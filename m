@@ -1,116 +1,162 @@
-Return-Path: <linux-kernel+bounces-120173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E906588D3B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:27:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFC188D3BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C1643046BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:27:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 810DE2A8079
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9D11CF92;
-	Wed, 27 Mar 2024 01:27:43 +0000 (UTC)
-Received: from mo-csw.securemx.jp (mo-csw1122.securemx.jp [210.130.202.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB701CFA9;
+	Wed, 27 Mar 2024 01:31:21 +0000 (UTC)
+Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6188A3DAC0D;
-	Wed, 27 Mar 2024 01:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.130.202.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D70A1CF92;
+	Wed, 27 Mar 2024 01:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.128
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711502863; cv=none; b=rK5dCjPBykXGFtuLbAqPcdHG7S4gZSkdur9gKmziasOwjhEvJfivxsp0SoxF1k9IwGyeN0oBPxYDhA0dHgB+v+ntVZJ6+BQjKehgw++QWcDgi4p14eIS4qCr0AoxuZmHXkc2LSPp4XFXl7YlTfqCclMfqstQtwwh/dgMwlk0LkM=
+	t=1711503081; cv=none; b=HX14UsxjK2jnOuBn3Rv4b0/fYhRc/6w2jccIBDN5xCYUPdO5fAUTfaOpWLLshBqvXB7ihmcIwYVT61zqo4ApBi5wPffibl4SgDN/XzZeyTNUJ4jxngQxwgj/nlw+SB1dfNirTWkT/MQuEhOHzKf1KTD9m9iRqmABY+ZYRscaaEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711502863; c=relaxed/simple;
-	bh=zVg5O3wsiJKYJ8Is9mWAxtglVlYiS8fSvcnUzjl61bE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tAz9snt8NPsvtmUMgsg8byeGbcrqVYd7XhHI3ICjfzVbImzarEjZI+l94bfjIGqBAVDuNCX6pJ4hYXUZUu8i9icre3DW9/8Ml8/lSFySTVHpM9KfN81RqtpwwJ/vunk6t7CDaKnsiW2QC0q1Jy/w/czH0RZXeD6+4tceShCOEdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kioxia.com; spf=pass smtp.mailfrom=kioxia.com; arc=none smtp.client-ip=210.130.202.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kioxia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kioxia.com
-Received: by mo-csw.securemx.jp (mx-mo-csw1122) id 42R1RMuI3953510; Wed, 27 Mar 2024 10:27:22 +0900
-X-Iguazu-Qid: 2rWgdkpBNqpP8I2LWS
-X-Iguazu-QSIG: v=2; s=0; t=1711502842; q=2rWgdkpBNqpP8I2LWS; m=n1qdayTa9w8M4H4sPbw9HV/SO3esIlWbNi0a08j1J4U=
-Received: from CNN1EMTA01.test.kioxia.com ([202.248.33.144])
-	by relay.securemx.jp (mx-mr1123) id 42R1RLup3221249
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Wed, 27 Mar 2024 10:27:21 +0900
-Received: from Switcher-Post_Send (gateway [10.232.20.1])
-	by CNN1EMTA01.test.kioxia.com (Postfix) with ESMTP id 0E4C62F014;
-	Wed, 27 Mar 2024 10:27:21 +0900 (JST)
-Received: from CNN1ESTR04.kioxia.com (localhost [127.0.0.1])
-	by Switcher-Post_Send (Postfix) with ESMTP id 66D5D1900001E1;
-	Wed, 27 Mar 2024 10:14:54 +0900 (JST)
-Received: from localhost [127.0.0.1] 
-	 by CNN1ESTR04.kioxia.com with ESMTP id 0003LAAAAAA00642;
-	 Wed, 27 Mar 2024 10:14:54 +0900
-Received: from CNN1EXMB01.r1.kioxia.com (CNN1EXMB01.r1.kioxia.com [10.232.20.150])
-	by Switcher-Pre_Send (Postfix) with ESMTP id 5B3EBA29C5E28;
-	Wed, 27 Mar 2024 10:14:54 +0900 (JST)
-Received: from CNN1EXMB03.r1.kioxia.com (10.232.20.152) by
- CNN1EXMB01.r1.kioxia.com (10.232.20.150) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 27 Mar 2024 10:27:19 +0900
-Received: from CNN1EXMB03.r1.kioxia.com ([10.13.100.22]) by
- CNN1EXMB03.r1.kioxia.com ([10.13.100.22]) with mapi id 15.01.2507.035; Wed,
- 27 Mar 2024 10:27:19 +0900
-From: tada keisuke <keisuke1.tada@kioxia.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>, "song@kernel.org" <song@kernel.org>
-CC: "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yukuai (C)"
-	<yukuai3@huawei.com>
-Subject: Re: [PATCH 00/11] md: avoid counter operation conflicts
-Thread-Topic: [PATCH 00/11] md: avoid counter operation conflicts
-Thread-Index: Adp/Y1jSZkz1OENpR0iwTWSI17JctP//rrSA//7ETZA=
-Date: Wed, 27 Mar 2024 01:27:19 +0000
-Message-ID: <481dc71231494b729b13dcc7392deb00@kioxia.com>
-References: <a022f547c43e40e2b9f0aebb2bd0bfa8@kioxia.com>
- <140c7f16-4c2a-390a-7021-53d3723626ec@huaweicloud.com>
-In-Reply-To: <140c7f16-4c2a-390a-7021-53d3723626ec@huaweicloud.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tm-as-product-ver: ISME-14.0.0.2080-9.0.1002-28276.001
-x-tm-as-result: No-10--7.663500-8.000000
-x-tmase-matchedrid: gIzQ6PxOy4OmagT1k9kBpu5i6weAmSDKKQNhMboqZlrGZbX3v50Wr423
-	cEKfZk4cPzfUQuvyrgx/g7iVBplYS0xUhXAIWfA4uy1sIsdu6VLCw5dmm1Y3wFKFfeM8C6d1GNt
-	H9cKwddYoeLEhOyw4QQS2kVlHSIV7i4F4IRlS0JJpR7+L0B6mE9DEMPvvoocvlLc3nRzXiU0uEy
-	MxU5vQY30tCKdnhB58O5QxsrU10s/6C0ePs7A07fcUt5lc1lLgNedi3nDhxyNCPrpj5CJTkIoz9
-	feK2Qv7yf3ziYviPcsK+6p60COouKvLg3ZiEGlBpmkSxX1HTig=
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--7.663500-8.000000
-x-tmase-version: ISME-14.0.0.2080-9.0.1002-28276.001
-x-tm-snts-smtp: AB5E7A0EA1609AA99F961EBC9FF6BC8D3D1D551E1553425C88D43C09FA601D152000:8
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1711503081; c=relaxed/simple;
+	bh=PB78qaohyz8M/acpebMaE6FdLWqAdAAntBtk1iJ8u+g=;
+	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GDqNEoYpoh0lj1AzZSwo/gIBAT03vJiyDqD5qL7/9HfudFHV6Jw8JQwFlyNkS/N4rDGg+tVj1vpQkv/a8w87DIWqo4eOJrjkFzevcBvqyLO5AqfzFQ49KU1rYlectb8WXdNmTknVPQtR7j3MlDe6W+k4XemzvKbPVD1GmEFk1W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com; spf=pass smtp.mailfrom=net-swift.com; arc=none smtp.client-ip=54.254.200.128
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=net-swift.com
+X-QQ-mid:Yeas8t1711502976t933t54105
+Received: from 73E00E8BC808433CB9DB281092DFBE6B (duanqiangwen@net-swift.com [122.235.142.34])
+X-QQ-SSF:00400000000000F0FH4000000000000
+From: duanqiangwen@net-swift.com
+X-BIZMAIL-ID: 293933216363626304
+To: "'Jiri Pirko'" <jiri@resnulli.us>
+Cc: <netdev@vger.kernel.org>,
+	<jiawenwu@trustnetic.com>,
+	<mengyuanlou@net-swift.com>,
+	<davem@davemloft.net>,
+	<edumazet@google.com>,
+	<kuba@kernel.org>,
+	<pabeni@redhat.com>,
+	<maciej.fijalkowski@intel.com>,
+	<andrew@lunn.ch>,
+	<wangxiongfeng2@huawei.com>,
+	<linux-kernel@vger.kernel.org>,
+	<michal.kubiak@intel.com>
+References: <20240322080416.470517-1-duanqiangwen@net-swift.com> <Zf09VnR2YI_WOchd@nanopsycho>
+In-Reply-To: <Zf09VnR2YI_WOchd@nanopsycho>
+Subject: RE: [PATCH net v5] net: txgbe: fix i2c dev name cannot match clkdev
+Date: Wed, 27 Mar 2024 09:29:35 +0800
+Message-ID: <001201da7fe6$3aa37f10$afea7d30$@net-swift.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CrossPremisesHeadersFilteredBySendConnector: CNN1EXMB01.r1.kioxia.com
-X-OrganizationHeadersPreserved: CNN1EXMB01.r1.kioxia.com
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFwLs5rgYGClTpBePjvbYMXpqMxXgKXsSFcsgqwUFA=
+Content-Language: zh-cn
+X-QQ-SENDSIZE: 520
+Feedback-ID: Yeas:net-swift.com:qybglogicsvrsz:qybglogicsvrsz3a-1
 
->> Currently, active_aligned_reads and nr_pending used as counters are atom=
-ic types.
->> Therefore, when inc/dec in a multi-core results in conflicts.
->
-> I don't uderstand what's the problem here, what's wrong with atomic
-> types in a multi-core system?
+> -----Original Message-----
+> From: Jiri Pirko <jiri@resnulli.us>
+> Sent: 2024=C4=EA3=D4=C222=C8=D5 16:12
+> To: Duanqiang Wen <duanqiangwen@net-swift.com>
+> Cc: netdev@vger.kernel.org; jiawenwu@trustnetic.com;
+> mengyuanlou@net-swift.com; davem@davemloft.net;
+> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+> maciej.fijalkowski@intel.com; andrew@lunn.ch;
+> wangxiongfeng2@huawei.com; linux-kernel@vger.kernel.org;
+> michal.kubiak@intel.com
+> Subject: Re: [PATCH net v5] net: txgbe: fix i2c dev name cannot match
+clkdev
+>=20
+> Fri, Mar 22, 2024 at 09:04:16AM CET, duanqiangwen@net-swift.com wrote:
+> >txgbe clkdev shortened clk_name, so i2c_dev info_name also need to
+> >shorten. Otherwise, i2c_dev cannot initialize clock.
+> >
+> >Change log:
+> >v4-v5: address comments:
+> >	Jiri Pirko:
+> >	Well, since it is used in txgbe_phy.c, it should be probably
+> >	rather defined locally in txgbe_phy.c.
+>=20
+> Did you read Florian's comment? Please do.
+>=20
+> pw-bot: cr
+>=20
 
-Hi Kuai
+I replied to Florian:=20
+" I want to shorten "i2c_desginware" to "i2c_dw" in txgbe driver, so =
+other
+drivers which use "i2c_designware" need another patch to use a define. "
 
-This patch is not a fix for the problem, but an improvement.
-This patch makes the counter inc/dec faster.
+He hasn't replied to me for several days, what should I do next?
 
-For the same reason, active_io was changed from atomic_t to percpu_ref.
-https://marc.info/?l=3Dlinux-raid&m=3D167514225920879
-
-Thanks,
-Keisuke
+>=20
+> >v3->v4: address comments:
+> >	Jakub Kicinski:
+> >	No empty lines between Fixes and Signed-off... please.
+> >v2->v3: address comments:
+> >	Jiawen Wu:
+> >	Please add the define in txgbe_type.h
+> >
+> >Fixes: e30cef001da2 ("net: txgbe: fix clk_name exceed MAX_DEV_ID
+> >limits")
+> >Signed-off-by: Duanqiang Wen <duanqiangwen@net-swift.com>
+> >---
+> > drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c | 8 +++++---
+> > 1 file changed, 5 insertions(+), 3 deletions(-)
+> >
+> >diff --git a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >index 5b5d5e4310d1..2fa511227eac 100644
+> >--- a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >+++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >@@ -20,6 +20,8 @@
+> > #include "txgbe_phy.h"
+> > #include "txgbe_hw.h"
+> >
+> >+#define TXGBE_I2C_CLK_DEV_NAME "i2c_dw"
+> >+
+> > static int txgbe_swnodes_register(struct txgbe *txgbe)  {
+> > 	struct txgbe_nodes *nodes =3D &txgbe->nodes; @@ -571,8 +573,8
+> @@ static
+> >int txgbe_clock_register(struct txgbe *txgbe)
+> > 	char clk_name[32];
+> > 	struct clk *clk;
+> >
+> >-	snprintf(clk_name, sizeof(clk_name), "i2c_dw.%d",
+> >-		 pci_dev_id(pdev));
+> >+	snprintf(clk_name, sizeof(clk_name), "%s.%d",
+> >+		 TXGBE_I2C_CLK_DEV_NAME, pci_dev_id(pdev));
+> >
+> > 	clk =3D clk_register_fixed_rate(NULL, clk_name, NULL, 0, =
+156250000);
+> > 	if (IS_ERR(clk))
+> >@@ -634,7 +636,7 @@ static int txgbe_i2c_register(struct txgbe =
+*txgbe)
+> >
+> > 	info.parent =3D &pdev->dev;
+> > 	info.fwnode =3D software_node_fwnode(txgbe-
+> >nodes.group[SWNODE_I2C]);
+> >-	info.name =3D "i2c_designware";
+> >+	info.name =3D TXGBE_I2C_CLK_DEV_NAME;
+> > 	info.id =3D pci_dev_id(pdev);
+> >
+> > 	info.res =3D &DEFINE_RES_IRQ(pdev->irq);
+> >--
+> >2.27.0
+> >
+> >
+>=20
 
 
