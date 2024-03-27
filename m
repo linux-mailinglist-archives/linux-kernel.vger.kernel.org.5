@@ -1,160 +1,112 @@
-Return-Path: <linux-kernel+bounces-120695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 590CE88DB8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:49:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045D088DB8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9921C2693A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF6711F28358
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C00851C47;
-	Wed, 27 Mar 2024 10:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659F4524B2;
+	Wed, 27 Mar 2024 10:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="khhjnn3B";
-	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="LLnlVQQJ"
-Received: from mx0a-00230701.pphosted.com (mx0a-00230701.pphosted.com [148.163.156.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HaCmLsTc"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B093DABF0;
-	Wed, 27 Mar 2024 10:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FE94F1F6;
+	Wed, 27 Mar 2024 10:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711536584; cv=none; b=FrKJeEfr9ikZWE0BzJpqB4M508P2PeWqROSyug++O2bYei8wx21K/8keoAWNuO5o2TcaY3o2CDeeExNYiblYN1aSEkC57gCZdD7lti+DwrQuzla4seMk/MhGBUiCapmO7TifNIRBYdDTyzw4BaEfCkVEiPLhJW26MTA1HDf9DSI=
+	t=1711536612; cv=none; b=XV/exygPBRpNU/KjwLuuwErhl0ZuCe6DpXE50gNW11nTMN1oRUzmvo/HHQzfitc7TlY6NaXRvk+1MlVMKKOZegCifVBn/G4e08Jm7BypHKlyE+liizFk52qm2Sy111JrUFl6W+lv3xM/dZDsC7aNMy0AfR9LaGHYFsZkqduYD/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711536584; c=relaxed/simple;
-	bh=CQySag7xm2muRwM/T32TWtIU0dCJiXAtitG8wW/6ZwE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Fd9Yix07RIa+o8o11b2GDx/+p5QW3JNyx0foDXipjTcyTbNb+pKvddCpklhyWzCfWZGiQEHC56LlII5d8CMh6lTtEfO1up6DUhgYStFGVvKWJfD6+6e4oBPQNxevT/PFPKjKpnpWUgvhqUUoKVWDjsSbG0R0NmDTFXYnfDMQV4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com; spf=pass smtp.mailfrom=synopsys.com; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=khhjnn3B; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=LLnlVQQJ; arc=none smtp.client-ip=148.163.156.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synopsys.com
-Received: from pps.filterd (m0098571.ppops.net [127.0.0.1])
-	by mx0a-00230701.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R7StDo012814;
-	Wed, 27 Mar 2024 03:49:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=
-	from:to:cc:subject:date:message-id; s=pfptdkimsnps; bh=xwEnEgNmd
-	ia2OaQNO3Qw1uAkOGxJ+2PH6QxnIB8iPco=; b=khhjnn3BniMVNhfpzV8VdqAnw
-	zcGGic5fvRagVYAs9CRoBkkL8wxXYiKBOwIZIy6LWTVqUNPlBE5SyFmnl9zoaArQ
-	DY/bR+RnZtI/MUaUX6hEdIWtXw6GAlRf04pwAGXCPrF63t0hpssdewzPSgzo1utH
-	EaPF8LNDmJZIAugT8/1xg5KGm8SquJ6HKift2hWns4hydh5yT7vEerBjvQexlKIp
-	ccaCXb0NLaswUmRHZ/z0VOUdpAn1aeIdNLGrE54Gn6l5rsvwQQbD49Dx42SHGlfb
-	D7SEINWt3DJMuIP+OIdeY5DeMfKJL8OOGof6IIkX3Ju81FdKvQJEPUSxjXjLw==
-Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.87.133])
-	by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3x3b6e5a8e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 03:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-	t=1711536574; bh=CQySag7xm2muRwM/T32TWtIU0dCJiXAtitG8wW/6ZwE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=LLnlVQQJvhMNkzAdTotUz6l2eI5rE9TgL5y4v2DV45SjjoDxq3ePpoI29CWDxmp23
-	 OrUcp/l3M8Hk+0slQJ/5ej9slyPGjSmrDUhgxzPX+9ErPAQqAqdsP0Ccp83SKwYOo7
-	 MA9Ndr/s/BTEx3cASc+QVwgvABi5i5qIw2pk3I3TFieNW052F1+K41sJGCnJpKEelt
-	 LmUZD6Cvh+aXyLmpnNSFEen0KJEGv87n4ImpX8V9c+BMS4EYBvRFSrLCRYQBOKHni/
-	 qXMZYHJc6hYxkL0vrPwRj5Ps0E4O8ooPlCsnh6/ZyRXGnTnzYbKbmqS7qU94ISmrKo
-	 7HgxEJARfSCKQ==
-Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits)
-	 client-signature RSA-PSS (2048 bits))
-	(Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-	by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id E3BE340467;
-	Wed, 27 Mar 2024 10:49:33 +0000 (UTC)
-Received: from us01odcvde44181.internal.synopsys.com (us01odcvde44181.internal.synopsys.com [10.192.159.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(Client did not present a certificate)
-	by mailhost.synopsys.com (Postfix) with ESMTPSA id 9547AA008A;
-	Wed, 27 Mar 2024 10:49:33 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From: Joao Pinto <Joao.Pinto@synopsys.com>
-To: Eugeniy.Paltsev@synopsys.com, dmaengine@vger.kernel.org
-Cc: Joao.Pinto@synopsys.com, Martin.McKenny@synopsys.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] Avoid hw_desc array overrun in dw-axi-dmac
-Date: Wed, 27 Mar 2024 10:49:24 +0000
-Message-Id: <1711536564-12919-1-git-send-email-jpinto@synopsys.com>
-X-Mailer: git-send-email 2.6.3
-X-Proofpoint-GUID: KGZr8mQD7piZvRf0pyeCg_q8imALXnQg
-X-Proofpoint-ORIG-GUID: KGZr8mQD7piZvRf0pyeCg_q8imALXnQg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_07,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
- adultscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 phishscore=0 clxscore=1015 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2403270074
+	s=arc-20240116; t=1711536612; c=relaxed/simple;
+	bh=hRZ12UFk01NEt79oTtxQRbJ/1y3rDaUGFfV1INmoIGs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t6pxmjFk29GASNcJrywbIplgb0UOZVj48gG6ZQmtNJ5tGUNdTA4q5PzwRmvzaofjiLGWpUxdsrgrJ47UAMGNEdu/MTRyPBImjmUrHQPETuZW7u2EcPeaC1jLnILQzSaLs28Jrpaz14SWV9G0QvKm/4x25QI9m7f86OdpLXRsLnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HaCmLsTc; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6f69e850bso5946943b3a.0;
+        Wed, 27 Mar 2024 03:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711536609; x=1712141409; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ture+LxIapYu0oPV7sdPwmJ6Rv+cKuHE663qPdR1ILM=;
+        b=HaCmLsTcoS6LBlwQ9LXTkoM8GwzAje0CXnAhQywu2SBc+URjQ99rna6w7cXJFYuGVI
+         r9FFlrbBMZWjmiYBIign2wJ/IFwbWTYrPGJ+1+SD6usodQNkBAuiAvqvi9R371N0PTDw
+         w5jp3tykqXK42qdSjjryJqxMxDmVcQdq14MzDPxK3W49E/rKiFW5cOn1gSqMuWgnstzs
+         i4D1Jz9DVt0bjOAR5TBxFcWFM7qjnc9cAM361cGimNz+4S17wGEl0DXW561wEgxHav2i
+         KIhN8hueU/juFLNOc9LDdI4srYn69i/2LrQR/7QE73WFS8QDcSVNxEXtPTSRFAsn++a4
+         SuzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711536609; x=1712141409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ture+LxIapYu0oPV7sdPwmJ6Rv+cKuHE663qPdR1ILM=;
+        b=UrxkFq3Ic/QOuHou143D+t8tpB7rW2wvEFlnQY4/yDCEqFy5piArnt5zYtR1r7DIpv
+         xkvorWYxWaZewJg8mVTTisvWkmIqCxTthMhUS/6rzm4jxrGgxImvHUvFTdWqiCFhlGvX
+         tLB5PdEopqqSbI9x9onOZwxxFMOIH8yzbN4OfWQIlgvZqMtlvsRXCJSfKQifdw41b/de
+         tZq1q1CnBkfvccZhSnd0c+dMeNrRnYZTJhdJd8MTIDs6AtpdCXrl0GMWKeIQo0tOixkp
+         ZERiSq0FFDtZVuT0TSg2bhi78B3tGg9hm6TnNP4dJpkES2n1EGnwoIJCVyw3kUCf+uIe
+         fzYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEhzdDC6J16T/pvmKmFAQkLC2mhKw2yCgXtDpImJHSkSg+C1VUrAUdwyvvdvoBfEzdGHLqg998ISb3iLzAN1X6rJmyf0W0SVgyW1IkNBguiz7wa2imYhneCsfT1OOnzCK/tSIyYwHEPIg79go=
+X-Gm-Message-State: AOJu0Yz1pLkdpuLGhil/My6NRo/wObT0jKsrw6Pn6uWJ3lqr3VQOkg8J
+	xVST3GEgUqPPUxYVIxC4CynxXTrSaBlft8jspUcamR21dnBs1XK82WbVzqIF1Lg9pcd4kIEh/GT
+	raWeou9g6i+NgsX5OkoWwr7hmvNw=
+X-Google-Smtp-Source: AGHT+IGJj/bSZAP3EjL/JWUjRKPP2j3anmA/ZNQuHSO9LvWflS1OwWtEtEuC5q5HpCiPQAhY9CM7STns6XpVssCEc7U=
+X-Received: by 2002:a05:6a20:7351:b0:1a3:c4b9:dbd9 with SMTP id
+ v17-20020a056a20735100b001a3c4b9dbd9mr3971300pzc.42.1711536608991; Wed, 27
+ Mar 2024 03:50:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240327023531.187880-1-wedsonaf@gmail.com> <20240327023531.187880-8-wedsonaf@gmail.com>
+ <ZgOXGSDmIgrENB7d@Boquns-Mac-mini.home>
+In-Reply-To: <ZgOXGSDmIgrENB7d@Boquns-Mac-mini.home>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 27 Mar 2024 11:49:41 +0100
+Message-ID: <CANiq72=0Q2KJ_Rmnsa596fRA0E3tE4cZtG7W7DHU94=nWLMoSg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/10] rust: alloc: update `VecExt` to take allocation flags
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, 
+	Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I have a use case where nr_buffers = 3 and in which each descriptor is composed by 3
-segments, resulting in the DMA channel descs_allocated to be 9. Since axi_desc_put()
-handles the hw_desc considering the descs_allocated, this scenario would result in a
-kernel panic (hw_desc array will be overrun).
+On Wed, Mar 27, 2024 at 4:48=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> /me likes this! ;-) Too bad `write_slice_cloned()` is not stablized:
+>
+>         https://doc.rust-lang.org/core/mem/union.MaybeUninit.html#method.=
+write_slice_cloned
 
-To fix this, the proposal is to add a new member to the axi_dma_desc structure,
-where we keep the number of allocated hw_descs (axi_desc_alloc()) and use it in
-axi_desc_put() to handle the hw_desc array correctly.
+For future reference, it will be called `clone_from_slice` soon (1.78):
 
-Additionally I propose to remove the axi_chan_start_first_queued() call after completing
-the transfer, since it was identified that unbalance can occur (started descriptors can
-be interrupted and transfer ignored due to DMA channel not being enabled).
+    https://doc.rust-lang.org/beta/core/mem/union.MaybeUninit.html#method.c=
+lone_from_slice
+    https://github.com/rust-lang/rust/issues/79995
 
-Signed-off-by: Joao Pinto <jpinto@synopsys.com>
----
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 7 ++-----
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 1 +
- 2 files changed, 3 insertions(+), 5 deletions(-)
+This could be a "good first issue", i.e. to replace these if these get
+stabilized (which seems likely).
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index a86a81f..b39f37a 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -302,6 +302,7 @@ static struct axi_dma_desc *axi_desc_alloc(u32 num)
- 		kfree(desc);
- 		return NULL;
- 	}
-+	desc->nr_hw_descs = num;
- 
- 	return desc;
- }
-@@ -328,7 +329,7 @@ static struct axi_dma_lli *axi_desc_get(struct axi_dma_chan *chan,
- static void axi_desc_put(struct axi_dma_desc *desc)
- {
- 	struct axi_dma_chan *chan = desc->chan;
--	int count = atomic_read(&chan->descs_allocated);
-+	int count = desc->nr_hw_descs;
- 	struct axi_dma_hw_desc *hw_desc;
- 	int descs_put;
- 
-@@ -1139,9 +1139,6 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 		/* Remove the completed descriptor from issued list before completing */
- 		list_del(&vd->node);
- 		vchan_cookie_complete(vd);
--
--		/* Submit queued descriptors after processing the completed ones */
--		axi_chan_start_first_queued(chan);
- 	}
- 
- out:
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index 454904d..ac571b4 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -104,6 +104,7 @@ struct axi_dma_desc {
- 	u32				completed_blocks;
- 	u32				length;
- 	u32				period_len;
-+	u32				nr_hw_descs;
- };
- 
- struct axi_dma_chan_config {
--- 
-1.8.3.1
+Though that one has to account for panics -- it would be good to check
+codegen if we do replace it.
 
+Cheers,
+Miguel
 
