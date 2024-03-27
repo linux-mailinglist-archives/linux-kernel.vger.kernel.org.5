@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-120829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41D5C88DE9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:17:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB52288DEA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:17:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7761B2486B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:17:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC9A61C238A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DF912DDA6;
-	Wed, 27 Mar 2024 12:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0239213A24E;
+	Wed, 27 Mar 2024 12:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k6e+ZNC8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nnNZfGcs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1489D139D09;
-	Wed, 27 Mar 2024 12:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3059013A242;
+	Wed, 27 Mar 2024 12:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541322; cv=none; b=b8gNBNjZIfsUIyx3aD8ikdc8hop9omJ62fZvgXHrUmt0/uQW0DdTCaKyd676gqPfwYtPgJNfkyffqzxAJEAax6c+JGoQZ0GsZsyH+BDZqBN2leaoVpzDbUbUikrT/d8cTEdjBecFJ771znO1qm8Zo3Gne9SOhBy4Vnbu7GkKNDA=
+	t=1711541325; cv=none; b=Yf4Ie6bb9UQn0/QdnW13d3hgwLRrOfnG5IHtWMzsD5H368eP29JWpN3yTlcotZQ02TkIrBXJXve3MN9B9/PVIoX65JLZd5u+xQBJMBl+/KkmQxtblOWK7UYmsTTGaWaRivK1En8YdofqvDlnRclWlH5dpwVcjY/a5VRckEC89kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541322; c=relaxed/simple;
-	bh=RefdEEQR2WW+1s1RlS40ESTXryb1X0ViQR6Q4wLd6tU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fjE5pK15/PM2cuRe4bkA4I7K6coTN9gXHPAfRH3Re2xf86SnW/lk939uJ23lVsS9JB2mK/mvkYdq+Uc680u7Qs+UaOkbNdn8Cxi3A86EG5GP6Wyt5sXsVW41R/31e4eJFx4I3jBk9zUFFWrRCYqJzbZ8XIP+uLo71ixtnj7nNlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k6e+ZNC8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A50C433F1;
-	Wed, 27 Mar 2024 12:08:40 +0000 (UTC)
+	s=arc-20240116; t=1711541325; c=relaxed/simple;
+	bh=GloueK3WocEL+gIBegUHsZVz6flv982uVaODEJFynco=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iYo1XwWbT7Rgu3jIi5bkfLk8cqJNQyL8ztoIGZtoYiybk2MFZXdiUGVjXDfj4Zu3ii6nV34Nd3MM9BgosrxKQYZnIDZEATauaHgS59pFp8G0UNeBjlX1Sg+/OisZsbq9kBJiDTwerJDJ9BnT0I7HPhxxXeO3U2Sl1JSy59Lx/GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nnNZfGcs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFB5AC433C7;
+	Wed, 27 Mar 2024 12:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541322;
-	bh=RefdEEQR2WW+1s1RlS40ESTXryb1X0ViQR6Q4wLd6tU=;
+	s=k20201202; t=1711541324;
+	bh=GloueK3WocEL+gIBegUHsZVz6flv982uVaODEJFynco=;
 	h=From:To:Cc:Subject:Date:From;
-	b=k6e+ZNC8XEIvWdxoEEe4w+K/b2+p6FAmtRx7QnV15sJpsCmUrZCruYcu0Y1mZtSA0
-	 U2cNouG9Cc/CwqhqmVvsp6NP8FIyzX6Df4DMxL9+KAaDqf9toBHy/6jqpXNoHyzxXu
-	 vaXknoa3jiCp4Rm+nx+oq/UUQNrFnljLwsmpQQR31Ct0Crne9jHfkwFsmhKcYOM495
-	 Y/2PnmHegLPjzfhSj3GYgqBK5/K9J5bO4M9CQHpW739tVz//I0TMQE0GYco0O1Ncj5
-	 B9GhGSUawAefnCegt4kj/t1hzmpervnKy8vYuXtc9aFCYbmWuIH44fqURazwpC3Bop
-	 6x4MBPdADdcXg==
+	b=nnNZfGcszFWuG6wo6q8lebBbQc1KnfZLk0OW6o9zyMu+lKgoJ1U//oRr/l4GycJQ+
+	 GuWZfg7t8Wdv3sKcBQCMglko/APvgYKzRqWAw+ELby7OsDV42BBvNrfIBZSs99rzAK
+	 IaY68qin140/0B4eHbxG5IVQv/tMvsaj+cP7uJy2B4SShp/L3tcWXnnvQTFPCyT0rG
+	 7/4lXkOQ/uKGak8hL+J0wkVITQuClRZ28QpD9V4S6gSZKfKwC4PQ0hkXCk53hJWLlt
+	 ooyagGNWwTLSGP5Afg2Bz6cfTOBiIgSdDHUNYq+IWSSR8ytwpK8tcsuJoRhkdYFYxr
+	 knAwa6wLGDgDw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	srinivasan.shanmugam@amd.com
-Cc: Alex Hung <alex.hung@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	akiyks@gmail.com
+Cc: Thorsten Blum <thorsten.blum@toblux.com>,
+	Breno Leitao <leitao@debian.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL check for writeback requests." failed to apply to 6.7-stable tree
-Date: Wed, 27 Mar 2024 08:08:39 -0400
-Message-ID: <20240327120839.2826392-1-sashal@kernel.org>
+Subject: FAILED: Patch "docs: Makefile: Add dependency to $(YNL_INDEX) for targets other than htmldocs" failed to apply to 6.7-stable tree
+Date: Wed, 27 Mar 2024 08:08:42 -0400
+Message-ID: <20240327120842.2826444-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,52 +73,60 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From b2f26f49e84bea03dddb5f37ff137c97b165107b Mon Sep 17 00:00:00 2001
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Date: Sat, 13 Jan 2024 14:32:27 +0530
-Subject: [PATCH] drm/amd/display: Drop 'acrtc' and add 'new_crtc_state' NULL
- check for writeback requests.
+From a304fa1d10fcb974c117d391e5b4d34c2baa9a62 Mon Sep 17 00:00:00 2001
+From: Akira Yokosawa <akiyks@gmail.com>
+Date: Tue, 5 Mar 2024 13:23:00 +0900
+Subject: [PATCH] docs: Makefile: Add dependency to $(YNL_INDEX) for targets
+ other than htmldocs
 
-Return value of 'to_amdgpu_crtc' which is container_of(...) can't be
-null, so it's null check 'acrtc' is dropped.
+Commit f061c9f7d058 ("Documentation: Document each netlink family")
+added recipes for YAML -> RST conversion.
+Then commit 7da8bdbf8f5d ("docs: Makefile: Fix make cleandocs by
+deleting generated .rst files") made sure those converted .rst files
+are cleaned by "make cleandocs".
 
-Fixing the below:
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9302 amdgpu_dm_atomic_commit_tail() error: we previously assumed 'acrtc' could be null (see line 9299)
+However, they took care of htmldocs build only.
 
-Added 'new_crtc_state' NULL check for function
-'drm_atomic_get_new_crtc_state' that retrieves the new state for a CRTC,
-while enabling writeback requests.
+If one of other targets such as latexdocs or epubdocs is built
+without building htmldocs, missing .rst files can cause additional
+WARNINGs from sphinx-build as follow:
 
-Cc: stable@vger.kernel.org
-Cc: Alex Hung <alex.hung@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+    ./Documentation/userspace-api/netlink/specs.rst:18: WARNING: undefined label: 'specs'
+    ./Documentation/userspace-api/netlink/netlink-raw.rst:64: WARNING: unknown document: '../../networking/netlink_spec/rt_link'
+    ./Documentation/userspace-api/netlink/netlink-raw.rst:64: WARNING: unknown document: '../../networking/netlink_spec/tc'
+    ./Documentation/userspace-api/netlink/index.rst:21: WARNING: undefined label: 'specs'
+
+Add dependency to $(YNL_INDEX) for other targets and allow any targets
+to be built cleanly right after "make cleandocs".
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+Cc: stable@vger.kernel.org  # v6.7
+Cc: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: Breno Leitao <leitao@debian.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Reviwed-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+Message-ID: <e876e3c8-109d-4bc8-9916-05a4bc4ee9ac@gmail.com>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/Makefile | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 36af104e7663c..8623722e954f9 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -9327,10 +9327,10 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
- 		if (!new_con_state->writeback_job)
- 			continue;
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 4479910166fc1..b68f8c816897b 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -111,7 +111,9 @@ $(YNL_INDEX): $(YNL_RST_FILES)
+ $(YNL_RST_DIR)/%.rst: $(YNL_YAML_DIR)/%.yaml $(YNL_TOOL)
+ 	$(Q)$(YNL_TOOL) -i $< -o $@
  
--		new_crtc_state = NULL;
-+		new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
+-htmldocs: $(YNL_INDEX)
++htmldocs texinfodocs latexdocs epubdocs xmldocs: $(YNL_INDEX)
++
++htmldocs:
+ 	@$(srctree)/scripts/sphinx-pre-install --version-check
+ 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,html,$(var),,$(var)))
  
--		if (acrtc)
--			new_crtc_state = drm_atomic_get_new_crtc_state(state, &acrtc->base);
-+		if (!new_crtc_state)
-+			continue;
- 
- 		if (acrtc->wb_enabled)
- 			continue;
 -- 
 2.43.0
 
