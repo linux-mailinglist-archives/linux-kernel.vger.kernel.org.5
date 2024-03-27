@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-120871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8031688DFDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:27:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E59E88DFE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10A161F2DCE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:27:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC6EA29B16B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E401422C4;
-	Wed, 27 Mar 2024 12:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A82142621;
+	Wed, 27 Mar 2024 12:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQpjjGtV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ai+Ntd+S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D00E130AC2;
-	Wed, 27 Mar 2024 12:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A578130AC9;
+	Wed, 27 Mar 2024 12:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541443; cv=none; b=saD98Zk7nAabfp4JGi1IiCAZJ8moYOka8/8YWMJOQH5uGglTlfJHXme75zm96GdSoIUd8MeVWScJodJk/KTe6x+EuyYIPuaHz+VFeia6tced6d8nUtR/x/NEq6jI1rr5JCWR7Gs2EpB4tAN75stDcKGEM3JMlV+NOdHgvAwu1K4=
+	t=1711541446; cv=none; b=PHgMSxNIOC6p+epHM7rFwmoOO39G27Q6gP/d+C0SuKpjHdLhST+sWSVlCV0V+5GSWgK3aYz9HlKwUqnidV1i4CYmg5Sekg9P0miqYUrcB3U0q82lSNnbYHu+om3UEM/aG8lkV9EPMnWI2Mz3gmM3IbAK31dtMVsegZvujaj8Ug0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541443; c=relaxed/simple;
-	bh=eFoo9Oj9LB1MSpTOBkNnCmt0ODh5N7H0yYe3/LDuVC4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WCIIPPZYMrrJPueBLVpG2u9RzXAhyzaasI5Rt7cyWsuZIEgHoD1/vqv/kDwAd7B85KmeJbo6ClFFVkxiIsKveVDWSfg+VMdtdX+m+vHJItru201VnhpHKaI92QrQ91bw5w9CR7ECL5958a06E6Ty/13I3yY19bbBJUja2wJt8zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQpjjGtV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE537C433F1;
-	Wed, 27 Mar 2024 12:10:41 +0000 (UTC)
+	s=arc-20240116; t=1711541446; c=relaxed/simple;
+	bh=K2PVQU4TqWEZirqo8n6sE/o/4af9Vnjw4M8jG2nVK0w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ohPpqCH8tiQmAcPLOYQzbuXwtzqrwhNwI+V90762PV+2+mJSaFm3Hiq7FKS+M9/IOg2rDAnxT0J2sfA65R8vhgro94pODet5Vy1QD2KZ2sxKTyd1Nv6fZBVeG8JmGUhqOMZ3ax41tfncIzfxOr/XlPZImgmzOe1jjK5xSgxx/+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ai+Ntd+S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC2BC43390;
+	Wed, 27 Mar 2024 12:10:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541442;
-	bh=eFoo9Oj9LB1MSpTOBkNnCmt0ODh5N7H0yYe3/LDuVC4=;
+	s=k20201202; t=1711541446;
+	bh=K2PVQU4TqWEZirqo8n6sE/o/4af9Vnjw4M8jG2nVK0w=;
 	h=From:To:Cc:Subject:Date:From;
-	b=hQpjjGtVN6iCLYf4Xclx8LpVXOmu+tENb22Xw45jSrAFLbbzfhvMhmdrCzNTkF0ZM
-	 OjAHLi+SdFgw7nljeDZitNIqIiv9PQGM/2iRI+RbzhIhOj2nqwTVyohUz3Gr67VdHq
-	 0IvXb0S7b6dqMvI6iSdey6ykuvGGM294MSK7uxiRtgxDMrjWQW6A+Sb0K75mMjiCt6
-	 T501rfvJS+mOhd6NoLSi0qK0+vHz2wpjNPuQbjsd7H+Reo655zK1aksGHLde4UHqcD
-	 ahaiYYqE71W7Ew+XYCSdQN3V/oKWRZjukSEH9Cz0BuIqhH0lecOhbCNXz1+BmDLNS/
-	 vSlyRaymFc/eg==
+	b=Ai+Ntd+SyHQLoP+D3uP6xSijfEfmQ/Ck8Sl0tImqeIT4oizsQROlUGfPZG0djS8pr
+	 DBOXf73LXGLoz7L1/PawdXQwyooiaUssVoKFnX4WFtBPq0qo6wP6CZ55AdPdXiwIQW
+	 u0R2Ul+fz6QlCrWVaXbVdhX75xGstWj3Zs0qZYEPvqEZSwHHLWRSioXS8UiPZOL2Et
+	 zfPi9M3KN6f3j07oqErO4BFx0Z0NohjkYPb48NpS9goA2hntvIDzLh7fuieMyewodo
+	 AP4HJlEBY48gpVrLvajN/ypVG2NmjS1tOOJ5bJ/gHPl37/jkgfQCM5um7vPa4Q3nA8
+	 qbnxqBAo1pK0g==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	yukuai3@huawei.com
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Xiao Ni <xni@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Song Liu <song@kernel.org>,
-	dm-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org
-Subject: FAILED: Patch "dm-raid: really frozen sync_thread during suspend" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:10:40 -0400
-Message-ID: <20240327121040.2828143-1-sashal@kernel.org>
+	charlene.liu@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Sung joon Kim <sungjoon.kim@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "drm/amd/display: Add logging resource checks" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:10:43 -0400
+Message-ID: <20240327121044.2828208-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,145 +74,81 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 16c4770c75b1223998adbeb7286f9a15c65fba73 Mon Sep 17 00:00:00 2001
-From: Yu Kuai <yukuai3@huawei.com>
-Date: Tue, 5 Mar 2024 15:23:02 +0800
-Subject: [PATCH] dm-raid: really frozen sync_thread during suspend
+From 012fe0674af0753e71424b638960adbfb7f3db5a Mon Sep 17 00:00:00 2001
+From: Charlene Liu <charlene.liu@amd.com>
+Date: Thu, 28 Dec 2023 13:19:33 -0500
+Subject: [PATCH] drm/amd/display: Add logging resource checks
 
-1) commit f52f5c71f3d4 ("md: fix stopping sync thread") remove
-   MD_RECOVERY_FROZEN from __md_stop_writes() and doesn't realize that
-   dm-raid relies on __md_stop_writes() to frozen sync_thread
-   indirectly. Fix this problem by adding MD_RECOVERY_FROZEN in
-   md_stop_writes(), and since stop_sync_thread() is only used for
-   dm-raid in this case, also move stop_sync_thread() to
-   md_stop_writes().
-2) The flag MD_RECOVERY_FROZEN doesn't mean that sync thread is frozen,
-   it only prevent new sync_thread to start, and it can't stop the
-   running sync thread; In order to frozen sync_thread, after seting the
-   flag, stop_sync_thread() should be used.
-3) The flag MD_RECOVERY_FROZEN doesn't mean that writes are stopped, use
-   it as condition for md_stop_writes() in raid_postsuspend() doesn't
-   look correct. Consider that reentrant stop_sync_thread() do nothing,
-   always call md_stop_writes() in raid_postsuspend().
-4) raid_message can set/clear the flag MD_RECOVERY_FROZEN at anytime,
-   and if MD_RECOVERY_FROZEN is cleared while the array is suspended,
-   new sync_thread can start unexpected. Fix this by disallow
-   raid_message() to change sync_thread status during suspend.
+[Why]
+When mapping resources, resources could be unavailable.
 
-Note that after commit f52f5c71f3d4 ("md: fix stopping sync thread"), the
-test shell/lvconvert-raid-reshape.sh start to hang in stop_sync_thread(),
-and with previous fixes, the test won't hang there anymore, however, the
-test will still fail and complain that ext4 is corrupted. And with this
-patch, the test won't hang due to stop_sync_thread() or fail due to ext4
-is corrupted anymore. However, there is still a deadlock related to
-dm-raid456 that will be fixed in following patches.
-
-Reported-by: Mikulas Patocka <mpatocka@redhat.com>
-Closes: https://lore.kernel.org/all/e5e8afe2-e9a8-49a2-5ab0-958d4065c55e@redhat.com/
-Fixes: 1af2048a3e87 ("dm raid: fix deadlock caused by premature md_stop_writes()")
-Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
-Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
-Cc: stable@vger.kernel.org # v6.7+
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Xiao Ni <xni@redhat.com>
-Acked-by: Mike Snitzer <snitzer@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240305072306.2562024-6-yukuai1@huaweicloud.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Sung joon Kim <sungjoon.kim@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Charlene Liu <charlene.liu@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/md/dm-raid.c | 25 +++++++++++++++----------
- drivers/md/md.c      |  3 ++-
- 2 files changed, 17 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc.c          | 4 +++-
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 4 ++++
+ drivers/gpu/drm/amd/display/dc/core/dc_state.c    | 5 +++--
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index eb009d6bb03a1..e2d7a73c0f874 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3240,11 +3240,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	rs->md.ro = 1;
- 	rs->md.in_sync = 1;
- 
--	/* Keep array frozen until resume. */
--	set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index 69e726630241d..aa7c02ba948e9 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -3522,7 +3522,7 @@ static void commit_planes_for_stream(struct dc *dc,
+ 	top_pipe_to_program = resource_get_otg_master_for_stream(
+ 				&context->res_ctx,
+ 				stream);
 -
- 	/* Has to be held on running the array */
- 	mddev_suspend_and_lock_nointr(&rs->md);
-+
-+	/* Keep array frozen until resume. */
-+	md_frozen_sync_thread(&rs->md);
-+
- 	r = md_run(&rs->md);
- 	rs->md.in_sync = 0; /* Assume already marked dirty */
- 	if (r) {
-@@ -3722,6 +3723,9 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
- 	if (!mddev->pers || !mddev->pers->sync_request)
- 		return -EINVAL;
++	ASSERT(top_pipe_to_program != NULL);
+ 	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+ 		struct pipe_ctx *old_pipe = &dc->current_state->res_ctx.pipe_ctx[i];
  
-+	if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
-+		return -EBUSY;
-+
- 	if (!strcasecmp(argv[0], "frozen"))
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 	else
-@@ -3796,10 +3800,11 @@ static void raid_postsuspend(struct dm_target *ti)
- 	struct raid_set *rs = ti->private;
+@@ -4345,6 +4345,8 @@ static bool should_commit_minimal_transition_for_windowed_mpo_odm(struct dc *dc,
  
- 	if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
--		/* Writes have to be stopped before suspending to avoid deadlocks. */
--		if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
--			md_stop_writes(&rs->md);
--
-+		/*
-+		 * sync_thread must be stopped during suspend, and writes have
-+		 * to be stopped before suspending to avoid deadlocks.
-+		 */
-+		md_stop_writes(&rs->md);
- 		mddev_suspend(&rs->md, false);
- 	}
- }
-@@ -4012,8 +4017,6 @@ static int raid_preresume(struct dm_target *ti)
- 	}
+ 	cur_pipe = resource_get_otg_master_for_stream(&dc->current_state->res_ctx, stream);
+ 	new_pipe = resource_get_otg_master_for_stream(&context->res_ctx, stream);
++	if (!cur_pipe || !new_pipe)
++		return false;
+ 	cur_is_odm_in_use = resource_get_odm_slice_count(cur_pipe) > 1;
+ 	new_is_odm_in_use = resource_get_odm_slice_count(new_pipe) > 1;
+ 	if (cur_is_odm_in_use == new_is_odm_in_use)
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index f2abc1096ffb6..9fbdb09697fd5 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -2194,6 +2194,10 @@ void resource_log_pipe_topology_update(struct dc *dc, struct dc_state *state)
+ 	for (stream_idx = 0; stream_idx < state->stream_count; stream_idx++) {
+ 		otg_master = resource_get_otg_master_for_stream(
+ 				&state->res_ctx, state->streams[stream_idx]);
++		if (!otg_master	|| otg_master->stream_res.tg == NULL) {
++			DC_LOG_DC("topology update: otg_master NULL stream_idx %d!\n", stream_idx);
++			return;
++		}
+ 		slice_count = resource_get_opp_heads_for_otg_master(otg_master,
+ 				&state->res_ctx, opp_heads);
+ 		for (slice_idx = 0; slice_idx < slice_count; slice_idx++) {
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
+index 56feee0ff01b1..88c6436b28b69 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
+@@ -434,8 +434,9 @@ bool dc_state_add_plane(
  
- 	/* Check for any resize/reshape on @rs and adjust/initiate */
--	/* Be prepared for mddev_resume() in raid_resume() */
--	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 	if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
- 		set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
- 		mddev->resync_min = mddev->recovery_cp;
-@@ -4055,10 +4058,12 @@ static void raid_resume(struct dm_target *ti)
- 		if (mddev->delta_disks < 0)
- 			rs_set_capacity(rs);
+ 	otg_master_pipe = resource_get_otg_master_for_stream(
+ 			&state->res_ctx, stream);
+-	added = resource_append_dpp_pipes_for_plane_composition(state,
+-			dc->current_state, pool, otg_master_pipe, plane_state);
++	if (otg_master_pipe)
++		added = resource_append_dpp_pipes_for_plane_composition(state,
++				dc->current_state, pool, otg_master_pipe, plane_state);
  
-+		WARN_ON_ONCE(!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery));
-+		WARN_ON_ONCE(test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
- 		mddev_lock_nointr(mddev);
--		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		mddev->ro = 0;
- 		mddev->in_sync = 0;
-+		md_unfrozen_sync_thread(mddev);
- 		mddev_unlock_and_resume(mddev);
- 	}
- }
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 55ecc05c17c65..167db77442392 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6364,7 +6364,6 @@ static void md_clean(struct mddev *mddev)
- 
- static void __md_stop_writes(struct mddev *mddev)
- {
--	stop_sync_thread(mddev, true, false);
- 	del_timer_sync(&mddev->safemode_timer);
- 
- 	if (mddev->pers && mddev->pers->quiesce) {
-@@ -6389,6 +6388,8 @@ static void __md_stop_writes(struct mddev *mddev)
- void md_stop_writes(struct mddev *mddev)
- {
- 	mddev_lock_nointr(mddev);
-+	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-+	stop_sync_thread(mddev, true, false);
- 	__md_stop_writes(mddev);
- 	mddev_unlock(mddev);
- }
+ 	if (added) {
+ 		stream_status->plane_states[stream_status->plane_count] =
 -- 
 2.43.0
 
