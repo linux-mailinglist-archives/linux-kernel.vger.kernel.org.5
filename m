@@ -1,80 +1,148 @@
-Return-Path: <linux-kernel+bounces-121433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E89288E7D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:06:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0346588E7C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04ED01F35750
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:06:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970371F3402A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078A412FB29;
-	Wed, 27 Mar 2024 14:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rkCPQTx8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491181474B0;
+	Wed, 27 Mar 2024 14:23:55 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A0D147C80;
-	Wed, 27 Mar 2024 14:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D0614535D;
+	Wed, 27 Mar 2024 14:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711549576; cv=none; b=p//Nr49P7YGIpCYiu7l/2BXsDmmXyeGNoxbTa4aUDHEY3ZVLCNKzfO6EdzUXQ0lJm8+RHZ1jUx1VSy/h4dv6FmbUAiftZsfqnZPZRz8ToNLygNCi27Sz9X/sSYxlKctDdSex5dBLpobI6F6xDl0AKgmrbHsDGgsmf+SrtP54pKs=
+	t=1711549434; cv=none; b=ngNwIiSdRROELj3XeEw5m0RtVeMsR+MWkrI/7alHmjRIm8NQ6aAFnhkrcr4FoZGnMutbKHq4+K4EkuqLg1ayf56IOQl4ZBf7qmt3gOu89aR8ELn/AR/U7vIy3h7ZLiL3YmUbT9ki0nDNoqLzElGxTB2pGM9tzrMmW4sHRDeNcQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711549576; c=relaxed/simple;
-	bh=tYPHhNepAAUe/RQ25n0j0I86CGTDkYfEPdE4S8lqpas=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uG46wo3EUNA/YP/0MPPKplkNSOMkUoRkRtsWpuwmLFY0uJXlQHLHT0Taofcy+cNdsTCoG6FNhZpZgrBY8Se0JjH/ru+F3aJNkPcWBcrYXZdQEbXdb1qzUHKRgWO4bEJIBYCtHvygcTW2DDGbvvg/16LUNY/cXuhWk7gfm7XwtmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rkCPQTx8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 256A5C433F1;
-	Wed, 27 Mar 2024 14:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711549575;
-	bh=tYPHhNepAAUe/RQ25n0j0I86CGTDkYfEPdE4S8lqpas=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rkCPQTx86xKBwvhO7HDufGb5TKgJnEhkgurHdpJP2aGkREXb4bWU9HlVf2dDPQ8ht
-	 QQCXpMrDWKt40fjB3JZfbkKhRJwxTKqpsF1AONm11z/vKvlMlZwwYZOg63P6rE/VHZ
-	 P7ziXQhb+6A6CJ+L39PXLqydtd/ebYP0Z+OnOR3YtdQ9u4zA/FO34PrntOuZKTvvAC
-	 dMp6xdNb3OOWu+bqrD7RpqmmuLPC5DTrqZpJ3Ze2Ej5hXYqDSUIdxwSPzeOWwB7Mw1
-	 W8SRMhKw2dPENkg4EERVYrp/mQxgIu1+1Ii0Vkd6yBCduwZEiGwCGSnGJMWAHBecLn
-	 oLr9UgQ5W9E9w==
-Date: Wed, 27 Mar 2024 14:26:10 +0000
-From: Simon Horman <horms@kernel.org>
-To: Hariprasad Kelam <hkelam@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
-	davem@davemloft.net, sgoutham@marvell.com, gakula@marvell.com,
-	jerinj@marvell.com, lcherian@marvell.com, sbhatta@marvell.com,
-	naveenm@marvell.com, edumazet@google.com, pabeni@redhat.com
-Subject: Re: [net PATCH] Octeontx2-af: fix pause frame configuration in GMP
- mode
-Message-ID: <20240327142610.GI403975@kernel.org>
-References: <20240326052720.4441-1-hkelam@marvell.com>
+	s=arc-20240116; t=1711549434; c=relaxed/simple;
+	bh=BmZ4SjxSQBnkpuUFtgR3wQXxh1obJ6n5r0ucuS+Wj4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YMilRaZRvlDVdNTUS4PBRb6kVK9YaZJw7FU98e/AntXHg7mp3CHt+isYZ1vPsZSTf20bZ776bpLK4BuozlIvKzM5nXYTNQP00LLfsHlbzSPTrzjkOrhH0uG3jloOo3M9GZJwMOa5Fu4mOw9gpKIMhlCuQdpFHHtpjJ3liFc5prM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8748DC433F1;
+	Wed, 27 Mar 2024 14:23:53 +0000 (UTC)
+Date: Wed, 27 Mar 2024 10:26:34 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Tio Zhang <tiozhang@didiglobal.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Ingo Molnar <mingo@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-trace-kernel@vger.kernel.org>, <zyhtheonly@yeah.net>,
+ <zyhtheonly@gmail.com>
+Subject: Re: [PATCH] trace/sched: add tgid for sched_wakeup_template
+Message-ID: <20240327102634.17013392@gandalf.local.home>
+In-Reply-To: <20240327084948.GA28114@didi-ThinkCentre-M930t-N000>
+References: <20240327084948.GA28114@didi-ThinkCentre-M930t-N000>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326052720.4441-1-hkelam@marvell.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 10:57:20AM +0530, Hariprasad Kelam wrote:
-> The Octeontx2 MAC block (CGX) has separate data paths (SMU and GMP) for
-> different speeds, allowing for efficient data transfer.
-> 
-> The previous patch which added pause frame configuration has a bug due
-> to which pause frame feature is not working in GMP mode.
-> 
-> This patch fixes the issue by configurating appropriate registers.
-> 
-> Fixes: f7e086e754fe ("octeontx2-af: Pause frame configuration at cgx")
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+On Wed, 27 Mar 2024 16:50:57 +0800
+Tio Zhang <tiozhang@didiglobal.com> wrote:
 
-nit: For consistency with git history,
-     octeontx2-af should be all lowercase in the subject
+> By doing this, we are able to filter tasks by tgid while we are
+> tracing wakeup events by ebpf or other methods.
+> 
+> For example, when we care about tracing a user space process (which has
+> uncertain number of LWPs, i.e, pids) to monitor its wakeup latency,
+> without tgid available in sched_wakeup tracepoints, we would struggle
+> finding out all pids to trace, or we could use kprobe to achieve tgid
+> tracing, which is less accurate and much less efficient than using
+> tracepoint.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+This is a very common trace event, and I really do not want to add more
+data than necessary to it, as it increases the size of the event which
+means less events can be recorded on a fixed size trace ring buffer.
+
+Note, you are not modifying the "tracepoint", but you are actually
+modifying a "trace event".
+
+ "tracepoint" is the hook in the kernel code:
+
+   trace_sched_wakeup()
+
+ "trace event" is defined by TRACE_EVENT() macro (and friends) that defines
+     what is exposed in the tracefs file system.
+
+I thought ebpf could hook directly to the tracepoint which is:
+
+	trace_sched_wakeup(p);
+
+I believe you can have direct access to the 'p' before it is processed from ebpf.
+
+There's also "trace probes" (I think we are lacking documentation on this,
+as well as event probes :-p):
+
+ $ gdb vmlinux
+(gdb) p &((struct task_struct *)0)->tgid
+$1 = (pid_t *) 0x56c
+(gdb) p &((struct task_struct *)0)->pid
+$2 = (pid_t *) 0x568
+
+ # echo 't:wakeup sched_waking pid=+0x568($arg1):u32 tgid=+0x56c($arg1):u32' > /sys/kernel/tracing/dynamic_events
+
+ # trace-cmd start -e wakeup
+ # trace-cmd show
+       trace-cmd-7307    [003] d..6. 599486.485762: wakeup: (__probestub_sched_waking+0x4/0x10) pid=845 tgid=845
+            bash-845     [001] d.s4. 599486.486136: wakeup: (__probestub_sched_waking+0x4/0x10) pid=17 tgid=17
+            bash-845     [001] d..4. 599486.486336: wakeup: (__probestub_sched_waking+0x4/0x10) pid=5516 tgid=5516
+   kworker/u18:2-5516    [001] d..4. 599486.486445: wakeup: (__probestub_sched_waking+0x4/0x10) pid=818 tgid=818
+          <idle>-0       [001] d.s4. 599486.491206: wakeup: (__probestub_sched_waking+0x4/0x10) pid=17 tgid=17
+          <idle>-0       [001] d.s5. 599486.493218: wakeup: (__probestub_sched_waking+0x4/0x10) pid=17 tgid=17
+          <idle>-0       [001] d.s4. 599486.497200: wakeup: (__probestub_sched_waking+0x4/0x10) pid=17 tgid=17
+          <idle>-0       [003] d.s4. 599486.829209: wakeup: (__probestub_sched_waking+0x4/0x10) pid=70 tgid=70
+
+The above attaches to the tracepoint and $arg1 is the 'struct task_struct *p'.
+
+-- Steve
+
+
+> 
+> Signed-off-by: Tio Zhang <tiozhang@didiglobal.com>
+> Signed-off-by: Dylane Chen <dylanechen@didiglobal.com>
+> ---
+>  include/trace/events/sched.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index dbb01b4b7451..ea7e525649e5 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -149,6 +149,7 @@ DECLARE_EVENT_CLASS(sched_wakeup_template,
+>  		__field(	pid_t,	pid			)
+>  		__field(	int,	prio			)
+>  		__field(	int,	target_cpu		)
+> +		__field(	pid_t,	tgid			)
+>  	),
+>  
+>  	TP_fast_assign(
+> @@ -156,11 +157,12 @@ DECLARE_EVENT_CLASS(sched_wakeup_template,
+>  		__entry->pid		= p->pid;
+>  		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
+>  		__entry->target_cpu	= task_cpu(p);
+> +		__entry->tgid		= p->tgid;
+>  	),
+>  
+> -	TP_printk("comm=%s pid=%d prio=%d target_cpu=%03d",
+> +	TP_printk("comm=%s pid=%d prio=%d target_cpu=%03d tgid=%d",
+>  		  __entry->comm, __entry->pid, __entry->prio,
+> -		  __entry->target_cpu)
+> +		  __entry->target_cpu, __entry->tgid)
+>  );
+>  
+>  /*
+
 
