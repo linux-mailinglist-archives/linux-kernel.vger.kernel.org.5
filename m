@@ -1,53 +1,55 @@
-Return-Path: <linux-kernel+bounces-121086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C6288E235
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:21:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D39288E2D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:34:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5132B29BF54
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:21:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38988B2CAF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A6B16D9D6;
-	Wed, 27 Mar 2024 12:20:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C3816D9DA;
+	Wed, 27 Mar 2024 12:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gL8mULRS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxxqL9uu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9C816D9CB;
-	Wed, 27 Mar 2024 12:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EAA16E861;
+	Wed, 27 Mar 2024 12:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542042; cv=none; b=p6XGwIZbpvM9XplBUqtkAK9pGyXs3O7Fl5CMchuqJoO4soqojUG6eROq3QIAdk5yV4jHl9J61He7jb0a8Ry8E+ufbPQaUpvFydkcu6wbb12s1U29XF6EyBRCjqgL4ViKz6oPxzPmhGC4z0eKPGZPe0kheEI5WmcI60tP4Yf0Zcg=
+	t=1711542045; cv=none; b=a2cS+VErMPt3wg7Z09mF5sBFY0p6olgjAphm7y+Wd8GJAkE4FxIzuFb+jEeoXTwbXGMdaRSTP5HcwuOZyMLqIO930zJ3bMrL6eWCInBnX5/GW290bl5mvd2dkc9dJ3okPd09xm8n9ZHXsUfqpZgBlqAyl4DHAGem7Ykcmg0yg8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542042; c=relaxed/simple;
-	bh=uc+f3GiJhYQkEll3dp8W8GhBIaEupet6T1k8W0PbeSc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZL6I3BdXBldmIqPXD2rVbPd6PkmEyZiDtVr0EyxJrISuO2yIWgpPpJPeisN7aslRYZcdwT96WmLbwjJz1Tlf5r8fn/hkxPTjMxW1KOyEutThPs6IKHje6w7klkJnEoMfnvGErAWm9FBDVa2JBasIiEKTj9J8Oxq4DllyO4lp7XA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gL8mULRS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8745C433F1;
-	Wed, 27 Mar 2024 12:20:41 +0000 (UTC)
+	s=arc-20240116; t=1711542045; c=relaxed/simple;
+	bh=X8oIdoNsjR3YFrCpIAQrYxfqYNjTusb6ZfjjQyR+dzM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NwhsHD3BX6HUxyjSWI4utqdIgn1RlbBjy7LrNyyCFuxqS0de/CwZVBVcGyKFxfTFkkQpgAEXvGhCCsiMvD9qtvGsn7AMezfGwJwcqCZwR43EAkrTNFOesqcZjLWkDpfEtWeYt/NXu+A8leUneUiC4kLNdWNToicW4aAziGXHCcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxxqL9uu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D81FC433C7;
+	Wed, 27 Mar 2024 12:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542042;
-	bh=uc+f3GiJhYQkEll3dp8W8GhBIaEupet6T1k8W0PbeSc=;
+	s=k20201202; t=1711542044;
+	bh=X8oIdoNsjR3YFrCpIAQrYxfqYNjTusb6ZfjjQyR+dzM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=gL8mULRS18/szi9iTIbfFs+iKRN1TV5+Rno3bilp3CAp/csxOVWzEtvhQ75bGCUhi
-	 uPPF/Ym436jE0vMLP/Biolnn0ghWgm/aevKRfXBaTFIbcYuTavMSHn0gX9nJTanqqb
-	 HZIVdInAx3z2PT6OwUyMCCQsoKbaNOMJeuFv3SuufYBcFnxdqp5d1H2etND+fsZco+
-	 yIYnQxSBwyz9Q1Db7IES3Ag8eBnyRl5wp2nkSZV3QBjD9XUFFsMK6TVamk7MqkL/f+
-	 BpJ/DD+pDRRLzSykjbEzf10cYv9HXfmlLb9VYAsbJewHlRK3rTxY84z8BvPg37DXza
-	 bkRZpqvYGqVxw==
+	b=MxxqL9uuqw/33QfOnwv8iBw3cKmFRDDUHHfm1NHhxdm9HsipkU5vqIHl0yLaNYLhT
+	 4YKD2Lnp/WjGcotopm8fmMcbH2SZH9njs/F4ro4a63TcTsyoZb67lpN/OgZ8A6XfXc
+	 48T372FuiV9Yr99/1SwrpDWqiSMCXAjjx5687TglrrM+SOGbBjugVfjvzhy7CwSi+p
+	 QbXDN0I53fTVj9Rml8TL8YntQ90dEZufPNerBKp6E8pm4haH8gPKkEFiz/EDOIgWkT
+	 G55YKE93Ct/wDRnYEaYhglDlmxeslaBdPGy+oMNHeJLXr5uvc5atb4G8FUOXJiaemG
+	 6ZbXpa1fkr33A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jani.nikula@intel.com
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
+	Philip.Yang@amd.com
+Cc: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/probe-helper: warn about negative .get_modes()" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:20:40 -0400
-Message-ID: <20240327122040.2836229-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amdgpu: amdgpu_ttm_gart_bind set gtt bound flag" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:20:42 -0400
+Message-ID: <20240327122043.2836266-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -57,6 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.10-stable tree.
@@ -69,59 +72,40 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 7af03e688792293ba33149fb8df619a8dff90e80 Mon Sep 17 00:00:00 2001
-From: Jani Nikula <jani.nikula@intel.com>
-Date: Fri, 8 Mar 2024 18:03:39 +0200
-Subject: [PATCH] drm/probe-helper: warn about negative .get_modes()
+From 6c6064cbe58b43533e3451ad6a8ba9736c109ac3 Mon Sep 17 00:00:00 2001
+From: Philip Yang <Philip.Yang@amd.com>
+Date: Mon, 11 Mar 2024 18:07:34 -0400
+Subject: [PATCH] drm/amdgpu: amdgpu_ttm_gart_bind set gtt bound flag
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The .get_modes() callback is supposed to return the number of modes,
-never a negative error code. If a negative value is returned, it'll just
-be interpreted as a negative count, and added to previous calculations.
-
-Document the rules, but handle the negative values gracefully with an
-error message.
+Otherwise after the GTT bo is released, the GTT and gart space is freed
+but amdgpu_ttm_backend_unbind will not clear the gart page table entry
+and leave valid mapping entry pointing to the stale system page. Then
+if GPU access the gart address mistakely, it will read undefined value
+instead page fault, harder to debug and reproduce the real issue.
 
 Cc: stable@vger.kernel.org
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/50208c866facc33226a3c77b82bb96aeef8ef310.1709913674.git.jani.nikula@intel.com
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/drm_probe_helper.c       | 7 +++++++
- include/drm/drm_modeset_helper_vtables.h | 3 ++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
-index 19ecb749704be..75f84753f6ee3 100644
---- a/drivers/gpu/drm/drm_probe_helper.c
-+++ b/drivers/gpu/drm/drm_probe_helper.c
-@@ -422,6 +422,13 @@ static int drm_helper_probe_get_modes(struct drm_connector *connector)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 8722beba494e5..fc418e670fdae 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -864,6 +864,7 @@ static void amdgpu_ttm_gart_bind(struct amdgpu_device *adev,
+ 		amdgpu_gart_bind(adev, gtt->offset, ttm->num_pages,
+ 				 gtt->ttm.dma_address, flags);
+ 	}
++	gtt->bound = true;
+ }
  
- 	count = connector_funcs->get_modes(connector);
- 
-+	/* The .get_modes() callback should not return negative values. */
-+	if (count < 0) {
-+		drm_err(connector->dev, ".get_modes() returned %pe\n",
-+			ERR_PTR(count));
-+		count = 0;
-+	}
-+
- 	/*
- 	 * Fallback for when DDC probe failed in drm_get_edid() and thus skipped
- 	 * override/firmware EDID.
-diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-index 881b03e4dc288..9ed42469540eb 100644
---- a/include/drm/drm_modeset_helper_vtables.h
-+++ b/include/drm/drm_modeset_helper_vtables.h
-@@ -898,7 +898,8 @@ struct drm_connector_helper_funcs {
- 	 *
- 	 * RETURNS:
- 	 *
--	 * The number of modes added by calling drm_mode_probed_add().
-+	 * The number of modes added by calling drm_mode_probed_add(). Return 0
-+	 * on failures (no modes) instead of negative error codes.
- 	 */
- 	int (*get_modes)(struct drm_connector *connector);
- 
+ /*
 -- 
 2.43.0
 
