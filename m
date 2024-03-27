@@ -1,167 +1,603 @@
-Return-Path: <linux-kernel+bounces-120424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BFE688D722
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:20:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E74A88D725
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C152B225CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:20:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0120E29985B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9338C28DD5;
-	Wed, 27 Mar 2024 07:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF79652;
+	Wed, 27 Mar 2024 07:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziswiler.com header.i=marcel@ziswiler.com header.b="B+dGVDVn"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="E1ht/+SQ"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8D6225D9;
-	Wed, 27 Mar 2024 07:20:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1745E28DD3
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711524048; cv=none; b=qjdV3cgWQGi5mEgBLDChkjmQY6gaPEJpbpvzdSAquU2hmm6/RXE/14hNf/9YEbXnlxLCJQ3abIt0wOmqdV/XRy6qfx6rXaW8B9E/maDPw+4tdP7OiN01GWbOIC4MLQY5eh0YgX4Y1fkYJuZ+Ls2LSu7tNRXpOcpbTcZSyj8IW+4=
+	t=1711524093; cv=none; b=sEQkip2y8yCZL9wyc1Kqbnn80y9NYiLtchQhaB8MFJbI34rBhkMKkqxMPJWc2/Xhv6fOZxCy7n0yicw5eH0cvXw3vN6j9jDFXY79+6c/Jfju92KP1cmty+c4Rqn/3CleHSwy2ThSnGrqy1IKpE6uho3qIZiGhLLaIN21cB9PGDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711524048; c=relaxed/simple;
-	bh=0mw3Z0iuLK/Oy5qllO5ABVscdcllvCYUuXhvUv08Jv4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cHz931wdOigztEtkTBwus3e3dwAII9FkCYa60fErt1ptdK9Leotk08Eo2aSqt0e8/Cha07gHN7vclOpb72duK6FQshbLwmCWLnFg1HLbU9C/nDR2OUPaFNMvUUE0p5uMjBSdsWSYQb/fnUHihRTuQbrpfyrCEXf4PhyuEQ51qRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziswiler.com; spf=pass smtp.mailfrom=ziswiler.com; dkim=pass (2048-bit key) header.d=ziswiler.com header.i=marcel@ziswiler.com header.b=B+dGVDVn; arc=none smtp.client-ip=74.208.4.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziswiler.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziswiler.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ziswiler.com;
-	s=s1-ionos; t=1711524005; x=1712128805; i=marcel@ziswiler.com;
-	bh=wnNVEOncldO1On7KO8fAvEAupvlzSNB7wVXjAeDRXl8=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=B+dGVDVnTFoO4u/IWt9pIZKnBjwU3o/Sn78+04Q3wr3UDgNoZmLYJPzCaa31iYTF
-	 PvVYMcBVryIIPFI1dO7QbcHZuzdPG0RUGOI+T/c7CrrwvMsaYcLOVDKr45PSIDTnY
-	 7WI662hjcCHUbauBAHMBaaHdqcI9dpHqC3nSfhnSeWeqgjhhR/s31JFQrC2eXPeMn
-	 3JxvZiIWvTYy2t8tE792StegeSHOImTcJtKANLv+YFKY18Erp5tkvx3eRhy8IBn7I
-	 OvNgPjTGe1S/skQxK79vuFWsD0MDWfckTOj7Eq+99zQdpdSV2VznpwOFVvskoJdtV
-	 tY+od10URcnvELY6aw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost.localdomain ([213.55.224.253]) by mrelay.perfora.net
- (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0MVen3-1sMdNT3wFD-00OqWK;
- Wed, 27 Mar 2024 08:20:05 +0100
-From: Marcel Ziswiler <marcel@ziswiler.com>
-To: linux-phy@lists.infradead.org
-Cc: linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org,
-	stable@vger.kernel.org,
-	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Tim Harvey <tharvey@gateworks.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Yang Li <yang.lee@linux.alibaba.com>,
-	imx@lists.linux.dev
-Subject: [PATCH v2] phy: freescale: imx8m-pcie: fix pcie link-up instability
-Date: Wed, 27 Mar 2024 08:19:37 +0100
-Message-ID: <20240327071946.8869-1-marcel@ziswiler.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711524093; c=relaxed/simple;
+	bh=svJ8doLT2AQdgyIKlvrkMHsN3B7MU3sRe807nvD36VE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VxjBdi99n2zpfkK/xQA6WArDegybS6YHGmBzAorWya3EhuYL/RDd1WolHA7I0tddOilZSdXZhXIfg5Fs8M4VO8cUHbb9fAPD7cnoxk2TrB50uej7HwGxKx29A9MQIy+p6UvK7vyMY7Pk+Mzx5zTEOw59gqrOl5hIwP8LUeVqYLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=E1ht/+SQ; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R2RQ8l001605;
+	Wed, 27 Mar 2024 00:21:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=WfbsJj9v
+	GZtx0SxZOrGBC6pyDj7Ubie1UW9/TisA3Sc=; b=E1ht/+SQ6rA5So2nZiKhCOyH
+	8kCyk2x9Zg6efW+sHYiQuyk3tdGMgrNOJUomEX4n16VWOHHuwgjgYWt+nI9hwk0U
+	wXdqFMlq4UaQx6g8LkZoXiD28EdymPh7nAntsd72UOrAqnEjxlsODZAt14hrMbCZ
+	4qSGnU693jF4MS6lfGQHGvWT112sY2P1nv2VUG8hpljRSG5m7E4XBFuyv2s6f+yg
+	sthWJKHLD3sDq2T4wLHsfvZfdrVy44ntjmgoI6y4wPNFdldT6Bf34CbzTD09khnj
+	nFKYE2YTVRRsVixw5tAPfKURhJ4NllZUJWT/6TkqDVnD5LVnF8OWUghQIQZRHQ==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x4ap80wye-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 00:21:23 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Wed, 27 Mar 2024 00:21:22 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Wed, 27 Mar 2024 00:21:22 -0700
+Received: from IPBU-BLR-SERVER1.marvell.com (IPBU-BLR-SERVER1.marvell.com [10.28.8.41])
+	by maili.marvell.com (Postfix) with ESMTP id D4E6C3F70C1;
+	Wed, 27 Mar 2024 00:21:19 -0700 (PDT)
+From: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+To: <will@kernel.org>, <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <sgoutham@marvell.com>, <gcherian@marvell.com>, <lcherian@marvell.com>,
+        Gowthami Thiagarajan <gthiagarajan@marvell.com>
+Subject: [RESEND PATCH v3] perf/marvell: Marvell PEM performance monitor support
+Date: Wed, 27 Mar 2024 12:51:17 +0530
+Message-ID: <20240327072117.1556653-1-gthiagarajan@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lbH4shU1mJFfwL/g76O9vJC4HBEY1pkPhgwYOBwWvJviKC6wYBk
- eSgVNuWN7mq68FVIVZu8Ignbe3vMNcizoCe9oBipJoJlfDe7Jctbka4ZbAcMVtjeDzkQDg8
- HZRospSzMu7DDOIz6yqf37LI/j1T5QUmEZQpvmr7fLyj128cxl6RnwoRuSkU5PIdMLG6ucU
- SY9JIMQnO60+H5A2M4pJw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:CIxx/7qf/R8=;cr8oAoSV4b4/HSUiSremUO3fQ1n
- GZac4UIL79J6yAl89goDCpau85ZNY6AprrHuSrxuBINAhNjtX9j+gQLbd0CReMXyvY8slULHt
- RnvU8jAd/OLNLUo5dzTNBqulw3FKD3pKS21x2e0HB3j3dHvuDSb57IpIpOCIBMdJORUIFGLUN
- viPumuf2NyBMt+keg41XiY826R+ycUSnT94TFZHhPSyTPYSY5ByJbsFA5jlK0C+bX3tDZBglK
- XsudkDcuQIsOw2Cnbt90nctrOe5Y0+PTvO3DbNA8ByKfdn4m4VTvYJM2ZOy9D7hVD36ui1pVQ
- wRRWgTyY02hb5QCYXr8yrmmCO0cuT8ogBxxNPjcX8zW36Gsr2KnmgIc7E0+xwAPNGZceN8cwT
- hWocNhGrijq46m/nE6qjY22woNc37GP5ucuPxS/eBsOMwh23dtzG7KQ6KzXZfGFNKhzl88C+r
- 6jPAvm84oDavTj7X/r7G7tMCaJgrcS1v2us0CzW1LbUpGiz/ibNLPxuy3KB6dfAQ0K7pK+zce
- DJ1qfM8Azr1iiwCwm1wCQQBnx0JBtFf7xbduYQZ+WQbohbOAc3jYLBnQdJm5+oksFAYjgyjCN
- qR8irzH/IQdhkaXIBg7RA/RztGUP9oNlCsRKsHo2QTiHFmD3IEOntuQQu/Zc6Zm8cQAAMm2eR
- pAUxJ7kzQLxQfvQVIADTRuGuUm0MGOmGN3rG070Hn3oO1o2WSpSLqhjkn1BiOfHq9mt2aWOHR
- Ujiu6Q+vXMtEZFAGVCQrTIKTi56sv8rrI7xqMw1JZUnAddE68YCgXY=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: iTIx23jzOZU0Hc5dPUqtDZ1HdjLiwvGz
+X-Proofpoint-ORIG-GUID: iTIx23jzOZU0Hc5dPUqtDZ1HdjLiwvGz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_04,2024-03-21_02,2023-05-22_02
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+PCI Express Interface PMU includes various performance counters
+to monitor the data that is transmitted over the PCIe link. The
+counters track various inbound and outbound transactions which
+includes separate counters for posted/non-posted/completion TLPs.
+Also, inbound and outbound memory read requests along with their
+latencies can also be monitored. Address Translation Services(ATS)events
+such as ATS Translation, ATS Page Request, ATS Invalidation along with
+their corresponding latencies are also supported.
 
-On the i.MX 8M Mini, the AUX_PLL_REFCLK_SEL has to be left at its reset
-default of AUX_IN (PLL clock).
+The performance counters are 64 bits wide.
 
-Background Information:
-In our automated testing setup, we use Delock Mini-PCIe SATA cards [1].
-While this setup has proven very stable overall we noticed upstream on
-the i.MX 8M Mini fails quite regularly (about 50/50) to bring up the
-PCIe link while with NXP's downstream BSP 5.15.71_2.2.2 it always works.
-As that old downstream stuff was quite different, I first also tried
-NXP's latest downstream BSP 6.1.55_2.2.0 which from a PCIe point of view
-is fairly vanilla, however, also there the PCIe link-up was not stable.
-Comparing and debugging I noticed that upstream explicitly configures
-the AUX_PLL_REFCLK_SEL to I_PLL_REFCLK_FROM_SYSPLL while working
-downstream [2] leaving it at reset defaults of AUX_IN (PLL clock).
-Unfortunately, the TRM does not mention any further details about this
-register (both for the i.MX 8M Mini as well as the Plus).
-NXP confirmed their validation codes for the i.MX8MM PCIe doesn't
-configure cmn_reg063 (offset: 0x18C).
-BTW: On the i.MX 8M Plus we have not seen any issues with PCIe with the
-exact same setup which is why I left it unchanged.
+For instance,
+perf stat -e ib_tlp_pr <workload>
+tracks the inbound posted TLPs for the workload.
 
-[1] https://www.delock.com/produkt/95233/merkmale.html
-[2] https://github.com/nxp-imx/linux-imx/blob/lf-5.15.71-2.2.0/drivers/pci=
-/controller/dwc/pci-imx6.c#L1548
+Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+---
+v2->v3 changes:
+- Dropped device tree support as the acpi table based probing is used.
 
-Fixes: 1aa97b002258 ("phy: freescale: pcie: Initialize the imx8 pcie stand=
-alone phy driver")
+ MAINTAINERS                    |   6 +
+ drivers/perf/Kconfig           |   7 +
+ drivers/perf/Makefile          |   1 +
+ drivers/perf/marvell_pem_pmu.c | 428 +++++++++++++++++++++++++++++++++
+ include/linux/cpuhotplug.h     |   1 +
+ 5 files changed, 443 insertions(+)
+ create mode 100644 drivers/perf/marvell_pem_pmu.c
 
-Cc: stable@vger.kernel.org # 6.1.x: ca679c49: phy: freescale: imx8m-pcie: =
-Refine i.MX8MM PCIe PHY driver
-Cc: stable@vger.kernel.org # 6.1.x
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
-Link: https://lore.kernel.org/all/AS8PR04MB867661386FEA07649771FBE18C362@A=
-S8PR04MB8676.eurprd04.prod.outlook.com
-
-=2D--
-
-Changes in v2:
-- Reword the commmit message.
-- Meld the background information from the cover letter into the commit
-  message as suggested by Fabio. Thanks!
-- Document NXP's confirmation from their validation codes and add
-  Richard Zhu's reviewed-by. Thanks!
-
- drivers/phy/freescale/phy-fsl-imx8m-pcie.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/phy/freescale/phy-fsl-imx8m-pcie.c b/drivers/phy/free=
-scale/phy-fsl-imx8m-pcie.c
-index b700f52b7b67..11fcb1867118 100644
-=2D-- a/drivers/phy/freescale/phy-fsl-imx8m-pcie.c
-+++ b/drivers/phy/freescale/phy-fsl-imx8m-pcie.c
-@@ -110,8 +110,10 @@ static int imx8_pcie_phy_power_on(struct phy *phy)
- 		/* Source clock from SoC internal PLL */
- 		writel(ANA_PLL_CLK_OUT_TO_EXT_IO_SEL,
- 		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG062);
--		writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
--		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
-+		if (imx8_phy->drvdata->variant !=3D IMX8MM) {
-+			writel(AUX_PLL_REFCLK_SEL_SYS_PLL,
-+			       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG063);
-+		}
- 		val =3D ANA_AUX_RX_TX_SEL_TX | ANA_AUX_TX_TERM;
- 		writel(val | ANA_AUX_RX_TERM_GND_EN,
- 		       imx8_phy->base + IMX8MM_PCIE_PHY_CMN_REG064);
-=2D-
-2.44.0
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dd5de540ec0b..50c11e128a98 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12759,6 +12759,12 @@ S:	Supported
+ F:	Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+ F:	drivers/net/ethernet/marvell/octeontx2/af/
+ 
++MARVELL PEM PMU DRIVER
++M:	Linu Cherian <lcherian@marvell.com>
++M:	Gowthami Thiagarajan <gthiagarajan@marvell.com>
++S:	Supported
++F:	drivers/perf/marvell_pem_pmu.c
++
+ MARVELL PRESTERA ETHERNET SWITCH DRIVER
+ M:	Taras Chornyi <taras.chornyi@plvision.eu>
+ S:	Supported
+diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+index 273d67ecf6d2..12ac8409263a 100644
+--- a/drivers/perf/Kconfig
++++ b/drivers/perf/Kconfig
+@@ -234,4 +234,11 @@ config CXL_PMU
+ 
+ 	  If unsure say 'm'.
+ 
++config MARVELL_PEM_PMU
++	tristate "MARVELL PEM PMU Support"
++	depends on ARCH_THUNDER || (COMPILE_TEST && 64BIT)
++	help
++	  Enable support for PCIe Interface performance monitoring
++	  on Marvell platform.
++
+ endmenu
+diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+index 16b3ec4db916..db3c473cc5c7 100644
+--- a/drivers/perf/Makefile
++++ b/drivers/perf/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
+ obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
+ obj-$(CONFIG_MARVELL_CN10K_TAD_PMU) += marvell_cn10k_tad_pmu.o
+ obj-$(CONFIG_MARVELL_CN10K_DDR_PMU) += marvell_cn10k_ddr_pmu.o
++obj-$(CONFIG_MARVELL_PEM_PMU) += marvell_pem_pmu.o
+ obj-$(CONFIG_APPLE_M1_CPU_PMU) += apple_m1_cpu_pmu.o
+ obj-$(CONFIG_ALIBABA_UNCORE_DRW_PMU) += alibaba_uncore_drw_pmu.o
+ obj-$(CONFIG_ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU) += arm_cspmu/
+diff --git a/drivers/perf/marvell_pem_pmu.c b/drivers/perf/marvell_pem_pmu.c
+new file mode 100644
+index 000000000000..d4175483b982
+--- /dev/null
++++ b/drivers/perf/marvell_pem_pmu.c
+@@ -0,0 +1,428 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Marvell PEM(PCIe RC) Performance Monitor Driver
++ *
++ * Copyright (C) 2024 Marvell.
++ */
++
++#include <linux/acpi.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/perf_event.h>
++
++/*
++ * Each of these events maps to a free running 64 bit counter
++ * with no event control, but can be reset.
++ *
++ */
++enum pem_events {
++	IB_TLP_NPR,
++	IB_TLP_PR,
++	IB_TLP_CPL,
++	IB_TLP_DWORDS_NPR,
++	IB_TLP_DWORDS_PR,
++	IB_TLP_DWORDS_CPL,
++	IB_INFLIGHT,
++	IB_READS,
++	IB_REQ_NO_RO_NCB,
++	IB_REQ_NO_RO_EBUS,
++	OB_TLP_NPR,
++	OB_TLP_PR,
++	OB_TLP_CPL,
++	OB_TLP_DWORDS_NPR,
++	OB_TLP_DWORDS_PR,
++	OB_TLP_DWORDS_CPL,
++	OB_INFLIGHT,
++	OB_READS,
++	OB_MERGES_NPR,
++	OB_MERGES_PR,
++	OB_MERGES_CPL,
++	ATS_TRANS,
++	ATS_TRANS_LATENCY,
++	ATS_PRI,
++	ATS_PRI_LATENCY,
++	ATS_INV,
++	ATS_INV_LATENCY,
++	PEM_EVENTIDS_MAX,
++};
++
++static u64 eventid_to_offset_table[] = {
++	[IB_TLP_NPR]	     = 0x0,
++	[IB_TLP_PR]	     = 0x8,
++	[IB_TLP_CPL]	     = 0x10,
++	[IB_TLP_DWORDS_NPR]  = 0x100,
++	[IB_TLP_DWORDS_PR]   = 0x108,
++	[IB_TLP_DWORDS_CPL]  = 0x110,
++	[IB_INFLIGHT]	     = 0x200,
++	[IB_READS]	     = 0x300,
++	[IB_REQ_NO_RO_NCB]   = 0x400,
++	[IB_REQ_NO_RO_EBUS]  = 0x408,
++	[OB_TLP_NPR]         = 0x500,
++	[OB_TLP_PR]          = 0x508,
++	[OB_TLP_CPL]         = 0x510,
++	[OB_TLP_DWORDS_NPR]  = 0x600,
++	[OB_TLP_DWORDS_PR]   = 0x608,
++	[OB_TLP_DWORDS_CPL]  = 0x610,
++	[OB_INFLIGHT]        = 0x700,
++	[OB_READS]	     = 0x800,
++	[OB_MERGES_NPR]      = 0x900,
++	[OB_MERGES_PR]       = 0x908,
++	[OB_MERGES_CPL]      = 0x910,
++	[ATS_TRANS]          = 0x2D18,
++	[ATS_TRANS_LATENCY]  = 0x2D20,
++	[ATS_PRI]            = 0x2D28,
++	[ATS_PRI_LATENCY]    = 0x2D30,
++	[ATS_INV]            = 0x2D38,
++	[ATS_INV_LATENCY]    = 0x2D40,
++};
++
++struct pem_pmu {
++	struct pmu pmu;
++	void __iomem *base;
++	unsigned int cpu;
++	struct	device *dev;
++	struct hlist_node node;
++};
++
++#define to_pem_pmu(p)	container_of(p, struct pem_pmu, pmu)
++
++static int eventid_to_offset(int eventid)
++{
++	return eventid_to_offset_table[eventid];
++}
++
++/* Events */
++static ssize_t pem_pmu_event_show(struct device *dev,
++				  struct device_attribute *attr,
++				  char *page)
++{
++	struct perf_pmu_events_attr *pmu_attr;
++
++	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
++	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
++}
++
++#define PEM_EVENT_ATTR(_name, _id)					\
++	(&((struct perf_pmu_events_attr[]) {				\
++	{ .attr = __ATTR(_name, 0444, pem_pmu_event_show, NULL),	\
++		.id = _id, }						\
++	})[0].attr.attr)
++
++static struct attribute *pem_perf_events_attrs[] = {
++	PEM_EVENT_ATTR(ib_tlp_npr, IB_TLP_NPR),
++	PEM_EVENT_ATTR(ib_tlp_pr, IB_TLP_PR),
++	PEM_EVENT_ATTR(ib_tlp_cpl_partid, IB_TLP_CPL),
++	PEM_EVENT_ATTR(ib_tlp_dwords_npr, IB_TLP_DWORDS_NPR),
++	PEM_EVENT_ATTR(ib_tlp_dwords_pr, IB_TLP_DWORDS_PR),
++	PEM_EVENT_ATTR(ib_tlp_dwords_cpl_partid, IB_TLP_DWORDS_CPL),
++	PEM_EVENT_ATTR(ib_inflight, IB_INFLIGHT),
++	PEM_EVENT_ATTR(ib_reads, IB_READS),
++	PEM_EVENT_ATTR(ib_req_no_ro_ncb, IB_REQ_NO_RO_NCB),
++	PEM_EVENT_ATTR(ib_req_no_ro_ebus, IB_REQ_NO_RO_EBUS),
++	PEM_EVENT_ATTR(ob_tlp_npr_partid, OB_TLP_NPR),
++	PEM_EVENT_ATTR(ob_tlp_pr_partid, OB_TLP_PR),
++	PEM_EVENT_ATTR(ob_tlp_cpl_partid, OB_TLP_CPL),
++	PEM_EVENT_ATTR(ob_tlp_dwords_npr_partid, OB_TLP_DWORDS_NPR),
++	PEM_EVENT_ATTR(ob_tlp_dwords_pr_partid, OB_TLP_DWORDS_PR),
++	PEM_EVENT_ATTR(ob_tlp_dwords_cpl_partid, OB_TLP_DWORDS_CPL),
++	PEM_EVENT_ATTR(ob_inflight_partid, OB_INFLIGHT),
++	PEM_EVENT_ATTR(ob_reads_partid, OB_READS),
++	PEM_EVENT_ATTR(ob_merges_npr_partid, OB_MERGES_NPR),
++	PEM_EVENT_ATTR(ob_merges_pr_partid, OB_MERGES_PR),
++	PEM_EVENT_ATTR(ob_merges_cpl_partid, OB_MERGES_CPL),
++	PEM_EVENT_ATTR(ats_trans, ATS_TRANS),
++	PEM_EVENT_ATTR(ats_trans_latency, ATS_TRANS_LATENCY),
++	PEM_EVENT_ATTR(ats_pri, ATS_PRI),
++	PEM_EVENT_ATTR(ats_pri_latency, ATS_PRI_LATENCY),
++	PEM_EVENT_ATTR(ats_inv, ATS_INV),
++	PEM_EVENT_ATTR(ats_inv_latency, ATS_INV_LATENCY),
++	NULL
++};
++
++static struct attribute_group pem_perf_events_attr_group = {
++	.name = "events",
++	.attrs = pem_perf_events_attrs,
++};
++
++PMU_FORMAT_ATTR(event, "config:0-5");
++
++static struct attribute *pem_perf_format_attrs[] = {
++	&format_attr_event.attr,
++	NULL
++};
++
++static struct attribute_group pem_perf_format_attr_group = {
++	.name = "format",
++	.attrs = pem_perf_format_attrs,
++};
++
++/* cpumask */
++static ssize_t pem_perf_cpumask_show(struct device *dev,
++				     struct device_attribute *attr,
++				     char *buf)
++{
++	struct pem_pmu *pmu = dev_get_drvdata(dev);
++
++	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pmu->cpu));
++}
++
++static struct device_attribute pem_perf_cpumask_attr =
++	__ATTR(cpumask, 0444, pem_perf_cpumask_show, NULL);
++
++static struct attribute *pem_perf_cpumask_attrs[] = {
++	&pem_perf_cpumask_attr.attr,
++	NULL
++};
++
++static struct attribute_group pem_perf_cpumask_attr_group = {
++	.attrs = pem_perf_cpumask_attrs,
++};
++
++static const struct attribute_group *pem_perf_attr_groups[] = {
++	&pem_perf_events_attr_group,
++	&pem_perf_cpumask_attr_group,
++	&pem_perf_format_attr_group,
++	NULL
++};
++
++static int pem_perf_event_init(struct perf_event *event)
++{
++	struct pem_pmu *pmu = to_pem_pmu(event->pmu);
++	struct hw_perf_event *hwc = &event->hw;
++
++	if (event->attr.type != event->pmu->type)
++		return -ENOENT;
++
++	if (is_sampling_event(event) ||
++	    event->attach_state & PERF_ATTACH_TASK) {
++		return -EOPNOTSUPP;
++	}
++
++	if (event->cpu < 0)
++		return -EOPNOTSUPP;
++
++	/*  We must NOT create groups containing mixed PMUs */
++	if (event->group_leader->pmu != event->pmu &&
++	    !is_software_event(event->group_leader))
++		return -EINVAL;
++
++	/*
++	 * Set ownership of event to one CPU, same event can not be observed
++	 * on multiple cpus at same time.
++	 */
++	event->cpu = pmu->cpu;
++	hwc->idx = -1;
++	return 0;
++}
++
++static void pem_perf_counter_reset(struct pem_pmu *pmu,
++				   struct perf_event *event, int eventid)
++{
++	writeq_relaxed(0x0, pmu->base + eventid_to_offset(eventid));
++}
++
++static u64 pem_perf_read_counter(struct pem_pmu *pmu,
++				 struct perf_event *event, int eventid)
++{
++	return readq_relaxed(pmu->base + eventid_to_offset(eventid));
++}
++
++static void pem_perf_event_update(struct perf_event *event)
++{
++	struct pem_pmu *pmu = to_pem_pmu(event->pmu);
++	struct hw_perf_event *hwc = &event->hw;
++	u64 prev_count, new_count;
++
++	do {
++		prev_count = local64_read(&hwc->prev_count);
++		new_count = pem_perf_read_counter(pmu, event, hwc->idx);
++	} while (local64_xchg(&hwc->prev_count, new_count) != prev_count);
++
++	local64_add((new_count - prev_count), &event->count);
++}
++
++static void pem_perf_event_start(struct perf_event *event, int flags)
++{
++	struct pem_pmu *pmu = to_pem_pmu(event->pmu);
++	struct hw_perf_event *hwc = &event->hw;
++	int eventid = hwc->idx;
++
++	local64_set(&hwc->prev_count, 0);
++
++	pem_perf_counter_reset(pmu, event, eventid);
++
++	hwc->state = 0;
++}
++
++static int pem_perf_event_add(struct perf_event *event, int flags)
++{
++	struct hw_perf_event *hwc = &event->hw;
++
++	hwc->idx = event->attr.config;
++	if (hwc->idx >= PEM_EVENTIDS_MAX)
++		return -EINVAL;
++	hwc->state |= PERF_HES_STOPPED;
++
++	if (flags & PERF_EF_START)
++		pem_perf_event_start(event, flags);
++
++	return 0;
++}
++
++static void pem_perf_event_stop(struct perf_event *event, int flags)
++{
++	struct hw_perf_event *hwc = &event->hw;
++
++	if (flags & PERF_EF_UPDATE)
++		pem_perf_event_update(event);
++
++	hwc->state |= PERF_HES_STOPPED;
++}
++
++static void pem_perf_event_del(struct perf_event *event, int flags)
++{
++	struct hw_perf_event *hwc = &event->hw;
++
++	pem_perf_event_stop(event, PERF_EF_UPDATE);
++	hwc->idx = -1;
++}
++
++static int pem_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
++{
++	struct pem_pmu *pmu = hlist_entry_safe(node, struct pem_pmu,
++					       node);
++	unsigned int target;
++
++	if (cpu != pmu->cpu)
++		return 0;
++
++	target = cpumask_any_but(cpu_online_mask, cpu);
++	if (target >= nr_cpu_ids)
++		return 0;
++
++	perf_pmu_migrate_context(&pmu->pmu, cpu, target);
++	pmu->cpu = target;
++	return 0;
++}
++
++static int pem_perf_probe(struct platform_device *pdev)
++{
++	struct pem_pmu *pem_pmu;
++	struct resource *res;
++	void __iomem *base;
++	char *name;
++	int ret;
++
++	pem_pmu = devm_kzalloc(&pdev->dev, sizeof(*pem_pmu), GFP_KERNEL);
++	if (!pem_pmu)
++		return -ENOMEM;
++
++	pem_pmu->dev = &pdev->dev;
++	platform_set_drvdata(pdev, pem_pmu);
++
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	pem_pmu->base = base;
++
++	pem_pmu->pmu = (struct pmu) {
++		.module	      = THIS_MODULE,
++		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
++		.task_ctx_nr = perf_invalid_context,
++		.attr_groups = pem_perf_attr_groups,
++		.event_init  = pem_perf_event_init,
++		.add	     = pem_perf_event_add,
++		.del	     = pem_perf_event_del,
++		.start	     = pem_perf_event_start,
++		.stop	     = pem_perf_event_stop,
++		.read	     = pem_perf_event_update,
++	};
++
++	/* Choose this cpu to collect perf data */
++	pem_pmu->cpu = raw_smp_processor_id();
++
++	name = devm_kasprintf(pem_pmu->dev, GFP_KERNEL, "mrvl_pcie_rc_pmu_%llx",
++			      res->start);
++	if (!name)
++		return -ENOMEM;
++
++	cpuhp_state_add_instance_nocalls
++			(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
++			 &pem_pmu->node);
++
++	ret = perf_pmu_register(&pem_pmu->pmu, name, -1);
++	if (ret)
++		goto error;
++
++	pr_info("Marvell PEM(PCIe RC) PMU Driver for pem@%llx\n", res->start);
++	return 0;
++error:
++	cpuhp_state_remove_instance_nocalls
++			(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
++			 &pem_pmu->node);
++	return ret;
++}
++
++static int pem_perf_remove(struct platform_device *pdev)
++{
++	struct pem_pmu *pem_pmu = platform_get_drvdata(pdev);
++
++	cpuhp_state_remove_instance_nocalls
++			(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
++			 &pem_pmu->node);
++
++	perf_pmu_unregister(&pem_pmu->pmu);
++	return 0;
++}
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id pem_pmu_acpi_match[] = {
++	{"MRVL000E", 0},
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, pem_pmu_acpi_match);
++#endif
++
++static struct platform_driver pem_pmu_driver = {
++	.driver	= {
++		.name   = "pem-pmu",
++		.acpi_match_table = ACPI_PTR(pem_pmu_acpi_match),
++		.suppress_bind_attrs = true,
++	},
++	.probe		= pem_perf_probe,
++	.remove		= pem_perf_remove,
++};
++
++static int __init pem_pmu_init(void)
++{
++	int ret;
++
++	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
++				      "perf/marvell/pem:online", NULL,
++				       pem_pmu_offline_cpu);
++	if (ret)
++		return ret;
++
++	ret = platform_driver_register(&pem_pmu_driver);
++	if (ret)
++		cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE);
++	return ret;
++}
++
++static void __exit pem_pmu_exit(void)
++{
++	platform_driver_unregister(&pem_pmu_driver);
++	cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE);
++}
++
++module_init(pem_pmu_init);
++module_exit(pem_pmu_exit);
++
++MODULE_DESCRIPTION("Marvell PEM Perf driver");
++MODULE_AUTHOR("Linu Cherian <lcherian@marvell.com>");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 624d4a38c358..9bf34f66e5f5 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -238,6 +238,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_PERF_ARM_APM_XGENE_ONLINE,
+ 	CPUHP_AP_PERF_ARM_CAVIUM_TX2_UNCORE_ONLINE,
+ 	CPUHP_AP_PERF_ARM_MARVELL_CN10K_DDR_ONLINE,
++	CPUHP_AP_PERF_ARM_MARVELL_PEM_ONLINE,
+ 	CPUHP_AP_PERF_POWERPC_NEST_IMC_ONLINE,
+ 	CPUHP_AP_PERF_POWERPC_CORE_IMC_ONLINE,
+ 	CPUHP_AP_PERF_POWERPC_THREAD_IMC_ONLINE,
+-- 
+2.25.1
 
 
