@@ -1,132 +1,230 @@
-Return-Path: <linux-kernel+bounces-120686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA1A88DB6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:45:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF8088DB80
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B6D1F2A0BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:45:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E0C5B220E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D5C524B2;
-	Wed, 27 Mar 2024 10:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286674F21F;
+	Wed, 27 Mar 2024 10:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pv3oo70V"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lIYUd44L"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1E2225D9
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF1E1D53C
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711536287; cv=none; b=XTxbD/aZrUCnvWQIwHfOfgyyA8jf2/euto3ZKq3eeEGlVVEGVGw4w5EDtE/8Dpr0gSkxgxCXEbTR+05ahQ3eqSGJuBMUHD6JIlKw2gS/GtERSEVDYB06tqTxqYEcyWz1Mng9mZmxC870x+FaT05ilW4OgpEx16iXAhtYFfQuTCs=
+	t=1711536379; cv=none; b=XRoCwMyknqXsS24Urs5zJB0blIF9LVUDnOpQBAp8H6hTWRScI8z6sG24zqREylnExnxqilJx3hSfA8jtR9tLpHTb7GGldyB5MQFKlfZ1W1T6lF4K/NHJxOivUFKGxTo+xtX08mcREK7rsS4jJKFCfIo7Xp6dsW/rqlBX2T0fifo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711536287; c=relaxed/simple;
-	bh=lmuk6TusSQkOrFRgEF6krdSYo1Ma9u5yHt+tzmVoVLA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=t0ZcvV+/mlet4alfuaGUc6iWDEk7xB3CQCW1BZWT9RvYMO+9wUiEMm3tKIQ0t8AVTWeL5X4NZhYLJFe6P/v2XFegjDIdRki/lUuXbfC9y4feuFNTCK59CFg6+16xo9uS2lrHcNIPGFRx/PGf/HRe7B1oPI5yIlOMAx3obKRGg14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pv3oo70V; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711536284;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ez+DfU/pKmOevZsWMVq7Pe8YJPQsmb9b6xRp3Rz6UTM=;
-	b=Pv3oo70V2O05PBTsNUtms7KTu5emPTgZLHz3zSz6fkzV4d22oI7o1avq5Tdg/SFkIuOryw
-	CleHD3j52ICIyDYMDd/SPOMuXDVlNms6I1bR1nibTAh7fGam86MNU7UAtHIEdPQzz2IcEu
-	ogxj4smdB0lGy5WTg+GQDwKxDVUVwsA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-645-Q4lXMOfEPaqacdtP5lO_7g-1; Wed, 27 Mar 2024 06:44:43 -0400
-X-MC-Unique: Q4lXMOfEPaqacdtP5lO_7g-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a46ba1a19fdso471965666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:44:43 -0700 (PDT)
+	s=arc-20240116; t=1711536379; c=relaxed/simple;
+	bh=4qNhZd6In4W6BpD2cTnvRVSY7sZSE1eUcfTuvPhG4us=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pLlR4BXtVVwL1XKhRtBIh8Udbc3fkoaGRtnbEVL2rpVnm5N536NO95RzlylW1CJrVBCI0X/wc8XHKFZcOmhk1EEvPcNUwsdEuTAwwlE1ZARvOgLlzXSFlL9++ECHFyM1TYl2iWWyxxGv3X3RlV4Fa9JOtoYubNwrZaPmYIyBtPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lIYUd44L; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4751063318so440319166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711536376; x=1712141176; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7bMAFuTzgkVK2W2ZWS18PceZ7VDbzSyIzk2OmuZlF/o=;
+        b=lIYUd44L7tpV6w2WQj0VJu5eNTxXDSby2RebM/7tvaxpEipdXAO8TJqU+Qs6qHGpR4
+         nHHbj0yYmWHtSEh8ed6ZDeSa/NivDDhLCDvUkCRWj40WLGjtWS6WP643tTnQaZ/q1ge2
+         x3hsvWlDIRLi9p8vP4Jb29RUZK0YY5l8oEyT4Bwhyub9v9PBj8XKFCGeg/jH7XsYtZHE
+         Xe961vDu+L9a+Yad/CJUwEtvtm+XebwWdl72AzV4BOFdwo6/1jdM8QwK0jkZSeylsuN3
+         PEGYkjIlVxKCQfRW4smy/dqT+bfGzHVTU0dRFOwCktlP6H0R+vH6iwDHVDoHaB2xS7lJ
+         MmhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711536282; x=1712141082;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ez+DfU/pKmOevZsWMVq7Pe8YJPQsmb9b6xRp3Rz6UTM=;
-        b=QadKUN7YBw2PEHtEbqrq6NAJJQ5Y4TuzvsN1THdtTaMQPxuQ2PZO7uQCbbxZf20I6v
-         2h+yTCEmrXwiMSBFAk9A9Ry3XznbiBz9YzoSh00Q42lGd8GdT4N5qUESeikL9ia+dEtn
-         hFiYVQmZNQa5t6zTFElQLXXwWDMcyk5OC++GKQGe+UQ5NXCE37eyr8rqsUw5UdhMNDRw
-         S+eJ1HImgBCDOMwbYZfnQVxx6ArrzQHrOO8oBAWiuBID4DX5M9gWGmx1BRBhlZ0ZC7kE
-         0bNIeMgSsinpCrkm78H16rU1r4natbVvAk08F02FQyb5LJ3Syyh6O/J5FyML2BJwYuFm
-         M60g==
-X-Forwarded-Encrypted: i=1; AJvYcCWS42IqNou/QSmPmGTDd7L3IpRxWhkWpeCzKJLmuCOIjmeflLyu7NlR3MExzehMxgiSL3NgIY8biLEMrxcNRGK3VwUxQuhaoi87EWzp
-X-Gm-Message-State: AOJu0YxFlafohK2LuQYq/4ih5WJAaZPDUJPtUzQJ1tpetS3IFgzMnFPq
-	DCN+zXv+BUIdt/3B1iWH9LAxOP6dR4qk9QGLOn2ZW8zik+157XIH9zwuVkGn3OWeuos4IYCj9BG
-	Rp2vOF6OkwQ6MyT80euJA173QFEYdxN89KBpiEfqBL2quvPUkkCKyp6k3b6jmIg==
-X-Received: by 2002:a17:906:4ad3:b0:a46:7c9c:10d0 with SMTP id u19-20020a1709064ad300b00a467c9c10d0mr547355ejt.23.1711536282117;
-        Wed, 27 Mar 2024 03:44:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEIQUj3lLHZP90JkeIOIlrhnz5bf74xtLGccdVai8P8RbXYh6J6BFonG2OnDbzqpCngEMdpnQ==
-X-Received: by 2002:a17:906:4ad3:b0:a46:7c9c:10d0 with SMTP id u19-20020a1709064ad300b00a467c9c10d0mr547347ejt.23.1711536281813;
-        Wed, 27 Mar 2024 03:44:41 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id u17-20020a17090663d100b00a468bcde79bsm5311110ejk.109.2024.03.27.03.44.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 03:44:41 -0700 (PDT)
-Message-ID: <9fe3d7a6-3b34-4c96-bd9f-510b41f9ab0d@redhat.com>
-Date: Wed, 27 Mar 2024 11:44:41 +0100
+        d=1e100.net; s=20230601; t=1711536376; x=1712141176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7bMAFuTzgkVK2W2ZWS18PceZ7VDbzSyIzk2OmuZlF/o=;
+        b=BdpqbfYOSHG5z9I0fsOERXMQUSuRU/byTRBDr8Cz/L5sUhB/jiklD7ITR3kL1etPki
+         xzkazkQsq9XG0PPv2jhS1yoWIQjOqUiYUzzJsN8DRqKdxmP6b9kTT7bhvh2vmu0lFDiH
+         ZhSuxMtp6giPrHEPQWnBS0C5ky9JYkJQ8o/l8MOUcTW2P7/ycEnao8/8TZ7Rt8mFaAxc
+         OXetTBiMn7s/4gMKf0g/AWko1m9K+osecf7VrPcpmghw2qcqRsMi3gIb1GxcDUiH+4CI
+         P5RdOS8vRV0P2UVcVDLiWed1UQ07Wd9x2Cf7yzd4IsgpREHpAGnQntQGBuf0sNlU/GGm
+         j3YA==
+X-Forwarded-Encrypted: i=1; AJvYcCXTV1nhUSvlNm82UtHw2AD7z/3cBSHgjxR+mwHpr2NrQQLsbIDYkxJrbX6ggVP533g/bNraHk/zu2LCEh3Y7a3IfKlD/IOxtGokauqe
+X-Gm-Message-State: AOJu0Yzk9BaYe/rrCAeEEHpgGIE0swSRmjy/LVoYH9NMFo7OlXwcmZFd
+	X5Pbx5U/aiM+D/1sxK4Ym5Ch2r9pgnzr+wPHy4HhsvQN1whNEEPGdLrTGJQSaAM=
+X-Google-Smtp-Source: AGHT+IGqXcP4a7y/1sAfahWl3DUL7IV+aXO1Cv/OupNWGZLq9Wf7bfIgd7Fmu5SqyGqlldsHQezFoA==
+X-Received: by 2002:a17:906:f594:b0:a4e:9d3:cc8b with SMTP id cm20-20020a170906f59400b00a4e09d3cc8bmr698757ejd.40.1711536375884;
+        Wed, 27 Mar 2024 03:46:15 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id o9-20020a170906774900b00a46a2ac0dbasm5268238ejn.197.2024.03.27.03.46.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 03:46:15 -0700 (PDT)
+Date: Wed, 27 Mar 2024 13:46:11 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <4879ad5d-165c-4118-81f7-8f6348a5a5d4@moroto.mountain>
+References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
+ <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] power: supply: test-power: implement charge_behaviour
- property
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>,
- Sebastian Reichel <sre@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240306-power_supply-charge_behaviour_prop-v3-1-d04cf1f5f0af@weissschuh.net>
- <171148264419.185695.14027540198251584096.b4-ty@collabora.com>
- <6f0761a6-5f49-42e2-9b79-3e04c9d259a4@redhat.com>
-In-Reply-To: <6f0761a6-5f49-42e2-9b79-3e04c9d259a4@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
 
-Hi,
+Looks really nice.  Just a few small comments below.
 
-On 3/27/24 11:36 AM, Hans de Goede wrote:
-> Hi Sebastian,
-> 
-> On 3/26/24 8:50 PM, Sebastian Reichel wrote:
->>
->> On Wed, 06 Mar 2024 20:37:04 +0100, Thomas Weißschuh wrote:
->>> To validate the special formatting of the "charge_behaviour" sysfs
->>> property add it to the example driver.
->>>
->>>
->>
->> Applied, thanks!
->>
->> [1/1] power: supply: test-power: implement charge_behaviour property
->>       commit: 070c1470ae24317e7b19bd3882b300b6d69922a4
-> 
-> Does this mean that you've also applied patches 1-3 of:
-> "[PATCH v2 0/4] power: supply: core: align charge_behaviour format with docs" ?
-> 
-> Because this is a new version of 4/4 of that series and I think
-> that the new test may depend on the fixes from patches 1-3
-> of that series (which I'm reviewing now).
+On Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) wrote:
+> +
+> +struct scmi_msg_func_set {
+> +	__le32 identifier;
+> +	__le32 function_id;
+> +	__le32 flags;
+> +};
 
-Ok, I have some not entirely trivial comments on patch 3/4 of that series.
-I guess you (Sebastian) could address those while merging, or wait for
-a v3 of the series.
+This scmi_msg_func_set struct is unused.  Delete.
 
-Regards,
+> +static void
+> +iter_pinctrl_settings_get_prepare_message(void *message, u32 desc_index,
+> +					  const void *priv)
+> +{
+> +	struct scmi_msg_settings_get *msg = message;
+> +	const struct scmi_settings_get_ipriv *p = priv;
+> +	u32 attributes;
+> +
+> +	attributes = FIELD_PREP(CONFIG_FLAG_MASK, p->flag) |
+> +		     FIELD_PREP(SELECTOR_MASK, p->type);
+> +
+> +	if (p->flag == 1)
+> +		attributes |= FIELD_PREP(SKIP_CONFIGS_MASK, desc_index);
+> +	else if (!p->flag)
 
-Hans
+This is a nit-pick but could you change these !p->flag conditions to
+p->flag == 0?  It's a number zero, not a bool.
+
+> +		attributes |= FIELD_PREP(CONFIG_TYPE_MASK, p->config_types[0]);
+> +
+> +	msg->attributes = cpu_to_le32(attributes);
+> +	msg->identifier = cpu_to_le32(p->selector);
+> +}
+> +
+> +static int
+> +iter_pinctrl_settings_get_update_state(struct scmi_iterator_state *st,
+> +				       const void *response, void *priv)
+> +{
+> +	const struct scmi_resp_settings_get *r = response;
+> +	struct scmi_settings_get_ipriv *p = priv;
+> +
+> +	if (p->flag == 1) {
+> +		st->num_returned = le32_get_bits(r->num_configs, GENMASK(7, 0));
+> +		st->num_remaining = le32_get_bits(r->num_configs,
+> +						  GENMASK(31, 24));
+> +	} else {
+> +		st->num_returned = 1;
+> +		st->num_remaining = 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +iter_pinctrl_settings_get_process_response(const struct scmi_protocol_handle *ph,
+> +				       const void *response,
+> +				       struct scmi_iterator_state *st,
+> +				       void *priv)
+> +{
+> +	const struct scmi_resp_settings_get *r = response;
+> +	struct scmi_settings_get_ipriv *p = priv;
+> +
+> +	if (!p->flag) {
+
+
+if (p->flag == 0) {
+
+> +		if (p->config_types[0] !=
+> +		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
+> +			return -EINVAL;
+> +	} else if (p->flag == 1) {
+> +		p->config_types[st->desc_index + st->loop_idx] =
+> +			le32_get_bits(r->configs[st->loop_idx * 2],
+> +				      GENMASK(7, 0));
+> +	} else if (p->flag == 2) {
+> +		return 0;
+> +	}
+> +
+> +	p->config_values[st->desc_index + st->loop_idx] =
+> +		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +scmi_pinctrl_settings_get(const struct scmi_protocol_handle *ph, u32 selector,
+> +			  enum scmi_pinctrl_selector_type type,
+> +			  enum scmi_pinctrl_conf_type config_type,
+> +			  u32 *config_value)
+> +{
+> +	int ret;
+> +	void *iter;
+> +	struct scmi_iterator_ops ops = {
+> +		.prepare_message = iter_pinctrl_settings_get_prepare_message,
+> +		.update_state = iter_pinctrl_settings_get_update_state,
+> +		.process_response = iter_pinctrl_settings_get_process_response,
+> +	};
+> +	struct scmi_settings_get_ipriv ipriv = {
+> +		.selector = selector,
+> +		.type = type,
+> +		.flag = 0,
+
+->flag should be 0-2.
+
+> +		.config_types = &config_type,
+> +		.config_values = config_value,
+> +	};
+> +
+> +	if (!config_value || type == FUNCTION_TYPE)
+             ^^^^^^^^^^^^
+config_value should be optional for flag == 2.
+
+regards,
+dan carpenter
+
+> +		return -EINVAL;
+> +
+> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
+> +	if (ret)
+> +		return ret;
+> +
+> +	iter = ph->hops->iter_response_init(ph, &ops, 1, PINCTRL_SETTINGS_GET,
+> +					    sizeof(struct scmi_msg_settings_get),
+> +					    &ipriv);
+> +
+> +	if (IS_ERR(iter))
+> +		return PTR_ERR(iter);
+> +
+> +	return ph->hops->iter_response_run(iter);
+> +}
+> +
 
 
