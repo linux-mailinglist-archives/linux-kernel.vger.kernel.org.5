@@ -1,95 +1,191 @@
-Return-Path: <linux-kernel+bounces-120510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A396D88D88D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:15:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C9DA88D89B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BE2A29E68C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:15:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D8C7B237B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5A72D604;
-	Wed, 27 Mar 2024 08:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825EE2D047;
+	Wed, 27 Mar 2024 08:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uFSGxBkF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R6/fSfD7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B219823D7;
-	Wed, 27 Mar 2024 08:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57F93DAC19
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711527331; cv=none; b=MbFuWBW0lYSEAgvDIn3ZrR7RdUFUahLjrvpYOwyLTlhfbXDz1f5KIPfFtKdh/wrRS+QIBdZRUW2fSJjh5umfa53cGo/TcIb3UHUCRJYA/Ul4iZJGSCxY9VvBrxPfTDBTkANv4T7qESMqDkqurQzkreQodIfT+pnma560WgoPncA=
+	t=1711527509; cv=none; b=f4tg3uFeY582oREUUMG857ZeuyhtobbafZjYn86RJe0oMmLwTf1ruFTYmHtC6YVOK2Lihcs5OTvqCEpPwUFhfBpaOEN+9lZ+dfWf4fIP76jpbjCa7Cj2CYEaYa5ux72lzd7tY6gPGGqh6hLwwSsHuLWrQkHaMhB/t3ztoaL3IyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711527331; c=relaxed/simple;
-	bh=xVHaqZ1u760s+2uA6tdl2keH+dzuvpVmNgm8RSxlN50=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MH5ih2EwJ9JxvxmFJGLxfJFnQVx6rVuvT0I0/9HjgY3l6BwV4zFKCjh+pEvHElcBCnObG2a4rK5vVp8wOAOLhVWNgRC8evcwgUA/PvrWMXOuIBh5K7NfdyWSpTffzOGOOn1rjwl31jI0lKwYLEX1kkv24orcvcTkMtBBL5WZ+hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uFSGxBkF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2025C433C7;
-	Wed, 27 Mar 2024 08:15:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711527331;
-	bh=xVHaqZ1u760s+2uA6tdl2keH+dzuvpVmNgm8RSxlN50=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uFSGxBkFaIMIAEsa4zemQnwPcMOfoNFWZPB+2Ka9mznGd0UGAhY2D69zeimXf6RGX
-	 y5Gx28eXDgyHIrcyobJexzf4puxWw2sk840SLc+c12F6CXH2HlqI4RJk1ozhgzyGlB
-	 1N++CXZZE7EOCtBsPWCzQtOa7OidhTh3LGSxsdNc=
-Date: Wed, 27 Mar 2024 09:15:28 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Norihiko Hama <norihiko.hama@alpsalpine.com>
-Cc: "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"usb-storage@lists.one-eyed-alien.net" <usb-storage@lists.one-eyed-alien.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb-storage: Optimize scan delay more precisely
-Message-ID: <2024032750-violator-trivial-90a3@gregkh>
-References: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
- <2024032757-surcharge-grime-d3dd@gregkh>
- <TYVPR01MB107814D7A583CB986884AD4B290342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
- <2024032745-transfer-dazzler-2e15@gregkh>
- <TYVPR01MB10781723CBD338DC3EEB5F20590342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+	s=arc-20240116; t=1711527509; c=relaxed/simple;
+	bh=4wWd4i/vKGYQmj3wwF8rqhpT36RPM/HAKao0l4UPWdo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fw1Kqa5QIOD2jxKRoaKgNbVWFb94rOVcnpv5dO0mnZLv8y/ptJ5bmLlmpQhHxBithg/rKFIhPh06rCWARmNmnDiXqKZIdaIaox0n+1t4T8dn0H3IpeCKa2Dr4LSERcc/fP5sgC5WmSZHpl7mOZ0RE4jjc5d1Am3YApNUpU2Bhp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R6/fSfD7; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711527508; x=1743063508;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=4wWd4i/vKGYQmj3wwF8rqhpT36RPM/HAKao0l4UPWdo=;
+  b=R6/fSfD7XOGtz5HZ5bSK35OWPsVWTtIcGxRo1/GuySS02XIZ8T7nlgZo
+   jsuh4ktB5VvMEomgqa7eDgx5OQwepkqDN62yVNddw+MXOAlJjxBHZiOVU
+   INXvXP9HhQPRDhMUSgYH+VnUxQb3gcMe3otGpUUNLrQeVR6G8I+Wm5KsL
+   VNyKIKbvDwIj+yOEOE/CUpw17Y2itLCmBWMhbtXSv11Rw9lG/wKBWmr1p
+   3mA+/BnMv5hjuHX2ae1U+er4ItuXjT+gvBweoMgx9fGYhe3Ed+WVWGhkX
+   L6Lbm5GjhxDShECRrBtL4Twcw9HXBP3XEFL2jdl75HhbJXTzbnDeKLVVV
+   Q==;
+X-CSE-ConnectionGUID: nS42qyC0TkKnkhwAo5Iu2A==
+X-CSE-MsgGUID: KicvrPliTQWhxKCe5pi+sg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="32055610"
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="32055610"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 01:18:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
+   d="scan'208";a="16156089"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 01:18:23 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Chris Li <chrisl@kernel.org>,  Minchan Kim
+ <minchan@kernel.org>,  Barry Song <v-songbaohua@oppo.com>,  Ryan Roberts
+ <ryan.roberts@arm.com>,  Yu Zhao <yuzhao@google.com>,  SeongJae Park
+ <sj@kernel.org>,  David Hildenbrand <david@redhat.com>,  Yosry Ahmed
+ <yosryahmed@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew
+ Wilcox <willy@infradead.org>,  Nhat Pham <nphamcs@gmail.com>,  Chengming
+ Zhou <zhouchengming@bytedance.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 10/10] mm/swap: optimize synchronous swapin
+In-Reply-To: <CAMgjq7D9-6JXOzpd18t8MSBAotHgEG2YZbi4efNkJiwiSJyJmw@mail.gmail.com>
+	(Kairui Song's message of "Wed, 27 Mar 2024 15:14:03 +0800")
+References: <20240326185032.72159-1-ryncsn@gmail.com>
+	<20240326185032.72159-11-ryncsn@gmail.com>
+	<87zfukmbwz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAMgjq7A-TxWkNKz0wwjaf0C-KZgps-VdPG+QcpY9tMmBY04TNA@mail.gmail.com>
+	<87r0fwmar4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAMgjq7D9-6JXOzpd18t8MSBAotHgEG2YZbi4efNkJiwiSJyJmw@mail.gmail.com>
+Date: Wed, 27 Mar 2024 16:16:30 +0800
+Message-ID: <87il18m6n5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYVPR01MB10781723CBD338DC3EEB5F20590342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 07:57:52AM +0000, Norihiko Hama wrote:
-> On Wed, Mar 27, 2024 at 07:39:55AM +0000, Norihiko Hama wrote:
-> > > > Sorry, but module parameters are from the 1990's, we will not go back to that if at all possible as it's not easy to maintain and will not work properly for multiple devices.
-> > > >
-> > > > I can understand wanting something between 1 and 0 seconds, but adding yet-another-option isn't probably the best way, sorry.
-> > > 1 second does not meet with performance requirement.
-> >
-> > Who is requiring such a performance requirement?  The USB specification?
-> > Or something else?
-> This is our customer requirement.
+Kairui Song <ryncsn@gmail.com> writes:
 
-If it is impossible to do, why are they making you do it?  :)
+> On Wed, Mar 27, 2024 at 2:49=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> Kairui Song <ryncsn@gmail.com> writes:
+>>
+>> > On Wed, Mar 27, 2024 at 2:24=E2=80=AFPM Huang, Ying <ying.huang@intel.=
+com> wrote:
+>> >>
+>> >> Kairui Song <ryncsn@gmail.com> writes:
+>> >>
+>> >> > From: Kairui Song <kasong@tencent.com>
+>> >> >
+>> >> > Interestingly the major performance overhead of synchronous is actu=
+ally
+>> >> > from the workingset nodes update, that's because synchronous swap in
+>> >>
+>> >> If it's the major overhead, why not make it the first optimization?
+>> >
+>> > This performance issue became much more obvious after doing other
+>> > optimizations, and other optimizations are for general swapin not only
+>> > for synchronous swapin, that's also how I optimized things step by
+>> > step, so I kept my patch order...
+>> >
+>> > And it is easier to do this after Patch 8/10 which introduces the new
+>> > interface for swap cache.
+>> >
+>> >>
+>> >> > keeps adding single folios into a xa_node, making the node no longer
+>> >> > a shadow node and have to be removed from shadow_nodes, then remove
+>> >> > the folio very shortly and making the node a shadow node again,
+>> >> > so it has to add back to the shadow_nodes.
+>> >>
+>> >> The folio is removed only if should_try_to_free_swap() returns true?
+>> >>
+>> >> > Mark synchronous swapin folio with a special bit in swap entry embe=
+dded
+>> >> > in folio->swap, as we still have some usable bits there. Skip worki=
+ngset
+>> >> > node update on insertion of such folio because it will be removed v=
+ery
+>> >> > quickly, and will trigger the update ensuring the workingset info is
+>> >> > eventual consensus.
+>> >>
+>> >> Is this safe?  Is it possible for the shadow node to be reclaimed aft=
+er
+>> >> the folio are added into node and before being removed?
+>> >
+>> > If a xa node contains any non-shadow entry, it can't be reclaimed,
+>> > shadow_lru_isolate will check and skip such nodes in case of race.
+>>
+>> In shadow_lru_isolate(),
+>>
+>>         /*
+>>          * The nodes should only contain one or more shadow entries,
+>>          * no pages, so we expect to be able to remove them all and
+>>          * delete and free the empty node afterwards.
+>>          */
+>>         if (WARN_ON_ONCE(!node->nr_values))
+>>                 goto out_invalid;
+>>         if (WARN_ON_ONCE(node->count !=3D node->nr_values))
+>>                 goto out_invalid;
+>>
+>> So, this isn't considered normal and will cause warning now.
+>
+> Yes, I added an exception in this patch:
+> -       if (WARN_ON_ONCE(node->count !=3D node->nr_values))
+> +       if (WARN_ON_ONCE(node->count !=3D node->nr_values &&
+> mapping->host !=3D NULL))
+>
+> The code is not a good final solution, but the idea might not be that
+> bad, list_lru provides many operations like LRU_ROTATE, we can even
+> lazy remove all the nodes as a general optimization, or add a
+> threshold for adding/removing a node from LRU.
 
-> > > I have no good idea except module parameter so that we can maintain backward compatibility but be configurable out of module.
-> > > Do you have any other better solution?
-> > How long do you exactly need to wait?  Why not figure out how long the device takes and if it fails, slowly back off until the full time delay happens and then you can abort?
-> It's IOP issue and difficult to figure out because it depends on device itself.
+We can compare different solutions.  For this one, we still need to deal
+with the cases where the folio isn't removed from the swap cache, that
+is, should_try_to_free_swap() returns false.
 
-Agreed.
+>>
+>> >>
+>> >> If so, we may consider some other methods.  Make shadow_nodes per-cpu?
+>> >
+>> > That's also an alternative solution if there are other risks.
+>>
+>> This appears a general optimization and more clean.
+>
+> I'm not sure if synchronization between CPUs will make more burden,
+> because shadow nodes are globally shared, one node can be referenced
+> by multiple CPUs, I can have a try to see if this is doable. Maybe a
+> per-cpu batch is better but synchronization might still be an issue.
 
-> I know we have multiple devices with delay_use=0, but then it's recovered and detected by reset after 30s timeout, that is too long than 1 sec.
+Yes.  Per-CPU shadow_nodes needs to find list from shadow node.  That
+has some overhead.
 
-So how do you know that making this smaller will help?  There are many
-many odd and broken devices out there that take a long time to spin up
-before they are able to be accessed.  That's what that option is there
-for, if you "know" you don't need to wait, you don't have to wait.
-Otherwise you HAVE to wait as you do not know how long things take.
+If lock contention on list_lru lock is the root cause, we can use hashed
+shadow node lists.  That can reduce lock contention effectively.
 
-sorry,
-
-greg k-h
+--
+Best Regards,
+Huang, Ying
 
