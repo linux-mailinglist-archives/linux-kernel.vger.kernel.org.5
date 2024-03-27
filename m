@@ -1,106 +1,139 @@
-Return-Path: <linux-kernel+bounces-121356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B9188E6AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:41:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA6788E6EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 488231F3136E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:41:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CC2AB289C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F86157E9D;
-	Wed, 27 Mar 2024 13:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6A9158201;
+	Wed, 27 Mar 2024 13:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WlC5zEpA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzuINk43"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F8E112FB05;
-	Wed, 27 Mar 2024 13:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA08B13AD07;
+	Wed, 27 Mar 2024 13:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711545324; cv=none; b=MQslS2d2Kcq7bd4yKDRyRNlMZcOt0t4FP2SsMDtGlTCkQ6deC6RRgh4F5y5naiTMWWcxRrxqoxaVEmDK80EtoAcjt8Zbkgf36ray0hz08HgrjwTbVTfe57mG6sUAKT1fBF8BrM01r4izkc2Aka1922zhzUPaWoafUuBfNtVBC8c=
+	t=1711545420; cv=none; b=YWYLcBe8pMXQsMtdkJL0Je5I4UGRo0bCsC/bbI/QsDJUQWNPbIERGO5Kx9LVZrTIKb2ZYnHZLHQfl2uv5dmo16t43NuWvvZ71fzT3EDD440hs+TMWl/Pb9v9k8rV7+kHvhit7vk9RrxN7K5ZviJjdxJ+jNU3JdQ1BFYQOKUQsqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711545324; c=relaxed/simple;
-	bh=hVWGFMnT3NSh/Y5bcfvnFJ7BOfpWRpHZTt1+sFeRYK4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aGvzmMwbQy1HSWRX6ovW9PwQgpqdb/iW6Yurb+Iq7lVjV1FZbQrD59MQr2QzKFggHXI+dCvFghIz0kRFcsLTr+auonKSlY82Jt+70bU6BXdi6Mj2LhjzuRKLy9kCKjDlhlqwEqAcrD1IZ/v3YiJzlkG0Mu5HhmhdccWLlFjpQRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WlC5zEpA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B85C433F1;
-	Wed, 27 Mar 2024 13:15:18 +0000 (UTC)
+	s=arc-20240116; t=1711545420; c=relaxed/simple;
+	bh=KB772K6yfcU4hKXW7HSRS4muGDBCrt9ntzx2TSR19P8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SsoSf4c8xSfBx798rTa5le0MnNu/A/B59SlZlLzOd4dBldy24k4r+2vUAofD69UpquMe5nfepm1bsa2T1MFGn/Guwi8x6S8xN0g9KSOXGNBv/w776rf5ZYabYxkgNima1wOQ/AMkHKREmd7Q4I4LkB45U0dkyIY9RGKzvls5aoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzuINk43; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F66BC43141;
+	Wed, 27 Mar 2024 13:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711545323;
-	bh=hVWGFMnT3NSh/Y5bcfvnFJ7BOfpWRpHZTt1+sFeRYK4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=WlC5zEpALyHcMLL7crzKzm7z4rnrwW8uowh4E59sISP/prn0iAEbwxHXS7+uKc/Bw
-	 wqYGQilNWFJ+5kfznbP5jYfOcjMrK1brNMdB9bdD3SvgfimE43gkSodM2ShnLCFCEv
-	 dajJ3Yz10qJsLnDCfEhKopyfEJq0gvIwVYovDawkfcn6oHnklPZtey6rVEgLmyWPEW
-	 E4PyqpPn0WepobbP4ZCzTB0lH2Gu+IQbfjUU9TXdLpBKot4bTj6an5nQ1I4caHFct3
-	 xEXFx6xrVEhsmAkJsShcH7vHCWmfF6SFD+e74pyrl9dxggHDC3ksSqQCHRrsdwas/m
-	 v4ecGkxzUp56A==
-Message-ID: <e15019f54d26898e4b67b84c331cd52d09427258.camel@kernel.org>
-Subject: Re: [PATCH v4 02/14] mm: Switch mm->get_unmapped_area() to a flag
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org"
- <luto@kernel.org>,  "dave.hansen@linux.intel.com"
- <dave.hansen@linux.intel.com>, "debug@rivosinc.com" <debug@rivosinc.com>, 
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, 
- "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
- "mingo@redhat.com" <mingo@redhat.com>,  "christophe.leroy@csgroup.eu"
- <christophe.leroy@csgroup.eu>, "tglx@linutronix.de" <tglx@linutronix.de>, 
- "hpa@zytor.com" <hpa@zytor.com>, "peterz@infradead.org"
- <peterz@infradead.org>, "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org"
- <x86@kernel.org>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, 
- "linux-s390@vger.kernel.org"
-	 <linux-s390@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
- "linux-cxl@vger.kernel.org"
-	 <linux-cxl@vger.kernel.org>, "sparclinux@vger.kernel.org"
-	 <sparclinux@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>, "io-uring@vger.kernel.org"
-	 <io-uring@vger.kernel.org>, "linux-fsdevel@vger.kernel.org"
-	 <linux-fsdevel@vger.kernel.org>, "nvdimm@lists.linux.dev"
-	 <nvdimm@lists.linux.dev>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Date: Wed, 27 Mar 2024 15:15:17 +0200
-In-Reply-To: <5b585bcced9b5fffbcfa093ea92a6403ee8ac462.camel@intel.com>
-References: <20240326021656.202649-1-rick.p.edgecombe@intel.com>
-	 <20240326021656.202649-3-rick.p.edgecombe@intel.com>
-	 <D03NWFQM9XP2.1AWMB9VW98Z98@kernel.org>
-	 <5b585bcced9b5fffbcfa093ea92a6403ee8ac462.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=k20201202; t=1711545419;
+	bh=KB772K6yfcU4hKXW7HSRS4muGDBCrt9ntzx2TSR19P8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=DzuINk43Tn1Mu46vGyloK0RcIZjT/o1tO37IhMTw3vGuY8iuvQbfC1d2wuhVGcsvu
+	 11L2zxwsTwcE7XYQee6vDMJHq4r9cM8rR8tK68KarEE8Ls8MlaUQuo7iFtWeq4/4cm
+	 vN7xbALw3d3LM7cP291/Wb2Iyn/8gooXL9HkTTf5SU72EIMtgU2ssAT51bz/1X0cGC
+	 l3MOS7g4HXtAMKtJKR287UtUghHwkIv48hVcpsuz5cisQC2vkKx2Jv20NpVrjH03kF
+	 /hRoBnhHkVLj/0Sx5qOGUttptO1hRrQRB0i++C/FWqVIh+128a+cZj7paJ2AKb6Fwp
+	 Xy9pZb7E7FGnA==
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e447c39525so77621a34.0;
+        Wed, 27 Mar 2024 06:16:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU/Zpw9U9pU55sehhvw0QccjCcGXkFRFuiKO6PrOrtXJ6v6OOcYe7R6RDkxjozZVkjiM1kTCeqiqaez6WxRdjPgWio2eH4BvRwVl1156q+qHQ+EWnYXZMlTdpo9CKty57s3QB88XeR3kbJdTmUICit9Wczskd0xygh9Tx78kBAWfwEUcJE8Dyx8qnwo3dsWHTLYgZUvxTLIAJ5R+NJ6Tnf9YycnkjIjGSJMVJ1sqRnOa5lNUPXRpzR7NJ8mJmngZSb6YA==
+X-Gm-Message-State: AOJu0YxnMJwnMEeIF4/yTCOp3BQ0FRzgF3m4pk67FBnVrPTGLxoYSlzZ
+	3jmzb+Sjjr01gwbyCyzfi353WKs47H4G7RL09Wmv3z3GymC5iskCyRA3bZQYsgaOXUKXmpGlsNU
+	xegFZpBMr1O6rJ3JsZD0xbIlIdUg=
+X-Google-Smtp-Source: AGHT+IHTd8oEHRAH3g6srEsbWrNzFluzIX84L1KgTi5gMkKVrAYaOe8Cp3nobmnxM/cXjJi/h1wt0g2XfJgmb7R2UWU=
+X-Received: by 2002:a05:6870:b156:b0:221:399e:959a with SMTP id
+ a22-20020a056870b15600b00221399e959amr13119078oal.0.1711545418629; Wed, 27
+ Mar 2024 06:16:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
+In-Reply-To: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 27 Mar 2024 14:16:46 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
+Message-ID: <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
+Subject: Re: [PATCH 00/19] ACPI: store owner from modules with acpi_bus_register_driver()
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, Corentin Chary <corentin.chary@gmail.com>, 
+	"Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, Daniel Oliveira Nascimento <don@syst.com.br>, 
+	=?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
+	Matan Ziv-Av <matan@svgalib.org>, Mattia Dongili <malattia@linux.it>, 
+	Azael Avalos <coproscefalo@gmail.com>, Richard Cochran <richardcochran@gmail.com>, 
+	Jeff Sipek <jsipek@vmware.com>, Ajay Kaher <akaher@vmware.com>, 
+	Alexey Makhalov <amakhalov@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
+	"Theodore Ts'o" <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-input@vger.kernel.org, netdev@vger.kernel.org, 
+	chrome-platform@lists.linux.dev, platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-03-27 at 02:42 +0000, Edgecombe, Rick P wrote:
-> On Tue, 2024-03-26 at 13:57 +0200, Jarkko Sakkinen wrote:
-> > In which conditions which path is used during the initialization of
-> > mm
-> > and why is this the case? It is an open claim in the current form.
->=20
-> There is an arch_pick_mmap_layout() that arch's can have their own
-> rules for. There is also a
-> generic one. It gets called during exec.
->=20
-> >=20
-> > That would be nice to have documented for the sake of being
-> > complete
-> > description. I have zero doubts of the claim being untrue.
->=20
-> ...being untrue?
->=20
+On Wed, Mar 27, 2024 at 8:44=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Merging
+> =3D=3D=3D=3D=3D=3D=3D
+> All further patches depend on the first amba patch, therefore please ack
+> and this should go via one tree: ACPI?
+>
+> Description
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Modules registering driver with acpi_bus_register_driver() often forget t=
+o
+> set .owner field.
+>
+> Solve the problem by moving this task away from the drivers to the core
+> amba bus code, just like we did for platform_driver in commit
+> 9447057eaff8 ("platform_device: use a macro instead of
+> platform_driver_register").
+>
+> Best regards,
+> Krzysztof
+>
+> ---
+> Krzysztof Kozlowski (19):
+>       ACPI: store owner from modules with acpi_bus_register_driver()
+>       Input: atlas: - drop owner assignment
+>       net: fjes: drop owner assignment
+>       platform: chrome: drop owner assignment
+>       platform: asus-laptop: drop owner assignment
+>       platform: classmate-laptop: drop owner assignment
+>       platform/x86/dell: drop owner assignment
+>       platform/x86/eeepc: drop owner assignment
+>       platform/x86/intel/rst: drop owner assignment
+>       platform/x86/intel/smartconnect: drop owner assignment
+>       platform/x86/lg-laptop: drop owner assignment
+>       platform/x86/sony-laptop: drop owner assignment
+>       platform/x86/toshiba_acpi: drop owner assignment
+>       platform/x86/toshiba_bluetooth: drop owner assignment
+>       platform/x86/toshiba_haps: drop owner assignment
+>       platform/x86/wireless-hotkey: drop owner assignment
+>       ptp: vmw: drop owner assignment
+>       virt: vmgenid: drop owner assignment
+>       ACPI: drop redundant owner from acpi_driver
 
-I mean I believe the change itself makes sense, it is just not
-fully documented in the commit message.
+I definitely like this, so
 
-BR, Jarkko
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+for the series and I can pick it up if people agree.
+
+Thanks!
 
