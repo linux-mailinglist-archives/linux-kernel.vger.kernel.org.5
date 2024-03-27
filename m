@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-121133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F61288E2B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:32:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F79588E2B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:32:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14A071F2CA68
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:32:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E0411F2CB00
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047AD17555D;
-	Wed, 27 Mar 2024 12:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8DE175574;
+	Wed, 27 Mar 2024 12:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VTSvbQ0k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AoCcelS5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C2B12FF69;
-	Wed, 27 Mar 2024 12:22:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A17175569;
+	Wed, 27 Mar 2024 12:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542165; cv=none; b=FOzkLVOMQlfnRBz82LOT4Xg0OdZ8ba5+O0558rCWB9ABsRCTWDaJq0jAuIWGYveMHD5a5YHLFKEjFoR7uoeTekNiJHZF/wRyS0tLIhabb9h3UkR2SGdVhxq/SvYo6pmyRvlisiFD49X0+3o9A/dp59DbJCQArEbmDY0in8mi3AM=
+	t=1711542167; cv=none; b=Z6n6UBATuE2J54muYQI4l3qY06W3Tn2kmJLHqXNGeVyUtJZU9VcIdL8Xart/z0pVwS/Re6ZmOmOBy6SFQIIV0N05cETiXXaR/RdlcnQq9IfUNQNBjlUxDEsbphlM9Hp/DjAX0cwuXHwXvSBzd3bUvxn0+m2i4bORFwgBbJ2cpzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542165; c=relaxed/simple;
-	bh=mu1QpX12s8RhnKVIQrgvsQdB1NHlixa0oNaX2v8nA20=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M4951OvcqwfuveOSTkhL1Up8MmUlIgvH460YTv86UiozqXCbDXB2RTNx/WHNaPLqMBP8rWgnx2nZql3dYsrhAIBFJ23MyRpMrtHUV/kqEGBD5NjP7XhEuXI7LpH04+F2X63odNenrLfkVsxCIAEzOUDHBrXujwQ2/5/8UMh514M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VTSvbQ0k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12809C433F1;
-	Wed, 27 Mar 2024 12:22:43 +0000 (UTC)
+	s=arc-20240116; t=1711542167; c=relaxed/simple;
+	bh=spDWDPd/dlIwz2jPQOOv3QYSRiK5aiSBNfx9Tos4VRY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D/W4TgFg/NE+xpkHsG7MehWdYhm8oT5KU2OpUvpvfEpKXL2itCVbDl2WYhykIORb1c6K9PX6PvdqxO9Xq7Gs2g1nmy5PJJ+r0JYAOw2UP1Hkiiy/mr3s0HOfcYD8cktAs/grs0g+3DuFpiy6uyrWO6uaHE8qD1fj22zySd6EfVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AoCcelS5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E70C43390;
+	Wed, 27 Mar 2024 12:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542164;
-	bh=mu1QpX12s8RhnKVIQrgvsQdB1NHlixa0oNaX2v8nA20=;
+	s=k20201202; t=1711542167;
+	bh=spDWDPd/dlIwz2jPQOOv3QYSRiK5aiSBNfx9Tos4VRY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=VTSvbQ0kXWPiCslOXElbqkuxzuiFaa9k98wi2wL5MXuCyRexONxLDyngfWYJdfZfW
-	 +50mei+Ye9mKw3B0o551uuXNRnuwgxtUmiHwXlNb68RkwNIyfGFw2MBp2dkKA53PHm
-	 y4sKPZxo7pIGHAHu4izCW7o5RKJgzGbVOEjyBoqDXN2T+zSA36GskPWiWrZcFv52Ae
-	 WRiJlsgKZqdfos4zMEPT0XtJWGKCER1YmpscFjFCkGXDwA0ER7LAMzXY4LOAQH7imV
-	 FXEozY3s61PGrHHUrQeG8703OqJFQnSZOZoeIucF0yGd3koVc+7iMBX1DVdv4UfMgt
-	 KfWyJLkw0q3ag==
+	b=AoCcelS57NWJrSsTXkrT1TDxtDfnOt2W7gzDqwFfYSk9dMbYUMgnsAida03v35kve
+	 N57nSw1Memz4vvO/+U62NjGGaCcHGTrQXlBDkyhlnrRI/wYaEB4jsHqcrz8fEv4NxF
+	 AyGDXDAlrDt+hU+CY5yLpbAJdlOB1VI92yElPYXuy7cUbjfFiRS2qjUJ7CYu7vCx1p
+	 Vx1MjU/z8ANCATModh9kuOwfd7L04vjApN+UOMtbj8jzXTdMWQr/Gm2z0KW4aAqEY5
+	 /D7nApLNj50n2xFlP5eSur2ATJk7mMpbmuK87hQ5AckS2tlgHkrmgP98HzIkOut/2U
+	 jmwcBjWg8EV7g==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	pcc@google.com
-Cc: John Ogness <john.ogness@linutronix.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: FAILED: Patch "serial: Lock console when calling into driver before registration" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:22:39 -0400
-Message-ID: <20240327122243.2837897-1-sashal@kernel.org>
+	zack.rusin@broadcom.com
+Cc: Niels De Graef <ndegraef@redhat.com>,
+	Martin Krastev <martin.krastev@broadcom.com>,
+	Maaz Mombasawala <maaz.mombasawala@broadcom.com>,
+	Ian Forbes <ian.forbes@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "drm/vmwgfx: Fix possible null pointer derefence with invalid contexts" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:22:45 -0400
+Message-ID: <20240327122245.2837938-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,186 +73,102 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 801410b26a0e8b8a16f7915b2b55c9528b69ca87 Mon Sep 17 00:00:00 2001
-From: Peter Collingbourne <pcc@google.com>
-Date: Mon, 4 Mar 2024 13:43:49 -0800
-Subject: [PATCH] serial: Lock console when calling into driver before
- registration
+From 517621b7060096e48e42f545fa6646fc00252eac Mon Sep 17 00:00:00 2001
+From: Zack Rusin <zack.rusin@broadcom.com>
+Date: Wed, 10 Jan 2024 15:03:05 -0500
+Subject: [PATCH] drm/vmwgfx: Fix possible null pointer derefence with invalid
+ contexts
 
-During the handoff from earlycon to the real console driver, we have
-two separate drivers operating on the same device concurrently. In the
-case of the 8250 driver these concurrent accesses cause problems due
-to the driver's use of banked registers, controlled by LCR.DLAB. It is
-possible for the setup(), config_port(), pm() and set_mctrl() callbacks
-to set DLAB, which can cause the earlycon code that intends to access
-TX to instead access DLL, leading to missed output and corruption on
-the serial line due to unintended modifications to the baud rate.
+vmw_context_cotable can return either an error or a null pointer and its
+usage sometimes went unchecked. Subsequent code would then try to access
+either a null pointer or an error value.
 
-In particular, for setup() we have:
+The invalid dereferences were only possible with malformed userspace
+apps which never properly initialized the rendering contexts.
 
-univ8250_console_setup()
--> serial8250_console_setup()
--> uart_set_options()
--> serial8250_set_termios()
--> serial8250_do_set_termios()
--> serial8250_do_set_divisor()
+Check the results of vmw_context_cotable to fix the invalid derefs.
 
-For config_port() we have:
+Thanks:
+ziming zhang(@ezrak1e) from Ant Group Light-Year Security Lab
+who was the first person to discover it.
+Niels De Graef who reported it and helped to track down the poc.
 
-serial8250_config_port()
--> autoconfig()
-
-For pm() we have:
-
-serial8250_pm()
--> serial8250_do_pm()
--> serial8250_set_sleep()
-
-For set_mctrl() we have (for some devices):
-
-serial8250_set_mctrl()
--> omap8250_set_mctrl()
--> __omap8250_set_mctrl()
-
-To avoid such problems, let's make it so that the console is locked
-during pre-registration calls to these callbacks, which will prevent
-the earlycon driver from running concurrently.
-
-Remove the partial solution to this problem in the 8250 driver
-that locked the console only during autoconfig_irq(), as this would
-result in a deadlock with the new approach. The console continues
-to be locked during autoconfig_irq() because it can only be called
-through uart_configure_port().
-
-Although this patch introduces more locking than strictly necessary
-(and in particular it also locks during the call to rs485_config()
-which is not affected by this issue as far as I can tell), it follows
-the principle that it is the responsibility of the generic console
-code to manage the earlycon handoff by ensuring that earlycon and real
-console driver code cannot run concurrently, and not the individual
-drivers.
-
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
-Link: https://linux-review.googlesource.com/id/I7cf8124dcebf8618e6b2ee543fa5b25532de55d8
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20240304214350.501253-1-pcc@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9c079b8ce8bf ("drm/vmwgfx: Adapt execbuf to the new validation api")
+Cc: <stable@vger.kernel.org> # v4.20+
+Reported-by: Niels De Graef  <ndegraef@redhat.com>
+Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
+Cc: Martin Krastev <martin.krastev@broadcom.com>
+Cc: Maaz Mombasawala <maaz.mombasawala@broadcom.com>
+Cc: Ian Forbes <ian.forbes@broadcom.com>
+Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: dri-devel@lists.freedesktop.org
+Reviewed-by: Maaz Mombasawala <maaz.mombasawala@broadcom.com>
+Reviewed-by: Martin Krastev <martin.krastev@broadcom.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240110200305.94086-1-zack.rusin@broadcom.com
 ---
- drivers/tty/serial/8250/8250_port.c |  6 ------
- drivers/tty/serial/serial_core.c    | 12 ++++++++++++
- kernel/printk/printk.c              | 21 ++++++++++++++++++---
- 3 files changed, 30 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 336a0bd4d172a..fc9dd5d45295d 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1325,9 +1325,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
- 		inb_p(ICP);
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+index 4c22fe7ec79b7..cc3086e649eb5 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+@@ -447,7 +447,7 @@ static int vmw_resource_context_res_add(struct vmw_private *dev_priv,
+ 	    vmw_res_type(ctx) == vmw_res_dx_context) {
+ 		for (i = 0; i < cotable_max; ++i) {
+ 			res = vmw_context_cotable(ctx, i);
+-			if (IS_ERR(res))
++			if (IS_ERR_OR_NULL(res))
+ 				continue;
+ 
+ 			ret = vmw_execbuf_res_val_add(sw_context, res,
+@@ -1266,6 +1266,8 @@ static int vmw_cmd_dx_define_query(struct vmw_private *dev_priv,
+ 		return -EINVAL;
+ 
+ 	cotable_res = vmw_context_cotable(ctx_node->ctx, SVGA_COTABLE_DXQUERY);
++	if (IS_ERR_OR_NULL(cotable_res))
++		return cotable_res ? PTR_ERR(cotable_res) : -EINVAL;
+ 	ret = vmw_cotable_notify(cotable_res, cmd->body.queryId);
+ 
+ 	return ret;
+@@ -2484,6 +2486,8 @@ static int vmw_cmd_dx_view_define(struct vmw_private *dev_priv,
+ 		return ret;
+ 
+ 	res = vmw_context_cotable(ctx_node->ctx, vmw_view_cotables[view_type]);
++	if (IS_ERR_OR_NULL(res))
++		return res ? PTR_ERR(res) : -EINVAL;
+ 	ret = vmw_cotable_notify(res, cmd->defined_id);
+ 	if (unlikely(ret != 0))
+ 		return ret;
+@@ -2569,8 +2573,8 @@ static int vmw_cmd_dx_so_define(struct vmw_private *dev_priv,
+ 
+ 	so_type = vmw_so_cmd_to_type(header->id);
+ 	res = vmw_context_cotable(ctx_node->ctx, vmw_so_cotables[so_type]);
+-	if (IS_ERR(res))
+-		return PTR_ERR(res);
++	if (IS_ERR_OR_NULL(res))
++		return res ? PTR_ERR(res) : -EINVAL;
+ 	cmd = container_of(header, typeof(*cmd), header);
+ 	ret = vmw_cotable_notify(res, cmd->defined_id);
+ 
+@@ -2689,6 +2693,8 @@ static int vmw_cmd_dx_define_shader(struct vmw_private *dev_priv,
+ 		return -EINVAL;
+ 
+ 	res = vmw_context_cotable(ctx_node->ctx, SVGA_COTABLE_DXSHADER);
++	if (IS_ERR_OR_NULL(res))
++		return res ? PTR_ERR(res) : -EINVAL;
+ 	ret = vmw_cotable_notify(res, cmd->body.shaderId);
+ 	if (ret)
+ 		return ret;
+@@ -3010,6 +3016,8 @@ static int vmw_cmd_dx_define_streamoutput(struct vmw_private *dev_priv,
  	}
  
--	if (uart_console(port))
--		console_lock();
--
- 	/* forget possible initially masked and pending IRQ */
- 	probe_irq_off(probe_irq_on());
- 	save_mcr = serial8250_in_MCR(up);
-@@ -1367,9 +1364,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
- 	if (port->flags & UPF_FOURPORT)
- 		outb_p(save_ICP, ICP);
- 
--	if (uart_console(port))
--		console_unlock();
--
- 	port->irq = (irq > 0) ? irq : 0;
- }
- 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index d6a58a9e072a1..ff85ebd3a007d 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2608,7 +2608,12 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
- 			port->type = PORT_UNKNOWN;
- 			flags |= UART_CONFIG_TYPE;
- 		}
-+		/* Synchronize with possible boot console. */
-+		if (uart_console(port))
-+			console_lock();
- 		port->ops->config_port(port, flags);
-+		if (uart_console(port))
-+			console_unlock();
- 	}
- 
- 	if (port->type != PORT_UNKNOWN) {
-@@ -2616,6 +2621,10 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
- 
- 		uart_report_port(drv, port);
- 
-+		/* Synchronize with possible boot console. */
-+		if (uart_console(port))
-+			console_lock();
-+
- 		/* Power up port for set_mctrl() */
- 		uart_change_pm(state, UART_PM_STATE_ON);
- 
-@@ -2632,6 +2641,9 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
- 
- 		uart_rs485_config(port);
- 
-+		if (uart_console(port))
-+			console_unlock();
-+
- 		/*
- 		 * If this driver supports console, and it hasn't been
- 		 * successfully registered yet, try to re-register it.
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index f2444b581e16c..89f2aa2e1172f 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3263,6 +3263,21 @@ static int __init keep_bootcon_setup(char *str)
- 
- early_param("keep_bootcon", keep_bootcon_setup);
- 
-+static int console_call_setup(struct console *newcon, char *options)
-+{
-+	int err;
-+
-+	if (!newcon->setup)
-+		return 0;
-+
-+	/* Synchronize with possible boot console. */
-+	console_lock();
-+	err = newcon->setup(newcon, options);
-+	console_unlock();
-+
-+	return err;
-+}
-+
- /*
-  * This is called by register_console() to try to match
-  * the newly registered console with any of the ones selected
-@@ -3298,8 +3313,8 @@ static int try_enable_preferred_console(struct console *newcon,
- 			if (_braille_register_console(newcon, c))
- 				return 0;
- 
--			if (newcon->setup &&
--			    (err = newcon->setup(newcon, c->options)) != 0)
-+			err = console_call_setup(newcon, c->options);
-+			if (err)
- 				return err;
- 		}
- 		newcon->flags |= CON_ENABLED;
-@@ -3325,7 +3340,7 @@ static void try_enable_default_console(struct console *newcon)
- 	if (newcon->index < 0)
- 		newcon->index = 0;
- 
--	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
-+	if (console_call_setup(newcon, NULL) != 0)
- 		return;
- 
- 	newcon->flags |= CON_ENABLED;
+ 	res = vmw_context_cotable(ctx_node->ctx, SVGA_COTABLE_STREAMOUTPUT);
++	if (IS_ERR_OR_NULL(res))
++		return res ? PTR_ERR(res) : -EINVAL;
+ 	ret = vmw_cotable_notify(res, cmd->body.soid);
+ 	if (ret)
+ 		return ret;
 -- 
 2.43.0
 
