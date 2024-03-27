@@ -1,98 +1,107 @@
-Return-Path: <linux-kernel+bounces-121809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE4F88EE0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:16:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113A088EE02
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 865E2B21972
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:15:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC2628A283
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C1014F9D7;
-	Wed, 27 Mar 2024 18:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296C415216F;
+	Wed, 27 Mar 2024 18:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYLKE40g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JSSGaKwe"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50B7131BB8;
-	Wed, 27 Mar 2024 18:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A21914E2F4
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711563135; cv=none; b=iB+jjiTRbXuOI0WtdONTrKPSfxw99jeLttv7crklA+XxgHW9j5ARKRgF1hqZMM71uVugSgM9L8lulkCxGJ2Rq0NytgAWBkmvjCbyjUXU+ymxNZLCSYqJ37tC86vo7IcJgy+hJECLxBJXOqyM0b7Y1VWEDSy+UZLeFPEhKdmLYJM=
+	t=1711563197; cv=none; b=CvHW1rxXw0FqQoS64ChtUJdi+yzfAaNl34vm61kVTFhVdTqPIPyuo8pkJaq5vpWXMR3SdEHZ3LVJm9np3bo2ddZy3av+4Chk1JXwgmLzMUYv4C4VUOZHfb68AdB4w1eQN1Hc7y8rm1NukadGQkXltef8BKzZUS1zkP6kD37j7ZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711563135; c=relaxed/simple;
-	bh=0HBq8F9K6LnjpSqk+7zBZTXcdceoLu9fTOnW0z7k21I=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=bTS8yhjJd07nLIddqni/ojPkCk0+Wdda4KFpA7AAC9qpZHi2X6wfswJwGMHz0tzFZXBYhQh3vHzHcdLd99kLMhHAMIxDOfjDZtiMlZBZ+qJOYhDr0+7A/KoE1pR80VsHS4XVosZ+gJJ5gTR2aZbAo5lw6zIe87rKTg6qhlR/X58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYLKE40g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26D2EC433C7;
-	Wed, 27 Mar 2024 18:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711563135;
-	bh=0HBq8F9K6LnjpSqk+7zBZTXcdceoLu9fTOnW0z7k21I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=EYLKE40g3iKdlE2CQqB+tjPKqpcZhq5/SBvcBnXaqp97Qo9GVj+d5GDNsVlqsjPRl
-	 9lc+s9WSq+GkuFPvs0tZwQN5gIzynKjrTE15FWxn02SaCJDBa+LSdLBgoFHzZ913yI
-	 +LLZoednW2Nb68P4xNkgWApoInz/+Yx9eGTCp8OHInTEu4K2Anr64u/UYfkTbqSEPg
-	 aJ4bvpUyUjVu0JOqTao7dPb5G1E9TQCm2vu25gCKTdfhWtURD5YBmyIM9zyOi53lgh
-	 LrwBYL85dmjKLW/4StfxyPeeMggTJQMKJAz6ukLOGD2njjX3YM1gntjqTOafWy9cPY
-	 IeGtYrVJ5Z8Gg==
-Date: Wed, 27 Mar 2024 13:12:13 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] PCI: Update pci_find_capability() stub return values
-Message-ID: <20240327181213.GA1531575@bhelgaas>
+	s=arc-20240116; t=1711563197; c=relaxed/simple;
+	bh=wyryXguB8266lLWCkFJS/84WDCfywSXsHKF549oL7yE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X+l5llOM9fCNB52mhTvIMBtros9ouiREw97JyXfVos8/7FJARefS8XwN/t1BQIStLdfceJuebj6gV8CNINcJK19hOFV9pZj0p9OHFyJup2vFolaigA4az3/PT14g2ik5PP0ukaYUshaqqUBO2HsatEbKnuOV8HO47W5Y3k6ho9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JSSGaKwe; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29c14800a7fso117355a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711563195; x=1712167995; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F+Apmp+5NG0ozOI/JWe7g3FmXSoAcJcuTi09oKHmC84=;
+        b=JSSGaKweBG1L3L9Qgcjl3ewrFGPfrEtmGdzmqX6vggN5D8fOpgcVs/egVmHVI8GH4s
+         JqsO9BtEuo0pbXXgX+WDq1dvS+D/69FpY5kQpLyth97GmGQDssZD3hYu/dCzhUqI3atX
+         V8o8+Y7cd3BjN60tAm0iFnP3voj2+JHCWKX7ZGEUjaWbspGTgUtuTCYL75dhSoEFtE60
+         NvPcFeIsUzwdQ9ks6JRBNo0soiquH2YGZLzy2f+/BUCVsN0bAGekCvu+9rcXt5GL+S9c
+         +S5U6j8joSkrhAdOLlXIAhSdTrWOjYux6f42xcpqP/JiSFFPpG0kKidvlURU2iGbwztm
+         5JEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711563195; x=1712167995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F+Apmp+5NG0ozOI/JWe7g3FmXSoAcJcuTi09oKHmC84=;
+        b=NEBNmj61nsj+Zdsb/NtWuFIB8saE8v5a2T4oxD5HmBUD4r/87xpkvt9FlGtA3cBo8O
+         8FuqDvbbl5a8Hen3W3Ot5/roPh9VmMnyrOXDn5FNRTCw0E7jakURB0dAGE5A9vNjJ4qy
+         nAnYKl33tn2CPi404iypm86VHfGLBdoZRdI2rZiUUbgA1q4hu+OsaJtGuPHF2i9GHXBz
+         3a/641ImurQ0CYk3XLRAig8JYHN3qr5Gco5Uw1OqLL2FBD9wOdvVgB+KfzIsHX/17c51
+         i1uvxSduknh2NVTT0AuaHUrerhb35lPceOjsl3Y4JVsIc5uOgib4owrE2e6P4TVagfKn
+         DF3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVOmzZTPegyqzEPgjUKEn4Tm7Wi47lDigq1nnP84dZnJwSTk+DmsOrbgTMfdkzDdAFeqDXigTFhtk4HjVQknOGf5bF3VDnGYl4rBF3Q
+X-Gm-Message-State: AOJu0YxHAOMENKPSSVDgSPkTY010v8ku4+YINyAB5Z+WGF5pXuFNmhsv
+	10OPTZ6Hn5di+frKMMH4lJkbqgNUvynORkXt744tbdEivIFjDcW7eHpZ9Uz46YM4hQHjmzAB1Bm
+	p9M2IT2XkqWLNZhwXeVLcxyeHS2s=
+X-Google-Smtp-Source: AGHT+IHLikdTRV0YFY05LU+4dKjjaqnZE0r4ZhQYCDgh/j+5MZTT1jmReESMvyU/J8EN3USD/LkkQwkRCTSMfu5GTf8=
+X-Received: by 2002:a17:90b:3702:b0:29d:dfae:4fac with SMTP id
+ mg2-20020a17090b370200b0029ddfae4facmr514671pjb.23.1711563195269; Wed, 27 Mar
+ 2024 11:13:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327180234.1529164-1-helgaas@kernel.org>
+References: <CANiq72mbsAYmR_dRPpQQ=9-NWhTtp0TWiOz0v=V-0AvwYbWw4A@mail.gmail.com>
+ <20240327-magnetic-nonchalant-hare-bbe8d2@houat> <CANiq72kqqQfUxLkHJYqeBAhpc6YcX7bfR96gmmbF=j8hEOykqw@mail.gmail.com>
+In-Reply-To: <CANiq72kqqQfUxLkHJYqeBAhpc6YcX7bfR96gmmbF=j8hEOykqw@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 27 Mar 2024 19:12:47 +0100
+Message-ID: <CANiq72=hguVfscJQSCAYS2FfL1VpUVvX_Chd4X8gAX4Twq-TLQ@mail.gmail.com>
+Subject: Re: drivers/gpu/drm/qxl/qxl_cmd.c:424:6: error: variable 'count' set
+ but not used
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Dave Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, virtualization@lists.linux.dev, 
+	spice-devel@lists.freedesktop.org, 
+	dri-devel <dri-devel@lists.freedesktop.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 01:02:34PM -0500, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> f646c2a0a668 ("PCI: Return u8 from pci_find_capability() and similar") and
-> ee8b1c478a9f ("PCI: Return u16 from pci_find_ext_capability() and similar")
-> updated the return type of the extern declarations, but neglected to update
-> the type of the stubs used CONFIG_PCI is not enabled.
-> 
-> Update them to match the extern declarations.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+On Wed, Mar 27, 2024 at 3:43=E2=80=AFPM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> Will do -- I found another one when running the CI with the above one fix=
+ed:
+>
+>     drivers/gpu/drm/qxl/qxl_ioctl.c:148:14: error: variable
+> 'num_relocs' set but not used [-Werror,-Wunused-but-set-variable]
+>
+> I will send you one for that too then.
 
-Provisionally applied to pci/enumeration for v6.10, let me know if you
-see any issues.
+Done: https://lore.kernel.org/lkml/20240327175556.233126-1-ojeda@kernel.org=
+/
 
-> ---
->  include/linux/pci.h | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index b19992a5dfaf..6a09bd9636d5 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2011,10 +2011,9 @@ static inline int pci_register_driver(struct pci_driver *drv)
->  static inline void pci_unregister_driver(struct pci_driver *drv) { }
->  static inline u8 pci_find_capability(struct pci_dev *dev, int cap)
->  { return 0; }
-> -static inline int pci_find_next_capability(struct pci_dev *dev, u8 post,
-> -					   int cap)
-> +static inline u8 pci_find_next_capability(struct pci_dev *dev, u8 post, int cap)
->  { return 0; }
-> -static inline int pci_find_ext_capability(struct pci_dev *dev, int cap)
-> +static inline u16 pci_find_ext_capability(struct pci_dev *dev, int cap)
->  { return 0; }
->  
->  static inline u64 pci_get_dsn(struct pci_dev *dev)
-> -- 
-> 2.34.1
-> 
+Cheers,
+Miguel
 
