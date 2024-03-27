@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-121268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAB3588E485
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:05:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 239D788E71D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D730D1C2BD95
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:05:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20AE5B32A04
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7B7142E75;
-	Wed, 27 Mar 2024 12:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563331B6FDE;
+	Wed, 27 Mar 2024 12:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNiZ24oC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="suqu1WNr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFED1B6FB6;
-	Wed, 27 Mar 2024 12:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8F11B6FD5;
+	Wed, 27 Mar 2024 12:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542509; cv=none; b=eZxkG0yPvBR/F3fq8127EW8/1ihRsGHzz6cE433XciytRiX2ds52Ot9OkdoOI5wCpW4sysAz6g5fQzAG6u192bPUUNOVERLlOyk7A5CmUsN5eOIABWMgpqRsfkGfoZBKUgCjjXZNLRph5nQZon4lJA0O6uY6fZyvlKeZYBO8CW0=
+	t=1711542512; cv=none; b=GcZ9+hS0S0Wjq46QtSo+ONCBZSjU/Jbr5i0gZjKBPP2E5VXSlLUnvuSZpuDY6ByrjGq6X7cUrjRuATcTfSK+LixjGo8ze45kFEh0nQ3zbUNDTSsXG3/iIpnjngRD1DbZFzHrRR5WW1fNl+vqftdqD2G/aXYhCYhl6RG0xFZd7wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542509; c=relaxed/simple;
-	bh=qILXJDfEFX4ZvfUyQtQSZ91X4eaPsw7idazy43hhUPg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Asy7YTvOlpp5895dvIYzMEgITh9MKnF1OzV8tKHga+EZhkkDtn34cPn0eYIGbY2CYalK82kNcjSh0z74B5mWmrZxWtUTsuxfuDfIZvFfGRqBDo8ETBFgqhwSz9AWU8qQ5gRz/YLuF7KSwtR0hXqxA7B9nQObOxOZQSlx59F8QvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNiZ24oC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E61C433C7;
-	Wed, 27 Mar 2024 12:28:28 +0000 (UTC)
+	s=arc-20240116; t=1711542512; c=relaxed/simple;
+	bh=YWBrmyrOQ8PxEBOzvBTJCbGd3f9JLChempXE4mAhhSw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Cobglwbw5xCLod5pxklKS30R6E2SgyBeTK2/RJn+hSII/a6I3HkbsIZz1F1Me7vvyaph+a6jv6QiLnS4V6L+bSo96llRThTtyJZZfhsrTUzO2WDXMbHpm2I+ykM11PnMkyWuUISlJl/Y/Z+Ma3YukLm48T6awHGz8lEDU0EpdZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=suqu1WNr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 443FDC433C7;
+	Wed, 27 Mar 2024 12:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542509;
-	bh=qILXJDfEFX4ZvfUyQtQSZ91X4eaPsw7idazy43hhUPg=;
+	s=k20201202; t=1711542512;
+	bh=YWBrmyrOQ8PxEBOzvBTJCbGd3f9JLChempXE4mAhhSw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=lNiZ24oCexiEmuZ7PM4dYQS+I56/lo+Uw07F2cmNzaukPJG2NbpgPjMH1HRYDpZHU
-	 kDe+YUFoQMQTXCSqx0qzBmfWUYFbtMz7ZFod0noZ/KBHHuXr5nDNibZAFJjzSrjg15
-	 K+sKnpQUAKml6ww21l0YLG8GDjAhyka0m060OnLbC2mkUTmWED6Hmgr0ZtIWwyUw6V
-	 XcAdMLTOy6tas0dVCb8CsPHKeVwuJRChZxM/CEntlvyKAAM/+dCQzPHQH0F3QAENcp
-	 v4Jfa1yesBGVVwXaDRmv4HSfO7SszkNlw43ULMgPHbdemQ1xBgEuTUzXmqSBKqed+C
-	 f7Yyl6TjP0Cjg==
+	b=suqu1WNrZjpEpTyVYtCJjsnpPIKhgSXjLAEJKsl/p4mDXAHj/qeLlXNJBMIMvAbrd
+	 rW+ZMLLOBwGR4HD1k+x7XwoBLB5Sph4MBuU3rwu2Uxh+vwjNcy6nYkz1lrwHNxFvtq
+	 pGFjJxwCC7XGlo+9QZu6ly1lRa6xGO2vOUnu0owmGCLcqdHwjhck8xZjcrxTWE/XPH
+	 qRaLqYRrN72m2N9K9mhQqT6j/k2tsT4acby9wmUt9SrQJeMei71KF9qrJW2wuaP5Vf
+	 tEW9rHm8bNCXzEHdIociOpx+63DFvFvWVNeHylu3Lg0OGnUExUIEEOldXY7K5cpZZq
+	 OAaZxZWavrcqg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	mpatocka@redhat.com
-Cc: John Pittman <jpittman@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	dm-devel@lists.linux.dev,
+	Philip.Yang@amd.com
+Cc: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "dm snapshot: fix lockup in dm_exception_table_exit" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:28:27 -0400
-Message-ID: <20240327122827.2842757-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amdgpu: amdgpu_ttm_gart_bind set gtt bound flag" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:28:30 -0400
+Message-ID: <20240327122830.2842794-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -58,6 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 4.19-stable tree.
@@ -70,38 +72,40 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 6e7132ed3c07bd8a6ce3db4bb307ef2852b322dc Mon Sep 17 00:00:00 2001
-From: Mikulas Patocka <mpatocka@redhat.com>
-Date: Wed, 20 Mar 2024 18:43:11 +0100
-Subject: [PATCH] dm snapshot: fix lockup in dm_exception_table_exit
+From 6c6064cbe58b43533e3451ad6a8ba9736c109ac3 Mon Sep 17 00:00:00 2001
+From: Philip Yang <Philip.Yang@amd.com>
+Date: Mon, 11 Mar 2024 18:07:34 -0400
+Subject: [PATCH] drm/amdgpu: amdgpu_ttm_gart_bind set gtt bound flag
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-There was reported lockup when we exit a snapshot with many exceptions.
-Fix this by adding "cond_resched" to the loop that frees the exceptions.
+Otherwise after the GTT bo is released, the GTT and gart space is freed
+but amdgpu_ttm_backend_unbind will not clear the gart page table entry
+and leave valid mapping entry pointing to the stale system page. Then
+if GPU access the gart address mistakely, it will read undefined value
+instead page fault, harder to debug and reproduce the real issue.
 
-Reported-by: John Pittman <jpittman@redhat.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/md/dm-snap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
-index bf7a574499a34..0ace06d1bee38 100644
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -684,8 +684,10 @@ static void dm_exception_table_exit(struct dm_exception_table *et,
- 	for (i = 0; i < size; i++) {
- 		slot = et->table + i;
- 
--		hlist_bl_for_each_entry_safe(ex, pos, n, slot, hash_list)
-+		hlist_bl_for_each_entry_safe(ex, pos, n, slot, hash_list) {
- 			kmem_cache_free(mem, ex);
-+			cond_resched();
-+		}
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 8722beba494e5..fc418e670fdae 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -864,6 +864,7 @@ static void amdgpu_ttm_gart_bind(struct amdgpu_device *adev,
+ 		amdgpu_gart_bind(adev, gtt->offset, ttm->num_pages,
+ 				 gtt->ttm.dma_address, flags);
  	}
++	gtt->bound = true;
+ }
  
- 	kvfree(et->table);
+ /*
 -- 
 2.43.0
 
