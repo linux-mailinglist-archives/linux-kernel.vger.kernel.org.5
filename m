@@ -1,105 +1,115 @@
-Return-Path: <linux-kernel+bounces-121324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B317688E65E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:36:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748D088E610
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:31:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2FE1B248BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:30:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D5BA29E0BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1EFE15217D;
-	Wed, 27 Mar 2024 12:55:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8EC12F37F;
-	Wed, 27 Mar 2024 12:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CEA152E19;
+	Wed, 27 Mar 2024 12:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeI1DRl9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B904415251C;
+	Wed, 27 Mar 2024 12:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711544141; cv=none; b=K6E2oLhunFnQvbQNSRXveswcGDCAFo+gPypiUctUEd9Fyi5MsHVqm0/7+IesB9avRbGiPIr3UyjloE+urt/AyEle9FDTY8ZmWoUGynGAdR08f53gQpOD2f9yOGR2bh18uNg4mcW+uvH2HEFUO3VC1IWCWCbvsoL4HtAeE5cCmmc=
+	t=1711544175; cv=none; b=lziqLRHkzMO5a/41BZ8RfBZKyw1ZuoMfnVoKhR67CCoLMpbT+pgHg/xfaPc27R1BgdUXoTwvTx5cwsHvbtovVaVliEkE5QM9PVyE4Ax3gh/NiMoVTNfST8x50dN9KYoeCDHFi+E+FmS/vZvGWjPCg7Z8HtKZuqJflWz2U3eGx+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711544141; c=relaxed/simple;
-	bh=3K5FY9zYoZ9NIYrs8JeXAE2pagjbwPp+dZ93De3oyV4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EK9zmRbNONZeGke3kZ1HaNlR6pkeGZsagmRjRX7c6yD3qbYeHbagALPCEYFJrquVd1AVQZDaSDxYNkAUjUeKgN1bJ7qhV6Lp2cNNCZsvK2lbi6xeSkqxnJB84EROndmZM8amMtff6lhKhdQwMsc91k9PH0EFy0so/SrbWvxZRxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27C1E2F4;
-	Wed, 27 Mar 2024 05:56:12 -0700 (PDT)
-Received: from [192.168.178.110] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CD983F7C5;
-	Wed, 27 Mar 2024 05:55:35 -0700 (PDT)
-Message-ID: <410c5da7-c79c-4607-9aa3-2e78d991d2d7@arm.com>
-Date: Wed, 27 Mar 2024 13:55:34 +0100
+	s=arc-20240116; t=1711544175; c=relaxed/simple;
+	bh=t5Dr+QPEU1FaZbxI2VzHHPUV33oVM25Zuyjp8wRwBxQ=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=iFm3YA9kLj68XOWKZcMRSYtsJmWzLlxAfwsXERyDsxAoNx3HWu2zAjq//C8KpfGHKaIh/1yL63SZodp8dOBqiUC8HIuV0k4HF8w5tUBXDozTAVIEki1Pmua8JBKKALMd37+APWhJMOPMcYPPQ5aWVRnaqtddhkPWUmIU1B2XmeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PeI1DRl9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C93C43390;
+	Wed, 27 Mar 2024 12:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711544174;
+	bh=t5Dr+QPEU1FaZbxI2VzHHPUV33oVM25Zuyjp8wRwBxQ=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=PeI1DRl97jSBL5h+TjLof7OmsdrUn8XoRsGQVaXc1QrS2MsqMVnRRdmF+M5dmweaA
+	 Cf4i01dUWOny6pJ6QuLijRvpE44xS0PcZc1e9PeN+WBhzhBO4xJy/Ts3k409QwdVEV
+	 p+A11VpmypxO3Ps9Q8jXDfwY+GDNk4U7h2495MzupWAahXb3s6nMhf4xTbKbYBv9sH
+	 Qg2EVim4HGea+Pk1qx3RaNxw1jAVCalYFQ1zjH9SvFpUEhLNt2Q6UwcJWGcqLuJGpO
+	 jNEGpE3iLazGfTCtetqVqdY3FWUY6/vKk+gRsmlO3tArdLh8t7rKXHMt3Lo2FnfSbu
+	 armFDkXpy3JVQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,  Jason Wang
+ <jasowang@redhat.com>,  Xuan Zhuo <xuanzhuo@linux.alibaba.com>,  Richard
+ Weinberger <richard@nod.at>,  Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,  Johannes Berg
+ <johannes@sipsolutions.net>,  Paolo Bonzini <pbonzini@redhat.com>,  Stefan
+ Hajnoczi <stefanha@redhat.com>,  Jens Axboe <axboe@kernel.dk>,  Marcel
+ Holtmann <marcel@holtmann.org>,  Luiz Augusto von Dentz
+ <luiz.dentz@gmail.com>,  Olivia Mackall <olivia@selenic.com>,  Herbert Xu
+ <herbert@gondor.apana.org.au>,  Amit Shah <amit@kernel.org>,  Arnd
+ Bergmann <arnd@arndb.de>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  Gonglei <arei.gonglei@huawei.com>,  "David
+ S. Miller" <davem@davemloft.net>,  Viresh Kumar <vireshk@kernel.org>,
+  Linus Walleij <linus.walleij@linaro.org>,  Bartosz Golaszewski
+ <brgl@bgdev.pl>,  David Airlie <airlied@redhat.com>,  Gerd Hoffmann
+ <kraxel@redhat.com>,  Gurchetan Singh <gurchetansingh@chromium.org>,
+  Chia-I Wu <olvaffe@gmail.com>,  Jean-Philippe Brucker
+ <jean-philippe@linaro.org>,  Joerg Roedel <joro@8bytes.org>,  Alexander
+ Graf <graf@amazon.com>,  Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Eric Van
+ Hensbergen <ericvh@kernel.org>,  Latchesar Ionkov <lucho@ionkov.net>,
+  Dominique Martinet <asmadeus@codewreck.org>,  Christian Schoenebeck
+ <linux_oss@crudebyte.com>,  Stefano Garzarella <sgarzare@redhat.com>,  Dan
+ Williams <dan.j.williams@intel.com>,  Vishal Verma
+ <vishal.l.verma@intel.com>,  Dave Jiang <dave.jiang@intel.com>,  Ira Weiny
+ <ira.weiny@intel.com>,  Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+  Bjorn Andersson <andersson@kernel.org>,  Mathieu Poirier
+ <mathieu.poirier@linaro.org>,  "Martin K. Petersen"
+ <martin.petersen@oracle.com>,  Vivek Goyal <vgoyal@redhat.com>,  Miklos
+ Szeredi <miklos@szeredi.hu>,  Anton Yakovlev
+ <anton.yakovlev@opensynergy.com>,  Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>,  virtualization@lists.linux.dev,
+  linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-um@lists.infradead.org,  linux-block@vger.kernel.org,
+  linux-bluetooth@vger.kernel.org,  linux-crypto@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-gpio@vger.kernel.org,
+  dri-devel@lists.freedesktop.org,  iommu@lists.linux.dev,
+  netdev@vger.kernel.org,  v9fs@lists.linux.dev,  kvm@vger.kernel.org,
+  linux-wireless@vger.kernel.org,  nvdimm@lists.linux.dev,
+  linux-remoteproc@vger.kernel.org,  linux-scsi@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  alsa-devel@alsa-project.org,
+  linux-sound@vger.kernel.org
+Subject: Re: [PATCH 17/22] wireless: mac80211_hwsim: drop owner assignment
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+	<20240327-module-owner-virtio-v1-17-0feffab77d99@linaro.org>
+Date: Wed, 27 Mar 2024 14:55:58 +0200
+In-Reply-To: <20240327-module-owner-virtio-v1-17-0feffab77d99@linaro.org>
+	(Krzysztof Kozlowski's message of "Wed, 27 Mar 2024 13:41:10 +0100")
+Message-ID: <87plvf7s0x.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND][PATCH v2 3/4] PM: EM: Add em_dev_update_chip_binning()
-Content-Language: en-US
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, sboyd@kernel.org, nm@ti.com,
- linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
- rafael@kernel.org, viresh.kumar@linaro.org, krzysztof.kozlowski@linaro.org,
- alim.akhtar@samsung.com, m.szyprowski@samsung.com, mhiramat@kernel.org,
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20240322110850.77086-1-lukasz.luba@arm.com>
- <20240322110850.77086-4-lukasz.luba@arm.com>
- <eb9f48f6-cca8-405b-82a2-352893a79f14@arm.com>
- <30ee98e9-3d9a-4be8-8127-043f68a7dcb1@arm.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <30ee98e9-3d9a-4be8-8127-043f68a7dcb1@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On 26/03/2024 21:32, Lukasz Luba wrote:
-> 
-> 
-> On 3/26/24 10:09, Dietmar Eggemann wrote:
->> On 22/03/2024 12:08, Lukasz Luba wrote:
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 
-[...]
+> virtio core already sets the .owner, so driver does not need to.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
->>> +    return em_recalc_and_update(dev, pd, em_table);
->>> +}
->>> +EXPORT_SYMBOL_GPL(em_dev_update_chip_binning);
->>
->> In the previous version of 'chip-binning' you were using the new EM
->> interface em_dev_compute_costs() (1) which is now replaced by
->> em_recalc_and_update() -> em_compute_costs().
->>
->> https://lkml.kernel.org/r/20231220110339.1065505-2-lukasz.luba@arm.com
->>
->> Which leaves (1) still unused.
->>
->> That was why my concern back then that we shouldn't introduce EM
->> interfaces without a user:
->>
->> https://lkml.kernel.org/r/8fc499cf-fca1-4465-bff7-a93dfd36f3c8@arm.com
->>
->> What happens now with em_dev_compute_costs()?
->>
-> 
-> For now it's not used, but modules which will create new EMs
-> with custom power values will use it. When such a module have
-> e.g. 5 EMs for one PD and only switches on one of them, then
-> this em_dev_compute_costs() will be used at setup for those
-> 5 EMs. Later it won't be used.
-> I don't wanted to combine the registration of new EM with
-> the compute cost, because that will create overhead in the
-> switching to new EM code path. Now we have only ~3us, which
-> was the main goal.
-> 
-> When our scmi-cpufreq get the support for EM update this
-> compute cost will be used there.
+We use "wifi:" in the title, not "wireless:". It would be nice if you
+can fix this during commit.
 
-OK, I see. I checked the reloadable EM test module and
-em_dev_compute_costs() is used there like you described it.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
