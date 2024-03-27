@@ -1,197 +1,94 @@
-Return-Path: <linux-kernel+bounces-120272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B729088D525
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:46:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF2C88D52A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:47:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E92ED1C24ED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:46:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7011F2C138
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635BD22F03;
-	Wed, 27 Mar 2024 03:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4976C22F19;
+	Wed, 27 Mar 2024 03:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CddTe2Yz"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NDXyIYB4"
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0821E22616
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B8122616
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711511169; cv=none; b=LwX15wFOSOKs5QDYx4HX/VeJjS5dmbrsZmhghy3VSXefbXJnIx6jwumeZZteLn3Bit/lhlTc/KrkqmI5T2nSiAHi5LHWGF1659wVh0SY02pW/X7atHEvdqMwnTFo1OUECZ5XYTUEiIpLLhzYuYvRTEMVQqpNuvknCgoyLzr4v98=
+	t=1711511233; cv=none; b=qkqG40Y/ZnM3F6CPyUfNCbjQ64/st+Tj+MzIQIH6IxdaBtJavZgDy6+FHX7BH2OeYQU6McUdp0lpA2A8yWnMMjjz4Xx+ipYa/3xeqoULRF/WZMZltsBHDbkAtXkdTLyKFVAr0ygXK5WbXxHkqBopDq0GzuIzypQRZNRPuryQmpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711511169; c=relaxed/simple;
-	bh=ZeAFsxPtacnd3+C+1rJ30gAV/hVdWc3kQmPPpMzcr04=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ltT9zLKk5KjMzD2R4YglCA43xehctfKUB7Q2eoql60fuFyXKmT8Zd3H5QaRU4/MKqmQ5igp/BUCXZ/CduePj+wT9BJHHRlBbtGoyX2NNYp3yDk7dhaAVkImgiZnISjQkmnqTDlHRrWl4Bni24IpoknVLKIYe3LrgEwMh0Fblvjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CddTe2Yz; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-29dfad24f36so4229852a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:46:07 -0700 (PDT)
+	s=arc-20240116; t=1711511233; c=relaxed/simple;
+	bh=NzemdoyjALEp5Ne0oRNHFHMDDDAlBGl0VlU9gOElQdc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A8z8vEGj2EGN/mSTZzOoSYpaHfC33m2iBo+PkR7SW6evFWpKB3/OjfukQ/zzr2JporO7Rk8uxieFdLz1t/ynmekZPbtLAkwpBspY+Ew2O9oWrQZtWETTf4lFRKjN8hZGbXSTyvd2cmjiNxuUjR4Uh41X5RGTYkG87vj52LSayyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NDXyIYB4; arc=none smtp.client-ip=209.85.222.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7e09e1871fdso1631194241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 20:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711511167; x=1712115967; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KNqU8sxkAGV2sIPTWHyuNFg/2BkpL0OA+B81hrWr0ZA=;
-        b=CddTe2YzH4t6oiMHeRXojUikZYpl57n8ZORzDx/05v8WnBcVCAYfFmX1Y/TJDgrqSx
-         MrE1+jcG/r9xTAqWzKQ3+HXmacMf342XM4DSHFgkO4zB7oYUZcSdouxfh1vCTVmPxvPn
-         qRzlTNhHMkyaaxWfNFtnXfwXGgQgQ418SUEEdgoEl5mhzlAQt74stSXOUzK9NDDV8kY7
-         aAubHuvts0Z2hsrE/o9Dz0BIUzlwFTlCfD88RXopGQ+dfXDEZEbzWbu5/e7OCkPZdyqj
-         jFEgp3RQgCU5jodw019zHt35/xQrrgKuiu9XzFyt4wX3gnKEAbf7jzpXRvZY7SA0+OXv
-         iS/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711511167; x=1712115967;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1711511231; x=1712116031; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KNqU8sxkAGV2sIPTWHyuNFg/2BkpL0OA+B81hrWr0ZA=;
-        b=a6BVG5X9+7pMZokNBQT+4P2MuS+mo+HPxqkMi59WX/43Ojh2W7JQIBh3ha1MThCEef
-         AkMobb/8ikZqNv2ViYxDJGCj8bFI2l2t7gOC9ObRLU/PaIHwj1Yhe0lGKuq3scYGPGZR
-         AlZKEuP5qz7ai6ypr9rYgjkOrUCKI8WEuzBFBTOV+ZZK9lbO1zEpBxh+7zakl+xy6faN
-         tOGQsYOWpAvRpHhPQVlvjgbdQlMI8RBAR5+1IipI/nunOob9jMkFn1WXKr8kDMoPUG9/
-         jitntr8bHq3jFls3XUZVktFc4aYd0/QeL6cIPH4G1zB6Uq5XR6YLjheU3nuajaEsqmMb
-         a/8g==
-X-Forwarded-Encrypted: i=1; AJvYcCWP/ywKG385w+j+WLGZYsaMeW/QGMw39PwrDP0G/ediKvFr82PQv9EfEC+4DoA4Z7oBczB987JYLJkM/wJUAYqAS5hqzpuPt8gAMXVO
-X-Gm-Message-State: AOJu0YyajI7SnO1GDQq4lYHQisjxHJYSk6JwZr4GovHNQYXGcBJKkcZN
-	wjkKv/w+BFvd3iuyZHVfkt+B7MneEoOM13kRfWRdjZ2FKIv+2GCt
-X-Google-Smtp-Source: AGHT+IFni7awmeeUlQh91WaJ34jqzPWLRRorhThWvS+SZRo4JHZ/K8HkM4/wAg69Vd1NoLiIDpvN8g==
-X-Received: by 2002:a17:90b:4b0b:b0:29b:a9b2:f98c with SMTP id lx11-20020a17090b4b0b00b0029ba9b2f98cmr1538518pjb.24.1711511167137;
-        Tue, 26 Mar 2024 20:46:07 -0700 (PDT)
-Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
-        by smtp.gmail.com with ESMTPSA id c16-20020a17090ad91000b0029c741ca894sm440382pjv.29.2024.03.26.20.46.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 20:46:06 -0700 (PDT)
-From: mhkelley58@gmail.com
-X-Google-Original-From: mhklinux@outlook.com
-To: hch@lst.de,
-	m.szyprowski@samsung.com,
-	robin.murphy@arm.com,
-	petrtesarik@huaweicloud.com,
-	konrad.wilk@oracle.com,
-	chanho61.park@samsung.com,
-	bumyong.lee@samsung.com,
-	dominique.martinet@atmark-techno.com,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: will@kernel.org,
-	petr@tesarici.cz,
-	roberto.sassu@huaweicloud.com
-Subject: [PATCH 1/1] swiotlb: Fix swiotlb_bounce() to do partial sync's correctly
-Date: Tue, 26 Mar 2024 20:45:48 -0700
-Message-Id: <20240327034548.1959-1-mhklinux@outlook.com>
-X-Mailer: git-send-email 2.25.1
-Reply-To: mhklinux@outlook.com
+        bh=NzemdoyjALEp5Ne0oRNHFHMDDDAlBGl0VlU9gOElQdc=;
+        b=NDXyIYB4XXx4IX9pA4qsNgpit4srwr3pxzp2kG0qm8GUP6I38ToFaAnU4bYVyscbiU
+         gRx+BdE13rCkSXrq/i08hMLWNOJpvJYvD8R3jXwit6Di05kDkaWfcStVM7ktv2WBO79Z
+         u7UvB1l1qPNVSwAWafQJ7rUNizCemvWZtJ1FE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711511231; x=1712116031;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NzemdoyjALEp5Ne0oRNHFHMDDDAlBGl0VlU9gOElQdc=;
+        b=Pl1UHQhYF48BPCmZutLygb20F/u54uyRwhYLWQsm05HFwtbLk66BqEzhaQBslOtmRy
+         PN4sG15rB9bvzXWZ84iXu21GkTxDdHqYxaOZBhqGKrYSccf+3UWhPGDpUXewYbxWdXRP
+         xef4yFiG/jJY8XaONaebw5CKhZ0Wwbu4dWty98k6thk+9ahCxHerocySmEel5X+mIUv6
+         udi/c2kmprgxegGUlp9PmuWhRisTohRjjLx6zWkSkTqaPNbTEEQ6QfcY45oAbNUTDSuy
+         adSyWrHxA4j11UXl9il7IHtbaD+v8f9xbPjI86iP7j9Vxw+bGRF83OwhuIipGIK7TQNQ
+         no/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXwCEWaR092JBGjme9j5IMFxCygJp1TAeZycGabgZSodjI6gJ1HSkuWnoiZkl+J/4vMB5oIJA/plL/9vOGm5SzQ+bRx+V+ZVIDbD+xw
+X-Gm-Message-State: AOJu0YwMlcisuc4CT67SSYujhbCt4SX3g50bn36hnLTDpvNQ9XtTIzUs
+	YwzieMgrnFIZDRK/GwMLn5AtxRKAcgCSnjHsBVpRxpJBjEs2wGpYvHCQN+qxuR0XGgnJmx6Y49X
+	2nLe3JGCViFPHBgYnuflbuJj20QPsaid0x/0V
+X-Google-Smtp-Source: AGHT+IEnAe/XEivX0tpGpVeOk/Y1JjQzcaU0hnYqVCd0bNPmDAgKWMvmA6VqDC4R+aIAB8lzbhuYESGZN3G6h+iEosI=
+X-Received: by 2002:a05:6122:8c6:b0:4cc:29cf:a1fa with SMTP id
+ 6-20020a05612208c600b004cc29cfa1famr1744790vkg.4.1711511231123; Tue, 26 Mar
+ 2024 20:47:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240325-public-ucsi-h-v1-0-7c7e888edc0a@chromium.org>
+ <20240325-public-ucsi-h-v1-2-7c7e888edc0a@chromium.org> <CACeCKaehH3Qs8y-W_jsyOdnTYWVzgsGj5_wGujjYT2Sr8xxqkA@mail.gmail.com>
+In-Reply-To: <CACeCKaehH3Qs8y-W_jsyOdnTYWVzgsGj5_wGujjYT2Sr8xxqkA@mail.gmail.com>
+From: Pavan Holla <pholla@chromium.org>
+Date: Tue, 26 Mar 2024 20:46:35 -0700
+Message-ID: <CAB2FV=662xWkfEJf0eqnrn6mBPFM88oy7QTTSYMkLo=6wPeoHw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] usb: typec: ucsi: Import interface for UCSI transport
+To: Prashant Malani <pmalani@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, 
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Michael Kelley <mhklinux@outlook.com>
+On Mon, Mar 25, 2024 at 7:11=E2=80=AFPM Prashant Malani <pmalani@chromium.o=
+rg> wrote:
+> Can you squash Patch 1/3 and this Patch (2/3)? It sounds like an
+> atomic change that doesn't need two patches.
 
-In current code, swiotlb_bounce() may do partial sync's correctly in
-some circumstances, but may incorrectly fail in other circumstances.
-The failure cases require both of these to be true:
+Acknowledged. Will do it in the next version.
 
-1) swiotlb_align_offset() returns a non-zero "offset" value
-2) the tlb_addr of the partial sync area points into the first
-"offset" bytes of the _second_ or subsequent swiotlb slot allocated
-for the mapping
-
-Code added in commit 868c9ddc182b ("swiotlb: add overflow checks
-to swiotlb_bounce") attempts to WARN on the invalid case where
-tlb_addr points into the first "offset" bytes of the _first_
-allocated slot. But there's no way for swiotlb_bounce() to distinguish
-the first slot from the second and subsequent slots, so the WARN
-can be triggered incorrectly when #2 above is true.
-
-Related, current code calculates an adjustment to the orig_addr stored
-in the swiotlb slot. The adjustment compensates for the difference
-in the tlb_addr used for the partial sync vs. the tlb_addr for the full
-mapping. The adjustment is stored in the local variable tlb_offset.
-But when #1 and #2 above are true, it's valid for this adjustment to
-be negative. In such case the arithmetic to adjust orig_addr produces
-the wrong result due to tlb_offset being declared as unsigned.
-
-Fix these problems by removing the over-constraining validations added
-in 868c9ddc182b. Change the declaration of tlb_offset to be signed
-instead of unsigned so the adjustment arithmetic works correctly.
-
-Tested with a test-only hack to how swiotlb_tbl_map_single() calls
-swiotlb_bounce(). Instead of calling swiotlb_bounce() just once
-for the entire mapped area, do a loop with each iteration doing
-only a 128 byte partial sync until the entire mapped area is
-sync'ed. Then with swiotlb=force on the kernel boot line, run a
-variety of raw disk writes followed by read and verification of
-all bytes of the written data. The storage device has DMA
-min_align_mask set, and the writes are done with a variety of
-original buffer memory address alignments and overall buffer
-sizes. For many of the combinations, current code triggers the
-WARN statements, or the data verification fails. With the fixes,
-no WARNs occur and all verifications pass.
-
-Fixes: 5f89468e2f06 ("swiotlb: manipulate orig_addr when tlb_addr has offset")
-Fixes: 868c9ddc182b ("swiotlb: add overflow checks to swiotlb_bounce")
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
----
-This patch is built against the 6.9-rc1 tree plus Petr Tesarik's
-"swiotlb: extend buffer pre-padding to alloc_align_mask" patch
-that's in-flight.
-
- kernel/dma/swiotlb.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index d7a8cb93ef2d..d57c8837c813 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -863,27 +863,23 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
- 	size_t alloc_size = mem->slots[index].alloc_size;
- 	unsigned long pfn = PFN_DOWN(orig_addr);
- 	unsigned char *vaddr = mem->vaddr + tlb_addr - mem->start;
--	unsigned int tlb_offset, orig_addr_offset;
-+	int tlb_offset;
- 
- 	if (orig_addr == INVALID_PHYS_ADDR)
- 		return;
- 
--	tlb_offset = tlb_addr & (IO_TLB_SIZE - 1);
--	orig_addr_offset = swiotlb_align_offset(dev, 0, orig_addr);
--	if (tlb_offset < orig_addr_offset) {
--		dev_WARN_ONCE(dev, 1,
--			"Access before mapping start detected. orig offset %u, requested offset %u.\n",
--			orig_addr_offset, tlb_offset);
--		return;
--	}
--
--	tlb_offset -= orig_addr_offset;
--	if (tlb_offset > alloc_size) {
--		dev_WARN_ONCE(dev, 1,
--			"Buffer overflow detected. Allocation size: %zu. Mapping size: %zu+%u.\n",
--			alloc_size, size, tlb_offset);
--		return;
--	}
-+	/*
-+	 * It's valid for tlb_offset to be negative. This can happen when the
-+	 * "offset" returned by swiotlb_align_offset() is non-zero, and the
-+	 * tlb_addr is pointing within the first "offset" bytes of the second
-+	 * or subsequent slots of the allocated swiotlb area. While it's not
-+	 * valid for tlb_addr to be pointing within the first "offset" bytes
-+	 * of the first slot, there's no way to check for such an error since
-+	 * this function can't distinguish the first slot from the second and
-+	 * subsequent slots.
-+	 */
-+	tlb_offset = (tlb_addr & (IO_TLB_SIZE - 1)) -
-+		     swiotlb_align_offset(dev, 0, orig_addr);
- 
- 	orig_addr += tlb_offset;
- 	alloc_size -= tlb_offset;
--- 
-2.25.1
-
+Thanks,
+Pavan
 
