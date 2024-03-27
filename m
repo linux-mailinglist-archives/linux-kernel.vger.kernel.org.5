@@ -1,122 +1,447 @@
-Return-Path: <linux-kernel+bounces-121661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD7AA88EBF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 115E988EC00
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8780C29F5C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:00:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FA6B295A5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7617514C5BE;
-	Wed, 27 Mar 2024 17:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664F514D6F1;
+	Wed, 27 Mar 2024 17:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LMXB4AEi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fp0UnKHS"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B278E1AAD7;
-	Wed, 27 Mar 2024 17:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E26C131BBE
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711558805; cv=none; b=n8T29SpC5rXBu6ml8LJMaecYq4QDQwOxtq85D8ttdiVi1H8kw2MAmsXTGpqz1NMhL72Ib6y43DqL4kxqkIdaNpJw50L9C/ojTsjk3+WT54m+X9PwL/kEw4uyArKAozabFfhWigaE/r5tlgcDc2fvmBvTGFV52Q9Y38+IagH/Nvo=
+	t=1711558949; cv=none; b=AiYsWnFQQKFMFshrT3NtqSzqB8QP8r3vg8z+eLVyj1EOl4UqtYzFCLdeCoHJnlYnqMDF+MHU3Pno1f3gsmcYWE+Ic44cJS/hO1DUcHz2ZCC+/LmJoMjYYKcduqLkrqpPv4qT7PMLujX3dW2KKL5rGS4PvHGavpcqBdS5mNcqEtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711558805; c=relaxed/simple;
-	bh=kFJK27eqsn3b94GlLP703fwEajJD+XlRkEDUgGuh2cI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=hlPgyuU1f+9q5wxJUW0KA5Y4AN9XyCCmktimbSNiysMVNIppCMsOG/2xRrgC1OlKmm/O2V4uKWuaEpqczgXNv85e+RXjjeSgGZv/kql71PY4ZBufKUSV1eAuyN/yW9w9Xd5lgsYTQd/S3PRH3X+yJJ4VJMN91+J+Jhh4N7ZqUGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LMXB4AEi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F492C433F1;
-	Wed, 27 Mar 2024 17:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711558805;
-	bh=kFJK27eqsn3b94GlLP703fwEajJD+XlRkEDUgGuh2cI=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=LMXB4AEil8mhpE14pDOZqk5V1G188v/TX9AtT86gdloR9J8ZE6YYFIuKlQ6Z5UZai
-	 ksIWU4umsus3CI4jcIqamwIW1/1BUK51hMF6nWTO/ybRk6h24jLLwM5k9LsVDzmjen
-	 KSlyP8rn5Cl3MBWOuEJuMsCHv3G+qvASXSOYok+8tEK4bRu4FYc4uHhXpqFNyzugKX
-	 W86SAEnJ+6FFFqq0dK7TLagxjyFHw/IXsCFF00jRzL4KQm0Ckp17ryUENvaKF3ioao
-	 rk7UvQWIGDvrFX2dp1rP4Ha5h/BhxE0MXQRiFlHeaoDv2p1LHr8qkdigCDJAVZXITN
-	 LHE94pHdXHP7A==
+	s=arc-20240116; t=1711558949; c=relaxed/simple;
+	bh=tco6ZVQyvJdkc86E7n6MVZLMiHRD/WuMVxniFLNJfBQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eodUQuWsQH2SP+YdYNaO0VufsQKQsvCmW8CPApumdZvPLKuAgE4+HbLRg9rRxQ600ZHRr8b6U0wVlPpyaeo8fNmJTEDxiLtb5vkXcDQIP6XTgqL/3DpA062x0s+iBBxd2Pb2XihGfV1rRiQIJtQgzUYBajewpzI+qlMhxqV0BYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fp0UnKHS; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711558946;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0A1JLMQh+h+WzgQyGtWZmREpjmRelVOHA7aXCkcHag0=;
+	b=Fp0UnKHSZF3Z92epaGVZrd3QEbGFIo2dUcPx0HzyKMC0U1FXaJKb+JHVtqDNWvQ344pyDv
+	L9XAtIoPSF09e13xqhPvUvpPY4CG7NaUfJzjgalPywq3DMYOR/pPY9EWavi/j2mqN47H7S
+	np79fyBhRWgPDt0IG1Bf1f9Yk23jl7Q=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-RgdmK8ifOQqYFoed-prFFQ-1; Wed, 27 Mar 2024 13:02:24 -0400
+X-MC-Unique: RgdmK8ifOQqYFoed-prFFQ-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d48d13b3c9so62082041fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:02:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711558942; x=1712163742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0A1JLMQh+h+WzgQyGtWZmREpjmRelVOHA7aXCkcHag0=;
+        b=XDrZD4xdXP7CWkW6V5YRuq/agZ5X43540I/Y4O3ALt+ydW+frKCXXlECK7jmFpFZrO
+         L5qyyKTdjFRbGidOxQ3kl1STXmA5JuPU115Z44q2QW2A70Ygb2HQRi9PoHsgHyE3inGO
+         2ZnQW2PKt9jELZfOqiGRXBwPBeQhzuri/bYuJ3gdjq2jJkJSLf6nWJg4AI82u9W9pkdM
+         tWTkeTblqf23sBUguFjatYLDtbXpmO08o5QknUkVKvlxxlhH6h64cknJ3B9shqagzLkp
+         r9HTO93it1+Xmzr7UQyx/xArzomuCBINq+dAAPPQYaE4U82yE9GmXFj/Pc3Z4rc091WE
+         M/pw==
+X-Forwarded-Encrypted: i=1; AJvYcCX/6bV1pAeNB7W7X0wfYzMVq0PdN5tYxn3YI+dQgTJFQDaB2Ozmoog0Y4ePBuqR39IGzi68VKkkbTS0usLawAy8Hvtd+lkHW6R8gyI8
+X-Gm-Message-State: AOJu0YzRZsn3xlbHkv4vafDggw46ht/9AGDcWGo5lWUeB1wfzrgg5PTq
+	fDM2udewsDVPZA0mcTFP5J9LMI1JWls7He056HB6aJGvH9kuyZ6xrQklJkfGKX9Yqmx/6L81C+9
+	Giobn3iV9Bf9FOIaM560HJXVXhVmxFDY9dSzSX8T7Y5G3T4nw3SmCBgbEq2j382negaIPZFMc9l
+	D6JEZ5NkN9uM2hOSEushCI05hXeg4vee+9b6p4
+X-Received: by 2002:a2e:978c:0:b0:2d2:4783:872a with SMTP id y12-20020a2e978c000000b002d24783872amr99350lji.29.1711558941981;
+        Wed, 27 Mar 2024 10:02:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHbnH0NzFvaHV3NvKxHWq1yw15L4GXvDmDRNt1vWzEyHXelqw8YysCbzSzMo9N0avkk3+Ria5F7M3q6C79fdqA=
+X-Received: by 2002:a2e:978c:0:b0:2d2:4783:872a with SMTP id
+ y12-20020a2e978c000000b002d24783872amr99318lji.29.1711558941510; Wed, 27 Mar
+ 2024 10:02:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
+In-Reply-To: <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Wed, 27 Mar 2024 18:02:09 +0100
+Message-ID: <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Mar 2024 19:00:00 +0200
-Message-Id: <D04OYICG7UM7.3SFZE1NKID389@kernel.org>
-Cc: <linux-riscv@lists.infradead.org>, "Paul Walmsley"
- <paul.walmsley@sifive.com>, "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert
- Ou" <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>, "Luis
- Chamberlain" <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>, "Naveen
- N . Rao" <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
- <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>,
- "Masami Hiramatsu" <mhiramat@kernel.org>
-Subject: Re: [PATCH v7 2/2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Conor Dooley" <conor@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240326134616.7691-1-jarkko@kernel.org>
- <20240326134616.7691-2-jarkko@kernel.org>
- <20240326-cape-compacted-e76df066752f@spud>
-In-Reply-To: <20240326-cape-compacted-e76df066752f@spud>
 
-On Tue Mar 26, 2024 at 8:42 PM EET, Conor Dooley wrote:
-> On Tue, Mar 26, 2024 at 03:46:16PM +0200, Jarkko Sakkinen wrote:
-> > Tacing with kprobes while running a monolithic kernel is currently
-> > impossible due the kernel module allocator dependency.
-> >=20
-> > Address the issue by implementing textmem API for RISC-V.
+On Mon, Mar 25, 2024 at 1:50=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> This doesn't compile for nommu:
->   /build/tmp.3xucsBhqDV/arch/riscv/kernel/execmem.c:10:46: error: 'MODULE=
-S_VADDR' undeclared (first use in this function)
->   /build/tmp.3xucsBhqDV/arch/riscv/kernel/execmem.c:11:37: error: 'MODULE=
-S_END' undeclared (first use in this function)
->   /build/tmp.3xucsBhqDV/arch/riscv/kernel/execmem.c:14:1: error: control =
-reaches end of non-void function [-Werror=3Dreturn-type]
-> Clang builds also report:
-> ../arch/riscv/kernel/execmem.c:8:56: warning: omitting the parameter name=
- in a function definition is a C2x extension [-Wc2x-extensions]
->
-> >=20
-> > Link: https://www.sochub.fi # for power on testing new SoC's with a min=
-imal stack
-> > Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profi=
-an.com/ # continuation
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> On Fri, Mar 22, 2024 at 7:56=E2=80=AFAM Benjamin Tissoires <bentiss@kerne=
+l.org> wrote:
+> >
+> > They are implemented as a workqueue, which means that there are no
+> > guarantees of timing nor ordering.
+> >
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> >
 > > ---
-> > v5-v7:
-> > - No changes.
-> > v4:
-> > - Include linux/execmem.h.
-> > v3:
-> > - Architecture independent parts have been split to separate patches.
-> > - Do not change arch/riscv/kernel/module.c as it is out of scope for
-> >   this patch set now.
+> >
+> > no changes in v5
+> >
+> > changes in v4:
+> > - dropped __bpf_timer_compute_key()
+> > - use a spin_lock instead of a semaphore
+> > - ensure bpf_timer_cancel_and_free is not complaining about
+> >   non sleepable context and use cancel_work() instead of
+> >   cancel_work_sync()
+> > - return -EINVAL if a delay is given to bpf_timer_start() with
+> >   BPF_F_TIMER_SLEEPABLE
+> >
+> > changes in v3:
+> > - extracted the implementation in bpf_timer only, without
+> >   bpf_timer_set_sleepable_cb()
+> > - rely on schedule_work() only, from bpf_timer_start()
+> > - add semaphore to ensure bpf_timer_work_cb() is accessing
+> >   consistent data
+> >
+> > changes in v2 (compared to the one attaches to v1 0/9):
+> > - make use of a kfunc
+> > - add a (non-used) BPF_F_TIMER_SLEEPABLE
+> > - the callback is *not* called, it makes the kernel crashes
+> > ---
+> >  include/uapi/linux/bpf.h |  4 +++
+> >  kernel/bpf/helpers.c     | 86 ++++++++++++++++++++++++++++++++++++++++=
+++++++--
+> >  2 files changed, 88 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 3c42b9f1bada..b90def29d796 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -7461,10 +7461,14 @@ struct bpf_core_relo {
+> >   *     - BPF_F_TIMER_ABS: Timeout passed is absolute time, by default =
+it is
+> >   *       relative to current time.
+> >   *     - BPF_F_TIMER_CPU_PIN: Timer will be pinned to the CPU of the c=
+aller.
+> > + *     - BPF_F_TIMER_SLEEPABLE: Timer will run in a sleepable context,=
+ with
+> > + *       no guarantees of ordering nor timing (consider this as being =
+just
+> > + *       offloaded immediately).
+> >   */
+> >  enum {
+> >         BPF_F_TIMER_ABS =3D (1ULL << 0),
+> >         BPF_F_TIMER_CPU_PIN =3D (1ULL << 1),
+> > +       BPF_F_TIMER_SLEEPABLE =3D (1ULL << 2),
+> >  };
+> >
+> >  /* BPF numbers iterator state */
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index a89587859571..38de73a9df83 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1094,14 +1094,20 @@ const struct bpf_func_proto bpf_snprintf_proto =
+=3D {
+> >   * bpf_timer_cancel() cancels the timer and decrements prog's refcnt.
+> >   * Inner maps can contain bpf timers as well. ops->map_release_uref is
+> >   * freeing the timers when inner map is replaced or deleted by user sp=
+ace.
+> > + *
+> > + * sleepable_lock protects only the setup of the workqueue, not the ca=
+llback
+> > + * itself. This is done to ensure we don't run concurrently a free of =
+the
+> > + * callback or the associated program.
 >
-> Meta comment. I dunno when v1 was sent, but versions can you please
-> relax with submitting new versions of your patches? There's conversations
-> ongoing on v5 at the moment, while this is a more recent version. v2
-> seems to have been sent on the 23rd and there's been 5 versions in the
-> last day:
-> https://patchwork.kernel.org/project/linux-riscv/list/?submitter=3D195059=
-&state=3D*
+> I recall there was a discussion about this lock earlier,
+> but I don't remember what the conclusion was.
+
+There wasn't much of a conclusion TBH.
+
+> The above comment is not enough to understand what it protects.
 >
-> Could you please also try and use a cover letter for patchsets, ideally
-> with a consistent subject? Otherwise I have to manually mark stuff as
-> superseded.
+> In general how sleepable cb is fundamentally different
+> from non-sleepable one when it comes to races ?
 
-Point taken but the work has been taken over by Mark and relevant
-changes are now sucked into that patch set.
+I think there are 2 main differences:
+- it's sleepable, so classic RCU locking doesn't work (I didn't know
+about rcu_read_lock_trace() up to now)
+- when we cancel(_and_free) the program, we can not afford to wait for
+the program to finish because that program might take ages to do so.
 
-> Thanks,
-> Conor.
+While OTOH, hrtimer callbacks are in soft IRQ, so with IRQ disabled,
+and nothing can interrupt it AFAICT. We can also wait for the timer cb
+to finish in that case because it can't sleep.
 
-BR, Jarkko
+>
+> bpf_timer_set_callback() is racy for both sleepable and non-sleepable
+> and the latter handles it fine.
+
+I don't think bpf_timer_set_callback() is the problem: in both cases
+(sleepable or not) we are under the spinlock from bpf_timer_kern so
+the race is cut short there.
+
+>
+> Note that struct bpf_hrtimer is rcu protected.
+> See kfree_rcu(t, rcu); in bpf_timer_cancel_and_free().
+
+Sorry, RCU is still always hard to grasp for me, and even if I think I
+get it, I still don't see how this would be sufficient in sleepable
+bpf_timer_work_cb() without any lock protecting the struct bpf_hrtimer
+very first access.
+
+>
+> >   */
+> >  struct bpf_hrtimer {
+> >         struct hrtimer timer;
+> > +       struct work_struct work;
+> >         struct bpf_map *map;
+> >         struct bpf_prog *prog;
+> >         void __rcu *callback_fn;
+> >         void *value;
+> >         struct rcu_head rcu;
+> > +       spinlock_t sleepable_lock;
+> >  };
+> >
+> >  /* the actual struct hidden inside uapi struct bpf_timer */
+> > @@ -1114,6 +1120,49 @@ struct bpf_timer_kern {
+> >         struct bpf_spin_lock lock;
+> >  } __attribute__((aligned(8)));
+> >
+> > +static void bpf_timer_work_cb(struct work_struct *work)
+> > +{
+> > +       struct bpf_hrtimer *t =3D container_of(work, struct bpf_hrtimer=
+, work);
+> > +       struct bpf_map *map =3D t->map;
+> > +       bpf_callback_t callback_fn;
+> > +       void *value =3D t->value;
+> > +       unsigned long flags;
+> > +       void *key;
+> > +       u32 idx;
+> > +
+> > +       BTF_TYPE_EMIT(struct bpf_timer);
+> > +
+> > +       spin_lock_irqsave(&t->sleepable_lock, flags);
+> > +
+> > +       callback_fn =3D READ_ONCE(t->callback_fn);
+> > +       if (!callback_fn) {
+> > +               spin_unlock_irqrestore(&t->sleepable_lock, flags);
+> > +               return;
+> > +       }
+> > +
+> > +       if (map->map_type =3D=3D BPF_MAP_TYPE_ARRAY) {
+> > +               struct bpf_array *array =3D container_of(map, struct bp=
+f_array, map);
+> > +
+> > +               /* compute the key */
+> > +               idx =3D ((char *)value - array->value) / array->elem_si=
+ze;
+> > +               key =3D &idx;
+> > +       } else { /* hash or lru */
+> > +               key =3D value - round_up(map->key_size, 8);
+> > +       }
+> > +
+> > +       /* prevent the callback to be freed by bpf_timer_cancel() while=
+ running
+> > +        * so we can release the sleepable lock
+> > +        */
+> > +       bpf_prog_inc(t->prog);
+> > +
+> > +       spin_unlock_irqrestore(&t->sleepable_lock, flags);
+>
+> why prog_inc ?
+> The sleepable progs need rcu_read_lock_trace() + migrate_disable()
+> anyway, which are missing here.
+> Probably best to call __bpf_prog_enter_sleepable_recur()
+> like kern_sys_bpf() does.
+
+Sounds like a good idea.
+
+But as I was playing with it, I realized that t->prog is not RCU
+protected, so I have no guarantees that the value is correct while
+calling __bpf_prog_enter_sleepable_recur(t->prog, &run_ctx)...
+
+Should I manually call first rcu_read_lock_trace() before
+__bpf_prog_enter_sleepable_recur(t->prog, &run_ctx)?
+
+>
+> Now with that, the bpf_timer_cancel() can drop prog refcnt to zero
+> and it's ok, since rcu_read_lock_trace() will protect it.
+
+OK, this is a good step forward, thanks!
+
+>
+> > +
+> > +       callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0=
+, 0);
+> > +       /* The verifier checked that return value is zero. */
+>
+> the prog will finish and will be freed after rcu_read_unlock_trace().
+> Seems fine to me. No need for inc/dec refcnt.
+
+Ack
+
+>
+> > +
+> > +       bpf_prog_put(t->prog);
+> > +}
+> > +
+> >  static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+> >
+> >  static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+> > @@ -1192,6 +1241,8 @@ BPF_CALL_3(bpf_timer_init, struct bpf_timer_kern =
+*, timer, struct bpf_map *, map
+> >         t->prog =3D NULL;
+> >         rcu_assign_pointer(t->callback_fn, NULL);
+> >         hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
+> > +       INIT_WORK(&t->work, bpf_timer_work_cb);
+> > +       spin_lock_init(&t->sleepable_lock);
+> >         t->timer.function =3D bpf_timer_cb;
+> >         WRITE_ONCE(timer->timer, t);
+> >         /* Guarantee the order between timer->timer and map->usercnt. S=
+o
+> > @@ -1237,6 +1288,7 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_tim=
+er_kern *, timer, void *, callb
+> >                 ret =3D -EINVAL;
+> >                 goto out;
+> >         }
+> > +       spin_lock(&t->sleepable_lock);
+> >         if (!atomic64_read(&t->map->usercnt)) {
+> >                 /* maps with timers must be either held by user space
+> >                  * or pinned in bpffs. Otherwise timer might still be
+> > @@ -1263,6 +1315,8 @@ BPF_CALL_3(bpf_timer_set_callback, struct bpf_tim=
+er_kern *, timer, void *, callb
+> >         }
+> >         rcu_assign_pointer(t->callback_fn, callback_fn);
+> >  out:
+> > +       if (t)
+> > +               spin_unlock(&t->sleepable_lock);
+> >         __bpf_spin_unlock_irqrestore(&timer->lock);
+>
+> If lock is really needed why timer->lock cannot be reused?
+> The pattern of two locks in pretty much the same data structure
+> is begging for questions about what is going on here.
+
+Agree, but I can't find a way to reuse timer->lock:
+- ideally I should add struct work_struct into struct bpf_timer_kern
+directly, but there is a warning about the size of bpf_timer_kern
+which makes me feel like we can not extend it
+- adding a pointer back from struct bpf_hrtimer to bpf_timer_kern is
+also not a solution as we might be freed if we are outside of the lock
+in bpf_timer_kern...
+
+Though if I have reliable access from bpf_timer_work_cb() to the
+matching bpf_timer_kern, I could spinlock ->lock while I need to
+access ->timer, and then everything would be much easier.
+
+>
+> >         return ret;
+> >  }
+> > @@ -1283,8 +1337,12 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_ker=
+n *, timer, u64, nsecs, u64, fla
+> >
+> >         if (in_nmi())
+> >                 return -EOPNOTSUPP;
+> > -       if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
+> > +       if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN | BPF_F_TIM=
+ER_SLEEPABLE))
+> >                 return -EINVAL;
+> > +
+> > +       if ((flags & BPF_F_TIMER_SLEEPABLE) && nsecs)
+> > +               return -EINVAL;
+> > +
+> >         __bpf_spin_lock_irqsave(&timer->lock);
+> >         t =3D timer->timer;
+> >         if (!t || !t->prog) {
+> > @@ -1300,7 +1358,10 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_ker=
+n *, timer, u64, nsecs, u64, fla
+> >         if (flags & BPF_F_TIMER_CPU_PIN)
+> >                 mode |=3D HRTIMER_MODE_PINNED;
+> >
+> > -       hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+> > +       if (flags & BPF_F_TIMER_SLEEPABLE)
+> > +               schedule_work(&t->work);
+> > +       else
+> > +               hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+> >  out:
+> >         __bpf_spin_unlock_irqrestore(&timer->lock);
+> >         return ret;
+> > @@ -1348,13 +1409,22 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_k=
+ern *, timer)
+> >                 ret =3D -EDEADLK;
+> >                 goto out;
+> >         }
+> > +       spin_lock(&t->sleepable_lock);
+> >         drop_prog_refcnt(t);
+> > +       spin_unlock(&t->sleepable_lock);
+>
+> this also looks odd.
+
+I basically need to protect "t->prog =3D NULL;" from happening while
+bpf_timer_work_cb is setting up the bpf program to be run.
+
+>
+> >  out:
+> >         __bpf_spin_unlock_irqrestore(&timer->lock);
+> >         /* Cancel the timer and wait for associated callback to finish
+> >          * if it was running.
+> >          */
+> >         ret =3D ret ?: hrtimer_cancel(&t->timer);
+> > +
+> > +       /* also cancel the sleepable work, but *do not* wait for
+> > +        * it to finish if it was running as we might not be in a
+> > +        * sleepable context
+> > +        */
+> > +       ret =3D ret ?: cancel_work(&t->work);
+> > +
+> >         rcu_read_unlock();
+> >         return ret;
+> >  }
+> > @@ -1383,11 +1453,13 @@ void bpf_timer_cancel_and_free(void *val)
+> >         t =3D timer->timer;
+> >         if (!t)
+> >                 goto out;
+> > +       spin_lock(&t->sleepable_lock);
+> >         drop_prog_refcnt(t);
+> >         /* The subsequent bpf_timer_start/cancel() helpers won't be abl=
+e to use
+> >          * this timer, since it won't be initialized.
+> >          */
+> >         WRITE_ONCE(timer->timer, NULL);
+> > +       spin_unlock(&t->sleepable_lock);
+>
+> This one I don't understand either.
+
+Same as above, I do not want t->prog to be set to NULL.
+
+Also, side note: if anyone feels like it would go faster to fix those
+races by themself instead of teaching me how to properly do it, this
+is definitely fine from me :)
+
+Cheers,
+Benjamin
+
 
