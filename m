@@ -1,241 +1,197 @@
-Return-Path: <linux-kernel+bounces-121975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9FC88F015
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB03588F018
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83F59B232B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:28:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21AD6B245A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6317B153560;
-	Wed, 27 Mar 2024 20:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B688152501;
+	Wed, 27 Mar 2024 20:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gvpuxGVa"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BxVBXQbc";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="K97Ez81x";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BxVBXQbc";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="K97Ez81x"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C315E1534E9
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673B61514F7;
+	Wed, 27 Mar 2024 20:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571269; cv=none; b=GBhc8LBX+R0N+dyzc0GTNURo/L1IELPIqs4bvGvmo3rAm/gvxt4As2/NVadqgk7AhG1L8+pJa2c2L3oYIamb0qwUabENe74wp/9PYS3lHTTysyEZGK3Zlir99k66dWQ8knuS7Py77klB2Gr1E7lE03955M5bKnAACr4aGnKkdKo=
+	t=1711571310; cv=none; b=nSLKaKiS31kAE9WAQOf3V7o563yuGwUJHRSPQd4Z0LPGkRNgUUQcW+ARl1jR3aFFfyO3PPQLptwybX6yv1z1BWqQFd6VFTGNM76BTd6W1qc8f43QxLFzz7jj0R4/r2AUGQ6z68jRFMxTjkgxtkASnECOGGx+Yvfc93lKu8DdG5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571269; c=relaxed/simple;
-	bh=XlLrWtTmg8s6/XeVCQZ9E5GXfb4dRX9E/Mp5HjCCdVQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g2/aD4mNRuQpQOimqi8XPMZoOmwP+fyoavjYQIaTXu6Kdjd2T3A6OfkRNvxs5XnP4u48WV1wo8sfPzw+fx8rQ5h54erlMYrfCFNQmLunYfP1Is62W2Yzj2mtoXlvCW4aSSM2npYAUfXAHK0QW9p9nZUEotfzlCx1FV9XBbcJz4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gvpuxGVa; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so270771b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711571267; x=1712176067; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jlQlD7myWbCJBZn4zLaj3UQ5LgDpgVdZ5/7RcoFhMMk=;
-        b=gvpuxGVaHElUanW7cbHo1rE/Ey38pNklRGI4ge2eHGYcNOd8PmksDnhIU9wMQp8rAG
-         w0IM8ZJAjxd559ezNWlQG1ZlOJXzPOWnEMc3wt+x5sOiuEPZAeAm7c0YOuTiqgpDymJV
-         XanlG903bbsWTcnqCHe37NpqvJBa/LGXeKTz0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711571267; x=1712176067;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jlQlD7myWbCJBZn4zLaj3UQ5LgDpgVdZ5/7RcoFhMMk=;
-        b=BJPlg3eMDQgnwkJHK3BMhvBHsvf8tCVMmd+9WX5XmWfiPqJOmgujF1VhvFMAkrTNek
-         Fe/r8QdkM/sMQvWF+w0C4+Pe0jisUewlJbJE5iZmo8JDLd5vu7uL47xOqV90pV/ukCST
-         UKD2F6ZH+wgrIWjSZyGbc8qR3U9didLylzejMboXrhbIRYaOWST7+0MQdtvzcV0Flgcx
-         n6dywpKrt4rQsZ0DdqNnyRhQwRS1GEXizjf9XMbXwYl2i4+xg/16/muHtV4ZVdFkSWu1
-         Pkkmd/tWBRugi4K7NcD8NXa/UAj9HIpotilW5t4jkvoOMe9pHMLKigbZKvxZ/38L+mGg
-         OVZQ==
-X-Gm-Message-State: AOJu0Yzc5YL411pfwcHxWEuLiRhaZHtTVI/7zWqgxeFHaEy22mIIMsN2
-	DQQR1jvVczC5ykbR1/jplWAo2BhoyZfj3cQ9LlScaoa1SdzcxCTolwb6RZSuhA==
-X-Google-Smtp-Source: AGHT+IFZUfMHq9peOune+htb5ZoHYhdcO8/RJ3COKKB5hswynLS0DibaW32eMRntBRlKzrHvHeFAuA==
-X-Received: by 2002:a05:6a00:3cd5:b0:6ea:baed:a136 with SMTP id ln21-20020a056a003cd500b006eabaeda136mr1128489pfb.8.1711571267067;
-        Wed, 27 Mar 2024 13:27:47 -0700 (PDT)
-Received: from localhost (4.198.125.34.bc.googleusercontent.com. [34.125.198.4])
-        by smtp.gmail.com with UTF8SMTPSA id y8-20020a62b508000000b006e319d8c752sm8234371pfe.150.2024.03.27.13.27.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 13:27:46 -0700 (PDT)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org,
-	Laura Nao <laura.nao@collabora.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Taniya Das <quic_tdas@quicinc.com>
-Subject: [PATCH 2/2] clk: qcom: Properly initialize shared RCGs upon registration
-Date: Wed, 27 Mar 2024 13:27:38 -0700
-Message-ID: <20240327202740.3075378-3-swboyd@chromium.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-In-Reply-To: <20240327202740.3075378-1-swboyd@chromium.org>
-References: <20240327202740.3075378-1-swboyd@chromium.org>
+	s=arc-20240116; t=1711571310; c=relaxed/simple;
+	bh=UpUOyzIoicAiSAUUbpqychIlGaoQK9rh/sgsGu0bpwA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MiOWiKT+gO/TKnQtxFgC7pB5ykkITjJMxRSEiAmzga1TDDjLK6hRiu04V7vlaaKEbAgDjbtKbL4IGVeF1T4aGqYjFbwLDn1ENe7B6KsPlmv7a4wDBzDyepyudMC7KOIQFbJJJi3hgVG6lk0ZgQIw6AK6X7v1QSCEBcutTdyJdJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BxVBXQbc; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=K97Ez81x; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BxVBXQbc; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=K97Ez81x; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 84E0E1FB6E;
+	Wed, 27 Mar 2024 20:28:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711571306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1DwBX/Ioxr6p7/z032afJeSuUVlWTs0NlyebTRJsgxA=;
+	b=BxVBXQbct7a8JRNQSwI/g+RzMMGE/Hsa9pxQCIa3PqR6bjb2cTAPI8BjbzO9wULFX/vC+Y
+	a1VHQ5zpiTINQ72cBjokvsYvChcfv7QmXBfOmXgwIaOvmKltedxQFMksUCpZ9+omml1yBl
+	LIJH/qTT9aVkY22rXXSI9RWMcopC9jw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711571306;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1DwBX/Ioxr6p7/z032afJeSuUVlWTs0NlyebTRJsgxA=;
+	b=K97Ez81xCppZbLqRxrwLBwvnch6LSOtsfMff+bMu6C1koV6kWud5U7TypvFeB0ArIYB695
+	KWCEo2KafGRN9TCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711571306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1DwBX/Ioxr6p7/z032afJeSuUVlWTs0NlyebTRJsgxA=;
+	b=BxVBXQbct7a8JRNQSwI/g+RzMMGE/Hsa9pxQCIa3PqR6bjb2cTAPI8BjbzO9wULFX/vC+Y
+	a1VHQ5zpiTINQ72cBjokvsYvChcfv7QmXBfOmXgwIaOvmKltedxQFMksUCpZ9+omml1yBl
+	LIJH/qTT9aVkY22rXXSI9RWMcopC9jw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711571306;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1DwBX/Ioxr6p7/z032afJeSuUVlWTs0NlyebTRJsgxA=;
+	b=K97Ez81xCppZbLqRxrwLBwvnch6LSOtsfMff+bMu6C1koV6kWud5U7TypvFeB0ArIYB695
+	KWCEo2KafGRN9TCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 125E013AB3;
+	Wed, 27 Mar 2024 20:28:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id hJVdAmqBBGZBEQAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Wed, 27 Mar 2024 20:28:26 +0000
+Message-ID: <5df1d391-7683-4d9c-accc-9b446d46a150@suse.de>
+Date: Wed, 27 Mar 2024 21:28:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/ast: Fix soft lockup
+Content-Language: en-US
+To: Jocelyn Falempe <jfalempe@redhat.com>, Jammy Huang
+ <orbit.huang@gmail.com>, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, airlied@redhat.com, airlied@gmail.com, daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Jammy Huang <jammy_huang@aspeedtech.com>, stable@vger.kernel.org
+References: <20240325033515.814-1-jammy_huang@aspeedtech.com>
+ <c04ebd16-f0b0-45be-a831-fae8b50b7011@redhat.com>
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <c04ebd16-f0b0-45be-a831-fae8b50b7011@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -0.40
+X-Spamd-Result: default: False [-0.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 BAYES_HAM(-0.61)[81.97%];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 FREEMAIL_TO(0.00)[redhat.com,gmail.com,linux.intel.com,kernel.org,ffwll.ch];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-There's two problems with shared RCGs.
+Hi
 
-The first problem is that they incorrectly report the parent after
-commit 703db1f5da1e ("clk: qcom: rcg2: Cache CFG register updates for
-parked RCGs"). That's because the cached CFG register value needs to be
-populated when the clk is registered. clk_rcg2_shared_enable() writes
-the cached CFG register value 'parked_cfg'. This value is initially zero
-due to static initializers. If a driver calls clk_enable() first before
-setting a rate or parent, it will set the parent to '0' which is
-(almost?) always XO, and may not reflect the real parent. In the worst
-case, this switches the RCG from sourcing a fast PLL to the slow crystal
-speed.
+Am 27.03.24 um 09:53 schrieb Jocelyn Falempe:
+> Hi,
+>
+> Thanks for your patch.
+> I'm wondering how you can trigger this infinite loop ?
 
-The second problem is that the force enable bit isn't cleared. The force
-enable bit is only used during parking and unparking of shared RCGs.
-Otherwise it shouldn't be set because it keeps the RCG enabled even when
-all the branches on the output of the RCG are disabled (the hardware has
-a feedback mechanism so that any child branches keep the RCG enabled
-when the branch enable bit is set). This problem wastes power if the clk
-is unused, and is harmful in the case that the clk framework disables
-the parent of the force enabled RCG. In the latter case, the GDSC the
-shared RCG is associated with will get wedged if the RCG's source clk is
-disabled and the GDSC tries to enable the RCG to do "housekeeping" while
-powering on.
+Yeah, a bit more context for this bug would be welcome. It's hard to 
+judge the fix without.
 
-Both of these problems combined with incorrect runtime PM usage in the
-display driver lead to a black screen on Qualcomm sc7180 Trogdor
-chromebooks.  What happens is that the bootloader leaves the
-'disp_cc_mdss_rot_clk' enabled and the 'disp_cc_mdss_rot_clk_src' force
-enabled and parented to 'disp_cc_pll0'. The mdss driver probes and
-runtime suspends, disabling the mdss_gdsc which uses the
-'disp_cc_mdss_rot_clk_src' for "housekeeping". The
-'disp_cc_mdss_rot_clk' is disabled during late init because the clk is
-unused, but the parent 'disp_cc_mdss_rot_clk_src' is still force enabled
-because the force enable bit was never cleared. Then 'disp_cc_pll0' is
-disabled because it is also unused. That's because the clk framework
-believes the parent of the RCG is XO when it isn't. A child device of
-the mdss device (e.g. DSI) runtime resumes mdss which powers on the
-mdss_gdsc. This wedges the GDSC because 'disp_cc_mdss_rot_clk_src' is
-parented to 'disp_cc_pll0' and that PLL is off. With the GDSC wedged,
-mdss_runtime_resume() tries to enable 'disp_cc_mdss_mdp_clk' but it
-can't because the GDSC has wedged all the clks associated with the GDSC.
+Best regards
+Thomas
 
- disp_cc_mdss_mdp_clk status stuck at 'off'
- WARNING: CPU: 1 PID: 81 at drivers/clk/qcom/clk-branch.c:87 clk_branch_toggle+0x114/0x168
- Modules linked in:
- CPU: 1 PID: 81 Comm: kworker/u16:4 Not tainted 6.7.0-g0dd3ee311255 #1 f5757d475795053fd2ad52247a070cd50dd046f2
- Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
- Workqueue: events_unbound deferred_probe_work_func
- pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
- pc : clk_branch_toggle+0x114/0x168
- lr : clk_branch_toggle+0x110/0x168
- sp : ffffffc08084b670
- pmr_save: 00000060
- x29: ffffffc08084b680 x28: ffffff808006de00 x27: 0000000000000001
- x26: ffffff8080dbd4f4 x25: 0000000000000000 x24: 0000000000000000
- x23: 0000000000000000 x22: ffffffd838461198 x21: ffffffd838007997
- x20: ffffffd837541d5c x19: 0000000000000001 x18: 0000000000000004
- x17: 0000000000000000 x16: 0000000000000010 x15: ffffffd837070fac
- x14: 0000000000000003 x13: 0000000000000004 x12: 0000000000000001
- x11: c0000000ffffdfff x10: ffffffd838347aa0 x9 : 08dadf92e516c000
- x8 : 08dadf92e516c000 x7 : 0000000000000000 x6 : 0000000000000027
- x5 : ffffffd8385a61f2 x4 : 0000000000000000 x3 : ffffffc08084b398
- x2 : ffffffc08084b3a0 x1 : 00000000ffffdfff x0 : 00000000fffffff0
- Call trace:
-  clk_branch_toggle+0x114/0x168
-  clk_branch2_enable+0x24/0x30
-  clk_core_enable+0x5c/0x1c8
-  clk_enable+0x38/0x58
-  clk_bulk_enable+0x40/0xb0
-  mdss_runtime_resume+0x68/0x258
-  pm_generic_runtime_resume+0x30/0x44
-  __genpd_runtime_resume+0x30/0x80
-  genpd_runtime_resume+0x124/0x214
-  __rpm_callback+0x7c/0x15c
-  rpm_callback+0x30/0x88
-  rpm_resume+0x390/0x4d8
-  rpm_resume+0x43c/0x4d8
-  __pm_runtime_resume+0x54/0x98
-  __device_attach+0xe0/0x170
-  device_initial_probe+0x1c/0x28
-  bus_probe_device+0x48/0xa4
-  device_add+0x52c/0x6fc
-  mipi_dsi_device_register_full+0x104/0x1a8
-  devm_mipi_dsi_device_register_full+0x28/0x78
-  ti_sn_bridge_probe+0x1dc/0x2bc
-  auxiliary_bus_probe+0x4c/0x94
-  really_probe+0xf8/0x270
-  __driver_probe_device+0xa8/0x130
-  driver_probe_device+0x44/0x104
-  __device_attach_driver+0xa4/0xcc
-  bus_for_each_drv+0x94/0xe8
-  __device_attach+0xf8/0x170
-  device_initial_probe+0x1c/0x28
-  bus_probe_device+0x48/0xa4
-  deferred_probe_work_func+0x9c/0xd8
-  process_scheduled_works+0x1ac/0x4dc
-  worker_thread+0x110/0x320
-  kthread+0x100/0x120
-  ret_from_fork+0x10/0x20
+>
+> Also this looks like a simple fix, that can be easily backported, so 
+> I'm adding stable in Cc.
+>
+> If Thomas has no objections, I can push it to drm-misc-fixes.
+>
+> Reviewed-by: Jocelyn Falempe <jfalempe@redhat.com>
+>
 
-Fixes: 703db1f5da1e ("clk: qcom: rcg2: Cache CFG register updates for parked RCGs")
-Reported-by: Stephen Boyd <sboyd@kernel.org>
-Closes: https://lore.kernel.org/r/1290a5a0f7f584fcce722eeb2a1fd898.sboyd@kernel.org
-Closes: https://issuetracker.google.com/319956935
-Reported-by: Laura Nao <laura.nao@collabora.com>
-Closes: https://lore.kernel.org/r/20231218091806.7155-1-laura.nao@collabora.com
-Cc: Bjorn Andersson <andersson@kernel.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Taniya Das <quic_tdas@quicinc.com>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/clk/qcom/clk-rcg2.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
-index 5183c74b074f..a150b4317d6f 100644
---- a/drivers/clk/qcom/clk-rcg2.c
-+++ b/drivers/clk/qcom/clk-rcg2.c
-@@ -1138,7 +1138,26 @@ clk_rcg2_shared_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
- 	return clk_rcg2_recalc_rate(hw, parent_rate);
- }
- 
-+static int clk_rcg2_shared_init(struct clk_hw *hw)
-+{
-+	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
-+
-+	/* Initialize cached cfg so the parent is reported properly */
-+	regmap_read(rcg->clkr.regmap, rcg->cmd_rcgr + CFG_REG, &rcg->parked_cfg);
-+
-+	/*
-+	 * Clear any force enable of the RCG from boot. We rely on child clks
-+	 * (branches) to turn the RCG on/off in the hardware and only set the
-+	 * enable bit in the RCG when we want to make sure the clk stays on for
-+	 * parent switches or parking.
-+	 */
-+	clk_rcg2_clear_force_enable(hw);
-+
-+	return 0;
-+}
-+
- const struct clk_ops clk_rcg2_shared_ops = {
-+	.init = clk_rcg2_shared_init,
- 	.enable = clk_rcg2_shared_enable,
- 	.disable = clk_rcg2_shared_disable,
- 	.get_parent = clk_rcg2_shared_get_parent,
+
 -- 
-https://chromeos.dev
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
 
 
