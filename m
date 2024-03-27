@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-121043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3367288E1CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:11:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B6288E1CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB3D29C33E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:11:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8B841C2146B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9790215E1EA;
-	Wed, 27 Mar 2024 12:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEE713A877;
+	Wed, 27 Mar 2024 12:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XeB5nZQP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V5Kc1lEO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8185915DBD3;
-	Wed, 27 Mar 2024 12:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D83C13A876;
+	Wed, 27 Mar 2024 12:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541923; cv=none; b=l8fMJG4E4xiU3FU8o0yaXyTAquv14XgaiXuQNpnELvvRJQmtGYYJ+coA7UBleMJ9BBrF5GErRWbXDr8zDbFmd/ZcLPSfr603INJHp2UbxLqrZ7ACOy+VyKnCEcyVrw0VKoMm3K4SqkhQ7DLgCtrQLsBHG6u3uCR5FIJW1aFBdw4=
+	t=1711541926; cv=none; b=FYvJR//+doRx1guzHpxTbqQOSp5NsWh88RBtE6PDVrCD2kT4DmWyJ+8kM7mEZ3RX6aFR8rLSwg1IwRa3c0yIPw4UJE8ms76M089VuykmYeRH4K+ocmRZk+8mDvgGf/rRFMYuINg2zA2B+Sx/6yI29nL2lh2lHxCRxVrAmPQdwWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541923; c=relaxed/simple;
-	bh=ssea+tyk4jBBBoPSntzSetQ2I7KaB13JQ35ZkiFahDw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fw8cy4K3CVSq7K0IqXnDTOjhVDxoJ/djKtRFoJouDNQiX21RLS+CEpnwecLTkYKbMMXeJXgkTa/GLwIWblUzUQJhMTFrtVqV8oVXK1UFreoLOHlG74teLFisn5CNNVuxOw9CtigLyM0OXvkSkBufqOGgghrjEqYfyvWMg+Cas9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XeB5nZQP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BD4C43399;
-	Wed, 27 Mar 2024 12:18:42 +0000 (UTC)
+	s=arc-20240116; t=1711541926; c=relaxed/simple;
+	bh=9OPj6gjborEVQg8+r+em2kDklBBJ4BsY+YIJnMleLrA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EELZ1iNYy0BP4laZDOH4SVAFDy1EvwW0edUXRq+J66LwJHDafsYnxMdKHTQRKt5TznGASzAUZ5/5ggAcCNSkKPCzwzBh8OUqv/lGwiuyPDmxllQGtP0gRXwI38X1ETrUZd7Mf18ub46rwkgsC9Uap6qWMUMk+5SwzraaPOvzUlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V5Kc1lEO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 660BFC433F1;
+	Wed, 27 Mar 2024 12:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541923;
-	bh=ssea+tyk4jBBBoPSntzSetQ2I7KaB13JQ35ZkiFahDw=;
+	s=k20201202; t=1711541926;
+	bh=9OPj6gjborEVQg8+r+em2kDklBBJ4BsY+YIJnMleLrA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=XeB5nZQPX0+ER5UYHDLaPIB24FMwAdoJLgbD8gtuvLJxpihmGSenozvTnLHUAswRX
-	 H1iMsv+Y0gHVwFwwn5mH/N+WK+MR0bJEvGl2oLQNx6010mTRCCFy0i5pTEfpY2f94O
-	 Oc2DshRRWEMIPujN1SJO0fOcKtByoAf2qO0zk6ltkPCxBkY0eIe2iM8xmupg3nWibo
-	 LjKCQ7eLctfAc0+wEdfRblodVRVGd2/hzxnabJPZ7tufpKkF6fCorAxxtGnuee3UL7
-	 BGKGbgepOxn4Sa21zLjFRpO3DqhLGmI/VLDLzSafMrIimRvNi7+cmNRfrSrw4sSB/7
-	 yS0bUXbdOLyvA==
+	b=V5Kc1lEOFCcYAhZoDSkSiIMmnrgSzE7MS2T/gbTjYY0EGYjVxGvNJito69gblkFdP
+	 cMViX6gO4IeU1/qAiXwRkbxHmooCwCCE8Eo8BlKyAIlUk36Z8zoGA3fzc3fP49QniF
+	 EtOFWJtPim00MvUVbzI7fo5KoGFQDUGVDKd8VKxsiywl2loJrAnKgUO4gdum0suNoA
+	 V0s0iW6WGbS2dUojTb+b9ac0YdvJcZaWg4RDr5mLPPhEx2q9QDt35oB266UdxCDZoB
+	 ATw+fsOetCwNppSZziVMLQ61jI2Zt8KZMeuCTAWH8knuAgYf29q0bWGcZP6lUXKWY8
+	 1eLDnavpO0Q2w==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	linkinjeon@kernel.org
-Cc: Steve French <stfrench@microsoft.com>,
-	linux-cifs@vger.kernel.org,
+	stfrench@microsoft.com
+Cc: linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "ksmbd: fix potencial out-of-bounds when buffer offset is invalid" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:18:41 -0400
-Message-ID: <20240327121841.2834590-1-sashal@kernel.org>
+Subject: FAILED: Patch "cifs: allow changing password during remount" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:18:44 -0400
+Message-ID: <20240327121844.2834627-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,315 +69,136 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From c6cd2e8d2d9aa7ee35b1fa6a668e32a22a9753da Mon Sep 17 00:00:00 2001
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Tue, 19 Mar 2024 08:40:48 +0900
-Subject: [PATCH] ksmbd: fix potencial out-of-bounds when buffer offset is
- invalid
+From c1eb537bf4560b3ad4df606c266c665624f3b502 Mon Sep 17 00:00:00 2001
+From: Steve French <stfrench@microsoft.com>
+Date: Tue, 13 Feb 2024 00:40:01 -0600
+Subject: [PATCH] cifs: allow changing password during remount
 
-I found potencial out-of-bounds when buffer offset fields of a few requests
-is invalid. This patch set the minimum value of buffer offset field to
-->Buffer offset to validate buffer length.
+There are cases where a session is disconnected and password has changed
+on the server (or expired) for this user and this currently can not
+be fixed without unmount and mounting again.  This patch allows
+remount to change the password (for the non Kerberos case, Kerberos
+ticket refresh is handled differently) when the session is disconnected
+and the user can not reconnect due to still using old password.
+
+Future patches should also allow us to setup the keyring (cifscreds)
+to have an "alternate password" so we would be able to change
+the password before the session drops (without the risk of races
+between when the password changes and the disconnect occurs -
+ie cases where the old password is still needed because the new
+password has not fully rolled out to all servers yet).
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
 Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- fs/smb/server/smb2misc.c | 23 +++++++++++++------
- fs/smb/server/smb2pdu.c  | 48 ++++++++++++++++++++++------------------
- 2 files changed, 42 insertions(+), 29 deletions(-)
+ fs/smb/client/cifs_debug.c |  2 ++
+ fs/smb/client/cifsglob.h   |  1 +
+ fs/smb/client/fs_context.c | 27 ++++++++++++++++++++++-----
+ fs/smb/client/smb2pdu.c    |  5 +++++
+ 4 files changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/fs/smb/server/smb2misc.c b/fs/smb/server/smb2misc.c
-index 7c872ffb4b0a9..727cb49926ee5 100644
---- a/fs/smb/server/smb2misc.c
-+++ b/fs/smb/server/smb2misc.c
-@@ -101,7 +101,9 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
- 		*len = le16_to_cpu(((struct smb2_sess_setup_req *)hdr)->SecurityBufferLength);
- 		break;
- 	case SMB2_TREE_CONNECT:
--		*off = le16_to_cpu(((struct smb2_tree_connect_req *)hdr)->PathOffset);
-+		*off = max_t(unsigned short int,
-+			     le16_to_cpu(((struct smb2_tree_connect_req *)hdr)->PathOffset),
-+			     offsetof(struct smb2_tree_connect_req, Buffer));
- 		*len = le16_to_cpu(((struct smb2_tree_connect_req *)hdr)->PathLength);
- 		break;
- 	case SMB2_CREATE:
-@@ -110,7 +112,6 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
- 			max_t(unsigned short int,
- 			      le16_to_cpu(((struct smb2_create_req *)hdr)->NameOffset),
- 			      offsetof(struct smb2_create_req, Buffer));
--
- 		unsigned short int name_len =
- 			le16_to_cpu(((struct smb2_create_req *)hdr)->NameLength);
+diff --git a/fs/smb/client/cifs_debug.c b/fs/smb/client/cifs_debug.c
+index 3e4209f41c18f..23d2622b969f0 100644
+--- a/fs/smb/client/cifs_debug.c
++++ b/fs/smb/client/cifs_debug.c
+@@ -488,6 +488,8 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
+ 				ses->ses_count, ses->serverOS, ses->serverNOS,
+ 				ses->capabilities, ses->ses_status);
+ 			}
++			if (ses->expired_pwd)
++				seq_puts(m, "password no longer valid ");
+ 			spin_unlock(&ses->ses_lock);
  
-@@ -131,11 +132,15 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
- 		break;
- 	}
- 	case SMB2_QUERY_INFO:
--		*off = le16_to_cpu(((struct smb2_query_info_req *)hdr)->InputBufferOffset);
-+		*off = max_t(unsigned int,
-+			     le16_to_cpu(((struct smb2_query_info_req *)hdr)->InputBufferOffset),
-+			     offsetof(struct smb2_query_info_req, Buffer));
- 		*len = le32_to_cpu(((struct smb2_query_info_req *)hdr)->InputBufferLength);
- 		break;
- 	case SMB2_SET_INFO:
--		*off = le16_to_cpu(((struct smb2_set_info_req *)hdr)->BufferOffset);
-+		*off = max_t(unsigned int,
-+			     le16_to_cpu(((struct smb2_set_info_req *)hdr)->BufferOffset),
-+			     offsetof(struct smb2_set_info_req, Buffer));
- 		*len = le32_to_cpu(((struct smb2_set_info_req *)hdr)->BufferLength);
- 		break;
- 	case SMB2_READ:
-@@ -145,7 +150,7 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
- 	case SMB2_WRITE:
- 		if (((struct smb2_write_req *)hdr)->DataOffset ||
- 		    ((struct smb2_write_req *)hdr)->Length) {
--			*off = max_t(unsigned int,
-+			*off = max_t(unsigned short int,
- 				     le16_to_cpu(((struct smb2_write_req *)hdr)->DataOffset),
- 				     offsetof(struct smb2_write_req, Buffer));
- 			*len = le32_to_cpu(((struct smb2_write_req *)hdr)->Length);
-@@ -156,7 +161,9 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
- 		*len = le16_to_cpu(((struct smb2_write_req *)hdr)->WriteChannelInfoLength);
- 		break;
- 	case SMB2_QUERY_DIRECTORY:
--		*off = le16_to_cpu(((struct smb2_query_directory_req *)hdr)->FileNameOffset);
-+		*off = max_t(unsigned short int,
-+			     le16_to_cpu(((struct smb2_query_directory_req *)hdr)->FileNameOffset),
-+			     offsetof(struct smb2_query_directory_req, Buffer));
- 		*len = le16_to_cpu(((struct smb2_query_directory_req *)hdr)->FileNameLength);
- 		break;
- 	case SMB2_LOCK:
-@@ -171,7 +178,9 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
- 		break;
- 	}
- 	case SMB2_IOCTL:
--		*off = le32_to_cpu(((struct smb2_ioctl_req *)hdr)->InputOffset);
-+		*off = max_t(unsigned int,
-+			     le32_to_cpu(((struct smb2_ioctl_req *)hdr)->InputOffset),
-+			     offsetof(struct smb2_ioctl_req, Buffer));
- 		*len = le32_to_cpu(((struct smb2_ioctl_req *)hdr)->InputCount);
- 		break;
- 	default:
-diff --git a/fs/smb/server/smb2pdu.c b/fs/smb/server/smb2pdu.c
-index 1ef3859fed1b3..3f3408f086699 100644
---- a/fs/smb/server/smb2pdu.c
-+++ b/fs/smb/server/smb2pdu.c
-@@ -1927,7 +1927,7 @@ int smb2_tree_connect(struct ksmbd_work *work)
- 
- 	WORK_BUFFERS(work, req, rsp);
- 
--	treename = smb_strndup_from_utf16(req->Buffer,
-+	treename = smb_strndup_from_utf16((char *)req + le16_to_cpu(req->PathOffset),
- 					  le16_to_cpu(req->PathLength), true,
- 					  conn->local_nls);
- 	if (IS_ERR(treename)) {
-@@ -2840,7 +2840,7 @@ int smb2_open(struct ksmbd_work *work)
- 			goto err_out2;
- 		}
- 
--		name = smb2_get_name(req->Buffer,
-+		name = smb2_get_name((char *)req + le16_to_cpu(req->NameOffset),
- 				     le16_to_cpu(req->NameLength),
- 				     work->conn->local_nls);
- 		if (IS_ERR(name)) {
-@@ -4305,7 +4305,7 @@ int smb2_query_dir(struct ksmbd_work *work)
- 	}
- 
- 	srch_flag = req->Flags;
--	srch_ptr = smb_strndup_from_utf16(req->Buffer,
-+	srch_ptr = smb_strndup_from_utf16((char *)req + le16_to_cpu(req->FileNameOffset),
- 					  le16_to_cpu(req->FileNameLength), 1,
- 					  conn->local_nls);
- 	if (IS_ERR(srch_ptr)) {
-@@ -4565,7 +4565,8 @@ static int smb2_get_ea(struct ksmbd_work *work, struct ksmbd_file *fp,
- 		    sizeof(struct smb2_ea_info_req))
- 			return -EINVAL;
- 
--		ea_req = (struct smb2_ea_info_req *)req->Buffer;
-+		ea_req = (struct smb2_ea_info_req *)((char *)req +
-+						     le16_to_cpu(req->InputBufferOffset));
- 	} else {
- 		/* need to send all EAs, if no specific EA is requested*/
- 		if (le32_to_cpu(req->Flags) & SL_RETURN_SINGLE_ENTRY)
-@@ -6211,6 +6212,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 			      struct ksmbd_share_config *share)
+ 			seq_printf(m, "\n\tSecurity type: %s ",
+diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
+index 53c75cfb33ab9..ec9a26bd05a12 100644
+--- a/fs/smb/client/cifsglob.h
++++ b/fs/smb/client/cifsglob.h
+@@ -1066,6 +1066,7 @@ struct cifs_ses {
+ 	enum securityEnum sectype; /* what security flavor was specified? */
+ 	bool sign;		/* is signing required? */
+ 	bool domainAuto:1;
++	bool expired_pwd;  /* track if access denied or expired pwd so can know if need to update */
+ 	unsigned int flags;
+ 	__u16 session_flags;
+ 	__u8 smb3signingkey[SMB3_SIGN_KEY_SIZE];
+diff --git a/fs/smb/client/fs_context.c b/fs/smb/client/fs_context.c
+index 4b2f5aa2ea0e1..415e87635d5aa 100644
+--- a/fs/smb/client/fs_context.c
++++ b/fs/smb/client/fs_context.c
+@@ -772,7 +772,7 @@ static void smb3_fs_context_free(struct fs_context *fc)
+  */
+ static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
+ 				       struct smb3_fs_context *new_ctx,
+-				       struct smb3_fs_context *old_ctx)
++				       struct smb3_fs_context *old_ctx, bool need_recon)
  {
- 	unsigned int buf_len = le32_to_cpu(req->BufferLength);
-+	char *buffer = (char *)req + le16_to_cpu(req->BufferOffset);
- 
- 	switch (req->FileInfoClass) {
- 	case FILE_BASIC_INFORMATION:
-@@ -6218,7 +6220,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 		if (buf_len < sizeof(struct smb2_file_basic_info))
- 			return -EINVAL;
- 
--		return set_file_basic_info(fp, (struct smb2_file_basic_info *)req->Buffer, share);
-+		return set_file_basic_info(fp, (struct smb2_file_basic_info *)buffer, share);
+ 	if (new_ctx->posix_paths != old_ctx->posix_paths) {
+ 		cifs_errorf(fc, "can not change posixpaths during remount\n");
+@@ -798,8 +798,15 @@ static int smb3_verify_reconfigure_ctx(struct fs_context *fc,
  	}
- 	case FILE_ALLOCATION_INFORMATION:
- 	{
-@@ -6226,7 +6228,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 			return -EINVAL;
- 
- 		return set_file_allocation_info(work, fp,
--						(struct smb2_file_alloc_info *)req->Buffer);
-+						(struct smb2_file_alloc_info *)buffer);
+ 	if (new_ctx->password &&
+ 	    (!old_ctx->password || strcmp(new_ctx->password, old_ctx->password))) {
+-		cifs_errorf(fc, "can not change password during remount\n");
+-		return -EINVAL;
++		if (need_recon == false) {
++			cifs_errorf(fc,
++				    "can not change password of active session during remount\n");
++			return -EINVAL;
++		} else if (old_ctx->sectype == Kerberos) {
++			cifs_errorf(fc,
++				    "can not change password for Kerberos via remount\n");
++			return -EINVAL;
++		}
  	}
- 	case FILE_END_OF_FILE_INFORMATION:
- 	{
-@@ -6234,7 +6236,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 			return -EINVAL;
+ 	if (new_ctx->domainname &&
+ 	    (!old_ctx->domainname || strcmp(new_ctx->domainname, old_ctx->domainname))) {
+@@ -843,9 +850,14 @@ static int smb3_reconfigure(struct fs_context *fc)
+ 	struct smb3_fs_context *ctx = smb3_fc2context(fc);
+ 	struct dentry *root = fc->root;
+ 	struct cifs_sb_info *cifs_sb = CIFS_SB(root->d_sb);
++	struct cifs_ses *ses = cifs_sb_master_tcon(cifs_sb)->ses;
++	bool need_recon = false;
+ 	int rc;
  
- 		return set_end_of_file_info(work, fp,
--					    (struct smb2_file_eof_info *)req->Buffer);
-+					    (struct smb2_file_eof_info *)buffer);
- 	}
- 	case FILE_RENAME_INFORMATION:
- 	{
-@@ -6242,7 +6244,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 			return -EINVAL;
- 
- 		return set_rename_info(work, fp,
--				       (struct smb2_file_rename_info *)req->Buffer,
-+				       (struct smb2_file_rename_info *)buffer,
- 				       buf_len);
- 	}
- 	case FILE_LINK_INFORMATION:
-@@ -6251,7 +6253,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 			return -EINVAL;
- 
- 		return smb2_create_link(work, work->tcon->share_conf,
--					(struct smb2_file_link_info *)req->Buffer,
-+					(struct smb2_file_link_info *)buffer,
- 					buf_len, fp->filp,
- 					work->conn->local_nls);
- 	}
-@@ -6261,7 +6263,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 			return -EINVAL;
- 
- 		return set_file_disposition_info(fp,
--						 (struct smb2_file_disposition_info *)req->Buffer);
-+						 (struct smb2_file_disposition_info *)buffer);
- 	}
- 	case FILE_FULL_EA_INFORMATION:
- 	{
-@@ -6274,7 +6276,7 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 		if (buf_len < sizeof(struct smb2_ea_info))
- 			return -EINVAL;
- 
--		return smb2_set_ea((struct smb2_ea_info *)req->Buffer,
-+		return smb2_set_ea((struct smb2_ea_info *)buffer,
- 				   buf_len, &fp->filp->f_path, true);
- 	}
- 	case FILE_POSITION_INFORMATION:
-@@ -6282,14 +6284,14 @@ static int smb2_set_info_file(struct ksmbd_work *work, struct ksmbd_file *fp,
- 		if (buf_len < sizeof(struct smb2_file_pos_info))
- 			return -EINVAL;
- 
--		return set_file_position_info(fp, (struct smb2_file_pos_info *)req->Buffer);
-+		return set_file_position_info(fp, (struct smb2_file_pos_info *)buffer);
- 	}
- 	case FILE_MODE_INFORMATION:
- 	{
- 		if (buf_len < sizeof(struct smb2_file_mode_info))
- 			return -EINVAL;
- 
--		return set_file_mode_info(fp, (struct smb2_file_mode_info *)req->Buffer);
-+		return set_file_mode_info(fp, (struct smb2_file_mode_info *)buffer);
- 	}
- 	}
- 
-@@ -6370,7 +6372,7 @@ int smb2_set_info(struct ksmbd_work *work)
- 		}
- 		rc = smb2_set_info_sec(fp,
- 				       le32_to_cpu(req->AdditionalInformation),
--				       req->Buffer,
-+				       (char *)req + le16_to_cpu(req->BufferOffset),
- 				       le32_to_cpu(req->BufferLength));
- 		ksmbd_revert_fsids(work);
- 		break;
-@@ -7816,7 +7818,7 @@ static int fsctl_pipe_transceive(struct ksmbd_work *work, u64 id,
- 				 struct smb2_ioctl_rsp *rsp)
- {
- 	struct ksmbd_rpc_command *rpc_resp;
--	char *data_buf = (char *)&req->Buffer[0];
-+	char *data_buf = (char *)req + le32_to_cpu(req->InputOffset);
- 	int nbytes = 0;
- 
- 	rpc_resp = ksmbd_rpc_ioctl(work->sess, id, data_buf,
-@@ -7929,6 +7931,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 	u64 id = KSMBD_NO_FID;
- 	struct ksmbd_conn *conn = work->conn;
- 	int ret = 0;
-+	char *buffer;
- 
- 	if (work->next_smb2_rcv_hdr_off) {
- 		req = ksmbd_req_buf_next(work);
-@@ -7951,6 +7954,8 @@ int smb2_ioctl(struct ksmbd_work *work)
- 		goto out;
- 	}
- 
-+	buffer = (char *)req + le32_to_cpu(req->InputOffset);
+-	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx);
++	if (ses->expired_pwd)
++		need_recon = true;
 +
- 	cnt_code = le32_to_cpu(req->CtlCode);
- 	ret = smb2_calc_max_out_buf_len(work, 48,
- 					le32_to_cpu(req->MaxOutputResponse));
-@@ -8008,7 +8013,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 		}
++	rc = smb3_verify_reconfigure_ctx(fc, ctx, cifs_sb->ctx, need_recon);
+ 	if (rc)
+ 		return rc;
  
- 		ret = fsctl_validate_negotiate_info(conn,
--			(struct validate_negotiate_info_req *)&req->Buffer[0],
-+			(struct validate_negotiate_info_req *)buffer,
- 			(struct validate_negotiate_info_rsp *)&rsp->Buffer[0],
- 			in_buf_len);
- 		if (ret < 0)
-@@ -8061,7 +8066,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 		rsp->VolatileFileId = req->VolatileFileId;
- 		rsp->PersistentFileId = req->PersistentFileId;
- 		fsctl_copychunk(work,
--				(struct copychunk_ioctl_req *)&req->Buffer[0],
-+				(struct copychunk_ioctl_req *)buffer,
- 				le32_to_cpu(req->CtlCode),
- 				le32_to_cpu(req->InputCount),
- 				req->VolatileFileId,
-@@ -8074,8 +8079,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 			goto out;
- 		}
+@@ -858,7 +870,12 @@ static int smb3_reconfigure(struct fs_context *fc)
+ 	STEAL_STRING(cifs_sb, ctx, UNC);
+ 	STEAL_STRING(cifs_sb, ctx, source);
+ 	STEAL_STRING(cifs_sb, ctx, username);
+-	STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
++	if (need_recon == false)
++		STEAL_STRING_SENSITIVE(cifs_sb, ctx, password);
++	else  {
++		kfree_sensitive(ses->password);
++		ses->password = kstrdup(ctx->password, GFP_KERNEL);
++	}
+ 	STEAL_STRING(cifs_sb, ctx, domainname);
+ 	STEAL_STRING(cifs_sb, ctx, nodename);
+ 	STEAL_STRING(cifs_sb, ctx, iocharset);
+diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
+index 608ee05491e26..a500380d1b2e9 100644
+--- a/fs/smb/client/smb2pdu.c
++++ b/fs/smb/client/smb2pdu.c
+@@ -1536,6 +1536,11 @@ SMB2_sess_sendreceive(struct SMB2_sess_data *sess_data)
+ 			    &sess_data->buf0_type,
+ 			    CIFS_LOG_ERROR | CIFS_SESS_OP, &rsp_iov);
+ 	cifs_small_buf_release(sess_data->iov[0].iov_base);
++	if (rc == 0)
++		sess_data->ses->expired_pwd = false;
++	else if ((rc == -EACCES) || (rc == -EKEYEXPIRED) || (rc == -EKEYREVOKED))
++		sess_data->ses->expired_pwd = true;
++
+ 	memcpy(&sess_data->iov[0], &rsp_iov, sizeof(struct kvec));
  
--		ret = fsctl_set_sparse(work, id,
--				       (struct file_sparse *)&req->Buffer[0]);
-+		ret = fsctl_set_sparse(work, id, (struct file_sparse *)buffer);
- 		if (ret < 0)
- 			goto out;
- 		break;
-@@ -8098,7 +8102,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 		}
- 
- 		zero_data =
--			(struct file_zero_data_information *)&req->Buffer[0];
-+			(struct file_zero_data_information *)buffer;
- 
- 		off = le64_to_cpu(zero_data->FileOffset);
- 		bfz = le64_to_cpu(zero_data->BeyondFinalZero);
-@@ -8129,7 +8133,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 		}
- 
- 		ret = fsctl_query_allocated_ranges(work, id,
--			(struct file_allocated_range_buffer *)&req->Buffer[0],
-+			(struct file_allocated_range_buffer *)buffer,
- 			(struct file_allocated_range_buffer *)&rsp->Buffer[0],
- 			out_buf_len /
- 			sizeof(struct file_allocated_range_buffer), &nbytes);
-@@ -8173,7 +8177,7 @@ int smb2_ioctl(struct ksmbd_work *work)
- 			goto out;
- 		}
- 
--		dup_ext = (struct duplicate_extents_to_file *)&req->Buffer[0];
-+		dup_ext = (struct duplicate_extents_to_file *)buffer;
- 
- 		fp_in = ksmbd_lookup_fd_slow(work, dup_ext->VolatileFileHandle,
- 					     dup_ext->PersistentFileHandle);
+ 	return rc;
 -- 
 2.43.0
 
