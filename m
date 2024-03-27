@@ -1,53 +1,58 @@
-Return-Path: <linux-kernel+bounces-120836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61ED88DECF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:19:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1EEF88DED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E9921F26632
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AF741F27C18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F0813AA4E;
-	Wed, 27 Mar 2024 12:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E555A13AD09;
+	Wed, 27 Mar 2024 12:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hV4pWmhv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O0XEsLi8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E11813AA3A;
-	Wed, 27 Mar 2024 12:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F398B13AD04;
+	Wed, 27 Mar 2024 12:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541339; cv=none; b=F+6SCAqs5WrGAfRUvihRfEYPkOXXlm0qdmqoB+YocZqmHH/SXHvf1YoVQj4oyk4sq6dp50AoQ9wR0dEAY4CpsAvKKt/N+KWq02Sb51jrvYfj2hH1u64gekdrjISkrk0wnBMsvgzWadRzn/vUGUfutKn26CrhMXpK/wb13bM7FMU=
+	t=1711541343; cv=none; b=MLT3ZfS8c7tmVuL5baJ7QOqX+IQOQkCVFMXqVCkZwylqS5hgqJESOH+Tz14hYJ5a5gctmaSRJ4AyF7rN196xstVSF2L5AmO9Es2us7DPEWBPTnS3XjtfvI0kz1A71x5mrze4ly9Ff5zkiJJ/tUk4pxJvS6dayFajZJCZJe4fzcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541339; c=relaxed/simple;
-	bh=kDIsLVLx1NflgLdnfRw687WTZ1vXPS23eWSMYH8QCGE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZvDS22uYS+PiySgFRj0llZnwQfRgblVDHt0bmeqag36zWxyCpYgr48MC4nI+NXjNjUSdgRZJp6Q//UWYeWmtQ6GRn8PxAvSNvBLvlEYVlChlXUzZRFPNaCxguZoZ7sR4415cmwmyE6tpdLay9lR2owSr3/QTeQK8q454YOZXkD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hV4pWmhv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 909BDC433F1;
-	Wed, 27 Mar 2024 12:08:58 +0000 (UTC)
+	s=arc-20240116; t=1711541343; c=relaxed/simple;
+	bh=sV50j7eYImpFJDReGawZGKXxcTlYJyJ0zm/7k4spmLE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m62WE36cEXJbswNhdI9mUnE0YlQEk8nNmRoRioP/wGZCaT1SaOXPWBGpLfanndZC59ZpuN31zp6R0X1+8t4DBARpiaGRUUggK4pwdS7v19a1uIPVFMiCUlld+ZEAahXV4e/HCXh2aGt/gMFigibWf2ApXdvMXmKnR081IkOx0tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O0XEsLi8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F91C433C7;
+	Wed, 27 Mar 2024 12:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541339;
-	bh=kDIsLVLx1NflgLdnfRw687WTZ1vXPS23eWSMYH8QCGE=;
+	s=k20201202; t=1711541342;
+	bh=sV50j7eYImpFJDReGawZGKXxcTlYJyJ0zm/7k4spmLE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=hV4pWmhvqedI2KzF8JAh2/cl5Fyu5ymKdT8+UNVvx67lmMPwFJaM8kZTqqdX+JU3O
-	 W73IPcx2ZOlyENJhes6ENdpA44X+9v2xgU+y6WzGyHvg8580rNdXelY0FLw6OoL33s
-	 4MnxT4gq0iVO/BYxBck284UvTilEsAUyVBJS/GF0axfEC3g7RfOjWa/bPe5Wf9yVfL
-	 4sgpa+QI1gAkrFpbajzkdhHVKLHRrW9bz9twG9qKkSsHeS958Ov5F5LUQUZMu+uBtN
-	 q7XciOX+tnZRBvQhJO++bZhSMUC5L6RNBacrzaGf20Qi1JHIsb6IfmVcz7DARwaWJD
-	 ZHe/43Sy2yPxw==
+	b=O0XEsLi8a9YH+qZujLkksjMV2uWy2jGegu+gNoXaKC5tH5ArMVkdw88+9BDgn4R0w
+	 k+TUQPxBn1YEzIL0ao1GvBGZhjNMAx+XSq5d3IMXMgsOokj4D6GEmWnjwjt8oIVx2Z
+	 zdmAbf1js4W04LU0S0vjDsyHUFA1ZibS3aQBr28gncUEaA+2P1Uzi+FLtleEcx9jIP
+	 Ohi777VqC1CtBKajM+NBOrS2JiVLM3byNMmJm7bcw0A3yJv22a08kZ5sM772c7IsuQ
+	 EteKJj4WXmCUhfXH4mN2HW8TkjtxA1Q9ZfRxKfjSWamF6PlAOYq76fIXrVmEU7Ru+k
+	 6M/jDRFsmmIUA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	faetalize@proton.me
-Cc: Takashi Iwai <tiwai@suse.de>,
-	linux-sound@vger.kernel.org,
+	chuntao.tso@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "ALSA: hda/realtek - ALC236 fix volume mute & mic mute LED on some HP models" failed to apply to 6.7-stable tree
-Date: Wed, 27 Mar 2024 08:08:57 -0400
-Message-ID: <20240327120857.2826646-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Amend coasting vtotal for replay low hz" failed to apply to 6.7-stable tree
+Date: Wed, 27 Mar 2024 08:08:59 -0400
+Message-ID: <20240327120900.2826683-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,37 +74,157 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 300ab0dfbf3903f36b4456643d8201438e6553b1 Mon Sep 17 00:00:00 2001
-From: Valentine Altair <faetalize@proton.me>
-Date: Tue, 12 Mar 2024 14:42:00 +0000
-Subject: [PATCH] ALSA: hda/realtek - ALC236 fix volume mute & mic mute LED on
- some HP models
+From 8e054b0f1e71531762b8ded7f66c1b4af734671b Mon Sep 17 00:00:00 2001
+From: ChunTao Tso <chuntao.tso@amd.com>
+Date: Tue, 20 Feb 2024 17:08:39 +0800
+Subject: [PATCH] drm/amd/display: Amend coasting vtotal for replay low hz
 
-Some HP laptops have received revisions that altered their board IDs
-and therefore the current patches/quirks do not apply to them.
-Specifically, for my Probook 440 G8, I have a board ID of 8a74.
-It is necessary to add a line for that specific model.
+[WHY]
+The original coasting vtotal is 2 bytes, and it need to
+be amended to 4 bytes because low hz case.
 
-Signed-off-by: Valentine Altair <faetalize@proton.me>
-Cc: <stable@vger.kernel.org>
-Message-ID: <kOqXRBcxkKt6m5kciSDCkGqMORZi_HB3ZVPTX5sD3W1pKxt83Pf-WiQ1V1pgKKI8pYr4oGvsujt3vk2zsCE-DDtnUADFG6NGBlS5N3U4xgA=@proton.me>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[HOW]
+Amend coasting vtotal from 2 bytes to 4 bytes.
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: ChunTao Tso <chuntao.tso@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/dc/dc_types.h                 | 4 ++--
+ drivers/gpu/drm/amd/display/dc/inc/link.h                 | 4 ++--
+ .../display/dc/link/protocols/link_edp_panel_control.c    | 4 ++--
+ .../display/dc/link/protocols/link_edp_panel_control.h    | 4 ++--
+ drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h           | 8 ++++++++
+ drivers/gpu/drm/amd/display/modules/power/power_helpers.c | 2 +-
+ drivers/gpu/drm/amd/display/modules/power/power_helpers.h | 2 +-
+ 7 files changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4f92b19a58501..b6cd13b1775d9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9870,6 +9870,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8a30, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8a31, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8a6e, "HP EDNA 360", ALC287_FIXUP_CS35L41_I2C_4),
-+	SND_PCI_QUIRK(0x103c, 0x8a74, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a78, "HP Dev One", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x103c, 0x8aa0, "HP ProBook 440 G9 (MB 8A9E)", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)", ALC236_FIXUP_HP_GPIO_LED),
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_types.h b/drivers/gpu/drm/amd/display/dc/dc_types.h
+index 9900dda2eef5c..be2ac5c442a48 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_types.h
+@@ -1085,9 +1085,9 @@ struct replay_settings {
+ 	/* SMU optimization is enabled */
+ 	bool replay_smu_opt_enable;
+ 	/* Current Coasting vtotal */
+-	uint16_t coasting_vtotal;
++	uint32_t coasting_vtotal;
+ 	/* Coasting vtotal table */
+-	uint16_t coasting_vtotal_table[PR_COASTING_TYPE_NUM];
++	uint32_t coasting_vtotal_table[PR_COASTING_TYPE_NUM];
+ 	/* Maximum link off frame count */
+ 	enum replay_link_off_frame_count_level link_off_frame_count_level;
+ 	/* Replay pseudo vtotal for abm + ips on full screen video which can improve ips residency */
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/link.h b/drivers/gpu/drm/amd/display/dc/inc/link.h
+index 26fe81f213da5..bf29fc58ea6a6 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/link.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/link.h
+@@ -285,12 +285,12 @@ struct link_service {
+ 			enum replay_FW_Message_type msg,
+ 			union dmub_replay_cmd_set *cmd_data);
+ 	bool (*edp_set_coasting_vtotal)(
+-			struct dc_link *link, uint16_t coasting_vtotal);
++			struct dc_link *link, uint32_t coasting_vtotal);
+ 	bool (*edp_replay_residency)(const struct dc_link *link,
+ 			unsigned int *residency, const bool is_start,
+ 			const bool is_alpm);
+ 	bool (*edp_set_replay_power_opt_and_coasting_vtotal)(struct dc_link *link,
+-			const unsigned int *power_opts, uint16_t coasting_vtotal);
++			const unsigned int *power_opts, uint32_t coasting_vtotal);
+ 
+ 	bool (*edp_wait_for_t12)(struct dc_link *link);
+ 	bool (*edp_is_ilr_optimization_required)(struct dc_link *link,
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+index acfbbc638cc64..3baa2bdd6dd65 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+@@ -1034,7 +1034,7 @@ bool edp_send_replay_cmd(struct dc_link *link,
+ 	return true;
+ }
+ 
+-bool edp_set_coasting_vtotal(struct dc_link *link, uint16_t coasting_vtotal)
++bool edp_set_coasting_vtotal(struct dc_link *link, uint32_t coasting_vtotal)
+ {
+ 	struct dc *dc = link->ctx->dc;
+ 	struct dmub_replay *replay = dc->res_pool->replay;
+@@ -1073,7 +1073,7 @@ bool edp_replay_residency(const struct dc_link *link,
+ }
+ 
+ bool edp_set_replay_power_opt_and_coasting_vtotal(struct dc_link *link,
+-	const unsigned int *power_opts, uint16_t coasting_vtotal)
++	const unsigned int *power_opts, uint32_t coasting_vtotal)
+ {
+ 	struct dc  *dc = link->ctx->dc;
+ 	struct dmub_replay *replay = dc->res_pool->replay;
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
+index 34e521af7bb48..a158c6234d422 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
+@@ -59,12 +59,12 @@ bool edp_setup_replay(struct dc_link *link,
+ bool edp_send_replay_cmd(struct dc_link *link,
+ 			enum replay_FW_Message_type msg,
+ 			union dmub_replay_cmd_set *cmd_data);
+-bool edp_set_coasting_vtotal(struct dc_link *link, uint16_t coasting_vtotal);
++bool edp_set_coasting_vtotal(struct dc_link *link, uint32_t coasting_vtotal);
+ bool edp_replay_residency(const struct dc_link *link,
+ 	unsigned int *residency, const bool is_start, const bool is_alpm);
+ bool edp_get_replay_state(const struct dc_link *link, uint64_t *state);
+ bool edp_set_replay_power_opt_and_coasting_vtotal(struct dc_link *link,
+-	const unsigned int *power_opts, uint16_t coasting_vtotal);
++	const unsigned int *power_opts, uint32_t coasting_vtotal);
+ bool edp_wait_for_t12(struct dc_link *link);
+ bool edp_is_ilr_optimization_required(struct dc_link *link,
+        struct dc_crtc_timing *crtc_timing);
+diff --git a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
+index a529e369b2ace..af3fe8bb0728b 100644
+--- a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
++++ b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
+@@ -3238,6 +3238,14 @@ struct dmub_cmd_replay_set_coasting_vtotal_data {
+ 	 * Currently the support is only for 0 or 1
+ 	 */
+ 	uint8_t panel_inst;
++	/**
++	 * 16-bit value dicated by driver that indicates the coasting vtotal high byte part.
++	 */
++	uint16_t coasting_vtotal_high;
++	/**
++	 * Explicit padding to 4 byte boundary.
++	 */
++	uint8_t pad[2];
+ };
+ 
+ /**
+diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+index e304e8435fb8f..2a3698fd2dc24 100644
+--- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
++++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+@@ -975,7 +975,7 @@ bool psr_su_set_dsc_slice_height(struct dc *dc, struct dc_link *link,
+ 
+ void set_replay_coasting_vtotal(struct dc_link *link,
+ 	enum replay_coasting_vtotal_type type,
+-	uint16_t vtotal)
++	uint32_t vtotal)
+ {
+ 	link->replay_settings.coasting_vtotal_table[type] = vtotal;
+ }
+diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.h b/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
+index bef4815e1703d..ff7e6f3cd6be2 100644
+--- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
++++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
+@@ -56,7 +56,7 @@ bool dmub_init_abm_config(struct resource_pool *res_pool,
+ void init_replay_config(struct dc_link *link, struct replay_config *pr_config);
+ void set_replay_coasting_vtotal(struct dc_link *link,
+ 	enum replay_coasting_vtotal_type type,
+-	uint16_t vtotal);
++	uint32_t vtotal);
+ void set_replay_ips_full_screen_video_src_vtotal(struct dc_link *link, uint16_t vtotal);
+ void calculate_replay_link_off_frame_count(struct dc_link *link,
+ 	uint16_t vtotal, uint16_t htotal);
 -- 
 2.43.0
 
