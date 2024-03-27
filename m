@@ -1,55 +1,52 @@
-Return-Path: <linux-kernel+bounces-120987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3423888E141
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:56:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66BD088E145
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:56:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55DDF1C2A346
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:56:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 088151F27397
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966DB15689E;
-	Wed, 27 Mar 2024 12:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C1915697A;
+	Wed, 27 Mar 2024 12:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYzQ1n+Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSje7bpY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94C5156861;
-	Wed, 27 Mar 2024 12:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797B715696A;
+	Wed, 27 Mar 2024 12:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541772; cv=none; b=miNsx6Mc92sRALM2+9lzSnjysB26/tdj/vHIh/zho47VQoDEcv1Y3cjteQ3Cf5AUrFrGOo5arDV+sbqfibtvEpX/HOPNmNtMMew2WdxymU19Qj0hzZdC94asty5lrKB1EsE8sfzZQQy5beVYm0LpiNFSR7JyIkgZEmRmrhpFkdc=
+	t=1711541775; cv=none; b=dsiFQpz0hbqzcSiBCTMTeppnnKjYVVLgF3lwVS3nKN47hsHp8jd3yGGmL9Bo587McqHWqfOLAuoPnjMZAi5lb+dIFeShsbW5wLEr4lCFAodkOA7/fjxI7n9kn8gyXnj75vM8wD9/BHBLWM2elRlBNtp6khx1srjto/OktiF2tDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541772; c=relaxed/simple;
-	bh=9RyTMMwBIF8uAtriar+c5TuJAZDF70y2ckZWzIn2edE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hVSdeVEo/aV+5ZW2EKnsSmIlBnSDOofhbwdCF5syWohrQQUejxBo5ojoZ5rJKENGSmFYVAxwxMadcJWvWqv6xEBuVzk/ZroBDx5EDrTm0NF0c0TnxbCjI4Tn6c6nGuRAjJWbupzp4/6/5pIOu+Py2yD1bvhWd4DAW2jG2rTDLFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tYzQ1n+Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE871C433F1;
-	Wed, 27 Mar 2024 12:16:11 +0000 (UTC)
+	s=arc-20240116; t=1711541775; c=relaxed/simple;
+	bh=RpBJig541+cUy7MA1hFz4xdyhriuScmF/9i/Y04N+nQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EqU5DSZQSoQINAXd5mJPl+7XcXZgTyWQBo/mF9ACszXaLXrip91+kUmS+wfVNVYQ9JVM5CkGUE9GskoRMjPm5cRPUVWQwDXThcP3DBS+SLM+fJ2xoTRzr7Zh/3ezCHqYyg+u+xjH3/rJGjlR5y3oj45MrP0EEl4orstY2/AOTNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSje7bpY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ACA1C433C7;
+	Wed, 27 Mar 2024 12:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541772;
-	bh=9RyTMMwBIF8uAtriar+c5TuJAZDF70y2ckZWzIn2edE=;
+	s=k20201202; t=1711541775;
+	bh=RpBJig541+cUy7MA1hFz4xdyhriuScmF/9i/Y04N+nQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=tYzQ1n+Z2zbMNEZNUcKJ+ivw9hMQokaBMROedsZgNvXs6ticRB8c14iyUSnHXk09E
-	 se4OJqoFKMbTzH8EusiMCdMk/7OeoRg7aktPaJp9sxm8OuBTf8J+qT3+KtQuqm29Nd
-	 Fk7xM/npgqwfMJSw4/dTueJCB+qDl18+cJvt9IKlSyPFId9CUzGb8XMQ2aRuh7P7Ph
-	 iyGc21CZxkZroCVxulM7ly1yaBIpRPzJhP5qLq1467KmhUJ4cf2o/X4EGc4kzzTCTO
-	 oK9m4ohYqjwnSO61WVIhy6vTtV+FWX0+vcx2knVZG/97022cu6AFcxfcH4s+5X86/R
-	 CZJqi9MJpyHzQ==
+	b=HSje7bpY2dRJVvhp8l5Vi++NdPelwxmZlD4A5ys/NxwEOIzkjM4P6o9FbtiMVzcjh
+	 kUiqF8Fjn+z9HVFRt8GkXLpvUTraqdO+kOT8MHY9CNoUUXZJ/aGcobKZ7PNWQyF024
+	 JRE0mGBXe4FSTqm07aoOHgxxSG2jeEa6rx6sj7LgxQ8A1geOPh/or+LvYx4V4X1CfZ
+	 scZ3/vQCMqCWURv8tkZJPXCiIa6ojFwvd78jP8Mx9nO61jd9PmCcEPiOwUR0GsS99D
+	 kO2pcivt2EzTvJeBGK0leGk+yTBtMAhBoMM+Zx7CvKN5N8mfHTLR3ar/kT2l9CzWXP
+	 EpfeCn00SmA8A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alex.williamson@redhat.com
-Cc: Reinette Chatre <reinette.chatre@intel.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	kvm@vger.kernel.org,
+	mpe@ellerman.id.au
+Cc: linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "vfio/pci: Lock external INTx masking ops" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:16:10 -0400
-Message-ID: <20240327121610.2832499-1-sashal@kernel.org>
+Subject: FAILED: Patch "powerpc/smp: Increase nr_cpu_ids to include the boot CPU" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:16:13 -0400
+Message-ID: <20240327121613.2832541-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,126 +68,39 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 810cd4bb53456d0503cc4e7934e063835152c1b7 Mon Sep 17 00:00:00 2001
-From: Alex Williamson <alex.williamson@redhat.com>
-Date: Fri, 8 Mar 2024 16:05:23 -0700
-Subject: [PATCH] vfio/pci: Lock external INTx masking ops
+From 777f81f0a9c780a6443bcf2c7785f0cc2e87c1ef Mon Sep 17 00:00:00 2001
+From: Michael Ellerman <mpe@ellerman.id.au>
+Date: Thu, 15 Feb 2024 00:14:04 +1100
+Subject: [PATCH] powerpc/smp: Increase nr_cpu_ids to include the boot CPU
 
-Mask operations through config space changes to DisINTx may race INTx
-configuration changes via ioctl.  Create wrappers that add locking for
-paths outside of the core interrupt code.
+If nr_cpu_ids is too low to include the boot CPU adjust nr_cpu_ids
+upward. Otherwise the kernel will BUG when trying to allocate a paca
+for the boot CPU and fail to boot.
 
-In particular, irq_type is updated holding igate, therefore testing
-is_intx() requires holding igate.  For example clearing DisINTx from
-config space can otherwise race changes of the interrupt configuration.
-
-This aligns interfaces which may trigger the INTx eventfd into two
-camps, one side serialized by igate and the other only enabled while
-INTx is configured.  A subsequent patch introduces synchronization for
-the latter flows.
-
-Cc:  <stable@vger.kernel.org>
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Link: https://lore.kernel.org/r/20240308230557.805580-3-alex.williamson@redhat.com
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20231229120107.2281153-2-mpe@ellerman.id.au
 ---
- drivers/vfio/pci/vfio_pci_intrs.c | 34 +++++++++++++++++++++++++------
- 1 file changed, 28 insertions(+), 6 deletions(-)
+ arch/powerpc/kernel/prom.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index 136101179fcbd..75c85eec21b3c 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -99,13 +99,15 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
- }
- 
- /* Returns true if the INTx vfio_pci_irq_ctx.masked value is changed. */
--bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
-+static bool __vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
- {
- 	struct pci_dev *pdev = vdev->pdev;
- 	struct vfio_pci_irq_ctx *ctx;
- 	unsigned long flags;
- 	bool masked_changed = false;
- 
-+	lockdep_assert_held(&vdev->igate);
-+
- 	spin_lock_irqsave(&vdev->irqlock, flags);
- 
- 	/*
-@@ -143,6 +145,17 @@ bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
- 	return masked_changed;
- }
- 
-+bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
-+{
-+	bool mask_changed;
-+
-+	mutex_lock(&vdev->igate);
-+	mask_changed = __vfio_pci_intx_mask(vdev);
-+	mutex_unlock(&vdev->igate);
-+
-+	return mask_changed;
-+}
-+
- /*
-  * If this is triggered by an eventfd, we can't call eventfd_signal
-  * or else we'll deadlock on the eventfd wait queue.  Return >0 when
-@@ -194,12 +207,21 @@ static int vfio_pci_intx_unmask_handler(void *opaque, void *unused)
- 	return ret;
- }
- 
--void vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
-+static void __vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
- {
-+	lockdep_assert_held(&vdev->igate);
-+
- 	if (vfio_pci_intx_unmask_handler(vdev, NULL) > 0)
- 		vfio_send_intx_eventfd(vdev, NULL);
- }
- 
-+void vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
-+{
-+	mutex_lock(&vdev->igate);
-+	__vfio_pci_intx_unmask(vdev);
-+	mutex_unlock(&vdev->igate);
-+}
-+
- static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
- {
- 	struct vfio_pci_core_device *vdev = dev_id;
-@@ -563,11 +585,11 @@ static int vfio_pci_set_intx_unmask(struct vfio_pci_core_device *vdev,
- 		return -EINVAL;
- 
- 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
--		vfio_pci_intx_unmask(vdev);
-+		__vfio_pci_intx_unmask(vdev);
- 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
- 		uint8_t unmask = *(uint8_t *)data;
- 		if (unmask)
--			vfio_pci_intx_unmask(vdev);
-+			__vfio_pci_intx_unmask(vdev);
- 	} else if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
- 		struct vfio_pci_irq_ctx *ctx = vfio_irq_ctx_get(vdev, 0);
- 		int32_t fd = *(int32_t *)data;
-@@ -594,11 +616,11 @@ static int vfio_pci_set_intx_mask(struct vfio_pci_core_device *vdev,
- 		return -EINVAL;
- 
- 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
--		vfio_pci_intx_mask(vdev);
-+		__vfio_pci_intx_mask(vdev);
- 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
- 		uint8_t mask = *(uint8_t *)data;
- 		if (mask)
--			vfio_pci_intx_mask(vdev);
-+			__vfio_pci_intx_mask(vdev);
- 	} else if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
- 		return -ENOTTY; /* XXX implement me */
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index 58e80076bed5c..77364729a1b61 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -381,6 +381,12 @@ static int __init early_init_dt_scan_cpus(unsigned long node,
+ 			nr_cpu_ids);
  	}
+ 
++	if (boot_cpuid >= nr_cpu_ids) {
++		set_nr_cpu_ids(min(CONFIG_NR_CPUS, ALIGN(boot_cpuid + 1, nthreads)));
++		pr_warn("Boot CPU %d >= nr_cpu_ids, adjusted nr_cpu_ids to %d\n",
++			boot_cpuid, nr_cpu_ids);
++	}
++
+ 	/*
+ 	 * PAPR defines "logical" PVR values for cpus that
+ 	 * meet various levels of the architecture:
 -- 
 2.43.0
 
