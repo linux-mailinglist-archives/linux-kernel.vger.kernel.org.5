@@ -1,115 +1,106 @@
-Return-Path: <linux-kernel+bounces-121327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748D088E610
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:31:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5669588E602
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D5BA29E0BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:31:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87F551C2D74B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CEA152E19;
-	Wed, 27 Mar 2024 12:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PeI1DRl9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B904415251C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C623B15251D;
 	Wed, 27 Mar 2024 12:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74468138481;
+	Wed, 27 Mar 2024 12:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711544175; cv=none; b=lziqLRHkzMO5a/41BZ8RfBZKyw1ZuoMfnVoKhR67CCoLMpbT+pgHg/xfaPc27R1BgdUXoTwvTx5cwsHvbtovVaVliEkE5QM9PVyE4Ax3gh/NiMoVTNfST8x50dN9KYoeCDHFi+E+FmS/vZvGWjPCg7Z8HtKZuqJflWz2U3eGx+A=
+	t=1711544174; cv=none; b=huUIwCsCOBzzhkwW/oBHM0RdU75cbDlUj0rlPhhnkQcNLaX0DFrnbTElLr7xYr8Iyb+2jnMC+9njJk139v69eLkoA7trO6+l3rD7rrQz/65yDtQP+isfiqZ6ahlLkP4o1JkdFnnYBOq/CJ6fjqe/IHQd7/UygfH2CL0r2W7K3A0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711544175; c=relaxed/simple;
-	bh=t5Dr+QPEU1FaZbxI2VzHHPUV33oVM25Zuyjp8wRwBxQ=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=iFm3YA9kLj68XOWKZcMRSYtsJmWzLlxAfwsXERyDsxAoNx3HWu2zAjq//C8KpfGHKaIh/1yL63SZodp8dOBqiUC8HIuV0k4HF8w5tUBXDozTAVIEki1Pmua8JBKKALMd37+APWhJMOPMcYPPQ5aWVRnaqtddhkPWUmIU1B2XmeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PeI1DRl9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C93C43390;
-	Wed, 27 Mar 2024 12:56:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711544174;
-	bh=t5Dr+QPEU1FaZbxI2VzHHPUV33oVM25Zuyjp8wRwBxQ=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=PeI1DRl97jSBL5h+TjLof7OmsdrUn8XoRsGQVaXc1QrS2MsqMVnRRdmF+M5dmweaA
-	 Cf4i01dUWOny6pJ6QuLijRvpE44xS0PcZc1e9PeN+WBhzhBO4xJy/Ts3k409QwdVEV
-	 p+A11VpmypxO3Ps9Q8jXDfwY+GDNk4U7h2495MzupWAahXb3s6nMhf4xTbKbYBv9sH
-	 Qg2EVim4HGea+Pk1qx3RaNxw1jAVCalYFQ1zjH9SvFpUEhLNt2Q6UwcJWGcqLuJGpO
-	 jNEGpE3iLazGfTCtetqVqdY3FWUY6/vKk+gRsmlO3tArdLh8t7rKXHMt3Lo2FnfSbu
-	 armFDkXpy3JVQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,  Jason Wang
- <jasowang@redhat.com>,  Xuan Zhuo <xuanzhuo@linux.alibaba.com>,  Richard
- Weinberger <richard@nod.at>,  Anton Ivanov
- <anton.ivanov@cambridgegreys.com>,  Johannes Berg
- <johannes@sipsolutions.net>,  Paolo Bonzini <pbonzini@redhat.com>,  Stefan
- Hajnoczi <stefanha@redhat.com>,  Jens Axboe <axboe@kernel.dk>,  Marcel
- Holtmann <marcel@holtmann.org>,  Luiz Augusto von Dentz
- <luiz.dentz@gmail.com>,  Olivia Mackall <olivia@selenic.com>,  Herbert Xu
- <herbert@gondor.apana.org.au>,  Amit Shah <amit@kernel.org>,  Arnd
- Bergmann <arnd@arndb.de>,  Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  Gonglei <arei.gonglei@huawei.com>,  "David
- S. Miller" <davem@davemloft.net>,  Viresh Kumar <vireshk@kernel.org>,
-  Linus Walleij <linus.walleij@linaro.org>,  Bartosz Golaszewski
- <brgl@bgdev.pl>,  David Airlie <airlied@redhat.com>,  Gerd Hoffmann
- <kraxel@redhat.com>,  Gurchetan Singh <gurchetansingh@chromium.org>,
-  Chia-I Wu <olvaffe@gmail.com>,  Jean-Philippe Brucker
- <jean-philippe@linaro.org>,  Joerg Roedel <joro@8bytes.org>,  Alexander
- Graf <graf@amazon.com>,  Eric Dumazet <edumazet@google.com>,  Jakub
- Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Eric Van
- Hensbergen <ericvh@kernel.org>,  Latchesar Ionkov <lucho@ionkov.net>,
-  Dominique Martinet <asmadeus@codewreck.org>,  Christian Schoenebeck
- <linux_oss@crudebyte.com>,  Stefano Garzarella <sgarzare@redhat.com>,  Dan
- Williams <dan.j.williams@intel.com>,  Vishal Verma
- <vishal.l.verma@intel.com>,  Dave Jiang <dave.jiang@intel.com>,  Ira Weiny
- <ira.weiny@intel.com>,  Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-  Bjorn Andersson <andersson@kernel.org>,  Mathieu Poirier
- <mathieu.poirier@linaro.org>,  "Martin K. Petersen"
- <martin.petersen@oracle.com>,  Vivek Goyal <vgoyal@redhat.com>,  Miklos
- Szeredi <miklos@szeredi.hu>,  Anton Yakovlev
- <anton.yakovlev@opensynergy.com>,  Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>,  virtualization@lists.linux.dev,
-  linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-um@lists.infradead.org,  linux-block@vger.kernel.org,
-  linux-bluetooth@vger.kernel.org,  linux-crypto@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,  linux-gpio@vger.kernel.org,
-  dri-devel@lists.freedesktop.org,  iommu@lists.linux.dev,
-  netdev@vger.kernel.org,  v9fs@lists.linux.dev,  kvm@vger.kernel.org,
-  linux-wireless@vger.kernel.org,  nvdimm@lists.linux.dev,
-  linux-remoteproc@vger.kernel.org,  linux-scsi@vger.kernel.org,
-  linux-fsdevel@vger.kernel.org,  alsa-devel@alsa-project.org,
-  linux-sound@vger.kernel.org
-Subject: Re: [PATCH 17/22] wireless: mac80211_hwsim: drop owner assignment
-References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
-	<20240327-module-owner-virtio-v1-17-0feffab77d99@linaro.org>
-Date: Wed, 27 Mar 2024 14:55:58 +0200
-In-Reply-To: <20240327-module-owner-virtio-v1-17-0feffab77d99@linaro.org>
-	(Krzysztof Kozlowski's message of "Wed, 27 Mar 2024 13:41:10 +0100")
-Message-ID: <87plvf7s0x.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1711544174; c=relaxed/simple;
+	bh=WZJCVOkyTHYxcqXrLL5fJDRlkvGm4gLHduI+I7k25ns=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qi+LW77ETyP7KBKktOxXivuEz6PoV98WGd9i0uxVhkI3JM028WJOCtnHaBGzXTGr0sw7TJ4Jk6mzramR9k+6C6yHQoTnK8SwwKFDcGA8Px0q8HlH5sQAkLoY+k1+D8gbAjAXEvG6Ha9vwrJnKgU8sZVx9pW5M8DdNEA5/s163R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DDD2C2F4;
+	Wed, 27 Mar 2024 05:56:45 -0700 (PDT)
+Received: from [192.168.178.110] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 914273F7C5;
+	Wed, 27 Mar 2024 05:56:09 -0700 (PDT)
+Message-ID: <e02ca745-52df-4210-b175-f4ef278d81d8@arm.com>
+Date: Wed, 27 Mar 2024 13:56:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND][PATCH v2 4/4] soc: samsung: exynos-asv: Update Energy
+ Model after adjusting voltage
+Content-Language: en-US
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, sboyd@kernel.org, nm@ti.com,
+ linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
+ rafael@kernel.org, viresh.kumar@linaro.org, krzysztof.kozlowski@linaro.org,
+ alim.akhtar@samsung.com, m.szyprowski@samsung.com, mhiramat@kernel.org,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20240322110850.77086-1-lukasz.luba@arm.com>
+ <20240322110850.77086-5-lukasz.luba@arm.com>
+ <59d37960-cf19-4b10-802f-59d42496c133@arm.com>
+ <d5d6ae17-3ba1-4cb8-909f-865e47bfa45b@arm.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <d5d6ae17-3ba1-4cb8-909f-865e47bfa45b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
+On 26/03/2024 21:12, Lukasz Luba wrote:
+> Hi Dietmar,
+> 
+> On 3/26/24 11:20, Dietmar Eggemann wrote:
+>> On 22/03/2024 12:08, Lukasz Luba wrote:
+>>
+>> [...]
+>>
+>>> @@ -97,9 +98,17 @@ static int exynos_asv_update_opps(struct
+>>> exynos_asv *asv)
+>>>               last_opp_table = opp_table;
+>>>                 ret = exynos_asv_update_cpu_opps(asv, cpu);
+>>> -            if (ret < 0)
+>>> +            if (!ret) {
+>>> +                /*
+>>> +                 * When the voltage for OPPs successfully
+>>> +                 * changed, update the EM power values to
+>>> +                 * reflect the reality and not use stale data
+>>
+>> At this point, can we really say that the voltage has changed?
+>>
+>>    exynos_asv_update_cpu_opps()
+>>
+>>      ...
+>>      ret = dev_pm_opp_adjust_voltage()
+>>      if (!ret)
+>>        em_dev_update_chip_binning()
+>>      ...
+>>
+>> dev_pm_opp_adjust_voltage() also returns 0 when the voltage value stays
+>> the same?
+>>
+>> [...]
+> 
+> The comment for the dev_pm_opp_adjust_voltage() says that it
+> returns 0 if no modification was done or modification was
+> successful. So I cannot distinguish in that driver code, but
+> also there is no additional need to do it IMO (even framework
+> doesn't do this).
 
-> virtio core already sets the .owner, so driver does not need to.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Precisely. That's why the added comment in exynos_asv_update_opps():
+"When the voltage for OPPs successfully __changed__, ..." is somehow
+misleading IMHO.
 
-We use "wifi:" in the title, not "wireless:". It would be nice if you
-can fix this during commit.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
