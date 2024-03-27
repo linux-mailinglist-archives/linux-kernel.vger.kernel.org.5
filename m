@@ -1,185 +1,378 @@
-Return-Path: <linux-kernel+bounces-121588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D1788EA43
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:04:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80E7D88EB26
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DF991C2FF93
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:04:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE59FB32F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4679E131BA6;
-	Wed, 27 Mar 2024 16:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C6E132809;
+	Wed, 27 Mar 2024 16:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="J8qrdkF3"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2057.outbound.protection.outlook.com [40.107.93.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9813012DDB3
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555403; cv=fail; b=nuLpXv/3l8DVaS1yg9YPtT6/Ocv3jc0T4uOIVLY3FdyaGIwvMDmGdJ98B4QNKmuAIH6zlAZWkjDr/BZi8usSiZUJ5DIDtO6pcr/PMeZQkcLHjkJ6D+HfC47VjdC8G5NfPBRUrcp3EJjL8CG6XpbCSkFmuD1GRWbDVW/8VBbY338=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="j1MFXh/g"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FD512DD97;
+	Wed, 27 Mar 2024 16:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711555403; cv=none; b=UyWWo+OCfyBl9yetBZ63gU2qfpvCB/AwBD59LsTh6lTl81kGKobcKft2pCGZNWtGqW2CG87DMI3yDlqS6Twy9oOp5azxI3P2B55cXgFcBH44VqkA3ZnlfuUfFsYj2QrruaY+BsmLdOga202jz8UU+I3c2tt9sPraphuAGgDb0KY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711555403; c=relaxed/simple;
-	bh=LPBMSFOcBdnCWTWSwZuMQhwlQ/BwseXEsRshpPWQ5BA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XUYZm6xnYTLnjiTKmtrNCnTb2uk4NqfR3f3ONs3Id3+KeZA7/k1DI3dEqwpzv5PNVBsq4EtpdNpKTzyKeV2/5no/K9kBiuuegh34pgwItrEgT40r8aPK5FkpaLJMiO0F4ddlpmFTUwPq1/H1gnCWDq6dnfDcmqqF3CuRVe7IYuY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=J8qrdkF3; arc=fail smtp.client-ip=40.107.93.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YMscX8Lv63t3jsfBmzyohx2Kq+Ult//SvzpmSURZle5oLN58KN8Tz2014RXQ8LzUvAoH+qix/oBL310U1NH0LYcgHBk8LAu/z6jSA7uPHnF1H091Lld6Lns/tEROkgdSV3MeZvz2cHYOi2Aw9KAs3iVnX1EdDU1Q6uHpc98r3uBYKUmmGXfUTc3940kjWuzpNqVKcMdHfn5AvpnT7kI0Sva/mlW/iE0riSW2U5p0jmCZlkwsK1lRk8AAgftyxGuJumgGLO9brGip2acQV8kiBTay8blWnyCblkn70WjKPBY5s5g3B1TW6hbwoM5M+7TPJz4PAeDSW5s5uHDmgUMrxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/pwK0KzVxNxNJ1/NHzBY5STd6/oycVRn4PIDhMsV7ck=;
- b=fdhFwu/cmzEcdp4hbxoEntutNoeuZdgQ3vK7+52F6ZZVv2EZ7kFhdEjybpxFrU8M+W87AEZBb/FCBD8aSswIzkh4SDMXoFZSe2T7zzoFHle3XrZQqET1Qfjrk2KKw6gQXDLm9mwiAU2YtluKSr/mSoUn01QzZP2McDDQaUEskA9Dxjvs94n97n6DD0YRGuD8o9JXJsvKjKVEQFbAbzV9OLmPYKg76XSlNzVdzna4UIkebi51GOA6S1dVbVKBtEPESyzgi2Iz2Cf76s4Isl9BYXT5eUumeE6xVnyLp/ajg3l5Y0mNmymr4bPTXs3lkptzeO2x1gtsSBLKN+qYcDRGxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kvack.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/pwK0KzVxNxNJ1/NHzBY5STd6/oycVRn4PIDhMsV7ck=;
- b=J8qrdkF3Jcugxk8LrDWRbdK1xP7jnJrc5MPh38AS1d9x8+JxC74c27P84MSnZeEIOh/G6f/mO00ptAAjn2PNvMXS/YAPBEyPD3/4uA1K9S45hquaGeyMD4K+eEAJor+Ns/iKZjD/hzl86cQsO83ra9COpppH0+CDqjf6RxjhP9o=
-Received: from BN8PR04CA0054.namprd04.prod.outlook.com (2603:10b6:408:d4::28)
- by SN7PR12MB7934.namprd12.prod.outlook.com (2603:10b6:806:346::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Wed, 27 Mar
- 2024 16:03:11 +0000
-Received: from BN3PEPF0000B06A.namprd21.prod.outlook.com
- (2603:10b6:408:d4:cafe::53) by BN8PR04CA0054.outlook.office365.com
- (2603:10b6:408:d4::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Wed, 27 Mar 2024 16:03:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN3PEPF0000B06A.mail.protection.outlook.com (10.167.243.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.0 via Frontend Transport; Wed, 27 Mar 2024 16:03:11 +0000
-Received: from BLR-5CG1133937.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 27 Mar
- 2024 11:03:06 -0500
-From: Bharata B Rao <bharata@amd.com>
-To: <linux-mm@kvack.org>
-CC: <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-	<mingo@redhat.com>, <peterz@infradead.org>, <mgorman@techsingularity.net>,
-	<raghavendra.kt@amd.com>, <ying.huang@intel.com>,
-	<dave.hansen@linux.intel.com>, <hannes@cmpxchg.org>, Bharata B Rao
-	<bharata@amd.com>
-Subject: [RFC PATCH 2/2] mm: Update hint fault count for pages that are skipped during scanning
-Date: Wed, 27 Mar 2024 21:32:37 +0530
-Message-ID: <20240327160237.2355-3-bharata@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240327160237.2355-1-bharata@amd.com>
-References: <20240327160237.2355-1-bharata@amd.com>
+	bh=axfExQQ9XjSS7+xlvPmWMy5GZEEZS+Lbf0Yr8kq4jQs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=k1PnerHMVG2HZHBj0Wx68x+pMTRGAdRseU9U8XKrrZKTIfVdk0uP3UVgWDYivwdZV2AjeM/DhFjFdWoo071ZllPHL0pMYs0GNA4aG1ziwh6s7KqPudtcYYlCiKW0xe4CTDfIqiIG2k5zZLHSmJ1tEa4AyENUr7iRHMZq4dGwOcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=j1MFXh/g; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from apais-vm1.0synte4vioeebbvidf5q0vz2ua.xx.internal.cloudapp.net (unknown [52.183.86.224])
+	by linux.microsoft.com (Postfix) with ESMTPSA id DA2672085CE4;
+	Wed, 27 Mar 2024 09:03:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DA2672085CE4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711555401;
+	bh=3hcnlvv5JwxGRimv8puox0FI6yYT22rRQLYPals06nM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=j1MFXh/gQg1tzy1NiZhDwekxwc8dvAzI+onvdyQYuwuUQW8n92YESaET4UqKK3s+1
+	 GkKlfkFJN7woCpfY/15BUPreZuaOKAoShX2RDT1e+7ZGcLy3rLDfkRWzSogXlEFbF5
+	 xONzEb2r0qc0V0QS8P8cWQIe/e+DcLcRmQWlSfJA=
+From: Allen Pais <apais@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org
+Cc: tj@kernel.org,
+	keescook@chromium.org,
+	vkoul@kernel.org,
+	marcan@marcan.st,
+	sven@svenpeter.dev,
+	florian.fainelli@broadcom.com,
+	rjui@broadcom.com,
+	sbranden@broadcom.com,
+	paul@crapouillou.net,
+	Eugeniy.Paltsev@synopsys.com,
+	manivannan.sadhasivam@linaro.org,
+	vireshk@kernel.org,
+	Frank.Li@nxp.com,
+	leoyang.li@nxp.com,
+	zw@zh-kernel.org,
+	wangzhou1@hisilicon.com,
+	haijie1@huawei.com,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	sean.wang@mediatek.com,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	afaerber@suse.de,
+	logang@deltatee.com,
+	daniel@zonque.org,
+	haojian.zhuang@gmail.com,
+	robert.jarzmik@free.fr,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	orsonzhai@gmail.com,
+	baolin.wang@linux.alibaba.com,
+	zhang.lyra@gmail.com,
+	patrice.chotard@foss.st.com,
+	linus.walleij@linaro.org,
+	wens@csie.org,
+	jernej.skrabec@gmail.com,
+	peter.ujfalusi@gmail.com,
+	kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	jassisinghbrar@gmail.com,
+	mchehab@kernel.org,
+	maintainers@bluecherrydvr.com,
+	aubin.constans@microchip.com,
+	ulf.hansson@linaro.org,
+	manuel.lauss@gmail.com,
+	mirq-linux@rere.qmqm.pl,
+	jh80.chung@samsung.com,
+	oakad@yahoo.com,
+	hayashi.kunihiko@socionext.com,
+	mhiramat@kernel.org,
+	brucechang@via.com.tw,
+	HaraldWelte@viatech.com,
+	pierre@ossman.eu,
+	duncan.sands@free.fr,
+	stern@rowland.harvard.edu,
+	oneukum@suse.com,
+	openipmi-developer@lists.sourceforge.net,
+	dmaengine@vger.kernel.org,
+	asahi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	imx@lists.linux.dev,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-mediatek@lists.infradead.org,
+	linux-actions@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-omap@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: [PATCH 0/9] Convert Tasklets to BH Workqueues
+Date: Wed, 27 Mar 2024 16:03:05 +0000
+Message-Id: <20240327160314.9982-1-apais@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06A:EE_|SN7PR12MB7934:EE_
-X-MS-Office365-Filtering-Correlation-Id: 531f7416-a48e-4b52-97e5-08dc4e7766bd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	o7jMpkaBwpqEDOIdhIv6SMVT0criqKknSh6v2cmI21d+EM8bIqG+pvgUJZxRkkXflVabPKx2iTzhR++jfAu64S3ZxBAWjHmfcRSrDZCi3cZS7mhr7aRk/f3zVItmG74+ylOE9m30JpGbiizw5FvUtv+VH0DebqNqhO1zbG0EVfJdoITsInqzN8PDDb3sMAMo9RQIIriWYfcyG8+g4ThjT4IWYUzt0WpeMc0dcrjJYKG+fq0YTYEb2jub4n6/SsTZvmgJkvvi9jLbjEwa8U1Dq3e1eoHWX6OI4L5PRhnwB4OrTYqogGbRdKI/CV7vp+oBe0rsmgRxntJPKVzqAIoz0sWlh+Xw8mJrpbhmXckzeubNsyaX4KrFP3wAQ+EPKiDmInCWSQFSujDn26MDIOb/7+CpYAjPBB9LMFVeXo7fUmE2dvi8FVPtaRGRmRzx3ZGJOz1mUmfNk/jEtvk2R10EbtVWKbko+549ANQUjJLu8HkBcBBY+JYMP+k6qWFEbLmUgrF4NeDEh7VUnrWQftgac1NbkpY9spjZ+Jp03sg39ixFjNr91zJ2aLU8hQsGc5LP/5wBPGSO6BcXWXdKfo3DarGGz9NSibH4Kq8QGsrC9a3HLPp5OnTKcsCnfNkcqYJeMx+dqs+95hVVNCp5gm996IvaQ+LolT1LpokilPVYwswujdM7L9wiRv5Yo84wPbbFQW+IfaTjWPrRRHDuh07m240dIeUPbt8O4w1xwL61Aokiu7sQ0SCKdy/OPQLlMdF/
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(82310400014)(36860700004)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 16:03:11.1075
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 531f7416-a48e-4b52-97e5-08dc4e7766bd
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B06A.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7934
 
-During scanning, PTE updates are skipped for those pages which
-are already marked as PROT_NONE. This is required but update the
-scan time fault count so that the fault count which is used to
-calculate the latency is kept uptodate based on the recent
-scanning iteration.
+This patch series represents a significant shift in how asynchronous
+execution in the bottom half (BH) context is handled within the kernel.
+Traditionally, tasklets have been the go-to mechanism for such operations.
+This series introduces the conversion of existing tasklet implementations
+to the newly supported BH workqueues, marking a pivotal enhancement
+in how asynchronous tasks are managed and executed.
 
-Signed-off-by: Bharata B Rao <bharata@amd.com>
----
- mm/huge_memory.c | 7 ++++---
- mm/mprotect.c    | 9 +++++----
- 2 files changed, 9 insertions(+), 7 deletions(-)
+Background and Motivation:
+Tasklets have served as the kernel's lightweight mechanism for
+scheduling bottom-half processing, providing a simple interface
+for deferring work from interrupt context. There have been increasing
+requests and motivations to deprecate and eventually remove tasklets
+in favor of more modern and flexible mechanisms.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 7e62c3c2bbcb..24a4f976323e 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2086,9 +2086,6 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 		if (is_huge_zero_pmd(*pmd))
- 			goto unlock;
- 
--		if (pmd_protnone(*pmd))
--			goto unlock;
--
- 		folio = page_folio(pmd_page(*pmd));
- 		toptier = node_is_toptier(folio_nid(folio));
- 		/*
-@@ -2102,6 +2099,10 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
- 		    !toptier)
- 			folio_xchg_fault_count(folio, atomic_read(&mm->hint_faults));
-+
-+		if (pmd_protnone(*pmd))
-+			goto unlock;
-+
- 	}
- 	/*
- 	 * In case prot_numa, we are under mmap_read_lock(mm). It's critical
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 30118fd492f4..cfd3812302be 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -118,10 +118,6 @@ static long change_pte_range(struct mmu_gather *tlb,
- 				int nid;
- 				bool toptier;
- 
--				/* Avoid TLB flush if possible */
--				if (pte_protnone(oldpte))
--					continue;
--
- 				folio = vm_normal_folio(vma, addr, oldpte);
- 				if (!folio || folio_is_zone_device(folio) ||
- 				    folio_test_ksm(folio))
-@@ -162,6 +158,11 @@ static long change_pte_range(struct mmu_gather *tlb,
- 					folio_xchg_fault_count(folio,
- 							atomic_read(&vma->vm_mm->hint_faults));
- 
-+				/* Avoid TLB flush if possible */
-+				if (pte_protnone(oldpte))
-+					continue;
-+
-+
- 			}
- 
- 			oldpte = ptep_modify_prot_start(vma, addr, pte);
+Introduction of BH Workqueues:
+BH workqueues are designed to behave similarly to regular workqueues
+with the added benefit of execution in the BH context.
+
+Conversion Details:
+The conversion process involved identifying all instances where
+tasklets were used within the kernel and replacing them with BH workqueue
+implementations.
+
+This patch series is a first step toward broader adoption of BH workqueues
+across the kernel, and soon other subsystems using tasklets will undergo
+a similar transition. The groundwork laid here could serve as a
+blueprint for such future conversions.
+
+Testing Request:
+In addition to a thorough review of these changes,
+I kindly request that the reviwers engage in both functional and
+performance testing of this patch series. Specifically, benchmarks
+that measure interrupt handling efficiency, latency, and throughput.
+
+I welcome your feedback, suggestions, and any further discussion on this
+patch series.
+
+
+Additional Info:
+    Based on the work done by Tejun Heo <tj@kernel.org>
+    Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
+
+Allen Pais (9):
+  hyperv: Convert from tasklet to BH workqueue
+  dma: Convert from tasklet to BH workqueue
+  IB: Convert from tasklet to BH workqueue
+  USB: Convert from tasklet to BH workqueue
+  mailbox: Convert from tasklet to BH workqueue
+  ipmi: Convert from tasklet to BH workqueue
+  s390: Convert from tasklet to BH workqueue
+  drivers/media/*: Convert from tasklet to BH workqueue
+  mmc: Convert from tasklet to BH workqueue
+
+ drivers/char/ipmi/ipmi_msghandler.c           | 30 ++++----
+ drivers/dma/altera-msgdma.c                   | 15 ++--
+ drivers/dma/apple-admac.c                     | 15 ++--
+ drivers/dma/at_hdmac.c                        |  2 +-
+ drivers/dma/at_xdmac.c                        | 15 ++--
+ drivers/dma/bcm2835-dma.c                     |  2 +-
+ drivers/dma/dma-axi-dmac.c                    |  2 +-
+ drivers/dma/dma-jz4780.c                      |  2 +-
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    |  2 +-
+ drivers/dma/dw-edma/dw-edma-core.c            |  2 +-
+ drivers/dma/dw/core.c                         | 13 ++--
+ drivers/dma/dw/regs.h                         |  3 +-
+ drivers/dma/ep93xx_dma.c                      | 15 ++--
+ drivers/dma/fsl-edma-common.c                 |  2 +-
+ drivers/dma/fsl-qdma.c                        |  2 +-
+ drivers/dma/fsl_raid.c                        | 11 +--
+ drivers/dma/fsl_raid.h                        |  2 +-
+ drivers/dma/fsldma.c                          | 15 ++--
+ drivers/dma/fsldma.h                          |  3 +-
+ drivers/dma/hisi_dma.c                        |  2 +-
+ drivers/dma/hsu/hsu.c                         |  2 +-
+ drivers/dma/idma64.c                          |  4 +-
+ drivers/dma/img-mdc-dma.c                     |  2 +-
+ drivers/dma/imx-dma.c                         | 27 +++----
+ drivers/dma/imx-sdma.c                        |  6 +-
+ drivers/dma/ioat/dma.c                        | 17 +++--
+ drivers/dma/ioat/dma.h                        |  5 +-
+ drivers/dma/ioat/init.c                       |  2 +-
+ drivers/dma/k3dma.c                           | 19 ++---
+ drivers/dma/mediatek/mtk-cqdma.c              | 35 ++++-----
+ drivers/dma/mediatek/mtk-hsdma.c              |  2 +-
+ drivers/dma/mediatek/mtk-uart-apdma.c         |  4 +-
+ drivers/dma/mmp_pdma.c                        | 13 ++--
+ drivers/dma/mmp_tdma.c                        | 11 +--
+ drivers/dma/mpc512x_dma.c                     | 17 +++--
+ drivers/dma/mv_xor.c                          | 13 ++--
+ drivers/dma/mv_xor.h                          |  5 +-
+ drivers/dma/mv_xor_v2.c                       | 23 +++---
+ drivers/dma/mxs-dma.c                         | 13 ++--
+ drivers/dma/nbpfaxi.c                         | 15 ++--
+ drivers/dma/owl-dma.c                         |  2 +-
+ drivers/dma/pch_dma.c                         | 17 +++--
+ drivers/dma/pl330.c                           | 31 ++++----
+ drivers/dma/plx_dma.c                         | 13 ++--
+ drivers/dma/ppc4xx/adma.c                     | 17 +++--
+ drivers/dma/ppc4xx/adma.h                     |  5 +-
+ drivers/dma/pxa_dma.c                         |  2 +-
+ drivers/dma/qcom/bam_dma.c                    | 35 ++++-----
+ drivers/dma/qcom/gpi.c                        | 18 ++---
+ drivers/dma/qcom/hidma.c                      | 11 +--
+ drivers/dma/qcom/hidma.h                      |  5 +-
+ drivers/dma/qcom/hidma_ll.c                   | 11 +--
+ drivers/dma/qcom/qcom_adm.c                   |  2 +-
+ drivers/dma/sa11x0-dma.c                      | 27 +++----
+ drivers/dma/sf-pdma/sf-pdma.c                 | 23 +++---
+ drivers/dma/sf-pdma/sf-pdma.h                 |  5 +-
+ drivers/dma/sprd-dma.c                        |  2 +-
+ drivers/dma/st_fdma.c                         |  2 +-
+ drivers/dma/ste_dma40.c                       | 17 +++--
+ drivers/dma/sun6i-dma.c                       | 33 ++++----
+ drivers/dma/tegra186-gpc-dma.c                |  2 +-
+ drivers/dma/tegra20-apb-dma.c                 | 19 ++---
+ drivers/dma/tegra210-adma.c                   |  2 +-
+ drivers/dma/ti/edma.c                         |  2 +-
+ drivers/dma/ti/k3-udma.c                      | 11 +--
+ drivers/dma/ti/omap-dma.c                     |  2 +-
+ drivers/dma/timb_dma.c                        | 23 +++---
+ drivers/dma/txx9dmac.c                        | 29 +++----
+ drivers/dma/txx9dmac.h                        |  5 +-
+ drivers/dma/virt-dma.c                        |  9 ++-
+ drivers/dma/virt-dma.h                        |  9 ++-
+ drivers/dma/xgene-dma.c                       | 21 +++---
+ drivers/dma/xilinx/xilinx_dma.c               | 23 +++---
+ drivers/dma/xilinx/xilinx_dpdma.c             | 21 +++---
+ drivers/dma/xilinx/zynqmp_dma.c               | 21 +++---
+ drivers/hv/channel.c                          |  8 +-
+ drivers/hv/channel_mgmt.c                     |  5 +-
+ drivers/hv/connection.c                       |  9 ++-
+ drivers/hv/hv.c                               |  3 +-
+ drivers/hv/hv_balloon.c                       |  4 +-
+ drivers/hv/hv_fcopy.c                         |  8 +-
+ drivers/hv/hv_kvp.c                           |  8 +-
+ drivers/hv/hv_snapshot.c                      |  8 +-
+ drivers/hv/hyperv_vmbus.h                     |  9 ++-
+ drivers/hv/vmbus_drv.c                        | 19 ++---
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h       |  3 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c      | 21 +++---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h      |  2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c    | 25 ++++---
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h    |  2 +-
+ drivers/infiniband/hw/erdma/erdma.h           |  3 +-
+ drivers/infiniband/hw/erdma/erdma_eq.c        | 11 +--
+ drivers/infiniband/hw/hfi1/rc.c               |  2 +-
+ drivers/infiniband/hw/hfi1/sdma.c             | 37 ++++-----
+ drivers/infiniband/hw/hfi1/sdma.h             |  9 ++-
+ drivers/infiniband/hw/hfi1/tid_rdma.c         |  6 +-
+ drivers/infiniband/hw/irdma/ctrl.c            |  2 +-
+ drivers/infiniband/hw/irdma/hw.c              | 24 +++---
+ drivers/infiniband/hw/irdma/main.h            |  5 +-
+ drivers/infiniband/hw/qib/qib.h               |  7 +-
+ drivers/infiniband/hw/qib/qib_iba7322.c       |  9 ++-
+ drivers/infiniband/hw/qib/qib_rc.c            | 16 ++--
+ drivers/infiniband/hw/qib/qib_ruc.c           |  4 +-
+ drivers/infiniband/hw/qib/qib_sdma.c          | 11 +--
+ drivers/infiniband/sw/rdmavt/qp.c             |  2 +-
+ drivers/mailbox/bcm-pdc-mailbox.c             | 21 +++---
+ drivers/mailbox/imx-mailbox.c                 | 16 ++--
+ drivers/media/pci/bt8xx/bt878.c               |  8 +-
+ drivers/media/pci/bt8xx/bt878.h               |  3 +-
+ drivers/media/pci/bt8xx/dvb-bt8xx.c           |  9 ++-
+ drivers/media/pci/ddbridge/ddbridge.h         |  3 +-
+ drivers/media/pci/mantis/hopper_cards.c       |  2 +-
+ drivers/media/pci/mantis/mantis_cards.c       |  2 +-
+ drivers/media/pci/mantis/mantis_common.h      |  3 +-
+ drivers/media/pci/mantis/mantis_dma.c         |  5 +-
+ drivers/media/pci/mantis/mantis_dma.h         |  2 +-
+ drivers/media/pci/mantis/mantis_dvb.c         | 12 +--
+ drivers/media/pci/ngene/ngene-core.c          | 23 +++---
+ drivers/media/pci/ngene/ngene.h               |  5 +-
+ drivers/media/pci/smipcie/smipcie-main.c      | 18 ++---
+ drivers/media/pci/smipcie/smipcie.h           |  3 +-
+ drivers/media/pci/ttpci/budget-av.c           |  3 +-
+ drivers/media/pci/ttpci/budget-ci.c           | 27 +++----
+ drivers/media/pci/ttpci/budget-core.c         | 10 +--
+ drivers/media/pci/ttpci/budget.h              |  5 +-
+ drivers/media/pci/tw5864/tw5864-core.c        |  2 +-
+ drivers/media/pci/tw5864/tw5864-video.c       | 13 ++--
+ drivers/media/pci/tw5864/tw5864.h             |  7 +-
+ drivers/media/platform/intel/pxa_camera.c     | 15 ++--
+ drivers/media/platform/marvell/mcam-core.c    | 11 +--
+ drivers/media/platform/marvell/mcam-core.h    |  3 +-
+ .../st/sti/c8sectpfe/c8sectpfe-core.c         | 15 ++--
+ .../st/sti/c8sectpfe/c8sectpfe-core.h         |  2 +-
+ drivers/media/radio/wl128x/fmdrv.h            |  7 +-
+ drivers/media/radio/wl128x/fmdrv_common.c     | 41 +++++-----
+ drivers/media/rc/mceusb.c                     |  2 +-
+ drivers/media/usb/ttusb-dec/ttusb_dec.c       | 21 +++---
+ drivers/mmc/host/atmel-mci.c                  | 35 ++++-----
+ drivers/mmc/host/au1xmmc.c                    | 37 ++++-----
+ drivers/mmc/host/cb710-mmc.c                  | 15 ++--
+ drivers/mmc/host/cb710-mmc.h                  |  3 +-
+ drivers/mmc/host/dw_mmc.c                     | 25 ++++---
+ drivers/mmc/host/dw_mmc.h                     |  9 ++-
+ drivers/mmc/host/omap.c                       | 17 +++--
+ drivers/mmc/host/renesas_sdhi.h               |  3 +-
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c | 24 +++---
+ drivers/mmc/host/renesas_sdhi_sys_dmac.c      |  9 +--
+ drivers/mmc/host/sdhci-bcm-kona.c             |  2 +-
+ drivers/mmc/host/tifm_sd.c                    | 15 ++--
+ drivers/mmc/host/tmio_mmc.h                   |  3 +-
+ drivers/mmc/host/tmio_mmc_core.c              |  4 +-
+ drivers/mmc/host/uniphier-sd.c                | 13 ++--
+ drivers/mmc/host/via-sdmmc.c                  | 25 ++++---
+ drivers/mmc/host/wbsd.c                       | 75 ++++++++++---------
+ drivers/mmc/host/wbsd.h                       | 10 +--
+ drivers/s390/block/dasd.c                     | 42 +++++------
+ drivers/s390/block/dasd_int.h                 | 10 +--
+ drivers/s390/char/con3270.c                   | 27 ++++---
+ drivers/s390/crypto/ap_bus.c                  | 24 +++---
+ drivers/s390/crypto/ap_bus.h                  |  2 +-
+ drivers/s390/crypto/zcrypt_msgtype50.c        |  2 +-
+ drivers/s390/crypto/zcrypt_msgtype6.c         |  4 +-
+ drivers/s390/net/ctcm_fsms.c                  |  4 +-
+ drivers/s390/net/ctcm_main.c                  | 15 ++--
+ drivers/s390/net/ctcm_main.h                  |  5 +-
+ drivers/s390/net/ctcm_mpc.c                   | 12 +--
+ drivers/s390/net/ctcm_mpc.h                   |  7 +-
+ drivers/s390/net/lcs.c                        | 26 +++----
+ drivers/s390/net/lcs.h                        |  2 +-
+ drivers/s390/net/qeth_core_main.c             |  2 +-
+ drivers/s390/scsi/zfcp_qdio.c                 | 45 +++++------
+ drivers/s390/scsi/zfcp_qdio.h                 |  9 ++-
+ drivers/usb/atm/usbatm.c                      | 55 +++++++-------
+ drivers/usb/atm/usbatm.h                      |  3 +-
+ drivers/usb/core/hcd.c                        | 22 +++---
+ drivers/usb/gadget/udc/fsl_qe_udc.c           | 21 +++---
+ drivers/usb/gadget/udc/fsl_qe_udc.h           |  4 +-
+ drivers/usb/host/ehci-sched.c                 |  2 +-
+ drivers/usb/host/fhci-hcd.c                   |  3 +-
+ drivers/usb/host/fhci-sched.c                 | 10 +--
+ drivers/usb/host/fhci.h                       |  5 +-
+ drivers/usb/host/xhci-dbgcap.h                |  3 +-
+ drivers/usb/host/xhci-dbgtty.c                | 15 ++--
+ include/linux/hyperv.h                        |  2 +-
+ include/linux/usb/cdc_ncm.h                   |  2 +-
+ include/linux/usb/usbnet.h                    |  2 +-
+ 186 files changed, 1135 insertions(+), 1044 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
 
