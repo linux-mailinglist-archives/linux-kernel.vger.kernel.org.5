@@ -1,126 +1,96 @@
-Return-Path: <linux-kernel+bounces-120677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C07B88DB57
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:37:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24DB488DB56
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D3A81F27F03
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:37:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55EA71C23956
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62313FB85;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8FE26AC1;
 	Wed, 27 Mar 2024 10:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GZGpmWnY"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b="uGwCT0Lq"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C83A273FB
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5381421A0B
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711535833; cv=none; b=m6hZdAZZNag9u0CMggJkJzVjTNpA6rihr8nvwe5ZQWPh4dFQafOt82EEvVCqjKEIck8I+FlrydMEIGhsKtxoOfFMutkCvqmxyBBEPQiXPT4VN9vEsMjydac6LH6K2zrVwaKPk/0Id+PijS4jTkTFS1m0MFuJ92gXOXj/r4N/0KA=
+	t=1711535832; cv=none; b=p1fvrEhTMO1KTI3f+SvGLBCP0skMysXVgOBWsKLwIUdvuTVUPHe4T7Djr/OVTspP+G+fKUyxgJLOPYn1Nm8H6JK2MfJoGfCpaZn2jOE0zjvkZBNg/fQLtLx2mqQAXkFCf2RkQat0P7NzVOTYOmvqitze1yp4Et7w0GqNJEjd4wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711535833; c=relaxed/simple;
-	bh=9MtnUGb5/xVzmxiQWRd0pMDTVCd37nN0QPXrSbZMyo4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iBVQT1BDQ00ncVfAVLxnA8kxlOBjI+XCjja22tw3HgqcMGnefNWdo+Xzzsx1V1MwZQG5z2rBdUKoNZRq8kJc7rBk+LXRf/KBvl+BITxePcSHrcUt83c/0VG9OFfr1O64xSQAFkxta+9Kl97gxg/1r4EgfIwfSvUlHDJrCcrnqSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GZGpmWnY; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so137224766b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:37:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711535830; x=1712140630; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k0RBjv/Mk5+1uH8zHWpw+frS6Pk+FGxJ0ixEJQeiLUE=;
-        b=GZGpmWnYg6GhwFB6eRNKaXWKkyMmDfdOPHdGc9Oqfl+KzdIbERbRLu80RDPtBzImL/
-         cVvS+IYkr3VeTNM/msdVaWUtIqJTpbgmoY8dnAecGMrSmFRIaHms2BPxG17XI8qM/scj
-         lx/nhKELnCvQDgK7EF+xCen0FYNVgQKXSzsE3Idrnsis0FInaCzvJlHSabaVNlfLMxow
-         rKCajQ+0xqi1ukr70GjB6zry3zgLLYOSPGTCq/PjnnAw9QJxUwWligP7OF5XQNLqcIWc
-         8p7oI5SqtQcP4FxjZ2UvN2QianT7gG7kQRz/XIQBactQCAWDJJCMCuu1Fn2O+2ZgJwA/
-         GZQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711535830; x=1712140630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k0RBjv/Mk5+1uH8zHWpw+frS6Pk+FGxJ0ixEJQeiLUE=;
-        b=OPlYU0r6T6JakbPyhogfwdHyJ2+xxmkIh9atgjH68Q/3qllf9TY1y3pHBCOFcumMDr
-         CUhSJPU3nxygO9+89fQrFkpjpGzoeutcF7JyNTjcwjPySboVzJzb/h5lu4/4PHpTf0ak
-         f0QTvbvq5M9vlZiaM8Mywp+H7SF3DQ98604SQ0Hdon0kE7R5VA3aSGkeeGMcVAP0QV2t
-         TlkdhwyLXdeEeoAkXvL/QVGZ9LBWQpG6GCkfmhUInZknVvxJNYm+MniVCuAbWCv2pDIh
-         J3sFsy6/alOXyQdtVUaymJZUN0t+Z7bgHR5lU3WIgwCYcEDgsBPjjBi+wPMqRsUwLp40
-         POpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKyjNkN+PaLQiF916eN++GEbM6343uqf8lB1jLpdWp3UcWkiIQv1hyhtZ5lhsD+L6VUOfRsBUmefKhCEbV2Vga9lijgzSmBpRvrg0S
-X-Gm-Message-State: AOJu0YyE6A97diJceF7y5w+5Ju+00Gs3wgeZMuslNDwVVy44pCekO+W5
-	Wg9OQWlhKA4wBpwqIIelTgb+lSqdCH4lZxMZaV1EkY/UBX7hs06zqkhxKrKGU+0=
-X-Google-Smtp-Source: AGHT+IGz4Ddt/Fv3CJl38Ww58TnJzydiHKubdfPR7I7n1Y2mpYfMpwk6w9WcDu9linEDr2LcHQ+bmQ==
-X-Received: by 2002:a17:906:4552:b0:a4e:ca2:f597 with SMTP id s18-20020a170906455200b00a4e0ca2f597mr141687ejq.30.1711535829275;
-        Wed, 27 Mar 2024 03:37:09 -0700 (PDT)
-Received: from linaro.org ([79.114.172.194])
-        by smtp.gmail.com with ESMTPSA id d12-20020a50fe8c000000b0056a033fa007sm5109218edt.64.2024.03.27.03.37.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 03:37:08 -0700 (PDT)
-Date: Wed, 27 Mar 2024 12:37:07 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH RESEND v6 0/5] spmi: pmic-arb: Add support for multiple
- buses
-Message-ID: <ZgP209t7IhdhcZIr@linaro.org>
-References: <20240326-spmi-multi-master-support-v6-0-1c87d8306c5b@linaro.org>
- <d213f262-ba0e-4cf8-af0e-66745ffea429@linaro.org>
+	s=arc-20240116; t=1711535832; c=relaxed/simple;
+	bh=APeCfLoHjOUQ/c5+H6kqxFvrr2nTy7dCG35+pTLJAXw=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=MGNIA+H28JdXyL+udj9rWYh2or59RJZnNAhphsAWxqm8W3V8Zjv4WjPVbOwg1pVuuODnMFB2cB40aaDEbNAUaPh80p+C/Zue6Op3nbFwkyGO2Z5gwLvf7fXkJ/VjI9Qqp3gcWhN3gjp5Iqa5QuRsgPdLH1vBEM2UyjhDNQ7Kk/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b=uGwCT0Lq; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1711535828; x=1712140628; i=aros@gmx.com;
+	bh=APeCfLoHjOUQ/c5+H6kqxFvrr2nTy7dCG35+pTLJAXw=;
+	h=X-UI-Sender-Class:Date:From:Subject:To;
+	b=uGwCT0LqBNLo5HfJHyuTP0unurXfLoAM7fatqnD/vil0ykHjxFmVXH6ScYHjT9Nm
+	 kgVzS6OQFEE/1gxVRMiP1y92ZjNfz2+PWWRFZRxwvl2iw1/PR0SDdGE6KTTMWYYNz
+	 ro4JYnHPgFAalxQIQimumEPfys1yqkdb616fzabfq3jHxFCz62kkxtgyKrQy2o5AD
+	 E9KfI/bOw9w+fSpDTsbVVUtuJdDus7o8PjOfDDteOt0IVb/HoH6bwA6uuGSbwVbNM
+	 8bos1FfRvNv1YyXHBY0+Y1EJde/sN4zEJvviTCP37XNt/EEbXsb/3Igmx+0SCCe8X
+	 J7qK1yucqk/+NTl3sg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.54.110.16] ([89.149.39.14]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9Wuq-1ruuIK0MeC-005ZoI for
+ <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 11:37:08 +0100
+Message-ID: <cb894653-6e20-4759-8dd1-7b03ae8614cf@gmx.com>
+Date: Wed, 27 Mar 2024 10:37:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d213f262-ba0e-4cf8-af0e-66745ffea429@linaro.org>
+From: "Artem S. Tashkinov" <aros@gmx.com>
+Subject: workqueue: name exceeds WQ_NAME_LEN. Truncating to:
+ events_freezable_power_efficien
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:efAKzF7z5a40k8qVRdGWYCsRarcoK/tKbegLxmMM7jRQv7an3J2
+ pftqIOaK0XiSNc63Uxo3EGZAgQMBtxmaPVVxkbvyvEAj3k4ztqrfzCB/MCT7I0u8RoCOS/5
+ ik+x58qqEGZIuKVDa32uJ3FVY8f6nAj07vl3uTdNXqqA75Vy5RYlwFOpKE7QwVw3T9IdJ5e
+ j/hE7SkNtIdb22AuT69gQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8iXj5r0QmV8=;CwZfWpjBbOIbc3MfiDiHxNPGebL
+ Zzy214Sr5qYXdc1/B93t/5uGK1W7wSgGI2hiec5dIKfCHRP7GK09Hj9jLFvhHiPYcdcoZa7gH
+ +MMf5vkmLKGMiKjczlcwt5lsSCoVc47KCblH+DJeVRpCyBTrgbbPzR3VfBaBzn1s5EUryLuNz
+ AuchBIzkVq6WWbiHeeeRTwA58uxYchHp6hJ6rKFTCMQ97LFRgcIgfJBkyxaV3bZg+7aeYrDzy
+ qmvkXq3188vB5ScGnWKOjSLM1OfKG+YHD9f8cbFrLZ77pUYXMvT8p7OS4inhJ1fJUHmVyjMXX
+ D1she44BVABCSzXXec0Egbs4Iw+zE0tQT1obX0tGe/PgKtMqfUm9mmlyaTexMVhu0Tb6bWijB
+ CnjeAWWV9vcCvsLMidV0nNR62fW/IfONKcimrMR+mD4XnWZn7rDf8AxEtZ/Ljt6Q9XUwtMAYs
+ ZRTfif7/toNi+2iXyOwQMzf1f15HMQ3/gc46hEUqkOqlOMpNjvrZ3EISQyknf7dwSe/Kvu5sv
+ yUPZBMLiqnswaETwoxaenRQRowQZtOIQHLLYhEdLsjW9/F/UTWri6BenWUSHn95YyA47MADAQ
+ ZkJ9y/jDpGLzd0rBqy731v6tAcTvLXaXAi9VIrfSLZ1NwcYXXGlUkU05LpmYCj+7jQ9bqvdqx
+ 5VWC6A8NaPBclDfL/RLvUlkIF/amBYd9cfM5Wpy8FyNrsKNr1A+SAFIOiegGF8U+R+VZhPVCo
+ kk5UuLwNGaOP5HeRTJo0mXjg2oi4TNN+9UTHjXJOi0haWreDK2n3fTmRXQETk+5wp6xLqp2dS
+ c4o247UwdqaOTg1vV954+E/84j+APgPdc9B1pQQ+6wU50=
 
-On 24-03-27 10:23:51, Krzysztof Kozlowski wrote:
-> On 26/03/2024 17:28, Abel Vesa wrote:
-> > This RFC prepares for and adds support for 2 buses, which is supported
-> > in HW starting with version 7. Until now, none of the currently
-> > supported platforms in upstream have used the second bus. The X1E80100
-> > platform, on the other hand, needs the second bus for the USB2.0 to work
-> > as there are 3 SMB2360 PMICs which provide eUSB2 repeaters and they are
-> > all found on the second bus.
-> > 
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> > Changes in v6:
-> > - Changed the compatible to platform specific (X1E80100) along with the
-> >   schema. Fixed the spmi buses unit addresses and added the empty ranges
-> 
-> Why resending after few days? And why without reviews?
-> 
+Hello,
 
-If you are referring to the initial v6 patchset, it was sent more than a
-month ago.
+There's a new warning message in kernel 6.8 which I guess shouldn't be
+there. Linux 6.7 did not have it.
 
-https://lore.kernel.org/all/20240222-spmi-multi-master-support-v6-0-bc34ea9561da@linaro.org/
+No idea where it comes from:
 
-> Best regards,
-> Krzysztof
-> 
+workqueue: name exceeds WQ_NAME_LEN. Truncating to:
+events_freezable_power_efficien
+
+A relevant bug report: https://bugzilla.kernel.org/show_bug.cgi?id=3D21864=
+9
+
+Please fix.
+
+Best regards,
+Artem
 
