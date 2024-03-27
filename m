@@ -1,104 +1,80 @@
-Return-Path: <linux-kernel+bounces-120403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 168F988D6E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:57:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71E8B88D6E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B6CCB2182C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:57:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A398A1C24AD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8613C241EC;
-	Wed, 27 Mar 2024 06:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A552376A;
+	Wed, 27 Mar 2024 06:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LXFx52Pj"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="l77RhJiP"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74763241E1;
-	Wed, 27 Mar 2024 06:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8CE22EF4
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711522648; cv=none; b=pAC6nIu8VAhwJAJGCW8Iyh4O6U/i3kC+ZaZreaV9tczxbiXxLtM43KNlF+Sg9u877sJ9csp8rb2fxzi+aIEwdUCCydpX/izjCWonw1SdYpTDK9mGIkfrqv08Tzv3csUOm52XkQhh/O5UBCHKjDSm1d4Mm0GGw9tdeOMHftu5Gag=
+	t=1711522704; cv=none; b=sYZcgr9bnmOUhryefxG7ylvfOtuqOoSNqZCzc6LDz518JhRftjPP4LqYrPO5drOdwpDqmNGNCa/2zdzR+ffiK3DowhO8Smb2SbUO5cW3P1gtJSk2JOEeAwAE2U9gpXuHulz80E7m1lajjihEIvSxv0o651EGiSWlVDDnZOMbrN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711522648; c=relaxed/simple;
-	bh=SLe3EkoAmpsK8G38HlQexQFaGXpkqG9r7/RlGeZTW7w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RcBTnc9IU94hLZDWOkcOAZy2ogKad6xIy0EXS5ufopfKVNAC5m6w62BTgOUY5/eckbjqT+dqqD3EaPkeGRqOQ+alpaq7gfjbQZfpTgwnZe3K+hV7nqVqMFf4W+2BB91mh225+KTwi4aS+s/GayXmQY6nmWvkLbLjsb97rKs+m18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LXFx52Pj; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56b8e4f38a2so8110742a12.3;
-        Tue, 26 Mar 2024 23:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711522646; x=1712127446; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SLe3EkoAmpsK8G38HlQexQFaGXpkqG9r7/RlGeZTW7w=;
-        b=LXFx52PjjNw0+ED8EE4gfujBsrIZ8MSviDj0zCkd5OpnYXQDqDN5hxrWIzqBvH+Kml
-         0l0OcetIto8sO6NJnZZb1/57QS5ErZBmvz2kVzHzqJU6V5rtDXL24nvyoHm5H8tiZJai
-         TfOqN/XHSCWDhtiiTQfbVQAQE+RMvjHR67LCNm7F61n8Myb54ftsr4ALssQLQ4WLDGKr
-         y1KD41KEAaodh2VpYSE3z0Fz1JtUj8vXFSfQpJJoqqQbRuUJiuJ5jPhXTvgwHCwdMS6Q
-         l+NHmvDwi6RpWRwOTeNoFRrwYjJQxDGGh1JAjU70othm26Tc0npe+aXz56YzUFPPw+jM
-         IF0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711522646; x=1712127446;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SLe3EkoAmpsK8G38HlQexQFaGXpkqG9r7/RlGeZTW7w=;
-        b=RvAUuxifvjdISQ49XXYJhPoXl13BHm+ah1+95ml6bmQp5opvnKs5bKpRKGRJaTIu3X
-         8EeChA17hLyI6CmJrX05v7vu572lcgq2+pdxKxx1EaTQPE/0FD0jf7EJWEYZnMsKc8tJ
-         heXUQxN7Hps++DoP0PaLsmu4Gm2InELGb9/c3k17pIM6raWW1qIGQL+vzt0QhocEkJj7
-         sZYb2nuCKJ+NIcJxCry0Eq5UFxaG0P/9bXOuVBTfgVg9hgFp9AEUpcMi/Avg2kB3Y/ec
-         EK6CiKD2BhHFT1z+cTEEai4gwwRkosbo+6EbJdb0yo2cQ/LK25fziJFAMyZ6sEjmrWbN
-         DKiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrBcEqYY6RI61egIjulf/RZZQhgXHasLvGcg7wDS3S0kg63fPYFzCu5mmt1MsRFm78JsMSxpT8a0/qHn3/s/X+kl76TSeahYuloZ9tg5yvVCJlQlH8wbP55sjLGAUDbIk90yx75y19bWaJbRI4FdwkY9ODSWsdzzYwNxnjer7KTZ0Hu+pHrKg5
-X-Gm-Message-State: AOJu0YzHnZObMPn615h1BJIe8BXM8sCo7vY5mA6Nq7WpMQsRoj2E/6Jb
-	WREEJjKr3EKbufCX9fK84u5iTaxv7+MWuPFQi+0Kxth3n/QiNflKBams5eWpVdSAy7G1bEb5ImL
-	o8OZuJ7blQG5v4LwPNM/58r2IGX0=
-X-Google-Smtp-Source: AGHT+IHwC1Xl9gPnTUY6wLcUNw+FjI+7Ejo0bvWGC/bVdJHL3gFSiwCZmJZq1WaW9XmnK7lrUZZaqOkkY5/QxWoufFw=
-X-Received: by 2002:a17:906:3c12:b0:a4d:f400:4e17 with SMTP id
- h18-20020a1709063c1200b00a4df4004e17mr2441213ejg.34.1711522645616; Tue, 26
- Mar 2024 23:57:25 -0700 (PDT)
+	s=arc-20240116; t=1711522704; c=relaxed/simple;
+	bh=5J2izzty6pDrrKaoIduuVXIGzOLsg5+I73DRf7H8tO8=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=MTBf9DezA5dxufOghzW7xjq8lnFRkCdNSgQG1cGGy3gylxlEx2Bq47YdJg6P5aWro2vQbNuQUZGaa78NWR3wHBxRT1X5ISXrKfyp3noKbO5xxxVhvExNL6HfFbgWYyRnHQHwjmLfxKTSk0tVVnEv4+wYF5z/5ePgEt1NeAieYLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=l77RhJiP; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xzMCZa/AwFEKYQZrVS8fSOiX2iz5fGxGpi2PPn7NXpk=; b=l77RhJiPgEPmqvAT3XHMCReQ4e
+	qrk68PMCpEZ4BMlFoWipdiRX18myGGBSuebXN/Qev8/aqWbm+Tq+ygiV359AcdK3Ouo13OYkLPkZM
+	XqvII2+lkKCnNg7UKe1gV/OegRx7NLjpHTc+4w8v4BCeqEVqJXioTWScTSJmqRWJJDOOzjKG7lFP6
+	1ZHolA16IUYFb8gziek0YitzItc58cuf/6wRHX4HwZzToQHObEFHWSIY+pakvkRb1zK0uts/DMLWu
+	/camiSan1gxuKMPlbm1ryLW42tAopTdpGzfFI75YPB+vfRyH7N9In3gxo3lyZ1RZl9LcmSV1jeqU7
+	ma0rLJQA==;
+Received: from [2a02:fe1:7001:f100:999a:2c37:93c6:50c9] (port=52648)
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rpNEj-00DeqW-IS
+	for linux-kernel@vger.kernel.org;
+	Wed, 27 Mar 2024 07:58:13 +0100
+Message-ID: <09e5964f-7d49-4b91-942e-c10c9ec024eb@cu-phil.org>
+Date: Wed, 27 Mar 2024 07:58:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1711475011.git.balazs.scheidler@axoflow.com> <0c8b3e33dbf679e190be6f4c6736603a76988a20.1711475011.git.balazs.scheidler@axoflow.com>
-In-Reply-To: <0c8b3e33dbf679e190be6f4c6736603a76988a20.1711475011.git.balazs.scheidler@axoflow.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Wed, 27 Mar 2024 14:56:48 +0800
-Message-ID: <CAL+tcoCsrGRWd-oE1xLs7JQ=a8_HUQ_6wx2py5-D6Nxb9jpRjg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/2] net: udp: add IP/port data to the
- tracepoint udp/udp_fail_queue_rcv_skb
-To: Balazs Scheidler <bazsi77@gmail.com>
-Cc: kuniyu@amazon.com, netdev@vger.kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Balazs Scheidler <balazs.scheidler@axoflow.com>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+Subject: Goveon (was Fair Source)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 27, 2024 at 2:05=E2=80=AFAM Balazs Scheidler <bazsi77@gmail.com=
-> wrote:
->
-> The udp_fail_queue_rcv_skb() tracepoint lacks any details on the source
-> and destination IP/port whereas this information can be critical in case
-> of UDP/syslog.
->
-> Signed-off-by: Balazs Scheidler <balazs.scheidler@axoflow.com>
+Slight change of focus -
 
-Looks good to me, thanks!
+I talked about Fair Source, that went into labour party politics, and 
+fair pay prinicples.
 
-Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
+We might aswell change focus completely to Goveon. Which means following 
+the Government correctly. Goveon should give a good idea of that, and 
+everything should follow that, and is a name in itself for a good fair 
+source OS. Also including later idea of AI correlation if anyone wants 
+to do that.
+
+Serenity!
+Ywe Cærlyn,
+Fair Source Rabbi.
 
