@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-120800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F17588DDB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 84BB788DDBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4667B26F05
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C72E5B271F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580C1130A43;
-	Wed, 27 Mar 2024 12:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957DC130ACE;
+	Wed, 27 Mar 2024 12:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDFtaLfq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A2SK7hVM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6D412FF90;
-	Wed, 27 Mar 2024 12:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C959130AD8;
+	Wed, 27 Mar 2024 12:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541237; cv=none; b=u76Do1Bvf14f95YaoVdCbnGGUbdr3JDptr4GUXbLg6088U1cIKlvCjvUwfX38ipE+0qaCzQsqha29vYLGfe0lCubuE5A6TBrvIgdrGf0bv+yZEX/a2a5FsG1qDFarrLB8Y3iqFa6jPjtv6WEp5sJphMxJBbtSnbtLZjKiibPpho=
+	t=1711541241; cv=none; b=du1TQkSq04yYz/PiuI9PW486zvYOU61nsy2tNWrPsgcSuGPMmGKMi1FD1idtGS8cCUo7/Unpjb+md7+IZbBGYd10CojEIGzfuHPQ34tVyWYoCFeEpEh75x2Rv6WDLEFrYZtnU9+/wXIi2PrAjsuqsVCvbRGhd55v8jlouoAriKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541237; c=relaxed/simple;
-	bh=JbUMZ/roR+rmiGA2vkSGBmEv9Ry9nL3yPJ8PrddJmIw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pgda348n1r2PMwmjzqU6mVeperc0lkxHI7iPTa+G1AxettI01oBRQYP+qvr+KeCGIieD2+GHDiV20p9VoqWjmEmF874wjTJTU4IOA+PUtV/+scrbXvYRtb5J65eJTy5h7DLhDqY90aGKDw1b5f4w2rnQUEChv1FdHmyfBOGFRlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDFtaLfq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADC78C433C7;
-	Wed, 27 Mar 2024 12:07:16 +0000 (UTC)
+	s=arc-20240116; t=1711541241; c=relaxed/simple;
+	bh=4ufu1nUY2CTgewJ5njwKZWz3ysqXUUAprJBPQoXZxBQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uRhtVpMeEZjrOzwxljjXtVmlLPa110097pLIIBodNH9Fp/2tuBrW6A6kWGxzv5o0pEBFnAOYwFLl9McDUetNMYonPfYtyXlyqg1E9sFssR++v1pe3pa1cxy2th6mlBOIMuHt7CEiy9e35+gkRvBH0aAyjjjA/hdLFeVfiP0SYNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A2SK7hVM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24548C433F1;
+	Wed, 27 Mar 2024 12:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541237;
-	bh=JbUMZ/roR+rmiGA2vkSGBmEv9Ry9nL3yPJ8PrddJmIw=;
+	s=k20201202; t=1711541241;
+	bh=4ufu1nUY2CTgewJ5njwKZWz3ysqXUUAprJBPQoXZxBQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=YDFtaLfqL2QQaSup61o+EKiWw0g3s60ziTocvqycKYQK6C71EcZwVu4CNKjCiq+mj
-	 gaG9SezctvL0y9jcqqq3TKllGTRvYxuSF81kLrvduJEoYPhJOMCtKmo01WgoqErpO8
-	 +zwkfIpgWHrdc8m75AegsHXODiFlkYKmBaqRAJN/mEhSMj3Y9XTIQDV44l/uc/OYbv
-	 39qpyksgZdrf6EshRi8DyJz0/dyi5v1ZdijvJA6H+PSs+itOsW3AAns9HmcTXfDCoD
-	 Sg7t99zLWN+Q1CZM/5F5Z47E6WBj6GQakGZYS7iOK8jWHoGymhY6u25A0vSAyT81dg
-	 BdXejQsiEUSag==
+	b=A2SK7hVMzlPmGoz2pORh0nNPTrNgVvFbNxlNDIpConAzix7gNu/KVOvemwNfnT3e2
+	 Kr54jKex19v//PIoFUTUdmgarRemn58xG0+nXVXjnFcXMberGrc+ung8MmoP1hY1lt
+	 EuN245jYzU5X5YsOWM2Mvo84Lzw0bDfQNvj3TNSOTVTfoeeYFi2Fayi4Y4AFiZGCCb
+	 O+j12iCHkq5jWeqV7q4Dv950F5QmTuyxO8vounUnquTuDmhh6t69Z2PpUpcird005V
+	 1v1D/6nHu0poUy3rO+ISrCJORTi25SCcbJ+wL5XD3haMdhGVXYgZFk2hgXRei8gPih
+	 aLQ8d+4hv1lHw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ville.syrjala@linux.intel.com
-Cc: =?UTF-8?q?Jouni=20H=C3=B6gander?= <jouni.hogander@intel.com>,
-	intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org,
+	friedrich.vock@gmx.de
+Cc: Joshua Ashton <joshua@froggi.es>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/i915/psr: Only allow PSR in LPSP mode on HSW non-ULT" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:07:15 -0400
-Message-ID: <20240327120715.2825271-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amdgpu: Reset IH OVERFLOW_CLEAR bit" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:07:18 -0400
+Message-ID: <20240327120719.2825318-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,69 +73,205 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 94501c3ca6400e463ff6cc0c9cf4a2feb6a9205d Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
-Date: Thu, 18 Jan 2024 23:21:31 +0200
-Subject: [PATCH] drm/i915/psr: Only allow PSR in LPSP mode on HSW non-ULT
+From 9217b91c64587459362f211b0310e2bdaeb67719 Mon Sep 17 00:00:00 2001
+From: Friedrich Vock <friedrich.vock@gmx.de>
+Date: Tue, 23 Jan 2024 12:52:03 +0100
+Subject: [PATCH] drm/amdgpu: Reset IH OVERFLOW_CLEAR bit
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On HSW non-ULT (or at least on Dell Latitude E6540) external displays
-start to flicker when we enable PSR on the eDP. We observe a much higher
-SR and PC6 residency than should be possible with an external display,
-and indeen much higher than what we observe with eDP disabled and
-only the external display enabled. Looks like the hardware is somehow
-ignoring the fact that the external display is active during PSR.
+Allows us to detect subsequent IH ring buffer overflows as well.
 
-I wasn't able to redproduce this on my HSW ULT machine, or BDW.
-So either there's something specific about this particular laptop
-(eg. some unknown firmware thing) or the issue is limited to just
-non-ULT HSW systems. All known registers that could affect this
-look perfectly reasonable on the affected machine.
-
-As a workaround let's unmask the LPSP event to prevent PSR entry
-except while in LPSP mode (only pipe A + eDP active). This
-will prevent PSR entry entirely when multiple pipes are active.
-The one slight downside is that we now also prevent PSR entry
-when driving eDP with pipe B or C, but I think that's a reasonable
-tradeoff to avoid having to implement a more complex workaround.
-
+Cc: Joshua Ashton <joshua@froggi.es>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
 Cc: stable@vger.kernel.org
-Fixes: 783d8b80871f ("drm/i915/psr: Re-enable PSR1 on hsw/bdw")
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10092
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240118212131.31868-1-ville.syrjala@linux.intel.com
-Reviewed-by: Jouni Högander <jouni.hogander@intel.com>
+Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/i915/display/intel_psr.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/cik_ih.c     | 6 ++++++
+ drivers/gpu/drm/amd/amdgpu/cz_ih.c      | 5 +++++
+ drivers/gpu/drm/amd/amdgpu/iceland_ih.c | 5 +++++
+ drivers/gpu/drm/amd/amdgpu/ih_v6_0.c    | 6 ++++++
+ drivers/gpu/drm/amd/amdgpu/ih_v6_1.c    | 7 +++++++
+ drivers/gpu/drm/amd/amdgpu/navi10_ih.c  | 6 ++++++
+ drivers/gpu/drm/amd/amdgpu/si_ih.c      | 6 ++++++
+ drivers/gpu/drm/amd/amdgpu/tonga_ih.c   | 6 ++++++
+ drivers/gpu/drm/amd/amdgpu/vega10_ih.c  | 6 ++++++
+ drivers/gpu/drm/amd/amdgpu/vega20_ih.c  | 6 ++++++
+ 10 files changed, 59 insertions(+)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_psr.c b/drivers/gpu/drm/i915/display/intel_psr.c
-index 696d5d32ca9db..1010b8c405df2 100644
---- a/drivers/gpu/drm/i915/display/intel_psr.c
-+++ b/drivers/gpu/drm/i915/display/intel_psr.c
-@@ -1544,8 +1544,18 @@ static void intel_psr_enable_source(struct intel_dp *intel_dp,
- 	 * can rely on frontbuffer tracking.
- 	 */
- 	mask = EDP_PSR_DEBUG_MASK_MEMUP |
--	       EDP_PSR_DEBUG_MASK_HPD |
--	       EDP_PSR_DEBUG_MASK_LPSP;
-+	       EDP_PSR_DEBUG_MASK_HPD;
+diff --git a/drivers/gpu/drm/amd/amdgpu/cik_ih.c b/drivers/gpu/drm/amd/amdgpu/cik_ih.c
+index 6f7c031dd197a..f24e34dc33d1d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/cik_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/cik_ih.c
+@@ -204,6 +204,12 @@ static u32 cik_ih_get_wptr(struct amdgpu_device *adev,
+ 		tmp = RREG32(mmIH_RB_CNTL);
+ 		tmp |= IH_RB_CNTL__WPTR_OVERFLOW_CLEAR_MASK;
+ 		WREG32(mmIH_RB_CNTL, tmp);
 +
-+	/*
-+	 * For some unknown reason on HSW non-ULT (or at least on
-+	 * Dell Latitude E6540) external displays start to flicker
-+	 * when PSR is enabled on the eDP. SR/PC6 residency is much
-+	 * higher than should be possible with an external display.
-+	 * As a workaround leave LPSP unmasked to prevent PSR entry
-+	 * when external displays are active.
-+	 */
-+	if (DISPLAY_VER(dev_priv) >= 8 || IS_HASWELL_ULT(dev_priv))
-+		mask |= EDP_PSR_DEBUG_MASK_LPSP;
++		/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++		 * can be detected.
++		 */
++		tmp &= ~IH_RB_CNTL__WPTR_OVERFLOW_CLEAR_MASK;
++		WREG32(mmIH_RB_CNTL, tmp);
+ 	}
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+index b8c47e0cf37ad..c19681492efa7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
+@@ -216,6 +216,11 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32(mmIH_RB_CNTL, tmp);
  
- 	if (DISPLAY_VER(dev_priv) < 20)
- 		mask |= EDP_PSR_DEBUG_MASK_MAX_SLEEP;
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32(mmIH_RB_CNTL, tmp);
+ 
+ out:
+ 	return (wptr & ih->ptr_mask);
+diff --git a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
+index aecad530b10a6..2c02ae69883d2 100644
+--- a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
+@@ -215,6 +215,11 @@ static u32 iceland_ih_get_wptr(struct amdgpu_device *adev,
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32(mmIH_RB_CNTL, tmp);
+ 
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32(mmIH_RB_CNTL, tmp);
+ 
+ out:
+ 	return (wptr & ih->ptr_mask);
+diff --git a/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c b/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
+index d9ed7332d805d..ad4ad39f128f7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
+@@ -418,6 +418,12 @@ static u32 ih_v6_0_get_wptr(struct amdgpu_device *adev,
+ 	tmp = RREG32_NO_KIQ(ih_regs->ih_rb_cntl);
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
++
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
+ out:
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/ih_v6_1.c b/drivers/gpu/drm/amd/amdgpu/ih_v6_1.c
+index 8fb05eae340ad..b8da0fc29378c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/ih_v6_1.c
++++ b/drivers/gpu/drm/amd/amdgpu/ih_v6_1.c
+@@ -418,6 +418,13 @@ static u32 ih_v6_1_get_wptr(struct amdgpu_device *adev,
+ 	tmp = RREG32_NO_KIQ(ih_regs->ih_rb_cntl);
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
++
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
++
+ out:
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/navi10_ih.c b/drivers/gpu/drm/amd/amdgpu/navi10_ih.c
+index 57d04ed20357b..4178f4e5dad73 100644
+--- a/drivers/gpu/drm/amd/amdgpu/navi10_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/navi10_ih.c
+@@ -442,6 +442,12 @@ static u32 navi10_ih_get_wptr(struct amdgpu_device *adev,
+ 	tmp = RREG32_NO_KIQ(ih_regs->ih_rb_cntl);
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
++
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
+ out:
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/si_ih.c b/drivers/gpu/drm/amd/amdgpu/si_ih.c
+index 9a24f17a57502..cada9f300a7f5 100644
+--- a/drivers/gpu/drm/amd/amdgpu/si_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/si_ih.c
+@@ -119,6 +119,12 @@ static u32 si_ih_get_wptr(struct amdgpu_device *adev,
+ 		tmp = RREG32(IH_RB_CNTL);
+ 		tmp |= IH_RB_CNTL__WPTR_OVERFLOW_CLEAR_MASK;
+ 		WREG32(IH_RB_CNTL, tmp);
++
++		/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++		 * can be detected.
++		 */
++		tmp &= ~IH_RB_CNTL__WPTR_OVERFLOW_CLEAR_MASK;
++		WREG32(IH_RB_CNTL, tmp);
+ 	}
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
+index 917707bba7f36..450b6e8315091 100644
+--- a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
+@@ -219,6 +219,12 @@ static u32 tonga_ih_get_wptr(struct amdgpu_device *adev,
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32(mmIH_RB_CNTL, tmp);
+ 
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32(mmIH_RB_CNTL, tmp);
++
+ out:
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/vega10_ih.c b/drivers/gpu/drm/amd/amdgpu/vega10_ih.c
+index d364c6dd152c3..bf68e18e3824b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vega10_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/vega10_ih.c
+@@ -373,6 +373,12 @@ static u32 vega10_ih_get_wptr(struct amdgpu_device *adev,
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
+ 
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
++
+ out:
+ 	return (wptr & ih->ptr_mask);
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/vega20_ih.c b/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
+index ddfc6941f9d55..db66e6cccaf2a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
++++ b/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
+@@ -421,6 +421,12 @@ static u32 vega20_ih_get_wptr(struct amdgpu_device *adev,
+ 	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
+ 	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
+ 
++	/* Unset the CLEAR_OVERFLOW bit immediately so new overflows
++	 * can be detected.
++	 */
++	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 0);
++	WREG32_NO_KIQ(ih_regs->ih_rb_cntl, tmp);
++
+ out:
+ 	return (wptr & ih->ptr_mask);
+ }
 -- 
 2.43.0
 
