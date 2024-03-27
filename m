@@ -1,554 +1,136 @@
-Return-Path: <linux-kernel+bounces-120393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D076F88D6C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:41:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEFF288D68E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 484551F2B09D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:41:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EE3BB224CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F86E2D04F;
-	Wed, 27 Mar 2024 06:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED7D2C877;
+	Wed, 27 Mar 2024 06:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lsmnBAZH"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QE3JGv1a"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C022C86E
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E821F606
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711521550; cv=none; b=mcWs3pNOUkBzcQ72ua2PqXkHzBZmpYtD41AzSmPIiPxms04GNiOise84pKAy3ecaWgputQrs2/n5WAdyYB3freJD+cGVyvN8ooWPLwF2e7VMPjFga3mrzzKxqSKicgFAULoqeALvvcdQxwfdClGx1DMgTPnLgA9Ko7+GSwjGbAY=
+	t=1711521467; cv=none; b=n6NtNJwMy3ro+36DX3HlJp7bzMNP3sc+zj/28AfAkSQ9KYMvYCRvLGLCSjzp1xAGV6I5TCUm4WrbAHomDAJW8j0bWC9Ic7t5h/H1MEJocsoThvQNKCGa5kvTEWCYzwpeFHCbSjM+kZCWNufLdYSxWpn8iYrUGzB+16C/2DZGbJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711521550; c=relaxed/simple;
-	bh=Z90+hpyS7BTYS+5IhBwCQlHmOswh/JP6rqgyquNWImA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nXY/Y9VBZVeVqWaxwsiuddDMdgrNGl6iLNBIXR2DPZqQUgEWDAsL0v9qk9F0+/TxPzffWxQ7Fu1T8OPo2mDR1mVm1FKE1JochXOS5YThiF7P3EwTLVu/yArgIa9L5LLhAhENDVmBWtaeBGkKpbif23gsrRfZqYTGBlS9EKCBkg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lsmnBAZH; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e0878b76f3so4493545ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:39:06 -0700 (PDT)
+	s=arc-20240116; t=1711521467; c=relaxed/simple;
+	bh=YbTWH1ZEgnojQO0lu/RJHGC/KsAwMHzIuPpPakpg8oQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f0/9XDBUDf0vJi211CXN6hUwTCJvYGE1gB6eyvvkNtpkljtzV0pOp23bTb4yiuL7e2zbhLA+w2gKgU0OohQL40qUL1Fdr59fAXLGA6fEavPZ2mZvl6PMbwsRwlR7GZj9lSGK3/T/hZAgYFDcyMujVVg7QXZL4hEmlAx+39BXDEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QE3JGv1a; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d68c6a4630so74387401fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 23:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711521546; x=1712126346; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3DfQOYc1JN5nrBehzJkZHt1akeRs7lpnsLdaI1nfPLU=;
-        b=lsmnBAZHIziGBWMx6qGv4gkwVuLLqFHkdWWchne3ONz+2SvWTh210uCUhIcjdTP/sP
-         YJDqLxaHuQuGFF+4pYRd1nom6duhIwVPJIN02mu4xD2t60rshPehQOWYCR8+B+tI2ZPP
-         fPhRvMZ1VvS8gQpGXMzskZNBjN8E6ETiWlle4gVobRc5hnrRZuDRWDxvka6CKE4rwXru
-         rcSWAP1KVP+FQY82UkAtQqlnjAjHOTUPoF0L+kly0sLSfDMIFGcN0MqmdWkmhm+wXQwj
-         qN43w+Ds0kEtep8dYpdrj6N+jRyUyRpXDdgJ7H0MMz2Y/WR3gel+cJM+3VziUj4Kf6Mj
-         1iUg==
+        d=gmail.com; s=20230601; t=1711521464; x=1712126264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9xRCZV/DoCsl1IXRPXRF8ryJxeBYrzLKPPE0aKQ6Epg=;
+        b=QE3JGv1a7lYuYn+hFtgqV+7TlAMbF93oGLSEXlqNmOw5vS6zlxKJLTZpIRlyN/d99C
+         JCaNUw/1PCk0exOJEQOSKkcLUy3oCEgC7PS0QePJULSocuGrmJ6Q5WMt5HeO4LUj4bd/
+         5eZqZtWTeNFCn3s0ftpGdrNh1f9FF++MICYfF2tYyw3w6mmm3deRcDL/nivHUiDnG33y
+         zMOhwkhDNTMfxIh5Pg62kkWoiN3I6YJxw8Z7pPEIvD5wkZ4yJ1Lnnz67qc6OhxG6f0pL
+         GkKVImT7jPIIHZyLK8EYp2N45oWfgsDuAcJXeCBsKXW7l4KYE8FTl0e1XRVPgjDkg1Lz
+         iGVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711521546; x=1712126346;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711521464; x=1712126264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3DfQOYc1JN5nrBehzJkZHt1akeRs7lpnsLdaI1nfPLU=;
-        b=ruR0Y46OPQAc/kEPU8Ih0PmmsoHlOje2hxaIgz8iGqR9Wqb4w/To4QMcH/C5ywAAVb
-         HPf4wTEJfls4IZYIWtCtYMkVbtCBcpT/11ZkVaGwKNBvzGCEXvXO26yiJghjQJ2yQxyo
-         curuY4z2hJNjpUTp6SrjCch8+EelLCuvqngXaLfbmsEeO2Q2T9WipgBIw0ALDYU5IHIS
-         drqePkayvz5tzOyb1DTddEslAMfxXDViK7GO1RDr+HDBHoSpXb9YeD9TuMItSdpvCWnG
-         igDn1uuiOnQyMRUxm7pwiSUVBYozwG5xtChLmjXhl6mfuBVjixa8XatwaUzCz7MvWQQb
-         7WMg==
-X-Forwarded-Encrypted: i=1; AJvYcCWYYAad/q+3kmGTy3+gOW0+q21C9cjJbI56l/Xaa6p9xhPyx+ZHKNBGMdOLKJecv94R2rAuRDUMDKxD+FumjC9Sljs6MRYwTNELkBl4
-X-Gm-Message-State: AOJu0YzwsSA4DAJ4RumOK990+54n4ALQyB5QhzOyAMLbQ8HV86DiC6ru
-	K94t5QTxo6ATLsuNSvJ+6v6WTsol8IzpWS5j52GSjFUvXyDHkA/YlhoE3j6DjQ==
-X-Google-Smtp-Source: AGHT+IG9tkeLSux89RDN7jdZLa4I9cQEl6MhGSBjtccqzZ7asOarqJOrM5ja9d0DupKloRxYagDqLg==
-X-Received: by 2002:a17:902:dac2:b0:1e0:a3b9:2e7a with SMTP id q2-20020a170902dac200b001e0a3b92e7amr5435896plx.6.1711521546022;
-        Tue, 26 Mar 2024 23:39:06 -0700 (PDT)
-Received: from [127.0.1.1] ([117.207.28.168])
-        by smtp.gmail.com with ESMTPSA id r9-20020a170902be0900b001e14807c7dfsm602553pls.86.2024.03.26.23.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 23:39:05 -0700 (PDT)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Wed, 27 Mar 2024 12:05:54 +0530
-Subject: [PATCH v11 8/8] PCI: endpoint: Remove "core_init_notifier" flag
+        bh=9xRCZV/DoCsl1IXRPXRF8ryJxeBYrzLKPPE0aKQ6Epg=;
+        b=OZyN8JYHIYsdp/o4v6WfU1gfb+Vt0YIRlbfboJN+7mSLJZZBq5JlayOA8XAyx5bsp6
+         gmDyKZbmpaLuMFOaQRJ/Pqc7UBHr+gTzUP042zmBaHtSdrqeuu259f0WVjiEKH/KpuP3
+         bpu+wg4vJrsiOBD/9z4H9yytsOIskNFakPIuO/guGsFUoVFpY/r88Js/QOZLyjdW9vBL
+         g6xITsK2J2xmIJkXgrsgtu4LTxZpkws1ST7Egy4s4yrYeSnIvMgrupHp3gRzypOl0S5l
+         YRDX8KtjuLDWzbyTaFVzj6W+CE4rHWdEIeBIv94uWhn5Mn2UIEGTsMsvzHXd1AJb5m28
+         MVTw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKTdOFbE6k8ji0OAQ5EZk1VNErgGpO0ib7sQH0B3tMw68ysGDmg3t0cFRnCH1z0c3tU0nQClPSVQIVbD6gDNG00up5FKW4zK1P50lI
+X-Gm-Message-State: AOJu0YxDN9DvOJNxZIhjropW0e8Bhm8NhyWYladdXboJ9AfMixQlqyF7
+	SVo9gsTl/uaUUTciPYhnSGePPr5QydO7LrNYroQiAkF+aZhJgdKVEjTk+yJNi464MPaaZ9b5+bm
+	brSAmN2u2aNAOhWETp5YBMxHirWo=
+X-Google-Smtp-Source: AGHT+IFP36X0x7Y4uIxFOLg/TPs4cMecmv/NsfNrKV01BYoqzbIV2D9iVtA+gZVp9VkMB8P0uScAIOQQksOhARs8EhE=
+X-Received: by 2002:a2e:9f0b:0:b0:2d4:aae0:1d71 with SMTP id
+ u11-20020a2e9f0b000000b002d4aae01d71mr226051ljk.43.1711521463657; Tue, 26 Mar
+ 2024 23:37:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-pci-dbi-rework-v11-8-6f5259f90673@linaro.org>
-References: <20240327-pci-dbi-rework-v11-0-6f5259f90673@linaro.org>
-In-Reply-To: <20240327-pci-dbi-rework-v11-0-6f5259f90673@linaro.org>
-To: Jingoo Han <jingoohan1@gmail.com>, 
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Marek Vasut <marek.vasut+renesas@gmail.com>, 
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Kishon Vijay Abraham I <kishon@ti.com>, Vidya Sagar <vidyas@nvidia.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Zhu <hongxing.zhu@nxp.com>, 
- Lucas Stach <l.stach@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
- Minghuan Lian <minghuan.Lian@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>, 
- Roy Zang <roy.zang@nxp.com>, 
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Jesper Nilsson <jesper.nilsson@axis.com>, 
- Srikanth Thokala <srikanth.thokala@intel.com>, 
- Shawn Lin <shawn.lin@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
- Niklas Cassel <cassel@kernel.org>, linux-arm-kernel@axis.com, 
- linux-rockchip@lists.infradead.org, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=16248;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=Z90+hpyS7BTYS+5IhBwCQlHmOswh/JP6rqgyquNWImA=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmA75WX+kb3lCzbDSKWf6R/y+0OWcYOCZVdrgur
- WzvicT8hiKJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZgO+VgAKCRBVnxHm/pHO
- 9XjKB/9j8a7tWA27fz2x4jlLEJwzZqGdc9y9WIpBu6jm7P4jaUni/EpWdCHgNGoGeiWQVXAcTrP
- ZKFjIIDqW2e87TG62zCem2IglMvOg7Yt1h99+sXpdDw7QEb+G4mz0AXRtc6fdpJcL8QNvfUgqkP
- 3HIorsY99ntCzufoxq9GB/2bbq43s0ZuJSbJjM9ogqjKOUzb2YJ57Q27xs1jFJkjAps9NzviiYe
- NvKAwEOrQreNPuvkI8yVc+a5aj28L3Bsxj4VoRx9KtT0mKyskY0P8Q1wJVfj31cZou99q0i/nee
- y1DLXH242gxAUKy+SqojLlFmnDn4QzwKnywUvS2cNQJ8OrxC
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+References: <20240326185032.72159-1-ryncsn@gmail.com> <20240326185032.72159-11-ryncsn@gmail.com>
+ <87zfukmbwz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87zfukmbwz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 27 Mar 2024 14:37:27 +0800
+Message-ID: <CAMgjq7A-TxWkNKz0wwjaf0C-KZgps-VdPG+QcpY9tMmBY04TNA@mail.gmail.com>
+Subject: Re: [RFC PATCH 10/10] mm/swap: optimize synchronous swapin
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, Chris Li <chrisl@kernel.org>, Minchan Kim <minchan@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	Yu Zhao <yuzhao@google.com>, SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Matthew Wilcox <willy@infradead.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-"core_init_notifier" flag is set by the glue drivers requiring refclk from
-the host to complete the DWC core initialization. Also, those drivers will
-send a notification to the EPF drivers once the initialization is fully
-completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-will start functioning.
+On Wed, Mar 27, 2024 at 2:24=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> Kairui Song <ryncsn@gmail.com> writes:
+>
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > Interestingly the major performance overhead of synchronous is actually
+> > from the workingset nodes update, that's because synchronous swap in
+>
+> If it's the major overhead, why not make it the first optimization?
 
-For the rest of the drivers generating refclk locally, EPF drivers will
-start functioning post binding with them. EPF drivers rely on the
-'core_init_notifier' flag to differentiate between the drivers.
-Unfortunately, this creates two different flows for the EPF drivers.
+This performance issue became much more obvious after doing other
+optimizations, and other optimizations are for general swapin not only
+for synchronous swapin, that's also how I optimized things step by
+step, so I kept my patch order...
 
-So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-a single initialization flow for the EPF drivers. This is done by calling
-the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-send the notification to the EPF drivers once the initialization is fully
-completed.
+And it is easier to do this after Patch 8/10 which introduces the new
+interface for swap cache.
 
-Only difference here is that, the drivers requiring refclk from host will
-send the notification once refclk is received, while others will send it
-during probe time itself.
+>
+> > keeps adding single folios into a xa_node, making the node no longer
+> > a shadow node and have to be removed from shadow_nodes, then remove
+> > the folio very shortly and making the node a shadow node again,
+> > so it has to add back to the shadow_nodes.
+>
+> The folio is removed only if should_try_to_free_swap() returns true?
+>
+> > Mark synchronous swapin folio with a special bit in swap entry embedded
+> > in folio->swap, as we still have some usable bits there. Skip workingse=
+t
+> > node update on insertion of such folio because it will be removed very
+> > quickly, and will trigger the update ensuring the workingset info is
+> > eventual consensus.
+>
+> Is this safe?  Is it possible for the shadow node to be reclaimed after
+> the folio are added into node and before being removed?
 
-But this also requires the EPC core driver to deliver the notification
-after EPF driver bind. Because, the glue driver can send the notification
-before the EPF drivers bind() and in those cases the EPF drivers will miss
-the event. To accommodate this, EPC core is now caching the state of the
-EPC initialization in 'init_complete' flag and pci-ep-cfs driver sends the
-notification to EPF drivers based on that after each EPF driver bind.
+If a xa node contains any non-shadow entry, it can't be reclaimed,
+shadow_lru_isolate will check and skip such nodes in case of race.
 
-Tested-by: Niklas Cassel <cassel@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/cadence/pcie-cadence-ep.c  |  2 ++
- drivers/pci/controller/dwc/pci-dra7xx.c           |  2 ++
- drivers/pci/controller/dwc/pci-imx6.c             |  2 ++
- drivers/pci/controller/dwc/pci-keystone.c         |  2 ++
- drivers/pci/controller/dwc/pci-layerscape-ep.c    |  2 ++
- drivers/pci/controller/dwc/pcie-artpec6.c         |  2 ++
- drivers/pci/controller/dwc/pcie-designware-ep.c   |  1 +
- drivers/pci/controller/dwc/pcie-designware-plat.c |  2 ++
- drivers/pci/controller/dwc/pcie-keembay.c         |  2 ++
- drivers/pci/controller/dwc/pcie-qcom-ep.c         |  1 -
- drivers/pci/controller/dwc/pcie-rcar-gen4.c       |  2 ++
- drivers/pci/controller/dwc/pcie-tegra194.c        |  1 -
- drivers/pci/controller/dwc/pcie-uniphier-ep.c     |  2 ++
- drivers/pci/controller/pcie-rcar-ep.c             |  2 ++
- drivers/pci/controller/pcie-rockchip-ep.c         |  2 ++
- drivers/pci/endpoint/functions/pci-epf-test.c     | 18 +++++-------------
- drivers/pci/endpoint/pci-ep-cfs.c                 |  9 +++++++++
- drivers/pci/endpoint/pci-epc-core.c               | 22 ++++++++++++++++++++++
- include/linux/pci-epc.h                           |  7 ++++---
- 19 files changed, 65 insertions(+), 18 deletions(-)
+>
+> If so, we may consider some other methods.  Make shadow_nodes per-cpu?
 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-index 2d0a8d78bffb..da67a06ee790 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-@@ -734,6 +734,8 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
- 
- 	spin_lock_init(&ep->lock);
- 
-+	dw_pcie_ep_init_notify(&pci->ep);
-+
- 	return 0;
- 
-  free_epc_mem:
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index 395042b29ffc..d2d17d37d3e0 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -474,6 +474,8 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(ep);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index bfcafa440ddb..894b5de76e3a 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -1144,6 +1144,8 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(ep);
-+
- 	/* Start LTSSM. */
- 	imx6_pcie_ltssm_enable(dev);
- 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 093dbb725e41..b7b30470b394 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -1293,6 +1293,8 @@ static int ks_pcie_probe(struct platform_device *pdev)
- 			goto err_ep_init;
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "INVALID device type %d\n", mode);
-diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-index b712fdd06549..c513598a46d7 100644
---- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-@@ -283,6 +283,8 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(&pci->ep);
-+
- 	return ls_pcie_ep_interrupt_init(pcie, pdev);
- }
- 
-diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
-index a6095561db4a..a4630b92489b 100644
---- a/drivers/pci/controller/dwc/pcie-artpec6.c
-+++ b/drivers/pci/controller/dwc/pcie-artpec6.c
-@@ -452,6 +452,8 @@ static int artpec6_pcie_probe(struct platform_device *pdev)
- 			return ret;
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "INVALID device type %d\n", artpec6_pcie->mode);
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index e0c654f242d2..5bfecc629bfc 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -630,6 +630,7 @@ void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
- 
- 	dw_pcie_edma_remove(pci);
-+	ep->epc->init_complete = false;
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
-index ca9b22e654cd..8490c5d6ff9f 100644
---- a/drivers/pci/controller/dwc/pcie-designware-plat.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
-@@ -154,6 +154,8 @@ static int dw_plat_pcie_probe(struct platform_device *pdev)
- 			dw_pcie_ep_deinit(&pci->ep);
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "INVALID device type %d\n", dw_plat_pcie->mode);
-diff --git a/drivers/pci/controller/dwc/pcie-keembay.c b/drivers/pci/controller/dwc/pcie-keembay.c
-index 250d6acf16dc..9fa9354a5f48 100644
---- a/drivers/pci/controller/dwc/pcie-keembay.c
-+++ b/drivers/pci/controller/dwc/pcie-keembay.c
-@@ -438,6 +438,8 @@ static int keembay_pcie_probe(struct platform_device *pdev)
- 			return ret;
- 		}
- 
-+		dw_pcie_ep_init_notify(&pci->ep);
-+
- 		break;
- 	default:
- 		dev_err(dev, "Invalid device type %d\n", pcie->mode);
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 3697b4a944cc..2fb8c15e7a91 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -775,7 +775,6 @@ static void qcom_pcie_ep_init_debugfs(struct qcom_pcie_ep *pcie_ep)
- 
- static const struct pci_epc_features qcom_pcie_epc_features = {
- 	.linkup_notifier = true,
--	.core_init_notifier = true,
- 	.msi_capable = true,
- 	.msix_capable = false,
- 	.align = SZ_4K,
-diff --git a/drivers/pci/controller/dwc/pcie-rcar-gen4.c b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-index fb7c03639a53..0448928017f3 100644
---- a/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-+++ b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-@@ -435,6 +435,8 @@ static int rcar_gen4_add_dw_pcie_ep(struct rcar_gen4_pcie *rcar)
- 		rcar_gen4_pcie_ep_deinit(rcar);
- 	}
- 
-+	dw_pcie_ep_init_notify(ep);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 264ee76bf008..e02deb31a72d 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -2006,7 +2006,6 @@ static int tegra_pcie_ep_raise_irq(struct dw_pcie_ep *ep, u8 func_no,
- 
- static const struct pci_epc_features tegra_pcie_epc_features = {
- 	.linkup_notifier = true,
--	.core_init_notifier = true,
- 	.msi_capable = false,
- 	.msix_capable = false,
- 	.reserved_bar = 1 << BAR_2 | 1 << BAR_3 | 1 << BAR_4 | 1 << BAR_5,
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier-ep.c b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-index 82ccaea089be..eb1d79fdb1f1 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-@@ -410,6 +410,8 @@ static int uniphier_pcie_ep_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	dw_pcie_ep_init_notify(&priv->pci.ep);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/pci/controller/pcie-rcar-ep.c b/drivers/pci/controller/pcie-rcar-ep.c
-index e6909271def7..45449171d71f 100644
---- a/drivers/pci/controller/pcie-rcar-ep.c
-+++ b/drivers/pci/controller/pcie-rcar-ep.c
-@@ -538,6 +538,8 @@ static int rcar_pcie_ep_probe(struct platform_device *pdev)
- 		goto err_pm_put;
- 	}
- 
-+	dw_pcie_ep_init_notify(&pci->ep);
-+
- 	return 0;
- 
- err_pm_put:
-diff --git a/drivers/pci/controller/pcie-rockchip-ep.c b/drivers/pci/controller/pcie-rockchip-ep.c
-index c9046e97a1d2..d3412ce17440 100644
---- a/drivers/pci/controller/pcie-rockchip-ep.c
-+++ b/drivers/pci/controller/pcie-rockchip-ep.c
-@@ -609,6 +609,8 @@ static int rockchip_pcie_ep_probe(struct platform_device *pdev)
- 	rockchip_pcie_write(rockchip, PCIE_CLIENT_CONF_ENABLE,
- 			    PCIE_CLIENT_CONFIG);
- 
-+	dw_pcie_ep_init_notify(&pci->ep);
-+
- 	return 0;
- err_epc_mem_exit:
- 	pci_epc_mem_exit(epc);
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index 18c80002d3bd..fc0282b0d626 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -753,6 +753,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
- 	const struct pci_epc_features *epc_features;
- 	struct pci_epc *epc = epf->epc;
- 	struct device *dev = &epf->dev;
-+	bool linkup_notifier = false;
- 	bool msix_capable = false;
- 	bool msi_capable = true;
- 	int ret;
-@@ -795,6 +796,10 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
- 		}
- 	}
- 
-+	linkup_notifier = epc_features->linkup_notifier;
-+	if (!linkup_notifier)
-+		queue_work(kpcitest_workqueue, &epf_test->cmd_handler.work);
-+
- 	return 0;
- }
- 
-@@ -901,8 +906,6 @@ static int pci_epf_test_bind(struct pci_epf *epf)
- 	const struct pci_epc_features *epc_features;
- 	enum pci_barno test_reg_bar = BAR_0;
- 	struct pci_epc *epc = epf->epc;
--	bool linkup_notifier = false;
--	bool core_init_notifier = false;
- 
- 	if (WARN_ON_ONCE(!epc))
- 		return -EINVAL;
-@@ -913,8 +916,6 @@ static int pci_epf_test_bind(struct pci_epf *epf)
- 		return -EOPNOTSUPP;
- 	}
- 
--	linkup_notifier = epc_features->linkup_notifier;
--	core_init_notifier = epc_features->core_init_notifier;
- 	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
- 	if (test_reg_bar < 0)
- 		return -EINVAL;
-@@ -927,21 +928,12 @@ static int pci_epf_test_bind(struct pci_epf *epf)
- 	if (ret)
- 		return ret;
- 
--	if (!core_init_notifier) {
--		ret = pci_epf_test_core_init(epf);
--		if (ret)
--			return ret;
--	}
--
- 	epf_test->dma_supported = true;
- 
- 	ret = pci_epf_test_init_dma_chan(epf_test);
- 	if (ret)
- 		epf_test->dma_supported = false;
- 
--	if (!linkup_notifier && !core_init_notifier)
--		queue_work(kpcitest_workqueue, &epf_test->cmd_handler.work);
--
- 	return 0;
- }
- 
-diff --git a/drivers/pci/endpoint/pci-ep-cfs.c b/drivers/pci/endpoint/pci-ep-cfs.c
-index 0ea64e24ed61..3b21e28f9b59 100644
---- a/drivers/pci/endpoint/pci-ep-cfs.c
-+++ b/drivers/pci/endpoint/pci-ep-cfs.c
-@@ -64,6 +64,9 @@ static int pci_secondary_epc_epf_link(struct config_item *epf_item,
- 		return ret;
- 	}
- 
-+	/* Send any pending EPC initialization complete to the EPF driver */
-+	pci_epc_notify_pending_init(epc, epf);
-+
- 	return 0;
- }
- 
-@@ -125,6 +128,9 @@ static int pci_primary_epc_epf_link(struct config_item *epf_item,
- 		return ret;
- 	}
- 
-+	/* Send any pending EPC initialization complete to the EPF driver */
-+	pci_epc_notify_pending_init(epc, epf);
-+
- 	return 0;
- }
- 
-@@ -230,6 +236,9 @@ static int pci_epc_epf_link(struct config_item *epc_item,
- 		return ret;
- 	}
- 
-+	/* Send any pending EPC initialization complete to the EPF driver */
-+	pci_epc_notify_pending_init(epc, epf);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-index dcd4e66430c1..ba2ff037dfa6 100644
---- a/drivers/pci/endpoint/pci-epc-core.c
-+++ b/drivers/pci/endpoint/pci-epc-core.c
-@@ -753,10 +753,32 @@ void pci_epc_init_notify(struct pci_epc *epc)
- 			epf->event_ops->core_init(epf);
- 		mutex_unlock(&epf->lock);
- 	}
-+	epc->init_complete = true;
- 	mutex_unlock(&epc->list_lock);
- }
- EXPORT_SYMBOL_GPL(pci_epc_init_notify);
- 
-+/**
-+ * pci_epc_notify_pending_init() - Notify the pending EPC device initialization
-+ *                                 complete to the EPF device
-+ * @epc: the EPC device whose core initialization is pending to be notified
-+ * @epf: the EPF device to be notified
-+ *
-+ * Invoke to notify the pending EPC device initialization complete to the EPF
-+ * device. This is used to deliver the notification if the EPC initialization
-+ * got completed before the EPF driver bind.
-+ */
-+void pci_epc_notify_pending_init(struct pci_epc *epc, struct pci_epf *epf)
-+{
-+	if (epc->init_complete) {
-+		mutex_lock(&epf->lock);
-+		if (epf->event_ops && epf->event_ops->core_init)
-+			epf->event_ops->core_init(epf);
-+		mutex_unlock(&epf->lock);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(pci_epc_notify_pending_init);
-+
- /**
-  * pci_epc_bme_notify() - Notify the EPF device that the EPC device has received
-  *			  the BME event from the Root complex
-diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-index 40ea18f5aa02..adee6dbe4e45 100644
---- a/include/linux/pci-epc.h
-+++ b/include/linux/pci-epc.h
-@@ -128,6 +128,8 @@ struct pci_epc_mem {
-  * @group: configfs group representing the PCI EPC device
-  * @lock: mutex to protect pci_epc ops
-  * @function_num_map: bitmap to manage physical function number
-+ * @init_complete: flag to indicate whether the EPC initialization is complete
-+ *                 or not
-  */
- struct pci_epc {
- 	struct device			dev;
-@@ -143,13 +145,12 @@ struct pci_epc {
- 	/* mutex to protect against concurrent access of EP controller */
- 	struct mutex			lock;
- 	unsigned long			function_num_map;
-+	bool				init_complete;
- };
- 
- /**
-  * struct pci_epc_features - features supported by a EPC device per function
-  * @linkup_notifier: indicate if the EPC device can notify EPF driver on link up
-- * @core_init_notifier: indicate cores that can notify about their availability
-- *			for initialization
-  * @msi_capable: indicate if the endpoint function has MSI capability
-  * @msix_capable: indicate if the endpoint function has MSI-X capability
-  * @reserved_bar: bitmap to indicate reserved BAR unavailable to function driver
-@@ -159,7 +160,6 @@ struct pci_epc {
-  */
- struct pci_epc_features {
- 	unsigned int	linkup_notifier : 1;
--	unsigned int	core_init_notifier : 1;
- 	unsigned int	msi_capable : 1;
- 	unsigned int	msix_capable : 1;
- 	u8	reserved_bar;
-@@ -198,6 +198,7 @@ int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf,
- void pci_epc_linkup(struct pci_epc *epc);
- void pci_epc_linkdown(struct pci_epc *epc);
- void pci_epc_init_notify(struct pci_epc *epc);
-+void pci_epc_notify_pending_init(struct pci_epc *epc, struct pci_epf *epf);
- void pci_epc_bme_notify(struct pci_epc *epc);
- void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf,
- 			enum pci_epc_interface_type type);
-
--- 
-2.25.1
-
+That's also an alternative solution if there are other risks.
 
