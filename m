@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-120956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3329088E0F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:47:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2C8788E0F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DB221F28416
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:47:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC8421C2981D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655F4152510;
-	Wed, 27 Mar 2024 12:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3353D15252C;
+	Wed, 27 Mar 2024 12:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fFdyqitj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLoglpx0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A3015219D;
-	Wed, 27 Mar 2024 12:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626D5152517;
+	Wed, 27 Mar 2024 12:14:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541690; cv=none; b=pehEFnCewzPLdP3feVLGXQliVrywsW1f2NnVU3pnc8TV9g/UZgw4mBNRl/FoamdZi8zZz+fw5Dej2KiEVi/H49VsdeVah81gDAC0y1CVEDTDPazdQxZ7QB7gd6fuAvA0tQjbvor+Nrkx4OXHmN0gNvPCXdH3Fh1ga4cubkjJlY8=
+	t=1711541693; cv=none; b=uUKTu8Vok2WtXpvy3BjiKpxJ8vZk7j4ZBQFbhpGsjlJwDYSp33aYa4DiudImJT8nCB7ZUacxCKXPyox+Xs45ngwX5zEtv8xToTdks4OXdAbXbYgk6lVNgiQ3M78Bvql5vDdst2rEMzbWnPRHfwoa6MWzpZY/ls6g36vGOexhIpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541690; c=relaxed/simple;
-	bh=0sPBcFnE5vZkf0Qhj5W4AyG/7WAm/5udhCmy+iZOIFI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nex9w0hC2jIIwg1C8uFIX0v904detCfF+64TCTW3IpXTXbvjdUiN9xjdF5aKQ9W5vmy/G5IpuThM8SO0PV140fkg77ueEc2Vgq3ud8FU8S2hb22AScoYKo3JFS8oEf/nlJShdmnuOocYnykkFZCGir/Av7U5KLvOqpTDVbYnz5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fFdyqitj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60108C433F1;
-	Wed, 27 Mar 2024 12:14:49 +0000 (UTC)
+	s=arc-20240116; t=1711541693; c=relaxed/simple;
+	bh=InLTL0BiJSyESEr0O1Y1zmUS5HNnDKY4umz7iqnxKL8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gehiwA//YXVb3sqzFWfEE00QFG1V2H+DgT6hjooNaWYdxZSDJps5cngybIYx6gYQuW5CPI/L/cSxzLgLuV9P/mEzlLS9bIJjJV8P5qvOs0tGUdR0lNTfpOBlK9fQH8BmRED5M9C7iP3GoEkQj5jJ3NXdjcxOyF5eqL/kHdkOhHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLoglpx0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21299C433F1;
+	Wed, 27 Mar 2024 12:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541690;
-	bh=0sPBcFnE5vZkf0Qhj5W4AyG/7WAm/5udhCmy+iZOIFI=;
+	s=k20201202; t=1711541692;
+	bh=InLTL0BiJSyESEr0O1Y1zmUS5HNnDKY4umz7iqnxKL8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=fFdyqitjzL9saixBx59BdlSJc4/vzST/IDkdJ0AZTH84osWGGx5YVqoolDlIxywl3
-	 ejU2vbmV8Cfz5dz2nX06HXaSn7oFqsq2ILN4qL5hYlejoDIi99FINEcM0Qq0BdLbpp
-	 JbbYigXh7OiprksMZT9vTIE0IzbaVdPqnejh+XO8qdTcLZywsHWXOiUPZSlDdtHA6S
-	 wqZObfNZOjxSnK5yKzz6ylf1hO1w12Uai6l5gKCOLPXkPe2xoBuL4O+XkfdzmP5pQ1
-	 wPd3lDfoevv3H2jcqtdHv5yAgz7atDq8xlXJntyw7O0OeyU3S4v9sOjlXgc3VQGqgl
-	 1C06dc3tgJTXg==
+	b=lLoglpx0sD9YAtACcppNuuxBF1hSUgy84gacn6lE4F3uRgIFaaPhUpgGe1zUiQ5bX
+	 77tROhRT45+v7XLXJqCkBZEI9DtMhAjenvvTzOg5gdXa5nC3Q/tMOpgi9NggMC6JzH
+	 mAlPnzxCY2G/pb6jZVAH+teYFCtEb2loHit312TSHxMpsCMOO93yPAxl83mJLO59EN
+	 SMYmqMj/SixLC2gWujNXkvsbs1cnl7ObzTb5uOML+H06JAb/LXqDW6zevqpCqsppf2
+	 D1FtBiWpkM9EXag9pH787E1BsTKzw4NT2xH3ADxrOhw0/NCcmFmsEjSVT7y576JKR7
+	 vooD9vrC0tjBw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	bharathsm@microsoft.com
-Cc: Shyam Prasad N <sprasad@microsoft.com>,
-	Steve French <stfrench@microsoft.com>,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
+	2045gemini@gmail.com
+Cc: Yu Kuai <yukuai3@huawei.com>,
+	Song Liu <song@kernel.org>,
+	linux-raid@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "cifs: prevent updating file size from server if we have a read/write lease" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:14:47 -0400
-Message-ID: <20240327121448.2831375-1-sashal@kernel.org>
+Subject: FAILED: Patch "md/raid5: fix atomicity violation in raid5_cache_count" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:14:50 -0400
+Message-ID: <20240327121451.2831412-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,167 +70,117 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From e4b61f3b1c67f5068590965f64ea6e8d5d5bd961 Mon Sep 17 00:00:00 2001
-From: Bharath SM <bharathsm@microsoft.com>
-Date: Thu, 29 Feb 2024 23:09:52 +0530
-Subject: [PATCH] cifs: prevent updating file size from server if we have a
- read/write lease
+From dfd2bf436709b2bccb78c2dda550dde93700efa7 Mon Sep 17 00:00:00 2001
+From: Gui-Dong Han <2045gemini@gmail.com>
+Date: Fri, 12 Jan 2024 15:10:17 +0800
+Subject: [PATCH] md/raid5: fix atomicity violation in raid5_cache_count
 
-In cases of large directories, the readdir operation may span multiple
-round trips to retrieve contents. This introduces a potential race
-condition in case of concurrent write and readdir operations. If the
-readdir operation initiates before a write has been processed by the
-server, it may update the file size attribute to an older value.
-Address this issue by avoiding file size updates from readdir when we
-have read/write lease.
+In raid5_cache_count():
+    if (conf->max_nr_stripes < conf->min_nr_stripes)
+        return 0;
+    return conf->max_nr_stripes - conf->min_nr_stripes;
+The current check is ineffective, as the values could change immediately
+after being checked.
 
-Scenario:
-1) process1: open dir xyz
-2) process1: readdir instance 1 on xyz
-3) process2: create file.txt for write
-4) process2: write x bytes to file.txt
-5) process2: close file.txt
-6) process2: open file.txt for read
-7) process1: readdir 2 - overwrites file.txt inode size to 0
-8) process2: read contents of file.txt - bug, short read with 0 bytes
+In raid5_set_cache_size():
+    ...
+    conf->min_nr_stripes = size;
+    ...
+    while (size > conf->max_nr_stripes)
+        conf->min_nr_stripes = conf->max_nr_stripes;
+    ...
 
+Due to intermediate value updates in raid5_set_cache_size(), concurrent
+execution of raid5_cache_count() and raid5_set_cache_size() may lead to
+inconsistent reads of conf->max_nr_stripes and conf->min_nr_stripes.
+The current checks are ineffective as values could change immediately
+after being checked, raising the risk of conf->min_nr_stripes exceeding
+conf->max_nr_stripes and potentially causing an integer overflow.
+
+This possible bug is found by an experimental static analysis tool
+developed by our team. This tool analyzes the locking APIs to extract
+function pairs that can be concurrently executed, and then analyzes the
+instructions in the paired functions to identify possible concurrency bugs
+including data races and atomicity violations. The above possible bug is
+reported when our tool analyzes the source code of Linux 6.2.
+
+To resolve this issue, it is suggested to introduce local variables
+'min_stripes' and 'max_stripes' in raid5_cache_count() to ensure the
+values remain stable throughout the check. Adding locks in
+raid5_cache_count() fails to resolve atomicity violations, as
+raid5_set_cache_size() may hold intermediate values of
+conf->min_nr_stripes while unlocked. With this patch applied, our tool no
+longer reports the bug, with the kernel configuration allyesconfig for
+x86_64. Due to the lack of associated hardware, we cannot test the patch
+in runtime testing, and just verify it according to the code logic.
+
+Fixes: edbe83ab4c27 ("md/raid5: allow the stripe_cache to grow and shrink.")
 Cc: stable@vger.kernel.org
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
-Signed-off-by: Bharath SM <bharathsm@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Song Liu <song@kernel.org>
+Link: https://lore.kernel.org/r/20240112071017.16313-1-2045gemini@gmail.com
+Signed-off-by: Song Liu <song@kernel.org>
 ---
- fs/smb/client/cifsproto.h |  6 ++++--
- fs/smb/client/file.c      |  8 +++++---
- fs/smb/client/inode.c     | 13 +++++++------
- fs/smb/client/readdir.c   |  2 +-
- 4 files changed, 17 insertions(+), 12 deletions(-)
+ drivers/md/raid5.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/fs/smb/client/cifsproto.h b/fs/smb/client/cifsproto.h
-index a841bf4967fa4..58cfbd450a55e 100644
---- a/fs/smb/client/cifsproto.h
-+++ b/fs/smb/client/cifsproto.h
-@@ -144,7 +144,8 @@ extern int cifs_reconnect(struct TCP_Server_Info *server,
- extern int checkSMB(char *buf, unsigned int len, struct TCP_Server_Info *srvr);
- extern bool is_valid_oplock_break(char *, struct TCP_Server_Info *);
- extern bool backup_cred(struct cifs_sb_info *);
--extern bool is_size_safe_to_change(struct cifsInodeInfo *, __u64 eof);
-+extern bool is_size_safe_to_change(struct cifsInodeInfo *cifsInode, __u64 eof,
-+				   bool from_readdir);
- extern void cifs_update_eof(struct cifsInodeInfo *cifsi, loff_t offset,
- 			    unsigned int bytes_written);
- extern struct cifsFileInfo *find_writable_file(struct cifsInodeInfo *, int);
-@@ -201,7 +202,8 @@ extern void cifs_unix_basic_to_fattr(struct cifs_fattr *fattr,
- 				     struct cifs_sb_info *cifs_sb);
- extern void cifs_dir_info_to_fattr(struct cifs_fattr *, FILE_DIRECTORY_INFO *,
- 					struct cifs_sb_info *);
--extern int cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr);
-+extern int cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr,
-+			       bool from_readdir);
- extern struct inode *cifs_iget(struct super_block *sb,
- 			       struct cifs_fattr *fattr);
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index 14f2cf75abbd7..7ec445f49f1c3 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -2412,7 +2412,7 @@ static int grow_one_stripe(struct r5conf *conf, gfp_t gfp)
+ 	atomic_inc(&conf->active_stripes);
  
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index f391c9b803d84..9cff5f7dc062e 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -329,7 +329,7 @@ int cifs_posix_open(const char *full_path, struct inode **pinode,
- 		}
- 	} else {
- 		cifs_revalidate_mapping(*pinode);
--		rc = cifs_fattr_to_inode(*pinode, &fattr);
-+		rc = cifs_fattr_to_inode(*pinode, &fattr, false);
- 	}
- 
- posix_open_ret:
-@@ -4738,12 +4738,14 @@ static int is_inode_writable(struct cifsInodeInfo *cifs_inode)
-    refreshing the inode only on increases in the file size
-    but this is tricky to do without racing with writebehind
-    page caching in the current Linux kernel design */
--bool is_size_safe_to_change(struct cifsInodeInfo *cifsInode, __u64 end_of_file)
-+bool is_size_safe_to_change(struct cifsInodeInfo *cifsInode, __u64 end_of_file,
-+			    bool from_readdir)
- {
- 	if (!cifsInode)
- 		return true;
- 
--	if (is_inode_writable(cifsInode)) {
-+	if (is_inode_writable(cifsInode) ||
-+		((cifsInode->oplock & CIFS_CACHE_RW_FLG) != 0 && from_readdir)) {
- 		/* This inode is open for write at least once */
- 		struct cifs_sb_info *cifs_sb;
- 
-diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
-index d02f8ba29cb5b..7f28edf4b20f3 100644
---- a/fs/smb/client/inode.c
-+++ b/fs/smb/client/inode.c
-@@ -147,7 +147,8 @@ cifs_nlink_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr)
- 
- /* populate an inode with info from a cifs_fattr struct */
- int
--cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr)
-+cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr,
-+		    bool from_readdir)
- {
- 	struct cifsInodeInfo *cifs_i = CIFS_I(inode);
- 	struct cifs_sb_info *cifs_sb = CIFS_SB(inode->i_sb);
-@@ -199,7 +200,7 @@ cifs_fattr_to_inode(struct inode *inode, struct cifs_fattr *fattr)
- 	 * Can't safely change the file size here if the client is writing to
- 	 * it due to potential races.
- 	 */
--	if (is_size_safe_to_change(cifs_i, fattr->cf_eof)) {
-+	if (is_size_safe_to_change(cifs_i, fattr->cf_eof, from_readdir)) {
- 		i_size_write(inode, fattr->cf_eof);
- 
- 		/*
-@@ -368,7 +369,7 @@ static int update_inode_info(struct super_block *sb,
- 		CIFS_I(*inode)->time = 0; /* force reval */
- 		return -ESTALE;
- 	}
--	return cifs_fattr_to_inode(*inode, fattr);
-+	return cifs_fattr_to_inode(*inode, fattr, false);
+ 	raid5_release_stripe(sh);
+-	conf->max_nr_stripes++;
++	WRITE_ONCE(conf->max_nr_stripes, conf->max_nr_stripes + 1);
+ 	return 1;
  }
  
- #ifdef CONFIG_CIFS_ALLOW_INSECURE_LEGACY
-@@ -403,7 +404,7 @@ cifs_get_file_info_unix(struct file *filp)
- 	} else
- 		goto cifs_gfiunix_out;
+@@ -2707,7 +2707,7 @@ static int drop_one_stripe(struct r5conf *conf)
+ 	shrink_buffers(sh);
+ 	free_stripe(conf->slab_cache, sh);
+ 	atomic_dec(&conf->active_stripes);
+-	conf->max_nr_stripes--;
++	WRITE_ONCE(conf->max_nr_stripes, conf->max_nr_stripes - 1);
+ 	return 1;
+ }
  
--	rc = cifs_fattr_to_inode(inode, &fattr);
-+	rc = cifs_fattr_to_inode(inode, &fattr, false);
+@@ -6820,7 +6820,7 @@ raid5_set_cache_size(struct mddev *mddev, int size)
+ 	if (size <= 16 || size > 32768)
+ 		return -EINVAL;
  
- cifs_gfiunix_out:
- 	free_xid(xid);
-@@ -934,7 +935,7 @@ cifs_get_file_info(struct file *filp)
- 	fattr.cf_uniqueid = CIFS_I(inode)->uniqueid;
- 	fattr.cf_flags |= CIFS_FATTR_NEED_REVAL;
- 	/* if filetype is different, return error */
--	rc = cifs_fattr_to_inode(inode, &fattr);
-+	rc = cifs_fattr_to_inode(inode, &fattr, false);
- cgfi_exit:
- 	cifs_free_open_info(&data);
- 	free_xid(xid);
-@@ -1491,7 +1492,7 @@ cifs_iget(struct super_block *sb, struct cifs_fattr *fattr)
+-	conf->min_nr_stripes = size;
++	WRITE_ONCE(conf->min_nr_stripes, size);
+ 	mutex_lock(&conf->cache_size_mutex);
+ 	while (size < conf->max_nr_stripes &&
+ 	       drop_one_stripe(conf))
+@@ -6832,7 +6832,7 @@ raid5_set_cache_size(struct mddev *mddev, int size)
+ 	mutex_lock(&conf->cache_size_mutex);
+ 	while (size > conf->max_nr_stripes)
+ 		if (!grow_one_stripe(conf, GFP_KERNEL)) {
+-			conf->min_nr_stripes = conf->max_nr_stripes;
++			WRITE_ONCE(conf->min_nr_stripes, conf->max_nr_stripes);
+ 			result = -ENOMEM;
+ 			break;
  		}
+@@ -7388,11 +7388,13 @@ static unsigned long raid5_cache_count(struct shrinker *shrink,
+ 				       struct shrink_control *sc)
+ {
+ 	struct r5conf *conf = shrink->private_data;
++	int max_stripes = READ_ONCE(conf->max_nr_stripes);
++	int min_stripes = READ_ONCE(conf->min_nr_stripes);
  
- 		/* can't fail - see cifs_find_inode() */
--		cifs_fattr_to_inode(inode, fattr);
-+		cifs_fattr_to_inode(inode, fattr, false);
- 		if (sb->s_flags & SB_NOATIME)
- 			inode->i_flags |= S_NOATIME | S_NOCMTIME;
- 		if (inode->i_state & I_NEW) {
-diff --git a/fs/smb/client/readdir.c b/fs/smb/client/readdir.c
-index b520eea7bfce8..132ae7d884a97 100644
---- a/fs/smb/client/readdir.c
-+++ b/fs/smb/client/readdir.c
-@@ -148,7 +148,7 @@ cifs_prime_dcache(struct dentry *parent, struct qstr *name,
- 						rc = -ESTALE;
- 					}
- 				}
--				if (!rc && !cifs_fattr_to_inode(inode, fattr)) {
-+				if (!rc && !cifs_fattr_to_inode(inode, fattr, true)) {
- 					dput(dentry);
- 					return;
- 				}
+-	if (conf->max_nr_stripes < conf->min_nr_stripes)
++	if (max_stripes < min_stripes)
+ 		/* unlikely, but not impossible */
+ 		return 0;
+-	return conf->max_nr_stripes - conf->min_nr_stripes;
++	return max_stripes - min_stripes;
+ }
+ 
+ static struct r5conf *setup_conf(struct mddev *mddev)
 -- 
 2.43.0
 
