@@ -1,154 +1,171 @@
-Return-Path: <linux-kernel+bounces-121926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1386888EF87
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:50:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5B188EF8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DBA5B25FB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E485429ED06
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E591415252A;
-	Wed, 27 Mar 2024 19:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95375152DF7;
+	Wed, 27 Mar 2024 19:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gNbpt7vF"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KASVTbbY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746C21509B1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6B5152526;
+	Wed, 27 Mar 2024 19:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711569013; cv=none; b=ImzSLxtL+hIltu+nlmCSDlUqDkmPwKBgqA6m5r4OY1b02oyN53leFRq827TgbVDp9Coisfmtgt1rvEqhG8BJkleeqJDYIs0mz1J2zlupmoxRRzEpKn2h5JYksqMeva8BO08teyaj2ERzxZx7vkYK6Rj+lBnaC5nXSCBXX+8fFOY=
+	t=1711569128; cv=none; b=Q5+Fu07WB9YTrHz0Xt6tu6ETQG0PFpaphRDhxZVM3iUSfiBzr9xmAW/E1X604X6DMpqgDVfeS58l9x9Qt/7gGJIe+B/64IUzoRm4jtsuy3s5iMLu8hnx6y8WP6nk1fsumcUsLhaqJKFhuLakFMrEXR2/hJ5wbel0Uz1+lt8VJHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711569013; c=relaxed/simple;
-	bh=wuxCCv8VQBgulT0IC8qi8fq3uXjMWvgWTlKCDOY8Ffw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jIgrSEgpet//3ipImQ2g76hg0HBvewRKnvAhBEaToxppicWR81PnTNn/MpeyQYtiPdIBqewTCf6rkG3tseVxUkGeF676DC+VHiwkCe6wZuBXE6nyCvBxh0sIEkxdaslc2DrAsSMRUJjmAjrEjR+9e+edsJs2pSdvKewisW4HCEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gNbpt7vF; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a466fc8fcccso25126666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:50:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711569010; x=1712173810; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+bMAqCJ8t7P3InP0WP0DeRsP6LlfPzKdNMqUuNEm/4E=;
-        b=gNbpt7vF6Lp7b1WE+806lp21l16X8JpQKm9TyOC95a//5gvRvfOayyyEYXPkwukkHN
-         HTm/pwT+/VAxZ/W3dWlWIqFix4pdANMkIKCn0O87whZhbDXENo7vptE+ST+I6qBq8h/u
-         GDLqHI7pKtNKAhSnhlsPWnsCw/ld6wpTrm3MaasqZik13sD9AolXmFHjoXJV+dSC4FXK
-         tyOdeArf5Uzy1r6eSrdxBUGPJ+W347rs9p1PYzypMqREkvV9dbm786ULDvL1HmdA1fM3
-         VpAx5HmCuavm4e4g9XN0k/sAA2wZ3x2XcTZU2+N8nLWLx7skwuSWvV4B2vKgUJ3Gl/VE
-         FAow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711569010; x=1712173810;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+bMAqCJ8t7P3InP0WP0DeRsP6LlfPzKdNMqUuNEm/4E=;
-        b=QKLdvj+7+Mcdu4xiFH8BEwDIJDogbHcRbaR+5xpfC8ExkxL3exC6+VWHnJZtki9fEs
-         2XTITZvgIvqLbYEtulWnmF2yEmfxRSVk6Ybxl1Y4wSX8YeYKDsbjS5O4BVqUrzIL+830
-         IZmBKqOqHjLYVHuQv0AlVLmCgrxQIx6via3OQvczfLdjlJd7HrjEyM7AUb49E6Es9Bl8
-         k4FJj3GOm9c4X9LmhmvS+oywYX91X9VI5G3UfjiwQBbgDWvo+Fk+/uqbrJHUcLaQU884
-         2Kym7ipjNdxm9DL54UPRwN8l0gMKs+7eEicRRz7RyE5BjXuUHGqs/82rSe9klwYu0h8e
-         OOig==
-X-Forwarded-Encrypted: i=1; AJvYcCUsWSYRqzqhpDJ5XWu/KraZQhRwEKAoXxIep3tkD5GelUuOmqlHQ9ys5dRLhDmGum11ac26ouSP4+it9bUJLh1qi3R9ImcJUAZG4TYF
-X-Gm-Message-State: AOJu0YxeRhJHY1PJJ4MTrrjcmsEXZUJG621TUhP27209dld5vwnVw9IK
-	PkipyShDJ1n72gMYU2QhgKpPc51wTc1YRzTadfPtNi8GGOBLBKIFPG5Mf/gxy3A=
-X-Google-Smtp-Source: AGHT+IEK1FEdv++g2vsCy21f89ME56VjBd3DO8jXMfxko/7+tJDQKxkB0s3d5Wy0ekpNPimPsqDxwQ==
-X-Received: by 2002:a17:906:2a0c:b0:a47:3c66:b396 with SMTP id j12-20020a1709062a0c00b00a473c66b396mr294393eje.64.1711569009863;
-        Wed, 27 Mar 2024 12:50:09 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id z15-20020a170906270f00b00a46b8cd9b51sm5834772ejc.185.2024.03.27.12.50.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 12:50:09 -0700 (PDT)
-Message-ID: <60428572-a611-4c43-a185-a850ef69d2de@linaro.org>
-Date: Wed, 27 Mar 2024 20:50:07 +0100
+	s=arc-20240116; t=1711569128; c=relaxed/simple;
+	bh=NW/plT/lkw+bj9qL/voWkJkmE88rQnUU6wEQcKQY0HE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eONAc9XS9I9MxjP71jwuJ3hgo8ZWiJzf0Zz7bLDW1Wu+MBxeXKFJAo+tKESFcygYSZ7CbndqkSa7uCVSOlGI3lekEpqk8bocna9U+pPxIZjEWWH63xvoeR/VGHCSHKuuVVAhiIjSFyCe59qPio3NEacgnIaN9GUvWpvQ6xrmJWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KASVTbbY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 235A0C433C7;
+	Wed, 27 Mar 2024 19:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711569128;
+	bh=NW/plT/lkw+bj9qL/voWkJkmE88rQnUU6wEQcKQY0HE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KASVTbbYdrxm95eqZVmCFpnLknJBDKYPdDamEQvTLthvPNOmRTdm47trn8eYWdN/T
+	 brLftUfBJD4RKutIOC2d2WZN52a33/sMjKZW56z9vj+U8CV/nhi0bHaDOk3RBCU7oa
+	 WzK2VOtcZ9sU2NPwoHINwlSOB94oflPngQS6nDfeF7iahMDXOFs2q/Loy66rDVcJoj
+	 ylq2GULbNPQnko8sVJwURfcalqYZ/PK8FSqT3Pld5CTvT4CKC96k0c4FU7IY3BGXyY
+	 xrbwHV+YPtuFxNvvJJWp/PFaQTVfQhVOubC+JPmOW0hjpxfRrPkwP/i1FMaSE+bXQZ
+	 BuJI+CL8aoJBw==
+Date: Wed, 27 Mar 2024 19:52:02 +0000
+From: Will Deacon <will@kernel.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Gavin Shan <gshan@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: [PATCH untested] vhost: order avail ring reads after index
+ updates
+Message-ID: <20240327195202.GB12000@willie-the-truck>
+References: <f7be6f4ed4bc5405e9a6b848e5ac3dd1f9955c2a.1711560268.git.mst@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ARM: dts: qcom: Add support for Motorola Moto G
- (2013)
-To: Stanislav Jakubek <stano.jakubek@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, phone-devel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <32c507337ab80c550fb1df08f7014d1e31eb4c32.1711454680.git.stano.jakubek@gmail.com>
- <8c605fb9cff8364ea6ac321b5a3fc265c5686def.1711454680.git.stano.jakubek@gmail.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <8c605fb9cff8364ea6ac321b5a3fc265c5686def.1711454680.git.stano.jakubek@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7be6f4ed4bc5405e9a6b848e5ac3dd1f9955c2a.1711560268.git.mst@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 26.03.2024 1:11 PM, Stanislav Jakubek wrote:
-> Add a device tree for the Motorola Moto G (2013) smartphone based
-> on the Qualcomm MSM8226 SoC.
+On Wed, Mar 27, 2024 at 01:26:23PM -0400, Michael S. Tsirkin wrote:
+> vhost_get_vq_desc (correctly) uses smp_rmb to order
+> avail ring reads after index reads.
+> However, over time we added two more places that read the
+> index and do not bother with barriers.
+> Since vhost_get_vq_desc when it was written assumed it is the
+> only reader when it sees a new index value is cached
+> it does not bother with a barrier either, as a result,
+> on the nvidia-gracehopper platform (arm64) available ring
+> entry reads have been observed bypassing ring reads, causing
+> a ring corruption.
 > 
-> Initially supported features:
->   - Buttons (Volume Down/Up, Power)
->   - eMMC
->   - Hall Effect Sensor
->   - SimpleFB display
->   - TMP108 temperature sensor
->   - Vibrator
+> To fix, factor out the correct index access code from vhost_get_vq_desc.
+> As a side benefit, we also validate the index on all paths now, which
+> will hopefully help catch future errors earlier.
 > 
-> Note: the dhob and shob reserved-memory regions are seemingly a part of some
-> Motorola specific (firmware?) mechanism, see [1].
+> Note: current code is inconsistent in how it handles errors:
+> some places treat it as an empty ring, others - non empty.
+> This patch does not attempt to change the existing behaviour.
 > 
-> [1] https://github.com/LineageOS/android_kernel_motorola_msm8226/blob/cm-14.1/Documentation/devicetree/bindings/misc/hob_ram.txt
-> 
-> Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
+> Cc: stable@vger.kernel.org
+> Reported-by: Gavin Shan <gshan@redhat.com>
+> Reported-by: Will Deacon <will@kernel.org>
+> Suggested-by: Will Deacon <will@kernel.org>
+> Fixes: 275bf960ac69 ("vhost: better detection of available buffers")
+> Cc: "Jason Wang" <jasowang@redhat.com>
+> Fixes: d3bb267bbdcb ("vhost: cache avail index in vhost_enable_notify()")
+> Cc: "Stefano Garzarella" <sgarzare@redhat.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 > ---
+> 
+> I think it's better to bite the bullet and clean up the code.
+> Note: this is still only built, not tested.
+> Gavin could you help test please?
+> Especially on the arm platform you have?
+> 
+> Will thanks so much for finding this race!
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+No problem, and I was also hoping that the smp_rmb() could be
+consolidated into a single helper like you've done here.
 
-Konrad
+One minor comment below:
+
+>  drivers/vhost/vhost.c | 80 +++++++++++++++++++++++--------------------
+>  1 file changed, 42 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 045f666b4f12..26b70b1fd9ff 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -1290,10 +1290,38 @@ static void vhost_dev_unlock_vqs(struct vhost_dev *d)
+>  		mutex_unlock(&d->vqs[i]->mutex);
+>  }
+>  
+> -static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq,
+> -				      __virtio16 *idx)
+> +static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq)
+>  {
+> -	return vhost_get_avail(vq, *idx, &vq->avail->idx);
+> +	__virtio16 idx;
+> +	u16 avail_idx;
+> +	int r = vhost_get_avail(vq, idx, &vq->avail->idx);
+> +
+> +	if (unlikely(r < 0)) {
+> +		vq_err(vq, "Failed to access avail idx at %p: %d\n",
+> +		       &vq->avail->idx, r);
+> +		return -EFAULT;
+> +	}
+> +
+> +	avail_idx = vhost16_to_cpu(vq, idx);
+> +
+> +	/* Check it isn't doing very strange things with descriptor numbers. */
+> +	if (unlikely((u16)(avail_idx - vq->last_avail_idx) > vq->num)) {
+> +		vq_err(vq, "Guest moved used index from %u to %u",
+> +		       vq->last_avail_idx, vq->avail_idx);
+> +		return -EFAULT;
+> +	}
+> +
+> +	/* Nothing new? We are done. */
+> +	if (avail_idx == vq->avail_idx)
+> +		return 0;
+> +
+> +	vq->avail_idx = avail_idx;
+> +
+> +	/* We updated vq->avail_idx so we need a memory barrier between
+> +	 * the index read above and the caller reading avail ring entries.
+> +	 */
+> +	smp_rmb();
+
+I think you could use smp_acquire__after_ctrl_dep() if you're feeling
+brave, but to be honest I'd prefer we went in the opposite direction
+and used READ/WRITE_ONCE + smp_load_acquire()/smp_store_release() across
+the board. It's just a thankless, error-prone task to get there :(
+
+So, for the patch as-is:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+(I've not tested it either though, so definitely wait for Gavin on that!)
+
+Cheers,
+
+Will
 
