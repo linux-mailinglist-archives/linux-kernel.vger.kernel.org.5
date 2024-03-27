@@ -1,113 +1,98 @@
-Return-Path: <linux-kernel+bounces-121808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B03188EDF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:15:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE4F88EE0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45D2E29BD66
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:15:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 865E2B21972
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A9D1514D7;
-	Wed, 27 Mar 2024 18:11:05 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C1014F9D7;
+	Wed, 27 Mar 2024 18:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYLKE40g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8C414F11F
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50B7131BB8;
+	Wed, 27 Mar 2024 18:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711563065; cv=none; b=gyVYl4mUNwVoHTi72lxl8GPGxJ5QjVIjbvI6mJSwtz/h5cS4HkxzQ5qyINZm8ulRycfcgkUXNcpXb1Baw3zUnjiCwnYJCKi/9Zu9FX/LAVFjau3XPPbp9KXAOjtD7BG5sRpwWpJl4r/8XlYwHgVHBC4CTAAsg1d9vwB2rlZETfY=
+	t=1711563135; cv=none; b=iB+jjiTRbXuOI0WtdONTrKPSfxw99jeLttv7crklA+XxgHW9j5ARKRgF1hqZMM71uVugSgM9L8lulkCxGJ2Rq0NytgAWBkmvjCbyjUXU+ymxNZLCSYqJ37tC86vo7IcJgy+hJECLxBJXOqyM0b7Y1VWEDSy+UZLeFPEhKdmLYJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711563065; c=relaxed/simple;
-	bh=9GNTWxMSRwlXCVsa0OHVcGTRa4irJx+7RxihjbPMJYs=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aB4UJ+ZVwTIYWp0nrdMyezI5u2Lh+wL5fRomrsxL4mv2AcrzJjWfFop1qUQVA3UTStN5vBo3lODfbny8YtUZChW1w0kQLZaYuEwRfDwLUYpwCIj+8yxhKUPxjY4AdcBQm0VEPwtExG6R2BKxpwYX6XufLU0FHdTnzia+5EwUOB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V4ZT43cYpz6K5px;
-	Thu, 28 Mar 2024 02:10:00 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id EC530140CB9;
-	Thu, 28 Mar 2024 02:10:54 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 27 Mar
- 2024 18:10:54 +0000
-Date: Wed, 27 Mar 2024 18:10:53 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Alexey Dobriyan <adobriyan@gmail.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-kernel@vger.kernel.org>, Guenter Roeck
-	<linux@roeck-us.net>, <linuxarm@huawei.com>
-Subject: Re: [PATCH v2] cpu: mark cpu_possible_mask as __ro_after_init
-Message-ID: <20240327181053.0000481d@Huawei.com>
-In-Reply-To: <11d7a34f-909b-4923-a15f-d32015463c35@p183>
-References: <41cd78af-92a3-4f23-8c7a-4316a04a66d8@p183>
-	<11d7a34f-909b-4923-a15f-d32015463c35@p183>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1711563135; c=relaxed/simple;
+	bh=0HBq8F9K6LnjpSqk+7zBZTXcdceoLu9fTOnW0z7k21I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=bTS8yhjJd07nLIddqni/ojPkCk0+Wdda4KFpA7AAC9qpZHi2X6wfswJwGMHz0tzFZXBYhQh3vHzHcdLd99kLMhHAMIxDOfjDZtiMlZBZ+qJOYhDr0+7A/KoE1pR80VsHS4XVosZ+gJJ5gTR2aZbAo5lw6zIe87rKTg6qhlR/X58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYLKE40g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26D2EC433C7;
+	Wed, 27 Mar 2024 18:12:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711563135;
+	bh=0HBq8F9K6LnjpSqk+7zBZTXcdceoLu9fTOnW0z7k21I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=EYLKE40g3iKdlE2CQqB+tjPKqpcZhq5/SBvcBnXaqp97Qo9GVj+d5GDNsVlqsjPRl
+	 9lc+s9WSq+GkuFPvs0tZwQN5gIzynKjrTE15FWxn02SaCJDBa+LSdLBgoFHzZ913yI
+	 +LLZoednW2Nb68P4xNkgWApoInz/+Yx9eGTCp8OHInTEu4K2Anr64u/UYfkTbqSEPg
+	 aJ4bvpUyUjVu0JOqTao7dPb5G1E9TQCm2vu25gCKTdfhWtURD5YBmyIM9zyOi53lgh
+	 LrwBYL85dmjKLW/4StfxyPeeMggTJQMKJAz6ukLOGD2njjX3YM1gntjqTOafWy9cPY
+	 IeGtYrVJ5Z8Gg==
+Date: Wed, 27 Mar 2024 13:12:13 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] PCI: Update pci_find_capability() stub return values
+Message-ID: <20240327181213.GA1531575@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327180234.1529164-1-helgaas@kernel.org>
 
-On Thu, 22 Feb 2024 14:19:35 +0300
-Alexey Dobriyan <adobriyan@gmail.com> wrote:
-
-> cpu_possible_mask is by definition "cpus which could be hotplugged without
-> reboot". It's a property which is fixed after kernel enumerates hardware
-> configuration.
+On Wed, Mar 27, 2024 at 01:02:34PM -0500, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> f646c2a0a668 ("PCI: Return u8 from pci_find_capability() and similar") and
+> ee8b1c478a9f ("PCI: Return u16 from pci_find_ext_capability() and similar")
+> updated the return type of the extern declarations, but neglected to update
+> the type of the stubs used CONFIG_PCI is not enabled.
+> 
+> Update them to match the extern declarations.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Causes a crash in this path (via CPU HP testing on qemu)
-Pretending to be an AMD Genoa, but I doubt that matters.
-
-topology_hotplug_apic()
--> topo_set_cpuids()
- --> set_cpu_possible(cpu, true);
-It should be already set, but the code doesn't check that.
-
-Various possible fixes. Probably easiest is to pass in a 
-bool hotplug to topo_set_cpuids() so we don't set the 
-possible value if it's coming from hotplug calls.
-
-I can spin a patch, but it will next week probably.
-
-Jonathan
+Provisionally applied to pci/enumeration for v6.10, let me know if you
+see any issues.
 
 > ---
+>  include/linux/pci.h | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> 	v2: fix parisc compilation
-> 
->  kernel/cpu.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -3107,10 +3107,10 @@ const DECLARE_BITMAP(cpu_all_bits, NR_CPUS) = CPU_BITS_ALL;
->  EXPORT_SYMBOL(cpu_all_bits);
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b19992a5dfaf..6a09bd9636d5 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -2011,10 +2011,9 @@ static inline int pci_register_driver(struct pci_driver *drv)
+>  static inline void pci_unregister_driver(struct pci_driver *drv) { }
+>  static inline u8 pci_find_capability(struct pci_dev *dev, int cap)
+>  { return 0; }
+> -static inline int pci_find_next_capability(struct pci_dev *dev, u8 post,
+> -					   int cap)
+> +static inline u8 pci_find_next_capability(struct pci_dev *dev, u8 post, int cap)
+>  { return 0; }
+> -static inline int pci_find_ext_capability(struct pci_dev *dev, int cap)
+> +static inline u16 pci_find_ext_capability(struct pci_dev *dev, int cap)
+>  { return 0; }
 >  
->  #ifdef CONFIG_INIT_ALL_POSSIBLE
-> -struct cpumask __cpu_possible_mask __read_mostly
-> +struct cpumask __cpu_possible_mask __ro_after_init
->  	= {CPU_BITS_ALL};
->  #else
-> -struct cpumask __cpu_possible_mask __read_mostly;
-> +struct cpumask __cpu_possible_mask __ro_after_init;
->  #endif
->  EXPORT_SYMBOL(__cpu_possible_mask);
->  
-
+>  static inline u64 pci_get_dsn(struct pci_dev *dev)
+> -- 
+> 2.34.1
+> 
 
