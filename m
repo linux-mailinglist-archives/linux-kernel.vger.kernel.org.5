@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-121101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826AB88E25A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:24:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 621E288E25D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4AD292A2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:24:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 948CB1C2AB79
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2FE16FF2A;
-	Wed, 27 Mar 2024 12:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A3113B795;
+	Wed, 27 Mar 2024 12:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oG1e2Cso"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1eQuoG7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0351516F917;
-	Wed, 27 Mar 2024 12:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0895816FF47;
+	Wed, 27 Mar 2024 12:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542082; cv=none; b=HIxZKo59I195kfZLompxfYvZ2r7Rp2YA6WqK3j/+1OgcsqLL8pcmJfaYIy9UCG34lb9O9ca9jVYhARpUuCJU6nlJB3mJc4H6+/OcvIabyU7k2VYSxflXLoUlceSdXOg18lYxXOVCgHkp5MDQH5h9MfM0srGNB5h8ldgzBWE538w=
+	t=1711542085; cv=none; b=ulHCLbbc/Yl5paYsT2VE0uaHR2ko4IYdWzRj4vonTHe6o7o3Ctkx6rO2DZyVbiN2LRXkJpcFwV/tFMTolXRPeq0oR6bFsHrLdWDRMu1PBJLUpsadsc0v9ea/9Ji/ZO5CgVZjGn/RqzwsNS7PgWG/Qpd7r7697mPl82FlWzZ4+4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542082; c=relaxed/simple;
-	bh=pM5VrG/QjiTFoQxqIbmJmqFrXIt3s8YHfV9nSWyJWnY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sxpq4BspM92oqk6UuPFPam2Y0PziUKin0cKQ7gFlGdFMPHoWI+meFb2FAxGKDm4Keh/hYEa8hlRdlGQFyNNaKe5Cj5brdHqr5017HyzwoJhAuDwWgiTjnqLohKQIFaRIh2J89/AE8V7Qtg0IrkCxdgSUq9jnr6j6nz0u4Zqz020=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oG1e2Cso; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B00BC433F1;
-	Wed, 27 Mar 2024 12:21:21 +0000 (UTC)
+	s=arc-20240116; t=1711542085; c=relaxed/simple;
+	bh=CIIr3gCEG+3opvY+S/mrbaoCSt0eZctrjskSgO9hl54=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nqmBI2UB6cX0t8SxgSgKOlFsMG0vJqqccnG0TCqdb5xMxwcX3CO74ODyLCN4FKRcTQl0XPacLr+JhpxSfCMcdcc4Lir/HwSLwylAHEmida7mtr5BXa5wyTk2BzcGpqU7QUbAbUzCvaocaasTM9m6CTKg7yuFiCfdZlOuuQZqu7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p1eQuoG7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95149C433F1;
+	Wed, 27 Mar 2024 12:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542081;
-	bh=pM5VrG/QjiTFoQxqIbmJmqFrXIt3s8YHfV9nSWyJWnY=;
+	s=k20201202; t=1711542084;
+	bh=CIIr3gCEG+3opvY+S/mrbaoCSt0eZctrjskSgO9hl54=;
 	h=From:To:Cc:Subject:Date:From;
-	b=oG1e2CsoMOuX/ryNLLUuf8Kdlga2aDYqPWXIZAvDQSWDtuj+Ghde1+s4JGYjyhWRW
-	 NXjWlDdc0sGcVViWkmbfN5pzRMIjExfXWfaBz7t7rdtY4ZS/Kf04WE78A+/LtD0WL1
-	 uVzkSCpkopE3zoRbcR9lSlv4mX6coaHaYP1YthzFUfLPOEvkqaJ3XSWxa5wQBI5fKv
-	 TuRmyJ7MMYe/Y29BPnXfODS1hKgeQy9BaCyHSgvNwRu9EuL/YbBeMkTArf3YLmoGjt
-	 mnvFXs2QJMQ/fJ5vtsYpQlX2mvWdj9dEtrVewC10BiZaXFbiGSfMqieliQYieyp63c
-	 tLIXM31xK0YjA==
+	b=p1eQuoG7OzDcLUkkXpIEjy1AJuDQ7A3HyuZtDjkJrBP1BHHcZlbMhEkV4hPWbl7lw
+	 MGIN2ceUkzvXcZYRgZx9LdIHIChAKKvio7/EDcmSpeO6qW3Rw/FYXejGJDqbiHFM7R
+	 0ZICeta0ZampNT3H6V80Phqru7lvs5zMCBgroo/9Jkkhr0sO+CjSCCDZSx4t4EnCAZ
+	 Adt1FHoiFXPeuoGKnO46SzYEmU4tJLqUcImpT7oHZcEBMtyR8hJutMTCVmPzCkmk7i
+	 hu7PenbUntHiiKnifcYbfUDxm1fk1cFcONni/VQ48ASgIUDLzv0bKt/GH2kjnZml3L
+	 hePOMPmsK6l4A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alexander.deucher@amd.com
-Cc: Feifei Xu <Feifei.Xu@amd.com>,
-	amd-gfx@lists.freedesktop.org,
+	jani.nikula@intel.com
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amdgpu/gfx11: set UNORD_DISPATCH in compute MQDs" failed to apply to 5.4-stable tree
-Date: Wed, 27 Mar 2024 08:21:19 -0400
-Message-ID: <20240327122120.2836754-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/panel: do not return negative error codes from drm_panel_get_modes()" failed to apply to 5.4-stable tree
+Date: Wed, 27 Mar 2024 08:21:22 -0400
+Message-ID: <20240327122122.2836791-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,50 +72,72 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From fc8f5a29d4cf0979ac4019282c3ca5cb246969f9 Mon Sep 17 00:00:00 2001
-From: Alex Deucher <alexander.deucher@amd.com>
-Date: Fri, 19 Jan 2024 12:32:59 -0500
-Subject: [PATCH] drm/amdgpu/gfx11: set UNORD_DISPATCH in compute MQDs
+From fc4e97726530241d96dd7db72eb65979217422c9 Mon Sep 17 00:00:00 2001
+From: Jani Nikula <jani.nikula@intel.com>
+Date: Fri, 8 Mar 2024 18:03:40 +0200
+Subject: [PATCH] drm/panel: do not return negative error codes from
+ drm_panel_get_modes()
 
-This needs to be set to 1 to avoid a potential deadlock in
-the GC 10.x and newer.  On GC 9.x and older, this needs
-to be set to 0. This can lead to hangs in some mixed
-graphics and compute workloads. Updated firmware is also
-required for AQL.
+None of the callers of drm_panel_get_modes() expect it to return
+negative error codes. Either they propagate the return value in their
+struct drm_connector_helper_funcs .get_modes() hook (which is also not
+supposed to return negative codes), or add it to other counts leading to
+bogus values.
 
-Reviewed-by: Feifei Xu <Feifei.Xu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+On the other hand, many of the struct drm_panel_funcs .get_modes() hooks
+do return negative error codes, so handle them gracefully instead of
+propagating further.
+
+Return 0 for no modes, whatever the reason.
+
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
 Cc: stable@vger.kernel.org
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/79f559b72d8c493940417304e222a4b04dfa19c4.1709913674.git.jani.nikula@intel.com
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c           | 2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_panel.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
-index 043eff309100f..c1e0000107608 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c
-@@ -3846,7 +3846,7 @@ static int gfx_v11_0_compute_mqd_init(struct amdgpu_device *adev, void *m,
- 			    (order_base_2(prop->queue_size / 4) - 1));
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, RPTR_BLOCK_SIZE,
- 			    (order_base_2(AMDGPU_GPU_PAGE_SIZE / 4) - 1));
--	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 0);
-+	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 1);
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, TUNNEL_DISPATCH,
- 			    prop->allow_tunneling);
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, PRIV_STATE, 1);
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
-index 15277f1d5cf0a..d722cbd317834 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v11.c
-@@ -224,6 +224,7 @@ static void update_mqd(struct mqd_manager *mm, void *mqd,
- 	m->cp_hqd_pq_control = 5 << CP_HQD_PQ_CONTROL__RPTR_BLOCK_SIZE__SHIFT;
- 	m->cp_hqd_pq_control |=
- 			ffs(q->queue_size / sizeof(unsigned int)) - 1 - 1;
-+	m->cp_hqd_pq_control |= CP_HQD_PQ_CONTROL__UNORD_DISPATCH_MASK;
- 	pr_debug("cp_hqd_pq_control 0x%x\n", m->cp_hqd_pq_control);
+diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
+index e814020bbcd3b..cfbe020de54e0 100644
+--- a/drivers/gpu/drm/drm_panel.c
++++ b/drivers/gpu/drm/drm_panel.c
+@@ -274,19 +274,24 @@ EXPORT_SYMBOL(drm_panel_disable);
+  * The modes probed from the panel are automatically added to the connector
+  * that the panel is attached to.
+  *
+- * Return: The number of modes available from the panel on success or a
+- * negative error code on failure.
++ * Return: The number of modes available from the panel on success, or 0 on
++ * failure (no modes).
+  */
+ int drm_panel_get_modes(struct drm_panel *panel,
+ 			struct drm_connector *connector)
+ {
+ 	if (!panel)
+-		return -EINVAL;
++		return 0;
  
- 	m->cp_hqd_pq_base_lo = lower_32_bits((uint64_t)q->queue_address >> 8);
+-	if (panel->funcs && panel->funcs->get_modes)
+-		return panel->funcs->get_modes(panel, connector);
++	if (panel->funcs && panel->funcs->get_modes) {
++		int num;
+ 
+-	return -EOPNOTSUPP;
++		num = panel->funcs->get_modes(panel, connector);
++		if (num > 0)
++			return num;
++	}
++
++	return 0;
+ }
+ EXPORT_SYMBOL(drm_panel_get_modes);
+ 
 -- 
 2.43.0
 
