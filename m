@@ -1,66 +1,73 @@
-Return-Path: <linux-kernel+bounces-121874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C0C988EED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:02:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EB2B88EED4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4703A29E2B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:02:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3427C280FBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96DA15218B;
-	Wed, 27 Mar 2024 19:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8562814D42C;
+	Wed, 27 Mar 2024 19:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="o6i/ckCN"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iu58nxUi"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6210A1514F1
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715E6150983;
+	Wed, 27 Mar 2024 19:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711566145; cv=none; b=UTKBwo+D8QuYRxf1dIuCgLKaGmaDi7C9KoAm7azEgHU2quyq57fmQbmELJuqa51TD58F+IMrRbAvAUnmZZSnIEJj4fMCypkDGlFeGQhEpdfqVwmeYyk2PyyajrhzRyi9X/qz+f1S3jPv4hp1HYi6wDsypcl3biP8+UvEsjUy8SQ=
+	t=1711566187; cv=none; b=gs8ZbbMvGNSL8eusSvQQVAMv8g5RL/3sALY3OFcjUNxGCB0DNnpST16uoQZBSXtqdyNV1yVaZY9AcG8QuTLiHZB2iDS+83JI/4J7TP2g1NkeK4sTzcEtrr/GsFSFo1TsG8dk+fR0CCOOqbBbGp9ckWPslm7HPJgrbC/WRcSnHLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711566145; c=relaxed/simple;
-	bh=tY/kYlCKTZM1U9At1f8pcyF1C2M3Gx00Kx1VbgRTDBE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hevJJR2k/GXUwcS2AzQzexR2ojrWJbtCfNKpk77O+JCM/j3Im9fLVWLf+J1K3b72iUqif4QMux6slfiScN75LiT8xhA4pv9On6LgzhNPxmSrGP+hkHKl7aqyQ53mlu9w2Ufc3rLOS2gOZDzFxtwRlBh2lSzdQ4v1pk/4IXgpF0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=o6i/ckCN; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-	by cmsmtp with ESMTPS
-	id pWKlrI1CJl9dRpYXWrjzhF; Wed, 27 Mar 2024 19:02:22 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id pYXVrtFv3sT9BpYXVro2Vk; Wed, 27 Mar 2024 19:02:21 +0000
-X-Authority-Analysis: v=2.4 cv=LIutQ4W9 c=1 sm=1 tr=0 ts=66046d3d
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=ne6NSq1Het56kcJAOLIA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=eTo6rPqoE3ht4O7ovAkyYWoWGnFdaNMGQPNuK9WIyCE=; b=o6i/ckCNzyuwFrbMgNPhUV/iIK
-	3PM/clgmp92OTK7km9UWKK3UqAH4hrt0zx3XEjFdYpYEzsTUFIGpyaKdCQjAVv6bva63+teWqnhJu
-	EqhtVByQ8opkoxvV8VUDOJzxjOcK3voxKJIVhB24rVrVtFxXGvPCibvIf57k521jiBgy6fK+jAK3Z
-	PuWiqTAcBnkQSx19vahiRxSAxWW/3xnVciMPfGXJ4+N3+kkI0Aai4sfkGZ2AIzdIA5XXRYz/T+dmj
-	9I36Qcxjft97TligGxtyiww4umuSa1NyaE7DSpOpi3TMaFp05MzOkMf4UxAgGVTzi3Ly/3IiNP6RB
-	IsZNowbw==;
-Received: from [201.172.173.147] (port=58918 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rpYXU-003fPc-23;
-	Wed, 27 Mar 2024 14:02:20 -0500
-Message-ID: <29be66cd-e752-4c5e-a660-7b668e49ff9e@embeddedor.com>
-Date: Wed, 27 Mar 2024 13:02:19 -0600
+	s=arc-20240116; t=1711566187; c=relaxed/simple;
+	bh=7tGP5Yx28ma+MeXsuiagnEfceXRF58+ITcV8jHkkQcw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=XvxACrGm5NKSzEeYtQelyQ8gElxp8Bhn/I33MwByiGY3WS7nHw+0/O+Lkh2INBL/UujNcHVPKHU4sHS1CWK/8N7+2h7bhVNmN5i1sJiGBH/VoBZmitglSO8rrxHqzpLC/eK4OpGx3iaVsNPBfLcQwKoRIO708eQ2Casjezy33ck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iu58nxUi; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4149746f80aso1024015e9.1;
+        Wed, 27 Mar 2024 12:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711566184; x=1712170984; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=dCQNhIetTJ8dJ+pvLEKVctT07st05bOCf57ar6v1H74=;
+        b=iu58nxUipyFK9uUwxozaQAg2AhJ4y4sPpinRiQi2qjXg762URM+lCUxSXm6TioAIJY
+         UWw/I4kKUmhYpXt6NpY5bpRkPj8m0RmFqf/2KSoLnHk0VVFD4KSqKhgIk8rfLWMThTlP
+         SgwGOix4P60cqiaJXa+J5LBLTxdUGHUtLBflNmoZgcTGycrZbGViw48EttcwAGTcOXGp
+         jcLrIU70aBoNdWxfNxVZrMOhNLzrEJG8yvrgvdWxCCQzkGtaatV1E0QRAagC3p3y/nTt
+         soagFPExj9tEBQfDq5zZqihohUEyNn6C1arEUiNwEOVViMyGaQX14/a2lGSjuaJpCa5b
+         d8XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711566184; x=1712170984;
+        h=content-transfer-encoding:in-reply-to:from:cc:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dCQNhIetTJ8dJ+pvLEKVctT07st05bOCf57ar6v1H74=;
+        b=igCHxEXG3JjV1dozKoU7Dc6Y+bn5hWkYgB7YKTokl2uCRHRG/BuixGl/9ba2NXCx3U
+         E3vVQd1TuLHAUvL+bQkNk3Ic2as5sRW60jOHZlY4EX+DoGsorSXp9IuDo4I5+MtDtwQ/
+         csKFvMeByoariQh3Tk1aG7bDqsToi/N+u/9CxOjJDz7L/V7ZhZePRhcige2Q0K6eeISF
+         mnqHQj+EVx5sT1EBaqeaLOfXsOY7s1i9rSui2phbcLNcNg/zKASerySUl+tdPCLD/SBY
+         RUfVBAaAk6Gl87AU2e/luJIB+9mNkW04IYisJGVloYIvEmJ/IY5qngIUZHJ98VsYTrO4
+         VOHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfccZejuqRzvZG+a1B03FTrNy6ASRTKwI+KmKRSiewuebuKcCGyvN+ZnvgNizCC6j/Liq4Mxh2DXwek/6NJkb81xpKlTxnmXx9n62gOwon97ECYK1lAViV/gx2/Uxt3zqDZx7Bn0jPTqBLFTYg3JmK2Q==
+X-Gm-Message-State: AOJu0YzPblbhkR4UwMOZrLr4o7WOyu0t24eYMg6h36QmOJRvjPay+0b4
+	jLtvGYs4kgS5GRgmQQc5YLcuzHMPoMorYXaH87+qcrRG261I5nfroovfkA/y6uHT0Q==
+X-Google-Smtp-Source: AGHT+IHF6SdKCaaAFsMOJ9ztw4rgjkCSIcK223yBchR0f0uzh8AFVcFaTMAY8GEi1kGSH1JGFynVXA==
+X-Received: by 2002:a05:600c:2109:b0:414:7e1b:8aac with SMTP id u9-20020a05600c210900b004147e1b8aacmr703353wml.38.1711566183395;
+        Wed, 27 Mar 2024 12:03:03 -0700 (PDT)
+Received: from ?IPV6:2001:8a0:ed72:2800:4fbb:3beb:7045:e257? ([2001:8a0:ed72:2800:4fbb:3beb:7045:e257])
+        by smtp.gmail.com with ESMTPSA id h17-20020a05600c351100b0041468961233sm2940538wmq.35.2024.03.27.12.03.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 12:03:02 -0700 (PDT)
+Message-ID: <5181e9fa-2acc-4bc3-9f22-77ec519941ac@gmail.com>
+Date: Wed, 27 Mar 2024 19:03:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,104 +75,380 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] wifi: wil6210: Avoid -Wflex-array-member-not-at-end
- warning
+Subject: Re: [PATCH] HP: wmi: added support for 4 zone keyboard rgb
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+References: <20240324180549.148812-1-carlosmiguelferreira.2003@gmail.com>
+ <980459bc-a781-1d2b-374c-da023d601c58@linux.intel.com>
+ <998ee474-5e0c-4877-8a95-b22b0edd7837@gmail.com>
+ <69e28674-58b8-4e77-b4b1-033ccb7e4dce@linux.intel.com>
 Content-Language: en-US
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <ZgOEoCWguq3n1OqQ@neat>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <ZgOEoCWguq3n1OqQ@neat>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.173.147
-X-Source-L: No
-X-Exim-ID: 1rpYXU-003fPc-23
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:58918
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDlG9KzOxS/T3FjuXP9yj4v7hixWDRVPia/0Xs0dmCpU/HaVhYASIR56rdfdoXd2O2uham6qH+XMZaTMxS5k+SNj+zx9xc7PSffA5r50FqvU4T2MwFun
- SJDNUbbDmf0LnoJSGzT0KF0UhPUW87FV4taMIa6051lEaxxxhh4vREIvf5rSuM9IfUUbIqNoioWHo9xL01CGE4mw3fQm8r5240P8P1W+8LtnGHM1jtf7L3QT
+Cc: hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+From: Carlos Ferreira <carlosmiguelferreira.2003@gmail.com>
+In-Reply-To: <69e28674-58b8-4e77-b4b1-033ccb7e4dce@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi all,
+On 3/27/24 1:05 PM, Ilpo Järvinen wrote:
 
-Please, drop this.
-
-The following patch replaces it:
-
-https://lore.kernel.org/linux-hardening/ZgRsn72WkHzfCUsa@neat/
-
-Thanks
---
-Gustavo
-
-On 3/26/24 20:29, Gustavo A. R. Silva wrote:
-> Use the `DEFINE_FLEX()` helper for an on-stack definition of
-> a flexible structure where the size of the flexible-array member
-> is known at compile-time, and refactor the rest of the code,
-> accordingly.
+> On Tue, 26 Mar 2024, Carlos Ferreira wrote:
 > 
-> So, with these changes, fix the following warning:
-> drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>> Hi, i have changed some of the code. How does it look now?
+>>
+>> Signed-off-by: Carlos Ferreira <carlosmiguelferreira.2003@gmail.com>
+>> ---
 > 
-> Link: https://github.com/KSPP/linux/issues/202
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->   drivers/net/wireless/ath/wil6210/wmi.c | 19 +++++++------------
->   1 file changed, 7 insertions(+), 12 deletions(-)
+> First of all, you need to make a proper submission with versioning, that 
+> is:
 > 
-> diff --git a/drivers/net/wireless/ath/wil6210/wmi.c b/drivers/net/wireless/ath/wil6210/wmi.c
-> index 6fdb77d4c59e..cc0ad70f0d01 100644
-> --- a/drivers/net/wireless/ath/wil6210/wmi.c
-> +++ b/drivers/net/wireless/ath/wil6210/wmi.c
-> @@ -4014,28 +4014,23 @@ int wmi_set_cqm_rssi_config(struct wil6210_priv *wil,
->   	struct net_device *ndev = wil->main_ndev;
->   	struct wil6210_vif *vif = ndev_to_vif(ndev);
->   	int rc;
-> -	struct {
-> -		struct wmi_set_link_monitor_cmd cmd;
-> -		s8 rssi_thold;
-> -	} __packed cmd = {
-> -		.cmd = {
-> -			.rssi_hyst = rssi_hyst,
-> -			.rssi_thresholds_list_size = 1,
-> -		},
-> -		.rssi_thold = rssi_thold,
-> -	};
->   	struct {
->   		struct wmi_cmd_hdr hdr;
->   		struct wmi_set_link_monitor_event evt;
->   	} __packed reply = {
->   		.evt = {.status = WMI_FW_STATUS_FAILURE},
->   	};
-> +	DEFINE_FLEX(struct wmi_set_link_monitor_cmd, cmd,
-> +		    rssi_thresholds_list, rssi_thresholds_list_size, 1);
-> +
-> +	cmd->rssi_hyst = rssi_hyst;
-> +	cmd->rssi_thresholds_list[0] = rssi_thold;
->   
->   	if (rssi_thold > S8_MAX || rssi_thold < S8_MIN || rssi_hyst > U8_MAX)
->   		return -EINVAL;
->   
-> -	rc = wmi_call(wil, WMI_SET_LINK_MONITOR_CMDID, vif->mid, &cmd,
-> -		      sizeof(cmd), WMI_SET_LINK_MONITOR_EVENTID,
-> +	rc = wmi_call(wil, WMI_SET_LINK_MONITOR_CMDID, vif->mid, cmd,
-> +		      sizeof(*cmd), WMI_SET_LINK_MONITOR_EVENTID,
->   		      &reply, sizeof(reply), WIL_WMI_CALL_GENERAL_TO_MS);
->   	if (rc) {
->   		wil_err(wil, "WMI_SET_LINK_MONITOR_CMDID failed, rc %d\n", rc);
+> - Put version into the subject: PATCH v2
+> - Don't put extra stuff into changelog like the above question, if you 
+> need to ask something, put your question underneath the first --- line.
+> - List the changes you made underneath the first --- line (see ML 
+> archives for examples about formatting)
+
+Should i submit the v2 patch with the current state or with the changes suggested such as the use of the leds API?
+
+>>  drivers/platform/x86/hp/hp-wmi.c | 251 +++++++++++++++++++++++++++++--
+>>  1 file changed, 241 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/hp/hp-wmi.c b/drivers/platform/x86/hp/hp-wmi.c
+>> index e53660422..8108ca7e9 100644
+>> --- a/drivers/platform/x86/hp/hp-wmi.c
+>> +++ b/drivers/platform/x86/hp/hp-wmi.c
+>> @@ -27,6 +27,7 @@
+>>  #include <linux/rfkill.h>
+>>  #include <linux/string.h>
+>>  #include <linux/dmi.h>
+>> +#include <linux/bitfield.h>
+> 
+> Try to put it earlier, these should eventually be in alphabetic order 
+> (again, ordered by a separate patch, not this one).
+
+You mean organizing all the imports like this?
+#include <linux/acpi.h>
+#include <linux/bitfield.h>
+#include <linux/dmi.h>
+#include <linux/hwmon.h>
+#include <linux/init.h>
+#include <linux/input.h>
+#include <linux/input/sparse-keymap.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <linux/platform_profile.h>
+#include <linux/rfkill.h>
+#include <linux/slab.h>
+#include <linux/string.h>
+#include <linux/types.h>
+
+>>  MODULE_AUTHOR("Matthew Garrett <mjg59@srcf.ucam.org>");
+>>  MODULE_DESCRIPTION("HP laptop WMI hotkeys driver");
+>> @@ -40,6 +41,10 @@ MODULE_ALIAS("wmi:5FB7F034-2C63-45e9-BE91-3D44E2C707E4");
+>>  #define HP_OMEN_EC_THERMAL_PROFILE_OFFSET 0x95
+>>  #define zero_if_sup(tmp) (zero_insize_support?0:sizeof(tmp)) // use when zero insize is required
+>>  
+>> +#define FOURZONE_LIGHTING_SUPPORTED_BIT 0x01
+>> +#define FOURZONE_LIGHTING_ON  228
+>> +#define FOURZONE_LIGHTING_OFF 100
+>> +
+>>  /* DMI board names of devices that should use the omen specific path for
+>>   * thermal profiles.
+>>   * This was obtained by taking a look in the windows omen command center
+>> @@ -131,18 +136,36 @@ enum hp_wmi_commandtype {
+>>  };
+>>  
+>>  enum hp_wmi_gm_commandtype {
+>> -	HPWMI_FAN_SPEED_GET_QUERY = 0x11,
+>> -	HPWMI_SET_PERFORMANCE_MODE = 0x1A,
+>> -	HPWMI_FAN_SPEED_MAX_GET_QUERY = 0x26,
+>> -	HPWMI_FAN_SPEED_MAX_SET_QUERY = 0x27,
+>> -	HPWMI_GET_SYSTEM_DESIGN_DATA = 0x28,
+>> +	HPWMI_FAN_SPEED_GET_QUERY	= 0x11,
+>> +	HPWMI_SET_PERFORMANCE_MODE	= 0x1A,
+>> +	HPWMI_FAN_SPEED_MAX_GET_QUERY	= 0x26,
+>> +	HPWMI_FAN_SPEED_MAX_SET_QUERY	= 0x27,
+>> +	HPWMI_GET_SYSTEM_DESIGN_DATA	= 0x28,
+>> +	HPWMI_GET_KEYBOARD_TYPE		= 0x2B,
+>> +};
+>> +
+>> +enum hp_wmi_fourzone_commandtype {
+>> +	HPWMI_SUPPORTS_LIGHTNING = 0x01,
+>> +	HPWMI_FOURZONE_COLOR_GET = 0x02,
+>> +	HPWMI_FOURZONE_COLOR_SET = 0x03,
+>> +	HPWMI_FOURZONE_MODE_GET  = 0x04,
+>> +	HPWMI_FOURZONE_MODE_SET  = 0x05,
+>> +};
+>> +
+>> +enum hp_wmi_keyboardtype {
+>> +	HPWMI_KEYBOARD_INVALID        = 0x00,
+>> +	HPWMI_KEYBOARD_NORMAL         = 0x01,
+>> +	HPWMI_KEYBOARD_WITH_NUMPAD    = 0x02,
+>> +	HPWMI_KEYBOARD_WITHOUT_NUMPAD = 0x03,
+>> +	HPWMI_KEYBOARD_RGB	      = 0x04,
+>>  };
+>>  
+>>  enum hp_wmi_command {
+>> -	HPWMI_READ	= 0x01,
+>> -	HPWMI_WRITE	= 0x02,
+>> -	HPWMI_ODM	= 0x03,
+>> -	HPWMI_GM	= 0x20008,
+>> +	HPWMI_READ     = 0x01,
+>> +	HPWMI_WRITE    = 0x02,
+>> +	HPWMI_ODM      = 0x03,
+>> +	HPWMI_GM       = 0x20008,
+>> +	HPWMI_FOURZONE = 0x20009,
+>>  };
+>>  
+>>  enum hp_wmi_hardware_mask {
+>> @@ -652,6 +675,74 @@ static int hp_wmi_rfkill2_refresh(void)
+>>  	return 0;
+>>  }
+>>  
+>> +static int fourzone_get_colors(u32 *colors)
+>> +{
+>> +	int ret;
+>> +	u8 buff[128];
+>> +
+>> +	ret = hp_wmi_perform_query(HPWMI_FOURZONE_COLOR_GET, HPWMI_FOURZONE,
+>> +				   &buff, sizeof(buff), sizeof(buff));
+>> +	if (ret != 0)
+>> +		return -EINVAL;
+>> +
+>> +	for (int i = 0; i < 4; i++) {
+>> +		colors[3 - i] = FIELD_PREP(GENMASK(23, 16), buff[25 + i * 3])	   // r
+>> +			      |	FIELD_PREP(GENMASK(15, 8),  buff[25 + i * 3 + 1])  // g
+>> +			      | FIELD_PREP(GENMASK(7, 0),   buff[25 + i * 3 + 2]); // b
+> 
+> Those GENMASK() calls should be done in #define and only used here:
+> 
+> #define FOURZONE_COLOR_R		GENMASK(23, 16)
+> #define FOURZONE_COLOR_G		GENMASK(15, 8)
+> #define FOURZONE_COLOR_B		GENMASK(7, 0)
+> 
+> You can then drop the comments because the code is self-explanatory.
+> 
+> Add #include <linux/bits.h>.
+> 
+> ...But please see my comments about multicolor below.
+> 
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int fourzone_set_colors(u32 *colors)
+>> +{
+>> +	int ret;
+>> +	u8 buff[128];
+>> +
+>> +	ret = hp_wmi_perform_query(HPWMI_FOURZONE_COLOR_GET, HPWMI_FOURZONE,
+>> +				   &buff, sizeof(buff), sizeof(buff));
+>> +	if (ret != 0)
+>> +		return -EINVAL;
+>> +
+>> +	for (int i = 0; i < 4; i++) {
+>> +		buff[25 + i * 3]     = FIELD_GET(GENMASK(23, 16), colors[3 - i]); // r
+>> +		buff[25 + i * 3 + 1] = FIELD_GET(GENMASK(15, 8),  colors[3 - i]); // g
+>> +		buff[25 + i * 3 + 2] = FIELD_GET(GENMASK(7, 0),	  colors[3 - i]); // b
+>> +	}
+>> +	return hp_wmi_perform_query(HPWMI_FOURZONE_COLOR_SET, HPWMI_FOURZONE,
+>> +				    &buff, sizeof(buff), sizeof(buff));
+>> +}
+>> +
+>> +/*
+>> + * Returns a negative number on error or 0/1 for the mode.
+>> + */
+>> +static int fourzone_get_mode(void)
+>> +{
+>> +	int ret;
+>> +	u8 buff[4];
+> 
+> Try to use reverse xmas tree order where possible (go through the other 
+> functions too).
+> 
+>> +
+>> +	ret = hp_wmi_perform_query(HPWMI_FOURZONE_MODE_GET, HPWMI_FOURZONE,
+>> +				   &buff, sizeof(buff), sizeof(buff));
+>> +	if (ret != 0)
+>> +		return ret;
+>> +
+>> +	return buff[0] == FOURZONE_LIGHTING_ON ? 1 : 0;
+>> +}
+>> +
+>> +/*
+>> + * This device supports only two different modes:
+>> + * 1 -> lights on
+>> + * 0 -> lights off
+>> + */
+>> +static int fourzone_set_mode(u32 mode)
+>> +{
+>> +	u8 buff[4] = {mode ? FOURZONE_LIGHTING_ON : FOURZONE_LIGHTING_OFF, 0, 0, 0};
+>> +
+>> +	return hp_wmi_perform_query(HPWMI_FOURZONE_MODE_SET, HPWMI_FOURZONE,
+>> +				    &buff, sizeof(buff), 0);
+>> +}
+>> +
+>>  static ssize_t display_show(struct device *dev, struct device_attribute *attr,
+>>  			    char *buf)
+>>  {
+>> @@ -754,6 +845,58 @@ static ssize_t postcode_store(struct device *dev, struct device_attribute *attr,
+>>  	return count;
+>>  }
+>>  
+>> +static ssize_t colors_show(struct device *dev, struct device_attribute *attr,
+>> +			    char *buf)
+>> +{
+>> +	int ret;
+>> +	u32 colors[4];
+>> +
+>> +	ret = fourzone_get_colors(colors);
+>> +	if (ret != 0)
+>> +		return -EINVAL;
+>> +
+>> +	return sysfs_emit(buf, "%06x %06x %06x %06x\n", colors[0], colors[1], colors[2], colors[3]);
+>> +}
+>> +
+>> +static ssize_t colors_store(struct device *dev, struct device_attribute *attr,
+>> +				const char *buf, size_t count)
+>> +{
+>> +	int ret;
+>> +	u32 colors[4];
+>> +
+>> +	ret = sscanf(buf, "%6x %6x %6x %6x", &colors[0], &colors[1], &colors[2], &colors[3]);
+>> +	if (ret != 4)
+>> +		return -EINVAL;
+> 
+> I now realize this should use leds multicolor API instead.
+> 
+>> +	ret = fourzone_set_colors(colors);
+>> +	return ret == 0 ? count : ret;
+>> +}
+>> +
+>> +static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
+>> +			    char *buf)
+>> +{
+>> +	u32 ret = fourzone_get_mode();
+>> +
+>> +	if (ret < 0)
+> 
+> Please don't save one line like this, put the declaration on own 
+> line/declaration block so you can keep function call and it's error 
+> handling next to each other.
+> 
+> Also, compiler should have warned you here because u32 is not the correct 
+> type and you're checking for < 0!
+> 
+>> +		return ret;
+>> +
+>> +	return sysfs_emit(buf, "%d\n", ret);
+>> +}
+>> +
+>> +static ssize_t mode_store(struct device *dev, struct device_attribute *attr,
+>> +				const char *buf, size_t count)
+>> +{
+>> +	int ret;
+>> +	u32 mode;
+>> +
+>> +	ret = kstrtou32(buf, 10, &mode);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = fourzone_set_mode(mode);
+>> +	return ret == 0 ? count : ret;
+>> +}
+>> +
+>>  static int camera_shutter_input_setup(void)
+>>  {
+>>  	int err;
+>> @@ -781,6 +924,34 @@ static int camera_shutter_input_setup(void)
+>>  	return err;
+>>  }
+>>  
+>> +static enum hp_wmi_keyboardtype fourzone_get_keyboard_type(void)
+>> +{
+>> +	int ret;
+>> +	u8 buff[128];
+>> +
+>> +	ret = hp_wmi_perform_query(HPWMI_GET_KEYBOARD_TYPE, HPWMI_GM,
+>> +				   &buff, sizeof(buff), sizeof(buff));
+>> +	if (ret != 0)
+>> +		return HPWMI_KEYBOARD_INVALID;
+>> +
+>> +	/* the first byte in the response represents the keyboard type */
+>> +	return (enum hp_wmi_keyboardtype)(buff[0] + 1);
+>> +}
+>> +
+>> +static ssize_t type_show(struct device *dev, struct device_attribute *attr,
+>> +			    char *buf)
+>> +{
+>> +	enum hp_wmi_keyboardtype type = fourzone_get_keyboard_type();
+>> +
+>> +	if (type == HPWMI_KEYBOARD_INVALID)
+>> +		return -EINVAL;
+>> +
+>> +	return sysfs_emit(buf, "%d\n", type - 1);
+> 
+> These are always positive, right? So %u is better.
+> 
+>> +}
+>> +
+>> +/*
+>> + * Generic device attributes.
+>> + */
+>>  static DEVICE_ATTR_RO(display);
+>>  static DEVICE_ATTR_RO(hddtemp);
+>>  static DEVICE_ATTR_RW(als);
+>> @@ -797,7 +968,35 @@ static struct attribute *hp_wmi_attrs[] = {
+>>  	&dev_attr_postcode.attr,
+>>  	NULL,
+>>  };
+>> -ATTRIBUTE_GROUPS(hp_wmi);
+>> +
+>> +static struct attribute_group hp_wmi_group = {
+>> +	.attrs = hp_wmi_attrs,
+>> +};
+>> +
+>> +/*
+>> + * Omen fourzone specific device attributes.
+>> + */
+>> +static DEVICE_ATTR_RW(colors);
+>> +static DEVICE_ATTR_RW(mode);
+>> +static DEVICE_ATTR_RO(type);
+>> +
+>> +static struct attribute *hp_wmi_fourzone_attrs[] = {
+>> +	&dev_attr_colors.attr,
+>> +	&dev_attr_mode.attr,
+>> +	&dev_attr_type.attr,
+>> +	NULL,
+>> +};
+>> +
+>> +static struct attribute_group hp_wmi_fourzone_group = {
+>> +	.attrs = hp_wmi_fourzone_attrs,
+>> +	.name = "kbd-backlight",
+>> +};
+>> +
+>> +static const struct attribute_group *hp_wmi_groups[] = {
+>> +	&hp_wmi_group,
+>> +	NULL,
+>> +	NULL,
+>> +};
+>>  
+>>  static void hp_wmi_notify(u32 value, void *context)
+>>  {
+>> @@ -1446,6 +1645,35 @@ static int thermal_profile_setup(void)
+>>  	return 0;
+>>  }
+>>  
+>> +static bool fourzone_supports_lighting(void)
+>> +{
+>> +	int ret;
+>> +	u8 buff[128];
+>> +
+>> +	ret = hp_wmi_perform_query(HPWMI_SUPPORTS_LIGHTNING, HPWMI_FOURZONE,
+>> +				   &buff, sizeof(buff), sizeof(buff));
+>> +	if (ret != 0)
+> 
+> < 0 ?
+> 
 
