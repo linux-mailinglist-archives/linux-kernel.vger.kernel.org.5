@@ -1,126 +1,113 @@
-Return-Path: <linux-kernel+bounces-122122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798DA88F220
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:53:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B7688F24C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 087BDB24181
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:53:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4DA21C2BAC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A514153BF7;
-	Wed, 27 Mar 2024 22:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F101552E5;
+	Wed, 27 Mar 2024 22:57:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="caTsXPow"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="puxN8n8k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F30153BEF;
-	Wed, 27 Mar 2024 22:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADFF1F5E6;
+	Wed, 27 Mar 2024 22:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711579989; cv=none; b=MHa87l6ggZAN2xHDP7zmdk/yiGbpJqIUuwYmN4CasIo2nWtF0tC54vCt3kUH8Cw1soZTTanmucJr0EDo90gXrhDHaLfkolmi4tuMY0K0vZHbuV4k1IH61VDitLqhfXBWl525i5YPzgDSojXR7tTgzhciDHwieITUqpzTWC1c+ys=
+	t=1711580238; cv=none; b=HqnWP6O06zuZHSw8eVFLYGIowa64OVYhRiHdpcfobdD93hHMffj+JbwXVjd0+8SAAdThdscwfms0qWEyK48OlPkf4nfceyQDZOFZuprj5aoddg5Evh4rSpGyv/VnwFfKmsryXgMwjhyg0MRdEThEfgJeNvSXQGxhhnutYllSFtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711579989; c=relaxed/simple;
-	bh=sqhN02+ZEO+ko6LtC5zADXfc7A3LE/qm9zqb38Oaq8A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KCUsicCnHZnEBP7ZNrS525JsHSg+F4RW73x70tLvETcEIzA2DDLmqk0+8plbu1ZDnA4vJsHMmHVDcPFey2P3JwQVmZrjZavotXlNXbdfo9nEDYpyXBB7iVp3n22RqDDL1bo2qJ7H14moCwJi/PqZcUk1phvDVPcsVypQTpZYRNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=caTsXPow; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711579986;
-	bh=sqhN02+ZEO+ko6LtC5zADXfc7A3LE/qm9zqb38Oaq8A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=caTsXPowXDRb4G9GIbmJvN/vTrUemSmke8KD9L2ybhniat5DqxfWRaB9xxS8PMsWF
-	 9CHi3Njx7ES35Vz8Y168f5r13bkzbMQaGt7IMq+4gpCbA4o+RAgFce9ClMJ9v+LZl7
-	 yXPHmQDfJ49Pxye2SubKl4jKeuOc1ZaHaEFB9viDGuNhAI4wPefPENjO/ZAOrnq90u
-	 6DofX0sKa7feG7JhNW3oJHv6RpGExf65bKu9NEsd5Z4KkQosaq5ZNhwTmOLKcx/KtF
-	 N2j9LPLECVUZK7xjEpq/QASY1Yv0JAx6HaGMyfjY+KB3Syrq2qMk3H8JA6kapuVNzm
-	 A51xkdbtiR7Pg==
-Received: from shreeya.shreeya (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: shreeya)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BCE6B3782115;
-	Wed, 27 Mar 2024 22:52:57 +0000 (UTC)
-From: Shreeya Patel <shreeya.patel@collabora.com>
-To: heiko@sntech.de,
-	mchehab@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	p.zabel@pengutronix.de,
-	jose.abreu@synopsys.com,
-	nelson.costa@synopsys.com,
-	dmitry.osipenko@collabora.com,
-	sebastian.reichel@collabora.com,
-	shawn.wen@rock-chips.com,
-	nicolas.dufresne@collabora.com,
-	hverkuil@xs4all.nl,
-	hverkuil-cisco@xs4all.nl
-Cc: kernel@collabora.com,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-clk@vger.kernel.org,
-	linux-arm@lists.infradead.org,
-	Shreeya Patel <shreeya.patel@collabora.com>
-Subject: [PATCH v3 6/6] MAINTAINERS: Add entry for Synopsys DesignWare HDMI RX Driver
-Date: Thu, 28 Mar 2024 04:20:57 +0530
-Message-Id: <20240327225057.672304-7-shreeya.patel@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240327225057.672304-1-shreeya.patel@collabora.com>
-References: <20240327225057.672304-1-shreeya.patel@collabora.com>
+	s=arc-20240116; t=1711580238; c=relaxed/simple;
+	bh=sQVyeEFBwEdJidDQvMPAc1y+aDkcz+DPIZdUdRxEJ4s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=NK9UxVGrAQualqT0Jjq/hbG7mZVL1KCKH8IeCX2t6Tz4yxdYEkLvZ1liKBeMHmPvbFIJ6laf/3u+h0IY78kKd1MFWuFoOjay1eTAIq9q8wgiNfQSZgejpzXEz4cyme6MLugG18BRoOwK90nADN9oFcrgP/KLEu1fPKW0PKalV0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=puxN8n8k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2ED4CC433C7;
+	Wed, 27 Mar 2024 22:57:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711580238;
+	bh=sQVyeEFBwEdJidDQvMPAc1y+aDkcz+DPIZdUdRxEJ4s=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=puxN8n8kPgrnvldg22MK+pHoAxQ5lPDRiyC9wU4EISLTodursiS7mHrRSHbxlFAGn
+	 HM3R6CSCNez9vePuVY4zzkSSCaT0q5Ckxi1TSUD2PDDEH4qeVB00j5KVxJuYS3wp6E
+	 R1+Pkj/dXDwBuX52PT+PTy+11vDzn1EorfveG9laaOS2YYy6sAM9Kb0NW5YtCKoRzl
+	 OvIGXqrqaOZ+/XEd2C02i3nOj/FWFL7FVJmeAMTnFx3WU2RqWcl8exu0eFOB5kTJtw
+	 YzGvJuLfF2UmqdC+7MIWV6Qta04nKO68a40nR4ZQT1GrGwmPHZkspt7y1lDxlILhBE
+	 jgpcvZdrAyn5A==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14342CD11DD;
+	Wed, 27 Mar 2024 22:57:18 +0000 (UTC)
+From: =?utf-8?q?Andr=C3=A9_Apitzsch_via_B4_Relay?= <devnull+git.apitzsch.eu@kernel.org>
+Subject: [PATCH 0/3] Add sy7802 flash led driver
+Date: Wed, 27 Mar 2024 23:51:32 +0100
+Message-Id: <20240327-sy7802-v1-0-db74ab32faaf@apitzsch.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAPSiBGYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyNT3eJKcwsDI900E4O0ZLM0UzNTI1MloOKCotS0zAqwQdGxtbUAlYR
+ kMVgAAAA=
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711580236; l=1112;
+ i=git@apitzsch.eu; s=20240325; h=from:subject:message-id;
+ bh=sQVyeEFBwEdJidDQvMPAc1y+aDkcz+DPIZdUdRxEJ4s=;
+ b=YUVsRU80cvty+TKsvnoBkHkPt8VESpOUdQDnZYM4vdcpoIAe8RltJv9jyhEFugMquOEa71yh1
+ wZH2k/+n0hUCpU2HCL6Z+QO7KWPEhLAPIw9jJe7Ynq9AhPIbDBPYwdZ
+X-Developer-Key: i=git@apitzsch.eu; a=ed25519;
+ pk=wxovcZRfvNYBMcTw4QFFtNEP4qv39gnBfnfyImXZxiU=
+X-Endpoint-Received: by B4 Relay for git@apitzsch.eu/20240325 with
+ auth_id=142
+X-Original-From: =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Reply-To: git@apitzsch.eu
 
-Add an entry for Synopsys DesignWare HDMI Receiver Controller
-Driver.
+This series introduces a driver for the Silergy SY7802 charge pump used
+in the BQ Aquaris M5 and X5 smartphones.
 
-Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+The implementation is based on information extracted from downstream as
+the datasheet provided by a distributor of the hardware didn't include
+any information about the i2c register description.
+
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
 ---
-Changes in v3 :-
-  - No change
+André Apitzsch (3):
+      dt-bindings: leds: Add Silergy SY7802 flash LED
+      leds: sy7802: Add support for Silergy SY7802 flash LED controller
+      arm64: dts: qcom: msm8939-longcheer-l9100: Add rear flash
 
-Changes in v2 :-
-  - Add a patch for MAINTAINERS file changes
+ .../devicetree/bindings/leds/silergy,sy7802.yaml   |  96 ++++
+ .../boot/dts/qcom/msm8939-longcheer-l9100.dts      |  26 +
+ drivers/leds/flash/Kconfig                         |  11 +
+ drivers/leds/flash/Makefile                        |   1 +
+ drivers/leds/flash/leds-sy7802.c                   | 532 +++++++++++++++++++++
+ 5 files changed, 666 insertions(+)
+---
+base-commit: 084c8e315db34b59d38d06e684b1a0dd07d30287
+change-id: 20240325-sy7802-f40fc6f56525
 
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3a534e344737..05bbb58c2a41 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21492,6 +21492,14 @@ F:	drivers/net/pcs/pcs-xpcs.c
- F:	drivers/net/pcs/pcs-xpcs.h
- F:	include/linux/pcs/pcs-xpcs.h
- 
-+SYNOPSYS DESIGNWARE HDMI RX CONTROLLER DRIVER
-+M:	Shreeya Patel <shreeya.patel@collabora.com
-+L:	linux-media@vger.kernel.org
-+L:	kernel@collabora.com
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
-+F:	drivers/media/platform/synopsys/hdmirx/*
-+
- SYNOPSYS DESIGNWARE I2C DRIVER
- M:	Jarkko Nikula <jarkko.nikula@linux.intel.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Best regards,
 -- 
-2.39.2
+André Apitzsch <git@apitzsch.eu>
+
 
 
