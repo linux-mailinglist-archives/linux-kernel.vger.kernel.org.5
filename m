@@ -1,148 +1,136 @@
-Return-Path: <linux-kernel+bounces-120916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA71488E07C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C75DE88E08A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:38:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46D57B27384
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:37:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6558AB22B1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7D9149C72;
-	Wed, 27 Mar 2024 12:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4EF714A4D7;
+	Wed, 27 Mar 2024 12:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="flYmHvvP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYutqEe5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6B7149C5F;
-	Wed, 27 Mar 2024 12:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA1C14A0BB;
+	Wed, 27 Mar 2024 12:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541576; cv=none; b=nX4haGnwXIgr4AbMq7C5oGyCb/NZEAVt3iz7b5Uxf+fnNfiOterSumKMMmy2yaTmMKiC8XkA+A/bH9dV46rT36OT4fm8eeew5YqviraFKQypfMUjahFHZi6S5H7oGdu4++HMeA1G16y26mD1349jUfpJ4xYnii3T35Aa8EsRCLo=
+	t=1711541591; cv=none; b=bqYerT1RdXaeFHxWaHd27CrAi6PFVuewyTC3pJzv4HENQva0Qt3JU+v9xmTFVJyLczO2v8T4i3uc8fDGtJ7iFGv86uomdm2/2tmZPWG2OwZMLnd/VyAkg7tIa4f7m+n25ecnBV65oUljDAglkZVCKfVoiyF7LTuxDPTP0Okpqw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541576; c=relaxed/simple;
-	bh=G83QTErL8n2Y76MXQwujf0FzfFPIzjjZ6OxjLFGq1kI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bwHp2rXNBH08Ep2jJ7buvd++I4Y9n6LAO2Dre0zsFOFMlQw/3JP8y8F+Dt1fCZCokgjzzLH8jE2eL1/6n1AlVkMy6O6qxq7WNmaO3+EjzwD5BJtllBb6EzmKDu4QVYSnkvQ4F5koqd6+q8pA9oGw2+7DBpS1pUWEoh2/+s5hKng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=flYmHvvP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A0AC433F1;
-	Wed, 27 Mar 2024 12:12:55 +0000 (UTC)
+	s=arc-20240116; t=1711541591; c=relaxed/simple;
+	bh=6nzb64oC/aS+38eYkHxWrJnO/Ec/5COHzsOHpbHjwq8=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aTPFQRFl42qPfCNEDy9nL/3QaBNhNub0f4WGXKbUU4KIdomxnEr8Iafk+9o0Z2G0IUzcg13Kr33XjitQlCQ1xx4pcXSCZ1HnybFS9+s5VchCkLLV4QVcBfQyLiP7IzZ14zx8qwvkX8VaMxiUPnnLI5EbfL6t5XKVA/bzLYlCVNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYutqEe5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E52E3C43390;
+	Wed, 27 Mar 2024 12:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541576;
-	bh=G83QTErL8n2Y76MXQwujf0FzfFPIzjjZ6OxjLFGq1kI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=flYmHvvPZynlm5lgPXZEH5rKK4nLgRrjVE1Jbz0fDYHevtxgDlOow+NWxVoZbvOOU
-	 NTcNLmPFNGcCtVQX7OKQ/q9mGmUpsZXihLYRRHIZX1Z5vcXT/VhYaaVVOnxrWBV/md
-	 4yBY82npHcodzAe3mLCyhJVcrrdlKWQh0+ypYAj3hyl08LVQ4VjNubb1EfyHSixvYz
-	 3bi8kvgwBZqBzIuuNKBv/spllyj/e5f/77Ss4QwyJu3dglHsA1fvJ3rkgyYefCpX0h
-	 eGsQjTWJvW/KXA8gr93QRC7W7pqPhsKUNr6S1L5Wy6jAh9gI0iCJMhQ3wRqtd5x3aB
-	 uQwHHHWDR2q3Q==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	rogerq@kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "usb: dwc3-am62: fix module unload/reload behavior" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:12:54 -0400
-Message-ID: <20240327121254.2829897-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=k20201202; t=1711541590;
+	bh=6nzb64oC/aS+38eYkHxWrJnO/Ec/5COHzsOHpbHjwq8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iYutqEe5s0N9gvqdYsI1i59tc58latUbZgDX0+SbW82UFYr6MrNmzMRo7wACyvb7T
+	 DeHYGvTc8P1teXK1vtA0zmcQnp/3o+jMFUsAHinGhBHgQ81ebMqkoeWBDXCDCYQcsZ
+	 QGqrxYvnlRfSjvflGkmodVfCCHNPwaXxwyRyhUvOylTvTpqSV26GH8GwTjeO6PiDjt
+	 mDzTByGBUWz16Ja1pwIvm9yBf8uPgmymQ/cJmUvSkVNCtAmZP9cbHCsowYebcxImZZ
+	 S69O/cz21T+WpcKOtQsuyGDnlm38KPeYjL7eLslJr3Z5EnMoOvXBgwRKXcP5Xp0DVb
+	 Thlxr2JmBSx/g==
+Received: from 82-132-225-99.dab.02.net ([82.132.225.99] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rpS9U-00GHA1-83;
+	Wed, 27 Mar 2024 12:13:08 +0000
+Date: Wed, 27 Mar 2024 12:12:55 +0000
+Message-ID: <87ttkrswjc.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc: kvmarm@lists.linux.dev,	kvm@vger.kernel.org,	linux-arm-kernel@lists.infradead.org,	linux-kernel@vger.kernel.org,	oliver.upton@linux.dev,	darren@os.amperecomputing.com,	d.scott.phillips@amperecomputing.com
+Subject: Re: [RFC PATCH] kvm: nv: Optimize the unmapping of shadow S2-MMU tables.
+In-Reply-To: <92117ba1-54ff-4752-b446-0ed09bde7201@os.amperecomputing.com>
+References: <20240305054606.13261-1-gankulkarni@os.amperecomputing.com>
+	<86sf150w4t.wl-maz@kernel.org>
+	<6685c3a6-2017-4bc2-ad26-d11949097050@os.amperecomputing.com>
+	<86r0go201z.wl-maz@kernel.org>
+	<92117ba1-54ff-4752-b446-0ed09bde7201@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.225.99
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, darren@os.amperecomputing.com, d.scott.phillips@amperecomputing.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-The patch below does not apply to the 6.1-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+On Tue, 26 Mar 2024 11:33:27 +0000,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> 
+> 
+> Hi Marc,
+> 
+> On 05-03-2024 08:33 pm, Marc Zyngier wrote:
+> > On Tue, 05 Mar 2024 13:29:08 +0000,
+> > Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> >> 
+> >> 
+> >> 
+> >> What are the core issues (please forgive me if you mentioned already)?
+> >> certainly we will prioritise them than this.
+> > 
+> > AT is a big one. Maintenance interrupts are more or less broken. I'm
+> > slowly plugging PAuth, but there's no testing whatsoever (running
+> > Linux doesn't count). Lack of SVE support is also definitely a
+> > blocker.
+> > 
+> 
+> I am debugging an issue where EDK2(ArmVirtPkg) boot hangs when tried
+> to boot from L1 using QEMU.
+> 
+> The hang is due to failure of AT instruction and resulting in
+> immediate return to Guest(L2) and the loop continues...
+>
+> AT instruction is executed in function of
+> __get_fault_info(__translate_far_to_hpfar) in L1 when data abort is
+> forwarded. Then AT instruction is trapped and executed/emulated in L0
+> in function "__kvm_at_s1e01" is failing and resulting in the return to
+> guest.
+> 
+> Is this also the manifestation of the issue of AT that you are referring to?
 
-Thanks,
-Sasha
+It's possible, but you are looking at the symptom and not necessarily
+the problem.
 
------------------- original commit in Linus's tree ------------------
+FWIW, I can boot EDK2 as built by debian as an L2 using QEMU without
+any problem, but I'm not using QEMU for L1 (it shouldn't have much of
+an impact anyway).
 
-From 6661befe41009c210efa2c1bcd16a5cc4cff8a06 Mon Sep 17 00:00:00 2001
-From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 27 Feb 2024 11:23:48 +0200
-Subject: [PATCH] usb: dwc3-am62: fix module unload/reload behavior
+I expect AT S1E1R to fail if any of the following are true:
 
-As runtime PM is enabled, the module can be runtime
-suspended when .remove() is called.
+- the guest S1 page tables have been swapped out in the interval
+  between the fault and the AT emulation
 
-Do a pm_runtime_get_sync() to make sure module is active
-before doing any register operations.
+- the shadow S2 page tables do not have a translation for the output
+  of the S1 page tables yet
 
-Doing a pm_runtime_put_sync() should disable the refclk
-so no need to disable it again.
+You will need to work out which of these two are true. It is perfectly
+possible that there are more edge cases that need addressing, as what
+you describe just works with my setup. It could also be that 4kB page
+support at L1 is broken (as I have no way to test it and only run with
+a 16kB L1).
 
-Fixes the below warning at module removel.
+	M.
 
-[   39.705310] ------------[ cut here ]------------
-[   39.710004] clk:162:3 already disabled
-[   39.713941] WARNING: CPU: 0 PID: 921 at drivers/clk/clk.c:1090 clk_core_disable+0xb0/0xb8
-
-We called of_platform_populate() in .probe() so call the
-cleanup function of_platform_depopulate() in .remove().
-Get rid of the now unnnecessary dwc3_ti_remove_core().
-Without this, module re-load doesn't work properly.
-
-Fixes: e8784c0aec03 ("drivers: usb: dwc3: Add AM62 USB wrapper driver")
-Cc: stable@vger.kernel.org # v5.19+
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Link: https://lore.kernel.org/r/20240227-for-v6-9-am62-usb-errata-3-0-v4-1-0ada8ddb0767@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/dwc3/dwc3-am62.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/usb/dwc3/dwc3-am62.c b/drivers/usb/dwc3/dwc3-am62.c
-index 90a587bc29b74..f85603b7f7c5e 100644
---- a/drivers/usb/dwc3/dwc3-am62.c
-+++ b/drivers/usb/dwc3/dwc3-am62.c
-@@ -267,21 +267,14 @@ static int dwc3_ti_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int dwc3_ti_remove_core(struct device *dev, void *c)
--{
--	struct platform_device *pdev = to_platform_device(dev);
--
--	platform_device_unregister(pdev);
--	return 0;
--}
--
- static void dwc3_ti_remove(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct dwc3_am62 *am62 = platform_get_drvdata(pdev);
- 	u32 reg;
- 
--	device_for_each_child(dev, NULL, dwc3_ti_remove_core);
-+	pm_runtime_get_sync(dev);
-+	of_platform_depopulate(dev);
- 
- 	/* Clear mode valid bit */
- 	reg = dwc3_ti_readl(am62, USBSS_MODE_CONTROL);
-@@ -289,7 +282,6 @@ static void dwc3_ti_remove(struct platform_device *pdev)
- 	dwc3_ti_writel(am62, USBSS_MODE_CONTROL, reg);
- 
- 	pm_runtime_put_sync(dev);
--	clk_disable_unprepare(am62->usb2_refclk);
- 	pm_runtime_disable(dev);
- 	pm_runtime_set_suspended(dev);
- }
 -- 
-2.43.0
-
-
-
-
+Without deviation from the norm, progress is not possible.
 
