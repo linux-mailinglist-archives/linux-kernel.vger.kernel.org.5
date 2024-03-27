@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-120286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD4088D55C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:09:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4C988D55E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29C51B21E65
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:09:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 387CF1C2553F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 04:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FE02561D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A36CE28DCA;
 	Wed, 27 Mar 2024 04:09:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZyocSwZ6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJDkhcmu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3A322F1C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFD724211;
 	Wed, 27 Mar 2024 04:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711512575; cv=none; b=R4jw8pDUHoar3vJDAN+FVGHOnq+i/k89A1VVlo97IcDxj6xbynTfd9IkfUfrKKwWjKD7lp2/dkCInCZ+jpq9fAVIIAplQICLyEWPBz7RjhLyOQINN5nJMOjSge0TONn508+8Biqq0v0Ef/0xjgQgjPZfdEsiQS7N3q5OOSuq/bY=
+	t=1711512575; cv=none; b=KqpykhrJ1izuSvPbnTfgrvx5QXHyVIez83886LkRyCzZoiFG9DPXJAlp2tYmfuAnbhPjBTRHiOxjDLP7x5PrtDYp/GtUP1IsgRAHVGZPpidlyNVkUtfbgIJoBAHTOaTquKmRAZgIEOv4mg80wpaB9O4ncRFZd95TWItExjcQ9vI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711512575; c=relaxed/simple;
-	bh=5Z/+u3yQJXkig12YLCHeYknu32FDLCzB+SMwQmNvuys=;
+	bh=DfKRggbLQPnah/j7AqhtFsxmQZMJ2jTVZKuWmOnkN3E=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=rZNtM4kP8KE/IepHH7yinDD0wcfoaYPTk0GDLZawgWdsxHXouQuvwT8H+luxE9TiwbErh3yGG65i5RiIO8JEnCfBWlRacm+vdV/ryjUzRX4A8y3CV9RVBmnsHL8WD2dqPGyY/cMnZtHRWwYWCb5HERkN6+ix7O84pCvBVJjsQCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZyocSwZ6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DA6B7C43390;
+	 In-Reply-To:To:Cc; b=Pc60s+jhesLV6v5szYbKh8Az9CqlulbmYjJOn8ucMO3yy+nBRW9suVad0cwuaDe8KRKZhILZlEJcRMf50pzNUSsFdMC1sr0Lu49oXSRyZW5fk/aenfGdBDfi9NJ7/CnBDYlcDa92hSMEPJbdPozs1FVjI5VXM5djiH5PSxDcvrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJDkhcmu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6290BC433B1;
 	Wed, 27 Mar 2024 04:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711512574;
-	bh=5Z/+u3yQJXkig12YLCHeYknu32FDLCzB+SMwQmNvuys=;
+	s=k20201202; t=1711512575;
+	bh=DfKRggbLQPnah/j7AqhtFsxmQZMJ2jTVZKuWmOnkN3E=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ZyocSwZ6yOcuATiAPM+/A5CFmqB2UPBwEjkLAAuNeI901EDW1reiCE7324pehC0Xs
-	 03MqE2TVyhVq5bzgvDOmXTt6JW68EGlfaxK4Ymc82qHoap0gRqW0fxuNoDnBi4zLGv
-	 SmkWxCasvCFVLtskeUsriCmjHS2t4tCqwFlUXqPXA+CN6s/3JPTWCN14jQAH/XObSZ
-	 Q90aBNgJnYTXY/FTPpyHC+cRo3zZWyiF6UhkBV07gLAcSftmMqb74+AkMXdfylmimr
-	 iBSFGoKFx9MVWqqIJcHpNVfteHwO4D1CEMQ76qZBiGTVLIKnNDpE1Bi9pvhTtUJnCD
-	 rKcnne1DFsVBQ==
+	b=vJDkhcmubCZ/BDnwKhaUiy7ic+S9BztYxgVxJPssCq3Ahne/OKOy07j8sTZ/yOYGb
+	 rbFw0S7XLAeRdz0atOnV+YyWPMyroagfQPZiKfnPdR2G3ebQBFM05vJFpXGvAJLB01
+	 uavf0eBsqNVsQ9PfX1HnpTvosVH/sMB08TUB+lAYKER/Cd5aArNxddYHeMkGJoj6kT
+	 TSW50rZ8YcFXhdLMnMO1Xk0sISY/iGVOMFPyophwtt5nuhHm3CsnRwa719ussXzfeF
+	 PEfKotYQlOXWgu5eoJUOMZv3xcCDPg2FzZpzr8op6UBA1yyTOvZ4phuNz5GJt/SIZK
+	 sqTvpblX6NTjQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C91A1D95065;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 574E5D9505F;
 	Wed, 27 Mar 2024 04:09:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,37 +51,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: amd8111e: Drop unused copy of pm_cap
+Subject: Re: [PATCH net v3] mlxbf_gige: call request_irq() after NAPI initialized
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171151257482.29046.17101565198691559001.git-patchwork-notify@kernel.org>
+ <171151257435.29046.15255647159792456.git-patchwork-notify@kernel.org>
 Date: Wed, 27 Mar 2024 04:09:34 +0000
-References: <20240325220633.1453180-1-helgaas@kernel.org>
-In-Reply-To: <20240325220633.1453180-1-helgaas@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
+References: <20240325183627.7641-1-davthompson@nvidia.com>
+In-Reply-To: <20240325183627.7641-1-davthompson@nvidia.com>
+To: David Thompson <davthompson@nvidia.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bhelgaas@google.com
+ pabeni@redhat.com, u.kleine-koenig@pengutronix.de, leon@kernel.org,
+ asmaa@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 25 Mar 2024 17:06:33 -0500 you wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On Mon, 25 Mar 2024 14:36:27 -0400 you wrote:
+> The mlxbf_gige driver encounters a NULL pointer exception in
+> mlxbf_gige_open() when kdump is enabled.  The sequence to reproduce
+> the exception is as follows:
+> a) enable kdump
+> b) trigger kdump via "echo c > /proc/sysrq-trigger"
+> c) kdump kernel executes
+> d) kdump kernel loads mlxbf_gige module
+> e) the mlxbf_gige module runs its open() as the
+>    the "oob_net0" interface is brought up
+> f) mlxbf_gige module will experience an exception
+>    during its open(), something like:
 > 
-> The copy of pdev->pm_cap in struct amd8111e_priv is never used.  Drop it.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/net/ethernet/amd/amd8111e.c | 1 -
->  drivers/net/ethernet/amd/amd8111e.h | 1 -
->  2 files changed, 2 deletions(-)
+> [...]
 
 Here is the summary with links:
-  - net: amd8111e: Drop unused copy of pm_cap
-    https://git.kernel.org/netdev/net-next/c/ee36b1e93b11
+  - [net,v3] mlxbf_gige: call request_irq() after NAPI initialized
+    https://git.kernel.org/netdev/net/c/f7442a634ac0
 
 You are awesome, thank you!
 -- 
