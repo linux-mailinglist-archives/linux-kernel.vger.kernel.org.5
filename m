@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-121460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BF3F88E833
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:14:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B5E88EA17
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E38F12A45D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:14:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CE47B2EB33
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89EA013BAE0;
-	Wed, 27 Mar 2024 14:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6D713BC1B;
+	Wed, 27 Mar 2024 14:45:56 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0975D130481
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277DC13BAC7
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711550752; cv=none; b=BHOBQDFMRH3UbEMHynD7f2juTaBeiaNfyBPku4fxi5xqrVfXDimSAyP7HODbnS/Qrihbbtl+y3nGOqkx+JSFb0vd26oWTtJIY8letFl6qxeh1ZjwCAoNLRXxVs+ixi9JrsAQrMCt94XdKOtBoJFc6AoE8lGf9X2ohEtHheoR8Tk=
+	t=1711550755; cv=none; b=VJbBFVt02JvqsgvDkC0nNBUKunP58y1cSQHD0nuvLn+trXweK9Ij5YYSe+9PHOo4hVo/mayuHPbn/gtIwguMH1a47esyTOyB8wDLH+xpweEym2D4MN0aXHmwPggqffvw9UqWZU7NyHCedDji1aZjaswsoj/ZDuKfu4mvMTB5M9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711550752; c=relaxed/simple;
-	bh=oLx17dAvx38XplINFEi1I7AILz9gaIdu/fQKTPEhicE=;
+	s=arc-20240116; t=1711550755; c=relaxed/simple;
+	bh=yo5mzCqyusPJnrcpYGi8bJFDnc9uYuGgBkNtxUqR3wA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dyentsG6DDz2F/r42LRDK4N6n4PM2E6MI8jtRH7GU5HTTPUmSFFCSXevJ3Eb//yCSvNRS0WL8DEKpurMV6U+6DWBuEca9hy9QvwuptwwCxz11+5L2WfJChnlhAtvGpFM6ds8+Fa3iFMUvuNFkCI8yER2WXZy3g4qIKc5r/W03us=
+	 MIME-Version; b=NxGDrROM0AdX26YwIdN7+/tvEKDoFC+akJebYNTDNi2CcE6tkbiP8w2RwkR5QE5251YiKgyjqQo+QgEaVsRDnIiNCLgAGxdCZfg4Y3o3FxtoWDkxc1yf2P90/Sgu9b0YhbFW8w4IvVJAbeNlHshWv5R0LzgjP2G5w6oKcscuV2A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 812EC339;
-	Wed, 27 Mar 2024 07:46:24 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B253D1595;
+	Wed, 27 Mar 2024 07:46:26 -0700 (PDT)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 870353F64C;
-	Wed, 27 Mar 2024 07:45:48 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D7553F64C;
+	Wed, 27 Mar 2024 07:45:50 -0700 (PDT)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	David Hildenbrand <david@redhat.com>,
@@ -48,9 +48,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/6] mm: swap: Remove CLUSTER_FLAG_HUGE from swap_cluster_info:flags
-Date: Wed, 27 Mar 2024 14:45:32 +0000
-Message-Id: <20240327144537.4165578-2-ryan.roberts@arm.com>
+Subject: [PATCH v5 2/6] mm: swap: free_swap_and_cache_nr() as batched free_swap_and_cache()
+Date: Wed, 27 Mar 2024 14:45:33 +0000
+Message-Id: <20240327144537.4165578-3-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240327144537.4165578-1-ryan.roberts@arm.com>
 References: <20240327144537.4165578-1-ryan.roberts@arm.com>
@@ -62,200 +62,368 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As preparation for supporting small-sized THP in the swap-out path,
-without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
-which, when present, always implies PMD-sized THP, which is the same as
-the cluster size.
+Now that we no longer have a convenient flag in the cluster to determine
+if a folio is large, free_swap_and_cache() will take a reference and
+lock a large folio much more often, which could lead to contention and
+(e.g.) failure to split large folios, etc.
 
-The only use of the flag was to determine whether a swap entry refers to
-a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
-Instead of relying on the flag, we now pass in nr_pages, which
-originates from the folio's number of pages. This allows the logic to
-work for folios of any order.
+Let's solve that problem by batch freeing swap and cache with a new
+function, free_swap_and_cache_nr(), to free a contiguous range of swap
+entries together. This allows us to first drop a reference to each swap
+slot before we try to release the cache folio. This means we only try to
+release the folio once, only taking the reference and lock once - much
+better than the previous 512 times for the 2M THP case.
 
-The one snag is that one of the swap_page_trans_huge_swapped() call
-sites does not have the folio. But it was only being called there to
-shortcut a call __try_to_reclaim_swap() in some cases.
-__try_to_reclaim_swap() gets the folio and (via some other functions)
-calls swap_page_trans_huge_swapped(). So I've removed the problematic
-call site and believe the new logic should be functionally equivalent.
+Contiguous swap entries are gathered in zap_pte_range() and
+madvise_free_pte_range() in a similar way to how present ptes are
+already gathered in zap_pte_range().
 
-That said, removing the fast path means that we will take a reference
-and trylock a large folio much more often, which we would like to avoid.
-The next patch will solve this.
-
-Removing CLUSTER_FLAG_HUGE also means we can remove split_swap_cluster()
-which used to be called during folio splitting, since
-split_swap_cluster()'s only job was to remove the flag.
+While we are at it, let's simplify by converting the return type of both
+functions to void. The return value was used only by zap_pte_range() to
+print a bad pte, and was ignored by everyone else, so the extra
+reporting wasn't exactly guaranteed. We will still get the warning with
+most of the information from get_swap_device(). With the batch version,
+we wouldn't know which pte was bad anyway so could print the wrong one.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- include/linux/swap.h | 10 ----------
- mm/huge_memory.c     |  3 ---
- mm/swapfile.c        | 47 ++++++++------------------------------------
- 3 files changed, 8 insertions(+), 52 deletions(-)
+ include/linux/pgtable.h | 28 +++++++++++++++
+ include/linux/swap.h    | 12 +++++--
+ mm/internal.h           | 48 +++++++++++++++++++++++++
+ mm/madvise.c            | 12 ++++---
+ mm/memory.c             | 13 +++----
+ mm/swapfile.c           | 78 ++++++++++++++++++++++++++++++-----------
+ 6 files changed, 157 insertions(+), 34 deletions(-)
 
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 09c85c7bf9c2..8185939df1e8 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -708,6 +708,34 @@ static inline void pte_clear_not_present_full(struct mm_struct *mm,
+ }
+ #endif
+ 
++#ifndef clear_not_present_full_ptes
++/**
++ * clear_not_present_full_ptes - Clear consecutive not present PTEs.
++ * @mm: Address space the ptes represent.
++ * @addr: Address of the first pte.
++ * @ptep: Page table pointer for the first entry.
++ * @nr: Number of entries to clear.
++ * @full: Whether we are clearing a full mm.
++ *
++ * May be overridden by the architecture; otherwise, implemented as a simple
++ * loop over pte_clear_not_present_full().
++ *
++ * Context: The caller holds the page table lock.  The PTEs are all not present.
++ * The PTEs are all in the same PMD.
++ */
++static inline void clear_not_present_full_ptes(struct mm_struct *mm,
++		unsigned long addr, pte_t *ptep, unsigned int nr, int full)
++{
++	for (;;) {
++		pte_clear_not_present_full(mm, addr, ptep, full);
++		if (--nr == 0)
++			break;
++		ptep++;
++		addr += PAGE_SIZE;
++	}
++}
++#endif
++
+ #ifndef __HAVE_ARCH_PTEP_CLEAR_FLUSH
+ extern pte_t ptep_clear_flush(struct vm_area_struct *vma,
+ 			      unsigned long address,
 diff --git a/include/linux/swap.h b/include/linux/swap.h
-index a211a0383425..f6f78198f000 100644
+index f6f78198f000..5737236dc3ce 100644
 --- a/include/linux/swap.h
 +++ b/include/linux/swap.h
-@@ -259,7 +259,6 @@ struct swap_cluster_info {
- };
- #define CLUSTER_FLAG_FREE 1 /* This cluster is free */
- #define CLUSTER_FLAG_NEXT_NULL 2 /* This cluster has no next cluster */
--#define CLUSTER_FLAG_HUGE 4 /* This cluster is backing a transparent huge page */
+@@ -471,7 +471,7 @@ extern int swap_duplicate(swp_entry_t);
+ extern int swapcache_prepare(swp_entry_t);
+ extern void swap_free(swp_entry_t);
+ extern void swapcache_free_entries(swp_entry_t *entries, int n);
+-extern int free_swap_and_cache(swp_entry_t);
++extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+ int swap_type_of(dev_t device, sector_t offset);
+ int find_first_swap(dev_t *device);
+ extern unsigned int count_swap_pages(int, int);
+@@ -520,8 +520,9 @@ static inline void put_swap_device(struct swap_info_struct *si)
+ #define free_pages_and_swap_cache(pages, nr) \
+ 	release_pages((pages), (nr));
  
- /*
-  * We assign a cluster to each CPU, so each CPU can allocate swap entry from
-@@ -590,15 +589,6 @@ static inline int add_swap_extent(struct swap_info_struct *sis,
+-/* used to sanity check ptes in zap_pte_range when CONFIG_SWAP=0 */
+-#define free_swap_and_cache(e) is_pfn_swap_entry(e)
++static inline void free_swap_and_cache_nr(swp_entry_t entry, int nr)
++{
++}
+ 
+ static inline void free_swap_cache(struct folio *folio)
+ {
+@@ -589,6 +590,11 @@ static inline int add_swap_extent(struct swap_info_struct *sis,
  }
  #endif /* CONFIG_SWAP */
  
--#ifdef CONFIG_THP_SWAP
--extern int split_swap_cluster(swp_entry_t entry);
--#else
--static inline int split_swap_cluster(swp_entry_t entry)
--{
--	return 0;
--}
--#endif
--
++static inline void free_swap_and_cache(swp_entry_t entry)
++{
++	free_swap_and_cache_nr(entry, 1);
++}
++
  #ifdef CONFIG_MEMCG
  static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
  {
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index b49fcb8a16cc..8c1f3393994a 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2961,9 +2961,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		shmem_uncharge(folio->mapping->host, nr_dropped);
- 	remap_page(folio, nr);
+diff --git a/mm/internal.h b/mm/internal.h
+index 8e11f7b2da21..eadb79c3a357 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -11,6 +11,8 @@
+ #include <linux/mm.h>
+ #include <linux/pagemap.h>
+ #include <linux/rmap.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
+ #include <linux/tracepoint-defs.h>
  
--	if (folio_test_swapcache(folio))
--		split_swap_cluster(folio->swap);
--
- 	/*
- 	 * set page to its compound_head when split to non order-0 pages, so
- 	 * we can skip unlocking it below, since PG_locked is transferred to
+ struct folio_batch;
+@@ -189,6 +191,52 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+ 
+ 	return min(ptep - start_ptep, max_nr);
+ }
++
++/**
++ * swap_pte_batch - detect a PTE batch for a set of contiguous swap entries
++ * @start_ptep: Page table pointer for the first entry.
++ * @max_nr: The maximum number of table entries to consider.
++ * @entry: Swap entry recovered from the first table entry.
++ *
++ * Detect a batch of contiguous swap entries: consecutive (non-present) PTEs
++ * containing swap entries all with consecutive offsets and targeting the same
++ * swap type.
++ *
++ * max_nr must be at least one and must be limited by the caller so scanning
++ * cannot exceed a single page table.
++ *
++ * Return: the number of table entries in the batch.
++ */
++static inline int swap_pte_batch(pte_t *start_ptep, int max_nr,
++				 swp_entry_t entry)
++{
++	const pte_t *end_ptep = start_ptep + max_nr;
++	unsigned long expected_offset = swp_offset(entry) + 1;
++	unsigned int expected_type = swp_type(entry);
++	pte_t *ptep = start_ptep + 1;
++
++	VM_WARN_ON(max_nr < 1);
++	VM_WARN_ON(non_swap_entry(entry));
++
++	while (ptep < end_ptep) {
++		pte_t pte = ptep_get(ptep);
++
++		if (pte_none(pte) || pte_present(pte))
++			break;
++
++		entry = pte_to_swp_entry(pte);
++
++		if (non_swap_entry(entry) ||
++		    swp_type(entry) != expected_type ||
++		    swp_offset(entry) != expected_offset)
++			break;
++
++		expected_offset++;
++		ptep++;
++	}
++
++	return ptep - start_ptep;
++}
+ #endif /* CONFIG_MMU */
+ 
+ void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 1f77a51baaac..070bedb4996e 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -628,6 +628,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+ 	struct folio *folio;
+ 	int nr_swap = 0;
+ 	unsigned long next;
++	int nr, max_nr;
+ 
+ 	next = pmd_addr_end(addr, end);
+ 	if (pmd_trans_huge(*pmd))
+@@ -640,7 +641,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+ 		return 0;
+ 	flush_tlb_batched_pending(mm);
+ 	arch_enter_lazy_mmu_mode();
+-	for (; addr != end; pte++, addr += PAGE_SIZE) {
++	for (; addr != end; pte += nr, addr += PAGE_SIZE * nr) {
++		nr = 1;
+ 		ptent = ptep_get(pte);
+ 
+ 		if (pte_none(ptent))
+@@ -655,9 +657,11 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+ 
+ 			entry = pte_to_swp_entry(ptent);
+ 			if (!non_swap_entry(entry)) {
+-				nr_swap--;
+-				free_swap_and_cache(entry);
+-				pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
++				max_nr = (end - addr) / PAGE_SIZE;
++				nr = swap_pte_batch(pte, max_nr, entry);
++				nr_swap -= nr;
++				free_swap_and_cache_nr(entry, nr);
++				clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+ 			} else if (is_hwpoison_entry(entry) ||
+ 				   is_poisoned_swp_entry(entry)) {
+ 				pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+diff --git a/mm/memory.c b/mm/memory.c
+index 36191a9c799c..9d844582ba38 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1631,12 +1631,13 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 				folio_remove_rmap_pte(folio, page, vma);
+ 			folio_put(folio);
+ 		} else if (!non_swap_entry(entry)) {
+-			/* Genuine swap entry, hence a private anon page */
++			max_nr = (end - addr) / PAGE_SIZE;
++			nr = swap_pte_batch(pte, max_nr, entry);
++			/* Genuine swap entries, hence a private anon pages */
+ 			if (!should_zap_cows(details))
+ 				continue;
+-			rss[MM_SWAPENTS]--;
+-			if (unlikely(!free_swap_and_cache(entry)))
+-				print_bad_pte(vma, addr, ptent, NULL);
++			rss[MM_SWAPENTS] -= nr;
++			free_swap_and_cache_nr(entry, nr);
+ 		} else if (is_migration_entry(entry)) {
+ 			folio = pfn_swap_entry_folio(entry);
+ 			if (!should_zap_folio(details, folio))
+@@ -1659,8 +1660,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
+ 			WARN_ON_ONCE(1);
+ 		}
+-		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+-		zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
++		clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
++		zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details, ptent);
+ 	} while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
+ 
+ 	add_mm_rss_vec(mm, rss);
 diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 5e6d2304a2a4..0d44ee2b4f9c 100644
+index 0d44ee2b4f9c..cedfc82d37e5 100644
 --- a/mm/swapfile.c
 +++ b/mm/swapfile.c
-@@ -343,18 +343,6 @@ static inline void cluster_set_null(struct swap_cluster_info *info)
- 	info->data = 0;
- }
+@@ -130,7 +130,11 @@ static inline unsigned char swap_count(unsigned char ent)
+ /* Reclaim the swap entry if swap is getting full*/
+ #define TTRS_FULL		0x4
  
--static inline bool cluster_is_huge(struct swap_cluster_info *info)
--{
--	if (IS_ENABLED(CONFIG_THP_SWAP))
--		return info->flags & CLUSTER_FLAG_HUGE;
--	return false;
--}
--
--static inline void cluster_clear_huge(struct swap_cluster_info *info)
--{
--	info->flags &= ~CLUSTER_FLAG_HUGE;
--}
--
- static inline struct swap_cluster_info *lock_cluster(struct swap_info_struct *si,
- 						     unsigned long offset)
+-/* returns 1 if swap entry is freed */
++/*
++ * returns number of pages in the folio that backs the swap entry. If positive,
++ * the folio was reclaimed. If negative, the folio was not reclaimed. If 0, no
++ * folio was associated with the swap entry.
++ */
+ static int __try_to_reclaim_swap(struct swap_info_struct *si,
+ 				 unsigned long offset, unsigned long flags)
  {
-@@ -1027,7 +1015,7 @@ static int swap_alloc_cluster(struct swap_info_struct *si, swp_entry_t *slot)
- 	offset = idx * SWAPFILE_CLUSTER;
- 	ci = lock_cluster(si, offset);
- 	alloc_cluster(si, idx);
--	cluster_set_count_flag(ci, SWAPFILE_CLUSTER, CLUSTER_FLAG_HUGE);
-+	cluster_set_count(ci, SWAPFILE_CLUSTER);
- 
- 	memset(si->swap_map + offset, SWAP_HAS_CACHE, SWAPFILE_CLUSTER);
- 	unlock_cluster(ci);
-@@ -1365,7 +1353,6 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
- 
- 	ci = lock_cluster_or_swap_info(si, offset);
- 	if (size == SWAPFILE_CLUSTER) {
--		VM_BUG_ON(!cluster_is_huge(ci));
- 		map = si->swap_map + offset;
- 		for (i = 0; i < SWAPFILE_CLUSTER; i++) {
- 			val = map[i];
-@@ -1373,7 +1360,6 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
- 			if (val == SWAP_HAS_CACHE)
- 				free_entries++;
- 		}
--		cluster_clear_huge(ci);
- 		if (free_entries == SWAPFILE_CLUSTER) {
- 			unlock_cluster_or_swap_info(si, ci);
- 			spin_lock(&si->lock);
-@@ -1395,23 +1381,6 @@ void put_swap_folio(struct folio *folio, swp_entry_t entry)
- 	unlock_cluster_or_swap_info(si, ci);
- }
- 
--#ifdef CONFIG_THP_SWAP
--int split_swap_cluster(swp_entry_t entry)
--{
--	struct swap_info_struct *si;
--	struct swap_cluster_info *ci;
--	unsigned long offset = swp_offset(entry);
--
--	si = _swap_info_get(entry);
--	if (!si)
--		return -EBUSY;
--	ci = lock_cluster(si, offset);
--	cluster_clear_huge(ci);
--	unlock_cluster(ci);
--	return 0;
--}
--#endif
--
- static int swp_entry_cmp(const void *ent1, const void *ent2)
- {
- 	const swp_entry_t *e1 = ent1, *e2 = ent2;
-@@ -1519,22 +1488,23 @@ int swp_swapcount(swp_entry_t entry)
- }
- 
- static bool swap_page_trans_huge_swapped(struct swap_info_struct *si,
--					 swp_entry_t entry)
-+					 swp_entry_t entry,
-+					 unsigned int nr_pages)
- {
- 	struct swap_cluster_info *ci;
- 	unsigned char *map = si->swap_map;
- 	unsigned long roffset = swp_offset(entry);
--	unsigned long offset = round_down(roffset, SWAPFILE_CLUSTER);
-+	unsigned long offset = round_down(roffset, nr_pages);
- 	int i;
- 	bool ret = false;
- 
- 	ci = lock_cluster_or_swap_info(si, offset);
--	if (!ci || !cluster_is_huge(ci)) {
-+	if (!ci || nr_pages == 1) {
- 		if (swap_count(map[roffset]))
- 			ret = true;
- 		goto unlock_out;
+@@ -155,6 +159,7 @@ static int __try_to_reclaim_swap(struct swap_info_struct *si,
+ 			ret = folio_free_swap(folio);
+ 		folio_unlock(folio);
  	}
--	for (i = 0; i < SWAPFILE_CLUSTER; i++) {
-+	for (i = 0; i < nr_pages; i++) {
- 		if (swap_count(map[offset + i])) {
- 			ret = true;
- 			break;
-@@ -1556,7 +1526,7 @@ static bool folio_swapped(struct folio *folio)
- 	if (!IS_ENABLED(CONFIG_THP_SWAP) || likely(!folio_test_large(folio)))
- 		return swap_swapcount(si, entry) != 0;
- 
--	return swap_page_trans_huge_swapped(si, entry);
-+	return swap_page_trans_huge_swapped(si, entry, folio_nr_pages(folio));
++	ret = ret ? folio_nr_pages(folio) : -folio_nr_pages(folio);
+ 	folio_put(folio);
+ 	return ret;
+ }
+@@ -895,7 +900,7 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 		swap_was_freed = __try_to_reclaim_swap(si, offset, TTRS_ANYWAY);
+ 		spin_lock(&si->lock);
+ 		/* entry was freed successfully, try to use this again */
+-		if (swap_was_freed)
++		if (swap_was_freed > 0)
+ 			goto checks;
+ 		goto scan; /* check next one */
+ 	}
+@@ -1572,32 +1577,63 @@ bool folio_free_swap(struct folio *folio)
+ 	return true;
  }
  
- /**
-@@ -1622,8 +1592,7 @@ int free_swap_and_cache(swp_entry_t entry)
- 		}
+-/*
+- * Free the swap entry like above, but also try to
+- * free the page cache entry if it is the last user.
+- */
+-int free_swap_and_cache(swp_entry_t entry)
++void free_swap_and_cache_nr(swp_entry_t entry, int nr)
+ {
+-	struct swap_info_struct *p;
+-	unsigned char count;
++	unsigned long end = swp_offset(entry) + nr;
++	unsigned int type = swp_type(entry);
++	struct swap_info_struct *si;
++	unsigned long offset;
  
- 		count = __swap_entry_free(p, entry);
--		if (count == SWAP_HAS_CACHE &&
--		    !swap_page_trans_huge_swapped(p, entry))
-+		if (count == SWAP_HAS_CACHE)
- 			__try_to_reclaim_swap(p, swp_offset(entry),
+ 	if (non_swap_entry(entry))
+-		return 1;
++		return;
+ 
+-	p = get_swap_device(entry);
+-	if (p) {
+-		if (WARN_ON(data_race(!p->swap_map[swp_offset(entry)]))) {
+-			put_swap_device(p);
+-			return 0;
+-		}
++	si = get_swap_device(entry);
++	if (!si)
++		return;
+ 
+-		count = __swap_entry_free(p, entry);
+-		if (count == SWAP_HAS_CACHE)
+-			__try_to_reclaim_swap(p, swp_offset(entry),
++	if (WARN_ON(end > si->max))
++		goto out;
++
++	/*
++	 * First free all entries in the range.
++	 */
++	for (offset = swp_offset(entry); offset < end; offset++) {
++		if (!WARN_ON(data_race(!si->swap_map[offset])))
++			__swap_entry_free(si, swp_entry(type, offset));
++	}
++
++	/*
++	 * Now go back over the range trying to reclaim the swap cache. This is
++	 * more efficient for large folios because we will only try to reclaim
++	 * the swap once per folio in the common case. If we do
++	 * __swap_entry_free() and __try_to_reclaim_swap() in the same loop, the
++	 * latter will get a reference and lock the folio for every individual
++	 * page but will only succeed once the swap slot for every subpage is
++	 * zero.
++	 */
++	for (offset = swp_offset(entry); offset < end; offset += nr) {
++		nr = 1;
++		if (READ_ONCE(si->swap_map[offset]) == SWAP_HAS_CACHE) {
++			/*
++			 * Folios are always naturally aligned in swap so
++			 * advance forward to the next boundary. Zero means no
++			 * folio was found for the swap entry, so advance by 1
++			 * in this case. Negative value means folio was found
++			 * but could not be reclaimed. Here we can still advance
++			 * to the next boundary.
++			 */
++			nr = __try_to_reclaim_swap(si, offset,
  					      TTRS_UNMAPPED | TTRS_FULL);
- 		put_swap_device(p);
+-		put_swap_device(p);
++			if (nr == 0)
++				nr = 1;
++			else if (nr < 0)
++				nr = -nr;
++			nr = ALIGN(offset + 1, nr) - offset;
++		}
+ 	}
+-	return p != NULL;
++
++out:
++	put_swap_device(si);
+ }
+ 
+ #ifdef CONFIG_HIBERNATION
 -- 
 2.25.1
 
