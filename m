@@ -1,368 +1,174 @@
-Return-Path: <linux-kernel+bounces-121279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ECA888E49D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:08:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7CD88E4A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:08:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1E7D1C26AA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:08:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CC0C1C2789B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B19D1BB754;
-	Wed, 27 Mar 2024 12:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71A81BAC4D;
+	Wed, 27 Mar 2024 12:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YG9BsnoB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Y6U0j+OF"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00825130E20;
-	Wed, 27 Mar 2024 12:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F199130E26;
+	Wed, 27 Mar 2024 12:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542544; cv=none; b=ai4sHjvNco3B0YI73nEm8QoRkMRD7eNbwM57sw1Gnbvj1BxGuECADDHr7EZ5e6m0MQ2sQeqg2RY4/nqoNccmITlA9OHgz1M0duUFwOIkyLHDf4sBwKsDWYK9GojehS6zWohtWLRy7bOrF0NRNOgkI4XF/BKzvBfPjG+pYHxrOyM=
+	t=1711542548; cv=none; b=Tw/iOa/8uOggQaCwblsebKzAV/egqdOMxtBaYH4RsyT51yNl318X4S02affT/5jhLxwgBXKzxiT4TX/ov3zi7V7RUQpEDdDeC2jlivQ3n6NQQats4A/kLkQR3VEurO4ua8HqPs4JUcpVTYK5eJT9l00KSo6B6OtHJjz8wqBJ92Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542544; c=relaxed/simple;
-	bh=j/1+4cJT/eNh/zOUvAwFOaKRSzLapFzaAS/T2jpB4II=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=p5Fj2Qpoy+u5LlosRJ+kbYLqSVmpPUJzaetkS+3c7okVwbVQXBPMB8h6eEmiouvnlz0D0yiGm3NbYlI3mGDg43dcEyHW4NBiYTP62QDFSJDduqhOpwIQmU8xMYvMBE9eJB57+p1qzS7HQC6NQ1HURX/2HjmvK0Q03jSv95V6SI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YG9BsnoB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04BE9C43390;
-	Wed, 27 Mar 2024 12:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542543;
-	bh=j/1+4cJT/eNh/zOUvAwFOaKRSzLapFzaAS/T2jpB4II=;
-	h=From:To:Cc:Subject:Date:From;
-	b=YG9BsnoBKUBYtUgRuTt3k7PEDKNeIIl267H27Uu0l6szIhM8zEG/JrvhTdMETZURM
-	 QtmtlOIiFEoe9zdLXcBlAsGnsjStASnc/yY/qLBSex8CYwDj8yxpwVCpUHo3zs11BR
-	 E2UDigCzuvHQEAOiH6vn4g0fVbCpYdSMES/2TTblDW0fxTWLS0f9Xp4qhgzGg4+sUg
-	 cbkfza3Q+BgfUsjXiFEvG1qy3J7uBzJ4tNH6bzU/pgJLIq6qfUUsOE3IPiCRp3M2Bl
-	 68OZkP+w3kbwUYAyJEfjNwiCVAfmYd9OJWWgGno/05Zadd3M+1vb0npa1uWGTreQ39
-	 H0x5rC9GlGtYw==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	ardb@kernel.org
-Cc: Kevin Loughlin <kevinloughlin@google.com>,
-	Borislav Petkov <bp@alien8.de>,
-	stable@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "x86/sev: Fix position dependent variable references in startup code" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:29:01 -0400
-Message-ID: <20240327122902.2843201-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711542548; c=relaxed/simple;
+	bh=CO5GH4EA8whWcoaMAqHIvlMBS85gT/fzeKfIasWL0u4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nx2GuC8AGoqsOyrvF0Gq10GXvbhkpRA0V+0svAweb2rGZhwWYg4PR9luow6WN+lzK3F7HbEyznJh1KrZLSSTTgXHvHtDgZAViiVkPwkSBcUJ+IMAExxOvbd2LrOeAUjDRL42xmj5j5VJxqjA4Ho0+twwy8a6REhMG+NClBdudCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Y6U0j+OF; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id D157F1803;
+	Wed, 27 Mar 2024 13:28:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711542513;
+	bh=CO5GH4EA8whWcoaMAqHIvlMBS85gT/fzeKfIasWL0u4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Y6U0j+OFBoERo4NLXOKKaj2rQdhlzROnRmG0SPXr0BzC8cPgxX5eLyopVOCtZ6Fg1
+	 PdY2shE1BVORLLodPIwDAcXWP69d0OZeMT+rgHTlw+QeUn/nzAYXhlfCy4qxAFWDop
+	 6QEAlXuKLNUlooSiAoK7/AfWsIUZNemcLT3rMPlA=
+Message-ID: <a4053c39-3781-4fc4-9c5e-45f32b5525ed@ideasonboard.com>
+Date: Wed, 27 Mar 2024 14:29:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] dma: Add lockdep asserts to virt-dma
+Content-Language: en-US
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+References: <20240308210034.3634938-1-sean.anderson@linux.dev>
+ <20240308210034.3634938-4-sean.anderson@linux.dev>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240308210034.3634938-4-sean.anderson@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The patch below does not apply to the 4.19-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+On 08/03/2024 23:00, Sean Anderson wrote:
+> Add lockdep asserts to all functions with "vc.lock must be held by
+> caller" in their documentation. This will help catch cases where these
+> assumptions do not hold.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> ---
 
-Thanks,
-Sasha
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
------------------- original commit in Linus's tree ------------------
+  Tomi
 
-From 1c811d403afd73f04bde82b83b24c754011bd0e8 Mon Sep 17 00:00:00 2001
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 3 Feb 2024 13:53:06 +0100
-Subject: [PATCH] x86/sev: Fix position dependent variable references in
- startup code
-
-The early startup code executes from a 1:1 mapping of memory, which
-differs from the mapping that the code was linked and/or relocated to
-run at. The latter mapping is not active yet at this point, and so
-symbol references that rely on it will fault.
-
-Given that the core kernel is built without -fPIC, symbol references are
-typically emitted as absolute, and so any such references occuring in
-the early startup code will therefore crash the kernel.
-
-While an attempt was made to work around this for the early SEV/SME
-startup code, by forcing RIP-relative addressing for certain global
-SEV/SME variables via inline assembly (see snp_cpuid_get_table() for
-example), RIP-relative addressing must be pervasively enforced for
-SEV/SME global variables when accessed prior to page table fixups.
-
-__startup_64() already handles this issue for select non-SEV/SME global
-variables using fixup_pointer(), which adjusts the pointer relative to a
-`physaddr` argument. To avoid having to pass around this `physaddr`
-argument across all functions needing to apply pointer fixups, introduce
-a macro RIP_RELATIVE_REF() which generates a RIP-relative reference to
-a given global variable. It is used where necessary to force
-RIP-relative accesses to global variables.
-
-For backporting purposes, this patch makes no attempt at cleaning up
-other occurrences of this pattern, involving either inline asm or
-fixup_pointer(). Those will be addressed later.
-
-  [ bp: Call it "rip_rel_ref" everywhere like other code shortens
-    "rIP-relative reference" and make the asm wrapper __always_inline. ]
-
-Co-developed-by: Kevin Loughlin <kevinloughlin@google.com>
-Signed-off-by: Kevin Loughlin <kevinloughlin@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: <stable@kernel.org>
-Link: https://lore.kernel.org/all/20240130220845.1978329-1-kevinloughlin@google.com
----
- arch/x86/coco/core.c               |  7 +------
- arch/x86/include/asm/asm.h         | 14 ++++++++++++++
- arch/x86/include/asm/coco.h        |  8 +++++++-
- arch/x86/include/asm/mem_encrypt.h | 15 +++++++++------
- arch/x86/kernel/sev-shared.c       | 12 ++++++------
- arch/x86/kernel/sev.c              |  4 ++--
- arch/x86/mm/mem_encrypt_identity.c | 27 ++++++++++++---------------
- 7 files changed, 51 insertions(+), 36 deletions(-)
-
-diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-index eeec9986570ed..d07be9d05cd03 100644
---- a/arch/x86/coco/core.c
-+++ b/arch/x86/coco/core.c
-@@ -14,7 +14,7 @@
- #include <asm/processor.h>
- 
- enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
--static u64 cc_mask __ro_after_init;
-+u64 cc_mask __ro_after_init;
- 
- static bool noinstr intel_cc_platform_has(enum cc_attr attr)
- {
-@@ -148,8 +148,3 @@ u64 cc_mkdec(u64 val)
- 	}
- }
- EXPORT_SYMBOL_GPL(cc_mkdec);
--
--__init void cc_set_mask(u64 mask)
--{
--	cc_mask = mask;
--}
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index fbcfec4dc4ccd..ca8eed1d496ab 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -113,6 +113,20 @@
- 
- #endif
- 
-+#ifndef __ASSEMBLY__
-+#ifndef __pic__
-+static __always_inline __pure void *rip_rel_ptr(void *p)
-+{
-+	asm("leaq %c1(%%rip), %0" : "=r"(p) : "i"(p));
-+
-+	return p;
-+}
-+#define RIP_REL_REF(var)	(*(typeof(&(var)))rip_rel_ptr(&(var)))
-+#else
-+#define RIP_REL_REF(var)	(var)
-+#endif
-+#endif
-+
- /*
-  * Macros to generate condition code outputs from inline assembly,
-  * The output operand must be type "bool".
-diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-index 6ae2d16a7613b..21940ef8d2904 100644
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_X86_COCO_H
- #define _ASM_X86_COCO_H
- 
-+#include <asm/asm.h>
- #include <asm/types.h>
- 
- enum cc_vendor {
-@@ -11,9 +12,14 @@ enum cc_vendor {
- };
- 
- extern enum cc_vendor cc_vendor;
-+extern u64 cc_mask;
- 
- #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
--void cc_set_mask(u64 mask);
-+static inline void cc_set_mask(u64 mask)
-+{
-+	RIP_REL_REF(cc_mask) = mask;
-+}
-+
- u64 cc_mkenc(u64 val);
- u64 cc_mkdec(u64 val);
- #else
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index 359ada486fa92..b31eb9fd59544 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -15,7 +15,8 @@
- #include <linux/init.h>
- #include <linux/cc_platform.h>
- 
--#include <asm/bootparam.h>
-+#include <asm/asm.h>
-+struct boot_params;
- 
- #ifdef CONFIG_X86_MEM_ENCRYPT
- void __init mem_encrypt_init(void);
-@@ -58,6 +59,11 @@ void __init mem_encrypt_free_decrypted_mem(void);
- 
- void __init sev_es_init_vc_handling(void);
- 
-+static inline u64 sme_get_me_mask(void)
-+{
-+	return RIP_REL_REF(sme_me_mask);
-+}
-+
- #define __bss_decrypted __section(".bss..decrypted")
- 
- #else	/* !CONFIG_AMD_MEM_ENCRYPT */
-@@ -89,6 +95,8 @@ early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool en
- 
- static inline void mem_encrypt_free_decrypted_mem(void) { }
- 
-+static inline u64 sme_get_me_mask(void) { return 0; }
-+
- #define __bss_decrypted
- 
- #endif	/* CONFIG_AMD_MEM_ENCRYPT */
-@@ -106,11 +114,6 @@ void add_encrypt_protection_map(void);
- 
- extern char __start_bss_decrypted[], __end_bss_decrypted[], __start_bss_decrypted_unused[];
- 
--static inline u64 sme_get_me_mask(void)
--{
--	return sme_me_mask;
--}
--
- #endif	/* __ASSEMBLY__ */
- 
- #endif	/* __X86_MEM_ENCRYPT_H__ */
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index 5db24d0fc557c..ae79f9505298d 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -560,9 +560,9 @@ static int snp_cpuid(struct ghcb *ghcb, struct es_em_ctxt *ctxt, struct cpuid_le
- 		leaf->eax = leaf->ebx = leaf->ecx = leaf->edx = 0;
- 
- 		/* Skip post-processing for out-of-range zero leafs. */
--		if (!(leaf->fn <= cpuid_std_range_max ||
--		      (leaf->fn >= 0x40000000 && leaf->fn <= cpuid_hyp_range_max) ||
--		      (leaf->fn >= 0x80000000 && leaf->fn <= cpuid_ext_range_max)))
-+		if (!(leaf->fn <= RIP_REL_REF(cpuid_std_range_max) ||
-+		      (leaf->fn >= 0x40000000 && leaf->fn <= RIP_REL_REF(cpuid_hyp_range_max)) ||
-+		      (leaf->fn >= 0x80000000 && leaf->fn <= RIP_REL_REF(cpuid_ext_range_max))))
- 			return 0;
- 	}
- 
-@@ -1072,11 +1072,11 @@ static void __init setup_cpuid_table(const struct cc_blob_sev_info *cc_info)
- 		const struct snp_cpuid_fn *fn = &cpuid_table->fn[i];
- 
- 		if (fn->eax_in == 0x0)
--			cpuid_std_range_max = fn->eax;
-+			RIP_REL_REF(cpuid_std_range_max) = fn->eax;
- 		else if (fn->eax_in == 0x40000000)
--			cpuid_hyp_range_max = fn->eax;
-+			RIP_REL_REF(cpuid_hyp_range_max) = fn->eax;
- 		else if (fn->eax_in == 0x80000000)
--			cpuid_ext_range_max = fn->eax;
-+			RIP_REL_REF(cpuid_ext_range_max) = fn->eax;
- 	}
- }
- 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 002af6c30601b..1ef7ae806a01b 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -748,7 +748,7 @@ void __init early_snp_set_memory_private(unsigned long vaddr, unsigned long padd
- 	 * This eliminates worries about jump tables or checking boot_cpu_data
- 	 * in the cc_platform_has() function.
- 	 */
--	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
-+	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
- 		return;
- 
- 	 /*
-@@ -767,7 +767,7 @@ void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr
- 	 * This eliminates worries about jump tables or checking boot_cpu_data
- 	 * in the cc_platform_has() function.
- 	 */
--	if (!(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
-+	if (!(RIP_REL_REF(sev_status) & MSR_AMD64_SEV_SNP_ENABLED))
- 		return;
- 
- 	 /* Ask hypervisor to mark the memory pages shared in the RMP table. */
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index efe9f217fcf99..0166ab1780ccb 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -304,7 +304,8 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
- 	 * instrumentation or checking boot_cpu_data in the cc_platform_has()
- 	 * function.
- 	 */
--	if (!sme_get_me_mask() || sev_status & MSR_AMD64_SEV_ENABLED)
-+	if (!sme_get_me_mask() ||
-+	    RIP_REL_REF(sev_status) & MSR_AMD64_SEV_ENABLED)
- 		return;
- 
- 	/*
-@@ -541,11 +542,11 @@ void __init sme_enable(struct boot_params *bp)
- 	me_mask = 1UL << (ebx & 0x3f);
- 
- 	/* Check the SEV MSR whether SEV or SME is enabled */
--	sev_status   = __rdmsr(MSR_AMD64_SEV);
--	feature_mask = (sev_status & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
-+	RIP_REL_REF(sev_status) = msr = __rdmsr(MSR_AMD64_SEV);
-+	feature_mask = (msr & MSR_AMD64_SEV_ENABLED) ? AMD_SEV_BIT : AMD_SME_BIT;
- 
- 	/* The SEV-SNP CC blob should never be present unless SEV-SNP is enabled. */
--	if (snp && !(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
-+	if (snp && !(msr & MSR_AMD64_SEV_SNP_ENABLED))
- 		snp_abort();
- 
- 	/* Check if memory encryption is enabled */
-@@ -571,7 +572,6 @@ void __init sme_enable(struct boot_params *bp)
- 			return;
- 	} else {
- 		/* SEV state cannot be controlled by a command line option */
--		sme_me_mask = me_mask;
- 		goto out;
- 	}
- 
-@@ -590,16 +590,13 @@ void __init sme_enable(struct boot_params *bp)
- 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
- 				     ((u64)bp->ext_cmd_line_ptr << 32));
- 
--	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
--		goto out;
--
--	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
--		sme_me_mask = me_mask;
-+	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0 ||
-+	    strncmp(buffer, cmdline_on, sizeof(buffer)))
-+		return;
- 
- out:
--	if (sme_me_mask) {
--		physical_mask &= ~sme_me_mask;
--		cc_vendor = CC_VENDOR_AMD;
--		cc_set_mask(sme_me_mask);
--	}
-+	RIP_REL_REF(sme_me_mask) = me_mask;
-+	physical_mask &= ~me_mask;
-+	cc_vendor = CC_VENDOR_AMD;
-+	cc_set_mask(me_mask);
- }
--- 
-2.43.0
-
-
-
+>   drivers/dma/virt-dma.h | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/dma/virt-dma.h b/drivers/dma/virt-dma.h
+> index e9f5250fbe4d..59d9eabc8b67 100644
+> --- a/drivers/dma/virt-dma.h
+> +++ b/drivers/dma/virt-dma.h
+> @@ -81,6 +81,8 @@ static inline struct dma_async_tx_descriptor *vchan_tx_prep(struct virt_dma_chan
+>    */
+>   static inline bool vchan_issue_pending(struct virt_dma_chan *vc)
+>   {
+> +	lockdep_assert_held(&vc->lock);
+> +
+>   	list_splice_tail_init(&vc->desc_submitted, &vc->desc_issued);
+>   	return !list_empty(&vc->desc_issued);
+>   }
+> @@ -96,6 +98,8 @@ static inline void vchan_cookie_complete(struct virt_dma_desc *vd)
+>   	struct virt_dma_chan *vc = to_virt_chan(vd->tx.chan);
+>   	dma_cookie_t cookie;
+>   
+> +	lockdep_assert_held(&vc->lock);
+> +
+>   	cookie = vd->tx.cookie;
+>   	dma_cookie_complete(&vd->tx);
+>   	dev_vdbg(vc->chan.device->dev, "txd %p[%x]: marked complete\n",
+> @@ -146,6 +150,8 @@ static inline void vchan_terminate_vdesc(struct virt_dma_desc *vd)
+>   {
+>   	struct virt_dma_chan *vc = to_virt_chan(vd->tx.chan);
+>   
+> +	lockdep_assert_held(&vc->lock);
+> +
+>   	list_add_tail(&vd->node, &vc->desc_terminated);
+>   
+>   	if (vc->cyclic == vd)
+> @@ -160,6 +166,8 @@ static inline void vchan_terminate_vdesc(struct virt_dma_desc *vd)
+>    */
+>   static inline struct virt_dma_desc *vchan_next_desc(struct virt_dma_chan *vc)
+>   {
+> +	lockdep_assert_held(&vc->lock);
+> +
+>   	return list_first_entry_or_null(&vc->desc_issued,
+>   					struct virt_dma_desc, node);
+>   }
+> @@ -177,6 +185,8 @@ static inline struct virt_dma_desc *vchan_next_desc(struct virt_dma_chan *vc)
+>   static inline void vchan_get_all_descriptors(struct virt_dma_chan *vc,
+>   	struct list_head *head)
+>   {
+> +	lockdep_assert_held(&vc->lock);
+> +
+>   	list_splice_tail_init(&vc->desc_allocated, head);
+>   	list_splice_tail_init(&vc->desc_submitted, head);
+>   	list_splice_tail_init(&vc->desc_issued, head);
 
 
