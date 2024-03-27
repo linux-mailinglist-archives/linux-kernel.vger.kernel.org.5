@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-121885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5681088EEF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:12:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E74E88EEF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:12:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8809E1C34BB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:12:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B22B71F33AB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D64515250B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90B69152529;
 	Wed, 27 Mar 2024 19:11:51 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8180B13E043;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BFA152187;
 	Wed, 27 Mar 2024 19:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711566710; cv=none; b=TaXZG6Kb+odw1UZJWlc4rzf/17hXU0NOFLN43zFORZWMszSfRxD+u8gPmx+HE+lkOlnmop3RcbdCJE3+2OC8OP2T/CVcCxEgKIwiQOVuJyGXRGQN9g0YjXGyUMMgtVPxiHPPP0qsOv8UlsoIpV4L3uzn4JB1lFUhXiEm3AzszsY=
+	t=1711566710; cv=none; b=cf3jpDlWZOYPHULPhr3ux6ARWFsBdauTJv1HuMaJwsbV6az1I0yXYge8qCuduxeXOR6SaXYBVhyHqhmWFmNG/yusGc19D963zl5sUEa126eBdigkCF6yrWSyMGaYRrLJH+EreNwUCTLpIcnNETY9EHLH8XfaN2oo5HZjI9ae4EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711566710; c=relaxed/simple;
-	bh=BOiUDY1X5fzeGOqE1IIej5iszJIV6a41YoYson7zgZE=;
+	bh=tIFCfgf+3D7TdIVE0ZdE2tSE7iH4jRinyIvff5gv8yI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fyMBy3g/rXFjbbqA9h6qDu4507RlB6fwauAp5teJezSryQ1ghQ/ORIqSJe081InqgetrbGtTj33xU7yafwsb8Of5aBOCEB2QmXBc+yGDdc/Lqa3f+R/eazFGZgUWPiBIkxuB83eGKSsEW4l6WjFIMQQPZ4l9Du+sdmW+2URQhsI=
+	 In-Reply-To:To:Cc; b=SbM+Ltj5QyYlzdFuBj9d70OZCxdlAGpzEhOnm7leiCQsZHTZkeujWbOdOyDDjfmkp+A7+/CPwP+safe8j+X8FS8rfQVo88SW0PF2z7Df7A9Z6zhUiwVshIsDU5l/1Xe+/nsbcuc4FKA6ZGNBrNiOOEAq5Z8zCE6UnsuEk8EeOoI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1395C433F1;
-	Wed, 27 Mar 2024 19:11:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48E9AC43601;
+	Wed, 27 Mar 2024 19:11:50 +0000 (UTC)
 Received: by mercury (Postfix, from userid 1000)
-	id AA64D1060704; Wed, 27 Mar 2024 20:11:47 +0100 (CET)
+	id AB94A1060992; Wed, 27 Mar 2024 20:11:47 +0100 (CET)
 From: Sebastian Reichel <sebastian.reichel@collabora.com>
-Date: Wed, 27 Mar 2024 20:11:32 +0100
-Subject: [PATCH v2 1/7] dt-bindings: hsi: hsi-client: convert to YAML
+Date: Wed, 27 Mar 2024 20:11:33 +0100
+Subject: [PATCH v2 2/7] dt-bindings: hsi: nokia-modem: convert to YAML
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,7 +41,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-hsi-dt-binding-v2-1-110fab4c32ae@collabora.com>
+Message-Id: <20240327-hsi-dt-binding-v2-2-110fab4c32ae@collabora.com>
 References: <20240327-hsi-dt-binding-v2-0-110fab4c32ae@collabora.com>
 In-Reply-To: <20240327-hsi-dt-binding-v2-0-110fab4c32ae@collabora.com>
 To: Rob Herring <robh@kernel.org>, 
@@ -51,172 +51,210 @@ Cc: Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
  linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Sebastian Reichel <sebastian.reichel@collabora.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4296;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5307;
  i=sebastian.reichel@collabora.com; h=from:subject:message-id;
- bh=BOiUDY1X5fzeGOqE1IIej5iszJIV6a41YoYson7zgZE=;
- b=owEBbQKS/ZANAwAKAdju1/PIO/qaAcsmYgBmBG9xveG5FkVLMTBd0NfOMim9KvuljtMYjGmro
- ExRuuz6eEiJAjMEAAEKAB0WIQTvZg0HRj+Lcmp5VBPY7tfzyDv6mgUCZgRvcQAKCRDY7tfzyDv6
- muYSD/9911Opo8umunu4+xNuQwSXbmunqYpyPswxPiHkliaQhMq7fXNUvZJsVVAXLtYGrAvjY9A
- KXX1XJMwiIlrTVnPFStvwDJj0aAjTUYb1YB1zBp4cDCCLpH9se2joREXspawEzCxeXBgbkexaat
- N82IJ1ZCxIz68CH6zNywh+ZiAheb+E7/29iLRAqkAViUndWIvIXaO3Eal+1xrbRQIJGtl8h8kzx
- s9eyOaxfi9eBn/hyz2QlGVsS6jxQpTsyCQ/8kbJff1xwRrmSsV/w57JsAPWVE4C+FpAAUoaYiOT
- Am4vDVamhRlpnOT/lW7DfX3mlYD9E4VoNmzFZrXKIUfhv3iowAT20JaCc4Zquf+bzShn7LXZzRS
- GipF245CyoGD+Ib9feOgabN/8mGsZRjAwd5E/EvEP9tVhYHX2Pd/gVLxe6vLBhFQ4RUZed/IW11
- Im0qkpIR+cW4R9pzGvCGw3/H4Hb+qlpXgzjzjju6P+AGOQNyhOisngOF1KYvq1HBlLvYEten9ps
- 1gEvhFH1XYLU753N+xvlu7El4mMuhbt0FsxMWQ1GKC7n74eLjnekse/K6oDvT/sQkuWp8sxxcNy
- sUYezIArQPGDXXUck5jo5znKIepbswhg8YF0ntS8OTHQuIHs+eJXPhmpe+Ms4YZlzmntLecQwVl
- s1Pn4bOifNCbM1Q==
+ bh=tIFCfgf+3D7TdIVE0ZdE2tSE7iH4jRinyIvff5gv8yI=;
+ b=owEBbQKS/ZANAwAKAdju1/PIO/qaAcsmYgBmBG9xESFLsmU9PrlmwWaBhkW2IWl5iC4Fx4xWa
+ BAk/X+EN3uJAjMEAAEKAB0WIQTvZg0HRj+Lcmp5VBPY7tfzyDv6mgUCZgRvcQAKCRDY7tfzyDv6
+ ms/0D/9PM/pXIrq5uR+J+47qLOAobSWIVB4frfxUJB+0Ej5YCe0AyDv7zCUHM8znJZCB04xrwwW
+ /AF/+6gcgOqBWSY+jgHecpyw3teLyR6r10dCEP48oOwDHJVzS47VXdI9jx1P98PIHpZyHegv9dX
+ iTiCDd3tR3GOkWd6WktrW4U5IW8pia6MFT22PlNncCsz7bv1YoUnujod9dnSECOlGmZ1FBTcOlP
+ Xj63u2HfqKyi/c9jzwda/mIrfRSylybCYs3N766lfs23PAbGUXphMwEXU+6X0EWK8PSiO3oY1QI
+ w6yjeXEuvI+Ot1sSyCeNboZpjSGppEwKYEnGRxKg0mTlA1jbnmIRn/oHmA7/FVEaCkQCE0OcnCp
+ UTotJ6U/5MB3mCExcQByBaSg2gLIEGcpixYOAXjUTw2P7fBgTe9PLp4Cbru54L49qEsFfWlBMew
+ TuLhLAzQ5MXxB0ELSCNlrYVZUP1NWZ0sSS7WPn6qcvwOb7pnAaF54x7CU6MFM/ASGneNHn1jKjx
+ VZmi1Yl/0cD53FZGnQrRd8hbjnj0vfLT64UNEEXBozAd5ge2JdWifWKuO9jw6dNGgaOlmchbo82
+ dYGM93WS1QqxzjLCtwKQ62bTf1fr2FfWOdzE54b7uU3gnvSnk+IbTO2QqP2rmqhGaIPBu9xQl2v
+ dXWiSb9gYKwf8Zw==
 X-Developer-Key: i=sebastian.reichel@collabora.com; a=openpgp;
  fpr=EF660D07463F8B726A795413D8EED7F3C83BFA9A
 
-Convert the legacy txt binding to modern YAML and rename from
-client-devices to hsi-client. Also the example got dropped,
-since this is a shared schema. No semantic change in the binding
-itself.
+Convert the legacy txt binding to modern YAML.
+No semantic change.
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- .../devicetree/bindings/hsi/client-devices.txt     | 44 ------------
- .../devicetree/bindings/hsi/hsi-client.yaml        | 81 ++++++++++++++++++++++
- 2 files changed, 81 insertions(+), 44 deletions(-)
+ .../devicetree/bindings/hsi/nokia,modem.yaml       | 106 +++++++++++++++++++++
+ .../devicetree/bindings/hsi/nokia-modem.txt        |  59 ------------
+ 2 files changed, 106 insertions(+), 59 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hsi/client-devices.txt b/Documentation/devicetree/bindings/hsi/client-devices.txt
-deleted file mode 100644
-index 104c9a3e57a4..000000000000
---- a/Documentation/devicetree/bindings/hsi/client-devices.txt
-+++ /dev/null
-@@ -1,44 +0,0 @@
--Each HSI port is supposed to have one child node, which
--symbols the remote device connected to the HSI port. The
--following properties are standardized for HSI clients:
--
--Required HSI configuration properties:
--
--- hsi-channel-ids:	A list of channel ids
--
--- hsi-rx-mode:		Receiver Bit transmission mode ("stream" or "frame")
--- hsi-tx-mode:		Transmitter Bit transmission mode ("stream" or "frame")
--- hsi-mode:		May be used instead hsi-rx-mode and hsi-tx-mode if
--			the transmission mode is the same for receiver and
--			transmitter
--- hsi-speed-kbps:	Max bit transmission speed in kbit/s
--- hsi-flow:		RX flow type ("synchronized" or "pipeline")
--- hsi-arb-mode:		Arbitration mode for TX frame ("round-robin", "priority")
--
--Optional HSI configuration properties:
--
--- hsi-channel-names:	A list with one name per channel specified in the
--			hsi-channel-ids property
--
--
--Device Tree node example for an HSI client:
--
--hsi-controller {
--	hsi-port {
--		modem: hsi-client {
--			compatible = "nokia,n900-modem";
--
--			hsi-channel-ids = <0>, <1>, <2>, <3>;
--			hsi-channel-names = "mcsaab-control",
--					    "speech-control",
--					    "speech-data",
--					    "mcsaab-data";
--			hsi-speed-kbps = <55000>;
--			hsi-mode = "frame";
--			hsi-flow = "synchronized";
--			hsi-arb-mode = "round-robin";
--
--			/* more client specific properties */
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/hsi/hsi-client.yaml b/Documentation/devicetree/bindings/hsi/hsi-client.yaml
+diff --git a/Documentation/devicetree/bindings/hsi/nokia,modem.yaml b/Documentation/devicetree/bindings/hsi/nokia,modem.yaml
 new file mode 100644
-index 000000000000..9c8d6887e840
+index 000000000000..f6d5e2c14329
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/hsi/hsi-client.yaml
-@@ -0,0 +1,81 @@
++++ b/Documentation/devicetree/bindings/hsi/nokia,modem.yaml
+@@ -0,0 +1,106 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/hsi/hsi-client.yaml#
++$id: http://devicetree.org/schemas/hsi/nokia,modem.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: HSI bus peripheral
-+
-+description:
-+  Each HSI port is supposed to have one child node, which
-+  symbols the remote device connected to the HSI port.
++title: Nokia modem
 +
 +maintainers:
 +  - Sebastian Reichel <sre@kernel.org>
 +
 +properties:
++  compatible:
++    enum:
++      - nokia,n900-modem
++      - nokia,n950-modem
++      - nokia,n9-modem
++
 +  hsi-channel-ids:
 +    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    maxItems: 8
++    minItems: 4
++    maxItems: 4
 +
 +  hsi-channel-names:
-+    minItems: 1
-+    maxItems: 8
++    items:
++      - const: mcsaab-control
++      - const: speech-control
++      - const: speech-data
++      - const: mcsaab-data
 +
-+  hsi-rx-mode:
-+    enum: [stream, frame]
-+    description: Receiver Bit transmission mode
++  interrupts:
++    items:
++      - description: modem reset indication
 +
-+  hsi-tx-mode:
-+    enum: [stream, frame]
-+    description: Transmitter Bit transmission mode
++  gpios:
++    minItems: 3
++    maxItems: 5
 +
-+  hsi-mode:
-+    enum: [stream, frame]
-+    description:
-+      May be used instead hsi-rx-mode and hsi-tx-mode if the
-+      transmission mode is the same for receiver and transmitter.
-+
-+  hsi-speed-kbps:
-+    description: Max bit transmission speed in kbit/s
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  hsi-flow:
-+    enum: [synchronized, pipeline]
-+    description: RX flow type
-+
-+  hsi-arb-mode:
-+    enum: [round-robin, priority]
-+    description: Arbitration mode for TX frame
-+
-+additionalProperties: true
++  gpio-names:
++    items:
++      - const: cmt_apeslpx
++      - const: cmt_rst_rq
++      - const: cmt_en
++      - const: cmt_rst
++      - const: cmt_bsi
++    minItems: 3
 +
 +required:
-+  - compatible
-+  - hsi-channel-ids
-+  - hsi-speed-kbps
-+  - hsi-flow
-+  - hsi-arb-mode
-+
-+oneOf:
-+  - required:
-+      - hsi-mode
-+  - required:
-+      - hsi-rx-mode
-+      - hsi-tx-mode
++  - gpios
++  - gpio-names
++  - interrupts
 +
 +allOf:
++  - $ref: hsi-client.yaml#
 +  - if:
-+      required:
-+        - hsi-mode
++      properties:
++        compatible:
++          contains:
++            enum:
++              - nokia,n950-modem
++              - nokia,n9-modem
 +    then:
 +      properties:
-+        hsi-rx-mode: false
-+        hsi-tx-mode: false
-+  - if:
-+      required:
-+        - hsi-rx-mode
-+    then:
++        gpios:
++          maxItems: 3
++        gpio-names:
++          maxItems: 3
++    else:
 +      properties:
-+        hsi-mode: false
++        gpios:
++          minItems: 5
++        gpio-names:
++          minItems: 5
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    modem {
++        compatible = "nokia,n900-modem";
++
++        hsi-channel-ids = <0>, <1>, <2>, <3>;
++        hsi-channel-names = "mcsaab-control",
++                            "speech-control",
++                            "speech-data",
++                            "mcsaab-data";
++        hsi-speed-kbps = <55000>;
++        hsi-mode = "frame";
++        hsi-flow = "synchronized";
++        hsi-arb-mode = "round-robin";
++
++        interrupts-extended = <&gpio3 8 IRQ_TYPE_EDGE_FALLING>;
++
++        gpios = <&gpio3  6 GPIO_ACTIVE_HIGH>,
++                <&gpio3  9 GPIO_ACTIVE_HIGH>,
++                <&gpio3 10 GPIO_ACTIVE_HIGH>,
++                <&gpio3 11 GPIO_ACTIVE_HIGH>,
++                <&gpio5 29 GPIO_ACTIVE_HIGH>;
++        gpio-names = "cmt_apeslpx",
++                     "cmt_rst_rq",
++                     "cmt_en",
++                     "cmt_rst",
++                     "cmt_bsi";
++    };
+diff --git a/Documentation/devicetree/bindings/hsi/nokia-modem.txt b/Documentation/devicetree/bindings/hsi/nokia-modem.txt
+deleted file mode 100644
+index 53de1d9d0b95..000000000000
+--- a/Documentation/devicetree/bindings/hsi/nokia-modem.txt
++++ /dev/null
+@@ -1,59 +0,0 @@
+-Nokia modem client bindings
+-
+-The Nokia modem HSI client follows the common HSI client binding
+-and inherits all required properties. The following additional
+-properties are needed by the Nokia modem HSI client:
+-
+-Required properties:
+-- compatible:		Should be one of
+-      "nokia,n900-modem"
+-      "nokia,n950-modem"
+-      "nokia,n9-modem"
+-- hsi-channel-names:	Should contain the following strings
+-      "mcsaab-control"
+-      "speech-control"
+-      "speech-data"
+-      "mcsaab-data"
+-- gpios:		Should provide a GPIO handler for each GPIO listed in
+-                        gpio-names
+-- gpio-names:		Should contain the following strings
+-      "cmt_apeslpx" (for n900, n950, n9)
+-      "cmt_rst_rq"  (for n900, n950, n9)
+-      "cmt_en"      (for n900, n950, n9)
+-      "cmt_rst"     (for n900)
+-      "cmt_bsi"     (for n900)
+-- interrupts:		Should be IRQ handle for modem's reset indication
+-
+-Example:
+-
+-&ssi_port {
+-	modem: hsi-client {
+-		compatible = "nokia,n900-modem";
+-
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&modem_pins>;
+-
+-		hsi-channel-ids = <0>, <1>, <2>, <3>;
+-		hsi-channel-names = "mcsaab-control",
+-				    "speech-control",
+-				    "speech-data",
+-				    "mcsaab-data";
+-		hsi-speed-kbps = <55000>;
+-		hsi-mode = "frame";
+-		hsi-flow = "synchronized";
+-		hsi-arb-mode = "round-robin";
+-
+-		interrupts-extended = <&gpio3 8 IRQ_TYPE_EDGE_FALLING>; /* 72 */
+-
+-		gpios = <&gpio3  6 GPIO_ACTIVE_HIGH>, /* 70 */
+-			<&gpio3  9 GPIO_ACTIVE_HIGH>, /* 73 */
+-			<&gpio3 10 GPIO_ACTIVE_HIGH>, /* 74 */
+-			<&gpio3 11 GPIO_ACTIVE_HIGH>, /* 75 */
+-			<&gpio5 29 GPIO_ACTIVE_HIGH>; /* 157 */
+-		gpio-names = "cmt_apeslpx",
+-			     "cmt_rst_rq",
+-			     "cmt_en",
+-			     "cmt_rst",
+-			     "cmt_bsi";
+-	};
+-};
 
 -- 
 2.43.0
