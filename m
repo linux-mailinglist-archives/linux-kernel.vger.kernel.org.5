@@ -1,126 +1,148 @@
-Return-Path: <linux-kernel+bounces-122043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDEB588F122
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:43:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6B1188F124
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DF4C1F2E3A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:43:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 599F3B23F88
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC57153588;
-	Wed, 27 Mar 2024 21:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E67153833;
+	Wed, 27 Mar 2024 21:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="tryAY9MH"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SK7ULyYn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3335F152DF0;
-	Wed, 27 Mar 2024 21:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704B5153815;
+	Wed, 27 Mar 2024 21:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711575819; cv=none; b=kNPXEpJbIxs48a3BMvC9EpQevXGrQyAeHJhd9Jq5iJ8pmY496pvxmPBRsDMBxWl6yQnZ4BxZ0Dz3DPQJObzGScNTStLO0saapNKimmVmfcPyqqBpYFBL1Lw/uqUpZdobU8gkvU8KBKJCUqrlCaYHJTURl+R5JYcw/AnYNxl/Rvc=
+	t=1711575821; cv=none; b=J2ZD3XhLAZKnEMC4v6CQcvw5OlIxzY5KeX4yCOXkgkwmfaV7i0avpeDhV1i5bu8kxl+eEOtg0HwWGpdquIe0QYy+TxXZz76WTWFBvljbc0OKsyY6VqiGhtCBo33FeAD2GjaowJdwFr8Dm/QzrCE38hCBDilvt+KLPRNdeKD0VWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711575819; c=relaxed/simple;
-	bh=qXdwMjctvpeC4uhAfUKnHc6+D0VbmDFQ/tteFpiojL8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FVl/OdxyU5dlggAskj2cPvHt2/izWLVGO3sdqI+CxniNJcaosikk9fQunLa1p9WmckuUl8++5TeGlEizIalwRRHBQwKXl50HNjqOxwc3vTJ1kNiEJukpFsENyPyv/cOQCe6JM+e8+3djtXY0E9WJzkWWbl+8PEq1c37qpMn6O9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=tryAY9MH; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=0E6XNCXe9tY4/BkqEg7TfJ6EdX6Zcqe7RrlA/oI/V+0=;
-	t=1711575818; x=1712785418; b=tryAY9MHAsL65aVTGC72ATnxbgVWvoxRTkMcDUyA5oMd4cZ
-	SVBkclQZ2SauBxQlT9ss9ZDk8kIx+MsCXgdwZuKt3Ns7wbiJIYN+RmhrlPmeOEXPCWdeFV5bqD63g
-	2honUAjmUggIEDgLYb9+LRPXH6gKDH7/TQAj0Q0I7apFJ5DYlOdmRgtKElDjLgmkTTFmgXWBv2QnQ
-	7FPrCaMI2JwTxrWNnQrvOx9Sk/2nEH57O/yeGOlgU5yEqE0E3qo3VGoX3BoIAgXs83nJrQMDf3erc
-	iUnYUDWWOdadbD14oWFs+2ukGxfKJWxAh1H5Qt4mi3oUGw5etabr4XxmwfVPXPmg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rpb3W-0000000HPjO-1ApD;
-	Wed, 27 Mar 2024 22:43:34 +0100
-Message-ID: <e6fabaa541704463804f48b5931e8a43f7ee75eb.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/3] using guard/__free in networking
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, Peter Zijlstra
-	 <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Date: Wed, 27 Mar 2024 22:43:33 +0100
-In-Reply-To: <0e7af4cb0dc19be7cc0267256284a70ceb250b38.camel@sipsolutions.net>
-References: <20240325223905.100979-5-johannes@sipsolutions.net>
-	 <20240325190957.02d74258@kernel.org>
-	 <8eeae19a0535bfe72f87ee8c74a15dd2e753c765.camel@sipsolutions.net>
-	 <20240326073722.637e8504@kernel.org>
-	 <0dc633a36a658b96f9ec98165e7db61a176c79e0.camel@sipsolutions.net>
-	 <87h6grbevf.fsf@cloudflare.com>
-	 <0e7af4cb0dc19be7cc0267256284a70ceb250b38.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711575821; c=relaxed/simple;
+	bh=PSse2mxqcEYbaUCSj79+mEwcPvos9bsukayrKlgAVaU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=qaEYBnDv1l2OLS5XjYAJ9lTMORbAMvbsAoL1n864qETxYkDCmU8lvHMMfTkYLm0juhPthHwbDlFVHXr9gwJjGVHq/CxoF95f1jXQ+TjjP+2HyTgvps1aATZlbgReOwvppjXLYisxcwPgb+bSM1l6CucOwvmOPAJWUIO0suS7zr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SK7ULyYn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E6F3C43390;
+	Wed, 27 Mar 2024 21:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711575821;
+	bh=PSse2mxqcEYbaUCSj79+mEwcPvos9bsukayrKlgAVaU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=SK7ULyYnSUSpL1DcbuSq2UB9hb3NI8yisEWk7jsj+w3QAP7lP4KrIyQov3O/+nfrY
+	 ANb2AWFal9Mqce/MAvFOOxIp08T5NjverE/J90XIUvoxd6cXl5OBBy52FGOawlkpPA
+	 129w4dmPoYhXLcFiNuIeFxQ+qfIhBXqj0Ua2FC59tWki/cD9mAh0GzMa9BbNL5MpGJ
+	 /YCp0HXlZeK6jcx1nv4EhouYcSDTr87YysGtTVx2DmjcWcwQgrFV1J2ofw46YFYRG1
+	 9pTrAJHAzlqfIPzN5wP19YfckMbYifARA+qJdO34595UtgmqKZc+qy+Pv55CeNXcrm
+	 xnYiohBSxZvCw==
+Date: Wed, 27 Mar 2024 15:43:38 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2][next] wifi: wil6210: wmi: Use __counted_by() in struct
+ wmi_set_link_monitor_cmd and avoid -Wfamnae warning
+Message-ID: <ZgSTCmdP+omePvWg@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, 2024-03-27 at 22:28 +0100, Johannes Berg wrote:
->=20
-> +typedef struct class_##_name##_drop##_t {				\
-> +	class_##_name##_t obj;						\
-> +	void (*destructor)(struct class_##_name##_drop##_t *);		\
-> +} class_##_name##_drop##_t;						\
+Prepare for the coming implementation by GCC and Clang of the
+__counted_by attribute. Flexible array members annotated with
+__counted_by can have their accesses bounds-checked at run-time
+via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
+(for strcpy/memcpy-family functions).
 
-No, I misread the compiler output, it does output a real destructor
-function to push it into a stack variable with this...
+Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
+getting ready to enable it globally.
 
-So I guess it'd have to be
+So, use the `DEFINE_FLEX()` helper for an on-stack definition of
+a flexible structure where the size of the flexible-array member
+is known at compile-time, and refactor the rest of the code,
+accordingly.
 
-void my_something(my_t *my)
-{
-..
-	named_guard(lock, mutex)(&my->mutex);
-..
-	if (foo)
-		return -EINVAL; // automatically unlocks
-..
-	// no need for lock any more
-	drop_guard(lock, mutex);
-..
-	// do other things now unlocked
-}
+So, with these changes, fix the following warning:
+drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
 
+Link: https://github.com/KSPP/linux/issues/202
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Use __struct_size() to get the compile-time size of the flex-struct
+   instance.
 
-instead, syntax-wise.
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/ZgRsn72WkHzfCUsa@neat/
 
+ drivers/net/wireless/ath/wil6210/wmi.c | 19 +++++++------------
+ drivers/net/wireless/ath/wil6210/wmi.h |  2 +-
+ 2 files changed, 8 insertions(+), 13 deletions(-)
 
-Which obviously simplifies the changes:
-
-
-diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-index c2d09bc4f976..cf39a4a3f56f 100644
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -163,6 +163,12 @@ static inline class_##_name##_t class_##_name##ext##_c=
-onstructor(_init_args) \
- #define guard(_name) \
- 	CLASS(_name, __UNIQUE_ID(guard))
-=20
-+#define named_guard(_name, _class) \
-+	CLASS(_class, _name)
+diff --git a/drivers/net/wireless/ath/wil6210/wmi.c b/drivers/net/wireless/ath/wil6210/wmi.c
+index 6fdb77d4c59e..8ff69dc72fb9 100644
+--- a/drivers/net/wireless/ath/wil6210/wmi.c
++++ b/drivers/net/wireless/ath/wil6210/wmi.c
+@@ -4014,28 +4014,23 @@ int wmi_set_cqm_rssi_config(struct wil6210_priv *wil,
+ 	struct net_device *ndev = wil->main_ndev;
+ 	struct wil6210_vif *vif = ndev_to_vif(ndev);
+ 	int rc;
+-	struct {
+-		struct wmi_set_link_monitor_cmd cmd;
+-		s8 rssi_thold;
+-	} __packed cmd = {
+-		.cmd = {
+-			.rssi_hyst = rssi_hyst,
+-			.rssi_thresholds_list_size = 1,
+-		},
+-		.rssi_thold = rssi_thold,
+-	};
+ 	struct {
+ 		struct wmi_cmd_hdr hdr;
+ 		struct wmi_set_link_monitor_event evt;
+ 	} __packed reply = {
+ 		.evt = {.status = WMI_FW_STATUS_FAILURE},
+ 	};
++	DEFINE_FLEX(struct wmi_set_link_monitor_cmd, cmd,
++		    rssi_thresholds_list, rssi_thresholds_list_size, 1);
 +
-+#define drop_guard(_name, _class) \
-+	do { class_##_class##_destructor(&_name); _name =3D NULL; } while (0)
-+
- #define __guard_ptr(_name) class_##_name##_lock_ptr
-=20
- #define scoped_guard(_name, args...)					\
++	cmd->rssi_hyst = rssi_hyst;
++	cmd->rssi_thresholds_list[0] = rssi_thold;
+ 
+ 	if (rssi_thold > S8_MAX || rssi_thold < S8_MIN || rssi_hyst > U8_MAX)
+ 		return -EINVAL;
+ 
+-	rc = wmi_call(wil, WMI_SET_LINK_MONITOR_CMDID, vif->mid, &cmd,
+-		      sizeof(cmd), WMI_SET_LINK_MONITOR_EVENTID,
++	rc = wmi_call(wil, WMI_SET_LINK_MONITOR_CMDID, vif->mid, cmd,
++		      __struct_size(cmd), WMI_SET_LINK_MONITOR_EVENTID,
+ 		      &reply, sizeof(reply), WIL_WMI_CALL_GENERAL_TO_MS);
+ 	if (rc) {
+ 		wil_err(wil, "WMI_SET_LINK_MONITOR_CMDID failed, rc %d\n", rc);
+diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+index b47606d9068c..38f64524019e 100644
+--- a/drivers/net/wireless/ath/wil6210/wmi.h
++++ b/drivers/net/wireless/ath/wil6210/wmi.h
+@@ -3320,7 +3320,7 @@ struct wmi_set_link_monitor_cmd {
+ 	u8 rssi_hyst;
+ 	u8 reserved[12];
+ 	u8 rssi_thresholds_list_size;
+-	s8 rssi_thresholds_list[];
++	s8 rssi_thresholds_list[] __counted_by(rssi_thresholds_list_size);
+ } __packed;
+ 
+ /* wmi_link_monitor_event_type */
+-- 
+2.34.1
 
 
