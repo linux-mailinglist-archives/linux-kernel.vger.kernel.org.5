@@ -1,116 +1,124 @@
-Return-Path: <linux-kernel+bounces-120179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C1088D3C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:36:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD53A88D3CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:38:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B42A2C773F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:36:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66DA52C16D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:38:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111801CD3B;
-	Wed, 27 Mar 2024 01:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D69B1F60A;
+	Wed, 27 Mar 2024 01:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PNzvh2g5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="qipBKAvA"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A43020323;
-	Wed, 27 Mar 2024 01:36:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D761B7E9;
+	Wed, 27 Mar 2024 01:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711503392; cv=none; b=C5cp8VO+fCLXMGqkheHTBDWX84BXjOhvdVQW8cTp1G0colh40QMKzxpiHczBf6TUIr+8l2rYYdlEaUMwKNbMMRCQW/7LaqG89jYha2zo470aAi39bdETAhuiRA3PTVV+lpnzAPHLK6LowmmK55rY2wHiXLusRevWZK2h5IhMzww=
+	t=1711503492; cv=none; b=hpLnBmbSC7Dq8CkDodNVbj3JDVtzXZdM6gG4mIfKNF6boe/vngPxQbeVDOeIdYGjzKWg/nfB0wXyZrG9dsGffTAGtPWS0AGvBakZyXeNN6v8maY3oDMyGtJZVfWQ5PCubAlDtdh64rIx3iGP+yPbl9LUM40CTSptnbFWrWM3JqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711503392; c=relaxed/simple;
-	bh=G5CnkT5QVDuAxX6bjBrkXtiKlaXMp79BcaVPmAi2WQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n8lDb4FaxxX6AsL7dn89nKOJgWZM678nFfsL0aNdEC7gnvJISZadcVq4RQbyU9VPmlUOrCTYK0QR84p1oTAPEYKQ5sCy2gABEAUyh+wrwLZMf/pmPtNespn3e3y/Pm6kJ3EcctGq/x/HMR0S1vZXqxDxw3dacvB4qe6doRIdnnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PNzvh2g5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 289CAC433C7;
-	Wed, 27 Mar 2024 01:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711503391;
-	bh=G5CnkT5QVDuAxX6bjBrkXtiKlaXMp79BcaVPmAi2WQQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PNzvh2g5NC3x8OmCPQmNFGAXaVUpQVkEa8BeyO11NScvIdjLTpTGry+Ww3O/SeT7/
-	 5Ym80jU058K3n7+BoSOm0FCC7j3dtwpF63ff0X4xsojFcVNPa82YpDLNFlXOvEAOTX
-	 zpSZLIIyFpGkLleRylvT1mc6AnXj/UmG1b6OiyT2Mz9ACnlAhSwCLUY1aVNuhfbUQp
-	 3t4TgXcgTsdi8AuGf3p+mXGJ3ryHRd/qdIMUrCJDX7bqg40OsYLuQCADxmCVP/Qo3l
-	 Uqpc/E26crc48fh4sequ3zRbAZIqvVAcuG8zc9CWwN5kpAsQG3lkYniq9KHHsPTYEl
-	 b/1AUvahum7lg==
-Message-ID: <d7fd5998-8813-4f29-a8d2-b82adbdec11c@kernel.org>
-Date: Wed, 27 Mar 2024 10:36:28 +0900
+	s=arc-20240116; t=1711503492; c=relaxed/simple;
+	bh=6qAmt+xdA2QOcCOcEi6dB8mBsdItFfMjVsA3nuCRwiU=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=FeTnDw3i2JOD7uAT/JB5hupeseRvS4lH9N9MT+uFpVR6WJLIonsiBpquF/eOQ0CnzLOtCMBXhAuyVWa6dmgigI/Pkm95oVwHpo8DXwUlP0M9qcgJHhrKPX0OemThnuuQMPljrLQz2WAjHKDY9sCIuWdxWXyvCtvsLI9bD529B3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=qipBKAvA; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711503481; h=Message-ID:Subject:Date:From:To;
+	bh=xSV0Dmq1/beES1CrMcd6dQoXETDRC4jlecw03aBarYs=;
+	b=qipBKAvAOeq6M0q+nrL3Y6PjYTzqODbRaVKZyNrfi7pMnNBQapugNcZaHbJmlTLe1U8n6rsgvu08vel8BcbxSdjpOm8e51K+ErBIAz9FeIxZR+Itkt7sa1awBaDIyvDqLcvMz2/NXbayzJ3coBHMBvXzKzhrp0ihChKH9K6YWp8=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W3Mnh-R_1711503480;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W3Mnh-R_1711503480)
+          by smtp.aliyun-inc.com;
+          Wed, 27 Mar 2024 09:38:01 +0800
+Message-ID: <1711503463.632461-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net v2 1/2] virtio_net: Do not set rss_indir if RSS is not supported
+Date: Wed, 27 Mar 2024 09:37:43 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Breno Leitao <leitao@debian.org>
+Cc: rbc@meta.com,
+ riel@surriel.com,
+ virtualization@lists.linux.dev (open list:VIRTIO CORE AND NET DRIVERS),
+ netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+ linux-kernel@vger.kernel.org (open list),
+ hengqi@linux.alibaba.com,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+References: <20240326151911.2155689-1-leitao@debian.org>
+In-Reply-To: <20240326151911.2155689-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/12] sata: sx4: fix pdc20621_get_from_dimm() on 64-bit
-To: Arnd Bergmann <arnd@kernel.org>, linux-kbuild@vger.kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, Niklas Cassel <cassel@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>, Nathan Chancellor
- <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- John Garry <john.g.garry@oracle.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240326144741.3094687-1-arnd@kernel.org>
- <20240326145348.3318887-1-arnd@kernel.org>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240326145348.3318887-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 3/26/24 23:53, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc warns about a memcpy() with overlapping pointers because of an
-> incorrect size calculation:
-> 
-> In file included from include/linux/string.h:369,
->                  from drivers/ata/sata_sx4.c:66:
-> In function 'memcpy_fromio',
->     inlined from 'pdc20621_get_from_dimm.constprop' at drivers/ata/sata_sx4.c:962:2:
-> include/linux/fortify-string.h:97:33: error: '__builtin_memcpy' accessing 4294934464 bytes at offsets 0 and [16, 16400] overlaps 6442385281 bytes at offset -2147450817 [-Werror=restrict]
->    97 | #define __underlying_memcpy     __builtin_memcpy
->       |                                 ^
-> include/linux/fortify-string.h:620:9: note: in expansion of macro '__underlying_memcpy'
->   620 |         __underlying_##op(p, q, __fortify_size);                        \
->       |         ^~~~~~~~~~~~~
-> include/linux/fortify-string.h:665:26: note: in expansion of macro '__fortify_memcpy_chk'
->   665 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
->       |                          ^~~~~~~~~~~~~~~~~~~~
-> include/asm-generic/io.h:1184:9: note: in expansion of macro 'memcpy'
->  1184 |         memcpy(buffer, __io_virt(addr), size);
->       |         ^~~~~~
-> 
-> The problem here is the overflow of an unsigned 32-bit number to a
-> negative that gets converted into a signed 'long', keeping a large
-> positive number.
-> 
-> Replace the complex calculation with a more readable min() variant
-> that avoids the warning.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+On Tue, 26 Mar 2024 08:19:08 -0700, Breno Leitao <leitao@debian.org> wrote:
+> Do not set virtnet_info->rss_indir_table_size if RSS is not available
+> for the device.
+>
+> Currently, rss_indir_table_size is set if either has_rss or
+> has_rss_hash_report is available, but, it should only be set if has_rss
+> is set.
+>
+> On the virtnet_set_rxfh(), return an invalid command if the request has
+> indirection table set, but virtnet does not support RSS.
+>
+> Suggested-by: Heng Qi <hengqi@linux.alibaba.com>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  drivers/net/virtio_net.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index c22d1118a133..c640fdf28fc5 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -3813,6 +3813,9 @@ static int virtnet_set_rxfh(struct net_device *dev,
+>  	    rxfh->hfunc != ETH_RSS_HASH_TOP)
+>  		return -EOPNOTSUPP;
+>
+> +	if (rxfh->indir && !vi->has_rss)
+> +		return -EINVAL;
+> +
+>  	if (rxfh->indir) {
 
-That is old :)
+Put !vi->has_rss here?
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Thanks.
 
-Looks good to me. I can take the patch through libata tree, unless you prefer
-taking the whole series ?
 
-In case it is the latter:
-
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
-
--- 
-Damien Le Moal
-Western Digital Research
-
+>  		for (i = 0; i < vi->rss_indir_table_size; ++i)
+>  			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
+> @@ -4729,13 +4732,15 @@ static int virtnet_probe(struct virtio_device *vdev)
+>  	if (virtio_has_feature(vdev, VIRTIO_NET_F_HASH_REPORT))
+>  		vi->has_rss_hash_report = true;
+>
+> -	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS))
+> +	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS)) {
+>  		vi->has_rss = true;
+>
+> -	if (vi->has_rss || vi->has_rss_hash_report) {
+>  		vi->rss_indir_table_size =
+>  			virtio_cread16(vdev, offsetof(struct virtio_net_config,
+>  				rss_max_indirection_table_length));
+> +	}
+> +
+> +	if (vi->has_rss || vi->has_rss_hash_report) {
+>  		vi->rss_key_size =
+>  			virtio_cread8(vdev, offsetof(struct virtio_net_config, rss_max_key_size));
+>
+> --
+> 2.43.0
+>
 
