@@ -1,147 +1,109 @@
-Return-Path: <linux-kernel+bounces-121710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6B588ECD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:41:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 806FE88ECD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D704A1F28235
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:41:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DC8128615F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B48414D705;
-	Wed, 27 Mar 2024 17:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aycjg/sz"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0D314C5AF;
+	Wed, 27 Mar 2024 17:43:13 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888E812E1F0;
-	Wed, 27 Mar 2024 17:41:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0631DFF4
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561280; cv=none; b=FwfM+2xE4MC7W3ROgMRHlMSAS8RZ8OBVirGIeS1RXjaEZNUpR2I9I9ineIZo3QCzazmbau/rOVUA5GeRpCsXoXTej5tvoPqwr5t4i/1MRAFPA8BU51O12ZVG7loZN2mI6LKOzemfRKkpw/5Q6m4Cxh82buNJgnBQ0qWGQ+Es9/I=
+	t=1711561392; cv=none; b=GpULjysp9VmR5fTQ5cli5bH6FttX1Zd7b6bOr4qMOtJKYIAtlrLvLPPFykq0syJDanZrdECuOjl2T8FMIlxn8PbHrHXu0u84Li+jAzb7gxEVb3hpAMyBfCHuv1iq1jTwpD+b7ngX6bf0fmCWJfNrc8UmwcgF9x2pFXMkL8CajPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561280; c=relaxed/simple;
-	bh=CgrYWenITCZVs5rgxOkYDcWumcyCEq1xPoUasY+8V8Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jE3ttxVbnjoItEkCKsGKSBokQ3aDPW++O0WvtLl1NcR5GwyYuCEOWyg6U23fiE8V34ubL5GOdehVCyyGRP2Gyb7j2JjCNij0PxCM53ho9oWRwAERTdButB/33JGv2JH2iNdvhRcIJMIIVlC+nroA8/j3XGFqEPRsYBqAClLl6RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aycjg/sz; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711561279; x=1743097279;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=CgrYWenITCZVs5rgxOkYDcWumcyCEq1xPoUasY+8V8Q=;
-  b=aycjg/szt+05QwBPrT3JrrdbwtjnTCs1Y80eygq7DsVjuBi2KprJr64O
-   3KY3CfqDdur7L541bSmQZpWw0l5u7MrG8RsgTEzU/L+qu0GeZkPcNslFd
-   w+JGlxYvYcqc8EdpdTtDUsJP8Njm/tbe6QmqnZXP8t/WFShq7mRZYmD9T
-   DEflWyDvEC2hMxB7uKrpPP9xv5ZcdSRTEnxiIKX4DnM7ZQ2v1s7KA/TMV
-   BDuclb0rT+erni0nt5E42/dCS7UDwnNnIeeHK8vy2LF/ofm2vYV1Un8r6
-   hR7QOujIyqq0i1+7pyDnj/+yFG+4FRRygt6SYhVqgq3wbVEu3heHCp9wH
-   A==;
-X-CSE-ConnectionGUID: z3f/mZQMR1yMB6t7zZwYhw==
-X-CSE-MsgGUID: BE1/EEVfRiCxDJe2Wkc0DQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17824937"
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="17824937"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:41:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
-   d="scan'208";a="16998217"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.56.222]) ([10.212.56.222])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:41:07 -0700
-Message-ID: <4e24a03c-f557-4323-a836-ed01f72a3055@intel.com>
-Date: Wed, 27 Mar 2024 10:41:05 -0700
+	s=arc-20240116; t=1711561392; c=relaxed/simple;
+	bh=B1claC9P9AYA+Mf5t5vgP4Smp2dxfxXkmd0XFGZLQj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BHV2kgTcPNicsEL9PO6lgB95j0qgVINpOtspPH1C8LTsT9XnhjMY3xzgPzfWzitgJWioEjMiWHDE9w9RELBicUboF8w86Wrhpb1bkh8++LVJ6rPDJ25q8NHe1IxyAP9G9GXQBEBcYW49Dd0D86gYO0Gxtc27MVGUVvF8MpXTcIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5B26C433C7;
+	Wed, 27 Mar 2024 17:43:10 +0000 (UTC)
+Date: Wed, 27 Mar 2024 17:43:08 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Audra Mitchell <aubaker@redhat.com>
+Subject: Re: [PATCH v2] mm/kmemleak: Don't hold kmemleak_lock when calling
+ printk()
+Message-ID: <ZgRarOvI3Zhos9Gl@arm.com>
+References: <20240307184707.961255-1-longman@redhat.com>
+ <20240307114630.32702099ac24c182b91da517@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/26] cxl/pci: Factor out interrupt policy check
-Content-Language: en-US
-To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Navneet Singh <navneet.singh@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
- linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-12-b7b00d623625@intel.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-12-b7b00d623625@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307114630.32702099ac24c182b91da517@linux-foundation.org>
 
+On Thu, Mar 07, 2024 at 11:46:30AM -0800, Andrew Morton wrote:
+> On Thu,  7 Mar 2024 13:47:07 -0500 Waiman Long <longman@redhat.com> wrote:
+> > When some error conditions happen (like OOM), some kmemleak functions
+> > call printk() to dump out some useful debugging information while holding
+> > the kmemleak_lock. This may cause deadlock as the printk() function
+> > may need to allocate additional memory leading to a create_object()
+> > call acquiring kmemleak_lock again.
+> > 
+> > An abbreviated lockdep splat is as follows:
+> >
+> > ...
+> > 
+> > Fix this deadlock issue by making sure that printk() is only called
+> > after releasing the kmemleak_lock.
+> > 
+> > ...
+> >
+> > @@ -427,9 +442,19 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
+> >  		else if (untagged_objp == untagged_ptr || alias)
+> >  			return object;
+> >  		else {
+> > +			if (!get_object(object))
+> > +				break;
+> > +			/*
+> > +			 * Release kmemleak_lock temporarily to avoid deadlock
+> > +			 * in printk(). dump_object_info() is called without
+> > +			 * holding object->lock (race unlikely).
+> > +			 */
+> > +			raw_spin_unlock(&kmemleak_lock);
+> >  			kmemleak_warn("Found object by alias at 0x%08lx\n",
+> >  				      ptr);
+> >  			dump_object_info(object);
+> > +			put_object(object);
+> > +			raw_spin_lock(&kmemleak_lock);
+> >  			break;
+> 
+> Please include a full description of why this is safe.  Once we've
+> dropped that lock, the tree is in an unknown state and we shouldn't
+> touch it again.  This consideration should be added to the relevant
+> functions' interface documentation and the code should be reviewed to
+> ensure that we're actually adhering to this.  Or something like that.
+> 
+> To simply drop and reacquire a lock without supporting analysis and
+> comments does not inspire confidence!
 
+I agree it looks fragile. I think it works, the code tends to bail out
+on those errors and doesn't expect the protected data to have remained
+intact. But we may change it in the future and forgot about this.
 
-On 3/24/24 4:18 PM, Ira Weiny wrote:
-> Dynamic capacity devices (DCD) require interrupts to notify the host of
-> events in the DCD log.  The interrupts for DCD may be supported despite
-> FW control of memory event logs.
-> 
-> Prepare to support DCD event interrupts separate from other event
-> interrupts by factoring out the check for event interrupt settings.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> 
-> ---
-> Changes for V3:
-> [iweiny: new patch]
-> ---
->  drivers/cxl/pci.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index ccaf4ad26a4f..12cd5d399230 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -738,6 +738,21 @@ static bool cxl_event_int_is_fw(u8 setting)
->  	return mode == CXL_INT_FW;
->  }
->  
-> +static bool cxl_event_validate_mem_policy(struct cxl_memdev_state *mds,
-> +					  struct cxl_event_interrupt_policy *policy)
-> +{
-> +	if (cxl_event_int_is_fw(policy->info_settings) ||
-> +	    cxl_event_int_is_fw(policy->warn_settings) ||
-> +	    cxl_event_int_is_fw(policy->failure_settings) ||
-> +	    cxl_event_int_is_fw(policy->fatal_settings)) {
-> +		dev_err(mds->cxlds.dev,
-> +			"FW still in control of Event Logs despite _OSC settings\n");
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
->  static int cxl_event_config(struct pci_host_bridge *host_bridge,
->  			    struct cxl_memdev_state *mds, bool irq_avail)
->  {
-> @@ -760,14 +775,8 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
->  	if (rc)
->  		return rc;
->  
-> -	if (cxl_event_int_is_fw(policy.info_settings) ||
-> -	    cxl_event_int_is_fw(policy.warn_settings) ||
-> -	    cxl_event_int_is_fw(policy.failure_settings) ||
-> -	    cxl_event_int_is_fw(policy.fatal_settings)) {
-> -		dev_err(mds->cxlds.dev,
-> -			"FW still in control of Event Logs despite _OSC settings\n");
-> +	if (!cxl_event_validate_mem_policy(mds, &policy))
->  		return -EBUSY;
-> -	}
->  
->  	rc = cxl_event_config_msgnums(mds, &policy);
->  	if (rc)
-> 
+I wonder whether we can actually make things slightly easier to reason
+about, defer the printing until unlock, store the details in some
+per-cpu variable. Another option would be to have a per-CPU array to
+store potential recursive kmemleak_*() callbacks during the critical
+regions. This should be bounded since the interrupts are disabled. On
+unlock, we'd replay the array and add those pointers.
+
+-- 
+Catalin
 
