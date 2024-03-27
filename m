@@ -1,244 +1,149 @@
-Return-Path: <linux-kernel+bounces-121468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC8D88E98F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:43:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E0688E850
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:17:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7809B357FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:17:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41C422C1D4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D20313E895;
-	Wed, 27 Mar 2024 14:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B1A713E6B6;
+	Wed, 27 Mar 2024 14:52:22 +0000 (UTC)
 Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D9613E414
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FA813AA41
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711551144; cv=none; b=RhZlxhHPI5920l/0CfALxUlf9CgpJE0bTuUWmZn6N+UoZsT1RYrKLyVz0VxFggoAtLhNw1OfSawccFwtrI4wAqgF6sPW8ZIHbuiHAICPhP4Wcuvbl7h9uK5k8MU8QulIg2EskksGyzv4qmlqjlKXUgG6XUCizMC6xMsWQT+empU=
+	t=1711551141; cv=none; b=iI/cLIkew9sLXIog9G+Dk7xemR7tXiLlUkgznqaoKtcnI+Oma19VYmMXbazr2J+PMPbrzsJ4kai+vK5bAHUWxI6YZk2EH/uWSueOF5VU6UXcMK9ns+WLtEBRlFaC82zA4zg1LIXmTOzoiKfVrYbDJJxeG6KVXXc5qKMXVnGP1e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711551144; c=relaxed/simple;
-	bh=71rJq7Xp8Cqgp8M2d8+P1WXkdN3xzz0kedDaTR9okh8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nQNN1FD7xLxd6KstyTq7LWqiR9LvGBJrTvFHwIVBZ+nVQ/d7qpeZe+dWdGUiyzyKIuUZTDMJ+3jit+sxfXSAd34wgoTQ8D3vHxGRMXAekPOw/LamZWmwPZPvx2TvRfRPCd3dbB1Oxa/vswy3cxzbbaPomVeD5QuBaRyWsq2nJKI=
+	s=arc-20240116; t=1711551141; c=relaxed/simple;
+	bh=yMK9CUyK2auY2sjJAyE//x0rIqad7kjdbCI1ABfVnmo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ohW/M1cuN0dcPJB9nl33zSST6U0P3gQ8PQgBGAXswIKnHsb4wVLKSpeKIeasBffACG7YKWvYUMUl9OxsZWdxz6/OLVn1EW1eGFXZxyM0UvQczkgp2v2/4isSRtJy0zswh28qdb0BQql/62kxJqB6iAlGvNTMZ08ASRpLBOtd7FI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc012893acso713857439f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:52:20 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cbf1d5d35bso724707239f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:52:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1711551139; x=1712155939;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9Zz5Gummoz+kjUDcBWiUlBWeOeyMoyGTY6ig/qkgeKg=;
-        b=dN5CLL9PcMY/HCePl6COuR58zqUovNgxPrbN05QJ+v5C9Zxf0VPo8+N+dR9zqjDkRR
-         DYJ3v8Nr7GfxyLXV5vjfWVfv41dLptMSn/XuUnRRaZwfyld3qDG7RDq6giyKssxtKv9d
-         UpL3uI7G12M9kNg7I7N2cvDjpsawbC53U4LYoBRFKimaTX3P69oj9x+F7QswZpIXPaw9
-         kCle75zOuJu3leHZq1pgvgph6hY6ezG1dBVlz1wFA72H5F04sqFx0DgFfgclXbgOi1aO
-         tz8n5RoGZq54F1mmnJtsnaGMHyZvxEGX4fk3J6LHoMMO3UhwxHmpxG+jCT88zbjhLhac
-         uaHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzEx9vY1npM9W08ykWnnlQJciy5ctwDqprvXah2sMpr0B36RCMzAMpdw+05+BozlEZWNXJ1tP4IodhWJRJ5DBbgp45XhyTK5Fp1dGk
-X-Gm-Message-State: AOJu0YzmoyJzwW1xnWcAJA04cHjk2nudB0TKYKMfHwfMRqqjBarpd7KA
-	Bz81Pq7uw46M6hZ++kqOIcfrO1xvLtJ4y3RK+GBYufpPxdLc86kQpckYhxMGSfx5xWl1vqJYx2B
-	ThIszLqk5O05kSI6lKj5I9XJytySlpqeA8aeLhwXLzsehrT0yxShPm9w=
-X-Google-Smtp-Source: AGHT+IHBacTzIE+E1O1ogxORsrkRvTUqLPNLlGhjmN8DFpzF0NyBgHXnhmdHMvgV+Iht5TXt+tVCSAfgmiROLTwxAwKTVtJ4aecF
+        bh=0xIjabR/1C/PkXnxQ3D13ioZWEvzCJ2+Fo9chdl0auo=;
+        b=UXNktS0qG3SnXUyaECFfRiWFyQvAq2lILfVmoZjuU95FhaMSnm3D1TT6FfhDu7sZ6i
+         3Bg2FcZmgHPHSrqsyYTAAsQSMoujDY7NKJ68i75c0YZpglePF3tch/rD45mmmiL5MvSt
+         w033b46JUuK1WPL2PtxamJj0hXYghh+4uXWdKxKY2j17Izj+/Mp/Vt/SIKe1EN0HO8ho
+         wmpgkVQdO0u/M5puk6YzhVjMpyBy/KALFzR3jsmlG6yEiDNUwW79cgJA+m7RpZUdnweF
+         zIzITrsHTaSlyO5/d8tH7/eSBTZWaARfTtVCtge0MVa52BESuFyeyD8hUTYnILWvW0U4
+         vzVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCNzXy/s4oN7BRpSPaKDDpU4nb8ettHDbu5TPP3Q9eEjbUlcZwvuEIHe9s5vPM2tNvgAbr8E5g4J7osovnU1luw3THPPQMQj0gYqS9
+X-Gm-Message-State: AOJu0YzOiQ/6cklm/NHqMvDnzp8auviqM4t44RiRYS8Nl+HXiuOdHyGL
+	0PMuVg3rUs7RxjkbrErJcjEfd2mDLNROyBfNllLN0aUF3b+sl9s4BxQxi1irsBfH75YDeMtL7DC
+	Y44wx3kKPvK5iI44kS+BPbPY/kUlSgay7hN9ncC6/hmDujYyFqzTlds4=
+X-Google-Smtp-Source: AGHT+IGu6Fv+cgPe6xcSmQZWC2dGAYYjbjmJT8iSzuYALQqzKMM43yvJQWzPT2IzCWDH+Yl/C4WVxGBs+B17o9wD2zSgNPrU+X7M
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:640f:b0:7d0:7c06:805a with SMTP id
- gn15-20020a056602640f00b007d07c06805amr9787iob.3.1711551139625; Wed, 27 Mar
+X-Received: by 2002:a05:6e02:1d94:b0:368:7d6b:a7cd with SMTP id
+ h20-20020a056e021d9400b003687d6ba7cdmr2646ila.3.1711551139427; Wed, 27 Mar
  2024 07:52:19 -0700 (PDT)
 Date: Wed, 27 Mar 2024 07:52:19 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b146890614a58da4@google.com>
-Subject: [syzbot] [wireless?] possible deadlock in ieee80211_open
-From: syzbot <syzbot+7526b1c2ce0b9a92e9a6@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, johannes@sipsolutions.net, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000ae4aa90614a58d7b@google.com>
+Subject: [syzbot] [input?] WARNING in cm109_input_open/usb_submit_urb (3)
+From: syzbot <syzbot+ac0f9c4cc1e034160492@syzkaller.appspotmail.com>
+To: dmitry.torokhov@gmail.com, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    237bb5f7f7f5 cxgb4: unnecessary check for 0 in the free_sg..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=113622a5180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=7526b1c2ce0b9a92e9a6
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14136479180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=ac0f9c4cc1e034160492
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/728c4d735738/disk-237bb5f7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fcd84ee276f5/vmlinux-237bb5f7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/366f6292e769/bzImage-237bb5f7.xz
+disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7526b1c2ce0b9a92e9a6@syzkaller.appspotmail.com
+Reported-by: syzbot+ac0f9c4cc1e034160492@syzkaller.appspotmail.com
 
-netlink: 'syz-executor.0': attribute type 10 has an invalid length.
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-syzkaller-05204-g237bb5f7f7f5 #0 Not tainted
-------------------------------------------------------
-syz-executor.0/7478 is trying to acquire lock:
-ffff888077110768 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5951 [inline]
-ffff888077110768 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: ieee80211_open+0xe7/0x200 net/mac80211/iface.c:449
-
-but task is already holding lock:
-ffff888064974d20 (team->team_lock_key#17){+.+.}-{3:3}, at: team_add_slave+0xad/0x2750 drivers/net/team/team.c:1973
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (team->team_lock_key#17){+.+.}-{3:3}:
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2995
-       team_device_event+0x161/0x5b0 drivers/net/team/team.c:3021
-       notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
-       call_netdevice_notifiers_extack net/core/dev.c:1988 [inline]
-       call_netdevice_notifiers net/core/dev.c:2002 [inline]
-       dev_close_many+0x33c/0x4c0 net/core/dev.c:1543
-       unregister_netdevice_many_notify+0x544/0x16d0 net/core/dev.c:11071
-       macvlan_device_event+0x7bc/0x850 drivers/net/macvlan.c:1828
-       notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
-       call_netdevice_notifiers_extack net/core/dev.c:1988 [inline]
-       call_netdevice_notifiers net/core/dev.c:2002 [inline]
-       unregister_netdevice_many_notify+0xd96/0x16d0 net/core/dev.c:11096
-       unregister_netdevice_many net/core/dev.c:11154 [inline]
-       unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11033
-       unregister_netdevice include/linux/netdevice.h:3115 [inline]
-       _cfg80211_unregister_wdev+0x162/0x560 net/wireless/core.c:1206
-       ieee80211_if_remove+0x25d/0x3a0 net/mac80211/iface.c:2242
-       ieee80211_del_iface+0x19/0x30 net/mac80211/cfg.c:202
-       rdev_del_virtual_intf net/wireless/rdev-ops.h:62 [inline]
-       cfg80211_remove_virtual_intf+0x230/0x3f0 net/wireless/util.c:2847
-       genl_family_rcv_msg_doit net/netlink/genetlink.c:1113 [inline]
-       genl_family_rcv_msg net/netlink/genetlink.c:1193 [inline]
-       genl_rcv_msg+0xb14/0xec0 net/netlink/genetlink.c:1208
-       netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2559
-       genl_rcv+0x28/0x40 net/netlink/genetlink.c:1217
-       netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
-       netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
-       netlink_sendmsg+0x8e1/0xcb0 net/netlink/af_netlink.c:1905
-       sock_sendmsg_nosec net/socket.c:730 [inline]
-       __sock_sendmsg+0x221/0x270 net/socket.c:745
-       ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
-       ___sys_sendmsg net/socket.c:2638 [inline]
-       __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
--> #0 (&rdev->wiphy.mtx){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
-       wiphy_lock include/net/cfg80211.h:5951 [inline]
-       ieee80211_open+0xe7/0x200 net/mac80211/iface.c:449
-       __dev_open+0x2d3/0x450 net/core/dev.c:1430
-       dev_open+0xae/0x1b0 net/core/dev.c:1466
-       team_port_add drivers/net/team/team.c:1214 [inline]
-       team_add_slave+0x9b3/0x2750 drivers/net/team/team.c:1974
-       do_set_master net/core/rtnetlink.c:2685 [inline]
-       do_setlink+0xe70/0x41f0 net/core/rtnetlink.c:2891
-       __rtnl_newlink net/core/rtnetlink.c:3680 [inline]
-       rtnl_newlink+0x180b/0x20a0 net/core/rtnetlink.c:3727
-       rtnetlink_rcv_msg+0x89b/0x10d0 net/core/rtnetlink.c:6595
-       netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2559
-       netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
-       netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
-       netlink_sendmsg+0x8e1/0xcb0 net/netlink/af_netlink.c:1905
-       sock_sendmsg_nosec net/socket.c:730 [inline]
-       __sock_sendmsg+0x221/0x270 net/socket.c:745
-       ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
-       ___sys_sendmsg net/socket.c:2638 [inline]
-       __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(team->team_lock_key#17);
-                               lock(&rdev->wiphy.mtx);
-                               lock(team->team_lock_key#17);
-  lock(&rdev->wiphy.mtx);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.0/7478:
- #0: ffffffff8f385a08 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f385a08 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x842/0x10d0 net/core/rtnetlink.c:6592
- #1: ffff888064974d20 (team->team_lock_key#17){+.+.}-{3:3}, at: team_add_slave+0xad/0x2750 drivers/net/team/team.c:1973
-
-stack backtrace:
-CPU: 0 PID: 7478 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-05204-g237bb5f7f7f5 #0
+input: CM109 USB driver as /devices/platform/dummy_hcd.0/usb1/1-1/1-1:0.8/input/input8
+------------[ cut here ]------------
+URB ffff8880285c2100 submitted while active
+WARNING: CPU: 1 PID: 5112 at drivers/usb/core/urb.c:379 usb_submit_urb+0x1039/0x18c0 drivers/usb/core/urb.c:379
+Modules linked in:
+CPU: 1 PID: 5112 Comm: kworker/1:3 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:usb_submit_urb+0x1039/0x18c0 drivers/usb/core/urb.c:379
+Code: 00 eb 66 e8 b9 b2 86 fa e9 79 f0 ff ff e8 af b2 86 fa c6 05 1e 90 63 08 01 90 48 c7 c7 c0 96 4b 8c 4c 89 ee e8 c8 86 49 fa 90 <0f> 0b 90 90 e9 40 f0 ff ff e8 89 b2 86 fa eb 12 e8 82 b2 86 fa 41
+RSP: 0018:ffffc90004a0eb48 EFLAGS: 00010246
+RAX: e879a53475439e00 RBX: 0000000000000cc0 RCX: 0000000000040000
+RDX: ffffc900134bb000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: ffff8880285c2108 R08: ffffffff8157cc12 R09: 1ffff110172a51a2
+R10: dffffc0000000000 R11: ffffed10172a51a3 R12: 1ffff11005a65a0a
+R13: ffff8880285c2100 R14: dffffc0000000000 R15: ffff88802d32d010
+FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020002024 CR3: 0000000068c66000 CR4: 0000000000350ef0
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
- wiphy_lock include/net/cfg80211.h:5951 [inline]
- ieee80211_open+0xe7/0x200 net/mac80211/iface.c:449
- __dev_open+0x2d3/0x450 net/core/dev.c:1430
- dev_open+0xae/0x1b0 net/core/dev.c:1466
- team_port_add drivers/net/team/team.c:1214 [inline]
- team_add_slave+0x9b3/0x2750 drivers/net/team/team.c:1974
- do_set_master net/core/rtnetlink.c:2685 [inline]
- do_setlink+0xe70/0x41f0 net/core/rtnetlink.c:2891
- __rtnl_newlink net/core/rtnetlink.c:3680 [inline]
- rtnl_newlink+0x180b/0x20a0 net/core/rtnetlink.c:3727
- rtnetlink_rcv_msg+0x89b/0x10d0 net/core/rtnetlink.c:6595
- netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2559
- netlink_unicast_kernel net/netlink/af_netlink.c:1335 [inline]
- netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1361
- netlink_sendmsg+0x8e1/0xcb0 net/netlink/af_netlink.c:1905
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
- ___sys_sendmsg net/socket.c:2638 [inline]
- __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fc81627dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc81701e0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fc8163abf80 RCX: 00007fc81627dda9
-RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
-RBP: 00007fc8162ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fc8163abf80 R15: 00007ffd5f0eb6a8
+ cm109_input_open+0x1f9/0x470 drivers/input/misc/cm109.c:572
+ input_open_device+0x193/0x2e0 drivers/input/input.c:654
+ kbd_connect+0xe9/0x130 drivers/tty/vt/keyboard.c:1593
+ input_attach_handler drivers/input/input.c:1064 [inline]
+ input_register_device+0xcfc/0x1090 drivers/input/input.c:2396
+ cm109_usb_probe+0x10cd/0x1600 drivers/input/misc/cm109.c:806
+ usb_probe_interface+0x5cd/0xb00 drivers/usb/core/driver.c:399
+ really_probe+0x2a0/0xc50 drivers/base/dd.c:658
+ __driver_probe_device+0x1a2/0x3e0 drivers/base/dd.c:800
+ driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+ __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
+ bus_for_each_drv+0x250/0x2e0 drivers/base/bus.c:457
+ __device_attach+0x333/0x520 drivers/base/dd.c:1030
+ bus_probe_device+0x189/0x260 drivers/base/bus.c:532
+ device_add+0x8ff/0xca0 drivers/base/core.c:3639
+ usb_set_configuration+0x1976/0x1fb0 drivers/usb/core/message.c:2207
+ usb_generic_driver_probe+0x88/0x140 drivers/usb/core/generic.c:254
+ usb_probe_device+0x140/0x2d0 drivers/usb/core/driver.c:294
+ really_probe+0x2a0/0xc50 drivers/base/dd.c:658
+ __driver_probe_device+0x1a2/0x3e0 drivers/base/dd.c:800
+ driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+ __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
+ bus_for_each_drv+0x250/0x2e0 drivers/base/bus.c:457
+ __device_attach+0x333/0x520 drivers/base/dd.c:1030
+ bus_probe_device+0x189/0x260 drivers/base/bus.c:532
+ device_add+0x8ff/0xca0 drivers/base/core.c:3639
+ usb_new_device+0x104a/0x19a0 drivers/usb/core/hub.c:2614
+ hub_port_connect drivers/usb/core/hub.c:5483 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5623 [inline]
+ port_event drivers/usb/core/hub.c:5783 [inline]
+ hub_event+0x2d13/0x50f0 drivers/usb/core/hub.c:5865
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa02/0x1770 kernel/workqueue.c:3335
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
+ kthread+0x2f2/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
  </TASK>
-team0: Port device wlan1 added
 
 
 ---
