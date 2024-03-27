@@ -1,141 +1,153 @@
-Return-Path: <linux-kernel+bounces-121970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A737D88F006
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F0988F007
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:24:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B028D1C29D8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:23:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DE161C299DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B0A15217B;
-	Wed, 27 Mar 2024 20:23:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069F0152501;
+	Wed, 27 Mar 2024 20:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O0uaK4mk"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CUuu509u"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61FC14C59E
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4289614F9C2
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571003; cv=none; b=n3m1Dx98mbRKlOD38Pkwsm42e/b9yu9c1q86G/DduN9X80bafXn5jGKEhRmyw+pZzHn9raUFSjqjha31KuOpMUyJ4btBmuBnQYFnYwY3s4ku24PD2A3haA9Od0Uf51XVLNdTM7ggM7XSm15nyUqUJpYIgwiVdo/9RoQBizoU/Uk=
+	t=1711571091; cv=none; b=r71i/u9827RV/BsgK3Jrc+peuPLqrDIBlupjTuSs9oA9v4jpFOHK0PfjSzKcyvCOqxNrlq71PFEJFDYoQ3yBmqFy8WOSfd7FLGinrxtJb6DsGU8xzRGlGeIL4vLX6Ae8Cv4F00ifN9NS8NUCgtH2UXdvpzbYdMHlk4fYqMfYQKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571003; c=relaxed/simple;
-	bh=lf3iGRU4+8TJtIaIB5wpVth3vfvKck6uCnm+CIzK0Tg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hUPr/ddmLxZskq4wbCV7kalCwa1Pvuz3TyHyhM/W2YD5IyeLnStL83QLOlGogRywHFkstXgHuXzCwRLODD6oTYn2U4YW9dWmjdZ1rdvxi/zc8fP7rK9Z9brzvq0zyYCJgi796Vv06Jk9khJ8KEZ0XDZS6QCPpcfENKlPeyGGq4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O0uaK4mk; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1711571091; c=relaxed/simple;
+	bh=2wt5pcKGxNbpvWCg8ZTbrpXO3NVBOSuebT4+RRom7BE=;
+	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=JXTpNUxeoGsEE44MbLSqWacTZKGsWhXrAcpNCmHnI4SmkN+SFK1RAYq4ZNUj7LaOjZvJNbOlWAh5xa9oNQX4FD2Z1kITt1otxG5xMayDxO2kkWBP5b8BVWkfR5Xj/evvo6XWAh+jaCN4xSAw/bvrIsKEtQZxV2woLEXrSbHZAyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CUuu509u; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711571000;
+	s=mimecast20190719; t=1711571088;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lTDl/e4NP4//kzTYlfYlNhyuiB+c7Oh5LOKfCsmlo8o=;
-	b=O0uaK4mkIfUOVy8KiJEyiOJDrO1HJpaJpV39lS28u/8MiwJAaNz9eTniXzcv2H3GJE0ANm
-	jeVIdlXq4d1Anu5AYpSUZ3C/0+XMhocXHW+Jf+qEokxpw+/metzteXOXicq+IlQ+ag68I0
-	Pzc+r1spj3b/JAABPgzMLKVKTrNab8Y=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5OpSCK5ZWGlU+xhOZk/X4d6um5rclbXdax5bm29ta4o=;
+	b=CUuu509u2L3dDKtFIk8GEhChSq5re2Ci493hffj5+BcDF9P6MclPmQ9p8FOohJluV8DQ+W
+	kRPKDuH9tYp1+ef8MdBue85UDHF5e91aJRB+2z6XARZRypWwmrPzQp6tG0ytICjZ9+kv8w
+	oW9NkK4Qnvfwc/a02gQxo5tIomuqhTY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-421-Ln3-82tuPCK4tmvX5U-2sw-1; Wed, 27 Mar 2024 16:23:19 -0400
-X-MC-Unique: Ln3-82tuPCK4tmvX5U-2sw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4455ae71fcso10845366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:23:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711570998; x=1712175798;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lTDl/e4NP4//kzTYlfYlNhyuiB+c7Oh5LOKfCsmlo8o=;
-        b=V0VnD3wZ6RCIHfCUGZ+yypZE37TnF1MSpXVTDwChLue6Q9swdGQyx/RjJP/zN9flB7
-         TX/eaQZ1WupIV87q1qey76/UXll3eIjpsJ0JKVGFLL2Kycp0ZY0wqV7TlcuSbkqSiTdN
-         qkKwhaBIybKe1l27PC7srPzbuahMyxt8BB949vxAl3YGACbQXPLrYlNSVc4onpLXE0x3
-         UAUZO6+9oVoPMNT/6L4a7Unxx92KcXFOLdBf+4ngAh500h8JboPDqe/NLcnk6S65smGs
-         lHe0EXEEcln8iKkQvfv98oUeJq1MvhQ9n5Uc6cygealbVXDqhFdSfch4FOJYve2SOjtJ
-         m+Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCXqD+ILh/VjcmaTqSVzQE+RBBQGjOG7fFGlHPxhmihY0DNvusl91S2nzKyjo4rpg4hPA6P8a2/i+ofN2F7+Po9ixpjmnwfw11S/DQV/
-X-Gm-Message-State: AOJu0YxwzJ5cmXs2f/k500l2QCZ9+lrA4NV2d69a2SZaCKRFSLrKVDOh
-	lR7cdzIOIJ+NzlyX9GWpjA7jfn3Kv4zlvfwlNM9FW1eFMMEXmi6qV5wwKKOC1Wrs309n0Gfk5aJ
-	SSlJe+h6jciTzJ4Zr7fSuJA7MLRUayC1r0fd8vm4KfY3VINzDNI46wuT38sTBtA==
-X-Received: by 2002:a17:907:780e:b0:a4e:1035:3ed7 with SMTP id la14-20020a170907780e00b00a4e10353ed7mr403288ejc.25.1711570998065;
-        Wed, 27 Mar 2024 13:23:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHcEdkUAPLuW/Ae7idu094WKvWLJZe4zJVSSj0CyhZ3tmJC63xdaI7MSHJiYeLoSlECwHmK+g==
-X-Received: by 2002:a17:907:780e:b0:a4e:1035:3ed7 with SMTP id la14-20020a170907780e00b00a4e10353ed7mr403282ejc.25.1711570997669;
-        Wed, 27 Mar 2024 13:23:17 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ju2-20020a170906e90200b00a4a33db326csm3963869ejb.194.2024.03.27.13.23.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 13:23:17 -0700 (PDT)
-Message-ID: <a76ec816-b5d3-451b-9d3a-f1546fdbbd95@redhat.com>
-Date: Wed, 27 Mar 2024 21:23:17 +0100
+ us-mta-517-2F0moKomNwurP2UcBacpSA-1; Wed, 27 Mar 2024 16:24:44 -0400
+X-MC-Unique: 2F0moKomNwurP2UcBacpSA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 713F585A58C;
+	Wed, 27 Mar 2024 20:24:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 04FB840C6CB1;
+	Wed, 27 Mar 2024 20:24:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Eric Van Hensbergen <ericvh@kernel.org>,
+    Latchesar Ionkov <lucho@ionkov.net>,
+    Dominique Martinet <asmadeus@codewreck.org>
+cc: dhowells@redhat.com, Christian Schoenebeck <linux_oss@crudebyte.com>,
+    Christian Brauner <brauner@kernel.org>, v9fs@lists.linux.dev,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] 9p: Clean up some kdoc and unused var warnings.
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: MAINTAINERS: drop Daniel Oliveira
- Nascimento
-Content-Language: en-US, nl
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240327081434.306106-1-krzysztof.kozlowski@linaro.org>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240327081434.306106-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2540926.1711571061.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 27 Mar 2024 20:24:21 +0000
+Message-ID: <2540927.1711571061@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Hi,
+    =
 
-On 3/27/24 9:14 AM, Krzysztof Kozlowski wrote:
-> Emails to Daniel Oliveira Nascimento bounce:
-> 
->   "550 5.1.1 The email account that you tried to reach does not exist."
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Remove the kdoc for the removed 'req' member of the 9p_conn struct.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Remove a pair of set-but-not-used v9ses variables.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Eric Van Hensbergen <ericvh@kernel.org>
+cc: Latchesar Ionkov <lucho@ionkov.net>
+cc: Dominique Martinet <asmadeus@codewreck.org>
+cc: Christian Schoenebeck <linux_oss@crudebyte.com>
+cc: v9fs@lists.linux.dev
+---
+ fs/9p/vfs_inode_dotl.c |    4 ----
+ net/9p/trans_fd.c      |    1 -
+ 2 files changed, 5 deletions(-)
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+index ef9db3e03506..7af27ba1c25d 100644
+--- a/fs/9p/vfs_inode_dotl.c
++++ b/fs/9p/vfs_inode_dotl.c
+@@ -297,7 +297,6 @@ static int v9fs_vfs_mkdir_dotl(struct mnt_idmap *idmap=
+,
+ 			       umode_t omode)
+ {
+ 	int err;
+-	struct v9fs_session_info *v9ses;
+ 	struct p9_fid *fid =3D NULL, *dfid =3D NULL;
+ 	kgid_t gid;
+ 	const unsigned char *name;
+@@ -307,7 +306,6 @@ static int v9fs_vfs_mkdir_dotl(struct mnt_idmap *idmap=
+,
+ 	struct posix_acl *dacl =3D NULL, *pacl =3D NULL;
+ =
 
-Regards,
+ 	p9_debug(P9_DEBUG_VFS, "name %pd\n", dentry);
+-	v9ses =3D v9fs_inode2v9ses(dir);
+ =
 
-Hans
+ 	omode |=3D S_IFDIR;
+ 	if (dir->i_mode & S_ISGID)
+@@ -739,7 +737,6 @@ v9fs_vfs_mknod_dotl(struct mnt_idmap *idmap, struct in=
+ode *dir,
+ 	kgid_t gid;
+ 	const unsigned char *name;
+ 	umode_t mode;
+-	struct v9fs_session_info *v9ses;
+ 	struct p9_fid *fid =3D NULL, *dfid =3D NULL;
+ 	struct inode *inode;
+ 	struct p9_qid qid;
+@@ -749,7 +746,6 @@ v9fs_vfs_mknod_dotl(struct mnt_idmap *idmap, struct in=
+ode *dir,
+ 		 dir->i_ino, dentry, omode,
+ 		 MAJOR(rdev), MINOR(rdev));
+ =
 
-
-
-> ---
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 51d5a64a5a36..de17c0950d83 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5207,7 +5207,6 @@ F:	lib/closure.c
->  
->  CMPC ACPI DRIVER
->  M:	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-> -M:	Daniel Oliveira Nascimento <don@syst.com.br>
->  L:	platform-driver-x86@vger.kernel.org
->  S:	Supported
->  F:	drivers/platform/x86/classmate-laptop.c
+-	v9ses =3D v9fs_inode2v9ses(dir);
+ 	dfid =3D v9fs_parent_fid(dentry);
+ 	if (IS_ERR(dfid)) {
+ 		err =3D PTR_ERR(dfid);
+diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+index 1a3948b8c493..196060dc6138 100644
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -95,7 +95,6 @@ struct p9_poll_wait {
+  * @unsent_req_list: accounting for requests that haven't been sent
+  * @rreq: read request
+  * @wreq: write request
+- * @req: current request being processed (if any)
+  * @tmp_buf: temporary buffer to read in header
+  * @rc: temporary fcall for reading current frame
+  * @wpos: write position for current frame
 
 
