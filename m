@@ -1,114 +1,314 @@
-Return-Path: <linux-kernel+bounces-122038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7DF088F110
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:37:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3416888F12C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:45:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A11A1F2ABAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:37:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6C529E3AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA726153506;
-	Wed, 27 Mar 2024 21:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B020A153588;
+	Wed, 27 Mar 2024 21:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLKp9yq2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yfpobhUg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="trQ+zlv3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yfpobhUg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="trQ+zlv3"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC41383A3
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B431A152532;
+	Wed, 27 Mar 2024 21:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711575460; cv=none; b=i6+6QHJ1TmofwXtRv/IisgAKR6z6o4NeppuU43JEI8oeNp21Y7q47IZuRnnFDBCixm535nyAPsEER4gARuGue3QgBlRQB8WJrbHIqRZ7r/Su4VsWta5qlkdyXkypS8FJn3x9eOg+QlB9RgX77hE7cOaQwVMNDuMouk9s6Klajsg=
+	t=1711575918; cv=none; b=Ii7DzxFxPlfc7vdEwExDN6pgxnWCqMRelKfwluSJF+GJqQ+W6F0RoVVXq2jeo+EINOsMYJK3KlLiwQJjx9PpQzonVm/LPwMSQVV9ucdhhfXsCTIH2oEGYtFjZ0DDSrAuGHkOeHn697yrnXjPORYDWN18LtWkcRCkknPHXPX89cA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711575460; c=relaxed/simple;
-	bh=+a/yj3h8rVSneW/iF8kjLcf4ZyxOYGMnQKmk1KbGD+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rkQSPxkNNCfslTxLwjidb+aR73AvyjRpDLhh/s1DljvnaWvpIH05f2VLuR6809i3wXvTOS2ehP9/Pu+FUA+fOaT8Uxv2B9vxCZ96837dwDG9jF3Ye6T24YCxtHH3+BFsFCm4bds2jfUbzkDGHtjS9B+iFWePOltmcQ5UkseXvBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLKp9yq2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C2DFC433C7
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:37:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711575459;
-	bh=+a/yj3h8rVSneW/iF8kjLcf4ZyxOYGMnQKmk1KbGD+M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dLKp9yq2AiU7NbLXCiOD9TPEsZ2IxUXF93QH5SyS5t1M+XqFHHChbkYYJdgs+wDii
-	 dfx/1b8bFxNH6i8eSeRpwPa95UYVxlKzzGMOC5Xgdod6hrFfXBjvlQtXD3PkFJIgKZ
-	 TwTXav6joWJmTXWXeJUau1DkAnG+mEy54ZHjAuJqmnUE32c7YeiHS0scnt6o8CYO4r
-	 e/HJJtX29AeMT2MZUl5NGnOoJgYRQenaQwg+MFOq472b45JZrlH+hfkRW5W8uMchiK
-	 gsEL2ejkX//oddtOM7kC6cqtjDXKGokLYM9vXuGLb/uvyScsGDCmm6DJ+YRipR3hb2
-	 SpmUoeOdR1jkQ==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515c50dc2afso85695e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:37:39 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWVd0pjq9rSkPN8VkQFHwI+o3vZ6PxFuDrCHZj8W7ciR3fwLTlgQctLo1oHQiEFsjgnZ+281FiRS4pNl8Z8k9yiYwY7FkLOwKdtm+Oo
-X-Gm-Message-State: AOJu0YwRzSuOxdLmLn8gTI7AJi82mGM74K9+gj1Gp4Ij5jxZJ5IjQLsK
-	HhW8VB4TnVKeo7ZeyDkQtm032tAWq3gti8wSLQPRZHivUQgH+ByK/WZyM9eDjO5hScNyeO8RurG
-	kvSOTBdYNmICKZoCdwLDsTMrr7w==
-X-Google-Smtp-Source: AGHT+IHPYADR3jEg0ovb+UQf5enb1wsbs2TylHVNqhyBT7RHbI/UPPyevxzVCJ9+c5vHHCX12pi8TxcJwOthcwA7Qic=
-X-Received: by 2002:a19:6905:0:b0:515:a8e0:dfd8 with SMTP id
- e5-20020a196905000000b00515a8e0dfd8mr458066lfc.3.1711575457931; Wed, 27 Mar
- 2024 14:37:37 -0700 (PDT)
+	s=arc-20240116; t=1711575918; c=relaxed/simple;
+	bh=SOc/XQwFa+yBtf35557/o9VMVygf4mGBjGof6MpezFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rpfcUXVQHUTDN2FwRxlg+cAqBbI+J2zHS+7LQhk/V+zFk3zgzRFa9r16+DrrXV0FgMYo8YgJ8FySWCWwFy0fu8Q5J8LDJJHiR8/nxaqYXK+TKcBxyIidfv2VXLhv37zdR05WllyN739NDjk4VBibkNhHUezBWHosjDUhH9572Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yfpobhUg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=trQ+zlv3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yfpobhUg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=trQ+zlv3; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7DE2522B9E;
+	Wed, 27 Mar 2024 21:45:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711575914;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GYSrlk1FplivjVsKqpeABcsJVFei8YwAw4wGQlG9hb8=;
+	b=yfpobhUgvEsDs4feIjULv7QGn6KGgghk57xwgbu3vRhdOvVAMx0jRGUqc05DvZMbXzsyoR
+	efnhisav2IqwUyKF/e78bl0DEdI0lN7kte+H5MUjaTUogo7zs/0OXV0laROva3+siP6FkY
+	lzfdJWjDx4RSVOCdInMukyRDVjzNQg0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711575914;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GYSrlk1FplivjVsKqpeABcsJVFei8YwAw4wGQlG9hb8=;
+	b=trQ+zlv3ApC954wKR3btpr9tVOQahJDSSEPfAxygF4aWpNufCcQKGMmVN1zF04hg0TYJ3T
+	4mUdGFEmR2hTR8Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711575914;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GYSrlk1FplivjVsKqpeABcsJVFei8YwAw4wGQlG9hb8=;
+	b=yfpobhUgvEsDs4feIjULv7QGn6KGgghk57xwgbu3vRhdOvVAMx0jRGUqc05DvZMbXzsyoR
+	efnhisav2IqwUyKF/e78bl0DEdI0lN7kte+H5MUjaTUogo7zs/0OXV0laROva3+siP6FkY
+	lzfdJWjDx4RSVOCdInMukyRDVjzNQg0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711575914;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GYSrlk1FplivjVsKqpeABcsJVFei8YwAw4wGQlG9hb8=;
+	b=trQ+zlv3ApC954wKR3btpr9tVOQahJDSSEPfAxygF4aWpNufCcQKGMmVN1zF04hg0TYJ3T
+	4mUdGFEmR2hTR8Dg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5956313215;
+	Wed, 27 Mar 2024 21:45:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id /q+sFWqTBGZFJQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 27 Mar 2024 21:45:14 +0000
+Date: Wed, 27 Mar 2024 22:37:51 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org, anand.jain@oracle.com,
+	Alex Romosan <aromosan@gmail.com>,
+	CHECK_1234543212345@protonmail.com, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: FAILED: Patch "btrfs: do not skip re-registration for the
+ mounted device" failed to apply to 6.8-stable tree
+Message-ID: <20240327213751.GW14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240327120640.2824671-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322065419.162416-1-linux@roeck-us.net>
-In-Reply-To: <20240322065419.162416-1-linux@roeck-us.net>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 27 Mar 2024 16:37:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJqD8_DZsU6kBxvd+4X136K-Z_q_1Mow6x+d-xWbQjvmA@mail.gmail.com>
-Message-ID: <CAL_JsqJqD8_DZsU6kBxvd+4X136K-Z_q_1Mow6x+d-xWbQjvmA@mail.gmail.com>
-Subject: Re: [PATCH v2] nios2: Only use built-in devicetree blob if configured
- to do so
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Dinh Nguyen <dinguyen@kernel.org>, linux-kernel@vger.kernel.org, 
-	Frank Rowand <frowand.list@gmail.com>, Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327120640.2824671-1-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yfpobhUg;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=trQ+zlv3
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,protonmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,oracle.com,gmail.com,protonmail.com,suse.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -4.21
+X-Rspamd-Queue-Id: 7DE2522B9E
+X-Spam-Flag: NO
 
-On Fri, Mar 22, 2024 at 1:54=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
-wrote:
->
-> Starting with commit 7b937cc243e5 ("of: Create of_root if no dtb provided
-> by firmware"), attempts to boot nios2 images with an external devicetree
-> blob result in a crash.
->
-> Kernel panic - not syncing: early_init_dt_alloc_memory_arch:
->         Failed to allocate 72 bytes align=3D0x40
->
-> For nios2, a built-in devicetree blob always overrides devicetree blobs
-> provided by ROMMON/BIOS. This includes the new dummy devicetree blob.
-> Result is that the dummy devicetree blob is used even if an external
-> devicetree blob is provided. Since the dummy devicetree blob does not
-> include any memory information, memory allocations fail, resulting in
-> the crash.
->
-> To fix the problem, only use the built-in devicetree blob if
-> CONFIG_NIOS2_DTB_SOURCE_BOOL is enabled.
->
-> Fixes: 7b937cc243e5 ("of: Create of_root if no dtb provided by firmware")
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Rob Herring <robh@kernel.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Mark 'dtb' as __maybe_unused
->
->  arch/nios2/kernel/prom.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+On Wed, Mar 27, 2024 at 08:06:40AM -0400, Sasha Levin wrote:
+> The patch below does not apply to the 6.8-stable tree.
+> If someone wants it applied there, or to any other stable or longterm
+> tree, then please email the backport, including the original git commit
+> id to <stable@vger.kernel.org>.
 
-I don't love the ifdef, but seems to be the least invasive for 6.9.
+Please use the version below, applies cleanly on 6.7.x and 6.8.x.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+---
 
-I have a somewhat more invasive change which checks for top-level
-compatible existing to decide whether to use the built-in. That's more
-risky as it would affect everyone. We're already doing that elsewhere
-and found 1 board that didn't have one.
+From: Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH] btrfs: do not skip re-registration for the mounted device
 
-Rob
+[ Upstream commit d565fffa68560ac540bf3d62cc79719da50d5e7a ]
+
+There are reports that since version 6.7 update-grub fails to find the
+device of the root on systems without initrd and on a single device.
+
+This looks like the device name changed in the output of
+/proc/self/mountinfo:
+
+6.5-rc5 working
+
+  18 1 0:16 / / rw,noatime - btrfs /dev/sda8 ...
+
+6.7 not working:
+
+  17 1 0:15 / / rw,noatime - btrfs /dev/root ...
+
+and "update-grub" shows this error:
+
+  /usr/sbin/grub-probe: error: cannot find a device for / (is /dev mounted?)
+
+This looks like it's related to the device name, but grub-probe
+recognizes the "/dev/root" path and tries to find the underlying device.
+However there's a special case for some filesystems, for btrfs in
+particular.
+
+The generic root device detection heuristic is not done and it all
+relies on reading the device infos by a btrfs specific ioctl. This ioctl
+returns the device name as it was saved at the time of device scan (in
+this case it's /dev/root).
+
+The change in 6.7 for temp_fsid to allow several single device
+filesystem to exist with the same fsid (and transparently generate a new
+UUID at mount time) was to skip caching/registering such devices.
+
+This also skipped mounted device. One step of scanning is to check if
+the device name hasn't changed, and if yes then update the cached value.
+
+This broke the grub-probe as it always read the device /dev/root and
+couldn't find it in the system. A temporary workaround is to create a
+symlink but this does not survive reboot.
+
+The right fix is to allow updating the device path of a mounted
+filesystem even if this is a single device one.
+
+In the fix, check if the device's major:minor number matches with the
+cached device. If they do, then we can allow the scan to happen so that
+device_list_add() can take care of updating the device path. The file
+descriptor remains unchanged.
+
+This does not affect the temp_fsid feature, the UUID of the mounted
+filesystem remains the same and the matching is based on device major:minor
+which is unique per mounted filesystem.
+
+This covers the path when the device (that exists for all mounted
+devices) name changes, updating /dev/root to /dev/sdx. Any other single
+device with filesystem and is not mounted is still skipped.
+
+Note that if a system is booted and initial mount is done on the
+/dev/root device, this will be the cached name of the device. Only after
+the command "btrfs device scan" it will change as it triggers the
+rename.
+
+The fix was verified by users whose systems were affected.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218353
+Link: https://lore.kernel.org/lkml/CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com/
+Fixes: bc27d6f0aa0e ("btrfs: scan but don't register device on single device filesystem")
+CC: stable@vger.kernel.org # 6.7+
+Tested-by: Alex Romosan <aromosan@gmail.com>
+Tested-by: CHECK_1234543212345@protonmail.com
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/volumes.c | 57 ++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 47 insertions(+), 10 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index f627674b37db..6f4dd3ebbf7a 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1290,6 +1290,47 @@ int btrfs_forget_devices(dev_t devt)
+ 	return ret;
+ }
+ 
++static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
++				    const char *path, dev_t devt,
++				    bool mount_arg_dev)
++{
++	struct btrfs_fs_devices *fs_devices;
++
++	/*
++	 * Do not skip device registration for mounted devices with matching
++	 * maj:min but different paths. Booting without initrd relies on
++	 * /dev/root initially, later replaced with the actual root device.
++	 * A successful scan ensures grub2-probe selects the correct device.
++	 */
++	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
++		struct btrfs_device *device;
++
++		mutex_lock(&fs_devices->device_list_mutex);
++
++		if (!fs_devices->opened) {
++			mutex_unlock(&fs_devices->device_list_mutex);
++			continue;
++		}
++
++		list_for_each_entry(device, &fs_devices->devices, dev_list) {
++			if (device->bdev && (device->bdev->bd_dev == devt) &&
++			    strcmp(device->name->str, path) != 0) {
++				mutex_unlock(&fs_devices->device_list_mutex);
++
++				/* Do not skip registration. */
++				return false;
++			}
++		}
++		mutex_unlock(&fs_devices->device_list_mutex);
++	}
++
++	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
++	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING))
++		return true;
++
++	return false;
++}
++
+ /*
+  * Look for a btrfs signature on a device. This may be called out of the mount path
+  * and we are not allowed to call set_blocksize during the scan. The superblock
+@@ -1346,18 +1387,14 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
+ 		goto error_bdev_put;
+ 	}
+ 
+-	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
+-	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) {
+-		dev_t devt;
++	if (btrfs_skip_registration(disk_super, path, bdev_handle->bdev->bd_dev,
++				    mount_arg_dev)) {
++		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
++			  path, MAJOR(bdev_handle->bdev->bd_dev),
++			  MINOR(bdev_handle->bdev->bd_dev));
+ 
+-		ret = lookup_bdev(path, &devt);
+-		if (ret)
+-			btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
+-				   path, ret);
+-		else
+-			btrfs_free_stale_devices(devt, NULL);
++		btrfs_free_stale_devices(bdev_handle->bdev->bd_dev, NULL);
+ 
+-		pr_debug("BTRFS: skip registering single non-seed device %s\n", path);
+ 		device = NULL;
+ 		goto free_disk_super;
+ 	}
+-- 
+2.44.0
+
 
