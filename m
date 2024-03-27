@@ -1,58 +1,60 @@
-Return-Path: <linux-kernel+bounces-121240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44EF188E449
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:57:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542DD88E677
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E582A1F27AC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:57:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BCC4B2A762
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA53E199E8C;
-	Wed, 27 Mar 2024 12:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B5C199EBA;
+	Wed, 27 Mar 2024 12:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b2zLeh56"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="td9o8f+P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8DB1966BD;
-	Wed, 27 Mar 2024 12:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080D7199EAA;
+	Wed, 27 Mar 2024 12:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542435; cv=none; b=dfORD4AMxLn7lP8oOzfbYCeHEUDR4OOK4EP/e4yKhc9vOG8/hVglLa0PK+T9ddz534hZKuDpwkgmjYC9BgOksnLgilwkbTHz/HLyJZmQy3YJdTvca058lMMvIrldHhG9J9L9kXkH+21Dzc+c6TO9yxMGNGhK6rPh3qDCeBgIe7w=
+	t=1711542438; cv=none; b=VO3IJDSKkX49ldz2dyuBesDR4NkMqRhHpqemmmG5OYpaa0/+O0gsAz+5AqfHGwEzm0TIiIC6Wsv5gL1TMrmaDuZ6LQbeCwuYVMbhbNbKfPaJ3MBm9ZDCtRDPY/rmnkdkFE/XuF2LhkYwYfe8sZLHat8HHBeT6rE29DAjAP72hII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542435; c=relaxed/simple;
-	bh=J8kUSQ/o+qznVrEgEsl+xX4uW4Jy8EHdhXgSRLvyMGg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hzgXfoXuPe9c0G1jt0qAlixqsKz1Q4K415pGjr1ve7Fch0nMy4ido64BsRx0FV14EGnYCBwP9P/dkoSHViyKwQtwnGm/B+5hi4iqfnXhqkRq0uRwly7dEfQC98FpatnxUQ0aNOWyzQtHE9yBepdM99Madx0Zkw74ifSsGWILkMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b2zLeh56; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95200C433F1;
-	Wed, 27 Mar 2024 12:27:13 +0000 (UTC)
+	s=arc-20240116; t=1711542438; c=relaxed/simple;
+	bh=sdBS3Itw8nJYi9YIkVG72y414I7C4JAyuzgomJ+fxxA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pQJqTE0EvKGnvF4FjGryZqbMmOCOysV460uJESlVL4HTab8Nk5+WBUoOrZGlZWUEel2rih/9m0KmIRpKhtDLc2AmtHaKZ5DNEsY0Da8cPFyJunCdddemaGCzayWHqiQ5Wk2w8aZ3U1qc5hpDabkXBGatWjwdGnCM40PoVKqQgPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=td9o8f+P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55B45C433C7;
+	Wed, 27 Mar 2024 12:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542434;
-	bh=J8kUSQ/o+qznVrEgEsl+xX4uW4Jy8EHdhXgSRLvyMGg=;
+	s=k20201202; t=1711542437;
+	bh=sdBS3Itw8nJYi9YIkVG72y414I7C4JAyuzgomJ+fxxA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=b2zLeh56k2AyACOwlcAA1EXuSg6/levLjCMuPrEo8n9Ohc7L2+ePGRCRydNEFh8+b
-	 VlZLFOPgXgY6y1AwD8kT6r6Hfsbf5IDOHzCeR89ewZuqJ+yPSsmPqQWcKBYIwCM3fJ
-	 eJ9tLV/mSWcVtY6jjoNFH6As6hXfymQ62mP3k8zc6NwFXfy9yn4gFeWYxcrbgGEq9a
-	 V0TgNBCo9UfeFeTPvyPyFItYAfx3A6ljKJz4PZQSwVyxhgBhtGOxJVUwZv0cRMN4nR
-	 oeg/fxsIGuixtuWXZKBGZwvldlko+aRSafz5Y84afm94SGB6JxsnHolexsi2WwKkry
-	 SRYKMymzzZwDw==
+	b=td9o8f+PhWs/An1jBG++emOBNPSlIm1lYMMq3bc7b2nrotJKCdd3n4dZXFRR6Gw3q
+	 JPCget3lFBAawQoV4pwREAS1m3IHKvJl5ciGh71c7AzizPSdSpNvU05a3CRF1xHM12
+	 /WPQ0CZxLFZ4ANFQFfyrasIXVmFexMn/Dlvr+CKyhNFiLgcUW0wPwSEcjCG5hZtfH9
+	 UUfgLbwnNr8g5TZvLbQ+4BgW3F9fGPGOyybTlDvnzR/pVZ2eOX5XYBG9yRmWS3Yj7I
+	 KXSLpHjgunJux5RAHO2tPFm0F9qaM2dBsHRdDRvG0Ow13OdeTEyBVZTETWO7NAjxzQ
+	 eNbo2IxJfEoaQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	sohaib.nadeem@amd.com
+	wenjing.liu@amd.com
 Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Josip Pavic <josip.pavic@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+	Nevenko Stupar <nevenko.stupar@amd.com>,
+	Chaitanya Dhere <chaitanya.dhere@amd.com>,
+	Tom Chung <chiahsuan.chung@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: fixed integer types and null check locations" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:12 -0400
-Message-ID: <20240327122712.2841726-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: fix incorrect mpc_combine array size" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:15 -0400
+Message-ID: <20240327122715.2841763-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,112 +76,47 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 616b39467e816851335277d817ec98b7a9b92758 Mon Sep 17 00:00:00 2001
-From: Sohaib Nadeem <sohaib.nadeem@amd.com>
-Date: Wed, 31 Jan 2024 16:40:37 -0500
-Subject: [PATCH] drm/amd/display: fixed integer types and null check locations
+From 607e1b0cf480cb8dbd65b372397871d7389942b5 Mon Sep 17 00:00:00 2001
+From: Wenjing Liu <wenjing.liu@amd.com>
+Date: Thu, 18 Jan 2024 15:14:15 -0500
+Subject: [PATCH] drm/amd/display: fix incorrect mpc_combine array size
 
-[why]:
-issues fixed:
-- comparison with wider integer type in loop condition which can cause
-infinite loops
-- pointer dereference before null check
+[why]
+MAX_SURFACES is per stream, while MAX_PLANES is per asic. The
+mpc_combine is an array that records all the planes per asic. Therefore
+MAX_PLANES should be used as the array size. Using MAX_SURFACES causes
+array overflow when there are more than 3 planes.
+
+[how]
+Use the MAX_PLANES for the mpc_combine array size.
 
 Cc: Mario Limonciello <mario.limonciello@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Josip Pavic <josip.pavic@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Sohaib Nadeem <sohaib.nadeem@amd.com>
+Reviewed-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+Reviewed-by: Nevenko Stupar <nevenko.stupar@amd.com>
+Reviewed-by: Chaitanya Dhere <chaitanya.dhere@amd.com>
+Acked-by: Tom Chung <chiahsuan.chung@amd.com>
+Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- .../gpu/drm/amd/display/dc/bios/bios_parser2.c   | 16 ++++++++++------
- .../drm/amd/display/dc/link/link_validation.c    |  2 +-
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-index 960c4b4f6ddf3..05f392501c0ae 100644
---- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-+++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-@@ -1850,19 +1850,21 @@ static enum bp_result get_firmware_info_v3_2(
- 		/* Vega12 */
- 		smu_info_v3_2 = GET_IMAGE(struct atom_smu_info_v3_2,
- 							DATA_TABLES(smu_info));
--		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_2->gpuclk_ss_percentage);
- 		if (!smu_info_v3_2)
- 			return BP_RESULT_BADBIOSTABLE;
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
+index 9b80f65c04664..a7981a0c4158f 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/dcn32_fpu.c
+@@ -1113,7 +1113,7 @@ struct pipe_slice_table {
+ 		struct pipe_ctx *pri_pipe;
+ 		struct dc_plane_state *plane;
+ 		int slice_count;
+-	} mpc_combines[MAX_SURFACES];
++	} mpc_combines[MAX_PLANES];
+ 	int mpc_combine_count;
+ };
  
-+		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_2->gpuclk_ss_percentage);
-+
- 		info->default_engine_clk = smu_info_v3_2->bootup_dcefclk_10khz * 10;
- 	} else if (revision.minor == 3) {
- 		/* Vega20 */
- 		smu_info_v3_3 = GET_IMAGE(struct atom_smu_info_v3_3,
- 							DATA_TABLES(smu_info));
--		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_3->gpuclk_ss_percentage);
- 		if (!smu_info_v3_3)
- 			return BP_RESULT_BADBIOSTABLE;
- 
-+		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_3->gpuclk_ss_percentage);
-+
- 		info->default_engine_clk = smu_info_v3_3->bootup_dcefclk_10khz * 10;
- 	}
- 
-@@ -2422,10 +2424,11 @@ static enum bp_result get_integrated_info_v11(
- 	info_v11 = GET_IMAGE(struct atom_integrated_system_info_v1_11,
- 					DATA_TABLES(integratedsysteminfo));
- 
--	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v11->gpuclk_ss_percentage);
- 	if (info_v11 == NULL)
- 		return BP_RESULT_BADBIOSTABLE;
- 
-+	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v11->gpuclk_ss_percentage);
-+
- 	info->gpu_cap_info =
- 	le32_to_cpu(info_v11->gpucapinfo);
- 	/*
-@@ -2637,11 +2640,12 @@ static enum bp_result get_integrated_info_v2_1(
- 
- 	info_v2_1 = GET_IMAGE(struct atom_integrated_system_info_v2_1,
- 					DATA_TABLES(integratedsysteminfo));
--	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_1->gpuclk_ss_percentage);
- 
- 	if (info_v2_1 == NULL)
- 		return BP_RESULT_BADBIOSTABLE;
- 
-+	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_1->gpuclk_ss_percentage);
-+
- 	info->gpu_cap_info =
- 	le32_to_cpu(info_v2_1->gpucapinfo);
- 	/*
-@@ -2799,11 +2803,11 @@ static enum bp_result get_integrated_info_v2_2(
- 	info_v2_2 = GET_IMAGE(struct atom_integrated_system_info_v2_2,
- 					DATA_TABLES(integratedsysteminfo));
- 
--	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_2->gpuclk_ss_percentage);
--
- 	if (info_v2_2 == NULL)
- 		return BP_RESULT_BADBIOSTABLE;
- 
-+	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_2->gpuclk_ss_percentage);
-+
- 	info->gpu_cap_info =
- 	le32_to_cpu(info_v2_2->gpucapinfo);
- 	/*
-diff --git a/drivers/gpu/drm/amd/display/dc/link/link_validation.c b/drivers/gpu/drm/amd/display/dc/link/link_validation.c
-index 1c038e2a527b3..1aed55b0ab6a0 100644
---- a/drivers/gpu/drm/amd/display/dc/link/link_validation.c
-+++ b/drivers/gpu/drm/amd/display/dc/link/link_validation.c
-@@ -359,7 +359,7 @@ bool link_validate_dpia_bandwidth(const struct dc_stream_state *stream, const un
- 	struct dc_link *dpia_link[MAX_DPIA_NUM] = {0};
- 	int num_dpias = 0;
- 
--	for (uint8_t i = 0; i < num_streams; ++i) {
-+	for (unsigned int i = 0; i < num_streams; ++i) {
- 		if (stream[i].signal == SIGNAL_TYPE_DISPLAY_PORT) {
- 			/* new dpia sst stream, check whether it exceeds max dpia */
- 			if (num_dpias >= MAX_DPIA_NUM)
 -- 
 2.43.0
 
