@@ -1,381 +1,153 @@
-Return-Path: <linux-kernel+bounces-121896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF3CA88EF0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:16:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF02088EF1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:24:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9E031C2C97B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:16:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D44221C2DEA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C9914D28A;
-	Wed, 27 Mar 2024 19:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACA7152188;
+	Wed, 27 Mar 2024 19:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ERCnRVJm"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hDCd2SW8"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C600C13172D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676BE14F116
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711567000; cv=none; b=CSJkwCxkgt9/vYl5TAQ91c75bznOHNzfp7ZvFJN5+qyNwzkqgVGaR7ubFzZ3ZYvOjnpDXc2Qf5XRoxvwMUg94ODay6LyCyjFKvXjearVc/P0GjzX19u1GQRIfPtrRW02QURo8uw+3YRSlnccMGlq7A/WFjuVzWr5b+1xPXuBjmI=
+	t=1711567438; cv=none; b=t4dyLvGyO3TdcDMkqHP7N2y0qECwUPn5rAxT+EGP1F7CInIhja5Udm0sjQwlIqZqunJOvwq2b526xRh1Jsg3sj8SVI9/KWiAYCjE6/3BDIJEm3vk+ejV08wzSs7ErBg+pM98Mhs9xEPsMlHQflddHk97vm2O7CHLeAHU7N+veRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711567000; c=relaxed/simple;
-	bh=rT7083cc0YiUftDA+tFAepIVi96Nohvyc/mp9LpuIkg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JEY1/tZp0T8jzrsMEkXVLs5p+q/3srXGbHo36Boy3utyNctFcx3ebH7pTMrkGAtfJmDu8LfRpiC3rtCiqehmZaLlkXUaC6N/A+sShEycBozuyE5gfctLBjMBSmt8vrgQiXL3nTzSTrVwijGbOhJVE7W6Kr30Ea4s32mtsaeLhNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=ERCnRVJm; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a0599f631so1543017b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:16:36 -0700 (PDT)
+	s=arc-20240116; t=1711567438; c=relaxed/simple;
+	bh=vjEvrisXs0PaTIn6yTzeC7Qp/wJlnRMLb5/DytcPMgc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AlmUqpMEGVI1qSfZ0/f52dLTnVzxskRHt+NARRH4ZS0HGKCUxUSCbERAauVCqn+vU5muNXSGoLHjTjQ4m1ZFsveMvM0u9oskaM9pXV/kPr8kNkRmgPz1lFJ8n8wfYsWiR0AsyUwa+YQrwN8NHPHqNvvtitGBS/nUf06u1t0UhMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hDCd2SW8; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a4a393b699fso36942466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1711566996; x=1712171796; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qY9pVjsmMhniDRXvBSM9SVCxWBDBVXOSDIoyD1+tWkY=;
-        b=ERCnRVJmB0LS6EWFSECBF5BzMWWIAqT8Z7dxO+Gijynn4o2Ew3anvw9rjqjjNO1HML
-         MJd5G9LQiO/BM1It9KwlnmklB09Cr79YSrqikcK8vCzTsdRBxzVDSa3kwrU44fKSUZ2J
-         vxKFoEDobs69iWCx8GsHtEzRrKee19cB3xb0RbmtHFS7eXamAVN2a5Oj5AryQ/DB2P86
-         HAp+gB4fmth7Tn3/2SGNF8IcfEi5ewB0nSmLHYC56Rbq0+HWCyiB93cLv/sh/bTso5K8
-         oTEMmygKoV9z2kj7h206OIHMFSI4C09wJcmHthWBGJDDd1qZwd9BLnCxwF9VoYDX0gLC
-         ewEA==
+        d=linaro.org; s=google; t=1711567435; x=1712172235; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=mXh1hk1oPeStdknju80ZXZITRIxNJc+CZyjjCVnDwcI=;
+        b=hDCd2SW8RocW5ld/peH5sWY8+9uXr0ghFmYZGSbbpz0buZLbez2FHtgDBokIgtRHn1
+         zXv/KXedRrpdyiSJLHVjLO++iARqaQ4hVaOxXDsYqN/rt7yAJvyrfejFWQkoVivTZWWV
+         x/CG71f1IuU/gTFYj251Tn/eDg+JWnScrrJXx9WU7Ey7KvZr4F4N1jYMkR3XhdoxKPCT
+         2ewg9YEwFPBPYhu6dRAOaK2ZjmBL02AMS2wuMyWFmLkG3A+f3sAbJQZSPaQ3zu6nPFQn
+         1nB7UAXkPXCIJfyV//o8wo+OKyBoTADKRGDCqkZhaYsV7Ztxe3unOzenhf31XLrOXpmH
+         KhTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711566996; x=1712171796;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qY9pVjsmMhniDRXvBSM9SVCxWBDBVXOSDIoyD1+tWkY=;
-        b=EYELyHNjq8Koj6yCH2h2irGj9P1Z2R5qDRPHKQ0BM1d9JfuqCwxuYgM14uwOfoo9nj
-         hjQnBo9j671HN1/jfGJjtR17vx22Mtl2LRybA1hS1z93pLrQi4vBZc/aPFIB5zhH65cj
-         xHwFk9Y90MQsKo/ziEdKwKDfMEZj0MWnBtbkZmAdQ0VXX3VqrqBe1oPtoVH/rvtgnIWj
-         bbIzQXT/na236OK1hPpidr3Vyxs0tC79oD4uo+BvKb7YAJyS41l2Oungo4by/hLJFHpf
-         FAbsBO8iVPb6JmzbPYpzn+11QcYjO2WYHP0acrpBs1xhCsmX1GcpBPfmJ4wMg68R48dO
-         WGjg==
-X-Forwarded-Encrypted: i=1; AJvYcCViMo3FSxzkL8tznk6ipXk0igygiCSM35jPwO6wjZOj8I6lDPTfatY4OvvrjD81UZBNYOuaNvskBz8frbe5GgNwUmJumF/KJ1Yyp0+D
-X-Gm-Message-State: AOJu0YyJnkjOdtAxTNk1l89T+ZWYg20zDibUWqQQHuD4Srpx6gO8a/hd
-	YI67BEWdcoVNa+srMLvGUDKAJwQk0PkuojJUaSBrb1nYFmaWS5fffJ7AsAjBmP0vyk6kOTf+gA5
-	yExwXk/katKGZnaLNVxB8cvZuwJ5JwdurjCngtX8L9u77KBGWRA==
-X-Google-Smtp-Source: AGHT+IFz2nBHDeDJuGJOmEGPA+S7LMXBg8QdPSi9mM++es/FpkMBOmsmqYNrG4GGCYwIA/lIrbfeHOYLo59g9jpOFLs=
-X-Received: by 2002:a0d:dc46:0:b0:613:fdf2:77cf with SMTP id
- f67-20020a0ddc46000000b00613fdf277cfmr657527ywe.34.1711566995774; Wed, 27 Mar
- 2024 12:16:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711567435; x=1712172235;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mXh1hk1oPeStdknju80ZXZITRIxNJc+CZyjjCVnDwcI=;
+        b=FW3hwaq8RObw4psUJm9eCYDOVvrNqS4pRYyKOoKnlsJlFU/gm5MuwE3chRHGy9/G/m
+         FCTFBVr5TLvcgsl3VSkMkm4/bLDvTs3jflGFKPizxmiOyk33qa1mevPXUK+wZ6vhevUG
+         dMg3P5eEQqf+F0O9boP1AqkAZF1AOYzvE2xifoP6Ze1ABI+xW/rZTZkoT5XwObkPwJU+
+         Qs9f2YQev2LqCDkPl0RfWZDTyF5r8+CWXdHIlVDEL2aFxgs+fCd/obfBzyLYCofCCLhu
+         HGUNWRAdkIh99OUaX8Ftk9FBc3T55b4ztYZmv/WSqy52oMRrQowKDXrfZFsYblbuC4Mq
+         7XIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWXY7mwgBrKKXJC4oyEdgS4ZhfACobomqMRjp/faYNz0r8cr900H21O6i2LddZsSJd+qk3rsRa9mthl1mxVvgPDqYmvXGWs+PTf4WjC
+X-Gm-Message-State: AOJu0YzI+m1NfUh5LxCuHp4iCvpBd1Gb7+el4RK50cLU0QZWNzlZ094h
+	BpAs7Qh3xMMikHdKjXRuzVrok43CxKv361mOYDgGymHJlv2NNIIIeD8gP7CkW3Q=
+X-Google-Smtp-Source: AGHT+IGWWBaCyjo8hryoRHrSa9yjNZ26cymjZzL1fb8Jp2J2Fo3NE7EzwYtjC5Qmh4YUteTcnyJNDQ==
+X-Received: by 2002:a17:906:57c7:b0:a47:3cd5:b3f1 with SMTP id u7-20020a17090657c700b00a473cd5b3f1mr182772ejr.35.1711567434658;
+        Wed, 27 Mar 2024 12:23:54 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id i10-20020a170906250a00b00a47459e7371sm5425614ejb.79.2024.03.27.12.23.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 12:23:54 -0700 (PDT)
+Message-ID: <65669ccc-3d95-496f-aa82-4ecbf4c11290@linaro.org>
+Date: Wed, 27 Mar 2024 20:23:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000d929dd0614a8ba8c@google.com>
-In-Reply-To: <000000000000d929dd0614a8ba8c@google.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 27 Mar 2024 15:16:25 -0400
-Message-ID: <CAHC9VhTWk8j2OnnH+307UzH+A4tLAmcyw7xde3KboZJ0JE2hzw@mail.gmail.com>
-Subject: Re: [syzbot] [audit?] [bpf?] INFO: rcu detected stall in
- kauditd_thread (4)
-To: syzbot <syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, audit@vger.kernel.org, 
-	bpf@vger.kernel.org, daniel@iogearbox.net, eparis@redhat.com, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	john.ogness@linutronix.de, pmladek@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: iommu: arm,smmu-v3: Add SC8280XP
+ compatible
+To: Robin Murphy <robin.murphy@arm.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev, Johan Hovold <johan+linaro@kernel.org>
+References: <20231219-topic-8280_smmuv3-v2-0-c67bd3226687@linaro.org>
+ <20231219-topic-8280_smmuv3-v2-1-c67bd3226687@linaro.org>
+ <9b2a681e-1191-4cf7-8da7-14aa2c1fa455@arm.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <9b2a681e-1191-4cf7-8da7-14aa2c1fa455@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 2:39=E2=80=AFPM syzbot
-<syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kerne=
-l..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D121a9e2118000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Daef2a55903e57=
-91c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D81f5ca46b043d4a=
-1b789
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12104f9e180=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D112840ee18000=
-0
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/dis=
-k-fe46a7dd.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinu=
-x-fe46a7dd.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/b=
-zImage-fe46a7dd.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com
+On 19.03.2024 2:53 PM, Robin Murphy wrote:
+> On 2024-03-09 1:31 pm, Konrad Dybcio wrote:
+>> The smmu-v3 binding currently doesn't differentiate the SoCs it's
+>> implemented on. This is a poor design choice that may bite in the future,
+>> should any quirks surface.
+> 
+> That doesn't seem entirely fair to say - the vast majority of bindings don't have separate compatibles for every known integration of the same implementation in different SoCs. And in this case we don't have per-implementation compatibles for quirks and errata because the implementation is architecturally discoverable from the SMMU_IIDR register.
+> 
+> We have the whole mess for QCom SMMUv2 because the effective *implementation* is a mix of hardware and hypervisor, whose behaviour does seem to vary on almost a per-SoC basis. I'm not at all keen to start repeating that here without very good reason, and that of "documenting" a device which we typically expect to not even be accessible isn't really convincing me...
 
-This doesn't look to be audit related, but I do see something that may
-be related in the printk code which was just merged into Linus' tree:
+From my POV as an arch dts maintainer, this often ends up being the only
+way to retroactively add some conditional action into the code - the kernel
+is supposed to be backwards compatible with older device trees.
 
-  commit 8076972468584d4a21dab9aa50e388b3ea9ad8c7
-  Author: John Ogness <john.ogness@linutronix.de>
-  Date:   Mon Feb 26 13:07:24 2024 +0106
+And so far it's been almost by luck that all of the smmuv3 implementations
+have been a straight copy-and-paste of the reference design (or close enough),
+I don't believe this will be for much longer.
 
-   printk: Update @console_may_schedule in console_trylock_spinning()
-
-   console_trylock_spinning() may takeover the console lock from a
-   schedulable context. Update @console_may_schedule to make sure it
-   reflects a trylock acquire.
-
-   Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
-   Closes: https://lore.kernel.org/lkml/20240222090538.23017-1-quic_mojha@q=
-uicinc.com
-   Fixes: dbdda842fe96 ("printk: Add console owner and ...")
-   Signed-off-by: John Ogness <john.ogness@linutronix.de>
-   Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
-   Reviewed-by: Petr Mladek <pmladek@suse.com>
-   Link: https://lore.kernel.org/r/875xybmo2z.fsf@jogness.linutronix.de
-   Signed-off-by: Petr Mladek <pmladek@suse.com>
-
-> rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> rcu:    1-...!: (1 ticks this GP) idle=3D9bf4/1/0x4000000000000000 softir=
-q=3D6591/6591 fqs=3D5
-> rcu:    (detected by 0, t=3D10502 jiffies, g=3D7873, q=3D65 ncpus=3D2)
-> Sending NMI from CPU 0 to CPUs 1:
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 28 Comm: kauditd Not tainted 6.8.0-syzkaller-08951-gfe46a7dd1=
-89e #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 02/29/2024
-> RIP: 0010:write_comp_data+0x0/0x90 kernel/kcov.c:230
-> Code: 48 8b 05 13 e2 76 7e 48 8b 80 08 16 00 00 c3 cc cc cc cc 0f 1f 80 0=
-0 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <49> 89 d2 49 89=
- f8 49 89 f1 65 48 8b 15 df e1 76 7e 65 8b 05 e0 e1
-> RSP: 0018:ffffc90000a08d78 EFLAGS: 00000046
-> RAX: 0000000000000001 RBX: 0000000000000001 RCX: ffffffff88e73a44
-> RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000005
-> RBP: 000000000003d3cc R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000002 R12: ffff8880b952cac0
-> R13: ffff88802abeb340 R14: ffff88802abeb340 R15: ffffffff88e73220
-> FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000555582f0dca8 CR3: 000000002bcea000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <NMI>
->  </NMI>
->  <IRQ>
->  advance_sched+0x824/0xc60 net/sched/sch_taprio.c:925
->  __run_hrtimer kernel/time/hrtimer.c:1692 [inline]
->  __hrtimer_run_queues+0x20c/0xc20 kernel/time/hrtimer.c:1756
->  hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1818
->  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1032 [inline]
->  __sysvec_apic_timer_interrupt+0x10f/0x410 arch/x86/kernel/apic/apic.c:10=
-49
->  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inli=
-ne]
->  sysvec_apic_timer_interrupt+0x90/0xb0 arch/x86/kernel/apic/apic.c:1043
->  </IRQ>
->  <TASK>
->  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.=
-h:702
-> RIP: 0010:console_flush_all+0xa19/0xd70 kernel/printk/printk.c:2979
-> Code: e8 9c dd 25 00 9c 5b 81 e3 00 02 00 00 31 ff 48 89 de e8 0a c9 1e 0=
-0 48 85 db 0f 85 8b 01 00 00 e8 ec cd 1e 00 fb 48 8b 04 24 <4c> 89 fa 83 e2=
- 07 0f b6 00 38 d0 7f 08 84 c0 0f 85 a9 02 00 00 41
-> RSP: 0018:ffffc90000a47a98 EFLAGS: 00000293
-> RAX: fffff52000148f7a RBX: 0000000000000000 RCX: ffffffff816e2ab6
-> RDX: ffff888018ee9e00 RSI: ffffffff816e2ac4 RDI: 0000000000000007
-> RBP: dffffc0000000000 R08: 0000000000000007 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000200
-> R13: ffffffff8e3995f8 R14: ffffffff8e3995a0 R15: ffffc90000a47bd0
->  console_unlock+0xae/0x290 kernel/printk/printk.c:3042
->  vprintk_emit kernel/printk/printk.c:2342 [inline]
->  vprintk_emit+0x11a/0x5a0 kernel/printk/printk.c:2297
->  vprintk+0x7f/0xa0 kernel/printk/printk_safe.c:45
->  _printk+0xc8/0x100 kernel/printk/printk.c:2367
->  kauditd_printk_skb kernel/audit.c:546 [inline]
->  kauditd_hold_skb+0x1fb/0x240 kernel/audit.c:581
->  kauditd_send_queue+0x236/0x290 kernel/audit.c:766
->  kauditd_thread+0x61e/0xa80 kernel/audit.c:890
->  kthread+0x2c1/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 2.415=
- msecs
-> rcu: rcu_preempt kthread starved for 10491 jiffies! g7873 f0x0 RCU_GP_WAI=
-T_FQS(5) ->state=3D0x0 ->cpu=3D0
-> rcu:    Unless rcu_preempt kthread gets sufficient CPU time, OOM is now e=
-xpected behavior.
-> rcu: RCU grace-period kthread stack dump:
-> task:rcu_preempt     state:R  running task     stack:28304 pid:16    tgid=
-:16    ppid:2      flags:0x00004000
-> Call Trace:
->  <TASK>
->  context_switch kernel/sched/core.c:5409 [inline]
->  __schedule+0xf15/0x5c70 kernel/sched/core.c:6736
->  __schedule_loop kernel/sched/core.c:6813 [inline]
->  schedule+0xe7/0x350 kernel/sched/core.c:6828
->  schedule_timeout+0x136/0x2a0 kernel/time/timer.c:2572
->  rcu_gp_fqs_loop+0x1eb/0xb00 kernel/rcu/tree.c:1663
->  rcu_gp_kthread+0x271/0x380 kernel/rcu/tree.c:1862
->  kthread+0x2c1/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> rcu: Stack dump where RCU GP kthread last ran:
-> CPU: 0 PID: 43 Comm: kworker/u8:3 Not tainted 6.8.0-syzkaller-08951-gfe46=
-a7dd189e #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 02/29/2024
-> Workqueue: events_unbound toggle_allocation_gate
-> RIP: 0010:csd_lock_wait kernel/smp.c:311 [inline]
-> RIP: 0010:smp_call_function_many_cond+0x4e7/0x1590 kernel/smp.c:855
-> Code: 0c 00 85 ed 74 4d 48 b8 00 00 00 00 00 fc ff df 4d 89 f4 4c 89 f5 4=
-9 c1 ec 03 83 e5 07 49 01 c4 83 c5 03 e8 4b 05 0c 00 f3 90 <41> 0f b6 04 24=
- 40 38 c5 7c 08 84 c0 0f 85 5d 0e 00 00 8b 43 08 31
-> RSP: 0018:ffffc90000b37910 EFLAGS: 00000293
-> RAX: 0000000000000000 RBX: ffff8880b9544380 RCX: ffffffff8180f38b
-> RDX: ffff8880192f0000 RSI: ffffffff8180f365 RDI: 0000000000000005
-> RBP: 0000000000000003 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000006 R12: ffffed10172a8871
-> R13: 0000000000000001 R14: ffff8880b9544388 R15: ffff8880b943f840
-> FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055e176bb4000 CR3: 000000000d57a000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  </IRQ>
->  <TASK>
->  on_each_cpu_cond_mask+0x40/0x90 kernel/smp.c:1023
->  on_each_cpu include/linux/smp.h:71 [inline]
->  text_poke_sync arch/x86/kernel/alternative.c:2086 [inline]
->  text_poke_bp_batch+0x22b/0x760 arch/x86/kernel/alternative.c:2296
->  text_poke_flush arch/x86/kernel/alternative.c:2487 [inline]
->  text_poke_flush arch/x86/kernel/alternative.c:2484 [inline]
->  text_poke_finish+0x30/0x40 arch/x86/kernel/alternative.c:2494
->  arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:1=
-46
->  jump_label_update+0x1d7/0x400 kernel/jump_label.c:829
->  static_key_enable_cpuslocked+0x1b7/0x270 kernel/jump_label.c:205
->  static_key_enable+0x1a/0x20 kernel/jump_label.c:218
->  toggle_allocation_gate mm/kfence/core.c:826 [inline]
->  toggle_allocation_gate+0xf8/0x250 mm/kfence/core.c:818
->  process_one_work+0x9a9/0x1a60 kernel/workqueue.c:3254
->  process_scheduled_works kernel/workqueue.c:3335 [inline]
->  worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
->  kthread+0x2c1/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> watchdog: BUG: soft lockup - CPU#0 stuck for 246s! [kworker/u8:3:43]
-> Modules linked in:
-> irq event stamp: 519008
-> hardirqs last  enabled at (519007): [<ffffffff8ad251cb>] irqentry_exit+0x=
-3b/0x90 kernel/entry/common.c:351
-> hardirqs last disabled at (519008): [<ffffffff8ad239ae>] sysvec_apic_time=
-r_interrupt+0xe/0xb0 arch/x86/kernel/apic/apic.c:1043
-> softirqs last  enabled at (519006): [<ffffffff8ad63156>] softirq_handle_e=
-nd kernel/softirq.c:400 [inline]
-> softirqs last  enabled at (519006): [<ffffffff8ad63156>] __do_softirq+0x5=
-96/0x8de kernel/softirq.c:583
-> softirqs last disabled at (518991): [<ffffffff8151a149>] invoke_softirq k=
-ernel/softirq.c:428 [inline]
-> softirqs last disabled at (518991): [<ffffffff8151a149>] __irq_exit_rcu k=
-ernel/softirq.c:633 [inline]
-> softirqs last disabled at (518991): [<ffffffff8151a149>] irq_exit_rcu+0xb=
-9/0x120 kernel/softirq.c:645
-> CPU: 0 PID: 43 Comm: kworker/u8:3 Not tainted 6.8.0-syzkaller-08951-gfe46=
-a7dd189e #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 02/29/2024
-> Workqueue: events_unbound toggle_allocation_gate
-> RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:26 [inline]
-> RIP: 0010:check_kcov_mode kernel/kcov.c:173 [inline]
-> RIP: 0010:write_comp_data+0x11/0x90 kernel/kcov.c:236
-> Code: cc cc 0f 1f 80 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 9=
-0 90 90 49 89 d2 49 89 f8 49 89 f1 65 48 8b 15 df e1 76 7e <65> 8b 05 e0 e1=
- 76 7e a9 00 01 ff 00 74 0f f6 c4 01 74 59 8b 82 14
-> RSP: 0018:ffffc90000b37908 EFLAGS: 00000202
-> RAX: 0000000000000001 RBX: ffff8880b9544380 RCX: ffffffff8180f38b
-> RDX: ffff8880192f0000 RSI: 0000000000000000 RDI: 0000000000000005
-> RBP: 0000000000000003 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000006 R12: ffffed10172a8871
-> R13: 0000000000000001 R14: ffff8880b9544388 R15: ffff8880b943f840
-> FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055e176bb4000 CR3: 000000000d57a000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  </IRQ>
->  <TASK>
->  csd_lock_wait kernel/smp.c:311 [inline]
->  smp_call_function_many_cond+0x50b/0x1590 kernel/smp.c:855
->  on_each_cpu_cond_mask+0x40/0x90 kernel/smp.c:1023
->  on_each_cpu include/linux/smp.h:71 [inline]
->  text_poke_sync arch/x86/kernel/alternative.c:2086 [inline]
->  text_poke_bp_batch+0x22b/0x760 arch/x86/kernel/alternative.c:2296
->  text_poke_flush arch/x86/kernel/alternative.c:2487 [inline]
->  text_poke_flush arch/x86/kernel/alternative.c:2484 [inline]
->  text_poke_finish+0x30/0x40 arch/x86/kernel/alternative.c:2494
->  arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:1=
-46
->  jump_label_update+0x1d7/0x400 kernel/jump_label.c:829
->  static_key_enable_cpuslocked+0x1b7/0x270 kernel/jump_label.c:205
->  static_key_enable+0x1a/0x20 kernel/jump_label.c:218
->  toggle_allocation_gate mm/kfence/core.c:826 [inline]
->  toggle_allocation_gate+0xf8/0x250 mm/kfence/core.c:818
->  process_one_work+0x9a9/0x1a60 kernel/workqueue.c:3254
->  process_scheduled_works kernel/workqueue.c:3335 [inline]
->  worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
->  kthread+0x2c1/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
-
-
-
---=20
-paul-moore.com
+Konrad
 
