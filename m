@@ -1,118 +1,182 @@
-Return-Path: <linux-kernel+bounces-122060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A84B88F15F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:53:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FF688F2A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD1AA1F29878
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:53:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7A96B23712
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1779815357C;
-	Wed, 27 Mar 2024 21:53:23 +0000 (UTC)
-Received: from fgw23-7.mail.saunalahti.fi (fgw23-7.mail.saunalahti.fi [62.142.5.84])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B6A153BEE;
+	Wed, 27 Mar 2024 23:09:54 +0000 (UTC)
+Received: from 7.mo581.mail-out.ovh.net (7.mo581.mail-out.ovh.net [46.105.43.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B91C14F9E4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF8B1DA4E
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.43.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711576402; cv=none; b=kvF46SwDAhX8Vtd/9PPd1seV8NJysmefWul+vLvvYXt3q8aJZPcpMhSbmEXfuN7HmKRL0DBUt1uFIQYW/DvCl2nGa2c2SHUfSf9lQxpsPiVtTud3kbk+F3m8qmOu+wmgX9+N0uqEc3t+TvLvhERIr6/GZ5dJCgbnrxJkejWywmQ=
+	t=1711580993; cv=none; b=MXnVTvX/4ahfI2t4UZYLO+YfFuhQ/nSQ3U+Z00LRJ+hIC+nPK6V95BFq2rL+OqMBx9zUPgigpgjTT6Sx3nWG/ONs0ov7AX3Nzwkw7rHspNEM6kTTMx/lLg8FDUoTr4LgY16QjKhaYLkEGxeHBVUoQ+EXAzeFMBWhIMCo2TxxMKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711576402; c=relaxed/simple;
-	bh=2v7wc9fQwYf7d5X1GIFIUQt0lyBTBGde+QP7rENxUrY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OV1E7A/VTcwhLcZJYEqKb9WKibL24QAcLCpUR1yKcsUacxvLGxoxfi4ehnI2OyVV8+FeyTom0eOsq2UNLa0SR/ij9+F7QXfwYEebVTOc55U6uPS8SfNtp+9C452JDzLYfc0cGzT+Pdl4mT7pSZ4uZDVDYmnoujZYhqFDyKRigbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
-	by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-	id 4324b3c1-ec84-11ee-b972-005056bdfda7;
-	Wed, 27 Mar 2024 23:52:10 +0200 (EET)
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Armin Wolf <W_Armin@gmx.de>,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v1 1/1] platform/x86: quickstart: Miscellaneous improvements
-Date: Wed, 27 Mar 2024 23:52:08 +0200
-Message-ID: <20240327215208.649020-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711580993; c=relaxed/simple;
+	bh=QjtZY6rB2FF4gyaL9iXzJNDSNIVD0xKrRIo9oJmORcU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fmF6+4UAhvhMZOBfK7s1yuS3HLH/canLu9g+RlLwXHYzSAiHezr4X9yXdiaKh3j9aVTgIfFP5SiVsKCTwk4CWGqZH5YrEY6QxBU/2Is1tMY1DXow8GNkD9wjni5Dj5+ftE91IAjXVR2ycTSWISzqmQ3NfYCiOc/ou0pnpJuQN34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl; spf=pass smtp.mailfrom=milecki.pl; arc=none smtp.client-ip=46.105.43.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=milecki.pl
+Received: from director1.ghost.mail-out.ovh.net (unknown [10.109.140.166])
+	by mo581.mail-out.ovh.net (Postfix) with ESMTP id 4V4gQc4xTYz1Fv7
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:53:12 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-fsmdr (unknown [10.110.168.247])
+	by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 63E7A1FD49;
+	Wed, 27 Mar 2024 21:53:09 +0000 (UTC)
+Received: from milecki.pl ([37.59.142.95])
+	by ghost-submission-6684bf9d7b-fsmdr with ESMTPSA
+	id WN4WFEWVBGbp2AUAQbJ/Pw
+	(envelope-from <rafal@milecki.pl>); Wed, 27 Mar 2024 21:53:09 +0000
+Authentication-Results:garm.ovh; auth=pass (GARM-95G00185960c84-105b-4035-9ca6-df95b4d75bca,
+                    AD8588E3BB83D84E59DEA8CE8674EAB20989D6B2) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp:31.11.218.106
+Message-ID: <b02dd24b-9e67-4ba7-973e-4c2b180eb56a@milecki.pl>
+Date: Wed, 27 Mar 2024 22:53:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20240322040951.16680-1-ansuelsmth@gmail.com>
+ <44a377b11208ff33045f12f260b667dd@milecki.pl>
+ <66042f0a.050a0220.374bd.5e4a@mx.google.com>
+Content-Language: en-US
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+In-Reply-To: <66042f0a.050a0220.374bd.5e4a@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 10756847710028540729
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedguddvlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepteetfeejjeeghfeikeevleevkeehtdeghffguddthefhgffgveduheetveejueetnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkedupdhmohguvgepshhmthhpohhuth
 
-There is a mix of a few improvements to the driver.
-I have done this instead of review, so it can quickly be
-folded into the original code (partially or fully).
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/platform/x86/quickstart.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/platform/x86/quickstart.c b/drivers/platform/x86/quickstart.c
-index ba3a7a25dda70..f686942662ccc 100644
---- a/drivers/platform/x86/quickstart.c
-+++ b/drivers/platform/x86/quickstart.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * quickstart.c - ACPI Direct App Launch driver
-+ * ACPI Direct App Launch driver
-  *
-  * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>
-  * Copyright (C) 2022 Arvid Norlander <lkml@vorapal.se>
-@@ -10,15 +10,18 @@
-  * <https://archive.org/details/microsoft-acpi-dirapplaunch>
-  */
- 
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--
- #include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/errno.h>
- #include <linux/init.h>
- #include <linux/input.h>
- #include <linux/input/sparse-keymap.h>
--#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeup.h>
-+#include <linux/printk.h>
-+#include <linux/slab.h>
- #include <linux/sysfs.h>
- #include <linux/types.h>
- 
-@@ -165,7 +168,8 @@ static int quickstart_probe(struct platform_device *pdev)
- 	data->dev = &pdev->dev;
- 	dev_set_drvdata(&pdev->dev, data);
- 
--	/* We have to initialize the device wakeup before evaluating GHID because
-+	/*
-+	 * We have to initialize the device wakeup before evaluating GHID because
- 	 * doing so will notify the device if the button was used to wake the machine
- 	 * from S5.
- 	 */
-@@ -202,7 +206,7 @@ static int quickstart_probe(struct platform_device *pdev)
- }
- 
- static const struct acpi_device_id quickstart_device_ids[] = {
--	{ "PNP0C32", 0 },
-+	{ "PNP0C32" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, quickstart_device_ids);
--- 
-2.44.0
+On 27.03.2024 15:36, Christian Marangi wrote:
+> On Wed, Mar 27, 2024 at 03:26:55PM +0100, Rafał Miłecki wrote:
+>> On 2024-03-22 05:09, Christian Marangi wrote:
+>>> MTD OTP logic is very fragile and can be problematic with some specific
+>>> kind of devices.
+>>>
+>>> NVMEM across the years had various iteration on how Cells could be
+>>> declared in DT and MTD OTP probably was left behind and
+>>> add_legacy_fixed_of_cells was enabled without thinking of the
+>>> consequences.
+>>
+>> Er... thank you?
+>>
+> 
+> Probably made some bad assumption and sorry for it!
 
+No problem :)
+
+
+>>> That option enables NVMEM to scan the provided of_node and treat each
+>>> child as a NVMEM Cell, this was to support legacy NVMEM implementation
+>>> and don't cause regression.
+>>>
+>>> This is problematic if we have devices like Nand where the OTP is
+>>> triggered by setting a special mode in the flash. In this context real
+>>> partitions declared in the Nand node are registered as OTP Cells and
+>>> this cause probe fail with -EINVAL error.
+>>>
+>>> This was never notice due to the fact that till now, no Nand supported
+>>> the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
+>>> access for MX30LFxG18AC") this changed and coincidentally this Nand is
+>>> used on an FritzBox 7530 supported on OpenWrt.
+>>
+>> So as you noticed this problem was *exposed* by adding OTP support for
+>> Macronix NAND chips.
+>>
+>>
+>>> Alternative and more robust way to declare OTP Cells are already
+>>> prossible by using the fixed-layout node or by declaring a child node
+>>> with the compatible set to "otp-user" or "otp-factory".
+>>>
+>>> To fix this and limit any regression with other MTD that makes use of
+>>> declaring OTP as direct child of the dev node, disable
+>>> add_legacy_fixed_of_cells if we detect the MTD type is Nand.
+>>>
+>>> With the following logic, the OTP NVMEM entry is correctly created with
+>>> no Cells and the MTD Nand is correctly probed and partitions are
+>>> correctly exposed.
+>>>
+>>> Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old
+>>> syntax fixed OF cells")
+>>
+>> It's not that commit however that introduced the problem. Introducing
+>> "add_legacy_fixed_of_cells" just added a clean way of enabling parsing
+>> of old cells syntax. Even before my commit NVMEM subsystem was looking
+>> for NVMEM cells in NAND devices.
+>>
+>> I booted kernel 6.6 which has commit e87161321a40 ("mtd: rawnand:
+>> macronix: OTP > access for MX30LFxG18AC") but does NOT have commit
+>> 2cc3b37f5b6d ("nvmem: add explicit config option to read old syntax
+>> fixed OF cells").
+>>
+>> Look at this log from Broadcom Northstar (Linux 6.6):
+>> [    0.410107] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xdc
+>> [    0.416531] nand: Macronix MX30LF4G18AC
+>> [    0.420409] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB
+>> size: 64
+>> [    0.428022] iproc_nand 18028000.nand-controller: detected 512MiB total,
+>> 128KiB blocks, 2KiB pages, 16B OOB, 8-bit, BCH-8
+>> [    0.438991] Scanning device for bad blocks
+>> [    0.873598] Bad eraseblock 738 at 0x000005c40000
+>> [    1.030279] random: crng init done
+>> [    1.854895] Bad eraseblock 2414 at 0x000012dc0000
+>> [    2.657354] Bad eraseblock 3783 at 0x00001d8e0000
+>> [    2.662967] Bad eraseblock 3785 at 0x00001d920000
+>> [    2.848418] nvmem user-otp1: nvmem: invalid reg on
+>> /nand-controller@18028000/nand@0
+>> [    2.856126] iproc_nand 18028000.nand-controller: error -EINVAL: Failed to
+>> register OTP NVMEM device
+>>
+>> So to summary it up:
+>> 1. Problem exists since much earlier and wasn't introduced by 2cc3b37f5b6d
+>> 2. Commit 2cc3b37f5b6d just gives you a clean way of solving this issue
+>> 3. Problem was exposed by commit e87161321a40
+>> 4. We miss fix for v6.6 which doesn't have 2cc3b37f5b6d (it hit v6.7)
+>>
+> 
+> So the thing was broken all along? Maybe the regression was introduced
+> when OF support for NVMEM cell was introduced? (and OF scan was enabled
+> by default?)
+
+I went back to the commit 4b361cfa8624 ("mtd: core: add OTP nvmem
+provider support") from 2021 (it went into 5.14). It seems that even
+back then nvmem_register() used to call nvmem_add_cells_from_of(). SO
+maybe this problem is as old as that?
+
+
+> Anyway Sorry for adding the wrong fixes, maybe Miquel can remote the
+> commit from mtd/fixes and fix the problematic fixes tag?
+> 
+>>
+>>> Cc: <stable@vger.kernel.org>
+>>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> 
 
