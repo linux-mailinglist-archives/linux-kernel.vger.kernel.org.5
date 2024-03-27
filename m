@@ -1,93 +1,111 @@
-Return-Path: <linux-kernel+bounces-121567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED2F88E9CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:49:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CEAF88E9D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 16:50:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 738CC1F35B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:49:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0B9297075
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77877131193;
-	Wed, 27 Mar 2024 15:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A46112A160;
+	Wed, 27 Mar 2024 15:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aSYnsKqT"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB8C12DDAF;
-	Wed, 27 Mar 2024 15:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lOcQhYo+"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA97412BF39;
+	Wed, 27 Mar 2024 15:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711554500; cv=none; b=dFji8geqZ7tJLIU0Qnk9TyK/J2/jL9GvFgUJ05NIGbI1ncaYopOy+lo3Lz9cG0Cu/g+4pWDFfPNTs77nescRZlhAf+MksP/VrQGJzDY5J2s+JYwVY+ziS5z0UE+2gWyu02rhpbbgE/8HMmGnwVOIxZy/LQ45znfRwt2pjiI1Qag=
+	t=1711554525; cv=none; b=fkCFNxIpVtclQzxshCtWA+ELnRG5H+fBXduymgT1214eR+JZzdEAzLWn0g3mmzBC+EqTinolHH30yV2WVeUx2/GcnbzuvNYJBoFP81APXR3i8aJPRQmiLqE+gzpxKFjhacRH1ct29Cqq6CQn5H8ni5jPCZrG+1Dhlt/jg5dyer0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711554500; c=relaxed/simple;
-	bh=76OeUfIHMBxJhe8IVfeoWgftOWgpYR+KcvuA/0YJZ20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rqTv7/ooJgxXT5RnFbdb7CARfYFWZdgV8EK0SeVc0jm7bhpYBAE7PfjbZ+/Tj+FmC1IvPSSgIjhd7xkfsgkzamUsl8u0G2ORZvs1lorbP/8XW3Hdb6wwaReK5L9BH9/E9Km6gWZm69MuwxSGpPgTxiqfj5PW7mv6e7e6yxIa2cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aSYnsKqT; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.128.218] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 8344F2098E07;
-	Wed, 27 Mar 2024 08:48:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8344F2098E07
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711554498;
-	bh=y+2+9j6sWbPoLeSeuAktrd2FKSwR04iT4UsblobGcEo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aSYnsKqTNvT3v1QSZJomn1eKSsYHIkcl42F7FToV2X9hSN1YPhzZMnutZN+JOtLZ4
-	 BHI1WG/HkmTgSbC05nsvNYmSzXJ6ozZyJEF84DOzH82F09+B9SzfnFx/lD9z2ZL6pn
-	 cd1rjP0mCGRYzc7ljxNor7ODIW35T/dLnrPOV/uI=
-Message-ID: <b34308af-ebc9-4a0e-a27b-90d6e176c526@linux.microsoft.com>
-Date: Wed, 27 Mar 2024 08:48:17 -0700
+	s=arc-20240116; t=1711554525; c=relaxed/simple;
+	bh=0lBCOiGJZsLp9XozwByMVzqlaygvHpHmzEZ12pQP62I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L6PGR6q6g+lPUrOCc3878PKwBUjKVdLJyNk1kr9R2enL0Hl5K+kuLc8GVDxXWo65M5PjySNu6mI4mMDDN0ru+EjnsRmLFeYJXcsOZLHLfSoBp3F6avuP7YcaI1bIaTUIH9+zC4vC9mBXN7EImwAo/wr5m2+Qq2w6DK+pyR31nzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=lOcQhYo+; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A5D8140E024C;
+	Wed, 27 Mar 2024 15:48:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id oZ9Y01BW6sd6; Wed, 27 Mar 2024 15:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711554517; bh=6lwcTIvU4yG21aAYWM8l61di7mHTUQ1ZGvZOcNTpVH4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lOcQhYo++Zexd75UMv5W0EH8ORASfx7gmXW2opJ2PDN5CRCT4INNB7S7Apie/YyK0
+	 G5M3vqZo/OHLgrftQAEZGDeFlt+kUBKbky6QOkTByMsOO6dZetgYzE7u1aZi5gOlZm
+	 DEN0EC0dqLoQr+sEKtkd3xNP9RgcgH2+15eaDBPmhTT3blMmrtXBCq9jO6+2+Ctkpg
+	 XickEM+0/1bvFc7QySjuiY2FsJAHc0v67lvJGdOXFjfc7Vc3yuyw6fK6v1xOGtTK2C
+	 0K5By5XgaPnAMnnHSG6CPg5sDjvVPatzsoyZpGU2JaqtEgofANCF+C21+v0OCWKJlX
+	 MEOwuBwNQN+DWJ3wrZCiQHNFeWzCkkYPGRHf13oE/as1Pq5T/AOHe2bbbGa1afbV2i
+	 Fyjq6WO0qGDYRDptEdMizcYRdJaulG/gy/OxWpabHvduXi9sfI/RDad9cPyJ9Ltq6v
+	 nYBLT0ooRrl2FOEZcw4+QV9QdUUlwrIxuB/ig1UW0lvrgSlT91pGi1VbrKGHGKshhI
+	 XNtVjMeVKYYrBVdVHHtqh53JFd2975SCeah0JI1q4EJh8xf5bcEycoJLqf+m3T6U/s
+	 lEJCGYb4q1yRuR3HxxdgqX9yLf9AO+3GQMmcy4Ey5rBTtm0ovHCFSZmD6AJ+9LC2Lz
+	 mQb4KPPq7vy2CJRwBskDFuL8=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5E65040E02A5;
+	Wed, 27 Mar 2024 15:48:30 +0000 (UTC)
+Date: Wed, 27 Mar 2024 16:48:28 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com,
+	"anthony s . knowles" <akira.2020@protonmail.com>
+Subject: Re: [PATCH] RAS: Avoid build errors when CONFIG_DEBUG_FS=n
+Message-ID: <20240327154828.GAZgQ_zK1iUbWxuXd0@fat_crate.local>
+References: <20240326203252.2699278-1-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: FAILED: Patch "ACPI: CPPC: Use access_width over bit_width for
- system memory accesses" failed to apply to 5.15-stable tree
-To: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
- jarredwhite@linux.microsoft.com
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240327121738.2833692-1-sashal@kernel.org>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <20240327121738.2833692-1-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240326203252.2699278-1-yazen.ghannam@amd.com>
 
-Hi Sasha,
+On Tue, Mar 26, 2024 at 08:32:52PM +0000, Yazen Ghannam wrote:
+> A new helper was introduced for RAS modules to get be able to get the
+> RAS subsystem debugfs root directory. The helper is defined in debugfs.c
+> which is only built when CONFIG_DEBUG_FS=y.
+> 
+> However, it's possible that the modules would include debugfs support
+> for optional functionality. One current example is the fmpm module. In
+> this case, a build error will occur when CONFIG_RAS_FMPM is selected and
+> CONFIG_DEBUG_FS=n.
+> 
+> Add an inline helper function stub for the CONFIG_DEBUG_FS=n case.
+> 
+> Fixes: 9d2b6fa09d15 ("RAS: Export helper to get ras_debugfs_dir")
+> Reported-by: anthony s. knowles <akira.2020@protonmail.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218640
+> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> Tested-by: anthony s. knowles <akira.2020@protonmail.com>
+> Link: https://lore.kernel.org/r/20240325183755.776-1-bp@alien8.de
+> ---
+>  drivers/ras/debugfs.h | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-On 3/27/2024 5:17 AM, Sasha Levin wrote:
-> The patch below does not apply to the 5.15-stable tree.
-> If someone wants it applied there, or to any other stable or longterm
-> tree, then please email the backport, including the original git commit
-> id to <stable@vger.kernel.org>.
-> 
-> Thanks,
-> Sasha
-> 
-> ------------------ original commit in Linus's tree ------------------
-> 
->>From 2f4a4d63a193be6fd530d180bb13c3592052904c Mon Sep 17 00:00:00 2001
-> From: Jarred White <jarredwhite@linux.microsoft.com>
-> Date: Fri, 1 Mar 2024 11:25:59 -0800
-> Subject: [PATCH] ACPI: CPPC: Use access_width over bit_width for system memory
->  accesses
-> 
-> To align with ACPI 6.3+, since bit_width can be any 8-bit value, it
-> cannot be depended on to be always on a clean 8b boundary. This was
-> uncovered on the Cobalt 100 platform.
-> 
+Applied, thanks.
 
-Please see the backport for this patch I sent earlier: https://lore.kernel.org/stable/6df99ad6-0402-4dcf-9a1c-7259436768dd@linux.microsoft.com/T/#u
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Easwar
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
