@@ -1,217 +1,210 @@
-Return-Path: <linux-kernel+bounces-120681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D9E88DB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:42:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6495A88DB66
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27745B21BAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:42:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16F3129AA1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A35C4F1E4;
-	Wed, 27 Mar 2024 10:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC155024E;
+	Wed, 27 Mar 2024 10:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="F6lHahGZ";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="JVoM/TlF"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M3kT1zfz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9CB4EB4C;
-	Wed, 27 Mar 2024 10:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711536139; cv=fail; b=gG9OhsmnjEJI3larPqsmtUa+MtemZvZJz7gLSDbEvfJBgeVKhHlNccmUJOoaDJQcaLLLyJmJ2HE0AVFitMMSAO4fvYycZdWqiUr9Ye0CgCOlto3nztX/rTtYsxHF7h6hx2WqJ14K7BHSkD1+/y8MZ7g8sPSeN8V1aeU4unxa4Uc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711536139; c=relaxed/simple;
-	bh=NqD9tPnGHCQozT0zJNwH19f2izHKcjuhvFGfMqEoX/U=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=OFeoX9IlYhq5ryB4XoWoD0tFSEWgY4LmTUgAL7eP4glm6wLVyihJxYCfz6ALsJQCFveY1M0vEfSxVMU4NX9Ezm2pw0ru3aBoA8G5g34rj7SJSkOOu31J6E52wlECeD2GJ9UzQXy49P4MCay3UbZ6FiEWcGdtDQ+7/PcXyOd3JoI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=F6lHahGZ; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=JVoM/TlF; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42R872nk009119;
-	Wed, 27 Mar 2024 10:42:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=RIkUEzpJk0x+kxfBkl9MkloBvsGiYjCraQQF55Qc8qM=;
- b=F6lHahGZCIBEVXsI44rh7Ef4ivmm6XaM5awdQ7F2L94AIJqWMuzscOPsuuzMVKNmAACo
- Yu1k6wYCfuCHT3UUwvCymmQYJwWBCrxnOncI/FFcW01f6qmQMXFE/p68JzoDcEz+dNv5
- f+ZOKZHWmH3Eg7rdk41kWLCCb3j1G24A7BtFJhtBBbmMdNwaJkP48Pv1lWCBQjqcEYZf
- H31dTIudL/0YtRbJ01c6D01GfchU3fiWrp9gnA1ZAznKfF+dA/mTDIZmD0l0M6lYIjet
- D4rXlz6jMGE5xSC1ejlcCC88/Z/EDBQwJDt3Lcwpv4kOnhEZg+vyIQwx18yziHNBCg9e cQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x4cxy0ghj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Mar 2024 10:42:02 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42RAQBEG019101;
-	Wed, 27 Mar 2024 10:42:01 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3x1nhekktg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Mar 2024 10:42:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZlkoGsTiKRTieDS9w48qjoxEZtHDIb48IZ3O8U9yxDcmbjpiYN+cbrFmuH6qPNDR2iIfgpJbbSlGErtcfz61b2nUmLpODkmpc7a4G06Ja33o9R8uMqw+v3PdrHOVuVsvZcLTMntDyoVoRi/pemCwH3wGnyoUfcuvQrwyEvgkN9PIw7038jtT2mND9sHuZIqJexmYGCAbxAtHBXWCEjlSZCBuxdfRbSH4C71o1qOaPJnpmdVskXd6RhoIg1dZs1WbBNkT8aGPDFZMAhv9kmCTO71doN4pCSQUhE2H9xkgqC1AcCY/ORaDOLq2UmmqBricygCkbOOsbOaU2yISmTw42A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RIkUEzpJk0x+kxfBkl9MkloBvsGiYjCraQQF55Qc8qM=;
- b=Qm/x3y9WC21POm1WsOr0TfOFlNtyrLfpiaj58LMkhc9zCq+CVyJUvd+GpJD1vBym7piSCY0VxzNByBSmScZtIA1HMLQgz8Wj2PHBb8b/QLaqtasPIFdr+VJQYGKEyHmc4vBW71JWcqakZ9ESn9VHGXaqIhAQ5fZSg9j25EiJEdJ2k3P1atOu4JjI3/aOPo8PlWVEjzTqky/PV7H+t3lChXCD1EolBuTAGX6MPEuiqP3n1WJlBJJUmo6/guctPcMQfk8dkJRjZxNtnSb7Ct9OxBK1gGrxl6ESVVJe7+SrQNub8R4OaTJOi7n7e44Vup+2jC0gZvCQyytvmoolN17KiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RIkUEzpJk0x+kxfBkl9MkloBvsGiYjCraQQF55Qc8qM=;
- b=JVoM/TlFs12fSXGPkw1m7T9rCtF097x0i8DmfKuVvHL72KU/IfQjO4YgDSR1cxSIVBFXC7ZCXqTO1zfL7jFpgb+1OMQshFA3LJdF60aJyRX12oe7GDrJW/Ahx1ynpfjiDGmdBBf9sqoC2sC7Pgo+1lV/bsOrAWsnLDXuQKYNmvo=
-Received: from PH0PR10MB5893.namprd10.prod.outlook.com (2603:10b6:510:149::11)
- by DS7PR10MB5022.namprd10.prod.outlook.com (2603:10b6:5:3a3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Wed, 27 Mar
- 2024 10:41:59 +0000
-Received: from PH0PR10MB5893.namprd10.prod.outlook.com
- ([fe80::b037:6181:76f0:9a72]) by PH0PR10MB5893.namprd10.prod.outlook.com
- ([fe80::b037:6181:76f0:9a72%7]) with mapi id 15.20.7409.028; Wed, 27 Mar 2024
- 10:41:59 +0000
-Message-ID: <f8e03425-98cf-4076-8959-d85eda846bab@oracle.com>
-Date: Wed, 27 Mar 2024 10:41:52 +0000
-Subject: Re: [BUG] seltests/iommu: runaway ./iommufd consuming 99% CPU after a
- failed assert()
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>, iommu@lists.linux.dev,
-        Kevin Tian <kevin.tian@intel.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0d5c3b29-fc5b-41d9-9556-5ce94262dac8@alu.unizg.hr>
- <20240319135852.GA393211@nvidia.com>
- <a692d5d7-11d5-4c1b-9abc-208d2194ccde@alu.unizg.hr>
- <cdc9c46b-1bad-41cd-8f98-38cc2171186a@oracle.com>
- <20240325135207.GC6245@nvidia.com>
-Content-Language: en-US
-From: Joao Martins <joao.m.martins@oracle.com>
-In-Reply-To: <20240325135207.GC6245@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PAZP264CA0071.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:1fd::6) To PH0PR10MB5893.namprd10.prod.outlook.com
- (2603:10b6:510:149::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F5247F54
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711536200; cv=none; b=SEhoIPFLBLWkii4gNybzwLqUOX5zz9yDexMg2q/MBd9knBgOn5RB98g2iWlyWw7DvNRIqvwVJRHowf6c7nXeMJbNUAB2QTH47pnrp5fJeregWRJadz2U08YijU5fJSBPPa7rTkieMsFZxGUy08kVT/Awq1tuhMk3rmpqDpylrRM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711536200; c=relaxed/simple;
+	bh=7MAZ1oJYx2he2O/U2IQ1vXCKiFiHly3gLB+lXSIflb0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ThXmDdj4OJnVMqzN6vNClfBpXiIWXdWqvDY+/WxeawFfGY7XRD6/2vaWn/l1aaFn8E2+gH8vKn9fvjM7RFOrP4XxPgxTzc2vacxcH3a9csOfzkspjIXT3NoUfkcH7MVq1s0FD+XdjpxjKogCsfqqFuMTARIzth2jfgZW08531Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M3kT1zfz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711536198;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dFsd9d7Gos7i1/b5V+OTo42Y7I+kMeOk7bouc9bj640=;
+	b=M3kT1zfzI3MT8mJgGzfjGGOdiLPq7bUKdZQ8Eu0+MB7/7/iIfKi1S4Jl26/D9FUTNukKe7
+	BUp0za1sXNAK9sh/X8ifzr7I8+BrkiiGO3Cxxsr2nQDH1TdbCMB5f5WmpOr826zDoZHYDb
+	zDk1Sgo2+babLPLxzs4bOeyTbbfipmg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-287-pKho5eaNPHiIDmxDcS1w2g-1; Wed, 27 Mar 2024 06:43:15 -0400
+X-MC-Unique: pKho5eaNPHiIDmxDcS1w2g-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a4751d193caso171152666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:43:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711536194; x=1712140994;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dFsd9d7Gos7i1/b5V+OTo42Y7I+kMeOk7bouc9bj640=;
+        b=FGN/4norh4zblHJa4it1BqiapvLj2AhDaLvqkYtRXvfslHSGl3//ckxl/GgeiYw4Tu
+         v80fFz0tiXAAcYfJEKA95MWpKmRxcb7JAPplt6+TXjX3Pk8hPLpoxrgbIyVp2jSlptWu
+         HaeMLmCVlmFfbbpaQVM73WFIjwhEYldmtX4DdfyPUOuwg5Dw81WncT1JTftFQLbBt3U7
+         f34FBDBxgFvNIPbZg2jDfyuJ87pQWR/DH3UkyyreMZIqJ0nwX9JX5UYUiCJ7S5Dw8WHp
+         SixtoVlekYq6b2sJ/ppj4ZZG19Lyw89Hy8Bh3P9hGvZ0RUc9pEK/ghec4IZfQp2c8FjK
+         2pDg==
+X-Forwarded-Encrypted: i=1; AJvYcCW7zkWlal0uueLXklfIURYmcRPfSJYra+PFTFN5tw611qOahuBTNFbFROkbkfrvFqnkoeyXiaqno+H8SI6gQEJAXZ/x7Yv24ddsWcMy
+X-Gm-Message-State: AOJu0Ywhbjtqt3yju6BaLABrKsmTsFYIlgr53wfhMPMpfw4TZdzXBzmu
+	DgHGvxTfSS7Hb2YvTIHdY5hnx2jMsO7AbN0AAHoskphTYWDaJNkG2GziXA1Crw/qk/DdpTStWpl
+	u1n7LAbYDhcjb1jIHsoKZtBVmS35hVD22lbEJowMb8dg6rGdkJzu77/YfLkJBlQ==
+X-Received: by 2002:a17:906:b310:b0:a4d:ff60:23e with SMTP id n16-20020a170906b31000b00a4dff60023emr1355419ejz.11.1711536194208;
+        Wed, 27 Mar 2024 03:43:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF/F3TWm576rM7znpuR1Ur2IS4OPqOiCggxfDxScn/bJpxRgIpLeOjAepMa+WykCQOkbHV5jA==
+X-Received: by 2002:a17:906:b310:b0:a4d:ff60:23e with SMTP id n16-20020a170906b31000b00a4dff60023emr1355408ejz.11.1711536193870;
+        Wed, 27 Mar 2024 03:43:13 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id u17-20020a17090663d100b00a468bcde79bsm5311110ejk.109.2024.03.27.03.43.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 03:43:13 -0700 (PDT)
+Message-ID: <9e035ae4-cb07-4f84-8336-1a0050855bea@redhat.com>
+Date: Wed, 27 Mar 2024 11:43:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5893:EE_|DS7PR10MB5022:EE_
-X-MS-Office365-Filtering-Correlation-Id: a69a29fd-5ec5-49ab-88ae-08dc4e4a87f9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	HJrBv4J4948DmESDzWI9soLxiEfNYmI03hQ7dtkRbFxgMbg7+5KXab0Q/YI0S/zcXpIWAsZsW/oM9QwSpeiFnxMjlPqyY0naFODOwDv48kbfJAZv5FIEtBSeukiz4MR4hDfXy+Nfx2y8gAMK16V+apR7bQ5qGQ6SJuYoAdvQwak05F+Aikr4FVcryHHtQb2jDz3s/mVIcy0X12/Rt6HqLI0XfPeeOlzwCNtknA/Gw1KiY2Pe36cT2fM+zdlyTnCiY0H7rru0W+f9zhkcGygYN1n3UC73UpD+LlnQJMeO0VRWdHfcx+AQCbk8LvxhnJVsF5GWYSD8x2Qb/NrDlf8GUE4Bq6e19G73IHYW57Qo2f/3n4uNkl1bXUEg3X00fTXrl3UL+IiRVhqMSu/paKR8/WwSEzOTmuDkyX9axa5HjVIqjL5YYqCN74ePlG9s1Lm1XpdcqFV++CbyX+Ff1GNArRRzt6fQvNeL9uHd1XT9BDJONDNO7UAzPebNi2k+vw88j5mbFgXsgbTSuHhayUGht5OPM4U+dCbSDjzsHebw8KBngZ08Lrf6mEqFv62sHXmEG5My/1TbWt5C1+G2WcnzK3cHUqK2DzzfzNKIxm3/Y/MOyXk3SVKlUhm/pe40LAahyGh9EPj0U0l4KhS5Zh//AuY9CjC7DCEpjtZctVrRIHY=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5893.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?U1ZkNjdaZmlkOG1kQVRKWnJYdTZJZ3l4SzZVZjNHSGlDbEtDd1M0VENHc3Y1?=
- =?utf-8?B?d0RNZmNOeFdrOFZYZ25XLy9RdkpIenZvUXFPRUpJd3RuV09LcG5aeTJmZWRR?=
- =?utf-8?B?OHFHRitJRzdLZGRxZlFBRlNISDE4RVFnWit0YWtxb2N4Z2F2NG5jZ2tVMmt6?=
- =?utf-8?B?aVN0SlQyQjVKWWY2dnJTWWo5RkFac0dFZTVva0p5T3owUXJLVjIyRE85cmNP?=
- =?utf-8?B?MFBGdTA3ZThXVGN3dm81eGgvL25SWDE4ZzhGK0g4MDRseGhPQkRKdXluVXNk?=
- =?utf-8?B?ZTNrOWVzWTFuNmhEK2FFRzlSaTRpMzR1a05CZjduSWxob3BPQVB5dHFSQ3hH?=
- =?utf-8?B?ZVJMVnBhQWswOE8yQ0M4SUdLVWplWUlrK2JvR05XYXJyMmhsRDVlaytmYW1L?=
- =?utf-8?B?NlluNlJzT3U3M0xOR2p3OC9GT3ptZTdrWEQraUxRMnUwcC9YYlNFYzh6Y2x0?=
- =?utf-8?B?K2xGbFAwVmJlL2drODUwNGJQRDZndXR1MmprUC83U2lIMjlpYmRndDJwS1Va?=
- =?utf-8?B?b28wV1JkZmZoV3lYbWNUWTBLeDJGWWRzQ0o3VGg1NWNGMTZsYUVKZ2xBemhC?=
- =?utf-8?B?WHcwTklwQ2M2K3cvNTMrN0hPYllwMzEyQ1dweTB1c0dRVGdnNGNDbVNxcGxR?=
- =?utf-8?B?N29WOHdUT1YrUms0RnJkQXlNem5CTmkzVVgzNXh4bDVQaDQvUUtjY3U2bGg0?=
- =?utf-8?B?d1lEakkzSzNoZkFjSkc2U1VNTXdXMVBEWTJ6bFZaTDNscFd5UGczN05lOUND?=
- =?utf-8?B?VjQ3K251ckhKclJoK0hOUFdOYkxnZXJTS24wdkN6NmVHeXo4WEhVcUhaNEVG?=
- =?utf-8?B?WEkwMkwzTk5qRjJudXlBdXl4MksxVWtLNWJnUW1ZSkNVb0hKVUtrakV1TFdU?=
- =?utf-8?B?alRucVgvQW56VlhCQW1kblRPQWF3ZUx3VDFCSFlQbFFDeHI3c3dod2Nza0ZQ?=
- =?utf-8?B?ekZTVFRmY3RsVnliR2syNVArM1hGWjdUUzY4UTVlSlZzU2s2ckdvOFZ6T1d2?=
- =?utf-8?B?T1krUlB4NmJqdUdXQ08vN1lIMlZFb24rWW0xV1ZBTTFUS0Zia2JPaG5UVkFi?=
- =?utf-8?B?c01DMFlUa3hJajB3KzFiT2NGOXBYOFIzNy9XQVh3ZVp3c2N3bnQ4MGU5bVEy?=
- =?utf-8?B?a0hTNmc3L243elFtNjd0cTNaaEQ1VUNJM3I3TkVkaUR2endTSjFYa3pUK2N4?=
- =?utf-8?B?ZEk0WmVoYisrc2VHeFd4VFhHdVdOaXFISjZoU0d3L25DcllPYlJBdzlKZ2p0?=
- =?utf-8?B?N2FZbGNqM3pOM3FWc3JTazV5VWp5d0F4SGo2ak9ieWFLUTYzbzZaMVNZa0wz?=
- =?utf-8?B?bEJuRjNQQm92b3ljb2w2cWxhVlFKdnJkd0h0RjBWeEpWWXZPRUl1NU0weE1t?=
- =?utf-8?B?UlZHbThUVEhZRFJNYVpEV1hoNTZlZFRRSFFRU3RYd29wczBvbnhTVWlhbjZW?=
- =?utf-8?B?WGt0NnFvYnlSV2pjdFcreXhjbGJvbGtLNnBQcXFoWkJGckcxMmJuUVp0WW9K?=
- =?utf-8?B?YjdaME1sT3lzU1NQdzlYMnl2N2VkVGxiNVhSZ1NlRHpGSWlOSzQ3QUtyMmhX?=
- =?utf-8?B?dm9XNG9HSktFS0lBeVdiR1VGUDZnVnVlSm5SR09GeUQvSzF0MGZ1aFhmRkg5?=
- =?utf-8?B?ZjViS2k2VHZNWlFzR1FURGtRdlk1QkxURTY0R2N1cXQ4YTNaakFmQ0ZKMjNp?=
- =?utf-8?B?OHJENnRBTGVPNWhDUUhxZ2lFbFp2bE1iWGt6SjRLN280RUpnc1dkUEpZZFFl?=
- =?utf-8?B?cTZkTk5TZE1HNnYwQ1VPdVZJUjFxRkdqN3FOdWsrQmJVMDlqTXNrMWpUS1d5?=
- =?utf-8?B?NXErZ3NHZ0Y1aVFFS0E4djZjRFNQNUZCSUJnVUhaVEN4dHJWSGN5czc3eGJT?=
- =?utf-8?B?ZDlES3JGbElmQnM5eWJjZFRncGIzYXMzaW82bldIaUIxVU1lckc5cjNvckps?=
- =?utf-8?B?WGxPNFpLdmpyQ2RudGVJRUhSSTYxK1FSMnJPUzY1OHRQamNzQmtSandiQmZR?=
- =?utf-8?B?emVyQ0U4NTFMZVB1dVFXVjNaRzBJTnd0M1hwVGZrQnZ6NmxWdnhobUEwRmFD?=
- =?utf-8?B?dHRvQk51cmNGN3BpaUJST2lrbW5HVDFCNmNLdFJ4TGh5ZHhXVTRpVGhLMHFN?=
- =?utf-8?B?aU8zaXhyeVJPSmVFQUJ2V1dvdVB5VzZjVndLSTYvZmlDRGVJNkJiQUtRbXhx?=
- =?utf-8?B?TUE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	0i7B+BuwcdlIrKKymbN7UC0pIjH2VcZIukINYhrA2UqA31SeoZvI/tbkdCOPiqolQKIA2czL2MCeCfk0vGicmyNfQkoE2KjAAXu+UQ+XdsQLCBzU23WHciNHQmSeb8auFwbNRk16lPs10GVYho0C/kFzYu6EAk07BFP/G+TKsc+tXNc4M6HvOvtobr+GnqSW+69azmER4xZLvAGy20SslvXeT0/2zNfrgX6LWjKyD67wi0DU6wQzpJtgdMwAo83gS7a1/Z++iKtCYdulADPtZbflYv6Drkd3hqzXsJfo7tA5AewN07b1mq4pLo3ZB5Pek58rmgzhoe/Qwy6e0cZ9mDYCmn82FPJz8BuWq0xJRwbjj8TWPiHC5fMo1SSDo+25SzD0XQyG0ELJZNMuy3v3bT9GRp5bXS6qR37OaZno9K4ISi4uKY58J3vI/d8au5VgANScMWSLONffjVvYOQ1nvQD7yBfjUtN061/cFeDHazegwLissO58KNCRSuzKJIpk729tSbHMUsP4RzlM7fIoIt6skHCAg+EUkuRLWJs3mYmZ//G6HKW+MCIe8p9uzRGouRiqUGFve5RsLwXCcUGz94HKTRzdFhnolip5hvbplNw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a69a29fd-5ec5-49ab-88ae-08dc4e4a87f9
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5893.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 10:41:59.8164
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QzWTfiWVJssEo9b4pfuN0l/Z5rF+IuuzU5DMVxYi0mONHcKaLXE8tDJINypwASe9UfYs5L2i1m91t7sQiydfr65mKE6Q1CCXiyesOfYwQPU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5022
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_07,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=958 bulkscore=0
- adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403270072
-X-Proofpoint-ORIG-GUID: dTh7GlRS3DGOt-bxsTnzB4fSlBFzb2pq
-X-Proofpoint-GUID: dTh7GlRS3DGOt-bxsTnzB4fSlBFzb2pq
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] power: supply: core: fix charge_behaviour
+ formatting
+Content-Language: en-US, nl
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ Sebastian Reichel <sre@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20240303-power_supply-charge_behaviour_prop-v2-0-8ebb0a7c2409@weissschuh.net>
+ <20240303-power_supply-charge_behaviour_prop-v2-3-8ebb0a7c2409@weissschuh.net>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240303-power_supply-charge_behaviour_prop-v2-3-8ebb0a7c2409@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 25/03/2024 13:52, Jason Gunthorpe wrote:
-> On Mon, Mar 25, 2024 at 12:17:28PM +0000, Joao Martins wrote:
->>> However, I am not smart enough to figure out why ...
->>>
->>> Apparently, from the source, mmap() fails to allocate pages on the desired address:
->>>
->>>   1746         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
->>>   1747         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ |
->>> PROT_WRITE,
->>>   1748                    mmap_flags, -1, 0);
->>> → 1749         assert(vrc == self->buffer);
->>>   1750
->>>
->>> But I am not that deep into the source to figure our what was intended and what
->>> went
->>> wrong :-/
->>
->> I can SKIP() the test rather assert() in here if it helps. Though there are
->> other tests that fail if no hugetlb pages are reserved.
->>
->> But I am not sure if this is problem here as the initial bug email had an
->> enterily different set of failures? Maybe all you need is an assert() and it
->> gets into this state?
+Hi Thomas,
+
+On 3/3/24 4:31 PM, Thomas Weißschuh wrote:
+> This property is documented to have a special format which exposes all
+> available behaviours and the currently active one at the same time.
+> For this special format some helpers are provided.
 > 
-> I feel like there is something wrong with the kselftest framework,
-> there should be some way to fail the setup/teardown operations without
-> triggering an infinite loop :(
+> However the default property logic in power_supply_sysfs.c is not using
+> the helper and the default logic only prints the currently active
+> behaviour.
+> 
+> Adjust power_supply_sysfs.c to follow the documented format.
+> 
+> There are currently two in-tree drivers exposing charge behaviours:
+> thinkpad_acpi and mm8013.
+> thinkpad_acpi is not affected by the change, as it directly uses the
+> helpers and does not use the power_supply_sysfs.c logic.
+> 
+> As mm8013 does not set implement desc->charge_behaviours.
+> the new logic will preserve the simple output format in this case.
 
-I am now wondering if the problem is the fact that we have an assert() in the
-middle of FIXTURE_{TEST,SETUP} whereby we should be having ASSERT_TRUE() (or any
-other kselftest macro that). The expect/assert macros from kselftest() don't do
-asserts and it looks like we are failing mid tests in the assert().
+Since patch 1/3 now drops the charge behaviours from mm8013 I believe
+these 2 paragraphs should be replaced with:
 
-Maybe it is OK for setup_sizes(), but maybe not OK for the rest (i.e. during the
-actual setup / tests). I can throw a patch there to see if this helps Mirsad.
+"""
+thinkpad_acpi. is the only in-tree drivers currently exposing charge
+behaviours. thinkpad_acpi is not affected by the change, as it directly
+uses the helpers and does not use the power_supply_sysfs.c logic.
+"""
+
+> Fixes: 1b0b6cc8030d ("power: supply: add charge_behaviour attributes")
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+>  drivers/power/supply/power_supply_sysfs.c | 20 ++++++++++++++++++++
+>  include/linux/power_supply.h              |  1 +
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
+> index 10fec411794b..a20aa0156b0a 100644
+> --- a/drivers/power/supply/power_supply_sysfs.c
+> +++ b/drivers/power/supply/power_supply_sysfs.c
+> @@ -271,6 +271,23 @@ static ssize_t power_supply_show_usb_type(struct device *dev,
+>  	return count;
+>  }
+>  
+> +static ssize_t power_supply_show_charge_behaviour(struct device *dev,
+> +						  struct power_supply *psy,
+> +						  union power_supply_propval *value,
+> +						  char *buf)
+> +{
+> +	int ret;
+> +
+> +	ret = power_supply_get_property(psy,
+> +					POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR,
+> +					value);
+> +	if (ret < 0)
+> +		return ret;
+
+power_supply_show_property() has already called power_supply_get_property()
+before calling this, so this call can be dropped. At which point
+power_supply_show_charge_behaviour() becomes just a wrapper around
+power_supply_charge_behaviour_show() and thus can be dropped itself.
+
+And then ... (continued below).
+
+> +
+> +	return power_supply_charge_behaviour_show(dev, psy->desc->charge_behaviours,
+> +						  value->intval, buf);
+> +}
+> +
+>  static ssize_t power_supply_show_property(struct device *dev,
+>  					  struct device_attribute *attr,
+>  					  char *buf) {
+> @@ -303,6 +320,9 @@ static ssize_t power_supply_show_property(struct device *dev,
+>  		ret = power_supply_show_usb_type(dev, psy->desc,
+>  						&value, buf);
+>  		break;
+> +	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR:
+> +		ret = power_supply_show_charge_behaviour(dev, psy, &value, buf);
+
+replace this line with:
+
+		ret = power_supply_charge_behaviour_show(dev, psy->desc->charge_behaviours,
+							 value.intval, buf);
+
+Making this patch a nice simple patch :)
+
+Regards,
+
+Hans
+
+
+
+
+> +		break;
+>  	case POWER_SUPPLY_PROP_MODEL_NAME ... POWER_SUPPLY_PROP_SERIAL_NUMBER:
+>  		ret = sysfs_emit(buf, "%s\n", value.strval);
+>  		break;
+> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+> index c0992a77feea..a50ee69503bf 100644
+> --- a/include/linux/power_supply.h
+> +++ b/include/linux/power_supply.h
+> @@ -242,6 +242,7 @@ struct power_supply_config {
+>  struct power_supply_desc {
+>  	const char *name;
+>  	enum power_supply_type type;
+> +	u8 charge_behaviours;
+>  	const enum power_supply_usb_type *usb_types;
+>  	size_t num_usb_types;
+>  	const enum power_supply_property *properties;
+> 
 
 
