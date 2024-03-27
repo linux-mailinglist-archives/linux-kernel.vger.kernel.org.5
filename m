@@ -1,291 +1,331 @@
-Return-Path: <linux-kernel+bounces-121698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4AC088ECA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:28:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A545288EC9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97232B236D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:28:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5511F33780
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD48814D704;
-	Wed, 27 Mar 2024 17:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C0514D6EF;
+	Wed, 27 Mar 2024 17:27:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="Ztkricb4"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aTBl3vHx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E6BF4E2;
-	Wed, 27 Mar 2024 17:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711560480; cv=fail; b=bvVCxL4twD7mO5zkk+euysvRmRQV9VNhQI7LsCyhplk8XXTOrwT1Yt9767be78g8KXZPYZnk6ndgiTktxNbJPzCX5wz8BarpXLbJwSbxXzxwtF/2ZilIwcP0N9vVCSI6Kn9Kwav5MlVBUIxBjVg8217NxNwoGu4gTcfR4i9oAcg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711560480; c=relaxed/simple;
-	bh=6+6x+HKT+owSnqmkNoOtElCcVIQqNYvalo2eiQlplog=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UZBR07A/Y7h0j9OVQ8K0TQbUxrVfYod7heeZa8PIIgZEwzVdJ2pFCSIlwI/2RThoLp+82aPWAfS7AMrIl2S6ZNq8H7/dprxHsXY/DRZ+0bDhTGsvOA5ChIx4LvC5M9mtOoJ0nGao8yio4mmhrvDKq51z4veB4WxyWNhmqKvWgLI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=Ztkricb4; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RALgAr002468;
-	Wed, 27 Mar 2024 10:27:44 -0700
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x4hmp9v80-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 10:27:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bMSGsyJt8yI8f18ZlCWotZzzcLfcxZMvisTPChjG30zC5x5TcZ+oFo6DeRkvEN5S+85p4iORYpniB3EqlMNKiCZxDZt55MC1BVzS0F47wAOqI49xGCiIFP/FRVMxovw5T0dK8d7qmMlPH4Bnr/mhM9pbs+We2Lla73X+itUfCzudj4xsrMoUpxq1k0h8/Hf9KrYRStTPiG5qoLlKtDBWLiMbTdDwtsOhKPAMG40Q9+4AY1GbZGE/490OjQB8CqrQkx2t4is+qpTG7jPFg/Bg7hNE0cpIi0t7zhFRR7P/2bwMpKXLArnW/PE+sLel4sQPUQFX7NMJuHOSPkkYpynuRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pW0RW5iO2UyYJ6B4rJAgFKPTWFoiS9673Y0ovxBjbx8=;
- b=cbh15CDWj8bGoH/0ysqLPb3k+jTWeVGwKLE+ANKXLMaNFD0WPULWJjTft33OvkH2GMIgErKt5wXmpUl/r/uf+Gbiz3Z1tuAgXxsr8wYwcl9FTnocBvL7pmfRKlEEMX0u0H0tSU75l1deqXEmnkFXKFn3h1PTFSEQ/jrsvkcCpGJ8s0+sYC35JmBDhcHlqjeOFWtrS3S1TTzvlEqvJAMjP3BmIrguVmlbexapaz+rjVLaBRGddgSb2YHhkwaVObsD3mXW1dcJa7ANi74v0s0UV0Qx9q2oY5XdSWDPDYfUBKUxPSneszcXIs7PaEeGz96gKjJgP3mjkN3t6Nq4X2UjUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pW0RW5iO2UyYJ6B4rJAgFKPTWFoiS9673Y0ovxBjbx8=;
- b=Ztkricb4aerxZa+EVavtCA5x3yswSEdgaRVGZlEa5j98vgYuPjX/54ZVvql8UMfUzvKsPSENOiQh5R7HIckIJX9dYpPqodEzc+EXrcuAkPVETSkqrcK2soZJMkWWSmGp8bz9Ou5n/QDxSrtmjmMJK60XFSXv0Se27Xt2edDRXcQ=
-Received: from BN9PR18MB4251.namprd18.prod.outlook.com (2603:10b6:408:11c::10)
- by LV8PR18MB5855.namprd18.prod.outlook.com (2603:10b6:408:223::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
- 2024 17:27:41 +0000
-Received: from BN9PR18MB4251.namprd18.prod.outlook.com
- ([fe80::7471:7657:9316:1494]) by BN9PR18MB4251.namprd18.prod.outlook.com
- ([fe80::7471:7657:9316:1494%7]) with mapi id 15.20.7409.031; Wed, 27 Mar 2024
- 17:27:41 +0000
-From: Elad Nachman <enachman@marvell.com>
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Taras Chornyi <taras.chornyi@plvision.eu>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-        "przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
-        "dkirjanov@suse.de" <dkirjanov@suse.de>,
-        "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
- twice
-Thread-Topic: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
- twice
-Thread-Index: 
- AQHaeurjPmANQMrOHkqJdwxY/uh+37FBVLMAgAEesYCAACDkgIAD853QgACBRQCABNdBkA==
-Date: Wed, 27 Mar 2024 17:27:41 +0000
-Message-ID: 
- <BN9PR18MB4251B1533E14523AEADBA22FDB342@BN9PR18MB4251.namprd18.prod.outlook.com>
-References: <20240320172008.2989693-1-enachman@marvell.com>
- <4104387a-d7b5-4029-b822-060ef478c6e3@lunn.ch>
- <BN9PR18MB42517F8E84C8C18078E45C37DB322@BN9PR18MB4251.namprd18.prod.outlook.com>
- <89a01616-57c2-4338-b469-695bdc731dee@lunn.ch>
- <BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
- <6dae31dc-8c4f-4b8d-80e4-120619119326@lunn.ch>
-In-Reply-To: <6dae31dc-8c4f-4b8d-80e4-120619119326@lunn.ch>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR18MB4251:EE_|LV8PR18MB5855:EE_
-x-ms-office365-filtering-correlation-id: d9ef1118-f7f7-4e7d-d231-08dc4e8334e4
-x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- 0+VgTA6HTr8JI4SqdoC1Xldqoso4ItdkVL8AUV4N31kdkQaT1fFVpo1aQ8aauj0VmNqCMGDV358MDqWhoIuOOR3x/rMTRMAMOkRcXptJtSmI0Wje5OVzfQLWGIH8IwbagSsTULRpAuDGk4EH/3X3KE431n1Lxgo+Q0hc+IKfq8D39iruWW1vAZPyM9gHUU0bX4LU/TOHqMlDXAPthCXhD3+KKbqC10185ku77NRuHEIAL/BkrtvHJyIGe39HVMI1PrR5+ACxXs/quTz3mpM8sLZnORtx8IxVItuhCFhUtc5SqrkL+cPO/vaE8WqlPUZBig6I+V76TGOj+4lStRRf52bqFsQKTUlclPTHCWaYFfkI/k6obdQtLcyI6Rzb3QrWc95PNYlucikTq8axMda8hvY2Kn/nXIOX+a/R/K2c7yI2gqSrAIccbrqHUIbUEV0eYIcbCC7Hin/L8GmkUKZPBCysd5XFtTPnocd0vKR7kEzVa5pULIFOSu/tYrUAaMxs5aM794Ch4qZwoulOynCNRGsCSrMSqdp5FfjsPEP8V7gJ00qpSYliZNmwFj63pP2/aqgeUTM5OM07rUfLySFdhtXlEE2xjYvI7pa50+nCDvQd1urEqGID8MK6uDJLUTShZ86yd8iYHO4dHNI3/gZJ9kdmJAHSrznTLXVszmdU8qA=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR18MB4251.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?iso-8859-1?Q?WqZMR/EGSQAGVGQiEq5CK+owlfJpS53FzQ3k+7osQC4r4myaRJ9PNthzIQ?=
- =?iso-8859-1?Q?I+A44+K1BM1otABHHKv9s95+e2HSFQT5TPfo8DxWgzH87R2l3mF57tF1VF?=
- =?iso-8859-1?Q?XBk2NAM8jCI6fM6XSTse3Izg2nQhJXv91jRsz0NcfPME+o1+tS1oDPNOp4?=
- =?iso-8859-1?Q?ECyeHbinOT1PQHxWbx1r08PmV02nFYUcueDVlljB+coTIgNONUajp7Nkr1?=
- =?iso-8859-1?Q?JxnvCIoeMRkNY0FEOPxqAWBn3t/WJ28dqLt12BRKy1EYognE6oMwRgJwvt?=
- =?iso-8859-1?Q?hOF7UBNJviYNEU5/rJ0kZElXn5K+XYj/M9Stie0oo4AN7ZDXBspacnGqi+?=
- =?iso-8859-1?Q?SCrOwPTzHgH7JQhvG11heXSHj/vcAQlNJorF+w3OJg6UP9llFNwuLwxy5Z?=
- =?iso-8859-1?Q?wFhOkczCEzEWbsqBDhTCEwq8edCLdavepIksD8ZvwZZYuCVZJJjCc/1tiy?=
- =?iso-8859-1?Q?Yt9cbx5UZzVnkMCfThbsViUzdalccMhzgbT+b5fX0AJPAC4PC4/n46eKKV?=
- =?iso-8859-1?Q?yWXTInSfzroHfLew6WnSV8x6PuskYzmVxhob+tQxlaA3ABMwH0pDCmJtCM?=
- =?iso-8859-1?Q?eP3Zn/6bQ944KGENGi5RQg5PyKgPJ7UfMolHlwsNaeyEPsc5uImrCAMEKN?=
- =?iso-8859-1?Q?tg5R+9dtJXqsj4jPSscIrntGbDMAjZXHcz06f9EOj4kIZgmxo05UPaYZ5h?=
- =?iso-8859-1?Q?eY8LgL4obDy7swcD2v9h58NGmAMunLN8K0gBQzvCjA1r2M9ihB0TUiJDYm?=
- =?iso-8859-1?Q?ZcYTswdqqi9716JjzJnxEKWng5a5jQdhWdsQzIwkyAZOMQuWS+Mf35ouq+?=
- =?iso-8859-1?Q?MsdAL7IS95StPko+hjPc/WfKvvDtEZWS5qjj+vsuDCNaav4OvQ7/vBHAEj?=
- =?iso-8859-1?Q?9D8lG08jIfU4L+Anu7UCB1Icnffy1j55laNfwXAtR6Tod7LYH98UAZtrRU?=
- =?iso-8859-1?Q?B4wN/7//bAGd9Vidu4+4t3gAu2RX99nVwKzeFHaeY5EbS2dE2eG1Vf27ff?=
- =?iso-8859-1?Q?JqovnEnR7w5hK/OAi4hhHfCwY4BGPivmUa6kt9mShu+eO1Hn+vOefRnpyJ?=
- =?iso-8859-1?Q?tP+vfZnnPGHTXxr9D++Y037XLNEeYwXxF2+6Ma7J/hUfeaQMPHInOCDmEp?=
- =?iso-8859-1?Q?MfKA6zzoNOfOJIG7mrbkH2VF21fDb2HPVUt2Q4AOammXbj5/0Gz/455FfM?=
- =?iso-8859-1?Q?TrYaopZ/cWUHLKY+7UkR7MYNwW1Wj0OMQHzzKaOngfUuNKthZBUqjVCkHs?=
- =?iso-8859-1?Q?msD2sbJs0dkbj9cv7g6Heb+KeS/rZq8g1tpiToNltBEASA7l0wH8hYb/lB?=
- =?iso-8859-1?Q?p8z1Vol/DcNWSsVFfluy8WXDQyvmp8nyqp/ejmvFyvdpHY/9b37hdhDWVs?=
- =?iso-8859-1?Q?LMwlR/97HlJCjnQgMIzhvbchJscAKAae+H2M1TbLKOVjZHnK9jerAZ+RD9?=
- =?iso-8859-1?Q?V/GZ0rY7kOFvJ+ygJXLn5v56orwpm4bgF8I76rOq8Ota2Pqp2VriCH0/yO?=
- =?iso-8859-1?Q?owF+nIUPq2W6Tm70mvg67ADZh3kjaqE/ek0tJh7uBdPEhB/H+J5znhLwHL?=
- =?iso-8859-1?Q?qwKw9AfSdKuOgIf2Ek2XkfiomWgGMIkjS5D4NOPa3OTMXj8i4g7af6qgyt?=
- =?iso-8859-1?Q?nzWxyyDyupsZYZHghY/kSMrV5BX/ASU9ib?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7197E12FB3E;
+	Wed, 27 Mar 2024 17:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711560466; cv=none; b=b4AvYmV5NUcvsylrZSosdbtxol+ku+VAeQVsgsnjaupt7SL8ZSCBb1W08aGWnvycLEyGG/emnqV90PDVv34R0GaQ2Zijegn3yRzeDXz08byObPlPdODDW4AmSxzXT/lYWrn1ayAZSpH8o100DwLaUn6Q7RnBINr8RugPhElp2JI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711560466; c=relaxed/simple;
+	bh=xq4tevDffl124Rs0SAZHCv/vVKGMDoRQlDy6HZvW3zk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RVBAQquHCYnVtn0iBjUvkwAVEsDWsGhfzH88wIVjnZgAajlQ+NbW/7hSqbGPncIiGky9JJ/jUdmHnPeYq8Qq5oJvCEdU0jCT+FaE4grG4H9HYcuW7uKW0w3xQdgXITjZ9GqdT/lF0i656MSTH3g5CrgUdPjaPvkOhE2YfqODGIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aTBl3vHx; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711560465; x=1743096465;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xq4tevDffl124Rs0SAZHCv/vVKGMDoRQlDy6HZvW3zk=;
+  b=aTBl3vHxEhYtt+5IgZ8tQDyZq4SZlFZqlphwAYmHjfl2PVWN1fbkIlD0
+   HFYH07iJiKqn9nvp6W7Hb5vKQXBs+UYuBwEqfOA4PkAv1PJK5NLQsOrvN
+   LCgLN5VolMSzjbnXEJGrT3XWsvm7hBVxdTfi+J1KImNq6YkNGUARLCCu/
+   555kn/Sy3IxnA6sePIjxeokbNeBy7ihVo7n5mpG/M4aP0HOZfUBotZH54
+   Al7Xv0HhLiXLHhdtRBxGIrISoWjeLNb8WEq1K1Z1BiiR+6SuvE3H3OSAC
+   RUC2VSeKxHf2XGjK3fJEwEPgN9/Mv1j5BT2IDp6iTa630/2DYlWSFRusq
+   A==;
+X-CSE-ConnectionGUID: wpXd1wosRnG4cypRbuUULw==
+X-CSE-MsgGUID: S+Tg85n7SqiNIfhGmfJIDg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="9640692"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="9640692"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:27:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="16287061"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.56.222]) ([10.212.56.222])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:27:43 -0700
+Message-ID: <dde02c34-fcf3-4adc-8920-7fd7fe202d54@intel.com>
+Date: Wed, 27 Mar 2024 10:27:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR18MB4251.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9ef1118-f7f7-4e7d-d231-08dc4e8334e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Mar 2024 17:27:41.4290
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5y1vIH08GKNEx2mQUHUbymchkGS4B+uIGg5e9qXSrnzdIc2YPEyJZMGpdxkAx1nivCHRcd3UG9cFd+2QeVkW4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR18MB5855
-X-Proofpoint-ORIG-GUID: MX057xmhy6dEYHOlHIXAtskouQcmLRKL
-X-Proofpoint-GUID: MX057xmhy6dEYHOlHIXAtskouQcmLRKL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_14,2024-03-27_01,2023-05-22_02
-
-Hi Andrew,
-
-We have made internal technical review of the issues you have raised (retur=
-n version API, try to get version API before starting to initialize and loa=
-d the firmware, clear configuration API) versus the delay saved (almost 30 =
-seconds minus several seconds to perform and complete the API calls) - arou=
-nd 20 seconds or so.
-
-Existing customers we have talked to seem to be able to cope with the exist=
-ing delay.
-
-Unfortunately, the amount of coding and testing involved with saving these =
-20 seconds or so is beyond our available development manpower at this speci=
-fic point in time.
-
-Unfortunately, we will have to defer making the development you have reques=
-ted to a later period in time.
-
-Elad.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/26] cxl/region: Add Dynamic Capacity CXL region support
+Content-Language: en-US
+To: ira.weiny@intel.com, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-9-b7b00d623625@intel.com>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-9-b7b00d623625@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-> -----Original Message-----
-> From: Andrew Lunn <andrew@lunn.ch>
-> Sent: Sunday, March 24, 2024 5:25 PM
-> To: Elad Nachman <enachman@marvell.com>
-> Cc: Taras Chornyi <taras.chornyi@plvision.eu>; davem@davemloft.net;
-> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
-> kory.maincent@bootlin.com; thomas.petazzoni@bootlin.com;
-> miquel.raynal@bootlin.com; przemyslaw.kitszel@intel.com;
-> dkirjanov@suse.de; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to pr=
-obe
-> twice
->=20
-> > > > Originally, the pain point for Kory was the rmmod + insmod
-> > > > re-probing failure, Which is only fixed by the first two commits,
-> > > > so I see little point in submitting 3-5 alone, Without fixing Kory'=
-s
-> problem.
-> > >
-> > > I thought Kory's problem was actually EPROBE_DEFER? The resources
-> > > needed for the PoE are not available, so probing the switch needs to
-> > > happen again later, when PoE can get the resources it needs.
-> >
-> > No, the PoE is the general high level application where he noted the
-> problem.
-> > There is no PoE code nor special PoE resources in the Prestera driver.
->=20
-> So here is K=F6ry email:
->=20
-> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
-> 3A__lore.kernel.org_netdev_20240208101005.29e8c7f3-40kmaincent-2DXPS-
-> 2D13-2D7390_T_-
-> 23mb898bb2a4bf07776d79f1a19b6a8420716ecb4a3&d=3DDwIDAw&c=3DnKjWec2
-> b6R0mOyPaz7xtfQ&r=3DeTeNTLEK5-
-> TxXczjOcKPhANIFtlB9pP4lq9qhdlFrwQ&m=3DSD1MhKC11sFmp4Q8l76N_DgGdac
-> 4aMCTdPsa7Pofb73HEqAGtJ-1p0-
-> etIyyldC7&s=3DVWat9LPub52H3nUez4itmkpuMipnYD3Ngn-paFC9wd4&e=3D
->=20
-> I don't see why the prestera needs to be involved in PoE itself. It is ju=
-st a MAC.
-> PoE happens much lower down in the network stack. Same as Prestera uses
-> phylink, it does not need to know about the PHYs or the SFP modules, phyl=
-ink
-> manages them, not prestera.
->=20
-> > The problem was caused because the module exit was lacking the so
-> > called "switch HW reset" API call which would cause the firmware to
-> > exit to the firmware loader on the firmware CPU, and move to the state
-> > in the state machine when it can receive new firmware from the host
-> > CPU (running the Prestera switchDev driver).
-> >
-> > >
-> > > But if that is going to take 30 seconds, i'm not sure we can call
-> > > EPROBE_DEFER solved.
-> > >
-> > > The later patches are pretty simple, don't need discussion, so could
-> > > be merged. However, i think we need to explore different possible
-> > > solutions for firmware {re}loading.
-> > >
-> > > > The problem is not with the hardware, but with the existing
-> > > > firmware code on the Firmware cpu, most probably secure-boot
-> > > > protected, which lacks the ABIs to report to The kernel what is
-> > > > loaded, what version, what
-> > > state, etc.
-> > >
-> > > Can you at least tell if it is running firmware?
-> >
-> > There is no existing API/ABI for that.
->=20
-> Do you at least have the ability to determine if an API call exists or no=
-t? It
-> sounds like your firmware needs extending to support returning the versio=
-n.
-> If the API is missing, you know it is 4.1 or older. If it does exist, it =
-will return
-> 4.2 or higher.
->=20
-> > > Can you explain the boot in a bit more detail. Are you saying it
-> > > could be running an old firmware when the driver first loads? So you
-> > > need to hit it with
-> >
-> > Exactly.
-> >
-> > > a reset in order to load the firmware for /lib/firmware, which might
-> > > be newer than what it is already running?
-> >
-> > Right. And there is also the configuration. There is no telling what
-> > kind of Configuration the existing firmware is running. Just using the
-> > existing firmware Will lead to the situation where Linux kernel side
-> > will report certain configuration (via ip link / ip addr / tc , etc.) b=
-ut the
-> firmware configuration is completely different.
->=20
-> Well, during probe and -EPRODE_DEFER, linux has no configuration, since t=
-he
-> driver failed to probe. However, for a rmmod/modprobe, the firmware could
-> have stale configuration. However pretty much every device i've come acro=
-ss
-> has the concept of a software reset which clears out the configuration. S=
-eems
-> to be something else your firmware is missing.
->=20
-> 	Andrew
+
+On 3/24/24 4:18 PM, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> CXL devices optionally support dynamic capacity.  CXL Regions must be
+> configured correctly to access this capacity.  Similar to ram and pmem
+> partitions, DC Regions, as they are called in CXL 3.1, represent
+> different partitions of the DPA space.
+> 
+> Introduce the concept of a sparse DAX region.  Add the create_dc_region
+> sysfs entry to create sparse DC DAX regions.  Special case DC capable
+> regions to create a 0 sized seed DAX device to maintain backwards
+> compatibility with older software which needs a default DAX device to
+> hold the region reference.
+> 
+> Flag sparse DAX regions to indicate 0 capacity available until such time
+> as DC capacity is added.
+> 
+> Interleaving is deferred in this series.  Add an early check.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v1:
+> [djiang: mark sysfs entries to be in 6.10 kernel including date]
+> [djbw: change dax region typing to be 'sparse' rather than 'dynamic']
+> [iweiny: rebase changes to master instead of type2 patches]
+> ---
+>  Documentation/ABI/testing/sysfs-bus-cxl | 22 +++++++++++-----------
+>  drivers/cxl/core/core.h                 |  1 +
+>  drivers/cxl/core/port.c                 |  1 +
+>  drivers/cxl/core/region.c               | 33 +++++++++++++++++++++++++++++++++
+>  drivers/dax/bus.c                       |  8 ++++++++
+>  drivers/dax/bus.h                       |  1 +
+>  drivers/dax/cxl.c                       | 15 +++++++++++++--
+>  7 files changed, 68 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> index 8a4f572c8498..f0cf52fff9fa 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> @@ -411,20 +411,20 @@ Description:
+>  		interleave_granularity).
+>  
+>  
+> -What:		/sys/bus/cxl/devices/decoderX.Y/create_{pmem,ram}_region
+> -Date:		May, 2022, January, 2023
+> -KernelVersion:	v6.0 (pmem), v6.3 (ram)
+> +What:		/sys/bus/cxl/devices/decoderX.Y/create_{pmem,ram,dc}_region
+> +Date:		May, 2022, January, 2023, June 2024
+> +KernelVersion:	v6.0 (pmem), v6.3 (ram), v6.10 (dc)
+>  Contact:	linux-cxl@vger.kernel.org
+>  Description:
+>  		(RW) Write a string in the form 'regionZ' to start the process
+> -		of defining a new persistent, or volatile memory region
+> -		(interleave-set) within the decode range bounded by root decoder
+> -		'decoderX.Y'. The value written must match the current value
+> -		returned from reading this attribute. An atomic compare exchange
+> -		operation is done on write to assign the requested id to a
+> -		region and allocate the region-id for the next creation attempt.
+> -		EBUSY is returned if the region name written does not match the
+> -		current cached value.
+> +		of defining a new persistent, volatile, or Dynamic Capacity
+> +		(DC) memory region (interleave-set) within the decode range
+> +		bounded by root decoder 'decoderX.Y'. The value written must
+> +		match the current value returned from reading this attribute.
+> +		An atomic compare exchange operation is done on write to assign
+> +		the requested id to a region and allocate the region-id for the
+> +		next creation attempt.  EBUSY is returned if the region name
+
+-EBUSY?
+
+> +		written does not match the current cached value.
+>  
+>  
+>  What:		/sys/bus/cxl/devices/decoderX.Y/delete_region
+> diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
+> index 3b64fb1b9ed0..91abeffbe985 100644
+> --- a/drivers/cxl/core/core.h
+> +++ b/drivers/cxl/core/core.h
+> @@ -13,6 +13,7 @@ extern struct attribute_group cxl_base_attribute_group;
+>  #ifdef CONFIG_CXL_REGION
+>  extern struct device_attribute dev_attr_create_pmem_region;
+>  extern struct device_attribute dev_attr_create_ram_region;
+> +extern struct device_attribute dev_attr_create_dc_region;
+>  extern struct device_attribute dev_attr_delete_region;
+>  extern struct device_attribute dev_attr_region;
+>  extern const struct device_type cxl_pmem_region_type;
+> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> index 036b61cb3007..661177b575f7 100644
+> --- a/drivers/cxl/core/port.c
+> +++ b/drivers/cxl/core/port.c
+> @@ -335,6 +335,7 @@ static struct attribute *cxl_decoder_root_attrs[] = {
+>  	&dev_attr_qos_class.attr,
+>  	SET_CXL_REGION_ATTR(create_pmem_region)
+>  	SET_CXL_REGION_ATTR(create_ram_region)
+> +	SET_CXL_REGION_ATTR(create_dc_region)
+>  	SET_CXL_REGION_ATTR(delete_region)
+>  	NULL,
+>  };
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index ec3b8c6948e9..0d7b09a49dcf 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -2205,6 +2205,7 @@ static struct cxl_region *devm_cxl_add_region(struct cxl_root_decoder *cxlrd,
+>  	switch (mode) {
+>  	case CXL_REGION_RAM:
+>  	case CXL_REGION_PMEM:
+> +	case CXL_REGION_DC:
+>  		break;
+>  	default:
+>  		dev_err(&cxlrd->cxlsd.cxld.dev, "unsupported mode %s\n",
+> @@ -2314,6 +2315,32 @@ static ssize_t create_ram_region_store(struct device *dev,
+>  }
+>  DEVICE_ATTR_RW(create_ram_region);
+>  
+> +static ssize_t create_dc_region_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
+> +{
+> +	return __create_region_show(to_cxl_root_decoder(dev), buf);
+> +}
+> +
+> +static ssize_t create_dc_region_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf, size_t len)
+> +{
+> +	struct cxl_root_decoder *cxlrd = to_cxl_root_decoder(dev);
+> +	struct cxl_region *cxlr;
+> +	int rc, id;
+> +
+> +	rc = sscanf(buf, "region%d\n", &id);
+> +	if (rc != 1)
+> +		return -EINVAL;
+> +
+> +	cxlr = __create_region(cxlrd, CXL_REGION_DC, id);
+> +	if (IS_ERR(cxlr))
+> +		return PTR_ERR(cxlr);
+> +
+> +	return len;
+> +}
+> +DEVICE_ATTR_RW(create_dc_region);
+> +
+>  static ssize_t region_show(struct device *dev, struct device_attribute *attr,
+>  			   char *buf)
+>  {
+> @@ -2759,6 +2786,11 @@ static int devm_cxl_add_dax_region(struct cxl_region *cxlr)
+>  	struct device *dev;
+>  	int rc;
+>  
+> +	if (cxlr->mode == CXL_REGION_DC && cxlr->params.interleave_ways != 1) {
+> +		dev_err(&cxlr->dev, "Interleaving DC not supported\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	cxlr_dax = cxl_dax_region_alloc(cxlr);
+>  	if (IS_ERR(cxlr_dax))
+>  		return PTR_ERR(cxlr_dax);
+> @@ -3040,6 +3072,7 @@ static int cxl_region_probe(struct device *dev)
+>  	case CXL_REGION_PMEM:
+>  		return devm_cxl_add_pmem_region(cxlr);
+>  	case CXL_REGION_RAM:
+> +	case CXL_REGION_DC:
+>  		/*
+>  		 * The region can not be manged by CXL if any portion of
+>  		 * it is already online as 'System RAM'
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index cb148f74ceda..903566aff5eb 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -181,6 +181,11 @@ static bool is_static(struct dax_region *dax_region)
+>  	return (dax_region->res.flags & IORESOURCE_DAX_STATIC) != 0;
+>  }
+>  
+> +static bool is_sparse(struct dax_region *dax_region)
+> +{
+> +	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
+> +}
+> +
+>  bool static_dev_dax(struct dev_dax *dev_dax)
+>  {
+>  	return is_static(dev_dax->region);
+> @@ -304,6 +309,9 @@ static unsigned long long dax_region_avail_size(struct dax_region *dax_region)
+>  
+>  	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
+>  
+> +	if (is_sparse(dax_region))
+> +		return 0;
+> +
+>  	for_each_dax_region_resource(dax_region, res)
+>  		size -= resource_size(res);
+>  	return size;
+> diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+> index cbbf64443098..783bfeef42cc 100644
+> --- a/drivers/dax/bus.h
+> +++ b/drivers/dax/bus.h
+> @@ -13,6 +13,7 @@ struct dax_region;
+>  /* dax bus specific ioresource flags */
+>  #define IORESOURCE_DAX_STATIC BIT(0)
+>  #define IORESOURCE_DAX_KMEM BIT(1)
+> +#define IORESOURCE_DAX_SPARSE_CAP BIT(2)
+>  
+>  struct dax_region *alloc_dax_region(struct device *parent, int region_id,
+>  		struct range *range, int target_node, unsigned int align,
+> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
+> index c696837ab23c..415d03fbf9b6 100644
+> --- a/drivers/dax/cxl.c
+> +++ b/drivers/dax/cxl.c
+> @@ -13,19 +13,30 @@ static int cxl_dax_region_probe(struct device *dev)
+>  	struct cxl_region *cxlr = cxlr_dax->cxlr;
+>  	struct dax_region *dax_region;
+>  	struct dev_dax_data data;
+> +	resource_size_t dev_size;
+> +	unsigned long flags;
+>  
+>  	if (nid == NUMA_NO_NODE)
+>  		nid = memory_add_physaddr_to_nid(cxlr_dax->hpa_range.start);
+>  
+> +	flags = IORESOURCE_DAX_KMEM;
+> +	if (cxlr->mode == CXL_REGION_DC)
+> +		flags |= IORESOURCE_DAX_SPARSE_CAP;
+> +
+>  	dax_region = alloc_dax_region(dev, cxlr->id, &cxlr_dax->hpa_range, nid,
+> -				      PMD_SIZE, IORESOURCE_DAX_KMEM);
+> +				      PMD_SIZE, flags);
+>  	if (!dax_region)
+>  		return -ENOMEM;
+>  
+> +	dev_size = range_len(&cxlr_dax->hpa_range);
+> +	/* Add empty seed dax device */
+> +	if (cxlr->mode == CXL_REGION_DC)
+> +		dev_size = 0;
+
+Nit. Just do if/else so dev_size isn't set twice if mode is DC.
+
+> +
+>  	data = (struct dev_dax_data) {
+>  		.dax_region = dax_region,
+>  		.id = -1,
+> -		.size = range_len(&cxlr_dax->hpa_range),
+> +		.size = dev_size,
+>  		.memmap_on_memory = true,
+>  	};
+>  
+> 
 
