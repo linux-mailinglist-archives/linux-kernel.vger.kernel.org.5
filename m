@@ -1,106 +1,100 @@
-Return-Path: <linux-kernel+bounces-121765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 816A988ED59
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:58:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 675F788ED54
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36EB31F29D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:58:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98AD21C2B726
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9B514D6FE;
-	Wed, 27 Mar 2024 17:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VQAUYVkk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A262152E16;
+	Wed, 27 Mar 2024 17:50:08 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAFB14EC52
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4BE14F130;
+	Wed, 27 Mar 2024 17:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561902; cv=none; b=H0FX4Xhkxnz5tgG/6yfiwAWLFUb7mSVcDdVBGtko4Fs94Vv5Q9u41BkI3nXO75RtFJAjdIrfIS94YifAkkzwz/ngiO8nDF536jT0GVBsiZ5cxoLx4rwt0LtPFuJDWyNMRmtkerqShbfp7k3b/qx6MmT3gKXl25cXb+rP/m9QAzY=
+	t=1711561808; cv=none; b=f1IbshHSA5SwxZXBtHoud6MGZiuOvhDMjN/Z4OtpweydUmO2r+3bsBIsM4FRqjTbn2tY12tDRZl+QkIhJ+KZ0rnZ10lG95arDH+OyrOcMRdg/PYLzBo10HlWWtQoGkuiMeLyN8/ZzGRgUcjwRjwIWB00+9in9JukNJVBTChtLZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561902; c=relaxed/simple;
-	bh=Ifq8bc4sS7mIA42uoZVgKLdhrUE9yKJJvvvC0SusJHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HqiKFiFO+m4yWhbpM3BJyBSVL8iLmsswBDZwbeth2xGEjonAofoiHmL8F2kGxSV7tM5Sp43gI5V9Q0tJT4gT/5a/eNBZ0FFAyQxPFxmuP/C9As6VxpfcmEpjxy2QX1GzpsWFPvGKj1ySu+aX9eMpHEwNBXKxBv3QivYLnMNovmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VQAUYVkk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18642C433C7;
-	Wed, 27 Mar 2024 17:51:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711561901;
-	bh=Ifq8bc4sS7mIA42uoZVgKLdhrUE9yKJJvvvC0SusJHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VQAUYVkkowBA1kzf4iR4zJrIX2VW9K2SbPhSgbsK8NrT/Psjovj0G5NHt+4sLWpH+
-	 GXzVSBzGod2oR3ziGZbYGRbZDiTZzf+/QDTTA/LUp8zP+gfXvI33VvXUVcMLmjE/fm
-	 h0s8pdNHa6MVg3DoQanRAKnrJMrUkJ4q0/feZF6I=
-Date: Wed, 27 Mar 2024 18:51:38 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Chris Leech <cleech@redhat.com>, Nilesh Javali <njavali@marvell.com>,
-	Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Char/Misc driver changes for 6.9-rc1
-Message-ID: <2024032709-grunt-eskimo-55a2@gregkh>
-References: <Zfwv2y7P7BneKqMZ@kroah.com>
- <CAHk-=wjHZBziH+5tXcTJ1aGZN2tC5S5gKhkNjhiaFFO93vNqcA@mail.gmail.com>
+	s=arc-20240116; t=1711561808; c=relaxed/simple;
+	bh=L60+hwzuhgsT0n2An7LhZzoaJZ7ijJhdidT19m3OCZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dXqnEvDwgO+UjzEykDVJC+KkEZyydumK1XFgaQyiYIh4Aks7BSOtpBQLfdMEaJn85qQvquDsd19gbU57C87pUaE+VWm0ITQFHJ9k7xlR58MudGr6NPcUy+xeM++SGF5bVBUetA/akyC157usLut/wHK01U8rWHpKn9r9e/gmGXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86402C433C7;
+	Wed, 27 Mar 2024 17:50:06 +0000 (UTC)
+Date: Wed, 27 Mar 2024 13:52:46 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
+ <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel
+ Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH v4] rcu-tasks: Fix show_rcu_tasks_trace_gp_kthread
+ buffer overflow
+Message-ID: <20240327135246.54cdb58e@gandalf.local.home>
+In-Reply-To: <20240327174747.612002-1-kiryushin@ancud.ru>
+References: <20240327125132.600d62a3@gandalf.local.home>
+	<20240327174747.612002-1-kiryushin@ancud.ru>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjHZBziH+5tXcTJ1aGZN2tC5S5gKhkNjhiaFFO93vNqcA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 09:56:43AM -0700, Linus Torvalds wrote:
-> On Thu, 21 Mar 2024 at 06:02, Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > Char/Misc and other driver subsystem updates for 6.9-rc1
-> [...]
-> > Chris Leech (4):
-> >       uio: introduce UIO_MEM_DMA_COHERENT type
-> >       cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
-> >       uio_pruss: UIO_MEM_DMA_COHERENT conversion
-> >       uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
-> 
-> So this was all broken, and doesn't even build on 32-bit architectures
-> with 64-bit physical addresses as reported by at least Guenter.
-> Notably that includes i386 allmodconfig.
-> 
-> I fixed up the build, but I did it the mindless way. I noted in the
-> commit message that I think the correct fix is likely to make
-> 'uio_mem.mem' be a union of 'physaddr_t' and 'void *' and just always
-> use the right member. UIO_MEM_LOGICAL and UIO_MEM_VIRTUAL should
-> probably use the pointer thing too.
-> 
-> I also *suspect* that using 'physaddr_t' is in itself pointless,
-> because I *think* the physical addresses are always page-aligned
-> anyway, and it would be better if the uio_mem thing just contained the
-> pfn instead. Which could just be 'unsigned long pfn'.
-> 
-> So there are proper cleanups that could be done in that area.
-> 
-> That's not what I did, though. I just fixed up the bad casts.
-> 
-> There may be other fixes pending out there, but I didn't want to delay
-> the 32-bit build fixes any more.
-> 
-> It turns out that the cnic,bnx2,bnx2x conversion avoided the problems,
-> almost by accident. That driver had used UIO_MEM_LOGICAL before and
-> had existing casts. That doesn't make it good, but at least it made it
-> not fail to build.
-> 
-> See commit 498e47cd1d1f ("Fix build errors due to new
-> UIO_MEM_DMA_COHERENT mess")
+On Wed, 27 Mar 2024 20:47:47 +0300
+Nikita Kiryushin <kiryushin@ancud.ru> wrote:
 
-Ick, ok, those casts work :)
+> There is a possibility of buffer overflow in
+> show_rcu_tasks_trace_gp_kthread() if counters, passed
+> to sprintf() are huge. Counter numbers, needed for this
+> are unrealistically high, but buffer overflow is still
+> possible.
+> 
+> Use snprintf() with buffer size instead of sprintf().
+> 
 
-I was waiting to hear back from Chris before applying the patches from
-Guenter, but yours work for me for now, thanks!
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-greg k-h
+-- Steve
+
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> ---
+> v4: Change ARRAY_SIZE to sizeof() as more idiomatic
+> as Steven Rostedt <rostedt@goodmis.org> suggested
+> v3: Fixed commit message
+> v2: Use snprintf() as
+> Steven Rostedt <rostedt@goodmis.org> suggested.
+>  kernel/rcu/tasks.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 147b5945d67a..2a453de9f3d9 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -1994,7 +1994,7 @@ void show_rcu_tasks_trace_gp_kthread(void)
+>  {
+>  	char buf[64];
+>  
+> -	sprintf(buf, "N%lu h:%lu/%lu/%lu",
+> +	snprintf(buf, sizeof(buf), "N%lu h:%lu/%lu/%lu",
+>  		data_race(n_trc_holdouts),
+>  		data_race(n_heavy_reader_ofl_updates),
+>  		data_race(n_heavy_reader_updates),
+
 
