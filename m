@@ -1,84 +1,149 @@
-Return-Path: <linux-kernel+bounces-120160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B28D88D37D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:47:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70EED88D381
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:48:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3296D2A837F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:47:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67F49B235EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5815A1B7E9;
-	Wed, 27 Mar 2024 00:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAACA18E11;
+	Wed, 27 Mar 2024 00:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UezsQDLg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nBrVbisA"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BB0F4FB;
-	Wed, 27 Mar 2024 00:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25934125C1;
+	Wed, 27 Mar 2024 00:48:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711500436; cv=none; b=KZrMYUuRTTOGVHvltL6k9USnDR2VF6bsvtlddvVpTOwuZa3qzVwgG07wV/s+U8QDgqrC8Ms/ZkmBEuO1sotpYmRu7aLa/qLY0m9jcwikM+INqT33eL2gziymfy4J6xp/A5RRzE9dFOpUbXZ30uM76hrQ8MZgf8gFXE+OI5URSyU=
+	t=1711500496; cv=none; b=qSxwO2Ta4podXKgrMZqoXxv1y+mO7cC2yFIDj6zXmre8JCDDJryxsU2CqMJi9Y880GfK2cc6xhP9Lm6ljbYUFzJh1m8VTwTgEAm1IlQLVz5rkLVsdl3cllV1faL7Mat6hHRg4AV0Nd2MpnrzugR52XTVDdMPtzZaXv5O1jzMOxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711500436; c=relaxed/simple;
-	bh=2q5crH4HwBtEVMAdw9c1ugeNy2Oyqk30hp+EirVO3q0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hkWMNTzbZfTgA/IEK/JK4+B3v+mSz4F4UIfx8jWMKdsdXRYM468WolThpJmZcjldQiYiJ6V404RZu7IVIxEvecn6uZ5hlm61RPXIxMnleGnLxuMfGp/TnnNoplqsZH1bymKTDlsOWOugTIC/5Ldq1Xneczg6q9NQGyW050/URjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UezsQDLg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7EB0C433C7;
-	Wed, 27 Mar 2024 00:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711500435;
-	bh=2q5crH4HwBtEVMAdw9c1ugeNy2Oyqk30hp+EirVO3q0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UezsQDLgF9nL66A4jsvBTDD2EOr0eqDdVGhmNGprFvTwmA1eJHgPOWS9WJ7ECimcd
-	 RDE0aan9K8Zg8d9M25lbWh96ZCpZ7y0mP+R19goxTSdH2JUd8JcPPdRW83X8rI6QM8
-	 MJUThd//pIxYMao207aSg2QzHNfqWYJLPbB+dCwBN2EVPijRRPNUhHocfcqdZVwTSk
-	 P3meIA4B8q4n+12qJIk0cKVZsdNFWx3sQ+EkouWPRC+ZdDc/jHiwushF/bhTIdgyqo
-	 iwYU8SW6CRg3wKHM6DqpqtfSkZUOfF7qjVM0qmdXWxlmO2PGuFkWXuQEEE+muZ3xGT
-	 sSHlZk7LNCyaw==
-Date: Tue, 26 Mar 2024 17:47:13 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>, Dmitry Torokhov
- <dmitry.torokhov@gmail.com>, Claudiu Manoil <claudiu.manoil@nxp.com>,
- Vladimir Oltean <vladimir.oltean@nxp.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Ariel Elior
- <aelior@marvell.com>, Manish Chopra <manishc@marvell.com>, Hans de Goede
- <hdegoede@redhat.com>, Ilpo =?UTF-8?B?SsOkcnZpbmVu?=
- <ilpo.jarvinen@linux.intel.com>, Maximilian Luz <luzmaximilian@gmail.com>,
- Hannes Reinecke <hare@kernel.org>, "Martin K. Petersen"
- <martin.petersen@oracle.com>, Helge Deller <deller@gmx.de>, Masahiro Yamada
- <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
- Schier <nicolas@fjasle.eu>, Johannes Berg <johannes@sipsolutions.net>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Nick
- Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kbuild@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org
-Subject: Re: [PATCH 0/9] enabled -Wformat-truncation for clang
-Message-ID: <20240326174713.49f3a9ce@kernel.org>
-In-Reply-To: <20240326223825.4084412-1-arnd@kernel.org>
-References: <20240326223825.4084412-1-arnd@kernel.org>
+	s=arc-20240116; t=1711500496; c=relaxed/simple;
+	bh=vRIhKjtK5KUqqD/xM6V+L7t8LjfRUzw5/jZWpRZcMiY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RT7dF8fYBupQlclYAVdb4moRmUpo+rBDDFTIyGWENhE6YfvOdfBTD0VID/r+x7kwlSv/JtjDNrc5Kw8BnRf1IdrD3hEffxwo7NId7vFTU3KIiMoMDMrGw2zVC8IoocXmLESZpTDUuO/kAPAdvyTF41c3et3DJMtMcFluTf6ZVrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nBrVbisA; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711500494; x=1743036494;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vRIhKjtK5KUqqD/xM6V+L7t8LjfRUzw5/jZWpRZcMiY=;
+  b=nBrVbisArdnhCcw6TuZaONQZsKS+yosp/G7/zS1ERb+ic7V3X7hbDe5n
+   GTV3cKoUzf/wQ+sj6crYUHoZ6aujKp1PqF3nnmiINO0tL/04Z+oVAuLp2
+   uFLZS+UrePkK9SifHUyU/VMqgOc4pN2i1v9W3NuZ8ViPVH2TfMI+4BSEJ
+   +JYyh7mNWLLM1nIPs5JLtwX16mWAGZgE/UGQmmhfG0qrDD0zpX82TX83Z
+   rVogNkttWdngXpwYnl2kSQwup6+I0czAb8AlukgmR+rJQIf5PhcGkdHD0
+   uHdjZ4kSiJ60igmmDVQowLGDMNb6VCtJkOvHn30UbwIdkidH0fBBLixDj
+   w==;
+X-CSE-ConnectionGUID: z+TD5Vu/QBiKEjJXl3Joqg==
+X-CSE-MsgGUID: 9TNezZRnQ2mvAidIdBt2ig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17311751"
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="17311751"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 17:48:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
+   d="scan'208";a="20609157"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 17:47:57 -0700
+Message-ID: <a3d0b8dd-4831-4cf3-839e-ef40bdcea234@linux.intel.com>
+Date: Wed, 27 Mar 2024 08:47:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 048/130] KVM: Allow page-sized MMU caches to be
+ initialized with custom 64-bit values
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ isaku.yamahata@linux.intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <9c392612eac4f3c489ad12dd4a4d505cf10d36dc.1708933498.git.isaku.yamahata@intel.com>
+ <d2ea2f8e-80b1-4dda-bf47-2145859e7463@linux.intel.com>
+ <20240326173414.GA2444378@ls.amr.corp.intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240326173414.GA2444378@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Tue, 26 Mar 2024 23:37:59 +0100 Arnd Bergmann wrote:
-> I hope that the patches can get picked up by platform maintainers
-> directly, so the final patch can go in later on.
 
-platform == subsystem? :)
+
+On 3/27/2024 1:34 AM, Isaku Yamahata wrote:
+> On Tue, Mar 26, 2024 at 11:53:02PM +0800,
+> Binbin Wu <binbin.wu@linux.intel.com> wrote:
+>
+>>
+>> On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
+>>> From: Sean Christopherson <seanjc@google.com>
+>>>
+>>> Add support to MMU caches for initializing a page with a custom 64-bit
+>>> value, e.g. to pre-fill an entire page table with non-zero PTE values.
+>>> The functionality will be used by x86 to support Intel's TDX, which needs
+>>> to set bit 63 in all non-present PTEs in order to prevent !PRESENT page
+>>> faults from getting reflected into the guest (Intel's EPT Violation #VE
+>>> architecture made the less than brilliant decision of having the per-PTE
+>>> behavior be opt-out instead of opt-in).
+>>>
+>>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>>> ---
+>>>    include/linux/kvm_types.h |  1 +
+>>>    virt/kvm/kvm_main.c       | 16 ++++++++++++++--
+>>>    2 files changed, 15 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
+>>> index 9d1f7835d8c1..60c8d5c9eab9 100644
+>>> --- a/include/linux/kvm_types.h
+>>> +++ b/include/linux/kvm_types.h
+>>> @@ -94,6 +94,7 @@ struct gfn_to_pfn_cache {
+>>>    struct kvm_mmu_memory_cache {
+>>>    	gfp_t gfp_zero;
+>>>    	gfp_t gfp_custom;
+>>> +	u64 init_value;
+>>>    	struct kmem_cache *kmem_cache;
+>>>    	int capacity;
+>>>    	int nobjs;
+>>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>>> index de38f308738e..d399009ef1d7 100644
+>>> --- a/virt/kvm/kvm_main.c
+>>> +++ b/virt/kvm/kvm_main.c
+>>> @@ -401,12 +401,17 @@ static void kvm_flush_shadow_all(struct kvm *kvm)
+>>>    static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
+>>>    					       gfp_t gfp_flags)
+>>>    {
+>>> +	void *page;
+>>> +
+>>>    	gfp_flags |= mc->gfp_zero;
+>>>    	if (mc->kmem_cache)
+>>>    		return kmem_cache_alloc(mc->kmem_cache, gfp_flags);
+>>> -	else
+>>> -		return (void *)__get_free_page(gfp_flags);
+>>> +
+>>> +	page = (void *)__get_free_page(gfp_flags);
+>>> +	if (page && mc->init_value)
+>>> +		memset64(page, mc->init_value, PAGE_SIZE / sizeof(mc->init_value));
+>> Do we need a static_assert() to make sure mc->init_value is 64bit?
+> I don't see much value.  Is your concern sizeof() part?
+> If so, we can replace it with 8.
+>
+>          memset64(page, mc->init_value, PAGE_SIZE / 8);
+
+Yes, but it's trivial. So, up to you. :)
+
 
