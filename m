@@ -1,145 +1,120 @@
-Return-Path: <linux-kernel+bounces-121381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B914388E738
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:51:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C85B88E73B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:51:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49C471F2786A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:51:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF1511C2ED17
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A0A13DDA5;
-	Wed, 27 Mar 2024 13:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B2213B2B2;
+	Wed, 27 Mar 2024 13:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="IpVBOFaM"
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="IxMEOz0s"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10AC555E65
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B73212DDAF;
+	Wed, 27 Mar 2024 13:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711546913; cv=none; b=tweoOr7SKQBtqw/92ytXsNAVzB2yuM7InSU6289tlKLYOK/905GyI70l/O6Yko/iKt/YCI8mpGcR+NNkwmiQ8MeWVlqyiltQ6It5kdtuRlngOg99e7A0bUqWmJnHmAScMj/JS27gjkPnxz8xxFLyckQXLUzPB09qv3nEUxKqF+k=
+	t=1711547024; cv=none; b=ACNWhOptIFHL9QPPWUwTmxranYn17K0w2s3/7w6Gz0iQ9IJHiKzpw3XoiEXG369i3kCtB4ImUbYo3u1ZXvR+XT7JQCtxY0rvv8lUNexuQJW269FfAi3gxs9LKX9bn/C/9kSaN4XZ6N6Z+g8KLwwqPigXtnfp6AcxW7s0Njslqgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711546913; c=relaxed/simple;
-	bh=cub+9PgTDd0P0DgIgEHPL7peHS4Xteup4bI9z9035l0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jfOwex0u2P3RBdhFBKGgPtZV4bNkBGYMdWT0tGd9e62XrnuIlf8e98WK5rHVxlFgauX+h8hIQy5coKRvA7ctJeApjBah4FkZjhmA8roxRV81y8YTRHtUGMG+x0plEUOuZ0KFHPEmsYIcITkE8V9fBlqhLfE3JFBbbSSlpQDKmFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=IpVBOFaM; arc=none smtp.client-ip=212.27.42.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from [IPV6:2a01:cb08:8dcf:1a00:16f6:d8ff:fe12:3306] (unknown [IPv6:2a01:cb08:8dcf:1a00:16f6:d8ff:fe12:3306])
-	(Authenticated sender: eric.valette@free.fr)
-	by smtp2-g21.free.fr (Postfix) with ESMTPSA id 97BA1200410;
-	Wed, 27 Mar 2024 14:41:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1711546909;
-	bh=cub+9PgTDd0P0DgIgEHPL7peHS4Xteup4bI9z9035l0=;
-	h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IpVBOFaM4WH89SnAxLEusAAKYr61emirHxyrRJtwc4R+T+2BOblNFRRJHeX6/2z5a
-	 zDb4O/J5X+lGU4iDysjixbUiuAIwTFMogm7OvaXYpFo7p7LwYwtydYencSadEMIR0G
-	 Fkc55nodMU8WrWXlx76dZfmuBeBuZPdT3ch4nN1QqLr/knxc6t+UWi5hb5KrD8TfPW
-	 es/iLaswYQZSu5Gt+fzrhNLFxQ+Zv+xU4OIINEbvo4QOD35rRG6HPPRg4EK3zu9WBY
-	 horRiiyf7ZVbHmk4GqIe0KbO6FOsno/FCCaLL0I10d7Av2Wvq45fygXFf3eSH2W3TV
-	 F+azZErHtwhIQ==
-Message-ID: <8a6d3251-f7ae-4b10-956c-7d24a45464f5@free.fr>
-Date: Wed, 27 Mar 2024 14:41:45 +0100
+	s=arc-20240116; t=1711547024; c=relaxed/simple;
+	bh=jDFSsc2I8O7lsiinPAqe5K2U9ZhqiVvG7UDP4Qyx7bM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tLSNory83q06/POaex2LgFb8j+05nnScU6gxvS1RzfiSha/YgMCMYoU+FB7YOHhXbh7okBx+qGGy4Rj6RPYtQQ8gPYK8TkiFlUkk8DT75CnJAHMJz001MKsDxlFxeiT25HwhhqGtVlii9TSQp2WXBhgWn4yeun4c5UY6KqfI4kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=IxMEOz0s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60EBDC433F1;
+	Wed, 27 Mar 2024 13:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711547023;
+	bh=jDFSsc2I8O7lsiinPAqe5K2U9ZhqiVvG7UDP4Qyx7bM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IxMEOz0souoepUUY4FjZnzzZPm/Qz+ztLIF3UheOgq/xHV9PJ9vdx1xUXwAurB8wG
+	 MyrGCWjKP/blb6quJBwXmjPi7KbiJNvn4c/5qosGkGKJ6cdLeo6v0GDkn9qvdGlqq/
+	 1iw+HuEHc/hUwNxBXtO6NJd0umi+d0NrlnDf1Pi4=
+Date: Wed, 27 Mar 2024 14:43:40 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ron Economos <re@w6rz.net>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, Audra Mitchell <audra@redhat.com>,
+	Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 6.8 002/715] workqueue.c: Increase workqueue name length
+Message-ID: <2024032733-freebase-dipped-0b4b@gregkh>
+References: <20240324223455.1342824-1-sashal@kernel.org>
+ <20240324223455.1342824-3-sashal@kernel.org>
+ <10844429-b80f-ca9d-bf1d-c42efcc635f6@w6rz.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: eric.valette@free.fr
-Subject: Re: your recently submitted patch to fix BT RIP error shall be
- applied to 6.6 stable (I have a systematic crash on reboot in 6.6.23)
-To: "Von Dentz, Luiz" <luiz.von.dentz@intel.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <878ae145-ad1f-4b48-abe3-2966a1c9a0da@free.fr>
- <PH0PR11MB512628ED33CB0EC120ECC08AD3342@PH0PR11MB5126.namprd11.prod.outlook.com>
-Content-Language: fr
-From: Eric Valette <eric.valette@free.fr>
-Autocrypt: addr=eric.valette@free.fr; keydata=
- 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
- wycNoa755G2xgOMORgXEMg==
-In-Reply-To: <PH0PR11MB512628ED33CB0EC120ECC08AD3342@PH0PR11MB5126.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10844429-b80f-ca9d-bf1d-c42efcc635f6@w6rz.net>
 
-On 27/03/2024 14:36, Von Dentz, Luiz wrote:
-> Hi Eric,
+On Tue, Mar 26, 2024 at 02:36:22AM -0700, Ron Economos wrote:
+> On 3/24/24 3:23 PM, Sasha Levin wrote:
+> > From: Audra Mitchell <audra@redhat.com>
+> > 
+> > [ Upstream commit 31c89007285d365aa36f71d8fb0701581c770a27 ]
+> > 
+> > Currently we limit the size of the workqueue name to 24 characters due to
+> > commit ecf6881ff349 ("workqueue: make workqueue->name[] fixed len")
+> > Increase the size to 32 characters and print a warning in the event
+> > the requested name is larger than the limit of 32 characters.
+> > 
+> > Signed-off-by: Audra Mitchell <audra@redhat.com>
+> > Signed-off-by: Tejun Heo <tj@kernel.org>
+> > Stable-dep-of: 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >   kernel/workqueue.c | 8 ++++++--
+> >   1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> > index 7b482a26d7419..8a06fddb23e66 100644
+> > --- a/kernel/workqueue.c
+> > +++ b/kernel/workqueue.c
+> > @@ -108,7 +108,7 @@ enum {
+> >   	RESCUER_NICE_LEVEL	= MIN_NICE,
+> >   	HIGHPRI_NICE_LEVEL	= MIN_NICE,
+> > -	WQ_NAME_LEN		= 24,
+> > +	WQ_NAME_LEN		= 32,
+> >   };
+> >   /*
+> > @@ -4666,6 +4666,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+> >   	va_list args;
+> >   	struct workqueue_struct *wq;
+> >   	struct pool_workqueue *pwq;
+> > +	int len;
+> >   	/*
+> >   	 * Unbound && max_active == 1 used to imply ordered, which is no longer
+> > @@ -4692,9 +4693,12 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+> >   	}
+> >   	va_start(args, max_active);
+> > -	vsnprintf(wq->name, sizeof(wq->name), fmt, args);
+> > +	len = vsnprintf(wq->name, sizeof(wq->name), fmt, args);
+> >   	va_end(args);
+> > +	if (len >= WQ_NAME_LEN)
+> > +		pr_warn_once("workqueue: name exceeds WQ_NAME_LEN. Truncating to: %s\n", wq->name);
+> > +
+> >   	max_active = max_active ?: WQ_DFL_ACTIVE;
+> >   	max_active = wq_clamp_max_active(max_active, flags, wq->name);
 > 
-> This shouldn't apply to 6.6 kernel, the regression was introduced with:
+> Minor issue. The upstream commit 8318d6a6362f5903edb4c904a8dd447e59be4ad1
+> "workqueue: Shorten events_freezable_power_efficient name" goes with this
+> patch. Otherwise the warning "kernel: workqueue: name exceeds WQ_NAME_LEN.
+> Truncating to: events_freezable_power_efficien" occurs.
 > 
-> commit 711c35949648ba19f54bce27b49ced0ad90b19b9
-> Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> Date:   Tue Jan 9 13:45:40 2024 -0500
-> 
->      Bluetooth: hci_core: Cancel request on command timeout
-> 
-> So, you only really need that fix if you were using 6.9-rc1
+> Same for 6.7.11-rc2 and 6.6.23-rc2.
 
-Well I get the same error message and with the fix it works again.
+Now queued up, thanks.
 
-Will check the 6.6.22 6.6.23 patch.
-
-Could you point me to the problematic patch via adiff that I could 
-easilly check?
-
--- eric
-
-
+greg k-h
 
