@@ -1,176 +1,149 @@
-Return-Path: <linux-kernel+bounces-120609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD4688DA35
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:23:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9066088DA36
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:23:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4831C27724
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4967329E3BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF46381B0;
-	Wed, 27 Mar 2024 09:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAB5374EF;
+	Wed, 27 Mar 2024 09:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eIMtOwEn"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y7mYawG3"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8321F2D04E
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FB628DDC
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:23:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711531404; cv=none; b=HNgk7FUNonbxBiY5ft/e71VWmX1A+pk1MjtF1sMoMdlLPG5JTNKsKwobxcFZ+/SfNHTc645Ywz6aVZwyFd7XEwgbQvifBb361LiE3o9hOuBmF370XYvopW9/0F0z4VIkpAzZNderlveX0x+UfDqpynw+8SzJp+hU6HwQ3CqSsK0=
+	t=1711531428; cv=none; b=L+34asOXHuc5+BbtxnYH00M3IWx6W6143P7JE5LuYvF2WX6aeK2crTxzGqjwCRqNYgPw1M1x5vAObz3YmiO9GW1InFUupMMAV34OV752PRVWy7tHjE+2n0nOnaKisdIdcJ5bC8dTXwHG0dexQZrrYlRIJvFme//ctigm6AXNWv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711531404; c=relaxed/simple;
-	bh=9iX7b9GD7uvh5Hbkv7+dsefgSwYEYSZcj+k4pzrjb9o=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Poh9MiwKs6oxvRmD20pfF/72CyQItL5EtTZ6UYXMM04olC9dBfjM2u7YL6iJMOa2jGiWxz3KeioeNPW0sZqd9xoYFeTb5yn8LSYDLpwc/bRMpwOyEDV98cU1AJRnsA4y8hX7MlChMi4v2pogi5uby7SPed7qZUByaNlqFmArr68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eIMtOwEn; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1711531428; c=relaxed/simple;
+	bh=uFPeaEcw4g/8JynEDPRpxLUD284cz5rdKcvYR3gatNM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hmN278vbKpJV03PkXlmFsKt3zntAFUw3Inwr7piIAhk9V9pkXjXQfQ2f9pqjwV5fdmR6Ua37STju6VbuFf/ZTW+bAVRS7LdP+guIclg0+GhEpMpx1cU6bPQooMO9YaG9p/Qoyc6gXOSHLm2nc5RrK158dzKz+BxCGXJT4iH/5Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y7mYawG3; arc=none smtp.client-ip=209.85.161.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4a393b699fso106432266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:23:21 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a492093073so295806eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:23:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711531400; x=1712136200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=U9VA56VrFWmCSGuSnKV8c60GKZ/E4BlEsHm8F89QPoQ=;
-        b=eIMtOwEnDVGTaNInTQf7g2bW4W4aWC0e/NDJcumTxm1uT15eA3ERznN24nm1bH/yvq
-         szMNC/933kMw4cAkz0c6Sx3UCSDYJEzzUi+Xdgloc2zpPTAFmVoBR9JvkaYkLdmAKlAh
-         ItioN/SxbNTNZkfxkq0KJxaT4VKnjUotHOJUaCAeG+NVKRTqfF3LMgcD213kSYiaQhJM
-         0BIYyCZBWi5UyvhXagAFlKcQ83AOddzSGym3jAjjLt5lxzjny8655BnYTLGUwU/my9xE
-         CoF8e9FCcVxTo6dmSJckM79pS1DFu2UqdhcYWTo53tHssm/mcAMWdbyuSSnlmmmL/SrW
-         W1XQ==
+        d=linaro.org; s=google; t=1711531426; x=1712136226; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2WL0cVu7jMB0Wq9iW91+oOn4zqSh5t8E2HFEwQ1OI5w=;
+        b=Y7mYawG3c7vV3T3CsK2vL6clatXGAW46OWTTTeNpWmrXnora5UX26LZLbulGupBDcB
+         axejEdEbnZRG2axqoN/644B4++/ZNS+Cg39Y2AAGaOMncDS05sMz+XNqQkxIeaYX17ZW
+         VFdMYRRo66zaEviwi4zeg9vu+fZFrI+cxlU3HjPbQbc5Zo/cSDNyhVozHVHn0qpXnyLB
+         7CegS926+l30t7M7nPRD4OytXkzajDV4AUOnZ15FHSVxNDAXFyzkL9B+errhAZ8/2mK4
+         g/Vp5KjaocYjJPbkTXJ32ncdEpW7qvThdFWKpZwOmCuHp9e2jTzvjstWwXZV5F9K5jtj
+         UpRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711531400; x=1712136200;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U9VA56VrFWmCSGuSnKV8c60GKZ/E4BlEsHm8F89QPoQ=;
-        b=aIEymnXVDnZ98lOQ8A4AozjuV9chrErhL+Szs4M5wk5G/MeNw10ONs7ddS4KgsLeQJ
-         mTsumgSmyPyiakcV/axnHCA43L5FAo0rUkgP55lxmEid+ghYWvHTsuOYuRoR5vH5yjUV
-         GajkDwKmnzzKhkp28sciTl5n9qFnfF7/vkDxxFidxn6wQQ8sdSa6gLWloOBjh69c6/+6
-         oa4A5EHbFPA94qJtNLhYchyPvsstE4RDnsMvqgJK1Pkf9s6xTxp4RoNXtgQg9ZeOc4Gd
-         bZkaR9F3amKs8LzmTPKKnQwwc+Pv9x/kRnpPs+7QYA8ATd2yHILNmxQfezo0K+7QRZY/
-         pa3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVYDbloD1JGumYRYqCoy5RAIgvNllatUHnss4DLY2duuuCRa5Szb3qrsCf3hg2XSzTQAfWA6qm2LLipYYUJ5r6gPVNjJBZN9+Mg6MGY
-X-Gm-Message-State: AOJu0YxUqatlCzBWSQzRcoHG0RE3vY4/8UldSuUZj+RIYqSoNKpKInjC
-	n3EztsCaok7u1y9LfUUQk7WoIpssCZ4LX3XWdgqvvzW2jTMISR+F+f886Wraieg=
-X-Google-Smtp-Source: AGHT+IHOTEmL5nnAkaZ43sMnfmXMPzU1hxieecDn0KTOMb9akiksiLfGJLOnOIYjYs+Tzeyvsdi2eA==
-X-Received: by 2002:a17:907:7d8f:b0:a4e:14d:69d6 with SMTP id oz15-20020a1709077d8f00b00a4e014d69d6mr1513670ejc.36.1711531399781;
-        Wed, 27 Mar 2024 02:23:19 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id p22-20020a1709060dd600b00a4df7d02395sm1406144eji.86.2024.03.27.02.23.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 02:23:19 -0700 (PDT)
-Message-ID: <c3ca3d90-898e-44b0-ad0f-dd78c09c5fcd@linaro.org>
-Date: Wed, 27 Mar 2024 10:23:10 +0100
+        d=1e100.net; s=20230601; t=1711531426; x=1712136226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2WL0cVu7jMB0Wq9iW91+oOn4zqSh5t8E2HFEwQ1OI5w=;
+        b=oFzSgAW50kYgZ/yXmwE1xqMuxnH7GPdKsoPW8v9pmBPxzs25hocBO3kUmV7SyY4kRN
+         cuVkzcIjp3+JB0NWdoSxnCt/45sZ8y2SA1ExLnbYKXh791M5TgNT8oHfv9ZbHl5G6ZAF
+         FoEi2RqGYCZ9r6ExLFfXRufxpsNnvlKu2ADJYprp8PCdg+G6b+qY9d3XxU5pvkOXlFBl
+         v2R443JP7c2FYQKq2j/thNel+h7cTt881r6ffLwpGw5Hn7AGR+zUlcSHYJm01HK/TXrC
+         /ROadupdM8QYHeEfBK+6bY4gldifR+IhNfIBIVjpomy4H9xVYX9kT7LR/XVAriLTup5d
+         6R8A==
+X-Gm-Message-State: AOJu0Yw8MRkzIh9qkQWoL56eYjloAvV1Ypr3QtGX0je0E/3WFCH4Vbye
+	v5fK+n3E68RKMVPDy6Hf9tSjw+073CvIEsIcxVTTPID7+ABqJ8EBrH7AnFD96iGq58byQpKiOQG
+	6EPJMyd0BOD2OpNe0tAYnAF8HqLwr/cgS/maQBgo884l5bMfLc7E=
+X-Google-Smtp-Source: AGHT+IF9npVwLifdeT4+xaYL12RWuvRUE3pQfir+GjllvL4HF4Io/mnKtrOovxKsEmfkjXLyrX9yHpelXiQJF7ayKfI=
+X-Received: by 2002:a05:6870:b49f:b0:221:9495:4ee9 with SMTP id
+ y31-20020a056870b49f00b0022194954ee9mr1724715oap.22.1711531425879; Wed, 27
+ Mar 2024 02:23:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] dt-bindings: power: Add mediatek larb definition
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: "yu-chang.lee" <yu-chang.lee@mediatek.com>, Rob Herring
- <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- MandyJH Liu <mandyjh.liu@mediatek.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com, fan.chen@mediatek.com,
- xiufeng.li@mediatek.com
-References: <20240327055732.28198-1-yu-chang.lee@mediatek.com>
- <20240327055732.28198-3-yu-chang.lee@mediatek.com>
- <6dd9959e-f741-47af-b10a-1894f72ae78f@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <6dd9959e-f741-47af-b10a-1894f72ae78f@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240325081335.2326979-1-jens.wiklander@linaro.org> <ZgLrQ7FtDy3INX8F@bogus>
+In-Reply-To: <ZgLrQ7FtDy3INX8F@bogus>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Wed, 27 Mar 2024 10:23:35 +0100
+Message-ID: <CAHUa44HuuPE_cs3i4XEvHpSV+T0koCqBPo66uOmYyQ1=Rx=NWw@mail.gmail.com>
+Subject: Re: [PATCH v2] firmware: arm_ffa: support running as a guest in a vm
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	Marc Bonnici <marc.bonnici@arm.com>, Olivier Deprez <Olivier.Deprez@arm.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Bertrand Marquis <Bertrand.Marquis@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 27/03/2024 09:39, Krzysztof Kozlowski wrote:
-> On 27/03/2024 06:57, yu-chang.lee wrote:
->> Add Smart Multimedia Interface Local Arbiter to mediatek
->> power domain.
->>
->> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
->> ---
->>  .../devicetree/bindings/power/mediatek,power-controller.yaml  | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
->> index 8985e2df8a56..228c0dec5253 100644
->> --- a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
->> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
->> @@ -125,6 +125,10 @@ $defs:
->>          $ref: /schemas/types.yaml#/definitions/phandle
->>          description: phandle to the device containing the SMI register range.
->>  
->> +     mediatek,larb:
->> +        $ref: /schemas/types.yaml#/definitions/phandle
->> +        description: phandle to the device containing the LARB register range.
-> 
-> Why do you need it?
-> 
-> Plus I also see mediatek,larbs and mediatek,larb-id... so now we have
-> third one similar.
+On Tue, Mar 26, 2024 at 4:35=E2=80=AFPM Sudeep Holla <sudeep.holla@arm.com>=
+ wrote:
+>
+> On Mon, Mar 25, 2024 at 09:13:35AM +0100, Jens Wiklander wrote:
+> > Add support for running the driver in a guest to a hypervisor. The main
+> > difference is introducing notification pending interrupt and that
+> > FFA_NOTIFICATION_BITMAP_CREATE doesn't need to be called.
+> >
+> > The guest may need to use a notification pending interrupt instead of o=
+r
+> > in addition to the schedule receiver interrupt.
+>
+> The above statement makes me worry a bit that we are still not on the sam=
+e
+> page about NPI vs SRI. NPI need not exist in addition to SRI. And in v1
+> you did mention you have SRI in the guest as well. Then why do we need
+> NPI in addition to that. As part of SRI, the callback  ffa_self_notif_han=
+dle
+> gets registered and will be called as part of SRI handling. What you
+> do in  notif_pend_irq_handler(), exactly what ffa_self_notif_handle()
+> already does.
 
-.. and not even tested!
+That's my understanding of what an NPI handler should do to be able to
+receive per-vCPU notifications.
 
-Best regards,
-Krzysztof
+>
+> I am still struggling to understand the usecase here. If you just have
+> NPI and no SRI when running the driver in the VM, then it aligns with
+> my understanding of possible use-case(not the one you mentioned in v1:
+> where FF-A driver in VM will have SRI as OPTEE is the secondary scheduler=
+)
 
+OP-TEE is not a secondary scheduler. OP-TEE (the SP) is scheduled as
+usual by the normal world using direct request. OP-TEE doesn't receive
+FF-A notifications and I'm not sure it will ever be needed.
+
+>
+> If we are supporting NPI or SRI, I think we can see if we can further
+> simplify this change, but I want to get to an agreement with usage model
+> before we dig into implementation details in this patch.
+
+The spec doesn't as far as I know explicitly make NPI and SRI mutually
+exclusive, it doesn't make sense to use both in all configurations.
+I'm trying to be as dynamic as possible when configuring the NPI and
+SRI handlers.
+
+If the kernel is a physical endpoint, it's easy, it only uses SRI and
+the SPMC will not give an NPI when asked.
+
+If the kernel is a virtual endpoint it might be more complicated since
+a VM may need to act as a secondary scheduler. That's not fully
+supported in this patch, since it can only schedule itself. SRI is not
+used in my current configuration. If a hypervisor injects an SRI I
+expect it to filter what's returned by FFA_NOTIFICATION_INFO_GET for
+this VM so it doesn't interfere with notifications for other VMs.
+
+In my current configuration, the hypervisor uses NPI to signal pending
+notifications to the guest. I do not need a secondary scheduler since
+OP-TEE doesn't receive notifications. At a later time, we may have SPs
+that need to be scheduled, but that's not a problem I'm trying to
+solve here.
+
+Thanks,
+Jens
 
