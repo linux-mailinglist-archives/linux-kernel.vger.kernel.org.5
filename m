@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-121074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA1F88E216
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:19:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227A388E219
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2471D29C846
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D138929CACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDC416A1E1;
-	Wed, 27 Mar 2024 12:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C373116A1F9;
+	Wed, 27 Mar 2024 12:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S7E9xN0n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDquvlkM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8F316A1D1;
-	Wed, 27 Mar 2024 12:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBFE13B284;
+	Wed, 27 Mar 2024 12:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542009; cv=none; b=lpsYvBOW9uLMCWAzADtSyhEsIgVMMr/VZ3hp4uVm/gCVNNYLnoQn+IxscSW2bNg/Kv84OSSEAopGMglWfhAoFpo8jwxn7hvkOPbhny0T7Cv7SMemYQy5Tuh3FH9THA+hU0z/zHKhjyr6DX6yDnf16D570HjI4rc8efxNbpYkTMU=
+	t=1711542012; cv=none; b=PKo/l/UVz0GHU94wWtqkZ2QRpbDEvikaoTULp9QbZfgsOIIRHI2FFmf5nKn5iWiytNJb2aiUyzHbVwJ54DJ7eOWYRXjB71+mFqUgj23gCnKB8A8ub9DidZrfIawPi5xuFMMrBEqolWxQJsCs8GJAdsuW9B+shWeUolmgjCjs48s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542009; c=relaxed/simple;
-	bh=ufK/g3GX9r3mWLjejioZqTZhpQp3PSOo4bubJdqFO2A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cZT247bZHvfG026P4vRu3WzEozK3PkFJqG3u8A1zMsAIn0kWLujknJlSStDI9auwHkEppPxtrUS3wWttVo5s+sQ2J/N4fHzISGEC1FraqMSGgndfxFKyYzZ0ekn/Gvp27C8lcVlyc8FHBl2OLarSaHe/H9f8NBClGFbI98U2WO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S7E9xN0n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81342C43330;
-	Wed, 27 Mar 2024 12:20:08 +0000 (UTC)
+	s=arc-20240116; t=1711542012; c=relaxed/simple;
+	bh=MERzE0xqZgND55+ouz38tPdJesnOWqnWKHL7f8B7cEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gzX/EiTXgb86jHArlklSRVkmBkhrY1+meEzci+cJQlX6DCC2gI1VCKHlgd8wfOlGx6g68c78U0FV/6eb6ei8As4uu3jh3GOoCrmSEGY/nls/6cWsouGOkhKoqkLRrsKbb1585KIovUwofo+E5q2LTWlI5tn3RkocmPk5++FFUaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uDquvlkM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9A0DC43390;
+	Wed, 27 Mar 2024 12:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542009;
-	bh=ufK/g3GX9r3mWLjejioZqTZhpQp3PSOo4bubJdqFO2A=;
+	s=k20201202; t=1711542011;
+	bh=MERzE0xqZgND55+ouz38tPdJesnOWqnWKHL7f8B7cEQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=S7E9xN0n5bLST7rfZvB5XGIT4mgB5D0C3XuVsi/nk2XSSp2VgjiLL1+jzs1TmVQJN
-	 a/P5fe3KB/xpoG/hpiS9rlei73OVnhOesNqDD11ahb/lcdaVl9unNQQgyfuYyNrN2n
-	 yMEe3VvILa3VZz890fzL5lPEZWClNr4oAGSiI58WQZcUZykeMDwEK/b6v/5T6N0wVk
-	 MEDLBQyzf0TOSdfzsnsf8gZfRDmOQgfO+JHq3lipCR/5GaADY5x1I5FpmPJ11t3UHa
-	 q3YaICxI7bk83Kz0PTb9W7gRnp+3vIe1Lx9JY7OfGRxZZHPi7qq9lCw/OBU7o+2+en
-	 +wS40vIubp/fQ==
+	b=uDquvlkMZ0radrTlwaNqIxDwom/5PZoRj9reFq6oPaKtf4WieEtZi2AhnSt4MpDG2
+	 4fpc9mrb0sPjwWMcilh2Vn1AKAX1yE3aMy5jESvn6gUpt/nMuBp5pj225qgoZ/glir
+	 p6244pOauGdMFvT4kmqxsSzP76iyurktb5jq+lUtHSaqugJxzbq3i42eHaZJ56qMEz
+	 KtvAt8Tx8p7xXVKL1TxWDXj5drvtsJCaCg2hzG6D7/haEaAzSVgkmNznB48Xp4/8sD
+	 8UjCbn7kxsx5zmIiqA8PDo+dnrccJmoFnx8ux3hfSS6dJy0KGi6fzfpzm96AMX5Euk
+	 03dkqPO1HFZtg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	nathan@kernel.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: FAILED: Patch "powerpc: xor_vmx: Add '-mhard-float' to CFLAGS" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:20:07 -0400
-Message-ID: <20240327122007.2835763-1-sashal@kernel.org>
+	mmakassikis@freebox.fr
+Cc: Namjae Jeon <linkinjeon@kernel.org>,
+	Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "ksmbd: retrieve number of blocks using vfs_getattr in set_file_allocation_info" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:20:09 -0400
+Message-ID: <20240327122010.2835800-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,46 +70,59 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 35f20786c481d5ced9283ff42de5c69b65e5ed13 Mon Sep 17 00:00:00 2001
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Sat, 27 Jan 2024 11:07:43 -0700
-Subject: [PATCH] powerpc: xor_vmx: Add '-mhard-float' to CFLAGS
+From 34cd86b6632718b7df3999d96f51e63de41c5e4f Mon Sep 17 00:00:00 2001
+From: Marios Makassikis <mmakassikis@freebox.fr>
+Date: Thu, 22 Feb 2024 10:58:21 +0100
+Subject: [PATCH] ksmbd: retrieve number of blocks using vfs_getattr in
+ set_file_allocation_info
 
-arch/powerpc/lib/xor_vmx.o is built with '-msoft-float' (from the main
-powerpc Makefile) and '-maltivec' (from its CFLAGS), which causes an
-error when building with clang after a recent change in main:
-
-  error: option '-msoft-float' cannot be specified with '-maltivec'
-  make[6]: *** [scripts/Makefile.build:243: arch/powerpc/lib/xor_vmx.o] Error 1
-
-Explicitly add '-mhard-float' before '-maltivec' in xor_vmx.o's CFLAGS
-to override the previous inclusion of '-msoft-float' (as the last option
-wins), which matches how other areas of the kernel use '-maltivec', such
-as AMDGPU.
+Use vfs_getattr() to retrieve stat information, rather than make
+assumptions about how a filesystem fills inode structs.
 
 Cc: stable@vger.kernel.org
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1986
-Link: https://github.com/llvm/llvm-project/commit/4792f912b232141ecba4cbae538873be3c28556c
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20240127-ppc-xor_vmx-drop-msoft-float-v1-1-f24140e81376@kernel.org
+Signed-off-by: Marios Makassikis <mmakassikis@freebox.fr>
+Acked-by: Namjae Jeon <linkinjeon@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- arch/powerpc/lib/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/smb/server/smb2pdu.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
-index 6eac63e79a899..0ab65eeb93ee3 100644
---- a/arch/powerpc/lib/Makefile
-+++ b/arch/powerpc/lib/Makefile
-@@ -76,7 +76,7 @@ obj-$(CONFIG_PPC_LIB_RHEAP) += rheap.o
- obj-$(CONFIG_FTR_FIXUP_SELFTEST) += feature-fixups-test.o
+diff --git a/fs/smb/server/smb2pdu.c b/fs/smb/server/smb2pdu.c
+index f6cc5d2730ffb..199c31c275e5b 100644
+--- a/fs/smb/server/smb2pdu.c
++++ b/fs/smb/server/smb2pdu.c
+@@ -5809,15 +5809,21 @@ static int set_file_allocation_info(struct ksmbd_work *work,
  
- obj-$(CONFIG_ALTIVEC)	+= xor_vmx.o xor_vmx_glue.o
--CFLAGS_xor_vmx.o += -maltivec $(call cc-option,-mabi=altivec)
-+CFLAGS_xor_vmx.o += -mhard-float -maltivec $(call cc-option,-mabi=altivec)
- # Enable <altivec.h>
- CFLAGS_xor_vmx.o += -isystem $(shell $(CC) -print-file-name=include)
+ 	loff_t alloc_blks;
+ 	struct inode *inode;
++	struct kstat stat;
+ 	int rc;
  
+ 	if (!(fp->daccess & FILE_WRITE_DATA_LE))
+ 		return -EACCES;
+ 
++	rc = vfs_getattr(&fp->filp->f_path, &stat, STATX_BASIC_STATS,
++			 AT_STATX_SYNC_AS_STAT);
++	if (rc)
++		return rc;
++
+ 	alloc_blks = (le64_to_cpu(file_alloc_info->AllocationSize) + 511) >> 9;
+ 	inode = file_inode(fp->filp);
+ 
+-	if (alloc_blks > inode->i_blocks) {
++	if (alloc_blks > stat.blocks) {
+ 		smb_break_all_levII_oplock(work, fp, 1);
+ 		rc = vfs_fallocate(fp->filp, FALLOC_FL_KEEP_SIZE, 0,
+ 				   alloc_blks * 512);
+@@ -5825,7 +5831,7 @@ static int set_file_allocation_info(struct ksmbd_work *work,
+ 			pr_err("vfs_fallocate is failed : %d\n", rc);
+ 			return rc;
+ 		}
+-	} else if (alloc_blks < inode->i_blocks) {
++	} else if (alloc_blks < stat.blocks) {
+ 		loff_t size;
+ 
+ 		/*
 -- 
 2.43.0
 
