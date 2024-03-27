@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-120656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64CC488DB15
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA5AA88DB16
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:18:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0340AB23733
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:18:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6858EB23887
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5B54BA94;
-	Wed, 27 Mar 2024 10:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF474D9E1;
+	Wed, 27 Mar 2024 10:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="pTlNnbc1"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ZekZGj7s"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4835C4AED3;
-	Wed, 27 Mar 2024 10:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448F3487A5;
+	Wed, 27 Mar 2024 10:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711534703; cv=none; b=rLBvps+8FHMVxWQ5iSY9Ve4p26KZiZkB6PpyzY2pfFKWBjVxmv91tdsDuFWq5cW+Iup7Jf7pQeumj4o+/mczjozwbT8EHfJNu3EEGkZguNHzgaC5sxuJjcPWSkFhphABNPgKUKvdmgPJV8hfUcDT8Uorn0yXepmngDsZ2LgQCo0=
+	t=1711534704; cv=none; b=HcD4QEgxtZ4PqVELRU53unmWwV3qqpZ6foIO9hMuxWAMMbMVwvfjKPoRqUagi6igllXYEwF5rbXXzoI387U/FKoxr4YA6gTunAP7M24yP/8D+CRfCv7WdALztILPX8QPSj2hEqn1K50e+x98JBp/qFcu9UQiYWn14yaZP55AMU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711534703; c=relaxed/simple;
-	bh=mrpZq+2IhH09H8vRJkafUX3lwv1PhGwDbdtVPupkg30=;
+	s=arc-20240116; t=1711534704; c=relaxed/simple;
+	bh=wD2nTcpMdJZrzZufqmtVM7xTKD12zXfm5p9LDsV06bA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KxidoE50diKHGeqlmJ97gQlL3eaWZPySGBfgDJJMxf7dhiy1PE7T5ckZCuKxdfria9q5Qsgxqv0QLINm7XjyjPhpf9p8Z4GuF7Jk7yUtHQogphgwO1Z6ha3jMut7NplBNYv3NS7FFBXELpS4eo3p9buX3QJ5o2mjfh1afTbXM1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=pTlNnbc1; arc=none smtp.client-ip=68.232.153.233
+	 MIME-Version:Content-Type; b=XK9S8aznJBWwUG/DtyLLRZDe+kXGem7eaSQ77iFVH2QOOMgv0FWhh6mNm7tqsujyN99/XJIrKVpKQ+zvk1SrYc1rYo6qkLrFuPKNa6kL49AtDwbZFubiBbAAliRMaN8XEe0Xv/G3jWiSJn3wMjd7AJwzBP/+LLuBZLui/3dN2wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ZekZGj7s; arc=none smtp.client-ip=68.232.153.233
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1711534703; x=1743070703;
+  t=1711534704; x=1743070704;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=mrpZq+2IhH09H8vRJkafUX3lwv1PhGwDbdtVPupkg30=;
-  b=pTlNnbc1JlHnoQ10UX6L+D7rxu6YDYpTm7ZXs+Vk0HBAh0Fbu6jW00mb
-   cqKKlVk6ObYFoIYKvw1vOx+1KrNVLUf7DKLPuRiUgV7uO/mKT6c7eUIdd
-   3BTBZMXiBwBMFcJkUhkVdmOruverH5yd+LHBbpIDl8g9u2ahtJJdReQx7
-   c+rxKiJqK6T9hs+AZR+4Y+hXkYfQb8uSzN/SceTwR7FvV+wTsSuBB0g1E
-   n3e/wxFuReeWYLtrDCUZLL5AI7afADDDMyYUg0mPTXqoTRYQun0QJFK1k
-   yDk7tWzFJT1TRxWfzackYfFSJmw3bwNliezY3RIoLQgsVJ7UmNaQvxaM3
+  bh=wD2nTcpMdJZrzZufqmtVM7xTKD12zXfm5p9LDsV06bA=;
+  b=ZekZGj7s97P7QV5G6hoQTRBbtZAqxX48es6KxZFfHs0zIZDm69PG0x2R
+   5dlq5QSFU5PkzCp75JC+6beH3ZD8aCQDTmxS+E/c6Bqx39ZiVy0ITyQ7T
+   wP0GKYs6OdMCDzkY0DbRwRX4P5e0y5qAkhCXNXULmfDVc4kQXvxdeMVGw
+   iVjMVb0mHlPlM9HU+X0BBA2EuxmNV70HMLCoi93sVRN3qzFUtznvlV4n8
+   xXvH4rE2w7ThjSHn5dEpW87q67n4Wb8RczZYvOyMD6/Qg4BFVXvZzBmmV
+   6qU2mhhLD29w/oXv/Jbpy/syEU7fIo6iVWdHossw/TKZiSwFW36uFZ488
    w==;
 X-CSE-ConnectionGUID: calzwGTlQgCl6fVaUG6ALA==
-X-CSE-MsgGUID: s35crSE5TBi9xcUt4CFXNA==
+X-CSE-MsgGUID: LNxzxDpGQwKx1MJ2IQ3y4A==
 X-IronPort-AV: E=Sophos;i="6.07,158,1708412400"; 
-   d="scan'208";a="18378689"
+   d="scan'208";a="18378694"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
   by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Mar 2024 03:18:22 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 27 Mar 2024 03:17:44 -0700
+ 15.1.2507.35; Wed, 27 Mar 2024 03:17:47 -0700
 Received: from archlinux.microchip.com (10.10.85.11) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 27 Mar 2024 03:17:41 -0700
+ 15.1.2507.35 via Frontend Transport; Wed, 27 Mar 2024 03:17:44 -0700
 From: Mihai Sain <mihai.sain@microchip.com>
 To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -65,9 +65,9 @@ To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>
 CC: Mihai Sain <mihai.sain@microchip.com>
-Subject: [PATCH 2/7] ARM: dts: microchip: sama5d29_curiosity: Update the node names from pmic-regulators
-Date: Wed, 27 Mar 2024 12:17:19 +0200
-Message-ID: <20240327101724.2982-3-mihai.sain@microchip.com>
+Subject: [PATCH 3/7] ARM: dts: microchip: sama5d2_icp: Update the node names from pmic-regulators
+Date: Wed, 27 Mar 2024 12:17:20 +0200
+Message-ID: <20240327101724.2982-4-mihai.sain@microchip.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240327101724.2982-1-mihai.sain@microchip.com>
 References: <20240327101724.2982-1-mihai.sain@microchip.com>
@@ -86,49 +86,49 @@ Using BUCK1-4 as node names is consistent with the node naming rules.
 
 Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
 ---
- arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts | 8 ++++----
+ arch/arm/boot/dts/microchip/at91-sama5d2_icp.dts | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
-index 6b02b7bcfd49..b1874ae8dfc2 100644
---- a/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
-+++ b/arch/arm/boot/dts/microchip/at91-sama5d29_curiosity.dts
-@@ -148,7 +148,7 @@ mcp16502@5b {
- 		lpm-gpios = <&pioBU 0 GPIO_ACTIVE_LOW>;
+diff --git a/arch/arm/boot/dts/microchip/at91-sama5d2_icp.dts b/arch/arm/boot/dts/microchip/at91-sama5d2_icp.dts
+index 999adeca6f33..f20de8180381 100644
+--- a/arch/arm/boot/dts/microchip/at91-sama5d2_icp.dts
++++ b/arch/arm/boot/dts/microchip/at91-sama5d2_icp.dts
+@@ -194,7 +194,7 @@ mcp16502@5b {
+ 			lpm-gpios = <&pioBU 7 GPIO_ACTIVE_LOW>;
  
- 		regulators {
--			vdd_3v3: VDD_IO {
-+			vdd_3v3: BUCK1 {
- 				regulator-name = "VDD_IO";
- 				regulator-min-microvolt = <3300000>;
- 				regulator-max-microvolt = <3300000>;
-@@ -167,7 +167,7 @@ regulator-state-mem {
+ 			regulators {
+-				vdd_io_reg: VDD_IO {
++				vdd_io_reg: BUCK1 {
+ 					regulator-name = "VDD_IO";
+ 					regulator-min-microvolt = <3300000>;
+ 					regulator-max-microvolt = <3300000>;
+@@ -213,7 +213,7 @@ regulator-state-mem {
+ 					};
  				};
- 			};
  
--			vddio_ddr: VDD_DDR {
-+			vddio_ddr: BUCK2 {
- 				regulator-name = "VDD_DDR";
- 				regulator-min-microvolt = <1200000>;
- 				regulator-max-microvolt = <1200000>;
-@@ -190,7 +190,7 @@ regulator-state-mem {
+-				VDD_DDR {
++				BUCK2 {
+ 					regulator-name = "VDD_DDR";
+ 					regulator-min-microvolt = <1350000>;
+ 					regulator-max-microvolt = <1350000>;
+@@ -232,7 +232,7 @@ regulator-state-mem {
+ 					};
  				};
- 			};
  
--			vdd_core: VDD_CORE {
-+			vdd_core: BUCK3 {
- 				regulator-name = "VDD_CORE";
- 				regulator-min-microvolt = <1250000>;
- 				regulator-max-microvolt = <1250000>;
-@@ -209,7 +209,7 @@ regulator-state-mem {
+-				VDD_CORE {
++				BUCK3 {
+ 					regulator-name = "VDD_CORE";
+ 					regulator-min-microvolt = <1250000>;
+ 					regulator-max-microvolt = <1250000>;
+@@ -251,7 +251,7 @@ regulator-state-mem {
+ 					};
  				};
- 			};
  
--			vdd_ddr: VDD_OTHER {
-+			vdd_ddr: BUCK4 {
- 				regulator-name = "VDD_OTHER";
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <1800000>;
+-				VDD_OTHER {
++				BUCK4 {
+ 					regulator-name = "VDD_OTHER";
+ 					regulator-min-microvolt = <600000>;
+ 					regulator-max-microvolt = <1850000>;
 -- 
 2.44.0
 
