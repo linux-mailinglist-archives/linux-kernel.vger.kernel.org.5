@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-120937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1F688E0B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:42:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F78288E0BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2F6FB252FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:42:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E728A1F28CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC9C14D43D;
-	Wed, 27 Mar 2024 12:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5770514D6F5;
+	Wed, 27 Mar 2024 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HAnJHGme"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TLzxnflF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB75114D2BE;
-	Wed, 27 Mar 2024 12:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633EF14D2BE;
+	Wed, 27 Mar 2024 12:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541635; cv=none; b=j4pQ9GnYyPIGoacOahIkhgdlDqBvLJhz95+up/gm2kSgUKFEGrqfAIDf+ideLl57efUEAsoMuFz2VNwx11k7Aw0IkYuP5Y8yfRJPFKQ2eLyGuKUXXhFUlXclSlDa9l5Sz6N2Aa9ZCdDMNif2xPzNjaUo6FSm4q2kdn+ZyWpTc10=
+	t=1711541638; cv=none; b=tlqjwa+9puVuBtZKmk5EOQM02omairEwFuIY0c5apFzWG0Yd2p1tUbXZJ+zt4GZ2Ne5DD4EQRKPNo+w82zxBIUwXeOvVx7D63ISap+WrCIIm8gRhULftaYtMfC26AgiG9r944EcI/m2DZh26DAB2GVbXXqJDYt+A9FyvZS5Zdlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541635; c=relaxed/simple;
-	bh=JsFu3wR3DhF000KcrA8afqUCDSA8XExED+j71OfMf/U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SNwJs7kGRs+ns5X0bsceLIA5+h4Qwe9bNdDXM+QEpPrP+pjdiMcXnFSVR7PB/3mtAwllnM7EFUqDjheaZq4lsaNDph6upshTw1UMurNCdSXx8+Rk+IaYmdd62lnyNt+HBERgvk/PmOtGo6GjtnNe3bmcWJ3+A8QrkclVxc7PjC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HAnJHGme; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA759C433F1;
-	Wed, 27 Mar 2024 12:13:53 +0000 (UTC)
+	s=arc-20240116; t=1711541638; c=relaxed/simple;
+	bh=9iRBohJ36Gw9tNMYJMCgeN1i5qq30E8ajm1+Zpi+QPY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Axkxv9KYXS1YZ6HQ9YarnSUnI5dtrkvG9DmXe4tZMo3SXx/cWrPfs4exGbwkRhEYaDQGIyiMqd3mszrznRdwQTgiF5b78tTRi8pSpZBQ+DC8PxwacGFC5ubBfiLmymBR/A0pT3hd/KvzgXYbDHaRLezrxmWJ6wzInEZ5m2KSkeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TLzxnflF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B365C433C7;
+	Wed, 27 Mar 2024 12:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541634;
-	bh=JsFu3wR3DhF000KcrA8afqUCDSA8XExED+j71OfMf/U=;
+	s=k20201202; t=1711541638;
+	bh=9iRBohJ36Gw9tNMYJMCgeN1i5qq30E8ajm1+Zpi+QPY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=HAnJHGmeN5xIf2DgHZlRthESGuTZPBlZOv3hC5DpbReefGpRyJKondDOHknSxQ+6o
-	 sT391gKG7CeIZel1AMlZ6lX80ZNiBy0Og1jitWHnMGv1IPAKdJwVp0NrWy+qMBQFu0
-	 9NvuK18f5UQiGdJ8VfpfsGLpJiHKapPCHv93yUn+0ahpxKKX8KlN2j93VHHsT+BqBj
-	 eA3GDkc4qybwwJAbPuWFs/p3jpJ07mK9FxnT4Dl5xGJh1Q9orC9I512Jy+IbzlUqNe
-	 RkzL/d/IW3jspjQ0wwcXAJE3APEoj+Wy5ggzE2wGXWXHLiqjlwKGWaSAEM6QJTq7yA
-	 kLOo3beCX1fvw==
+	b=TLzxnflFdRS4LG1vk1vPqcjPKM+hdNuuI/V1nB4FhymmI5PDT59i4AAt7elRPKP4M
+	 vDJJlQEAlHfrgJ0BvhAFSr5F5zX+tPfYbgdRD0iOAwWyIKukeGSL6iRBU4CDZ6fceu
+	 qv+D1BIbEnze3DFcYe84C8XK7ePpj3Kq9FfwdgO6ZXzI5ZxJn/vAeonVggIOVRpgzC
+	 bLohs5WIIldreCOB2JRZHxVj5TfbH6I+kQ46IVcY7Hj2wncJO9smvt5HUuvL59+l5Q
+	 yxfBy3dM+GZqs4xRJBf5i3iY7wQsYfkxzEvXGcaJ9+zxYK2OreJ3gWr7jOdPMjOwli
+	 tRxWwSdayoHcg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	laurent.pinchart@ideasonboard.com
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	linux-media@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
+	chuntao.tso@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "media: nxp: imx8-isi: Mark all crossbar sink pads as MUST_CONNECT" failed to apply to 6.1-stable tree
-Date: Wed, 27 Mar 2024 08:13:52 -0400
-Message-ID: <20240327121352.2830698-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Amend coasting vtotal for replay low hz" failed to apply to 6.1-stable tree
+Date: Wed, 27 Mar 2024 08:13:55 -0400
+Message-ID: <20240327121356.2830735-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,54 +74,157 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 9b71021b2ea537632b01e51e3f003df24a637858 Mon Sep 17 00:00:00 2001
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Date: Mon, 15 Jan 2024 04:16:29 +0200
-Subject: [PATCH] media: nxp: imx8-isi: Mark all crossbar sink pads as
- MUST_CONNECT
+From 8e054b0f1e71531762b8ded7f66c1b4af734671b Mon Sep 17 00:00:00 2001
+From: ChunTao Tso <chuntao.tso@amd.com>
+Date: Tue, 20 Feb 2024 17:08:39 +0800
+Subject: [PATCH] drm/amd/display: Amend coasting vtotal for replay low hz
 
-All the sink pads of the crossbar switch require an active link if
-they're part of the pipeline. Mark them with the
-MEDIA_PAD_FL_MUST_CONNECT flag to fail pipeline validation if they're
-not connected. This allows removing a manual check when translating
-streams.
+[WHY]
+The original coasting vtotal is 2 bytes, and it need to
+be amended to 4 bytes because low hz case.
 
-Cc: stable@vger.kernel.org # 6.1
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+[HOW]
+Amend coasting vtotal from 2 bytes to 4 bytes.
+
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: ChunTao Tso <chuntao.tso@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- .../media/platform/nxp/imx8-isi/imx8-isi-crossbar.c    | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dc_types.h                 | 4 ++--
+ drivers/gpu/drm/amd/display/dc/inc/link.h                 | 4 ++--
+ .../display/dc/link/protocols/link_edp_panel_control.c    | 4 ++--
+ .../display/dc/link/protocols/link_edp_panel_control.h    | 4 ++--
+ drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h           | 8 ++++++++
+ drivers/gpu/drm/amd/display/modules/power/power_helpers.c | 2 +-
+ drivers/gpu/drm/amd/display/modules/power/power_helpers.h | 2 +-
+ 7 files changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c
-index 1bb1334ec6f2b..93a55c97cd173 100644
---- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c
-+++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-crossbar.c
-@@ -160,13 +160,6 @@ mxc_isi_crossbar_xlate_streams(struct mxc_isi_crossbar *xbar,
- 	}
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_types.h b/drivers/gpu/drm/amd/display/dc/dc_types.h
+index 9900dda2eef5c..be2ac5c442a48 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_types.h
++++ b/drivers/gpu/drm/amd/display/dc/dc_types.h
+@@ -1085,9 +1085,9 @@ struct replay_settings {
+ 	/* SMU optimization is enabled */
+ 	bool replay_smu_opt_enable;
+ 	/* Current Coasting vtotal */
+-	uint16_t coasting_vtotal;
++	uint32_t coasting_vtotal;
+ 	/* Coasting vtotal table */
+-	uint16_t coasting_vtotal_table[PR_COASTING_TYPE_NUM];
++	uint32_t coasting_vtotal_table[PR_COASTING_TYPE_NUM];
+ 	/* Maximum link off frame count */
+ 	enum replay_link_off_frame_count_level link_off_frame_count_level;
+ 	/* Replay pseudo vtotal for abm + ips on full screen video which can improve ips residency */
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/link.h b/drivers/gpu/drm/amd/display/dc/inc/link.h
+index 26fe81f213da5..bf29fc58ea6a6 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/link.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/link.h
+@@ -285,12 +285,12 @@ struct link_service {
+ 			enum replay_FW_Message_type msg,
+ 			union dmub_replay_cmd_set *cmd_data);
+ 	bool (*edp_set_coasting_vtotal)(
+-			struct dc_link *link, uint16_t coasting_vtotal);
++			struct dc_link *link, uint32_t coasting_vtotal);
+ 	bool (*edp_replay_residency)(const struct dc_link *link,
+ 			unsigned int *residency, const bool is_start,
+ 			const bool is_alpm);
+ 	bool (*edp_set_replay_power_opt_and_coasting_vtotal)(struct dc_link *link,
+-			const unsigned int *power_opts, uint16_t coasting_vtotal);
++			const unsigned int *power_opts, uint32_t coasting_vtotal);
  
- 	pad = media_pad_remote_pad_first(&xbar->pads[sink_pad]);
--	if (!pad) {
--		dev_dbg(xbar->isi->dev,
--			"no pad connected to crossbar input %u\n",
--			sink_pad);
--		return ERR_PTR(-EPIPE);
--	}
--
- 	sd = media_entity_to_v4l2_subdev(pad->entity);
- 	if (!sd) {
- 		dev_dbg(xbar->isi->dev,
-@@ -475,7 +468,8 @@ int mxc_isi_crossbar_init(struct mxc_isi_dev *isi)
- 	}
+ 	bool (*edp_wait_for_t12)(struct dc_link *link);
+ 	bool (*edp_is_ilr_optimization_required)(struct dc_link *link,
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+index acfbbc638cc64..3baa2bdd6dd65 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+@@ -1034,7 +1034,7 @@ bool edp_send_replay_cmd(struct dc_link *link,
+ 	return true;
+ }
  
- 	for (i = 0; i < xbar->num_sinks; ++i)
--		xbar->pads[i].flags = MEDIA_PAD_FL_SINK;
-+		xbar->pads[i].flags = MEDIA_PAD_FL_SINK
-+				    | MEDIA_PAD_FL_MUST_CONNECT;
- 	for (i = 0; i < xbar->num_sources; ++i)
- 		xbar->pads[i + xbar->num_sinks].flags = MEDIA_PAD_FL_SOURCE;
+-bool edp_set_coasting_vtotal(struct dc_link *link, uint16_t coasting_vtotal)
++bool edp_set_coasting_vtotal(struct dc_link *link, uint32_t coasting_vtotal)
+ {
+ 	struct dc *dc = link->ctx->dc;
+ 	struct dmub_replay *replay = dc->res_pool->replay;
+@@ -1073,7 +1073,7 @@ bool edp_replay_residency(const struct dc_link *link,
+ }
  
+ bool edp_set_replay_power_opt_and_coasting_vtotal(struct dc_link *link,
+-	const unsigned int *power_opts, uint16_t coasting_vtotal)
++	const unsigned int *power_opts, uint32_t coasting_vtotal)
+ {
+ 	struct dc  *dc = link->ctx->dc;
+ 	struct dmub_replay *replay = dc->res_pool->replay;
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
+index 34e521af7bb48..a158c6234d422 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.h
+@@ -59,12 +59,12 @@ bool edp_setup_replay(struct dc_link *link,
+ bool edp_send_replay_cmd(struct dc_link *link,
+ 			enum replay_FW_Message_type msg,
+ 			union dmub_replay_cmd_set *cmd_data);
+-bool edp_set_coasting_vtotal(struct dc_link *link, uint16_t coasting_vtotal);
++bool edp_set_coasting_vtotal(struct dc_link *link, uint32_t coasting_vtotal);
+ bool edp_replay_residency(const struct dc_link *link,
+ 	unsigned int *residency, const bool is_start, const bool is_alpm);
+ bool edp_get_replay_state(const struct dc_link *link, uint64_t *state);
+ bool edp_set_replay_power_opt_and_coasting_vtotal(struct dc_link *link,
+-	const unsigned int *power_opts, uint16_t coasting_vtotal);
++	const unsigned int *power_opts, uint32_t coasting_vtotal);
+ bool edp_wait_for_t12(struct dc_link *link);
+ bool edp_is_ilr_optimization_required(struct dc_link *link,
+        struct dc_crtc_timing *crtc_timing);
+diff --git a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
+index a529e369b2ace..af3fe8bb0728b 100644
+--- a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
++++ b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
+@@ -3238,6 +3238,14 @@ struct dmub_cmd_replay_set_coasting_vtotal_data {
+ 	 * Currently the support is only for 0 or 1
+ 	 */
+ 	uint8_t panel_inst;
++	/**
++	 * 16-bit value dicated by driver that indicates the coasting vtotal high byte part.
++	 */
++	uint16_t coasting_vtotal_high;
++	/**
++	 * Explicit padding to 4 byte boundary.
++	 */
++	uint8_t pad[2];
+ };
+ 
+ /**
+diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+index e304e8435fb8f..2a3698fd2dc24 100644
+--- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
++++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.c
+@@ -975,7 +975,7 @@ bool psr_su_set_dsc_slice_height(struct dc *dc, struct dc_link *link,
+ 
+ void set_replay_coasting_vtotal(struct dc_link *link,
+ 	enum replay_coasting_vtotal_type type,
+-	uint16_t vtotal)
++	uint32_t vtotal)
+ {
+ 	link->replay_settings.coasting_vtotal_table[type] = vtotal;
+ }
+diff --git a/drivers/gpu/drm/amd/display/modules/power/power_helpers.h b/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
+index bef4815e1703d..ff7e6f3cd6be2 100644
+--- a/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
++++ b/drivers/gpu/drm/amd/display/modules/power/power_helpers.h
+@@ -56,7 +56,7 @@ bool dmub_init_abm_config(struct resource_pool *res_pool,
+ void init_replay_config(struct dc_link *link, struct replay_config *pr_config);
+ void set_replay_coasting_vtotal(struct dc_link *link,
+ 	enum replay_coasting_vtotal_type type,
+-	uint16_t vtotal);
++	uint32_t vtotal);
+ void set_replay_ips_full_screen_video_src_vtotal(struct dc_link *link, uint16_t vtotal);
+ void calculate_replay_link_off_frame_count(struct dc_link *link,
+ 	uint16_t vtotal, uint16_t htotal);
 -- 
 2.43.0
 
