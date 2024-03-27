@@ -1,55 +1,60 @@
-Return-Path: <linux-kernel+bounces-121224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B420288E420
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:53:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 121AB88E422
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:53:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B8161F2F5C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:53:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FD9E1C2B7D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82351411CC;
-	Wed, 27 Mar 2024 12:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E4D18BC43;
+	Wed, 27 Mar 2024 12:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIg4l7+R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kpTNejkf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB87118B618;
-	Wed, 27 Mar 2024 12:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5ED118BC3B;
+	Wed, 27 Mar 2024 12:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542392; cv=none; b=Zzqa6I5jiGUZljIsbhsNI97uyOY8VhTJT6MVgA/UclwL42AlmQmUDIv4YnrSeFw8ACNq/aQQvrJkEjfmReWKfX3sPdWQNWnlx+kFJmpkw49zPBkXRXmKL3+I5oRGkIvwQQvp4Swp80kAf8P6Eeyd7df2ixLR2QPlVavEAvq//+o=
+	t=1711542394; cv=none; b=pUXKLbob7Mf3gIFvumScilMKSnrN5PRBXTLmMbpCLjYFIaegKN9SFS46KD6AGYbCtWNxiyEtKyPCpUG1YdA85mpTPVrHqm3AVu4Zqpp/cW+bakR5mgYtVD29gxqCky7eLgqSF3bd/tOPuN7FZtW2nptu0zaCxTTxCxfn9O6uca0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542392; c=relaxed/simple;
-	bh=c6I8Ilt7BMRkOWNzIl697pUiKROGT3eJAxfs/f6ncJQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cU7lUwPMywWwFaIiuebg0S/9gWTvimzm/ZIa9qinqUt/lLrG93baUPNX1+4dGYC0WdEPXmt7KWqpR7DhBPXc7x9ZDztBt1jtrSn9BKNsSS6nSwTbIafE/eDwEV9uBn3azEgtrmcyqXGOBz7BLh80aByFcbKV+krfBbXCeVtJVSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XIg4l7+R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B900CC433F1;
-	Wed, 27 Mar 2024 12:26:30 +0000 (UTC)
+	s=arc-20240116; t=1711542394; c=relaxed/simple;
+	bh=yLo0maUaBlppSb+0jqMmPQdZp56ZI4K9rUaj/Lv8vOA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XtKVz8tSqmaP0/ooyYAZZrYA7Xxu0YhHp22OWCqI478az62FqbEUHceUwIomhSoVtkJvRqMI0TWnmPegbDT9k8AwNBSHsZsMoAX91y5cpX22eNdKUmao3k7OHTFt0JtnNvFCzroWvTXVXbQwmBg0CHAfGu8Cs0mMgRvd5/IKN1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kpTNejkf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4852EC433A6;
+	Wed, 27 Mar 2024 12:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542391;
-	bh=c6I8Ilt7BMRkOWNzIl697pUiKROGT3eJAxfs/f6ncJQ=;
+	s=k20201202; t=1711542394;
+	bh=yLo0maUaBlppSb+0jqMmPQdZp56ZI4K9rUaj/Lv8vOA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=XIg4l7+R5UQi2IglUDLt22Q4mTZBnecJFto7c+lBwKKvlwVWYzEpKb9F2kZnHf3cM
-	 NVMAGFgEzpwgzv7l6iHdW99T/ZZ4rj6CvS/B1GtxNCH/wTsgrhgEsuDIKFdCAkkeE4
-	 kB8t1yHxFFWRO++ACxiVZHswwcB9GaIzZ1eL08lFUdFyUpcqOQF7p/5TjU1b689mLj
-	 PzavNI8TP0iKqPOuZ9tjkejCZm2+uxXH4ujbeaXJR7onTuhaliRRjQJIo1tPPsXFQ3
-	 eHqlKfgzSxIS+KCHwkAwQ5R+YXzJdO8v7/q2nVroLkKEZROELU2qls7bhh/IkNhYfJ
-	 E9MDIWbe8BtrA==
+	b=kpTNejkfh/wsoNrJxOemEAMloIZ2CzoZY+4vi48qif8lJqkQjaQ4GqOdCWtgXG+DH
+	 C6ovqv649rPyMaYkxkDVIyTnS9z996sWTawzG38C1F6GMs0P9xaW74ChPz2vV4Uq1C
+	 zXmZiodsLcYIeOqryfVoZz4ObSqO0e9CWhBr88TSmiBsaAXyZtRUvRXONa8whQbPPT
+	 9MNkTVtw7aQcDE4NMi96MLNkjVH5mTUc0KMtwXj9R+fLVrFr9005f04rOVf8ihd5ll
+	 hlaeCxkYz/MylxkXgdoI0S0q1r0ulgh5TGwFXe25HZHYNIZG2BdcH2OGVOQpC0hb8g
+	 vf0ZShPHAE04A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ville.syrjala@linux.intel.com
-Cc: Jani Nikula <jani.nikula@intel.com>,
-	intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org,
+	srinivasan.shanmugam@amd.com
+Cc: Jerry Zuo <jerry.zuo@amd.com>,
+	Jun Lei <Jun.Lei@amd.com>,
+	Wayne Lin <Wayne.Lin@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/i915/dp: Limit SST link rate to <=8.1Gbps" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:26:29 -0400
-Message-ID: <20240327122629.2841148-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Fix uninitialized variable usage in core_link_ 'read_dpcd() & write_dpcd()' functions" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:26:32 -0400
+Message-ID: <20240327122632.2841187-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,7 +64,6 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 4.19-stable tree.
@@ -72,40 +76,57 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 6061811d72e14f41f71b6a025510920b187bfcca Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
-Date: Thu, 8 Feb 2024 17:45:52 +0200
-Subject: [PATCH] drm/i915/dp: Limit SST link rate to <=8.1Gbps
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From 3295580d4683bdc56c0662b4a4834f597baceadc Mon Sep 17 00:00:00 2001
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Date: Wed, 17 Jan 2024 08:41:52 +0530
+Subject: [PATCH] drm/amd/display: Fix uninitialized variable usage in
+ core_link_ 'read_dpcd() & write_dpcd()' functions
 
-Limit the link rate to HBR3 or below (<=8.1Gbps) in SST mode.
-UHBR (10Gbps+) link rates require 128b/132b channel encoding
-which we have not yet hooked up into the SST/no-sideband codepaths.
+The 'status' variable in 'core_link_read_dpcd()' &
+'core_link_write_dpcd()' was uninitialized.
+
+Thus, initializing 'status' variable to 'DC_ERROR_UNEXPECTED' by default.
+
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dpcd.c:226 core_link_read_dpcd() error: uninitialized symbol 'status'.
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dpcd.c:248 core_link_write_dpcd() error: uninitialized symbol 'status'.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240208154552.14545-1-ville.syrjala@linux.intel.com
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Cc: Jerry Zuo <jerry.zuo@amd.com>
+Cc: Jun Lei <Jun.Lei@amd.com>
+Cc: Wayne Lin <Wayne.Lin@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/i915/display/intel_dp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index ab415f41924d7..5045c34a16be1 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -2356,6 +2356,9 @@ intel_dp_compute_config_limits(struct intel_dp *intel_dp,
- 	limits->min_rate = intel_dp_common_rate(intel_dp, 0);
- 	limits->max_rate = intel_dp_max_link_rate(intel_dp);
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c
+index 5c9a30211c109..fc50931c2aecb 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c
+@@ -205,7 +205,7 @@ enum dc_status core_link_read_dpcd(
+ 	uint32_t extended_size;
+ 	/* size of the remaining partitioned address space */
+ 	uint32_t size_left_to_read;
+-	enum dc_status status;
++	enum dc_status status = DC_ERROR_UNEXPECTED;
+ 	/* size of the next partition to be read from */
+ 	uint32_t partition_size;
+ 	uint32_t data_index = 0;
+@@ -234,7 +234,7 @@ enum dc_status core_link_write_dpcd(
+ {
+ 	uint32_t partition_size;
+ 	uint32_t data_index = 0;
+-	enum dc_status status;
++	enum dc_status status = DC_ERROR_UNEXPECTED;
  
-+	/* FIXME 128b/132b SST support missing */
-+	limits->max_rate = min(limits->max_rate, 810000);
-+
- 	limits->min_lane_count = 1;
- 	limits->max_lane_count = intel_dp_max_lane_count(intel_dp);
- 
+ 	while (size) {
+ 		partition_size = dpcd_get_next_partition_size(address, size);
 -- 
 2.43.0
 
