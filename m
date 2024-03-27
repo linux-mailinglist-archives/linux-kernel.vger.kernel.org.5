@@ -1,99 +1,156 @@
-Return-Path: <linux-kernel+bounces-121359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFEB588E6B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:42:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA90688E6B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4F71C280F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84E5F2C95BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0FB13AD21;
-	Wed, 27 Mar 2024 13:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469681386DF;
+	Wed, 27 Mar 2024 13:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Y7jtTKcr"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+b05JUj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47623139D1D
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E9A127B5F
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711545493; cv=none; b=Qax1bEvd23zHafqt0H8USYucmvx2vQ2nzGrJMVS+FgOmYR7zH/jQ91fj38n6KPt7fENKbZKGPaofYVb7cRv0fjCIz+ASBgbqHENEqxlX/E0kEdHNwb0c2YuCkTNNE8qus6q/qqr6po/Zy0hK4csdNcpZtKjNc+qaINrKn/Hewwg=
+	t=1711545810; cv=none; b=hpB1m+s8yfREsPmC9eYj8qxqZ952JZ+WyJ/uuxnpzPTFpfiOMiO8leN99rVeoGo5XGGHhj1PczgNCAcsPYCujHcD92lxnUENtvhjanqm3XmEKGzQ/ge5+lIx3jSms75xCvJJXu+g5/By9EWOmRgWELR3lj9iPnyYJWHRsFYO1B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711545493; c=relaxed/simple;
-	bh=K5p0LQUVGEjvqZlnZQdHgOEYJ2uEEM4vsv9v1Xr+OhU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dgJ+Fg/lZE4BsI2vRfPxUPke0XQAADOrHsWiDQ9B/ycVKlv+0ME5FW0/fJfR5aC+w6tv0INJg//o76DSFiszIYnBjHXq290YjlbFOtDZJhQantlt9wLEvAfZnrwX0WVDqI0jfmBrlLsYVZdWxZprZKdtzZ2OpBlIrfuQt74SyCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Y7jtTKcr; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 75E1A675;
-	Wed, 27 Mar 2024 14:17:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711545457;
-	bh=K5p0LQUVGEjvqZlnZQdHgOEYJ2uEEM4vsv9v1Xr+OhU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y7jtTKcr2CCJPe2Q35s1BtZbsbxNS9bdvXO5tUBBMTz/t9tWOeuEfmvtNrDI2TEiG
-	 BxiNafgPsql1Qg6JkM9UTC4xTDDRrp4QOM/idKGkGFmTpYLsWFruNwZAzGWpvUY3+v
-	 3WQTEc1Ot0102n8nV6IkhmFjIouj5OGvpPVyjqrA=
-Date: Wed, 27 Mar 2024 15:18:00 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add myself as maintainer for Xilinx DRM
- drivers
-Message-ID: <20240327131800.GA4666@pendragon.ideasonboard.com>
-References: <20240327-xilinx-maintainer-v1-1-c5fdc115f448@ideasonboard.com>
+	s=arc-20240116; t=1711545810; c=relaxed/simple;
+	bh=U7abAYA8MCl0AIbIYaTfhg3/P08q63VTWwI22U1GpRo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lU99OqbN0bLmmaY7A2in8p3ALNbM8eZX2d66Smmr7rLNFR/363OKIYAn6BbQNsmS3f7edNpLtc/vFOYGavFASp/CpOYt6Zui2rUK5D8/NvITNUU+20fXjgQhvWd/mVEPyfT/+BEGM2YCxy2+Z/PaQPj0YQ32Q0+TtrIF1gdS3zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+b05JUj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A6AAC43394;
+	Wed, 27 Mar 2024 13:23:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711545810;
+	bh=U7abAYA8MCl0AIbIYaTfhg3/P08q63VTWwI22U1GpRo=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=Z+b05JUje7LfkVLWp2X/on6sDdqTF4W2g/f4omGVP4ZosDCiI3xVXCdCEClOLvID7
+	 KLVVoNUWBnDIhjDIHxZtuIj2ZOjUOz1tElMOQIu1VuSt5Ky6nWuDbVGthZHXHmsxrE
+	 eqtaKq1V2ABFMCS/OfnPQOPMp2IpfLPX0NFOJWSZ+yn/9kPaW6UZYyDE3s3WdXVyfE
+	 FEKeg0OIodQL7NKr3+KwJbOduoWiciKPsUfDCuADvVppCjAz2l7KWel9y5Plpfa2yq
+	 wjsxnN9rtfXsrAXII+73GJ9Ja0NLXgCHTuYyESt4y5wT2wFbB5M8TAGiuIaWU2/HL4
+	 i/kiwtdft8dAA==
+Message-ID: <fb1d34b54d00fce340c1c7e20e6d8590293f3513.camel@kernel.org>
+Subject: Re: [PATCH 4/4] kprobes: Remove core dependency on modules
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>
+Cc: linux-kernel@vger.kernel.org, agordeev@linux.ibm.com, 
+ anil.s.keshavamurthy@intel.com, aou@eecs.berkeley.edu, bp@alien8.de, 
+ catalin.marinas@arm.com, dave.hansen@linux.intel.com, davem@davemloft.net, 
+ gor@linux.ibm.com, hca@linux.ibm.com, jcalvinowens@gmail.com, 
+ linux-arm-kernel@lists.infradead.org, mingo@redhat.com, mpe@ellerman.id.au,
+  naveen.n.rao@linux.ibm.com, palmer@dabbelt.com, paul.walmsley@sifive.com, 
+ tglx@linutronix.de, will@kernel.org
+Date: Wed, 27 Mar 2024 15:23:24 +0200
+In-Reply-To: <20240327090155.873f1ed32700dbdb75f8eada@kernel.org>
+References: <20240326163624.3253157-1-mark.rutland@arm.com>
+	 <20240326163624.3253157-5-mark.rutland@arm.com>
+	 <D03UMKC71414.2D6NN1BIWD5TZ@kernel.org>
+	 <ZgMICo-dZJgVklc4@FVFF77S0Q05N.cambridge.arm.com>
+	 <20240327090155.873f1ed32700dbdb75f8eada@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240327-xilinx-maintainer-v1-1-c5fdc115f448@ideasonboard.com>
 
-Hi Tomi,
+On Wed, 2024-03-27 at 09:01 +0900, Masami Hiramatsu wrote:
+> On Tue, 26 Mar 2024 17:38:18 +0000
+> Mark Rutland <mark.rutland@arm.com> wrote:
+>=20
+> > On Tue, Mar 26, 2024 at 07:13:51PM +0200, Jarkko Sakkinen wrote:
+> > > On Tue Mar 26, 2024 at 6:36 PM EET, Mark Rutland wrote:
+> >=20
+> > > > +#ifdef CONFIG_MODULES
+> > > > =C2=A0	/* Check if 'p' is probing a module. */
+> > > > =C2=A0	*probed_mod =3D __module_text_address((unsigned long) p-
+> > > > >addr);
+> > > > =C2=A0	if (*probed_mod) {
+> > > > @@ -1605,6 +1606,8 @@ static int
+> > > > check_kprobe_address_safe(struct kprobe *p,
+> > > > =C2=A0			ret =3D -ENOENT;
+> > > > =C2=A0		}
+> > > > =C2=A0	}
+> > > > +#endif
+> > >=20
+> > > This can be scoped a bit more (see v7 of my patch set).
+> >=20
+> > > > +#ifdef CONFIG_MODULES
+> > > > =C2=A0static nokprobe_inline bool trace_kprobe_module_exist(struct
+> > > > trace_kprobe *tk)
+> > > > =C2=A0{
+> > > > =C2=A0	char *p;
+> > > > @@ -129,6 +130,9 @@ static nokprobe_inline bool
+> > > > trace_kprobe_module_exist(struct trace_kprobe *tk)
+> > > > =C2=A0
+> > > > =C2=A0	return ret;
+> > > > =C2=A0}
+> > > > +#else
+> > > > +#define trace_kprobe_module_exist(tk) false /* aka a module
+> > > > never exists */
+> > > > +#endif /* CONFIG_MODULES */
+> > > > =C2=A0
+> > > > =C2=A0static bool trace_kprobe_is_busy(struct dyn_event *ev)
+> > > > =C2=A0{
+> > > > @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct
+> > > > trace_kprobe *tk)
+> > > > =C2=A0	return ret;
+> > > > =C2=A0}
+> > > > =C2=A0
+> > > > +#ifdef CONFIG_MODULES
+> > > > =C2=A0/* Module notifier call back, checking event on the module */
+> > > > =C2=A0static int trace_kprobe_module_callback(struct notifier_block
+> > > > *nb,
+> > > > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long val, v=
+oid
+> > > > *data)
+> > > > @@ -699,6 +704,9 @@ static int
+> > > > trace_kprobe_module_callback(struct notifier_block *nb,
+> > > > =C2=A0
+> > > > =C2=A0	return NOTIFY_DONE;
+> > > > =C2=A0}
+> > > > +#else
+> > > > +#define trace_kprobe_module_callback (NULL)
+> > > > +#endif /* CONFIG_MODULES */
+> > >=20
+> > > The last two CONFIG_MODULES sections could be combined. This was
+> > > also in
+> > > v7.
+> >=20
+> > > Other than lgtm.
+> >=20
+> > Great! I've folded your v7 changes in, and pushed that out to:
+> >=20
+> > =C2=A0
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=
+=3Dkprobes/without-modules
+> >=20
+> > I'll hold off sending that out to the list until other folk have
+> > had a chance
+> > to comment.
+>=20
+> Yeah, the updated one looks good to me too.
+>=20
+> Thanks!
 
-Thank you for the patch.
+Yeah, I'm also planning to test this with x86 instrumenting sgx_* calls
+as I need to test the cgroups support for it so can help with the
+coverage both RISC-V and x86 (as I find a good time slot).
 
-On Wed, Mar 27, 2024 at 03:03:33PM +0200, Tomi Valkeinen wrote:
-> Add myself as a co-maintainer for Xilinx DRM drivers to help Laurent.
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-Much appreciated :-)
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1aabf1c15bb3..79ef5a6bf21b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7306,6 +7306,7 @@ F:	drivers/gpu/drm/xen/
->  
->  DRM DRIVERS FOR XILINX
->  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> +M:	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
->  T:	git git://anongit.freedesktop.org/drm/drm-misc
-> 
-> ---
-> base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
-> change-id: 20240327-xilinx-maintainer-f6020f6cba4d
-
--- 
-Regards,
-
-Laurent Pinchart
+BR, Jarkko
 
