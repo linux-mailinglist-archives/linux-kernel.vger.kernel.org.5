@@ -1,111 +1,172 @@
-Return-Path: <linux-kernel+bounces-122104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D00D88F1ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:33:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F1D88F1BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7381C2FAA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:33:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E201C2B81B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E26152E1B;
-	Wed, 27 Mar 2024 22:33:20 +0000 (UTC)
-Received: from 2.mo560.mail-out.ovh.net (2.mo560.mail-out.ovh.net [188.165.53.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A037153575;
+	Wed, 27 Mar 2024 22:18:46 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0932376A
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.53.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDE5152E03
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:18:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711578800; cv=none; b=cy+GARi5Mww0LMApk44CAiL4LS4h1djFU4B1/Bsl6xI2yJ13sXiqtJqazxI+quVIl9yJE/XOhwrSXu41R/6YSq91ghYHOc56vijdvS6uC3NlSmoqFFr6MPSMJ1/HDdQBEGaKhFgdYDwWrhsqFiq3K8WyN+H1VmZ2XjxGMPF6/e4=
+	t=1711577926; cv=none; b=PxgZEd32wVSIjLjCEB8izSY37XKDY5blDoIQCOQ2fpgZGjgZZFj0EjoSp8zWLQWfUzr/ttO/sU3B09e1HeAIKFpE3euJqoGXDZMo3CxJFhEzzAjE6RqhCXrZBOwp42DN1OyYE1TFp/xIKWawLO85K94oyf3a3CjgVoe8316haek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711578800; c=relaxed/simple;
-	bh=uubMJfEGsx1wHMfNv8O85cjpX0Z4oxTc9ge4GrdhcKE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O3qVHDR52x3cNqCevnhfZjJHePaqsQSQNoI9T3otS0UD7rimozn59lDOy8V2nk82q/U2IowM7qBdwCw6KIbxQrq1QOGaDrrnS/l8sj1Ues/zgHhTrrX2RsJOogV79EW7WDEJQNBE9GyhRVl+9rw9GlJrC0yVrgx7h60u8xc9zRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl; spf=pass smtp.mailfrom=milecki.pl; arc=none smtp.client-ip=188.165.53.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=milecki.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=milecki.pl
-Received: from director9.ghost.mail-out.ovh.net (unknown [10.109.176.162])
-	by mo560.mail-out.ovh.net (Postfix) with ESMTP id 4V4gvv0d45z1JMc
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:15:07 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-xfkn4 (unknown [10.110.178.52])
-	by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id E1CF91FD2C;
-	Wed, 27 Mar 2024 22:15:03 +0000 (UTC)
-Received: from milecki.pl ([37.59.142.107])
-	by ghost-submission-6684bf9d7b-xfkn4 with ESMTPSA
-	id gjE7MWeaBGY6QxIAbVqslg
-	(envelope-from <rafal@milecki.pl>); Wed, 27 Mar 2024 22:15:03 +0000
-Authentication-Results:garm.ovh; auth=pass (GARM-107S0012491a7f4-335c-4194-8bbd-5f1ada98fd90,
-                    AD8588E3BB83D84E59DEA8CE8674EAB20989D6B2) smtp.auth=rafal@milecki.pl
-X-OVh-ClientIp:31.11.218.106
-Message-ID: <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
-Date: Wed, 27 Mar 2024 23:15:02 +0100
+	s=arc-20240116; t=1711577926; c=relaxed/simple;
+	bh=GEVd/ZHs22Oo1fsjgBg0d3C+YaEbF9o9uCOPozoSIpw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=b4L7WrlQlxYT8pUVUj6MayaHgvjTImCP0+68RcbRI7ZiccWGazYe+OzFB/n1GgBgWS+SETVA2jD9+yIYV98VDDMKyfcYPC94bss5s2C5OKhPiLa5z1tbmFl30QtJUYyUpzCI5qUptkAfhB20Y1REEUlzkUnB2sxdyNraxnSmdVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbef888187so25902939f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 15:18:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711577924; x=1712182724;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BXJswU0jfXaplFI+x0DV+weneotNUeY/bMnz2lIVJHY=;
+        b=BqBK9aeQXTt9ZO7+nCxp6K5hDAXbNQ3xXiD15Wf3jWsye8hnJpOHhY/R9POU7vLp4x
+         k4Ymx/yrkLGZadaWfHLWokoCJKlgF/oDgpPga4n44TymxhXXY2B1iK7kEXRofaWQc1Wf
+         adWXEzubLQa3DJTeudEgKyqxRJr1hdTeha0g5OFmM3YoUGdIMRIZfuVPQOmJ3LPWvDfr
+         gzLhp0rEh2eLaBwySb6aJJa3HBqBC1JwOP5jPwkAd6LWppzo/VuvVokFWx1U4T+3V0m2
+         vDfjl4TNVD7tBNO5T/xWZh7DMxUBXGDZ8fvo95rKCAQ6/9vzKo1/vgpxN31YvfyJXQYF
+         uxhg==
+X-Gm-Message-State: AOJu0YwdThLl+rAWmaICdqg13orFve22M/fyIpvo0X4Q4xB263D3fWl0
+	JfByEVTl/EwoRJ63tQlyL94DrVJ9R4vXmd4pX8FLqzjqSfJoEMnr3pb+e/SWkZ82U6XWMcqGvHW
+	dsWD1IVQsygHZQlaB/UO0hOfxdgmFIT6uz7Y0u9MMBBXlxsWtEs+GqdRnFw==
+X-Google-Smtp-Source: AGHT+IFD7kKa5WHCwUn6h2vhVU3D7bbKHjWW+K/lo+/4Lxr+lvUFKFA/TNgrGFp3hVUhmTowsQxPtWClsDNgb9V6DkYmItH4k1S6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <20240322040951.16680-1-ansuelsmth@gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-In-Reply-To: <20240322040951.16680-1-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 11126987304968301369
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgeekvdfgleeuteeludfghfduvdffjeekhfehteefvefggeelheeludeuiedvueejnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipdefjedrheelrddugedvrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeitddpmhhouggvpehsmhhtphhouhht
+X-Received: by 2002:a05:6638:12ca:b0:47c:14bd:41aa with SMTP id
+ v10-20020a05663812ca00b0047c14bd41aamr34400jas.0.1711577923889; Wed, 27 Mar
+ 2024 15:18:43 -0700 (PDT)
+Date: Wed, 27 Mar 2024 15:18:43 -0700
+In-Reply-To: <0000000000006f876b061478e878@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000028c0be0614abcafb@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
+From: syzbot <syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 22.03.2024 05:09, Christian Marangi wrote:
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 5887feb347a4..0de87bc63840 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
->   	config.name = compatible;
->   	config.id = NVMEM_DEVID_AUTO;
->   	config.owner = THIS_MODULE;
-> -	config.add_legacy_fixed_of_cells = true;
-> +	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
->   	config.type = NVMEM_TYPE_OTP;
->   	config.root_only = true;
->   	config.ignore_wp = true;
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-I think there may be even more unwanted behaviour here. If
-mtd_otp_nvmem_register() fails to find node with "user-otp" /
-"factory-otp" compatible then it sets "config.of_node" to NULL but that
-means NVMEM core still looks for NVMEM cells in device's "of_node".
+***
 
-I believe we should not look for OTP NVMEM cells out of the "user-otp" /
-"factory-otp" compatible nodes.
+Subject: Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
+Author: martin.lau@linux.dev
 
-So maybe what we need in the first place is just:
-config.add_legacy_fixed_of_cells = !!np;
-?
+On 3/25/24 2:36 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    5e74df2f8f15 Merge tag 'x86-urgent-2024-03-24' of git://gi..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=148872a5180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3cf6f08d68868f9db3
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15921a6e180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e081f1180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/1a82880723a7/disk-5e74df2f.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/fd3046ac43b9/vmlinux-5e74df2f.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/2097be59cbc1/bzImage-5e74df2f.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
+> BUG: KMSAN: uninit-value in dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
+>   __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
+>   dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
+>   ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+>   bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+>   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+>   __bpf_prog_run256+0xb5/0xe0 kernel/bpf/core.c:2237
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>   __bpf_prog_run include/linux/filter.h:657 [inline]
+>   bpf_prog_run include/linux/filter.h:664 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>   bpf_trace_run5+0x16f/0x350 kernel/trace/bpf_trace.c:2423
+>   __bpf_trace_ext4_remove_blocks+0x45/0x60 include/trace/events/ext4.h:1984
+>   __traceiter_ext4_remove_blocks+0xb5/0x170 include/trace/events/ext4.h:1984
+>   trace_ext4_remove_blocks include/trace/events/ext4.h:1984 [inline]
+>   ext4_remove_blocks fs/ext4/extents.c:2463 [inline]
+>   ext4_ext_rm_leaf fs/ext4/extents.c:2686 [inline]
+>   ext4_ext_remove_space+0x4e30/0x7e00 fs/ext4/extents.c:2934
+>   ext4_ext_truncate+0x1e3/0x390 fs/ext4/extents.c:4440
+>   ext4_truncate+0x14c6/0x1e10 fs/ext4/inode.c:4146
+>   ext4_evict_inode+0x1886/0x24d0 fs/ext4/inode.c:258
+>   evict+0x3ae/0xa60 fs/inode.c:667
+>   iput_final fs/inode.c:1741 [inline]
+>   iput+0x9ca/0xe10 fs/inode.c:1767
+>   d_delete_notify include/linux/fsnotify.h:307 [inline]
+>   vfs_rmdir+0x53c/0x790 fs/namei.c:4222
+>   do_rmdir+0x630/0x8b0 fs/namei.c:4268
+>   __do_sys_rmdir fs/namei.c:4287 [inline]
+>   __se_sys_rmdir fs/namei.c:4285 [inline]
+>   __x64_sys_rmdir+0x78/0xb0 fs/namei.c:4285
+>   do_syscall_64+0xd5/0x1f0
+>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> 
+> Local variable stack created at:
+>   __bpf_prog_run256+0x45/0xe0 kernel/bpf/core.c:2237
+>   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>   __bpf_prog_run include/linux/filter.h:657 [inline]
+>   bpf_prog_run include/linux/filter.h:664 [inline]
+>   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>   bpf_trace_run5+0x16f/0x350 kernel/trace/bpf_trace.c:2423
+> 
+> CPU: 0 PID: 5017 Comm: syz-executor365 Not tainted 6.8.0-syzkaller-13236-g5e74df2f8f15 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+> =====================================================
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
 
-Any extra limitation of .add_legacy_fixed_of_cells should probably be
-used only if we want to prevent new users of the legacy syntax. The
-problem is that mtd.yaml binding allowed "user-otp" and "factory-otp"
-with old syntax cells. It means every MTD device was allowed to have
-them.
-
-No in-kernel DTS even used "user-otp" or "factory-otp" with NVMEM legacy
-cells but I'm not sure about downstream DTS files. Ideally we would do
-config.add_legacy_fixed_of_cells = false;
-but that could break compatibility with some downstream DTS files.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/martin.lau/bpf-next.git interpreter.kmsan
 
