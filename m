@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-120226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974CD88D49B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:37:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E1988D49C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:37:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0F76B22F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:37:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 243112E810D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7289621101;
-	Wed, 27 Mar 2024 02:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FABA23765;
+	Wed, 27 Mar 2024 02:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUwTWvFO"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QGvyb41W"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB4A24B4A;
-	Wed, 27 Mar 2024 02:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD50424B5B;
+	Wed, 27 Mar 2024 02:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711506978; cv=none; b=B57IGDUKi5DhZeTQQodk/xJcWvSQOVOOiZy8QYFcZFDvJSj1K12k1ZkjcTrV/RmqyNmN5yFwDecDKW2rhdSuyDX2502Tj1J7Hphgmi72fdKjEitEI3Sf2PnNwnUklIYPkS+z3F5lHfR9fkxETXSwBbvpYfHtOvdz5R1rBKQqA5o=
+	t=1711506983; cv=none; b=V3JUDvMbANOtevTcemQsiOzBHkGfVK6yNPbdI5EQS6og1OEfThgbqxLKq7zf9N9eh+qvpF8D1cq/KWWwi6/cLAR87ptKck7QYAwgreIvnvUxNr5I6qvT+Uw2g4rAKYb80qgFNHFnKB87lJ77kz/EIcqFJM8gauhQMfgFiM789xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711506978; c=relaxed/simple;
-	bh=0fCsGNf1188vA6CAE01UEQquzZhM0FfzVV+EIiO8TSw=;
+	s=arc-20240116; t=1711506983; c=relaxed/simple;
+	bh=17ik0Ul2gPKK8aUlxS+AElFknDr9P8MWNuwiq1vhq+0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U78qXQktTaxoM4xyh92NXVgee88ZvbWEGZwjghpkr3ZuackfDz8w2ijTfZiYyIb9SmZG7xdQad6Nzayhwf1oYyodtWzcKYz5rLsMHMyWyqtFz2Y0HAAfcg+eRh1PsJxLphIRYus8cnqpoQf03zENBF11BeUKYE1flSGEIH/ykhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUwTWvFO; arc=none smtp.client-ip=209.85.216.46
+	 MIME-Version; b=WZhBQz86G62Xv2CB5EPDx9fSQkS+KMX9lva1NNvRR6NjCTLPTKvnG19lLt0LykcRdO4V47qXNcgsQKiToeiC8CfpThWIX6b0RVxC1b6+iK+ISpbxHr1GzkTeNBiCUR9hgtJYjfBtIbkzjTPdk0ogNjB0BHk8K5hQxsykk9gUV18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QGvyb41W; arc=none smtp.client-ip=209.85.215.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29f93c4946cso4194993a91.1;
-        Tue, 26 Mar 2024 19:36:16 -0700 (PDT)
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d3907ff128so4694344a12.3;
+        Tue, 26 Mar 2024 19:36:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711506976; x=1712111776; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711506981; x=1712111781; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1nOGf5fpM64u9bq6Y02DKyESI+dcDeLAOylIn1hPVDk=;
-        b=AUwTWvFObc6H3SOcovV3oRkKroYCa/OovYPqu+jheqpTP876WkJ4sXU8S4Jq4QKPWJ
-         /+8TGBH94qJN++57lq04FK5HKxP1acpCM2uT8q7Zln5MWHmaWYpMXqug7AQMw999M3Vk
-         8vAO/c4IeLOM3P6H71ultmiZ5vhYUxZ5thIgkZrld2xJJ7AqjtyFQQTG/LJIiFXVaNMQ
-         X08lCS7ITFwiHGSCrMO/Q+gVsuu/MKNK3p5feH8UJjfpm0RPCluZ+kEPrWbkeoZmh7X9
-         s5ZdQrpiKXsdiuFkcimKK/G752oJ9WBZqzLuFXJKdKx0tQULewjr5rbpN1MMnK0gkopn
-         SRzw==
+        bh=0HHQeIoqMo2CZOYcEbyAnPxdtILQe9NcGBVh9oiIIeA=;
+        b=QGvyb41WE4bHkWCAixzXlEX6gunz0ILP4HWloKkkvQ9Vy70RbRuQ344VmcQ7gqA3Uk
+         o0ChVxDNtdlO3Ve1Exq4oJP2y8RDXZiX26en5hy45FfUyeNUXQY5QQgBG+rWuE9xiLrK
+         3DQZo28sibiy6u1n8I9opXkX3dSjZZSk0ykjLq/7WmtFEVEuv3uOSxKostHLEdQNWEKL
+         weZziQim/fW8OMfOuzb8isngATyuhWQK1EcjqiKQkUxfm89xxXsYKkMXTS34fRnCSaRp
+         YlzEdJCxIBY+CrK6noFlujjegD1Pg8StTEgb3TZYzxACi/jUEZGHf/s4mORpzaIzeBZC
+         1UAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711506976; x=1712111776;
+        d=1e100.net; s=20230601; t=1711506981; x=1712111781;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1nOGf5fpM64u9bq6Y02DKyESI+dcDeLAOylIn1hPVDk=;
-        b=qRdDlykf++C2gUreYvk3zYV1maDgGrVhiq5AQSDpNVl9pvw4gyrnrgVJQ67Gx+NRco
-         icJX3m6GTsI1qUmj8g+fqbMej6pB4Hhtw2+fJE/mEYqdSQ+A1jbW5mnWlpQd95AgxTYh
-         bqwUlX1WCP6wbPa1DFlYf9FfMdT94bUAWEdf1XfORz/PjbH6Ly8mrMU0jH3XIrW6fmmO
-         8v5zx/5+MTVK9Az0MUgTxIrj4zKIcGYzjSrsWQfPRN2pweHf8a755SeDFVQ99BE1wdN8
-         tjDcXbIDFOtgYwoTWY570VDH9jMnN2t6G52VBACCZszkYMPysK6D/DtvpU7aS6vmRth5
-         aBfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXViiolvJCmQIg+d7a0p2qfRJa1EOEh7KnOXorJdGjDjrom3kTQqhMJDJIXu188D3wGdO3s8AJJD9oTGRHeQ7H6lZrHC/8fgE0dyEvZ
-X-Gm-Message-State: AOJu0Yw7O3fhNx6OltHPyN9FsK32wCDexf2b93K+SMtTNj/N0FGmnFKU
-	CCdN9HVuiib+L2MGxJVTyfqPw/SCE+2tXnNBP1mungw7/EeJh5jYA1c4wB7j
-X-Google-Smtp-Source: AGHT+IFmQvoPLIdrjBKDhCQTw0wXy6EPV4pLT8wSmz0VmoB7JynqXBk1OHP6LF8DHlR+cZ2rpcurHQ==
-X-Received: by 2002:a17:90a:d3d6:b0:29b:9d98:5388 with SMTP id d22-20020a17090ad3d600b0029b9d985388mr1516802pjw.12.1711506976293;
-        Tue, 26 Mar 2024 19:36:16 -0700 (PDT)
+        bh=0HHQeIoqMo2CZOYcEbyAnPxdtILQe9NcGBVh9oiIIeA=;
+        b=sM8rbJGdb9IAui9Ihzb38OQ/yqCl3mD9KZZHOLm8PVevGI0HIkeo38IPt2UsFNFpk9
+         UXoMOs7BPILE+hlFy/YWBXPWLzDRCgEVW6TAbaMrFqqoS0hKgT4hc6BVeoYiXrxjaGbH
+         g6uwTCaPIEmYDryvmwg8sl1cBrcgNjpJZFPhv72h1hbN82n+Uq1281e6V0qVWxCgME0v
+         MNQNh7jgKJFaj1ewzUqrwRs68US2V5IiMVdyHzcrD9V7xiFAg0LT/evOjqJOa/HI/dIh
+         QljB/M2OhZKBtJk53qEoHJ9SmXb+ZF80dcjcDQ2dl778eewZPWW3M0hx+kJMRvozRz9B
+         eG4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUjBvYWasynLvkduEaHKg4Jopf7mQgLGL4NHgcWnkajnVng+/Pa5m3Kc2LRgJetzf+61Kzh2ktY+/lmjfwG+cbxSFPhGbjVAbHX27vg
+X-Gm-Message-State: AOJu0YxXg4v0/pyArmd2tlr/YleQs6RPXtuiIhbHZAbQIvp+3MddE5b1
+	jWmQgFRertJnTX+pfFJOEYTsvAMMN+i9NQ7I5Lhf+FZFF0TFl6OKzkQ0wGPl
+X-Google-Smtp-Source: AGHT+IGQDsKjcKuyDURBUBz2PqgK/gvpzGoPM9zjK4nSWJIL+hN6jJasAB7nKlBRx2zHEJZLAUCIqw==
+X-Received: by 2002:a05:6a21:150d:b0:1a3:da69:8eeb with SMTP id nq13-20020a056a21150d00b001a3da698eebmr4086556pzb.52.1711506981166;
+        Tue, 26 Mar 2024 19:36:21 -0700 (PDT)
 Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id l20-20020a17090a409400b0029b2e5bc1b9sm347441pjg.23.2024.03.26.19.36.12
+        by smtp.googlemail.com with ESMTPSA id l20-20020a17090a409400b0029b2e5bc1b9sm347441pjg.23.2024.03.26.19.36.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 19:36:15 -0700 (PDT)
+        Tue, 26 Mar 2024 19:36:20 -0700 (PDT)
 From: Wedson Almeida Filho <wedsonaf@gmail.com>
 To: rust-for-linux@vger.kernel.org
 Cc: Miguel Ojeda <ojeda@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Alice Ryhl <aliceryhl@google.com>,
 	linux-kernel@vger.kernel.org,
 	Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: [PATCH v2 05/10] rust: alloc: introduce allocation flags
-Date: Tue, 26 Mar 2024 23:35:26 -0300
-Message-Id: <20240327023531.187880-6-wedsonaf@gmail.com>
+Subject: [PATCH v2 06/10] rust: alloc: introduce the `BoxExt` trait
+Date: Tue, 26 Mar 2024 23:35:27 -0300
+Message-Id: <20240327023531.187880-7-wedsonaf@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240327023531.187880-1-wedsonaf@gmail.com>
 References: <20240327023531.187880-1-wedsonaf@gmail.com>
@@ -94,108 +94,209 @@ Content-Transfer-Encoding: 8bit
 
 From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-We'll use them when allocating `Box`, `Arc`, and `UniqueArc` instances,
-as well as when allocating memory for `Vec` elements. These changes will
-come in subsequent patches.
+Make fallible versions of `new` and `new_uninit` methods available in
+`Box` even though it doesn't implement them because we build `alloc`
+with the `no_global_oom_handling` config.
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+They also have an extra `flags` parameter that allows callers to pass
+flags to the allocator.
+
 Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 ---
- rust/bindings/bindings_helper.h |  3 ++
- rust/kernel/alloc.rs            | 56 +++++++++++++++++++++++++++++++++
- rust/kernel/prelude.rs          |  2 +-
- 3 files changed, 60 insertions(+), 1 deletion(-)
+ rust/kernel/alloc.rs           |  1 +
+ rust/kernel/alloc/allocator.rs |  6 +++-
+ rust/kernel/alloc/box_ext.rs   | 62 ++++++++++++++++++++++++++++++++++
+ rust/kernel/init.rs            | 13 +++----
+ rust/kernel/prelude.rs         |  2 +-
+ rust/kernel/sync/arc.rs        |  3 +-
+ 6 files changed, 78 insertions(+), 9 deletions(-)
+ create mode 100644 rust/kernel/alloc/box_ext.rs
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 65b98831b975..ddb5644d4fd9 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -20,5 +20,8 @@
- 
- /* `bindgen` gets confused at certain things. */
- const size_t RUST_CONST_HELPER_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
-+const gfp_t RUST_CONST_HELPER_GFP_ATOMIC = GFP_ATOMIC;
- const gfp_t RUST_CONST_HELPER_GFP_KERNEL = GFP_KERNEL;
-+const gfp_t RUST_CONST_HELPER_GFP_KERNEL_ACCOUNT = GFP_KERNEL_ACCOUNT;
-+const gfp_t RUST_CONST_HELPER_GFP_NOWAIT = GFP_NOWAIT;
- const gfp_t RUST_CONST_HELPER___GFP_ZERO = __GFP_ZERO;
 diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
-index 2c99635f9fd3..0502bcf00bce 100644
+index 0502bcf00bce..a4c4b1f79bc9 100644
 --- a/rust/kernel/alloc.rs
 +++ b/rust/kernel/alloc.rs
-@@ -6,3 +6,59 @@
+@@ -5,6 +5,7 @@
+ #[cfg(not(test))]
  #[cfg(not(testlib))]
  mod allocator;
++pub mod box_ext;
  pub mod vec_ext;
+ 
+ /// Flags to be used when allocating memory.
+diff --git a/rust/kernel/alloc/allocator.rs b/rust/kernel/alloc/allocator.rs
+index 01ad139e19bc..fc0439455faa 100644
+--- a/rust/kernel/alloc/allocator.rs
++++ b/rust/kernel/alloc/allocator.rs
+@@ -15,7 +15,11 @@
+ ///
+ /// - `ptr` can be either null or a pointer which has been allocated by this allocator.
+ /// - `new_layout` must have a non-zero size.
+-unsafe fn krealloc_aligned(ptr: *mut u8, new_layout: Layout, flags: bindings::gfp_t) -> *mut u8 {
++pub(crate) unsafe fn krealloc_aligned(
++    ptr: *mut u8,
++    new_layout: Layout,
++    flags: bindings::gfp_t,
++) -> *mut u8 {
+     // Customized layouts from `Layout::from_size_align()` can have size < align, so pad first.
+     let layout = new_layout.pad_to_align();
+ 
+diff --git a/rust/kernel/alloc/box_ext.rs b/rust/kernel/alloc/box_ext.rs
+new file mode 100644
+index 000000000000..aaa6a20d12b6
+--- /dev/null
++++ b/rust/kernel/alloc/box_ext.rs
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+/// Flags to be used when allocating memory.
-+///
-+/// They can be combined with the operators `|`, `&`, and `!`.
-+///
-+/// Values can be used from the [`flags`] module.
-+#[derive(Clone, Copy)]
-+pub struct Flags(u32);
++//! Extensions to [`Box`] for fallible allocations.
 +
-+impl core::ops::BitOr for Flags {
-+    type Output = Self;
-+    fn bitor(self, rhs: Self) -> Self::Output {
-+        Self(self.0 | rhs.0)
-+    }
-+}
++use super::Flags;
++use alloc::boxed::Box;
++use core::alloc::AllocError;
++use core::mem::MaybeUninit;
++use core::result::Result;
 +
-+impl core::ops::BitAnd for Flags {
-+    type Output = Self;
-+    fn bitand(self, rhs: Self) -> Self::Output {
-+        Self(self.0 & rhs.0)
-+    }
-+}
-+
-+impl core::ops::Not for Flags {
-+    type Output = Self;
-+    fn not(self) -> Self::Output {
-+        Self(!self.0)
-+    }
-+}
-+
-+/// Allocation flags.
-+///
-+/// These are meant to be used in functions that can allocate memory.
-+pub mod flags {
-+    use super::Flags;
-+    use crate::bindings;
-+
-+    /// Users can not sleep and need the allocation to succeed.
++/// Extensions to [`Box`].
++pub trait BoxExt<T>: Sized {
++    /// Allocates a new box.
 +    ///
-+    /// A lower watermark is applied to allow access to "atomic reserves". The current
-+    /// implementation doesn't support NMI and few other strict non-preemptive contexts (e.g.
-+    /// raw_spin_lock). The same applies to [`GFP_NOWAIT`].
-+    pub const GFP_ATOMIC: Flags = Flags(bindings::GFP_ATOMIC);
++    /// The allocation may fail, in which case an error is returned.
++    fn new(x: T, flags: Flags) -> Result<Self, AllocError>;
 +
-+    /// Typical for kernel-internal allocations. The caller requires ZONE_NORMAL or a lower zone
-+    /// for direct access but can direct reclaim.
-+    pub const GFP_KERNEL: Flags = Flags(bindings::GFP_KERNEL);
-+
-+    /// The same as [`GFP_KERNEL`], except the allocation is accounted to kmemcg.
-+    pub const GFP_KERNEL_ACCOUNT: Flags = Flags(bindings::GFP_KERNEL_ACCOUNT);
-+
-+    /// Ror kernel allocations that should not stall for direct reclaim, start physical IO or
-+    /// use any filesystem callback.  It is very likely to fail to allocate memory, even for very
-+    /// small allocations.
-+    pub const GFP_NOWAIT: Flags = Flags(bindings::GFP_NOWAIT);
++    /// Allocates a new uninitialised box.
++    ///
++    /// The allocation may fail, in which case an error is returned.
++    fn new_uninit(flags: Flags) -> Result<Box<MaybeUninit<T>>, AllocError>;
 +}
++
++impl<T> BoxExt<T> for Box<T> {
++    #[cfg(any(test, testlib))]
++    fn new(x: T, _flags: Flags) -> Result<Self, AllocError> {
++        Ok(Box::new(x))
++    }
++
++    #[cfg(not(any(test, testlib)))]
++    fn new(x: T, flags: Flags) -> Result<Self, AllocError> {
++        let ptr = if core::mem::size_of::<T>() == 0 {
++            core::ptr::NonNull::<T>::dangling().as_ptr()
++        } else {
++            let layout = core::alloc::Layout::new::<T>();
++
++            // SAFETY: Memory is being allocated (first arg is null). The only other source of
++            // safety issues is sleeping on atomic context, which is addressed by klint. Lastly,
++            // the type is not a SZT (checked above).
++            let ptr = unsafe {
++                super::allocator::krealloc_aligned(core::ptr::null_mut(), layout, flags.0)
++            };
++            if ptr.is_null() {
++                return Err(AllocError);
++            }
++
++            let ptr = ptr.cast::<T>();
++
++            // SAFETY: We just allocated the memory above, it is valid for write.
++            unsafe { ptr.write(x) };
++            ptr
++        };
++
++        // SAFETY: For non-zero-sized types, we allocate above using the global allocator. For
++        // zero-sized types, we use `NonNull::dangling`.
++        Ok(unsafe { Box::from_raw(ptr) })
++    }
++
++    fn new_uninit(flags: Flags) -> Result<Box<MaybeUninit<T>>, AllocError> {
++        <Box<_> as BoxExt<_>>::new(MaybeUninit::<T>::uninit(), flags)
++    }
++}
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index 424257284d16..9c798cffc8e4 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -210,6 +210,7 @@
+ //! [`pin_init!`]: crate::pin_init!
+ 
+ use crate::{
++    alloc::{box_ext::BoxExt, flags::*},
+     error::{self, Error},
+     sync::UniqueArc,
+     types::{Opaque, ScopeGuard},
+@@ -305,9 +306,9 @@ macro_rules! stack_pin_init {
+ ///
+ /// stack_try_pin_init!(let foo: Result<Pin<&mut Foo>, AllocError> = pin_init!(Foo {
+ ///     a <- new_mutex!(42),
+-///     b: Box::try_new(Bar {
++///     b: Box::new(Bar {
+ ///         x: 64,
+-///     })?,
++///     }, GFP_KERNEL)?,
+ /// }));
+ /// let foo = foo.unwrap();
+ /// pr_info!("a: {}", &*foo.a.lock());
+@@ -331,9 +332,9 @@ macro_rules! stack_pin_init {
+ ///
+ /// stack_try_pin_init!(let foo: Pin<&mut Foo> =? pin_init!(Foo {
+ ///     a <- new_mutex!(42),
+-///     b: Box::try_new(Bar {
++///     b: Box::new(Bar {
+ ///         x: 64,
+-///     })?,
++///     }, GFP_KERNEL)?,
+ /// }));
+ /// pr_info!("a: {}", &*foo.a.lock());
+ /// # Ok::<_, AllocError>(())
+@@ -1158,7 +1159,7 @@ fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = Box::try_new_uninit()?;
++        let mut this = <Box<_> as BoxExt<_>>::new_uninit(GFP_KERNEL)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid and will not be moved, because we pin it later.
+@@ -1172,7 +1173,7 @@ fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = Box::try_new_uninit()?;
++        let mut this = <Box<_> as BoxExt<_>>::new_uninit(GFP_KERNEL)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid.
 diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
-index c85b5972c0d3..827e4dfd77df 100644
+index 827e4dfd77df..b37a0b3180fb 100644
 --- a/rust/kernel/prelude.rs
 +++ b/rust/kernel/prelude.rs
 @@ -14,7 +14,7 @@
  #[doc(no_inline)]
  pub use core::pin::Pin;
  
--pub use crate::alloc::vec_ext::VecExt;
-+pub use crate::alloc::{flags::*, vec_ext::VecExt};
+-pub use crate::alloc::{flags::*, vec_ext::VecExt};
++pub use crate::alloc::{box_ext::BoxExt, flags::*, vec_ext::VecExt};
  
  #[doc(no_inline)]
  pub use alloc::{boxed::Box, vec::Vec};
+diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+index 7d4c4bf58388..1252a1b630ed 100644
+--- a/rust/kernel/sync/arc.rs
++++ b/rust/kernel/sync/arc.rs
+@@ -16,6 +16,7 @@
+ //! [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
+ 
+ use crate::{
++    alloc::{box_ext::BoxExt, flags::*},
+     bindings,
+     error::{self, Error},
+     init::{self, InPlaceInit, Init, PinInit},
+@@ -170,7 +171,7 @@ pub fn try_new(contents: T) -> Result<Self, AllocError> {
+             data: contents,
+         };
+ 
+-        let inner = Box::try_new(value)?;
++        let inner = <Box<_> as BoxExt<_>>::new(value, GFP_KERNEL)?;
+ 
+         // SAFETY: We just created `inner` with a reference count of 1, which is owned by the new
+         // `Arc` object.
 -- 
 2.34.1
 
