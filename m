@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-120880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445EC88E021
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:29:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BDF588E023
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9F54B26372
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:29:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3602F29F34E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9BF143C47;
-	Wed, 27 Mar 2024 12:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E19143C6F;
+	Wed, 27 Mar 2024 12:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nm763ZLc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ds1aFSKt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1617143899;
-	Wed, 27 Mar 2024 12:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AEE130E37;
+	Wed, 27 Mar 2024 12:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541472; cv=none; b=o7iVyIYJWFln5Z73eWxueUE4ugxT5UmItWUs2ZkpieXWpa4M9bg/Lwp72RmWD21k7S/rxJnLoVnfnjg0RJITWTGmQQuUgQGC4NuQ9/wbVjSnaXrituojVYZd/YYJcOt9WeZ7LgC7Y+MAF4JvGDg6UGkpYMtPKFObHs8v+5O3OBo=
+	t=1711541475; cv=none; b=gmGSmdidnttr+YbMAidOiQadUzQC3z4MTJ48PmnK146q4TM5yTkl9viKljC7iT8dop9jtaPTV75Atf8iMUK3U2juB7cZ/diEP0FSjWyznTDq7EJSgYK62CPLo9XtnWpSyQ2NwWbIE7ubKqPHN716wcwQM+4KQQGpu9TjjYePiVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541472; c=relaxed/simple;
-	bh=BUAOWqTZdE9aNt1mSirOW9MejxA5rxFMq9wdkBIWlaw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K4pw7S9e1gf9ESrODy4i7+fCD4KdTSrWGc8N2e4IxNWT+CT3XopfkoLsGLIOkPyLJ3+OQRuUAbpjINQ0HJAnS1oQgzD1DMH+c/h9lD36VLeTu2Ud6R1cuquECg/bBypoX1TPZqKXqMtRPOwoOy4crY6EZDd8y1+jZKuW9nCCIn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nm763ZLc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A591C433F1;
-	Wed, 27 Mar 2024 12:11:10 +0000 (UTC)
+	s=arc-20240116; t=1711541475; c=relaxed/simple;
+	bh=9MDSg8diNnnmtmY8t5so3HBPUWbg3AOvXnfYt2w+2q8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gk/OMX53Md44my15Itja37Yclb9Jo9cwVkgq0RQYfK2pkV7i972UhZzqHVadQaiBl1ERgRbaVg8IjgiKNqwOXp0e0iosjYdf5vmdkQcc7pW+Rwyvuum3as9pxEk8qe1x+298i0QJPYU5DFDOZbBClTjS/+Z3AIEx+dXRAqehuQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ds1aFSKt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D85C433C7;
+	Wed, 27 Mar 2024 12:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541471;
-	bh=BUAOWqTZdE9aNt1mSirOW9MejxA5rxFMq9wdkBIWlaw=;
+	s=k20201202; t=1711541475;
+	bh=9MDSg8diNnnmtmY8t5so3HBPUWbg3AOvXnfYt2w+2q8=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Nm763ZLclv4kPzYAmITL9HJrR70RFQvuVPqMUF0uXGaD/U0JoYkWjPAKNKka8NuW+
-	 gygrruk0ydkPxEy4VGbI7vO9ZkPXTnlCZlvbTlvSrVS2NC7pVPuWpuGHjiYSH/xjmR
-	 wK+xKlIAzE43xH3LOg8Ml7BVyCKByr8yZZG6809QITLKPH+aBbuY6m7Wv0Hcd4aZjq
-	 MQRdkUb/zrhii4ez7p0GElR912Bzf3L1ePlt5Z6YwpMRX+yU4ItxMH6HyNftDR/Ovk
-	 GNYcAPBSz8Xf0jxJ/bCjlyFFaWywnvmkfIyI6Ai+HXZraVQZAa3K/NuvSruPP/kjNA
-	 rjF/R7UDutclA==
+	b=ds1aFSKt/6m4/iyIOLX80sv4w9WqpSMUotTK6J26yDxLRksGvtZhsVUoqJxyDvc7a
+	 pRaWZlqBqKitN+STeqhoK3WGtN4bd1esBJ+CGhiB1+TlmO1HXyhOiYstxPIJatKIVW
+	 bhR5IHrnfYEBEr9rYXjZdi4HYCLnvtkLOlmPxvzUw1wX9TaitPkhQpjEAeXjTMqz2P
+	 rmzClRimePQ+7Tri+b5ePxu8+x36L53qnzjYP+Pe04a7BGFlzL9b6d48Z5hRyqpaJe
+	 tBQeefwQBdBqvXWZE8Epi6plqEFtUXDHkHuq0F53tGoJ62+OondZVnKx1BJd+NN1cB
+	 cW8h+jEkzlj0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	nicholas.kazlauskas@amd.com
+	gabe.teeger@amd.com
 Cc: Mario Limonciello <mario.limonciello@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
-	Duncan Ma <duncan.ma@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
+	Ovidiu Bunea <ovidiu.bunea@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix idle check for shared firmware state" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:11:09 -0400
-Message-ID: <20240327121109.2828554-1-sashal@kernel.org>
+Subject: FAILED: Patch "Revert "drm/amd/display: Send DTBCLK disable message on first commit"" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:11:12 -0400
+Message-ID: <20240327121112.2828592-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,61 +74,41 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 3d066f9547dd58329b526db44f42c487a7974703 Mon Sep 17 00:00:00 2001
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Date: Wed, 21 Feb 2024 12:27:31 -0500
-Subject: [PATCH] drm/amd/display: Fix idle check for shared firmware state
+From 3a6a32b31a111f6e66526fb2d3cb13a876465076 Mon Sep 17 00:00:00 2001
+From: Gabe Teeger <gabe.teeger@amd.com>
+Date: Mon, 29 Jan 2024 13:31:44 -0500
+Subject: [PATCH] Revert "drm/amd/display: Send DTBCLK disable message on first
+ commit"
 
-[WHY]
-We still had an instance of get_idle_state checking the PMFW scratch
-register instead of the actual idle allow signal.
+This reverts commit f341055b10bd8be55c3c995dff5f770b236b8ca9.
 
-[HOW]
-Replace it with the SW state check for whether we had allowed idle
-through notify_idle.
+System hang observed, this commit is thought to be the
+regression point.
 
 Cc: Mario Limonciello <mario.limonciello@amd.com>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Duncan Ma <duncan.ma@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reviewed-by: Ovidiu Bunea <ovidiu.bunea@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Gabe Teeger <gabe.teeger@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 613d09c42f3b9..958552a8605ff 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -4847,22 +4847,16 @@ void dc_exit_ips_for_hw_access(struct dc *dc)
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
+index 06edca50a8fa1..36e5bb611fb10 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c
+@@ -414,7 +414,6 @@ static void init_clk_states(struct clk_mgr *clk_mgr)
+ 	uint32_t ref_dtbclk = clk_mgr->clks.ref_dtbclk_khz;
+ 	memset(&(clk_mgr->clks), 0, sizeof(struct dc_clocks));
  
- bool dc_dmub_is_ips_idle_state(struct dc *dc)
- {
--	uint32_t idle_state = 0;
--
- 	if (dc->debug.disable_idle_power_optimizations)
- 		return false;
- 
- 	if (!dc->caps.ips_support || (dc->config.disable_ips == DMUB_IPS_DISABLE_ALL))
- 		return false;
- 
--	if (dc->hwss.get_idle_state)
--		idle_state = dc->hwss.get_idle_state(dc);
--
--	if (!(idle_state & DMUB_IPS1_ALLOW_MASK) ||
--		!(idle_state & DMUB_IPS2_ALLOW_MASK))
--		return true;
-+	if (!dc->ctx->dmub_srv)
-+		return false;
- 
--	return false;
-+	return dc->ctx->dmub_srv->idle_allowed;
- }
- 
- /* set min and max memory clock to lowest and highest DPM level, respectively */
+-	clk_mgr->clks.dtbclk_en = true;
+ 	clk_mgr->clks.ref_dtbclk_khz = ref_dtbclk;	// restore ref_dtbclk
+ 	clk_mgr->clks.p_state_change_support = true;
+ 	clk_mgr->clks.prev_p_state_change_support = true;
 -- 
 2.43.0
 
