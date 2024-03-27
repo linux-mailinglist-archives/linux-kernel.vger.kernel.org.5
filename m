@@ -1,124 +1,118 @@
-Return-Path: <linux-kernel+bounces-120180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD53A88D3CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:38:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8739F88D3D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:46:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66DA52C16D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:38:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41ACB2A7499
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D69B1F60A;
-	Wed, 27 Mar 2024 01:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E2F1CF9A;
+	Wed, 27 Mar 2024 01:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="qipBKAvA"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="epBV9ekP"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D761B7E9;
-	Wed, 27 Mar 2024 01:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D5720334;
+	Wed, 27 Mar 2024 01:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711503492; cv=none; b=hpLnBmbSC7Dq8CkDodNVbj3JDVtzXZdM6gG4mIfKNF6boe/vngPxQbeVDOeIdYGjzKWg/nfB0wXyZrG9dsGffTAGtPWS0AGvBakZyXeNN6v8maY3oDMyGtJZVfWQ5PCubAlDtdh64rIx3iGP+yPbl9LUM40CTSptnbFWrWM3JqU=
+	t=1711503980; cv=none; b=lWCLfjKrK2qonqUrJLATmhZqYb+cEjwTXrFn20zhTbcDWanb3gEr9FwlVbR/Imof7A95sD24kd9djcYK9ifp1T7k1tZ4ywralPlF7Oj/0ARIz/AtGqMlFsngO0qAuuX66WWjsvkKcvb+x8Xl8jup6DZ2gXVSFq+jnMlY8QiITGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711503492; c=relaxed/simple;
-	bh=6qAmt+xdA2QOcCOcEi6dB8mBsdItFfMjVsA3nuCRwiU=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=FeTnDw3i2JOD7uAT/JB5hupeseRvS4lH9N9MT+uFpVR6WJLIonsiBpquF/eOQ0CnzLOtCMBXhAuyVWa6dmgigI/Pkm95oVwHpo8DXwUlP0M9qcgJHhrKPX0OemThnuuQMPljrLQz2WAjHKDY9sCIuWdxWXyvCtvsLI9bD529B3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=qipBKAvA; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1711503481; h=Message-ID:Subject:Date:From:To;
-	bh=xSV0Dmq1/beES1CrMcd6dQoXETDRC4jlecw03aBarYs=;
-	b=qipBKAvAOeq6M0q+nrL3Y6PjYTzqODbRaVKZyNrfi7pMnNBQapugNcZaHbJmlTLe1U8n6rsgvu08vel8BcbxSdjpOm8e51K+ErBIAz9FeIxZR+Itkt7sa1awBaDIyvDqLcvMz2/NXbayzJ3coBHMBvXzKzhrp0ihChKH9K6YWp8=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W3Mnh-R_1711503480;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W3Mnh-R_1711503480)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Mar 2024 09:38:01 +0800
-Message-ID: <1711503463.632461-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net v2 1/2] virtio_net: Do not set rss_indir if RSS is not supported
-Date: Wed, 27 Mar 2024 09:37:43 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: rbc@meta.com,
- riel@surriel.com,
- virtualization@lists.linux.dev (open list:VIRTIO CORE AND NET DRIVERS),
- netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
- linux-kernel@vger.kernel.org (open list),
- hengqi@linux.alibaba.com,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-References: <20240326151911.2155689-1-leitao@debian.org>
-In-Reply-To: <20240326151911.2155689-1-leitao@debian.org>
+	s=arc-20240116; t=1711503980; c=relaxed/simple;
+	bh=HlIAUH5uwQqP1NoramiPx0ynaL0jbu+tb/BWx6ErTU0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kSP6C6qHV7tLHwyz8yh2NnSzMnUKZ6BNDXcdjz+siwlS6mjg6M1S2L3AqCpnfGBGeG0eA6rIu1Eoplk8bYPiAXQEgWvmFvtG3esKyGrWsE1LdQHfSuBdRCGJZ5uURW501HaO+4IJ4CsFA9+9TPWiekJbU1cXiZGA+ikbODkzEeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=epBV9ekP; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42R0Wjx8018515;
+	Wed, 27 Mar 2024 01:46:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=2MDr1/ScghGWOQiG54TEb
+	6BhdAzXd758M7gz4CJdEzM=; b=epBV9ekPGAFqcEAhNPw5gRd65eqTnxWqqlOv6
+	qwm70QCzQ/35XX51JR8rc39nsU/6WaFtRLQ0F075gDD9rLR0UdMurGI7sK5C36wo
+	f5MM+txynKdmBgD3jAEEIhdncweflFdERaXJPpUzd0S6JkcwvriTUxLabFrTlIGR
+	ZL7y29ffogAoNnbIuk8TR/vDeUaBjzxNGe1rYUDGQyWdZJ5Hh1LX9RZJ/bicizsN
+	Ku7d9RM2q7pEusoTKOxxmKXIHztg0Cn/zjxtPnDQKqkRpA15NTr1ZcJdUZcjM7Zv
+	uicXU0xNBq5CgU5E8G7wzNVnxk1MVWxI3gYxlUxTzPY13Jo3g==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x477yrb1u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 01:46:05 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42R1k4xe006882
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 01:46:04 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 26 Mar 2024 18:46:03 -0700
+Date: Tue, 26 Mar 2024 18:46:02 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Jameson Thies <jthies@google.com>
+CC: <heikki.krogerus@linux.intel.com>, <linux-usb@vger.kernel.org>,
+        <pmalani@chromium.org>, <bleung@google.com>,
+        <abhishekpandit@chromium.org>, <andersson@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <fabrice.gasnier@foss.st.com>,
+        <gregkh@linuxfoundation.org>, <hdegoede@redhat.com>,
+        <neil.armstrong@linaro.org>, <rajaram.regupathy@intel.com>,
+        <saranya.gopal@intel.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] usb: typec: ucsi: Check capabilities before cable
+ and identity discovery
+Message-ID: <20240327014602.GB2136359@hu-bjorande-lv.qualcomm.com>
+References: <20240315171836.343830-1-jthies@google.com>
+ <20240315171836.343830-2-jthies@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240315171836.343830-2-jthies@google.com>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zC_GlHJK0_LYl76AEeNORxwCfreSz2u3
+X-Proofpoint-ORIG-GUID: zC_GlHJK0_LYl76AEeNORxwCfreSz2u3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-26_12,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 phishscore=0 adultscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 impostorscore=0
+ mlxlogscore=783 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403210001 definitions=main-2403270010
 
-On Tue, 26 Mar 2024 08:19:08 -0700, Breno Leitao <leitao@debian.org> wrote:
-> Do not set virtnet_info->rss_indir_table_size if RSS is not available
-> for the device.
->
-> Currently, rss_indir_table_size is set if either has_rss or
-> has_rss_hash_report is available, but, it should only be set if has_rss
-> is set.
->
-> On the virtnet_set_rxfh(), return an invalid command if the request has
-> indirection table set, but virtnet does not support RSS.
->
-> Suggested-by: Heng Qi <hengqi@linux.alibaba.com>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->  drivers/net/virtio_net.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index c22d1118a133..c640fdf28fc5 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -3813,6 +3813,9 @@ static int virtnet_set_rxfh(struct net_device *dev,
->  	    rxfh->hfunc != ETH_RSS_HASH_TOP)
->  		return -EOPNOTSUPP;
->
-> +	if (rxfh->indir && !vi->has_rss)
-> +		return -EINVAL;
-> +
->  	if (rxfh->indir) {
+On Fri, Mar 15, 2024 at 05:18:35PM +0000, Jameson Thies wrote:
+> Check the UCSI_CAP_GET_PD_MESSAGE bit before sending GET_PD_MESSAGE to
+> discover partner and cable identity, check UCSI_CAP_CABLE_DETAILS before
+> sending GET_CABLE_PROPERTY to discover the cable and check
+> UCSI_CAP_ALT_MODE_DETAILS before registering the a cable plug. Additionally,
+> move 8 bits from reserved_1 to features in the ucsi_capability struct. This
+> makes the field 16 bits, still 8 short of the 24 bits allocated for it in
+> UCSI v3.0, but it will not overflow because UCSI only defines 14 bits in
+> bmOptionalFeatures.
+> 
+> Fixes: 38ca416597b0 ("usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY")
+> Link: https://lore.kernel.org/linux-usb/44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org
+> Suggested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Jameson Thies <jthies@google.com>
 
-Put !vi->has_rss here?
+Thanks you, Jameson, this resolve the regression I ran into on
+qcs6490-rb3gen2 as well.
 
-Thanks.
+Tested-by: Bjorn Andersson <quic_bjorande@quicinc.com> # QCS6490 Rb3Gen2
 
-
->  		for (i = 0; i < vi->rss_indir_table_size; ++i)
->  			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
-> @@ -4729,13 +4732,15 @@ static int virtnet_probe(struct virtio_device *vdev)
->  	if (virtio_has_feature(vdev, VIRTIO_NET_F_HASH_REPORT))
->  		vi->has_rss_hash_report = true;
->
-> -	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS))
-> +	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS)) {
->  		vi->has_rss = true;
->
-> -	if (vi->has_rss || vi->has_rss_hash_report) {
->  		vi->rss_indir_table_size =
->  			virtio_cread16(vdev, offsetof(struct virtio_net_config,
->  				rss_max_indirection_table_length));
-> +	}
-> +
-> +	if (vi->has_rss || vi->has_rss_hash_report) {
->  		vi->rss_key_size =
->  			virtio_cread8(vdev, offsetof(struct virtio_net_config, rss_max_key_size));
->
-> --
-> 2.43.0
->
+Regards,
+Bjorn
 
