@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-121040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBA3088E305
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:40:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3925D88E1C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B12F6B28270
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:11:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E23151F2CF14
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1764715CD68;
-	Wed, 27 Mar 2024 12:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4143E15D5DE;
+	Wed, 27 Mar 2024 12:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="peRfj/hK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MQ0/AQDV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B9D15D5AD;
-	Wed, 27 Mar 2024 12:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D8315D5D2;
+	Wed, 27 Mar 2024 12:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541915; cv=none; b=h0gtC85cKG7gsLGOmzm67LNHneQVcyMe3HNMoH2mX8R6/DNn2Fq8YfUgrTkc8U1eh1uzq2xr+eBgTKNW8i5sow+srcGCsAXM5OE3lwMQa08crsvb/YqovhicskzPuilcyB2y84UCUkto+8JuN2kij2AEhRiZZBTaSqE4VfrDHiE=
+	t=1711541918; cv=none; b=kBs0twqB3znAd2H0g66fCPKfZeoO92pQIPoqPdUgDn7SdgPxX8mCDnkXjgSOxXh3/L9cFG9quUz7oycux7QDE7eIkoc9D8egVu6Ld0ahAAmxIGWlpvFSIXbb94cTxVqZ6kIEeROW2q67/MBA0RaE9ShQZB4S646o+/uf/WXSdpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541915; c=relaxed/simple;
-	bh=94PepYASHTuw0AbcUSCI00ueygO1XwOUo7qVmNVSBgM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i9MBVI/HBpV4tfos8aoq4a/glYj2kKSTRyHSbtcVFGjH0h4C176713VXuctgomflnAJjZS9ZJsF3sZJaiDfkZjRi2tAgE1QD/G2ayeaT6vdB9WQ1G2a7j2xwFJD+lVNnUc0To9LTuyPsF+qqWoforNlYa+victpWhJtij9dMqjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=peRfj/hK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C2EC433C7;
-	Wed, 27 Mar 2024 12:18:34 +0000 (UTC)
+	s=arc-20240116; t=1711541918; c=relaxed/simple;
+	bh=nyDkxAtoumz6NapNC3ssvGii4GjOv4f2Xhot8O07yaE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P/S1BLZpiqlIqYQE22LVp90Peo7ks2TOoj6P4PgVpjSygo7CgBMtO4qvSZoTp+v5QtnWUbrM7NJwU2sIRc3wgXy+Zk1CIrAVn1Vhz/DRV/QCbamM8jRwBZ0Gzhu290C1UkSVjKzkLO6HCgfRECQPm40sia5eAKEUtCck+hcIcx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MQ0/AQDV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E269DC433F1;
+	Wed, 27 Mar 2024 12:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541915;
-	bh=94PepYASHTuw0AbcUSCI00ueygO1XwOUo7qVmNVSBgM=;
+	s=k20201202; t=1711541918;
+	bh=nyDkxAtoumz6NapNC3ssvGii4GjOv4f2Xhot8O07yaE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=peRfj/hKC418B9bk+9pscTyxLI9e7saGE/uWtp22ZEei5WbqTHwxM9/2m/lFjE5pd
-	 EluKmrwTR+TZtjiBIVi1GboH8pQRp5OiFm4/7nPe9z/XycUzKr1Es+4XChSf4YC/Gg
-	 +Si/41WaF5B6q1myN9meb6T+hQsMTKbtNXTsUplGQEG+AhRgy2mkJURZn+CX+0Na+u
-	 t5RDvCOO+SXAtFuOLWJcbMhc2GqFTxiKZo5ZqgXw1DTdiyFRPqFEyYAN0o45xTpnmW
-	 URHhf3jIAHDB6QpGDKmFlkPyHc6dfhZ8PPKRgZeo0AMV9XH26DGPFp37ETHIPD71T5
-	 xfisdSN4GxCZg==
+	b=MQ0/AQDVZpvUPIRzwLmMHUtIr9bqDDfn9P6vqdRqnICn5X+wPtNIVJ5twWoj+wGnR
+	 qwEKRq8t52Amp2iHl0k+zqmHo6Ly0KDXKhTduHZWU1PMypLe0+OV2TqUun7LT+3Wvk
+	 fPQ7chZb99nEj5/6LOJCwc/LzzJe5+MM9C4whH/034w66PM0kNPwvDf8L7T9qWWQBe
+	 CsNY+qNBEu/bdVH0cDAe91q+e0QJ/v+O/7j8+PLvtTTIKZrt+ooc6BJtr3AVbzo4Co
+	 igYJVKzeTQwj0vw7Jfs+8MyiqAM/qwMkpk64a8PkDyZAfpDUTv5cfivTQg2MVCLVRJ
+	 sKqhE8gtt1pTA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	dillon.varone@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Martin Leung <martin.leung@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	chenhuacai@kernel.org
+Cc: Xiaotian Wu <wuxiaotian@loongson.cn>,
+	Miao Wang <shankerwangmiao@gmail.com>,
+	Xing Li <lixing@loongson.cn>,
+	Hongchen Zhang <zhanghongchen@loongson.cn>,
+	Rui Wang <wangrui@loongson.cn>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	linux-mm@kvack.org,
+	loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Init link enc resources in dc_state only if res_pool presents" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:18:33 -0400
-Message-ID: <20240327121833.2834478-1-sashal@kernel.org>
+Subject: FAILED: Patch "LoongArch: Change __my_cpu_offset definition to avoid mis-optimization" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:18:35 -0400
+Message-ID: <20240327121836.2834515-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,43 +75,56 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From ca25a2b5f841f991e472e2dde7f5e2d337dbea08 Mon Sep 17 00:00:00 2001
-From: Dillon Varone <dillon.varone@amd.com>
-Date: Thu, 28 Dec 2023 21:36:39 -0500
-Subject: [PATCH] drm/amd/display: Init link enc resources in dc_state only if
- res_pool presents
+From c87e12e0e8c1241410e758e181ca6bf23efa5b5b Mon Sep 17 00:00:00 2001
+From: Huacai Chen <chenhuacai@loongson.cn>
+Date: Tue, 19 Mar 2024 15:50:34 +0800
+Subject: [PATCH] LoongArch: Change __my_cpu_offset definition to avoid
+ mis-optimization
 
-[Why & How]
-res_pool is not initialized in all situations such as virtual
-environments, and therefore link encoder resources should not be
-initialized if res_pool is NULL.
+From GCC commit 3f13154553f8546a ("df-scan: remove ad-hoc handling of
+global regs in asms"), global registers will no longer be forced to add
+to the def-use chain. Then current_thread_info(), current_stack_pointer
+and __my_cpu_offset may be lifted out of the loop because they are no
+longer treated as "volatile variables".
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
+This optimization is still correct for the current_thread_info() and
+current_stack_pointer usages because they are associated to a thread.
+However it is wrong for __my_cpu_offset because it is associated to a
+CPU rather than a thread: if the thread migrates to a different CPU in
+the loop, __my_cpu_offset should be changed.
+
+Change __my_cpu_offset definition to treat it as a "volatile variable",
+in order to avoid such a mis-optimization.
+
 Cc: stable@vger.kernel.org
-Reviewed-by: Martin Leung <martin.leung@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Dillon Varone <dillon.varone@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Reported-by: Xiaotian Wu <wuxiaotian@loongson.cn>
+Reported-by: Miao Wang <shankerwangmiao@gmail.com>
+Signed-off-by: Xing Li <lixing@loongson.cn>
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+Signed-off-by: Rui Wang <wangrui@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_state.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/loongarch/include/asm/percpu.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-index 460a8010c79fe..56feee0ff01b1 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
-@@ -267,7 +267,8 @@ void dc_state_construct(struct dc *dc, struct dc_state *state)
- 	state->clk_mgr = dc->clk_mgr;
- 
- 	/* Initialise DIG link encoder resource tracking variables. */
--	link_enc_cfg_init(dc, state);
-+	if (dc->res_pool)
-+		link_enc_cfg_init(dc, state);
+diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/include/asm/percpu.h
+index 9b36ac003f890..8f290e5546cf7 100644
+--- a/arch/loongarch/include/asm/percpu.h
++++ b/arch/loongarch/include/asm/percpu.h
+@@ -29,7 +29,12 @@ static inline void set_my_cpu_offset(unsigned long off)
+ 	__my_cpu_offset = off;
+ 	csr_write64(off, PERCPU_BASE_KS);
  }
+-#define __my_cpu_offset __my_cpu_offset
++
++#define __my_cpu_offset					\
++({							\
++	__asm__ __volatile__("":"+r"(__my_cpu_offset));	\
++	__my_cpu_offset;				\
++})
  
- void dc_state_destruct(struct dc_state *state)
+ #define PERCPU_OP(op, asm_op, c_op)					\
+ static __always_inline unsigned long __percpu_##op(void *ptr,		\
 -- 
 2.43.0
 
