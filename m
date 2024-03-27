@@ -1,199 +1,251 @@
-Return-Path: <linux-kernel+bounces-121833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57F188EE51
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:34:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 505F288EE53
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:34:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FD5E29CFF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:34:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E500A1F3C3AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7693150981;
-	Wed, 27 Mar 2024 18:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D3BF150987;
+	Wed, 27 Mar 2024 18:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gxwO5lRU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="FjoraUmA"
+Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC1A12EBC4;
-	Wed, 27 Mar 2024 18:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C8114EC61
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711564449; cv=none; b=glmXDwhRC8bq8jSv7vw69s/6thQ1AtckBM4/om3tyUNfYPM0NfK1DFftjeEJKHXG9ixpmjwlwwAPPftDPpPfdkQGAeNeGsemqLTAF6PxDG3518gOT7OM8DU75VxF5em59sgz7pR9iIg/vpKvsN+H8s3qffnTasRzVHHFv4c6CDQ=
+	t=1711564465; cv=none; b=eg/+hEALbgtbW1aY6ECyejlS2ROGjrA/ZJniaQ0i+g4oi7r5vuoo/O4CTOS0nfYFb5mKDJGdbvoSXxgZ4IF7eev99pgCApcDrWXL9xkKyJNkaabt3N3XRvJSN+TwQQi6x1sn13JRmoOnYfANcLa92cQV0417Yh42Nmyd1J5R7V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711564449; c=relaxed/simple;
-	bh=7eFBescMyL+emvxUkie7Cz4ZX6idN7amqZZmxHioyzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FeZvNTEShvTUj+ABy5XtyFFUympmUqr+VU5l+4zsxI3lI00++jZ59S0jiK+vdzqg1bwOb+XER8n19yR/AET4ag2HN2MecKkhuWcxEbJA4iuF9yp4rzKEe4IU6fQZlpi6BTZWGZ4lLyKXnZKC6K22Jm+39tFdnWeXSXilWG+Lo4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gxwO5lRU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58D3BC433C7;
-	Wed, 27 Mar 2024 18:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711564449;
-	bh=7eFBescMyL+emvxUkie7Cz4ZX6idN7amqZZmxHioyzQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gxwO5lRUnXIcrWlAZixFvZw/4eYw6KC/AlS9oz2vPrv1CJYVuLZ67gzfTzrBh/jSt
-	 Bsniw2nGCeqouZuxppz2TvpNd/+i69uGnSiUqWBwKa4UseG2SHejJIugMJMuePnvbz
-	 BpPLamj2yzDRP+Sn5WQUYXX1gx6L7zIg81/97HwWJs1xbsdynerORzk3URtsJSlgKD
-	 tD/erLPMOADFJmJuMdJv5A+sOWel+RsMFkfvUAuPyYh7CstwFPGzoqj2ZKpld+HEdP
-	 sss9aIDZ56ppn8kej8jahRh7K0Jy4eEyy/JYFlt8S3DLbJmuQXPKLXsZvDuJt1vElj
-	 1K/TklKHAx6OQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E0EFECE0D67; Wed, 27 Mar 2024 11:34:08 -0700 (PDT)
-Date: Wed, 27 Mar 2024 11:34:08 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix invalid context warning when enable srcu
- barrier testing
-Message-ID: <75730446-9de6-4240-b337-c3170fb405ba@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240325075219.10367-1-qiang.zhang1211@gmail.com>
- <ea12722c-772b-47de-ae3a-022fe1f8da3e@paulmck-laptop>
- <CALm+0cWRSFr=1tdYpvurHFMaB7B-u8geYRZEOztRFfmH42ZKhA@mail.gmail.com>
+	s=arc-20240116; t=1711564465; c=relaxed/simple;
+	bh=aX6QSSGc13nyyDwfQVPqyZNm6X2xKiTyc3AeQGSb5dY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VXHCvf7W34tpXEpZlCnHpvTfWqbqpjvBJfjhZNJmX/BxF7tNZi3PKZUELLwHrllK+RbQ9eSezpUWQIHFGCJ42mG1QWwWzlLUco5pceCrPVA5XX8Pbdemrf/BGDO0mf163sSKbVIFkVcJesoB8BvizxzWgsjAMnSW3HzYJHwHLXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=FjoraUmA; arc=none smtp.client-ip=35.89.44.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+	by cmsmtp with ESMTPS
+	id p9ZQrcPy1DI6fpY6LrCddf; Wed, 27 Mar 2024 18:34:17 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id pY6Kr09WSybtzpY6KrZCxT; Wed, 27 Mar 2024 18:34:16 +0000
+X-Authority-Analysis: v=2.4 cv=RsAOLzmK c=1 sm=1 tr=0 ts=660466a8
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=VgmWMAVCFVrwZvelSRUA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=bAemq08bU+SllrPiEJ0JpMclOr++1EwoQ9PgFhUqrIQ=; b=FjoraUmAwLCGk1O+jFd0gqmn+P
+	7APOyFgNMgCER3TdA4CNzBLaZH9JmHFpznBIg5AUCYKwK8owTtWlhsOwoJoiaiOlRlPtgYL7B7lHz
+	JM09OMYrKcfN3KWd88XABuMg1LX8MRgqw9RBjN/aK0dVTiQxRpDBiyKC7c9YITdOcQ3p7VJsT/Px6
+	sj0oe93KbYhZygr1nQL8uBz+/oiyCKHMAFhY3pecQnwbHl+RHsV7vD14+61yvq1CajQPL0bEo87FD
+	yWdX6cTxrCOrq+q5KAjWp0cdxl6dAOQIv+Cw6KJIrvjd5p3NtBVcsy7esi1HGnKDgBFXcK+SXTaJz
+	igWUtyDw==;
+Received: from [201.172.173.147] (port=36990 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rpY6J-003FCt-27;
+	Wed, 27 Mar 2024 13:34:15 -0500
+Message-ID: <5a6bdbc6-b37e-4c6b-9bff-470fd560663b@embeddedor.com>
+Date: Wed, 27 Mar 2024 12:34:14 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cWRSFr=1tdYpvurHFMaB7B-u8geYRZEOztRFfmH42ZKhA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2][next] wifi: wil6210: Annotate a couple of structs with
+ __counted_by()
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <ZgRayuCJ0gQinMvr@neat>
+ <3f19627e-4472-4ed1-9e2e-b0b427682910@quicinc.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <3f19627e-4472-4ed1-9e2e-b0b427682910@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.173.147
+X-Source-L: No
+X-Exim-ID: 1rpY6J-003FCt-27
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:36990
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfEZi2166cA5AvxC2wUmO0lRzTcfmHW7O5+SY7ppQdfhRbVnU6JxFmqne7UY7WGUIGG1vK2ryfEN3InH7jPKLUvmpULSuzFUKPjXwCUuxEHbNa9a1EOyu
+ PhZTdmvM7QA2BbMof9ssjemuD/Wl9NCM+C7cN64pVGlhxMOSCwaljHEJVm9PfhbnWzU2AvvoXYZHkOdDPJI4vSgKZqeesSL8JUwYYar+Rt6cJuyaCMX3VFaO
 
-On Wed, Mar 27, 2024 at 05:40:07PM +0800, Z qiang wrote:
-> > On Mon, Mar 25, 2024 at 03:52:19PM +0800, Zqiang wrote:
-> > > When the torture_type is set srcu or srcud and cb_barrier is
-> > > non-zero, running the rcutorture test will trigger the
-> > > following warning:
-> > >
-> > > [  163.910989][    C1] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> > > [  163.910994][    C1] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
-> > > [  163.910999][    C1] preempt_count: 10001, expected: 0
-> > > [  163.911002][    C1] RCU nest depth: 0, expected: 0
-> > > [  163.911005][    C1] INFO: lockdep is turned off.
-> > > [  163.911007][    C1] irq event stamp: 30964
-> > > [  163.911010][    C1] hardirqs last  enabled at (30963): [<ffffffffabc7df52>] do_idle+0x362/0x500
-> > > [  163.911018][    C1] hardirqs last disabled at (30964): [<ffffffffae616eff>] sysvec_call_function_single+0xf/0xd0
-> > > [  163.911025][    C1] softirqs last  enabled at (0): [<ffffffffabb6475f>] copy_process+0x16ff/0x6580
-> > > [  163.911033][    C1] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > > [  163.911038][    C1] Preemption disabled at:
-> > > [  163.911039][    C1] [<ffffffffacf1964b>] stack_depot_save_flags+0x24b/0x6c0
-> > > [  163.911063][    C1] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W          6.8.0-rc4-rt4-yocto-preempt-rt+ #3 1e39aa9a737dd024a3275c4f835a872f673a7d3a
-> > > [  163.911071][    C1] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> > > [  163.911075][    C1] Call Trace:
-> > > [  163.911078][    C1]  <IRQ>
-> > > [  163.911080][    C1]  dump_stack_lvl+0x88/0xd0
-> > > [  163.911089][    C1]  dump_stack+0x10/0x20
-> > > [  163.911095][    C1]  __might_resched+0x36f/0x530
-> > > [  163.911105][    C1]  rt_spin_lock+0x82/0x1c0
-> > > [  163.911112][    C1]  spin_lock_irqsave_ssp_contention+0xb8/0x100
-> > > [  163.911121][    C1]  srcu_gp_start_if_needed+0x782/0xf00
-> > > [  163.911128][    C1]  ? _raw_spin_unlock_irqrestore+0x46/0x70
-> > > [  163.911136][    C1]  ? debug_object_active_state+0x336/0x470
-> > > [  163.911148][    C1]  ? __pfx_srcu_gp_start_if_needed+0x10/0x10
-> > > [  163.911156][    C1]  ? __pfx_lock_release+0x10/0x10
-> > > [  163.911165][    C1]  ? __pfx_rcu_torture_barrier_cbf+0x10/0x10
-> > > [  163.911188][    C1]  __call_srcu+0x9f/0xe0
-> > > [  163.911196][    C1]  call_srcu+0x13/0x20
-> > > [  163.911201][    C1]  srcu_torture_call+0x1b/0x30
-> > > [  163.911224][    C1]  rcu_torture_barrier1cb+0x4a/0x60
-> > > [  163.911247][    C1]  __flush_smp_call_function_queue+0x267/0xca0
-> > > [  163.911256][    C1]  ? __pfx_rcu_torture_barrier1cb+0x10/0x10
-> > > [  163.911281][    C1]  generic_smp_call_function_single_interrupt+0x13/0x20
-> > > [  163.911288][    C1]  __sysvec_call_function_single+0x7d/0x280
-> > > [  163.911295][    C1]  sysvec_call_function_single+0x93/0xd0
-> > > [  163.911302][    C1]  </IRQ>
-> > > [  163.911304][    C1]  <TASK>
-> > > [  163.911308][    C1]  asm_sysvec_call_function_single+0x1b/0x20
-> > > [  163.911313][    C1] RIP: 0010:default_idle+0x17/0x20
-> > > [  163.911326][    C1] RSP: 0018:ffff888001997dc8 EFLAGS: 00000246
-> > > [  163.911333][    C1] RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffffae618b51
-> > > [  163.911337][    C1] RDX: 0000000000000000 RSI: ffffffffaea80920 RDI: ffffffffaec2de80
-> > > [  163.911342][    C1] RBP: ffff888001997dc8 R08: 0000000000000001 R09: ffffed100d740cad
-> > > [  163.911346][    C1] R10: ffffed100d740cac R11: ffff88806ba06563 R12: 0000000000000001
-> > > [  163.911350][    C1] R13: ffffffffafe460c0 R14: ffffffffafe460c0 R15: 0000000000000000
-> > > [  163.911358][    C1]  ? ct_kernel_exit.constprop.3+0x121/0x160
-> > > [  163.911369][    C1]  ? lockdep_hardirqs_on+0xc4/0x150
-> > > [  163.911376][    C1]  arch_cpu_idle+0x9/0x10
-> > > [  163.911383][    C1]  default_idle_call+0x7a/0xb0
-> > > [  163.911390][    C1]  do_idle+0x362/0x500
-> > > [  163.911398][    C1]  ? __pfx_do_idle+0x10/0x10
-> > > [  163.911404][    C1]  ? complete_with_flags+0x8b/0xb0
-> > > [  163.911416][    C1]  cpu_startup_entry+0x58/0x70
-> > > [  163.911423][    C1]  start_secondary+0x221/0x280
-> > > [  163.911430][    C1]  ? __pfx_start_secondary+0x10/0x10
-> > > [  163.911440][    C1]  secondary_startup_64_no_verify+0x17f/0x18b
-> > > [  163.911455][    C1]  </TASK>
-> > >
-> > > This commit therefore use smp_call_on_cpu() instead of
-> > > smp_call_function_single(), make rcu_torture_barrier1cb() invoked
-> > > happens on task-context.
-> > >
-> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> >
-> > Huh.  The use of non-raw spinlocks does constrain call_rcu() use, doesn't
-> > it?  Good catch!
-> 
-> Yes, This problem happens in the srcu rcutorture test under the
-> Preempt-RT kernel.
-> 
-> > Queued for testing and further review.  Are there any uses of call_srcu()
-> > out there that are unsafe on -rt?
-> 
-> I'm running rcutorture tests under the RT-kernel these days, and I haven't found
-> any others yet.  :)
 
-Very good, and glad that you are doing RT rcutorture testing.
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
+On 3/27/24 12:26, Jeff Johnson wrote:
+> On 3/27/2024 10:43 AM, Gustavo A. R. Silva wrote:
+>> Prepare for the coming implementation by GCC and Clang of the __counted_by
+>> attribute. Flexible array members annotated with __counted_by can have
+>> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+>> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+>> functions).
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>> Changes in v2:
+>>   - Annotate one more struct.
+>>   - Update Subject line.
+>>
+>> v1:
+>>   - Link: https://lore.kernel.org/linux-hardening/ZgODZOB4fOBvKl7R@neat/
+>>
+>>   drivers/net/wireless/ath/wil6210/wmi.h | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+>> index 71bf2ae27a98..38f64524019e 100644
+>> --- a/drivers/net/wireless/ath/wil6210/wmi.h
+>> +++ b/drivers/net/wireless/ath/wil6210/wmi.h
+>> @@ -474,7 +474,7 @@ struct wmi_start_scan_cmd {
+>>   	struct {
+>>   		u8 channel;
+>>   		u8 reserved;
+>> -	} channel_list[];
+>> +	} channel_list[] __counted_by(num_channels);
+>>   } __packed;
 > 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > ---
-> > >  kernel/rcu/rcutorture.c | 9 ++++-----
-> > >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > > index 48a9d47ec90e..498aae52333e 100644
-> > > --- a/kernel/rcu/rcutorture.c
-> > > +++ b/kernel/rcu/rcutorture.c
-> > > @@ -3041,11 +3041,12 @@ static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
-> > >  }
-> > >
-> > >  /* IPI handler to get callback posted on desired CPU, if online. */
-> > > -static void rcu_torture_barrier1cb(void *rcu_void)
-> > > +static int rcu_torture_barrier1cb(void *rcu_void)
-> > >  {
-> > >       struct rcu_head *rhp = rcu_void;
-> > >
-> > >       cur_ops->call(rhp, rcu_torture_barrier_cbf);
-> > > +     return 0;
-> > >  }
-> > >
-> > >  /* kthread function to register callbacks used to test RCU barriers. */
-> > > @@ -3071,11 +3072,9 @@ static int rcu_torture_barrier_cbs(void *arg)
-> > >                * The above smp_load_acquire() ensures barrier_phase load
-> > >                * is ordered before the following ->call().
-> > >                */
-> > > -             if (smp_call_function_single(myid, rcu_torture_barrier1cb,
-> > > -                                          &rcu, 1)) {
-> > > -                     // IPI failed, so use direct call from current CPU.
-> > > +             if (smp_call_on_cpu(myid, rcu_torture_barrier1cb, &rcu, 1))
-> > >                       cur_ops->call(&rcu, rcu_torture_barrier_cbf);
-> > > -             }
-> > > +
-> > >               if (atomic_dec_and_test(&barrier_cbs_count))
-> > >                       wake_up(&barrier_wq);
-> > >       } while (!torture_must_stop());
-> > > --
-> > > 2.17.1
-> > >
+> does the compiler handle the actual logic where it is modifying num_channels
+> concurrently with writing into the array? i.e. this will be writing into
+> channel_list[0] when num_channels is 0:
+
+I'm actually about to send this patch:
+
+diff --git a/drivers/net/wireless/ath/wil6210/cfg80211.c b/drivers/net/wireless/ath/wil6210/cfg80211.c
+index dbe4b3478f03..836b49954171 100644
+--- a/drivers/net/wireless/ath/wil6210/cfg80211.c
++++ b/drivers/net/wireless/ath/wil6210/cfg80211.c
+@@ -892,10 +892,8 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+         struct wil6210_priv *wil = wiphy_to_wil(wiphy);
+         struct wireless_dev *wdev = request->wdev;
+         struct wil6210_vif *vif = wdev_to_vif(wil, wdev);
+-       struct {
+-               struct wmi_start_scan_cmd cmd;
+-               u16 chnl[4];
+-       } __packed cmd;
++       DEFINE_FLEX(struct wmi_start_scan_cmd, cmd,
++                   channel_list, num_channels, 4);
+         uint i, n;
+         int rc;
+
+@@ -977,9 +975,9 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+         vif->scan_request = request;
+         mod_timer(&vif->scan_timer, jiffies + WIL6210_SCAN_TO);
+
+-       memset(&cmd, 0, sizeof(cmd));
+-       cmd.cmd.scan_type = WMI_ACTIVE_SCAN;
+-       cmd.cmd.num_channels = 0;
++       memset(cmd, 0, sizeof(*cmd));
++       cmd->scan_type = WMI_ACTIVE_SCAN;
++       cmd->num_channels = 0;
+         n = min(request->n_channels, 4U);
+         for (i = 0; i < n; i++) {
+                 int ch = request->channels[i]->hw_value;
+@@ -991,7 +989,8 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+                         continue;
+                 }
+                 /* 0-based channel indexes */
+-               cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
++               cmd->num_channels++;
++               cmd->channel_list[cmd->num_channels - 1].channel = ch - 1;
+                 wil_dbg_misc(wil, "Scan for ch %d  : %d MHz\n", ch,
+                              request->channels[i]->center_freq);
+         }
+@@ -1007,16 +1006,15 @@ static int wil_cfg80211_scan(struct wiphy *wiphy,
+         if (rc)
+                 goto out_restore;
+
+-       if (wil->discovery_mode && cmd.cmd.scan_type == WMI_ACTIVE_SCAN) {
+-               cmd.cmd.discovery_mode = 1;
++       if (wil->discovery_mode && cmd->scan_type == WMI_ACTIVE_SCAN) {
++               cmd->discovery_mode = 1;
+                 wil_dbg_misc(wil, "active scan with discovery_mode=1\n");
+         }
+
+         if (vif->mid == 0)
+                 wil->radio_wdev = wdev;
+         rc = wmi_send(wil, WMI_START_SCAN_CMDID, vif->mid,
+-                     &cmd, sizeof(cmd.cmd) +
+-                     cmd.cmd.num_channels * sizeof(cmd.cmd.channel_list[0]));
++                     cmd, struct_size(cmd, channel_list, cmd->num_channels));
+
+  out_restore:
+         if (rc) {
+
+
+
+--
+Gustavo
+
+> 
+> 		cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
+> 
+> if that will cause a bounds check failure then suggest you change the logic so
+> that it updates num_channels before writing into channel_list
+> 
+>>   
+>>   #define WMI_MAX_PNO_SSID_NUM	(16)
+>> @@ -3320,7 +3320,7 @@ struct wmi_set_link_monitor_cmd {
+>>   	u8 rssi_hyst;
+>>   	u8 reserved[12];
+>>   	u8 rssi_thresholds_list_size;
+>> -	s8 rssi_thresholds_list[];
+>> +	s8 rssi_thresholds_list[] __counted_by(rssi_thresholds_list_size);
+>>   } __packed;
+> 
+> this looks ok to me, although I think there is another issue associated with
+> this, namely the way the code populates the rssi_thresholds_list is by
+> defining a separate anonymous struct:
+> 	struct {
+> 		struct wmi_set_link_monitor_cmd cmd;
+> 		s8 rssi_thold;
+> 	} __packed cmd = {
+> 		.cmd = {
+> 			.rssi_hyst = rssi_hyst,
+> 			.rssi_thresholds_list_size = 1,
+> 		},
+> 		.rssi_thold = rssi_thold,
+> 	};
+> 
+> I would expect gcc and clang to both complain about that s8 rssi_thold comes
+> after a flexible array (even though its purpose is to be the value of
+> rssi_thresholds_list[0])
+> 
+> /jeff
+> 
+> 
+>>   
+>>   /* wmi_link_monitor_event_type */
+> 
+> 
 
