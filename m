@@ -1,100 +1,153 @@
-Return-Path: <linux-kernel+bounces-120497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B2A88D866
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEE8E88D863
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395321F2A044
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 220B31F29D6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE952D05B;
-	Wed, 27 Mar 2024 08:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="P/gTX9gB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F422C842;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6502C859;
 	Wed, 27 Mar 2024 08:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ONmXkiid"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2FD2C68E
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 08:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711526919; cv=none; b=nyBEye+H8zL88jg2c6vR7OHbpPNsT05/QQisEhuTMjz7gLzoyZCXtnYRqN7O7Ics1qM7eKWPQMyWqPdIGbW08sjXkUojZumKhFz7z9lw3yetwBpfZ12xvgeP4TIb6dpoVbWzEVf/EvtfK4xFX6rLNcz5AbcG0K+b3NSbJxVNClo=
+	t=1711526918; cv=none; b=Sn0xJxN1srRfklp4iAcNFv+6AxZGQpj5wopCrSkq+qFpaijwXuXOoXe2xYJI0gfeGsfgiHvCy+tflTZ+l/zxSi7V5s684Egko3DnrAPoBxNMBzkUByuF0aXwYX5bXB7jcF/JiyeaeoTttEwIgHkPgqhBQAftU5tx29sYWaoBz/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711526919; c=relaxed/simple;
-	bh=wl9NzEEEzFaq/cZRe1HNQXpS1Pwff+DEAEStKmncbBI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TcRSssXaIZw0Rn5f1nNOZ1ejbhYCsntHluNUhFafnud6QZMwqzszMAfjEs7ViTtJvLWKMCX++FWVAb61rQ4G1sLKrK3yzP/WDeoaKQz+Hzs9/eCLXKPXgB2RALP16NY9cuqxJjf3YzbrugfBgTPTwqAsZBU7X7wivLjDtTU+ft4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=P/gTX9gB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A49E1C433C7;
-	Wed, 27 Mar 2024 08:08:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711526919;
-	bh=wl9NzEEEzFaq/cZRe1HNQXpS1Pwff+DEAEStKmncbBI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=P/gTX9gBC/8VmXxu3KSqfX+PhHpB049Q/pZeE9wP16jlxZ26tXioaHQX1RsZHjHKK
-	 stLEoiZjNrv16LirzgwlMwfmct3y6GE62YA1uf0vTZ7wyrPT8/AVLA/dA8Pl1wg4kc
-	 JndCQg6zKdU8SCKBVebptWiQTSmCzuiShVVr35sM=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: naveenkrishna.chatradhi@amd.com
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Carlos Bilbao <carlos.bilbao@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH v3] platform/x86/amd/hsmp: switch to use device_add_groups()
+	s=arc-20240116; t=1711526918; c=relaxed/simple;
+	bh=Oc9Iv5diB5DzfcVhZ+RCWd76hDCbOkvCx734DwkPblE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qck9e5lumSmr/1j5UpZdTpn6iF5vYX2jmziEB18rlM9GM/ogAu6VD1qXCvDUGhG88gz1elU7S5+jzRj6cYpdVhaxMrnzdgKk36okrtXlU1fAEymcQ9jOQyWpKKiI+YVsvVVdWV7hgEkxildcvXhfJUNwXaDWHdgKhASTucIlDR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ONmXkiid; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso6747256a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 01:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711526915; x=1712131715; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=obxAsZqjQz5NFCsemkq6GbW/laq9L0gPO3GCkwtXJlM=;
+        b=ONmXkiid9vq1dp6D/7yTze0vJP21KKiirpquwzzbz+BTLjgG+R4e0mHtdVqjTA8upk
+         Ypf72DKib697dBFk80r5gr+c3FnIyprh3VQKpvhfJeHs2bROdE/5HbpdLjg2TyQXihib
+         nfMn/fD3jRudBR5SUAPPuixxDSevHyaRB0xmaePpLKkUHcvSxwgPjXDrfG+3ioIk4TBf
+         934ed2gzzZPMuuRYO9QreVMDNDzu4Osja7oJdB2Nhde3FF7a2snlbUksjco+10tqkajN
+         p2gO7rPOiIilzQYpuQAmCHuYxWbhFMmdQ4ACbEyC5Ek+2ryxrYx1i/Et6Kego2/X4c9j
+         hZfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711526915; x=1712131715;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=obxAsZqjQz5NFCsemkq6GbW/laq9L0gPO3GCkwtXJlM=;
+        b=wj+pgM6AuJv/k7QL6pLggpSYVLmkQ8RYGuK/PG4zIsSNsawkbjdq4jFWMnyLgUaIGN
+         baocAN7WvH2AFpZ0VUUJcT5wOZxqC7SOdAJnVNaXA1X7P7KYTDJ9wy9syh/uKFNtmHPr
+         IxheVY98kR1MuebggPfvT+74BDTltXGF9bBtqRs44MdMdncNQJBM98d4HDJqJp2b2WoB
+         xt9F53PufyjasbKZd8rbZ1FfA3sl1inRn2TXI5YGll8mz1exMB3Wb/TKi1cwQzYle8ia
+         ixKhiLXFQjInnedos8Gm3Wg75zuY0+yR722oyi9cmIt/3HFrF4zu2ZHePWf2cqoemb7q
+         FUBA==
+X-Forwarded-Encrypted: i=1; AJvYcCWltbiIQPEmKNS/XTUgssX3K6KAW7E5N6DnZGtYyr7mI7wLN7lBAJtGk6SkxqP38BsNyqL+BCRqlxoaZnDPdEfGyI8/9SiYN5YD3T26
+X-Gm-Message-State: AOJu0YzhXOPsq5gouzI75qPBmTT4nkmaj+ObAkKGqPV2xP+66MrOYiXU
+	fBOTETLaiktc8LzrGJ65WGIhr58z0gwlMoKPVYNXwZD/bocnacgx40S2paS8aW0=
+X-Google-Smtp-Source: AGHT+IH9Rhol6bx4mSpOLsYkvw7rBvwEt9QkpNW/BVY05fFsQyPnFGF3f+h1lkvsoqSdr+5AAem4OQ==
+X-Received: by 2002:a50:8706:0:b0:56c:19d2:85b2 with SMTP id i6-20020a508706000000b0056c19d285b2mr2639075edb.35.1711526915427;
+        Wed, 27 Mar 2024 01:08:35 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.206.205])
+        by smtp.gmail.com with ESMTPSA id r14-20020aa7da0e000000b0056bf31fa2a3sm4996730eds.80.2024.03.27.01.08.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 01:08:34 -0700 (PDT)
+Message-ID: <a3accd7e-b89f-4d26-b89b-31e5c282014f@linaro.org>
 Date: Wed, 27 Mar 2024 09:08:33 +0100
-Message-ID: <2024032732-thigh-smite-f5dd@gregkh>
-X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] dt-bindings: arm: keystone: Remove
+ ti,system-reboot-controller property
+To: Andrew Davis <afd@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Santosh Shilimkar <ssantosh@kernel.org>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240326223730.54639-1-afd@ti.com>
+ <20240326223730.54639-5-afd@ti.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240326223730.54639-5-afd@ti.com>
 Content-Type: text/plain; charset=UTF-8
-Lines: 36
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1467; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=wl9NzEEEzFaq/cZRe1HNQXpS1Pwff+DEAEStKmncbBI=; b=owGbwMvMwCRo6H6F97bub03G02pJDGnMVxheXavkNfE4cJ9fX9rPdeaSqzap4ROC9zyQn5S6T uity9fUjlgWBkEmBlkxRZYv23iO7q84pOhlaHsaZg4rE8gQBi5OAZiI2U6GBf3eL3b69bs/Wfh4 Rr322/rtj9mfbGJY0GGmUvzz4dujtVq5RUdFH92+y3BTFAA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-devm_device_add_groups() is being removed from the kernel, so move the
-hsmp driver to use device_add_groups() instead.  The logic is identical,
-when the device is removed the driver core will properly clean up and
-remove the groups, and the memory used by the attribute groups will be
-freed because it was created with dev_* calls, so this is functionally
-identical overall.
+On 26/03/2024 23:37, Andrew Davis wrote:
+> This property was only ever used in one device. It is no longer needed as
+> what it signaled is now default. Remove this unneeded/unused property.
+> 
+> Signed-off-by: Andrew Davis <afd@ti.com>
+> ---
+>  Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml | 5 -----
+>  1 file changed, 5 deletions(-)
 
-Cc: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
-Cc: Carlos Bilbao <carlos.bilbao@amd.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v3: change the changelog text to reflect that this change is identical
-    to the current code.  Rebase against 6.9-rc1
-v2: rebased against platform/for-next
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
- drivers/platform/x86/amd/hsmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/hsmp.c
-index 1927be901108..d84ea66eecc6 100644
---- a/drivers/platform/x86/amd/hsmp.c
-+++ b/drivers/platform/x86/amd/hsmp.c
-@@ -693,7 +693,7 @@ static int hsmp_create_non_acpi_sysfs_if(struct device *dev)
- 		hsmp_create_attr_list(attr_grp, dev, i);
- 	}
- 
--	return devm_device_add_groups(dev, hsmp_attr_grps);
-+	return device_add_groups(dev, hsmp_attr_grps);
- }
- 
- static int hsmp_create_acpi_sysfs_if(struct device *dev)
--- 
-2.44.0
+Best regards,
+Krzysztof
 
 
