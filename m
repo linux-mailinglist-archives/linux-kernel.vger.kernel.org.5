@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-121213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF6788E400
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:51:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80A6388E402
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6411C2B63A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:51:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF7B71C22916
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF61187E6B;
-	Wed, 27 Mar 2024 12:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E635188A95;
+	Wed, 27 Mar 2024 12:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErDgZ6ef"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3X8ELlA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F41188A7B;
-	Wed, 27 Mar 2024 12:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7062C188A92;
+	Wed, 27 Mar 2024 12:26:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542362; cv=none; b=cRLDBcsoCGu7jeSf3lre1dZFQI2yAk2TRpJI/4+/J0Hubyi2mD4bfGPkzysLj+wu5YdzrnLI9DY5y6tQN/I+N6w85QrdfvGolzI5gN1za0i01YKtrwOFHACYvicWN+0iPG9RapOtIVm6i37KPJkIBuHTo9AV8IZD0E56mS6tlmc=
+	t=1711542365; cv=none; b=l/PBod8HGha1IfxC856R3/plsQ9FjjwqIczqwZT8LVvVnj74m6NIQQAiMZdbR1eEhNl+LUPrdsVY5QSGdTt1+fzrG7gOh6fIZG2Dhs1QkH98YG4OyXDTlu0A2Wdned41ilbLM3CW6p1FehdYj8H0hd9tELrdL9yCfCxZrfRqPkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542362; c=relaxed/simple;
-	bh=DMHzWxFUC1TEX6HEDYOe4zkyxWF09G1xypBMn4vEbB0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sj1WJ/apkFGzlyNspmbZxPjaFzywK1CmM36WakBB8kYjDik8Cd1qOErwgkzliQKyMCLUe1yQjfXpiUE+Ki5ulQ9Hc37BUeMwwEVEFgZdTbRvxwPgT/AlXI4gPQ8257HA2oewMkJK98ex7nkfWg/AQuZsd366TCE7Kw0zSwpOP7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErDgZ6ef; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93A98C433C7;
-	Wed, 27 Mar 2024 12:26:01 +0000 (UTC)
+	s=arc-20240116; t=1711542365; c=relaxed/simple;
+	bh=KHQiRhTRcJRpE1M5wDnDT3b7Li/dBrgfORbLdigvAkY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R+QRTKXnJlXyxIrMmOz9lij8w9yKNMXpDIrDd98/bJjYcxHp2Lp3fBW1IGvYy9+7Uz1sodKcH/Mov++kkDfyU7le9bUUNgiuX9xyoV7ZVDQ1rqlBCPSXACPxyKU6tr1/fTKCkN/o+ChfzkQwj433UR08d+SVU5vK8XydLxJrfl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3X8ELlA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00A7FC433C7;
+	Wed, 27 Mar 2024 12:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542362;
-	bh=DMHzWxFUC1TEX6HEDYOe4zkyxWF09G1xypBMn4vEbB0=;
+	s=k20201202; t=1711542365;
+	bh=KHQiRhTRcJRpE1M5wDnDT3b7Li/dBrgfORbLdigvAkY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=ErDgZ6efAvaYyPDvbSPZK9SoO1GA/gA/a6oF6v+CXDrfV+L9n3TSD8zeJ++CHM4N3
-	 2AB8c1z18Gae/3lwbJ+9a5g2LVCyq8TGcxgJOeiia2qtLhBo/yKgI3oErlXLeZf8Be
-	 qUAt5FysdmOJAv2XvJaxO2z4S/+ZHPyNS+bsnzSjgCJaTp3Oc1aaH4n6S/dNFinEhq
-	 iPL+lDwC1qoog5jsEeUAwuLZeuRMqoGGRQui5IGbRTaTuNzOANpMwBBVjjFfM645to
-	 P5VB6qnjuzkbfYrNuSzngu98D/bjYuK/hbuqWD1wvetyeYv53Qgwwku7ReGUIgv/+S
-	 xJYHdH9wGL1aA==
+	b=K3X8ELlAvwjUUpRMpEscTtOYrBgXr/n3/OUpSp4G+g7Pe2qwpznXBVDCX98jkeAUg
+	 CcQGaERfspFaIBb+YWacCFDTISi/iB12qWgJU051T07ohx5ewMsw+TJY51JGRQg+GN
+	 UPtq+LWLEEBsEn7oZhfdjxEYKJzKKk8furYRwjxOHU6tnxjOaux6CXuEvFd847KQ2S
+	 YlIkIkzv5PFomKx9FmjFytZ9iEj5xjSKXAL/AIzfAcF3E99ZpwuLtJ8Fw00Po9oJNE
+	 Y3mBdpXl70X0oONLDbZGJpQw8h67rvLtCX0Sjutn/wPOKm5FJDS78/PJTQN4S/xL5k
+	 J6QlTC2NtdW2g==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	alexander.deucher@amd.com
-Cc: Feifei Xu <Feifei.Xu@amd.com>,
+	dillon.varone@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Martin Leung <martin.leung@amd.com>,
+	Alex Hung <alex.hung@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amdgpu/gfx10: set UNORD_DISPATCH in compute MQDs" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:26:00 -0400
-Message-ID: <20240327122600.2840741-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: Init link enc resources in dc_state only if res_pool presents" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:26:02 -0400
+Message-ID: <20240327122603.2840778-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -70,50 +74,43 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From ca01082353d4c7c316cd8cfa53879970564a9c71 Mon Sep 17 00:00:00 2001
-From: Alex Deucher <alexander.deucher@amd.com>
-Date: Fri, 19 Jan 2024 12:23:55 -0500
-Subject: [PATCH] drm/amdgpu/gfx10: set UNORD_DISPATCH in compute MQDs
+From ca25a2b5f841f991e472e2dde7f5e2d337dbea08 Mon Sep 17 00:00:00 2001
+From: Dillon Varone <dillon.varone@amd.com>
+Date: Thu, 28 Dec 2023 21:36:39 -0500
+Subject: [PATCH] drm/amd/display: Init link enc resources in dc_state only if
+ res_pool presents
 
-This needs to be set to 1 to avoid a potential deadlock in
-the GC 10.x and newer.  On GC 9.x and older, this needs
-to be set to 0.  This can lead to hangs in some mixed
-graphics and compute workloads.  Updated firmware is also
-required for AQL.
+[Why & How]
+res_pool is not initialized in all situations such as virtual
+environments, and therefore link encoder resources should not be
+initialized if res_pool is NULL.
 
-Reviewed-by: Feifei Xu <Feifei.Xu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
+Reviewed-by: Martin Leung <martin.leung@amd.com>
+Acked-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Dillon Varone <dillon.varone@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c           | 2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_state.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
-index 420c82b54650f..be4d5c1e826f3 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
-@@ -6589,7 +6589,7 @@ static int gfx_v10_0_compute_mqd_init(struct amdgpu_device *adev, void *m,
- #ifdef __BIG_ENDIAN
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, ENDIAN_SWAP, 1);
- #endif
--	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 0);
-+	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, UNORD_DISPATCH, 1);
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, TUNNEL_DISPATCH,
- 			    prop->allow_tunneling);
- 	tmp = REG_SET_FIELD(tmp, CP_HQD_PQ_CONTROL, PRIV_STATE, 1);
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c
-index 8b7fed9135269..22cbfa1bdaddb 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager_v10.c
-@@ -170,6 +170,7 @@ static void update_mqd(struct mqd_manager *mm, void *mqd,
- 	m->cp_hqd_pq_control = 5 << CP_HQD_PQ_CONTROL__RPTR_BLOCK_SIZE__SHIFT;
- 	m->cp_hqd_pq_control |=
- 			ffs(q->queue_size / sizeof(unsigned int)) - 1 - 1;
-+	m->cp_hqd_pq_control |= CP_HQD_PQ_CONTROL__UNORD_DISPATCH_MASK;
- 	pr_debug("cp_hqd_pq_control 0x%x\n", m->cp_hqd_pq_control);
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_state.c b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
+index 460a8010c79fe..56feee0ff01b1 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_state.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_state.c
+@@ -267,7 +267,8 @@ void dc_state_construct(struct dc *dc, struct dc_state *state)
+ 	state->clk_mgr = dc->clk_mgr;
  
- 	m->cp_hqd_pq_base_lo = lower_32_bits((uint64_t)q->queue_address >> 8);
+ 	/* Initialise DIG link encoder resource tracking variables. */
+-	link_enc_cfg_init(dc, state);
++	if (dc->res_pool)
++		link_enc_cfg_init(dc, state);
+ }
+ 
+ void dc_state_destruct(struct dc_state *state)
 -- 
 2.43.0
 
