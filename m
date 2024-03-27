@@ -1,116 +1,148 @@
-Return-Path: <linux-kernel+bounces-122009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37A9188F09F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:06:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 141F988F0A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E78F329BDFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:06:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45A601C21815
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EA8152E16;
-	Wed, 27 Mar 2024 21:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFAE153510;
+	Wed, 27 Mar 2024 21:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="plXN80LV"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="VzVU3Au5"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0112153510
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136A015216E
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711573586; cv=none; b=qPJ9ZcXeDEKQn73gRYAEn+4lfyL3xyDFpRek8OmQkGHDyHXn10Von6ruNU2SPszayUCZVGsSpICyZgtYI8r5bAdmBccMO6bQaPmMk+X5qYbll0LSxBvN92a7beh8IZyEjTyFinDCnXjhRO/rqm4jFRgwq1wJOZRdAG5aQYz40qc=
+	t=1711573617; cv=none; b=ttwrU0S+MUxYCOziX7QGdRsWtFT443nIzwOtN3q/4VGaZqoLaaYXlruAs5RevKsbqo8D+xrEmtlvy5vd5Ld7a20L8/wSC5ETX0dun9871nuPqp3B+GFLsSgdFjmEZUc/HKb2JomqT6hEuexKePanO8dkP7ZvhPdUGND2K27Gwqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711573586; c=relaxed/simple;
-	bh=Xx5MpaWvy5522jqTooimseYw/Jm8R5vpweYD4JwX7nk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DGJBneDet2L6PH91nfgZ6Q/8xlkoTM5e08yTWYgWeibWuiEzwaHLFX//Gx/UrE8ax649wR4KhYB/itXt8/GoGLo3zSB7x9y6PsyYy8sE+6iSSDwf3vxGck1wLqFwaoaKuEP16mGQNWON2jz/cMXBT5ux6nk03nVrvnU369CyWKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=plXN80LV; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-	by cmsmtp with ESMTPS
-	id p9lirtuIaQr4SpaTXrk2BF; Wed, 27 Mar 2024 21:06:23 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id paTWrDxUFkyhrpaTWr10aJ; Wed, 27 Mar 2024 21:06:23 +0000
-X-Authority-Analysis: v=2.4 cv=Z9TqHmRA c=1 sm=1 tr=0 ts=66048a4f
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=COk6AnOGAAAA:8
- a=1VVxQOVvkDxVd9r07kAA:9 a=QEXdDO2ut3YA:10 a=oeCWIyVaUf8A:10
- a=TjNXssC_j7lpFel5tvFf:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=0qCww4XnuD7HGbcNfioDP3N0BucgDEPTS/31Ql+x+hY=; b=plXN80LVUebjbHVxO2SjTlb2ZP
-	djrrZWoC1bsw6SEGq6k3t9zjtKqgwNe/Ar5RJEb63BpWKG94ofEC1ykvpXutIVLCWNudFi93KhSPo
-	e1gR0hIpWIhz1HAcu1yUhOAXVT4Ov0s3AN8SgLUMjwc6UOHF25Q8u9OJMQpC/haQXmFwZWxY+zt5X
-	Ns9lq514ralTgD+uTDwdfGLN9IMU3pCOSCAKRuwBdAb5XAuRNqH/IA0WeiI08bzMGGQQ1dR1mt6TD
-	+X+GLKIMb0E9G11nD9RGUtKs6W7lDwW7giEmnLVgwAnq77cp6Ub51D4HGZvNtIyt9sHNd1TiT2fR4
-	VOxkTrbA==;
-Received: from [201.172.173.147] (port=56048 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rpaTW-001BZU-0M;
-	Wed, 27 Mar 2024 16:06:22 -0500
-Message-ID: <0abb2673-1c60-4374-8c88-b5f0eaa3be33@embeddedor.com>
-Date: Wed, 27 Mar 2024 15:06:20 -0600
+	s=arc-20240116; t=1711573617; c=relaxed/simple;
+	bh=YrmFkUT787lgt9TKr1idm9VIG50SUrjdiy7+fDVi1tU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZUpyXzc9wgeyw2QXx6/Ic3k3YBOMTPxGJE83GZuep5oa2aFv6dsZCzh/ca/sIFWxXalSIv4IYnaXsRhIicDB8JHfreCP/dreBfKskQKtsShY6j4shDeAgKVZv+3b25cgBaokmg/WmYIJt5ThAEFHTI5UJFYtpzNOB0GX9SQpiDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=VzVU3Au5; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711573609; x=1711832809;
+	bh=tmh4P03wZoUNrmGMRDjppoh9LNoMf3SVixBqcaDEGJE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=VzVU3Au50Flw9LC5rZqT4ufKGY2RGvXVAD6wqVWwHR3g+HcKuyPqFqKLXbzMVNIq/
+	 bB/KSJNYpUi/Z9uUo2mwGyz8MjMqYGBe5jc1cJqmLrv1QFAHguXDxk6d0qkYeunOxu
+	 yeUvGtr0AHi/VaWcYtb5ay87EmGVyfvHjrFkKamyeukRgeUMu1taw1uUaeDgRjpTUx
+	 UO2Rj++2rE2fvIBpaBA5q2qI45its36ojMnA6d6wIyfaiNaHKw9ueUag5bfUOhoHUZ
+	 LPeJO0p9tpaHDHI3ay1MdoFAA5p2/DYsWAl0UBlhNCGAaZqWlwTfRpArIIoBEIm0r1
+	 Slcsdqv9eH/sw==
+Date: Wed, 27 Mar 2024 21:06:42 +0000
+To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH 2/4] WIP: drm: Introduce rvkms
+Message-ID: <b41f707d-7e06-4c1a-93f0-d74ee242b650@proton.me>
+In-Reply-To: <20240322221305.1403600-3-lyude@redhat.com>
+References: <20240322221305.1403600-1-lyude@redhat.com> <20240322221305.1403600-3-lyude@redhat.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] wifi: wil6210: wmi: Use __counted_by() in struct
- wmi_set_link_monitor_cmd and avoid -Wfamnae warning
-Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <ZgRsn72WkHzfCUsa@neat>
- <dc556824-d499-430c-850e-fb0ca55dd5fe@quicinc.com>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <dc556824-d499-430c-850e-fb0ca55dd5fe@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.173.147
-X-Source-L: No
-X-Exim-ID: 1rpaTW-001BZU-0M
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.173.147]:56048
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfE+1+CO04tDJZL8HCoupXmSuUkUdM80OWF2j3gco+gp30UzbqUwiVvKhKtiimNgmnA9CMLBPszLnBVHlYqvsTin3Ylf4p2drVZq3owGzuuiVjhvNho6+
- UxhCmMDwMqnIRH1BNySWXAVOnCzFPeqt1jIa7sbDGdp1OlEW3MR/HLvWfOnaejUaHXfFygxIh0aOpjA4pi/8f6RSKe21PcuITY4NstoJZcJHEnki/E1vJ187
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On 22.03.24 23:03, Lyude Paul wrote:
+> diff --git a/drivers/gpu/drm/rvkms/connector.rs b/drivers/gpu/drm/rvkms/c=
+onnector.rs
+> new file mode 100644
+> index 0000000000000..40f84d38437ee
+> --- /dev/null
+> +++ b/drivers/gpu/drm/rvkms/connector.rs
+> @@ -0,0 +1,55 @@
+> +// TODO: License and stuff
+> +// Contain's rvkms's drm_connector implementation
+> +
+> +use super::{RvkmsDriver, RvkmsDevice, MAX_RES, DEFAULT_RES};
+> +use kernel::{
+> +    prelude::*,
+> +    drm::{
+> +        device::Device,
+> +        kms::{
+> +            connector::{self, ConnectorGuard},
+> +            ModeConfigGuard
+> +        }
+> +    },
+> +    prelude::*
+> +};
+> +use core::marker::PhantomPinned;
+> +
+> +#[pin_data]
+> +pub(crate) struct DriverConnector {
+> +    #[pin]
+> +    _p: PhantomPinned
+> +}
 
-> That DEFINE_FLEX() macro takes a bit of time to understand! But I finally
-> digested it so...
-> 
-> Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> 
+This struct does not need to be annotated with `#[pin_data]`, this
+should just work:
 
-Thanks for your time and RB tag!
+pub(crate) struct DriverConnector;
 
---
-Gustavo
+> +
+> +pub(crate) type Connector =3D connector::Connector<DriverConnector>;
+> +
+> +impl connector::DriverConnector for DriverConnector {
+> +    type Initializer =3D impl PinInit<Self, Error>;
+> +
+> +    type State =3D ConnectorState;
+> +
+> +    type Driver =3D RvkmsDriver;
+> +
+> +    type Args =3D ();
+> +
+> +    fn new(dev: &Device<Self::Driver>, args: Self::Args) -> Self::Initia=
+lizer {
+
+And then here just return `Self`.
+
+This works, since there is a blanket impl `PinInit<T, E> for T`.
+
+Looking at how you use this API, I am not sure if you actually need
+pin-init for the type that implements `DriverConnector`.
+Do you need to store eg `Mutex<T>` or something else that needs
+pin-init in here in a more complex driver?
+
+--=20
+Cheers,
+Benno
+
+> +        try_pin_init!(Self { _p: PhantomPinned })
+> +    }
+> +
+> +    fn get_modes(
+> +        connector: ConnectorGuard<'_, Self>,
+> +        _guard: &ModeConfigGuard<'_, Self::Driver>
+> +    ) -> i32 {
+> +        let count =3D connector.add_modes_noedid(MAX_RES);
+> +
+> +        connector.set_preferred_mode(DEFAULT_RES);
+> +        count
+> +    }
+> +}
+> +
+> +#[derive(Clone, Default)]
+> +pub(crate) struct ConnectorState;
+> +
+> +impl connector::DriverConnectorState for ConnectorState {
+> +    type Connector =3D DriverConnector;
+> +}
+
 
