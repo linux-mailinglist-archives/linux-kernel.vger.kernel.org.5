@@ -1,51 +1,53 @@
-Return-Path: <linux-kernel+bounces-120560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71B7F88D95C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4433E88D95F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A389D1C27145
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:44:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74DBD1C2724D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E578136B1D;
-	Wed, 27 Mar 2024 08:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C39374FF;
+	Wed, 27 Mar 2024 08:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZO5BfdhX"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="e8MtlAb1"
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE502E85D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE953398B;
 	Wed, 27 Mar 2024 08:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711529029; cv=none; b=Bf6K5oXf7afDhpE589j14pKZ/DMXch6fJlgUBL6bv9qFfqfvdhORroSsUgKnlG4GC3ZcAIUf/k9TQtv6lrzuNDT/H6ThvkofDneuKM/vTa7p6tbj18zZ2r5EHW0tTyjrdPCdfMgCVX7CNDOKL79S+WYsjrKntm4X6lCMU5SPbKg=
+	t=1711529029; cv=none; b=GqwKkY15xXl8t9gKi2XeSiyI8FJrPrNDRgflRocuww1V1avR6ltnzuhRS0yeur40mp+q44rXgGHZOiMv0AXIu3da2nKqunIUzpNUwPcCw1ml76lKL3w+BtjxIw1tUClhlAjXOygjawSiAxyxKVDEEwaWd7L0aM8ER3bh3tU5BK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711529029; c=relaxed/simple;
-	bh=Be4IEMfgO+NQg96KLT0RH17FuIbGLM/+Ly84HY6myDo=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QQrndv7XHBXqKOOTHjIVt1ZEuMYDXGnrnWz/gJdy8Gf1RHdfUZPCtfSg5Ss6SQRQXi66+JqETLgWFUAIVGWzYgTNdMdywciPhFC+fOjLzIAt7+XOQ2SSjLV9i1syuFgM1LEatliAMssrOAmdwms+3QjBGAewHwwGSyqvm5N1Oec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZO5BfdhX; arc=none smtp.client-ip=217.70.183.199
+	bh=BrFNjhI8oLc26SSKfKHH6M/L+OciIVtrBnTYO5nLL64=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=dY60EY9EyM5CHNIET3YDTuUYgZ5+LBnIDd9qJnS/xarjG3bqmMacZbklB6zN5OP1qzhAu5jzJ/GsyCm/0CXSnpkC8KJyjHyV1WvE3iOrNFYQV7a5OXD9OO7e9L+wr+iQ0oV2tiQ/dnifc35zLuBotw5jUw9LnazkThZAhiSyJAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=e8MtlAb1; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6F331FF803;
-	Wed, 27 Mar 2024 08:43:44 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0C3A4FF806;
+	Wed, 27 Mar 2024 08:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711529024;
+	t=1711529025;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=i89OkT3P+4nNC4N0ixmTN+nbvd6Z0Vz30h4VrjrK+ZY=;
-	b=ZO5BfdhXUTtz034fILAk2e8gSpW4pJqYWrIiRgzhypuo0klMWW63VTrLvOjbYTRaFler6M
-	5m4BR+PMnojDrpRkBNbtdUqtaZxaSn7LX72eESNjTq1AJBuayH56PhOZBeDVfXL1WrzunB
-	Z2lXvTUJnDT72qzL2wdPhngwTfPpniYSUJBNbvU2avLnveplvi1L4TCz1f1WQW47q+yRS9
-	f3xGr6Yp/v4mZ23pqU7BrtR4PJ804hTKD0mQfP4QGOL5tVidbw7Zwd7mx/0jrBX4jaG6+U
-	xPqO7120ohaQNqJS69JEp0RG8GQB8hnqgtOhVfVAB7QdnH5fhjYMSXe1rpKxVQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=knHSdAeL3C8xPiNb5BV1ixMXuco9YBgoOV7376ixMAg=;
+	b=e8MtlAb1gLizUVrUWLAnv7MSFuCqG87189i5izDIbvatnrYSeTLq2NmaIae3jGhGZSWCPA
+	5vbC9hXODrCKregYiq+CQNXgG74AscToTY7VLGojn+49xohpVwNHswnzCGvUV957WtbVng
+	EFUSs7WWPyrmghpbzzjavDaddxf7Wa+ZayECQLxdKOjVYaNEQQNAiTZqy7ws3O8X1J9wHN
+	aoRiepxPEFM/3w852FOekaK8oSCKI5PRmca0Ol8/4wcv/5dqopxjs/Y81T3f4d0/6d8uHN
+	RLruLD3MWyl9F+fVwOpvXLv+mpsG3bkHA7a4+MPMnm/Wr4GAwumwiROFUn7DAQ==
 From: Louis Chauvet <louis.chauvet@bootlin.com>
-Subject: [PATCH v3 0/3] Add multi mode support for omap-mcspi
-Date: Wed, 27 Mar 2024 09:43:35 +0100
-Message-Id: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
+Date: Wed, 27 Mar 2024 09:43:36 +0100
+Subject: [PATCH v3 1/3] spi: spi-omap2-mcspi.c: revert "Toggle CS after
+ each word"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,83 +56,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADfcA2YC/42Oyw7CIBBFf8WwFgMD9uHK/zAueAyWpIUG2kZj+
- u9SN8aNcTOZexfnnifJmDxmcto9ScLFZx9DCWK/I6ZT4YbU25IJMJCMQ0Xz6Gkc1Ah0MNs/zP1
- UbrRIsQJXNbpulBWkALTKSHVSwXQFEea+L+WY0Pn7e/FyLbnzeYrp8RZY+Nb+tbVwyqjjRyehN
- rZVzVnHOPU+HEwctvG/IZZLYYVwzCH7gmx2C3yMAMRPGBSYcthKWVe6NeIbtq7rC99ttdFtAQA
- A
+Message-Id: <20240327-spi-omap2-mcspi-multi-mode-v3-1-c4ac329dd5a2@bootlin.com>
+References: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
+In-Reply-To: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
 To: Mark Brown <broonie@kernel.org>
 Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
  thomas.petazzoni@bootlin.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
  yen-mei.goh@keysight.com, koon-kee.lie@keysight.com, 
  jeremie.dautheribes@bootlin.com, Louis Chauvet <louis.chauvet@bootlin.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2080;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2319;
  i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=Be4IEMfgO+NQg96KLT0RH17FuIbGLM/+Ly84HY6myDo=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmA9w/c9Cnfvrqqq1MDDNUKvNAz41Dvk9GITU1loRj
- A8OVKIiJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZgPcPwAKCRAgrS7GWxAs4ihlD/
- 4/Q5DgfZ1iSI4FrQZ7Pf67vcWlI1/96ahnk+N+PMw8Pbtm3itcncI96DPxrwr5edOaCPF7pom0C93J
- byF/fwZYNBa/oZq0JHO8D5fY9jnmgyGLsOqyOOMhR+ihypn7aKXQkAq/rd50d7LGAgIELRZfoK5Tlj
- 29Vi7pbp6t1sBWSXRAtXrkh53QoPA6TJvZF7PBfmPdpWcw7riIcvApkoIeOV02HV24DSLdxC8oaVEQ
- A38s6HuYbb/qb6AG72cYJALK9w9sbUcFGQYT9senwHMJhJT0AeluyhHiNZam+RoYoOTvBSmpTPNqh0
- fjkoJ/tHq+Dt6n4l466vrW+0dz/zHUekO7AEkCG/PcS3xaNod2uxg5Oj2EBiU0eGPlZ4iGIQ+RF5MG
- JzFa9dKFM9y4kd2IAKN3f5W6PsyniueCsk1CLatn5B/hMG2pOnN1jcOEErkhfiumgBsRhStg58LqH7
- xu6VMWYD0VuUGWEF20ebJ7YQz82YgL7xdkhf5M9dyffItGlwFHFY3+gVZVZa6oqFIQBqbCgMGtE9rH
- L2mVk02Go5eD6Qv4CWBGTB3IwxcLuLpUCx81taJqrB+ISBcsoUlebzAJNb7cCt55aGQT/c4KcZTwDz
- DAvtBEOj6tgmVGQHdKSkg5a1OX1+709/NaexU1Qm/gxIG2ugo4uq1dN3Osug==
+ bh=BrFNjhI8oLc26SSKfKHH6M/L+OciIVtrBnTYO5nLL64=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBmA9w/NUAnDS/xLvqKxxcULsx6ggIPcYgTe+hD3tlb
+ cclGh1mJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZgPcPwAKCRAgrS7GWxAs4jNlEA
+ CByt+wrzLsf0tJos+LC6LHl5GBgNrz7OGAAxqKF3d0Jo/rsP0GEvseAmlM9+K8b4ON0CxX/fWH4qj5
+ QBrItoWv3mw4zwVTe+c0T+04O91RGqRm11MPAtzp4+P3i50sEs2c69M7xqDaR77prFvZntRgtwfSf9
+ rT74msmQT1QvjiQ6dPR77bxS4Z4Bpo+bH7hP1ZB2C47MAAqM6op3mSYvbYk6UzBopdH5gGm0pE47av
+ L8/ouqGTbWnTQlUoRfumWvvB37HToeeuEzItqx7twjrqBR9HAIq5pwFh6LIO1wMxgOoNEgQsOaqvwn
+ UEb7apefQxuSdTYKgzQwQKC5BEq9ZDTSyhkVhbjzd+p9fMqEYD+bqM/g+aupsyF9ve/JqC1vVkEJk/
+ rX5qJ+Hhdhc+0hntAFxXbVtguhbc0d0w1zG8AwfVYHgYydr0XJMhyvmQKfhFISq/Mh7Co4tVa7OlIa
+ OOOr/7VAd4QXwBM8swkLpI9qFRr9v7Noj6uzX+IyvSBuZXeE2ZKAmbvKpDeqDLEzUWYIIk4y5qojmM
+ iqDUhIq8ngjBI3Nd+tg5eFiQD5CR53afN3FAXHfcv8kuOznjf/YT6ILzyuk//PpZDGThHev4DF12Bs
+ rs/nO6qO2RTmQP13oNUBazSixe3KlizM/CRogSepSVX+JEFYnUa0Y3dSVocA==
 X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
  fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
 X-GND-Sasl: louis.chauvet@bootlin.com
 
-This series adds the support for the omap-mcspi multi mode which allows
-sending SPI messages with a shorter delay between CS and the message.
+Commit 5cbc7ca987fb ("spi: spi-omap2-mcspi.c: Toggle CS after each
+word") introduced the toggling of CS after each word for the omap2-mcspi
+controller.
 
-One drawback of the multi-mode is that the CS is raised between each word, 
-so it can only be used with messages containing 1 word transfers and 
-asking for cs_change. Few devices, like FPGAs, may easily workaround this 
-limitation.
+The implementation is not respectful of the actual spi_message
+content, so the CS can be raised after each word even if the
+transfer structure asks to keep the CS active for the whole operation.
 
-The first patch removes the current implementation, which is working, but 
-don't comply with what is asked in the spi transfer (The CS is raised by 
-the hardware regardless of cs_change state). No drivers or board file use this 
-implementation upstream.
-
-The second patch adds the implementation of the multi-mode, which complies 
-with what is asked in the SPI message.
-
-The third patch is the suggested optimization for using MULTI mode in more 
-situations.
+As it is not used anyway in the current Linux tree, it can be safely
+removed.
 
 Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 ---
-Changes in v3:
-- Fix compilation warnings found with allmodconfig
-- Link to v2: https://lore.kernel.org/r/20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com
+ drivers/spi/spi-omap2-mcspi.c                 | 15 ---------------
+ include/linux/platform_data/spi-omap2-mcspi.h |  3 ---
+ 2 files changed, 18 deletions(-)
 
-Changes in v2:
-- Updated the commit line for the first patch to use the correct format;
-- Updated the commit message for the second patch, adding precision on how
-  the controler works;
-- Added the suggestion from Mark Brown to merge multiple transfers word 
-  into one when applicable;
-- Link to v1: https://lore.kernel.org/r/20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com
+diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
+index ddf1c684bcc7..601acec37eca 100644
+--- a/drivers/spi/spi-omap2-mcspi.c
++++ b/drivers/spi/spi-omap2-mcspi.c
+@@ -1175,13 +1175,6 @@ static int omap2_mcspi_transfer_one(struct spi_controller *ctlr,
+ 		    t->bits_per_word == spi->bits_per_word)
+ 			par_override = 0;
+ 	}
+-	if (cd && cd->cs_per_word) {
+-		chconf = mcspi->ctx.modulctrl;
+-		chconf &= ~OMAP2_MCSPI_MODULCTRL_SINGLE;
+-		mcspi_write_reg(ctlr, OMAP2_MCSPI_MODULCTRL, chconf);
+-		mcspi->ctx.modulctrl =
+-			mcspi_read_cs_reg(spi, OMAP2_MCSPI_MODULCTRL);
+-	}
+ 
+ 	chconf = mcspi_cached_chconf0(spi);
+ 	chconf &= ~OMAP2_MCSPI_CHCONF_TRM_MASK;
+@@ -1240,14 +1233,6 @@ static int omap2_mcspi_transfer_one(struct spi_controller *ctlr,
+ 		status = omap2_mcspi_setup_transfer(spi, NULL);
+ 	}
+ 
+-	if (cd && cd->cs_per_word) {
+-		chconf = mcspi->ctx.modulctrl;
+-		chconf |= OMAP2_MCSPI_MODULCTRL_SINGLE;
+-		mcspi_write_reg(ctlr, OMAP2_MCSPI_MODULCTRL, chconf);
+-		mcspi->ctx.modulctrl =
+-			mcspi_read_cs_reg(spi, OMAP2_MCSPI_MODULCTRL);
+-	}
+-
+ 	omap2_mcspi_set_enable(spi, 0);
+ 
+ 	if (spi_get_csgpiod(spi, 0))
+diff --git a/include/linux/platform_data/spi-omap2-mcspi.h b/include/linux/platform_data/spi-omap2-mcspi.h
+index 3b400b1919a9..9e3c15b4ac91 100644
+--- a/include/linux/platform_data/spi-omap2-mcspi.h
++++ b/include/linux/platform_data/spi-omap2-mcspi.h
+@@ -16,9 +16,6 @@ struct omap2_mcspi_platform_config {
+ 
+ struct omap2_mcspi_device_config {
+ 	unsigned turbo_mode:1;
+-
+-	/* toggle chip select after every word */
+-	unsigned cs_per_word:1;
+ };
+ 
+ #endif
 
----
-Louis Chauvet (3):
-      spi: spi-omap2-mcspi.c: revert "Toggle CS after each word"
-      spi: omap2-mcspi: Add support for MULTI-mode
-      spi: omap2-mcpsi: Enable MULTI-mode in more situations
-
- drivers/spi/spi-omap2-mcspi.c                 | 95 +++++++++++++++++++++------
- include/linux/platform_data/spi-omap2-mcspi.h |  3 -
- 2 files changed, 74 insertions(+), 24 deletions(-)
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240126-spi-omap2-mcspi-multi-mode-e62f68b78ad3
-
-Best regards,
 -- 
-Louis Chauvet <louis.chauvet@bootlin.com>
+2.43.0
 
 
