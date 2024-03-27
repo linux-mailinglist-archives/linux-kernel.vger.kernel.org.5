@@ -1,633 +1,772 @@
-Return-Path: <linux-kernel+bounces-120651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E5E188DB07
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:14:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77A2488DB04
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86441B2252A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:14:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E91B2242C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E204CB4B;
-	Wed, 27 Mar 2024 10:14:25 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA2F4879B;
+	Wed, 27 Mar 2024 10:14:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rq+WwJ7P"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73A44C618
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 10:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3246225634;
+	Wed, 27 Mar 2024 10:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711534464; cv=none; b=DNYRTUFQ9k3gxSaE2ttTEFSeSl3ly71QrrauVoNRMXqMkwb1xqbKKkgdvz70GC+C+ICGfNfVBX1aIJUJz/fQzZUhZtWS7i1vZyzCB+uVhc6wy/86qwIuP5GEdrm7zIov94DcUtX6GOM/0taQGsklUVRZmIVgg0XppG4FUyg+RWE=
+	t=1711534443; cv=none; b=ZhNGHDVzXMpUDRbhc0bO7X4sw+9Uva8u87Kzhq4/zy+Of2mF3I04oabD9aDRUL52hnRj3WEMuh1lI8e01j9gFppx66h+mcbI4wnvTupDL9QVS+zsix8tKY4fvJrHVQ1GpAJjHPDqX7Tyi5lHZ6eO0Yr3KtbR8CUKOb0b2sZLqb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711534464; c=relaxed/simple;
-	bh=MYUxqwJ15Au6j+tzRF+Kb1ngq4X8ptxy3u0nngYX5D0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Y21c1c64Gd1U1tsR9c/Vk4o37QpqRcjHTvl4ljy1zhUQqARwxTVwqXOIVHUDk/ceO8aTGWuQhXktk+eiiZaioN90vwqVClec1CL740KesZ6yKBqvgyAhGNm+u+tQmOp65DBi1R/EcKYyV7ZscBhXwW4gw6INmwxCKEzlZLv1eMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-368a72042b9so5796745ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 03:14:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711534461; x=1712139261;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g0x6QznP0naXlFBKhvXrKZHgMeDX4diMgnDySQGYLOM=;
-        b=bmHUyKTgH47+byOPKRW7ti8sD4dOCLi86TAffQAaEeizMmuHyy2UC0OK1tX2KUM6cY
-         QNgDe5/1BSafjwtAvLwWCJC2BmF3+ey16kfUsR/seZTNHpJTNfn/MBwm2ia/98XmNaUJ
-         id/oGFudfrXu0YUyyFkapmGPnH2gd/2LtQBwJxG99vln0aBZPR2bXyMLV1WesXJAmZ1b
-         xksmPiZ5pkhxa7D4IzY0HS7A9gtHMWys9iWUWt+RTHz7PmrRj13/TkhNdb9uXfT+8uPH
-         d8VxxGPOGK/xzvB9AU1Zl1i8OUf5tqXwVat/w/+n0BBiDEiynl7k437twZ6EW9bytWo0
-         nuiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUovzuFmnLH54bN5oxe2jIwphgivGB5OTovyHNFCkDMkLdmC8Tqu2UW5Ii/HRSM+7HTumEte20+U2h79O799c2hKvrnhZem4j0F6crn
-X-Gm-Message-State: AOJu0YxSEw+RT7imA8SGPwnlWfBxI2oXh2D2LzxOX/RSwxgZK/upxWMQ
-	jBNGnYiaLpZqt9E2E+GmcbY4r8TEhqzCr5QwDqsyn8c/HBmgPCzbG38U8OgNtmiuosmXF3PNGUw
-	N0xDwKpAPvhHDUFJy/NPasr8DfOQgDiAMI0B8OzNh/JRy3JmUJOWW8w8=
-X-Google-Smtp-Source: AGHT+IETCBh5u6IdKmQut9xl9QiE3UB3Uunj6qxqrxg1m73vxJVwunBZ9Ja5YUCwg2CzfITLrhbLAsIyH5Oo+nNw+3dQaw2TkSgz
+	s=arc-20240116; t=1711534443; c=relaxed/simple;
+	bh=pLp0DtuR1snCHa1gI/aM7p+gecTr7MkIvch2jVaHz9c=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Cc:Subject:To:
+	 References:From:In-Reply-To; b=Truc3T4N+1mc3VGTq3tnD7NvALb3ePSTvfQt6u3rPs91+c3u1nTqVJBWIAKAOPd/4PZcC4xPkGipNgYC6fDsV8mrvKRwW3EQ3S3dE1nUs2D0xKz+zbMCpX9zrM7sg2k9BJVLRB1uACH0wf3YUEinp/KFvof/lhlRHor+JN62gAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rq+WwJ7P; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711534438;
+	bh=pLp0DtuR1snCHa1gI/aM7p+gecTr7MkIvch2jVaHz9c=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=rq+WwJ7PzFsmZVWjUwU5hdoCHCAVUmnlgS6fQSM/9vQh74Y4mJm/19wkEm+3gmSam
+	 BcxZcW87QsPCGR9A4M3ZxOB/qY8/38EL8sx80yz6gqA6dw7APRYgkhqSbE8kB4aEqF
+	 JheTLtqq7ZAyEkS5XC8pez1DlA7Bm0grpwvWeuwsv5HzTT5pFjthZCpzrq6woJlpAD
+	 L+8Aqnbdm0rOG2fqGMxQzpL0oSBm7K7CKfJBgryp8pQeE3olnMnUxXt3dYyk6pVE+j
+	 8HWE4GQHW7NeY75brHd0TDsZBUmGlVPc+lQg2Mg41bgDuUFJcObSYLpTyZcuaMLc0L
+	 YrGGnB6UIqPgA==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D68A937820A3;
+	Wed, 27 Mar 2024 10:13:55 +0000 (UTC)
+Content-Type: multipart/mixed; boundary="------------0P070n0LNOrU7MnelRpNTlQw"
+Message-ID: <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
+Date: Wed, 27 Mar 2024 15:14:25 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0e:b0:366:bbfb:5866 with SMTP id
- i14-20020a056e021d0e00b00366bbfb5866mr192030ila.3.1711534460953; Wed, 27 Mar
- 2024 03:14:20 -0700 (PDT)
-Date: Wed, 27 Mar 2024 03:14:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000090fe770614a1ab17@google.com>
-Subject: [syzbot] [bpf?] [net?] possible deadlock in ahci_single_level_irq_intr
-From: syzbot <syzbot+d4066896495db380182e@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
+ Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
+To: Jason Gunthorpe <jgg@ziepe.ca>
+References: <20240325090048.1423908-1-usama.anjum@collabora.com>
+ <31fcc276-acd6-4277-bd6c-4a871c7fb28a@collabora.com>
+ <20240326150340.GE8419@ziepe.ca>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240326150340.GE8419@ziepe.ca>
 
-Hello,
+This is a multi-part message in MIME format.
+--------------0P070n0LNOrU7MnelRpNTlQw
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-syzbot found the following issue on:
+On 3/26/24 8:03 PM, Jason Gunthorpe wrote:
+> On Tue, Mar 26, 2024 at 06:09:34PM +0500, Muhammad Usama Anjum wrote:
+>> Even after applying this config patch and following snippet (which doesn't
+>> terminate the program if mmap doesn't allocate exactly as the hint), I'm
+>> finding failed tests.
+>>
+>> @@ -1746,7 +1748,7 @@ FIXTURE_SETUP(iommufd_dirty_tracking)
+>>         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
+>>         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
+>>                    mmap_flags, -1, 0);
+>> -       assert(vrc == self->buffer);
+>> +       assert(vrc == self->buffer);// ???
+>>
+>> On x86:
+>> # Totals: pass:176 fail:4 xfail:0 xpass:0 skip:0 error:0
+>> On ARM64:
+>> # Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
+>>
+>> The log files are attached.
+> 
+> You probably don't have enough transparent huge pages available to the process
+> 
+>       echo 1024 > /proc/sys/vm/nr_hugepages
+After making huge pages available, the iommufd test always passed on x86.
+But there are still failures on arm64. I'm looking into the failures.
 
-HEAD commit:    bfa8f18691ed Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11bbb1be180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8f186ceee5fcb0b8
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4066896495db380182e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-bfa8f186.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c7a06d439e10/vmlinux-bfa8f186.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8bc8cb9cde60/bzImage-bfa8f186.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d4066896495db380182e@syzkaller.appspotmail.com
-
-=====================================================
-WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
-6.8.0-syzkaller-13161-gbfa8f18691ed #0 Not tainted
------------------------------------------------------
-syz-executor.0/5916 [HC0[0]:SC0[2]:HE0:SE0] is trying to acquire:
-ffff888011e92a00 (&stab->lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff888011e92a00 (&stab->lock){+...}-{2:2}, at: __sock_map_delete net/core/sock_map.c:414 [inline]
-ffff888011e92a00 (&stab->lock){+...}-{2:2}, at: sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
-
-and this task is already holding:
-ffff888021ffe418 (&host->lock){-.-.}-{2:2}, at: ata_scsi_queuecmd+0x86/0x160 drivers/ata/libata-scsi.c:4194
-which would create a new lock dependency:
- (&host->lock){-.-.}-{2:2} -> (&stab->lock){+...}-{2:2}
-
-but this new dependency connects a HARDIRQ-irq-safe lock:
- (&host->lock){-.-.}-{2:2}
-
-.. which became HARDIRQ-irq-safe at:
-  lock_acquire kernel/locking/lockdep.c:5754 [inline]
-  lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-  spin_lock include/linux/spinlock.h:351 [inline]
-  ahci_single_level_irq_intr+0xc7/0x120 drivers/ata/libahci.c:2022
-  __handle_irq_event_percpu+0x229/0x7c0 kernel/irq/handle.c:158
-  handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
-  handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
-  handle_edge_irq+0x263/0xd10 kernel/irq/chip.c:831
-  generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
-  handle_irq arch/x86/kernel/irq.c:238 [inline]
-  __common_interrupt+0xde/0x250 arch/x86/kernel/irq.c:257
-  common_interrupt+0xab/0xd0 arch/x86/kernel/irq.c:247
-  asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
-  native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
-  arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
-  default_idle+0xf/0x20 arch/x86/kernel/process.c:742
-  default_idle_call+0x6d/0xb0 kernel/sched/idle.c:117
-  cpuidle_idle_call kernel/sched/idle.c:191 [inline]
-  do_idle+0x32c/0x3f0 kernel/sched/idle.c:332
-  cpu_startup_entry+0x4f/0x60 kernel/sched/idle.c:430
-  start_secondary+0x220/0x2b0 arch/x86/kernel/smpboot.c:313
-  common_startup_64+0x13e/0x148
-
-to a HARDIRQ-irq-unsafe lock:
- (&stab->lock){+...}-{2:2}
-
-.. which became HARDIRQ-irq-unsafe at:
+cat /proc/sys/vm/nr_hugepages
+1024
+/iommufd
 ..
-  lock_acquire kernel/locking/lockdep.c:5754 [inline]
-  lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-  _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-  spin_lock_bh include/linux/spinlock.h:356 [inline]
-  __sock_map_delete net/core/sock_map.c:414 [inline]
-  sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
-  ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-  __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-  __bpf_prog_run include/linux/filter.h:657 [inline]
-  bpf_prog_run include/linux/filter.h:664 [inline]
-  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-  bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
-  trace_mm_page_alloc include/trace/events/kmem.h:177 [inline]
-  __alloc_pages+0x3ad/0x2460 mm/page_alloc.c:4597
-  alloc_pages_mpol+0x275/0x610 mm/mempolicy.c:2264
-  pipe_write+0xe4a/0x1b50 fs/pipe.c:513
-  call_write_iter include/linux/fs.h:2108 [inline]
-  new_sync_write fs/read_write.c:497 [inline]
-  vfs_write+0x6db/0x1100 fs/read_write.c:590
-  ksys_write+0x1f8/0x260 fs/read_write.c:643
-  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-  do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+# Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
 
-other info that might help us debug this:
+> 
+> Jason
+> 
 
- Possible interrupt unsafe locking scenario:
+-- 
+BR,
+Muhammad Usama Anjum
+--------------0P070n0LNOrU7MnelRpNTlQw
+Content-Type: text/x-log; charset=UTF-8; name="iommufd_arm.log"
+Content-Disposition: attachment; filename="iommufd_arm.log"
+Content-Transfer-Encoding: base64
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(&stab->lock);
-                               local_irq_disable();
-                               lock(&host->lock);
-                               lock(&stab->lock);
-  <Interrupt>
-    lock(&host->lock);
+VEFQIHZlcnNpb24gMTMKMS4uMTgwCiMgU3RhcnRpbmcgMTgwIHRlc3RzIGZyb20gMTggdGVz
+dCBjYXNlcy4KIyAgUlVOICAgICAgICAgICBpb21tdWZkLnNpbXBsZV9jbG9zZSAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkLnNpbXBsZV9jbG9zZQpvayAxIGlvbW11ZmQuc2ltcGxl
+X2Nsb3NlCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZC5jbWRfZmFpbCAuLi4KIyAgICAgICAg
+ICAgIE9LICBpb21tdWZkLmNtZF9mYWlsCm9rIDIgaW9tbXVmZC5jbWRfZmFpbAojICBSVU4g
+ICAgICAgICAgIGlvbW11ZmQuY21kX2xlbmd0aCAuLi4KIyAgICAgICAgICAgIE9LICBpb21t
+dWZkLmNtZF9sZW5ndGgKb2sgMyBpb21tdWZkLmNtZF9sZW5ndGgKIyAgUlVOICAgICAgICAg
+ICBpb21tdWZkLmNtZF9leF9mYWlsIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmQuY21k
+X2V4X2ZhaWwKb2sgNCBpb21tdWZkLmNtZF9leF9mYWlsCiMgIFJVTiAgICAgICAgICAgaW9t
+bXVmZC5nbG9iYWxfb3B0aW9ucyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkLmdsb2Jh
+bF9vcHRpb25zCm9rIDUgaW9tbXVmZC5nbG9iYWxfb3B0aW9ucwojICBSVU4gICAgICAgICAg
+IGlvbW11ZmQuc2ltcGxlX2lvY3RscyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkLnNp
+bXBsZV9pb2N0bHMKb2sgNiBpb21tdWZkLnNpbXBsZV9pb2N0bHMKIyAgUlVOICAgICAgICAg
+ICBpb21tdWZkLnVubWFwX2NtZCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkLnVubWFw
+X2NtZApvayA3IGlvbW11ZmQudW5tYXBfY21kCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZC5t
+YXBfY21kIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmQubWFwX2NtZApvayA4IGlvbW11
+ZmQubWFwX2NtZAojICBSVU4gICAgICAgICAgIGlvbW11ZmQuaW5mb19jbWQgLi4uCiMgICAg
+ICAgICAgICBPSyAgaW9tbXVmZC5pbmZvX2NtZApvayA5IGlvbW11ZmQuaW5mb19jbWQKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkLnNldF9pb21tdV9jbWQgLi4uCiMgICAgICAgICAgICBP
+SyAgaW9tbXVmZC5zZXRfaW9tbXVfY21kCm9rIDEwIGlvbW11ZmQuc2V0X2lvbW11X2NtZAoj
+ICBSVU4gICAgICAgICAgIGlvbW11ZmQudmZpb19pb2FzIC4uLgojICAgICAgICAgICAgT0sg
+IGlvbW11ZmQudmZpb19pb2FzCm9rIDExIGlvbW11ZmQudmZpb19pb2FzCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2F1dG9fZGVzdHJveSAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmlvYXNfYXV0b19kZXN0cm95
+Cm9rIDEyIGlvbW11ZmRfaW9hcy5ub19kb21haW4uaW9hc19hdXRvX2Rlc3Ryb3kKIyAgUlVO
+ICAgICAgICAgICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmlvYXNfZGVzdHJveSAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmlvYXNfZGVzdHJveQpvayAx
+MyBpb21tdWZkX2lvYXMubm9fZG9tYWluLmlvYXNfZGVzdHJveQojICBSVU4gICAgICAgICAg
+IGlvbW11ZmRfaW9hcy5ub19kb21haW4uYWxsb2NfaHdwdF9uZXN0ZWQgLi4uCiMgICAgICAg
+ICAgICBPSyAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5hbGxvY19od3B0X25lc3RlZApvayAx
+NCBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFsbG9jX2h3cHRfbmVzdGVkCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5od3B0X2F0dGFjaCAuLi4KIyAgICAgICAg
+ICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmh3cHRfYXR0YWNoCm9rIDE1IGlvbW11
+ZmRfaW9hcy5ub19kb21haW4uaHdwdF9hdHRhY2gKIyAgUlVOICAgICAgICAgICBpb21tdWZk
+X2lvYXMubm9fZG9tYWluLmlvYXNfYXJlYV9kZXN0cm95IC4uLgojICAgICAgICAgICAgT0sg
+IGlvbW11ZmRfaW9hcy5ub19kb21haW4uaW9hc19hcmVhX2Rlc3Ryb3kKb2sgMTYgaW9tbXVm
+ZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2FyZWFfZGVzdHJveQojICBSVU4gICAgICAgICAgIGlv
+bW11ZmRfaW9hcy5ub19kb21haW4uaW9hc19hcmVhX2F1dG9fZGVzdHJveSAuLi4KIyAgICAg
+ICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmlvYXNfYXJlYV9hdXRvX2Rlc3Ry
+b3kKb2sgMTcgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2FyZWFfYXV0b19kZXN0cm95
+CiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5nZXRfaHdfaW5mbyAu
+Li4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmdldF9od19pbmZv
+Cm9rIDE4IGlvbW11ZmRfaW9hcy5ub19kb21haW4uZ2V0X2h3X2luZm8KIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFyZWEgLi4uCiMgICAgICAgICAgICBPSyAg
+aW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5hcmVhCm9rIDE5IGlvbW11ZmRfaW9hcy5ub19kb21h
+aW4uYXJlYQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5ub19kb21haW4udW5tYXBf
+ZnVsbHlfY29udGFpbmVkX2FyZWFzIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9h
+cy5ub19kb21haW4udW5tYXBfZnVsbHlfY29udGFpbmVkX2FyZWFzCm9rIDIwIGlvbW11ZmRf
+aW9hcy5ub19kb21haW4udW5tYXBfZnVsbHlfY29udGFpbmVkX2FyZWFzCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5hcmVhX2F1dG9faW92YSAuLi4KIyAgICAg
+ICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFyZWFfYXV0b19pb3ZhCm9rIDIx
+IGlvbW11ZmRfaW9hcy5ub19kb21haW4uYXJlYV9hdXRvX2lvdmEKIyAgUlVOICAgICAgICAg
+ICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFyZWFfYWxsb3dlZCAuLi4KIyAgICAgICAgICAg
+IE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFyZWFfYWxsb3dlZApvayAyMiBpb21tdWZk
+X2lvYXMubm9fZG9tYWluLmFyZWFfYWxsb3dlZAojICBSVU4gICAgICAgICAgIGlvbW11ZmRf
+aW9hcy5ub19kb21haW4uY29weV9hcmVhIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRf
+aW9hcy5ub19kb21haW4uY29weV9hcmVhCm9rIDIzIGlvbW11ZmRfaW9hcy5ub19kb21haW4u
+Y29weV9hcmVhCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5pb3Zh
+X3JhbmdlcyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmlv
+dmFfcmFuZ2VzCm9rIDI0IGlvbW11ZmRfaW9hcy5ub19kb21haW4uaW92YV9yYW5nZXMKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19kb21haW5fZGVz
+dG9yeSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vz
+c19kb21haW5fZGVzdG9yeQpvayAyNSBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19k
+b21haW5fZGVzdG9yeQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5ub19kb21haW4u
+YWNjZXNzX3BpbiAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWlu
+LmFjY2Vzc19waW4Kb2sgMjYgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5hY2Nlc3NfcGluCiMg
+IFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5hY2Nlc3NfcGluX3VubWFw
+IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5ub19kb21haW4uYWNjZXNzX3Bp
+bl91bm1hcApvayAyNyBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19waW5fdW5tYXAK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19ydyAuLi4K
+IyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19ydwpvayAy
+OCBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19ydwojICBSVU4gICAgICAgICAgIGlv
+bW11ZmRfaW9hcy5ub19kb21haW4uYWNjZXNzX3J3X3VuYWxpZ25lZCAuLi4KIyAgICAgICAg
+ICAgIE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmFjY2Vzc19yd191bmFsaWduZWQKb2sg
+MjkgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5hY2Nlc3NfcndfdW5hbGlnbmVkCiMgIFJVTiAg
+ICAgICAgICAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5mb3JrX2dvbmUgLi4uCiMgICAgICAg
+ICAgICBPSyAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5mb3JrX2dvbmUKb2sgMzAgaW9tbXVm
+ZF9pb2FzLm5vX2RvbWFpbi5mb3JrX2dvbmUKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lv
+YXMubm9fZG9tYWluLmZvcmtfcHJlc2VudCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZk
+X2lvYXMubm9fZG9tYWluLmZvcmtfcHJlc2VudApvayAzMSBpb21tdWZkX2lvYXMubm9fZG9t
+YWluLmZvcmtfcHJlc2VudAojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5ub19kb21h
+aW4uaW9hc19vcHRpb25faHVnZV9wYWdlcyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZk
+X2lvYXMubm9fZG9tYWluLmlvYXNfb3B0aW9uX2h1Z2VfcGFnZXMKb2sgMzIgaW9tbXVmZF9p
+b2FzLm5vX2RvbWFpbi5pb2FzX29wdGlvbl9odWdlX3BhZ2VzCiMgIFJVTiAgICAgICAgICAg
+aW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2lvdmFfYWxsb2MgLi4uCiMgICAgICAgICAg
+ICBPSyAgaW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2lvdmFfYWxsb2MKb2sgMzMgaW9t
+bXVmZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2lvdmFfYWxsb2MKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2lvYXMubm9fZG9tYWluLmlvYXNfYWxpZ25fY2hhbmdlIC4uLgojICAgICAgICAg
+ICAgT0sgIGlvbW11ZmRfaW9hcy5ub19kb21haW4uaW9hc19hbGlnbl9jaGFuZ2UKb2sgMzQg
+aW9tbXVmZF9pb2FzLm5vX2RvbWFpbi5pb2FzX2FsaWduX2NoYW5nZQojICBSVU4gICAgICAg
+ICAgIGlvbW11ZmRfaW9hcy5ub19kb21haW4uY29weV9zd2VlcCAuLi4KIyAgICAgICAgICAg
+IE9LICBpb21tdWZkX2lvYXMubm9fZG9tYWluLmNvcHlfc3dlZXAKb2sgMzUgaW9tbXVmZF9p
+b2FzLm5vX2RvbWFpbi5jb3B5X3N3ZWVwCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluLmlvYXNfYXV0b19kZXN0cm95IC4uLgojICAgICAgICAgICAgT0sgIGlv
+bW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2FzX2F1dG9fZGVzdHJveQpvayAzNiBpb21tdWZk
+X2lvYXMubW9ja19kb21haW4uaW9hc19hdXRvX2Rlc3Ryb3kKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2lvYXMubW9ja19kb21haW4uaW9hc19kZXN0cm95IC4uLgojICAgICAgICAgICAg
+T0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2FzX2Rlc3Ryb3kKb2sgMzcgaW9tbXVm
+ZF9pb2FzLm1vY2tfZG9tYWluLmlvYXNfZGVzdHJveQojICBSVU4gICAgICAgICAgIGlvbW11
+ZmRfaW9hcy5tb2NrX2RvbWFpbi5hbGxvY19od3B0X25lc3RlZCAuLi4KIyAgICAgICAgICAg
+IE9LICBpb21tdWZkX2lvYXMubW9ja19kb21haW4uYWxsb2NfaHdwdF9uZXN0ZWQKb2sgMzgg
+aW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmFsbG9jX2h3cHRfbmVzdGVkCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmh3cHRfYXR0YWNoIC4uLgojICAgICAg
+ICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5od3B0X2F0dGFjaApvayAzOSBp
+b21tdWZkX2lvYXMubW9ja19kb21haW4uaHdwdF9hdHRhY2gKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2lvYXMubW9ja19kb21haW4uaW9hc19hcmVhX2Rlc3Ryb3kgLi4uCiMgICAgICAg
+ICAgICBPSyAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmlvYXNfYXJlYV9kZXN0cm95Cm9r
+IDQwIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2FzX2FyZWFfZGVzdHJveQojICBSVU4g
+ICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2FzX2FyZWFfYXV0b19kZXN0
+cm95IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2Fz
+X2FyZWFfYXV0b19kZXN0cm95Cm9rIDQxIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2Fz
+X2FyZWFfYXV0b19kZXN0cm95CiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm1vY2tf
+ZG9tYWluLmdldF9od19pbmZvIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5t
+b2NrX2RvbWFpbi5nZXRfaHdfaW5mbwpvayA0MiBpb21tdWZkX2lvYXMubW9ja19kb21haW4u
+Z2V0X2h3X2luZm8KIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW4u
+YXJlYSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubW9ja19kb21haW4uYXJl
+YQpvayA0MyBpb21tdWZkX2lvYXMubW9ja19kb21haW4uYXJlYQojICBSVU4gICAgICAgICAg
+IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi51bm1hcF9mdWxseV9jb250YWluZWRfYXJlYXMg
+Li4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLnVubWFwX2Z1
+bGx5X2NvbnRhaW5lZF9hcmVhcwpvayA0NCBpb21tdWZkX2lvYXMubW9ja19kb21haW4udW5t
+YXBfZnVsbHlfY29udGFpbmVkX2FyZWFzCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluLmFyZWFfYXV0b19pb3ZhIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11
+ZmRfaW9hcy5tb2NrX2RvbWFpbi5hcmVhX2F1dG9faW92YQpvayA0NSBpb21tdWZkX2lvYXMu
+bW9ja19kb21haW4uYXJlYV9hdXRvX2lvdmEKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lv
+YXMubW9ja19kb21haW4uYXJlYV9hbGxvd2VkIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11
+ZmRfaW9hcy5tb2NrX2RvbWFpbi5hcmVhX2FsbG93ZWQKb2sgNDYgaW9tbXVmZF9pb2FzLm1v
+Y2tfZG9tYWluLmFyZWFfYWxsb3dlZAojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5t
+b2NrX2RvbWFpbi5jb3B5X2FyZWEgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluLmNvcHlfYXJlYQpvayA0NyBpb21tdWZkX2lvYXMubW9ja19kb21haW4u
+Y29weV9hcmVhCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmlv
+dmFfcmFuZ2VzIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFp
+bi5pb3ZhX3JhbmdlcwpvayA0OCBpb21tdWZkX2lvYXMubW9ja19kb21haW4uaW92YV9yYW5n
+ZXMKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW4uYWNjZXNzX2Rv
+bWFpbl9kZXN0b3J5IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2Rv
+bWFpbi5hY2Nlc3NfZG9tYWluX2Rlc3RvcnkKb2sgNDkgaW9tbXVmZF9pb2FzLm1vY2tfZG9t
+YWluLmFjY2Vzc19kb21haW5fZGVzdG9yeQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9h
+cy5tb2NrX2RvbWFpbi5hY2Nlc3NfcGluIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRf
+aW9hcy5tb2NrX2RvbWFpbi5hY2Nlc3NfcGluCm9rIDUwIGlvbW11ZmRfaW9hcy5tb2NrX2Rv
+bWFpbi5hY2Nlc3NfcGluCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm1vY2tfZG9t
+YWluLmFjY2Vzc19waW5fdW5tYXAgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluLmFjY2Vzc19waW5fdW5tYXAKb2sgNTEgaW9tbXVmZF9pb2FzLm1vY2tf
+ZG9tYWluLmFjY2Vzc19waW5fdW5tYXAKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMu
+bW9ja19kb21haW4uYWNjZXNzX3J3IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9h
+cy5tb2NrX2RvbWFpbi5hY2Nlc3NfcncKb2sgNTIgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWlu
+LmFjY2Vzc19ydwojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5h
+Y2Nlc3NfcndfdW5hbGlnbmVkIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5t
+b2NrX2RvbWFpbi5hY2Nlc3NfcndfdW5hbGlnbmVkCm9rIDUzIGlvbW11ZmRfaW9hcy5tb2Nr
+X2RvbWFpbi5hY2Nlc3NfcndfdW5hbGlnbmVkCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9p
+b2FzLm1vY2tfZG9tYWluLmZvcmtfZ29uZSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZk
+X2lvYXMubW9ja19kb21haW4uZm9ya19nb25lCm9rIDU0IGlvbW11ZmRfaW9hcy5tb2NrX2Rv
+bWFpbi5mb3JrX2dvbmUKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21h
+aW4uZm9ya19wcmVzZW50IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2Nr
+X2RvbWFpbi5mb3JrX3ByZXNlbnQKb2sgNTUgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmZv
+cmtfcHJlc2VudAojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5p
+b2FzX29wdGlvbl9odWdlX3BhZ2VzIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9h
+cy5tb2NrX2RvbWFpbi5pb2FzX29wdGlvbl9odWdlX3BhZ2VzCm9rIDU2IGlvbW11ZmRfaW9h
+cy5tb2NrX2RvbWFpbi5pb2FzX29wdGlvbl9odWdlX3BhZ2VzCiMgIFJVTiAgICAgICAgICAg
+aW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmlvYXNfaW92YV9hbGxvYyAuLi4KIyAgICAgICAg
+ICAgIE9LICBpb21tdWZkX2lvYXMubW9ja19kb21haW4uaW9hc19pb3ZhX2FsbG9jCm9rIDU3
+IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2FzX2lvdmFfYWxsb2MKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW4uaW9hc19hbGlnbl9jaGFuZ2UgLi4uCiMg
+ICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluLmlvYXNfYWxpZ25fY2hh
+bmdlCm9rIDU4IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5pb2FzX2FsaWduX2NoYW5nZQoj
+ICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5jb3B5X3N3ZWVwIC4u
+LgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5jb3B5X3N3ZWVw
+Cm9rIDU5IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbi5jb3B5X3N3ZWVwCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5pb2FzX2F1dG9fZGVzdHJveSAu
+Li4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmlvYXNf
+YXV0b19kZXN0cm95Cm9rIDYwIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uaW9hc19h
+dXRvX2Rlc3Ryb3kKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9t
+YWluLmlvYXNfZGVzdHJveSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdv
+X21vY2tfZG9tYWluLmlvYXNfZGVzdHJveQpvayA2MSBpb21tdWZkX2lvYXMudHdvX21vY2tf
+ZG9tYWluLmlvYXNfZGVzdHJveQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50d29f
+bW9ja19kb21haW4uYWxsb2NfaHdwdF9uZXN0ZWQgLi4uCiMgICAgICAgICAgICBPSyAgaW9t
+bXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5hbGxvY19od3B0X25lc3RlZApvayA2MiBpb21t
+dWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFsbG9jX2h3cHRfbmVzdGVkCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5od3B0X2F0dGFjaCAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmh3cHRfYXR0YWNo
+Cm9rIDYzIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uaHdwdF9hdHRhY2gKIyAgUlVO
+ICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmlvYXNfYXJlYV9kZXN0
+cm95IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4u
+aW9hc19hcmVhX2Rlc3Ryb3kKb2sgNjQgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5p
+b2FzX2FyZWFfZGVzdHJveQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50d29fbW9j
+a19kb21haW4uaW9hc19hcmVhX2F1dG9fZGVzdHJveSAuLi4KIyAgICAgICAgICAgIE9LICBp
+b21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmlvYXNfYXJlYV9hdXRvX2Rlc3Ryb3kKb2sg
+NjUgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5pb2FzX2FyZWFfYXV0b19kZXN0cm95
+CiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5nZXRfaHdf
+aW5mbyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWlu
+LmdldF9od19pbmZvCm9rIDY2IGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uZ2V0X2h3
+X2luZm8KIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFy
+ZWEgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5h
+cmVhCm9rIDY3IGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uYXJlYQojICBSVU4gICAg
+ICAgICAgIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4udW5tYXBfZnVsbHlfY29udGFp
+bmVkX2FyZWFzIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy50d29fbW9ja19k
+b21haW4udW5tYXBfZnVsbHlfY29udGFpbmVkX2FyZWFzCm9rIDY4IGlvbW11ZmRfaW9hcy50
+d29fbW9ja19kb21haW4udW5tYXBfZnVsbHlfY29udGFpbmVkX2FyZWFzCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5hcmVhX2F1dG9faW92YSAuLi4K
+IyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFyZWFfYXV0
+b19pb3ZhCm9rIDY5IGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uYXJlYV9hdXRvX2lv
+dmEKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFyZWFf
+YWxsb3dlZCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9t
+YWluLmFyZWFfYWxsb3dlZApvayA3MCBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFy
+ZWFfYWxsb3dlZAojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21h
+aW4uY29weV9hcmVhIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy50d29fbW9j
+a19kb21haW4uY29weV9hcmVhCm9rIDcxIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4u
+Y29weV9hcmVhCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFp
+bi5pb3ZhX3JhbmdlcyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21v
+Y2tfZG9tYWluLmlvdmFfcmFuZ2VzCm9rIDcyIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21h
+aW4uaW92YV9yYW5nZXMKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tf
+ZG9tYWluLmFjY2Vzc19kb21haW5fZGVzdG9yeSAuLi4KIyAgICAgICAgICAgIE9LICBpb21t
+dWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFjY2Vzc19kb21haW5fZGVzdG9yeQpvayA3MyBp
+b21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFjY2Vzc19kb21haW5fZGVzdG9yeQojICBS
+VU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uYWNjZXNzX3BpbiAu
+Li4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFjY2Vz
+c19waW4Kb2sgNzQgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5hY2Nlc3NfcGluCiMg
+IFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5hY2Nlc3NfcGlu
+X3VubWFwIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21h
+aW4uYWNjZXNzX3Bpbl91bm1hcApvayA3NSBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWlu
+LmFjY2Vzc19waW5fdW5tYXAKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21v
+Y2tfZG9tYWluLmFjY2Vzc19ydyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMu
+dHdvX21vY2tfZG9tYWluLmFjY2Vzc19ydwpvayA3NiBpb21tdWZkX2lvYXMudHdvX21vY2tf
+ZG9tYWluLmFjY2Vzc19ydwojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50d29fbW9j
+a19kb21haW4uYWNjZXNzX3J3X3VuYWxpZ25lZCAuLi4KIyAgICAgICAgICAgIE9LICBpb21t
+dWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmFjY2Vzc19yd191bmFsaWduZWQKb2sgNzcgaW9t
+bXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5hY2Nlc3NfcndfdW5hbGlnbmVkCiMgIFJVTiAg
+ICAgICAgICAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5mb3JrX2dvbmUgLi4uCiMg
+ICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5mb3JrX2dvbmUK
+b2sgNzggaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5mb3JrX2dvbmUKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmZvcmtfcHJlc2VudCAuLi4K
+IyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmZvcmtfcHJl
+c2VudApvayA3OSBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmZvcmtfcHJlc2VudAoj
+ICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50d29fbW9ja19kb21haW4uaW9hc19vcHRp
+b25faHVnZV9wYWdlcyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMudHdvX21v
+Y2tfZG9tYWluLmlvYXNfb3B0aW9uX2h1Z2VfcGFnZXMKb2sgODAgaW9tbXVmZF9pb2FzLnR3
+b19tb2NrX2RvbWFpbi5pb2FzX29wdGlvbl9odWdlX3BhZ2VzCiMgIFJVTiAgICAgICAgICAg
+aW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5pb2FzX2lvdmFfYWxsb2MgLi4uCiMgICAg
+ICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5pb2FzX2lvdmFfYWxs
+b2MKb2sgODEgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2RvbWFpbi5pb2FzX2lvdmFfYWxsb2MK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMudHdvX21vY2tfZG9tYWluLmlvYXNfYWxp
+Z25fY2hhbmdlIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy50d29fbW9ja19k
+b21haW4uaW9hc19hbGlnbl9jaGFuZ2UKb2sgODIgaW9tbXVmZF9pb2FzLnR3b19tb2NrX2Rv
+bWFpbi5pb2FzX2FsaWduX2NoYW5nZQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy50
+d29fbW9ja19kb21haW4uY29weV9zd2VlcCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZk
+X2lvYXMudHdvX21vY2tfZG9tYWluLmNvcHlfc3dlZXAKb2sgODMgaW9tbXVmZF9pb2FzLnR3
+b19tb2NrX2RvbWFpbi5jb3B5X3N3ZWVwCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluX2xpbWl0LmlvYXNfYXV0b19kZXN0cm95IC4uLgojICAgICAgICAgICAg
+T0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5pb2FzX2F1dG9fZGVzdHJveQpv
+ayA4NCBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuaW9hc19hdXRvX2Rlc3Ryb3kK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuaW9hc19k
+ZXN0cm95IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9s
+aW1pdC5pb2FzX2Rlc3Ryb3kKb2sgODUgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0
+LmlvYXNfZGVzdHJveQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFp
+bl9saW1pdC5hbGxvY19od3B0X25lc3RlZCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZk
+X2lvYXMubW9ja19kb21haW5fbGltaXQuYWxsb2NfaHdwdF9uZXN0ZWQKb2sgODYgaW9tbXVm
+ZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LmFsbG9jX2h3cHRfbmVzdGVkCiMgIFJVTiAgICAg
+ICAgICAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0Lmh3cHRfYXR0YWNoIC4uLgoj
+ICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5od3B0X2F0
+dGFjaApvayA4NyBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuaHdwdF9hdHRhY2gK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuaW9hc19h
+cmVhX2Rlc3Ryb3kgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLm1vY2tfZG9t
+YWluX2xpbWl0LmlvYXNfYXJlYV9kZXN0cm95Cm9rIDg4IGlvbW11ZmRfaW9hcy5tb2NrX2Rv
+bWFpbl9saW1pdC5pb2FzX2FyZWFfZGVzdHJveQojICBSVU4gICAgICAgICAgIGlvbW11ZmRf
+aW9hcy5tb2NrX2RvbWFpbl9saW1pdC5pb2FzX2FyZWFfYXV0b19kZXN0cm95IC4uLgojICAg
+ICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5pb2FzX2FyZWFf
+YXV0b19kZXN0cm95Cm9rIDg5IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5pb2Fz
+X2FyZWFfYXV0b19kZXN0cm95CiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm1vY2tf
+ZG9tYWluX2xpbWl0LmdldF9od19pbmZvIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRf
+aW9hcy5tb2NrX2RvbWFpbl9saW1pdC5nZXRfaHdfaW5mbwpvayA5MCBpb21tdWZkX2lvYXMu
+bW9ja19kb21haW5fbGltaXQuZ2V0X2h3X2luZm8KIyAgUlVOICAgICAgICAgICBpb21tdWZk
+X2lvYXMubW9ja19kb21haW5fbGltaXQuYXJlYSAuLi4KIyAgICAgICAgICAgIE9LICBpb21t
+dWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuYXJlYQpvayA5MSBpb21tdWZkX2lvYXMubW9j
+a19kb21haW5fbGltaXQuYXJlYQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2Nr
+X2RvbWFpbl9saW1pdC51bm1hcF9mdWxseV9jb250YWluZWRfYXJlYXMgLi4uCiMgICAgICAg
+ICAgICBPSyAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LnVubWFwX2Z1bGx5X2Nv
+bnRhaW5lZF9hcmVhcwpvayA5MiBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQudW5t
+YXBfZnVsbHlfY29udGFpbmVkX2FyZWFzCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluX2xpbWl0LmFyZWFfYXV0b19pb3ZhIC4uLgojICAgICAgICAgICAgT0sg
+IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5hcmVhX2F1dG9faW92YQpvayA5MyBp
+b21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuYXJlYV9hdXRvX2lvdmEKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuYXJlYV9hbGxvd2VkIC4u
+LgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5hcmVh
+X2FsbG93ZWQKb2sgOTQgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LmFyZWFfYWxs
+b3dlZAojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5j
+b3B5X2FyZWEgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWlu
+X2xpbWl0LmNvcHlfYXJlYQpvayA5NSBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQu
+Y29weV9hcmVhCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xp
+bWl0LmlvdmFfcmFuZ2VzIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2Nr
+X2RvbWFpbl9saW1pdC5pb3ZhX3JhbmdlcwpvayA5NiBpb21tdWZkX2lvYXMubW9ja19kb21h
+aW5fbGltaXQuaW92YV9yYW5nZXMKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9j
+a19kb21haW5fbGltaXQuYWNjZXNzX2RvbWFpbl9kZXN0b3J5IC4uLgojICAgICAgICAgICAg
+T0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5hY2Nlc3NfZG9tYWluX2Rlc3Rv
+cnkKb2sgOTcgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LmFjY2Vzc19kb21haW5f
+ZGVzdG9yeQojICBSVU4gICAgICAgICAgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1p
+dC5hY2Nlc3NfcGluIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2Rv
+bWFpbl9saW1pdC5hY2Nlc3NfcGluCm9rIDk4IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9s
+aW1pdC5hY2Nlc3NfcGluCiMgIFJVTiAgICAgICAgICAgaW9tbXVmZF9pb2FzLm1vY2tfZG9t
+YWluX2xpbWl0LmFjY2Vzc19waW5fdW5tYXAgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVm
+ZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LmFjY2Vzc19waW5fdW5tYXAKb2sgOTkgaW9tbXVm
+ZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LmFjY2Vzc19waW5fdW5tYXAKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuYWNjZXNzX3J3IC4uLgojICAg
+ICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5hY2Nlc3NfcncK
+b2sgMTAwIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5hY2Nlc3NfcncKIyAgUlVO
+ICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuYWNjZXNzX3J3X3Vu
+YWxpZ25lZCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubW9ja19kb21haW5f
+bGltaXQuYWNjZXNzX3J3X3VuYWxpZ25lZApvayAxMDEgaW9tbXVmZF9pb2FzLm1vY2tfZG9t
+YWluX2xpbWl0LmFjY2Vzc19yd191bmFsaWduZWQKIyAgUlVOICAgICAgICAgICBpb21tdWZk
+X2lvYXMubW9ja19kb21haW5fbGltaXQuZm9ya19nb25lIC4uLgojICAgICAgICAgICAgT0sg
+IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5mb3JrX2dvbmUKb2sgMTAyIGlvbW11
+ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5mb3JrX2dvbmUKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuZm9ya19wcmVzZW50IC4uLgojICAgICAg
+ICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5mb3JrX3ByZXNlbnQK
+b2sgMTAzIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5mb3JrX3ByZXNlbnQKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuaW9hc19vcHRp
+b25faHVnZV9wYWdlcyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubW9ja19k
+b21haW5fbGltaXQuaW9hc19vcHRpb25faHVnZV9wYWdlcwpvayAxMDQgaW9tbXVmZF9pb2Fz
+Lm1vY2tfZG9tYWluX2xpbWl0LmlvYXNfb3B0aW9uX2h1Z2VfcGFnZXMKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuaW9hc19pb3ZhX2FsbG9jIC4u
+LgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5pb2Fz
+X2lvdmFfYWxsb2MKb2sgMTA1IGlvbW11ZmRfaW9hcy5tb2NrX2RvbWFpbl9saW1pdC5pb2Fz
+X2lvdmFfYWxsb2MKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5f
+bGltaXQuaW9hc19hbGlnbl9jaGFuZ2UgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9p
+b2FzLm1vY2tfZG9tYWluX2xpbWl0LmlvYXNfYWxpZ25fY2hhbmdlCm9rIDEwNiBpb21tdWZk
+X2lvYXMubW9ja19kb21haW5fbGltaXQuaW9hc19hbGlnbl9jaGFuZ2UKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuY29weV9zd2VlcCAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkX2lvYXMubW9ja19kb21haW5fbGltaXQuY29weV9zd2Vl
+cApvayAxMDcgaW9tbXVmZF9pb2FzLm1vY2tfZG9tYWluX2xpbWl0LmNvcHlfc3dlZXAKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4uYmFzaWMgLi4u
+CiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluLmJhc2lj
+Cm9rIDEwOCBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4uYmFzaWMKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4ucm9fdW5zaGFyZSAuLi4K
+IyAgICAgICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4ucm9fdW5z
+aGFyZQpvayAxMDkgaW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluLnJvX3Vuc2hhcmUK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4uYWxsX2Fs
+aWducyAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21h
+aW4uYWxsX2FsaWducwpvayAxMTAgaW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluLmFs
+bF9hbGlnbnMKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21h
+aW4uYWxsX2FsaWduc19jb3B5IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfbW9ja19k
+b21haW4ub25lX2RvbWFpbi5hbGxfYWxpZ25zX2NvcHkKb2sgMTExIGlvbW11ZmRfbW9ja19k
+b21haW4ub25lX2RvbWFpbi5hbGxfYWxpZ25zX2NvcHkKIyAgUlVOICAgICAgICAgICBpb21t
+dWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4udXNlcl9jb3B5IC4uLgojICAgICAgICAgICAg
+T0sgIGlvbW11ZmRfbW9ja19kb21haW4ub25lX2RvbWFpbi51c2VyX2NvcHkKb2sgMTEyIGlv
+bW11ZmRfbW9ja19kb21haW4ub25lX2RvbWFpbi51c2VyX2NvcHkKIyAgUlVOICAgICAgICAg
+ICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4ucmVwbGFjZSAuLi4KIyAgICAgICAg
+ICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4ucmVwbGFjZQpvayAxMTMg
+aW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluLnJlcGxhY2UKIyAgUlVOICAgICAgICAg
+ICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4uYWxsb2NfaHdwdCAuLi4KIyAgICAg
+ICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW4uYWxsb2NfaHdwdApv
+ayAxMTQgaW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluLmFsbG9jX2h3cHQKIyAgUlVO
+ICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLmJhc2ljIC4uLgoj
+ICAgICAgICAgICAgT0sgIGlvbW11ZmRfbW9ja19kb21haW4udHdvX2RvbWFpbnMuYmFzaWMK
+b2sgMTE1IGlvbW11ZmRfbW9ja19kb21haW4udHdvX2RvbWFpbnMuYmFzaWMKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLnJvX3Vuc2hhcmUgLi4u
+CiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9tYWlucy5yb191
+bnNoYXJlCm9rIDExNiBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLnJvX3Vuc2hh
+cmUKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLmFs
+bF9hbGlnbnMgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29f
+ZG9tYWlucy5hbGxfYWxpZ25zCm9rIDExNyBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21h
+aW5zLmFsbF9hbGlnbnMKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3
+b19kb21haW5zLmFsbF9hbGlnbnNfY29weSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZk
+X21vY2tfZG9tYWluLnR3b19kb21haW5zLmFsbF9hbGlnbnNfY29weQpvayAxMTggaW9tbXVm
+ZF9tb2NrX2RvbWFpbi50d29fZG9tYWlucy5hbGxfYWxpZ25zX2NvcHkKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLnVzZXJfY29weSAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLnVzZXJfY29w
+eQpvayAxMTkgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9tYWlucy51c2VyX2NvcHkKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLnJlcGxhY2Ug
+Li4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9tYWlucy5y
+ZXBsYWNlCm9rIDEyMCBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLnJlcGxhY2UK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zLmFsbG9j
+X2h3cHQgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9t
+YWlucy5hbGxvY19od3B0Cm9rIDEyMSBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5z
+LmFsbG9jX2h3cHQKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9k
+b21haW5faHVnZXBhZ2UuYmFzaWMgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2Nr
+X2RvbWFpbi5vbmVfZG9tYWluX2h1Z2VwYWdlLmJhc2ljCm9rIDEyMiBpb21tdWZkX21vY2tf
+ZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2UuYmFzaWMKIyAgUlVOICAgICAgICAgICBpb21t
+dWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2Uucm9fdW5zaGFyZSAuLi4KIyAg
+ICAgICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2Uu
+cm9fdW5zaGFyZQpvayAxMjMgaW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluX2h1Z2Vw
+YWdlLnJvX3Vuc2hhcmUKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9u
+ZV9kb21haW5faHVnZXBhZ2UuYWxsX2FsaWducyAuLi4KIyAgICAgICAgICAgIE9LICBpb21t
+dWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2UuYWxsX2FsaWducwpvayAxMjQg
+aW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluX2h1Z2VwYWdlLmFsbF9hbGlnbnMKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2Uu
+YWxsX2FsaWduc19jb3B5IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfbW9ja19kb21h
+aW4ub25lX2RvbWFpbl9odWdlcGFnZS5hbGxfYWxpZ25zX2NvcHkKb2sgMTI1IGlvbW11ZmRf
+bW9ja19kb21haW4ub25lX2RvbWFpbl9odWdlcGFnZS5hbGxfYWxpZ25zX2NvcHkKIyAgUlVO
+ICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2UudXNl
+cl9jb3B5IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfbW9ja19kb21haW4ub25lX2Rv
+bWFpbl9odWdlcGFnZS51c2VyX2NvcHkKb2sgMTI2IGlvbW11ZmRfbW9ja19kb21haW4ub25l
+X2RvbWFpbl9odWdlcGFnZS51c2VyX2NvcHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21v
+Y2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2UucmVwbGFjZSAuLi4KIyAgICAgICAgICAg
+IE9LICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBhZ2UucmVwbGFjZQpv
+ayAxMjcgaW9tbXVmZF9tb2NrX2RvbWFpbi5vbmVfZG9tYWluX2h1Z2VwYWdlLnJlcGxhY2UK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLm9uZV9kb21haW5faHVnZXBh
+Z2UuYWxsb2NfaHdwdCAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWlu
+Lm9uZV9kb21haW5faHVnZXBhZ2UuYWxsb2NfaHdwdApvayAxMjggaW9tbXVmZF9tb2NrX2Rv
+bWFpbi5vbmVfZG9tYWluX2h1Z2VwYWdlLmFsbG9jX2h3cHQKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLmJhc2ljIC4uLgojICAg
+ICAgICAgICAgT0sgIGlvbW11ZmRfbW9ja19kb21haW4udHdvX2RvbWFpbnNfaHVnZXBhZ2Uu
+YmFzaWMKb2sgMTI5IGlvbW11ZmRfbW9ja19kb21haW4udHdvX2RvbWFpbnNfaHVnZXBhZ2Uu
+YmFzaWMKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5z
+X2h1Z2VwYWdlLnJvX3Vuc2hhcmUgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2Nr
+X2RvbWFpbi50d29fZG9tYWluc19odWdlcGFnZS5yb191bnNoYXJlCm9rIDEzMCBpb21tdWZk
+X21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLnJvX3Vuc2hhcmUKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLmFsbF9h
+bGlnbnMgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9t
+YWluc19odWdlcGFnZS5hbGxfYWxpZ25zCm9rIDEzMSBpb21tdWZkX21vY2tfZG9tYWluLnR3
+b19kb21haW5zX2h1Z2VwYWdlLmFsbF9hbGlnbnMKIyAgUlVOICAgICAgICAgICBpb21tdWZk
+X21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLmFsbF9hbGlnbnNfY29weSAuLi4K
+IyAgICAgICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2Vw
+YWdlLmFsbF9hbGlnbnNfY29weQpvayAxMzIgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9t
+YWluc19odWdlcGFnZS5hbGxfYWxpZ25zX2NvcHkKIyAgUlVOICAgICAgICAgICBpb21tdWZk
+X21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLnVzZXJfY29weSAuLi4KIyAgICAg
+ICAgICAgIE9LICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLnVz
+ZXJfY29weQpvayAxMzMgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9tYWluc19odWdlcGFn
+ZS51c2VyX2NvcHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19k
+b21haW5zX2h1Z2VwYWdlLnJlcGxhY2UgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9t
+b2NrX2RvbWFpbi50d29fZG9tYWluc19odWdlcGFnZS5yZXBsYWNlCm9rIDEzNCBpb21tdWZk
+X21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLnJlcGxhY2UKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX21vY2tfZG9tYWluLnR3b19kb21haW5zX2h1Z2VwYWdlLmFsbG9jX2h3
+cHQgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9tb2NrX2RvbWFpbi50d29fZG9tYWlu
+c19odWdlcGFnZS5hbGxvY19od3B0Cm9rIDEzNSBpb21tdWZkX21vY2tfZG9tYWluLnR3b19k
+b21haW5zX2h1Z2VwYWdlLmFsbG9jX2h3cHQKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2Rp
+cnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOGsuZW5mb3JjZV9kaXJ0eSAuLi4KIyAgICAg
+ICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOGsuZW5m
+b3JjZV9kaXJ0eQpvayAxMzYgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkx
+MjhrLmVuZm9yY2VfZGlydHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTEyOGsuc2V0X2RpcnR5X3RyYWNraW5nIC4uLgojICAgICAgICAg
+ICAgT0sgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MTI4ay5zZXRfZGly
+dHlfdHJhY2tpbmcKb2sgMTM3IGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5
+MTI4ay5zZXRfZGlydHlfdHJhY2tpbmcKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5
+X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOGsuZGV2aWNlX2RpcnR5X2NhcGFiaWxpdHkgLi4u
+CiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkx
+MjhrLmRldmljZV9kaXJ0eV9jYXBhYmlsaXR5Cm9rIDEzOCBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTEyOGsuZGV2aWNlX2RpcnR5X2NhcGFiaWxpdHkKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOGsuZ2V0X2Rp
+cnR5X2JpdG1hcCAuLi4KIyBpb21tdWZkX3V0aWxzLmg6Mzc0OmdldF9kaXJ0eV9iaXRtYXA6
+RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRlc3RfYml0KGkgKyBqLCAodW5zaWduZWQgbG9u
+ZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5X2JpdG1hcDogVGVzdCB0ZXJtaW5hdGVkIGJ5
+IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9t
+YWluX2RpcnR5MTI4ay5nZXRfZGlydHlfYml0bWFwCm5vdCBvayAxMzkgaW9tbXVmZF9kaXJ0
+eV90cmFja2luZy5kb21haW5fZGlydHkxMjhrLmdldF9kaXJ0eV9iaXRtYXAKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOGsuZ2V0X2Rp
+cnR5X2JpdG1hcF9ub19jbGVhciAuLi4KIyBpb21tdWZkX3V0aWxzLmg6Mzc0OmdldF9kaXJ0
+eV9iaXRtYXBfbm9fY2xlYXI6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRlc3RfYml0KGkg
+KyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5X2JpdG1hcF9u
+b19jbGVhcjogVGVzdCB0ZXJtaW5hdGVkIGJ5IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwg
+IGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MTI4ay5nZXRfZGlydHlfYml0
+bWFwX25vX2NsZWFyCm5vdCBvayAxNDAgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5f
+ZGlydHkxMjhrLmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXIKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1NmsuZW5mb3JjZV9kaXJ0eSAu
+Li4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0
+eTI1NmsuZW5mb3JjZV9kaXJ0eQpvayAxNDEgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21h
+aW5fZGlydHkyNTZrLmVuZm9yY2VfZGlydHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2Rp
+cnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nmsuc2V0X2RpcnR5X3RyYWNraW5nIC4uLgoj
+ICAgICAgICAgICAgT0sgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2
+ay5zZXRfZGlydHlfdHJhY2tpbmcKb2sgMTQyIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9t
+YWluX2RpcnR5MjU2ay5zZXRfZGlydHlfdHJhY2tpbmcKIyAgUlVOICAgICAgICAgICBpb21t
+dWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1NmsuZGV2aWNlX2RpcnR5X2NhcGFi
+aWxpdHkgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21h
+aW5fZGlydHkyNTZrLmRldmljZV9kaXJ0eV9jYXBhYmlsaXR5Cm9rIDE0MyBpb21tdWZkX2Rp
+cnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1NmsuZGV2aWNlX2RpcnR5X2NhcGFiaWxpdHkK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1
+NmsuZ2V0X2RpcnR5X2JpdG1hcCAuLi4KIyBpb21tdWZkX3V0aWxzLmg6Mzc0OmdldF9kaXJ0
+eV9iaXRtYXA6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRlc3RfYml0KGkgKyBqLCAodW5z
+aWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5X2JpdG1hcDogVGVzdCB0ZXJt
+aW5hdGVkIGJ5IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwgIGlvbW11ZmRfZGlydHlfdHJh
+Y2tpbmcuZG9tYWluX2RpcnR5MjU2ay5nZXRfZGlydHlfYml0bWFwCm5vdCBvayAxNDQgaW9t
+bXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkyNTZrLmdldF9kaXJ0eV9iaXRtYXAK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1
+NmsuZ2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhciAuLi4KIyBpb21tdWZkX3V0aWxzLmg6Mzc0
+OmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXI6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRl
+c3RfYml0KGkgKyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5
+X2JpdG1hcF9ub19jbGVhcjogVGVzdCB0ZXJtaW5hdGVkIGJ5IGFzc2VydGlvbgojICAgICAg
+ICAgIEZBSUwgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2ay5nZXRf
+ZGlydHlfYml0bWFwX25vX2NsZWFyCm5vdCBvayAxNDUgaW9tbXVmZF9kaXJ0eV90cmFja2lu
+Zy5kb21haW5fZGlydHkyNTZrLmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXIKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTY0MGsuZW5mb3Jj
+ZV9kaXJ0eSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRv
+bWFpbl9kaXJ0eTY0MGsuZW5mb3JjZV9kaXJ0eQpvayAxNDYgaW9tbXVmZF9kaXJ0eV90cmFj
+a2luZy5kb21haW5fZGlydHk2NDBrLmVuZm9yY2VfZGlydHkKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTY0MGsuc2V0X2RpcnR5X3RyYWNr
+aW5nIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWlu
+X2RpcnR5NjQway5zZXRfZGlydHlfdHJhY2tpbmcKb2sgMTQ3IGlvbW11ZmRfZGlydHlfdHJh
+Y2tpbmcuZG9tYWluX2RpcnR5NjQway5zZXRfZGlydHlfdHJhY2tpbmcKIyAgUlVOICAgICAg
+ICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTY0MGsuZGV2aWNlX2Rp
+cnR5X2NhcGFiaWxpdHkgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9kaXJ0eV90cmFj
+a2luZy5kb21haW5fZGlydHk2NDBrLmRldmljZV9kaXJ0eV9jYXBhYmlsaXR5Cm9rIDE0OCBp
+b21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTY0MGsuZGV2aWNlX2RpcnR5X2Nh
+cGFiaWxpdHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFp
+bl9kaXJ0eTY0MGsuZ2V0X2RpcnR5X2JpdG1hcCAuLi4KIyBpb21tdWZkX3V0aWxzLmg6Mzc0
+OmdldF9kaXJ0eV9iaXRtYXA6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRlc3RfYml0KGkg
+KyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5X2JpdG1hcDog
+VGVzdCB0ZXJtaW5hdGVkIGJ5IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwgIGlvbW11ZmRf
+ZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5NjQway5nZXRfZGlydHlfYml0bWFwCm5vdCBv
+ayAxNDkgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHk2NDBrLmdldF9kaXJ0
+eV9iaXRtYXAKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFp
+bl9kaXJ0eTY0MGsuZ2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhciAuLi4KIyBpb21tdWZkX3V0
+aWxzLmg6Mzc0OmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXI6RXhwZWN0ZWQgaiA8IG5wdGUg
+KDEpID09IHRlc3RfYml0KGkgKyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMg
+Z2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhcjogVGVzdCB0ZXJtaW5hdGVkIGJ5IGFzc2VydGlv
+bgojICAgICAgICAgIEZBSUwgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5
+NjQway5nZXRfZGlydHlfYml0bWFwX25vX2NsZWFyCm5vdCBvayAxNTAgaW9tbXVmZF9kaXJ0
+eV90cmFja2luZy5kb21haW5fZGlydHk2NDBrLmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXIK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEy
+OE0uZW5mb3JjZV9kaXJ0eSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3Ry
+YWNraW5nLmRvbWFpbl9kaXJ0eTEyOE0uZW5mb3JjZV9kaXJ0eQpvayAxNTEgaW9tbXVmZF9k
+aXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNLmVuZm9yY2VfZGlydHkKIyAgUlVOICAg
+ICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOE0uc2V0X2Rp
+cnR5X3RyYWNraW5nIC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfZGlydHlfdHJhY2tp
+bmcuZG9tYWluX2RpcnR5MTI4TS5zZXRfZGlydHlfdHJhY2tpbmcKb2sgMTUyIGlvbW11ZmRf
+ZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MTI4TS5zZXRfZGlydHlfdHJhY2tpbmcKIyAg
+UlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOE0u
+ZGV2aWNlX2RpcnR5X2NhcGFiaWxpdHkgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9k
+aXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNLmRldmljZV9kaXJ0eV9jYXBhYmlsaXR5
+Cm9rIDE1MyBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOE0uZGV2aWNl
+X2RpcnR5X2NhcGFiaWxpdHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTEyOE0uZ2V0X2RpcnR5X2JpdG1hcCAuLi4KIyBpb21tdWZkX3V0
+aWxzLmg6Mzc0OmdldF9kaXJ0eV9iaXRtYXA6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRl
+c3RfYml0KGkgKyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5
+X2JpdG1hcDogVGVzdCB0ZXJtaW5hdGVkIGJ5IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwg
+IGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MTI4TS5nZXRfZGlydHlfYml0
+bWFwCm5vdCBvayAxNTQgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhN
+LmdldF9kaXJ0eV9iaXRtYXAKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTEyOE0uZ2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhciAuLi4KIyBp
+b21tdWZkX3V0aWxzLmg6Mzc0OmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXI6RXhwZWN0ZWQg
+aiA8IG5wdGUgKDEpID09IHRlc3RfYml0KGkgKyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1h
+cCkgKDApCiMgZ2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhcjogVGVzdCB0ZXJtaW5hdGVkIGJ5
+IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9t
+YWluX2RpcnR5MTI4TS5nZXRfZGlydHlfYml0bWFwX25vX2NsZWFyCm5vdCBvayAxNTUgaW9t
+bXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNLmdldF9kaXJ0eV9iaXRtYXBf
+bm9fY2xlYXIKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFp
+bl9kaXJ0eTEyOE1faHVnZS5lbmZvcmNlX2RpcnR5IC4uLgojICAgICAgICAgICAgT0sgIGlv
+bW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MTI4TV9odWdlLmVuZm9yY2VfZGly
+dHkKb2sgMTU2IGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MTI4TV9odWdl
+LmVuZm9yY2VfZGlydHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5n
+LmRvbWFpbl9kaXJ0eTEyOE1faHVnZS5zZXRfZGlydHlfdHJhY2tpbmcgLi4uCiMgICAgICAg
+ICAgICBPSyAgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNX2h1Z2Uu
+c2V0X2RpcnR5X3RyYWNraW5nCm9rIDE1NyBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFp
+bl9kaXJ0eTEyOE1faHVnZS5zZXRfZGlydHlfdHJhY2tpbmcKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOE1faHVnZS5kZXZpY2VfZGly
+dHlfY2FwYWJpbGl0eSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTEyOE1faHVnZS5kZXZpY2VfZGlydHlfY2FwYWJpbGl0eQpvayAx
+NTggaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNX2h1Z2UuZGV2aWNl
+X2RpcnR5X2NhcGFiaWxpdHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTEyOE1faHVnZS5nZXRfZGlydHlfYml0bWFwIC4uLgojIGlvbW11
+ZmRfdXRpbHMuaDozNzQ6Z2V0X2RpcnR5X2JpdG1hcDpFeHBlY3RlZCBqIDwgbnB0ZSAoMSkg
+PT0gdGVzdF9iaXQoaSArIGosICh1bnNpZ25lZCBsb25nICopYml0bWFwKSAoMCkKIyBnZXRf
+ZGlydHlfYml0bWFwOiBUZXN0IHRlcm1pbmF0ZWQgYnkgYXNzZXJ0aW9uCiMgICAgICAgICAg
+RkFJTCAgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNX2h1Z2UuZ2V0
+X2RpcnR5X2JpdG1hcApub3Qgb2sgMTU5IGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWlu
+X2RpcnR5MTI4TV9odWdlLmdldF9kaXJ0eV9iaXRtYXAKIyAgUlVOICAgICAgICAgICBpb21t
+dWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTEyOE1faHVnZS5nZXRfZGlydHlfYml0
+bWFwX25vX2NsZWFyIC4uLgojIGlvbW11ZmRfdXRpbHMuaDozNzQ6Z2V0X2RpcnR5X2JpdG1h
+cF9ub19jbGVhcjpFeHBlY3RlZCBqIDwgbnB0ZSAoMSkgPT0gdGVzdF9iaXQoaSArIGosICh1
+bnNpZ25lZCBsb25nICopYml0bWFwKSAoMCkKIyBnZXRfZGlydHlfYml0bWFwX25vX2NsZWFy
+OiBUZXN0IHRlcm1pbmF0ZWQgYnkgYXNzZXJ0aW9uCiMgICAgICAgICAgRkFJTCAgaW9tbXVm
+ZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkxMjhNX2h1Z2UuZ2V0X2RpcnR5X2JpdG1h
+cF9ub19jbGVhcgpub3Qgb2sgMTYwIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2Rp
+cnR5MTI4TV9odWdlLmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXIKIyAgUlVOICAgICAgICAg
+ICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk0uZW5mb3JjZV9kaXJ0
+eSAuLi4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9k
+aXJ0eTI1Nk0uZW5mb3JjZV9kaXJ0eQpvayAxNjEgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5k
+b21haW5fZGlydHkyNTZNLmVuZm9yY2VfZGlydHkKIyAgUlVOICAgICAgICAgICBpb21tdWZk
+X2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk0uc2V0X2RpcnR5X3RyYWNraW5nIC4u
+LgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5
+MjU2TS5zZXRfZGlydHlfdHJhY2tpbmcKb2sgMTYyIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcu
+ZG9tYWluX2RpcnR5MjU2TS5zZXRfZGlydHlfdHJhY2tpbmcKIyAgUlVOICAgICAgICAgICBp
+b21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk0uZGV2aWNlX2RpcnR5X2Nh
+cGFiaWxpdHkgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVmZF9kaXJ0eV90cmFja2luZy5k
+b21haW5fZGlydHkyNTZNLmRldmljZV9kaXJ0eV9jYXBhYmlsaXR5Cm9rIDE2MyBpb21tdWZk
+X2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk0uZGV2aWNlX2RpcnR5X2NhcGFiaWxp
+dHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0
+eTI1Nk0uZ2V0X2RpcnR5X2JpdG1hcCAuLi4KIyBpb21tdWZkX3V0aWxzLmg6Mzc0OmdldF9k
+aXJ0eV9iaXRtYXA6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09IHRlc3RfYml0KGkgKyBqLCAo
+dW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2RpcnR5X2JpdG1hcDogVGVzdCB0
+ZXJtaW5hdGVkIGJ5IGFzc2VydGlvbgojICAgICAgICAgIEZBSUwgIGlvbW11ZmRfZGlydHlf
+dHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2TS5nZXRfZGlydHlfYml0bWFwCm5vdCBvayAxNjQg
+aW9tbXVmZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkyNTZNLmdldF9kaXJ0eV9iaXRt
+YXAKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0
+eTI1Nk0uZ2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhciAuLi4KIyBpb21tdWZkX3V0aWxzLmg6
+Mzc0OmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXI6RXhwZWN0ZWQgaiA8IG5wdGUgKDEpID09
+IHRlc3RfYml0KGkgKyBqLCAodW5zaWduZWQgbG9uZyAqKWJpdG1hcCkgKDApCiMgZ2V0X2Rp
+cnR5X2JpdG1hcF9ub19jbGVhcjogVGVzdCB0ZXJtaW5hdGVkIGJ5IGFzc2VydGlvbgojICAg
+ICAgICAgIEZBSUwgIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2TS5n
+ZXRfZGlydHlfYml0bWFwX25vX2NsZWFyCm5vdCBvayAxNjUgaW9tbXVmZF9kaXJ0eV90cmFj
+a2luZy5kb21haW5fZGlydHkyNTZNLmdldF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXIKIyAgUlVO
+ICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk1faHVn
+ZS5lbmZvcmNlX2RpcnR5IC4uLgojICAgICAgICAgICAgT0sgIGlvbW11ZmRfZGlydHlfdHJh
+Y2tpbmcuZG9tYWluX2RpcnR5MjU2TV9odWdlLmVuZm9yY2VfZGlydHkKb2sgMTY2IGlvbW11
+ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2TV9odWdlLmVuZm9yY2VfZGlydHkK
+IyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1
+Nk1faHVnZS5zZXRfZGlydHlfdHJhY2tpbmcgLi4uCiMgICAgICAgICAgICBPSyAgaW9tbXVm
+ZF9kaXJ0eV90cmFja2luZy5kb21haW5fZGlydHkyNTZNX2h1Z2Uuc2V0X2RpcnR5X3RyYWNr
+aW5nCm9rIDE2NyBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk1faHVn
+ZS5zZXRfZGlydHlfdHJhY2tpbmcKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3Ry
+YWNraW5nLmRvbWFpbl9kaXJ0eTI1Nk1faHVnZS5kZXZpY2VfZGlydHlfY2FwYWJpbGl0eSAu
+Li4KIyAgICAgICAgICAgIE9LICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0
+eTI1Nk1faHVnZS5kZXZpY2VfZGlydHlfY2FwYWJpbGl0eQpvayAxNjggaW9tbXVmZF9kaXJ0
+eV90cmFja2luZy5kb21haW5fZGlydHkyNTZNX2h1Z2UuZGV2aWNlX2RpcnR5X2NhcGFiaWxp
+dHkKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNraW5nLmRvbWFpbl9kaXJ0
+eTI1Nk1faHVnZS5nZXRfZGlydHlfYml0bWFwIC4uLgojIGlvbW11ZmRfdXRpbHMuaDozNzQ6
+Z2V0X2RpcnR5X2JpdG1hcDpFeHBlY3RlZCBqIDwgbnB0ZSAoMSkgPT0gdGVzdF9iaXQoaSAr
+IGosICh1bnNpZ25lZCBsb25nICopYml0bWFwKSAoMCkKIyBnZXRfZGlydHlfYml0bWFwOiBU
+ZXN0IHRlcm1pbmF0ZWQgYnkgYXNzZXJ0aW9uCiMgICAgICAgICAgRkFJTCAgaW9tbXVmZF9k
+aXJ0eV90cmFja2luZy5kb21haW5fZGlydHkyNTZNX2h1Z2UuZ2V0X2RpcnR5X2JpdG1hcApu
+b3Qgb2sgMTY5IGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2TV9odWdl
+LmdldF9kaXJ0eV9iaXRtYXAKIyAgUlVOICAgICAgICAgICBpb21tdWZkX2RpcnR5X3RyYWNr
+aW5nLmRvbWFpbl9kaXJ0eTI1Nk1faHVnZS5nZXRfZGlydHlfYml0bWFwX25vX2NsZWFyIC4u
+LgojIGlvbW11ZmRfdXRpbHMuaDozNzQ6Z2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhcjpFeHBl
+Y3RlZCBqIDwgbnB0ZSAoMSkgPT0gdGVzdF9iaXQoaSArIGosICh1bnNpZ25lZCBsb25nICop
+Yml0bWFwKSAoMCkKIyBnZXRfZGlydHlfYml0bWFwX25vX2NsZWFyOiBUZXN0IHRlcm1pbmF0
+ZWQgYnkgYXNzZXJ0aW9uCiMgICAgICAgICAgRkFJTCAgaW9tbXVmZF9kaXJ0eV90cmFja2lu
+Zy5kb21haW5fZGlydHkyNTZNX2h1Z2UuZ2V0X2RpcnR5X2JpdG1hcF9ub19jbGVhcgpub3Qg
+b2sgMTcwIGlvbW11ZmRfZGlydHlfdHJhY2tpbmcuZG9tYWluX2RpcnR5MjU2TV9odWdlLmdl
+dF9kaXJ0eV9iaXRtYXBfbm9fY2xlYXIKIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9t
+b2NrX2RvbWFpbi5WZXIxdjIuc2ltcGxlX2Nsb3NlIC4uLgojICAgICAgICAgICAgT0sgIHZm
+aW9fY29tcGF0X21vY2tfZG9tYWluLlZlcjF2Mi5zaW1wbGVfY2xvc2UKb2sgMTcxIHZmaW9f
+Y29tcGF0X21vY2tfZG9tYWluLlZlcjF2Mi5zaW1wbGVfY2xvc2UKIyAgUlVOICAgICAgICAg
+ICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjIub3B0aW9uX2h1Z2VfcGFnZXMgLi4u
+CiMgICAgICAgICAgICBPSyAgdmZpb19jb21wYXRfbW9ja19kb21haW4uVmVyMXYyLm9wdGlv
+bl9odWdlX3BhZ2VzCm9rIDE3MiB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjIub3B0
+aW9uX2h1Z2VfcGFnZXMKIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFp
+bi5WZXIxdjIuZ2V0X2luZm8gLi4uCiMgICAgICAgICAgICBPSyAgdmZpb19jb21wYXRfbW9j
+a19kb21haW4uVmVyMXYyLmdldF9pbmZvCm9rIDE3MyB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFp
+bi5WZXIxdjIuZ2V0X2luZm8KIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2Rv
+bWFpbi5WZXIxdjIubWFwIC4uLgojICAgICAgICAgICAgT0sgIHZmaW9fY29tcGF0X21vY2tf
+ZG9tYWluLlZlcjF2Mi5tYXAKb2sgMTc0IHZmaW9fY29tcGF0X21vY2tfZG9tYWluLlZlcjF2
+Mi5tYXAKIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjIu
+aHVnZV9tYXAgLi4uCiMgICAgICAgICAgICBPSyAgdmZpb19jb21wYXRfbW9ja19kb21haW4u
+VmVyMXYyLmh1Z2VfbWFwCm9rIDE3NSB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjIu
+aHVnZV9tYXAKIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIx
+djAuc2ltcGxlX2Nsb3NlIC4uLgojICAgICAgICAgICAgT0sgIHZmaW9fY29tcGF0X21vY2tf
+ZG9tYWluLlZlcjF2MC5zaW1wbGVfY2xvc2UKb2sgMTc2IHZmaW9fY29tcGF0X21vY2tfZG9t
+YWluLlZlcjF2MC5zaW1wbGVfY2xvc2UKIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9t
+b2NrX2RvbWFpbi5WZXIxdjAub3B0aW9uX2h1Z2VfcGFnZXMgLi4uCiMgICAgICAgICAgICBP
+SyAgdmZpb19jb21wYXRfbW9ja19kb21haW4uVmVyMXYwLm9wdGlvbl9odWdlX3BhZ2VzCm9r
+IDE3NyB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjAub3B0aW9uX2h1Z2VfcGFnZXMK
+IyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjAuZ2V0X2lu
+Zm8gLi4uCiMgICAgICAgICAgICBPSyAgdmZpb19jb21wYXRfbW9ja19kb21haW4uVmVyMXYw
+LmdldF9pbmZvCm9rIDE3OCB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjAuZ2V0X2lu
+Zm8KIyAgUlVOICAgICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjAubWFw
+IC4uLgojICAgICAgICAgICAgT0sgIHZmaW9fY29tcGF0X21vY2tfZG9tYWluLlZlcjF2MC5t
+YXAKb2sgMTc5IHZmaW9fY29tcGF0X21vY2tfZG9tYWluLlZlcjF2MC5tYXAKIyAgUlVOICAg
+ICAgICAgICB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjAuaHVnZV9tYXAgLi4uCiMg
+ICAgICAgICAgICBPSyAgdmZpb19jb21wYXRfbW9ja19kb21haW4uVmVyMXYwLmh1Z2VfbWFw
+Cm9rIDE4MCB2ZmlvX2NvbXBhdF9tb2NrX2RvbWFpbi5WZXIxdjAuaHVnZV9tYXAKIyBGQUlM
+RUQ6IDE2NiAvIDE4MCB0ZXN0cyBwYXNzZWQuCiMgVG90YWxzOiBwYXNzOjE2NiBmYWlsOjE0
+IHhmYWlsOjAgeHBhc3M6MCBza2lwOjAgZXJyb3I6MAo=
 
- *** DEADLOCK ***
-
-5 locks held by syz-executor.0/5916:
- #0: ffff888023da0b98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
- #1: ffff888023da2950 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0x1125/0x1620 fs/jbd2/transaction.c:463
- #2: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #2: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #2: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: blk_mq_run_hw_queue+0x619/0x9a0 block/blk-mq.c:2273
- #3: ffff888021ffe418 (&host->lock){-.-.}-{2:2}, at: ata_scsi_queuecmd+0x86/0x160 drivers/ata/libata-scsi.c:4194
- #4: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #4: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #4: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #4: ffffffff8dbb1420 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run4+0x107/0x460 kernel/trace/bpf_trace.c:2422
-
-the dependencies between HARDIRQ-irq-safe lock and the holding lock:
--> (&host->lock){-.-.}-{2:2} {
-   IN-HARDIRQ-W at:
-                    lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                    lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-                    __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-                    _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-                    spin_lock include/linux/spinlock.h:351 [inline]
-                    ahci_single_level_irq_intr+0xc7/0x120 drivers/ata/libahci.c:2022
-                    __handle_irq_event_percpu+0x229/0x7c0 kernel/irq/handle.c:158
-                    handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
-                    handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
-                    handle_edge_irq+0x263/0xd10 kernel/irq/chip.c:831
-                    generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
-                    handle_irq arch/x86/kernel/irq.c:238 [inline]
-                    __common_interrupt+0xde/0x250 arch/x86/kernel/irq.c:257
-                    common_interrupt+0xab/0xd0 arch/x86/kernel/irq.c:247
-                    asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
-                    native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
-                    arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
-                    default_idle+0xf/0x20 arch/x86/kernel/process.c:742
-                    default_idle_call+0x6d/0xb0 kernel/sched/idle.c:117
-                    cpuidle_idle_call kernel/sched/idle.c:191 [inline]
-                    do_idle+0x32c/0x3f0 kernel/sched/idle.c:332
-                    cpu_startup_entry+0x4f/0x60 kernel/sched/idle.c:430
-                    start_secondary+0x220/0x2b0 arch/x86/kernel/smpboot.c:313
-                    common_startup_64+0x13e/0x148
-   IN-SOFTIRQ-W at:
-                    lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                    lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-                    __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-                    _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-                    spin_lock include/linux/spinlock.h:351 [inline]
-                    ahci_single_level_irq_intr+0xc7/0x120 drivers/ata/libahci.c:2022
-                    __handle_irq_event_percpu+0x229/0x7c0 kernel/irq/handle.c:158
-                    handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
-                    handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
-                    handle_edge_irq+0x263/0xd10 kernel/irq/chip.c:831
-                    generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
-                    handle_irq arch/x86/kernel/irq.c:238 [inline]
-                    __common_interrupt+0xde/0x250 arch/x86/kernel/irq.c:257
-                    common_interrupt+0x52/0xd0 arch/x86/kernel/irq.c:247
-                    asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
-                    variable_ffs arch/x86/include/asm/bitops.h:321 [inline]
-                    __do_softirq+0x1dc/0x922 kernel/softirq.c:542
-                    invoke_softirq kernel/softirq.c:428 [inline]
-                    __irq_exit_rcu kernel/softirq.c:633 [inline]
-                    irq_exit_rcu+0xb9/0x120 kernel/softirq.c:645
-                    instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
-                    sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1043
-                    asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-                    console_flush_all+0xa19/0xd70 kernel/printk/printk.c:2979
-                    console_unlock+0xae/0x290 kernel/printk/printk.c:3042
-                    vprintk_emit kernel/printk/printk.c:2342 [inline]
-                    vprintk_emit+0x11a/0x5a0 kernel/printk/printk.c:2297
-                    dev_vprintk_emit drivers/base/core.c:4930 [inline]
-                    dev_printk_emit+0xfb/0x140 drivers/base/core.c:4941
-                    __dev_printk+0xf5/0x270 drivers/base/core.c:4953
-                    _dev_printk+0xde/0x120 drivers/base/core.c:4970
-                    sdev_prefix_printk+0x1a2/0x230 drivers/scsi/scsi_logging.c:78
-                    sd_print_capacity drivers/scsi/sd.c:2824 [inline]
-                    sd_revalidate_disk.isra.0+0x2988/0x9d10 drivers/scsi/sd.c:3653
-                    sd_probe+0x8ef/0xfe0 drivers/scsi/sd.c:3907
-                    call_driver_probe drivers/base/dd.c:578 [inline]
-                    really_probe+0x23e/0xa90 drivers/base/dd.c:656
-                    __driver_probe_device+0x1de/0x440 drivers/base/dd.c:798
-                    driver_probe_device+0x4c/0x1b0 drivers/base/dd.c:828
-                    __device_attach_driver+0x1df/0x310 drivers/base/dd.c:956
-                    bus_for_each_drv+0x157/0x1e0 drivers/base/bus.c:457
-                    __device_attach_async_helper+0x1d3/0x290 drivers/base/dd.c:985
-                    async_run_entry_fn+0x9c/0x530 kernel/async.c:129
-                    process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
-                    process_scheduled_works kernel/workqueue.c:3335 [inline]
-                    worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
-                    kthread+0x2c1/0x3a0 kernel/kthread.c:388
-                    ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-                    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                   lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-                   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                   _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-                   ata_dev_init+0x1b4/0x410 drivers/ata/libata-core.c:5399
-                   ata_link_init+0x19c/0x300 drivers/ata/libata-core.c:5444
-                   ata_port_alloc+0x4a1/0x590 drivers/ata/libata-core.c:5519
-                   ata_host_alloc+0x21c/0x2c0 drivers/ata/libata-core.c:5631
-                   ata_host_alloc_pinfo+0x2b/0x3f0 drivers/ata/libata-core.c:5674
-                   ahci_init_one+0x132a/0x2de0 drivers/ata/ahci.c:1885
-                   local_pci_probe+0xde/0x1b0 drivers/pci/pci-driver.c:324
-                   pci_call_probe drivers/pci/pci-driver.c:392 [inline]
-                   __pci_device_probe drivers/pci/pci-driver.c:417 [inline]
-                   pci_device_probe+0x29d/0x7b0 drivers/pci/pci-driver.c:451
-                   call_driver_probe drivers/base/dd.c:578 [inline]
-                   really_probe+0x23e/0xa90 drivers/base/dd.c:656
-                   __driver_probe_device+0x1de/0x440 drivers/base/dd.c:798
-                   driver_probe_device+0x4c/0x1b0 drivers/base/dd.c:828
-                   __driver_attach+0x283/0x580 drivers/base/dd.c:1214
-                   bus_for_each_dev+0x13c/0x1d0 drivers/base/bus.c:368
-                   bus_add_driver+0x2ed/0x640 drivers/base/bus.c:673
-                   driver_register+0x15c/0x4b0 drivers/base/driver.c:246
-                   do_one_initcall+0x128/0x700 init/main.c:1238
-                   do_initcall_level init/main.c:1300 [inline]
-                   do_initcalls init/main.c:1316 [inline]
-                   do_basic_setup init/main.c:1335 [inline]
-                   kernel_init_freeable+0x69d/0xca0 init/main.c:1548
-                   kernel_init+0x1c/0x2b0 init/main.c:1437
-                   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-                   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- }
- ... key      at: [<ffffffff94d99ee0>] __key.5+0x0/0x40
-
-the dependencies between the lock to be acquired
- and HARDIRQ-irq-unsafe lock:
--> (&stab->lock){+...}-{2:2} {
-   HARDIRQ-ON-W at:
-                    lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                    lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-                    __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-                    _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-                    spin_lock_bh include/linux/spinlock.h:356 [inline]
-                    __sock_map_delete net/core/sock_map.c:414 [inline]
-                    sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
-                    ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-                    __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-                    bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-                    __bpf_prog_run include/linux/filter.h:657 [inline]
-                    bpf_prog_run include/linux/filter.h:664 [inline]
-                    __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-                    bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
-                    trace_mm_page_alloc include/trace/events/kmem.h:177 [inline]
-                    __alloc_pages+0x3ad/0x2460 mm/page_alloc.c:4597
-                    alloc_pages_mpol+0x275/0x610 mm/mempolicy.c:2264
-                    pipe_write+0xe4a/0x1b50 fs/pipe.c:513
-                    call_write_iter include/linux/fs.h:2108 [inline]
-                    new_sync_write fs/read_write.c:497 [inline]
-                    vfs_write+0x6db/0x1100 fs/read_write.c:590
-                    ksys_write+0x1f8/0x260 fs/read_write.c:643
-                    do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-                    do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-                    entry_SYSCALL_64_after_hwframe+0x6d/0x75
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                   lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-                   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-                   _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-                   spin_lock_bh include/linux/spinlock.h:356 [inline]
-                   __sock_map_delete net/core/sock_map.c:414 [inline]
-                   sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
-                   ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-                   __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-                   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-                   __bpf_prog_run include/linux/filter.h:657 [inline]
-                   bpf_prog_run include/linux/filter.h:664 [inline]
-                   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-                   bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
-                   trace_mm_page_alloc include/trace/events/kmem.h:177 [inline]
-                   __alloc_pages+0x3ad/0x2460 mm/page_alloc.c:4597
-                   alloc_pages_mpol+0x275/0x610 mm/mempolicy.c:2264
-                   pipe_write+0xe4a/0x1b50 fs/pipe.c:513
-                   call_write_iter include/linux/fs.h:2108 [inline]
-                   new_sync_write fs/read_write.c:497 [inline]
-                   vfs_write+0x6db/0x1100 fs/read_write.c:590
-                   ksys_write+0x1f8/0x260 fs/read_write.c:643
-                   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-                   do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-                   entry_SYSCALL_64_after_hwframe+0x6d/0x75
- }
- ... key      at: [<ffffffff94e2b680>] __key.1+0x0/0x40
- ... acquired at:
-   lock_acquire kernel/locking/lockdep.c:5754 [inline]
-   lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-   _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-   spin_lock_bh include/linux/spinlock.h:356 [inline]
-   __sock_map_delete net/core/sock_map.c:414 [inline]
-   sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
-   ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-   __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-   __bpf_prog_run include/linux/filter.h:657 [inline]
-   bpf_prog_run include/linux/filter.h:664 [inline]
-   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-   bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
-   trace_mm_page_alloc include/trace/events/kmem.h:177 [inline]
-   __alloc_pages+0x3ad/0x2460 mm/page_alloc.c:4597
-   __alloc_pages_node include/linux/gfp.h:238 [inline]
-   alloc_pages_node include/linux/gfp.h:261 [inline]
-   alloc_pgtable_page+0xe6/0x1e0 drivers/iommu/intel/iommu.c:306
-   pfn_to_dma_pte+0x2ca/0x5a0 drivers/iommu/intel/iommu.c:870
-   __domain_mapping+0x35e/0xc20 drivers/iommu/intel/iommu.c:2105
-   intel_iommu_map drivers/iommu/intel/iommu.c:4050 [inline]
-   intel_iommu_map_pages+0x270/0x390 drivers/iommu/intel/iommu.c:4069
-   __iommu_map+0x2f1/0x680 drivers/iommu/iommu.c:2464
-   iommu_map_sg+0x1a5/0x4b0 drivers/iommu/iommu.c:2615
-   iommu_dma_map_sg+0x79b/0xc80 drivers/iommu/dma-iommu.c:1454
-   __dma_map_sg_attrs+0xd6/0x230 kernel/dma/mapping.c:201
-   dma_map_sg_attrs+0x34/0x50 kernel/dma/mapping.c:236
-   ata_sg_setup drivers/ata/libata-core.c:4741 [inline]
-   ata_qc_issue+0x81a/0xf50 drivers/ata/libata-core.c:5043
-   ata_scsi_translate drivers/ata/libata-scsi.c:1717 [inline]
-   __ata_scsi_queuecmd+0xa39/0x13c0 drivers/ata/libata-scsi.c:4153
-   ata_scsi_queuecmd+0xac/0x160 drivers/ata/libata-scsi.c:4198
-   scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1610 [inline]
-   scsi_queue_rq+0x12af/0x36a0 drivers/scsi/scsi_lib.c:1852
-   blk_mq_dispatch_rq_list+0x452/0x2030 block/blk-mq.c:2058
-   __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
-   blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
-   __blk_mq_sched_dispatch_requests+0xcdf/0x1620 block/blk-mq-sched.c:309
-   blk_mq_sched_dispatch_requests+0xd4/0x150 block/blk-mq-sched.c:331
-   blk_mq_run_hw_queue+0x645/0x9a0 block/blk-mq.c:2273
-   blk_mq_dispatch_plug_list block/blk-mq.c:2774 [inline]
-   blk_mq_flush_plug_list.part.0+0x611/0x1d90 block/blk-mq.c:2822
-   blk_mq_flush_plug_list block/blk-mq.c:1296 [inline]
-   blk_add_rq_to_plug+0x117/0x540 block/blk-mq.c:1299
-   blk_mq_submit_bio+0x1602/0x20f0 block/blk-mq.c:3014
-   __submit_bio+0xfd/0x310 block/blk-core.c:619
-   __submit_bio_noacct_mq block/blk-core.c:698 [inline]
-   submit_bio_noacct_nocheck+0x98a/0xd50 block/blk-core.c:727
-   submit_bio_noacct+0x746/0x1ba0 block/blk-core.c:837
-   ext4_io_submit fs/ext4/page-io.c:378 [inline]
-   io_submit_add_bh fs/ext4/page-io.c:419 [inline]
-   ext4_bio_write_folio+0x76f/0x1da0 fs/ext4/page-io.c:563
-   mpage_submit_folio+0x1c0/0x350 fs/ext4/inode.c:1869
-   mpage_map_and_submit_buffers+0x57b/0xac0 fs/ext4/inode.c:2115
-   mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
-   ext4_do_writepages+0x186c/0x3250 fs/ext4/inode.c:2679
-   ext4_writepages+0x303/0x730 fs/ext4/inode.c:2768
-   do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
-   filemap_fdatawrite_wbc mm/filemap.c:397 [inline]
-   filemap_fdatawrite_wbc+0x148/0x1c0 mm/filemap.c:387
-   __filemap_fdatawrite_range+0xba/0x100 mm/filemap.c:430
-   ext4_alloc_da_blocks+0x202/0x2c0 fs/ext4/inode.c:3072
-   ext4_release_file+0x17c/0x370 fs/ext4/file.c:169
-   __fput+0x270/0xb80 fs/file_table.c:422
-   task_work_run+0x14e/0x250 kernel/task_work.c:180
-   exit_task_work include/linux/task_work.h:38 [inline]
-   do_exit+0xa7d/0x2c10 kernel/exit.c:878
-   do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
-   get_signal+0x2616/0x2710 kernel/signal.c:2911
-   arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:310
-   exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
-   exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
-   irqentry_exit_to_user_mode+0x139/0x280 kernel/entry/common.c:225
-   asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-
-
-stack backtrace:
-CPU: 3 PID: 5916 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-13161-gbfa8f18691ed #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- print_bad_irq_dependency kernel/locking/lockdep.c:2626 [inline]
- check_irq_usage+0xe3c/0x1490 kernel/locking/lockdep.c:2865
- check_prev_add kernel/locking/lockdep.c:3138 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x248e/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
- _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- __sock_map_delete net/core/sock_map.c:414 [inline]
- sock_map_delete_elem+0xc8/0x150 net/core/sock_map.c:446
- ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
- trace_mm_page_alloc include/trace/events/kmem.h:177 [inline]
- __alloc_pages+0x3ad/0x2460 mm/page_alloc.c:4597
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_pgtable_page+0xe6/0x1e0 drivers/iommu/intel/iommu.c:306
- pfn_to_dma_pte+0x2ca/0x5a0 drivers/iommu/intel/iommu.c:870
- __domain_mapping+0x35e/0xc20 drivers/iommu/intel/iommu.c:2105
- intel_iommu_map drivers/iommu/intel/iommu.c:4050 [inline]
- intel_iommu_map_pages+0x270/0x390 drivers/iommu/intel/iommu.c:4069
- __iommu_map+0x2f1/0x680 drivers/iommu/iommu.c:2464
- iommu_map_sg+0x1a5/0x4b0 drivers/iommu/iommu.c:2615
- iommu_dma_map_sg+0x79b/0xc80 drivers/iommu/dma-iommu.c:1454
- __dma_map_sg_attrs+0xd6/0x230 kernel/dma/mapping.c:201
- dma_map_sg_attrs+0x34/0x50 kernel/dma/mapping.c:236
- ata_sg_setup drivers/ata/libata-core.c:4741 [inline]
- ata_qc_issue+0x81a/0xf50 drivers/ata/libata-core.c:5043
- ata_scsi_translate drivers/ata/libata-scsi.c:1717 [inline]
- __ata_scsi_queuecmd+0xa39/0x13c0 drivers/ata/libata-scsi.c:4153
- ata_scsi_queuecmd+0xac/0x160 drivers/ata/libata-scsi.c:4198
- scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1610 [inline]
- scsi_queue_rq+0x12af/0x36a0 drivers/scsi/scsi_lib.c:1852
- blk_mq_dispatch_rq_list+0x452/0x2030 block/blk-mq.c:2058
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
- __blk_mq_sched_dispatch_requests+0xcdf/0x1620 block/blk-mq-sched.c:309
- blk_mq_sched_dispatch_requests+0xd4/0x150 block/blk-mq-sched.c:331
- blk_mq_run_hw_queue+0x645/0x9a0 block/blk-mq.c:2273
- blk_mq_dispatch_plug_list block/blk-mq.c:2774 [inline]
- blk_mq_flush_plug_list.part.0+0x611/0x1d90 block/blk-mq.c:2822
- blk_mq_flush_plug_list block/blk-mq.c:1296 [inline]
- blk_add_rq_to_plug+0x117/0x540 block/blk-mq.c:1299
- blk_mq_submit_bio+0x1602/0x20f0 block/blk-mq.c:3014
- __submit_bio+0xfd/0x310 block/blk-core.c:619
- __submit_bio_noacct_mq block/blk-core.c:698 [inline]
- submit_bio_noacct_nocheck+0x98a/0xd50 block/blk-core.c:727
- submit_bio_noacct+0x746/0x1ba0 block/blk-core.c:837
- ext4_io_submit fs/ext4/page-io.c:378 [inline]
- io_submit_add_bh fs/ext4/page-io.c:419 [inline]
- ext4_bio_write_folio+0x76f/0x1da0 fs/ext4/page-io.c:563
- mpage_submit_folio+0x1c0/0x350 fs/ext4/inode.c:1869
- mpage_map_and_submit_buffers+0x57b/0xac0 fs/ext4/inode.c:2115
- mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
- ext4_do_writepages+0x186c/0x3250 fs/ext4/inode.c:2679
- ext4_writepages+0x303/0x730 fs/ext4/inode.c:2768
- do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
- filemap_fdatawrite_wbc mm/filemap.c:397 [inline]
- filemap_fdatawrite_wbc+0x148/0x1c0 mm/filemap.c:387
- __filemap_fdatawrite_range+0xba/0x100 mm/filemap.c:430
- ext4_alloc_da_blocks+0x202/0x2c0 fs/ext4/inode.c:3072
- ext4_release_file+0x17c/0x370 fs/ext4/file.c:169
- __fput+0x270/0xb80 fs/file_table.c:422
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa7d/0x2c10 kernel/exit.c:878
- do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
- get_signal+0x2616/0x2710 kernel/signal.c:2911
- arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:310
- exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- irqentry_exit_to_user_mode+0x139/0x280 kernel/entry/common.c:225
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0033:0x7f38e3228807
-Code: Unable to access opcode bytes at 0x7f38e32287dd.
-RSP: 002b:00007f38e3fc6260 EFLAGS: 00010206
-RAX: 0000000000000000 RBX: 000000000000000b RCX: 00007f38e327dda9
-RDX: 00007f38e3fc6280 RSI: 00007f38e3fc63b0 RDI: 000000000000000b
-RBP: 00007f38e32ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f38e33abf80 R15: 00007ffc0d25d6f8
- </TASK>
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 3 PID: 5916 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 3 PID: 5916 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-13161-gbfa8f18691ed #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
-Code: 90 f3 0f 1e fa 90 80 3d fc f1 ec 04 00 74 06 90 c3 cc cc cc cc c6 05 ed f1 ec 04 01 90 48 c7 c7 c0 c2 2c 8b e8 38 3c 72 f6 90 <0f> 0b 90 90 eb df 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc900038f6978 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff888021ffe400 RCX: ffffffff814fe149
-RDX: ffff888026514880 RSI: ffffffff814fe156 RDI: 0000000000000001
-RBP: 0000000000000246 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 61636f6c5f776172 R12: ffff88802328a680
-R13: 0000000000000246 R14: ffff888023288010 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88806b300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020450000 CR3: 0000000108534000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
- _raw_spin_unlock_irqrestore+0x74/0x80 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
- ata_scsi_queuecmd+0xda/0x160 drivers/ata/libata-scsi.c:4204
- scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1610 [inline]
- scsi_queue_rq+0x12af/0x36a0 drivers/scsi/scsi_lib.c:1852
- blk_mq_dispatch_rq_list+0x452/0x2030 block/blk-mq.c:2058
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
- __blk_mq_sched_dispatch_requests+0xcdf/0x1620 block/blk-mq-sched.c:309
- blk_mq_sched_dispatch_requests+0xd4/0x150 block/blk-mq-sched.c:331
- blk_mq_run_hw_queue+0x645/0x9a0 block/blk-mq.c:2273
- blk_mq_dispatch_plug_list block/blk-mq.c:2774 [inline]
- blk_mq_flush_plug_list.part.0+0x611/0x1d90 block/blk-mq.c:2822
- blk_mq_flush_plug_list block/blk-mq.c:1296 [inline]
- blk_add_rq_to_plug+0x117/0x540 block/blk-mq.c:1299
- blk_mq_submit_bio+0x1602/0x20f0 block/blk-mq.c:3014
- __submit_bio+0xfd/0x310 block/blk-core.c:619
- __submit_bio_noacct_mq block/blk-core.c:698 [inline]
- submit_bio_noacct_nocheck+0x98a/0xd50 block/blk-core.c:727
- submit_bio_noacct+0x746/0x1ba0 block/blk-core.c:837
- ext4_io_submit fs/ext4/page-io.c:378 [inline]
- io_submit_add_bh fs/ext4/page-io.c:419 [inline]
- ext4_bio_write_folio+0x76f/0x1da0 fs/ext4/page-io.c:563
- mpage_submit_folio+0x1c0/0x350 fs/ext4/inode.c:1869
- mpage_map_and_submit_buffers+0x57b/0xac0 fs/ext4/inode.c:2115
- mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
- ext4_do_writepages+0x186c/0x3250 fs/ext4/inode.c:2679
- ext4_writepages+0x303/0x730 fs/ext4/inode.c:2768
- do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
- filemap_fdatawrite_wbc mm/filemap.c:397 [inline]
- filemap_fdatawrite_wbc+0x148/0x1c0 mm/filemap.c:387
- __filemap_fdatawrite_range+0xba/0x100 mm/filemap.c:430
- ext4_alloc_da_blocks+0x202/0x2c0 fs/ext4/inode.c:3072
- ext4_release_file+0x17c/0x370 fs/ext4/file.c:169
- __fput+0x270/0xb80 fs/file_table.c:422
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa7d/0x2c10 kernel/exit.c:878
- do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
- get_signal+0x2616/0x2710 kernel/signal.c:2911
- arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:310
- exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- irqentry_exit_to_user_mode+0x139/0x280 kernel/entry/common.c:225
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0033:0x7f38e3228807
-Code: Unable to access opcode bytes at 0x7f38e32287dd.
-RSP: 002b:00007f38e3fc6260 EFLAGS: 00010206
-RAX: 0000000000000000 RBX: 000000000000000b RCX: 00007f38e327dda9
-RDX: 00007f38e3fc6280 RSI: 00007f38e3fc63b0 RDI: 000000000000000b
-RBP: 00007f38e32ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f38e33abf80 R15: 00007ffc0d25d6f8
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--------------0P070n0LNOrU7MnelRpNTlQw--
 
