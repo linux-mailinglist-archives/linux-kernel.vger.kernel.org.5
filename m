@@ -1,238 +1,146 @@
-Return-Path: <linux-kernel+bounces-120472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F6888D80E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6737588D813
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 08:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BD0E1C260ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 974D51C26163
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0534B3B18D;
-	Wed, 27 Mar 2024 07:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8992C6AF;
+	Wed, 27 Mar 2024 07:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mBdwjkqw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fEFYpdco"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5A82E651;
-	Wed, 27 Mar 2024 07:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F0B1DA21
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 07:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711525819; cv=none; b=fb7DIMoEfXcy8viV0fgq66QCFvxrq6+3AWcCynza4hqULrPrVdy5bJQU1OB3TKcoLHXKt/8bQgUUiXHEgrbTeXp842qjtP0+4QcYE2uMhwAmPKc7PTcUWzuwbXHKsrKddukXKOKk1WDKgp0Wc+miQsRyQDcIUoyGG6him+fI2Wc=
+	t=1711526051; cv=none; b=s4LeHk7oWDBfH3bb48H4lNdv6wLBt09dfL07hnhfn/ymlAFGWjrwJrlJ8evHRcLxohU8KCSCgbqW/Gh/5CzAG0t7URbdxV709iQD5/L9ENlDAVJMic1JeK/GgQ/qpLU7XGvy6VgH7ksEwxV++4I0fesiyujqcZGcKtiYztMdL+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711525819; c=relaxed/simple;
-	bh=+I0dUNOdZGkwtBeC0T1EU1TrsDrWBxEiMA9XkoJPZrg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=A6Ghz/AYm4Zg5LvKYaDlxauccQlV19cW/f1PCDce9tXxt88rgc5sAFIpg2e5/RSWORcPVHXXNBklREqVuthV4OeUus1AXjCGFDFL44UYwglYys9FL1Maae666IZ+uYqC+hH6G5Z55Jj5kjYHPyLQ/tnKIk3rOU9+tjd+ogmA6ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mBdwjkqw; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711525817; x=1743061817;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=+I0dUNOdZGkwtBeC0T1EU1TrsDrWBxEiMA9XkoJPZrg=;
-  b=mBdwjkqwAsAxs3oi7apG/3ZtBkcnGikAWzoehoPZOkbTYpetrxHWvsfX
-   +eph1azzxHrFfNAOe6p3LmfchINcPPToWi/uSzbVnwVpruMnB9sCEFaLe
-   6Vtjlt2UVeYpyuHgis9/Bamdy7vhl6jo6xfrokuGIgi5DF76sHeH3ViIA
-   0CyFfaC5yKldgVT8vTWq1tQLAx7V1Zzt5Qh37mN1+jSMm7ppYAORBtgoZ
-   CvpJr8zEtA9Lw8dPHV/iPBMlmZCOWcE7GDpphatxEOVFPHAUqnLxZNonI
-   wQEAoOq8KpfgzUnoQhZbRHqTqka+psUEpRumluka9xe1SnEhxqH4FODgt
-   Q==;
-X-CSE-ConnectionGUID: MsyQbz5AQHy8y68fVaLnuQ==
-X-CSE-MsgGUID: hocw4mZkQ2y001r8rNwlqA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6467190"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="6467190"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:50:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="16277502"
-Received: from mmazilu-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.56.43])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 00:50:08 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
- linux-kbuild@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
- Harry Wentland <harry.wentland@amd.com>, Alex Deucher
- <alexander.deucher@amd.com>, Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>,
- Lucas De Marchi <lucas.demarchi@intel.com>, Oded Gabbay
- <ogabbay@kernel.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Jeffery
- <andrew@codeconstruct.com.au>, Linus Walleij <linus.walleij@linaro.org>,
- Joel Stanley <joel@jms.id.au>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrew Morton
- <akpm@linux-foundation.org>, Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
- linux-mm@kvack.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more
- consistent
-In-Reply-To: <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240326144741.3094687-1-arnd@kernel.org>
- <20240326144741.3094687-2-arnd@kernel.org> <87jzlohhbc.fsf@intel.com>
- <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
-Date: Wed, 27 Mar 2024 09:50:05 +0200
-Message-ID: <87edbwglle.fsf@intel.com>
+	s=arc-20240116; t=1711526051; c=relaxed/simple;
+	bh=k2hKUHtmNw+3Nry+09PEpiWVfUC02KEaPbAqug7TAco=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ToLM6km/V6nCcVCIgW2mSFr3KnQNdmHDL71uLNfZ+A66gVgJbSsSHdtPHw5Vtz65eUO348t+kX4HMwBqk7Mm8wlaqlPGq5TVfIhlPFeyv3wt69bfJPERGi8/AvuNB1XIGq2d3+KW2GrXF7HvjgIoPlXTD8qYP2WAnfOxnx0u5uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fEFYpdco; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a07b092c4fso1860081a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 00:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711526046; x=1712130846; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5e8VEDc6X3vdP7dz2M9r9pk6H8tvft/oIARZVKpUkPM=;
+        b=fEFYpdco0WVZPEO5jPet4utYDkvHLeSDcF9nIEDzssjc4A5uBzOYjyKkFcEdIGi5B+
+         gTeZ6aXP1ZKSXs+vguRj76LCbrfKdxospTuA7PARA07TXAT56vaZbZ8FECIX1SK5xDKp
+         tiY8gnY1GmpCDdM+N2Wn/jYXgoCq/jGq1w8sSEh8uhYlma5gLv2H7zZoACJ1mZM8UYEw
+         9xPxbShwHF7p9VW9dJjpHFXqsKz4LpfHsB8L4xh3noF34zeNhBoJI4KaJuYsS8THzSgW
+         L6ynFHqdSj9XuLMZMEF7Hc+QpG+atMk57Qdnzle8R3KwjYjT/Kj99b4vVVoXWSXywoyX
+         LNjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711526046; x=1712130846;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5e8VEDc6X3vdP7dz2M9r9pk6H8tvft/oIARZVKpUkPM=;
+        b=JktGYzJ5gjuiW0XKVOlDNqkqlTWi9ig6G9CnqXnDSvsRWkj6/nJIFSkJ9sCCYuyAQN
+         0TT1+6uxl8tTCRbZd+Lgx5s86je5Yw9IrFtoH3bNEGEa5L8/Vijwr13AwIoY1iJb71dj
+         KgI/B33uKV/+adqOojlfjRDhnnNPkqO8Pwqr+HkEpwfUbQK4axh8HgYt8TKihGJWjxpp
+         lCPSa4Tgx4qhO4n8ZKUUi6gB0qD+z7sTeUDB1U1ku5A8/XJ3JYgoJ1PBmPBzM08YL2W4
+         Afj1fqVRwEo6+qznB26fWVM1EFKKgGhQpaMyU2KbE8uClLh+GCEjvO2NWKyRmM5jCVuj
+         AeVg==
+X-Forwarded-Encrypted: i=1; AJvYcCX07/nayDAchFJHdXVhbtv/G4OdV99KQVuYtuQiX4hACxjaCJk5p7LRcNDFvuRh5fQ4fUONqUZtgYpiUjIodng/vnEFk68y+RGJkQZ7
+X-Gm-Message-State: AOJu0Ywe8UZ8XSRoz8MxIA5PvP7wuZRSwQKya10c5I/dglaKS5X2aeJI
+	LSfQqN7KPkQIy/CT4/122/Wbmb4/lyekHmeTEVdhjwY1bnyy/eRc0ZonKQyGbFQ=
+X-Google-Smtp-Source: AGHT+IEnNz21hCUFzcc3BDrCXEP56Iio2L0jyNpy2CcYiYy/MtCouQUyfmpbI/NAqQ1TI46wKu7kCw==
+X-Received: by 2002:a17:90a:f697:b0:2a0:4835:972 with SMTP id cl23-20020a17090af69700b002a048350972mr400982pjb.4.1711526045593;
+        Wed, 27 Mar 2024 00:54:05 -0700 (PDT)
+Received: from [192.168.0.13] ([172.92.174.232])
+        by smtp.gmail.com with ESMTPSA id si13-20020a17090b528d00b0029fe0b8859fsm2531873pjb.1.2024.03.27.00.54.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 00:54:05 -0700 (PDT)
+Subject: Re: [PATCH 1/4] riscv: Fix TASK_SIZE on 64-bit NOMMU
+To: Jisheng Zhang <jszhang@kernel.org>,
+ Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240227003630.3634533-1-samuel.holland@sifive.com>
+ <20240227003630.3634533-2-samuel.holland@sifive.com>
+ <ZgPE5e7FzB5H4MnK@xhacker>
+From: Bo Gan <ganboing@gmail.com>
+Message-ID: <668ad9cf-08bf-92de-b70a-af36defda6e0@gmail.com>
+Date: Wed, 27 Mar 2024 00:54:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <ZgPE5e7FzB5H4MnK@xhacker>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-On Tue, 26 Mar 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
-> On Tue, Mar 26, 2024, at 21:24, Jani Nikula wrote:
->> On Tue, 26 Mar 2024, Arnd Bergmann <arnd@kernel.org> wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>> index 475e1e8c1d35..0786eb0da391 100644
->>> --- a/drivers/net/ethernet/renesas/sh_eth.c
->>> +++ b/drivers/net/ethernet/renesas/sh_eth.c
->>> @@ -50,7 +50,7 @@
->>>   * the macros available to do this only define GCC 8.
->>>   */
->>>  __diag_push();
->>> -__diag_ignore(GCC, 8, "-Woverride-init",
->>> +__diag_ignore_all("-Woverride-init",
->>>  	      "logic to initialize all and then override some is OK");
+On 3/27/24 12:04 AM, Jisheng Zhang wrote:
+> On Mon, Feb 26, 2024 at 04:34:46PM -0800, Samuel Holland wrote:
+>> On NOMMU, userspace memory can come from anywhere in physical RAM. The
+>> current definition of TASK_SIZE is wrong if any RAM exists above 4G,
+>> causing spurious failures in the userspace access routines.
 >>
->> This is nice because it's more localized than the per-file
->> disable. However, we tried to do this in i915, but this doesn't work for
->> GCC versions < 8, and some defconfigs enabling -Werror forced us to
->> revert. See commit 290d16104575 ("Revert "drm/i915: use localized
->> __diag_ignore_all() instead of per file"").
->
-> It works now.
->
-> The original __diag_ignore_all() only did it for gcc-8 and above
-> because that was initially needed to suppress warnings that
-> got added in that version, but this was always a mistake.
->
-> 689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes
-> warning for all supported GCC") made it work correctly.
+>> Fixes: 6bd33e1ece52 ("riscv: add nommu support")
+>> Fixes: c3f896dcf1e4 ("mm: switch the test_vmalloc module to use __vmalloc_node")
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> 
+> Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+> 
 
-Oh, nice! Then I think we'd like to go back to __diag_ignore_all() in
-i915 and xe.
+Reviewed-by: Bo Gan <ganboing@gmail.com>
 
-The diff is below. I'm fine with you squashing it to your patch, or if
-you want me to turn it into a proper patch for you to pick up in your
-series, that's fine too. Just let me know.
+Thanks for this patch! I'm doing something similar locally and it fixes the
+linux nommu + musl libc build on my JH7110 S7 core.
 
-BR,
-Jani.
+Bo
 
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+>> ---
+>>
+>>   arch/riscv/include/asm/pgtable.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>> index 0c94260b5d0c..a564a39e5676 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -882,7 +882,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>>   #define PAGE_SHARED		__pgprot(0)
+>>   #define PAGE_KERNEL		__pgprot(0)
+>>   #define swapper_pg_dir		NULL
+>> -#define TASK_SIZE		0xffffffffUL
+>> +#define TASK_SIZE		_AC(-1, UL)
+>>   #define VMALLOC_START		_AC(0, UL)
+>>   #define VMALLOC_END		TASK_SIZE
+>>   
+>> -- 
+>> 2.43.0
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
 
-
-diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-index 3ef6ed41e62b..87d6ba8d2341 100644
---- a/drivers/gpu/drm/i915/Makefile
-+++ b/drivers/gpu/drm/i915/Makefile
-@@ -32,11 +32,6 @@ endif
- # Enable -Werror in CI and development
- subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
- 
--# Fine grained warnings disable
--CFLAGS_i915_pci.o = $(call cc-disable-warning, override-init)
--CFLAGS_display/intel_display_device.o = $(call cc-disable-warning, override-init)
--CFLAGS_display/intel_fbdev.o = $(call cc-disable-warning, override-init)
--
- # Support compiling the display code separately for both i915 and xe
- # drivers. Define I915 when building i915.
- subdir-ccflags-y += -DI915
-diff --git a/drivers/gpu/drm/i915/display/intel_display_device.c b/drivers/gpu/drm/i915/display/intel_display_device.c
-index c02d79b50006..b8903bd0e82a 100644
---- a/drivers/gpu/drm/i915/display/intel_display_device.c
-+++ b/drivers/gpu/drm/i915/display/intel_display_device.c
-@@ -17,6 +17,9 @@
- #include "intel_display_reg_defs.h"
- #include "intel_fbc.h"
- 
-+__diag_push();
-+__diag_ignore_all("-Woverride-init", "Allow field initialization overrides for display info");
-+
- static const struct intel_display_device_info no_display = {};
- 
- #define PIPE_A_OFFSET		0x70000
-@@ -768,6 +771,8 @@ static const struct intel_display_device_info xe2_lpd_display = {
- 		BIT(INTEL_FBC_C) | BIT(INTEL_FBC_D),
- };
- 
-+__diag_pop();
-+
- /*
-  * Separate detection for no display cases to keep the display id array simple.
-  *
-diff --git a/drivers/gpu/drm/i915/display/intel_fbdev.c b/drivers/gpu/drm/i915/display/intel_fbdev.c
-index 99894a855ef0..43855c6c3509 100644
---- a/drivers/gpu/drm/i915/display/intel_fbdev.c
-+++ b/drivers/gpu/drm/i915/display/intel_fbdev.c
-@@ -135,6 +135,9 @@ static int intel_fbdev_mmap(struct fb_info *info, struct vm_area_struct *vma)
- 	return i915_gem_fb_mmap(obj, vma);
- }
- 
-+__diag_push();
-+__diag_ignore_all("-Woverride-init", "Allow field initialization overrides for fb ops");
-+
- static const struct fb_ops intelfb_ops = {
- 	.owner = THIS_MODULE,
- 	__FB_DEFAULT_DEFERRED_OPS_RDWR(intel_fbdev),
-@@ -146,6 +149,8 @@ static const struct fb_ops intelfb_ops = {
- 	.fb_mmap = intel_fbdev_mmap,
- };
- 
-+__diag_pop();
-+
- static int intelfb_create(struct drm_fb_helper *helper,
- 			  struct drm_fb_helper_surface_size *sizes)
- {
-diff --git a/drivers/gpu/drm/i915/i915_pci.c b/drivers/gpu/drm/i915/i915_pci.c
-index 1e69783ae4fd..405ca17a990b 100644
---- a/drivers/gpu/drm/i915/i915_pci.c
-+++ b/drivers/gpu/drm/i915/i915_pci.c
-@@ -38,6 +38,9 @@
- #include "i915_reg.h"
- #include "intel_pci_config.h"
- 
-+__diag_push();
-+__diag_ignore_all("-Woverride-init", "Allow field initialization overrides for device info");
-+
- #define PLATFORM(x) .platform = (x)
- #define GEN(x) \
- 	.__runtime.graphics.ip.ver = (x), \
-@@ -785,6 +788,8 @@ static const struct intel_device_info mtl_info = {
- 
- #undef PLATFORM
- 
-+__diag_pop();
-+
- /*
-  * Make sure any device matches here are from most specific to most
-  * general.  For example, since the Quanta match is based on the subsystem
-diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
-index 3c3e67885559..2f58faf0a79a 100644
---- a/drivers/gpu/drm/xe/Makefile
-+++ b/drivers/gpu/drm/xe/Makefile
-@@ -172,9 +172,6 @@ subdir-ccflags-$(CONFIG_DRM_XE_DISPLAY) += \
- 	-Ddrm_i915_gem_object=xe_bo \
- 	-Ddrm_i915_private=xe_device
- 
--CFLAGS_i915-display/intel_fbdev.o = $(call cc-disable-warning, override-init)
--CFLAGS_i915-display/intel_display_device.o = $(call cc-disable-warning, override-init)
--
- # Rule to build SOC code shared with i915
- $(obj)/i915-soc/%.o: $(srctree)/drivers/gpu/drm/i915/soc/%.c FORCE
- 	$(call cmd,force_checksrc)
-
--- 
-Jani Nikula, Intel
 
