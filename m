@@ -1,126 +1,93 @@
-Return-Path: <linux-kernel+bounces-120394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9501E88D6C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A3E788D6C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 07:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E02D29A87D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:41:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1317529D7E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF672376A;
-	Wed, 27 Mar 2024 06:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2076B286BD;
+	Wed, 27 Mar 2024 06:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SGiQ55l2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UqhmHbfT"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02609E574;
-	Wed, 27 Mar 2024 06:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E25249F9;
+	Wed, 27 Mar 2024 06:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711521649; cv=none; b=JXlxJuk+f8rLJ0BC+qtMrfDuM5tJPp1hHKnWAKRNeCExniZswdP2XPCNy+0Og8PpPY4lrROZelBB4wbMpi5PFligWiII02hw4ueKhqTw+acL0+aSDssEdeNZ2yh6kkaN/0elLrnPxOcTVbAjUtC9rNZs1+is8JCAAev+8zYZ5TQ=
+	t=1711521687; cv=none; b=cjBFLJkhiuEI+1sYGcNjiULBebJZ3hQ0qbWZWlfviFPchSW7lIwNG4X+Qrn4NT3fz7PnjE/PjzsFAq8uxE3p0q9CvlU8al+wh+5wvxV92Pgm+eBgnrDAufdqllCi1l9IKN7qSj1asxbtMPe1vkrLqI6xbSIiIadBTJO3PtlzB5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711521649; c=relaxed/simple;
-	bh=sJSXWPv7y3LAtlgAf4xNkAZyP7p6P6pUlbW8YJObejY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NXyHtPOMmySxLlVgA5hs+7EhgmwO4HH838tN4ni3D0Fkm6f7q9xjF9E+qqGmVDjc1eibhVHWTiuTL82WOy7M3Zw8xNJFPPd8b4VFB+ztS1UP2UklzxmOj3g2sBZlfAhwI6jpzsOdn34PH68wQtuKzMD9L9ZyXDhp5dxE0Ju2ehI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SGiQ55l2; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711521647; x=1743057647;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sJSXWPv7y3LAtlgAf4xNkAZyP7p6P6pUlbW8YJObejY=;
-  b=SGiQ55l2Kez/KwuQArBfWGA+KU4nObNUpTQ7Kd8sBfs/Xl1eeg+9+nf0
-   Yc1jviMv1M+iuCUh3q22dw+rgpLP8CjHjB51wg0Fy0+mcvsoNe9RJOy3C
-   aJRxZqfreUAzGh112YP+KCzrJhKcfQX47b+q+lHigrqjl0+Q5HbeSbjH9
-   yFNSMI9ZfeGumvXImvLxUTRHdbfg4UiOJesvksgWjhBILEol6S6EcoVlA
-   7vhno58B7DOmvJhfXwpka0HN8/9ziZh4SGuBqr5D0gPXBEC8ByVvhcuK+
-   p1hChCD/G+4ncR+8EG8tPEU3JZBzRJAnRjWMEDc3g3FlfG+pnqfv3l190
-   w==;
-X-CSE-ConnectionGUID: bP4EfQunQrSz2H+HVIWyFA==
-X-CSE-MsgGUID: f+uys+qiSgWKzCQXEe+hWQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="24094012"
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="24094012"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 23:40:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,158,1708416000"; 
-   d="scan'208";a="53666527"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.125.242.198]) ([10.125.242.198])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 23:40:43 -0700
-Message-ID: <715a9591-a913-4b79-a07b-9599a67e60e7@linux.intel.com>
-Date: Wed, 27 Mar 2024 14:40:25 +0800
+	s=arc-20240116; t=1711521687; c=relaxed/simple;
+	bh=Veuy1m8uxACdlf5PxY31xxr+35oOGhJJBwn68nyJ7qQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cyZJTwiDrJibGGLajlFlXjIaY6Krr6vKDdwanO9q3HEKZapvizhCAP4OmN/cP34zrg31kTTFzGbupduHf5dPElkRc2nHvOayrPPdI/AVmDPDFQAH7XSH6s9yZiiFocHTzaUetVBrH/29oLxDXBT1uvEufbls94EMuknja+O7F10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UqhmHbfT; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a4a2d99598so2922314eaf.2;
+        Tue, 26 Mar 2024 23:41:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711521685; x=1712126485; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Veuy1m8uxACdlf5PxY31xxr+35oOGhJJBwn68nyJ7qQ=;
+        b=UqhmHbfTtpFSORuRzSP6vYEtJ33VuxU4aFreq3glSVQg5sl0HOyMceh5USYkrdKcQT
+         vRE25UUIqHucp1OmMNX5se9dw/lUfI7sku6vnccLLcUXB5rcUrSxVMPjk/Lr0BcAHb3H
+         bdNfTpuwyo3qgwYJS7oCqWoT7YMsVzUGm9kTZoYV69uLwcJji7VkBnq4fxmHFEVjnyi2
+         UCRGm/AS8YJ4qn9LB/c7r3Ga9omsdmvZ/RvVJOoZj2DcfEK4dYkaan2YKolYL10Cfuy6
+         9eCn4VIIGKUyWLKDRF5O/ggDsFxHfJdeqpDCdE8QeM4q+xWKFECPo/8lGpyK5qussK4p
+         Df/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711521685; x=1712126485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Veuy1m8uxACdlf5PxY31xxr+35oOGhJJBwn68nyJ7qQ=;
+        b=YBAdwDtzdKyJAEO4hTLENuZknfIlTRIn4SN6NNMEjI1II6FOtnHpSZAFwduj0crI5x
+         hH7IzuH2VorVqozqRdr/EZQ29aeqexI9vQA4Y33wyY/sI4xsSwn01M/eizjA73DICLVE
+         WSoOgesFJKVHk22adIlAtPSjH+7XEvbBPZiEuCPPy8fB/i2DGSy+VUTTQD2Sp6v/faHy
+         x92w0HPJkFpdRl8es5q40Unz9sslO1UfDOwvfo6bgzvF5/sl+sk81qHTIEZsKFwE1ZX4
+         HbFme5GaTjjkJX1P9yLKd9eF3vM8Vd3GkBWcnfHckH030Y7edgWH+tnzQE8v983EEGA5
+         EnPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVzzPqc+wBYeA+ms3dFx1Sfvl4cMNieA8jm2JLMKDNzpXi2A9M3NUtEod/IXJneQYbUDzzuz+IDXSd0OkrukHfCmSiOGTtP/HKVmiHP5zz6GbaV+q8c1Yt4A8FCJUSJhYaH9tkd75qYotkrPOVUS4NVeOtpPKj+HgiUBlkx2YQYQUtniw==
+X-Gm-Message-State: AOJu0Yy4Iy7RSxds2mSh9LDOeDHqrgRnlPzkh8R9vPJypT/H1/PIkT9C
+	yLEaItpP3XV2FqrrVgOMFlCg0HGfTvTO2h7x2Zll9KQ8gJfciw3bXh12LiaIJ0eDK58mnF8XgKe
+	NFtCRsKpdeTiFwgq8lGaiTmpr0zI=
+X-Google-Smtp-Source: AGHT+IF8vDHk6Q1MwxoTL2+6tFKjhcI/muzpbx+Te0ONd18hgyVPNKFYdO09+0hEVm1IVvQjzt1TR0Sry4UYUnsMeHQ=
+X-Received: by 2002:a05:6870:5488:b0:222:d6a:9ae8 with SMTP id
+ f8-20020a056870548800b002220d6a9ae8mr1751114oan.35.1711521685119; Tue, 26 Mar
+ 2024 23:41:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [kvm-unit-tests Patch v3 02/11] x86: pmu: Enlarge cnt[] length to
- 64 in check_counters_many()
-To: Jim Mattson <jmattson@google.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
- Zhang Xiong <xiong.y.zhang@intel.com>, Mingwei Zhang <mizhang@google.com>,
- Like Xu <like.xu.linux@gmail.com>, Jinrong Liang <cloudliang@tencent.com>,
- Dapeng Mi <dapeng1.mi@intel.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
- <20240103031409.2504051-3-dapeng1.mi@linux.intel.com>
- <CALMp9eSsF22203ZR6o+qMxySDrPpjVNYe-nBRjf1vSRq9aBLDA@mail.gmail.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <CALMp9eSsF22203ZR6o+qMxySDrPpjVNYe-nBRjf1vSRq9aBLDA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240327054014.36864-1-animeshagarwal28@gmail.com> <171152048362.993925.5771433856261368802.robh@kernel.org>
+In-Reply-To: <171152048362.993925.5771433856261368802.robh@kernel.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Wed, 27 Mar 2024 12:11:14 +0530
+Message-ID: <CAE3Oz82AgokcQWJXJVvxYQZzqUURyv=2h=-uCgX4tbLu6Z2jLA@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: ata: ahci-da850: Convert to dtschema
+To: Rob Herring <robh@kernel.org>
+Cc: Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Mar 27, 2024 at 11:51=E2=80=AFAM Rob Herring <robh@kernel.org> wrot=
+e:
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-On 3/26/2024 5:41 AM, Jim Mattson wrote:
-> On Tue, Jan 2, 2024 at 7:09 PM Dapeng Mi <dapeng1.mi@linux.intel.com> wrote:
->> Considering there are already 8 GP counters and 4 fixed counters on
->> latest Intel processors, like Sapphire Rapids. The original cnt[] array
->> length 10 is definitely not enough to cover all supported PMU counters on these
->> new processors even through currently KVM only supports 3 fixed counters
->> at most. This would cause out of bound memory access and may trigger
->> false alarm on PMU counter validation
->>
->> It's probably more and more GP and fixed counters are introduced in the
->> future and then directly extends the cnt[] array length to 64 once and
->> for all.
->>
->> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
->> ---
->>   x86/pmu.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/x86/pmu.c b/x86/pmu.c
->> index 0def28695c70..a13b8a8398c6 100644
->> --- a/x86/pmu.c
->> +++ b/x86/pmu.c
->> @@ -254,7 +254,7 @@ static void check_fixed_counters(void)
->>
->>   static void check_counters_many(void)
->>   {
->> -       pmu_counter_t cnt[10];
->> +       pmu_counter_t cnt[64];
-> I think 48 should be sufficient, based on the layout of
-> IA32_PERF_GLOBAL_CTRL and IA32_PERF_GLOBAL_STATUS.
->
-> In any event, let's bump this up!
->
-> Reviewed-by: Jim Mattson <jmattson@google.com>
-
-Yeah, would shrink to 48.
-
-Thanks Jim. I'm glad you have time to review this patchset. Not sure if 
-you have time to review other patches?
-
+Sorry about the issue, I am fixing it now.
 
