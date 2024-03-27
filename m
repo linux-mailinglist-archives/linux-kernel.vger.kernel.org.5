@@ -1,124 +1,137 @@
-Return-Path: <linux-kernel+bounces-120170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB1AD88D3A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:18:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF8988D3B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:26:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 727DE1F340DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:18:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E998B1F24295
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DDC1CFA9;
-	Wed, 27 Mar 2024 01:18:10 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6351BDDB;
+	Wed, 27 Mar 2024 01:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ia9kcfKB"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341062901;
-	Wed, 27 Mar 2024 01:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E563DAC0D
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 01:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711502290; cv=none; b=LcKbtGyhAI1vqNsY6jr036wgrnHdxX/DSJE1WeN+8kTELYHPvax02PSb1vunVU3C/VRI2BawbrXAR7ujtzTgkmgSjAS/MZdveAQLGARTdCOQHsBIC4dov7zSoTaWBfFKDmDHgODVusb/2PQlrGpTJhnZgS0Ll3+M7PZApBgC9oU=
+	t=1711502774; cv=none; b=J29+O8DXy1QvfAhYdFS0TKjwGfj3dx85r1+RH1DX0acrXr7kXdOkP1v88YESddWgpQvfFYLXVlHgV3fQt9ZcpX7EXnrj9h48/HPnQ0jP/ze6vQligW4aYqUbJzCVUfObnGIgu/hdQqwpK2ouxCH5OSZJjuUJWJ0nQwWzzCbsAaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711502290; c=relaxed/simple;
-	bh=Z5wI9KmQz3Xr0Tko4bQCdV4Jx5c8BoA5ZukqaeDCNnQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HZpjOejgQ3Ik3rTq/3QEU3//NCyxYuq91WGma8VxDFbzJysJdEY3qplE2GV3E49WDcjN4uiLcN3x3xdv6WYEpr8m87xyA2HYvc06DGvPwmAi5acPIbfBj01SyLmRXfmHFgq5yX6o9hMBY0xjqs9ez8DfHGVowaiKyHyDw+TpELY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V481H2bDTz4f3lVg;
-	Wed, 27 Mar 2024 09:17:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 78CCB1A06E6;
-	Wed, 27 Mar 2024 09:18:03 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgAnmAvJcwNmRFhyIQ--.6093S3;
-	Wed, 27 Mar 2024 09:18:03 +0800 (CST)
-Message-ID: <a123d813-bdef-202d-2980-fb74c5a715e5@huaweicloud.com>
-Date: Wed, 27 Mar 2024 09:18:01 +0800
+	s=arc-20240116; t=1711502774; c=relaxed/simple;
+	bh=GqzERt7Hb1xZRdLM5Wl2ICX6XNGzv9UMGiH4kpKGUN0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PkUizqeSx+7NyOYPWXsq1rnFqOW5allin8u/7W63JNBcXgs9+4zACYoHhwzNhrpMOsdEAUurUCUH/m2QICau9KSI0alDrYQLPx63DzPJuFhiXk44/3c9u9w2e/Wv83tv6g2bDeofL/t/XtRQx7SIqoQe6Ues3mbQUDrYx7nkhnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ia9kcfKB; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d41d1bedc9so115764781fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 18:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711502771; x=1712107571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RYZGEUhGrOB0Ufj0v9g5JNZSmjlSrrhBE0eNJdDGR9E=;
+        b=ia9kcfKBZ8l6ONDZLL3qCJ4+aKAu1mOY1DxsoxUt1GIoTjOidaZ9dW7NLaKYL6v5z1
+         n6BVk1mR2laxDf2HukNLuA/eB+I6W/2dSDPlSegJJ9QC80TAE5lXhvX4rWBJi4Kv+cF2
+         X4euRrn+m8B1NHUq87sByRCaQPsXtrOsVYiPgDb2CXQhJMdnH6ij7jlvmYxIUWW3V5Bu
+         eJ0g9sFc1NOjln4QbEheVRVmCMEmS9y7vcSmDnuBlc/TXZ4FjzUFhB1suIc++AyHoS85
+         wBCy82panD5kDrkSZiOJX9Oz4Pu180y0Bt8KVdWCXi2DOqR3P/ah7F5bTVAoZGrGhpXn
+         JPYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711502771; x=1712107571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RYZGEUhGrOB0Ufj0v9g5JNZSmjlSrrhBE0eNJdDGR9E=;
+        b=nzUuF6XWBAAEJv2EiwpB2nTGwgkzwCx5gptCwn4iSMnclYy5adohhcbvsUUX7Bn0n9
+         Eo4TvmdpHQc6tgsB5qGFoiWZuUTrbxvlCj/cHXfo03kKXnusX+5n03MLCYDx3bDpKRSq
+         tTH/iDH9ZU/EW10QQpI337yDR+EJqK2NbM9TDpw5AzgWlwUaq/17yjY0kyqpJKF49PBn
+         yWR4YQq34HnrWjMgURq7QvtWC5BIux2OQe/JIKBMwZEaxAoBQp7tzYGdb0a9gZwHbWAM
+         MeEeMk+tWv5UiDdgrL4amnZWUHeRD3NPu9vgPBGnyh/QSyVZwpxgbLtjPUv23EFNsm5n
+         A0Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCV8rcMh2QtTZCBaFl8G8T6xx0EChdbHkMkTjOji761NO7Z6EP1z2huYUJ9yb6m/vNJI9/aEVer+5K5sdP7x5VdzRzVt9rRt+NY+VND4
+X-Gm-Message-State: AOJu0Yw1aLAVOb5dNNUsm2gMVvy/FdzcVxbgkjc3jBdum3QFXq8grQ9n
+	+AkqNEW6P/Ki9oebYQKrhv3uQSOLkPmTAYMqbMjFvUpTZtm6UiAJ5lC4o4G0lh8bwJdY72dl26K
+	dCwqX4JfvHS2jLix5GaQr8EXjNBkW44Aj8qo=
+X-Google-Smtp-Source: AGHT+IF+O4i8zpoAQA7aYuTcNBW+pg4KvRZb+Abnui5XaAN9wtwyKuIDJxnHBeFHRZlOFJO74wtcAsI79petfkTvJNk=
+X-Received: by 2002:a2e:9c92:0:b0:2d6:f793:3434 with SMTP id
+ x18-20020a2e9c92000000b002d6f7933434mr513418lji.2.1711502770816; Tue, 26 Mar
+ 2024 18:26:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 5.10 033/238] md: implement ->set_read_only to hook into
- BLKROSET processing
-To: Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>,
- linux-raid <linux-raid@vger.kernel.org>, Li Nan <linan666@huaweicloud.com>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-References: <20240324234027.1354210-1-sashal@kernel.org>
- <20240324234027.1354210-34-sashal@kernel.org> <20240325010435.GA23652@lst.de>
- <ZgFfc2b6VsX_QSu4@sashalap> <20240326074029.GB9773@lst.de>
- <CAPhsuW7FREFLrAnt2iYDRoJG0d=OXm-5vy3OCJ7MOJDp2SE9GQ@mail.gmail.com>
-From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <CAPhsuW7FREFLrAnt2iYDRoJG0d=OXm-5vy3OCJ7MOJDp2SE9GQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAnmAvJcwNmRFhyIQ--.6093S3
-X-Coremail-Antispam: 1UD129KBjvJXoWruw4kGFy3Cr4kWFWDCF1fXrb_yoW8JrWrpF
-	9Fya1jyr4Dtry7C3WIyw4Sqr1Iv3ykJry5W3s5XrZ3A39Y9rWfJr1UKr1qgFyDKrn7Z34Y
-	va12gw1ayrWkAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-	4I1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-	67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-	IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
-	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWI
-	evJa73UjIFyTuYvjfUOlksUUUUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+References: <Zfg0WLrcOmCtdn_M@casper.infradead.org> <CAGWkznGhiuzkqfeewNq-ykKehvFTBjH2v_==xAS2_7iFqsFk5A@mail.gmail.com>
+ <Zfj_-LbiIsAVWcPX@casper.infradead.org> <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
+ <ZfwpuRjAZV07_lc3@casper.infradead.org> <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
+ <Zfz4_GJAHRInB8ul@casper.infradead.org> <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
+ <ZgDt9mwN-Py5Y-xr@casper.infradead.org> <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
+ <ZgK91II_eSYY6D2F@casper.infradead.org>
+In-Reply-To: <ZgK91II_eSYY6D2F@casper.infradead.org>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Wed, 27 Mar 2024 09:25:59 +0800
+Message-ID: <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
+Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
+ mm: fix a race scenario in folio_isolate_lru
+To: Matthew Wilcox <willy@infradead.org>
+Cc: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 26, 2024 at 8:21=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Tue, Mar 26, 2024 at 05:06:55PM +0800, Zhaoyang Huang wrote:
+> > 1. Thread_readahead remove the folio from page cache and drop 2 refcnt
+> > by readahead_folio & filemap_remove_folio(get rid of the folios which
+> > failed to launch IO during readahead)
+> >     refcnt =3D=3D 0, PG_lru =3D=3D true, PG_lock =3D=3D true
+> >     read_pages
+> > ...
+> >         folio =3D readahead_folio
+> >         <one refcnt dropped here>
+> > ********For the folio which can not launch IO, we should NOT drop
+> > refcnt here??? replaced by __readahead_folio???**********
+> >         folio_get
+> >         filemap_remove_folio(folio)
+> >         folio_unlock
+> >         <one refcnt dropped here>
+> >         folio_put
+>
+> Ignoring any other thread, you're basically saying that there's a
+> refcount imbalance here.  Which means we'd hit an assert (that folio
+> refcount went below zero) in the normal case where another thread wasn't
+> simultaneously trying to do anything.
+Theoretically Yes but it is rare in practice as aops->readahead will
+launch all pages to IO under most scenarios.
 
+read_pages
+    aops->readahead[1]
+..
+    while (folio =3D readahead_folio)[2]
+        filemap_remove_folio
 
-在 2024/3/26 16:46, Song Liu 写道:
-> Hi Li Nan,
-> 
-> Could you please look into this (back port 9674f54e41ff to older stable
-> kernels)? If there is no clean back port, I would recommend we not do
-> the back port.
-> 
+IMO, according to the comments of readahead_page, the refcnt
+represents page cache dropped in [1] makes sense for two reasons, '1.
+The folio is going to do IO and is locked until IO done;2. The refcnt
+will be added back when found again from the page cache and then serve
+for PTE or vfs' while it doesn't make sense in [2] as the refcnt of
+page cache will be dropped in filemap_remove_folio
 
-There are some conflicts to back port, which are not related to the
-modification of this patch. If necessary, let me know and I can adapt and
-send it :)
-
-> Thanks,
-> Song
-> 
-> On Tue, Mar 26, 2024 at 12:40 AM Christoph Hellwig <hch@lst.de> wrote:
->>
->> On Mon, Mar 25, 2024 at 07:26:43AM -0400, Sasha Levin wrote:
->>> On Mon, Mar 25, 2024 at 02:04:35AM +0100, Christoph Hellwig wrote:
->>>> How did we end up backporting all these block layer API changes?
->>>
->>> They were brought in as a dependency for 9674f54e41ff ("md: Don't clear
->>> MD_CLOSING when the raid is about to stop").
->>>
->>> It's possible to work around bringing them during backport, but I
->>> preferred to bring the dependencies instead.
->>
->> I really don't see what these giant backports bring us.  If people
->> want all the changes they'd just be better off on a modern kernel
->> rather than these frankenkernels.  The automatic backporting is
->> gettind way out of hand.  If the MD maintainers want
->> 9674f54e41ff, maybe they can send a tailor made backport?
-> 
-> .
-
--- 
-Thanks,
-Nan
-
+ * Context: The page is locked and has an elevated refcount.  The caller
+ * should decreases the refcount once the page has been submitted for I/O
+ * and unlock the page once all I/O to that page has completed.
+ * Return: A pointer to the next page, or %NULL if we are done.
 
