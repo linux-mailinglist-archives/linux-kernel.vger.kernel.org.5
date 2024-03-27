@@ -1,150 +1,129 @@
-Return-Path: <linux-kernel+bounces-120203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C99B88D463
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:06:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE8A388D470
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 289E42E4BE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:06:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 542F1B21314
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9660121A06;
-	Wed, 27 Mar 2024 02:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7B6208A4;
+	Wed, 27 Mar 2024 02:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Kftvu67U"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="SvdTlF3y"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F741219E4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20561F60A;
+	Wed, 27 Mar 2024 02:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711505175; cv=none; b=Zh/a3uiJCjDwb5WLdOQ52TBpC7Map5XjD8t20en/YorkpOvbXja8JCVLSOP8yNmCDZlZUruNijq2qDQi2aVMUKBXBHGnb/1HBOVif8rykTpbVOkmWM179pA107k9jgErWvAgftNHLjm4vruRcfdt88HnNbCElHrK0y9lWD9uDV4=
+	t=1711505455; cv=none; b=o0q4NICrOlvRlbmpxYAoRJxzXWjhMfZi9pxpYLPA3vOOWAjy3wrMKbSkohXI67RMdEIW0O+6VN0wuDLm4GMlQCDqNWOnrgBbt3zdt0fC7qThvKOrF9TonRitMkp9gJYR+7TTFCXisdimCtX4cBK1/tUukGG+szwmIWW+9fQHtgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711505175; c=relaxed/simple;
-	bh=i9TQlwS4jHXsBaCog0XSG78A4Gp0vefPX1kFJMw18KI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eTsIc4Ln+ZLQOWXa3KqfYifd7ywDKzZ5rut+mT3QKBkOjVRYndW0y3oY4bHZlfJ49JbXpwP2ITjK0BJ51NpUSLuvOyZlWSNuB6sz4KaZEceFRzOH/9Oi+08GerMOvVcay6T9jsPZprCqR6fbuUC0FNkWvbuQJnr0gKv+TOFwpdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Kftvu67U; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d862e8b163so1316942a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711505173; x=1712109973; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uwUOUJFev6SeeJTav481VchkFk0enH4AA6PGxDjAHGs=;
-        b=Kftvu67UI9npnD99ZX/Mh4LtelUsJoh9yClU5hJL+jy7ezcHGbDUeao7e6X3tn/jso
-         ephFbNpvmEUjvxvg+5tsdqWR34SJwrLAgZQVTpihlWX8GG2N0Chkx/reggmBIS4jhWeo
-         A7EBa0r2Bbl4kCmNOOF1/MSeHWuH+uUrGl48sKZjxCHorUy60I2qJj9KLBOHbFC7gdCY
-         k08s3yq+Zt5et3dd8R6zHM0AhFwXtZlC9O+ctxx9xr4TuRw2OiNnodyJGc238dbxAJcx
-         0YRqQyLPa5v8tr2ZBJusnRk36+0J5vYUPAYWvrZRB97tNP4Wm8C/dD4/+DR/lzGAZBbs
-         9vOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711505173; x=1712109973;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uwUOUJFev6SeeJTav481VchkFk0enH4AA6PGxDjAHGs=;
-        b=C7yRCTuxwSpSRQj3XBpX0GEe0CnizmbhSsn2VnGK0aloZ3Wib4AosooZRfVKjBrdNW
-         LBV1rIr0fkIf9DA7oJ0Pmpuc3H8PArOfblmlhhZdOBUF7RSncmVYaNpfp8S91Cuu6biC
-         QUflmoK9Lj82GaN2LzHMQdFABOJ5+v5VCgHZUsfgHD4b5XqUHYaJxFYuI71OCjRkLWmV
-         SG2ZTOVaqCGCfmZ/f9qaqFv3qHWCrbWA7L9PdeYHbcsNYNW5tjC7HcOmB0RD/QzNHhgd
-         YunnlRsv4Uv2bkG8ZfdrfHMJCarIF6D4ED3B9dZK8H+rOTd3tD5/t7TT3Peqw27Jxgvs
-         OxiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW6cNkElkSvrpIFx2kIGVL/7c4JajKkLncDU0uW958TtX3sZAtHYqGKLpWVLeFY9xjdIL0PG1dZx4T2rynYJ6o2NA+gwdQsycx1VEif
-X-Gm-Message-State: AOJu0YzUktz+XGHRaQvsS13HQEgFi6nzAVAQRpY2zhKHz1lBIdE13Zd6
-	Egbmeqg+GB8bNQC2kQ72nbN6zCaPOKAcs44tXVi0sY9L6C6+Hzd3eyAQALyzzCw=
-X-Google-Smtp-Source: AGHT+IGfD8kxXoqXM9ss45RtxP+teLNaG0eXEfoVNsyy2oHStpBFx81guKfPstuUlABCC6y8qf6jrQ==
-X-Received: by 2002:a05:6a20:7fa6:b0:1a3:b00a:7921 with SMTP id d38-20020a056a207fa600b001a3b00a7921mr15025519pzj.5.1711505173271;
-        Tue, 26 Mar 2024 19:06:13 -0700 (PDT)
-Received: from [10.254.105.249] ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id ld8-20020a170902fac800b001e009717560sm7618786plb.232.2024.03.26.19.06.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 19:06:12 -0700 (PDT)
-Message-ID: <d650b969-ebd7-4821-8d5a-7938ee1b7154@bytedance.com>
-Date: Wed, 27 Mar 2024 10:06:06 +0800
+	s=arc-20240116; t=1711505455; c=relaxed/simple;
+	bh=yK1BWdP9fBBurO6TjZlMRJkzkDO6xJFUyXMX7xi/poM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EHd3YirQwqcqW1TDirBEiSTrwGVDkLQH7w+DedBE+CpWxzBV4O3KRDk0pVUiOgryyBpM7kzQFcIvGHkqA1FBkkZoPd4qJ8L5GJGFL5F2er3TYEjLH6TCS9UnJc5hikISS0MWoel+tEE7mKAzJJQr5Y4ZqQhDLRs5VfhH7X53E1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=SvdTlF3y; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711505447;
+	bh=D8wBYTSFVO3Kwg+qqhaeqbpJi3hBXVAJOjaIUMpVxnc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=SvdTlF3yDAAB6CE2oE+292GRCaCmeKWZG4AGd/RfPBPCWiE+DRFj/XaD6YhQii6TP
+	 9Q/mp1M7vHvgq9b8EbNigqQC8o4t6QIlsZ4BFIoUDbdmb69IyINnz3VBaEMBe0CZjf
+	 G+SoJsNdcY0h+9l9bDE4N+R8JrxogLeJci54WQgupg2AWdXAXoS4vlLtSHegq16RK9
+	 OHcu4j5DbD81FjWvX9O0AUu3pl0n9/9Yhfch9hk9shDd0XnwOO6xPkNQFwi8s2icQD
+	 eGFERvJMJ+AkbVP+dzck7amuJoqL0eJ815UCLdZWZhaeZp+PgGXchnwN+P1RKewOWe
+	 UWYina0qtPoaQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V49BH44jLz4wc9;
+	Wed, 27 Mar 2024 13:10:47 +1100 (AEDT)
+Date: Wed, 27 Mar 2024 13:10:44 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Christian =?UTF-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the selinux tree
+Message-ID: <20240327131044.2c629921@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mm: pgtable: add missing pt_index to struct ptdesc
-Content-Language: en-US
-To: Vishal Moola <vishal.moola@gmail.com>
-Cc: akpm@linux-foundation.org, hughd@google.com, david@redhat.com,
- rppt@kernel.org, willy@infradead.org, muchun.song@linux.dev,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1709541697.git.zhengqi.arch@bytedance.com>
- <283624c2af45fb2090b41a6b1b5481bb0a45bad7.1709541697.git.zhengqi.arch@bytedance.com>
- <ZgMhEp4R7de8oeAA@fedora>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZgMhEp4R7de8oeAA@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/T4I06AC_GtqUxmW6wUhGgUe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/T4I06AC_GtqUxmW6wUhGgUe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2024/3/27 03:25, Vishal Moola wrote:
-> On Mon, Mar 04, 2024 at 07:07:19PM +0800, Qi Zheng wrote:
->> In s390, the page->index field is used for gmap (see gmap_shadow_pgt()),
->> so add the corresponding pt_index to struct ptdesc and add a comment to
->> clarify this.
-> 
-> Yes s390 gmap 'uses' page->index, but not for the purpose page->index is
-> supposed to hold. It's alright to have a variable here, but I'd rather
-> see it named something more appropriate to the purporse it serves.
+After merging the selinux tree, today's linux-next build (i386 defconfig)
+failed like this:
 
-Make sense.
+In file included from include/linux/kernel.h:31,
+                 from security/selinux/ss/ebitmap.c:16:
+security/selinux/ss/ebitmap.c: In function 'ebitmap_read':
+include/linux/kern_levels.h:5:25: error: format '%ld' expects argument of t=
+ype 'long int', but argument 3 has type 'u32' {aka 'unsigned int'} [-Werror=
+=3Dformat=3D]
+    5 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
+      |                         ^~~~~~
+include/linux/printk.h:429:25: note: in definition of macro 'printk_index_w=
+rap'
+  429 |                 _p_func(_fmt, ##__VA_ARGS__);                      =
+     \
+      |                         ^~~~
+include/linux/printk.h:500:9: note: in expansion of macro 'printk'
+  500 |         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+      |         ^~~~~~
+include/linux/kern_levels.h:11:25: note: in expansion of macro 'KERN_SOH'
+   11 | #define KERN_ERR        KERN_SOH "3"    /* error conditions */
+      |                         ^~~~~~~~
+include/linux/printk.h:500:16: note: in expansion of macro 'KERN_ERR'
+  500 |         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+      |                ^~~~~~~~
+security/selinux/ss/ebitmap.c:464:17: note: in expansion of macro 'pr_err'
+  464 |                 pr_err("SELinux: ebitmap: high bit %d is not equal =
+to the expected value %ld\n",
+      |                 ^~~~~~
+cc1: all warnings being treated as errors
 
-> 
-> You can take look at this patch from v5 of my ptdesc conversion series
-> for more info:
-> https://lore.kernel.org/linux-mm/20230622205745.79707-3-vishal.moola@gmail.com/
+Caused by commit
 
-Oh, but it seems that this patch has not been merged?
+  0142c56682fb ("selinux: reject invalid ebitmaps")
 
-> 
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/mm_types.h | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
->> index 5ea77969daae..5240bd7bca33 100644
->> --- a/include/linux/mm_types.h
->> +++ b/include/linux/mm_types.h
->> @@ -425,6 +425,7 @@ FOLIO_MATCH(compound_head, _head_2a);
->>    * @_pt_pad_1:        Padding that aliases with page's compound head.
->>    * @pmd_huge_pte:     Protected by ptdesc->ptl, used for THPs.
->>    * @__page_mapping:   Aliases with page->mapping. Unused for page tables.
->> + * @pt_index:         Used for s390 gmap.
->>    * @pt_mm:            Used for x86 pgds.
->>    * @pt_frag_refcount: For fragmented page table tracking. Powerpc only.
->>    * @_pt_pad_2:        Padding to ensure proper alignment.
->> @@ -450,6 +451,7 @@ struct ptdesc {
->>   	unsigned long __page_mapping;
->>   
->>   	union {
->> +		pgoff_t pt_index;
->>   		struct mm_struct *pt_mm;
->>   		atomic_t pt_frag_refcount;
->>   	};
->> @@ -475,6 +477,7 @@ TABLE_MATCH(flags, __page_flags);
->>   TABLE_MATCH(compound_head, pt_list);
->>   TABLE_MATCH(compound_head, _pt_pad_1);
->>   TABLE_MATCH(mapping, __page_mapping);
->> +TABLE_MATCH(index, pt_index);
->>   TABLE_MATCH(rcu_head, pt_rcu_head);
->>   TABLE_MATCH(page_type, __page_type);
->>   TABLE_MATCH(_refcount, __page_refcount);
->> -- 
->> 2.30.2
->>
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/T4I06AC_GtqUxmW6wUhGgUe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYDgCQACgkQAVBC80lX
+0Gyx4wf7B5dPGQPLJCl1RyR5kh+l9b034doZnlG/gW0IP0joJUnjhqvZmzob7/OX
+AuTPqAvswvoioReqOFc96XyYLAJBWmpYDrT39q1iigSIYYuVxwYCAM+XO1bmPPoK
+qnQNf1s5T6ES22zO5eyzFGTQ+ZC6NLK7HXk5dmct+hSwPp1h0kQANf0uP1V7N91X
+rWtooI74UtJL1Yq5+B5TEVugnbM2bg6qA7ZNXgWFdt0I1RSXb4zuWUcCO8OLVEpv
+26XgRSqa5X2GsAOQzDqwR9kMkdQ4vYrYZw3CW3CzQrwc2v8EimDghdAC8GAVKqlQ
+bUlZQC+XH/OVG3aZ9GCdEI/TjFLwbA==
+=JvsM
+-----END PGP SIGNATURE-----
+
+--Sig_/T4I06AC_GtqUxmW6wUhGgUe--
 
