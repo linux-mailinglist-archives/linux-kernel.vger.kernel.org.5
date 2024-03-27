@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-121196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1211688E3D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:48:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD2088E3D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 289581C2B3B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2595328D75D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677ED1836CF;
-	Wed, 27 Mar 2024 12:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC291836EF;
+	Wed, 27 Mar 2024 12:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HvES3qf/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYKbZNc1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892E213EFEE;
-	Wed, 27 Mar 2024 12:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE4D1836E0;
+	Wed, 27 Mar 2024 12:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542320; cv=none; b=O+VG4wJY5DOu7qIUy1bvY/hmvzrOKwGHR0hnWAz75MB7K2DRCXCUMX4SYpm4YQKqSE2pLUISN1rY3l9qYz7nn/jTTjuR3TeTgR44tFvVe6fA7vyUhbrvu3EYYCWdpOGtjuXzFUXG6nc8NYC/T/6+c8xN7XoSE2IMrfbXwkWyku4=
+	t=1711542323; cv=none; b=p6gC08eN+UqkWNdFSdWa3w3uBV9ZpLK6BUYfvlaYCHPihwUScZTjlCRBAdyuSODnZs17XIutR4pZamNGlKn4kH1SZexgcSLTc6nJ+C/oTde3QSacGR07YFACrWl6ukRohv+ax9/cW+SSV2jWb9Tpx/SPSh86YQ7enYrk/xnKvIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542320; c=relaxed/simple;
-	bh=XcyGAKHhH1BhoHNkqAc3lfQdNvG2pdA5Q2gmHb3khFE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YdxufwXvsltGpFyMRyri/hl5mdIhG7bTyEdlAmqtZw+RuDXKYwrSgodyzpCmSowDVX3DX4QOuqeG6FnK3F2QMpuUArFlbHyQnxldZJTNuet1yFNlW7wXx66MU5otHQgvgBxLTwD+6CTMuJBl98x+O08NmdkL2fu+apShF8YweNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HvES3qf/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 462C2C433C7;
-	Wed, 27 Mar 2024 12:25:19 +0000 (UTC)
+	s=arc-20240116; t=1711542323; c=relaxed/simple;
+	bh=fNuHaD+igTEh2V9ZsL9Jv5vHw8hQvqrYp0L7YbeWvnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YcYJKbQCiTPDBFtC4xZR5XEL8gEhsmhbmetQbRqIkyZIfIn4tct5U99BTrT1Pfg60oIbm+wXjfFzrMEAr298BJYrMyyDB7mQ39Xn+Bx6GoAi3kPASQiSY6IJm9uAkHklAa3trKeU+gDuVNaS+b0IfsRdS1S1GW4yzP5p1nPkSOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sYKbZNc1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6DFDC43390;
+	Wed, 27 Mar 2024 12:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542320;
-	bh=XcyGAKHhH1BhoHNkqAc3lfQdNvG2pdA5Q2gmHb3khFE=;
+	s=k20201202; t=1711542322;
+	bh=fNuHaD+igTEh2V9ZsL9Jv5vHw8hQvqrYp0L7YbeWvnE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=HvES3qf/+imzbQjZteoop0Ko0xlm9fSxhfOV7s3Rr519bzK3g/bcuKj5rc77+nEG1
-	 5yvkYmYAAFgdHX7DsumwsI/XsDdXbcObDTB1MMZY8ZzDOJ+5snELNJcau4nmjpoVZp
-	 JWzJSLc4FnNDLPsiqIGNSz08q3cCQxbHZsLzwXDuMqCCsdaENyDv1qMEU7Yzz/rah6
-	 /oS5rW8CPLYJqRt7oYi8959rSlhrnCv53FFtvldNdKt0ZpRXgs0vMTstahHr+Gh/4J
-	 wc+eKWR+InQ9z13k72+GUtFDrgE+GOV5Zi8TQrMTGVz1j8rVfNrejeZ9WiD+DyUmbv
-	 eiploLh0YAk3w==
+	b=sYKbZNc1kwYDu2T69h1K1DgDiNh8LAm4lixj4EGqle28s4RGMPNAj2WbyZnEBBf+y
+	 cAKsJoRP0caKO9GYA8ikSyvk0fvECNDsOJCphbz99M5D9HZhL9qJ+rokojp/wAxDoa
+	 C+hV06GpRf2ca6wqg8V30dYsWBqLN7NqRP6NMpcktN5lsgZNCw0bq+HJeyEXswELQu
+	 HlmwdpMN1E5QEAhONVEk6KlQlbFTpBggNk0A4igbzP/sXmMukXcAHKsjZSk1WXNdUw
+	 glpENrBH8pGmCDX1zVueRsCKXk6C0ycD0YN0EwTD5MhpQ+OC2yGGYeEo5F0bfJ0rt0
+	 plD0vaMC5bp9A==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jani.nikula@intel.com
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org,
+	willy@infradead.org
+Cc: Rik van Riel <riel@surriel.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/panel: do not return negative error codes from drm_panel_get_modes()" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:25:18 -0400
-Message-ID: <20240327122518.2840115-1-sashal@kernel.org>
+Subject: FAILED: Patch "bounds: support non-power-of-two CONFIG_NR_CPUS" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:25:20 -0400
+Message-ID: <20240327122521.2840152-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,72 +72,44 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From fc4e97726530241d96dd7db72eb65979217422c9 Mon Sep 17 00:00:00 2001
-From: Jani Nikula <jani.nikula@intel.com>
-Date: Fri, 8 Mar 2024 18:03:40 +0200
-Subject: [PATCH] drm/panel: do not return negative error codes from
- drm_panel_get_modes()
+From f2d5dcb48f7ba9e3ff249d58fc1fa963d374e66a Mon Sep 17 00:00:00 2001
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Date: Tue, 10 Oct 2023 15:55:49 +0100
+Subject: [PATCH] bounds: support non-power-of-two CONFIG_NR_CPUS
 
-None of the callers of drm_panel_get_modes() expect it to return
-negative error codes. Either they propagate the return value in their
-struct drm_connector_helper_funcs .get_modes() hook (which is also not
-supposed to return negative codes), or add it to other counts leading to
-bogus values.
+ilog2() rounds down, so for example when PowerPC 85xx sets CONFIG_NR_CPUS
+to 24, we will only allocate 4 bits to store the number of CPUs instead of
+5.  Use bits_per() instead, which rounds up.  Found by code inspection.
+The effect of this would probably be a misaccounting when doing NUMA
+balancing, so to a user, it would only be a performance penalty.  The
+effects may be more wide-spread; it's hard to tell.
 
-On the other hand, many of the struct drm_panel_funcs .get_modes() hooks
-do return negative error codes, so handle them gracefully instead of
-propagating further.
-
-Return 0 for no modes, whatever the reason.
-
-Cc: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: stable@vger.kernel.org
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/79f559b72d8c493940417304e222a4b04dfa19c4.1709913674.git.jani.nikula@intel.com
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Link: https://lkml.kernel.org/r/20231010145549.1244748-1-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: 90572890d202 ("mm: numa: Change page last {nid,pid} into {cpu,pid}")
+Reviewed-by: Rik van Riel <riel@surriel.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- drivers/gpu/drm/drm_panel.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ kernel/bounds.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-index e814020bbcd3b..cfbe020de54e0 100644
---- a/drivers/gpu/drm/drm_panel.c
-+++ b/drivers/gpu/drm/drm_panel.c
-@@ -274,19 +274,24 @@ EXPORT_SYMBOL(drm_panel_disable);
-  * The modes probed from the panel are automatically added to the connector
-  * that the panel is attached to.
-  *
-- * Return: The number of modes available from the panel on success or a
-- * negative error code on failure.
-+ * Return: The number of modes available from the panel on success, or 0 on
-+ * failure (no modes).
-  */
- int drm_panel_get_modes(struct drm_panel *panel,
- 			struct drm_connector *connector)
- {
- 	if (!panel)
--		return -EINVAL;
-+		return 0;
- 
--	if (panel->funcs && panel->funcs->get_modes)
--		return panel->funcs->get_modes(panel, connector);
-+	if (panel->funcs && panel->funcs->get_modes) {
-+		int num;
- 
--	return -EOPNOTSUPP;
-+		num = panel->funcs->get_modes(panel, connector);
-+		if (num > 0)
-+			return num;
-+	}
-+
-+	return 0;
- }
- EXPORT_SYMBOL(drm_panel_get_modes);
- 
+diff --git a/kernel/bounds.c b/kernel/bounds.c
+index b529182e8b04f..c5a9fcd2d6228 100644
+--- a/kernel/bounds.c
++++ b/kernel/bounds.c
+@@ -19,7 +19,7 @@ int main(void)
+ 	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
+ 	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
+ #ifdef CONFIG_SMP
+-	DEFINE(NR_CPUS_BITS, ilog2(CONFIG_NR_CPUS));
++	DEFINE(NR_CPUS_BITS, bits_per(CONFIG_NR_CPUS));
+ #endif
+ 	DEFINE(SPINLOCK_SIZE, sizeof(spinlock_t));
+ #ifdef CONFIG_LRU_GEN
 -- 
 2.43.0
 
