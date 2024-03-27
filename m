@@ -1,277 +1,290 @@
-Return-Path: <linux-kernel+bounces-121323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E400E88E5EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:29:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A8488E5FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:30:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72FA81F303A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:29:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14B0A1F30099
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E60137938;
-	Wed, 27 Mar 2024 12:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460E315219C;
+	Wed, 27 Mar 2024 12:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="RsvqqV1y"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLxzKta9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B9313793D;
-	Wed, 27 Mar 2024 12:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B470137C5B;
+	Wed, 27 Mar 2024 12:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711543992; cv=none; b=oyuhLUzVgGaNKUfW1i+xs3rR59NCWwLskAMHRMBEFmbsIRmcPNMW6Z94kMkMddnBJKNa6rVowP8IjInVtjA/LTgBqLvQIPW+TwwrpVdR7FmK7HlqzaYTfNio0hMtok7OgkcBiFzJRvucl+0od1BNnPKOYyHwr72SHTLEx3jXsnU=
+	t=1711544159; cv=none; b=cUWutajUT1sUDLKKek9UY+Ny63l9LgSAsWp3iExM/8jsNaaCRNl+ZRyI/6InN1DXxycXhSk9yUyPlczCsVjIxH9XmJ4X5kBQEXr6CUo5LTLWAATE5jP1AZ5Ao/lL6/CyrrjxjgZmL9XNFJ2rdwFfnLCSQAJ/dLiMoAvoEFAV6/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711543992; c=relaxed/simple;
-	bh=S83QBORogKvvtFt+xB9g1z1TUhvqrmHBi2LnzlxLI+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fuJrfQG2jjMVfCkEmzIR7JfYuSWPULdgtw/FIE0f7ElMVsg74jzEBfDVO6T9few7xb+1o6G2+h+YUKUtqZNv4VIOOJG9M9mUmRLJ7z11KNG0vK8YCp/kUvX2W+Zt/QllB47tGRmq1WzkHs+k19ibDgEZVvTebEW7PUfkLhmQhIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=RsvqqV1y; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0323513AC;
-	Wed, 27 Mar 2024 13:52:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711543955;
-	bh=S83QBORogKvvtFt+xB9g1z1TUhvqrmHBi2LnzlxLI+w=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=RsvqqV1ylYgKPTrEsc3QorvZgRVPWY2ERuy3XvqkE0surXevQSkZ0HHAV/Myll2/H
-	 DJfQZiPnzGheI/s6ncQRotKHDG0gItaVEil0L4g2tODmMm8qlXhgUvSJ5cFcOIjB4/
-	 kiATP5jVE4GNcNnsyuLeeZneJNM7Mjfk4a25w49w=
-Message-ID: <15f85f9f-d995-4146-82a9-5f11d715799a@ideasonboard.com>
-Date: Wed, 27 Mar 2024 14:53:04 +0200
+	s=arc-20240116; t=1711544159; c=relaxed/simple;
+	bh=/4hao90m2lFZTisPobhr+RiJ+36sJrqVQ3pwgxDkrBI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ImvOhYfabBbrPk+ujQpHTG6BPynHq+e8HJY8oG4E7MvMWzcGlN1n7ZmSGMCpYm6/CgMLAVbu7Mu7PaCtsEZ/HFYysXt+kHVfJ4GD2v35gJwyLtrf5d0T0N2XUTX+47D2lAUH7r10GZoDpgWqBZmwnefI2+owmltFc3iBiF3U3As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLxzKta9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E19AC433F1;
+	Wed, 27 Mar 2024 12:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711544158;
+	bh=/4hao90m2lFZTisPobhr+RiJ+36sJrqVQ3pwgxDkrBI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=MLxzKta9uSeURjL488EfGW3OX8K32Kw2kZKlG8VZgIPm4zwHVv6tdHyjNfVklexGk
+	 t3UPDgzQKbtC7bvVu7JLPF3xK26ZOYB7rcGUTxdFafBG8cshUtoHrFj+WKVgP5oh/e
+	 hhiwo8mFKDeQBkna8gDi8ebecr7es1MBDuwHr1yE2kQbKRvnYz0FsFghCc9lc8uC8B
+	 JpujHOrq+rBfCKPvyhUhHDH6/FE6PmJvkg/bvi3gNWNnG/Rnnr1Au5s42tVgXCUNgm
+	 WA62QIs8B1+gggjgVmmgI3F+zwMQ00S8yJ//vKfxe1o11PEIfxipZqH3QE+nTYuHcX
+	 SvIdg0O6xLYIw==
+Message-ID: <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: Haitao Huang <haitao.huang@linux.intel.com>,
+ dave.hansen@linux.intel.com,  tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org,  linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org,  tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com,  sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com, 
+	zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com, 
+	yangjie@microsoft.com, chrisyan@microsoft.com
+Date: Wed, 27 Mar 2024 14:55:34 +0200
+In-Reply-To: <20240205210638.157741-16-haitao.huang@linux.intel.com>
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+	 <20240205210638.157741-16-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dmaengine: xilinx: dpdma: Add support for cyclic
- dma mode
-Content-Language: en-US
-To: Vishal Sagar <vishal.sagar@amd.com>
-Cc: michal.simek@amd.com, dmaengine@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- varunkumar.allagadapa@amd.com, laurent.pinchart@ideasonboard.com,
- vkoul@kernel.org
-References: <20240228042124.3074044-1-vishal.sagar@amd.com>
- <20240228042124.3074044-3-vishal.sagar@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240228042124.3074044-3-vishal.sagar@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 28/02/2024 06:21, Vishal Sagar wrote:
-> From: Rohit Visavalia <rohit.visavalia@xilinx.com>
-> 
-> This patch adds support for DPDMA cyclic dma mode,
-> DMA cyclic transfers are required by audio streaming.
-> 
-> Signed-off-by: Rohit Visavalia <rohit.visavalia@amd.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> Signed-off-by: Vishal Sagar <vishal.sagar@amd.com>
-> 
+On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
+> The scripts rely on cgroup-tools package from libcgroup [1].
+>=20
+> To run selftests for epc cgroup:
+>=20
+> sudo ./run_epc_cg_selftests.sh
+>=20
+> To watch misc cgroup 'current' changes during testing, run this in a
+> separate terminal:
+>=20
+> ./watch_misc_for_tests.sh current
+>=20
+> With different cgroups, the script starts one or multiple concurrent
+> SGX
+> selftests, each to run one unclobbered_vdso_oversubscribed test.=C2=A0
+> Each
+> of such test tries to load an enclave of EPC size equal to the EPC
+> capacity available on the platform. The script checks results against
+> the expectation set for each cgroup and reports success or failure.
+>=20
+> The script creates 3 different cgroups at the beginning with
+> following
+> expectations:
+>=20
+> 1) SMALL - intentionally small enough to fail the test loading an
+> enclave of size equal to the capacity.
+> 2) LARGE - large enough to run up to 4 concurrent tests but fail some
+> if
+> more than 4 concurrent tests are run. The script starts 4 expecting
+> at
+> least one test to pass, and then starts 5 expecting at least one test
+> to fail.
+> 3) LARGER - limit is the same as the capacity, large enough to run
+> lots of
+> concurrent tests. The script starts 8 of them and expects all pass.
+> Then it reruns the same test with one process randomly killed and
+> usage checked to be zero after all process exit.
+>=20
+> The script also includes a test with low mem_cg limit and LARGE
+> sgx_epc
+> limit to verify that the RAM used for per-cgroup reclamation is
+> charged
+> to a proper mem_cg.
+>=20
+> [1] https://github.com/libcgroup/libcgroup/blob/main/README
+>=20
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 > ---
->   drivers/dma/xilinx/xilinx_dpdma.c | 97 +++++++++++++++++++++++++++++++
->   1 file changed, 97 insertions(+)
-> 
-> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
-> index 28d9af8f00f0..88ad2f35538a 100644
-> --- a/drivers/dma/xilinx/xilinx_dpdma.c
-> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
-> @@ -669,6 +669,84 @@ static void xilinx_dpdma_chan_free_tx_desc(struct virt_dma_desc *vdesc)
->   	kfree(desc);
->   }
->   
-> +/**
-> + * xilinx_dpdma_chan_prep_cyclic - Prepare a cyclic dma descriptor
-> + * @chan: DPDMA channel
-> + * @buf_addr: buffer address
-> + * @buf_len: buffer length
-> + * @period_len: number of periods
-> + * @flags: tx flags argument passed in to prepare function
-> + *
-> + * Prepare a tx descriptor incudling internal software/hardware descriptors
-> + * for the given cyclic transaction.
-> + *
-> + * Return: A dma async tx descriptor on success, or NULL.
-> + */
-> +static struct dma_async_tx_descriptor *
-> +xilinx_dpdma_chan_prep_cyclic(struct xilinx_dpdma_chan *chan,
-> +			      dma_addr_t buf_addr, size_t buf_len,
-> +			      size_t period_len, unsigned long flags)
-> +{
-> +	struct xilinx_dpdma_tx_desc *tx_desc;
-> +	struct xilinx_dpdma_sw_desc *sw_desc, *last = NULL;
-> +	unsigned int periods = buf_len / period_len;
-> +	unsigned int i;
-> +
-> +	tx_desc = xilinx_dpdma_chan_alloc_tx_desc(chan);
-> +	if (!tx_desc)
-> +		return (void *)tx_desc;
+> V7:
+> - Added memcontrol test.
+>=20
+> V5:
+> - Added script with automatic results checking, remove the
+> interactive
+> script.
+> - The script can run independent from the series below.
+> ---
+> =C2=A0.../selftests/sgx/run_epc_cg_selftests.sh=C2=A0=C2=A0=C2=A0=C2=A0 |=
+ 246
+> ++++++++++++++++++
+> =C2=A0.../selftests/sgx/watch_misc_for_tests.sh=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0 13 +
+> =C2=A02 files changed, 259 insertions(+)
+> =C2=A0create mode 100755
+> tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> =C2=A0create mode 100755
+> tools/testing/selftests/sgx/watch_misc_for_tests.sh
+>=20
+> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> new file mode 100755
+> index 000000000000..e027bf39f005
+> --- /dev/null
+> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> @@ -0,0 +1,246 @@
+> +#!/bin/bash
 
-Just return NULL here?
+This is not portable and neither does hold in the wild.
 
-> +
-> +	for (i = 0; i < periods; i++) {
-> +		struct xilinx_dpdma_hw_desc *hw_desc;
-> +
-> +		if (!IS_ALIGNED(buf_addr, XILINX_DPDMA_ALIGN_BYTES)) {
-> +			dev_err(chan->xdev->dev,
-> +				"buffer should be aligned at %d B\n",
-> +				XILINX_DPDMA_ALIGN_BYTES);
-> +			goto error;
-> +		}
-> +
-> +		sw_desc = xilinx_dpdma_chan_alloc_sw_desc(chan);
-> +		if (!sw_desc)
-> +			goto error;
-> +
-> +		xilinx_dpdma_sw_desc_set_dma_addrs(chan->xdev, sw_desc, last,
-> +						   &buf_addr, 1);
-> +		hw_desc = &sw_desc->hw;
-> +		hw_desc->xfer_size = period_len;
-> +		hw_desc->hsize_stride =
-> +			FIELD_PREP(XILINX_DPDMA_DESC_HSIZE_STRIDE_HSIZE_MASK,
-> +				   period_len) |
-> +			FIELD_PREP(XILINX_DPDMA_DESC_HSIZE_STRIDE_STRIDE_MASK,
-> +				   period_len);
-> +		hw_desc->control |= XILINX_DPDMA_DESC_CONTROL_PREEMBLE;
-> +		hw_desc->control |= XILINX_DPDMA_DESC_CONTROL_IGNORE_DONE;
-> +		hw_desc->control |= XILINX_DPDMA_DESC_CONTROL_COMPLETE_INTR;
+It does not even often hold as it is not uncommon to place bash
+to the path /usr/bin/bash. If I recall correctly, e.g. NixOS has
+a path that is neither of those two.
 
-You could:
+Should be #!/usr/bin/env bash
 
-hw_desc->control |= XILINX_DPDMA_DESC_CONTROL_PREEMBLE |
-		    XILINX_DPDMA_DESC_CONTROL_IGNORE_DONE |
-		    XILINX_DPDMA_DESC_CONTROL_COMPLETE_INTR;
+That is POSIX compatible form.
 
-Although... Shouldn't control always be 0 here, so you can just 
-hw_desc->control = ...;
+Just got around trying to test this in NUC7 so looking into this in
+more detail.
 
+That said can you make the script work with just "#!/usr/bin/env sh"
+and make sure that it is busybox ash compatible?
+
+I don't see any necessity to make this bash only and it adds to the
+compilation time of the image. Otherwise lot of this could be tested
+just with qemu+bzImage+busybox(inside initramfs).
+
+Now you are adding fully glibc shenanigans for the sake of syntax
+sugar.
+
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright(c) 2023 Intel Corporation.
 > +
-> +		list_add_tail(&sw_desc->node, &tx_desc->descriptors);
+> +TEST_ROOT_CG=3Dselftest
+> +cgcreate -g misc:$TEST_ROOT_CG
+
+How do you know that cgcreate exists? It is used a lot in the script
+with no check for the existence. Please fix e.g. with "command -v
+cgreate".
+
+> +if [ $? -ne 0 ]; then
+> +=C2=A0=C2=A0=C2=A0 echo "# Please make sure cgroup-tools is installed, a=
+nd misc
+> cgroup is mounted."
+> +=C2=A0=C2=A0=C2=A0 exit 1
+> +fi
+
+And please do not do it this way. Also, please remove the advice for
+"cgroups-tool". This is not meant to be debian only. Better would be
+to e.g. point out the URL of the upstream project.
+
+And yeah the whole message should be based on "command -v", not like
+this.
+
+> +TEST_CG_SUB1=3D$TEST_ROOT_CG/test1
+> +TEST_CG_SUB2=3D$TEST_ROOT_CG/test2
+> +# We will only set limit in test1 and run tests in test3
+> +TEST_CG_SUB3=3D$TEST_ROOT_CG/test1/test3
+> +TEST_CG_SUB4=3D$TEST_ROOT_CG/test4
 > +
-> +		buf_addr += period_len;
-> +		last = sw_desc;
-> +	}
+> +cgcreate -g misc:$TEST_CG_SUB1
+
+
+
+> +cgcreate -g misc:$TEST_CG_SUB2
+> +cgcreate -g misc:$TEST_CG_SUB3
+> +cgcreate -g misc:$TEST_CG_SUB4
 > +
-> +	sw_desc = list_first_entry(&tx_desc->descriptors,
-> +				   struct xilinx_dpdma_sw_desc, node);
-> +	last->hw.next_desc = lower_32_bits(sw_desc->dma_addr);
-> +	if (chan->xdev->ext_addr)
-> +		last->hw.addr_ext |=
-> +			FIELD_PREP(XILINX_DPDMA_DESC_ADDR_EXT_NEXT_ADDR_MASK,
-> +				   upper_32_bits(sw_desc->dma_addr));
+> +# Default to V2
+> +CG_MISC_ROOT=3D/sys/fs/cgroup
+> +CG_MEM_ROOT=3D/sys/fs/cgroup
+> +CG_V1=3D0
+> +if [ ! -d "/sys/fs/cgroup/misc" ]; then
+> +=C2=A0=C2=A0=C2=A0 echo "# cgroup V2 is in use."
+> +else
+> +=C2=A0=C2=A0=C2=A0 echo "# cgroup V1 is in use."
+
+Is "#" prefix a standard for kselftest? I don't know this, thus asking.
+
+> +=C2=A0=C2=A0=C2=A0 CG_MISC_ROOT=3D/sys/fs/cgroup/misc
+> +=C2=A0=C2=A0=C2=A0 CG_MEM_ROOT=3D/sys/fs/cgroup/memory
+> +=C2=A0=C2=A0=C2=A0 CG_V1=3D1
+
+Have you checked what is the indentation policy for bash scripts inside
+kernel tree. I don't know what it is. That's why I'm asking.
+
+> +fi
 > +
-> +	last->hw.control |= XILINX_DPDMA_DESC_CONTROL_LAST_OF_FRAME;
+> +CAPACITY=3D$(grep "sgx_epc" "$CG_MISC_ROOT/misc.capacity" | awk
+> '{print $2}')
+> +# This is below number of VA pages needed for enclave of capacity
+> size. So
+> +# should fail oversubscribed cases
+> +SMALL=3D$(( CAPACITY / 512 ))
 > +
-> +	return vchan_tx_prep(&chan->vchan, &tx_desc->vdesc, flags);
+> +# At least load one enclave of capacity size successfully, maybe up
+> to 4.
+> +# But some may fail if we run more than 4 concurrent enclaves of
+> capacity size.
+> +LARGE=3D$(( SMALL * 4 ))
 > +
-> +error:
-> +	xilinx_dpdma_chan_free_tx_desc(&tx_desc->vdesc);
+> +# Load lots of enclaves
+> +LARGER=3D$CAPACITY
+> +echo "# Setting up limits."
+> +echo "sgx_epc $SMALL" > $CG_MISC_ROOT/$TEST_CG_SUB1/misc.max
+> +echo "sgx_epc $LARGE" >=C2=A0 $CG_MISC_ROOT/$TEST_CG_SUB2/misc.max
+> +echo "sgx_epc $LARGER" > $CG_MISC_ROOT/$TEST_CG_SUB4/misc.max
 > +
-> +	return NULL;
+> +timestamp=3D$(date +%Y%m%d_%H%M%S)
+> +
+> +test_cmd=3D"./test_sgx -t unclobbered_vdso_oversubscribed"
+> +
+> +wait_check_process_status() {
+> +=C2=A0=C2=A0=C2=A0 local pid=3D$1
+> +=C2=A0=C2=A0=C2=A0 local check_for_success=3D$2=C2=A0 # If 1, check for =
+success;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # If 0, check for failure
+> +=C2=A0=C2=A0=C2=A0 wait "$pid"
+> +=C2=A0=C2=A0=C2=A0 local status=3D$?
+> +
+> +=C2=A0=C2=A0=C2=A0 if [[ $check_for_success -eq 1 && $status -eq 0 ]]; t=
+hen
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "# Process $pid succeede=
+d."
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0
+> +=C2=A0=C2=A0=C2=A0 elif [[ $check_for_success -eq 0 && $status -ne 0 ]];=
+ then
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "# Process $pid returned=
+ failure."
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0
+> +=C2=A0=C2=A0=C2=A0 fi
+> +=C2=A0=C2=A0=C2=A0 return 1
 > +}
 > +
->   /**
->    * xilinx_dpdma_chan_prep_interleaved_dma - Prepare an interleaved dma
->    *					    descriptor
-> @@ -1190,6 +1268,23 @@ static void xilinx_dpdma_chan_handle_err(struct xilinx_dpdma_chan *chan)
->   /* -----------------------------------------------------------------------------
->    * DMA Engine Operations
->    */
-> +static struct dma_async_tx_descriptor *
-> +xilinx_dpdma_prep_dma_cyclic(struct dma_chan *dchan, dma_addr_t buf_addr,
-> +			     size_t buf_len, size_t period_len,
-> +			     enum dma_transfer_direction direction,
-> +			     unsigned long flags)
-> +{
-> +	struct xilinx_dpdma_chan *chan = to_xilinx_chan(dchan);
-> +
-> +	if (direction != DMA_MEM_TO_DEV)
-> +		return NULL;
-> +
-> +	if (buf_len % period_len)
-> +		return NULL;
-> +
-> +	return xilinx_dpdma_chan_prep_cyclic(chan, buf_addr, buf_len,
-> +						 period_len, flags);
+> +wai
+> wait_and_detect_for_any() {
 
-The parameters should be aligned above.
+what is "any"?
 
-> +}
->   
->   static struct dma_async_tx_descriptor *
->   xilinx_dpdma_prep_interleaved_dma(struct dma_chan *dchan,
-> @@ -1673,6 +1768,7 @@ static int xilinx_dpdma_probe(struct platform_device *pdev)
->   
->   	dma_cap_set(DMA_SLAVE, ddev->cap_mask);
->   	dma_cap_set(DMA_PRIVATE, ddev->cap_mask);
-> +	dma_cap_set(DMA_CYCLIC, ddev->cap_mask);
->   	dma_cap_set(DMA_INTERLEAVE, ddev->cap_mask);
->   	dma_cap_set(DMA_REPEAT, ddev->cap_mask);
->   	dma_cap_set(DMA_LOAD_EOT, ddev->cap_mask);
-> @@ -1680,6 +1776,7 @@ static int xilinx_dpdma_probe(struct platform_device *pdev)
->   
->   	ddev->device_alloc_chan_resources = xilinx_dpdma_alloc_chan_resources;
->   	ddev->device_free_chan_resources = xilinx_dpdma_free_chan_resources;
-> +	ddev->device_prep_dma_cyclic = xilinx_dpdma_prep_dma_cyclic;
->   	ddev->device_prep_interleaved_dma = xilinx_dpdma_prep_interleaved_dma;
->   	/* TODO: Can we achieve better granularity ? */
->   	ddev->device_tx_status = dma_cookie_status;
+Maybe for some key functions could have short documentation what they
+are and for what test uses them. I cannot possibly remember all of this
+just by hints such as "this waits for Any" ;-)
 
-While I'm not too familiar with dma engines, this looks fine to me. So, 
-other than the few cosmetics comments:
+I don't think there is actual kernel guideline to engineer the script
+to work with just ash but at least for me that would inevitably
+increase my motivation to test this patch set more rather than less.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
-
+BR, Jarkko
 
