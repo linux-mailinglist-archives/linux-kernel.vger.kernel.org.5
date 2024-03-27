@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-121277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9995188E49A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:07:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F2C388E5CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F7271F2865C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:07:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4033CB346E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6F81BB723;
-	Wed, 27 Mar 2024 12:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00BB143883;
+	Wed, 27 Mar 2024 12:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hyM8C2/7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AppGaFmR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE34714387E;
-	Wed, 27 Mar 2024 12:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCF41BB722;
+	Wed, 27 Mar 2024 12:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542538; cv=none; b=Cxk6SbPwh6wQdc9UmCt9Kjcr3T+waAP4LWs9auWHks9VtNeCmv2Z1gyaYDR2CadwXaBTzX8DGQPrFbBy0GPTEYwG6wRGfiwqSdZOI1visIweeA4MUeGBdSpqTq6WiWmhh3gXvWNkHB67LiXcF94e35K43REbWaRFOB+NK36SCZA=
+	t=1711542541; cv=none; b=JajC3oSYiKEDhlZ311ECJJ5q7lao1ptZmBHUfD+Qandr6nsR6ns6bLAXBdsUZCNRsTaK9SW8c7R+CYL2/K9vWmPrYEj6vMXfrLCmMwrWRPHtgiR1yDdN5QHbPphn2RqiTqhqDAJYMemb+caQpN30PUC6YpRLrP8Miq7RwgVCcWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542538; c=relaxed/simple;
-	bh=AUtCxDzEIQ6O2PxuduPxo95p6SN3/0XTSUtRFzQBtSU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GSs0s0lk3rrmnezVWLLMk6jUnLIQF9cK90Uaks4tZOd/rWvYoZS9kXSZywngBP/t8nGKQUO93XweuzoclGMaKwVVmyzlVakyzO2XAP+3OocO3lDDXghkl9/E1AzXd7LkXc8VER0IXW+DfL5Jn1oErice52DKg29kKUah7x6Qg3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hyM8C2/7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9384DC433C7;
-	Wed, 27 Mar 2024 12:28:56 +0000 (UTC)
+	s=arc-20240116; t=1711542541; c=relaxed/simple;
+	bh=OLO7jFtRnqCvGjaFIBp+QZLU7tw94zPs0lRQffBxt6U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uK1SMZaNtysvNOECmgjZpuU13MnTxO+hz3jSvdPlOhYFXvgV3p/hEqgu0A1J/vhnkR/II60CfZcmySTPqZ1Wdl5/nBdcPOnRkP3l4pNpmsps/2ydejl8ThkCxqWLjiYT0sSSz0JagiiJeKUEYdc8fC5BmEVtXrTsuZ1Gd1CRB0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AppGaFmR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9704DC433C7;
+	Wed, 27 Mar 2024 12:28:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542537;
-	bh=AUtCxDzEIQ6O2PxuduPxo95p6SN3/0XTSUtRFzQBtSU=;
+	s=k20201202; t=1711542540;
+	bh=OLO7jFtRnqCvGjaFIBp+QZLU7tw94zPs0lRQffBxt6U=;
 	h=From:To:Cc:Subject:Date:From;
-	b=hyM8C2/7ANEw2jBG9YD2fAm3ziXZj2vXL9d6I6q4kP6UKag/1vQ/dipHTkP72io8Y
-	 ujKAxRhFh0aosw1DEor8hvhOuZjyu8SHkdzDvCUcyF9SIZniQFMR6RplhFswQwLzqm
-	 OS4wkYgs1ewwi32d1UB0Bu0LCIM33Gvi7tett8SgRPJ5VPHEWuaF6uRnLFShe16rKO
-	 jjb7g2Wld5in1mYX6dafoxSdALBOrgM/IcpQqEtmbY5dDFaW4yqL5KH6Z7/pF8lqJq
-	 eUO5lMZ4WTlYdDpd/ozdMTK0Wx7c9nNT5AAUTwghKMOrLXQX1PShmvYk2c4u/Osid/
-	 QRVn4eAciaw7Q==
+	b=AppGaFmR5g0QIc9/R86oeMsfxlOXo5Z4GU4Gfl9XlcXYx4jrEIZhCCnk13OLTBfIG
+	 DOJx/OpA1knbzGSFxwmEr4ocGz5uFpF7Q+cvf/raoO9Y+rqeNIrFa5i9BwySKQFZ7m
+	 8A34M0Jps4gXtPsnav7SmVXb7JD2u4LGLGj+C3IZaWKCbZ47xEk4yJ+qpg8bWhuH1m
+	 Nx9p25TUFk6yNBijRn+4XE6CQmURKVX3H9ARyPcpR/gIgToUlqBSs72cuG9UU6Why9
+	 B7tqe5tz7w/ihTAoQo1Qt8t7/0K3K0VHGWf1vIZ1Tmxklepp2yTqf/eIrJ+2VHs519
+	 MtxCVvIWLnQBA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	wenjing.liu@amd.com
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Alvin Lee <alvin.lee2@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	stanislaw.gruszka@linux.intel.com
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-pci@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Implement wait_for_odm_update_pending_complete" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:28:54 -0400
-Message-ID: <20240327122855.2843127-1-sashal@kernel.org>
+Subject: FAILED: Patch "PCI/AER: Block runtime suspend when handling errors" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:28:58 -0400
+Message-ID: <20240327122858.2843164-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,299 +72,97 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 2d7f3d1a5866705be2393150e1ffdf67030ab88d Mon Sep 17 00:00:00 2001
-From: Wenjing Liu <wenjing.liu@amd.com>
-Date: Fri, 23 Feb 2024 15:38:40 -0500
-Subject: [PATCH] drm/amd/display: Implement
- wait_for_odm_update_pending_complete
+From 002bf2fbc00e5c4b95fb167287e2ae7d1973281e Mon Sep 17 00:00:00 2001
+From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Date: Mon, 12 Feb 2024 13:01:35 +0100
+Subject: [PATCH] PCI/AER: Block runtime suspend when handling errors
 
-[WHY]
-Odm update is doubled buffered. We need to wait for ODM update to be
-completed before optimizing bandwidth or programming new udpates.
+PM runtime can be done simultaneously with AER error handling.  Avoid that
+by using pm_runtime_get_sync() before and pm_runtime_put() after reset in
+pcie_do_recovery() for all recovering devices.
 
-[HOW]
-implement wait_for_odm_update_pending_complete function to wait for:
-1. odm configuration update is no longer pending in timing generator.
-2. no pending dpg pattern update for each active OPP.
+pm_runtime_get_sync() will increase dev->power.usage_count counter to
+prevent any possible future request to runtime suspend a device.  It will
+also resume a device, if it was previously in D3hot state.
 
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
-Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: Wenjing Liu <wenjing.liu@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+I tested with igc device by doing simultaneous aer_inject and rpm
+suspend/resume via /sys/bus/pci/devices/PCI_ID/power/control and can
+reproduce:
+
+  igc 0000:02:00.0: not ready 65535ms after bus reset; giving up
+  pcieport 0000:00:1c.2: AER: Root Port link has been reset (-25)
+  pcieport 0000:00:1c.2: AER: subordinate device reset failed
+  pcieport 0000:00:1c.2: AER: device recovery failed
+  igc 0000:02:00.0: Unable to change power state from D3hot to D0, device inaccessible
+
+The problem disappears when this patch is applied.
+
+Link: https://lore.kernel.org/r/20240212120135.146068-1-stanislaw.gruszka@linux.intel.com
+Signed-off-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Cc: <stable@vger.kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c      | 56 ++++++++++++++++++-
- .../gpu/drm/amd/display/dc/dcn10/dcn10_opp.c  |  1 +
- .../gpu/drm/amd/display/dc/dcn20/dcn20_opp.c  | 14 +++++
- .../gpu/drm/amd/display/dc/dcn20/dcn20_opp.h  |  2 +
- .../drm/amd/display/dc/dcn201/dcn201_opp.c    |  1 +
- .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   |  4 +-
- drivers/gpu/drm/amd/display/dc/inc/hw/opp.h   |  3 +
- .../amd/display/dc/inc/hw/timing_generator.h  |  1 +
- .../amd/display/dc/optc/dcn10/dcn10_optc.h    |  3 +-
- .../amd/display/dc/optc/dcn32/dcn32_optc.c    |  8 +++
- .../amd/display/dc/optc/dcn32/dcn32_optc.h    |  1 +
- 11 files changed, 90 insertions(+), 4 deletions(-)
+ drivers/pci/pcie/err.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 958552a8605ff..e7dc128f6284b 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -1302,6 +1302,54 @@ static void disable_vbios_mode_if_required(
- 	}
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index 59c90d04a609a..705893b5f7b09 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -13,6 +13,7 @@
+ #define dev_fmt(fmt) "AER: " fmt
+ 
+ #include <linux/pci.h>
++#include <linux/pm_runtime.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+@@ -85,6 +86,18 @@ static int report_error_detected(struct pci_dev *dev,
+ 	return 0;
  }
  
-+/**
-+ * wait_for_blank_complete - wait for all active OPPs to finish pending blank
-+ * pattern updates
-+ *
-+ * @dc: [in] dc reference
-+ * @context: [in] hardware context in use
-+ */
-+static void wait_for_blank_complete(struct dc *dc,
-+		struct dc_state *context)
++static int pci_pm_runtime_get_sync(struct pci_dev *pdev, void *data)
 +{
-+	struct pipe_ctx *opp_head;
-+	struct dce_hwseq *hws = dc->hwseq;
-+	int i;
-+
-+	if (!hws->funcs.wait_for_blank_complete)
-+		return;
-+
-+	for (i = 0; i < MAX_PIPES; i++) {
-+		opp_head = &context->res_ctx.pipe_ctx[i];
-+
-+		if (!resource_is_pipe_type(opp_head, OPP_HEAD) ||
-+				dc_state_get_pipe_subvp_type(context, opp_head) == SUBVP_PHANTOM)
-+			continue;
-+
-+		hws->funcs.wait_for_blank_complete(opp_head->stream_res.opp);
-+	}
++	pm_runtime_get_sync(&pdev->dev);
++	return 0;
 +}
 +
-+static void wait_for_odm_update_pending_complete(struct dc *dc, struct dc_state *context)
++static int pci_pm_runtime_put(struct pci_dev *pdev, void *data)
 +{
-+	struct pipe_ctx *otg_master;
-+	struct timing_generator *tg;
-+	int i;
-+
-+	for (i = 0; i < MAX_PIPES; i++) {
-+		otg_master = &context->res_ctx.pipe_ctx[i];
-+		if (!resource_is_pipe_type(otg_master, OTG_MASTER) ||
-+				dc_state_get_pipe_subvp_type(context, otg_master) == SUBVP_PHANTOM)
-+			continue;
-+		tg = otg_master->stream_res.tg;
-+		if (tg->funcs->wait_odm_doublebuffer_pending_clear)
-+			tg->funcs->wait_odm_doublebuffer_pending_clear(tg);
-+	}
-+
-+	/* ODM update may require to reprogram blank pattern for each OPP */
-+	wait_for_blank_complete(dc, context);
++	pm_runtime_put(&pdev->dev);
++	return 0;
 +}
 +
- static void wait_for_no_pipes_pending(struct dc *dc, struct dc_state *context)
+ static int report_frozen_detected(struct pci_dev *dev, void *data)
  {
- 	int i;
-@@ -1993,6 +2041,11 @@ static enum dc_status dc_commit_state_no_check(struct dc *dc, struct dc_state *c
- 		context->stream_count == 0) {
- 		/* Must wait for no flips to be pending before doing optimize bw */
- 		wait_for_no_pipes_pending(dc, context);
-+		/*
-+		 * optimized dispclk depends on ODM setup. Need to wait for ODM
-+		 * update pending complete before optimizing bandwidth.
-+		 */
-+		wait_for_odm_update_pending_complete(dc, context);
- 		/* pplib is notified if disp_num changed */
- 		dc->hwss.optimize_bandwidth(dc, context);
- 		/* Need to do otg sync again as otg could be out of sync due to otg
-@@ -3496,7 +3549,7 @@ static void commit_planes_for_stream_fast(struct dc *dc,
- 		top_pipe_to_program->stream->update_flags.raw = 0;
- }
+ 	return report_error_detected(dev, pci_channel_io_frozen, data);
+@@ -207,6 +220,8 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	else
+ 		bridge = pci_upstream_bridge(dev);
  
--static void wait_for_outstanding_hw_updates(struct dc *dc, const struct dc_state *dc_context)
-+static void wait_for_outstanding_hw_updates(struct dc *dc, struct dc_state *dc_context)
- {
- /*
-  * This function calls HWSS to wait for any potentially double buffered
-@@ -3534,6 +3587,7 @@ static void wait_for_outstanding_hw_updates(struct dc *dc, const struct dc_state
- 			}
- 		}
++	pci_walk_bridge(bridge, pci_pm_runtime_get_sync, NULL);
++
+ 	pci_dbg(bridge, "broadcast error_detected message\n");
+ 	if (state == pci_channel_io_frozen) {
+ 		pci_walk_bridge(bridge, report_frozen_detected, &status);
+@@ -251,10 +266,15 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 		pcie_clear_device_status(dev);
+ 		pci_aer_clear_nonfatal_status(dev);
  	}
-+	wait_for_odm_update_pending_complete(dc, dc_context);
- }
- 
- static void commit_planes_for_stream(struct dc *dc,
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c
-index 48a40dcc7050b..5838a11efd00c 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_opp.c
-@@ -384,6 +384,7 @@ static const struct opp_funcs dcn10_opp_funcs = {
- 		.opp_set_disp_pattern_generator = NULL,
- 		.opp_program_dpg_dimensions = NULL,
- 		.dpg_is_blanked = NULL,
-+		.dpg_is_pending = NULL,
- 		.opp_destroy = opp1_destroy
- };
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c
-index 0784d01986610..fbf1b6370eb23 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.c
-@@ -337,6 +337,19 @@ bool opp2_dpg_is_blanked(struct output_pixel_processor *opp)
- 		(double_buffer_pending == 0);
- }
- 
-+bool opp2_dpg_is_pending(struct output_pixel_processor *opp)
-+{
-+	struct dcn20_opp *oppn20 = TO_DCN20_OPP(opp);
-+	uint32_t double_buffer_pending;
-+	uint32_t dpg_en;
 +
-+	REG_GET(DPG_CONTROL, DPG_EN, &dpg_en);
++	pci_walk_bridge(bridge, pci_pm_runtime_put, NULL);
 +
-+	REG_GET(DPG_STATUS, DPG_DOUBLE_BUFFER_PENDING, &double_buffer_pending);
+ 	pci_info(bridge, "device recovery successful\n");
+ 	return status;
+ 
+ failed:
++	pci_walk_bridge(bridge, pci_pm_runtime_put, NULL);
 +
-+	return (dpg_en == 1 && double_buffer_pending == 1);
-+}
-+
- void opp2_program_left_edge_extra_pixel (
- 		struct output_pixel_processor *opp,
- 		bool count)
-@@ -363,6 +376,7 @@ static struct opp_funcs dcn20_opp_funcs = {
- 		.opp_set_disp_pattern_generator = opp2_set_disp_pattern_generator,
- 		.opp_program_dpg_dimensions = opp2_program_dpg_dimensions,
- 		.dpg_is_blanked = opp2_dpg_is_blanked,
-+		.dpg_is_pending = opp2_dpg_is_pending,
- 		.opp_dpg_set_blank_color = opp2_dpg_set_blank_color,
- 		.opp_destroy = opp1_destroy,
- 		.opp_program_left_edge_extra_pixel = opp2_program_left_edge_extra_pixel,
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h
-index 3ab221bdd27dd..8f186abd558db 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_opp.h
-@@ -159,6 +159,8 @@ void opp2_program_dpg_dimensions(
+ 	pci_uevent_ers(bridge, PCI_ERS_RESULT_DISCONNECT);
  
- bool opp2_dpg_is_blanked(struct output_pixel_processor *opp);
- 
-+bool opp2_dpg_is_pending(struct output_pixel_processor *opp);
-+
- void opp2_dpg_set_blank_color(
- 		struct output_pixel_processor *opp,
- 		const struct tg_color *color);
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c
-index 8e77db46a4090..6a71ba3dfc632 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn201/dcn201_opp.c
-@@ -50,6 +50,7 @@ static struct opp_funcs dcn201_opp_funcs = {
- 		.opp_set_disp_pattern_generator = opp2_set_disp_pattern_generator,
- 		.opp_program_dpg_dimensions = opp2_program_dpg_dimensions,
- 		.dpg_is_blanked = opp2_dpg_is_blanked,
-+		.dpg_is_pending = opp2_dpg_is_pending,
- 		.opp_dpg_set_blank_color = opp2_dpg_set_blank_color,
- 		.opp_destroy = opp1_destroy,
- 		.opp_program_left_edge_extra_pixel = opp2_program_left_edge_extra_pixel,
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-index 40098d9f70cbc..8b3536c380b8d 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
-@@ -2452,7 +2452,7 @@ bool dcn20_wait_for_blank_complete(
- 	int counter;
- 
- 	for (counter = 0; counter < 1000; counter++) {
--		if (opp->funcs->dpg_is_blanked(opp))
-+		if (!opp->funcs->dpg_is_pending(opp))
- 			break;
- 
- 		udelay(100);
-@@ -2463,7 +2463,7 @@ bool dcn20_wait_for_blank_complete(
- 		return false;
- 	}
- 
--	return true;
-+	return opp->funcs->dpg_is_blanked(opp);
- }
- 
- bool dcn20_dmdata_status_done(struct pipe_ctx *pipe_ctx)
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h b/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h
-index aee5372e292c5..d89c92370d5b3 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/opp.h
-@@ -337,6 +337,9 @@ struct opp_funcs {
- 	bool (*dpg_is_blanked)(
- 			struct output_pixel_processor *opp);
- 
-+	bool (*dpg_is_pending)(struct output_pixel_processor *opp);
-+
-+
- 	void (*opp_dpg_set_blank_color)(
- 			struct output_pixel_processor *opp,
- 			const struct tg_color *color);
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h b/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h
-index d98d72f35be5b..ffad8fe16c54d 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/timing_generator.h
-@@ -331,6 +331,7 @@ struct timing_generator_funcs {
- 
- 	void (*init_odm)(struct timing_generator *tg);
- 	void (*wait_drr_doublebuffer_pending_clear)(struct timing_generator *tg);
-+	void (*wait_odm_doublebuffer_pending_clear)(struct timing_generator *tg);
- };
- 
- #endif
-diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h b/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h
-index ab81594a7fadc..6c2e84d3967fc 100644
---- a/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h
-+++ b/drivers/gpu/drm/amd/display/dc/optc/dcn10/dcn10_optc.h
-@@ -557,7 +557,8 @@ struct dcn_optc_registers {
- 	type OTG_CRC_DATA_STREAM_SPLIT_MODE;\
- 	type OTG_CRC_DATA_FORMAT;\
- 	type OTG_V_TOTAL_LAST_USED_BY_DRR;\
--	type OTG_DRR_TIMING_DBUF_UPDATE_PENDING;
-+	type OTG_DRR_TIMING_DBUF_UPDATE_PENDING;\
-+	type OTG_H_TIMING_DIV_MODE_DB_UPDATE_PENDING;
- 
- #define TG_REG_FIELD_LIST_DCN3_2(type) \
- 	type OTG_H_TIMING_DIV_MODE_MANUAL;
-diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
-index 8234935433254..f07a4c7e48bc2 100644
---- a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
-+++ b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.c
-@@ -122,6 +122,13 @@ void optc32_get_odm_combine_segments(struct timing_generator *tg, int *odm_combi
- 	}
- }
- 
-+void optc32_wait_odm_doublebuffer_pending_clear(struct timing_generator *tg)
-+{
-+	struct optc *optc1 = DCN10TG_FROM_TG(tg);
-+
-+	REG_WAIT(OTG_DOUBLE_BUFFER_CONTROL, OTG_H_TIMING_DIV_MODE_DB_UPDATE_PENDING, 0, 2, 50000);
-+}
-+
- void optc32_set_h_timing_div_manual_mode(struct timing_generator *optc, bool manual_mode)
- {
- 	struct optc *optc1 = DCN10TG_FROM_TG(optc);
-@@ -345,6 +352,7 @@ static struct timing_generator_funcs dcn32_tg_funcs = {
- 		.set_odm_bypass = optc32_set_odm_bypass,
- 		.set_odm_combine = optc32_set_odm_combine,
- 		.get_odm_combine_segments = optc32_get_odm_combine_segments,
-+		.wait_odm_doublebuffer_pending_clear = optc32_wait_odm_doublebuffer_pending_clear,
- 		.set_h_timing_div_manual_mode = optc32_set_h_timing_div_manual_mode,
- 		.get_optc_source = optc2_get_optc_source,
- 		.set_out_mux = optc3_set_out_mux,
-diff --git a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h
-index 8ce3b178cab06..0c2c146955619 100644
---- a/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h
-+++ b/drivers/gpu/drm/amd/display/dc/optc/dcn32/dcn32_optc.h
-@@ -183,5 +183,6 @@ void optc32_set_h_timing_div_manual_mode(struct timing_generator *optc, bool man
- void optc32_get_odm_combine_segments(struct timing_generator *tg, int *odm_combine_segments);
- void optc32_set_odm_bypass(struct timing_generator *optc,
- 		const struct dc_crtc_timing *dc_crtc_timing);
-+void optc32_wait_odm_doublebuffer_pending_clear(struct timing_generator *tg);
- 
- #endif /* __DC_OPTC_DCN32_H__ */
+ 	/* TODO: Should kernel panic here? */
 -- 
 2.43.0
 
