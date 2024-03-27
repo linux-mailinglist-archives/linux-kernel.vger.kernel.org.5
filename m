@@ -1,121 +1,95 @@
-Return-Path: <linux-kernel+bounces-122005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 175F588F093
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:01:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B6688F096
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:02:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DC83B20FFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:01:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9F7A1C2933F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE6815356A;
-	Wed, 27 Mar 2024 21:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1F4153560;
+	Wed, 27 Mar 2024 21:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HzExBfGA"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sX9lUzM6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86E215351C;
-	Wed, 27 Mar 2024 21:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA521514DB;
+	Wed, 27 Mar 2024 21:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711573283; cv=none; b=lli4/f7bJ2bP6EoDdlrkHoHEy3S5ZGhYjyJ6QTHuHPsXl1dAyamqQbZRJ7vTWO4OCjd1bA5b+V256YVNBou6RrEum+o1OmXIxiLeUobitmHzR2O33hY0v8Nr7kRnecj/uWL9fiYnxPn8LRcr6d3L1WHkYtB/ny4BN04vlUoJypg=
+	t=1711573338; cv=none; b=hHnPyM9zn+uaw19GoDC2o4juuho4gtM21n6LhgHjgv/A5RyVLIxpgvIwMnRNVwnNe01wPY9nTBYJU9XBmKPkW3rd6177t03zScgx6st5lqqBnFu8VLUkCYyYlha+4vR84rkWLqF5wZmk7LwQ3QdlLNtp8Bkfk5G/rVjz5fMVHMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711573283; c=relaxed/simple;
-	bh=OPurRJ5xp6aX8HKk/buUQYjAT54YFne/0QOnhHJzkRE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sqmaXQlJZx/ISBPVNj7cnwUje0848WkSFV9m3dFs0gIevTLTGnhktKEDQeAZ7JchWqmzycTzzdhOKfCTeu8qlaBzCqRcld3RM4YJ83+fU8xDVs5H77mx+FpTuMQ+iUGUDl06WqVy52TuREOz7AO8oAjTeloaBO8yHF/64V/OeoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HzExBfGA; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RL0BDo018853;
-	Wed, 27 Mar 2024 21:01:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=xmtVpysrBXcgF+Pog62RluWsO9TEDjl7iMQWHnudVBY=; b=Hz
-	ExBfGAzeo8rFS6NU2MB68p2l2/IdaEJuJbbt/r53shABVELEOid8vVo9CIPrvMjp
-	YOvcrk6w6OP+q3BP+du/kryKLUU2fVMNOAq0p8SLsu4P/HYIb1F+gDzwoPIz+qKh
-	yxyY3Cu6sVrUMV3Sn4s3e2Hg3hjx+dk+FIipLxLbF7H94OiMjyDkLchTj0F5xrC8
-	K53Gfk+0Oj4b01lMFTRh7IiW3xlu6DwRZc9AxS/nBq+8B6kwW68C1ixtawKD4BeZ
-	ixyYxzHZpPZxDXW+zMlCAWrMc1t+1/wEkmh77hX3rdRb1mzkT7FBYhfFSsJ5Rhdp
-	HF+0BdYI+3p0lJQ9EXfw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4u04r033-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 21:01:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42RL1BWK029439
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Mar 2024 21:01:11 GMT
-Received: from [10.227.110.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 27 Mar
- 2024 14:01:11 -0700
-Message-ID: <dc556824-d499-430c-850e-fb0ca55dd5fe@quicinc.com>
-Date: Wed, 27 Mar 2024 14:01:10 -0700
+	s=arc-20240116; t=1711573338; c=relaxed/simple;
+	bh=zimNrLl1t2P5OKTQ7qXF3CGYSVBY7jD6LDZ0qUvDB/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gJrwuxfBHUPzrTRATgJKP/ovUUsUOgF5IlBBFOdmlrg742UMrDn8YVkO9Q594IZSEK6yGZAaKrMliVJHvbziB02rN0fJDxMZsoThJBPfbI6gyK+JfdEVV/5pDC9j9A4Sulv1qr+H17VRD6n0sj0WYfx9yaV9FtHll2ujtrtdN3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sX9lUzM6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D62AC433F1;
+	Wed, 27 Mar 2024 21:02:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711573337;
+	bh=zimNrLl1t2P5OKTQ7qXF3CGYSVBY7jD6LDZ0qUvDB/s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sX9lUzM6hibJ1nC/TA2GFKnJg5DmzdnKK1TDASFYDlVc0hXwLrXvxkt8Y6lWk/C/Y
+	 E/QOlOpsWwJeUbAJhsiFGl6y0DPre3hTGXNBoYWmyklyvZCVBRhD342U1haaoRXoqr
+	 jottNhtFoVvF/R5Fbj3uWDGQSW+A/d43BFYuBB+ZnsWlTR7H2dQvp3RRyQZmhdl9a4
+	 i27tJHClUGy3kBJWcU/LzL1/NuVWG1yIU8lpfJhr/Okn39CQcoq6OZRtj79bAIV7z0
+	 c3kjAf8tez3e8hfMaYDR6NSW70icbW8LcHldAWQZhjWqI7XsVtBRCE6KowGJLUMzw8
+	 55o+CxsSulfuA==
+Date: Wed, 27 Mar 2024 22:02:13 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 22/64] i2c: highlander: reword according to newest
+ specification
+Message-ID: <u4dtq2ii3kjvwj5hhxogcqje27adpoxxlr7y6bkqo2suqcumxb@p5vsjp3m2rop>
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+ <20240322132619.6389-23-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] wifi: wil6210: wmi: Use __counted_by() in struct
- wmi_set_link_monitor_cmd and avoid -Wfamnae warning
-Content-Language: en-US
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kalle Valo
-	<kvalo@kernel.org>
-CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>
-References: <ZgRsn72WkHzfCUsa@neat>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <ZgRsn72WkHzfCUsa@neat>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: -42v3xr_7ZE0RIUA4Hc1HvCqp3LbjyXW
-X-Proofpoint-GUID: -42v3xr_7ZE0RIUA4Hc1HvCqp3LbjyXW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-27_18,2024-03-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- mlxlogscore=807 clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2403270149
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322132619.6389-23-wsa+renesas@sang-engineering.com>
 
-On 3/27/2024 11:59 AM, Gustavo A. R. Silva wrote:
-> Prepare for the coming implementation by GCC and Clang of the
-> __counted_by attribute. Flexible array members annotated with
-> __counted_by can have their accesses bounds-checked at run-time
-> via CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE
-> (for strcpy/memcpy-family functions).
-> 
-> Also, -Wflex-array-member-not-at-end is coming in GCC-14, and we are
-> getting ready to enable it globally.
-> 
-> So, use the `DEFINE_FLEX()` helper for an on-stack definition of
-> a flexible structure where the size of the flexible-array member
-> is known at compile-time, and refactor the rest of the code,
-> accordingly.
-> 
-> So, with these changes, fix the following warning:
-> drivers/net/wireless/ath/wil6210/wmi.c:4018:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> 
-> Link: https://github.com/KSPP/linux/issues/202
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Hi Wolfram,
 
-That DEFINE_FLEX() macro takes a bit of time to understand! But I finally
-digested it so...
+On Fri, Mar 22, 2024 at 02:25:15PM +0100, Wolfram Sang wrote:
+> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
+> specifications and replace "master/slave" with more appropriate terms.
+> They are also more specific because we distinguish now between a remote
+> entity ("client") and a local one ("target").
 
-Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+I'm just noticing... what do you mean with client/target? Can you
+please be a bit more specific?
 
+If I search through the three documents I find the word "client"
+written only once in the i3c document.
+
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/i2c/busses/i2c-highlander.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-highlander.c b/drivers/i2c/busses/i2c-highlander.c
+> index 7922bc917c33..ec3546a5178b 100644
+> --- a/drivers/i2c/busses/i2c-highlander.c
+> +++ b/drivers/i2c/busses/i2c-highlander.c
+> @@ -331,7 +331,7 @@ static int highlander_i2c_smbus_xfer(struct i2c_adapter *adap, u16 addr,
+>  	/* Ensure we're in a sane state */
+>  	highlander_i2c_done(dev);
+>  
+> -	/* Set slave address */
+> +	/* Set client address */
+
+/client/target/ ?
+
+Andi
 
