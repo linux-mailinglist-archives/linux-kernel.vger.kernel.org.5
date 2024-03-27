@@ -1,186 +1,130 @@
-Return-Path: <linux-kernel+bounces-121947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F04A88EFC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:05:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDDFA88EFCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8B14B2718C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:05:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BA6C1C33478
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3408152E1A;
-	Wed, 27 Mar 2024 20:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B03D152517;
+	Wed, 27 Mar 2024 20:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="noziLqwF"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RQGNM0bk"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65640154BF7
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:02:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC5314F9E6
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711569740; cv=none; b=NJrxe6bIrDNtqnz3VRUXv6eiu0DPfCgATWF74hQ/T75MTlH/cP1GbCddsW7/7cW3yrl0x71CEUgOSlaE7u8fuZLGaI1ghY4hP1kuJGNKw5JIJXLYi1wFnli5KUB9zt9cmaG0lLwCePd5rVD+t94p0EslGdn60iPgUG88cJVSlh8=
+	t=1711569831; cv=none; b=k+yWvKSaKccJumUAfXMmIxxowPoJfhcFbiw8WNcIEE0yA0PUbKN5XwaACU4Nc86NKKEhP41xMTnZvRBPwzasETBUcshrhQP8gYc/QtV2EaQkdZslZyVe76b312N+LWNt0pooBEYw+uvTdqrNb3ig7bn6+H5CZYcLjV2q1InFLBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711569740; c=relaxed/simple;
-	bh=E7MLSmCZtdYqT/97iSjjy5MvTX1XvFIxMI0c3iuGdCI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=krRGqBzx+j98DcNeT8oszmLyAvKl3sa4K+NOlX+OiD8B8+59v3JeSKD9utvivwZuvgU1mKlN2F+tj7LGtHNC7B/SgmKRELELFkgdYPUfiWUFWhMnCRueLiQ8hXxq4FzIsDPy2SOaD4hejc7alF9AmOqfaskzAlgddvlmBGAbWfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=noziLqwF; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1def59b537cso1592295ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711569738; x=1712174538; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1KPYCb9S3Soscoa7gVsLkBiv/vc0d18dY2Lykf0pkTk=;
-        b=noziLqwFZQWZjHYxnaQ7Ba1PpL6FqL/WWlAx8A69tosxUn7uAeWY2fUa8cTYFNY6o5
-         E7ahw2Hh2itkW8PLwG53FIRFWIKFriGNHXis1RGuCH3o68E1DYnzq3XSUHs8PB0AJXx5
-         FmGeEc7wMrN5bhJSwoonwaFyVDQ+aGsIcT9AQ5fFolpPWUdk+4SYeYnl95dF86XOBJbK
-         ZcKfoZpQzni84VSM08/4GJF86upNXlb1nSk+x/hSAtfrMvc6zPIaBLCpn+VuG1b6emkN
-         MjZAUr4QOUTZIdE9a64iRpyoNyZLEZWTohxGSe4OE6ZwzYmZTqg4pn8TwxMBAZAPxbMz
-         88CQ==
+	s=arc-20240116; t=1711569831; c=relaxed/simple;
+	bh=t12owULa2Uk3B4uxPPmsB4a79oGho0TYNcWr/T2cVIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iQwUbvRMpk/xvmOEO9l2+zRlEURl+/NpSvWm7dHQ35SZN23MBkj0i+Ms7O6yEq5k1w/6irK7EOJa9JAFyqnyI5hiPD6aQobajAw7xMW72SizHch3agx3xfbI0Q9D2+rColHPKvVjQkhJSUH92Q525b9TVHtyOJfkgDS/WKX8TzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RQGNM0bk; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711569825;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m5gtlylC0qzrEzSYUPIkmlPoES5wXwK/DFLxhK4lKIc=;
+	b=RQGNM0bkrdgzQc2v7fFvxEeX55IjbQ063oy1W3wKyP249hYzvDVUj/bGRLeqNkbXokI/GY
+	XxH1u6C/jnYLRQ0I/ZTJJ4T/85iwDtWcLK2+P3Rhv+O1uyw+OW5/ZjBJ/vvicX8iecgsLO
+	y8TwydpkfeCDgV33jhFm6vs7lj+4LM8=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-114-FcaLx51aPdq3QKZiU3rxLQ-1; Wed, 27 Mar 2024 16:03:41 -0400
+X-MC-Unique: FcaLx51aPdq3QKZiU3rxLQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-513e31aef6cso93610e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:03:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711569738; x=1712174538;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1KPYCb9S3Soscoa7gVsLkBiv/vc0d18dY2Lykf0pkTk=;
-        b=pvPC+hwsceGt13SrKR2fxwmZ2M4IcHBITpL/jUA/XXbq8pOEo/+Xdhf7K3/gsUJPEA
-         I/5WVFBbmWErrPDOv/q7nIaiI/UHBUIGCgpm1fctEOb484BGjcNd6BrmBzquazeBKyVK
-         PnBueCLvt5MziL21LgLt1FtCIoS9WC1i0c1dmRyIdMJVQHRdVq/kTMqaLdeFstmdzLos
-         mHkCYRM0o1r5B7SyvRXFwGNTvn1DF3l/glZpF23QND9xVpAbhfXAykH/YCXW7uICQPjZ
-         505y1tNpXyJLFDbJLA3dFr1MzcTH+2Iki9iHMRyZPIngoqHaepqGw2DHhNvxfkshA9ui
-         KF3g==
-X-Gm-Message-State: AOJu0Ywclzsc0PRp+iTtxvFa41cinWpZiMXnOKNMUH2mt3dUG0vfCZED
-	H5UCprjmBFewLh6xGoto/J3W+ipFHu52b7z0NCQBgKGpuGXYfAqS8NShKbkDvvJ/o7V1myHoOKh
-	5
-X-Google-Smtp-Source: AGHT+IHiVrJt14UyveizhwLAq9XPpEU6ZyZvDdQzDZe0rjNysh7dZh6CYDZhY9eiiH2RA2j+uTxBcQ==
-X-Received: by 2002:a17:902:ec8b:b0:1e0:1f1d:bd38 with SMTP id x11-20020a170902ec8b00b001e01f1dbd38mr622795plg.7.1711569737898;
-        Wed, 27 Mar 2024 13:02:17 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id u4-20020a170902e5c400b001dd0d0d26a4sm9446459plf.147.2024.03.27.13.02.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 13:02:17 -0700 (PDT)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel@lists.infradead.org,
-	x86@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	Christoph Hellwig <hch@lst.de>,
-	loongarch@lists.linux.dev,
-	amd-gfx@lists.freedesktop.org,
-	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v3 14/14] selftests/fpu: Allow building on other architectures
-Date: Wed, 27 Mar 2024 13:00:45 -0700
-Message-ID: <20240327200157.1097089-15-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.43.1
-In-Reply-To: <20240327200157.1097089-1-samuel.holland@sifive.com>
-References: <20240327200157.1097089-1-samuel.holland@sifive.com>
+        d=1e100.net; s=20230601; t=1711569820; x=1712174620;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m5gtlylC0qzrEzSYUPIkmlPoES5wXwK/DFLxhK4lKIc=;
+        b=Uw1aFT/YQbQm36z5EPNrH90LrJ96fSa+/nyS/7xnFTA4YM7KdYbtMTsXa3xM8IiLzI
+         BKrp8Wehzc7H4vpwT/mbZfBRf4ZxDcv1p6LspRSTXNEcY1xTrxfc3NX91vDeY62jN+Qd
+         fDpn6MLfIcJQYK/DhCvLMBDIUtZ0+JUrlGcjAQmwK+Se+JtvAPfu4e5iEY22vb9jirDb
+         P9GqbjW3uHWp+gGceG0gsIGrXS163uRArEX2suvlgVxAjHx0DhwrQlXDnK0Gq19lCC8x
+         rGyNm2lXV8DuwSyuZ7eUmpUEcM6bleq12p2AoF7R/I65uDY4ArUF64OwpyxmfRbcHlBZ
+         SXHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXmKzINFSeSyNxPE9zjTYC+J+L+Uy8aufSi9BnEJnejgWFHyjd2ouSv4r8CZIGNMKhRa+KnRNzjWbXDkBfHXVJs5jzNnPZrEJF+WpWn
+X-Gm-Message-State: AOJu0Yyy416YIzptUNl9R4azGjEseFXtAM6mPB62w4/aTk14n9lJCz2Q
+	7pf6UojRqWz1xwW13P7Cxrn/0+2AXigAdG3rNO3JBvheVx48T/px4YIDky7zvjqtzbZPHA9jp5T
+	GNP49tbyy9l830Xd+lnwAGS3kjPF74ozqkzeVYE4dSP/eSm28NDqDhFbIA7PmBQ==
+X-Received: by 2002:a05:6512:52b:b0:513:226c:651d with SMTP id o11-20020a056512052b00b00513226c651dmr448050lfc.2.1711569820061;
+        Wed, 27 Mar 2024 13:03:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFgOaSquNs/XdTRHz1ZCegoSjmGEMwnfQhgHJRMfn2tZOUBOK1WoIRggVRj1OyU/ET5d7bPfQ==
+X-Received: by 2002:a05:6512:52b:b0:513:226c:651d with SMTP id o11-20020a056512052b00b00513226c651dmr448028lfc.2.1711569819620;
+        Wed, 27 Mar 2024 13:03:39 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id q2-20020a17090609a200b00a3efa4e033asm5796770eje.151.2024.03.27.13.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 13:03:39 -0700 (PDT)
+Message-ID: <4b6aa3ef-82f1-43d4-9544-89f591f49e41@redhat.com>
+Date: Wed, 27 Mar 2024 21:03:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11] platform/x86: add lenovo wmi camera button driver
+Content-Language: en-US, nl
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: =?UTF-8?B?6Im+6LaF?= <aichao@kylinos.cn>,
+ "ilpo.jarvinen" <ilpo.jarvinen@linux.intel.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ platform-driver-x86 <platform-driver-x86@vger.kernel.org>
+References: <je8phmmtfz-je9zfg1v9s@nsmail7.0.0--kylin--1>
+ <030beaf8-12e1-400a-b064-f17384e32714@redhat.com>
+ <ZgQbz5pBTuY64pNF@smile.fi.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <ZgQbz5pBTuY64pNF@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Now that ARCH_HAS_KERNEL_FPU_SUPPORT provides a common way to compile
-and run floating-point code, this test is no longer x86-specific.
+Hi,
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+On 3/27/24 2:14 PM, Andy Shevchenko wrote:
+> On Wed, Mar 27, 2024 at 11:54:55AM +0100, Hans de Goede wrote:
+>> On 3/26/24 3:54 AM, 艾超 wrote:
+> 
+> ...
+> 
+>>>>> +config LENOVO_WMI_CAMERA
+>>>>> + tristate "Lenovo WMI Camera Button driver"
+>>>>> + depends on ACPI_WMI
+>>>>> + depends on INPUT
+>>>
+>>>> No COMPILE_TEST?
+>>>
+>>> I compile this driver and used Evtest tool to test it on lenovo A70.
+> 
+> What I meant here is to add respective COMPILE_TEST to the dependency(ies).
 
-(no changes since v1)
+Neither include/linux/input.h nor include/linux/wmi.h offer
+stubs when disabled so this will not work.
 
- lib/Kconfig.debug   |  2 +-
- lib/Makefile        | 25 ++-----------------------
- lib/test_fpu_glue.c |  5 ++++-
- 3 files changed, 7 insertions(+), 25 deletions(-)
+Besides x86 has a lot of compile test coverage in general,
+so I don't see much value in adding || COMPILE_TEST to
+dependencies.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index c63a5fbf1f1c..f93e778e0405 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2890,7 +2890,7 @@ config TEST_FREE_PAGES
- 
- config TEST_FPU
- 	tristate "Test floating point operations in kernel space"
--	depends on X86 && !KCOV_INSTRUMENT_ALL
-+	depends on ARCH_HAS_KERNEL_FPU_SUPPORT && !KCOV_INSTRUMENT_ALL
- 	help
- 	  Enable this option to add /sys/kernel/debug/selftest_helpers/test_fpu
- 	  which will trigger a sequence of floating point operations. This is used
-diff --git a/lib/Makefile b/lib/Makefile
-index fcb35bf50979..e44ad11f77b5 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -110,31 +110,10 @@ CFLAGS_test_fprobe.o += $(CC_FLAGS_FTRACE)
- obj-$(CONFIG_FPROBE_SANITY_TEST) += test_fprobe.o
- obj-$(CONFIG_TEST_OBJPOOL) += test_objpool.o
- 
--#
--# CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
--# off the generation of FPU/SSE* instructions for kernel proper but FPU_FLAGS
--# get appended last to CFLAGS and thus override those previous compiler options.
--#
--FPU_CFLAGS := -msse -msse2
--ifdef CONFIG_CC_IS_GCC
--# Stack alignment mismatch, proceed with caution.
--# GCC < 7.1 cannot compile code using `double` and -mpreferred-stack-boundary=3
--# (8B stack alignment).
--# See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
--#
--# The "-msse" in the first argument is there so that the
--# -mpreferred-stack-boundary=3 build error:
--#
--#  -mpreferred-stack-boundary=3 is not between 4 and 12
--#
--# can be triggered. Otherwise gcc doesn't complain.
--FPU_CFLAGS += -mhard-float
--FPU_CFLAGS += $(call cc-option,-msse -mpreferred-stack-boundary=3,-mpreferred-stack-boundary=4)
--endif
--
- obj-$(CONFIG_TEST_FPU) += test_fpu.o
- test_fpu-y := test_fpu_glue.o test_fpu_impl.o
--CFLAGS_test_fpu_impl.o += $(FPU_CFLAGS)
-+CFLAGS_test_fpu_impl.o += $(CC_FLAGS_FPU)
-+CFLAGS_REMOVE_test_fpu_impl.o += $(CC_FLAGS_NO_FPU)
- 
- # Some KUnit files (hooks.o) need to be built-in even when KUnit is a module,
- # so we can't just use obj-$(CONFIG_KUNIT).
-diff --git a/lib/test_fpu_glue.c b/lib/test_fpu_glue.c
-index 85963d7be826..eef282a2715f 100644
---- a/lib/test_fpu_glue.c
-+++ b/lib/test_fpu_glue.c
-@@ -17,7 +17,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/debugfs.h>
--#include <asm/fpu/api.h>
-+#include <linux/fpu.h>
- 
- #include "test_fpu.h"
- 
-@@ -38,6 +38,9 @@ static struct dentry *selftest_dir;
- 
- static int __init test_fpu_init(void)
- {
-+	if (!kernel_fpu_available())
-+		return -EINVAL;
-+
- 	selftest_dir = debugfs_create_dir("selftest_helpers", NULL);
- 	if (!selftest_dir)
- 		return -ENOMEM;
--- 
-2.43.1
+Regards,
+
+Hans
+
 
 
