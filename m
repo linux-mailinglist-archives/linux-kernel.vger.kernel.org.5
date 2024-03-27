@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-120965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A826B88E108
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:50:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FE1588E10B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AEC4299134
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:50:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB5701F2F6C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9EC15381C;
-	Wed, 27 Mar 2024 12:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1837F15380E;
+	Wed, 27 Mar 2024 12:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PiaZlJ10"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQiy30As"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7395153808;
-	Wed, 27 Mar 2024 12:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CBC2153830;
+	Wed, 27 Mar 2024 12:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541715; cv=none; b=cT0udtsV5yE/M8NFSQqRE394OlDCNYJZFHFi+ZhRbzY3BnoMQdfbspGwqecMz6gd1Y0mdINvcmzk4ubK9+iF3eu+psbjLxrSvmFy+QxqlTkM8jERoMjQmEdMNwFdQSP/p6rYzfr8JySy8GJom4kWC75gMAA0MGOy4Q1ByU08FvU=
+	t=1711541719; cv=none; b=AjZytmSkJdjrW8wliqqcq4QWsa5oFPxGOcZezcC8eEQvrnG0wCTdZkcBYXP0JhwMy0hpoGY7PW5qHrKJufzWBXijIXT721dGpGKUuqsmJPN0e2KTbB51AK1xd7rahsS0cnxXehJ7Z8cjyMj9dOJ6CTDLsI2X98J1m9gYgaTnXNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541715; c=relaxed/simple;
-	bh=7tjlYr/koR2ItXdpC7R/cFNFCbMhGwO67d6zvUmF6dE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CkaX4Ufas1CfpHDyMkllZ9Rc9Et8keq3lRbZ8L+6YEHfb+f9ei5nMJvsVZd8kDIRNFk3r6E+q2feikTl94dttMuVbfe3FYz9p7p23NFMwLlNelKTXc36qjCmCI6QuwQj686V7YAV1zAdYyGaypxnVuxv8z6e7Coubn2s0vRANO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PiaZlJ10; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79BE2C433C7;
-	Wed, 27 Mar 2024 12:15:14 +0000 (UTC)
+	s=arc-20240116; t=1711541719; c=relaxed/simple;
+	bh=4uVU4wn70eY5pwU3aJoqhGiWGcO4W6VpxdBgFZucCJc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oXuxFwTdMlRayChk8aVb3o3YN1GqsBa121LZzNMGU/SnXDpOUmL/+n0JsecqwCcjXJ4AO6/8a1/eVqjOfC8Mi56C7vEMcnPhlIxNXBVVvH2HlQeMjySFFNVgPs0eVZjiCyTBzBuYeTPKULse6tq74XyJvjnfXATvEBlHQA500A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQiy30As; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EE94C433F1;
+	Wed, 27 Mar 2024 12:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541715;
-	bh=7tjlYr/koR2ItXdpC7R/cFNFCbMhGwO67d6zvUmF6dE=;
+	s=k20201202; t=1711541718;
+	bh=4uVU4wn70eY5pwU3aJoqhGiWGcO4W6VpxdBgFZucCJc=;
 	h=From:To:Cc:Subject:Date:From;
-	b=PiaZlJ10n613vSDrKch2JMzi1yfhYOUTXGzD8cD+B0qngneBYcWRlSb2BUQ/858X3
-	 s5AQmhmVc1e+278co05VYKj+yNMy0DV++ubUTi8Xa1/MDsO4R+qB+ESYQ9TzluK8bs
-	 K3QbGl1JFqlcF2okqUrRvkkNPgTellF3ppG8GRbsv04V7H2NyYqqCQUhJj/emu5BTH
-	 RPE2IqT3jn7er8VUILyMasVZtlACF1hEvx3opiPTqzyx0QqRXLon5ibyalgwTck9D/
-	 ggt0xhIzIxp+1QK8dxGcFUagSYn7V1NvW1a75bN//vdOXXe/QbkJS9Ut4dEYMNBdsU
-	 Gg7BALs9cZEwA==
+	b=hQiy30AsC0rVH+L+AwFPJyBV0uKaC3ziwvcd3OQUrlaDfIEZKbE3hyLtinM0Hf7hi
+	 L6TdwkiVFbA7K78sQ4kihcsZk+s2Vs8bXVQ+pX9kYp74atNi9wiQLqgdA+/xcgBhEu
+	 HzX2vQzXjOo3S7GR9Ee90wRzcS8zuKezV5NTryoDQGkCyyLf88KSACQLtnrpMBUOiU
+	 NQen1FPyaPIC9Lbssw8Y6AXIKPkE1X6kvoGFxAaMHTCWw9NozhmFP+UB4Bf3hU2fZv
+	 jKPyEgOKgVxcmfWk1GZxMzVF2Wa7ueLuUVy+IMY8c9zANLc+c59asuw2QugrEM9LQ2
+	 DmBZTOvRmlTxg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	dtatulea@nvidia.com
-Cc: "Anatoli N . Chechelnickiy" <Anatoli.Chechelnickiy@m.interpipe.biz>,
-	Ian Kumlien <ian.kumlien@gmail.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: FAILED: Patch "net: esp: fix bad handling of pages from page_pool" failed to apply to 5.15-stable tree
-Date: Wed, 27 Mar 2024 08:15:13 -0400
-Message-ID: <20240327121513.2831737-1-sashal@kernel.org>
+	chenhuacai@kernel.org
+Cc: Xiaotian Wu <wuxiaotian@loongson.cn>,
+	Miao Wang <shankerwangmiao@gmail.com>,
+	Xing Li <lixing@loongson.cn>,
+	Hongchen Zhang <zhanghongchen@loongson.cn>,
+	Rui Wang <wangrui@loongson.cn>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	linux-mm@kvack.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "LoongArch: Change __my_cpu_offset definition to avoid mis-optimization" failed to apply to 5.15-stable tree
+Date: Wed, 27 Mar 2024 08:15:16 -0400
+Message-ID: <20240327121516.2831778-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,194 +75,56 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From c3198822c6cb9fb588e446540485669cc81c5d34 Mon Sep 17 00:00:00 2001
-From: Dragos Tatulea <dtatulea@nvidia.com>
-Date: Fri, 8 Mar 2024 17:26:00 +0200
-Subject: [PATCH] net: esp: fix bad handling of pages from page_pool
+From c87e12e0e8c1241410e758e181ca6bf23efa5b5b Mon Sep 17 00:00:00 2001
+From: Huacai Chen <chenhuacai@loongson.cn>
+Date: Tue, 19 Mar 2024 15:50:34 +0800
+Subject: [PATCH] LoongArch: Change __my_cpu_offset definition to avoid
+ mis-optimization
 
-When the skb is reorganized during esp_output (!esp->inline), the pages
-coming from the original skb fragments are supposed to be released back
-to the system through put_page. But if the skb fragment pages are
-originating from a page_pool, calling put_page on them will trigger a
-page_pool leak which will eventually result in a crash.
+From GCC commit 3f13154553f8546a ("df-scan: remove ad-hoc handling of
+global regs in asms"), global registers will no longer be forced to add
+to the def-use chain. Then current_thread_info(), current_stack_pointer
+and __my_cpu_offset may be lifted out of the loop because they are no
+longer treated as "volatile variables".
 
-This leak can be easily observed when using CONFIG_DEBUG_VM and doing
-ipsec + gre (non offloaded) forwarding:
+This optimization is still correct for the current_thread_info() and
+current_stack_pointer usages because they are associated to a thread.
+However it is wrong for __my_cpu_offset because it is associated to a
+CPU rather than a thread: if the thread migrates to a different CPU in
+the loop, __my_cpu_offset should be changed.
 
-  BUG: Bad page state in process ksoftirqd/16  pfn:1451b6
-  page:00000000de2b8d32 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1451b6000 pfn:0x1451b6
-  flags: 0x200000000000000(node=0|zone=2)
-  page_type: 0xffffffff()
-  raw: 0200000000000000 dead000000000040 ffff88810d23c000 0000000000000000
-  raw: 00000001451b6000 0000000000000001 00000000ffffffff 0000000000000000
-  page dumped because: page_pool leak
-  Modules linked in: ip_gre gre mlx5_ib mlx5_core xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat nf_nat xt_addrtype br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi ib_umad rdma_cm ib_ipoib iw_cm ib_cm ib_uverbs ib_core overlay zram zsmalloc fuse [last unloaded: mlx5_core]
-  CPU: 16 PID: 96 Comm: ksoftirqd/16 Not tainted 6.8.0-rc4+ #22
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x36/0x50
-   bad_page+0x70/0xf0
-   free_unref_page_prepare+0x27a/0x460
-   free_unref_page+0x38/0x120
-   esp_ssg_unref.isra.0+0x15f/0x200
-   esp_output_tail+0x66d/0x780
-   esp_xmit+0x2c5/0x360
-   validate_xmit_xfrm+0x313/0x370
-   ? validate_xmit_skb+0x1d/0x330
-   validate_xmit_skb_list+0x4c/0x70
-   sch_direct_xmit+0x23e/0x350
-   __dev_queue_xmit+0x337/0xba0
-   ? nf_hook_slow+0x3f/0xd0
-   ip_finish_output2+0x25e/0x580
-   iptunnel_xmit+0x19b/0x240
-   ip_tunnel_xmit+0x5fb/0xb60
-   ipgre_xmit+0x14d/0x280 [ip_gre]
-   dev_hard_start_xmit+0xc3/0x1c0
-   __dev_queue_xmit+0x208/0xba0
-   ? nf_hook_slow+0x3f/0xd0
-   ip_finish_output2+0x1ca/0x580
-   ip_sublist_rcv_finish+0x32/0x40
-   ip_sublist_rcv+0x1b2/0x1f0
-   ? ip_rcv_finish_core.constprop.0+0x460/0x460
-   ip_list_rcv+0x103/0x130
-   __netif_receive_skb_list_core+0x181/0x1e0
-   netif_receive_skb_list_internal+0x1b3/0x2c0
-   napi_gro_receive+0xc8/0x200
-   gro_cell_poll+0x52/0x90
-   __napi_poll+0x25/0x1a0
-   net_rx_action+0x28e/0x300
-   __do_softirq+0xc3/0x276
-   ? sort_range+0x20/0x20
-   run_ksoftirqd+0x1e/0x30
-   smpboot_thread_fn+0xa6/0x130
-   kthread+0xcd/0x100
-   ? kthread_complete_and_exit+0x20/0x20
-   ret_from_fork+0x31/0x50
-   ? kthread_complete_and_exit+0x20/0x20
-   ret_from_fork_asm+0x11/0x20
-   </TASK>
-
-The suggested fix is to introduce a new wrapper (skb_page_unref) that
-covers page refcounting for page_pool pages as well.
+Change __my_cpu_offset definition to treat it as a "volatile variable",
+in order to avoid such a mis-optimization.
 
 Cc: stable@vger.kernel.org
-Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
-Reported-and-tested-by: Anatoli N.Chechelnickiy <Anatoli.Chechelnickiy@m.interpipe.biz>
-Reported-by: Ian Kumlien <ian.kumlien@gmail.com>
-Link: https://lore.kernel.org/netdev/CAA85sZvvHtrpTQRqdaOx6gd55zPAVsqMYk_Lwh4Md5knTq7AyA@mail.gmail.com
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Reported-by: Xiaotian Wu <wuxiaotian@loongson.cn>
+Reported-by: Miao Wang <shankerwangmiao@gmail.com>
+Signed-off-by: Xing Li <lixing@loongson.cn>
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+Signed-off-by: Rui Wang <wangrui@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- include/linux/skbuff.h | 10 ++++++++++
- net/ipv4/esp4.c        |  8 ++++----
- net/ipv6/esp6.c        |  8 ++++----
- 3 files changed, 18 insertions(+), 8 deletions(-)
+ arch/loongarch/include/asm/percpu.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 3023bc2be6a1c..b49a7d6591e8e 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3523,6 +3523,16 @@ int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
- 			 struct bpf_prog *prog);
- bool napi_pp_put_page(struct page *page, bool napi_safe);
- 
-+static inline void
-+skb_page_unref(const struct sk_buff *skb, struct page *page, bool napi_safe)
-+{
-+#ifdef CONFIG_PAGE_POOL
-+	if (skb->pp_recycle && napi_pp_put_page(page, napi_safe))
-+		return;
-+#endif
-+	put_page(page);
-+}
+diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/include/asm/percpu.h
+index 9b36ac003f890..8f290e5546cf7 100644
+--- a/arch/loongarch/include/asm/percpu.h
++++ b/arch/loongarch/include/asm/percpu.h
+@@ -29,7 +29,12 @@ static inline void set_my_cpu_offset(unsigned long off)
+ 	__my_cpu_offset = off;
+ 	csr_write64(off, PERCPU_BASE_KS);
+ }
+-#define __my_cpu_offset __my_cpu_offset
 +
- static inline void
- napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
- {
-diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
-index 4dd9e50406720..d33d124218140 100644
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -95,7 +95,7 @@ static inline struct scatterlist *esp_req_sg(struct crypto_aead *aead,
- 			     __alignof__(struct scatterlist));
- }
++#define __my_cpu_offset					\
++({							\
++	__asm__ __volatile__("":"+r"(__my_cpu_offset));	\
++	__my_cpu_offset;				\
++})
  
--static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
-+static void esp_ssg_unref(struct xfrm_state *x, void *tmp, struct sk_buff *skb)
- {
- 	struct crypto_aead *aead = x->data;
- 	int extralen = 0;
-@@ -114,7 +114,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
- 	 */
- 	if (req->src != req->dst)
- 		for (sg = sg_next(req->src); sg; sg = sg_next(sg))
--			put_page(sg_page(sg));
-+			skb_page_unref(skb, sg_page(sg), false);
- }
- 
- #ifdef CONFIG_INET_ESPINTCP
-@@ -260,7 +260,7 @@ static void esp_output_done(void *data, int err)
- 	}
- 
- 	tmp = ESP_SKB_CB(skb)->tmp;
--	esp_ssg_unref(x, tmp);
-+	esp_ssg_unref(x, tmp, skb);
- 	kfree(tmp);
- 
- 	if (xo && (xo->flags & XFRM_DEV_RESUME)) {
-@@ -639,7 +639,7 @@ int esp_output_tail(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *
- 	}
- 
- 	if (sg != dsg)
--		esp_ssg_unref(x, tmp);
-+		esp_ssg_unref(x, tmp, skb);
- 
- 	if (!err && x->encap && x->encap->encap_type == TCP_ENCAP_ESPINTCP)
- 		err = esp_output_tail_tcp(x, skb);
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index 6e6efe026cdcc..7371886d4f9f4 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -112,7 +112,7 @@ static inline struct scatterlist *esp_req_sg(struct crypto_aead *aead,
- 			     __alignof__(struct scatterlist));
- }
- 
--static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
-+static void esp_ssg_unref(struct xfrm_state *x, void *tmp, struct sk_buff *skb)
- {
- 	struct crypto_aead *aead = x->data;
- 	int extralen = 0;
-@@ -131,7 +131,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
- 	 */
- 	if (req->src != req->dst)
- 		for (sg = sg_next(req->src); sg; sg = sg_next(sg))
--			put_page(sg_page(sg));
-+			skb_page_unref(skb, sg_page(sg), false);
- }
- 
- #ifdef CONFIG_INET6_ESPINTCP
-@@ -294,7 +294,7 @@ static void esp_output_done(void *data, int err)
- 	}
- 
- 	tmp = ESP_SKB_CB(skb)->tmp;
--	esp_ssg_unref(x, tmp);
-+	esp_ssg_unref(x, tmp, skb);
- 	kfree(tmp);
- 
- 	esp_output_encap_csum(skb);
-@@ -677,7 +677,7 @@ int esp6_output_tail(struct xfrm_state *x, struct sk_buff *skb, struct esp_info
- 	}
- 
- 	if (sg != dsg)
--		esp_ssg_unref(x, tmp);
-+		esp_ssg_unref(x, tmp, skb);
- 
- 	if (!err && x->encap && x->encap->encap_type == TCP_ENCAP_ESPINTCP)
- 		err = esp_output_tail_tcp(x, skb);
+ #define PERCPU_OP(op, asm_op, c_op)					\
+ static __always_inline unsigned long __percpu_##op(void *ptr,		\
 -- 
 2.43.0
 
