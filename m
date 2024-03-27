@@ -1,177 +1,150 @@
-Return-Path: <linux-kernel+bounces-121850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D625688EE7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:47:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5149D88EE81
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 911222A3AE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C7372A3DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A4D152160;
-	Wed, 27 Mar 2024 18:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251F01514CC;
+	Wed, 27 Mar 2024 18:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VPReqIQw"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vz588ZcO"
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CA31514D7;
-	Wed, 27 Mar 2024 18:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D9F150981
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711565190; cv=none; b=CYc4IcgLKFtPi6faZSXqeFv7tIt0zucB5kn2SFApwVQUQHaixyV37PjIgql00XvRtl+CJES+drN9pndxr+Pxny4Cum0SFpT1CahP+ZnaMMzLKphaEWkd++Suuk55bRRTrmXunXTjGhrEqCLDANqCdfBfzklasA6QhH5lJlDnfOo=
+	t=1711565218; cv=none; b=Wmlv4kHiaSUXJFGWlKHbzS1cwc37UgxbMvowLsctjeOPIv6vJKnbBz1xhCca6SeddOsJJhdgccvepo+h5AyReKddUIyHnxOmPFALtgAwg60vSpdZysJ92hNv+5dlkghTRziQuZjApSW76E1D1EhNXpsWBJwe6eOfvkP9tDba0EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711565190; c=relaxed/simple;
-	bh=exuGrWSRS6cE3AtRRe5kVccLgVt8p90B506qHZAesl8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NcosPgd2H+2OnFfPm3Y6oDomR5v59Cn2kOnKEnEfnLgaczhZLbdbVNsSvCF4NuCEsQdFKUz57M94BV1aCAUdqckJxsZkwsAZVRQKqDkvj2CjvHdLH2ZG7MZU/TWEZ3bF+rXM/RF7Di/p1vmyi/n9/M3/KjgW2oiihnl/xmUNwgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VPReqIQw; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711565187;
-	bh=exuGrWSRS6cE3AtRRe5kVccLgVt8p90B506qHZAesl8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VPReqIQwUUmoG4xowLTiPRGvbJGt7PCFZgNNTRRP5FEGNNp/dDYKU00A1/Kz01gph
-	 uYqjDx59GtX8BuVOZSD2MInoovfdiYIZLmMTLyNCC4DpDRtsdn7EtFz7fyNnYeLnYz
-	 RcP+JpA7x/zvrGvKJHiDRIp+b/+rYZsPa4WIDmN4Jdudgya/6D53QX0zOW4gxDJ6LH
-	 +vxK5y/PvS6tfVJVQOvpttXRJzBgO6HeIm/zdt+t1uVluqaxtUXQe8pXHbORAETy4H
-	 yMV9UUXjJZ0AUtaTAXnMGSYiBE/nILtiXGZb+A26sG1u2Lv2at454lEB/NgzkKA7Jx
-	 tWjdVS1HlhhOQ==
-Received: from localhost.localdomain (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 541C83782114;
-	Wed, 27 Mar 2024 18:46:24 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: kernel@collabora.com,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] selftests: x86: test_mremap_vdso: conform test to TAP format output
-Date: Wed, 27 Mar 2024 23:46:36 +0500
-Message-Id: <20240327184637.3915969-3-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240327184637.3915969-1-usama.anjum@collabora.com>
-References: <20240327184637.3915969-1-usama.anjum@collabora.com>
+	s=arc-20240116; t=1711565218; c=relaxed/simple;
+	bh=wOYDqXQBwndxLNpGzVpA/alUz261GjYTc0wTNh/rnrg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qFqpaKNY0U8Zce0QRGYiF6MsEQpyjioSeNUNczmU5VAJEgzNN9r7RxIl9xefF2eW0oOkpFNmeJwY6dnArkcbB3b3ZwosrsBkyB9hQTZr0EnNHqV97WYYFGX+u1Kz6p6k9FJy22tH1fb9nyGKdlvAqpuZWDxzzz1udgBEQKWmjJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vz588ZcO; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c621f56d-6354-45a3-8c41-1380f5f03b1f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711565213;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yx1UbkHwdHZLLbNuRcSx7DJyIY0QwP+4nFSmm21yDtQ=;
+	b=Vz588ZcOD6FrUivNA4zc/O2aYjnlG2CqGtHPSocyox7umNsKF3yrwoGxP1Xubf7bKxC3qD
+	PdLQbAW86bvNr3QJAtjD+9zFfsK5J7mP1o1wTd3mzIRv2X7ddNDqhmGbirF6+MM4bUQ+Ib
+	vU6poku+UMDG74k7C13EYaeERKDSLeA=
+Date: Wed, 27 Mar 2024 11:46:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
+Content-Language: en-US
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ syzbot <syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com>,
+ bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+ KP Singh <kpsingh@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>
+References: <0000000000006f876b061478e878@google.com>
+ <a402206e-a9c9-40bd-bf78-710054506071@linux.dev>
+ <CAADnVQLXyQ_o5hSA0OpHYj231WKPFNRNMyr0NePMr2ypusiLmg@mail.gmail.com>
+ <5063d525-d9df-4aaf-991d-bcb9f495c041@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <5063d525-d9df-4aaf-991d-bcb9f495c041@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Conform the layout, informational and status messages to TAP. No
-functional change is intended other than the layout of output messages.
+On 3/26/24 9:47 PM, Yonghong Song wrote:
+> 
+> On 3/26/24 6:07 PM, Alexei Starovoitov wrote:
+>> On Tue, Mar 26, 2024 at 5:54 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>> On 3/25/24 2:36 AM, syzbot wrote:
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    5e74df2f8f15 Merge tag 'x86-urgent-2024-03-24' of git://gi..
+>>>> git tree:       upstream
+>>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=148872a5180000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3cf6f08d68868f9db3
+>>>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for 
+>>>> Debian) 2.40
+>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15921a6e180000
+>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e081f1180000
+>>>>
+>>>> Downloadable assets:
+>>>> disk image: 
+>>>> https://storage.googleapis.com/syzbot-assets/1a82880723a7/disk-5e74df2f.raw.xz
+>>>> vmlinux: 
+>>>> https://storage.googleapis.com/syzbot-assets/fd3046ac43b9/vmlinux-5e74df2f.xz
+>>>> kernel image: 
+>>>> https://storage.googleapis.com/syzbot-assets/2097be59cbc1/bzImage-5e74df2f.xz
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com
+>>>>
+>>>> =====================================================
+>>>> BUG: KMSAN: uninit-value in __dev_map_lookup_elem kernel/bpf/devmap.c:441 
+>>>> [inline]
+>>>> BUG: KMSAN: uninit-value in dev_map_lookup_elem+0xf3/0x170 
+>>>> kernel/bpf/devmap.c:796
+>>>>    __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
+>>>>    dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
+>>>>    ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+>>>>    bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+>>>>    ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+>>>>    __bpf_prog_run256+0xb5/0xe0 kernel/bpf/core.c:2237
+>>> It should be in the interpreter mode.
+>>>
+>>> The C reproducer is trying to run the following bpf prog:
+>>>
+>>>      0: (18) r0 = 0x0
+>>>      2: (18) r1 = map[id:49]
+>>>      4: (b7) r8 = 16777216
+>>>      5: (7b) *(u64 *)(r10 -8) = r8
+>>>      6: (bf) r2 = r10
+>>>      7: (07) r2 += -229
+>>>              ^^^^^^^^^^
+>>>
+>>>      8: (b7) r3 = 8
+>>>      9: (b7) r4 = 0
+>>>     10: (85) call dev_map_lookup_elem#1543472
+>>>     11: (95) exit
+>>>
+>>> I think this KMSAN report (and a few others related to lookup/delete_elem)
+>>> should only happen in the interpreter mode.
+>>>
+>>> Does it worth to suppress it by always initializing the stack in the interpreter
+>>> mode considering the interpreter is not very speed sensitive ?
+>> Maybe we can mark it as initialized from kmsan pov ?
+>> There are kasan_poison/unpoison helpers that may fit ?
+> 
+> Maybe use kmsan_unpoison_memory()?
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- .../testing/selftests/x86/test_mremap_vdso.c  | 43 +++++++++----------
- 1 file changed, 21 insertions(+), 22 deletions(-)
+Good idea. It should do. My qemu cannot boot with CONFIG_KMSAN somehow.
+I will ask syzbot to test.
 
-diff --git a/tools/testing/selftests/x86/test_mremap_vdso.c b/tools/testing/selftests/x86/test_mremap_vdso.c
-index f0d876d482778..d53959e035930 100644
---- a/tools/testing/selftests/x86/test_mremap_vdso.c
-+++ b/tools/testing/selftests/x86/test_mremap_vdso.c
-@@ -19,6 +19,7 @@
- #include <sys/auxv.h>
- #include <sys/syscall.h>
- #include <sys/wait.h>
-+#include "../kselftest.h"
- 
- #define PAGE_SIZE	4096
- 
-@@ -29,13 +30,13 @@ static int try_to_remap(void *vdso_addr, unsigned long size)
- 	/* Searching for memory location where to remap */
- 	dest_addr = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
- 	if (dest_addr == MAP_FAILED) {
--		printf("[WARN]\tmmap failed (%d): %m\n", errno);
-+		ksft_print_msg("WARN: mmap failed (%d): %m\n", errno);
- 		return 0;
- 	}
- 
--	printf("[NOTE]\tMoving vDSO: [%p, %#lx] -> [%p, %#lx]\n",
--		vdso_addr, (unsigned long)vdso_addr + size,
--		dest_addr, (unsigned long)dest_addr + size);
-+	ksft_print_msg("Moving vDSO: [%p, %#lx] -> [%p, %#lx]\n",
-+		       vdso_addr, (unsigned long)vdso_addr + size,
-+		       dest_addr, (unsigned long)dest_addr + size);
- 	fflush(stdout);
- 
- 	new_addr = mremap(vdso_addr, size, size,
-@@ -43,10 +44,10 @@ static int try_to_remap(void *vdso_addr, unsigned long size)
- 	if ((unsigned long)new_addr == (unsigned long)-1) {
- 		munmap(dest_addr, size);
- 		if (errno == EINVAL) {
--			printf("[NOTE]\tvDSO partial move failed, will try with bigger size\n");
-+			ksft_print_msg("vDSO partial move failed, will try with bigger size\n");
- 			return -1; /* Retry with larger */
- 		}
--		printf("[FAIL]\tmremap failed (%d): %m\n", errno);
-+		ksft_print_msg("[FAIL]\tmremap failed (%d): %m\n", errno);
- 		return 1;
- 	}
- 
-@@ -58,11 +59,12 @@ int main(int argc, char **argv, char **envp)
- {
- 	pid_t child;
- 
-+	ksft_print_header();
-+	ksft_set_plan(1);
-+
- 	child = fork();
--	if (child == -1) {
--		printf("[WARN]\tfailed to fork (%d): %m\n", errno);
--		return 1;
--	}
-+	if (child == -1)
-+		ksft_exit_fail_msg("failed to fork (%d): %m\n", errno);
- 
- 	if (child == 0) {
- 		unsigned long vdso_size = PAGE_SIZE;
-@@ -70,9 +72,9 @@ int main(int argc, char **argv, char **envp)
- 		int ret = -1;
- 
- 		auxval = getauxval(AT_SYSINFO_EHDR);
--		printf("\tAT_SYSINFO_EHDR is %#lx\n", auxval);
-+		ksft_print_msg("AT_SYSINFO_EHDR is %#lx\n", auxval);
- 		if (!auxval || auxval == -ENOENT) {
--			printf("[WARN]\tgetauxval failed\n");
-+			ksft_print_msg("WARN: getauxval failed\n");
- 			return 0;
- 		}
- 
-@@ -92,16 +94,13 @@ int main(int argc, char **argv, char **envp)
- 		int status;
- 
- 		if (waitpid(child, &status, 0) != child ||
--			!WIFEXITED(status)) {
--			printf("[FAIL]\tmremap() of the vDSO does not work on this kernel!\n");
--			return 1;
--		} else if (WEXITSTATUS(status) != 0) {
--			printf("[FAIL]\tChild failed with %d\n",
--					WEXITSTATUS(status));
--			return 1;
--		}
--		printf("[OK]\n");
-+			!WIFEXITED(status))
-+			ksft_test_result_fail("mremap() of the vDSO does not work on this kernel!\n");
-+		else if (WEXITSTATUS(status) != 0)
-+			ksft_test_result_fail("Child failed with %d\n", WEXITSTATUS(status));
-+		else
-+			ksft_test_result_pass("%s\n", __func__);
- 	}
- 
--	return 0;
-+	ksft_finished();
- }
--- 
-2.39.2
-
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/martin.lau/bpf-next.git interpreter.kmsan
 
