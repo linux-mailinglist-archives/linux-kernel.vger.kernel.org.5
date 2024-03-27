@@ -1,173 +1,203 @@
-Return-Path: <linux-kernel+bounces-122192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD3188F34C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:41:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 579F288F34E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B00FDB218F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:41:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77C4B1C2BCA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 23:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF0B15359C;
-	Wed, 27 Mar 2024 23:41:48 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128C415444F;
+	Wed, 27 Mar 2024 23:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="DnKqWhRk"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA77B364AB
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926C01534EC
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711582908; cv=none; b=CzzF2J3d4IopRrBn4f9qRvg+6n3DYXdyX+Bboc5iQVk5qZkxZGCcVT85iV97/eDNl93YRDZHBobsgvs9TK7gFYho+nok8R7rrACravibSeDeiT903h5jVxQ9r7stZh/6XrwjHW+jenNKCz1+R9gW92UF+T8wrQvTaPlQYcb5EtM=
+	t=1711583030; cv=none; b=ug5S7dqE5aR00W7aZUjui4ngOx8qbNPMeoDFUCBCqMQHZDepxPvFbQvQpLvJMCvaiKksaz6VLumJyK9s2pCffjsWjyvho0ionCizx1Sl6mYAakA8J7CYMfiYiGlQvsBnLobdbBcx3ZcX+stspRJrwnDAougVYHVEEPhlI/EsR/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711582908; c=relaxed/simple;
-	bh=N3E69GqreEebKgQlafzWS5Tn68yX4Mn+rGL9z2zzJ1Y=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=WUunDOUtXYHcUD84Ocb0uBuXFAENLDx3iCyNhhJjrY58IU6JV5ShDYv3KbjS89OADJsYhTPhUnvmM9gJcTFOZJp29mGtR9uNCbkgtQqc46elcxV3HOipdsRObSy5XeEyjtFRA5EM0ZtsR6uj7MsU1ye0zZmalN5l1HSIC4fUvv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso37421239f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:41:46 -0700 (PDT)
+	s=arc-20240116; t=1711583030; c=relaxed/simple;
+	bh=LHSTVg05tlSrlDZR4E07ykDqUEUkIg1dZ8Yhyx6TfZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VdXJeKIHo0R0IbV1N8FhGSe+TV/Ez6Era1hsUiHwfD62NMKmKFW53TbzEFitFkSQpOnLOQVzY2Q8jABw2YLNqqtsAdPXMTRBcEPTZQx4f24jIeG3SJk7k+K5JgIAQ7+PhT8CnDhNXZlxKRPGmDyDYriGyn0qJaeBxw+ivQApMR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=DnKqWhRk; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-609f060cbafso4789127b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 16:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1711583027; x=1712187827; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DsqU9PXjgnx5iMV4Gv2GAE/CJCMtgSBEOxF0nZeWP9w=;
+        b=DnKqWhRkNNFRkN868BBDfaaMasrOZKbpuo0lu9nfxAodgZgqnBd+dl11LpF4xphv/H
+         zN+cKxH7oiigp9Fq4z5ZMIVFJBoHofUnUhX5nC4xNURk6LopWDajhp75pc9WfE6wEED1
+         OYLmuq5WPwu2ryBPp6X8IranWoHPIlEnh4xvx88swtCs1l/zg6KxTs9JRzMcg7+qrdiH
+         v6uZjfSB6WrKiTvEgzbZP4QiZBRSMnv7ZWswLnGVLLblmVHidLOsoiH43bAmMMZhbGRb
+         /Ket1pwRvZxsAeEEHHj6vyUlef2YMoi98HnZmnzPLGREBdbIPs6d5As52Upm8E0Oawq4
+         OA+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711582906; x=1712187706;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LlXQwa0ZFnWqKY2f0ssbm6okzE7Tk0I5SucBQUxGMZ4=;
-        b=TUomp8FC/d1lq+/gCdh6ifvjr/vKOV1gIRRTzpqX+jPHeo7F8zIE3p/7VIfM7PON/y
-         DnrLiIKrfMj34plBbT00+Sk1KpRe/LrWNkEd2Y9brKLy5gxWlswWhUMnmI8vcrkgqWMy
-         +yStAHkLmngP4dq+O5WwLf5CMmmPBwRIfJYzPtwEs/eXvTuiEGfU6khewSwOWRkRuFBB
-         vekN0a32phNWdqhtd2nGyYzRvhjiUnZsEFjsEhSWJPJZvK68KfbkNXJwrU0LndI6N4a1
-         zEX6b23OPrmLoOxXVWYZnnRHVLC/zyJERtD16c9zHASwOotDaqNWSr5AWt8IXCXBLb8V
-         0ezA==
-X-Gm-Message-State: AOJu0Yyf3xKldq9FIBvlJnpjuvzxc+V2eaQZoSJnYSxybKEBFPxv3wPi
-	nfy4A2aKhwf4GZ9SuJUyyqkO4wHadz4nK/CL8BXEsUwUsiIJMctx5fwfQDWVKGwN/6+HT5hfAgl
-	HZTdF8jH3ZPAk6uygvtSvdwLfm8WJ2UpW+I5AggCfPe4GP9AKG4/dZUhvMQ==
-X-Google-Smtp-Source: AGHT+IHgB5yJZmL3xmxiyeP7FxnTcsa2QOloS/WOiLgSQ0qaS/KcaA8iqQ8y08imEB5Nv8Xk2WiGZUfecyb/1sXl2yx3VpDIj1wx
+        d=1e100.net; s=20230601; t=1711583027; x=1712187827;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DsqU9PXjgnx5iMV4Gv2GAE/CJCMtgSBEOxF0nZeWP9w=;
+        b=Hgu55rsz/A/RbvFAJaWtmQiIAbROm/RizcMl4L4Nts+KrxHg8e+wTWsnSPDZVkNaO/
+         NXcwcxUTcWSumktrHe/0JPVWA7spkBz0+Lenr2CPbwL1IERPHoulJ+CQrwInF4HYu94T
+         00635AT3pBppaZaPn9SLvxXGrrm6VEsLcMLij2JWhjoPSyiRWdOAjnWT6uw6Q4yAaEFS
+         wJjhIujCw0AysyGicYwLsRQMhJ7W7jaKaHeSR4IDClC8o2WGMYag2ZIuLBjz9Z8NxdrA
+         hj6ZpLUmvy9PBI8shbuOX4XoJy90YQJqraMMmJCrpVd0pYG2WfyCVM0SyuVz+Piho4Yd
+         qIOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUdA5JQyqVwrrJBs0RVY6TPn3sAQssV9hB9rjlmQJdrA2+bCgealOwtzsCrOnoPP2QuZ9BJQ0Z2vgTwpvKcoNW4mO8Z/RVyg2L+YADh
+X-Gm-Message-State: AOJu0Ywh0yKjzGP5zKqMN5dRuoMsCLhQ8b/3fkIepuOnuvjU9tqCzWoM
+	xQtU2YQTA8fG8id8ji3XlTJPqFKjqB9yhrgPt3FNMCk2uuCx0whEPIIlG9u8rrsF1Rkq/o3epuM
+	A3vglP2KBwwJXRCmSa0BgStM4/oQ9Oq8XQjgg
+X-Google-Smtp-Source: AGHT+IFzJD42WxwIyDiJQ7hk0af16PEilvyKG/ivl0LgZM5S63lug/B1fRKIBhG8Khsl/MpMDLRdegs8EKQUu4OpC7E=
+X-Received: by 2002:a81:8397:0:b0:611:1eee:3af3 with SMTP id
+ t145-20020a818397000000b006111eee3af3mr1296551ywf.7.1711583027605; Wed, 27
+ Mar 2024 16:43:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8904:b0:47e:c0cf:f272 with SMTP id
- jc4-20020a056638890400b0047ec0cff272mr41985jab.4.1711582906267; Wed, 27 Mar
- 2024 16:41:46 -0700 (PDT)
-Date: Wed, 27 Mar 2024 16:41:46 -0700
-In-Reply-To: <0000000000006f876b061478e878@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000021caba0614acf349@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
-From: syzbot <syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
+References: <ZgSrBVidW1U6yP+h@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+In-Reply-To: <ZgSrBVidW1U6yP+h@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 27 Mar 2024 19:43:36 -0400
+Message-ID: <CAHC9VhRYDNoqkbkgdUSg-kYSHVbheD5NtezmVxyRakZ0-DzuSg@mail.gmail.com>
+Subject: Re: [PATCH] LANDLOCK: use kmem_cache for landlock_object
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: alison.schofield@intel.com, mic@digikod.net, 
+	fabio.maria.de.francesco@linux.intel.com, linux-staging@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, 
+	outreachy@lists.linux.dev, linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
-
-***
-
-Subject: Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
-Author: martin.lau@linux.dev
-
-On 3/25/24 2:36 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    5e74df2f8f15 Merge tag 'x86-urgent-2024-03-24' of git://gi..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=148872a5180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3cf6f08d68868f9db3
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15921a6e180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e081f1180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/1a82880723a7/disk-5e74df2f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/fd3046ac43b9/vmlinux-5e74df2f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2097be59cbc1/bzImage-5e74df2f.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
-> BUG: KMSAN: uninit-value in dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
->   __dev_map_lookup_elem kernel/bpf/devmap.c:441 [inline]
->   dev_map_lookup_elem+0xf3/0x170 kernel/bpf/devmap.c:796
->   ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
->   bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
->   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
->   __bpf_prog_run256+0xb5/0xe0 kernel/bpf/core.c:2237
->   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->   __bpf_prog_run include/linux/filter.h:657 [inline]
->   bpf_prog_run include/linux/filter.h:664 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->   bpf_trace_run5+0x16f/0x350 kernel/trace/bpf_trace.c:2423
->   __bpf_trace_ext4_remove_blocks+0x45/0x60 include/trace/events/ext4.h:1984
->   __traceiter_ext4_remove_blocks+0xb5/0x170 include/trace/events/ext4.h:1984
->   trace_ext4_remove_blocks include/trace/events/ext4.h:1984 [inline]
->   ext4_remove_blocks fs/ext4/extents.c:2463 [inline]
->   ext4_ext_rm_leaf fs/ext4/extents.c:2686 [inline]
->   ext4_ext_remove_space+0x4e30/0x7e00 fs/ext4/extents.c:2934
->   ext4_ext_truncate+0x1e3/0x390 fs/ext4/extents.c:4440
->   ext4_truncate+0x14c6/0x1e10 fs/ext4/inode.c:4146
->   ext4_evict_inode+0x1886/0x24d0 fs/ext4/inode.c:258
->   evict+0x3ae/0xa60 fs/inode.c:667
->   iput_final fs/inode.c:1741 [inline]
->   iput+0x9ca/0xe10 fs/inode.c:1767
->   d_delete_notify include/linux/fsnotify.h:307 [inline]
->   vfs_rmdir+0x53c/0x790 fs/namei.c:4222
->   do_rmdir+0x630/0x8b0 fs/namei.c:4268
->   __do_sys_rmdir fs/namei.c:4287 [inline]
->   __se_sys_rmdir fs/namei.c:4285 [inline]
->   __x64_sys_rmdir+0x78/0xb0 fs/namei.c:4285
->   do_syscall_64+0xd5/0x1f0
->   entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> Local variable stack created at:
->   __bpf_prog_run256+0x45/0xe0 kernel/bpf/core.c:2237
->   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->   __bpf_prog_run include/linux/filter.h:657 [inline]
->   bpf_prog_run include/linux/filter.h:664 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->   bpf_trace_run5+0x16f/0x350 kernel/trace/bpf_trace.c:2423
-> 
-> CPU: 0 PID: 5017 Comm: syz-executor365 Not tainted 6.8.0-syzkaller-13236-g5e74df2f8f15 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> =====================================================
-> 
-> 
+On Wed, Mar 27, 2024 at 7:26=E2=80=AFPM Ayush Tiwari <ayushtiw0110@gmail.co=
+m> wrote:
+>
+> Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
+> struct landlock_object and update the related dependencies.
+>
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
+>  security/landlock/fs.c     |  2 +-
+>  security/landlock/object.c | 14 ++++++++++++--
+>  security/landlock/object.h |  4 ++++
+>  security/landlock/setup.c  |  2 ++
+>  4 files changed, 19 insertions(+), 3 deletions(-)
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/martin.lau/bpf-next.git d8889e866be3
+Hi Ayush,
 
+Micka=C3=ABl has the final say on Landlock patches, but I had a few
+comments that I've included below ...
+
+> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> index fc520a06f9af..227dd67dd902 100644
+> --- a/security/landlock/fs.c
+> +++ b/security/landlock/fs.c
+> @@ -124,7 +124,7 @@ static struct landlock_object *get_inode_object(struc=
+t inode *const inode)
+>         if (unlikely(rcu_access_pointer(inode_sec->object))) {
+>                 /* Someone else just created the object, bail out and ret=
+ry. */
+>                 spin_unlock(&inode->i_lock);
+> -               kfree(new_object);
+> +               kmem_cache_free(landlock_object_cache, new_object);
+
+See my comment below, but you may want to wrap this in a Landlock
+object API function.
+
+>                 rcu_read_lock();
+>                 goto retry;
+> diff --git a/security/landlock/object.c b/security/landlock/object.c
+> index 1f50612f0185..df1354215617 100644
+> --- a/security/landlock/object.c
+> +++ b/security/landlock/object.c
+> @@ -17,6 +17,15 @@
+>
+>  #include "object.h"
+>
+> +struct kmem_cache *landlock_object_cache;
+> +
+> +void __init landlock_object_init(void)
+> +{
+> +       landlock_object_cache =3D kmem_cache_create(
+> +               "landlock_object_cache", sizeof(struct landlock_object), =
+0,
+> +               SLAB_PANIC, NULL);
+
+The comments in include/linux/slab.h suggest using the KMEM_CACHE()
+macro, instead of kmem_cache_create(), as a best practice for creating
+slab caches.
+
+> +}
+> +
+>  struct landlock_object *
+>  landlock_create_object(const struct landlock_object_underops *const unde=
+rops,
+>                        void *const underobj)
+> @@ -25,7 +34,8 @@ landlock_create_object(const struct landlock_object_und=
+erops *const underops,
+>
+>         if (WARN_ON_ONCE(!underops || !underobj))
+>                 return ERR_PTR(-ENOENT);
+> -       new_object =3D kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
+> +       new_object =3D
+> +               kmem_cache_zalloc(landlock_object_cache, GFP_KERNEL_ACCOU=
+NT);
+
+If the line is too long, you might want to consider splitting the
+function parameters like this:
+
+  new_object =3D kmem_cache_zalloc(landlock_object_cache,
+                                 GFP_KERNEL_ACCOUNT);
+
+>         if (!new_object)
+>                 return ERR_PTR(-ENOMEM);
+>         refcount_set(&new_object->usage, 1);
+> @@ -62,6 +72,6 @@ void landlock_put_object(struct landlock_object *const =
+object)
+>                  * @object->underobj to @object (if it still exists).
+>                  */
+>                 object->underops->release(object);
+> -               kfree_rcu(object, rcu_free);
+> +               kmem_cache_free(landlock_object_cache, object);
+>         }
+>  }
+> diff --git a/security/landlock/object.h b/security/landlock/object.h
+> index 5f28c35e8aa8..8ba1af3ddc2e 100644
+> --- a/security/landlock/object.h
+> +++ b/security/landlock/object.h
+> @@ -13,6 +13,10 @@
+>  #include <linux/refcount.h>
+>  #include <linux/spinlock.h>
+>
+> +extern struct kmem_cache *landlock_object_cache;
+
+This really is a decision for Micka=C3=ABl, but you may want to make
+@landlock_object_cache private to object.c and create functions to
+manage it as needed, e.g. put/free operations.
+
+> +void __init landlock_object_init(void);
+> +
+>  struct landlock_object;
+>
+>  /**
+> diff --git a/security/landlock/setup.c b/security/landlock/setup.c
+> index f6dd33143b7f..a5fca4582ee1 100644
+
+--=20
+paul-moore.com
 
