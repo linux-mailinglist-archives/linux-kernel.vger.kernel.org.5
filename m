@@ -1,129 +1,133 @@
-Return-Path: <linux-kernel+bounces-120205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE8A388D470
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:11:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E233388D472
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 03:11:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 542F1B21314
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:11:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 121511C2458F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 02:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7B6208A4;
-	Wed, 27 Mar 2024 02:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA641F60A;
+	Wed, 27 Mar 2024 02:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="SvdTlF3y"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="JxRsfOQn"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20561F60A;
-	Wed, 27 Mar 2024 02:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39795219EB
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711505455; cv=none; b=o0q4NICrOlvRlbmpxYAoRJxzXWjhMfZi9pxpYLPA3vOOWAjy3wrMKbSkohXI67RMdEIW0O+6VN0wuDLm4GMlQCDqNWOnrgBbt3zdt0fC7qThvKOrF9TonRitMkp9gJYR+7TTFCXisdimCtX4cBK1/tUukGG+szwmIWW+9fQHtgI=
+	t=1711505482; cv=none; b=MAaeqEyvfTXGXLgKyWjqe0V6nhlZmCJuZDY7H1uTpo3CZb4WtnC8AbsBW09ny1S92f2QqJkIUHEKrAVanWF8DcxL+pfZkpaktrWvUX4+/2a1t8rBlM12hstfzH9/m9xFbAkcLJooL5WLl/eWy+Rm0qjVIvqsR3Fa94PKXMkFDgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711505455; c=relaxed/simple;
-	bh=yK1BWdP9fBBurO6TjZlMRJkzkDO6xJFUyXMX7xi/poM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EHd3YirQwqcqW1TDirBEiSTrwGVDkLQH7w+DedBE+CpWxzBV4O3KRDk0pVUiOgryyBpM7kzQFcIvGHkqA1FBkkZoPd4qJ8L5GJGFL5F2er3TYEjLH6TCS9UnJc5hikISS0MWoel+tEE7mKAzJJQr5Y4ZqQhDLRs5VfhH7X53E1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=SvdTlF3y; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711505447;
-	bh=D8wBYTSFVO3Kwg+qqhaeqbpJi3hBXVAJOjaIUMpVxnc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=SvdTlF3yDAAB6CE2oE+292GRCaCmeKWZG4AGd/RfPBPCWiE+DRFj/XaD6YhQii6TP
-	 9Q/mp1M7vHvgq9b8EbNigqQC8o4t6QIlsZ4BFIoUDbdmb69IyINnz3VBaEMBe0CZjf
-	 G+SoJsNdcY0h+9l9bDE4N+R8JrxogLeJci54WQgupg2AWdXAXoS4vlLtSHegq16RK9
-	 OHcu4j5DbD81FjWvX9O0AUu3pl0n9/9Yhfch9hk9shDd0XnwOO6xPkNQFwi8s2icQD
-	 eGFERvJMJ+AkbVP+dzck7amuJoqL0eJ815UCLdZWZhaeZp+PgGXchnwN+P1RKewOWe
-	 UWYina0qtPoaQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V49BH44jLz4wc9;
-	Wed, 27 Mar 2024 13:10:47 +1100 (AEDT)
-Date: Wed, 27 Mar 2024 13:10:44 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Christian =?UTF-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the selinux tree
-Message-ID: <20240327131044.2c629921@canb.auug.org.au>
+	s=arc-20240116; t=1711505482; c=relaxed/simple;
+	bh=y2aifghtI/Ja4XD7u2NtI6N6MTi5BLIEicHNNSMA6SA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tZLLOa+m2y2P3Senv1H/OzAglok8nNkmvb7OPviRXzNCevBZaR7+d0H99SMhkS6vi/UpNsiEpxl30Dymq/U+SI5f1plKgQrnbyhwGUbWCYUAgwcTKI6PWZ93umFbOlgXQCVtJBShkM/hrjU/2FHxCHrpTWeDSY464JR/d+FIFlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=JxRsfOQn; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29f8403166aso1058048a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Mar 2024 19:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711505480; x=1712110280; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VKgEZz3gqT/qrPZJxtA6ePPIz6oGvyMPjM3uA1fFlqE=;
+        b=JxRsfOQn8gPSjir6TbrBjWXbK/PJp4ZBSwKtWzwl58PgosmH2htE9+JnrFwfbnzQ2G
+         /qa55/418mac0pI1hfo5vRwTNvgu60YzGuXXTWbPdw4xSCbU9P28mRYteMbrcz9qhLMx
+         fFGwlRPa9ESvMcE90yEh8E3G8fD3dm/8iyo6Cnmor6/SsdhSPMMVI0G/c080B2KXbSsJ
+         95pGqI7L+x9Fw3E6nJNoAc7GSEbX+N1sOw/7QDH9RCfJYh387NdNn+ocZ9vI757IaxX+
+         3OQeXlXkwK+CZSWR1+VNrrJC4rkxeNAlNhGjmxE6yE4ylVRFrSEZiQfYLqdseXO/8ud7
+         F5Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711505480; x=1712110280;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VKgEZz3gqT/qrPZJxtA6ePPIz6oGvyMPjM3uA1fFlqE=;
+        b=JaCIsiHHX0cDbO8oBD2ekWQNgGNACwPF/B1XOcEk5NKUV9I47ZOIf/dwwTHldg1+IT
+         lYLmbg5Kcn4fMV5jwHwaml/4BOgMSQ+YjIFkAtwRx4OWQdLHKE4EpMduWqrxnzawL76v
+         jXszv9e/ZLFaehTW7wVf6QgIUAWcn8YxYN/4htv0oHQ5DLxg45eIAdS+t2xWnlphd/nB
+         k4zciJd7/BQnc1XBh7+iRVAcCjqq916wYNme59QMuOSWAufFc4BhrDac8Q+mmhCrGVD5
+         5x5uI4Qi8S3G07K7BaHACxLDrhfbY6DVxXc3hEtt/mGnnVhPto/u1o5OQGk35eL8vfjY
+         ul8w==
+X-Forwarded-Encrypted: i=1; AJvYcCV1hQuPLotEgwm5TGdB78ua7LoK9TrQv20ojDaFU5eAUD+VdQb/OKO/1clta7gRnn0JUR+jVW1nf8p+TT5mF7Vj1uc24ZDBEa6LgfVC
+X-Gm-Message-State: AOJu0YzxIXzBhrem/1XVHClzgCN/uvN/mUg308FC1P1lWfnihcnY6gQC
+	28RVtyDouDfjbm74RMG1zeWJaTVRLmI0g1dvTYUobShp/4rio7xXOosnu74PSZQ=
+X-Google-Smtp-Source: AGHT+IHOxzsYzXYb2U6hVOGVogL6FmVfZp9EHnweMdH3lzP+3KV1JbtDB3TMm+JsCmDJCYsexHcneA==
+X-Received: by 2002:a17:90a:9f8b:b0:29b:fab2:8a24 with SMTP id o11-20020a17090a9f8b00b0029bfab28a24mr10290068pjp.3.1711505480542;
+        Tue, 26 Mar 2024 19:11:20 -0700 (PDT)
+Received: from [10.254.105.249] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id q5-20020a17090ac10500b0029becfcb97esm335753pjt.22.2024.03.26.19.11.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 19:11:20 -0700 (PDT)
+Message-ID: <7258d29d-0d4b-4463-8685-e3f21d426d2d@bytedance.com>
+Date: Wed, 27 Mar 2024 10:11:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T4I06AC_GtqUxmW6wUhGgUe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] s390: supplement for ptdesc conversion
+Content-Language: en-US
+To: Vishal Moola <vishal.moola@gmail.com>
+Cc: akpm@linux-foundation.org, hughd@google.com, david@redhat.com,
+ rppt@kernel.org, willy@infradead.org, muchun.song@linux.dev,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
+ linux-s390@vger.kernel.org
+References: <cover.1709541697.git.zhengqi.arch@bytedance.com>
+ <04beaf3255056ffe131a5ea595736066c1e84756.1709541697.git.zhengqi.arch@bytedance.com>
+ <ZgMmec2paNA0GFwY@fedora>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZgMmec2paNA0GFwY@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/T4I06AC_GtqUxmW6wUhGgUe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the selinux tree, today's linux-next build (i386 defconfig)
-failed like this:
+On 2024/3/27 03:48, Vishal Moola wrote:
+> On Mon, Mar 04, 2024 at 07:07:20PM +0800, Qi Zheng wrote:
+>> --- a/arch/s390/mm/gmap.c
+>> +++ b/arch/s390/mm/gmap.c
+>> @@ -206,9 +206,11 @@ static void gmap_free(struct gmap *gmap)
+>>   
+>>   	/* Free additional data for a shadow gmap */
+>>   	if (gmap_is_shadow(gmap)) {
+>> +		struct ptdesc *ptdesc;
+>> +
+>>   		/* Free all page tables. */
+>> -		list_for_each_entry_safe(page, next, &gmap->pt_list, lru)
+>> -			page_table_free_pgste(page);
+>> +		list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>> +			page_table_free_pgste(ptdesc);
+> 
+> An important note: ptdesc allocation/freeing is different than the
+> standard alloc_pages()/free_pages() routines architectures are used to.
+> Are we sure we don't have memory leaks here?
+> 
+> We always allocate and free ptdescs as compound pages; for page table
+> struct pages, most archictectures do not. s390 has CRST_ALLOC_ORDER
+> pagetables, meaning if we free anything using the ptdesc api, we better
+> be sure it was allocated using the ptdesc api as well.
 
-In file included from include/linux/kernel.h:31,
-                 from security/selinux/ss/ebitmap.c:16:
-security/selinux/ss/ebitmap.c: In function 'ebitmap_read':
-include/linux/kern_levels.h:5:25: error: format '%ld' expects argument of t=
-ype 'long int', but argument 3 has type 'u32' {aka 'unsigned int'} [-Werror=
-=3Dformat=3D]
-    5 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
-      |                         ^~~~~~
-include/linux/printk.h:429:25: note: in definition of macro 'printk_index_w=
-rap'
-  429 |                 _p_func(_fmt, ##__VA_ARGS__);                      =
-     \
-      |                         ^~~~
-include/linux/printk.h:500:9: note: in expansion of macro 'printk'
-  500 |         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-      |         ^~~~~~
-include/linux/kern_levels.h:11:25: note: in expansion of macro 'KERN_SOH'
-   11 | #define KERN_ERR        KERN_SOH "3"    /* error conditions */
-      |                         ^~~~~~~~
-include/linux/printk.h:500:16: note: in expansion of macro 'KERN_ERR'
-  500 |         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-      |                ^~~~~~~~
-security/selinux/ss/ebitmap.c:464:17: note: in expansion of macro 'pr_err'
-  464 |                 pr_err("SELinux: ebitmap: high bit %d is not equal =
-to the expected value %ld\n",
-      |                 ^~~~~~
-cc1: all warnings being treated as errors
+According to the code inspection, all ptdescs added to the pmap->pt_list
+are allocated via page_table_alloc_pgste().
 
-Caused by commit
+> 
+> Like you, I don't have a s390 to test on, so hopefully some s390 expert
+> can chime in to let us know if we need a fix for this.
 
-  0142c56682fb ("selinux: reject invalid ebitmaps")
+Yes, hope so!
 
-I have reverted that commit for today.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/T4I06AC_GtqUxmW6wUhGgUe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYDgCQACgkQAVBC80lX
-0Gyx4wf7B5dPGQPLJCl1RyR5kh+l9b034doZnlG/gW0IP0joJUnjhqvZmzob7/OX
-AuTPqAvswvoioReqOFc96XyYLAJBWmpYDrT39q1iigSIYYuVxwYCAM+XO1bmPPoK
-qnQNf1s5T6ES22zO5eyzFGTQ+ZC6NLK7HXk5dmct+hSwPp1h0kQANf0uP1V7N91X
-rWtooI74UtJL1Yq5+B5TEVugnbM2bg6qA7ZNXgWFdt0I1RSXb4zuWUcCO8OLVEpv
-26XgRSqa5X2GsAOQzDqwR9kMkdQ4vYrYZw3CW3CzQrwc2v8EimDghdAC8GAVKqlQ
-bUlZQC+XH/OVG3aZ9GCdEI/TjFLwbA==
-=JvsM
------END PGP SIGNATURE-----
-
---Sig_/T4I06AC_GtqUxmW6wUhGgUe--
 
