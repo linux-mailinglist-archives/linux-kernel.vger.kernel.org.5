@@ -1,153 +1,349 @@
-Return-Path: <linux-kernel+bounces-121996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B87D88F07B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:48:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EA7A88F07C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BED0B240BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:48:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE8D91C289BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBFB1534FC;
-	Wed, 27 Mar 2024 20:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491AF15350A;
+	Wed, 27 Mar 2024 20:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T4I57VPY"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="OZATpAA2"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65869152DEA
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC56514F9D7;
+	Wed, 27 Mar 2024 20:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711572497; cv=none; b=uTei29hAZm0xd2nbm5jH9tnLXOvGm2L454+6w90GEQC8WTWrL13jO0jW/R7o61fec+XMemOBKLby6qKWqWskMMFU6Ir8yWNyzgCK9m0gMcIDGJRfGjT9zDnEibl727OgWP/UvvHok9m+zeCKVHNmpFHTd6o2xAybv9UhDdqnHVI=
+	t=1711572658; cv=none; b=GJVjrSg0aqnsQpc+UX+a7rJh80cPaLM72RVRPzBk3FslGY27njp4yfwrsxt9dGvfB0wAWuJwB8LU19dw+bP4cfgs87o9r6hhgtY+HmqBoxHuxDKJssKSDEO3TNs8/HVQPDYjZNl4j8+aBfba9ST5fxjpeCpI3z95ZIlHGQzM4qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711572497; c=relaxed/simple;
-	bh=bBSihwyj6QqaoBrlVdzXuT1LwFsR3kDiWQ0i1Mjpbw0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fyfKK/jcQrIAEla0E+9UYlgoQjlMvcxAdqPzYneFALORDa37Oi+KjJFqo7pjGxpMQSxa2bwejv0e5i1oE/NABWMUe5nnCPsiyGIySxR1tkn6s82c1BRuek7c5ox0v08mL+xy0z2m10QyrT0ckFzB6YmGhRYlWXHMLslejJ+8s0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T4I57VPY; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so53697866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711572494; x=1712177294; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SUD3QukZ9tgzgqeBxO31WDQxtggejKllhzLhWk9Mxfw=;
-        b=T4I57VPY9a6twZp78LZt0Qgz4uaE1LAz/1jPQDK8uXdwmHK8G6z+djWXaOpccLGJp4
-         hozvYyPAGOsFJ2tq930hG+aiL+oR/5yu3ye/3/bLtHQ9DYhLlcbpRXIBxe67A95qF7Ed
-         DWR4FHtXCU+Mvtm0Fz0350uINLgAcYAID70le4sra349S4Tzk9kMeVAtHnn1Hl4YVAPW
-         uSVvEk3D6saZPSiJB0XDVJagvJabKS4clxU8VvfdkrBf7paSPQW3yaeKH3venVVxt7Pc
-         UA3ZM8w8zYKd98kxUyLLG5Q2gekuhNO+mYcG4k4vEk07xu27KU2/vaAn7v9rcHQiVfkg
-         l/Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711572494; x=1712177294;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SUD3QukZ9tgzgqeBxO31WDQxtggejKllhzLhWk9Mxfw=;
-        b=m8SzhOy5kDJeOdN2RGK4n7eRxu6uKNK3c31vuyU6Mi3v3GixdsuZD3xkKQ6BIAB6mc
-         8aQTJcNpvm1FYAt0S9lCFozDoFSTCXlcBtTgDWQinEysuMqHkBcP0jRofjSkxClTLIvz
-         mHmu1LHfmkXJ5YFaCFP3BXkwDCII1FF3GFfMFuyDOZYDGx3ivnGFxmeOxpwtMMUEF+Jx
-         mjAuNffxUi0lrJ/b3C88jP1+H7HrmSQ438fl4vLyjpvS9B4PLBn9sDqy1KIwnblYunfl
-         JFs9EI4VV3Q6DYifLuTbTEJ7WfQN9cny5/Zt3/qWJghUjDZT49vdwmTSVyb5sGB22gG6
-         HrJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMyTpvr/OKnPUpgZIba9YjWD8IopuECAdKpyk0yenvgYXCumvlVMAH4czyAUfAJGBlnl7CxPx9Vw1zlcBj/Gb1p2KNZEjsdRpx9Kxt
-X-Gm-Message-State: AOJu0YysfI12sOMbTiEC19JoVgNaq0gJVksRiYrw5XOhM6dLotpat7Jd
-	fBPJFq9AfDc+JIn63xnbBAsoYs/eu+4R0OhxOwtN0z7+0bEOG1ZZuEh2NfvcyLE=
-X-Google-Smtp-Source: AGHT+IEYcDHAUGTZ+wcna45N+/LrIFKC5kbIuK+RvWvpeI+gdVZeTbUdyF4KUyJQz+c8qnZzQm6yvQ==
-X-Received: by 2002:a17:906:7252:b0:a46:a28d:2f49 with SMTP id n18-20020a170906725200b00a46a28d2f49mr362565ejk.32.1711572493672;
-        Wed, 27 Mar 2024 13:48:13 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id w17-20020a17090633d100b00a4df82aa6a7sm2026882eja.219.2024.03.27.13.48.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 13:48:13 -0700 (PDT)
-Message-ID: <e1d8d30f-483a-4e3b-882c-147cea40c532@linaro.org>
-Date: Wed, 27 Mar 2024 21:48:10 +0100
+	s=arc-20240116; t=1711572658; c=relaxed/simple;
+	bh=ecYiF3LQleWO2eJWakbWwxOepT7U6SM8Ty5eSgD+pf4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c2oFWe26X4H5MqOrcPDgghJmVawxuqRRS3xVhf3PBki8fCHA10Pc+50+Pwrt3XsqGqSgbk9vJZ/whibZch2ZcqlpiIU4FIZCSf9XhAvoE2pH2GmVuyBJueZ8DKjSQqEIY4fZxCsUkVo+njecvkEbO9slz7NhV9++qdxc5UWWrYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=OZATpAA2; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711572647; x=1711831847;
+	bh=Q/iz2zOOWcC6GoMvllWnFGxZfFo5UxgnI33gxsE3uvU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=OZATpAA2GN+yg7TWfSRcOcphct4vymBRaLAYLlyyZs/iQAyzE5x1bilo6G/92AKU0
+	 Qwfzu7H5sOuM2xYrP46wcHnxEmB9E/3Mjknpuk+ihYZXxPTpW8aLvyHBYZ7Spe8Cgy
+	 rem6NLYzuKrQiBYINHSk6fCBkfLcf3lbWxwp6Q+11Zjb4SzIA7N/7pUS9m7+VJhjOI
+	 9YpI8TK7Az2LAOahprCZ817TZijFzrIVesyinZSVhlfsNR/OlRZvc84dgI/YrG7nXB
+	 QDQneQLAEgm6bNFFXcQK5gd7cJXFWBZz7/6g4YYCe1ATTb8yEmMsufKhBuJk+W0vb0
+	 lGMcDGNAdCL4Q==
+Date: Wed, 27 Mar 2024 20:50:41 +0000
+To: Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Asahi Lina <lina@asahilina.net>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, FUJITA Tomonori <fujita.tomonori@gmail.com>, Danilo Krummrich <dakr@redhat.com>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH 1/4] WIP: rust: Add basic KMS bindings
+Message-ID: <0785452f-7714-4384-838b-879e0b224c3c@proton.me>
+In-Reply-To: <20240322221305.1403600-2-lyude@redhat.com>
+References: <20240322221305.1403600-1-lyude@redhat.com> <20240322221305.1403600-2-lyude@redhat.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] power: supply: mm8013: fix "not charging"
- detection
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
- Sebastian Reichel <sre@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- Konrad Dybcio <konradybcio@kernel.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20240303-power_supply-charge_behaviour_prop-v2-0-8ebb0a7c2409@weissschuh.net>
- <20240303-power_supply-charge_behaviour_prop-v2-1-8ebb0a7c2409@weissschuh.net>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240303-power_supply-charge_behaviour_prop-v2-1-8ebb0a7c2409@weissschuh.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3.03.2024 4:31 PM, Thomas Weißschuh wrote:
-> The charge_behaviours property is meant as a control-knob that can be
-> changed by the user.
-> 
-> Page 23 of [0] which documents the flag CHG_INH as follows:
-> 
->   CHG_INH : Charge Inhibit      When the current is more than or equal to charge
->                                 threshold current,
->                                 charge inhibit temperature (upper/lower limit) ：1
->                                 charge permission temperature or the current is
->                                 less than charge threshold current ：0
-> 
-> So this is pure read-only information which is better represented as
-> POWER_SUPPLY_STATUS_NOT_CHARGING.
-> 
-> [0] https://product.minebeamitsumi.com/en/product/category/ics/battery/fuel_gauge/parts/download/__icsFiles/afieldfile/2023/07/12/1_download_01_12.pdf
-> 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Hi,
+
+I just took a quick look and commented on the things that stuck
+out to me. Some general things:
+- several `unsafe` blocks have missing SAFETY comments,
+- missing documentation and examples.
+
+On 22.03.24 23:03, Lyude Paul wrote:
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 > ---
+>  rust/bindings/bindings_helper.h  |   4 +
+>  rust/helpers.c                   |  17 ++
+>  rust/kernel/drm/device.rs        |   2 +
+>  rust/kernel/drm/drv.rs           | 115 +++++++--
+>  rust/kernel/drm/kms.rs           | 146 +++++++++++
+>  rust/kernel/drm/kms/connector.rs | 404 +++++++++++++++++++++++++++++++
+>  rust/kernel/drm/kms/crtc.rs      | 300 +++++++++++++++++++++++
+>  rust/kernel/drm/kms/encoder.rs   | 175 +++++++++++++
+>  rust/kernel/drm/kms/plane.rs     | 300 +++++++++++++++++++++++
+>  rust/kernel/drm/mod.rs           |   1 +
+>  10 files changed, 1448 insertions(+), 16 deletions(-)
 
-The patch is now queued, so I won't leave any additional tags,
-but thanks for taking care of this, Thomas!
+Please try to break this up into smaller patches. It makes review
+a lot easier!
 
-Konrad
+[...]
+
+> diff --git a/rust/kernel/drm/kms.rs b/rust/kernel/drm/kms.rs
+> new file mode 100644
+> index 0000000000000..b55d14415367a
+> --- /dev/null
+> +++ b/rust/kernel/drm/kms.rs
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +
+> +//! KMS driver abstractions for rust.
+> +
+> +pub mod connector;
+> +pub mod crtc;
+> +pub mod encoder;
+> +pub mod plane;
+> +
+> +use crate::{
+> +    drm::{drv, device::Device},
+> +    prelude::*,
+> +    types::ARef,
+> +    private::Sealed
+> +};
+> +use core::{
+> +    ops::Deref,
+> +    ptr,
+> +};
+> +use bindings;
+> +
+> +#[derive(Copy, Clone)]
+> +pub struct ModeConfigInfo {
+> +    /// The minimum (w, h) resolution this driver can support
+> +    pub min_resolution: (i32, i32),
+> +    /// The maximum (w, h) resolution this driver can support
+> +    pub max_resolution: (i32, i32),
+> +    /// The maximum (w, h) cursor size this driver can support
+> +    pub max_cursor: (u32, u32),
+> +    /// The preferred depth for dumb ioctls
+> +    pub preferred_depth: u32,
+> +}
+> +
+> +// TODO: I am not totally sure about this. Ideally, I'd like a nice way =
+of hiding KMS-specific
+> +// functions for DRM drivers which don't implement KMS - so that we don'=
+t have to have a bunch of
+> +// random modesetting functions all over the DRM device trait. But, unfo=
+rtunately I don't know of
+> +// any nice way of doing that yet :(
+
+I don't follow, can't you put the KMS specific functions into the
+KmsDriver trait?
+
+> +
+> +/// An atomic KMS driver implementation
+> +pub trait KmsDriver: drv::Driver { }
+> +
+> +impl<T: KmsDriver> Device<T> {
+> +    pub fn mode_config_reset(&self) {
+> +        // SAFETY: The previous build assertion ensures this can only be=
+ called for devices with KMS
+> +        // support, which means mode_config is initialized
+> +        unsafe { bindings::drm_mode_config_reset(self.drm.get()) }
+> +    }
+> +}
+> +
+> +/// Main trait for a modesetting object in DRM
+> +pub trait ModeObject: Sealed + Send + Sync {
+> +    /// The parent driver for this ModeObject
+> +    type Driver: KmsDriver;
+> +
+> +    /// Return the `drv::Device` for this `ModeObject`
+> +    fn drm_dev(&self) -> &Device<Self::Driver>;
+> +}
+
+[...]
+
+> diff --git a/rust/kernel/drm/kms/connector.rs b/rust/kernel/drm/kms/conne=
+ctor.rs
+> new file mode 100644
+> index 0000000000000..88dfa946d306b
+> --- /dev/null
+> +++ b/rust/kernel/drm/kms/connector.rs
+> @@ -0,0 +1,404 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +
+> +//! Rust bindings for DRM connectors
+> +
+> +use crate::{
+> +    bindings,
+> +    sync::ArcBorrow,
+> +    drm::{
+> +        drv::{Driver, FEAT_MODESET},
+> +        device::Device,
+> +    },
+> +    types::{AlwaysRefCounted, Opaque, ARef},
+> +    prelude::*,
+> +    init::Zeroable,
+> +    error::{to_result, from_result},
+> +    build_error,
+> +};
+> +use core::{
+> +    marker::PhantomPinned,
+> +    ptr::null_mut,
+> +    mem,
+> +    ptr::{self, NonNull},
+> +    ffi::*,
+> +    ops::Deref,
+> +};
+> +use super::{
+> +    ModeObject,
+> +    ModeConfigGuard,
+> +    encoder::{Encoder, DriverEncoder},
+> +    KmsDriver,
+> +};
+> +use macros::pin_data;
+> +
+> +// XXX: This is :\, figure out a better way at some point?
+> +pub use bindings::{
+> +    DRM_MODE_CONNECTOR_Unknown,
+> +    DRM_MODE_CONNECTOR_VGA,
+> +    DRM_MODE_CONNECTOR_DVII,
+> +    DRM_MODE_CONNECTOR_DVID,
+> +    DRM_MODE_CONNECTOR_DVIA,
+> +    DRM_MODE_CONNECTOR_Composite,
+> +    DRM_MODE_CONNECTOR_SVIDEO,
+> +    DRM_MODE_CONNECTOR_LVDS,
+> +    DRM_MODE_CONNECTOR_Component,
+> +    DRM_MODE_CONNECTOR_9PinDIN,
+> +    DRM_MODE_CONNECTOR_DisplayPort,
+> +    DRM_MODE_CONNECTOR_HDMIA,
+> +    DRM_MODE_CONNECTOR_HDMIB,
+> +    DRM_MODE_CONNECTOR_TV,
+> +    DRM_MODE_CONNECTOR_eDP,
+> +    DRM_MODE_CONNECTOR_VIRTUAL,
+> +    DRM_MODE_CONNECTOR_DSI,
+> +    DRM_MODE_CONNECTOR_DPI,
+> +    DRM_MODE_CONNECTOR_WRITEBACK,
+> +    DRM_MODE_CONNECTOR_SPI,
+> +    DRM_MODE_CONNECTOR_USB,
+> +};
+> +
+> +/// A DRM connector implementation
+> +pub trait DriverConnector: Send + Sync + Sized {
+> +    /// The return type of the new() function. Should be `impl PinInit<S=
+elf, Error>`.
+> +    /// TODO: Remove this when return_position_impl_trait_in_trait is st=
+able.
+> +    type Initializer: PinInit<Self, Error>;
+
+This has been stabilized in 1.75.0, so now you should be able to write
+
+     fn new(dev: &Device<Self::Driver>, args: Self::Args) -> impl PinInit<S=
+elf, Error>;
+
+> +
+> +    /// The data type to use for passing incoming arguments for new `Con=
+nector<T>` instances
+> +    /// Drivers which don't care about this can just use `()`
+> +    type Args;
+> +
+> +    /// The parent driver for this DRM connector implementation
+> +    type Driver: KmsDriver;
+> +
+> +    /// The atomic state implementation for this DRM connector implement=
+ation
+> +    type State: DriverConnectorState;
+> +
+> +    /// Create a new instance of the private driver data struct for this=
+ connector in-place
+> +    fn new(dev: &Device<Self::Driver>, args: Self::Args) -> Self::Initia=
+lizer;
+> +
+> +    /// Retrieve a list of available display modes for this connector
+> +    fn get_modes<'a>(
+> +        connector: ConnectorGuard<'a, Self>,
+> +        guard: &ModeConfigGuard<'a, Self::Driver>
+> +    ) -> i32;
+> +}
+
+[...]
+
+> diff --git a/rust/kernel/drm/kms/crtc.rs b/rust/kernel/drm/kms/crtc.rs
+> new file mode 100644
+> index 0000000000000..3d072028a4884
+> --- /dev/null
+> +++ b/rust/kernel/drm/kms/crtc.rs
+> @@ -0,0 +1,300 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +
+> +//! KMS driver abstractions for rust.
+> +
+> +use super::{
+> +    plane::*,
+> +    ModeObject,
+> +    StaticModeObject,
+> +    KmsDriver
+> +};
+> +use crate::{
+> +    bindings,
+> +    drm::{drv::Driver, device::Device},
+> +    device,
+> +    prelude::*,
+> +    types::Opaque,
+> +    init::Zeroable,
+> +    sync::Arc,
+> +    error::to_result,
+> +};
+> +use core::{
+> +    cell::UnsafeCell,
+> +    marker::PhantomPinned,
+> +    ptr::{null, null_mut},
+> +    ops::Deref,
+> +};
+> +use macros::vtable;
+> +
+> +/// A typed KMS CRTC with a specific driver.
+> +#[repr(C)]
+> +#[pin_data]
+> +pub struct Crtc<T: DriverCrtc> {
+> +    // The FFI drm_crtc object
+> +    pub(super) crtc: Opaque<bindings::drm_crtc>,
+> +    /// The driver's private inner data
+> +    #[pin]
+> +    inner: T,
+> +    #[pin]
+> +    _p: PhantomPinned,
+
+Instead of adding this field, you can mark the `crtc` field above as
+`#[pin]`. This is because of 0b4e3b6f6b79 ("rust: types: make `Opaque`
+be `!Unpin`").
+
+--=20
+Cheers,
+Benno
+
+> +}
+> +
+> +/// KMS CRTC object functions, which must be implemented by drivers.
+> +pub trait DriverCrtc: Send + Sync + Sized {
+> +    /// The return type of the new() function. Should be `impl PinInit<S=
+elf, Error>`.
+> +    /// TODO: Remove this when return_position_impl_trait_in_trait is st=
+able.
+> +    type Initializer: PinInit<Self, Error>;
+> +
+> +    /// The data type to use for passing incoming arguments for new `Crt=
+c<T>` instances
+> +    /// Drivers which don't care about this can just use `()`
+> +    type Args;
+> +
+> +    /// The parent driver implementation
+> +    type Driver: KmsDriver;
+> +
+> +    /// The type for this driver's drm_crtc_state implementation
+> +    type State: DriverCrtcState;
+> +
+> +    /// Create a new CRTC for this driver
+> +    fn new(device: &Device<Self::Driver>, args: Self::Args) -> Self::Ini=
+tializer;
+> +}
+
 
