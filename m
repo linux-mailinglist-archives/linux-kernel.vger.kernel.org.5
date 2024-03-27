@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-121239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0F188E4A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:08:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44EF188E449
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1514EB28C84
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:56:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E582A1F27AC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16521420D4;
-	Wed, 27 Mar 2024 12:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA53E199E8C;
+	Wed, 27 Mar 2024 12:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GHSJyVj4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b2zLeh56"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CA1196695;
-	Wed, 27 Mar 2024 12:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8DB1966BD;
+	Wed, 27 Mar 2024 12:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542432; cv=none; b=ZmrxIjteSoz5QElbotrLZtbiroIHkeMjGmak5LDO8S9Jdb+q5PdrpCT6qQMdW9e9WjYvgzmlAQAldQLbItS+KE93onSCwLJSVFUYJeG1rcCK1Qpz8cGD8KV16Eu488oTjgZUnHLAdCo2Y9wXwP0vN4mrCdfBMx+3TJrVDH0TCW4=
+	t=1711542435; cv=none; b=dfORD4AMxLn7lP8oOzfbYCeHEUDR4OOK4EP/e4yKhc9vOG8/hVglLa0PK+T9ddz534hZKuDpwkgmjYC9BgOksnLgilwkbTHz/HLyJZmQy3YJdTvca058lMMvIrldHhG9J9L9kXkH+21Dzc+c6TO9yxMGNGhK6rPh3qDCeBgIe7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542432; c=relaxed/simple;
-	bh=GQqq20Olh9qtNJkZFBaVfhHmmn0jXgbnXXSi9Oo06Us=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=krTeExMpsOHfSPKIJT/Qk/mTL+y1sUa8Y/YPvuN80BdISqXYyhwJWFE7MnwvAW8Izv6qfNq6a/U5RuccZjUoNg9XiH0EJX5IQPO0H8Kx6Vntjm6SzIzVCJPpGlmhNLNx9+Q8A5fmPQ/Hzd/Yvcup3CyyQffheXklb11K1QRo8W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GHSJyVj4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA88C433F1;
-	Wed, 27 Mar 2024 12:27:10 +0000 (UTC)
+	s=arc-20240116; t=1711542435; c=relaxed/simple;
+	bh=J8kUSQ/o+qznVrEgEsl+xX4uW4Jy8EHdhXgSRLvyMGg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hzgXfoXuPe9c0G1jt0qAlixqsKz1Q4K415pGjr1ve7Fch0nMy4ido64BsRx0FV14EGnYCBwP9P/dkoSHViyKwQtwnGm/B+5hi4iqfnXhqkRq0uRwly7dEfQC98FpatnxUQ0aNOWyzQtHE9yBepdM99Madx0Zkw74ifSsGWILkMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b2zLeh56; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95200C433F1;
+	Wed, 27 Mar 2024 12:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542431;
-	bh=GQqq20Olh9qtNJkZFBaVfhHmmn0jXgbnXXSi9Oo06Us=;
+	s=k20201202; t=1711542434;
+	bh=J8kUSQ/o+qznVrEgEsl+xX4uW4Jy8EHdhXgSRLvyMGg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=GHSJyVj4iBRtBFANuQ48Ed/kmkchLey1WpUNIXSq+F2pCzjtN+XVyxyT/MCQ0yUx2
-	 d3HyJKRkw7seT++Tg9SzjLVnqCTam1J0AqdlFaXHUM/jr/cWrqqxdI8XP0+/gWtWXF
-	 DxWa0JacC6swTf3szQaSd+wABq9DlquTP43ZM0A3unABElEi4dqbynXpRse6AOcZVP
-	 hqnLw8Yb1EqZwDg7txg6tSGUSTX74vXl/5KtQuAmYG9E6qt0M7kyWdUr6p2jx6j7lL
-	 ZCLvMX7cnW9Q1hxa9bsOYTS3pCGwGTZUzawEUOd9i0n9YioFL8Tfbp7Rp4dor2ENw9
-	 cxTP7bXvVaT1w==
+	b=b2zLeh56k2AyACOwlcAA1EXuSg6/levLjCMuPrEo8n9Ohc7L2+ePGRCRydNEFh8+b
+	 VlZLFOPgXgY6y1AwD8kT6r6Hfsbf5IDOHzCeR89ewZuqJ+yPSsmPqQWcKBYIwCM3fJ
+	 eJ9tLV/mSWcVtY6jjoNFH6As6hXfymQ62mP3k8zc6NwFXfy9yn4gFeWYxcrbgGEq9a
+	 V0TgNBCo9UfeFeTPvyPyFItYAfx3A6ljKJz4PZQSwVyxhgBhtGOxJVUwZv0cRMN4nR
+	 oeg/fxsIGuixtuWXZKBGZwvldlko+aRSafz5Y84afm94SGB6JxsnHolexsi2WwKkry
+	 SRYKMymzzZwDw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	pmenzel@molgen.mpg.de
-Cc: Niels van Aert <nvaert1986@hotmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	linux-pci@vger.kernel.org,
+	sohaib.nadeem@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Josip Pavic <josip.pavic@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "PCI/DPC: Quirk PIO log size for Intel Raptor Lake Root Ports" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:27:09 -0400
-Message-ID: <20240327122710.2841689-1-sashal@kernel.org>
+Subject: FAILED: Patch "drm/amd/display: fixed integer types and null check locations" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:27:12 -0400
+Message-ID: <20240327122712.2841726-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,53 +74,112 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 627c6db20703b5d18d928464f411d0d4ec327508 Mon Sep 17 00:00:00 2001
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-Date: Tue, 5 Mar 2024 12:30:56 +0100
-Subject: [PATCH] PCI/DPC: Quirk PIO log size for Intel Raptor Lake Root Ports
+From 616b39467e816851335277d817ec98b7a9b92758 Mon Sep 17 00:00:00 2001
+From: Sohaib Nadeem <sohaib.nadeem@amd.com>
+Date: Wed, 31 Jan 2024 16:40:37 -0500
+Subject: [PATCH] drm/amd/display: fixed integer types and null check locations
 
-Commit 5459c0b70467 ("PCI/DPC: Quirk PIO log size for certain Intel Root
-Ports") and commit 3b8803494a06 ("PCI/DPC: Quirk PIO log size for Intel Ice
-Lake Root Ports") add quirks for Ice, Tiger and Alder Lake Root Ports.
-System firmware for Raptor Lake still has the bug, so Linux logs the
-warning below on several Raptor Lake systems like Dell Precision 3581 with
-Intel Raptor Lake processor (0W18NX) system firmware/BIOS version 1.10.1.
+[why]:
+issues fixed:
+- comparison with wider integer type in loop condition which can cause
+infinite loops
+- pointer dereference before null check
 
-  pci 0000:00:07.0: [8086:a76e] type 01 class 0x060400
-  pci 0000:00:07.0: DPC: RP PIO log size 0 is invalid
-  pci 0000:00:07.1: [8086:a73f] type 01 class 0x060400
-  pci 0000:00:07.1: DPC: RP PIO log size 0 is invalid
-
-Apply the quirk for Raptor Lake Root Ports as well.
-
-This also enables the DPC driver to dump the RP PIO Log registers when DPC
-is triggered.
-
-Link: https://lore.kernel.org/r/20240305113057.56468-1-pmenzel@molgen.mpg.de
-Reported-by: Niels van Aert <nvaert1986@hotmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218560
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: <stable@vger.kernel.org>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Niels van Aert <nvaert1986@hotmail.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Josip Pavic <josip.pavic@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Sohaib Nadeem <sohaib.nadeem@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../gpu/drm/amd/display/dc/bios/bios_parser2.c   | 16 ++++++++++------
+ .../drm/amd/display/dc/link/link_validation.c    |  2 +-
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index d797df6e5f3e9..663d838fa861d 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -6225,6 +6225,8 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2b, dpc_log_size);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2d, dpc_log_size);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2f, dpc_log_size);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a31, dpc_log_size);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0xa73f, dpc_log_size);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0xa76e, dpc_log_size);
- #endif
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+index 960c4b4f6ddf3..05f392501c0ae 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+@@ -1850,19 +1850,21 @@ static enum bp_result get_firmware_info_v3_2(
+ 		/* Vega12 */
+ 		smu_info_v3_2 = GET_IMAGE(struct atom_smu_info_v3_2,
+ 							DATA_TABLES(smu_info));
+-		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_2->gpuclk_ss_percentage);
+ 		if (!smu_info_v3_2)
+ 			return BP_RESULT_BADBIOSTABLE;
  
- /*
++		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_2->gpuclk_ss_percentage);
++
+ 		info->default_engine_clk = smu_info_v3_2->bootup_dcefclk_10khz * 10;
+ 	} else if (revision.minor == 3) {
+ 		/* Vega20 */
+ 		smu_info_v3_3 = GET_IMAGE(struct atom_smu_info_v3_3,
+ 							DATA_TABLES(smu_info));
+-		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_3->gpuclk_ss_percentage);
+ 		if (!smu_info_v3_3)
+ 			return BP_RESULT_BADBIOSTABLE;
+ 
++		DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", smu_info_v3_3->gpuclk_ss_percentage);
++
+ 		info->default_engine_clk = smu_info_v3_3->bootup_dcefclk_10khz * 10;
+ 	}
+ 
+@@ -2422,10 +2424,11 @@ static enum bp_result get_integrated_info_v11(
+ 	info_v11 = GET_IMAGE(struct atom_integrated_system_info_v1_11,
+ 					DATA_TABLES(integratedsysteminfo));
+ 
+-	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v11->gpuclk_ss_percentage);
+ 	if (info_v11 == NULL)
+ 		return BP_RESULT_BADBIOSTABLE;
+ 
++	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v11->gpuclk_ss_percentage);
++
+ 	info->gpu_cap_info =
+ 	le32_to_cpu(info_v11->gpucapinfo);
+ 	/*
+@@ -2637,11 +2640,12 @@ static enum bp_result get_integrated_info_v2_1(
+ 
+ 	info_v2_1 = GET_IMAGE(struct atom_integrated_system_info_v2_1,
+ 					DATA_TABLES(integratedsysteminfo));
+-	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_1->gpuclk_ss_percentage);
+ 
+ 	if (info_v2_1 == NULL)
+ 		return BP_RESULT_BADBIOSTABLE;
+ 
++	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_1->gpuclk_ss_percentage);
++
+ 	info->gpu_cap_info =
+ 	le32_to_cpu(info_v2_1->gpucapinfo);
+ 	/*
+@@ -2799,11 +2803,11 @@ static enum bp_result get_integrated_info_v2_2(
+ 	info_v2_2 = GET_IMAGE(struct atom_integrated_system_info_v2_2,
+ 					DATA_TABLES(integratedsysteminfo));
+ 
+-	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_2->gpuclk_ss_percentage);
+-
+ 	if (info_v2_2 == NULL)
+ 		return BP_RESULT_BADBIOSTABLE;
+ 
++	DC_LOG_BIOS("gpuclk_ss_percentage (unit of 0.001 percent): %d\n", info_v2_2->gpuclk_ss_percentage);
++
+ 	info->gpu_cap_info =
+ 	le32_to_cpu(info_v2_2->gpucapinfo);
+ 	/*
+diff --git a/drivers/gpu/drm/amd/display/dc/link/link_validation.c b/drivers/gpu/drm/amd/display/dc/link/link_validation.c
+index 1c038e2a527b3..1aed55b0ab6a0 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/link_validation.c
++++ b/drivers/gpu/drm/amd/display/dc/link/link_validation.c
+@@ -359,7 +359,7 @@ bool link_validate_dpia_bandwidth(const struct dc_stream_state *stream, const un
+ 	struct dc_link *dpia_link[MAX_DPIA_NUM] = {0};
+ 	int num_dpias = 0;
+ 
+-	for (uint8_t i = 0; i < num_streams; ++i) {
++	for (unsigned int i = 0; i < num_streams; ++i) {
+ 		if (stream[i].signal == SIGNAL_TYPE_DISPLAY_PORT) {
+ 			/* new dpia sst stream, check whether it exceeds max dpia */
+ 			if (num_dpias >= MAX_DPIA_NUM)
 -- 
 2.43.0
 
