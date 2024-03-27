@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-122007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA6C88F099
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:05:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F395988F09D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 22:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C2329AC7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:05:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2988A1C2B03B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44914153518;
-	Wed, 27 Mar 2024 21:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734FE153563;
+	Wed, 27 Mar 2024 21:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VnEGkXgg"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R0zYsOC3"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2461B1514F2
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB52A13A3F7
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711573525; cv=none; b=gLE+D0G0modoIgnDxp2b7iXXAQUvgrDSsZk/TYGcpIvA/i6Jg7HQtKsGSrpJYAO9rggC4hfb+jHiUqv1DHKEpz1iSTUfNBuvbzdz2eAa5Ww1QgelVdy9qMUvkGTIFiFw5HrhTggiphWxkR8WvNIOigtPoroGLzwNSXSCRMoGw2Q=
+	t=1711573577; cv=none; b=BUrufUQGgyqMBgtqIsNevQOLhlY8rLds9iY6n9cYg+bilnnptZ7f2s5CKswR9b0HRgqMhlaCnoTSVm2ejFNrnXQdkAG501IGabIBYw7YqNL+l+7p27QzS3EJYigKT1BzhJLGtxkzsIuSxh8ttJeYxHYDXiWdx8xeHHU62vKu5wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711573525; c=relaxed/simple;
-	bh=QFfCU2ShjmjmejolYLNR3xXPEKKaNd0/8UhyYa0TwxY=;
+	s=arc-20240116; t=1711573577; c=relaxed/simple;
+	bh=txwLarapxjPZmto0nAB8MNIy+S7CGgxhK6ZcCA+LSkg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VmeZAW+h45ga/oMTwiu0+CRXi2iiXB0/SqIb4wXknW0pWAkgt+qvF5PkOPgKDyYhK0JbO5f9AtDsFDUiiQ/j9cSPi6Qh4zh7qV4ZoSczvUN94pVtuJh4eutgBQiUu6Dm5laHgKgeomFJG1lTyiPCrHXbFs9+aaTM5QqF0RfRZPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VnEGkXgg; arc=none smtp.client-ip=209.85.208.42
+	 In-Reply-To:Content-Type; b=cA9KsTIFCGlYPg1pmb9boXnioLAEYRo0GutvaUQi6pPxyMScdN4bB61cbKCBCettABoKZa5Q06wA4iK0JdhHxetNxFwlZeiwWwuUrQ9Lpx2GD6Gw0Agj6dSvxzM5HIqmFFwYpl67L2mdBjz0pEX2oCMAAhC5LRYti3IaUFWNm4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R0zYsOC3; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso266784a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:05:22 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso381691a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 14:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711573521; x=1712178321; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711573574; x=1712178374; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kvroJO6bsNvnGtvMGrSLScYHhDXOfSKf/BJavmfHO9k=;
-        b=VnEGkXggk2CkMMagQO2wSMkXkcQ695bFLM+cmDpxCDYXxVAVDi0n+uCoqGuQACDL/r
-         hY2kX/6sdtl8GPIZFBfgDF78dd3tI0O8fiZwK3U7lDh2DThaiGHo3WZQjspw2fV2/soH
-         FeO8A0ST/J6psbHCD/WYbtW3pWtdakrIhO/wDscAneHa++5Ojgd53N99W9WufZiy4gjU
-         tAIEKLgwSk3Mj1eJYq661z6WxuZciRAHb/ZxGI/f12cQG9ajyLHSbpzc9t/VIPyJIwwT
-         RMtDB7n5kVf4qNt4b0PclCz4BYBQSoPOezRI+ryoIQWqKA+ANywOh8ZXYhcwwbgDjlGa
-         h4cw==
+        bh=LJMvh1U1g5i2ZCyHMLTGdnwDxmPIIFiD/UlBteVN5OA=;
+        b=R0zYsOC3oPIT1N1a/iiVrroH2uHTv393R8gBsjCWvenGrFqM5Ow8ib16PYwjvWULBx
+         oq93Qg81MCqR5A6EpufJOv6vx5Kmd+oItZbB2H1EledKlQ3vNTUSL5M1sIXfDe/Q4989
+         qHPUwBQODUjswCkWQu8Yi6f9fmm9VVFWgU2dVb606PjwhfFtCmqbKxXnnOu7StxVhwVH
+         8XpHWzhUm1qxEvac2wcYfslLyB+sudW2bj5vzo+CnLujbWOCM71kEnJZYDcdw+7bm3yB
+         sLdneccYu/Fsy3313OPcjFdcLJU9BqNKiPSbpuKNelWoNFj/RbWOXIG28/AdB5ld1qwe
+         QVeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711573521; x=1712178321;
+        d=1e100.net; s=20230601; t=1711573574; x=1712178374;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kvroJO6bsNvnGtvMGrSLScYHhDXOfSKf/BJavmfHO9k=;
-        b=dRKq7cj4028ScBWh97+rv4EqFl5k2c0WKayybF9orGmiflSCX4Nysa92t3dNktpRRz
-         hB5aSDbjKCXxL62BAucav4+zUFEo6fNL0M+2Y5xwinoor7KpUd2O4PKKsMBhrhr0VNu3
-         Ld3hBbgJ4ZTXxYMwI7KmNyQWjj3fL5LyPw+Bk/GC6TuHDooPReFbG/s1rPWDAqd5t1XU
-         B8ViPNnPj2uw/qBGqjpfhiumlFej9NuvDV5KOjnKSUsE4rOjTJ6QMQh+3XQcVMISq7RR
-         7CXC3x2dvKx0DJFZdxr5EAicWY8mCNL3aKq1Q318uzhaxY8d9fY4xXGgssDh3zg7zBjw
-         C0NA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDKnysYOLqUvFspVwbxjArkJraaKrZOm2NbWHbfQhrxy6oD+6Vjy0sKrQNB+YECrguQKMfSGcNcCg0IwlpjzacCyzUlCCKFfU3kvQV
-X-Gm-Message-State: AOJu0Yw+IrmRXddkNPcz5sLD+s9AA4X96jgR8pyojOVLhPQuDe6X+XCU
-	bBYrLJKviu+bzre7RAU7LnSMwOX0KU6Go33/rgfaGpRZtaHlXqSbKu4Tq7zRUd0=
-X-Google-Smtp-Source: AGHT+IF6t7YYt5GlUd8lfYhh2av2vkxIM3TOqXNXPaXpHlhre1V2wxY1wrF1QXdBb2kLUPzUW8uZaw==
-X-Received: by 2002:a17:906:46d0:b0:a47:52ff:194d with SMTP id k16-20020a17090646d000b00a4752ff194dmr441490ejs.35.1711573521467;
-        Wed, 27 Mar 2024 14:05:21 -0700 (PDT)
+        bh=LJMvh1U1g5i2ZCyHMLTGdnwDxmPIIFiD/UlBteVN5OA=;
+        b=MqQeyHKOZBRU6Dp6EZb3zonM+AgQxUUZri4VQxbaNj2cDvbMuf1xrvanTx8LP9/R4D
+         QZSZBYz+ab+pWWwtcbyDN5HThRQOlY19lM7/78RQFvNUATHH1bm12jcE0XOhSWlh5Zdn
+         SqwnaeykUJT5zFvH3+DUfNMO9kr/VpT7jQuyXlmBKsfyeSfBYXEWbna5MCBx60gpO359
+         uH85AOGkZmu8NFzO66SgMzMDfhvHrua6/l+IbCnM8cw1rgds+7S+dGwd+oWJwzZBw21P
+         UCIa6O6oaYjNlLqRBXrtyNMHxrCu1Z+imWZ2N0PUtXyMqTKFxGjR151YuazAD8vDzPXF
+         iW8w==
+X-Forwarded-Encrypted: i=1; AJvYcCUy8/h912teCTAIFwbiVToT4r8CgByMbnXxrvtM8L0sHvVTQ9xfCqG3N3pZZAeoeRH7ZwujRjMCVqxenlMNhU2OfmQz2ltz9/x2QttJ
+X-Gm-Message-State: AOJu0YwFazpPBMX468PsxvqybIse9mBXcNt+YIjwQht9SXgVAzoKBzqc
+	+jssVY/F0YIYFKSKt42D6lv9Na1z4vrnQbYmBcTXl+CvRfgSiOWYSS3ocozotJ0=
+X-Google-Smtp-Source: AGHT+IEOd7ZGQ1iXrOms8ViLIB02MVphw46zQAODE3pyuuxQfB8dxFqGpQCqAi//HAKtNolmAri5XA==
+X-Received: by 2002:a50:8adc:0:b0:56b:a91c:ebcd with SMTP id k28-20020a508adc000000b0056ba91cebcdmr690345edk.7.1711573574255;
+        Wed, 27 Mar 2024 14:06:14 -0700 (PDT)
 Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id xj8-20020a170906db0800b00a4a33a9f077sm4089735ejb.11.2024.03.27.14.05.19
+        by smtp.gmail.com with ESMTPSA id ek25-20020a056402371900b0056bdc4a5cd6sm10509edb.62.2024.03.27.14.06.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 14:05:21 -0700 (PDT)
-Message-ID: <ccb312aa-3c4c-41bb-a3f4-b94971edb346@linaro.org>
-Date: Wed, 27 Mar 2024 22:05:18 +0100
+        Wed, 27 Mar 2024 14:06:13 -0700 (PDT)
+Message-ID: <f4ebe819-9718-42c3-9874-037151587d0c@linaro.org>
+Date: Wed, 27 Mar 2024 22:06:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,14 +76,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] i2c: i2c-qcom-geni: Add support to share an I2C SE
- from two subsystem
-To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>, andersson@kernel.org,
- vkoul@kernel.org, andi.shyti@kernel.org, wsa@kernel.org,
- linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Cc: quic_vdadhani@quicinc.com
-References: <20240327101825.1142012-1-quic_msavaliy@quicinc.com>
+Subject: Re: [PATCH] soc: qcom: cmd-db: map shared memory as WT, not WB
+To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
+Cc: Caleb Connolly <caleb.connolly@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Douglas Anderson <dianders@chromium.org>, Rob Clark <robdclark@gmail.com>
+References: <20240327200917.2576034-1-volodymyr_babchuk@epam.com>
+ <e0586d43-284c-4bef-a8be-4ffbc12bf787@linaro.org> <87a5mjz8s3.fsf@epam.com>
 Content-Language: en-US
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
@@ -121,225 +122,50 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240327101825.1142012-1-quic_msavaliy@quicinc.com>
+In-Reply-To: <87a5mjz8s3.fsf@epam.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 27.03.2024 11:18 AM, Mukesh Kumar Savaliya wrote:
-> Add feature to share an I2C serial engine from two subsystem(SS) so that
-
-from -> between
-subystem -> subsystems
-
-> individual client from different subsystem can work on the same bus.
-
-client -> clients
-subystem -> subsystems
-
-"work on the same bus" - access the same bus? Does that concern both
-read and write to the same slave device?
-
-
-Please give a more specific example. Could that be for example APSS and
-TZ?
-
+On 27.03.2024 10:04 PM, Volodymyr Babchuk wrote:
 > 
-> This is possible in GSI mode where driver queues the TRE with required
-> descriptors and ensures it executes them in a mutual exclusive way.
-
-mutually
-
-the "it" and "them" are confusing, could you reword this?
-
-> Add Lock TRE at the start of the transfer and Unlock TRE at the end of
-> the transfer protecting the DMA channel. This way not allowing other SS
-> to queue anything in between and disturb the data path.
-
-'Issue a "Lock TRE" command at the start of the transfer and an "Unlock TRE"
-at the end of it. This prevents other subsystems from concurrently
-performing DMA transfers through the same GPI channel, so as to avoid
-disturbing the data path.'
-
-Would that be a fair representation of what this is trying to achieve?
-
+> Hi Konrad,
 > 
-> Since the GPIOs are also shared for the i2c bus, do not touch GPIO
-> configuration while going to runtime suspend and only turn off the
-> clocks. This will allow other SS to continue to transfer the data.
+> Konrad Dybcio <konrad.dybcio@linaro.org> writes:
 > 
-> To realize this, add below change:
-> 1) Check if the Particular I2C requires to be shared during probe() time.
-
-This requires a dt-bindings change. Had you run something like:
-
-/scripts/checkpatch.pl -g $(git describe --abbrev=0)..HEAD
-
-you'dve noticed there's new warnings.
-
-> 2) If shared SE add LOCK TRE inside gpi_create_i2c_tre() before first
->    message.
-> 3) If shared SE add UNLOCK TRE inside gpi_create_i2c_tre() before
->    last transfer message.
-
-You already described this above.
-
-> 4) Export function geni_se_clks_off() to call explicitly instead of
->    geni_se_resources_off().
-
-Do we expect other SEs (UART, I3C, SPI) to also support this "shared"
-configuration? Would it be beneficial to make the "shared" cases common
-and bail out of geni_se_resources_off() early if a SE is marked as such?
-
+>> On 27.03.2024 9:09 PM, Volodymyr Babchuk wrote:
+>>> It appears that hardware does not like cacheable accesses to this
+>>> region. Trying to access this shared memory region as Normal Memory
+>>> leads to secure interrupt which causes an endless loop somewhere in
+>>> Trust Zone.
+>>>
+>>> The only reason it is working right now is because Qualcomm Hypervisor
+>>> maps the same region as Non-Cacheable memory in Stage 2 translation
+>>> tables. The issue manifests if we want to use another hypervisor (like
+>>> Xen or KVM), which does not know anything about those specific
+>>> mappings. This patch fixes the issue by mapping the shared memory as
+>>> Write-Through. This removes dependency on correct mappings in Stage 2
+>>> tables.
+>>>
+>>> I tested this on SA8155P with Xen.
+>>>
+>>> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
+>>> ---
+>>
+>> Interesting..
+>>
+>> +Doug, Rob have you ever seen this on Chrome? (FYI, Volodymyr, chromebooks
+>> ship with no qcom hypervisor)
 > 
-> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-> ---
->  drivers/dma/qcom/gpi.c             | 33 +++++++++++++++++++++++++++++-
->  drivers/i2c/busses/i2c-qcom-geni.c | 24 ++++++++++++++++------
->  drivers/soc/qcom/qcom-geni-se.c    |  4 +++-
->  include/linux/dma/qcom-gpi-dma.h   |  6 ++++++
->  include/linux/soc/qcom/geni-se.h   |  3 +++
-
-This is a big no-go, you're changing files across 3 different subsystems,
-you must split this patch up. In this case, you want one for dma, one for
-soc and one for i2c. Check ./scripts/get_maintainer.pl <filename>
-
->  5 files changed, 62 insertions(+), 8 deletions(-)
+> Well, maybe I was wrong when called this thing "hypervisor". All I know
+> that it sits in hyp.mbn partition and all what it does is setup EL2
+> before switching to EL1 and running UEFI.
 > 
-> diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-> index 1c93864e0e4d..df276ccf9cbb 100644
-> --- a/drivers/dma/qcom/gpi.c
-> +++ b/drivers/dma/qcom/gpi.c
-> @@ -2,6 +2,7 @@
->  /*
->   * Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
->   * Copyright (c) 2020, Linaro Limited
-> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->  
->  #include <dt-bindings/dma/qcom-gpi.h>
-> @@ -65,6 +66,12 @@
->  /* DMA TRE */
->  #define TRE_DMA_LEN		GENMASK(23, 0)
->  
-> +/* Lock TRE */
-> +#define TRE_I2C_LOCK_WORD_3	(3 << 20 | 0 << 16 | BIT(0))
-> +
-> +/* Unlock TRE */
-> +#define TRE_I2C_UNLOCK_WORD_3	(3 << 20 | 1 << 16 | BIT(8))
+> In my experiments I replaced contents of hyp.mbn with U-Boot, which gave
+> me access to EL2 and I was able to boot Xen and then Linux as Dom0.
 
-The comments you're introducing don't seem particularly helpful, looking
-at the define names. You should also avoid adding random shifted values
-and #define the bitfields used in your messages with BIT() and GENMASK()
-
-> +
->  /* Register offsets from gpi-top */
->  #define GPII_n_CH_k_CNTXT_0_OFFS(n, k)	(0x20000 + (0x4000 * (n)) + (0x80 * (k)))
->  #define GPII_n_CH_k_CNTXT_0_EL_SIZE	GENMASK(31, 24)
-> @@ -522,7 +529,7 @@ struct gpii {
->  	bool ieob_set;
->  };
->  
-> -#define MAX_TRE 3
-> +#define MAX_TRE 5
-
-This almost looks like a separate commit itself? Definitely needs
-an explanation.
-
->  
->  struct gpi_desc {
->  	struct virt_dma_desc vd;
-> @@ -1644,6 +1651,18 @@ static int gpi_create_i2c_tre(struct gchan *chan, struct gpi_desc *desc,
->  	struct gpi_tre *tre;
->  	unsigned int i;
->  
-> +	/* create lock tre for first tranfser */
-> +	if (i2c->shared_se && i2c->first_msg) {
-> +		tre = &desc->tre[tre_idx];
-> +		tre_idx++;
-> +
-> +		/* lock: chain bit set */
-
-What does this mean?
-
-> +		tre->dword[0] = 0;
-> +		tre->dword[1] = 0;
-> +		tre->dword[2] = 0;
-> +		tre->dword[3] = TRE_I2C_LOCK_WORD_3;
-> +	}
-> +
->  	/* first create config tre if applicable */
->  	if (i2c->set_config) {
->  		tre = &desc->tre[tre_idx];
-> @@ -1702,6 +1721,18 @@ static int gpi_create_i2c_tre(struct gchan *chan, struct gpi_desc *desc,
->  		tre->dword[3] |= u32_encode_bits(1, TRE_FLAGS_IEOT);
->  	}
->  
-> +	/* Unlock tre for last transfer */
-> +	if (i2c->shared_se && i2c->last_msg && i2c->op != I2C_READ) {
-> +		tre = &desc->tre[tre_idx];
-> +		tre_idx++;
-> +
-> +		/* unlock tre: ieob set */
-
-What does this mean?
-
-> +		tre->dword[0] = 0;
-> +		tre->dword[1] = 0;
-> +		tre->dword[2] = 0;
-> +		tre->dword[3] = TRE_I2C_UNLOCK_WORD_3;
-> +	}
-> +
->  	for (i = 0; i < tre_idx; i++)
->  		dev_dbg(dev, "TRE:%d %x:%x:%x:%x\n", i, desc->tre[i].dword[0],
->  			desc->tre[i].dword[1], desc->tre[i].dword[2], desc->tre[i].dword[3]);
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> index da94df466e83..c5935c5f46e8 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  // Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
-> +// Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
->  
->  #include <linux/acpi.h>
->  #include <linux/clk.h>
-> @@ -99,6 +100,7 @@ struct geni_i2c_dev {
->  	struct dma_chan *rx_c;
->  	bool gpi_mode;
->  	bool abort_done;
-> +	bool is_shared;
->  };
->  
->  struct geni_i2c_desc {
-> @@ -601,6 +603,7 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
->  	peripheral.clk_div = itr->clk_div;
->  	peripheral.set_config = 1;
->  	peripheral.multi_msg = false;
-> +	peripheral.shared_se = gi2c->is_shared;
->  
->  	for (i = 0; i < num; i++) {
->  		gi2c->cur = &msgs[i];
-> @@ -611,6 +614,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
->  		if (i < num - 1)
->  			peripheral.stretch = 1;
->  
-> +		peripheral.first_msg = (i == 0) ? true : false;
-> +		peripheral.last_msg = (i == num - 1) ? true : false;
-
-Why the ternary operator? == already returns a boolean value
-
->  		peripheral.addr = msgs[i].addr;
->  
->  		ret =  geni_i2c_gpi(gi2c, &msgs[i], &config,
-> @@ -802,6 +807,11 @@ static int geni_i2c_probe(struct platform_device *pdev)
->  		gi2c->clk_freq_out = KHZ(100);
->  	}
->  
-> +	if (of_property_read_bool(pdev->dev.of_node, "qcom,shared-se")) {
-> +		gi2c->is_shared = true;
-> +		dev_info(&pdev->dev, "Multi-EE usecase with shared SE\n");
-
-How would this line be useful in my kernel log?
+Yeah we're talking about the same thing. I was just curious whether
+the Chrome folks have heard of it, or whether they have any changes/
+workarounds for it.
 
 Konrad
 
