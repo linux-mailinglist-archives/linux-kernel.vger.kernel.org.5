@@ -1,125 +1,174 @@
-Return-Path: <linux-kernel+bounces-121364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B29388E6C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:43:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF27E88E6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 500002E0E36
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:43:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2F3B1C2E575
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9769513BAFC;
-	Wed, 27 Mar 2024 13:27:40 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5A213C3D3;
+	Wed, 27 Mar 2024 13:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FDoQdytP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4143B13BAF2
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE37513C3C3
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711546060; cv=none; b=H+lkROgwGOP72PKv4v8GiQGn1g69Ee7tRkgki9vraGStTX2WMjD3ejDZ2PmdD1j0UeSOiC7bMQaXFpbPu/rOhDo44J/SIB4L9AWRpWMNCM/GWD92QX6rcehUdht6BN+8g7kz5u67arJ9v1sRupQQ9n6WnJe/QeDXgoyp3yveIss=
+	t=1711546252; cv=none; b=c3VDiX0QNzsgJAXL/VK5pjiN/vKwifZQxg1yA/wP6Y/F0ac/Krtwe/WHsPym+x0z958s4jnUnhvzhtPzWP4UNrpDNhSYBElNv1IaqatYBqfSXpWOzY3od67VVKYcuAVAg42DQ0a6OppVrZ3G98yvciZHfg6x6VLW/uKUe2+RUcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711546060; c=relaxed/simple;
-	bh=pRRk+A5pVTzJED7abAqhdbyakVo6azr4eGLw0OA5Bo4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mUhvXj2AOU4b1gZQOIsvgULfHli4G08+vJtJYaLifWdFHk84cTm591MNuQlSpZTmHFgQBPhw4Z3h6hLCZj0XfWe128RodTuPgt3WOsedn96TnlM1njppGi1KgQ3e/nR2c5y6PAGiRI9zuw9oroGxaJq+MarL8PD1j0VDYOCI05I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from msk1wst434n.omp.ru (81.22.207.138) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 27 Mar
- 2024 16:27:32 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: Jan Kara <jack@suse.com>
-CC: Roman Smirnov <r.smirnov@omp.ru>, <linux-kernel@vger.kernel.org>, Sergey
- Shtylyov <s.shtylyov@omp.ru>, <lvc-project@linuxtesting.org>, Jan Kara
-	<jack@suse.cz>
-Subject: [PATCH v2] udf: udftime: prevent overflow in udf_disk_stamp_to_time()
-Date: Wed, 27 Mar 2024 16:27:55 +0300
-Message-ID: <20240327132755.13945-1-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711546252; c=relaxed/simple;
+	bh=0XY9//HMaNHTRAMknvvS4g417tWnY3ABPrd/afaOHBI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HwFMPE0buJDHoWhFA+IfHO+v3OnCdVd/F4H2OAEb3VA4ScBlYQbdulGWJi3r+o5edBN6TdugYw9LP1+WI6/xBR1/sLfdSYOfiH8SUja2voVjHAcVkWsmxqJM374o2/beMEUH0mrj2RVwziohbB+3JUytCH+OYoRe/ZGfGi5f2JQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FDoQdytP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711546250;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TLg38MFVhLXh0D5Ryy6sGfzcGNzaaaxhoktXDmAvMEQ=;
+	b=FDoQdytPN8kWK7BncF2pW9GCaG9myiez2trYAAtQDoZh/+wcAD7qOTGs67zUoora5z1yRc
+	x80DqHfGsxtnl+APhnMGqTIKWi/luH++JH9P+i2xMPKDGZvXE+aomKFliDaDg3ocs0Pj9s
+	6d2hSlTb9PY6wMfk3JKVITilH73LW+s=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-496-tnoXk5jgOnWo_JpUZ45txQ-1; Wed, 27 Mar 2024 09:30:46 -0400
+X-MC-Unique: tnoXk5jgOnWo_JpUZ45txQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4943e972d1so96823366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 06:30:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711546245; x=1712151045;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TLg38MFVhLXh0D5Ryy6sGfzcGNzaaaxhoktXDmAvMEQ=;
+        b=jjkMxYrIGMxxrcdM5ROa71pZPOG42kmSJpMN94HaXw2IpT3whdjUb3Vj2ME3I7o1cP
+         /lTC9dqlx+BLcb/RYpFVbUpNqfhf2mprtUcshslg6m3vFiQzpwLX4+ynJFXXZsW4G92h
+         FgaL+G2NnwZJJ9ctsX8JQHmYk1yxf+TCwMaMZNETHxo6pRHbrR142gsyk5GGiiafbXAy
+         cY12HoJPtZ4NIUAW/0pGKOjz3HfAUv3fk7iqqWpfSwZ6S/kws1ylsVnDPX2PDxNVskXF
+         jh9MB9y6IYw7oKwVWwcR+NxoVAaabUH1Jb8p/ESTYdC1yLxF+yEz/SL5Q7W9zyIAzrM8
+         i42w==
+X-Forwarded-Encrypted: i=1; AJvYcCXj4Pydb7TsT24TpKNPN4ECyaSL9OPI46MEftoZwx+Xb7bhvodaTG0ofSfPGKcbcqNAF0Q0g4jaLRI8vTbtWUacoBaS8q1qnpjVWmw4
+X-Gm-Message-State: AOJu0Yx4U2wXX7+1F7Vh9Sk2WEwNriQkco7IkTvhoc0rqWct5EADHu1V
+	hEz+OBhXJQv5rDL1tAXrGfTliVvOgoYplwEYBgSCXtS1bohBw1OT/cOEtrJAIHHBi9P39jX6xqs
+	WQpEcc9cOnv+GEmDplJLtiu/XNpkBkGToVEopFg5Uvz6ATQFuxtcObGuRmv0MZA==
+X-Received: by 2002:a17:906:4552:b0:a4e:ca2:f597 with SMTP id s18-20020a170906455200b00a4e0ca2f597mr464555ejq.30.1711546245267;
+        Wed, 27 Mar 2024 06:30:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHxMNQa6I7wHwsl8AheMWybiN2BzRa3S3xpZTZlv2r8DjsDL3nA8c8TtS4ntqPeWCUGEfcy9w==
+X-Received: by 2002:a17:906:4552:b0:a4e:ca2:f597 with SMTP id s18-20020a170906455200b00a4e0ca2f597mr464548ejq.30.1711546244934;
+        Wed, 27 Mar 2024 06:30:44 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id q2-20020a1709060e4200b00a4674ad8ab9sm5383406eji.211.2024.03.27.06.30.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Mar 2024 06:30:44 -0700 (PDT)
+Message-ID: <7a7d7216-ae22-4908-af63-6b1dd96359dd@redhat.com>
+Date: Wed, 27 Mar 2024 14:30:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/19] ACPI: store owner from modules with
+ acpi_bus_register_driver()
+Content-Language: en-US, nl
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ Corentin Chary <corentin.chary@gmail.com>, "Luke D. Jones"
+ <luke@ljones.dev>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>,
+ Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>,
+ Daniel Oliveira Nascimento <don@syst.com.br>, =?UTF-8?Q?Pali_Roh=C3=A1r?=
+ <pali@kernel.org>, Matan Ziv-Av <matan@svgalib.org>,
+ Mattia Dongili <malattia@linux.it>, Azael Avalos <coproscefalo@gmail.com>,
+ Richard Cochran <richardcochran@gmail.com>, Jeff Sipek <jsipek@vmware.com>,
+ Ajay Kaher <akaher@vmware.com>, Alexey Makhalov <amakhalov@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Theodore Ts'o <tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-input@vger.kernel.org,
+ netdev@vger.kernel.org, chrome-platform@lists.linux.dev,
+ platform-driver-x86@vger.kernel.org
+References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
+ <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAJZ5v0hEiKJJWn-TVoyL6DEbCcMpL39_q+HLG_YZyjf9g29CXA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/27/2024 13:10:53
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 184441 [Mar 27 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 13 0.3.13
- 9d58e50253d512f89cb08f71c87c671a2d0a1bca
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;omp.ru:7.1.1;msk1wst434n.omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;81.22.207.138:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 81.22.207.138
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/27/2024 13:15:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/27/2024 10:50:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-An overflow can occur in a situation where src.centiseconds
-takes the value of 255. This situation is unlikely, but there
-is no validation check anywere in the code.
+Hi,
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+On 3/27/24 2:16 PM, Rafael J. Wysocki wrote:
+> On Wed, Mar 27, 2024 at 8:44 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> Merging
+>> =======
+>> All further patches depend on the first amba patch, therefore please ack
+>> and this should go via one tree: ACPI?
+>>
+>> Description
+>> ===========
+>> Modules registering driver with acpi_bus_register_driver() often forget to
+>> set .owner field.
+>>
+>> Solve the problem by moving this task away from the drivers to the core
+>> amba bus code, just like we did for platform_driver in commit
+>> 9447057eaff8 ("platform_device: use a macro instead of
+>> platform_driver_register").
+>>
+>> Best regards,
+>> Krzysztof
+>>
+>> ---
+>> Krzysztof Kozlowski (19):
+>>       ACPI: store owner from modules with acpi_bus_register_driver()
+>>       Input: atlas: - drop owner assignment
+>>       net: fjes: drop owner assignment
+>>       platform: chrome: drop owner assignment
+>>       platform: asus-laptop: drop owner assignment
+>>       platform: classmate-laptop: drop owner assignment
+>>       platform/x86/dell: drop owner assignment
+>>       platform/x86/eeepc: drop owner assignment
+>>       platform/x86/intel/rst: drop owner assignment
+>>       platform/x86/intel/smartconnect: drop owner assignment
+>>       platform/x86/lg-laptop: drop owner assignment
+>>       platform/x86/sony-laptop: drop owner assignment
+>>       platform/x86/toshiba_acpi: drop owner assignment
+>>       platform/x86/toshiba_bluetooth: drop owner assignment
+>>       platform/x86/toshiba_haps: drop owner assignment
+>>       platform/x86/wireless-hotkey: drop owner assignment
+>>       ptp: vmw: drop owner assignment
+>>       virt: vmgenid: drop owner assignment
+>>       ACPI: drop redundant owner from acpi_driver
+> 
+> I definitely like this, so
+> 
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> for the series and I can pick it up if people agree.
 
-Suggested-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
----
- fs/udf/udftime.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/fs/udf/udftime.c b/fs/udf/udftime.c
-index 758163af39c2..3113785af3cf 100644
---- a/fs/udf/udftime.c
-+++ b/fs/udf/udftime.c
-@@ -46,13 +46,18 @@ udf_disk_stamp_to_time(struct timespec64 *dest, struct timestamp src)
- 	dest->tv_sec = mktime64(year, src.month, src.day, src.hour, src.minute,
- 			src.second);
- 	dest->tv_sec -= offset * 60;
--	dest->tv_nsec = 1000 * (src.centiseconds * 10000 +
--			src.hundredsOfMicroseconds * 100 + src.microseconds);
-+
- 	/*
- 	 * Sanitize nanosecond field since reportedly some filesystems are
- 	 * recorded with bogus sub-second values.
- 	 */
--	dest->tv_nsec %= NSEC_PER_SEC;
-+	if (src.centiseconds < 100 && src.hundredsOfMicroseconds < 100 &&
-+	    src.microseconds < 100) {
-+		dest->tv_nsec = 1000 * (src.centiseconds * 10000 +
-+			src.hundredsOfMicroseconds * 100 + src.microseconds);
-+	} else {
-+		desk->tv_nsec = 0;
-+	}
- }
- 
- void
--- 
-2.34.1
+> 
+> Thanks!
+> 
 
 
