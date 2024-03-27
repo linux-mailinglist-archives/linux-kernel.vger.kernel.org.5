@@ -1,106 +1,169 @@
-Return-Path: <linux-kernel+bounces-121822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B5EB88EE3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:26:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0483488EE3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 19:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5741929E3FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:26:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22DC21C32763
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8462A14F11B;
-	Wed, 27 Mar 2024 18:26:09 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E0914F12A;
+	Wed, 27 Mar 2024 18:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FaoqlCPL"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2AB12EBE3;
-	Wed, 27 Mar 2024 18:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6B014E2CE;
+	Wed, 27 Mar 2024 18:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711563969; cv=none; b=AmCl04vn3rNVERRVuLPABQVZK2hYgbbBFuPmqwmzmtZSF1yjKJrUt8W4cTylMrf+N8eUDUBpIht60/Y3ILtwT4n5eu84/+t9jIvLbrqCXErooeR8933A43t+pR4AwhmPstgvW8IW1Lz/WjtR1Led4a8TCE47KWhu83qR9ahCZH8=
+	t=1711563989; cv=none; b=VEan3LwCnLr7CeR29/oh1hFO08bPpH2lPK6QiX7/XNoPptYYDyGrlB5Dt910JfjcWGOHWkYZimzvBkoFY8HKtKTuCZzvVhRrlG8lP9Aw6VFJp071XHHL8lxeJ3Wwwdde1N4Rt+BWEw36/PzWLiJCyGsPWvTx3j2lW5qU2B+mtHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711563969; c=relaxed/simple;
-	bh=GAwQvl9nZZ1rCNX9QTMZ3MoljEqQK7NTCFxck4MbYTs=;
-	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GXMQNGxhq9qXkWqL0rFUWxo5q3SRaXMDEZoa8jzjeIiqpG7PjcRfR6ZfRy0jns0XbA0UyK+eoa0IEcd5A9WVB9+rUxbR7dupPO1MsIr485ExUUlyPH8IgzX0R0xwwxcPrWWCNtvvf76Lxh4MMYh68ZSVc+/EderXUso6Yk+RxOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.86.12) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 27 Mar
- 2024 21:25:55 +0300
-Subject: Re: [PATCH] ata: pata_macio: drop driver owner assignment
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Damien Le Moal
-	<dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
-	<linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240327174936.519861-1-krzysztof.kozlowski@linaro.org>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <c178e5d2-c1f5-ecad-0ad1-cf885fb860a5@omp.ru>
-Date: Wed, 27 Mar 2024 21:25:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1711563989; c=relaxed/simple;
+	bh=S5lpD0totsV4KRoZDEAp/wgiazw+vvQTX2MXpvfKUzY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=YUIqGgZNsehN+a8eyWORTeMdTwozMxc4Lpy+ater88OBH3EBKJWnmkLfHYQ9geZ517HBZmVIE88TYDBzUAepJRiDRQvwiGje7ZUfY4bBW62Sg/Y8y36Y5yXD9D7OJ2R0H2lZg1vE6Va0pN3XAdNiCUoa1Q5fHvOgSfr4SZ3n1Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FaoqlCPL; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42RHuK8S028054;
+	Wed, 27 Mar 2024 18:26:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:from:subject:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=deAWrZr3uZsWt7WZFTIo1fovSqSpvhFlpEIjkFW8FnA=; b=Fa
+	oqlCPLkTSVDEqOKzcLAGVIE1DoCPDbSrINPg3eY8oLsyUJp9JrF7djJI0LVowEYX
+	WJs5kcF6j5HYHfjf1N1Wtg1dz+CP66GCGmT0xS1tIO/BvHAI7XdjicUG0DGYmpun
+	kmKPVv8Riep75eYdCnr8EuUONznBnkHjh6oBLIbMZshkeyNV8SIrCy+NadcIcAmS
+	a20v1PUAaXhAU84IIOEfjdb67wOn9UoS0jbQsIAckTKHw5BSgmchYX34l0Ovs+YT
+	p+XVUREwWNHcQMQ/dVSNICLzgpOF6Dpe8IFigcK6LBksqJ/tifjI59dYUtZtQUh9
+	t4QRBONhSMWzmkYP2qOw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4h001dqc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 18:26:24 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42RIQNIM004200
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 27 Mar 2024 18:26:23 GMT
+Received: from [10.110.28.48] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 27 Mar
+ 2024 11:26:22 -0700
+Message-ID: <3f19627e-4472-4ed1-9e2e-b0b427682910@quicinc.com>
+Date: Wed, 27 Mar 2024 11:26:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240327174936.519861-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: Re: [PATCH v2][next] wifi: wil6210: Annotate a couple of structs with
+ __counted_by()
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kalle Valo
+	<kvalo@kernel.org>
+CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <ZgRayuCJ0gQinMvr@neat>
 Content-Language: en-US
+In-Reply-To: <ZgRayuCJ0gQinMvr@neat>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/27/2024 18:10:06
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 184451 [Mar 27 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 13 0.3.13
- 9d58e50253d512f89cb08f71c87c671a2d0a1bca
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.86.12 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.86.12
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/27/2024 18:13:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/27/2024 3:07:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: xSTK4iV_T6ogPey7uYf2986hFYjKNMOg
+X-Proofpoint-ORIG-GUID: xSTK4iV_T6ogPey7uYf2986hFYjKNMOg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-27_14,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 clxscore=1011 spamscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403270128
 
-On 3/27/24 8:49 PM, Krzysztof Kozlowski wrote:
-
-> PCI core in pci_register_driver() already sets the .owner, so driver
-> does not need to.
+On 3/27/2024 10:43 AM, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v2:
+>  - Annotate one more struct.
+>  - Update Subject line.
+> 
+> v1:
+>  - Link: https://lore.kernel.org/linux-hardening/ZgODZOB4fOBvKl7R@neat/
+> 
+>  drivers/net/wireless/ath/wil6210/wmi.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+> index 71bf2ae27a98..38f64524019e 100644
+> --- a/drivers/net/wireless/ath/wil6210/wmi.h
+> +++ b/drivers/net/wireless/ath/wil6210/wmi.h
+> @@ -474,7 +474,7 @@ struct wmi_start_scan_cmd {
+>  	struct {
+>  		u8 channel;
+>  		u8 reserved;
+> -	} channel_list[];
+> +	} channel_list[] __counted_by(num_channels);
+>  } __packed;
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+does the compiler handle the actual logic where it is modifying num_channels
+concurrently with writing into the array? i.e. this will be writing into
+channel_list[0] when num_channels is 0:
 
-[...]
+		cmd.cmd.channel_list[cmd.cmd.num_channels++].channel = ch - 1;
 
-MBR, Sergey
+if that will cause a bounds check failure then suggest you change the logic so
+that it updates num_channels before writing into channel_list
+
+>  
+>  #define WMI_MAX_PNO_SSID_NUM	(16)
+> @@ -3320,7 +3320,7 @@ struct wmi_set_link_monitor_cmd {
+>  	u8 rssi_hyst;
+>  	u8 reserved[12];
+>  	u8 rssi_thresholds_list_size;
+> -	s8 rssi_thresholds_list[];
+> +	s8 rssi_thresholds_list[] __counted_by(rssi_thresholds_list_size);
+>  } __packed;
+
+this looks ok to me, although I think there is another issue associated with
+this, namely the way the code populates the rssi_thresholds_list is by
+defining a separate anonymous struct:
+	struct {
+		struct wmi_set_link_monitor_cmd cmd;
+		s8 rssi_thold;
+	} __packed cmd = {
+		.cmd = {
+			.rssi_hyst = rssi_hyst,
+			.rssi_thresholds_list_size = 1,
+		},
+		.rssi_thold = rssi_thold,
+	};
+
+I would expect gcc and clang to both complain about that s8 rssi_thold comes
+after a flexible array (even though its purpose is to be the value of
+rssi_thresholds_list[0])
+
+/jeff
+
+
+>  
+>  /* wmi_link_monitor_event_type */
+
 
