@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-121034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2370888E1B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:09:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8345788E1B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90E1D1F26624
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:09:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36A2C291D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CDA15B569;
-	Wed, 27 Mar 2024 12:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFB3138483;
+	Wed, 27 Mar 2024 12:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FRboy/XG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="reuCb1uI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3C815B558;
-	Wed, 27 Mar 2024 12:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632DA15B554;
+	Wed, 27 Mar 2024 12:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541900; cv=none; b=Fs2QoFzZ0ClzOwx6FqHNrLDG9Sc2d3DuZPsWgix4v/3IK1wv/HJeuXnrUsu5ujoRmBcuEwvO7IgB9dpWy4YjJGz2ROE1mMFZ8mLY3rwpdbqj2B+V+JfapG8WjJ+U/0N+efjjKpMM/KBpFUKt0Rx1s0sh3lLEYA8Cy5tB5CXBXqE=
+	t=1711541902; cv=none; b=ZA4EnCyKGmCZniDiCEDCCL+WzAzT6liw7vCDh5Y1cH7y9uJ51icOfiH6j3DU+VTWZZBZSH09sMKxzW7K4/FvO8149DlIh897eeublOkOQsQtN0pAv6Jtpdh3iLtEk3GzgvSNtPULqNldgj6UO0T5xjKmV8M+N/t0a/W1tF8uEsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541900; c=relaxed/simple;
-	bh=KTtpWTMjOQwngwn+yU6wwksb7TJ6zBCJq+Ni7vA0NTs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NI22qZhpwOztCYiRSwpJRRBXaBLvz1+rG7HNxgzoBI86E6Wlv7xIIPvowGD7TyF+5UD50nCISnUFBgMuDpkf2m0yNNfh6jmHSVcYsRIDMlYPD6d3KqeWw9ftOd6xRZfGweH4M1V8D53SRJdeh0ph9bBOojb+KQjnyZYk3jNZErw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FRboy/XG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 000C1C433C7;
-	Wed, 27 Mar 2024 12:18:18 +0000 (UTC)
+	s=arc-20240116; t=1711541902; c=relaxed/simple;
+	bh=HU2ybblLmCObuPz/205gH9qZSrlwSXOiyNMkwahMovM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ruS6TbarpD3SQdGkWYF4wiOq8tYzqqk84bZIWRyxwNVxmVWSda5ooTW1CoiBDkVZeJ7yRVqNRyVnpNQu7bUi9eTPar2oiCSqR9I5Tl2ErzvW7zeONvoJW+sM2gUXudmpbsS1HlBGyjFviwZpSKxBrhxKZYgGGLO5gogvmfxmOGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=reuCb1uI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73A53C43390;
+	Wed, 27 Mar 2024 12:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541899;
-	bh=KTtpWTMjOQwngwn+yU6wwksb7TJ6zBCJq+Ni7vA0NTs=;
+	s=k20201202; t=1711541902;
+	bh=HU2ybblLmCObuPz/205gH9qZSrlwSXOiyNMkwahMovM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=FRboy/XG9bbWh5Ec1/VLwFkoW2dQcAueTz/KSmpkYAqjz083CFkFrjsTTBYIvSfgG
-	 pPL1/9xP5Dva34MyQx6UNHG9tySR9mAl9G/NYexi/IdRq+/cp6WtnzuTGZWli1HO75
-	 z84pjr/rdHe9HMbuObXM2CL8eiZsXRPtOAJYVcHRiyzSBB3YypIXviIlvE6dC4gTbH
-	 uxTbRL7IaArwoezOpMmIpaYKMoE+bLKN9Razu0GwhOmxdOq8DkJlwWDcdxU32PDitv
-	 g6n5k2qABcwc5NCtfoEKn0zfWuwAlC/tW88UpyxJwCtosBfA1B1TDKHbAQ7jS6e1tk
-	 EQeovWKDs6XIg==
+	b=reuCb1uI9EJGnQ3uVEoHD/Ec44nEiVNCtZKTz5LPl3f7pAyPKFYA4WcvDig+RGqXh
+	 pMXeLOr4XPzqiXrcxNv7othjZOfX4PHf28xU+IkiP8KwxsY0TfDKHyr9zbHEMii8kY
+	 baIXpyFqb3UBeZ+rW5Tbrc4q4XY1PjhysDj6ZYm3Nx+sx2/L0rfv6BXSLcVAjJR/vZ
+	 zfA+7sPl1FggyaVj1zH+wwo7Isa0teDekpAIYLmPYs8dtvbYmYw9QWlGsITEq1nxfA
+	 pJmsIb0z0AlbL8dtiWt140H67cqcJUchDFB3Re+0+47Xp7hL3ksO5rtm52+ZFyul9m
+	 pDPVK9EYSpIXg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	ville.syrjala@linux.intel.com
-Cc: Jani Nikula <jani.nikula@intel.com>,
-	intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
+	linkinjeon@kernel.org
+Cc: Yang Chaoming <lometsj@live.com>,
+	Steve French <stfrench@microsoft.com>,
+	linux-cifs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "Revert "drm/i915/dsi: Do display on sequence later on icl+"" failed to apply to 5.10-stable tree
-Date: Wed, 27 Mar 2024 08:18:17 -0400
-Message-ID: <20240327121818.2834227-1-sashal@kernel.org>
+Subject: FAILED: Patch "ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()" failed to apply to 5.10-stable tree
+Date: Wed, 27 Mar 2024 08:18:20 -0400
+Message-ID: <20240327121820.2834266-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,7 +58,6 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Hint: ignore
 X-stable: review
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 The patch below does not apply to the 5.10-stable tree.
@@ -72,64 +70,59 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From dc524d05974f615b145404191fcf91b478950499 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
-Date: Tue, 16 Jan 2024 23:08:21 +0200
-Subject: [PATCH] Revert "drm/i915/dsi: Do display on sequence later on icl+"
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From d10c77873ba1e9e6b91905018e29e196fd5f863d Mon Sep 17 00:00:00 2001
+From: Namjae Jeon <linkinjeon@kernel.org>
+Date: Wed, 20 Dec 2023 15:52:11 +0900
+Subject: [PATCH] ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
 
-This reverts commit 88b065943cb583e890324d618e8d4b23460d51a3.
+If ->NameOffset/Length is bigger than ->CreateContextsOffset/Length,
+ksmbd_check_message doesn't validate request buffer it correctly.
+So slab-out-of-bounds warning from calling smb_strndup_from_utf16()
+in smb2_open() could happen. If ->NameLength is non-zero, Set the larger
+of the two sums (Name and CreateContext size) as the offset and length of
+the data area.
 
-Lenovo 82TQ is unhappy if we do the display on sequence this
-late. The display output shows severe corruption.
-
-It's unclear if this is a failure on our part (perhaps
-something to do with sending commands in LP mode after HS
-/video mode transmission has been started? Though the backlight
-on command at least seems to work) or simply that there are
-some commands in the sequence that are needed to be done
-earlier (eg. could be some DSC init stuff?). If the latter
-then I don't think the current Windows code would work
-either, but maybe this was originally tested with an older
-driver, who knows.
-
-Root causing this fully would likely require a lot of
-experimentation which isn't really feasible without direct
-access to the machine, so let's just accept failure and
-go back to the original sequence.
-
+Reported-by: Yang Chaoming <lometsj@live.com>
 Cc: stable@vger.kernel.org
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10071
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240116210821.30194-1-ville.syrjala@linux.intel.com
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 ---
- drivers/gpu/drm/i915/display/icl_dsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/smb/server/smb2misc.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
-index ac456a2275dba..eda4a8b885904 100644
---- a/drivers/gpu/drm/i915/display/icl_dsi.c
-+++ b/drivers/gpu/drm/i915/display/icl_dsi.c
-@@ -1155,6 +1155,7 @@ static void gen11_dsi_powerup_panel(struct intel_encoder *encoder)
+diff --git a/fs/smb/server/smb2misc.c b/fs/smb/server/smb2misc.c
+index 23bd3d1209dfa..03dded29a9804 100644
+--- a/fs/smb/server/smb2misc.c
++++ b/fs/smb/server/smb2misc.c
+@@ -106,16 +106,25 @@ static int smb2_get_data_area_len(unsigned int *off, unsigned int *len,
+ 		break;
+ 	case SMB2_CREATE:
+ 	{
++		unsigned short int name_off =
++			le16_to_cpu(((struct smb2_create_req *)hdr)->NameOffset);
++		unsigned short int name_len =
++			le16_to_cpu(((struct smb2_create_req *)hdr)->NameLength);
++
+ 		if (((struct smb2_create_req *)hdr)->CreateContextsLength) {
+ 			*off = le32_to_cpu(((struct smb2_create_req *)
+ 				hdr)->CreateContextsOffset);
+ 			*len = le32_to_cpu(((struct smb2_create_req *)
+ 				hdr)->CreateContextsLength);
+-			break;
++			if (!name_len)
++				break;
++
++			if (name_off + name_len < (u64)*off + *len)
++				break;
+ 		}
+ 
+-		*off = le16_to_cpu(((struct smb2_create_req *)hdr)->NameOffset);
+-		*len = le16_to_cpu(((struct smb2_create_req *)hdr)->NameLength);
++		*off = name_off;
++		*len = name_len;
+ 		break;
  	}
- 
- 	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_INIT_OTP);
-+	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_DISPLAY_ON);
- 
- 	/* ensure all panel commands dispatched before enabling transcoder */
- 	wait_for_cmds_dispatched_to_panel(encoder);
-@@ -1255,8 +1256,6 @@ static void gen11_dsi_enable(struct intel_atomic_state *state,
- 	/* step6d: enable dsi transcoder */
- 	gen11_dsi_enable_transcoder(encoder);
- 
--	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_DISPLAY_ON);
--
- 	/* step7: enable backlight */
- 	intel_backlight_enable(crtc_state, conn_state);
- 	intel_dsi_vbt_exec_sequence(intel_dsi, MIPI_SEQ_BACKLIGHT_ON);
+ 	case SMB2_QUERY_INFO:
 -- 
 2.43.0
 
