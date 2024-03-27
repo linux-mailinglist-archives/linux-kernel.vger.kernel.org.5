@@ -1,132 +1,182 @@
-Return-Path: <linux-kernel+bounces-121283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB8A88E4A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:09:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF65488E4AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 15:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F9B41C2AD89
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:09:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243011F295DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD0A13D8B2;
-	Wed, 27 Mar 2024 12:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532201311B6;
+	Wed, 27 Mar 2024 12:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vnlu+KBx"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="R/XhVYBz"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BB51311A7
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 12:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DAF12E1F6;
+	Wed, 27 Mar 2024 12:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542718; cv=none; b=atqfYBDOp/RMTkvu6CRA4PH/p+tvmbVrx1B5LzptsJKBazPpNfAwZtEE0hDhePd+BtEItfCjku418X6oIysnIYIeQByAdbMh8LTbxZ1OrY2JOG4s+h9EvkKU8/kmj57YBCZV6QUhDDlj9fu8GuIdRUx0Uhrs1br0fUQDXApJfCg=
+	t=1711542738; cv=none; b=rEsCtQjwu0sO5nXfA+x87wWAFLxzIEPRxB7vXbWz1aJ7eI4Y7Pe2vzhMOfz4SmHx1bNc3lCPMGFPTXL7b6y151Q/AOOtNzIQHZu2U5qHr9MAxs9+DrFthab3/848U9SL7CEzw30jR16AN7XmD2fDQDRdadpJQbSmvG4WtI+pI2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542718; c=relaxed/simple;
-	bh=jI8j+Hk7jO97k2/0wPNbWPlKYub9zJxqLVA5E2Xe8+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UeEAPyVuu4DqqVzsR+iBeASnRSF3BPMq9wuPJbthAZAhwxNehkV4mwC9QuvwF6ljY5Jmume8S9RqGpELs5aKcY18xUQQISTPvoYqGkv0VjYM5iYfpHCiNU/CDGIEzysAfktMcNlunT63rF/xrwfdeXGgU6Fg5qHZJl1zmRsjR3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=vnlu+KBx; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=NLZi73Xb4ep908R2UXV6rktiIulOxpZuvd/TS5KeEy4=; b=vnlu+KBxz0A/LWrNCJWqk+pOMj
-	FqC3Hme8EZRafost80noqjORFBRzKICIGLAvtFPgVKInoFqzVbb2gB825R3qGetjUztfDMzH6RjFy
-	RmuGURgTIWwtHoOo4P5VMwkcJe1iSxTbg4feNAf87bl4RKYxSTwq6YRr2pwyPO7ZFtdgZDc6S5Nej
-	1AoZaOlltlgWw3JirOg9Q2jlR/u6lP2HODPT5J0t5pMZB2pEYhbJ1cY7YIG0AoRkpDHnDDSRIJ1ES
-	NZSeiL9wxmjtgFnjaZs+PHZQDxgTWE+wf32ZAcozbJ//v14kiyVDGQSmp1n97hWkY4xKA4aHM+haC
-	OixDqVuw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpSRZ-00000003qY9-10f2;
-	Wed, 27 Mar 2024 12:31:49 +0000
-Date: Wed, 27 Mar 2024 12:31:49 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-Message-ID: <ZgQRtQ60mrvOUKXo@casper.infradead.org>
-References: <Zfj_-LbiIsAVWcPX@casper.infradead.org>
- <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
- <ZfwpuRjAZV07_lc3@casper.infradead.org>
- <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
- <Zfz4_GJAHRInB8ul@casper.infradead.org>
- <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
- <ZgDt9mwN-Py5Y-xr@casper.infradead.org>
- <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
- <ZgK91II_eSYY6D2F@casper.infradead.org>
- <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
+	s=arc-20240116; t=1711542738; c=relaxed/simple;
+	bh=eauS07e0uZwR+eZxZshxdp8VELzhQtI+0tJN5Bk/9a0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PzacOj07Qk3RzTEqdNeEU/aQRVZgDyEI4z6H89PvGLzVJhMa1rbV3QQ5Kw5MfDDK0M1VWTynokhD/ieQKVwUSvMPgs4isMdU2csm4J+6cpGMMLTchItehfWKk17KvVv5R2Irt8So//So9PKrtlIqpW9nQmvGXDF5eVDzLfja8Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=R/XhVYBz; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B27A413AC;
+	Wed, 27 Mar 2024 13:31:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711542703;
+	bh=eauS07e0uZwR+eZxZshxdp8VELzhQtI+0tJN5Bk/9a0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=R/XhVYBz/Xl8N2++t3nmiSoiRRLe2gh6g7vIBhaJrAckHr4Jx3pFLnMThSu2rUq9W
+	 g8YhfPneQKhc2pONRNzCZW4zWDbhjiRuvy4qU9QnZkYtDCcoq6sQW1Hra530hwGk3U
+	 WuUg5mDqbAQEqx04MMKPZ2lEnFkeHvDrrfrG3LVI=
+Message-ID: <e0c8200f-cf91-466f-8769-10817bc9fb8c@ideasonboard.com>
+Date: Wed, 27 Mar 2024 14:32:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dmaengine: xilinx: dpdma: Fix race condition in
+ vsync IRQ
+Content-Language: en-US
+To: Vishal Sagar <vishal.sagar@amd.com>
+Cc: michal.simek@amd.com, dmaengine@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ varunkumar.allagadapa@amd.com, laurent.pinchart@ideasonboard.com,
+ vkoul@kernel.org, Sean Anderson <sean.anderson@linux.dev>
+References: <20240228042124.3074044-1-vishal.sagar@amd.com>
+ <20240228042124.3074044-2-vishal.sagar@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240228042124.3074044-2-vishal.sagar@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 09:25:59AM +0800, Zhaoyang Huang wrote:
-> > Ignoring any other thread, you're basically saying that there's a
-> > refcount imbalance here.  Which means we'd hit an assert (that folio
-> > refcount went below zero) in the normal case where another thread wasn't
-> > simultaneously trying to do anything.
-> Theoretically Yes but it is rare in practice as aops->readahead will
-> launch all pages to IO under most scenarios.
-
-Rare, but this path has been tested.
-
-> read_pages
->     aops->readahead[1]
-> ...
->     while (folio = readahead_folio)[2]
->         filemap_remove_folio
+On 28/02/2024 06:21, Vishal Sagar wrote:
+> From: Neel Gandhi <neel.gandhi@xilinx.com>
 > 
-> IMO, according to the comments of readahead_page, the refcnt
-> represents page cache dropped in [1] makes sense for two reasons, '1.
-> The folio is going to do IO and is locked until IO done;2. The refcnt
-> will be added back when found again from the page cache and then serve
-> for PTE or vfs' while it doesn't make sense in [2] as the refcnt of
-> page cache will be dropped in filemap_remove_folio
+> The vchan_next_desc() function, called from
+> xilinx_dpdma_chan_queue_transfer(), must be called with
+> virt_dma_chan.lock held. This isn't correctly handled in all code paths,
+> resulting in a race condition between the .device_issue_pending()
+> handler and the IRQ handler which causes DMA to randomly stop. Fix it by
+> taking the lock around xilinx_dpdma_chan_queue_transfer() calls that are
+> missing it.
 > 
->  * Context: The page is locked and has an elevated refcount.  The caller
->  * should decreases the refcount once the page has been submitted for I/O
->  * and unlock the page once all I/O to that page has completed.
->  * Return: A pointer to the next page, or %NULL if we are done.
+> Signed-off-by: Neel Gandhi <neel.gandhi@amd.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Signed-off-by: Vishal Sagar <vishal.sagar@amd.com>
 
-Follow the refcount through.
+Sean posted almost identical, but very slightly better patch, for this, 
+so I think we can pick that one instead.
 
-In page_cache_ra_unbounded():
+  Tomi
 
-                folio = filemap_alloc_folio(gfp_mask, 0);
-(folio has refcount 1)
-                ret = filemap_add_folio(mapping, folio, index + i, gfp_mask);
-(folio has refcount 2)
+> 
+> Link: https://lore.kernel.org/all/20220122121407.11467-1-neel.gandhi@xilinx.com
+> ---
+>   drivers/dma/xilinx/xilinx_dpdma.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
+> index b82815e64d24..28d9af8f00f0 100644
+> --- a/drivers/dma/xilinx/xilinx_dpdma.c
+> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
+> @@ -1097,12 +1097,14 @@ static void xilinx_dpdma_chan_vsync_irq(struct  xilinx_dpdma_chan *chan)
+>   	 * Complete the active descriptor, if any, promote the pending
+>   	 * descriptor to active, and queue the next transfer, if any.
+>   	 */
+> +	spin_lock(&chan->vchan.lock);
+>   	if (chan->desc.active)
+>   		vchan_cookie_complete(&chan->desc.active->vdesc);
+>   	chan->desc.active = pending;
+>   	chan->desc.pending = NULL;
+>   
+>   	xilinx_dpdma_chan_queue_transfer(chan);
+> +	spin_unlock(&chan->vchan.lock);
+>   
+>   out:
+>   	spin_unlock_irqrestore(&chan->lock, flags);
+> @@ -1264,10 +1266,12 @@ static void xilinx_dpdma_issue_pending(struct dma_chan *dchan)
+>   	struct xilinx_dpdma_chan *chan = to_xilinx_chan(dchan);
+>   	unsigned long flags;
+>   
+> -	spin_lock_irqsave(&chan->vchan.lock, flags);
+> +	spin_lock_irqsave(&chan->lock, flags);
+> +	spin_lock(&chan->vchan.lock);
+>   	if (vchan_issue_pending(&chan->vchan))
+>   		xilinx_dpdma_chan_queue_transfer(chan);
+> -	spin_unlock_irqrestore(&chan->vchan.lock, flags);
+> +	spin_unlock(&chan->vchan.lock);
+> +	spin_unlock_irqrestore(&chan->lock, flags);
+>   }
+>   
+>   static int xilinx_dpdma_config(struct dma_chan *dchan,
+> @@ -1495,7 +1499,9 @@ static void xilinx_dpdma_chan_err_task(struct tasklet_struct *t)
+>   		    XILINX_DPDMA_EINTR_CHAN_ERR_MASK << chan->id);
+>   
+>   	spin_lock_irqsave(&chan->lock, flags);
+> +	spin_lock(&chan->vchan.lock);
+>   	xilinx_dpdma_chan_queue_transfer(chan);
+> +	spin_unlock(&chan->vchan.lock);
+>   	spin_unlock_irqrestore(&chan->lock, flags);
+>   }
+>   
 
-Then we call read_pages()
-First we call ->readahead() which for some reason stops early.
-Then we call readahead_folio() which calls folio_put()
-(folio has refcount 1)
-Then we call folio_get()
-(folio has refcount 2)
-Then we call filemap_remove_folio()
-(folio has refcount 1)
-Then we call folio_unlock()
-Then we call folio_put()
-(folio has refcount 0 and is freed)
-
-Yes, other things can happen in there to increment the refcount, so this
-folio_put() might not be the last put, but we hold the folio locked the
-entire time, so many things which might be attempted will block on the
-folio lock.  In particular, nobody can remove it from the page cache,
-so its refcount cannot reach 0 until the last folio_put() of the
-sequence.
 
