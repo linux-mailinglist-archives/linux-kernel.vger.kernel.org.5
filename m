@@ -1,98 +1,151 @@
-Return-Path: <linux-kernel+bounces-120606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C6B688DA25
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:21:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB96A88DA32
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2654B29C5C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:21:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EEFDB21E3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B17383A3;
-	Wed, 27 Mar 2024 09:21:26 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1082D381B0;
+	Wed, 27 Mar 2024 09:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Bv3ns0y1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aObx3p/a"
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEC038393
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 09:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B523A28B;
+	Wed, 27 Mar 2024 09:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711531286; cv=none; b=NstJY0d7s8O6fBwc3Rg4EvdEzoh9JlP6mV0mNIaecTirArDPVOqUGXW+JsRpnj5WWXGPy/JbzF2S4UzNtTJEiowcuJWbQLPon3T/r/AxxgAK2XkB0e1Pgr6OjotUHh5NE+Zr/kBv1Ggs8coTbXXuyUTqMn526HSrNyPirjzQjnE=
+	t=1711531381; cv=none; b=uuYF4UVE5Sq1ph3Z+aDdlVmnjVnuLbVguuEiIdbQyMDiu1FNyk0nQZWZLTcZn5iJuJhcOIUFLnS8z0nPqaQQw5MIxn7VXilRoYsUN84zGrOjZ90eRl8HFxGANtI/KMye/gF0KlScdn83Rwu7WcFoZw2yWL7SIJm9sE4lrc8rbEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711531286; c=relaxed/simple;
-	bh=BTnJHFY/nt7PFY4PT3msCip+fzBmYxAGj/lUvuDySlw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CXlMfyN/IDECD8FXSIenTo9Whz/xPdDH+Pk4sA6w90/Dmu6OepPl9aE27oupjpz6kDbu3zWnrRpnpQ8cFHEUqG0YU0r40ZUyXvJ80xKfrkoELwyEaJE99wNr5rO46FUBY+wLsYvRs7O6RZWI0vKnyWk09sWDw30Ygsw0sGcwKuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so648521039f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 02:21:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711531284; x=1712136084;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8ReOWwslIB13Fq9t7nccy52B9153T7KjTEtXzz+65A8=;
-        b=Iio5ug+LTKawhME2XWGKYJ7F0qY6Upw+Wk9TMd+fuXi4kNZSxgAq8jVIyHhIYZo6f6
-         IBS0urODPN9hr9kLkvVRsoHDaWWX4QeLpLAYgXdjlsZKMURJMvXDp1xmtkx0hQrsEnz7
-         gSNRNExp8+8sMiEwFCuRfWdnDVf0/6GGJ/MTbghd+AzGJ8OMC9dim37mFNCbWHEh9V3L
-         iPxk5Pq6IAoMrCRQvXKrjRROS/oCMQlecckyxHUjwft1MhAiulmZPBi9MApZsBWEVIHA
-         H+hmZrd3gJ0DMAeNt4a62mMd18yBgYnFg8OVrmohw5ce/i6zw5gGRysKTEn+DeObOd2s
-         Ck9g==
-X-Forwarded-Encrypted: i=1; AJvYcCURRE68AkPBlqmGmg30Dxviggx2a0BpvrXamZOgnTz06+y/ImcaJsJ9wPc2DudXR+LcNYcmVh1V9gKc+oPgdDMkJ9u2Bb6+fSjcSWwP
-X-Gm-Message-State: AOJu0YxLERRUncAqQi2xyfNYG205kmdEYGiT6tcrzklKe3k23Rl6VEKH
-	pv5h4cs/ZLF+ZuH1RZv4Q9rRoD8sMCVfHrWaubspS0EOIaDQzh8yQo9zXvgw0tbVVxm6NUIAa33
-	WmvixKwBM0wHmOngK0HcqxG9nqZFuGxaP/qS9BOq43G21rZznGgyWvOM=
-X-Google-Smtp-Source: AGHT+IG2mSBwqqNlErV4Wnfic3Uyo2AfbnE/SxUf4IRcmKE1tix18e348CPFw2dnX/bz968AcHk7NtqOELZN8TZt7UniSbLlX0YR
+	s=arc-20240116; t=1711531381; c=relaxed/simple;
+	bh=Re5z3X7pBCz94DmXmRZdc2lzjhrBFzVyIsdRv3vt234=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=SSfa/X2mL4VT1HI0Sd9SeYrTbYPOkSLV4IAOVxdpyQu3UXsFROEmgt1De3AO9BHJ0h28ebJkepoXTy2GK2y/z/2RP0ehqe9Y10ixq9nE45ZL9i+GWQR+WrxqsUi08a61CjKkqd0TzbMB00NBLfqHATUR5dybNdHVyVx0P7UTmpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Bv3ns0y1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aObx3p/a; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 75B211C0009D;
+	Wed, 27 Mar 2024 05:22:55 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 27 Mar 2024 05:22:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1711531374; x=1711617774; bh=EuhV5oR6Xt
+	SBm/DNGntleXF/S1OUvOHdAvFWPaD79QY=; b=Bv3ns0y1U+nkyPBufPGObdsdvq
+	tGcjRODX8qHyjeFkM6QI8p1JG2xCNygnPoylEshDObtoBG8H8DPPssjVQO+tnrCX
+	8nc2Q9w1WDCm0XAtSPX1c0lsTvBKWIeDdiDXkd0n77aX7QKVHzpSg+p82aXHUQBE
+	6ZaR8+h/ht9OqhBK3IkVvYQwzReKPkIJvCqwh5XLWb3808fQLIhGwjj8V0a29EEG
+	USnt+sEy68Xqqt1ksCgih4o8+wZgc2KDrdDDuvKqcJrvycf7xtn0cEm7Ka8EKS+y
+	y53NNvCOhx74w2dkUwx2iMPWrOeU4T+Gm4nTIZ2nEcmnNrax4PkNlGGzxhew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711531374; x=1711617774; bh=EuhV5oR6XtSBm/DNGntleXF/S1OU
+	vOHdAvFWPaD79QY=; b=aObx3p/anYEx/+gNcxae1ppxtOMe0uoey9wDiYLRIgn5
+	0EylZ+JJ4Zh3u/zvPwG7BTJm/a+ZKyn4h9PemfXBHLfH7inF8AayDY1FfS4ecXVy
+	l6wSE9mxuVt/idSlWdnUMpmYgdc1DFWSKm21HVTth74FL9EIekLKI6TS1RUicdSC
+	QNDHZYWerpygSJRPssHozwPA7fZfJCewMijK9+rOQ7lQ42NPctXa/JKu645yVwEJ
+	MAoxQ+NNF7kc4crmgbwUvLSfQaXawZGJQ8ctKQI0EK16dkJsW1pE0TSDDMC3ZE8J
+	s87QEcz4pTWxVCBBou9oadve43AGiESj0N1kOkgLZw==
+X-ME-Sender: <xms:beUDZoUC1y0lQaZPUwlMgU2nEVXP7ErOHYi89K3dshUCC87x1_lw3Q>
+    <xme:beUDZsmsYaFwr-YMg6bVARYbV2gIPNlVAG9HsPRyRx2p_Zg2TGO7mycwHJUjF3Fwk
+    nYa2BeP9wUQXerpuk4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduhedgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:beUDZsZ_fwYzTPkRd8ri3TN4glA4zeAXMpE0y0m8CoyYtU3Xh4yg4g>
+    <xmx:beUDZnW3gBSej8EQ8HjifqdCr_iUGH_6ZSEYe5IlkHXl-4VPKB6fQg>
+    <xmx:beUDZin_wDETtHzZou3o7e73zigpqXYCnmhfCA1fiLeWv3gcUTdbhw>
+    <xmx:beUDZscWHt3wsD7uf-xIF5uIH21CCQqfn3gw6cNbkteTU5WyCLTErA>
+    <xmx:buUDZg0z7rR8XfmmYBPhLjz1bLE_F2NQV-4beb7lU4qAMhFOb4x5cwSAekY>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5B925B6008D; Wed, 27 Mar 2024 05:22:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:628c:b0:47e:b8b2:dd80 with SMTP id
- fh12-20020a056638628c00b0047eb8b2dd80mr66686jab.3.1711531284151; Wed, 27 Mar
- 2024 02:21:24 -0700 (PDT)
-Date: Wed, 27 Mar 2024 02:21:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000036cf020614a0eed8@google.com>
-Subject: [syzbot] Monthly arm report (Mar 2024)
-From: syzbot <syzbot+listcb18b8c90f9e4d847c17@syzkaller.appspotmail.com>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <07c604d1-6304-4ff8-844b-03c3d5c727ad@app.fastmail.com>
+In-Reply-To: <87edbwglle.fsf@intel.com>
+References: <20240326144741.3094687-1-arnd@kernel.org>
+ <20240326144741.3094687-2-arnd@kernel.org> <87jzlohhbc.fsf@intel.com>
+ <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
+ <87edbwglle.fsf@intel.com>
+Date: Wed, 27 Mar 2024 10:22:30 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Jani Nikula" <jani.nikula@linux.intel.com>,
+ "Arnd Bergmann" <arnd@kernel.org>, linux-kbuild@vger.kernel.org,
+ "Masahiro Yamada" <masahiroy@kernel.org>,
+ "Harry Wentland" <harry.wentland@amd.com>,
+ "Alex Deucher" <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Lucas De Marchi" <lucas.demarchi@intel.com>,
+ "Oded Gabbay" <ogabbay@kernel.org>,
+ "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+ "Maxime Ripard" <mripard@kernel.org>,
+ "Thomas Zimmermann" <tzimmermann@suse.de>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Andrew Jeffery" <andrew@codeconstruct.com.au>,
+ "Linus Walleij" <linus.walleij@linaro.org>, "Joel Stanley" <joel@jms.id.au>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Nathan Chancellor" <nathan@kernel.org>
+Cc: "Nicolas Schier" <nicolas@fjasle.eu>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ linux-mm@kvack.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more consistent
+Content-Type: text/plain
 
-Hello arm maintainers/developers,
+On Wed, Mar 27, 2024, at 08:50, Jani Nikula wrote:
+> On Tue, 26 Mar 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
+>> On Tue, Mar 26, 2024, at 21:24, Jani Nikula wrote:
+>>> On Tue, 26 Mar 2024, Arnd Bergmann <arnd@kernel.org> wrote:
+>>
+>> It works now.
+>>
+>> The original __diag_ignore_all() only did it for gcc-8 and above
+>> because that was initially needed to suppress warnings that
+>> got added in that version, but this was always a mistake.
+>>
+>> 689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes
+>> warning for all supported GCC") made it work correctly.
+>
+> Oh, nice! Then I think we'd like to go back to __diag_ignore_all() in
+> i915 and xe.
+>
+> The diff is below. I'm fine with you squashing it to your patch, or if
+> you want me to turn it into a proper patch for you to pick up in your
+> series, that's fine too. Just let me know.
 
-This is a 31-day syzbot report for the arm subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/arm
+I think I'd prefer to keep my patch simpler for the moment and
+get that merged through the kbuild tree, it already touches
+too many places at once.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 4 issues are still open and 4 have been fixed so far.
+It may be better for me to just drop the drivers/gpu/ part of
+my patch so you can just just take your patch through the
+drm tree. I actually have a similar patch for the amdgpu driver
+that I can send if you like this option better.
 
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 924     Yes   BUG: bad usercopy in fpa_set
-                  https://syzkaller.appspot.com/bug?extid=cb76c2983557a07cdb14
-<2> 22      No    WARNING in delayed_work_timer_fn
-                  https://syzkaller.appspot.com/bug?extid=e13e654d315d4da1277c
-<3> 8       No    WARNING in do_sve_acc
-                  https://syzkaller.appspot.com/bug?extid=95ffb6a83b20ea7f4f55
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+    Arnd
 
