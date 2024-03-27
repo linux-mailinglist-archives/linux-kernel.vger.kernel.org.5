@@ -1,60 +1,55 @@
-Return-Path: <linux-kernel+bounces-120797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D41588DD98
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:09:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC42288DDA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C7C1F28F82
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:09:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EC3D28F5B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54BF130493;
-	Wed, 27 Mar 2024 12:07:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA021304B8;
+	Wed, 27 Mar 2024 12:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HJzoNP4A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kusuduHC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA36212DDB9;
-	Wed, 27 Mar 2024 12:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ED812E1CE;
+	Wed, 27 Mar 2024 12:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541230; cv=none; b=CWbj1Ujc048NoUHP65FiXdzyV5ChhBR1i0r3ACAt/I3WWs5eUAsMKgp96SneN7pgjqDwtLPjvecwtrUOHaSRwgT8iCxOwrpRTOJ/N48WiYVd6+vcTHwIkxxcFXfcCl1wraQanvJWjJchTr6ZubrCQGThWbLZFEDT9mJ8YQBXK8M=
+	t=1711541232; cv=none; b=sTcvoF4mBuY1c/vd28/NCklpz1Nr3zWSwWyvN82seOdVHmPugdrZAz4iTdz/SUSZYgBv39CujejFQTPpO9JJzWeJXoQF3UejpGES1MoR2WqxzID74mNdnvMmC2dXaDi6B/MhD5uZbuXqzKPF0zBJJqmZPJ+yN9WqUX1HDFZLCOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541230; c=relaxed/simple;
-	bh=e0jwUDxnfqvuaRUSNqWyuGO0eTgvs/zfbMsXeoNEbGg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vGVSYEVJVzno5nvsa4cJRNimcM4fYWOfPijuA4pMd9vrh4dVcHCs2fkJ5Xp7is7koPDGgoTJTj/jumn6Y533RdsxteN10P76pg2zLgwzZ+Icd4KCBhp4lU/HRb/ofEX9rUt01TGEhQ8ZZkF1vjMJP1wODUTxxquHZYD0qSXDP1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HJzoNP4A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA78C433C7;
-	Wed, 27 Mar 2024 12:07:08 +0000 (UTC)
+	s=arc-20240116; t=1711541232; c=relaxed/simple;
+	bh=CoSnL3qPQEJOccnboM8Yx9diAo3ePi4BoTAGB2yAXic=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qRvhJ01oDNgKEgPwGMjXO58pajDUqiGYtastNjJ19fuvzklDn1PVFWr5INHU/fj+5nnHLen+YGGalq8eNUnyf3Eo9xEGjucTPq22QbCju5hlgShn6HqH775HCptwEMI5DenNQHRv9130n9OU66j9gj558G8p0s6yvoKtbCPFF30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kusuduHC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 369F2C433F1;
+	Wed, 27 Mar 2024 12:07:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541229;
-	bh=e0jwUDxnfqvuaRUSNqWyuGO0eTgvs/zfbMsXeoNEbGg=;
+	s=k20201202; t=1711541232;
+	bh=CoSnL3qPQEJOccnboM8Yx9diAo3ePi4BoTAGB2yAXic=;
 	h=From:To:Cc:Subject:Date:From;
-	b=HJzoNP4Am9wAYEmDjoSSCTWcUGaLchNCOFnenK8D+cHIraq5F/0LzlVFuQCw9zcWx
-	 RjlBAGJFenXkmjO62x4V/dWURyPRcf3hAbn6Qx7r5yedMlsaYufF2OhzYf4HAOklXR
-	 3LNO6zO5+/tROh1Du2zN65tzDHRNgsvwPb+UQ10U7q51eZlnHQDRtWI4hwF+wk6osZ
-	 WWlq2vl+YtmgdTyVA5SoUQbaNAD4QkYNLjpdMFJ3KQ6yHA1ALCV77WUPXI60IV2A3F
-	 W/2KlaWZ0p6qCmmqZa0HHuDDyrr3xEyY6W4wQWqjALrYG1zda33z0ssofzd9hUbNht
-	 Xkmtpec2Dv75Q==
+	b=kusuduHCFxJ2UTor5ojALVKldcK3CkkUOAGYBHYYY5APRWeU5S2a0qni1b11ZM9VQ
+	 arBY6xHXhA9nZlPabBJhR9QTNMbRFLAu0oZcY+S6Zn5qbjOHxAmRTWN4aoB/tQPkp/
+	 /N5RQBgCNwNBcHjjmRi/qHLg7gTG8+Yb1mjb3OPj+dARjNoT0tYNpIgceiVMhz19Jx
+	 cgTM9SHzReK+iOLkgoqBs59PWHbZiCUAOaDDqJojmXWoZg8gy6k+M0nLKBn+Ovt6GC
+	 VMJLplhH/QjcbpglpVlnNpqQxkjovhRVAy1iZfocGPLuFUO8vt8lcGJPnpSmUM/GLK
+	 7SX1tdzRbbJyA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	srinivasan.shanmugam@amd.com
-Cc: Jerry Zuo <jerry.zuo@amd.com>,
-	Jun Lei <Jun.Lei@amd.com>,
-	Wayne Lin <Wayne.Lin@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+	nathan@kernel.org
+Cc: Alex Deucher <alexander.deucher@amd.com>,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "drm/amd/display: Fix uninitialized variable usage in core_link_ 'read_dpcd() & write_dpcd()' functions" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:07:07 -0400
-Message-ID: <20240327120707.2825157-1-sashal@kernel.org>
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: FAILED: Patch "drm/amd/display: Increase frame-larger-than for all display_mode_vba files" failed to apply to 6.8-stable tree
+Date: Wed, 27 Mar 2024 08:07:10 -0400
+Message-ID: <20240327120710.2825195-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,57 +71,68 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 3295580d4683bdc56c0662b4a4834f597baceadc Mon Sep 17 00:00:00 2001
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Date: Wed, 17 Jan 2024 08:41:52 +0530
-Subject: [PATCH] drm/amd/display: Fix uninitialized variable usage in
- core_link_ 'read_dpcd() & write_dpcd()' functions
+From 321036db915bc647d04750337eb002022c912857 Mon Sep 17 00:00:00 2001
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Mon, 5 Feb 2024 14:54:05 -0700
+Subject: [PATCH] drm/amd/display: Increase frame-larger-than for all
+ display_mode_vba files
 
-The 'status' variable in 'core_link_read_dpcd()' &
-'core_link_write_dpcd()' was uninitialized.
+After a recent change in LLVM, allmodconfig (which has CONFIG_KCSAN=y
+and CONFIG_WERROR=y enabled) has a few new instances of
+-Wframe-larger-than for the mode support and system configuration
+functions:
 
-Thus, initializing 'status' variable to 'DC_ERROR_UNEXPECTED' by default.
+  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20v2.c:3393:6: error: stack frame size (2144) exceeds limit (2048) in 'dml20v2_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
+   3393 | void dml20v2_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
+        |      ^
+  1 error generated.
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dpcd.c:226 core_link_read_dpcd() error: uninitialized symbol 'status'.
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dpcd.c:248 core_link_write_dpcd() error: uninitialized symbol 'status'.
+  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:3520:6: error: stack frame size (2192) exceeds limit (2048) in 'dml21_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
+   3520 | void dml21_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
+        |      ^
+  1 error generated.
+
+  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20.c:3286:6: error: stack frame size (2128) exceeds limit (2048) in 'dml20_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
+   3286 | void dml20_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
+        |      ^
+  1 error generated.
+
+Without the sanitizers enabled, there are no warnings.
+
+This was the catalyst for commit 6740ec97bcdb ("drm/amd/display:
+Increase frame warning limit with KASAN or KCSAN in dml2") and that same
+change was made to dml in commit 5b750b22530f ("drm/amd/display:
+Increase frame warning limit with KASAN or KCSAN in dml") but the
+frame_warn_flag variable was not applied to all files. Do so now to
+clear up the warnings and make all these files consistent.
 
 Cc: stable@vger.kernel.org
-Cc: Jerry Zuo <jerry.zuo@amd.com>
-Cc: Jun Lei <Jun.Lei@amd.com>
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Closes: https://github.com/ClangBuiltLinux/linux/issue/1990
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dml/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c
-index 5c9a30211c109..fc50931c2aecb 100644
---- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c
-+++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_dpcd.c
-@@ -205,7 +205,7 @@ enum dc_status core_link_read_dpcd(
- 	uint32_t extended_size;
- 	/* size of the remaining partitioned address space */
- 	uint32_t size_left_to_read;
--	enum dc_status status;
-+	enum dc_status status = DC_ERROR_UNEXPECTED;
- 	/* size of the next partition to be read from */
- 	uint32_t partition_size;
- 	uint32_t data_index = 0;
-@@ -234,7 +234,7 @@ enum dc_status core_link_write_dpcd(
- {
- 	uint32_t partition_size;
- 	uint32_t data_index = 0;
--	enum dc_status status;
-+	enum dc_status status = DC_ERROR_UNEXPECTED;
- 
- 	while (size) {
- 		partition_size = dpcd_get_next_partition_size(address, size);
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+index 6042a5a6a44f8..59ade76ffb18d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+@@ -72,11 +72,11 @@ CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn10/dcn10_fpu.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/dcn20_fpu.o := $(dml_ccflags)
+-CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20.o := $(dml_ccflags)
++CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20.o := $(dml_ccflags) $(frame_warn_flag)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20.o := $(dml_ccflags)
+-CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
++CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags) $(frame_warn_flag)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
+-CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
++CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags) $(frame_warn_flag)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
 -- 
 2.43.0
 
