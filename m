@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-121227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742E388E429
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:54:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF3EB88E42B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE222A41C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:54:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CDB51C2B7A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD6C18C9D5;
-	Wed, 27 Mar 2024 12:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EE218C9EE;
+	Wed, 27 Mar 2024 12:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SkvKGWKc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZlQTrvO4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82451411E1;
-	Wed, 27 Mar 2024 12:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D841411ED;
+	Wed, 27 Mar 2024 12:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542402; cv=none; b=XBC8kNyPRlwwkLTjfX3WakFETr5PxaLYcKNUTsbzpSP6BEN3TMMIthGW+FrJMf0jUOrITn0TUzHAnZ4N1Ch/VPnE9ICV7hFBg/dSEyoi8GTAr8e1FyIO+pf6hZSNOjH054/cyWImLR0x0YVy/yXRIi3NkaiucFBkeAmjoum1G0E=
+	t=1711542405; cv=none; b=GKI1mlXwDMaBBmdiVu3lAt+q78tglIZakCACJ02oWr/xVMhP2fXye4tXOUy3uj5v0dgdu1x0o043Qgon7mnogQOqODjZlgG9VASSSKkl6Kdl0YT5mE9JQuq5uPxBzMYP7/7nCmr78OkO8Xq9dycJOOXnwT/3hwJr66i75vetmNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542402; c=relaxed/simple;
-	bh=pEtsKa8gK5hqjqregu5jZida+iQIstpz2eDtMNBXCSw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hwHoJt/Vz+5id6NhVnqUQzUOchodFtp4ghaiMqdFUla8gH6BBa0H0uTdH9d0DSDFpAJYTMN5yurGlKzJGLX5dz76c2GPv22RYJVNVKsCl8eZW5gNS24xQ4l1fqukCQFmgwo6LzPiclbaJTtl1pfK/wfwLx7kL7VOUafH/fuhNMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SkvKGWKc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D62C433F1;
-	Wed, 27 Mar 2024 12:26:41 +0000 (UTC)
+	s=arc-20240116; t=1711542405; c=relaxed/simple;
+	bh=GmeKlkNLUaS/w5sqHZUfTZPWxqKPVKXvoNIaWRL/jzA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JLwib6WkO7G2vLfHYp65BlCNnfWmzGG0ICLhD10bCiKaNgnq1rztWCfWD8WXBXUKjXUqwbry7YW8imBniHbZ7ptBV41+eN9qcqOJX2lp58UfDOO3X6P8Uzbnkhc7OLk2XQ4eFr8tqbHS8t15/KBjMyTb0Gv4iMIDFlm6ZbL/oA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZlQTrvO4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9AE3C433C7;
+	Wed, 27 Mar 2024 12:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542402;
-	bh=pEtsKa8gK5hqjqregu5jZida+iQIstpz2eDtMNBXCSw=;
+	s=k20201202; t=1711542404;
+	bh=GmeKlkNLUaS/w5sqHZUfTZPWxqKPVKXvoNIaWRL/jzA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=SkvKGWKc9uAlAStUs6S8oFSdYAWBiofDWfVMJECdZA4NTF14YlWpJrCVp/WQ9prc+
-	 duY35QVS5zFN4+gyuNxjfZqdricSn5tfKJ2gkVutDCFbvU/zpj4WAOWEH7CkTbtRhP
-	 iKTCvbaGuFUOy1Ad2Sq6fwukZEivf+WtEXKgXaZyKBAvwr1YdDazAzbH3VcOvI3AhU
-	 bpRk6M4b7TMSo0HZYZVmQtSf9+Qev8pwcCDxUlR45i2Zwi0gielAeWYFRdK/nE3Pcv
-	 N7BFmeQYPPthWNFmkWBcH87nXiuPfurByrBxxLMBhKumjYfZ7/+vtLi5F9AjthD1zv
-	 ubIae3TVrDZKw==
+	b=ZlQTrvO4GtcvMgBW8OMNzp6hJ+pBdJo6iCi9XRAytEOGcsrVK8jReCD37CQ2vgmaJ
+	 Io6NyP5vpp+zyNnQb1TyryJzGmhcxVQGIJvsqLmWKj7/2XZKt27YEGjOKvIRm/Js7/
+	 aB+ixxFpg40JQhOYI/d3qD8U/R4y97v+MOGEAUMJ/1rL6BW2Ho+zXAFqhdlad8KoDA
+	 hFeFkYedQL5kTp0V7wj4OWflJy4TbEpdy07+8GAKAJ8XC9Z6cDsWKkJyvKerxb8Ujz
+	 bs0aFmuNDscV7y/TwwhDIviXIZoP4JfkWDRu6B1ieyU70ut+ZQUjYGnCpyG45MbX/l
+	 +sCOwV6pHQOKw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	nathan@kernel.org
-Cc: Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: FAILED: Patch "drm/amd/display: Increase frame-larger-than for all display_mode_vba files" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:26:40 -0400
-Message-ID: <20240327122640.2841265-1-sashal@kernel.org>
+	david@redhat.com
+Cc: stable@kernel.org,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "virtio: reenable config if freezing device failed" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:26:42 -0400
+Message-ID: <20240327122643.2841302-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,68 +72,48 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 321036db915bc647d04750337eb002022c912857 Mon Sep 17 00:00:00 2001
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Mon, 5 Feb 2024 14:54:05 -0700
-Subject: [PATCH] drm/amd/display: Increase frame-larger-than for all
- display_mode_vba files
+From 310227f42882c52356b523e2f4e11690eebcd2ab Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Tue, 13 Feb 2024 14:54:25 +0100
+Subject: [PATCH] virtio: reenable config if freezing device failed
 
-After a recent change in LLVM, allmodconfig (which has CONFIG_KCSAN=y
-and CONFIG_WERROR=y enabled) has a few new instances of
--Wframe-larger-than for the mode support and system configuration
-functions:
+Currently, we don't reenable the config if freezing the device failed.
 
-  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20v2.c:3393:6: error: stack frame size (2144) exceeds limit (2048) in 'dml20v2_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
-   3393 | void dml20v2_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
-        |      ^
-  1 error generated.
+For example, virtio-mem currently doesn't support suspend+resume, and
+trying to freeze the device will always fail. Afterwards, the device
+will no longer respond to resize requests, because it won't get notified
+about config changes.
 
-  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_mode_vba_21.c:3520:6: error: stack frame size (2192) exceeds limit (2048) in 'dml21_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
-   3520 | void dml21_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
-        |      ^
-  1 error generated.
+Let's fix this by re-enabling the config if freezing fails.
 
-  drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn20/display_mode_vba_20.c:3286:6: error: stack frame size (2128) exceeds limit (2048) in 'dml20_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than]
-   3286 | void dml20_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
-        |      ^
-  1 error generated.
-
-Without the sanitizers enabled, there are no warnings.
-
-This was the catalyst for commit 6740ec97bcdb ("drm/amd/display:
-Increase frame warning limit with KASAN or KCSAN in dml2") and that same
-change was made to dml in commit 5b750b22530f ("drm/amd/display:
-Increase frame warning limit with KASAN or KCSAN in dml") but the
-frame_warn_flag variable was not applied to all files. Do so now to
-clear up the warnings and make all these files consistent.
-
-Cc: stable@vger.kernel.org
-Closes: https://github.com/ClangBuiltLinux/linux/issue/1990
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 22b7050a024d ("virtio: defer config changed notifications")
+Cc: <stable@kernel.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Message-Id: <20240213135425.795001-1-david@redhat.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/gpu/drm/amd/display/dc/dml/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/virtio/virtio.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index 6042a5a6a44f8..59ade76ffb18d 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -72,11 +72,11 @@ CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn10/dcn10_fpu.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/dcn20_fpu.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20.o := $(dml_ccflags)
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index f4080692b3513..f513ee21b1c18 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -510,8 +510,10 @@ int virtio_device_freeze(struct virtio_device *dev)
+ 
+ 	if (drv && drv->freeze) {
+ 		ret = drv->freeze(dev);
+-		if (ret)
++		if (ret) {
++			virtio_config_enable(dev);
+ 			return ret;
++		}
+ 	}
+ 
+ 	if (dev->config->destroy_avq)
 -- 
 2.43.0
 
