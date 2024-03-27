@@ -1,83 +1,81 @@
-Return-Path: <linux-kernel+bounces-120334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB44988D5F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:40:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DE588D5F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8644929F3F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:40:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3F491C22CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3DC1401F;
-	Wed, 27 Mar 2024 05:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E8E175AA;
+	Wed, 27 Mar 2024 05:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E5bumHTB"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FTc0Ehpp"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898E010949;
-	Wed, 27 Mar 2024 05:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5A6FC18;
+	Wed, 27 Mar 2024 05:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711518038; cv=none; b=XDZl2qTvrAyJXU4OAiVhOxaDnc4UStgT2/99m+9o+q6rh3w8qmxog+sU8jYZniN50Q4IeMR5jcwwYk44d9fqNOtWGSs73Zi1fgZikdCsnQhVODMab7z4F/phIir11RWIU0cqD2X1fu2687/AOW2Olfrklu52ZN5yp/t52jsoJGE=
+	t=1711518173; cv=none; b=WGd4vSK97hesITAS3a9chw4D6dIYcNfm0dru2rgrs/W+cXKdxyKb3AAAFsLeaxd+7IOr6G+kcyDt62trnGUMwekBQHTZ/Cj016xH/LCyBDiYFluVpvDd6mEK6xNV2HQXV6KVoOd59+cIHBknKqBYBiM6whzWVkIy8FxohKTFzak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711518038; c=relaxed/simple;
-	bh=KKEp5sc6sFi1eq1upDmeSVzyDCa2sp6vUs9sPYMLjyc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FplMI7sffQLYvmR4GS1SXK9+gfuwCFEWDC43yfkz1qDizYoHHc7bntcqGzUQ0ZpDJ8K6bOpfJsq/TazUCjaaXKEQxTdI3eOr5GaVrx/3z0dsLLCGw2mV4csyqrjFy+QjwCJMbVkpjYgDLUgVy4Kr1WXjKg7VSvh2/M5pHVc2WM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E5bumHTB; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29ddfada0d0so3528544a91.3;
-        Tue, 26 Mar 2024 22:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711518036; x=1712122836; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tZcOrIhJIFiQ3b0HbHJAkzbepauO6QKGgBvXuK2i+pE=;
-        b=E5bumHTB1K3lkjysaMPWhzEFIJ+VQSmXGoInE33TPFLTiT2GMh1FYXXoLtyL3/3+em
-         d6M3exVi2oW7ypO46lvTQo1vwhPVvhfJVTx4Q7SQDPldWREv21BfGjcVTMav+Ll9fuyv
-         D95BV0P/q/Gm+d0uyqgyZtVkniZArCHIStK7Tyq3yCaNbUur0lHgpsaI8FBEuC5MGbel
-         ZIsZYWlK5hakVCiWg+ovqHPeUTEWWkKkeFJjZxrwNMFfJVde5pS9fWUaZofesJO+xYMa
-         Emd3NS4t3FVJmQrdml5punmrvg8xX+alRLUb/uCU8a1ZXPLJAh0fEwvp1Q3gDK7BhkeT
-         NNKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711518036; x=1712122836;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tZcOrIhJIFiQ3b0HbHJAkzbepauO6QKGgBvXuK2i+pE=;
-        b=C7FRoYQO90yyyq0cdjRt7JhFQq0pi8OQDl7QqrHKWCA8/Af8RIYQ6Ko+MqcH+8RTfH
-         a3X38dtIHeAsHBnRUfgyJlmNb1OIILkIW0gi0wbqkp29jPI4dunA8KoEi4ZYU+ZiZsfn
-         rpoZPpDRIF37PDrvHg0ct1e4gANgWhnOG7M2x2dYMAjbg8B0ms9n/9xUHApK6ASTCvei
-         ByCfcxgFATWTj5gdjYhbmZLfwVpfPQbeMiXXryDdGOcm2pZ4uqYKNZxJCpwvF4I1Wz+3
-         c11vRGcMPoJV4EAEt7J9QRuc4htcAKKiM+wLfWdPb8Pr03MhhrjFxR2SPMawmU1WzDl7
-         xLIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1wHYK8flyQW6Q4LqGuSxYpVYo3J7gP2ADDP1q2xsCM9xFJoKnnf1wCwVllAw4qcnl1G3QkQoeNDWUVzvksYCLbhdddW4+gpLx7bB6ZKsVH6nDuIRk9/HKyPo9HoGuM7cz4IwMasbAWdp+CmuPCBPFBpgc9QGSQOxbVqC5iqh1x7cbPg==
-X-Gm-Message-State: AOJu0Yz4ZXyY7Yg1hzkSdO/F5E0HKop05pbE50FviZiOl2HKWkHCKCjL
-	l1mDEPjlVTrfittq6Kpgdxcelq7YeNmSq+WhM7k8OCUw6i68izRdEGaJjuI1Gcjl+TXs
-X-Google-Smtp-Source: AGHT+IGOaG0gpfwiSadNSvtanAIQa1+D3zFUjfTLN9tDaL+YwYO90R+YQMEzTRrI0qcTfNjTzhrssA==
-X-Received: by 2002:a17:90b:2d83:b0:29c:720b:5f95 with SMTP id sj3-20020a17090b2d8300b0029c720b5f95mr4290548pjb.30.1711518035855;
-        Tue, 26 Mar 2024 22:40:35 -0700 (PDT)
-Received: from fedora.. ([2409:40f4:37:3d1f:3a25:2b3d:10de:3da2])
-        by smtp.gmail.com with ESMTPSA id y12-20020a17090a8b0c00b0029baf24ee51sm649437pjn.48.2024.03.26.22.40.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 22:40:35 -0700 (PDT)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: ata: ahci-da850: Convert to dtschema
-Date: Wed, 27 Mar 2024 11:10:10 +0530
-Message-ID: <20240327054014.36864-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711518173; c=relaxed/simple;
+	bh=QQaHLtuCVDpufz/dWiNPqyz029e9Y48ZpXiYSb0Ohnc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dqDa0FXHqe+FHZZtIVDuoD2Goz3p6Y75t85x8uv+qO68AcrSZE7D1F+O5F0tReot5Rss3WFJxEFfarlPS2mgyF6ZOLN0xKfZvA3zYvS0LCRhIl5ITnubFNglkDApXUcOsF2JnCsyeWhxcHC7VKQaY96bVs7I8uiSbdqgTrPFAT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FTc0Ehpp; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42R5gaEQ081137;
+	Wed, 27 Mar 2024 00:42:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711518156;
+	bh=ErIA36PB/xIN23wrInJjOe4P3aBvVzJ24Brluvn2JoU=;
+	h=From:To:CC:Subject:Date;
+	b=FTc0Ehppng+kGcqn3OxGjuZrHKLWTmSvNii/CiQjQuuEyZAXEbrdCPbTHdaAhxy6n
+	 FXXGLKPhVvug/npXMZnUee8OZu1dwZi/kyC+bBaBXy+Rg1X7y1MsMLruZq6/IrFSOG
+	 zLCV2cTrkc+fxyMMDHnXBC1l8wh4OwTp+83RmD2A=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42R5gavO002199
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 27 Mar 2024 00:42:36 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
+ Mar 2024 00:42:36 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 27 Mar 2024 00:42:36 -0500
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42R5gZE4092551;
+	Wed, 27 Mar 2024 00:42:36 -0500
+From: Chintan Vankar <c-vankar@ti.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+        Siddharth Vadapalli
+	<s-vadapalli@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Heiner
+ Kallweit" <hkallweit1@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Chintan Vankar <c-vankar@ti.com>, Andrew Lunn <andrew@lunn.ch>,
+        Roger Quadros
+	<rogerq@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet
+	<edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH net-next v4 1/3] net: ethernet: ti: am65-cpts: Enable PTP RX HW timestamp using CPTS FIFO
+Date: Wed, 27 Mar 2024 11:12:32 +0530
+Message-ID: <20240327054234.1906957-1-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,90 +83,131 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Convert the ahci-da850 bindings to DT schema.
+CPTS module supports capturing timestamp for every packet it receives,
+add a new function named "am65_cpts_find_rx_ts()" to get the timestamp
+of received packets from CPTS FIFO.
 
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+Add another function named "am65_cpts_rx_timestamp()" which internally
+calls "am65_cpts_find_rx_ts()" function and timestamps the received
+PTP packets.
 
+Signed-off-by: Chintan Vankar <c-vankar@ti.com>
 ---
-Changes in v2:
-- Added description for reg property items.
----
- .../devicetree/bindings/ata/ahci-da850.txt    | 18 ---------
- .../bindings/ata/ti,da850-ahci.yaml           | 38 +++++++++++++++++++
- 2 files changed, 38 insertions(+), 18 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/ata/ahci-da850.txt
- create mode 100644 Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
 
-diff --git a/Documentation/devicetree/bindings/ata/ahci-da850.txt b/Documentation/devicetree/bindings/ata/ahci-da850.txt
-deleted file mode 100644
-index 5f8193417725..000000000000
---- a/Documentation/devicetree/bindings/ata/ahci-da850.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--Device tree binding for the TI DA850 AHCI SATA Controller
-----------------------------------------------------------
--
--Required properties:
--  - compatible: must be "ti,da850-ahci"
--  - reg: physical base addresses and sizes of the two register regions
--         used by the controller: the register map as defined by the
--         AHCI 1.1 standard and the Power Down Control Register (PWRDN)
--         for enabling/disabling the SATA clock receiver
--  - interrupts: interrupt specifier (refer to the interrupt binding)
--
--Example:
--
--	sata: sata@218000 {
--		compatible = "ti,da850-ahci";
--		reg = <0x218000 0x2000>, <0x22c018 0x4>;
--		interrupts = <67>;
--	};
-diff --git a/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
-new file mode 100644
-index 000000000000..b8f31187f34b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ata/ti,da850-ahci.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+Changes from v3 to v4:
+- No change in v4.
+
+Link to v3:
+https://lore.kernel.org/r/20240320102600.3418248-1-c-vankar@ti.com/
+
+ drivers/net/ethernet/ti/am65-cpts.c | 65 +++++++++++++++++++++++++++++
+ drivers/net/ethernet/ti/am65-cpts.h |  6 +++
+ 2 files changed, 71 insertions(+)
+
+diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+index c66618d91c28..040953ea8cc2 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.c
++++ b/drivers/net/ethernet/ti/am65-cpts.c
+@@ -906,6 +906,71 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+ 	return 1;
+ }
+ 
++static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, u32 skb_mtype_seqid)
++{
++	struct list_head *this, *next;
++	struct am65_cpts_event *event;
++	unsigned long flags;
++	u32 mtype_seqid;
++	u64 ns = 0;
 +
-+title: TI DA850 AHCI SATA Controller
++	am65_cpts_fifo_read(cpts);
++	spin_lock_irqsave(&cpts->lock, flags);
++	list_for_each_safe(this, next, &cpts->events) {
++		event = list_entry(this, struct am65_cpts_event, list);
++		if (time_after(jiffies, event->tmo)) {
++			list_del_init(&event->list);
++			list_add(&event->list, &cpts->pool);
++			continue;
++		}
 +
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
++		mtype_seqid = event->event1 &
++			      (AM65_CPTS_EVENT_1_MESSAGE_TYPE_MASK |
++			       AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK |
++			       AM65_CPTS_EVENT_1_EVENT_TYPE_MASK);
 +
-+properties:
-+  compatible:
-+    const: ti,da850-ahci
++		if (mtype_seqid == skb_mtype_seqid) {
++			ns = event->timestamp;
++			list_del_init(&event->list);
++			list_add(&event->list, &cpts->pool);
++			break;
++		}
++	}
++	spin_unlock_irqrestore(&cpts->lock, flags);
 +
-+  reg:
-+    items:
-+      - description: Address and size of the register map as defined by the AHCI 1.1 standard.
-+      - description: |
-+        Address and size of Power Down Control Register (PWRDN) for enabling/disabling the SATA clock receiver.
++	return ns;
++}
 +
-+  interrupts:
-+    maxItems: 1
++void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb)
++{
++	struct am65_cpts_skb_cb_data *skb_cb = (struct am65_cpts_skb_cb_data *)skb->cb;
++	struct skb_shared_hwtstamps *ssh;
++	int ret;
++	u64 ns;
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
++	/* am65_cpts_rx_timestamp() is called before eth_type_trans(), so
++	 * skb MAC Hdr properties are not configured yet. Hence need to
++	 * reset skb MAC header here
++	 */
++	skb_reset_mac_header(skb);
++	ret = am65_skb_get_mtype_seqid(skb, &skb_cb->skb_mtype_seqid);
++	if (!ret)
++		return; /* if not PTP class packet */
 +
-+additionalProperties: false
++	skb_cb->skb_mtype_seqid |= (AM65_CPTS_EV_RX << AM65_CPTS_EVENT_1_EVENT_TYPE_SHIFT);
 +
-+examples:
-+  - |
-+    sata@218000 {
-+        compatible = "ti,da850-ahci";
-+        reg = <0x218000 0x2000>, <0x22c018 0x4>;
-+        interrupts = <67>;
-+    };
++	dev_dbg(cpts->dev, "%s mtype seqid %08x\n", __func__, skb_cb->skb_mtype_seqid);
++
++	ns = am65_cpts_find_rx_ts(cpts, skb_cb->skb_mtype_seqid);
++	if (!ns)
++		return;
++
++	ssh = skb_hwtstamps(skb);
++	memset(ssh, 0, sizeof(*ssh));
++	ssh->hwtstamp = ns_to_ktime(ns);
++}
++EXPORT_SYMBOL_GPL(am65_cpts_rx_timestamp);
++
+ /**
+  * am65_cpts_tx_timestamp - save tx packet for timestamping
+  * @cpts: cpts handle
+diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
+index 6e14df0be113..90296968a75c 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.h
++++ b/drivers/net/ethernet/ti/am65-cpts.h
+@@ -22,6 +22,7 @@ void am65_cpts_release(struct am65_cpts *cpts);
+ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+ 				   struct device_node *node);
+ int am65_cpts_phc_index(struct am65_cpts *cpts);
++void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+ void am65_cpts_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+ void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+ void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en);
+@@ -48,6 +49,11 @@ static inline int am65_cpts_phc_index(struct am65_cpts *cpts)
+ 	return -1;
+ }
+ 
++static inline void am65_cpts_rx_timestamp(struct am65_cpts *cpts,
++					  struct sk_buff *skb)
++{
++}
++
+ static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+ 					  struct sk_buff *skb)
+ {
 -- 
-2.44.0
+2.34.1
 
 
