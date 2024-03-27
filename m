@@ -1,43 +1,54 @@
-Return-Path: <linux-kernel+bounces-121711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 806FE88ECD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:43:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1139988ECD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 18:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DC8128615F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:43:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4293C1C2813D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 17:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0D314C5AF;
-	Wed, 27 Mar 2024 17:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781AA14E2D8;
+	Wed, 27 Mar 2024 17:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ab/XZ32i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0631DFF4
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40D7142E9E;
+	Wed, 27 Mar 2024 17:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711561392; cv=none; b=GpULjysp9VmR5fTQ5cli5bH6FttX1Zd7b6bOr4qMOtJKYIAtlrLvLPPFykq0syJDanZrdECuOjl2T8FMIlxn8PbHrHXu0u84Li+jAzb7gxEVb3hpAMyBfCHuv1iq1jTwpD+b7ngX6bf0fmCWJfNrc8UmwcgF9x2pFXMkL8CajPc=
+	t=1711561421; cv=none; b=fTn3SLGLrgP9kkvnBWMEI73+uq6+cvdjOvPHnsdghQzXqEcuyGsjlGVBMVkbWoUxiD2mATGf7Vk6cq1as9FXq7LDgYm/ztrBGOAEOfl5MCOPYpiZMqHkT2VlyFxjWzWqf+5QvEGu/37t2EsCmi7wq9RzEGSFRXQP/9rxrio+kmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711561392; c=relaxed/simple;
-	bh=B1claC9P9AYA+Mf5t5vgP4Smp2dxfxXkmd0XFGZLQj4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BHV2kgTcPNicsEL9PO6lgB95j0qgVINpOtspPH1C8LTsT9XnhjMY3xzgPzfWzitgJWioEjMiWHDE9w9RELBicUboF8w86Wrhpb1bkh8++LVJ6rPDJ25q8NHe1IxyAP9G9GXQBEBcYW49Dd0D86gYO0Gxtc27MVGUVvF8MpXTcIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5B26C433C7;
-	Wed, 27 Mar 2024 17:43:10 +0000 (UTC)
-Date: Wed, 27 Mar 2024 17:43:08 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Audra Mitchell <aubaker@redhat.com>
-Subject: Re: [PATCH v2] mm/kmemleak: Don't hold kmemleak_lock when calling
- printk()
-Message-ID: <ZgRarOvI3Zhos9Gl@arm.com>
-References: <20240307184707.961255-1-longman@redhat.com>
- <20240307114630.32702099ac24c182b91da517@linux-foundation.org>
+	s=arc-20240116; t=1711561421; c=relaxed/simple;
+	bh=ZyctGTIpRZDmHcL8VpKW/j9XRl6gQ/zGsuOghb9KmJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KyTodRAV4nNw/rmsVwc6EWHJ/NBSUdtvqKgSYSvQgrVgIivEdi4v3ZAK/BHZrYgFfAJpZyDpxMPeIIeQfbkbpHcG6m5J0bQC0jtNgWhaZ3SRFhmJPfQMHCScw+mKyjJmVlh5klkTP/oar52BnMQhL5n24tFzQRFyoNrI4xe9pu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ab/XZ32i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC5A1C433F1;
+	Wed, 27 Mar 2024 17:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711561421;
+	bh=ZyctGTIpRZDmHcL8VpKW/j9XRl6gQ/zGsuOghb9KmJs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ab/XZ32iXTl0u1mXUWGif3sqrvLxqybsTviiEHPNiDpBFmr7r6EG5/eZ55xD0pa9i
+	 1+/oE+cZT2FSLsy6uUdfW9OIRZEktL/0WwyOaPO4E/L3Z//Rhc6KIBKDFXqiyAAXDX
+	 wiwa6SheazC98VXvZbv3qrPTOqw0xfJKnLxwQN1ZUbaFE7l6HbHkhBTaBW01Z3ERlI
+	 MhA6SFNvAsOplmDFWCR4HYovh9u5EmHmcIuXCEd7xVbnlkBtScMLYluLhQSaTCpGai
+	 wiJuO0Ewv/CdHGmHhXZM405AWdQUBUSqmP1pnu/xiqjtAbSTBw3jla0J5BzpyhjZa4
+	 CRX12JvhMhFag==
+Date: Wed, 27 Mar 2024 11:43:38 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2][next] wifi: wil6210: Annotate a couple of structs with
+ __counted_by()
+Message-ID: <ZgRayuCJ0gQinMvr@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,64 +57,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307114630.32702099ac24c182b91da517@linux-foundation.org>
 
-On Thu, Mar 07, 2024 at 11:46:30AM -0800, Andrew Morton wrote:
-> On Thu,  7 Mar 2024 13:47:07 -0500 Waiman Long <longman@redhat.com> wrote:
-> > When some error conditions happen (like OOM), some kmemleak functions
-> > call printk() to dump out some useful debugging information while holding
-> > the kmemleak_lock. This may cause deadlock as the printk() function
-> > may need to allocate additional memory leading to a create_object()
-> > call acquiring kmemleak_lock again.
-> > 
-> > An abbreviated lockdep splat is as follows:
-> >
-> > ...
-> > 
-> > Fix this deadlock issue by making sure that printk() is only called
-> > after releasing the kmemleak_lock.
-> > 
-> > ...
-> >
-> > @@ -427,9 +442,19 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
-> >  		else if (untagged_objp == untagged_ptr || alias)
-> >  			return object;
-> >  		else {
-> > +			if (!get_object(object))
-> > +				break;
-> > +			/*
-> > +			 * Release kmemleak_lock temporarily to avoid deadlock
-> > +			 * in printk(). dump_object_info() is called without
-> > +			 * holding object->lock (race unlikely).
-> > +			 */
-> > +			raw_spin_unlock(&kmemleak_lock);
-> >  			kmemleak_warn("Found object by alias at 0x%08lx\n",
-> >  				      ptr);
-> >  			dump_object_info(object);
-> > +			put_object(object);
-> > +			raw_spin_lock(&kmemleak_lock);
-> >  			break;
-> 
-> Please include a full description of why this is safe.  Once we've
-> dropped that lock, the tree is in an unknown state and we shouldn't
-> touch it again.  This consideration should be added to the relevant
-> functions' interface documentation and the code should be reviewed to
-> ensure that we're actually adhering to this.  Or something like that.
-> 
-> To simply drop and reacquire a lock without supporting analysis and
-> comments does not inspire confidence!
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-I agree it looks fragile. I think it works, the code tends to bail out
-on those errors and doesn't expect the protected data to have remained
-intact. But we may change it in the future and forgot about this.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Annotate one more struct.
+ - Update Subject line.
 
-I wonder whether we can actually make things slightly easier to reason
-about, defer the printing until unlock, store the details in some
-per-cpu variable. Another option would be to have a per-CPU array to
-store potential recursive kmemleak_*() callbacks during the critical
-regions. This should be bounded since the interrupts are disabled. On
-unlock, we'd replay the array and add those pointers.
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/ZgODZOB4fOBvKl7R@neat/
 
+ drivers/net/wireless/ath/wil6210/wmi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
+index 71bf2ae27a98..38f64524019e 100644
+--- a/drivers/net/wireless/ath/wil6210/wmi.h
++++ b/drivers/net/wireless/ath/wil6210/wmi.h
+@@ -474,7 +474,7 @@ struct wmi_start_scan_cmd {
+ 	struct {
+ 		u8 channel;
+ 		u8 reserved;
+-	} channel_list[];
++	} channel_list[] __counted_by(num_channels);
+ } __packed;
+ 
+ #define WMI_MAX_PNO_SSID_NUM	(16)
+@@ -3320,7 +3320,7 @@ struct wmi_set_link_monitor_cmd {
+ 	u8 rssi_hyst;
+ 	u8 reserved[12];
+ 	u8 rssi_thresholds_list_size;
+-	s8 rssi_thresholds_list[];
++	s8 rssi_thresholds_list[] __counted_by(rssi_thresholds_list_size);
+ } __packed;
+ 
+ /* wmi_link_monitor_event_type */
 -- 
-Catalin
+2.34.1
+
 
