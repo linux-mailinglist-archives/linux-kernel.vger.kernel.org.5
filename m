@@ -1,338 +1,176 @@
-Return-Path: <linux-kernel+bounces-120347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F29C488D616
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:52:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1438988D602
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 06:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E142A6465
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:52:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 375181C24DB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 05:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2FF1CAAF;
-	Wed, 27 Mar 2024 05:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151CB17565;
+	Wed, 27 Mar 2024 05:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PVvSXPPw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=alpsalpine.com header.i=@alpsalpine.com header.b="klBqQFEt"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2093.outbound.protection.outlook.com [40.107.114.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7FB1CD18;
-	Wed, 27 Mar 2024 05:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711518754; cv=none; b=M6W2vh4RhE+VPd2lgXnlLI0TzYljxai3wS041Ii7xAWKeMwzCwB2R/1al3kxW3NJaadVeNYux/S2AUUmAP6KoBtJYV3bgDPhxmBVeN4EatoVeeJll0ES3sb1CB7gPgQaC+UOzHlo6m7E9/85TE3/Os96MKx6MP3Kppvm/HGIIIA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711518754; c=relaxed/simple;
-	bh=8I1UH/rkKDL/ZnyryRvPe87zpb54lxeFGn61pTVax28=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=hIFw+ak+RNDzwKENSE0ZvQw9AvJaRnV1Bcy0/82poU6npZWfWvabvO1Z/uNOzIexD5SPK5XsxBrFc883jUNHu5/4sEst1v5LxppVGtkZUP8pFZpQHMqQLatedGCSWv4KqnFWPFqc5Bkuxa+TimgIS8co3EBpNbRSHWS8wwOhqeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PVvSXPPw; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711518753; x=1743054753;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=8I1UH/rkKDL/ZnyryRvPe87zpb54lxeFGn61pTVax28=;
-  b=PVvSXPPw/cFTaT0ojzTc2v54M27kxVDTPvldsPDOT3Tr+MMtW2r1LYwf
-   aPgNo/QN/JjlftnaFKcamC2JJ1TP0LJ13YJSbs6W9C5TSnyQV8z0grZzh
-   ptCGcaJzgxmngOFbVShP78J7c32iwO3Ylu3UC2GIQf+uNW2z2aE/C4zqk
-   gGp0mGUQ+MQIsb4GPwiA1rGKuvtfCw54+Hbo5hK5rAivn+6MQ2yvtmm18
-   IagcnaNx/GaVk5w5mcbOgIYseYwna/Fye9kUiDXknBzFyIrrd+EQOzZ6A
-   HZ9flE0wf74k+GDWaV6rcZc3u7oj++hRVr4NuokFAsy83J9racw4eU5bN
-   g==;
-X-CSE-ConnectionGUID: VbdRz39nT/G/IpAJnLbN1Q==
-X-CSE-MsgGUID: sNOU4J2wSAGQLCeS7E7HrQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6788890"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="6788890"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 22:52:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="20669703"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 22:52:26 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Cc: "Gregory Price" <gourry.memverge@gmail.com>,
-  aneesh.kumar@linux.ibm.com,  mhocko@suse.com,  tj@kernel.org,
-  john@jagalactic.com,  "Eishan Mirakhur" <emirakhur@micron.com>,
-  "Vinicius Tavares Petrucci" <vtavarespetr@micron.com>,  "Ravis OpenSrc"
- <Ravis.OpenSrc@micron.com>,  "Alistair Popple" <apopple@nvidia.com>,
-  "Srinivasulu Thanneeru" <sthanneeru@micron.com>,  Dan Williams
- <dan.j.williams@intel.com>,  Vishal Verma <vishal.l.verma@intel.com>,
-  Dave Jiang <dave.jiang@intel.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  nvdimm@lists.linux.dev,
-  linux-cxl@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mm@kvack.org,  "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,  "Ho-Ren
- (Jack) Chuang" <horenchuang@gmail.com>,  qemu-devel@nongnu.org,  Hao Xiang
- <hao.xiang@bytedance.com>
-Subject: Re: [PATCH v5 2/2] memory tier: create CPUless memory tiers after
- obtaining HMAT info
-In-Reply-To: <20240327041646.3258110-3-horenchuang@bytedance.com> (Ho-Ren
-	Chuang's message of "Wed, 27 Mar 2024 04:16:46 +0000")
-References: <20240327041646.3258110-1-horenchuang@bytedance.com>
-	<20240327041646.3258110-3-horenchuang@bytedance.com>
-Date: Wed, 27 Mar 2024 13:50:32 +0800
-Message-ID: <874jcsnryv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82F8D304;
+	Wed, 27 Mar 2024 05:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.114.93
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711518313; cv=fail; b=rl4Rw5oVBeIOEHc6Dp6t9d6aKChPI78HmJ8HCeQsjbulDTTFEOP68t8hIMk7s+/eaye/N8/YeBseUNm0aGihAR3ji1SZHTZLoBp+2oyB7hJBZqbldDsyMhwFwlD3JEXDQX/g6I0rhBexh9IUjV72sBPYMMxoQY4+QCG/cW3HqGI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711518313; c=relaxed/simple;
+	bh=Iw/53vxBsRihWl84U0I7kJcmefneVhb9Keu1IUavv3A=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=j+oH9588qYiFrg5+MHBkuXx+P7tPtDgPNJM+2Pln84Haf/gP5F3Kyz2f+plnKAGZqyLj+0iKiQ0lW1clmp2rzzw3gC4SqkHU7yh8KDZg9kQbImEc8UzDCRsZ/wR/sJniaru7+btqDKq39AblNgQ0TqF4Bm3f96mzO6evnxzcv5c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alpsalpine.com; spf=pass smtp.mailfrom=alpsalpine.com; dkim=pass (2048-bit key) header.d=alpsalpine.com header.i=@alpsalpine.com header.b=klBqQFEt; arc=fail smtp.client-ip=40.107.114.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alpsalpine.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpsalpine.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PntNfRmHlnEZ4kWOGb5AV3QKiGyyP+mz7SJSfEkQPxb4broKCoyJeFwwf9VZ1Wc83UOEh5DQBPExUQnZwVWVx7gYpDRoyR8zrqNVSkJbfGGEhIEFACo0zb5hP1GY8DmDrkitx13sJocb/+fRd8Dn0PygC+djsroC2hphi1tVc/34e2pDsJp7HJoNTgZIS4wuT+OEGZxRruEPLgXOHy52zHwXBlT+Rr6vimzYGPzkV8IQbNfFopb6PTuHYCwI//bWLLLLBlOeGgmXU+A5Xaad8xnQq5DpEd6uFNGJVhiq7zpfzTGFYijjfAW4hYrqgwb0CPh3389+aAvnh+yPUsf1gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a6g1k8vaWviVcenabrA4wGTHHxp/jKeST2qd+QA+Ps8=;
+ b=QFe2pcoBYrOW77VHr1kfyaXD9Pce8MTUGQD5h307h0wDv06T8w+UmK7GnRhSm9uMwUGSYbxTg6PUB0pP8ly/bqhnE0WClp43hZRoCnukmata0rkOyq+EzHZ1HKdI2Lv9hII/7et0XI4ioyC65ZzhqfvN3f3CMVmeRiRI7x2IZgxkkh8Q1BVH99TOh8nnwKYh4SFoKv3QLUaDX4ZX1oQS2mHYG1xd/2detJC5u800yFPETWi0vhiPLFTI2nOY2a8NR7AWun6thVWraFlw41Fo7VBPlOGVEhZUYusKe/1a1ZDtAMCl3hKkZXBu8WvTBItIiYX7v6M4zDlqgfsFZbH0bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=alpsalpine.com; dmarc=pass action=none
+ header.from=alpsalpine.com; dkim=pass header.d=alpsalpine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alpsalpine.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a6g1k8vaWviVcenabrA4wGTHHxp/jKeST2qd+QA+Ps8=;
+ b=klBqQFEtIqAH8E3EmeXDDpERbPgk7qX5KRhezajtQqquNuOpNOnlFueHe3HsEkZCVGtZM4JDHvHOVezWiIaRsPCdxMpIqRA7NSuQQPVg9Ui6lgFZg6wauNhripe52Gn7FCgcQBURO1cFxgIptF0Cr719B9yZspQJinrloHYkkojCvnavgTpFx0yl0teo7DhcL+Avp/QBvlMIUylNPNI2H40CeyiV3ZW4NKD2Q92bVc+kRDNlrcfGiC5QquzlSgGXZ7YigXI3ug/kH44Y3bHs/Qb2kY8AAflg1gfhpt3O1XmCR4Ii3wejXyEtv2L3O0xk0HhJws48oVnN3oGr4/ZYMA==
+Received: from TYVPR01MB10781.jpnprd01.prod.outlook.com
+ (2603:1096:400:2ae::14) by OSZPR01MB9329.jpnprd01.prod.outlook.com
+ (2603:1096:604:1d7::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 27 Mar
+ 2024 05:45:08 +0000
+Received: from TYVPR01MB10781.jpnprd01.prod.outlook.com
+ ([fe80::b541:f53c:6306:6e2b]) by TYVPR01MB10781.jpnprd01.prod.outlook.com
+ ([fe80::b541:f53c:6306:6e2b%4]) with mapi id 15.20.7409.031; Wed, 27 Mar 2024
+ 05:45:08 +0000
+From: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+To: stern@rowland.harvard.edu,
+	gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org,
+	usb-storage@lists.one-eyed-alien.net,
+	linux-kernel@vger.kernel.org
+Cc: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+Subject: [PATCH] usb-storage: Optimize scan delay more precisely
+Date: Wed, 27 Mar 2024 14:51:30 +0900
+Message-Id: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
+X-Mailer: git-send-email 2.17.1
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0200.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:385::6) To TYVPR01MB10781.jpnprd01.prod.outlook.com
+ (2603:1096:400:2ae::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYVPR01MB10781:EE_|OSZPR01MB9329:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	V+Y8tbVRDXKvLFTdI3Md7n8pWxerRyvpm8G+kUzUdrvgTf3I8ts97gTgYdmz+6qdlARQZuHDW6LhY//GvZoXlqYljxQsbGB2QQ/Hep7lujlhTBL1J5782DHYhO6osmCb0Kb16JjUBcaeeyIttKFYwcZD2h+CPGYq2zFCrlLtnfeyiY/gBTSbO6wTM4CSoIwgbdWhIl5K1UaviJWsqPiYAcZ/TMhea5+MBE2Xhj6Q5hd5yVF8QNGIn7m++4gF3QJMYme6VsFQyucIZOuuLbR9xE8jS1fjxtXvnt7Eo2/ntveGAm/OmWn3coD8byrIewknS0zIexJkHhtLBoG7+H+sMMeeUZ6hN7w1c835SYZjxojDsOGeea+DwR98B2Fgt+ejx8R78fvBPlV1CTyd+D6GCB+f02nKD59VpEUDhnCvKT2LrCPJxlN9iS+XPIRtEJlLxhG/ZGslqmTPqzCw+2NP4jEQbEgZ4OkOrIli3qq4P+1JxJaVLJdvJB4e03P+wr+R5Pi7lZLJrNGFrhNJ92uXC7yRUVDCNNqVxnXfDYrtYwfDqeHORX5zg5xZpEV7hlp8gd9g2KgGrsNz7p57eqgIs8YQJyPph7vtchsLNRWvmLqiYG3fm3ZR7hYsgmPQa2zQ9b5GK5jIPAesYi54NN3p3Q43sspdzTWUoLEVpxpJSpaEnHtLnogusiJIG1d18BSXv7W3Isagcd2sYtd7Wcg5LmF21e3klLAFGdOBCe3oONY=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYVPR01MB10781.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?dmkfGP4jcxxEW1hoFwbG6/iGJM2nliiN8qnmuJpPNI8MMd/DBnYy39+WK5lD?=
+ =?us-ascii?Q?BPi4mhnQ8KVakEjHuStLyNNVNGZgimBnwKQuEgrdCgu2Iz3KWHtdjcFXTXQM?=
+ =?us-ascii?Q?o36Wy4gX9SYbW47+BbQi14/CKOHwCHH75LNrFyulzu8c1D/I6CvVEk9tkdTg?=
+ =?us-ascii?Q?vN57esqpoIZC5q1RIpkZBRswaCC+drSfs2ve+2kIpluq+4b9pDWECCEG8wQk?=
+ =?us-ascii?Q?9Pxo7wL1Lz6D/5j/ABt+ypJqf41tLyhx0jLPa+5Tn6ClrjXJpNaxJ2/YIdDE?=
+ =?us-ascii?Q?pfHrvpy3GDq+uJHD7/dfhWPM594kAibTm6UL1Hj9uKhOOrNrgVORSPDkx1F+?=
+ =?us-ascii?Q?z5TqgpEHNThB21IsTp1QGH6/Oq3OeCrRuaLYh74F9MtkfogCAm3q754DDFwi?=
+ =?us-ascii?Q?XWWdFiDX7e+DaaeQiqrViq/inMci2akwo2v0+AMAHW4jsUrTrtl15GCg7U8U?=
+ =?us-ascii?Q?0Dj2LNXaBB6+Mdh+4LWgLClOBy14h801gyVpZbhpDERWrgd227VEZtDZ3y2c?=
+ =?us-ascii?Q?7aGcTQ0mvxp1LLkBax0YAkzHOUPbucHsNZpF1bSavgtfQxrmLsg12Lu78QeC?=
+ =?us-ascii?Q?P346Oktz+0z18sPmmexKgtgtzqKl6XZbQkM3BtcbycRlSKuXzUCKRcJU8auZ?=
+ =?us-ascii?Q?e7flRo7A3XWtFwyR6a9SNcRf3r9yCRVm1EU1fZq+bo9/h7otSj/3mcOOmteT?=
+ =?us-ascii?Q?ia1xfomiObfSXSlNQmw+utdNACQr97KtvY3ZFhnB9CoIDVSnzpdvIrfkkcku?=
+ =?us-ascii?Q?qAeIEms9YCVG5sKKAY4RfMyfPCKwuzMSwxg/tSkTPg5PWfzZ25l/TkaXhRoa?=
+ =?us-ascii?Q?YkS6YKMav6QiynC2yZAj4nnCQDLKuKV3yNv+GQsFPMiR7/yFzeT5qcwwMQox?=
+ =?us-ascii?Q?dGJ+iestFT5i5G0yPvibq3DIM3ByEiAcx/KO7GLpak1l8yI5GP6Fxmzdf27z?=
+ =?us-ascii?Q?PagjpEKin7W/jmz6x0F3rnRdSf7EwDIghns1BaZ/WM48y00pCTx+8JQ6jbhA?=
+ =?us-ascii?Q?O870zlf3H3SxF36Gz2JQ59xFx/bkdmzvmwuuz5CRT1Wom+sGcnERJVGZ2lZ8?=
+ =?us-ascii?Q?nAIgbfe2EmTGgsJ6/j4lubjPDSb4+k8/OOXY0ciJjL65gxgUTiEDCh2M73af?=
+ =?us-ascii?Q?KsIXl3ozCBBBrNEmWu7ROClIr/jxFRXpigXCgytXMn7YcKL/roRzUXiKYn4k?=
+ =?us-ascii?Q?+1C4/2SE1sc5hwXZoglILJ0eRxq6e8p6DcdohJKLzzLW2Q5r4WipS7cRD2II?=
+ =?us-ascii?Q?cs+djvMeGOJFTAQQXCHctX7/TlB9uAeL4IkTGFf58bjo/jr395TKbkmoEhhS?=
+ =?us-ascii?Q?/DKDwnCDEnrSxIpvVNlqgz7qMYYLmf4DkRc8YAH71Xr/x8na188elMhncDT2?=
+ =?us-ascii?Q?d8KyIhb/EHKDuKlPIv4fb3NLP4s5xP/O1GLwjEn/p1ZgRFxAQ8BbE5r1tG0Y?=
+ =?us-ascii?Q?15E1PQUAPw9WM6b0mYmiW56PUU8JxeCNJ1meeZtXLAUuYNAr9P9bfQ58iqfG?=
+ =?us-ascii?Q?JuX4PnjjN9wkMW6gvGVfEK3u6z2ohVw6RBKil1+/iQ+l6KVjRHu+ReC+Z4m3?=
+ =?us-ascii?Q?wiYRLsZIAX0Jin4Y1rTLBxYRJVuCCvOBjy/uXwxl?=
+X-OriginatorOrg: alpsalpine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 741c1a02-6d5b-4a6f-5cc3-08dc4e210f5f
+X-MS-Exchange-CrossTenant-AuthSource: TYVPR01MB10781.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 05:45:08.0464
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 57e76998-77bd-4b82-a424-198f46eb2254
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OCg9iFOTG0uyAHCwC5jP+vt/Hfd3s9GODfxkn7Mmfx6zuS6uAaD8xWuAsU0YnXaKbUwBcZgNMcVb2WogeZ8P3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB9329
 
-"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
+Current storage scan delay is reduced by the following old commit.
 
-> The current implementation treats emulated memory devices, such as
-> CXL1.1 type3 memory, as normal DRAM when they are emulated as normal memory
-> (E820_TYPE_RAM). However, these emulated devices have different
-> characteristics than traditional DRAM, making it important to
-> distinguish them. Thus, we modify the tiered memory initialization process
-> to introduce a delay specifically for CPUless NUMA nodes. This delay
-> ensures that the memory tier initialization for these nodes is deferred
-> until HMAT information is obtained during the boot process. Finally,
-> demotion tables are recalculated at the end.
->
-> * late_initcall(memory_tier_late_init);
-> Some device drivers may have initialized memory tiers between
-> `memory_tier_init()` and `memory_tier_late_init()`, potentially bringing
-> online memory nodes and configuring memory tiers. They should be excluded
-> in the late init.
->
-> * Handle cases where there is no HMAT when creating memory tiers
-> There is a scenario where a CPUless node does not provide HMAT information.
-> If no HMAT is specified, it falls back to using the default DRAM tier.
->
-> * Introduce another new lock `default_dram_perf_lock` for adist calculation
-> In the current implementation, iterating through CPUlist nodes requires
-> holding the `memory_tier_lock`. However, `mt_calc_adistance()` will end up
-> trying to acquire the same lock, leading to a potential deadlock.
-> Therefore, we propose introducing a standalone `default_dram_perf_lock` to
-> protect `default_dram_perf_*`. This approach not only avoids deadlock
-> but also prevents holding a large lock simultaneously. Besides, this patch
-> slightly shortens the time holding the lock by putting the lock closer to
-> what it protects as well.
->
-> * Upgrade `set_node_memory_tier` to support additional cases, including
->   default DRAM, late CPUless, and hot-plugged initializations.
-> To cover hot-plugged memory nodes, `mt_calc_adistance()` and
-> `mt_find_alloc_memory_type()` are moved into `set_node_memory_tier()` to
-> handle cases where memtype is not initialized and where HMAT information is
-> available.
->
-> * Introduce `default_memory_types` for those memory types that are not
->   initialized by device drivers.
-> Because late initialized memory and default DRAM memory need to be managed,
-> a default memory type is created for storing all memory types that are
-> not initialized by device drivers and as a fallback.
->
-> * Fix a deadlock bug in `mt_perf_to_adistance`
-> Because an error path was not handled properly in `mt_perf_to_adistance`,
-> unlock before returning the error.
->
-> Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-> Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
-> ---
->  mm/memory-tiers.c | 85 +++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 72 insertions(+), 13 deletions(-)
->
-> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> index 974af10cfdd8..610db9581ba4 100644
-> --- a/mm/memory-tiers.c
-> +++ b/mm/memory-tiers.c
-> @@ -36,6 +36,11 @@ struct node_memory_type_map {
->  
->  static DEFINE_MUTEX(memory_tier_lock);
->  static LIST_HEAD(memory_tiers);
-> +/*
-> + * The list is used to store all memory types that are not created
-> + * by a device driver.
-> + */
-> +static LIST_HEAD(default_memory_types);
->  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
->  struct memory_dev_type *default_dram_type;
->  
-> @@ -108,6 +113,8 @@ static struct demotion_nodes *node_demotion __read_mostly;
->  
->  static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
->  
-> +/* The lock is used to protect `default_dram_perf*` info and nid. */
-> +static DEFINE_MUTEX(default_dram_perf_lock);
->  static bool default_dram_perf_error;
->  static struct access_coordinate default_dram_perf;
->  static int default_dram_perf_ref_nid = NUMA_NO_NODE;
-> @@ -505,7 +512,8 @@ static inline void __init_node_memory_type(int node, struct memory_dev_type *mem
->  static struct memory_tier *set_node_memory_tier(int node)
->  {
->  	struct memory_tier *memtier;
-> -	struct memory_dev_type *memtype;
-> +	struct memory_dev_type *mtype = default_dram_type;
-> +	int adist = MEMTIER_ADISTANCE_DRAM;
->  	pg_data_t *pgdat = NODE_DATA(node);
->  
->  
-> @@ -514,11 +522,20 @@ static struct memory_tier *set_node_memory_tier(int node)
->  	if (!node_state(node, N_MEMORY))
->  		return ERR_PTR(-EINVAL);
->  
-> -	__init_node_memory_type(node, default_dram_type);
-> +	mt_calc_adistance(node, &adist);
-> +	if (node_memory_types[node].memtype == NULL) {
-> +		mtype = mt_find_alloc_memory_type(adist, &default_memory_types);
-> +		if (IS_ERR(mtype)) {
-> +			mtype = default_dram_type;
-> +			pr_info("Failed to allocate a memory type. Fall back.\n");
-> +		}
-> +	}
->  
-> -	memtype = node_memory_types[node].memtype;
-> -	node_set(node, memtype->nodes);
-> -	memtier = find_create_memory_tier(memtype);
-> +	__init_node_memory_type(node, mtype);
-> +
-> +	mtype = node_memory_types[node].memtype;
-> +	node_set(node, mtype->nodes);
-> +	memtier = find_create_memory_tier(mtype);
->  	if (!IS_ERR(memtier))
->  		rcu_assign_pointer(pgdat->memtier, memtier);
->  	return memtier;
-> @@ -655,6 +672,34 @@ void mt_put_memory_types(struct list_head *memory_types)
->  }
->  EXPORT_SYMBOL_GPL(mt_put_memory_types);
->  
-> +/*
-> + * This is invoked via `late_initcall()` to initialize memory tiers for
-> + * CPU-less memory nodes after driver initialization, which is
-> + * expected to provide `adistance` algorithms.
-> + */
-> +static int __init memory_tier_late_init(void)
-> +{
-> +	int nid;
-> +
-> +	mutex_lock(&memory_tier_lock);
-> +	for_each_node_state(nid, N_MEMORY)
-> +		if (!node_state(nid, N_CPU) &&
-> +			node_memory_types[nid].memtype == NULL)
-> +			/*
-> +			 * Some device drivers may have initialized memory tiers
-> +			 * between `memory_tier_init()` and `memory_tier_late_init()`,
-> +			 * potentially bringing online memory nodes and
-> +			 * configuring memory tiers. Exclude them here.
-> +			 */
-> +			set_node_memory_tier(nid);
-> +
-> +	establish_demotion_targets();
-> +	mutex_unlock(&memory_tier_lock);
-> +
-> +	return 0;
-> +}
-> +late_initcall(memory_tier_late_init);
-> +
->  static void dump_hmem_attrs(struct access_coordinate *coord, const char *prefix)
->  {
->  	pr_info(
-> @@ -668,7 +713,6 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  {
->  	int rc = 0;
->  
-> -	mutex_lock(&memory_tier_lock);
->  	if (default_dram_perf_error) {
->  		rc = -EIO;
->  		goto out;
-> @@ -680,6 +724,7 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  		goto out;
->  	}
->  
-> +	mutex_lock(&default_dram_perf_lock);
+a4a47bc03fe5 ("Lower USB storage settling delay to something more reasonable")
 
-Why do you move the position of locking?  mutex_lock/unlock() will be
-unbalance for error path above.
+It means that delay is at least 'one second', or zero with delay_use=0.
+'one second' is still long delay especially for embedded system but
+when delay_use is set to 0 (no delay), error still observed on some USB drives.
 
->  	if (default_dram_perf_ref_nid == NUMA_NO_NODE) {
->  		default_dram_perf = *perf;
->  		default_dram_perf_ref_nid = nid;
-> @@ -716,23 +761,26 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  	}
->  
->  out:
-> -	mutex_unlock(&memory_tier_lock);
-> +	mutex_unlock(&default_dram_perf_lock);
->  	return rc;
->  }
->  
->  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
->  {
-> +	int rc = 0;
-> +
->  	if (default_dram_perf_error)
->  		return -EIO;
->  
-> -	if (default_dram_perf_ref_nid == NUMA_NO_NODE)
-> -		return -ENOENT;
-> -
->  	if (perf->read_latency + perf->write_latency == 0 ||
->  	    perf->read_bandwidth + perf->write_bandwidth == 0)
->  		return -EINVAL;
->  
-> -	mutex_lock(&memory_tier_lock);
-> +	mutex_lock(&default_dram_perf_lock);
+So delay_use should not be set to 0 but 'one second' is quite long.
 
-It may be a little better to move lock position at the begin of the
-function.  This will not avoid race condition (not harmful in practice)
-but it will make code easier to be understood.
+This patch optimizes scan delay more precisely
+to minimize delay time but not to have any problems on USB drives
+by adding module parameter 'delay_scale' of delay-time divisor.
+By default, delay time is 'one second' for backward compatibility.
+For example, it seems to be good by changing delay_scale=100,
+that is 100 millisecond delay.
 
-> +	if (default_dram_perf_ref_nid == NUMA_NO_NODE) {
-> +		rc = -ENOENT;
-> +		goto out;
-> +	}
->  	/*
->  	 * The abstract distance of a memory node is in direct proportion to
->  	 * its memory latency (read + write) and inversely proportional to its
-> @@ -745,8 +793,10 @@ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
->  		(default_dram_perf.read_latency + default_dram_perf.write_latency) *
->  		(default_dram_perf.read_bandwidth + default_dram_perf.write_bandwidth) /
->  		(perf->read_bandwidth + perf->write_bandwidth);
-> -	mutex_unlock(&memory_tier_lock);
-> +	mutex_unlock(&default_dram_perf_lock);
->  
-> +out:
-> +	mutex_unlock(&default_dram_perf_lock);
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(mt_perf_to_adistance);
-> @@ -858,7 +908,8 @@ static int __init memory_tier_init(void)
->  	 * For now we can have 4 faster memory tiers with smaller adistance
->  	 * than default DRAM tier.
->  	 */
-> -	default_dram_type = alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
-> +	default_dram_type = mt_find_alloc_memory_type(MEMTIER_ADISTANCE_DRAM,
-> +									&default_memory_types);
->  	if (IS_ERR(default_dram_type))
->  		panic("%s() failed to allocate default DRAM tier\n", __func__);
->  
-> @@ -868,6 +919,14 @@ static int __init memory_tier_init(void)
->  	 * types assigned.
->  	 */
->  	for_each_node_state(node, N_MEMORY) {
-> +		if (!node_state(node, N_CPU))
-> +			/*
-> +			 * Defer memory tier initialization on CPUless numa nodes.
-> +			 * These will be initialized after firmware and devices are
-> +			 * initialized.
-> +			 */
-> +			continue;
-> +
->  		memtier = set_node_memory_tier(node);
->  		if (IS_ERR(memtier))
->  			/*
+Signed-off-by: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+---
+ drivers/usb/storage/usb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---
-Best Regards,
-Huang, Ying
+diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+index 90aa9c12ffac..f4a755e364da 100644
+--- a/drivers/usb/storage/usb.c
++++ b/drivers/usb/storage/usb.c
+@@ -70,6 +70,9 @@ MODULE_LICENSE("GPL");
+ static unsigned int delay_use = 1;
+ module_param(delay_use, uint, S_IRUGO | S_IWUSR);
+ MODULE_PARM_DESC(delay_use, "seconds to delay before using a new device");
++static unsigned int delay_scale = MSEC_PER_SEC;
++module_param(delay_scale, uint, 0644);
++MODULE_PARM_DESC(delay_scale, "time scale of delay_use");
+ 
+ static char quirks[128];
+ module_param_string(quirks, quirks, sizeof(quirks), S_IRUGO | S_IWUSR);
+@@ -1066,7 +1069,7 @@ int usb_stor_probe2(struct us_data *us)
+ 	if (delay_use > 0)
+ 		dev_dbg(dev, "waiting for device to settle before scanning\n");
+ 	queue_delayed_work(system_freezable_wq, &us->scan_dwork,
+-			delay_use * HZ);
++			msecs_to_jiffies(delay_use * delay_scale));
+ 	return 0;
+ 
+ 	/* We come here if there are any problems */
+-- 
+2.17.1
+
 
