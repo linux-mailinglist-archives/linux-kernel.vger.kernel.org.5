@@ -1,149 +1,181 @@
-Return-Path: <linux-kernel+bounces-120161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70EED88D381
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:48:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5699D88D383
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 01:48:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67F49B235EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:48:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7358B23735
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 00:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAACA18E11;
-	Wed, 27 Mar 2024 00:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nBrVbisA"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D824B1BDDB;
+	Wed, 27 Mar 2024 00:48:17 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25934125C1;
-	Wed, 27 Mar 2024 00:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983D328EC;
+	Wed, 27 Mar 2024 00:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711500496; cv=none; b=qSxwO2Ta4podXKgrMZqoXxv1y+mO7cC2yFIDj6zXmre8JCDDJryxsU2CqMJi9Y880GfK2cc6xhP9Lm6ljbYUFzJh1m8VTwTgEAm1IlQLVz5rkLVsdl3cllV1faL7Mat6hHRg4AV0Nd2MpnrzugR52XTVDdMPtzZaXv5O1jzMOxg=
+	t=1711500497; cv=none; b=KDNiEW1gXB8PPWBA5dUJ/L/lGfpzN4MlBnE3lcHktyWMUPN1iZIAdNDxfTi7INLC8uP3Q2XoirjHDRZr3I2LaALUWOPeFaZvdI1LZzjDHP4+TKbv8lBJPKPAJtM4fD8IgnPNMbj8/gYPVATfKVEgZtTv7DlObCTyVHEPXFrW5PY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711500496; c=relaxed/simple;
-	bh=vRIhKjtK5KUqqD/xM6V+L7t8LjfRUzw5/jZWpRZcMiY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RT7dF8fYBupQlclYAVdb4moRmUpo+rBDDFTIyGWENhE6YfvOdfBTD0VID/r+x7kwlSv/JtjDNrc5Kw8BnRf1IdrD3hEffxwo7NId7vFTU3KIiMoMDMrGw2zVC8IoocXmLESZpTDUuO/kAPAdvyTF41c3et3DJMtMcFluTf6ZVrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nBrVbisA; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711500494; x=1743036494;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vRIhKjtK5KUqqD/xM6V+L7t8LjfRUzw5/jZWpRZcMiY=;
-  b=nBrVbisArdnhCcw6TuZaONQZsKS+yosp/G7/zS1ERb+ic7V3X7hbDe5n
-   GTV3cKoUzf/wQ+sj6crYUHoZ6aujKp1PqF3nnmiINO0tL/04Z+oVAuLp2
-   uFLZS+UrePkK9SifHUyU/VMqgOc4pN2i1v9W3NuZ8ViPVH2TfMI+4BSEJ
-   +JYyh7mNWLLM1nIPs5JLtwX16mWAGZgE/UGQmmhfG0qrDD0zpX82TX83Z
-   rVogNkttWdngXpwYnl2kSQwup6+I0czAb8AlukgmR+rJQIf5PhcGkdHD0
-   uHdjZ4kSiJ60igmmDVQowLGDMNb6VCtJkOvHn30UbwIdkidH0fBBLixDj
-   w==;
-X-CSE-ConnectionGUID: z+TD5Vu/QBiKEjJXl3Joqg==
-X-CSE-MsgGUID: 9TNezZRnQ2mvAidIdBt2ig==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17311751"
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="17311751"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 17:48:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,157,1708416000"; 
-   d="scan'208";a="20609157"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 17:47:57 -0700
-Message-ID: <a3d0b8dd-4831-4cf3-839e-ef40bdcea234@linux.intel.com>
-Date: Wed, 27 Mar 2024 08:47:54 +0800
+	s=arc-20240116; t=1711500497; c=relaxed/simple;
+	bh=hWuZXrxDD/5dw1ptkdk4OsxL5BtRsRdCmo6PnucLDH0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=VGOrXVrOPgGCG7reS9UJg+BjS12SR1B2sPTZKz/6oj52E/oapAkhkO0C6xY10Xo4+qTpG6NaTMvqmt4HvFE4652yGwEtUIH2ATztXQBwkrcFTPs+/6LvLcXtYxq6TdYJ2U8EQS68TXqMS03cCA4/VvymbfX5cjqoNWdA3zF2/kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V47LN0cv7z1GDJm;
+	Wed, 27 Mar 2024 08:47:40 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 795961A0172;
+	Wed, 27 Mar 2024 08:48:10 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 27 Mar 2024 08:48:09 +0800
+Message-ID: <cf82a480-568e-7ce0-5394-bd6c511c067e@huawei.com>
+Date: Wed, 27 Mar 2024 08:48:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 048/130] KVM: Allow page-sized MMU caches to be
- initialized with custom 64-bit values
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- isaku.yamahata@linux.intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <9c392612eac4f3c489ad12dd4a4d505cf10d36dc.1708933498.git.isaku.yamahata@intel.com>
- <d2ea2f8e-80b1-4dda-bf47-2145859e7463@linux.intel.com>
- <20240326173414.GA2444378@ls.amr.corp.intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240326173414.GA2444378@ls.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH -next v5 2/3] x86/mce: set MCE_IN_KERNEL_COPYIN for
+ DEFAULT_MCE_SAFE exception
+From: Tong Tiangen <tongtiangen@huawei.com>
+To: Borislav Petkov <bp@alien8.de>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	<wangkefeng.wang@huawei.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Tony Luck
+	<tony.luck@intel.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Naoya
+ Horiguchi <naoya.horiguchi@nec.com>, <linux-kernel@vger.kernel.org>,
+	<linux-edac@vger.kernel.org>, <linux-mm@kvack.org>, Guohanjun
+	<guohanjun@huawei.com>
+References: <20240204082627.3892816-1-tongtiangen@huawei.com>
+ <20240204082627.3892816-3-tongtiangen@huawei.com>
+ <20240207122942.GRZcN3tqWkV-WE-pak@fat_crate.local>
+ <100198dd-320f-68e6-9c09-210620940a74@huawei.com>
+In-Reply-To: <100198dd-320f-68e6-9c09-210620940a74@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
+Hi Petkov：
 
+	Kindly ping...
 
-On 3/27/2024 1:34 AM, Isaku Yamahata wrote:
-> On Tue, Mar 26, 2024 at 11:53:02PM +0800,
-> Binbin Wu <binbin.wu@linux.intel.com> wrote:
->
+Thanks,
+Tong.
+
+在 2024/2/18 18:08, Tong Tiangen 写道:
+> 
+> 
+> 在 2024/2/7 20:29, Borislav Petkov 写道:
+>> On Sun, Feb 04, 2024 at 04:26:26PM +0800, Tong Tiangen wrote:
+>>> diff --git a/arch/x86/kernel/cpu/mce/severity.c 
+>>> b/arch/x86/kernel/cpu/mce/severity.c
+>>> index bca780fa5e57..b2cce1b6c96d 100644
+>>> --- a/arch/x86/kernel/cpu/mce/severity.c
+>>> +++ b/arch/x86/kernel/cpu/mce/severity.c
+>>> @@ -292,11 +292,11 @@ static noinstr int error_context(struct mce *m, 
+>>> struct pt_regs *regs)
+>>>       case EX_TYPE_UACCESS:
+>>>           if (!copy_user)
+>>>               return IN_KERNEL;
+>>> +        fallthrough;
+>>> +    case EX_TYPE_DEFAULT_MCE_SAFE:
+>>>           m->kflags |= MCE_IN_KERNEL_COPYIN;
+>>>           fallthrough;
 >>
->> On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
->>> From: Sean Christopherson <seanjc@google.com>
->>>
->>> Add support to MMU caches for initializing a page with a custom 64-bit
->>> value, e.g. to pre-fill an entire page table with non-zero PTE values.
->>> The functionality will be used by x86 to support Intel's TDX, which needs
->>> to set bit 63 in all non-present PTEs in order to prevent !PRESENT page
->>> faults from getting reflected into the guest (Intel's EPT Violation #VE
->>> architecture made the less than brilliant decision of having the per-PTE
->>> behavior be opt-out instead of opt-in).
->>>
->>> Signed-off-by: Sean Christopherson <seanjc@google.com>
->>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->>> ---
->>>    include/linux/kvm_types.h |  1 +
->>>    virt/kvm/kvm_main.c       | 16 ++++++++++++++--
->>>    2 files changed, 15 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
->>> index 9d1f7835d8c1..60c8d5c9eab9 100644
->>> --- a/include/linux/kvm_types.h
->>> +++ b/include/linux/kvm_types.h
->>> @@ -94,6 +94,7 @@ struct gfn_to_pfn_cache {
->>>    struct kvm_mmu_memory_cache {
->>>    	gfp_t gfp_zero;
->>>    	gfp_t gfp_custom;
->>> +	u64 init_value;
->>>    	struct kmem_cache *kmem_cache;
->>>    	int capacity;
->>>    	int nobjs;
->>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->>> index de38f308738e..d399009ef1d7 100644
->>> --- a/virt/kvm/kvm_main.c
->>> +++ b/virt/kvm/kvm_main.c
->>> @@ -401,12 +401,17 @@ static void kvm_flush_shadow_all(struct kvm *kvm)
->>>    static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
->>>    					       gfp_t gfp_flags)
->>>    {
->>> +	void *page;
->>> +
->>>    	gfp_flags |= mc->gfp_zero;
->>>    	if (mc->kmem_cache)
->>>    		return kmem_cache_alloc(mc->kmem_cache, gfp_flags);
->>> -	else
->>> -		return (void *)__get_free_page(gfp_flags);
->>> +
->>> +	page = (void *)__get_free_page(gfp_flags);
->>> +	if (page && mc->init_value)
->>> +		memset64(page, mc->init_value, PAGE_SIZE / sizeof(mc->init_value));
->> Do we need a static_assert() to make sure mc->init_value is 64bit?
-> I don't see much value.  Is your concern sizeof() part?
-> If so, we can replace it with 8.
->
->          memset64(page, mc->init_value, PAGE_SIZE / 8);
-
-Yes, but it's trivial. So, up to you. :)
-
+>> I knew something was still bugging me here and this is still wrong.
+>>
+>> Let's imagine this flow:
+>>
+>> copy_mc_to_user() - note *src is kernel memory
+>> |-> copy_mc_enhanced_fast_string or copy_mc_fragile - it's the same thing
+>>    |-> -#MC, exception type EX_TYPE_DEFAULT_MCE_SAFE
+>>      |-> error_context():
+>>         case EX_TYPE_DEFAULT_MCE_SAFE:
+>>                  m->kflags |= MCE_IN_KERNEL_COPYIN;
+>>
+>> MCE_IN_KERNEL_COPYIN does kill_me_never():
+>>
+>>     pr_err("Kernel accessed poison in user space at %llx\n", 
+>> p->mce_addr);
+>>
+>> but that's reading from kernel memory!
+> 
+> Hi:
+> 
+> 1. The copy_mc_to_kernel() is used in the coredump, KSM, and COW
+> scenarios, in these scenarios, the src mem stores the user data and the
+> kernel use kernel address to access the src mem(using kmap()).
+> 
+> 2. the src mem of copy_mc_to_user() is currently only used by the DAX:
+> 
+>    dax_iomap_iter()
+>      -> dax_copy_to_iter()
+>        -> _copy_mc_to_iter
+>          -> copy_to_user_iter_mc()
+>            -> copy_mc_to_user()
+> 
+> DAX is also used to store user data，such as pmem，pmem uses the kernel
+> address to access src mem(memremap_pages()):
+> 
+>    pmem_attach_disk()
+>      -> devm_memremap_pages()
+>        -> memremap_pages()
+> 
+> 3. EX_TYPE_DEFAULT_MCE_SAFE is only used in
+> copy_mc_to_user()/copy_mc_to_kernel()。
+> 
+> 4. Therefore, for EX_TYPE_DEFAULT_MCE_SAFE, the memory page where the
+> hardware error occurs stores user data, these page can be securely
+> isolated. This is different from UACCESS, which can be securely isolated
+> only COPYIN(the src mem is user data) is checked.
+> 
+> Based on the above understanding, I think the original logic should be
+> fine, except for the pr_err() in kill_me_never().
+> 
+> Thanks.
+> Tong.
+> 
+>>
+>> IOW, I *think* that switch statement should be this:
+>>
+>>     switch (fixup_type) {
+>>     case EX_TYPE_UACCESS:
+>>     case EX_TYPE_DEFAULT_MCE_SAFE:
+>>         if (!copy_user)
+>>             return IN_KERNEL;
+>>
+>>         m->kflags |= MCE_IN_KERNEL_COPYIN;
+>>         fallthrough;
+>>
+>>     case EX_TYPE_FAULT_MCE_SAFE:
+>>         m->kflags |= MCE_IN_KERNEL_RECOV;
+>>         return IN_KERNEL_RECOV;
+>>
+>>     default:
+>>         return IN_KERNEL;
+>>     }
+>>
+>> Provided I'm not missing a case and provided is_copy_from_user() really
+>> detects all cases properly.
+>>
+>> And then patch 3 is wrong because we only can handle "copy in" - not
+>> just any copy.
+>>
+>> Thx.
+>>
 
