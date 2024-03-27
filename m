@@ -1,121 +1,189 @@
-Return-Path: <linux-kernel+bounces-120617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 334C788DA55
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:33:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35E3988DA51
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 10:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBD8A1F22AED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:33:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E396E2956FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 09:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94694503B;
-	Wed, 27 Mar 2024 09:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8948D37702;
+	Wed, 27 Mar 2024 09:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ge1+4gYn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="h8Yr/MFk"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vng5gi4s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7Xk/ghNk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vng5gi4s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7Xk/ghNk"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C383383AB;
-	Wed, 27 Mar 2024 09:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7DB36AEE;
+	Wed, 27 Mar 2024 09:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711532002; cv=none; b=DiyMNx0tRcq8/0WasSlWeWH76aEoqxuvii7xINaUcVRdWLMt49ty+8isVpLogv8qidaOkzjCm8P1KrN9tGzg6CnMc3BXs798Ww2dQ5LBkZvQ8zfF1e34scEpowz7yYBJfyHfZFzs+2eQo3jrDxTpyTwyqzU/ZuYikIFUREO+iG0=
+	t=1711531997; cv=none; b=LGmwmrV2R4IA4KVCgmRclgHpvEtjhnISc7n874lraXmFS//OS7+8T1QNEEKurIYiJH+akMnUsXM2kbLVAVEpMthIEgoq3zwoOAvcj8YvFmHRLL6dtrnrouOUHDM4+SNX1gNjQLJBvUOPORDdRVoCvfROjKv+oKhUs/rG88tq4vI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711532002; c=relaxed/simple;
-	bh=pET2BBVg0xnzMN0YLHuDfWiXk7vgjrlQsg1h1vEKJeA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AmXCPKbFaHk7HkM8INozW/QEmqvlkIOUr/DFo3UOhkDbfvlZzWz+/jcxqWrmu3NAka30WQc12zvuxuyu6ZyyLN+hWxmrbcMJtKW9aQm41YQOe4Wsb2sy7Yw+TaKNZGf2nKjopqaQyM+uCQ54YaYf439X83fDVVGdP4OObFjVmlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ge1+4gYn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=h8Yr/MFk; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711531992;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1711531997; c=relaxed/simple;
+	bh=vEcZ/Q1akhcZHJE06X72YESNtGMAMVwjBWD8vmdT8T8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EuC68ev6EzKRtmXwO+OfH3JjyLiV3Nd0R642uhBucYiFNw6EnE/CUU/xfHRLJjEVyfn7UlwCMj14gOY7cTXRz6cx2g1QVGMKo85mguqwN2tlaLxV/efnbDx1AdCV9jIaheR0Kgrwp5ZZkIJdS7NmSbCSLoP/5EUC5XKJb0sQb9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vng5gi4s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7Xk/ghNk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vng5gi4s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7Xk/ghNk; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B5E21387EF;
+	Wed, 27 Mar 2024 09:33:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711531993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nHVXfzfNDmRZjH7QwfXLPjb1528cJfMeGmgmP9uOtP0=;
-	b=Ge1+4gYnoLjHn7A9EvbZN5FF+9/aXdVzjo2nHP0HMtL6RYdILdsu+L4e1bGWWQH0qqInFF
-	NtbTK6FCsA4NDDVIazHpMEdey5DfeafkptG5meKeRCTNnLfLvnrhfNDtAz/dvRlrH6U513
-	lSz+ZssOxIQem0qlXEZ1Sh0Gr3OuuVIJ/mNLynW6g9Ykwyd0iEZ2u/Bf7ADO0ynyerjLO0
-	oHBtltCHHjKHlFjJZ1Ya3xXSTIYIp13QJyRl0tj9RuWOLdEutx2kds7P8jN2ETvsqtXhEi
-	m7CEe30rY0ypceCd7uFF7J/40KjrC8SLAufDGeZfG1FzA+ue/gk9z2OoZtzvFQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711531992;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	bh=2Q1Gpg1vNXmP8CcxozlvISl2pAsCSU9f210dFyaw38Y=;
+	b=Vng5gi4sxoupKaSAG8p96Lfo9gIv+5sPUTQPFcXjd51APv0naDgto8X/CXP4Vn0eEnldRN
+	OmWprAcUte9j+3pY8DG2XMwmy8diCh+5noU2wf2tiMVuWAREqQdImKhyZDjtJ8hvwuRT2/
+	bRUHzGaVReAdhwXyy+5EQ9LJ+Ojbqyk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711531993;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nHVXfzfNDmRZjH7QwfXLPjb1528cJfMeGmgmP9uOtP0=;
-	b=h8Yr/MFkV8yQpexcQmq9sLq5Gkh+M3rNjW8p6r8bUlAxaYugFlEtXKBVOJ+3eEIsPj/TEp
-	yyg7QfcCdPPoO2Cw==
-To: Tony Lindgren <tony@atomide.com>
-Cc: Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky
- <senozhatsky@chromium.org>, Steven Rostedt <rostedt@goodmis.org>, Thomas
- Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
- <jirislaby@kernel.org>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Justin Chen <justin.chen@broadcom.com>, Jiaqing
- Zhao <jiaqing.zhao@linux.intel.com>, linux-serial@vger.kernel.org, Peter
- Collingbourne <pcc@google.com>
-Subject: Re: [PATCH printk v2 08/26] printk: nbcon: Implement processing in
- port->lock wrapper
-In-Reply-To: <20240322062305.GB5132@atomide.com>
-References: <87le6oy9vg.fsf@jogness.linutronix.de>
- <87plvy31hg.fsf@jogness.linutronix.de> <20240322062305.GB5132@atomide.com>
-Date: Wed, 27 Mar 2024 10:38:15 +0106
-Message-ID: <87r0fwt3z4.fsf@jogness.linutronix.de>
+	bh=2Q1Gpg1vNXmP8CcxozlvISl2pAsCSU9f210dFyaw38Y=;
+	b=7Xk/ghNkRUjffJZlf7vWMhyMSAjGjn6Jwxmt3kO9g/cJONbTjb7YtOyl2mxqsv/ADShrDd
+	W3wPWh6dShi509BQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711531993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2Q1Gpg1vNXmP8CcxozlvISl2pAsCSU9f210dFyaw38Y=;
+	b=Vng5gi4sxoupKaSAG8p96Lfo9gIv+5sPUTQPFcXjd51APv0naDgto8X/CXP4Vn0eEnldRN
+	OmWprAcUte9j+3pY8DG2XMwmy8diCh+5noU2wf2tiMVuWAREqQdImKhyZDjtJ8hvwuRT2/
+	bRUHzGaVReAdhwXyy+5EQ9LJ+Ojbqyk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711531993;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2Q1Gpg1vNXmP8CcxozlvISl2pAsCSU9f210dFyaw38Y=;
+	b=7Xk/ghNkRUjffJZlf7vWMhyMSAjGjn6Jwxmt3kO9g/cJONbTjb7YtOyl2mxqsv/ADShrDd
+	W3wPWh6dShi509BQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A243613215;
+	Wed, 27 Mar 2024 09:33:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id m9dXJ9nnA2aXCgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 27 Mar 2024 09:33:13 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 4566AA0812; Wed, 27 Mar 2024 10:33:09 +0100 (CET)
+Date: Wed, 27 Mar 2024 10:33:09 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: Tejun Heo <tj@kernel.org>, akpm@linux-foundation.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, willy@infradead.org,
+	bfoster@redhat.com, jack@suse.cz, dsterba@suse.com,
+	mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
+Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
+Message-ID: <20240327093309.ejuzjus2zcixb4qt@quack3>
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+ <20240320110222.6564-7-shikemeng@huaweicloud.com>
+ <Zfr9my_tfxO-N6HS@mtj.duckdns.org>
+ <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.80
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.997];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,linux-foundation.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.cz,suse.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-On 2024-03-22, Tony Lindgren <tony@atomide.com> wrote:
-> * John Ogness <john.ogness@linutronix.de> [240313 09:50]:
->> One nice thing that has risen from this is we are starting to see
->> exactly what the console lock is needed for. At this point I would say
->> its main function is synchronizing boot consoles with real
->> drivers. Which means we will not be able to remove the console lock
->> until we find a real solution to match boot consoles (which circumvent
->> the Linux driver model) with the real drivers.
->
-> Would it help if earlycon handles all the boot consoles?
-> Then just have the serial driver take over when it probes?
+On Thu 21-03-24 15:12:21, Kemeng Shi wrote:
+> 
+> 
+> on 3/20/2024 11:15 PM, Tejun Heo wrote:
+> > Hello,
+> > 
+> > On Wed, Mar 20, 2024 at 07:02:22PM +0800, Kemeng Shi wrote:
+> >> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
+> >> GDTC_INIT_NO_WB
+> >>
+> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> > ...
+> >>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
+> >>  {
+> >> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
+> >> +	struct dirty_throttle_control gdtc = { };
+> > 
+> > Even if it's currently not referenced, wouldn't it still be better to always
+> > guarantee that a dtc's dom is always initialized? I'm not sure what we get
+> > by removing this.
+> As we explicitly use GDTC_INIT_NO_WB to set global_wb_domain before
+> calculating dirty limit with domain_dirty_limits, I intuitively think the
+> dirty limit calculation in domain_dirty_limits is related to
+> global_wb_domain when CONFIG_WRITEBACK_CGROUP is enabled while the truth
+> is not. So this is a little confusing to me.
 
-I think this would be very helpful. And it would also cleanup the boot
-arguments. For example, we would no longer need the
-architecture-specific arguments/options (such as "early_printk" and
-"keep"). These architecture-specific arguments can be really
-confusing. There have been so many times I see a developer cursing that
-they can't get early debugging working, when I notice they are trying to
-use "early_printk" on an arm64 system.
+I'm not sure I understand your confusion. domain_dirty_limits() calculates
+the dirty limit (and background dirty limit) for the dirty_throttle_control
+passed in. If you pass dtc initialized with GDTC_INIT[_NO_WB], it will
+compute global dirty limits. If the dtc passed in is initialized with
+MDTC_INIT() it will compute cgroup specific dirty limits.
 
-Browsing through
+Now because domain_dirty_limits() does not scale the limits based on each
+device throughput - that is done only later in __wb_calc_thresh() to avoid
+relatively expensive computations when we don't need them - and also
+because the effective dirty limit (dtc->dom->dirty_limit) is not updated by
+domain_dirty_limits(), domain_dirty_limits() does not need dtc->dom at all.
+But that is a technical detail of implementation and I don't want this
+technical detail to be relied on by even more code.
 
-arch/x86/kernel/early_printk.c
-arch/x86/boot/early_serial_console.c
+What might have confused you is that GDTC_INIT_NO_WB is defined to be empty
+when CONFIG_CGROUP_WRITEBACK is disabled. But this is only because in that
+case dtc_dom() function unconditionally returns global_wb_domain so we
+don't bother with initializing (or even having) the 'dom' field anywhere.
 
-you can see lots of examples of various early consoles and their special
-tricks/hacks (such as pretending not to be a boot console when it really
-is).
+Now I agree this whole code is substantially confusing and complex and it
+would all deserve some serious thought how to make it more readable. But
+even after thinking about it again I don't think removing GDTC_INIT_NO_WB is
+the right way to go.
 
-And pretty much every architecture has these. (git grep CON_BOOT)
-
-Ideally it would be great if a console could register and say "taking
-over for console X". Maybe with a new field:
-
-struct console {
-  ...
-  struct console *console_to_replace;
-  ...
-};
-
-John Ogness
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
