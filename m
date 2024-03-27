@@ -1,161 +1,89 @@
-Return-Path: <linux-kernel+bounces-121978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98EDD88F023
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:32:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE64E88F026
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 21:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8C611C27EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:32:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C42BA1C2C457
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 20:32:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCB3153501;
-	Wed, 27 Mar 2024 20:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="WdV7v24D"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21FF1534EC;
+	Wed, 27 Mar 2024 20:32:05 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF1B152526
-	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9EE152E12
+	for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571511; cv=none; b=s2ASgPOUETyPX9gH+ymzGMeQ+GF7zUbFmtxIdz7QKceJDqKFwjeCsk1ufLE2xI5mnq/u05JmFlcBdBNcs5RypLH8ARvDCw9oUcUnKMT/1M/nSoUEbq/Q3wGzPZhrNM4I0L7QOqQWSguLw8PkpwD8AiKU10EkT6p356xklvmicYY=
+	t=1711571525; cv=none; b=kb1KxFWk1dazrpV31DQmtBYrcBPUcwOuIQKr5YjA4zs+2Hd97vlkk9Qdt2e2gi0YQwuUK/UKsZk2Ydo0VDNW5kR9Ly5fuOqh/GvBXV8jAmFMzMlyspwbWqajWaRI55z55psFOj5bgCTRUX36XdBD2wtQQIWKucW74VXppF3hR1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571511; c=relaxed/simple;
-	bh=t9C9+riY1OxmsAmH5QBPtHJT8HnbNBNjvpO0E8IF0BE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m+BxtZx3nKt7qUBcyG57CzO1N9CVxLjVWqhqdJQQMJ92OyAUOAdGFN8KhKhDoN5JonYqdXbdXAVwY5jOvx6w0US+Nq0sJatUFHrF+YFJIvp8QMrs1su7Se31w/gwvbrv/UugzZCeXALTaEbs4rVLdBuRgOaUCkH3KPt7GyyJ28E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=WdV7v24D; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dffa5e3f2dso2091095ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1711571509; x=1712176309; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xsbDq/umAVs2THPOn+dgmzNcXWhcjS94eKkuWI7aCcw=;
-        b=WdV7v24DFxW8nfNW5OWhAwfjj+i+ZVdBXd9AjRVX3+FR6PNQyPvX86pyquKqdmn6BS
-         bfc15NGU+fFCY9xMyEo0TctEynV+f47N5thGqFoiVeZ9Leo0Hqd9BEL7Urs4kMSYNY+v
-         uMYHsfFr6osUaF6beCF3AsA02QuXQ58hVSP4ADsOivo2jCCgU1tKef5h3bICgvuqLECd
-         t75vl4QJfwrdmNsiMu8say58xXLMtyw0PuQAqFH6gvfQLrmN4cKCefKboz5ZDBLeM9Pe
-         TEiwmjp1GzixsJWd7GzRU50cLPloHmf0kM1OBSEn37xY0s7glSCfe+zFvhF+Q0ziQCgW
-         MaIg==
+	s=arc-20240116; t=1711571525; c=relaxed/simple;
+	bh=nRwlE/hA+5kIdWWS/56V+tZqn6E78CxeZd1m1w7AwQ4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=NUY4uuF0lEdO8fVCjiGETWHWrZHZOYCxNFenEISyGoH2qdbl/zoqbO5CjCy6wNhgbW5DHm0J3NFRMrCMtc4x60+u+RzK3tvvG+HsFzu6q9lrCQfrlrJxatIiG7EJka+J3OXvWFZRkTQvAboqJ3MAfgZnC8L4dmAUlYD6DExhmmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc0a422d43so23714639f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 13:32:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711571509; x=1712176309;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xsbDq/umAVs2THPOn+dgmzNcXWhcjS94eKkuWI7aCcw=;
-        b=nCaeBsG2zAzutHfJur9zqZB1ImtZjcR2IfqdKHiw+tfgU9dwIVAMUNIRk+toO1mzD6
-         dyNpRcOYqslLUr9Opy7XcwgJNDaJOe170g4BQqT1EhYpJqB+TK4OFb2Y66GUAiCumM4Z
-         /oi5dTBKBshodbSE3/HCUJOyHdRzYKQQbllP/Ck2s5fqDuyQwbrRx6tvpquGMV7PYI4z
-         qFFFbGq6F3Zd39BLaw8lY3aJCWgbs7qqEgw3DzAIcDaWCj7o9lpfZHzMWjGfzP1pP8LO
-         Ytcc0mYyxYtXRwthXy4YfDtSVcuar0p0j7/OPU4OX23vxaTfTXfQuIENyhGV9VU053Wl
-         mMFw==
-X-Forwarded-Encrypted: i=1; AJvYcCVPDYKbJ9txelml50so330o0puI9gTYWaTnw8B/TU9sB1N3GBnlCp3a+bfR/Hl2KWk3gSHSm4aWpADU3wqAGP5sNokldQZIvY0Gn2QJ
-X-Gm-Message-State: AOJu0YyeAWW79yiPL9Zxn6NRfMagX4ljXN+eUTBO5cWVm1apAOmXDJye
-	PkHjUUtnrHw5aCREXUANFZ4etVTrWctiP+Y1/cggYIJYnjmT0O7jhKf7RaS4mHs=
-X-Google-Smtp-Source: AGHT+IHM4Tr0BQ+ZyOuGEh7PBr8lX9a5mFa0hqjuG33bAQkeUreuKwQCfXdzVyFJvoKTjvvS6rj26w==
-X-Received: by 2002:a17:903:8cd:b0:1df:fa1a:529f with SMTP id lk13-20020a17090308cd00b001dffa1a529fmr955250plb.24.1711571509203;
-        Wed, 27 Mar 2024 13:31:49 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170903120d00b001deed044b7dsm4122560plh.185.2024.03.27.13.31.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 13:31:48 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rpZw1-00CItN-2k;
-	Thu, 28 Mar 2024 07:31:45 +1100
-Date: Thu, 28 Mar 2024 07:31:45 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v6 00/10] block atomic writes
-Message-ID: <ZgSCMXKtcYWhxR7e@dread.disaster.area>
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <ZgOXb_oZjsUU12YL@casper.infradead.org>
+        d=1e100.net; s=20230601; t=1711571523; x=1712176323;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GrIQKBS2v/d7YU14An08GRjqL5ZRUdHZeXnpNFfQdUk=;
+        b=icMuBb7K5F1xjovTxQUYmiblK2Ms5fSswmWeclUFnbUfTQ3GqBkt0YEuAyYWVEutUJ
+         KIY0ccfyoaK7cbLoNbWhkb/xn+1ljaGBB3vX76C1YzAdb+wtuaWeLjPT7YTKIhdlNJVD
+         uSaDN+xkT+BnIXIkF2s9Vje7YMbovgHS2zel0vlPHgyQKSsJRaBvM3z9+DoOdCN9uY0L
+         8kccWx20RO56kzcAqdWo+Fzg4heQhKzpZjlSvc4el1zatHIY5/alVieEtfUAm6mcCi6b
+         ZdoineelfxctuesTxsPW4o+BYUUaNqpd4n7g+dkr3N/ixNLAS1eowbGsezzwgsB+KiqB
+         M3HQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXaO2C2oDqFsNe+5WnMRGrhmJhENlRd7ON/Ge2JSOASuOwYdPPOmuTzQJDJzN7I3diLkUepTmU5yCtR0u+rVEy9ScL2+REsbx4z/mF2
+X-Gm-Message-State: AOJu0YyhvCtLKlbtvjtmyoO9I5DI/+x63994SNdhY6dNoo+IPtG4K6KR
+	8gLEbQnZzlvIB+uTE7JCn9MpmrxmHQNVG7hUGTRE8wkQYqNVHm8TFXXHRD7Z7k7nvHdcuw4bsd2
+	aP5E9uTcYz0oRnRO4kFOXloiTNHQxPilsXexh9ottxBGXu/tkjW4P9h4=
+X-Google-Smtp-Source: AGHT+IEv1GS0F1bIQIoueTKC7US/um1YmwFLw785Q/O0DHu40YUikpwnw4dFaz1J6Vc+zuxa3ZZur/MOvmSybjnXmQSPHjqMWXYb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgOXb_oZjsUU12YL@casper.infradead.org>
+X-Received: by 2002:a05:6602:2d81:b0:7c8:c7ec:2b71 with SMTP id
+ k1-20020a0566022d8100b007c8c7ec2b71mr4702iow.3.1711571523139; Wed, 27 Mar
+ 2024 13:32:03 -0700 (PDT)
+Date: Wed, 27 Mar 2024 13:32:03 -0700
+In-Reply-To: <87le63bfuf.fsf@cloudflare.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a50cbd0614aa4ceb@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in ahci_single_level_irq_intr
+From: syzbot <syzbot+d4066896495db380182e@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 27, 2024 at 03:50:07AM +0000, Matthew Wilcox wrote:
-> On Tue, Mar 26, 2024 at 01:38:03PM +0000, John Garry wrote:
-> > The goal here is to provide an interface that allows applications use
-> > application-specific block sizes larger than logical block size
-> > reported by the storage device or larger than filesystem block size as
-> > reported by stat().
-> > 
-> > With this new interface, application blocks will never be torn or
-> > fractured when written. For a power fail, for each individual application
-> > block, all or none of the data to be written. A racing atomic write and
-> > read will mean that the read sees all the old data or all the new data,
-> > but never a mix of old and new.
-> > 
-> > Three new fields are added to struct statx - atomic_write_unit_min,
-> > atomic_write_unit_max, and atomic_write_segments_max. For each atomic
-> > individual write, the total length of a write must be a between
-> > atomic_write_unit_min and atomic_write_unit_max, inclusive, and a
-> > power-of-2. The write must also be at a natural offset in the file
-> > wrt the write length. For pwritev2, iovcnt is limited by
-> > atomic_write_segments_max.
-> > 
-> > There has been some discussion on supporting buffered IO and whether the
-> > API is suitable, like:
-> > https://lore.kernel.org/linux-nvme/ZeembVG-ygFal6Eb@casper.infradead.org/
-> > 
-> > Specifically the concern is that supporting a range of sizes of atomic IO
-> > in the pagecache is complex to support. For this, my idea is that FSes can
-> > fix atomic_write_unit_min and atomic_write_unit_max at the same size, the
-> > extent alignment size, which should be easier to support. We may need to
-> > implement O_ATOMIC to avoid mixing atomic and non-atomic IOs for this. I
-> > have no proposed solution for atomic write buffered IO for bdev file
-> > operations, but I know of no requirement for this.
-> 
-> The thing is that there's no requirement for an interface as complex as
-> the one you're proposing here.  I've talked to a few database people
-> and all they want is to increase the untorn write boundary from "one
-> disc block" to one database block, typically 8kB or 16kB.
-> 
-> So they would be quite happy with a much simpler interface where they
-> set the inode block size at inode creation time, and then all writes to
-> that inode were guaranteed to be untorn.  This would also be simpler to
-> implement for buffered writes.
+Hello,
 
-You're conflating filesystem functionality that applications will use
-with hardware and block-layer enablement that filesystems and
-filesystem utilities need to configure the filesystem in ways that
-allow users to make use of atomic write capability of the hardware.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-The block layer functionality needs to export everything that the
-hardware can do and filesystems will make use of. The actual
-application usage and setup of atomic writes at the filesystem/page
-cache layer is a separate problem.  i.e. The block layer interfaces
-need only support direct IO and expose limits for issuing atomic
-direct IO, and nothing more. All the more complex stuff to make it
-"easy to use" is filesystem level functionality and completely
-outside the scope of this patchset....
+Reported-and-tested-by: syzbot+d4066896495db380182e@syzkaller.appspotmail.com
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Tested on:
+
+commit:         4dd65107 bpf: update BPF LSM designated reviewer list
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=116d23e6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5826764df8e788a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4066896495db380182e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1593c145180000
+
+Note: testing is done by a robot and is best-effort only.
 
