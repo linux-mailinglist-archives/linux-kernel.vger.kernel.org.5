@@ -1,60 +1,58 @@
-Return-Path: <linux-kernel+bounces-121201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-121202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9169588E3DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:49:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917E588E3DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 14:49:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DC4F2A23D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:49:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4B291C2B4FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 13:49:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C236418520D;
-	Wed, 27 Mar 2024 12:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246D013F453;
+	Wed, 27 Mar 2024 12:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="quj1LnWo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qtSuhYgF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16312185202;
-	Wed, 27 Mar 2024 12:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4597C18521E;
+	Wed, 27 Mar 2024 12:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711542331; cv=none; b=U1ELjM1LF41wBHi1wUdsqb2tDxNoPHtOd7Fc5IMxzv/hyi+YQV7HPKyqZqd1YHOEClDPQpqEJBx8VxigWyYj1f96uiJUsRwI/kQxgRVqAYjiFf+W0RWujFQwlUNlp+x20RRCkNqOXpiB4NX2BcFywjBOR9Q7bKEMKQkz31CCR2o=
+	t=1711542334; cv=none; b=oKjKqEAntF7u7zS774SwjPOY/LdM9iunSfZuTdb6iN8N+WP3uYJWdbxxU1/qaWpdLQwlqcTG1gQqtdyWpmCTQhYQzIZa8/92n3iwsFZL6nmUhgU1qp9OJaJF5NB+21fo7Tr87/BtYYGf3Rlrf4yFSOHz63Tsu1rBXITopSEoFMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711542331; c=relaxed/simple;
-	bh=ygb/+RjzOtkEwIpryyrNU9odhfP3ylclbuKAA4e6BI4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OTput9U+wz067pyMqABUu5KMyZQLPFwW1qpktkXgq5RMbAiJH+8E+Ri08iFrym0rGK6UY4OEEhFRr/Z98dn/cUGzaDRePcYBofuHkQ0effUHQnVA/XI6jqXSNb4tzzD7WxaTPwQD6HU/0JJCHtkAT/b6Yc+cwRPkoPHe8uePCI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=quj1LnWo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEF1DC433F1;
-	Wed, 27 Mar 2024 12:25:29 +0000 (UTC)
+	s=arc-20240116; t=1711542334; c=relaxed/simple;
+	bh=FsA6EaKKXWl4858n5Xez9OJR3Lo1nc9dauU8TswQhOg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EBoghb9g5KKgYkOIXgYOdwvKUI6Wta/FCPkkXrB9lM8lokdqddVTmvM/iwxquRLXYtFuyoxin4TNDFMpphdwzPvyB7qLZprFEXT1OvJWBRhM2KjwHpR+lO2iL+OZB4UPVI+V4JENpsiXgxsRuCR+8QY0KEltxpFdlq798iTC5MQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qtSuhYgF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C9DC43390;
+	Wed, 27 Mar 2024 12:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711542331;
-	bh=ygb/+RjzOtkEwIpryyrNU9odhfP3ylclbuKAA4e6BI4=;
+	s=k20201202; t=1711542334;
+	bh=FsA6EaKKXWl4858n5Xez9OJR3Lo1nc9dauU8TswQhOg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=quj1LnWoSgGKRLPIEvErZq4I0JA5/HcJk0p2xF4wVygPm/I7C/SXT2Rae8mIdwDaC
-	 cS0cAvPXJD6qHJNffvh4zuqUNi6aWI5el1/AdXWawVjpWiMCDFyVR3JQ6ESa8JVtns
-	 3WQF/kVjr5p+ZUFmR4chXRJVSbvziQ/O+DbTliMhX7OwefDaLct2AKL7mbduVheDlw
-	 crAO+BlBgNZfgNx9mmVldBV6fSMdi74XGVNvKLjc4kCmV7hOwE3gDzU0wR5EVzx+Fw
-	 XVET9p/JCQ0BcvkTyvN3It5hZgpdEwEpteYamOBPC8cv7P+f2i9et4ULKQdizpKdJP
-	 lY8vZmKbQuQ6Q==
+	b=qtSuhYgFJfYyIFZbFJjHshZ/lQeZLkf1sMc/L/o36GQ2JyaX91VkvrnzU0z6Mwm3H
+	 TyaIHuLocEtB8V/hpvzxTg41YpS7KH3j3mrMFfmaD0NmhS6ZgmEUEQpM5qsFPxkOXk
+	 Wj5cd0NbpGzNExZdUj4PnCbFHnhkrkRCYGDuPpk5ts9OuyLBclheNtgwGWWiHZ1zjx
+	 VZl9xXtiqHGjKwIIis+MGO9B6bIakpVVaOsD908C7pyOTrO7OyYcvertrvM9pt7Mh4
+	 kTxy6SM33X04LnCd9ZlJKLO4l58cz2nbKTEL1HXaOL/msz7ldCkDGjECJJDqrnffzH
+	 1I3c+JBTjHSGQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	arnd@arndb.de
-Cc: Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Marco Elver <elver@google.com>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	kasan-dev@googlegroups.com,
-	linux-mm@kvack.org,
+	george.shen@amd.com
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Martin Leung <martin.leung@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "kasan/test: avoid gcc warning for intentional overflow" failed to apply to 4.19-stable tree
-Date: Wed, 27 Mar 2024 08:25:28 -0400
-Message-ID: <20240327122528.2840267-1-sashal@kernel.org>
+Subject: FAILED: Patch "Revert "drm/amd/display: Add left edge pixel for YCbCr422/420 + ODM pipe split"" failed to apply to 4.19-stable tree
+Date: Wed, 27 Mar 2024 08:25:31 -0400
+Message-ID: <20240327122532.2840314-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,54 +74,168 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From e10aea105e9ed14b62a11844fec6aaa87c6935a3 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 12 Feb 2024 12:15:52 +0100
-Subject: [PATCH] kasan/test: avoid gcc warning for intentional overflow
+From e9e1abb397e550aec86a6d9eb7c6f8ed4271d742 Mon Sep 17 00:00:00 2001
+From: George Shen <george.shen@amd.com>
+Date: Fri, 2 Feb 2024 17:45:32 -0500
+Subject: [PATCH] Revert "drm/amd/display: Add left edge pixel for YCbCr422/420
+ + ODM pipe split"
 
-The out-of-bounds test allocates an object that is three bytes too short
-in order to validate the bounds checking.  Starting with gcc-14, this
-causes a compile-time warning as gcc has grown smart enough to understand
-the sizeof() logic:
+[Why/How]
+A regression was identified with the change to add left edge pixel for
+YCbCr422/420 + ODM combine cases.
 
-mm/kasan/kasan_test.c: In function 'kmalloc_oob_16':
-mm/kasan/kasan_test.c:443:14: error: allocation of insufficient size '13' for type 'struct <anonymous>' with size '16' [-Werror=alloc-size]
-  443 |         ptr1 = kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
-      |              ^
+This reverts commit 288c0254a0b0c9980dba9df7d5afadf27280b99c
 
-Hide the actual computation behind a RELOC_HIDE() that ensures
-the compiler misses the intentional bug.
-
-Link: https://lkml.kernel.org/r/20240212111609.869266-1-arnd@kernel.org
-Fixes: 3f15801cdc23 ("lib: add kasan test module")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Martin Leung <martin.leung@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: George Shen <george.shen@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- mm/kasan/kasan_test.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/core/dc.c      |  4 --
+ .../gpu/drm/amd/display/dc/core/dc_resource.c | 37 -------------------
+ .../amd/display/dc/hwss/dcn20/dcn20_hwseq.c   |  7 +---
+ .../gpu/drm/amd/display/dc/inc/core_types.h   |  2 -
+ drivers/gpu/drm/amd/display/dc/inc/resource.h |  4 --
+ 5 files changed, 1 insertion(+), 53 deletions(-)
 
-diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-index 318d9cec111aa..2d8ae4fbe63bb 100644
---- a/mm/kasan/kasan_test.c
-+++ b/mm/kasan/kasan_test.c
-@@ -440,7 +440,8 @@ static void kmalloc_oob_16(struct kunit *test)
- 	/* This test is specifically crafted for the generic mode. */
- 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index 1d0fd69cc7bd1..4d5194293dbd5 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -3098,10 +3098,6 @@ static bool update_planes_and_stream_state(struct dc *dc,
  
--	ptr1 = kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
-+	/* RELOC_HIDE to prevent gcc from warning about short alloc */
-+	ptr1 = RELOC_HIDE(kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL), 0);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+ 			if (otg_master && otg_master->stream->test_pattern.type != DP_TEST_PATTERN_VIDEO_MODE)
+ 				resource_build_test_pattern_params(&context->res_ctx, otg_master);
+-
+-			if (otg_master && (otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
+-					otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR420))
+-				resource_build_subsampling_params(&context->res_ctx, otg_master);
+ 		}
+ 	}
  
- 	ptr2 = kmalloc(sizeof(*ptr2), GFP_KERNEL);
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index 96ea283bd1690..1b7765bc5e5ef 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -822,16 +822,6 @@ static struct rect calculate_odm_slice_in_timing_active(struct pipe_ctx *pipe_ct
+ 			stream->timing.v_border_bottom +
+ 			stream->timing.v_border_top;
+ 
+-	/* Recout for ODM slices after the first slice need one extra left edge pixel
+-	 * for 3-tap chroma subsampling.
+-	 */
+-	if (odm_slice_idx > 0 &&
+-			(pipe_ctx->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
+-				pipe_ctx->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR420)) {
+-		odm_rec.x -= 1;
+-		odm_rec.width += 1;
+-	}
+-
+ 	return odm_rec;
+ }
+ 
+@@ -1448,7 +1438,6 @@ void resource_build_test_pattern_params(struct resource_context *res_ctx,
+ 	enum controller_dp_test_pattern controller_test_pattern;
+ 	enum controller_dp_color_space controller_color_space;
+ 	enum dc_color_depth color_depth = otg_master->stream->timing.display_color_depth;
+-	enum dc_pixel_encoding pixel_encoding = otg_master->stream->timing.pixel_encoding;
+ 	int h_active = otg_master->stream->timing.h_addressable +
+ 		otg_master->stream->timing.h_border_left +
+ 		otg_master->stream->timing.h_border_right;
+@@ -1480,36 +1469,10 @@ void resource_build_test_pattern_params(struct resource_context *res_ctx,
+ 		else
+ 			params->width = last_odm_slice_width;
+ 
+-		/* Extra left edge pixel is required for 3-tap chroma subsampling. */
+-		if (i != 0 && (pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
+-				pixel_encoding == PIXEL_ENCODING_YCBCR420)) {
+-			params->offset -= 1;
+-			params->width += 1;
+-		}
+-
+ 		offset += odm_slice_width;
+ 	}
+ }
+ 
+-void resource_build_subsampling_params(struct resource_context *res_ctx,
+-	struct pipe_ctx *otg_master)
+-{
+-	struct pipe_ctx *opp_heads[MAX_PIPES];
+-	int odm_cnt = 1;
+-	int i;
+-
+-	odm_cnt = resource_get_opp_heads_for_otg_master(otg_master, res_ctx, opp_heads);
+-
+-	/* For ODM slices after the first slice, extra left edge pixel is required
+-	 * for 3-tap chroma subsampling.
+-	 */
+-	if (otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR422 ||
+-			otg_master->stream->timing.pixel_encoding == PIXEL_ENCODING_YCBCR420) {
+-		for (i = 0; i < odm_cnt; i++)
+-			opp_heads[i]->stream_res.left_edge_extra_pixel = (i == 0) ? false : true;
+-	}
+-}
+-
+ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx)
+ {
+ 	const struct dc_plane_state *plane_state = pipe_ctx->plane_state;
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+index f15ba7335336a..c55d5155ecb9c 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn20/dcn20_hwseq.c
+@@ -1573,8 +1573,7 @@ static void dcn20_detect_pipe_changes(struct dc_state *old_state,
+ 	 * makes this assumption at the moment with how hubp reset is matched to
+ 	 * same index mpcc reset.
+ 	 */
+-	if (old_pipe->stream_res.opp != new_pipe->stream_res.opp ||
+-			old_pipe->stream_res.left_edge_extra_pixel != new_pipe->stream_res.left_edge_extra_pixel)
++	if (old_pipe->stream_res.opp != new_pipe->stream_res.opp)
+ 		new_pipe->update_flags.bits.opp_changed = 1;
+ 	if (old_pipe->stream_res.tg != new_pipe->stream_res.tg)
+ 		new_pipe->update_flags.bits.tg_changed = 1;
+@@ -1962,10 +1961,6 @@ static void dcn20_program_pipe(
+ 			pipe_ctx->stream_res.opp,
+ 			&pipe_ctx->stream->bit_depth_params,
+ 			&pipe_ctx->stream->clamping);
+-
+-		pipe_ctx->stream_res.opp->funcs->opp_program_left_edge_extra_pixel(
+-			pipe_ctx->stream_res.opp,
+-			pipe_ctx->stream_res.left_edge_extra_pixel);
+ 	}
+ 
+ 	/* Set ABM pipe after other pipe configurations done */
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/core_types.h b/drivers/gpu/drm/amd/display/dc/inc/core_types.h
+index ebb659c327e06..3a6bf77a68732 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/core_types.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/core_types.h
+@@ -333,8 +333,6 @@ struct stream_resource {
+ 	uint8_t gsl_group;
+ 
+ 	struct test_pattern_params test_pattern_params;
+-
+-	bool left_edge_extra_pixel;
+ };
+ 
+ struct plane_resource {
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/resource.h b/drivers/gpu/drm/amd/display/dc/inc/resource.h
+index b14d52e52fa2f..77a60aa9f27bb 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/resource.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/resource.h
+@@ -107,10 +107,6 @@ void resource_build_test_pattern_params(
+ 		struct resource_context *res_ctx,
+ 		struct pipe_ctx *pipe_ctx);
+ 
+-void resource_build_subsampling_params(
+-		struct resource_context *res_ctx,
+-		struct pipe_ctx *pipe_ctx);
+-
+ bool resource_build_scaling_params(struct pipe_ctx *pipe_ctx);
+ 
+ enum dc_status resource_build_scaling_params_for_context(
 -- 
 2.43.0
 
