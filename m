@@ -1,299 +1,185 @@
-Return-Path: <linux-kernel+bounces-120761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-120762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD1688DCB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:39:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A73B88DCB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 12:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C412C1C2248A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:39:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B63F1F29299
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Mar 2024 11:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0C586ACB;
-	Wed, 27 Mar 2024 11:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0955B126F2C;
+	Wed, 27 Mar 2024 11:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IthzmOWE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jqWV1w4J"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9283E86637;
-	Wed, 27 Mar 2024 11:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711539556; cv=none; b=jLUuWqwF00nZ7+xmWNua4VsnmLDCv+51Vhkbw6ecR/QGgjoyeJ3ZXe9ips3j01ECZWftOstGWlTp9r/4kKhkXHMOEvV5CaLNegykfSoQsEb80STPFxmutzgropcvdBjCd9bpnFwS9Ci8VRuU4aATOG40RKxyPG4R2MO3oFzSVoo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711539556; c=relaxed/simple;
-	bh=0aSLD8v9FhdgjLmAm4FFNYvpmf51+GglcayqfEF6akk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g7RSQL8XAaQH3Y/25amUOzpfC9PkCMps5QW58P6H+itaqyU1i8auYm95f9XKQ9+YzoWhP8ZyNlQeHtXti6QCqmfqZc9z+FuHb49bxuP0qbVYiElIHRS0qFkqdKr0/hMEfWVYEtBEn/WI237WFxqxpyM2DwA6kJWVeHjqi7Ux28g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IthzmOWE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 182F0C433F1;
-	Wed, 27 Mar 2024 11:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711539556;
-	bh=0aSLD8v9FhdgjLmAm4FFNYvpmf51+GglcayqfEF6akk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IthzmOWEN3mIomGFkzEB7rdFo+sVY9NJoykWW/JaltxLd6FaeS7t/4TOEz67p3nBA
-	 I2PXY+Edpozu3HFBTHNyT4zD/Azr4mbYlQRfgb6n9+XFE5/gwjk+qBrtCirGC2MBXy
-	 40Vm1apsToyMQazDpvK1j/JQECLhCY+uKKtTb8Rk+zmaVwPutLbZMgVN7Ay9795nig
-	 7CxFS0O+CM3rImV6sFyLghl93bs/Xd++nzFgCZ+/2Lml/PgqNJdLN32kTDTUuCh8+z
-	 hY7WnKKpYAPsim7YtilIQtXPf0BXRhDH01VvkLB+AVUADNreC4+pK58Czcd49svPpX
-	 lt8nvzqZXMZuA==
-Date: Wed, 27 Mar 2024 12:39:10 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 05/11] PCI: epf-{mhi/test}: Move DMA initialization to
- EPC init callback
-Message-ID: <ZgQFXsgqpeLbXMTb@ryzen>
-References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
- <20240314-pci-epf-rework-v1-5-6134e6c1d491@linaro.org>
- <Zf2tXgKo-gc3qy1D@ryzen>
- <20240326082636.GG9565@thinkpad>
- <ZgKsBoTvPWWhPO9e@ryzen>
- <20240327055457.GA2742@thinkpad>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713E886AF1;
+	Wed, 27 Mar 2024 11:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711539637; cv=fail; b=bOUvl7yvOzgAmigjBPWCm0sQsSCcMb9OeRfxR72Bb9Uo4FMZulltLq+8zdaeekH2C1kALTauudejdS8YmI39qLN9zWpJo7YPRrsiR3rMflDRhAGCUndOFf4js04+Psb4jyZAgedhx8CDzKLurHMKY2C26Pc+1cKNXvF++iAyySU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711539637; c=relaxed/simple;
+	bh=L8yM5bAEnoLa/uofoKOojU1hXsPHn0RfVeE9Tq+7NGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=AZN4UQ/inFXI9NLX8D88lTk7Cg4tgeK9i7rJ4JnScY7ykGkEgK87KhKuvY9NsGuFZcoTpbUlTjxi+pZG0mkE3xo5ll+qGXUEGUvDaDysFzxOcCB3bQ/iNKQMP+uRGpNpFcQTONcxLqBqjGvMzjCjDLwf90THXFONXkoS3dk/d/4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jqWV1w4J; arc=fail smtp.client-ip=40.107.92.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kd7rTmid0K5CZIJmj9r/c4LunDxUotws3o1MVsFymJaDGoc+zbGKn1MXVzKUFbjj7RXo4jQudwYj63l9MoXXCcNA4i9emtY9ahD2x2hBwUqmfFXgJ3AU5CLv1cEICeUX1r6VztjgCJ1sOZoXXUVr9sL6cOTFR9k/LtGrH07w4vvo5YfZq+m+WYVHGQdIunB/o4t0nZhnNMn2fUm5miuPjBPEy5Y5FH1nZUv5VmcRw+34W7QG/J+Lt6+ItG7+NzOml3a0MSW9UfrJ7FnbyoyLb3ahnjVI/8vysLH5AuTrb1uZVqx/r7v0HzY0PK4iCFABc4UMN7H+UPlH0PeBreGtNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3LJ6byHNF2VmlVFbuwoPHuGJEgZtn0FpoRv+NiVeSrs=;
+ b=erqALgy9DDALJVsum21YEo4uRizWOHalNDgM33DQT/5Za6TCWoAvebSY/oPwnAySlX0P0oo3HSkGIbrOC1oS6SwdNP9xnUuXhi6wKPpWlvFTVJjxtzie/992KwxL/ZBXoOF32fKd2KJv4FbZ8DxgKPResxOe/5nGQcW/ch62FRJpL/9KOMxrVCEK/OewRdi5eJBNtqEoK8WrxFE4fAE0a3YQPo61TeL5B1q0iSKACbkPFMVkdg/69VZH2HsEYTo2TOEg2Rklgujp0VUrnsBIwlABK+dRw6XFUOg37Yyd48S0UYYAiz7kjOTkMjA5kOO93TQ4sLgJiPZVpubbeCTUqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3LJ6byHNF2VmlVFbuwoPHuGJEgZtn0FpoRv+NiVeSrs=;
+ b=jqWV1w4JQ2IuM/0an+pIsZ+oSlh4dLwFvXdO34GisL5RXVNjT+tnFY9FoHvIAZ+QpW6ORcIht/q5AcNWQXArFHNSzBayi+yWSNaItAJwnSvsZOJTRNDydCU9QBl0jy5Kf86nJ5jz3thWt8bq+O+1ofp9iweJAWnahHCi2QIxEnml69Qm5ao85kOtAgHWSZ8tgEnGQC3mjkJPdmaNgz+84QfQS5PgEuk2ctJLsrarUDTDFbOrgela8xmlf7OoA6QkeMJxmHOldDNXhwR91tlIsmLej3xpVDbcM6OLuCkpPd/k5hvN6WT8nma3qA40BBuPg84f1kVy42NEbcxl926xnw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by DM4PR12MB5938.namprd12.prod.outlook.com (2603:10b6:8:69::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.32; Wed, 27 Mar 2024 11:40:30 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.031; Wed, 27 Mar 2024
+ 11:40:30 +0000
+Date: Wed, 27 Mar 2024 08:40:29 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Joao Martins <joao.m.martins@oracle.com>
+Cc: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>, iommu@lists.linux.dev,
+	Kevin Tian <kevin.tian@intel.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] seltests/iommu: runaway ./iommufd consuming 99% CPU after
+ a failed assert()
+Message-ID: <20240327114029.GC946323@nvidia.com>
+References: <0d5c3b29-fc5b-41d9-9556-5ce94262dac8@alu.unizg.hr>
+ <20240319135852.GA393211@nvidia.com>
+ <a692d5d7-11d5-4c1b-9abc-208d2194ccde@alu.unizg.hr>
+ <cdc9c46b-1bad-41cd-8f98-38cc2171186a@oracle.com>
+ <20240325135207.GC6245@nvidia.com>
+ <f8e03425-98cf-4076-8959-d85eda846bab@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f8e03425-98cf-4076-8959-d85eda846bab@oracle.com>
+X-ClientProxiedBy: MN2PR20CA0041.namprd20.prod.outlook.com
+ (2603:10b6:208:235::10) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327055457.GA2742@thinkpad>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|DM4PR12MB5938:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59516d3f-030f-4cc9-6380-08dc4e52b462
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rVcKwg8gjjji47c7h4So5wJ2ZOBFH97R4+FyLTr92TI+34crpMpMFh0nvRFLlchRB4ZLofJgR1gn1BFmrio81geHO8rTvTKuinUa/q89YXXArhvPGw6uqXnxinLWqOkeefaPEl6xBplnrgDMm0thmGDe8gpiPTm5YKP3TGZUgv1FLUzJiiK+wCkY4dIeL8wfbJoO/PmvN7cvEa1lolL9VeuYucW+KUH0gHl2fw+WCVu8TdFvYkC8N0YIvDUn8Kwwqkbvg03hVESBtc9jaTQeZGA4aBIvG73zStJcF0E+pXYnKejtC3gMgguE0e6MLSq0B1FHav7XUB83A0aeNY6syVZ6spRWiU8gU2+aXzGsYs6w21cU7Og2OW02WGoPWSkulUZbEB1XsDziM1G+lh/NH01nBm4gOqoBB/z9flgl1ORtYnmzCW2iaR7nMIpPOkuzZSEfj1JjP754aMPeOke+Exp9CqvCIzANdC40fzwhyM3hQQyXgEdA1dRiNsk/DWsR5O16qVvKbBL7l+egcuaNhTfi//ZPZBbNoUwtw/tgXVn4SeqNYv744BoE6mtWWBRXHMv03isTAlc7D+LsJlxxjk4i9RbX+WwM31j3a5IetZjaJaUaqHLV+z8IabtbAy+7IcFTh7C9BaGHqCbyVJy+CVuRxpFhBtmoEXT3cliuDVE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TzN5UkRvSzdnUEtFQ3V4N3djTlArbmRySXBtQlNwL1M2UDYyTkVSM056V3pZ?=
+ =?utf-8?B?N3JNQVZBNllkcUNDdVdQaVFiY2RYTktFc2ZVdnYxc0JxOXZTbDQybkR0YWtB?=
+ =?utf-8?B?VlBXUnFJMEYxbC9oTG1MLzBrZ2RwZ0NjWVJNYnFpRnNQK3g5YitJVnRFbHBa?=
+ =?utf-8?B?YjR0LzJES3RMRVlPT3Y0TnlaS3NXNDZTaSs2alBCN1RST3JwVnVlNjlCVU9i?=
+ =?utf-8?B?MWdacE5rUHFkdDR1L3hHeXh3dC9mN0trR2J6TWNuUlFlOVh1aHI4Z2laKzF1?=
+ =?utf-8?B?bG1scTRobUROZlZjTlFDckZMTUFLaVR5dzJBbUNZeWVCUEE4Y1VnV240TWs2?=
+ =?utf-8?B?SWd3SXJUVEdIT1JEZ050aWxUVmVyREsyVjgxeWQ0eWZ6enB0OEJYSUkzTVlm?=
+ =?utf-8?B?UCtudndRSGdoYlBVUllBNHIvUFZEZFVZNDVzSTRUY0RLemlYYUZ3cktoeW1p?=
+ =?utf-8?B?bU5SVG1LYWdWKzJHNnFTbEJ4RHROWmRlWkxUZ3JYb1Uyd2N6WkxTYmttRHBZ?=
+ =?utf-8?B?NHlPVzF2YWFwSTFNbFNjT2ZxSzQ2cWU5Z2J4cVVnS1JYMUNNNGpIUmFMMitw?=
+ =?utf-8?B?NFJtc0ttWENnZk5ZMnNiUjZreWdudGNlS2tIYXRqMkthVEZKTVhNSTBwcVZK?=
+ =?utf-8?B?SUJublUrd0dQeXAxY04wdHZyTXR3SUZibC91QTNSMGI4L3lodTRkNDBnUG5D?=
+ =?utf-8?B?VlNoVk52dTN4UTh1Q01lTlcyNEZLYzBlc2h5eUNLZ2QvakFrelpVS1kxZDEr?=
+ =?utf-8?B?aStxWTNyaVY0Sm5jaHExYlI2TVpOeUhWNVg4dkVJZFBUWGNnTTdqTnd4T0Mr?=
+ =?utf-8?B?ak1ubWdMYUVHNFlwdC82N2RBMXlhSDJrTE9pQjl4cThlTWp6QVRtalhWSUl4?=
+ =?utf-8?B?UTVFbkp6ZldtKzNwVUpLeGQrcUI4WHhydE92bUVWejBYcndiSXZnRFlXZ2lG?=
+ =?utf-8?B?ZktzSWRxQU5KN2psZ09MQW9WNEZ3SFZGbDVBS016eUprRmhVaHA0c1lmYU55?=
+ =?utf-8?B?VzNnQ2lKd0VIY0FYbkVvS3NuRTlDRGZwb0RjWG9OYmRMNUhrQ0xyTlc5ZGRr?=
+ =?utf-8?B?VW13N0ZKb29CcWkxQ3VicG9LbWpMSjBsYWFuMGw4RGJldkZ5NE5oM3kzaktG?=
+ =?utf-8?B?VytFT3RCZWU4VDBDbmFmY1VMdHZhTHB4Z1F4MTVmVEg1R1ZKczhGaXFndU5v?=
+ =?utf-8?B?SXdaSHE5dFNyNFZrQ0hqUVZOY2tJSnNDRXlSWVhPRGpINXFMcGJlYkZ2Q3Nm?=
+ =?utf-8?B?dzZadXYwYXAwMW9pRHk5WXloOGpHWkNBazVkeGxQcjJoTEVDNFE4K1NEUlJl?=
+ =?utf-8?B?b1dTUHlVakFSNWdIR2Fna2E5MGtoaWVoeG52R0huR2xKVWtQYnV2S0FJcXN2?=
+ =?utf-8?B?a1AvZXZBcWVlV25ickkyNmVldExDbWhNM1RLRHBlOWNyQjk3TkM3T09YTFQr?=
+ =?utf-8?B?V1pKRzQ4V3lBbjRuaHExSlhGemE4Ykt2azRpSDZIR3dOZ1FWbWZwcitzSkhh?=
+ =?utf-8?B?UFZETDhjbkY4ckRkNDM5Ym1HRk5lSmhPV28wUTc0Y0N4ZzZyUklQME5hVjNm?=
+ =?utf-8?B?T0tjUTJ6VmdhbndkSzM3NzB1dHRZQlF3dGJqK0VzYVhtUjQxRmE2K0dhbE12?=
+ =?utf-8?B?cTNnS2pLNE0wZERBVTlINDVaTzA3Tng1eGhmRHBTYTFLdnFtZ0ZXTWE4SVBU?=
+ =?utf-8?B?SWd5U0FKdXczZ2VvTTNCZ0JJbFZlcmdHNW0vSVZ0STdPalgxZnV6VWVWd3p5?=
+ =?utf-8?B?Mll5c0Q0R0NlOUw2WEpabXZabUt0Z2FQWitDc2hiT3pvV3RsTWlyVC9CL09m?=
+ =?utf-8?B?aWZQcFA1WS8xb2wzZXhxZVpDLzZuMFZhMmtibnM2VWlTalg2SUViWGVPa1RY?=
+ =?utf-8?B?OWs1eFFOemN4WTgvTDdaeUxpNm4xYzFrdmFRUExqdFIyTGNjcll1a281eUVN?=
+ =?utf-8?B?WEI0V2cwRkNSYitWeE1PYUxVeDlNNGRZb09rOENMNXBkM3BIcjZLMmw1RWNF?=
+ =?utf-8?B?L1lXZ2I4U1NaYW1GWVVTaEdBcVNRcEhGbnpySEdpNnFUSXdNN0hlS2RuLzcv?=
+ =?utf-8?B?aklNUm5STmFRL05uQlRVWHBEVjNTQTl5YWYyZk1EQTNVbVNsT21TdVphc0VO?=
+ =?utf-8?Q?eWgeS/WkodgJKZIuE/MMefn32?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59516d3f-030f-4cc9-6380-08dc4e52b462
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2024 11:40:30.1619
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0Khe17rxqiZFNdR/GsO+pQSbfkmCHzeI61k0dwN8CGDhyw4EItiCcn6CS68WV5Hd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5938
 
-+CC Vinod
-
-Hello Vinod,
-
-I didn't know the answer, so I chose the "call a friend option" ;)
-I hope that you can help me out :)
-
-
-If you take a look at drivers/pci/endpoint/functions/pci-epf-test.c
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/endpoint/functions/pci-epf-test.c#L448-L471
-
-You can see that the driver always does pci_epc_map_addr(),
-then it will either use:
-DMA API, e.g. dma_map_single() etc.
-or
-memcpy_fromio()/memcpy_toio()
-
-based on flag FLAG_USE_DMA.
-
-This flag is set via ioctl, so if we run:
-/usr/bin/pcitest -d
-the flag will be set, without the -d parameter the flag won't be set.
-
-
-If you look at how the DMA channel is requested:
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/endpoint/functions/pci-epf-test.c#L224-L258
-
-If will try to get a private DMA channel, if that fails,
-it will use the "dummy memcpy" DMA channel.
-
-If the FLAG_USE_DMA is set, the transfers itself will use:
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/endpoint/functions/pci-epf-test.c#L139-L155
-either dmaengine_prep_slave_single() or dmaengine_prep_dma_memcpy(),
-depending on if we are using "dummy memcpy" or not.
-
-
-
-If you take e.g. the DWC PCIe EP controller, it can have an embedded DMA
-controller on the PCIe controller, and we will try to detect it when
-initializing the PCIe EP controller using dw_pcie_edma_detect():
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/controller/dwc/pcie-designware-ep.c#L759
-
-For the PCIe EP controller that I am using, which have eDMA built-in,
-I noticed that if I do not enable the eDMA driver (# CONFIG_DW_EDMA is not
-set), I noticed that I can still run:
-/usr/bin/pcitest -d
-
-Which will use the "dummy memcpy" DMA channel.
-Yes, the performance is poor, but it still works, so it appears that the
-fallback code is working properly.
-
-
-If I enable the eDMA driver (CONFIG_DW_EDMA=y),
-I can run:
-/usr/bin/pcitest -d
-
-And the performance is good.
-
-
-So my question is:
-Is the "dummy memcpy" DMA channel always available?
-
-Because if it is, I think we could drop the path in the pci-epf-test.c
-driver which uses memcpy_fromio()/memcpy_toio() instead of DMA API.
-(Since just having a single path to do I/O in the driver would simplify
-the driver IMO.)
-
-I assume that the "dummy memcpy" DMA channel just uses memcpy_fromio() and
-memcpy_toio() under the hood, so I assume that using the memcpy_fromio()/
-memcpy_toio/() is equivalent to using DMA API + dmaengine_prep_dma_memcpy().
-
-Although it would be nice if we didn't need to have the two separate paths
-in pci_epf_test_data_transfer() (dmaengine_prep_slave_single() vs
-dmaengine_prep_dma_memcpy()) to support the "dummy memcpy" channel.
-But I guess that is not possible...
-
-
-I hope that you can bring some clarity Vinod.
-(Please read my replies to Mani below before you compose your email,
-as it does provide more insight to this mess.)
-
-Mani, I tried to reply to you inline below, with my limited understanding
-of how dmaengine works.
-
-
-On Wed, Mar 27, 2024 at 11:48:19AM +0530, Manivannan Sadhasivam wrote:
-> > So we still want to test:
-> > -DMA API using the eDMA
-> > -DMA API using the "dummy" memcpy dma-channel.
+On Wed, Mar 27, 2024 at 10:41:52AM +0000, Joao Martins wrote:
+> On 25/03/2024 13:52, Jason Gunthorpe wrote:
+> > On Mon, Mar 25, 2024 at 12:17:28PM +0000, Joao Martins wrote:
+> >>> However, I am not smart enough to figure out why ...
+> >>>
+> >>> Apparently, from the source, mmap() fails to allocate pages on the desired address:
+> >>>
+> >>>   1746         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
+> >>>   1747         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ |
+> >>> PROT_WRITE,
+> >>>   1748                    mmap_flags, -1, 0);
+> >>> → 1749         assert(vrc == self->buffer);
+> >>>   1750
+> >>>
+> >>> But I am not that deep into the source to figure our what was intended and what
+> >>> went
+> >>> wrong :-/
+> >>
+> >> I can SKIP() the test rather assert() in here if it helps. Though there are
+> >> other tests that fail if no hugetlb pages are reserved.
+> >>
+> >> But I am not sure if this is problem here as the initial bug email had an
+> >> enterily different set of failures? Maybe all you need is an assert() and it
+> >> gets into this state?
 > > 
+> > I feel like there is something wrong with the kselftest framework,
+> > there should be some way to fail the setup/teardown operations without
+> > triggering an infinite loop :(
 > 
-> IMO, the test driver should just test one form of data transfer. Either CPU
-> memcpy (using iATU or something similar) or DMA. But I think the motive behind
-> using DMA memcpy is that to support platforms that do not pass DMA slave
-> channels in devicetree.
-> 
-> It is applicable to test driver but not to MHI driver since all DMA supported
-> MHI platforms will pass the DMA slave channels in devicetree.
+> I am now wondering if the problem is the fact that we have an assert() in the
+> middle of FIXTURE_{TEST,SETUP} whereby we should be having ASSERT_TRUE() (or any
+> other kselftest macro that). The expect/assert macros from kselftest() don't do
+> asserts and it looks like we are failing mid tests in the assert().
 
-I don't understand how device tree is relevant here, e.g. qcom-ep.c
-specifies pcie_ep->pci.edma.nr_irqs = 1;
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/controller/dwc/pcie-qcom-ep.c#L818
-which is sufficient for you to be able to probe/detect eDMA successfully,
-no need for anything in device tree at all.
+Those ASSERT_TRUE cause infinite loops when used within the setup
+context, I removed them and switched to assert because of this - which
+did work OK in my testing at least.
 
-
-> 
-> > However, it seems like both pci-epf-mhi.c and pci-epf-test.c
-> > do either:
-> > -Use DMA API
-> > or
-> > -Use memcpy_fromio()/memcpy_toio() instead of DMA API
-> > 
-> > 
-> > To me, it seems like we should always be able to use
-> > DMA API (using either a eDMA or "dummy" memcpy).
-> > 
-> 
-> No, there are platforms that don't support DMA at all. Like Qcom SDX55, so we
-> still need to do CPU memcpy.
-
-I assume that you mean the the PCIe controller used in SDX55 does not
-have the eDMA on the PCIe controller, so dw_pcie_edma_detect() will
-fail to detect any eDMA. That is fine no?
-
-I assume that this SoC will still able to use the "dummy" memcpy dma-channel?
-
-
-> 
-> > I don't really see the need to have the path that does:
-> > memcpy_fromio()/memcpy_toio().
-> > 
-> > I know that for DWC, when using memcpy (and this also
-> > memcpy via DMA API), we need to map the address using
-> > iATU first.
-> > 
-> > But that could probably be done using another flag,
-> > perhaps rename that flag FLAG_USE_DMA to NEEDS_MAP or
-> > something.
-> > (Such that we can change these drivers to only have a
-> > code path that uses DMA API.)
-> > (...and making sure that inheriting the DMA mask does
-> > not affect the DMA mask for DMA_MEMCPY.)
-
-I was wrong here, pci-epf-test always calls pci_epc_map_addr()
-regardless if FLAG_USE_DMA is set or not.
-
-(Even though this should be unnecessary when using the eDMA.)
-
-However, if we look at pci-epf-mhi.c we can see that it does
-NOT call pci_epc_map_addr() when using DMA API + dmaengine.
-
-Is it really safe to avoid pci_epc_map_addr() in all EPC controllers?
-I assume that it should be safe for all "real" DMA channels.
-We can see that it is not safe when using DMA API + "dummy" memcpy
-dma-channel. (That is why I was asking if we need a NEEDS_MAP, or
-MAP_NOT_NEEDED flag.)
-
-
-> > 
-> > But perhaps I am missing something... and DMA_MEMCPY is
-> > not always available?
-
-Right now pci-epf-test driver has three ways:
--DMA API + dmaengine dmaengine_prep_slave_single()
--DMA API + dmaengine dmaengine_prep_dma_memcpy()
--memcpy_toio()/memcpy_fromio().
-
-pci-epf-mhi.c driver has two ways:
--DMA API + dmaengine dmaengine_prep_slave_single()
--memcpy_toio()/memcpy_fromio().
-
-
-pci-epf-test.c:
--Always calls pci_epc_map_addr() when using DMA API.
-
-pci-epf-mhi.c:
--Never calls pci_epc_map_addr() when using DMA API.
-
-
-I honestly don't see any point of having three paths
-for pci-epf-test. Ideally I would want one, max two.
-
-If you think that:
--DMA API + dmaengine dmaengine_prep_slave_single()
-+
--memcpy_toio()/memcpy_fromio().
-
-is more logical than:
--DMA API + dmaengine dmaengine_prep_slave_single()
-+
--DMA API + dmaengine dmaengine_prep_dma_memcpy()
-
-Then I think we should rip out the:
--DMA API + dmaengine dmaengine_prep_dma_memcpy()
-it serves no purpose... if you don't have a "real" DMA channel,
-just run without the -d flag.
-
-Or, if you argue that the dmaengine_prep_dma_memcpy() is there
-to test the DMA API code (which I can't say that it does, since
-it doesn't use the exact same code path as a "real" DMA channel, see:
-https://github.com/torvalds/linux/blob/v6.9-rc1/drivers/pci/endpoint/functions/pci-epf-test.c#L139-L155
-so this argument is questionable).
-
-Put it under a --use_dummy_dma, and return failure by default
-if no "real" DMA channel is found.
-
-
-But even so, that would not address the pci-epf-test and
-pci-mhi-test inconsistency WRT pci_epc_map_addr().
-
-I think if we rip out:
--DMA API + dmaengine dmaengine_prep_dma_memcpy()
-we could also move the pci_epc_map_addr() so that it is
-only used for the memcpy_toio()/memcpy_fromio() path.
-
-(Or if we add a --use_dummy_dma, we can move the pci_epc_map_addr() to
-that path, and remove it from the dmaengine_prep_slave_single() path.)
-
-
-Kind regards,
-Niklas
+Jason
 
