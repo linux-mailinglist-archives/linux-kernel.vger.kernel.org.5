@@ -1,225 +1,144 @@
-Return-Path: <linux-kernel+bounces-123117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E15890255
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:55:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD17E890259
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560831F26F2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:55:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41040B234B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9926E12FB03;
-	Thu, 28 Mar 2024 14:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8831312CDBF;
+	Thu, 28 Mar 2024 14:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="l9LeqVpT"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="gafSkfD4"
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA05A7F49E;
-	Thu, 28 Mar 2024 14:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FF812EBC4
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637639; cv=none; b=IPugyFvwxGOL41c52xRGVmKpogYTBjjTjPTmpYrImgNgdfIj1vUf9zbdKFkncxKp6oqmOJq7wBjk1fkVgm9eoMEvPTL6nF2UHbyCoPSk4QkTJeq8CXy8qa50VGaUOGZtGZ8b6iiJJduUi2ZFwF/hwkuHQGw7WxRHgEMHfXg4AmE=
+	t=1711637642; cv=none; b=qj99I2NhGFseBKjD0dbLLzXySDbu+KHgrz52RLKPcTjPtjI/eTYpGSwOKzErBRzlT7oPNtpG+LRvsEFBA3aBri6GgytbnM3IMvWNTuQDow+hCo4PibhJoTPEr34T2cOB/NZ7X+qTVieF5EPHNKVDSjFNkU7ivPp1JcTQqAYseNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637639; c=relaxed/simple;
-	bh=q+l+CxYfGh8NmwrdiTXY1xVL3a2sjXtQLxyA/dT0Zoo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s8+eLL1jM/v4+9A6HWfyvsVLaC4d0pg2DKwAVqSoMXlwKUsqEoNYsijT3C20VF8eoW9EN05UxCdD4I7VD7ZGSRAt/CV0WRWxxQmeaiQNzqeskRmchq+u4aHdJtCYIoENLJa2/nXIV5HObGUNcJjLl/z+17FLmr3u7gsz0IEBHG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=l9LeqVpT; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-	Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=nkqbgG1HrRF3ejvn+5iZhShKyFwlWg+3aA2aTIsKg7Y=; b=l9LeqVpTWjHKfGQt+kKRgbPf8s
-	WDAvhfYh7NGSMUBT3eh5GC3BQi5huG4D9JB5ZBx4Mqb3+esFsPfopskhXCorPVKofm1eftxDa2j5S
-	1zLJdlHiqsf2EF/zNn7eSnMC3u1sYU1+U5Xyn5SIXUH5DXkPEZTfI1FmrDxa9xorxPgxxp5A+uewc
-	eKLRmXUhXLcxbYcNi0X/ZBMFCRR8GOVw4Ko6rZBT36YuzPkYiG+fY8x2ecMVd8MRFyFjb3WJRreUz
-	59LzJf1f8s6AhFmM8GC3eOjxHZzmVJHy3KEkD4qF9EWg6ps8XNaHIVofUMCn1JCp5qUdKpK02FS73
-	S2eNoFAg==;
-Received: from [84.65.0.132] (helo=localhost)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rpr8Q-00GHNP-GR; Thu, 28 Mar 2024 15:53:42 +0100
-From: Tvrtko Ursulin <tursulin@igalia.com>
-To: dri-devel@lists.freedesktop.org
-Cc: Tvrtko Ursulin <tursulin@ursulin.net>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	linux-media@vger.kernel.org,
-	linaro-mm-sig@lists.linaro.org,
-	linux-kernel@vger.kernel.org,
-	kernel-dev@igalia.com
-Subject: [PATCH] dma-buf: Do not build debugfs related code when !CONFIG_DEBUG_FS
-Date: Thu, 28 Mar 2024 14:53:23 +0000
-Message-ID: <20240328145323.68872-1-tursulin@igalia.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711637642; c=relaxed/simple;
+	bh=iZIfvRAXPiN1hUOqhcrIgulJC/h0qg4G0zbfy7UTFog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y/FSdLCgKPZ9Sav1vJ2EkDanabvRxI8JVXLOWDTXNOYVIIVLRDwxBpzwrZYR0R4CMOtjuMnEeu9deQ++lKH1qmBnFoBHUIXcsXZYKBzZ29imsmmf4wuEJQjX714vsBGfN3YhOEWetcB6ndj2d2UIEExUIs0kUpZWfsgBcIaQKEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=gafSkfD4; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-781753f52afso55177985a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google; t=1711637638; x=1712242438; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ch1rSN60qRNe5jZReHI5Y78NslDtRUbpHN7Kv6Yk4Rs=;
+        b=gafSkfD4I9UUsl7v479VXMwpQfzA11f7ivm4sjOBEbRWuFRyiSmT1MZbdowifcrVd6
+         kFEXvPwaA9xgqLNj18mmuAo5rTyLYjRmGgj30qY9c5m0+gUm+KCbnGM+FqGZFQGcZIjN
+         0SJKUFYFxNUFLVfAW+tJnv7KFHDXI5d5kWdeY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711637638; x=1712242438;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ch1rSN60qRNe5jZReHI5Y78NslDtRUbpHN7Kv6Yk4Rs=;
+        b=rsB9XeIvY5KoHguwiE3zlO80Ck6XoFb771O/VNgDVIFjV8Of1emGQglUQjhAL61uN5
+         lvcM99RvlfIjNdocNf1q5+Nf9x8m2DGPlmd0bkjgkkQBb3l7d1zz5geQCne/9eIsCHAr
+         AeJoOQWFUyZkxoBYhdPQcUgSpbVAaTTsMwvyEj7GiCE3f1wYYHyIcdWwetaU+QbCRWiH
+         aHqmdzZdY5zL6+o/aGwVhCXOlUJ/UWjBH/2rvb72VnDbouUniV+RbBdnB0Tr9nZ5jxvk
+         tXYUxy9IfUb7aBkWNv7i5/dQgoLYtyInPXOIt09iaN1RD7g6wXjPI2ch1sEt3mL5giqc
+         5Q0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXgs7ixx3sn36yN/K+WrV0/8vCOXwqhAkiI+0I5smNAuT0I6v1PaDJGjzTKkyn9cdZhzMJQzSEAhTNp7DkdcziA7aZd4RefKSiKDMmI
+X-Gm-Message-State: AOJu0YwaV38Q2uKK7aA1zF80JfzNp26yA9cTz4R+/s6lL6gdlgLxvYFQ
+	KP49FLtiF8TuE9qSGa1rm8sd7J85I4Pn623nTKdivlPPMBMUzxk/KIBWNbVt9A==
+X-Google-Smtp-Source: AGHT+IEnRGCY/sQi9y+ccYFEbyJVObyHWpdhYti3ZYxnNsR7GFx/Tq+iuzOTlBR8697MpFQbDAmQmg==
+X-Received: by 2002:ad4:5507:0:b0:696:990b:dfeb with SMTP id pz7-20020ad45507000000b00696990bdfebmr2685430qvb.16.1711637638145;
+        Thu, 28 Mar 2024 07:53:58 -0700 (PDT)
+Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.googlemail.com with ESMTPSA id jf11-20020a0562142a4b00b006987272f5cbsm399690qvb.71.2024.03.28.07.53.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 07:53:57 -0700 (PDT)
+Message-ID: <b8e848fe-96d8-4f75-a2e9-2ed5c11a2fd7@ieee.org>
+Date: Thu, 28 Mar 2024 09:53:55 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/9] rbd: avoid out-of-range warning
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+ Ilya Dryomov <idryomov@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+ Nathan Chancellor <nathan@kernel.org>, Alex Elder <elder@inktank.com>,
+ Josh Durgin <josh.durgin@inktank.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Hannes Reinecke <hare@suse.de>, Christian Brauner <brauner@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>,
+ Jinjie Ruan <ruanjinjie@huawei.com>, Alex Elder <elder@linaro.org>,
+ ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, llvm@lists.linux.dev
+References: <20240328143051.1069575-1-arnd@kernel.org>
+ <20240328143051.1069575-4-arnd@kernel.org>
+From: Alex Elder <elder@ieee.org>
+In-Reply-To: <20240328143051.1069575-4-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Tvrtko Ursulin <tursulin@ursulin.net>
+On 3/28/24 9:30 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> clang-14 points out that the range check is always true on 64-bit
+> architectures since a u32 is not greater than the allowed size:
+> 
+> drivers/block/rbd.c:6079:17: error: result of comparison of constant 2305843009213693948 with expression of type 'u32' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+w
+>              ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> This is harmless, so just change the type of the temporary to size_t
+> to shut up that warning.
 
-There is no point in compiling in the list and mutex operations which are
-only used from the dma-buf debugfs code, if debugfs is not compiled in.
+This fixes the warning, but then the now size_t value is passed
+to ceph_decode_32_safe(), which implies a different type conversion.
+That too is not harmful, but...
 
-Put the code in questions behind some kconfig guards and so save some text
-and maybe even a pointer per object at runtime when not enabled.
+Could we just cast the value in the comparison instead?
 
-Signed-off-by: Tvrtko Ursulin <tursulin@ursulin.net>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kernel-dev@igalia.com
----
- drivers/dma-buf/dma-buf.c | 56 ++++++++++++++++++++++++---------------
- include/linux/dma-buf.h   |  2 ++
- 2 files changed, 36 insertions(+), 22 deletions(-)
+   if ((size_t)snap_count > (SIZE_MAX - sizeof (struct ceph_snap_context))
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 8fe5aa67b167..8892bc701a66 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -35,12 +35,35 @@
- 
- static inline int is_dma_buf_file(struct file *);
- 
--struct dma_buf_list {
--	struct list_head head;
--	struct mutex lock;
--};
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+static DEFINE_MUTEX(debugfs_list_mutex);
-+static LIST_HEAD(debugfs_list);
- 
--static struct dma_buf_list db_list;
-+static void __dma_buf_debugfs_list_add(struct dma_buf *dmabuf)
-+{
-+	mutex_lock(&debugfs_list_mutex);
-+	list_add(&dmabuf->list_node, &debugfs_list);
-+	mutex_unlock(&debugfs_list_mutex);
-+}
-+
-+static void __dma_buf_debugfs_list_del(struct dma_buf *dmabuf)
-+{
-+	if (!dmabuf)
-+		return;
-+
-+	mutex_lock(&debugfs_list_mutex);
-+	list_del(&dmabuf->list_node);
-+	mutex_unlock(&debugfs_list_mutex);
-+}
-+#else
-+static void __dma_buf_debugfs_list_add(struct dma_buf *dmabuf)
-+{
-+}
-+
-+static void __dma_buf_debugfs_list_del(struct file *file)
-+{
-+}
-+#endif
- 
- static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
- {
-@@ -89,17 +112,10 @@ static void dma_buf_release(struct dentry *dentry)
- 
- static int dma_buf_file_release(struct inode *inode, struct file *file)
- {
--	struct dma_buf *dmabuf;
--
- 	if (!is_dma_buf_file(file))
- 		return -EINVAL;
- 
--	dmabuf = file->private_data;
--	if (dmabuf) {
--		mutex_lock(&db_list.lock);
--		list_del(&dmabuf->list_node);
--		mutex_unlock(&db_list.lock);
--	}
-+	__dma_buf_debugfs_list_del(file->private_data);
- 
- 	return 0;
- }
-@@ -672,9 +688,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
- 	file->f_path.dentry->d_fsdata = dmabuf;
- 	dmabuf->file = file;
- 
--	mutex_lock(&db_list.lock);
--	list_add(&dmabuf->list_node, &db_list.head);
--	mutex_unlock(&db_list.lock);
-+	__dma_buf_debugfs_list_add(dmabuf);
- 
- 	return dmabuf;
- 
-@@ -1611,7 +1625,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
- 	size_t size = 0;
- 	int ret;
- 
--	ret = mutex_lock_interruptible(&db_list.lock);
-+	ret = mutex_lock_interruptible(&debugfs_list_mutex);
- 
- 	if (ret)
- 		return ret;
-@@ -1620,7 +1634,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
- 	seq_printf(s, "%-8s\t%-8s\t%-8s\t%-8s\texp_name\t%-8s\tname\n",
- 		   "size", "flags", "mode", "count", "ino");
- 
--	list_for_each_entry(buf_obj, &db_list.head, list_node) {
-+	list_for_each_entry(buf_obj, &debugfs_list, list_node) {
- 
- 		ret = dma_resv_lock_interruptible(buf_obj->resv, NULL);
- 		if (ret)
-@@ -1657,11 +1671,11 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
- 
- 	seq_printf(s, "\nTotal %d objects, %zu bytes\n", count, size);
- 
--	mutex_unlock(&db_list.lock);
-+	mutex_unlock(&debugfs_list_mutex);
- 	return 0;
- 
- error_unlock:
--	mutex_unlock(&db_list.lock);
-+	mutex_unlock(&debugfs_list_mutex);
- 	return ret;
- }
- 
-@@ -1718,8 +1732,6 @@ static int __init dma_buf_init(void)
- 	if (IS_ERR(dma_buf_mnt))
- 		return PTR_ERR(dma_buf_mnt);
- 
--	mutex_init(&db_list.lock);
--	INIT_LIST_HEAD(&db_list.head);
- 	dma_buf_init_debugfs();
- 	return 0;
- }
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 8ff4add71f88..36216d28d8bd 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -370,8 +370,10 @@ struct dma_buf {
- 	 */
- 	struct module *owner;
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
- 	/** @list_node: node for dma_buf accounting and debugging. */
- 	struct list_head list_node;
-+#endif
- 
- 	/** @priv: exporter specific private data for this buffer object. */
- 	void *priv;
--- 
-2.44.0
+You could drop the space between sizeof and ( while
+you're at it (I always used the space back then).
+
+					-Alex
+
+> 
+> Fixes: bb23e37acb2a ("rbd: refactor rbd_header_from_disk()")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/block/rbd.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+> index 26ff5cd2bf0a..cb25ee513ada 100644
+> --- a/drivers/block/rbd.c
+> +++ b/drivers/block/rbd.c
+> @@ -6062,7 +6062,7 @@ static int rbd_dev_v2_snap_context(struct rbd_device *rbd_dev,
+>   	void *p;
+>   	void *end;
+>   	u64 seq;
+> -	u32 snap_count;
+> +	size_t snap_count;
+>   	struct ceph_snap_context *snapc;
+>   	u32 i;
+>   
 
 
