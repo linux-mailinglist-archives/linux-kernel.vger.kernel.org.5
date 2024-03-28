@@ -1,99 +1,85 @@
-Return-Path: <linux-kernel+bounces-123452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DCCA8908DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F0988908DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BE121F24488
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:11:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8874E1F253DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9BD13791E;
-	Thu, 28 Mar 2024 19:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="3d5thlKH"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2809137931;
+	Thu, 28 Mar 2024 19:12:05 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645823BBC7
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FFB2B9A7
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711653073; cv=none; b=Jn9IQVriFFRu78mkkMpKdEYl2VZjBkwRQWx1n8rh8s3bAp2ds96wXzqdGbVhJcry+qSwkkZr83XjnmPE0q8OiNlYSl1CO0VNMZh6/Ti67nc+ORshKBuV839V9ZCEmAoW5dtOgJYgLOW8BngExX+VPW1JrbvWGZ84fSK0DNA33VA=
+	t=1711653125; cv=none; b=fKv7l91FnuofcgtYozbjajkbD9RftJHal9XlItdUrC6hIdoDfp8TSJN682p1QxzMYMJjXE5JXut2c5dzFZSrnUael5ShTsmhaX+/5N7WqDdRp6Wl4/kO92tQYQZZozDd2kPVhObR5qS9JoNCyZO2tl5f/z6xEnGuYflv7N9qUQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711653073; c=relaxed/simple;
-	bh=OlsGVc24cRFBwsqfAO8+K1ji9SM4JgJWySnIA4va+bU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GNfHzhP4+1WNTbPNSzZGJC4iIm07KJ/6vJU1f+de6TuwXAd2WM0+IZmqJlQOKvb/Qbumy8zVaBzXumoE2Z4lLwOdxx0VSn6z0gctf4PeVG6eiCnVU4rnKk9Ht8itfO/fJahvdcTmXuCccGtq5vjx711xPmzBrz5vDMCEXjHcxos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=3d5thlKH; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c3ac720bceso818367b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711653070; x=1712257870; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QYi3n+1dup0vmKpcwHd1ByrK/mila8jNJvnF9Ro8+/Y=;
-        b=3d5thlKHtBx6SIdywu1adWsPEaq9KS7KR8jz0YuXkaCSzlPebuO141lC9MUP/Z0eUt
-         vSQ1TmhwmV/9rm7qPpNnSEVW2dxj884cfyRgOFftCvrMDuFLNal2VRTKvNnQQwiwJzDX
-         2AotnlO0e1c2iCm2GP2NlPEKNN1Q21Agx2xbMJPC3qB/gwrq2lN2qABWTqRdR7qbed2v
-         LRrI/uVlRJooD8UTyVjRgJJNBiYUWqH+Cvl8oiYeAYcVCHnsViXj04Sfe3XZTJMnX8Dd
-         uEvxbrctvS52X6PYtlr55H/RziChe3O2TTFTaCbmqB4DtA7gfcSJRNvkKyxYHx+pMjfA
-         Pmkg==
+	s=arc-20240116; t=1711653125; c=relaxed/simple;
+	bh=isKCXuY72yWQzJLXP0Js+yDQWJTwX5/faWnfRDvfWFQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=f9hOxn6C7UFndTRY0FaLOpBBTfdBFO8Y9GSqTTLRpgBIG5rVhbWzOlrs5m+ze1PuTtUXfJqL+JGzTMYzKWp4r6xe8rqT3iVlLze+8cy1tirun1W7zwHkTWdT9Al3zCr+tbYpPzZLrnagVL06dGkr9GYbRVoSrZJbUEi5MH1uFa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36696c9cb23so9596535ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:12:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711653070; x=1712257870;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QYi3n+1dup0vmKpcwHd1ByrK/mila8jNJvnF9Ro8+/Y=;
-        b=E36QMy6//zwqmteDWtxE0h8IVXv2wKN16eqVrmiplu0mx+jrLsskLSy9g8OGSBN4DU
-         dSD97BfufryFNPga5MCB8eQsl/0WiKQ9oqrJrcRoeWVZfqhnGpJH7WDLY82z9KpkJZo0
-         IwyMK7VurrXzOUh954mH6AtdFwG+Kwc1kyE698dvZe0oCp5kIzOJlkU4j64FBFaG09gG
-         rtrg+xoILdPTx6r6zKpkLiaia+13y5c+xARZyP/Sj8cWl35zQBebF+rb/3cyou+yYSZz
-         AqUm3cDMUTKsuK4xxxbkqiVbHbrQJEV89Z0wVlo/q9QcjTrPg1Y8FxcCuAHMDAkjJLcL
-         W/HA==
-X-Forwarded-Encrypted: i=1; AJvYcCXcs1NuY96jkqOMclp+OSFbxYlPCGSqYKH/gnIejwZxDhXJnmL2tovdgLw4/qQOuUPwNTKCwbB+1sn7Y0hZObav9UlCNLa6oPWt8jDk
-X-Gm-Message-State: AOJu0YxerHlbbYnj6dJSW07UT/4kX01sY94arg0PBgVfhhNmSHAARYOu
-	4OX+YKjWddjYwRmsr3bCVNW2vmMcIpn9bMckpr7eI7LqbPRN4kmz+n9C962RGZU=
-X-Google-Smtp-Source: AGHT+IED6aKTx2u/XlyNAZMWz9pwnLPD+8mqkNcEiCkQXf6h24tspgZn3twTnL09ahR9madhXG75+g==
-X-Received: by 2002:a05:6808:4498:b0:3c3:cd7a:af8 with SMTP id eq24-20020a056808449800b003c3cd7a0af8mr234178oib.35.1711653070517;
-        Thu, 28 Mar 2024 12:11:10 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:bb1f])
-        by smtp.gmail.com with ESMTPSA id eq16-20020a05622a5e1000b004316bafd1afsm869909qtb.3.2024.03.28.12.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 12:11:09 -0700 (PDT)
-Date: Thu, 28 Mar 2024 15:11:09 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 5/9] mm: zswap: remove zswap_same_filled_pages_enabled
-Message-ID: <20240328191109.GE7597@cmpxchg.org>
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-6-yosryahmed@google.com>
+        d=1e100.net; s=20230601; t=1711653123; x=1712257923;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWT9KuAegNLVfJjqAlaRw3hu6Cgsmv1M1mWe3K5+52s=;
+        b=ZWCxBpDmlnrQGR1iDz9We8xouRxRETxlHAK0MpPNKiP8nYxMPO+KgySKomp9rYpwYt
+         HasYPDYh1SbQT67LtaVLBbsfxcP0+HkL9ZOPLw7n45DAAYqeWb77DAHcl5U4ZRX3+7kJ
+         7+yRdYF6qGVw+9ogz+RmgZd0o+qnrCoJYwsidPU0vedkh6+PfG7LZW7lkNQ7JX9dttNm
+         cL/aBgcTGk4u9PQ6cvMdulRGrvmg6Zu7d1cMrewZQrq4OAE63/dPxAgs9hPNJTV2q9dL
+         Yu3hj1OECvmSdruII5TA70q3X1dHwCUg9psSDenxC2WGrd5r+KsULS8+X/sSv9nFVtdM
+         2rdw==
+X-Gm-Message-State: AOJu0YxolSEaA4+yDpLKbcTxfOgnLFBVMaSpsvAg6eHyzQd//xhxWFa4
+	n/Jjvt1Qo1Cjho9IfapU77fCaua6MivG54qLq2pzhB5fNrACq7hOxeYsyunCef7aMXg1nr8Oscc
+	y8idAt6OMBTnC7+XLkYNLZTs15y+U2GoJOfzpb3of216C+HeuWPpm2LrVQA==
+X-Google-Smtp-Source: AGHT+IHC4PQs5jKRrWRDhfF+kJvbGO1BPSa4ramkNeg2o8qgp/z9rPY2OXhbnLw8P27qiIRrBTGam9W2EUyZ9SCFksUACxhoUAju
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325235018.2028408-6-yosryahmed@google.com>
+X-Received: by 2002:a05:6e02:12ca:b0:366:94e2:f17b with SMTP id
+ i10-20020a056e0212ca00b0036694e2f17bmr1992ilm.0.1711653123350; Thu, 28 Mar
+ 2024 12:12:03 -0700 (PDT)
+Date: Thu, 28 Mar 2024 12:12:03 -0700
+In-Reply-To: <1921e7e8-3c43-4f3c-9709-874b37ea9c81@linux.dev>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006576fd0614bd4cb6@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
+From: syzbot <syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 25, 2024 at 11:50:13PM +0000, Yosry Ahmed wrote:
-> There is no logical reason to refuse storing same-filled pages more
-> efficiently and opt for compression. Remove the userspace knob.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Hello,
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-I also think the non_same_filled_pages_enabled option should go
-away. Both of these tunables are pretty bizarre.
+Reported-and-tested-by: syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         d8889e86 bpf: Mark bpf prog stack with kmsan_unposion_..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/martin.lau/bpf-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=155ac345180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
+dashboard link: https://syzkaller.appspot.com/bug?extid=1a3cf6f08d68868f9db3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
