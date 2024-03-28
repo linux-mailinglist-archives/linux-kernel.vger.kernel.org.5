@@ -1,115 +1,113 @@
-Return-Path: <linux-kernel+bounces-122407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDE3188F68B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:44:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0D088F69B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A814B2940AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:44:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28D501C27E41
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2AE3FBB6;
-	Thu, 28 Mar 2024 04:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6273FBA2;
+	Thu, 28 Mar 2024 04:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="j2OGHpcP"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VoJX3Ifx"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7FD20DF7;
-	Thu, 28 Mar 2024 04:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7AB645BFE
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 04:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711601073; cv=none; b=kD9qjyoySYYcc3vpIBw0LcKMzOkO/i26N+rs/rRs9msFbQnOYrfqT9QVrID+oOeLcdixajYSvg6+R6eB4sDJ61u+nUq0Jvy0/4K+RbUlBAZLkE6orQkCTuDaoExWDBvkRaN35z5st3l9F+g0zdTLoC21RGlE0j0zfnhXbJMcSnI=
+	t=1711601272; cv=none; b=dUHfy2zsS0L8qYJBApXHkZkCY38Tn2TeEyvV3yd3NHzJ5o1cSqnO+Tf7jZEoLTCSCcQstt1+KmuEpJcTANf+Uofb9GOLFMq+nXsMM7NUzgV1HxFmdKdSUMmt+93DpAJtF812ULTB1sGYPwNvWoLNXxU+eCZDvUxlFiOM00Xs5Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711601073; c=relaxed/simple;
-	bh=73mQ4DIK7jO7eY6z8AHtGLh7jz4rlxCQD0iafq2CEkk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=igyVXWkTLaR8Nx+wXsAUJia3PIbSndGIa7LOcSwgqhUoyX5jWZB3n57y5vQZQbdfYnNNmT6t8GHBSzjPjeKwTYbTUpcC6J2QBQzKmDAFHIvwQ+QvonYBwflDr5Skcj9LldGAcjdVQ4a9PZEmL3VVvO0BYRFfIJEqc1NKv3Srunw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=j2OGHpcP; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711601068;
-	bh=73mQ4DIK7jO7eY6z8AHtGLh7jz4rlxCQD0iafq2CEkk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=j2OGHpcPo4OMEFfNk0IRKqZp10g7pYZB/itYg9qfO0ajed61IoK+AHj1P1tcFYDMu
-	 PefC45pTqOHNeSC7XnzgL1peNc/qxZvF9pJMmDRAXEYTi04JUFSP5YhFvYKhA74qps
-	 AePbZjBZXpY0cCFvbWQrDSnXN/o3lE8tv3V7iAKRvnkTZPz4I+24gSqVwic3e9YknQ
-	 KZNgo7e2kEcEvno4ug55OhktiozLVl06A1rWjxvjodQCksSdb9g4HKMvx6TQfkjP3Z
-	 fRrT1waBJuCrFa2A4tXeu9xvIGGEjIywBOiAVc2/yWeN5vwC1Nxj9murD1QhXiXrJX
-	 EndcnEBpoRScA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V4rY83w9Vz4wbv;
-	Thu, 28 Mar 2024 15:44:28 +1100 (AEDT)
-Date: Thu, 28 Mar 2024 15:44:27 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Linux Doc Mailing List
- <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew
- Morton <akpm@linux-foundation.org>, Kent Overstreet
- <kent.overstreet@linux.dev>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the mm tree
-Message-ID: <20240328154427.3e926d21@canb.auug.org.au>
-In-Reply-To: <20240328153947.3871cfdf@canb.auug.org.au>
-References: <20240325123603.1bdd6588@canb.auug.org.au>
-	<CAJuCfpH4Ee00hM9+B7=mi5Dwjrhov8vUK-KwPuoO3wsD7iJSAQ@mail.gmail.com>
-	<5e1321ca-0d46-4e9d-a6e5-0560d99f65ff@infradead.org>
-	<CAJuCfpFTOz8cNiJFiCU5tMM1u5L=wXRsXqxUhN9g-R0u77CyZw@mail.gmail.com>
-	<20240328153947.3871cfdf@canb.auug.org.au>
+	s=arc-20240116; t=1711601272; c=relaxed/simple;
+	bh=d3A86BctIuCxhSuJwEib/WmsULz0e58Ssh5pV+xKO/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rhKxIEgmOzz4hBuWA3vEyecoIvQmU+TOfi5bv8br3ULe82/IOXa2dprRU1fBADArtlf4CLIE+7fUgXsWWNPY5OdOZlfUMLKNRRawuj/UgyChseuP+Pfx+V2ZyT1meNuQ+4wBl4NE51Z/kye7P3p+y95CqksvaxkUfiBltyHdVRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VoJX3Ifx; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=ZeyI246RdPv08pafnqQ6MRH7GAOmb2wa7EV6ApCd9zc=; b=VoJX3Ifx6dpNP2vF7afTf36fav
+	OgDWRnogJsWpcVZoXmhAtotOqQds9MaIcnPYG9nDRG4jNZRciFvw2Dxy+CJm3tZ6L4QGVKiZDXrhL
+	2n9J4s955Fi+NnRBhCYmiGtgTQbNIfhByhNb4os8T4twId1MDPeBrj9wpmPwa6Q19BDh8HdhkKNVy
+	A60/sOHE8EaI6PYlAOQs6kSOj6YeTkA0bJqit5hP0KH1gWmc0lHUlvEpr8C3uhsGL2rqV3IBnBkck
+	CmuWpR/59SewYTiJ5FCUjYWoy8eLLxiu0cCX0sTvxAuqaarZwcuj+6w8C27Yz4gdSYFSYRvdjuu2x
+	fFRuWunA==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rphg5-0000000CQcN-4Ak9;
+	Thu, 28 Mar 2024 04:47:50 +0000
+Message-ID: <d9bf12c1-4d21-40d4-9abe-95a4d8b59d8f@infradead.org>
+Date: Wed, 27 Mar 2024 21:47:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/f09pjWL5E=u7CMHFiGcd3P3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] peci: linux/peci.h: fix Excess kernel-doc description
+ warning
+Content-Language: en-US
+To: "Winiarska, Iwona" <iwona.winiarska@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+References: <20231223050605.13961-1-rdunlap@infradead.org>
+ <a3ea93b54911f553a6ca37d33181be0cf9f89b07.camel@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <a3ea93b54911f553a6ca37d33181be0cf9f89b07.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---Sig_/f09pjWL5E=u7CMHFiGcd3P3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Thu, 28 Mar 2024 15:39:47 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Mon, 25 Mar 2024 23:16:55 -0700 Suren Baghdasaryan <surenb@google.com>=
- wrote:
-> >
-> > Thanks! I'll change back all the instances in the documentation where
-> > we replaced original names with _noprof versions. =20
->=20
-> I now have the following:
+On 1/10/24 06:19, Winiarska, Iwona wrote:
+> On Fri, 2023-12-22 at 21:06 -0800, Randy Dunlap wrote:
+>> Remove the @controller: line to prevent the kernel-doc warning:
+>>
+>> include/linux/peci.h:84: warning: Excess struct member 'controller'
+>> description in 'peci_device'
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Iwona Winiarska <iwona.winiarska@intel.com>
+>> Cc: openbmc@lists.ozlabs.org
+> 
+> Reviewed-by: Iwona Winiarska <iwona.winiarska@intel.com>
+> 
+> Thanks
+> -Iwona
 
-Sorry, some of those are not relevant here, just the _noprof stuff.
+Hi Iwona,
 
---=20
-Cheers,
-Stephen Rothwell
+Who should be merging this patch?
 
---Sig_/f09pjWL5E=u7CMHFiGcd3P3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks.
 
------BEGIN PGP SIGNATURE-----
+> 
+>> ---
+>>  include/linux/peci.h |    1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff -- a/include/linux/peci.h b/include/linux/peci.h
+>> --- a/include/linux/peci.h
+>> +++ b/include/linux/peci.h
+>> @@ -58,7 +58,6 @@ static inline struct peci_controller *to
+>>  /**
+>>   * struct peci_device - PECI device
+>>   * @dev: device object to register PECI device to the device model
+>> - * @controller: manages the bus segment hosting this PECI device
+>>   * @info: PECI device characteristics
+>>   * @info.family: device family
+>>   * @info.model: device model
+> 
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYE9asACgkQAVBC80lX
-0GxZkwf/R000FNdurcR7mhJvrzsJNDKvw07jyl5+aIU379g5mUchSg2VAv01KmWQ
-8QkperFGvZdpr2OA3Z/lv/QvbGEl4MxTlxxU5IEVieKiAlB1Y7qG9xsx3TQAaOvy
-kXLUhcJ4dn1NB/jO8iYdyMNNq5uOViHm0yekEIg5+Xh5RW/ZlZe+hYX5chpy8wWy
-0vDvlHstdB+4nOMthvGwlrmUbfBbGlSMPQIXYFILVqWWWG4iMlZdKlkii0I4my9K
-Q5sGKHJdSa6xlu1aAVw44rruFGLKoaYI0PkBJw6A3lIkBGnzVJFbnhviL5QpKDan
-jgUS8sLugQ+JKwjPkwwUU9vhHabl4w==
-=9TJl
------END PGP SIGNATURE-----
-
---Sig_/f09pjWL5E=u7CMHFiGcd3P3--
+-- 
+#Randy
 
