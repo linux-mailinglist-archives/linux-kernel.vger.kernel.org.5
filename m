@@ -1,70 +1,62 @@
-Return-Path: <linux-kernel+bounces-123118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD17E890259
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:55:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C9B389025D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:55:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41040B234B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACB80B23DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8831312CDBF;
-	Thu, 28 Mar 2024 14:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034CE12BEBE;
+	Thu, 28 Mar 2024 14:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="gafSkfD4"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hlwUv/1I"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FF812EBC4
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912481E48C;
+	Thu, 28 Mar 2024 14:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637642; cv=none; b=qj99I2NhGFseBKjD0dbLLzXySDbu+KHgrz52RLKPcTjPtjI/eTYpGSwOKzErBRzlT7oPNtpG+LRvsEFBA3aBri6GgytbnM3IMvWNTuQDow+hCo4PibhJoTPEr34T2cOB/NZ7X+qTVieF5EPHNKVDSjFNkU7ivPp1JcTQqAYseNs=
+	t=1711637731; cv=none; b=pELeYOcHZ/qu3yMURgNbY/idB94VvNfBN2T/0pF+ExmWlIO2ClDdk/dJ0LZikuKyDDi6SepioheKD1R5IjqFzlork5sF5tNPp350FJt2PORqFeGR9RnrIrAIbsNzAjoEZGuR2hcZLBYB5BVgjVFD9EP0u4279suSSoLzd5DkgIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637642; c=relaxed/simple;
-	bh=iZIfvRAXPiN1hUOqhcrIgulJC/h0qg4G0zbfy7UTFog=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y/FSdLCgKPZ9Sav1vJ2EkDanabvRxI8JVXLOWDTXNOYVIIVLRDwxBpzwrZYR0R4CMOtjuMnEeu9deQ++lKH1qmBnFoBHUIXcsXZYKBzZ29imsmmf4wuEJQjX714vsBGfN3YhOEWetcB6ndj2d2UIEExUIs0kUpZWfsgBcIaQKEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=gafSkfD4; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-781753f52afso55177985a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1711637638; x=1712242438; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ch1rSN60qRNe5jZReHI5Y78NslDtRUbpHN7Kv6Yk4Rs=;
-        b=gafSkfD4I9UUsl7v479VXMwpQfzA11f7ivm4sjOBEbRWuFRyiSmT1MZbdowifcrVd6
-         kFEXvPwaA9xgqLNj18mmuAo5rTyLYjRmGgj30qY9c5m0+gUm+KCbnGM+FqGZFQGcZIjN
-         0SJKUFYFxNUFLVfAW+tJnv7KFHDXI5d5kWdeY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711637638; x=1712242438;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ch1rSN60qRNe5jZReHI5Y78NslDtRUbpHN7Kv6Yk4Rs=;
-        b=rsB9XeIvY5KoHguwiE3zlO80Ck6XoFb771O/VNgDVIFjV8Of1emGQglUQjhAL61uN5
-         lvcM99RvlfIjNdocNf1q5+Nf9x8m2DGPlmd0bkjgkkQBb3l7d1zz5geQCne/9eIsCHAr
-         AeJoOQWFUyZkxoBYhdPQcUgSpbVAaTTsMwvyEj7GiCE3f1wYYHyIcdWwetaU+QbCRWiH
-         aHqmdzZdY5zL6+o/aGwVhCXOlUJ/UWjBH/2rvb72VnDbouUniV+RbBdnB0Tr9nZ5jxvk
-         tXYUxy9IfUb7aBkWNv7i5/dQgoLYtyInPXOIt09iaN1RD7g6wXjPI2ch1sEt3mL5giqc
-         5Q0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXgs7ixx3sn36yN/K+WrV0/8vCOXwqhAkiI+0I5smNAuT0I6v1PaDJGjzTKkyn9cdZhzMJQzSEAhTNp7DkdcziA7aZd4RefKSiKDMmI
-X-Gm-Message-State: AOJu0YwaV38Q2uKK7aA1zF80JfzNp26yA9cTz4R+/s6lL6gdlgLxvYFQ
-	KP49FLtiF8TuE9qSGa1rm8sd7J85I4Pn623nTKdivlPPMBMUzxk/KIBWNbVt9A==
-X-Google-Smtp-Source: AGHT+IEnRGCY/sQi9y+ccYFEbyJVObyHWpdhYti3ZYxnNsR7GFx/Tq+iuzOTlBR8697MpFQbDAmQmg==
-X-Received: by 2002:ad4:5507:0:b0:696:990b:dfeb with SMTP id pz7-20020ad45507000000b00696990bdfebmr2685430qvb.16.1711637638145;
-        Thu, 28 Mar 2024 07:53:58 -0700 (PDT)
-Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.googlemail.com with ESMTPSA id jf11-20020a0562142a4b00b006987272f5cbsm399690qvb.71.2024.03.28.07.53.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 07:53:57 -0700 (PDT)
-Message-ID: <b8e848fe-96d8-4f75-a2e9-2ed5c11a2fd7@ieee.org>
-Date: Thu, 28 Mar 2024 09:53:55 -0500
+	s=arc-20240116; t=1711637731; c=relaxed/simple;
+	bh=N1Hlh0/nQyHFsmO9kXfMBpqfOjJKnBxxQzST5ZvMFGI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=COSlVt72JtdkwknvsGtLln1LGxaJS+iOASefJOeuDWxTmF6IlYjfHry/boLJpufOdYCHim+jcdb4+56vidb24f7fY3NAykdYQlRbfE9Hk6F0O2cGLp7dnIImW1dUeEakezbWXWLvSYwB8oHKKH3inxYwVJdPv1pm5F8XmlHsraE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hlwUv/1I; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SBA2M6023688;
+	Thu, 28 Mar 2024 14:55:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=JQTagzTLA0ahr+zdqFFccuIih+ODyT0fmJmBoKrjDoo=; b=hl
+	wUv/1IeIk8g5cFNiLFj7Si3KibGei4qTmHufiufhKKa07Mn33fC03xh9dcZqz8q2
+	Bf/YFRU8YKzm1n3qGJCqGa5NPMum3hP4ayG+SF5IxdiJhnMz3RplOeYofD5+xywY
+	GEd7WyIefrXm+3kCRXdh8cZiy0izTXPj5nZDOEOs3YkOCm4dFEV5ha6WDy/JfNu5
+	wwIEYCldKb6TqRGhK0yIM4fQp8AMKBY0JtI1DOQf+giSqFvQiu5TDUe/9p0ruQr7
+	bMcFzNpGTffCakh4zbYRicgffIXSDKMGjwyb/NL/3DkrKsaqZdSxgbQe9hyvg8lp
+	2K5K/UsBVIpuFHnUHVFw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4u203ptv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 14:55:23 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SEtMnc027055
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 14:55:22 GMT
+Received: from [10.218.29.219] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
+ 2024 07:55:19 -0700
+Message-ID: <124a7d54-5a18-4be7-9a76-a12017f6cce5@quicinc.com>
+Date: Thu, 28 Mar 2024 20:25:16 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,73 +64,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/9] rbd: avoid out-of-range warning
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+To: <patchwork-bot+bluetooth@kernel.org>,
+        Johan Hovold
+	<johan+linaro@kernel.org>
+CC: <luiz.dentz@gmail.com>, <marcel@holtmann.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, <quic_mohamull@quicinc.com>,
+        <quic_hbandi@quicinc.com>
+References: <20240314084412.1127-1-johan+linaro@kernel.org>
+ <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
 Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
- Ilya Dryomov <idryomov@gmail.com>, Jens Axboe <axboe@kernel.dk>,
- Nathan Chancellor <nathan@kernel.org>, Alex Elder <elder@inktank.com>,
- Josh Durgin <josh.durgin@inktank.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Dongsheng Yang <dongsheng.yang@easystack.cn>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Hannes Reinecke <hare@suse.de>, Christian Brauner <brauner@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- "Ricardo B. Marliere" <ricardo@marliere.net>,
- Jinjie Ruan <ruanjinjie@huawei.com>, Alex Elder <elder@linaro.org>,
- ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, llvm@lists.linux.dev
-References: <20240328143051.1069575-1-arnd@kernel.org>
- <20240328143051.1069575-4-arnd@kernel.org>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <20240328143051.1069575-4-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+In-Reply-To: <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9N6dvkzbmne6emHvKabkk5wZfoBqHh1i
+X-Proofpoint-ORIG-GUID: 9N6dvkzbmne6emHvKabkk5wZfoBqHh1i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_15,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 spamscore=0 impostorscore=0 malwarescore=0 phishscore=0
+ adultscore=0 clxscore=1011 mlxlogscore=821 mlxscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403280102
 
-On 3/28/24 9:30 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+Hi Johan,
+We made this change to configure the device which supports persistent memory for the BD-Address
+So to make device functional in both scenarios we are adding a new property in dts file to distinguish persistent and non-persistent support of BD Address and set HCI_QUIRK_USE_BDADDR_PROPERTY bit accordingly
+
+On 3/26/2024 9:00 PM, patchwork-bot+bluetooth@kernel.org wrote:
+> Hello:
 > 
-> clang-14 points out that the range check is always true on 64-bit
-> architectures since a u32 is not greater than the allowed size:
+> This patch was applied to bluetooth/bluetooth-next.git (master)
+> by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 > 
-> drivers/block/rbd.c:6079:17: error: result of comparison of constant 2305843009213693948 with expression of type 'u32' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-w
->              ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> On Thu, 14 Mar 2024 09:44:12 +0100 you wrote:
+>> This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
+>>
+>> Qualcomm Bluetooth controllers like WCN6855 do not have persistent
+>> storage for the Bluetooth address and must therefore start as
+>> unconfigured to allow the user to set a valid address unless one has
+>> been provided by the boot firmware in the devicetree.
+>>
+>> [...]
 > 
-> This is harmless, so just change the type of the temporary to size_t
-> to shut up that warning.
-
-This fixes the warning, but then the now size_t value is passed
-to ceph_decode_32_safe(), which implies a different type conversion.
-That too is not harmful, but...
-
-Could we just cast the value in the comparison instead?
-
-   if ((size_t)snap_count > (SIZE_MAX - sizeof (struct ceph_snap_context))
-
-You could drop the space between sizeof and ( while
-you're at it (I always used the space back then).
-
-					-Alex
-
+> Here is the summary with links:
+>    - Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT"
+>      https://git.kernel.org/bluetooth/bluetooth-next/c/ac0cf3552972
 > 
-> Fixes: bb23e37acb2a ("rbd: refactor rbd_header_from_disk()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/block/rbd.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-> index 26ff5cd2bf0a..cb25ee513ada 100644
-> --- a/drivers/block/rbd.c
-> +++ b/drivers/block/rbd.c
-> @@ -6062,7 +6062,7 @@ static int rbd_dev_v2_snap_context(struct rbd_device *rbd_dev,
->   	void *p;
->   	void *end;
->   	u64 seq;
-> -	u32 snap_count;
-> +	size_t snap_count;
->   	struct ceph_snap_context *snapc;
->   	u32 i;
->   
+> You are awesome, thank you!
 
+Thanks,
+Janaki Ram
 
