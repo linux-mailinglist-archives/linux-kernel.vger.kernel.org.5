@@ -1,62 +1,92 @@
-Return-Path: <linux-kernel+bounces-122947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EB888FFFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:21:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BB12890004
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F9E2895CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A747E1F21B0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B0B51C39;
-	Thu, 28 Mar 2024 13:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF8581720;
+	Thu, 28 Mar 2024 13:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cfl2+mhk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NGpA6mvg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qbyHkPq/";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NY+qt2Vh";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="N4AgHX/b"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3C47D3E7;
-	Thu, 28 Mar 2024 13:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DCE54BCB;
+	Thu, 28 Mar 2024 13:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711632106; cv=none; b=Gypjxh3rLhDstSfg6al+ChMCdNtKq7An7obG2LpBWcvHmZ26v0GqVLrElfl8BKczjCgVgLep6eFVizbCbdaSvhABaBCpRgtpvQcSGOno1irJub5snEPTr8v7mWh6ck24UVfl9o+uonGbetqiR5UFUyZJTvyE6wl9fzl/Y7b+NRk=
+	t=1711632120; cv=none; b=rnPtN/52usULYpEJ3sYUDJAbA14sbQ3yC7mnokI6zxGlCsZHZbJM/1xN0B2ueVWikWItTD1kLioYCZ4HQhswIBR7nSv2r8JjVWMP8p6OTi+MZw/KYcwAFaWBtU7++WWIqo4GtkwZlEDkPw8ZD0+cDLsYDep4sbCmh7B0XjxLXy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711632106; c=relaxed/simple;
-	bh=b3jNS8gEcTwmueSbmAZyxea0/9+2+uixNOONc4qQGxU=;
+	s=arc-20240116; t=1711632120; c=relaxed/simple;
+	bh=NcfMVdP8jG0B+5gpRT5h6O65Scej8O2oGnAGIFber+E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eDmOBPge6cep/4t9T1P2YCs0gDJLQvMHaGU17wPIstfT2winzIqJsc8GmB/3nHVghDMK/0CiU1vxiaeCyeU+sf+pUFHO0h3CpzXLLZEZEZFgqFmMXLiVp1sxcNwNJax+wRLjDmrC0F2czcq9W2g7i1OY+Vc8tcgfu2H5fNX8Fes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cfl2+mhk; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711632105; x=1743168105;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=b3jNS8gEcTwmueSbmAZyxea0/9+2+uixNOONc4qQGxU=;
-  b=Cfl2+mhkym1UcEw5K7kU+kEVpqDUov1Basqp2dcQn4bY+Tww4Msr6t+Q
-   jDk7Fendal8fBukXzOwCAQv125vb9i+0GoZZ+O+3gP+G3ESn2UMazFgre
-   nn7jwDJxpoifgvNZVtmjOtxHIZIfjpPgkRwZxIr7hswTgNVoD5OdKogMn
-   x0CHoSyu9+v/cqwDRP15TGjTtaRPAZJ/j7LgnCYYINqFd6slHHr/yFC11
-   vKwcY5wyOXhZD3D1lAwQBQaad0SJ0EcuYt2dUSI4kS+d57fNoqKZm8HKd
-   DD79OVzbTbS1ffBPow8BNbSxb6VqTmlht59nGp+tHDGvP6O0XL+wEY/4V
-   A==;
-X-CSE-ConnectionGUID: AYHDKjCNToWhQKjlL0N9gA==
-X-CSE-MsgGUID: sl/2rkjPQ2S+EjmHJvYXEg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="7382977"
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="7382977"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 06:21:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="21294611"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 06:21:41 -0700
-Message-ID: <234c9998-c314-44bb-ad96-6af2cece7465@intel.com>
-Date: Thu, 28 Mar 2024 21:21:37 +0800
+	 In-Reply-To:Content-Type; b=pD4xJAcCqvkuvKR5dQ2X5ZkJyYCaC0DZUXqeLF1kN5BtIxeHdX/pugv6XmAveouZdlg46TfA9/Z5TCnxikUecsIZ9/7c9bW5MwYRd925GEGK4YevULFdfekLRTtEKjyBsMKfqjOdnBbjqKNtMmnn1u7/WtNBj3x17KGx73FfvfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NGpA6mvg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qbyHkPq/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NY+qt2Vh; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=N4AgHX/b; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CBED233F29;
+	Thu, 28 Mar 2024 13:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711632115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nBV9RrkyQba5NE+tY7TfavXdtDbJlQ91iAXymXIDHBE=;
+	b=NGpA6mvg7SFLaMcdkaGNHlk4p5WZfQLCmZYijHyXug8BWvcnMg4XRWGmMu1m+NnOdC6/oC
+	jUDkV7nKO3ld0CJ6vYYPtZG6zQsO0ghndq5hj7VZO5H9ndGSF+6C+Jv4zy5f1GP2XU7Iw5
+	u0CBN7YO30G0WhadnZ9sTV5sfaFbfRk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711632115;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nBV9RrkyQba5NE+tY7TfavXdtDbJlQ91iAXymXIDHBE=;
+	b=qbyHkPq/SEgcwQyQHpo6vxF0xg5dHYOQjze+ICf8/63zx8Mn9W7pDDngyKiNTe8VHCVPUo
+	9PaUNAeWEGZ03PCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711632113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nBV9RrkyQba5NE+tY7TfavXdtDbJlQ91iAXymXIDHBE=;
+	b=NY+qt2VhonCWz3P20U2cBtC00PDuVJUkY1lU9QraJMicGNmHTYKZDAep6Ak0qejrElOJmw
+	ljjsKl4gZ/2aPeG9JR3jsAaJgN6AGg8ImUaFNSjipl1Sggupx+9Zx+dXGr0aFH3B0gIIC0
+	28Xkvoj58+cjVxxwLR8+1wfXV43tRm4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711632113;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nBV9RrkyQba5NE+tY7TfavXdtDbJlQ91iAXymXIDHBE=;
+	b=N4AgHX/br0WdmOd7rgZKyvHTXJi2A3IlhcmW3nOdAH5hh+27AJDHqSmhyc4owM/9a5dw0r
+	fcfmhq4WiuAmQ/CA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CB06813AB3;
+	Thu, 28 Mar 2024 13:21:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 3Tx/L/BuBWboPAAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Thu, 28 Mar 2024 13:21:52 +0000
+Message-ID: <c114a614-8e65-42a2-8df6-5a3015e79c29@suse.de>
+Date: Thu, 28 Mar 2024 14:21:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,139 +94,216 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
- unsupported cases
-To: Chao Gao <chao.gao@intel.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "Yamahata, Isaku" <isaku.yamahata@intel.com>,
- "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
- <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
- "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
- "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aktas, Erdem" <erdemaktas@google.com>,
- "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>, "Yuan, Hang"
- <hang.yuan@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <20240326174859.GB2444378@ls.amr.corp.intel.com>
- <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
- <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
- <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
- <e0ac83c57da3c853ffc752636a4a50fe7b490884.camel@intel.com>
- <5f07dd6c-b06a-49ed-ab16-24797c9f1bf7@intel.com>
- <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
- <20ef977a-75e5-4bbc-9acf-fa1250132138@intel.com>
- <783d85acd13fedafc6032a82f202eb74dc2bd214.camel@intel.com>
- <f499ee87-0ce3-403e-bad6-24f82933903a@intel.com>
- <ZgVDvCePGwKWv0wd@chao-email>
+Subject: Re: [PATCH v2 1/3] arch: Select fbdev helpers with CONFIG_VIDEO
+To: Helge Deller <deller@gmx.de>, arnd@arndb.de, javierm@redhat.com,
+ sui.jingfeng@linux.dev
+Cc: linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>
+References: <20240327204450.14914-1-tzimmermann@suse.de>
+ <20240327204450.14914-2-tzimmermann@suse.de>
+ <70aefe08-b4c4-4738-a223-e4b04562cd56@gmx.de>
 Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZgVDvCePGwKWv0wd@chao-email>
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <70aefe08-b4c4-4738-a223-e4b04562cd56@gmx.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=NY+qt2Vh;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="N4AgHX/b"
+X-Rspamd-Queue-Id: CBED233F29
+X-Spam-Score: -5.30
+X-Spamd-Result: default: False [-5.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	XM_UA_NO_VERSION(0.01)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_TO(0.00)[gmx.de,arndb.de,redhat.com,linux.dev];
+	URIBL_BLOCKED(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo,suse.de:email,suse.de:dkim,intel.com:email,davemloft.net:email,gmx.de:email,zytor.com:email,hansenpartnership.com:email,linutronix.de:email,gaisler.com:email,alien8.de:email];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On 3/28/2024 6:17 PM, Chao Gao wrote:
-> On Thu, Mar 28, 2024 at 11:40:27AM +0800, Xiaoyao Li wrote:
->> On 3/28/2024 11:04 AM, Edgecombe, Rick P wrote:
->>> On Thu, 2024-03-28 at 09:30 +0800, Xiaoyao Li wrote:
->>>>> The current ABI of KVM_EXIT_X86_RDMSR when TDs are created is nothing. So I don't see how this
->>>>> is
->>>>> any kind of ABI break. If you agree we shouldn't try to support MTRRs, do you have a different
->>>>> exit
->>>>> reason or behavior in mind?
->>>>
->>>> Just return error on TDVMCALL of RDMSR/WRMSR on TD's access of MTRR MSRs.
->>>
->>> MTRR appears to be configured to be type "Fixed" in the TDX module. So the guest could expect to be
->>> able to use it and be surprised by a #GP.
->>>
->>>           {
->>>             "MSB": "12",
->>>             "LSB": "12",
->>>             "Field Size": "1",
->>>             "Field Name": "MTRR",
->>>             "Configuration Details": null,
->>>             "Bit or Field Virtualization Type": "Fixed",
->>>             "Virtualization Details": "0x1"
->>>           },
->>>
->>> If KVM does not support MTRRs in TDX, then it has to return the error somewhere or pretend to
->>> support it (do nothing but not return an error). Returning an error to the guest would be making up
->>> arch behavior, and to a lesser degree so would ignoring the WRMSR.
+Hi
+
+Am 28.03.24 um 13:39 schrieb Helge Deller:
+> On 3/27/24 21:41, Thomas Zimmermann wrote:
+>> Various Kconfig options selected the per-architecture helpers for
+>> fbdev. But none of the contained code depends on fbdev. Standardize
+>> on CONFIG_VIDEO, which will allow to add more general helpers for
+>> video functionality.
 >>
->> The root cause is that it's a bad design of TDX to make MTRR fixed1. When
->> guest reads MTRR CPUID as 1 while getting #VE on MTRR MSRs, it already breaks
->> the architectural behavior. (MAC faces the similar issue , MCA is fixed1 as
-> 
-> I won't say #VE on MTRR MSRs breaks anything. Writes to other MSRs (e.g.
-> TSC_DEADLINE MSR) also lead to #VE. If KVM can emulate the MSR accesses, #VE
-> should be fine.
-> 
-> The problem is: MTRR CPUID feature is fixed 1 while KVM/QEMU doesn't know how
-> to virtualize MTRR especially given that KVM cannot control the memory type in
-> secure-EPT entries.
+>> CONFIG_VIDEO protects each architecture's video/ directory.
+>
+> Your patch in general looks good.
+> But is renaming the config option from CONFIG_FB_CORE to CONFIG_VIDEO
+> the best choice?
+> CONFIG_VIDEO might be mixed up with multimedia/video-streaming.
+>
+> Why not e.g. CONFIG_GRAPHICS_CORE?
+> I'm fine with CONFIG_VIDEO as well, but if someone has a better idea
+> we maybe should go with that instead now?
 
-yes, I partly agree on that "#VE on MTRR MSRs breaks anything". #VE is 
-not a problem, the problem is if the #VE is opt-in or unconditional.
+We already have CONFIG_VIDEO in drivers/video/Kconfig specifically for 
+such low-level graphics code. For generic multimedia, we could have 
+CONFIG_MEDIA, CONFIG_STREAMING, etc. rather than renaming an established 
+Kconfig symbol.
 
-For the TSC_DEADLINE_MSR, #VE is opt-in actually. 
-CPUID(1).EXC[24].TSC_DEADLINE is configurable by VMM. Only when VMM 
-configures the bit to 1, will the TD guest get #VE. If VMM configures it 
-to 0, TD guest just gets #GP. This is the reasonable design.
+Best regards
+Thomas
 
->> well while accessing MCA related MSRs gets #VE. This is why TDX is going to
->> fix them by introducing new feature and make them configurable)
+>
+> Helge
+>
+>> This
+>> allows for the use of more fine-grained control for each directory's
+>> files, such as the use of CONFIG_STI_CORE on parisc.
 >>
->>> So that is why I lean towards
->>> returning to userspace and giving the VMM the option to ignore it, return an error to the guest or
->>> show an error to the user.
+>> v2:
+>> - sparc: rebased onto Makefile changes
 >>
->> "show an error to the user" doesn't help at all. Because user cannot fix it,
->> nor does QEMU.
-> 
-> The key point isn't who can fix/emulate MTRR MSRs. It is just KVM doesn't know
-> how to handle this situation and ask userspace for help.
-> 
-> Whether or how userspace can handle the MSR writes isn't KVM's problem. It may be
-> better if KVM can tell userspace exactly in which cases KVM will exit to
-> userspace. But there is no such an infrastructure.
-> 
-> An example is: in KVM CET series, we find it is complex for KVM instruction
-> emulator to emulate control flow instructions when CET is enabled. The
-> suggestion is also to punt to userspace (w/o any indication to userspace that
-> KVM would do this).
-
-Please point me to decision of CET? I'm interested in how userspace can 
-help on that.
-
+>> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+>> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+>> Cc: Helge Deller <deller@gmx.de>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Andreas Larsson <andreas@gaisler.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Borislav Petkov <bp@alien8.de>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: x86@kernel.org
+>> Cc: "H. Peter Anvin" <hpa@zytor.com>
+>> ---
+>>   arch/parisc/Makefile      | 2 +-
+>>   arch/sparc/Makefile       | 4 ++--
+>>   arch/sparc/video/Makefile | 2 +-
+>>   arch/x86/Makefile         | 2 +-
+>>   arch/x86/video/Makefile   | 3 ++-
+>>   5 files changed, 7 insertions(+), 6 deletions(-)
 >>
->>> If KVM can't support the behavior, better to get an actual error in
->>> userspace than a mysterious guest hang, right?
->> What behavior do you mean?
+>> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+>> index 316f84f1d15c8..21b8166a68839 100644
+>> --- a/arch/parisc/Makefile
+>> +++ b/arch/parisc/Makefile
+>> @@ -119,7 +119,7 @@ export LIBGCC
 >>
->>> Outside of what kind of exit it is, do you object to the general plan to punt to userspace?
->>>
->>> Since this is a TDX specific limitation, I guess there is KVM_EXIT_TDX_VMCALL as a general category
->>> of TDVMCALLs that cannot be handled by KVM.
-> 
-> Using KVM_EXIT_TDX_VMCALL looks fine.
-> 
-> We need to explain why MTRR MSRs are handled in this way unlike other MSRs.
-> 
-> It is better if KVM can tell userspace that MTRR virtualization isn't supported
-> by KVM for TDs. Then userspace should resolve the conflict between KVM and TDX
-> module on MTRR. But to report MTRR as unsupported, we need to make
-> GET_SUPPORTED_CPUID a vm-scope ioctl. I am not sure if it is worth the effort.
-
-My memory is that Sean dislike the vm-scope GET_SUPPORTED_CPUID for TDX 
-when he was at Intel.
-
-Anyway, we can provide TDX specific interface to report SUPPORTED_CPUID 
-in KVM_TDX_CAPABILITIES, if we really need it.
-
-> 
+>>   libs-y    += arch/parisc/lib/ $(LIBGCC)
 >>
->> I just don't see any difference between handling it in KVM and handling it in
->> userspace: either a) return error to guest or b) ignore the WRMSR.
+>> -drivers-y += arch/parisc/video/
+>> +drivers-$(CONFIG_VIDEO) += arch/parisc/video/
+>>
+>>   boot    := arch/parisc/boot
+>>
+>> diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
+>> index 2a03daa68f285..757451c3ea1df 100644
+>> --- a/arch/sparc/Makefile
+>> +++ b/arch/sparc/Makefile
+>> @@ -59,8 +59,8 @@ endif
+>>   libs-y                 += arch/sparc/prom/
+>>   libs-y                 += arch/sparc/lib/
+>>
+>> -drivers-$(CONFIG_PM) += arch/sparc/power/
+>> -drivers-$(CONFIG_FB_CORE) += arch/sparc/video/
+>> +drivers-$(CONFIG_PM)    += arch/sparc/power/
+>> +drivers-$(CONFIG_VIDEO) += arch/sparc/video/
+>>
+>>   boot := arch/sparc/boot
+>>
+>> diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
+>> index d4d83f1702c61..9dd82880a027a 100644
+>> --- a/arch/sparc/video/Makefile
+>> +++ b/arch/sparc/video/Makefile
+>> @@ -1,3 +1,3 @@
+>>   # SPDX-License-Identifier: GPL-2.0-only
+>>
+>> -obj-$(CONFIG_FB_CORE) += fbdev.o
+>> +obj-y    += fbdev.o
+>> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+>> index 15a5f4f2ff0aa..c0ea612c62ebe 100644
+>> --- a/arch/x86/Makefile
+>> +++ b/arch/x86/Makefile
+>> @@ -265,7 +265,7 @@ drivers-$(CONFIG_PCI)            += arch/x86/pci/
+>>   # suspend and hibernation support
+>>   drivers-$(CONFIG_PM) += arch/x86/power/
+>>
+>> -drivers-$(CONFIG_FB_CORE) += arch/x86/video/
+>> +drivers-$(CONFIG_VIDEO) += arch/x86/video/
+>>
+>>   ####
+>>   # boot loader support. Several targets are kept for legacy purposes
+>> diff --git a/arch/x86/video/Makefile b/arch/x86/video/Makefile
+>> index 5ebe48752ffc4..9dd82880a027a 100644
+>> --- a/arch/x86/video/Makefile
+>> +++ b/arch/x86/video/Makefile
+>> @@ -1,2 +1,3 @@
+>>   # SPDX-License-Identifier: GPL-2.0-only
+>> -obj-$(CONFIG_FB_CORE)        += fbdev.o
+>> +
+>> +obj-y    += fbdev.o
+>
+
+-- 
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
 
 
