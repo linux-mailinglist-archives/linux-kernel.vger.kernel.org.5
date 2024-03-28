@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-122876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340C188FEC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:13:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B1CD88FEC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0D70294500
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:13:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E5901C25DD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684797EF0F;
-	Thu, 28 Mar 2024 12:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66C57EF1D;
+	Thu, 28 Mar 2024 12:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aK+ihdK6"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ulp4A9wA"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9A17F7C9
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1057EF0D
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711627980; cv=none; b=jjjT+PPsmjYnDDntht0qc3A/p2A3XSsClgIsQsqzUPUxpGSAlYPJzSmvgaAT/AZ/5AwA+K3C3JV4JsFa9XMQEaJ+VjlekZAfFxR19ySIN7XvvZRTeEqRYMVbCRsRcYHdDwnchkEkdd7obQ7G/n9exFDzSVcepJwNm94kycpAVfU=
+	t=1711627982; cv=none; b=Kj2CyzaXWAQv4o6FwqryOYKE9yPJo+ILs0oMSlElNCyGQIaPCG9mFfOYqpCu9k3pV7JwogTjA39Ak8D8k/8IBVr1b8fYtXUtz9nZTICPK+nk85Qmw4B77i2HUPFuTAzUtDdmIwkkd9EcBTXA7W4UPv5AOcvLTLwLOUVfvDqcHz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711627980; c=relaxed/simple;
-	bh=HjRvMGXjDbwDSvM16WAhK4wPegt0yyIWO/1j4Z95mjo=;
+	s=arc-20240116; t=1711627982; c=relaxed/simple;
+	bh=rduB/RDRA5RPBB7h21AIh+xd67gq//w9BJQsmLy4FtA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jqOYeEWUgyFvmO1BW8MwjqmoS+cpEUZVKqs0bTXc3IlZH3va/3KLtS0S45x2RAZJU5RIJEf3jWHUPVAAFH7kfkStYcBQABvwM2vHLz/RKYy8WXV7iIpM0oqjTMGtWUUo/idRg69ABMw6i3Oz6nhDI4TJcpvvO4NxHXJaEDsD1ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aK+ihdK6; arc=none smtp.client-ip=209.85.208.178
+	 MIME-Version; b=QpsmVEW1elFEzE+mB3PLG9/3zlAmGlJio4zVn8Ske0pPTBtCItWNwR9FXuIWvRWY3582/9WWhLVwk/qoSTGVvJ4nmV4ftxrUCicbrHmCSK1uHYsRveFJq4ETpvzm7eeKkwOD2mu0FjfxQbTJTxi6vStC0pTqV5gj8k68xslrBuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ulp4A9wA; arc=none smtp.client-ip=209.85.208.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d68cf90ec4so12378711fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:12:58 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d68cf90ec4so12379111fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:12:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711627977; x=1712232777; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711627978; x=1712232778; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YJrpsii5KxAd/+yN0rzfHDl19GAcoZcZzgV5GRtFABE=;
-        b=aK+ihdK62WQ4eoPmO3inUqzsuBDDAS9Vjj/leAv1+8nXiV+nbwkmopf3nbIDtyAl6i
-         YNVD5vhQwKhh08SRDb+67zCbMi3g+8JgLVjudejemzle4i7uQ0TjNa8FlU74Ef6Ib/QK
-         Ax7Tk7qCEgLI51kZhzwEG1pKtXT3SoCTJdBbyiFh/5CpCinK6RI0v1ewfzqhKYZ/vxtk
-         Mo7WK56f9Xb8R+p0Tig39bH2OiQpEttcTRsKXElw1BfjfNcr7mWZym2nY9uRvGIczNbM
-         y62etIpCdpOy67NERi0iqKF9exEae7uLnQ9UBM8iw5SuKOFfSL79ZQa+PRxv+tgnBcQH
-         yu4Q==
+        bh=z9w3iqi8v6g1Qg2xrkzZI49jeraryi4PMJn7xcz2yLU=;
+        b=Ulp4A9wAMblKJ6vJ86JRNBeqEBQsq81jGhT2KPUoRPiVZsiuRyVoZI4zYKKFDV9+jW
+         gcAD3itqNNNo2x2kxy5Y3lLGfMkWNreNGJAe1G3/Qh+qBxABl5DVVVF+4VbyQlR2R2Gw
+         PfPvchBHW3a5ZfbhdVclJaXTUaF7YzcNxD1GHnIDqQmodCZL2d7L+nuyJmtbFGi9pZjl
+         bCsweQkpnA3mzgwRmuxgu7pQHMfZFBCMVePhxGEzGgBCkLorAhQczCZ+Nmk0Pjeflyu9
+         AOVkj73qFJLuCNfWQlhQVEeWLacjF0/Kowi7hklkCb2Ucn05TPjri3KBLeiJuoj0uHxY
+         cWJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711627977; x=1712232777;
+        d=1e100.net; s=20230601; t=1711627978; x=1712232778;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YJrpsii5KxAd/+yN0rzfHDl19GAcoZcZzgV5GRtFABE=;
-        b=qRrnp6XxrFC0mR0vfaqnIcOL7Ozb85UM0XXTr6lwJatHUs9HY3K7n0IhR/NC3DLNaC
-         itentpfFjpcVpUsHgFXVk5r5/bmPoPKr2P0ST+PCD+4vkZ9gbBJClUySHkyniPS2WDDG
-         jtOFOPtQQ8OADPX9JX6kZyZNzTqAhjplBWAix4rrAW6Gr+04LRsb6IP00/dvGQzGtYLa
-         yUVD/z4yXqm6oHiWfdhKVqj0t9HbkfkC55wkWc6SvpgBioKoa16lSYzNHtb0Dh4rxwXm
-         gaJKyGuBFGUt84Ufu1A7vSLJjh4BYkaBTTMXLNpmHUt0EHkZkx1UOvFcxR8QaOY5I9iB
-         0QkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsyu0+wblMoq3Ll5bAc0Z7xFoH/SLpPp3FmB4PZWm2vYSK39EI3i8Uk1Mwt24wQFe2qa//oOTJN7KKnejdZcywtpcam64Rg4h5XA0q
-X-Gm-Message-State: AOJu0YwRK88tPO0Js9KTN3kEIlpkGcbK/rpvndg6C9Jr4Mgwkpz9dPNy
-	0PSQPoMv+2uBprZnOUy1C8Km8i3P/4jKbsxh5+Qtwxq7P8XT1MsD
-X-Google-Smtp-Source: AGHT+IFn/MiTHHRnQAcKDrcHrGTaSrb+CJwCaYVf1XK0ugL/wrsGsugJZad0dPF/R2zRCJqERrTo0w==
-X-Received: by 2002:a2e:990a:0:b0:2d7:fbb:8276 with SMTP id v10-20020a2e990a000000b002d70fbb8276mr223321lji.44.1711627976886;
-        Thu, 28 Mar 2024 05:12:56 -0700 (PDT)
+        bh=z9w3iqi8v6g1Qg2xrkzZI49jeraryi4PMJn7xcz2yLU=;
+        b=Ks0UdJv6gU/fxHIGg0w+FRWkgZMg7yUPuhGyGruGE3soojIU/xynnzqlmV584/hv3X
+         M9NiMtHTJXUQypCRidIazuf/RSBtabOXTPmLgx8i344wEdBHwgu7Dq9px4ud4PeW7+tE
+         wPWrei1eCqDnUpIKzXJJ9MmTwRy7sxim76lr8mO3Uf1A0sIz9p9Ft7sag5EwDXp+kD/S
+         bqyqTTYYDzt48OgaUFdhtQIgeciUaIzzGuiva9DeCGtGLxWv6uFRDN16gUDqvQV3u1Ux
+         9+l+e2Bi6JabMvZ9cnWRav5wc/vtMmNT/NXPmYjizx1K09YBy5UVFWi181DXhLWlz4mw
+         mvQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUWGZVMbsvuvLptXaf3uC36dIY0Mi3ZOgliA4HvfN3T5JbcY21S7DyS2fMQ+G8qH9DC92TXuEsU94y0cumgy1Mom403BQ1m7WJr5UW8
+X-Gm-Message-State: AOJu0YzmsxkeiGY8Ll5MwYG+++ti+DrmdsH15SGzNMkwCcp0dSZTNAnd
+	AN3n7EWY9X+vCVwO75r93mqiuCVoDWHXvonTQCuCjmGxPiCxxP9B
+X-Google-Smtp-Source: AGHT+IFXNzbhuclNbfEZdBE4eJZUSweezFj6xP8a2IZt/uTSmSn8t2yUDd3leLfO3tyGlIvwJiYWXg==
+X-Received: by 2002:a2e:93c2:0:b0:2d6:dbf2:bb19 with SMTP id p2-20020a2e93c2000000b002d6dbf2bb19mr1503100ljh.50.1711627978242;
+        Thu, 28 Mar 2024 05:12:58 -0700 (PDT)
 Received: from YOGA.local ([2a06:c701:736b:f200:125e:963c:4e4b:b7c5])
-        by smtp.gmail.com with ESMTPSA id bd11-20020a05600c1f0b00b00415460a63ebsm1416456wmb.29.2024.03.28.05.12.55
+        by smtp.gmail.com with ESMTPSA id bd11-20020a05600c1f0b00b00415460a63ebsm1416456wmb.29.2024.03.28.05.12.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 05:12:56 -0700 (PDT)
+        Thu, 28 Mar 2024 05:12:57 -0700 (PDT)
 From: Shahar Avidar <ikobh7@gmail.com>
 To: gregkh@linuxfoundation.org,
 	hverkuil-cisco@xs4all.nl,
@@ -74,9 +74,9 @@ To: gregkh@linuxfoundation.org,
 	felixkimbu1@gmail.com
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] staging: pi433: Rename "pi433_dev" of type "dev_t" to "pi433_devt"
-Date: Thu, 28 Mar 2024 14:12:43 +0200
-Message-Id: <20240328121244.1244719-6-ikobh7@gmail.com>
+Subject: [PATCH 5/5] staging: pi433: Remove duplicated code using the "goto" error recovery scheme.
+Date: Thu, 28 Mar 2024 14:12:44 +0200
+Message-Id: <20240328121244.1244719-7-ikobh7@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328121244.1244719-1-ikobh7@gmail.com>
 References: <20240328121244.1244719-1-ikobh7@gmail.com>
@@ -88,79 +88,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Distinguish struct device type instances from dev_t instances
-to enhance readability.
+pi433_init had "unregister_chrdev" called twice.
+Remove it using goto statements.
 
 Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
 ---
- drivers/staging/pi433/pi433_if.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/staging/pi433/pi433_if.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index 208c0c6d3649..62ce75b07bf0 100644
+index 62ce75b07bf0..e538f1d4e787 100644
 --- a/drivers/staging/pi433/pi433_if.c
 +++ b/drivers/staging/pi433/pi433_if.c
-@@ -53,7 +53,7 @@
- #define FIFO_THRESHOLD	15		/* bytes */
- #define NUM_DIO			2
- 
--static dev_t pi433_dev;
-+static dev_t pi433_devt;
- static DEFINE_IDR(pi433_idr);
- static DEFINE_MUTEX(minor_lock); /* Protect idr accesses */
- static struct dentry *root_dir;	/* debugfs root directory for the driver */
-@@ -1262,7 +1262,7 @@ static int pi433_probe(struct spi_device *spi)
- 	}
- 
- 	/* create device */
--	pi433->devt = MKDEV(MAJOR(pi433_dev), pi433->minor);
-+	pi433->devt = MKDEV(MAJOR(pi433_devt), pi433->minor);
- 	pi433->dev = device_create(&pi433_class,
- 				   &spi->dev,
- 				   pi433->devt,
-@@ -1276,7 +1276,7 @@ static int pi433_probe(struct spi_device *spi)
- 	} else {
- 		dev_dbg(pi433->dev,
- 			"created device for major %d, minor %d\n",
--			MAJOR(pi433_dev),
-+			MAJOR(pi433_devt),
- 			pi433->minor);
- 	}
- 
-@@ -1398,13 +1398,13 @@ static int __init pi433_init(void)
- 	 * that will key udev/mdev to add/remove /dev nodes.
- 	 * Last, register the driver which manages those device numbers.
+@@ -1400,24 +1400,25 @@ static int __init pi433_init(void)
  	 */
--	status = alloc_chrdev_region(&pi433_dev, 0, N_PI433_MINORS, "pi433");
-+	status = alloc_chrdev_region(&pi433_devt, 0, N_PI433_MINORS, "pi433");
+ 	status = alloc_chrdev_region(&pi433_devt, 0, N_PI433_MINORS, "pi433");
  	if (status < 0)
- 		return status;
+-		return status;
++		goto fail;
  
  	status = class_register(&pi433_class);
- 	if (status) {
--		unregister_chrdev(MAJOR(pi433_dev),
-+		unregister_chrdev(MAJOR(pi433_devt),
- 				  pi433_spi_driver.driver.name);
- 		return status;
- 	}
-@@ -1414,7 +1414,7 @@ static int __init pi433_init(void)
- 	status = spi_register_driver(&pi433_spi_driver);
- 	if (status < 0) {
- 		class_unregister(&pi433_class);
--		unregister_chrdev(MAJOR(pi433_dev),
-+		unregister_chrdev(MAJOR(pi433_devt),
- 				  pi433_spi_driver.driver.name);
- 	}
+-	if (status) {
+-		unregister_chrdev(MAJOR(pi433_devt),
+-				  pi433_spi_driver.driver.name);
+-		return status;
+-	}
++	if (status)
++		goto unreg_chrdev;
  
-@@ -1427,7 +1427,7 @@ static void __exit pi433_exit(void)
- {
- 	spi_unregister_driver(&pi433_spi_driver);
- 	class_unregister(&pi433_class);
--	unregister_chrdev(MAJOR(pi433_dev), pi433_spi_driver.driver.name);
+ 	root_dir = debugfs_create_dir(KBUILD_MODNAME, NULL);
+ 
+ 	status = spi_register_driver(&pi433_spi_driver);
+-	if (status < 0) {
+-		class_unregister(&pi433_class);
+-		unregister_chrdev(MAJOR(pi433_devt),
+-				  pi433_spi_driver.driver.name);
+-	}
++	if (status < 0)
++		goto unreg_class;
+ 
++	return 0;
++
++unreg_class:
++	class_unregister(&pi433_class);
++unreg_chrdev:
 +	unregister_chrdev(MAJOR(pi433_devt), pi433_spi_driver.driver.name);
- 	debugfs_remove(root_dir);
++fail:
+ 	return status;
  }
- module_exit(pi433_exit);
+ 
 -- 
 2.34.1
 
