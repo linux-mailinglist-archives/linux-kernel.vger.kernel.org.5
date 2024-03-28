@@ -1,118 +1,117 @@
-Return-Path: <linux-kernel+bounces-123623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A81890BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:47:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC7F1890BDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542CC2A7051
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:47:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD3771C311D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459ED13BC08;
-	Thu, 28 Mar 2024 20:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA7B113AA48;
+	Thu, 28 Mar 2024 20:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W4tuN2qn"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UIB0xJ5f"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7BB13A3E7;
-	Thu, 28 Mar 2024 20:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A3546BF;
+	Thu, 28 Mar 2024 20:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658772; cv=none; b=iA/3QnWjN30PkgFgcAZc9RpgljPGMThRoc6JLVSM/V/Yu6JjdxQfhekFPchjRW2Mzeqd94E0EGsdDCdxxih2x59JSZO7RgBKq+TwCuDzMv8rzXaQ/TyUlbknfUuGN4CqP/gEtV4KcATWi27Xh1mgrtwmEpMn0lStELtgNgdkt4w=
+	t=1711658797; cv=none; b=Vf/pC+Ynn5vhUkxNORjERh9qMPy3TJSU5SMeQP5bgoogERy6R6/eZFUzwdnlOrirzjf+14kGotPTwW1LC1TQUXVx75CXWjzzaTUAeCD3a+aMcFi2ju6DLCg1Lhj6/s5g3eo38SKzvLnF+mSAUx4oHtVIK8a2/Q2E7Y0RdbiwW9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658772; c=relaxed/simple;
-	bh=g3FUs8oSA+rki3KtzU+fASuzzmwuKLMhOPJ3dRUzwlU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZkgSIl28DJUCjbU8/0GJwKVtAKcKLQUckzNezg4tX+JiqREPPXEpVDjQyfl4EpraBTqdP0qUZc07MFx9CyK2GMZ4PG0wbJkyHajkiMVQrFTocqY3w+/xWgpkwIkEZx3mFIaSMrTEPWL+bAAZhT2ZQMTl5NE20VKE4AMmJBFVkRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W4tuN2qn; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711658797; c=relaxed/simple;
+	bh=achoef3ti3RKfcO/Jo2hswTSG/HLiIYtXu63FbpwenQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IlVImzl3xOSwlvyuIbDVNgFmUOzS2DLry6mdwTtqJ+sVBUxOVxJNxvAZSN+g3LN7kwU5IJqGDzSCPaywYU1Yj3IBDS3BdpJKwxaqgLU1n7yy6j55EOsTNpOdHyo9NU3OckHJXiA6lxKUEluFgW7MZFeI2v0Wfa1uEjflSvnmRnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UIB0xJ5f; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41490d05bafso13294255e9.1;
-        Thu, 28 Mar 2024 13:46:09 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso1217424b3a.3;
+        Thu, 28 Mar 2024 13:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711658768; x=1712263568; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9ROvuikQjjjOim6lRPo+vqju8xmCENbq2GpP5H9zg3o=;
-        b=W4tuN2qnTVuTlk1gl0o+5Sm9HUTDaAiyXbfV3E9yDoC60Sjc5feRAZCYFNz20KV+F4
-         5S82L+jlDesZkqE2GfZHTW7/ZrtMjcwXF1s513j5Pt2HXGPjanulJ0PrJaougvETHAAp
-         S7Cb4f/li0Rm/DRJFgp3KtGa6lNgjgFxikZqMvd3Jp5/lhRYW8qs9mFYh29g0912jIex
-         23CFBcwSQxJ2QzhuXxGyAFDejd3CC9m9sHlbyaaIE8H65c7KRoN0i8UcSF4/pKwBK9v5
-         vGSBNtX3+zLXjTTLXxFZUFGgA3znCTAroeIZh8zxvGJOGqBRw7mQ+kfx0LV1dXrhYU+v
-         fQdg==
+        d=gmail.com; s=20230601; t=1711658795; x=1712263595; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IbXWRpIWODvs590Ka3pQExFk/pRq6wGRNHitZbvqgOM=;
+        b=UIB0xJ5fGWMCQe7EYMjVR488kwKgiS6shGVZIeXYDeDCFV/W7NlMYKayG3Om44S08R
+         buFdgBBdqMuOCDJzPUqYMZGKAKMoQfyFtOgtlPGszDMhnVNn7JOoDuxRQylo2xBZ0UF+
+         pUPLzpkSiFr3DeMEPhnz7/lOs2CU63kZlcnXdYzGxYYlfFkcGaASRTxwlFZwgRMT3XQh
+         zJ2sRGsoB4Xj3+216iPB3QVaEYwadBYNWjxEp3Hh66WHNZb3z6uksWihS6AZyqiACYJo
+         et0LotoVFj+de+fyCRYHIqz+4sA9tDKrZYPztJCG2Un6MKGgpX+KdjwLsiXZdwsz7ypb
+         r4XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711658768; x=1712263568;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711658795; x=1712263595;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9ROvuikQjjjOim6lRPo+vqju8xmCENbq2GpP5H9zg3o=;
-        b=C5VQuflX/7GPLEyc21P9EIjHUZVIxqHV+LH2J5euEyz29bEmOw1X2z1l7FwnJnqAJK
-         GW2RC4RJwdDd4fgqfY5fGhDIEkjcsR9wZnkfKjbjCA7f6hHTu3u4MQLRVJNbYhdOmNW0
-         QGEW9Dh3FPyFayjhlmfFZNvHGRm3wsmmxxps61lr0wuLo9krgG8N3cD1TODVdHrRpzTO
-         kPeUVlfSuEg7LYUZk6V5c0zWwNonN8EvnlPajGwMSu0jmqkzgLdV5NNoX21KmWlBTz7I
-         yROQoNT/hLTv1LD/Xat29PpZEalahJoBTO+UJ6j/R1rRo7AxaP0egoXKYXUQ8Tki/pu4
-         8AxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV78ueAH2EI/SgQGE5xd83EvYD+tpAj5Zr4Qe8vUuCAtbRi3Al4RSxw6lTTFzrr9immA+pSlQLKs/6tCrRdndcLIfwSKJ337dz2iu447hOOSwzVdQyLOwv3+8F+VgIiUy3GLh4d5SNRQEvovkHVNT5c1drx1cxrcvfe2WzgMP7fr0ggPedOeLtuF6M636Mh8e3npWBVhVxMqSOYVg==
-X-Gm-Message-State: AOJu0Yzpz59GCCAcB1SiaCK1FYYwemXHHzc3yLzDHud5vd4WThSWWiGg
-	r9CwqF4gvzQY2joDLtwMUO2CMnTqltlCnt3gfdmr5/x0jO7sfNI/5ysujiDDFV04C6uXf3Fb4WN
-	7aZobszuuQh2xUMJVhQ4Um80uEm8=
-X-Google-Smtp-Source: AGHT+IEdrmrdYZ0neuzmeyllgckzAWnObYdTmf8L+advoRdhvLgbXuXjAoPzNFvj61inxZuOuaxGq2GMEL3TifRYDag=
-X-Received: by 2002:a05:600c:19c6:b0:414:9455:85e with SMTP id
- u6-20020a05600c19c600b004149455085emr410145wmq.25.1711658768259; Thu, 28 Mar
- 2024 13:46:08 -0700 (PDT)
+        bh=IbXWRpIWODvs590Ka3pQExFk/pRq6wGRNHitZbvqgOM=;
+        b=PJkpl3Lotfq3LFhmY+v8xJ8tUNnxVo+CZtLI3NsHSShABUklLnj7Q6kAlpTBjplvy1
+         9dv3xSAQE25LH89zgkA11ZjPBnX0RXD8Ci6Qfj1XwhMNfnvnnRzdQfolQ2e0hwg4XDzz
+         LbpgQhDPt2EU1f4pIgvOj84waT2FAVfkTJkaV28CXQNsFG6GxJAJXcyjAlODn26gtPY/
+         zF0wBJAPZgNyjqbFWQF4/uzrgZyk5/q81dNkRUDa4bIhFaGljro+4gjWBqAF7fEwSwOV
+         RyllagczfnK8Ig+Aqt8KIhXbXKKY3Cr8zywVQ0xv9CAAjsQ5qv32J+1InMnMhfbVFV29
+         +TWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGUfEkemTiw4ZrZHdWk0+izNQS8vw64N3x57sNAfK/MliykFj7AMqmr+r2EGIYCUAXGoLOE/H6HKJ1v3cCQMpfEjrmcEQ786bcppleHHVLfDKzNnV8mTQz/FgE91m6lOwiWRWKt2dVwVLqhw==
+X-Gm-Message-State: AOJu0YxhP6LCKLvQNDiQDtfC+gxtHRD6nFJo8bSqT6FFDBlcUBRhtZsi
+	c1/1sYK5E0YiJ1oZns0kCmgwozURJGJY6FqY23Aw6nspFYos4KpZpVsuvDrD
+X-Google-Smtp-Source: AGHT+IFOmWQCDUONSdDve2zVQcrYjIwB6pDEs2HXMF9WbYDg5ycopW9LMQsawCPCzAmz7i67RJT6uw==
+X-Received: by 2002:a05:6a20:6a0e:b0:1a3:aa5d:8caa with SMTP id p14-20020a056a206a0e00b001a3aa5d8caamr372739pzk.12.1711658795031;
+        Thu, 28 Mar 2024 13:46:35 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id i64-20020a62c143000000b006eadc37bad0sm1537852pfg.72.2024.03.28.13.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 13:46:34 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 28 Mar 2024 10:46:33 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
+	willy@infradead.org, jack@suse.cz, bfoster@redhat.com,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
+Message-ID: <ZgXXKaZlmOWC-3mn@slm.duckdns.org>
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <qyzaompqkxwdquqtofmqghvpi4m3twkrawn26rxs56aw4n2j3o@kt32f47dkjtu>
+ <ZgXFrabAqunDctVp@slm.duckdns.org>
+ <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
+ <ZgXJH9XQNqda7fpz@slm.duckdns.org>
+ <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
+ <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
+ <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
- <ZgWnPZtwBYfHEFzf@slm.duckdns.org> <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
- <ZgWv19ySvoACAll4@slm.duckdns.org> <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
- <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
-In-Reply-To: <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 28 Mar 2024 13:45:56 -0700
-Message-ID: <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-To: Tejun Heo <tj@kernel.org>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
 
-On Thu, Mar 28, 2024 at 1:02=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> There's also cgroup.kill which would be useful for similar use cases. We =
-can
-> add interface for both but idk. Let's say we have something like the
-> following (pardon the bad naming):
->
->   bpf_cgroup_knob_write(struct cgroup *cgrp, char *filename, char *buf)
->
-> Would that work? I'm not necessarily in love with the idea or against add=
-ing
-> separate helpers but the duplication still bothers me a bit.
+Hello, Kent.
 
-I liked it.
-So filename will be one of cgroup_base_files[].name ?
-We probably don't want psi or cgroup1_base_files in there.
+On Thu, Mar 28, 2024 at 04:22:13PM -0400, Kent Overstreet wrote:
+> Most users are never going to touch tracing, let alone BPF; that's too
+> much setup. But I can and do regularly tell users "check this, this and
+> this" and debug things on that basis without ever touching their
+> machine.
 
-From the verifier pov 2nd arg can be "char *knob__str" and
-the verifier will make sure it's a constant NULL terminated string,
-so at runtime it will be easier to search cgroup_base_files array.
-And 'buf' can be: void *mem, int mem__sz with kfunc doing
-run-time validation that there a null there.
+I think this is where the disconnect is. It's not difficult to set up at
+all. Nowadays, in most distros, it comes down to something like run "pacman
+-S bcc" and then run "/usr/share/bcc/tools/biolatpcts" with these params or
+run this script I'm attaching. It is a signficant boost when debugging many
+different kernel issues. I strongly suggest giving it a try and getting used
+to it rather than resisting it.
+
+Thanks.
+
+-- 
+tejun
 
