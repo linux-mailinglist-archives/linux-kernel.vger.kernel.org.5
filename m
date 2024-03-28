@@ -1,93 +1,97 @@
-Return-Path: <linux-kernel+bounces-123480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F98A890941
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:28:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 324A1890984
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE48E2987F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:28:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91E1C29192C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:44:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A984B137C58;
-	Thu, 28 Mar 2024 19:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8471A1386A5;
+	Thu, 28 Mar 2024 19:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W5O94yj8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="ZnKiZLpA"
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2DE3C08E;
-	Thu, 28 Mar 2024 19:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C21134CC0;
+	Thu, 28 Mar 2024 19:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711654130; cv=none; b=qDYtziT2drbvl4IS86sDsQOPcX1X9IBjwm5O5BqojgaaAmN98d6YC3esgQBLWeaGwIC+8Vidkrm8Qa4OPYZlZChTgw0unwei73d2cK5C5eKCCEAkMGPxA5OoJe+24pNpv/TWrEDvncvoyS56VftZECSH28CsGTU7OdoH/fBSNEA=
+	t=1711655070; cv=none; b=bBQ2ZUHc2NCC4NeEw9jsIu45K7CydAHUzODXn4hvgQPPowY5w0rOb9d7h6gE4N8KMHdzj5zzOS/uEjbChyQIzcwxwSvEyeOiZg1f87fbAZ7/n1jBolRaZl/c6UVySdKzjOzedVUx5CT8yy9VBDQQwS80M/RRBF9xy0gl/EgkAS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711654130; c=relaxed/simple;
-	bh=Nw7UVEH0a9tRFeHtk6dToEX6iVYCsePji0jVeTefwOI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BSgpmCSzLA72YvzWidDUsb8qnD7XmVWr5TISHV00tugyEPfTpSuA/DXJYanjIgkgO7Yz0gkvWn5B88XSGeYcg8YokrQ2rexr0S2EbqbZ3OhcwnrIrj47tTvL+4US8U2s9bFRKznuWuH1af6Um0t/KqdcuOvnHPBWyOwLyvq6vJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W5O94yj8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C8EC433C7;
-	Thu, 28 Mar 2024 19:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711654129;
-	bh=Nw7UVEH0a9tRFeHtk6dToEX6iVYCsePji0jVeTefwOI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W5O94yj8jgo4OfsZ399hf3ZeVZFmihwlUWFwgqs8GpT4QyL8UeSlb4Z5kzFU6JWzp
-	 to2Ukwwl6F/oSvjgjn4jsfCLOFrlGwSVrUjRTMaxOnMNkz2tJL12uavg7zNxkz6CoI
-	 m+tq48/mYyYDSwRi0Xgt25Kb4VzEM0W21P/nMzgLAsfPVTrmTLl5batE5Yx1Qe2DHz
-	 KA3r4sHbMDKW9DxVQ44PLSVgHa1SHV0F9AHEDCsXnB7WDUZYo/AY19/Q05Xz9hnhLG
-	 LhFfy9tZ1xbFJ2IEtfaK0c8RgjFA1+NLhYM8YF+0nFKavBjCsXQ44c/FrcPibW2BTx
-	 d772wANjHfR3g==
-Date: Thu, 28 Mar 2024 19:28:44 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Stephen Lee <slee08177@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org, roman.gushchin@linux.dev,
-	dennis@kernel.org
-Subject: Re: [PATCH] ASoC: ops: Fix wraparound for mask in snd_soc_get_volsw
-Message-ID: <ad9088ab-cd55-4c59-b0af-65e44475124a@sirena.org.uk>
-References: <20240326010131.6211-1-slee08177@gmail.com>
+	s=arc-20240116; t=1711655070; c=relaxed/simple;
+	bh=BA0p6EgNxcmz4H9GYa0tDJrQXGb/k9OOb1DW6MRHGHw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D93ciJp/eBKtKAAqPLr10rVyT7ALvoCjqTWEXoGuCTTyVGhTuYvZPk8W66r1GRjHFEjoV3MK/ESn4YOLEZqxAdxWasxp/kqXLDjJzCzoDuiaTsgS01RIBrTKJO/zPcj2kbO2fpI5lErQfRN07VdKudDZx/fCkzJ3LSt/37BlIcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=ZnKiZLpA; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
+	s=submission; t=1711655043; x=1712955043;
+	bh=fKOBcit0OLSIvvpbV7fpFKk/+/JlS7VOufh0Oihpa10=;
+	h=From:MIME-Version;
+	b=ZnKiZLpAu25fer/vfl6cNMeySwxQoMcMbf6GmMyq3xu4asRubhzUFqXPz5c09UhSd
+	 b16Vn1Hreeo8E05pUPiJR8DonSmwBwk89f2wG6+XK5m8JylMaK/4WBhgTzMO7wn2QL
+	 cKuSGx+D/9g/sHuGzkJgM/9wst1QDTlWpn3yBoQDojh54o+VcR/rpEikhU2/kh4Etq
+	 Bw7R3xF2GXjALShGFtEK3hp88TXXW0yGTpuYtIMExdvO+DGn4MgEwg4x9Y8mXqUzZp
+	 /E4/WW9naIKWQRyLeo2CTG5u5VFlhMlZyVcdw8VevDkg+fV8lakzONsPZZ4ybB/B2/
+	 N8XSN5fr1Povw==
+Received: from localhost (internet5.mraknet.com [185.200.108.250])
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42SJi0QS074668
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Thu, 28 Mar 2024 20:44:01 +0100 (CET)
+	(envelope-from balejk@matfyz.cz)
+From: Karel Balej <balejk@matfyz.cz>
+To: Thorsten Leemhuis <linux@leemhuis.info>, Jonathan Corbet <corbet@lwn.net>,
+        regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Cc: balejk@matfyz.cz
+Subject: [PATCH 0/2] regressions documentation improvements
+Date: Thu, 28 Mar 2024 20:29:14 +0100
+Message-ID: <20240328194342.11760-1-balejk@matfyz.cz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fcY7Zu6uSdocuvCO"
-Content-Disposition: inline
-In-Reply-To: <20240326010131.6211-1-slee08177@gmail.com>
-X-Cookie: Yes, but which self do you want to be?
+Content-Transfer-Encoding: 8bit
 
+Hello,
 
---fcY7Zu6uSdocuvCO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+this small series suggests two (hopefully) improvements for the
+regressions-related documentation texts.
 
-On Mon, Mar 25, 2024 at 06:01:31PM -0700, Stephen Lee wrote:
+The first one is perhaps unnecessarily nitpicky but if nothing else, it
+at least adds a missing word.
 
-> This seems to show up in quite a few places in the alsa subsystem,
-> should they be addressed altogether?
+The other one tries to clarify for future readers a question which was
+on my mind through the whole process during my first attempt at
+reporting a regression.
 
-Probably worth it, yes.
+Please take a look, I am eager to hear what you think.
 
---fcY7Zu6uSdocuvCO
-Content-Type: application/pgp-signature; name="signature.asc"
+Thank you, kind regards,
+K. B.
 
------BEGIN PGP SIGNATURE-----
+Karel Balej (2):
+  docs: *-regressions.rst: unify quoting, add missing word
+  docs: handling-regressions.rst: clarify that "Closes:" tags work too
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYFxOwACgkQJNaLcl1U
-h9AMpAf+O5E+hqTgoIg1rWfMJgpCMlfl5IMhAkNW2/BrrNnRk7dJokixpLb2HEIA
-PC2lh4j5vfmmGRtwF0SDdIrNuGAkTR5OGwm5wei4orBmS1HAVhBlu/+n85pBhG99
-WyQaaqLdzMii5PZ3xLB82bh+mRJF0jlvb/3wLkzDKqF9F3sssPgNOXXihZ2O1K14
-+wp5O0xoF0DYqsicJKEgPxTNU6GmW/ONkKuIeVkXGhTXnFQcbHGJ+nQzYzAIaWsC
-9b/+Oyn2s/6+qTM17dPiPrLhKvz6AZ5N3zaA3HplS+Nk/Mxq7vHcVfwb2NyBL+CS
-S9nQgr9W+PbToigTz3mN6t8tCL2lIg==
-=E4V/
------END PGP SIGNATURE-----
+ .../admin-guide/reporting-regressions.rst     | 10 +++---
+ .../process/handling-regressions.rst          | 32 ++++++++++---------
+ 2 files changed, 22 insertions(+), 20 deletions(-)
 
---fcY7Zu6uSdocuvCO--
+-- 
+2.44.0
+
 
