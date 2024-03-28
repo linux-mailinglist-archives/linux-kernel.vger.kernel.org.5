@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-123529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39262890A60
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:58:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA43E890A62
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE0961F279E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:58:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB94F1C2EE48
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C37313B5A1;
-	Thu, 28 Mar 2024 19:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF5C13B7AA;
+	Thu, 28 Mar 2024 19:55:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FUBDeGl9"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gPWPu2UM"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F23C13B598;
-	Thu, 28 Mar 2024 19:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D5013B791;
+	Thu, 28 Mar 2024 19:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655720; cv=none; b=eRgDoysZsOz8pRmsneZvtyKuCECKflDZ4Y9TQ/5gcq/sn8xBMiG0FxjF0oUx65rbIrC+ffsSpHm7iRXwCDFJh7b8EenvakBSmFAgTMZ3WiRAOsiSHdK4BuYn1OpT3J/qDO+oQxg5zZguf2MB6RlGUXkI1TDvhb7/8nV9yVFciGQ=
+	t=1711655724; cv=none; b=I/hWT3f2q4eETqKllJBk+/0y+12HNeLjsMHw4CG3TJZ/ak0AZTjj7mQZaETluykr52HUiAyouF8S26Yt0OW/jw5R5mVzyJ2UR5lGsPLAOhgbk1MO9FcG/5OdXcrnZKGgEcw9V4ikm7TxEk+dDu545XjORx1l+G4bqDSk4C9IAX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655720; c=relaxed/simple;
-	bh=8H5op9oxVlU0msUtq5I4WSqtnbdnJghczRSI2SqtUaM=;
+	s=arc-20240116; t=1711655724; c=relaxed/simple;
+	bh=cjEsbiErL4GEiLgWPr00zMhV+ra7917lJ1keLF6jIuU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I3V5uP+xaYnPL0AfZdeCTFwrCYgZzL3Rc+xqyXZnOHn1Xof8nkSm+spYO/94aWVzrnUzpWL2xtqyYfDU2COVChrS5GEHZguRbOYmly9nfwIOa36Pc11sRKerc3gYJGgogWIl7ry6hTDithUIdvQHugqEuJtJmqGarwDarrTeR8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FUBDeGl9; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=f3nlPS7Iay+xmHrqX3yqb+u0KovwtLLbBD3y6DKEfjRz+qKzII7DcQ37OR7V7dNBaA8LfPte7DbR0XR4FI4P+ucmq7h4qUN4d83xx7qZti/i0ii7yQXS2H9qZbWlJMUQnJxP8vFD4zPGW++rRp39z3NXsRQRCXaYymA8vOjlpGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gPWPu2UM; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e0d82c529fso12721145ad.2;
-        Thu, 28 Mar 2024 12:55:18 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6b22af648so1810277b3a.0;
+        Thu, 28 Mar 2024 12:55:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711655718; x=1712260518; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711655723; x=1712260523; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EzqUPsfXWj4binayeXTWXcfCoPWBBRiht8YRpbXdcMA=;
-        b=FUBDeGl9A7jmubRkBgVcnyIBChMi26PnlOPx/hjHJ/Mwg/tfyOMh7bvFZjFpE0UYCT
-         ZHhzlllWiC43WF87h1e6HXC+FNmq/N+I64RKBVrvGhCzTORfDXdxx5ULDAZ8B6x4NU0O
-         BsCpp7uKTtZjvwe56Ja/5YH/7PFIl2TnruX+SdQDH5Z90cYemOiUMdah3jZhbdqII+Ik
-         U2KJ14rdZTYjMYpuIE8PthCac3sV83w92HqV/yI4GV3pHfp6ooQE3USdRMY37YRyEn0L
-         1KENrWbJaoD5M7ktUKfderZlbGMyNYCjDAxlyvvKNkHVO94TluyG3Ti2DEKWf45ee3zg
-         tAtQ==
+        bh=3onkuNTqsbsPIhsygl1fro8dFk+/knTOJGgy1+clLaE=;
+        b=gPWPu2UMrdNMHAZtDJp8iahagtqXaTKstTkTrUSr/k7+F9uI5F25MsM8vSdH6qfYUL
+         Eh9r5I9feTiNtqtIGRU1fJqWBw5LzTucgGinku1zcC3CcT8wmhwFYB12t7DUQUFtNyUm
+         DHtsxm7IShaBcJK+oryafg86T2pPdkHINxm/bB2QdLcP/X/XVFm2MWxXIRNtfskTp4Oz
+         fJ4WzUXP9H/naottyJouNLOS7/C7BcmwTkWbXMUWr1c7bMTingRodQPVDNuoGqfGYY1C
+         66FfVLkKNloKXHF5kOI1YFtrUzlmllB91L6GGtCi/nJ7IVH5/60/068ommHKvBQeCxZy
+         jEuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711655718; x=1712260518;
+        d=1e100.net; s=20230601; t=1711655723; x=1712260523;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EzqUPsfXWj4binayeXTWXcfCoPWBBRiht8YRpbXdcMA=;
-        b=sXRKYaTuteajfrZxL5eW2BceANRBRYHVinBBO0jSAHlx0asCxh35dMWFB/o6qKd8I1
-         /ga1r1pdcpihQkI7G9XGpmCD1QXxE5NVoQGjXPwdCabyxV/myNTg9WEt5ED1uSmiaTgo
-         wtVYc2blaZClgQWqrkcJStPIuPmBx6QUJQ2IifGsTnPr8nw99JsADSoC6k8mkG7RBHXT
-         eNyyJvWZeJnXux06lI7ngbDaRrtV226uM+MLm4u7vPTEg9V2Jn9Nc8x0xCXOCllOPJpm
-         +OeYIJU5SaR2DkNZBeCLiwl135P9/iNFO542d5+5PIqGuGJNwqdHW0R8KnK09/rCMrJu
-         kiNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWl82i6PKd0T0L31FhqG7RdyYAuG+OXFMzk6EGfjzx+wEc2Vp5iNh0dPYNU4Zeryo0fgW3TTxlnRGI3DXpKwEz+Dtk/Of++W2IBDZxNc2B8ijoSxLW7O5HUyWS6au2Gtx5cPpqJ
-X-Gm-Message-State: AOJu0YzpKAA92gEgXa3Bg92LF9u7zWC/DMgxJPY/NgKPlBNkSkcWipey
-	U+AJXnVr9/qBKEzk04bN7t4qEq6GWMUUfYO6CtqgJrG9q7nxR0ZHoBerG+8e
-X-Google-Smtp-Source: AGHT+IFcH8y9aRYK8WAqYucQcxKLzTdOpTXagA/BsEXoq0kvwRHyM3jJoCzmityUgjvvuOTNcC1qnQ==
-X-Received: by 2002:a17:902:e888:b0:1e0:b5d4:9fa3 with SMTP id w8-20020a170902e88800b001e0b5d49fa3mr634632plg.2.1711655718390;
-        Thu, 28 Mar 2024 12:55:18 -0700 (PDT)
+        bh=3onkuNTqsbsPIhsygl1fro8dFk+/knTOJGgy1+clLaE=;
+        b=c70/XWa16ITaHO5BAmzJrjm61bAsWjn8/ZTH4lAcdSBycyDlG6avflqmYOMLL5LcR7
+         csM/3esfC0wsHY3rqo/Gk68oXa1IqWwFM7BUlF23Q0T54Tj1MArdONovPnUdRkQfE7pi
+         VZTgKahiD/T2MQYlCvT0HV1tzU5BoGuUAlX897qwlrbecK2qTWtOZm/828jP3K80oF5K
+         ZzFEDfypqr0VZ6nd64ndBF70cmvOLMdVFpbmftqkn03Jt993yp9LRAr+gCw9/9qkw8kM
+         rGXPvGLCB6mJ5ePdFWfeQdj+DLjZSbtxTM2b2csbaiclphUg+sc7sBdaqxV4yCdRCiA6
+         NwVA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGvW1Gb0JZNIegFvAYTj+vhRU/UuainNVBj+7E1A4HgwgzGuT07HC0oSLF3vn2yJTRVpN6n4Yi2I8twe7iGQ7qteIm5KqYa4jnKkYw
+X-Gm-Message-State: AOJu0Yzu+2+sDTdPIi+wOyNxI2oWiHgB1PxGyII2VpwFrEj893XXeaLQ
+	COGJM3Eq9NPL7MJjVeOBZ+RqkQ2NedcHU1I6DJnoPVI6LDlFoZnhTXVWZ0Ev
+X-Google-Smtp-Source: AGHT+IFHIFFoXRxFAQKTg7a2ng7z0GqOTb5sKGnRXt/T4T4naasjHmM5jKwJejoXUwY2joLDaGiA7w==
+X-Received: by 2002:a17:902:f54a:b0:1e0:aca5:fd24 with SMTP id h10-20020a170902f54a00b001e0aca5fd24mr498128plf.24.1711655722792;
+        Thu, 28 Mar 2024 12:55:22 -0700 (PDT)
 Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id p16-20020a170902e75000b001dd7a97a266sm2006520plf.282.2024.03.28.12.55.13
+        by smtp.googlemail.com with ESMTPSA id p16-20020a170902e75000b001dd7a97a266sm2006520plf.282.2024.03.28.12.55.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 12:55:18 -0700 (PDT)
+        Thu, 28 Mar 2024 12:55:22 -0700 (PDT)
 From: Wedson Almeida Filho <wedsonaf@gmail.com>
 To: rust-for-linux@vger.kernel.org
 Cc: Miguel Ojeda <ojeda@kernel.org>,
@@ -77,13 +77,10 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Andreas Hindborg <a.hindborg@samsung.com>,
 	Alice Ryhl <aliceryhl@google.com>,
 	linux-kernel@vger.kernel.org,
-	Wedson Almeida Filho <walmeida@microsoft.com>,
-	FUJITA Tomonori <fujita.tomonori@gmail.com>,
-	Trevor Gross <tmgross@umich.edu>,
-	netdev@vger.kernel.org
-Subject: [PATCH v2 1/5] rust: phy: implement `Send` for `Registration`
-Date: Thu, 28 Mar 2024 16:54:53 -0300
-Message-Id: <20240328195457.225001-2-wedsonaf@gmail.com>
+	Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: [PATCH v2 2/5] rust: kernel: require `Send` for `Module` implementations
+Date: Thu, 28 Mar 2024 16:54:54 -0300
+Message-Id: <20240328195457.225001-3-wedsonaf@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328195457.225001-1-wedsonaf@gmail.com>
 References: <20240328195457.225001-1-wedsonaf@gmail.com>
@@ -97,32 +94,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-In preparation for requiring `Send` for `Module` implementations in the
-next patch.
+The thread that calls the module initialisation code when a module is
+loaded is not guaranteed [in fact, it is unlikely] to be the same one
+that calls the module cleanup code on module unload, therefore, `Module`
+implementations must be `Send` to account for them moving from one
+thread to another implicitly.
 
-Cc: FUJITA Tomonori <fujita.tomonori@gmail.com>
-Cc: Trevor Gross <tmgross@umich.edu>
-Cc: netdev@vger.kernel.org
 Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 ---
- rust/kernel/net/phy.rs | 4 ++++
- 1 file changed, 4 insertions(+)
+ rust/kernel/lib.rs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
-index 96e09c6e8530..265d0e1c1371 100644
---- a/rust/kernel/net/phy.rs
-+++ b/rust/kernel/net/phy.rs
-@@ -640,6 +640,10 @@ pub struct Registration {
-     drivers: Pin<&'static mut [DriverVTable]>,
- }
- 
-+// SAFETY: The only action allowed in a `Registration` instance is dropping it, which is safe to do
-+// from any thread because `phy_drivers_unregister` can be called from any thread context.
-+unsafe impl Send for Registration {}
-+
- impl Registration {
-     /// Registers a PHY driver.
-     pub fn register(
+diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+index 5c641233e26d..9141a95efb25 100644
+--- a/rust/kernel/lib.rs
++++ b/rust/kernel/lib.rs
+@@ -62,7 +62,7 @@
+ /// The top level entrypoint to implementing a kernel module.
+ ///
+ /// For any teardown or cleanup operations, your type may implement [`Drop`].
+-pub trait Module: Sized + Sync {
++pub trait Module: Sized + Sync + Send {
+     /// Called at module initialization time.
+     ///
+     /// Use this method to perform whatever setup or registration your module
 -- 
 2.34.1
 
