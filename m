@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-123754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70503890D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:19:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA367890D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CBC41C30DB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1301C30F63
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0981494CE;
-	Thu, 28 Mar 2024 22:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CFD149C55;
+	Thu, 28 Mar 2024 22:08:14 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6491494BF;
-	Thu, 28 Mar 2024 22:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B86E149C46;
+	Thu, 28 Mar 2024 22:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711663691; cv=none; b=EfkYQSmHUzCpTE3p6FEYLwFOZSunxRZuhBdEdxhEpD4xtium/l07A2I3x8U9OTYz873yx+c2iAkcmtThTosbqhKYTkAiVBwR7+4zg5t6fE5JI+3UeY3mQyydWZ1b57Ie+R+parDSNjlV8lPqxYY7XzeVCcpw2XRfxERaG2ceAWg=
+	t=1711663693; cv=none; b=aSy+sPAZA9DdHpHm5wTUlMxhssxGg2tiQZphIjjYiV1i0QiXYzc+XPLLFJy4cE9Ov0x9xginENNWAXKVSpxB1LUBGVCaQG8bEhSLRb3228SRbDb+wRcv9SQHsw8u4TubTsGRISIxUBsE4YuFASWcJmE0n6ZX2qYzgzOpcrg/NDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711663691; c=relaxed/simple;
-	bh=zQLc857Pt+hekczjRNz9Vs9fdZat2RkxZijifeCJb8g=;
+	s=arc-20240116; t=1711663693; c=relaxed/simple;
+	bh=q48hSjcgCVk3GMV1sSMZLNfkOyG0fmboF3YaOfhGgUM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aEJRTqXDu+UI7FvDIWmm7xvk8mT+jXay84T7Iayc9ZTnDyLdN18ruERx12aLnQCzEhRdXsM6+4RKyVGd5ZoZbtcKeJesrO6oueC7rPYNokzZR6L+8YXTzRbLDEGyAbL3pYjsguPjpv2BBJCpC3xMCTeoyjBQieyJWBdZdmqO+fs=
+	 In-Reply-To:To:Cc; b=gp1entdMHTEpSMH2ffYQQPv00BYjK0QrbpKOHpJGdX6IcWgC3H+M4g2HDpPSSZ8IDDZlNqk74Es5TxhIL0WPz5fClvUYr/AxbqiQGlTtMLUEN/0ikgy/fMiUbex9y1dDJCdWFR99gjVS3rXESPSigs7VBDjVNY4Sd/Yp/WgOqa8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E818C43399;
-	Thu, 28 Mar 2024 22:08:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25C3BC433F1;
+	Thu, 28 Mar 2024 22:08:11 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 23:06:26 +0100
-Subject: [PATCH 48/52] USB: serial: visor: drop driver owner initialization
+Date: Thu, 28 Mar 2024 23:06:27 +0100
+Subject: [PATCH 49/52] USB: serial: whiteheat: drop driver owner
+ initialization
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,7 +40,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-module-owner-usb-serial-v1-48-bc46c9ffbf56@linaro.org>
+Message-Id: <20240328-module-owner-usb-serial-v1-49-bc46c9ffbf56@linaro.org>
 References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
 In-Reply-To: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
 To: Johan Hovold <johan@kernel.org>, 
@@ -47,21 +48,21 @@ To: Johan Hovold <johan@kernel.org>,
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1302;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1012;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=zQLc857Pt+hekczjRNz9Vs9fdZat2RkxZijifeCJb8g=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBenk21IqmDHoMADZ3m+/AQJF0e8WzAw67s2ch
- uvfix7uJEyJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXp5AAKCRDBN2bmhouD
- 193WD/wPoh+zRHQUVE4NlX10e47eVO0VtpkZ+Mq1yfZYZpBoTRmyQI3FJihfdrBccO8TLAq+Ums
- iGtgoj3Frc5TRQKSLrknglbgWe3tp/nirB6c3c0J1cHqVbb0+frOnwz3QJAn/JLludnzGoYjsvB
- ZdLMfXVci4kw3MnEk639mugXLc5bAOsxRdUAgY6QOmD/2xWSAI1ZR34JWJRuHj6x9KuM1GbwsvO
- kBTb5BrxJDAYDlLzfcdQSEKuJi0pIpPIyE6iFjSxDbO6aaOtfFikyDPSMHF6kObzMvu7SjdsF6y
- aqmoRPTqwckDnahiCnQbYlrhanSicnWygbbZjO6VgmvyBL1cbTm6iofDzp5PnIHTvyh9Ut3D3TV
- +iQH+XDbeTzSt5203aRf5kdTJppoTQ2kJM1s3IVS/CQRT+IFanVjzXyQHV/69O6zZm6ENaqjhJJ
- 3jJMnB4sjy/h2bKqTLov1d3Tb5g7LBLbkzqXmnOnPtuJWjYJtTjtJXGaui4SdF/S9Tvc5LAlWCf
- VSrdPW0MUpGIXhTeq8JwrISfsM/Ap6r3AtEz0qgDBMxs54BLG2iT7E9ILKtRG/tnXfXGL41/lhc
- GkFjPKvFO7mQtpAeJYMB/LRubL3L9oXjScRG7yLXjzaMLCsuKo5Hr/72mR7i4EQc4bjdYHn3Ml2
- Dtfgo/Q70aLqqUQ==
+ bh=q48hSjcgCVk3GMV1sSMZLNfkOyG0fmboF3YaOfhGgUM=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBenlXqrQCwBqlkKd8A12xHE5HaQcXRQwC0egX
+ c4s+VxQR/CJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXp5QAKCRDBN2bmhouD
+ 10YGD/0TFb8d+56rj2w81e9TjiecVpF8DKP5swGq5P5EKU2Rz4BYqenGHwyJrX13jGduynD9nfe
+ 8N2121RX+Ij4uDmv04pnhAyMz8BkKXsY87ZOuXYjSHa2lFG67k19sghfbrx3ETBjN3ewHi97XSW
+ lJQ3AvFo5bU7LjyNxFzZNbDNqrkjC+X50QV5fQtxhPUrGxBixR9v5QvMGpFO0Ku+eXZvqfr1Nuh
+ hWgL6TbCIJXbpsU9lhgr/00qKJHzk36bAD121z0OcqKMCBqxSCuU7lolMKZcyn7au0YSrPtue6p
+ m83YAsW1lm3RJlHlUVJV/qqVfz5UmU5OMAdkJnorx2F3fd3Lrjlo0NJrmGqSPNlKev4UJev7ViC
+ brPFSUhqh/qMlx6Yx8OB6TV64VoJwDfwOUcMBJjq0W4OiL7Qw9pVinugBsPdkHnuZOVYghO0LB3
+ cUGLSDnHxIJi6Xc+RD7Odcj6XiJDrl6ERIjkAAGqkkiRsdmWiMOgunudAcPbpdmPrPZPgxLCxUv
+ MBB4YjMHKMjuJuPbTqs/JYTkJ1UjkDTANweVySdA3ykQEFMldruge48r3vyZzdx0i9QfmLgyayR
+ kweubFmSbVQwF9rjoElwFeCh2PrMasgr2x5akIAehOlxnEZCTX9cG0jfDcMzmCs+2iKUKOq9KLj
+ 12vo2AkGG6LiW0Q==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -70,37 +71,29 @@ does not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/usb/serial/visor.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/usb/serial/whiteheat.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/serial/visor.c b/drivers/usb/serial/visor.c
-index 4412834db21c..062a38fe0c1c 100644
---- a/drivers/usb/serial/visor.c
-+++ b/drivers/usb/serial/visor.c
-@@ -161,7 +161,6 @@ MODULE_DEVICE_TABLE(usb, id_table_combined);
-    and Palm 4.0 devices */
- static struct usb_serial_driver handspring_device = {
+diff --git a/drivers/usb/serial/whiteheat.c b/drivers/usb/serial/whiteheat.c
+index ca48e90a8e81..009faeb2ef55 100644
+--- a/drivers/usb/serial/whiteheat.c
++++ b/drivers/usb/serial/whiteheat.c
+@@ -91,7 +91,6 @@ static int whiteheat_break_ctl(struct tty_struct *tty, int break_state);
+ 
+ static struct usb_serial_driver whiteheat_fake_device = {
  	.driver = {
 -		.owner =	THIS_MODULE,
- 		.name =		"visor",
+ 		.name =		"whiteheatnofirm",
  	},
- 	.description =		"Handspring Visor / Palm OS",
-@@ -180,7 +179,6 @@ static struct usb_serial_driver handspring_device = {
- /* All of the device info needed for the Clie UX50, TH55 Palm 5.0 devices */
- static struct usb_serial_driver clie_5_device = {
+ 	.description =		"Connect Tech - WhiteHEAT - (prerenumeration)",
+@@ -103,7 +102,6 @@ static struct usb_serial_driver whiteheat_fake_device = {
+ 
+ static struct usb_serial_driver whiteheat_device = {
  	.driver = {
 -		.owner =	THIS_MODULE,
- 		.name =		"clie_5",
+ 		.name =		"whiteheat",
  	},
- 	.description =		"Sony Clie 5.0",
-@@ -200,7 +198,6 @@ static struct usb_serial_driver clie_5_device = {
- /* device info for the Sony Clie OS version 3.5 */
- static struct usb_serial_driver clie_3_5_device = {
- 	.driver = {
--		.owner =	THIS_MODULE,
- 		.name =		"clie_3.5",
- 	},
- 	.description =		"Sony Clie 3.5",
+ 	.description =		"Connect Tech - WhiteHEAT",
 
 -- 
 2.34.1
