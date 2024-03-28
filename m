@@ -1,167 +1,117 @@
-Return-Path: <linux-kernel+bounces-123577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D27B890B46
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 381E9890B4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 197D21F27384
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:26:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E24DA1F283FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC06313B29D;
-	Thu, 28 Mar 2024 20:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8995113A3ED;
+	Thu, 28 Mar 2024 20:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ErpvbV5s"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t4o2OmxM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C438313AD36;
-	Thu, 28 Mar 2024 20:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2FD7131753;
+	Thu, 28 Mar 2024 20:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711657484; cv=none; b=jMTJ9ovDnozDEOx74VfyIFcWVzNJybITRHaR1+A7PwuKYfC+UhViMdFXVL2xQk/+qKHiVMqAAbcdZzYufC1eJig63lmy9ezqiqZjGf0O75+j3h73RQO+34J1A5V097PkA0OGWF5GC8GbIM1TvbFvZQT+ZsIgNlNKHaUrknVtf7o=
+	t=1711657538; cv=none; b=saKR8OaYPInnj1sJ9UPLDcBlK8O0z0gGtNV3wFc1QhDR95u5K/Ev76XHeBjhIRDWseFWsT/3pj11aHuwHEmLf/qDcgsQL6TbgIkLNkyjmC+5DE6avzaLPCTdWSHbh8N+ZvWUTmNwPI9ehUwGRjQY3TtT0+N+jKScya5BR9wacQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711657484; c=relaxed/simple;
-	bh=nsgSRkxzMwcL9nY3tuBJREALrbXEDPSiM7Rc2uwkNbU=;
+	s=arc-20240116; t=1711657538; c=relaxed/simple;
+	bh=uLKGKHPYrINSKa7Ua6spfB0BXJ6X0qB7dFs0VLn6mow=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AMYD40H8xYuTaeXrqTnz56PhiaGPYrOHC49fpjgKhqFM6sARgPFQPCEwiXh8Bhrx8Msy7nhN942ciW2JAKrMNmEXWOvJiMwaVD7/IuHC4RtshdIZmGFdbix5lB+3Jab2/MBfZj4L7xWMNWvH7o6X2a6rdA7ixik2FlFsag/6KbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ErpvbV5s; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e0f0398553so13914345ad.3;
-        Thu, 28 Mar 2024 13:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711657482; x=1712262282; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSBQzFqQufqwBm+U4G6XPdH75Rro6F7rWhWjrRhCESc=;
-        b=ErpvbV5sYBYqnyUlP91TonlqNUcq9w763iSlMGk34Cfzztx61tp83qndlir+ezUN3m
-         XgkNbscKIg3LDNoJ6g5phYPsFdbNbViKAxDm1tnG37rF/a0NHPWlnCwyUR0/2G6HgGlQ
-         5Y5UaiI6jYICgizegSXDN6R/1ig7GXZAJANzF1S2NgarF/11OQ6ua+NIDPoAR+dAW2hD
-         mTiE3JvT8rFj1FHqUZItgFRsFx9uT/voLvQX7qYyQa60MjZTAuMZtpc3A6TUpzLeoY0Z
-         UhnS7zYCe7lz9YvrxnPzB5dKQ7SsK3q2j8hOfylVUpJ2MeufGUbSVuP8DhM0bCFsNk7e
-         dvTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711657482; x=1712262282;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OSBQzFqQufqwBm+U4G6XPdH75Rro6F7rWhWjrRhCESc=;
-        b=lI8ZqGKWCPC/PQnVT7Li52/H1rI26hfbkKpbWdjWNj6OZmZNxOrmokZwMIbUR49kiu
-         /Km1zxQKDqcfHqRAN30PnmCr3dAtDTY9DwJ8Ab+Yv6I1utcU57bsXh2rrIH0r64MF648
-         7y/JH0IdyEtn1zDB/mmltU1RNKZho3U2ByzEJcPdrnDttP/erR9Boe15yV/sECT28yWq
-         FZKIWNL1655fAbcdlODBXQt8WWDZdR3tFaCT0Nmvf5w6TSSQ27kFf26hJmU9SHOvNwqZ
-         Ad/FljIGj2c/CPADM1CDWvHmUTyM0k8JBndCJOzBYujeMd6YRO7PqdmGY4J0wkQA+zjm
-         dAmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5ZYi5SrRqSEhTgvuE5J7yjjYph3E1icgTPQvtGyFH+2liiTB9Wu9AXNQV6/M5E9ak9TNdcpCXSm0nmL4tFB8lJF5VabfwaVeh/m01lRvB+CrerGoexnTMzBuzSG4d6V1HxbWLSuQGRDIgdfYRXxb1UUNpVjhHZKuhFt2M260CRWllXDfQkPTK
-X-Gm-Message-State: AOJu0Yypyiy0Vbp/c6l0DXQiYUft/zxbDE1ylBXEc+ZYKNme8tde6wgm
-	LyjRdl+9YcBFtb0mXnr3b9ckqoI2V/Kr7tjZRp5ItFRVBtrTs3p9iufR5EjV
-X-Google-Smtp-Source: AGHT+IEYm311DmU2l4RYrADp6NKGy1vTeD+bo97fMWmOcok6ACRQLIIZgeJAuM+ZhBOnrLw6hHfubA==
-X-Received: by 2002:a17:902:dacd:b0:1dc:7bc:d025 with SMTP id q13-20020a170902dacd00b001dc07bcd025mr770219plx.4.1711657481885;
-        Thu, 28 Mar 2024 13:24:41 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:493e:82a3:49f9:d88])
-        by smtp.gmail.com with ESMTPSA id c3-20020a170903234300b001db594c9d17sm2051032plh.254.2024.03.28.13.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:24:41 -0700 (PDT)
-Date: Thu, 28 Mar 2024 13:24:38 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Fenglin Wu <quic_fenglinw@quicinc.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-	agross@kernel.org, andersson@kernel.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-input@vger.kernel.org, quic_collinsd@quicinc.com,
-	quic_subbaram@quicinc.com, quic_kamalw@quicinc.com,
-	jestar@qti.qualcomm.com, Luca Weiss <luca.weiss@fairphone.com>
-Subject: Re: [RESEND PATCH v6 3/3] input: pm8xxx-vibrator: add new SPMI
- vibrator support
-Message-ID: <ZgXSBiQcBEbwF060@google.com>
-References: <20230922083801.3056724-1-quic_fenglinw@quicinc.com>
- <20230922083801.3056724-4-quic_fenglinw@quicinc.com>
- <CAA8EJpoW8DJOTVHBu9_+BQs5DtxyJu3xrCfDNyYHn2MeHZHV4w@mail.gmail.com>
- <12887370-0ada-359b-8a4f-18a28495c69a@quicinc.com>
- <ZRhKAWYBLcBZHc73@google.com>
- <98c668b6-7595-2c0a-ebe5-2f729d29b618@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U4iS6f6Kjldz3b+i1lu8OAa5SlOX5rW5lmyxGV3yCIH0D+v93AtY6HnRNONgozS0beXM3QK4Nooy+1Ih7LXMUS273CTdRFodAfgvdOi/HVsnR6B13t4y6gWM2r7Eu0a5ZASX7nrXPCsXS47HxPkONpoZ5eC6kVhKXhnEOvHVNM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t4o2OmxM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9170DC433C7;
+	Thu, 28 Mar 2024 20:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711657538;
+	bh=uLKGKHPYrINSKa7Ua6spfB0BXJ6X0qB7dFs0VLn6mow=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t4o2OmxM8QuDeLAfom5BUyuBUVPZQG+XUENdNqCrWf07mov+v/xlV3wpyjbONMYDd
+	 sGoVZ38a/ieAYoupou2K+k5BRDOnBTQ+SPIpR/ppuYHARZZ6Audan+8E4Lf4FZyBf0
+	 PgWKq7ZjWxvvyF+capA8hj21Hr98wmYkppg+SnWoNOZAtpli/EcTWznfsfGLimjwqJ
+	 m7xsdVlS8Tb/Hfu2/3row7LEvRsal45iPQt0+WATTwhQmRJcLwSkh2hYLAcIcjKDhc
+	 tYv1DOIpwVq1E6uwFjmWifRtZeHDyw44mCmSDDehBV/XienNpptDe2MeKJfBOfFR3O
+	 P2FVvkRBPDE9A==
+Date: Thu, 28 Mar 2024 20:25:31 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: David Lechner <dlechner@baylibre.com>, Jonathan Corbet <corbet@lwn.net>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Support Opensource <support.opensource@diasemi.com>,
+	Cosmin Tanislav <cosmin.tanislav@analog.com>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Antoniu Miclaus <antoniu.miclaus@analog.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-input@vger.kernel.org
+Subject: Re: [PATCH RFC 1/7] regulator: devres: add APIs for reference
+ supplies
+Message-ID: <8d98fab7-d73b-45c5-a46a-ace57907d25b@sirena.org.uk>
+References: <20240327-regulator-get-enable-get-votlage-v1-0-5f4517faa059@baylibre.com>
+ <20240327-regulator-get-enable-get-votlage-v1-1-5f4517faa059@baylibre.com>
+ <ZgWw66OpLnLPdCn-@google.com>
+ <043b347b-2652-4ffb-a8e0-954a89899ade@sirena.org.uk>
+ <ZgXQcGlMiewRzki5@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5fDUEvDFvOkj++3z"
+Content-Disposition: inline
+In-Reply-To: <ZgXQcGlMiewRzki5@google.com>
+X-Cookie: Yes, but which self do you want to be?
+
+
+--5fDUEvDFvOkj++3z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <98c668b6-7595-2c0a-ebe5-2f729d29b618@quicinc.com>
 
-Hi Fenglin,
+On Thu, Mar 28, 2024 at 01:17:52PM -0700, Dmitry Torokhov wrote:
+> On Thu, Mar 28, 2024 at 06:18:32PM +0000, Mark Brown wrote:
 
-On Thu, Mar 28, 2024 at 02:52:32PM +0800, Fenglin Wu wrote:
-> 
-> 
-> On 2023/10/1 0:17, Dmitry Torokhov wrote:
-> > On Mon, Sep 25, 2023 at 10:54:45AM +0800, Fenglin Wu wrote:
-> > > 
-> > > 
-> > > On 9/24/2023 3:07 AM, Dmitry Baryshkov wrote:
-> > > > > +
-> > > > > +       switch (vib->data->hw_type) {
-> > > > > +       case SSBI_VIB:
-> > > > >                   mask = SSBI_VIB_DRV_LEVEL_MASK;
-> > > > >                   shift = SSBI_VIB_DRV_SHIFT;
-> > > > > +               break;
-> > > > > +       case SPMI_VIB:
-> > > > > +               mask = SPMI_VIB_DRV_LEVEL_MASK;
-> > > > > +               shift = SPMI_VIB_DRV_SHIFT;
-> > > > > +               break;
-> > > > > +       case SPMI_VIB_GEN2:
-> > > > > +               mask = SPMI_VIB_GEN2_DRV_MASK;
-> > > > > +               shift = SPMI_VIB_GEN2_DRV_SHIFT;
-> > > > > +               break;
-> > > > > +       default:
-> > > > > +               return -EINVAL;
-> > > > Could you please move the switch to the previous patch? Then it would
-> > > > be more obvious that you are just adding the SPMI_VIB_GEN2 here.
-> > > > 
-> > > > Other than that LGTM.
-> > > 
-> > > Sure, I can move the switch to the previous refactoring patch.
-> > 
-> > Actually, the idea of having a const "reg" or "chip", etc. structure is
-> > to avoid this kind of runtime checks based on hardware type and instead
-> > use common computation. I believe you need to move mask and shift into
-> > the chip-specific structure and avoid defining hw_type.
-> > 
-> > Thanks.
-> 
-> Hi Dmitry,
-> 
-> The v7 changes have been pending for a while, I am not sure if you are still
-> insist on this. As I explained, I actually did it this way in v2 and it got
-> updated to this by following other comments.
-> 
-> Can you respond and tell me if you prefer changes similar to v2? I can
-> update and push v8 by following your suggestion.
-> 
-> v7: https://lore.kernel.org/linux-arm-msm/20231108-pm8xxx-vibrator-v7-0-632c731d25a8@quicinc.com/
-> 
-> v2: https://lore.kernel.org/linux-arm-msm/20230718062639.2339589-3-quic_fenglinw@quicinc.com/
+> > I don't follow what you're saying here?  What normal APIs are not
+> > available?  AFAICT this has nothing to do with a devm enable, it's a
+> > combined operation which reports the voltage for the regulator if one is
+> > available which would still be being added even if it used a devm
+> > enable.
 
-Yes, I believe what you had in v2 was better, and Dmitry Baryshkov's
-comments on v2 were also great.
+> You can not do devm_regulator_get_enable() and then call
+> regulator_get_voltage(), you need a new combined API.
 
-You can have 2 styles of code - you have a hw type for each regulator
-and then use it to do conditional logic in the code. If you do it this
-way you and you need to add a new device type or model you have to go
-through the code and validate all the checks. Or you could have a
-structure that is defined flexibly enough to cover all existing
-permutations, and you rely on the data in it to control the behavior.
-You should not mix the 2 styles, as this just makes the code more
-confusing.
+I think the theory here is that there are so many instances of this
+reference voltage pattern that it's useful to have a helper for that
+reason alone.
 
-Thanks.
+--5fDUEvDFvOkj++3z
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Dmitry
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYF0jsACgkQJNaLcl1U
+h9CUrgf/XPKWYWqhNVXtXDECIbF2IgErrGFkL54cu8EWxC/OrJPMdGnZV8lQmK0D
++pOV7o7CYYYtYG5K4brvdgqgAyK0COk55E0N4Y8PCtLIhnLmCNr+WsWP2RXlmwB+
+m/K9zfyav3r6ZyKE0xZOeBderEAOixJCFQkJN/ssppyjeC2RAbOVmIcA3kpni8Vp
+ONJFpdvniqYsk7lhetuSbn3NcfQefcWn0KKq2B0ZsgS1fWN70/ccR3cKhlZVfN1u
+oG3zp4KlquAT/eTI+FGiqc3N2zVTON/tjEZEZMEldMsuZ3Oegyr75QIulXVqPtQq
+G1AjkHGXsSDsNt5PERnu3xYz6F/XHQ==
+=GRYZ
+-----END PGP SIGNATURE-----
+
+--5fDUEvDFvOkj++3z--
 
