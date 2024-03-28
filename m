@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-123342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB5C8906E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:09:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B608906FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:13:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 222DB1C319AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:09:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36A0D1F29296
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26F513790D;
-	Thu, 28 Mar 2024 17:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA2C44376;
+	Thu, 28 Mar 2024 17:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="jFofzEIQ"
-Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="OOcmOZlV"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC42C3D988;
-	Thu, 28 Mar 2024 17:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.60
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41EA3CF73;
+	Thu, 28 Mar 2024 17:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711645608; cv=none; b=mPXoCWmmoUhB9qZOw3ze4GQxz+1C57zBP2w8t+z8lgMbqYH9ehYXozJ9mLZPebt9NDodXmlNN/3h8Sbo3+7PFVK5jw1BUE273zIRTEDzth6qcavisbjAOewW5MLJwe3Ol40PQvlfii1lXKyYJIKmcAVcCCUqa9Wv4QRwpNuuFB0=
+	t=1711645975; cv=none; b=inr1FTU7dAbj/fh7VEGyCNSrDdhXsMQePwEASDYpWD6p7bg9Sp3IeD2TxFsY94k+Pm3DHyopY5kJg/p7Y+QFKTKmsb2gbsV3XuMnJUnzuuJfoQyuG0ExQmbqqiIVJwOYYFY+NkAyxIRrMsAB4NMCN7TYxvCkTFZ6/2539C0b/yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711645608; c=relaxed/simple;
-	bh=I/qGT6THkR7Oe1fklTwpWUDoOAdPYVU/72MDEA8l3uc=;
+	s=arc-20240116; t=1711645975; c=relaxed/simple;
+	bh=NvDiTdvu1oocEd4z4WVUoGVua3pG0iHjdYEeWj5pFOw=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=AMOnDoEtl0o0gRLOS/Cy5OV1UdYgoxUlSBV/IHhnwQOupk44V5kmpTFjAG847ZVvsrloDE2pOiVzBE1MbxGal9/6J4mxLudDgCeBVVryNHNb9/zHBwRNYjzlicCU+cfhoXbKLoYkqiYcclthu614ChhiaaRK+KhYrveAdZT/PHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=jFofzEIQ; arc=none smtp.client-ip=203.205.251.60
+	 MIME-Version; b=S3ie5oDk+l77/eqme4++9A/jVyoUiA43vv1lahZMnNpPRUxjDZAQ0AFUcifUTOesWPUakM0G30NFeMsa1Ft2W+DOlLp6Tybz2u2I2ghPccJbkLzeICNUUga5ItJsk6cy+bdwSDjI3ngSfOOPj9W7fRP2yX4vTl+1QS1fukPWUC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=OOcmOZlV; arc=none smtp.client-ip=162.62.57.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711645597; bh=gwLy8EHIrL7+lUNma349SO3H+5GaIQblVCaOrJwekyY=;
+	t=1711645960; bh=L2lkCcExhcCSZci/+XbSJe7RshMmWIbz8lRm/dAsp5U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=jFofzEIQ1LZK/TMBKP4ln9u0EH57DRWbvqd9XFfOdv1B5H1gSE8sAHoY+ed2SYHVn
-	 rIdD6Ib5CN/KTHamDav7h/awYqDWnPcn3+mRllgA95lukt1RCG64CBQL0BGpzZnkjU
-	 1ikGC++bS8NrAcuXVbarQUBxoZPQSfYTUZlxvrUo=
+	b=OOcmOZlVFdg5q1a8eyiAp4wBEg7I7HD06iWvaUsYQtaehNgmGqjFP8ZzjO61iheXf
+	 DLFg8K9wKHuSJEFzKNNHJVWtr6nT9t6i3uCmnINRwX1W1XeLdVcHp9JOCJc7tygE9g
+	 5UA3aVjl8Mu2RPagl/Ks8mLjc4XDR/lOhr+m6YoU=
 Received: from cyy-pc.lan ([240e:379:2277:8a00:7feb:196a:dd5b:c05f])
 	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
 	id 199B7A03; Fri, 29 Mar 2024 01:06:25 +0800
-X-QQ-mid: xmsmtpt1711645594tp24uy5gv
-Message-ID: <tencent_4FC67CBE4B41306D52C71C5CEC989690FF07@qq.com>
-X-QQ-XMAILINFO: M5WvXNp9ZPrQurtbw2kfLYxuV4kvz5IMKbHDLqezAnXQBFGRi/vH2JvXDuHJ8m
-	 GwscIy/reNZCHHLZSIz/tKsD4X96rRjH5tX4Hc9Q4Eou9TwpAeEspgv0RO2xP+GPVy7WMCPxB8WG
-	 D3wYPa29Mi86cVL+hV51vRRILct5aONLYi/3Vx916HRmpmRSrsPOakmDBo6nloIDWTzj+4q8Lum3
-	 AlOgN36kChzj0i3aQ7amE9MhRnm2lf3Z3WiThgoY8LoFsNwU+hMmg+eIEwnCP3c9/HQpqe72Gg7J
-	 7QzsFvIxaO1yGWpNIxztIhcIVbj853jF//l1m77wJ8e5yyvRpwmauHQsmpAKaawdWF6jhYCYapjq
-	 CrGDkwN5QJk06DD+H0CHbs+dVpWnwZr43UmE3D2eOMwk3odxhyAZxHOVrMxIlyvV+YpGpfJL1XCF
-	 mQdmvCJgNBLZpMR8EU5wjVJqivVnqqeQiu6nJjSIImgScyc+DXOIhYUVVO/JN6mIAaofzHvp8RsD
-	 S6FndPhCgVNztifc/hUmOulHf+jQP/x4mS7Tuj8tFigQ+RlmzGcWDAHy5Z5WTnTuK1sdjUDxoQHT
-	 x0SBqrL5hpW7hWILUPY9gj9HIqx1W5MQ6YqfXAtSSsVXORfnoxxsYqwW7EjqtBUNsxbjnANSYuor
-	 JKcj6HmjQ97xAGNCHxLIlxDOyVNl+4nrlibYDQRmdQf1J7jgPtLIretR/UOCEXS0EbZ6KH5DbCnm
-	 c004RJhjtASDy7k84y6QXVNjq7I/Gklgyvof5BLPVOeA67M44cFMHdhPI6RTyG5f44gPxpwbsOHc
-	 h8h2CAY97edCTHbjWiYwT3hwkvpW/mAxnyZITHEy8FRbUcZju5L33sSjye/ZUDWkRzZnqmy2qzqB
-	 lyejbrX8G2kcElySiyZf1bHZ6yNAqcU5xZWG/jOY7qDDVesQcr8n8Onai4F9cLQdZIzE7Ekga26b
-	 qG6I8UGm40i6+jG9ELmRDu6zL+jkE4L78JPwAyyEN5DGl/n4HEFD0uplS/NWIWxJNJ3YA1EqXgOE
-	 thCXnt/OHVKChjWtiTyPMu+ORceccGkQuXKUcr0w==
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+X-QQ-mid: xmsmtpt1711645596tdwddzrgm
+Message-ID: <tencent_DB11214C8D0D7C48829ADA128E7BB8F13108@qq.com>
+X-QQ-XMAILINFO: NMGzQWUSIfvTNMP2jtZxLCFW1PIkrRFpEbd8CFMBnnDWS+4rcko4Wwu1VcTYYI
+	 Jv+Qii0fPVnQFco/q+0pNKeDoK+4aqtPIK78H9JnOIM07p2UpArsZk0bUPw3Ia9NKYw44Fo7YQNw
+	 D38x8y+sGFVnXgB5HwOHLQ8Gq+wmy3tlpThH+4ftr08MFZ7zM8pUBrEXsPN3bVZAA/MnzqrYQx9K
+	 qqvZQk1H1nIIxZSB4H20CEnH5O49hlUPhWmKyPSZG6xLUNWf8e/KMh05dD/NoTaPYG0RQu7BMHmf
+	 IdHWmNPvo3HUacip14GUl+jyUb/0HuFffyAszOql4ZXt7ZSYQAWwE3d+fQGwDbhRmSnVZNJWws7G
+	 GOEJ5SPh0ZULLP0fWhV27X8zLwyJLdzek4JmIq4l1kyiyfR7bvt+wSyryOMEboSoSKyJv84oHVWJ
+	 E/HVW3q2QeSaV5iqtI9QqXPGLieKYeGpaeiG9XSFFjmkO6DdILK4kZ9wd4BKPbajGCkob5zS8Skp
+	 1voYk6+8NxaxMpmzQVMtmofs9DEre+mgFK9gTel8Uzaajgt0p7GWzUCq8z0qgLtlV1YpmXkgix2b
+	 AiWCctCng0910fXjyg5ktmhiHaNyhOvigvg20dmRSBcf7k4Dbww7B0wDhemkjBTSQ7DhYDXcb+pG
+	 639LFTFVAk09vuiy16OGagFCP2UXdtIAbBTWkAN46+2uneR6L/jZJwqUw9KFCe44AkmTV69eBc7w
+	 4nYSxLkFMBPpFM+cZs1i45jAi4h+BFJrQ7gVfbPdmOMOfq6YkqRLPh8koRp8jS8lHx/NuTEfSwRV
+	 RXxzrKtosbYvffH2VxPvUS3ZA31s5MwAL1qo9cetC2EHcBwQ3L6wxtKmZIUT5C+/C5Q110Rog+9i
+	 GlsRpD6Mw7jHIW65xKdbYxf4XwpVYLrCojZASyzIapW1MTb75Z53HlzFPrFxoVhdyk/kKBAsLET3
+	 340vpJumhJgwec5gRqTLq3Hga2d1CppBT8F7EwUZ4wvH65scjd/C3d/vh9dFt/Y3xO2mS1qGJitd
+	 NwWinoYcOqg5/IPzKge/GcNhq95Zk5sVDqd0lj7x9h6/fUV1sY
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
 From: Yangyu Chen <cyy@cyyself.name>
 To: linux-riscv@lists.infradead.org
 Cc: Conor Dooley <conor@kernel.org>,
@@ -74,9 +74,9 @@ Cc: Conor Dooley <conor@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v1 3/5] clk: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
-Date: Fri, 29 Mar 2024 01:06:11 +0800
-X-OQ-MSGID: <20240328170613.120131-3-cyy@cyyself.name>
+Subject: [PATCH v1 4/5] pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+Date: Fri, 29 Mar 2024 01:06:12 +0800
+X-OQ-MSGID: <20240328170613.120131-4-cyy@cyyself.name>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
 References: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
@@ -102,24 +102,29 @@ when it has the symbol SOC_CANAAN_K210.
 
 Signed-off-by: Yangyu Chen <cyy@cyyself.name>
 ---
- drivers/clk/Kconfig | 4 ++--
+ drivers/pinctrl/Kconfig | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 50af5fc7f570..7517a0dfd15c 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -451,8 +451,8 @@ config COMMON_CLK_FIXED_MMIO
+diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+index d45657aa986a..1be05efccc29 100644
+--- a/drivers/pinctrl/Kconfig
++++ b/drivers/pinctrl/Kconfig
+@@ -235,13 +235,13 @@ config PINCTRL_INGENIC
  
- config COMMON_CLK_K210
- 	bool "Clock driver for the Canaan Kendryte K210 SoC"
--	depends on OF && RISCV && SOC_CANAAN
+ config PINCTRL_K210
+ 	bool "Pinctrl driver for the Canaan Kendryte K210 SoC"
+-	depends on RISCV && SOC_CANAAN && OF
++	depends on RISCV && SOC_CANAAN_K210 && OF
+ 	select GENERIC_PINMUX_FUNCTIONS
+ 	select GENERIC_PINCONF
+ 	select GPIOLIB
+ 	select OF_GPIO
+ 	select REGMAP_MMIO
 -	default SOC_CANAAN
-+	depends on OF && RISCV && SOC_CANAAN_K210
 +	default SOC_CANAAN_K210
  	help
- 	  Support for the Canaan Kendryte K210 RISC-V SoC clocks.
- 
+ 	  Add support for the Canaan Kendryte K210 RISC-V SOC Field
+ 	  Programmable IO Array (FPIOA) controller.
 -- 
 2.43.0
 
