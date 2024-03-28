@@ -1,144 +1,110 @@
-Return-Path: <linux-kernel+bounces-122859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8ABA88FE83
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:01:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3636988FE92
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87C851F260EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:01:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 680FE1C2270F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCD47EF02;
-	Thu, 28 Mar 2024 12:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407EB7EEF4;
+	Thu, 28 Mar 2024 12:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GZ9lnkX3";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QTR7MTbK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTITSUoj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E128B7EEF0;
-	Thu, 28 Mar 2024 12:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA9E43ABE;
+	Thu, 28 Mar 2024 12:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711627280; cv=none; b=JMPdL4zG2M5vhsSybtskGlh84Rd6ANqM2CyHgT1yE2Sh9l6cV24t1rxhTTWlEY7wR2+nHKZs8AqOQCND6cKEqId7zUitZrrb6wI8lcHpkbZBmp0GReuVXjF/8AgPwI6ER3l9Iwb72JREdNBZITsvPTGUS2v2DAoxjqFXZQZml4s=
+	t=1711627415; cv=none; b=Kel7dRxyoMltVn/+HICb8BxEk36ffOUOkR38A3p7ixckL3VAWrOf69BVzMK47zbOt+y+sQOPc9ND22agl9t2lmXBeF6w7FBLKIPcLguU7ufWn0TgSZy33DDTj8/NwSQ2E5Lf1aEZy2YJDnibgU4yxTWDKXBO3fkr4uJCKySNBFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711627280; c=relaxed/simple;
-	bh=wOB2LfjWpNF45aDOCaXSuvmmAgZ/ioyeLxdQfdTJtKw=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=JcKqVWOZbu7n+igo0ZkJ13P3RvKrw8ExA0RBcZA5kJYbqwVGyvcw+OfvqrlLsXtS+9HkeRRBu9NiOEb3V3ON2t6hXw2SjivhQuabQvEMnVRghq3c06EjtuHIKNfqjTotpknH/f4XzQ7kdjNH6gGcxu2AVYOojPT/ByJE399aLW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GZ9lnkX3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QTR7MTbK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 28 Mar 2024 12:01:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711627269;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jP0p65YWOsf77wLgWYhZ/RRn5X7bXK44Gnj/lGgc71Y=;
-	b=GZ9lnkX3liD+/1xLsCpe0Wj+Jr90eH3BCCIcx1wNjDM/LG2JB3sdm7kMch1SzZjC1jKk79
-	/sBHTiMyFozrJfkRtqpJ/5zqMYS+abyJJ1qVJYxSaj5vX5/9+VuHSF8O5ELljLCTaVwbRu
-	googX4S70KjUl/2LNCG76rCUM8wDzVbTpY6Yi+h2CF2gmQwudkdm/x1FbAdCvNoVz2T9uG
-	BwZuR8YsamDU8VXEU98XxxchKDpNw0fXdXsJzOJ68VRuKmzqyDZiAZX23dP+TTopPsH/2P
-	whTNNS75zogZGdD81ObAENvNsCuFfWB5Bpw6m2SPFZ/VKqZtLlrIz1CSRG1ZSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711627269;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jP0p65YWOsf77wLgWYhZ/RRn5X7bXK44Gnj/lGgc71Y=;
-	b=QTR7MTbKSsNcVD31a3NHtrUVk+KmTqsrjTH9orwJCU/a3au9mc09jsE6eXaIQFs7IGHf4J
-	Yr9FiRCDtOonwHDw==
-From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Rename set_rd_overutilized_status() to
- set_rd_overutilized()
-Cc: Ingo Molnar <mingo@kernel.org>, Qais Yousef <qyousef@layalina.io>,
- Shrikanth Hegde <sshegde@linux.ibm.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <ZgVHq65XKsOZpfgK@gmail.com>
-References: <ZgVHq65XKsOZpfgK@gmail.com>
+	s=arc-20240116; t=1711627415; c=relaxed/simple;
+	bh=ftAi0138ljeybsCkA3p2TsAqoWmZb2V8KjzoPIukDkY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LFBAaJEziu65Ak3myrfMspCzFP/f9T5d21x3mD0lNzsJV6hF3BdPkOK48cqtgKbPyz8SascSDNvrkORuNJF62z6W9JKgjytFDc4qs9yfyhWlehEGDA9ZFUoUMuoNe5i+BLzBIwmbWqmeT+HXkEPKIfaM/AMuL7u+1zcZFZpjl0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTITSUoj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E19BC433F1;
+	Thu, 28 Mar 2024 12:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711627415;
+	bh=ftAi0138ljeybsCkA3p2TsAqoWmZb2V8KjzoPIukDkY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CTITSUojfmL0QlCbb0gXnBadPu3eZ1mEGnEUggOhx6hAPXuzr6DWg/p5xHLL7F5dp
+	 21D3HwDhdniSffz69djLfuzgiRBX446JxR5288pRPaaYZBcYPG9mrWULd7HizmEkVr
+	 pDkt63Tz6AKuBL1MMgiA5OdVC2txUtV28GA5fmhPmBtdlJfRtVUVAIy6y6SeSeWk0I
+	 CexovdNTwSrf9Pi9PVzdCOjax6p/MNikaA6kADIRd4z4J5t3I4VnHP63m2HTYYG4bT
+	 0/XfCsR0jPtXdAZL3ZnFGWR427QIEEPUNI3nHdgf3lC6sGEqEbJKIHybHwxvNzDSeE
+	 R7ymhIV1S2e1w==
+Date: Thu, 28 Mar 2024 12:03:29 +0000
+From: Lee Jones <lee@kernel.org>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	Samuel Holland <samuel@sholland.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	Ryan Walklin <ryan@testtoast.com>
+Subject: Re: [GIT PULL] Immutable branch between MFD and Regulator due for
+ the v6.9 merge window:wq
+Message-ID: <20240328120329.GF13211@google.com>
+References: <20240310010211.28653-1-andre.przywara@arm.com>
+ <20240328095631.GW13211@google.com>
+ <20240328111108.5ddfa073@minigeek.lan>
+ <20240328120011.GE13211@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171162726870.10875.3148729818855002567.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240328120011.GE13211@google.com>
 
-The following commit has been merged into the sched/core branch of tip:
+On Thu, 28 Mar 2024, Lee Jones wrote:
 
-Commit-ID:     4d0a63e5b841c759c9a306aff158420421ef016f
-Gitweb:        https://git.kernel.org/tip/4d0a63e5b841c759c9a306aff158420421ef016f
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 28 Mar 2024 11:54:42 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 28 Mar 2024 11:54:42 +01:00
+> On Thu, 28 Mar 2024, Andre Przywara wrote:
+> 
+> > On Thu, 28 Mar 2024 09:56:31 +0000
+> > Lee Jones <lee@kernel.org> wrote:
+> > 
+> > Hi Lee,
+> > 
+> > many thanks for picking this up!
+> > 
+> > > Enjoy!
+> > > 
+> > > The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+> > > 
+> > >   Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-regulator-v6.9
+> > > 
+> > > for you to fetch changes up to d2ac3df75c3a995064cfac0171e082a30d8c4c66:
+> > > 
+> > >   regulator: axp20x: add support for the AXP717 (2024-03-28 09:51:03 +0000)
+> > > 
+> > > ----------------------------------------------------------------
+> > > Immutable branch between MFD and Regulator due for the v6.9 merge window
+> > 
+> > Did you mean v6.10 merge window? Or is there a plan to merge this into
+> > 6.9 still?
+> 
+> Yes - off-by-one!
 
-sched/fair: Rename set_rd_overutilized_status() to set_rd_overutilized()
+Just recreated ib-mfd-regulator-v6.10 for all the OCD types (like me!).
 
-The _status() postfix has no real meaning, simplify the naming
-and harmonize it with set_rd_overloaded().
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Qais Yousef <qyousef@layalina.io>
-Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/ZgVHq65XKsOZpfgK@gmail.com
----
- kernel/sched/fair.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 839a97a..f29efd5 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6693,7 +6693,7 @@ static inline int is_rd_overutilized(struct root_domain *rd)
- 	return !sched_energy_enabled() || READ_ONCE(rd->overutilized);
- }
- 
--static inline void set_rd_overutilized_status(struct root_domain *rd,
-+static inline void set_rd_overutilized(struct root_domain *rd,
- 					      unsigned int status)
- {
- 	if (!sched_energy_enabled())
-@@ -6711,7 +6711,7 @@ static inline void check_update_overutilized_status(struct rq *rq)
- 	 */
- 
- 	if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
--		set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
-+		set_rd_overutilized(rq->rd, SG_OVERUTILIZED);
- }
- #else
- static inline void check_update_overutilized_status(struct rq *rq) { }
-@@ -10660,10 +10660,10 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 		set_rd_overloaded(env->dst_rq->rd, sg_status & SG_OVERLOADED);
- 
- 		/* Update over-utilization (tipping point, U >= 0) indicator */
--		set_rd_overutilized_status(env->dst_rq->rd,
-+		set_rd_overutilized(env->dst_rq->rd,
- 					   sg_status & SG_OVERUTILIZED);
- 	} else if (sg_status & SG_OVERUTILIZED) {
--		set_rd_overutilized_status(env->dst_rq->rd, SG_OVERUTILIZED);
-+		set_rd_overutilized(env->dst_rq->rd, SG_OVERUTILIZED);
- 	}
- 
- 	update_idle_cpu_scan(env, sum_util);
+-- 
+Lee Jones [李琼斯]
 
