@@ -1,281 +1,132 @@
-Return-Path: <linux-kernel+bounces-123298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACCF890641
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:50:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30BC5890643
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:50:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F5A01C306E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:50:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B02472A2A8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A9E7EEFD;
-	Thu, 28 Mar 2024 16:46:43 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93F218C22;
-	Thu, 28 Mar 2024 16:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0CC12F59E;
+	Thu, 28 Mar 2024 16:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="GF/LGX26"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EDF2C6AD;
+	Thu, 28 Mar 2024 16:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711644403; cv=none; b=pQgVpe1OyGc9VXXEQVkJeKQq8Ev4sDNPCj0+0JBq/3CsSgX027MIl/+tPLqHsiCGS9Uo8cn3tlMVKU3c26Q4pM0qp4T6nNGu6Gbl0uKRV1exd/KUjPmgQ+8WuILUAEag1mEiq3VV+0qPRvOBCdeymJlBgLV1S6yGnE2eAc8DWnU=
+	t=1711644435; cv=none; b=hMiDjZBLZFh3MYxV4mPNUREzxmuNGuOihaws8LcR95PuT9lT7+xT41A+9tGCaNIuPWYWq+Soq1mOi78rUREhGjqQE3hgdxUiL/nddSYcLX+CNXnI53oM8HVmeWzC4EDyrLe7OC48iXCWCg9I4GQxi0uDFUtu4108pxQsyR0OtZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711644403; c=relaxed/simple;
-	bh=/7oEBbCWMXpbKoQrKMMTnevOb8vD6EJN8BtbKnGfIFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IK+sbD7yVL5qVPrUJb8opSDQL+ik1BBEPR2XEgwya/wi9fRExFvh7feFQVgs+C8hfvBuaf7Pm0NfavNCVWuK77Da2WwzLjmejSh+owj1J+4yhTRyrnuymkoh3PjWSBmqwg8ql+gakNfrcyTHNClyGEU95a0wllmxK1VMqNlwHgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B32C51476;
-	Thu, 28 Mar 2024 09:47:13 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 983E43F694;
-	Thu, 28 Mar 2024 09:46:38 -0700 (PDT)
-Date: Thu, 28 Mar 2024 16:46:36 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: Re: [PATCH v6 4/4] pinctrl: Implementation of the generic
- scmi-pinctrl driver
-Message-ID: <ZgWe7ISUoCsdn5LB@pluto>
-References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
- <20240323-pinctrl-scmi-v6-4-a895243257c0@nxp.com>
+	s=arc-20240116; t=1711644435; c=relaxed/simple;
+	bh=zYBptg0Q4ids4Qp/xFxn+pDwZGbc5lhp6j/rsmPcXwk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tgw3OFZkdq9uwsLm9CduPcFKFJ6YHmhzlM6QHqcmJUIAbJRjrimcXEfKrXplT4UC5baAYO4xFDMQmfom166F+DouHmg54zIceQieURdU5qOG8i8RnoUZ4bghKg31a2IVLmWTrVD0OzBiVJd1r9TdsaHm+yeUxmGbPyzgOoUkifs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=GF/LGX26; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V58Zy5wtlz6Cnk8t;
+	Thu, 28 Mar 2024 16:47:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1711644423; x=1714236424; bh=/CRDH2chuqf02kQLgOdJTq8k
+	eMEI7k1Ir0dHZtq22A0=; b=GF/LGX26GsWodplyf+K20fwnLrdN8nvelpJmkcXl
+	bU7JBclDhPB5Y/x9kk67Z+M0A+fW6YaQI0WqUn44TyCApwy4dw/oFVFFXF7jNpWa
+	MnN9LRPM/vrEBtTWn734zCzjqdW+PQ4PyEvVLRWmc3Eo/GmffaYx+PHqaMgr09XI
+	/FwAJqOnBI8Gjw3JV6jZhLGisluYTVhpgwHQRj+fs0tVY+HnKbizWMpzhCuZ1RN4
+	AYNfV1v2eu26gpXbiv1oVJGleUltd+Gw/poNIr8vwYwJV1clM31tY/uy3noMHyUv
+	VkduUjI4u2oCWoq8TGR592QFzwz+OcRL9u/QQ0rLHhi0jw==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id XfpEE5bIkp4V; Thu, 28 Mar 2024 16:47:03 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V58Zs2P7Cz6Cnk8m;
+	Thu, 28 Mar 2024 16:47:00 +0000 (UTC)
+Message-ID: <73de2cd5-9770-453c-b002-7cd561bdbc7b@acm.org>
+Date: Thu, 28 Mar 2024 09:46:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240323-pinctrl-scmi-v6-4-a895243257c0@nxp.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/11] scsi: devinfo: rework scsi_strcpy_devinfo()
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Chris Down <chris@chrisdown.name>,
+ Petr Mladek <pmladek@suse.com>, linux-scsi@vger.kernel.org
+References: <20240328140512.4148825-1-arnd@kernel.org>
+ <20240328140512.4148825-3-arnd@kernel.org>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240328140512.4148825-3-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 23, 2024 at 08:15:17PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> scmi-pinctrl driver implements pinctrl driver interface and using
-> SCMI protocol to redirect messages from pinctrl subsystem SDK to
-> SCMI platform firmware, which does the changes in HW.
-> 
-
-Hi,
-
-> Co-developed-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  MAINTAINERS                         |   1 +
->  drivers/firmware/arm_scmi/pinctrl.c |   1 +
->  drivers/pinctrl/Kconfig             |  11 +
->  drivers/pinctrl/Makefile            |   1 +
->  drivers/pinctrl/pinctrl-scmi.c      | 564 ++++++++++++++++++++++++++++++++++++
->  5 files changed, 578 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4b511a55101c..d8270ac6651a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21457,6 +21457,7 @@ F:	drivers/cpufreq/sc[mp]i-cpufreq.c
->  F:	drivers/firmware/arm_scmi/
->  F:	drivers/firmware/arm_scpi.c
->  F:	drivers/hwmon/scmi-hwmon.c
-> +F:	drivers/pinctrl/pinctrl-scmi.c
->  F:	drivers/pmdomain/arm/
->  F:	drivers/powercap/arm_scmi_powercap.c
->  F:	drivers/regulator/scmi-regulator.c
-> diff --git a/drivers/firmware/arm_scmi/pinctrl.c b/drivers/firmware/arm_scmi/pinctrl.c
-> index 87d9b89cab13..0ecefe855432 100644
-> --- a/drivers/firmware/arm_scmi/pinctrl.c
-> +++ b/drivers/firmware/arm_scmi/pinctrl.c
-> @@ -465,6 +465,7 @@ scmi_pinctrl_settings_conf(const struct scmi_protocol_handle *ph,
->  
->  		tx = t->tx.buf;
->  		tx->identifier = cpu_to_le32(selector);
-> +		tx->function_id = cpu_to_le32(0xFFFFFFFF);
-
-As already said....does not belong to this patch
-
->  		attributes = FIELD_PREP(GENMASK(1, 0), type) |
->  			FIELD_PREP(GENMASK(9, 2), chunk);
->  		tx->attributes = cpu_to_le32(attributes);
-> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> index d45657aa986a..4e6f65cf0e76 100644
-> --- a/drivers/pinctrl/Kconfig
-> +++ b/drivers/pinctrl/Kconfig
-> @@ -450,6 +450,17 @@ config PINCTRL_ROCKCHIP
->  	help
->            This support pinctrl and GPIO driver for Rockchip SoCs.
->  
-> +config PINCTRL_SCMI
-> +	tristate "Pinctrl driver using SCMI protocol interface"
-> +	depends on ARM_SCMI_PROTOCOL || COMPILE_TEST
-> +	select PINMUX
-> +	select GENERIC_PINCONF
-> +	help
-> +	  This driver provides support for pinctrl which is controlled
-> +	  by firmware that implements the SCMI interface.
-> +	  It uses SCMI Message Protocol to interact with the
-> +	  firmware providing all the pinctrl controls.
-> +
-
-[snip]
-
-> +static int pinctrl_scmi_pinconf_group_get(struct pinctrl_dev *pctldev,
-> +					  unsigned int group,
-> +					  unsigned long *config)
-> +{
+On 3/28/24 07:04, Arnd Bergmann wrote:
+> diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
+> index ba7237e83863..58726c15ebac 100644
+> --- a/drivers/scsi/scsi_devinfo.c
+> +++ b/drivers/scsi/scsi_devinfo.c
+> @@ -290,18 +290,28 @@ static struct scsi_dev_info_list_table *scsi_devinfo_lookup_by_key(int key)
+>   static void scsi_strcpy_devinfo(char *name, char *to, size_t to_length,
+>   				char *from, int compatible)
+>   {
+> -	size_t from_length;
 > +	int ret;
-> +	struct scmi_pinctrl *pmx = pinctrl_dev_get_drvdata(pctldev);
-> +	enum pin_config_param config_type;
-> +	enum scmi_pinctrl_conf_type type;
-> +	u32 config_value;
+>   
+> -	from_length = strlen(from);
+> -	/* This zero-pads the destination */
+> -	strncpy(to, from, to_length);
+> -	if (from_length < to_length && !compatible) {
+> -		/*
+> -		 * space pad the string if it is short.
+> -		 */
+> -		memset(&to[from_length], ' ', to_length - from_length);
+> +	if (compatible) {
+> +		/* This zero-pads and nul-terminates the destination */
+> +		ret = strscpy_pad(to, from, to_length);
+> +	} else {
+> +		/* no nul-termination but space-padding for short strings */
+> +		size_t from_length = strlen(from);
+> +		ret = from_length;
 > +
-> +	if (!config)
-> +		return -EINVAL;
+> +		if (from_length > to_length) {
+> +			from_length = to_length;
+> +			ret = -E2BIG;
+> +		}
 > +
-> +	config_type = pinconf_to_config_param(*config);
-> +	ret = pinctrl_scmi_map_pinconf_type(config_type, &type);
-> +	if (ret) {
-> +		dev_err(pmx->dev, "Error map pinconf_type %d\n", ret);
-> +		return ret;
-> +	}
+> +		memcpy(to, from, from_length);
 > +
-> +	ret = pinctrl_ops->settings_get(pmx->ph, group, GROUP_TYPE, type,
-> +					&config_value);
-> +	if (ret)
-> +		return ret;
+> +		if (from_length < to_length)
+> +			memset(&to[from_length], ' ', to_length - from_length);
+>   	}
+> -	if (from_length > to_length)
 > +
-> +	*config = pinconf_to_config_packed(config_type, config_value);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct pinconf_ops pinctrl_scmi_pinconf_ops = {
-> +	.is_generic = true,
-> +	.pin_config_get = pinctrl_scmi_pinconf_get,
-> +	.pin_config_set = pinctrl_scmi_pinconf_set,
-> +	.pin_config_group_set = pinctrl_scmi_pinconf_group_set,
-> +	.pin_config_group_get = pinctrl_scmi_pinconf_group_get,
-> +	.pin_config_config_dbg_show = pinconf_generic_dump_config,
-> +};
-> +
-> +static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
-> +				 struct pinctrl_desc *desc)
-> +{
-> +	struct pinctrl_pin_desc *pins;
-> +	unsigned int npins;
-> +	int ret, i;
-> +
-> +	npins = pinctrl_ops->count_get(pmx->ph, PIN_TYPE);
-> +	pins = devm_kmalloc_array(pmx->dev, npins, sizeof(*pins), GFP_KERNEL);
-> +	if (!pins)
-> +		return -ENOMEM;
-> +
+> +	if (ret < 0)
+>   		 printk(KERN_WARNING "%s: %s string '%s' is too long\n",
+>   			__func__, name, from);
+>   }
 
-This is fine only if npins != 0, because on zero npins
-devm_kmalloc_array will return ZERO_SIZE_PTR which is NOT-NULL so I
-would add a check for !npins and bail out..or use ZERO_OR_NULL_PTR()
-to check the return value...if from the previous pinctrl patch you
-had decided to bail out at the protocol layer when (nr_pins == 0) and so
-you will never get here, please add a comment above that npins cannot be
-zero...
-
-> +	for (i = 0; i < npins; i++) {
-> +		pins[i].number = i;
-> +		ret = pinctrl_ops->name_get(pmx->ph, i, PIN_TYPE, &pins[i].name);
-> +		if (ret)
-> +			return dev_err_probe(pmx->dev, ret,
-> +					     "Can't get name for pin %d", i);
-> +	}
-> +
-> +	desc->npins = npins;
-> +	desc->pins = pins;
-> +	dev_dbg(pmx->dev, "got pins %d", npins);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct scmi_device_id scmi_id_table[] = {
-> +	{ SCMI_PROTOCOL_PINCTRL, "pinctrl" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(scmi, scmi_id_table);
-> +
-> +static int scmi_pinctrl_probe(struct scmi_device *sdev)
-> +{
-> +	int ret;
-> +	struct device *dev = &sdev->dev;
-> +	struct scmi_pinctrl *pmx;
-> +	const struct scmi_handle *handle;
-> +	struct scmi_protocol_handle *ph;
-> +
-> +	if (!sdev || !sdev->handle)
-
-if (!sdev->handle) is enough...
-
-> +		return -EINVAL;
-> +
-> +	handle = sdev->handle;
-> +
-> +	pinctrl_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_PINCTRL,
-> +						&ph);
-> +	if (IS_ERR(pinctrl_ops))
-> +		return PTR_ERR(pinctrl_ops);
-> +
-> +	pmx = devm_kzalloc(dev, sizeof(*pmx), GFP_KERNEL);
-> +	if (!pmx)
-> +		return -ENOMEM;
-> +
-> +	pmx->ph = ph;
-> +
-> +	pmx->dev = dev;
-> +	pmx->pctl_desc.name = DRV_NAME;
-> +	pmx->pctl_desc.owner = THIS_MODULE;
-> +	pmx->pctl_desc.pctlops = &pinctrl_scmi_pinctrl_ops;
-> +	pmx->pctl_desc.pmxops = &pinctrl_scmi_pinmux_ops;
-> +	pmx->pctl_desc.confops = &pinctrl_scmi_pinconf_ops;
-> +
-> +	ret = pinctrl_scmi_get_pins(pmx, &pmx->pctl_desc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_pinctrl_register_and_init(dev, &pmx->pctl_desc, pmx,
-> +					     &pmx->pctldev);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to register pinctrl\n");
-> +
-> +	pmx->nr_functions = pinctrl_scmi_get_functions_count(pmx->pctldev);
-> +	pmx->functions = devm_kcalloc(dev, pmx->nr_functions,
-> +				      sizeof(*pmx->functions),
-> +				      GFP_KERNEL);
-> +	if (!pmx->functions)
-> +		return -ENOMEM;
-> +
-> +	return pinctrl_enable(pmx->pctldev);
-> +}
-> +
-> +static struct scmi_driver scmi_pinctrl_driver = {
-> +	.name = DRV_NAME,
-> +	.probe = scmi_pinctrl_probe,
-> +	.id_table = scmi_id_table,
-> +};
-> +module_scmi_driver(scmi_pinctrl_driver);
-> +
-> +MODULE_AUTHOR("Oleksii Moisieiev <oleksii_moisieiev@epam.com>");
-> +MODULE_AUTHOR("Peng Fan <peng.fan@nxp.com>");
-> +MODULE_DESCRIPTION("ARM SCMI pin controller driver");
-> +MODULE_LICENSE("GPL");
-> 
+Please eliminate the variable 'ret'. I think that will improve
+readability of the new code.
 
 Thanks,
-Cristian
+
+Bart.
 
