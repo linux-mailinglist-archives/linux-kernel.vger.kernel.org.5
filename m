@@ -1,70 +1,78 @@
-Return-Path: <linux-kernel+bounces-123378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BF4890794
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D7578907A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB604B21509
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:51:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B17E9B2460F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE25012F360;
-	Thu, 28 Mar 2024 17:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE4F12FB35;
+	Thu, 28 Mar 2024 17:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TJ9cJQBV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aq54SIwT"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F8E82894
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FE240852;
+	Thu, 28 Mar 2024 17:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711648305; cv=none; b=aYXvxBm1/S74JTGwF41lajsOJb6v/itI/YNAK4+Bj1Q5VJY+/5Zw5SNBGUzH9D9m4DmT/lAZv9TM2Gaozrn4IJvZrDW0ze8tu1H2sEfRhkaQ3kstdylfPYuxdhBRVvz09NulftaJNZfJmZSiptMVsf68LJiKEbHDN5db+MjFKp0=
+	t=1711648432; cv=none; b=EjQ61KdV3SEcI+I0ANmaLYFYVVgm2RLdclW1HqvmA1A7URsNJ/vVvJLbg6UHhRPQeEkO3HphuDi5rkFq8obqcJXKiJAz/vcHnQb1WkHaG4fv0fu+scpVmCUNp0KtVRX3M18xJTxAg3S6lwXrpvc22FwVxi9D/PgqTYwHWNIqM8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711648305; c=relaxed/simple;
-	bh=U4yHXTHHMRwN8YtzD2Qg5Gh+ldlnMTRFcRkbgd4PyW0=;
+	s=arc-20240116; t=1711648432; c=relaxed/simple;
+	bh=5Zvbq6SSDLSVgY2hx7xF+iMbXVGMa05lQvv15AxbGv0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lM7qvgS6wSOfEmyEy/RgoLkWi1WUuZ7N8qrbjLr4jcUaGIFQXC2RlxFHtUio5O7HxBZpPjXIsH5LmVIuKqOMgB0FvsXugT4iM8ooWh9LrEghH76Jt7hRxFOOQNazrQEsBfDLzzD18EbP4ooZWgzoCvaKmsngkpcpvsxslpKkpwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TJ9cJQBV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711648301;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J+QcM3gk0UOb/w55XoDEIwmQlkoTEaF8u9uo8lDJ1ss=;
-	b=TJ9cJQBV9VyeOlgP4PQ6S14qJj6yiLh5Va+xKjfBiqSadz962wjO3T0FRycBPLBAPpxf4r
-	ygAZgxSxWPvGvEJcPxNVx4uk1WTQTbpPXjjaTc3sZsTCFSL3GosBUk/oull1GYx7d1DdbI
-	/nwqgpnlq8u0nCCzTglj2YCECrJobSI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-108-4zpXVmEIOq2rWiH1sW_bfg-1; Thu, 28 Mar 2024 13:51:34 -0400
-X-MC-Unique: 4zpXVmEIOq2rWiH1sW_bfg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 621ED185A781;
-	Thu, 28 Mar 2024 17:51:34 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id D78E84B4405;
-	Thu, 28 Mar 2024 17:51:33 +0000 (UTC)
-Date: Thu, 28 Mar 2024 13:53:31 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
-	tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com,
-	dhowells@redhat.com, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] writeback: protect race between bdi release and
- bdi_debug_stats_show
-Message-ID: <ZgWum7SWr44w0rie@bfoster>
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <20240327155751.3536-2-shikemeng@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GaAct6qGBCz06lmCm8gtwqwUUn5pOUHTw35ErktgvqzPVJNiVVlyurB6EWUw+Ck47v0b1phKtPhO0yQV8+d8Y0RW3kZRzfskKU1sCytfsaNCOLdT5ycJKOfbx8X1r22kvR0FrRMO0GrHlHieZQCPigQfdJAIknZ+do8aXTxdj4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aq54SIwT; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1def3340682so11900135ad.1;
+        Thu, 28 Mar 2024 10:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711648431; x=1712253231; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PkvuiONoAPmS4J3DvPiNOVFVt8Zrpei3L6fZbSR1vK4=;
+        b=Aq54SIwTTpKDAz0q7MLrOSCO9fesCJQpFLRMmM+qjW/+64IBA4k16SWlN6+ws+PL/n
+         hJugovN5RwK5KEKEc6S3sBWwqkXZneJlMCx1sS4MSsPxeNNyITz+skaJNaAhwB519djc
+         Q8khK/tdz1CMFJc3rGgbuu/49hznw8ZDD2P+l1prUgeKFfvkjXSRgpJC1kD7/mLfyjcc
+         lbeoVCQGdbFs+4q4fSAoJFIy4lewzmeFpLo0aCSqCpsdJh1xeYIKG1VTQsPHs2e9Nb6r
+         QP4Ur0VH4T+JL9ohlWVzkG6iIb7jJDnjqjbIuyK5ypisgCMHSQObLV9TXtlsT1wQ9uLX
+         Gaow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711648431; x=1712253231;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PkvuiONoAPmS4J3DvPiNOVFVt8Zrpei3L6fZbSR1vK4=;
+        b=YSUYsHYbXcBFfQ3vj3Q8+STMp08XdykutZ4CniMjvTMjCn5AQq6jsqSjuSGdDnZLD1
+         Rbov0g76DiV12PVrcJab4g1w2hmueh0l+G8zw1e8qiepSfg5TFHXJyTRYbqy0vuVyJTo
+         42XIEv10zuYiUGpZ7mUJNjgik2FaiAML7CtBNaueptD/CpYBEAQwhSO3qjKGLA4HSQPT
+         a3ar70o5iwW2XWCMb1LPR5HDOBlBGnIPM5Dv69uRJli0vGb0uTaLVZK4yPtzxVHYIPwK
+         u/djr/lUfZEfV2zJDNAYWgyuVxJjxsn91nj52Crr1a4YBAdlIIFXx6mNKdNgt21ozxDP
+         8R6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWJfWXsDu3D6CQX3ONDzYj8C51LOd3bM6u9Nexv5Ar/c7gkh2xmDWfukuM/OzX5qybxKlkygHJzK2unm/jCD81sa8ibyG4ToLpAnLGC
+X-Gm-Message-State: AOJu0YwIgVHyqBwCJIAcOSQotixY3ItrCr/EJXOcRc29K/sSy9PxLLop
+	zXnv0lt3vrrpUMH+1k+iXKa+I9kPA7GtW7Aii6HrOLzomtwQrOTeMcOYxT1C
+X-Google-Smtp-Source: AGHT+IF/w2JF7Yg+0NBSCWcyatQGo5LuV/VN7nZPG/h/MqUyETB1iCFlW9dVc8z7gEgzhLOX+SGD9g==
+X-Received: by 2002:a17:902:eacb:b0:1e2:1027:d0d1 with SMTP id p11-20020a170902eacb00b001e21027d0d1mr156929pld.39.1711648430490;
+        Thu, 28 Mar 2024 10:53:50 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:493e:82a3:49f9:d88])
+        by smtp.gmail.com with ESMTPSA id n14-20020a170902e54e00b001e0f2dc4165sm1897906plf.60.2024.03.28.10.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 10:53:50 -0700 (PDT)
+Date: Thu, 28 Mar 2024 10:53:47 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Frieder Hannenheim <friederhannenheim@riseup.net>,
+	Marge Yang <marge.yang@tw.synaptics.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
+Message-ID: <ZgWuq1bDWNRtrImD@google.com>
+References: <20240327214643.7055-1-friederhannenheim@riseup.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,100 +81,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240327155751.3536-2-shikemeng@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+In-Reply-To: <20240327214643.7055-1-friederhannenheim@riseup.net>
 
-On Wed, Mar 27, 2024 at 11:57:46PM +0800, Kemeng Shi wrote:
-> There is a race between bdi release and bdi_debug_stats_show:
-> /* get debug info */		/* bdi release */
-> bdi_debug_stats_show
->   bdi = m->private;
->   wb = &bdi->wb;
-> 				bdi_unregister
-> 				bdi_put
-> 				  release_bdi
-> 				    kfree(bdi)
->   /* use after free */
->   spin_lock(&wb->list_lock);
-> 
+[ now CCing for real ]
 
-Maybe I'm missing something, but it looks to me that
-bdi_unregister_debug() can't complete until active readers of associated
-debugfs files have completed. For example, see __debugfs_file_removed()
-and use of ->active_users[_drained]. Once the dentry is unlinked,
-further reads fail (I think) via debugfs_file_get(). Hm?
+Hi Frieder,
 
-Brian
+On Wed, Mar 27, 2024 at 10:39:12PM +0100, Frieder Hannenheim wrote:
+> This is a bit of a stripped down and partially reworked driver for the
+> synaptics_tcm_oncell touchscreen. I based my work off the driver in the
+> LineageOS kernel found at
+> https://github.com/LineageOS/android_kernel_oneplus_sm8250 branch
+> lineage-20. The code was originally written by OnePlus developers but
+> I'm not sure how to credit them correctly.
 
-> Search bdi on bdi_list under rcu lock in bdi_debug_stats_show to ensure
-> the bdi is not freed to fix the issue.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  mm/backing-dev.c | 33 +++++++++++++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 5f2be8c8df11..70f02959f3bd 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -46,16 +46,44 @@ static void bdi_debug_init(void)
->  	bdi_debug_root = debugfs_create_dir("bdi", NULL);
->  }
->  
-> -static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> +static struct backing_dev_info *lookup_bdi(struct seq_file *m)
->  {
-> +	const struct file *file = m->file;
->  	struct backing_dev_info *bdi = m->private;
-> -	struct bdi_writeback *wb = &bdi->wb;
-> +	struct backing_dev_info *exist;
-> +
-> +	list_for_each_entry_rcu(exist, &bdi_list, bdi_list) {
-> +		if (exist != bdi)
-> +			continue;
-> +
-> +		if (exist->debug_dir == file->f_path.dentry->d_parent)
-> +			return bdi;
-> +		else
-> +			return NULL;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +
-> +static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> +{
-> +	struct backing_dev_info *bdi;
-> +	struct bdi_writeback *wb;
->  	unsigned long background_thresh;
->  	unsigned long dirty_thresh;
->  	unsigned long wb_thresh;
->  	unsigned long nr_dirty, nr_io, nr_more_io, nr_dirty_time;
->  	struct inode *inode;
->  
-> +	rcu_read_lock();
-> +	bdi = lookup_bdi(m);
-> +	if (!bdi) {
-> +		rcu_read_unlock();
-> +		return -EEXIST;
-> +	}
-> +
-> +	wb = &bdi->wb;
->  	nr_dirty = nr_io = nr_more_io = nr_dirty_time = 0;
->  	spin_lock(&wb->list_lock);
->  	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
-> @@ -101,6 +129,7 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
->  		   nr_dirty_time,
->  		   !list_empty(&bdi->bdi_list), bdi->wb.state);
->  
-> +	rcu_read_unlock();
->  	return 0;
->  }
->  DEFINE_SHOW_ATTRIBUTE(bdi_debug_stats);
-> -- 
-> 2.30.0
-> 
+So the first question is: does this device not use Synaptics RMI4
+protocol?
 
+I am CCing Marge Yang of Synaptics who may shed some light on the kind
+of touch controller this is.
+
+Thanks.
+
+-- 
+Dmitry
 
