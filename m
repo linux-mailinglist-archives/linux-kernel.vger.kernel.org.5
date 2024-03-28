@@ -1,173 +1,118 @@
-Return-Path: <linux-kernel+bounces-123251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A0A890526
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4FA0890528
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB5E11F27C17
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:26:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B72E1F25FBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0DA12F399;
-	Thu, 28 Mar 2024 16:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5CC130E5A;
+	Thu, 28 Mar 2024 16:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QiXC52ON"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="f6dDQoVp"
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0482A54673;
-	Thu, 28 Mar 2024 16:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DE17E788;
+	Thu, 28 Mar 2024 16:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711643191; cv=none; b=a38dEIHZUnzeghVHZ1roEUpNPGT1q8t5SBL6X1oNFll7VCWQzb3jQ+m9ljaLO78GYSUPipqKmo9MlZN00zDWtmGLWlRJlCqgZ7mqJ38qSS0Nn4QEDUwIiqibg1ROMtVV+Sfn82pAZlSEJtuZUYv3ImioBrOWWzuMnDauBvZc75U=
+	t=1711643246; cv=none; b=TRdOkJ91QEGfsPznMepto9e13pslkAiM5jZLJvxhgUI0CjK+PruS0t8EORfCMxYY50sC3f5u5jYnFXrZbHDQySnT49rlNb5mk2AdF89taSAD5rtzCs/5hBA5QrlZCXgO1uwQMQIxUsn2Ihp+XfAYkqnL2gls+QAsiBG6F1fx9S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711643191; c=relaxed/simple;
-	bh=UmScTq88cfl53jM8TjrVTFJdvXguvHkEnLR4nuT+0No=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=i3m2F0D0XlHDeBnS0e5a8BM0Q6VD/21RxhCcpmE5ryfcZR31uEafcQcU9RD5rMerk14rcyLQ2fZUyJYGPw9oHpURPnVGKVdJViHLkrJe68ZAtk9HEHpEBb8CyMDabcfLcjyItYDC6B48FL7/XzAQ4cnLo3GB4kUYYRA0GFjwW+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=QiXC52ON; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42SGQP16000815;
-	Thu, 28 Mar 2024 11:26:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711643185;
-	bh=hei07kTCLYDyZkCWh+ZyvIX04hDPX4vnUAD923iYyHE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=QiXC52ONf8qYZL3aD0uqFVA0EWBVBoYHICQpJRfRuyCmJEYkItQu44SzJf8zY9EKh
-	 nRbFSfLO25LTaqsOi5TxRN7IybIgIUeQbSRc6WXMCvjwU5uvWS7vN6Iz4YQHKkhnUM
-	 DielPA40UNCLLGXMcJ7khTb0Hl/QYt2t+LkxIyO0=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42SGQPZg078449
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 28 Mar 2024 11:26:25 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
- Mar 2024 11:26:24 -0500
-Received: from fllvsmtp7.itg.ti.com (10.64.40.31) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 28 Mar 2024 11:26:24 -0500
-Received: from [10.249.42.149] ([10.249.42.149])
-	by fllvsmtp7.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42SGQOID033455;
-	Thu, 28 Mar 2024 11:26:24 -0500
-Message-ID: <0697211f-4a28-4a74-8540-840c075d513c@ti.com>
-Date: Thu, 28 Mar 2024 11:26:24 -0500
+	s=arc-20240116; t=1711643246; c=relaxed/simple;
+	bh=dIb9eE7iYPMGcvU2C0yJgjBaPJT0qXXikLkp/Z4F09M=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:To:From:Cc; b=klzcwefSGkicP5QPN+K5Z1Sxoa1Kk7FxhSkVotqlkuG65YaraM4QGsehPuv1X3S2ejRC9etzM4Q7ttQx9EYoEfh0K50yZEODGoHKWi1azKdZMqSoMDAEjgN23APYRYXUA/q17KXOP/SsdTBhjDL4pa6KpB1qkDERj33sAbEqaLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=f6dDQoVp; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
+	s=submission; t=1711643225; x=1712943225;
+	bh=UIMr0cXzQ7K9MqVml1YbFic1/i1jalZvSB0LSoBSsDQ=;
+	h=Mime-Version:From;
+	b=f6dDQoVpmL/onp80cBDa4r6ezxFbnUEqH6rIQrDZ7YxoFaSmFHcoPjc1iwm4d70Pt
+	 jS+lzJFdJwuybbUfRpSeSuahAsKGXstZb6Aj6AOlAut1kWTLcWsHwuvuPuvg34MnbM
+	 5ldTqipkpguHZfzuYXcSBwFr9ky3DGT09dQeULHKGP0nL73N7tGH+iMFKA1ldx570H
+	 TPiobmP+202I07GapaeAPvsh9CBDFrwBAlDJJKY/dyKzgwG8wkYhkvfgI0F3/Qc86i
+	 88IPUo70ueRVyPpeZh4NOt/gVpDhbnvjsV1iaNnVNbmw/uZggmGl/w7IELrLMVFrG1
+	 sMb0u0e7l4ssA==
+Received: from localhost (internet5.mraknet.com [185.200.108.250])
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42SGR3at063608
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Thu, 28 Mar 2024 17:27:05 +0100 (CET)
+	(envelope-from balejk@matfyz.cz)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] remoteproc: k3-dsp: Fix usage of omap_mbox_message
- and mbox_msg_t
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>, <linux-remoteproc@vger.kernel.org>,
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 28 Mar 2024 17:27:03 +0100
+Message-Id: <D05IVTPYH35N.2CLDG6LSILRSN@matfyz.cz>
+Subject: [REGRESSION] PWM vibrator does not probe with v6.9-rc1
+To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+From: "Karel Balej" <balejk@matfyz.cz>
+Cc: <regressions@lists.linux.dev>, <linux-pwm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-References: <20240325165808.31885-1-afd@ti.com> <ZgWMi088/zORh0m3@p14s>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <ZgWMi088/zORh0m3@p14s>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 3/28/24 10:28 AM, Mathieu Poirier wrote:
-> Hi Andrew,
-> 
-> On Mon, Mar 25, 2024 at 11:58:06AM -0500, Andrew Davis wrote:
->> The type of message sent using omap-mailbox is always u32. The definition
->> of mbox_msg_t is uintptr_t which is wrong as that type changes based on
->> the architecture (32bit vs 64bit). Use u32 unconditionally and remove
->> the now unneeded omap-mailbox.h include.
->>
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->>   drivers/remoteproc/ti_k3_dsp_remoteproc.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> index 3555b535b1683..33b30cfb86c9d 100644
->> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> @@ -11,7 +11,6 @@
->>   #include <linux/module.h>
->>   #include <linux/of.h>
->>   #include <linux/of_reserved_mem.h>
->> -#include <linux/omap-mailbox.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/remoteproc.h>
->>   #include <linux/reset.h>
->> @@ -113,7 +112,7 @@ static void k3_dsp_rproc_mbox_callback(struct mbox_client *client, void *data)
->>   						  client);
->>   	struct device *dev = kproc->rproc->dev.parent;
->>   	const char *name = kproc->rproc->name;
->> -	u32 msg = omap_mbox_message(data);
->> +	u32 msg = (u32)(uintptr_t)(data);
->>   
-> 
-> Looking at omap-mailbox.h and unless I'm missing something, the end result is
-> the same.
-> 
-> 
->>   	dev_dbg(dev, "mbox msg: 0x%x\n", msg);
->>   
->> @@ -152,11 +151,11 @@ static void k3_dsp_rproc_kick(struct rproc *rproc, int vqid)
->>   {
->>   	struct k3_dsp_rproc *kproc = rproc->priv;
->>   	struct device *dev = rproc->dev.parent;
->> -	mbox_msg_t msg = (mbox_msg_t)vqid;
->> +	u32 msg = vqid;
->>   	int ret;
->>
-> 
-> Here @vqid becomes a 'u32' rather than a 'uintptr'...
-> 
+Uwe,
 
-u32 is the correct type for messages sent with OMAP mailbox. It
-only sends 32bit messages, uintptr is 64bit when compiled on
-64bit hardware (like our ARM64 cores on K3). mbox_msg_t should
-have been defined as u32, this was a mistake we missed as we only
-ever used to compile it for 32bit cores (where uintptr is 32bit).
+I am working on bringing the mainline Linux to my old smartphone. Most
+of the changes are not yet in-tree.
 
->>   	/* send the index of the triggered virtqueue in the mailbox payload */
->> -	ret = mbox_send_message(kproc->mbox, (void *)msg);
->> +	ret = mbox_send_message(kproc->mbox, (void *)(uintptr_t)msg);
-> 
-> ... but here it is casted as a 'uintptr_t', which yields the same result.
-> 
+The phone has a PWM vibrator for which the corresponding input driver
+(pwm-vibrator) is used. The driver used for the PWM is pwm-pxa (or
+pxa25x-pwm).
 
-The function mbox_send_message() takes a void*, so we need to cast our 32bit
-message to that first, it is cast back to u32 inside the OMAP mailbox driver.
-Doing that in one step (u32 -> void*) causes a warning when void* is 64bit
-(cast from int to pointer of different size).
+The DT nodes look like this
 
-> 
-> I am puzzled - other than getting rid of a header file I don't see what else
-> this patch does.
-> 
+[...]
+	pwm: pwm@1ac00 {
+		compatible =3D "marvell,pxa250-pwm";
+		reg =3D <0x1ac00 0x10>;
+		#pwm-cells =3D <1>;
+		clocks =3D <&apbc PXA1908_CLK_PWM3>;
+	};
+[...]
+	vibrator {
+		compatible =3D "pwm-vibrator";
+		pwm-names =3D "enable";
+		pwms =3D <&pwm 100000>;
+		enable-gpios =3D <&gpio 20 GPIO_ACTIVE_HIGH>;
+		pinctrl-names =3D "default";
+		pinctrl-0 =3D <&vibrator_pins>;
+	};
+[...]
 
-Getting rid of the header is the main point of this patch (I have a later
-series that needs that header gone). But the difference this patch makes is that
-before we passed a pointer to a 64bit int to OMAP mailbox which takes a pointer
-to a 32bit int. Sure, the result is the same in little-endian systems, but that
-isn't a strictly correct in general.
+The vibrator worked fine with v6.8-rc6 but after I rebased to v6.9-rc1,
+it no longer probes printing
 
-Thanks,
-Andrew
+	[  +0.000118] pwm-vibrator vibrator: failed to apply initial PWM state: -2=
+2
 
-> Thanks,
-> Mathieu
-> 
->>   	if (ret < 0)
->>   		dev_err(dev, "failed to send mailbox message (%pe)\n",
->>   			ERR_PTR(ret));
->> -- 
->> 2.39.2
->>
+to dmesg.
+
+I have bisected the problem to 40ade0c2e794 ("pwm: Let the of_xlate
+callbacks accept references without period").
+
+Looking at the commit and adjacent history, I don't believe this problem
+is caused by this still being an out-of-tree DT, nonetheless, if it
+proves to be the case, then I apologize for false alarm.
+
+Would you please take a look?
+
+Thank you and kind regards,
+K. B.
+
+#regzbot introduced: 40ade0c2e794
 
