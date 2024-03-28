@@ -1,88 +1,82 @@
-Return-Path: <linux-kernel+bounces-123549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B87E890AAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:13:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 194E9890AAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E67DE293D97
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:13:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B2601C27F7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5990913A244;
-	Thu, 28 Mar 2024 20:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB2513849A;
+	Thu, 28 Mar 2024 20:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XIGlL9zL"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F+drNiz6"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D2FE139CED;
-	Thu, 28 Mar 2024 20:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D05131BA3;
+	Thu, 28 Mar 2024 20:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711656811; cv=none; b=lDF+NC5GgZ9icUitYwP8fcoZxoMIxt4kA7OW9XBj4XOtDLYRSweZhShmR7dFC/zcpHunQ5Elq4HpiGP26KUiOJOxk9g6X4wcQKiEiLKEb+kz5nGy+5/ImY4xbSj45k+n+U6NMnay0M5xVu04yzK8gYXJPgRZtbtK1DEawqGLtZA=
+	t=1711656821; cv=none; b=th2wQ/L3c3C2S5/2GeNttMbWS1i+atautAE86FE/YnT9wLw6nmzmWT+7op3h+VFWyDYHUiEK8DoUrZ8gRhPTTjccgLQAL23hA6b4dIqWIdYfnCCB8UZDAshbBw9OB5xalhleUIDLthRKe8XniIl/lMcexhSvwXmVyRgsPg7VWjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711656811; c=relaxed/simple;
-	bh=sx0xdhi9Aljo0IKpocFtbr8LZOORqSUEX68dDOkcDxs=;
+	s=arc-20240116; t=1711656821; c=relaxed/simple;
+	bh=xm4BNUTfDgO67+eXj8M7Qk2l7ZEhup+lEssGSxNSDOg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iV16FcxhYDN1Mcku5lqdGNW1D3NdhjHTvJ+Xfbf/5ajbTZdrYGXUDXDlYmmACDxdd1fadr0kKgv2S2RjlpF/kIZM74CE73yXjd2exD9geukEhlRsqXMxafmDn630FXIT2CnWEiRXtdkJp8QC8UyQNVd/Al27Qxn+DRlneuKGxvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XIGlL9zL; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=CAxl/Uoh1lnBplhFu9ceHXC0uFzedb8bcbwj+ElkZjShUZ0q2Ih33luYp+swL78YrK3VpuyeMWVB8B8QLr/6Qv7YvlkStbfdNlRavPE34bU1C65fT1Ad2eiNA/ztoEtmVbz3xrHxBHFP2eC4rYthRqjLxEi2HsXJDOMtq/6K1Gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F+drNiz6; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e0ae065d24so12611625ad.1;
-        Thu, 28 Mar 2024 13:13:29 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e0f2798cd8so12553695ad.3;
+        Thu, 28 Mar 2024 13:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711656809; x=1712261609; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711656819; x=1712261619; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TJh0w+6LNIpaseEpVPREtMFaluSVUJYpCPOmmi1HWNg=;
-        b=XIGlL9zLUemmiVX/Tdgv6MbkZj341sEjQMgIO7bG0DnisevgYAmiRHCZQUfgETcK8f
-         wsFlzDqwyje5qYnAKpeKWhRoyqCZ8LdOSvRs4p/lI+D2aHo7BwowoqSLE6rznDfzMlC7
-         xOQIDxOoOTcIzuXgUq/RxfKivGo1ayZwVKumwBfzlJ83yI15vkJ2RRJHuYg5uckF7LpH
-         okbL/6V56+ZPZQ4I1riBLFjEWla3aqz4lgs1gyEWYK05ylK0Pkcoj00wGtu3e1BZhPkF
-         wH8v5Wm7Wl+xj9/1C0NvqYhoXazOuo7h3muhaV7cNKxfjDHLXPYq8Az6+YS55FD5cpbL
-         9G+w==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fgUsxV4VoJF7d2glcoMovVqVoVYDXEoEZNAbQKQAfc0=;
+        b=F+drNiz6my8qMXxmwz2ZASh1ICAoZkKuq2OBNrwmEC7duI+fzZI+v8/rC3su68tZHp
+         HQMXjTuwNzvRc7J0fSoJg2EbVNKovgUJieRmWh5byf+Uxdp+p8TxfQDncYm49nttiJh2
+         YBkisAp6/ZUFw6dRtrsdtjCVR7bl3tU6dlVUMj8JOfQTQmMClDZtuyPRJxtJRLhp6QRR
+         JakJ0DtxVAi97E0xpP7feWtU7A/MA0I4Mo6jVrU2Ck9jWNLU8yzSNZ7Z2CKjkkIQKmZ8
+         3RznwWOuyAJ0MdcNy84RRVLFAdBO9c23kOVUEYLR0oAAMmbepoHySt3VSh1Lsq2xF0Rc
+         0mzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711656809; x=1712261609;
+        d=1e100.net; s=20230601; t=1711656819; x=1712261619;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TJh0w+6LNIpaseEpVPREtMFaluSVUJYpCPOmmi1HWNg=;
-        b=bh2sfD0SzKEoAWLd5DP3cajFhlIzmdCnOHH9bojZdIBw90VpGMFfj7iUW1daFwAKw+
-         31YDp/9j5drc64lAa3b6HjDykYWDRr8Q37fvGMH+zN83kKqhPYz2tv0tE872dS2wSO4s
-         dItHZC6Z4cFASb9QWN/ROztZW2oEAYAv+Rx21aomEk6mYZ5QYPVY5K0m36CfK4InZHcV
-         WQIIy0UgjOsAiQZds+tZ+4TGXL6ZqfbcDAYBjPpIYFw8AS1Et/YTQ3zvz0FhtZHEgI0T
-         mAmg2XBAGGc3mbXja8zUOrbfLPYdX3s7Uc2Or4sZb8yrTpyD9t+zFDq4Hfi6cSfC/5Po
-         j3Bw==
-X-Forwarded-Encrypted: i=1; AJvYcCVDHIApuffnJqaEuXGtFStFZRT4wWtGawRUce4H2DN7gpqYaz2Ca5xrEJNFMF0QWaWqfJsHYt8Z1h8UBVxuIhdDw+ZVbVU1CEP16VW8WUZ/WELNVDIfLViQerSYqM6MBu1d/ZLk0kXP3Zreag==
-X-Gm-Message-State: AOJu0YzSrFxzblaP5avFB4ZRL49nYcVRN2GHKLg+qCXxGdYp8MtIVfBl
-	GX57zw+hyca4i541/FPXooBG5h+FeLnI1Kz1bX7RTtXS5nKKTc8f
-X-Google-Smtp-Source: AGHT+IF2RZEilfGlheBdjw01iR0oba703+q/sHwMzEEvWDchg6pVds9Ll4DvJwEw0oTnZsBiTFQzQg==
-X-Received: by 2002:a17:902:8341:b0:1de:fd12:1929 with SMTP id z1-20020a170902834100b001defd121929mr485333pln.55.1711656809385;
-        Thu, 28 Mar 2024 13:13:29 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id f21-20020a170902e99500b001e208707048sm2041353plb.117.2024.03.28.13.13.28
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fgUsxV4VoJF7d2glcoMovVqVoVYDXEoEZNAbQKQAfc0=;
+        b=h6ydoK8Cdn85GVrRuGInUGanGj8P5voU6YyWMDJ3CFD6HIfw8Fr9PTgpJMkLK3/zku
+         W2RQ3QDrrI466fprK6ZOyIYS0mfjd5U72s9kFfFSN5CoRt31SL31OW6CyC9g816//Lr0
+         Z5lQAD6yrE7u1Ae/iSJXM+sZBd2zpIp5Sek4aBruzWEWsl0eg0MHgiwfTmY6ERmZs5c+
+         7LmK05ECyG74QlF/ON4yHAfT6hdR/EZbK/evpK90A1uYPy4DcOWmgBAc6Nk0s+VzxPRP
+         NSpgUuP8kuDDhi6ddZwaI9GtmvTQltJ0+Ua/FpkpOt3hxpZZ9KYVEB97pu0sIbcfoATS
+         A21w==
+X-Forwarded-Encrypted: i=1; AJvYcCV26dInLVZAkExh2dAB3mOclDlblNRuaMOGlx/RjgO80BYeSgX3qrRvP+Yqfvz0QT2AB8McsyvuUvEFvLdSJA+id0Ex7UDPm5uM2PV9
+X-Gm-Message-State: AOJu0YxjaiTVMih6ohJHobyulImG+lyG03TBkK4+Bwf7z5aAE5eVxHtM
+	fqzXp7rBNXj+bT2gq8MC5Ysu3t+YDyqCv3d4rGjNHhcHbtoGnoEi
+X-Google-Smtp-Source: AGHT+IEJd7NvzFnPESl+PNer+0FvqA+KmSg4ExUyA9GqzEH1In5+hir0Ic4ktkG7vP8gBDl0szKvmg==
+X-Received: by 2002:a17:902:ecd2:b0:1dd:a3d4:9545 with SMTP id a18-20020a170902ecd200b001dda3d49545mr669820plh.54.1711656819274;
+        Thu, 28 Mar 2024 13:13:39 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:493e:82a3:49f9:d88])
+        by smtp.gmail.com with ESMTPSA id ld11-20020a170902facb00b001dd55ac5d78sm2037046plb.184.2024.03.28.13.13.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:13:29 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 28 Mar 2024 10:13:27 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-	willy@infradead.org, jack@suse.cz, bfoster@redhat.com,
-	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
-Message-ID: <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <qyzaompqkxwdquqtofmqghvpi4m3twkrawn26rxs56aw4n2j3o@kt32f47dkjtu>
- <ZgXFrabAqunDctVp@slm.duckdns.org>
- <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
- <ZgXJH9XQNqda7fpz@slm.duckdns.org>
- <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
+        Thu, 28 Mar 2024 13:13:38 -0700 (PDT)
+Date: Thu, 28 Mar 2024 13:13:36 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Marge Yang <marge.yang@tw.synaptics.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	david.chiu@tw.synaptics.com, derek.cheng@tw.synaptics.com,
+	sam.tsai@synaptics.com, vincent.huang@tw.synaptics.com,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH V1] Input: synaptics-rmi4 - Enable support for F3A by
+ default.
+Message-ID: <ZgXPcBNsGMujY0m1@google.com>
+References: <20231110082148.1032629-1-marge.yang@tw.synaptics.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,66 +85,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
+In-Reply-To: <20231110082148.1032629-1-marge.yang@tw.synaptics.com>
 
-Hello,
+Hi Marge,
 
-On Thu, Mar 28, 2024 at 03:55:32PM -0400, Kent Overstreet wrote:
-> > On Thu, Mar 28, 2024 at 03:40:02PM -0400, Kent Overstreet wrote:
-> > > Collecting latency numbers at various key places is _enormously_ useful.
-> > > The hard part is deciding where it's useful to collect; that requires
-> > > intimate knowledge of the code. Once you're defining those collection
-> > > poitns statically, doing it with BPF is just another useless layer of
-> > > indirection.
-> > 
-> > Given how much flexibility helps with debugging, claiming it useless is a
-> > stretch.
+On Fri, Nov 10, 2023 at 08:21:48AM +0000, Marge Yang wrote:
+> RMI4 F3A supports the touchpad GPIO function, it's designed to
+> support more GPIOs and used on new touchpad. This patch will
+> enable support of touchpad button.
 > 
-> Well, what would it add?
+> Signed-off-by: Marge Yang <marge.yang@tw.synaptics.com>
 
-It depends on the case but here's an example. If I'm seeing occasional tail
-latency spikes, I'd want to know whether there's any correation with
-specific types or sizes of IOs and if so who's issuing them and why. With
-BPF, you can detect those conditions to tag and capture where exactly those
-IOs are coming from and aggregate the result however you like across
-thousands of machines in production without anyone noticing. That's useful,
-no?
+This should go to Jiri or Benjamin (CCed).
 
-Also, actual percentile disribution is almost always a lot more insightful
-than more coarsely aggregated numbers. We can't add all that to fixed infra.
-In most cases not because runtime overhead would be too hight but because
-the added interface and code complexity and maintenance overhead isn't
-justifiable given how niche, adhoc and varied these use cases get.
-
-> > > The time stats stuff I wrote is _really_ cheap, and you really want this
-> > > stuff always on so that you've actually got the data you need when
-> > > you're bughunting.
-> > 
-> > For some stats and some use cases, always being available is useful and
-> > building fixed infra for them makes sense. For other stats and other use
-> > cases, flexibility is pretty useful too (e.g. what if you want percentile
-> > distribution which is filtered by some criteria?). They aren't mutually
-> > exclusive and I'm not sure bdi wb instrumentation is on top of enough
-> > people's minds.
-> > 
-> > As for overhead, BPF instrumentation can be _really_ cheap too. We often run
-> > these programs per packet.
+> ---
+>  drivers/hid/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> The main things I want are just
->  - elapsed time since last writeback IO completed, so we can see at a
->    glance if it's stalled
->  - time stats on writeback io initiation to completion
+> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+> index e11c1c8..f3a989e 100644
+> --- a/drivers/hid/Kconfig
+> +++ b/drivers/hid/Kconfig
+> @@ -1082,6 +1082,7 @@ config HID_RMI
+>  	select RMI4_F11
+>  	select RMI4_F12
+>  	select RMI4_F30
+> +        select RMI4_F3A
+>  	help
+>  	Support for Synaptics RMI4 touchpads.
+>  	Say Y here if you have a Synaptics RMI4 touchpads over i2c-hid or usbhid
+> -- 
+> 2.7.4
 > 
-> The main value of this one will be tracking down tail latency issues and
-> finding out where in the stack they originate.
-
-Yeah, I mean, if always keeping those numbers around is useful for wide
-enough number of users and cases, sure, go ahead and add fixed infra. I'm
-not quite sure bdi wb stats fall in that bucket given how little attention
-it usually gets.
 
 Thanks.
 
 -- 
-tejun
+Dmitry
 
