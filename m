@@ -1,114 +1,124 @@
-Return-Path: <linux-kernel+bounces-123687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BAAA890CB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:51:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49254890CB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:51:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E129293165
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:51:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0554629332A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561DC13B593;
-	Thu, 28 Mar 2024 21:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C0313B591;
+	Thu, 28 Mar 2024 21:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="esHe22s8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YZl8heIg"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8412681752;
-	Thu, 28 Mar 2024 21:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA87013AD32
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711662672; cv=none; b=J3Qm5FK1yfrpB92QRbAft/ULqiEWWlSaGJ+lo/haKdqNOQ6NKEnJ5N+lFITJ/cGsWedG+wmDlfNLvikPtzwj0xej9Mmhfccayka4XlcrehzmyR4T71+YO0cC90XxE7W2ZTpbTqfKhbJ7lEOm+cAnB+Uj18lyhjjZZcXOFJBjM+8=
+	t=1711662695; cv=none; b=g8FKHMXwDrVcJ7By4sUm7t3q65D5QibX+3297G0a2mGQedVmp5sizVBIWOz5nBofq+mcI5eyBIk3hwoa4zs3xGKM92DnHG6pEjacawBl/hl89bRNkwfsifpYXQ/D5Mz3omQa4j2cFNrICsaqTBacRq6QljaioSSvJaH+rXxrTJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711662672; c=relaxed/simple;
-	bh=kDwe9Nhm7lE8AL8JY1vMlWhsHIywSrYlJ13DQOehe5w=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:To:Date; b=UNkCzQoKqkq++bvBlUzJ3ppbtsaJS+/W8gk6MfcW8n33rNpNCs/51v1LryFSM5kVAAbjom8Bb2Yims/HUy8WmFgX/GldH/bOMZ1JH/lpufkVWnMTNXhXKBFAOxc0XPU5fMTDxncUNOHs7zFPEzymi16Jd6Z1TPsqMyiOKq+2+Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=esHe22s8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2DD5C433C7;
-	Thu, 28 Mar 2024 21:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711662672;
-	bh=kDwe9Nhm7lE8AL8JY1vMlWhsHIywSrYlJ13DQOehe5w=;
-	h=In-Reply-To:References:Subject:From:To:Date:From;
-	b=esHe22s85rralJGnhs8eo4vhoGNOF3mAbLKgBYcVJ7P+tP31vCRN6vLDmchmII1ha
-	 nPgeDao773r95dEb4iflh+8KUj/uHtBo8Hz/pOT4LByEgFT2odyrzr9VkiFA+ppOB3
-	 Kg6hkx18pm6KthBhxVMFOQFKATxliKE7AGFyTmFoTjLYJdSFus8K6/FuKhKa5tHwpf
-	 qvQyJZNX8IhQU01riZSw6sVKta4qJ5w8bD60iAgcrKVNC84g+SxiQ/tBln+Y1E6PSK
-	 ICuuEYcoLBnQ6JWklfKfNsGHxVzozqAl0iqQuLaoO3hTbM3cnk7IAz+5l+Ng2pEURz
-	 57saOLSBf/cgQ==
-Message-ID: <95f4e99a60cc97770fc3cee850b62faf.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711662695; c=relaxed/simple;
+	bh=ZEE26gPTJZ/hBbsHNUyGFvQicSGcferjjPKlGEmy+hU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uHQNpTselRo35DfUqMvyBK/mL6uoq6CWkjbVwW8n1HNylvC1apHpbTxgwXSScq/N3Yu5ud2/mDc96OvMcasUOSvgWyG/bTrYHUaBFJsppZ7Cg47N6jVT5gPZa58qxPoD2wRO36CKBPcdlqYJLy/PXzGc5z5vwkz1PysdO3zMtn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YZl8heIg; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e00d1e13a2so11370575ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:51:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711662693; x=1712267493; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHpNoyxs0hG49ZqgEYrAt6uwLA+lg8Ao3v4qhonPl2o=;
+        b=YZl8heIgfO51Hm6eSKT1QMTgLXlAKdpvfPUNx+DHG0WTMfqsdc5Rt/zKG+k/Yse23e
+         tfcMAToSuR99q5A9o9uPmOxyBTpntieWiDt+gVzgRwqXOelb0x5HZpojOIm+JyMKphsU
+         kbeSaHjjp8vv0LZ0IRrui3VpSA0V8+Beq7y+M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711662693; x=1712267493;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZHpNoyxs0hG49ZqgEYrAt6uwLA+lg8Ao3v4qhonPl2o=;
+        b=RjADhrucpPAgKdOXiWMtPPriEG39fj/cyY0hS6OW4x7hL/CmTHbNOamCRHprRM159O
+         OnTaBjNYGz/UnlG08djjA5RhW6rJdI48S7Kjmk0+0FF5z5PMeokBytnS4+dj3yDb8TeU
+         WHuxvYTfgJcLDeZ1iUlMxQtfOlQI1JhVz6H5QT0d/LK06O6wLSWfyC1+LbRK5jwDz21K
+         f6DB3b8IJBHsCJEewxfV+lnMli6Ae6h958J5JZtaqRDe6hXNXdnVCeXAS7thKdCT0g4Q
+         LremhFwkdBWo7fW9NA9Ds6k6278oaCUaG+X8qctvf6F5L9MOWzlmWYx5Jy8I40wQ3jrs
+         KgQg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSCJxKzLoHVzPXX0wzdbO3F91r7NfGw12wxO2YGwbNwSE4/2v4Y6l5y982xK8FxDhDZdb737KC76Ad3CAcZjmraEtD63QoarETKBiB
+X-Gm-Message-State: AOJu0YxkDUhsF4722fMLXWHD4LtSY02/hUR7EXCc7YPwqEGZ3gLiOwgm
+	TS33zqTOHzXy3xm+i8VwcniYGshCwpvF63i0SCToeeKpL/puNBLuYBrpvC9YRw==
+X-Google-Smtp-Source: AGHT+IEMvDfUims4WapdrR4k340zi5+TetBtVJ7L44Et9CdsFiQpLpmuyGP05ekYi4VrMKMaXxz5qQ==
+X-Received: by 2002:a17:903:11d2:b0:1de:f93f:4410 with SMTP id q18-20020a17090311d200b001def93f4410mr818655plh.8.1711662692925;
+        Thu, 28 Mar 2024 14:51:32 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p17-20020a170902e75100b001def0897284sm2119344plf.76.2024.03.28.14.51.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 14:51:32 -0700 (PDT)
+Date: Thu, 28 Mar 2024 14:51:32 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Christian Lamparter <chunkeey@googlemail.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Johannes Berg <johannes.berg@intel.com>,
+	linux-hardening@vger.kernel.org,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
+	linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] [RESEND] wifi: carl9170: re-fix fortified-memset
+ warning
+Message-ID: <202403281451.6E8EB15E0@keescook>
+References: <20240328135509.3755090-1-arnd@kernel.org>
+ <20240328135509.3755090-2-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240328075936.223461-5-quic_varada@quicinc.com>
-References: <20240328075936.223461-1-quic_varada@quicinc.com> <20240328075936.223461-5-quic_varada@quicinc.com>
-Subject: Re: [PATCH v5 4/5] clk: qcom: ipq9574: Use icc-clk for enabling NoC related clocks
-From: Stephen Boyd <sboyd@kernel.org>
-To: andersson@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, djakov@kernel.org, dmitry.baryshkov@linaro.org, konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, mturquette@baylibre.com, quic_anusha@quicinc.com, quic_varada@quicinc.com, robh@kernel.org
-Date: Thu, 28 Mar 2024 14:51:09 -0700
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328135509.3755090-2-arnd@kernel.org>
 
-Quoting Varadarajan Narayanan (2024-03-28 00:59:35)
-> diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq957=
-4.c
-> index 0a3f846695b8..187fd9dcdf49 100644
-> --- a/drivers/clk/qcom/gcc-ipq9574.c
-> +++ b/drivers/clk/qcom/gcc-ipq9574.c
-> @@ -4301,6 +4302,56 @@ static const struct qcom_reset_map gcc_ipq9574_res=
-ets[] =3D {
->         [GCC_WCSS_Q6_TBU_BCR] =3D { 0x12054, 0 },
->  };
-> =20
-> +#define IPQ_APPS_ID                    9574    /* some unique value */
+On Thu, Mar 28, 2024 at 02:55:04PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The carl9170_tx_release() function sometimes triggers a fortified-memset
+> warning in my randconfig builds:
+> 
+> In file included from include/linux/string.h:254,
+>                  from drivers/net/wireless/ath/carl9170/tx.c:40:
+> In function 'fortify_memset_chk',
+>     inlined from 'carl9170_tx_release' at drivers/net/wireless/ath/carl9170/tx.c:283:2,
+>     inlined from 'kref_put' at include/linux/kref.h:65:3,
+>     inlined from 'carl9170_tx_put_skb' at drivers/net/wireless/ath/carl9170/tx.c:342:9:
+> include/linux/fortify-string.h:493:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+>   493 |                         __write_overflow_field(p_size_field, size);
+> 
+> Kees previously tried to avoid this by using memset_after(), but it seems
+> this does not fully address the problem. I noticed that the memset_after()
+> here is done on a different part of the union (status) than the original
+> cast was from (rate_driver_data), which may confuse the compiler.
+> 
+> Unfortunately, the memset_after() trick does not work on driver_rates[]
+> because that is part of an anonymous struct, and I could not get
+> struct_group() to do this either. Using two separate memset() calls
+> on the two members does address the warning though.
+> 
+> Fixes: fb5f6a0e8063b ("mac80211: Use memset_after() to clear tx status")
+> Link: https://lore.kernel.org/lkml/20230623152443.2296825-1-arnd@kernel.org/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-How is this supposed to stay unique? I don't understand
-icc_node_create() API quite honestly. Why can't icc_clk_register()
-maintain some ida of allocated numbers? Or is there some global number
-space that we can "reserve" from? I'm quite amazed this is how things
-are connected in interconnect framework.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-> +
-> +enum {
-> +       ICC_ANOC_PCIE0,
-> +       ICC_SNOC_PCIE0,
-> +       ICC_ANOC_PCIE1,
-> +       ICC_SNOC_PCIE1,
-> +       ICC_ANOC_PCIE2,
-> +       ICC_SNOC_PCIE2,
-> +       ICC_ANOC_PCIE3,
-> +       ICC_SNOC_PCIE3,
-> +       ICC_SNOC_USB,
-> +       ICC_ANOC_USB_AXI,
-> +       ICC_NSSNOC_NSSCC,
-> +       ICC_NSSNOC_SNOC_0,
-> +       ICC_NSSNOC_SNOC_1,
-> +       ICC_NSSNOC_PCNOC_1,
-> +       ICC_NSSNOC_QOSGEN_REF,
-> +       ICC_NSSNOC_TIMEOUT_REF,
-> +       ICC_NSSNOC_XO_DCD,
-> +       ICC_NSSNOC_ATB,
-> +       ICC_MEM_NOC_NSSNOC,
-> +       ICC_NSSNOC_MEMNOC,
-> +       ICC_NSSNOC_MEM_NOC_1,
-> +};
-
-Are these supposed to be in a dt-binding header?
-
-> +
-> +static struct clk_hw *icc_ipq9574_hws[] =3D {
-> +       [ICC_ANOC_PCIE0] =3D &gcc_anoc_pcie0_1lane_m_clk.clkr.hw,
-> +       [ICC_SNOC_PCIE0] =3D &gcc_anoc_pcie1_1lane_m_clk.clkr.hw,
-> +       [ICC_ANOC_PCIE1] =3D &gcc_anoc_pcie2_2lane_m_clk.clkr.hw,
-> +       [ICC_SNOC_PCIE1] =3D &gcc_anoc_pcie3_2lane_m_clk.clkr.hw,
-> +       [ICC_ANOC_PCIE2] =3D &gcc_snoc_pcie0_1lane_s_clk.clkr.hw,
-> +       [ICC_SNOC_PCIE2] =3D &gcc_snoc_pcie1_1lane_s_clk.clkr.hw,
+-- 
+Kees Cook
 
