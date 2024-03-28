@@ -1,122 +1,256 @@
-Return-Path: <linux-kernel+bounces-122403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F4EE88F677
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:39:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7641288F67C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 336C61C25E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:39:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C20D297961
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF0328E6;
-	Thu, 28 Mar 2024 04:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA1039FE9;
+	Thu, 28 Mar 2024 04:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s/6yM3A3"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="YUKGjwOi"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412CE22094;
-	Thu, 28 Mar 2024 04:38:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E572B9A6;
+	Thu, 28 Mar 2024 04:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711600736; cv=none; b=mSOYYngQ2Ahs7SCahRdSgHE/O2oF9f2r0XUcf91OgQAUcTHdaM3TZlDbbjSP2nMFfcuSNoTDLpZVGeSc6ZTuWhKrI49N4tsG1i94dTVcqvLFuWJfMXI3PcrBzdss1cxrmQNr9tYVB+9OjeMkv+OvCFWjDE+PM+WdpSvTd6My8qc=
+	t=1711600794; cv=none; b=ntWVlhm/4OnrJkx22hbsBqyYJvKk0+HTrPvQeyel7oGyLBBn86X3BRqPvw4JHxtV5cnu0Sb+MOfoSF4mqlGYbw+lr5rJoBSt+lgBHdk4+jeEuSeRmJPfbLovzLgg5IK49RGiWKUNFOajDcR7Elo2YKstnV85z+8Wm+NkNVRXQzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711600736; c=relaxed/simple;
-	bh=xJUJBVcTrcoVWKWI3noVCP/ZJuIJJ8OvP66ZFl3lGwc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EKydnLtR9l61d/HSgn0fB2lAPMN0l+SHUPTiESm5VdfxherjIkrdUgnqHJOt4BKVpkQKZFQaeXlCBErrPB+L7sMma2VOElCo480FIIlhoAl2Hed4yVAhO+CrM8BAU6FmM41nsMRRezfcJDPm8FdybpxG/9NL3x1QSxEe2iZ2XMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=s/6yM3A3; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=L2eLyY9/pC8EXuZ02In+NSGjvj0LLz9UHxJBhvFZYGA=; b=s/6yM3A3kOt+PKN3V+URRlK5AK
-	akTx62Bf7DEH6+1H7Kug56ZKJ3IbLEALZPDV3SAXP2dqEP++iSGUbDevhEXuVMA3nUfNebJ3+/adW
-	GvGTVU1e93CTO9HlhW2z1CcRTmlGlAh4ZG/ROB/dkWrc0mocKhGxiHsoO1Oy5r8Mg7LFuguapgTWu
-	i8ZhHJpIJW7uqR/sABrluz/c8Vw4OPv3h1Svh8+rFNPOFkcqhlbsRfzpdSNFTA7NcZrVQrwZZqYWu
-	AvRFdCqYbL042qgh+SZZUbEAt5VCVwTcipyBjUmdrKN/HwN6jck8E6EJBL8AapMAaERw9MlkWct0n
-	1RFLBWcQ==;
-Received: from [50.53.2.121] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rphXS-0000000CPWL-3DPM;
-	Thu, 28 Mar 2024 04:38:54 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org
-Subject: [PATCH] spi: spi.h: fix punctuation & grammar typos
-Date: Wed, 27 Mar 2024 21:38:54 -0700
-Message-ID: <20240328043854.18249-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711600794; c=relaxed/simple;
+	bh=d9lVMBqip8Vlse1tnqzWa5D/+rQuj4kjXCm2F4hQayo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BtHjyY0shR+02q7lvVlUWMdlsQlKZUzdnTf+Kw98fZA/wU9eFU+9HHy/UKMNH/0wvJ7vSHa2/ri0X+rWwehdz+Mgwc+EpRM0N3ewqDSH4t/UqPoScOE6M0yFZ766fI95we662FZU9PlVFPRW7dYpzcMB3Y+z+QWipCLSLzngISw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=YUKGjwOi; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711600789;
+	bh=d9lVMBqip8Vlse1tnqzWa5D/+rQuj4kjXCm2F4hQayo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YUKGjwOirTEYIK4hsG7Xye20iU/dXC+apRyDbdniRLLZXRSYHAC226cSIpDQ9i+a6
+	 nOiTUQhHNwbt05MuzlRO+53kX1PmJEzpNltHijzX1rFZXJxbsMk1m1c0nFc3VDLeyC
+	 yy/UD3TllFE3e4hVdeg7uSE/fk7US9x2fX3J09WrQ/eaiRPIpcpn5YJW0smadqAZ3J
+	 6MeyqAm92hvGfs0l6HlWekefZanfj4KKJ2Wcbdti0Otq58N1dpsB1SjoqjtGdaCtBU
+	 E3/E+7EkQ62/M2k+Q7faZFSiin6MT/uvrNJpC3GHEKPH1uQQk27d2RsiTzawAxatK9
+	 2JzOVSVChZG/Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V4rRm1FnPz4wck;
+	Thu, 28 Mar 2024 15:39:48 +1100 (AEDT)
+Date: Thu, 28 Mar 2024 15:39:47 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Linux Doc Mailing List
+ <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew
+ Morton <akpm@linux-foundation.org>, Kent Overstreet
+ <kent.overstreet@linux.dev>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the mm tree
+Message-ID: <20240328153947.3871cfdf@canb.auug.org.au>
+In-Reply-To: <CAJuCfpFTOz8cNiJFiCU5tMM1u5L=wXRsXqxUhN9g-R0u77CyZw@mail.gmail.com>
+References: <20240325123603.1bdd6588@canb.auug.org.au>
+	<CAJuCfpH4Ee00hM9+B7=mi5Dwjrhov8vUK-KwPuoO3wsD7iJSAQ@mail.gmail.com>
+	<5e1321ca-0d46-4e9d-a6e5-0560d99f65ff@infradead.org>
+	<CAJuCfpFTOz8cNiJFiCU5tMM1u5L=wXRsXqxUhN9g-R0u77CyZw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/1atUFZUt6qVSh.rRHhnvYDD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Fix various punctuation and grammar typos in <linux/spi/spi.h>.
+--Sig_/1atUFZUt6qVSh.rRHhnvYDD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
+Hi all,
 
- include/linux/spi/spi.h |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+On Mon, 25 Mar 2024 23:16:55 -0700 Suren Baghdasaryan <surenb@google.com> w=
+rote:
+>
+> Thanks! I'll change back all the instances in the documentation where
+> we replaced original names with _noprof versions.
 
-diff -- a/include/linux/spi/spi.h b/include/linux/spi/spi.h
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -227,9 +227,9 @@ struct spi_device {
- 	struct spi_statistics __percpu	*pcpu_statistics;
- 
- 	/* Bit mask of the chipselect(s) that the driver need to use from
--	 * the chipselect array.When the controller is capable to handle
-+	 * the chipselect array. When the controller is capable of handling
- 	 * multiple chip selects & memories are connected in parallel
--	 * then more than one bit need to be set in cs_index_mask.
-+	 * then more than one bit needs to be set in cs_index_mask.
- 	 */
- 	u32			cs_index_mask : SPI_CS_CNT_MAX;
- 
-@@ -611,8 +611,8 @@ struct spi_controller {
- 	};
- 
- 	/*
--	 * On some hardware transfer / message size may be constrained
--	 * the limit may depend on device transfer settings.
-+	 * On some hardware, transfer / message size may be constrained.
-+	 * The limit may depend on device transfer settings.
- 	 */
- 	size_t (*max_transfer_size)(struct spi_device *spi);
- 	size_t (*max_message_size)(struct spi_device *spi);
-@@ -676,7 +676,7 @@ struct spi_controller {
- 	void			(*cleanup)(struct spi_device *spi);
- 
- 	/*
--	 * Used to enable core support for DMA handling, if can_dma()
-+	 * Used to enable core support for DMA handling; if can_dma()
- 	 * exists and returns true then the transfer will be mapped
- 	 * prior to transfer_one() being called.  The driver should
- 	 * not modify or store xfer and dma_tx and dma_rx must be set
-@@ -1052,10 +1052,10 @@ struct spi_res {
-  * by the results of previous messages and where the whole transaction
-  * ends when the chipselect goes inactive.
-  *
-- * When SPI can transfer in 1x,2x or 4x. It can get this transfer information
-+ * When SPI can transfer in 1x, 2x or 4x, it can get this transfer information
-  * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
-- * two should both be set. User can set transfer mode with SPI_NBITS_SINGLE(1x)
-- * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three transfer.
-+ * two should both be set. User can set transfer mode with SPI_NBITS_SINGLE(1x),
-+ * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three transfers.
-  *
-  * The code that submits an spi_message (and its spi_transfers)
-  * to the lower layers is responsible for managing its memory.
+I now have the following:
+
+mm/util.c:128: warning: expecting prototype for kmemdup_noprof(). Prototype=
+ was for kmemdup() instead
+mm/util.c:613: warning: expecting prototype for kvmalloc_node_noprof(). Pro=
+totype was for kvmalloc_node() instead
+mm/util.c:724: warning: expecting prototype for __vmalloc_array_noprof(). P=
+rototype was for __vmalloc_array() instead
+mm/util.c:739: warning: expecting prototype for vmalloc_array_noprof(). Pro=
+totype was for vmalloc_array() instead
+mm/util.c:762: warning: expecting prototype for vcalloc_noprof(). Prototype=
+ was for vcalloc() instead
+drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comm=
+ents found
+drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comm=
+ents found
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:1: warning: no structured comme=
+nts found
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'read_mpcc_state' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'mpc_init_single_inst' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'get_mpcc_for_dpp_from_secondary' not described in 'mpc_=
+funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'get_mpcc_for_dpp' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'wait_for_idle' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'assert_mpcc_idle_before_connect' not described in 'mpc_=
+funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'init_mpcc_list_from_hw' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_denorm' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_denorm_clamp' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_output_csc' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_ocsc_default' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_output_gamma' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'power_on_mpc_mem_pwr' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_dwb_mux' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'disable_dwb_mux' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'is_dwb_idle' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_out_rate_control' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_gamut_remap' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'program_1dlut' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'program_shaper' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'acquire_rmu' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'program_3dlut' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'release_rmu' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'get_mpc_out_mux' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_bg_color' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:547: warning: Function paramete=
+r or struct member 'set_mpc_mem_lp_mode' not described in 'mpc_funcs'
+drivers/gpu/drm/amd/display/dc/inc/hw/opp.h:1: warning: no structured comme=
+nts found
+drivers/gpu/drm/amd/display/dc/inc/hw/opp.h:1: warning: no structured comme=
+nts found
+drivers/gpu/drm/amd/display/dc/link/hwss/link_hwss_dio.h:1: warning: no str=
+uctured comments found
+drivers/gpu/drm/amd/display/dc/link/hwss/link_hwss_dio.h:1: warning: no str=
+uctured comments found
+drivers/slimbus/stream.c:49: warning: Excess struct member 'segdist_codes' =
+description in 'segdist_code'
+include/linux/slab.h:730: warning: Function parameter or struct member '_n'=
+ not described in 'kcalloc'
+include/linux/slab.h:730: warning: Function parameter or struct member '_si=
+ze' not described in 'kcalloc'
+include/linux/slab.h:730: warning: Function parameter or struct member '_fl=
+ags' not described in 'kcalloc'
+include/linux/slab.h:730: warning: Excess function parameter 'n' descriptio=
+n in 'kcalloc'
+include/linux/slab.h:730: warning: Excess function parameter 'size' descrip=
+tion in 'kcalloc'
+include/linux/slab.h:730: warning: Excess function parameter 'flags' descri=
+ption in 'kcalloc'
+mm/slub.c:3969: warning: expecting prototype for kmem_cache_alloc_node_nopr=
+of(). Prototype was for kmem_cache_alloc_node() instead
+mm/util.c:128: warning: expecting prototype for kmemdup_noprof(). Prototype=
+ was for kmemdup() instead
+mm/util.c:613: warning: expecting prototype for kvmalloc_node_noprof(). Pro=
+totype was for kvmalloc_node() instead
+mm/util.c:724: warning: expecting prototype for __vmalloc_array_noprof(). P=
+rototype was for __vmalloc_array() instead
+mm/util.c:739: warning: expecting prototype for vmalloc_array_noprof(). Pro=
+totype was for vmalloc_array() instead
+mm/util.c:762: warning: expecting prototype for vcalloc_noprof(). Prototype=
+ was for vcalloc() instead
+mm/vmalloc.c:3722: warning: expecting prototype for __vmalloc_node_range_no=
+prof(). Prototype was for __vmalloc_node_range() instead
+mm/vmalloc.c:3867: warning: expecting prototype for __vmalloc_node_noprof()=
+ Prototype was for __vmalloc_node() instead
+mm/vmalloc.c:3940: warning: expecting prototype for vzalloc_noprof(). Proto=
+type was for vzalloc() instead
+mm/vmalloc.c:3978: warning: expecting prototype for vmalloc_node_noprof(). =
+Prototype was for vmalloc_node() instead
+mm/vmalloc.c:3996: warning: expecting prototype for vzalloc_node_noprof(). =
+Prototype was for vzalloc_node() instead
+mm/vmalloc.c:4024: warning: expecting prototype for vmalloc_32_noprof(). Pr=
+ototype was for vmalloc_32() instead
+mm/vmalloc.c:4040: warning: expecting prototype for vmalloc_32_user_noprof(=
+). Prototype was for vmalloc_32_user() instead
+mm/mempool.c:383: warning: expecting prototype for mempool_alloc_noprof(). =
+Prototype was for mempool_alloc() instead
+mm/page_alloc.c:4991: warning: expecting prototype for alloc_pages_exact_no=
+prof(). Prototype was for alloc_pages_exact() instead
+mm/page_alloc.c:5016: warning: expecting prototype for alloc_pages_exact_ni=
+d_noprof(). Prototype was for alloc_pages_exact_nid() instead
+mm/page_alloc.c:6463: warning: expecting prototype for alloc_contig_range_n=
+oprof(). Prototype was for alloc_contig_range() instead
+mm/page_alloc.c:6627: warning: expecting prototype for alloc_contig_pages_n=
+oprof(). Prototype was for alloc_contig_pages() instead
+mm/mempolicy.c:2223: warning: expecting prototype for alloc_pages_mpol_nopr=
+of(). Prototype was for alloc_pages_mpol() instead
+mm/mempolicy.c:2298: warning: expecting prototype for vma_alloc_folio_nopro=
+f(). Prototype was for vma_alloc_folio() instead
+mm/mempolicy.c:2326: warning: expecting prototype for alloc_pages_noprof().=
+ Prototype was for alloc_pages() instead
+mm/util.c:128: warning: expecting prototype for kmemdup_noprof(). Prototype=
+ was for kmemdup() instead
+mm/util.c:613: warning: expecting prototype for kvmalloc_node_noprof(). Pro=
+totype was for kvmalloc_node() instead
+mm/util.c:724: warning: expecting prototype for __vmalloc_array_noprof(). P=
+rototype was for __vmalloc_array() instead
+mm/util.c:739: warning: expecting prototype for vmalloc_array_noprof(). Pro=
+totype was for vmalloc_array() instead
+mm/util.c:762: warning: expecting prototype for vcalloc_noprof(). Prototype=
+ was for vcalloc() instead
+mm/percpu.c:1745: warning: expecting prototype for pcpu_alloc_noprof(). Pro=
+totype was for pcpu_alloc() instead
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/1atUFZUt6qVSh.rRHhnvYDD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYE9JMACgkQAVBC80lX
+0Gyc1gf9G+Yw5SVExufy2gkhTVQcY3VfSUzpMaVlhXRzyVPVgVQXRoRQ2ZwIt+Vu
+w1tXAza8CkV4odJvGnaFVYLPyI1xKOFz9PSndX2dN6T/kBxEAKkJMi2tMNouPxLc
+aGhFLPIzM2Qf/enN2m//lrviGHbGxNzI0yYJkuRtJ+OOBnGnwx9+VAWdHd4Ep0vW
+pmyqsDdDH0ih/l++2HF2XokieuBtXMd6f5aFfTpQw88kUQ/hXks14GCiY2h0L7pG
+4aFUYGOF6/PM8BjpjM4sJnH+QtrgW6JDOF6lYMBf6QGEllFAc/T55inJD5J+elpd
+zkfEGTx/yYqF0/yB62LezET2blHdhg==
+=rqsu
+-----END PGP SIGNATURE-----
+
+--Sig_/1atUFZUt6qVSh.rRHhnvYDD--
 
