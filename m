@@ -1,197 +1,111 @@
-Return-Path: <linux-kernel+bounces-122868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C52F388FEB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:09:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E67588FEB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FF3F28E5B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:09:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A5F72935FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FED7EEF6;
-	Thu, 28 Mar 2024 12:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="NTNWV+Rm"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA1C7EEF6;
+	Thu, 28 Mar 2024 12:10:54 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584D6651AB
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED005474B
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711627783; cv=none; b=G0Qc0YA2eUKohmsCiGI/Eio1dN9GiZo9LOzUICl2kGhzsumlEerEq1kEMl0HDvz/e2ovrd7kRHGWex0ckOlPcjrYXkHmQORM/MhQ79sYp6ghVk/crWtMxcvK5dzfdB26+ac9LHIXokD7opMWR0INwHMAvT44tNypGvGfEsad5HY=
+	t=1711627854; cv=none; b=gyHdBs4ffLYjnN+6IzlKsQfjTxX3OwE6Hnn5iPWCl+o4+EbDgOKIU67LungrXvcziT5sIlTdP9yxYeOtUzrrfFEMqVVBjGaADXGx5O2r9VNAskRpDVIN46/N2u1WgxULkofFQdS8axw7v6BT/gPwn7C+68mYoP4ww8/UftF86dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711627783; c=relaxed/simple;
-	bh=vnx4g3owfrYya81NQeB0zYvkAR4Dw7dFzjBLlvRWxFQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aHMlmNMplzugjAMC1Vrh7JluAbUHNM2uyWXeROB+FBEUbyD/vkrR6xHtOq22cZXYHPRkBqughvujldtKgxgvQG3WGDW50jsirMLkw9XvseoNSQA43BI/ALuysnJxF2Whb+AHJEBolmPQW1ciluF96gFPSEQNw80IcxcvlswriYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=NTNWV+Rm; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-229d01e81f1so451814fac.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711627780; x=1712232580; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/WXWD1P2EUdUvDGnk7t3ymrWbjSRue1eZVAHGlT2jeU=;
-        b=NTNWV+Rmdz073utZqUJeJlRc5YISp5nxuAM1a+b1a86Qmt0AcpfH8uNSik8jUDVVTR
-         452ZPuOJmGISHTR3r9immtawqjO3Ard2FNa3weN651/Lfi9CSn26lVIEv9HgxtzG02At
-         WNF0g8+MZKjfqZl50p2NNsg5aMM+pNvbm7e0bO82C3NhICP3upEo2S72uCrfrVQWzE0z
-         p9JqThRiv7UlQmIcU8wiVLNccZJ0afY1IYKGG1lUg4mrwdpIpKWroixn/3EhTfeniKOL
-         7jzoxggJwVaEawpY1cLrKbC1aHFWIQnh2F2zG2VRwZ+6dGcyTki5AYaCH4SMWgB21Xx3
-         R6pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711627780; x=1712232580;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/WXWD1P2EUdUvDGnk7t3ymrWbjSRue1eZVAHGlT2jeU=;
-        b=tCvtofolvusIcI9/MoDUf7RSN06KTTdbjX8UAlSMi1ofW2hg29QMF3DlChgz0M8TK1
-         SPw12ybzih77w0DULH0yiptBJjDbOeJB4qMeIz+rztIGRSZhDiTm+EzhtECpQpVGhBM/
-         igm9uo72WqDBkqwAoQeoptZ63fOhvK3tiLK3jKl0/LK8VAEo1c/EwNZyAX3pyfL4X1gz
-         HWpkmG7Z3crzrjQ+hdi/35HZYIak6w0djPycDMfwKdYIpIHHbndLr/Yu55//OWSkfUOf
-         W/L1dEY3sxMluasYxQDzK1OlYUKil5taHQsHNVSPxmkjLs+Aj98kPwa16SlgI34fWlSI
-         Qu1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU5K+7KlGje3LDVyQW2BnHHAmwmnkPzlBzN3wQT7A9bg0sZ5wGpQZ4Eo3mkLz7JSa6fzprtZGs270lri32H1W3yZ5fOfrhTZM301vHI
-X-Gm-Message-State: AOJu0YzNtdVKwaroZtEt1589utulX025ypUa1DiPrYUu59M2vm9BsDdx
-	rrcKop8lj5mZK4berzVY77FssiYeyFtD4nPm9TF3ig9ht40CQq1xEws7pAusJaKdIr1munwK7tS
-	clHIay1J8NOhkHYSAoD7nuB1waWSupGuBN/Z5qg==
-X-Google-Smtp-Source: AGHT+IG6KMSsNTaCJ4B801uxGRphzA7peDuz6U9DvVc2Nrjue29uyXVo1+rBJ4jLm7c2h0TDErvLIdg+N+zr8LbQtwE=
-X-Received: by 2002:a05:6870:510:b0:22b:a8f3:36b7 with SMTP id
- j16-20020a056870051000b0022ba8f336b7mr24986oao.55.1711627780242; Thu, 28 Mar
- 2024 05:09:40 -0700 (PDT)
+	s=arc-20240116; t=1711627854; c=relaxed/simple;
+	bh=XLR5seFyaOZ89hdv/Ug8D4XWdLSyEghesi9PWjNcV6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uZ0056mjwogczEW5ZoD8Hzhrc0kiF/tkqAtchWIClvg2LWYKrbgj0LvFvgXIZrPRNGnYwRYrzek37vIzivwmkah3ad15kp7LS9CDRYfYrYFffP2idN5vrZLbJr+nSng0+/x/Z/c+ENKVAIqHd5k/4stDM6+wyK1xHIRduOXgcTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rpoam-0003cy-1q; Thu, 28 Mar 2024 13:10:48 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rpoal-008zxt-FO; Thu, 28 Mar 2024 13:10:47 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rpoal-00CxMb-1I;
+	Thu, 28 Mar 2024 13:10:47 +0100
+Date: Thu, 28 Mar 2024 13:10:47 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] pwm: add missing kernel-doc for pwm_chip:cdev
+Message-ID: <3xqcgvyz2dunxxnmstt63d3v235r3cfh6ddsajrnogpw4zvy7b@w7tzawgexthc>
+References: <20240328045515.15874-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327061258.2370291-1-sorear@fastmail.com> <CAEEQ3w=yNEktgUucmKuUvqfwDYYztVX+jofi5Q7hG-yQWcLbTA@mail.gmail.com>
- <234c458c-15f1-423f-a2fd-0abfc6232c66@app.fastmail.com>
-In-Reply-To: <234c458c-15f1-423f-a2fd-0abfc6232c66@app.fastmail.com>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Thu, 28 Mar 2024 20:09:29 +0800
-Message-ID: <CAEEQ3wm3pJmAndvW1FvH0x2kKNsD8q2-TykasYdNqB1njk-R9A@mail.gmail.com>
-Subject: Re: [External] [PATCH] riscv: process: Fix kernel gp leakage
-To: "Stefan O'Rear" <sorear@fastmail.com>
-Cc: linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vl5k7ifaxjvijgw2"
+Content-Disposition: inline
+In-Reply-To: <20240328045515.15874-1-rdunlap@infradead.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--vl5k7ifaxjvijgw2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Stefan,
+Hello Randy,
 
-On Thu, Mar 28, 2024 at 12:54=E2=80=AFAM Stefan O'Rear <sorear@fastmail.com=
-> wrote:
->
-> On Wed, Mar 27, 2024, at 4:43 AM, yunhui cui wrote:
-> > Hi Stefan,
-> >
-> > On Wed, Mar 27, 2024 at 2:14=E2=80=AFPM Stefan O'Rear <sorear@fastmail.=
-com> wrote:
-> >>
-> >> childregs represents the registers which are active for the new thread
-> >> in user context. For a kernel thread, childregs->gp is never used sinc=
-e
-> >> the kernel gp is not touched by switch_to. For a user mode helper, the
-> >> gp value can be observed in user space after execve or possibly by oth=
-er
-> >> means.
-> >>
-> >> Fixes: 7db91e57a0ac ("RISC-V: Task implementation")
-> >> Signed-off-by: Stefan O'Rear <sorear@fastmail.com>
-> >> ---
-> >>  arch/riscv/kernel/process.c | 3 ---
-> >>  1 file changed, 3 deletions(-)
-> >>
-> >> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-> >> index 92922dbd5b5c..51042f48da17 100644
-> >> --- a/arch/riscv/kernel/process.c
-> >> +++ b/arch/riscv/kernel/process.c
-> >> @@ -27,8 +27,6 @@
-> >>  #include <asm/vector.h>
-> >>  #include <asm/cpufeature.h>
-> >>
-> >> -register unsigned long gp_in_global __asm__("gp");
-> >> -
-> >>  #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_=
-PER_TASK)
-> >>  #include <linux/stackprotector.h>
-> >>  unsigned long __stack_chk_guard __read_mostly;
-> >> @@ -207,7 +205,6 @@ int copy_thread(struct task_struct *p, const struc=
-t kernel_clone_args *args)
-> >>         if (unlikely(args->fn)) {
-> >>                 /* Kernel thread */
-> >>                 memset(childregs, 0, sizeof(struct pt_regs));
-> >> -               childregs->gp =3D gp_in_global;
-> >>                 /* Supervisor/Machine, irqs on: */
-> >>                 childregs->status =3D SR_PP | SR_PIE;
-> >>
-> >> --
-> >> 2.40.1
-> >>
-> >>
-> > Can you help express in more detail what the problem was before fixing =
-it?
->
-> It's a KASLR bypass, since gp_in_global is the address of the kernel symb=
-ol
-> __global_pointer$.
->
-> The /* Kernel thread */ comment is somewhat inaccurate in that it is also=
- used
-> for user_mode_helper threads, which exec a user process, e.g. /sbin/init =
-or
-> when /proc/sys/kernel/core_pattern is a pipe. Such threads do not have
-> PF_KTHREAD set and are valid targets for ptrace etc. even before they exe=
-c.
->
-> childregs is the *user* context during syscall execution and it is observ=
-able
-> from userspace in at least five ways:
->
-> 1. kernel_execve does not currently clear integer registers, so the start=
-ing
->    register state for PID 1 and other user processes started by the kerne=
-l has
->    sp =3D user stack, gp =3D kernel __global_pointer$, all other integer =
-registers
->    zeroed by the memset in the patch comment.
->
->    This is a bug in its own right, but I'm unwilling to bet that it is th=
-e only
->    way to exploit the issue addressed by this patch.
->
-> 2. ptrace(PTRACE_GETREGSET): you can PTRACE_ATTACH to a user_mode_helper =
-thread
->    before it execs, but ptrace requires SIGSTOP to be delivered which can=
- only
->    happen at user/kernel boundaries.
->
-> 3. /proc/*/task/*/syscall: this is perfectly happy to read pt_regs for
->    user_mode_helpers before the exec completes, but gp is not one of the
->    registers it returns.
->
-> 4. PERF_SAMPLE_REGS_USER: LOCKDOWN_PERF normally prevents access to kerne=
-l
->    addresses via PERF_SAMPLE_REGS_INTR, but due to this bug kernel addres=
-ses
->    are also exposed via PERF_SAMPLE_REGS_USER which is permitted under
->    LOCKDOWN_PERF. I have not attempted to write exploit code.
->
-> 5. Much of the tracing infrastructure allows access to user registers. I =
-have
->    not attempted to determine which forms of tracing allow access to user
->    registers without already allowing access to kernel registers.
->
-> Does this help? How much of this should be in the commit message?
+On Wed, Mar 27, 2024 at 09:55:13PM -0700, Randy Dunlap wrote:
+> Add a kernel-doc description of @cdev to prevent a build warning:
+>=20
+> include/linux/pwm.h:308: warning: Function parameter or struct member 'cd=
+ev' not described in 'pwm_chip'
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-Fine enough, Thanks.
+Thanks for the fix, I applied it to my for-next branch at
+https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git pwm/for-=
+next
+=2E
 
-Thanks,
-Yunhui
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vl5k7ifaxjvijgw2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYFXkYACgkQj4D7WH0S
+/k6cKQf/RspDnaB8B793IIf5VGeniUSJQJ6Y+ZbSnl7Nd5F8rpMpZ+V2dNkJ02eA
+sO64DEi9sdjm/xhiJh1qyZgJi4cmuHwl5SmZCOlQi4gVTtGXMydMUW8gL4MtsUiR
+ZS3KXz57oDWs6ZPRz2cAUwfut/b1Qs/9R9qOnb2JM/KFrYFxlQgtwxaXga1wweFB
+TJL7hElzajXZygks1pq7LNocMhvtdRz4hUBGjBekqLyLFXTLkY6TP2m0vep5UHJC
+U9irHFFFh5y0a2yhoQDEwqG2AYsLa3uFPEMC/GjKM85sUngv6O1C1QrCA4D2FRnT
+Adj9LPGcE8BWs4zr8UHUBElzBILs8g==
+=0Tli
+-----END PGP SIGNATURE-----
+
+--vl5k7ifaxjvijgw2--
 
