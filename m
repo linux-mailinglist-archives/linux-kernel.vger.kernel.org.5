@@ -1,198 +1,152 @@
-Return-Path: <linux-kernel+bounces-123545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 596B4890A9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:07:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8649890AA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:09:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD38294171
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:07:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6391C28333
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:09:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022661386A3;
-	Thu, 28 Mar 2024 20:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C45713849A;
+	Thu, 28 Mar 2024 20:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kFYtKs/u"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="b/LxhMJ5"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C061B36AF5;
-	Thu, 28 Mar 2024 20:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F8E36AF5
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711656426; cv=none; b=PvgRZmfcU6vKRaH312Wy8WkiAM1xWHzqSI1c9M5lpIGsxoIp+1C4e3kWVMNgqNXDXL6/1anhNWBeQo9D5GgJBbPvQKYoyoYN8tHIxQstgvvO2/LKj2E8RoTisScKFu/Ys8VO8e9P9EKCaWVM9dRI2ZZBmJZGToJJTTGc3FmJ0VU=
+	t=1711656569; cv=none; b=ikQr1otFOq0ztyhyB8jOp1pOiGVjTo8fu3m9xShZFFjRiuUiwEViRp9Hj2fCzyEQ+N5AGKvCFYD5qyFz8xDQLqNimSZOOXB+Pr/hvsNM7Qr6DzB4Tp5ikODVaQqYPM/9+h5UwQph00Z4aVmnA6Vs0GOx7Jv5rQU6lT1wgijBGZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711656426; c=relaxed/simple;
-	bh=icLKc+NlLTA/ubQEiOvaKjJVK9wgarwoGcCMWXJPcBc=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=UjZdHd2oyJy0YO73ng86PfkVEWuRMeoQTT2vX87xYHK/Xfh8cmGWhAyG6AEUK1undFderXtKfJdWhmLU3InT0Mhd0Vc+TZz1bRz9ciktSuypp15ga8ZS/W/JGsxIXRO0gbcnjUV72tJs/qDJKGqulcUHzd/jxUhwSzi8bCfTZvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kFYtKs/u; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1def89f0cfdso19387755ad.0;
-        Thu, 28 Mar 2024 13:07:04 -0700 (PDT)
+	s=arc-20240116; t=1711656569; c=relaxed/simple;
+	bh=OrfH9kHPnKygy3hofZhQXKxDKdHWeNXPs7Z+BPCJInw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fgyD9hRFx02aPyX6SBVcdFZnkf6a1mmDTwilz/NLUgLPk8/gKwxL6MHwLAI+QlAbohuBeBPCroobVr69kTa5naSY2/BvAnt3n5MZOazIHBgaPhTeYlDs+7VWi3ox3ORQ2t8ciW59CdhHdVGH7MCUONm1U3KHsYOAyOphur9SPUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=b/LxhMJ5; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso2061769a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:09:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711656424; x=1712261224; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ju6YB3mtZJAi658SXHHBI9fZWuQW9dTBciLAhgrB3UE=;
-        b=kFYtKs/ucG8o6RRLKxf1boVJkKWgvzLMq1AVAKM6hyISH2xSZoiDwFnqyGBhei4rVK
-         8b+7tcaLJtwMyWxVN5oZDql+hJBdzB7+31asQpY9V0c0a17GyhTKjU22u37a7ljiST1O
-         2UqujLY+vFhSDAyg2x+rli3Yu1UclAiLuxfLPEqyqZNP6RWWpIZnbMpqBG9hhwhRjG2P
-         tPgTdElJsCp0sNdjK0keb401N1UGjNPr7O6MgjHCaGTVgUthpB0D/EQ7gMoqFjsa0E4G
-         qCeGo/4GG773VIk2GpGQ6LyoMRYe9xFAWW1mnGTbQPaU6rWNrGx/AXdH8vPkL8jvkJTx
-         Q62A==
+        d=linux-foundation.org; s=google; t=1711656566; x=1712261366; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XTxbVAahUUqo8qIWTib74cjwQuWnxXYmY/UOpSlb0dE=;
+        b=b/LxhMJ57ZDdtRC1jnmbGYmHuyi7ZeUNhv+WO4VtE6p2IjBs4Sh6EDg2vfrOHpTRRE
+         ySp5gYKo/2TisecQtLdTEAeGRTEEax8c2YO7gNfnkT60JNQb+iwq5XPDvaMDyONlorTe
+         R/DuoDJ5Qp+aFmQcJWLaTSY+ZmEvQjCGPxAlU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711656424; x=1712261224;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ju6YB3mtZJAi658SXHHBI9fZWuQW9dTBciLAhgrB3UE=;
-        b=dDVkn4xxX/w8ih57EjGPJnnUg7O5oXs/e9u208z/VUC6ehk1EOJvnm+WyToQXWFVs6
-         4m57xdRauq/jbiZ4E42AV70v6rSv1rmICAOetCMO0fR9rYMpD3Mvu7m2YFS1FnV36lS7
-         XcjqWs0cjoHENTE0lbaa+jZLW+/H6HDSpPnaYRrkpGP8+RyNHeP860EFn8KVFnio7m4o
-         U9i94LaaFmF7JPl/zO00r+VdY2dydATP19rdwcmR6mXu4tih49R1z3mvNygUMJz94uBs
-         KUuFJw/SmY0uH3bgZ0eqYh5XvRzbAlU9MHfwAPiBXjR/mgczwxCM8BZ95EoxTGZ7zCH5
-         KnVw==
-X-Forwarded-Encrypted: i=1; AJvYcCVfD6pM3JDCFKK6wdcBniMCZFRvdfg5SOflgOnU/2WVX1oljdnejG9LIpIJNhImh6lo84XXaSNQ2o25wETr3VzwsalBA1/EDXXJ6ByxFdfRATvKnPdsEna9+wkSb5ivp78S3HYY4nGnxWq70mmurwo6S1i3
-X-Gm-Message-State: AOJu0YzU924tE98C60E7OYZuA+UmqPhLTFpYbNeFzC/RURtPTPW0olTI
-	Jxm+yiwxmOtz+GGIkQdT/Xe0MqPN4C/iySsMi+Dt4Hmk2cCGT2bB
-X-Google-Smtp-Source: AGHT+IELjcqIv0VORj1EnfKe71QoNIdyIK7nr1/XW2jUVaCl1BtmKXz2XUBexFJEuna+vspNKarKVQ==
-X-Received: by 2002:a17:902:f68e:b0:1e0:c070:b082 with SMTP id l14-20020a170902f68e00b001e0c070b082mr5344722plg.14.1711656423944;
-        Thu, 28 Mar 2024 13:07:03 -0700 (PDT)
-Received: from tahera-OptiPlex-5000 ([136.159.49.124])
-        by smtp.gmail.com with ESMTPSA id p2-20020a1709027ec200b001e0af9928casm2069031plb.55.2024.03.28.13.07.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:07:03 -0700 (PDT)
-Date: Thu, 28 Mar 2024 14:07:01 -0600
-From: TaheraFahimi <fahimitahera@gmail.com>
-To: outreachy@lists.linux.dev,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] landlock: Add abstract unix socket connect restrictions
-Message-ID: <ZgXN5fi6A1YQKiAQ@tahera-OptiPlex-5000>
+        d=1e100.net; s=20230601; t=1711656566; x=1712261366;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XTxbVAahUUqo8qIWTib74cjwQuWnxXYmY/UOpSlb0dE=;
+        b=TQqoiaCwto03+NqEhKWFCFdc84Skn2nKjqFgkPtGLbEwhe1R7fs7nDxQHUpJ3OuY6/
+         vdXTaHkPVzuC4sxTXFgrKQ+JlWPDsmh0xZGQuaDflIQTKMixDZN0K539JeZyXMklTnln
+         IwkpRPORiT/MZ3rXjwymBxVGb5kWMfVsansu+Vj1zuFAbALa8cAuF5ocK/a6PwEbMSE7
+         2LEFApsmozQgoOGLW54FfnCYja0oLZaZiGKxYsh+HfA4s6ja8z+YDhNGYwTnyDiYTf54
+         MvitQ6SGXGLTMahG572X6m7qEeimXiaS3hXGKQbFtM779cefDmY+lI1e/Mo8cSYp6JFt
+         mivQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXL1MjN7Gbym9UL7HoqPNTVXBTWFz7/3YfWF7Vkaoakwr/BlDoEmInCZxpSzeKjvHvYAk5K802sM//C0MS/4X2h2Qfel5PDdekmZHmH
+X-Gm-Message-State: AOJu0YzZCyKG3nD870C4GMiXbdIeB0YjDQbHJG63tW1qEDE7YU68KSKU
+	11JQjwXoWbUM+8mEuJvbeSeNG+zZ1Yw9XN8NDZmcEl/pYMMrk6ULw79EeSq1gWfjnuuannH06+6
+	4hdua7A==
+X-Google-Smtp-Source: AGHT+IH5L1fxOIwUYxNmDIgSBfgs+INEPbgDhVdz7a57F3LCISVk/rN2S0WX3sNnjqxPsIwfyqZPNw==
+X-Received: by 2002:a50:cc8e:0:b0:568:c6a2:f427 with SMTP id q14-20020a50cc8e000000b00568c6a2f427mr179380edi.27.1711656566226;
+        Thu, 28 Mar 2024 13:09:26 -0700 (PDT)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id er13-20020a056402448d00b0056c0a3d91easm1177587edb.12.2024.03.28.13.09.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 13:09:24 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso2061740a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:09:24 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWxvo6SR4fYZsLmqHQAvB+ygPED9//EjvxkLItxWJDtGb9zd/AUqHgAPT+WcD1iYjQ2pG4/Obt6eoDrEx1rWGMXmRPHY/Dz8ikTO6jg
+X-Received: by 2002:a17:906:2698:b0:a47:4d61:de44 with SMTP id
+ t24-20020a170906269800b00a474d61de44mr190688ejc.55.1711656564444; Thu, 28 Mar
+ 2024 13:09:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <CADyTPEwt=ZNams+1bpMB1F9w_vUdPsGCt92DBQxxq_VtaLoTdw@mail.gmail.com>
+ <CADyTPEyAidGgBT3f1VJLHb3ouO-r1UyvFp1PcwXxy0NRG94sbw@mail.gmail.com>
+ <1df92fec-7f57-5080-94ed-b149ed384280@leemhuis.info> <14dcd743-144a-9f7b-849c-0843d50e4c04@draconx.ca>
+ <4dce7447-678d-4e60-b76e-b01988bd6515@leemhuis.info>
+In-Reply-To: <4dce7447-678d-4e60-b76e-b01988bd6515@leemhuis.info>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 28 Mar 2024 13:09:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
+Message-ID: <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
+Subject: Re: PROBLEM: Only one CPU active on Ultra 60 since ~4.8 (regression)
+To: Linux regressions mailing list <regressions@lists.linux.dev>, Andreas Larsson <andreas@gaisler.com>
+Cc: Nick Bowler <nbowler@draconx.ca>, linux-kernel@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Abstract unix sockets are used for local interprocess communication without
-relying on filesystem. Since landlock has no restriction for connecting to
-a UNIX socket in the abstract namespace, a sandboxed process can connect to
-a socket outside the sandboxed environment. Access to such sockets should
-be scoped the same way ptrace access is limited.
+On Thu, 28 Mar 2024 at 12:36, Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> [CCing Linus, in case I say something to his disliking]
+>
+> On 22.03.24 05:57, Nick Bowler wrote:
+> >
+> > Just a friendly reminder that this issue still happens on Linux 6.8 and
+> > reverting commit 9b2f753ec237 as indicated below is still sufficient to
+> > resolve the problem.
+>
+> FWIW, that commit 9b2f753ec23710 ("sparc64: Fix cpu_possible_mask if
+> nr_cpus is set") is from v4.8. Reverting it after all that time might
+> easily lead to even bigger trouble.
 
-For a landlocked process to be allowed to connect to a target process, it
-must have a subset of the target process’s rules (the connecting socket
-must be in a sub-domain of the listening socket). This patch adds a new
-LSM hook for connect function in unix socket with the related access rights.
+I'm definitely not reverting a patch from almost a decade ago as a regression.
 
-Signed-off-by: Tahera Fahimi <fahimitahera@gmail.com>
----
- security/landlock/task.c | 70 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+If it took that long to find, it can't be that critical of a regression.
 
-diff --git a/security/landlock/task.c b/security/landlock/task.c
-index 849f5123610b..7f4155fc6174 100644
---- a/security/landlock/task.c
-+++ b/security/landlock/task.c
-@@ -13,6 +13,7 @@
- #include <linux/lsm_hooks.h>
- #include <linux/rcupdate.h>
- #include <linux/sched.h>
-+#include <net/sock.h>
- 
- #include "common.h"
- #include "cred.h"
-@@ -108,9 +109,78 @@ static int hook_ptrace_traceme(struct task_struct *const parent)
- 	return task_ptrace(parent, current);
- }
- 
-+static const struct cred *sk_get_cred(struct sock *sk)
-+{
-+	const struct cred *cred = get_cred(sk->sk_peer_cred);
-+
-+	if (!cred)
-+		return NULL;
-+	return cred;
-+}
-+
-+static const struct landlock_ruleset *get_current_sock_domain(void)
-+{
-+	const struct landlock_ruleset *const dom =
-+		landlock_get_current_domain();
-+
-+	if (!dom)
-+		return NULL;
-+
-+	return dom;
-+}
-+
-+static bool unix_sock_is_scoped(struct sock *const sock,
-+				struct sock *const other)
-+{
-+	bool is_scoped = true;
-+
-+	/* get the ruleset of connecting sock*/
-+	const struct landlock_ruleset *const dom_sock =
-+		get_current_sock_domain();
-+
-+	if (!dom_sock)
-+		return true;
-+
-+	/* get credential of listening sock*/
-+	const struct cred *cred_other = sk_get_cred(other);
-+
-+	if (!cred_other)
-+		return true;
-+
-+	/* retrieve the landlock_rulesets*/
-+	const struct landlock_ruleset *dom_parent;
-+
-+	rcu_read_lock();
-+	dom_parent = landlock_cred(cred_other)->domain;
-+	is_scoped = domain_scope_le(dom_parent, dom_sock);
-+	rcu_read_unlock();
-+
-+	return is_scoped;
-+}
-+
-+static int task_unix_stream_connect(struct sock *const sock,
-+				    struct sock *const other,
-+				    struct sock *const newsk)
-+{
-+	if (unix_sock_is_scoped(sock, other))
-+		return 0;
-+	return -EPERM;
-+}
-+
-+/**
-+ * hook_unix_stream_connect
-+ */
-+static int hook_unix_stream_connect(struct sock *const sock,
-+				    struct sock *const other,
-+				    struct sock *const newsk)
-+{
-+	return task_unix_stream_connect(sock, other, newsk);
-+}
-+
- static struct security_hook_list landlock_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(ptrace_access_check, hook_ptrace_access_check),
- 	LSM_HOOK_INIT(ptrace_traceme, hook_ptrace_traceme),
-+	LSM_HOOK_INIT(unix_stream_connect, hook_unix_stream_connect),
- };
- 
- __init void landlock_add_task_hooks(void)
--- 
-2.34.1
+So yes, let's treat it as a regular bug. And let's bring in Andreas to
+the discussion too (although presumably he has seen it on the
+sparclinux mailing list).
 
+Andreas, if not, here's the link to lore for the beginning of the thread:
+
+  https://lore.kernel.org/all/CADyTPEwt=ZNams+1bpMB1F9w_vUdPsGCt92DBQxxq_VtaLoTdw@mail.gmail.com/
+
+And from a quick look I do think that commit is buggy, and yes, the
+fix probably is just be to revert it.
+
+As the original report makes clear, that commit 9b2f753ec23710 is
+clearly confused about the difference between "number of CPU's", and
+"index of CPU numbers".
+
+When that smp_fill_in_cpu_possible_map() does
+
+        int possible_cpus = num_possible_cpus();
+
+and then uses that to fill in &__cpu_possible_mask, that's completely
+nonsensical. Because we literally have
+
+  #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
+  #define num_possible_cpus()     cpumask_weight(cpu_possible_mask)
+
+so it's reading cpu_possible_mask to figure out how many cpus it might
+have, and then using that number to set possibly *different* bits in
+the same bitmap that is just used to judge what the max number is.
+
+So I do think a revert is called for, but I'm not going to treat this
+as a regression, I'm going to just treat it as "sparc bug" and hope
+that the sparc people try to figure out why that crazy code was
+written.
+
+And maybe it made more sense back a decade ago than it does now.
+
+Andreas?
+
+                Linus
 
