@@ -1,123 +1,124 @@
-Return-Path: <linux-kernel+bounces-123475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341A7890930
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31258890935
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:27:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2D7928E538
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:26:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFBBC2968DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155AF137925;
-	Thu, 28 Mar 2024 19:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0091384AB;
+	Thu, 28 Mar 2024 19:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=beagleboard-org.20230601.gappssmtp.com header.i=@beagleboard-org.20230601.gappssmtp.com header.b="m0ByF2fc"
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="n9yMInIB"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7F042AA1
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5749D3BBCA;
+	Thu, 28 Mar 2024 19:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711653976; cv=none; b=T4AUW/3/9OZ87H8iD+7FOHakMNOO3LFkf4sdYLbDi0B4XufdzOfESVrXyzrIuEE/soZgdgcNsM/L0pdU4rUwpW6B8SzKwB82fjUunHT5Qg1eIFu5asJgu2yPcywULjVLw76N7ScRTZhTfr2U8DvTs00KZ3/q+cYTdFft/BlLdkc=
+	t=1711654018; cv=none; b=NhOJD6mcpuxy65JNdHsNIM1JSaB4m37vhWb0PzGuWNAp5kd4+ixwLg60L2ySaT61ipS7lIxLTqTOChE+1fCcWCey7V0w4ZZbrTvjJ09165JUqyXGb/VUPEd0u0Gh/9KbnDoNuGs7YdJEqjATH6sVUEYrWxxbBfxI4fx0itDN+T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711653976; c=relaxed/simple;
-	bh=R9BJSPHrXr00UHA65BWhimYwNfe1Hez1jYHp4c8aZvE=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=qdYrQolJqhgdHaRQeWdQKgzBxo/wFJSfR9BgY3bIbnYJ+fovP/ZIJQEOs+5kRpVU+6idNuQG+rgsYGizJKKrPaK/q/QksNR8auOzK20C2/aaaSN1Xh/Oeuf5zca42vcbx2VdeGZzoqKPqIJ/vK2C8pixd14uZNWhDafXxb/+MuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=beagleboard.org; spf=fail smtp.mailfrom=beagleboard.org; dkim=pass (2048-bit key) header.d=beagleboard-org.20230601.gappssmtp.com header.i=@beagleboard-org.20230601.gappssmtp.com header.b=m0ByF2fc; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=beagleboard.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=beagleboard.org
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c3e2e18db7so884692b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20230601.gappssmtp.com; s=20230601; t=1711653974; x=1712258774; darn=vger.kernel.org;
-        h=to:references:message-id:cc:date:in-reply-to:from:subject
-         :mime-version:content-transfer-encoding:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R9BJSPHrXr00UHA65BWhimYwNfe1Hez1jYHp4c8aZvE=;
-        b=m0ByF2fcLQCQ9e+xnyCCdm8AT+i2bsuu9aMw+tVSB5sQ+xexLX3UAcX33sy6iolGa7
-         /09I/T4MR64Un201bZLXtTpYdHL7KegZr+PEvNea7withwI7oSHDZSEZ01S7z6Wrq1nz
-         WCQA5OhH2r0h4ng/Rn8MlzjjLDJppaaySrmKsLu8ufNazuu56uTt5e3+V2JdcNDSD61a
-         MpjPRfLtpcIzkBLFV4nrdpD5wR7c2AjZcE6QZaVmmv7bUt7R9V47d4QHM68CZPn7UK//
-         oBXFxp2ugGK+YPpLvKAuZXo4/mYC6HG8ZKFrjS0sq3CpJFpCbb/u0Z/HboW2ZzZmQz5m
-         bvOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711653974; x=1712258774;
-        h=to:references:message-id:cc:date:in-reply-to:from:subject
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=R9BJSPHrXr00UHA65BWhimYwNfe1Hez1jYHp4c8aZvE=;
-        b=E0s8kjatno/JveJNVsm6ohCxhZLS/GreOGlfaWlUTnR43RfbbeXpkbpWlNb3Trd4EH
-         6VJcKLrdgtS65tiI0bl9LixQ4A4u2QSA/UiwpXsIKHZS6D4SHkCrj+TzBEDr/Efh+dBi
-         fh5tIG9gvEfA9/0W3YadmOlnYihpixcSBtZOhChngSCH6oWLyi67w4FjDmycF+BNrira
-         52BxTDLxmrYKoFbxH1ieWnnD95zsWL+7zj5W2r72jQ7rTa4k1+cBRa4Ytn64N+x6Gklg
-         IVOlxXXWM/aBK7HWvhgTYQuhH792bskVEneLLJlHby4jNbK7+q9EFHQ0KbZhkRS2mSIQ
-         SlMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVslerO1VUVRSfGIHDUJH5cQuVdMHOwFqBwi2AYvHOLi7Kw3YpEYpnbTdadxqWxMvUU/NT+tu/bYf+IKRVEZEX0vk4OEopCCxOZz24U
-X-Gm-Message-State: AOJu0YyQDhKI0x7Gk3Mv0MWu95q8KiRQjGAyOny6yhldtdLbBQhCOV+v
-	jnMoeWu14JMShkEZWuUS7mHWkiqyBB+vOnrbJfET+XA6Wd9fQTJ7QbtvKNUG2YkpSCIt23l+ci4
-	=
-X-Google-Smtp-Source: AGHT+IGlx3a3JQ1O+A1dz9DTs4khTqcNaqXLXR5xsoO6dwypOIBiDpIwjxtu0VtMWPHTyOBDbpTAaQ==
-X-Received: by 2002:a05:6808:2e94:b0:3c3:cdde:32b4 with SMTP id gt20-20020a0568082e9400b003c3cdde32b4mr280577oib.26.1711653973664;
-        Thu, 28 Mar 2024 12:26:13 -0700 (PDT)
-Received: from smtpclient.apple ([2600:381:9b1c:9291:f41d:154e:650f:9d52])
-        by smtp.gmail.com with ESMTPSA id s16-20020a0568080b1000b003c3b6c668a9sm342060oij.1.2024.03.28.12.26.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 12:26:13 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1711654018; c=relaxed/simple;
+	bh=4IjQCbBX39x+rcMchxVSDV412sPV0FIRrFPhrOUu/CE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JdDcTJ12aoovtXHCToRWVRP4A1fzo5WplOEdjslnlkJ5KKt24pL+XGDESHtNUH+XwH3e0Sqe+qBeyY6j4fPHXNYxfwhwHIL7A8acD76vU/jugJsmZ12Pho6a39pNtvi5ZsjyWwD9rzRCG30CMyMFKa0eO9zHEF2ZJ24K8Nw4iQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=n9yMInIB; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id D295B10000A;
+	Thu, 28 Mar 2024 22:26:52 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D295B10000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1711654012;
+	bh=4LvmixhzRlylWi1iASNzlMPPp0Wt/MZ3t6kmFoX+58E=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=n9yMInIBxBcPBRiF4+4Gdh9/V5Ipq/YOieRDnLAUKG/MJyuG5cvYhD76q+0Lh2XPz
+	 8U8cw1uIqHXXYo7hYGGTac1H2d47EJyO1JMuLLb/T5DtR6PM/Mc8+0dNBoIr1pUmcf
+	 bDhrpCXDHpQYszKFJciUY+oNVPPKrxwF7MVfIwJIsp4tMYTJP7yR2p4pjYZO8dcgvP
+	 NLUt26ORj2vdghSHQ7ANc7qH7Y0DAecsZ4GJYPKJPvU2tY9i8YQcW/iu4Kw4/aL3kP
+	 Bye6D44IKNaG51hnne8I2nTGmeemzHHHJyjLKWIT7BvpBv/ydhkQv8ck6hQ/ypLbaz
+	 cSqY20dKj8vGA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu, 28 Mar 2024 22:26:52 +0300 (MSK)
+Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 28 Mar 2024 22:26:52 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <neil.armstrong@linaro.org>, <jbrunet@baylibre.com>,
+	<mturquette@baylibre.com>, <khilman@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <glaroque@baylibre.com>,
+	<rafael@kernel.org>, <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
+	<lukasz.luba@arm.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, Dmitry Rokosov
+	<ddrokosov@salutedevices.com>
+Subject: [PATCH v2 0/3] arm64: dts: amlogic: a1: introduce thermal setup
+Date: Thu, 28 Mar 2024 22:26:34 +0300
+Message-ID: <20240328192645.20914-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 2/2] arm64: dts: ti: Add k3-j722s-beagley-ai
-From: Jason Kridner <jkridner@beagleboard.org>
-In-Reply-To: <CAOCHtYiSYat771sfx-Pdv59GDUBH_TzqkxUM+BMf0Q7Z0KEC9A@mail.gmail.com>
-Date: Thu, 28 Mar 2024 09:26:00 -1000
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Nishanth Menon <nm@ti.com>,
- Jared McArthur <j-mcarthur@ti.com>,
- Deepak Khatri <lorforlinux@beagleboard.org>
-Message-Id: <5C54919E-EBD5-4A16-821F-5146659CCD1D@beagleboard.org>
-References: <CAOCHtYiSYat771sfx-Pdv59GDUBH_TzqkxUM+BMf0Q7Z0KEC9A@mail.gmail.com>
-To: Robert Nelson <robertcnelson@gmail.com>
-X-Mailer: iPhone Mail (21E236)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184477 [Mar 28 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/28 18:21:00
+X-KSMG-LinksScanning: Clean, bases: 2024/03/28 18:21:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/28 18:13:00 #24496606
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+This patch series introduces thermal sensor declaration to the Meson A1
+common dtsi file. It also sets up thermal zones for the AD402 reference
+board. It depends on the series with A1 thermal support at [1].
 
+Changes v2 since v1 at [2]:
+    - provide Neil RvB for cooling-cells dts patch
+    - purge unnecessary 'amlogic,a1-thermal' fallback
 
-> On Mar 28, 2024, at 9:16=E2=80=AFAM, Robert Nelson <robertcnelson@gmail.co=
-m> wrote:
->=20
-> =EF=BB=BFOn Thu, Mar 28, 2024 at 2:12=E2=80=AFPM Robert Nelson <robertcnel=
-son@gmail.com> wrote:
->>=20
->> BeagleBoard.org BeagleY-AI is an easy to use, affordable open source
->> hardware single board computer based on the Texas Instruments AM67A,
->> which features a quad-core 64-bit Arm CPU subsystem, 2 general-purpose
->> digital-signal-processors (DSP) and matrix-multiply-accelerators (MMA),
->> GPU, vision and deep learning accelerators, and multiple Arm Cortex-R5
->> cores for low-power, low-latency GPIO control.
->>=20
->> https://beagley-ai.org/
->> https://openbeagle.org/beagley-ai/beagley-ai
->=20
-> @Jason Kridner we need this to become public when you are ready ^ ;)
->=20
+Links:
+[1] - https://lore.kernel.org/all/20240328191322.17551-1-ddrokosov@salutedevices.com/
+[2] - https://lore.kernel.org/all/20240328134459.18446-1-ddrokosov@salutedevices.com/
 
-Did I mess up? Should already be public. We should make a github.com mirror t=
-hough for up-time/visibility/bandwidth.=20
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 
+Dmitry Rokosov (3):
+  arm64: dts: amlogic: a1: add cooling-cells for DVFS feature
+  arm64: dts: amlogic: a1: introduce cpu temperature sensor
+  arm64: dts: amlogic: ad402: setup thermal-zones
 
-> Boot log:
->=20
-> https://gist.github.com/RobertCNelson/9db8ea04848e7ce2ca52c038fab0e1b7
->=20
-> --
-> Robert Nelson
-> https://rcn-ee.com/
+ .../arm64/boot/dts/amlogic/meson-a1-ad402.dts | 45 +++++++++++++++++++
+ arch/arm64/boot/dts/amlogic/meson-a1.dtsi     | 13 ++++++
+ 2 files changed, 58 insertions(+)
+
+-- 
+2.43.0
+
 
