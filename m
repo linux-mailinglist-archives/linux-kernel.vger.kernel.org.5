@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-123354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371E6890708
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:20:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0940B89070B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 070A21C273AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:20:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 065DEB220FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090F512BF39;
-	Thu, 28 Mar 2024 17:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C61E12EBF3;
+	Thu, 28 Mar 2024 17:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hRird4n+"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iW/39pDo"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B735D80617
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D4B12F38C
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711646408; cv=none; b=gfuskfhoph6n7rTKhuOQNou9g+zShcwlkFs1c1jOCbGXYhabg6vmGROozoRfdTR7BwgHWiW4Dg7F+zE/Ngd/1l4NRSXFRv1f9IflM1pRUfjjvUv+vxdu/ivERXzds/ic+4o8+gCi8UgiAMQFUwLX3RW6bp7mQzk59UgPaFNCKts=
+	t=1711646412; cv=none; b=NEX1LtpdvdltkGsWQkA93XlYLf+em/P/Jxi4PL0nP8m27H7UUPJa3WSLNKqyiFs5JnWPrwQUjVozl+xiNZjpowcADg04HbM2zwQP1Uc4TeswnXTEBooiY4ig1CwlEd3XeJgglxnjmtRUF1a+fm2FRXJOBmPYOLtMS0bGN9yex7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711646408; c=relaxed/simple;
-	bh=5nG12px40b95OiupwSpL661ZIzoB74o9DKh2Yxu7VGA=;
+	s=arc-20240116; t=1711646412; c=relaxed/simple;
+	bh=9y2U5zj1XSiEZQqP81LBCuKEobrFxtST9vwkP9GvsHo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HqTEieWWNDM/cI9ZptCZYtJD9wJQzSfvUfTkMpf8etkbrHwq6UDQHe5M8hs227GAn63gZCYoEaopY9O2lx3iWs1NY0V9QJueYNolSVrM9/Z/bWwn+M1faHcmeiApyU1qRNih0QrIZUTd4jF0TzTY3lqo8U9BTNFdqrUjZqCfeLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hRird4n+; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=dACk1sl6lZZqauF+k4RddxcNg0k7EWwMeK9EWPtEOtfAYNHDspwLovAJZV8iSBNNY7zb4u+E5og4Q14cNd6/wt97utZdiZzmDdG8y3rbIvnY2zjGaYkcBi0ZzdU+EEiKh5PeVTxU5aq4aR+QL9qfZADvEV7WqwkmSAAm01SkuQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iW/39pDo; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711646405;
+	s=mimecast20190719; t=1711646409;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NlDC3S558v4nqZXrURYnNQqnqNZ8k/Xoba+HwgD1low=;
-	b=hRird4n+7ckY0G/VqrihRYWLR0t8V155SeHXNS/M09Dv5DeLsR8Fph+tF0jiFyt8e81ly8
-	VWDHMsfLDf9RXXmuj8d5fN0xQCqkxGnWLond1qk9yG64tGSPce+SHAUbiO4p42rWaR5ZDu
-	tvTnOe2vuGlMAyl60rg7xhbj+nVkRkc=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=pOGUZjzjTM5VUWa9Ov+ku8ROX6G2+xVfPm/xO/kgd3w=;
+	b=iW/39pDoI8497qY2VcIMIOvSyNge0Yu6AQLaksdnsrGyPGf7G8Y1qcaR+ff6BpNHmqFh0V
+	SzV1uJByhxScDX44bWzlv6lclEAn12PR0YATZiXo6oSqrNk+jtRIX2LK0TRMwbFMrtXQQw
+	E+kQ6IpnIkBBZdaOrTJGExafhd3EfVg=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-503-lDR0D0wCOmumcCLX4nG-eQ-1; Thu, 28 Mar 2024 13:20:04 -0400
-X-MC-Unique: lDR0D0wCOmumcCLX4nG-eQ-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6987005a2fbso6544036d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:20:04 -0700 (PDT)
+ us-mta-148-FKJVCZr5Ng-4lTKq8KxPzw-1; Thu, 28 Mar 2024 13:20:07 -0400
+X-MC-Unique: FKJVCZr5Ng-4lTKq8KxPzw-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3c3dc181dd1so1082661b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:20:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711646404; x=1712251204;
+        d=1e100.net; s=20230601; t=1711646407; x=1712251207;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NlDC3S558v4nqZXrURYnNQqnqNZ8k/Xoba+HwgD1low=;
-        b=cGMfZIhSXJbs2HgOCNmjcsCXWLVW7Z8bir8W60ZryiHbfH7LJyLsgTPTYrvX1E4YZV
-         MFnv3tqp9Ga2fLIiM7P0WWEXr6lqIcQFc7rcFbX1Vi13jflXQiQQoOTaTmstAqI71ADN
-         zckomKGU2e1MNxnYmrEFVDJXYegvSM4flONQRMfwjXcCkzrjcplZeKvM/ueXqxqnOpXC
-         HNoLkWWE/gR0OlQUM2xkeIMXf7BX02YLZgImtweXgi6TQDzbbckuebJ1z2Th1/MXDMNJ
-         5Xxmvcb1J5kKx4pPHiNM8xZ8NQw19D2jRzrHYI88DOY8ETy0m/ckT5t1yIBWfFfhHM/Y
-         fBMg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8rd2WasMhaikeA7hTD1IdbuVjbq+OV45gaMOsyXnao6OoDyNBB3Lr/xuzkEhgLbVTi97fsMhA9v78YzzpsrkraQKeqNN7yO4rcpiI
-X-Gm-Message-State: AOJu0YyTizTACZo4qeRLEKAlk1paG4hX7niDUpAwCUj8KhHi1GaTpXH4
-	lUN5IVOO+2vRjkdUdU+OxheEDGGYOVBaPtwRODaq0rqoRzgaZDYP02LHeugAe5iu156n4lGFzEK
-	42h3h+izfza7kBdFF7BfdC2mQCT3rvfXxhjLq9bjKOKxJL6jFgie4+mJfLtTNVA==
-X-Received: by 2002:a05:6214:500a:b0:698:7ab0:eb15 with SMTP id jo10-20020a056214500a00b006987ab0eb15mr2054221qvb.46.1711646403946;
-        Thu, 28 Mar 2024 10:20:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFmeHJjJWBC27/ap5AWRtSmt7CBRCbfvjktUlnWlqC/t2lVabfEtbBhByfRUEWDgZkb7PIurw==
-X-Received: by 2002:a05:6214:500a:b0:698:7ab0:eb15 with SMTP id jo10-20020a056214500a00b006987ab0eb15mr2054204qvb.46.1711646403682;
-        Thu, 28 Mar 2024 10:20:03 -0700 (PDT)
+        bh=pOGUZjzjTM5VUWa9Ov+ku8ROX6G2+xVfPm/xO/kgd3w=;
+        b=wa1EITf4nuuphfeHoooHCfToOZQZIbitmuEeEuNaCPj036Tx6D1VdafcR2+9JGsbed
+         Jta+R1zVP7FyibHHw3OBMse+6UDcH+W7eFDPhy9svu3RW+kqlt2nkIXfbYa3ZtB0KLTB
+         JkLwhCIr0th3+YPc4V12lN02uUYdLxDwimzBXwjbf3IUm2zudWKyT5EuUrI7EkqOX2PI
+         N5LHUlnCqXrF0Y/3AGAk4YCZIvIputANtQUT1uZOh/OPomPohmfAg2Cge8yAh54bYkUn
+         iqHJQldeFdxI8d/T4mIGVrn40Ktu3V2Nxfa78Jv1At315BZ0cMH7mocVU2yKoA6aqG+b
+         ULBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqiek9jWfp9gPTuN32TccYK5puVMz547m/GIvmC2KtkNoDbuCclEbhErGg/tDnD3eOHJE2WY2eJaeCVIOdICMgi5/+7hCZJbrSrHW4
+X-Gm-Message-State: AOJu0YwmOSfXI6nKfyn8283KOq+rzI01VhCG8RUCerNScwDVZ2qf2Lip
+	BWHnBgfpWwJaL4C6uvuyhutX9A8BYRTXEF2KUoTxwH4s8Z/g85QCuCuD8BUWGkyDdAJuEBi7i1h
+	SE1RQQld1vuwcVdBvBL5w2C+eiLAp2HN3X6JJKqNKfCs015k3284dU9qP6uY48g==
+X-Received: by 2002:a05:6808:1242:b0:3c3:dfec:d9ee with SMTP id o2-20020a056808124200b003c3dfecd9eemr3965563oiv.32.1711646406944;
+        Thu, 28 Mar 2024 10:20:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHu853ijuqNBx1nyDj4vEt9gDt5cv976tFHHSJ9WoGLzNibEXGLlQqgvCaSZT7OfU274ydjLg==
+X-Received: by 2002:a05:6808:1242:b0:3c3:dfec:d9ee with SMTP id o2-20020a056808124200b003c3dfecd9eemr3965545oiv.32.1711646406669;
+        Thu, 28 Mar 2024 10:20:06 -0700 (PDT)
 Received: from LeoBras.redhat.com ([2804:1b3:a801:d7ed:4b57:3fcd:d5e6:a613])
-        by smtp.gmail.com with ESMTPSA id m13-20020ad45dcd000000b00696944e3ce6sm809078qvh.74.2024.03.28.10.20.00
+        by smtp.gmail.com with ESMTPSA id m13-20020ad45dcd000000b00696944e3ce6sm809078qvh.74.2024.03.28.10.20.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:20:03 -0700 (PDT)
+        Thu, 28 Mar 2024 10:20:06 -0700 (PDT)
 From: Leonardo Bras <leobras@redhat.com>
 To: Paolo Bonzini <pbonzini@redhat.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -89,9 +89,9 @@ Cc: Leonardo Bras <leobras@redhat.com>,
 	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
-Subject: [RFC PATCH v1 1/2] kvm: Implement guest_exit_last_time()
-Date: Thu, 28 Mar 2024 14:19:46 -0300
-Message-ID: <20240328171949.743211-2-leobras@redhat.com>
+Subject: [RFC PATCH v1 2/2] rcu: Ignore RCU in nohz_full cpus if it was running a guest recently
+Date: Thu, 28 Mar 2024 14:19:47 -0300
+Message-ID: <20240328171949.743211-3-leobras@redhat.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240328171949.743211-1-leobras@redhat.com>
 References: <20240328171949.743211-1-leobras@redhat.com>
@@ -103,92 +103,128 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Keep track of the last time a cpu ran guest_exit(), and provide a helper to
-make this information available to other files.
+In current code, we can ignore the RCU request on a nohz_full cpu for up to
+a second if it has interrupted idle or userspace tasks, since those are
+quiescent states, and will probably return to it soon thus not requiring
+to run a softirq or a rcuc thread.
 
+Running a guest is also considered to be a quiescent state, and will
+follow the same logic, so it makes sense to also ignore the RCU request in
+this case.
+
+This solves a latency issue of a latency-sensitive workload running on a
+guest pinned in nohz_full cpu: if the guest goes out for any reason, and a
+synchronize_rcu() is requested between guest exit and a timer interrupt,
+then invoke_rcu_core() is called, and introduce latency due to either a
+softirq, or a reschedule to run rcuc, if the host is a PREEMPT_RT kernel.
+
+Suggested-by: Marcelo Tosatti <mtosatti@redhat.com>
 Signed-off-by: Leonardo Bras <leobras@redhat.com>
 ---
- include/linux/kvm_host.h | 13 +++++++++++++
- virt/kvm/kvm_main.c      |  3 +++
- 2 files changed, 16 insertions(+)
+ kernel/rcu/tree_plugin.h | 14 ++++++++++++++
+ kernel/rcu/tree.c        |  4 +++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 48f31dcd318a..be90d83d631a 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -470,31 +470,44 @@ static __always_inline void guest_state_enter_irqoff(void)
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 36a8b5dbf5b5..16f3cf2e15df 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -5,20 +5,21 @@
+  * or preemptible semantics.
+  *
+  * Copyright Red Hat, 2009
+  * Copyright IBM Corporation, 2009
+  *
+  * Author: Ingo Molnar <mingo@elte.hu>
+  *	   Paul E. McKenney <paulmck@linux.ibm.com>
+  */
+ 
+ #include "../locking/rtmutex_common.h"
++#include "linux/kvm_host.h"
+ 
+ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
  {
- 	instrumentation_begin();
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare();
- 	instrumentation_end();
+ 	/*
+ 	 * In order to read the offloaded state of an rdp in a safe
+ 	 * and stable way and prevent from its value to be changed
+ 	 * under us, we must either hold the barrier mutex, the cpu
+ 	 * hotplug lock (read or write) or the nocb lock. Local
+ 	 * non-preemptible reads are also safe. NOCB kthreads and
+ 	 * timers have their own means of synchronization against the
+@@ -1260,10 +1261,23 @@ static bool rcu_nohz_full_cpu(void)
  
- 	guest_context_enter_irqoff();
- 	lockdep_hardirqs_on(CALLER_ADDR0);
+ /*
+  * Bind the RCU grace-period kthreads to the housekeeping CPU.
+  */
+ static void rcu_bind_gp_kthread(void)
+ {
+ 	if (!tick_nohz_full_enabled())
+ 		return;
+ 	housekeeping_affine(current, HK_TYPE_RCU);
  }
- 
-+DECLARE_PER_CPU(unsigned long, kvm_last_guest_exit);
 +
 +/*
-+ * Returns time (jiffies) for the last guest exit in current cpu
++ * true if for this cpu guest exit is at most over a second ago,
++ * false otherwise
 + */
-+static inline unsigned long guest_exit_last_time(void)
++static bool rcu_recent_guest_exit(void)
 +{
-+	return this_cpu_read(kvm_last_guest_exit);
++#ifdef CONFIG_KVM
++	return time_before(jiffies, guest_exit_last_time() + HZ);
++#else
++	return false;
++#endif
 +}
-+
- /*
-  * Exit guest context and exit an RCU extended quiescent state.
-  *
-  * Between guest_context_enter_irqoff() and guest_context_exit_irqoff() it is
-  * unsafe to use any code which may directly or indirectly use RCU, tracing
-  * (including IRQ flag tracing), or lockdep. All code in this period must be
-  * non-instrumentable.
-  */
- static __always_inline void guest_context_exit_irqoff(void)
- {
- 	context_tracking_guest_exit();
-+
-+	/* Keeps track of last guest exit */
-+	this_cpu_write(kvm_last_guest_exit, jiffies);
- }
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d9642dd06c25..e5ce00bf1898 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -148,20 +148,21 @@ static void rcu_report_qs_rnp(unsigned long mask, struct rcu_node *rnp,
+ static struct task_struct *rcu_boost_task(struct rcu_node *rnp);
+ static void invoke_rcu_core(void);
+ static void rcu_report_exp_rdp(struct rcu_data *rdp);
+ static void sync_sched_exp_online_cleanup(int cpu);
+ static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+ static bool rcu_rdp_cpu_online(struct rcu_data *rdp);
+ static bool rcu_init_invoked(void);
+ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf);
+ static void rcu_init_new_rnp(struct rcu_node *rnp_leaf);
++static bool rcu_recent_guest_exit(void);
  
  /*
-  * Stop accounting time towards a guest.
-  * Must be called after exiting guest context.
+  * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
+  * real-time priority(enabling/disabling) is controlled by
+  * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
   */
- static __always_inline void guest_timing_exit_irqoff(void)
- {
- 	instrumentation_begin();
- 	/* Flush the guest cputime we spent on the guest */
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index fb49c2a60200..732b1ab43ac9 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -103,20 +103,23 @@ EXPORT_SYMBOL_GPL(halt_poll_ns_shrink);
-  */
+ static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+ module_param(kthread_prio, int, 0444);
  
- DEFINE_MUTEX(kvm_lock);
- LIST_HEAD(vm_list);
+ /* Delay in jiffies for grace-period initialization delays, debug only. */
+@@ -3931,21 +3932,22 @@ static int rcu_pending(int user)
+ 	lockdep_assert_irqs_disabled();
  
- static struct kmem_cache *kvm_vcpu_cache;
+ 	/* Check for CPU stalls, if enabled. */
+ 	check_cpu_stall(rdp);
  
- static __read_mostly struct preempt_ops kvm_preempt_ops;
- static DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
+ 	/* Does this CPU need a deferred NOCB wakeup? */
+ 	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
+ 		return 1;
  
-+DEFINE_PER_CPU(unsigned long, kvm_last_guest_exit);
-+EXPORT_SYMBOL_GPL(kvm_last_guest_exit);
-+
- struct dentry *kvm_debugfs_dir;
- EXPORT_SYMBOL_GPL(kvm_debugfs_dir);
+ 	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+-	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
++	if ((user || rcu_is_cpu_rrupt_from_idle() || rcu_recent_guest_exit()) &&
++	    rcu_nohz_full_cpu())
+ 		return 0;
  
- static const struct file_operations stat_fops_per_vm;
+ 	/* Is the RCU core waiting for a quiescent state from this CPU? */
+ 	gp_in_progress = rcu_gp_in_progress();
+ 	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
+ 		return 1;
  
- static long kvm_vcpu_ioctl(struct file *file, unsigned int ioctl,
- 			   unsigned long arg);
- #ifdef CONFIG_KVM_COMPAT
- static long kvm_vcpu_compat_ioctl(struct file *file, unsigned int ioctl,
- 				  unsigned long arg);
+ 	/* Does this CPU have callbacks ready to invoke? */
+ 	if (!rcu_rdp_is_offloaded(rdp) &&
+ 	    rcu_segcblist_ready_cbs(&rdp->cblist))
 -- 
 2.44.0
 
