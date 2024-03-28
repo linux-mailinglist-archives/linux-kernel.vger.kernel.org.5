@@ -1,346 +1,234 @@
-Return-Path: <linux-kernel+bounces-122617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F6D988FA74
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:54:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BA688FA78
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8FE9B26B72
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:54:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0799D2A6D76
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F19F57889;
-	Thu, 28 Mar 2024 08:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2605054BCB;
+	Thu, 28 Mar 2024 08:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v9lzhoU/"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OLVMBC2m"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4AB29CEF
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6B73C0B;
+	Thu, 28 Mar 2024 08:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711616066; cv=none; b=UtthrJgQNRNZFD2Hps2XQJ/wDdDFLJBZQrA1UZ3N4xVEhEhXacyw0P1cVsd3XmpE1Icp1KtD5W/PfQIzf+luMfgTNrQUBYUeHnTK1nkr2twprihFmg6vCn7fF/UNiCBKzrLMMCdOCAD0dCf4L9/yvY7OuM/0LFkviPyAJ9ZR9WE=
+	t=1711616139; cv=none; b=RK1YtJIcESihg3/JuitRjmQTW0GUHo5klO+rpefA7AWsRTKuP0tCS/k5aPAXcVruYzmCgXBDE8MooJg1eFXxh8c1lfMDUTexfi9JIb0euflySyt11AYAKZXYdKCO0nbAtUq/BI4n3RfsRb8UT/NqP5m3AJO9bFAEsnpZ39K6Yh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711616066; c=relaxed/simple;
-	bh=ZAjDv+8I1mJ8G/NPZ4kRVngMBY6TQmnkMW7G+NgNAh8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=dneZUGRJEc1dYwZh0UMVaH5T4Ae5Y4qAkQQdK2/U88IKhlq4EMtLb6uAOSphz0lm8e4QFnxw13NRaPDSG/93CuTgvvmGt+L52LlATweI0br4nrsZ4ClneokGIeqlb3ItEwfyAlthQHa8NfBtD72GXZVQQQTQi4h2I9ROgbIWyxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v9lzhoU/; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-34100f4f9a2so415865f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:54:23 -0700 (PDT)
+	s=arc-20240116; t=1711616139; c=relaxed/simple;
+	bh=SwBW22qcadeQkdheN+7fvVJxa3pXoLgtNXHI9mpQwMQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QQeDAZ044dH2hTVVW+aSYEVpNIKEm9gTUV1K6rmrpBoaecmzY4VGPtRH67j60zvb2SO2hSSpHKGa/jkbtet1yLK1wcrTaC5VsVb51Vg2JnHl03pjPeItSZ88O4ktxb6m4WSxHqz01aOf3WBjcuazOTJgA3MLjJsMlGptE9Vvkfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OLVMBC2m; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56899d9bf52so861131a12.2;
+        Thu, 28 Mar 2024 01:55:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711616062; x=1712220862; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yty+7IW9qqNwqwNJtGSHLkt6EXl35mjOJg4EN6IRHIU=;
-        b=v9lzhoU/WEGh4jqJvWufa+SW6SQTWisDw6EXmtFPs/klGvGB4+vNfaOEt3Y2x7wwr7
-         QxTfJOeVtun1HbFco+SrM0HEaH9+S7UKrzV+QtBCXSio7Ye7iJlF6kNVpmCvH9WStxoM
-         6svICcgVXGEcE6t59pjP5HBLpqsqMOYjYrt0IOKy5OiPMt2WLOhDqwBjm02UsoSM7fV1
-         Z+kKv5ja3Y84KpMAW3jWVD7z/DdbhQTrtCYz3qjp2HNxUgtlDNvawdp5YcghLCSu/2vX
-         lwDtoNIB23nVOBAcYWTgcqZitd4wnZtLPnKzeQtn10ExR9uoZ4xv1QP/JthAR/qlIZBW
-         zApA==
+        d=gmail.com; s=20230601; t=1711616136; x=1712220936; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VZ3BMMhKAmNs4bhyvnKkEZ82vtuSNj39yw+KO8d5Hvg=;
+        b=OLVMBC2mxMDY7aZaVLrGjedUwVH0dALObfWJkVPY6EkI03jEE8dYVKYBjiyqdQQNXY
+         wJvLghol2GvG4zbNa3tbDy2txfAQh+o/HWCP4pvfiTBB+y7PptxmxD4sP4sFEBo/5UA7
+         ZNafiL3r0PO658cNJ6VVraYMnXHBAizE26PTxtQHI8jV4Er9s04lLkm3yMupVVuDx/h6
+         c6uaW3hR+psloD9er4a1inNoJkaCLONwmoOq/VAI1uvxUM98f2XjRH1PVGgIMWuBk2xY
+         zMDd40nxcl3Smw4eRg0ySsoRcLXrKbOuHeoLx+kGuapxXjFwd1BitTRqlP+bv3GdG+D5
+         teAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711616062; x=1712220862;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Yty+7IW9qqNwqwNJtGSHLkt6EXl35mjOJg4EN6IRHIU=;
-        b=PquQwetTpgsKLdzAWXMNM7W9mjKL0lCwGjeyRDNv3ObOFRCRKLfo1U1GSonujawHPx
-         6YBX/5g4PoUq0UMR1mSpBc0VMtkVVvKQzBkMxzZcExzTopkGnw2Z6lnouf6yrm2z4XZq
-         Vv/zjniolTma16PFdWMahg0F0m82gChVZqULHt8yFuhZQiqNlOcVrOeIt/6fN+a+MMk4
-         aoOGD/k+NLTgXq3oK6/QeY57FczvpUrOle+uASFL9GQJGhT25QB8/C16tnHMHLQmWsC5
-         XqbK3Ih6A/+0VLqM427ZsDRN9rKFR36+uvs7y1iIbxNkKrQlUFk/A1j9gqn1ShkslHTG
-         zgTg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXTFg6oS+nHNRokM7v/UOEiOYrKWKogqSPIaT9QOjn87RQ8+Leafb+spdH3mhOcx3dyleQuJZxVsGhN4AeS3FrFZLI8IBQ7uPqyek5
-X-Gm-Message-State: AOJu0YzPW6mpI9eVJl9J0JDwhnEA3oUTk871QOYG+8PqdBhbSt167lua
-	7iCSdX2rM7MXl7ZNOg2fOyWBgvY6JneBs59Pgn/yxes+3DVbMNtVUIjjQ011xHc=
-X-Google-Smtp-Source: AGHT+IGhNmd4eosIUt8hQTsfXrAFZtWrwXc4JyihDC4LrVrFfCvzlvTm8CR/aKVaG8qZSxA9zhE01A==
-X-Received: by 2002:a5d:6651:0:b0:341:bdf0:f86e with SMTP id f17-20020a5d6651000000b00341bdf0f86emr1497687wrw.67.1711616062183;
-        Thu, 28 Mar 2024 01:54:22 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:6306:1c7a:72c2:892a? ([2a01:e0a:982:cbb0:6306:1c7a:72c2:892a])
-        by smtp.gmail.com with ESMTPSA id g1-20020adfa481000000b00341e7e52802sm1169999wrb.92.2024.03.28.01.54.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 01:54:21 -0700 (PDT)
-Message-ID: <56f4f0eb-7c6b-459a-bf90-1493e14fc106@linaro.org>
-Date: Thu, 28 Mar 2024 09:54:20 +0100
+        d=1e100.net; s=20230601; t=1711616136; x=1712220936;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VZ3BMMhKAmNs4bhyvnKkEZ82vtuSNj39yw+KO8d5Hvg=;
+        b=VT3dg2YmLas9ojNp08jEPD4yEA44LmdR8msGYkxjBVF6bWV4aIB1iB8mWVnws68zj5
+         pfiQEubratZypnF5BUtXZeyvos3XlfLEIIz/7U5XFt++WnulcyL6vhDvyrKa/gBBKlVp
+         JjvGYln1e5mOiA8MhipkZ3xanJywPw1zzG14Ii1vJJBYlUwrTziCY/zqO3hpGV/2XwHT
+         lA+TRhXdcsGyBLZlB4hZCXlzz2vrkbxlY9PY3lMzze5mSPmiTcROKnIpUQZ5dSklVPxP
+         jr5A3BcHG/LzAzvbYoKo1UhTqyalozqOCoWaMc/kkN6TagZ+z7lqknw01PeVJXX8X1g1
+         RCcw==
+X-Forwarded-Encrypted: i=1; AJvYcCXaiFM+p/tGBfu0DGuzhU+Hm5T9qI9+fCjWPxLfU1xJU7Fcoszx1NKqjIsRg1qd9P5vf3iBjAz1HWQ3QWsSUI5zM1l52Yt4RNxsUDDOVdx6sCVm/0D3TA0VEHpjKDl9o/R8omanQu6Rr/SIySgslvdphHE4ny1Ob4twWVhQBeM28D8Ikz4=
+X-Gm-Message-State: AOJu0YyWakyeAQCbOX9HKqNlyszxw4+f8Cqs9t3gZhWO9JSuGZXQvWR5
+	nmVVIdFowZUieK1InX6HGx9K7WxfjVotzu63+lZGXUsDPAUYECyD4RpGbtSDO31L8WQ6ztSp+Qt
+	t10xd662KjzrHw4d+UkwSTPw4mqCGy7zZxpfjKw==
+X-Google-Smtp-Source: AGHT+IF/Gh0fqkummHE++ODJJmmDYUghD6sTKPcA5xCjIEGld6dcTsKYDT2r02IGeAmJKxsFDo1HaPJup4R1syV1vdI=
+X-Received: by 2002:a05:6402:34cd:b0:56c:56dd:3b5f with SMTP id
+ w13-20020a05640234cd00b0056c56dd3b5fmr438045edc.3.1711616135807; Thu, 28 Mar
+ 2024 01:55:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH RESEND v6 4/5] spmi: pmic-arb: Make core resources
- acquiring a version operation
-To: Abel Vesa <abel.vesa@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
-References: <20240326-spmi-multi-master-support-v6-0-1c87d8306c5b@linaro.org>
- <20240326-spmi-multi-master-support-v6-4-1c87d8306c5b@linaro.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240326-spmi-multi-master-support-v6-4-1c87d8306c5b@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240327-loongson1-nand-v6-0-7f9311cef020@gmail.com>
+ <20240327-loongson1-nand-v6-1-7f9311cef020@gmail.com> <20240327-bonehead-handlebar-1ca8dab95179@spud>
+In-Reply-To: <20240327-bonehead-handlebar-1ca8dab95179@spud>
+From: Keguang Zhang <keguang.zhang@gmail.com>
+Date: Thu, 28 Mar 2024 16:54:59 +0800
+Message-ID: <CAJhJPsX7Ds-UdFpTpLgFMW+rTGAgAYSKAieAMn12Z8RjNn-A8A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: Add Loongson-1 NAND Controller
+To: Conor Dooley <conor@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mips@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/03/2024 17:28, Abel Vesa wrote:
-> Rather than setting up the core, obsrv and chnls in probe by using
-> version specific conditionals, add a dedicated "get_core_resources"
-> version specific op and move the acquiring in there.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->   drivers/spmi/spmi-pmic-arb.c | 113 +++++++++++++++++++++++++++----------------
->   1 file changed, 70 insertions(+), 43 deletions(-)
-> 
-> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-> index 38fed8a585fe..188252bfb95f 100644
-> --- a/drivers/spmi/spmi-pmic-arb.c
-> +++ b/drivers/spmi/spmi-pmic-arb.c
-> @@ -203,6 +203,7 @@ struct spmi_pmic_arb {
->    */
->   struct pmic_arb_ver_ops {
->   	const char *ver_str;
-> +	int (*get_core_resources)(struct platform_device *pdev, void __iomem *core);
->   	int (*init_apid)(struct spmi_pmic_arb *pmic_arb, int index);
->   	int (*ppid_to_apid)(struct spmi_pmic_arb *pmic_arb, u16 ppid);
->   	/* spmi commands (read_cmd, write_cmd, cmd) functionality */
-> @@ -956,6 +957,19 @@ static int pmic_arb_init_apid_min_max(struct spmi_pmic_arb *pmic_arb)
->   	return 0;
->   }
->   
-> +static int pmic_arb_get_core_resources_v1(struct platform_device *pdev,
-> +					  void __iomem *core)
-> +{
-> +	struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
-> +
-> +	pmic_arb->wr_base = core;
-> +	pmic_arb->rd_base = core;
-> +
-> +	pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS;
-> +
-> +	return 0;
-> +}
-> +
->   static int pmic_arb_init_apid_v1(struct spmi_pmic_arb *pmic_arb, int index)
->   {
->   	u32 *mapping_table;
-> @@ -1063,6 +1077,33 @@ static u16 pmic_arb_find_apid(struct spmi_pmic_arb *pmic_arb, u16 ppid)
->   	return apid;
->   }
->   
-> +static int pmic_arb_get_obsrvr_chnls_v2(struct platform_device *pdev)
-> +{
-> +	struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
-> +
-> +	pmic_arb->rd_base = devm_platform_ioremap_resource_byname(pdev, "obsrvr");
-> +	if (IS_ERR(pmic_arb->rd_base))
-> +		return PTR_ERR(pmic_arb->rd_base);
-> +
-> +	pmic_arb->wr_base = devm_platform_ioremap_resource_byname(pdev, "chnls");
-> +	if (IS_ERR(pmic_arb->wr_base))
-> +		return PTR_ERR(pmic_arb->wr_base);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pmic_arb_get_core_resources_v2(struct platform_device *pdev,
-> +					  void __iomem *core)
-> +{
-> +	struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
-> +
-> +	pmic_arb->core = core;
-> +
-> +	pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS;
-> +
-> +	return pmic_arb_get_obsrvr_chnls_v2(pdev);
-> +}
-> +
->   static int pmic_arb_ppid_to_apid_v2(struct spmi_pmic_arb *pmic_arb, u16 ppid)
->   {
->   	u16 apid_valid;
-> @@ -1246,6 +1287,18 @@ static int pmic_arb_offset_v5(struct spmi_pmic_arb *pmic_arb, u8 sid, u16 addr,
->   	return offset;
->   }
->   
-> +static int pmic_arb_get_core_resources_v7(struct platform_device *pdev,
-> +					  void __iomem *core)
-> +{
-> +	struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
-> +
-> +	pmic_arb->core = core;
-> +
-> +	pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS_V7;
-> +
-> +	return pmic_arb_get_obsrvr_chnls_v2(pdev);
-> +}
-> +
->   /*
->    * Only v7 supports 2 buses. Each bus will get a different apid count, read
->    * from different registers.
-> @@ -1469,6 +1522,7 @@ pmic_arb_apid_owner_v7(struct spmi_pmic_arb *pmic_arb, u16 n)
->   
->   static const struct pmic_arb_ver_ops pmic_arb_v1 = {
->   	.ver_str		= "v1",
-> +	.get_core_resources	= pmic_arb_get_core_resources_v1,
->   	.init_apid		= pmic_arb_init_apid_v1,
->   	.ppid_to_apid		= pmic_arb_ppid_to_apid_v1,
->   	.non_data_cmd		= pmic_arb_non_data_cmd_v1,
-> @@ -1484,6 +1538,7 @@ static const struct pmic_arb_ver_ops pmic_arb_v1 = {
->   
->   static const struct pmic_arb_ver_ops pmic_arb_v2 = {
->   	.ver_str		= "v2",
-> +	.get_core_resources	= pmic_arb_get_core_resources_v2,
->   	.init_apid		= pmic_arb_init_apid_v1,
->   	.ppid_to_apid		= pmic_arb_ppid_to_apid_v2,
->   	.non_data_cmd		= pmic_arb_non_data_cmd_v2,
-> @@ -1499,6 +1554,7 @@ static const struct pmic_arb_ver_ops pmic_arb_v2 = {
->   
->   static const struct pmic_arb_ver_ops pmic_arb_v3 = {
->   	.ver_str		= "v3",
-> +	.get_core_resources	= pmic_arb_get_core_resources_v2,
->   	.init_apid		= pmic_arb_init_apid_v1,
->   	.ppid_to_apid		= pmic_arb_ppid_to_apid_v2,
->   	.non_data_cmd		= pmic_arb_non_data_cmd_v2,
-> @@ -1514,6 +1570,7 @@ static const struct pmic_arb_ver_ops pmic_arb_v3 = {
->   
->   static const struct pmic_arb_ver_ops pmic_arb_v5 = {
->   	.ver_str		= "v5",
-> +	.get_core_resources	= pmic_arb_get_core_resources_v2,
->   	.init_apid		= pmic_arb_init_apid_v5,
->   	.ppid_to_apid		= pmic_arb_ppid_to_apid_v5,
->   	.non_data_cmd		= pmic_arb_non_data_cmd_v2,
-> @@ -1529,6 +1586,7 @@ static const struct pmic_arb_ver_ops pmic_arb_v5 = {
->   
->   static const struct pmic_arb_ver_ops pmic_arb_v7 = {
->   	.ver_str		= "v7",
-> +	.get_core_resources	= pmic_arb_get_core_resources_v7,
->   	.init_apid		= pmic_arb_init_apid_v7,
->   	.ppid_to_apid		= pmic_arb_ppid_to_apid_v5,
->   	.non_data_cmd		= pmic_arb_non_data_cmd_v2,
-> @@ -1565,16 +1623,6 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
->   	pmic_arb = spmi_controller_get_drvdata(ctrl);
->   	pmic_arb->spmic = ctrl;
->   
-> -	/*
-> -	 * Please don't replace this with devm_platform_ioremap_resource() or
-> -	 * devm_ioremap_resource().  These both result in a call to
-> -	 * devm_request_mem_region() which prevents multiple mappings of this
-> -	 * register address range.  SoCs with PMIC arbiter v7 may define two
-> -	 * arbiter devices, for the two physical SPMI interfaces, which  share
-> -	 * some register address ranges (i.e. "core", "obsrvr", and "chnls").
-> -	 * Ensure that both devices probe successfully by calling devm_ioremap()
-> -	 * which does not result in a devm_request_mem_region() call.
-> -	 */
+On Thu, Mar 28, 2024 at 12:23=E2=80=AFAM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> On Wed, Mar 27, 2024 at 06:43:59PM +0800, Keguang Zhang via B4 Relay wrot=
+e:
+> > From: Keguang Zhang <keguang.zhang@gmail.com>
+> >
+> > Add devicetree binding document for Loongson-1 NAND Controller.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> > Changes in v6:
+> > - A newly added patch
+> > ---
+> >  .../devicetree/bindings/mtd/loongson,ls1x-nfc.yaml | 66 ++++++++++++++=
+++++++++
+> >  1 file changed, 66 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.ya=
+ml b/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml
+> > new file mode 100644
+> > index 000000000000..2494c7b3b506
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml
+> > @@ -0,0 +1,66 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/loongson,ls1x-nfc.yaml#
+>
+> Please make the filename match the compatible.
+>
+Got it. I'll rename it to loongson,ls1-nfc.yaml and change the
+compatible as follows.
+  compatible:
+   items:
+     - enum:
+         - loongson,ls1a-nfc
+         - loongson,ls1b-nfc
+         - loongson,ls1c-nfc
+     - const: loongson,ls1-nfc
 
-Can you explain in the commit message why you remove this comment ?
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Loongson-1 NAND Controller
+> > +
+> > +maintainers:
+> > +  - Keguang Zhang <keguang.zhang@gmail.com>
+> > +
+> > +allOf:
+> > +  - $ref: nand-controller.yaml
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - const: loongson,ls1b-nfc
+> > +      - items:
+> > +          - enum:
+> > +              - loongson,ls1a-nfc
+> > +              - loongson,ls1c-nfc
+> > +          - const: loongson,ls1b-nfc
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  dmas:
+> > +    maxItems: 1
+> > +
+> > +  dma-names:
+> > +    const: rxtx
+>
+> If you only have one dma, why do you need a dma-names entry for it?
+>
+Without "dma-names", the following error will come out when doing
+dt_binding_check.
+  nand-controller@1fe78000: 'dma-names' is a required property
 
->   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "core");
->   	core = devm_ioremap(&ctrl->dev, res->start, resource_size(res));
->   	if (IS_ERR(core))
-> @@ -1584,44 +1632,23 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
->   
->   	hw_ver = readl_relaxed(core + PMIC_ARB_VERSION);
->   
-> -	if (hw_ver < PMIC_ARB_VERSION_V2_MIN) {
-> +	if (hw_ver < PMIC_ARB_VERSION_V2_MIN)
->   		pmic_arb->ver_ops = &pmic_arb_v1;
-> -		pmic_arb->wr_base = core;
-> -		pmic_arb->rd_base = core;
-> -	} else {
-> -		pmic_arb->core = core;
-> -
-> -		if (hw_ver < PMIC_ARB_VERSION_V3_MIN)
-> -			pmic_arb->ver_ops = &pmic_arb_v2;
-> -		else if (hw_ver < PMIC_ARB_VERSION_V5_MIN)
-> -			pmic_arb->ver_ops = &pmic_arb_v3;
-> -		else if (hw_ver < PMIC_ARB_VERSION_V7_MIN)
-> -			pmic_arb->ver_ops = &pmic_arb_v5;
-> -		else
-> -			pmic_arb->ver_ops = &pmic_arb_v7;
-> -
-> -		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> -						   "obsrvr");
-> -		pmic_arb->rd_base = devm_ioremap(&ctrl->dev, res->start,
-> -						 resource_size(res));
-> -		if (IS_ERR(pmic_arb->rd_base))
-> -			return PTR_ERR(pmic_arb->rd_base);
-> -
-> -		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> -						   "chnls");
-> -		pmic_arb->wr_base = devm_ioremap(&ctrl->dev, res->start,
-> -						 resource_size(res));
-> -		if (IS_ERR(pmic_arb->wr_base))
-> -			return PTR_ERR(pmic_arb->wr_base);
-> -	}
-> +	else if (hw_ver < PMIC_ARB_VERSION_V3_MIN)
-> +		pmic_arb->ver_ops = &pmic_arb_v2;
-> +	else if (hw_ver < PMIC_ARB_VERSION_V5_MIN)
-> +		pmic_arb->ver_ops = &pmic_arb_v3;
-> +	else if (hw_ver < PMIC_ARB_VERSION_V7_MIN)
-> +		pmic_arb->ver_ops = &pmic_arb_v5;
-> +	else
-> +		pmic_arb->ver_ops = &pmic_arb_v7;
->   
->   	dev_info(&ctrl->dev, "PMIC arbiter version %s (0x%x)\n",
->   		 pmic_arb->ver_ops->ver_str, hw_ver);
->   
-> -	if (hw_ver < PMIC_ARB_VERSION_V7_MIN)
-> -		pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS;
-> -	else
-> -		pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS_V7;
-> +	err = pmic_arb->ver_ops->get_core_resources(pdev, core);
-> +	if (err)
-> +		return err;
->   
->   	err = pmic_arb->ver_ops->init_apid(pmic_arb, 0);
->   	if (err)
-> 
+In addition, loongson1_nand.c calls dma_request_chan(). Then
+dma_request_chan() calls of_dma_request_slave_channel(), in which the
+'dma-names' is necessary.
+struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
+                                             const char *name)
+{
+       ...
+       count =3D of_property_count_strings(np, "dma-names");
+       if (count < 0) {
+               pr_err("%s: dma-names property of node '%pOF' missing
+or empty\n",
+                       __func__, np);
+               return ERR_PTR(-ENODEV);
+       }
+       ...
+}
 
-With that added:
+Thanks for your review!
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Looks fine to me otherwise though,
+> COnor.
+>
+> > +
+> > +patternProperties:
+> > +  "^nand@[0-3]$":
+> > +    type: object
+> > +    $ref: raw-nand-chip.yaml
+> > +
+> > +    unevaluatedProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - dmas
+> > +  - dma-names
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    nand-controller@1fe78000 {
+> > +        compatible =3D "loongson,ls1b-nfc";
+> > +        reg =3D <0x1fe78000 0x40>;
+> > +
+> > +        #address-cells =3D <1>;
+> > +        #size-cells =3D <0>;
+> > +
+> > +        dmas =3D <&dma 0>;
+> > +        dma-names =3D "rxtx";
+> > +
+> > +        nand@0 {
+> > +            reg =3D <0>;
+> > +            nand-use-soft-ecc-engine;
+> > +            nand-ecc-algo =3D "hamming";
+> > +        };
+> > +    };
+> >
+> > --
+> > 2.40.1
+> >
+> >
+
+
+
+--
+Best regards,
+
+Keguang Zhang
 
