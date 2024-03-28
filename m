@@ -1,141 +1,93 @@
-Return-Path: <linux-kernel+bounces-122769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9E3088FCFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:28:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA9988FD05
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24CD2B25CEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:28:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB9FE297A8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5489B7C6CA;
-	Thu, 28 Mar 2024 10:28:00 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F697D061;
+	Thu, 28 Mar 2024 10:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="te5AfHjm"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001F743AC4;
-	Thu, 28 Mar 2024 10:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06F2524BD;
+	Thu, 28 Mar 2024 10:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621679; cv=none; b=inhvfMmaPR0NCra6fvqhIO6j3xUikllKRimK4w1HQ+M7ZyW+G7IRBIJIqVcKpnq8g6Iaw6tEDYvOXEkogihbE4NKOU3Je7SSzS0hel7znjN7q0M2ifym2J5GBwkXSJuTD+a2rJRyfyIf1zr84ny/j9/EYCmm6kiUHolJ26dBrHs=
+	t=1711621695; cv=none; b=t1IeB1pMgZfaN3hPd8FUzSNYCrbC6vKlzioS0c2ZEDEE017l6EhPfXc/LJ7PWQ8wpkTTmrKUQzwGZiPt/ckZ4vqUwWtD1BEnhEvAQYPRhkhNbdLTkVkpRoHp6PRDVIeCkcnKu2LEC5IceZ/LMWRcHEFnqfDH3O4mG4vFJuoyj0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621679; c=relaxed/simple;
-	bh=YdFMD05ICo4B3HtKvN5Kni+11Fpe39uVvX7nJWykwYI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NWaoWzIuK8vF/84zOFKEKCg5C2Is+SvHKaf7xsGF4xScbBM1Ubj5sYuXvnZDmKVtUVlIipcGtJLgeaGPR5Q/NVg8NCrN1KC1RcfPhq7GSjwE3zc926i2fBqb/ihprciqsCrzvFCgGP+8DQ+a69acTyDJlBLPpIsP0w6uAJnMpKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id B9F1C1C007E; Thu, 28 Mar 2024 11:27:55 +0100 (CET)
-Date: Thu, 28 Mar 2024 11:27:55 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Michael Klein <michael@fossekall.de>,
-	Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH 5.4 177/183] ARM: dts: sun8i-h2-plus-bananapi-m2-zero:
- add regulator nodes vcc-dram and vcc1v2
-Message-ID: <ZgVGK6fxuLb6PREs@duo.ucw.cz>
-References: <20240324234638.1355609-1-sashal@kernel.org>
- <20240324234638.1355609-178-sashal@kernel.org>
+	s=arc-20240116; t=1711621695; c=relaxed/simple;
+	bh=hRMmT1sLzmHF/7FhuqfNWfb4CFWaZrFbF4da3Q1LaHY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OiYX1c9tNP9gK6oqVG47rRoa3kVZ5xazGFipG4iZhUSU/KDx9JnzJ4depakViJ0bQ6uAmCzo693wz8fN7I2toin85cvqqfwmikaSX1umy8r6ZGgJlaAnwI6Nfer3B/xeBwFK6E5Y16gn3EBow6gDfIIhlTNZ5leKV2GaoebwBaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=te5AfHjm; arc=none smtp.client-ip=157.90.84.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from wse.fritz.box (pd9e59192.dip0.t-ipconnect.de [217.229.145.146])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPA id 0521D2FC0063;
+	Thu, 28 Mar 2024 11:28:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1711621684;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6DbZdGuizzKUHewxg7lVLF/Pgrh6G080aJGzF6C0T5M=;
+	b=te5AfHjmcieFmAhlRlxiejFR0f3VXBijNZmFEGDWPvauFyN1qHyseF4k5AzAHi6dMX+i0K
+	zJ6ed/FKNIXocQwV9fQFFzjQB0pS82ypwet3tdm/hSHyLzZwIXrqfbCtkZLssebry9JTkJ
+	7QXKM+TwpJSfwQb+9vnj9cwvpNJcywk=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+From: Werner Sembach <wse@tuxedocomputers.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Christoffer Sandberg <cs@tuxedo.de>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek - Fix inactive headset mic jack
+Date: Thu, 28 Mar 2024 11:27:57 +0100
+Message-Id: <20240328102757.50310-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KIjWPteef1tgOPZm"
-Content-Disposition: inline
-In-Reply-To: <20240324234638.1355609-178-sashal@kernel.org>
+Content-Transfer-Encoding: 8bit
 
+From: Christoffer Sandberg <cs@tuxedo.de>
 
---KIjWPteef1tgOPZm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch adds the existing fixup to certain TF platforms implementing
+the ALC274 codec with a headset jack. It fixes/activates the inactive
+microphone of the headset.
 
-Hi!
+Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> From: Michael Klein <michael@fossekall.de>
->=20
-> [ Upstream commit 23e85be1ec81647374055f731488cc9a7c013a5c ]
->=20
-> Add regulator nodes vcc-dram and vcc1v2 to the devicetree. These
-> regulators correspond to U4 and U5 in the schematics:
->=20
-> http://forum.banana-pi.org/t/bpi-m2-zero-schematic-diagram-public/4111
->=20
-> Signed-off-by: Michael Klein <michael@fossekall.de>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> Link: https://lore.kernel.org/r/20201130183841.136708-1-michael@fossekall=
-=2Ede
-> Stable-dep-of: 4a0e7f2decbf ("netfilter: nf_tables: do not compare
-> internal table flags on updates")
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a1facdb98d9a0..3b75934ee62c1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10365,6 +10365,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1d05, 0x1147, "TongFang GMxTGxx", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x1d05, 0x115c, "TongFang GMxTGxx", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x1d05, 0x121b, "TongFang GMxAGxx", ALC269_FIXUP_NO_SHUTUP),
++	SND_PCI_QUIRK(0x1d05, 0x1387, "TongFang GMxIXxx", ALC2XX_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1602, "RedmiBook", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1701, "XiaomiNotebook Pro", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
+-- 
+2.34.1
 
-Iti s hard to believe dts update is dependency of netfilter core
-change. Please investigate and drop.
-
-Best regards,
-								Pavel
-
-> ---
->  .../dts/sun8i-h2-plus-bananapi-m2-zero.dts    | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/arch/=
-arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
-> index 4c6704e4c57ec..74d5732c412ba 100644
-> --- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
-> +++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
-> @@ -62,6 +62,30 @@ reg_vdd_cpux: vdd-cpux-regulator {
->  		states =3D <1100000 0>, <1300000 1>;
->  	};
-> =20
-> +	reg_vcc_dram: vcc-dram {
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "vcc-dram";
-> +		regulator-min-microvolt =3D <1500000>;
-> +		regulator-max-microvolt =3D <1500000>;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		enable-active-high;
-> +		gpio =3D <&r_pio 0 9 GPIO_ACTIVE_HIGH>; /* PL9 */
-> +		vin-supply =3D <&reg_vcc5v0>;
-> +	};
-> +
-> +	reg_vcc1v2: vcc1v2 {
-> +		compatible =3D "regulator-fixed";
-> +		regulator-name =3D "vcc1v2";
-> +		regulator-min-microvolt =3D <1200000>;
-> +		regulator-max-microvolt =3D <1200000>;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		enable-active-high;
-> +		gpio =3D <&r_pio 0 8 GPIO_ACTIVE_HIGH>; /* PL8 */
-> +		vin-supply =3D <&reg_vcc5v0>;
-> +	};
-> +
->  	wifi_pwrseq: wifi_pwrseq {
->  		compatible =3D "mmc-pwrseq-simple";
->  		reset-gpios =3D <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
-
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---KIjWPteef1tgOPZm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgVGKwAKCRAw5/Bqldv6
-8jtDAJ0bCDM9bjLfGfmyeacQZp9rBEvLjwCfT3T65JCBteZupfYyxllvSSMqxE4=
-=LPLr
------END PGP SIGNATURE-----
-
---KIjWPteef1tgOPZm--
 
