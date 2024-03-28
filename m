@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-122676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C27C88FB44
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:25:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4713F88FB46
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:25:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9552A1F29E8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:25:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6991A1C2D542
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDB77C0BE;
-	Thu, 28 Mar 2024 09:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00797134CB;
+	Thu, 28 Mar 2024 09:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbFpXJEA"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pg1rnvD+"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A74E7BB12;
-	Thu, 28 Mar 2024 09:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E08A7C08E;
+	Thu, 28 Mar 2024 09:23:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711617809; cv=none; b=LjQ414OtzGQuFm6p1hSrvikrgg3pP0gGbe6g1c8J0Q9bCNqjFfqB59ZrzMJHIR+LVyhGNKSNcXwbWQcvOrX356LAxNcLBgd2ii11VZzTr31wQphfeXgAH15h1nizl3KpN5cjfEQV5GeohgSJUeCu89Gjxupm3z33aUBmj6QZ12g=
+	t=1711617810; cv=none; b=rF0omWMpNNDqjkbkgdXZDFsSOWfjxkYcHnyVNlsocziWiYYDMZnsr/RVEaXraqJNFMfoHTEx1QZph1YkT3La28aJ5I2Wc/no8Xxpu9LFU2DdZEji1809S31bcITXB4XBmhGG3rT1bkJ3JhWcg/q6WYdvDUFiYiNA1xNqLbc9OIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711617809; c=relaxed/simple;
-	bh=6yqLLrbyRf8n8iGwl36fXaImdnYsuitbiC91ybrCgGg=;
+	s=arc-20240116; t=1711617810; c=relaxed/simple;
+	bh=Pcj6wq13Q2zMT6Z2Uam+tVJ0LEM1dkNhmKNJG7xfxbM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AVguuItDV0Hw+jv5VmRfs3RvkPVTm4ztEY9TrF+NAC2f43guzUwJW9zEFUVnbwa6bcWN4rOJB4WGl4Im1YWC5IjBg+7h6WaPadJH2Fvs/o8ss/OXU9ojuZen1hns5vk38gKGvIK9xQKptBrBKNGnKmesfN2nvWU5PlVmSdPWLTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbFpXJEA; arc=none smtp.client-ip=209.85.167.44
+	 In-Reply-To:To:Cc; b=VdZdpWtgeLQtJ8ZllEz1EcKv3nKvcQE/gWNwJ0NEKHhl6wE9mF1pYujHZ6iojx6VXuRB/O1QxTd/ZOq7/O5oCcyozHbK+eIMPgtMyb14kKt2IuDlYzvlR9Zl3JNrYTewwbkmWp8U6C5XR05NC9K70wWN20VZtUlPwSrEVVII42Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pg1rnvD+; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513d212f818so694220e87.2;
-        Thu, 28 Mar 2024 02:23:27 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso791487a12.1;
+        Thu, 28 Mar 2024 02:23:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711617806; x=1712222606; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711617807; x=1712222607; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GP9+afefXmxrn552E+5zoI9Qrw0HgBxF5UsTwrTB7R0=;
-        b=kbFpXJEA+JfkGAuELbyMYh1cR3Yy8/TgKVBKB66/7G+CrRypi0CU9coA0mxuy7lob0
-         L1cyYfgf4Vy1w9PL0gfFX4GG2Mng4pcIQy18XP8tzzUmrySb84fijh2r1Ge7Qmfwy+29
-         skLlU4V1b+ucJDVo+eQUPDPD/ovvPlEpMQiUDGRc1xcDMlhNYvnSVVBD2ZLSoZz4r6ja
-         c9lq0dWsvj55Waqx3n6YXZWiZNY+sJTj8Qr4xS3RKzld+55PM6sR8d+vpfj4BJOqO76Q
-         R+4zvrHrAFJzOt2/nFuxQRx7UgOmCFTQek0N/YzrI6glGjNaiopE0RzwYKmXlXWAezGR
-         CbKQ==
+        bh=4fIcsg8gcugtMmlVw+LmPC2bgw0Si2DZI0WsD/Dma5Q=;
+        b=Pg1rnvD+ICWDwPdDod8UkktDDH9IXT2fcE+mmN9It59vCkI0RYGaGuwmdSCpQgCQAp
+         n3oTpyg0NyzwNvhN4x1lS2GIxnpUNNut5Se3G74L0EUQS6wB2q11BAxbFS/YQCkckZ+m
+         WXb6LLbkFkDj/pnuKC9xSnTFKD/EMPM6RgWe7WtxLDQtF7Nn95LVbY3aEYQHvkVTHqGP
+         cfOo8FpLZKZ+XRA1Sk7HValYsEmSjEFIbjUN8rLGIfSv3Jtg+Er9K6poAKyviDUiN04W
+         1hWq1OZzKj8LxdrbtOSa7NUcfWarIGbT1HhGo3kvflAMvojyu2Epi3WwV9+WfA9J93Rg
+         FmUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711617806; x=1712222606;
+        d=1e100.net; s=20230601; t=1711617807; x=1712222607;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GP9+afefXmxrn552E+5zoI9Qrw0HgBxF5UsTwrTB7R0=;
-        b=hEDR2veY/56/JkHepj80ceBsnLU0KQmo1VzwzEfy7bAN1Kc2RLB/Dm2puFWVM2f+nZ
-         DzjN/1L7hogtIoTAITHga47PHvx2ioBlRC8xrGJ4nnISQHuxuWA2tFYGQCdUHslSyve4
-         qelwD0OA96EcoTCn0Az6HBulCVCrQ87Kdo/NRg8J4zow+TSy93+F9Hed581sTa88qfv1
-         dDHku1CXyWe5hC39XgjK7rHWtgWZN8B1CGE4GApFupwNhMkamjt0eyK8QvHhCJypNHiv
-         cNkPBqtOAYokEIRP6FIObMSg2NDH9+8sw7AKOFWHWG8PocjSkCI89aB6uX8MnMOSiTj7
-         7IAg==
-X-Forwarded-Encrypted: i=1; AJvYcCVb00Ofk5bq8oOUnD2yY3Rwr0vuSu0vHkbaIBAcuPw6JD/a9dpNh6yTUmo8lkta0VhmaTOc9cXX/Mud9ebJwl7UThQdNsVznm3+uouDo0itq2EYBzoWOBLn6Vo01NC6yslv1VIy+1sZ
-X-Gm-Message-State: AOJu0YwcF5TzHYMFXM/qu2EOCft5XeSY5bfPuh3uKB+dZJktgnnUjvaa
-	WIRHEVq8PgMoAql+5QwAHaa3ykf7LHLRDfWUN0L70038nCREdlbC
-X-Google-Smtp-Source: AGHT+IHvVmIQCxcA7PlIBrcec1D2+7h7nhm/CLBpwxxgANk0OC9dseOeAvf5zf7NhgoGf5o2nh0qQw==
-X-Received: by 2002:a19:ca43:0:b0:513:d01e:b68 with SMTP id h3-20020a19ca43000000b00513d01e0b68mr1303471lfj.3.1711617805404;
-        Thu, 28 Mar 2024 02:23:25 -0700 (PDT)
+        bh=4fIcsg8gcugtMmlVw+LmPC2bgw0Si2DZI0WsD/Dma5Q=;
+        b=KuPNNC81SnyrDI7Y+ywtWGtcAB3+r7QhZ/+/vZc3xVNAvMnxu20yfT0YrmlnNFdm5J
+         /f3zWCfZadPKAeFyknfVRMkt8tWFPDORatRJxYvUJXfVEIx3HOZ8dqiwayOGr65akOGV
+         Hp6dmPUtlMxEXnzMTWNH8/WbBSELJPeK6CLbELFcYvBEenYbVR8XFhi8HZ5bzig8rusQ
+         SKdRnWl3go7OOShi0Xa0IMj062kw4jKli2aC4HkSXBrI2Gkd/WKkMADaANjZ7ecrYPw1
+         6n/vAyPE/AOk3h1opsL+zlzTA/s/AKYPe/N088Fomju2H7yuwmX5wyljewnensOkMc+4
+         l7Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCVkwPPTh62ohdkN8mArXD5AbwbPArTarvXGtT4rIGeQDx152n38yEtKSsKSjgD5+6+EokoMDnR+t/nXoJijPuSLxr6xDqeP22CkzlQDB39OQ4xL0O/wPMzrv7m4yRzU0hIy5YLiXqjR
+X-Gm-Message-State: AOJu0Yzr4j3QZV+yOdsSt7jSdLlKca7XNLHLf/FOrPf1GPELjfohfOeh
+	v1Volf+Ze9QMK11Q8/E20B6EwXpJeOkXLaYyZ1pUPx2D3U6Ei8T7
+X-Google-Smtp-Source: AGHT+IFZrXR3laMUTXAUaCNTQmsPgCkWeEvX2BaAsO9AeLFJaKEMFPnVJ7THgfa7l5KpqiINQd1SRA==
+X-Received: by 2002:a50:d486:0:b0:56c:1ac8:65bc with SMTP id s6-20020a50d486000000b0056c1ac865bcmr1810570edi.36.1711617806536;
+        Thu, 28 Mar 2024 02:23:26 -0700 (PDT)
 Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id cf2-20020a0564020b8200b0056b0af78d80sm609298edb.34.2024.03.28.02.23.23
+        by smtp.googlemail.com with ESMTPSA id cf2-20020a0564020b8200b0056b0af78d80sm609298edb.34.2024.03.28.02.23.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 02:23:25 -0700 (PDT)
+        Thu, 28 Mar 2024 02:23:26 -0700 (PDT)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 28 Mar 2024 10:23:10 +0100
-Subject: [PATCH v4 1/5] clk: qcom: apss-ipq-pll: reuse Stromer reg offsets
- from 'clk_alpha_pll_regs'
+Date: Thu, 28 Mar 2024 10:23:11 +0100
+Subject: [PATCH v4 2/5] clk: qcom: apss-ipq-pll: move Huayra register map
+ to 'clk_alpha_pll_regs'
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-apss-ipq-pll-cleanup-v4-1-eddbf617f0c8@gmail.com>
+Message-Id: <20240328-apss-ipq-pll-cleanup-v4-2-eddbf617f0c8@gmail.com>
 References: <20240328-apss-ipq-pll-cleanup-v4-0-eddbf617f0c8@gmail.com>
 In-Reply-To: <20240328-apss-ipq-pll-cleanup-v4-0-eddbf617f0c8@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>, 
@@ -90,13 +90,8 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.13.0
 
-The register offset array defined locally for the
-CLK_ALPHA_PLL_TYPE_STROMER_PLUS is the same as the
-entry defined for CLK_ALPHA_PLL_TYPE_STROMER in the
-'clk_alpha_pll_regs' array.
-
-To avoid code duplication, remove the local definition
-and use the global one instead.
+Move the locally defined Huayra register map to 'clk_alpha_pll_regs'
+in order to allow using that by other drivers, like the clk-cbf-8996.
 
 No functional changes.
 
@@ -106,75 +101,89 @@ Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
 Changes in v4:
  - no changes
- - Link to v3: https://lore.kernel.org/r/20240326-apss-ipq-pll-cleanup-v3-1-15c4aeeb14ac@gmail.com
+ - Link to v3: https://lore.kernel.org/r/20240326-apss-ipq-pll-cleanup-v3-2-15c4aeeb14ac@gmail.com
 
 Changes in v3:
  - rebase on top of v6.9-rc1
- - add Reviewed-by tag from Konrad
- - Link to v2: https://lore.kernel.org/r/20240321-apss-ipq-pll-cleanup-v2-1-201f3cf79fd4@gmail.com
+ - add Reviewed-by tags from Dmitry and Konrad
+ - Link to v2: https://lore.kernel.org/r/20240321-apss-ipq-pll-cleanup-v2-2-201f3cf79fd4@gmail.com
 
 Changes in v2:
- - add Reviewed-by tag from Dmitry
- - Link to v1: https://lore.kernel.org/r/20240318-apss-ipq-pll-cleanup-v1-1-52f795429d5d@gmail.com
-
-Depends on the following patches:
- - "clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to fix boot failure"
-   Link: https://lore.kernel.org/r/20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com
- - "clk: qcom: clk-alpha-pll: Stromer register cleanup"
-   Link: https://lore.kernel.org/r/20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com
+ - rework the patch as requested by Dmitry Baryshkov by moving the register
+   map into clk-alpha-pll.c instead of keeping that locally
+ - Link to v1: https://lore.kernel.org/r/20240318-apss-ipq-pll-cleanup-v1-2-52f795429d5d@gmail.com
 ---
- drivers/clk/qcom/apss-ipq-pll.c | 24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+ drivers/clk/qcom/apss-ipq-pll.c  | 20 +-------------------
+ drivers/clk/qcom/clk-alpha-pll.c | 10 ++++++++++
+ drivers/clk/qcom/clk-alpha-pll.h |  1 +
+ 3 files changed, 12 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
-index dfffec2f06ae..ed3e6405f99c 100644
+index ed3e6405f99c..8cf17374a2e2 100644
 --- a/drivers/clk/qcom/apss-ipq-pll.c
 +++ b/drivers/clk/qcom/apss-ipq-pll.c
-@@ -24,17 +24,6 @@ static const u8 ipq_pll_offsets[][PLL_OFF_MAX_REGS] = {
- 		[PLL_OFF_TEST_CTL] = 0x30,
- 		[PLL_OFF_TEST_CTL_U] = 0x34,
- 	},
--	[CLK_ALPHA_PLL_TYPE_STROMER_PLUS] = {
+@@ -8,27 +8,9 @@
+ 
+ #include "clk-alpha-pll.h"
+ 
+-/*
+- * Even though APSS PLL type is of existing one (like Huayra), its offsets
+- * are different from the one mentioned in the clk-alpha-pll.c, since the
+- * PLL is specific to APSS, so lets the define the same.
+- */
+-static const u8 ipq_pll_offsets[][PLL_OFF_MAX_REGS] = {
+-	[CLK_ALPHA_PLL_TYPE_HUAYRA] =  {
 -		[PLL_OFF_L_VAL] = 0x08,
 -		[PLL_OFF_ALPHA_VAL] = 0x10,
--		[PLL_OFF_ALPHA_VAL_U] = 0x14,
 -		[PLL_OFF_USER_CTL] = 0x18,
--		[PLL_OFF_USER_CTL_U] = 0x1c,
 -		[PLL_OFF_CONFIG_CTL] = 0x20,
+-		[PLL_OFF_CONFIG_CTL_U] = 0x24,
 -		[PLL_OFF_STATUS] = 0x28,
 -		[PLL_OFF_TEST_CTL] = 0x30,
 -		[PLL_OFF_TEST_CTL_U] = 0x34,
 -	},
- };
- 
+-};
+-
  static struct clk_alpha_pll ipq_pll_huayra = {
-@@ -57,12 +46,7 @@ static struct clk_alpha_pll ipq_pll_huayra = {
- 
- static struct clk_alpha_pll ipq_pll_stromer = {
  	.offset = 0x0,
--	/*
--	 * Reuse CLK_ALPHA_PLL_TYPE_STROMER_PLUS register offsets.
--	 * Although this is a bit confusing, but the offset values
--	 * are correct nevertheless.
--	 */
--	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_STROMER],
+-	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_HUAYRA],
++	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_HUAYRA_APSS],
  	.flags = SUPPORTS_DYNAMIC_UPDATE,
  	.clkr = {
  		.enable_reg = 0x0,
-@@ -80,7 +64,11 @@ static struct clk_alpha_pll ipq_pll_stromer = {
- 
- static struct clk_alpha_pll ipq_pll_stromer_plus = {
- 	.offset = 0x0,
--	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
-+	/*
-+	 * The register offsets of the Stromer Plus PLL used in IPQ5332
-+	 * are the same as the Stromer PLL's offsets.
-+	 */
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_STROMER],
- 	.flags = SUPPORTS_DYNAMIC_UPDATE,
- 	.clkr = {
- 		.enable_reg = 0x0,
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 9dc886d2ef97..08a783b28241 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -83,6 +83,16 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_TEST_CTL_U] = 0x20,
+ 		[PLL_OFF_STATUS] = 0x24,
+ 	},
++	[CLK_ALPHA_PLL_TYPE_HUAYRA_APSS] =  {
++		[PLL_OFF_L_VAL] = 0x08,
++		[PLL_OFF_ALPHA_VAL] = 0x10,
++		[PLL_OFF_USER_CTL] = 0x18,
++		[PLL_OFF_CONFIG_CTL] = 0x20,
++		[PLL_OFF_CONFIG_CTL_U] = 0x24,
++		[PLL_OFF_STATUS] = 0x28,
++		[PLL_OFF_TEST_CTL] = 0x30,
++		[PLL_OFF_TEST_CTL_U] = 0x34,
++	},
+ 	[CLK_ALPHA_PLL_TYPE_BRAMMO] =  {
+ 		[PLL_OFF_L_VAL] = 0x04,
+ 		[PLL_OFF_ALPHA_VAL] = 0x08,
+diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
+index fb6d50263bb9..c9457009be24 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.h
++++ b/drivers/clk/qcom/clk-alpha-pll.h
+@@ -15,6 +15,7 @@
+ enum {
+ 	CLK_ALPHA_PLL_TYPE_DEFAULT,
+ 	CLK_ALPHA_PLL_TYPE_HUAYRA,
++	CLK_ALPHA_PLL_TYPE_HUAYRA_APSS,
+ 	CLK_ALPHA_PLL_TYPE_BRAMMO,
+ 	CLK_ALPHA_PLL_TYPE_FABIA,
+ 	CLK_ALPHA_PLL_TYPE_TRION,
 
 -- 
 2.44.0
