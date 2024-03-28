@@ -1,149 +1,172 @@
-Return-Path: <linux-kernel+bounces-123069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5DF08901B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:29:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E92358901C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:31:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 228F21C22D31
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:29:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 255471C2B47F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E34127B67;
-	Thu, 28 Mar 2024 14:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6EB12BEA5;
+	Thu, 28 Mar 2024 14:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="oMB4Ha4F"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWM+Qp30"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0687E775;
-	Thu, 28 Mar 2024 14:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F081879;
+	Thu, 28 Mar 2024 14:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636154; cv=none; b=V5G5P4SQQnhwXJdaFmGPmhrTn+ZVHluq+33W+asxmhysDrGtWH51G9sqqPVxgKXoHfoOyKLGGlVLOyJ0AE/juUraSdCaoCsjILKcG5lEl6GasSiGHhD+EjCZZkQPQwxeemBs/2eP+QN/nrwPbhLHBX+6bXNdn7J01TGfUGH+fJ8=
+	t=1711636265; cv=none; b=TsaSuZaa+mOPb4gMTrYw6L6GZvvkXyWSJl1F6oLiN/d9cyei/sqjeLivDoKuLEArbftgkr8kn/4RC8rMN9pSq8Gslumnb5ALq7gqV9IAkh6ac+f9ubVSGA5egeD7c36qrt3LE6ob/nVFyIDbCG9PrsXhJb8Ue7u7TlApyLr1VNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636154; c=relaxed/simple;
-	bh=RgIsN2+9YTTR8Ah5iuVZwz4NadsK+VqbP0f38xQ2Pe4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O3B+wQ6Can2tLtiFmKMwAnpEdcp/P0ZZtw4t3Sh8yG337awVERJzXboLTqv5l7GnSVMr59uBQS4umedm+pBRn0Vf7w8hguLOCxWR6oAm+yOWk2m8efcURTmWAAWCfVZJTj4/ozJSfjpVX69g37XNu+vxqCwy36YyigEkISS49x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=oMB4Ha4F; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id DEDE310000E;
-	Thu, 28 Mar 2024 17:29:06 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DEDE310000E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711636146;
-	bh=evQRgmgfpBfE7ABI70oDODcWR8kPQd8V040QqDbhPSQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=oMB4Ha4FC7ybfhcUSoswKvOJhUj29Bq5Rd7h9qEdYDfmYH7X6DJiSC3G3MjYM3NY2
-	 Q6AEQZ0Uehd+MoAVb6NF6Tc+smi0HRsRNtne5+hMWylFb81NajdGQTQnMX7Pa3ljjk
-	 7cydUzFlqQR/nVUHzL8PYiEArvuxzgVzoOznVGd5UsK2045PhR3qTFE72O4+sRZmVQ
-	 Y2NkNOLFaYacssXKdGiaIv5mGrUwvEYWoel4FmFgrNEwJECRldQ2PWBrU16zqCosGq
-	 pi/X9Z3buwa97hVkDR2yKV5KCw2wbBVA9UJj7F+ovgEgl2yFMDJPAlAE1G4W4WbGKG
-	 d/kIiQbh6xIbA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 28 Mar 2024 17:29:06 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
- 2024 17:29:06 +0300
-Date: Thu, 28 Mar 2024 17:29:06 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: <neil.armstrong@linaro.org>
-CC: <jbrunet@baylibre.com>, <mturquette@baylibre.com>, <khilman@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <glaroque@baylibre.com>,
-	<rafael@kernel.org>, <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
-	<lukasz.luba@arm.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<kernel@salutedevices.com>, <rockosov@gmail.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1 1/2] dt-bindings: thermal: amlogic: add support for A1
- thermal sensor
-Message-ID: <20240328142818.5mnktmaq2dctos6o@CAB-WSD-L081021>
-References: <20240328133802.15651-1-ddrokosov@salutedevices.com>
- <20240328133802.15651-2-ddrokosov@salutedevices.com>
- <19897482-2fa1-4688-aeec-855123558374@linaro.org>
+	s=arc-20240116; t=1711636265; c=relaxed/simple;
+	bh=zN2hzijZlAwA7dSIUuqXqTXuAGGw3rihlUXROhzown4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XSfHzXv59ixjGGMOCuKiEcRfQH5Wz0iPodm6syal3cKs1ibOcBB8VQ6aE2+tAAVPsfPQQBTyRyb/qoda2KTCVttB0xw3cB816Y4UGNxWeP4Km2wwe+2WJvcSsEZOcPsQad/YfFPQWfacVFhDbYmSmLNrUyj97Cy6uzU917PbO2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWM+Qp30; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7141C433C7;
+	Thu, 28 Mar 2024 14:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711636264;
+	bh=zN2hzijZlAwA7dSIUuqXqTXuAGGw3rihlUXROhzown4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eWM+Qp30VXj9Cmh0LnGCxoeRKFCdiRG/+7cYiw3/d1A2+4+cFEwZTeR0JCmdB7dCq
+	 BJ9rIQbF9IBEI+soObC424HP7laoiCA3/oi1O9qP9rBITnPfxuSYeV5KRvg9hYcRab
+	 e/dCX3l7xvE+Crt9nLuvyn+RK8JuQn+i+0gl/X6RqKrS31M7lA4cVVAcZLH+2tD70I
+	 3HfxG2oBSEgx+79CZh8PlNRuEJmIOG2T+nm5DpqItFA2gaY6b7ltr3jg7UjRUmiCnX
+	 fBIiKt6tGKRHDPmTgbO18UpcTP5WlsP5+HLng5MSKm27q042WFMvRohaMfXHDUBt2+
+	 CV0uOkwqjgK7A==
+From: Arnd Bergmann <arnd@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Dongsheng Yang <dongsheng.yang@easystack.cn>,
+	Jens Axboe <axboe@kernel.dk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	dm-devel@lists.linux.dev,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Xiubo Li <xiubli@redhat.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	David Ahern <dsahern@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	ceph-devel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-nilfs@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	linux-kbuild@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH 0/9] address remaining -Wtautological-constant-out-of-range-compare
+Date: Thu, 28 Mar 2024 15:30:38 +0100
+Message-Id: <20240328143051.1069575-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <19897482-2fa1-4688-aeec-855123558374@linaro.org>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184473 [Mar 28 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/28 12:54:00 #24494464
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-Hello Neil,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thank you for quick feedback.
+The warning option was introduced a few years ago but left disabled
+by default. All of the actual bugs that this has found have been
+fixed in the meantime, and this series should address the remaining
+false-positives, as tested on arm/arm64/x86 randconfigs as well as
+allmodconfig builds for all architectures supported by clang.
 
-On Thu, Mar 28, 2024 at 03:07:52PM +0100, neil.armstrong@linaro.org wrote:
-> Hi,
-> 
-> On 28/03/2024 14:37, Dmitry Rokosov wrote:
-> > Provide right compatible properties for Amlogic A1 Thermal Sensor
-> > controller. A1 family supports only one thermal node - CPU thermal
-> > sensor.
-> > 
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > ---
-> >   .../bindings/thermal/amlogic,thermal.yaml          | 14 +++++++++-----
-> >   1 file changed, 9 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml b/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml
-> > index 20f8f9b3b971..0e7f6568d385 100644
-> > --- a/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml
-> > +++ b/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml
-> > @@ -13,11 +13,15 @@ description: Binding for Amlogic Thermal
-> >   properties:
-> >     compatible:
-> > -    items:
-> > -      - enum:
-> > -          - amlogic,g12a-cpu-thermal
-> > -          - amlogic,g12a-ddr-thermal
-> > -      - const: amlogic,g12a-thermal
-> > +    oneOf:
-> > +      - items:
-> > +          - enum:
-> > +              - amlogic,g12a-cpu-thermal
-> > +              - amlogic,g12a-ddr-thermal
-> > +          - const: amlogic,g12a-thermal
-> > +      - items:
-> > +          - const: amlogic,a1-cpu-thermal
-> > +          - const: amlogic,a1-thermal
-> 
-> In this case you can just use "amlogic,a1-cpu-thermal" or "amlogic,a1-thermal", no need for a fallback.
+Please apply the patches individually to subsystem maintainer trees.
 
-Okay, I will send v2 with only one compatible w/o fallback.
+      Arnd
+
+Arnd Bergmann (9):
+  dm integrity: fix out-of-range warning
+  libceph: avoid clang out-of-range warning
+  rbd: avoid out-of-range warning
+  kcov: avoid clang out-of-range warning
+  ipv4: tcp_output: avoid warning about NET_ADD_STATS
+  nilfs2: fix out-of-range warning
+  infiniband: uverbs: avoid out-of-range warnings
+  mlx5: stop warning for 64KB pages
+  kbuild: enable tautological-constant-out-of-range-compare
+
+ drivers/block/rbd.c                                    | 2 +-
+ drivers/infiniband/core/uverbs_ioctl.c                 | 4 ++--
+ drivers/md/dm-integrity.c                              | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 6 ++++--
+ fs/ceph/snap.c                                         | 2 +-
+ fs/nilfs2/ioctl.c                                      | 2 +-
+ kernel/kcov.c                                          | 3 ++-
+ net/ceph/osdmap.c                                      | 4 ++--
+ net/ipv4/tcp_output.c                                  | 2 +-
+ scripts/Makefile.extrawarn                             | 1 -
+ 10 files changed, 15 insertions(+), 13 deletions(-)
 
 -- 
-Thank you,
-Dmitry
+2.39.2
+
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: dm-devel@lists.linux.dev
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Xiubo Li <xiubli@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Bill Wendling <morbo@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Tariq Toukan <tariqt@nvidia.com>
+Cc: ceph-devel@vger.kernel.org
+Cc: linux-block@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-nilfs@vger.kernel.org
+Cc: kasan-dev@googlegroups.com
+Cc: linux-kbuild@vger.kernel.org
+Cc: llvm@lists.linux.dev
+
 
