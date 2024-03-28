@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-123400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E504F890806
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C458890808
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32E05B21F12
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:09:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1945B22F26
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F461327E2;
-	Thu, 28 Mar 2024 18:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43DC12F5B1;
+	Thu, 28 Mar 2024 18:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VSQmZLzN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GpLVOni3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EA712F38B;
-	Thu, 28 Mar 2024 18:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182F1446A4
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711649382; cv=none; b=Wk7Nfm8uf3upeOiivZXJDNaX4XZyUJhRNYZlSIuSFH842KV23ymwaj3mcmyCtXTA7KjyKykqU7bRSqG8uYik8DlVIVDGWLHGgHzkk05bDCW80jusB1iPrmnLkNRKtjOp5e39+epraritoQ631dGIzriC/4iQeyVy5rVihqdKoTA=
+	t=1711649511; cv=none; b=Gdnz/+K48+ZSFfLBLX5gEsj/Zn5qsB+CLS+lEN4mBp0WtDTFeX8kWGT2Lpk6rlS5rYrqc1m1UPXc3scEk0c0I3dbqkFpki2fNkItVGNBpyy77DiyCrArZ9x8xViDuGXfqjBy8EMM9/cTjIODxMkSFE74JTQjWCtqAz0EcDRQDOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711649382; c=relaxed/simple;
-	bh=He0L7am/V5CNl3ns9fu9G7ieIRAiLhmsEOwrMaSCWFo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=lhzol7vvuB9y8Ozet7QYN3S/RtkZPVV0cQQKs7NTi/h8AvLMk5eetpiraKXOYmPtzVE+XoIfDlVG+gF1PEH60gXZtXO6dRvPYt4B5i4cxU4IQnBHHuIDfq/CdZI9T/5L5TyCjwQHp0VCVUNVyOmopBYQYc861U8Kfio7y4K5n8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VSQmZLzN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC21C433C7;
-	Thu, 28 Mar 2024 18:09:41 +0000 (UTC)
+	s=arc-20240116; t=1711649511; c=relaxed/simple;
+	bh=8ERlPwQRmltkadYzho+Rro39TG8es6t+TgCTY0LtOY4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QT3cfmQwmtp2krWMoHgDe23tBBwdeaExijP1b46C6HobTj10hKbBSaPr/5qesAFNUtf7iw+Zxenpj/sBTpXb8KsQOQUmAWn8ma9vuEIWO4hhjdKFGQoOgJMsKWXbBdt0VAmGvqwJTtDwcAPg2JPqQ6xEwY4yWzVmoorfbPwZof4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GpLVOni3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7525FC433C7;
+	Thu, 28 Mar 2024 18:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711649381;
-	bh=He0L7am/V5CNl3ns9fu9G7ieIRAiLhmsEOwrMaSCWFo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=VSQmZLzN3F4Id6PkBByDxRYNwwmIAroujPN5YkCElzd/mjXqvezyVpjkeRliiYSCW
-	 EJLp7TuXhHEmBTAKBNJu1B9IUjKnEC+85kL4hSc0r8m2CAo1/G/Sz1oaylVAIsco+y
-	 MXE+kom41uvsAFX4q9OOIaEyyYyWWYZyOlgPekP4mrpsMhx/NmIJcw3+n+509pYJMn
-	 2fVkvEbiqwg0Z8Tn5UxmR6kgwXMiIIy4OFhAMU3BvPy7+ibQvQhjtRUsHYu8HZ2ULz
-	 6SBGwKNGO0yeWeQSVqE7IIGT/rJNyd42pE14ztptszfNeF09E5rM2q6/GPk9Oq1qbG
-	 siXvNn7gagnXA==
-Date: Thu, 28 Mar 2024 13:09:40 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH v2] PCI: dwc: Use the correct sleep function in
- wait_for_link
-Message-ID: <20240328180940.GA1575046@bhelgaas>
+	s=k20201202; t=1711649510;
+	bh=8ERlPwQRmltkadYzho+Rro39TG8es6t+TgCTY0LtOY4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GpLVOni31qJBk2L7atKQfrCiSYuR67xOjIwCmPeg0B1vT1WPl4D+M6ICz8XoV4YD+
+	 MCrreMSwGr+6u8xWzxQefYw+DNczGXnI1vpaueOnYaA1+kkXEx0M3aUQ+B1Kj44js8
+	 3AaWMo5G/LAIWZGdiX4Y//OKXgbZO6vnmBz3UJqbNNxvRqOnYFYajNiWsWuQcNUNNE
+	 zOcEpUZMH1TVeWdSnkOOCdQG1zyZK0s81fcJpC5oYU2NdBbptGXTbWVR4oXiM8H/Dr
+	 NJ7HA6qv7qtBTyx7CDm6yWBNRQya2fC4BW74QLgsCRVbeNUp6Iq9xwgOUuleIwIvPA
+	 J+6/jMRG4qrTA==
+Date: Thu, 28 Mar 2024 23:41:44 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com, Basavaraj.Hiregoudar@amd.com,
+	Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	Mastan Katragadda <Mastan.Katragadda@amd.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] soundwire: amd: fix for wake interrupt handling for
+ clockstop mode
+Message-ID: <ZgWy4M8nr7IFqpoa@matsya>
+References: <20240327063143.2266464-1-Vijendar.Mukunda@amd.com>
+ <20240327063143.2266464-2-Vijendar.Mukunda@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,76 +63,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215-topic-pci_sleep-v2-1-79334884546b@linaro.org>
+In-Reply-To: <20240327063143.2266464-2-Vijendar.Mukunda@amd.com>
 
-On Wed, Mar 27, 2024 at 07:24:49PM +0100, Konrad Dybcio wrote:
-> According to [1], msleep should be used for large sleeps, such as the
-> 100-ish ms one in this function. Comply with the guide and use it.
+On 27-03-24, 12:01, Vijendar Mukunda wrote:
+> When SoundWire Wake interrupt is enabled along with SoundWire Wake
+> enable register, SoundWire wake interrupt will be reported
+> when SoundWire manager is in D3 state and ACP is in D3 state.
 > 
-> [1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
+> When SoundWire Wake interrupt is reported, it will invoke runtime
+> resume of the SoundWire manager device.
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Thanks for fixing this up!
-
-No need to repost, but whoever applies this, please update the subject
-to be more specific:
-
-s/the correct sleep function/msleep()/
-s/wait_for_link/dw_pcie_wait_for_link()/
-
-Also update the doc link to something like this since timers-howto.txt
-no longer exists, and even timers-howto might be renamed or moved in
-the future:
-
-https://docs.kernel.org/6.8/timers/timers-howto.html
-
-> ---
-> Tested on Qualcomm SC8280XP CRD
-> ---
-> Changes in v2:
-> - Rename the define
-> - Sleep for 90ms (the lower boundary) instead of 100
-> - Link to v1: https://lore.kernel.org/r/20240215-topic-pci_sleep-v1-1-7ac79ac9739a@linaro.org
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
->  drivers/pci/controller/dwc/pcie-designware.h | 3 +--
->  2 files changed, 2 insertions(+), 3 deletions(-)
+> In case of system level suspend, for ClockStop Mode SoundWire Wake
+> interrupt should be disabled.
+> It should be enabled only for runtime suspend scenario.
+> Change wake interrupt enable/disable sequence for ClockStop Mode in
+> system level suspend and runtime suspend sceanrio.
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 250cf7f40b85..62915e4b2ebd 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -655,7 +655,7 @@ int dw_pcie_wait_for_link(struct dw_pcie *pci)
->  		if (dw_pcie_link_up(pci))
->  			break;
+> Fixes: 9cf1efc5ed2d ("soundwire: amd: add pm_prepare callback and pm ops support")
+> 
+
+no empty line b/w fixes and s-o-b line please
+
+I have fixed it up while applying
+Also, fixes should be first patch followed by other changes...
+
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  drivers/soundwire/amd_manager.c | 15 +++++++++++++++
+>  drivers/soundwire/amd_manager.h |  3 ++-
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+> index 1066d87aa011..20d94bcfc9b4 100644
+> --- a/drivers/soundwire/amd_manager.c
+> +++ b/drivers/soundwire/amd_manager.c
+> @@ -129,6 +129,19 @@ static void amd_sdw_set_frameshape(struct amd_sdw_manager *amd_manager)
+>  	writel(frame_size, amd_manager->mmio + ACP_SW_FRAMESIZE);
+>  }
 >  
-> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
-> +		msleep(LINK_WAIT_SLEEP_MS);
+> +static void amd_sdw_wake_enable(struct amd_sdw_manager *amd_manager, bool enable)
+> +{
+> +	u32 wake_ctrl;
+> +
+> +	wake_ctrl = readl(amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_8TO11);
+> +	if (enable)
+> +		wake_ctrl |= AMD_SDW_WAKE_INTR_MASK;
+> +	else
+> +		wake_ctrl &= ~AMD_SDW_WAKE_INTR_MASK;
+> +
+> +	writel(wake_ctrl, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_8TO11);
+> +}
+> +
+>  static void amd_sdw_ctl_word_prep(u32 *lower_word, u32 *upper_word, struct sdw_msg *msg,
+>  				  int cmd_offset)
+>  {
+> @@ -1094,6 +1107,7 @@ static int __maybe_unused amd_suspend(struct device *dev)
 >  	}
 >  
->  	if (retries >= LINK_WAIT_MAX_RETRIES) {
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 26dae4837462..b17e8ff54f55 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -63,8 +63,7 @@
+>  	if (amd_manager->power_mode_mask & AMD_SDW_CLK_STOP_MODE) {
+> +		amd_sdw_wake_enable(amd_manager, false);
+>  		return amd_sdw_clock_stop(amd_manager);
+>  	} else if (amd_manager->power_mode_mask & AMD_SDW_POWER_OFF_MODE) {
+>  		/*
+> @@ -1120,6 +1134,7 @@ static int __maybe_unused amd_suspend_runtime(struct device *dev)
+>  		return 0;
+>  	}
+>  	if (amd_manager->power_mode_mask & AMD_SDW_CLK_STOP_MODE) {
+> +		amd_sdw_wake_enable(amd_manager, true);
+>  		return amd_sdw_clock_stop(amd_manager);
+>  	} else if (amd_manager->power_mode_mask & AMD_SDW_POWER_OFF_MODE) {
+>  		ret = amd_sdw_clock_stop(amd_manager);
+> diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
+> index 418b679e0b1a..707065468e05 100644
+> --- a/drivers/soundwire/amd_manager.h
+> +++ b/drivers/soundwire/amd_manager.h
+> @@ -152,7 +152,7 @@
+>  #define AMD_SDW0_EXT_INTR_MASK		0x200000
+>  #define AMD_SDW1_EXT_INTR_MASK		4
+>  #define AMD_SDW_IRQ_MASK_0TO7		0x77777777
+> -#define AMD_SDW_IRQ_MASK_8TO11		0x000d7777
+> +#define AMD_SDW_IRQ_MASK_8TO11		0x000c7777
+>  #define AMD_SDW_IRQ_ERROR_MASK		0xff
+>  #define AMD_SDW_MAX_FREQ_NUM		1
+>  #define AMD_SDW0_MAX_TX_PORTS		3
+> @@ -190,6 +190,7 @@
+>  #define AMD_SDW_CLK_RESUME_REQ				2
+>  #define AMD_SDW_CLK_RESUME_DONE				3
+>  #define AMD_SDW_WAKE_STAT_MASK				BIT(16)
+> +#define AMD_SDW_WAKE_INTR_MASK				BIT(16)
 >  
->  /* Parameters for the waiting for link up routine */
->  #define LINK_WAIT_MAX_RETRIES		10
-> -#define LINK_WAIT_USLEEP_MIN		90000
-> -#define LINK_WAIT_USLEEP_MAX		100000
-> +#define LINK_WAIT_SLEEP_MS		90
->  
->  /* Parameters for the waiting for iATU enabled routine */
->  #define LINK_WAIT_MAX_IATU_RETRIES	5
-> 
-> ---
-> base-commit: 26074e1be23143b2388cacb36166766c235feb7c
-> change-id: 20240215-topic-pci_sleep-368108a1fb6f
-> 
-> Best regards,
+>  static u32 amd_sdw_freq_tbl[AMD_SDW_MAX_FREQ_NUM] = {
+>  	AMD_SDW_DEFAULT_CLK_FREQ,
 > -- 
-> Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
+> 2.34.1
+
+-- 
+~Vinod
 
