@@ -1,181 +1,298 @@
-Return-Path: <linux-kernel+bounces-123596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29177890B8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:39:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60735890B9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89741B21A4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:39:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 836071C2DED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C03F139D13;
-	Thu, 28 Mar 2024 20:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A7413A3F5;
+	Thu, 28 Mar 2024 20:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WBgEDQy7"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="icZCihKX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC40413A418
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D4E13A3FF
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658350; cv=none; b=ClPyG8YrJrPhgpCMgXkoqsZjUdsC5C3hSpQ+min5mh8is1aDhgdEwN8X+TzFxyOk9WqGq9j9EtDpxMCu4sPkyoRBFIBbDzuZ2C9Ka8JGNyW3FaYoEnNxh038tXtJo79FnbmZZ9ADLnxOsrrK6NWoVBsAJfdSG9jq4cNsqFZHp18=
+	t=1711658405; cv=none; b=PJGvRvkmCjvH1xDyipXO7Oc3HDp5c825ntovBWqTRpewAEXkx0jtfXSgEk3Qd7Vi/ThrfvbXGHTblasa58vwy0AY/h2rI25sK4xLgYxH6TJo/THP9JL1b4XddUaZhGSSVyMMgIroADWMtFAo8p09odaSCIdkkiD3+YPQPVVMaeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658350; c=relaxed/simple;
-	bh=c76w6ANOZw/3hvDVKikFOR104FP3uq0xGTMZX9yqf8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NA+x4qZ5p0qsqeejsbQqcTJ7qn9KXT/bwOCWJ8RFA2o7TERrmPKrpFCfqiiyv/cy92a2kwYMNlXTOpUJ+XF05NOWDTnxjd2v2lP+Z2ZljkMI6+BMVyL9MkrFWdJrd4JAdl9dgQYC/ZK0oREsdpdJBLBWIa+4ORFqKOdbTQvCvUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WBgEDQy7; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a450bedffdfso163188266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711658347; x=1712263147; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vXXOSZfz8O5OKgyE9PyGnB12GSSexqRiRe1MSPJ2Dvs=;
-        b=WBgEDQy7jidLSUfSCwFur8lXCW6mFyw0ulkGHuki29/26T/2wHrX6X0Bjgh2Bkw83+
-         Bmc/hIjvy0KLSttN3MLGxbM8+YA8Tc35p6aYG/9ADdu9TxPPV8ir23EKvL3FQgU9hVqE
-         I3oB0dPHhag3EjamTZPjCVnq9AAsCP/gSa84RxZMBiM0qzESuug1q5r1YkII7peSkYqM
-         dqCGjF5IqkTvqbz+937bJICfienaLYlEVGxCVxKN9QEeQ3lh+aWNi1tvM5ZOj+B85bUQ
-         yCTqq0et3426MtSKEaiCPltTPzpjwAmlldOh5CXtex73ZqPz+gQAbE/S00snahLvCuiL
-         jT9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711658347; x=1712263147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vXXOSZfz8O5OKgyE9PyGnB12GSSexqRiRe1MSPJ2Dvs=;
-        b=BKewio+8fofoW6KO5X022MUlCI2YAzoQSadlvDnJyuxkG0Du+oou3ex1Qj08ATinh9
-         xfAzNENV/ZsThwJ4lg+AI+9Ferav3Sl0FQJUv0s+rSibH+Yn+qKB/WxcEqonJ+YonI+X
-         7QywgpPyHnnUj4fMR5ORjqgRapH9RQm1ooywokbLvf21JFIkRYNGCXgcHiE5i1nxFSqz
-         tE6e7fTjr3m0WFwVAHgqPY5N1PQ70T4Dkmqi5G0qTJM8YGatCX+u/drLzGFD5l0KWA2a
-         QfsKrw9MYE/HcjTTtoSH3IBaKiD2WAKPO7CWZv6saiVZhUa6r5yjm6xsoSzL81qInGCG
-         C6CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/4dZ0E/U0TuwTJWUnVQsXcPYu4DRBznS27RpZQrIYEc+Dp2wTni57Y/2t0LBB8sGIqDDcmXeZVYjoA8R/PSAOx+0bZauk5tfN9y++
-X-Gm-Message-State: AOJu0YxT4IHkES09cWfnx+DCxPm/Aj7oMIyViYwoUaowI+/s7Zf2LOe1
-	Xn5DxilndC7NJ/MM1Qpa8gQxTzidliqqEr1VEZGvVbuZqnlneLUzvGRpeDhQkMiIssGxbfs2YTL
-	M
-X-Google-Smtp-Source: AGHT+IEfI6/ElqbxX011QI3EBz6Tqo72909UkKh+kFTHngulAL02ypmJA9aR2eFcAe+MhiuYzBH3uw==
-X-Received: by 2002:a17:906:2654:b0:a4d:d356:fd69 with SMTP id i20-20020a170906265400b00a4dd356fd69mr219001ejc.12.1711658346886;
-        Thu, 28 Mar 2024 13:39:06 -0700 (PDT)
-Received: from linaro.org ([79.114.172.194])
-        by smtp.gmail.com with ESMTPSA id mf9-20020a170906cb8900b00a46faaf7427sm1133467ejb.121.2024.03.28.13.39.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:39:06 -0700 (PDT)
-Date: Thu, 28 Mar 2024 22:39:04 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc: dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run,
-	swboyd@chromium.org, dianders@chromium.org, vkoul@kernel.org,
-	daniel@ffwll.ch, airlied@gmail.com, agross@kernel.org,
-	dmitry.baryshkov@linaro.org, andersson@kernel.org,
-	quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
-	quic_sbillaka@quicinc.com, marijn.suijten@somainline.org,
-	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] drm/msm/dp: assign correct DP controller ID to
- interface table
-Message-ID: <ZgXVaA6mbbUbVR0p@linaro.org>
-References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+	s=arc-20240116; t=1711658405; c=relaxed/simple;
+	bh=Rp9w8RwSy/4Z0Y7bMy5x7qlp6KJE9aJoHoyuWIitvzQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cfh05CcoVf4xSiI6uNiXEEcXLHfeSnzdvFb96uMLigQi9ATL/xzf9wRLDrILXdrjX+zPe9y7LOssKmKb4+xQLT3XRmBmQKdBmsqcOpL1+hJsDebi7516y8B3cO3gpKACeEryEU3uVEPxRvIPBXBlzu4yrTkWjsnRlLu+FWITyko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=icZCihKX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711658402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sjBz1KrK98sVajIv7PgdUWh+8H9rTGPZ9ES9DnhFZf8=;
+	b=icZCihKXUCLbOBK7p5WjkaN6kskc/xrNuHxkWnRA6QTVaClRo2xyadpRAFKv0vQAHmnGqH
+	3jrcmJ+Hskquzo4Y+xPbDF1yK62emEt0cFGZw/gUtgdBDWk+hz+h24gnaQYmh7AYBOEsh7
+	wX2AvpddsDIFO4CTZe0cvRCEWUrlDBw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-63-wEWhjZfMPkOYk_YV6Rw3gw-1; Thu, 28 Mar 2024 16:39:59 -0400
+X-MC-Unique: wEWhjZfMPkOYk_YV6Rw3gw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E4D0085A58B;
+	Thu, 28 Mar 2024 20:39:58 +0000 (UTC)
+Received: from localhost (unknown [10.39.194.117])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C2C792166B35;
+	Thu, 28 Mar 2024 20:39:57 +0000 (UTC)
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: linux-block@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	eblake@redhat.com,
+	Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	dm-devel@lists.linux.dev,
+	David Teigland <teigland@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>,
+	Joe Thornber <ejt@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>
+Subject: [RFC 3/9] selftests: block_seek_hole: add loop block driver tests
+Date: Thu, 28 Mar 2024 16:39:04 -0400
+Message-ID: <20240328203910.2370087-4-stefanha@redhat.com>
+In-Reply-To: <20240328203910.2370087-1-stefanha@redhat.com>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On 24-03-28 13:04:05, Kuogee Hsieh wrote:
-> At current x1e80100 interface table, interface #3 is wrongly
-> connected to DP controller #0 and interface #4 wrongly connected
-> to DP controller #2. Fix this problem by connect Interface #3 to
-> DP controller #0 and interface #4 connect to DP controller #1.
-> Also add interface #6, #7 and #8 connections to DP controller to
-> complete x1e80100 interface table.
-> 
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> ---
+Run the tests with:
 
-Nitpick: Probably mention the x1e80100 in the subject line somehow.
+  $ make TARGETS=block_seek_hole -C tools/selftests run_tests
 
-Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+---
+ tools/testing/selftests/Makefile              |   1 +
+ .../selftests/block_seek_hole/Makefile        |  17 +++
+ .../testing/selftests/block_seek_hole/config  |   1 +
+ .../selftests/block_seek_hole/map_holes.py    |  37 +++++++
+ .../testing/selftests/block_seek_hole/test.py | 103 ++++++++++++++++++
+ 5 files changed, 159 insertions(+)
+ create mode 100644 tools/testing/selftests/block_seek_hole/Makefile
+ create mode 100644 tools/testing/selftests/block_seek_hole/config
+ create mode 100755 tools/testing/selftests/block_seek_hole/map_holes.py
+ create mode 100755 tools/testing/selftests/block_seek_hole/test.py
 
->  .../drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h   | 34 ++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
-> index 9a9f709..a3e60ac 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
-> @@ -324,6 +324,7 @@ static const struct dpu_wb_cfg x1e80100_wb[] = {
->  	},
->  };
->  
-> +/* TODO: INTF 3, 8 and 7 are used for MST, marked as INTF_NONE for now */
->  static const struct dpu_intf_cfg x1e80100_intf[] = {
->  	{
->  		.name = "intf_0", .id = INTF_0,
-> @@ -358,8 +359,8 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
->  		.name = "intf_3", .id = INTF_3,
->  		.base = 0x37000, .len = 0x280,
->  		.features = INTF_SC7280_MASK,
-> -		.type = INTF_DP,
-> -		.controller_id = MSM_DP_CONTROLLER_1,
-> +		.type = INTF_NONE,
-> +		.controller_id = MSM_DP_CONTROLLER_0,	/* pair with intf_0 for DP MST */
->  		.prog_fetch_lines_worst_case = 24,
->  		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 30),
->  		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 31),
-> @@ -368,7 +369,7 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
->  		.base = 0x38000, .len = 0x280,
->  		.features = INTF_SC7280_MASK,
->  		.type = INTF_DP,
-> -		.controller_id = MSM_DP_CONTROLLER_2,
-> +		.controller_id = MSM_DP_CONTROLLER_1,
->  		.prog_fetch_lines_worst_case = 24,
->  		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 20),
->  		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 21),
-> @@ -381,6 +382,33 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
->  		.prog_fetch_lines_worst_case = 24,
->  		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 22),
->  		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 23),
-> +	}, {
-> +		.name = "intf_6", .id = INTF_6,
-> +		.base = 0x3A000, .len = 0x280,
-> +		.features = INTF_SC7280_MASK,
-> +		.type = INTF_DP,
-> +		.controller_id = MSM_DP_CONTROLLER_2,
-> +		.prog_fetch_lines_worst_case = 24,
-> +		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 17),
-> +		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 16),
-> +	}, {
-> +		.name = "intf_7", .id = INTF_7,
-> +		.base = 0x3b000, .len = 0x280,
-> +		.features = INTF_SC7280_MASK,
-> +		.type = INTF_NONE,
-> +		.controller_id = MSM_DP_CONTROLLER_2,	/* pair with intf_6 for DP MST */
-> +		.prog_fetch_lines_worst_case = 24,
-> +		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 18),
-> +		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 19),
-> +	}, {
-> +		.name = "intf_8", .id = INTF_8,
-> +		.base = 0x3c000, .len = 0x280,
-> +		.features = INTF_SC7280_MASK,
-> +		.type = INTF_NONE,
-> +		.controller_id = MSM_DP_CONTROLLER_1,	/* pair with intf_4 for DP MST */
-> +		.prog_fetch_lines_worst_case = 24,
-> +		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 12),
-> +		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 13),
->  	},
->  };
->  
-> -- 
-> 2.7.4
-> 
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index e1504833654db..8a21d6031b940 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -2,6 +2,7 @@
+ TARGETS += alsa
+ TARGETS += amd-pstate
+ TARGETS += arm64
++TARGETS += block_seek_hole
+ TARGETS += bpf
+ TARGETS += breakpoints
+ TARGETS += cachestat
+diff --git a/tools/testing/selftests/block_seek_hole/Makefile b/tools/testing/selftests/block_seek_hole/Makefile
+new file mode 100644
+index 0000000000000..3f4bbd52db29f
+--- /dev/null
++++ b/tools/testing/selftests/block_seek_hole/Makefile
+@@ -0,0 +1,17 @@
++# SPDX-License-Identifier: GPL-2.0-only
++PY3 = $(shell which python3 2>/dev/null)
++
++ifneq ($(PY3),)
++
++TEST_PROGS := test.py
++
++include ../lib.mk
++
++else
++
++all: no_py3_warning
++
++no_py3_warning:
++	@echo "Missing python3. This test will be skipped."
++
++endif
+diff --git a/tools/testing/selftests/block_seek_hole/config b/tools/testing/selftests/block_seek_hole/config
+new file mode 100644
+index 0000000000000..72437e0c0fc1c
+--- /dev/null
++++ b/tools/testing/selftests/block_seek_hole/config
+@@ -0,0 +1 @@
++CONFIG_BLK_DEV_LOOP=m
+diff --git a/tools/testing/selftests/block_seek_hole/map_holes.py b/tools/testing/selftests/block_seek_hole/map_holes.py
+new file mode 100755
+index 0000000000000..9477ec5d69d3a
+--- /dev/null
++++ b/tools/testing/selftests/block_seek_hole/map_holes.py
+@@ -0,0 +1,37 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# map_holes.py <filename>
++#
++# Print the holes and data ranges in a file.
++
++import errno
++import os
++import sys
++
++def map_holes(fd):
++    end = os.lseek(fd, 0, os.SEEK_END)
++    offset = 0
++
++    print('TYPE START END SIZE')
++
++    while offset < end:
++        contents = 'DATA'
++        new_offset = os.lseek(fd, offset, os.SEEK_HOLE)
++        if new_offset == offset:
++            contents = 'HOLE'
++            try:
++              new_offset = os.lseek(fd, offset, os.SEEK_DATA)
++            except OSError as err:
++                if err.errno == errno.ENXIO:
++                    new_offset = end
++                else:
++                    raise err
++            assert new_offset != offset
++        print(f'{contents} {offset} {new_offset} {new_offset - offset}')
++        offset = new_offset
++
++if __name__ == '__main__':
++    with open(sys.argv[1], 'rb') as f:
++        fd = f.fileno()
++        map_holes(fd)
+diff --git a/tools/testing/selftests/block_seek_hole/test.py b/tools/testing/selftests/block_seek_hole/test.py
+new file mode 100755
+index 0000000000000..4f7c2d01ab3d3
+--- /dev/null
++++ b/tools/testing/selftests/block_seek_hole/test.py
+@@ -0,0 +1,103 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# test.py
++#
++# Test SEEK_HOLE/SEEK_DATA support in block drivers
++
++import os
++import subprocess
++import sys
++from contextlib import contextmanager
++
++KB = 1024
++MB = 1024 * KB
++
++def run(args):
++    try:
++        cmd = subprocess.run(args, check=True, capture_output=True)
++    except subprocess.CalledProcessError as e:
++        print(e)
++        print(e.stderr.decode('utf-8').strip())
++        sys.exit(1)
++    return cmd
++
++@contextmanager
++def test_file(layout_fn, prefix='test'):
++    '''A context manager that creates a test file and produces its path'''
++    path = f'{prefix}-{os.getpid()}'
++    with open(path, 'w+b') as f:
++        layout_fn(f)
++
++    try:
++        yield path
++    finally:
++        os.unlink(path)
++
++@contextmanager
++def loop_device(file_path):
++    '''A context manager that attaches a loop device for a given file and produces the path of the loop device'''
++    cmd = run(['losetup', '--show', '-f', file_path])
++    loop_path = os.fsdecode(cmd.stdout.strip())
++
++    try:
++        yield loop_path
++    finally:
++        run(['losetup', '-d', loop_path])
++
++def test(layout, dev_context_manager):
++    with test_file(layout) as file_path, dev_context_manager(file_path) as dev_path:
++        cmd = run(['./map_holes.py', file_path])
++        file_output = cmd.stdout.decode('utf-8').strip()
++
++        cmd = run(['./map_holes.py', dev_path])
++        dev_output = cmd.stdout.decode('utf-8').strip()
++
++        if file_output != dev_output:
++            print(f'FAIL {dev_context_manager.__name__} {layout.__name__}')
++            print('File output:')
++            print(file_output)
++            print('Does not match device output:')
++            print(dev_output)
++            sys.exit(1)
++
++def test_all(layouts, dev_context_managers):
++    for dev_context_manager in dev_context_managers:
++        for layout in layouts:
++            test(layout, dev_context_manager)
++
++# Different data layouts to test
++
++def data_at_beginning_and_end(f):
++    f.write(b'A' * 4 * KB)
++    f.seek(256 * MB)
++
++    f.write(b'B' * 64 * KB)
++
++    f.seek(1024 * MB - KB)
++    f.write(b'C' * KB)
++
++def holes_at_beginning_and_end(f):
++    f.seek(128 * MB)
++    f.write(b'A' * 4 * KB)
++
++    f.seek(512 * MB)
++    f.write(b'B' * 64 * KB)
++
++    f.truncate(1024 * MB)
++
++def no_holes(f):
++    # Just 1 MB so test file generation is quick
++    mb = b'A' * MB
++    f.write(mb)
++
++def empty_file(f):
++    f.truncate(1024 * MB)
++
++if __name__ == '__main__':
++    layouts = [data_at_beginning_and_end,
++               holes_at_beginning_and_end,
++               no_holes,
++               empty_file]
++    dev_context_managers = [loop_device]
++    test_all(layouts, dev_context_managers)
+-- 
+2.44.0
+
 
