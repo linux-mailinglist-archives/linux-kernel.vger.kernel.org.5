@@ -1,222 +1,146 @@
-Return-Path: <linux-kernel+bounces-122827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7986588FE06
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:25:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2CB88FE09
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:25:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A291F242BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:25:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DD97B24441
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7357E775;
-	Thu, 28 Mar 2024 11:24:56 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174237E583;
+	Thu, 28 Mar 2024 11:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Gl4v05Tl"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404C07E574;
-	Thu, 28 Mar 2024 11:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A587D408
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 11:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711625095; cv=none; b=KwuMoV2fgvtuRSennm6okgK17DSH/SDJqjnKjZnLu5+mal8eUEe5Yd7MtlpeUI7M7oLR1XzJh1Z8j1sj22EaJFsHRLig24r1pwnvZlYniN+lCcLWiJOzRY7m+ruXOY9JBI65eJZOx1tEEuPI9DkzPmddbvQ4HwvARPyRAkIpNUE=
+	t=1711625122; cv=none; b=Xk0LxyKySOvjBGukm+xZ56TkHAnpnDVla80rhfH2DcxADsLBla2IlbvBTJGTpINRah83Ym7Y6WRn3FrEY0W+imG7nzk3z5v7blQm/oyUjITqwa3LBKiBeceHYFSO7NSHmjTyZmzp2WJSQtMS+mIBV15ycySMdPZi1M9vFwtxvhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711625095; c=relaxed/simple;
-	bh=IVWuMXHvJ24EzomPmVm//u7gaDNCPlrLrRC0bENfsmo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OaKL0UbU2k6VE8oi5JhvOLhrMznqM7YU5hY0h2FwSgYPJ2FL7iTy8v6vci8dFuYs4sikzEVx+IQDYh1M3TVdTjPzuf7QulxOEiTGkAZd/yMVBLkIheaeWkhkJeW8rYotPgwhsPrUznK3z8cB3nkCiUrcVSv2oQ9lDbmYhLXbBg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4V514V66wjz9xqx0;
-	Thu, 28 Mar 2024 19:08:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 4A515140801;
-	Thu, 28 Mar 2024 19:24:43 +0800 (CST)
-Received: from [10.81.200.225] (unknown [10.81.200.225])
-	by APP1 (Coremail) with SMTP id LxC2BwAXCxRwUwVmbnglBQ--.8766S2;
-	Thu, 28 Mar 2024 12:24:42 +0100 (CET)
-Message-ID: <4ad908dc-ddc5-492e-8ed4-d304156b5810@huaweicloud.com>
-Date: Thu, 28 Mar 2024 13:24:25 +0200
+	s=arc-20240116; t=1711625122; c=relaxed/simple;
+	bh=ReqiZMaFal2HmdF6yojPFU7SFMvwR9W/4on1lxJ2DGw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Qh7CBY5aDa9OnxGqm+b6tqbcQTeWvS1fyjPrDZVGeOy1Il6FJoZA1xxMxkNvQQEyfLSSnLj7oDjzyOCfisVv+YhXM6mKIdrn+jtzrhf7vLPJBTElaimYR6Ztf8k7Gsteq8D99Z/x7hL5upBQBnIjXuWt8V6qFij9NH+ayLbZrKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Gl4v05Tl; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33ececeb19eso442836f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 04:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711625118; x=1712229918; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ReqiZMaFal2HmdF6yojPFU7SFMvwR9W/4on1lxJ2DGw=;
+        b=Gl4v05TlhyNcfw9H1Geb1CYBTPBwT4w/BxsNU1ictJUL/Ff5HUSWQwVg7pPIWwd83B
+         P4c5Q1mh3sJThmVFkm0PRAbE+FULQGwNpirD93K+peixut7ycgzAiLMj33wxKiGuv0fx
+         N5yebskEyH8ynkSpG4/82N/r5VLqSutuKfUHFbJO1FEoHZ/rCT3tMBZ5xxZJTLwwYD04
+         Jb0vAqrKOVyFHgyMQGaJahZ2TZMKlUS06F0FJ7nluUqeCJxiO1zsC2un7ikdMZQqWezZ
+         YhBeNrTduWhsYkzkbM0496hPDHG/4IvWIY2Bg1WjhXkkBre11rF7POkuWqMzXFLjaEj5
+         x2IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711625118; x=1712229918;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ReqiZMaFal2HmdF6yojPFU7SFMvwR9W/4on1lxJ2DGw=;
+        b=LNtgc3d1c3r4MVUFlD00oKecaKnBLdqyULpht2k8/RXLoYf05JiCvkNQMGiwgjVTzP
+         rT0RirS3bAg7GpQZD+jq+x0P2qTrmH+qiJWs4PVGluO2o2zG+RnTmvP8RaPUAbaczHEJ
+         cBjC1IYsScVXjuuycyzG7Q4+P/7kqqel1/4L0gOvgzRj4c18E18N9ABblLKQdgoVSflR
+         CNKRh76J5JBtY8yIsQevP2BMEBwwDYJWWsjccE9IA5sKOSqJ7HO80N0acYrHiRWZvQaH
+         RJ7VHJ4MMDm4+0godvamZwWDMu/lxo/2c7YUP86llRus5k9mK9fQU3sWfriroJqMpPBx
+         72Kw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZ4pp2k+ZHdsyTa0B3jggrUaSth8rr4LLXwkcEmkXVSMSk0tR+afWyC1yTW+gBxat62J/6MIor5Qk5Hv0lgAQ+cLpdPKPmAVqQZ15+
+X-Gm-Message-State: AOJu0Yy8y3y4n7ZBBMgDmeybbv/KwoA6xwzsK+cm4OEFb4gqyWH1ZMfM
+	r8GqaZJP4rrHxFGYdSPp5oQK9LRre1tWLB9CYRh+0i+5JD/C5Komp//J24SmgcY=
+X-Google-Smtp-Source: AGHT+IG3rpM6+1a4KBV63oMIbrPS8hANggXGrZwGuY0lneIQs2DVnJVdpWA4J7EbAZOyKm7IfBsIkg==
+X-Received: by 2002:adf:ce11:0:b0:33d:5fa6:79bf with SMTP id p17-20020adfce11000000b0033d5fa679bfmr1750674wrn.71.1711625117639;
+        Thu, 28 Mar 2024 04:25:17 -0700 (PDT)
+Received: from draszik.lan ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id bn22-20020a056000061600b00341e2738eb4sm1512382wrb.95.2024.03.28.04.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 04:25:17 -0700 (PDT)
+Message-ID: <ed636c3e3dbd733b7135f0609e070c7afa8e673f.camel@linaro.org>
+Subject: Re: [PATCH v2 2/3] clk: samsung: gs101: propagate PERIC1 USI SPI
+ clock rate
+From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org, 
+	krzysztof.kozlowski@linaro.org
+Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ willmcvicker@google.com, kernel-team@android.com, s.nawrocki@samsung.com, 
+ cw00.choi@samsung.com, mturquette@baylibre.com, sboyd@kernel.org, 
+ semen.protsenko@linaro.org, linux-clk@vger.kernel.org,
+ jaewon02.kim@samsung.com
+Date: Thu, 28 Mar 2024 11:25:16 +0000
+In-Reply-To: <20240326172813.801470-3-tudor.ambarus@linaro.org>
+References: <20240326172813.801470-1-tudor.ambarus@linaro.org>
+	 <20240326172813.801470-3-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2-1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: kernel crash in mknod
-Content-Language: en-US
-To: Christian Brauner <brauner@kernel.org>
-Cc: Roberto Sassu <roberto.sassu@huawei.com>,
- Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@manguebit.com>,
- Christian Brauner <christian@brauner.io>, Mimi Zohar <zohar@linux.ibm.com>,
- Paul Moore <paul@paul-moore.com>,
- "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>
-References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
- <20240324054636.GT538574@ZenIV> <3441a4a1140944f5b418b70f557bca72@huawei.com>
- <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
- <cb267d1c7988460094dbe19d1e7bcece@huawei.com>
- <20240326-halbkreis-wegstecken-8d5886e54d28@brauner>
- <4a0b28ba-be57-4443-b91e-1a744a0feabf@huaweicloud.com>
- <20240328-raushalten-krass-cb040068bde9@brauner>
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <20240328-raushalten-krass-cb040068bde9@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:LxC2BwAXCxRwUwVmbnglBQ--.8766S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWrXrW7uryfJFykZFWDJwb_yoWrCr1kpF
-	4rt3WDGws5JFW3Wr1IyF17ua1Sva4rWFW5AF4Fgw15ArnxKr1jqF1SvFyY9FW5Kr4xW34I
-	qa17trsxWw4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj5fjZQABs3
 
-On 3/28/2024 12:08 PM, Christian Brauner wrote:
-> On Thu, Mar 28, 2024 at 12:53:40PM +0200, Roberto Sassu wrote:
->> On 3/26/2024 12:40 PM, Christian Brauner wrote:
->>>> we can change the parameter of security_path_post_mknod() from
->>>> dentry to inode?
->>>
->>> If all current callers only operate on the inode then it seems the best
->>> to only pass the inode. If there's some reason someone later needs a
->>> dentry the hook can always be changed.
->>
->> Ok, so the crash is likely caused by:
->>
->> void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry
->> *dentry)
->> {
->>          if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
->>
->> I guess we can also simply check if there is an inode attached to the
->> dentry, to minimize the changes. I can do both.
->>
->> More technical question, do I need to do extra checks on the dentry before
->> calling security_path_post_mknod()?
-> 
-> Why do you need the dentry? The two users I see are ima in [1] and evm in [2].
-> Both of them don't care about the dentry. They only care about the
-> inode. So why is that hook not just:
+On Tue, 2024-03-26 at 17:28 +0000, Tudor Ambarus wrote:
+> When SPI transfer is being prepared, the spi-s3c64xx driver will call
+> clk_set_rate() to change the rate of SPI source clock (IPCLK). But IPCLK
+> is a gate (leaf) clock, so it must propagate the rate change up the
+> clock tree, so that corresponding MUX/DIV clocks can actually change
+> their values. Add CLK_SET_RATE_PARENT flag to corresponding clocks for
+> all USI instances in GS101 PERIC1: USI{0, 9, 10, 11, 12, 13}. This change
+> involves the following clocks:
+>=20
+> PERIC1 USI*:
+>=20
+> =C2=A0=C2=A0=C2=A0 Clock=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Div range=C2=A0=C2=A0=
+=C2=A0 MUX Selection
+> =C2=A0=C2=A0=C2=A0 ------------------------------------------------------=
+-------------
+> =C2=A0=C2=A0=C2=A0 gout_peric1_peric1_top0_ipclk_*=C2=A0=C2=A0=C2=A0 -=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -
+> =C2=A0=C2=A0=C2=A0 dout_peric1_usi*_usi=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /1..16=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 -
+> =C2=A0=C2=A0=C2=A0 mout_peric1_usi*_usi_user=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 {24.5 MHz, 400 MHz}
+>=20
+> With input clock of 400 MHz this scheme provides the following IPCLK
+> rate range, for each USI block:
+>=20
+> =C2=A0=C2=A0=C2=A0 PERIC1 USI*:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.5 M=
+Hz ... 400 MHz
+>=20
+> Accounting for internal /4 divider in SPI blocks, and because the max
+> SPI frequency is limited at 50 MHz, it gives us next SPI SCK rates:
+>=20
+> =C2=A0=C2=A0=C2=A0 PERIC1 USI_SPI*:=C2=A0=C2=A0 384 KHz ... 49.9 MHz
+>=20
+> Which shall be fine for the applications of the SPI bus.
+>=20
+> Note that with this we allow the reparenting of the MUX_USIx clocks to
+> OSCCLK. Each instance of the USI IP has its own MUX_USI clock, thus the
+> reparenting of a MUX_USI clock corresponds to a single instance of the
+> USI IP. The datasheet mentions OSCCLK just in the low-power mode
+> context, but the downstream driver reparents too the MUX_USI clocks to
+> OSCCLK. Follow the downstream driver and do the same.
+>=20
+> Fixes: 63b4bd1259d9 ("clk: samsung: gs101: add support for cmu_peric1")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-Sure, I can definitely do that. Seems an easier fix to do an extra check 
-in security_path_post_mknod(), rather than changing the parameter 
-everywhere.
-
-Next time, when we introduce new LSM hooks we can try to introduce more 
-specific parameters.
-
-Also, consider that the pre hook security_path_mknod() has the dentry as 
-parameter. For symmetry, we could keep it in the post hook.
-
-What I was also asking is if I can still call d_backing_inode() on the 
-dentry without extra checks, and avoiding the IS_PRIVATE() check if the 
-former returns NULL.
-
-> diff --git a/security/security.c b/security/security.c
-> index 7e118858b545..025689a7e912 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1799,11 +1799,11 @@ EXPORT_SYMBOL(security_path_mknod);
->    *
->    * Update inode security field after a file has been created.
->    */
-> -void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
-> +void security_inode_post_mknod(struct mnt_idmap *idmap, struct inode *inode)
->   {
-> -       if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +       if (unlikely(IS_PRIVATE(inode)))
->                  return;
-> -       call_void_hook(path_post_mknod, idmap, dentry);
-> +       call_void_hook(path_post_mknod, idmap, inode);
->   }
-> 
->   /**
-> 
-> And one another thing I'd like to point out is that the security hook is
-> called "security_path_post_mknod()" while the evm and ima hooks are
-> called evm_post_path_mknod() and ima_post_path_mknod() respectively. In
-> other words:
-> 
-> git grep _path_post_mknod() doesn't show the implementers of that hook
-> which is rather unfortunate. It would be better if the pattern were:
-> 
-> <specific LSM>_$some_$ordered_$words()
-
-I know, yes. Didn't want to change just yet since people familiar with 
-the IMA code know the current function name. I don't see any problem to 
-rename the functions.
-
-Thanks
-
-Roberto
-
-> [1]:
-> static void evm_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
-> {
->          struct inode *inode = d_backing_inode(dentry);
->          struct evm_iint_cache *iint = evm_iint_inode(inode);
-> 
->          if (!S_ISREG(inode->i_mode))
->                  return;
-> 
->          if (iint)
->                  iint->flags |= EVM_NEW_FILE;
-> }
-> 
-> [2]:
-> static void ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
-> {
->          struct ima_iint_cache *iint;
->          struct inode *inode = dentry->d_inode;
->          int must_appraise;
-> 
->          if (!ima_policy_flag || !S_ISREG(inode->i_mode))
->                  return;
-> 
->          must_appraise = ima_must_appraise(idmap, inode, MAY_ACCESS,
->                                            FILE_CHECK);
->          if (!must_appraise)
->                  return;
-> 
->          /* Nothing to do if we can't allocate memory */
->          iint = ima_inode_get(inode);
->          if (!iint)
->                  return;
-> 
->          /* needed for re-opening empty files */
->          iint->flags |= IMA_NEW_FILE;
-> }
-> 
-> 
-> 
->>
->> Thanks
->>
->> Roberto
->>
->>> For bigger changes it's also worthwhile if the object that's passed down
->>> into the hook-based LSM layer is as specific as possible. If someone
->>> does a change that affects lifetime rules of mounts then any hook that
->>> takes a struct path argument that's unused means going through each LSM
->>> that implements the hook only to find out it's not actually used.
->>> Similar for dentry vs inode imho.
->>
+Acked-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
 
 
