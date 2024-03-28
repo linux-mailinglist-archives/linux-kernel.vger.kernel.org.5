@@ -1,118 +1,114 @@
-Return-Path: <linux-kernel+bounces-122577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C549688F9F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:19:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6948A88F9EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6540BB24AEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:19:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A9E01C223ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29FA2CCA0;
-	Thu, 28 Mar 2024 08:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9825854672;
+	Thu, 28 Mar 2024 08:18:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="hfyUJ6qw"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B067847C;
-	Thu, 28 Mar 2024 08:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="IG34/QgP"
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5EB351C45
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711613944; cv=none; b=uhWidEGrxsRehFqM6W2MtxmEpyGKP9dz9/9GWnRCLzgjBozqv0DEnSQSkyXwlSprEEMM2imW3kLf367CAjeTKyQ1W3o24rP+tiG3HkVqiN/VN7U5h5TzwzFA3iQVutaBOcKCwyeYx6veFxyhmY91QRWY5iR4oSNgP3oDwc77WCQ=
+	t=1711613903; cv=none; b=sv8cPy1YvE+KZPBHnWQKRGexi2IzZgBslPf5FNw/hBYsNtWqQuh6LwfYdHgxaHb4OtzAGf3Bs9++smqSdggOYTRs/db0D/WmxaJTunXLvhYjHZptFWqV1PlrG3MlGQ+2SCLyNScbX1j5KQgxeWqXomG0AfGw5G/If0zSnxojBHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711613944; c=relaxed/simple;
-	bh=gGMVJNa69Leb+cEsuqMfbUA1imWzW7vL8sf2rg0Skpo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kQXMK/xhfMXhj4kWv2ZaS7O4xxvO4oqKs+HwvneXHk+nclMuXNANRahx8g7jc3s3TzFJ2CI/a51i2Oi09Og1CH1m+GlGANZSu53URqTkV2NCn4dzIbbYGd5bIVtALexFYH8h0GRu35kHESRpOQmqRjlrPwMOgBtXuEG2ijas+o0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=hfyUJ6qw; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id EA2F3100002;
-	Thu, 28 Mar 2024 11:18:33 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1711613914; bh=PBDen4iYcixurelbSTnSYzaQdiGcKvKP3bLFXy2ahvQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=hfyUJ6qwa0EdurR0ieoZbSH+vxyi00Eh/N8Kgmj54z98a4F9waSSW4HyYyn8fv8es
-	 92k5TDTzeqxzQjNvSMjj7SW2Ls0jouagLRfVxAJWekx5aATjE7yec8JxMbNlvHT3zO
-	 2SGObajDAqBGWe9yXDpxCNtAYdfkP2qyPm9SqHP5HqZ2a9AnUxVrndy67G9ioxwflu
-	 F4QjLKtMDvKGEUr81VYLRI9kz7lwlYxQc8bUC+WQ1/53iybepcxys5zyQGo0B+Z9ry
-	 yTn+sUDN7GSFkTglQ0gyIMXoJMO9kvprZyLzYc0j9xr9t4EzaQXaRuBtBTXXI1ISnj
-	 KuwUkOt6ML4ig==
-Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Thu, 28 Mar 2024 11:17:18 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 28 Mar
- 2024 11:16:57 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Sunil Goutham <sgoutham@marvell.com>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Linu Cherian
-	<lcherian@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Jerin Jacob
-	<jerinj@marvell.com>, hariprasad <hkelam@marvell.com>, Subbaraya Sundeep
-	<sbhatta@marvell.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] octeontx2-af: Add array index check
-Date: Thu, 28 Mar 2024 11:16:48 +0300
-Message-ID: <20240328081648.13193-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1711613903; c=relaxed/simple;
+	bh=E4W+r8TfulGjSmOA1LdOpEM8S3uPAlvCQu3lib2TuNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=okxpuwazWv57B+5IB9zLLaGYT8LbY8AwWDYgnbTdlBPKUTeqdNqrtMd8GFYlOJ/WzGwYb9Lz/K3qA5CxtOtO0TcrhcGSj3tH7nguJQBg+GChSPzLyIioP2yBSIFQzS/V5hXA+Ci1soNrW2BTJ9iMrdFmZCxUP9anZKcCFCr1eTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=IG34/QgP; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe1eea.dip0.t-ipconnect.de [79.254.30.234])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 72C052810A1;
+	Thu, 28 Mar 2024 09:18:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1711613900;
+	bh=E4W+r8TfulGjSmOA1LdOpEM8S3uPAlvCQu3lib2TuNg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IG34/QgPa0IP27cm2dZWuDmVArq8mQEmiYfzGlXQSoE7lXXjo0DbqMEt6I7ehsHTD
+	 OGFwyrG/zwdXb0hjZF7LaiAVJ8wnJt+hMHF4bx4zGuUwWL33m/3Rg9e48Put9IMxXA
+	 wsuSJyr3lxUfFX/gLJ5njoD7FlvvBkqZslYCH1CI1HkKyWJdubvX8egmW4UhAPl+mY
+	 kHuhb/A08lp61uK69qzR/WNwyd0vt3HEqivK07uS8C3pE3w0PuDvZFPbXsQuIHWXSS
+	 x+IWE9E5d45p/BVid6sq+C1vMTEsINWLuWl/xzvn7mfsfcHLI+TbUtoRPDi6n+ZXWt
+	 TbvONu6RgVXdQ==
+Date: Thu, 28 Mar 2024 09:18:18 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev
+Subject: [git pull] IOMMU Fixes for Linux v6.9-rc1
+Message-ID: <ZgUnyqosVrEtULhz@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184459 [Mar 28 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 13 0.3.13 9d58e50253d512f89cb08f71c87c671a2d0a1bca, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;mx1.t-argos.ru.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/28 07:24:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/28 06:03:00 #24486213
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In rvu_map_cgx_lmac_pf() the 'iter', which is used as an array index, can reach
-value (up to 14) that exceed the size (MAX_LMAC_COUNT = 8) of the array.
-Fix this bug by adding 'iter' value check.
+Hi Linus,
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-Fixes: 91c6945ea1f9 ("octeontx2-af: cn10k: Add RPM MAC support")
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 2 ++
- 1 file changed, 2 insertions(+)
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 72e060cf6b61..e9bf9231b018 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -160,6 +160,8 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
- 			continue;
- 		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
- 		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
-+			if (iter >= MAX_LMAC_COUNT)
-+				continue;
- 			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
- 					      iter);
- 			rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
--- 
-2.30.2
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.9-rc1
+
+for you to fetch changes up to c404f55c26fc23c70a9f2262f3f36a69fc46289b:
+
+  iommu: Validate the PASID in iommu_attach_device_pasid() (2024-03-28 06:38:40 +0100)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v6.9-rc1:
+
+Including:
+
+	- ARM SMMU fixes:
+
+	  - Fix swabbing of the STE fields in the unlikely event of
+	    running on a big-endian machine.
+	  - Fix setting of STE.SHCFG on hardware that doesn't implement
+	    support for attribute overrides.
+
+	- IOMMU core:
+
+	  - PASID validation fix in device attach path
+
+----------------------------------------------------------------
+Jason Gunthorpe (2):
+      iommu/arm-smmu-v3: Add cpu_to_le64() around STRTAB_STE_0_V
+      iommu: Validate the PASID in iommu_attach_device_pasid()
+
+Joerg Roedel (1):
+      Merge tag 'arm-smmu-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into iommu/fixes
+
+Mostafa Saleh (1):
+      iommu/arm-smmu-v3: Fix access for STE.SHCFG
+
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 38 +++++++++++++++++++----------
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 ++
+ drivers/iommu/iommu.c                       | 11 ++++++++-
+ 3 files changed, 37 insertions(+), 14 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
 
