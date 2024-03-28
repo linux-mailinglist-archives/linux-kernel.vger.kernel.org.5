@@ -1,149 +1,132 @@
-Return-Path: <linux-kernel+bounces-122854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54AA188FE76
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:59:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9A3488FE7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE0A0B2166C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:59:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 167AB1C2867C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEC97E792;
-	Thu, 28 Mar 2024 11:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543587E58F;
+	Thu, 28 Mar 2024 12:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="U4+g4GQd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c/GsYOkp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6845474B;
-	Thu, 28 Mar 2024 11:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F82B657CE;
+	Thu, 28 Mar 2024 12:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711627154; cv=none; b=ef8gQl2lX/mfkNx1Xreq5fFIw8SJhWw2eePvJn3bB1FqiKn6aq6/vcp5NpjlTb53Xwzf/bLWtEcQLG2LOxP6skco2D1A67ensugGFnKX4odIZSIZSXamawx+/R4jJcyE5y6NvzUn3jKzAPbDcNdKC1AcpC90cl8iQscIpLBGyUU=
+	t=1711627217; cv=none; b=esXW35aYfMG4ihLLHw+6Mr9+oaEZash7Bkl7fK6ne2Zw/nLDg4NpMgHgpza38kw+LskACBBNKu5XWAnWA8RzEe7MXoL88wEfU8sRUtxXqg5ynZLS9sNboseAIi6jHw+hENB8OZ/5ijmovqs+Uvl7Jir4vCBDKtBSzSPMQV2S0SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711627154; c=relaxed/simple;
-	bh=9nsT8fHj6sfhBsSfZYt5q8FpfT54bgl+bVhOjsgfDiI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mu5Ym9ugPUqRa+bQHqQ+l0+p9bsNnV50JQ+4UFhqUeY3UTGNaEJtpGJvdzWf4tsgefVT8/hccDbkh1e1RddcR2CwfDV9847qUPB/vOKevmliF6huQWnKMLTu7c3PRECbMVitjcjQfjMjAICxLB7BhtcFuF1Y2VhFeoh0S0WMbz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=U4+g4GQd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D7ECC433F1;
-	Thu, 28 Mar 2024 11:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711627154;
-	bh=9nsT8fHj6sfhBsSfZYt5q8FpfT54bgl+bVhOjsgfDiI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U4+g4GQdOI6JToTQkRHWdWTqomcGll7yLt+UMv38d5WYMs7CYWMlXSGWwWS+GXRWn
-	 E8rNGB2bF5M6qZeTCO962l/Gu8iv/sp0pxla4/rG5uA/oNrmQo8f6d+8PldC6mVSke
-	 goJdaRrlpo305xugrT+1jCSmim3dZtZivhEyBEX0=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: lee@kernel.org
-Cc: dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	daniel.thompson@linaro.org,
-	jingoohan1@gmail.com,
-	deller@gmx.de,
-	"Ricardo B. Marliere" <ricardo@marliere.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 2/2] video: backlight: lcd: make lcd_class constant
-Date: Thu, 28 Mar 2024 12:59:07 +0100
-Message-ID: <2024032809-enchanted-conducive-3677@gregkh>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <2024032805-putdown-mushy-a0f9@gregkh>
-References: <2024032805-putdown-mushy-a0f9@gregkh>
+	s=arc-20240116; t=1711627217; c=relaxed/simple;
+	bh=8b7pqk930R8E8yQ2t5Oy9IoPCP561nVG0BIS05bsseY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNhqJdwE9JlsUvIJBxq9oiffBghslEY/vGOgpugHPc9BDEhNvMU0PohPFuLzLjIM7gv9qjSPVOXkaplkBCj/mXNz9jyLoXrFy0q8stn7wIrE9v7Q3wJx7cg7SQBoSdKmdWAPUn89KlFKpEcgSNiD+S1sVY/pn8CcQoWY1cJZEiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c/GsYOkp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CED6C433F1;
+	Thu, 28 Mar 2024 12:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711627217;
+	bh=8b7pqk930R8E8yQ2t5Oy9IoPCP561nVG0BIS05bsseY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c/GsYOkphZyoGQZ7xarQ0Z708uvlSorqefD3ho8akQtdHOKnfrqMIGCEsFDP+cmHw
+	 NndOlszvHha0HW2O8DoMMO382nMuqkE7oLtt2jtPT/9SBv5n1FSs7eATkxYKDpV9OP
+	 m9LHXsppYV99doh0ofdFeJsMHChtji0wyFZyaO29FYlUx4bT4sBlMwwH19hnvrQbo4
+	 9yUUYUPya6lnLpM5FuRoxyEMw8rIjTjTWhlkZCWzMAOOmWFMcUFwR8JhV3LQpxoN1t
+	 nBvXFQVqXmJHU/Aad9q9UCQ2gUzZ4Uh45Voj8VHA5CfSRI5riqfmZnqYftcRb95wJv
+	 cksCMkt2KJsbQ==
+Date: Thu, 28 Mar 2024 12:00:11 +0000
+From: Lee Jones <lee@kernel.org>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	Samuel Holland <samuel@sholland.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	Ryan Walklin <ryan@testtoast.com>
+Subject: Re: [GIT PULL] Immutable branch between MFD and Regulator due for
+ the v6.9 merge window:wq
+Message-ID: <20240328120011.GE13211@google.com>
+References: <20240310010211.28653-1-andre.przywara@arm.com>
+ <20240328095631.GW13211@google.com>
+ <20240328111108.5ddfa073@minigeek.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Lines: 79
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2535; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=yCsQQAr22nUmFXlA9JkgS4sO+euLEjucK5Uqyl8x3Co=; b=owGbwMvMwCRo6H6F97bub03G02pJDGms0b2bl367zNNasmV5Vp74ykaFDXN3nwrnmXJCq/RL3 iH/kNo1HbEsDIJMDLJiiixftvEc3V9xSNHL0PY0zBxWJpAhDFycAjARiwaGeer+U79vdj98eRl7 jsrWsiL3d57bFzIsWOcevdJ+kufkX1N47hx/1/LLXfduHQA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240328111108.5ddfa073@minigeek.lan>
 
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
+On Thu, 28 Mar 2024, Andre Przywara wrote:
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the lcd_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+> On Thu, 28 Mar 2024 09:56:31 +0000
+> Lee Jones <lee@kernel.org> wrote:
+> 
+> Hi Lee,
+> 
+> many thanks for picking this up!
+> 
+> > Enjoy!
+> > 
+> > The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+> > 
+> >   Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-regulator-v6.9
+> > 
+> > for you to fetch changes up to d2ac3df75c3a995064cfac0171e082a30d8c4c66:
+> > 
+> >   regulator: axp20x: add support for the AXP717 (2024-03-28 09:51:03 +0000)
+> > 
+> > ----------------------------------------------------------------
+> > Immutable branch between MFD and Regulator due for the v6.9 merge window
+> 
+> Did you mean v6.10 merge window? Or is there a plan to merge this into
+> 6.9 still?
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: "Ricardo B. Marliere" <ricardo@marliere.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: rebased on 6.9-rc1
+Yes - off-by-one!
 
- drivers/video/backlight/lcd.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+> Also I found some issue with the LDOs' supply voltage: there are not
+> all the same, as described right now. Fix is quite easy, how do you
+> want to take this? As a follow up patch? And would this be squashed or
+> kept separate?
+> Or do you want we to send a new version? If yes, based on what branch?
 
-diff --git a/drivers/video/backlight/lcd.c b/drivers/video/backlight/lcd.c
-index 77c5cb2a44e2..ba4771cbd781 100644
---- a/drivers/video/backlight/lcd.c
-+++ b/drivers/video/backlight/lcd.c
-@@ -159,8 +159,6 @@ static ssize_t max_contrast_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(max_contrast);
- 
--static struct class *lcd_class;
--
- static void lcd_device_release(struct device *dev)
- {
- 	struct lcd_device *ld = to_lcd_device(dev);
-@@ -175,6 +173,11 @@ static struct attribute *lcd_device_attrs[] = {
- };
- ATTRIBUTE_GROUPS(lcd_device);
- 
-+static const struct class lcd_class = {
-+	.name = "lcd",
-+	.dev_groups = lcd_device_groups,
-+};
-+
- /**
-  * lcd_device_register - register a new object of lcd_device class.
-  * @name: the name of the new object(must be the same as the name of the
-@@ -202,7 +205,7 @@ struct lcd_device *lcd_device_register(const char *name, struct device *parent,
- 	mutex_init(&new_ld->ops_lock);
- 	mutex_init(&new_ld->update_lock);
- 
--	new_ld->dev.class = lcd_class;
-+	new_ld->dev.class = &lcd_class;
- 	new_ld->dev.parent = parent;
- 	new_ld->dev.release = lcd_device_release;
- 	dev_set_name(&new_ld->dev, "%s", name);
-@@ -318,19 +321,19 @@ EXPORT_SYMBOL(devm_lcd_device_unregister);
- 
- static void __exit lcd_class_exit(void)
- {
--	class_destroy(lcd_class);
-+	class_unregister(&lcd_class);
- }
- 
- static int __init lcd_class_init(void)
- {
--	lcd_class = class_create("lcd");
--	if (IS_ERR(lcd_class)) {
--		pr_warn("Unable to create backlight class; errno = %ld\n",
--			PTR_ERR(lcd_class));
--		return PTR_ERR(lcd_class);
-+	int ret;
-+
-+	ret = class_register(&lcd_class);
-+	if (ret) {
-+		pr_warn("Unable to create backlight class; errno = %d\n", ret);
-+		return ret;
- 	}
- 
--	lcd_class->dev_groups = lcd_device_groups;
- 	return 0;
- }
- 
+Please submit a fix-up.
+
+I'll sent out a new (ib-mfd-regulator-v6.9-1) PR based on this one.
+
+> > ----------------------------------------------------------------
+> > Andre Przywara (4):
+> >       regulator: axp20x: fix typo-ed identifier
+> >       dt-bindings: mfd: x-powers,axp152: Document AXP717
+> >       mfd: axp20x: Add support for AXP717 PMIC
+> >       regulator: axp20x: add support for the AXP717
+> > 
+> >  .../devicetree/bindings/mfd/x-powers,axp152.yaml   |  2 +
+> >  drivers/mfd/axp20x-i2c.c                           |  2 +
+> >  drivers/mfd/axp20x-rsb.c                           |  1 +
+> >  drivers/mfd/axp20x.c                               | 90 ++++++++++++++++++++
+> >  drivers/regulator/axp20x-regulator.c               | 94 +++++++++++++++++++--
+> >  include/linux/mfd/axp20x.h                         | 98 ++++++++++++++++++++--
+> >  6 files changed, 277 insertions(+), 10 deletions(-)
+> > 
+> 
+
 -- 
-2.44.0
-
+Lee Jones [李琼斯]
 
