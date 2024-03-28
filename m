@@ -1,130 +1,117 @@
-Return-Path: <linux-kernel+bounces-123000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832688900DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:56:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F11E8900E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:56:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2372B1F26042
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:56:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF7992956F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1190382D66;
-	Thu, 28 Mar 2024 13:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eZjGgAqL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847BD81AC1;
+	Thu, 28 Mar 2024 13:56:38 +0000 (UTC)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5069181AC1;
-	Thu, 28 Mar 2024 13:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C8E14294;
+	Thu, 28 Mar 2024 13:56:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634136; cv=none; b=oAZQq0iLjqMH6m/c2CWuQPEArsrQDRezCaKNbwztnrllCG8KwlBhy0p8OW3nmFElWWbdIcz0CCnKUcaMziV/3fyHrauDtk7OlELxdntumFMw1Z8lF7Jxnv8+94BWjtWc+oqxy+5+/daVbAXdQSqOfoXP4YHfHQeyW7mg3ckb5mk=
+	t=1711634198; cv=none; b=TwHriEoWTqoyvpCm7PNqHzNyq1te9+aU7fTXxpBZcYxuUi9V2F2fOW4y6BP3XJ2wte0gchX9CA6w9ynxwoyZnK/tVvmppZjYgRDqPOlXKtHWGc8RQvB3G/fL74I8xI5IJP7p9hzLNrDZvmXlO0tSVILAMAi/Iu5Rgy7eHTTmKvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634136; c=relaxed/simple;
-	bh=B1bIIrooihislE1mX6BRJC65yAmjnRAiaxE9OMZQxAY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RqCENXwZp8ijks5Y4brg+iD+Kd4bondaHdyQyKJbqJffhFxf1gZop8QHdoJ3ilXcDwVyURX7vSGEI4mj8OJBCqjXKhMBrwxP+2Za8xtKd6Gz/3m4zDQX6qUJbaTnpgpVJD5teND7J3NkPE9Rq1LTg076u+PbWxlWCOYrIuz2hFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eZjGgAqL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97163C433C7;
-	Thu, 28 Mar 2024 13:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711634136;
-	bh=B1bIIrooihislE1mX6BRJC65yAmjnRAiaxE9OMZQxAY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eZjGgAqL4xfmx+WtA+DkKBbpM0763PjFCAfx7FMQr7cL7//eBJVQP5QwfqrQ/WbVZ
-	 qB2za8R9/WhWcvAsK3nUbTZjLQQFP1GHR5RneRJPQWh3jbhr3mDMhdlp7mr8Wp1gCN
-	 riwiiWjnA2CGUMpMjzlBXYXevIlkmuBlUJ7zkZy/shsLb4Y4GW0X4+Ei69Y67wLgip
-	 T3zN8gEsbmh0DVdesbL8czMAUOJIB3ZMDxxs8X5Xi+NClNLGzIcMx3aZn0HtQzLC7U
-	 usJ1xUL/E/RS3M0JU3jwITusYF0fwi6QxFOT8/+lJXikBKde7hEab2/RORmzN7zIQB
-	 aj+BkIsu2YE7Q==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Kees Cook <keescook@chromium.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Cc: linux-hardening@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Dmitry Antipov <dmantipov@yandex.ru>,
-	Hancheng Yang <hyang@freebox.fr>,
-	Remi Pommarel <repk@triplefau.lt>,
-	Johannes Berg <johannes.berg@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] wifi: ath9k: work around memset overflow warning
-Date: Thu, 28 Mar 2024 14:55:05 +0100
-Message-Id: <20240328135509.3755090-3-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240328135509.3755090-1-arnd@kernel.org>
-References: <20240328135509.3755090-1-arnd@kernel.org>
+	s=arc-20240116; t=1711634198; c=relaxed/simple;
+	bh=F5hUSk85hnxWbxGk/O656hneYPZj9/33L9DzTGsry3A=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=UrBcMSaRT/Pq7g49YujZSywrVItOnzPggxpa2bRRAa3RXggcY6ce9oxYYXswdz8dunGfBWGTO6Kg36YGZOd4XVBeEKxxi7DjYZ8fmbUi4Y/gJQCgXzjm4wZhw6ocTsblku8UJeseVl+mDbspi94YcSPCI3mlPTNiZLHXg1uJQjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4149529f410so9648775e9.3;
+        Thu, 28 Mar 2024 06:56:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711634195; x=1712238995;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WWUG/M8h4ce1tDofK2qig9Jq+3pVhe68X67Iu+wugeA=;
+        b=SubecfH23bSCw/EMnXNYJ0rZwTjeWVtBG/RMwPurqi0tv2V8W70JFbRaCObgxsox1E
+         t4i5INeY6gT0OSJKhSc/jHWmUgeBrKMUb9K+HZisifoSaSmH0dOxIEFVpW9ZKB3DmF2G
+         nX/ALqVH8QH34SGQdK2fWPFjO8SUlOk2wxKGe2kK7kBF8AnnqMLN8l2Cjo0FVWdfVwGN
+         +tP+BrFNDz/GoEfZBa1IjFUblYCO0QCtegFaZNhuCDMVkB62oHpKW4jNYdpwjm4a9UWW
+         /yVA+NFXm6zcMC6C91fvwIeu8I1Axq8Vm0WXhKFo9v+9PYcQP2BjZuUQ9TMZf1XpUThC
+         E2xg==
+X-Forwarded-Encrypted: i=1; AJvYcCUVeyaS/T3uvDOgD7sQdljvnSz96PpQvY89x/aevBed5kYRmumK6YpHOdto+Q/faRXhqHydXc1KUAIEwHP37BGJrj+mi/fi0NnKhomL
+X-Gm-Message-State: AOJu0Yzw1/0OZygaCET3xBhfO/qgZnYn599hvrUZVVu8gLMtxtMPFgJS
+	qWI4V1g3YLK+MgtoFFxdJjSa3VpJihs6N85yPaIM/AEiyvLX081C
+X-Google-Smtp-Source: AGHT+IFG9VTrEkGatGcuErLL/Zu9020iTvJwG60clqoohGTbcEYIvpwKwg2mzTEKV4jF2SpmfJzMBg==
+X-Received: by 2002:a05:600c:19c6:b0:414:854a:8167 with SMTP id u6-20020a05600c19c600b00414854a8167mr3249020wmq.18.1711634194615;
+        Thu, 28 Mar 2024 06:56:34 -0700 (PDT)
+Received: from [127.0.0.1] (p200300f6f7068b00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f706:8b00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id o10-20020a05600c510a00b004148a5e3188sm5519570wms.25.2024.03.28.06.56.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 06:56:34 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH RFC 0/3] btrfs: zoned: reclaim block-groups more
+ aggressively
+Date: Thu, 28 Mar 2024 14:56:30 +0100
+Message-Id: <20240328-hans-v1-0-4cd558959407@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA53BWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyMLXaBgsa5RsmWqcZJJopllqoUSUGlBUWpaZgXYmGilIDdnhQDHEGc
+ PpdjaWgC6P5Z1YQAAAA==
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Hans Holmberg <Hans.Holmberg@wdc.com>, Naohiro Aota <Naohiro.Aota@wdc.com>, 
+ hch@lst.de, Damien LeMoal <dlemoal@kernel.org>, Boris Burkov <boris@bur.io>, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.4
 
-From: Arnd Bergmann <arnd@arndb.de>
+Recently we had reports internally that zoned btrfs can get to -ENOSPC
+prematurely, because we're running out of allocatable zones on the drive.
 
-gcc-9 and some other older versions produce a false-positive warning
-for zeroing two fields
+But we would have enough space left, if we would reclaim more aggressively.
 
-In file included from include/linux/string.h:369,
-                 from drivers/net/wireless/ath/ath9k/main.c:18:
-In function 'fortify_memset_chk',
-    inlined from 'ath9k_ps_wakeup' at drivers/net/wireless/ath/ath9k/main.c:140:3:
-include/linux/fortify-string.h:462:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-  462 |                         __write_overflow_field(p_size_field, size);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The following fio-job is an example how to trigger the failure.
 
-Using a struct_group seems to reliably avoid the warning and
-not make the code much uglier. The combined memset() should even
-save a couple of cpu cycles.
+[test]
+filename=$SCRATCH_MNT
+readwrite=write
+ioengine=libaio
+direct=1
+loops=2
+filesize=$60_PERCENT_OF_DRIVE
+bs=128k
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The reason this is still an RFC is, it is enough to have DATA block groups
+free but not METADATA block groups. Of cause the same principle could be
+applied to METADATA block groups as well, but I'd prefer to have a
+discussion on the general direction first.
+
 ---
-This is from randconfig testing, see https://pastebin.com/yjKk5N81
-for a reproducer
----
- drivers/net/wireless/ath/ath.h        | 6 ++++--
- drivers/net/wireless/ath/ath9k/main.c | 3 +--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+Johannes Thumshirn (3):
+      btrfs: zoned: traverse device list in should reclaim under rcu_read_lock
+      btrfs: zoned: reserve relocation zone on mount
+      btrfs: zoned: kick cleaner kthread if low on space
 
-diff --git a/drivers/net/wireless/ath/ath.h b/drivers/net/wireless/ath/ath.h
-index f02a308a9ffc..34654f710d8a 100644
---- a/drivers/net/wireless/ath/ath.h
-+++ b/drivers/net/wireless/ath/ath.h
-@@ -171,8 +171,10 @@ struct ath_common {
- 	unsigned int clockrate;
- 
- 	spinlock_t cc_lock;
--	struct ath_cycle_counters cc_ani;
--	struct ath_cycle_counters cc_survey;
-+	struct_group(cc,
-+		struct ath_cycle_counters cc_ani;
-+		struct ath_cycle_counters cc_survey;
-+	);
- 
- 	struct ath_regulatory regulatory;
- 	struct ath_regulatory reg_world_copy;
-diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
-index a2943aaecb20..01173aac3045 100644
---- a/drivers/net/wireless/ath/ath9k/main.c
-+++ b/drivers/net/wireless/ath/ath9k/main.c
-@@ -135,8 +135,7 @@ void ath9k_ps_wakeup(struct ath_softc *sc)
- 	if (power_mode != ATH9K_PM_AWAKE) {
- 		spin_lock(&common->cc_lock);
- 		ath_hw_cycle_counters_update(common);
--		memset(&common->cc_survey, 0, sizeof(common->cc_survey));
--		memset(&common->cc_ani, 0, sizeof(common->cc_ani));
-+		memset(&common->cc, 0, sizeof(common->cc));
- 		spin_unlock(&common->cc_lock);
- 	}
- 
+ fs/btrfs/disk-io.c |  2 ++
+ fs/btrfs/zoned.c   | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/zoned.h   |  3 +++
+ 3 files changed, 59 insertions(+), 2 deletions(-)
+---
+base-commit: c22750cb802ea5fd510fa66f77aefa3a0529951b
+change-id: 20240328-hans-2c9e3b4a69e8
+
+Best regards,
 -- 
-2.39.2
+Johannes Thumshirn <jth@kernel.org>
 
 
