@@ -1,147 +1,83 @@
-Return-Path: <linux-kernel+bounces-123671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F5C890C70
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:21:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C689890C73
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C24C828FE6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:21:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 588F428FD3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C973A13A3FF;
-	Thu, 28 Mar 2024 21:21:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A7213AD00;
+	Thu, 28 Mar 2024 21:22:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oEHKJdhS"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6KyZeS4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1CA2BAE7;
-	Thu, 28 Mar 2024 21:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C0240842;
+	Thu, 28 Mar 2024 21:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711660895; cv=none; b=SfGvEzRXflarlpftHZWUpmoKXrVSkhc+gWb7s1LozfEcI4TZiz1yCb+oNcWme/NI3H8Lb/6O+/5O3UT0OHxC/4Abo9u5+cA+P0+wSNmRoa0RKVUn31UdBDh4ppsmEu0Oif52WHnu0UNlhpsJmc+Tq+L4V1GyZRVdVnfhkaWfZ/c=
+	t=1711660940; cv=none; b=G6KNF59FMEWWD/3/wHAVSwaP5o4rJp3N7ibz8PaqwIE4Dqlrht81ANkSkrIFxaNxfZeuxx0igjA2T69hhiyN/pJq+CxUKEsXLtPzOilkKJaFJxugYVyVIjfvCTUUvMwRsUi96f/9ffJQ5D4QAhQk37dq0cmnMg0OE0jKqrn/0Og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711660895; c=relaxed/simple;
-	bh=Zj9xVaW5VxIj77MDr1gWeh7JZ6hMmrUu9YoKUpzwMWo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tPG27DUAQad+avKXNiR+U6EXE7aEImKnzxCQrkmGW2uLqru/uV/n/TkZs2z7RsJjpKBB2phKrRWXYR4qSAp7R3u384xHz4OPWN4GyRsykvfObvwRYr8Z0bOmR6zl/TmXTmYQgJcp9Gd8sv3PftlQ3/aFXSI7/ioaXI2w2HSG6Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oEHKJdhS; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SLLN0e030916;
-	Thu, 28 Mar 2024 21:21:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=YqluI44oCwIMb2uPkFQarghRCXAwIcfSImWcvajff8o=; b=oE
-	HKJdhSQh3m7dimSMxiQTnAeQomAIRnhX5E2tYs1ZZAaNew9QOsq+nbxKbbiFGjpG
-	417lUfoVUeheW6K3CLdhDCOe7SvGyOVA6fmxfLSKleG+A5sk8q5eDBgVafa0T4PN
-	kyNgj1T/Fkt89wOfXCnlYDzE8xGzbxV35Fpxzk8mZYhrtRNcTnpvZD4oLNceP6Pm
-	zl9fqkEPrV3tyKSqoVgHvSPLavVP2nEbH87wR0UmNNxeVo4Txv8Gn9Auj6unh3r+
-	SbzEDSvWu0Q0WKbAjW9qGDcu864R4lu0AOYFfIVcualX/jmJXAGYvnQtjOJW3hIb
-	Ebt0HhTkNo424Ky3O2NQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x562rhuew-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 21:21:23 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SLLMEF005080
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 21:21:22 GMT
-Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
- 2024 14:21:17 -0700
-Message-ID: <23de89e9-3ef3-c52d-7abf-93dc2dbb51a4@quicinc.com>
-Date: Thu, 28 Mar 2024 14:21:14 -0700
+	s=arc-20240116; t=1711660940; c=relaxed/simple;
+	bh=08HHgve+hGTmOTCrIOzqWVz1iHc1ZVS5yvxBVoo+PpM=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=EUkio1KUdF+BvdclACN+7MhkjjU6NNrXo2Gs9PLLTWc+lzwC74f+q6YpQp9uQ11426WVgJxj9SXFEgqRhEd7sOCq5m7VnswoardXYVwuPEeZfGK+GugbKoLU7LwfRGJbOf+54SDWOi4llQzF0B0TBwaUdx9RISpuX1R/3ozWrLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6KyZeS4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97FE3C433F1;
+	Thu, 28 Mar 2024 21:22:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711660939;
+	bh=08HHgve+hGTmOTCrIOzqWVz1iHc1ZVS5yvxBVoo+PpM=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=U6KyZeS4S5DaRpwt15Fx52JSO4rdZJDLBzn1z9MpqRYo9ZttVdpFW7yoPJMfo/Y74
+	 1/5RnFEOSOfXfdAEuhXOdKFvkh1ky0UjUNSsmrtfsJ6RLA81k0SeWioUPoXzePR3lF
+	 C39xUp1r/ACL5u589hIpQYBixbngbRsuNIppyYXV3Bg6dzslSZy7X4n3BBJ8/wWQ4D
+	 yfzQhAFdiEpdKtPqMMsInIOsKhvdGvUfnnrObxaKZF6JqE3btAeK7ZQU9ZXFHTclH6
+	 bDkaHoRw0utqZPo2V1Q5Ty7qrzIw+mxTly/Kad0fn0EwaHHRU6Xa89hp9moprV+e3I
+	 DtkuGQz6ZLvqg==
+Message-ID: <fa350b549fd5dc16ac1aaaac3921d26f.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
- dp_hpd_unplug_handle() directly
-Content-Language: en-US
-To: Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
-        <agross@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <dianders@chromium.org>, <dmitry.baryshkov@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <vkoul@kernel.org>
-CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
- <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
- <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com>
- <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xSN-cC30vJQgqcjGx3Mjnt0ZAam_B0JM
-X-Proofpoint-GUID: xSN-cC30vJQgqcjGx3Mjnt0ZAam_B0JM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-28_17,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403280153
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240323032806.14356-1-yuehaibing@huawei.com>
+References: <20240323032806.14356-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH] clk: qcom: Fix SM_GPUCC_8650 dependencies
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, yuehaibing@huawei.com
+To: Yue Haibing <yuehaibing@huawei.com>, andersson@kernel.org, dmitry.baryshkov@linaro.org, konrad.dybcio@linaro.org, mturquette@baylibre.com, neil.armstrong@linaro.org
+Date: Thu, 28 Mar 2024 14:22:17 -0700
+User-Agent: alot/0.10
 
+Quoting Yue Haibing (2024-03-22 20:28:06)
+> CONFIG_SM_GCC_8650 depends on ARM64 but it is selected by
+> CONFIG_SM_GPUCC_8650, which can be selected on ARM, resulting in a
+> Kconfig warning.
+>=20
+> WARNING: unmet direct dependencies detected for SM_GCC_8650
+>   Depends on [n]: COMMON_CLK [=3Dy] && COMMON_CLK_QCOM [=3Dy] && (ARM64 |=
+| COMPILE_TEST [=3Dn])
+>   Selected by [m]:
+>   - SM_GPUCC_8650 [=3Dm] && COMMON_CLK [=3Dy] && COMMON_CLK_QCOM [=3Dy]
+>=20
+> Add the same dependencies to CONFIG_SM_GPUCC_8650 to resolve the warning.
+>=20
+> Fixes: 8676fd4f3874 ("clk: qcom: add the SM8650 GPU Clock Controller driv=
+er")
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> ---
 
+This is superseded by https://lore.kernel.org/r/20240318-fix-some-qcom-kcon=
+fig-deps-v1-2-ea0773e3df5a@kernel.org
 
-On 3/28/2024 1:58 PM, Stephen Boyd wrote:
-> Quoting Abhinav Kumar (2024-03-28 13:24:34)
->> + Johan and Bjorn for FYI
->>
->> On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
->>> For internal HPD case, hpd_event_thread is created to handle HPD
->>> interrupts generated by HPD block of DP controller. It converts
->>> HPD interrupts into events and executed them under hpd_event_thread
->>> context. For external HPD case, HPD events is delivered by way of
->>> dp_bridge_hpd_notify() under thread context. Since they are executed
->>> under thread context already, there is no reason to hand over those
->>> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
->>> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
->>>
->>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>> ---
->>>    drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
->>>    1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>
->> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
-> 
-> Is this a bug fix or an optimization? The commit text doesn't tell me.
-> 
-
-I would say both.
-
-optimization as it avoids the need to go through the hpd_event thread 
-processing.
-
-bug fix because once you go through the hpd event thread processing it 
-exposes and often breaks the already fragile hpd handling state machine 
-which can be avoided in this case.
-
->>
->> Looks right to me,
->>
->> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Bjorn did you want me to pick that series up?
 
