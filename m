@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-123515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD8C7890A1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:54:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84853890A20
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE0C61C2ACC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:54:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B58E91C2CA8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D400813C3C2;
-	Thu, 28 Mar 2024 19:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7093013CC5C;
+	Thu, 28 Mar 2024 19:51:35 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC7913A86C;
-	Thu, 28 Mar 2024 19:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3BB1386D3;
+	Thu, 28 Mar 2024 19:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655487; cv=none; b=t2PzoxmqgYa7Ji08teZYXf/CMdbSDSj3SlqO+BaGPVILSvjvWTeuTto3qbaxS4Vps39ZQsO5CtgQU00YMfEhzpXtU2OwKhvym/na603SP5IrfJuYXmiod1tzC6cGjSFp7qb414vfpd9nz4jGXbDW1p1Sxsi0+v/EiR8obWfKFW8=
+	t=1711655495; cv=none; b=ZVDHHSpnR3yxM9XmgoddVveCa9Gltx8U5IfA0MfgDDdDBgRP8tBy2sqQ/WJmMbIMoa2tFJyM2PXNq2+tba/fOnH8tonbMrTKvOTIQERPDOObUdfkI30HYZ7iT4VGUdieVk5h/dyZy2Dqfj58jECNcRa/oqp5V0g3LOOPxTeHjI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655487; c=relaxed/simple;
-	bh=5+ORG/j/kb1Cve3f9rEDzoG0cfc3WHU3p/pEfGdSHAI=;
+	s=arc-20240116; t=1711655495; c=relaxed/simple;
+	bh=/fri/mbQzXv0DCaHIG5MYdobhipeSpfUI4L+XzGK7Yw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BdgJS86Rzq/SuqkEaO/4hFCWU1DujNs4mVEDyP5NK1/Ax9+LO1PimQyJcmlKTNfjA64hrLnGh48v7xmlKVRFXEplEgdGynddfvwjn0HaSgHC1kAxHHzi+Ty8oas5R190SqvoJAn90+Uiek9WmjfNDdozCCUrRMl5wY8CX1bAvvE=
+	 In-Reply-To:To:Cc; b=i/hGwMDIOx7dYvMHbnB+DdFybLfdA9az2grfAVmoxvrBIY9xxl6Ft4qx/iW1Yf6F35oVzjs4lKmJj9JyRcYy5xDclSu4CRd1yhM1ElVTNfug2lQvVW7D9lrXHjc9rJCwMWaO3sratm08w1yXzLs4YA78JphJdYz/CUGP64AHAWw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7417C43143;
-	Thu, 28 Mar 2024 19:51:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 376B1C433B1;
+	Thu, 28 Mar 2024 19:51:26 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 20:49:21 +0100
-Subject: [PATCH v2 11/19] platform/x86/lg-laptop: drop owner assignment
+Date: Thu, 28 Mar 2024 20:49:22 +0100
+Subject: [PATCH v2 12/19] platform/x86/sony-laptop: drop owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,7 +39,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-b4-module-owner-acpi-v2-11-1e5552c2c69f@linaro.org>
+Message-Id: <20240328-b4-module-owner-acpi-v2-12-1e5552c2c69f@linaro.org>
 References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -66,21 +66,21 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=735;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1056;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=5+ORG/j/kb1Cve3f9rEDzoG0cfc3WHU3p/pEfGdSHAI=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnIQ8hQdZMOn2jGeMGfQmpim/Q8HVFW1L/dr
- QNO6uQwzuCJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJyAAKCRDBN2bmhouD
- 1+j/D/4m8pRSwGGl6rlDdeTZDx9mSnA1417XbXeU4pItzPnbaows031JtAyLICdsNKXciXft9j7
- Qf/V/BSJTL4zZ6/LHVOXrdp+Et5Xr0ZC1eA9p/Ps05WqPVxYXGLXehHX04DA8bL9GzOjYUPttF2
- T3LesFXytBT/aHgNedyO3OjIsVcqtwixwiqH9e3oIKF1w8Y6oWyy/znWKCb7ost4WlpK76USI1z
- 62zowiRAFb5q0FI3ND3gf80gicXq2eWRTq8di/vwLQu7IjCr6feL+F173ZKquG8POzM0u0kdH3N
- 1iyGmVZi6FY2GLmwo7qJ0cqNRU8OrVTqWY0eN0eC1Jt1BEukU42PRrNNsO1lJC/eMF9/NAJb7HD
- 7iPDZdsxE+SCoM6sEThSQtx5H0wLx7ii5iZvt37cr2LsWDem5QdP/EFS6Ps83fwbDKQlrIuNtZl
- as6gRFiIKOr08JZoor6vhIFltMs9xMnq5BTqPEmmguQMZUxNgDBfkDgTjyvYoDMDZUZ/izsDa2w
- kfbm7lk7rv09s1oJXq0Ioc29YInWiF7dEr42V4SuLuUzf+2pgvocdVLp+qdtIsnOEnf3Yi//3zs
- ftUOyLVgdcK/DbyE+M1nLfSmvJnvvP/BvrhNWqC1uKIh7VeJbMRRdO/4c+NLIKSvky/R4ePPRat
- U/Cgj3Q6W/ueC5w==
+ bh=/fri/mbQzXv0DCaHIG5MYdobhipeSpfUI4L+XzGK7Yw=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnI+0P0nKPcDaw4xeIiValSm9HqzcE1SQ+rq
+ AfAS2R9muiJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJyAAKCRDBN2bmhouD
+ 19fND/9VLlKtGjkucaO+i/FbQaPCBWDWn7z+YQBVAcDfniIehG6Xln3PvEYdhGRO96DaFnsfmEt
+ Qimauwz6KvLLHNZPPLHbfd1l2zX2WUAVnCLzyDLUIVqgQzj5ARXgtr99Ep9n1KiICopK8fcmfoB
+ /fIKMp5dPijIAm1Kdq8EZk7Aqgln0XKrB0j7ukBIWIai0wG/OIMO032JihbbRBfTVmzDOxRGqqV
+ G0a7+Moo/BwMbsvhLarnpDOYWmrh6ZCne87N1nJg223Z4XoCL38raUnIwSY/F5kwDNbtr+qU3q8
+ VM1sNfubREQYsuTzFDVdlrG5/RenSNM7j7pIxjTp4ht5WdWwbkYDa41H3+THJ2YFYMQ3kaAyWm+
+ /nUjgFXbY0LeqCCEhsFEvx/3+Rf6lRK8NELHdoPXwC+PpvGhIH21tpaglOVe2iQmibtTOzzhf2l
+ 2qpiwF0b0zacpE5mBNK3eSwZnmBHFBsIbCoAGhMgwaocurU5/BcYOBMaEdOkWd5XgbFZfbr+22x
+ +Nb0JOw2mkiLGZUUXAjEZaVt1xtOHib5QurGZzoDfoNelNuyIYE3+f8dfCHeP8gW9QI/LOwsJ3M
+ F01CEERdyhlZHw8zyegjKNktYgSWvEK7KN8Svt1x9/htjR3lB3RegdXZWIywkmrHY+a7p6JkNzH
+ 8t1z5UR6fKas1Ow==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -90,21 +90,29 @@ Acked-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/platform/x86/lg-laptop.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/platform/x86/sony-laptop.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/platform/x86/lg-laptop.c b/drivers/platform/x86/lg-laptop.c
-index ad3c39e9e9f5..36e88b9d59ea 100644
---- a/drivers/platform/x86/lg-laptop.c
-+++ b/drivers/platform/x86/lg-laptop.c
-@@ -790,7 +790,6 @@ static struct acpi_driver acpi_driver = {
- 		.remove = acpi_remove,
- 		.notify = acpi_notify,
- 		},
+diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
+index 40878e327afd..3e94fdd1ea52 100644
+--- a/drivers/platform/x86/sony-laptop.c
++++ b/drivers/platform/x86/sony-laptop.c
+@@ -3303,7 +3303,6 @@ static struct acpi_driver sony_nc_driver = {
+ 	.name = SONY_NC_DRIVER_NAME,
+ 	.class = SONY_NC_CLASS,
+ 	.ids = sony_nc_device_ids,
 -	.owner = THIS_MODULE,
- };
- 
- static int __init acpi_init(void)
+ 	.ops = {
+ 		.add = sony_nc_add,
+ 		.remove = sony_nc_remove,
+@@ -4844,7 +4843,6 @@ static struct acpi_driver sony_pic_driver = {
+ 	.name = SONY_PIC_DRIVER_NAME,
+ 	.class = SONY_PIC_CLASS,
+ 	.ids = sony_pic_device_ids,
+-	.owner = THIS_MODULE,
+ 	.ops = {
+ 		.add = sony_pic_add,
+ 		.remove = sony_pic_remove,
 
 -- 
 2.34.1
