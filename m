@@ -1,74 +1,54 @@
-Return-Path: <linux-kernel+bounces-122628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1121588FA9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:02:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4076888FA9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:02:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ACC51F22541
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:02:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 719DB1C23326
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778A357895;
-	Thu, 28 Mar 2024 09:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E2658108;
+	Thu, 28 Mar 2024 09:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FVW2inD8"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="b2FZwegd"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42FCE58108
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225953FBB3;
+	Thu, 28 Mar 2024 09:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711616512; cv=none; b=E9b0WA7W8PKwHqCkP8RpMtR730BOcf/prWGOzGb72eTZvVybBkA8vToaTVoPIe6pjFmqK0avOgkLIMIm75voX0UdaRrDQJ6nnaFEJ/WnknpZsRjQh0CjEZXuyvkSv8MQwspVGWp3bL5qsL6FLA88OTxu+nE6vlemaYk8kAlASGs=
+	t=1711616541; cv=none; b=WTsGgeeEcRNEe0vbzWDyP4Bp8XzRl7/y4+O9wstMRWCRFMka7cTn77UB3Jl8UrmdsGFEAYJfHunUQY7L1jbMO4nBGeOC+c5zce1FGV1DnEg3p4BfuWc56wfiYREhrFFFUCXeFWVfh8G8Je777resR9udUk0fnt9GSONvDgt60Qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711616512; c=relaxed/simple;
-	bh=dSvrPxa6WCXN3w4zl3cUnWipLNJXSrXaKQdnNQrMO1o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=D8abIX0vn2hGtBy9t2up/wgHAZDFsw8pNPcGf0RK74Eo5XKcR6ZNM0sOZWAp8BIhm3f0no6LNrKCSlR7A7Ag6ZWiWTVDmfXSNO0XsD3N0TQ9R/NEcWHGMaFYvf3FBWGr90nxlOjBuyfNGypOuhbo+UaOubVZzRUJo3VPTjQPB6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FVW2inD8; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4154471fb81so2742395e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711616507; x=1712221307; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ojQNUSQIFFG++1GZDeRJjvpciqnPUaIAnOJ9p1+1Mag=;
-        b=FVW2inD8k00FBxETFpOZqV4bRyB/zZoSHplfvzEq8J51PqwaOMJCXnZjrKcEL8nssP
-         bEr8ehXap4y+oO1eA2mygeywZOqLMowha2ksExauOOwiHpYrXMMp+3iZ4BaaDlkVrxjU
-         CLU+H7YF5oN+Tztjqa/LUaOge+rQqxK3rnXQ0d+JnOB93G9dWLHsMCVxo21ISauEm8vU
-         Z9KcdqJMT5mpH1bZreKrgRiwMo95Y+fmLMIWOqXO1jo3nXhcwxZKqb80h7pOtC9SJYbX
-         Jh3p9v1BTTWsasccT+wqQfbAmEoJYqx4W/t0AaU2Xxm5qPReyoYvI14eC1KBkVjqnvEo
-         nLVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711616507; x=1712221307;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ojQNUSQIFFG++1GZDeRJjvpciqnPUaIAnOJ9p1+1Mag=;
-        b=SGoQYPg2cP5GzzA04RXqi1ZSmW4yUvuZKDHJuETTiTPR9WUxJCqoXXLAdBBlDQmtYv
-         xPA7HA1sXEeI2cOF0kFraevo9p8ujC/ICXEL1n/klsLQnLMrR07dPm8oDEhaCy74u/OS
-         cnt2gBclkoyTxpXUBtFfDvFQAbDi8Ca1dyGNzXpMZMVqZd3oKwO3UUBtTxE2tBJFqL4Y
-         6u3c3n1RBAmYdRgAc0WM5pSdkCsrHFC1fEwP4kCRAHYgbMBsT8jY9Dix0mIcAcBIc3rc
-         zhZRmvunVVyOPVSLuAQzoXk7mGaV98aD00bpWg4L42XG2oSpCI3QWxuibgRxQhjc8gXt
-         cXLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtakuZ4YXS2DgXLz4FFyAp8uatfVrr/J1fOPGU0+b4+IUcD74ABBa6Kg4hhpjXpECXEEhLkSDlaWj4iCgX170zUtM1zYEcHC7qtMr8
-X-Gm-Message-State: AOJu0Yzxgiifg0ODUD6vk0SoHJi8K9qCe/Xoy7F+a9RtoMlVgEt1gqDv
-	QcNwuFdeBnU6ktvgP4MLXcS1NQsNElqyc4R7mHkOKku7jis39sQMfPj099fuaBc=
-X-Google-Smtp-Source: AGHT+IGEUgdRPIM5y9jOXcxiqCueL/Y86qKN+/+Jit5kxPav10LkDzha4OlzWPC1QuwzziLrP5yFMw==
-X-Received: by 2002:a05:600c:3505:b0:414:63c6:8665 with SMTP id h5-20020a05600c350500b0041463c68665mr2153970wmq.2.1711616507497;
-        Thu, 28 Mar 2024 02:01:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.148])
-        by smtp.gmail.com with ESMTPSA id iv16-20020a05600c549000b004146a1bf590sm4717532wmb.32.2024.03.28.02.01.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 02:01:46 -0700 (PDT)
-Message-ID: <cff5e036-7f7c-4270-be0c-f49b196a502b@linaro.org>
-Date: Thu, 28 Mar 2024 10:01:45 +0100
+	s=arc-20240116; t=1711616541; c=relaxed/simple;
+	bh=Ufh8ofbcGIpZqebBgeU63gQtywNxj6fTHPQwgJxbxWg=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mFc2Uok5j88T/6LsXh53Ih5jqkpO9ejQf8l5/iRRuu207PufEHlRRoUqN86UqtPWujxeJVsvHw4fZYQdSHtoSfJIbzVktDaucrgXeoi8b7BQhyvPrONsSw6q8lTnwMxnKkPQg72dgUoiVUDEOjfxUxA48jMNYOoFCqlD0WfjLww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=b2FZwegd; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711616533;
+	bh=Ufh8ofbcGIpZqebBgeU63gQtywNxj6fTHPQwgJxbxWg=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=b2FZwegdsqBcB5ZhCCFwc/bldEv6XVivywv06kdoiGWU0RcYjHt5zMCWulL3/NR1r
+	 23xglYTKKi+7RS/HgMV4gOr2rj8wVGGG+UYU9fo9W+2F2WBT9t4AQbrRB1KzkiHTUK
+	 F6KqIPM+KaKmq+vvh9Itvt7mlQz4i049g8DVeNZradHZ6S78T4o5/Ps+rokYDOsAP8
+	 CWKuBOfTG6JfAAtFdigDMwPjBm7GVSeH5LWf+MSbxKDir8s1iEds7Ln0sAAvNLuQlG
+	 qk/0S0dub42+CpvkX5ezpk4YMpKk8R+TEqF+YlyBbvl6ryPwMGUQn3ZOVkOm5pibg6
+	 2HKQnaGsx/law==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6D43B3782115;
+	Thu, 28 Mar 2024 09:02:09 +0000 (UTC)
+Message-ID: <6d82298b-b17b-440a-beef-590177d0ff50@collabora.com>
+Date: Thu, 28 Mar 2024 14:02:37 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,257 +56,76 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 3/5] dt-bindings: clock: meson: document A1 SoC
- audio clock controller driver
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, linux-amlogic@lists.infradead.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240328010831.884487-1-jan.dakinevich@salutedevices.com>
- <20240328010831.884487-4-jan.dakinevich@salutedevices.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
+ Axel Rasmussen <axelrasmussen@google.com>,
+ Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Peter Zijlstra <peterz@infradead.org>, Guillaume Tucker <gtucker@gtucker.io>
+Subject: Re: [PATCH 0/2] Fix selftests/mm build without requiring "make
+ headers"
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240328010831.884487-4-jan.dakinevich@salutedevices.com>
+To: John Hubbard <jhubbard@nvidia.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
+References: <20240328033418.203790-1-jhubbard@nvidia.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240328033418.203790-1-jhubbard@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 28/03/2024 02:08, Jan Dakinevich wrote:
-> Add device tree bindings for A1 SoC audio clock and reset controllers.
+On 3/28/24 8:34 AM, John Hubbard wrote:
+> Hi,
 > 
-> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> ---
+> As mentioned in each patch, this implements the solution that we discussed in
+> December 2023, in [1]. This turned out to be very clean and easy. It should also
+> be quite easy to maintain.
+There is another way. The headers should be built automatically by make
+dependency. The topmost make file always builds headers before building
+kselftest i.e., make kselftest
 
-> +title: Amlogic A1 Audio Clock Control Unit and Reset Controller
-> +
-> +maintainers:
-> +  - Neil Armstrong <neil.armstrong@linaro.org>
-> +  - Jerome Brunet <jbrunet@baylibre.com>
-> +  - Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - amlogic,a1-audio-clkc
-> +      - amlogic,a1-audio2-clkc
+The tools/testing/selftests/Makefile and others Makefiles in test suites
+should be updated to build the headers as well. This used to be the
+behavior until there were un-resolvable bugs in the Makefiles and it was
+reverted:
+https://lore.kernel.org/all/cover.1657614127.git.guillaume.tucker@collabora.com/
 
-What is "2"?
+We should come up with the revert of this series such that all the
+different scenarios are covered instead of yet again a new solution;
+resorting to the duplication of header files or any sort of duplication.
 
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 6
-> +    maxItems: 7
-> +
-> +  clock-names:
-> +    minItems: 6
-> +    maxItems: 7
-> +
-> +required:
-> +  - compatible
-> +  - '#clock-cells'
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - amlogic,a1-audio-clkc
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: input core clock
-> +            - description: input main peripheral bus clock
-> +            - description: input dds_in
-> +            - description: input fixed pll div2
-> +            - description: input fixed pll div3
-> +            - description: input hifi_pll
-> +            - description: input oscillator (usually at 24MHz)
-> +        clocks-names:
-> +          items:
-> +            - const: core
-> +            - const: pclk
-> +            - const: dds_in
-> +            - const: fclk_div2
-> +            - const: fclk_div3
-> +            - const: hifi_pll
-> +            - const: xtal
-> +      required:
-> +        - '#reset-cells'
-> +    else:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: input main peripheral bus clock
-> +            - description: input dds_in
-> +            - description: input fixed pll div2
-> +            - description: input fixed pll div3
-> +            - description: input hifi_pll
-> +            - description: input oscillator (usually at 24MHz)
-> +        clock-names:
-> +          items:
-> +            - const: pclk
-> +            - const: dds_in
-> +            - const: fclk_div2
-> +            - const: fclk_div3
-> +            - const: hifi_pll
-> +            - const: xtal
+> 
+> This should also make Peter Zijlstra happy, because it directly addresses the
+> root cause of his "NAK NAK NAK" reply [2]. :)
+> 
+> I haven't done much build testing, because selftests are not so easy to build
+> with a cross-compiler. So it's just tested on x86 64-bit so far.
+> 
+> [1] https://lore.kernel.org/all/783a4178-1dec-4e30-989a-5174b8176b09@redhat.com/
+> [2] https://lore.kernel.org/lkml/20231103121652.GA6217@noisy.programming.kicks-ass.net/
+> 
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> 
+> John Hubbard (2):
+>   selftests: break the dependency upon local header files
+>   selftests/mm: fix additional build errors for selftests
+> 
+>  tools/include/uapi/linux/memfd.h       |  39 +++
+>  tools/include/uapi/linux/userfaultfd.h | 386 +++++++++++++++++++++++++
+>  tools/testing/selftests/lib.mk         |   9 +
+>  tools/testing/selftests/mm/Makefile    |   2 +-
+>  4 files changed, 435 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/include/uapi/linux/memfd.h
+>  create mode 100644 tools/include/uapi/linux/userfaultfd.h
+> 
+> 
+> base-commit: 98560e9019851bf55b8a4073978a623a3bcf98c0
 
-#reset-cells: false
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/amlogic,a1-pll-clkc.h>
-> +    #include <dt-bindings/clock/amlogic,a1-peripherals-clkc.h>
-> +    #include <dt-bindings/clock/amlogic,a1-audio-clkc.h>
-> +    audio {
-
-If there is going to be any new version/resend:
-soc {
-
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        clkc_audio: audio-clock-controller@fe050000 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-So: clock-controller
-
-> +                compatible = "amlogic,a1-audio-clkc";
-> +                reg = <0x0 0xfe050000 0x0 0xb0>;
-> +                #clock-cells = <1>;
-> +                #reset-cells = <1>;
-> +                clocks = <&clkc_audio2 AUD2_CLKID_AUDIOTOP>,
-> +                         <&clkc_periphs CLKID_AUDIO>,
-> +                         <&clkc_periphs CLKID_DDS_IN>,
-> +                         <&clkc_pll CLKID_FCLK_DIV2>,
-> +                         <&clkc_pll CLKID_FCLK_DIV3>,
-> +                         <&clkc_pll CLKID_HIFI_PLL>,
-> +                         <&xtal>;
-> +                clock-names = "core",
-> +                              "pclk",
-> +                              "dds_in",
-> +                              "fclk_div2",
-> +                              "fclk_div3",
-> +                              "hifi_pll",
-> +                              "xtal";
-> +        };
-> +
-> +        clkc_audio2: audio-clock-controller@fe054800 {
-
-clock-controller
-(so I expect resend)
-
-> +                compatible = "amlogic,a1-audio2-clkc";
-> +                reg = <0x0 0xfe054800 0x0 0x20>;
-> +                #clock-cells = <1>;
-> +                clocks = <&clkc_periphs CLKID_AUDIO>,
-> +                         <&clkc_periphs CLKID_DDS_IN>,
-> +                         <&clkc_pll CLKID_FCLK_DIV2>,
-> +                         <&clkc_pll CLKID_FCLK_DIV3>,
-> +                         <&clkc_pll CLKID_HIFI_PLL>,
-> +                         <&xtal>;
-> +                clock-names = "pclk",
-> +                              "dds_in",
-> +                              "fclk_div2",
-> +                              "fclk_div3",
-> +                              "hifi_pll",
-> +                              "xtal";
-> +        };
-> +    };
-> diff --git a/include/dt-bindings/clock/amlogic,a1-audio-clkc.h b/include/dt-bindings/clock/amlogic,a1-audio-clkc.h
-> new file mode 100644
-> index 000000000000..b30df3b1ae08
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/amlogic,a1-audio-clkc.h
-> @@ -0,0 +1,122 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> +/*
-> + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
-> + *
-> + * Author: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> + */
-> +
-> +#ifndef __A1_AUDIO_CLKC_BINDINGS_H
-> +#define __A1_AUDIO_CLKC_BINDINGS_H
-> +
-> +#define AUD_CLKID_DDR_ARB		1
-> +#define AUD_CLKID_TDMIN_A		2
-> +#define AUD_CLKID_TDMIN_B		3
-> +#define AUD_CLKID_TDMIN_LB		4
-
-Why both clock controllers have the same clocks? This is confusing. It
-seems you split same block into two!
-
-Best regards,
-Krzysztof
-
+-- 
+BR,
+Muhammad Usama Anjum
 
