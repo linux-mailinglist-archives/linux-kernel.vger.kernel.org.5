@@ -1,137 +1,141 @@
-Return-Path: <linux-kernel+bounces-123526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C17A890A5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:58:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DAE890A5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:58:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDA3DB212B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:58:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1941E1F271D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998B613A3E8;
-	Thu, 28 Mar 2024 19:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E5113AA22;
+	Thu, 28 Mar 2024 19:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LlE0bFjJ"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZH6gbo5z"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588F61327FC;
-	Thu, 28 Mar 2024 19:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A284B137C26;
+	Thu, 28 Mar 2024 19:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655698; cv=none; b=ThnLk807HwgS4aWDinULZ3PIEUGG8s1/M/S99bY0pHoGj7W5Mpa0S+haDTM3WJIWH2h5RwudmRAw8ZCooJX5QAwcuQS6IKYE7UNhQj7I6wLjA1e3VSJLONzmQFKA/IaCcbgb4FbLrgIufCXsdqKCxgyOIVY+L7J+c0q+UVZebA8=
+	t=1711655715; cv=none; b=le2xP5YTPEt59j8kYrfqtJlN+hgPbWDS/JCmuyQ0C4dBrblWswndSaPs4wsZ5CHYYV/4Mc5yz6NZzylOU/SrhlYW2v23TUJzdpfV9fanDJnINyiYl3rNZe/On454hORaP+IQ23mlPk87vToSV8zSFNkKZnExfeqO9TVFHEMk30o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655698; c=relaxed/simple;
-	bh=PSDZovwfsjNCrw5eVrkA8X9sJK4u7vGS2YhntmA5pe4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JsHYB1fqhtD3xB7hxfArbKCvucbjJxyniuSIlYidtkK82AK43nLL1H0gMk40xAeUHwqeTzqW+oxLbPtM9RTFbrZ5S9TLA/pttMwZC1tIbGsau8mmHN7UjCJlBHwj+uWk5LpwVScTv7hdtF30C6tvvwGJ7o6nJHJ3IYKrDpvBlZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LlE0bFjJ; arc=none smtp.client-ip=209.85.221.175
+	s=arc-20240116; t=1711655715; c=relaxed/simple;
+	bh=nZaQEnidgOuWecUtT416/mVD/axNf4qn18t+llX9f5U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cK4e87GFq6jhj6yx0Ufbd5ezjXjpBY4B+D/I9MvZzEb6iFV4B2UiuGCz/xud/HDDSER0gTRWkO1SVWWL7a4MKi+8aWqjB0YhindSBm+c6FM6rLEdVLfaokIwReefEKS+CQGd7zUNliNpIhibVQwnlU+PgPmrZZmA2Uaj7uec834=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZH6gbo5z; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4d43a1f0188so545736e0c.2;
-        Thu, 28 Mar 2024 12:54:57 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e21d1e8307so5560255ad.2;
+        Thu, 28 Mar 2024 12:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711655696; x=1712260496; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=edpM49hY5bgsJjXAVnncLdk5Mo7gmai926Onh5HepfM=;
-        b=LlE0bFjJthml5zi58FdrRLqLg19JV+WY9BJ9nSk5Fg1Uad0mc/hh6xZpWfVNPsDVoU
-         Gd7MSH8KWAJpVV1x94Qtj7N+cr4XZ+khvtXhq5XMWw1tI3DBL+DjRxBPMSfoCZMxkFOu
-         K3tQGvsbaQ332/YsUdMdfcZ3ZNitDkg8q54QoCpsQsmFcP+NGpRd7apNrWWiVsRdzPBG
-         clpksKCOHmsG8+7rBGOH53TC0tWRWF++JTs3+tMSYlt87Mc86pyUS8k9KhbmElORDqI+
-         v5Y1BFNij1GQ7LB2FTspKh2gdReUYvwRRAU4unESDHCnmoNZwxncBQGSiQaOWkU6xaNG
-         HLbw==
+        d=gmail.com; s=20230601; t=1711655713; x=1712260513; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uty8UkCKWRel+6ILHWv9WEZYPVQazLXowk/xRzK5PO0=;
+        b=ZH6gbo5z3N1WeOw97l9FCM7MhNJPhJL/Rbwanx3Ij+BIdWR1/Q4myqNrZoHnB8uyMq
+         H8S1/WKX12gKdGYcz1Gf8n0oFUTEoy7G6ALKxqWd6WeVx3geLdGeB43JZSdxdRG9Nroq
+         354M1Vw8kr/7x5R6ZkfTrT/ZutxEs3S/zC57t4CAKuAAgfwIrJ3ha+zjMRCBMzqJiAP/
+         0o70CxOqXpnvIwOEefMxRgQKpB/2vuVIF+qoe1UZIQC0MRSqLdSka5+od9k8/BPUqJhc
+         y1oAl1s8AzbgyM7a80wKkTK2ZpP8zCCww9cu0Gnbnj8l3z3j9QwTPBR3XQ5ngudcZPF0
+         Zrmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711655696; x=1712260496;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=edpM49hY5bgsJjXAVnncLdk5Mo7gmai926Onh5HepfM=;
-        b=LiVEaX7Y0iYI6hsepfgSivA2h88uyE/ZLE4fx1Yfc+3KrcBugjY/D1V1CWaAu5u9fO
-         TNNTiwmLGpelkrbUnMnIDDG3GKeJbAuXaJV1DNrbUTsUYmEJfYVMHwNjoP17cEOSMnQf
-         bdGiyy+xCfq1MxtdVsvdMhljBHfvZTcImV1IjpExKt8fGb38zZiqUrh+wBBvfHY7TGDT
-         etoK18GPJ3aQJcJziaeIW+8e4gcRf8AiWeAXp3bxiJJARTu91UMRulaVnp14MDSyUWg9
-         7TrYmZga6FLdcj4tpAoAzAj0EiEuhrbCry124FO7RqZAOAKGlRqwZFxWqPve+jfIx+09
-         vy2g==
-X-Forwarded-Encrypted: i=1; AJvYcCWLTCMo1gcRdBK+ZujZ1iB5WvpPXU5MxhnPIIDzw9NNG4TvU0HkrzXjczHfpsJGq4J3xteR4OPMqXJcFOLVrw8b18FN85Tp01NjYADVT6h8Hsj9RM98jTi+HZ+1Tj1CZ+tU5POi82/N79YDL3LLQPIC3icg8qvmbW3N+r0OA4uoKj/vlvcasmjXMzK4tBKltBx8SX28Q1M655h7stAH4yXuLwPOc+ozEw==
-X-Gm-Message-State: AOJu0YyrkA7NyRao6MzMj1ip2nC1yvy+6Nf1VSkmSo8PQMDZDXd/AUR3
-	JxCKcnfsDl+YB+CnDOn/i8anVJ7i7O3sQXCO0OnlkBIGeumqafjl0Bf9LxySMQ26gc5NyXoxe58
-	uI3DyFHagnAS8xp8jn8QbgVfxGGVK0XLcuac=
-X-Google-Smtp-Source: AGHT+IHa9XAosSfz4PvD/IcWP/NhKOLb0BvmrqJ2Lo2NpQG6t74W5U8h2BiSeNMsW8VD/17fq5eWBQ4y1Ml9pRBhVtY=
-X-Received: by 2002:a05:6122:3982:b0:4d3:398f:8633 with SMTP id
- eq2-20020a056122398200b004d3398f8633mr422285vkb.10.1711655696167; Thu, 28 Mar
- 2024 12:54:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711655713; x=1712260513;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uty8UkCKWRel+6ILHWv9WEZYPVQazLXowk/xRzK5PO0=;
+        b=gf3LSXGme5/nQTyEdoKRd7PMdT03kQZF5MCyBxDHnTOdgcGlgOByz411jHAQ4iPnCT
+         O8a4fvhXEr/+F4u1Wr7Wuj6CUWYGKysigNTEjmvO3TLLAEfx/8kCvAS/EHNURQF5MFK3
+         OLqJDVgxwxCMJuO8NsHaOz/iiQLbK1/tQquHLqF3tSgxgs8rnbS5Bd9rF/GOj62c5pCm
+         Fv30u14l6MeqcaCuSQwDWjFH0JWJgniJlK2uh3h1mJBzENbPv3i379SSrWQ4/Wt2H8jX
+         013pAhKllOyoSsRCYuF1b6l36nfHGOtbBwRnLNojknJ3rv9U/7fVJA8wxg9j6yy6glbu
+         yTfw==
+X-Forwarded-Encrypted: i=1; AJvYcCVaA3Btkrj+gQvZ3vEhvX7GyiIQKEAhiAZlsg0T9g+lIfMy9YXXx2v6QfrEfwxPiyAEUVHhpkWaPQQSf96JYZq6cNvJ/sOpbWThF11R
+X-Gm-Message-State: AOJu0YywRPZrHaidJKMd/L9UdkzQVpoYVE+GVsDiHMDV/Xt2zNCnqR1/
+	9nVRBFb8jarjPRWDtJ/2uOAZpg6PC4mTOCZNx6QBSHbTEo0Szk76TF0ogk0f
+X-Google-Smtp-Source: AGHT+IElnhBk7d/VB908EFbFbv6uktbtDvC3+sx5GgszAqs583nTVEUNlKwm5IQm45b6KqgF3nKS8Q==
+X-Received: by 2002:a17:902:9a0c:b0:1e0:342b:af6f with SMTP id v12-20020a1709029a0c00b001e0342baf6fmr531706plp.16.1711655712685;
+        Thu, 28 Mar 2024 12:55:12 -0700 (PDT)
+Received: from wedsonaf-dev.home.lan ([189.124.190.154])
+        by smtp.googlemail.com with ESMTPSA id p16-20020a170902e75000b001dd7a97a266sm2006520plf.282.2024.03.28.12.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 12:55:12 -0700 (PDT)
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+To: rust-for-linux@vger.kernel.org
+Cc: Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	linux-kernel@vger.kernel.org,
+	Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: [PATCH v2 0/5] In-place module initialisation
+Date: Thu, 28 Mar 2024 16:54:52 -0300
+Message-Id: <20240328195457.225001-1-wedsonaf@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240326222844.1422948-7-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWdaiSer10agMytpv9h_gb4bEpEHjThDwRkMShXkKMxzA@mail.gmail.com>
-In-Reply-To: <CAMuHMdWdaiSer10agMytpv9h_gb4bEpEHjThDwRkMShXkKMxzA@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 28 Mar 2024 19:53:12 +0000
-Message-ID: <CA+V-a8udXMwzZvJhDH5kK9J4ihLU00TbpKNb5-YoxOGFtdgpPg@mail.gmail.com>
-Subject: Re: [RFC PATCH 06/13] pinctrl: renesas: pinctrl-rzg2l: Make cfg to
- u64 in struct rzg2l_variable_pin_cfg
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-Thank you for the review.
+Introduce `InPlaceModule`, which allows modules to be initialised
+inplace, as opposed to the current state where modules must return an
+instance which is moved to its final memory location.
 
-On Thu, Mar 28, 2024 at 2:14=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Tue, Mar 26, 2024 at 11:30=E2=80=AFPM Prabhakar <prabhakar.csengg@gmai=
-l.com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Now that we have updated the macro PIN_CFG_MASK to allow for the maximu=
-m
-> > configuration bits, update the size of 'cfg' to 'u64' in the
-> > 'struct rzg2l_variable_pin_cfg'.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > @@ -241,7 +241,7 @@ struct rzg2l_dedicated_configs {
-> >   * @pin: port pin
-> >   */
-> >  struct rzg2l_variable_pin_cfg {
-> > -       u32 cfg:20;
-> > +       u64 cfg:46;
-> >         u32 port:5;
-> >         u32 pin:3;
->
-> Doesn't this store the 46 cfg bits in a 64-bit word, and the 8 port
-> and pin bits in a different 32-bit word?  Worse, you'll get 4 bytes
-> of padding at the end of the structure.
-Agreed.
+This allows us to have modules whose state hold objects that must be
+initialised inplace like locks. It also allows us to implement
+registrations (e.g., driver registration) inplace and have them similar
+to their C counterparts where no new allocations are needed.
 
-> Changing the port and pin to u64 should make sure everything is
-> stored together in a single 64-bit word.
->
-I'll change the port and pin to u64 .
+This is built on top of the allocation APIs because the sample module is
+a modified version of rust_minimal, which would be incompatible with the
+allocation API series because it uses vectors.
 
-Cheers,
-Prabhakar
+---
+
+Changes in v2:
+
+- Rebased to latest rust-next 
+- Split off adding `Send` requirement to `Module` into a separate patch
+- Prefixed all `core` and `kernel` references with `::` in
+  `module!` macro-generated code.
+- Calling `__pinned_init` with explicit full path.
+- Add `Mutex` to `rust_inplace`  sample.
+- Added `Send` implementation for `Registration` in net/phy.
+- Link to v1: https://lore.kernel.org/rust-for-linux/20240327032337.188938-1-wedsonaf@gmail.com/T/#t
+
+---
+Wedson Almeida Filho (5):
+  rust: phy: implement `Send` for `Registration`
+  rust: kernel: require `Send` for `Module` implementations
+  rust: module: prefix all module paths with `::`
+  rust: introduce `InPlaceModule`
+  samples: rust: add in-place initialisation sample
+
+ rust/kernel/lib.rs           | 25 +++++++++++++++++++-
+ rust/kernel/net/phy.rs       |  4 ++++
+ rust/macros/module.rs        | 36 ++++++++++++-----------------
+ samples/rust/Kconfig         | 11 +++++++++
+ samples/rust/Makefile        |  1 +
+ samples/rust/rust_inplace.rs | 44 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 99 insertions(+), 22 deletions(-)
+ create mode 100644 samples/rust/rust_inplace.rs
+
+
+base-commit: 453275c66aa4d87c73c5152140b3573ab2435bb7
+-- 
+2.34.1
+
 
