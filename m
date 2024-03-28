@@ -1,180 +1,120 @@
-Return-Path: <linux-kernel+bounces-123393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C1F08907DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 773C38907DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:03:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 205032A59E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:01:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 336A02A5DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51875131BDC;
-	Thu, 28 Mar 2024 18:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5701311BE;
+	Thu, 28 Mar 2024 18:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PTHB7ySp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="NnpMOJux"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE2F3BBC5;
-	Thu, 28 Mar 2024 18:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540F846549;
+	Thu, 28 Mar 2024 18:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711648875; cv=none; b=TjG1Tx8FnEr3aFUhtaZp1C4fF99nltJEdQicuREzFZ5xkH9z9JgbWK70GZ3P2ow6riSh+BX8vqqMurc7/T632GXPSVspozZo1vN+tRVp3mvl8GXENTbUCLOXdFIJTMkRa6Q7Y3H4g59gKb9it46LsPOuuEieCbAWUIs/kAGml1g=
+	t=1711648986; cv=none; b=LwUKf3H/+2NZQdTTfkVlLTMIRhemQcBmds12Nwgmez9D7RB1Vb5d/rouRUxN+dGsTJjnpTThsfeWOw4St1qAmqMP0WGfCOrgCx0YEF57u/4in98Dczqm3+7luG3PdyedSSItnn3/LuwlRpEuU5FMD9RKtSlmdUZiiTtuHH4MPnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711648875; c=relaxed/simple;
-	bh=4phPWnWO8U4B+6/tBTg6onrt6txt5QrNdPVtLs0pEDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fXKa09+QARqTJr0MrxA+MrzndOzjebvmDzIDDnOBUrBFXEcOTAGdT46okt1wekF2hP+6bVb6ySCVEJbgLW5e16qj/TSPjFnAwOH8EMz947vOCPqvO2XYE/FfzHu1+sZCY+02PLEisQ5MQeIBe+e5E2XEfGu3OFoHBsKPyUuVfBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PTHB7ySp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CCBBC433C7;
-	Thu, 28 Mar 2024 18:01:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711648875;
-	bh=4phPWnWO8U4B+6/tBTg6onrt6txt5QrNdPVtLs0pEDE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PTHB7ySpnSsjWLu+d154b3fd84Utt8K81WByU29Xe3bUphIcvK390k1jGFjvAua5Z
-	 7SKYtrvWfSkCIdR3LkiUos2WstAbh+N7vyzUqY+8ZxVlO3z0Yd+pqPcnA1H5yCrh11
-	 CnbF3bPD6RgCjKDvXuxMkaDK8vS+LeyZSRL8YzNsMXkt2g8/ji8cqHtWlV10VI2843
-	 UVNb+TpojYuVYqzBqsMTKWuBR53awurPsxp3DPQGvnLMXXlqJF36xukiu4gUShLtla
-	 kD44XW1mgkhd+z9i83+af/HBfFnL5TWj1lFlwp8rTDNFC/OkYPdG/SaenG+h6eTkBR
-	 sZnQGqT/S8ykA==
-Date: Thu, 28 Mar 2024 18:01:09 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Alban Browaeys <alban.browaeys@gmail.com>
-Cc: dev@folker-schwesinger.de, Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Chris Ruehl <chris.ruehl@gtsys.com.hk>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Christopher Obbard <chris.obbard@collabora.com>,
-	Doug Anderson <dianders@chromium.org>,
-	Brian Norris <briannorris@chromium.org>,
-	Jensen Huang <jensenhuang@friendlyarm.com>,
-	linux-phy@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] phy: rockchip: emmc: Enable pulldown for strobe line
-Message-ID: <20240328-unnatural-unsorted-e53a13f5e87e@spud>
-References: <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
- <20240326-rk-default-enable-strobe-pulldown-v1-1-f410c71605c0@folker-schwesinger.de>
- <20240326-tactical-onlooker-3df8d2352dc2@spud>
- <871f0b24a38208d9c5d6abc87d83b067162c103e.camel@gmail.com>
+	s=arc-20240116; t=1711648986; c=relaxed/simple;
+	bh=DTbZ+Y9jaC0uz8dR80S7Tj5E5VmybpfliaYZJV2ojCo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NUcHRrq86fOo4oKPnzfmOzHK16Fuii+5fHTHrt5yMivVHcJKxkgJFECT4L1/7JFIrakOoJLen4nHK3RKlIEopWidB5YkpKxK3X9Y+SBHWnouYDi4GW0+FoFVIreG46i2dxX4QTdsqZMlnIWQ+hjfx8PbvsO43e8PDEAdZb4h9kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=NnpMOJux; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id 376DE100002;
+	Thu, 28 Mar 2024 21:02:43 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1711648963; bh=SSfky+uq2rYnJ57PyR2zDM3Rz0HLw3/XFkx0D1YEnb8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=NnpMOJuxSPu9KTqSrqj10q37r83Yv9mDdyfg+KRAVcOY9lG93hF3y11nRxRxIG1eY
+	 0jcsE0Nn2+VxZG5nq15GE59cmm3AULNYty0cTLznSiCnhn0x2B9Ytn2CexeMRJThFO
+	 I5rPtQrDlOQcqyRYNQp1C5dljaEmvcm1kabkZp4CC4TKC15sKgq0knQtLVkmglttDn
+	 DDuAthOjId3w0A1OJH5sXZdXHPHgBqKZioicDkSYKc5WEkE7OkYuDlkMeRhKuDKyMp
+	 XAx21hpqL0lj8yhqABznj8wg/WW10ovU01fR3ISQNf8VYRzjsF/8QZflyUa1mhYDd6
+	 lFrqEeZLeDMhA==
+Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Thu, 28 Mar 2024 21:01:54 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 28 Mar
+ 2024 21:01:34 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: Jonathan Chocron <jonnyc@amazon.com>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, Lorenzo Pieralisi
+	<lpieralisi@kernel.org>, =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?=
+	<kw@linux.com>, Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] PCI: dwc: Fix potential NULL dereference
+Date: Thu, 28 Mar 2024 21:01:26 +0300
+Message-ID: <20240328180126.23574-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8F3JqEr12hAqS6Zr"
-Content-Disposition: inline
-In-Reply-To: <871f0b24a38208d9c5d6abc87d83b067162c103e.camel@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184474 [Mar 28 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_from_domain_doesnt_match_to}, mx1.t-argos.ru.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;t-argos.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/28 17:08:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/28 16:46:00 #24495495
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+In al_pcie_config_prepare() resource_list_first_type() may return
+NULL which is later dereferenced. Fix this bug by adding NULL check.
 
---8F3JqEr12hAqS6Zr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-On Thu, Mar 28, 2024 at 06:00:03PM +0100, Alban Browaeys wrote:
-> Le mardi 26 mars 2024 =E0 19:46 +0000, Conor Dooley a =E9crit=A0:
-> > On Tue, Mar 26, 2024 at 07:54:35PM +0100, Folker Schwesinger via B4
-> > Relay wrote:
-> > > From: Folker Schwesinger <dev@folker-schwesinger.de>
-> > > -	if (of_property_read_bool(dev->of_node, "rockchip,enable-
-> > > strobe-pulldown"))
-> > > -		rk_phy->enable_strobe_pulldown =3D
-> > > PHYCTRL_REN_STRB_ENABLE;
-> > > +	if (of_property_read_bool(dev->of_node, "rockchip,disable-
-> > > strobe-pulldown"))
-> > > +		rk_phy->enable_strobe_pulldown =3D
-> > > PHYCTRL_REN_STRB_DISABLE;
-> >=20
-> > Unfortunately you cannot do this.
-> > Previously no property at all meant disabled and a property was
-> > required
-> > to enable it. With this change the absence of a property means that
-> > it
-> > will be enabled.
-> > An old devicetree is that wanted this to be disabled would have no
-> > property and will now end up with it enabled. This is an ABI break
-> > and is
-> > clearly not backwards compatible, that's a NAK unless it is
-> > demonstrable
-> > that noone actually wants to disable it at all.
->=20
->=20
-> But the patch that introduced the new default to disable the pulldown
-> explicitely introduced a regression for at least 4 boards.
-> It took time to sort out that the default to disable pulldown was the
-> culprit but still.
-> Will we carry this new behavor that breaks the default design for
-> rk3399 because since the regression was introduced new board definition
-> might have expceted this new behavior.
->=20
-> Could the best option be to revert to =E9not set a default enable/disable
-> pulldown" (as before the commit that introduced the regression) and
-> allow one to force the pulldown via the enable/disable pulldown
-> property?
-> I mean the commit that introduced a default value for the pulldown did
-> not seem to be about fixing anything. But it broke a lot. ANd it was
-> really really hard to find the description of this commit to understand
-> that one had to enable pulldown to restore hs400.
->=20
-> In more than 3 years, only one board maintainer noticed that this
-> property was required to get back HS400  and thanks to a user telling
-> me that this board was working I found from this board that this
-> property was "missing" from most board definitions (while it was not
-> required before).
->=20
->=20
-> I am all for not breaking ABI. But what about not reverting a patch
-> that already broke ABI because this patch introduced a new ABI that we
-> don't want to break?
-> I mean shouldn't a new commit with a new ABI that regressed the kernel
-> be reverted?
+Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+ drivers/pci/controller/dwc/pcie-al.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I think I said it after OP replied to me yesterday, but this is a pretty
-shitty situation in that the original default picked for the property
-was actually incorrect. Given it's been like this for four years before
-anyone noticed, and others probably depend on the current behaviour,
-that's hard to justify.
+diff --git a/drivers/pci/controller/dwc/pcie-al.c b/drivers/pci/controller/dwc/pcie-al.c
+index 6dfdda59f328..29bc99d48295 100644
+--- a/drivers/pci/controller/dwc/pcie-al.c
++++ b/drivers/pci/controller/dwc/pcie-al.c
+@@ -252,7 +252,12 @@ static void al_pcie_config_prepare(struct al_pcie *pcie)
+ 	u8 secondary_bus;
+ 	u32 cfg_control;
+ 	u32 reg;
+-	struct resource *bus = resource_list_first_type(&pp->bridge->windows, IORESOURCE_BUS)->res;
++
++	struct resource_entry *ft = resource_list_first_type(&pp->bridge->windows, IORESOURCE_BUS); 
++	if (!ft)
++		return;
++
++	struct resource *bus = ft->res;
+ 
+ 	target_bus_cfg = &pcie->target_bus_cfg;
+ 
+-- 
+2.30.2
 
-> Mind fixing the initial regression 8b5c2b45b8f0 "phy: rockchip: set
-> pulldown for strobe line in dts" does not necessarily mean changing the
-> default to the opposite value but could also be reverting to not
-> setting a default.
-
-That's also problematic, as the only way to do this is make setting
-one of the enabled or disabled properties required, which is also an ABI
-break, since you'd then be rejecting probe if one is not present.
-
-> Though I don't know if there are pros to setting a default.
-
-What you probably have to weigh up is the cons of each side. If what you
-lose is HS400 mode with what's in the kernel right now but switching to
-what's been proposed would entirely break some boards, I know which
-I think the lesser of two evils is.
-
-It's probably up to the platform maintainer to weigh in at this point.
-
-Hope that helps?
-Conor.
-
---8F3JqEr12hAqS6Zr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgWwZQAKCRB4tDGHoIJi
-0jB0AQC8/xsQZ9aSVUyDP+TLrTxN1T6WpnZxDmZ0RytuJJKcagEAs1IkEDW1WV+R
-Vn4E8r+DK3CUYvmFu6xKJKaLOoafAwY=
-=YhMf
------END PGP SIGNATURE-----
-
---8F3JqEr12hAqS6Zr--
 
