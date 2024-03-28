@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-122261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5382288F463
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:10:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CA0A88F466
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:11:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7174C1C29C27
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:10:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC7F52A9339
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1419F286AD;
-	Thu, 28 Mar 2024 01:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2745C2C853;
+	Thu, 28 Mar 2024 01:10:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="V5FzICn+"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Ja4PGYml"
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C578D210FB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C571C20DF1;
 	Thu, 28 Mar 2024 01:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711588201; cv=none; b=YjW/nRzDpEvHSC+KtFq33y8IFw9MhHQrv952iD3vt6sBbNjBvLtQPkYc+EUY1jWtUGqNLyyn9M4PSXwufKHWNK60WucwQI9SpPoG4zIiIJMxsio0OyGtJIleAvBr55HbqqbAmg9s1QRsCpv7w8vJGXd/32TdHS03gdPsXHZCxyA=
+	t=1711588202; cv=none; b=J6J/FYvy5BisuDg0JTuGSmnwVHWspJ3gsr+NPsAYrPUMuUuJLnYU3ee/QAMp5f9PtFd6ERBqhR8poH9EAKtuGhypWI+gpQrtUBp3md8hXtQix2lh91ZBVZ64wckcYbTNsPIiXU5Nh6AHxJFybqBA6HesR3dhvHoUjejvfDE97SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711588201; c=relaxed/simple;
-	bh=QgV+Xw9NbQEO6idqHDJtYJNVbDwVxFgW0gvsSbHMu8Q=;
+	s=arc-20240116; t=1711588202; c=relaxed/simple;
+	bh=FsyigFX7LxoBLnh6uPhCeJBxx0WIhf3QMVKrR98V5CQ=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LU5fhwnHG0a4a31T3gD0kl+oEHbZE0c8b0CjNncda9V7ZVMR16znxT5WlhhZw3a6nztSyc+MJl1L0Uqvzq7nYMxr6IZJkn0H8Qph4G2JyMJJRVE583UTwz/9+NuU3yTeBu4/Ti9E6cVL2P23mdAVN+MM6zUFVgIaWv+/mMpjuUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=V5FzICn+; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=Tfa0OSCw6XJJADkQlgY5VrW7cZ0R6MSDfbOiqh2koNqR1Jh5zZk+HeRy9+v2IL4IEIkA/x5vWk+F3Zt+qQOlS4PbTfxU8sfA6Zi4uJfjgVZ3uS7TSHldj0McfNNTHkRNTIsyJG+LtA5EBtmZ2x/yJ+jk3Yxr4hvsHCAvoSR65ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Ja4PGYml; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 1FB2112000F;
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 4BFFA120010;
 	Thu, 28 Mar 2024 04:09:50 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1FB2112000F
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4BFFA120010
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1711588190;
-	bh=gLbD9tc2pn1QeC2j87RMdeV5jO49713zgVqzzHkHt5E=;
+	bh=DNnelVrVBfGa2EMYKbsMYYbsAiO+qm//fCxZ0FZcepg=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=V5FzICn+/Q1eqKSq7NtDLR+qohNpWb+0nYESA22njBrgUT/znT33ePvaRXTt33BvV
-	 ichiLMqztRc/k5Zibv7fiEqK2sFCkYCvXU9+zf1xa73Jx51g/Z85vtjYsJg99duedn
-	 UtwpojeHVr6nBQe4u2dO0Z3+1E9zwyTe+iTR3hQd/uhqI7N8N0LbVnTvnxU97/L17K
-	 mNA6g2nhYflMH4mzS9j4xg2lGcS88NuQpU21z3hwHqLLK2CPZ+DyuQ54FkDXVS+23w
-	 nzegsA7ZcgZCwYz4ntP8fK8Kayb2enlWbuD5daOS6+PEoV5wXMXaxX3qPVOgOLtRjg
-	 gnEsgX+udcrfA==
+	b=Ja4PGYmlow+kLsQsms4cLsnMCStLH3Fo7detuYaXpZkr75QV0C6fGLhmQQOhMVIjs
+	 0tB6Es0S6u2+l2nZSzLFqz1oVWeo+47l5nDAyEZvhUk/J98WSKjxOoHlqN8Vq4dYsj
+	 6RtlLym6iD3082FWyaZugW3vfCpBtMr3GqbYrQq7FjPW3UyN/JzbsIcQY/VhyunHec
+	 6rkaMaGvc3AO8jKEjGJGnqXgobo+DAA9E0Z/4Gj1YA4DdoEN8de5aJY7JjtJr08DtK
+	 YXABXqHnMrx4Vs7vcO2+4QOsvWF3d7UuyFf2kqJU6WDTqv+lujGOHKk9ages6rVTxJ
+	 TetcmHk6MxcKw==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 28 Mar 2024 04:09:49 +0300 (MSK)
+	Thu, 28 Mar 2024 04:09:50 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -64,9 +64,9 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>
-Subject: [RFC PATCH v2 1/5] clk: meson: axg: move reset controller's code to separate module
-Date: Thu, 28 Mar 2024 04:08:27 +0300
-Message-ID: <20240328010831.884487-2-jan.dakinevich@salutedevices.com>
+Subject: [RFC PATCH v2 2/5] clk: meson: axg: share the audio helper macro
+Date: Thu, 28 Mar 2024 04:08:28 +0300
+Message-ID: <20240328010831.884487-3-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328010831.884487-1-jan.dakinevich@salutedevices.com>
 References: <20240328010831.884487-1-jan.dakinevich@salutedevices.com>
@@ -101,313 +101,323 @@ This code will by reused by A1 SoC.
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- drivers/clk/meson/Kconfig            |   5 ++
- drivers/clk/meson/Makefile           |   1 +
- drivers/clk/meson/axg-audio.c        |  95 +----------------------
- drivers/clk/meson/meson-audio-rstc.c | 109 +++++++++++++++++++++++++++
- drivers/clk/meson/meson-audio-rstc.h |  12 +++
- 5 files changed, 130 insertions(+), 92 deletions(-)
- create mode 100644 drivers/clk/meson/meson-audio-rstc.c
- create mode 100644 drivers/clk/meson/meson-audio-rstc.h
+ drivers/clk/meson/axg-audio.c   | 138 +-----------------------------
+ drivers/clk/meson/meson-audio.h | 143 ++++++++++++++++++++++++++++++++
+ 2 files changed, 144 insertions(+), 137 deletions(-)
+ create mode 100644 drivers/clk/meson/meson-audio.h
 
-diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-index 29ffd14d267b..d6a2fa5f7e88 100644
---- a/drivers/clk/meson/Kconfig
-+++ b/drivers/clk/meson/Kconfig
-@@ -48,6 +48,10 @@ config COMMON_CLK_MESON_CPU_DYNDIV
- 	tristate
- 	select COMMON_CLK_MESON_REGMAP
- 
-+config COMMON_CLK_MESON_AUDIO_RSTC
-+	tristate
-+	select RESET_CONTROLLER
-+
- config COMMON_CLK_MESON8B
- 	bool "Meson8 SoC Clock controller support"
- 	depends on ARM
-@@ -101,6 +105,7 @@ config COMMON_CLK_AXG_AUDIO
- 	select COMMON_CLK_MESON_PHASE
- 	select COMMON_CLK_MESON_SCLK_DIV
- 	select COMMON_CLK_MESON_CLKC_UTILS
-+	select COMMON_CLK_MESON_AUDIO_RSTC
- 	select REGMAP_MMIO
- 	help
- 	  Support for the audio clock controller on AmLogic A113D devices,
-diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-index 9ee4b954c896..88d94921a4dc 100644
---- a/drivers/clk/meson/Makefile
-+++ b/drivers/clk/meson/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
- obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
- obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
- obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
-+obj-$(CONFIG_COMMON_CLK_MESON_AUDIO_RSTC) += meson-audio-rstc.o
- 
- # Amlogic Clock controllers
- 
 diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
-index ac3482960903..990203a7ad5c 100644
+index 990203a7ad5c..7406f49efe62 100644
 --- a/drivers/clk/meson/axg-audio.c
 +++ b/drivers/clk/meson/axg-audio.c
-@@ -12,10 +12,10 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
--#include <linux/reset-controller.h>
- #include <linux/slab.h>
+@@ -16,6 +16,7 @@
  
  #include "meson-clkc-utils.h"
-+#include "meson-audio-rstc.h"
+ #include "meson-audio-rstc.h"
++#include "meson-audio.h"
  #include "axg-audio.h"
  #include "clk-regmap.h"
  #include "clk-phase.h"
-@@ -1648,84 +1648,6 @@ static struct clk_regmap *const sm1_clk_regmaps[] = {
- 	&sm1_sysclk_b_en,
- };
+@@ -23,52 +24,6 @@
  
--struct axg_audio_reset_data {
--	struct reset_controller_dev rstc;
--	struct regmap *map;
--	unsigned int offset;
--};
--
--static void axg_audio_reset_reg_and_bit(struct axg_audio_reset_data *rst,
--					unsigned long id,
--					unsigned int *reg,
--					unsigned int *bit)
--{
--	unsigned int stride = regmap_get_reg_stride(rst->map);
--
--	*reg = (id / (stride * BITS_PER_BYTE)) * stride;
--	*reg += rst->offset;
--	*bit = id % (stride * BITS_PER_BYTE);
--}
--
--static int axg_audio_reset_update(struct reset_controller_dev *rcdev,
--				unsigned long id, bool assert)
--{
--	struct axg_audio_reset_data *rst =
--		container_of(rcdev, struct axg_audio_reset_data, rstc);
--	unsigned int offset, bit;
--
--	axg_audio_reset_reg_and_bit(rst, id, &offset, &bit);
--
--	regmap_update_bits(rst->map, offset, BIT(bit),
--			assert ? BIT(bit) : 0);
--
--	return 0;
--}
--
--static int axg_audio_reset_status(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	struct axg_audio_reset_data *rst =
--		container_of(rcdev, struct axg_audio_reset_data, rstc);
--	unsigned int val, offset, bit;
--
--	axg_audio_reset_reg_and_bit(rst, id, &offset, &bit);
--
--	regmap_read(rst->map, offset, &val);
--
--	return !!(val & BIT(bit));
--}
--
--static int axg_audio_reset_assert(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	return axg_audio_reset_update(rcdev, id, true);
--}
--
--static int axg_audio_reset_deassert(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	return axg_audio_reset_update(rcdev, id, false);
--}
--
--static int axg_audio_reset_toggle(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	int ret;
--
--	ret = axg_audio_reset_assert(rcdev, id);
--	if (ret)
--		return ret;
--
--	return axg_audio_reset_deassert(rcdev, id);
--}
--
--static const struct reset_control_ops axg_audio_rstc_ops = {
--	.assert = axg_audio_reset_assert,
--	.deassert = axg_audio_reset_deassert,
--	.reset = axg_audio_reset_toggle,
--	.status = axg_audio_reset_status,
--};
--
- static const struct regmap_config axg_audio_regmap_cfg = {
- 	.reg_bits	= 32,
- 	.val_bits	= 32,
-@@ -1745,7 +1667,6 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	const struct audioclk_data *data;
--	struct axg_audio_reset_data *rst;
- 	struct regmap *map;
- 	void __iomem *regs;
- 	struct clk_hw *hw;
-@@ -1807,18 +1728,8 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
- 	if (!data->reset_num)
- 		return 0;
+ #include <dt-bindings/clock/axg-audio-clkc.h>
  
--	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
--	if (!rst)
--		return -ENOMEM;
+-#define AUD_GATE(_name, _reg, _bit, _pname, _iflags) {			\
+-	.data = &(struct clk_regmap_gate_data){				\
+-		.offset = (_reg),					\
+-		.bit_idx = (_bit),					\
+-	},								\
+-	.hw.init = &(struct clk_init_data) {				\
+-		.name = "aud_"#_name,					\
+-		.ops = &clk_regmap_gate_ops,				\
+-		.parent_names = (const char *[]){ #_pname },		\
+-		.num_parents = 1,					\
+-		.flags = CLK_DUTY_CYCLE_PARENT | (_iflags),		\
+-	},								\
+-}
 -
--	rst->map = map;
--	rst->offset = data->reset_offset;
--	rst->rstc.nr_resets = data->reset_num;
--	rst->rstc.ops = &axg_audio_rstc_ops;
--	rst->rstc.of_node = dev->of_node;
--	rst->rstc.owner = THIS_MODULE;
+-#define AUD_MUX(_name, _reg, _mask, _shift, _dflags, _pdata, _iflags) {	\
+-	.data = &(struct clk_regmap_mux_data){				\
+-		.offset = (_reg),					\
+-		.mask = (_mask),					\
+-		.shift = (_shift),					\
+-		.flags = (_dflags),					\
+-	},								\
+-	.hw.init = &(struct clk_init_data){				\
+-		.name = "aud_"#_name,					\
+-		.ops = &clk_regmap_mux_ops,				\
+-		.parent_data = _pdata,					\
+-		.num_parents = ARRAY_SIZE(_pdata),			\
+-		.flags = CLK_DUTY_CYCLE_PARENT | (_iflags),		\
+-	},								\
+-}
 -
--	return devm_reset_controller_register(dev, &rst->rstc);
-+	return meson_audio_rstc_register(dev, map, data->reset_offset,
-+					 data->reset_num);
+-#define AUD_DIV(_name, _reg, _shift, _width, _dflags, _pname, _iflags) { \
+-	.data = &(struct clk_regmap_div_data){				\
+-		.offset = (_reg),					\
+-		.shift = (_shift),					\
+-		.width = (_width),					\
+-		.flags = (_dflags),					\
+-	},								\
+-	.hw.init = &(struct clk_init_data){				\
+-		.name = "aud_"#_name,					\
+-		.ops = &clk_regmap_divider_ops,				\
+-		.parent_names = (const char *[]){ #_pname },		\
+-		.num_parents = 1,					\
+-		.flags = (_iflags),					\
+-	},								\
+-}
+-
+ #define AUD_PCLK_GATE(_name, _reg, _bit) {				\
+ 	.data = &(struct clk_regmap_gate_data){				\
+ 		.offset = (_reg),					\
+@@ -82,97 +37,6 @@
+ 	},								\
  }
  
- static const struct audioclk_data axg_audioclk_data = {
-diff --git a/drivers/clk/meson/meson-audio-rstc.c b/drivers/clk/meson/meson-audio-rstc.c
+-#define AUD_SCLK_DIV(_name, _reg, _div_shift, _div_width,		\
+-		     _hi_shift, _hi_width, _pname, _iflags) {		\
+-	.data = &(struct meson_sclk_div_data) {				\
+-		.div = {						\
+-			.reg_off = (_reg),				\
+-			.shift   = (_div_shift),			\
+-			.width   = (_div_width),			\
+-		},							\
+-		.hi = {							\
+-			.reg_off = (_reg),				\
+-			.shift   = (_hi_shift),				\
+-			.width   = (_hi_width),				\
+-		},							\
+-	},								\
+-	.hw.init = &(struct clk_init_data) {				\
+-		.name = "aud_"#_name,					\
+-		.ops = &meson_sclk_div_ops,				\
+-		.parent_names = (const char *[]){ #_pname },		\
+-		.num_parents = 1,					\
+-		.flags = (_iflags),					\
+-	},								\
+-}
+-
+-#define AUD_TRIPHASE(_name, _reg, _width, _shift0, _shift1, _shift2,	\
+-		     _pname, _iflags) {					\
+-	.data = &(struct meson_clk_triphase_data) {			\
+-		.ph0 = {						\
+-			.reg_off = (_reg),				\
+-			.shift   = (_shift0),				\
+-			.width   = (_width),				\
+-		},							\
+-		.ph1 = {						\
+-			.reg_off = (_reg),				\
+-			.shift   = (_shift1),				\
+-			.width   = (_width),				\
+-		},							\
+-		.ph2 = {						\
+-			.reg_off = (_reg),				\
+-			.shift   = (_shift2),				\
+-			.width   = (_width),				\
+-		},							\
+-	},								\
+-	.hw.init = &(struct clk_init_data) {				\
+-		.name = "aud_"#_name,					\
+-		.ops = &meson_clk_triphase_ops,				\
+-		.parent_names = (const char *[]){ #_pname },		\
+-		.num_parents = 1,					\
+-		.flags = CLK_DUTY_CYCLE_PARENT | (_iflags),		\
+-	},								\
+-}
+-
+-#define AUD_PHASE(_name, _reg, _width, _shift, _pname, _iflags) {	\
+-	.data = &(struct meson_clk_phase_data) {			\
+-		.ph = {							\
+-			.reg_off = (_reg),				\
+-			.shift   = (_shift),				\
+-			.width   = (_width),				\
+-		},							\
+-	},								\
+-	.hw.init = &(struct clk_init_data) {				\
+-		.name = "aud_"#_name,					\
+-		.ops = &meson_clk_phase_ops,				\
+-		.parent_names = (const char *[]){ #_pname },		\
+-		.num_parents = 1,					\
+-		.flags = (_iflags),					\
+-	},								\
+-}
+-
+-#define AUD_SCLK_WS(_name, _reg, _width, _shift_ph, _shift_ws, _pname,	\
+-		    _iflags) {						\
+-	.data = &(struct meson_sclk_ws_inv_data) {			\
+-		.ph = {							\
+-			.reg_off = (_reg),				\
+-			.shift   = (_shift_ph),				\
+-			.width   = (_width),				\
+-		},							\
+-		.ws = {							\
+-			.reg_off = (_reg),				\
+-			.shift   = (_shift_ws),				\
+-			.width   = (_width),				\
+-		},							\
+-	},								\
+-	.hw.init = &(struct clk_init_data) {				\
+-		.name = "aud_"#_name,					\
+-		.ops = &meson_clk_phase_ops,				\
+-		.parent_names = (const char *[]){ #_pname },		\
+-		.num_parents = 1,					\
+-		.flags = (_iflags),					\
+-	},								\
+-}
+-
+ /* Audio Master Clocks */
+ static const struct clk_parent_data mst_mux_parent_data[] = {
+ 	{ .fw_name = "mst_in0", },
+diff --git a/drivers/clk/meson/meson-audio.h b/drivers/clk/meson/meson-audio.h
 new file mode 100644
-index 000000000000..2079d24c40f4
+index 000000000000..cbcdbd487d4a
 --- /dev/null
-+++ b/drivers/clk/meson/meson-audio-rstc.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (c) 2018 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+#include <linux/reset-controller.h>
-+
-+#include "meson-audio-rstc.h"
-+
-+struct meson_audio_reset_data {
-+	struct reset_controller_dev rstc;
-+	struct regmap *map;
-+	unsigned int offset;
-+};
-+
-+static void meson_audio_reset_reg_and_bit(struct meson_audio_reset_data *rst,
-+					  unsigned long id,
-+					  unsigned int *reg,
-+					  unsigned int *bit)
-+{
-+	unsigned int stride = regmap_get_reg_stride(rst->map);
-+
-+	*reg = (id / (stride * BITS_PER_BYTE)) * stride;
-+	*reg += rst->offset;
-+	*bit = id % (stride * BITS_PER_BYTE);
-+}
-+
-+static int meson_audio_reset_update(struct reset_controller_dev *rcdev,
-+				    unsigned long id, bool assert)
-+{
-+	struct meson_audio_reset_data *rst =
-+		container_of(rcdev, struct meson_audio_reset_data, rstc);
-+	unsigned int offset, bit;
-+
-+	meson_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-+
-+	regmap_update_bits(rst->map, offset, BIT(bit),
-+			assert ? BIT(bit) : 0);
-+
-+	return 0;
-+}
-+
-+static int meson_audio_reset_status(struct reset_controller_dev *rcdev,
-+				    unsigned long id)
-+{
-+	struct meson_audio_reset_data *rst =
-+		container_of(rcdev, struct meson_audio_reset_data, rstc);
-+	unsigned int val, offset, bit;
-+
-+	meson_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-+
-+	regmap_read(rst->map, offset, &val);
-+
-+	return !!(val & BIT(bit));
-+}
-+
-+static int meson_audio_reset_assert(struct reset_controller_dev *rcdev,
-+				    unsigned long id)
-+{
-+	return meson_audio_reset_update(rcdev, id, true);
-+}
-+
-+static int meson_audio_reset_deassert(struct reset_controller_dev *rcdev,
-+				      unsigned long id)
-+{
-+	return meson_audio_reset_update(rcdev, id, false);
-+}
-+
-+static int meson_audio_reset_toggle(struct reset_controller_dev *rcdev,
-+				    unsigned long id)
-+{
-+	int ret;
-+
-+	ret = meson_audio_reset_assert(rcdev, id);
-+	if (ret)
-+		return ret;
-+
-+	return meson_audio_reset_deassert(rcdev, id);
-+}
-+
-+static const struct reset_control_ops meson_audio_rstc_ops = {
-+	.assert = meson_audio_reset_assert,
-+	.deassert = meson_audio_reset_deassert,
-+	.reset = meson_audio_reset_toggle,
-+	.status = meson_audio_reset_status,
-+};
-+
-+int meson_audio_rstc_register(struct device *dev, struct regmap *map,
-+			      unsigned int offset, unsigned int num)
-+{
-+	struct meson_audio_reset_data *rst;
-+
-+	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
-+	if (!rst)
-+		return -ENOMEM;
-+
-+	rst->map = map;
-+	rst->offset = offset;
-+	rst->rstc.nr_resets = num;
-+	rst->rstc.ops = &meson_audio_rstc_ops;
-+	rst->rstc.of_node = dev->of_node;
-+	rst->rstc.owner = THIS_MODULE;
-+
-+	return devm_reset_controller_register(dev, &rst->rstc);
-+}
-+EXPORT_SYMBOL_GPL(meson_audio_rstc_register);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/meson/meson-audio-rstc.h b/drivers/clk/meson/meson-audio-rstc.h
-new file mode 100644
-index 000000000000..6b441549de03
---- /dev/null
-+++ b/drivers/clk/meson/meson-audio-rstc.h
-@@ -0,0 +1,12 @@
++++ b/drivers/clk/meson/meson-audio.h
+@@ -0,0 +1,143 @@
 +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
 +
-+#ifndef __MESON_AUDIO_RSTC_H
-+#define __MESON_AUDIO_RSTC_H
++#ifndef __MESON_AUDIO_H__
++#define __MESON_AUDIO_H__
 +
-+#include <linux/device.h>
-+#include <linux/regmap.h>
++#define AUD_GATE(_name, _reg, _bit, _pname, _iflags) {			\
++	.data = &(struct clk_regmap_gate_data){				\
++		.offset = (_reg),					\
++		.bit_idx = (_bit),					\
++	},								\
++	.hw.init = &(struct clk_init_data) {				\
++		.name = "aud_"#_name,					\
++		.ops = &clk_regmap_gate_ops,				\
++		.parent_names = (const char *[]){ #_pname },		\
++		.num_parents = 1,					\
++		.flags = CLK_DUTY_CYCLE_PARENT | (_iflags),		\
++	},								\
++}
 +
-+int meson_audio_rstc_register(struct device *dev, struct regmap *map,
-+			      unsigned int offset, unsigned int num);
++#define AUD_MUX(_name, _reg, _mask, _shift, _dflags, _pdata, _iflags) {	\
++	.data = &(struct clk_regmap_mux_data){				\
++		.offset = (_reg),					\
++		.mask = (_mask),					\
++		.shift = (_shift),					\
++		.flags = (_dflags),					\
++	},								\
++	.hw.init = &(struct clk_init_data){				\
++		.name = "aud_"#_name,					\
++		.ops = &clk_regmap_mux_ops,				\
++		.parent_data = _pdata,					\
++		.num_parents = ARRAY_SIZE(_pdata),			\
++		.flags = CLK_DUTY_CYCLE_PARENT | (_iflags),		\
++	},								\
++}
 +
-+#endif /* __MESON_AUDIO_RSTC_H */
++#define AUD_DIV(_name, _reg, _shift, _width, _dflags, _pname, _iflags) { \
++	.data = &(struct clk_regmap_div_data){				\
++		.offset = (_reg),					\
++		.shift = (_shift),					\
++		.width = (_width),					\
++		.flags = (_dflags),					\
++	},								\
++	.hw.init = &(struct clk_init_data){				\
++		.name = "aud_"#_name,					\
++		.ops = &clk_regmap_divider_ops,				\
++		.parent_names = (const char *[]){ #_pname },		\
++		.num_parents = 1,					\
++		.flags = (_iflags),					\
++	},								\
++}
++
++#define AUD_SCLK_DIV(_name, _reg, _div_shift, _div_width,		\
++		     _hi_shift, _hi_width, _pname, _iflags) {		\
++	.data = &(struct meson_sclk_div_data) {				\
++		.div = {						\
++			.reg_off = (_reg),				\
++			.shift   = (_div_shift),			\
++			.width   = (_div_width),			\
++		},							\
++		.hi = {							\
++			.reg_off = (_reg),				\
++			.shift   = (_hi_shift),				\
++			.width   = (_hi_width),				\
++		},							\
++	},								\
++	.hw.init = &(struct clk_init_data) {				\
++		.name = "aud_"#_name,					\
++		.ops = &meson_sclk_div_ops,				\
++		.parent_names = (const char *[]){ #_pname },		\
++		.num_parents = 1,					\
++		.flags = (_iflags),					\
++	},								\
++}
++
++#define AUD_TRIPHASE(_name, _reg, _width, _shift0, _shift1, _shift2,	\
++		     _pname, _iflags) {					\
++	.data = &(struct meson_clk_triphase_data) {			\
++		.ph0 = {						\
++			.reg_off = (_reg),				\
++			.shift   = (_shift0),				\
++			.width   = (_width),				\
++		},							\
++		.ph1 = {						\
++			.reg_off = (_reg),				\
++			.shift   = (_shift1),				\
++			.width   = (_width),				\
++		},							\
++		.ph2 = {						\
++			.reg_off = (_reg),				\
++			.shift   = (_shift2),				\
++			.width   = (_width),				\
++		},							\
++	},								\
++	.hw.init = &(struct clk_init_data) {				\
++		.name = "aud_"#_name,					\
++		.ops = &meson_clk_triphase_ops,				\
++		.parent_names = (const char *[]){ #_pname },		\
++		.num_parents = 1,					\
++		.flags = CLK_DUTY_CYCLE_PARENT | (_iflags),		\
++	},								\
++}
++
++#define AUD_PHASE(_name, _reg, _width, _shift, _pname, _iflags) {	\
++	.data = &(struct meson_clk_phase_data) {			\
++		.ph = {							\
++			.reg_off = (_reg),				\
++			.shift   = (_shift),				\
++			.width   = (_width),				\
++		},							\
++	},								\
++	.hw.init = &(struct clk_init_data) {				\
++		.name = "aud_"#_name,					\
++		.ops = &meson_clk_phase_ops,				\
++		.parent_names = (const char *[]){ #_pname },		\
++		.num_parents = 1,					\
++		.flags = (_iflags),					\
++	},								\
++}
++
++#define AUD_SCLK_WS(_name, _reg, _width, _shift_ph, _shift_ws, _pname,	\
++		    _iflags) {						\
++	.data = &(struct meson_sclk_ws_inv_data) {			\
++		.ph = {							\
++			.reg_off = (_reg),				\
++			.shift   = (_shift_ph),				\
++			.width   = (_width),				\
++		},							\
++		.ws = {							\
++			.reg_off = (_reg),				\
++			.shift   = (_shift_ws),				\
++			.width   = (_width),				\
++		},							\
++	},								\
++	.hw.init = &(struct clk_init_data) {				\
++		.name = "aud_"#_name,					\
++		.ops = &meson_clk_phase_ops,				\
++		.parent_names = (const char *[]){ #_pname },		\
++		.num_parents = 1,					\
++		.flags = (_iflags),					\
++	},								\
++}
++
++#endif /* __MESON_AUDIO_H__ */
 -- 
 2.34.1
 
