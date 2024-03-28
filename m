@@ -1,1390 +1,355 @@
-Return-Path: <linux-kernel+bounces-122929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B79788FFB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:54:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4662588FFA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EEBD1C2AAB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:54:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A576DB211AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0C87F481;
-	Thu, 28 Mar 2024 12:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD23C7F7C7;
+	Thu, 28 Mar 2024 12:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rc17cqsk"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lE1qeDzw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9710E80024
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711630450; cv=none; b=niaJ7tnx2sxQ+sardcoUHrZhtq3YmsVrgPMV3nwaKLThUnHspZmwcm5ZEt7/jikBhRZJ+St3OXKbfM/kuXWvlihacMaT1OT8hNF1KhXwuY71vVSB8MDWMx90Wb1DnTzi9nndSQuWFuUkOCM2IuI2UpkV3qPNA8HgZhJ6qTEaf/g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711630450; c=relaxed/simple;
-	bh=5TCpjsckKUJH2Vyyr3jKi48ADggaJQL1+D4m0WdDjNQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CgCFIItAwuEZTxLR6Xz83jmgQiFJ6mDiXz9hcqXD3bb3UmQKTF3kiZYTjAacu4s9O+TQTmP5KKyKRqtT3rCgKILf8ydxtoxJPtRjsRCLdVr5N4N4uvrFFaH5vpWQ8riFaEIee8uLxcMB4sRGkD0drQEOiHtDyIajsRgOFQT36a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rc17cqsk; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-ddaad2aeab1so819406276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711630441; x=1712235241; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=v1k5/f6q+Q/w1jFRkd0GjI7DV6a3ySNeWdRSbY80foE=;
-        b=rc17cqsk7XnqeofrahdIMwSNPrvWlviYCKbwUeanoNb1DcrQ7m7vW8IGdVek3YrOH9
-         6c+LeGGq1g2VXbL3KAzRAjnjC9Xwg754oYyqRJRtRycHxoOfacFY60N3O/TvO1vD3CF9
-         tkebHWXOOfXj+g+31izzYu3SX05QGRyibkei/gtqkfPJ/5PwGTwXMb81T9PjeuinJ3y9
-         Y02GNT8C4gVXxNvD+HfXryNe3+ijmzy+tCC/PugeNLH5PuVtdJjZbygBBMN86cmJIdT7
-         NPT3dqiJRL9KNipNIYuAkReO5OH1CyoafCKf80jfzeBd4KBGeigXibF6R3zYp3ur/pq7
-         7wCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711630441; x=1712235241;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v1k5/f6q+Q/w1jFRkd0GjI7DV6a3ySNeWdRSbY80foE=;
-        b=vwm1yM9Vz/2S9+RBHWc06Cu9tOjXN7SzvbC1njnCbYrQpmJsm+T7KWKG7rtIMjHE7L
-         56YbnGYXOhQswjXHJvXIcVGh/TXKRco78qQEz14Q0yCJw92yp4apzEq+CYlgwvse5HOP
-         0KhtkRSVRAMleY82XR5Eour3Vnx/cP1Gh4sjJtFIwmEFzLoFFGxNsieO4ZoJK0pk1xTT
-         9unEakaHFMinDGCGJu+JiI1Dyq6Wjbro8NK7otSU4I8zdrOuxSQ9FHphDot7c5ZYxEy4
-         4ymT1h8ZH08Ntx6kKNVnsCZkRjjOaZE0xfUN9AR2QAmtcz46RcAZfcoA/ACQox28qmaF
-         CbDg==
-X-Gm-Message-State: AOJu0YwzsUsqQi+Ot0fyWmeM6l8nWjpC0en8019y3ZE+yzOb1e8iYnQP
-	I9Z9JSZSVXRYT9pNVwUlGVG+yxEBFT2u1VX6Llkq1Z6YYOYsR0mRkYLY0/aKOS43H7Av1O3fzgW
-	+dUMKtIdHSbf5hfmsi8igbfoepqhQu0VOmp/nLg==
-X-Google-Smtp-Source: AGHT+IEm2Rq9XjvRvF1Gc4lsv4kGx5qbg+5ZM7vcXzz64h8UswdJjg7AyAejkrusteq5Jr0rDKgp2IxQuuw3+bz69NU=
-X-Received: by 2002:a25:dc0b:0:b0:dc7:46e7:7aea with SMTP id
- y11-20020a25dc0b000000b00dc746e77aeamr2934828ybe.47.1711630441038; Thu, 28
- Mar 2024 05:54:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6814C7D416;
+	Thu, 28 Mar 2024 12:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711630434; cv=fail; b=AYMzIZ9GGYWV0hhQChvs3/AfSXBJn5Fes2zBH2dSEBdOQQUJbm1GVTMhPCuHBLAQ8m8sEcl8+15MfvAvxXDPmKf9GIEDCpBHUrIQQuhe1Fq0iUGFaFbvRFR7DV9PnZyqNhAobLdONielbDjhFNTLIaCexlXBv07N8ayv4mppDas=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711630434; c=relaxed/simple;
+	bh=3/bXIgJ8VvswPXOLlzUnh6fyF+jJnqkp5UBPT8mprFk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=TfKYwHLTjCmeyN6QLrHRgZn2IHnbILgrEdR1qLD8NiB/EoM5eKWgTdbsvOZ/E1mUT8mEb4OBGKL1AoUB2clSPGpSSMTKR65wn9/qTYshE87zDT1PC5ESlrefsFfIlksc9f9ZYu/GlW6/yaWYLqFvjiZvmrNqUkAh4x/S/IfTF8Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lE1qeDzw; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711630431; x=1743166431;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=3/bXIgJ8VvswPXOLlzUnh6fyF+jJnqkp5UBPT8mprFk=;
+  b=lE1qeDzwhgvZihfusLGU25spgyXNKO7wVGyAwGBGVJlkCw3ld6LTLIjo
+   w9IcCPaeBaNlmfgwcdmtjdH3Lg7Ruf7vV0UqtRoPr1Vmun+MT+pDoZT9r
+   BlkYQ0reMkQgBQaoLXPZv30bozwL49lApOYXUvzdQah0F59SuYKVFqF3B
+   uieoUHo8JNdzujn+WbPaFUi2HyS0E0keoyYT2gsc/NpfuT0tNt4dxU8SS
+   2evDA1BeOekem/MWd6c5Fijp7BmRc1I+IwHJalbKhCH/jT3OzI7Lwk/0B
+   0h76aarkZXnVi2vMmGUxmqFSw25kalRS5luZw+a6U4MfqfdGMFOMXgblC
+   g==;
+X-CSE-ConnectionGUID: SYf4Qt0DTT+nIvunRPmlvQ==
+X-CSE-MsgGUID: MZKeRiGSRqeb1ov6CgwhaA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17329970"
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="17329970"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:53:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="16711163"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 05:53:48 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 05:53:48 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 05:53:48 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 05:53:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YTrOIksewkycycs7b7+mYlBSHG7CPv+dDq7np65p+egzp4T5pZxecDovSwLfQKCcLswVt6pdixP2NjebaFgjO8KM19+8EEp44e2HjL7J6NvUv0G22SK1niJkEOHJ831A1YNX9UcJVRqravcWxkieRjk4EjN2B5HFSBjgWHPE3uLIrgZWJ61qx61lfHEEYTOiM7pHhxtdgpQaV4xNSuGMA7amVJ83a4nogmmXf9x40HK68xQnO3pKBEZ+bDVdS/b8SEwdPqsn64qgUw8NAG5JVecYJLxAnu5Y9+JKZY8YJTEIU+wzDRleUbPxB95a8ZlUSQaNF+PsGrpV+71cWj1S5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3/bXIgJ8VvswPXOLlzUnh6fyF+jJnqkp5UBPT8mprFk=;
+ b=SExQ4biNUyedtgemw5KBgLnPdoLLFbgErOFa2yVgu0dTRZ7OVaYnYsb9JGT3+XbR2WbEgKudfN+W6V3zRZDJfcy/O2FbVUYtZLIri1+WHQf+kNZIgCtP4GSwYEVIbuVzHr4hrWdjGRl7Wg74Dk2Iw+2q4XUPWysKhxRv2GD0Q6DMVXt9ifZGiARr8m1AZfWRtA2EVUQP0WU+2lxZOAEWw+7muCndrNoijjcsukannrqzI88VC30jYB2odiCf5qp+mfU02ICpgdl4djUXlyh+06DYbCXXLKIvAZhYEm4MW9crioeAdLwe3P2gVWg6J27ox5O3d4Lfto5QVo3xgCRHWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by CY5PR11MB6210.namprd11.prod.outlook.com (2603:10b6:930:26::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
+ 2024 12:53:45 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 12:53:45 +0000
+From: "Huang, Kai" <kai.huang@intel.com>
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+	<tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+	<linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+	<cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "haitao.huang@linux.intel.com"
+	<haitao.huang@linux.intel.com>, "Mehta, Sohil" <sohil.mehta@intel.com>,
+	"tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>,
+	"bp@alien8.de" <bp@alien8.de>
+CC: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+	<anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+	"kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+	<yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v10 05/14] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+Thread-Topic: [PATCH v10 05/14] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+Thread-Index: AQHagKYLsFT4s142u0e+3dOpqX6L9LFNHJ0A
+Date: Thu, 28 Mar 2024 12:53:45 +0000
+Message-ID: <89b4e053db21c31859cf2572428fd9d4ab4475ab.camel@intel.com>
+References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
+	 <20240328002229.30264-6-haitao.huang@linux.intel.com>
+In-Reply-To: <20240328002229.30264-6-haitao.huang@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CY5PR11MB6210:EE_
+x-ms-office365-filtering-correlation-id: be7a7846-598d-4b27-8998-08dc4f261aaa
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SjVyp3OwW5f6N0qTfpeyYAdvlqFftDGL0FDuox01FZv5BhsLBFX+koqdPtdpaSY8Lr0dud64/njPB35vAMQKyFvWAwUqng9U8FAcJ8QUsqd0JXumDIDkdmXrjYqZrSrKsYH4YzH1ANW3pPRDRPNo9EikFBJy4gsOk+sahAL/NdK2zxh9bBKDQPot8zoiXA5ULibkkU48LYoW20AHODqWqzQPP+U97/f1ILb8f8gdcxzpw6Y3JnRasKai9Wh1f+Lpkp/yHXz1vLyLaU54P1nsm4oSwfRDOWCsSSWDTuDEvCHDgh7l696VBbzYZFcYF0L4Gs38FvXprC/r0cQ+LRY05uacQQYIG9fdrz0afNP1trZTMNVkZv0Cfo+EeQLaBdpiVEGT1N4WtI2ZXdX6lRhcUydF/qNrhvsHDKRAOvWwU0zlEZCW207WxMCDq1RtnckMPb0r9Gago6wqEsNu2fhRD+lmOLMKmYy+oeC9YSYP56BISHW+645pKVDA9wikNM8nPoXaZw0z+3EYaFy+jJUFiC5tdxr6QtUAz1RySTv1CfLGYqYpCOXoqK5vBNRziS5Keiun1emO/37tTIJYrJ0D0jkX6pmacN2fVN6sL7iTSFpsltDBB7eD/NLs9fK1nZGBUvJyZOF+SPhTbPGd7O3xf2YpXjAa5CLon1st8bKotPP1iCyy3b5iRr4Eks99ry0UCO7eNQ90ThQPu6/mIm50ZKhpCp4OgxiIhuAde262FEo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015)(38070700009)(921011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T0lPNlFPK2dOdGVmS2s3UDBuQWR5TlZCV3p5NGxGMWRRT2dtcDBiZGlrMXcw?=
+ =?utf-8?B?aW9FdUtWRlQrRi93VTJvR2wyc1Y5SnBPa1pORm5jWFVlYkN5S1BZclRYazhj?=
+ =?utf-8?B?b0Y3OFI1YUROYmQzZFhXNFRpZnYyTjBhNFJlZjRKNjRXYjJiN21odTljNit5?=
+ =?utf-8?B?Z05lTUtvSFREckhUbVFiSXI4Y09tQ1hqejBnMVh0STB0Szd5ZUNETW5vSjZ3?=
+ =?utf-8?B?MGNLYVB4QTlnL25zT1Y1aEMrOGt5VVJKd3VOM20va3ljdmxsTjlLWWZhSEs2?=
+ =?utf-8?B?OFpMTi9ncFd4anE3aXhyRUVMczAzUXRNSTJZejZ5RWFrZEhPRDB0T09HeFZU?=
+ =?utf-8?B?VlZFS3NKekFLdVVQdFlIaXNONGN4N1hWTVR5Y2Z6TDh1L3BZZHZCbjAwWmxD?=
+ =?utf-8?B?VU1sK1hld0FQekUxRmp6ZGE5QzZjdTVjNGlneGdvdDd3MTNSUVhpczU3ODRV?=
+ =?utf-8?B?UWFsTm90ekIyZE5TZFhyWnFPdlpiVnBtQmRraUVvQWhJOVRGWEwrYm4wcWRC?=
+ =?utf-8?B?b3VNK0dnV3NBY2F2WFZQNzV2R2JMNGZTd3JpaXNaY0tpZHdtOEUreThtcm1J?=
+ =?utf-8?B?UlFZVHpOUlcvOC9DNjlVOXpMblE5dlRoNkFmeXlQRTI2NTRvQWFqM0FDVTdo?=
+ =?utf-8?B?RTYvNVlJTHRDTzZBYys2cUxEMXJZWk9NWXNENFQ0Y2lNUDV5S0ZFUVhaY2dy?=
+ =?utf-8?B?RWFRU3RpWUs2eWN0WXVxS2crSE1RSTVxOFY2Z2hpWkIwQ1Y1UDEycmtybklj?=
+ =?utf-8?B?OWd3bXhnNE1qRzFzM0hwZFBZSHRnaFFlaTUzTlh2Rzh6YmpjNktnMXNEMTVm?=
+ =?utf-8?B?WUtBaG5ERUpSakxsb2dPYnQwSlBmN2o4YmtNeW02RXFMMFBpOGhSeXd6Mzd5?=
+ =?utf-8?B?K3VEODlRb3BTSUxzLzg2b1VrUVdkanZKTUJxcXN4T0NaSkNjckUzaUU2QXBV?=
+ =?utf-8?B?dElWbi8wR3ByR0UxMDRGOEw2bXBjbnFqVVFPYVZvMXF1OFJLL2pnRUtLdWRK?=
+ =?utf-8?B?SERJUGlwZ0d1UVA1Q21zdElmMytKUU8xL0Z2Y0hrd2JPRUtUVnE5VU5ZUGF4?=
+ =?utf-8?B?YXBYOHcxMUlrY0EwcHlHREdQcENWYkFYYU0vYXhnM1Z3SWZpLzVBdmREN1F2?=
+ =?utf-8?B?akJscFd0R0NUTVFEUE5oR0Y1ajhHUmtEaTJML2NDWlMzTHIyY2ZXUlJ3ZHNB?=
+ =?utf-8?B?a1ZSM1VOUGt2VUxCWXZhMzF5U0RUZnhUcnJ5VUNLcHJ1Zis0OFBRUGJjL01W?=
+ =?utf-8?B?RFprbkNYUExWRENtandNeml3YWRNbE5BOVRlb1JyM3I5R2d4R0xiNlQvT2FB?=
+ =?utf-8?B?Mmd5b1FXcnd3M2k1emdyRW9oLzFmSlFWNHVNcVFIbW5WeE9QR2YxdjVoYmF3?=
+ =?utf-8?B?cXhCOWplYnNJa01Id0grY0NrMTZZMXFHblNHTkVzaFViVTB4b1hiaWtNSFRa?=
+ =?utf-8?B?MDZQQ0xoeHVsOEgraVVTeVp0cGovby9mejYra3NPOVdhaGNpNUlCRGlXUFM1?=
+ =?utf-8?B?cmJadk5RMktNWG4zbjRQR04vcnJaWjZnUDNHMHRpV3BXbWZLUlF4SEFiaUlQ?=
+ =?utf-8?B?NE8vZzV5M092ZWNUR0N5WDBURDF2cnduZkxwYjBDcTRBbmVFckpwN0FkQmI2?=
+ =?utf-8?B?cG5xa2grbjU0eDNvVW5Ba3hlSDI2YlBTYWVBSnFaaTYwY0U0emNHd3VSOUdL?=
+ =?utf-8?B?SUo5N1owWTZwdks5SDl0VlpIanRBTlp4Y2MwZzN4R0xhV2xBUmNaVzFNL2Vr?=
+ =?utf-8?B?MGg5ekRHSm9YbjBqZUNHaTVZOXdUakdvLzY0a2EvVzlMTW8wSThiZk9rN0lC?=
+ =?utf-8?B?Q2txZk5SaG5zYWNqUDZOT01iMVRzT1d6QlRzTWZNZ3ZOQ09USjlZYStJbGpB?=
+ =?utf-8?B?aVNEYjFLOFAxUGEwRE51Z1NMeXRGTmM4YkxjSDVUbC83QTduTll6UWhpZTlN?=
+ =?utf-8?B?b05iQTlCYklieitVaUtiNEl4ZFZmMWtibmp6Mk5KVXN0TktQeHVOYysxdzAv?=
+ =?utf-8?B?ZDdqUG5mUGczNDNMVTJUcmZvYnpmSmRHMmdXK1p0eU5LV2lMdHFIdko5Z25K?=
+ =?utf-8?B?YXB6NXR5OWcrSHVwY01XRXgyTUE1WDlveTdmaFBsaCs4MmUyVUhjekx1N1Bp?=
+ =?utf-8?B?ZWpMcUZEa2lvZ0FkTVVSRzE2RWYwaGtSZlpTNWFjeHNqaWhjbmtHc1lqUnRi?=
+ =?utf-8?B?eVE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <58B80FA42BF8B140B35338C4C6A4FB14@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327160314.9982-1-apais@linux.microsoft.com> <20240327160314.9982-10-apais@linux.microsoft.com>
-In-Reply-To: <20240327160314.9982-10-apais@linux.microsoft.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 28 Mar 2024 13:53:25 +0100
-Message-ID: <CAPDyKFpuKadPQv6+61C2pE4x4FE-DUC5W6WCCPu9Nb2DnDB56g@mail.gmail.com>
-Subject: Re: [PATCH 9/9] mmc: Convert from tasklet to BH workqueue
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org, 
-	vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
-	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
-	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
-	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
-	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
-	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
-	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
-	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
-	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
-	patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org, 
-	jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com, 
-	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
-	jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com, 
-	aubin.constans@microchip.com, manuel.lauss@gmail.com, mirq-linux@rere.qmqm.pl, 
-	jh80.chung@samsung.com, oakad@yahoo.com, hayashi.kunihiko@socionext.com, 
-	mhiramat@kernel.org, brucechang@via.com.tw, HaraldWelte@viatech.com, 
-	pierre@ossman.eu, duncan.sands@free.fr, stern@rowland.harvard.edu, 
-	oneukum@suse.com, openipmi-developer@lists.sourceforge.net, 
-	dmaengine@vger.kernel.org, asahi@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, imx@lists.linux.dev, 
-	linuxppc-dev@lists.ozlabs.org, linux-mediatek@lists.infradead.org, 
-	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be7a7846-598d-4b27-8998-08dc4f261aaa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 12:53:45.4154
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Cq/9Qnae5cWPXpHLLNhSb3nwLoVDaKfbxeJve5KpNtUMzSVGg30XcD5PiMSnYv0jNyrHC5PtTWXcDTRbKOqMpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6210
+X-OriginatorOrg: intel.com
 
-On Wed, 27 Mar 2024 at 17:03, Allen Pais <apais@linux.microsoft.com> wrote:
->
-> The only generic interface to execute asynchronously in the BH context is
-> tasklet; however, it's marked deprecated and has some design flaws. To
-> replace tasklets, BH workqueue support was recently added. A BH workqueue
-> behaves similarly to regular workqueues except that the queued work items
-> are executed in the BH context.
->
-> This patch converts drivers/infiniband/* from tasklet to BH workqueue.
->
-> Based on the work done by Tejun Heo <tj@kernel.org>
-> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
->
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-
-Overall, this makes sense to me. However, just to make things clear,
-an mmc host driver shouldn't really need the tasklet. As I understand
-it, the few remaining users are there for legacy reasons.
-
-At this point we have suggested to drivers to switch to use threaded
-irq handlers (and regular work queues if needed too). That said,
-what's the benefit of using the BH work queue?
-
-Kind regards
-Uffe
-
-> ---
->  drivers/mmc/host/atmel-mci.c                  | 35 ++++-----
->  drivers/mmc/host/au1xmmc.c                    | 37 ++++-----
->  drivers/mmc/host/cb710-mmc.c                  | 15 ++--
->  drivers/mmc/host/cb710-mmc.h                  |  3 +-
->  drivers/mmc/host/dw_mmc.c                     | 25 ++++---
->  drivers/mmc/host/dw_mmc.h                     |  9 ++-
->  drivers/mmc/host/omap.c                       | 17 +++--
->  drivers/mmc/host/renesas_sdhi.h               |  3 +-
->  drivers/mmc/host/renesas_sdhi_internal_dmac.c | 24 +++---
->  drivers/mmc/host/renesas_sdhi_sys_dmac.c      |  9 +--
->  drivers/mmc/host/sdhci-bcm-kona.c             |  2 +-
->  drivers/mmc/host/tifm_sd.c                    | 15 ++--
->  drivers/mmc/host/tmio_mmc.h                   |  3 +-
->  drivers/mmc/host/tmio_mmc_core.c              |  4 +-
->  drivers/mmc/host/uniphier-sd.c                | 13 ++--
->  drivers/mmc/host/via-sdmmc.c                  | 25 ++++---
->  drivers/mmc/host/wbsd.c                       | 75 ++++++++++---------
->  drivers/mmc/host/wbsd.h                       | 10 +--
->  18 files changed, 167 insertions(+), 157 deletions(-)
->
-> diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
-> index dba826db739a..0a92a7fd020f 100644
-> --- a/drivers/mmc/host/atmel-mci.c
-> +++ b/drivers/mmc/host/atmel-mci.c
-> @@ -33,6 +33,7 @@
->  #include <linux/pm.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/pinctrl/consumer.h>
-> +#include <linux/workqueue.h>
->
->  #include <asm/cacheflush.h>
->  #include <asm/io.h>
-> @@ -284,12 +285,12 @@ struct atmel_mci_dma {
->   *     EVENT_DATA_ERROR is pending.
->   * @stop_cmdr: Value to be loaded into CMDR when the stop command is
->   *     to be sent.
-> - * @tasklet: Tasklet running the request state machine.
-> + * @work: Work running the request state machine.
->   * @pending_events: Bitmask of events flagged by the interrupt handler
-> - *     to be processed by the tasklet.
-> + *     to be processed by the work.
->   * @completed_events: Bitmask of events which the state machine has
->   *     processed.
-> - * @state: Tasklet state.
-> + * @state: Work state.
->   * @queue: List of slots waiting for access to the controller.
->   * @need_clock_update: Update the clock rate before the next request.
->   * @need_reset: Reset controller before next request.
-> @@ -363,7 +364,7 @@ struct atmel_mci {
->         u32                     data_status;
->         u32                     stop_cmdr;
->
-> -       struct tasklet_struct   tasklet;
-> +       struct work_struct      work;
->         unsigned long           pending_events;
->         unsigned long           completed_events;
->         enum atmel_mci_state    state;
-> @@ -761,7 +762,7 @@ static void atmci_timeout_timer(struct timer_list *t)
->         host->need_reset = 1;
->         host->state = STATE_END_REQUEST;
->         smp_wmb();
-> -       tasklet_schedule(&host->tasklet);
-> +       queue_work(system_bh_wq, &host->work);
->  }
->
->  static inline unsigned int atmci_ns_to_clocks(struct atmel_mci *host,
-> @@ -983,7 +984,7 @@ static void atmci_pdc_complete(struct atmel_mci *host)
->
->         dev_dbg(&host->pdev->dev, "(%s) set pending xfer complete\n", __func__);
->         atmci_set_pending(host, EVENT_XFER_COMPLETE);
-> -       tasklet_schedule(&host->tasklet);
-> +       queue_work(system_bh_wq, &host->work);
->  }
->
->  static void atmci_dma_cleanup(struct atmel_mci *host)
-> @@ -997,7 +998,7 @@ static void atmci_dma_cleanup(struct atmel_mci *host)
->  }
->
->  /*
-> - * This function is called by the DMA driver from tasklet context.
-> + * This function is called by the DMA driver from work context.
->   */
->  static void atmci_dma_complete(void *arg)
->  {
-> @@ -1020,7 +1021,7 @@ static void atmci_dma_complete(void *arg)
->                 dev_dbg(&host->pdev->dev,
->                         "(%s) set pending xfer complete\n", __func__);
->                 atmci_set_pending(host, EVENT_XFER_COMPLETE);
-> -               tasklet_schedule(&host->tasklet);
-> +               queue_work(system_bh_wq, &host->work);
->
->                 /*
->                  * Regardless of what the documentation says, we have
-> @@ -1033,7 +1034,7 @@ static void atmci_dma_complete(void *arg)
->                  * haven't seen all the potential error bits yet.
->                  *
->                  * The interrupt handler will schedule a different
-> -                * tasklet to finish things up when the data transfer
-> +                * work to finish things up when the data transfer
->                  * is completely done.
->                  *
->                  * We may not complete the mmc request here anyway
-> @@ -1765,9 +1766,9 @@ static void atmci_detect_change(struct timer_list *t)
->         }
->  }
->
-> -static void atmci_tasklet_func(struct tasklet_struct *t)
-> +static void atmci_work_func(struct work_struct *t)
->  {
-> -       struct atmel_mci        *host = from_tasklet(host, t, tasklet);
-> +       struct atmel_mci        *host = from_work(host, t, work);
->         struct mmc_request      *mrq = host->mrq;
->         struct mmc_data         *data = host->data;
->         enum atmel_mci_state    state = host->state;
-> @@ -1779,7 +1780,7 @@ static void atmci_tasklet_func(struct tasklet_struct *t)
->         state = host->state;
->
->         dev_vdbg(&host->pdev->dev,
-> -               "tasklet: state %u pending/completed/mask %lx/%lx/%x\n",
-> +               "work: state %u pending/completed/mask %lx/%lx/%x\n",
->                 state, host->pending_events, host->completed_events,
->                 atmci_readl(host, ATMCI_IMR));
->
-> @@ -2141,7 +2142,7 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
->                         dev_dbg(&host->pdev->dev, "set pending data error\n");
->                         smp_wmb();
->                         atmci_set_pending(host, EVENT_DATA_ERROR);
-> -                       tasklet_schedule(&host->tasklet);
-> +                       queue_work(system_bh_wq, &host->work);
->                 }
->
->                 if (pending & ATMCI_TXBUFE) {
-> @@ -2210,7 +2211,7 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
->                         smp_wmb();
->                         dev_dbg(&host->pdev->dev, "set pending notbusy\n");
->                         atmci_set_pending(host, EVENT_NOTBUSY);
-> -                       tasklet_schedule(&host->tasklet);
-> +                       queue_work(system_bh_wq, &host->work);
->                 }
->
->                 if (pending & ATMCI_NOTBUSY) {
-> @@ -2219,7 +2220,7 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
->                         smp_wmb();
->                         dev_dbg(&host->pdev->dev, "set pending notbusy\n");
->                         atmci_set_pending(host, EVENT_NOTBUSY);
-> -                       tasklet_schedule(&host->tasklet);
-> +                       queue_work(system_bh_wq, &host->work);
->                 }
->
->                 if (pending & ATMCI_RXRDY)
-> @@ -2234,7 +2235,7 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
->                         smp_wmb();
->                         dev_dbg(&host->pdev->dev, "set pending cmd rdy\n");
->                         atmci_set_pending(host, EVENT_CMD_RDY);
-> -                       tasklet_schedule(&host->tasklet);
-> +                       queue_work(system_bh_wq, &host->work);
->                 }
->
->                 if (pending & (ATMCI_SDIOIRQA | ATMCI_SDIOIRQB))
-> @@ -2530,7 +2531,7 @@ static int atmci_probe(struct platform_device *pdev)
->
->         host->mapbase = regs->start;
->
-> -       tasklet_setup(&host->tasklet, atmci_tasklet_func);
-> +       INIT_WORK(&host->work, atmci_work_func);
->
->         ret = request_irq(irq, atmci_interrupt, 0, dev_name(&pdev->dev), host);
->         if (ret) {
-> diff --git a/drivers/mmc/host/au1xmmc.c b/drivers/mmc/host/au1xmmc.c
-> index b5a5c6a2fe8b..c86fa7d2ebb7 100644
-> --- a/drivers/mmc/host/au1xmmc.c
-> +++ b/drivers/mmc/host/au1xmmc.c
-> @@ -42,6 +42,7 @@
->  #include <linux/leds.h>
->  #include <linux/mmc/host.h>
->  #include <linux/slab.h>
-> +#include <linux/workqueue.h>
->
->  #include <asm/io.h>
->  #include <asm/mach-au1x00/au1000.h>
-> @@ -113,8 +114,8 @@ struct au1xmmc_host {
->
->         int irq;
->
-> -       struct tasklet_struct finish_task;
-> -       struct tasklet_struct data_task;
-> +       struct work_struct finish_task;
-> +       struct work_struct data_task;
->         struct au1xmmc_platform_data *platdata;
->         struct platform_device *pdev;
->         struct resource *ioarea;
-> @@ -253,9 +254,9 @@ static void au1xmmc_finish_request(struct au1xmmc_host *host)
->         mmc_request_done(host->mmc, mrq);
->  }
->
-> -static void au1xmmc_tasklet_finish(struct tasklet_struct *t)
-> +static void au1xmmc_work_finish(struct work_struct *t)
->  {
-> -       struct au1xmmc_host *host = from_tasklet(host, t, finish_task);
-> +       struct au1xmmc_host *host = from_work(host, t, finish_task);
->         au1xmmc_finish_request(host);
->  }
->
-> @@ -363,9 +364,9 @@ static void au1xmmc_data_complete(struct au1xmmc_host *host, u32 status)
->         au1xmmc_finish_request(host);
->  }
->
-> -static void au1xmmc_tasklet_data(struct tasklet_struct *t)
-> +static void au1xmmc_work_data(struct work_struct *t)
->  {
-> -       struct au1xmmc_host *host = from_tasklet(host, t, data_task);
-> +       struct au1xmmc_host *host = from_work(host, t, data_task);
->
->         u32 status = __raw_readl(HOST_STATUS(host));
->         au1xmmc_data_complete(host, status);
-> @@ -425,7 +426,7 @@ static void au1xmmc_send_pio(struct au1xmmc_host *host)
->                 if (host->flags & HOST_F_STOP)
->                         SEND_STOP(host);
->
-> -               tasklet_schedule(&host->data_task);
-> +               queue_work(system_bh_wq, &host->data_task);
->         }
->  }
->
-> @@ -505,7 +506,7 @@ static void au1xmmc_receive_pio(struct au1xmmc_host *host)
->                 if (host->flags & HOST_F_STOP)
->                         SEND_STOP(host);
->
-> -               tasklet_schedule(&host->data_task);
-> +               queue_work(system_bh_wq, &host->data_task);
->         }
->  }
->
-> @@ -561,7 +562,7 @@ static void au1xmmc_cmd_complete(struct au1xmmc_host *host, u32 status)
->
->         if (!trans || cmd->error) {
->                 IRQ_OFF(host, SD_CONFIG_TH | SD_CONFIG_RA | SD_CONFIG_RF);
-> -               tasklet_schedule(&host->finish_task);
-> +               queue_work(system_bh_wq, &host->finish_task);
->                 return;
->         }
->
-> @@ -797,7 +798,7 @@ static irqreturn_t au1xmmc_irq(int irq, void *dev_id)
->                 IRQ_OFF(host, SD_CONFIG_NE | SD_CONFIG_TH);
->
->                 /* IRQ_OFF(host, SD_CONFIG_TH | SD_CONFIG_RA | SD_CONFIG_RF); */
-> -               tasklet_schedule(&host->finish_task);
-> +               queue_work(system_bh_wq, &host->finish_task);
->         }
->  #if 0
->         else if (status & SD_STATUS_DD) {
-> @@ -806,7 +807,7 @@ static irqreturn_t au1xmmc_irq(int irq, void *dev_id)
->                         au1xmmc_receive_pio(host);
->                 else {
->                         au1xmmc_data_complete(host, status);
-> -                       /* tasklet_schedule(&host->data_task); */
-> +                       /* queue_work(system_bh_wq, &host->data_task); */
->                 }
->         }
->  #endif
-> @@ -854,7 +855,7 @@ static void au1xmmc_dbdma_callback(int irq, void *dev_id)
->         if (host->flags & HOST_F_STOP)
->                 SEND_STOP(host);
->
-> -       tasklet_schedule(&host->data_task);
-> +       queue_work(system_bh_wq, &host->data_task);
->  }
->
->  static int au1xmmc_dbdma_init(struct au1xmmc_host *host)
-> @@ -1039,9 +1040,9 @@ static int au1xmmc_probe(struct platform_device *pdev)
->         if (host->platdata)
->                 mmc->caps &= ~(host->platdata->mask_host_caps);
->
-> -       tasklet_setup(&host->data_task, au1xmmc_tasklet_data);
-> +       INIT_WORK(&host->data_task, au1xmmc_work_data);
->
-> -       tasklet_setup(&host->finish_task, au1xmmc_tasklet_finish);
-> +       INIT_WORK(&host->finish_task, au1xmmc_work_finish);
->
->         if (has_dbdma()) {
->                 ret = au1xmmc_dbdma_init(host);
-> @@ -1091,8 +1092,8 @@ static int au1xmmc_probe(struct platform_device *pdev)
->         if (host->flags & HOST_F_DBDMA)
->                 au1xmmc_dbdma_shutdown(host);
->
-> -       tasklet_kill(&host->data_task);
-> -       tasklet_kill(&host->finish_task);
-> +       cancel_work_sync(&host->data_task);
-> +       cancel_work_sync(&host->finish_task);
->
->         if (host->platdata && host->platdata->cd_setup &&
->             !(mmc->caps & MMC_CAP_NEEDS_POLL))
-> @@ -1135,8 +1136,8 @@ static void au1xmmc_remove(struct platform_device *pdev)
->                 __raw_writel(0, HOST_CONFIG2(host));
->                 wmb(); /* drain writebuffer */
->
-> -               tasklet_kill(&host->data_task);
-> -               tasklet_kill(&host->finish_task);
-> +               cancel_work_sync(&host->data_task);
-> +               cancel_work_sync(&host->finish_task);
->
->                 if (host->flags & HOST_F_DBDMA)
->                         au1xmmc_dbdma_shutdown(host);
-> diff --git a/drivers/mmc/host/cb710-mmc.c b/drivers/mmc/host/cb710-mmc.c
-> index 0aec33b88bef..eebb6797e785 100644
-> --- a/drivers/mmc/host/cb710-mmc.c
-> +++ b/drivers/mmc/host/cb710-mmc.c
-> @@ -8,6 +8,7 @@
->  #include <linux/module.h>
->  #include <linux/pci.h>
->  #include <linux/delay.h>
-> +#include <linux/workqueue.h>
->  #include "cb710-mmc.h"
->
->  #define CB710_MMC_REQ_TIMEOUT_MS       2000
-> @@ -493,7 +494,7 @@ static void cb710_mmc_request(struct mmc_host *mmc, struct mmc_request *mrq)
->         if (!cb710_mmc_command(mmc, mrq->cmd) && mrq->stop)
->                 cb710_mmc_command(mmc, mrq->stop);
->
-> -       tasklet_schedule(&reader->finish_req_tasklet);
-> +       queue_work(system_bh_wq, &reader->finish_req_work);
->  }
->
->  static int cb710_mmc_powerup(struct cb710_slot *slot)
-> @@ -646,10 +647,10 @@ static int cb710_mmc_irq_handler(struct cb710_slot *slot)
->         return 1;
->  }
->
-> -static void cb710_mmc_finish_request_tasklet(struct tasklet_struct *t)
-> +static void cb710_mmc_finish_request_work(struct work_struct *t)
->  {
-> -       struct cb710_mmc_reader *reader = from_tasklet(reader, t,
-> -                                                      finish_req_tasklet);
-> +       struct cb710_mmc_reader *reader = from_work(reader, t,
-> +                                                      finish_req_work);
->         struct mmc_request *mrq = reader->mrq;
->
->         reader->mrq = NULL;
-> @@ -718,8 +719,8 @@ static int cb710_mmc_init(struct platform_device *pdev)
->
->         reader = mmc_priv(mmc);
->
-> -       tasklet_setup(&reader->finish_req_tasklet,
-> -                     cb710_mmc_finish_request_tasklet);
-> +       INIT_WORK(&reader->finish_req_work,
-> +                       cb710_mmc_finish_request_work);
->         spin_lock_init(&reader->irq_lock);
->         cb710_dump_regs(chip, CB710_DUMP_REGS_MMC);
->
-> @@ -763,7 +764,7 @@ static void cb710_mmc_exit(struct platform_device *pdev)
->         cb710_write_port_32(slot, CB710_MMC_CONFIG_PORT, 0);
->         cb710_write_port_16(slot, CB710_MMC_CONFIGB_PORT, 0);
->
-> -       tasklet_kill(&reader->finish_req_tasklet);
-> +       cancel_work_sync(&reader->finish_req_work);
->
->         mmc_free_host(mmc);
->  }
-> diff --git a/drivers/mmc/host/cb710-mmc.h b/drivers/mmc/host/cb710-mmc.h
-> index 5e053077dbed..b35ab8736374 100644
-> --- a/drivers/mmc/host/cb710-mmc.h
-> +++ b/drivers/mmc/host/cb710-mmc.h
-> @@ -8,10 +8,11 @@
->  #define LINUX_CB710_MMC_H
->
->  #include <linux/cb710.h>
-> +#include <linux/workqueue.h>
->
->  /* per-MMC-reader structure */
->  struct cb710_mmc_reader {
-> -       struct tasklet_struct finish_req_tasklet;
-> +       struct work_struct finish_req_work;
->         struct mmc_request *mrq;
->         spinlock_t irq_lock;
->         unsigned char last_power_mode;
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 8e2d676b9239..ee6f892bc0d8 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -36,6 +36,7 @@
->  #include <linux/regulator/consumer.h>
->  #include <linux/of.h>
->  #include <linux/mmc/slot-gpio.h>
-> +#include <linux/workqueue.h>
->
->  #include "dw_mmc.h"
->
-> @@ -493,7 +494,7 @@ static void dw_mci_dmac_complete_dma(void *arg)
->          */
->         if (data) {
->                 set_bit(EVENT_XFER_COMPLETE, &host->pending_events);
-> -               tasklet_schedule(&host->tasklet);
-> +               queue_work(system_bh_wq, &host->work);
->         }
->  }
->
-> @@ -1834,7 +1835,7 @@ static enum hrtimer_restart dw_mci_fault_timer(struct hrtimer *t)
->         if (!host->data_status) {
->                 host->data_status = SDMMC_INT_DCRC;
->                 set_bit(EVENT_DATA_ERROR, &host->pending_events);
-> -               tasklet_schedule(&host->tasklet);
-> +               queue_work(system_bh_wq, &host->work);
->         }
->
->         spin_unlock_irqrestore(&host->irq_lock, flags);
-> @@ -2056,9 +2057,9 @@ static bool dw_mci_clear_pending_data_complete(struct dw_mci *host)
->         return true;
->  }
->
-> -static void dw_mci_tasklet_func(struct tasklet_struct *t)
-> +static void dw_mci_work_func(struct work_struct *t)
->  {
-> -       struct dw_mci *host = from_tasklet(host, t, tasklet);
-> +       struct dw_mci *host = from_work(host, t, work);
->         struct mmc_data *data;
->         struct mmc_command *cmd;
->         struct mmc_request *mrq;
-> @@ -2113,7 +2114,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
->                                  * will waste a bit of time (we already know
->                                  * the command was bad), it can't cause any
->                                  * errors since it's possible it would have
-> -                                * taken place anyway if this tasklet got
-> +                                * taken place anyway if this work got
->                                  * delayed. Allowing the transfer to take place
->                                  * avoids races and keeps things simple.
->                                  */
-> @@ -2706,7 +2707,7 @@ static void dw_mci_cmd_interrupt(struct dw_mci *host, u32 status)
->         smp_wmb(); /* drain writebuffer */
->
->         set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
-> -       tasklet_schedule(&host->tasklet);
-> +       queue_work(system_bh_wq, &host->work);
->
->         dw_mci_start_fault_timer(host);
->  }
-> @@ -2774,7 +2775,7 @@ static irqreturn_t dw_mci_interrupt(int irq, void *dev_id)
->                                 set_bit(EVENT_DATA_COMPLETE,
->                                         &host->pending_events);
->
-> -                       tasklet_schedule(&host->tasklet);
-> +                       queue_work(system_bh_wq, &host->work);
->
->                         spin_unlock(&host->irq_lock);
->                 }
-> @@ -2793,7 +2794,7 @@ static irqreturn_t dw_mci_interrupt(int irq, void *dev_id)
->                                         dw_mci_read_data_pio(host, true);
->                         }
->                         set_bit(EVENT_DATA_COMPLETE, &host->pending_events);
-> -                       tasklet_schedule(&host->tasklet);
-> +                       queue_work(system_bh_wq, &host->work);
->
->                         spin_unlock(&host->irq_lock);
->                 }
-> @@ -3098,7 +3099,7 @@ static void dw_mci_cmd11_timer(struct timer_list *t)
->
->         host->cmd_status = SDMMC_INT_RTO;
->         set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
-> -       tasklet_schedule(&host->tasklet);
-> +       queue_work(system_bh_wq, &host->work);
->  }
->
->  static void dw_mci_cto_timer(struct timer_list *t)
-> @@ -3144,7 +3145,7 @@ static void dw_mci_cto_timer(struct timer_list *t)
->                  */
->                 host->cmd_status = SDMMC_INT_RTO;
->                 set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
-> -               tasklet_schedule(&host->tasklet);
-> +               queue_work(system_bh_wq, &host->work);
->                 break;
->         default:
->                 dev_warn(host->dev, "Unexpected command timeout, state %d\n",
-> @@ -3195,7 +3196,7 @@ static void dw_mci_dto_timer(struct timer_list *t)
->                 host->data_status = SDMMC_INT_DRTO;
->                 set_bit(EVENT_DATA_ERROR, &host->pending_events);
->                 set_bit(EVENT_DATA_COMPLETE, &host->pending_events);
-> -               tasklet_schedule(&host->tasklet);
-> +               queue_work(system_bh_wq, &host->work);
->                 break;
->         default:
->                 dev_warn(host->dev, "Unexpected data timeout, state %d\n",
-> @@ -3435,7 +3436,7 @@ int dw_mci_probe(struct dw_mci *host)
->         else
->                 host->fifo_reg = host->regs + DATA_240A_OFFSET;
->
-> -       tasklet_setup(&host->tasklet, dw_mci_tasklet_func);
-> +       INIT_WORK(&host->work, dw_mci_work_func);
->         ret = devm_request_irq(host->dev, host->irq, dw_mci_interrupt,
->                                host->irq_flags, "dw-mci", host);
->         if (ret)
-> diff --git a/drivers/mmc/host/dw_mmc.h b/drivers/mmc/host/dw_mmc.h
-> index 4ed81f94f7ca..d17f398a0432 100644
-> --- a/drivers/mmc/host/dw_mmc.h
-> +++ b/drivers/mmc/host/dw_mmc.h
-> @@ -17,6 +17,7 @@
->  #include <linux/fault-inject.h>
->  #include <linux/hrtimer.h>
->  #include <linux/interrupt.h>
-> +#include <linux/workqueue.h>
->
->  enum dw_mci_state {
->         STATE_IDLE = 0,
-> @@ -89,12 +90,12 @@ struct dw_mci_dma_slave {
->   * @stop_cmdr: Value to be loaded into CMDR when the stop command is
->   *     to be sent.
->   * @dir_status: Direction of current transfer.
-> - * @tasklet: Tasklet running the request state machine.
-> + * @work: Work running the request state machine.
->   * @pending_events: Bitmask of events flagged by the interrupt handler
-> - *     to be processed by the tasklet.
-> + *     to be processed by the work.
->   * @completed_events: Bitmask of events which the state machine has
->   *     processed.
-> - * @state: Tasklet state.
-> + * @state: Work state.
->   * @queue: List of slots waiting for access to the controller.
->   * @bus_hz: The rate of @mck in Hz. This forms the basis for MMC bus
->   *     rate and timeout calculations.
-> @@ -194,7 +195,7 @@ struct dw_mci {
->         u32                     data_status;
->         u32                     stop_cmdr;
->         u32                     dir_status;
-> -       struct tasklet_struct   tasklet;
-> +       struct work_struct      work;
->         unsigned long           pending_events;
->         unsigned long           completed_events;
->         enum dw_mci_state       state;
-> diff --git a/drivers/mmc/host/omap.c b/drivers/mmc/host/omap.c
-> index 088f8ed4fdc4..d85bae7b9cba 100644
-> --- a/drivers/mmc/host/omap.c
-> +++ b/drivers/mmc/host/omap.c
-> @@ -28,6 +28,7 @@
->  #include <linux/slab.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/platform_data/mmc-omap.h>
-> +#include <linux/workqueue.h>
->
->
->  #define        OMAP_MMC_REG_CMD        0x00
-> @@ -105,7 +106,7 @@ struct mmc_omap_slot {
->         u16                     power_mode;
->         unsigned int            fclk_freq;
->
-> -       struct tasklet_struct   cover_tasklet;
-> +       struct work_struct      cover_work;
->         struct timer_list       cover_timer;
->         unsigned                cover_open;
->
-> @@ -873,18 +874,18 @@ void omap_mmc_notify_cover_event(struct device *dev, int num, int is_closed)
->                 sysfs_notify(&slot->mmc->class_dev.kobj, NULL, "cover_switch");
->         }
->
-> -       tasklet_hi_schedule(&slot->cover_tasklet);
-> +       queue_work(system_bh_highpri_wq, &slot->cover_work);
->  }
->
->  static void mmc_omap_cover_timer(struct timer_list *t)
->  {
->         struct mmc_omap_slot *slot = from_timer(slot, t, cover_timer);
-> -       tasklet_schedule(&slot->cover_tasklet);
-> +       queue_work(system_bh_wq, &slot->cover_work);
->  }
->
-> -static void mmc_omap_cover_handler(struct tasklet_struct *t)
-> +static void mmc_omap_cover_handler(struct work_struct *t)
->  {
-> -       struct mmc_omap_slot *slot = from_tasklet(slot, t, cover_tasklet);
-> +       struct mmc_omap_slot *slot = from_work(slot, t, cover_work);
->         int cover_open = mmc_omap_cover_is_open(slot);
->
->         mmc_detect_change(slot->mmc, 0);
-> @@ -1299,7 +1300,7 @@ static int mmc_omap_new_slot(struct mmc_omap_host *host, int id)
->
->         if (slot->pdata->get_cover_state != NULL) {
->                 timer_setup(&slot->cover_timer, mmc_omap_cover_timer, 0);
-> -               tasklet_setup(&slot->cover_tasklet, mmc_omap_cover_handler);
-> +               INIT_WORK(&slot->cover_work, mmc_omap_cover_handler);
->         }
->
->         r = mmc_add_host(mmc);
-> @@ -1318,7 +1319,7 @@ static int mmc_omap_new_slot(struct mmc_omap_host *host, int id)
->                                         &dev_attr_cover_switch);
->                 if (r < 0)
->                         goto err_remove_slot_name;
-> -               tasklet_schedule(&slot->cover_tasklet);
-> +               queue_work(system_bh_wq, &slot->cover_work);
->         }
->
->         return 0;
-> @@ -1341,7 +1342,7 @@ static void mmc_omap_remove_slot(struct mmc_omap_slot *slot)
->         if (slot->pdata->get_cover_state != NULL)
->                 device_remove_file(&mmc->class_dev, &dev_attr_cover_switch);
->
-> -       tasklet_kill(&slot->cover_tasklet);
-> +       cancel_work_sync(&slot->cover_work);
->         del_timer_sync(&slot->cover_timer);
->         flush_workqueue(slot->host->mmc_omap_wq);
->
-> diff --git a/drivers/mmc/host/renesas_sdhi.h b/drivers/mmc/host/renesas_sdhi.h
-> index 586f94d4dbfd..4fd2bfcacd76 100644
-> --- a/drivers/mmc/host/renesas_sdhi.h
-> +++ b/drivers/mmc/host/renesas_sdhi.h
-> @@ -11,6 +11,7 @@
->
->  #include <linux/dmaengine.h>
->  #include <linux/platform_device.h>
-> +#include <linux/workqueue.h>
->  #include "tmio_mmc.h"
->
->  struct renesas_sdhi_scc {
-> @@ -67,7 +68,7 @@ struct renesas_sdhi_dma {
->         dma_filter_fn filter;
->         void (*enable)(struct tmio_mmc_host *host, bool enable);
->         struct completion dma_dataend;
-> -       struct tasklet_struct dma_complete;
-> +       struct work_struct dma_complete;
->  };
->
->  struct renesas_sdhi {
-> diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> index 53d34c3eddce..f175f8898516 100644
-> --- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> +++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> @@ -336,7 +336,7 @@ static bool renesas_sdhi_internal_dmac_dma_irq(struct tmio_mmc_host *host)
->                 writel(status ^ dma_irqs, host->ctl + DM_CM_INFO1);
->                 set_bit(SDHI_DMA_END_FLAG_DMA, &dma_priv->end_flags);
->                 if (test_bit(SDHI_DMA_END_FLAG_ACCESS, &dma_priv->end_flags))
-> -                       tasklet_schedule(&dma_priv->dma_complete);
-> +                       queue_work(system_bh_wq, &dma_priv->dma_complete);
->         }
->
->         return status & dma_irqs;
-> @@ -351,7 +351,7 @@ renesas_sdhi_internal_dmac_dataend_dma(struct tmio_mmc_host *host)
->         set_bit(SDHI_DMA_END_FLAG_ACCESS, &dma_priv->end_flags);
->         if (test_bit(SDHI_DMA_END_FLAG_DMA, &dma_priv->end_flags) ||
->             host->data->error)
-> -               tasklet_schedule(&dma_priv->dma_complete);
-> +               queue_work(system_bh_wq, &dma_priv->dma_complete);
->  }
->
->  /*
-> @@ -439,9 +439,9 @@ renesas_sdhi_internal_dmac_start_dma(struct tmio_mmc_host *host,
->         renesas_sdhi_internal_dmac_enable_dma(host, false);
->  }
->
-> -static void renesas_sdhi_internal_dmac_issue_tasklet_fn(unsigned long arg)
-> +static void renesas_sdhi_internal_dmac_issue_work_fn(struct work_struct *t)
->  {
-> -       struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
-> +       struct tmio_mmc_host *host = from_work(host, t, dma_issue);
->         struct renesas_sdhi *priv = host_to_priv(host);
->
->         tmio_mmc_enable_mmc_irqs(host, TMIO_STAT_DATAEND);
-> @@ -453,7 +453,7 @@ static void renesas_sdhi_internal_dmac_issue_tasklet_fn(unsigned long arg)
->                 /* on CMD errors, simulate DMA end immediately */
->                 set_bit(SDHI_DMA_END_FLAG_DMA, &priv->dma_priv.end_flags);
->                 if (test_bit(SDHI_DMA_END_FLAG_ACCESS, &priv->dma_priv.end_flags))
-> -                       tasklet_schedule(&priv->dma_priv.dma_complete);
-> +                       queue_work(system_bh_wq, &priv->dma_priv.dma_complete);
->         }
->  }
->
-> @@ -483,9 +483,9 @@ static bool renesas_sdhi_internal_dmac_complete(struct tmio_mmc_host *host)
->         return true;
->  }
->
-> -static void renesas_sdhi_internal_dmac_complete_tasklet_fn(unsigned long arg)
-> +static void renesas_sdhi_internal_dmac_complete_work_fn(struct work_struct *t)
->  {
-> -       struct tmio_mmc_host *host = (struct tmio_mmc_host *)arg;
-> +       struct tmio_mmc_host *host = from_work(host, t, dam_complete);
->
->         spin_lock_irq(&host->lock);
->         if (!renesas_sdhi_internal_dmac_complete(host))
-> @@ -543,12 +543,10 @@ renesas_sdhi_internal_dmac_request_dma(struct tmio_mmc_host *host,
->         /* Each value is set to non-zero to assume "enabling" each DMA */
->         host->chan_rx = host->chan_tx = (void *)0xdeadbeaf;
->
-> -       tasklet_init(&priv->dma_priv.dma_complete,
-> -                    renesas_sdhi_internal_dmac_complete_tasklet_fn,
-> -                    (unsigned long)host);
-> -       tasklet_init(&host->dma_issue,
-> -                    renesas_sdhi_internal_dmac_issue_tasklet_fn,
-> -                    (unsigned long)host);
-> +       INIT_WORK(&priv->dma_priv.dma_complete,
-> +                       renesas_sdhi_internal_dmac_complete_work_fn);
-> +       INIT_WORK(&host->dma_issue,
-> +                       renesas_sdhi_internal_dmac_issue_work_fn);
->
->         /* Add pre_req and post_req */
->         host->ops.pre_req = renesas_sdhi_internal_dmac_pre_req;
-> diff --git a/drivers/mmc/host/renesas_sdhi_sys_dmac.c b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
-> index 9cf7f9feab72..793595ad6d02 100644
-> --- a/drivers/mmc/host/renesas_sdhi_sys_dmac.c
-> +++ b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
-> @@ -312,9 +312,9 @@ static void renesas_sdhi_sys_dmac_start_dma(struct tmio_mmc_host *host,
->         }
->  }
->
-> -static void renesas_sdhi_sys_dmac_issue_tasklet_fn(unsigned long priv)
-> +static void renesas_sdhi_sys_dmac_issue_work_fn(struct work_struct *t)
->  {
-> -       struct tmio_mmc_host *host = (struct tmio_mmc_host *)priv;
-> +       struct tmio_mmc_host *host = from_work(host, t, dma_issue);
->         struct dma_chan *chan = NULL;
->
->         spin_lock_irq(&host->lock);
-> @@ -401,9 +401,8 @@ static void renesas_sdhi_sys_dmac_request_dma(struct tmio_mmc_host *host,
->                         goto ebouncebuf;
->
->                 init_completion(&priv->dma_priv.dma_dataend);
-> -               tasklet_init(&host->dma_issue,
-> -                            renesas_sdhi_sys_dmac_issue_tasklet_fn,
-> -                            (unsigned long)host);
-> +               INIT_WORK(&host->dma_issue,
-> +                               renesas_sdhi_sys_dmac_issue_work_fn);
->         }
->
->         renesas_sdhi_sys_dmac_enable_dma(host, true);
-> diff --git a/drivers/mmc/host/sdhci-bcm-kona.c b/drivers/mmc/host/sdhci-bcm-kona.c
-> index cb9152c6a65d..974f205d479b 100644
-> --- a/drivers/mmc/host/sdhci-bcm-kona.c
-> +++ b/drivers/mmc/host/sdhci-bcm-kona.c
-> @@ -107,7 +107,7 @@ static void sdhci_bcm_kona_sd_init(struct sdhci_host *host)
->   * Software emulation of the SD card insertion/removal. Set insert=1 for insert
->   * and insert=0 for removal. The card detection is done by GPIO. For Broadcom
->   * IP to function properly the bit 0 of CORESTAT register needs to be set/reset
-> - * to generate the CD IRQ handled in sdhci.c which schedules card_tasklet.
-> + * to generate the CD IRQ handled in sdhci.c which schedules card_work.
->   */
->  static int sdhci_bcm_kona_sd_card_emulate(struct sdhci_host *host, int insert)
->  {
-> diff --git a/drivers/mmc/host/tifm_sd.c b/drivers/mmc/host/tifm_sd.c
-> index b5a2f2f25ad9..c6285c577db0 100644
-> --- a/drivers/mmc/host/tifm_sd.c
-> +++ b/drivers/mmc/host/tifm_sd.c
-> @@ -13,6 +13,7 @@
->  #include <linux/highmem.h>
->  #include <linux/scatterlist.h>
->  #include <linux/module.h>
-> +#include <linux/workqueue.h>
->  #include <asm/io.h>
->
->  #define DRIVER_NAME "tifm_sd"
-> @@ -97,7 +98,7 @@ struct tifm_sd {
->         unsigned int          clk_div;
->         unsigned long         timeout_jiffies;
->
-> -       struct tasklet_struct finish_tasklet;
-> +       struct work_struct finish_work;
->         struct timer_list     timer;
->         struct mmc_request    *req;
->
-> @@ -463,7 +464,7 @@ static void tifm_sd_check_status(struct tifm_sd *host)
->                 }
->         }
->  finish_request:
-> -       tasklet_schedule(&host->finish_tasklet);
-> +       queue_work(system_bh_wq, &host->finish_work);
->  }
->
->  /* Called from interrupt handler */
-> @@ -723,9 +724,9 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
->         mmc_request_done(mmc, mrq);
->  }
->
-> -static void tifm_sd_end_cmd(struct tasklet_struct *t)
-> +static void tifm_sd_end_cmd(struct work_struct *t)
->  {
-> -       struct tifm_sd *host = from_tasklet(host, t, finish_tasklet);
-> +       struct tifm_sd *host = from_work(host, t, finish_work);
->         struct tifm_dev *sock = host->dev;
->         struct mmc_host *mmc = tifm_get_drvdata(sock);
->         struct mmc_request *mrq;
-> @@ -960,7 +961,7 @@ static int tifm_sd_probe(struct tifm_dev *sock)
->          */
->         mmc->max_busy_timeout = TIFM_MMCSD_REQ_TIMEOUT_MS;
->
-> -       tasklet_setup(&host->finish_tasklet, tifm_sd_end_cmd);
-> +       INIT_WORK(&host->finish_work, tifm_sd_end_cmd);
->         timer_setup(&host->timer, tifm_sd_abort, 0);
->
->         mmc->ops = &tifm_sd_ops;
-> @@ -999,7 +1000,7 @@ static void tifm_sd_remove(struct tifm_dev *sock)
->         writel(0, sock->addr + SOCK_MMCSD_INT_ENABLE);
->         spin_unlock_irqrestore(&sock->lock, flags);
->
-> -       tasklet_kill(&host->finish_tasklet);
-> +       cancel_work_sync(&host->finish_work);
->
->         spin_lock_irqsave(&sock->lock, flags);
->         if (host->req) {
-> @@ -1009,7 +1010,7 @@ static void tifm_sd_remove(struct tifm_dev *sock)
->                 host->req->cmd->error = -ENOMEDIUM;
->                 if (host->req->stop)
->                         host->req->stop->error = -ENOMEDIUM;
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->         }
->         spin_unlock_irqrestore(&sock->lock, flags);
->         mmc_remove_host(mmc);
-> diff --git a/drivers/mmc/host/tmio_mmc.h b/drivers/mmc/host/tmio_mmc.h
-> index de56e6534aea..bee13acaa80f 100644
-> --- a/drivers/mmc/host/tmio_mmc.h
-> +++ b/drivers/mmc/host/tmio_mmc.h
-> @@ -21,6 +21,7 @@
->  #include <linux/scatterlist.h>
->  #include <linux/spinlock.h>
->  #include <linux/interrupt.h>
-> +#include <linux/workqueue.h>
->
->  #define CTL_SD_CMD 0x00
->  #define CTL_ARG_REG 0x04
-> @@ -156,7 +157,7 @@ struct tmio_mmc_host {
->         bool                    dma_on;
->         struct dma_chan         *chan_rx;
->         struct dma_chan         *chan_tx;
-> -       struct tasklet_struct   dma_issue;
-> +       struct work_struct      dma_issue;
->         struct scatterlist      bounce_sg;
->         u8                      *bounce_buf;
->
-> diff --git a/drivers/mmc/host/tmio_mmc_core.c b/drivers/mmc/host/tmio_mmc_core.c
-> index 93e912afd3ae..51bd2365795b 100644
-> --- a/drivers/mmc/host/tmio_mmc_core.c
-> +++ b/drivers/mmc/host/tmio_mmc_core.c
-> @@ -608,7 +608,7 @@ static void tmio_mmc_cmd_irq(struct tmio_mmc_host *host, unsigned int stat)
->                         } else {
->                                 tmio_mmc_disable_mmc_irqs(host,
->                                                           TMIO_MASK_READOP);
-> -                               tasklet_schedule(&host->dma_issue);
-> +                               queue_work(system_bh_wq, &host->dma_issue);
->                         }
->                 } else {
->                         if (!host->dma_on) {
-> @@ -616,7 +616,7 @@ static void tmio_mmc_cmd_irq(struct tmio_mmc_host *host, unsigned int stat)
->                         } else {
->                                 tmio_mmc_disable_mmc_irqs(host,
->                                                           TMIO_MASK_WRITEOP);
-> -                               tasklet_schedule(&host->dma_issue);
-> +                               queue_work(system_bh_wq, &host->dma_issue);
->                         }
->                 }
->         } else {
-> diff --git a/drivers/mmc/host/uniphier-sd.c b/drivers/mmc/host/uniphier-sd.c
-> index 1404989e6151..d1964111c393 100644
-> --- a/drivers/mmc/host/uniphier-sd.c
-> +++ b/drivers/mmc/host/uniphier-sd.c
-> @@ -17,6 +17,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/reset.h>
-> +#include <linux/workqueue.h>
->
->  #include "tmio_mmc.h"
->
-> @@ -90,9 +91,9 @@ static void uniphier_sd_dma_endisable(struct tmio_mmc_host *host, int enable)
->  }
->
->  /* external DMA engine */
-> -static void uniphier_sd_external_dma_issue(struct tasklet_struct *t)
-> +static void uniphier_sd_external_dma_issue(struct work_struct *t)
->  {
-> -       struct tmio_mmc_host *host = from_tasklet(host, t, dma_issue);
-> +       struct tmio_mmc_host *host = from_work(host, t, dma_issue);
->         struct uniphier_sd_priv *priv = uniphier_sd_priv(host);
->
->         uniphier_sd_dma_endisable(host, 1);
-> @@ -199,7 +200,7 @@ static void uniphier_sd_external_dma_request(struct tmio_mmc_host *host,
->         host->chan_rx = chan;
->         host->chan_tx = chan;
->
-> -       tasklet_setup(&host->dma_issue, uniphier_sd_external_dma_issue);
-> +       INIT_WORK(&host->dma_issue, uniphier_sd_external_dma_issue);
->  }
->
->  static void uniphier_sd_external_dma_release(struct tmio_mmc_host *host)
-> @@ -236,9 +237,9 @@ static const struct tmio_mmc_dma_ops uniphier_sd_external_dma_ops = {
->         .dataend = uniphier_sd_external_dma_dataend,
->  };
->
-> -static void uniphier_sd_internal_dma_issue(struct tasklet_struct *t)
-> +static void uniphier_sd_internal_dma_issue(struct work_struct *t)
->  {
-> -       struct tmio_mmc_host *host = from_tasklet(host, t, dma_issue);
-> +       struct tmio_mmc_host *host = from_work(host, t, dma_issue);
->         unsigned long flags;
->
->         spin_lock_irqsave(&host->lock, flags);
-> @@ -317,7 +318,7 @@ static void uniphier_sd_internal_dma_request(struct tmio_mmc_host *host,
->
->         host->chan_tx = (void *)0xdeadbeaf;
->
-> -       tasklet_setup(&host->dma_issue, uniphier_sd_internal_dma_issue);
-> +       INIT_WORK(&host->dma_issue, uniphier_sd_internal_dma_issue);
->  }
->
->  static void uniphier_sd_internal_dma_release(struct tmio_mmc_host *host)
-> diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-> index ba6044b16e07..2777b773086b 100644
-> --- a/drivers/mmc/host/via-sdmmc.c
-> +++ b/drivers/mmc/host/via-sdmmc.c
-> @@ -12,6 +12,7 @@
->  #include <linux/interrupt.h>
->
->  #include <linux/mmc/host.h>
-> +#include <linux/workqueue.h>
->
->  #define DRV_NAME       "via_sdmmc"
->
-> @@ -307,7 +308,7 @@ struct via_crdr_mmc_host {
->         struct sdhcreg pm_sdhc_reg;
->
->         struct work_struct carddet_work;
-> -       struct tasklet_struct finish_tasklet;
-> +       struct work_struct finish_work;
->
->         struct timer_list timer;
->         spinlock_t lock;
-> @@ -643,7 +644,7 @@ static void via_sdc_finish_data(struct via_crdr_mmc_host *host)
->         if (data->stop)
->                 via_sdc_send_command(host, data->stop);
->         else
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->  }
->
->  static void via_sdc_finish_command(struct via_crdr_mmc_host *host)
-> @@ -653,7 +654,7 @@ static void via_sdc_finish_command(struct via_crdr_mmc_host *host)
->         host->cmd->error = 0;
->
->         if (!host->cmd->data)
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->
->         host->cmd = NULL;
->  }
-> @@ -682,7 +683,7 @@ static void via_sdc_request(struct mmc_host *mmc, struct mmc_request *mrq)
->         status = readw(host->sdhc_mmiobase + VIA_CRDR_SDSTATUS);
->         if (!(status & VIA_CRDR_SDSTS_SLOTG) || host->reject) {
->                 host->mrq->cmd->error = -ENOMEDIUM;
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->         } else {
->                 via_sdc_send_command(host, mrq->cmd);
->         }
-> @@ -848,7 +849,7 @@ static void via_sdc_cmd_isr(struct via_crdr_mmc_host *host, u16 intmask)
->                 host->cmd->error = -EILSEQ;
->
->         if (host->cmd->error)
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->         else if (intmask & VIA_CRDR_SDSTS_CRD)
->                 via_sdc_finish_command(host);
->  }
-> @@ -955,16 +956,16 @@ static void via_sdc_timeout(struct timer_list *t)
->                                 sdhost->cmd->error = -ETIMEDOUT;
->                         else
->                                 sdhost->mrq->cmd->error = -ETIMEDOUT;
-> -                       tasklet_schedule(&sdhost->finish_tasklet);
-> +                       queue_work(system_bh_wq, &sdhost->finish_work);
->                 }
->         }
->
->         spin_unlock_irqrestore(&sdhost->lock, flags);
->  }
->
-> -static void via_sdc_tasklet_finish(struct tasklet_struct *t)
-> +static void via_sdc_work_finish(struct work_struct *t)
->  {
-> -       struct via_crdr_mmc_host *host = from_tasklet(host, t, finish_tasklet);
-> +       struct via_crdr_mmc_host *host = from_work(host, t, finish_work);
->         unsigned long flags;
->         struct mmc_request *mrq;
->
-> @@ -1005,7 +1006,7 @@ static void via_sdc_card_detect(struct work_struct *work)
->                         pr_err("%s: Card removed during transfer!\n",
->                                mmc_hostname(host->mmc));
->                         host->mrq->cmd->error = -ENOMEDIUM;
-> -                       tasklet_schedule(&host->finish_tasklet);
-> +                       queue_work(system_bh_wq, &host->finish_work);
->                 }
->
->                 spin_unlock_irqrestore(&host->lock, flags);
-> @@ -1051,7 +1052,7 @@ static void via_init_mmc_host(struct via_crdr_mmc_host *host)
->
->         INIT_WORK(&host->carddet_work, via_sdc_card_detect);
->
-> -       tasklet_setup(&host->finish_tasklet, via_sdc_tasklet_finish);
-> +       INIT_WORK(&host->finish_work, via_sdc_work_finish);
->
->         addrbase = host->sdhc_mmiobase;
->         writel(0x0, addrbase + VIA_CRDR_SDINTMASK);
-> @@ -1193,7 +1194,7 @@ static void via_sd_remove(struct pci_dev *pcidev)
->                 sdhost->mrq->cmd->error = -ENOMEDIUM;
->                 if (sdhost->mrq->stop)
->                         sdhost->mrq->stop->error = -ENOMEDIUM;
-> -               tasklet_schedule(&sdhost->finish_tasklet);
-> +               queue_work(system_bh_wq, &sdhost->finish_work);
->         }
->         spin_unlock_irqrestore(&sdhost->lock, flags);
->
-> @@ -1203,7 +1204,7 @@ static void via_sd_remove(struct pci_dev *pcidev)
->
->         del_timer_sync(&sdhost->timer);
->
-> -       tasklet_kill(&sdhost->finish_tasklet);
-> +       cancel_work_sync(&sdhost->finish_work);
->
->         /* switch off power */
->         gatt = readb(sdhost->pcictrl_mmiobase + VIA_CRDR_PCICLKGATT);
-> diff --git a/drivers/mmc/host/wbsd.c b/drivers/mmc/host/wbsd.c
-> index f0562f712d98..984e380abc71 100644
-> --- a/drivers/mmc/host/wbsd.c
-> +++ b/drivers/mmc/host/wbsd.c
-> @@ -32,6 +32,7 @@
->  #include <linux/mmc/sd.h>
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
-> +#include <linux/workqueue.h>
->
->  #include <asm/io.h>
->  #include <asm/dma.h>
-> @@ -459,7 +460,7 @@ static void wbsd_empty_fifo(struct wbsd_host *host)
->          * FIFO threshold interrupts properly.
->          */
->         if ((data->blocks * data->blksz - data->bytes_xfered) < 16)
-> -               tasklet_schedule(&host->fifo_tasklet);
-> +               queue_work(system_bh_wq, &host->fifo_work);
->  }
->
->  static void wbsd_fill_fifo(struct wbsd_host *host)
-> @@ -524,7 +525,7 @@ static void wbsd_fill_fifo(struct wbsd_host *host)
->          * 'FIFO empty' under certain conditions. So we
->          * need to be a bit more pro-active.
->          */
-> -       tasklet_schedule(&host->fifo_tasklet);
-> +       queue_work(system_bh_wq, &host->fifo_work);
->  }
->
->  static void wbsd_prepare_data(struct wbsd_host *host, struct mmc_data *data)
-> @@ -746,7 +747,7 @@ static void wbsd_request(struct mmc_host *mmc, struct mmc_request *mrq)
->         struct mmc_command *cmd;
->
->         /*
-> -        * Disable tasklets to avoid a deadlock.
-> +        * Disable works to avoid a deadlock.
->          */
->         spin_lock_bh(&host->lock);
->
-> @@ -821,7 +822,7 @@ static void wbsd_request(struct mmc_host *mmc, struct mmc_request *mrq)
->                  * Dirty fix for hardware bug.
->                  */
->                 if (host->dma == -1)
-> -                       tasklet_schedule(&host->fifo_tasklet);
-> +                       queue_work(system_bh_wq, &host->fifo_work);
->
->                 spin_unlock_bh(&host->lock);
->
-> @@ -961,13 +962,13 @@ static void wbsd_reset_ignore(struct timer_list *t)
->          * Card status might have changed during the
->          * blackout.
->          */
-> -       tasklet_schedule(&host->card_tasklet);
-> +       queue_work(system_bh_wq, &host->card_work);
->
->         spin_unlock_bh(&host->lock);
->  }
->
->  /*
-> - * Tasklets
-> + * Works
->   */
->
->  static inline struct mmc_data *wbsd_get_data(struct wbsd_host *host)
-> @@ -987,9 +988,9 @@ static inline struct mmc_data *wbsd_get_data(struct wbsd_host *host)
->         return host->mrq->cmd->data;
->  }
->
-> -static void wbsd_tasklet_card(struct tasklet_struct *t)
-> +static void wbsd_work_card(struct work_struct *t)
->  {
-> -       struct wbsd_host *host = from_tasklet(host, t, card_tasklet);
-> +       struct wbsd_host *host = from_work(host, t, card_work);
->         u8 csr;
->         int delay = -1;
->
-> @@ -1020,7 +1021,7 @@ static void wbsd_tasklet_card(struct tasklet_struct *t)
->                         wbsd_reset(host);
->
->                         host->mrq->cmd->error = -ENOMEDIUM;
-> -                       tasklet_schedule(&host->finish_tasklet);
-> +                       queue_work(system_bh_wq, &host->finish_work);
->                 }
->
->                 delay = 0;
-> @@ -1036,9 +1037,9 @@ static void wbsd_tasklet_card(struct tasklet_struct *t)
->                 mmc_detect_change(host->mmc, msecs_to_jiffies(delay));
->  }
->
-> -static void wbsd_tasklet_fifo(struct tasklet_struct *t)
-> +static void wbsd_work_fifo(struct work_struct *t)
->  {
-> -       struct wbsd_host *host = from_tasklet(host, t, fifo_tasklet);
-> +       struct wbsd_host *host = from_work(host, t, fifo_work);
->         struct mmc_data *data;
->
->         spin_lock(&host->lock);
-> @@ -1060,16 +1061,16 @@ static void wbsd_tasklet_fifo(struct tasklet_struct *t)
->          */
->         if (host->num_sg == 0) {
->                 wbsd_write_index(host, WBSD_IDX_FIFOEN, 0);
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->         }
->
->  end:
->         spin_unlock(&host->lock);
->  }
->
-> -static void wbsd_tasklet_crc(struct tasklet_struct *t)
-> +static void wbsd_work_crc(struct work_struct *t)
->  {
-> -       struct wbsd_host *host = from_tasklet(host, t, crc_tasklet);
-> +       struct wbsd_host *host = from_work(host, t, crc_work);
->         struct mmc_data *data;
->
->         spin_lock(&host->lock);
-> @@ -1085,15 +1086,15 @@ static void wbsd_tasklet_crc(struct tasklet_struct *t)
->
->         data->error = -EILSEQ;
->
-> -       tasklet_schedule(&host->finish_tasklet);
-> +       queue_work(system_bh_wq, &host->finish_work);
->
->  end:
->         spin_unlock(&host->lock);
->  }
->
-> -static void wbsd_tasklet_timeout(struct tasklet_struct *t)
-> +static void wbsd_work_timeout(struct work_struct *t)
->  {
-> -       struct wbsd_host *host = from_tasklet(host, t, timeout_tasklet);
-> +       struct wbsd_host *host = from_work(host, t, timeout_work);
->         struct mmc_data *data;
->
->         spin_lock(&host->lock);
-> @@ -1109,15 +1110,15 @@ static void wbsd_tasklet_timeout(struct tasklet_struct *t)
->
->         data->error = -ETIMEDOUT;
->
-> -       tasklet_schedule(&host->finish_tasklet);
-> +       queue_work(system_bh_wq, &host->finish_work);
->
->  end:
->         spin_unlock(&host->lock);
->  }
->
-> -static void wbsd_tasklet_finish(struct tasklet_struct *t)
-> +static void wbsd_work_finish(struct work_struct *t)
->  {
-> -       struct wbsd_host *host = from_tasklet(host, t, finish_tasklet);
-> +       struct wbsd_host *host = from_work(host, t, finish_work);
->         struct mmc_data *data;
->
->         spin_lock(&host->lock);
-> @@ -1156,18 +1157,18 @@ static irqreturn_t wbsd_irq(int irq, void *dev_id)
->         host->isr |= isr;
->
->         /*
-> -        * Schedule tasklets as needed.
-> +        * Schedule works as needed.
->          */
->         if (isr & WBSD_INT_CARD)
-> -               tasklet_schedule(&host->card_tasklet);
-> +               queue_work(system_bh_wq, &host->card_work);
->         if (isr & WBSD_INT_FIFO_THRE)
-> -               tasklet_schedule(&host->fifo_tasklet);
-> +               queue_work(system_bh_wq, &host->fifo_work);
->         if (isr & WBSD_INT_CRC)
-> -               tasklet_hi_schedule(&host->crc_tasklet);
-> +               queue_work(system_bh_highpri_wq, &host->crc_work);
->         if (isr & WBSD_INT_TIMEOUT)
-> -               tasklet_hi_schedule(&host->timeout_tasklet);
-> +               queue_work(system_bh_highpri_wq, &host->timeout_work);
->         if (isr & WBSD_INT_TC)
-> -               tasklet_schedule(&host->finish_tasklet);
-> +               queue_work(system_bh_wq, &host->finish_work);
->
->         return IRQ_HANDLED;
->  }
-> @@ -1443,13 +1444,13 @@ static int wbsd_request_irq(struct wbsd_host *host, int irq)
->         int ret;
->
->         /*
-> -        * Set up tasklets. Must be done before requesting interrupt.
-> +        * Set up works. Must be done before requesting interrupt.
->          */
-> -       tasklet_setup(&host->card_tasklet, wbsd_tasklet_card);
-> -       tasklet_setup(&host->fifo_tasklet, wbsd_tasklet_fifo);
-> -       tasklet_setup(&host->crc_tasklet, wbsd_tasklet_crc);
-> -       tasklet_setup(&host->timeout_tasklet, wbsd_tasklet_timeout);
-> -       tasklet_setup(&host->finish_tasklet, wbsd_tasklet_finish);
-> +       INIT_WORK(&host->card_work, wbsd_work_card);
-> +       INIT_WORK(&host->fifo_work, wbsd_work_fifo);
-> +       INIT_WORK(&host->crc_work, wbsd_work_crc);
-> +       INIT_WORK(&host->timeout_work, wbsd_work_timeout);
-> +       INIT_WORK(&host->finish_work, wbsd_work_finish);
->
->         /*
->          * Allocate interrupt.
-> @@ -1472,11 +1473,11 @@ static void  wbsd_release_irq(struct wbsd_host *host)
->
->         host->irq = 0;
->
-> -       tasklet_kill(&host->card_tasklet);
-> -       tasklet_kill(&host->fifo_tasklet);
-> -       tasklet_kill(&host->crc_tasklet);
-> -       tasklet_kill(&host->timeout_tasklet);
-> -       tasklet_kill(&host->finish_tasklet);
-> +       cancel_work_sync(&host->card_work);
-> +       cancel_work_sync(&host->fifo_work);
-> +       cancel_work_sync(&host->crc_work);
-> +       cancel_work_sync(&host->timeout_work);
-> +       cancel_work_sync(&host->finish_work);
->  }
->
->  /*
-> diff --git a/drivers/mmc/host/wbsd.h b/drivers/mmc/host/wbsd.h
-> index be30b4d8ce4c..942a64a724e4 100644
-> --- a/drivers/mmc/host/wbsd.h
-> +++ b/drivers/mmc/host/wbsd.h
-> @@ -171,11 +171,11 @@ struct wbsd_host
->         int                     irq;            /* Interrupt */
->         int                     dma;            /* DMA channel */
->
-> -       struct tasklet_struct   card_tasklet;   /* Tasklet structures */
-> -       struct tasklet_struct   fifo_tasklet;
-> -       struct tasklet_struct   crc_tasklet;
-> -       struct tasklet_struct   timeout_tasklet;
-> -       struct tasklet_struct   finish_tasklet;
-> +       struct work_struct      card_work;      /* Work structures */
-> +       struct work_struct      fifo_work;
-> +       struct work_struct      crc_work;
-> +       struct work_struct      timeout_work;
-> +       struct work_struct      finish_work;
->
->         struct timer_list       ignore_timer;   /* Ignore detection timer */
->  };
-> --
-> 2.17.1
->
+DQo+IC0tLSAvZGV2L251bGwNCj4gKysrIGIvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvZXBjX2Nn
+cm91cC5jDQo+IEBAIC0wLDAgKzEsNzQgQEANCj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVy
+OiBHUEwtMi4wDQo+ICsvLyBDb3B5cmlnaHQoYykgMjAyMiBJbnRlbCBDb3Jwb3JhdGlvbi4NCg0K
+SXQncyAyMDI0IG5vdy4NCg0KQW5kIGxvb2tzIHlvdSBuZWVkIHRvIHVzZSBDIHN0eWxlIGNvbW1l
+bnQgZm9yIC8qIENvcHlyaWdodCAuLi4gKi8sIGFmdGVyIGxvb2tpbmcNCmF0IHNvbWUgb3RoZXIg
+QyBmaWxlcy4NCg0KPiArDQo+ICsjaW5jbHVkZSA8bGludXgvYXRvbWljLmg+DQo+ICsjaW5jbHVk
+ZSA8bGludXgva2VybmVsLmg+DQo+ICsjaW5jbHVkZSAiZXBjX2Nncm91cC5oIg0KPiArDQo+ICsv
+KiBUaGUgcm9vdCBTR1ggRVBDIGNncm91cCAqLw0KPiArc3RhdGljIHN0cnVjdCBzZ3hfY2dyb3Vw
+IHNneF9jZ19yb290Ow0KPiArDQo+ICsvKioNCj4gKyAqIHNneF9jZ3JvdXBfdHJ5X2NoYXJnZSgp
+IC0gdHJ5IHRvIGNoYXJnZSBjZ3JvdXAgZm9yIGEgc2luZ2xlIEVQQyBwYWdlDQo+ICsgKg0KPiAr
+ICogQHNneF9jZzoJVGhlIEVQQyBjZ3JvdXAgdG8gYmUgY2hhcmdlZCBmb3IgdGhlIHBhZ2UuDQo+
+ICsgKiBSZXR1cm46DQo+ICsgKiAqICUwIC0gSWYgc3VjY2Vzc2Z1bGx5IGNoYXJnZWQuDQo+ICsg
+KiAqIC1lcnJubyAtIGZvciBmYWlsdXJlcy4NCj4gKyAqLw0KPiAraW50IHNneF9jZ3JvdXBfdHJ5
+X2NoYXJnZShzdHJ1Y3Qgc2d4X2Nncm91cCAqc2d4X2NnKQ0KPiArew0KPiArCXJldHVybiBtaXNj
+X2NnX3RyeV9jaGFyZ2UoTUlTQ19DR19SRVNfU0dYX0VQQywgc2d4X2NnLT5jZywgUEFHRV9TSVpF
+KTsNCj4gK30NCj4gKw0KPiArLyoqDQo+ICsgKiBzZ3hfY2dyb3VwX3VuY2hhcmdlKCkgLSB1bmNo
+YXJnZSBhIGNncm91cCBmb3IgYW4gRVBDIHBhZ2UNCj4gKyAqIEBzZ3hfY2c6CVRoZSBjaGFyZ2Vk
+IHNneCBjZ3JvdXANCj4gKyAqLw0KPiArdm9pZCBzZ3hfY2dyb3VwX3VuY2hhcmdlKHN0cnVjdCBz
+Z3hfY2dyb3VwICpzZ3hfY2cpDQo+ICt7DQo+ICsJbWlzY19jZ191bmNoYXJnZShNSVNDX0NHX1JF
+U19TR1hfRVBDLCBzZ3hfY2ctPmNnLCBQQUdFX1NJWkUpOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMg
+dm9pZCBzZ3hfY2dyb3VwX2ZyZWUoc3RydWN0IG1pc2NfY2cgKmNnKQ0KPiArew0KPiArCXN0cnVj
+dCBzZ3hfY2dyb3VwICpzZ3hfY2c7DQo+ICsNCj4gKwlzZ3hfY2cgPSBzZ3hfY2dyb3VwX2Zyb21f
+bWlzY19jZyhjZyk7DQo+ICsJaWYgKCFzZ3hfY2cpDQo+ICsJCXJldHVybjsNCj4gKw0KPiArCWtm
+cmVlKHNneF9jZyk7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBpbnQgc2d4X2Nncm91cF9hbGxvYyhz
+dHJ1Y3QgbWlzY19jZyAqY2cpOw0KDQpBZ2FpbiwgdGhpcyBkZWNsYXJhdGlvbiBjYW4gYmUgcmVt
+b3ZlZCBpZiB5b3UgbW92ZSB0aGUgYmVsb3cgc3RydWN0dXJlIC4uLg0KDQo+ICsNCj4gK2NvbnN0
+IHN0cnVjdCBtaXNjX3Jlc19vcHMgc2d4X2Nncm91cF9vcHMgPSB7DQo+ICsJLmFsbG9jID0gc2d4
+X2Nncm91cF9hbGxvYywNCj4gKwkuZnJlZSA9IHNneF9jZ3JvdXBfZnJlZSwNCj4gK307DQo+ICsN
+Cj4gK3N0YXRpYyB2b2lkIHNneF9jZ3JvdXBfbWlzY19pbml0KHN0cnVjdCBtaXNjX2NnICpjZywg
+c3RydWN0IHNneF9jZ3JvdXAgKnNneF9jZykNCj4gK3sNCj4gKwljZy0+cmVzW01JU0NfQ0dfUkVT
+X1NHWF9FUENdLnByaXYgPSBzZ3hfY2c7DQo+ICsJc2d4X2NnLT5jZyA9IGNnOw0KPiArfQ0KPiAr
+DQo+ICtzdGF0aWMgaW50IHNneF9jZ3JvdXBfYWxsb2Moc3RydWN0IG1pc2NfY2cgKmNnKQ0KPiAr
+ew0KPiArCXN0cnVjdCBzZ3hfY2dyb3VwICpzZ3hfY2c7DQo+ICsNCj4gKwlzZ3hfY2cgPSBremFs
+bG9jKHNpemVvZigqc2d4X2NnKSwgR0ZQX0tFUk5FTCk7DQo+ICsJaWYgKCFzZ3hfY2cpDQo+ICsJ
+CXJldHVybiAtRU5PTUVNOw0KPiArDQo+ICsJc2d4X2Nncm91cF9taXNjX2luaXQoY2csIHNneF9j
+Zyk7DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCg0KLi4uIGhlcmUuDQoNCj4gKw0KPiArdm9p
+ZCBzZ3hfY2dyb3VwX2luaXQodm9pZCkNCj4gK3sNCj4gKwltaXNjX2NnX3NldF9vcHMoTUlTQ19D
+R19SRVNfU0dYX0VQQywgJnNneF9jZ3JvdXBfb3BzKTsNCj4gKwlzZ3hfY2dyb3VwX21pc2NfaW5p
+dChtaXNjX2NnX3Jvb3QoKSwgJnNneF9jZ19yb290KTsNCj4gK30NCj4gZGlmZiAtLWdpdCBhL2Fy
+Y2gveDg2L2tlcm5lbC9jcHUvc2d4L2VwY19jZ3JvdXAuaCBiL2FyY2gveDg2L2tlcm5lbC9jcHUv
+c2d4L2VwY19jZ3JvdXAuaA0KPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAw
+MDAwMDAuLjhmNzk0ZTIzZmFkNg0KPiAtLS0gL2Rldi9udWxsDQo+ICsrKyBiL2FyY2gveDg2L2tl
+cm5lbC9jcHUvc2d4L2VwY19jZ3JvdXAuaA0KPiBAQCAtMCwwICsxLDcwIEBADQo+ICsvKiBTUERY
+LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLw0KPiArLyogQ29weXJpZ2h0KGMpIDIwMjIg
+SW50ZWwgQ29ycG9yYXRpb24uICovDQo+ICsjaWZuZGVmIF9TR1hfRVBDX0NHUk9VUF9IXw0KPiAr
+I2RlZmluZSBfU0dYX0VQQ19DR1JPVVBfSF8NCj4gKw0KPiArI2luY2x1ZGUgPGFzbS9zZ3guaD4N
+Cj4gKyNpbmNsdWRlIDxsaW51eC9jZ3JvdXAuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9taXNjX2Nn
+cm91cC5oPg0KPiArDQo+ICsjaW5jbHVkZSAic2d4LmgiDQo+ICsNCj4gKyNpZm5kZWYgQ09ORklH
+X0NHUk9VUF9TR1hfRVBDDQoNCk5pdDogYWRkIGFuIGVtcHR5IGxpbmUgdG8gbWFrZSB0ZXh0IG1v
+cmUgYnJlYXRoYWJsZS4NCg0KPiArI2RlZmluZSBNSVNDX0NHX1JFU19TR1hfRVBDIE1JU0NfQ0df
+UkVTX1RZUEVTDQo+ICtzdHJ1Y3Qgc2d4X2Nncm91cDsNCj4gKw0KPiArc3RhdGljIGlubGluZSBz
+dHJ1Y3Qgc2d4X2Nncm91cCAqc2d4X2dldF9jdXJyZW50X2NnKHZvaWQpDQo+ICt7DQo+ICsJcmV0
+dXJuIE5VTEw7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBzZ3hfcHV0X2NnKHN0
+cnVjdCBzZ3hfY2dyb3VwICpzZ3hfY2cpIHsgfQ0KPiArDQo+ICtzdGF0aWMgaW5saW5lIGludCBz
+Z3hfY2dyb3VwX3RyeV9jaGFyZ2Uoc3RydWN0IHNneF9jZ3JvdXAgKnNneF9jZykNCj4gK3sNCj4g
+KwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGlubGluZSB2b2lkIHNneF9jZ3JvdXBf
+dW5jaGFyZ2Uoc3RydWN0IHNneF9jZ3JvdXAgKnNneF9jZykgeyB9DQo+ICsNCj4gK3N0YXRpYyBp
+bmxpbmUgdm9pZCBzZ3hfY2dyb3VwX2luaXQodm9pZCkgeyB9DQo+ICsjZWxzZQ0KDQpOaXQ6IEkg
+cHJlZmVyIHR3byBlbXB0eSBsaW5lcyBiZWZvcmUgYW5kIGFmdGVyIHRoZSAnZWxzZScuDQoNCj4g
+K3N0cnVjdCBzZ3hfY2dyb3VwIHsNCj4gKwlzdHJ1Y3QgbWlzY19jZyAqY2c7DQo+ICt9Ow0KPiAr
+DQo+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCBzZ3hfY2dyb3VwICpzZ3hfY2dyb3VwX2Zyb21fbWlz
+Y19jZyhzdHJ1Y3QgbWlzY19jZyAqY2cpDQo+ICt7DQo+ICsJcmV0dXJuIChzdHJ1Y3Qgc2d4X2Nn
+cm91cCAqKShjZy0+cmVzW01JU0NfQ0dfUkVTX1NHWF9FUENdLnByaXYpOw0KPiArfQ0KPiArDQo+
+ICsvKioNCj4gKyAqIHNneF9nZXRfY3VycmVudF9jZygpIC0gZ2V0IHRoZSBFUEMgY2dyb3VwIG9m
+IGN1cnJlbnQgcHJvY2Vzcy4NCj4gKyAqDQo+ICsgKiBSZXR1cm5lZCBjZ3JvdXAgaGFzIGl0cyBy
+ZWYgY291bnQgaW5jcmVhc2VkIGJ5IDEuIENhbGxlciBtdXN0IGNhbGwNCj4gKyAqIHNneF9wdXRf
+Y2coKSB0byByZXR1cm4gdGhlIHJlZmVyZW5jZS4NCj4gKyAqDQo+ICsgKiBSZXR1cm46IEVQQyBj
+Z3JvdXAgdG8gd2hpY2ggdGhlIGN1cnJlbnQgdGFzayBiZWxvbmdzIHRvLg0KPiArICovDQo+ICtz
+dGF0aWMgaW5saW5lIHN0cnVjdCBzZ3hfY2dyb3VwICpzZ3hfZ2V0X2N1cnJlbnRfY2codm9pZCkN
+Cj4gK3sNCj4gKwlyZXR1cm4gc2d4X2Nncm91cF9mcm9tX21pc2NfY2coZ2V0X2N1cnJlbnRfbWlz
+Y19jZygpKTsNCj4gK30NCg0KQWdhaW4sIEkgX3RoaW5rXyB5b3UgbmVlZCB0byBjaGVjayB3aGV0
+aGVyIGdldF9jdXJyZW50X21pc2NfY2coKSByZXR1cm5zIE5VTEw/DQoNCk1pc2MgY2dyb3VwIGNh
+biBiZSBkaXNhYmxlZCBieSBjb21tYW5kIGxpbmUgZXZlbiBpdCBpcyBvbiBpbiB0aGUgS2NvbmZp
+Zy4NCg0KSSBhbSBub3QgZXhwZXJ0IG9uIGNncm91cCwgc28gY291bGQgeW91IGNoZWNrIG9uIHRo
+aXM/DQoNCj4gKw0KPiArLyoqDQo+ICsgKiBzZ3hfcHV0X3NneF9jZygpIC0gUHV0IHRoZSBFUEMg
+Y2dyb3VwIGFuZCByZWR1Y2UgaXRzIHJlZiBjb3VudC4NCj4gKyAqIEBzZ3hfY2cgLSBFUEMgY2dy
+b3VwIHRvIHB1dC4NCj4gKyAqLw0KPiArc3RhdGljIGlubGluZSB2b2lkIHNneF9wdXRfY2coc3Ry
+dWN0IHNneF9jZ3JvdXAgKnNneF9jZykNCj4gK3sNCj4gKwlpZiAoc2d4X2NnKQ0KPiArCQlwdXRf
+bWlzY19jZyhzZ3hfY2ctPmNnKTsNCj4gK30NCj4gKw0KPiAraW50IHNneF9jZ3JvdXBfdHJ5X2No
+YXJnZShzdHJ1Y3Qgc2d4X2Nncm91cCAqc2d4X2NnKTsNCj4gK3ZvaWQgc2d4X2Nncm91cF91bmNo
+YXJnZShzdHJ1Y3Qgc2d4X2Nncm91cCAqc2d4X2NnKTsNCj4gK3ZvaWQgc2d4X2Nncm91cF9pbml0
+KHZvaWQpOw0KPiArDQo+ICsjZW5kaWYNCj4gKw0KPiArI2VuZGlmIC8qIF9TR1hfRVBDX0NHUk9V
+UF9IXyAqLw0KPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvbWFpbi5jIGIv
+YXJjaC94ODYva2VybmVsL2NwdS9zZ3gvbWFpbi5jDQo+IGluZGV4IGQyMTlmMTQzNjVkNC4uMDIz
+YWY1NGMxYmViIDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9rZXJuZWwvY3B1L3NneC9tYWluLmMN
+Cj4gKysrIGIvYXJjaC94ODYva2VybmVsL2NwdS9zZ3gvbWFpbi5jDQo+IEBAIC02LDYgKzYsNyBA
+QA0KPiAgI2luY2x1ZGUgPGxpbnV4L2hpZ2htZW0uaD4NCj4gICNpbmNsdWRlIDxsaW51eC9rdGhy
+ZWFkLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvbWlzY2RldmljZS5oPg0KPiArI2luY2x1ZGUgPGxp
+bnV4L21pc2NfY2dyb3VwLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvbm9kZS5oPg0KPiAgI2luY2x1
+ZGUgPGxpbnV4L3BhZ2VtYXAuaD4NCj4gICNpbmNsdWRlIDxsaW51eC9yYXRlbGltaXQuaD4NCj4g
+QEAgLTE3LDYgKzE4LDcgQEANCj4gICNpbmNsdWRlICJkcml2ZXIuaCINCj4gICNpbmNsdWRlICJl
+bmNsLmgiDQo+ICAjaW5jbHVkZSAiZW5jbHMuaCINCj4gKyNpbmNsdWRlICJlcGNfY2dyb3VwLmgi
+DQo+ICANCj4gIHN0cnVjdCBzZ3hfZXBjX3NlY3Rpb24gc2d4X2VwY19zZWN0aW9uc1tTR1hfTUFY
+X0VQQ19TRUNUSU9OU107DQo+ICBzdGF0aWMgaW50IHNneF9ucl9lcGNfc2VjdGlvbnM7DQo+IEBA
+IC01NTgsNyArNTYwLDE2IEBAIGludCBzZ3hfdW5tYXJrX3BhZ2VfcmVjbGFpbWFibGUoc3RydWN0
+IHNneF9lcGNfcGFnZSAqcGFnZSkNCj4gICAqLw0KPiAgc3RydWN0IHNneF9lcGNfcGFnZSAqc2d4
+X2FsbG9jX2VwY19wYWdlKHZvaWQgKm93bmVyLCBlbnVtIHNneF9yZWNsYWltIHJlY2xhaW0pDQo+
+ICB7DQo+ICsJc3RydWN0IHNneF9jZ3JvdXAgKnNneF9jZzsNCj4gIAlzdHJ1Y3Qgc2d4X2VwY19w
+YWdlICpwYWdlOw0KPiArCWludCByZXQ7DQo+ICsNCj4gKwlzZ3hfY2cgPSBzZ3hfZ2V0X2N1cnJl
+bnRfY2coKTsNCj4gKwlyZXQgPSBzZ3hfY2dyb3VwX3RyeV9jaGFyZ2Uoc2d4X2NnKTsNCj4gKwlp
+ZiAocmV0KSB7DQo+ICsJCXNneF9wdXRfY2coc2d4X2NnKTsNCj4gKwkJcmV0dXJuIEVSUl9QVFIo
+cmV0KTsNCj4gKwl9DQo+ICANCj4gIAlmb3IgKCA7IDsgKSB7DQo+ICAJCXBhZ2UgPSBfX3NneF9h
+bGxvY19lcGNfcGFnZSgpOw0KPiBAQCAtNTY3LDggKzU3OCwxMCBAQCBzdHJ1Y3Qgc2d4X2VwY19w
+YWdlICpzZ3hfYWxsb2NfZXBjX3BhZ2Uodm9pZCAqb3duZXIsIGVudW0gc2d4X3JlY2xhaW0gcmVj
+bGFpbSkNCj4gIAkJCWJyZWFrOw0KPiAgCQl9DQo+ICANCj4gLQkJaWYgKGxpc3RfZW1wdHkoJnNn
+eF9hY3RpdmVfcGFnZV9saXN0KSkNCj4gLQkJCXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOw0KPiAr
+CQlpZiAobGlzdF9lbXB0eSgmc2d4X2FjdGl2ZV9wYWdlX2xpc3QpKSB7DQo+ICsJCQlwYWdlID0g
+RVJSX1BUUigtRU5PTUVNKTsNCj4gKwkJCWJyZWFrOw0KPiArCQl9DQo+ICANCj4gIAkJaWYgKHJl
+Y2xhaW0gPT0gU0dYX05PX1JFQ0xBSU0pIHsNCj4gIAkJCXBhZ2UgPSBFUlJfUFRSKC1FQlVTWSk7
+DQo+IEBAIC01ODAsMTAgKzU5MywyNCBAQCBzdHJ1Y3Qgc2d4X2VwY19wYWdlICpzZ3hfYWxsb2Nf
+ZXBjX3BhZ2Uodm9pZCAqb3duZXIsIGVudW0gc2d4X3JlY2xhaW0gcmVjbGFpbSkNCj4gIAkJCWJy
+ZWFrOw0KPiAgCQl9DQo+ICANCj4gKwkJLyoNCj4gKwkJICogTmVlZCB0byBkbyBhIGdsb2JhbCBy
+ZWNsYW1hdGlvbiBpZiBjZ3JvdXAgd2FzIG5vdCBmdWxsIGJ1dCBmcmVlDQo+ICsJCSAqIHBoeXNp
+Y2FsIHBhZ2VzIHJ1biBvdXQsIGNhdXNpbmcgX19zZ3hfYWxsb2NfZXBjX3BhZ2UoKSB0byBmYWls
+Lg0KPiArCQkgKi8NCg0KQWdhaW4sIHRvIG1lIHRoaXMgY29tbWVudCBzaG91bGRuJ3QgYmUgaGVy
+ZSwgYmVjYXVzZSBpdCBkb2Vzbid0IGFkZCBhbnkgbW9yZQ0KaW5mb3JtYXRpb24uDQoNCklmIHlv
+dSBjYW4gcmVhY2ggaGVyZSwgeW91IGhhdmUgcGFzc2VkIHRoZSBjaGFyZ2UoKS4gIEluIGZhY3Qs
+IEkgYmVsaWV2ZSB0aGlzDQpkb2Vzbid0IG1hdHRlcjrCoA0KDQpXaGVuIHlvdSBmYWlsIHRvIGFs
+bG9jYXRlLCB5b3UganVzdCBuZWVkIHRvIHJlY2xhaW0uDQoNCk5vdyB5b3Ugb25seSBoYXZlIHRo
+ZSBnbG9iYWwgcmVjbGFtYXRpb24sIHRodXMgeW91IG5lZWQgdG8gcmVjbGFpbSBmcm9tIGl0Lg0K
+DQpQZXJoYXBzIGl0IGlzIHVzZWZ1bCB3aGVuIHlvdSBoYXZlIHBlci1jZ3JvdXAgTFJVIGxpc3Qu
+ICBJbiB0aGF0IGNhc2UgeW91IGNhbg0KcHV0IHRoaXMgY29tbWVudCB0aGVyZS4NCg0KPiAgCQlz
+Z3hfcmVjbGFpbV9wYWdlcygpOw0KPiAgCQljb25kX3Jlc2NoZWQoKTsNCj4gIAl9DQo+ICANCj4g
+KyNpZmRlZiBDT05GSUdfQ0dST1VQX1NHWF9FUEMNCj4gKwlpZiAoIUlTX0VSUihwYWdlKSkgew0K
+PiArCQlXQVJOX09OX09OQ0UocGFnZS0+c2d4X2NnKTsNCj4gKwkJLyogc2d4X3B1dF9jZygpIGlu
+IHNneF9mcmVlX2VwY19wYWdlKCkgKi8NCj4gKwkJcGFnZS0+c2d4X2NnID0gc2d4X2NnOw0KPiAr
+CX0gZWxzZSB7DQo+ICsJCXNneF9jZ3JvdXBfdW5jaGFyZ2Uoc2d4X2NnKTsNCj4gKwkJc2d4X3B1
+dF9jZyhzZ3hfY2cpOw0KPiArCX0NCj4gKyNlbmRpZg0KDQpBZ2FpbiwgSU1ITyBoYXZpbmcgQ09O
+RklHX0NHUk9VUF9TR1hfRVBDIGhlcmUgaXMgdWdseSwgYmVjYXVzZSBpdCBkb2Vzbid0IGV2ZW4N
+Cm1hdGNoIHRoZSB0cnlfY2hhcmdlKCkgYWJvdmUsIHdoaWNoIGRvZXNuJ3QgaGF2ZSB0aGUgQ09O
+RklHX0NHUk9VUF9TR1hfRVBDLg0KDQpJZiB5b3UgYWRkIGEgd3JhcHBlciBpbiAiZXBjX2Nncm91
+cC5oIg0KDQpzdGF0aWMgaW5saW5lIHZvaWQgc2d4X2VwY19wYWdlX3NldF9jZ3JvdXAoc3RydWN0
+IGVwY19wYWdlICplcGNfcGFnZSzCoA0KCQkJCQkgICBzdHJ1Y3Qgc2d4X2Nncm91cCAqc2d4X2Nn
+KQ0Kew0KI2lmZGVmIENPTkZJR19DR1JPVVBfU0dYX0VQQw0KCWVwY19wYWdlLT5zZ3hfY2cgPSBz
+Z3hfY2c7DQojZW5kaWYJCQ0KfQ0KDQpUaGVuIEkgYmVsaWV2ZSB0aGUgYWJvdmUgY2FuIGJlIHNp
+bXBsaWZpZWQgdG86DQoNCglpZiAoIUlTX0VSUihwYWdlKSkgew0KCQlzZ3hfZXBjX3BhZ2Vfc2V0
+X2Nncm91cChwYWdlLCBzZ3hfY2cpOw0KCX0gZWxzZSB7DQoJCXNneF9jZ3JvdXBfdW5jaGFyZ2Uo
+c2d4X2NnKTsNCgkJc2d4X3B1dF9jZyhzZ3hfY2cpOw0KCX0NCiANCj4gIAlpZiAoc2d4X3Nob3Vs
+ZF9yZWNsYWltKFNHWF9OUl9MT1dfUEFHRVMpKQ0KPiAgCQl3YWtlX3VwKCZrc2d4ZF93YWl0cSk7
+DQo+ICANCj4gQEAgLTYwNCw2ICs2MzEsMTQgQEAgdm9pZCBzZ3hfZnJlZV9lcGNfcGFnZShzdHJ1
+Y3Qgc2d4X2VwY19wYWdlICpwYWdlKQ0KPiAgCXN0cnVjdCBzZ3hfZXBjX3NlY3Rpb24gKnNlY3Rp
+b24gPSAmc2d4X2VwY19zZWN0aW9uc1twYWdlLT5zZWN0aW9uXTsNCj4gIAlzdHJ1Y3Qgc2d4X251
+bWFfbm9kZSAqbm9kZSA9IHNlY3Rpb24tPm5vZGU7DQo+ICANCj4gKyNpZmRlZiBDT05GSUdfQ0dS
+T1VQX1NHWF9FUEMNCj4gKwlpZiAocGFnZS0+c2d4X2NnKSB7DQo+ICsJCXNneF9jZ3JvdXBfdW5j
+aGFyZ2UocGFnZS0+c2d4X2NnKTsNCj4gKwkJc2d4X3B1dF9jZyhwYWdlLT5zZ3hfY2cpOw0KPiAr
+CQlwYWdlLT5zZ3hfY2cgPSBOVUxMOw0KPiArCX0NCj4gKyNlbmRpZg0KPiArDQoNClNpbWlsYXJs
+eSwgaG93IGFib3V0IGFkZGluZyBhIHdyYXBwZXIgaW4gImVwY19jZ3JvdXAuaCINCg0Kc3RydWN0
+IHNneF9jZ3JvdXAgKnNneF9lcGNfcGFnZV9nZXRfY2dyb3VwKHN0cnVjdCBzZ3hfZXBjX3BhZ2Ug
+KnBhZ2UpDQp7DQojaWZkZWYgQ09ORklHX0NHUk9VUF9TR1hfRVBDDQoJcmV0dXJuIHBhZ2UtPnNn
+eF9jZzsNCiNlbHNlDQoJcmV0dXJuIE5VTEw7DQojZW5kaWYNCn0NCg0KVGhlbiB0aGlzIGNhbiBi
+ZToNCg0KCXNneF9jZyA9IHNneF9lcGNfcGFnZV9nZXRfY2dyb3VwKHBhZ2UpOw0KCXNneF9jZ3Jv
+dXBfdW5jaGFyZ2Uoc2d4X2NnKTsNCglzZ3hfcHV0X2NnKHNneF9jZyk7DQoJc2d4X2VwY19wYWdl
+X3NldF9jZ3JvdXAocGFnZSwgTlVMTCk7DQoNCj4gIAlzcGluX2xvY2soJm5vZGUtPmxvY2spOw0K
+PiAgDQo+ICAJcGFnZS0+b3duZXIgPSBOVUxMOw0KPiBAQCAtNjQzLDYgKzY3OCwxMSBAQCBzdGF0
+aWMgYm9vbCBfX2luaXQgc2d4X3NldHVwX2VwY19zZWN0aW9uKHU2NCBwaHlzX2FkZHIsIHU2NCBz
+aXplLA0KPiAgCQlzZWN0aW9uLT5wYWdlc1tpXS5mbGFncyA9IDA7DQo+ICAJCXNlY3Rpb24tPnBh
+Z2VzW2ldLm93bmVyID0gTlVMTDsNCj4gIAkJc2VjdGlvbi0+cGFnZXNbaV0ucG9pc29uID0gMDsN
+Cj4gKw0KPiArI2lmZGVmIENPTkZJR19DR1JPVVBfU0dYX0VQQw0KPiArCQlzZWN0aW9uLT5wYWdl
+c1tpXS5zZ3hfY2cgPSBOVUxMOw0KPiArI2VuZGlmDQoNCkNhbiB1c2UgdGhlIHdyYXBwZXIgdG9v
+Lg0KDQpbLi4uXQ0KDQooQnR3LCBJJ2xsIGJlIGF3YXkgZm9yIGNvdXBsZSBvZiBkYXlzIGR1ZSB0
+byBwdWJsaWMgaG9saWRheSBhbmQgd2lsbCByZXZpZXcgdGhlDQpyZXN0IHN0YXJ0aW5nIGZyb20g
+bGF0ZSBuZXh0IHdlZWspLg0K
 
