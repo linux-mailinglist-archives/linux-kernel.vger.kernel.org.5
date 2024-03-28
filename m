@@ -1,116 +1,111 @@
-Return-Path: <linux-kernel+bounces-123004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626748900E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:57:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 633EE8900EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8A382953F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:57:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94B251C24091
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B14112D1E0;
-	Thu, 28 Mar 2024 13:56:41 +0000 (UTC)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CA881ABE;
+	Thu, 28 Mar 2024 13:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="urzfM6hH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7830083A08;
-	Thu, 28 Mar 2024 13:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8128B8175E;
+	Thu, 28 Mar 2024 13:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634201; cv=none; b=I3r3tbAVop4pt/5unkDJWQZWvcOZtNJopMNFrhm4OCme78SoFzbUreJeK7KacH3+Ctxc5m1VhizZcCyXiQvo2BkbFa7Q+4WEZ8XL9+sisXi68i0X3rRJUjOjMm2f+qVZaOHo16TQso9iAJlrMiv2ydZk7A0+/8ViDbD5egH0tEo=
+	t=1711634207; cv=none; b=Axc43XRQcA1i6B+7+oAN1dCWcvi9C+FDpija4U5BPGisn4ir/zPRgmbZmXaLwk2bgOwi+U8OlEA/8bI2xin+U8MPfPVcic0Y+uzkIGoDzuhjaXBczsWSwsxnFUcAamzgSB2dzs+OTGRFFZA3mkQXCyaZW+5gp4b+oAw/ueCyfVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634201; c=relaxed/simple;
-	bh=zCWARO4cU6ipBjqQ0ides2u7RHSpySTD3YjFyt5mff8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZK8KWiHn/uqa3YPojoRqSOSrqR+GptlNXuY8Vtzf3LgLRs+hOoEiKbHR2B4XVXOPiyJFPiuEJqt8SQGBpuusC+LY15jofBP/o2qEOKr8OmtUz+YUbftkW5dHO4AiARC8EBj7tbnz4ws3yJDzfFNNAgUgAMJpMj071Ht1qvX0a84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4141156f245so6984525e9.2;
-        Thu, 28 Mar 2024 06:56:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711634198; x=1712238998;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jnf2sQ/2dHHFn3aPbM4EqErtjtbBBjy2+Un0IzylCkY=;
-        b=qgoxpadkEXWNa6MEDG52puX7geva75oJQGLgWSuHjjwTg6Xl4EjUL4289sWkJRlrni
-         FIQgWUnLbXkq99O1ns/MPdfXhuHP6Vo9pOQjx80MVpgmq9pXAT2pKMzLP2j8NeGqa4mn
-         ot8n+CE0tRIcAAj2HQi5HJq+x1ifAf+pbJ0W63/XwG6/9lccolrZJ+A2bevBLhZeC2tB
-         eRiUZF1hJdfAb9FJzIc4LYiLlhuTstKq1+XDCG8sYmw8fPXtTQWsnXPcoD6gCDpg5Jng
-         899G24aVF761CJssJ9u49wuMyHAqZgMow44AmpEh8r1WFKJwRxMhztlrBn5MGnwHcmlU
-         x33g==
-X-Forwarded-Encrypted: i=1; AJvYcCWmVkd8XM38uiAf4nYDyIJNDOtGrzjMyeM5YrgRdgG7C5sV5K7LQFJymqmSLXGor4ejfp6GenMrs8qUX9YQYQVcHQ7NXviiGSBcnDIH
-X-Gm-Message-State: AOJu0YwkvY8x15Hrm7ONYHXBxDFmsBhXuiyckhNfmVMtkFvidDxT3D9q
-	ndn1Sm9Fe5VXwCq6cTMIhqjJydYS4hxoS5ixmQWQJ6iNf+pVF+IA
-X-Google-Smtp-Source: AGHT+IHSc0Ag57wUydtZUmvEIUV8BIzYY3xcCT7jti83u0Y+vnsmmK+sU5mP7C00IW8aorHW0nWMBg==
-X-Received: by 2002:a05:600c:4593:b0:414:9456:2f61 with SMTP id r19-20020a05600c459300b0041494562f61mr2215120wmo.14.1711634197795;
-        Thu, 28 Mar 2024 06:56:37 -0700 (PDT)
-Received: from [127.0.0.1] (p200300f6f7068b00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f706:8b00:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id o10-20020a05600c510a00b004148a5e3188sm5519570wms.25.2024.03.28.06.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 06:56:37 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-Date: Thu, 28 Mar 2024 14:56:33 +0100
-Subject: [PATCH RFC PATCH 3/3] btrfs: zoned: kick cleaner kthread if low on
- space
+	s=arc-20240116; t=1711634207; c=relaxed/simple;
+	bh=45W0j0SQwEbF1WEVuZJq+yF57n0rEsuSxnYCwbsjyaA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LO8J3ulSd21x43OpfVp7005+T9kHqJwAdPS03JeMLjcqaM/egsCVgmILvlTXYEv2q4F12eVwIaU9gEezK2jwEs/M3ueCG11DL782uK8z/nrzxDlmcUFTQafsz3Itsl5vfFhHLyCus3nTzTdppQ3F9U2EgUBrFDtjGg0cLiQni/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=urzfM6hH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC42C433C7;
+	Thu, 28 Mar 2024 13:56:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711634207;
+	bh=45W0j0SQwEbF1WEVuZJq+yF57n0rEsuSxnYCwbsjyaA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=urzfM6hHSgtdOcXXX0qWKjzxnEn3cHDPfy8zymXAcdjTYxLfqY5EVLs2g9kLBrenh
+	 bO1mKJWrcFoSkDNSsJzqJFH2o9JhOI4dY8RPeTJQSUCKZMGc7F31+bFAS0yBzj3QIh
+	 cDtI7yrxHsaArBjZ/3YvR2RdvLhWObk2wuo+H0xTn+JxnKTH6b8jf4enVzudHN4mP3
+	 mqkKt9nLuChV3ZGzzt/c6CNGjrkuW6+fqpQa8gH93XK/JepaWZeA41OC5Xh5L5w/gI
+	 y1fKI0ajXiepiGfDur/A2zbxANS0QfV0oLoNCOhXahhoD8aLSNkTrEFaNR3vtIXN1F
+	 CWNI3jdLTxf8Q==
+Date: Thu, 28 Mar 2024 13:56:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: John Watts <contact@jookia.org>
+Cc: Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: sunxi: sun4i-i2s: Enable 32-bit audio formats
+Message-ID: <9055efa5-8da6-47b2-b2db-d1f8e02d2267@sirena.org.uk>
+References: <20240326-sunxi_s32-v1-1-899f71dcb1e6@jookia.org>
+ <23447395.6Emhk5qWAg@jernej-laptop>
+ <ZgTUIWh8qXH_7oxQ@titan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-hans-v1-3-4cd558959407@kernel.org>
-References: <20240328-hans-v1-0-4cd558959407@kernel.org>
-In-Reply-To: <20240328-hans-v1-0-4cd558959407@kernel.org>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Hans Holmberg <Hans.Holmberg@wdc.com>, Naohiro Aota <Naohiro.Aota@wdc.com>, 
- hch@lst.de, Damien LeMoal <dlemoal@kernel.org>, Boris Burkov <boris@bur.io>, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.4
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mhMUzKVvsxFenEfD"
+Content-Disposition: inline
+In-Reply-To: <ZgTUIWh8qXH_7oxQ@titan>
+X-Cookie: Yes, but which self do you want to be?
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Kick the cleaner kthread on chunk allocation if we're slowly running out
-of usable space on a zoned filesystem.
+--mhMUzKVvsxFenEfD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Thu, Mar 28, 2024 at 01:21:21PM +1100, John Watts wrote:
+> On Wed, Mar 27, 2024 at 08:53:32PM +0100, Jernej =C5=A0krabec wrote:
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index fb8707f4cab5..25c1a17873db 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1040,6 +1040,7 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
- u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
- 				 u64 hole_end, u64 num_bytes)
- {
-+	struct btrfs_fs_info *fs_info = device->fs_info;
- 	struct btrfs_zoned_device_info *zinfo = device->zone_info;
- 	const u8 shift = zinfo->zone_size_shift;
- 	u64 nzones = num_bytes >> shift;
-@@ -1051,6 +1052,11 @@ u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
- 	ASSERT(IS_ALIGNED(hole_start, zinfo->zone_size));
- 	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
- 
-+	if (!test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags) &&
-+	    btrfs_zoned_should_reclaim(fs_info)) {
-+		wake_up_process(fs_info->cleaner_kthread);
-+	}
-+
- 	while (pos < hole_end) {
- 		begin = pos >> shift;
- 		end = begin + nzones;
+> > I wish it would be that simple. SUN4I_FORMATS is cross section of all I=
+2S
+> > variants that are supported by this driver. If you check A10, you'll se=
+e that
+> > it doesn't support S32.
 
--- 
-2.35.3
+> > If you want to add support for S32, you'll have to add new quirk for ea=
+ch
+> > variant.
 
+> Yes, A10 doesn't support it. But it should error out in hw_params due to
+> get_sr not supporting 32-bit, no?
+
+The constraints shouldn't be advertising things that hw_params() will
+error out on, sometimes there are contingent constraints that prevent
+this but something that just doesn't work isn't one of those times.
+
+--mhMUzKVvsxFenEfD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYFdxkACgkQJNaLcl1U
+h9CE1Af+O5zsMVBYtNcP/Zpm6ZYtaVlBfArlIiMyRHh/rU2sZcHctfvD/5FpomNB
+DX+B2CXJ54QN/AzVgK7q6QcMzryuK1xOLmjs6+THEHS8Tx6w4We32P2zGuGX655C
+mqkPWGWOltacPI/1Upb0PogW3a1qfXuhvBWPtNfkaBvgBICtbrJiJyEyNHJozq2v
+n94djp24WVSRt5Jjh0u6U/1Q7Eqt0FFiBtm10J8fdHjSt81CVIYz/jw5aZgCPY7l
+NVHn77XPjEccjdx5hNGpNAEZT8ZZbIF0sC/HOKDP/OvypWpV1GRyA0Y5XwaJWnnD
+NQcO169FnkN2RGXB1nbjkBEXAUbpQQ==
+=cayw
+-----END PGP SIGNATURE-----
+
+--mhMUzKVvsxFenEfD--
 
