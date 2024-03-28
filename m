@@ -1,62 +1,51 @@
-Return-Path: <linux-kernel+bounces-123103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31297890230
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:46:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8129890233
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:46:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4C7E1F278EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:46:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 255FF1C2DD8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5898612DD94;
-	Thu, 28 Mar 2024 14:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6161A12D771;
+	Thu, 28 Mar 2024 14:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="njKnrrfG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="jAu4ww4X"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D72128369;
-	Thu, 28 Mar 2024 14:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92BF80BF8;
+	Thu, 28 Mar 2024 14:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637168; cv=none; b=ilIw9mDVhGFCH4CNrHHcYR01XdkJ1TxxjH1XvZPESldon6+jhvq8tmUrRe0kZsWmD4PqeueygMQ+dtw4Fz6R8OWRw5aTWFsdiV6SD4liDBJmCGxeyBQn5IFbgBBBXZ6V11q6NdCHeq/jwkgxHRNvYihi+Rsy14s8gtx7p1ypzUM=
+	t=1711637176; cv=none; b=j88oyVUhwpdX7W55qnHRn1MKDn1MyLCiJeue/M213l0w76C6b58jfO3RP+S5iGXJuE2nvS1Yxa0ncC3aHIxnkm/k/6mL+sG7JUcD9Zjn5RlzLkAvPuqn+b1Xk7H3TcDZk8gxVuP1VtlSw43fwwTNO4hMJFLFPreMmvPj3ua+peY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637168; c=relaxed/simple;
-	bh=e7T2k8jeQC9M808lpQTjDzIA9RTU/rhvmNyQ/wDrKOo=;
+	s=arc-20240116; t=1711637176; c=relaxed/simple;
+	bh=p2J07VNUHUPvh5qAwaad4eJ9jVb4amixahDlgymiSlA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GaDwfFhJcYytv5/+fGADFgJoMvSL8mOexsDVe/cS7ZSXApo8n8nXlzhYDGpwQl+ExmgaE0PBq8EjahpV126g/WB+cCYETn7n8Zlo/SbPvEPK848qAeQEEBID80dhnMkatNLid8LKLBiApYGplYP4SSZwFm9dj712yJypnfJLbYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=njKnrrfG; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711637166; x=1743173166;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=e7T2k8jeQC9M808lpQTjDzIA9RTU/rhvmNyQ/wDrKOo=;
-  b=njKnrrfGF2aunM+EjMIZnEaMq+qHNYTKHNn3Ok3Xplml28n2TyBhlaAB
-   SNe+6quzzvNDP4lhT3zfZs1ugYdkLXFjWG2AidAc5qPrGd38lmSrVWoCa
-   VjxIv2tsdhx+rvvMTxLeX9eR/vs+6CHnxjktVDioEd75IxosBATCWL7xp
-   vitEdVHT74oaZZFP+Ei1PQCJtU6hYwKuLUBsf3JaCqQWT8VaZoimuIGq3
-   ZP90nr6cpXTcpfkqVjplsse+fCWmmOM1QD1DV7FqnStzmCJcASsMSUEmq
-   VA7X1TeQ9L0cKPbnUtU6XP7x10gac6/DNPefFmpsdKJVwT2Smo5lC1o9W
-   w==;
-X-CSE-ConnectionGUID: vpsdT2oMTTiAdk+7oZM7IA==
-X-CSE-MsgGUID: Civ7iNmFQ/ipuDa2YU9+wA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6681770"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6681770"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 07:46:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="47857228"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 07:46:01 -0700
-Message-ID: <79adf996-48d6-41b0-8327-f3258d74bb7b@intel.com>
-Date: Thu, 28 Mar 2024 22:45:58 +0800
+	 In-Reply-To:Content-Type; b=fVM4vu9ZaoMj/6ZPonhL4XhS7RWdo7AKLnzan7I/tno4uk45afgGVK1l/uKIrV9SEwBuzvG7qzJuLvsWihKqmmSbu99ahbcCDKi8PWn68VM1SGxAN8wTU6h7hnLf2Uu4Dky0UMNkry6G56swgRkgOFk4+s0sooVmDk7yqXIpHsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=jAu4ww4X; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C15E460005;
+	Thu, 28 Mar 2024 14:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1711637172;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yvXc/6fB/STKMVpjx0LeFmiE8/rH1mB7ohtX7hXt9io=;
+	b=jAu4ww4X3VxvcLdS3J00rkjW+Rwb2tH+izGCSUraHF5ssrjAwsT4npqWOf4+ih8U9oUZbP
+	h3+iooEUdjyMVVH4Wx55xhtsOzafmrK/ZkwcO+drbk1tyFwDztVsZg/kp/IsF4oMEqH8ul
+	U/I1akDNZo3t6twvO5EN+uaOrz5LtY/wXOHQriJcNxN4pKqBqbJ8nrdQn6Om0S5OiCODOt
+	fSdB/V8CL+nSomrlHtFqpl3vdR2SwftbkBkPHjWlsgqXdOiwCdO4vrFkyi13xEeChmtujw
+	B8jP565rNI5qmBmgWaW7EGprWyddbAvrsSbmpiLSh6bPAQ/8avXtYDwin9uPXw==
+Message-ID: <515ca95e-7f7a-4eb7-9431-a297301ca55d@arinc9.com>
+Date: Thu, 28 Mar 2024 17:46:03 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,96 +53,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
- unsupported cases
-To: Chao Gao <chao.gao@intel.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "Yamahata, Isaku" <isaku.yamahata@intel.com>,
- "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
- <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
- "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
- "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aktas, Erdem" <erdemaktas@google.com>,
- "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>, "Yuan, Hang"
- <hang.yuan@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
- <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
- <e0ac83c57da3c853ffc752636a4a50fe7b490884.camel@intel.com>
- <5f07dd6c-b06a-49ed-ab16-24797c9f1bf7@intel.com>
- <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
- <20ef977a-75e5-4bbc-9acf-fa1250132138@intel.com>
- <783d85acd13fedafc6032a82f202eb74dc2bd214.camel@intel.com>
- <f499ee87-0ce3-403e-bad6-24f82933903a@intel.com>
- <ZgVDvCePGwKWv0wd@chao-email>
- <234c9998-c314-44bb-ad96-6af2cece7465@intel.com>
- <ZgVywaHkKVNNfuQ8@chao-email>
+Subject: Re: [PATCH net v2 2/2] net: dsa: mt7530: fix disabling EEE on failure
+ on MT7531 and MT7988
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>,
+ DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+ SkyLake Huang <SkyLake.Huang@mediatek.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-0-9af9d5041bfe@arinc9.com>
+ <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-2-9af9d5041bfe@arinc9.com>
+ <799572b672ea8b4756236b14068aef7c8fa726a6.camel@redhat.com>
+ <d65f4c45-e616-4157-a769-c285cbad575c@arinc9.com>
+ <530da7c1-c058-44ef-84fd-86ff58f1501b@arinc9.com>
+ <ZgRCFZBFvNSZ1a2U@shell.armlinux.org.uk>
+ <ZgRCZSBniraUCuT2@shell.armlinux.org.uk>
 Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZgVywaHkKVNNfuQ8@chao-email>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <ZgRCZSBniraUCuT2@shell.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On 3/28/2024 9:38 PM, Chao Gao wrote:
-> On Thu, Mar 28, 2024 at 09:21:37PM +0800, Xiaoyao Li wrote:
->> On 3/28/2024 6:17 PM, Chao Gao wrote:
->>> On Thu, Mar 28, 2024 at 11:40:27AM +0800, Xiaoyao Li wrote:
->>>> On 3/28/2024 11:04 AM, Edgecombe, Rick P wrote:
->>>>> On Thu, 2024-03-28 at 09:30 +0800, Xiaoyao Li wrote:
->>>>>>> The current ABI of KVM_EXIT_X86_RDMSR when TDs are created is nothing. So I don't see how this
->>>>>>> is
->>>>>>> any kind of ABI break. If you agree we shouldn't try to support MTRRs, do you have a different
->>>>>>> exit
->>>>>>> reason or behavior in mind?
->>>>>>
->>>>>> Just return error on TDVMCALL of RDMSR/WRMSR on TD's access of MTRR MSRs.
->>>>>
->>>>> MTRR appears to be configured to be type "Fixed" in the TDX module. So the guest could expect to be
->>>>> able to use it and be surprised by a #GP.
->>>>>
->>>>>            {
->>>>>              "MSB": "12",
->>>>>              "LSB": "12",
->>>>>              "Field Size": "1",
->>>>>              "Field Name": "MTRR",
->>>>>              "Configuration Details": null,
->>>>>              "Bit or Field Virtualization Type": "Fixed",
->>>>>              "Virtualization Details": "0x1"
->>>>>            },
->>>>>
->>>>> If KVM does not support MTRRs in TDX, then it has to return the error somewhere or pretend to
->>>>> support it (do nothing but not return an error). Returning an error to the guest would be making up
->>>>> arch behavior, and to a lesser degree so would ignoring the WRMSR.
->>>>
->>>> The root cause is that it's a bad design of TDX to make MTRR fixed1. When
->>>> guest reads MTRR CPUID as 1 while getting #VE on MTRR MSRs, it already breaks
->>>> the architectural behavior. (MAC faces the similar issue , MCA is fixed1 as
+On 27.03.2024 18:59, Russell King (Oracle) wrote:
+> On Wed, Mar 27, 2024 at 03:58:13PM +0000, Russell King (Oracle) wrote:
+>> On Wed, Mar 27, 2024 at 11:46:19AM +0300, arinc.unal@arinc9.com wrote:
+>>> On 26.03.2024 12:19, Arınç ÜNAL wrote:
+>>>> Whether a problem would happen in practice depends on when
+>>>> phy_init_eee()
+>>>> fails, meaning it returns a negative non-zero code. I requested Russell
+>>>> to
+>>>> review this patch to shed light on when phy_init_eee() would return a
+>>>> negative non-zero code so we have an idea whether this patch actually
+>>>> fixes
+>>>> a problem.
 >>>
->>> I won't say #VE on MTRR MSRs breaks anything. Writes to other MSRs (e.g.
->>> TSC_DEADLINE MSR) also lead to #VE. If KVM can emulate the MSR accesses, #VE
->>> should be fine.
->>>
->>> The problem is: MTRR CPUID feature is fixed 1 while KVM/QEMU doesn't know how
->>> to virtualize MTRR especially given that KVM cannot control the memory type in
->>> secure-EPT entries.
+>>> I don't suppose Russell is going to review the patch at this point. I will
+>>> submit this to net-next then. If someone actually reports a problem in
+>>> practice, I can always submit it to the stable trees.
 >>
->> yes, I partly agree on that "#VE on MTRR MSRs breaks anything". #VE is not a
->> problem, the problem is if the #VE is opt-in or unconditional.
+>> So the fact that I only saw your request this morning to look at
+>> phy_init_eee(), and to review this patch... because... I work for
+>> Oracle, and I've been looking at backporting Arm64 KVM patches to
+>> our kernel, been testing and debugging that effort... and the
+>> act that less than 24 hours had passed since you made the original
+>> request... yea, sorry, it's clearly my fault for not jumping on this
+>> the moment you sent the email.
+>>
+>> I get _so_ much email that incorrectly has me in the To: header. I
+>> also get _so_ much email that fails to list me in the To: header
+>> when the author wants me to respond. I don't have time to read every
+>> email as it comes in. I certainly don't have time to read every
+>> email in any case. I do the best I can, which varies considerably
+>> with my workload.
+>>
+>> I already find that being single, fitting everything in during the
+>> day (paid work, chores, feeding oneself) is quite a mammoth task.
+>> There is no one else to do the laundry. There is no one else to get
+>> the shopping. There is no one else to do the washing up. There is no
+>> one else to take the rubbish out. All this I do myself, and serially
+>> because there is only one of me, and it all takes time away from
+>> sitting here reading every damn email as it comes in.
+>>
+>> And then when I end up doing something that _you_ very well could do
+>> (reading the phy_init_eee() code to find out when it might return a
+>> negative number) and then you send an email like this... yea... that
+>> really gets my goat.
+
+I've made the request on 21th of March. It must've been buried under the
+other emails that are incorrectly sent to you as you've described. Of
+course you're not in fault for not responding. I trust your expertise on
+the topic so I requested your comment. You're not entitled to do that,
+which is why, after waiting for about 6 days, I assumed that you're not
+interested in looking at this patch, so I responded with the intention to
+move on.
+
+https://lore.kernel.org/netdev/dc487e20-7d6c-48b7-a590-cb3bd815cd21@arinc9.com/
+
 > 
->  From guest's p.o.v, there is no difference: the guest doesn't know whether a feature
-> is opted in or not.
+> ... and now I have a 1:1 with my manager for the next 30-60 minutes.
+> Is it okay by you for me to be offline for that period of time while
+> I have a chat with him?
 
-I don't argue it makes any difference to guest. I argue that it is a bad 
-design of TDX to make MTRR fixed1, which leaves the tough problem to 
-VMM. TDX architecture is one should be blamed.
+That sounds exhausting. I wish things get easier for you.
 
-Though TDX is going to change it, we have to come up something to handle 
-with current existing TDX if we want to support them.
-
-I have no objection of leaving it to userspace, via KVM_EXIT_TDX_VMCALL. 
-If we go this path, I would suggest return error to TD guest on QEMU 
-side (when I prepare the QEMU patch for it) because QEMU cannot emulate 
-it neither.
-
+Arınç
 
