@@ -1,150 +1,198 @@
-Return-Path: <linux-kernel+bounces-122747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555E388FC7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:10:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 678E288FC9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:11:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C28E51F2687B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:10:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E20529A607
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFE77CF3E;
-	Thu, 28 Mar 2024 10:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB0F7CF06;
+	Thu, 28 Mar 2024 10:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="2FiZjsn4"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="FeY8g9rw"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7EF7C6E9
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711620578; cv=none; b=qQYCLixqg0Aj+68Ze8Zl6yOFR5KNi9PpQMyP7H7MNJ0oeO7BYTLFIQOX1f4BH1YfXfZ2QkYuDCPrS1MkAzM3FeT6az9PVtyulmt05NLkXEHzGhAO5mAQMZi6mtKtsM6KTlufYatHUv+IUhn6+ApzPPMb4Lz8yBZ+z4jam9TfdMI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711620578; c=relaxed/simple;
-	bh=FrsEbllgu5nSWbKKPqP082m+wmXkceS/8bSVAZaHeLY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ccNIgj5OV2eiyupAOWR3SlBs6RhaOaIVRWLZiSTP6LHK5K/TwGYDAqViOlYg4GFQ2bhF/sHeHmGTEbzax3MBdkqxIfMQ7zTPDRjG5zcAmuuq867F/PSYSfbgQLQ+7LU8xk7epXoPiY59V40cy98xDBLBAUYu+aux9npvrOlT1v8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=2FiZjsn4; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34175878e3cso532368f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 03:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711620574; x=1712225374; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f5wMiw22c5vII85IvPgCG/zbOc7PIefhra+kZ3K8oIE=;
-        b=2FiZjsn4MJ87jzjepIbZmu/mDB5NHlpk2J0DU7pHikoV+lccS1VkhpjkI7om9XLyNb
-         ABJXpsAVquGp8pePCVL+OmGITO7+Pb67E8pbxLMronhgcKIW3e0SBiSDI36C8Je9twMI
-         ZPPX/zuSakN1NlvEciPnMHdTqgLNJCzosn7ed1AJtyfloX8ITMOz46QgePwTbwxHBLfT
-         7T2ccdCx9Ep0WUoIA3vLBoAhN326whA11b5MnqZkKh/saq/tSI8P93myCbqimgXb5BAj
-         1UbBM3Ox4gjLZoOBG3ZJtIfwg8WcDRtg8HyYKjA6zh1kHdfbQAF4+eBL/PFHIe5Qtk0p
-         e1Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711620574; x=1712225374;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f5wMiw22c5vII85IvPgCG/zbOc7PIefhra+kZ3K8oIE=;
-        b=A1/6y6fC4zko0Mbvn/yq52TFTEPoNcHxncmEtLX5IDCh7LOcrZmQp70xWxzoMb7fi5
-         g1pC3Q7VB1Ltg5fg4k3Z8CG+YqzuDH1fgEYZ7R2QXseoPDlwACQYZ6O4x/b6TeVs4UMu
-         gwUly1d6fx7nOcPytQif11E0ZRBh6r/6jxc8X44ZRaDK0mf4qhCJNvEASo+VUnJT4R9X
-         uyPxS/Q2TijW7f1jgFaJnX/sbC2vwKj7AuTT8YFmlwt1Sk7pRjQU1HPkQ+2xPoWDtXmd
-         6RnSQRCA8b/uDSwpC5WR3U1e2jewYrMWgtnIXFucKW0zSh5PH5GBhzuSR2hUstOP1TDQ
-         AAzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUU9R4pSsAEYc8s+L669636W/BDhVxuyVgwLhl6sFskg1H5huo1L8xMIlwTULyNaYUrzzn293NoTXm1W72JWUGnvT50xCTEX6XZqsX/
-X-Gm-Message-State: AOJu0YzhOGtsS24NDC5IvMcu632E43+WLPQjgV1wRQADTkQbhauvpXbz
-	VHOIhN3MDa7qSDcmx6D5fhXqxg5ODuXIZk9Tq/Twwy6nMjI96DFXBAef8vyVnRc=
-X-Google-Smtp-Source: AGHT+IFGHWYadDJCgABhwjbgmr/G/9ahD5CWJZRFUjAkHe014xq2ZOOYv0q270M74EFrQt4il5g9rw==
-X-Received: by 2002:a5d:6d82:0:b0:33e:9292:b194 with SMTP id l2-20020a5d6d82000000b0033e9292b194mr2493550wrs.14.1711620574475;
-        Thu, 28 Mar 2024 03:09:34 -0700 (PDT)
-Received: from [10.1.5.127] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id ea2-20020a0560000ec200b003432d79876esm1316197wrb.97.2024.03.28.03.09.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 03:09:34 -0700 (PDT)
-Message-ID: <4dba5a65-d1dc-4a80-bcaa-fe9ba02c5082@baylibre.com>
-Date: Thu, 28 Mar 2024 11:09:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F797BB19;
+	Thu, 28 Mar 2024 10:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711620699; cv=fail; b=kJwDDn8pJvyrXYhqquL/gApS1qvmowxqG+PlxGneAar0TYD/istVHEcsQKGp6aj2l46zzjAhvu4mkSLnUoecBFbxrr+IyWB4hJEZEEdUsylGI8B6n3F2rEq34pcecJYTyZzQf5hMt/sB+ctJySWZJVA2iQ3RQwf2yLrCdLf5Sd4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711620699; c=relaxed/simple;
+	bh=U+9xnppZIxRqcZXBb5r5IfN3yO69VeCscbe9F0B85Qg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=P0G81cwQx1pmI+3L2d8g0u+RoPB4ydm7GUQmsjvIg7nYeZtBEGT/pZirtQiHOOwLxXajH/wmKi1hIzN3EneuNMW3yd2d+J9PMD6WZvMZqlKMn1ixaUJFdrUXROENagc0Dz71VtmX1jQlsZsiZ31U8ZrEqUBPhpjvtrubApFwSmg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=FeY8g9rw; arc=fail smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SA0rcY019727;
+	Thu, 28 Mar 2024 03:10:47 -0700
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x4v1u3ph9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 03:10:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ItZaSZiBe28Ois83CiXEr1quOUhWEP7Vnbk9nZTsLAJji8lP0e9ryhC730NJBfpCgLr00LHUM5iir133oOYQuIEahV3+h9aEmR2qOLeVXTcyqeSxrxQcWgXspxPco7dIpaieLcDGIBhLfybpq+gxMkNlkKnfWgXWIyjjYBozwcod6f/0qpOLQB5RNDZmqDS9ItUWWvYgKDhZw/hP1GXR9VOks7JSsXuCRajDOJaeTBuB0qTCYgtWmYb3G51m9GVAD6ZDjYzf6UtLCQOQzGwayvD8vZJyY5nl+DVbvk4CHC2POLjjcc0Qx5Qqd4DHgI0cfj39RE345c4E3B03l2iHNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FRadSvUUQIyAhT//rHDbll93rZu8ojT0HHH/scBXggY=;
+ b=RWTwuB5BpRIU5Ef4sK4ruHmstUvRQMv9prqjfHNNCvG2iWGYL6A+Nlzd3egiuAFx20kNGMusIgRSqRCr82DjnA/KAs33IphyDIXcEYeC3NeGwjkty34Hs08coMPXckNvR6EmbhruXfGQi2XgtY/YRRw/s8PKfjalfUw7bgTpkBbsaovieIF02BqVgRmDuJzMUDmYAJIv+WL9YySWCTVViGDAB0WViod4PhQ7TgHRKB5KLa8z1yRmV/V6wioi+t0g0hCKxf5ReZHiBJ+Sb4n+87wfsR6bwlAtH2p0/ttYoQQ5SwtzHdyf8hqJa3FbDNrXjgxEMq4qleNAF5ok6BF4cQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FRadSvUUQIyAhT//rHDbll93rZu8ojT0HHH/scBXggY=;
+ b=FeY8g9rwY0lXEgNhuWAvL8nqmR4n+6HVu2OdyLhAsrZsOVMuhEM8ZFSGZ3F4U18khmh2o6G8IZZ/6Jf1/AREsfgCaMxnKtl5jHOYolZsa94XD7ON9BF1oYNa4SLd4cC/boxRGZRwaiPjfiOV206a4pGH+fm+TBRw60xJ2Z9rrpw=
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com (2603:10b6:510:ea::22)
+ by SJ0PR18MB3945.namprd18.prod.outlook.com (2603:10b6:a03:2e1::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
+ 2024 10:09:38 +0000
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::3e9:f0ca:e966:7e37]) by PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::3e9:f0ca:e966:7e37%7]) with mapi id 15.20.7409.028; Thu, 28 Mar 2024
+ 10:09:37 +0000
+From: Hariprasad Kelam <hkelam@marvell.com>
+To: Aleksandr Mishin <amishin@t-argos.ru>,
+        Sunil Kovvuri Goutham
+	<sgoutham@marvell.com>
+CC: Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula
+	<gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Subbaraya Sundeep
+ Bhatta <sbhatta@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH] octeontx2-af: Add array index check
+Thread-Topic: [PATCH] octeontx2-af: Add array index check
+Thread-Index: AQHagPgKsIiFHV07QkGSwCVqUVX2/A==
+Date: Thu, 28 Mar 2024 10:09:37 +0000
+Message-ID: 
+ <PH0PR18MB4474F0C8213F4DC4E399AE47DE3B2@PH0PR18MB4474.namprd18.prod.outlook.com>
+References: <20240328081648.13193-1-amishin@t-argos.ru>
+In-Reply-To: <20240328081648.13193-1-amishin@t-argos.ru>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB4474:EE_|SJ0PR18MB3945:EE_
+x-ms-office365-filtering-correlation-id: 67efe4c6-f510-4553-96a3-08dc4f0f2cd2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ gkv0bie0VTqtrb0jAcnqaVV1ChTpLQBdbZZJWSgKLIKo9FEUlhvQswIac90K7IqEiG4LEEElYKagz1gZjwRJg1+rCIZLqWEykJXEmXgi/d/XyXM2zTBGv9UWGSTnXzajMwpgvPIAKLWUdAeU/TgWTkIdcRMVHA3wp93cIU8SwtnIGaU4lcyHFg8r4zu5GAMR0X/lfFSRCVMRteZA+EmFv+IYVCMaI6LLHHlhIGExvlKOELQ9tRCAYExdUqUSHneo6An+wCF4YmYAAB9mGr19Z2sJl9VmtzOp/VcphYEzfuvu5i6xoMtJscgX1VjiUFlk/+G9j9XDJvcIdbe2cF1UabLsaUGXVtM9Zy4TnjDsgXIj4wjuKER9Do6tRz/CwA459EzbfTrcQ6XeNo+ayAnhU6yVTbC77MWIUYQeZ0mogeGjtN2WfoHbRmaBcvMa+Am4MnRfPznMrzDgTz1NKiRYIlw4CyoYEs0ubsSvKmzclK6UBRyn+dJ+KNnJXvFHReLoKpIBTX9THJQYoAxgOuEQJqLO8Xt/J9ta/O0FHPB4iFsxX6hUD6MmNQqP4RArXeDSlCCO7I2k360FQabhJ8twFxZ27xEHeAmw8qaxyqou9ovCRplMSV3MVCd+ydN052ar//XAxgXSbHc4eLczqVJldMejKj1s7jWkQe8KkTVKkg+cAg8E8mrGcXJezAj/FlWZhiYma+2TNp4sn+OEktCp9Q==
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4474.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?YRJMDu85EpGM35GL7020lr6i15QxASgRYcFqfJBBm6zfXbSdqywwYcOJVAEP?=
+ =?us-ascii?Q?SW4MvgKuuhuaGVLLrUOHdla7F8VNbpHzh/HTVO0mVbsSoyeJgGdjFQaK3sLy?=
+ =?us-ascii?Q?io+JDv4nWSgsZNaROChGCKse7BOsq/FSvcbpQag0UecjUdjfglYsZJcRxO/L?=
+ =?us-ascii?Q?FrrTDtCPgLfsJ0792HqHND7jD8hyYkClEPrIv5i4lUyXRxJ5YUhHcz9KMqwW?=
+ =?us-ascii?Q?rnjau65cB2SUAMOx/BHjfO0yafXFWPtd2C5NRPW1QhoX0H3t9WVYLQgBQ1ES?=
+ =?us-ascii?Q?mmNlrYVd8RDn1J8wM3riEH2H6bv3FYzpLcDVq/jTm4eoh5hXqH0+GoyTw0Cy?=
+ =?us-ascii?Q?0FlsrfqgaCpIPkfZ06xqaXgxalOmCRgtRgb8BB0CqtixfOdmcCz7dIXf88BV?=
+ =?us-ascii?Q?sq911FMAWUijBOVfLNesjL5M/GBYdZr60ahF8HW3a2FzpLEbht1NoOh5gB5s?=
+ =?us-ascii?Q?6VwRWa+iolfZ2RfnT6jx6cKP5IH7ghkXcDf5vv1Gu/2q1OavNQEI+e8jCEB8?=
+ =?us-ascii?Q?gJMTH0PhF+U3EEjvKfmtuX8i5edNXjpBBL8F0803qlRklOJ0phpf6X8tivmq?=
+ =?us-ascii?Q?7pfIkhBqe10TUMeQOsTatu68DwHO1qIu2g/J/+HV+Z47eqNvpE/SWFBI97aE?=
+ =?us-ascii?Q?GqsxMr/ijLP+VMJQY4Kd6qhshKGgErP/UUKS0jTbFy6OVGP24XBye8pQkZQj?=
+ =?us-ascii?Q?tDOHkAC94y9XunJ78p+w1HM3Lktnytvj2CcwsQvMbASqos1XSXhLgF1AOVK4?=
+ =?us-ascii?Q?3XmdAY1ntDW091yWm2/BdsNt8fik8YbMBuMksXuvEXopmFGUzXArl0q+JcE5?=
+ =?us-ascii?Q?MlFxtp4s/Fdwc813mRFj+gL4dLmp/s6tJsQp0/Opr2ZbN+6vVi6lEjh2VIY1?=
+ =?us-ascii?Q?lksejW2r00NEHmR0ijeYNt+l3ekLzF0B7/mQLiFBnHXv+SSpbzsMWqWOJTuW?=
+ =?us-ascii?Q?/VNV/UIRMEYQNt+Veg2IUypqMHkS99JO/95Dhwia7ODXeN6xi2B2npHB7EnQ?=
+ =?us-ascii?Q?1+PtoKSb0y0RUq2X0NNFZXjo3/QCFJALpJu+6Hvr6Aj24Rh8xElb8DngaahB?=
+ =?us-ascii?Q?G8Zs954/NxsgzI0OIUcQivhNKsZuWtBH4VeCIVZSXbNE3aor2Ity/yru9oR2?=
+ =?us-ascii?Q?gFPU7tRqkKSNLYMxbNtpKjBR+CJgI0nuxAOMq316uOv5oscPQmm1oNS8Ve3k?=
+ =?us-ascii?Q?33hU6Ro8VPsHrsJ7ysYv0ktfN6JPm28mWa+BS1NPd/q7i41INrTg9k37K7iX?=
+ =?us-ascii?Q?38hKbx816E7PYzu3Ta9yQq9mgl5c3cOBkV3TSD7RCrUI3cDtOqD119PtZb0q?=
+ =?us-ascii?Q?GEcPqblF5W6K1xyJPfp6Hf0CcxvXxIT+SZf3hWhadsMN+Oqb8vuU9fXZsNvC?=
+ =?us-ascii?Q?BijbaZn/e+QyxQ/oFTeWROfCwBKL+APfxTBNTXGlLGdG9BCMu1Yweb3lMKzE?=
+ =?us-ascii?Q?dwVn3guvRQ+Bi3VtP6RcOkKVrELqKBaS5+06jVF9TRsAZkhM+f9qPWNGKxkG?=
+ =?us-ascii?Q?Y2LdO2wGZgFJe7dmjnja1gnDURNhLu+WCbNAKijZDdGFEJl7UQRO6Cr7lMEe?=
+ =?us-ascii?Q?P8efjxEA23QvTlBjGHROHQU5ZGyL0zQjIKmub4V8?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/18] Add audio support for the MediaTek Genio 350-evk
- board
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- Lee Jones <lee@kernel.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Conor Dooley
- <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
- Catalin Marinas <catalin.marinas@arm.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- linux-arm-kernel@lists.infradead.org, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>, Flora Fu <flora.fu@mediatek.com>,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- Nicolas Belin <nbelin@baylibre.com>, Fabien Parent <fparent@baylibre.com>,
- Sumit Semwal <sumit.semwal@linaro.org>, Will Deacon <will@kernel.org>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <53671deb-9c11-43c1-8deb-93fe4708651a@collabora.com>
-Content-Language: en-US
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <53671deb-9c11-43c1-8deb-93fe4708651a@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-Hi Angelo
-
-On 26/02/2024 15:54, AngeloGioacchino Del Regno wrote:
-> Il 26/02/24 15:01, Alexandre Mergnat ha scritto:
->> This serie aim to add the following audio support for the Genio 350-evk:
->> - Playback
->>    - 2ch Headset Jack (Earphone)
->>    - 1ch Line-out Jack (Speaker)
->>    - 8ch HDMI Tx
->> - Capture
->>    - 1ch DMIC (On-board Digital Microphone)
->>    - 1ch AMIC (On-board Analogic Microphone)
->>    - 1ch Headset Jack (External Analogic Microphone)
->>
->> Of course, HDMI playback need the MT8365 display patches [1] and a DTS
->> change documented in "mediatek,mt8365-mt6357.yaml".
->>
->> [1]: 
->> https://lore.kernel.org/all/20231023-display-support-v1-0-5c860ed5c33b@baylibre.com/
->>
->> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> 
-> Actually, I am cooking a series (I'm finishing the testing....) that 
-> brings quite
-> a bit of cleanups in MTK ASoC, including the commonization of the 
-> machine driver
-> probe, with the dai-link DT nodes, and which also modernizes most of the 
-> existing
-> drivers to use that instead.
-> 
-> If you wait for a day or two, your mt8365-mt6357.c driver's probe 
-> function can be
-> shrunk to ~3 lines or something like that.. very easily :-)
-
-Just to inform you. I'm aware of your serie. Currently, I've fixed my 
-patches according to the comments. The next step will be to rebase my 
-serie over yours and do the changes to be aligned with your new 
-implementation.
-
-I've planned to review your serie during my last task, but it seems 
-already approved and already (partially) merged into linux-next, sorry.
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4474.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67efe4c6-f510-4553-96a3-08dc4f0f2cd2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 10:09:37.4237
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yRoHNjFp3gGIw0aDk4FOiPNztoSqtNOgQRnWnsdWWCOXzAa78TQ98D7hIIRhuiqulzGM1ZyXrI76EJXhpp7m2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR18MB3945
+X-Proofpoint-GUID: YEjKUNIFnjrGSaRDdy_LkimgwtIg-FXC
+X-Proofpoint-ORIG-GUID: YEjKUNIFnjrGSaRDdy_LkimgwtIg-FXC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_10,2024-03-27_01,2023-05-22_02
 
 
--- 
-Regards,
-Alexandre
+Hi,
+
+> In rvu_map_cgx_lmac_pf() the 'iter', which is used as an array index, can
+> reach value (up to 14) that exceed the size (MAX_LMAC_COUNT =3D 8) of the
+> array.
+> Fix this bug by adding 'iter' value check.
+>=20
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>=20
+
+Since it is a fix, please add "net" to the subject.
+
+Thanks,
+Hariprasad k
+> Fixes: 91c6945ea1f9 ("octeontx2-af: cn10k: Add RPM MAC support")
+> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> index 72e060cf6b61..e9bf9231b018 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> @@ -160,6 +160,8 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+>  			continue;
+>  		lmac_bmap =3D cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
+>  		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx)
+> {
+> +			if (iter >=3D MAX_LMAC_COUNT)
+> +				continue;
+>  			lmac =3D cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
+>  					      iter);
+>  			rvu->pf2cgxlmac_map[pf] =3D cgxlmac_id_to_bmap(cgx,
+> lmac);
+> --
+> 2.30.2
+
 
