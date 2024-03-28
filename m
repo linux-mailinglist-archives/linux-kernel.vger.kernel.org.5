@@ -1,141 +1,250 @@
-Return-Path: <linux-kernel+bounces-123125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDD6890279
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:59:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62BFA890272
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:58:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3CBF2948D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:59:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10E02295890
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E36312EBCC;
-	Thu, 28 Mar 2024 14:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BC380028;
+	Thu, 28 Mar 2024 14:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="P7J32uYm"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETd01BtU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A5C22086
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BF47E56E;
+	Thu, 28 Mar 2024 14:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637947; cv=none; b=q8/c3W0dvFXiOBEqYmWUYmgZJyYLqD58rpK6faBdJvpOlzcw8kD8Hx76KPpaVR3d1W3jZ+YuHgIsyLMbVTDUPQ+clMAmEVEdJMITp+L+heQxg7QHIpB66JZ1CixX4gOW+hYeKfzKZAcWN6QvOAIAsFZJDMoabP3X3RFOB+0Y0GQ=
+	t=1711637905; cv=none; b=bEdZi38Vbjy3IYRQFJZbj67qOzLJeazDoxyd7dp55eZ7Q3s/ogyUwJYjC27t32zAj2ADktGZyYituwIA+fUMmUOUSbis3483VtzMIMrKdBT9WkqsWaN1ChlIwIDQ0FkLoROnKquhEibzy4i/50e10yTCIClpWe5hH2TKJyOPr8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637947; c=relaxed/simple;
-	bh=pqcTdZsas/L2lLLi0r0tZaLc/T481Gjhve2hnITnqOg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HTLGv3cV7B2B1UNN0+LP5vuYt10it/Q7UePKIWFvNMplrB4og0t/MFx7ZO9IdRSApeFh2E3DMQNrIfigHSZjoNy6yovMRbe1Jic8xVlsFSx/7xOn6fqWeSJMr8alv4nbhZkNEqORrkZraggKd795EfekxGE/qdlk5Hr0X6UOJGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=P7J32uYm; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1711637945; x=1743173945;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pqcTdZsas/L2lLLi0r0tZaLc/T481Gjhve2hnITnqOg=;
-  b=P7J32uYmKLn+d2GvrhWvLtmV9erO0xdXjL5FkkON8gogFbxqum/WuR+p
-   balfZv3S1DkHyukT7Qi1pyselk9lAfwrTciDsM7mSL3JU2qX4jVKTGjjM
-   vIwX32MCW6HfsdL9R/pq3OWrw3qd59zA71aDzZaU2iLPBv8y6xAMuePPI
-   IawtDn5WyYZ55nouOvjLftsMmRyQWOhJ5QAhgqr+tXWntQRb6T1R11e+b
-   O1FX1oy3jl3cECkg1fLH90WajDGlJ3ZfWyykPHHuKrGuc6CjjszxQxxT2
-   WDRT3u8Z2UOTCJH6fbgbznw40et8nvA4ugGox8z+l5WwJUDk+fJZgBJAP
-   A==;
-X-CSE-ConnectionGUID: aoxufTLkQWq9+1EyrDTJqA==
-X-CSE-MsgGUID: owMpyAaSQPuHzpD0jAx60Q==
-X-IronPort-AV: E=Sophos;i="6.07,162,1708412400"; 
-   d="asc'?scan'208";a="19071180"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Mar 2024 07:58:58 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 07:58:45 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 28 Mar 2024 07:58:42 -0700
-Date: Thu, 28 Mar 2024 14:57:54 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Christoph =?iso-8859-1?Q?M=FCllner?= <christoph.muellner@vrull.eu>
-CC: Andrew Jones <ajones@ventanamicro.com>, Conor Dooley <conor@kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Palmer
- Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Philipp Tomsich
-	<philipp.tomsich@vrull.eu>, =?iso-8859-1?Q?Bj=F6rn_T=F6pel?=
-	<bjorn@kernel.org>, Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-	Heiko Stuebner <heiko@sntech.de>, Cooper Qu <cooper.qu@linux.alibaba.com>,
-	Zhiwei Liu <zhiwei_liu@linux.alibaba.com>, Huang Tao
-	<eric.huang@linux.alibaba.com>, Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH 2/2] riscv: T-Head: Test availability bit before enabling
- MAEE errata
-Message-ID: <20240328-issuing-crouton-3448aba81b64@wendy>
-References: <20240327103130.3651950-1-christoph.muellner@vrull.eu>
- <20240327103130.3651950-3-christoph.muellner@vrull.eu>
- <20240327-imperfect-washbowl-d95e57cef0ef@spud>
- <20240327-77a6b64153a68452d0438999@orel>
- <CAEg0e7jyGZV3+04HNYzgfHMGYT9wV_c0A=ekpCRi3L-5yjxK=w@mail.gmail.com>
+	s=arc-20240116; t=1711637905; c=relaxed/simple;
+	bh=KE28sO4h/UaOjEn9eEmHuxOAJzdiKt3XKrBSNlZvEK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K2LwD2JlV2mjWHDIZ2L9hAxhOEl/+R4DNHnbWAK8MrOW77q6352BAkkS8A8j8ne7lAtqWEUU/xfB3ayDMT4UBFk4NcZ0FKGq1H9/AJ2knt1mf16//+oms1MSFpHvw8tfsmo4nZkLlNVKK+hNwMZpg2aTBERC2rFrujuUyeLDJ1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETd01BtU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EF32C433C7;
+	Thu, 28 Mar 2024 14:58:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711637904;
+	bh=KE28sO4h/UaOjEn9eEmHuxOAJzdiKt3XKrBSNlZvEK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ETd01BtUu1iBbG7kPAosbZdnMWU0YU79BNgBeIFaA4NqD0ZG7SQSIw09tYMePW+bG
+	 HRc258xosQbqXItAV0nMZt+X3XenYrjIN5y1q/kD8ox/WQr7BkZnl6bckqCUdLnqn7
+	 QONob5QYEc1JvvaEqohC3GJ5DV+lDSR+GCaEVufqpGHXEWRXNJxBmSe/4a7WG34VKr
+	 6Keu2ioXEp4oKiuf/mWA68tsI40khBx/IrooKVj3xA3QzqevVyyE29KgFDDaYkVSLK
+	 rclLH0oyd3nvaBwId5sqrtqKF+XsiYIZJ5+Zc4F/yOAoRVd0N9uxisyYkO2QDx0Fpv
+	 X92pGfkorGY6A==
+Date: Thu, 28 Mar 2024 14:58:19 +0000
+From: Simon Horman <horms@kernel.org>
+To: Hariprasad Kelam <hkelam@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
+	davem@davemloft.net, sgoutham@marvell.com, gakula@marvell.com,
+	jerinj@marvell.com, lcherian@marvell.com, sbhatta@marvell.com,
+	naveenm@marvell.com, edumazet@google.com, pabeni@redhat.com
+Subject: Re: [net-next Patch] octeontx2-af: map management port always to
+ first PF
+Message-ID: <20240328145819.GN403975@kernel.org>
+References: <20240327160348.3023-1-hkelam@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DnbhxEf6LbaydUMs"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEg0e7jyGZV3+04HNYzgfHMGYT9wV_c0A=ekpCRi3L-5yjxK=w@mail.gmail.com>
+In-Reply-To: <20240327160348.3023-1-hkelam@marvell.com>
 
---DnbhxEf6LbaydUMs
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 27, 2024 at 09:33:48PM +0530, Hariprasad Kelam wrote:
+> The user can enable or disable any MAC block or a few ports of the
+> block. The management port's interface name varies depending on the
+> setup of the user if its not mapped to the first pf.
+> 
+> The management port mapping is now configured to always connect to the
+> first PF. This patch implements this change.
+> 
+> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
 
-On Thu, Mar 28, 2024 at 03:18:22PM +0100, Christoph M=FCllner wrote:
+Hi Hariprasad and Sunil,
 
-> Switching from th.mxstatus to th.sxstatus should address all mentioned co=
-ncerns:
-> * no dependency on OpenSBI changes
-> * no break of functionality
-> * no need for graceful handling of CSR read failures
-> * no need to differentiate between HW and emulation (assuming QEMU
-> accepts the emulation of th.sxstatus)
+some feedback from my side.
 
-Yah, th.sxstatus seems ideal here, provided it is accepted by QEMU - but
-if they allow th.mxstatus I would hope emulating th.sxstatus would be
-okay too.
+> ---
+>  .../net/ethernet/marvell/octeontx2/af/mbox.h  |  5 +-
+>  .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 60 +++++++++++++++----
+>  2 files changed, 53 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> index eb2a20b5a0d0..105d2e8f25df 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> @@ -638,7 +638,10 @@ struct cgx_lmac_fwdata_s {
+>  	/* Only applicable if SFP/QSFP slot is present */
+>  	struct sfp_eeprom_s sfp_eeprom;
+>  	struct phy_s phy;
+> -#define LMAC_FWDATA_RESERVED_MEM 1021
+> +	u32 lmac_type;
+> +	u32 portm_idx;
+> +	u64 mgmt_port:1;
+> +#define LMAC_FWDATA_RESERVED_MEM 1019
+>  	u64 reserved[LMAC_FWDATA_RESERVED_MEM];
+>  };
+>  
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> index 72e060cf6b61..446344801576 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> @@ -118,15 +118,40 @@ static void rvu_map_cgx_nix_block(struct rvu *rvu, int pf,
+>  		pfvf->nix_blkaddr = BLKADDR_NIX1;
+>  }
+>  
+> -static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+> +static bool rvu_cgx_is_mgmt_port(struct rvu *rvu, int cgx_id, int lmac_id)
+> +{
+> +	struct cgx_lmac_fwdata_s *fwdata;
+> +
+> +	fwdata =  &rvu->fwdata->cgx_fw_data_usx[cgx_id][lmac_id];
+> +	if (fwdata->mgmt_port)
+> +		return true;
+> +
+> +	return false;
 
-> Also note that DT handling would be difficult, because we need to probe b=
-efore
-> setting up the page table.
+nit: I think this could be more succinctly expressed as:
 
-IIRC the kaslr seed is also read from DT prior to calling the early
-alternatives stuff, so while it would be a bit more annoying than usual
-I do think it is possible. My (naive) hope here though is that we don't
-actually have to deal with this scenario though, as things like the c908
-support Svpbmt as well as the maee version. For the k230 the plan is
-to use both Zicbom and Svpbmt rather than the non-standard T-Head
-alternatives:
-https://lore.kernel.org/all/tencent_DF5D7CD182AFDA188E0FB80E314A21038D08@qq=
-=2Ecom/
+	return !!fwdata->mgmt_port;
 
-Cheers,
-Conor.
+> +}
+> +
+> +static void __rvu_map_cgx_lmac_pf(struct rvu *rvu, int pf, int cgx, int lmac)
+>  {
+>  	struct npc_pkind *pkind = &rvu->hw->pkind;
+> +	int numvfs, hwvfs;
+> +	int free_pkind;
+> +
+> +	rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
+> +	rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
 
---DnbhxEf6LbaydUMs
-Content-Type: application/pgp-signature; name="signature.asc"
+This isn't strictly related to this patch, but here
+it seems implied that pf is not negative and <= 63, as
+rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] is only 64 bits wide.
 
------BEGIN PGP SIGNATURE-----
+So firstly I wonder if pf should be unsigned
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgWFcgAKCRB4tDGHoIJi
-0ln8AP9fysABFrgqy3Okgc9O+ecA2rywWKxbBMYuyaLnrMihuAEA6mmXJ/4phDg3
-D6YcC7uR47skvTGO9rKNLSUVk0G0bwE=
-=rLay
------END PGP SIGNATURE-----
+> +	free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
+> +	pkind->pfchan_map[free_pkind] = ((pf) & 0x3F) << 16;
 
---DnbhxEf6LbaydUMs--
+Here pf is masked off so it is not more than 63.
+But that seems to conflict with the assumption above that it is <= 63.
+
+If there is a concern about it being larger, it should be
+capped in the for loop that calls __rvu_map_cgx_lmac_pf() ?
+
+> +	rvu_map_cgx_nix_block(rvu, pf, cgx, lmac);
+> +	rvu->cgx_mapped_pfs++;
+> +	rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvfs);
+> +	rvu->cgx_mapped_vfs += numvfs;
+> +}
+> +
+> +static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+> +{
+>  	int cgx_cnt_max = rvu->cgx_cnt_max;
+>  	int pf = PF_CGXMAP_BASE;
+>  	unsigned long lmac_bmap;
+> -	int size, free_pkind;
+>  	int cgx, lmac, iter;
+> -	int numvfs, hwvfs;
+> +	int size;
+>  
+>  	if (!cgx_cnt_max)
+>  		return 0;
+> @@ -155,6 +180,24 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+>  		return -ENOMEM;
+>  
+>  	rvu->cgx_mapped_pfs = 0;
+> +
+> +	/* Map mgmt port always to first PF */
+> +	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
+> +		if (!rvu_cgx_pdata(cgx, rvu))
+> +			continue;
+> +		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
+> +		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
+> +			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu), iter);
+> +			if (rvu_cgx_is_mgmt_port(rvu, cgx, lmac)) {
+> +				__rvu_map_cgx_lmac_pf(rvu, pf, cgx, lmac);
+> +				pf++;
+> +				goto non_mgmtport_mapping;
+> +			}
+> +		}
+> +	}
+> +
+> +non_mgmtport_mapping:
+> +
+>  	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
+>  		if (!rvu_cgx_pdata(cgx, rvu))
+>  			continue;
+> @@ -162,14 +205,9 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+>  		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
+>  			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
+>  					      iter);
+> -			rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
+> -			rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
+> -			free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
+> -			pkind->pfchan_map[free_pkind] = ((pf) & 0x3F) << 16;
+> -			rvu_map_cgx_nix_block(rvu, pf, cgx, lmac);
+> -			rvu->cgx_mapped_pfs++;
+> -			rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvfs);
+> -			rvu->cgx_mapped_vfs += numvfs;
+> +			if (rvu_cgx_is_mgmt_port(rvu, cgx, lmac))
+> +				continue;
+> +			__rvu_map_cgx_lmac_pf(rvu, pf, cgx, lmac);
+>  			pf++;
+>  		}
+>  	}
+
+There seems to be a fair amount of code duplication above.
+If we can assume that there is always a management port,
+then perhaps the following is simpler (compile tested only!).
+
+And if not, I'd suggest moving the outermost for loop and everything
+within it into a helper with a parameter such that it can handle
+the (first?) management port on one invocation, and non management
+ports on the next invocation.
+
+ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+ {
+ 	struct npc_pkind *pkind = &rvu->hw->pkind;
+ 	int cgx_cnt_max = rvu->cgx_cnt_max;
+-	int pf = PF_CGXMAP_BASE;
++	int next_pf = PF_CGXMAP_BASE + 1;
+ 	unsigned long lmac_bmap;
+ 	int size, free_pkind;
+ 	int cgx, lmac, iter;
+@@ -158,10 +167,20 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+ 	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
+ 		if (!rvu_cgx_pdata(cgx, rvu))
+ 			continue;
++
+ 		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
+ 		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
++			int pf;
++
+ 			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
+ 					      iter);
++
++			/* Always use first PF for management port */
++			if (rvu_cgx_is_mgmt_port(rvu, cgx, lmac))
++				pf = PF_CGXMAP_BASE;
++			else
++				pf = next_pf++;
++
+ 			rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
+ 			rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
+ 			free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
 
