@@ -1,80 +1,103 @@
-Return-Path: <linux-kernel+bounces-123823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F4202890E75
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:21:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99CC3890E79
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2027C1C27D79
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:21:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 068A1B23118
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:23:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F3E132810;
-	Thu, 28 Mar 2024 23:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6A7135A50;
+	Thu, 28 Mar 2024 23:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JtGNv6OW"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HsUzo0Dx"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7199C13A251
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 23:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCFA3F9EA;
+	Thu, 28 Mar 2024 23:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711668053; cv=none; b=ibeUr9bSwUt8MwaPuOxHfIAx0bOdAdYo3SFXVxubKrHAZRFQ8yiCUJ01y9rHKSJM9mpLD9Gh8wK1o1pKLQI383uQQNCfJN7ScUjVmB79+I09zBQeKGKGjBACJs4EK2OsW9LI8x2NmlHJ8RtaDpLnSOPd2bE+HG6lrM70+8rOQSA=
+	t=1711668206; cv=none; b=GgPpP40mfkaA5eElv27qi2lZ2ZZKEqQimNI+jYR0ZtnWeLk7ELCEr92RH0oYsQa5bGD/GlTcgxtiNEiJvwmuu3mRpB1rE3+cKyztc7V+rE4LH2QZgyHFtPVPsrzBYQ2LpVkAotYvk1wFFPTgy8I7kznZJHlSd7UDgHa7wMuyYA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711668053; c=relaxed/simple;
-	bh=kXI/N2EFthFpwFqaePA7PW8txr3uYOT4NocqWhJIaVE=;
+	s=arc-20240116; t=1711668206; c=relaxed/simple;
+	bh=f+Fn0IVd1CXhIBMUfKxmbY6PpiZuXCT5Jwa6jncWG1c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GctMjp2YwOfyd0U8wT9keO398F2LZ6oUNpjmN7zoDo+E/kW+2Oe8k43V3knZz4ZMx4szRn0cto6rNa9/Rsmlfqk6di5dzQQzl1KBoXaLf4Uho1LpMy0unFCuoOPOFS9D4jdm07UG7I3RwDbmFYTyfClPRukEnDZsTkh7hC+2i1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JtGNv6OW; arc=none smtp.client-ip=209.85.166.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3688b72d08cso4846125ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:20:51 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=j/fSNAuRKHY70oeLFpbQJrkOQRTZC74Rzd3F80pUUEO2pdKpxCWohIHCt10bBhMJg1N7mIHCaOFObjJs39ogovKHht08nLs41pUVcJgHN5bgIqf1pywJhHubkXP3ANBwoFKSOjVThNGlSfT0FPfGfhkJUzA3PGv7Ss0PoeDPeoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HsUzo0Dx; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so1327639b3a.1;
+        Thu, 28 Mar 2024 16:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711668050; x=1712272850; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711668204; x=1712273004; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mGHsh+olpz09agSrZ5PVuqusbfa5vJRT4mSuRZDIFFk=;
-        b=JtGNv6OW60benBDqGVPZ3bqUhmh1j9GPfvO64R5YyWGeS/asRttAdCexm+qDjKEgk1
-         gu9hOIl4AZ2woWGIcCRSURdvQI6dbJzb24zXdPNP6sPf58B40/1kDPu3iMFldCxQLn1P
-         bVLzhMDCt/sYBmlvK+yxyVI0HKmsc6WEXr5T7Lcsyfm12tP8ZP2mRmP1V8wv0FuTsEql
-         5N1vO0Co3mH9UAd16cUh0HF/80+Kmq5oW+vBfZqllmyeqs7p7PgdFLTh9BEeT78xiRJd
-         gyw6CjjQ7P9eUZkUfA0zm2ZJvUipY8oDiW/FJtoOlHSCdV0SadsxZ5PW2wlZ8oMeKp2L
-         j1ow==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pjgXiS9mThv24KOLFrcYAxjGt4bSxcV19+6gwf0UgxU=;
+        b=HsUzo0Dxh1VYe4WWFqSmxN/uGTbMb4jeaLMWzKxAivvIRD0w2fi3P21vdDhPCAd8xw
+         vkJnbMUX1GuJsC6Mzsp1HqFfwL5ahrzWcPHk8o2qSStAvMj/h5JQYNWY6biSAcYU4/0T
+         LBu5TKHZzLpoQj5YcH8oeDLzYw3ZQerXZhWbwSazCn8ltQDYdZn3oAq7InXrK1w2cIJ/
+         7InQeSASODFeYc+z9kAgFJEq+P/MKRJqSvgo+OTSdAFHazZ6v1zLaO3OfRfxGD+C7iUe
+         Was0zY43K57AYYD1x9NfgcH7KJd/fCXC0WSt81ebZ5sDGlVTGZxWl1kkq9T6ZBLOM7Fb
+         O0lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711668050; x=1712272850;
+        d=1e100.net; s=20230601; t=1711668204; x=1712273004;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mGHsh+olpz09agSrZ5PVuqusbfa5vJRT4mSuRZDIFFk=;
-        b=vRMDFyem3I9nO3tztgaYLP6PKHw4eeMFXoBDzis9tGsoMxbMD5IJrZaco7Y2NvuWD7
-         oI9lerwDZMIuhhQj95IF7qBj4aaIZqzzXbRg0pOgwKj3i007Tk7vlHfxkiMcrw4sZ4qG
-         tI4SZTP/GouD1xzgHAqObYQbDmO9Xa5bCYPbrvaqHa4iRgg0xlVZiczm3GLRYPFIILQ1
-         msyNj0dvFVCrSwBRU8H1ETNiEsKys9NtsWk5mX1ApCDkbvqS/hR3go/BFDDOzRF7FSH6
-         29IxDmciBiy2E4IoDpCNTHFNzSwEgfTUqJzuYGWY/gX4eRYf3EGkezG5JN9JZKgyddLT
-         w+hQ==
-X-Gm-Message-State: AOJu0YzxysQoRzZESgV+52k2GJQOwEkH7MZ6H5QFN+trsiUR4ZTCKmp6
-	KU7XMUHbrrLZhT24elOB3t0305jX9NxLyuAJs0y2DVG2kCP7XOOiuxTpa/XCaw==
-X-Google-Smtp-Source: AGHT+IHj/RmxrwmmPniOkZLAq0PRG8Xgl98+vXzJdUNCAQfEqB2x3mGWkMwhUJC1dVUoP0aEft3VFw==
-X-Received: by 2002:a05:6e02:3210:b0:368:a85d:2060 with SMTP id cd16-20020a056e02321000b00368a85d2060mr554729ilb.31.1711668050548;
-        Thu, 28 Mar 2024 16:20:50 -0700 (PDT)
-Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
-        by smtp.gmail.com with ESMTPSA id p3-20020a92d683000000b00368ad50d9e5sm715627iln.41.2024.03.28.16.20.49
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pjgXiS9mThv24KOLFrcYAxjGt4bSxcV19+6gwf0UgxU=;
+        b=BZhyGagJTBWm047299r0wwnleZ6YGjF0nfBOOTO5bz7t3xuTjwPfcEGniZBG9W8Hle
+         oPXcnBfDqLwCuYXddeQrBd3uWfLndmaCEpUiHuCcFceVPPFYuS54EblFyNAnUdRi7D4k
+         2llGqxXodgUIeNOTSFnrO9TXc+YtRYHAdlFru8cex4zptPLHq2JxbvKjOJwfGz62dmRW
+         8eaOeINZzAMQ4VUCgGVSIsnw4lpr7oPlsQHn8mRZHQVvtYQd5UDbsJjZHgKDXPoiGdSL
+         uCvczGotbLh0YOYoW79WhKySGuw04VzzXG381i0jbnGS3utCt63jfGWQPzcKc2gvYfsy
+         BofQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNRAFsaUFyMf+wds197nQJULS2/AKiVooK0hu2LNbcpptbNq+nVLSMZbBrdqaJs984/prRz+3GTl4DQYclPkiaUZzt74Qs2dQbGETLsXFQNJzHfzJAuv6+dQngVSnIrRm/xP2C3XOr3D8mWM+DSOJNjbEi8Te7w2OaCGbpv5RYxlEkKgQf8urZ2ReANN1WD4DTMNqHNdM4YjqzFg==
+X-Gm-Message-State: AOJu0YzXM9fsVEc/cc39dLqXHxbJrNgcrqqKcuryKpArpf4/n+yKaIgi
+	sromWI4DFK1ilTOI9MN0HO3gejLtxWL84vO9AVXE6pBukvZOwMlG
+X-Google-Smtp-Source: AGHT+IED4+zMpS52gRLtiDL2tuGN2olL7XAhhBJZ5TcYamtrSCl87g6jlNerqqK47bJO7a629WacbA==
+X-Received: by 2002:a05:6a00:9284:b0:6ea:c2ef:3b71 with SMTP id jw4-20020a056a00928400b006eac2ef3b71mr927159pfb.20.1711668203684;
+        Thu, 28 Mar 2024 16:23:23 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id e5-20020aa79805000000b006eac9c54f7csm1968972pfl.96.2024.03.28.16.23.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 16:20:49 -0700 (PDT)
-Date: Thu, 28 Mar 2024 23:20:47 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Robert Moore <robert.moore@intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Alexey Starikovskiy <astarikovskiy@suse.de>, 
-	Lin Ming <ming.m.lin@intel.com>, Len Brown <len.brown@intel.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH 06/11] acpi: avoid warning for truncated string copy
-Message-ID: <qjjr3joytboeadlax7ws3j3nxiflkbcclikl4z2pezpfyj2oup@ytyzgxoyihyw>
-References: <20240328140512.4148825-1-arnd@kernel.org>
- <20240328140512.4148825-7-arnd@kernel.org>
+        Thu, 28 Mar 2024 16:23:23 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 28 Mar 2024 13:23:22 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+Message-ID: <ZgX76nX2NfcxuYb8@slm.duckdns.org>
+References: <20240327-ccb56fc7a6e80136db80876c@djalal>
+ <20240327225334.58474-1-tixxdz@gmail.com>
+ <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
+ <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+ <ZgWv19ySvoACAll4@slm.duckdns.org>
+ <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
+ <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
+ <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
+ <ZgXallkHApJC-adM@slm.duckdns.org>
+ <CAADnVQLSDOfKccynu2jt-7=8nJqoLtoNkRchvHo1NCUEYOQJ7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,86 +106,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328140512.4148825-7-arnd@kernel.org>
+In-Reply-To: <CAADnVQLSDOfKccynu2jt-7=8nJqoLtoNkRchvHo1NCUEYOQJ7Q@mail.gmail.com>
 
-Hi,
+Hello,
 
-On Thu, Mar 28, 2024 at 03:04:50PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Mar 28, 2024 at 02:28:51PM -0700, Alexei Starovoitov wrote:
+> > > So filename will be one of cgroup_base_files[].name ?
+> > > We probably don't want psi or cgroup1_base_files in there.
+> >
+> > Would it matter?
 > 
-> gcc -Wstringop-truncation warns about copying a string that results in a
-> missing nul termination:
+> Few weak reasons:
+> . cgroup_psi_files have show/write/poll/release which
+>   doesn't map to this bpf_cgroup_knob_write/read ?
+> . cgroup1_base_files probably needs to a separate kfunc
+>   bpf_cgroup1_...
 > 
-> drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
-> drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
->    60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
->    61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > If the user has root perm, they can do whatever with the
+> > files anyway, so I'm not sure why we'd restrict any specific knob. Maybe we
+> > wanna make sure @filename doesn't include '/'? Or is it that you don't want
+> > to go through the usual file name look up?
 > 
-> This one is intentional, so rewrite the code in a way that avoids the
-> warning. Since there is already an extra strlen() and an overflow check,
-> the actual size to be copied is already known here.
->
-I also tried cleaning these up but Kees informed me that this subsystem
-is maintained elsewhere:
+> yeah. why do a file lookup? The names are there in the array.
+> cgroup pointer gives that "relative path" and knob name is the last
+> part of such "path". Easy to search in that array(s).
 
-https://lore.kernel.org/all/202308241612.DFE4119@keescook/
+Difficult to tell without looking at the implementation but I don't have
+strong opinions. The interface makes sense to me and as long as we can hook
+it up in a reasonably way, it should be okay. We can always change internal
+implementation later if necessary.
 
-I am not sure if you can get changes through by the traditional means.
+Thanks.
 
-> 
-> Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/acpi/acpica/tbfind.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
-> index 1c1b2e284bd9..472ce2a6624b 100644
-> --- a/drivers/acpi/acpica/tbfind.c
-> +++ b/drivers/acpi/acpica/tbfind.c
-> @@ -36,7 +36,7 @@ acpi_tb_find_table(char *signature,
->  {
->  	acpi_status status = AE_OK;
->  	struct acpi_table_header header;
-> -	u32 i;
-> +	u32 len, i;
->  
->  	ACPI_FUNCTION_TRACE(tb_find_table);
->  
-> @@ -46,19 +46,18 @@ acpi_tb_find_table(char *signature,
->  		return_ACPI_STATUS(AE_BAD_SIGNATURE);
->  	}
->  
-> -	/* Don't allow the OEM strings to be too long */
-> -
-> -	if ((strlen(oem_id) > ACPI_OEM_ID_SIZE) ||
-> -	    (strlen(oem_table_id) > ACPI_OEM_TABLE_ID_SIZE)) {
-> -		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> -	}
-> -
->  	/* Normalize the input strings */
->  
->  	memset(&header, 0, sizeof(struct acpi_table_header));
->  	ACPI_COPY_NAMESEG(header.signature, signature);
-> -	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-> -	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-> +	len = strlen(oem_id);
-> +	if (len > ACPI_OEM_ID_SIZE)
-> +		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> +	memcpy(header.oem_id, oem_id, len);
-> +	len = strlen(oem_table_id);
-> +	if (len > ACPI_OEM_TABLE_ID_SIZE)
-> +		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-> +	memcpy(header.oem_table_id, oem_table_id, len);
->  
->  	/* Search for the table */
->  
-> -- 
-> 2.39.2
-> 
-Thanks
-Justin
+-- 
+tejun
 
