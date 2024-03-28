@@ -1,180 +1,119 @@
-Return-Path: <linux-kernel+bounces-122814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23DE88FDC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:08:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1420688FDCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8CD228A018
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1B732975EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CEF47E0FB;
-	Thu, 28 Mar 2024 11:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABEF7E0E5;
+	Thu, 28 Mar 2024 11:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwBZUIWX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SF/KD1cn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B189651A1;
-	Thu, 28 Mar 2024 11:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 308EC374EF
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 11:11:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711624117; cv=none; b=mZq5nQqSd5emAFkG8nI7mDOc2yao8/2zOYE9r5iFTCfhgmCz+83cFDCwvbeXpbwPo+XU9oaDvDTFTeVc5YPZmHifTK3HT+gBxlaEcOtxb3LJgjYvgApzHIYP0oTkj7+PB33I4GHR8XpAS9+Dt6ebD6GNCTkG+DTs2YOYdDH0KKg=
+	t=1711624274; cv=none; b=fUcsdkpbKawakoIliGOylTF8CWuXMMDek2yzf+yW5eRK9RDCb57eBvvYdP6CrAm6RUMnyCDJn+6OJvRAMnXWUzUJK/YOrAoQXF0beTRvUOJL2UnihGcIP++oldfXiuZZmwwk3s6yWHTwMQM4M11Tnx1voA09DVITdUY3dxmOKXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711624117; c=relaxed/simple;
-	bh=W8rjrD7Btmne8moGwzQxQpMrc2o8aOPxid/YQsai9Ms=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A7bL+7gWuATmVTwZnNJNpdIpxwrreBVeBnRf4mvA/EyZ01Kvtpw4qcWqHvInpH0YdyFystWLXeVRw/5MpSTNd0nEDRti+ei98a9UjYNPOyi2XoR0zcNYFCjATYZhDTNCaOqQ7vj2s8WtblQPEpSEwVKuEgPjRQF32As2p/S5s/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kwBZUIWX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8AC4C433F1;
-	Thu, 28 Mar 2024 11:08:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711624117;
-	bh=W8rjrD7Btmne8moGwzQxQpMrc2o8aOPxid/YQsai9Ms=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kwBZUIWX0HFIq68joUOA1btWoHTQ9PVTNAMoUQO+CZq9WHL6JbHI7eKQwZ7a0YzR4
-	 60t/NUND1FP7zoM+hemJKci5oeDkFEPxT5ujao9xd23jOS2PhPiE/F6LpyyJlQ0a6p
-	 axkHPPARRXmpx72Xsv19zoMocjI1uTeuOnPEbNeslwn6Die9j0UHgOjWKARNTTy3oF
-	 yio/m4dCV1FtJ88kfBIHk2YLh7urVeWUAjQBIF7AkRhVa/1mk30dWaAvgnD0TkR7QW
-	 JoCP9bXPpIvzUoQRYWLV53azoXTacPYkCzMUgflIVGA74SVeWSUWmEfazF2Vwa6j56
-	 QowjaYb5MbPgQ==
-Date: Thu, 28 Mar 2024 12:08:31 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Roberto Sassu <roberto.sassu@huawei.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
-	CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@manguebit.com>, 
-	Christian Brauner <christian@brauner.io>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Paul Moore <paul@paul-moore.com>, 
-	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>, 
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
-Subject: Re: kernel crash in mknod
-Message-ID: <20240328-raushalten-krass-cb040068bde9@brauner>
-References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
- <20240324054636.GT538574@ZenIV>
- <3441a4a1140944f5b418b70f557bca72@huawei.com>
- <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
- <cb267d1c7988460094dbe19d1e7bcece@huawei.com>
- <20240326-halbkreis-wegstecken-8d5886e54d28@brauner>
- <4a0b28ba-be57-4443-b91e-1a744a0feabf@huaweicloud.com>
+	s=arc-20240116; t=1711624274; c=relaxed/simple;
+	bh=0sjnUhGSLWF4zdEeCOtICFa6SD4hLB0WrMWUZ010M2M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ap7ixnps3bpeEWIit8ZfgowAeEsnceqQKgDf+CDT2fL38sx3p9ZcPJ7Wb5tubRDfhSMLVwlCJphO9yqjzrsdkx/wghqoh4t0UAFOowVS3nH3IKdlczzLakNnvH1H+u++AEbPmloioyMaGUzRq7lNRTa7xdBas8h0F6V6zY/I8cQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SF/KD1cn; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711624273; x=1743160273;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=0sjnUhGSLWF4zdEeCOtICFa6SD4hLB0WrMWUZ010M2M=;
+  b=SF/KD1cnq7+1T1miHqS+0y0yBtfMX3zWu46E2Ro54sFs95q9E2kobvtg
+   BzT4L7CeaOwmoGwXgNHgPBaI5AaCWQamvPs7f4vL2nWWhZ0Zj822nY01X
+   ngM/0KAG0FZ6hz3tOIOeA1Pym1i5IVLL3IPDkEEUa4cUv4f+ZdXYoReay
+   ahyh9o/MAooHkSUQlnfwet6SXPSqQQrp2NoSjzRqRoJr6OePs5cSvsS9T
+   mkZ9y9791W0MO9jW4eG/QVjNIX+jsrehv/iSbHr8+dVOAfT7LF6pczIwy
+   fk9rVmTlGjrM47yXQ01cW6t/XcYG0jo7KqP9u86x0dp3ImW6V3z2sPtUC
+   w==;
+X-CSE-ConnectionGUID: HJs1G2kCR3+vymIbbrFUbA==
+X-CSE-MsgGUID: by14qiRnSx6Lzh4fnqEPhQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="18205792"
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="18205792"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 04:11:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="17229579"
+Received: from abdulqaf-mobl2.amr.corp.intel.com (HELO localhost) ([10.252.57.138])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 04:11:09 -0700
+From: Jani Nikula <jani.nikula@intel.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Hamza Mahfooz <hamza.mahfooz@amd.com>,
+ Javier Martinez Canillas <javierm@redhat.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Geert
+ Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] drm: DRM_WERROR should depend on DRM
+In-Reply-To: <87msqkhhts.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <631a1f4c066181b54617bfe2f38b0bd0ac865b68.1711474200.git.geert+renesas@glider.be>
+ <87msqkhhts.fsf@intel.com>
+Date: Thu, 28 Mar 2024 13:11:06 +0200
+Message-ID: <87jzlmfw6t.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4a0b28ba-be57-4443-b91e-1a744a0feabf@huaweicloud.com>
+Content-Type: text/plain
 
-On Thu, Mar 28, 2024 at 12:53:40PM +0200, Roberto Sassu wrote:
-> On 3/26/2024 12:40 PM, Christian Brauner wrote:
-> > > we can change the parameter of security_path_post_mknod() from
-> > > dentry to inode?
-> > 
-> > If all current callers only operate on the inode then it seems the best
-> > to only pass the inode. If there's some reason someone later needs a
-> > dentry the hook can always be changed.
-> 
-> Ok, so the crash is likely caused by:
-> 
-> void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry
-> *dentry)
-> {
->         if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> 
-> I guess we can also simply check if there is an inode attached to the
-> dentry, to minimize the changes. I can do both.
-> 
-> More technical question, do I need to do extra checks on the dentry before
-> calling security_path_post_mknod()?
+On Tue, 26 Mar 2024, Jani Nikula <jani.nikula@intel.com> wrote:
+> On Tue, 26 Mar 2024, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+>> There is no point in asking the user about enforcing the DRM compiler
+>> warning policy when configuring a kernel without DRM support.
+>>
+>> Fixes: f89632a9e5fa6c47 ("drm: Add CONFIG_DRM_WERROR")
+>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> D'oh! My bad.
+>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-Why do you need the dentry? The two users I see are ima in [1] and evm in [2].
-Both of them don't care about the dentry. They only care about the
-inode. So why is that hook not just:
+And pushed to drm-misc-next. Thanks for the patch!
 
-diff --git a/security/security.c b/security/security.c
-index 7e118858b545..025689a7e912 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1799,11 +1799,11 @@ EXPORT_SYMBOL(security_path_mknod);
-  *
-  * Update inode security field after a file has been created.
-  */
--void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
-+void security_inode_post_mknod(struct mnt_idmap *idmap, struct inode *inode)
- {
--       if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-+       if (unlikely(IS_PRIVATE(inode)))
-                return;
--       call_void_hook(path_post_mknod, idmap, dentry);
-+       call_void_hook(path_post_mknod, idmap, inode);
- }
+BR,
+Jani.
 
- /**
+>
+>> ---
+>>  drivers/gpu/drm/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>> index f2bcf5504aa77679..2e1b23ccf30423a9 100644
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -423,7 +423,7 @@ config DRM_PRIVACY_SCREEN
+>>  
+>>  config DRM_WERROR
+>>  	bool "Compile the drm subsystem with warnings as errors"
+>> -	depends on EXPERT
+>> +	depends on DRM && EXPERT
+>>  	default n
+>>  	help
+>>  	  A kernel build should not cause any compiler warnings, and this
 
-And one another thing I'd like to point out is that the security hook is
-called "security_path_post_mknod()" while the evm and ima hooks are
-called evm_post_path_mknod() and ima_post_path_mknod() respectively. In
-other words:
-
-git grep _path_post_mknod() doesn't show the implementers of that hook
-which is rather unfortunate. It would be better if the pattern were:
-
-<specific LSM>_$some_$ordered_$words()
-
-[1]:
-static void evm_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
-{
-        struct inode *inode = d_backing_inode(dentry);
-        struct evm_iint_cache *iint = evm_iint_inode(inode);
-
-        if (!S_ISREG(inode->i_mode))
-                return;
-
-        if (iint)
-                iint->flags |= EVM_NEW_FILE;
-}
-
-[2]:
-static void ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
-{
-        struct ima_iint_cache *iint;
-        struct inode *inode = dentry->d_inode;
-        int must_appraise;
-
-        if (!ima_policy_flag || !S_ISREG(inode->i_mode))
-                return;
-
-        must_appraise = ima_must_appraise(idmap, inode, MAY_ACCESS,
-                                          FILE_CHECK);
-        if (!must_appraise)
-                return;
-
-        /* Nothing to do if we can't allocate memory */
-        iint = ima_inode_get(inode);
-        if (!iint)
-                return;
-
-        /* needed for re-opening empty files */
-        iint->flags |= IMA_NEW_FILE;
-}
-
-
-
-> 
-> Thanks
-> 
-> Roberto
-> 
-> > For bigger changes it's also worthwhile if the object that's passed down
-> > into the hook-based LSM layer is as specific as possible. If someone
-> > does a change that affects lifetime rules of mounts then any hook that
-> > takes a struct path argument that's unused means going through each LSM
-> > that implements the hook only to find out it's not actually used.
-> > Similar for dentry vs inode imho.
-> 
+-- 
+Jani Nikula, Intel
 
