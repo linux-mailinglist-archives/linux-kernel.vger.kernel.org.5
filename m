@@ -1,153 +1,142 @@
-Return-Path: <linux-kernel+bounces-122506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06F9388F8C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:31:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E423B88F8CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:32:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6D32298CB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:31:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 848751F22054
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF34F535C8;
-	Thu, 28 Mar 2024 07:30:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712202C6B8;
-	Thu, 28 Mar 2024 07:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D20537F7;
+	Thu, 28 Mar 2024 07:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gcYWJotu"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E32F2561F;
+	Thu, 28 Mar 2024 07:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711611035; cv=none; b=TVDzjvxOSf5nCoa/W3OCF//T6pcmZclSTa+xSjNHn5A+Li8NqF5wPbhSUV+kw95P8VZj1R9mtgZORkHCCism9kvLD3T0MTcoayjwsq0ZTSxhHNwzr8QEGNEQfGLT3UvAM4zmMfxrptX5Pk1zPR38uGziGonCON8pX9YdEjfvjs4=
+	t=1711611101; cv=none; b=l35qVSooQJgulXf8OEKXM4ee0eiW9zEiabwibizv6f8FKhsfkL2kBsAFdsaSVFGnwEn/j5SNqdoECfx+4U/wzWExWXSMbiYW1R5710zGqQWe24Zt57/6WWij+zk0Y4X16uKXZLVUG59umzXIyA3yrmEdXTITyXfMyzhZ9bFyVQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711611035; c=relaxed/simple;
-	bh=3exzUqajDFk/5+jRBK0S4zTkjn1GxyDjBzP18yJnkn0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aRgY1xop8AhtIAnyMgLSyKUYWVuvff3GuhzBE5ry/o4ChEyAbf2jEL2g1NIpMf4onKMw0vO2o0JcxfcXW3h8eIzruFM76FFULHcIt9fSw0lGXlIftpWrQS8wUxmF0qTzeeOF0+OhvhrDuvPgKOwwpTAT2QzB7tLjbXzMxdZzwms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D1A02F4;
-	Thu, 28 Mar 2024 00:31:06 -0700 (PDT)
-Received: from [10.57.73.83] (unknown [10.57.73.83])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B2123F64C;
-	Thu, 28 Mar 2024 00:30:30 -0700 (PDT)
-Message-ID: <b4d1cb26-f49a-4f5e-9059-8bc87baba5e3@arm.com>
-Date: Thu, 28 Mar 2024 07:30:29 +0000
+	s=arc-20240116; t=1711611101; c=relaxed/simple;
+	bh=UiexvZQWK+4Yc+SMZ9M3zHpPBZVoEYHrn9anANb9C5w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d5Fm6ImLcHPV6UYzlsQeYNsjvAQufCBZvBPsa210F2htuofaAshATEDf/2A5+yv08JlFkWpjmTYRAyXYwW6T0YT/0SU5eCH/gYnEQ9pXljqsRinJCl/lnkDFftrLbeUWzIEzBr/O7AtKnfMOcFBuMtBpAoSVFpTIrHmgldSXXD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gcYWJotu; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vttzHoZOnFV3RpiKvH6mM16x2BnNpMVa6ppcy7eNO+k=; b=gcYWJotuQVW8GYZ0l03Qd1Y7Rx
+	geRqzubUVBuSA9E2/DAQoiPMRqhx1n9l+w28Wiufj/ZAExFJaqfwavTjC8gzuWje1jZN2jUSkE+qE
+	Q15FOsZFQN2b0luQEwgHnGe7lzK15zDdvK7FQjfmrbwwmVTazNYcBHn8mWmTha+YKF08jxIWc0REQ
+	+8EyFi9U6Gl0G+TAuZmP4Qd6h8HYQgYngvPlmHvo3Jo8XSRKsSWUmgiFQ8nfw+lmfCUH+lF0bMRBm
+	3NB7t68iGeniQOu1nPNBlIsx+leXTDUB9ZbdcRiTXuwjN/rjZyp29U3bvNZvER0Ozv/NSab0o7bxJ
+	CYLe7RCQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpkEV-0000000CslI-1PHG;
+	Thu, 28 Mar 2024 07:31:31 +0000
+Date: Thu, 28 Mar 2024 00:31:31 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Christoph Hellwig <hch@infradead.org>, shakeel.butt@linux.dev,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <ZgUc07Szbx5x-obb@infradead.org>
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-3-almasrymina@google.com>
+ <ZfegzB341oNc_Ocz@infradead.org>
+ <CAHS8izOUi6qGp=LSQb_o5oph-EnhNOuhLkPSfbQRU3eniZvbdA@mail.gmail.com>
+ <ZgC5JoSiWAYf3IgX@infradead.org>
+ <CAHS8izO5-giYhM1bVCLLOXRXq-Xd0=pi0kPq5E1-R=3i=XihmQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND][PATCH v2 3/4] PM: EM: Add em_dev_update_chip_binning()
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, sboyd@kernel.org, nm@ti.com,
- linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
- rafael@kernel.org, viresh.kumar@linaro.org, krzysztof.kozlowski@linaro.org,
- alim.akhtar@samsung.com, m.szyprowski@samsung.com, mhiramat@kernel.org,
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20240322110850.77086-1-lukasz.luba@arm.com>
- <20240322110850.77086-4-lukasz.luba@arm.com>
- <eb9f48f6-cca8-405b-82a2-352893a79f14@arm.com>
- <30ee98e9-3d9a-4be8-8127-043f68a7dcb1@arm.com>
- <410c5da7-c79c-4607-9aa3-2e78d991d2d7@arm.com>
- <9f2f5c94-cc9f-4a16-9b70-f00598af8cab@arm.com>
-Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <9f2f5c94-cc9f-4a16-9b70-f00598af8cab@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHS8izO5-giYhM1bVCLLOXRXq-Xd0=pi0kPq5E1-R=3i=XihmQ@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
+On Tue, Mar 26, 2024 at 01:19:20PM -0700, Mina Almasry wrote:
+> 
+> Are you envisioning that dmabuf support would be added to the block
+> layer
 
+Yes.
 
-On 3/28/24 07:21, Dietmar Eggemann wrote:
-> On 27/03/2024 13:55, Dietmar Eggemann wrote:
->> On 26/03/2024 21:32, Lukasz Luba wrote:
->>>
->>>
->>> On 3/26/24 10:09, Dietmar Eggemann wrote:
->>>> On 22/03/2024 12:08, Lukasz Luba wrote:
->>
->> [...]
->>
->>>>> +    return em_recalc_and_update(dev, pd, em_table);
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(em_dev_update_chip_binning);
->>>>
->>>> In the previous version of 'chip-binning' you were using the new EM
->>>> interface em_dev_compute_costs() (1) which is now replaced by
->>>> em_recalc_and_update() -> em_compute_costs().
->>>>
->>>> https://lkml.kernel.org/r/20231220110339.1065505-2-lukasz.luba@arm.com
->>>>
->>>> Which leaves (1) still unused.
->>>>
->>>> That was why my concern back then that we shouldn't introduce EM
->>>> interfaces without a user:
->>>>
->>>> https://lkml.kernel.org/r/8fc499cf-fca1-4465-bff7-a93dfd36f3c8@arm.com
->>>>
->>>> What happens now with em_dev_compute_costs()?
->>>>
->>>
->>> For now it's not used, but modules which will create new EMs
->>> with custom power values will use it. When such a module have
->>> e.g. 5 EMs for one PD and only switches on one of them, then
->>> this em_dev_compute_costs() will be used at setup for those
->>> 5 EMs. Later it won't be used.
->>> I don't wanted to combine the registration of new EM with
->>> the compute cost, because that will create overhead in the
->>> switching to new EM code path. Now we have only ~3us, which
->>> was the main goal.
->>>
->>> When our scmi-cpufreq get the support for EM update this
->>> compute cost will be used there.
->>
->> OK, I see. I checked the reloadable EM test module and
->> em_dev_compute_costs() is used there like you described it.
-> 
-> I had a second look and IMHO the layout is like this:
-> 
-> Internal (1) and external (2,3) 'reloadable EM' use cases:
-> (EM alloc and free not depicted)
-> 
-> 1. Late CPUs booting (CPU capacity adjustment)
-> 
->   e3f1164fc9ee  PM: EM: Support late CPUs booting and capacity adjustment
-> 
->   schedule_delayed_work(&em_update_work, ...)
-> 
->    em_update_workfn()
->     em_check_capacity_update()
->      em_adjust_new_capacity()
->       em_recalc_and_update()       <-- (i)
->        em_compute_costs()          <-- (ii)
->        em_dev_update_perf_domain() <-- external
-> 
-> 2. Reload EM from driver
-> 
->   22ea02848c07  PM: EM: Add em_dev_compute_costs()
->   977230d5d503  PM: EM: Introduce em_dev_update_perf_domain() for EM
->                 updates
-> 
->   em_dev_compute_costs()           <-- external
->    em_compute_costs()              <-- (ii)
->   em_dev_update_perf_domain()      <-- external
-> 
-> 3. Chip binning
-> 
->   this patchset  PM: EM: Add em_dev_update_chip_binning()
-> 
->   em_dev_update_chip_binning()     <-- external
->    em_recalc_and_update()          <-- (i)
->     em_compute_costs()             <-- (ii)
->     em_dev_update_perf_domain()    <-- external
-> 
-> 
-> 
-> 
+> (which I understand is part of the VFS and not driver specific),
 
-Yes, that's correct.
+The block layer isn't really the VFS, it's just another core stack
+like the network stack.
+
+> or as part of the specific storage driver (like nvme for example)? If
+> we can add dmabuf support to the block layer itself that sounds
+> awesome. We may then be able to do devmem TCP on all/most storage
+> devices without having to modify each individual driver.
+
+I suspect we'll still need to touch the drivers to understand it,
+but hopefully all the main infrastructure can live in the block layer.
+
+> In your estimation, is adding dmabuf support to the block layer
+> something technically feasible & acceptable upstream? I notice you
+> suggested it so I'm guessing yes to both, but I thought I'd confirm.
+
+I think so, and I know there has been quite some interest to at least
+pre-register userspace memory so that the iommu overhead can be
+pre-loaded.  It also is a much better interface for Peer to Peer
+transfers than what we currently have.
+
 
