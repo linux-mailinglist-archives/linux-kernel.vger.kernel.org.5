@@ -1,152 +1,230 @@
-Return-Path: <linux-kernel+bounces-123676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC02D890C82
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:29:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAC1A890C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:30:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78CDC29283D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:29:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D7BDB23564
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E24413B294;
-	Thu, 28 Mar 2024 21:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C1313AD2E;
+	Thu, 28 Mar 2024 21:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q815/UKF"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=epam.com header.i=@epam.com header.b="m4GVqbP8"
+Received: from mx0b-0039f301.pphosted.com (mx0b-0039f301.pphosted.com [148.163.137.242])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA0813A244;
-	Thu, 28 Mar 2024 21:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711661346; cv=none; b=tTxZ8tHF/8tkQ2vw9raAeofoSaQbT0c2gM9zSyryf3eIVQu5EdfBaIIlMRmBfp0tlRJ20tLfJuiMvlw9AgfNEK6fNV6sgezv4W6qU0cOGJBCYW/YwGJi7IeqQlbhgQJksaaNJ4OLwjKAka8l3MdwuU9YyKmuwcNxHpVHLVHUqic=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711661346; c=relaxed/simple;
-	bh=fu9vUyiydStv12IrbMDN19YasY8MTA7HLFJT94T3dNY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KC4mmtA4yD2P/l6oXss3CISRulBgFlo6JIIA9Mlg1UOuJUTUcm4par3dxGqCmSbk6VwG/7KQQaP7PMq7nV4YQQVtWNGb+876R3GbjUnzSxPYCeUQ8bHsFDMXg6WLLZzSG0KMSNP+htmdtOeAIEmWc+Cpfm5H436AaG1KxYE99WY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q815/UKF; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33ed6078884so1365193f8f.1;
-        Thu, 28 Mar 2024 14:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711661343; x=1712266143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7rZ5v4VYB7xFxkylJdxU/zw8gdhhfD99ak8fXt5M6cs=;
-        b=Q815/UKFhLZgHH2DPzS7HNK8+2Kw8u7gnSGggT3Yc2LTSITyeD8UrF0SCh9A0NwGyw
-         Bakn/NtkGmXfHWiFvyKaY0S/27xmG6lsRMspt+GNkL4XHej0mgwHTgP8t2O7ww5K6SHl
-         u/g4luUdSl7hXuS/uQd1Qotq20z9mb4Alp5bz9DoEO0wtEw5rV/qtM3WoDCtM+N40D4G
-         y4uVUSbPOoQPY1WxF5SObSZp20AuD4ERNaXVQtZIo+C1KO3cPLruDc6zEd0O1AeT8e+l
-         3nInnEWmxYLFdfWRLPNdTr4zgtruOmY0InsOu0ueJBhjJL8XB4w1cnSRLcuCdZHSbctc
-         sASQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711661343; x=1712266143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7rZ5v4VYB7xFxkylJdxU/zw8gdhhfD99ak8fXt5M6cs=;
-        b=r+C+EfMrsHpBQORYSxqRWSiAlSniXsZEA/hdv2lG0p8xW8gRzkbh07335OF/dLV3tW
-         67d0pQRX0mlH1/j9rBetNRGb0b1oT1b4FJFLWtUY8A0g1DLt5ktxXzEiaKAvybvcpGDD
-         6oks55LorDf3V3uO4RWDq8QaDvUcO4N0eEJENb/hHYX3woHwQg6dDATh2CJD8bdy92iF
-         DhoqxxxfHaFKgeeesOZQ/G7RKpF53mDbxrHltu9y0B0odk4jHnMbAYB3pFH0tAAMt0Xr
-         IEkX0FnfdS6oltUpxybmeaZB/Km16awfDkN1PZHGE2tu+JI9dKD4oB57cAJfGLaYzHAD
-         mPLg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJBBt3duXQK07lAchJ1gmKVEe20UjjCSl2WgiDM7lHwjh5qb9K6WaDxSN8ZnhYBkfNcdX7+ffaQQS8esT0BqGSdSCQAMZ+Lx+5Hcg95o7MW+oZVMrCjn3Bgnl0OMmWaddPWE/KJt4xySjvz1oQkfgYlIG5X0PQXNUPGcR4coE7D3bM5OaYv0NJ/IdMZr3Ub9J+n9iYclUag9iT4g==
-X-Gm-Message-State: AOJu0YxgEzRCct6JP53fDhO/N/Ra5Mca5MXytm2ALRkW1Gr7ppq0LDV+
-	wObdDVLV4YEvh/8Bd4TjdtiBz+j3eVbq08ys/twrOG6MM3uV8OLCR36w6kY21n+/CTyMN2hdLLH
-	Xu4KwHrbfz7B8Ewr7uAj14oM0hQs=
-X-Google-Smtp-Source: AGHT+IFzIhW2YQyUd9cAOcumnuAgNA8lL7LVX7R3nvoZOS1vxlZNbuJ3S0Kc3PqSPmS2+VvmBf1rEWus56RvmsoxrqI=
-X-Received: by 2002:adf:e606:0:b0:342:d5ac:c712 with SMTP id
- p6-20020adfe606000000b00342d5acc712mr609862wrm.7.1711661342976; Thu, 28 Mar
- 2024 14:29:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CF213A244;
+	Thu, 28 Mar 2024 21:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.137.242
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711661417; cv=fail; b=UiboTsBkS/RObI+QBCWn+/JHHh+5gEd9GWZpRT9xzgprsKfgMnODKK066nYa9xNrbwwr03aImqqxGxRpBdKbtCvOFiYrtVCjJoT0nJABrtsgw1P4O0dPM8+2vI918sPniZu180pw/O/EyqvOmX7X9oLXzSM2+q+zU998N16HqJo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711661417; c=relaxed/simple;
+	bh=JFOqYtoRoC/qpd6wZqPe2GARO2f71sc+HGoxXXI7LWY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ls0RUyPd8W+cyooKjA7Rq2beNPDhnuCRFDJxVCWkMZZjU6b5tyzc2i0JSwNcShManMJJJZIlCyiiHuvqxQ11ivih8xHtwDYFb+MhqLJCGFX9ZTxsglJ1Ve9WNPDkzmcxZ1XmwPhMf+61HHonaV0YH0AtdiUGWK57KmaZtgxMIEY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=epam.com; spf=pass smtp.mailfrom=epam.com; dkim=pass (2048-bit key) header.d=epam.com header.i=@epam.com header.b=m4GVqbP8; arc=fail smtp.client-ip=148.163.137.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=epam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=epam.com
+Received: from pps.filterd (m0174680.ppops.net [127.0.0.1])
+	by mx0b-0039f301.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SFFik1021850;
+	Thu, 28 Mar 2024 21:29:59 GMT
+Received: from eur04-vi1-obe.outbound.protection.outlook.com (mail-vi1eur04lp2051.outbound.protection.outlook.com [104.47.14.51])
+	by mx0b-0039f301.pphosted.com (PPS) with ESMTPS id 3x5b1qh3d7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 21:29:58 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OYUZ+o8a+GAgIlGn9Jmmj7XvOGmCBkTDmqemboI6xjRC9wKZxiLz3TXDR93/CssQ4Xy+NGWKedlGpDFcg3+1r/VwSdmCwbsV/w6/qER7BVd+PJ08DDrWtNeFea3df8ReqcaqSpnHonzoWYNLoEDLaKyMKnVQ8TmBbE92ucFRDPvdVIlx6a5KUUggcte8Rx+5OKfJALaAj7ewQiLopMzfuVX1tF0H05+qVxAqY8v8u21+vHGE3i4QoQQ1NpGsr9bB1Y0CzTRj+NYub1Yw/rCRKMZ3Hn/CF4rWsp7tbXxwf5u9th2A4nB+778YhvRTNlT02nlJQU+3gsQIZEZXX1NFBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JFOqYtoRoC/qpd6wZqPe2GARO2f71sc+HGoxXXI7LWY=;
+ b=And1uP/gENMiQehcWLClXkGe6pTKngk7VQQA/OFQQ7qmHPH3Vu4sxJiJZWsVioyy38gxxscFv8zQwrKz5rBurrwJcrJWY/r9NuUOAxky/8auq2fvF0TXtBzshHM1uh0WeKWzJI54ku8ebMLeOOMD8Pyk8mz/jNITjhJLQaD2sqyOggCIKSYvzk5RKI34wjz1+ZvYigZRF4DNdynlylqrAcGA0RBSk6qvPBFiDUB1CrxRNAGCO2gqjn8lEw0z4DSXO53JhYmDM+FYGWgsO0Hbx/3KfDauoNRPZpJP4ndlIFlh9kRaal/kpEAQ/KRFJg4XDFZ9v6TsOlDccPUjwvJLkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
+ dkim=pass header.d=epam.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JFOqYtoRoC/qpd6wZqPe2GARO2f71sc+HGoxXXI7LWY=;
+ b=m4GVqbP87oiiUFpmxpAzSezKz3X2cxfqH2GietX+XEZu9XrjGS/KlzSggYgY4kF0p4l1G8DypXdTgHoqUJPZA+XXVAo1pwbzGc6ENrhIskIMejlrQ1t7AXrJ+/x0wAqvhlWTZITFmILHV9ifiDRtsmF9bew/ot++TAQIMnacX+Mr21pyZ/fMDlHY8x8abeKEuEFg45LsHMu/cpBX0xytLpb84//Cyql3t+yspR8MIWgg1eJRwbpcg+oUOzq7FRemBULaA3XsEU2hRDzA63Yx7ICsTXh3/b8w51zbOjLh2gKDRw2U6mdpAsSuhCyECjacH2Z0ryv3g2JjZoQ4Cf5oVQ==
+Received: from GV1PR03MB10456.eurprd03.prod.outlook.com
+ (2603:10a6:150:16a::21) by AM0PR03MB6292.eurprd03.prod.outlook.com
+ (2603:10a6:20b:15e::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
+ 2024 21:29:55 +0000
+Received: from GV1PR03MB10456.eurprd03.prod.outlook.com
+ ([fe80::74c9:2488:1dd7:b976]) by GV1PR03MB10456.eurprd03.prod.outlook.com
+ ([fe80::74c9:2488:1dd7:b976%3]) with mapi id 15.20.7409.028; Thu, 28 Mar 2024
+ 21:29:53 +0000
+From: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
+To: Caleb Connolly <caleb.connolly@linaro.org>
+CC: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob
+ Clark <robdclark@gmail.com>
+Subject: Re: [PATCH] soc: qcom: cmd-db: map shared memory as WT, not WB
+Thread-Topic: [PATCH] soc: qcom: cmd-db: map shared memory as WT, not WB
+Thread-Index: AQHagIKviCrPH112HEOpsjr5BCtYWLFMDkOAgAAEYgCAAAGHAIAAJ/GAgAFvKoA=
+Date: Thu, 28 Mar 2024 21:29:52 +0000
+Message-ID: <8734sayrhs.fsf@epam.com>
+References: <20240327200917.2576034-1-volodymyr_babchuk@epam.com>
+ <e0586d43-284c-4bef-a8be-4ffbc12bf787@linaro.org> <87a5mjz8s3.fsf@epam.com>
+ <f4ebe819-9718-42c3-9874-037151587d0c@linaro.org>
+ <cd549ee8-22dc-4bc4-af09-9c5c925ee03a@linaro.org>
+In-Reply-To: <cd549ee8-22dc-4bc4-af09-9c5c925ee03a@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: mu4e 1.10.7; emacs 29.1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GV1PR03MB10456:EE_|AM0PR03MB6292:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ pOS1N4O3P7rQ4nm8cP3RakkVIsTsk9lZXEjFRAzBTn+qd9rkl34fRCnV69KVEr8VjCK1Jtcv0IHrLjkVcR+cBjRCwI/ue+ufXzrTyQUDvTH//YaewEHwhtqLzSu8N9GnkUXL6z+9MjKhhkJR0QXLHaeXqFpQHVcVu/m8JmcElGEfUYalk3nbN5nh1IxW8NAKsI3VeCcVX+WsAewxUnaU66kXbjcLJSpsvD3tS9Gs13S67zNUtBxKwf5zjNUE/d8yLGgUG0YZvbi24zp9hiV+Wf3RmdRb8CPU5gKwJF1J16m8ke3drnaiEeMYL28conEFPyjh/NMdvrZTxHwHlEcAj3Tk6PlKQlSCh6jlD0nyYFOijV1G5khbVVlEOZf93112cx7NDU+5N5aVawDVGvxtqNC1CjYaQ3q64X220Cc0cN9myooh36aTZSWJfHfKys6VErJ1LF9s2bBJh4u1y1jh2Okf5faaLAEdngXOKMigIRv8F4p3wcQeBdTAiGpAJjv5MQPiKuufYpQheaMpAVlOThpI2IDABTcuQRRjaylB+Qpu/89ydTUiiMl4tM54mifQTBIAymqy9SmDlC2PHicPprMuylm6uzFq7J0GxtnK2YfW/BY8+fT+MyctavjFOvwOzQ11GU271GjA53KMqKSUDednqX79xriaYmj+/I8D0dE=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR03MB10456.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?iso-8859-1?Q?9YkavmRa74ZHCRFuFE4SEyQ+ctavZcRYb7bbU2r2AJFiNtqnZOQdn2sN3r?=
+ =?iso-8859-1?Q?q+SZIY0QjdWz1vWKqAbozn19AwDFZPG/9UeovLx364MxlEheJ+yG8DTBau?=
+ =?iso-8859-1?Q?JNWBOk0SW1ZvH7nWMDdVmPhv2mLa0Mr/0Ivxjj7cB5pUMQfMkAT3U44/CP?=
+ =?iso-8859-1?Q?r0m5chpjzkViu2C5PpPdWwEOZGCeDDG15cI7q6KKsB6BVu+IGxvARIlww9?=
+ =?iso-8859-1?Q?H8WmSTAocZjjCl1awH0S+jyy57RnQ9BcT/E7NvYPD4+R52sorQMBzVa8tP?=
+ =?iso-8859-1?Q?6qreJi0d9IXDXojIW448ccvcE+NdMn/XhuMhV+xAT95Njg1d1DZEktH4Ff?=
+ =?iso-8859-1?Q?EMwxvOxiHihId3SzS6R/VBRNr7KVxJeRBe50PgH0WP9CdgtZqA4bsCBuoW?=
+ =?iso-8859-1?Q?SzntUEzbmMqOF2/Z240jSu/FUPEXIi1V3/fiYaKzUBjoR5ATstk/XkXRDs?=
+ =?iso-8859-1?Q?vxLagia0yimRpsmNWzVN1skXI/BkwDbFLzSqJaRnii5armjhFL6bQpKyDB?=
+ =?iso-8859-1?Q?YhtKhA635RxOYARrjIKE5VXd0buV4YSn2f+bIYmyyTY5qP0S+JgUVZF/Xf?=
+ =?iso-8859-1?Q?MlutLBdp7vR10C+bqDwCPJtSGmf2JRgYq/pRhlxD/xn1Z0Od5zo6ByxcTI?=
+ =?iso-8859-1?Q?UFmN56GJ52K1XXNESUj2DikV+OJS6B4jlYEIA/GzwWtLzGqt3blx8WYxN+?=
+ =?iso-8859-1?Q?+1L0pXTWLddafon9PLadTrzwFH1IUlcolfmvxTepE5niAzs77YlczSGx3k?=
+ =?iso-8859-1?Q?uEjyvuny30TrTdwP8aEdpL3kWBdINJkqVtoJMhfE1FuwZAv9ElN7guBUEN?=
+ =?iso-8859-1?Q?67z3oqHt3iaMmhqtWJP3hCDaxvhQcEDJX9qqZUVHWTU1ZdwAP+To4dxKlt?=
+ =?iso-8859-1?Q?Ulo3ktUk/oySTblfGIDSc8uH4FK+CI8v0NiZpEKNzmsoBSX9UTwyfJDXOj?=
+ =?iso-8859-1?Q?1EA3Mu/TizslCVouvYQcZMa7RL80EkIrFda+DltnQMgIp7pRTvgwEf44vX?=
+ =?iso-8859-1?Q?+kgm6YokNVn9DueHQlhOD9Fh8JibJeKWczDwknfWu9PL0UFDuJdNppuPdK?=
+ =?iso-8859-1?Q?Oq1V4ZO6wPqVEKoiLaIRs8mb/n9hUJNf7J++vmA1obANKYAERwgU38l107?=
+ =?iso-8859-1?Q?CE3NdzT70QAY9Pli6IE0/NeY8ZJ5Uc6ZPk56iXvsRyR084/88ykTV4jZwI?=
+ =?iso-8859-1?Q?3nvG66MlQs2pPGiBZYMMcOfW7y7DkO9h3juMivt8EdDoB7YcZHx7zXl8EP?=
+ =?iso-8859-1?Q?tI+Ex6gKt57C+u+RcMHswnyAWo/Mq4vw5UAJ690qj5wJdf0sE5GNQIkwJI?=
+ =?iso-8859-1?Q?RyTsSPD1AceogEL0WJUxN8v8Q+kQ2jIfQy0YV4eugEjf7H2YDj16b+9ZgI?=
+ =?iso-8859-1?Q?y+jFNY5fkglnlUdg4Nz5+xhaALsLMlvq5LDu+elax2EktSBKIY23xO++vS?=
+ =?iso-8859-1?Q?yDgh2wo7GkVGKiGETwtjc8MZSkH4nv1OQfQ75U/49Z+2UN7hjoUKRc8FdO?=
+ =?iso-8859-1?Q?ab/0GQQGA5VymiKHj+2SX0n13SO1uQ/djfmE8/1uT1WPQmO2FcPFFXGVaU?=
+ =?iso-8859-1?Q?2Pu+sAjOTX5P6RKvVBSgpd6lEWtXYtxYLEw1++uJpont7Lhetgh3CRfZui?=
+ =?iso-8859-1?Q?hViUKmh3bQD89iFA6wFsyvaR9d7AlcGuM7UzULEgg1twcb8moAzW0h2Q?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
- <ZgWnPZtwBYfHEFzf@slm.duckdns.org> <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
- <ZgWv19ySvoACAll4@slm.duckdns.org> <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
- <ZgXMww9kJiKi4Vmd@slm.duckdns.org> <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
- <ZgXallkHApJC-adM@slm.duckdns.org>
-In-Reply-To: <ZgXallkHApJC-adM@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 28 Mar 2024 14:28:51 -0700
-Message-ID: <CAADnVQLSDOfKccynu2jt-7=8nJqoLtoNkRchvHo1NCUEYOQJ7Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-To: Tejun Heo <tj@kernel.org>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: epam.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR03MB10456.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57c80102-5587-47a5-e3bc-08dc4f6e34b6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 21:29:52.9082
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yuEyPjaSh7ANvMOhRZrezKs9QrRMT493UypmMCYi7JpE77IX/MERQO9ip/d2vFAVhQVTAAl4cM0xCo1r5s9aik9gh8JGNDRmU+lTth6p/is=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB6292
+X-Proofpoint-GUID: 7HwnPVXuXLenJqOEP-_ZulGiwT-9F3tD
+X-Proofpoint-ORIG-GUID: 7HwnPVXuXLenJqOEP-_ZulGiwT-9F3tD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_17,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ phishscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 impostorscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ mlxlogscore=890 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403280154
 
-On Thu, Mar 28, 2024 at 2:01=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Thu, Mar 28, 2024 at 01:45:56PM -0700, Alexei Starovoitov wrote:
-> > On Thu, Mar 28, 2024 at 1:02=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > There's also cgroup.kill which would be useful for similar use cases.=
- We can
-> > > add interface for both but idk. Let's say we have something like the
-> > > following (pardon the bad naming):
-> > >
-> > >   bpf_cgroup_knob_write(struct cgroup *cgrp, char *filename, char *bu=
-f)
-> > >
-> > > Would that work? I'm not necessarily in love with the idea or against=
- adding
-> > > separate helpers but the duplication still bothers me a bit.
-> >
-> > I liked it.
-> > So filename will be one of cgroup_base_files[].name ?
-> > We probably don't want psi or cgroup1_base_files in there.
->
-> Would it matter?
 
-Few weak reasons:
- cgroup_psi_files have show/write/poll/release which
-  doesn't map to this bpf_cgroup_knob_write/read ?
- cgroup1_base_files probably needs to a separate kfunc
-  bpf_cgroup1_...
+Hi Caleb,
 
-> If the user has root perm, they can do whatever with the
-> files anyway, so I'm not sure why we'd restrict any specific knob. Maybe =
-we
-> wanna make sure @filename doesn't include '/'? Or is it that you don't wa=
-nt
-> to go through the usual file name look up?
+Caleb Connolly <caleb.connolly@linaro.org> writes:
 
-yeah. why do a file lookup? The names are there in the array.
-cgroup pointer gives that "relative path" and knob name is the last
-part of such "path". Easy to search in that array(s).
+> On 27/03/2024 21:06, Konrad Dybcio wrote:
+>> On 27.03.2024 10:04 PM, Volodymyr Babchuk wrote:
+>>>
+>>> Hi Konrad,
+>>>
+>>> Konrad Dybcio <konrad.dybcio@linaro.org> writes:
+>>>
+>>>> On 27.03.2024 9:09 PM, Volodymyr Babchuk wrote:
+>>>>> It appears that hardware does not like cacheable accesses to this
+>>>>> region. Trying to access this shared memory region as Normal Memory
+>>>>> leads to secure interrupt which causes an endless loop somewhere in
+>>>>> Trust Zone.
+>>>>>
+>>>>> The only reason it is working right now is because Qualcomm Hyperviso=
+r
+>>>>> maps the same region as Non-Cacheable memory in Stage 2 translation
+>>>>> tables. The issue manifests if we want to use another hypervisor (lik=
+e
+>>>>> Xen or KVM), which does not know anything about those specific
+>>>>> mappings. This patch fixes the issue by mapping the shared memory as
+>>>>> Write-Through. This removes dependency on correct mappings in Stage 2
+>>>>> tables.
+>>>>>
+>>>>> I tested this on SA8155P with Xen.
+>>>>>
+>>>>> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
+>>>>> ---
+>>>>
+>>>> Interesting..
+>>>>
+>>>> +Doug, Rob have you ever seen this on Chrome? (FYI, Volodymyr, chromeb=
+ooks
+>>>> ship with no qcom hypervisor)
+>>>
+>>> Well, maybe I was wrong when called this thing "hypervisor". All I know
+>>> that it sits in hyp.mbn partition and all what it does is setup EL2
+>>> before switching to EL1 and running UEFI.
+>>>
+>>> In my experiments I replaced contents of hyp.mbn with U-Boot, which gav=
+e
+>>> me access to EL2 and I was able to boot Xen and then Linux as Dom0.
+>>=20
+>> Yeah we're talking about the same thing. I was just curious whether
+>> the Chrome folks have heard of it, or whether they have any changes/
+>> workarounds for it.
+>
+> Does Linux ever write to this region? Given that the Chromebooks don't
+> seem to have issues with this (we have a bunch of them in pmOS and I'd
+> be very very surprised if this was an issue there which nobody had tried
+> upstreaming before) I'd guess the significant difference here is between
+> booting Linux in EL2 (as Chromebooks do?) vs with Xen.
 
-> > From the verifier pov 2nd arg can be "char *knob__str" and
-> > the verifier will make sure it's a constant NULL terminated string,
-> > so at runtime it will be easier to search cgroup_base_files array.
-> > And 'buf' can be: void *mem, int mem__sz with kfunc doing
-> > run-time validation that there a null there.
+It does not write, but I assume that direction is irrelevant in this
+case. AFAIK, CPU signals memory type to the bus for both reads and
+writes, just with different signals: ARCACHE[3:0] and AWCACHE[3:0].
+
 >
-> That all sound good.
->
-> Thanks.
->
-> --
-> tejun
+> Volodymyr: have you tried booting the kernel directly from U-Boot in
+> EL2? Can you confirm if this issues also happens then?
+
+Yes, behavior is exactly the same. It does not work with WB, but work
+with WC or WT.
+
+--=20
+WBR, Volodymyr=
 
