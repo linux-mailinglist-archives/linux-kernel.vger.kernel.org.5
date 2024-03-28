@@ -1,91 +1,84 @@
-Return-Path: <linux-kernel+bounces-123395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330128907E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:03:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA198907EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7BA41F265FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:03:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519151F266FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E39E131E4B;
-	Thu, 28 Mar 2024 18:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F9E131E59;
+	Thu, 28 Mar 2024 18:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KBYe1IuR"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFkxlUXh"
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB3C130E4F;
-	Thu, 28 Mar 2024 18:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED169130AF3;
+	Thu, 28 Mar 2024 18:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711649008; cv=none; b=dyU/VtFhpOR92I+0KQCg0Wd0yrLoGh2OZ2Lh00BbRBDRqACe/k59VwlWrynUaPg4SnDoUD1tikfow0TEBMWka4EjP02Vy7OVsmtpoGqxker0EpIr5b6mUeg+ycnzxkIKLeVMqKp95SxELjQoK1+H7EDwo6+mjny2i4QuRp3cLaA=
+	t=1711649127; cv=none; b=Kk6d93hnLCsUM+CCAwXT+y/1eySxAh+sGnA9kkrr4528zQNhA918xNcwN32iUdu04m61lW6c+whCXgdT1g+4jGTiF3AeiaMc9D/MV5q5pLCBvSxHYBog3Htj20BVlm6TNGLPkVcjF6Kz+fnL2yZV2YMnuDseq2LyPXwDucWXcgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711649008; c=relaxed/simple;
-	bh=vB1K3UeOU2FvgT3cwFX6bIQzHZMdAnkhCLXgIqkAx/8=;
+	s=arc-20240116; t=1711649127; c=relaxed/simple;
+	bh=aFSCjclxqeDyxNPG8CG1rNS3d6TVmOgwGEULmjQ33k8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FbOw8XRr/uUoq1XyqT92TUGozdvUVjvrI5qDf8CSs/PkJstqeMw8gbiLTUn17hUIN02+6QKPlxBInFaumPLuEGpynWD4XGzWn2eedcUdjhsjoh3/NcQQ+mkiQWONBiTQaqkN4yBOHP6PFJORKq5BHeSIOp6OMFuxxF/qLu3Uki8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KBYe1IuR; arc=none smtp.client-ip=209.85.214.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=gCINsIeTAl39NpGA+TijMMmCu+jCkF/4zM4J7dGWW0qplc/WJV4oAWOuKAUP8sx9nn934ZZPx8x9Mor/QaegE6HfADlWmIxE2zXA2NmSF3scYSYRzJdQXOCvHPJat7Y94IU/Bf/H6WfqyIq0G+sx+rSbONi0tNxbUGe78VSvx+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AFkxlUXh; arc=none smtp.client-ip=209.85.166.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0189323b4so8952565ad.1;
-        Thu, 28 Mar 2024 11:03:27 -0700 (PDT)
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-368aa96233bso5540895ab.3;
+        Thu, 28 Mar 2024 11:05:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711649007; x=1712253807; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711649125; x=1712253925; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=olSW0jWLIrC4vxY5yG21bb3i0NkpMQDJhW3rhvvrLzQ=;
-        b=KBYe1IuROmE5QJaTzVoQaJKqamXjGV+ZoaZINvIedkFJbRxlJ/mqbvTh1ZCwQBq6J1
-         eKgQi72FgBtA+MbOS8NsYACPBaML3XrszURM3eL0UO5e/wdMVGt08t3GlpbuAOeOZWf0
-         tDGJRAJ2AVVIXJRaEiXZSr84rInmQxtYktX3PwhcB/JZBtcdFbtvpo3T6jRGxibfvlhK
-         cFKiNTiS6OPpNAnwdgx3MXVP8CSCGlmr3HV16Tklx/ta0wHX3bs5h0xkYPkYVsY0tTOa
-         1ebnNtjiXgUf47ieun1IFa8/11CCqgQphZaj1ixRo7tCtCxQ7JdUWJ+Z9CxDe8A2PFDX
-         NnGw==
+        bh=K/sacnz72CwRH0otyTGzert8z0sn/i0tise2f/EaGiQ=;
+        b=AFkxlUXhxQ4uagL3m4z+FmOX9CseFAlOwucLW35YJaZf/EJMi8hhzcwx2VpwXmw1C3
+         trAdlBcN5GPx/ozFJT8sZtaUApbZbSHhC8ePhdPq6XDazgUGOKyzlAuBzSbD5FRM2KGt
+         haVSVcKwOQjfT1HDGUir495mYYEQAoVEVcLJ7vUheyaKlXnAjZ9bWUIulQi0lWn+v+zq
+         S1v7U8A5gNzs7YE5TQDCViLGZzR68/Bt8ebWc+x3YrrVn1TdioG4G5j2BSrQhx8q7yx9
+         3XgG4JqXyXk5q2eEKfJ0dGxithYdjpsy363HZhZdxwvCL//MqH2oxK2rpBcVJDNzf0Yk
+         8hRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711649007; x=1712253807;
+        d=1e100.net; s=20230601; t=1711649125; x=1712253925;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=olSW0jWLIrC4vxY5yG21bb3i0NkpMQDJhW3rhvvrLzQ=;
-        b=Q8eoUXFNkIT4je707nOq0ez1AeV82JMetCUtwr6XaE3onEdyS3/+oZq6VOn/Kj2YWQ
-         xzNkRLBc5i2uKjtY/VcdXnWlFgfdPlSiWSXFFbSxZNFsJZuLCIyfDCIkyd79D1Stbe2d
-         VMcxSSSE9stv3Pz0kGh29B31l63G6HPjkxcNT8JhCwN/lcpihg32fPe5UNl07dcU+7km
-         mgWqqcJh2X079ppDFEjdEgLU97UH/qAjSQsOIni0wuVLACbDl7WhaaQID8NGSWcO7Jc4
-         eUtv0uYYbGAd2TJI5ehIgxOoC6soAAkLyL+aMHdpObWQHVBXr8VSUUctUJzuLsCzL1g8
-         Ez2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXbzyQaPcO3Lp3AuGE2/093BgYKWEpochKA3214kbHkafMshD4X211+Hgfzssu96/UGsLvulQbPrmJe7vcHvqlhbTUAo3sq8E+THOOFIP6gcARjyT778rs3iISrKiZjerTXlkLQ3R5RBZG3nqFDULBhMXzQ5LLsa4z00mgqSGXlRGV7xnek4ijsGPOwnJnpsQiANsiBDI3L7NsS7ATIqb9oyWAwYB8F0Eh+0O0D9jNpjj+KiCp/vXVLGIZAug==
-X-Gm-Message-State: AOJu0Yz26g/twb8fwv3x9KV41Zi/J4WF6cgovgebK6LknKetP8h/rbrM
-	t/u9bUMTv93778apXMkl56rwXYISdKOK0402OzNrcxhmCnOLW8ZY
-X-Google-Smtp-Source: AGHT+IEkQsFT2CQ41glFYLpP1d3wFQ1n1mHU48V+X330fVWYW26kggF6SGZ6JUFwxozMX9FKu+ROTw==
-X-Received: by 2002:a17:902:ef48:b0:1e0:e2b1:7395 with SMTP id e8-20020a170902ef4800b001e0e2b17395mr283743plx.14.1711649006562;
-        Thu, 28 Mar 2024 11:03:26 -0700 (PDT)
+        bh=K/sacnz72CwRH0otyTGzert8z0sn/i0tise2f/EaGiQ=;
+        b=o0CYd/bwSUdPN4o1uexWSleRIfc9q5UEr2MX2WgD/NV9CSDpuBv7etWvlfFqO28SKx
+         CJaQr5kV/0tOjvec4gCl2Cq3QhdCIlcQqNri7RNZiyLQHKmubGjNeYHs/G+ydG29uMg2
+         vSrwEHrtRNz3mYnPbPD6IOhwvQrNsAwZ8Bw3rL8TtxCZKBzTs7bJVSV0g7IcM8H3GJ3Y
+         HZZcdvzbwFpl21UjRiqaVqDi5K8k+5YgYqPuNI/7suKeHQu5CCyCO3REziz8FVyrXHj6
+         OYjnsdqHB1wBsS+QoVWe+YA9xMdV/KWmneM7+/uyWLNvzvOcmf9HWasB1WA6vnXxkHTY
+         Epqg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1B6Bs8O5cZlPoI9K7J2zPJ9AKkHJwlpcpnZYmCNk7loELLLZABjDAhoUX/KpGsWfEw5uYwbiC0fdJd0fKHiNLJUdARnd6zCNm5JYqKhcqvKQg8w4dGnZbQkQtfh6K1OL9CSU=
+X-Gm-Message-State: AOJu0Yx0fKem8S807OJLSSwlB8TXa163JQPv/WYVFyISZuS288YzJbIc
+	DXpU/Vk/5Y+fNdCV+6mo1ggtDHhJMyzh3NWKl3AtZS1IzMGTcLfl
+X-Google-Smtp-Source: AGHT+IFxenVy3Vpe40qXySr/FIX8Cmzlhc9MA4Bak20UWKfT1c1La/2Q3sNRmDFpNQjvs7U7sVA40g==
+X-Received: by 2002:a92:d486:0:b0:368:a474:4410 with SMTP id p6-20020a92d486000000b00368a4744410mr4494143ilg.2.1711649124902;
+        Thu, 28 Mar 2024 11:05:24 -0700 (PDT)
 Received: from google.com ([2620:15c:9d:2:493e:82a3:49f9:d88])
-        by smtp.gmail.com with ESMTPSA id mm8-20020a1709030a0800b001e12013ae07sm1901205plb.231.2024.03.28.11.03.25
+        by smtp.gmail.com with ESMTPSA id a185-20020a6366c2000000b005dc88b232a5sm1593248pgc.26.2024.03.28.11.05.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 11:03:26 -0700 (PDT)
-Date: Thu, 28 Mar 2024 11:03:23 -0700
+        Thu, 28 Mar 2024 11:05:24 -0700 (PDT)
+Date: Thu, 28 Mar 2024 11:05:22 -0700
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Support Opensource <support.opensource@diasemi.com>,
-	Cosmin Tanislav <cosmin.tanislav@analog.com>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Antoniu Miclaus <antoniu.miclaus@analog.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-input@vger.kernel.org
-Subject: Re: [PATCH RFC 1/7] regulator: devres: add APIs for reference
- supplies
-Message-ID: <ZgWw66OpLnLPdCn-@google.com>
-References: <20240327-regulator-get-enable-get-votlage-v1-0-5f4517faa059@baylibre.com>
- <20240327-regulator-get-enable-get-votlage-v1-1-5f4517faa059@baylibre.com>
+To: Jason Andryuk <jandryuk@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Phillip Susi <phill@thesusis.net>,
+	stable@vger.kernel.org,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	linux-input@vger.kernel.org,
+	xen-devel <xen-devel@lists.xenproject.org>,
+	Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH v3] Input: xen-kbdfront - drop keys to shrink modalias
+Message-ID: <ZgWxYvQH4A_Vh1i4@google.com>
+References: <20231011193444.81254-1-jandryuk@gmail.com>
+ <CAKf6xpuJe6Cza6bow3QxDGf1viu0kish7Y8YRN8haXL1oEF3HA@mail.gmail.com>
+ <CAKf6xpv2oDpPB3wWh=Fz_ahDVgmvw2MSj_q3RYqQ8NG6km5Tuw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,30 +87,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240327-regulator-get-enable-get-votlage-v1-1-5f4517faa059@baylibre.com>
+In-Reply-To: <CAKf6xpv2oDpPB3wWh=Fz_ahDVgmvw2MSj_q3RYqQ8NG6km5Tuw@mail.gmail.com>
 
-On Wed, Mar 27, 2024 at 06:18:50PM -0500, David Lechner wrote:
-> A common use case for regulators is to supply a reference voltage to an
-> analog input or output device. This adds two new devres APIs to get,
-> enable, and get the voltage in a single call. This allows eliminating
-> boilerplate code in drivers that use reference supplies in this way.
+Hi Jason,
+
+On Wed, Mar 20, 2024 at 01:42:27PM -0400, Jason Andryuk wrote:
+> Hi Dmitry,
 > 
-> devm_regulator_get_enable_get_voltage() is intended for cases where the
-> supply is required to provide an external reference voltage.
+> Do you have any feedback, or can you pick up this patch?  It solves a
+> real issue affecting udev, which crashes the Debian installer and
+> breaks the mouse for Gnome.
 > 
-> devm_regulator_get_optional_enable_get_voltage() is intended for cases
-> where the supply is optional and device typically uses an internal
-> reference voltage if the supply is not available.
+> Or would you be okay if this patch went in via the Xen tree?
 
-So because we decided that we could not have devm_regulator_enable()
-because of (IMO) contrived example of someone totally mixing up the devm
-and non-devm APIs we now have to make more and more devm- variants
-simply because we do not have access to the regulator structure with
-devm_regulator_get_enable() and so all normal APIs are not available.
-
-This is quite bad honestly. Mark, could we please reverse this
-shortsighted decision and have normal devm_regulator_enable() operating
-on a regulator?
+I'd rather not. Could you please ping me in 2 weeks on this. I promise
+we find a solution before the next release.
 
 Thanks.
 
