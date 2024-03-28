@@ -1,127 +1,161 @@
-Return-Path: <linux-kernel+bounces-123099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6EB890226
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:43:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CAB3890229
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 769BE297CFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:43:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A6EE1F277C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD64112BF08;
-	Thu, 28 Mar 2024 14:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B828112AAC8;
+	Thu, 28 Mar 2024 14:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="uX75/+yJ"
-Received: from sonic309-20.consmr.mail.ne1.yahoo.com (sonic309-20.consmr.mail.ne1.yahoo.com [66.163.184.146])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VUsxoU5y"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D714127B66
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.184.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86759127B66
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636988; cv=none; b=aZop5k/qO7p5kYuLX1Py2oebFScz1dWjUGN0AGqfR5AoUQG80TlrrhggqXS4DuOMLWkVtsmmIu1oM+iHR4hna3ahlPrsfwN5h+4NUVyl6TonIbXd5ajv7eBU1uZZvPrb8AoIxik4icztx7Lajm49hLutINWPZnJPlSK71Wa8vXw=
+	t=1711636995; cv=none; b=GzskooMN+4GCTPw1CST8nPyMEKq03bIAHeThWR4ma5eYRlsBHVS85nJ59/MbWijJ/Y/h9CyTHsPm/acsrphI8wmCFDg4utllmU6HE2iMU0HK6SMM3uiyOuMJVRQKlLaMvSIAG6X8/lXbMG9wyigtJNkWDGsIXIgq4X86u6outGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636988; c=relaxed/simple;
-	bh=bZGqD1Qko3l8gQBtb0dEESAh+VdOR3Psbbmt/CLYtqs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gdwptpn8HR2vBkDWgOgi5CKoaqIfkJ4hH+A0xC+5maR/EO8cpBnO1bWLnKu4S6jnBu/7HZvgBM4ovj8HkhSdW0EC7GcvlCM3sG6mql94Yv7LwVvsvkWJ9ck5QXaS2VVqfNAjeIkTZkCYWc50BhYkCjlnbkw7RneXKQfBQzfXVkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=uX75/+yJ; arc=none smtp.client-ip=66.163.184.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1711636980; bh=g1anJ9SArd8svSUwZTdW2RVW0ATJLmdpNNQgfHQxsYM=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=uX75/+yJGtvxLlsg8k6Osju8giMukFoeDCN7vRznFDRe5fTD2qwi91ES1HWF1OQGcgYHkgsAtkl5qAsUYCJNmvwZB8CyVRHX7Ww73tZnQNVcsQEv3ZiU9DPba6j0zUeM6gOlCXbfoG3M6QusQHFSkYSDaAk1UEji40EjDEG1gPN4s/tg78D+hnnFYts5qugnwL8b2wk6OO9NDQNuW41P88me8K34Rd0f2hbCRJNJczhIupN+/Jlpo6LY3wRvOYEtd01KX0ZgdhhM7VlgEkN6MGwBjm4gNKspt7VuvXnvJ+1c/bZ32/DwMjxgV7yCe8HHGHoAyFoGJ/MF+vh4H2HKLA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1711636980; bh=sEeIUzNwSaiytCMALB8Zm+O498jy0t7jmE7z6F1Veqb=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=ZrYNoncDRxbXgTW6X/fM01KS7QuH58t4az+INfb7IjPbqdwfWL6/dPcZSaS9TZ4V/8OqfpE0PH1VDssPjvSIUzuqw+GO94Pr0zmIWnNGN8GtbfME0bUIPlI5LAwp4On2E2jtrANTmt61Mk5I8PAIlsStc3JW8JJXPN57NUdMybp+T3BQ1pZQHdh6keWs0rnyaPzLMgNGw5bN82trQ7cVHqfNLE1GhFNDbyLYhq8PnJUDeHEw3QyFsyFfxIVe9++C10Cq6Kt+qG1QKErgJeOqNFufNHI29y+XC0pKUxJnY4VTVUSvukhXSvE3dWE86myBHIiJX5xL9lFi1V1fPYJDCA==
-X-YMail-OSG: o0BZUZ4VM1koiDp.F2VfpVIV3CO06UgKnbH3BsGIhukliMPxbb8_6MPmDXyY3fo
- WD1ApgEFpUur3Z9.QpznACQZAA8pSIHjbS6exB_n7SYTaly.HvyR.Axg.XKk0EDAMTrV8N_5jEHZ
- wT0H.yQakV4eVsKMTHyuwxJzDmMKW6cKq56IXluTmZN8pEUFx.VGUwzag9VX8qqAMDbE7CRBqgcr
- X0bKxuZv1D8T2n8jMFBdfelZzPHv2gDak3oRQVrh0CnbJ8fzzKz6uGulApwx7TN9ssjb4mpNbuiX
- UmPYKHcDBoXH.H_atFfYmAs5iOEOVLmHVcGeZ4uvMhL1aszEejINoMY4P6zH0qbUeg5v53nJtXB8
- jb2oUnebU6W.hyzJ.FlgqAgqK6u5yhC218BWbqs6QfKhk_XC8ClrUgVBwDPaFXblqIz74j415Cll
- 6LHafRNAHvqjbwbulO2eTkIUhld6lqo27.W6QkWWJNkYFLkky3_5Tm0ZC62LsKc90aRt8tc60Q0Z
- bJbOVu0HUk62soWwFJHSwDcfuNCs.lwfJNwRhuSh8uu3Xh9qyzU6XRCIIiYVNqGrBEedZlhEr6ck
- B99TPDGfnzHhIIDjYkTOkPiGulmkR5e1uI9a0pwgOHpWUGUiFgnrTbpqQ7Ik_QyllwoBDn5v2.c6
- FvpZ7S5JDl7FwoGOsgjook.2DDm6t6xK5KHe5VmLjc3d._21ge.yq4CcVlIK12bpDo795F4rkzIB
- .IJ0d8QTRWYzAxnxQF38Gh1ISGryzTna3WojPgEpG7MDmmTxC13HWdCNydn65auxqdBSJqYEP3s4
- 7Hexq_4s0BnMfsSlU4pW_ege9BD9f.m7OHpfsklBHt3IdUuzEqbtSlofEN.dFs4J1STboGDJdBf7
- bvNsA36OzbHNNM7ZKJiXmUcCOcFJP9PxrjLxgtoC_dNmIWAH8DWyR_eDSWhHv2FLU7fUktEkDjHW
- 5ebCXkaPfgQaRSHRhzYGSv0SQKN9azmdFzm45FF7.tRBYUTWQc0TO8CfPaNYM1rIIvBTGvMeK5ld
- Oba6R49xybTzKxhJEsDlOJnOQKPolzvUe4C6hpxp3Jmd_jJKw.QNcOcwYxcQDe5slVam7bePvOC7
- e_4OMbUcvQ2Q6dUj4s1GI6vOf4JyAEun5SX1KOIQlSKOxS5YI_T_2tkBpwQAich0cKrQY1I85_R3
- Q2bVX8jghiU3yZVhZDbvDxXuTCEOuoruxb_736cZOrsx1xK_rWpfvIV9_RfcjZ65b7qEzP3RFeNr
- sUGCRuw5ZkvGKAgGtcnzdbctNW_6CpYtxm6gmvejTKgbiglKCGlnwb76TSSZDIYC.eAM68_EVSK5
- 1loBBDyYxxzOAUqftmXIqvSZt6TCEN4LTPHZAU1nXxZ..OV7_InN17arMduCktYDbFOqTBIUjLjE
- synLShQkYmEzqRYBmvTELvpVpWq61ondtj5v88NVK1rjs.9uf8GzyCni3gqTtBa2Yfx0Vh33usO2
- _j4WbFxaBqi6DGnt1JVTvXjMvoWHpETop_wJngUzr_sfpvEp9bqBdRS1AjflBgvFX1SQ6X8nsC.O
- TQlBtgJJtU1lwHjyOKtzSQjNEVOhMlvQf63itd7O6uVIgre9zX1C2Pwj8iLB2YwsjIKeqQjpX0NK
- QdiMFL1bVHj0t1R_A4QRQbBMfBIfLX5CcIpIj4NnP9Hf_NhFzi6OG2Q5V1xOEym20QMX4hHNtn2x
- JOVU_z434g7R3zvZ53.64LbaGhVo.50kLrhEUU5oGSk0kC8DRO16A2XRj.hZ566xfGxZ0HzDfMAW
- TRPnvco6wP37dcowsVlnCP9ysaH3Gwbras9jpGUlp3FxlbziG88qZ0ZXb5vOFE1ufYRjFdn5Yw3v
- Azc4iYnKdYklKSaaHVwyt5dgAgeQHZtJO38_ajM9oLr9NxAQETpQUnmyYnDQx6LYpOAls5ubxCj_
- BcjC4Ujjb0Wx9P4ZIG3YtRSqBAijcUYANXhWOcpqvfm7YCsN4Tp6m93nG5gsknT84Id332gf3D1i
- csn4EjZmyh3f3vg.k3DKml_xcbvgzS5cdANOV8ACozyaaT1hMQ5kt0Ax1Fch1PHhvSK7_A4mIvrV
- knMBmNwhblTziQupON4neJjMXYOhrPccAmJQxxd5RuRzqKikp581Zda3BWqfqKRXYAcY1G2dNdSy
- ZZt5zauvTXG7sc8NB806HPJ6Xnz3R2MseY3G9d4pTdM.UJF032qq.A7j9uNS61FEYyw01HSI2eAy
- .170qRYH6mduThmmwO8wv5JuEdPI6n9w7CS8tLsIar3MD753eGTtBjL4WdXY-
-X-Sonic-MF: <serdeliuk@yahoo.com>
-X-Sonic-ID: dcae60cb-a63d-4564-bbef-99fbb1cf4b6a
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Thu, 28 Mar 2024 14:43:00 +0000
-Received: by hermes--production-ir2-7bc88bfc75-ll9h2 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID bd83f5bdb12ca9d1f475c97b948ec81a;
-          Thu, 28 Mar 2024 14:42:55 +0000 (UTC)
-Message-ID: <33e23d1c-5b6f-4111-9631-0f8db1100d0c@yahoo.com>
-Date: Thu, 28 Mar 2024 15:42:52 +0100
+	s=arc-20240116; t=1711636995; c=relaxed/simple;
+	bh=FP+PjcJtBihvI3lmTTnq4UygK8snjjZb87vYNUD/7Mo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I59iW1mmce3m8X9FHOe36vnoYLG2eSYfgvTNhBrzkD153TZhNmr2L0mdWnkW9BvWWG1B7XZ56+RlLrzzqn1DsU2IBfOkwLgri+wOydCnXDJFCCLGIXwYBA52O9KoGmc6K0HPI5nime8sg/k4jvFUYMQtOoSW8avFhaD9JGKFKI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VUsxoU5y; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e74aa08d15so938504b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:43:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711636993; x=1712241793; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+IYKdlLOF58lOHPLCX4kHglsTCyj/A/Ku3dDSw21YHw=;
+        b=VUsxoU5yUXtSMgNXcbZIEebWpO/9PLxMQkVQfW4G660/BBorwPZD3wcl5fETKpJBWO
+         DaEDVUZjvw27ciJnWwh6Whg7ox1ui/09aHwtjrMB34Bn1O+DvXU0xlJAu+JWORkOx/GA
+         eEFKWSKzw6KhfAWIhCzfkIwgwAL2vEfLViBJtBSgI2pdbHEp1d40zACD00h4rv2t0MXT
+         2g/HfuaWuNwLwhuQQwNztnVmBA9S7qL1OjhG7GEB8FjAURbZ9DkaECUXfrRq4Y5FwAlC
+         u+FA45gwdOKr/wydIErH1FAKS1GL8oXrzrG+GDY5EdZjq7RJyVNvox7do9Q8+A+V6vIb
+         Qc9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711636993; x=1712241793;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+IYKdlLOF58lOHPLCX4kHglsTCyj/A/Ku3dDSw21YHw=;
+        b=RCoHWYed1yJHr2wqBchqIBwBaoc5j7rt0JAKGz02lL1m+DW4oQ1v97GRnKRe9H6Kop
+         KDRnFqb5GC2NcF65xFv2J+Q6ljMS5oe992FsWdu7bCOu71St8g9y/fELgdNwt3GvEpbz
+         04pUGkTeDkN+mnI00h3UZQC3jzHNQZKGVFF6TVLZdEhRGJR7yfEe8Q/Xi/NRlHACr/o4
+         b1QsyxENVG1tzWdQ8ogPbjclgWjuQfKDqfDpbSD4jiJEngzFYA+0dysDMAzQFi37SLa3
+         8Uu0Csb80PUXcxe4qLPUGnVmviGYqZ1arfdCVzIet1gM7EeTbplC9xcnqYXijXQsHdMq
+         c1ng==
+X-Forwarded-Encrypted: i=1; AJvYcCUSVsZLfr8TUR3avi+LDKCbhQpWD1ia1JGTgMUa9T7ALZgLdKO2hbsERxBf9G0crTLNPVCY+IMaQq2zbV2wzyZzzVxUwKzSgJ4d+bP/
+X-Gm-Message-State: AOJu0Ywy4wB/0Pt5n8VGLFrPrmLbm91Fb+tiDduHRughmot5+7ZotvTL
+	n8yPMGCOqsz7aBO7U4eqt8w5+jo9OwZdXlX/KMitz1tTLsXdE0JyZvnNfIjHTEZlVyteYgdtxzn
+	EWp5ZLij+kWHxsK4GOUG0IJBneiRK0XZauPgR2Q==
+X-Google-Smtp-Source: AGHT+IFX882eA2liCkZM38bQdVn3B8jcLzFramIwF0Y4tsnsNbpi0sMAydCF+/IjL2H0suLJvrkmXuMRB8j0EGK5+FI=
+X-Received: by 2002:a05:6a00:391c:b0:6ea:ba7a:d180 with SMTP id
+ fh28-20020a056a00391c00b006eaba7ad180mr3582489pfb.15.1711636992828; Thu, 28
+ Mar 2024 07:43:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: arm: qcom: Add Samsung Galaxy Z Fold5
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240328-dt-bindings-arm-qcom-add-support-for-samsung-galaxy-zfold5-v1-1-cb612e3ade18@yahoo.com>
- <ca4ed5e3-32ea-451a-82ca-25fba07877dc@linaro.org>
-Content-Language: en-US
-From: Alexandru Serdeliuc <serdeliuk@yahoo.com>
-In-Reply-To: <ca4ed5e3-32ea-451a-82ca-25fba07877dc@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.22205 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <cover.1711584739.git.vitaly@bursov.com> <da4454bf368e51369c74e4574d22e8f0bfd9d368.1711584739.git.vitaly@bursov.com>
+In-Reply-To: <da4454bf368e51369c74e4574d22e8f0bfd9d368.1711584739.git.vitaly@bursov.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 28 Mar 2024 15:43:01 +0100
+Message-ID: <CAKfTPtCux6diCArXcF11w+D1VMKLwj-eWUeXQq3d=2=2Xfe8uw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: allow disabling newidle_balance with sched_relax_domain_level
+To: Vitalii Bursov <vitaly@bursov.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Konrad,
-
-
-Thanks, yes, I am new to b4 and sending patches, in a few minutes I will 
-add the second patch.
-
-That actually add the device tree, but  without the previous patch it 
-showed me a warning, and with both patches provided another  warning 
-that i need to split them in two.
-
-
-Best regards,
-
-Marc
-
-
-On 28/3/24 15:39, Konrad Dybcio wrote:
-> On 28.03.2024 3:31 PM, Alexandru Marc Serdeliuc via B4 Relay wrote:
->> From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
->>
->> This documents Samsung Galaxy Z Fold5 (samsung,q5q)
->> which is a foldable phone by Samsung based on the sm8550 SoC.
->>
->> Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
->> ---
->> This documents Samsung Galaxy Z Fold5 (samsung,q5q)
->> which is a foldable phone by Samsung based on the sm8550 SoC.
->> ---
-> That's very welcome, but are you going to submit a devicetree for it?
+On Thu, 28 Mar 2024 at 01:31, Vitalii Bursov <vitaly@bursov.com> wrote:
 >
-> Konrad
+> Change relax_domain_level checks so that it would be possible
+> to exclude all domains from newidle balancing.
+>
+> This matches the behavior described in the documentation:
+>   -1   no request. use system default or follow request of others.
+>    0   no search.
+>    1   search siblings (hyperthreads in a core).
+>
+> "2" enables levels 0 and 1, level_max excludes the last (level_max)
+> level, and level_max+1 includes all levels.
+
+I was about to say that max+1 is useless because it's the same as -1
+but it's not exactly the same because it can supersede the system wide
+default_relax_domain_level. I wonder if one should be able to enable
+more levels than what the system has set by default.
+
+>
+> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+> ---
+>  kernel/cgroup/cpuset.c  | 2 +-
+>  kernel/sched/debug.c    | 1 +
+>  kernel/sched/topology.c | 2 +-
+>  3 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 4237c874871..da24187c4e0 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -2948,7 +2948,7 @@ bool current_cpuset_is_being_rebound(void)
+>  static int update_relax_domain_level(struct cpuset *cs, s64 val)
+>  {
+>  #ifdef CONFIG_SMP
+> -       if (val < -1 || val >= sched_domain_level_max)
+> +       if (val < -1 || val > sched_domain_level_max + 1)
+>                 return -EINVAL;
+>  #endif
+>
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 8d5d98a5834..8454cd4e5e1 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -423,6 +423,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
+>
+>  #undef SDM
+>
+> +       debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
+
+IMO, this should be a separate patch as it's not part of the fix
+
+>         debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
+>         debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
+>  }
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 99ea5986038..3127c9b30af 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1468,7 +1468,7 @@ static void set_domain_attribute(struct sched_domain *sd,
+>         } else
+>                 request = attr->relax_domain_level;
+>
+> -       if (sd->level > request) {
+> +       if (sd->level >= request) {
+
+good catch and worth :
+Fixes: 9ae7ab20b483 ("sched/topology: Don't set SD_BALANCE_WAKE on
+cpuset domain relax")
+
+
+>                 /* Turn off idle balance on this domain: */
+>                 sd->flags &= ~(SD_BALANCE_WAKE|SD_BALANCE_NEWIDLE);
+>         }
+> --
+> 2.20.1
+>
 
