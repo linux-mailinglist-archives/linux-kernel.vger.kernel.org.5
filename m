@@ -1,145 +1,89 @@
-Return-Path: <linux-kernel+bounces-122401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4876988F66E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:34:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E50A888F675
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAE741F2264B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:34:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A00B1F26195
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EEB83F9DE;
-	Thu, 28 Mar 2024 04:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C6F39AC9;
+	Thu, 28 Mar 2024 04:38:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="BX0ELZ03"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fnHMhdxo"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81FA3DB8C;
-	Thu, 28 Mar 2024 04:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518EF28E6;
+	Thu, 28 Mar 2024 04:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711600461; cv=none; b=YT3oiwRDf3GZkfEssr69g6oSZYULeH0+fmkrBJ8MCqQXKhpc2u5MPtFjqztVfA115BdTdurPISSv6t4w2fljo0+mpfefHeATTgvu0lMS2y/Hk5HhCJ1Jd3Z4JmUMxkm+TkdIqsXn5z3eCyJD4rgFNyD99zRazd1qIaD6wj4qp6c=
+	t=1711600728; cv=none; b=hELk+th78NjoVxNEQvgKVr7Hk6Pop3I8wHG0RJpa7WhRNQs926P6IXnYrUbwM718W/KRzRAh9CikJdxiYTgXy+K8GZhDOvo6SPXsp66depyhW50SnKjJ2KZKKmD2Wo9LltxapGYdnbTXTxlAK2IyhdD2gcDLCBtflZFClgbU8sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711600461; c=relaxed/simple;
-	bh=NmFgsJpAx7yxb+C9g+fbVwUXAcnrOTlBaGYG8d4WMFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Wvu1hDqUHN9JPQNcGTE2K/rvNvnrIsZAhgWqeDmnny/e70cqR/UTdA7h2uGCGxcY1/cbHI44a1CElBvy6Bkft2GBBOD3RX51nhgg+9Kk9D+9cIObyaVRI8e0XzBSRNoSCdSfYd4HH3z6BH+v1uGCEdYvLNzc0ziY+QqvYxGYxyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=BX0ELZ03; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711600456;
-	bh=2taK/eJb1jrVdnCdJ8E7At+edEsv4o1BCqfe1S1KcPY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=BX0ELZ03JQyx0OMme7NazsPQcrRCg65A5xdx2KetBjFsgDAOmYh+ssScPZlbqYi2/
-	 AiZQ0Kw+5rqI74kGHpti3DOiYjANNw+4y4hHYGcOA7hjk989DgRRX0KJpB/ZJYc6Ip
-	 Dn9RC4dnR3YrFBubQozTyyN3JIWyfqMX6F7xwumpp3U0N53zto+7nQrt61GGLYtYXx
-	 iLgOUxAhkvwj3aftI1mDltGtChKIOyjiZIfTDZZ6jA56K5vRIfoXDL/6i5b2ocT6mc
-	 wnVQ9JrXd0hQCgOLJtMB80Asl2pEI4CZ6Qkq/3qnhDDGAaKb0rlzZVDaN20QPMHXuJ
-	 qFFNYPOo/Jh1g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V4rKL6Bqwz4wc3;
-	Thu, 28 Mar 2024 15:34:14 +1100 (AEDT)
-Date: Thu, 28 Mar 2024 15:34:14 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mm tree
-Message-ID: <20240328153414.326f6774@canb.auug.org.au>
+	s=arc-20240116; t=1711600728; c=relaxed/simple;
+	bh=UQt70vAkiaaCvAuoBncUOZWI5xsL+A6vYuGPERra61M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bcWatKVx2Fwfseizjj9UoIC1xgXt+MAkZ+pFXiwv5qSde5F61RWIYlzwr+GOAJmS95TihGJzsz/YWmUoNuxB4BD7cBy7nJDpcU35la1+zd0eaJi2loc6NfhWpiFyRPWm/ONg91kuourv8YQwMIxmUeKSr9lUr80prcZ2j0uP55Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fnHMhdxo; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=xqc3wCt9hsEsM7CdvGBkX++ytxnYM2OrJrMC82sR1kg=; b=fnHMhdxoitqZmrX1PqBAmtkAjO
+	CqGgHbm9jcQ/u3UGY4jjFNJu05jZmhR82P66Xz2+AS8lV9KulG/HwDN9z+tMPoj9OHkAup7Ov+xST
+	mM0SsA/IL4GrWIa7Ife0Dc53usgOtnNeu9zZd5gixuQrnNHe8ufRtGwiP4FhSViRL/O8OgkIwOr1E
+	PM6wQE8jKqCEHqPS6+wwzVKZdX+TaEiHgnX8eqtKWHe4ShFnogo+PngJGu32Z4yrCgynQcUAHcDZ2
+	b1QSc9zWd3U4lNnoOghiytzDrPvrfuEr8zCdc7nmdpCPkuDg5kamq4fFySIg1YC62E9mWjM/uG6VC
+	VhTbY/PQ==;
+Received: from [50.53.2.121] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rphXJ-0000000CPVp-3aBO;
+	Thu, 28 Mar 2024 04:38:45 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Mark Brown <broonie@kernel.org>,
+	Andy Shevchenko <andy@kernel.org>,
+	linux-spi@vger.kernel.org
+Subject: [PATCH] spi: spi.h: add missing kernel-doc for @last_cs_index_mask
+Date: Wed, 27 Mar 2024 21:38:45 -0700
+Message-ID: <20240328043845.28882-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_3P3CFaQ+hu8Lc2rdpxu7hf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/_3P3CFaQ+hu8Lc2rdpxu7hf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+kernel-doc complains about last_cs_index_mask not described, so add its
+decscription.
 
-Hi all,
+spi.h:778: warning: Function parameter or struct member 'last_cs_index_mask' not described in 'spi_controller'
 
-After merging the mm tree, today's linux-next build (arm64 defconfig)
-failed like this:
-
-In file included from include/linux/hugetlb.h:828,
-                 from fs/proc/task_mmu.c:4:
-arch/arm64/include/asm/hugetlb.h:25:34: error: redefinition of 'arch_clear_=
-hugetlb_flags'
-   25 | #define arch_clear_hugetlb_flags arch_clear_hugetlb_flags
-      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/hugetlb.h:840:20: note: in expansion of macro 'arch_clear_hug=
-etlb_flags'
-  840 | static inline void arch_clear_hugetlb_flags(struct folio *folio) { }
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/arm64/include/asm/hugetlb.h:21:20: note: previous definition of 'arch_=
-clear_hugetlb_flags' with type 'void(struct folio *)'
-   21 | static inline void arch_clear_hugetlb_flags(struct folio *folio)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  34ffd5e56690 ("mm: convert arch_clear_hugepage_flags to take a folio")
-
-from the mm-unstable branch of the mm tree.
-
-I applied the following patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 28 Mar 2024 15:24:47 +1100
-Subject: [PATCH] fix up for "mm: convert arch_clear_hugepage_flags to take =
-a folio"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 ---
- include/linux/hugetlb.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Andy Shevchenko <andy@kernel.org>
+Cc: linux-spi@vger.kernel.org
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index cc420c42a773..03fc6d625068 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -836,7 +836,7 @@ static inline int is_hugepage_only_range(struct mm_stru=
-ct *mm,
- #define is_hugepage_only_range is_hugepage_only_range
- #endif
-=20
--#ifndef arch_clear_hugepage_flags
-+#ifndef arch_clear_hugetlb_flags
- static inline void arch_clear_hugetlb_flags(struct folio *folio) { }
- #define arch_clear_hugetlb_flags arch_clear_hugetlb_flags
- #endif
---=20
-2.43.0
+ include/linux/spi/spi.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_3P3CFaQ+hu8Lc2rdpxu7hf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYE80YACgkQAVBC80lX
-0Gwr8Qf/Tw+h/Npou93MVXy2Tkj5AhW/qhAeMtX3rtJmbFqLr29eI2f8jIiFfIe7
-KZ853lQ/ar6qO3nGFzd+jISznk+QHoc1JC7ZvOxktBmoiu6Zcq8xRAyPtiA/M8xk
-Jb2FUB2muBRLysO8Lp0/ZQDMy3x6H78147uinLk/nI4zwz/H/W6WPjRd/t/q+39f
-eo4p9tk/MPH5lz/sQM+n7o2NaHde8xHnQhe9FyIs+tUCGD8Vyi4RMAbed8/0kRWB
-Xt89cIoY0YckYPUK0ukUPFbaE2JG/wtmPTejeerPq5LIaMyNgK2YA7qbHXNtWuNV
-rBq0hCBWfG1wQfbypViumQlUrl/d4w==
-=F8T9
------END PGP SIGNATURE-----
-
---Sig_/_3P3CFaQ+hu8Lc2rdpxu7hf--
+diff -- a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -453,6 +453,7 @@ extern struct spi_device *spi_new_ancill
+  * @last_cs_mode_high: was (mode & SPI_CS_HIGH) true on the last call to set_cs.
+  * @last_cs: the last chip_select that is recorded by set_cs, -1 on non chip
+  *           selected
++ * @last_cs_index_mask: bit mask the last chip selects that were used
+  * @xfer_completion: used by core transfer_one_message()
+  * @busy: message pump is busy
+  * @running: message pump is running
 
