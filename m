@@ -1,174 +1,166 @@
-Return-Path: <linux-kernel+bounces-122417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 557B788F709
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:15:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA2988F719
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C04C71F25018
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:15:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F14701C22391
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7336F405FC;
-	Thu, 28 Mar 2024 05:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9979C4DA11;
+	Thu, 28 Mar 2024 05:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAqHRhnZ"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gXPbjKTb"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF43418026;
-	Thu, 28 Mar 2024 05:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA443FE31
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711602919; cv=none; b=GYG2gkotPT7EhY8sS5Tvc71ygcc6aqXwnNkkWJVX5+HvXnhUMlln5XwBpzJGL3yyACYSzWS78Oc6mZNwGefVjlHNZzSkOUDJ5bg8QwyckWoxKn2Or+gVVSqfD65pUy/ABz30JmF5nmKmnp+7egTYpf08R1vMbrInIGnKQ58riZY=
+	t=1711602998; cv=none; b=T/GrIvPkDlYrZI+0FLFcBj9rg9rbQ8uutChu3UYOxr3fs5NtAoNS+0FfkA/GAWgahxq9z9/gXBVRYxnhZXkct+M620AKscQUbyoa9Ry0TbwikseXEs6WJssJjUF2jrrS/esjXLNcXg+BqEZyBlNelnF/P3masrasGPdM4z/rK/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711602919; c=relaxed/simple;
-	bh=SDm1WUJOozAhagrXoYdXg9RSn/CTnbRjqTHIIL8O57I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lXQLjN4rzZx2pz5LHupLr+VQx+1W7IXaeTqJfd3+qo/tLBQXwvsIoq8JzgGb8YG7mbw8CYEmCKlIuPE2ymm544+zgwbupFzNs+heHQ2PkfUJWKXArZUIpX50SLiMdYIjaj5cY9TRQGdzWzPShTQlEVjIqQOwREn/VyZQNPpLCmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dAqHRhnZ; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d4886a1cb4so6577001fa.0;
-        Wed, 27 Mar 2024 22:15:17 -0700 (PDT)
+	s=arc-20240116; t=1711602998; c=relaxed/simple;
+	bh=sBPTJcGEYTbv3hcgUwqNauzYtskOKb+GWpnb7br0MOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lbSKhW5A/+hpvvIL1eV++hH/cbKIwU4PeM849tC0zZfq6YP6K2P0umvdJ7Y8mrcxfFNssLMcygGXHWjHYuVrC6tUtTEIVrSbv/eBR3RPtl2deNwZ8Th02pL7PhmFmOL4qpj7QckhwOeRaEZzH+4cQF9NhwwWtfLZ8LB6IaIUFd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gXPbjKTb; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a5362ceb7bso270883eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:16:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711602916; x=1712207716; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BWrmw61dLt1m0KvK8rpCl4hVDCE+Bi3t+dQ5mux0DuE=;
-        b=dAqHRhnZ+WJTLFtXNhEaCu6EmESM+JDbmusW2M/iY2kKqdsQOKv4nnIxqYKs8X+6Zl
-         pJVqqMd6aouSrfhQ8PfdKk/FTbaYH2dWdY5DkGDVcSUGp3q8UTXdLYsYXy136saUqKU9
-         glQ13pAU588SsIS51S7pC0unWe7t/BKYPFW1nv7OEWaPg/MmqBIxyg4PwFGjw9TlSo7s
-         G77IhaPVe2+8Ty6jDPf+xA9uDe4Ncv0oNjNG3igGLjx6VI0xxfR0DvvlYMi6WtwBO4wl
-         /8mF8RfDTBkh6sLHpyA/GiT7W5YRTb1ik6RC1CzWXVsEJCbf9GkZg5eJF3hO9hCIQo/w
-         X7Vg==
+        d=linaro.org; s=google; t=1711602994; x=1712207794; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NCBBqATkrmhAqNvcc7V5yUc6Bj0MDD2J9Hd2vuTQUac=;
+        b=gXPbjKTbrvtfpT6/qEmVUxns+A30LH6QOiAjT4F0xLZUPzUZg0ordNOvATabg2F/Wl
+         kPv7rlwtWOxfgPm2w1j9yiVchrEqiifXfpuqKbM3c55rO+d/cQmcOVsJtdO/BdsefRN9
+         RxOKLZQ8lQKHo0Up3S4+54dabwBIgvbFJlg0eTR2NGULCedimJYCVi8NEO/uINa2jv1N
+         m9SrGDUqniaEzEwLDKjTqPO6IIW3ujVusL7p6WPrXVYciMFtPwv7L9mAU+/qpWitn5fr
+         hH1CJycNEicAhv28MTJZUrDtXoqvUlSPCv54sDagwBcdt6nzOokgIGUCvI13cWlf71La
+         jDOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711602916; x=1712207716;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BWrmw61dLt1m0KvK8rpCl4hVDCE+Bi3t+dQ5mux0DuE=;
-        b=ipZecEIlmpMAVd01EwG+mPW5n98khsI/j9loM+xlk6zPzD883YBsIcUMDHh4bWFhXZ
-         HQsc+V7aYB/biqyLhwMwtZ0ICKNf7FdQzbmmfnbgiWXerhUGGrsuUVoJ8uK2WRh9TCNG
-         DRL2HwJaiIF1f82BsDVrfx0u2gUPtOBPf49fb2p5tSKf9TzTpvj+DnB+OyfG5hMdtmy4
-         pfOW+uRhLs7WNT6IgWB1p1fgtgSWW7VfVfLskTnqFheUx2NLnEvJZr0UgdrJDGJIXKtI
-         VWZ0B5putwv1AIgB6Mu4EF556QAPVzyfoxCdE5cHoP9966vNh2cbzMNpmrZ5SJ80R9se
-         7oYw==
-X-Forwarded-Encrypted: i=1; AJvYcCXANovr7T/4vubmureK0vefkDDrQ7/aLxfksNx8TJKHS/eu+cusdpyeIyFBpRnOAvgU+e5U/asroRm8T9YEKr0RvI8AssQvBMvQMzckGJdeZDwPu0vOaRYgTDFEcrJcr2Aq9T5qbSKYOw==
-X-Gm-Message-State: AOJu0Yx6EHdU1FTQErGogNgtnepP0UvdyiDOMbfUdtgkjC2FPWjePWpO
-	6rA6/hgdosprBqV99iAIXGbDw6y9Z9aAAnlibO8lGCvuZtKESsti
-X-Google-Smtp-Source: AGHT+IEFH/Jy5ULJDduNo75nbO6sOQ5MrFRQJ7zmT79iZdRCBF1lus9zpFK9O2+292nH1b8gY9DTbA==
-X-Received: by 2002:a2e:3615:0:b0:2d6:c94d:94c2 with SMTP id d21-20020a2e3615000000b002d6c94d94c2mr1427438lja.46.1711602915799;
-        Wed, 27 Mar 2024 22:15:15 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:7426:df00::6? (drtxq0yyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:7426:df00::6])
-        by smtp.gmail.com with ESMTPSA id p18-20020a2eb992000000b002d0f0f5e395sm99427ljp.47.2024.03.27.22.15.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 22:15:15 -0700 (PDT)
-Message-ID: <dec94ef3-5c5f-4b7f-baba-f76ac36b9627@gmail.com>
-Date: Thu, 28 Mar 2024 07:15:14 +0200
+        d=1e100.net; s=20230601; t=1711602994; x=1712207794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NCBBqATkrmhAqNvcc7V5yUc6Bj0MDD2J9Hd2vuTQUac=;
+        b=KAnkVE/f3eXB+0RiC6yS9dWqmmWK4h7NcaxozzvvsN3rv2wpEabGoIpiw+ZIqj408Y
+         5VfPx4yK6QHFqQmX03a5qMgnHVF5jS6GQga2lrBCeBLKsXSgcDAQpoEyBXMD/Gjc6s+/
+         eAxoYqdawuUDYnoLPUa25Rdo7Rysq5dcV5vcXn7+3xOcpNzAKrp2L/W6zuOz/qqiMy/2
+         5EjKjFGu4KZXfvM/Pu6SnydMCE3LPYUqHh8yJuTducv0s3X5BTXb5rCn04yX7/nC3pzW
+         KLuxKdEpyzkHutNWifzpUZijTzxPqdVj4r3vUPBjZcrKBr9VeRYykMH0z9xLN0sFDyQ8
+         EXUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUrIRQNGbQWu2EXBicwlwGooiZsIRQQMfdGnQ0ZdfOOMpu/HfZk1DVR0TaZQyzRs3mTn0lMltugvShD4u9hcdc7tkqjpmNE+ND+Hi+T
+X-Gm-Message-State: AOJu0Yzmue/Lw2Gj8FcwwYlP+aVNv/bA1B/VGfoLmf+noxdwgn7MSoyp
+	zAqHCPyyqks997bfKNG6+j1kzvAlMa8o/MQK2ZsBj/vKHGAHLr3ciwf6ioXiTZk=
+X-Google-Smtp-Source: AGHT+IENjWm30W77Sho1F7STKjVDKRSghd/5qoLRwkalJNx2D7PN+W1+MnXgZZvq+TiwN/1tI/fojA==
+X-Received: by 2002:a05:6358:5307:b0:17e:8f90:dd31 with SMTP id n7-20020a056358530700b0017e8f90dd31mr1555244rwf.32.1711602994298;
+        Wed, 27 Mar 2024 22:16:34 -0700 (PDT)
+Received: from localhost ([122.172.85.206])
+        by smtp.gmail.com with ESMTPSA id u23-20020a63df17000000b005e857bba96csm433309pgg.10.2024.03.27.22.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 22:16:33 -0700 (PDT)
+Date: Thu, 28 Mar 2024 10:46:31 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gonglei <arei.gonglei@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	David Airlie <airlied@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
+	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
+	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 09/22] gpio: virtio: drop owner assignment
+Message-ID: <20240328051631.c5eitp4mzaj4bh6i@vireshk-i7>
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+ <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mfd: rohm-bd71828: Add power off functionality
-Content-Language: en-US, en-GB
-To: Andreas Kemnade <andreas@kemnade.info>
-Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240326192258.298143-1-andreas@kemnade.info>
- <20240326192258.298143-3-andreas@kemnade.info>
- <815e1cdc-145e-4880-96a0-d9c21308b9b3@gmail.com>
- <20240327140451.65ff8e18@aktux>
- <c6f5a515-61a1-4d87-a029-4000fa96f10e@gmail.com>
- <20240327230252.0535e895@aktux>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240327230252.0535e895@aktux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
 
-Morning Andreas,
-
-On 3/28/24 00:02, Andreas Kemnade wrote:
-> Hi Matti,
+On 27-03-24, 13:41, Krzysztof Kozlowski wrote:
+> virtio core already sets the .owner, so driver does not need to.
 > 
-> On Wed, 27 Mar 2024 16:11:36 +0200
-> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
->> On 3/27/24 15:04, Andreas Kemnade wrote:
->>> Hi,
->>>
->>> On Wed, 27 Mar 2024 09:32:29 +0200
->>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>>    
->>>> It's worth noting that there is another PMIC, BD71879, which, from the
->>>> driver software point of view, should be (almost?) identical to the
->>>> BD71828. I believe the BD71828 drivers should work with it as well - if
->>>> not out of the box, at least with very minor modifications.
->>>> Unfortunately I don't know products where the BD71879 is used or if it
->>>> is sold via distributors - so I don't know if adding a DT
->>>> compatible/chip type define for it would be beneficial.
->>>
->>> yes, you already told we thet the BD71828 drivers are compatible with
->>> the BD71879 and I am using the latter.
->>> But that at least should be commented somewhere, so that
->>> people do not raise questions, like: Do I have some strange board revision,
->>> etc?
->>> The most terse form to comment it is a separate dt compatible so we are
->>> prepare any "almost identical" surprises.
->>
->> I agree. Reason why I haven't done this already is that I don't always
->> (like in this case) know which of the variant are eventually sold. So,
->> it's balancing dance between adding compatibles for ICs that will never
->> been seen by large audience, and missing compatibles for some of the
->> variants.
->>
->> This is also why I was interested in knowing which variant you had, and
->> where was it used.
->>
-> I have found it in the Kobo Clara 2E ebook reader.
-> Kobo seems to switch from RC5T619 to BD71879.
-> The Kobo Nia rev C also has that one.
-> Kobo Libra 2 has several hardware revs out in the wild, some of them
-> with the BD71879.
-
-Thanks for the info :) It's a shame we so rarely know where things we 
-work for are used. I always find news like this interesting.
-
->> But yes, I think that as the BD71879 has obviously been found by a
->> community linux kernel user - it would make sense to add a compatible
->> for it!
->>
->> Do you feel like adding the compatible 'rohm,bd71879' in
->> rohm,bd71828-pmic.yaml as part of this series(?)
+> ---
 > 
-> Do we want a separate chip_type now? Or do we want to add it later if
-> we ever see a difference. My personal opinion is to wait until there is
-> really a need.
+> Depends on the first patch.
+> ---
+>  drivers/gpio/gpio-virtio.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+> index fcc5e8c08973..9fae8e396c58 100644
+> --- a/drivers/gpio/gpio-virtio.c
+> +++ b/drivers/gpio/gpio-virtio.c
+> @@ -653,7 +653,6 @@ static struct virtio_driver virtio_gpio_driver = {
+>  	.remove			= virtio_gpio_remove,
+>  	.driver			= {
+>  		.name		= KBUILD_MODNAME,
+> -		.owner		= THIS_MODULE,
+>  	},
+>  };
+>  module_virtio_driver(virtio_gpio_driver);
 
-Using the BD71828 chip_id for BD71879 in the MFD driver is fine to me. A 
-comment saying they seem "functionally equivalent" can be added to 
-explain this choice.
-
-> If we do not need it, then it is a different series I think but sure
-> I will produce such a patch.
-
-Great, thanks! I think it's clearer to have it as own patch, but I think 
-it fits in the same series - what suits you best. (Don't know if Lee or 
-DT peeps have different opinion.)
-
-Yours,
-	-- Matti
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+viresh
 
