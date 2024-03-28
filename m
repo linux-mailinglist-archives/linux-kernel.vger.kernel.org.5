@@ -1,261 +1,142 @@
-Return-Path: <linux-kernel+bounces-122961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1032A89005F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:36:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7397890071
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92C531F25D9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705032918CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C737EF04;
-	Thu, 28 Mar 2024 13:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED1981ADA;
+	Thu, 28 Mar 2024 13:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ls7eTJPH"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gquCu54b"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB5A7F7CE
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B544D7F7CE
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711633006; cv=none; b=t4SvjsEFgl3PkfCPG1wxcfx/HpThifC5E4UIPaDhzojibVjRuxn8r+4xfMNgoFqxYasKP0O3Oe/rnD29e5+57GEzAPLuk6K5tpwUpS6vUXnkcrygyMUQa5iNQTqSRNsLg41qbYl1gLL2w+gUmQYfGnBhrpojk3g3MV5zoYCo2mg=
+	t=1711633045; cv=none; b=f7zxGGA7oqpv9E7sxGhuR18FnTLuBWbvhSnsDn5mm/qSyayTX5C5mCUUrot3AHC+i3z8ANIHlgmHWZjUL8DoN2uUaEKc2jPCvs7QI+gu3Qh1U5xkBHRAonoeIr1h8eIlnqW4XlKmzSUpVi6QXelm59U75BabboIG2dCEPqCoEiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711633006; c=relaxed/simple;
-	bh=ImeiQvEeK4vVx6wgVtnrIyHLe/KlQ6pY3d5ytHEwbuc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rzLue6LRJ+AaTo7qAI6wE5gcLxIKszEegCzuS/ViRKHsxNUtYx6W+TcCMJk8me0We9/3TG2iDx0U1XVv9GtBJjnr2CbK+FhVY+U8enO1XdarXxOf7WFDAUGz+uAgwA70KFrPqKSjt5cMktQLgLd2A5J71PH9FZscRU/aG+nt25c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ls7eTJPH; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1711633045; c=relaxed/simple;
+	bh=vhptj9/Vq4Rm0PoGzxaGiCJqIgDUZwkAbXDvc9ksjDI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AgN6inN/ovWlrjJszV3kOk9Gb1jIBPa0jYUZNi3OGakT8xG0bzJipNNDl0lRViN+cSJthN3n8PyMIrfYShxRNrta+z2yqrwCf9ULwx7d2dZYlCdr32Av9KkCljuanvikuF/ZzXfBTv8BRdyTKmy9/VZ7zp13K4SUpLP5oZBKYg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gquCu54b; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-415446af364so3729575e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:36:44 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so897397276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:37:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711633003; x=1712237803; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1IePTNqHmG2u8C44qjEuGkD7ttbOGPgyCjA8yYZ50bc=;
-        b=ls7eTJPHiC5L1ZjnEH3HxkoCDdjo5ndDi1hffwr+ln8UC6/VVTXLl5uBXEmaTVLzgc
-         Qr8DFzXBRBWD3p7ft7QK7UG04VmXtnrxglgvoPjaYnjxyTcSdNNJ/95EN1g1LJlUbowV
-         D8wxtc8u01Qc/x8b+WBRvIY7yHEVRSn1pTK0CoTJxnyXuE8BB2auCZOtVkryoAlk+Zsp
-         McMfvBtcnQSqXNrCY0heLEWB+B2fOAWt3SlXamPM4SB0COYbsO2bWXKJdNiIZMwo+xFb
-         FUQSGqPve5UK2g+YiCMoTm3/shvejOQYmJQlEgHOODwm2TdDdcjcceGpGHQU4KTs+YgB
-         Rizg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711633003; x=1712237803;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1711633042; x=1712237842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1IePTNqHmG2u8C44qjEuGkD7ttbOGPgyCjA8yYZ50bc=;
-        b=MNovGTE6oEamjO387MyfGQve1lrUaOVH4122dm42XmksCqnfXumQ4CDpyZm9EXUg9x
-         /yO82Okw3C5cT5G9kwua3Jv9BmEZ2eKtCAjluGdZajkubuxGMPJo+UgKacNWVms+dPzB
-         qz7YvfTc7PFWvG+8Xclm11Qg1A3x+fjVzIC55vFtq1huTC5Tgw7bLisSUoCLupvt1BfK
-         T6Cj2OEd7UxIf/akx2JdKYkzVWzMrOI1ZMqsKskTVBhTKLKYjmqRRfqGzfxRDLcUzryZ
-         dW0CrMQpuD2FVz6+6K/1+f26EcXkrp0CtKRdpPoOP9VQfoh70fMplQhc9UZAmLTD7LN+
-         5acA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhYkWB/qs6+kknZoCoMXZ+j6nFDpTuVmFlBoFtsMCgAPP0N1aElQqqcEBef1CVLQh+UD6V5A7z5cMFWRUHQ/cFu8pyrRwxCXa0j4tN
-X-Gm-Message-State: AOJu0YzkL1nWeQx74GhOirPkf6404MLBp1Sj5wo8kjCupYKF7SWSxTaJ
-	E0MrljHHx7NgD+Jukx/rAf8Gu2ogtZDFZFi/171wKceDXfZ9VSCmEm3Nvn8IGYA=
-X-Google-Smtp-Source: AGHT+IEqy69lfejNCICnEF+Lz3j5+RW5/EqlqxH994OBXzrzmpwHtFr1ILfHmp+nOsj3wq2bEQxAVA==
-X-Received: by 2002:adf:e6cb:0:b0:343:343f:85da with SMTP id y11-20020adfe6cb000000b00343343f85damr886818wrm.33.1711633002735;
-        Thu, 28 Mar 2024 06:36:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.50])
-        by smtp.gmail.com with ESMTPSA id fj3-20020a05600c0c8300b00414896b61e4sm5493647wmb.16.2024.03.28.06.36.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 06:36:42 -0700 (PDT)
-Message-ID: <6b691a48-ca97-4f23-a09f-69b9254f0c11@linaro.org>
-Date: Thu, 28 Mar 2024 14:36:40 +0100
+        bh=vhptj9/Vq4Rm0PoGzxaGiCJqIgDUZwkAbXDvc9ksjDI=;
+        b=gquCu54b7my9LLg/q4oPnqkKhGJwkL7ltG07Je+mkXnkO0tce3QQpinYIyA7vcMP/8
+         Sauy3czMzIHrSZ3M3UhQ+GugaxC245fv7DBzi8sGuKlDvKv23NV1VgjUUzcezwu/i0ml
+         3HrBrO9F758spxgQNWF+Ci5uC4PqVuJlKBak5mCFxHIhRfXo6w6Nmf2on3E6OtKniUNV
+         LT+M+VYkCIqd8Ya+BOtEl1V3iANk+gyZjZ1mB7ci4WB+l2OjnJnP7F4pH66J5T09vOM3
+         DIs8FWa5IPBud/6lNqR+RP9dQvkjXcvuHeTQr6oNe2jFd3rTU0IALrzYHbQvhymkZzQM
+         YC1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711633042; x=1712237842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vhptj9/Vq4Rm0PoGzxaGiCJqIgDUZwkAbXDvc9ksjDI=;
+        b=V21Pz/LjjBb1OjE56lJ8T3tyUQM3VlA6Pdh8pktA3LCutyGGy46KmlqBQ8oTm93jsp
+         +4EKh6oV8l4fSCDddunLt4VhkxUage2u+Dq32fYLW97xXdjU2ymYhVUh2xDq86XCUiVC
+         KmkF7DTDCZTO2UKCVNHya521uY0ptNy/mggwljWnkFRE2y6LQm4XJlQTbEnDjqAxfrFA
+         icnCyw/0X7YIexRYUsaUgUZYspl3TBBOCRKBbSe/qiocA8S5R6LficKBPLfS0pGlSFqp
+         yYhZssGMOvwjWNVYfyekxeCk6QbX2BoiC6TURh0a2ZIhr1nUFkyu7O9ArkTbVOEkxu6v
+         x/lQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWtKtHXunM0dbYsQyzhFtveB/LWEH4zYJ81R0lS3+sPbjFqpv52mJEbaG+ZmMZgX4VSvk7sCyKEY4UNC2r22qaLfkxchCfHsk5/d3F/
+X-Gm-Message-State: AOJu0YyFP+66hIQN2GzLECiODYITrMwwnlE7oUTnVwETRFu/MwNQPPLy
+	nZOAvPlhDKotbZeoH8mG1wZ21a5J7VqhlxGYzDhBLY7NWV4oooiYa3F2z54vWdF65KVFkdfWAqd
+	+Exz+iuypvRr7jnRSgxcUuPZ/7vAvrc4xlOYXlw==
+X-Google-Smtp-Source: AGHT+IGjGHEbsk10nKTaVGgOOQzkHc5Qm9STf87bHGVpMP0DEmjO9lKjEWUgvRJ23UvcJC23rRkiymMtwiTmbVMLRs0=
+X-Received: by 2002:a25:b9ca:0:b0:dd1:3cc1:5352 with SMTP id
+ y10-20020a25b9ca000000b00dd13cc15352mr2820459ybj.15.1711633040798; Thu, 28
+ Mar 2024 06:37:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH REVIEW] hwrng: add exynos Secure World RNG device driver
-To: Alexey Klimov <alexey.klimov@linaro.org>, olivia@selenic.com,
- herbert@gondor.apana.org.au, sehi.kim@samsung.com,
- linux-samsung-soc@vger.kernel.org, peter.griffin@linaro.org,
- =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Cc: alim.akhtar@samsung.com, linux-crypto@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-team@android.com, andre.draszik@linaro.org, willmcvicker@google.com,
- saravanak@google.com, elder@linaro.org, tudor.ambarus@linaro.org,
- klimov.linux@gmail.com
-References: <20240328125056.1054878-1-alexey.klimov@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240328125056.1054878-1-alexey.klimov@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-10-apais@linux.microsoft.com> <CAPDyKFpuKadPQv6+61C2pE4x4FE-DUC5W6WCCPu9Nb2DnDB56g@mail.gmail.com>
+In-Reply-To: <CAPDyKFpuKadPQv6+61C2pE4x4FE-DUC5W6WCCPu9Nb2DnDB56g@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 28 Mar 2024 14:37:09 +0100
+Message-ID: <CACRpkdZ7wAbtTUmmLCef7KnATmfZeAL26Q-gLqnGe3CdZ3+O3A@mail.gmail.com>
+Subject: Re: [PATCH 9/9] mmc: Convert from tasklet to BH workqueue
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org, tj@kernel.org, 
+	keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
+	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
+	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
+	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
+	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
+	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
+	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
+	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
+	patrice.chotard@foss.st.com, wens@csie.org, jernej.skrabec@gmail.com, 
+	peter.ujfalusi@gmail.com, kys@microsoft.com, haiyangz@microsoft.com, 
+	wei.liu@kernel.org, decui@microsoft.com, jassisinghbrar@gmail.com, 
+	mchehab@kernel.org, maintainers@bluecherrydvr.com, 
+	aubin.constans@microchip.com, manuel.lauss@gmail.com, mirq-linux@rere.qmqm.pl, 
+	jh80.chung@samsung.com, oakad@yahoo.com, hayashi.kunihiko@socionext.com, 
+	mhiramat@kernel.org, brucechang@via.com.tw, HaraldWelte@viatech.com, 
+	pierre@ossman.eu, duncan.sands@free.fr, stern@rowland.harvard.edu, 
+	oneukum@suse.com, openipmi-developer@lists.sourceforge.net, 
+	dmaengine@vger.kernel.org, asahi@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, imx@lists.linux.dev, 
+	linuxppc-dev@lists.ozlabs.org, linux-mediatek@lists.infradead.org, 
+	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, linux-omap@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 28/03/2024 13:50, Alexey Klimov wrote:
-> The Exynos TRNG device is controlled by firmware and shared between
+On Thu, Mar 28, 2024 at 1:54=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org=
+> wrote:
 
-No, it is not. I have TRNG perfectly usable on my board. Maybe you are
-refer to some specific SoC...
+> At this point we have suggested to drivers to switch to use threaded
+> irq handlers (and regular work queues if needed too). That said,
+> what's the benefit of using the BH work queue?
 
-Please always Cc existing TRNG driver maintainer.
+Context:
+https://lwn.net/Articles/960041/
+"Tasklets, in particular, remain because they offer lower latency than
+workqueues which, since they must go through the CPU scheduler,
+can take longer to execute a deferred-work item."
 
-> non-secure world and secure world. Access to it is exposed via SMC
-> interface which is implemented here. The firmware code does
-> additional security checks, start-up test and some checks on resume.
-> 
-> This device is found, for instance, in Google Tensor GS101-family
-> of devices.
+The BH WQ is controlled by a software IRQ and quicker than an
+ordinary work item.
 
-Nothing here explains why this cannot be integrated into existing
-driver. Maybe it, maybe it cannot...
+I don't know if this little latency could actually affect any MMC
+device, I doubt it.
 
-You try to upstream again vendor driver ignoring that community already
-did it and instead it might be enough to customize it.
+The other benefit IIUC is that it is easy to mechanically rewrite tasklets
+to BH workqueues and be sure that it is as fast as the tasklet, if you want
+to switch to threaded IRQ handlers or proper work, you need to write a
+lot of elaborate code and test it (preferably on real hardware).
 
-Guys, the same as all the MCT, PHYs and PCI in previous works of various
-people: stop duplicating drivers by upstreaming new vendor stuff with
-all the issues we already fixed and please work on re-using existing
-drivers.
-
-Sometimes work cannot be combined, so come with arguments. Otherwise we
-keep repeating and repeating the same feedback.
-
-> 
-> Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
-> ---
->  drivers/char/hw_random/Kconfig           |  12 +
->  drivers/char/hw_random/Makefile          |   1 +
->  drivers/char/hw_random/exynos-swd-trng.c | 423 +++++++++++++++++++++++
->  3 files changed, 436 insertions(+)
->  create mode 100644 drivers/char/hw_random/exynos-swd-trng.c
-> 
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 442c40efb200..bff7c3ec129a 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -479,6 +479,18 @@ config HW_RANDOM_EXYNOS
->  
->  	  If unsure, say Y.
->  
-> +config HW_RANDOM_EXYNOS_SWD
-> +	tristate "Exynos SWD HW random number generator support"
-
-What is SWD?
-
-> +	default n
-> +	help
-> +	  This driver provides kernel-side support for accessing Samsung
-> +	  TRNG hardware located in secure world using smc calls.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called exynos-swd-trng.
-> +
-> +	  If unsure, say N.
-> +
-
-
-..
-
-> +
-> +static UNIVERSAL_DEV_PM_OPS(exyswd_rng_pm_ops, exyswd_rng_suspend,
-> +			    exyswd_rng_resume, NULL);
-> +
-> +static struct platform_driver exyswd_rng_driver = {
-> +	.probe		= exyswd_rng_probe,
-> +	.remove		= exyswd_rng_remove,
-> +	.driver		= {
-> +		.name	= DRVNAME,
-> +		.owner	= THIS_MODULE,
-
-So this was fixed ~8-10 years ago. Yet it re-appears. Please do not use
-downstream code as template.
-
-Take upstream driver and either change it or customize it.
-
-
-> +		.pm     = &exyswd_rng_pm_ops,
-> +	},
-> +};
-> +
-> +static struct platform_device *exyswd_rng_pdev;
-
-And if I have multiple devices?
-
-> +
-> +static int __init exyswd_rng_init(void)
-> +{
-> +	int ret;
-> +
-> +	exyswd_rng_pdev = platform_device_register_simple(DRVNAME, -1, NULL, 0);
-> +	if (IS_ERR(exyswd_rng_pdev))
-> +		pr_err(DRVNAME ": could not register device: %ld\n",
-> +		       PTR_ERR(exyswd_rng_pdev));
-
-This is some oddity... Why do you create devices based on module load?
-So I load this on Qualcomm anbd you create exynos device? This does not
-make sense.
-
-
-> +
-> +	ret = platform_driver_register(&exyswd_rng_driver);
-> +	if (ret) {
-> +		platform_device_unregister(exyswd_rng_pdev);
-> +		return ret;
-> +	}
-> +
-> +	pr_info("ExyRNG driver, (c) 2014 Samsung Electronics\n");
-
-Drop, dirvers should not print code just because I load a driver. Again:
-imagine I load it on Qualcomm.
-
-
-Best regards,
-Krzysztof
-
+Yours,
+Linus Walleij
 
