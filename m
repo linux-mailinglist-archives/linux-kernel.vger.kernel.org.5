@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-123512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0166890A0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E050890A11
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59EC128756B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:53:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D5722863E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D813B13B7BE;
-	Thu, 28 Mar 2024 19:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8070013BAEC;
+	Thu, 28 Mar 2024 19:51:09 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E4813A267;
-	Thu, 28 Mar 2024 19:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F192E1EA6E;
+	Thu, 28 Mar 2024 19:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655460; cv=none; b=hqMnOg2lSB2Qd4kx11CjTt6dWXBe8DVb/hEpQW3FNAJuafafH7bJVzmzPtMVz0ur2KAifyKnDD3CPP1t/BGB3FU4sMVn4dr2esm/SJLVBX+nmX+hshqhWiJ4FTnYX9CaqMKZffO0D6gkkRaD0bt1SRkYosT7vTdRUECUcWZBoq4=
+	t=1711655469; cv=none; b=sn29/Yn2DNN6mVqGaG/OF3gxsd4oQnQQS2MfnfJiAC2ryIG9NHbvMYT5c4poo7TD9dJbwyjHt9q8sEGcElNi4od3IVQeBxkkQcl7KtbdRt2AZPyPujbyiMnJLVNgRiK816ealxOtJavaPMxfDxW6KOWTDUIiB4pVV+mD6XolEbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655460; c=relaxed/simple;
-	bh=3DBlcw5Uc+lUgavKBCn/PyGF+yjz7VdivcFuSZC/Ml4=;
+	s=arc-20240116; t=1711655469; c=relaxed/simple;
+	bh=atsGEmkFbuwoMNttwqx1F0yIynHkaEbwFezW18HyMOc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BlI585987Uph2+/PdVph8nEEHATS5XitpPlo3wFDtvn92F6jJxbq+vYvkST6p33mWL65b0IdTLUl/Me5IYJVmN1Dgljkbzd1pW7ZPORW8JqufizgFbA3BDPfCA3yPrJzFgkp/nkp5iMZkKyeaRcuXGx3XDyYtHfBD3SKJ2LaL+k=
+	 In-Reply-To:To:Cc; b=tpxK7efh8oS1KJeTZWeMJa2Kv0yL++2vP2eywHZXm2RD8rZFKCnq6UKVMd+WcXM4xv3RzdERemodw7tNKfSxsVtwXzDH2B/WK9gSQtPbcH3MSfpnmEO+LXTjoIZFe5J98qQEp9uryia9h4C76fd/2Lqvm7ec/JN81mC77/emEY8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5298C43390;
-	Thu, 28 Mar 2024 19:50:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E68C41674;
+	Thu, 28 Mar 2024 19:51:00 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 20:49:18 +0100
-Subject: [PATCH v2 08/19] platform/x86/eeepc: drop owner assignment
+Date: Thu, 28 Mar 2024 20:49:19 +0100
+Subject: [PATCH v2 09/19] platform/x86/intel/rst: drop owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,7 +39,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-b4-module-owner-acpi-v2-8-1e5552c2c69f@linaro.org>
+Message-Id: <20240328-b4-module-owner-acpi-v2-9-1e5552c2c69f@linaro.org>
 References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -66,21 +66,21 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=843;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=775;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=3DBlcw5Uc+lUgavKBCn/PyGF+yjz7VdivcFuSZC/Ml4=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnF4TCFoCX2OG7IvrYWNINl4P1WQDwKPPeBq
- MCuTEmFg0WJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJxQAKCRDBN2bmhouD
- 1/iUD/9E0L2SN23OQ0KbFtk6ov6hSt6CoxrR2cl7lu0il6sEsl4VU18vauvLcqEerNMeDDUeL4M
- VHWN/flV2KjayvwcXZCjFlUuoqdojOSzVqFuZ538oClVbb9PIeBIAmY4+3Nxwn+GvlhaMB2FThg
- uVZ63qp0nTLQ4Iindi9uD9tosomBofDNk2gnA4TWKchN+d8MgWPSMgjS3cQ5uvHqMCIfRF21JVv
- IYwpvhdJZEpqw8cGfOE5br/1gASHOE9X7V0a9S4Y3ts0Fp4c73AkPSbBoAzdWf35i7IAQ1fEhxB
- IuRwq8srR2S3LgpibWI5r5sroWLLArg79acbVT9smUg75FDqqJdERtQTQOXA8OeT3CX5RkOQhag
- riYrk8FC6HUMPCwrWdLDL/X1LN5Ofb7pa4J2bFGzr6R8KgoyXSSA/YT6iJ7SYz9MjoyR9+kIYBb
- 0xk1Wkq3Lgt7PJgsa3aB4kK2BGC37Ja7wo47osObCQ0lsVJmfSytUEgonLyqRKU1DiXs6Y0iKlD
- 8IA3L0CaRYnXpr62YhoXZkMCmDcBWomX5QApQQmTzGq8lcrPkcv3L5zqb1g8OXL/rMfLfixex1k
- SJi4+dkageqwbK5fACVD/9OGUDfzGn+Ed591/gQ9iz2kQ9h79zVQKrUyV9b4qnuY32PXS1wLRIO
- r3StYfNSCnAOLMw==
+ bh=atsGEmkFbuwoMNttwqx1F0yIynHkaEbwFezW18HyMOc=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnGszDplYNDMhpIQD/TAYJlN3PuXJLxkuC8f
+ Kr76QaTBoaJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJxgAKCRDBN2bmhouD
+ 16JsEACIEhsEhj/FJvoFNXNZ+0et5BZ1m4uWu5TryaOxRTswqcLf0/eaocjy6PSLWStoWlfe1GH
+ vZhiq/VX4knA4nfKcsioR54qbqYs/qHFK3PdHXGMFV+Mv6yk76vjgab8v96ZTHvYUyENtOQwST8
+ XtSQsYxLJ7fRvF+/eztvHv8fywWYUO4gdB+o/hMtXW4T2p5XPJl8kfamm0fg+ZiD5ann1iyK7Ya
+ O6Fu66xqrPGV0WgduMXfzXAd0lk1gkp5Lkw4HTN/L6MSoOtl7QdI5fWO7PE+J4MAdEkTmAsmzUL
+ q+VVSDFbWZW/dESb9yE8RTBk5L2PONC/dPb9YKMY1btZIOa1Yp5DvvIDiGL6v/EpvPQvJu9ytWf
+ xSN0yq/Il52tkMvt5Lnyc6I4IUOpMEGNCQF1v5tBlVOa+xCGIMFnw1Vfl5V8eZDtJI8iLOHzfwt
+ ToG5DxDpYkau+nWAEoLJ9IJcKSe6pa3bcaaZZdczFyMAv42rX8PB3I07tI9E7pLQALNX2dN0Ta8
+ XJJVnOxMaKzGl9ubXY7WABzTIKKWKrBc2uEEeHqbdc/AlYpbQ8hsdCKh7EOCeK8aKSw/460f/AO
+ fy3OG/kWgg5daGWpfF1GFs8iogre5Np1H9U2uITsF86vkTfS3DzvwkZVBhe0jMHlfqYWjOMgNza
+ JgKy9HlfNDoI3hQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -90,21 +90,21 @@ Acked-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/platform/x86/eeepc-laptop.c | 1 -
+ drivers/platform/x86/intel/rst.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/platform/x86/eeepc-laptop.c b/drivers/platform/x86/eeepc-laptop.c
-index ff1b70269ccb..447364bed249 100644
---- a/drivers/platform/x86/eeepc-laptop.c
-+++ b/drivers/platform/x86/eeepc-laptop.c
-@@ -1463,7 +1463,6 @@ MODULE_DEVICE_TABLE(acpi, eeepc_device_ids);
- static struct acpi_driver eeepc_acpi_driver = {
- 	.name = EEEPC_LAPTOP_NAME,
- 	.class = EEEPC_ACPI_CLASS,
+diff --git a/drivers/platform/x86/intel/rst.c b/drivers/platform/x86/intel/rst.c
+index 35814a7707af..6bc9c4a603e0 100644
+--- a/drivers/platform/x86/intel/rst.c
++++ b/drivers/platform/x86/intel/rst.c
+@@ -125,7 +125,6 @@ static const struct acpi_device_id irst_ids[] = {
+ };
+ 
+ static struct acpi_driver irst_driver = {
 -	.owner = THIS_MODULE,
- 	.ids = eeepc_device_ids,
- 	.flags = ACPI_DRIVER_ALL_NOTIFY_EVENTS,
- 	.ops = {
+ 	.name = "intel_rapid_start",
+ 	.class = "intel_rapid_start",
+ 	.ids = irst_ids,
 
 -- 
 2.34.1
