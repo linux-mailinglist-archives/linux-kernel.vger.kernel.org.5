@@ -1,121 +1,148 @@
-Return-Path: <linux-kernel+bounces-123536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A98890A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:00:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F5B890A7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:00:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F119E2976DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:00:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C6C29BB1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD329139D04;
-	Thu, 28 Mar 2024 19:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC7513A888;
+	Thu, 28 Mar 2024 19:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ij6tDyPi"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i/hBLy32"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64981DDEE;
-	Thu, 28 Mar 2024 19:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC29137C26;
+	Thu, 28 Mar 2024 19:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655866; cv=none; b=eAPpgem1vKUyxbvdPUUQeQMpZWJB1aJxT68G2vjIbpbAcZqWWHo8HEWBIlq3Gj7K7NghRsHSdKJIAXcEBKnoIlbVqAc52N4//sF4kDkADmDNJMb7Kw1DkR0Us9VJ2LD3IHbi514NKpJ8viIZ78ExsXE9drvQhv9QC47HvWrqZ48=
+	t=1711655943; cv=none; b=pZmjU6ZkqXVOf//CxLy/6nqh0c/7AeXxNHl9VhCxFPUubtpawB8B2XospJqNFWy6Kp7HxxrDv1Kvt7U17u5hNVG6l8xLwkN/XX6zedkb8ThQEKtMrwYpfmUnyJcssJhUuoXJSKjCKy32yIBD8vbArHgNKGJRsgL7bvUY5EJazvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655866; c=relaxed/simple;
-	bh=7JXe9YzedTYhE82EFXVYkzaD8exZPpH+SswVS252TeI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=B3X/GIE0Po/dEixDhCGg42AL8ZgiJPVrLtjDCnoyuHtzSvnxnpm7pYhHWtx6Vzs8+P2GfoSZW3N+phnW4Z9PFlYes+JJ8oM7ikDYhKcBciITpqz44vUhGN7JLMZmC0Q2DFsgvz6yuzfXOP07UGPjnEcBJn756qhdNPnR+Fmzr8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ij6tDyPi; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 7C6FD120006;
-	Thu, 28 Mar 2024 22:57:42 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7C6FD120006
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711655862;
-	bh=J1/tsMz9G9CRvZryKckzyx/QA25/rYaJHeU8Rg8upNg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=ij6tDyPiW4C1258e7K6nBMoIU18H1z4zgXG+IH5DSnAgh11efPtYTZHRIcbHt8ZTi
-	 dRveYjM0c72rVRxPc/tcw52+vWVZnhpo+x5XTT6w/03PHZ2kaZNFeShkaTI3ZZMr7D
-	 2sNZFi/h/l7BBlo8ymuyWTSoB0VBtTf3hoDMmEnEWVJQa8n+8j7ka5+EX64qVBMWpf
-	 a/gUt5KekUo8fP7wZdF0a+IGsW8+nm1qL73SWvaL6uGkFXRXF0dXit/RAwpRA7m1H2
-	 Ztdabxe1yPChvhpCzpRCKFHKydbfVjOeZUR43A94qNRc3eg+VPKGPk8cnLK1gmU45f
-	 YjtE22mUplBJg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 28 Mar 2024 22:57:42 +0300 (MSK)
-Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 28 Mar 2024 22:57:41 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: <neil.armstrong@linaro.org>, <jbrunet@baylibre.com>,
-	<mturquette@baylibre.com>, <khilman@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <sboyd@kernel.org>
-CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v1] clk: meson: pll: print out pll name when unable to lock it
-Date: Thu, 28 Mar 2024 22:57:29 +0300
-Message-ID: <20240328195733.30572-1-ddrokosov@salutedevices.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711655943; c=relaxed/simple;
+	bh=ZJAY5ItgPFNW0LMb5RnANZBqjmUyKGO9ruTQ3rdhYns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=abfveTTXjwSRWjJUr+Lo11Kpq6tFXn5GNOxhI/yHvChv+yXpJhGOU1T9LZK1AblxQzda+SLD1idv+hhhn07yG+vYCbOU5JE0s4cH18uqYgS2R4v4GrzFZnh0x3BIv1ztP2MselkYsUHTkRIdr4BKMeHHfwqqH0BoBITpqoLcp2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i/hBLy32; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7e0425e5aa8so396526241.3;
+        Thu, 28 Mar 2024 12:59:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711655940; x=1712260740; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vnKBKhBKsmsJMY/bC4lZDp0UO96Fq//Yoyy126bkPGI=;
+        b=i/hBLy32YYW/o8j3jlyT+58N73XWr4B7nEUysc6HQGvHX/dXUUf9BrlAekuhzfeCpX
+         OvvCSJrGdFgHBFHmzE5U84AhiSl2pfojaS40NgbQugrYHm0z20LUq4Ewv9RNV3pDuLHQ
+         zuBPLjn9y0+Cf/ARg2ussYnyELP22NkypxWVYl24RlmHKFpbHhYYqDzwJ2Xq+A9TxAGe
+         ucSWRgOMxDU90tsotlsQ6iW/2+pm5dxix7jkl6GSfclY2iG1IbaRFdKLtHsmstq3sHaO
+         mfQU844pkCEw8CnS1c9f9Ma+W+I4ZeGLcdOa5G5j5urWobzqiZBgjYWl9ctwB5B95LZZ
+         96DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711655940; x=1712260740;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vnKBKhBKsmsJMY/bC4lZDp0UO96Fq//Yoyy126bkPGI=;
+        b=j1Nfg/elcADLj8v9Rfa1f8MY3Bg8dCs8vvXnwKihxiwznCN8ntr9B+b6BoPd3cbWZQ
+         SxazB+FMzP4bROJnYL2N65+v+YHAcywwg6zZC0aHDkQ4NHxlmg0NARNrqJgyi7uCQB1Q
+         lUlHwUhR7pWAXod58qgvox0ygBz4xgYXycKh1mCN8Mg68dL2kw/+jnDyYv+zPjrvKj1X
+         jeBmAHMv7QIx98rR8UQ1xphHEeeCg8oQY5Qcg8FqUZQW2e6EAvkZrUtdoFdt9nOFrKAV
+         8kC2RMLKNaZXbi57sxq6mLi4jPlIbjhqNeUSRUbdgdLpXx8bm69n9/NLdaxSF09D5nBJ
+         n86w==
+X-Forwarded-Encrypted: i=1; AJvYcCU/5nSbr5ngakMEsCsYdcLYd69F+RxWN1k0X17193zxtZvSKXcNU37ePENQVUwzR9JX57ubYnL83GmOPMDcvjr+1sEFzky1L02TT7A5gP+OF0v0IFU4aBEb4msHu9AEOtq7Flle8Un0goMzFekKxiDs34Nc4Go1n2Q4g8t8JJM0QnJD3OUhhxwq0FjiAP4b5akZamLB+meyJpG95a7Zf8zIARo8itSz5WCJibjv88Ww5fZMu934l3JMjEc18EZtmxbJSghLZxf+wY610IziqyX3/PGzkC/Sbm7dddFLUS5YrtiLAyuiLJysKvha7cG7X8kyJUjHTxFmyou8D/6it3n+be/XrVQAcdP6X5wfwwaYNHv7gdLGsc4cPAOkJYipeY+T2d9+dgI/Aj+fvFr0pDRt2h60IbHDvK4JdeDQFmOob9puQCyfnao3dtv0IN26BcTta8yI7nxgeUT9t6bXu3VGVzSxk+rH/Ob+LQMbt6SWprby3SRayDzqjXtV6sbAUMfXg7gOdBt4uV6c1ALEkw6d5yCdrKJx98a56QyPaK+XgKZOlemc+IH+TUBNyiQpQAjUs3UvAV9Z7Hir0Z9SJhk=
+X-Gm-Message-State: AOJu0Yy/VcUJSpofnXO/IqOfIdWHC4xhGlkhm1fqBNHfw8iG3a9kL9gJ
+	W/91jjuRRU1ayHwki3FsghQJyFFhoQYVUqg3AGtZ0OtDwtvHgZS/KfSrB9FMsqaoVjySTImChu1
+	XPB6iTimdOT3ab4DOWy6pvRPNr23TrbbqUJEj5w==
+X-Google-Smtp-Source: AGHT+IEsqiTQ+RuhLXyb/Y+jV0DgOZDtp/0zVM9owKFV3xn7f9aoxOYdP+JeSKGOIKqBlapOYOkCUtaaLw32MikZSqo=
+X-Received: by 2002:a05:6102:2a65:b0:476:cf52:e1b7 with SMTP id
+ hp5-20020a0561022a6500b00476cf52e1b7mr141814vsb.28.1711655940207; Thu, 28 Mar
+ 2024 12:59:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184478 [Mar 28 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/28 18:13:00 #24496606
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-7-apais@linux.microsoft.com> <ZgRePyo2zC4A1Fp4@mail.minyard.net>
+ <CAOMdWS+1AFxEqmACiBYzPHc+q0Ut6hp15tdV50JHvfVeUNCGQw@mail.gmail.com>
+ <ZgXDmx1HvujsMYAR@mail.minyard.net> <CAOMdWS+nB5EENp_Vb=k1j77nrch5JgbZP2XYPJ2ieTja14zB0w@mail.gmail.com>
+ <ZgXKeL36ckOyNpI/@mail.minyard.net>
+In-Reply-To: <ZgXKeL36ckOyNpI/@mail.minyard.net>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 28 Mar 2024 12:58:49 -0700
+Message-ID: <CAOMdWS+KrT2dK0XiEkZJT0aHnre1sr6gMMSkdxuXZaUh5e2e8Q@mail.gmail.com>
+Subject: Re: [PATCH 6/9] ipmi: Convert from tasklet to BH workqueue
+To: minyard@acm.org
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org, tj@kernel.org, 
+	keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
+	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
+	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
+	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
+	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
+	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
+	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
+	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
+	patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org, 
+	jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com, 
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
+	jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com, 
+	aubin.constans@microchip.com, ulf.hansson@linaro.org, manuel.lauss@gmail.com, 
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com, 
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org, brucechang@via.com.tw, 
+	HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr, 
+	stern@rowland.harvard.edu, oneukum@suse.com, 
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-In most meson systems, multiple PLLs are present, making it difficult to
-identify the specific PLL that fails to lock. To address this issue,
-print out the name of the PLL that cannot be locked.
+> > > >
+> > > >   Fair point. Could you please let me know once you have had a chance to test
+> > > > these changes. Meanwhile, I will work on RFC wherein IPMI will have its own
+> > > > workqueue.
+> > > >
+> > > >  Thanks for taking time out to review.
+> > >
+> > > After looking and thinking about it a bit, a BH context is still
+> > > probably the best for this.
+> > >
+> > > I have tested this patch under load and various scenarios and it seems
+> > > to work ok.  So:
+> > >
+> > > Tested-by: Corey Minyard <cminyard@mvista.com>
+> > > Acked-by: Corey Minyard <cminyard@mvista.com>
+> > >
+> > > Or I can take this into my tree.
+> > >
+> > > -corey
+> >
+> >  Thank you very much. I think it should be okay for you to carry it into
+> > your tree.
+>
+> Ok, it's in my for-next tree.  I fixed the directory reference, and I
+> changed all the comments where you changed "tasklet" to "work" to
+> instead say "workqueue".
+>
 
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
----
- drivers/clk/meson/clk-pll.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Thank you very much for fixing it.
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 6fa7639a3050..78d17b2415af 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -436,8 +436,8 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 
- 	ret = meson_clk_pll_enable(hw);
- 	if (ret) {
--		pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
--			__func__, old_rate);
-+		pr_warn("%s: pll %s didn't lock, trying to set old rate %lu\n",
-+			__func__, clk_hw_get_name(hw), old_rate);
- 		/*
- 		 * FIXME: Do we really need/want this HACK ?
- 		 * It looks unsafe. what happens if the clock gets into a
--- 
-2.43.0
-
+- Allen
 
