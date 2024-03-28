@@ -1,147 +1,91 @@
-Return-Path: <linux-kernel+bounces-122423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EEC988F726
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:24:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C72088F737
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:27:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35DCB1C25C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:24:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F8CF1C24315
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815F14594F;
-	Thu, 28 Mar 2024 05:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE0745949;
+	Thu, 28 Mar 2024 05:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aej5HGLk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ftCGu+1t"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5313D304;
-	Thu, 28 Mar 2024 05:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60400D304;
+	Thu, 28 Mar 2024 05:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711603477; cv=none; b=HIKzsOJxeRrvk3PilAHtHzRNHcloKJYXvr8umThhATsI4NadZ0MXmMfVbG0JlpWk1dJU7/Su1K3TmMLjSWSH+OYJxamsYNvhl+lolMucHdEpYpW/ulXQk2+cCoqfEnJpmumP2jR082GixlmwjtiTN9dlzZcScBxPM+UFthQduAQ=
+	t=1711603613; cv=none; b=byNtoDNEGGaM1NCl1KzyjXNJiy5Jxt9wsHUvtYU/qn0653O7eB8blcnsrc9lVKNn9C5fgFayIciRvqffD8l6dQlBVfhLsxaMA9KWppKrwRIYWIWgAOTYYLUByOjdXatmTVyEd79t3WRQafX39ZHJdWm7I82yvkFygANRVT9WNN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711603477; c=relaxed/simple;
-	bh=yw8GtftqZAvBx8gq5uIPgpQrdVhodSjj57djQ9gazmw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LRmJiN0eSlAWXOGzfXg1/wAjFjBCbCdfwha3VUvZQ7PHz2gKDRYTEGp2UVkyBSb+jZnGQYcEoNKkynnZW30+R2GyDPEj9KXsAco58gtm9TSC77YsIgpNgBdlR3NrzWZi+ytkOvO648JFKibp22S79R01roatmfTDQ62KkxmhXJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aej5HGLk; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711603475; x=1743139475;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yw8GtftqZAvBx8gq5uIPgpQrdVhodSjj57djQ9gazmw=;
-  b=aej5HGLkC7WNktrTgwapzJ25tmYqLhx/oekmXP2Y6p/GU0GRcNG0VmDs
-   QAy1toxoH9qhN4JfbRBDEcBGiqda/vWoP8fK+YI86dlWBBfZxF4neIQDy
-   P7ZKLv9QzLFVqb6RqEcSAeB7LcaOlVI3eiGw8qYLOed1TFVolqOqFKuhU
-   b+ye1/2KO3CYBVwZEOmCKlN9PrvchyIyQU5sGCP/ITDU4Msor1rAFHMs5
-   ny1smJuF7WoBOLTVf21zGWZNXLKAzNF/2iLTXAemg9o+fsTy8aE2BUlt5
-   mlTCTDgqQsrmi1cWKlXXVdiM/dwYZ2d2QU7SLJ4l8WMR+j5ZAXGcC7ZZo
-   w==;
-X-CSE-ConnectionGUID: +AvnARNfRDCEr4oVfXFxYw==
-X-CSE-MsgGUID: qnhfdNPxTLa47TH7sQHCSA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6602122"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="6602122"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 22:24:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="21179122"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 22:24:30 -0700
-Message-ID: <94fb2094-d8ee-4bcc-a65d-489dc777b024@linux.intel.com>
-Date: Thu, 28 Mar 2024 13:24:27 +0800
+	s=arc-20240116; t=1711603613; c=relaxed/simple;
+	bh=nNDoNeVkx3lsLGt6cZnB5tXn8fXGFUJdOBK7O79ATdU=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=ECB89x2SawtFL3czzWGXy/qsAXwupcylgEvHtIShjwRUXl3vSNrgGvXGIykA76Llyr6VilWqQUsJPM4A4hjCC9eNhnhTQQ54LZrNTzmx6/hbp47OiE3+/vyomTOSMEsPn1nKifiBzF2FyRhU7f4/i1C/TXCcRp8mIHxglBq6hwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ftCGu+1t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B59AC433C7;
+	Thu, 28 Mar 2024 05:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711603612;
+	bh=nNDoNeVkx3lsLGt6cZnB5tXn8fXGFUJdOBK7O79ATdU=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=ftCGu+1tDZdMw5dOxoF9vvq5lW+Otcl56AJxf643bHo1VJ5VGf/spkG0S6e7keS5b
+	 3YNukZhqfwv456jxgF36e0xgoYG9zhIvJ3ttaQMH1AmV7s4z4+ebybPPFVp/yWcEks
+	 KTFqAXz+7ILgE0JfV3qaWxjhhNGCkNQNdyzjd9gjl4Eao1JD17HQIc8fg8HktBRAvq
+	 mY2JoV0CP4Gh/xYYJckAjNUOhn2bEJ3Sq2Iav8rMsI/3plZC/CbSS3zyIfLeu74Z08
+	 9cxeC7lc6pVCe+mmmOKY3oQAQpEFVNOKkL9Xtd92UTp5BLZ/wrDVG7EpC6XAoUg90Y
+	 9rflje1TTvQDQ==
+Date: Wed, 27 Mar 2024 23:26:51 -0600
+From: Kees Cook <kees@kernel.org>
+To: "Luck, Tony" <tony.luck@intel.com>, Kees Cook <keescook@chromium.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-hardening@vger.kernel.org
+Subject: Re: __randomize_layout;
+User-Agent: K-9 Mail for Android
+In-Reply-To: <SJ1PR11MB608346DDA3F41ABB893C7860FC342@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <SJ1PR11MB608346DDA3F41ABB893C7860FC342@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Message-ID: <1B6E0664-D1B5-4FCC-A874-8A9587924687@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 069/130] KVM: TDX: Require TDP MMU and mmio caching
- for TDX
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <f6a80dd212e8c3fd14b40049eed33187008cf35a.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <f6a80dd212e8c3fd14b40049eed33187008cf35a.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> As TDP MMU is becoming main stream than the legacy MMU, the legacy MMU
-> support for TDX isn't implemented.  TDX requires KVM mmio caching.
+On March 27, 2024 9:21:59 AM MDT, "Luck, Tony" <tony=2Eluck@intel=2Ecom> w=
+rote:
+>This e-mail is to check you on whether that __randomize_layout can shuffl=
+e the
+>fields inside that nested union/structure=2E I tried some experiments, an=
+d in a
+>few kernel builds I saw the whole block move to different offsets, but th=
+e order
+>of x86_vendor, x86, x86_model, and x86_reserved was preserved=2E
 
-Can you add some description about why TDX requires mmio caching in the 
-changelog?
+Yes, this is an intentional behavior: __randomize_layout will only apply t=
+o the struct it is attached to, and is not enabled for any substructs (anon=
+ymous or otherwise)=2E
 
+>But experiments aren't proof=2E Nor defense against future versions of
+>scripts/gcc-plugins/randomize_layout_plugin=2Ec becoming smarter or
+>more aggressive about changing layout=2E
 
->   Disable
-> TDX support when TDP MMU or mmio caching aren't supported.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c  |  1 +
->   arch/x86/kvm/vmx/main.c | 13 +++++++++++++
->   2 files changed, 14 insertions(+)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 0e0321ad9ca2..b8d6ce02e66d 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -104,6 +104,7 @@ module_param_named(flush_on_reuse, force_flush_and_sync_on_reuse, bool, 0644);
->    * If the hardware supports that we don't need to do shadow paging.
->    */
->   bool tdp_enabled = false;
-> +EXPORT_SYMBOL_GPL(tdp_enabled);
->   
->   static bool __ro_after_init tdp_mmu_allowed;
->   
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 076a471d9aea..54df6653193e 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -3,6 +3,7 @@
->   
->   #include "x86_ops.h"
->   #include "vmx.h"
-> +#include "mmu.h"
->   #include "nested.h"
->   #include "pmu.h"
->   #include "tdx.h"
-> @@ -36,6 +37,18 @@ static __init int vt_hardware_setup(void)
->   	if (ret)
->   		return ret;
->   
-> +	/* TDX requires KVM TDP MMU. */
-> +	if (enable_tdx && !tdp_enabled) {
-> +		enable_tdx = false;
-> +		pr_warn_ratelimited("TDX requires TDP MMU.  Please enable TDP MMU for TDX.\n");
-> +	}
-> +
-> +	/* TDX requires MMIO caching. */
-> +	if (enable_tdx && !enable_mmio_caching) {
-> +		enable_tdx = false;
-> +		pr_warn_ratelimited("TDX requires mmio caching.  Please enable mmio caching for TDX.\n");
-> +	}
-> +
->   	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
->   	if (enable_tdx)
->   		vt_x86_ops.vm_size = max_t(unsigned int, vt_x86_ops.vm_size,
+The behavior is also supported natively by Clang -- neither implementation=
+ is likely to ever change its treatment of substructs as it would kind of c=
+ause chaos=2E
 
+So you're all good! :)
+
+--=20
+Kees Cook
 
