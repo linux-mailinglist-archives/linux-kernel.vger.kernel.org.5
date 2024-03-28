@@ -1,195 +1,110 @@
-Return-Path: <linux-kernel+bounces-122779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71E688FD23
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:33:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77F8088FD28
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D53E1F28F40
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:33:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 170B0B29046
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3A77CF18;
-	Thu, 28 Mar 2024 10:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZD/g23Ny"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83E37C6C1;
+	Thu, 28 Mar 2024 10:34:08 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4072561D;
-	Thu, 28 Mar 2024 10:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC1E57895;
+	Thu, 28 Mar 2024 10:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711622010; cv=none; b=RFMFQ5c9A6m1TdCAufv8wbnluR8IjZfchL0kDWQaoGb6U86vcGAnpjxzQ+zyWoiUgSLdbjPCYeoJjAx4t3tYqglHQwXrRQVHbIdcJ92gypCYWNYnHxmQFH8nUCj/rHZRTts3GuPgSihFZIHBLoMh8BFAxhX89OweblwFCfFBcmk=
+	t=1711622048; cv=none; b=L1cC9zNfYdM7gQljoPouDCevciotLwYCnV+EH7JM/xOT7J0hsHSXx6Vc9pFSEYC1hDmrPA6557fn5yuNxQQsdR35KSUuxdi93YwtV181dSZgywsyFw1dHfyu8mep3KYEeUA/mNu+W/I4wxZMo9e/v6HUfoQqXNqyMh0ppOfdf8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711622010; c=relaxed/simple;
-	bh=iU1tUXhCDwyIc1WbR0eWG2uv/PUO2eklfA03DFfPGIA=;
+	s=arc-20240116; t=1711622048; c=relaxed/simple;
+	bh=9GKBgRe8M71pv5YsV8sYX43vihykXoAI4QMvCVvtNFc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tKoNzmXcRY6LFDJHN8Q3TBaYl1WFqmy+OH9Wx5EJLmqxnrngDtB7+aGwoSuA2gBEafmi4NPuIvMqFTYAz9dMhYnk/cXOWHx+l/XmpqjiWv46p6h9G5atgbPmFBQIS+RlYpqHAD0eKkJevJDf+wjd3PLAbbE/xFzPrvG+YuJpB6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZD/g23Ny; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DFA3C433F1;
-	Thu, 28 Mar 2024 10:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711622009;
-	bh=iU1tUXhCDwyIc1WbR0eWG2uv/PUO2eklfA03DFfPGIA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZD/g23NyMfnrDXqG9nJ1YMij3C0sSLv35lOLM6I9BSJqsUT1hiiQARxtBH9p4W0Y8
-	 lZDNdqc3LZiWPsO0cjNC7pnKr+Xqrl3k1Iz8COAOHsXzy3CSDuPpVcUVvPxwJRf6TK
-	 1utgva25c83ZOhTWXEmEhXUcKIFKR3i1RdNQRSLnq9eew7CAwx/eXKSSSTNZVLGZIC
-	 cPYP+5y/+gLNIVN+mAfHD6OoVfPo2SZVcNeWPNC02XTBC9UAVMxjVh63OnAXqOJqkA
-	 0D9ooBcZ7VJHzgYyQK7yLksLvjfR96ZtgUyPElsmjRNdRYA6g6jb4DNgUqixVSN762
-	 QkJoOvn5zIdKg==
-Date: Thu, 28 Mar 2024 10:33:22 +0000
-From: Simon Horman <horms@kernel.org>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 10/17] net: pse-pd: Add support for PSE PIs
-Message-ID: <20240328103322.GX403975@kernel.org>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
- <20240326-feature_poe-v6-10-c1011b6ea1cb@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DmBsPnGbSprLGQLwLbDrJkkwY7p3tP20ljUWmSTVvt+4JqqEhJf2+fPUP4QXzomP7HjyQ1BtlJdSbZkg5zB3OfmgpHJbyI263HQSrYtduUFcHCtf/5uiUoyJKbdsDPquXDdcdX3gczZd6TejXGDyfGdm78bikGH/L2WZ0JKAxIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id C0AA91C0081; Thu, 28 Mar 2024 11:34:04 +0100 (CET)
+Date: Thu, 28 Mar 2024 11:34:04 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	Russell King <linux@armlinux.org.uk>, Kalle Valo <kvalo@kernel.org>
+Subject: Re: [PATCH 4.19 035/148] wifi: mwifiex: debugfs: Drop unnecessary
+ error check for debugfs_create_dir()
+Message-ID: <ZgVHnFAGan7e+mYK@duo.ucw.cz>
+References: <20240324235012.1356413-1-sashal@kernel.org>
+ <20240324235012.1356413-36-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tkcsipe4i8KMbCTU"
+Content-Disposition: inline
+In-Reply-To: <20240324235012.1356413-36-sashal@kernel.org>
+
+
+--tkcsipe4i8KMbCTU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240326-feature_poe-v6-10-c1011b6ea1cb@bootlin.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 03:04:47PM +0100, Kory Maincent wrote:
-> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
-> 
-> The Power Sourcing Equipment Power Interface (PSE PI) plays a pivotal role
-> in the architecture of Power over Ethernet (PoE) systems. It is essentially
-> a blueprint that outlines how one or multiple power sources are connected
-> to the eight-pin modular jack, commonly known as the Ethernet RJ45 port.
-> This connection scheme is crucial for enabling the delivery of power
-> alongside data over Ethernet cables.
-> 
-> This patch adds support for getting the PSE controller node through PSE PI
-> device subnode.
-> 
-> This supports adds a way to get the PSE PI id from the pse_pi devicetree
-> subnode of a PSE controller node simply by reading the reg property.
-> 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+Hi!
 
-Hi Kory,
+> From: Jinjie Ruan <ruanjinjie@huawei.com>
+>=20
+> [ Upstream commit 50180c7f8e3de7c2d87f619131776598fcb1478d ]
+>=20
+> debugfs_create_dir() returns ERR_PTR and never return NULL.
+>=20
+> As Russell suggested, this patch removes the error checking for
+> debugfs_create_dir(). This is because the DebugFS kernel API is developed
+> in a way that the caller can safely ignore the errors that occur during
+> the creation of DebugFS nodes. The debugfs APIs have a IS_ERR() judge in
+> start_creating() which can handle it gracefully. So these checks are
+> unnecessary.
 
-Some minor documentation nits from my side.
+Additional error handling does not break anything.
 
-> diff --git a/Documentation/networking/pse-pd/pse-pi.rst b/Documentation/networking/pse-pd/pse-pi.rst
+This does not fix a bug, and thus does not belong into stable.
 
-..
+Best regards,
+								Pavel
+							=09
+> +++ b/drivers/net/wireless/marvell/mwifiex/debugfs.c
+> @@ -977,9 +977,6 @@ mwifiex_dev_debugfs_init(struct mwifiex_private *priv)
+>  	priv->dfs_dev_dir =3D debugfs_create_dir(priv->netdev->name,
+>  					       mwifiex_dfs_dir);
+> =20
+> -	if (!priv->dfs_dev_dir)
+> -		return;
+> -
+>  	MWIFIEX_DFS_ADD_FILE(info);
+>  	MWIFIEX_DFS_ADD_FILE(debug);
+>  	MWIFIEX_DFS_ADD_FILE(getlog);
 
-> +Table 145\u20133\u2014PSE Pinout Alternatives
-> +-----------------------------------
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-When running make htmldocs I see the following warning:
+--tkcsipe4i8KMbCTU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Table 145\u20133\u2014PSE Pinout Alternatives
+-----BEGIN PGP SIGNATURE-----
 
-And the header is rendered as:
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgVHnAAKCRAw5/Bqldv6
+8nWfAJ9PHvxLJw8k4iAUnXui+VmjI/BQ4gCeJBZ/PeipfPLhm5EZaYu7SOY+W4c=
+=Cb2c
+-----END PGP SIGNATURE-----
 
-Table 145u20133u2014PSE Pinout Alternatives
-
-I'm assuming my version of Sphinx doesn't understand the use
-of escape sequences for unicode characters here.
-
-I have observed this with (I assume this is the relevant command):
-
-$ sphinx-build --version
-sphinx-build 7.2.6
-
-$ sphinx-build --version
-sphinx-build 6.2.1
-
-..
-
-> diff --git a/drivers/net/pse-pd/pse_core.c b/drivers/net/pse-pd/pse_core.c
-
-..
-
->  /**
-> - * of_pse_zero_xlate - dummy function for controllers with one only control
-> - * @pcdev: a pointer to the PSE controller device
-> - * @pse_spec: PSE line specifier as found in the device tree
-> - *
-> - * This static translation function is used by default if of_xlate in
-> - * :c:type:`pse_controller_dev` is not set. It is useful for all PSE
-> - * controllers with #pse-cells = <0>.
-> + * of_load_pse_pi_pairset - load PSE PI pairsets pinout and polarity
-
-nit: of_load_pse_pi_pairsets
-
-> + * @node: a pointer of the device node
-> + * @pi: a pointer of the PSE PI to fill
-> + * @npairsets: the number of pairsets (1 or 2) used by the PI
->   */
-> -static int of_pse_zero_xlate(struct pse_controller_dev *pcdev,
-> -			     const struct of_phandle_args *pse_spec)
-> +static int of_load_pse_pi_pairsets(struct device_node *node,
-> +				   struct pse_pi *pi,
-> +				   int npairsets)
-
-..
-
-> diff --git a/include/linux/pse-pd/pse.h b/include/linux/pse-pd/pse.h
-
-..
-
-> @@ -73,11 +103,11 @@ struct pse_control;
->   * @pse_control_head: head of internal list of requested PSE controls
->   * @dev: corresponding driver model device struct
->   * @of_pse_n_cells: number of cells in PSE line specifiers
-> - * @of_xlate: translation function to translate from specifier as found in the
-> - *            device tree to id as given to the PSE control ops
->   * @nr_lines: number of PSE controls in this controller device
->   * @lock: Mutex for serialization access to the PSE controller
->   * @types: types of the PSE controller
-> + * @pi: table of PSE PIs described in this controller device
-> + * @of_legacy: flag set if the pse_pis devicetree node is not used
-
-nit: it looks line the documentation didn't keep up with the
-     structure during development: @no_of_pse_pi should be
-     documented instead of @of_legacy.
-
->   */
->  struct pse_controller_dev {
->  	const struct pse_controller_ops *ops;
-> @@ -86,11 +116,11 @@ struct pse_controller_dev {
->  	struct list_head pse_control_head;
->  	struct device *dev;
->  	int of_pse_n_cells;
-> -	int (*of_xlate)(struct pse_controller_dev *pcdev,
-> -			const struct of_phandle_args *pse_spec);
->  	unsigned int nr_lines;
->  	struct mutex lock;
->  	enum ethtool_pse_types types;
-> +	struct pse_pi *pi;
-> +	bool no_of_pse_pi;
->  };
-
-..
+--tkcsipe4i8KMbCTU--
 
