@@ -1,154 +1,168 @@
-Return-Path: <linux-kernel+bounces-123781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87019890DB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:36:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D0B890DB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 273181F27B73
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:36:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9C3229E8B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41C0383AC;
-	Thu, 28 Mar 2024 22:36:24 +0000 (UTC)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E3B339A0;
+	Thu, 28 Mar 2024 22:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="djx5LAUI"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A8932C89;
-	Thu, 28 Mar 2024 22:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24131D68F;
+	Thu, 28 Mar 2024 22:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711665384; cv=none; b=aSy1KMHFd+wHWMAnKqcm4b2QloBzFJfOQ6T3DrPub6uFc1agRFc23G6/jMMKqPZUVYHj3Ev9HRoCIXTZt+r/yYj2AIEWsp6OPwhE9K7LnHpQqZlNt7S1kqRbaTtAmsdp97OJUP38vHbv5Dzjvm1l6CVXTSZPaWL61dUulbGP9wU=
+	t=1711665427; cv=none; b=QL6BcG9XXLcEKx2OVY5meytW59ai0Sp6rnjfQNHjIeL/dPw0MlL6Dv1yrt8IJlJdhaxYr0Or2c76uoslVgqvJbF3Mb7UNA/MmtknUp3J6fnQOnPPVBaFayWWaaHOIwXxi4gyFuStKWoJ0QWNeFm61J6p5kI6ap7Wr1ShG9PH7V0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711665384; c=relaxed/simple;
-	bh=gj2wLdswjPOOndy4D8/Kdw2o0gqtcmzQErV30pF7frk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BqBZc0njxaAhBZhrYEMwy9uz7nc2EnclIu+sIO0aoA/x5713KSWFf7AP+OGNE817VCmzyuXuhNay5zgtn9PyPRat1Q4akkpBqdx238fmFSnLRjMiFemJk26h9gAKOlO8+OkP5I/2mkzWvEBQwEP7/ACQBKtmHidAN4v1we4lUEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515caffe2bcso779418e87.0;
-        Thu, 28 Mar 2024 15:36:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711665380; x=1712270180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dyCAY2qw35sgCbOx8eCrICiPTagVb1iTRuM2XaxYdj4=;
-        b=WGhWDLCGBm1IV4wE4sUBXhk2T936WQQ09AnOVJez4MroYjFGvXgF0lxlYqdHw0VFyB
-         EVrG2G+cjtPWze6h4MnLdXr1rVidA0UGHEUZxBU+2EcwX228m3nmAgHKy4MaaFR+/QqW
-         snEk+2gaMbDY9O8Hu8q+qe/56v4OCssm9jmNrPd/xJR1CnSEyeXx2ePmK1JGqHPX4+y8
-         6f5/mc+nzEOvGQICPy7ICK4MqaFKxVd8QMsIH8IKA5TjShsqN9vksQ82qQ1BT1yL/z/l
-         EJzloLyEQzE2idHIkI6pnJVqMgye94GfdoSKibqyhFA7Zkyft1Hidl9jiB50ksEh7l69
-         Xg+A==
-X-Forwarded-Encrypted: i=1; AJvYcCX/gtQgP0e9Ysp+5QafLbYIADNVNnW3Wdn7kvFuKzAQnGGqAGUwTSBpTvRJe3xIYR4wpnzY0ztlNxYKA9N2DpNbBrziCKF/FRKkLKY4
-X-Gm-Message-State: AOJu0YwekdTsBpf2EKQz7xISJ0M9FjXM995dkRQpaE+Pt3ICU2fNI53d
-	iO5g1IsKpYl+kH91CYSGRA8Jo0dlopi47MmDg/kXr2m0OikO+7fsvhxk6JwU
-X-Google-Smtp-Source: AGHT+IFmTgmyxdYwbz6b3GR+1vUcgLhP4Z/3hfmPAaXWrK7zxfx88bQCeyk+KZEhZIXh6nrGosVRMw==
-X-Received: by 2002:ac2:44c1:0:b0:513:e21:2a64 with SMTP id d1-20020ac244c1000000b005130e212a64mr420323lfm.31.1711665379474;
-        Thu, 28 Mar 2024 15:36:19 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id e5-20020a1709061e8500b00a4e07760215sm1222580ejj.69.2024.03.28.15.36.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 15:36:19 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso195185366b.1;
-        Thu, 28 Mar 2024 15:36:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWrRyX73iL8o/HJA6LieZHuQntQ5fEyHlRowEVdE0hwqtlmmQ0qoAhq6Y5yrRTKHpfUSWpxWehGRuZ1VS3NC8iL2W+Tc4EkaQbUpGtw
-X-Received: by 2002:a17:906:2813:b0:a47:4b39:ba1c with SMTP id
- r19-20020a170906281300b00a474b39ba1cmr308203ejc.39.1711665379110; Thu, 28 Mar
- 2024 15:36:19 -0700 (PDT)
+	s=arc-20240116; t=1711665427; c=relaxed/simple;
+	bh=xQvSGwjpy1U6i/xX+phhJvt3/ov4BDw8GZ/yLMQj2dU=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=P4O/OD3+mKo7aNTqoiHtAnvMDtKl1l6+ava/ozWl9R5PoHdhikmepfcY1M0m5jj42OMk2lJ+kvt3CZaUizQXcJis1kGmxk6MEyTTTvGTCnlCSll0a26Qmwi5QvfMz2BP36DeVjMCUkmAZAMupGid/5hlHrHs+IY+9risyEaLRYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=djx5LAUI; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=acFz8ZofxmGGcr8Ugossbm6NCpv7kLhJA9jmyA4gPP0=;
+	t=1711665425; x=1712875025; b=djx5LAUI7FnX5I56/ZNLZNWxFlCG0bFWh/HFUvIEYn8nM3U
+	ZNzAiYoz645+29heGeoeiaYBpeNkFTBhPTwwaL1pi8YJxz/kx8c0fQAFXgCTJzDhROVCB+QJe5NNj
+	s0UDHFax7KqW3RdEKKjGZUMzhAEghnwlw7Wnf/UQRQYlxx3lo27OkZ9lJZDnvGEbj1vZqr9BzJO3y
+	YFmlO6+ZFoXbgddGTsrlknQRgJsohG59/VDVu7cLE7EOBWtcLFa3XhZyhJT8Hrxmd9tE8i5iADxhc
+	3YG1GNC+F1dfNr7arbV0CvuGcQBs2aR1R/bSZekCxv+o5AWM4+hlo/H3L9myLJ3g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rpyMo-00000001QZ0-2sTv;
+	Thu, 28 Mar 2024 23:37:02 +0100
+Message-ID: <a67ce10d440ecaf8313e4f35832305f71d2f921c.camel@sipsolutions.net>
+Subject: Re: [syzbot] [wireless?] possible deadlock in ieee80211_open
+From: Johannes Berg <johannes@sipsolutions.net>
+To: syzbot <syzbot+7526b1c2ce0b9a92e9a6@syzkaller.appspotmail.com>, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Date: Thu, 28 Mar 2024 23:37:01 +0100
+In-Reply-To: <000000000000b146890614a58da4@google.com>
+References: <000000000000b146890614a58da4@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a144b96b-6ec4-4a62-b2ab-1ed631d81544@linux.intel.com> <20240328161831.GA1568357@bhelgaas>
-In-Reply-To: <20240328161831.GA1568357@bhelgaas>
-Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Date: Thu, 28 Mar 2024 15:36:07 -0700
-X-Gmail-Original-Message-ID: <CAC41dw-wZ7eM_y5AkwW3F4dJiHYuR3YSWwap5M7FVB_fZAkg=w@mail.gmail.com>
-Message-ID: <CAC41dw-wZ7eM_y5AkwW3F4dJiHYuR3YSWwap5M7FVB_fZAkg=w@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Update pci_find_capability() stub return values
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-malware-bazaar: not-scanned
 
-Hi,
+On Wed, 2024-03-27 at 07:52 -0700, syzbot wrote:
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> WARNING: possible circular locking dependency detected
+> 6.8.0-syzkaller-05204-g237bb5f7f7f5 #0 Not tainted
+> ------------------------------------------------------
+> syz-executor.0/7478 is trying to acquire lock:
+> ffff888077110768 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/n=
+et/cfg80211.h:5951 [inline]
+> ffff888077110768 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: ieee80211_open+0xe7/=
+0x200 net/mac80211/iface.c:449
+>=20
+> but task is already holding lock:
+> ffff888064974d20 (team->team_lock_key#17){+.+.}-{3:3}, at: team_add_slave=
++0xad/0x2750 drivers/net/team/team.c:1973
+>=20
+> which lock already depends on the new lock.
 
-On Thu, Mar 28, 2024 at 9:18=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> On Wed, Mar 27, 2024 at 02:49:34PM -0700, Kuppuswamy Sathyanarayanan wrot=
-e:
-> > On 3/27/24 11:02 AM, Bjorn Helgaas wrote:
-> > > From: Bjorn Helgaas <bhelgaas@google.com>
-> > >
-> > > f646c2a0a668 ("PCI: Return u8 from pci_find_capability() and similar"=
-) and
-> > > ee8b1c478a9f ("PCI: Return u16 from pci_find_ext_capability() and sim=
-ilar")
-> > > updated the return type of the extern declarations, but neglected to =
-update
-> > > the type of the stubs used CONFIG_PCI is not enabled.
-> > >
-> > > Update them to match the extern declarations.
-> > >
-> > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > ---
-> >
-> > This change looks fine to me.
-> >
-> > Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@lin=
-ux.intel.com>
->
-> Thanks for reviewing it!
->
-> > But the callers of these functions still seems to use int
-> > declaration to store the output. Any reason for not changing them?
-> > Like the usages in drivers/pci/pci.c?
->
-> This patch is just to make the extern declarations match the stubs.
->
-> No particular reason not to change users other than I didn't want to
-> change the users before the declarations (to avoid warnings about
-> assigning an int to a u8 or u16), and there's not a lot of value in
-> changing local variables, where an int is just on the stack and works
-> fine.
->
-> Changing stored values in a struct would have more benefit.  I took a
-> quick look and found these possibilities:
->
+Hmm.
 
-Agree. Thanks for clarifying it.
+> the existing dependency chain (in reverse order) is:
+>=20
+> -> #1 (team->team_lock_key#17){+.+.}-{3:3}:
+>        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+>        __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+>        __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+>        team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2995
+>        team_device_event+0x161/0x5b0 drivers/net/team/team.c:3021
+>        notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
+>        call_netdevice_notifiers_extack net/core/dev.c:1988 [inline]
+>        call_netdevice_notifiers net/core/dev.c:2002 [inline]
+>        dev_close_many+0x33c/0x4c0 net/core/dev.c:1543
+>        unregister_netdevice_many_notify+0x544/0x16d0 net/core/dev.c:11071
+>        macvlan_device_event+0x7bc/0x850 drivers/net/macvlan.c:1828
+>        notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
+>        call_netdevice_notifiers_extack net/core/dev.c:1988 [inline]
+>        call_netdevice_notifiers net/core/dev.c:2002 [inline]
+>        unregister_netdevice_many_notify+0xd96/0x16d0 net/core/dev.c:11096
+>        unregister_netdevice_many net/core/dev.c:11154 [inline]
+>        unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11033
+>        unregister_netdevice include/linux/netdevice.h:3115 [inline]
+>        _cfg80211_unregister_wdev+0x162/0x560 net/wireless/core.c:1206
+>        ieee80211_if_remove+0x25d/0x3a0 net/mac80211/iface.c:2242
+>        ieee80211_del_iface+0x19/0x30 net/mac80211/cfg.c:202
+>        rdev_del_virtual_intf net/wireless/rdev-ops.h:62 [inline]
+>        cfg80211_remove_virtual_intf+0x230/0x3f0 net/wireless/util.c:2847
 
->   struct controller.cap_offset (drivers/pci/hotplug/shpchp.h SHPC cap)
->   struct pci_sriov.pos (drivers/pci/pci.h SR-IOV ext cap)
->   struct altera_pcie_data.cap_offset (drivers/pci/controller/pcie-altera.=
-c PCIe cap)
->
->   struct tg3.msi_cap (broadcom/tg3.h MSI cap)
->   struct tg3.pcix_cap (broadcom/tg3.h PCI-X cap)
->   struct bnx2.pm_cap (broadcom/bnx2.h PM cap)
->   struct bnx2.pcix_cap (broadcom/bnx2.h PCI-X cap)
->   struct bnx2x_sriov.cap (broadcom/bnx2x/bnx2x_sriov.h SR-IOV ext cap)
->   struct amd8111e_priv.pm_cap (amd/amd8111e.c, removed [1])
->   struct pci_params.pm_cap (qlogic/qed/qed.h, removed [2])
->   struct qed_hw_sriov_info.cap (qlogic/qed/qed_sriov.h SR-IOV ext cap)
->   struct eeh_dev.pcix_cap (powerpc/include/asm/eeh.h PCI-X cap)
->   struct eeh_dev.pcie_cap (powerpc/include/asm/eeh.h PCIe cap)
->   struct eeh_dev.aer_cap (powerpc/include/asm/eeh.h AER ext cap)
->   struct eeh_dev.af_cap (powerpc/include/asm/eeh.h AF cap)
->   struct icm.vnd_cap (drivers/thunderbolt/icm.c VNDR ext cap)
->
-> [1] https://lore.kernel.org/all/20240325220633.1453180-1-helgaas@kernel.o=
-rg/
-> [2] https://lore.kernel.org/all/20240325224931.1462051-1-helgaas@kernel.o=
-rg/
->
-> Bjorn
+So this was the interface being removed via nl80211 (why do we even do
+that? rtnetlink can do that too ...)
+
+I guess it was a team port, since team_port_get_rtnl() must've been non-
+NULL for this netdev. That acquires the team->lock mutex, but we hold
+the wiphy mutex around unregister_netdevice().
+
+> -> #0 (&rdev->wiphy.mtx){+.+.}-{3:3}:
+>        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+>        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+>        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+>        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+>        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+>        __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+>        __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+>        wiphy_lock include/net/cfg80211.h:5951 [inline]
+>        ieee80211_open+0xe7/0x200 net/mac80211/iface.c:449
+>        __dev_open+0x2d3/0x450 net/core/dev.c:1430
+>        dev_open+0xae/0x1b0 net/core/dev.c:1466
+>        team_port_add drivers/net/team/team.c:1214 [inline]
+>        team_add_slave+0x9b3/0x2750 drivers/net/team/team.c:1974
+>        do_set_master net/core/rtnetlink.c:2685 [inline]
+>        do_setlink+0xe70/0x41f0 net/core/rtnetlink.c:2891
+>        __rtnl_newlink net/core/rtnetlink.c:3680 [inline]
+>        rtnl_newlink+0x180b/0x20a0 net/core/rtnetlink.c:3727
+>        rtnetlink_rcv_msg+0x89b/0x10d0 net/core/rtnetlink.c:6595
+
+I guess this was actually adding it as a team slave/port, which acquired
+the team->lock mutex, but do_open acquires the wiphy lock.
+
+We _don't_ hold the wiphy mutex around dev_close() when invoked in this
+path (see nl80211_del_interface), but regardless of how we delete the
+interface, we will hold wiphy mutex around the unregister.
+
+Thing is, I'm not sure I see a good way to avoid that? Maybe we could
+defer the unregister, and just set the ieee80211_ptr to NULL to make it
+effectively dead for wireless in the meantime. Not sure.
+
+However, as far as I can tell it's not actually possible for the
+deadlock to happen, because _both_ paths will necessarily be holding the
+RTNL around them - from nl80211 (nl80211_del_interface has
+NL80211_FLAG_NEED_RTNL) and rtnetlink_rcv_msg() respectively.
+
+So ultimately, we're both holding the mutex for internal reasons, but
+given the outer RTNL, I don't see how this would really deadlock.
+
+Given that, I'm inclined to ignore this, although it'd be nice to
+silence lockdep about it somehow I guess?
+
+johannes
 
