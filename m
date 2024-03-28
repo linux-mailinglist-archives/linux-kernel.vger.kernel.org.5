@@ -1,152 +1,130 @@
-Return-Path: <linux-kernel+bounces-122337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45F2388F55D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 021DF88F561
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFB741F28A54
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:29:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 959321F2CAAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9431F2B9DA;
-	Thu, 28 Mar 2024 02:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C02428DBF;
+	Thu, 28 Mar 2024 02:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rhk42HML"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXHc8PNx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B92D25760
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A212D374D2;
+	Thu, 28 Mar 2024 02:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711592940; cv=none; b=ngaws9TR4Pvr3DyvSnRdI6tPuEXeszvsEoc/WdGx4eR/C3szD8N3VW7eedHpmwvP4iDXhCKZWM253rHPPspFcLq3TIw4ZzrNoVoRxZM9PMYV1SQSRYi3uFNmmbALBjOH1LaE8aFwJCrra6MIrJgh0AAXHvtm+Azy8Ic8Hvg+Nn0=
+	t=1711592946; cv=none; b=TmeOSGlGicvVC7jc4IYOf2xZNbmGTebeIYvTXAprW2klhrR4vA6oNgz36xNE1NVJ3ryE1DCdf8yMiCQIJTfGabGj59cyy/pvTbD5MMVknu2S5z7BPevPxSuAwbylvZSZzrLIKbB8qQcLduYSNIwunIFTs8VwCyf+M8m7X4JkN3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711592940; c=relaxed/simple;
-	bh=qJqf+gspYBFRI2K5imH74xBgzF2f9aynWHZqrtIDj+k=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UB7CClCt4o53HMZ/r0g2FbbbtVFTbesle0zsctguhRBeIGLaAHZ3biIfgptC+FTyRlBAtljwxQPF5/ErpRG+IkGJRypIPnFo2CbNWIOs/hTB1IjUURiaJN4Sn3RJa386bFf7tXGVD6loQSuTCy8pUQ822aAAt+UnJnUhueAxeH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rhk42HML; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so846513276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711592938; x=1712197738; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/QmOyqM5X2MNASCMJ2dyKBKMwyn+XBPI/URXs6ak0lY=;
-        b=rhk42HMLIfXvjMyIuNQ1KAsmWHS2F3VZ7xM529MKMOc9qjyuoKjr/XOmBBvR6KXvjF
-         NNpwNIpqhFCDVoBJ4Uzi5Rl4v0/HkoGaFpHj03VUpDhIpNOfNcQ+dhzYWTAcCbJYlUvX
-         I00+UsIUkDjVQaLkEGkIRVzwt49HorrgRtBvaRcjfbH4EPU5HN0MmVOIliFaYmzSLIYe
-         03Q6602D/PaMndefNu0Q8+km6V/DdxctqRDEr5YsGyFhzY2grawQZFXuVgESvadrW1bG
-         Q9GEzmI/yKA8T1RdWOUVOHDB+gqiSDnzDz2Y1W3X1s2P/fYBlgB2bWUS3xzV/JDXdECS
-         ssbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711592938; x=1712197738;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/QmOyqM5X2MNASCMJ2dyKBKMwyn+XBPI/URXs6ak0lY=;
-        b=p68LE+e8wIIddM/W1/50dh320g+5uPTrIUpaIzyKhrqW28QiZX/b+zId4lEfrbVhgx
-         AZiblP7kV9im5CZsE/yhHq79JD/w8r4KCfqmfLh5EcNMcznprpPldEP/ymsYwInkUDKP
-         LWm22am3KxVhZ95MwjqyRSZ0K/RHKbtlt+5FgdTcGKJZz2SzMUa0yKAggfY2yFWH2/0Y
-         oO0EoIbo5eWdDWf9gPL0fT78TeLd1PIPqN6QJjHIzIaaKtVPEh2sF0BI7/SB2ZaI265Q
-         vuej4Ddc+y8EcBThp/bHOyGdon8wlikJKUlVAPXNs8GFBmVVBl6rR7E1IOWdq3lJsh8m
-         3NXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUnlCLNa6ZR5Mp9Ds13AWHXWeFbS9H9JOeqrGYjD9J0KI6kqf6D4DSyZwoFCdL832Rvznn8Yd5/YQhvyMWS2QlB4/eNHSySgLBxbroA
-X-Gm-Message-State: AOJu0YwtAJ3SzEwtmjKKgPCExMdTyYuAT+6qRvR9etiy78shF3fdeGsz
-	H3oZIpGWHJlagA43clasiJ6TfLrBIshUs0AS+Me+KlU0kXPVZ8Q9O+xjuaYSokwHbvC7B/qaTiz
-	pDBBNrJtrwGEigZSwIXBSVQ==
-X-Google-Smtp-Source: AGHT+IG3h7UFptSbhQThXKYXVUxHjXW9GcRNRwfD8DnNx4fzNFxp960mZTVoDNqHvfoMy5v3WIivsTHuarJXGtUe7A==
-X-Received: from ctop-sg.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:1223])
- (user=ackerleytng job=sendgmr) by 2002:a05:6902:2290:b0:dc7:48ce:d17f with
- SMTP id dn16-20020a056902229000b00dc748ced17fmr489931ybb.10.1711592938320;
- Wed, 27 Mar 2024 19:28:58 -0700 (PDT)
-Date: Thu, 28 Mar 2024 02:28:51 +0000
-In-Reply-To: <20240314232637.2538648-14-seanjc@google.com>
+	s=arc-20240116; t=1711592946; c=relaxed/simple;
+	bh=rHtUyom4X7jUcKQsE0lSv2b4fCRidQ44ktbNU1WEOlo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZX+Z7Iq0quIAaTMWAhCB7FgNzaQ2KOlZd5R2fqUaulPM4meyj/Bat5iZu1n+1ZaCGSpc9cftT7glrc/MA8XlMsQprYmiu6eah46GauosrAdxAfLDQmX1mriaep7LRBUZaotCF1sMY8F/0cXPkKLM31LxmM61N7kBNaA0gp1h/OY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXHc8PNx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BB5FC433F1;
+	Thu, 28 Mar 2024 02:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711592946;
+	bh=rHtUyom4X7jUcKQsE0lSv2b4fCRidQ44ktbNU1WEOlo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GXHc8PNx6iNLSZNvfMq4guVnP1fINDyusRbqdOYJsoz9DstfsEfi/s8yCIwfWtuBj
+	 Si6aizraugxnkHgi+FuxUgfAaPbjCKqSbdqtgzhcIsWK+yqZbR5gSRsp9a89LorGyl
+	 z2CCS/mnyh9gifYnqx/vG9pndtekE29ZCxIRveRw759rlnvuoomB5wKklbQp85/yA6
+	 90p+HA2g5tWgJw+Q+Jbdi4jcFgRPARJqRT8mQThqOLtsHwEBjT+mgV965JWBGdSr4Y
+	 eaMMiEfNUIEPEl1zR2Bv3xaJQPxZ+werBi4i0mxJF86rF7F4QAN56C7YkP+HHzXBPr
+	 mHBdZ0aCOOq8w==
+Date: Wed, 27 Mar 2024 21:29:03 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc8180x: Fix ss_phy_irq for secondary
+ USB controller
+Message-ID: <g2zfjcidsmaybwd6dzsrhcour2qxklv4r35d3va7txdk6lwfi3@sw2sslg4jnqi>
+References: <20240328022224.336938-1-luzmaximilian@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240314232637.2538648-1-seanjc@google.com> <20240314232637.2538648-14-seanjc@google.com>
-Message-ID: <diqz7chnm6n0.fsf@ctop-sg.c.googlers.com>
-Subject: Re: [PATCH 13/18] KVM: selftests: Drop superfluous switch() on
- vm->mode in vcpu_init_sregs()
-From: Ackerley Tng <ackerleytng@google.com>
-To: Sean Christopherson <seanjc@google.com>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
-	Claudio Imbrenda <imbrenda@linux.ibm.com>, Anup Patel <anup@brainfault.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328022224.336938-1-luzmaximilian@gmail.com>
 
-Sean Christopherson <seanjc@google.com> writes:
+On Thu, Mar 28, 2024 at 03:21:57AM +0100, Maximilian Luz wrote:
+> The ACPI DSDT of the Surface Pro X (SQ2) specifies the interrupts for
+> the secondary UBS controller as
+> 
+>     Name (_CRS, ResourceTemplate ()
+>     {
+>         Interrupt (ResourceConsumer, Level, ActiveHigh, Shared, ,, )
+>         {
+>             0x000000AA,
+>         }
+>         Interrupt (ResourceConsumer, Level, ActiveHigh, SharedAndWake, ,, )
+>         {
+>             0x000000A7,     // hs_phy_irq: &intc GIC_SPI 136
+>         }
+>         Interrupt (ResourceConsumer, Level, ActiveHigh, SharedAndWake, ,, )
+>         {
+>             0x00000228,     // ss_phy_irq: &pdc 40
+>         }
+>         Interrupt (ResourceConsumer, Edge, ActiveHigh, SharedAndWake, ,, )
+>         {
+>             0x0000020A,     // dm_hs_phy_irq: &pdc 10
+>         }
+>         Interrupt (ResourceConsumer, Edge, ActiveHigh, SharedAndWake, ,, )
+>         {
+>             0x0000020B,     // dp_hs_phy_irq: &pdc 11
+>         }
+>     })
+> 
+> Generally, the interrupts above 0x200 map to the PDC interrupts (as used
+> in the devicetree) as ACPI_NUMBER - 0x200. Note that this lines up with
+> dm_hs_phy_irq and dp_hs_phy_irq (as well as the interrupts for the
+> primary USB controller).
+> 
+> Based on the snippet above, ss_phy_irq should therefore be PDC 40 (=
+> 0x28) and not PDC 7. The latter is according to ACPI instead used as
+> ss_phy_irq for port 0 of the multiport USB controller). Fix this by
+> setting ss_phy_irq to '&pdc 40'.
+> 
+> Fixes: b080f53a8f44 ("arm64: dts: qcom: sc8180x: Add remoteprocs, wifi and usb nodes")
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-> Replace the switch statement on vm->mode in x86's vcpu_init_sregs()'s with
-> a simple assert that the VM has a 48-bit virtual address space.  A switch
-> statement is both overkill and misleading, as the existing code incorrectly
-> implies that VMs with LA57 would need different to configuration for the
-> LDT, TSS, and flat segments.  In all likelihood, the only difference that
-> would be needed for selftests is CR4.LA57 itself.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+
+Regards,
+Bjorn
+
 > ---
->  .../selftests/kvm/lib/x86_64/processor.c      | 25 ++++++++-----------
->  1 file changed, 10 insertions(+), 15 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> index 8547833ffa26..561c0aa93608 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> @@ -555,6 +555,8 @@ static void vcpu_init_sregs(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_sregs sregs;
->  
-> +	TEST_ASSERT_EQ(vm->mode, VM_MODE_PXXV48_4K);
-> +
->  	/* Set mode specific system register values. */
->  	vcpu_sregs_get(vcpu, &sregs);
->  
-> @@ -562,22 +564,15 @@ static void vcpu_init_sregs(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
->  
->  	kvm_setup_gdt(vm, &sregs.gdt);
->  
-> -	switch (vm->mode) {
-> -	case VM_MODE_PXXV48_4K:
-> -		sregs.cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
-> -		sregs.cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
-> -		sregs.efer |= (EFER_LME | EFER_LMA | EFER_NX);
-> +	sregs.cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
-> +	sregs.cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
-> +	sregs.efer |= (EFER_LME | EFER_LMA | EFER_NX);
->  
-> -		kvm_seg_set_unusable(&sregs.ldt);
-> -		kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs.cs);
-> -		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.ds);
-> -		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.es);
-> -		kvm_setup_tss_64bit(vm, &sregs.tr, 0x18);
-> -		break;
-> -
-> -	default:
-> -		TEST_FAIL("Unknown guest mode, mode: 0x%x", vm->mode);
-> -	}
-> +	kvm_seg_set_unusable(&sregs.ldt);
-> +	kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs.cs);
-> +	kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.ds);
-> +	kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.es);
-> +	kvm_setup_tss_64bit(vm, &sregs.tr, 0x18);
->  
->  	sregs.cr3 = vm->pgd;
->  	vcpu_sregs_set(vcpu, &sregs);
+>  arch/arm64/boot/dts/qcom/sc8180x.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8180x.dtsi b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+> index 32afc78d5b769..053f7861c3cec 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+> @@ -2701,7 +2701,7 @@ usb_sec: usb@a8f8800 {
+>  			resets = <&gcc GCC_USB30_SEC_BCR>;
+>  			power-domains = <&gcc USB30_SEC_GDSC>;
+>  			interrupts-extended = <&intc GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
+> -					      <&pdc 7 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&pdc 40 IRQ_TYPE_LEVEL_HIGH>,
+>  					      <&pdc 10 IRQ_TYPE_EDGE_BOTH>,
+>  					      <&pdc 11 IRQ_TYPE_EDGE_BOTH>;
+>  			interrupt-names = "hs_phy_irq", "ss_phy_irq",
 > -- 
-> 2.44.0.291.gc1ea87d7ee-goog
-
-Reviewed-by: Ackerley Tng <ackerleytng@google.com>
+> 2.44.0
+> 
 
