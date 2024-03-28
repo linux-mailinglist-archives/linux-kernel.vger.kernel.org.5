@@ -1,448 +1,235 @@
-Return-Path: <linux-kernel+bounces-122723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C695688FC14
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:51:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B54A888FC2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B1001F2DB12
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:51:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D85BD1C2CA47
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3713C73528;
-	Thu, 28 Mar 2024 09:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B10651B6;
+	Thu, 28 Mar 2024 09:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLmklekO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WpLOPPCL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695F3657BA
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711619453; cv=none; b=TtnnF9+qOGgdCXZbOJo3Q6Me/GZgsb98ujZHzl6HvtplHjIZJcU2dQ7s6DiBbg7tE7+MiDVdMfpfWzRm22rOzmdJXYh4fM3d4+zIay9b+IfCvHgrwoOxwzdlkqXH0HNbHccF7tivmPwr6qtMGaCV8ot3nHi6a7bjXQZgIUbKJ3M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711619453; c=relaxed/simple;
-	bh=IC+w1/aG7/S0e85a60pC7lSi5fxH02gmkfHkY/6WOcA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PTwSPK+Xu1djcO0ABc1eeS57vDPlGN/HlQrpkRcw17pSQPz9oZDF6QFwq7oQFku3YAstSfyj59q87SisuFhKx3HTvVpFUglUz19KU7uYCbg1Q5sFmlqRZDiJsNa/m5adEhVPzs87qJZDv7dn5c+W6D9S++9t4/N1PmaPqaKLo+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLmklekO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711619450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nxtLpj+iBP9Xt1HHnMn0rZUp2jdjxbDETMue+PmYl4I=;
-	b=aLmklekOFnozbxt++LYlBOC+UOL7k/BHqyPgkCanxiihydrYWahcfjS1lYNfyWFzDgrY9J
-	TMubl7BefYT4XXnXmsRNTnF1sUYeBpzaquM7kiZ1a/ZH2YNx0V+lvpnbJVLSWGfveJrC6X
-	3H8O+sxz9AyxLFEPlirtQ5IXHHapYjk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-241-iufqAUPZPZWzWBTmdG92ZQ-1; Thu, 28 Mar 2024 05:50:48 -0400
-X-MC-Unique: iufqAUPZPZWzWBTmdG92ZQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33ed44854ddso366512f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:50:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711619447; x=1712224247;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nxtLpj+iBP9Xt1HHnMn0rZUp2jdjxbDETMue+PmYl4I=;
-        b=HW3f5pPCROMItl2xWbFFNS/c1E3Z1GX0GMKfaNiDyixTzUadzGqMTH+uMe10MHbwyA
-         GU3ryYlP3MO9qCrGyS9AKEnefgH/jOriiZXJq8WX4Nk5WrbkGBmnz2RPvQ5+rmKD23Lr
-         kUabzPoVRZXIwAIV41gsTyF4qCMNIv/9XTccgclcDN+pZHQoVldHZsB4kIwKYgBka4Rq
-         y9n8QWy6F3nHkbRpq9IF4YxIDKy3c7SDPDfM2mDyrHDtx1twc5wpVe+cPRsMfL/lzeii
-         9qnH6Nr1J11BOK3d/oaUm6bGkJEgp3yA2Mnbp780W0TWRTde/Oq1fP7iPLnTQeRkj9qg
-         gwlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvGlqR62cVVz/fvzMeT/xg9ID4ZUwibD6H9m8Ij/ntC0C88XjRubtPb7euKdhDFqDcRPIOVt95m9rBIIY3+D7jFOo3PR7HTs2P2pd8
-X-Gm-Message-State: AOJu0Ywd6dB896VKo+KUOXkx+1UfJLdxe/Iod0OJDNKMsnHUBf5DOHbj
-	7YQDawaM1uft9LKymdLrjtrj/rG1WcPUdpIU0N0hUHDmUYs4R0EcqWV9TkfsgEzqkLBajyc25O5
-	lbXeQbdMK9M7wJqpuzzKLbpxk/MfsAavyCGmohGURA9+S1GgIcvG/xZhumVKV+A==
-X-Received: by 2002:a5d:6b87:0:b0:33e:7402:f4d3 with SMTP id n7-20020a5d6b87000000b0033e7402f4d3mr1830868wrx.33.1711619447552;
-        Thu, 28 Mar 2024 02:50:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEyrKrZ3N50ui+bWTg50EQbEelvWiqsIQ+BxNpbWjJq6gih2eNzSfvyD9RigouCStOuyiIO3g==
-X-Received: by 2002:a5d:6b87:0:b0:33e:7402:f4d3 with SMTP id n7-20020a5d6b87000000b0033e7402f4d3mr1830833wrx.33.1711619447065;
-        Thu, 28 Mar 2024 02:50:47 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c714:3600:8033:4189:6bd4:ea29? (p200300cbc7143600803341896bd4ea29.dip0.t-ipconnect.de. [2003:cb:c714:3600:8033:4189:6bd4:ea29])
-        by smtp.gmail.com with ESMTPSA id l3-20020a5d5603000000b0033e03d37685sm1281329wrv.55.2024.03.28.02.50.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 02:50:46 -0700 (PDT)
-Message-ID: <0e1dccfe-c181-444b-b124-05bec5cfd055@redhat.com>
-Date: Thu, 28 Mar 2024 10:50:45 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77B71DDFF;
+	Thu, 28 Mar 2024 09:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711619600; cv=fail; b=WI/BvBSkwdn/nb70HQYfh5YKNNiOcLbDQiyCaM01tPLBPpohJv4mjF7rgfLyoLTstZA+v/0/aeG3ZUR6xS/RS3rc8JZWofTfYMu8lWoCg0/63VvgvS9UE5n8sqVgC+GwyRuA5FzC7Q4Kq5EMTRLvDGiZpJPPia/NKC55Ddgdle0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711619600; c=relaxed/simple;
+	bh=tnGiCiyxNe2aFPWQfDUS/7qsZGOsFOuZZALsVoJefCo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=oU1rDm5la73Yp6IDzXLZ0gruAdsnjvVgaJPtS1nQyeGwBwnFiwyvkrIfjEVmDPTk0i/yWxnR8hR3/OIbfyALLS6WaTyPXFTfdy30VO2AFq8lRno/+eEPbf5rS5uUl0x6p01CuaQZRvu8/tpcsCF+7SfW3ilFhCyt6nsutJY91VE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WpLOPPCL; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711619598; x=1743155598;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=tnGiCiyxNe2aFPWQfDUS/7qsZGOsFOuZZALsVoJefCo=;
+  b=WpLOPPCLJiM33zwaA0vNf7zUY/ddnoDutdwBDVIDh+iZxp9KsHBRSnBw
+   o263A0/dzNkQRpYZ5jt0LMJNy9VjmsHH7PRd2/0g8havBUf587V76loFD
+   ZKp35MtewVw02iPOCb/JoN/k1l9GYIkFTJfZG2rhsLowmaqUMgXbs0EUe
+   o0fU/Aa1fqsOlkIzyVhwax2NX3NEdhXbE2hiW7p7C+83Igkf0GIr7IfkI
+   2495v3O/gQV+uIOWD+tLAngG4l7D7Qmh9haLuw1Li0iaefkDowUQjtNFm
+   2izDnobc3doIjB4+q25JWVmVp7LDW+5ore+EPJ0LuMrPKRGLPX3udvebh
+   Q==;
+X-CSE-ConnectionGUID: rwEoqtIpR1+WB1zDExoAXQ==
+X-CSE-MsgGUID: qlNoMXd9SMWCsmk2Wwfbmw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="29243903"
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="29243903"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 02:53:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="21068677"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 02:53:17 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 02:53:16 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 02:53:16 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 02:53:16 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 02:53:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MJcatQJ0Wajn0raFi6y6bPgQ5nIF92i5IYFj5zn5pCD96XNxwjPVO7vII+aN6pYAfAtJ3eCOAEzeMrjhlvbVLT0YzzVpZ6dZ7JUOK3eGCZE9z/I8EiGE3ghYHLKa8eWW/IscE7cNpjCRClRJ7iyVfZf1zbDz1jPgeTi8tnei0jv4TJmNiRTfUSj6QpEKWalvKDqWkPvkiE0lmMeBFcMQg+V+mrNDsDkDWlpsmE+aS8vNWaVDPPn+YTlRqIhjcgL1ZItQJLybE1bRxHwVQQvlez/wFSoMcfqBDvCMrmYwzaRwEQlJKgNOeu4x6kmLKsz/SFEqJs94kAwjcIHVO03x8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eel9r2OPUllpH6NvQ+I5KFgEwvwbaVkHVDGA2LUwfyU=;
+ b=FB08ysLzHxBITcy9n5O6QTOxUoX/3JupKSXW9VDD1RvNZDFLGsfzDUZuubKVw395zD853MNRsaa0zDB8acm/0sxgUVpPxOmL1OwAo6HLv3ZD2ZN62AHn1sD9XcnUNIKNikdupdNDpMhUCzj3fR7lsPPBVwhRUnWsUG7dXg12E+O2tp2GLxvEP1g/T+CxDJAPDaDrbMDM1VoGwAvyXgvnTh+JB6a3H25GN5Jme7PrPNsABr4rADH+FBCuGvGhAjnZGrr1cWauwBGNwzpjTD87La9k+fmmcj0QAiOZ+Oarc697R/gWSf/OCnLOdt+i4MfGZmxT5eT2pgYcmjA/vFEH7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by IA0PR11MB8336.namprd11.prod.outlook.com (2603:10b6:208:490::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
+ 2024 09:53:14 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 09:53:14 +0000
+Date: Thu, 28 Mar 2024 17:53:03 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+CC: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "Yamahata, Isaku"
+	<isaku.yamahata@intel.com>, "Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Chen,
+ Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Aktas, Erdem"
+	<erdemaktas@google.com>, "isaku.yamahata@gmail.com"
+	<isaku.yamahata@gmail.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"Yuan, Hang" <hang.yuan@intel.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
+ for unsupported cases
+Message-ID: <ZgU9/61//F17r1nw@chao-email>
+References: <20240325231058.GP2357401@ls.amr.corp.intel.com>
+ <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
+ <20240325233528.GQ2357401@ls.amr.corp.intel.com>
+ <ZgIzvHKobT2K8LZb@chao-email>
+ <20db87741e356e22a72fadeda8ab982260f26705.camel@intel.com>
+ <ZgKt6ljcmnfSbqG/@chao-email>
+ <20240326174859.GB2444378@ls.amr.corp.intel.com>
+ <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
+ <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
+ <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
+X-ClientProxiedBy: SI2PR02CA0044.apcprd02.prod.outlook.com
+ (2603:1096:4:196::17) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/3] mm/gup: consistently call it GUP-fast
-Content-Language: en-US
-To: Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Vineet Gupta <vgupta@kernel.org>, peterx <peterx@redhat.com>,
- linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-mm@kvack.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- x86@kernel.org, Ryan Roberts <ryan.roberts@arm.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Matt Turner <mattst88@gmail.com>,
- Alexey Brodkin <abrodkin@synopsys.com>
-References: <20240327130538.680256-1-david@redhat.com> <ZgQ5hNltQ2DHQXps@x1n>
- <3922460a-4d01-4ecb-b8c5-7c57fd46f3fd@redhat.com>
- <dc1433ea-4e59-4ab7-83fb-23b393020980@app.fastmail.com>
- <3360dba8-0fac-4126-b72b-abc036957d6a@kernel.org>
- <10da3ced-9a79-4ebb-a77d-1aa49cc61952@app.fastmail.com>
- <ZgUZCBNloC-grPWJ@kernel.org>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZgUZCBNloC-grPWJ@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|IA0PR11MB8336:EE_
+X-MS-Office365-Filtering-Correlation-Id: aace672d-bcc8-4d53-f3f5-08dc4f0ce286
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1Bm0DXYPARjEIEypJCgqLPBmBiE9plnNxRqa/pUHETplAXeN4HJJs3uQlrSno6ivC1m013DYwYlFw4yrm5FF6oVte8hS6uvGeI6s/LHfd8Et4QPOUixG0eYKlYHgVR1d8aUAFCMQMcDpW0Cv1EPFN7vi3abx4Hej7eHYiksIUr57lZVzt/L9TUhQNslS6Mar1xWkvt37RiollQJl4RzdpCToAa+VZzFEeWEPPzohDfvxEnQHonswV68TOxrxA/mk4LTiM00jSH7hBh/Qg8A3fkr+m3tWfDOvevKfwZt0rTCljHiurypGTw6lpQUwtEawdzrx9/ENT/rD8XpQ4krKsptzjC9qUz7paS+M6zsfvyDdQhmv+jYNIofBjt+5HE2/i1a5PZIQvlstGjRW2ZL3xzODHWsYE9waQ6Lc8qFDwoGANFLCyQPus55ViG3fyZexfCI98Q93J8xTU7eo035/7/hHIzRZ75FsCXcf0Oa9X5yEEbupfZ1yTpBl27h2IOJDOrsmOVTrJ/HQv4GbLPEp3LA501wS2QEj45mxPxEWJIFJ9Urz8wdiA6I2U52AQNLXbT5efNDk8A45bc6JvT77ODeHnn1LESIPdLOgMBad2Kn+6sIVGpXuGz4QKKT6BxA6GwIzUCHhEo/XBeMx/l4MOg/CYGoom25rFQyaDNPFAJg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TmpIUTNTT1BCL091QSsxcFRJWndlSWVVVzVHNmIySk9OT1JhdFhTNVExdVFy?=
+ =?utf-8?B?NmxOSVd2TFlTbFM4RDQ3UGFZTW5TdWhYYmFMbHZ5MFFzZFl0YzZYbDRlM3ds?=
+ =?utf-8?B?Z3RweXVVR2VXclBDcmExRXJraVJ0bmhPZ21iWFRzcE1DU3AvUHZYRVFtRjlM?=
+ =?utf-8?B?T3hHOVJlYUpNdjRudjFHN3YrNi81UE5DM1ZVZkczQjZ3VHcxeFJncXo2Q2g3?=
+ =?utf-8?B?N1E0VFVlemltSlpHSkl0MTlienBZQnFyME0vT1MxNXpsQ2k3QTRINnphNXhR?=
+ =?utf-8?B?SHJDRUhyQ29PRUQrRnN4Slk1bUdINVlHa3YzQ3duOW43YStCQlRzamk4bVZ5?=
+ =?utf-8?B?NVVQYU1Hb1FhdkpOZXU3SGRnZzVHeU80YWhlbHJhK3BpUkgzUWpWTi9QbEdG?=
+ =?utf-8?B?NVFzTG9COGhpdGhJTitLUVBXazZtdWJlb3hjR1RQRHBUdEFRUDZDU0dZNnNm?=
+ =?utf-8?B?VE5UWkM5N00rYzFudWkxVVdOUmgyVUtnQ1drcytReVFwVjhxSEtUREF0NzQ1?=
+ =?utf-8?B?YTRlT3VUZXBzOXJ5OTVwU0gvNndiRG5FcWxSMHNXalF2WllrQmJmT0J5bWFy?=
+ =?utf-8?B?YkpwK05ldm9YUUIyUXZJbHBpeEs2czNYTTNxYjhrZm92WmF4dGVFWmxpOHo4?=
+ =?utf-8?B?UEEwN2h6NHI2bld6TXhtWmdXNlhaUHVsczZGMVdsL1gxL1pSWlR4WlBKaVJM?=
+ =?utf-8?B?RHNCNUQrR0QwTStldVRHVk8rY2I1SUxJU2V5Y1plL2VIandWVHlwaUt6Vk54?=
+ =?utf-8?B?d1gyUmFRV2R5WmlTalNjNXJMZEEwNXNjOVZySUVUZG5uMStxMk5iUkZGZXJW?=
+ =?utf-8?B?RDF0NE5EVlYrQVhXV0dlSlN0c3Ixcm1yVXBtNm9ZWVlPaTZaWXRHSUloY3M1?=
+ =?utf-8?B?VGo2TXo5MzBVZ1J5Sk5PeStORkJ6L2VzKzNmUDU0NVU1WjJIQVZVeGIyL1JE?=
+ =?utf-8?B?bkdHZzNwTnJVM0VuNERjang3bXN2L1NyVVF4Q1ZSQk4wcVJZckxsMDdvcWR2?=
+ =?utf-8?B?d2JoakRYaTlyRExKa2UvVVBsQlNKcE90TldHZkdkR2U2M1hIcWgwUEwyS2hk?=
+ =?utf-8?B?Y1FTbGJUcVZCT1ArZVI5OHdDejBmL2ZCL1BpQTAzR0dxUjNGcG44ZlNIdU5k?=
+ =?utf-8?B?bUVQdTBsOGM1ZHFpZ0cvMTczc3NLdE9haWJPbGROM1hCTmRrNjl6MVhwTWF0?=
+ =?utf-8?B?M0wwR1NQM0RBOEZSak1zdjg1eUxFNVdpRnRveGo4aFpsZHFGc2NMbW9aRkxo?=
+ =?utf-8?B?cE1GcnpmVlRvYml5aUp5NVZiN2JyRi9xOFN2NWVjNjBpOVdQREZqbnRDNkpp?=
+ =?utf-8?B?K0JYcUpVc0tXd1kzM0lLQ2lHenMyWG5NN2ZhdkdtTFhHQjZKQ0F6Nm0ycUc3?=
+ =?utf-8?B?dHBsOVh2czhLck1yY1JZN0lLSWlPaGo0U2ZWQm55b1hjeW9OaGdTS0lnTEQ1?=
+ =?utf-8?B?QVBjVkxFV1g1UzFKcTFGV095MlVITWJFRm5YS3BLTmJad3l0ekVFcitONFhs?=
+ =?utf-8?B?Q0lHMkJ2NVQzZUNwNnY2NTF3eUZLTkhUVGRXbEx4NVhuQzJScTlVRklxT1FN?=
+ =?utf-8?B?ejVNYnROOCtOQXNZWHZTeHFOb243cFhWb2FOZUNLTUR0UnhCYlVTSVEySElr?=
+ =?utf-8?B?eFE3YWhkSXhJaUYzaGZwZHB3N0hTSFN0US9Jd1Vscm50eStab0UrOExzam80?=
+ =?utf-8?B?VFhHV3lmMkw1Q3A2bUl3RUJuS01wYS8rVnEyZU9KV2tXaHJNU0JqSEw1c2Er?=
+ =?utf-8?B?cVBqMWFrZTVYTTV6TVdPMDQyQXIvUWdxU2krbjdxMGpkUk9xUkdBdm1GdHl3?=
+ =?utf-8?B?MDRGaW5IRUltazBxWHFxUE10WC9pZ1pzYjBDVklzaUpZd0tWeVBPeHRqMFJN?=
+ =?utf-8?B?R3FzcXdBMGxJbjNVeS9ZSzh6bkN1R1ZKaDRiakhTTE9NOTZaUWlGY3JFYnVM?=
+ =?utf-8?B?dHNmS2IwNDZRaG53VGhBZUsxMXh3eDZGbUthcmI5NlZrKzNHNzJaQjBKR2xT?=
+ =?utf-8?B?SFF2OXNIVy8vMFlYM09YRHdSNHA3aHc2UWZkRnU1N2M0cldhZGN6VEJKK3BI?=
+ =?utf-8?B?dkRLZVErWEwyN3hRZnN3d2FsQmtMRVRmL2ZGcFNFNDNWRTVZRkpzT0UzWDVh?=
+ =?utf-8?Q?fkKSJvUjNAQVqSgnM6l0+aum1?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: aace672d-bcc8-4d53-f3f5-08dc4f0ce286
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 09:53:14.1919
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OOJ4Qr52aXTktmEoUDWpf69x6dKk16W6Z7S/HjGLEzKbfoVxX7UVPQQ+dpziEZl1XhcI73/BA4KWGsA8rZ9pFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB8336
+X-OriginatorOrg: intel.com
 
-On 28.03.24 08:15, Mike Rapoport wrote:
-> On Thu, Mar 28, 2024 at 07:09:13AM +0100, Arnd Bergmann wrote:
->> On Thu, Mar 28, 2024, at 06:51, Vineet Gupta wrote:
->>> On 3/27/24 09:22, Arnd Bergmann wrote:
->>>> On Wed, Mar 27, 2024, at 16:39, David Hildenbrand wrote:
->>>>> On 27.03.24 16:21, Peter Xu wrote:
->>>>>> On Wed, Mar 27, 2024 at 02:05:35PM +0100, David Hildenbrand wrote:
->>>>>>
->>>>>> I'm not sure what config you tried there; as I am doing some build tests
->>>>>> recently, I found turning off CONFIG_SAMPLES + CONFIG_GCC_PLUGINS could
->>>>>> avoid a lot of issues, I think it's due to libc missing.  But maybe not the
->>>>>> case there.
->>>>> CCin Arnd; I use some of his compiler chains, others from Fedora directly. For
->>>>> example for alpha and arc, the Fedora gcc is "13.2.1".
->>>>> But there is other stuff like (arc):
->>>>>
->>>>> ./arch/arc/include/asm/mmu-arcv2.h: In function 'mmu_setup_asid':
->>>>> ./arch/arc/include/asm/mmu-arcv2.h:82:9: error: implicit declaration of
->>>>> function 'write_aux_reg' [-Werro
->>>>> r=implicit-function-declaration]
->>>>>      82 |         write_aux_reg(ARC_REG_PID, asid | MMU_ENABLE);
->>>>>         |         ^~~~~~~~~~~~~
->>>> Seems to be missing an #include of soc/arc/aux.h, but I can't
->>>> tell when this first broke without bisecting.
->>>
->>> Weird I don't see this one but I only have gcc 12 handy ATM.
->>>
->>>      gcc version 12.2.1 20230306 (ARC HS GNU/Linux glibc toolchain -
->>> build 1360)
->>>
->>> I even tried W=1 (which according to scripts/Makefile.extrawarn) should
->>> include -Werror=implicit-function-declaration but don't see this still.
->>>
->>> Tomorrow I'll try building a gcc 13.2.1 for ARC.
->>
->> David reported them with the toolchains I built at
->> https://mirrors.edge.kernel.org/pub/tools/crosstool/
->> I'm fairly sure the problem is specific to the .config
->> and tree, not the toolchain though.
-> 
-> This happens with defconfig and both gcc 12.2.0 and gcc 13.2.0 from your
-> crosstools. I also see these on the current Linus' tree:
-> 
-> arc/kernel/ptrace.c:342:16: warning: no previous prototype for 'syscall_trace_enter' [-Wmissing-prototypes]
-> arch/arc/kernel/kprobes.c:193:15: warning: no previous prototype for 'arc_kprobe_handler' [-Wmissing-prototypes]
-> 
-> This fixed the warning about write_aux_reg for me, probably Vineet would
-> want this include somewhere else...
-> 
-> diff --git a/arch/arc/include/asm/mmu-arcv2.h b/arch/arc/include/asm/mmu-arcv2.h
-> index ed9036d4ede3..0fca342d7b79 100644
-> --- a/arch/arc/include/asm/mmu-arcv2.h
-> +++ b/arch/arc/include/asm/mmu-arcv2.h
-> @@ -69,6 +69,8 @@
->   
->   #ifndef __ASSEMBLY__
->   
-> +#include <asm/arcregs.h>
-> +
->   struct mm_struct;
->   extern int pae40_exist_but_not_enab(void);
+On Thu, Mar 28, 2024 at 08:06:53AM +0800, Xiaoyao Li wrote:
+>On 3/28/2024 1:36 AM, Edgecombe, Rick P wrote:
+>> On Wed, 2024-03-27 at 10:54 +0800, Xiaoyao Li wrote:
+>> > > > If QEMU doesn't configure the msr filter list correctly, KVM has to handle
+>> > > > guest's MTRR MSR accesses. In my understanding, the
+>> > > > suggestion is KVM zap private memory mappings.
+>
+>TDX spec states that
+>
+>  18.2.1.4.1 Memory Type for Private and Opaque Access
+>
+>  The memory type for private and opaque access semantics, which use a
+>  private HKID, is WB.
+>
+>  18.2.1.4.2 Memory Type for Shared Accesses
+>
+>  Intel SDM, Vol. 3, 28.2.7.2 Memory Type Used for Translated Guest-
+>  Physical Addresses
+>
+>  The memory type for shared access semantics, which use a shared HKID,
+>  is determined as described below. Note that this is different from the
+>  way memory type is determined by the hardware during non-root mode
+>  operation. Rather, it is a best-effort approximation that is designed
+>  to still allow the host VMM some control over memory type.
+>    • For shared access during host-side (SEAMCALL) flows, the memory
+>      type is determined by MTRRs.
+>    • For shared access during guest-side flows (VM exit from the guest
+>      TD), the memory type is determined by a combination of the Shared
+>      EPT and MTRRs.
+>      o If the memory type determined during Shared EPT walk is WB, then
+>        the effective memory type for the access is determined by MTRRs.
+>      o Else, the effective memory type for the access is UC.
+>
+>My understanding is that guest MTRR doesn't affect the memory type for
+>private memory. So we don't need to zap private memory mappings.
 
+This isn't related to the discussion. IIUC, this is the memory type used
+by TDX module code to access shared/private memory.
 
-Here are all err+warn I see with my configs on Linus' tree from today (not mm-unstable).
-Most of them are warnings due to missing prototypes or missing "clone3".
-
-Parisc64 seems to be a bit more broken. Maybe nobody cares about parisc64 anymore? Or
-it's a toolchain issue, don't know.
-
-xtensa is also broken, but "invalid register" smells like a toolchain issue to me.
-
-
-Maybe all known/expected, just posting it if anybody cares. I can share my full build script
-on request.
-
-
-
-[INFO] Compiling alpha
-[INFO] 0 errors
-[INFO] 102 warnings
-[PASS]
-
-$ cat alpha_log  | grep warn
-<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-arch/alpha/lib/checksum.c:45:9: warning: no previous prototype for 'csum_tcpudp_magic' [-Wmissing-prototypes]
-arch/alpha/lib/checksum.c:54:8: warning: no previous prototype for 'csum_tcpudp_nofold' [-Wmissing-prototypes]
-arch/alpha/lib/checksum.c:145:9: warning: no previous prototype for 'ip_fast_csum' [-Wmissing-prototypes]
-arch/alpha/lib/checksum.c:163:8: warning: no previous prototype for 'csum_partial' [-Wmissing-prototypes]
-arch/alpha/lib/checksum.c:180:9: warning: no previous prototype for 'ip_compute_csum' [-Wmissing-prototypes]
-arch/alpha/kernel/traps.c:211:1: warning: no previous prototype for 'do_entArith' [-Wmissing-prototypes]
-arch/alpha/kernel/traps.c:233:1: warning: no previous prototype for 'do_entIF' [-Wmissing-prototypes]
-arch/alpha/kernel/traps.c:400:1: warning: no previous prototype for 'do_entDbg' [-Wmissing-prototypes]
-arch/alpha/kernel/traps.c:436:1: warning: no previous prototype for 'do_entUna' [-Wmissing-prototypes]
-arch/alpha/kernel/traps.c:721:1: warning: no previous prototype for 'do_entUnaUser' [-Wmissing-prototypes]
-arch/alpha/mm/init.c:261:1: warning: no previous prototype for 'srm_paging_stop' [-Wmissing-prototypes]
-arch/alpha/lib/fpreg.c:20:1: warning: no previous prototype for 'alpha_read_fp_reg' [-Wmissing-prototypes]
-[....]
-
-[INFO] Compiling arc
-[INFO] 0 errors
-[INFO] 2 warnings
-[PASS]
-
-$ cat arc_log  | grep warn
-arch/arc/kernel/ptrace.c:342:16: warning: no previous prototype for 'syscall_trace_enter' [-Wmissing-prototypes]
-arch/arc/kernel/kprobes.c:193:15: warning: no previous prototype for 'arc_kprobe_handler' [-Wmissing-prototypes]
-
-
-[INFO] Compiling hexagon
-[INFO] 0 errors
-[INFO] 1 warnings
-[PASS]
-
-  $ cat hexagon_log  | grep warn
-<stdin>:1519:2: warning: syscall clone3 not implemented [-W#warnings]
-  1519 | #warning syscall clone3 not implemented
-1 warning generated.
-
-
-[INFO] Compiling mips64
-[INFO] 0 errors
-[INFO] 15 warnings
-[PASS]
-
-  $ cat mips64_log  | grep warn
-arch/mips/sibyte/bcm1480/setup.c:104:13: warning: no previous prototype for 'bcm1480_setup' [-Wmissing-prototypes]
-arch/mips/sibyte/bcm1480/irq.c:200:13: warning: no previous prototype for 'init_bcm1480_irqs' [-Wmissing-prototypes]
-arch/mips/sibyte/bcm1480/time.c:10:13: warning: no previous prototype for 'plat_time_init' [-Wmissing-prototypes]
-arch/mips/sibyte/bcm1480/smp.c:49:6: warning: no previous prototype for 'bcm1480_smp_init' [-Wmissing-prototypes]
-arch/mips/sibyte/bcm1480/smp.c:158:6: warning: no previous prototype for 'bcm1480_mailbox_interrupt' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/setup.c:59:5: warning: no previous prototype for 'swarm_be_handler' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/rtc_xicor1241.c:108:5: warning: no previous prototype for 'xicor_set_time' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/rtc_xicor1241.c:167:10: warning: no previous prototype for 'xicor_get_time' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/rtc_xicor1241.c:203:5: warning: no previous prototype for 'xicor_probe' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/rtc_m41t81.c:139:5: warning: no previous prototype for 'm41t81_set_time' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/rtc_m41t81.c:186:10: warning: no previous prototype for 'm41t81_get_time' [-Wmissing-prototypes]
-arch/mips/sibyte/swarm/rtc_m41t81.c:219:5: warning: no previous prototype for 'm41t81_probe' [-Wmissing-prototypes]
-arch/mips/mm/cerr-sb1.c:165:17: warning: no previous prototype for 'sb1_cache_error' [-Wmissing-prototypes]
-arch/mips/kernel/cevt-bcm1480.c:96:6: warning: no previous prototype for 'sb1480_clockevent_init' [-Wmissing-prototypes]
-arch/mips/kernel/csrc-bcm1480.c:37:13: warning: no previous prototype for 'sb1480_clocksource_init' [-Wmissing-prototypes]
-
-
-[INFO] Compiling mips32-xpa
-[INFO] 0 errors
-[INFO] 1 warnings
-[PASS]
-
-$ cat mips32-xpa_log | grep warn
-drivers/uio/uio.c:795:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-
-
-[INFO] Compiling mips32-alchemy
-[INFO] 0 errors
-[INFO] 1 warnings
-[PASS]
-
-$ cat mips32-alchemy_log  | grep warn
-drivers/net/ethernet/amd/au1000_eth.c:574:6: warning: no previous prototype for 'au1000_ReleaseDB' [-Wmissing-prototypes]
-
-
-[INFO] Compiling nios2
-[INFO] 0 errors
-[INFO] 35 warnings
-[PASS]
-
-$ cat nios2_log | grep warn
-<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-arch/nios2/lib/memcpy.c:160:7: warning: no previous prototype for 'memcpy' [-Wmissing-prototypes]
-arch/nios2/lib/memcpy.c:194:7: warning: no previous prototype for 'memcpyb' [-Wmissing-prototypes]
-arch/nios2/mm/dma-mapping.c:21:6: warning: no previous prototype for 'arch_sync_dma_for_device' [-Wmissing-prototypes]
-arch/nios2/mm/dma-mapping.c:45:6: warning: no previous prototype for 'arch_sync_dma_for_cpu' [-Wmissing-prototypes]
-arch/nios2/mm/dma-mapping.c:63:6: warning: no previous prototype for 'arch_dma_prep_coherent' [-Wmissing-prototypes]
-arch/nios2/mm/dma-mapping.c:70:7: warning: no previous prototype for 'arch_dma_set_uncached' [-Wmissing-prototypes]
-arch/nios2/kernel/irq.c:19:17: warning: no previous prototype for 'do_IRQ' [-Wmissing-prototypes]
-arch/nios2/kernel/process.c:34:6: warning: no previous prototype for 'arch_cpu_idle' [-Wmissing-prototypes]
-arch/nios2/kernel/process.c:43:6: warning: no previous prototype for 'machine_restart' [-Wmissing-prototypes]
-arch/nios2/kernel/process.c:54:6: warning: no previous prototype for 'machine_halt' [-Wmissing-prototypes]
-arch/nios2/kernel/process.c:66:6: warning: no previous prototype for 'machine_power_off' [-Wmissing-prototypes]
-arch/nios2/kernel/process.c:152:6: warning: no previous prototype for 'dump' [-Wmissing-prototypes]
-arch/nios2/kernel/process.c:253:16: warning: no previous prototype for 'nios2_clone' [-Wmissing-prototypes]
-[...]
-
-
-[INFO] Compiling parisc64
-[INFO] 79 errors
-[INFO] 54 warnings
-[FAIL]
-
-$ cat parisc64_log  | grep error
-ipc/sem.c:1284:18: error: 'struct semid64_ds' has no member named 'sem_otime_high'; did you mean 'sem_otime'?
-ipc/sem.c:1285:18: error: 'struct semid64_ds' has no member named 'sem_ctime_high'; did you mean 'sem_ctime'?
-/./include/linux/compiler_types.h:449:45: error: call to '__compiletime_assert_276' declared with attribute error: BUILD_BUG_ON failed: sizeof(struct semid64_ds) != 80
-ipc/msg.c:567:12: error: 'struct msqid64_ds' has no member named 'msg_stime_high'; did you mean 'msg_stime'?
-ipc/msg.c:568:12: error: 'struct msqid64_ds' has no member named 'msg_rtime_high'; did you mean 'msg_rtime'?
-ipc/msg.c:569:12: error: 'struct msqid64_ds' has no member named 'msg_ctime_high'; did you mean 'msg_ctime'?
-ipc/shm.c:1137:15: error: 'struct shmid64_ds' has no member named 'shm_atime_high'; did you mean 'shm_atime'?
-ipc/shm.c:1138:15: error: 'struct shmid64_ds' has no member named 'shm_dtime_high'; did you mean 'shm_dtime'?
-ipc/shm.c:1139:15: error: 'struct shmid64_ds' has no member named 'shm_ctime_high'; did you mean 'shm_ctime'?
-/./include/linux/compiler_types.h:449:45: error: call to '__compiletime_assert_390' declared with attribute error: BUILD_BUG_ON failed: offsetof(struct dst_entry, __rcuref) & 63
-/./include/linux/compiler_types.h:449:45: error: call to '__compiletime_assert_374' declared with attribute error: BUILD_BUG_ON failed: offsetof(struct dst_entry, __rcuref) & 63
-/./include/linux/compiler_types.h:449:45: error: call to '__compiletime_assert_382' declared with attribute error: BUILD_BUG_ON failed: offsetof(struct dst_entry, __rcuref) & 63
-[...]
-
-
-[INFO] Compiling sh
-[INFO] 0 errors
-[INFO] 39 warnings
-[PASS]
-
-  $ cat sh_log | grep warn
-<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-arch/sh/mm/cache-shx3.c:18:13: warning: no previous prototype for 'shx3_cache_init' [-Wmissing-prototypes]
-arch/sh/mm/flush-sh4.c:106:13: warning: no previous prototype for 'sh4__flush_region_init' [-Wmissing-prototypes]
-arch/sh/mm/cache-sh4.c:384:13: warning: no previous prototype for 'sh4_cache_init' [-Wmissing-prototypes]
-arch/sh/kernel/return_address.c:49:7: warning: no previous prototype for 'return_address' [-Wmissing-prototypes]
-arch/sh/mm/pgtable.c:10:6: warning: no previous prototype for 'pgd_ctor' [-Wmissing-prototypes]
-arch/sh/mm/pgtable.c:32:8: warning: no previous prototype for 'pgd_alloc' [-Wmissing-prototypes]
-arch/sh/mm/pgtable.c:37:6: warning: no previous prototype for 'pgd_free' [-Wmissing-prototypes]
-arch/sh/mm/pgtable.c:43:6: warning: no previous prototype for 'pud_populate' [-Wmissing-prototypes]
-arch/sh/mm/pgtable.c:48:8: warning: no previous prototype for 'pmd_alloc_one' [-Wmissing-prototypes]
-arch/sh/mm/pgtable.c:53:6: warning: no previous prototype for 'pmd_free' [-Wmissing-prototypes]
-arch/sh/mm/tlbex_32.c:22:1: warning: no previous prototype for 'handle_tlbmiss' [-Wmissing-prototypes]
-arch/sh/kernel/sys_sh.c:58:16: warning: no previous prototype for 'sys_cacheflush' [-Wmissing-prototypes]
-[...]
-
-
-[INFO] Compiling sparc32
-[INFO] 0 errors
-[INFO] 1 warnings
-[PASS]
-
-$ cat sparc32_log | grep warn
-<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-
-
-[INFO] Compiling sparc64
-[INFO] 0 errors
-[INFO] 26 warnings
-[PASS]
-
-$ cat sparc64_log | grep warn
-<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-arch/sparc/vdso/vma.c:246:12: warning: no previous prototype for 'init_vdso_image' [-Wmissing-prototypes]
-arch/sparc/vdso/vclock_gettime.c:254:1: warning: no previous prototype for '__vdso_clock_gettime' [-Wmissing-prototypes]
-arch/sparc/vdso/vclock_gettime.c:282:1: warning: no previous prototype for '__vdso_clock_gettime_stick' [-Wmissing-prototypes]
-arch/sparc/vdso/vclock_gettime.c:307:1: warning: no previous prototype for '__vdso_gettimeofday' [-Wmissing-prototypes]
-arch/sparc/vdso/vclock_gettime.c:343:1: warning: no previous prototype for '__vdso_gettimeofday_stick' [-Wmissing-prototypes]
-arch/sparc/kernel/traps_64.c:253:6: warning: no previous prototype for 'is_no_fault_exception' [-Wmissing-prototypes]
-arch/sparc/kernel/traps_64.c:2035:6: warning: no previous prototype for 'do_mcd_err' [-Wmissing-prototypes]
-[...]
-
-
-[INFO] Compiling uml64
-[INFO] 0 errors
-[INFO] 51 warnings
-[PASS]
-
-  $ cat uml64_log | grep warn
-arch/x86/um/user-offsets.c:17:6: warning: no previous prototype for 'foo' [-Wmissing-prototypes]
-/arch/x86/um/shared/sysdep/kernel-offsets.h:9:6: warning: no previous prototype for 'foo' [-Wmissing-prototypes]
-arch/x86/um/bugs_64.c:9:6: warning: no previous prototype for 'arch_check_bugs' [-Wmissing-prototypes]
-arch/x86/um/bugs_64.c:13:6: warning: no previous prototype for 'arch_examine_signal' [-Wmissing-prototypes]
-arch/x86/um/fault.c:18:5: warning: no previous prototype for 'arch_fixup' [-Wmissing-prototypes]
-arch/x86/um/ptrace_64.c:111:5: warning: no previous prototype for 'poke_user' [-Wmissing-prototypes]
-arch/x86/um/ptrace_64.c:171:5: warning: no previous prototype for 'peek_user' [-Wmissing-prototypes]
-arch/um/os-Linux/main.c:187:7: warning: no previous prototype for '__wrap_malloc' [-Wmissing-prototypes]
-arch/um/os-Linux/main.c:208:7: warning: no previous prototype for '__wrap_calloc' [-Wmissing-prototypes]
-arch/um/os-Linux/main.c:222:6: warning: no previous prototype for '__wrap_free' [-Wmissing-prototypes]
-arch/um/os-Linux/mem.c:28:6: warning: no previous prototype for 'kasan_map_memory' [-Wmissing-prototypes]
-arch/um/os-Linux/mem.c:212:13: warning: no previous prototype for 'check_tmpexec' [-Wmissing-prototypes]
-arch/um/os-Linux/signal.c:75:6: warning: no previous prototype for 'sig_handler' [-Wmissing-prototypes]
-arch/um/os-Linux/signal.c:111:6: warning: no previous prototype for 'timer_alarm_handler' [-Wmissing-prototypes]
-[...]
-
-
-[INFO] Compiling xtensa
-[INFO] 1 errors
-[INFO] 1 warnings
-[FAIL]
-
-  $ cat xtensa_log | grep Error
-/arch/xtensa/include/asm/initialize_mmu.h:57: Error: invalid register 'atomctl' for 'wsr' instruction
-make[4]: *** [scripts/Makefile.build:362: arch/xtensa/kernel/head.o] Error 1
-make[3]: *** [scripts/Makefile.build:485: arch/xtensa/kernel] Error 2
-make[2]: *** [scripts/Makefile.build:485: arch/xtensa] Error 2
-make[1]: *** [/home/dhildenb/git/linux-cross/Makefile:1919: .] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
-
-
--- 
-Cheers,
-
-David / dhildenb
-
+I didn't suggest zapping private memory. It is my understanding about what
+we will end up with, if KVM relies on QEMU to filter MTRR MSRs but somehow
+QEMU fails to do that.
 
