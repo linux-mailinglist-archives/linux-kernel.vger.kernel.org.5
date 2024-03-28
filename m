@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-123208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29B4D890481
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:05:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DDB890495
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:07:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D253A2968DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:05:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE0A7B238AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96A9131BBE;
-	Thu, 28 Mar 2024 16:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3361A131195;
+	Thu, 28 Mar 2024 16:05:43 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04D381AC8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C062B130E31
 	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711641938; cv=none; b=ctdmJBsMoOZPsIt1HIofpY1DhC52jcW42vw9jUQAjYg83093ezOml4AFdAj5ISruEcqBFEUNzAyg2mOwe15JZPL69eSRLbyUgIm1DnQ89JhLEPPbG/wbosJGQtgQaNCemAZtVb86ZvisRTk1yNYIbc3Rs25BZA2UfebLfiECDHQ=
+	t=1711641941; cv=none; b=QT590dOlbeN8P1ueB2H8jnoN5y10/NNJUKOV12dqUkS5xgFAGCGtpbFEvHTPsKJXb3g5cpIA9wVPc7qrGIzrptzcgNX+rM2Y3GgiHwwTRnyDdP24s8JIyJj3oUW4C9pkifXHEDOFVfZnE4jaedLTXGowWuJGDW7XWn/RvlnMOrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711641938; c=relaxed/simple;
-	bh=qUN8H93zV6XQLiINHS+NXR1WVuiAclCjAl3/m1ELF84=;
+	s=arc-20240116; t=1711641941; c=relaxed/simple;
+	bh=Xflz1GvkHXn3h/PNsBQIpsor1P0jWeoJnGeW7XRQHGA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cVjEa8ZtGJ/DaOajF99l8i5YK6keOxG5elJxUEUixyKAzlQ/q3vkQOZLLUEycsEaF2Og9eGmQKCC/w1382eFT/y3uR5CUyAazlO0E127PtTSJro0MrO5OGk4nUV6tdrwxXdV/YFSuVpQXrcEPg1+TM03t/xvTGEZu2hNEQ6nJT4=
+	 MIME-Version; b=OS+x9ah063bGYWD6t9BYjA3WcUUAwu2KWN9VvtNU2U5S/jLsaWg6BamEPSrFwoWLNtffnn9wwVmm+52m+ww3mz9b6lXYcXYvoGGjNrtKSym0clg0pyFvCKZ8PDgByIY5UbPEdEEev5mavH7GAkJMYXopQt4VxK5VdEQJsdymHo0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,15 +32,15 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rpsFm-00058i-N5; Thu, 28 Mar 2024 17:05:22 +0100
+	id 1rpsFm-00058j-N5; Thu, 28 Mar 2024 17:05:22 +0100
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rpsFj-0092JI-DV; Thu, 28 Mar 2024 17:05:19 +0100
+	id 1rpsFj-0092JJ-EI; Thu, 28 Mar 2024 17:05:19 +0100
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rpsFj-00A3Ny-18;
+	id 1rpsFj-00A3O9-1C;
 	Thu, 28 Mar 2024 17:05:19 +0100
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -61,9 +61,9 @@ Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
 	Simon Horman <horms@kernel.org>,
 	Willem de Bruijn <willemb@google.com>,
 	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH net-next v1 2/9] net: dsa: microchip: add IPV information support
-Date: Thu, 28 Mar 2024 17:05:11 +0100
-Message-Id: <20240328160518.2396238-3-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v1 3/9] net: add IEEE 802.1q specific helpers
+Date: Thu, 28 Mar 2024 17:05:12 +0100
+Message-Id: <20240328160518.2396238-4-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240328160518.2396238-1-o.rempel@pengutronix.de>
 References: <20240328160518.2396238-1-o.rempel@pengutronix.de>
@@ -79,211 +79,348 @@ X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Most of Microchip KSZ switches use Internal Priority Value associated
-with every frame. For example, it is possible to map any VLAN PCP or
-DSCP value to IPV and at the end, map IPV to a queue.
+IEEE 802.1q specification provides recommendation and examples which can
+be used as good default values for different drivers.
 
-Since amount of IPVs is not equal to amount of queues, add this
-information and make use of it in some functions.
+This patch implements mapping examples documented in IEEE 802.1Q-2022 in
+Annex I "I.3 Traffic type to traffic class mapping" and IETF DSCP naming
+and mapping DSCP to Traffic Type inspired by RFC8325.
+
+This helpers will be used in followup patches for dsa/microchip DCB
+implementation.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/dsa/microchip/ksz_common.c | 28 ++++++++++++++++++++++++--
- drivers/net/dsa/microchip/ksz_common.h |  2 +-
- 2 files changed, 27 insertions(+), 3 deletions(-)
+ include/net/dscp.h           |  76 ++++++++++++++++
+ include/net/ieee8021q.h      |  34 ++++++++
+ net/Kconfig                  |   4 +
+ net/core/Makefile            |   1 +
+ net/core/ieee8021q_helpers.c | 165 +++++++++++++++++++++++++++++++++++
+ 5 files changed, 280 insertions(+)
+ create mode 100644 include/net/dscp.h
+ create mode 100644 include/net/ieee8021q.h
+ create mode 100644 net/core/ieee8021q_helpers.c
 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 42330e8fd26e7..cf81739d91dae 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -1194,6 +1194,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 3,		/* total port count */
- 		.port_nirqs = 3,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &ksz9477_dev_ops,
-@@ -1223,6 +1224,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.cpu_ports = 0x10,	/* can be configured as cpu port */
- 		.port_cnt = 5,		/* total cpu and user ports */
- 		.num_tx_queues = 4,
-+		.max_ipvs = 4,
- 		.ops = &ksz8_dev_ops,
- 		.ksz87xx_eee_link_erratum = true,
- 		.mib_names = ksz9477_mib_names,
-@@ -1262,6 +1264,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.cpu_ports = 0x10,	/* can be configured as cpu port */
- 		.port_cnt = 5,		/* total cpu and user ports */
- 		.num_tx_queues = 4,
-+		.max_ipvs = 4,
- 		.ops = &ksz8_dev_ops,
- 		.ksz87xx_eee_link_erratum = true,
- 		.mib_names = ksz9477_mib_names,
-@@ -1287,6 +1290,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.cpu_ports = 0x10,	/* can be configured as cpu port */
- 		.port_cnt = 5,		/* total cpu and user ports */
- 		.num_tx_queues = 4,
-+		.max_ipvs = 4,
- 		.ops = &ksz8_dev_ops,
- 		.ksz87xx_eee_link_erratum = true,
- 		.mib_names = ksz9477_mib_names,
-@@ -1312,6 +1316,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.cpu_ports = 0x4,	/* can be configured as cpu port */
- 		.port_cnt = 3,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 4,
- 		.ops = &ksz8_dev_ops,
- 		.mib_names = ksz88xx_mib_names,
- 		.mib_cnt = ARRAY_SIZE(ksz88xx_mib_names),
-@@ -1336,6 +1341,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 7,		/* total physical port count */
- 		.port_nirqs = 4,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &ksz9477_dev_ops,
-@@ -1370,6 +1376,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 6,		/* total physical port count */
- 		.port_nirqs = 2,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.ops = &ksz9477_dev_ops,
- 		.mib_names = ksz9477_mib_names,
- 		.mib_cnt = ARRAY_SIZE(ksz9477_mib_names),
-@@ -1402,6 +1409,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 7,		/* total physical port count */
- 		.port_nirqs = 2,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.ops = &ksz9477_dev_ops,
- 		.mib_names = ksz9477_mib_names,
- 		.mib_cnt = ARRAY_SIZE(ksz9477_mib_names),
-@@ -1432,6 +1440,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 3,		/* total port count */
- 		.port_nirqs = 2,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.ops = &ksz9477_dev_ops,
- 		.mib_names = ksz9477_mib_names,
- 		.mib_cnt = ARRAY_SIZE(ksz9477_mib_names),
-@@ -1458,6 +1467,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 3,		/* total port count */
- 		.port_nirqs = 3,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &ksz9477_dev_ops,
-@@ -1486,6 +1496,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 7,		/* total port count */
- 		.port_nirqs = 3,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &ksz9477_dev_ops,
-@@ -1519,6 +1530,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 7,		/* total physical port count */
- 		.port_nirqs = 3,
- 		.num_tx_queues = 4,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &ksz9477_dev_ops,
-@@ -1551,6 +1563,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 5,		/* total physical port count */
- 		.port_nirqs = 6,
- 		.num_tx_queues = 8,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &lan937x_dev_ops,
-@@ -1578,6 +1591,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 6,		/* total physical port count */
- 		.port_nirqs = 6,
- 		.num_tx_queues = 8,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &lan937x_dev_ops,
-@@ -1605,6 +1619,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 8,		/* total physical port count */
- 		.port_nirqs = 6,
- 		.num_tx_queues = 8,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &lan937x_dev_ops,
-@@ -1636,6 +1651,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 5,		/* total physical port count */
- 		.port_nirqs = 6,
- 		.num_tx_queues = 8,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &lan937x_dev_ops,
-@@ -1667,6 +1683,7 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.port_cnt = 8,		/* total physical port count */
- 		.port_nirqs = 6,
- 		.num_tx_queues = 8,
-+		.max_ipvs = 8,
- 		.tc_cbs_supported = true,
- 		.tc_ets_supported = true,
- 		.ops = &lan937x_dev_ops,
-@@ -2296,6 +2313,13 @@ static int ksz_setup(struct dsa_switch *ds)
+diff --git a/include/net/dscp.h b/include/net/dscp.h
+new file mode 100644
+index 0000000000000..ba40540868c9c
+--- /dev/null
++++ b/include/net/dscp.h
+@@ -0,0 +1,76 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de> */
++
++#ifndef __DSCP_H__
++#define __DSCP_H__
++
++/*
++ * DSCP Pools and Codepoint Space Division:
++ *
++ * The Differentiated Services (Diffserv) architecture defines a method for
++ * classifying and managing network traffic using the DS field in IPv4 and IPv6
++ * packet headers. This field can carry one of 64 distinct DSCP (Differentiated
++ * Services Code Point) values, which are divided into three pools based on
++ * their Least Significant Bits (LSB) patterns and intended usage. Each pool has
++ * a specific registration procedure for assigning DSCP values:
++ *
++ * Pool 1 (Standards Action Pool):
++ * - Codepoint Space: xxxxx0
++ *   This pool includes DSCP values ending in '0' (binary), allocated via
++ *   Standards Action. It is intended for globally recognized traffic classes,
++ *   ensuring interoperability across the internet. This pool encompasses
++ *   well-known DSCP values such as CS0-CS7, AFxx, EF, and VOICE-ADMIT.
++ *
++ * Pool 2 (Experimental/Local Use Pool):
++ * - Codepoint Space: xxxx11
++ *   Reserved for DSCP values ending in '11' (binary), this pool is designated
++ *   for Experimental or Local Use. It allows for private or temporary traffic
++ *   marking schemes not intended for standardized global use, facilitating
++ *   testing and network-specific configurations without impacting
++ *   interoperability.
++ *
++ * Pool 3 (Preferential Standardization Pool):
++ * - Codepoint Space: xxxx01
++ *   Initially reserved for experimental or local use, this pool now serves as
++ *   a secondary standardization resource should Pool 1 become exhausted. DSCP
++ *   values ending in '01' (binary) are assigned via Standards Action, with a
++ *   focus on adopting new, standardized traffic classes as the need arises.
++ *
++ * For pool updates see:
++ * https://www.iana.org/assignments/dscp-registry/dscp-registry.xhtml
++ */
++
++/* Pool 1: Standardized DSCP values as per [RFC8126] */
++#define DSCP_CS0 0		/* 000000, [RFC2474] */
++/* CS0 is some times called default (DF) */
++#define DSCP_DF 0		/* 000000, [RFC2474] */
++#define DSCP_CS1 8		/* 001000, [RFC2474] */
++#define DSCP_CS2 16		/* 010000, [RFC2474] */
++#define DSCP_CS3 24		/* 011000, [RFC2474] */
++#define DSCP_CS4 32		/* 100000, [RFC2474] */
++#define DSCP_CS5 40		/* 101000, [RFC2474] */
++#define DSCP_CS6 48		/* 110000, [RFC2474] */
++#define DSCP_CS7 56		/* 111000, [RFC2474] */
++#define DSCP_AF11 10		/* 001010, [RFC2597] */
++#define DSCP_AF12 12		/* 001100, [RFC2597] */
++#define DSCP_AF13 14		/* 001110, [RFC2597] */
++#define DSCP_AF21 18		/* 010010, [RFC2597] */
++#define DSCP_AF22 20		/* 010100, [RFC2597] */
++#define DSCP_AF23 22		/* 010110, [RFC2597] */
++#define DSCP_AF31 26		/* 011010, [RFC2597] */
++#define DSCP_AF32 28		/* 011100, [RFC2597] */
++#define DSCP_AF33 30		/* 011110, [RFC2597] */
++#define DSCP_AF41 34		/* 100010, [RFC2597] */
++#define DSCP_AF42 36		/* 100100, [RFC2597] */
++#define DSCP_AF43 38		/* 100110, [RFC2597] */
++#define DSCP_EF 46		/* 101110, [RFC3246] */
++#define DSCP_VOICE_ADMIT 44	/* 101100, [RFC5865] */
++
++/* Pool 3: Standardized assignments, previously available for experimental/local
++ * use
++ */
++#define DSCP_LE 1		/* 000001, [RFC8622] */
++
++#define DSCP_MAX 64
++
++#endif /* __DSCP_H__ */
+diff --git a/include/net/ieee8021q.h b/include/net/ieee8021q.h
+new file mode 100644
+index 0000000000000..e524f6174f968
+--- /dev/null
++++ b/include/net/ieee8021q.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de> */
++
++#ifndef _NET_IEEE8021Q_H
++#define _NET_IEEE8021Q_H
++
++/**
++ * enum ieee8021q_traffic_type - 802.1Q traffic type priority values (802.1Q-2022)
++ *
++ * @IEEE8021Q_TT_BK: Background
++ * @IEEE8021Q_TT_BE: Best Effort (default). According to 802.1Q-2022, BE is 0
++ * but has higher priority than BK which is 1.
++ * @IEEE8021Q_TT_EE: Excellent Effort
++ * @IEEE8021Q_TT_CA: Critical Applications
++ * @IEEE8021Q_TT_VI: Video, < 100 ms latency and jitter
++ * @IEEE8021Q_TT_VO: Voice, < 10 ms latency and jitter
++ * @IEEE8021Q_TT_IC: Internetwork Control
++ * @IEEE8021Q_TT_NC: Network Control
++ */
++enum ieee8021q_traffic_type {
++	IEEE8021Q_TT_BK = 0,
++	IEEE8021Q_TT_BE = 1,
++	IEEE8021Q_TT_EE = 2,
++	IEEE8021Q_TT_CA = 3,
++	IEEE8021Q_TT_VI = 4,
++	IEEE8021Q_TT_VO = 5,
++	IEEE8021Q_TT_IC = 6,
++	IEEE8021Q_TT_NC = 7,
++};
++
++int ietf_dscp_to_ieee8021q_tt(int dscp);
++int ieee8021q_tt_to_tc(int tt, int num_queues);
++
++#endif /* _NET_IEEE8021Q_H */
+diff --git a/net/Kconfig b/net/Kconfig
+index 3e57ccf0da279..2da4e6639527a 100644
+--- a/net/Kconfig
++++ b/net/Kconfig
+@@ -449,6 +449,10 @@ config GRO_CELLS
+ config SOCK_VALIDATE_XMIT
+ 	bool
  
- 	dev->dev_ops->enable_stp_addr(dev);
- 
-+	/* Make sure driver provide plausible queue and IPV values */
-+	if (!dev->info->num_tx_queues ||
-+	    dev->info->num_tx_queues > dev->info->max_ipvs) {
-+		dev_err(dev->dev, "Number of TX queues exceeds maximum supported IPVs\n");
-+		return -EINVAL;
++config NET_IEEE8021Q_HELPERS
++	bool
++	default n
++
+ config NET_SELFTESTS
+ 	def_tristate PHYLIB
+ 	depends on PHYLIB && INET
+diff --git a/net/core/Makefile b/net/core/Makefile
+index 6e6548011fae5..febc10af4bb8c 100644
+--- a/net/core/Makefile
++++ b/net/core/Makefile
+@@ -26,6 +26,7 @@ obj-$(CONFIG_NETPOLL) += netpoll.o
+ obj-$(CONFIG_FIB_RULES) += fib_rules.o
+ obj-$(CONFIG_TRACEPOINTS) += net-traces.o
+ obj-$(CONFIG_NET_DROP_MONITOR) += drop_monitor.o
++obj-$(CONFIG_NET_IEEE8021Q_HELPERS) += ieee8021q_helpers.o
+ obj-$(CONFIG_NET_SELFTESTS) += selftests.o
+ obj-$(CONFIG_NETWORK_PHY_TIMESTAMPING) += timestamping.o
+ obj-$(CONFIG_NET_PTP_CLASSIFY) += ptp_classifier.o
+diff --git a/net/core/ieee8021q_helpers.c b/net/core/ieee8021q_helpers.c
+new file mode 100644
+index 0000000000000..df02f84ad3595
+--- /dev/null
++++ b/net/core/ieee8021q_helpers.c
+@@ -0,0 +1,165 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
++
++#include <linux/printk.h>
++#include <linux/types.h>
++#include <net/dscp.h>
++#include <net/ieee8021q.h>
++
++/* Following arrays map Traffic Types (TT) to traffic classes (TC) for different
++ * number of queues as shown in the example provided by  IEEE 802.1Q-2022 in
++ * Annex I "I.3 Traffic type to traffic class mapping" and Table I-1 "Traffic
++ * type to traffic class mapping".
++ */
++static const u8 ieee8021q_8queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0,
++	[IEEE8021Q_TT_BE] = 1,
++	[IEEE8021Q_TT_EE] = 2,
++	[IEEE8021Q_TT_CA] = 3,
++	[IEEE8021Q_TT_VI] = 4,
++	[IEEE8021Q_TT_VO] = 5,
++	[IEEE8021Q_TT_IC] = 6,
++	[IEEE8021Q_TT_NC] = 7,
++};
++
++static const u8 ieee8021q_7queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0,
++	[IEEE8021Q_TT_BE] = 1,
++	[IEEE8021Q_TT_EE] = 2,
++	[IEEE8021Q_TT_CA] = 3,
++	[IEEE8021Q_TT_VI] = 4,	[IEEE8021Q_TT_VO] = 4,
++	[IEEE8021Q_TT_IC] = 5,
++	[IEEE8021Q_TT_NC] = 6,
++};
++
++static const u8 ieee8021q_6queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0,
++	[IEEE8021Q_TT_BE] = 1,
++	[IEEE8021Q_TT_EE] = 2,	[IEEE8021Q_TT_CA] = 2,
++	[IEEE8021Q_TT_VI] = 3,	[IEEE8021Q_TT_VO] = 3,
++	[IEEE8021Q_TT_IC] = 4,
++	[IEEE8021Q_TT_NC] = 5,
++};
++
++static const u8 ieee8021q_5queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
++	[IEEE8021Q_TT_EE] = 1, [IEEE8021Q_TT_CA] = 1,
++	[IEEE8021Q_TT_VI] = 2, [IEEE8021Q_TT_VO] = 2,
++	[IEEE8021Q_TT_IC] = 3,
++	[IEEE8021Q_TT_NC] = 4,
++};
++
++static const u8 ieee8021q_4queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
++	[IEEE8021Q_TT_EE] = 1, [IEEE8021Q_TT_CA] = 1,
++	[IEEE8021Q_TT_VI] = 2, [IEEE8021Q_TT_VO] = 2,
++	[IEEE8021Q_TT_IC] = 3, [IEEE8021Q_TT_NC] = 3,
++};
++
++static const u8 ieee8021q_3queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
++	[IEEE8021Q_TT_EE] = 0, [IEEE8021Q_TT_CA] = 0,
++	[IEEE8021Q_TT_VI] = 1, [IEEE8021Q_TT_VO] = 1,
++	[IEEE8021Q_TT_IC] = 2, [IEEE8021Q_TT_NC] = 2,
++};
++
++static const u8 ieee8021q_2queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
++	[IEEE8021Q_TT_EE] = 0, [IEEE8021Q_TT_CA] = 0,
++	[IEEE8021Q_TT_VI] = 1, [IEEE8021Q_TT_VO] = 1,
++	[IEEE8021Q_TT_IC] = 1, [IEEE8021Q_TT_NC] = 1,
++};
++
++static const u8 ieee8021q_1queue_tt_tc_map[] = {
++	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
++	[IEEE8021Q_TT_EE] = 0, [IEEE8021Q_TT_CA] = 0,
++	[IEEE8021Q_TT_VI] = 0, [IEEE8021Q_TT_VO] = 0,
++	[IEEE8021Q_TT_IC] = 0, [IEEE8021Q_TT_NC] = 0,
++};
++
++/**
++ * ieee8021q_tt_to_tc - Map IEEE 802.1Q Traffic Type to Traffic Class
++ * @tt: IEEE 802.1Q Traffic Type
++ * @num_queues: Number of queues
++ *
++ * This function maps an IEEE 802.1Q Traffic Type to a Traffic Class (TC) based
++ * on the number of queues configured on the switch. The mapping is based on the
++ * example provided by IEEE 802.1Q-2022 in Annex I "I.3 Traffic type to traffic
++ * class mapping" and Table I-1 "Traffic type to traffic class mapping".
++ *
++ * Return: Traffic Class corresponding to the given Traffic Type.
++ */
++int ieee8021q_tt_to_tc(int tt, int num_queues)
++{
++	switch (num_queues) {
++	case 8:
++		return ieee8021q_8queue_tt_tc_map[tt];
++	case 7:
++		return ieee8021q_7queue_tt_tc_map[tt];
++	case 6:
++		return ieee8021q_6queue_tt_tc_map[tt];
++	case 5:
++		return ieee8021q_5queue_tt_tc_map[tt];
++	case 4:
++		return ieee8021q_4queue_tt_tc_map[tt];
++	case 3:
++		return ieee8021q_3queue_tt_tc_map[tt];
++	case 2:
++		return ieee8021q_2queue_tt_tc_map[tt];
++	case 1:
++		return ieee8021q_1queue_tt_tc_map[tt];
 +	}
 +
- 	ds->num_tx_queues = dev->info->num_tx_queues;
- 
- 	regmap_update_bits(ksz_regmap_8(dev), regs[S_MULTICAST_CTRL],
-@@ -3522,7 +3546,7 @@ static int ksz_tc_ets_add(struct ksz_device *dev, int port,
- 	for (tc_prio = 0; tc_prio < ARRAY_SIZE(p->priomap); tc_prio++) {
- 		int queue;
- 
--		if (tc_prio > KSZ9477_MAX_TC_PRIO)
-+		if (tc_prio >= dev->info->max_ipvs)
- 			break;
- 
- 		queue = ksz_ets_band_to_queue(p, p->priomap[tc_prio]);
-@@ -3564,7 +3588,7 @@ static int ksz_tc_ets_del(struct ksz_device *dev, int port)
- 	/* Revert the queue mapping for TC-priority to its default setting on
- 	 * the chip.
- 	 */
--	for (tc_prio = 0; tc_prio <= KSZ9477_MAX_TC_PRIO; tc_prio++) {
-+	for (tc_prio = 0; tc_prio < dev->info->max_ipvs; tc_prio++) {
- 		int queue;
- 
- 		queue = tc_prio >> s;
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 40c11b0d6b625..1bedd240cbbe4 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -58,6 +58,7 @@ struct ksz_chip_data {
- 	int port_cnt;
- 	u8 port_nirqs;
- 	u8 num_tx_queues;
-+	u8 max_ipvs; /* max number of Internal Priority Values */
- 	bool tc_cbs_supported;
- 	bool tc_ets_supported;
- 	const struct ksz_dev_ops *ops;
-@@ -722,7 +723,6 @@ static inline int is_lan937x(struct ksz_device *dev)
- #define KSZ9477_PORT_MRI_TC_MAP__4	0x0808
- 
- #define KSZ9477_PORT_TC_MAP_S		4
--#define KSZ9477_MAX_TC_PRIO		7
- 
- /* CBS related registers */
- #define REG_PORT_MTI_QUEUE_INDEX__4	0x0900
++	pr_warn("Invalid number of queues %d\n", num_queues);
++	return 0;
++}
++
++/**
++ * ietf_dscp_to_ieee8021q_tt - Map IETF DSCP to IEEE 802.1Q Traffic Type
++ * @dscp: IETF DSCP value
++ *
++ * This function maps an IETF DSCP value to an IEEE 802.1Q Traffic Type (TT).
++ * Since there is no corresponding mapping between DSCP and IEEE 802.1Q Traffic
++ * Type, this function is inspired by the RFC8325 documentation which describe
++ * the mapping between DSCP and 802.11 User Priority (UP) values.
++ *
++ * Return: IEEE 802.1Q Traffic Type corresponding to the given DSCP value
++ */
++
++int ietf_dscp_to_ieee8021q_tt(int dscp)
++{
++	switch (dscp) {
++	case DSCP_CS0:
++	case DSCP_AF11:
++	case DSCP_AF12:
++	case DSCP_AF13:
++		return IEEE8021Q_TT_BE;
++	case DSCP_CS1:
++		return IEEE8021Q_TT_BK;
++	case DSCP_CS2:
++	case DSCP_AF21:
++	case DSCP_AF22:
++	case DSCP_AF23:
++		return IEEE8021Q_TT_EE;
++	case DSCP_CS3:
++	case DSCP_AF31:
++	case DSCP_AF32:
++	case DSCP_AF33:
++		return IEEE8021Q_TT_CA;
++	case DSCP_CS4:
++	case DSCP_AF41:
++	case DSCP_AF42:
++	case DSCP_AF43:
++		return IEEE8021Q_TT_VI;
++	case DSCP_CS5:
++	case DSCP_EF:
++	case DSCP_VOICE_ADMIT:
++		return IEEE8021Q_TT_VO;
++	case DSCP_CS6:
++		return IEEE8021Q_TT_IC;
++	case DSCP_CS7:
++		return IEEE8021Q_TT_NC;
++	}
++
++	return (dscp >> 3) & 0x7;
++}
 -- 
 2.39.2
 
