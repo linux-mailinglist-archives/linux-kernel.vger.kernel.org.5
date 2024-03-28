@@ -1,116 +1,187 @@
-Return-Path: <linux-kernel+bounces-122719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 469C088FC04
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:50:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5B888FC09
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE17B1F2D915
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:50:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD1AE1C2D00A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DD5657BF;
-	Thu, 28 Mar 2024 09:50:06 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D0F41C62;
-	Thu, 28 Mar 2024 09:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5846B6A00E;
+	Thu, 28 Mar 2024 09:50:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8A1651B6;
+	Thu, 28 Mar 2024 09:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711619405; cv=none; b=q5Vvmr0Onvq1+aNFkwSiDvKk2k1ha4JTK+seE3nHkWXecaE3ayu1uIwLc0ez1DM542xdVZd8WIHO65NAxHwpNaEQX2AjZx3a6W/pXmW2e6fl/+0a3GLs51PSbNGNl7AdbC4L2Q8GYf3vlfK+hRUjIFufBKxejW1juqHs91e4Cl0=
+	t=1711619424; cv=none; b=dAiyS5kU8cQ3wTskbXoYYky0xfMgRGl1KZsdM7eThURD4uUUkTyp3GfqhlYxP+glHtJR2AH239vJVyiMvQ9L+5Qv+s0IMNZbmcPtKKVsX+nfHEmtzSYMlbe+GsqKdbrzk5E4ISOzjoHgegdKudHBgFnfgc2LJjq7b4qrg4vKloc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711619405; c=relaxed/simple;
-	bh=XBHE/uu+Z4wWTdk0CrlvoxxR3xMTv2slwoV1UnlURD8=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Cm4ZBQ1MBevaM8jvC5tlEvbYBelwt6k5nYPPlnWyhVCZh7RHsed1SvHyXac7vdD6ObvBuhA3T6+L4DG0yGdWE5eK11K5Rl/PrU9gnXmkhUkNeiD4jOwQUcRpNtFribCR8w9JBcqDuSUgCQBJlntu8ZbZDFfFyfvfbXxUdu6d0xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V4zGs1896ztQrt;
-	Thu, 28 Mar 2024 17:47:33 +0800 (CST)
-Received: from canpemm100001.china.huawei.com (unknown [7.192.105.122])
-	by mail.maildlp.com (Postfix) with ESMTPS id A87941404F6;
-	Thu, 28 Mar 2024 17:49:59 +0800 (CST)
-Received: from canpemm500004.china.huawei.com (7.192.104.92) by
- canpemm100001.china.huawei.com (7.192.105.122) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Mar 2024 17:49:59 +0800
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Mar 2024 17:49:58 +0800
-Subject: Re: [PATCH v4] scsi: libsas: Allocation SMP request is aligned to
- ARCH_DMA_MINALIGN
-To: Yihang Li <liyihang9@huawei.com>, <john.g.garry@oracle.com>,
-	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <dlemoal@kernel.org>,
-	<chenxiang66@hisilicon.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@huawei.com>, <yangxingui@huawei.com>
-References: <20240328090626.621147-1-liyihang9@huawei.com>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <bd975860-8872-8bf9-0bd6-da69c2f2973d@huawei.com>
-Date: Thu, 28 Mar 2024 17:49:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1711619424; c=relaxed/simple;
+	bh=34dy55diV+Qo54TTg/6m8LWWzKtrVmGDMbvaRXkv9Yk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=S+GTsfgFbV3aLbaH1WgCuNdOWyivj+m4hTvR7ltm4yixRqods88kFSs61DpgLT5d107LO3VZBzW5jO7bP41C/SFUwq9Bd7GSCHSDCxVXB4eegj6hk7BPxd4eyYwCPrim1CrJuz072areZ4K0XWxJT60idWlRX+7Yl9CZlcjsSxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6667A339;
+	Thu, 28 Mar 2024 02:50:50 -0700 (PDT)
+Received: from [10.57.73.140] (unknown [10.57.73.140])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 77E5B3F7BD;
+	Thu, 28 Mar 2024 02:50:15 -0700 (PDT)
+Message-ID: <3df783db-3243-4484-a429-4d3e64b9dbae@arm.com>
+Date: Thu, 28 Mar 2024 09:50:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240328090626.621147-1-liyihang9@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] thermal: gov_power_allocator: Allow binding without
+ cooling devices
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500004.china.huawei.com (7.192.104.92)
+From: Lukasz Luba <lukasz.luba@arm.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, nikita@trvn.ru
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Zhang Rui <rui.zhang@intel.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240321-gpa-no-cooling-devs-v1-1-5c9e0ef2062e@trvn.ru>
+ <CAJZ5v0jAq=iMKzYBz-Ni6Zqpbgxp3_0UYpPiAoSLcfGNJ8ruhQ@mail.gmail.com>
+ <1bfcb1cf-fc08-404b-be36-b5e1863f7c59@arm.com>
+In-Reply-To: <1bfcb1cf-fc08-404b-be36-b5e1863f7c59@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2024/3/28 17:06, Yihang Li wrote:
-> This series [1] reducing the kmalloc() minimum alignment on arm64 to 8
-> (from 128). In libsas, this will cause SMP requests to be 8-byte-aligned
-> through kmalloc() allocation. However, for the hisi_sas hardware, all
-> commands address must be 16-byte-aligned. Otherwise, the commands fail to
-> be executed.
-> 
-> ARCH_DMA_MINALIGN represents the minimum (static) alignment for safe DMA
-> operations, so use ARCH_DMA_MINALIGN as the alignment for SMP request.
-> 
-> Link: https://lkml.kernel.org/r/20230612153201.554742-1-catalin.marinas@arm.com [1]
-> Signed-off-by: Yihang Li <liyihang9@huawei.com>
-> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-> ---
-> Changes since v3:
-> - Still aligned to ARCH_DMA_MINALIGN for safe DMA operations.
-> 
-> Changes since v2:
-> - Use 16B as alignment for SMP requests instead of ARCH_DMA_MINALIGN.
-> 
-> Changes since v1:
-> - Directly modify alloc_smp_req() instead of using handler callback.
-> ---
->   drivers/scsi/libsas/sas_expander.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-> index a2204674b680..c989d182fc75 100644
-> --- a/drivers/scsi/libsas/sas_expander.c
-> +++ b/drivers/scsi/libsas/sas_expander.c
-> @@ -135,7 +135,7 @@ static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
->   
->   static inline void *alloc_smp_req(int size)
->   {
-> -	u8 *p = kzalloc(size, GFP_KERNEL);
-> +	u8 *p = kzalloc(ALIGN(size, ARCH_DMA_MINALIGN), GFP_KERNEL);
->   	if (p)
->   		p[0] = SMP_REQUEST;
->   	return p;
-> 
 
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
 
-Thanks,
-Jason
+On 3/28/24 09:12, Lukasz Luba wrote:
+> Hi Rafael,
+> 
+> On 3/27/24 15:25, Rafael J. Wysocki wrote:
+>> On Thu, Mar 21, 2024 at 3:44 PM Nikita Travkin <nikita@trvn.ru> wrote:
+>>>
+>>> Commit e83747c2f8e3 ("thermal: gov_power_allocator: Set up trip 
+>>> points earlier")
+>>> added a check that would fail binding the governer if there is no
+>>> cooling devices bound to the thermal zone. Unfortunately this causes
+>>> issues in cases when the TZ is bound to the governer before the cooling
+>>> devices are attached to it. (I.e. when the tz is registered using
+>>> thermal_zone_device_register_with_trips().)
+>>>
+>>> Additionally, the documentation across gov_power_allocator suggests it's
+>>> intended to allow it to be bound to thermal zones without cooling
+>>> devices (and thus without passive/active trip points), however the same
+>>> change added a check for the trip point to be present, causing those TZ
+>>> to fail probing.
+
+This patch description is mixing trips and cooling devices and refers to
+a commit which is only for guarding the trip points number to be
+not less than 2. In IPA we require 2 trip points.
+
+>>>
+>>> Those changes cause all thermal zones to fail on some devices (such as
+>>> sc7180-acer-aspire1) and prevent the kernel from controlling the cpu/gpu
+>>> frequency based on the temperature, as well as losing all the other
+>>> "informational" thermal zones if power_allocator is set as default.
+>>>
+>>> This commit partially reverts the referenced one by dropping the trip
+>>> point check and by allowing the TZ to probe even if no actor buffer was
+>>> allocated to allow those TZ to probe again.
+>>>
+>>> Fixes: e83747c2f8e3 ("thermal: gov_power_allocator: Set up trip 
+>>> points earlier")
+
+Not that commit.
+
+>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>>> ---
+>>> I've noticed that all thermal zones fail probing with -EINVAL on my
+>>> sc7180 based Acer Aspire 1 since 6.8. This commit allows me to bring
+>>> them back.
+>>
+>> Łukasz, any comments?
+> 
+> Let me check this today.
+> 
+>>
+>>> ---
+>>>   drivers/thermal/gov_power_allocator.c | 14 +++++---------
+>>>   1 file changed, 5 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/thermal/gov_power_allocator.c 
+>>> b/drivers/thermal/gov_power_allocator.c
+>>> index 1b17dc4c219c..4f2d7f3b7508 100644
+>>> --- a/drivers/thermal/gov_power_allocator.c
+>>> +++ b/drivers/thermal/gov_power_allocator.c
+>>> @@ -679,11 +679,6 @@ static int power_allocator_bind(struct 
+>>> thermal_zone_device *tz)
+>>>                  return -ENOMEM;
+>>>
+>>>          get_governor_trips(tz, params);
+>>> -       if (!params->trip_max) {
+>>> -               dev_warn(&tz->device, "power_allocator: missing 
+>>> trip_max\n");
+
+This if() guards the binding of TZ with less than 2 trip points,
+not the cooling devices.
+
+>>> -               kfree(params);
+>>> -               return -EINVAL;
+>>> -       }
+>>>
+>>>          ret = check_power_actors(tz, params);
+>>>          if (ret < 0) {
+>>> @@ -693,7 +688,7 @@ static int power_allocator_bind(struct 
+>>> thermal_zone_device *tz)
+>>>          }
+>>>
+>>>          ret = allocate_actors_buffer(params, ret);
+>>> -       if (ret) {
+
+This if() is from different commit.
+
+>>> +       if (ret && ret != -EINVAL) {
+
+This is about 0 cooling devices in the thermal zone, but IPA won't work
+so why to even fake and forward binding?
+
+Rafael should we support binding with 0 cooling devices?
+
+>>>                  dev_warn(&tz->device, "power_allocator: allocation 
+>>> failed\n");
+>>>                  kfree(params);
+>>>                  return ret;
+>>> @@ -714,9 +709,10 @@ static int power_allocator_bind(struct 
+>>> thermal_zone_device *tz)
+>>>          else
+>>>                  params->sustainable_power = tz->tzp->sustainable_power;
+>>>
+>>> -       estimate_pid_constants(tz, tz->tzp->sustainable_power,
+>>> -                              params->trip_switch_on,
+>>> -                              params->trip_max->temperature);
+>>> +       if (params->trip_max)
+
+This is not supported, we need those 2 trip points.
+
+>>> +               estimate_pid_constants(tz, tz->tzp->sustainable_power,
+>>> +                                      params->trip_switch_on,
+>>> +                                      params->trip_max->temperature);
+>>>
+>>>          reset_pid_controller(params);
+>>>
+>>>
+>>> ---
+>>> base-commit: e7528c088874326d3060a46f572252be43755a86
+>>> change-id: 20240321-gpa-no-cooling-devs-c79ee3288325
+>>>
+>>> Best regards,
+>>> -- 
+>>> Nikita Travkin <nikita@trvn.ru>
+>>>
+> 
 
