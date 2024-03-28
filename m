@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-123089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC40F8901FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:36:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863C18901FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D4E1291FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:36:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C5E91F274D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5475012F37B;
-	Thu, 28 Mar 2024 14:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1184A12F59C;
+	Thu, 28 Mar 2024 14:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ie6NRmEG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lJGFbr1S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DA8312EBC0;
-	Thu, 28 Mar 2024 14:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F5212F36D;
+	Thu, 28 Mar 2024 14:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636527; cv=none; b=ZcOU9rvVTMpVZnu40/Sj2GgD0oP7URbsVKXM7mKmxNizcOQkPV8ab8u6hGa1TQZS1GmwbK14IPzLghyOjuTO/y2r5SoKBIyQvnpjkS6tGMzsT+pBCir3mvOdfGknhmGqSYSbVl6B4KpHqxqHzyMl95tvyVYN616Kg/cI4diviDI=
+	t=1711636528; cv=none; b=DmDwwm3hGYWfYnvQapXOnMrjGLipk5o7Q56KLBLv6s6gAMQ2YcUievymaNCXCm31dBFQ1NG9/X7972dhoUt8ubwgeowYPEBDqQcgSjiwhfXei4Fh72fWLQsLWDjwL8zfZtlXtdNtYsad9J1+HlK+ks2UjgkTLOcG7o8y5rVHVdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636527; c=relaxed/simple;
-	bh=VF6qqnFq5BR0GgjD3EzNG17qE4d7jjvmtipCQSDt8JY=;
+	s=arc-20240116; t=1711636528; c=relaxed/simple;
+	bh=Dqd+kXEvsLwgGeIQGSkViQKw4HO+Q93TaZM7h2qYbzc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dpqN2kqVRsvnyHr+0u/ZnAmGZ14f51ofZlxX7gvnhR76vfdkSKiKswaahaChpHEGp+Qbaz0px9NczNmf+mGqSyEGiO2UI41S04KijqZYgTuMub4k/98OAZP17r2R27v8Ydz5ykujt5ScZ7drz97LoY/QzNWhNW47p4yOF5LC89g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ie6NRmEG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7E2C433C7;
-	Thu, 28 Mar 2024 14:35:26 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=CeDsIIpr5Z3ESzpM6gjZJDU4Z9ZQ1/SE2Oho3wH+FVSbAgz/XAm5wG0j2CQ90a+NRdH+g723+SxRwLxt/lJ6XJv/LyNO+ius0bDkez6F13FB3lyQVW4WEyHT6ZUFZJ2gCvOCw626TPuIA2cJTY8doW6Apf26A1zgh0ubf49U5xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lJGFbr1S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43B46C433A6;
+	Thu, 28 Mar 2024 14:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711636527;
-	bh=VF6qqnFq5BR0GgjD3EzNG17qE4d7jjvmtipCQSDt8JY=;
+	s=k20201202; t=1711636528;
+	bh=Dqd+kXEvsLwgGeIQGSkViQKw4HO+Q93TaZM7h2qYbzc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ie6NRmEG59AI/18DQPSh9EoEpD3gZOMKi26pfGroY35u1I831Lu8dcOZhZ+SrjquX
-	 y330QF+18cNIO8QvfMeNVS50Zo0XvV5PTad/v20jgG05pa/YHtBxixGyHXyipEMIrJ
-	 a+QQIzbW+5MgvgMUigDexS3EoSSs0NbZ4SKY1HbgnHc+VwOj6YErpk0oGD5WvTJNi/
-	 wW4w8X5LXENyGExLZKLdSdHS1WP0fnVFEQPEIPj/a11APY6/h9suhBX8m6J2zeVLBG
-	 AulNT62Cs17FT/tvXYH41tLhEsKd5C0j08yqW3DeErnql9finCYmdHobEeiLHrWcEg
-	 smRcPUZQwiQ+A==
+	b=lJGFbr1Smyq57XfdbLxau75pFzhb5Yw1TIDCKuR9EiGIFy6ciJ+uevKVncaj/nCor
+	 PGK85Pb+0fEpRhfu1DQ8HtqgxQlbAqLrzjwdNf+aC+KmkfEPDeEL0H4L1zCLOyldyR
+	 g7Gxf4sCBJrabDtDiLy40/sIq7/dYfy4RwfbXvzxpBfQoMfY+DjnMQ41ghCvi65O+s
+	 K7R21TIGR6+EyaDX2i0pmJfbUdk1eVmKFsrK+95P4L9N1v6e6vSKFlEXNiR340VN3V
+	 z0IT9L9A4E4lOm+meq7x1TAP9a66/H0EZ60AouOXxXmUBglEc0w5/6cdBUUFM8iEky
+	 BomUQkvz9WgbA==
 From: Bjorn Andersson <andersson@kernel.org>
-Date: Thu, 28 Mar 2024 07:40:03 -0700
-Subject: [PATCH v2 4/6] drm/msm/dp: Use function arguments for aux writes
+Date: Thu, 28 Mar 2024 07:40:04 -0700
+Subject: [PATCH v2 5/6] drm/msm/dp: Use function arguments for timing
+ configuration
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +52,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-msm-dp-cleanup-v2-4-a5aed9798d32@quicinc.com>
+Message-Id: <20240328-msm-dp-cleanup-v2-5-a5aed9798d32@quicinc.com>
 References: <20240328-msm-dp-cleanup-v2-0-a5aed9798d32@quicinc.com>
 In-Reply-To: <20240328-msm-dp-cleanup-v2-0-a5aed9798d32@quicinc.com>
 To: Rob Clark <robdclark@gmail.com>, 
@@ -63,127 +64,145 @@ Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
  freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
  Bjorn Andersson <quic_bjorande@quicinc.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3950;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4629;
  i=quic_bjorande@quicinc.com; h=from:subject:message-id;
- bh=mq3wvIgbvXj+jyFNC/yTvgdFWh8L1FA5V9blMx00Wnk=;
- b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBmBYFIcfyzuKuAQVKDPK/ZL8Bf4YLVO329x9//h
- mqe86z7Ky+JAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZgWBSBUcYW5kZXJzc29u
- QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcXIWw/8CFvExRkEmP4w9XHBNS/NPfMbAIuPdsxr+s4FKId
- 17MBXbj9xbTahkFLuYTNFtWZWipsIupGcIGDqC6xez2JMyKOOQUS3xsJUce+RNS2qFuqZa6VRQ6
- 2foqex5wz2Yi0HoETqQ1LvhW8g2cFdiAj6ggJ3V2838PF0e0iCm6SFbcZiUj9yEqSkpGJhKgqYu
- MWNYcd7pgn1wKqWiONUTamVMfvhI5pahdIqhpXntIhfWfm4pDZOgGOrKB2GcBh0YwLAfM+7loOW
- 5s0HUtQ4xhd+qAImZVm3Po6hlyl3+CpIkxhJNMyCYF3oZ1EXfQCsPXvwHnbBtPqNNEn4LQj6ipT
- /jezgR7KB+25OObMuaMEYNowj9mC8LlNhrPhxZNva1fJ5pjO+nFXSTr1B5klfW8uck4Fb4QdjCR
- MkDRElPxPMrL0cdiCOanjVV5Wq+ShS1+M7b+9LsBOe9F1tEVyblRiUP2VvKGrlcuQgdwfexWObY
- vEmnxAiv+hzHb9hcPZU6A1O+fKXqQgnu93qD3Cihn2dvpDjkwE4LHgTQZ6BoItH8q/pTuoQ2hLu
- IEHDbBub0Ad8RGTFBPIEWEKHVrpIHq6/nitCbcxC73t7UePfgIARqxMmCqx0Zh1aZ5zqLmBb3OO
- Mlp3DMryMnfoTyVeel2XdlUdWS1iud/8lVL0E4VD+kZE=
+ bh=p6zl39KBq28yg/YN5707OZTxRbZDEkda5d4ZGgyTaKA=;
+ b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBmBYFIiZW3sGxpGa3yGwbDxqhKCDH2SDbeZ/e5A
+ Gsvw0H9Pp6JAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZgWBSBUcYW5kZXJzc29u
+ QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcX+Ag//ewq4SKTTS7mL6qxsVF0flZEDbLJ1vcO84q/jIxO
+ Hb9NbLJR1suRb+Lazia/lDPg1S4dNoSBWPMs+9kvxIhCwUj8tuVYL+WeVEbC2tI4IVgaGai/kKa
+ 9g+ixmpn8XEEUTtQCwvRMNl+St5fmeN+VNZyPnlKl7pINc2lf+qt7L0SLX1HRHAg+GpsGAZWlNW
+ /tyAbPNXBWa5fPbw6O4lY0OAg0JXMQvc+/HmoedHkgZaKaks6Q837gr0PGccW9SOczJ1MQRLbw7
+ wuGKUjXBy4PfgJ9usAzfnzGL/mK/3lvNeZEgmYnX+2odTgGrQhqJuBuITvpL4rnpLHOmFSRe6Hc
+ 1d+2GmYRNGTYM2mViz+1nHyLTbBgT82YT3EOi1mC8W0mHRxZcosoL/691AgEqDjmETgGuIIvv+G
+ Zlva023YB/kZiIRHLwaJoWiZbU3z2uo+4mQOZrWW44jcQrlhdLRKKau7BbCeKaRuFz/uPMs/qW5
+ bwSGhfpF63cydmex9g2uT8m8WwsksEL4D021GF/f32T7EzE+GhUYWxm/Kzkhryz3RvNdEWcK2Wl
+ QyArioKHiHN82nlx4MbJglvn9l5RsAbh+jwUEOc0I4/9zzbGEATj3v+rEPk7erFJWj8+3NLVPsW
+ 2RTD4S/Qf7TJOucn1h0AtebMKkevFJm6qfNvl+UAmPGU=
 X-Developer-Key: i=quic_bjorande@quicinc.com; a=openpgp;
  fpr=05DE03CC5F35EA4F0966D5250B1F393F0D99ADC5
 
 From: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-The dp_aux write operations takes the data to be operated on through a
-member of struct dp_catalog, rather than as an argument to the function.
+dp_catalog_panel_timing_cfg() takes 4 arguments, which are passed from
+the calling function through members of struct dp_catalog.
 
-No state is maintained other than across the calling of the functions,
-so replace this member with a function argument.
+No state is maintained other than across this call, so switch to
+function arguments to clean up the code.
 
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 ---
- drivers/gpu/drm/msm/dp/dp_aux.c     | 9 +++------
- drivers/gpu/drm/msm/dp/dp_catalog.c | 8 ++++----
- drivers/gpu/drm/msm/dp/dp_catalog.h | 5 ++---
- 3 files changed, 9 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_catalog.c | 14 ++++++--------
+ drivers/gpu/drm/msm/dp/dp_catalog.h |  7 ++-----
+ drivers/gpu/drm/msm/dp/dp_panel.c   | 14 +++++++++-----
+ 3 files changed, 17 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index adbd5a367395..2c8bcc60692a 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -87,8 +87,7 @@ static ssize_t dp_aux_write(struct dp_aux_private *aux,
- 		/* index = 0, write */
- 		if (i == 0)
- 			reg |= DP_AUX_DATA_INDEX_WRITE;
--		aux->catalog->aux_data = reg;
--		dp_catalog_aux_write_data(aux->catalog);
-+		dp_catalog_aux_write_data(aux->catalog, reg);
- 	}
- 
- 	dp_catalog_aux_clear_trans(aux->catalog, false);
-@@ -106,8 +105,7 @@ static ssize_t dp_aux_write(struct dp_aux_private *aux,
- 	}
- 
- 	reg |= DP_AUX_TRANS_CTRL_GO;
--	aux->catalog->aux_data = reg;
--	dp_catalog_aux_write_trans(aux->catalog);
-+	dp_catalog_aux_write_trans(aux->catalog, reg);
- 
- 	return len;
- }
-@@ -145,8 +143,7 @@ static ssize_t dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
- 	data = DP_AUX_DATA_INDEX_WRITE; /* INDEX_WRITE */
- 	data |= DP_AUX_DATA_READ;  /* read */
- 
--	aux->catalog->aux_data = data;
--	dp_catalog_aux_write_data(aux->catalog);
-+	dp_catalog_aux_write_data(aux->catalog, data);
- 
- 	dp = msg->buffer;
- 
 diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index 55114a6aba7e..295bd4cb72cc 100644
+index 295bd4cb72cc..00ad3ebaa5a1 100644
 --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
 +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -169,21 +169,21 @@ u32 dp_catalog_aux_read_data(struct dp_catalog *dp_catalog)
- 	return dp_read_aux(catalog, REG_DP_AUX_DATA);
+@@ -880,19 +880,17 @@ u32 dp_catalog_ctrl_read_phy_pattern(struct dp_catalog *dp_catalog)
  }
  
--int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog)
-+int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog, u32 data)
+ /* panel related catalog functions */
+-int dp_catalog_panel_timing_cfg(struct dp_catalog *dp_catalog)
++int dp_catalog_panel_timing_cfg(struct dp_catalog *dp_catalog, u32 total,
++				u32 sync_start, u32 width_blanking, u32 dp_active)
  {
  	struct dp_catalog_private *catalog = container_of(dp_catalog,
  				struct dp_catalog_private, dp_catalog);
+ 	u32 reg;
  
--	dp_write_aux(catalog, REG_DP_AUX_DATA, dp_catalog->aux_data);
-+	dp_write_aux(catalog, REG_DP_AUX_DATA, data);
- 	return 0;
- }
+-	dp_write_link(catalog, REG_DP_TOTAL_HOR_VER,
+-				dp_catalog->total);
+-	dp_write_link(catalog, REG_DP_START_HOR_VER_FROM_SYNC,
+-				dp_catalog->sync_start);
+-	dp_write_link(catalog, REG_DP_HSYNC_VSYNC_WIDTH_POLARITY,
+-				dp_catalog->width_blanking);
+-	dp_write_link(catalog, REG_DP_ACTIVE_HOR_VER, dp_catalog->dp_active);
++	dp_write_link(catalog, REG_DP_TOTAL_HOR_VER, total);
++	dp_write_link(catalog, REG_DP_START_HOR_VER_FROM_SYNC, sync_start);
++	dp_write_link(catalog, REG_DP_HSYNC_VSYNC_WIDTH_POLARITY, width_blanking);
++	dp_write_link(catalog, REG_DP_ACTIVE_HOR_VER, dp_active);
  
--int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog)
-+int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog, u32 data)
- {
- 	struct dp_catalog_private *catalog = container_of(dp_catalog,
- 				struct dp_catalog_private, dp_catalog);
- 
--	dp_write_aux(catalog, REG_DP_AUX_TRANS_CTRL, dp_catalog->aux_data);
-+	dp_write_aux(catalog, REG_DP_AUX_TRANS_CTRL, data);
- 	return 0;
- }
+ 	reg = dp_read_p0(catalog, MMSS_DP_INTF_CONFIG);
  
 diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
-index 2c2dbeee7634..290ef8180c12 100644
+index 290ef8180c12..a82ab4856b50 100644
 --- a/drivers/gpu/drm/msm/dp/dp_catalog.h
 +++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
-@@ -48,7 +48,6 @@ enum dp_catalog_audio_header_type {
+@@ -48,10 +48,6 @@ enum dp_catalog_audio_header_type {
  };
  
  struct dp_catalog {
--	u32 aux_data;
- 	u32 total;
- 	u32 sync_start;
- 	u32 width_blanking;
-@@ -64,8 +63,8 @@ void dp_catalog_snapshot(struct dp_catalog *dp_catalog, struct msm_disp_state *d
+-	u32 total;
+-	u32 sync_start;
+-	u32 width_blanking;
+-	u32 dp_active;
+ 	enum dp_catalog_audio_sdp_type sdp_type;
+ 	enum dp_catalog_audio_header_type sdp_header;
+ 	u32 audio_data;
+@@ -106,7 +102,8 @@ void dp_catalog_ctrl_send_phy_pattern(struct dp_catalog *dp_catalog,
+ u32 dp_catalog_ctrl_read_phy_pattern(struct dp_catalog *dp_catalog);
  
- /* AUX APIs */
- u32 dp_catalog_aux_read_data(struct dp_catalog *dp_catalog);
--int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog);
--int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog);
-+int dp_catalog_aux_write_data(struct dp_catalog *dp_catalog, u32 data);
-+int dp_catalog_aux_write_trans(struct dp_catalog *dp_catalog, u32 data);
- int dp_catalog_aux_clear_trans(struct dp_catalog *dp_catalog, bool read);
- int dp_catalog_aux_clear_hw_interrupts(struct dp_catalog *dp_catalog);
- void dp_catalog_aux_reset(struct dp_catalog *dp_catalog);
+ /* DP Panel APIs */
+-int dp_catalog_panel_timing_cfg(struct dp_catalog *dp_catalog);
++int dp_catalog_panel_timing_cfg(struct dp_catalog *dp_catalog, u32 total,
++				u32 sync_start, u32 width_blanking, u32 dp_active);
+ void dp_catalog_panel_enable_vsc_sdp(struct dp_catalog *dp_catalog, struct dp_sdp *vsc_sdp);
+ void dp_catalog_panel_disable_vsc_sdp(struct dp_catalog *dp_catalog);
+ void dp_catalog_dump_regs(struct dp_catalog *dp_catalog);
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+index 8e7069453952..07db8f37cd06 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.c
++++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+@@ -353,6 +353,10 @@ int dp_panel_timing_cfg(struct dp_panel *dp_panel)
+ 	struct dp_catalog *catalog;
+ 	struct dp_panel_private *panel;
+ 	struct drm_display_mode *drm_mode;
++	u32 width_blanking;
++	u32 sync_start;
++	u32 dp_active;
++	u32 total;
+ 
+ 	panel = container_of(dp_panel, struct dp_panel_private, dp_panel);
+ 	catalog = panel->catalog;
+@@ -376,13 +380,13 @@ int dp_panel_timing_cfg(struct dp_panel *dp_panel)
+ 	data <<= 16;
+ 	data |= total_hor;
+ 
+-	catalog->total = data;
++	total = data;
+ 
+ 	data = (drm_mode->vtotal - drm_mode->vsync_start);
+ 	data <<= 16;
+ 	data |= (drm_mode->htotal - drm_mode->hsync_start);
+ 
+-	catalog->sync_start = data;
++	sync_start = data;
+ 
+ 	data = drm_mode->vsync_end - drm_mode->vsync_start;
+ 	data <<= 16;
+@@ -390,15 +394,15 @@ int dp_panel_timing_cfg(struct dp_panel *dp_panel)
+ 	data |= drm_mode->hsync_end - drm_mode->hsync_start;
+ 	data |= (panel->dp_panel.dp_mode.h_active_low << 15);
+ 
+-	catalog->width_blanking = data;
++	width_blanking = data;
+ 
+ 	data = drm_mode->vdisplay;
+ 	data <<= 16;
+ 	data |= drm_mode->hdisplay;
+ 
+-	catalog->dp_active = data;
++	dp_active = data;
+ 
+-	dp_catalog_panel_timing_cfg(catalog);
++	dp_catalog_panel_timing_cfg(catalog, total, sync_start, width_blanking, dp_active);
+ 
+ 	if (dp_panel->dp_mode.out_fmt_is_yuv_420)
+ 		dp_panel_setup_vsc_sdp_yuv_420(dp_panel);
 
 -- 
 2.43.0
