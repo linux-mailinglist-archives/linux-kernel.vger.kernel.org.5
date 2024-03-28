@@ -1,121 +1,170 @@
-Return-Path: <linux-kernel+bounces-123028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D296D890133
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:08:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 471C4890139
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:08:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F8031C21F40
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:08:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1A33286F3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D86E8612E;
-	Thu, 28 Mar 2024 14:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C395612A154;
+	Thu, 28 Mar 2024 14:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S6Qm71Xq"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="azqFJHfO"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D051581737
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3541014294
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634876; cv=none; b=RtoSNBhWZ9qB2WSvkWroiiJ+wInu8mgxMKNyFQ8iwvSZiHmaODI9omn8EnrN5kziNF7Wl26rWGGMOHeZSJC2A+BL/cfRBK1Q+qU+jtd5KWSjwLEyAcbtDIHHZ25torrU84DgLIzRHjjC7xZYxTy0m5Ly7gBGzK02pEu6hCgVknk=
+	t=1711634878; cv=none; b=pyR91VK+5mr2ct4pI9bDbmc3UC1xbURx2LAuKUYQpchkNhn41VxSYbFvK5gLQK5rMyaDTISTeZdNx7PMUqAdKQHEu3Ti+Qn/q7y/4YrwlY3nxjLAGv/sxiaC7c2wEAcI2ZmmJqMDFNayYaM7LzZNS/8BLMKyaEs5F2zEYOp4ABE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634876; c=relaxed/simple;
-	bh=DfH+3aoUof0sIpFInK30HYT3MVpH58jL9JiOI4p2scM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U0vTS1rrKkB96eLzn44Zar/dsB1zedeD10JrSUSnf6gCF2N2IaPMz3j2t5H28CoZIIhDencWnuIHtClyRs4hDfJBVZfNexR78KY1MjvrgkPj/mhj2O7Mj+0cBG4OjqGQhvObR0hrJ3U+JfiUDe44nWHiUnoWVCGgU2Jk7KEBits=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S6Qm71Xq; arc=none smtp.client-ip=209.85.167.179
+	s=arc-20240116; t=1711634878; c=relaxed/simple;
+	bh=2k6ORstxTR1rltKyQtMpHECxE1qHT1fg/ZtPbRvBX2w=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UdbpqpU7wfPfAOPDfS7tiX1L/qdWpgL932v6oi0RdKjX6m1GBpu7URHvdB7WvOoKgWtguVfTIQQbNHRHH31FLCq/vT4/zDcFt4uAa8l7MXVZAY3QFjAlzjcKZICisQpW50Pfoa2N2KyZxu6AVYCUs8WN4lR4rJLo1gX5bZBGNkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=azqFJHfO; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bbbc6e51d0so605217b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:07:54 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d476d7972aso15446541fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google; t=1711634874; x=1712239674; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yFmOaQNA1YO66RkVLT7+CKmbcZlTvokprFnN8slsZBs=;
-        b=S6Qm71Xq/J3a7S1tRj5XTLGZHc+VLgj0Rb/v/hkIrf0JlK1Zza19WJdB2XSz1hvIPF
-         8x6ivtlDj5DU7AMyjc5ub8l5hrbsfFbw1OTIJ/D/jSDhQ+8ZUDofX2D59aeqHe2yFdoD
-         c3dXCU7NOUTgvlsLnCszHFKv7rN3B785GES7npKe6nHiWpDiJtEZ90fnue9xw5SoRsdd
-         UCh06e/vUyVJaNLbPcc6cuW457CdFy57XqE/CUO2hmSHqjQQMj5nt6SxKNtwIrj16/aR
-         NXRnV/SPMGnkJ6HGzmndAFr0V++2zZRalbTLBwDtBhiEW/21EAjWPnAPDlA0wNdAMaPE
-         SdIw==
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wP+ZPQTFaT7dJC4++e1l/MpToBl5GmVhiDRKTTRN6DM=;
+        b=azqFJHfO0F0lC77HL0+tIZxk/jYKN8YgZ1/FgOu2c7avf5oja94E3h8LxttKCL84Q4
+         flgoJmWUpMvTfOsJbwNC9674CvYbqCC/8Y6V40Ws+VCga21VPBFtIcKcaRSVhH0PLroT
+         THuf9BGUTyrrPkzUW5r3/zSziF3o59CTi7GJa+bfDowjDaZZesjA4GF+jdP0Ajj5NG55
+         ZhT9cZHf/ewZHmqsAYxzaJ2898LBtRLokRmOZGNycAZkgpIYv2Y2mDPBtwD52rYbyAoY
+         s8BRwayWGs+xKc0+zZ2DinVhWq7OlD9q9872sdSo6VexroO4chnzZunf1hbsDYNtY9rS
+         20Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1711634874; x=1712239674;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yFmOaQNA1YO66RkVLT7+CKmbcZlTvokprFnN8slsZBs=;
-        b=r0gXe4jPJCSTaPGjojSNPQV7J8O1RY4iL5eGh/EceuvFqZCCeYcqXOG6boYfMs7BQ4
-         ncauciX5rwv37f+EPqONKWOwqcZKN+JybJLQjbWJJ53vpc3551dBRLDkbr+/qd7ramfi
-         c41AmzBbyr9vpsTNUmNvE9td4XTdsOz49JpxL06p83aBB6wIXjWPI18GAWK0Kf/fFJo8
-         pyIqPB1YnJjHEpRE+4981oFtDZ2Go4BpUkOcV0F4aozsyPRdDLm0JX8QhUsb1qtcQnGU
-         WH02TcmFJlehB0rfhTKasiSdlT8ik1xpwa4hGVEjN1OzqFKMmT7PiSEKnXOBejMSgfrK
-         O+rw==
-X-Gm-Message-State: AOJu0Ywar07zoSg3uYvFlAyYU1mL3rC+0vSjrfsGwq/EJHiYUzt6KRsu
-	bpdNrUuXFjLEAWTLKPiiV8PifsOnwkBP4WASi5vjAADkbIv2toJo1Sz3VLATBwYVgr7vFFlzK77
-	ezeCVAo9r/Bjz3YDwrpdH5cSyJn4M8QdqGkB9qoW3tyYUV6Z2lns=
-X-Google-Smtp-Source: AGHT+IGSHcrTNSo0TiF91FUIBOkfs+BnWX5uYwTCLEUQrIvu9e6qPQDoGHSDQR8cPK0FW6/kkHzHQhMS7Y0zn//rEl4=
-X-Received: by 2002:a05:6808:2124:b0:3c3:dd65:bdaa with SMTP id
- r36-20020a056808212400b003c3dd65bdaamr3292330oiw.6.1711634873746; Thu, 28 Mar
- 2024 07:07:53 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wP+ZPQTFaT7dJC4++e1l/MpToBl5GmVhiDRKTTRN6DM=;
+        b=jXzpueK4CM63I1Nq/LLu0DY7EEF38+NDQLIEI0T/inA0CFNVIkV5g7wPq0QU8pFpMu
+         VDj0Gs6tjMasPGrVp6N7CwyOuvx8GwgQXml+7ATX67zwXfNW+s2E3FNpvQzhqpz0Qz6j
+         2yUmnchYEpjXyHqUgrz4EMG/Qh/HTG4J+RaO7gAZr0Fm2FMFyYhztt1vq/6vhav5Nulr
+         5cVCGOXQISnNEmQQD/HBSC56zkqEaZZhA/lVdFCqrnn1QjSNrq7JRp+S9ekEjhny+N7A
+         4lPrrava4gg4gDnyNZ/G26d5shfw9lpYstAylLNE88zqeHrRrmFwRlPDYx2vcPNKlY8i
+         b0lw==
+X-Forwarded-Encrypted: i=1; AJvYcCXbefitxYd6Epdrp7wL6sRdS1HGc+wimud9bfESOePN32d5izM/2dMiyhAOW7gMXUdflku8k1LWcmEDFp+g0uOiXIjMUnBGW41aG+zd
+X-Gm-Message-State: AOJu0Yz+7rdI7M8s2KZ365Bt0zMoqMlx8IBTyP0u2F9rC7lCSQ5DYFYf
+	SIPUvNaCFvO+PnRDYK1kFPtETa9ZQtCW4atRCGL05H8cnTyejaUa1zRfFVj7FEw=
+X-Google-Smtp-Source: AGHT+IH6ZYT9rKlA75QKZqgaxnipCnDFWVuubAQIHNJlqj7IWgBBnTpQl5J08e0KHQPxv5VnxQnQwQ==
+X-Received: by 2002:a2e:9156:0:b0:2d7:f26:9a9f with SMTP id q22-20020a2e9156000000b002d70f269a9fmr731480ljg.4.1711634874273;
+        Thu, 28 Mar 2024 07:07:54 -0700 (PDT)
+Received: from [192.168.7.190] (82-64-249-211.subs.proxad.net. [82.64.249.211])
+        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00414688af147sm5555801wms.20.2024.03.28.07.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 07:07:53 -0700 (PDT)
+Message-ID: <19897482-2fa1-4688-aeec-855123558374@linaro.org>
+Date: Thu, 28 Mar 2024 15:07:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325115854.1764898-1-sashal@kernel.org> <CA+G9fYttAJcRBq2F-TfOvfsWJQuCKW9SAo_3C1nv5ok43j4Aeg@mail.gmail.com>
-In-Reply-To: <CA+G9fYttAJcRBq2F-TfOvfsWJQuCKW9SAo_3C1nv5ok43j4Aeg@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 28 Mar 2024 19:37:42 +0530
-Message-ID: <CA+G9fYuNsVNtWr9mLvgPnjRPr0Eq45eH9cSdEc6tbbDpXzFrNQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/147] 4.19.311-rc2 review
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	florian.fainelli@broadcom.com, pavel@denx.de
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: thermal: amlogic: add support for A1
+ thermal sensor
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>, jbrunet@baylibre.com,
+ mturquette@baylibre.com, khilman@baylibre.com,
+ martin.blumenstingl@googlemail.com, glaroque@baylibre.com,
+ rafael@kernel.org, daniel.lezcano@linaro.org, rui.zhang@intel.com,
+ lukasz.luba@arm.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org
+Cc: kernel@salutedevices.com, rockosov@gmail.com,
+ linux-amlogic@lists.infradead.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240328133802.15651-1-ddrokosov@salutedevices.com>
+ <20240328133802.15651-2-ddrokosov@salutedevices.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240328133802.15651-2-ddrokosov@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 26 Mar 2024 at 18:07, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Mon, 25 Mar 2024 at 17:29, Sasha Levin <sashal@kernel.org> wrote:
-> >
-> >
-> > This is the start of the stable review cycle for the 4.19.311 release.
-> > There are 147 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed Mar 27 11:58:33 AM UTC 2024.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.310
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> >
-> > Thanks,
-> > Sasha
->
-> One more important update from Linaro LKFT testing,
->
-> LTP syscalls fallocate06 fails on qemu-arm64 and juno-r2 devices.
->
-> fallocate06.c:155: TFAIL: fallocate(FALLOC_FL_PUNCH_HOLE |
-> FALLOC_FL_KEEP_SIZE) failed unexpectedly: ENOSPC (28)
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> We are running bisections on this issue and get back to you.
+Hi,
 
-This is to confirm that the reported issue is not a kernel regression.
-The reason is due to updates on userspace tools regarding the btrfs.
+On 28/03/2024 14:37, Dmitry Rokosov wrote:
+> Provide right compatible properties for Amlogic A1 Thermal Sensor
+> controller. A1 family supports only one thermal node - CPU thermal
+> sensor.
+> 
+> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> ---
+>   .../bindings/thermal/amlogic,thermal.yaml          | 14 +++++++++-----
+>   1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml b/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml
+> index 20f8f9b3b971..0e7f6568d385 100644
+> --- a/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/amlogic,thermal.yaml
+> @@ -13,11 +13,15 @@ description: Binding for Amlogic Thermal
+>   
+>   properties:
+>     compatible:
+> -    items:
+> -      - enum:
+> -          - amlogic,g12a-cpu-thermal
+> -          - amlogic,g12a-ddr-thermal
+> -      - const: amlogic,g12a-thermal
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - amlogic,g12a-cpu-thermal
+> +              - amlogic,g12a-ddr-thermal
+> +          - const: amlogic,g12a-thermal
+> +      - items:
+> +          - const: amlogic,a1-cpu-thermal
+> +          - const: amlogic,a1-thermal
 
-- Naresh
+In this case you can just use "amlogic,a1-cpu-thermal" or "amlogic,a1-thermal", no need for a fallback.
+
+Thanks,
+Neil
+
+>   
+>     reg:
+>       maxItems: 1
+
 
