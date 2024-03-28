@@ -1,174 +1,176 @@
-Return-Path: <linux-kernel+bounces-123367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F3C890733
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:30:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAA4890731
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637A41C29440
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F0F029ADA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6297E115;
-	Thu, 28 Mar 2024 17:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183F412DDAF;
+	Thu, 28 Mar 2024 17:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Oiqg1GgN"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2048.outbound.protection.outlook.com [40.107.220.48])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P23qjp0j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7A742A86;
-	Thu, 28 Mar 2024 17:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711647000; cv=fail; b=c0istSTnw/vspmt8kG4CqHBv6esYz1/y6as6KfzSBHvHC+NtVerdT34oQikkqhMrakZCqpOjfMsQqBQqwuRY1xunevss/KqYY1GjWHkABStYwj5XkdOAyqjnHWIJI/M+VY1bOj8UDrADvfUTIY3zSVl6foDedPvklGzn+1dSI/I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711647000; c=relaxed/simple;
-	bh=fRVZ/0TN21qQ5mIeRyJoawG2z2CSHMFXDCMLy0+nflM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=rOBerZc6yhQyBcWtSUR9+kEmj73NryNdVUnhFODY17lPyfk2HtECiSYxmQ14TUveOQD3l+b+XQbONWVIis6Ob/6pffglZFJVQqW1CHo9j00CyJ3tOgsBJtzogju+O2193eNg8g1m5g4kDu+ENX9VqcWrJ9YptAaRbEdhLHHh5qM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Oiqg1GgN; arc=fail smtp.client-ip=40.107.220.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OmH0HH6lC10ZIUuDx5TxZApVSYIBHjefpe09flusfN1kewK8FjZOKo/I0mka5nSWhxKsJxR0hn4cgpTLO96jTinFL0JFARiECM96fFCsudHeB4D7fPhx2gUmoSv6F/f7SJ4km5brDGg5xw/e8D1KZ6MJKQM4RTNCOwRfS3DXZKTbW5p3+fNILwnZbZLT5sS4Q5RPKfedYyd/Tm/sztgPpPsChnidFQuE+ThuOimC/he5rUENcZ+rk/xFiftKqBfewHr9Grz3RHiuBOc6SF1iICgV98k0DqA7d6EAfkmhGlyNo2PSHBFuZcreRKmk6T0M3Jainm8XidVFSPfvELxj7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cRVDdqkRE9u811TlxFnDjKgnALbB0yjT3536hZRI8LE=;
- b=nFftzH0Kb31DXJqW5+apSdeg6NINSPOqVjWUDW39dEPrS6rkE5FOQK0IRiggg/fQXQayZEYxLuhIcy+lOYmsWgi4aTNFIJClHvs1I+dTVCC7592wGzLuBsSG2ysmAxMqxu3/gpbKW2sdmld03MnUf2ihybJ1R9OateWmYbhAaU8DpEvIP8i1gFE02SYhMwo/vJJeFw1JUW7BGP7FmK05F1REcobgmUuGS6wANIditYk55ex0ZE3jTjz9QMOmgMf0jTvMFYPZkbAN9xk3Fh+yzTyYZ52vEJ3tsLQ5o7Ba2hRoy+EpKr9SJCb/BdcA8PP8tvo4gQlyMcAHXw6nwsGomw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cRVDdqkRE9u811TlxFnDjKgnALbB0yjT3536hZRI8LE=;
- b=Oiqg1GgN9ssneohjsqIQvwO7qxD2lepWeMQx9lasMCILN83wgliVkGxzHL36q56/u8o62n4stCXiRzQuFAQgLrwAPD+L5K/JMyx7BtBaWlwAtbYZ745Er5ZR+oRfC/kl2b7x0lgdLcxgPdu0cQpVyE9zYAhkHV/G936x0hWx4mD4B1rWoZiugRiM9P2TbQW9wYTk+Cs9bIl54HSND1DneXIsz9/2ZA8R+6mZwB9UCpcyforqUZiWaRFoFMi8QDFN5/KuwYvFm7snFPBiTIVU736YkvtiEwAS15mK9GjvY+UkuMBIDvtRRVQXP1OP8jKo3QPqQhBVTTivU5PDRfhxuw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by PH0PR12MB8175.namprd12.prod.outlook.com (2603:10b6:510:291::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
- 2024 17:29:55 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::3889:abf7:8a5e:cbbf]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::3889:abf7:8a5e:cbbf%3]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 17:29:54 +0000
-Message-ID: <834542e1-bb29-49ed-98ee-13a79168819f@nvidia.com>
-Date: Thu, 28 Mar 2024 10:28:38 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Fix selftests/mm build without requiring "make
- headers"
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
- Axel Rasmussen <axelrasmussen@google.com>,
- Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Peter Zijlstra <peterz@infradead.org>, Guillaume Tucker <gtucker@gtucker.io>
-References: <20240328033418.203790-1-jhubbard@nvidia.com>
- <6d82298b-b17b-440a-beef-590177d0ff50@collabora.com>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <6d82298b-b17b-440a-beef-590177d0ff50@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR05CA0010.namprd05.prod.outlook.com
- (2603:10b6:a03:254::15) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F4A7F46F;
+	Thu, 28 Mar 2024 17:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711646993; cv=none; b=rtsjIZhpWc7BbjYOaKkDkWDw3M+mGgwHZ5FmBWKUh4MtEq+6IYROuX7BoS8/6ubgEGdnjQmsTy6HCT8UFjZ6a0fK9AEn5iWFmzqQd9/N/woRMOLxQkrgEsacWDZja6k05p0mpJSbABkM/0HEtHxs0nIOUV19z7HxbQem8sRK4EY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711646993; c=relaxed/simple;
+	bh=2yjXG1cxcOLRAQQFD2MmlXzfBTpxi8yuDIP1YvTVo1o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g5ZllLRWOSkwEbj0o6hQT4Fh5/FBas2Tm6K85BnrFqXs4bt56Lt/Ylj5LtiN0E5hMqA3kZBHmI8rguLA+eVs0kWCtqELICk1X99Y8YPBa8zJ8YzLsKO9Lt4WyWtqDuFhsN2+R/skL/HOCPglgARSfCH562/7LXDRiSZZsZRoY38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P23qjp0j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD47CC433C7;
+	Thu, 28 Mar 2024 17:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711646992;
+	bh=2yjXG1cxcOLRAQQFD2MmlXzfBTpxi8yuDIP1YvTVo1o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P23qjp0jZGrt5nB7AvifCFT26FEKuPDGE1gQPhQ9VG7LDmaJZZubXdTjGL3d8g+0z
+	 1/W5PgJOr5RtSDp9S0Pu+iADL8NZ7oMTIcXQ3W3Qh1AgvSYUQ70+EY6mkS8x3SvhjG
+	 oVWyZOzRj5V4S4vWvNWu44YjcJYHsnyhoTiNNCLO4CbfBVBuZSm3qX89V48RF8tlwh
+	 aOVWX1QukpiYy3BfhRkyfdwg5PSTwCuDO7E7JXsSs81XUWzTMSsoQTyqhywubf1IFc
+	 C55lYbOzdO/GjNDAwX8FqZXrtTa0rOwIKDv0LNPTOjEoLW/1CBN3rP494bU1R5RsqM
+	 OO7eUgnD4v3gQ==
+Date: Thu, 28 Mar 2024 17:29:47 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, linux-gpio@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/5] riscv: Kconfig.socs: Deprecate SOC_CANAAN and use
+ SOC_CANAAN_K210 for K210
+Message-ID: <20240328-daytime-hankie-41a57ad9fbce@spud>
+References: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|PH0PR12MB8175:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4de883d-cfff-43c9-2199-08dc4f4caea1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	K0ANV4ao7aCyZmGrdgWewnGQUsdLhYy1BbW/PfpmsjTfGvXFzEZMFc8/BshS02A2Imjrq9oy3WLPF/1aNWHNvUidPqKDWkaBXG0mLDfB+nnaPdtUEwNtjDnonjnFyafjBDy+TTB/xKZjqIhz3bPRXoDHvrQIPRW/1Jrc7aM32HDXjoXopQBco9XSrkcRs316yONPSBkZAdQGRKh09lPrEvVGkizaiQfoncBQoN50Vbqip7hRQtNhfXywWF9hVfTw3F89K9n+nEIq42PEDPDMPrvFI/OSTcJYn3DzslFHhdAAyFkcj8h/QhOCAcEu8SKeUsnl/szYIu5Qvph3xScZy8E+6dscgin1rKSAxINobEUsifT/FQGNuBtNZVTUSN5yX07GXT85ZcTMqHx0CBaDsbI8QB6k+nNIrPv9gKXpgndHfW2YFVyE3RGv+ZUc+1YoeTjCRzEntc3BteQylpivnCJLJVcob7o0RCNntCbKzJQ3LGEPWcTHU7gJ4nyx1cexfjiYkGOUSfxsKrqzDAGgMtD0MMZ8hPUYf1INThpMYlCEH6/ivVRxrnNZWn9H+E/HgP8uqRC0JViMyMHCgb9cF1dnDvMwe9lSfKEsV11h2igP/aJcOdrUhIJEJJjSwqZaaYJNA+vTFQ8CWOlIKzBUrfBGQxgn4XT0JJJNEbhb/Xk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RUtQS2tRY256QmVyaXpwNS96K2x4dWxoMHdsOVpkb2t5MFJwcGpLUllMNHJ1?=
- =?utf-8?B?ZEFaRWpJdFNoWmdFb1piQTBXdmd5enVneEEwYWc1azNSTTF5eHU1TTlheUhz?=
- =?utf-8?B?Mm5VQWV1ZC9lSG5KQnZaMmZ2UitTQjkvYW40NnhxTFFpczU3aW5NME9IVlhk?=
- =?utf-8?B?dEgzcTY3Y21iQk9JRHU1UzFHWDAvR1AyVGxkamZPWWhoUEJPcTQ5dGphRTVP?=
- =?utf-8?B?MUdYS3lBOWFpR2d2bTdYQzJjQkZVSGxXTVNvSEt0QzNOak5MWHI4TjdnRW1U?=
- =?utf-8?B?REVrRVd3L1lqbkJoR2c5c1R4cDdOUVJnVWh1Qkh5V09Qa2ltdFJpTkVmUURn?=
- =?utf-8?B?SDZLN1VPTnhZK25Xa2tVeVpua0IzVEdEbjR4N2RQK0U4bTI2Q0wzNk44aGUz?=
- =?utf-8?B?T21jOVdxOGNTcjhodkdFVFRDbWhPVEF0cDlVQ1JKMGhsZEFSc2RIQnM5b01W?=
- =?utf-8?B?RS8rL04xbGpYV1lic05SeHpkT2dXMUEvaXVJenIySHlTdEdFQjQrdnhNZWls?=
- =?utf-8?B?SGt2Uldnc0Nob1R0Z214alNWTDZnS2NNdWdPUkx6TThYWjJqdVRqM0I4b2dQ?=
- =?utf-8?B?SlF1SW9ZdE5Kc0k3c1ZQKytNZW1reUpiMkN4Z1gvNTU3Mnh0eXAwcEVSVjJE?=
- =?utf-8?B?L1hhK3JOQzNlUVpNOGF3SDRZb1dHV0k1RytKelM1NU0wOGt0SktCMEM4cDFI?=
- =?utf-8?B?MXBOcnh3R1RvK29Id3BGdWg3SEVJM01kcTA5YXIvNFJCdVJPSktaSXhlbkhX?=
- =?utf-8?B?VHpKOW9aOW1lQm1VcXVmVVg4V0JTSzBrVjFETU40Q1MzVzVSbjhWODNJUVZR?=
- =?utf-8?B?SVlaYVBWRDMrQlVGMEFDUVBpSXFsR1Z3UmdrZjFpWkhlODBudUJET29nY1VZ?=
- =?utf-8?B?RmhmRjhRQXlTVnNtWDJrbEpEaFVabmRMWHhlTXRrczMvM0R4WGlCb3VvSlM5?=
- =?utf-8?B?QnNpeUxnejF5ZUpJY0JyWTRrY2tZSVV3RUljOHcvREpFdEpDZTdKWnJISWM5?=
- =?utf-8?B?RWpqVm82UDBtN1NITWxqdFlwY0s0WGxoeU9wSU5UMUNPb3JRbVRONTJWSGxK?=
- =?utf-8?B?aFFoQWpyOXA5Y0FmN1FpTzBtREVxSWs2ZGFJOGo2Vzk1QUR4Sjk1WGZHbmdH?=
- =?utf-8?B?cEZDUUlQaGg1YmdxdjlGWGtld2R1c0ZDQXhOejVERTc5b2tnZVVOek5DOWZN?=
- =?utf-8?B?clhzNWM5SVVIWXdzdzBYcVR3RmJpMXpWeE9FVS9GMm1lQzQ0VG9uM1VmU1ZS?=
- =?utf-8?B?MjFhcVdpWWRMVy9tMGlqU3MvL1JMMlpYeUFIOXlZNGxxdUJteWJNTWR3cmxz?=
- =?utf-8?B?K1ppeHlxWlJRMlhqQnZmcW4yR2hiQ3AxaHFwdmkwSWllRHN6OVUrQS85dEsz?=
- =?utf-8?B?VDRTdjlBNE14TjRVN2t0aVpuNVFQdDBxTHhtS2l3YVVXNUJ5cW5KSEcwY3B4?=
- =?utf-8?B?ZmlaOEhKMFZJd2JpUmp6eXFHU0dSRzdBMnlFVWxPSEdvdk94TStDak9GandK?=
- =?utf-8?B?YlhxYTNVR1FIYUxxMHpjV3k3OXRxMzF4dTJBVG9LTDArWStsN09rRHlrSmR6?=
- =?utf-8?B?bENDcU80RWZSZ0NUeE5DV3k5aHlCMG5lOFhSWE5pL2xERDEyNDdSc3MvbmRk?=
- =?utf-8?B?ME1PSzFYTFRldGxFamxiYVcxY2tsSm1wWUhLTTIreWdlQWVML0R0RVlBVFNp?=
- =?utf-8?B?M3NaUUNUMDRtaVdrS2ZvNy9vUUdGclI0QkloK1BXWUhTOHAzdHl4eXZQVTdp?=
- =?utf-8?B?dTNUeE5UZi9kNU1RVS82WDRTODFwVHVBTmtjOTBsQXZ0cU5mQW9iQnhJRkVn?=
- =?utf-8?B?bCtXYVVON0Q4SXhVV0Z5Y3lEa2VORWFsWXFFNTN5dUc0eElhb2J0UGhkVVdR?=
- =?utf-8?B?VEN5UldWUCs3N3JPbUcwUC9QeC9OVUZ0a3MramVFcnJHNkNtMktuRXBJb1JE?=
- =?utf-8?B?L0ExZVJydy9SNVplcktZWjZRZXZPaWtHa2ZmN2gwNUY2ODg2VjRWeWdiK1VX?=
- =?utf-8?B?NkxvRFFpNXZtMmpaN1dxOWtoc1BhWmFacXdodm85eDVhc3l1SzhhajhzL004?=
- =?utf-8?B?Ry9rd2VkL1FLRUc5c0hwR0tEMWVKY3FEN01IQUNpdDIyZW9ySVM5bmFrTGVX?=
- =?utf-8?B?c2k3Um5LdUx6eHh0MHlNemFBdEJuakk1MzYyY0pudXdqRUdBenFNeWRWV1M3?=
- =?utf-8?B?Y3c9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4de883d-cfff-43c9-2199-08dc4f4caea1
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 17:29:54.6822
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pepeeygQHwRWjBbKqKvmyLXB7r/Oy3gZsBfHnGtnuissL4oXaX95Yo4psCikZJBpqOEFOG2m1TIBDFDZgbtNFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8175
-
-On 3/28/24 2:02 AM, Muhammad Usama Anjum wrote:
-> On 3/28/24 8:34 AM, John Hubbard wrote:
->> Hi,
->>
->> As mentioned in each patch, this implements the solution that we discussed in
->> December 2023, in [1]. This turned out to be very clean and easy. It should also
->> be quite easy to maintain.
-> There is another way. The headers should be built automatically by make
-> dependency. The topmost make file always builds headers before building
-> kselftest i.e., make kselftest
-> 
-
-I think we talked through this already: Peter Z. pointed out the problems
-with requiring this kind of prerequisite. And it really it overkill. The
-approach here is simple, easy to maintain, and avoids breaking the various
-unusual build setups that people have.
-
-I'll shut up now and let others weigh in, though. :)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rTpquQ6Zk9VYNr0B"
+Content-Disposition: inline
+In-Reply-To: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
 
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+--rTpquQ6Zk9VYNr0B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Yangyu,
+
+And Linus/Stephen/Philipp I guess!
+
+On Fri, Mar 29, 2024 at 01:03:22AM +0800, Yangyu Chen wrote:
+> Since SOC_FOO should be deprecated from patch [1], and cleanup for other
+> SoCs is already in the mailing list [2,3,4], so we deprecate the use of
+> SOC_CANAAN and use ARCH_CANAAN for SoCs vendored by Canaan instead from n=
+ow
+> on.
+>=20
+> However, the K210 SoC is so special for NoMMU and built for loader.bin, if
+> we share the ARCH_CANAAN symbol directly for K210 and other new SoCs which
+> has MMU and no need for loader, it will confuse some users who may try to
+> boot MMU Kernel on K210, but it will fail. Thus, this patch set renamed t=
+he
+> original use of SOC_CANAAN to SOC_CANAAN_K210 for K210 SoC, as Damien
+> suggested from the list [5]. Then, it made some adaptations for soc, clk,
+> pinctrl, and reset drivers.
+>=20
+> Note: This patch set is used to prepare for Canaan K230 Support, which is
+> on the mailing list [6]. The next revision for the K230 support patch will
+> be based on this patch set.
+
+Please, if you don't completely understand what I tell you to do, ask me
+to clarify. Asking for more information on what to do is not a problem,
+it saves effort for everyone if you ask rather than submit another
+version. This patchset has the same sort of problem as was pointed
+out on the v5 and v6 of the k230 support.
+All patches in this series must go through the same tree, if they don't
+then the relevant drivers will not compile in the subsystem trees. As
+the new symbol will not be defined there. This is why I said that you
+should solicit acks from the subsystem maintainers to take this all via
+the soc tree - but you do have to explicitly ask for them! I suggested
+doing it under the --- line in each patch, as often maintainers ignore
+the parts of a series that do not involve them (I know I do this with
+dt-bindings *all* the time).
+
+The only way this works without taking everything via one tree is if we
+introduce ARCH_CANAAN for 6.10-rc1, switch every driver subsystem over in
+6.11-rc1 and then delete the Kconfig symbol after 6.11-rc1. Although I
+also waited with my SOC_FOO symbol removals because I wanted the
+ARCH_FOO symbols to propagate into .configs, I followed the process
+above so that things could be taken into subsystem trees without
+preventing building the drivers.
+
+I'm perfectly happy to take the whole series via the soc tree, but I need
+acks on the clk, pinctrl and reset patches before I can do that.
+
+Thanks,
+Conor.
+
+> [1] https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@ker=
+nel.org/
+> [2] https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7ed0=
+a@spud/
+> [3] https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c46b=
+b29@spud/
+> [4] https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb8655=
+a4d@spud/
+> [5] https://lore.kernel.org/linux-riscv/2b0511af-1b5b-4c90-a673-c9113bb58=
+142@kernel.org/
+> [6] https://lore.kernel.org/linux-riscv/tencent_F76EB8D731C521C18D5D7C4F8=
+229DAA58E08@qq.com/
+>=20
+> Yangyu Chen (5):
+>   riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210
+>   soc: canaan: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
+>   clk: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+>   pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+>   reset: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+>=20
+>  arch/riscv/Kconfig.socs                        | 10 ++++++++--
+>  arch/riscv/Makefile                            |  2 +-
+>  arch/riscv/configs/nommu_k210_defconfig        |  3 ++-
+>  arch/riscv/configs/nommu_k210_sdcard_defconfig |  3 ++-
+>  drivers/clk/Kconfig                            |  4 ++--
+>  drivers/pinctrl/Kconfig                        |  4 ++--
+>  drivers/reset/Kconfig                          |  4 ++--
+>  drivers/soc/Makefile                           |  2 +-
+>  drivers/soc/canaan/Kconfig                     |  4 ++--
+>  9 files changed, 22 insertions(+), 14 deletions(-)
+>=20
+> --=20
+> 2.43.0
+>=20
+
+--rTpquQ6Zk9VYNr0B
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgWpCwAKCRB4tDGHoIJi
+0vSiAP46u8BBoQ4Q2gEfklZZQYfm0Iqp6XLECwPL/erieG3qeAD/Z/ajVOOOn2gC
+HdoMbj86rCTOUylDh4k+rOt91693IAM=
+=b+GD
+-----END PGP SIGNATURE-----
+
+--rTpquQ6Zk9VYNr0B--
 
