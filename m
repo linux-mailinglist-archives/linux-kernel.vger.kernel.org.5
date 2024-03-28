@@ -1,163 +1,234 @@
-Return-Path: <linux-kernel+bounces-123804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B04C890E4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:10:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBD9890E51
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:10:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21F341F24951
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:10:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBCBB1F24739
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A5B657C6;
-	Thu, 28 Mar 2024 23:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705E51327E8;
+	Thu, 28 Mar 2024 23:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f7cftWJS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="TI5UFin6"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205653FBA1
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 23:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793E47F471
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 23:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711667405; cv=none; b=cfWQRPHyOkEFvdbi3Lry8iTOJm7TrtWer4iFk35TISHeygtpOEpLjc1nL71GaTUvrVQJ3MLyRvFORci+0vCGN+YH6FrFdjZVyWRIDT1NhiOzLZabJO8dcitSN3oNcRo2zyi5GWfxEYZpRBw5fLam+h0zmlmWWCGwBCATJbppC90=
+	t=1711667409; cv=none; b=RbZWT8BhDzIniPMYV8rrTqFUR0f1sYspZED8LQ7w50UzOdbtm8Th0OXtZweu4KUo1YvFawPhdBOQlihRemIOZ02YYMack83dtKZ8zOx1R5YhfAWC/sSgliQVYktiDNWy+rNY2J4e3DLx4q/r8W/it/ur2NkeHMBMuU4uis9ltZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711667405; c=relaxed/simple;
-	bh=kvmTcmHWQT5BDi0XbGATB1yNB1cSxJT9/zwntUh/tFU=;
+	s=arc-20240116; t=1711667409; c=relaxed/simple;
+	bh=TMme5ZXKNnHSKd975NADNN1dvWbPPdeLtyyKmkGZOEU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S0GLlXJmA38gwHCwq7V4eJB/kcjR/4zuAwu+yAfo3r2Ao3Q/xnaJ7NMCftMRUN0idmmeVsYRa/wCFmBqPuSDxh17O/UMnNtC74KyaUtPEwXhyw1fk7jHtzmDTxmw2QXCQOH98XT+PHqGiQO4/Y7ULLgii1CBoLPa8GWzRJf1HGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f7cftWJS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711667403;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rndfg4XfB22ONXO19F0as1oglujXnoi27yaTdnHvC0g=;
-	b=f7cftWJSSszvmGhjQjY18gWLiIUJMSEff/0rwjPU5VsAU8dmc7LLNhA5jkSqBUuvBR0/xu
-	p1CkfaBNU2NQ188K2DBXU9vKQLcYoaqOKeyrisA7T45Tpdb4ux6vgzbWVarYlZZ5SbBBKc
-	DhO8iEISo7HmrC7XygM4ojblcwI4kac=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-110-aWGgeugXPACFN4sPZ5mRhA-1; Thu,
- 28 Mar 2024 19:09:59 -0400
-X-MC-Unique: aWGgeugXPACFN4sPZ5mRhA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 36AB71C05AB5;
-	Thu, 28 Mar 2024 23:09:59 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 7785B2166B31;
-	Thu, 28 Mar 2024 23:09:58 +0000 (UTC)
-Date: Thu, 28 Mar 2024 19:09:52 -0400
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Eric Blake <eblake@redhat.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
-	David Teigland <teigland@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
-Subject: Re: [RFC 0/9] block: add llseek(SEEK_HOLE/SEEK_DATA) support
-Message-ID: <20240328230952.GB2373362@fedora>
-References: <20240328203910.2370087-1-stefanha@redhat.com>
- <e2lcp3n5gpf7zmlpyn4nj7wsr36sffn23z5bmzlsghu6oapi5u@sdkcbpimi5is>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YH0qf6KwviSqaNOzS0XP4Ou1791i+JeN6s91e0jediASQvgX0RvZ4ypkLVriMXc6LU4N+JRKo0rlbUvMQpjZnukVyfGUQapQ7JKwb/66DlsoF4nZJX0WjutuWx8xaO6CtxS9mbAAOAiY0ss9v5L/k6Xo3cucrrL2dNliiArkC7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=TI5UFin6; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4154d24cc77so1617895e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1711667406; x=1712272206; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1tO7ueWHoEepGddrFg7zTdu8r8oeX1Rtt58bpd+DL1I=;
+        b=TI5UFin68EuLmUobM0MoQNe8A/KD+V4pp6R/ZZiU3gaEXOZbi9cRe40/VjonTUt6km
+         HfgW/N1tVnAhCuFRqNdYmFwz0Z4xjb5FxYWAkRm7DNID4MpnaKIwJ8FU3Pqvrn7q1uhe
+         Qh0qBuhOX1huyyj2HSExikmn8mBi+nU52aUOPzfS0LKv5DPSTCA4YRrvvtOUmIRxSXxN
+         v+5jVW2XLiVrV5jnPo3gHJhUIJeB9G8qkm7DlyZKWECBGB50j3pOGslC3cgx96S8p1dA
+         m+ftdEhm6XbFo4GvMs8uHnKRQLoQ6xjCSZQoOnJNJBk6ZSrLZ/+EJhUChUdXWMa/TZlJ
+         ILpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711667406; x=1712272206;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1tO7ueWHoEepGddrFg7zTdu8r8oeX1Rtt58bpd+DL1I=;
+        b=D7XbV2N0HUBNSZNS872pgi04eFUwaUjA6jQg3yj9qIn1/tn9MylYZlyaqg1jpalfK9
+         h19B+8fRVlRN+suzSR5HQmpWeFRdgyMZtA5uNWzwDb6BSsnmOZbaHTQqRnvr9zPCVMl+
+         BzRIfjJM76PiweE7E4+fKLn30PJb3KQRtVeVK4USvtYq/y0DoTe1+1eW+Pa4Ak/fxe2r
+         3ptMtdjPU1etQS0AOIrKS5RzvdL+Dxz9LEN11Hll1yRG9RoJCfyEg58bPdcNf4HkG129
+         8kqs9KmXJEjwNDYpXj19XLbzJT0iwg+QzZ3cPS9zlRleQaLkSCouYxm8LLXsl80iTHCN
+         jOKg==
+X-Gm-Message-State: AOJu0Yx7Ykz3LxZxpKjPA8lTkr9TMvSey9HRcpjvB4YU9g/9e5T2HSw3
+	rJzjaFgLR07rgnI7X9ET14RuulrIDdUoypWSmD9n4LmoRp9R1sWf3vXbnZv2UYQ=
+X-Google-Smtp-Source: AGHT+IGtv6Z6wrekG698P4dqfoqZoaq1wgGJGqbHO+TJKNv2oXfTlt6+QPfVRk1xfGTD9OygG7ACmw==
+X-Received: by 2002:a05:600c:4f90:b0:414:726:87d9 with SMTP id n16-20020a05600c4f9000b00414072687d9mr612127wmq.12.1711667405898;
+        Thu, 28 Mar 2024 16:10:05 -0700 (PDT)
+Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
+        by smtp.gmail.com with ESMTPSA id jg2-20020a05600ca00200b0041490d1cd06sm3575459wmb.40.2024.03.28.16.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 16:10:05 -0700 (PDT)
+Date: Thu, 28 Mar 2024 23:10:04 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Christian Loehle <christian.loehle@arm.com>
+Cc: linux-kernel@vger.kernel.org, vincent.guittot@linaro.org,
+	mingo@redhat.com, rafael@kernel.org, dietmar.eggemann@arm.com,
+	linux-pm@vger.kernel.org
+Subject: Re: [PATCH] sched/uclamp: Fix iowait boost UCLAMP_MAX escape
+Message-ID: <20240328231004.fw7y4noyi6fbhxlc@airbuntu>
+References: <20240326180054.487388-1-christian.loehle@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="L5fVNxigY5xSFlqK"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e2lcp3n5gpf7zmlpyn4nj7wsr36sffn23z5bmzlsghu6oapi5u@sdkcbpimi5is>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+In-Reply-To: <20240326180054.487388-1-christian.loehle@arm.com>
+
+On 03/26/24 18:00, Christian Loehle wrote:
+> A task, regardless of UCLAMP_MAX value, was previously allowed to
+> build up the sg_cpu->iowait boost up to SCHED_CAPACITY_SCALE when
+> enqueued. Since the boost was only uclamped when applied this led
+> to sugov iowait boosting the rq while the task is dequeued.
+> 
+> The fix introduced by
+> commit d37aee9018e6 ("sched/uclamp: Fix iowait boost escaping uclamp restriction")
+> added the uclamp check before the boost is applied. Unfortunately
+> that is insufficient, as the iowait_boost may be built up purely by
+> a task with UCLAMP_MAX task, but since this task is in_iowait often,
+> the clamps are no longer active during the in_iowait periods.
+> So another task (let's say with low utilization) may immediately
+> receive the iowait_boost value previously built up under UCLAMP_MAX
+> restrictions.
+
+This is the intended behavior. Like utilization value, it should build up
+normally but at key decision points it gets clamped and the result of this
+clamping operation is used to make the decision. The reason is that this
+performance restriction could be left at any point of time and the system/task
+should go to the original behavior when this constraint is left.
+
+Beside the current design for iowait boost doesn't differentiate between who
+added the boost. So we are in for unnecessary complexity for a mechanism that
+needs to evolve anyway.
+
+As an alternative We could say that tasks with uclamp_max shouldn't cause
+iowait boost to increase, which can be a reasonable assumption for many cases.
+But not a safe one in practice as it makes assumptions on who should use
+uclamp_max and restrict the benefit for other use cases. And we don't want to
+impose restrictions on who can benefit from it.
+
+> 
+> The issue is less prevalent than the above might suggest, since if
+> the dequeuing of the UCLAMP_MAX set task will turn the cpu idle the
+> previous UCLAMP_MAX value is preserved by uclamp_idle_value().
+> Nonetheless anything being enqueued on the rq during the in_iowait
+> phase will falsely receive the iowait_boost.
+> 
+> Can be observed with a basic single-threaded benchmark running with
+> UCLAMP_MAX of 0, the iowait_boost is then triggered by the occasional
+> kworker.
+
+I think this a combination of two problems:
+
+1. The max aggregation problem that have been discussed several times already.
+2. It is a limitation of the current mechanism. Moving to per-task iowait boost
+   we can do smarter behavior to handle this.
+
+I think we should focus on handling these two issues. For this particular use
+case, the latter is the major problem. Once the iowait boosted task is
+dequeued, the CPU shouldn't need to run at faster frequency. The iowait boosted
+tasks are usually short running too. So the latter improvement should mean the
+CPU can move to lower frequency during its waiting time. Though we'll have to
+see if the boost need to extend until the softirq has finished.
+
+So overall I don't think we have a problem on how the hint is applied,
+but we need to fix problems elsewhere to make the overall behavior better.
 
 
---L5fVNxigY5xSFlqK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks!
 
-On Thu, Mar 28, 2024 at 05:16:54PM -0500, Eric Blake wrote:
-> On Thu, Mar 28, 2024 at 04:39:01PM -0400, Stefan Hajnoczi wrote:
-> > This can speed up the process by reducing the amount of data read and it
-> > preserves sparseness when writing to the output file.
-> >=20
-> > This patch series is an initial attempt at implementing
-> > llseek(SEEK_HOLE/SEEK_DATA) for block devices. I'm looking for feedback=
- on this
-> > approach and suggestions for resolving the open issues.
->=20
-> One of your open issues was whether adjusting the offset of the block
-> device itself should also adjust the file offset of the underlying
-> file (at least in the case of loopback and dm-linear).  What would the
+--
+Qais Yousef
 
-Only the loop block driver has this issue. The dm-linear driver uses
-blkdev_seek_hole_data(), which does not update the file offset because
-it operates on a struct block_device instead of a struct file.
-
->=20
-> >=20
-> > In the block device world there are similar concepts to holes:
-> > - SCSI has Logical Block Provisioning where the "mapped" state would be
-> >   considered data and other states would be considered holes.
->=20
-> BIG caveat here: the SCSI spec does not necessarily guarantee that
-> unmapped regions read as all zeroes; compare the difference between
-> FALLOC_FL_ZERO_RANGE and FALLOC_FL_PUNCH_HOLE.  While lseek(SEEK_HOLE)
-> on a regular file guarantees that future read() in that hole will see
-> NUL bytes, I'm not sure whether we want to make that guarantee for
-> block devices.  This may be yet another case where we might want to
-> add new SEEK_* constants to the *seek() family of functions that lets
-> the caller indicate whether they want offsets that are guaranteed to
-> read as zero, vs. merely offsets that are not allocated but may or may
-> not read as zero.  Skipping unallocated portions, even when you don't
-> know if the contents reliably read as zero, is still a useful goal in
-> some userspace programs.
-
-SCSI initiators can check the Logical Block Provisioning Read Zeroes
-(LBPRZ) field to determine whether or not zeroes are guaranteed. The sd
-driver would only rely on the device when LPBRZ indicates that zeroes
-will be read. Otherwise the driver would report that the device is
-filled with data.
-
->=20
-> > - NBD has NBD_CMD_BLOCK_STATUS for querying whether blocks are present.
->=20
-> However, utilizing it in nbd.ko would require teaching the kernel to
-> handle structured or extended headers (right now, that is an extension
-> only supported in user-space implementations of the NBD protocol).  I
-> can see why you did not tackle that in this RFC series, even though
-> you mention it in the cover letter.
-
-Yes, I'm mostly interested in dm-thin. The loop block driver and
-dm-linear are useful for testing so I modified them. I didn't try SCSI
-or NBD.
-
-Thanks,
-Stefan
-
---L5fVNxigY5xSFlqK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYF+MAACgkQnKSrs4Gr
-c8igigf/UDJaxtkdbmVL4Uer+bQYsOyVoZO0KIJ2d4vKGyQMZyoLt/teOilDZbji
-TnmcqrRqRbpIIiaIajLleTUUEwFArHq0LcENf5ONMKhShi1xVvX9OG2/v7iWlmzg
-RHI9mPKgu2S3/C3Vb5wPTjxAQjqGKzudy8JoiZ60dTYbUVoAlgkSp5wf3EPeVURm
-h63dZy2Gy4jgHWrnpYwcjXEa5T4i1xhTDwXfR7QFCtlOFYqpyfqrZBqj8CY+LNQ0
-8nSabkb+YiU+mOWXSr6qWr7BlPqn92bGazdSQRCEHsMKpxwUT8k5xz+zILF/KnrC
-f9wF1Fgl6oASE8MLEk9uAw3kzRYaOA==
-=PLlk
------END PGP SIGNATURE-----
-
---L5fVNxigY5xSFlqK--
-
+> 
+> Fixes: 982d9cdc22c9 ("sched/cpufreq, sched/uclamp: Add clamps for FAIR and RT tasks")
+> Signed-off-by: Christian Loehle <christian.loehle@arm.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 36 +++++++++++++++++++++++++-------
+>  1 file changed, 28 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index eece6244f9d2..bfd79762b28d 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -205,6 +205,25 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu, unsigned long boost)
+>  	sg_cpu->util = sugov_effective_cpu_perf(sg_cpu->cpu, util, min, max);
+>  }
+>  
+> +/**
+> + * sugov_iowait_clamp() - Clamp the boost with UCLAMP_MAX
+> + * @sg_cpu: the sugov data for the CPU
+> + * @boost: the requested new boost
+> + *
+> + * Clamps the iowait boost according to the rq's UCLAMP_MAX restriction.
+> + */
+> +static void sugov_iowait_clamp(struct sugov_cpu *sg_cpu, unsigned int boost)
+> +{
+> +#if CONFIG_UCLAMP_TASK
+> +	unsigned int boost_scaled = (boost *
+> +		arch_scale_cpu_capacity(sg_cpu->cpu)) >> SCHED_CAPACITY_SHIFT;
+> +
+> +	if (uclamp_rq_get(cpu_rq(sg_cpu->cpu), UCLAMP_MAX) < boost_scaled)
+> +		return;
+> +#endif
+> +	sg_cpu->iowait_boost = boost;
+> +	sg_cpu->iowait_boost_pending = true;
+> +}
+>  /**
+>   * sugov_iowait_reset() - Reset the IO boost status of a CPU.
+>   * @sg_cpu: the sugov data for the CPU to boost
+> @@ -225,8 +244,8 @@ static bool sugov_iowait_reset(struct sugov_cpu *sg_cpu, u64 time,
+>  	if (delta_ns <= TICK_NSEC)
+>  		return false;
+>  
+> -	sg_cpu->iowait_boost = set_iowait_boost ? IOWAIT_BOOST_MIN : 0;
+> -	sg_cpu->iowait_boost_pending = set_iowait_boost;
+> +	if (set_iowait_boost)
+> +		sugov_iowait_clamp(sg_cpu, IOWAIT_BOOST_MIN);
+>  
+>  	return true;
+>  }
+> @@ -249,6 +268,7 @@ static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
+>  			       unsigned int flags)
+>  {
+>  	bool set_iowait_boost = flags & SCHED_CPUFREQ_IOWAIT;
+> +	unsigned int iowait_boost;
+>  
+>  	/* Reset boost if the CPU appears to have been idle enough */
+>  	if (sg_cpu->iowait_boost &&
+> @@ -262,17 +282,17 @@ static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
+>  	/* Ensure boost doubles only one time at each request */
+>  	if (sg_cpu->iowait_boost_pending)
+>  		return;
+> -	sg_cpu->iowait_boost_pending = true;
+>  
+>  	/* Double the boost at each request */
+>  	if (sg_cpu->iowait_boost) {
+> -		sg_cpu->iowait_boost =
+> -			min_t(unsigned int, sg_cpu->iowait_boost << 1, SCHED_CAPACITY_SCALE);
+> -		return;
+> +		iowait_boost = min_t(unsigned int, sg_cpu->iowait_boost << 1,
+> +				SCHED_CAPACITY_SCALE);
+> +	} else {
+> +		/* First wakeup after IO: start with minimum boost */
+> +		iowait_boost = IOWAIT_BOOST_MIN;
+>  	}
+>  
+> -	/* First wakeup after IO: start with minimum boost */
+> -	sg_cpu->iowait_boost = IOWAIT_BOOST_MIN;
+> +	sugov_iowait_clamp(sg_cpu, iowait_boost);
+>  }
+>  
+>  /**
+> -- 
+> 2.34.1
+> 
 
