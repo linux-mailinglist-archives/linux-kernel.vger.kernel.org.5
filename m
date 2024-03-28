@@ -1,140 +1,183 @@
-Return-Path: <linux-kernel+bounces-123204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10208890472
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:02:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F8F890474
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41F891C285CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:02:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 660C51C24172
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984BE130E50;
-	Thu, 28 Mar 2024 16:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EB4131BA7;
+	Thu, 28 Mar 2024 16:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kolvcEWX"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Axv+du0e"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7473054BCB;
-	Thu, 28 Mar 2024 16:02:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60D81311B5
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711641754; cv=none; b=eXALzYfKFCxDqvXJSSQraWvzRWOyFjnlUB7Gn5BW8Fx3Jltyq6jfruaEvjXrojJr7/XHq0HRlkWtUVv4LeKTMhgcaNp6dusRT1KRJFa9eWtzemPN8gSyOqFllKYzmZ1v2nqn/AcLr51vOj47RoDeMxDsQhYaPCTM/XX7KGyHtAg=
+	t=1711641768; cv=none; b=h4NtPOpB+vK0PbB5DeoY92Vtl8Pn4u/zmDQWgnNS6NeOl3xzvsEPywS7l75jPFDnYZIktwvvy7qkWG/Uby0dDOIeUCDrKmv/nD+51yCsIpOiCei+rlA97OOvsGhS+7mWuLftkTYIOFErSsHudGlXzXwaCKdU5Lp3EjV+AE91MnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711641754; c=relaxed/simple;
-	bh=Yd+L1QfQn5v6eTEbWUAT4ptod70oCMTDA08xBm0v75s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Kl3PRF8QCGlqI6cB2JA+Ov1ylCrwVvgBD88513BUcMEooKUz4Yf+eKHPavg3VsvoSYSQXG2PFVbl0J1gg8kw/3SkzRMhm6mvvQsXb8wYoKBSL7SCJEgjhzMpF0ISxzdEVJzczJf+P7AvNuxTB002Eg7FND4zFSdIyOly7cqzByg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kolvcEWX; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SCMHpM029979;
-	Thu, 28 Mar 2024 16:01:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=wA0aGtF7pfUFgVF+PxkYWrv7TedUijbGDdENsyX5AgQ=; b=ko
-	lvcEWXQ+cSONt0QrNcfGX2I+aipfJmjAd57F/9FXL58aSPra8zcFgdKuJ8Z21nTf
-	ketEXxlSqpWo/WTx8e6RQBE/QMU5yOl669saggIdbDUEgDNm6L9uOihE5R82qHol
-	4WBMkxyD/udJAO90PQFnWvtkkOy5uge61LkeZ2rS8h3pF5+tvy5LBYWhZtN1QbQx
-	48HxQbhUanOh9lgq07HjOlbT4z01aSyxxY4PnXgTbbWSW4x/sQmWJMdfw4XSrMfA
-	Bt49OwX7tVVhm5icQppKo8Sipn3byK8GsRH+Sj7Fj+ajxM9ka3huOx9w/PWw6juH
-	OEiCUmsnV7KLexfHeBMg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x54r61f2v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 16:01:36 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SG1Z4S019666
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 16:01:35 GMT
-Received: from [10.110.124.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
- 2024 09:01:34 -0700
-Message-ID: <09fe8f18-7f68-4d5d-89e4-68c1e5487b05@quicinc.com>
-Date: Thu, 28 Mar 2024 09:01:33 -0700
+	s=arc-20240116; t=1711641768; c=relaxed/simple;
+	bh=3edFfHGuTgBNAtyipnLKn6bXij3/XaZeoLIupKMiaqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gVUSVB/1ysgqyxuxgCXOFgqAQyiz73Xq0C3FIdqVett4PIApKBL3DlI8OETkNtjCh8BXQmaeZij8gBmFlEAAcVDWffBICESbO1czvjSxT+N8C8OU3/PLaNQOELVQ/mVi/IEcE3HaBBn57hQsekjwuMElJlJdTJgGtSAGG7aAF5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Axv+du0e; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36899c4e544so95595ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711641766; x=1712246566; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cBP7eIuQCT3cz5tMBaiLfJfh0r9VLr4sISDdgfizVcc=;
+        b=Axv+du0e20K0bEUGJkG0c6h8oCQxsiNH3REaD/MaU+c+6f/kqQUlSU5nB6qPZ/KMn6
+         nXZvSnJEz+GOIEDz95dUxrTp9S5nTYYvfXSC6ZhfcS3ifyUmSjxNc7h7B6bWpBDF2vZ2
+         N5fUlZ57z1vvli75VtmoGjlMXNnpdEkuVxzmzawY/pgJfJodFYiErakRw5Qo+ic57892
+         LXcDEwhKfiixzvfy7Ek7S8VxeDF5mADV4PmkE6mpDFjfCu3IfU+G/j37DEptDZKD8xVP
+         j3A0df5eZMfyc7Z+gd+EUQ1atmJYSrZWsWUfxbSR2Pus5i9kryArldHXWLUIHiywZl7l
+         xqig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711641766; x=1712246566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cBP7eIuQCT3cz5tMBaiLfJfh0r9VLr4sISDdgfizVcc=;
+        b=XaM9XaaiZdK40IYC5rBK44hk/JibOSLX8uRGx+uV35FF/7MBcJdtRkuk2DAEP4+8CS
+         QNo2CmHy4zQ3kPC0FggYCP9ct4VUbG24oViSERZ58ju0MKI4eq4uZnh+pqXHL6U/OQAm
+         jtKl3o2/5epldNxAwPupUMXfF8PRo32HnCnwMMC2BLO3wYBlrythyMag17x1+NBP3DbB
+         mgdgxPLNM3qhmPHxuqyaCgqNuwVZdFkQceIaKG5F7jT2DVeoMsfIo7JspEa3mLUdWkGe
+         6rWeSXXmZEgpZZmJ9GC1hMTb42Ufl8VwMBwUJT9RXpKtV1H5HMCIGfgV5MNKggi6KESh
+         sNIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVcIUIcSTjvPat7B+KVqnzAegL/kdzt1Nm7+UQevc7sVa0sY+glt8QERkre1MMA3H6st5u2LOMMs5jr2mppWpOsRWanFC/TBOF6NPAe
+X-Gm-Message-State: AOJu0YwexUqipLRNcRrLbC86K4LM+fHP4gtYBgIyvC/lCp8uspgg12b5
+	36/O/M5rjrDehuMxPitp/H9AL1+XjEQr0jixOOSC0PYl1qMd8hpM+EezJAAWTTSsVATgjAd//78
+	+CqeYuPithvCkXBNoubjEqHndSS/vD614dCs1
+X-Google-Smtp-Source: AGHT+IE5sRRSnP6efrA0k65ve35cCb8jUxUvvFxl3PT4/ywpy6rDE0IK6F6PHTRirrQJFC7P30wEEgmC93Ik8v/WnaU=
+X-Received: by 2002:a05:6e02:1647:b0:366:4365:e83d with SMTP id
+ v7-20020a056e02164700b003664365e83dmr264174ilu.4.1711641765514; Thu, 28 Mar
+ 2024 09:02:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] scripts: checkpatch: check unused parameters for
- function-like macro
-Content-Language: en-US
-To: Barry Song <21cnbao@gmail.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>
-CC: <apw@canonical.com>, <broonie@kernel.org>, <chenhuacai@loongson.cn>,
-        <chris@zankel.net>, <corbet@lwn.net>, <dwaipayanray1@gmail.com>,
-        <herbert@gondor.apana.org.au>, <joe@perches.com>,
-        <linux-kernel@vger.kernel.org>, <linux@roeck-us.net>,
-        <lukas.bulwahn@gmail.com>, <mac.xxn@outlook.com>,
-        <sfr@canb.auug.org.au>, <v-songbaohua@oppo.com>,
-        <workflows@vger.kernel.org>, Max Filippov
-	<jcmvbkbc@gmail.com>
-References: <20240328022136.5789-1-21cnbao@gmail.com>
- <20240328022136.5789-3-21cnbao@gmail.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240328022136.5789-3-21cnbao@gmail.com>
+References: <20240328055857.383180-1-yangjihong@bytedance.com>
+In-Reply-To: <20240328055857.383180-1-yangjihong@bytedance.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 28 Mar 2024 09:02:31 -0700
+Message-ID: <CAP-5=fXms1noWT8PXqBu89QogcwVsvAGpxq3Q_bNUYOYL7PpKA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf sched timehist: Fix -g/--call-graph option failure
+To: Yang Jihong <yangjihong@bytedance.com>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	james.clark@arm.com, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Uyx3T4g92k3IzsT8Y3tgT1r8_KiCbe2B
-X-Proofpoint-ORIG-GUID: Uyx3T4g92k3IzsT8Y3tgT1r8_KiCbe2B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-28_15,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- priorityscore=1501 clxscore=1011 lowpriorityscore=0 malwarescore=0
- bulkscore=0 suspectscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403280108
+Content-Transfer-Encoding: quoted-printable
 
-On 3/27/2024 7:21 PM, Barry Song wrote:
-> From: Xining Xu <mac.xxn@outlook.com>
-> 
-> If function-like macros do not utilize a parameter, it might result in a
-> build warning.  In our coding style guidelines, we advocate for utilizing
-> static inline functions to replace such macros.  This patch verifies
-> compliance with the new rule.
-> 
-> For a macro such as the one below,
-> 
->  #define test(a) do { } while (0)
-> 
-> The test result is as follows.
-> 
->  ERROR: Parameter 'a' is not used in function-like macro, please use static
->  inline instead
->  #21: FILE: mm/init-mm.c:20:
->  +#define test(a) do { } while (0)
-> 
->  total: 1 errors, 0 warnings, 8 lines checked
-> 
-> Signed-off-by: Xining Xu <mac.xxn@outlook.com>
+On Wed, Mar 27, 2024 at 10:59=E2=80=AFPM Yang Jihong <yangjihong@bytedance.=
+com> wrote:
+>
+> When perf-sched enables the call-graph recording, sample_type of dummy
+> event does not have PERF_SAMPLE_CALLCHAIN, timehist_check_attr() checks
+> that the evsel does not have a callchain, and set show_callchain to 0.
+>
+> Currently perf sched timehist only saves callchain when processing
+> sched:sched_switch event, timehist_check_attr() only needs to determine
+> whether the event has PERF_SAMPLE_CALLCHAIN.
+>
+> Before:
+>   # perf sched record -g true
+>   [ perf record: Woken up 0 times to write data ]
+>   [ perf record: Captured and wrote 4.153 MB perf.data (7536 samples) ]
+>   # perf sched timehist
+>   Samples do not have callchains.
+>              time    cpu  task name                       wait time  sch =
+delay   run time
+>                           [tid/pid]                          (msec)     (=
+msec)     (msec)
+>   --------------- ------  ------------------------------  ---------  ----=
+-----  ---------
+>     147851.826019 [0000]  perf[285035]                        0.000      =
+0.000      0.000
+>     147851.826029 [0000]  migration/0[15]                     0.000      =
+0.003      0.009
+>     147851.826063 [0001]  perf[285035]                        0.000      =
+0.000      0.000
+>     147851.826069 [0001]  migration/1[21]                     0.000      =
+0.003      0.006
+>   <SNIP>
+>
+> After:
+>   # perf sched record -g true
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 2.572 MB perf.data (822 samples) ]
+>   # perf sched timehist
+>              time    cpu  task name                       wait time  sch =
+delay   run time
+>                           [tid/pid]                          (msec)     (=
+msec)     (msec)
+>   --------------- ------  ------------------------------  ---------  ----=
+-----  ---------
+>     144193.035164 [0000]  perf[277062]                        0.000      =
+0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <-=
+ __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_=
+for_common <- wait_for_completion
+>     144193.035174 [0000]  migration/0[15]                     0.000      =
+0.003      0.009    __traceiter_sched_switch <- __traceiter_sched_switch <-=
+ __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
+>     144193.035207 [0001]  perf[277062]                        0.000      =
+0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <-=
+ __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_=
+for_common <- wait_for_completion
+>     144193.035214 [0001]  migration/1[21]                     0.000      =
+0.003      0.007    __traceiter_sched_switch <- __traceiter_sched_switch <-=
+ __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
+> <SNIP>
 
-if you are re-posting somebody else's work you need to add your own Signed-off-by
+This looks good, should there be a Fixes tag for the sake of backports?
 
-> Tested-by: Barry Song <v-songbaohua@oppo.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Huacai Chen <chenhuacai@loongson.cn>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Andy Whitcroft <apw@canonical.com>
-> Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
+Thanks,
+Ian
 
+> Signed-off-by: Yang Jihong <yangjihong@bytedance.com>
+> ---
+>  tools/perf/builtin-sched.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> index b248c433529a..1bfb22347371 100644
+> --- a/tools/perf/builtin-sched.c
+> +++ b/tools/perf/builtin-sched.c
+> @@ -2963,8 +2963,11 @@ static int timehist_check_attr(struct perf_sched *=
+sched,
+>                         return -1;
+>                 }
+>
+> -               if (sched->show_callchain && !evsel__has_callchain(evsel)=
+) {
+> -                       pr_info("Samples do not have callchains.\n");
+> +               /* only need to save callchain related to sched_switch ev=
+ent */
+> +               if (sched->show_callchain &&
+> +                   evsel__name_is(evsel, "sched:sched_switch") &&
+> +                   !evsel__has_callchain(evsel)) {
+> +                       pr_info("Samples of sched_switch event do not hav=
+e callchains.\n");
+>                         sched->show_callchain =3D 0;
+>                         symbol_conf.use_callchain =3D 0;
+>                 }
+> --
+> 2.25.1
+>
 
