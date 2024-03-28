@@ -1,158 +1,102 @@
-Return-Path: <linux-kernel+bounces-122308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005AA88F4EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:53:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC3588F4F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5E2029F7E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:53:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C90E1C27BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FFE21364;
-	Thu, 28 Mar 2024 01:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E412263A;
+	Thu, 28 Mar 2024 01:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J9UKqMWB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DBg5y5MS"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB0A22092
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD64A38
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711590786; cv=none; b=hu8NWLXeGYBuqUhgGnrrJfVvwVVyZ4jA7bievyyyuaVqNtQWFRI+IU00ReQ6cw5EYb6085/7LUiNGKqI7juhtiYZwogzjCCmEBOlPXe7cwCeXD/7oazeaP/9haC4/LTfymRmYD5lXjCZIAw3ZMwoYOUEYT46W+m8dLcTFnbifEE=
+	t=1711590905; cv=none; b=AzZm9iWWucHu1AFel09UMBBJuhtx12ft8BBAfXmkExGm11CycZ/xRv4ocwbMi9sEv4Jcom0/vdz3pzIEv1aN5zgcVBAG+gfA531b6KVCfp1wAgLl5ay4NMSJM130xfOq6MGg/jU1BzRF1ACf6Hb7wOlwbwUvmm3YSG4jbtIWurg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711590786; c=relaxed/simple;
-	bh=AH3ZSLj4vhSj2IBP6+WKnZ5lWH4r9Ur13Q6fmrRBewo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dfDhnabOaz1C58H5OZ7+IVZpim93L7GHkuZvEDIE6mIMiu4yM0xJp9Kyr1t8sVONewLij8dxA91m/CswDvWXkStIu6osiRVWG6+P5znA6n1FDjxsoMyUmLDxTP3uVCMmrNoCZP38LOMJPFOe2V7IK1QLZghZuNiPnZMr+VLQQIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J9UKqMWB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711590784;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bGrCCIEqgGoPQ+c4NYkn0V6dFitHSmmoXt4A1C3TGLs=;
-	b=J9UKqMWBYOQO8oMZ7fdSF9Hl3BwGSVNXJwk0M4PO7Q4x5qOEW7VxiS3IvVsiQXlBnZR7GP
-	3JL/A6cQnSHYwd/AG0TINBK2ReZCq+RWOSL6Ux2+15CEb2GMYllVp6Kk3uTz7CFi2DRKVz
-	IOYho9rSciaVg7zBgD5HYWTnyoY3mTM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-623-lk96PMowNmi8VSOtzW0Kmw-1; Wed, 27 Mar 2024 21:52:56 -0400
-X-MC-Unique: lk96PMowNmi8VSOtzW0Kmw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 500C385A58B;
-	Thu, 28 Mar 2024 01:52:56 +0000 (UTC)
-Received: from [10.22.33.225] (unknown [10.22.33.225])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 07C0F1C060D0;
-	Thu, 28 Mar 2024 01:52:55 +0000 (UTC)
-Message-ID: <38ba7584-3e74-44e3-b1f5-6e42179856a5@redhat.com>
-Date: Wed, 27 Mar 2024 21:52:55 -0400
+	s=arc-20240116; t=1711590905; c=relaxed/simple;
+	bh=HZdnwNoXxWoGzLg2VQ6m1rbwvJy9TXrJcq306nSM7WU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BhSyHh3LsC+25ctRxKNbkxd87CsD6aBo1cZLW85110710G2NkR83Kw8QvKaNVed0TRlxsmGEJU+be4lKBkJrg7/Mj2uvKAz7cpAU88lrpwKFYBqm7Qt2zw+oF/zeZTSMTzUGZ6ExUbZPLbfGSj2YAASjK18bEWjTAkkskBwf9Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DBg5y5MS; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so426317276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711590902; x=1712195702; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ALb/aRygHviOk6gluVyyo7V4k4A2Pfn1TEU0psjmkus=;
+        b=DBg5y5MStygXbyrwRN8W7e27eaQiA+Y/Tofz7xAZJk9ljVbqrxkCJxly0QyDALVUhE
+         GpQoNLMeAHbbkCvnpo7op9xHmxqzeFCc3H4S3+GZ+fpyO1wrTVVBYWu/Cl4sbxXbFR3g
+         ZNI/vV8T05pO+Q4+l2wuZ78bPW3KDaxLjD38zGvwM4+EeEa3qHoX1A+hW/YL1pt+9z+L
+         XL0kKm/JoAZKaDD02PnvRIgJm7WjMsZJ/PJt1o6yn4ToYv+vrmmPde3yzDNXP7f7EtGT
+         5TlAmsVIX+/W9kUgPyxtqmDuZ5R0QljUyv3aubB7slaVnDnOHz4ZskB6kjIq2uPTrd2/
+         OJKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711590902; x=1712195702;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ALb/aRygHviOk6gluVyyo7V4k4A2Pfn1TEU0psjmkus=;
+        b=BvU1++Bvsr3fRMZEfcSOCbzFX7ld4RiqYWcF5BHik0Y3s1k6EKP3yFFjFfvLVHIq2N
+         zcqXh6cJrwEOixLMgFbkx8PIM3A0kd7gUYRxFcCVEf4xxShmpisKGOV7vLPaufL3XhC2
+         hx6REuAjfZZUVcSW4qzBoOUXpHdm7dd9ni5tcvrYa5or2HPVBPgtNaStimHhg9BT7y3L
+         xKWSYaNF1RAHt/0FEz3DKJusad9pkbIXeUTGP5OSxWf0LM9Rvdzs7XdEYb1qo3jX6slk
+         DVp+O0l8XKOKxCAnLq1Ofirzp4J2xrqinJKMXFpMTKBShR4ADKYQAGJ/o96Fw+VAKzyq
+         sMuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSSfO7GCgVQO3Lkl0WH5+iS3AS8Rl8gpLifr1ysuEmEm+qOHmXcd4yWVSiYTLDkks7gKsUlKN9XRD+TZJMjaqOTDVGMkmNlKoMtpJN
+X-Gm-Message-State: AOJu0YyxCx1WqaR2tPZglWEHD0k4tha0a6LGjSwK6Ehp3UYKhm4yFoLp
+	IVBkAmewJx686pr/m5d4yBljM3IHyAhVnDk2seUTnP6dPwircUp1wXVfkvElCqC03SDXtm2glIw
+	dh4kpuA3GuH9cyF+AzWIZAcaWsJtfM/FjDxbLaw==
+X-Google-Smtp-Source: AGHT+IFCbaTC3zvlel//KUFNLOeGVfLTLHjUeq3vH+xCrngLpNb7HC0ZeixUsAO/5BEehPEYBqCSaYH+eE2+mYXJSu0=
+X-Received: by 2002:a25:ab8d:0:b0:dcb:f7a0:b031 with SMTP id
+ v13-20020a25ab8d000000b00dcbf7a0b031mr1608022ybi.50.1711590902480; Wed, 27
+ Mar 2024 18:55:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] locking/pvqspinlock: Use try_cmpxchg_acquire() in
- trylock_clear_pending()
-Content-Language: en-US
-To: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
-References: <20240325140943.815051-1-ubizjak@gmail.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240325140943.815051-1-ubizjak@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+References: <20240326-rb3gen2-dp-connector-v2-0-a9f1bc32ecaf@quicinc.com> <20240326-rb3gen2-dp-connector-v2-3-a9f1bc32ecaf@quicinc.com>
+In-Reply-To: <20240326-rb3gen2-dp-connector-v2-3-a9f1bc32ecaf@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 28 Mar 2024 03:54:51 +0200
+Message-ID: <CAA8EJporooWutXaN4DYHK_G5=zY+tW3YLcieAwAX1Xno6KanDw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] arm64: dts: qcom: qcs6490-rb3gen2: Enable adsp and cdsp
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: cros-qcom-dts-watchers@chromium.org, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/25/24 10:09, Uros Bizjak wrote:
-> Use try_cmpxchg_acquire(*ptr, &old, new) instead of
-> cmpxchg_relaxed(*ptr, old, new) == old in trylock_clear_pending().
-> x86 CMPXCHG instruction returns success in ZF flag, so this change
-> saves a compare after cmpxchg.
+On Wed, 27 Mar 2024 at 04:04, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
 >
-> Also change the return type of the function to bool.
+> Define firmware paths and enable the ADSP and CDSP remoteprocs.
 >
-> No functional change intended.
->
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
->   kernel/locking/qspinlock_paravirt.h | 31 ++++++++++++-----------------
->   1 file changed, 13 insertions(+), 18 deletions(-)
->
-> diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-> index 169950fe1aad..77ba80bd95f9 100644
-> --- a/kernel/locking/qspinlock_paravirt.h
-> +++ b/kernel/locking/qspinlock_paravirt.h
-> @@ -116,11 +116,12 @@ static __always_inline void set_pending(struct qspinlock *lock)
->    * barrier. Therefore, an atomic cmpxchg_acquire() is used to acquire the
->    * lock just to be sure that it will get it.
->    */
-> -static __always_inline int trylock_clear_pending(struct qspinlock *lock)
-> +static __always_inline bool trylock_clear_pending(struct qspinlock *lock)
->   {
-> +	u16 old = _Q_PENDING_VAL;
-> +
->   	return !READ_ONCE(lock->locked) &&
-> -	       (cmpxchg_acquire(&lock->locked_pending, _Q_PENDING_VAL,
-> -				_Q_LOCKED_VAL) == _Q_PENDING_VAL);
-> +	       try_cmpxchg_acquire(&lock->locked_pending, &old, _Q_LOCKED_VAL);
->   }
->   #else /* _Q_PENDING_BITS == 8 */
->   static __always_inline void set_pending(struct qspinlock *lock)
-> @@ -128,27 +129,21 @@ static __always_inline void set_pending(struct qspinlock *lock)
->   	atomic_or(_Q_PENDING_VAL, &lock->val);
->   }
->   
-> -static __always_inline int trylock_clear_pending(struct qspinlock *lock)
-> +static __always_inline bool trylock_clear_pending(struct qspinlock *lock)
->   {
-> -	int val = atomic_read(&lock->val);
-> -
-> -	for (;;) {
-> -		int old, new;
-> -
-> -		if (val  & _Q_LOCKED_MASK)
-> -			break;
-> +	int old, new;
->   
-> +	old = atomic_read(&lock->val);
-> +	do {
-> +		if (old & _Q_LOCKED_MASK)
-> +			return false;
->   		/*
->   		 * Try to clear pending bit & set locked bit
->   		 */
-> -		old = val;
-> -		new = (val & ~_Q_PENDING_MASK) | _Q_LOCKED_VAL;
-> -		val = atomic_cmpxchg_acquire(&lock->val, old, new);
-> +		new = (old & ~_Q_PENDING_MASK) | _Q_LOCKED_VAL;
-> +	} while (!atomic_try_cmpxchg_acquire (&lock->val, &old, new));
->   
-> -		if (val == old)
-> -			return 1;
-> -	}
-> -	return 0;
-> +	return true;
->   }
->   #endif /* _Q_PENDING_BITS == 8 */
->   
-Reviewed-by: Waiman Long <longman@redhat.com>
+>  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+-- 
+With best wishes
+Dmitry
 
