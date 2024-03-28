@@ -1,105 +1,129 @@
-Return-Path: <linux-kernel+bounces-123130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A5E89028D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:01:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E081890282
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FFB42955F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:01:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03981B22AD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180D912FB0E;
-	Thu, 28 Mar 2024 15:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1753612E1F9;
+	Thu, 28 Mar 2024 15:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="FdWvpB8g"
-Received: from forward100b.mail.yandex.net (forward100b.mail.yandex.net [178.154.239.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vd5GkGBm"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B0E12F59C;
-	Thu, 28 Mar 2024 15:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEF712DDAC
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711638050; cv=none; b=MG+WVrEv/OySqbpaGcf1Dz79evrAgfX/ysL0wsBqRc/cF0HRCcp5xx3vo4X/IgB0KgeoIvyaGKQz7DXT9jy3xSDPKMzEty16ohQVvJUL55OzXefABtJL7hS5XAALJ49ZsZizZqBW1ziuNeRPrE8YIefrLzqaS7uY0vktM7a4XIY=
+	t=1711638037; cv=none; b=QiAeV/SkktdoJBIDJ+uj7mTXWA30tWRR06NbreJWcPzjs6G3g72nrwPCAzDKcsyjY3lTsGJfH0npif6BND4iI3uDV7bE9LsGNPHCDfy59DpK/wXwaRNjZPirkp8IcJRTokSSSYjSX4CplzDszuuNp5TBmFWFiRz4cwTcDVSZE1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711638050; c=relaxed/simple;
-	bh=RPApgADsKlI29chKvdFy7O12Bng/LmzDghTbECdn9Sg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hO6h4aJEtPPkDNIPDl9nNuRfcL1kuRz8V0jiguTj/5jWgmOpm8bVVAF3qoqJsYDsejPe81K7WUuLKIhf0jlc+qI8v0zcFvbq2VRxnAx6uI/YKCVLbG7pVFhG/U7bZyzYbyfbJHPH5spsG4Tvx9vvTxsn7NgqyWqoySuIoeDwWLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=FdWvpB8g; arc=none smtp.client-ip=178.154.239.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net [IPv6:2a02:6b8:c24:a33:0:640:d837:0])
-	by forward100b.mail.yandex.net (Yandex) with ESMTPS id 4A4E260B30;
-	Thu, 28 Mar 2024 18:00:44 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id W0PPosAetiE0-QIB3q1ZZ;
-	Thu, 28 Mar 2024 18:00:43 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1711638043; bh=EhuReZ9ZlrI84XoRVD7915LFMz58XbYYesStZiY24qI=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=FdWvpB8gA8a2Kh3dRx5zF7roYDfXz6QoaoH/oQ0RRs7FnSwQeF1fLGnilBQrD1I7/
-	 62j/erUwvTIPDN9sIx603VpSAooEQe1p6AKzOXKYQi9rAXN6/AFyBqnEckY54Pqira
-	 l+5ufyhOxqPesjMjr0QIHxbSoIeuu7uxsQ62kwUs=
-Authentication-Results: mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
-	linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Niklas Cassel <cassel@kernel.org>,
-	Pavel Koshutin <koshutin.pavel@yandex.ru>,
-	Artem Sadovnikov <ancowi69@gmail.com>,
-	Mikhail Ivanov <iwanov-23@bk.ru>
-Subject: [PATCH 5.10/5.15] ata: libata-scsi: check cdb length for VARIABLE_LENGTH_CMD commands
-Date: Thu, 28 Mar 2024 18:00:26 +0300
-Message-Id: <20240328150026.9129-1-mish.uxin2012@yandex.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1711638037; c=relaxed/simple;
+	bh=cy9u3VtVrRuyTCsjJgnGYGt2u+Rm+jFJiYwOK88je84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDKB+5xtez5xmV+IK0nbl3kjGUgHNxjlxhWFnhdh4bvVrwHjSB2mILy7DFG+0APsjLiIFYnlwL6Of+sRsxyxFkn8gx0xLgOpiRfa4ArWK61gScEoULSjLjHlk9xzmnVKm7C59BH4Ed5jVAB73EHIpzI/AgLFFKT/mF1LqWTSsP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vd5GkGBm; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so12031061fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711638034; x=1712242834; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1wJgbtA/vjDhwvz63u9VWEaiKAUmcJOl/pw5kAYmOlA=;
+        b=vd5GkGBmgM977GONngRSJrr3B2C9m8FM2JxRWGz2qiCdafIEdKhBqGmH/7ToeiPCfQ
+         0XiuAPVqGVLypPjDah4Yoio2b8Engse0C6B+tngEnjAuIXpoiDQXw1ZPznyJdcoeG1DX
+         N6UP+VEhEeobTUNbS4CCX7EYl5gLn/1jgE4/qkO4Woh+fkUNiHwqC3XZn4KHvuMy1wNr
+         TnKJGTLkxR2vI4QebQXsk9Cdcaa/N/yziaD9+IntOY7wlitecbm+vNT045EpychfsDiz
+         YYaZLx4+SdPq8tS7Z9Gh/52FVt/DNtaciz0bF6G1h9OOM+lELXqc0lx5M7K/FJQrPBB7
+         ZVbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711638034; x=1712242834;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1wJgbtA/vjDhwvz63u9VWEaiKAUmcJOl/pw5kAYmOlA=;
+        b=m8q6+W4ppbN8rULqUhJeWy5upfRsxqZ99UYZ0BKpMrTdF4H+YS50FZg1oY5EjI+MlJ
+         JJEKx3UEAbqwqDdy/aiNM0TTfp7z3ojnAUs9ldoIzW5MWYWQnEEWQfRE3rO+No4TXAi/
+         QYPG5XqfVhY32OIfEfNzNytINLk97qGp66r78enw0pKChspcCW/ToHFMLeDkHyufHFl0
+         ioCGc1bobrh3kNYkFXr/detynxrEkRzR+EsUP9tZM82aIZq8RjOYRkUTMxb9LJ2+47xe
+         z01HWsnHPzqhRz3MV8Zcfu/jix7TthtabHf3nXr8XW7OjGsH16Aw4Wuw273FNsz20COI
+         Z+Ww==
+X-Gm-Message-State: AOJu0YxbQSeqG6h++fqLYUqVB2kl8Cfio5nno6g10MNyTvFCrj/hCTnu
+	uZKIjruoYdPwpHDyxRPnZZE6oU15Q/1NXndiNiBNZ1rqn/EaiMuJhXs82BS3kqg=
+X-Google-Smtp-Source: AGHT+IGQ5CWKUqLKQ/deCqDvSGjzq/7ohPtTESkm+XyAfECW03YuhSnOZLJc5W2tTuXIQeRPB5tQuw==
+X-Received: by 2002:a2e:9591:0:b0:2d4:2b05:a671 with SMTP id w17-20020a2e9591000000b002d42b05a671mr2299444ljh.32.1711638033575;
+        Thu, 28 Mar 2024 08:00:33 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id d15-20020a056402400f00b0056c5395e581sm703497eda.70.2024.03.28.08.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 08:00:33 -0700 (PDT)
+Date: Thu, 28 Mar 2024 18:00:29 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 10/11] staging: greybus: change strncpy() to strscpy()
+Message-ID: <76214105-94ae-4540-8511-e9e2ff6d257e@moroto.mountain>
+References: <20240328140512.4148825-1-arnd@kernel.org>
+ <20240328140512.4148825-11-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328140512.4148825-11-arnd@kernel.org>
 
-Fuzzing of 5.10 stable branch reports a slab-out-of-bounds error in
-ata_scsi_pass_thru.
+On Thu, Mar 28, 2024 at 03:04:54PM +0100, Arnd Bergmann wrote:
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> This is from randconfig testing with random gcc versions, a .config to
+> reproduce is at https://pastebin.com/r13yezkU
+> ---
+>  drivers/staging/greybus/fw-management.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/fw-management.c b/drivers/staging/greybus/fw-management.c
+> index 3054f084d777..35bfdd5f32d2 100644
+> --- a/drivers/staging/greybus/fw-management.c
+> +++ b/drivers/staging/greybus/fw-management.c
+> @@ -303,13 +303,13 @@ static int fw_mgmt_backend_fw_update_operation(struct fw_mgmt *fw_mgmt,
+>  	struct gb_fw_mgmt_backend_fw_update_request request;
+>  	int ret;
+>  
+> -	strncpy(request.firmware_tag, tag, GB_FIRMWARE_TAG_MAX_SIZE);
+> +	ret = strscpy(request.firmware_tag, tag, GB_FIRMWARE_TAG_MAX_SIZE);
 
-The error is fixed in 5.18 by commit ce70fd9a551a ("scsi: core: Remove the
-cmd field from struct scsi_request").
-Backporting this commit would require significant changes to the code so
-it is bettter to use a simple fix for that particular error.
+This needs to be strscpy_pad() or it risks an information leak.
 
-The problem is that the length of the received SCSI command is not
-validated if scsi_op == VARIABLE_LENGTH_CMD. It can lead to out-of-bounds
-reading if the user sends a request with SCSI command of length less than
-32.
+>  
+>  	/*
+>  	 * The firmware-tag should be NULL terminated, otherwise throw error and
+                                      ^^^^^^^^^^^^^^^^
+These comments are out of date.
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+>  	 * fail.
+>  	 */
+> -	if (request.firmware_tag[GB_FIRMWARE_TAG_MAX_SIZE - 1] != '\0') {
+> +	if (ret == -E2BIG) {
+>  		dev_err(fw_mgmt->parent, "backend-update: firmware-tag is not NULL terminated\n");
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+More out of date prints.
 
-Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
-Signed-off-by: Mikhail Ivanov <iwanov-23@bk.ru>
----
- drivers/ata/libata-scsi.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
-index dfa090ccd21c..77589e911d3d 100644
---- a/drivers/ata/libata-scsi.c
-+++ b/drivers/ata/libata-scsi.c
-@@ -4065,6 +4065,9 @@ int __ata_scsi_queuecmd(struct scsi_cmnd *scmd, struct ata_device *dev)
- 
- 	if (unlikely(!scmd->cmd_len))
- 		goto bad_cdb_len;
-+
-+	if (scsi_op == VARIABLE_LENGTH_CMD && scmd->cmd_len < 32)
-+		goto bad_cdb_len;
- 
- 	if (dev->class == ATA_DEV_ATA || dev->class == ATA_DEV_ZAC) {
- 		if (unlikely(scmd->cmd_len > dev->cdb_len))
--- 
-2.25.1
+regards,
+dan carpenter
 
 
