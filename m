@@ -1,173 +1,98 @@
-Return-Path: <linux-kernel+bounces-122459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EB988F7D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:23:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D71C88F7DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74A3E297C95
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:23:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5B2B1F26C49
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A8F4F5F9;
-	Thu, 28 Mar 2024 06:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UaMOCYL2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86484F5E6;
+	Thu, 28 Mar 2024 06:27:16 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D314D1E49E;
-	Thu, 28 Mar 2024 06:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB08E4EB42;
+	Thu, 28 Mar 2024 06:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711607013; cv=none; b=D1hzqOd2O+dZmyZvB+P7RKa6f60lFi1MIE6OmMKL0slqNPtpd9njDCp1ouNHYy2wDi7BD4HQlvf0u2xOwf21bwjec2sXhlgf6ZQfhIS0nJKqb+/IObG+Jo+kDDMhulustwsJD3teYihAJQg7WCz5mJSj1eX0Af4iwtJZD55gjZ8=
+	t=1711607236; cv=none; b=f1HAVI0/Z8tg4EysQe/qmcSfwgmtM18MUshXq/iHY1lquVfEXKOb037m/VuAlm/rMD27Im2kyAgO7Ug3xM9TwDT0Lbb/xRhIsc0VLJakV7e2CWfGajxqh+h9mW2aQMpLEUJj2cwq5LXPZ27P72SkfQjnep8vEoASdliv6VVi+vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711607013; c=relaxed/simple;
-	bh=XxzwleAMl7kfTQ9nHbAuAtK+mGXYz1Wmw7p/PQbLjFk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fc3xzg2H1ErcUS7cvvsY0/tNMlK9dUgl8Xs8H28Pj0IqD1VhrhbRVKEG+kWSG6nfD8VoDnQV73F3J95k8uDFPf8RlZngrbQsqRv4hnBX4FyK9yImjvO1IQMhdvyeP1GIhf9246KItcncDkHGQ6AutkcrviOUt1VlimjdX+I+WwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UaMOCYL2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FCCC433C7;
-	Thu, 28 Mar 2024 06:23:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711607012;
-	bh=XxzwleAMl7kfTQ9nHbAuAtK+mGXYz1Wmw7p/PQbLjFk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UaMOCYL2JBDXma+19hgTY26MKMIj3SGutMo27LVkiQTdoRJZCdyPZe9k2FfGyrbXB
-	 JjuRTcQIbA70r4j5bNrEHLf2awD4kLSn0hA6tKtMZSmcCsgDdUS/LUom+HDg36W3mA
-	 qGKOgcsv9S65vTROxRDbsGAo3z/AK9UxKHNkQibOremkn+PMOOVuiW2v7jddpMs8jZ
-	 YL4cB65gz2SJ3/SfoAd6+OolbK4oXpDnVGmCIUrztpkbAX/HaNFncaa05m8/IRXEwL
-	 nhtTGTgNj5wxbRBcjrfJM5B3yNhWDui6NEl+WMYVBrthGsYsX+GNQgEeMLGN4dvBg3
-	 Ire/MFkuR/2wA==
-Date: Thu, 28 Mar 2024 11:53:16 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Nuno Sa <nuno.sa@analog.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v9 1/6] dmaengine: Add API function
- dmaengine_prep_peripheral_dma_vec()
-Message-ID: <ZgUM1LFEWs3lwoAU@matsya>
-References: <20240310124836.31863-1-paul@crapouillou.net>
- <20240310124836.31863-2-paul@crapouillou.net>
+	s=arc-20240116; t=1711607236; c=relaxed/simple;
+	bh=/S13wRNr5LsSZgLf9WFNV5wLCibrFCIJ8lAI341NND0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bS0hcKhssdeDrKdScF/RASAuetk5IM0n0xmuXFsUihVYm7WllWLOsIcDaujJUICMUA0wcwCBqCvxZYGSPoOevGdV/SpqxqxkbcO9dsToU+zNIz1Bjl5Yf5KYBxvTvr3WcIW1ntWXopAzXIjp7tl3VOxorOJhMkWa/3jWJcQC+Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V4tnH1yPyz1xt4F;
+	Thu, 28 Mar 2024 14:25:07 +0800 (CST)
+Received: from kwepemi500008.china.huawei.com (unknown [7.221.188.139])
+	by mail.maildlp.com (Postfix) with ESMTPS id 99D5D1402CA;
+	Thu, 28 Mar 2024 14:27:08 +0800 (CST)
+Received: from localhost.huawei.com (10.50.165.33) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 14:27:07 +0800
+From: Yihang Li <liyihang9@huawei.com>
+To: <john.g.garry@oracle.com>, <yanaijie@huawei.com>, <jejb@linux.ibm.com>,
+	<martin.petersen@oracle.com>, <dlemoal@kernel.org>,
+	<chenxiang66@hisilicon.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@huawei.com>, <yangxingui@huawei.com>,
+	<liyihang9@huawei.com>
+Subject: [PATCH v3] scsi: libsas: Allocation SMP request is aligned to 16B
+Date: Thu, 28 Mar 2024 14:26:57 +0800
+Message-ID: <20240328062657.581460-1-liyihang9@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240310124836.31863-2-paul@crapouillou.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
 
-On 10-03-24, 13:48, Paul Cercueil wrote:
-> This function can be used to initiate a scatter-gather DMA transfer,
-> where the address and size of each segment is located in one entry of
-> the dma_vec array.
-> 
-> The major difference with dmaengine_prep_slave_sg() is that it supports
-> specifying the lengths of each DMA transfer; as trying to override the
-> length of the transfer with dmaengine_prep_slave_sg() is a very tedious
-> process. The introduction of a new API function is also justified by the
-> fact that scatterlists are on their way out.
-> 
-> Note that dmaengine_prep_interleaved_dma() is not helpful either in that
-> case, as it assumes that the address of each segment will be higher than
-> the one of the previous segment, which we just cannot guarantee in case
-> of a scatter-gather transfer.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> 
-> ---
-> v3: New patch
-> 
-> v5: Replace with function dmaengine_prep_slave_dma_vec(), and struct
->     'dma_vec'.
->     Note that at some point we will need to support cyclic transfers
->     using dmaengine_prep_slave_dma_vec(). Maybe with a new "flags"
->     parameter to the function?
-> 
-> v7:
->   - Renamed *device_prep_slave_dma_vec() -> device_prep_peripheral_dma_vec();
->   - Added a new flag parameter to the function as agreed between Paul
->     and Vinod. I renamed the first parameter to prep_flags as it's supposed to
->     be used (I think) with enum dma_ctrl_flags. I'm not really sure how that API
->     can grow but I was thinking in just having a bool cyclic parameter (as the
->     first intention of the flags is to support cyclic transfers) but ended up
->     "respecting" the previously agreed approach.
-> ---
->  include/linux/dmaengine.h | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index 752dbde4cec1..856df8cd9a4e 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -160,6 +160,16 @@ struct dma_interleaved_template {
->  	struct data_chunk sgl[];
->  };
->  
-> +/**
-> + * struct dma_vec - DMA vector
-> + * @addr: Bus address of the start of the vector
-> + * @len: Length in bytes of the DMA vector
-> + */
-> +struct dma_vec {
-> +	dma_addr_t addr;
-> +	size_t len;
-> +};
-> +
->  /**
->   * enum dma_ctrl_flags - DMA flags to augment operation preparation,
->   *  control completion, and communicate status.
-> @@ -910,6 +920,10 @@ struct dma_device {
->  	struct dma_async_tx_descriptor *(*device_prep_dma_interrupt)(
->  		struct dma_chan *chan, unsigned long flags);
->  
-> +	struct dma_async_tx_descriptor *(*device_prep_peripheral_dma_vec)(
-> +		struct dma_chan *chan, const struct dma_vec *vecs,
-> +		size_t nents, enum dma_transfer_direction direction,
-> +		unsigned long prep_flags, unsigned long flags);
->  	struct dma_async_tx_descriptor *(*device_prep_slave_sg)(
->  		struct dma_chan *chan, struct scatterlist *sgl,
->  		unsigned int sg_len, enum dma_transfer_direction direction,
-> @@ -973,6 +987,19 @@ static inline struct dma_async_tx_descriptor *dmaengine_prep_slave_single(
->  						  dir, flags, NULL);
->  }
->  
-> +static inline struct dma_async_tx_descriptor *dmaengine_prep_peripheral_dma_vec(
-> +	struct dma_chan *chan, const struct dma_vec *vecs, size_t nents,
-> +	enum dma_transfer_direction dir, unsigned long prep_flags,
-> +	unsigned long flags)
-> +{
-> +	if (!chan || !chan->device || !chan->device->device_prep_peripheral_dma_vec)
-> +		return NULL;
-> +
-> +	return chan->device->device_prep_peripheral_dma_vec(chan, vecs, nents,
-> +							    dir, prep_flags,
-> +							    flags);
-> +}
+This series [1] reducing the kmalloc() minimum alignment on arm64 to 8
+(from 128). In libsas, this will cause SMP requests to be 8-byte-aligned
+through kmalloc() allocation. However, for the hisi_sas hardware, all
+commands address must be 16-byte-aligned. Otherwise, the commands fail to
+be executed.
 
-API looks good to me, thanks
-Few nits though:
-- Can we add kernel-doc for this new API please
-- Also update the documentation adding this new api
-- Lastly, we seem to have two flags, I know you have added a comment but
-  I dont seem to recall the discussion (looked at old threads for clue
-  as well), can you please remind me why we need both? And in your case,
-  what is the intended usage of these flags, i would prefer single
-  clean one...
+So use 16B as the alignment for SMP request.
 
+Link: https://lkml.kernel.org/r/20230612153201.554742-1-catalin.marinas@arm.com [1]
+Signed-off-by: Yihang Li <liyihang9@huawei.com>
+---
+Changes since v2:
+- Use 16B as alignment for SMP requests instead of ARCH_DMA_MINALIGN.
+
+Changes since v1:
+- Directly modify alloc_smp_req() instead of using handler callback.
+---
+ drivers/scsi/libsas/sas_expander.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
+index a2204674b680..5ddbd00d5c76 100644
+--- a/drivers/scsi/libsas/sas_expander.c
++++ b/drivers/scsi/libsas/sas_expander.c
+@@ -135,7 +135,7 @@ static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
+ 
+ static inline void *alloc_smp_req(int size)
+ {
+-	u8 *p = kzalloc(size, GFP_KERNEL);
++	u8 *p = kzalloc(ALIGN(size, 16), GFP_KERNEL);
+ 	if (p)
+ 		p[0] = SMP_REQUEST;
+ 	return p;
 -- 
-~Vinod
+2.33.0
+
 
