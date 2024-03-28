@@ -1,68 +1,70 @@
-Return-Path: <linux-kernel+bounces-122530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD8D88F91C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:51:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59FD388F91D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8055D1C2B2AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:50:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14EE9292C2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE7251C28;
-	Thu, 28 Mar 2024 07:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E2B54663;
+	Thu, 28 Mar 2024 07:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nyk96+CI"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8tOIJsw"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0C81EF0E;
-	Thu, 28 Mar 2024 07:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDE053813;
+	Thu, 28 Mar 2024 07:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711612253; cv=none; b=WY+ukt7RMnhnE2bDof/lCHHGcn1svCPv/4ogB67Fv8JiobzE2rnGzle7/4lsbkUfDAMrGqos26SGC3d8oMiiOC4lXk0bYy/SJGDPZKVuCVjOv6++ZrRiW4xxMqF44HScCZ8bjk2UBUMvBFilaxKRAmkulKFi9d7T6jgoTGlDtMc=
+	t=1711612257; cv=none; b=cnCXNyXRY1+as3xsofdWNOCGGOITisQOui46xMY4b4MjTWrdAiZT0LAcIqNXJdMItwfcDFqIaeUOHAvpZ9iVxs6z3KfUSt78pS+ux9u3IHnfmpRIjriQG8fERDWLt/ic2XUTyK3KyH1aHw0sHWXbn5KGutSPiXEclalTeH6Fa2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711612253; c=relaxed/simple;
-	bh=qlC9DkYFkkvL93MPhdhtUXJJp8tkNbJWevmd6FmfsJw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pJJ0RsC61LBg95pW3sWPpprKH/2F8FgQgJ9hkU1sXHLgx+Xu15IwlDtMhFNc7VQT6yLkh93yVlu8UJQvGg64jdrBL9ziQMDmxZ006kqqe31kcfPmtG8owiPT7PMvcxocjqaUee/JMewJkGmluyLB9h78xoUxrZTqC3GREBn1pvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nyk96+CI; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1711612257; c=relaxed/simple;
+	bh=VlRDIqwoVM+p8KZfRcMcR2xazrEvf0Q/aFGW4bWeON8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ei9wfU/LpgiI7IRoVRJOSaeUXAoKY3kBHWDtrU0V0NecBXhTvjlYyAyKSEeV4KBSLrjDIYP6PtmoTa4lZW2sqiSTSYiyP6HfYNwLZIoJy8fmLvGOPhnNztKxo/ObnkM+gZlu00ZW7kcn4j8cwSPI8T1WdlsMEuOUwoMGMAuKAhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f8tOIJsw; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0bec01232so6044265ad.3;
-        Thu, 28 Mar 2024 00:50:51 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e0d82d441bso6187685ad.3;
+        Thu, 28 Mar 2024 00:50:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711612251; x=1712217051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R85AsXScbEz12UU7rf0ghEgyGGHyz4cOYh1MWUd1+YA=;
-        b=Nyk96+CIMwHHmF9q9KIGStp3zAJ9pMoWKNbyeLbPmFWytVIEZV5YhUmoL3jf/gtB2n
-         0UdZGF7y11nyvQ2/EUxdIcdq45+uLBgGfd614z2K+zwOYufYKoUmubTaaQ467EnkqBAB
-         5+faI8j2yqLK2oQ1FLS4iFf/K5lqOlUMjzu9eu7AsXZIwj1owQD0kcW2u9AngKDPzqXF
-         zqZ3jWm9Ku0wF/RfgMzIxvHPtqY3a5n5uEBQYGksS+li7UB98zjAM4LLbyIwoS54h8Hi
-         oXsWmcXMhDFfcC6n7dj8i/rwGcIdcL59cH1KeYs6D0tjZzazcA3mWgpCuWTf2U3yjusN
-         EHog==
+        d=gmail.com; s=20230601; t=1711612254; x=1712217054; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5NHnLjZYEP5UNdxD1VIIFJ0g0ZRRIIckJCqa9h6jE6A=;
+        b=f8tOIJsw0WGxAcSb6g2IcfW0c3LjSA+nZtEBIqSMTryxVMTyWA4OQc1az6TBHHkfv2
+         TUkRqT8TPTS3zj0Rupzu2/qZoxP7BIxSfJI37Uj6oUIKPQNM6Ppwl90GkInusUwt2Now
+         NH+pGMh6JWCZSRmZ7MFJm3eX3doyf6+lzK1cV4jLx9L/7ON9+O7AtQbXTY1yhPfzodmw
+         zMwmucZGe9wLiefK53Q75ZZlDlMe9xAxrpXMeiWy6bOGfkQsKXC/6Njl3TtJmkJAK+0t
+         P9xer2wi0baA9JAROm9PWk7+khKfYlfGUwPIZYrJ6J7/F4Gp3qBZixhJtethcokisjvG
+         nTSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711612251; x=1712217051;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R85AsXScbEz12UU7rf0ghEgyGGHyz4cOYh1MWUd1+YA=;
-        b=H/TmLUrG7NDopWdYtM/FuQ1oZY7XGzHhs07kPDB2JgVKQA7oaIPF5uyX+H8E5UKwpd
-         Khq2beIXSYWO/nNM8+tP3dxNo+Ryc8G8JApzARUNcppp3tko/bn0JruePU1rhpfUzQ91
-         kXoZGCdt+ejyWQJbu76ilf/G9gxWjjOqy9ZY8PpCBA2pzvDKueojb1yOb+tzJLB51mcU
-         LptV31oohzYvYvF8qQCsuP9HpqYewOkHFBJwvFISegJEo6gzVMb8DbS82AMdI6dvchQv
-         fKHD2Mz/lGoL6fjAntbMvbhPKJuDvf7zFSdwwc2IbMR7bdarABc+HJRwb0yp24DLJCUj
-         ze4A==
-X-Gm-Message-State: AOJu0YyNH2RAiWnmwMDcMt/Zdhw3Cf0R/lieFuOxbihb7FAxWGCRR2Ix
-	eU7HcKFH5c8oYajm7Zai9L0i6uotVtgX5N0ZVRgMpl1sgv/SmX7MeLYuRf34
-X-Google-Smtp-Source: AGHT+IGcSOJ8UiM7ubjVfnmCp+pwDae3zWI5bm5or2EdD4XUOtWGEwIv2QWnuiBPLPo4aeWJYiMVnQ==
-X-Received: by 2002:a17:902:e541:b0:1e0:9122:abc4 with SMTP id n1-20020a170902e54100b001e09122abc4mr2345672plf.21.1711612250907;
-        Thu, 28 Mar 2024 00:50:50 -0700 (PDT)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id e7-20020a17090301c700b001e0ea5c910dsm862362plh.18.2024.03.28.00.50.50
+        d=1e100.net; s=20230601; t=1711612254; x=1712217054;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5NHnLjZYEP5UNdxD1VIIFJ0g0ZRRIIckJCqa9h6jE6A=;
+        b=wGcGHyshDGykbG0K5wGWay9PBkaG8ddzBW3VJkhwpXP7vdjPgr+2+uqEVyGUa3K6jB
+         4nk0kWmk6ppw4Ocj81e0rbg4Ovej/lQAZGlp5N82QtKRLrWy1gHRGfLqCJOsM8499lbN
+         4Non1T1nSrnH3qhexjNpnBqXGlBJjSOlTcaOLPfDhD7ZZaIi1s0oVlLr2e+cGza+RcR+
+         /bqPWTm19pC/TR5xCHyLQwaB/iPX46CNRArl2os/9bOwJmOMZPDdXUPfqauBf9MJVcHB
+         lrf3dHSwXdLWy6RaTln/iMY53CQH4KLH89+BigtDoXgEz6pu+8rjj/0+A3TSlq5zATrv
+         a2Fg==
+X-Gm-Message-State: AOJu0Yzr4N/XDV11hqN6mM4gtnA3hNWbNVkNKo5f/LQYGJaDx2rJbKG4
+	yb05OHNriCDXB151rwiIw5ffUlPKov1GMf32/S/6MzymLL3fVZh9qoLYCJiY
+X-Google-Smtp-Source: AGHT+IG5b9hiKqIXVMmIA/V/N+96/PpxM3h9SOhxAbcOOc4hbwQ4D182LaFIDQy1+CjspQ/K/NO4Fw==
+X-Received: by 2002:a17:902:ef52:b0:1dd:7485:b4c9 with SMTP id e18-20020a170902ef5200b001dd7485b4c9mr2420939plx.22.1711612254606;
+        Thu, 28 Mar 2024 00:50:54 -0700 (PDT)
+Received: from localhost ([198.11.178.15])
+        by smtp.gmail.com with ESMTPSA id k5-20020a170902694500b001e038619e34sm851133plt.221.2024.03.28.00.50.53
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Mar 2024 00:50:50 -0700 (PDT)
+        Thu, 28 Mar 2024 00:50:54 -0700 (PDT)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: rcu@vger.kernel.org,
@@ -70,11 +72,18 @@ Cc: rcu@vger.kernel.org,
 	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 00/10] rcu/x86: Use per-cpu rcu preempt count
-Date: Thu, 28 Mar 2024 15:53:08 +0800
-Message-Id: <20240328075318.83039-1-jiangshanlai@gmail.com>
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 01/10] lib: Use rcu_preempt_depth() to replace current->rcu_read_lock_nesting
+Date: Thu, 28 Mar 2024 15:53:09 +0800
+Message-Id: <20240328075318.83039-2-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20240328075318.83039-1-jiangshanlai@gmail.com>
+References: <20240328075318.83039-1-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,46 +94,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-X86 can access percpu data in a single instruction.
+Use the general wrapper rcu_preempt_depth() instead of the open code.
 
-Use per-cpu rcu preempt count and make it able to be inlined.
-
-patch 1-7: prepare
-patch 8-10: implement PCPU_RCU_PREEMPT_COUNT
+Prepare for enabling per-cpu rcu_preempt_count, in which case
+current->rcu_read_lock_nesting might not be synced with the real depth.
 
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+---
+ lib/locking-selftest.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Lai Jiangshan (10):
-  lib: Use rcu_preempt_depth() to replace current->rcu_read_lock_nesting
-  rcu: Move rcu_preempt_depth_set() to rcupdate.h
-  rcu: Reorder tree_exp.h after tree_plugin.h
-  rcu: Add macros set_rcu_preempt_special() and
-    clear_rcu_preempt_special()
-  rcu: Make rcu_read_unlock_special() global
-  rcu: Rename marco __LINUX_RCU_H to __KERNEL_RCU_H
-  sched/core: Add rcu_preempt_switch()
-  rcu: Implement PCPU_RCU_PREEMPT_COUNT framework
-  x86/rcu: Add rcu_preempt_count
-  x86/rcu: Add THUNK rcu_read_unlock_special_thunk
-
- arch/x86/Kconfig                   |   1 +
- arch/x86/entry/thunk_64.S          |   5 ++
- arch/x86/include/asm/current.h     |   3 +
- arch/x86/include/asm/rcu_preempt.h | 109 +++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/common.c       |   7 +-
- include/linux/rcupdate.h           |  36 ++++++++++
- kernel/rcu/Kconfig                 |   8 +++
- kernel/rcu/rcu.h                   |  15 +++-
- kernel/rcu/tree.c                  |   2 +-
- kernel/rcu/tree_exp.h              |   2 +-
- kernel/rcu/tree_plugin.h           |  41 +++++++----
- kernel/sched/core.c                |   2 +
- lib/locking-selftest.c             |   6 +-
- 13 files changed, 211 insertions(+), 26 deletions(-)
- create mode 100644 arch/x86/include/asm/rcu_preempt.h
-
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 6f6a5fc85b42..9bb41fb18088 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -1434,7 +1434,7 @@ static void dotest(void (*testcase_fn)(void), int expected, int lockclass_mask)
+ #ifdef CONFIG_SMP
+ 	int saved_mgd_count = current->migration_disabled;
+ #endif
+-	int saved_rcu_count = current->rcu_read_lock_nesting;
++	int saved_rcu_count = rcu_preempt_depth();
+ #endif
+ 
+ 	WARN_ON(irqs_disabled());
+@@ -1476,9 +1476,9 @@ static void dotest(void (*testcase_fn)(void), int expected, int lockclass_mask)
+ 		migrate_enable();
+ #endif
+ 
+-	while (current->rcu_read_lock_nesting > saved_rcu_count)
++	while (rcu_preempt_depth() > saved_rcu_count)
+ 		rcu_read_unlock();
+-	WARN_ON_ONCE(current->rcu_read_lock_nesting < saved_rcu_count);
++	WARN_ON_ONCE(rcu_preempt_depth() < saved_rcu_count);
+ #endif
+ 
+ #ifdef CONFIG_TRACE_IRQFLAGS
 -- 
 2.19.1.6.gb485710b
 
