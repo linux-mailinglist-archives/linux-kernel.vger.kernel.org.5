@@ -1,271 +1,118 @@
-Return-Path: <linux-kernel+bounces-123821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4C2890E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:20:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC232890E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD85F1F24D73
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:20:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7587A2957BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F001CAA4;
-	Thu, 28 Mar 2024 23:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BA41386A4;
+	Thu, 28 Mar 2024 23:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rCrm9lXC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="O1irU1hx"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF1C13A240;
-	Thu, 28 Mar 2024 23:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1503A132810;
+	Thu, 28 Mar 2024 23:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711668013; cv=none; b=M6uyLoIGFyzljHXNcszTNDtbLlY6upRtc+LeBaEIViHGOrjPgacLvbBBLfVSDvz8rV1Ff/SJQONdTdGu2H6slqzGaPypHbRGU2YkMAWoWYQIIVUIVEdmZWGbcL+PvPMe/wTIk/wQ4nye2RI5HUy8uVZQ9CyG2OglZJ8jzKft+D8=
+	t=1711668039; cv=none; b=YC6j5ixwktVeTTwwOoCIjov8OYtqCoMbUeQup0WJw4Y7+dQ+LLKvUtr7th2o4NX0wgG8q330z9fyD5f0AjMi4a8VadfVPLXO4v5cOWjRCwci581lSEZNzIxYVpAHAbR3atvclI7yaJsPeH7C9fA5C9Gtz5SPr16iLulUihh5fGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711668013; c=relaxed/simple;
-	bh=lFsA0nS63Z5c6P80Aq7VRGRFpbOphmG2SkLmIULSo/s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D6+vmAo3h684Tw7gEctjEL2ySofzerp0FVx7B8BmzmFxd2CEgsy5c0+rxnpzZbWJtbP7CsWjrYx4X6WgYnn9eFY1xR2GarZvDsJD1MP3kinegl2ebHrokkyWPWjPnGgdCFvxA9iynOJFjvKoz7FkHMdm0fS75jcWkudeWRUy1+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rCrm9lXC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76714C433A6;
-	Thu, 28 Mar 2024 23:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711668012;
-	bh=lFsA0nS63Z5c6P80Aq7VRGRFpbOphmG2SkLmIULSo/s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rCrm9lXC05qfenVdq4RX6asHVvozVufqTxtfg+3teFMon3bRH1yICsfaAIMsne0Lz
-	 vhouayYUcKBTWdiI2GHcHkUZvBtxc++QYj/zy63gL4VzI/V9pA+UeLfs/U0bLV0e+h
-	 euVnlcj0AvSSIunFCw6OTSvb1gjpnUIXFAgkWqkOSbeZhVFENgPdLKUkncDu0pcFNJ
-	 Zjr1ihK3xTZDr42AE0a2PLJ3xPozktV786w0sXxvb8DD7w+/nLt9DLwo1oP+DWjWCN
-	 jkXglENXX3J/T+G8vnI2u1Q1lZunZkZv8qsILifbfuDoiw8QMtojWqqCxxbk+bCkM2
-	 603byW4wrwOIA==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH 4/4] perf annotate: Use libcapstone to disassemble
-Date: Thu, 28 Mar 2024 16:20:09 -0700
-Message-ID: <20240328232009.466018-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-In-Reply-To: <20240328232009.466018-1-namhyung@kernel.org>
-References: <20240328232009.466018-1-namhyung@kernel.org>
+	s=arc-20240116; t=1711668039; c=relaxed/simple;
+	bh=34jIQYyG3HwhAtKIumxUv8XfeSTT8CDhCLqScz3CDRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SHXy2QQB7JtNid+MDH6LYmiiwPniqCiA7GhRn3M+yaunEoR9A7JzW9+JX/0V8kFyl6POBRK0HJoZ/gP8mGuZVrQbM304y4NcomfGaUB0Au+Hz4tD+EoxkS2bIElIWr8ZRVObdLk+ny7nl7oyuf99iFiKBy/6aD+jiXdhVagOGsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=O1irU1hx; arc=none smtp.client-ip=157.90.84.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (pd9e59192.dip0.t-ipconnect.de [217.229.145.146])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id D0DBC2FC0063;
+	Fri, 29 Mar 2024 00:20:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1711668032;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jhkvNvnameJwMfmvqN5hnsuhbbtE6or15TxgqStiKbk=;
+	b=O1irU1hxVaN+6UhGvajjQ1uwRXgPkPeyIM4GE+Bo7CuszA0mnkies30vjYPFK/8u8QJ99Z
+	cl3vDPy7/WQqtIIhfB19Nnja+ql3Q/AYrrWpdo8orGTGmjG8cwasNR/PKcccT5yh2MD7wY
+	DQiAZTvHQn/sAET7aMYiouQCpGVCC5c=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <29d54137-f3b9-4556-b99e-61a0f681f164@tuxedocomputers.com>
+Date: Fri, 29 Mar 2024 00:20:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: btintel: Add devices to
+ HCI_QUIRK_BROKEN_LE_CODED
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Christoffer Sandberg
+ <cs@tuxedo.de>, linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240328131800.63328-1-wse@tuxedocomputers.com>
+ <CABBYNZ+OaJ9QVE_KmBNL8QbBv4r5erL57u3BzFv0AnmUzY=PTA@mail.gmail.com>
+Content-Language: en-US
+From: Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <CABBYNZ+OaJ9QVE_KmBNL8QbBv4r5erL57u3BzFv0AnmUzY=PTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Now it can use the capstone library to disassemble the instructions.
-Let's use that (if available) for perf annotate to speed up.  Currently
-it only supports x86 architecture.  With this change I can see ~3x speed
-up in data type profiling.
+Hi Luiz,
 
-But note that capstone cannot give the source file and line number info.
-For now, users should use the external objdump for that by specifying
-the --objdump option explicitly.
+Am 28.03.24 um 15:17 schrieb Luiz Augusto von Dentz:
+> Hi Werner,
+>
+> On Thu, Mar 28, 2024 at 9:18 AM Werner Sembach <wse@tuxedocomputers.com> wrote:
+>> From: Christoffer Sandberg <cs@tuxedo.de>
+>>
+>> For HW variants 0x17, 0x18 and 0x19 LE Coded PHY causes scan and
+>> connection issues when enabled. This patch disables it through
+>> the existing quirk.
+>>
+>> Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> Cc: <stable@vger.kernel.org>
+>> ---
+>>   drivers/bluetooth/btintel.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
+>> index cdc5c08824a0a..6dbfb74d0adf9 100644
+>> --- a/drivers/bluetooth/btintel.c
+>> +++ b/drivers/bluetooth/btintel.c
+>> @@ -2881,6 +2881,8 @@ static int btintel_setup_combined(struct hci_dev *hdev)
+>>          case 0x17:
+>>          case 0x18:
+>>          case 0x19:
+>> +               /* 0x17, 0x18 and 0x19 have issues when LE Coded PHY is enabled */
+>> +               set_bit(HCI_QUIRK_BROKEN_LE_CODED, &hdev->quirks);
+> If it is just these 3 then we are missing a break here.
 
-Cc: Changbin Du <changbin.du@huawei.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/disasm.c | 153 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 153 insertions(+)
+The cases are not added by the patch, the fallthrough was here before. This 
+patch just adds this quirk for these 3 cases on top to the other things done 
+below, aka the fallthrough is intentional.
 
-diff --git a/tools/perf/util/disasm.c b/tools/perf/util/disasm.c
-index 59ac37723990..c58ea6d822ed 100644
---- a/tools/perf/util/disasm.c
-+++ b/tools/perf/util/disasm.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- #include <ctype.h>
- #include <errno.h>
-+#include <fcntl.h>
- #include <inttypes.h>
- #include <libgen.h>
- #include <regex.h>
-@@ -18,6 +19,7 @@
- #include "evsel.h"
- #include "map.h"
- #include "maps.h"
-+#include "namespaces.h"
- #include "srcline.h"
- #include "symbol.h"
- 
-@@ -1341,6 +1343,151 @@ symbol__disassemble_bpf_image(struct symbol *sym,
- 	return 0;
- }
- 
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+#include <capstone/capstone.h>
-+
-+static int open_capstone_handle(struct annotate_args *args, bool is_64bit,
-+				csh *handle)
-+{
-+	struct annotation_options *opt = args->options;
-+	cs_mode mode = is_64bit ? CS_MODE_64 : CS_MODE_32;
-+
-+	/* TODO: support more architectures */
-+	if (!arch__is(args->arch, "x86"))
-+		return -1;
-+
-+	if (cs_open(CS_ARCH_X86, mode, handle) != CS_ERR_OK)
-+		return -1;
-+
-+	if (!opt->disassembler_style ||
-+	    !strcmp(opt->disassembler_style, "att"))
-+		cs_option(*handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-+
-+	/*
-+	 * Resolving address operands to symbols is implemented
-+	 * on x86 by investigating instruction details.
-+	 */
-+	cs_option(*handle, CS_OPT_DETAIL, CS_OPT_ON);
-+
-+	return 0;
-+}
-+
-+struct find_file_offset_data {
-+	u64 ip;
-+	u64 offset;
-+};
-+
-+/* This will be called for each PHDR in an ELF binary */
-+static int find_file_offset(u64 start, u64 len, u64 pgoff, void *arg)
-+{
-+	struct find_file_offset_data *data = arg;
-+
-+	if (start <= data->ip && data->ip < start + len) {
-+		data->offset = pgoff + data->ip - start;
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+static int symbol__disassemble_capstone(char *filename, struct symbol *sym,
-+					struct annotate_args *args)
-+{
-+	struct annotation *notes = symbol__annotation(sym);
-+	struct map *map = args->ms.map;
-+	struct dso *dso = map__dso(map);
-+	struct nscookie nsc;
-+	u64 start = map__rip_2objdump(map, sym->start);
-+	u64 end = map__rip_2objdump(map, sym->end);
-+	u64 len = end - start;
-+	u64 offset;
-+	int i, fd, count;
-+	bool is_64bit = false;
-+	bool needs_cs_close = false;
-+	u8 *buf = NULL;
-+	struct find_file_offset_data data = {
-+		.ip = start,
-+	};
-+	csh handle;
-+	cs_insn *insn;
-+
-+	if (args->options->objdump_path)
-+		return -1;
-+
-+	nsinfo__mountns_enter(dso->nsinfo, &nsc);
-+	fd = open(filename, O_RDONLY);
-+	nsinfo__mountns_exit(&nsc);
-+	if (fd < 0)
-+		return -1;
-+
-+	if (file__read_maps(fd, /*exe=*/true, find_file_offset, &data,
-+			    &is_64bit) == 0)
-+		goto err;
-+
-+	if (open_capstone_handle(args, is_64bit, &handle) < 0)
-+		goto err;
-+
-+	needs_cs_close = true;
-+
-+	buf = malloc(len);
-+	if (buf == NULL)
-+		goto err;
-+
-+	count = pread(fd, buf, len, data.offset);
-+	close(fd);
-+	fd = -1;
-+
-+	if ((u64)count != len)
-+		goto err;
-+
-+	count = cs_disasm(handle, buf, len, start, len, &insn);
-+	for (i = 0, offset = 0; i < count; i++) {
-+		char disasm_buf[256];
-+		struct disasm_line *dl;
-+
-+		scnprintf(disasm_buf, sizeof(disasm_buf), "%s %s",
-+			  insn[i].mnemonic, insn[i].op_str);
-+
-+		args->offset = offset;
-+		args->line = disasm_buf;
-+		args->line_nr = 0;
-+		args->fileloc = NULL;
-+		args->ms.sym  = sym;
-+
-+		dl = disasm_line__new(args);
-+		if (dl == NULL)
-+			goto err;
-+
-+		annotation_line__add(&dl->al, &notes->src->source);
-+
-+		offset += insn[i].size;
-+	}
-+
-+out:
-+	if (needs_cs_close)
-+		cs_close(&handle);
-+	free(buf);
-+	return count < 0 ? count : 0;
-+
-+err:
-+	if (fd >= 0)
-+		close(fd);
-+	if (needs_cs_close) {
-+		struct disasm_line *dl, *tmp;
-+
-+		/*
-+		 * It probably failed in the middle of the above loop.
-+		 * Release any resources it might add.
-+		 */
-+		list_for_each_entry_safe(dl, tmp, &notes->src->source, al.node) {
-+			list_del(&dl->al.node);
-+			free(dl);
-+		}
-+	}
-+	count = -1;
-+	goto out;
-+}
-+#endif
-+
- /*
-  * Possibly create a new version of line with tabs expanded. Returns the
-  * existing or new line, storage is updated if a new line is allocated. If
-@@ -1463,6 +1610,12 @@ int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
- 		strcpy(symfs_filename, tmp);
- 	}
- 
-+#ifdef HAVE_LIBCAPSTONE_SUPPORT
-+	err = symbol__disassemble_capstone(symfs_filename, sym, args);
-+	if (err == 0)
-+		goto out_remove_tmp;
-+#endif
-+
- 	err = asprintf(&command,
- 		 "%s %s%s --start-address=0x%016" PRIx64
- 		 " --stop-address=0x%016" PRIx64
--- 
-2.44.0.478.gd926399ef9-goog
+Best regards,
 
+Werner
+
+>
+>>          case 0x1b:
+>>          case 0x1c:
+>>                  /* Display version information of TLV type */
+>> --
+>> 2.34.1
+>>
+>
 
