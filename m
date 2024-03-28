@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-123513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E050890A11
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA89890A16
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D5722863E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:53:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A5FF2920D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8070013BAEC;
-	Thu, 28 Mar 2024 19:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1302813BC1E;
+	Thu, 28 Mar 2024 19:51:18 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F192E1EA6E;
-	Thu, 28 Mar 2024 19:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8827E13A41D;
+	Thu, 28 Mar 2024 19:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655469; cv=none; b=sn29/Yn2DNN6mVqGaG/OF3gxsd4oQnQQS2MfnfJiAC2ryIG9NHbvMYT5c4poo7TD9dJbwyjHt9q8sEGcElNi4od3IVQeBxkkQcl7KtbdRt2AZPyPujbyiMnJLVNgRiK816ealxOtJavaPMxfDxW6KOWTDUIiB4pVV+mD6XolEbM=
+	t=1711655477; cv=none; b=amJenpVr/hJvdqwLq8HTlg2wxTGDYU+DtHoaSIhCuCrEP5lLdwSWDXU2BDBhECnpyXKUumEun9MLOfbXRe9cnhSTYrffqQTyYjHALY8shm0ckdMcXuXuA/RwHScvjw9FZ7FwQ/gGouK5smGLi8/TBntAdGAIIrvjfOvLWOF25I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655469; c=relaxed/simple;
-	bh=atsGEmkFbuwoMNttwqx1F0yIynHkaEbwFezW18HyMOc=;
+	s=arc-20240116; t=1711655477; c=relaxed/simple;
+	bh=0nW38Bhg6oefE8bRlPKT27U3IF63dXH13lRRqPo2U40=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tpxK7efh8oS1KJeTZWeMJa2Kv0yL++2vP2eywHZXm2RD8rZFKCnq6UKVMd+WcXM4xv3RzdERemodw7tNKfSxsVtwXzDH2B/WK9gSQtPbcH3MSfpnmEO+LXTjoIZFe5J98qQEp9uryia9h4C76fd/2Lqvm7ec/JN81mC77/emEY8=
+	 In-Reply-To:To:Cc; b=eNBMWp2SJg5UH6oBnhNpfWDEW/77eac4WjNhG8NXVcQnjzNQS/FCP8Rt8K7FK0opTCxpYCtzzbiTeVmI5OJnh5QbIJWgxa9l8VHrW8vgnRHqDi9TQ3+2slb3BThBkMaZvN/A8wLY2P3gE323dpC3AzMItPN03eHKoo8nBbNgr/0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E68C41674;
-	Thu, 28 Mar 2024 19:51:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0868FC43394;
+	Thu, 28 Mar 2024 19:51:08 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 20:49:19 +0100
-Subject: [PATCH v2 09/19] platform/x86/intel/rst: drop owner assignment
+Date: Thu, 28 Mar 2024 20:49:20 +0100
+Subject: [PATCH v2 10/19] platform/x86/intel/smartconnect: drop owner
+ assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,7 +40,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-b4-module-owner-acpi-v2-9-1e5552c2c69f@linaro.org>
+Message-Id: <20240328-b4-module-owner-acpi-v2-10-1e5552c2c69f@linaro.org>
 References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -66,21 +67,21 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=775;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=888;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=atsGEmkFbuwoMNttwqx1F0yIynHkaEbwFezW18HyMOc=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnGszDplYNDMhpIQD/TAYJlN3PuXJLxkuC8f
- Kr76QaTBoaJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJxgAKCRDBN2bmhouD
- 16JsEACIEhsEhj/FJvoFNXNZ+0et5BZ1m4uWu5TryaOxRTswqcLf0/eaocjy6PSLWStoWlfe1GH
- vZhiq/VX4knA4nfKcsioR54qbqYs/qHFK3PdHXGMFV+Mv6yk76vjgab8v96ZTHvYUyENtOQwST8
- XtSQsYxLJ7fRvF+/eztvHv8fywWYUO4gdB+o/hMtXW4T2p5XPJl8kfamm0fg+ZiD5ann1iyK7Ya
- O6Fu66xqrPGV0WgduMXfzXAd0lk1gkp5Lkw4HTN/L6MSoOtl7QdI5fWO7PE+J4MAdEkTmAsmzUL
- q+VVSDFbWZW/dESb9yE8RTBk5L2PONC/dPb9YKMY1btZIOa1Yp5DvvIDiGL6v/EpvPQvJu9ytWf
- xSN0yq/Il52tkMvt5Lnyc6I4IUOpMEGNCQF1v5tBlVOa+xCGIMFnw1Vfl5V8eZDtJI8iLOHzfwt
- ToG5DxDpYkau+nWAEoLJ9IJcKSe6pa3bcaaZZdczFyMAv42rX8PB3I07tI9E7pLQALNX2dN0Ta8
- XJJVnOxMaKzGl9ubXY7WABzTIKKWKrBc2uEEeHqbdc/AlYpbQ8hsdCKh7EOCeK8aKSw/460f/AO
- fy3OG/kWgg5daGWpfF1GFs8iogre5Np1H9U2uITsF86vkTfS3DzvwkZVBhe0jMHlfqYWjOMgNza
- JgKy9HlfNDoI3hQ==
+ bh=0nW38Bhg6oefE8bRlPKT27U3IF63dXH13lRRqPo2U40=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnHI+fLj6TQwOHnlEmbZ6FxpzRq52RY763MR
+ nzIN79UrB2JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJxwAKCRDBN2bmhouD
+ 10wBD/9XkMl8OBVcxJEVwL68gmpeMVt8oPSvBTufPFhkSxS5n7po79xMsSf2+B8DGDkwiA0YzyA
+ ZDxR1ELTeFvOz2w5Bm5wZ/txLIacADcaWlZ2kUmg+oKVeFAw39EMepZ4kzcO9EPwgy19425vrbh
+ uxxZ+Xxxp9HXyVGXAFV8U6x7GLA4Zn04pBvlYGfrQvngFn/+keC+5BUQnSYehdDUopoCpMmn+Vv
+ SPxV3Exy+4OgLuKrj7QBfK9J2kLRZCfVk6UbFHV+vEjfdWs+eA4vblEsoUa/qtabuG+YmHm1Cnf
+ xNVBFqcjulHS1DtAHPwgOBfXIYUALgnawXjDunV3DosOrFobXpfa/gpqYwDmD49kkDDjL4jnKBT
+ lRyoxokPASa1UYn4M6D7oF4XXQhjIuGa846rRxQ5SQqyGwmY+r7vXfZOGEwoR64ooCptSHMxNsa
+ r9Box+RQkglDpnZV+VY3OtmAVAhWXeFBwq7kMTnmZ03234fbVjhs6xY8PK1TDyPXq30uKbD0QUn
+ uJe29LvhydW0cQ87rx4NqVWboMjfYEQDXH3dxuvy/7uPiRxa1BRTj6lp/TU3vNaL6qxdhSq8LIq
+ VFmXOaAjCOoo3K4ZXY4JgyqUaSYIfyG4Oqu175/iJHGVJqrAsaOHaUH3C78eYZsSBAF56fdldqw
+ 3WLIXrjKn3rVUTA==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -90,21 +91,21 @@ Acked-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/platform/x86/intel/rst.c | 1 -
+ drivers/platform/x86/intel/smartconnect.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/platform/x86/intel/rst.c b/drivers/platform/x86/intel/rst.c
-index 35814a7707af..6bc9c4a603e0 100644
---- a/drivers/platform/x86/intel/rst.c
-+++ b/drivers/platform/x86/intel/rst.c
-@@ -125,7 +125,6 @@ static const struct acpi_device_id irst_ids[] = {
- };
+diff --git a/drivers/platform/x86/intel/smartconnect.c b/drivers/platform/x86/intel/smartconnect.c
+index 64c2dc93472f..cd25d0585324 100644
+--- a/drivers/platform/x86/intel/smartconnect.c
++++ b/drivers/platform/x86/intel/smartconnect.c
+@@ -32,7 +32,6 @@ static const struct acpi_device_id smartconnect_ids[] = {
+ MODULE_DEVICE_TABLE(acpi, smartconnect_ids);
  
- static struct acpi_driver irst_driver = {
+ static struct acpi_driver smartconnect_driver = {
 -	.owner = THIS_MODULE,
- 	.name = "intel_rapid_start",
- 	.class = "intel_rapid_start",
- 	.ids = irst_ids,
+ 	.name = "intel_smart_connect",
+ 	.class = "intel_smart_connect",
+ 	.ids = smartconnect_ids,
 
 -- 
 2.34.1
