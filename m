@@ -1,116 +1,159 @@
-Return-Path: <linux-kernel+bounces-123102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD5189022F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:45:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31297890230
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEA761C2D04D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:45:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4C7E1F278EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4438172F;
-	Thu, 28 Mar 2024 14:45:41 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5898612DD94;
+	Thu, 28 Mar 2024 14:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="njKnrrfG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6894E1C9
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D72128369;
+	Thu, 28 Mar 2024 14:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637140; cv=none; b=pVXN4Yx5Bf3rUcplyuYOSuYtYCeW+hsty6KYTRYs5xzLOacxAoL9kne1iB9HaKNgCkhLLQoQyg4kMyzlPcup2FX+rjPCxWix3YXRQgSsbQ/Ft1YlyoCAtZVkcAtBesfJ5V2IOpNdDTJ1v6Qm5haMmOEt8FARI26M3t8QnCAl+6o=
+	t=1711637168; cv=none; b=ilIw9mDVhGFCH4CNrHHcYR01XdkJ1TxxjH1XvZPESldon6+jhvq8tmUrRe0kZsWmD4PqeueygMQ+dtw4Fz6R8OWRw5aTWFsdiV6SD4liDBJmCGxeyBQn5IFbgBBBXZ6V11q6NdCHeq/jwkgxHRNvYihi+Rsy14s8gtx7p1ypzUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637140; c=relaxed/simple;
-	bh=oT2G2hzKBk5ZN70wX2Z/woZGyJvOk1Ns97niHF7wanE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LC6F2qrh70kSRARjSxAO0A+bjb3lDPtELSH3anOuaMr++E6xa79iuvqSHVX0UDwAoOiX0KX03J3ue/cc19AQGvJ3svY4Fk0Ea353OEaW462Dj44ke99V9z0Ze+mUESCA366OoaGlESFiNbOlP2qlNa8bY1gP7BNVwCNFKLYYiUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a0599f631so9494607b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:45:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711637136; x=1712241936;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+fjaRGcSgf8xsTZBcLTiZ5jbt+B1Ifd5p00AndFjlLw=;
-        b=jfqfxRWps1tzZF6vpqTiFungodkZDd0hzXQk/akC4WVyMH3Lv2D46wwbdhNtyVydJx
-         yGY5KYh95MWbfijS+ilqzghDWLP5KN9zsaPCmI0OHxUVFdVvbRnIGG7KzQPNiZIys5Wa
-         C/cMQx7XwpkeTdBjCm2nk2nebg7Qt3416u2qhwQ597f5AndyqSymHVg9LtBwtVXcwLv4
-         5BJsTCTwptiGSVrcwzXUuG/z1cl10n7fGqBdVjVjB+44IDKj1yobh0vn+NWSdQIFmr2M
-         QTu3MvmNRhd6WhCVl0NNzTD3I+FjQipJbggImy7d8QW4PD9vPhfaEGONu8Ypx3pLFsiW
-         jlQg==
-X-Forwarded-Encrypted: i=1; AJvYcCV81HGSrtiqzBD26lRoxHdubPSiUy58T64K7lHSWoLD/9HHF3wFnu70FeqlwxDBROYX3SP9yUWqVKMP6XmeEKXKpmL7+7gmWM3tGsaD
-X-Gm-Message-State: AOJu0YyVPMahpCM39LsK/0YSg47jrvW2RCAnmu5awiiJ/PUiYppoDdvw
-	axqc2IgjbG3Le36T3utfk7+8xnCp33JrF4Ls5LeMi9X44l/Y/yZvMMeSZVIXhMI=
-X-Google-Smtp-Source: AGHT+IG2iIc6VoFUZ5ivLymGIQcfAS3Z80xV3+lwx3YzsM7nUMsQSm2oLveRRUzkvIVhzgfHwNkhzg==
-X-Received: by 2002:a81:8416:0:b0:611:200c:9229 with SMTP id u22-20020a818416000000b00611200c9229mr3287517ywf.8.1711637136614;
-        Thu, 28 Mar 2024 07:45:36 -0700 (PDT)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id n14-20020a81eb0e000000b00610e2f00407sm324132ywm.114.2024.03.28.07.45.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 07:45:36 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dd045349d42so988781276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:45:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUkZTrZI5Y8Ft9Lmf5G5idWQhRB7JNT+LbBW1y+saQuoK7diqotJ5NyX+mXy1epSkxL/4x6pqaZr5AuF6e1s2Tmo5VZJv/8VdRLgUGM
-X-Received: by 2002:a25:ff19:0:b0:dc7:32ea:c89f with SMTP id
- c25-20020a25ff19000000b00dc732eac89fmr2988417ybe.15.1711637135802; Thu, 28
- Mar 2024 07:45:35 -0700 (PDT)
+	s=arc-20240116; t=1711637168; c=relaxed/simple;
+	bh=e7T2k8jeQC9M808lpQTjDzIA9RTU/rhvmNyQ/wDrKOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GaDwfFhJcYytv5/+fGADFgJoMvSL8mOexsDVe/cS7ZSXApo8n8nXlzhYDGpwQl+ExmgaE0PBq8EjahpV126g/WB+cCYETn7n8Zlo/SbPvEPK848qAeQEEBID80dhnMkatNLid8LKLBiApYGplYP4SSZwFm9dj712yJypnfJLbYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=njKnrrfG; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711637166; x=1743173166;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=e7T2k8jeQC9M808lpQTjDzIA9RTU/rhvmNyQ/wDrKOo=;
+  b=njKnrrfGF2aunM+EjMIZnEaMq+qHNYTKHNn3Ok3Xplml28n2TyBhlaAB
+   SNe+6quzzvNDP4lhT3zfZs1ugYdkLXFjWG2AidAc5qPrGd38lmSrVWoCa
+   VjxIv2tsdhx+rvvMTxLeX9eR/vs+6CHnxjktVDioEd75IxosBATCWL7xp
+   vitEdVHT74oaZZFP+Ei1PQCJtU6hYwKuLUBsf3JaCqQWT8VaZoimuIGq3
+   ZP90nr6cpXTcpfkqVjplsse+fCWmmOM1QD1DV7FqnStzmCJcASsMSUEmq
+   VA7X1TeQ9L0cKPbnUtU6XP7x10gac6/DNPefFmpsdKJVwT2Smo5lC1o9W
+   w==;
+X-CSE-ConnectionGUID: vpsdT2oMTTiAdk+7oZM7IA==
+X-CSE-MsgGUID: Civ7iNmFQ/ipuDa2YU9+wA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6681770"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="6681770"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 07:46:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="47857228"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 07:46:01 -0700
+Message-ID: <79adf996-48d6-41b0-8327-f3258d74bb7b@intel.com>
+Date: Thu, 28 Mar 2024 22:45:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327054537.424980-1-samuel.holland@sifive.com>
-In-Reply-To: <20240327054537.424980-1-samuel.holland@sifive.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 28 Mar 2024 15:45:24 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX7HoJc+67VkqZk+KH8LzauQoTofP2ZrALvbpAtnbNRtw@mail.gmail.com>
-Message-ID: <CAMuHMdX7HoJc+67VkqZk+KH8LzauQoTofP2ZrALvbpAtnbNRtw@mail.gmail.com>
-Subject: Re: [PATCH] cache: sifive_ccache: Partially convert to a platform driver
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Conor Dooley <conor@kernel.org>, Anup Patel <apatel@ventanamicro.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
+ unsupported cases
+To: Chao Gao <chao.gao@intel.com>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+ "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+ "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
+ <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
+ "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Aktas, Erdem" <erdemaktas@google.com>,
+ "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>, "Yuan, Hang"
+ <hang.yuan@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
+ <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
+ <e0ac83c57da3c853ffc752636a4a50fe7b490884.camel@intel.com>
+ <5f07dd6c-b06a-49ed-ab16-24797c9f1bf7@intel.com>
+ <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
+ <20ef977a-75e5-4bbc-9acf-fa1250132138@intel.com>
+ <783d85acd13fedafc6032a82f202eb74dc2bd214.camel@intel.com>
+ <f499ee87-0ce3-403e-bad6-24f82933903a@intel.com>
+ <ZgVDvCePGwKWv0wd@chao-email>
+ <234c9998-c314-44bb-ad96-6af2cece7465@intel.com>
+ <ZgVywaHkKVNNfuQ8@chao-email>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <ZgVywaHkKVNNfuQ8@chao-email>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Samuel,
+On 3/28/2024 9:38 PM, Chao Gao wrote:
+> On Thu, Mar 28, 2024 at 09:21:37PM +0800, Xiaoyao Li wrote:
+>> On 3/28/2024 6:17 PM, Chao Gao wrote:
+>>> On Thu, Mar 28, 2024 at 11:40:27AM +0800, Xiaoyao Li wrote:
+>>>> On 3/28/2024 11:04 AM, Edgecombe, Rick P wrote:
+>>>>> On Thu, 2024-03-28 at 09:30 +0800, Xiaoyao Li wrote:
+>>>>>>> The current ABI of KVM_EXIT_X86_RDMSR when TDs are created is nothing. So I don't see how this
+>>>>>>> is
+>>>>>>> any kind of ABI break. If you agree we shouldn't try to support MTRRs, do you have a different
+>>>>>>> exit
+>>>>>>> reason or behavior in mind?
+>>>>>>
+>>>>>> Just return error on TDVMCALL of RDMSR/WRMSR on TD's access of MTRR MSRs.
+>>>>>
+>>>>> MTRR appears to be configured to be type "Fixed" in the TDX module. So the guest could expect to be
+>>>>> able to use it and be surprised by a #GP.
+>>>>>
+>>>>>            {
+>>>>>              "MSB": "12",
+>>>>>              "LSB": "12",
+>>>>>              "Field Size": "1",
+>>>>>              "Field Name": "MTRR",
+>>>>>              "Configuration Details": null,
+>>>>>              "Bit or Field Virtualization Type": "Fixed",
+>>>>>              "Virtualization Details": "0x1"
+>>>>>            },
+>>>>>
+>>>>> If KVM does not support MTRRs in TDX, then it has to return the error somewhere or pretend to
+>>>>> support it (do nothing but not return an error). Returning an error to the guest would be making up
+>>>>> arch behavior, and to a lesser degree so would ignoring the WRMSR.
+>>>>
+>>>> The root cause is that it's a bad design of TDX to make MTRR fixed1. When
+>>>> guest reads MTRR CPUID as 1 while getting #VE on MTRR MSRs, it already breaks
+>>>> the architectural behavior. (MAC faces the similar issue , MCA is fixed1 as
+>>>
+>>> I won't say #VE on MTRR MSRs breaks anything. Writes to other MSRs (e.g.
+>>> TSC_DEADLINE MSR) also lead to #VE. If KVM can emulate the MSR accesses, #VE
+>>> should be fine.
+>>>
+>>> The problem is: MTRR CPUID feature is fixed 1 while KVM/QEMU doesn't know how
+>>> to virtualize MTRR especially given that KVM cannot control the memory type in
+>>> secure-EPT entries.
+>>
+>> yes, I partly agree on that "#VE on MTRR MSRs breaks anything". #VE is not a
+>> problem, the problem is if the #VE is opt-in or unconditional.
+> 
+>  From guest's p.o.v, there is no difference: the guest doesn't know whether a feature
+> is opted in or not.
 
-On Wed, Mar 27, 2024 at 6:45=E2=80=AFAM Samuel Holland
-<samuel.holland@sifive.com> wrote:
-> Commit 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a
-> platform driver") broke ccache initialization because the PLIC IRQ
-> domain is no longer available during an arch_initcall:
->
->   [    0.087229] irq: no irq domain found for interrupt-controller@c00000=
-0 !
->   [    0.087255] CCACHE: Could not request IRQ 0
->
-> Fix this by moving the IRQ handling code to a platform driver.
->
-> Fixes: 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a pla=
-tform driver")
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+I don't argue it makes any difference to guest. I argue that it is a bad 
+design of TDX to make MTRR fixed1, which leaves the tough problem to 
+VMM. TDX architecture is one should be blamed.
 
-Thanks, this fixes the Starlight boot failure I didn't get to bisect yet.
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Though TDX is going to change it, we have to come up something to handle 
+with current existing TDX if we want to support them.
 
-Gr{oetje,eeting}s,
+I have no objection of leaving it to userspace, via KVM_EXIT_TDX_VMCALL. 
+If we go this path, I would suggest return error to TD guest on QEMU 
+side (when I prepare the QEMU patch for it) because QEMU cannot emulate 
+it neither.
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
