@@ -1,79 +1,80 @@
-Return-Path: <linux-kernel+bounces-122344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3564988F578
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:47:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD9188F579
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD3FD29A38A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:47:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAB3EB23707
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B67820DF7;
-	Thu, 28 Mar 2024 02:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295B9286AC;
+	Thu, 28 Mar 2024 02:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4b79sfYy"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uN+lVx9r"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E885D210EC
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F663250E0
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711594032; cv=none; b=S/8LedYMHtR75TGcxi+gHn2Tc1Bs6I1Pl9aR+vfknm4kAZ05/pnEJ4K4FkuyeeLooQs63mpL9l2S0adUy56DPe1vxIX68UGAnr1l79zlgHSoMJ7ap26kGNzGJuUmuoXAmN3eUEDgPtl6/o93UmSq1IpKVofTYwwnZMNS9vtpdjg=
+	t=1711594051; cv=none; b=eKkbfzM65SIC9woCgN3HX7B3+CP1yJErHrqnyDAiSSWFTAyJUM959fLLVMqohF6sXzEHoUQZ+JEJajYJC2v/+iQyTnPPzTsbxt91zQHC4r8GvaP+MQtD5QzYq2MMDIQMV8LXAADtDHH3i/aNaqKA8kQz0byaIcoTrT+3HZhoKSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711594032; c=relaxed/simple;
-	bh=84H+cJFr0cL9Knja7weHauqkI7JHjb4wcobAfHN1EMI=;
+	s=arc-20240116; t=1711594051; c=relaxed/simple;
+	bh=uTn/hDm6rRTF0x1fCZTXyKoh4iOHnT5MFqKU6DRKUkE=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=c4W6JnCmuGRaURnu2gQai7NTHA/kWACL9E+IenH1xA+RHs92KYXuf+eoZI+H55NH/QmnlaUwx+rMtsEgvGEeM0t9OviX5y8OyhVnoV/3fR4fsE4jN/cYZwdD2OOtzeDDtMxVo5/3zuLb+rEuhUkXic4w0cLkaC/w0XnHpQ8SpzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4b79sfYy; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=Y3hsmlpzUCvMlMHcS5nEDHAuLAi41xrBYS++cbtEHA+dBEohN2YNbuiFqRGV0N/nemDFfR4VxpQpN4UasdC2CpwpauDoK5pELPT1lI2FunsMk/Ku9RgFVqCmKydKzjXNX5npOiDbWO6Oe7S1TB5s41dElwnTt9o/9HxUwVzuIF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uN+lVx9r; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60cd073522cso8921247b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:47:09 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so589458276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:47:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711594029; x=1712198829; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711594047; x=1712198847; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zwKAKqKSkPlBh99CpC5Ho4X+oKbKwu1UgbqAZ4JZV3w=;
-        b=4b79sfYymoScQAu7/7eJoVIjBxHjWn729jowcuWP2zjtW8rHPGlp3vwhlnWPWYwOUt
-         W8PMM4rT8FfVXwbWuoKqyOr3YbJUbrq4LFXnKHH3zATOYJgPhpky12vO6Ff6mo60xG6p
-         8CZ7Wtw4c1UFHiM+TOWEenZln0v945G6sUViHGnY5dK1z9/FTpk+LmuYyLouWT1jfU1A
-         sA9ooNbRIlJwKG387WHXaJacO286tnB1WBGiuANtWaFLSCBYQlfNgeSIhnWpuC+sWRQ3
-         BX1j/a5RqHNBVqjy5e5JGGwmgsV1MnF2zn8xqDbVG3/FQdev+ZfTuKf3ViTJHiEt+fft
-         RPJA==
+        bh=yqOjNlVyt9f+dZUymfqOg4Iq2ntY8mdLHefZitivNvA=;
+        b=uN+lVx9rgiwnW9I4aDI4oRtcZh1vdu8Q60xxrMwYyOb6/UWP4VtyNUxyDLrAE30jV1
+         D7FxCAQKvOXq/YOJEQ0m3OtyIxGY9FqfGV+nxml559PEYSgM+qNoNOIpGNUQGq7edB7w
+         R3XQqVVHs5S8lJfeE5EP5fufS4/9w8J61GRmswkgvHT/icPUi+Uh0MuKGKu9ZmFwwlc6
+         wmixI0xCYMi3cvK/h9gBoUACah6oOtoXC4ZTGMzCtkuqrdc64Hng17EV/iUYCneSHRNp
+         HnqokuPzZJax0AQnNLK40F0yY3i4x5Ic2B4GuGk3vpzBUe7sVxzmnRElWa1sSm/sZIqR
+         5ZLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711594029; x=1712198829;
+        d=1e100.net; s=20230601; t=1711594047; x=1712198847;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zwKAKqKSkPlBh99CpC5Ho4X+oKbKwu1UgbqAZ4JZV3w=;
-        b=W+447QS5GMmbvMI0HuWJi8WJ0uBDOcF0cv3sdbWd6BEGQmvN3DQvQwE8OzqniVGxpH
-         97JLYZ/t21hTig12zvb6FwemmI4HQSkOBNwZZUBlCQ0Ho37JBHlj/j0h0UI/1tGzZ8aV
-         Md7q412dpGIdL0G9x8BJm8y0oJ6aB4nCfK3j82VC3RKEddVdp+4w7C/SoGyjsEJArWpI
-         vg0rdHRpMNTTAvKmbvyCTbojgPwvPcmir7UDGOwOvYfxykNC83LKmzDODAP1Ex4UmFBS
-         OUqjW19SBWZDHb7UcqzNa1/iij5CqXKYhC6AYWyQRrtjxOfbxXzQRpYrSkIXq+EOKK0Y
-         YLaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXTpB0S5MpnUbwzTlcq1TmeD7dZJe9ReGCKW50lWCjput6bvkrUcH4TLKVXLapcXCBq9Ecd4cRKJA1S8UFEU4D16soDzTZnIFfxKKOr
-X-Gm-Message-State: AOJu0YxfCmkWXEb8k5NRTrSp1rpvuFnToKXavdNkOzY7JK2OrALiimz5
-	xa0VmhgLNyv1fYvVasfG3hKqsojMDq6ugm1zxz4LfM4W3IyKt+PUzwzbTTF0WeE8ffq0M97qOBR
-	dxWSsQ3OmRV57IcLvG1gYSw==
-X-Google-Smtp-Source: AGHT+IFuDAD4wtNUkP/2UEse7mwv3qapG5IVIY191z0pQp8MOjMKC9JPX6Ry++6lYE8vhg/RF4vUjCFCzCP7/uR5QA==
+        bh=yqOjNlVyt9f+dZUymfqOg4Iq2ntY8mdLHefZitivNvA=;
+        b=OB/ArqXX3obr8EJF9II+M2WgnK15yIXmTe06VoUfWX5u88eRMEAtA+e8f0sDTWk6f0
+         QVrOLxyTIo1M+GntZfpLAKiBTGcZK/NKzUwUsKpVWegZJPmyAmlwl6DWenMr44ko0xmX
+         gpb4wIh21tg4nGQ59Uc75IPHFrDlxFj3k3Z7NO8Hpyd9NZVUiWMEXQYLmLcynsT/sBT4
+         b3e8AZz9d9aLy94S0ik0Mt6SpdWzTeoTEg7psaof8LDspEe/4UfP+7ARicNP1VyLAzyG
+         zGtT4YiwIKWmNJ7EZxVoOZbcR6FPs/VBdo7hWGMBLueBbW1WKGJX8sM0S3uCUOT7nqTp
+         zVFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXekdRhRQYzCIfzY2JCCFFx/+nsq4ikU9+pSZ0wX0vLvRIXqBBTh+zzpo+0Zr4h6tEyBQMr9b/VuaB7MVDhJx/pqR7xHLzFRUHa6lG
+X-Gm-Message-State: AOJu0Yw8rwisR51+p1RJrbHLxU5K1D2EIZZVAj0vYL0+CWy7q6PfwxvF
+	M9DUvjKddAcB5ffGDrEYyq3vqBpU5+E4NjLFQjMr/+ghJsEIIRV4aRci74mzlG7zdest5tWWSo+
+	JpQJdubkBkm0WAjBy4ECIyw==
+X-Google-Smtp-Source: AGHT+IE29x7m+ZxCuBonRETTmQLNnZSrvQxvnruw/vCAylXmb5W1DxrhrZLZqb2+UAORn2Eg1cm0Cyzjivbt2c8E0g==
 X-Received: from ctop-sg.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:1223])
- (user=ackerleytng job=sendgmr) by 2002:a05:690c:30c:b0:610:c400:9e8a with
- SMTP id bg12-20020a05690c030c00b00610c4009e8amr207011ywb.2.1711594029051;
- Wed, 27 Mar 2024 19:47:09 -0700 (PDT)
-Date: Thu, 28 Mar 2024 02:47:05 +0000
-In-Reply-To: <20240314232637.2538648-10-seanjc@google.com>
+ (user=ackerleytng job=sendgmr) by 2002:a05:6902:1b06:b0:dcc:94b7:a7a3 with
+ SMTP id eh6-20020a0569021b0600b00dcc94b7a7a3mr157767ybb.12.1711594047236;
+ Wed, 27 Mar 2024 19:47:27 -0700 (PDT)
+Date: Thu, 28 Mar 2024 02:47:23 +0000
+In-Reply-To: <20240314232637.2538648-9-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240314232637.2538648-1-seanjc@google.com> <20240314232637.2538648-10-seanjc@google.com>
-Message-ID: <diqzttkrkr86.fsf@ctop-sg.c.googlers.com>
-Subject: Re: [PATCH 09/18] KVM: selftests: Rename x86's vcpu_setup() to vcpu_init_sregs()
+References: <20240314232637.2538648-1-seanjc@google.com> <20240314232637.2538648-9-seanjc@google.com>
+Message-ID: <diqzr0fvkr7o.fsf@ctop-sg.c.googlers.com>
+Subject: Re: [PATCH 08/18] KVM: selftests: Move x86's descriptor table helpers
+ "up" in processor.c
 From: Ackerley Tng <ackerleytng@google.com>
 To: Sean Christopherson <seanjc@google.com>, Marc Zyngier <maz@kernel.org>, 
 	Oliver Upton <oliver.upton@linux.dev>, Paolo Bonzini <pbonzini@redhat.com>, 
@@ -88,38 +89,233 @@ Content-Type: text/plain; charset="UTF-8"
 
 Sean Christopherson <seanjc@google.com> writes:
 
-> Rename vcpu_setup() to be more descriptive and precise, there is a whole
-> lot of "setup" that is done for a vCPU that isn't in said helper.
+> Move x86's various descriptor table helpers in processor.c up above
+> kvm_arch_vm_post_create() and vcpu_setup() so that the helpers can be
+> made static and invoked from the aforementioned functions.
 >
 > No functional change intended.
 >
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  tools/testing/selftests/kvm/lib/x86_64/processor.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  .../selftests/kvm/lib/x86_64/processor.c      | 191 +++++++++---------
+>  1 file changed, 95 insertions(+), 96 deletions(-)
 >
 > diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> index 3640d3290f0a..d6bfe96a6a77 100644
+> index eaeba907bb53..3640d3290f0a 100644
 > --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
 > +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> @@ -555,7 +555,7 @@ void vcpu_init_descriptor_tables(struct kvm_vcpu *vcpu)
->  	*(vm_vaddr_t *)addr_gva2hva(vm, (vm_vaddr_t)(&exception_handlers)) = vm->handlers;
+> @@ -540,6 +540,21 @@ static void kvm_setup_tss_64bit(struct kvm_vm *vm, struct kvm_segment *segp,
+>  	kvm_seg_fill_gdt_64bit(vm, segp);
 >  }
 >  
-> -static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-> +static void vcpu_init_sregs(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+> +void vcpu_init_descriptor_tables(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_vm *vm = vcpu->vm;
+> +	struct kvm_sregs sregs;
+> +
+> +	vcpu_sregs_get(vcpu, &sregs);
+> +	sregs.idt.base = vm->arch.idt;
+> +	sregs.idt.limit = NUM_INTERRUPTS * sizeof(struct idt_entry) - 1;
+> +	sregs.gdt.base = vm->arch.gdt;
+> +	sregs.gdt.limit = getpagesize() - 1;
+> +	kvm_seg_set_kernel_data_64bit(NULL, DEFAULT_DATA_SELECTOR, &sregs.gs);
+> +	vcpu_sregs_set(vcpu, &sregs);
+> +	*(vm_vaddr_t *)addr_gva2hva(vm, (vm_vaddr_t)(&exception_handlers)) = vm->handlers;
+> +}
+> +
+>  static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
 >  {
 >  	struct kvm_sregs sregs;
+> @@ -572,6 +587,86 @@ static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+>  	vcpu_sregs_set(vcpu, &sregs);
+>  }
 >  
-> @@ -716,7 +716,7 @@ struct kvm_vcpu *vm_arch_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id)
+> +static void set_idt_entry(struct kvm_vm *vm, int vector, unsigned long addr,
+> +			  int dpl, unsigned short selector)
+> +{
+> +	struct idt_entry *base =
+> +		(struct idt_entry *)addr_gva2hva(vm, vm->arch.idt);
+> +	struct idt_entry *e = &base[vector];
+> +
+> +	memset(e, 0, sizeof(*e));
+> +	e->offset0 = addr;
+> +	e->selector = selector;
+> +	e->ist = 0;
+> +	e->type = 14;
+> +	e->dpl = dpl;
+> +	e->p = 1;
+> +	e->offset1 = addr >> 16;
+> +	e->offset2 = addr >> 32;
+> +}
+> +
+> +static bool kvm_fixup_exception(struct ex_regs *regs)
+> +{
+> +	if (regs->r9 != KVM_EXCEPTION_MAGIC || regs->rip != regs->r10)
+> +		return false;
+> +
+> +	if (regs->vector == DE_VECTOR)
+> +		return false;
+> +
+> +	regs->rip = regs->r11;
+> +	regs->r9 = regs->vector;
+> +	regs->r10 = regs->error_code;
+> +	return true;
+> +}
+> +
+> +void route_exception(struct ex_regs *regs)
+> +{
+> +	typedef void(*handler)(struct ex_regs *);
+> +	handler *handlers = (handler *)exception_handlers;
+> +
+> +	if (handlers && handlers[regs->vector]) {
+> +		handlers[regs->vector](regs);
+> +		return;
+> +	}
+> +
+> +	if (kvm_fixup_exception(regs))
+> +		return;
+> +
+> +	ucall_assert(UCALL_UNHANDLED,
+> +		     "Unhandled exception in guest", __FILE__, __LINE__,
+> +		     "Unhandled exception '0x%lx' at guest RIP '0x%lx'",
+> +		     regs->vector, regs->rip);
+> +}
+> +
+> +void vm_init_descriptor_tables(struct kvm_vm *vm)
+> +{
+> +	extern void *idt_handlers;
+> +	int i;
+> +
+> +	vm->arch.idt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
+> +	vm->handlers = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
+> +	/* Handlers have the same address in both address spaces.*/
+> +	for (i = 0; i < NUM_INTERRUPTS; i++)
+> +		set_idt_entry(vm, i, (unsigned long)(&idt_handlers)[i], 0,
+> +			DEFAULT_CODE_SELECTOR);
+> +}
+> +
+> +void vm_install_exception_handler(struct kvm_vm *vm, int vector,
+> +			       void (*handler)(struct ex_regs *))
+> +{
+> +	vm_vaddr_t *handlers = (vm_vaddr_t *)addr_gva2hva(vm, vm->handlers);
+> +
+> +	handlers[vector] = (vm_vaddr_t)handler;
+> +}
+> +
+> +void assert_on_unhandled_exception(struct kvm_vcpu *vcpu)
+> +{
+> +	struct ucall uc;
+> +
+> +	if (get_ucall(vcpu, &uc) == UCALL_UNHANDLED)
+> +		REPORT_GUEST_ASSERT(uc);
+> +}
+> +
+>  void kvm_arch_vm_post_create(struct kvm_vm *vm)
+>  {
+>  	vm_create_irqchip(vm);
+> @@ -1087,102 +1182,6 @@ void kvm_init_vm_address_properties(struct kvm_vm *vm)
+>  	}
+>  }
 >  
->  	vcpu = __vm_vcpu_add(vm, vcpu_id);
->  	vcpu_init_cpuid(vcpu, kvm_get_supported_cpuid());
-> -	vcpu_setup(vm, vcpu);
-> +	vcpu_init_sregs(vm, vcpu);
->  
->  	/* Setup guest general purpose registers */
->  	vcpu_regs_get(vcpu, &regs);
+> -static void set_idt_entry(struct kvm_vm *vm, int vector, unsigned long addr,
+> -			  int dpl, unsigned short selector)
+> -{
+> -	struct idt_entry *base =
+> -		(struct idt_entry *)addr_gva2hva(vm, vm->arch.idt);
+> -	struct idt_entry *e = &base[vector];
+> -
+> -	memset(e, 0, sizeof(*e));
+> -	e->offset0 = addr;
+> -	e->selector = selector;
+> -	e->ist = 0;
+> -	e->type = 14;
+> -	e->dpl = dpl;
+> -	e->p = 1;
+> -	e->offset1 = addr >> 16;
+> -	e->offset2 = addr >> 32;
+> -}
+> -
+> -
+> -static bool kvm_fixup_exception(struct ex_regs *regs)
+> -{
+> -	if (regs->r9 != KVM_EXCEPTION_MAGIC || regs->rip != regs->r10)
+> -		return false;
+> -
+> -	if (regs->vector == DE_VECTOR)
+> -		return false;
+> -
+> -	regs->rip = regs->r11;
+> -	regs->r9 = regs->vector;
+> -	regs->r10 = regs->error_code;
+> -	return true;
+> -}
+> -
+> -void route_exception(struct ex_regs *regs)
+> -{
+> -	typedef void(*handler)(struct ex_regs *);
+> -	handler *handlers = (handler *)exception_handlers;
+> -
+> -	if (handlers && handlers[regs->vector]) {
+> -		handlers[regs->vector](regs);
+> -		return;
+> -	}
+> -
+> -	if (kvm_fixup_exception(regs))
+> -		return;
+> -
+> -	ucall_assert(UCALL_UNHANDLED,
+> -		     "Unhandled exception in guest", __FILE__, __LINE__,
+> -		     "Unhandled exception '0x%lx' at guest RIP '0x%lx'",
+> -		     regs->vector, regs->rip);
+> -}
+> -
+> -void vm_init_descriptor_tables(struct kvm_vm *vm)
+> -{
+> -	extern void *idt_handlers;
+> -	int i;
+> -
+> -	vm->arch.idt = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
+> -	vm->handlers = __vm_vaddr_alloc_page(vm, MEM_REGION_DATA);
+> -	/* Handlers have the same address in both address spaces.*/
+> -	for (i = 0; i < NUM_INTERRUPTS; i++)
+> -		set_idt_entry(vm, i, (unsigned long)(&idt_handlers)[i], 0,
+> -			DEFAULT_CODE_SELECTOR);
+> -}
+> -
+> -void vcpu_init_descriptor_tables(struct kvm_vcpu *vcpu)
+> -{
+> -	struct kvm_vm *vm = vcpu->vm;
+> -	struct kvm_sregs sregs;
+> -
+> -	vcpu_sregs_get(vcpu, &sregs);
+> -	sregs.idt.base = vm->arch.idt;
+> -	sregs.idt.limit = NUM_INTERRUPTS * sizeof(struct idt_entry) - 1;
+> -	sregs.gdt.base = vm->arch.gdt;
+> -	sregs.gdt.limit = getpagesize() - 1;
+> -	kvm_seg_set_kernel_data_64bit(NULL, DEFAULT_DATA_SELECTOR, &sregs.gs);
+> -	vcpu_sregs_set(vcpu, &sregs);
+> -	*(vm_vaddr_t *)addr_gva2hva(vm, (vm_vaddr_t)(&exception_handlers)) = vm->handlers;
+> -}
+> -
+> -void vm_install_exception_handler(struct kvm_vm *vm, int vector,
+> -			       void (*handler)(struct ex_regs *))
+> -{
+> -	vm_vaddr_t *handlers = (vm_vaddr_t *)addr_gva2hva(vm, vm->handlers);
+> -
+> -	handlers[vector] = (vm_vaddr_t)handler;
+> -}
+> -
+> -void assert_on_unhandled_exception(struct kvm_vcpu *vcpu)
+> -{
+> -	struct ucall uc;
+> -
+> -	if (get_ucall(vcpu, &uc) == UCALL_UNHANDLED)
+> -		REPORT_GUEST_ASSERT(uc);
+> -}
+> -
+>  const struct kvm_cpuid_entry2 *get_cpuid_entry(const struct kvm_cpuid2 *cpuid,
+>  					       uint32_t function, uint32_t index)
+>  {
 > -- 
 > 2.44.0.291.gc1ea87d7ee-goog
 
