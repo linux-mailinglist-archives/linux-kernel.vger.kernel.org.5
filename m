@@ -1,110 +1,89 @@
-Return-Path: <linux-kernel+bounces-122464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9E2088F7EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:34:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFDC88F7FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 279E31C24B90
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:34:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EF6D1C24EDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D612E40D;
-	Thu, 28 Mar 2024 06:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AEB2C6BA;
+	Thu, 28 Mar 2024 06:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CA7ekfYM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QKIaoq0D"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1275225A8;
-	Thu, 28 Mar 2024 06:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5256A21101;
+	Thu, 28 Mar 2024 06:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711607651; cv=none; b=B8Np3b1pWLnOSJJEGRx3nMECvov6ZHLKAzvWofeToB60OvTAH5QqnSmmFt8fbZ5x8vCzgPpHkaoP8zNA3G5+3944vgF20XUO2dZj+Qk7Iuhb7jPsawRBAJROMZ/bAK7dd+R+Vh397D/MSy9Tcqj2mtiWJbbzMoU4/wTXfem32wI=
+	t=1711607723; cv=none; b=uak1Q4SGO5ajNI6rthQmMX8GSr5W3LO7qllRW/KtZQvboyjz4WPLuYyr/saMyyVuGAK583C7CUR9jhYNWh15Ga8ecJ9ut78j8Ay3gCm1EGavpVO7X+M5kzHlrzT+HxyRDWMl/CqsbOu24Me0Re6D0e+OS4oN17ZS5pQap8di1Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711607651; c=relaxed/simple;
-	bh=OSZxUh1fu5GjMOOFW4rXi46zAlT98/Mr1omvAEd18D4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DhH4sbhnQWt8H8C/abliKnmkQJqMK3kXxyymyHY7ZeLZiZii44JFcrEZ6J9UMDp0hp8gfGkhbmTwAUGcqzTNjS1EVrFzm+SCXgWD9K8RraA1XkuPkc4J+XA8+36JlMMvtWtJ7LJgr0tn+ImA9BP1NZnvRT3YdO8LpEH/nYEez9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CA7ekfYM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 046EFC433C7;
-	Thu, 28 Mar 2024 06:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711607651;
-	bh=OSZxUh1fu5GjMOOFW4rXi46zAlT98/Mr1omvAEd18D4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CA7ekfYMrb3MoijNkweqAgV2XtAzjHiMXqM2FdwZ5eP/CnRHuADpIXSy4KXo1Auhm
-	 lWGg8FVdyZ520+KXxIr2EZXrfE8nujD2YxrOvi6ci7XG2tAh+rDEJADMxNmF+pGsup
-	 lfGYS5GCRVXXXJnZw3HpI7A4HdxbUIABMEfuaGKo3HNkfY+pf4T6T+aWfzfh5P5MPE
-	 1/34rJWCHDr8Nc4wKK6zcxSfBuK74ZevRqmNX5Au4GCcue+N9srGVSbbVfJYuNkEkP
-	 ebalC39ZVykIlJ4AC0YMM62lGUin5Vmbhm8L5RKe285p+v+E4RPMh6TuT9sTFNkkLs
-	 vo38nVEjtH0iw==
-Message-ID: <8e0129c9-c9c1-4c50-8c5b-ce902c91c5ad@kernel.org>
-Date: Thu, 28 Mar 2024 15:34:07 +0900
+	s=arc-20240116; t=1711607723; c=relaxed/simple;
+	bh=6G1sdm/Mzhb5jcW0q/QmO6HkpDa6kSYLU5wqvdfM+eQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TNZjLY3xFcb84340ZdstCKliKqxajCQaFwLE3C8udrtN8fJ7Te4YEbt/DZTU8dzAWB6nn0ZDXzAgM7fHyF4kRg/esZr1/VE5yCpJgxlB9DOK/HXT81dzmjbAtoh6jrQKXbSbLJWamT85CaiYovJ1QArvbqw9RYRPTHPf8TwppTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QKIaoq0D; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=I9oAmld5QX0jZjclvixZH9ygB8dtXnOdM00iyF+Eodw=; b=QKIaoq0DQM+pMcoJ/ZomQC2wsI
+	MZGE6pmn+xwMSGaMd+ZwrZSJUaS0OfpMfUcBBeH3XLR8sWDQKEfq6FY0RTqQj++RCbZ38NS8l5HkH
+	/8XXc1hnnqUlZZ3LlhcyTkAa5F0BDeKWMehMdLxaW7CBKUD+uLRPP347yLsrLoWI19Mn19gh2R8SB
+	zusQ08tkaJWKM+MlCBOAYFjoasGv5m3vuojsOm1PtHoTE/Y6qmtdpm+SiLsARAeJtW/sp4bNX5dnF
+	rad8JJNdfLJ986enlo3SSrznxH0HLEz+Q0k47QHfTcFvbuR4NQnKM5qR7sktcyd9fNa9XX10c1Ltj
+	+GfmwykA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpjM7-0000000CjXP-3YqS;
+	Thu, 28 Mar 2024 06:35:19 +0000
+Date: Wed, 27 Mar 2024 23:35:19 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Damien Le Moal <dlemoal@kernel.org>, Yihang Li <liyihang9@huawei.com>,
+	yanaijie@huawei.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+	chenxiang66@hisilicon.com, linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+	prime.zeng@huawei.com, yangxingui@huawei.com
+Subject: Re: [PATCH v2] scsi: libsas: Allocation SMP request is aligned to
+ ARCH_DMA_MINALIGN
+Message-ID: <ZgUPpwhkE9bRwHec@infradead.org>
+References: <20240326124358.2466259-1-liyihang9@huawei.com>
+ <5b5b9392-7fd2-4c87-8e41-5e54adf20003@kernel.org>
+ <0ba9914d-7060-498a-beac-2b19770e1963@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] scsi: libsas: Allocation SMP request is aligned to 16B
-To: Yihang Li <liyihang9@huawei.com>, john.g.garry@oracle.com,
- yanaijie@huawei.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
- chenxiang66@hisilicon.com
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linuxarm@huawei.com, prime.zeng@huawei.com, yangxingui@huawei.com
-References: <20240328062657.581460-1-liyihang9@huawei.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <20240328062657.581460-1-liyihang9@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ba9914d-7060-498a-beac-2b19770e1963@oracle.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 3/28/24 15:26, Yihang Li wrote:
-> This series [1] reducing the kmalloc() minimum alignment on arm64 to 8
-> (from 128). In libsas, this will cause SMP requests to be 8-byte-aligned
-> through kmalloc() allocation. However, for the hisi_sas hardware, all
-> commands address must be 16-byte-aligned. Otherwise, the commands fail to
-> be executed.
+On Tue, Mar 26, 2024 at 01:32:09PM +0000, John Garry wrote:
+> > > +	u8 *p;
+> > > +
+> > > +	size = ALIGN(size, ARCH_DMA_MINALIGN);
 > 
-> So use 16B as the alignment for SMP request.
 > 
-> Link: https://lkml.kernel.org/r/20230612153201.554742-1-catalin.marinas@arm.com [1]
-> Signed-off-by: Yihang Li <liyihang9@huawei.com>
-
-Looks OK to me.
-
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-
-> ---
-> Changes since v2:
-> - Use 16B as alignment for SMP requests instead of ARCH_DMA_MINALIGN.
+> If this is a hisi_sas requirement, then why use ARCH_DMA_MINALIGN and not
+> 16B as minimum alignment?
 > 
-> Changes since v1:
-> - Directly modify alloc_smp_req() instead of using handler callback.
-> ---
->  drivers/scsi/libsas/sas_expander.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-> index a2204674b680..5ddbd00d5c76 100644
-> --- a/drivers/scsi/libsas/sas_expander.c
-> +++ b/drivers/scsi/libsas/sas_expander.c
-> @@ -135,7 +135,7 @@ static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
->  
->  static inline void *alloc_smp_req(int size)
->  {
-> -	u8 *p = kzalloc(size, GFP_KERNEL);
-> +	u8 *p = kzalloc(ALIGN(size, 16), GFP_KERNEL);
->  	if (p)
->  		p[0] = SMP_REQUEST;
->  	return p;
+> Or are we really talking about an arch requirement?
 
--- 
-Damien Le Moal
-Western Digital Research
+One thing is that we should never allocate unaligned memory for
+anything DMA mapped, or data will be corrupted by non-coherent DMA.
+So ARCH_DMA_MINALIGN needs to be here.  If specific hardware has
+further requirements we'll need to communicated it through a field
+or op vector.
+
 
 
