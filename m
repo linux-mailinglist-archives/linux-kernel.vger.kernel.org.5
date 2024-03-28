@@ -1,134 +1,152 @@
-Return-Path: <linux-kernel+bounces-122336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D52388F55C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:29:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45F2388F55D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7CD9B239C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:29:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFB741F28A54
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BD12C197;
-	Thu, 28 Mar 2024 02:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9431F2B9DA;
+	Thu, 28 Mar 2024 02:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F+1iOBbV"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rhk42HML"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3AA15EA2
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B92D25760
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711592940; cv=none; b=hdQwQbaR+Kza9/ZVDJMNiIDAUtXkIDYZ1yaZdcPOx4fC93P+6OlmagQKk/C0hPLtNHaScNLOAXiOrqKodcfan7onVrPwnHw3v/YIE2Md5e2p6c8d8b8fEzBaCAVJw35GvT/w9Fc8yGLir1SoXwZRJ/3VtM1aPKzy1mCeyLIDbD8=
+	t=1711592940; cv=none; b=ngaws9TR4Pvr3DyvSnRdI6tPuEXeszvsEoc/WdGx4eR/C3szD8N3VW7eedHpmwvP4iDXhCKZWM253rHPPspFcLq3TIw4ZzrNoVoRxZM9PMYV1SQSRYi3uFNmmbALBjOH1LaE8aFwJCrra6MIrJgh0AAXHvtm+Azy8Ic8Hvg+Nn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711592940; c=relaxed/simple;
-	bh=h+/LJXjVQOXWB/sKPlFjTW9LNmbWR1Ss72lNfiJiT6w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=UDdnYsr4cXmhlOgr09HKt1+LgyGAeoThzpQaIk4iS3EodUk7oMMfl9bOq8S+9p118ta/vEyt46K5dIg7F5X38GTeIAKT6TuQzTmJdnrrhl8sw5UxE8ekPzAVdbUjfQOU495133XO0w+1S3h22YeQQm/Dm7pLHi5FOWG5gW//P7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F+1iOBbV; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4e0a65f37bso61755266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:28:58 -0700 (PDT)
+	bh=qJqf+gspYBFRI2K5imH74xBgzF2f9aynWHZqrtIDj+k=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=UB7CClCt4o53HMZ/r0g2FbbbtVFTbesle0zsctguhRBeIGLaAHZ3biIfgptC+FTyRlBAtljwxQPF5/ErpRG+IkGJRypIPnFo2CbNWIOs/hTB1IjUURiaJN4Sn3RJa386bFf7tXGVD6loQSuTCy8pUQ822aAAt+UnJnUhueAxeH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rhk42HML; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so846513276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 19:28:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711592937; x=1712197737; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bDAvihxPchw6uPgK2fWjw6QvhPyhverBPPRFPQpzTNk=;
-        b=F+1iOBbVpcT4yF1wIEoDDvXYb3jXTsEHOh/XCUbjXwg9R8ffJOsqsr0wGcQIhK6+CK
-         z/D4kY1r7lhNNJ656RGYAoR/FUF+wQoAHYIfBQqe6wx3Khynt7IoqC1InlXC9HRcq0w+
-         u0DnEwy0cUqEVQzLuuYHQ75FTjOzcf5tcYUP9Z5BX2sA7/+kfkX+88vDt6erUvsOtDkT
-         hhq3fiyC9AhY5MFS6jk5pcARC3pHtbuoni54ma6bvvXWwFZ710HcmBuQ6XiZqCyhRsOI
-         ahWb6tsbyJd/pZYlAASDA/P+o1CwlodhYWjRJPZMyqkoA84iaCVRRj4L/czpMI2xQyT+
-         IokA==
+        d=google.com; s=20230601; t=1711592938; x=1712197738; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/QmOyqM5X2MNASCMJ2dyKBKMwyn+XBPI/URXs6ak0lY=;
+        b=rhk42HMLIfXvjMyIuNQ1KAsmWHS2F3VZ7xM529MKMOc9qjyuoKjr/XOmBBvR6KXvjF
+         NNpwNIpqhFCDVoBJ4Uzi5Rl4v0/HkoGaFpHj03VUpDhIpNOfNcQ+dhzYWTAcCbJYlUvX
+         I00+UsIUkDjVQaLkEGkIRVzwt49HorrgRtBvaRcjfbH4EPU5HN0MmVOIliFaYmzSLIYe
+         03Q6602D/PaMndefNu0Q8+km6V/DdxctqRDEr5YsGyFhzY2grawQZFXuVgESvadrW1bG
+         Q9GEzmI/yKA8T1RdWOUVOHDB+gqiSDnzDz2Y1W3X1s2P/fYBlgB2bWUS3xzV/JDXdECS
+         ssbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711592937; x=1712197737;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bDAvihxPchw6uPgK2fWjw6QvhPyhverBPPRFPQpzTNk=;
-        b=DIMpJyIHXAO0F4cfDLr83iJG6EYp6tKOgwl8SWXmOL28Fs36AAqkuOQRtD8T1JZ316
-         ZIRZnk8EzJlio/7lgBiACxHIXUB/MS+8xkc6VmEgv5HsE3XWcNSOw2/A0d5qZUmPYlE2
-         GL+NVlIbaiE6EIHH5q0hZpdjYbPMV005tfyhHWIjSPEzPBQQKcrm9WZHFAvQuTw8zrNu
-         Q5pthSbtLp84rkcoRtKX3GIPhwV/3kZg9jayAFdlDVs+uqIyLrCWpZumIrG1PrSt4jpU
-         P0MOgWanvN+qECdAPSMMWRdtMcxZg6qW+XrS+TOEjh+INjMC+35EkPPkkUzS6S2tXO/P
-         wq1w==
-X-Forwarded-Encrypted: i=1; AJvYcCX5ygDyntVwCfRbCIZvGZw0RmHLObJzhe4su0tuBasCcOLg+KlSFOjW94lHacUl1Sh9QBZNPXvnJ9DwLNI1TGcgJQ+McQPJ3ogfw3Ar
-X-Gm-Message-State: AOJu0YyLA0hoM4qj2UdKqIISDvux8h8glIZpVHY8Ero6BRV7nHPUq1ge
-	G5F0QRPpIiIk+bKGXaBHOeAE0IM4th8rfws1FakR/+JBnMwz/GS5
-X-Google-Smtp-Source: AGHT+IFx/cbqzZGVJgBPv/qh22M7obTZPKff4xe8ROsXGaVfkTB4R9HcPfhyxlhq3e+0RE9gCSqNdw==
-X-Received: by 2002:a17:906:6a20:b0:a47:30d6:f465 with SMTP id qw32-20020a1709066a2000b00a4730d6f465mr982293ejc.1.1711592936785;
-        Wed, 27 Mar 2024 19:28:56 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id wv11-20020a170907080b00b00a4503a78dd5sm197756ejb.17.2024.03.27.19.28.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 27 Mar 2024 19:28:55 -0700 (PDT)
-From: Wei Yang <richard.weiyang@gmail.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de
-Cc: x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH 2/2] x86/boot/e820: a local variable for last_addr is not necessary
-Date: Thu, 28 Mar 2024 02:28:30 +0000
-Message-Id: <20240328022830.22802-2-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20240328022830.22802-1-richard.weiyang@gmail.com>
-References: <20240328022830.22802-1-richard.weiyang@gmail.com>
+        d=1e100.net; s=20230601; t=1711592938; x=1712197738;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/QmOyqM5X2MNASCMJ2dyKBKMwyn+XBPI/URXs6ak0lY=;
+        b=p68LE+e8wIIddM/W1/50dh320g+5uPTrIUpaIzyKhrqW28QiZX/b+zId4lEfrbVhgx
+         AZiblP7kV9im5CZsE/yhHq79JD/w8r4KCfqmfLh5EcNMcznprpPldEP/ymsYwInkUDKP
+         LWm22am3KxVhZ95MwjqyRSZ0K/RHKbtlt+5FgdTcGKJZz2SzMUa0yKAggfY2yFWH2/0Y
+         oO0EoIbo5eWdDWf9gPL0fT78TeLd1PIPqN6QJjHIzIaaKtVPEh2sF0BI7/SB2ZaI265Q
+         vuej4Ddc+y8EcBThp/bHOyGdon8wlikJKUlVAPXNs8GFBmVVBl6rR7E1IOWdq3lJsh8m
+         3NXw==
+X-Forwarded-Encrypted: i=1; AJvYcCUnlCLNa6ZR5Mp9Ds13AWHXWeFbS9H9JOeqrGYjD9J0KI6kqf6D4DSyZwoFCdL832Rvznn8Yd5/YQhvyMWS2QlB4/eNHSySgLBxbroA
+X-Gm-Message-State: AOJu0YwtAJ3SzEwtmjKKgPCExMdTyYuAT+6qRvR9etiy78shF3fdeGsz
+	H3oZIpGWHJlagA43clasiJ6TfLrBIshUs0AS+Me+KlU0kXPVZ8Q9O+xjuaYSokwHbvC7B/qaTiz
+	pDBBNrJtrwGEigZSwIXBSVQ==
+X-Google-Smtp-Source: AGHT+IG3h7UFptSbhQThXKYXVUxHjXW9GcRNRwfD8DnNx4fzNFxp960mZTVoDNqHvfoMy5v3WIivsTHuarJXGtUe7A==
+X-Received: from ctop-sg.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:1223])
+ (user=ackerleytng job=sendgmr) by 2002:a05:6902:2290:b0:dc7:48ce:d17f with
+ SMTP id dn16-20020a056902229000b00dc748ced17fmr489931ybb.10.1711592938320;
+ Wed, 27 Mar 2024 19:28:58 -0700 (PDT)
+Date: Thu, 28 Mar 2024 02:28:51 +0000
+In-Reply-To: <20240314232637.2538648-14-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+References: <20240314232637.2538648-1-seanjc@google.com> <20240314232637.2538648-14-seanjc@google.com>
+Message-ID: <diqz7chnm6n0.fsf@ctop-sg.c.googlers.com>
+Subject: Re: [PATCH 13/18] KVM: selftests: Drop superfluous switch() on
+ vm->mode in vcpu_init_sregs()
+From: Ackerley Tng <ackerleytng@google.com>
+To: Sean Christopherson <seanjc@google.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, Anup Patel <anup@brainfault.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-We only use this to calculate the size of new entry as the start
-address, which is already stored in new_entries->addr.
+Sean Christopherson <seanjc@google.com> writes:
 
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
----
- arch/x86/kernel/e820.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> Replace the switch statement on vm->mode in x86's vcpu_init_sregs()'s with
+> a simple assert that the VM has a 48-bit virtual address space.  A switch
+> statement is both overkill and misleading, as the existing code incorrectly
+> implies that VMs with LA57 would need different to configuration for the
+> LDT, TSS, and flat segments.  In all likelihood, the only difference that
+> would be needed for selftests is CR4.LA57 itself.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  .../selftests/kvm/lib/x86_64/processor.c      | 25 ++++++++-----------
+>  1 file changed, 10 insertions(+), 15 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> index 8547833ffa26..561c0aa93608 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+> @@ -555,6 +555,8 @@ static void vcpu_init_sregs(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_sregs sregs;
+>  
+> +	TEST_ASSERT_EQ(vm->mode, VM_MODE_PXXV48_4K);
+> +
+>  	/* Set mode specific system register values. */
+>  	vcpu_sregs_get(vcpu, &sregs);
+>  
+> @@ -562,22 +564,15 @@ static void vcpu_init_sregs(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
+>  
+>  	kvm_setup_gdt(vm, &sregs.gdt);
+>  
+> -	switch (vm->mode) {
+> -	case VM_MODE_PXXV48_4K:
+> -		sregs.cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
+> -		sregs.cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
+> -		sregs.efer |= (EFER_LME | EFER_LMA | EFER_NX);
+> +	sregs.cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
+> +	sregs.cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
+> +	sregs.efer |= (EFER_LME | EFER_LMA | EFER_NX);
+>  
+> -		kvm_seg_set_unusable(&sregs.ldt);
+> -		kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs.cs);
+> -		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.ds);
+> -		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.es);
+> -		kvm_setup_tss_64bit(vm, &sregs.tr, 0x18);
+> -		break;
+> -
+> -	default:
+> -		TEST_FAIL("Unknown guest mode, mode: 0x%x", vm->mode);
+> -	}
+> +	kvm_seg_set_unusable(&sregs.ldt);
+> +	kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs.cs);
+> +	kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.ds);
+> +	kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.es);
+> +	kvm_setup_tss_64bit(vm, &sregs.tr, 0x18);
+>  
+>  	sregs.cr3 = vm->pgd;
+>  	vcpu_sregs_set(vcpu, &sregs);
+> -- 
+> 2.44.0.291.gc1ea87d7ee-goog
 
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index ecbeb76ed08f..8d431ac3f76e 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -324,7 +324,6 @@ int __init e820__update_table(struct e820_table *table)
- 	struct e820_entry *entries = table->entries;
- 	u32 max_nr_entries = ARRAY_SIZE(table->entries);
- 	enum e820_type current_type, last_type;
--	unsigned long long last_addr;
- 	u32 new_nr_entries, overlap_entries;
- 	u32 i, chg_idx, chg_nr;
- 
-@@ -366,7 +365,6 @@ int __init e820__update_table(struct e820_table *table)
- 	overlap_entries = 0;	 /* Number of entries in the overlap table */
- 	new_nr_entries = 0;	 /* Index for creating new map entries */
- 	last_type = 0;		 /* Start with undefined memory type */
--	last_addr = 0;		 /* Start with 0 as last starting address */
- 
- 	/* Loop through change-points, determining effect on the new map: */
- 	for (chg_idx = 0; chg_idx < chg_nr; chg_idx++) {
-@@ -397,7 +395,8 @@ int __init e820__update_table(struct e820_table *table)
- 		/* Continue building up new map based on this information: */
- 		if (current_type != last_type || e820_nomerge(current_type)) {
- 			if (last_type) {
--				new_entries[new_nr_entries].size = change_point[chg_idx]->addr - last_addr;
-+				new_entries[new_nr_entries].size =
-+					change_point[chg_idx]->addr - new_entries[new_nr_entries].addr;
- 				/* Move forward only if the new size was non-zero: */
- 				if (new_entries[new_nr_entries].size != 0)
- 					/* No more space left for new entries? */
-@@ -407,7 +406,6 @@ int __init e820__update_table(struct e820_table *table)
- 			if (current_type) {
- 				new_entries[new_nr_entries].addr = change_point[chg_idx]->addr;
- 				new_entries[new_nr_entries].type = current_type;
--				last_addr = change_point[chg_idx]->addr;
- 			}
- 			last_type = current_type;
- 		}
--- 
-2.34.1
-
+Reviewed-by: Ackerley Tng <ackerleytng@google.com>
 
