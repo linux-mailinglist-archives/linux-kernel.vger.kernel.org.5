@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-123021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A05890124
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EFC5890126
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DDBEB238A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:07:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F03FB23AA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41B9482880;
-	Thu, 28 Mar 2024 14:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3C582D62;
+	Thu, 28 Mar 2024 14:06:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="btfiU8CF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R998RHJ3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80BB144C67;
-	Thu, 28 Mar 2024 14:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9DC84D31;
+	Thu, 28 Mar 2024 14:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634802; cv=none; b=iuqU66yZziqBqZaBasle+gitOlFquTCJa4K/osWIRCNtEv1WEt8rzedFy9IIE9BSd+Ch3SFFDe0N7q4rHRFSA45o6ih3RfVVX9+NNZe5liAX0RGAoVHMXLf+CTankTm9i4ZobwhwTQlIJ9yxzl3t0bNnm2N0cd7vBM+dUS4+KmI=
+	t=1711634808; cv=none; b=qRoMbQ0uxkfl+MOL3rvHFVyw/MqQ6XV3Snl/est9smpEbNC3gFl91boUJ/OZKET8I5UY3ZtW0RwaM/SVTPzNr0TWQJEUc8tS8WhrqSN9pOG7kztjyQrHyVLmgGbNy2pM5SsqWgjAEr8CplOaRassyRSr2UwBZyzrgsc1gdjN1P4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634802; c=relaxed/simple;
-	bh=lezpFM2DFivksVBQ+jcGXE6ARZQR+zJugCRJ8LauAOg=;
+	s=arc-20240116; t=1711634808; c=relaxed/simple;
+	bh=yHFhPfrMMHs59SCQp+6DZsAO2LqRForPxbzKn/h9OZA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ctiy9Iy530Gmzxzvd/8dGkKT3zv2Gyte7QOrIMGIbNZ/CljMyS7TQ7KLy3k4avNl06uoL02Tp6dhFQFaBgraIDgt4hUay2HfY5nrctnegf03FYeAbvSBQLJ23CIC3emwG632VJNg7PNh7YE2PX6ucAsy+8JlocQTMtL7Dq241zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=btfiU8CF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD52BC433C7;
-	Thu, 28 Mar 2024 14:06:39 +0000 (UTC)
+	 MIME-Version; b=lnP6Gu+2h+Z0gfI1FOG37wqu+3ARzH10LbuN/gGkWignOQ1F77dpHWE5+28eLVOK/h9ts7gWgcWRtGDgVGwX0fcyuiHiAFI2CcRcHaIfFxNmEGPUeGXL9pUhFqDY0Bb75VU9+Yh1+vQChLZVXFCZR/zgN8sliwYbmN6wKWgBpqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R998RHJ3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C68FAC433C7;
+	Thu, 28 Mar 2024 14:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711634802;
-	bh=lezpFM2DFivksVBQ+jcGXE6ARZQR+zJugCRJ8LauAOg=;
+	s=k20201202; t=1711634808;
+	bh=yHFhPfrMMHs59SCQp+6DZsAO2LqRForPxbzKn/h9OZA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=btfiU8CFi3ZJpE6YEYkrNSnkajZh5p/OPkCeQtqKmhP61Z3AbzPlRLr1vqjRGWgUv
-	 4NYQxyuOXQf/UOtzHaXO+vVcXaQd9eI57v/nK4ubYyfaUR2zYLM1QftIWpy+XGNRNH
-	 swbYRDzNe3lyoL8ahTFBq+VT18N3dRNB02b+LE0+li5tYVSiO/GWzL8UjqlQsNADle
-	 oRarDv9hUrzmtQkCNacsLuTQZ5EfKu7MGIeak/pjJw/L+OWFjGMnrYvOjMn8/V8X9K
-	 jemp4ib7rMMWMLjcgQ3sci6hfss19XYHNtQDyIFwaX/u56L+Ih+NWY9xDpx/C1m6B2
-	 6CY0kLzc2Fa3A==
+	b=R998RHJ3bF9lTIX5YWthw9VZaOAKxAC8PYU9VG6hxbfvkV/2ojvYP+QAo5KdLlrQ7
+	 /wz84TbbA9274ily1eOENho1tB+8cFC9giRCQegDvg4tPyUwccnz0Bdw4+I8Moyt5s
+	 Rw0NhibOpG0YPZHN8OLMstOKFp8ZFMWrowVFFP0BQ5sTlgZ4NiVcAIGqdCXFuNq3ne
+	 uKY3f9mdvItaaz+H+E9vnv4jxK/06AW1LCwyelKi2hAuNcupkYrRwVqZD+9E7z3+B5
+	 dAytiqSnnjaHoDp+hvabvCDcEm3Rry4aP06xRnDKpxAYTsukGYcIucItdTYFK0MG4s
+	 JHhAW59Pcv4eg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Robert Moore <robert.moore@intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Alexey Starikovskiy <astarikovskiy@suse.de>,
-	Lin Ming <ming.m.lin@intel.com>,
-	Len Brown <len.brown@intel.com>
+	"Richard Russon (FlatCap)" <ldm@flatcap.org>,
+	Jens Axboe <axboe@kernel.dk>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH 06/11] acpi: avoid warning for truncated string copy
-Date: Thu, 28 Mar 2024 15:04:50 +0100
-Message-Id: <20240328140512.4148825-7-arnd@kernel.org>
+	linux-ntfs-dev@lists.sourceforge.net,
+	linux-block@vger.kernel.org
+Subject: [PATCH 07/11] block/partitions/ldm: convert strncpy() to strscpy()
+Date: Thu, 28 Mar 2024 15:04:51 +0100
+Message-Id: <20240328140512.4148825-8-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240328140512.4148825-1-arnd@kernel.org>
 References: <20240328140512.4148825-1-arnd@kernel.org>
@@ -67,68 +63,55 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc -Wstringop-truncation warns about copying a string that results in a
-missing nul termination:
+The strncpy() here can cause a non-terminated string, which older gcc
+versions such as gcc-9 warn about:
 
-drivers/acpi/acpica/tbfind.c: In function 'acpi_tb_find_table':
-drivers/acpi/acpica/tbfind.c:60:9: error: 'strncpy' specified bound 6 equals destination size [-Werror=stringop-truncation]
-   60 |         strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/acpi/acpica/tbfind.c:61:9: error: 'strncpy' specified bound 8 equals destination size [-Werror=stringop-truncation]
-   61 |         strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'ldm_parse_tocblock',
+    inlined from 'ldm_validate_tocblocks' at block/partitions/ldm.c:386:7,
+    inlined from 'ldm_partition' at block/partitions/ldm.c:1457:7:
+block/partitions/ldm.c:134:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
+  134 |  strncpy (toc->bitmap1_name, data + 0x24, sizeof (toc->bitmap1_name));
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+block/partitions/ldm.c:145:2: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
+  145 |  strncpy (toc->bitmap2_name, data + 0x46, sizeof (toc->bitmap2_name));
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This one is intentional, so rewrite the code in a way that avoids the
-warning. Since there is already an extra strlen() and an overflow check,
-the actual size to be copied is already known here.
+New versions notice that the code is correct after all because of the
+following termination, but replacing the strncpy() with strscpy_pad()
+or strcpy() avoids the warning and simplifies the code at the same time.
 
-Fixes: 47c08729bf1c ("ACPICA: Fix for LoadTable operator, input strings")
+Use the padding version here to keep the existing behavior, in case
+the code relies on not including uninitialized data.
+
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/acpi/acpica/tbfind.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ block/partitions/ldm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/acpica/tbfind.c b/drivers/acpi/acpica/tbfind.c
-index 1c1b2e284bd9..472ce2a6624b 100644
---- a/drivers/acpi/acpica/tbfind.c
-+++ b/drivers/acpi/acpica/tbfind.c
-@@ -36,7 +36,7 @@ acpi_tb_find_table(char *signature,
- {
- 	acpi_status status = AE_OK;
- 	struct acpi_table_header header;
--	u32 i;
-+	u32 len, i;
- 
- 	ACPI_FUNCTION_TRACE(tb_find_table);
- 
-@@ -46,19 +46,18 @@ acpi_tb_find_table(char *signature,
- 		return_ACPI_STATUS(AE_BAD_SIGNATURE);
+diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
+index 38e58960ae03..2bd42fedb907 100644
+--- a/block/partitions/ldm.c
++++ b/block/partitions/ldm.c
+@@ -131,8 +131,7 @@ static bool ldm_parse_tocblock (const u8 *data, struct tocblock *toc)
+ 		ldm_crit ("Cannot find TOCBLOCK, database may be corrupt.");
+ 		return false;
  	}
+-	strncpy (toc->bitmap1_name, data + 0x24, sizeof (toc->bitmap1_name));
+-	toc->bitmap1_name[sizeof (toc->bitmap1_name) - 1] = 0;
++	strscpy_pad(toc->bitmap1_name, data + 0x24, sizeof(toc->bitmap1_name));
+ 	toc->bitmap1_start = get_unaligned_be64(data + 0x2E);
+ 	toc->bitmap1_size  = get_unaligned_be64(data + 0x36);
  
--	/* Don't allow the OEM strings to be too long */
--
--	if ((strlen(oem_id) > ACPI_OEM_ID_SIZE) ||
--	    (strlen(oem_table_id) > ACPI_OEM_TABLE_ID_SIZE)) {
--		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
--	}
--
- 	/* Normalize the input strings */
- 
- 	memset(&header, 0, sizeof(struct acpi_table_header));
- 	ACPI_COPY_NAMESEG(header.signature, signature);
--	strncpy(header.oem_id, oem_id, ACPI_OEM_ID_SIZE);
--	strncpy(header.oem_table_id, oem_table_id, ACPI_OEM_TABLE_ID_SIZE);
-+	len = strlen(oem_id);
-+	if (len > ACPI_OEM_ID_SIZE)
-+		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-+	memcpy(header.oem_id, oem_id, len);
-+	len = strlen(oem_table_id);
-+	if (len > ACPI_OEM_TABLE_ID_SIZE)
-+		return_ACPI_STATUS(AE_AML_STRING_LIMIT);
-+	memcpy(header.oem_table_id, oem_table_id, len);
- 
- 	/* Search for the table */
- 
+@@ -142,8 +141,7 @@ static bool ldm_parse_tocblock (const u8 *data, struct tocblock *toc)
+ 				TOC_BITMAP1, toc->bitmap1_name);
+ 		return false;
+ 	}
+-	strncpy (toc->bitmap2_name, data + 0x46, sizeof (toc->bitmap2_name));
+-	toc->bitmap2_name[sizeof (toc->bitmap2_name) - 1] = 0;
++	strscpy_pad(toc->bitmap2_name, data + 0x46, sizeof(toc->bitmap2_name));
+ 	toc->bitmap2_start = get_unaligned_be64(data + 0x50);
+ 	toc->bitmap2_size  = get_unaligned_be64(data + 0x58);
+ 	if (strncmp (toc->bitmap2_name, TOC_BITMAP2,
 -- 
 2.39.2
 
