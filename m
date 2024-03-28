@@ -1,130 +1,165 @@
-Return-Path: <linux-kernel+bounces-123790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABC67890DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:51:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40874890DDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:54:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D76021C28979
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:51:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACBD8B214A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CED40875;
-	Thu, 28 Mar 2024 22:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBCF535D2;
+	Thu, 28 Mar 2024 22:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n0sYZ3f0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GjvVCqp+"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82C43FBA1
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473B81D68F
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711666295; cv=none; b=mzDtCM0/6IeJN8KMeVEdcvnEnijpXZQPMPfJpbqjoCC5G0RQlC/xRQCoRYBya898kimQA3xJ2RvmFqhDD4/FaabLVVa7K8RmnkZAXJM8MB2EZPbyAes4R4EHXPCPque1H8ABhJh/VLDv7oyDtePBnbTabE74+nNesyprY7Ev4YE=
+	t=1711666430; cv=none; b=OgA0yRkSPgq4KlVN/08iMq3m5n9WIaufQg68k1qpFExbebFUjm3HG2DIwbpHuPydlDPwbOLdbnz2djZvGIe/tdcCeR/9zaKs9s+SbH04hVWU0KBHyfP2dcbRPu8Ilx6kPRgPaDQs6qmyCS80O3Oz5u2LrFJFXs8+k2Z/vJWT1U8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711666295; c=relaxed/simple;
-	bh=NifpSitZFwDIGKmPZazznM78PsJ/sym0i+5/IJ4O9zU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMpmhx/nM9gc2S6YA+ImS3SE4p+NpJgfdZdqwP4YObKQ1anG0lxjDr5TYbVEHXHtuPxsOyVTHA5u6NvhnejLwRwQGpYHhcrgm+QLgXVsFJ/4GW1XY86gOsNmYxQtqp2cuQytkzMk2Yif9VbNd932WV/1eMO1oLQN6LcIcuHSdSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n0sYZ3f0; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711666293; x=1743202293;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NifpSitZFwDIGKmPZazznM78PsJ/sym0i+5/IJ4O9zU=;
-  b=n0sYZ3f0sTTxY7V6IoyJib78JcQzlxje71GMA0Kux/sd3drSKfpbhvdu
-   zSxWfZt+9QQdEjagkf9WP/8pwVjAr4bzWzPCkoN72LtuRk0H4QHaro6W3
-   yTnttylt3hHPPgS6B4cZ6GHGQ+ra0qYm59dFytjkPdOv8ysPvQk0lQM7I
-   FvXXSTxEKdZJTE7n2dpKxOeKulm8mOhi2/yVpCw7OS5IAzvIFP87M8fFh
-   D9SPgns4uWoVME9voLYPjmCVNJ40ST85F96ljoTJJ2UndT7eUUh+6Exq3
-   O4dkq5YOsPvKrlRr3cwc2H4v97+oyl+rgDpy9AEQZ/6tC7CGi2qHl2jiI
-   w==;
-X-CSE-ConnectionGUID: uR67kKMISaevaN18LztdJw==
-X-CSE-MsgGUID: jvdUqBfjR5+uzD0UTOHOVA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="32252377"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="32252377"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 15:51:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="16839134"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.99.22])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 15:51:33 -0700
-Date: Thu, 28 Mar 2024 15:51:31 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: TaheraFahimi <fahimitahera@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev
-Subject: Re: [PATCH] staging: gdm724x: Align descendant argument to the open
- parenthesis
-Message-ID: <ZgX0c7mTJkipSkmQ@aschofie-mobl2>
-References: <ZgXupx0nXwIOjy7F@tahera-OptiPlex-5000>
+	s=arc-20240116; t=1711666430; c=relaxed/simple;
+	bh=m2sHr69UQ23/+yNNagVCVSd+tL9gNcumuplvgXMM3eE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fcE3oMa4k7mmxwPsEWrms06B/dmZEyIGknZ4ZmhlweLcH0zAo7rqWEoBq1Gp8GM5fsDl3uMc0sjb7Mc6kANHNgbTlSY04bhk+lgleZ9BICwZJXZXj0UDX1Npm05Z7Imi36BJXvKlWXVuve8hw3gaFAR1QVqVgMEaJ0mD3xQUbMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GjvVCqp+; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56899d9bf52so1954743a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711666428; x=1712271228; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TEbIDW7kbPaE87dBPORDU/rsnpNPLPoHlh1VVnWn9NA=;
+        b=GjvVCqp+UrkJj/Q1BkHxcMX1d1B0WrYzJZU4b12Im5rjUMSk/I1e59Gl2QrWEdObM3
+         WVc/EDOfGYTRdrVD47dbkVYM7MuIf37jur8eZgPmL+8hG7PgTYwfXzifmBWzk8lveWAu
+         pL0hI0UrIrSW/nh8lmgfAbsXzygVZWxD4TtHdgZcC4pdTnUigPdjglq+uAMNxGA2jvri
+         K6tZOk2oF/XSN3H5BV90vwHs0JQbplddepfes2CCS4QTGh07WMaBJrLApLTdwTjGhLPZ
+         EGKKa3bVP2Cb8BAMFjmMMbQTMCoCKjcFvd0keKtBzIICixLNsRrR6gCAEJa8cbc6+Mid
+         zDzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711666428; x=1712271228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TEbIDW7kbPaE87dBPORDU/rsnpNPLPoHlh1VVnWn9NA=;
+        b=qwOmx3JPP+zFkjf9zKvx2mgkhGcSxaX5I1XWPzyHV7tJhcZdKiYSjp9AsN4d7DYMUN
+         43+b19uuA9KyciYvxFZ8N8kIc4IHLdrW+8OT/1abOjL3IjPYw+/au6NAtYplVCh5GSk5
+         P5MsD2qOl5lmu58LpIXfkcwbAnwvsR4fAKkOeTxzGehsrTdZreN9sU03wjjI/sYHjNqD
+         Wjbzp9qz+6r0YNaCLSlXt5WeynYjLu87uFWBsCUMXgUbrs2RuZCqk9BQNsTEUcHSObzJ
+         REVICIv+TXM4qr29QoZoCgoLi8R8qZwgcVfZP83yOddAppMdoNo+4kx5bF1zmEJQ1XrZ
+         ZdBw==
+X-Gm-Message-State: AOJu0Yz3rCNcRvdV756lhPXuxs73EKRN6eiof1ulN+Mg5wyEymDh745N
+	dbHqx6G+9X2IefmNXzBjR79d0MilhCtXCeERrSUzDiU9L81DBs48Ois6SmgsUuml3VKqTCs0B4u
+	53eg/rzqfGdCGyYVEFpCDd4f8xSV0lt0eB4oo
+X-Google-Smtp-Source: AGHT+IHSOF7Jz1HlwWi9ZnZS4sDGFwM0sUVO6wKPz80s3bzKUakcomIa558eS7Mlmg+NfUj6hjAXDu38td4y54TNQ6s=
+X-Received: by 2002:a05:6402:254a:b0:56b:e089:56ed with SMTP id
+ l10-20020a056402254a00b0056be08956edmr540944edb.39.1711666427673; Thu, 28 Mar
+ 2024 15:53:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgXupx0nXwIOjy7F@tahera-OptiPlex-5000>
+References: <20240328143051.1069575-1-arnd@kernel.org> <20240328143051.1069575-3-arnd@kernel.org>
+In-Reply-To: <20240328143051.1069575-3-arnd@kernel.org>
+From: Justin Stitt <justinstitt@google.com>
+Date: Thu, 28 Mar 2024 15:53:35 -0700
+Message-ID: <CAFhGd8rCzhqK18KLtLVLWyWHtQzJsHCkkkQQyLbmw83K6ExKkw@mail.gmail.com>
+Subject: Re: [PATCH 2/9] libceph: avoid clang out-of-range warning
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Xiubo Li <xiubli@redhat.com>, 
+	Ilya Dryomov <idryomov@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Jeff Layton <jlayton@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Milind Changire <mchangir@redhat.com>, Patrick Donnelly <pdonnell@redhat.com>, 
+	Christian Brauner <brauner@kernel.org>, ceph-devel@vger.kernel.org, netdev@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 04:26:47PM -0600, TaheraFahimi wrote:
-> Mute the following checkpatch error:
-> 	CHECK: Alignment should match open parenthesis
-> 
-> Signed-off-by: Tahera Fahimi <fahimitahera@gmail.com>
+On Thu, Mar 28, 2024 at 7:31=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
+te:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang-14 points out that on 64-bit architectures, a u32
+> is never larger than constant based on SIZE_MAX:
+>
+> net/ceph/osdmap.c:1425:10: error: result of comparison of constant 461168=
+6018427387891 with expression of type 'u32' (aka 'unsigned int') is always =
+false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         if (len > (SIZE_MAX - sizeof(*pg)) / sizeof(u32))
+>             ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> net/ceph/osdmap.c:1608:10: error: result of comparison of constant 230584=
+3009213693945 with expression of type 'u32' (aka 'unsigned int') is always =
+false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         if (len > (SIZE_MAX - sizeof(*pg)) / (2 * sizeof(u32)))
+>             ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> The code is correct anyway, so just shut up that warning.
 
-Tahera,
+OK.
 
-I'm seeing this from checkpatch:
+>
+> Fixes: 6f428df47dae ("libceph: pg_upmap[_items] infrastructure")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-WARNING: From:/Signed-off-by: email name mismatch: 'From: TaheraFahimi <fahimitahera@gmail.com>' != 'Signed-off-by: Tahera Fahimi <fahimitahera@gmail.com>'
-
-Folks sometimes miss checkpatch reports if they only run checkpatch
-on their head commit. Please run it on the formatted patch before
-sending it.  
-
-Please refer to checkpatch documentation, but if it's useful, here's
-what I do:
-
-While developing a patch do this:
-$ git show HEAD | scripts/checkpatch.pl --strict --codespell
-
-Confirm with this before sending a patch to a mailing list:
-$ scripts/checkpatch.pl --no-tree --strict --codespell $1
-($1 is the formatted patch and that location is usually out of tree
-in my development environment.)
-
---Alison
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 
 > ---
->  drivers/staging/gdm724x/gdm_tty.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-> index 15c246d3b1a3..bd80cd48fb44 100644
-> --- a/drivers/staging/gdm724x/gdm_tty.c
-> +++ b/drivers/staging/gdm724x/gdm_tty.c
-> @@ -272,8 +272,8 @@ int register_lte_tty_driver(void)
->  	int ret;
->  
->  	for (i = 0; i < TTY_MAX_COUNT; i++) {
-> -		tty_driver = tty_alloc_driver(GDM_TTY_MINOR,
-> -				TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
-> +		tty_driver = tty_alloc_driver(GDM_TTY_MINOR, TTY_DRIVER_REAL_RAW |
-> +						TTY_DRIVER_DYNAMIC_DEV);
->  		if (IS_ERR(tty_driver))
->  			return PTR_ERR(tty_driver);
->  
-> -- 
-> 2.34.1
-> 
-> 
+>  fs/ceph/snap.c    | 2 +-
+>  net/ceph/osdmap.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/ceph/snap.c b/fs/ceph/snap.c
+> index c65f2b202b2b..521507ea8260 100644
+> --- a/fs/ceph/snap.c
+> +++ b/fs/ceph/snap.c
+> @@ -374,7 +374,7 @@ static int build_snap_context(struct ceph_mds_client =
+*mdsc,
+>
+>         /* alloc new snap context */
+>         err =3D -ENOMEM;
+> -       if (num > (SIZE_MAX - sizeof(*snapc)) / sizeof(u64))
+> +       if ((size_t)num > (SIZE_MAX - sizeof(*snapc)) / sizeof(u64))
+>                 goto fail;
+>         snapc =3D ceph_create_snap_context(num, GFP_NOFS);
+>         if (!snapc)
+> diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
+> index 295098873861..8e7cb2fde6f1 100644
+> --- a/net/ceph/osdmap.c
+> +++ b/net/ceph/osdmap.c
+> @@ -1438,7 +1438,7 @@ static struct ceph_pg_mapping *__decode_pg_temp(voi=
+d **p, void *end,
+>         ceph_decode_32_safe(p, end, len, e_inval);
+>         if (len =3D=3D 0 && incremental)
+>                 return NULL;    /* new_pg_temp: [] to remove */
+> -       if (len > (SIZE_MAX - sizeof(*pg)) / sizeof(u32))
+> +       if ((size_t)len > (SIZE_MAX - sizeof(*pg)) / sizeof(u32))
+>                 return ERR_PTR(-EINVAL);
+>
+>         ceph_decode_need(p, end, len * sizeof(u32), e_inval);
+> @@ -1621,7 +1621,7 @@ static struct ceph_pg_mapping *__decode_pg_upmap_it=
+ems(void **p, void *end,
+>         u32 len, i;
+>
+>         ceph_decode_32_safe(p, end, len, e_inval);
+> -       if (len > (SIZE_MAX - sizeof(*pg)) / (2 * sizeof(u32)))
+> +       if ((size_t)len > (SIZE_MAX - sizeof(*pg)) / (2 * sizeof(u32)))
+>                 return ERR_PTR(-EINVAL);
+>
+>         ceph_decode_need(p, end, 2 * len * sizeof(u32), e_inval);
+> --
+> 2.39.2
+>
 
