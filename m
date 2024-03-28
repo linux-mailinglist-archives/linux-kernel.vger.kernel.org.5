@@ -1,128 +1,131 @@
-Return-Path: <linux-kernel+bounces-122786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EB988FD37
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:37:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD4F188FD41
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:40:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6371C27471
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:37:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D7371F26CE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65457D08F;
-	Thu, 28 Mar 2024 10:36:58 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3067D07D;
+	Thu, 28 Mar 2024 10:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jnQC3/xR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7285E57895;
-	Thu, 28 Mar 2024 10:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B872B53818;
+	Thu, 28 Mar 2024 10:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711622218; cv=none; b=a1huI4paDbTK3mHmgneluQmc9j+PkrxmrNou6wwRCo+yc06kC20Q5dO/t5QmAabpdDK4ncP+4+EafilIO3lKZUU4EuHGlDABHOnjCg+n531+LGeAUFOQmoAtCy4OHnh3Nygd6L+//temyqKSu/xYx34rfdPqG4pKuOMp0xvLW6g=
+	t=1711622418; cv=none; b=TAuL2LiXoBXucvNhEyn5iQ7MBg2mP4aeHmtGP/TzsYTKd3jz3KoLWrgzyT/ZVjm+nO6QSmhLgyfkGwx56poLs1SHorWcehSBmmP2UtjxAVFe6ZETS932tyJ+rnqapvFyaaR1tqFUd9U0HrdvN2MYxypTiG08zyrTZljTN5E+vHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711622218; c=relaxed/simple;
-	bh=1tLDjrlhyi2d5C+bucKg0yc9r5BN3QOnrP8/yaJXcjA=;
+	s=arc-20240116; t=1711622418; c=relaxed/simple;
+	bh=PFuuAQ7UAQDLr/XGux3xSP9ZSukNKrAk400GL4pCeaI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KsrdwAq85NlhqL95+DORUaXY9tW1rhR1UPBJ/A4IhNf5XB4B3mC3xa4b6TQMkfk2gxnnC72Z3CUCDWYOeR5WQPBHfV+MmSVFkfa191yy0WT0XwOfQ/Pf6eFEU1IMOMlfD8Axww+vIs8NMQTJWaTWrrgd3h/neYpTXULtDATOyCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 7CBB31C0081; Thu, 28 Mar 2024 11:36:54 +0100 (CET)
-Date: Thu, 28 Mar 2024 11:36:54 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Bert Karwatzki <spasswolf@web.de>,
-	Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH 6.1 212/451] iommu: Fix compilation without
- CONFIG_IOMMU_INTEL
-Message-ID: <ZgVIRpCkWtJvEWnf@duo.ucw.cz>
-References: <20240324231207.1351418-1-sashal@kernel.org>
- <20240324231207.1351418-213-sashal@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ly40ZBRCKkE9RqDoshebxLl+hrPQjZSclpv2/0xDuJb3pofasKUyNz0N8qzcON+sgCLfcHm8Q/1pddv06I0B2nPGowjaoFUal9aqx+uEE1hzxul4hmtTtEQ0eH7cUjTTBN3MB+uyCuTSMPfRVbG9qIAsBxqthQmsBerjENk0igI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jnQC3/xR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB5A1C43390;
+	Thu, 28 Mar 2024 10:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711622418;
+	bh=PFuuAQ7UAQDLr/XGux3xSP9ZSukNKrAk400GL4pCeaI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jnQC3/xRFP0QVRTUNeZoU1I3y8WHjbeIbClQXTonCmY0HLKChE2JxhC2ZI9JRCgfA
+	 NsA6JUXigjuchixlHKDNcyFGz2h3qHBDpNK9DAJH0sobRXcnBUhjHot8kJeLULLZfS
+	 QTGKC2O1nCFR9+NpZOlVU20eRPehWrlyvtgpewgsZOhwTLYckAp/CXSZYnIP8ttyEf
+	 N1oViVVNkjowwegTIg86IwVEnnzzNj04FUM01Vsve/wE6zDEfAZvDGaFqDBCfpi84S
+	 v0xHNCGlLZAHHhPnYRS0eBiHgv9n7z30A2d7fCmNG19ev5aZMWXgXd8M2DG7V/eN2n
+	 9PuxhiYvhX5lA==
+Date: Thu, 28 Mar 2024 10:40:11 +0000
+From: Simon Horman <horms@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 10/17] net: pse-pd: Add support for PSE PIs
+Message-ID: <20240328104011.GY403975@kernel.org>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+ <20240326-feature_poe-v6-10-c1011b6ea1cb@bootlin.com>
+ <20240328103322.GX403975@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vZ6/CY6IfejnIZqG"
-Content-Disposition: inline
-In-Reply-To: <20240324231207.1351418-213-sashal@kernel.org>
-
-
---vZ6/CY6IfejnIZqG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240328103322.GX403975@kernel.org>
 
-Hi!
+On Thu, Mar 28, 2024 at 10:33:22AM +0000, Simon Horman wrote:
+> On Tue, Mar 26, 2024 at 03:04:47PM +0100, Kory Maincent wrote:
+> > From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 
-> [ Upstream commit 70bad345e622c23bb530016925c936ab04a646ac ]
->=20
-> When the kernel is comiled with CONFIG_IRQ_REMAP=3Dy but without
-> CONFIG_IOMMU_INTEL compilation fails since commit def054b01a8678 with an
-> undefined reference to device_rbtree_find(). This patch makes sure that
-> intel specific code is only compiled with CONFIG_IOMMU_INTEL=3Dy.
+..
 
-We don't have commit def054b01a8678 in -stable, so we should not need
-this.
+> > diff --git a/include/linux/pse-pd/pse.h b/include/linux/pse-pd/pse.h
+> 
+> ...
+> 
+> > @@ -73,11 +103,11 @@ struct pse_control;
+> >   * @pse_control_head: head of internal list of requested PSE controls
+> >   * @dev: corresponding driver model device struct
+> >   * @of_pse_n_cells: number of cells in PSE line specifiers
+> > - * @of_xlate: translation function to translate from specifier as found in the
+> > - *            device tree to id as given to the PSE control ops
+> >   * @nr_lines: number of PSE controls in this controller device
+> >   * @lock: Mutex for serialization access to the PSE controller
+> >   * @types: types of the PSE controller
+> > + * @pi: table of PSE PIs described in this controller device
+> > + * @of_legacy: flag set if the pse_pis devicetree node is not used
+> 
+> nit: it looks line the documentation didn't keep up with the
+>      structure during development: @no_of_pse_pi should be
+>      documented instead of @of_legacy.
 
-Best regards,
-								Pavel
+There seem to be some similar minor problems in
+[PATCH net-next v6 13/17] net: pse-pd: Use regulator framework within PSE framework
 
-> +++ b/drivers/iommu/Kconfig
-> @@ -192,7 +192,7 @@ source "drivers/iommu/intel/Kconfig"
->  config IRQ_REMAP
->  	bool "Support for Interrupt Remapping"
->  	depends on X86_64 && X86_IO_APIC && PCI_MSI && ACPI
-> -	select DMAR_TABLE
-> +	select DMAR_TABLE if INTEL_IOMMU
->  	help
->  	  Supports Interrupt remapping for IO-APIC and MSI devices.
->  	  To use x2apic mode in the CPU's which support x2APIC enhancements or
-> diff --git a/drivers/iommu/intel/Makefile b/drivers/iommu/intel/Makefile
-> index 7af3b8a4f2a00..29d26a4371327 100644
-> --- a/drivers/iommu/intel/Makefile
-> +++ b/drivers/iommu/intel/Makefile
-> @@ -5,5 +5,7 @@ obj-$(CONFIG_DMAR_TABLE) +=3D trace.o cap_audit.o
->  obj-$(CONFIG_DMAR_PERF) +=3D perf.o
->  obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) +=3D debugfs.o
->  obj-$(CONFIG_INTEL_IOMMU_SVM) +=3D svm.o
-> +ifdef CONFIG_INTEL_IOMMU
->  obj-$(CONFIG_IRQ_REMAP) +=3D irq_remapping.o
-> +endif
->  obj-$(CONFIG_INTEL_IOMMU_PERF_EVENTS) +=3D perfmon.o
-> diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
-> index 83314b9d8f38b..ee59647c20501 100644
-> --- a/drivers/iommu/irq_remapping.c
-> +++ b/drivers/iommu/irq_remapping.c
-> @@ -99,7 +99,8 @@ int __init irq_remapping_prepare(void)
->  	if (disable_irq_remap)
->  		return -ENOSYS;
-> =20
-> -	if (intel_irq_remap_ops.prepare() =3D=3D 0)
-> +	if (IS_ENABLED(CONFIG_INTEL_IOMMU) &&
-> +	    intel_irq_remap_ops.prepare() =3D=3D 0)
->  		remap_ops =3D &intel_irq_remap_ops;
->  	else if (IS_ENABLED(CONFIG_AMD_IOMMU) &&
->  		 amd_iommu_irq_ops.prepare() =3D=3D 0)
+/scripts/kernel-doc -none is your friend here.
 
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---vZ6/CY6IfejnIZqG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgVIRgAKCRAw5/Bqldv6
-8gZYAJ0dAltTpDHidc4ImFcKiK5HNSKFhgCcCqMLqo5lIL5+3AZeO+JDJB4mEjE=
-=FF3G
------END PGP SIGNATURE-----
-
---vZ6/CY6IfejnIZqG--
+> 
+> >   */
+> >  struct pse_controller_dev {
+> >  	const struct pse_controller_ops *ops;
+> > @@ -86,11 +116,11 @@ struct pse_controller_dev {
+> >  	struct list_head pse_control_head;
+> >  	struct device *dev;
+> >  	int of_pse_n_cells;
+> > -	int (*of_xlate)(struct pse_controller_dev *pcdev,
+> > -			const struct of_phandle_args *pse_spec);
+> >  	unsigned int nr_lines;
+> >  	struct mutex lock;
+> >  	enum ethtool_pse_types types;
+> > +	struct pse_pi *pi;
+> > +	bool no_of_pse_pi;
+> >  };
+> 
+> ...
+> 
 
