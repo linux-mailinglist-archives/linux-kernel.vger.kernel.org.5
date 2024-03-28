@@ -1,126 +1,88 @@
-Return-Path: <linux-kernel+bounces-122503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5638388F8AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:28:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A9F688F8AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD8BEB23CB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:28:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD13B1F26AB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D3451C43;
-	Thu, 28 Mar 2024 07:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699F051C55;
+	Thu, 28 Mar 2024 07:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J/6iqpYV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jgFUBrYk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968B72561F;
-	Thu, 28 Mar 2024 07:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7249C2561F;
+	Thu, 28 Mar 2024 07:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711610921; cv=none; b=QctZqf6+uvY2PhfYYA+cD/S4fs1RGOaK5Fkuj542YKc0dRM/RXVnGeWBDhTNuripLareD4pIrPe9Ui28G3f9d3cm1CftsY4veGt8FySFsOI5cEhUPK/kG6oOuuVPS8qn/05afEY5vtCalr8YVDKRAnk7ij6zelGYYgYwhAo/w2A=
+	t=1711610960; cv=none; b=BTxBgBqjDpifQd8z+LdTyZWYvysqLjYOtsvq4GudzmfZmoUyMwLdmGPD30WXQW7dKFxAM2LAxtmnoqwPKrOOG3ubPwsVW6KTxQ7qvYNFx/ObMvmHDV8fMe0MQ80m6n6VQ2XfL6c9hXeliTIUzPGQxVUE9lXKPY6zwEwtwzYcOxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711610921; c=relaxed/simple;
-	bh=ijOEeCiS3qSRc5vkkBFknmGBS+NCZHRyFeKZjNVu8LY=;
+	s=arc-20240116; t=1711610960; c=relaxed/simple;
+	bh=FiCIkTLUjia6oZra0f+d1gUdBJtXinTNpnbzT5pmwP8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ISaI8v82eQsdTWU3cXmB8i60TJGYjHk+PEPU9hlaEuLbh6Q9tuYyI7vXewA0dcnAPyKsryEFNuM2f50tj1wrzl7YMHC4J6HsTp+eXpHkhPeDvLlifgVYzCb+i3+m2xMhl3f0I72kq6Ve/80LzAG8qyKzQXL90Io8cxm897MWFjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J/6iqpYV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97067C433C7;
-	Thu, 28 Mar 2024 07:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711610921;
-	bh=ijOEeCiS3qSRc5vkkBFknmGBS+NCZHRyFeKZjNVu8LY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J/6iqpYVddWxSoR5VY0JmEmW4RcV/6iab+8AbRwbjn4SjChctq6U3Alq9l+CjysUZ
-	 qZNTL9Izuu8wY2frtyAVw3wDuRHzpUE69hGn36EbvtqVJ4TYZkyrFhYNfjpP3tgn2+
-	 cnzKqD5vtY1KFUKigjos8wS21Qt4lzA0SQ5WZV7/O9Wm7DOob8OAoK1+Oq9U8zzTeO
-	 hVPuwAF9OL9DbOJ75C3pu4BwkibFNTRcBW945xSeK7Wipm1xFc9a6k8VeV0Xu+Jffz
-	 CTaSO7cblVE8SXngaSMsRb7mU2T04eEC9FzDD2Aa54t/uf1VA2IlZ3SKyyGo7zakM1
-	 CwqxWbkerrB9g==
-Date: Thu, 28 Mar 2024 12:58:36 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 09/38] dma: cirrus: Convert to DT for Cirrus EP93xx
-Message-ID: <ZgUcJByXpLJfG10T@matsya>
-References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
- <20240326-ep93xx-v9-9-156e2ae5dfc8@maquefel.me>
- <ZgTytMtgvqcHlEsO@matsya>
- <821da3f70fcd326860a995514791b228e3f3f7b7.camel@maquefel.me>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z1fZAjaZJkbaKmjGFaPiyAtdBxl3/26NXQrN4xri44lumFJQDDPvbtzIxoTibIg4Tn0aBK6szG+Rcwb7JhrxDXuW9hMqy2h7lW/tgbPEh+Ct4UcyIcd1qvIDZ2t+c6DuJmCjH+RmTDO4o6HA2CRdc7SHKantjjogF71RqNCdQz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=jgFUBrYk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ZHG7bc9PgDrabFkR4+E2NwrDV4EJzWyNJdahkzxAUog=; b=jgFUBrYkh6xtqYLnocTPXtT4Qq
+	CqMvUpA5U1MUFNbuiCcp9o3fqf3wwWo34KUnJBUjmAsVoJy47B0NPIlwUtKD74+qiM2AibCiWGj6/
+	o4nUm+jgd3Qo5y6Pg7beHlq5qHrunMoLYYJ6yuZq3+9uBdPKEoAJThZOTmbHBR2U1cIslYGkElsme
+	FOPnGjnUzr0cFqmyNVmbrVVmVNacqp6OWU5nAZAgrGP8z8IP2ckIx4u2keAS3aCUnjzzOiDp4tC3G
+	zzTZ6Zv6/LWWYWMsyTKLpsFANpK7Yjb9SqmAmOVaLqriwYD3pIFU0cc1T5QiaipA8WnaUyx78jUFr
+	9kB1bkYg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpkCL-0000000Cs43-0GGI;
+	Thu, 28 Mar 2024 07:29:17 +0000
+Date: Thu, 28 Mar 2024 00:29:16 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Yihang Li <liyihang9@huawei.com>, Christoph Hellwig <hch@infradead.org>,
+	John Garry <john.g.garry@oracle.com>, yanaijie@huawei.com,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	chenxiang66@hisilicon.com, linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+	prime.zeng@huawei.com, yangxingui@huawei.com
+Subject: Re: [PATCH v2] scsi: libsas: Allocation SMP request is aligned to
+ ARCH_DMA_MINALIGN
+Message-ID: <ZgUcTLQnoLuqhOxO@infradead.org>
+References: <20240326124358.2466259-1-liyihang9@huawei.com>
+ <5b5b9392-7fd2-4c87-8e41-5e54adf20003@kernel.org>
+ <0ba9914d-7060-498a-beac-2b19770e1963@oracle.com>
+ <ZgUPpwhkE9bRwHec@infradead.org>
+ <75df3e2d-10c3-5370-3cd8-fe2fb0ff2acc@huawei.com>
+ <03ed6449-eb57-4a55-b2bf-ecbb9787feca@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <821da3f70fcd326860a995514791b228e3f3f7b7.camel@maquefel.me>
+In-Reply-To: <03ed6449-eb57-4a55-b2bf-ecbb9787feca@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 28-03-24, 10:24, Nikita Shubin wrote:
-> Hello Vinod!
+On Thu, Mar 28, 2024 at 04:23:22PM +0900, Damien Le Moal wrote:
+> But I thought that the original issue was that some arch have ARCH_DMA_MINALIGN
+> down to 8B but hisi driver needs at least 16 ?
 > 
-> Thank you for looking into this.
+> So in the end, you need something like:
 > 
-> On Thu, 2024-03-28 at 10:01 +0530, Vinod Koul wrote:
-> > On 26-03-24, 12:18, Nikita Shubin via B4 Relay wrote:
-> > > From: Nikita Shubin <nikita.shubin@maquefel.me>
-> > > 
-> > > +enum ep93xx_dma_type {
-> > > +       M2P_DMA,
-> > 
-> > Is this missing P2M?
-> > 
-> > > +       M2M_DMA,
-> > > +};
-> > > +
+> 	size = ALIGN(size, max(16, ARCH_DMA_MINALIGN));
 > 
-> These are internal types used only to distinguish M2P/P2M and M2M
-> capable controllers in "of_device_id ep93xx_dma_of_ids[]".
-> 
-> So M2P_DMA is M2P/P2M, a can rename M2P_DMA to M2P_P2M_DMA to avoid
-> confusion.
-> 
-> 
-> > >  struct ep93xx_dma_engine;
-> > >  static int ep93xx_dma_slave_config_write(struct dma_chan *chan,
-> > >                                          enum
-> > > dma_transfer_direction dir,
-> > > @@ -129,11 +136,17 @@ struct ep93xx_dma_desc {
-> > >         struct list_head                node;
-> > >  };
-> > >  
-> > > +struct ep93xx_dma_chan_cfg {
-> > > +       u8                              port;
-> > > +       enum dma_transfer_direction     dir;
-> > 
-> > Why is direction stored here, it should be derived from the prep_xxx
-> > call, that has direction as an argument
-> > 
-> > 
-> 
-> M2P/P2M channels aren't unidirectional.
-> 
-> Citing "EP9xx User Guide":
-> 
-> "Ten fully independent, programmable DMA controller internal M2P/P2M
-> channels (5 Tx and 5 Rx)."
-> 
-> We need to return correct channel based on Device Tree provided data,
-> because we need direction in device_alloc_chan_resources() for hardware
-> setup before prepping.
+> no ?
 
-Okay it sounds okay in that case...
+I don't think we ever have an 8 byte dma minalign.  With 8-byte
+aligned addresses dma_mapping_error could run into problems.
 
-> 
-> May be i am mistaking somewhere.
-
--- 
-~Vinod
 
