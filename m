@@ -1,121 +1,77 @@
-Return-Path: <linux-kernel+bounces-122795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEFFA88FD78
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:54:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ACA388FD7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BACB1C242F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:54:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A763B21F50
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304A67D414;
-	Thu, 28 Mar 2024 10:54:07 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C207D7E572;
+	Thu, 28 Mar 2024 10:54:12 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973054C62E;
-	Thu, 28 Mar 2024 10:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155707E112;
+	Thu, 28 Mar 2024 10:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711623246; cv=none; b=PmSF7i1Zmrzfir/+WP6YWFx91Y7GCdbpsZ4TxEpR1ZpAmBLfdR3o8uZ+rYg/7m92hrCAgSegyvIIppel/52n17T7PE5y0KBS2cSlo1G7kzUkA9WHLTj0CxmePn8Ch24PJCZcSBxNKrdrHNTg4/zAs9lDpZeVGOy2oOnLk9kl7cc=
+	t=1711623252; cv=none; b=j8HME11YBQA4cGDYSkYDywh6uUBvR/mr8oE7rRpkKt+Vz3p+f8gGMxJhLZC1OZAT6J+goTcGS9UdfNf6ZDp7eVsc8JnhzZ8sVfaKgppzmB/W1t+6JloDZWCXIC+rOhUHsEASSF8M5PSMXpc59Cn8bEknnQMKCpJtJqSOq67EbCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711623246; c=relaxed/simple;
-	bh=YQRBwIKyXMFpVXmOargCtb2gMHL7sG7XI5XG2RQxFsM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I1xsb2B5fuvSVeM/WLEdVV0vu79eygLpMRqdLHfc4EVmZ5IatG8aEboWshAfC5rzhka+tu5FoJbtQpi6lMMOeYGrISVCx1ppW2dxH8zAmHCWRChOeI/3BLLVu2GGji/fPdpMGGTHOtPv6Vtq1YYPZPIW1HRqqvxra2ZNkLbuW7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4V50Nw6SYJz9xqx4;
-	Thu, 28 Mar 2024 18:37:52 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 3F8F2140417;
-	Thu, 28 Mar 2024 18:53:55 +0800 (CST)
-Received: from [10.81.200.225] (unknown [10.81.200.225])
-	by APP2 (Coremail) with SMTP id GxC2BwAnEyc4TAVmFhodBQ--.8703S2;
-	Thu, 28 Mar 2024 11:53:54 +0100 (CET)
-Message-ID: <4a0b28ba-be57-4443-b91e-1a744a0feabf@huaweicloud.com>
-Date: Thu, 28 Mar 2024 12:53:40 +0200
+	s=arc-20240116; t=1711623252; c=relaxed/simple;
+	bh=waBJhRTALbA9npM49eqspenD5qwK6bVmYXSu2TkIC24=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P2PvnP5jKplIjPffGTePFyq5BNQIe0eKGBgIok1J4U2Wt05ebK9z9jYRkBYk9KYV9SvlHtP31HuGFjgvjv3WseNHe77pYjUh542dJRrWt1lgAt8mUJ/5uKTaLjRt2DOIj2j3MPCvR+lSu7NQz+Oq89RnT5mxOanMYXcD9Bo9OuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rpnOO-00C8PI-Bt; Thu, 28 Mar 2024 18:53:57 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Mar 2024 18:54:12 +0800
+Date: Thu, 28 Mar 2024 18:54:12 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org,
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: ice: Document sc7280 inline
+ crypto engine
+Message-ID: <ZgVMVFCXe3Itw6TL@gondor.apana.org.au>
+References: <20240313-sc7280-ice-v1-0-3fa089fb7a27@fairphone.com>
+ <20240313-sc7280-ice-v1-1-3fa089fb7a27@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: kernel crash in mknod
-To: Christian Brauner <brauner@kernel.org>,
- Roberto Sassu <roberto.sassu@huawei.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@manguebit.com>,
- Christian Brauner <christian@brauner.io>, Mimi Zohar <zohar@linux.ibm.com>,
- Paul Moore <paul@paul-moore.com>,
- "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
- "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>
-References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
- <20240324054636.GT538574@ZenIV> <3441a4a1140944f5b418b70f557bca72@huawei.com>
- <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
- <cb267d1c7988460094dbe19d1e7bcece@huawei.com>
- <20240326-halbkreis-wegstecken-8d5886e54d28@brauner>
-Content-Language: en-US
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <20240326-halbkreis-wegstecken-8d5886e54d28@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:GxC2BwAnEyc4TAVmFhodBQ--.8703S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF1rZw48CryDurW8GFy8Zrb_yoWkArc_Cr
-	s0ya4UG3y7ur93AF47WF1SgrZxAFWagry7CrWkKFy7t34DJrs8JFZ0vr93Wr1UWFWfGFnI
-	kryDAa40kry2vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
-	AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAQBF1jj5vkfAAAsn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313-sc7280-ice-v1-1-3fa089fb7a27@fairphone.com>
 
-On 3/26/2024 12:40 PM, Christian Brauner wrote:
->> we can change the parameter of security_path_post_mknod() from
->> dentry to inode?
+On Wed, Mar 13, 2024 at 01:53:14PM +0100, Luca Weiss wrote:
+> Document the compatible used for the inline crypto engine found on
+> SC7280.
 > 
-> If all current callers only operate on the inode then it seems the best
-> to only pass the inode. If there's some reason someone later needs a
-> dentry the hook can always be changed.
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-Ok, so the crash is likely caused by:
-
-void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry 
-*dentry)
-{
-         if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-
-I guess we can also simply check if there is an inode attached to the 
-dentry, to minimize the changes. I can do both.
-
-More technical question, do I need to do extra checks on the dentry 
-before calling security_path_post_mknod()?
-
-Thanks
-
-Roberto
-
-> For bigger changes it's also worthwhile if the object that's passed down
-> into the hook-based LSM layer is as specific as possible. If someone
-> does a change that affects lifetime rules of mounts then any hook that
-> takes a struct path argument that's unused means going through each LSM
-> that implements the hook only to find out it's not actually used.
-> Similar for dentry vs inode imho.
-
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
