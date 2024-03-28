@@ -1,147 +1,197 @@
-Return-Path: <linux-kernel+bounces-123575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2CDA890B3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:25:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0A7F890B42
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:26:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CD3B299750
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:25:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 387411F25CE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC35713AA4C;
-	Thu, 28 Mar 2024 20:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D2913AD2A;
+	Thu, 28 Mar 2024 20:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t1xfM/sk"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2eqn1aOe"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C0E139599
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18E6137C2A
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711657341; cv=none; b=d4oH68PR3aBt7BcvMOKTK16RAEYvvzTwPuyuJLYpxr1BfLXtMKjNwphxJVfD/w5PS8WbxcrB9sJ8mWCNPN9XzHbcwwTglEGQbBruQh41Tr3uxQTm3VSUhbe5Re+YSC3XjGs3OPil5DhN6KaK9mffYNz4kDywWEQoqH71UUdlG/Y=
+	t=1711657462; cv=none; b=mf0n0VAmHcFbi+1XlYatyj8ZXR300XNHqJGhvslysHIJi44VCb4tfvjiPQUrO7dwW+z0jjM7OdxJ7LP4vQdjxlGXPllHv4Yg+NuvKSWlu5UyXQ4VGDvNdWekcdKR2GH0WBnUb6YoA133PJ6Z+uIH5zEOmMDguaSOrfFMoO9j1nA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711657341; c=relaxed/simple;
-	bh=v6O4Uqk52YbEsaRRH8ACq+JI9VweRdHN6fwD+VY99LY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uaW1vVDknDj8907rX+4H/dp7dR15Hv39JEmLq2VGTCdWnlgLZyirA0P6Zvc2kqIdO/NgruoJuhjxjHE4dwzyl/DLHaiqb5OyhM4Nzm3JVyFIN4inKqVQppFJNQqh1+ljH4WGjqhNNBzOv5iDZf0C6+43tizW/7bpmlsjtwVtRnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t1xfM/sk; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 28 Mar 2024 16:22:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711657337;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SITu3wP6qaILu57znUskVSN6H9osyOHT4Gb41FteW/Y=;
-	b=t1xfM/sk4la00t065yw/dchJtSd86DyHJ5hZsC77hI3tD6MWdTT1Xhr+DJZxHogBRqAlv2
-	VvI/3ZhGyUghQnky940nynaLU+ZcO+Dg2ZNUQXtqMkuZiWU+UN7Tob6gPhBCiYaT9Nv7UV
-	zNUs/Hgip5OP/EHxeC07CyVObPP73YQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org, 
-	willy@infradead.org, jack@suse.cz, bfoster@redhat.com, dsterba@suse.com, 
-	mjguzik@gmail.com, dhowells@redhat.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
-Message-ID: <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <qyzaompqkxwdquqtofmqghvpi4m3twkrawn26rxs56aw4n2j3o@kt32f47dkjtu>
- <ZgXFrabAqunDctVp@slm.duckdns.org>
- <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
- <ZgXJH9XQNqda7fpz@slm.duckdns.org>
- <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
- <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
+	s=arc-20240116; t=1711657462; c=relaxed/simple;
+	bh=qmxf34bTMVgxH0f4NNBYG+HHviiW1iKApL+RlIdON68=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HGA83CDM15nSYtIYTEJZcNYeC+itHjJPD2kv6CbwfJ6UMMwrnqOh2c2BqC85ER/ELFZHebKvKKZN+1a4zlP0OugbgHtgOPJxfDqRI07keH0bX5cNdHw1FU7qZWTjzSx38pV3FZzH7BiBcpfbkqVe4UjrhLRm9wfDz9dgNTIm8wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2eqn1aOe; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3417a3151c4so1230560f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711657458; x=1712262258; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s6wzOI8f0nNiuU7SM67JbM3AAeU2GfbdXdqb/BOOqV4=;
+        b=2eqn1aOesEfXvERF1AgEg1ZKalq/F3Ex+9mt9T6D5AAbvEEB7V72V/Gf8koaGVWQjW
+         dQJTr2tnqVwVZOVfXk/4HmsIlWoHagg/x8kfkVsZpUDgdqZdBDHdZiv+DwJAHynrZPYj
+         6/cNK8eL/TqouD3l1yCFy+rxwIN07k6y6Mrsrp7O74Ca4epDmxjGxvawAZN4K39yqxAG
+         m66f4u8ykCH46g6wDAAA51F3vPiBmKHjuDLukq7dIIXTCO8unvN8J1r3mjEJkUwnLVnP
+         zYFKm7nywZwyUJFFjrhb5UwakRz6z81BrH1PSHTF+fnEUmenIVhY3bAzSxX7f36/GMLh
+         Y2Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711657458; x=1712262258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s6wzOI8f0nNiuU7SM67JbM3AAeU2GfbdXdqb/BOOqV4=;
+        b=lxByp+04iLH1vdPTmVH9UmAi5Y/1tLk3InmYsoFKAQzmPrvHDE6RFsF1ADPTvrqrwJ
+         2kcNfl23Ah8d+Pi4NoAszwoLWQIQPdtHhgPBeGNAHvFeBoG8qJIAmnUoIA7H8Chs4lCe
+         OjsQJXZvw/M2SkQs6KPEuhcSZCOk/dNw8sLe3uEQd+mrKkduuKiUuYL3uFgMIBmsxQfh
+         UeEHnMukbos8Es8JLTess0vu3ytVuwRPVInE9Pcv7PHBCeB7T2+L93dW979DhknaETTp
+         pU1qs4NP/lI/1jLGhfHuoeid0YV5MKag53vpVX4o2Bb/lWsfkVyjTm7Gk+5RCh3AC4uX
+         erXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKFvLwaLDOej3XCmjtjV6apctonW7ifSdZ5cMdbq9nbdxoyYY0W6+wbD0Izhfe7I1F1YTe7WsjmS1k2L0KAgXQKjqRo8ignNLBYWP2
+X-Gm-Message-State: AOJu0YwyharX2frEqqXKGx1H+cdoyGaet0nqUF6CEPgdW3g4/a6XJIuj
+	C8BszQXHM9xS+9kPCKdZYedUhYJAHYwITf2woY6+5aj9lHE40pqKQNA0bYIqo1LmFWQx0e4j8Jw
+	50YXCC5Qm38Ho/C3vZjGiW2txTztZ5+T/5VJdkibWDt7aEdWXLH+v
+X-Google-Smtp-Source: AGHT+IFXkGygkGArDNlR3c03YewcMnsXn2Y3WZHSXGvnNDU1C+7dW3MQ3mb3DZucF5DN+YcgsADtFr+OPnTSdxO7Axs=
+X-Received: by 2002:a05:6000:1d86:b0:33e:76a1:d031 with SMTP id
+ bk6-20020a0560001d8600b0033e76a1d031mr160319wrb.50.1711657458197; Thu, 28 Mar
+ 2024 13:24:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240325235018.2028408-1-yosryahmed@google.com>
+ <20240325235018.2028408-7-yosryahmed@google.com> <20240328193149.GF7597@cmpxchg.org>
+In-Reply-To: <20240328193149.GF7597@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 28 Mar 2024 13:23:42 -0700
+Message-ID: <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com>
+Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
+ pages handling
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 10:13:27AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Thu, Mar 28, 2024 at 03:55:32PM -0400, Kent Overstreet wrote:
-> > > On Thu, Mar 28, 2024 at 03:40:02PM -0400, Kent Overstreet wrote:
-> > > > Collecting latency numbers at various key places is _enormously_ useful.
-> > > > The hard part is deciding where it's useful to collect; that requires
-> > > > intimate knowledge of the code. Once you're defining those collection
-> > > > poitns statically, doing it with BPF is just another useless layer of
-> > > > indirection.
-> > > 
-> > > Given how much flexibility helps with debugging, claiming it useless is a
-> > > stretch.
-> > 
-> > Well, what would it add?
-> 
-> It depends on the case but here's an example. If I'm seeing occasional tail
-> latency spikes, I'd want to know whether there's any correation with
-> specific types or sizes of IOs and if so who's issuing them and why. With
-> BPF, you can detect those conditions to tag and capture where exactly those
-> IOs are coming from and aggregate the result however you like across
-> thousands of machines in production without anyone noticing. That's useful,
-> no?
+On Thu, Mar 28, 2024 at 12:31=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.or=
+g> wrote:
+>
+> On Mon, Mar 25, 2024 at 11:50:14PM +0000, Yosry Ahmed wrote:
+> > The current same-filled pages handling supports pages filled with any
+> > repeated word-sized pattern. However, in practice, most of these should
+> > be zero pages anyway. Other patterns should be nearly as common.
+> >
+> > Drop the support for non-zero same-filled pages, but keep the names of
+> > knobs exposed to userspace as "same_filled", which isn't entirely
+> > inaccurate.
+> >
+> > This yields some nice code simplification and enables a following patch
+> > that eliminates the need to allocate struct zswap_entry for those pages
+> > completely.
+> >
+> > There is also a very small performance improvement observed over 50 run=
+s
+> > of kernel build test (kernbench) comparing the mean build time on a
+> > skylake machine when building the kernel in a cgroup v1 container with =
+a
+> > 3G limit:
+> >
+> >               base            patched         % diff
+> > real          70.167          69.915          -0.359%
+> > user          2953.068        2956.147        +0.104%
+> > sys           2612.811        2594.718        -0.692%
+> >
+> > This probably comes from more optimized operations like memchr_inv() an=
+d
+> > clear_highpage(). Note that the percentage of zero-filled pages during
+> > this test was only around 1.5% on average, and was not affected by this
+> > patch. Practical workloads could have a larger proportion of such pages
+> > (e.g. Johannes observed around 10% [1]), so the performance improvement
+> > should be larger.
+> >
+> > [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmpxchg.org=
+/
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>
+> This is an interesting direction to pursue, but I actually thinkg it
+> doesn't go far enough. Either way, I think it needs more data.
+>
+> 1) How frequent are non-zero-same-filled pages? Difficult to
+>    generalize, but if you could gather some from your fleet, that
+>    would be useful. If you can devise a portable strategy, I'd also be
+>    more than happy to gather this on ours (although I think you have
+>    more widespread zswap use, whereas we have more disk swap.)
 
-That's cool, but really esoteric. We need to be able to answer basic
-questions and build an overall picture of what the system is doing
-without having to reach for the big stuff.
+I am trying to collect the data, but there are.. hurdles. It would
+take some time, so I was hoping the data could be collected elsewhere
+if possible.
 
-Most users are never going to touch tracing, let alone BPF; that's too
-much setup. But I can and do regularly tell users "check this, this and
-this" and debug things on that basis without ever touching their
-machine.
+The idea I had was to hook a BPF program to the entry of
+zswap_fill_page() and create a histogram of the "value" argument. We
+would get more coverage by hooking it to the return of
+zswap_is_page_same_filled() and only updating the histogram if the
+return value is true, as it includes pages in zswap that haven't been
+swapped in.
 
-And basic latency numbers are really easy for users to understand, that
-makes them doubly worthwhile to collect and make visible.
+However, with zswap_is_page_same_filled() the BPF program will run in
+all zswap stores, whereas for zswap_fill_page() it will only run when
+needed. Not sure if this makes a practical difference tbh.
 
-> Also, actual percentile disribution is almost always a lot more insightful
-> than more coarsely aggregated numbers. We can't add all that to fixed infra.
-> In most cases not because runtime overhead would be too hight but because
-> the added interface and code complexity and maintenance overhead isn't
-> justifiable given how niche, adhoc and varied these use cases get.
+>
+> 2) The fact that we're doing any of this pattern analysis in zswap at
+>    all strikes me as a bit misguided. Being efficient about repetitive
+>    patterns is squarely in the domain of a compression algorithm. Do
+>    we not trust e.g. zstd to handle this properly?
 
-You can't calculate percentiles accurately and robustly in one pass -
-that only works if your input data obeys a nice statistical
-distribution, and the cases we care about are the ones where it doesn't.
+I thought about this briefly, but I didn't follow through. I could try
+to collect some data by swapping out different patterns and observing
+how different compression algorithms react. That would be interesting
+for sure.
 
-> 
-> > > > The time stats stuff I wrote is _really_ cheap, and you really want this
-> > > > stuff always on so that you've actually got the data you need when
-> > > > you're bughunting.
-> > > 
-> > > For some stats and some use cases, always being available is useful and
-> > > building fixed infra for them makes sense. For other stats and other use
-> > > cases, flexibility is pretty useful too (e.g. what if you want percentile
-> > > distribution which is filtered by some criteria?). They aren't mutually
-> > > exclusive and I'm not sure bdi wb instrumentation is on top of enough
-> > > people's minds.
-> > > 
-> > > As for overhead, BPF instrumentation can be _really_ cheap too. We often run
-> > > these programs per packet.
-> > 
-> > The main things I want are just
-> >  - elapsed time since last writeback IO completed, so we can see at a
-> >    glance if it's stalled
-> >  - time stats on writeback io initiation to completion
-> > 
-> > The main value of this one will be tracking down tail latency issues and
-> > finding out where in the stack they originate.
-> 
-> Yeah, I mean, if always keeping those numbers around is useful for wide
-> enough number of users and cases, sure, go ahead and add fixed infra. I'm
-> not quite sure bdi wb stats fall in that bucket given how little attention
-> it usually gets.
+>
+>    I'm guessing this goes back to inefficient packing from something
+>    like zbud, which would waste half a page on one repeating byte.
+>
+>    But zsmalloc can do 32 byte objects. It's also a batching slab
+>    allocator, where storing a series of small, same-sized objects is
+>    quite fast.
+>
+>    Add to that the additional branches, the additional kmap, the extra
+>    scanning of every single page for patterns - all in the fast path
+>    of zswap, when we already know that the vast majority of incoming
+>    pages will need to be properly compressed anyway.
+>
+>    Maybe it's time to get rid of the special handling entirely?
 
-I think it should be getting a lot more attention given that memory
-reclaim and writeback are generally implicated whenever a user complains
-about their system going out to lunch.
+We would still be wasting some memory (~96 bytes between zswap_entry
+and zsmalloc object), and wasting cycling allocating them. This could
+be made up for by cycles saved by removing the handling. We will be
+saving some branches for sure. I am not worried about kmap as I think
+it's a noop in most cases.
+
+I am interested to see how much we could save by removing scanning for
+patterns. We may not save much if we abort after reading a few words
+in most cases, but I guess we could also be scanning a considerable
+amount before aborting. On the other hand, we would be reading the
+page contents into cache anyway for compression, so maybe it doesn't
+really matter?
+
+I will try to collect some data about this. I will start by trying to
+find out how the compression algorithms handle same-filled pages. If
+they can compress it efficiently, then I will try to get more data on
+the tradeoff from removing the handling.
+
+Thanks for the insights.
 
