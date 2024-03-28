@@ -1,124 +1,123 @@
-Return-Path: <linux-kernel+bounces-123653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38170890C43
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:09:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26EB0890C46
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA0161F22866
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:09:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F762A8661
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F95913A89E;
-	Thu, 28 Mar 2024 21:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6D113A89A;
+	Thu, 28 Mar 2024 21:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=draconx-ca.20230601.gappssmtp.com header.i=@draconx-ca.20230601.gappssmtp.com header.b="yQP1ckTt"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gt8adpfT"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCD4131E4B
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:08:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0894B52F62;
+	Thu, 28 Mar 2024 21:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711660134; cv=none; b=ELeLwQ/rzyj2SPfs8Pw9KYTntoTMCaNhR0SEm+z/dHdQSYhED5oIQz5WbZoDCn/9UW/9HMr6VyT7UvgxQxpugT+gysCKG+pB6llTXOsB8+xh+W4gYW4cidjCk+8MZHLu8VpQU6G8zl/oEhQXRpXxV+8nPM9Bc1FikLb9xOSHdLY=
+	t=1711660240; cv=none; b=BDceeqXebqQbDXPBKvZ1Y8vem3UmZZZsgBnJEpb0W7vN5H+BpnfPG2OHRKvFgCDp9GTQLgzXLEXImFWW2sNkkEIi9hPmcALxDplnMmQBxQh92PJVkPTlidk417eAeG1BOZEkqjFPkVM+3mXSIv7gcn0sMvG4jFhWEceL60U5NZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711660134; c=relaxed/simple;
-	bh=F4IrvSS6WvfTbwg+S1nOzbzpIHvcq0dGlD5txkHzVK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MpulzlBUfTDiX6Auan5jq5fRZVTEjtV+doPhWSxIVWU1/3vdxk2ohO8v8QB9oR6KZNl+nMxQuDn5ClbeUauUfnv4qYkx3pScnMZwrVOl26W5qAV9lgB1IscG7HLOnlY3LAIiTn8juGd58Ds8/nz0ajneeimPOlytDy1E1x2kr60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=draconx.ca; spf=none smtp.mailfrom=draconx.ca; dkim=pass (2048-bit key) header.d=draconx-ca.20230601.gappssmtp.com header.i=@draconx-ca.20230601.gappssmtp.com header.b=yQP1ckTt; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=draconx.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=draconx.ca
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a470320194so721882eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=draconx-ca.20230601.gappssmtp.com; s=20230601; t=1711660132; x=1712264932; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fhOqlDsFnhyStsUL+RT7PNmxZO7uBWizHf6GICmX+OI=;
-        b=yQP1ckTtFa0Nbah0PwcMmMl2brmJIdALgYkA3qHiG1ptTpY4BohkbmtlFBzcj8nP1u
-         XvI69UyDvJ0UXzCzpl1G13BGZtSlewsF//tWfHsMic2Pi+LQz+thKHxN7d5nhw0ugRAn
-         NsX0BETOnK+cVvFPTVvOQ9NG+P4OKCGfzwHi8krhtuFmmSs63oLtRGrkeADWBX0EfMvj
-         6y0v+bE8cngBRTVknruywhgm8fonta1JI/NnqFCfVsxfcBIn6xjPblwi9p7UuPYCFjx3
-         xbHcXHcMKUwtMjJGjWtIzU1y6eRC1EYWDkc0EB2wrewgNotwZ7KBcvh+5B02cJO0rlCc
-         jpbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711660132; x=1712264932;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fhOqlDsFnhyStsUL+RT7PNmxZO7uBWizHf6GICmX+OI=;
-        b=o8RmQxNqn8BorJ4KOiEY6WfSC9SO8ytDgq1/BltNbEkfWm5Qy41pOa0jB207Cd1UTV
-         6CpMr4bki/Xg2k97hm4lx7QcyoI2EKlFSajcBnautqonAILTenYzbiy1adlBGDRX0l70
-         ylCwKEJGZEK7gSmNjf1lDfu5j4Jo27GAkfUU6ZcFdHUC94dmir9A4taauBv2FhLTsfFJ
-         z7TtMF/vnC9iWSSxBDPLanp4la6v+SGSACU4iD5hlkzgArEqkZShE3KxvWzjchTuV5+g
-         iOKnT1dTDkvri59DTflhBqjL81u5omtBVJz3jwjIwRm2PgO5S4WMPkrITb1hhOsXcyw4
-         Xn8g==
-X-Gm-Message-State: AOJu0Yxsa6QkIf9v6DI3F+iplj9b3N7Egui7QszCiKx9bY1BXH6UOGpt
-	BeHAlpDXF5x3dEilofnwap/Iarz7+cQcpVGn2qqlok9BM8eVjnwn9RcqvtHHq0U+3H0BBbkRpei
-	aMDQ=
-X-Google-Smtp-Source: AGHT+IGfo+9brJXeQXDPL+VZY/J/lhapMlsOdjDfc2YE8PgBEa/Sxxdwof6mO9UnEH8hZci7XVl3nQ==
-X-Received: by 2002:a05:6820:208:b0:5a4:7696:6ba8 with SMTP id bw8-20020a056820020800b005a476966ba8mr317575oob.7.1711660131965;
-        Thu, 28 Mar 2024 14:08:51 -0700 (PDT)
-Received: from [192.168.0.50] (dhcp-24-53-241-2.cable.user.start.ca. [24.53.241.2])
-        by smtp.gmail.com with ESMTPSA id l26-20020ac848da000000b0042ee2bda028sm954486qtr.54.2024.03.28.14.08.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 14:08:51 -0700 (PDT)
-Message-ID: <943c6d11-e214-43c8-8813-8e1aba6be15c@draconx.ca>
-Date: Thu, 28 Mar 2024 17:08:50 -0400
+	s=arc-20240116; t=1711660240; c=relaxed/simple;
+	bh=GR+8vhdZaMF0jMh5JD8q+n8JbP3PzmlEhT9CqXSNA70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HuYUeb/3rdE9eXEEAw0VzGqee1fOXQqPiJQCh/0zQzmlJgPOUDQYgBa9eZAeesdHddUtzwW+5FQTTMDQvHZ8ByQucB6bF3ZtZAPa8aInVkKeQB2cjSTRXryll7rYsH8iu1252N2vRgb7NzOYebBCbk1+3+76cclG8RZevBXV8vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gt8adpfT; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711660238; x=1743196238;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GR+8vhdZaMF0jMh5JD8q+n8JbP3PzmlEhT9CqXSNA70=;
+  b=Gt8adpfThIuDKUzLWYmz0pj5cTq+D0mMwFD7vxmNd/1O8AJd/mgG1rs9
+   1XQL2vxh3/jTMiNT47ju0WI2kVrOdVF1nRQcL0WNBw47soy4Z0ujcTubh
+   yDlLKRI3zkvac/QvEV8zirmVRP4AvShabdFC0oeGetU1WfASb9IRjjUXF
+   w/+Qzy4nyzPa4KqFOsmpkvg7+bJOhJ1k82Qkhtsn746gMnlw/sNubVKPm
+   15otbGuVTFFU1I2txFkhqIQQQYgvdHtO4X6qAXDG4e8IkS/WhVoMHt3Fb
+   7q78ShxrxC4sddjc8CfsjEAOmgWHL1jGjBw88E/CDZtoX4bSCXdIxoGtZ
+   w==;
+X-CSE-ConnectionGUID: a6FstP4gSNmV1iT1kg7uDQ==
+X-CSE-MsgGUID: KBNOV1JLTYiy0CIBGCkCbQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6956294"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="6956294"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:10:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="16824858"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:10:37 -0700
+Date: Thu, 28 Mar 2024 14:10:36 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 091/130] KVM: TDX: remove use of struct vcpu_vmx from
+ posted_interrupt.c
+Message-ID: <20240328211036.GS2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <6c7774a44515d6787c9512cb05c3b305e9b5855c.1708933498.git.isaku.yamahata@intel.com>
+ <ZgUmdIM67dybDTCn@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PROBLEM: Only one CPU active on Ultra 60 since ~4.8 (regression)
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- sparclinux@vger.kernel.org, Andreas Larsson <andreas@gaisler.com>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <CADyTPEwt=ZNams+1bpMB1F9w_vUdPsGCt92DBQxxq_VtaLoTdw@mail.gmail.com>
- <CADyTPEyAidGgBT3f1VJLHb3ouO-r1UyvFp1PcwXxy0NRG94sbw@mail.gmail.com>
- <1df92fec-7f57-5080-94ed-b149ed384280@leemhuis.info>
- <14dcd743-144a-9f7b-849c-0843d50e4c04@draconx.ca>
- <4dce7447-678d-4e60-b76e-b01988bd6515@leemhuis.info>
- <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
-From: Nick Bowler <nbowler@draconx.ca>
-In-Reply-To: <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZgUmdIM67dybDTCn@chao-email>
 
-On 2024-03-28 16:09, Linus Torvalds wrote:
-> On Thu, 28 Mar 2024 at 12:36, Linux regression tracking (Thorsten
-> Leemhuis) <regressions@leemhuis.info> wrote:
->>
->> [CCing Linus, in case I say something to his disliking]
->>
->> On 22.03.24 05:57, Nick Bowler wrote:
->>>
->>> Just a friendly reminder that this issue still happens on Linux 6.8 and
->>> reverting commit 9b2f753ec237 as indicated below is still sufficient to
->>> resolve the problem.
->>
->> FWIW, that commit 9b2f753ec23710 ("sparc64: Fix cpu_possible_mask if
->> nr_cpus is set") is from v4.8. Reverting it after all that time might
->> easily lead to even bigger trouble.
+On Thu, Mar 28, 2024 at 04:12:36PM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
+
+> On Mon, Feb 26, 2024 at 12:26:33AM -0800, isaku.yamahata@intel.com wrote:
+> >@@ -190,7 +211,8 @@ static bool vmx_needs_pi_wakeup(struct kvm_vcpu *vcpu)
+> > 	 * notification vector is switched to the one that calls
+> > 	 * back to the pi_wakeup_handler() function.
+> > 	 */
+> >-	return vmx_can_use_ipiv(vcpu) || vmx_can_use_vtd_pi(vcpu->kvm);
+> >+	return (vmx_can_use_ipiv(vcpu) && !is_td_vcpu(vcpu)) ||
+> >+		vmx_can_use_vtd_pi(vcpu->kvm);
 > 
-> I'm definitely not reverting a patch from almost a decade ago as a regression.
+> It is better to separate this functional change from the code refactoring.
+
+Agreed. Let's split this patch.
+
+
+> > }
+> > 
+> > void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+> >@@ -200,7 +222,8 @@ void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+> > 	if (!vmx_needs_pi_wakeup(vcpu))
+> > 		return;
+> > 
+> >-	if (kvm_vcpu_is_blocking(vcpu) && !vmx_interrupt_blocked(vcpu))
+> >+	if (kvm_vcpu_is_blocking(vcpu) &&
+> >+	    (is_td_vcpu(vcpu) || !vmx_interrupt_blocked(vcpu)))
 > 
-> If it took that long to find, it can't be that critical of a regression.
+> Ditto.
+> 
+> This looks incorrect to me. here we assume interrupt is always enabled for TD.
+> But on TDVMCALL(HLT), the guest tells KVM if hlt is called with interrupt
+> disabled. KVM can just check that interrupt status passed from the guest.
 
-FWIW I'm not the first person to notice this problem.  Searching the sparclinux
-archive for "ultra 60" which turns up this very similar report[1] from two years
-prior to mine which also went nowhere (sadly, this reporter did not perform a
-bisection to find the problematic commit -- perhaps because nobody asked).
-
-[1] https://lore.kernel.org/sparclinux/20201009161924.c8f031c079dd852941307870@gmx.de/
-
-Cheers,
-  Nick
+That's true.  We can complicate this function and HLT emulation.  But I don't
+think it's worthwhile because HLT with interrupt masked is rare.  Only for
+CPU online.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
