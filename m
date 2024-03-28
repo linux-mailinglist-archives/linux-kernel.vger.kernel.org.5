@@ -1,103 +1,169 @@
-Return-Path: <linux-kernel+bounces-122623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C6CE88FA82
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B60488FA83
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:57:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9C52A702E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:57:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C58D42A6C60
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4A5381BD;
-	Thu, 28 Mar 2024 08:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74135F873;
+	Thu, 28 Mar 2024 08:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i8meCpGh"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CjMdOJ7U";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FJD0B/tE";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CjMdOJ7U";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FJD0B/tE"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAED28DD2
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B1228DD2;
+	Thu, 28 Mar 2024 08:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711616243; cv=none; b=kHeOAVPfup5m21PWi9KMQaBic6w/MX4XaMNpWiUKf7F43mwXAnrrGTC5tGkx+uILuvcUsorRa6gCxvv4usF5qUjyCY5FjyNV7BZRDUQZXJqLDGh9Scc1y1BS5HR+nHYbPH1KsaH9cbMmAKR5tmLT1qmabb0s0cLZKx+DxwVQp+c=
+	t=1711616249; cv=none; b=Nt7xMmkwTxojxXVJqliA4aXWEg9Nsn5KeMrywGEVxgpi0M+TjAsipmaexs3Qru5RdCkXOPnfYsQ1CpjRhcZxOF3xSIeqzIQO7VK1N9cxzpT7GsIPUrkNdUov9v3q9ZNduPnKTeWlKSKISBUnNvb/nFeob8x2D7YqVyENpH0c0UU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711616243; c=relaxed/simple;
-	bh=4F3JozY+G9dFPmMVqsIC2mv1plVDgN7zok2F2MfKt6E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GycbSUO0/+ECKWJB/VhT95k0m47wo1E5Yv0cj1VjZR35ODz6EMKH8G1dtum5r0ePSGs6GZ30XkU9PIgFpA2Pcudjsg/VCPdEphj22bnhdqkRvVKH3EqRaZLIOiD0RfpQrzmZrIeB2Qx2MY6W9W31zMcg0eJeB+gSeHZEa5KMsgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=i8meCpGh; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so692461276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711616241; x=1712221041; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4F3JozY+G9dFPmMVqsIC2mv1plVDgN7zok2F2MfKt6E=;
-        b=i8meCpGhFn5xCiIILqhnwryOHOOlJrjwaZMRsfKs+/hdnNDugS+2YP4UTDf/j+wQMj
-         Bmpg3nV/aBY1ohvz1siMXvgdHv1c7mdN6N+2HOYAVB0KY3hPvyJF38+Q7uGb/nxSguZC
-         wAm+TZ4ohQzp9YtvGvygHsKCPov3V2mnGzCr7Wct/LVZm8ddgxmDR1nBUdoTHcKK1/Vo
-         oFApd8SgEnfvUga42RmRRMYjj3pgXMjuzkZ/8QSYK4mXoMbfI8nzwlH2B5gf4ryZ2/Hb
-         wca1vJCY67aMg+BEROiKoWMzcBexwB5J7AKoAY6hrTa8Xl4bYAWX6Yu5oQatvu81Q0Q9
-         lfIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711616241; x=1712221041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4F3JozY+G9dFPmMVqsIC2mv1plVDgN7zok2F2MfKt6E=;
-        b=Wo9BJTtSzs01NMv7a+LewFJLEGYkct88PyHMujSVhWgOuo3V4FgRJhcI6vhjmjiwlz
-         sOIHe7SxZrVDU8DWkBuW7TvwdLcjpZvqqktWYz8bUUjcHEcGpTtQnifBo8M0tcG59BnJ
-         wbFpU1Fk0sRaRyauPffGXMQu45qedGS7LXYGl+2yaQEeDS8rJI+ee5oFxED6XeA9NbdL
-         8kuH5kOlJItRz8ld59Ufe+5DM0iUZR8yX13k4AZxjUjx0SSOhdMCt37qMeV9nOhcS0fA
-         Yj8obB0sb19fO4h321we8hFopESo/vL2GnjgZHN5vHQ5rT0KkkI9eNI7EEHfqnlJssCu
-         RTXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXPO3ioUc/OTqvNBj7hO9zNoQgBG41+1HnS+B1GWv2TrwNRUcyyXeHN2ZqGndcC63lJiDNU0KIuGFLn8VE2etfWKGLFP+Odlht4cCBj
-X-Gm-Message-State: AOJu0YwAvzgDtKHbL7a3x+9tcbSslLpMfiKxudq6pSpyHEhq0toj1IqS
-	IGqp3H7puMrJ2P1MtDlkAIpvlpTLJwWu1CQJjDTCjaGQI+8EVgaPhkY/aCGnkl6z+/iVjl3VTUm
-	g/f+jZOyc+piGKTiBHJwts2wlMRqNbOcT+O/3GA==
-X-Google-Smtp-Source: AGHT+IGKapoSLxpG9GrnNkjIeTSAnIkOLQk1JL/u0vi14kt6WJXVX3bRQ84jY5/TNx6lXuPoBgs2NzIE5E+MDpY0epU=
-X-Received: by 2002:a25:1606:0:b0:dc7:4725:56df with SMTP id
- 6-20020a251606000000b00dc7472556dfmr1939509ybw.23.1711616241053; Thu, 28 Mar
- 2024 01:57:21 -0700 (PDT)
+	s=arc-20240116; t=1711616249; c=relaxed/simple;
+	bh=BK5QDCsJj7fk5pOeiP1Gm7vaJkCrnhRaNZpCaCU6zjI=;
+	h=Date:Message-ID:From:To:Cc:Subject:MIME-Version:Content-Type; b=Ks44v9GY2OFQAwCXuxCYM6HjbnR9sgTsmnYTLBJDs0ZH3M5z12eB2tD60OnDC4c08kXfqBY9CA1ZfnxGoZrn2fi35wjroucDpyVs/GbylC6G+yienQQLcKF9AmHZKOGjnyTl9yDOC7QZyzk5U5gaFhR16aecpxeUUinOWSqNVI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CjMdOJ7U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FJD0B/tE; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CjMdOJ7U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FJD0B/tE; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8E08D20613;
+	Thu, 28 Mar 2024 08:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711616245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=tvr+LohFSR5FjAVMlXknd6aeS/Sg/TG0aaa5I7gqpas=;
+	b=CjMdOJ7UI00XT0zedpFSOpeqbayPwExdeQhvQhL/G9hfa75458v+pYmTj3pJ4QYX0X8BQk
+	m4ERwlfKhH1MRIrqymthvBVKkOAm9PYR7eP/VVSkGqTqBAdx4uMK671b+tuHOyUUOael99
+	7R+79wu1u/RZQEWCALMzzAh3DQZ/VD0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711616245;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=tvr+LohFSR5FjAVMlXknd6aeS/Sg/TG0aaa5I7gqpas=;
+	b=FJD0B/tEPmDL6o7CdhH0HTJl1VPEt5l3OmYU/8amerTcpCcYGkbq4XEKUArUCd6h4DJ0uI
+	hwCBwgDnnayFWtAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711616245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=tvr+LohFSR5FjAVMlXknd6aeS/Sg/TG0aaa5I7gqpas=;
+	b=CjMdOJ7UI00XT0zedpFSOpeqbayPwExdeQhvQhL/G9hfa75458v+pYmTj3pJ4QYX0X8BQk
+	m4ERwlfKhH1MRIrqymthvBVKkOAm9PYR7eP/VVSkGqTqBAdx4uMK671b+tuHOyUUOael99
+	7R+79wu1u/RZQEWCALMzzAh3DQZ/VD0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711616245;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=tvr+LohFSR5FjAVMlXknd6aeS/Sg/TG0aaa5I7gqpas=;
+	b=FJD0B/tEPmDL6o7CdhH0HTJl1VPEt5l3OmYU/8amerTcpCcYGkbq4XEKUArUCd6h4DJ0uI
+	hwCBwgDnnayFWtAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 65A5B13AB3;
+	Thu, 28 Mar 2024 08:57:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Pv1WF/UwBWasZAAAn2gu4w
+	(envelope-from <tiwai@suse.de>); Thu, 28 Mar 2024 08:57:25 +0000
+Date: Thu, 28 Mar 2024 09:57:27 +0100
+Message-ID: <87ttkqag3s.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.9-rc2
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240312025807.26075-1-quic_tengfan@quicinc.com> <20240312025807.26075-3-quic_tengfan@quicinc.com>
-In-Reply-To: <20240312025807.26075-3-quic_tengfan@quicinc.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 28 Mar 2024 09:57:10 +0100
-Message-ID: <CACRpkdb6LbBkt7aSr_B9=xSpJrjaHhR_MNz9g+LYJwhxdUqDWA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] dt-bindings: pinctrl: qcom: update functions to
- match with driver
-To: Tengfei Fan <quic_tengfan@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	dmitry.baryshkov@linaro.org, linux-arm-msm@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.95
+X-Spamd-Result: default: False [-2.95 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 TO_DN_ALL(0.00)[];
+	 NEURAL_HAM_SHORT(-0.17)[-0.844];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.68)[98.59%]
+X-Spam-Flag: NO
 
-On Tue, Mar 12, 2024 at 3:59=E2=80=AFAM Tengfei Fan <quic_tengfan@quicinc.c=
-om> wrote:
+Linus,
 
-> Some functions were consolidated in the SM4450 pinctrl driver, but they
-> had not been updated in the binding file before the previous SM4450
-> pinctrl patch series was merged.
-(...)
-> Fixes: 7bf8b78f86db ("dt-bindings: pinctrl: qcom: Add SM4450 pinctrl")
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+please pull sound fixes for v6.9-rc2 from:
 
-Patch applied.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.9-rc2
 
-Yours,
-Linus Walleij
+The topmost commit is 1506d96119eb9454d64f5ae80ab8d04c1594ac25
+
+----------------------------------------------------------------
+
+sound fixes for 6.9-rc2
+
+A collection of device-specific small fixes: a series of fixes for
+TAS2781 HD-audio codec, ASoC SOF, Cirrus CS35L56 and a couple of
+legacy drivers.
+
+----------------------------------------------------------------
+
+Arnd Bergmann (1):
+      ALSA: aoa: avoid false-positive format truncation warning
+
+Brent Lu (2):
+      ALSA: hda: intel-nhlt: add intel_nhlt_ssp_device_type() function
+      ASoC: SOF: ipc4-topology: support NHLT device type
+
+Duoming Zhou (1):
+      ALSA: sh: aica: reorder cleanup operations to avoid UAF bugs
+
+Gergo Koteles (4):
+      ALSA: hda/tas2781: remove digital gain kcontrol
+      ALSA: hda/tas2781: add locks to kcontrols
+      ALSA: hda/tas2781: add debug statements to kcontrols
+      ALSA: hda/tas2781: remove useless dev_dbg from playback_hook
+
+Simon Trimmer (2):
+      ALSA: hda: cs35l56: Raise device name message log level
+      ALSA: hda: cs35l56: Set the init_done flag before component_add()
+
+---
+ include/sound/intel-nhlt.h       |  10 ++++
+ sound/aoa/soundbus/i2sbus/core.c |   2 +-
+ sound/hda/intel-nhlt.c           |  26 +++++++++
+ sound/pci/hda/cs35l56_hda.c      |   8 +--
+ sound/pci/hda/tas2781_hda_i2c.c  | 120 +++++++++++++++++++++++++--------------
+ sound/sh/aica.c                  |  17 +++++-
+ sound/soc/sof/ipc4-topology.c    |  19 ++++++-
+ 7 files changed, 149 insertions(+), 53 deletions(-)
+
 
