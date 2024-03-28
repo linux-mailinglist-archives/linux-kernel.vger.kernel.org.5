@@ -1,189 +1,84 @@
-Return-Path: <linux-kernel+bounces-122931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4BA488FFB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:57:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8C188FFB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 476E31F24514
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:57:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 096C81C28EE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709C17F48D;
-	Thu, 28 Mar 2024 12:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720F47FBB9;
+	Thu, 28 Mar 2024 12:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="VMFc7l9N"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ak1sbqmT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86A657334;
-	Thu, 28 Mar 2024 12:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B4C5FB99;
+	Thu, 28 Mar 2024 12:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711630620; cv=none; b=q5vPfmMkkwLZHpEUVmXO0IEj2r789o1sAl1tdTV5U0bVT4og2w4Vi6tkCEPEwLbEQZGSikJtKqVyVY5l36kL/TRZPJe6WZ/MR6XPnxZHhxJNGJK8+CTE/o3SpK155kPBaNUdFNLzwIYrVGrUdv7tOiVqIprsf8L4NgdLkMRV97s=
+	t=1711630653; cv=none; b=DIsjIs6KB80P6WYgNvkMpqq8FFA+exfHXm0q1dgBRlwTT+2lNJNGw4FPiR2NgxxY24/9kXleT2HMqh6dOUUOFUV9A/JRGQLNMYZWy2O2gN6UsD+2gnxclgFAUn+lZXk6FQV2Xl2LBqDWSt8iwY46jUalUvR1xXXbyuyiVTtz/uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711630620; c=relaxed/simple;
-	bh=JHDGhy5VkAZfslj0S+264BFj36Pb1yYIhb66Fr42nZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LX4uqmOsIs1EJ+TDYWGH4OpwmJayM44g2522XL7zyrI67uEtvggt91plbY6zWloe4tgEg8vRWXHzLUJvvHmNgsGCJ9ZUabwsp8qNIIo6ibxb+xbupcpd3RrQ/rGdW793eGhS1X+hL7LYWhriuZlbkSlplM0nF619qeMXtRzwfsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=VMFc7l9N; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 16F1D8811D;
-	Thu, 28 Mar 2024 13:56:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1711630617;
-	bh=yBC4qKgCP2u86B3cHPsOZFo0pl6JDvKQ65pAG65n3FY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VMFc7l9NbOY1VqiCXf3IGopkdESWrY/Ldwslyxi3gJgbF6C5hCaxpkxeoX1l1I2UE
-	 C0FZEC3PiVMIeU/omXt9FNd9hRSgM8G35cxlW5cCM513I/TIHbWj7wK8LNC6rai1f+
-	 JDsf7Ms4pEv2AZzJBovF3gAOrzYmaUIzi7JixI/VTn+lcPEx2d8ikeKxoNHvHxMU54
-	 xyU7p+SZmJHaMVLXAybhHmeIOm8ghdytIKOfIqMSASE9si5QSas27LRvyvT+1ppFnR
-	 HWOZNxcPQQY1Hp0i2RRkYQbZfXTgdKLNqgEKQs7rxug6wf4NRE608k8uDzaImwc5C8
-	 bUIW7gPN95WHw==
-Date: Thu, 28 Mar 2024 13:56:55 +0100
-From: Lukasz Majewski <lukma@denx.de>
-To: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Eric Dumazet
- <edumazet@google.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Oleksij
- Rempel <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian
- Andrzej Siewior <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>,
- Ravi Gunasekaran <r-gunasekaran@ti.com>, Nikita Zhandarovich
- <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, Jiri
- Pirko <jiri@resnulli.us>, Dan Carpenter <dan.carpenter@linaro.org>, Ziyang
- Xuan <william.xuanziyang@huawei.com>, Shigeru Yoshida
- <syoshida@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RESEND] net: hsr: Provide RedBox support
-Message-ID: <20240328135655.48c8e7d1@wsk>
-In-Reply-To: <20240328122549.GJ403975@kernel.org>
-References: <20240326090220.3259927-1-lukma@denx.de>
-	<20240328122549.GJ403975@kernel.org>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711630653; c=relaxed/simple;
+	bh=NqFtcA01L6YHAkspYOeRJlzOjy89j+1aJ2esOXYp47g=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=bhQ+6sH0hTyAR9dp04JldtSJe+HoLa2NNaZIDpYpGkmigpD8T6TVnJ69KiL1lqq6hzF47dTMuo0kbfhUZP9afZkyYZMfqrKCU+BI2bkQnuGvfDi2Ubnaj2E+uQs93UfxBE5oVMzyfZ+sGzmsO/+QSnIyvg4eQS0+w5DMlAFNgWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ak1sbqmT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BDCCC433F1;
+	Thu, 28 Mar 2024 12:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711630653;
+	bh=NqFtcA01L6YHAkspYOeRJlzOjy89j+1aJ2esOXYp47g=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=ak1sbqmT2oNRt2EEk/n1QfSYg2WTASl9KJskAVfH+qD+2kE8i8hvY7xBI78j5G1oV
+	 Hk2dx1IBkSVNDqcq+IVUX6KLJf1GWo+5y7jrDiRq7yS/MbUSXeiJ17T2j2oVDLNXdB
+	 HnA/lleZY/E1rKdpZxlEMNETzRGMSfRg1gSo+yblcsGF14hiRgwpr+JnFpZw6BKYsB
+	 CPyLcVHrySf9uqFqZr10T1fJ5vb4FNYSr7N2G4ZskQGK67A9Ss1eMiqroPSOnFUs4A
+	 04JQSvDMUjbYmw5mZM5rq8KhlpG+6Ed1thYeof4fpTEwiYlZugDxIqi59Bue6RtfOM
+	 shK49zMqFYc1A==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/i1lim4VRYcicmxtzQ+h1Fh/";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] wifi: wil6210: Annotate struct
+ wmi_set_link_monitor_cmd with __counted_by()
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <ZgODZOB4fOBvKl7R@neat>
+References: <ZgODZOB4fOBvKl7R@neat>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171163065000.129280.2362402378382558964.kvalo@kernel.org>
+Date: Thu, 28 Mar 2024 12:57:31 +0000 (UTC)
 
---Sig_/i1lim4VRYcicmxtzQ+h1Fh/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-Hi Simon,
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-> On Tue, Mar 26, 2024 at 10:02:20AM +0100, Lukasz Majewski wrote:
-> > Introduce RedBox support (HSR-SAN to be more precise) for HSR
-> > networks. Following traffic reduction optimizations have been
-> > implemented:
-> > - Do not send HSR supervisory frames to Port C (interlink)
-> > - Do not forward to HSR ring frames addressed to Port C
-> > - Do not forward to Port C frames from HSR ring
-> > - Do not send duplicate HSR frame to HSR ring when destination is
-> > Port C
-> >=20
-> > The corresponding patch to modify iptable2 sources has already been
-> > sent:
-> > https://lore.kernel.org/netdev/20240308145729.490863-1-lukma@denx.de/T/
-> >=20
-> > Testing procedure:
-> > ------------------
-> > The EVB-KSZ9477 has been used for testing on net-next branch
-> > (SHA1: 709776ea8562).
-> >=20
-> > Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for
-> > ports 1/2 (with HW offloading for ksz9477) was created. Port 3 has
-> > been used as interlink port (single USB-ETH dongle).
-> >=20
-> > Configuration - RedBox (EVB-KSZ9477):
-> > ifconfig lan1 down;ifconfig lan2 down
-> > ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision
-> > 45 version 1 ip link add name hsr1 type hsr slave1 lan4 slave2 lan5
-> > interlink lan3 supervision 45 version 1 ifconfig lan4 up;ifconfig
-> > lan5 up ifconfig lan3 up
-> > ifconfig hsr1 192.168.0.11 up
-> >=20
-> > Configuration - DAN-H (EVB-KSZ9477):
-> >=20
-> > ifconfig lan1 down;ifconfig lan2 down
-> > ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision
-> > 45 version 1 ip link add name hsr1 type hsr slave1 lan4 slave2 lan5
-> > supervision 45 version 1 ifconfig lan4 up;ifconfig lan5 up
-> > ifconfig hsr1 192.168.0.12 up
-> >=20
-> > This approach uses only SW based HSR devices (hsr1).
-> >=20
-> > --------------          -----------------       ------------
-> > DAN-H  Port5 | <------> | Port5         |       |
-> >        Port4 | <------> | Port4   Port3 | <---> | PC
-> >              |          | (RedBox)      |       | (USB-ETH)
-> > EVB-KSZ9477  |          | EVB-KSZ9477   |       |
-> > --------------          -----------------       ------------
-> >=20
-> > Signed-off-by: Lukasz Majewski <lukma@denx.de> =20
->=20
-> Hi Lukasz,
->=20
-> this patch (2) seems to have a build dependency on:
-> (1) [v2,RESEND] net: hsr: Use full string description when opening
-> HSR network device
-> https://lore.kernel.org/all/20240326085649.3259424-1-lukma@denx.de/
->=20
-> Which is pending review.
->=20
-> With this in mind, I suggest waiting for the review of 1 to be
-> completed and then either:
->=20
-> * If 1 is accepted, then follow-up by sending v4 of this patch (2)
+I'm dropping this because it looks like you sent a different patch, but
+it's quite hard to know for sure.
 
-It has been reviewed by Andrew 2 days ago, so hopefully it will be
-merged soon, and then I can prepare v4 of the HSR Redbox support.
+Patch set to Superseded.
 
-> ; or
-> * If changes are requested to 1, include 1 and 2 together in
->    a patchset after addressing relevant feedback
->=20
-> ...
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/ZgODZOB4fOBvKl7R@neat/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/i1lim4VRYcicmxtzQ+h1Fh/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYFaRcACgkQAR8vZIA0
-zr1USQf/ePJ/H3ZbaxXuaPYKSe9LvI3xfehs/BHhayjH/IDytSVl7jxEhqJLriGl
-Eeaa/3s8p5Dv+P3chcDW9oaPdylamrkUDQQHhEMToDwFhgMTAb3BmzrWQhVyzE6r
-/boTH4PJwWTbSIm5PBgl+7Pi4CzHSxqKo4Qm1FNzQEp/kjeGXM3ioRJp+SlPZL09
-AY/77g2Ir/tOVuDP2on5m6G496EOeY2w/zwE4ELiqQD2xwEvRu58fETtb58X+cQj
-B8bo6WDUvep5N4uS5kv+vJNRShPCQeydN+r530diGzeY3WLOncTfwc99tZM5u+Vi
-WD9KHweC9ouEpITpVTnPC+FUr1/Kpw==
-=FL86
------END PGP SIGNATURE-----
-
---Sig_/i1lim4VRYcicmxtzQ+h1Fh/--
 
