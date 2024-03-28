@@ -1,147 +1,108 @@
-Return-Path: <linux-kernel+bounces-122942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A79BA88FFE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:15:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 837D588FFE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:15:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D19B61C288A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:15:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4EF91C282A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07FE80025;
-	Thu, 28 Mar 2024 13:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A807F7CA;
+	Thu, 28 Mar 2024 13:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="McOYBOmO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0evmTQG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A00847C;
-	Thu, 28 Mar 2024 13:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E4480620;
+	Thu, 28 Mar 2024 13:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711631718; cv=none; b=VsBr2rD2oSdTdMxypNXwavpD5lWguNvzsM/LVDGapD8nblXp0wnRwefkXXph90ZC6ZtoInSAkXK0onBntJ6U5M0sjGIOpiSzrQwRFKG+r2/eYpcrQ9wkrQk0Ts4dTzogH72l6QFuak125c1P3HxcgdUVexenneSa+s0qcHhDhkE=
+	t=1711631721; cv=none; b=d6DTrABHgk2GYZLXihSGP6YrJBFEyMX55/V7RJVG8L4U2NOh40f6Lz/hmqHN100KGZnB3tFhLLmN6QEc7StUlPIfH/Ocwuvccv3/rzT6LPFjUXaIILx5MVGfxrSahEhNCxprQGlZoKgYMkTEkTpqT5YGHaX+XVo8QoXx/X5MEcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711631718; c=relaxed/simple;
-	bh=6TWeWcjSh/g81Ig8RxxLjk0o2Q11JmZ1utPGtly2dYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bIMK8AaKTmDhj7g8kbK0XTvsw33ChoGfl6UvU+C4kN4g8RElIBw2ETSwZvGaY2YqCHpqTOJBP2EDgugq/LiCKt9AiINundAY9wWmRK6q+DTbgQzJXQpSZsdVYFx/ZVXlqgvpFFsAL/3OE9PNxAG4xe+7Qm/VC06lJ9F1cU1v8Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=McOYBOmO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C906C433C7;
-	Thu, 28 Mar 2024 13:15:13 +0000 (UTC)
+	s=arc-20240116; t=1711631721; c=relaxed/simple;
+	bh=m+h/KdE9apj2uOki2BwzpthHKlZsGJkW3Mwx6nf/uSU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NWGc6VX5SxImBiA2AaszXyOm5cjZLByzYJaUPZoorQXEIOWOpJC4NFfx4YUDMt0Bm/lynGseykNhVaY6tjOpTMXpHoLYq8b8J6Khtp586lO+I9aRRaW3ume+0igSuRHy6heiMrm/eXnxhTAVykUn01HmBZM2r54m1rpHbcLurzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0evmTQG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80ECFC433C7;
+	Thu, 28 Mar 2024 13:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711631717;
-	bh=6TWeWcjSh/g81Ig8RxxLjk0o2Q11JmZ1utPGtly2dYU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=McOYBOmOxr/4SJ6wInhGNN/Dwf766g0iIc7OaU4hNurqwBGkOrkfPACbNRk6uwwGn
-	 JJb8eZuQo2YKEcHgQY9Z0l0qEvHQ/lSne2WjHvKhsZhJD4d8b+MGgk0+AUhkkTQjh5
-	 Dy6iokvGsIvTrkA/+pK6GPSLcxeJ5oSOmVFWgwhUVHduxJjW8r9QbKTVpIDES3YFDa
-	 lD7OWQVY33gb+DDQVc5fgBP65U7mc523IqlWbkuYlC8T4tUNz/slrT/e4+J07mv6tB
-	 cx0Rx9t4M4PeGOnGZMRr6mgNhiEjZasUWEvB/+ZX/CQ6UcN3EX0EddKMRaVcTbXJd3
-	 HN/TqpYU+QzRA==
-Date: Thu, 28 Mar 2024 13:15:00 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Lothar Rubusch <l.rubusch@gmail.com>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Subject: Re: [PATCH v4 1/7] iio: accel: adxl345: Make data_range obsolete
-Message-ID: <20240328131500.068c82c3@jic23-huawei>
-In-Reply-To: <CAFXKEHaQLu9WFJe4r4+QaWO-wjM0hpYkWF_s8NOSh2Hoo5w8FQ@mail.gmail.com>
-References: <20240325153356.46112-1-l.rubusch@gmail.com>
-	<20240325153356.46112-2-l.rubusch@gmail.com>
-	<20240325203155.23ddfe3d@jic23-huawei>
-	<CAFXKEHaQLu9WFJe4r4+QaWO-wjM0hpYkWF_s8NOSh2Hoo5w8FQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=k20201202; t=1711631720;
+	bh=m+h/KdE9apj2uOki2BwzpthHKlZsGJkW3Mwx6nf/uSU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=h0evmTQGspNWIp9UxCKK5g7GZlsPRhW+Ixig9oMLHg46zlCMFblwQzP06UDKGcFVO
+	 aChVP7F5CFGgUQfGS4nUPTH5R2A3XmDOR4pW4ZsNNINcCqtFBRrHt1d1jFT1lk5maR
+	 cxP8bYS/WAtyf6ipv9HN6WGd24NYM5CGFPCBOuvenNcC8FUrt3KvLD4ebl/4Dj582A
+	 ngaMla9n4E8weFmdwLrwP4hVSnZlA7kr/PEaw08tdTmSBNpNj3GdImauAC9zBz3Bzq
+	 A3AwiRhOCXzv/fgI5DhEmk70kpqSCs7OQt9lUWeA9riDhPOsZUuU0G8okELQj9fAsV
+	 mi9ZtLJqcflhg==
+From: Georgi Djakov <djakov@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	djakov@kernel.org
+Subject: [GIT PULL] interconnect fixes for 6.9-rc
+Date: Thu, 28 Mar 2024 15:15:01 +0200
+Message-Id: <20240328131501.641457-1-djakov@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, 26 Mar 2024 21:59:34 +0100
-Lothar Rubusch <l.rubusch@gmail.com> wrote:
+Hello Greg,
 
-> On Mon, Mar 25, 2024 at 9:32=E2=80=AFPM Jonathan Cameron <jic23@kernel.or=
-g> wrote:
-> >
-> > On Mon, 25 Mar 2024 15:33:50 +0000
-> > Lothar Rubusch <l.rubusch@gmail.com> wrote:
-> > =20
-> > > Replace write() data_format by regmap_update_bits(), because
-> > > bus specific pre-configuration may have happened before on
-> > > the same register. Changes then need to be masked.
-> > >
-> > > Remove the data_range field from the struct adxl345_data,
-> > > because it is not used anymore.
-> > >
-> > > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> > > ---
-> > >  drivers/iio/accel/adxl345_core.c | 9 ++++-----
-> > >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adx=
-l345_core.c
-> > > index 8bd30a23e..be6758015 100644
-> > > --- a/drivers/iio/accel/adxl345_core.c
-> > > +++ b/drivers/iio/accel/adxl345_core.c
-> > > @@ -42,13 +42,13 @@
-> > >  #define ADXL345_DATA_FORMAT_4G               1
-> > >  #define ADXL345_DATA_FORMAT_8G               2
-> > >  #define ADXL345_DATA_FORMAT_16G              3
-> > > +#define ADXL345_DATA_FORMAT_MSK              ~((u8) BIT(6)) /* ignor=
-e spi-3wire */ =20
-> >
-> > I'm not keen on seeing masking of a bit we don't yet
-> > handle done by value.  Can we instead build this up by what we 'want' to
-> > write rather than don't. Will need a few more defines perhaps to cover
-> > the masks of SELF_TEST, INT_INVERT, FULL_RES, Justify and Range.
-> > =20
->=20
-> Good point. Anyway, there is also an input driver implementation for
-> the adxl345, mainly dealing with the interrupt feature as input
-> device. Thus, for the iio implementation I would suggest to reduce the
-> mask just to cover SELF_TEST and FULL_RES and leave INT_INVERT out. Is
-> this ok?
-yes, that sounds fine
->=20
-> > >
-> > >  #define ADXL345_DEVID                        0xE5
-> > >
-> > >  struct adxl345_data {
-> > >       const struct adxl345_chip_info *info;
-> > >       struct regmap *regmap;
-> > > -     u8 data_range;
-> > >  };
-> > >
-> > >  #define ADXL345_CHANNEL(index, axis) {                              =
-         \
-> > > @@ -219,14 +219,13 @@ int adxl345_core_probe(struct device *dev, stru=
-ct regmap *regmap)
-> > >       data =3D iio_priv(indio_dev);
-> > >       data->regmap =3D regmap;
-> > >       /* Enable full-resolution mode */
-> > > -     data->data_range =3D ADXL345_DATA_FORMAT_FULL_RES;
-> > >       data->info =3D device_get_match_data(dev);
-> > >       if (!data->info)
-> > >               return -ENODEV;
-> > >
-> > > -     ret =3D regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
-> > > -                        data->data_range);
-> > > -     if (ret < 0)
-> > > +     ret =3D regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
-> > > +                              ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_=
-FORMAT_FULL_RES);
-> > > +     if (ret)
-> > >               return dev_err_probe(dev, ret, "Failed to set data rang=
-e\n");
-> > >
-> > >       indio_dev->name =3D data->info->name; =20
-> > =20
+This pull request contains one core and one driver fix for the current
+cycle. The details are in the signed tag as usual. It is not based on rc1,
+but on a previous tag that you pulled, because i got these fixes during
+the merge window. All patches have been in linux-next for more than a week.
+Please pull into char-misc-linus when possible and propagate further when
+you have more char/misc fixes.
 
+Thanks,
+Georgi
+
+
+The following changes since commit 5464e7acea4a6c56b3c5c2d7aeef2eda92227b33:
+
+  interconnect: qcom: x1e80100: Add missing ACV enable_mask (2024-02-04 23:36:06 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.9-rc2
+
+for you to fetch changes up to de1bf25b6d771abdb52d43546cf57ad775fb68a1:
+
+  interconnect: Don't access req_list while it's being manipulated (2024-03-14 13:51:44 +0200)
+
+----------------------------------------------------------------
+interconnect fixes for v6.9-rc
+
+Here are fixes for two reported issues. One of them is a fix for
+a driver that tries to access a non-existent resource which prints
+a warning message during boot. The other one is fixing a race
+condition in the core framework where one struct member has been
+left unprotected by mutex.
+
+- interconnect: qcom: x1e80100: Remove inexistent ACV_PERF BCM
+- interconnect: Don't access req_list while it's being manipulated
+
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
+
+----------------------------------------------------------------
+Konrad Dybcio (1):
+      interconnect: qcom: x1e80100: Remove inexistent ACV_PERF BCM
+
+Mike Tipton (1):
+      interconnect: Don't access req_list while it's being manipulated
+
+ drivers/interconnect/core.c          |  8 +++
+ drivers/interconnect/qcom/x1e80100.c | 26 --------
+ 2 files changed, 8 insertions(+), 26 deletions(-)
 
