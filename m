@@ -1,131 +1,121 @@
-Return-Path: <linux-kernel+bounces-122944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FA8788FFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:15:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 924A88900C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39D63291FE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:15:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C21F2945D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7518003B;
-	Thu, 28 Mar 2024 13:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D64C80BEC;
+	Thu, 28 Mar 2024 13:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B65ebx4A"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Fzrq1x3N"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE022847C;
-	Thu, 28 Mar 2024 13:15:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1012D56B77
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711631741; cv=none; b=CcqGLN0yU00GaaHTFp14Fq70ZWgrPDhgUv9uy/8IBGCW8t5tcbDP3xQnUBriiDfjHJ8563JALoinOjJxp2YJ6T5Ms/nsH2jB/GXqFzbh5U8vF2XtM7sGnUC61A1DGUJ4lim8G2S+l8GQFBgAdUX5irJZd75Q+9qFHg4wz1Iq92Y=
+	t=1711633661; cv=none; b=pdfzI06WTy9CbTk3axlVmLO6EcUHldxUDaF79hO1npDMwRnHDSSOdDlfXX4anMYq2UpdUQE6oCLi0ZZf+VFDElr1tACxZxHD36R19c0fVzQrzERPwHD8UsxJciVaqus6acizxKR6t5xoR7V+0OAX22vHbrynh9PJ9t0JDohNGQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711631741; c=relaxed/simple;
-	bh=Xo032l06yr/hR/jwn/WjJ3wew5ThoMRYTk7U+HZZzrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uuzU9VXyOERrk8Fd1wYfmfD6BLOZy9JUyyw3V68f9pzS92ciMgL2jUE1Fa73wKM+U+zlE4d2m3VHPPrp2aNJj1FpCaSukalSzY6wysTVIjPLaWm8vLCSn1YvP0pSZT4+7z7QntS/nLBzWAi2Gt3pO4L8hdTwVfyOV0bIl/otTzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B65ebx4A; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711631738; x=1743167738;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Xo032l06yr/hR/jwn/WjJ3wew5ThoMRYTk7U+HZZzrE=;
-  b=B65ebx4Af8DFjJAYY5qvSyIryiU8E3lBdcEgf0P6v6wet68gIQ9/LwfC
-   5DGnALwQqE5T9cMrnFxvy3I+CWKOK8U5YZ1avX5HMtQUQ7QmhQ8E0Fkwg
-   6BlLLYAdXnigFA0ScQQwhzTEsF/B6j89EVzUHJ2ABw519hZlnyOBP1RQv
-   /SqZ1Tgttu2motYFGY/uvcShSDPy+zGITB5odxyXdPhNbwGwYAyy2vk1/
-   2lF94vr6QGWu5qIe1hflZb39jg6DtYq9w9vq+aeGpx4Azosk1A6SpE5Uq
-   orN8hkVdiJydoG5h3vtAkNhlgpri4hJEKKttaPINnO46hecwO2ZpGtbyD
-   A==;
-X-CSE-ConnectionGUID: m2FbL++mQkiFPsSLcdrCWA==
-X-CSE-MsgGUID: zilyCxbsRcm0ErALigs3RQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6999352"
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="6999352"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 06:15:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="16637521"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 28 Mar 2024 06:15:08 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rppb0-0002A6-01;
-	Thu, 28 Mar 2024 13:15:06 +0000
-Date: Thu, 28 Mar 2024 21:15:01 +0800
-From: kernel test robot <lkp@intel.com>
-To: Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
-	javierm@redhat.com, deller@gmx.de, sui.jingfeng@linux.dev
-Cc: oe-kbuild-all@lists.linux.dev, linux-arch@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-sh@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	loongarch@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>
-Subject: Re: [PATCH v2 3/3] arch: Rename fbdev header and source files
-Message-ID: <202403282102.OEKoBT3H-lkp@intel.com>
-References: <20240327204450.14914-4-tzimmermann@suse.de>
+	s=arc-20240116; t=1711633661; c=relaxed/simple;
+	bh=urpF+uhnagsRIlmCvAoqVf0cSl1JhJfWoktomJ+ip1k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lDEQQB33Osc83bvJ1SxEYOHBrGng1/vwFTXjkKjo3ByuJ2HSL5EWvQ6YSMHmF6ZE7rK3PywHIZ88LVXYxsJU2zTTny6fdVnP+o+Po/iERDCQsNjOVb1UBhmbD7WcEXPb9lhiLWM2mFvUSw7cA2y5kRvq0mjKinfijHk+h299IYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Fzrq1x3N; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a466fc8fcccso128249366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1711633657; x=1712238457; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GxzVOZoRlwbh3BCja72w8JfT19aYOorMwhFDDTCvDh0=;
+        b=Fzrq1x3N2q/eu7jyvo5orUU6iNcfIjp9NlWREakYVLy1qIQOdQ1KOLUwAlLTw8iUSS
+         Qqv2VzYmgTupchTiG0nfFPsvDTMMrdg6xEpqL0ZgnC8JVZGl559X/+PyleRlP45XdZZ9
+         CkraUi8hNO5np1RAJVXfRQuNkUwZt/9FxGro3qOepFQ4YOFlFACF2PdBLifj48lqi2cT
+         h9e9sTMeweB+AabLRGi+tRFT+yAqTBuC1vfIhA982l1xnb1hOSHCnNd1/ma2lGoRnixc
+         nihDBWPU+nOCeT1ewZGwuHTC61cZ2YJE98LscYtlzLdc1w+4u9YER62Gi+uupXuFLbo2
+         NeIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711633657; x=1712238457;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GxzVOZoRlwbh3BCja72w8JfT19aYOorMwhFDDTCvDh0=;
+        b=mAxyUkct13Hp4iJr3LPIFmB+YYI0p1NwDD99WV3dNLS1HwhvR+6RVZ94saibLc5xEb
+         5SLHuWLNSJU/hJTUGSkYpNhmM5UsqZnIlGGk013W8YKxJrmfF+bhiOF3goWp0CT6W+9g
+         VtyjLXRVmsXzH7i/47Q1YA4y+S6FivampDCCJzHPGNVRcjWFXTYL5pRHnygYxacPA+2m
+         rjrpEHg7IQWpcyfywnIfotBwqdea/QAJ2AitCWnMuG66Mo/ORf1s6QdIcYF+kzqaeJyF
+         bCnIyW+6HjDFdFsiYnk1IG++irrNjiKrq+GWcYW9S+DFxOwTDfhlUq6T0T+bRZRHtHI0
+         J/xg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRp50WR+fXr0T439qJX6yYoyRTQCmub7kTDEBboJQRA5Jt0bdVALySSVqeKh2B/sfihjdhSa81rmZhHA0ubVHuqSlkmYQ4A2yW5JLA
+X-Gm-Message-State: AOJu0Yyb1/6CTGs1ibXpXibAxgDdtErlzw/h1mKKrbTIl6kDJ2jCpWpV
+	zBixFDfKYzVZxh20ZYyBWiwWMwGf6CrZ+CoK7i7ukvsbmi3pMt3UXa50Ndj7CJ6IiZcHd+KGR+P
+	0k+g=
+X-Google-Smtp-Source: AGHT+IGpawLg28p3E5615Qyo+gXkEKgAfaMlSgEerS9cHHYKKRGks+Jt2ipv8BUlRar8DJhPLu6AUg==
+X-Received: by 2002:a17:906:c14c:b0:a4e:19f4:8452 with SMTP id dp12-20020a170906c14c00b00a4e19f48452mr1831832ejc.11.1711633657415;
+        Thu, 28 Mar 2024 06:47:37 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id gy16-20020a170906f25000b00a45f2dc6795sm765908ejb.137.2024.03.28.06.47.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 06:47:37 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Dan Williams <dan.j.williams@intel.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] raid6test: Use str_plural() to fix Coccinelle warning
+Date: Thu, 28 Mar 2024 14:15:22 +0100
+Message-ID: <20240328131519.372381-4-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327204450.14914-4-tzimmermann@suse.de>
+Content-Transfer-Encoding: 8bit
 
-Hi Thomas,
+Fixes the following Coccinelle/coccicheck warning reported by
+string_choices.cocci:
 
-kernel test robot noticed the following build errors:
+	opportunity for str_plural(err)
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.9-rc1 next-20240328]
-[cannot apply to tip/x86/core deller-parisc/for-next arnd-asm-generic/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ crypto/async_tx/raid6test.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-Select-fbdev-helpers-with-CONFIG_VIDEO/20240328-044735
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240327204450.14914-4-tzimmermann%40suse.de
-patch subject: [PATCH v2 3/3] arch: Rename fbdev header and source files
-config: um-randconfig-001-20240328 (https://download.01.org/0day-ci/archive/20240328/202403282102.OEKoBT3H-lkp@intel.com/config)
-compiler: gcc-12 (Ubuntu 12.3.0-9ubuntu2) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240328/202403282102.OEKoBT3H-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403282102.OEKoBT3H-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   /usr/bin/ld: drivers/video/fbdev/core/fb_io_fops.o: in function `fb_io_mmap':
->> fb_io_fops.c:(.text+0x251): undefined reference to `pgprot_framebuffer'
-   collect2: error: ld returned 1 exit status
-
+diff --git a/crypto/async_tx/raid6test.c b/crypto/async_tx/raid6test.c
+index d3fbee1e03e5..3826ccf0b9cc 100644
+--- a/crypto/async_tx/raid6test.c
++++ b/crypto/async_tx/raid6test.c
+@@ -11,6 +11,7 @@
+ #include <linux/mm.h>
+ #include <linux/random.h>
+ #include <linux/module.h>
++#include <linux/string_choices.h>
+ 
+ #undef pr
+ #define pr(fmt, args...) pr_info("raid6test: " fmt, ##args)
+@@ -228,7 +229,7 @@ static int __init raid6_test(void)
+ 
+ 	pr("\n");
+ 	pr("complete (%d tests, %d failure%s)\n",
+-	   tests, err, err == 1 ? "" : "s");
++	   tests, err, str_plural(err));
+ 
+ 	for (i = 0; i < NDISKS+3; i++)
+ 		put_page(data[i]);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.44.0
+
 
