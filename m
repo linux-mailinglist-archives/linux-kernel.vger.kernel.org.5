@@ -1,477 +1,183 @@
-Return-Path: <linux-kernel+bounces-123834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95ABE890EA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:42:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9EA890EA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9200B229AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:41:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D8FB1C258EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DE713958C;
-	Thu, 28 Mar 2024 23:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7531386DF;
+	Thu, 28 Mar 2024 23:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="F4LLCIkZ"
-Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11023019.outbound.protection.outlook.com [52.101.56.19])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Vmg487hU"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB6C1DFF5;
-	Thu, 28 Mar 2024 23:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711669309; cv=fail; b=puXmp9kzXhRDt5/zLo/TX2c46PwtZ7kh94kecKeA5QEFJFVeiwDr7OM8hAAMubZdBrmpMKVenMkobkYfOsINnBGnqcEWdRZKGivdIlJBLd8HMD+mJYeD+Pn5f3Qtl23ATydUdplvMNAMa37WqtjBhIISRWYMgxFxChY/Bhs4Li4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711669309; c=relaxed/simple;
-	bh=9yKHJ9B63AEBPkTpFw3vGvcL1gJrvmyjlao/9H1pOVA=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=FvxxD0luPZayEVfAmqXdkeLw5a2vEYxmFqYEFBmy/kNs2fA7LObfRoSgYpuVWf3SrS6zo0VqnHYCrkzuT4zu5XeA2rPfk85C1VuQIN1Vd1MohuLRlRpRDHFUEXfRfMMLOsdH93se+f3P4/3SPwEdPoRVg9zhjr6BRdikWnxxAR4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=F4LLCIkZ; arc=fail smtp.client-ip=52.101.56.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qj8OiJj4zt4M6PXeI0M2n3DmNUizHabwpa8iZOPJh7YEHLeq9HPBruqczfV1DD4aFIsa9EXuvrCQAucud3irznJM0pgmo0WurSfxhTdMWY6rQ8c8puNLjPDn7GEJ5Yo9no0FszwZAlguIy01roYm1r8ITSCcDWVVd/V+J3sIXYKZthe9aIOZMg888L00tEVZRkt360YEx/KIhZdF7jGMCeGLOo/3aoquOMGSCnZX/Zhnj3h9/S+Jz1neBbPubI6wj47QUaNiPO8zDaldad6l2vOiMGklXgAw1o0dC/Q+HBdEljieG0VWsZf/Ccd+i9wtIpX/GR1M+Lwmyu33LTxfzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G8QPhe+BU0s3uMP7YryxtgGR2g/P0au8w6M/3Jc1bLM=;
- b=OaRARyyrO5aHpbWkQUqj7t1EVBkOXBjTljLdcgu+FO21KtB2nW8Ix0bQ10CE8NmIlP+FK/LY6H3iSQ0JLgbvHijGZ3EiIrSSyKotqDmK5AHcz0Pp1BW3H6crx9cFtcN3qSyLDqgKtGGBUq9D0yeAYDdztyClSIs/kotSjWI/4yZbfOkdZzWpPbOL5tN3fvFDqPui/ciyJaZ+ipiWDD41lj32gydDYxKFD5FDR4pept6TtT15I/Kdw22yv3oDpOunB0WQbVzuficjrwnIcLu9ygs5oKYntj9HMFqjsjXP3JkscoRX8BRq72ggA9IfSe2RQIRDPRDUjsv3HAxMcAVveQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8QPhe+BU0s3uMP7YryxtgGR2g/P0au8w6M/3Jc1bLM=;
- b=F4LLCIkZ4aLsKVmrURnthJYpuUsVrKa54eM0JBe4XSfv+TQzY05Pb6iQNnJQuanemQuCYnQ9MViZpw9Zuaxs3n2EJprV96tVGbDCPRX6topFPjvT+QaAEO8uR8888c11siu22vh/ExmLgF3Kuk8z0ZTqkH5ZvFN4OyyJRlM4X7A=
-Received: from CO1PR01MB7370.prod.exchangelabs.com (2603:10b6:303:159::16) by
- PH0PR01MB7399.prod.exchangelabs.com (2603:10b6:510:10a::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.38; Thu, 28 Mar 2024 23:41:41 +0000
-Received: from CO1PR01MB7370.prod.exchangelabs.com
- ([fe80::994c:4200:8a4b:6882]) by CO1PR01MB7370.prod.exchangelabs.com
- ([fe80::994c:4200:8a4b:6882%6]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 23:41:41 +0000
-Message-ID: <78d11760-bb43-42a1-a302-3e2d3bf40c48@os.amperecomputing.com>
-Date: Thu, 28 Mar 2024 16:41:36 -0700
-User-Agent: Mozilla Thunderbird
-From: Daniel Ferguson <danielf@os.amperecomputing.com>
-Subject: Re: [RFC PATCH v7 12/12] memory: RAS2: Add memory RAS2 driver
-To: shiju.jose@huawei.com, linux-cxl@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-mm@kvack.org, dan.j.williams@intel.com,
- dave@stgolabs.net, jonathan.cameron@huawei.com, dave.jiang@intel.com,
- alison.schofield@intel.com, vishal.l.verma@intel.com, ira.weiny@intel.com
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
- david@redhat.com, Vilas.Sridharan@amd.com, leo.duran@amd.com,
- Yazen.Ghannam@amd.com, rientjes@google.com, jiaqiyan@google.com,
- tony.luck@intel.com, Jon.Grimm@amd.com, dave.hansen@linux.intel.com,
- rafael@kernel.org, lenb@kernel.org, naoya.horiguchi@nec.com,
- james.morse@arm.com, jthoughton@google.com, somasundaram.a@hpe.com,
- erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
- mike.malvestuto@intel.com, gthelen@google.com,
- wschwartz@amperecomputing.com, dferguson@amperecomputing.com,
- tanxiaofei@huawei.com, prime.zeng@hisilicon.com,
- kangkang.shen@futurewei.com, wanghuiqiang@huawei.com, linuxarm@huawei.com,
- wbs@os.amperecomputing.com
-References: <20240223143723.1574-1-shiju.jose@huawei.com>
- <20240223143723.1574-13-shiju.jose@huawei.com>
-Content-Language: en-US
-In-Reply-To: <20240223143723.1574-13-shiju.jose@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH5P222CA0022.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:610:1ee::18) To CO1PR01MB7370.prod.exchangelabs.com
- (2603:10b6:303:159::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DB026293;
+	Thu, 28 Mar 2024 23:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711669339; cv=none; b=GLcuP/8o1037WlI2GkmK7616N6WvDJIcv5My+AlC9z9II1wg5UHHX+52Xk8FzWKcKBfC/PgYIQRfCFGDWdoZvB7K8njC5FyG3O9nRT3wHjGZdpPmXvLaPj3EUnz8FtoN1ytlsH9BxwbkrZA0N5ZqKtqzRS73YsvBs6VqWtToqNk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711669339; c=relaxed/simple;
+	bh=9SjDpg3kIIQwlmHBii7c++p8d2jgsfij1d+HiASLf5s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=c/9fAVx+Axo1vB737Q6ajEhOBH+TUfU14YPgrFFsMqmvDb9d9c1bwuoNu4zWqHeILDHWyHcE+pesablDWeXDc55juMMetwiWmLfKIFJwBzlYkkUIJ3JuE7Wx46xGJo1M6CNJeT3jaPKJmk5j+t9Iljqxz1tLVWSFrLMAnkHVkCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Vmg487hU; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SKfHXL014988;
+	Thu, 28 Mar 2024 23:42:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Mau55tBozhBMaO0d5Rfa7Yp5L1oCFg3acc+d9Opj8DI=; b=Vm
+	g487hUoNyG6qRBbvOJYZ73Gnez818HIILu2cwVUELQ079aO+fK4JYNp5EKxKR8v4
+	IUgnTzGR4xEsQ/mJKFEEmbF4WQDNtRFgjjxFRDtwcJMze8qJQIdf8ts8tdrhEyiD
+	xBS2Vzg+Cl1TnMn0nUh3wuDPfaPrUN+Qewjao6nC4kUIytd0iqOtl6G00RUAL0UN
+	xACEMT1cV4n0lbcTq/z5rpW9sk4tOGPub7iHtGCHNPxGyJVBX6ChTma3LleHEVw5
+	/eY8IfbcMXTDt03iC92HZLroAZHvt7SQrwC5dv/LL+q2w5ovUwPElb0OE20t8iDh
+	l7HzruaqUNAiRXihQPtw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x575m9tfe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 23:42:04 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SNg36q011158
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 23:42:03 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
+ 2024 16:41:59 -0700
+Message-ID: <27cadd17-10a3-3b8c-2b29-6698ccdce531@quicinc.com>
+Date: Thu, 28 Mar 2024 16:41:57 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR01MB7370:EE_|PH0PR01MB7399:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0OqT0FpemKT4yv1fW7Art5+4CxYqAk62PV4OyUX0V1EosLb4WtZSau8T1df1Ya3SigLUvH1GbKna1LvssnuMEAbSONMeAsU42WgVW5bn1IQVzOkq9Iae8sGPkGe72/d143NkJF+aYtYseazeRANjsvGS2zRyw4U2WLf1mDszYnEUOrqVxuRjaAEPBd2t5i63phUBUSAcWo627G7ya+IyILKt90Z/zDFAEAOWOslIDkpyXXvkAsJXxrx9K+Si2anUaxm9kyEYdM1pwM1Py32+CgEeSfm4vsmxhreOcIHcPgIIYr1ysT5iSyUpHwGhZ3C8v2LzsSqCEKkKa8Nn3ibdN5YYhbILxCAemqiw8cx8+ibNL7KVLblNS+ugNxIAX7ooBBqKZL9cFN9C4Q6j5VjFUEofnM490P3FxnjwNfqcy/l5Y4/PUMBiWIr5bnDMbMXBIu1h2EGwLFVAy3KIVj9qE7WhVKk1mqHn3uW5wEF++2opOv8uUYFaIqLTJQTCm93XzsgVhAHxDe1UeNyWYyo8y3hKmNHkUIjrmJ/JwCDok4XSG4gKSMwjMxwpBu4x2P/0p/Kc7XZJIhH/tw95lQADf8XLJjK2B5jr2RuXy282BIuWFEh3KvEFMEHWkmsX6KwK77ctEjbBQWkWBPKwE8kTtyNPAuTpXvvNILDLBTEoa34ol2acHxmMggkv+ltSPKDs8IrC5XK6EGyP1oLuQtnjFPjnOWZzKqJJyhcETknU4+s=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR01MB7370.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(52116005)(366007)(38350700005)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?c1RFRHYvZkVuWXRJV2N1Vk1HZXdZc3VxRkprV1JSNVd0eDM3NTVMN1cyWmEw?=
- =?utf-8?B?R3IyRjg0WFZjSHFFUVBYR3NPMHdHa1RDL2pUSk0wUVorSmlPU1pNdWZxSEZD?=
- =?utf-8?B?b3FZNEoyYUQvNzEwaktaVlVreVY1UXRQd1dnTGc0RWd0aWE3VkxHMEo5T1lv?=
- =?utf-8?B?SUF2d2x1YThnWGtpZGxQcUd5dXIxM2JCTWowbjMwZm5ZS2tpOEF2ZHBXdDVP?=
- =?utf-8?B?VG4rSDR6MG1yRk56YU9uRUM5ZzFwR2ZZVEhyK1JCMi9UazY3Wm9NVURkMnB2?=
- =?utf-8?B?LzZHVlB5U2NyZ3F6aFpmTkN6aXQ5VWFORDhOL2hrYTRRY2J5ZkNxamtYSG5L?=
- =?utf-8?B?SE5sNUVteDI5WGdjTzhMODRmTWNWZzMrdlE0aXo2RDJlRVVWQnJnMVpFMm9D?=
- =?utf-8?B?dGNPMDcvVzI2WE9LbTRLRS8yS0dwanFPbitvcjEyaGRwK29sRkdYYjFQRjNw?=
- =?utf-8?B?cmdkK2I0VU81cWJaTkYrcFprcndzZ3EvQXJjOHZvZkpJWHltM0xXTkMzb1Bh?=
- =?utf-8?B?MEwzdkhnWU1PZUtlWVZtOGxFOXFZTTR6UUd1bmY0RW1Ia1E5YU14eStjaXBV?=
- =?utf-8?B?Ti9BMFdtY0dPbXlaR1V4RlplL1QwdytFR3NhMHZ4ejlqcWxNSkNOUG9pcy9w?=
- =?utf-8?B?dzlHR29XQWc5UWY1bU5WVkJyOWFzRXRSNndMSHJWOFlNQ3ZTSzR4aUV1blEy?=
- =?utf-8?B?WU9hbTUrSVVMa1hwaXIwTCtKSVNiTzB4NG10WGZHbVR0eGhvMk14V2pHU3Jn?=
- =?utf-8?B?L3VyU1JzS1F3YkkvR21TMWtMS0k1aGRHT1ZHNEFuTVZqQ01UNVBWZi9qcm9s?=
- =?utf-8?B?RWVJY1YvdDVMUm9jTUFWSGJwV24zaE1nZzlYTndLS1NBRTRxYnJmMjIxMWx4?=
- =?utf-8?B?YkdqTFdrWTExYm9XdFdDMElYWmZPV1c1QVBqRTJ0bmdmc05qd3IrQnp4dy81?=
- =?utf-8?B?M1k0bElONGhLdkp5VlhZcURyeWtDZURvK1cyVFZuY3YvM2NYSnpONDdzOU1C?=
- =?utf-8?B?RytOTTNTNzJ5WWtLUzgrdzdGYlZHb2NGYnNlVnJveWo3c3J1ZSs3MkNzUFUr?=
- =?utf-8?B?ZTBrelIyUE5peW1jSVVsRGdUaHFaZ3lQdlc1OEdkenY1TDJZRnFOcFQwRmJM?=
- =?utf-8?B?TGhrVldQd3BKZzFka01acGVZODA2NE0vb1g2c3hsVHV4U3JWTW43bmprNXMx?=
- =?utf-8?B?WTlWOTJTWkFsVEtYRDBuc0JLVXZ6dmcybGxoNE1lYXozNVJLeDZQK2RjQVlR?=
- =?utf-8?B?V0FITmo1K1h5czlnRVJ2dXVRdDZiTVdkRmpONXcrUEtEdXhxRTVybk1pa2t3?=
- =?utf-8?B?ZkgvZ2FueWVST2NnaXhwVTRVZ3ErMDRCb3VSaWdrQnI2azBHWEZmclAreVhs?=
- =?utf-8?B?YzRXelVkSVZjR08va2dHbjc4L2tHaXRjQnltakdLaXV4SUpFMDFnajhOVWg3?=
- =?utf-8?B?c2duK2xLdHlPS3V2WGlERmdtWkk1Um1nRDZEbmlBdEFEMnhFVjkvZUtRd2NU?=
- =?utf-8?B?aHk2clk2cmlMRTJocXFDZTJUOUc0RnhWMW9HRmV2VEpxUnJIY0NBdmF1NTJX?=
- =?utf-8?B?UHU2SS9CVGEzTmJVREpaUGVFdVNCZk5RM3JHOElhWkkvN2d3Vk1DNFFtRHY1?=
- =?utf-8?B?MWQ4Q1N5aUV4Y0pkOFRtdFNYb2NQM2RETmc2S2Y1MXAwRFVPTEpka0ZnaTg3?=
- =?utf-8?B?QTZuSkZEMXVkakkzdVluaHh4enF3RWVEVXUrMW96c2lhNVVuZm5FbElXQ3pk?=
- =?utf-8?B?UStUTk1FZXZWWnZBVDArV1VWQm1yYis0dVJhYW96ZXltblUvVDB3YUxtTmdv?=
- =?utf-8?B?L0E0YVNad2FZckY3ZG0rclV3czZHTTRhYTdhb1ZjRVNnWlY1TXBSdkRzTlQw?=
- =?utf-8?B?UlVKQ2JDOU5WWTkzNUIzWk81Nk5vdlh1K21INEVxemM5bk1kVkFhQk5lSngx?=
- =?utf-8?B?VFhjZnNHVWVGMEF6UXVRU21SSENRUXRpZlJ1a1dibkxYdnBrWFpRWTZEQVNp?=
- =?utf-8?B?TUpZZGVWVHBUNERLaGtOMGFaSFdJMlZydUNIUDg1Z283NmhJMy9MSW9wNy9q?=
- =?utf-8?B?S004UEl2QVMrblVuZXpQQkxJSnp1R2FFQkMxdFdxT2tZai9oa2FOMVhDR01F?=
- =?utf-8?B?T1pjV29LN1F1cWhaTmdpL2x0L3IxM3BzV3I1REV4ZW16UWZyaXROTTUveWtv?=
- =?utf-8?Q?vq7s+tsJWT/45mT6U5aIrgo=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a32e4bb-597d-4985-c408-08dc4f809e81
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR01MB7370.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 23:41:41.4796
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aeFEioJKwpn9UnLG+6QKPTi/uHWX/1rJ6u4sn5uflDvC8XivuK+7jZXkGy9BSDuV3W+mS7wLeaf/SytML0USq2G1bpfF4rOm4mbtOvZoLQjWJsmN2IWNjjfFmrwAWAG8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7399
-
-> +/*
-> + * The below functions are exposed to OSPM, to query, configure and
-> + * initiate memory patrol scrub.
-> + */
-> +static int ras2_is_patrol_scrub_support(struct ras2_context *ras2_ctx)
-> +{
-> +	int ret;
-> +	struct acpi_ras2_shared_memory  __iomem *generic_comm_base;
-> +
-> +	if (!ras2_ctx || !ras2_ctx->pcc_comm_addr)
-> +		return -EFAULT;
-> +
-> +	generic_comm_base = ras2_ctx->pcc_comm_addr;
-> +	guard(spinlock_irqsave)(&ras2_ctx->spinlock);
-> +	generic_comm_base->set_capabilities[0] = 0;
-> +
-> +	/* send command for reading RAS2 capabilities */
-> +	ret = ras2_send_pcc_cmd(ras2_ctx, RAS2_PCC_CMD_EXEC);
-> +	if (ret) {
-> +		dev_err(ras2_ctx->dev,
-> +			"%s: ras2_send_pcc_cmd failed\n", __func__);
-> +		return ret;
-> +	}
-> +
-> +	return generic_comm_base->features[0] & RAS2_SUPPORT_HW_PARTOL_SCRUB;
-
-Since firmware populates the feature bitmask on initialization, it would 
-seem
-that we do not need to send a PCC CMD EXEC to read RAS2 capabilities.
-> +}
-> +
-> +static int ras2_get_patrol_scrub_params(struct ras2_context *ras2_ctx,
-> +					struct ras2_scrub_params *params)
-> +{
-> +	int ret = 0;
-> +	u8  min_supp_scrub_rate, max_supp_scrub_rate;
-> +	struct acpi_ras2_shared_memory  __iomem *generic_comm_base;
-> +	struct acpi_ras2_patrol_scrub_parameter __iomem *patrol_scrub_params;
-> +
-> +	if (!ras2_ctx || !ras2_ctx->pcc_comm_addr)
-> +		return -EFAULT;
-> +
-> +	generic_comm_base = ras2_ctx->pcc_comm_addr;
-> +	patrol_scrub_params = ras2_ctx->pcc_comm_addr + sizeof(*generic_comm_base);
-> +
-> +	guard(spinlock_irqsave)(&ras2_ctx->spinlock);
-> +	generic_comm_base->set_capabilities[0] = RAS2_SUPPORT_HW_PARTOL_SCRUB;
-> +	/* send command for reading RAS2 capabilities */
-> +	ret = ras2_send_pcc_cmd(ras2_ctx, RAS2_PCC_CMD_EXEC);
-> +	if (ret) {
-> +		dev_err(ras2_ctx->dev,
-> +			"%s: ras2_send_pcc_cmd failed\n", __func__);
-> +		return ret;
-> +	}
-
-Similarly, since firmware populates the feature bitmask on
-initialization, it would seem that we do not need to send
-a PCC CMD EXEC to read RAS2 capabilities.
-> +
-> +	if (!(generic_comm_base->features[0] & RAS2_SUPPORT_HW_PARTOL_SCRUB) ||
-> +	    !(generic_comm_base->num_parameter_blocks)) {
-> +		dev_err(ras2_ctx->dev,
-> +			"%s: Platform does not support HW Patrol Scrubber\n", __func__);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	if (!patrol_scrub_params->requested_address_range[1]) {
-> +		dev_err(ras2_ctx->dev,
-> +			"%s: Invalid requested address range, \
-> +			requested_address_range[0]=0x%llx \
-> +			requested_address_range[1]=0x%llx\n",
-> +			__func__,
-> +			patrol_scrub_params->requested_address_range[0],
-> +			patrol_scrub_params->requested_address_range[1]);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	generic_comm_base->set_capabilities[0] = RAS2_SUPPORT_HW_PARTOL_SCRUB;
-> +	patrol_scrub_params->header.type = RAS2_TYPE_PATROL_SCRUB;
-
-header.type should already be populated by firmware. Is assigning it
-here necessary?
-> +	patrol_scrub_params->patrol_scrub_command = RAS2_GET_PATROL_PARAMETERS;
-> +
-> +	/* send command for reading the HW patrol scrub parameters */
-> +	ret = ras2_send_pcc_cmd(ras2_ctx, RAS2_PCC_CMD_EXEC);
-> +	if (ret) {
-> +		dev_err(ras2_ctx->dev,
-> +			"%s: failed to read HW patrol scrub parameters\n",
-> +			__func__);
-> +		return ret;
-> +	}
-> +
-> +	/* copy output scrub parameters */
-> +	params->addr_base = patrol_scrub_params->actual_address_range[0];
-> +	params->addr_size = patrol_scrub_params->actual_address_range[1];
-> +	params->flags = patrol_scrub_params->flags;
-> +	params->rate = FIELD_GET(RAS2_PATROL_SCRUB_RATE_OUT_MASK,
-> +				 patrol_scrub_params->scrub_params_out);
-> +	min_supp_scrub_rate = FIELD_GET(RAS2_PATROL_SCRUB_MIN_RATE_OUT_MASK,
-> +					patrol_scrub_params->scrub_params_out);
-> +	max_supp_scrub_rate = FIELD_GET(RAS2_PATROL_SCRUB_MAX_RATE_OUT_MASK,
-> +					patrol_scrub_params->scrub_params_out);
-> +	snprintf(params->rate_avail, RAS2_MAX_RATE_RANGE_LENGTH,
-> +		 "%d-%d", min_supp_scrub_rate, max_supp_scrub_rate);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ras2_enable_patrol_scrub(struct ras2_context *ras2_ctx, bool enable)
-> +{
-> +	int ret = 0;
-> +	struct ras2_scrub_params params;
-> +	struct acpi_ras2_shared_memory  __iomem *generic_comm_base;
-> +	u8 scrub_rate_to_set, min_supp_scrub_rate, max_supp_scrub_rate;
-> +	struct acpi_ras2_patrol_scrub_parameter __iomem *patrol_scrub_params;
-> +
-> +	if (!ras2_ctx || !ras2_ctx->pcc_comm_addr)
-> +		return -EFAULT;
-> +
-> +	generic_comm_base = ras2_ctx->pcc_comm_addr;
-> +	patrol_scrub_params = ras2_ctx->pcc_comm_addr + sizeof(*generic_comm_base);
-> +
-> +	if (enable) {
-> +		ret = ras2_get_patrol_scrub_params(ras2_ctx, &params);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	guard(spinlock_irqsave)(&ras2_ctx->spinlock);
-> +	generic_comm_base->set_capabilities[0] = RAS2_SUPPORT_HW_PARTOL_SCRUB;
-> +	patrol_scrub_params->header.type = RAS2_TYPE_PATROL_SCRUB;
-
-header.type should already be populated by firmware. Is assigning it
-here necessary?
-> +
-> +	if (enable) {
-> +		patrol_scrub_params->patrol_scrub_command = RAS2_START_PATROL_SCRUBBER;
-> +		patrol_scrub_params->requested_address_range[0] = params.addr_base;
-> +		patrol_scrub_params->requested_address_range[1] = params.addr_size;
-> +
-> +		scrub_rate_to_set = FIELD_GET(RAS2_PATROL_SCRUB_RATE_IN_MASK,
-> +					      patrol_scrub_params->scrub_params_in);
-> +		min_supp_scrub_rate = FIELD_GET(RAS2_PATROL_SCRUB_MIN_RATE_OUT_MASK,
-> +						patrol_scrub_params->scrub_params_out);
-> +		max_supp_scrub_rate = FIELD_GET(RAS2_PATROL_SCRUB_MAX_RATE_OUT_MASK,
-> +						patrol_scrub_params->scrub_params_out);
-> +		if (scrub_rate_to_set < min_supp_scrub_rate ||
-> +		    scrub_rate_to_set > max_supp_scrub_rate) {
-> +			dev_warn(ras2_ctx->dev,
-> +				 "patrol scrub rate to set is out of the supported range\n");
-> +			dev_warn(ras2_ctx->dev,
-> +				 "min_supp_scrub_rate=%d max_supp_scrub_rate=%d\n",
-> +				 min_supp_scrub_rate, max_supp_scrub_rate);
-> +			return -EINVAL;
-> +		}
-> +	} else {
-> +		patrol_scrub_params->patrol_scrub_command = RAS2_STOP_PATROL_SCRUBBER;
-> +	}
-> +
-> +	/* send command for enable/disable HW patrol scrub */
-> +	ret = ras2_send_pcc_cmd(ras2_ctx, RAS2_PCC_CMD_EXEC);
-> +	if (ret) {
-> +		pr_err("%s: failed to enable/disable the HW patrol scrub\n", __func__);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ras2_enable_background_scrub(struct ras2_context *ras2_ctx, bool enable)
-> +{
-> +	int ret;
-> +	struct acpi_ras2_shared_memory  __iomem *generic_comm_base;
-> +	struct acpi_ras2_patrol_scrub_parameter __iomem *patrol_scrub_params;
-> +
-> +	if (!ras2_ctx || !ras2_ctx->pcc_comm_addr)
-> +		return -EFAULT;
-> +
-> +	generic_comm_base = ras2_ctx->pcc_comm_addr;
-> +	patrol_scrub_params = ras2_ctx->pcc_comm_addr + sizeof(*generic_comm_base);
-> +
-> +	guard(spinlock_irqsave)(&ras2_ctx->spinlock);
-> +	generic_comm_base->set_capabilities[0] = RAS2_SUPPORT_HW_PARTOL_SCRUB;
-> +	patrol_scrub_params->header.type = RAS2_TYPE_PATROL_SCRUB;
-
-header.type should already be populated by firmware. Is assigning it
-here necessary?
-> +	patrol_scrub_params->patrol_scrub_command = RAS2_START_PATROL_SCRUBBER;
-> +
-> +	patrol_scrub_params->scrub_params_in &= ~RAS2_PATROL_SCRUB_EN_BACKGROUND;
-> +	patrol_scrub_params->scrub_params_in |= FIELD_PREP(RAS2_PATROL_SCRUB_EN_BACKGROUND,
-> +							   enable);
-> +
-> +	/* send command for enable/disable HW patrol scrub */
-> +	ret = ras2_send_pcc_cmd(ras2_ctx, RAS2_PCC_CMD_EXEC);
-> +	if (ret) {
-> +		dev_err(ras2_ctx->dev,
-> +			"%s: failed to enable/disable background patrol scrubbing\n",
-> +			__func__);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +static int ras2_set_patrol_scrub_params(struct ras2_context *ras2_ctx,
-> +					struct ras2_scrub_params *params, u8 param_type)
-> +{
-> +	struct acpi_ras2_shared_memory  __iomem *generic_comm_base;
-> +	struct acpi_ras2_patrol_scrub_parameter __iomem *patrol_scrub_params;
-> +
-> +	if (!ras2_ctx || !ras2_ctx->pcc_comm_addr)
-> +		return -EFAULT;
-> +
-> +	generic_comm_base = ras2_ctx->pcc_comm_addr;
-> +	patrol_scrub_params = ras2_ctx->pcc_comm_addr + sizeof(*generic_comm_base);
-> +
-> +	guard(spinlock_irqsave)(&ras2_ctx->spinlock);
-> +	patrol_scrub_params->header.type = RAS2_TYPE_PATROL_SCRUB;
-> +	if (param_type == RAS2_MEM_SCRUB_PARAM_ADDR_BASE && params->addr_base) {
-> +		patrol_scrub_params->requested_address_range[0] = params->addr_base;
-> +	} else if (param_type == RAS2_MEM_SCRUB_PARAM_ADDR_SIZE && params->addr_size) {
-> +		patrol_scrub_params->requested_address_range[1] = params->addr_size;
-> +	} else if (param_type == RAS2_MEM_SCRUB_PARAM_RATE) {
-> +		patrol_scrub_params->scrub_params_in &= ~RAS2_PATROL_SCRUB_RATE_IN_MASK;
-> +		patrol_scrub_params->scrub_params_in |= FIELD_PREP(RAS2_PATROL_SCRUB_RATE_IN_MASK,
-> +								   params->rate);
-> +	} else {
-> +		dev_err(ras2_ctx->dev, "Invalid patrol scrub parameter to set\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct ras2_hw_scrub_ops ras2_hw_ops = {
-> +	.enable_scrub = ras2_enable_patrol_scrub,
-> +	.enable_background_scrub = ras2_enable_background_scrub,
-> +	.get_scrub_params = ras2_get_patrol_scrub_params,
-> +	.set_scrub_params = ras2_set_patrol_scrub_params,
-> +};
-> +
-> +static const struct scrub_ops ras2_scrub_ops = {
-> +	.is_visible = ras2_hw_scrub_is_visible,
-> +	.read = ras2_hw_scrub_read,
-> +	.write = ras2_hw_scrub_write,
-> +	.read_string = ras2_hw_scrub_read_strings,
-> +};
-> +
-> +static DEFINE_IDA(ras2_ida);
-> +
-> +static void devm_ras2_release(void *ctx)
-> +{
-> +	struct ras2_context *ras2_ctx = ctx;
-> +
-> +	ida_free(&ras2_ida, ras2_ctx->id);
-> +	ras2_unregister_pcc_channel(ras2_ctx);
-> +}
-> +
-> +static int ras2_probe(struct platform_device *pdev)
-> +{
-> +	int ret, id;
-> +	struct mbox_client *cl;
-> +	struct device *hw_scrub_dev;
-> +	struct ras2_context *ras2_ctx;
-> +	char scrub_name[RAS2_MAX_NAME_LENGTH];
-> +
-> +	ras2_ctx = devm_kzalloc(&pdev->dev, sizeof(*ras2_ctx), GFP_KERNEL);
-> +	if (!ras2_ctx)
-> +		return -ENOMEM;
-> +
-> +	ras2_ctx->dev = &pdev->dev;
-> +	ras2_ctx->ops = &ras2_hw_ops;
-> +	spin_lock_init(&ras2_ctx->spinlock);
-> +	platform_set_drvdata(pdev, ras2_ctx);
-> +
-> +	cl = &ras2_ctx->mbox_client;
-> +	/* Request mailbox channel */
-> +	cl->dev = &pdev->dev;
-> +	cl->tx_done = ras2_tx_done;
-> +	cl->knows_txdone = true;
-> +	ras2_ctx->pcc_subspace_idx = *((int *)pdev->dev.platform_data);
-> +	dev_dbg(&pdev->dev, "pcc-subspace-id=%d\n", ras2_ctx->pcc_subspace_idx);
-> +	ret = ras2_register_pcc_channel(ras2_ctx);
-
-In our enabling activities, we have found a challenge here.
-Our hardware has a single PCC channel corresponding to a single
-platform-wide scrub interface. This driver, following the ACPI spec,
-will create a new scrub node for each NUMA node. However, for us,
-this means that each scrub device will try to map the same PCC channel,
-and this causes an error.
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, devm_ras2_release, ras2_ctx);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ras2_is_patrol_scrub_support(ras2_ctx)) {
-> +		id = ida_alloc(&ras2_ida, GFP_KERNEL);
-> +		if (id < 0)
-> +			return id;
-> +		ras2_ctx->id = id;
-> +		snprintf(scrub_name, sizeof(scrub_name), "%s%d", RAS2_SCRUB, id);
-> +		dev_set_name(&pdev->dev, RAS2_ID_FORMAT, id);
-> +		hw_scrub_dev = devm_scrub_device_register(&pdev->dev, scrub_name,
-> +							  ras2_ctx, &ras2_scrub_ops,
-> +							  0, NULL);
-> +		if (PTR_ERR_OR_ZERO(hw_scrub_dev))
-> +			return PTR_ERR_OR_ZERO(hw_scrub_dev);
-> +	}
-> +	ras2_ctx->scrub_dev = hw_scrub_dev;
-> +
-> +	return 0;
-> +}
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
+ dp_hpd_unplug_handle() directly
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Kuogee Hsieh
+	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
+        <agross@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <dianders@chromium.org>, <dri-devel@lists.freedesktop.org>,
+        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+ <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
+ <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com>
+ <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
+ <23de89e9-3ef3-c52d-7abf-93dc2dbb51a4@quicinc.com>
+ <CAA8EJppEWXnsQzDD1tdNuMb1ijEVtE7LQct9jt1fwVwMd8ch_Q@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJppEWXnsQzDD1tdNuMb1ijEVtE7LQct9jt1fwVwMd8ch_Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: JhyyTv2RyiL88vdIZHPTeOstcC7Jsia1
+X-Proofpoint-GUID: JhyyTv2RyiL88vdIZHPTeOstcC7Jsia1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_18,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 phishscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403280172
 
 
 
+On 3/28/2024 3:50 PM, Dmitry Baryshkov wrote:
+> On Thu, 28 Mar 2024 at 23:21, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 3/28/2024 1:58 PM, Stephen Boyd wrote:
+>>> Quoting Abhinav Kumar (2024-03-28 13:24:34)
+>>>> + Johan and Bjorn for FYI
+>>>>
+>>>> On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
+>>>>> For internal HPD case, hpd_event_thread is created to handle HPD
+>>>>> interrupts generated by HPD block of DP controller. It converts
+>>>>> HPD interrupts into events and executed them under hpd_event_thread
+>>>>> context. For external HPD case, HPD events is delivered by way of
+>>>>> dp_bridge_hpd_notify() under thread context. Since they are executed
+>>>>> under thread context already, there is no reason to hand over those
+>>>>> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
+>>>>> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
+>>>>>
+>>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>>>> ---
+>>>>>     drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
+>>>>>     1 file changed, 3 insertions(+), 2 deletions(-)
+>>>>>
+>>>>
+>>>> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
+>>>
+>>> Is this a bug fix or an optimization? The commit text doesn't tell me.
+>>>
+>>
+>> I would say both.
+>>
+>> optimization as it avoids the need to go through the hpd_event thread
+>> processing.
+>>
+>> bug fix because once you go through the hpd event thread processing it
+>> exposes and often breaks the already fragile hpd handling state machine
+>> which can be avoided in this case.
+> 
+> Please add a description for the particular issue that was observed
+> and how it is fixed by the patch.
+> 
+> Otherwise consider there to be an implicit NAK for all HPD-related
+> patches unless it is a series that moves link training to the enable
+> path and drops the HPD state machine completely.
+> 
+> I really mean it. We should stop beating a dead horse unless there is
+> a grave bug that must be fixed.
+> 
 
+I think the commit message is explaining the issue well enough.
 
+This was not fixing any issue we saw to explain you the exact scenario 
+of things which happened but this is just from code walkthrough.
 
+Like kuogee wrote, hpd event thread was there so handle events coming 
+out of the hpd_isr for internal hpd cases. For the hpd_notify coming 
+from pmic_glink or any other extnernal hpd cases, there is no need to 
+put this through the hpd event thread because this will only make things 
+worse of exposing the race conditions of the state machine.
 
+Moving link training to enable and removal of hpd event thread will be 
+worked on but delaying obvious things we can fix does not make sense.
 
-
+>>
+>>>>
+>>>> Looks right to me,
+>>>>
+>>>> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> 
+> 
+> 
 
