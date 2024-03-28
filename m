@@ -1,79 +1,110 @@
-Return-Path: <linux-kernel+bounces-122584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC12A88FA02
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:27:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57CCA88FA01
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DCB91F2612F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:27:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88CE91C2AF0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30D15811E;
-	Thu, 28 Mar 2024 08:27:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="aLZyzoYU"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F3456B65;
+	Thu, 28 Mar 2024 08:27:20 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C2256B7F
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498A126AD8
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711614442; cv=none; b=F/mNz/UkaO9BGmJPAOM1RPzXdi3qnToFN7u3kAzeg9gfA0IUfYaoE2yh8EPSX3JTNZbFlcl0DRYrVP1hsQOO2ufp5ltGqeQNIf7M1DSeupClwf2cy9OGURV54xruKjQDFR7Yx9Oh5Px3u7fkbovzJYro5croTPV1LKV7xeEraW4=
+	t=1711614439; cv=none; b=H7638v1FNzoQ7KFYFA92PMudXDAq+4RIJgqotkLKuhnXMNnIk/vb6mcd5Z+ASx5YxAcWAOkxJHwN9/WQCYOpym1BlOKbeR573p6XkfNJoALkTL5ZWJLr9G8/jXYXkXyOub5uZWufMeTheRzKE4MGujzB28xEC3XHLYUelobyvEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711614442; c=relaxed/simple;
-	bh=HqQErbvN+ijNu1Jdkp6E3sCfvGXfGUK+92NtkuPAjjs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ugyR5snPwo+/GtjS5/81yrpnZNJ6NRAVohCZjrwsPsVIM8BArOqMuK1JMCxutsA9Trwq7xsmBt8F1NLx0z5RhL13i2dEL4ewrZmOAqyOoNBNSskV36PQ3oXuXG4W44rOHTwFmC7QPcWdw61JXX9Qt6g2vEyURHV8CiLOmizPSX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=aLZyzoYU; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=HqQErbvN+ijNu1Jdkp6E3sCfvGXfGUK+92NtkuPAjjs=;
-	t=1711614440; x=1712824040; b=aLZyzoYUbhry1HbINh1uF/XZDdbyY0/I+RUiXOsekIDG5aA
-	sMt7fhf+djlzUzde7oLZ8H189U++OD0u+nb81Z0r7gK1g22IkrlnlxcMgwBt8AGOeiV7XGc+KTat8
-	JitiLYo1+UN110mAxe1ySmwJpRRzLRoUJlc+cNW00s/b1lgQzeUYKYRIkqYkezrH0Lj34KUt5JJmL
-	vBgmV2NV7fzGvKzqlqChBc7bhOd4DEPyHYx2yzUDM/4cBduYlM5ys496HmwG8DqtOWSM1FYfnCEkk
-	1ldVvRhHxmcIoUE/ndGiOPpq6wqa12wPxaWziA+UswdSGe9dfbhtnx9Av8GKtbtQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rpl6P-00000000mZL-3bbB;
-	Thu, 28 Mar 2024 09:27:14 +0100
-Message-ID: <6fa3c18b3421d5dfc80c82ce29a49171c1841bf0.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: Fix return value in ubd_init()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
-Cc: linux-um@lists.infradead.org, richard@nod.at, 
- anton.ivanov@cambridgegreys.com, axboe@kernel.dk, brauner@kernel.org,
- hare@suse.de,  jinpu.wang@ionos.com
-Date: Thu, 28 Mar 2024 09:27:12 +0100
-In-Reply-To: <20240306091259.18605-1-duoming@zju.edu.cn>
-References: <20240306091259.18605-1-duoming@zju.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711614439; c=relaxed/simple;
+	bh=g/SbGd2F9byoqsrkRkPWWH528ldR4o1+h/wnBBunMnk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gNSe1IyTo4v3RHFgnWArdG4ZH9dUJTua93ABlgKlC7Ux5NaZs4Vpw0pPNL3YHA2Wl6yOauvGj70Cc/2lHeJYRx87jqluHU0RJaUJdEU4evTNfWRw0mahoxHu6DD8x7lWIHAbbLrrHJqARtnIXs+CjeoGv2KbhEZYS+wXzlXnSVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-367858dd387so6499185ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:27:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711614437; x=1712219237;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r7LtcZu6Gv0nqzHmczcIx7im5xvOcwCAJaiKZxY9O5s=;
+        b=Lfh3GAqYOA7Wy/YHqFwKj7fZWgYGW6PDT+hhXdAQp9lvjsWwlsclhRt7pGE7bzmu55
+         Dw6tlU+oRkX+cRDMFkpoDHkK+jhQ7ICdN4WcLzuh4ntLxlRx6HodzpB8uEPwh+9Y8uma
+         jblLOgd0IbqMyC+sM4L492seXY4I6W6Ti4rZY2UgAQs5T2CGBv+JHi0ylCqwgGLaMeEa
+         MYAlzJSp+VeHkfK1fqwClk2JMIS0AlXzS8cGTOZu1uiyQh64wj2y8U5Qyv73uAdR+SK0
+         m9A2qppDzTBvhAw2p3RwFK0+2RhZcqmDBvhvoIL01xPnxQyvjXyi36zpC82Fhc2oozvy
+         CMLA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEn7JomKKRA8ps3Hn6sk4WkN5YyCyiueTR6+VZX5f9waCFRk54+hgtezCyYUbSfj7d4UyRfyF05zm6JRFe+k367IIawYqyhv4DPZKi
+X-Gm-Message-State: AOJu0Yw4sjO08qnZlzBC3/aJu1ODQitmS2xFUOeVy9m8iBknHLS3eKIG
+	T+PuUCZ6Zs88Kwnmo3y1Zb6Q0s2ioxKXteiTeRq4RHt1enVYf1l7Rr1jEt8LCTKYHXEiUoWeSTk
+	MOaJZHVR/RT7PHxLX/lmIVGK5C2gTNEfB+C1ejAqRBmiBbv24Yf2Nnkw=
+X-Google-Smtp-Source: AGHT+IEhu7EBwQJO0RH9od2MbxlSRSn5WV0Htc17+GWpseaHZK88iV4am8mKtxYsKyoKbDnAx0eBTUSQzgoOX1AFHB2d6EiqfiL0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+X-Received: by 2002:a05:6e02:198c:b0:368:b289:38bb with SMTP id
+ g12-20020a056e02198c00b00368b28938bbmr110263ilf.3.1711614437515; Thu, 28 Mar
+ 2024 01:27:17 -0700 (PDT)
+Date: Thu, 28 Mar 2024 01:27:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008a75510614b44af1@google.com>
+Subject: [syzbot] riscv/fixes boot error: can't ssh into the instance (3)
+From: syzbot <syzbot+620209d95a0e9fde702f@syzkaller.appspotmail.com>
+To: aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2024-03-06 at 17:12 +0800, Duoming Zhou wrote:
-> When kmalloc_array() fails to allocate memory, the ubd_init()
-> should return -ENOMEM instead of -1. So, fix it.
+Hello,
 
-Not sure this really matters, but the code seems cleaner with it :)
+syzbot found the following issue on:
 
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+HEAD commit:    653650c468be riscv: Mark __se_sys_* functions __used
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=1110f1e6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=88360569be845301
+dashboard link: https://syzkaller.appspot.com/bug?extid=620209d95a0e9fde702f
+compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: riscv64
 
-johannes
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-653650c4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2701bf6276c4/vmlinux-653650c4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/aed54fe6b3d5/Image-653650c4.xz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+620209d95a0e9fde702f@syzkaller.appspotmail.com
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
