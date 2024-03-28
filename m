@@ -1,144 +1,139 @@
-Return-Path: <linux-kernel+bounces-122430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D9288F757
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:37:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86DD588F753
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:36:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6AD8B23E4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:37:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 260861F2784A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90EF47F5B;
-	Thu, 28 Mar 2024 05:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A762C45962;
+	Thu, 28 Mar 2024 05:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ngQC02l1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="C6nUZoTj"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF1D46424
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E93B29CFB
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711604261; cv=none; b=qh8wx8NFazzWWtDV9GEq7+/3W5anUhtFMYWi5xxiQ8nVilewCaWz4oCBKIEqW+vCyqg4Nkskpmm6FfBn91/WEXmi/CXMrmSReSM/Y9RbC65ZHLdzb9uoiMEY5PPfhH5eOZZq/dkNnNORd3Z6sv1KKEv6ITKrXRx1bDePlD3c5qk=
+	t=1711604172; cv=none; b=FatZyGjovbmHFVeY+DZEmDPCfUb4w0vr6rJZNz6spbY6FCOznotoAreFQaoI/GkcpQio9tFinNhZXL7P/IHijvnfuUbCkLe4hGyMM5vPiQsbST/6mj6FqsrOXK7+FSoIRd6rJELa5B3v7dNdxl2rretfFqGlN3SIZFujhb3bPYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711604261; c=relaxed/simple;
-	bh=I1zV8l2wxGw1MD2JHTbYzY6hhxw7196Gef6nl+ubcWg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XUTWaxikwSdYJn0xY3b/uIL6qU5msDlCuP6Ug0hqBaRc3EoF9O3XQ9OCRl8EmP154GWMMnvvqf1vrG9BoXNDxqQnV3Yqe/oJmlxxv7rAvf80KELQVmqpYFo+BxiQIVczMKYS3wgtbZi2EiGnrpJLKmRw0s/SHAFFIErw9rrnRoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ngQC02l1; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711604260; x=1743140260;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=I1zV8l2wxGw1MD2JHTbYzY6hhxw7196Gef6nl+ubcWg=;
-  b=ngQC02l1/HP1+ipq3fwjccUwlwWVLGLFoogeAIAwkUOrVrR/Dy7UqHCg
-   FYOCjV6MqjTd7z62Yuk+bGCMWYXF8fA8mp+OoZ2xQHSfNebeK7j7/E+Ny
-   6PkyEAPIiq2FVaaAwwuB+iBNo+JFJUKszgs+W1Axp4/f5YkImapQPIV9c
-   lkc5gM+beIApjsAD+blSuCL3vEe4+boPkViP9t3I3vJ/JhKUMc4tjZunA
-   qvmd3jP+Ag1o48I0rWG5NY2azd+ScRfHur9366541TgDBdzspmFArKWvP
-   7426a67YxHk7G869MgaVIPBVUOTe3RJZ0oTKPzkOfg4BzYxhxavTu9Au6
-   g==;
-X-CSE-ConnectionGUID: M6TAfwOxRnqDuI2HXuDH/A==
-X-CSE-MsgGUID: QF/2cYRuR0ONyhnyp16hQQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="18122846"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="18122846"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 22:37:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="47732570"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 22:37:36 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Bharata B Rao <bharata@amd.com>
-Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
-  <akpm@linux-foundation.org>,  <mingo@redhat.com>,
-  <peterz@infradead.org>,  <mgorman@techsingularity.net>,
-  <raghavendra.kt@amd.com>,  <dave.hansen@linux.intel.com>,
-  <hannes@cmpxchg.org>
-Subject: Re: [RFC PATCH 0/2] Hot page promotion optimization for large
- address space
-In-Reply-To: <20240327160237.2355-1-bharata@amd.com> (Bharata B. Rao's message
-	of "Wed, 27 Mar 2024 21:32:35 +0530")
-References: <20240327160237.2355-1-bharata@amd.com>
-Date: Thu, 28 Mar 2024 13:35:42 +0800
-Message-ID: <87il16lxzl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711604172; c=relaxed/simple;
+	bh=3U6V+9JcBHoyWlFviROw3p+GodkWEvgG95H00we1DYg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rgmrKV9e5TAxrlQDC29eUnJuWTsZnP+Zn5yn0O9zWjbWA2Hzr6pUkc4LvpTq2EzS+vqT/BbnuSm+3qqqHASyT7aHivXTVhboU9SqOKgI9PByS7qVQUduDNqWYYBS86WE1qG+icBsFpOI70NIWmIj41is7owb3sF0ymjgq8KbMDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C6nUZoTj; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-61130dd21c1so6463697b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 22:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711604169; x=1712208969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3U6V+9JcBHoyWlFviROw3p+GodkWEvgG95H00we1DYg=;
+        b=C6nUZoTjLYyBZE2GaOu0G7/r/Je5GhhNkNXCEOPw7zrCpwDXT8nPfmbztgql/JBaKg
+         khhZz2ZL+cNSW2+tdYx0KPllhfzNSPAN3ytxL3SpDTGCftmNn2ppoDDh4fZMIzXa25RQ
+         gVAZDRzlVl74DOwc1ILiyrN70a2YLdT47Bv4XHVrM0wT62tK4GqgqrUhJtEb5MKJQgI0
+         q8Wtw8zGBz4Z4023CmZSE7m9O0iUuHTcILfMxQ3iZDAxojomszy9p9m/aXul3F2gIxqF
+         R+ZmQ0cZO+pBBLmbwnIjSFJXHXCFdU746JZx9tgfxmJj6ombSqtbkMWTil8VUB0o9EC/
+         5wBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711604169; x=1712208969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3U6V+9JcBHoyWlFviROw3p+GodkWEvgG95H00we1DYg=;
+        b=cIq78EjKLbq5FvF1IuN4zXy5OQfLwzQtkDyCisZ5OTLxk/c7gTARpzrvDjwHxFG1ad
+         3RQqwhOb+kaM777Rboj/MC8WsCAx3dfe74UOxhMhknWP/Zu6pmiYbUX/aomLQ6KbSaNB
+         nRcE1rqAz4sM2GRaesj4KlC8ps6cPIofWP88rENtFWg8n+zkvmePTMajyDYcBXWYE+99
+         gGgLiya34fPQVCJgAayxoEotQox7jY4AyqX1trb7i0i5sYvjFOytm44LYFafG9lDHpVm
+         XMKZl0uUt+DSlthJ8o0tgerIcM67Gf/1UlxKHrWI681R7q+MTvg4VSg1/OYi36/sn0eA
+         AHOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWyvVssI+vyNyCQC0cv1rO4A+mIpMdgT6SbmjkxtRhvrNS4KXDehP+CaHh3afFglJUjo10xeVjbMEIqpamUWXo/vT/tNdgEF/0lpPbR
+X-Gm-Message-State: AOJu0YwjwddIRQ739z8xt8jO2MwVzyZ1Kegz/Rosu7/m3h+CdT9jWvKs
+	epH3FG1nIrYu5cDLg9Fn8VAXQ01eW7HhbkzRCMv7vK+a1T3wywp4eStJN1Ryto797x9q406WLMd
+	JR3yxSQhJPKbRAzuuWPECgo7vevtN13+I8mlfUjMt6GDm9ywY1FeH
+X-Google-Smtp-Source: AGHT+IF0R+uKEToWGsBY2vSnfIQ6DhGDVJippMQDcB6SunV/Q//MnqMAHSWcEjEQX9kRv3J12yg8SvnpUOUx5mVmNBo=
+X-Received: by 2002:a25:a048:0:b0:dcd:4878:1f9 with SMTP id
+ x66-20020a25a048000000b00dcd487801f9mr1868686ybh.8.1711604169102; Wed, 27 Mar
+ 2024 22:36:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20240325123603.1bdd6588@canb.auug.org.au> <CAJuCfpH4Ee00hM9+B7=mi5Dwjrhov8vUK-KwPuoO3wsD7iJSAQ@mail.gmail.com>
+ <5e1321ca-0d46-4e9d-a6e5-0560d99f65ff@infradead.org> <CAJuCfpFTOz8cNiJFiCU5tMM1u5L=wXRsXqxUhN9g-R0u77CyZw@mail.gmail.com>
+ <20240328153947.3871cfdf@canb.auug.org.au> <20240328154427.3e926d21@canb.auug.org.au>
+In-Reply-To: <20240328154427.3e926d21@canb.auug.org.au>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 27 Mar 2024 22:35:56 -0700
+Message-ID: <CAJuCfpHZGkL9urkZaVmO_o0ujpr-moDGYiBES1iRy2dh8g-t8w@mail.gmail.com>
+Subject: Re: linux-next: build warnings after merge of the mm tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Randy Dunlap <rdunlap@infradead.org>, 
+	Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Andrew Morton <akpm@linux-foundation.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Bharata B Rao <bharata@amd.com> writes:
+On Wed, Mar 27, 2024 at 9:44=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
+>
+> Hi all,
+>
+> On Thu, 28 Mar 2024 15:39:47 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > On Mon, 25 Mar 2024 23:16:55 -0700 Suren Baghdasaryan <surenb@google.co=
+m> wrote:
+> > >
+> > > Thanks! I'll change back all the instances in the documentation where
+> > > we replaced original names with _noprof versions.
+> >
+> > I now have the following:
+>
+> Sorry, some of those are not relevant here, just the _noprof stuff.
 
-> In order to check how efficiently the existing NUMA balancing
-> based hot page promotion mechanism can detect hot regions and
-> promote pages for workloads with large memory footprints, I
-> wrote and tested a program that allocates huge amount of
-> memory but routinely touches only small parts of it.
->
-> This microbenchmark provisions memory both on DRAM node and CXL node.
-> It then divides the entire allocated memory into chunks of smaller
-> size and randomly choses a chunk for generating memory accesses.
-> Each chunk is then accessed for a fixed number of iterations to
-> create the notion of hotness. Within each chunk, the individual
-> pages at 4K granularity are again accessed in random fashion.
->
-> When a chunk is taken up for access in this manner, its pages
-> can either be residing on DRAM or CXL. In the latter case, the NUMA
-> balancing driven hot page promotion logic is expected to detect and
-> promote the hot pages that reside on CXL.
->
-> The experiment was conducted on a 2P AMD Bergamo system that has
-> CXL as the 3rd node.
->
-> $ numactl -H
-> available: 3 nodes (0-2)
-> node 0 cpus: 0-127,256-383
-> node 0 size: 128054 MB
-> node 1 cpus: 128-255,384-511
-> node 1 size: 128880 MB
-> node 2 cpus:
-> node 2 size: 129024 MB
-> node distances:
-> node   0   1   2 
->   0:  10  32  60 
->   1:  32  10  50 
->   2:  255  255  10
->
-> It is seen that number of pages that get promoted is really low and
-> the reason for it happens to be that the NUMA hint fault latency turns
-> out to be much higher than the hot threshold most of the times. Here
-> are a few latency and threshold sample values captured from
-> should_numa_migrate_memory() routine when the benchmark was run:
->
-> latency	threshold (in ms)
-> 20620	1125
-> 56185	1125
-> 98710	1250
-> 148871	1375
-> 182891	1625
-> 369415	1875
-> 630745	2000
+https://lore.kernel.org/all/20240327044649.9199-1-rdunlap@infradead.org/
+which seems to not yet been pulled into mm-unstable should fix the
+following warnings:
 
-The access latency of your workload is 20s to 630s, which appears too
-long.  Can you try to increase the range of threshold to deal with that?
-For example,
+include/linux/slab.h:730: warning: Function parameter or struct member
+'_n' not described in 'kcalloc'
+include/linux/slab.h:730: warning: Function parameter or struct member
+'_size' not described in 'kcalloc'
+include/linux/slab.h:730: warning: Function parameter or struct member
+'_flags' not described in 'kcalloc'
+include/linux/slab.h:730: warning: Excess function parameter 'n'
+description in 'kcalloc'
+include/linux/slab.h:730: warning: Excess function parameter 'size'
+description in 'kcalloc'
+include/linux/slab.h:730: warning: Excess function parameter 'flags'
+description in 'kcalloc'
 
-echo 100000 > /sys/kernel/debug/sched/numa_balancing/hot_threshold_ms
+And https://lore.kernel.org/all/20240326054149.2121-1-rdunlap@infradead.org=
+/
+should handle the _noprof warnings. I can see this patch in
+mm-unstable and running "make htmldocs" in mm-unstable does not show
+the _noprof warnings anymore. Please let me know if I should try some
+other command to reproduce these.
+Thanks,
+Suren.
 
-[snip]
 
---
-Best Regards,
-Huang, Ying
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
