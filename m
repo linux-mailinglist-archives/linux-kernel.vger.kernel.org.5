@@ -1,99 +1,107 @@
-Return-Path: <linux-kernel+bounces-123715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A304890D07
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:09:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 155BF890D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E863028F0B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:09:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 461141C2DBC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B576F13EFEF;
-	Thu, 28 Mar 2024 22:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CF7146D7A;
+	Thu, 28 Mar 2024 22:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SnG/rCdZ"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4OxVoCD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EF913E6D4
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FB6146A9D;
+	Thu, 28 Mar 2024 22:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711663614; cv=none; b=aBkrMbH2Ue/E8mQa4bLI6gBQPWGtWYPgOd2gtZ6VWgD0A629/1jGLxqPA4ODne6fAC9ZVDEM9wWXSS1M9c3yemeO0fdfiPwluygdJtl3/VjTXNi4xaw52EcklhRT0gfs2JpNISqYl5PQag4/VUDNjQpSjh2ukgSlaBT0DNPQQ6Q=
+	t=1711663673; cv=none; b=K9UfdHWbYwAcT/7O0rGYYutGWaRCfwB03TY1H65hntoK3eDJCHBkpNiezQiaHvyKr1gf0dW6z+lvtgCVHdP44dm6wDxqRsuOc0+hKPxumzN2Jci1ziC5jmCVDAsLFEMxeKfQWp9Dh6wn69RtufYPfNTvPu+DWgQK/ztuiDqnv9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711663614; c=relaxed/simple;
-	bh=5AJMO6myigFkuoAXfMA9V6C/wHc4aj530blLJIkgPVs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CKO+wsSEn6G2JgUwvFVozb3BndtDnLSto7qFSdcTKaFWE7sVc1R0/FpmGADHg/tUd+N1Msf8YqmXtVBio+p/ZfttXy9fIROicQFyzxICBNOZLhvMze83H/9n5ptqECjx8EC6C/LL0qggBtzVVi+cUPzpNryJG6uevVCDlTMdhNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SnG/rCdZ; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ea8ee55812so1432285b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711663612; x=1712268412; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FawcQ0+/Re5CGM1VyfGak6NYsr/nN1VT9V2EvlsawhQ=;
-        b=SnG/rCdZPSYTqZXyx7kblvvq01NvD8lYu7FQ4biSzbMUZVoZwxV/4dbs0dbEHlxf0r
-         AmC3eDqWf+L4ZjF0wRj3RmCxciZGBB9n++5TpUtz7NjT3TqWa7FK5QejboAeu6R4I8+o
-         A7sEc8xRGVH8CIgdv25hACaKysz3iLmKQs8oo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711663612; x=1712268412;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FawcQ0+/Re5CGM1VyfGak6NYsr/nN1VT9V2EvlsawhQ=;
-        b=HwcJZsIAXSzibDm+WNcx9mIRBvmXvrOHD8eum48B7lw9Q/nD0jSrsP+FLf/lkZVgaT
-         ALBFyfc0CdMBWwPTRPqyYmc55My01nW2QKoqRN5L+do9h/u8TshGKTL/Un24dyVTeBpk
-         oCqgrkI5FXTLuU9eHy1qMNRglXwP2djnton2Ys01KnDpSgl7QKXcO2Uc2ScLCB2e5aki
-         I5NxXeI+0NZMVHJTkd+WlOPY1nqk3q/ki3yiqq4zvp6/1BFmsLVi5/4BHvcLzdwNdwku
-         klh7m519+QbGskbVsHU1xlhhhMcsOvhbSObq1hBT7vdmHzh334l31A6935qg1Fb+XcYg
-         WzBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKGu05Dus93tVXrkNNCz8KjDmL8xQU2l2RKRueSuE6o5HrFB30Sp3eOizfa4apEBmmTd01TuGwJiCZV4/ZSQ8mfWRGt1HDgzl/RQ1z
-X-Gm-Message-State: AOJu0YyeAO7OZyXxIyiZ1GnSwL61b6ryigmDq91ZA5hd6NnX5//RJ3l1
-	krX0AHi5pr2ANplh69K6hqfP3NShbrEGX7fauVuPgTnWc4+el7UqocW9KD9vRAUzzAFZVDyBRew
-	=
-X-Google-Smtp-Source: AGHT+IG28FKoAE9GwUDPDbAhJpDSQvO83TTQaELwCTDF264wtxqHJW3X538E+oFBl7uIp2mx5xeCig==
-X-Received: by 2002:a05:6a00:2d11:b0:6ea:749c:7849 with SMTP id fa17-20020a056a002d1100b006ea749c7849mr707745pfb.13.1711663612175;
-        Thu, 28 Mar 2024 15:06:52 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g21-20020aa78755000000b006e71aec34a8sm1870864pfo.167.2024.03.28.15.06.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 15:06:51 -0700 (PDT)
-Date: Thu, 28 Mar 2024 15:06:51 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>
-Cc: linux-security-module@vger.kernel.org,
-	John Johansen <john.johansen@canonical.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, apparmor@lists.ubuntu.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] apparmor: fix typo in kernel doc
-Message-ID: <202403281506.6E7F782@keescook>
-References: <20240315125418.273104-1-cgzones@googlemail.com>
+	s=arc-20240116; t=1711663673; c=relaxed/simple;
+	bh=W4ByrRn+4LKetxSuLsKEBOpQVyml+dZHE4/n83TVljc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=UHv1CM/89YCdaR/PiK8E9LofDvhdJ1q8te2nSHxqG/rCCb5cHk3/ccxSOP2ZQij3kZXUOsEXxd82RGgjhomjgYOAMxeRnkLVpOgU+gLoK2q8nd6/UTLKA+Su+oI9GTv/iPxmyVXETTglw9AOuNrv0hl7Io7iOE3uGtKoVBLlaG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4OxVoCD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A53C43390;
+	Thu, 28 Mar 2024 22:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711663673;
+	bh=W4ByrRn+4LKetxSuLsKEBOpQVyml+dZHE4/n83TVljc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=V4OxVoCDai/enFPnJBLQJykhNDl1EcgFkrrTcoUNMqRgYCsT3pKvCQ4pUMTw9c5EV
+	 7ps/B6RtmKls0wISTrTzJx0RlRfQcXeF2RY8SZiUL7i0ypKS1dLF7N6aZlbm0pweIC
+	 LFaO67i9Oj0i3UhJ3KHZ10ZxkwNoNG3eWgoSsLtZLbS17N4z+u64fF8VEx1yoq97/0
+	 DXM6Ed5G/l+aHVasdfhXppVn+Eekxz/UclPWyo1nU2dcbxkOitwfFqOYiBb1FSY4lh
+	 yJrHD6RSB0jUdgMYWUg5JYyO1xllzQfHIzDRgLwalJClI3LBKR5WgpTPQRC9/uy9D8
+	 EmwXkoGdDd/1w==
+Date: Thu, 28 Mar 2024 17:07:51 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v4 18/18] PCI: j721e: Add suspend and resume support
+Message-ID: <20240328220751.GA1613553@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240315125418.273104-1-cgzones@googlemail.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v4-18-6f1f53390c85@bootlin.com>
 
-On Fri, Mar 15, 2024 at 01:54:09PM +0100, Christian Göttsche wrote:
-> Fix the typo in the function documentation to please kernel doc
-> warnings.
+On Mon, Mar 04, 2024 at 04:36:01PM +0100, Thomas Richard wrote:
+> From: ThÃ©o Lebrun <theo.lebrun@bootlin.com>
 > 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> Add suspend and resume support. Only the rc mode is supported.
+> 
+> During the suspend stage PERST# is asserted, then deasserted during the
+> resume stage.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> +		 * "Power Sequencing and Reset Signal Timings" table in
+> +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
+> +		 * indicates PERST# should be deasserted after minimum of 100us
+> +		 * once REFCLK is stable. The REFCLK to the connector in RC
+> +		 * mode is selected while enabling the PHY. So deassert PERST#
+> +		 * after 100 us.
 
--- 
-Kees Cook
+Please cite current spec (r5.1 was published August 2023), section,
+and parameter name.  I think this is T_PERST-CLK, "REFCLK stable
+before PERST# inactive", from sec 2.9.2.
+
+> +		 */
+> +		if (pcie->reset_gpio) {
+> +			fsleep(100);
+
+I'd like to see a macro used here instead of a bare number.  Since
+this isn't anything specific to j721e, maybe add something like
+#define PCIE_T_PERST_CLK_US alongside PCIE_T_PVPERL_MS.
+
+> +			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
+> +		}
 
