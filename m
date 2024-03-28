@@ -1,118 +1,152 @@
-Return-Path: <linux-kernel+bounces-123233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1018904DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:19:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D68CB89055B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:36:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED1241C2F4EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:19:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7A81F2661F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A94E1327F6;
-	Thu, 28 Mar 2024 16:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D593BB27;
+	Thu, 28 Mar 2024 16:35:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0r/vY99k"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="J1KF93Iy"
+Received: from sender-of-o58.zoho.eu (sender-of-o58.zoho.eu [136.143.169.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA94130E4E
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711642736; cv=none; b=kHBe1neIUrCBXWWdXwtt2aWtVzmpoToCAb4yh2MVwVML8R0mY3uav3GXcEfc4Eikm3+N2kREmxgIkqxHXkEVBgejzWuXhWyX0OVAq9l4WSe9kYrH/ACzOa5kuUrphPfKzJcl3LB8ueRQk9CojwF3PXadBvEEhnJNcG2lG10JYVo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711642736; c=relaxed/simple;
-	bh=GBsn4xh0VH3bSK4OltJrohHyGLgnl+zZmaIezM4iDdA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=N2nHrvAgFLtroqxaDvj5SRP3Mbj1lBDZtROhMXUDwcyoL3lOVwuxJhNE5DAdAiNRnIBptUuAN6dQBlILF2MwRnCEnSRfXjRAmJLdQX7xbcdn/rXK7gCddS9KGxrJn7Nz0lPQclG/QuEb1WHrgr7z643BmhbILqMIEKmaByfsLdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0r/vY99k; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--gthelen.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-ddaf165a8d9so1593103276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711642734; x=1712247534; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=umIDKJbLUeVjB30WBmxntoX4c0W2blxouvOQBNQgTYQ=;
-        b=0r/vY99kXoMzxkp4WPFgKJ0GDP+V8Gwm+QmvZ+Fc9oyjqDd5/gHMIjMRlRhtHIY10D
-         WVDAlKUYiZWlKgYN67wG3236TFGcol02GKfz0/4C0dUcq25hVT4GJk+RFoGPsmFBSGLt
-         KK5rOj1yqtH7/2QFgvAuwJf9X7QMZfYvkLZCGs9c0u7h4hbhxSh2VlLzdXGYrn02EEkX
-         ix7r9HQCoNchwR6mXhKkBziU3ubyXuEMouTDkkeOH63kgPA5AdHsK3YdXechPbqHEP6c
-         Q169M/2uYfBbNUDkJSEkiMvdeXyImB4UCpnzJwl7joD4KsmkbKeuJfvTjdEZDeyhE9pd
-         2fNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711642734; x=1712247534;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=umIDKJbLUeVjB30WBmxntoX4c0W2blxouvOQBNQgTYQ=;
-        b=YjOj81Qwxc2WCdzw8n2Cr3u8yqlCgbvZokutIJya8lEvRtWnfI1TtXy1Y7L8P7VzfA
-         1RWxj8kZWC1SopnNSsNa3i8dzXxlbiBXUd9C/cHLIZ1DqAlhvsZT8qwFdpg9F6i9lu79
-         wSCPxLZue4jxYqtEJ/mmygJEG1ePwOj/XwLuVa8f41qB2GTOrwiZFosKPMk4e+MO9wME
-         2JVxJ1e66aYO36AWIVGF23aoXARZuwppLcEhqtcqcr90kQymfRoRkUqpi037Oa41zp5J
-         37M88Jm4aB6NFbopAL9ZkOhj1a9A2Jj7Exh6Hyu+GtWcxb/+H2y0AEL3e7AyL5yoNt9C
-         y84A==
-X-Forwarded-Encrypted: i=1; AJvYcCWN99u5A+x89J7OJBeHg3l9PEA+KX3ictXF/EwDFPCWqBxBpNKca7n1FAWW5tdkuiFWQVc1nxDMsbl01W7yXEeAgfKLvwaj7FggZU6Y
-X-Gm-Message-State: AOJu0Yykt1NYGtONn3zXAOHy/1xtZepxzqNUEJ/HOig10RPwcMqoHPAE
-	c1ItM3dmdJOmkot3rlNQ1B0zUQ8kAqTDtbUeZg5ryVbldNXOF/XPj3q0CWhVf16QsFkSlwKeSBV
-	L7Ux4HQ==
-X-Google-Smtp-Source: AGHT+IG3wG69Xu1UOnAeobYYfeZbnbL1W7AO1OICQ5yW749ORUJQcN09ufbTLMPe/kI+kz+CtqMiH5GZrRAU
-X-Received: from gthelen-cloudtop.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1b13])
- (user=gthelen job=sendgmr) by 2002:a05:6902:2292:b0:ddd:7581:1234 with SMTP
- id dn18-20020a056902229200b00ddd75811234mr194893ybb.11.1711642734480; Thu, 28
- Mar 2024 09:18:54 -0700 (PDT)
-Date: Thu, 28 Mar 2024 09:18:52 -0700
-In-Reply-To: <20240328110103.28734-1-ncopa@alpinelinux.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE923A1C4
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711643722; cv=pass; b=bV+havZLQ8WVpjEE0cpQkFY9mGt5Ai7OqdqDPsD8AZYkEzexRsGr2cPFpLCf8H8D7asBaghtxrfkawQ77HtzDgIs0xhV/JO4QaxeuH+3ebldchBVlLHwBTUGlslLI5obmozcGf3Ivqm6xPlVbRSmtjoxN74Obt3/5dq5A7HrzDg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711643722; c=relaxed/simple;
+	bh=jWm9h4bEyRjCM9yo1TuiTy0WnYH+mWXWfvuJwWCVK+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lqtAlLddSMmNLEOKuB2tM3o3t6hSPkXMjXaCQHM9FiMhxxzR2+ulaybu1ZZ0YUdu81jQlrzmjVDmkjpzXSnxoz2C0OU1aalcpJlBTEBwzxJUzIKXDnZfNxDbEhEIlwDMUIB/lCvpCfAFeDJZN51zU6Im5/vWuAOCDvNC/Ml61ww=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=J1KF93Iy; arc=pass smtp.client-ip=136.143.169.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
+ARC-Seal: i=1; a=rsa-sha256; t=1711642777; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=Vg2MDAWErE3CnQQcUPVvzZSCgDcKi02Xk5ejr8GnC5+5yABp70FOO2Tv1qaOxVYx+El8xebnVXaPHd7nijvAaYkCcDaeWWUT7MXeuVLRC8rb8PQonnIdw2IqIk2VMMnrgekGhFtZpJV7uNpgTDGoPWTPB8oWN2+/P3Or18PmIdU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1711642777; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=cED9Awhfc1vCla8jeiZzKgUEOIEF9249yC2TVR3tHtI=; 
+	b=Vr5wc3KYzC6MMBpSmSxyJ0DpwwephWIL5hUEmP8oSyMAklXIP4W8mxmAdx3PRXeIjN7FAr2J8tuaNhPCkDvJ08e7A3kF3dsquyvHnmcOt1E84GSj/Di8olPu59zHNJP/IjZU2NXpgA5SStoFOraeSxnf4qgjNuGxC0zOqJ03d14=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=bursov.com;
+	spf=pass  smtp.mailfrom=vitaly@bursov.com;
+	dmarc=pass header.from=<vitaly@bursov.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1711642777;
+	s=zoho; d=bursov.com; i=vitaly@bursov.com;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=cED9Awhfc1vCla8jeiZzKgUEOIEF9249yC2TVR3tHtI=;
+	b=J1KF93IyyzirxQiTaeSUuqLKfj7mYD45CQ1qBCfMcvZYVSOt6TQ1DuFtu0Gzs86r
+	dVfsxfQfX3N2kCK7xfjID8cvwv3zLvyIbXq0MxKSKtcF50U4ES35QSsUU/JJESOnoMp
+	Y9I3YzkWfdxQIqVycYapVYu+S0RwTo6l8CqUwU48=
+Received: from [192.168.11.99] (217.20.170.230 [217.20.170.230]) by mx.zoho.eu
+	with SMTPS id 1711642776065691.1973913101963; Thu, 28 Mar 2024 17:19:36 +0100 (CET)
+Message-ID: <9a27094a-bcde-4226-8559-86bfae290895@bursov.com>
+Date: Thu, 28 Mar 2024 18:19:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240328110103.28734-1-ncopa@alpinelinux.org>
-Message-ID: <xr93zfuifhxv.fsf@gthelen-cloudtop.c.googlers.com>
-Subject: Re: [PATCH] tools/resolve_btfids: fix build with musl libc
-From: Greg Thelen <gthelen@google.com>
-To: Natanael Copa <ncopa@alpinelinux.org>, bpf@vger.kernel.org
-Cc: Natanael Copa <ncopa@alpinelinux.org>, stable@vger.kernel.org, 
-	Viktor Malik <vmalik@redhat.com>, Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-kernel@vger.kernel.org, Khazhy Kumykov <khazhy@chromium.org>, 
-	Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] sched/fair: allow disabling newidle_balance with
+ sched_relax_domain_level
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org
+References: <cover.1711584739.git.vitaly@bursov.com>
+ <da4454bf368e51369c74e4574d22e8f0bfd9d368.1711584739.git.vitaly@bursov.com>
+ <f6bd6617-b8fb-4760-a90b-ceeca6d4e415@linux.ibm.com>
+Content-Language: en-US, ru-RU, uk-UA
+From: Vitalii Bursov <vitaly@bursov.com>
+In-Reply-To: <f6bd6617-b8fb-4760-a90b-ceeca6d4e415@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 
-Natanael Copa <ncopa@alpinelinux.org> wrote:
 
-> Include the header that defines u32.
+On 28.03.24 07:51, Shrikanth Hegde wrote:
+> 
+> 
+> On 3/28/24 6:00 AM, Vitalii Bursov wrote:
+>> Change relax_domain_level checks so that it would be possible
+>> to exclude all domains from newidle balancing.
+>>
+>> This matches the behavior described in the documentation:
+>>   -1   no request. use system default or follow request of others.
+>>    0   no search.
+>>    1   search siblings (hyperthreads in a core).
+>>
+>> "2" enables levels 0 and 1, level_max excludes the last (level_max)
+>> level, and level_max+1 includes all levels.
+>>
+>> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+>> ---
+>>  kernel/cgroup/cpuset.c  | 2 +-
+>>  kernel/sched/debug.c    | 1 +
+>>  kernel/sched/topology.c | 2 +-
+>>  3 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 4237c874871..da24187c4e0 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -2948,7 +2948,7 @@ bool current_cpuset_is_being_rebound(void)
+>>  static int update_relax_domain_level(struct cpuset *cs, s64 val)
+>>  {
+>>  #ifdef CONFIG_SMP
+>> -	if (val < -1 || val >= sched_domain_level_max)
+>> +	if (val < -1 || val > sched_domain_level_max + 1)
+>>  		return -EINVAL;
+>>  #endif
+>>  
+>> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+>> index 8d5d98a5834..8454cd4e5e1 100644
+>> --- a/kernel/sched/debug.c
+>> +++ b/kernel/sched/debug.c
+>> @@ -423,6 +423,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
+>>  
+>>  #undef SDM
+>>  
+>> +	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
+> 
+> It would be better if the level can be after group_flags since its a new addition?
 
-> Fixes: 9707ac4fe2f5 ("tools/resolve_btfids: Refactor set sorting with  
-> types from btf_ids.h")
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218647
+I'll change the order.
+Thanks
 
-Tested-by: Greg Thelen <gthelen@google.com>
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
-> ---
-> This fixes build of 6.6.23 and 6.1.83 kernels for Alpine Linux, which
-> uses musl libc. I assume that GNU libc indirecly pulls in linux/types.h.
-
->   tools/include/linux/btf_ids.h | 2 ++
->   1 file changed, 2 insertions(+)
-
-> diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-> index 72535f00572f..72ea363d434d 100644
-> --- a/tools/include/linux/btf_ids.h
-> +++ b/tools/include/linux/btf_ids.h
-> @@ -3,6 +3,8 @@
->   #ifndef _LINUX_BTF_IDS_H
->   #define _LINUX_BTF_IDS_H
-
-> +#include <linux/types.h> /* for u32 */
-> +
->   struct btf_id_set {
->   	u32 cnt;
->   	u32 ids[];
+>>  	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
+>>  	debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
+>>  }
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 99ea5986038..3127c9b30af 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1468,7 +1468,7 @@ static void set_domain_attribute(struct sched_domain *sd,
+>>  	} else
+>>  		request = attr->relax_domain_level;
+>>  
+>> -	if (sd->level > request) {
+>> +	if (sd->level >= request) {
+>>  		/* Turn off idle balance on this domain: */
+>>  		sd->flags &= ~(SD_BALANCE_WAKE|SD_BALANCE_NEWIDLE);
+>>  	}
+> 
+> Other than the above change looks good. 
 
