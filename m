@@ -1,148 +1,173 @@
-Return-Path: <linux-kernel+bounces-123540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C748D890A90
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:02:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0685890A96
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671FDB237B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:02:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D22CE1C27119
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F4113958C;
-	Thu, 28 Mar 2024 20:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234AA139599;
+	Thu, 28 Mar 2024 20:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JDLQvDAT"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MQPjxXMa"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264C813A41A;
-	Thu, 28 Mar 2024 20:02:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3083BBDC;
+	Thu, 28 Mar 2024 20:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711656134; cv=none; b=VPOSgAWbAtLKXvfcq7MX/HMn2YeUg6DDPlBWmysC6QeVU+uggUW2m0pGIQfZxojFhIT5saVW/FJi6QOhvQ+KNVllfeyiVKzDd3geIvdCC6Fn716jL/WPDRTVogJnuDYwYv6GKq6pssdpQ/ugIkq6hJhUawEZwHDJ8fRPbWC6cmY=
+	t=1711656273; cv=none; b=oiPfoiJsYZ2yAdLZ87VFlpTzX51jT1zYjxmMr9W4IqGr+Edh51xJUDaSdfcRKRO6TkLDsVb6o0z80bkRg6UYhc9QImrXgN2TUPTrXTk0d7IUhh3r3CGONck6KCvJKiziRKJ7XutPB38DAKji0/BI2hf+Hju9vc78Kta8YXJ2vwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711656134; c=relaxed/simple;
-	bh=Z7vcjNq9iuDxV3o65whbRSs5plrB2OCKjhzQZCsPSbg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IMyU9ISjTT1AmSt06kfVMRwxUeYvcH6Ku9K0h+htsNz0s76ddVq6ldC2cd1lkERPFhyWeNPwPvUi2g3Oyrzg82iSymgmO+Ej8dP2ffrC2m3vETts7b6kxUfGrtZOoRSL2ZU9dko92i3YdcvnAvH6NTYdXR5PlzpDUI5w7/M74L0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JDLQvDAT; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6eae2b57ff2so436850b3a.2;
-        Thu, 28 Mar 2024 13:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711656132; x=1712260932; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=exQ2zy2WHkjHmygTSs/OFLcB/44Kfp63nWW6TTuS9co=;
-        b=JDLQvDATelqKwgvM919l1qpGY5jD68CEsZD2Oj7HPTFx1TYhuLPv7YjOLekxJQF1/o
-         GGfxmAdVxvj2cOdTuyg3akcNfonF3bBZ6fydV9+wipVYqqPXxqdC1oyftqkOuUcPNOxg
-         LphaY/Jp+SBSHNqoREf3vFtHmDgrJi/mZPyEfcD256UBoYa2ZmN+waeAH+gHBqZhRUDr
-         poWnByGkV0UR3J4tEx+cZCtCGufFmvl7QtyIx4U2Xpf6h6L57fiT3atpmBvhCJ7pGoo8
-         6DcGHh8dqqWKuuwd8dDlxkNhbZE4Z+lnZpnwNRJs8q02oaufw9///Xp6mm0LuRAq/I+n
-         jc1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711656132; x=1712260932;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=exQ2zy2WHkjHmygTSs/OFLcB/44Kfp63nWW6TTuS9co=;
-        b=nmILSvvEgpmg0x88uj+Ikuvpffnp6oEAtUABkOi5ZTiX33bU23Vur9GX77nqM17MHT
-         jyPL996ME2pn0IauddA0ynC5zZHgVO17pAqb+HQRZjn2VzZuDtBhHWaRABNH0iYikt7a
-         qoozqvqXxyEzOk+c0z9L0wsoDq7so00I6JESZ0BU8y/PchlygP6Co8MwOBFk7+z0m80T
-         +9taoRZgQWA6Spr5WswKJgsKBd/nhE2tnbeH5hU9IGyfJD6qR+SvsKTppFPRtsuG4sJm
-         ZwhRxAhU2mjPPybA746XYGcUawfjW+AZQjz51KSgZtTKS+XIa6QD5ohyHhfE20r3BuRO
-         0MUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbVOUrCA+bVvhJqKqkImq1mImOS4+Gqj+seURchDPzsy1UHAzLrJ6azVd1rkTiblsMnPMq4dZ25xD9TywQUKBJKPIMZpLgC1iDHJ9urOS9bNvxbI0PGATii3ZYFLSXghtr6DwslXuyclY6K67Qxb5FdHzmXX1qd7gYW/bKkxmc94wNJJrPFzP9au3u5pl673XqG+ULUzp95wqGDQ==
-X-Gm-Message-State: AOJu0YwSBNLtKXmmIMLCmHkcEPDaOMMGXAI5s3Vg/A2ysgEbjMh4jIrv
-	bGgq5FoQZpd8ivz5TUF8XVzciEXG2iAVS10Tjez4Jf2T+TY6lY6d
-X-Google-Smtp-Source: AGHT+IFACNiaq+1NYDRgLNEhercMPfzINXB3PvhMHD2tixWVt5eUtCDZPiJ0ztdRKKdkNFaCLHZpVQ==
-X-Received: by 2002:a17:903:1c8:b0:1e0:b60e:2cd9 with SMTP id e8-20020a17090301c800b001e0b60e2cd9mr602011plh.30.1711656132474;
-        Thu, 28 Mar 2024 13:02:12 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170902e5ca00b001e042dc5202sm2026332plf.80.2024.03.28.13.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:02:12 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 28 Mar 2024 10:02:11 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
- <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
- <ZgWv19ySvoACAll4@slm.duckdns.org>
- <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
+	s=arc-20240116; t=1711656273; c=relaxed/simple;
+	bh=hH/E1fvP5u8sATq4d5M1nonTtGikiXl9zK5EVET130Q=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QNjGapIODS2hLPWn/hs0rWdmUbb2R1DuIh9ghHAVGVtI4NRKqd8Nuhdqao1Or4f6zBAo///ZasfGJftPeI5j0Ik73iNVUgV/rn5LaQToA8mSDVrT9E9qRiRhppZhqGuVghN/XESfz7y72aMdr3EwG/ASIK89GbwBxfDNqeBQu8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MQPjxXMa; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SJw4rH020271;
+	Thu, 28 Mar 2024 20:04:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=GGtPoMsffWxQ3OSpqW29pRxhJ6osDqzG1TPLsNI8Jsk=; b=MQ
+	PjxXMaYfbYYtLIbg4IU/U+lhm1FxFkP+6zakGnw3BBdPy+oEVZkeF44Vop5OLMHc
+	+sWYslvJG85gZ8dAwblZKTdDRqzQQUPS5Nxj8OU5b1OiM3et2o+tXG2p3jFabb6k
+	5K7OSg+xcPnlUgyIaXQC5SlfA/h8XixuoL8ZEQxpzMXTtKgELddeUALQ17EwNpN4
+	u5e1F8fwK7WJRt8MBrG9IB0KijP1/Vvrisv+Da5Z8KiMP0hJiSutWSJ1K//akvu0
+	jEZGz+O0dr8dAPwsRdOez5uy/twejZY9YYGSTGphO7j53EjHJGUvEWBuD3nKhty/
+	4F7UWwSKxkoI8Sj6wrEg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4u20mkr7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 20:04:17 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SK4GuQ011959
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 20:04:16 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 28 Mar 2024 13:04:15 -0700
+From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+To: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <abel.vesa@linaro.org>, <andersson@kernel.org>
+CC: Kuogee Hsieh <quic_khsieh@quicinc.com>, <quic_abhinavk@quicinc.com>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] drm/msm/dp: assign correct DP controller ID to interface table
+Date: Thu, 28 Mar 2024 13:04:05 -0700
+Message-ID: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZlYyvIsrHhnzCwc2ipRqFB1JLDDC-IOi
+X-Proofpoint-GUID: ZlYyvIsrHhnzCwc2ipRqFB1JLDDC-IOi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_17,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 priorityscore=1501 phishscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403280141
 
-Hello,
+At current x1e80100 interface table, interface #3 is wrongly
+connected to DP controller #0 and interface #4 wrongly connected
+to DP controller #2. Fix this problem by connect Interface #3 to
+DP controller #0 and interface #4 connect to DP controller #1.
+Also add interface #6, #7 and #8 connections to DP controller to
+complete x1e80100 interface table.
 
-On Thu, Mar 28, 2024 at 12:46:03PM -0700, Alexei Starovoitov wrote:
-> To use kernel_file_open() it would need path, inode, cred.
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
+ .../drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h   | 34 ++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 3 deletions(-)
 
-Yeah, it's more involved and potentially more controversial. That said, just
-to push the argument a bit further, at least for path, it'd be nice to have
-a helper anyway which can return cgroup path. I don't know whether we'd need
-direct inode access. For cred, just share some root cred?
-
-> None of that is available now.
-> Allocating all these structures just to wrap a cgroup pointer
-> feels like overkill.
-> Of course, it would solve the need to introduce other
-> cgroup apis that are already available via text based cgroupfs
-> read/write. So there are pros and cons in both approaches.
-> Maybe the 3rd option would be to expose:
-> cgroup_lock() as a special blend of acquire plus lock.
-
-Oh, let's not expose that. That has been a source of problem for some use
-cases and we may have to change how cgroups are locked.
-
-> Then there will be no need for bpf_task_freeze_cgroup() with task
-> argument. Instead cgroup_freeze() will be such kfunc that
-> takes cgroup argument and the verifier will check that
-> cgroup was acquired/locked.
-> Sort-of what we check to access bpf_rb_root.
-
-There's also cgroup.kill which would be useful for similar use cases. We can
-add interface for both but idk. Let's say we have something like the
-following (pardon the bad naming):
-
-  bpf_cgroup_knob_write(struct cgroup *cgrp, char *filename, char *buf)
-
-Would that work? I'm not necessarily in love with the idea or against adding
-separate helpers but the duplication still bothers me a bit.
-
-Thanks.
-
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
+index 9a9f709..a3e60ac 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
+@@ -324,6 +324,7 @@ static const struct dpu_wb_cfg x1e80100_wb[] = {
+ 	},
+ };
+ 
++/* TODO: INTF 3, 8 and 7 are used for MST, marked as INTF_NONE for now */
+ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 	{
+ 		.name = "intf_0", .id = INTF_0,
+@@ -358,8 +359,8 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 		.name = "intf_3", .id = INTF_3,
+ 		.base = 0x37000, .len = 0x280,
+ 		.features = INTF_SC7280_MASK,
+-		.type = INTF_DP,
+-		.controller_id = MSM_DP_CONTROLLER_1,
++		.type = INTF_NONE,
++		.controller_id = MSM_DP_CONTROLLER_0,	/* pair with intf_0 for DP MST */
+ 		.prog_fetch_lines_worst_case = 24,
+ 		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 30),
+ 		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 31),
+@@ -368,7 +369,7 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 		.base = 0x38000, .len = 0x280,
+ 		.features = INTF_SC7280_MASK,
+ 		.type = INTF_DP,
+-		.controller_id = MSM_DP_CONTROLLER_2,
++		.controller_id = MSM_DP_CONTROLLER_1,
+ 		.prog_fetch_lines_worst_case = 24,
+ 		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 20),
+ 		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 21),
+@@ -381,6 +382,33 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 		.prog_fetch_lines_worst_case = 24,
+ 		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 22),
+ 		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 23),
++	}, {
++		.name = "intf_6", .id = INTF_6,
++		.base = 0x3A000, .len = 0x280,
++		.features = INTF_SC7280_MASK,
++		.type = INTF_DP,
++		.controller_id = MSM_DP_CONTROLLER_2,
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 17),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 16),
++	}, {
++		.name = "intf_7", .id = INTF_7,
++		.base = 0x3b000, .len = 0x280,
++		.features = INTF_SC7280_MASK,
++		.type = INTF_NONE,
++		.controller_id = MSM_DP_CONTROLLER_2,	/* pair with intf_6 for DP MST */
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 18),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 19),
++	}, {
++		.name = "intf_8", .id = INTF_8,
++		.base = 0x3c000, .len = 0x280,
++		.features = INTF_SC7280_MASK,
++		.type = INTF_NONE,
++		.controller_id = MSM_DP_CONTROLLER_1,	/* pair with intf_4 for DP MST */
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 12),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 13),
+ 	},
+ };
+ 
 -- 
-tejun
+2.7.4
+
 
