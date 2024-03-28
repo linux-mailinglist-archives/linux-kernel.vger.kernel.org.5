@@ -1,111 +1,142 @@
-Return-Path: <linux-kernel+bounces-122989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352D98900BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D82AC8900BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4FF41F26638
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:46:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78F641F265D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E068174E;
-	Thu, 28 Mar 2024 13:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC807BAE7;
+	Thu, 28 Mar 2024 13:46:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dBe+Yn3L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="F91xG6sN"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131BA11CA9;
-	Thu, 28 Mar 2024 13:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD7A81751
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711633534; cv=none; b=r37jiDkhSGh/vpSJA0fr7iwuA4YOaU1swujhaTaznMFLpcPUXWiudi5e2hCIR9Kce7ZqF+nZhfT8bmeQDgvsYYHUMlWdA4RjEm0p2/CnGtBGCJzM56kz/WBIpE1JuIcsZJqTTL4lpXd1qefbPeskh5qQaxXrJtk4HNNOTFMMzP0=
+	t=1711633608; cv=none; b=Ge+h/YbaqGDPueqnDO+zmSQZFmkNWvu4Cz7WlDoAyvVizC7Mz42t2hKwHo3WUGVbSIEpHCk5zIV62h0Lw04QqWEI3zrBmtspGHXqNUekb9lqIYCLqhNZR2HwPAdWL/dowtZDhi/CWFFa0Mz5R5FQZea6DA9dG6vY5epN+ohVX/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711633534; c=relaxed/simple;
-	bh=MFAXdOaG8IIYPpPqn+fadq88X4T0bNFsHUij/Byl2l8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SRKn3+CRVgecsgrSThEihB1InWQ5mi5d+MKgB7iFhX4DE3Tv4KPuzAlTduWbvEPTLFZJMk56e3enjLhQKGFXSyQblpMROlVdqsA/XFPtb3XkYmPnK9KTPeNIYVDgDhZi/dCJDyafRbE9Z2o08o5rtL8FN3VZY1BICCdDdLlNSUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dBe+Yn3L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149B2C433C7;
-	Thu, 28 Mar 2024 13:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711633533;
-	bh=MFAXdOaG8IIYPpPqn+fadq88X4T0bNFsHUij/Byl2l8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dBe+Yn3LhADOFryjYxU0YHm2Ov3d36otcpmHlaE6/JXWkUaNe51GLtPOobxKTcWPX
-	 dcxIvvhctvJ54NbEOiDazdjSRY+/Te9yOKpWLcbd0Haaao7WGkSv7dTme0HzzAZGit
-	 pi6kp97eOCNY+tr1b8k8i6WTIjliXvDy+ULv8stjOaq7eKkixq+vaZB0BAnUiawUVN
-	 a1l5w+OV3v4Pw9YaW9clwc15VG7Lx8WD1vjb9GGkK+RAIvGr17g7kNi4oW7UKVQMUB
-	 SEUwnXUpMp81sIqF+qH2aCZW8MFOlgWFEJ7vOMSCgUGzZgKcBCPM28VpEiCnGk84zQ
-	 gHDeRactzp+ig==
-Date: Thu, 28 Mar 2024 13:45:28 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Mihai Sain <mihai.sain@microchip.com>, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, lgirdwood@gmail.com,
-	andrei.simion@microchip.com, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] regulator: mcp16502: Update the names from buck
- regulators
-Message-ID: <aed9c6f0-a33f-4d2d-ad5c-2a5589483afa@sirena.org.uk>
-References: <20240327101724.2982-1-mihai.sain@microchip.com>
- <20240327101724.2982-8-mihai.sain@microchip.com>
- <20240327-agreed-routine-0cc60186876b@spud>
+	s=arc-20240116; t=1711633608; c=relaxed/simple;
+	bh=m+4RMEyF1XG5sdloerFWFTsyYJRbW+BicofL6yYpx6I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QuB0Xe5jaF81srF3BnWsyULdkNzsCelmF4pvoOumqyxDG7CH476lTcYf2zuUr6yL6F/KN3T165IJn2Z3JCeVys6XHkt0jCsJ4qQwO/QVWjqGDEexAIUUIttkfTURhfjZVQX+9nRGhtaxoCBcXlQIFicGJWN34YohCkb4ApqLi0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=F91xG6sN; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42SCevRR024100;
+	Thu, 28 Mar 2024 13:46:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=t2ZVAs8unsBSfF4LkjybvlbVRB0r0ywHzZpUsLk4GpE=;
+ b=F91xG6sNeuepgwOcFnOCjb6q3uBC+RUlbDXxtvRxx+0RbrlQq7A0a3nvMkQMnJtO6hDC
+ 3Nd1W1+eXjjAL6w+hZIWKrDafpDThGRV4y6D/9oEAFAroySl5Db33iCEKm5fnNN1DpPd
+ Gyc9MRhuSqDubGyqXymzc2PHi0QUYKQFrUE2Fd44U4kgOUaWtr0qF7Fghb8o6GDaKTy/
+ cF61hOQ1qrJ1EvQaMKwcVQcO0AYkISE486D76AdpJMxN4uLAzd+CMu1e7sVPFB5CV/sQ
+ eu3/x5yrcl8qIiFSHVnXu0dIvnyxX56DZAqb4GABmzdWgkPNEUbJkRzfNKt5j5Zq/WE0 Cg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x2s9h06cq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 28 Mar 2024 13:46:37 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42SDV0jx018186;
+	Thu, 28 Mar 2024 13:46:36 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x1nha79f7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 28 Mar 2024 13:46:36 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42SDkZKP013877;
+	Thu, 28 Mar 2024 13:46:36 GMT
+Received: from laptop-dell-latitude7430.nl.oracle.com (dhcp-10-175-57-99.vpn.oracle.com [10.175.57.99])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3x1nha79eh-1;
+	Thu, 28 Mar 2024 13:46:35 +0000
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
+To: linux-kernel@vger.kernel.org, jpoimboe@kernel.org, peterz@infradead.org
+Cc: alexandre.chartre@oracle.com
+Subject: [PATCH] objtool/x86: objtool can confuse memory and stack access
+Date: Thu, 28 Mar 2024 14:46:34 +0100
+Message-Id: <20240328134634.350592-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3xvy50Unb7ZcoSWS"
-Content-Disposition: inline
-In-Reply-To: <20240327-agreed-routine-0cc60186876b@spud>
-X-Cookie: Yes, but which self do you want to be?
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_13,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403280093
+X-Proofpoint-GUID: mz6WTB0k2_3qKTzpcqyFXgU5lxWmqXe3
+X-Proofpoint-ORIG-GUID: mz6WTB0k2_3qKTzpcqyFXgU5lxWmqXe3
 
+The encoding of an x86 instruction can include a ModR/M and a SIB
+(Scale-Index-Base) byte to describe the addressing mode of the
+instruction.
 
---3xvy50Unb7ZcoSWS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+objtool processes all addressing mode with a SIB base of 5 as having
+%rbp as the base register. However, a SIB base of 5 means that the
+effective address has either no base (if ModR/M mod is zero) or %rbp
+as the base (if ModR/M mod is 1 or 2). This can cause objtool to confuse
+an absolute address access with a stack operation.
 
-On Wed, Mar 27, 2024 at 04:28:49PM +0000, Conor Dooley wrote:
-> On Wed, Mar 27, 2024 at 12:17:24PM +0200, Mihai Sain wrote:
+For example, objtool will see the following instruction:
 
-> > Use generic names for buck regulators to avoid any confusion.
-> > Update the names from buck regulators in order to match
-> > the datasheet block diagram for the buck regulators.
+ 4c 8b 24 25 e0 ff ff    mov    0xffffffffffffffe0,%r12
 
-> I know the regulator core will create dummy regulators when they are not
-> provided in the devicetree, so I am not 100% on how backwards
-> compatibility works here.
-> You'll end up with a bunch of dummies and therefore the regulator-names
-> and constraints on the regulator will be lost, no?
-> Can you explain how is this backwards compatible with the old
-> devicetrees?
+as a stack operation (i.e. similar to: mov -0x20(%rbp), %r12).
 
-It quite simply isn't backwards compatible.  The original driver looks
-to be pretty broken but this breaks compatibility, we'd need a
-transition plan of some kind which probably needs some core work to cope
-with fallback names.
+[Note that this kind of weird absolute address access is added by the
+ compiler when using KASAN.]
 
---3xvy50Unb7ZcoSWS
-Content-Type: application/pgp-signature; name="signature.asc"
+If this perceived stack operation happens to reference the location
+where %r12 was pushed on the stack then the objtool validation will
+think that %r12 is being restored and this can cause a stack state
+mismatch.
 
------BEGIN PGP SIGNATURE-----
+This kind behavior was seen on xfs code, after a minor change (convert
+kmem_alloc() to kmalloc()):
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYFdHcACgkQJNaLcl1U
-h9BZ6Qf7BKNHdl8v6RMF5pRZyZ7vMKhs3CzyTeHe56lT/zejkrG4sHEsOQmV0dEG
-gVWKyDlpXzD+z5yrfTxadrPb3u72NEnFS0PEMBh0WgyuJ6YSVy8QaQe6jvKeJlMY
-+jsh7bXzm9YKiBVya1gudts97wrILFiI54yEpsHt+hAyVHiQkaoceEAwMRoprUJR
-3nxMQIn/fUIAsXCtEjPHHFGDCu6EjsHVS7pU0D/6gasATd++yCdnWgSk3GBR6HOV
-ahuAjSBE09Nws1mo275I83sFix1FyemBdxvual2iRBekMpTyl4hsz3EhuhU6o6bW
-My2Qzamr67YowDrsd2oEqYGVTJuBoQ==
-=t1ua
------END PGP SIGNATURE-----
+>> fs/xfs/xfs.o: warning: objtool: xfs_da_grow_inode_int+0x6c1: stack state mismatch: reg1[12]=-2-48 reg2[12]=-1+0
 
---3xvy50Unb7ZcoSWS--
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402220435.MGN0EV6l-lkp@intel.com/
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+---
+ tools/objtool/arch/x86/decode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 3a1d80a7878d3..18a9140173326 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -412,6 +412,14 @@ int arch_decode_instruction(struct objtool_file *file, const struct section *sec
+ 		if (!rex_w)
+ 			break;
+ 
++		/*
++		 * If the SIB base is 5, and ModRM mod is 0 then there
++		 * is no base. But SIB decoding will set sib_base to
++		 * CFI_BP (register 5).
++		 */
++		if (have_SIB() && sib_base == CFI_BP && modrm_mod == 0)
++			break;
++
+ 		if (rm_is_mem(CFI_BP)) {
+ 
+ 			/* mov disp(%rbp), reg */
+-- 
+2.39.3
+
 
