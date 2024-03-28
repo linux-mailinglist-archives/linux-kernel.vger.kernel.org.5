@@ -1,116 +1,127 @@
-Return-Path: <linux-kernel+bounces-123098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42880890224
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:42:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6EB890226
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6B23B21CB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 769BE297CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CBC12E1E3;
-	Thu, 28 Mar 2024 14:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD64112BF08;
+	Thu, 28 Mar 2024 14:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DZf5k/zb"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="uX75/+yJ"
+Received: from sonic309-20.consmr.mail.ne1.yahoo.com (sonic309-20.consmr.mail.ne1.yahoo.com [66.163.184.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE11D12DD92
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D714127B66
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.184.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636953; cv=none; b=fbWEzkjJRXIU9eBwEqgOzdX1psqnOexfCJaf2qs1OjGwv4sxR0S42onkkJWTh3k5jfhrD+dMgNpDQfdTXZl7AHhs+ICHihECtiPdJuME6McXeQlP42I7l3gbB6h1TyUCPn4i4aLa6r9Z+5fRu5RBndbCMHen9sy4jr1XQFl38m4=
+	t=1711636988; cv=none; b=aZop5k/qO7p5kYuLX1Py2oebFScz1dWjUGN0AGqfR5AoUQG80TlrrhggqXS4DuOMLWkVtsmmIu1oM+iHR4hna3ahlPrsfwN5h+4NUVyl6TonIbXd5ajv7eBU1uZZvPrb8AoIxik4icztx7Lajm49hLutINWPZnJPlSK71Wa8vXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636953; c=relaxed/simple;
-	bh=72e/QGdwx4cgM0WviYJewSYfxMsyz56u03JStMH/pMA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SGUg7wn5oLo51/NoU4GxODZbdFzib46OETP5401nXLH0Z2MQNCPN41rVQwZ25+BMnu/pJbw4I6Iedm7UNWKjUztz425p7B9yQASJCzkZubTwrkHry55aj9KUdHO0Rf1G+yeDbpe24PWpCC5wJtZgXQ0w1hpyMDJzWEKIHskzTZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DZf5k/zb; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d485886545so16276521fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711636950; x=1712241750; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G9hLepNJpbi3DWHCAppFTBwjpcQkCnm+v+TpTm9Peb8=;
-        b=DZf5k/zbtiMk1MWgldkra5zu/RGfSAyM7JdL/gGShVAAv5fB++l3wylFGLei9J2sAx
-         unDUe1jy3B7gDgYLJ+2hJwKdzEavFFKerSKR6v2ShXx2QT53VYf3ERIWJeWhjBhR2vGS
-         Gc3zqWrrorGmvD03lmALMg9FBbI7PbWRNDJBqaFoLG26fr+n+CE2qyLfnXGXurPIFfCk
-         GKFylqJQpWdjEoT63Mgf0n0Vf+0cxqbBeK6+I1CyDLlcZY7JcFv1cx9GJesXOaNyPdHt
-         RbJF8e94OqEagA1vR0lF8F0l768tlZeldvXi04gEHuylxckC4DDOp5eoengWa1SOQnui
-         Hvyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711636950; x=1712241750;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G9hLepNJpbi3DWHCAppFTBwjpcQkCnm+v+TpTm9Peb8=;
-        b=k/FJ/DMxF10erDg83fd4I+40KqT1eP2rX9lZ3nblPoh4hsCawp+ZlllUhUjw9dBfUa
-         P3+/4kvBats85JiAPWI6HpAE7S6tndJhHkHZMQhnMnt5kmuVgyxUWIORitH7LgX/UwI/
-         U3tZ+do2M6WW490R3cJGtljVRmo1Ir3FX5HU13Z99YWIYcwj6vjSebMisVS9XgmxRr4a
-         5GbwGb7HjDfqC3B8/wOlFQtoSNzeJVmnAm4Oig9Taw9UrjuP3TW3j+ozJeLjsY6zpHmn
-         XUUsNrJnwFuJvIT3nrrf5pDNbCrhdf41WufB0fYyi9JCJs8pg9Fwl9G7kxY4iSgG+TCo
-         ksNw==
-X-Gm-Message-State: AOJu0YxiigrLKEML0RzABeNIzf88axEqHG2egzoqLD9yW0Tq1P8ZQEa0
-	DzsBoQbARS+7ir9yMobt0OT3WAXno4nPuz78+TwmeBiAPZxXuJgE4+8TcFzIF8I=
-X-Google-Smtp-Source: AGHT+IEH5jD7Cj+NefM1s0YB32bnuPPntJtJeXj9KzXVwKXJ/p0MTHcCp31F39MAt8QJruB1HUs1Lw==
-X-Received: by 2002:a2e:7203:0:b0:2d4:676b:f591 with SMTP id n3-20020a2e7203000000b002d4676bf591mr3208568ljc.45.1711636949583;
-        Thu, 28 Mar 2024 07:42:29 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id my15-20020a1709065a4f00b00a46b99a4273sm819990ejc.216.2024.03.28.07.42.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 07:42:29 -0700 (PDT)
-Date: Thu, 28 Mar 2024 17:42:25 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 01/11] staging: vc04_services: changen strncpy() to
- strscpy_pad()
-Message-ID: <508e4ede-ab78-418d-9aef-f657827b6dd1@moroto.mountain>
-References: <20240328140512.4148825-1-arnd@kernel.org>
- <20240328140512.4148825-2-arnd@kernel.org>
+	s=arc-20240116; t=1711636988; c=relaxed/simple;
+	bh=bZGqD1Qko3l8gQBtb0dEESAh+VdOR3Psbbmt/CLYtqs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gdwptpn8HR2vBkDWgOgi5CKoaqIfkJ4hH+A0xC+5maR/EO8cpBnO1bWLnKu4S6jnBu/7HZvgBM4ovj8HkhSdW0EC7GcvlCM3sG6mql94Yv7LwVvsvkWJ9ck5QXaS2VVqfNAjeIkTZkCYWc50BhYkCjlnbkw7RneXKQfBQzfXVkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=uX75/+yJ; arc=none smtp.client-ip=66.163.184.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1711636980; bh=g1anJ9SArd8svSUwZTdW2RVW0ATJLmdpNNQgfHQxsYM=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=uX75/+yJGtvxLlsg8k6Osju8giMukFoeDCN7vRznFDRe5fTD2qwi91ES1HWF1OQGcgYHkgsAtkl5qAsUYCJNmvwZB8CyVRHX7Ww73tZnQNVcsQEv3ZiU9DPba6j0zUeM6gOlCXbfoG3M6QusQHFSkYSDaAk1UEji40EjDEG1gPN4s/tg78D+hnnFYts5qugnwL8b2wk6OO9NDQNuW41P88me8K34Rd0f2hbCRJNJczhIupN+/Jlpo6LY3wRvOYEtd01KX0ZgdhhM7VlgEkN6MGwBjm4gNKspt7VuvXnvJ+1c/bZ32/DwMjxgV7yCe8HHGHoAyFoGJ/MF+vh4H2HKLA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1711636980; bh=sEeIUzNwSaiytCMALB8Zm+O498jy0t7jmE7z6F1Veqb=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=ZrYNoncDRxbXgTW6X/fM01KS7QuH58t4az+INfb7IjPbqdwfWL6/dPcZSaS9TZ4V/8OqfpE0PH1VDssPjvSIUzuqw+GO94Pr0zmIWnNGN8GtbfME0bUIPlI5LAwp4On2E2jtrANTmt61Mk5I8PAIlsStc3JW8JJXPN57NUdMybp+T3BQ1pZQHdh6keWs0rnyaPzLMgNGw5bN82trQ7cVHqfNLE1GhFNDbyLYhq8PnJUDeHEw3QyFsyFfxIVe9++C10Cq6Kt+qG1QKErgJeOqNFufNHI29y+XC0pKUxJnY4VTVUSvukhXSvE3dWE86myBHIiJX5xL9lFi1V1fPYJDCA==
+X-YMail-OSG: o0BZUZ4VM1koiDp.F2VfpVIV3CO06UgKnbH3BsGIhukliMPxbb8_6MPmDXyY3fo
+ WD1ApgEFpUur3Z9.QpznACQZAA8pSIHjbS6exB_n7SYTaly.HvyR.Axg.XKk0EDAMTrV8N_5jEHZ
+ wT0H.yQakV4eVsKMTHyuwxJzDmMKW6cKq56IXluTmZN8pEUFx.VGUwzag9VX8qqAMDbE7CRBqgcr
+ X0bKxuZv1D8T2n8jMFBdfelZzPHv2gDak3oRQVrh0CnbJ8fzzKz6uGulApwx7TN9ssjb4mpNbuiX
+ UmPYKHcDBoXH.H_atFfYmAs5iOEOVLmHVcGeZ4uvMhL1aszEejINoMY4P6zH0qbUeg5v53nJtXB8
+ jb2oUnebU6W.hyzJ.FlgqAgqK6u5yhC218BWbqs6QfKhk_XC8ClrUgVBwDPaFXblqIz74j415Cll
+ 6LHafRNAHvqjbwbulO2eTkIUhld6lqo27.W6QkWWJNkYFLkky3_5Tm0ZC62LsKc90aRt8tc60Q0Z
+ bJbOVu0HUk62soWwFJHSwDcfuNCs.lwfJNwRhuSh8uu3Xh9qyzU6XRCIIiYVNqGrBEedZlhEr6ck
+ B99TPDGfnzHhIIDjYkTOkPiGulmkR5e1uI9a0pwgOHpWUGUiFgnrTbpqQ7Ik_QyllwoBDn5v2.c6
+ FvpZ7S5JDl7FwoGOsgjook.2DDm6t6xK5KHe5VmLjc3d._21ge.yq4CcVlIK12bpDo795F4rkzIB
+ .IJ0d8QTRWYzAxnxQF38Gh1ISGryzTna3WojPgEpG7MDmmTxC13HWdCNydn65auxqdBSJqYEP3s4
+ 7Hexq_4s0BnMfsSlU4pW_ege9BD9f.m7OHpfsklBHt3IdUuzEqbtSlofEN.dFs4J1STboGDJdBf7
+ bvNsA36OzbHNNM7ZKJiXmUcCOcFJP9PxrjLxgtoC_dNmIWAH8DWyR_eDSWhHv2FLU7fUktEkDjHW
+ 5ebCXkaPfgQaRSHRhzYGSv0SQKN9azmdFzm45FF7.tRBYUTWQc0TO8CfPaNYM1rIIvBTGvMeK5ld
+ Oba6R49xybTzKxhJEsDlOJnOQKPolzvUe4C6hpxp3Jmd_jJKw.QNcOcwYxcQDe5slVam7bePvOC7
+ e_4OMbUcvQ2Q6dUj4s1GI6vOf4JyAEun5SX1KOIQlSKOxS5YI_T_2tkBpwQAich0cKrQY1I85_R3
+ Q2bVX8jghiU3yZVhZDbvDxXuTCEOuoruxb_736cZOrsx1xK_rWpfvIV9_RfcjZ65b7qEzP3RFeNr
+ sUGCRuw5ZkvGKAgGtcnzdbctNW_6CpYtxm6gmvejTKgbiglKCGlnwb76TSSZDIYC.eAM68_EVSK5
+ 1loBBDyYxxzOAUqftmXIqvSZt6TCEN4LTPHZAU1nXxZ..OV7_InN17arMduCktYDbFOqTBIUjLjE
+ synLShQkYmEzqRYBmvTELvpVpWq61ondtj5v88NVK1rjs.9uf8GzyCni3gqTtBa2Yfx0Vh33usO2
+ _j4WbFxaBqi6DGnt1JVTvXjMvoWHpETop_wJngUzr_sfpvEp9bqBdRS1AjflBgvFX1SQ6X8nsC.O
+ TQlBtgJJtU1lwHjyOKtzSQjNEVOhMlvQf63itd7O6uVIgre9zX1C2Pwj8iLB2YwsjIKeqQjpX0NK
+ QdiMFL1bVHj0t1R_A4QRQbBMfBIfLX5CcIpIj4NnP9Hf_NhFzi6OG2Q5V1xOEym20QMX4hHNtn2x
+ JOVU_z434g7R3zvZ53.64LbaGhVo.50kLrhEUU5oGSk0kC8DRO16A2XRj.hZ566xfGxZ0HzDfMAW
+ TRPnvco6wP37dcowsVlnCP9ysaH3Gwbras9jpGUlp3FxlbziG88qZ0ZXb5vOFE1ufYRjFdn5Yw3v
+ Azc4iYnKdYklKSaaHVwyt5dgAgeQHZtJO38_ajM9oLr9NxAQETpQUnmyYnDQx6LYpOAls5ubxCj_
+ BcjC4Ujjb0Wx9P4ZIG3YtRSqBAijcUYANXhWOcpqvfm7YCsN4Tp6m93nG5gsknT84Id332gf3D1i
+ csn4EjZmyh3f3vg.k3DKml_xcbvgzS5cdANOV8ACozyaaT1hMQ5kt0Ax1Fch1PHhvSK7_A4mIvrV
+ knMBmNwhblTziQupON4neJjMXYOhrPccAmJQxxd5RuRzqKikp581Zda3BWqfqKRXYAcY1G2dNdSy
+ ZZt5zauvTXG7sc8NB806HPJ6Xnz3R2MseY3G9d4pTdM.UJF032qq.A7j9uNS61FEYyw01HSI2eAy
+ .170qRYH6mduThmmwO8wv5JuEdPI6n9w7CS8tLsIar3MD753eGTtBjL4WdXY-
+X-Sonic-MF: <serdeliuk@yahoo.com>
+X-Sonic-ID: dcae60cb-a63d-4564-bbef-99fbb1cf4b6a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Thu, 28 Mar 2024 14:43:00 +0000
+Received: by hermes--production-ir2-7bc88bfc75-ll9h2 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID bd83f5bdb12ca9d1f475c97b948ec81a;
+          Thu, 28 Mar 2024 14:42:55 +0000 (UTC)
+Message-ID: <33e23d1c-5b6f-4111-9631-0f8db1100d0c@yahoo.com>
+Date: Thu, 28 Mar 2024 15:42:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328140512.4148825-2-arnd@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: arm: qcom: Add Samsung Galaxy Z Fold5
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240328-dt-bindings-arm-qcom-add-support-for-samsung-galaxy-zfold5-v1-1-cb612e3ade18@yahoo.com>
+ <ca4ed5e3-32ea-451a-82ca-25fba07877dc@linaro.org>
+Content-Language: en-US
+From: Alexandru Serdeliuc <serdeliuk@yahoo.com>
+In-Reply-To: <ca4ed5e3-32ea-451a-82ca-25fba07877dc@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.22205 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-On Thu, Mar 28, 2024 at 03:04:45PM +0100, Arnd Bergmann wrote:
-> diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-> index 258aa0e37f55..6ca5797aeae5 100644
-> --- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-> +++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-> @@ -937,8 +937,8 @@ static int create_component(struct vchiq_mmal_instance *instance,
->  	/* build component create message */
->  	m.h.type = MMAL_MSG_TYPE_COMPONENT_CREATE;
->  	m.u.component_create.client_component = component->client_component;
-> -	strncpy(m.u.component_create.name, name,
-> -		sizeof(m.u.component_create.name));
-> +	strscpy_pad(m.u.component_create.name, name,
-> +		    sizeof(m.u.component_create.name));
+Hi Konrad,
 
-You sent this earlier and we already applied it.
 
-Btw, I just learned there is a new trick to write this when it's just
-sizeof(dest).
+Thanks, yes, I am new to b4 and sending patches, in a few minutes I will 
+add the second patch.
 
-	strscpy_pad(m.u.component_create.name, name);
+That actually add the device tree, but  without the previous patch it 
+showed me a warning, and with both patches provided another  warning 
+that i need to split them in two.
 
-regards,
-dan carpenter
 
+Best regards,
+
+Marc
+
+
+On 28/3/24 15:39, Konrad Dybcio wrote:
+> On 28.03.2024 3:31 PM, Alexandru Marc Serdeliuc via B4 Relay wrote:
+>> From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+>>
+>> This documents Samsung Galaxy Z Fold5 (samsung,q5q)
+>> which is a foldable phone by Samsung based on the sm8550 SoC.
+>>
+>> Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+>> ---
+>> This documents Samsung Galaxy Z Fold5 (samsung,q5q)
+>> which is a foldable phone by Samsung based on the sm8550 SoC.
+>> ---
+> That's very welcome, but are you going to submit a devicetree for it?
+>
+> Konrad
 
