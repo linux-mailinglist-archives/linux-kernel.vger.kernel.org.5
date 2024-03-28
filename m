@@ -1,165 +1,137 @@
-Return-Path: <linux-kernel+bounces-122559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F73C88F978
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:03:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4469188F97E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 829061C21E3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:03:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3E722997B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504D465BAA;
-	Thu, 28 Mar 2024 08:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103145789B;
+	Thu, 28 Mar 2024 08:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="IzCHboNc"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="NGK7V3cu"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE08C657BF
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629D257879
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711612888; cv=none; b=Ri8P2zkXJNeEkGldS9F+I8uluMQpn7K/urDaSWNqTHtWzH/b/wmwsvD5tSKLg7BOb+QhQgZvOj/i+k1KmOF9NDzWaxlJC0ivApzIdbhJ9j0n7J/GKMBg1FElIjMpD9QebjBgN/nD4C6tuK2QoCHE5wn0Tg77H3STVZiS13rfGww=
+	t=1711612974; cv=none; b=gzEvX9cQtPow40hCltSpeEq9aHYvLu14/L46rmXcHeRlacMI7ElpxQ/MBsV/vjXngYMyGfNJZ0dQm8N38eBFqi5v4wctfFLEBTCY80LP49frXMsBe5IVz6cydsFvO+EFry5+4ct5U+4v2t/5nSgXjh3O3iRexOfmykYvzjcoRio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711612888; c=relaxed/simple;
-	bh=iGPkZ93mPGMHekKKmEQJnZAQ7M3hRddQQyp6Ob/5spM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WBW2YTqwmx2uvOGA8lSji12kuVOJgjNAhG2GFHxHbnRAc3jmftbCEnQM+SsXcU0XNBAcl6eQUjFuO3OQ+GtuqpOZAfrnkz+1+01qrGPTgNvn8xgvVadhSz/8pcjp+fm1nG2tpFM7JKvAKnCTcOqjcPUPh4h6gnoaP1gobgvYXLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=IzCHboNc; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41544aef01aso2193405e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:01:23 -0700 (PDT)
+	s=arc-20240116; t=1711612974; c=relaxed/simple;
+	bh=nGY94ctV99RKSBmKBzu+ogs72YCJk1Ocz9yUA3kt8vQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Pjmjy3IEC3EVCuzkHP8zxjuH0TSjCI7waB6pJMnSggkrecig56g3kScCRfK112+lFJo3VQw1DVHwd9iMDK3PoU6K9cnb4u0MD8h1be/6NUVVHB+UtTEZYnUB5S/SG43DrJFH/0z1alez1XBENnO+SuU/RRsdtv3FYrW+qhyPbjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=NGK7V3cu; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c147205b9so1172040a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1711612882; x=1712217682; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sOFRtkco0210L/WuRcYQ2nRZLqQCloOmB/yxmLTCTIQ=;
-        b=IzCHboNcSD6S71uyiZCJjwvWfO6o0LaUf+9SOu0KyA5/a8JJCXmKD2/4qjqjEzekUj
-         HlGlpMlIdet8abtzXEw/O4DOa/Q7SWLKOJ3CVPJQuTUdZ8On5zlgjy3DoFbG/HjAwsQs
-         XHi7YulBehbsd0ttOqouZGEW66Ge6C9hCq+mPl31me5jdMF1kzZS3aOAKFdt8cGr+uIf
-         bqsr4ONXzdrN4gnYdoZsT1Y/obcsAHcfLC7BXvxh17JJNzqU/Qzribs6vyd5FxrvRimg
-         sNHymoC1Y4jhWikkBJ0vkZjtCtKZtZ3Y/OnrLuKwMBGX8oWi5ed5PhwM+hQSU2E7mlND
-         Kkqg==
+        d=fairphone.com; s=fair; t=1711612969; x=1712217769; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5mODnViOF43Qf7BlbaL1yV7bCzvxW2J00s0tf+KV++c=;
+        b=NGK7V3cu1N3eCHO7pKGFeXE2/+iBgqPFGDgdQHHmx9BOhZz7y41ZMJIJEPQhTZYbRH
+         aGU9jhn4IYYGh/5fR2hkxRweWs03Qk0gRc97LwvRbYaAOpdqsb8lkM2q4N3bqxd/WVPf
+         JuRBPRxS7R2dptVwHCjhBTskzfOI3+W6csCnal4lfGGGgzcON7vjP6rzcq8utYFcKSwD
+         x9BezZo0owHo9f37QG+wlMIz9RAP0Ls7jslqr3xgwxBXVq8lr5b/0cJyJMrx4DcngDgh
+         j9HXbxo0L+PuJCbv31raxkLLQd8m7/ZQbUadMdWxMW5qvkFcTvBr2kjJ3GuP26fFpIni
+         ZspA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711612882; x=1712217682;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sOFRtkco0210L/WuRcYQ2nRZLqQCloOmB/yxmLTCTIQ=;
-        b=Mo4LXTzdxIUnRTH8dpD9vGP7HdyJP0SApWEu+WlbBmluFkz2dGVx5QpgzXsVVtVQZM
-         XFdnZ3omAXydfcPwIuLQ54R0s6i4fXv32kiKmTJ+BBKfs/+6FxhyeAUbhJNs5AgHB9SR
-         MHQeSLY57blSrs2klcMclZ/INc1D10+LRVWT58DTgEXGPzB5z2qCcQx9qhbBgeoCg0SY
-         f64UsfGvzVSPxmCONXHdCZzKOmTwQdwv1yKZXYM/6+mh1O4fJleiazT8W6IXfmTeIvOw
-         7qsoa1yjndG5McI+gtK2WStk4GLehvIjaEGi13+vyw/2LjxBP4+dNcsnZG+XuL19HED7
-         S+Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlrDlsfq3EUx+nlmu5o3Tr8Cujsb4BziTrpjl58pjEtWCCC4gN4JeOgEBTNMGozI8rbyWLFiil65IUFcJhcTjz1xl/1Eo7Ua7Bmvy4
-X-Gm-Message-State: AOJu0YwllrbBJJMNB+XVj7WNUXP1VXXxZbsrH5zK6ZzD7r6B1RWgXvdl
-	NAaRh68kJtXMacQpdNlpgSyhQ2wU2KkWFoOjHfNO0mHearoIACd4iPbNA5ZXb14=
-X-Google-Smtp-Source: AGHT+IEfucJcctzZC8UBvZQeq6f9QZjWkgL5lvSz0lZ62cuXHSgW+76tyPLaKHZwCKmq33V0C3VBOA==
-X-Received: by 2002:a05:600c:5250:b0:413:f3f0:c591 with SMTP id fc16-20020a05600c525000b00413f3f0c591mr1901771wmb.41.1711612882008;
-        Thu, 28 Mar 2024 01:01:22 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.144])
-        by smtp.gmail.com with ESMTPSA id jg5-20020a05600ca00500b00414850d567fsm4609630wmb.1.2024.03.28.01.01.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 01:01:21 -0700 (PDT)
-Message-ID: <c200e87e-1c65-4926-9307-16229e90594e@tuxon.dev>
-Date: Thu, 28 Mar 2024 10:01:19 +0200
+        d=1e100.net; s=20230601; t=1711612969; x=1712217769;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5mODnViOF43Qf7BlbaL1yV7bCzvxW2J00s0tf+KV++c=;
+        b=Ah0U0dojsK+doZOFYWkr3/ETFelQWTX+Y+aKlrUTIH/+wtqoIBRyn024fxMZOQ4IYL
+         AMt8SZXJ3qfXIVTzralrAljJ8MYzNAw9bFTD4KLXuoHUE+CS2Iv0OXc6GpSFzcivUxAd
+         p1ZYUzKK/DIOo+eaxToeNR3XlJnRug80lJfCkerNhaDqFw3qVq7Gwh6MT0akoVaursFM
+         dsmgYT3+4yZr3L+RuwicH58vIwshK+iQBnAIJ9cJHD00uRE7ZixZi07iGuRDwf+Dh1iD
+         MXB+nIShoMowS1P8IKgUF30xV2NYlkI83in63zY7Oegwv9VEwPFy52yOb+puy7rhOyMO
+         TuAA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkeZFf+f3Nr09muSv8ner9+fS7Sbgrj5VK1rpCagAvHYdjUxR0rbi2BiTATEjNmk3qF9X/3ayrCX7j6jaS9u4gnISaH56QyUjq3RYz
+X-Gm-Message-State: AOJu0YxpkOGEtKhgM8eH612B1Ttqq/mJJBSB8PN1e0WzcNzqSxEXc6UU
+	O1+eFyUJU91Bjq8ZNU93ltNHUKbRuSepeu570ZeVqyUyW/9n0sv0GaYAT5cadzg=
+X-Google-Smtp-Source: AGHT+IGvGtijoBb4YavjO3REnAE+9JEFT1LLiQTDvEwJxSta1iXIKu06X+xRwMugSsM6ImuZbjFbHw==
+X-Received: by 2002:a50:9519:0:b0:568:a226:6685 with SMTP id u25-20020a509519000000b00568a2266685mr1455890eda.8.1711612968600;
+        Thu, 28 Mar 2024 01:02:48 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id k7-20020aa7c047000000b0056c443ce781sm522618edo.85.2024.03.28.01.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 01:02:48 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Thu, 28 Mar 2024 09:02:45 +0100
+Subject: [PATCH] drm/msm/adreno: Set highest_bank_bit for A619
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 07/13] pinctrl: renesas: pinctrl-rzg2l: Validate power
- registers for SD and ETH
-Content-Language: en-US
-To: Prabhakar <prabhakar.csengg@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240326222844.1422948-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20240326222844.1422948-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240328-a619-hbb-v1-1-cd135e2d22a7@fairphone.com>
+X-B4-Tracking: v=1; b=H4sIACUkBWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyML3UQzQ0vdjKQk3UTjJLOklETLVJNEcyWg8oKi1LTMCrBR0bG1tQC
+ NjGDnWgAAAA==
+To: Rob Clark <robdclark@gmail.com>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Akhil P Oommen <quic_akhilpo@quicinc.com>, 
+ Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Rob Clark <robdclark@chromium.org>, linux-arm-msm@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.13.0
 
-Hi, Prabhakar,
+The default highest_bank_bit of 15 didn't seem to cause issues so far
+but downstream defines it to be 14. But similar to [0] leaving it on 14
+(or 15 for that matter) causes some corruption issues with some
+resolutions with DisplayPort, like 1920x1200.
 
-On 27.03.2024 00:28, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> 
-> On RZ/V2H(P) SoC, the power registers for SD and ETH do not exist,
-> resulting in invalid register offsets. Ensure that the register offsets
-> are valid before any read/write operations are performed. If the power
-> registers are not available, both SD and ETH will be set to -EINVAL.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/pinctrl/renesas/pinctrl-rzg2l.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> index 348fdccaff72..705372faaeff 100644
-> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> @@ -184,8 +184,8 @@
->   */
->  struct rzg2l_register_offsets {
->  	u16 pwpr;
-> -	u16 sd_ch;
-> -	u16 eth_poc;
-> +	int sd_ch;
-> +	int eth_poc;
->  };
->  
->  /**
-> @@ -2567,8 +2567,10 @@ static int rzg2l_pinctrl_suspend_noirq(struct device *dev)
->  	rzg2l_pinctrl_pm_setup_dedicated_regs(pctrl, true);
->  
->  	for (u8 i = 0; i < 2; i++) {
-> -		cache->sd_ch[i] = readb(pctrl->base + SD_CH(regs->sd_ch, i));
-> -		cache->eth_poc[i] = readb(pctrl->base + ETH_POC(regs->eth_poc, i));
-> +		if (regs->sd_ch != -EINVAL)
+So set it to 13 for now so that there's no screen corruption.
 
-As of my knowledge, the current users of this driver uses SD and ETH
-offsets different from zero. To avoid populating these values for all the
-SoCs and avoid increasing the size of these fields I think you can add
-checks like these:
+[0] commit 6a0dbcd20ef2 ("drm/msm/a6xx: set highest_bank_bit to 13 for a610")
 
-if (regs->sd_ch)
-	// set sd_ch
+Fixes: b7616b5c69e6 ("drm/msm/adreno: Add A619 support")
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+@Akhil: Dmitry & Abhinav said I should ping you specifically to take a
+look if you have an idea why HBB=13 works but HBB=14 causes issues.
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 0674aca0f8a3..cf0b1de1c071 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1377,6 +1377,10 @@ static void a6xx_calc_ubwc_config(struct adreno_gpu *gpu)
+ 	if (adreno_is_a618(gpu))
+ 		gpu->ubwc_config.highest_bank_bit = 14;
+ 
++	if (adreno_is_a619(gpu))
++		/* TODO: Should be 14 but causes corruption at e.g. 1920x1200 on DP */
++		gpu->ubwc_config.highest_bank_bit = 13;
++
+ 	if (adreno_is_a619_holi(gpu))
+ 		gpu->ubwc_config.highest_bank_bit = 13;
+ 
 
-Same for the rest.
+---
+base-commit: d5a436a7b5958caa6fc0dcda6c842f9d951be73b
+change-id: 20240328-a619-hbb-a3b6bda9e4a7
 
-> +			cache->sd_ch[i] = readb(pctrl->base + SD_CH(regs->sd_ch, i));
-> +		if (regs->eth_poc != -EINVAL)
-> +			cache->eth_poc[i] = readb(pctrl->base + ETH_POC(regs->eth_poc, i));
->  	}
->  
->  	cache->qspi = readb(pctrl->base + QSPI);
-> @@ -2599,8 +2601,10 @@ static int rzg2l_pinctrl_resume_noirq(struct device *dev)
->  	writeb(cache->qspi, pctrl->base + QSPI);
->  	writeb(cache->eth_mode, pctrl->base + ETH_MODE);
->  	for (u8 i = 0; i < 2; i++) {
-> -		writeb(cache->sd_ch[i], pctrl->base + SD_CH(regs->sd_ch, i));
-> -		writeb(cache->eth_poc[i], pctrl->base + ETH_POC(regs->eth_poc, i));
-> +		if (regs->sd_ch != -EINVAL)
-> +			writeb(cache->sd_ch[i], pctrl->base + SD_CH(regs->sd_ch, i));
-> +		if (regs->eth_poc != -EINVAL)
-> +			writeb(cache->eth_poc[i], pctrl->base + ETH_POC(regs->eth_poc, i));
->  	}
->  
->  	rzg2l_pinctrl_pm_setup_pfc(pctrl);
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
+
 
