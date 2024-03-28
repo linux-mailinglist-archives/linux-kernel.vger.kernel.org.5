@@ -1,143 +1,90 @@
-Return-Path: <linux-kernel+bounces-123776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05619890DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:32:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC43F890DA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:33:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B01711F269E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:32:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CFF5B234B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0C726AC5;
-	Thu, 28 Mar 2024 22:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99593225D9;
+	Thu, 28 Mar 2024 22:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dZNOFzTL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="atKXMufQ"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D1821373
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24B1200DE;
+	Thu, 28 Mar 2024 22:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711665141; cv=none; b=Xb50n/ztxmTejL2b1rqd15Th8wAG23GBTElBDJZZILt+j1rm4CJiv8oiJEalXaJw/sWNW+hT3ipfRrdHl8XmvkkrYXze4YBuEPDVkTndvevsc1P6dRLc4r4LPSRZwzRaXl32Xlh6wTc9GDhfQTMKkM8EGDQuj4h8mKV6YMmp2X0=
+	t=1711665183; cv=none; b=SNLwoMe4CdUnxW26aHgTRmWab11Sm/02m8kGwVxf4q29yLsrLxEy4W3vGXSGZW2TfpeXGOk5caTh3to3mIjub1DumH2N9+Tx+m+E7SogJlHv7/WLaSiyS7Jc3UH+ep5D3SdrrOHyn23eZy0qbXcUXqh/tVs8gX08emsdOraPbVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711665141; c=relaxed/simple;
-	bh=HM9dI0+v2dvDagfXfBDPOTWaC1BvVu/Bw0HFxTguW+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gyGyn0UgfRY8G4BdpU6APSU4mYQ7iw0A63hZsMH6UDEVGkqKEkn5EuQ6oY/JyqhI1NJgPoCGE0+aPc+IRJD91b8/JRXeSTLbVEhUENhwDv0Pkoq0s4nQPUA+KwxLduvzXwuMLqT/x3vnxERlwt3zdqL14fSezf/20vsGKOEVHvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dZNOFzTL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711665139;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VkMXoVK2Q46JPYfsAJWLWQVhxzDC46YOif/NfcourZg=;
-	b=dZNOFzTLwCG0GxEk2jlL98Ut61suWvE4uv1CUC4wSBhfXneiO1AxERtlWRTSGIQcMYqRfk
-	37kNQbM9OI7MgTumF2e8cHSBKKzK1fz18O466xHs/eRBazhCtOAvTdPsbI1OzJzVtzN2wu
-	bjm4hk4raqoJNtQo7p0HXSHtvhwO954=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-616-mZTjqzYJP4OmW3P53SeQJw-1; Thu,
- 28 Mar 2024 18:32:15 -0400
-X-MC-Unique: mZTjqzYJP4OmW3P53SeQJw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 235FD293248C;
-	Thu, 28 Mar 2024 22:32:15 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 4B24210CB296;
-	Thu, 28 Mar 2024 22:32:14 +0000 (UTC)
-Date: Thu, 28 Mar 2024 18:32:08 -0400
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Eric Blake <eblake@redhat.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
-	David Teigland <teigland@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
-Subject: Re: [RFC 5/9] selftests: block_seek_hole: add dm-zero test
-Message-ID: <20240328223208.GA2373362@fedora>
-References: <20240328203910.2370087-1-stefanha@redhat.com>
- <20240328203910.2370087-6-stefanha@redhat.com>
- <sr42hsk5rqu5siso6xwjlu5akfegl6glco3ug6pleawszgtfcb@h5pca4b3yqot>
+	s=arc-20240116; t=1711665183; c=relaxed/simple;
+	bh=fPx+OB+31hGK/wR9lOKOA3tAk4NG8KeU1/JiKvILBk0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=We9wTkHvYy4tmVsl4PitYsIKDhVIvWqZZnAI0UhFVPSnO+y1HYZo7V+qCfurAyvADbizByxiNS7zC+theNok1uCuDrVofENqLWBooiDqi+/KDwCHrY2tcgV727koYcLVt9kmZF3qiFI54McbdG+4VtNdPDE4Phol5hbr5QJPvXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=atKXMufQ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=0mzQFfG2OBTnHVlzK9rEYc2q+n0r/5Ez5GZkbZnpj5c=; b=atKXMufQ+OhfO/PNDfaIqiewDy
+	3ZWaRMBRjQEVkNxrCr0pXuX7J67axeZDaLZxargiGYJzVs825+bmUBb7lu+PFKYbBtuOTRbgQ1Ze1
+	CQk03jaZ9chbBJs1VEjuiURPRoSp+gjKqwQHJDgaDVALCC5l4nzyUzio0bSe5Lt1PBWTgmy5dAJzm
+	lGZy0q8zGAeBut/zbPf+b++rl/AN31HvGaJszs1WpiFthPX6F9FTVeZP7uDB4+bj+EP3FdY/swqJs
+	CpZv0Ndw9a0SbF8TAymThwbN1fZzeWgzfbSUsjaGRf8pln7RjScXtRO7IF66RSZSIZ538zbJUSLLB
+	IFqhMxNg==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpyIv-0000000FxEq-21FA;
+	Thu, 28 Mar 2024 22:33:01 +0000
+Message-ID: <a9092d50-9c7a-4086-a65a-aacfb095e435@infradead.org>
+Date: Thu, 28 Mar 2024 15:33:00 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="errnYgf4vO9JYY3s"
-Content-Disposition: inline
-In-Reply-To: <sr42hsk5rqu5siso6xwjlu5akfegl6glco3ug6pleawszgtfcb@h5pca4b3yqot>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] spi: spi.h: add missing kernel-doc for
+ @last_cs_index_mask
+Content-Language: en-US
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Andy Shevchenko <andy@kernel.org>, linux-spi@vger.kernel.org
+References: <20240328043845.28882-1-rdunlap@infradead.org>
+ <CAHp75VfuoYoAm-QcVhx3bJcvsGarU88ZdNGwz=mW8sq-mt5pmQ@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAHp75VfuoYoAm-QcVhx3bJcvsGarU88ZdNGwz=mW8sq-mt5pmQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
---errnYgf4vO9JYY3s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 05:19:26PM -0500, Eric Blake wrote:
-> On Thu, Mar 28, 2024 at 04:39:06PM -0400, Stefan Hajnoczi wrote:
-> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > ---
-> >  .../selftests/block_seek_hole/Makefile        |  2 +-
-> >  .../testing/selftests/block_seek_hole/config  |  2 ++
-> >  .../selftests/block_seek_hole/dm_zero.sh      | 31 +++++++++++++++++++
-> >  3 files changed, 34 insertions(+), 1 deletion(-)
-> >  create mode 100755 tools/testing/selftests/block_seek_hole/dm_zero.sh
-> >=20
->=20
-> > +++ b/tools/testing/selftests/block_seek_hole/dm_zero.sh
-> > @@ -0,0 +1,31 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +#
-> > +# dm_zero.sh
-> > +#
-> > +# Test that dm-zero reports data because it does not have a custom
-> > +# SEEK_HOLE/SEEK_DATA implementation.
->=20
-> Why not?  Wouldn't it make more sense to have dm-zero report the
-> entire device as a hole (that is, an in-range SEEK_HOLE always returns
-> the same offset, while an in-range SEEK_DATA returns the device size)?
+On 3/28/24 01:51, Andy Shevchenko wrote:
+> On Thu, Mar 28, 2024 at 6:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> kernel-doc complains about last_cs_index_mask not described, so add its
+>> decscription.
+> 
+> description
 
-Yes, dm-zero could report a hole. I just added this test to verify that
-targets that do not implement seek_hole_data() work and the dm-zero
-target was convenient for testing.
+Fixed in v2.
 
-Stefan
+>> spi.h:778: warning: Function parameter or struct member 'last_cs_index_mask' not described in 'spi_controller'
+> 
+> Do we need a Fixes tag?
 
->=20
-> --=20
-> Eric Blake, Principal Software Engineer
-> Red Hat, Inc.
-> Virtualization:  qemu.org | libguestfs.org
->=20
+I'll add one.
 
---errnYgf4vO9JYY3s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYF7+gACgkQnKSrs4Gr
-c8gJTAf/drxTuPXV8DqCjh9n+P+C32Fxs32+AcAhMqGlVsD4b9Ypw4/n8QNyAFpx
-VvaJroLpR4zj5glSVAr1V/YAIHfU5HB+xheL5Mfd/JGCQLJXfiI4zmI3w70sp+CJ
-m+FkD5vP6fvc8sOexR86We6lVDEXCzSvvck1ChQtmZ/TsO1Tf/iBSq4NbMRNoG6r
-/sy+qV5z5NXBsYAagHkPb+a4lUktrCvR9v6StbRIsAh/pMNUKsN/2gtPshYUUs5h
-YMjipkwZztToUud98eUEehe3BV+IjyJ/m5Bjf99HkN6sQE6ftjx7X7BwXOFBj3eV
-RE6fSCJTogaq6/GrUh6PCDyPXZ97WA==
-=uXCc
------END PGP SIGNATURE-----
-
---errnYgf4vO9JYY3s--
-
+Thanks.
+-- 
+#Randy
 
