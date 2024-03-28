@@ -1,114 +1,123 @@
-Return-Path: <linux-kernel+bounces-122749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3C688FC8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:10:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B1BB88FC43
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 383E5297D61
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:10:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 191EB1F2F729
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A0FA55E6C;
-	Thu, 28 Mar 2024 10:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B627BB14;
+	Thu, 28 Mar 2024 09:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gv874rs7"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KXgyvBwN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1587B3EB;
-	Thu, 28 Mar 2024 10:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4872B1E861;
+	Thu, 28 Mar 2024 09:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711620646; cv=none; b=ZcW7LkMdW3Ai2vbt8n0DHfHuRkhGMem675uTsmDlQAzTe0lbBvGp3A1cYlIIFQ48NuduWBFN87+AABWMAV9nMLzPcLtJ3kAgyLUqogKxMsTaTBXbfRyPeyRtq7VeKkboTstCrcWOJ5j1R+2OAbgIlIsgddEpKSHISen0eB54kRo=
+	t=1711619875; cv=none; b=Dvax0G97bfo9bb6+fqCO3Jq9rrh3fHi7dcTr6eS7bP5xHuy0tTWj7eSV8FozglJO9pwc5hclY2TRojkeU7Q5jxguvBtX9sYnO9PdawSPa9Pnjbx1A+ySQl9kcIEv9GmkPoLJEycSpE2VsBgBRHcLD1+6DR8C0IypLxFPKSYEYNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711620646; c=relaxed/simple;
-	bh=4OFMzfSjsi+Q3F9miHZNiDNu34RwznmjJpdOMvmx/K0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HYwf59CpmF/Qrneos68P2MV6mXUueKpyYwttKgjPWTyYGG8VWmrE9M/YCVB5KagE2eeeBw0y7VxPpTGhDpXXKLedcQAi1znOTQfSd8Ox+eeB/nfk7qYTvcMOQyeHOtdr9qrgC/O4lD8n20/aZZiMgINZf2Blv4L0iogkGILq7os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gv874rs7; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso734807276.0;
-        Thu, 28 Mar 2024 03:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711620644; x=1712225444; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4OFMzfSjsi+Q3F9miHZNiDNu34RwznmjJpdOMvmx/K0=;
-        b=gv874rs7ergRs+0qgBG3IaU6XJg2G1WvAVoWvPsKm2+t+kvHXf8Nk91rvdp64Lh+us
-         7YsW82YHBq7GASi+D4Iz+0c0EqdXpxHJG88cXenAg+019XM5Ig1eyOD1PRFvliTNmqCJ
-         oyrsebU9QWThbs9lRyxpPPDrxGcSYnIi0yyCMLekqSUJOHi4231ZtBUPXpEGODmzWpJh
-         zhCawFYos3xJkUqhTDTHvh6JE9UvUlUmT/+TUs7yOzbawW7kicXoDR0oJXy0rpYAagwe
-         OOMwOyYgeXiL9E5b89RRmdJZt9wUeSwY2WBymy7ovnlLm6ES3u8o3NcH75M/PAaxKFyL
-         aCQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711620644; x=1712225444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4OFMzfSjsi+Q3F9miHZNiDNu34RwznmjJpdOMvmx/K0=;
-        b=l4Gco9/MlEZ8LMki2xzYKgr/VjwMgxkGZbbEn+a4AuH+UduHqMwTYezQNPA5S7g4Ab
-         QsaUtRHT9bGp7wQdtH0ZpjjXosDtPuzqcpEaxGCZX8R5qIy6aHXdJZh1e/A4R3xYqvZn
-         /2vtZ1zgC/brmF8d8pu1q+/3XzhN1tfaMcMYkfLma8pJdry3imbqS9MoqM81Vr5s3zLB
-         Cpfv+A0bPac4i4M/9WYVjloh2tF4illG5JKAY+0GheK1uJQVgSrFwjx31IMh0r8vMYSO
-         o2Rf2zkxD9NSjd2hyrx9BNildPs/ypywKmkTnrLCrROBPePC+5octVoMEFX5N0EmoICo
-         vC/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWPLedpUSs37uMKYqHCE1JVp267/rsmkRW1l4VlMj9CGLODoM9xTpB64AuxKLkUC7r0gp+Wm+zwiPPYxY3uJ4OLZw2DGVH4uhVI0y0BujLYJmIDmWQAxce7aVi0GteyMNDi+I3dUYCCMoQjiIB/uuirykW0bxzuuFg0Fdt736u4nSc/tA==
-X-Gm-Message-State: AOJu0Yy5zcKotsaYdre+D8GJLyKvhXbm6exntiBjxn9J5LOFHhSHQQ/p
-	uMzVqHKEdk1QaRaC4L8neyWQHKc5XU8mo8PHFMkUcsTFavwOkHCFdLd7b0bc5Gvfp1/ZSfgRqSc
-	Zl6xg0RnDXQmQdKkaBNdmwFaBD08=
-X-Google-Smtp-Source: AGHT+IFukCslxPd/D0/jvlNCrO+ycmsage3+usxF2H6UDkL4liECpcOIMAqmKRuAcfwWuukRPEjBvZXrFUP4B28rsAk=
-X-Received: by 2002:a25:8606:0:b0:dc2:2d75:5fde with SMTP id
- y6-20020a258606000000b00dc22d755fdemr2282719ybk.29.1711620644317; Thu, 28 Mar
- 2024 03:10:44 -0700 (PDT)
+	s=arc-20240116; t=1711619875; c=relaxed/simple;
+	bh=gAV+gUAqBp1S3zdGcOLRkMbsJPo5TaCr0FKPbsZ46M0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dyyyZbOtVSeupijBzVhmVyrWn8qL0sMTYmq1HtyRCgVjSeW0nsME/6aK8zyq+VIBjgUj4Jtjyb2JGeP7xjutUWtETpUuIE9mD7fzHCGRTFwZWXtLKnNLSRTCQEg5nRZzXw3ZkC2q0MakOkSCMvVYBkfmvOIx/bx7MggLtu8tHew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KXgyvBwN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8482DC43141;
+	Thu, 28 Mar 2024 09:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711619875;
+	bh=gAV+gUAqBp1S3zdGcOLRkMbsJPo5TaCr0FKPbsZ46M0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KXgyvBwNntZvsvohR9Dm+YUIE+XMILsRnEWVZYQ38z496oWWeT55HpERyihmNKCeL
+	 5NkIvQB1YyeF80qtVNVneOnagDmWOiNMG/Cs9SsTLsmsWBszi65yo9Nm/msBWCZCrd
+	 pxDTFHr4wiNgpnZu/Kj17LAVwK+6nvpPZgLXodjaRRHgUEUFMCb/DijwI+Bb/8WtnE
+	 C0WfyQ/LHZ8s1PL0o1axUm+p7O+LNQwA83wlEtwhxXAvTeH072vh+OMkwmGBklJrGv
+	 MXollRy5sBRX0cMQarT9x8nGbTYZyGn8mB57RGKCUD+AFkW/ooZAcBAdYJRguW5IUl
+	 ZrW2Po7qioj3w==
+Date: Thu, 28 Mar 2024 17:57:51 +0800
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Pavan Holla <pholla@chromium.org>, abhishekpandit@chromium.org,
+	bleung@chromium.org, chrome-platform@lists.linux.dev,
+	gregkh@linuxfoundation.org, groeck@chromium.org,
+	heikki.krogerus@linux.intel.com, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] platform/chrome: cros_ec_ucsi: Implement UCSI PDC
+ driver
+Message-ID: <ZgU_H4zceFlQUz8f@google.com>
+References: <03e1941b-0c8a-450d-9b83-76260817d303@kernel.org>
+ <20240328023233.2568230-1-pholla@chromium.org>
+ <2357d78f-8879-41ca-b0e1-6593400252c8@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327220320.15509-1-l.rubusch@gmail.com> <20240327220320.15509-5-l.rubusch@gmail.com>
- <9ab1fc70-fd01-437b-9020-49618924ab30@linaro.org>
-In-Reply-To: <9ab1fc70-fd01-437b-9020-49618924ab30@linaro.org>
-From: Lothar Rubusch <l.rubusch@gmail.com>
-Date: Thu, 28 Mar 2024 10:57:43 +0100
-Message-ID: <CAFXKEHboRLGwLMKk19Az3gA2eYAZwbSKaZbFY=9U-8H915+r0Q@mail.gmail.com>
-Subject: Re: [PATCH v5 4/7] dt-bindings: iio: accel: adxl345: Add spi-3wire
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2357d78f-8879-41ca-b0e1-6593400252c8@kernel.org>
 
-On Thu, Mar 28, 2024 at 10:22=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 27/03/2024 23:03, Lothar Rubusch wrote:
-> > Add spi-3wire because the device allows to be configured for spi 3-wire
-> > communication.
-> >
-> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
->
-> I don't understand why after my last message you still ignore my
-> feedback, but fine. I'll ignore this patchset.
+On Thu, Mar 28, 2024 at 09:36:54AM +0100, Krzysztof Kozlowski wrote:
+> On 28/03/2024 03:32, Pavan Holla wrote:
+> > On Tue, Mar 26, 2024 at 9:59 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >>
+> >> On 27/03/2024 04:39, Pavan Holla wrote:
+> >>> Hi Krzysztof,
+> >>>
+> >>> Thanks for the review.
+> >>>
+> >>> On Tue, Mar 26, 2024 at 1:47 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >>>> Nothing improved.
+> >>>
+> >>> Yes. I only added maintainers of drivers/platform/chrome in v2. I am
+> >>> still investigating why MODULE_ALIAS() is required.
+> >>
+> >> Heh, I wrote why. You miss ID table.
+> > 
+> > This driver is going to be used by the cros_ec_dev.c MFD. The UCSI device doesn’t
+> > have an ACPI or OF entry, so I am not sure how I can use MODULE_DEVICE_TABLE
+> > here. If I don’t use MODULE_ALIAS(“platform:” DRV_NAME),
+> > https://elixir.bootlin.com/linux/latest/source/drivers/mfd/cros_ec_dev.c#L206
+> > isn’t able to automatically associate the driver with the device at boot.
+> > I haven’t upstreamed the change in cros_ec_dev.c yet, but the code is similar to
+> > existing code for drivers/platform/chrome/cros_usbpd_logger.c. There are many
+> > other occurrences of the same MODULE_ALIAS pattern:
+> 
+> Just open other platform drivers and look how it is done there. Or ask
+> colleagues. There is absolutely no one in entire Chromium/google who
+> ever wrote platform_driver? platform_driver has ID table for matching.
+> 
+> Otherwise how do you expect this to be matched? How your driver is being
+> matched and device bound? By fallback, right? So what is the primary method?
 
-This is sad. I refrased the comment to the patch and tried to stress
-more on the device instead of the driver. Wasn't this the point of
-your criticism to the patch?
+Those platform devices are adding in drivers/mfd/cros_ec_dev.c via
+mfd_add_hotplug_devices().
 
-So, instead of answering to your last email, I posted the modified
-patch as answer. I think I considered your feedback to the best of my
-understanding. I'm sorry, it is certainly not my intention to ignore
-you. I appreciate your direct feedback.
+By looking other use cases of mfd_add_hotplug_devices():
+$ grep -R --files-with-matches mfd_add_hotplug_devices drivers/mfd/
+drivers/mfd/dln2.c
+drivers/mfd/cros_ec_dev.c
+drivers/mfd/viperboard.c
 
-I'll write an answer to the last email right away.
+They also have no ID tables and need MODULE_ALIAS().
+- drivers/gpio/gpio-dln2.c
+- drivers/i2c/busses/i2c-dln2.c
+- drivers/spi/spi-dln2.c
+- drivers/iio/adc/dln2-adc.c
+- drivers/gpio/gpio-viperboard.c
+- drivers/i2c/busses/i2c-viperboard.c
+- drivers/iio/adc/viperboard_adc.c
 
-> Best regards,
-> Krzysztof
->
+I'm not sure whether using the path results in:
+- Lack of device ID table.
+- Need MODULE_ALIAS().
+in the platform device drivers.  And perhaps it relies on the fallback match?
 
