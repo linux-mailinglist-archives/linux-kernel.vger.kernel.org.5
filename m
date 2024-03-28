@@ -1,110 +1,131 @@
-Return-Path: <linux-kernel+bounces-122314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76DF688F504
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C29888F506
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6E921C29242
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:59:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D5661C29B14
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C2F24B2F;
-	Thu, 28 Mar 2024 01:59:50 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364762374E;
+	Thu, 28 Mar 2024 02:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NMHsrQEE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8708E22618;
-	Thu, 28 Mar 2024 01:59:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A8323773
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711591190; cv=none; b=iv6OcEtcyeU2MCUWEZPF7sl7XqAquBFp81ALRCGVfjz71mp0CpHJbvDV/6TumViSOdDUPWR4jZiguV/rHiN8Edfhsv9o83iwoPYAVPWvavbCvw8ITd7JBq0TqAMnYkcghaTkFyt8tgpfiNVw38nSEqZpUE81RpS6KlyDjuOr9Ak=
+	t=1711591214; cv=none; b=c8SOOrPMzRQe8LNYXAKUifAAX/l/1pgkdZjXGFW2DXR2G5wuYWb60L4jk5cvzuIf90rqJvuNuA10O5ee/hFlPTTDeavJFFLVZVrrb2A4jotcGhrCadJ/CQpjv1fzUIq0Wfb8CKxIsaJtT0w/HHxlgkEQIYAop1jOzlgYTe61oDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711591190; c=relaxed/simple;
-	bh=CaFAYNasP3QvvTHntEwDpAEI0ipNZngQgZKNvavFEa0=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ZN00edYMeBwBKJ6lDTLMOdlAyfDV/VOvVL9k9Ddpba5tQYhk52ENNUSJgaDTZlfAy8O2SUZxtnhC2dLQ1mO9dFtFYz3U7W4O9ko8QbMrCg1ezwSOtfALyNilmxUOpWeuvGZWXNRSQ3bsM6c/rtQ0WMaGgCCsq5NQNb1E1tIdD5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V4mtt6YWLz4f3kkc;
-	Thu, 28 Mar 2024 09:59:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F381F1A0E41;
-	Thu, 28 Mar 2024 09:59:38 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP1 (Coremail) with SMTP id cCh0CgD3EQsIzwRmGgktIQ--.20517S2;
-	Thu, 28 Mar 2024 09:59:37 +0800 (CST)
-Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: willy@infradead.org, jack@suse.cz, bfoster@redhat.com, tj@kernel.org,
- dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <20240327104010.73d1180fbabe586f9e3f7bd2@linux-foundation.org>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <05bae65c-99fa-34f2-43e6-9a16f7d1ddc7@huaweicloud.com>
-Date: Thu, 28 Mar 2024 09:59:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1711591214; c=relaxed/simple;
+	bh=WO6HUfry9BHwXmmmaocg9kjEOnGz8Oiuy+GYJJcQtWs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xq9f6R4YMiasOzWHFgh/vLFsor7wysreIxJtkMrNQzhErsqMVXj9JAJswfl31ikpWbKMQj9nl6bEEj4HMSfgF+mBKs2ea+fHyM83fsMIX1bGBHAX8Pg6FyP+Eg96EDsWi2rZnpXROv+X0cp2njXQ2MUIDt8TrN6nqKuksY14COQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NMHsrQEE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711591211;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p5nqKfv3v+biAgyqBmGEVEdrEDuJ1P9xCB6+AquGT5s=;
+	b=NMHsrQEE0fWperfC1HUByBgDhE04bwxrTe/Ci06QG1ijt3FHh6Vs1L7htbajOdqMzhM/y7
+	+LEtuWWVazHiSiQ2FCDmuB5t3qhVGGoP5l1eO3bLPbfWaUZuvdbeL/QeHwiA6FTLAX14qy
+	3DD5ddeLsqpRu7TlBWIHbplo88+Md3g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-298-daDXQqzoMI2v4zX4q8y23g-1; Wed, 27 Mar 2024 22:00:01 -0400
+X-MC-Unique: daDXQqzoMI2v4zX4q8y23g-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9FCE3879849;
+	Thu, 28 Mar 2024 02:00:00 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C08F9492BD0;
+	Thu, 28 Mar 2024 01:59:59 +0000 (UTC)
+Date: Thu, 28 Mar 2024 09:59:52 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the mm tree
+Message-ID: <ZgTPGJamrN+nJsfr@MiWiFi-R3L-srv>
+References: <20240328091337.03421187@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240327104010.73d1180fbabe586f9e3f7bd2@linux-foundation.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgD3EQsIzwRmGgktIQ--.20517S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrur4rZrWUtF43Xr4kZw4kXrb_yoW8Jryfpa
-	95Ga1Ykr17AF4rJan7CF12kw15X3ZxKFy7X39rJw1fJFWY9a4Y9rs293yFg3WfZ397Kryj
-	qan3WFyvv3WjkrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUOyCJDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328091337.03421187@canb.auug.org.au>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
+On 03/28/24 at 09:13am, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the mm tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+> 
+> mm/page_alloc.c: In function 'build_zonelists':
+> mm/page_alloc.c:5324:13: warning: unused variable 'node' [-Wunused-variable]
+>  5324 |         int node, local_node;
+>       |             ^~~~
+> 
+> Introduced by commit
+> 
+>   95d0185255a3 ("mm/page_alloc.c: remove unneeded codes in !NUMA version of build_zonelists()")
+> 
+> from the mm-unstable branch of the mm tree.
 
-on 3/28/2024 1:40 AM, Andrew Morton wrote:
-> On Wed, 27 Mar 2024 23:57:45 +0800 Kemeng Shi <shikemeng@huaweicloud.com> wrote:
-> 
->> This series tries to improve visilibity of writeback.
-> 
-> Well...  why?  Is anyone usefully using the existing instrumentation? 
-> What is to be gained by expanding it further?  What is the case for
-> adding this code?
-> 
-> I don't recall hearing of anyone using the existing debug
-> instrumentation so perhaps we should remove it!
-Hi Andrew, this was discussed in [1]. In short, I use the
-debug files to test change in submit patchset [1]. The
-wb_monitor.py is suggested by Tejun in [2] to improve
-visibility of writeback.
-I use the debug files to test change in [1]. The wb_monitor.py is suggested by Tejun
-in [2] to improve visibility of writeback.
-> 
-> Also, I hit a build error and a pile of warnings with an arm
-> allnoconfig build.
-> 
-Sorry for this, I only tested on x86. I will look into this and
-fix the build problem in next version.
+Thanks. Below code change has been queued on mm-unstable branch to fix it.
 
-[1] https://lore.kernel.org/lkml/44e3b910-8b52-5583-f8a9-37105bf5e5b6@huaweicloud.com/
-[2] https://lore.kernel.org/lkml/a747dc7d-f24a-08bd-d969-d3fb35e151b7@huaweicloud.com/
-[3] https://lore.kernel.org/lkml/ZcUsOb_fyvYr-zZ-@slm.duckdns.org/
+From 6bb5aa700a6221248df150cba3d9c54cd95bed97 Mon Sep 17 00:00:00 2001
+From: Baoquan He <bhe@redhat.com>
+Date: Wed, 27 Mar 2024 20:06:45 +0800
+Subject: [PATCH] 
+ mm-page_allocc-remove-unneeded-codes-in-numa-version-of-build_zonelists-v2
+Content-type: text/plain
+
+remove unused locals
+
+Link: https://lkml.kernel.org/r/ZgQL1WOf9K88nLpQ@MiWiFi-R3L-srv
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/page_alloc.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index a4f6b5f308ea..9c591413ca04 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5285,12 +5285,9 @@ static void setup_min_slab_ratio(void);
+ 
+ static void build_zonelists(pg_data_t *pgdat)
+ {
+-	int node, local_node;
+ 	struct zoneref *zonerefs;
+ 	int nr_zones;
+ 
+-	local_node = pgdat->node_id;
+-
+ 	zonerefs = pgdat->node_zonelists[ZONELIST_FALLBACK]._zonerefs;
+ 	nr_zones = build_zonerefs_node(pgdat, zonerefs);
+ 	zonerefs += nr_zones;
+-- 
+2.41.0
 
 
