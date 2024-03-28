@@ -1,155 +1,154 @@
-Return-Path: <linux-kernel+bounces-123780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C92890DAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:36:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87019890DB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F23151F27A90
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:36:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 273181F27B73
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581E12C19D;
-	Thu, 28 Mar 2024 22:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K9BSxo05"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41C0383AC;
+	Thu, 28 Mar 2024 22:36:24 +0000 (UTC)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123881D68F
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:36:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A8932C89;
+	Thu, 28 Mar 2024 22:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711665379; cv=none; b=FpoS/pp/RBYi87lFt7yIz7O4ml6OQoWuwXCEtGUU5DFQSVFIzn7Bp59TcYzlK3CMTmc/NX+EZ5unzV32Huu7oeaS/wpTjN5aBwHjnHH+i2oRqWYJrF2porZ2ihu6bIFgbXl4f5sjukPJMgb6YHWAQ+B3t7fyF5pEGi7o4J4lmcs=
+	t=1711665384; cv=none; b=aSy1KMHFd+wHWMAnKqcm4b2QloBzFJfOQ6T3DrPub6uFc1agRFc23G6/jMMKqPZUVYHj3Ev9HRoCIXTZt+r/yYj2AIEWsp6OPwhE9K7LnHpQqZlNt7S1kqRbaTtAmsdp97OJUP38vHbv5Dzjvm1l6CVXTSZPaWL61dUulbGP9wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711665379; c=relaxed/simple;
-	bh=DyXMPntpHzTM8gI5S4nIpWoHbAT9e7zLas+AdBIkAVQ=;
+	s=arc-20240116; t=1711665384; c=relaxed/simple;
+	bh=gj2wLdswjPOOndy4D8/Kdw2o0gqtcmzQErV30pF7frk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PL28dbwzuvSvRfm+/qvM2znjSlirY3zSR3CmOIImvvDTrFC6NqLAisPM+5c0A+dY7ScvZKJ2ApohNptDybBwg5JdPnnbXmkHhCW7a1jDdgmsw6A5z4h/k/RhLSmLkeWXoHI3WsVkEu4hg2AJsengJEwOzRHOPypGjwMOa0s6Ceo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K9BSxo05; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc74435c428so1527987276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711665377; x=1712270177; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LjY+wgOUFRoXu57CnEBA1CkVg+Yjx2wYh83Heq0qxKg=;
-        b=K9BSxo05EwMlWixUhBUNSqQmHk5Vojr2loqHQi4pHNw0Ig6ZAz+k22xIbN79g/8bWW
-         uRGTROIpkGu0ywMRdUbPJGCzFVQYHyJx3wyezBJG3mFxsF+uBNvekrGN662L56frIUOd
-         jyp8qcAjKRDoSZHGzCB4Gb7GKn0CH0hszQGJr01HDZ/D5gFwuJc+DrSybP8xTmpejCZU
-         aR+AyMc6SK6NS7vS54cZzokfZGgvGPR9b6Li4GUQHrGzLY0TI+cdG68VLmnhmdWmae8p
-         9UeGfiuURjLANYIdS5liHV9em0GnGyb5eUK0QeaLGDfYHmHZHFk3vZHMAuMQbLUpheUh
-         3Ubg==
+	 To:Cc:Content-Type; b=BqBZc0njxaAhBZhrYEMwy9uz7nc2EnclIu+sIO0aoA/x5713KSWFf7AP+OGNE817VCmzyuXuhNay5zgtn9PyPRat1Q4akkpBqdx238fmFSnLRjMiFemJk26h9gAKOlO8+OkP5I/2mkzWvEBQwEP7/ACQBKtmHidAN4v1we4lUEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515caffe2bcso779418e87.0;
+        Thu, 28 Mar 2024 15:36:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711665377; x=1712270177;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LjY+wgOUFRoXu57CnEBA1CkVg+Yjx2wYh83Heq0qxKg=;
-        b=QfxbEKdcB7cXml81Bnt2xD1kLe1OI6ISZ5RujpKXhtQHIqcGWulL2Tp469d0ktSijA
-         WRP9l3u73zYUFamxVeiSF+ss/kKkd8huE2Ln4+VlIXQQVBH+WhI7jmo7y1ogdPtl5K4E
-         w+xPu7UiEDIFajARaeCbgs0rLTTK7IV9+U7Na5o2/TMImvOGSb2Kt0oc/tBWsH+w3DLN
-         S4CQMy2X7QyouqQY7muE/QHqDrAfWnyxqwJO0p1baD985QgLL5Xj+IsUrAdmbNIKUH2J
-         Hg8oV28TbWH+Sr5uOThIme7fqLwU18KvI4OCek3gyezm0WY8RMhVBpEVJ9kdvfRvCYPR
-         HBQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVnhat7ObKEpphzYVKiuTIOeiBn7JwcfS5dt/QJexLFhiz63Pb416507rGzcuawqaKHwozS5WTF0rAy4YMpx6ky8FYSsrK1Fy7wsInY
-X-Gm-Message-State: AOJu0YzbRVNiOMtxirsIGPy7+BjSgr+6b7VxTEnF5l7Wk7yGBes7CpjP
-	7c0VlC9FIcWZs+Wa0IkJYefOFmK4GgYmp3SnDKjlDUDOopnku964mg+cvI12ZRY7meS/xL0L7Sa
-	MGBei5Ji59Jj72o410sYZ2y5pU+Cae+Z6micRFg==
-X-Google-Smtp-Source: AGHT+IHaI+kjiLOUYNKBR/srDk7VFG1X/iL9Lyrl5XxlS/w0akawROX6LC6YYP28982DF251YeuCQALSFyoyvb3mAX4=
-X-Received: by 2002:a5b:183:0:b0:dcd:24b6:1ae7 with SMTP id
- r3-20020a5b0183000000b00dcd24b61ae7mr643047ybl.63.1711665377097; Thu, 28 Mar
- 2024 15:36:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711665380; x=1712270180;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dyCAY2qw35sgCbOx8eCrICiPTagVb1iTRuM2XaxYdj4=;
+        b=WGhWDLCGBm1IV4wE4sUBXhk2T936WQQ09AnOVJez4MroYjFGvXgF0lxlYqdHw0VFyB
+         EVrG2G+cjtPWze6h4MnLdXr1rVidA0UGHEUZxBU+2EcwX228m3nmAgHKy4MaaFR+/QqW
+         snEk+2gaMbDY9O8Hu8q+qe/56v4OCssm9jmNrPd/xJR1CnSEyeXx2ePmK1JGqHPX4+y8
+         6f5/mc+nzEOvGQICPy7ICK4MqaFKxVd8QMsIH8IKA5TjShsqN9vksQ82qQ1BT1yL/z/l
+         EJzloLyEQzE2idHIkI6pnJVqMgye94GfdoSKibqyhFA7Zkyft1Hidl9jiB50ksEh7l69
+         Xg+A==
+X-Forwarded-Encrypted: i=1; AJvYcCX/gtQgP0e9Ysp+5QafLbYIADNVNnW3Wdn7kvFuKzAQnGGqAGUwTSBpTvRJe3xIYR4wpnzY0ztlNxYKA9N2DpNbBrziCKF/FRKkLKY4
+X-Gm-Message-State: AOJu0YwekdTsBpf2EKQz7xISJ0M9FjXM995dkRQpaE+Pt3ICU2fNI53d
+	iO5g1IsKpYl+kH91CYSGRA8Jo0dlopi47MmDg/kXr2m0OikO+7fsvhxk6JwU
+X-Google-Smtp-Source: AGHT+IFmTgmyxdYwbz6b3GR+1vUcgLhP4Z/3hfmPAaXWrK7zxfx88bQCeyk+KZEhZIXh6nrGosVRMw==
+X-Received: by 2002:ac2:44c1:0:b0:513:e21:2a64 with SMTP id d1-20020ac244c1000000b005130e212a64mr420323lfm.31.1711665379474;
+        Thu, 28 Mar 2024 15:36:19 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id e5-20020a1709061e8500b00a4e07760215sm1222580ejj.69.2024.03.28.15.36.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 15:36:19 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso195185366b.1;
+        Thu, 28 Mar 2024 15:36:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWrRyX73iL8o/HJA6LieZHuQntQ5fEyHlRowEVdE0hwqtlmmQ0qoAhq6Y5yrRTKHpfUSWpxWehGRuZ1VS3NC8iL2W+Tc4EkaQbUpGtw
+X-Received: by 2002:a17:906:2813:b0:a47:4b39:ba1c with SMTP id
+ r19-20020a170906281300b00a474b39ba1cmr308203ejc.39.1711665379110; Thu, 28 Mar
+ 2024 15:36:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1711660035-9656-1-git-send-email-quic_khsieh@quicinc.com> <6641b5c9-1685-3d90-ac15-0b2e9d546bc5@quicinc.com>
-In-Reply-To: <6641b5c9-1685-3d90-ac15-0b2e9d546bc5@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 29 Mar 2024 00:36:06 +0200
-Message-ID: <CAA8EJpoXgtodevy_AHGRR8o3yB08dK1oeHdWUrnx13rsYgY=Dg@mail.gmail.com>
-Subject: Re: [PATCH v1] phy/qcom-qmp-combo: propagate correct return value at phy_power_on()
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>, dri-devel@lists.freedesktop.org, 
-	robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org, 
-	dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com, 
-	agross@kernel.org, abel.vesa@linaro.org, andersson@kernel.org, 
-	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com, 
-	marijn.suijten@somainline.org, freedreno@lists.freedesktop.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <a144b96b-6ec4-4a62-b2ab-1ed631d81544@linux.intel.com> <20240328161831.GA1568357@bhelgaas>
+In-Reply-To: <20240328161831.GA1568357@bhelgaas>
+Reply-To: sathyanarayanan.kuppuswamy@linux.intel.com
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Date: Thu, 28 Mar 2024 15:36:07 -0700
+X-Gmail-Original-Message-ID: <CAC41dw-wZ7eM_y5AkwW3F4dJiHYuR3YSWwap5M7FVB_fZAkg=w@mail.gmail.com>
+Message-ID: <CAC41dw-wZ7eM_y5AkwW3F4dJiHYuR3YSWwap5M7FVB_fZAkg=w@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Update pci_find_capability() stub return values
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bjorn Helgaas <bhelgaas@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 28 Mar 2024 at 23:36, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 3/28/2024 2:07 PM, Kuogee Hsieh wrote:
-> > Currently qmp_combo_dp_power_on() always return 0 in regardless of
-> > return value of cfg->configure_dp_phy(). This patch propagate
-> > return value of cfg->configure_dp_phy() all the way back to caller.
-> >
->
-> This is good. But I am also thinking if we should add some prints in
-> this driver like it doesnt even tell where it failed like here
->
->
->          ret = qmp_v456_configure_dp_phy(qmp);
->          if (ret < 0)
->                  return ret;
->
-> > Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> > ---
-> >   drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 5 +++--
-> >   1 file changed, 3 insertions(+), 2 deletions(-)
-> >
->
-> Also, I think we should have
->
-> Fixes: 94a407cc17a4 ("phy: qcom-qmp: create copies of QMP PHY driver")
->
-> If there is a better fixes tag for this, please let me know.
+Hi,
 
-Fixes: 52e013d0bffa ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy")
-
-Otherwise LGTM
-
+On Thu, Mar 28, 2024 at 9:18=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
+wrote:
 >
-> > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> > index 36632fa..884973a 100644
-> > --- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> > +++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> > @@ -2754,6 +2754,7 @@ static int qmp_combo_dp_power_on(struct phy *phy)
-> >       const struct qmp_phy_cfg *cfg = qmp->cfg;
-> >       void __iomem *tx = qmp->dp_tx;
-> >       void __iomem *tx2 = qmp->dp_tx2;
-> > +     int ret = 0;
+> On Wed, Mar 27, 2024 at 02:49:34PM -0700, Kuppuswamy Sathyanarayanan wrot=
+e:
+> > On 3/27/24 11:02 AM, Bjorn Helgaas wrote:
+> > > From: Bjorn Helgaas <bhelgaas@google.com>
+> > >
+> > > f646c2a0a668 ("PCI: Return u8 from pci_find_capability() and similar"=
+) and
+> > > ee8b1c478a9f ("PCI: Return u16 from pci_find_ext_capability() and sim=
+ilar")
+> > > updated the return type of the extern declarations, but neglected to =
+update
+> > > the type of the stubs used CONFIG_PCI is not enabled.
+> > >
+> > > Update them to match the extern declarations.
+> > >
+> > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > ---
 > >
-> >       mutex_lock(&qmp->phy_mutex);
+> > This change looks fine to me.
 > >
-> > @@ -2766,11 +2767,11 @@ static int qmp_combo_dp_power_on(struct phy *phy)
-> >       cfg->configure_dp_tx(qmp);
-> >
-> >       /* Configure link rate, swing, etc. */
-> > -     cfg->configure_dp_phy(qmp);
-> > +     ret = cfg->configure_dp_phy(qmp);
-> >
-> >       mutex_unlock(&qmp->phy_mutex);
-> >
-> > -     return 0;
-> > +     return ret;
-> >   }
-> >
-> >   static int qmp_combo_dp_power_off(struct phy *phy)
+> > Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@lin=
+ux.intel.com>
+>
+> Thanks for reviewing it!
+>
+> > But the callers of these functions still seems to use int
+> > declaration to store the output. Any reason for not changing them?
+> > Like the usages in drivers/pci/pci.c?
+>
+> This patch is just to make the extern declarations match the stubs.
+>
+> No particular reason not to change users other than I didn't want to
+> change the users before the declarations (to avoid warnings about
+> assigning an int to a u8 or u16), and there's not a lot of value in
+> changing local variables, where an int is just on the stack and works
+> fine.
+>
+> Changing stored values in a struct would have more benefit.  I took a
+> quick look and found these possibilities:
+>
 
+Agree. Thanks for clarifying it.
 
-
--- 
-With best wishes
-Dmitry
+>   struct controller.cap_offset (drivers/pci/hotplug/shpchp.h SHPC cap)
+>   struct pci_sriov.pos (drivers/pci/pci.h SR-IOV ext cap)
+>   struct altera_pcie_data.cap_offset (drivers/pci/controller/pcie-altera.=
+c PCIe cap)
+>
+>   struct tg3.msi_cap (broadcom/tg3.h MSI cap)
+>   struct tg3.pcix_cap (broadcom/tg3.h PCI-X cap)
+>   struct bnx2.pm_cap (broadcom/bnx2.h PM cap)
+>   struct bnx2.pcix_cap (broadcom/bnx2.h PCI-X cap)
+>   struct bnx2x_sriov.cap (broadcom/bnx2x/bnx2x_sriov.h SR-IOV ext cap)
+>   struct amd8111e_priv.pm_cap (amd/amd8111e.c, removed [1])
+>   struct pci_params.pm_cap (qlogic/qed/qed.h, removed [2])
+>   struct qed_hw_sriov_info.cap (qlogic/qed/qed_sriov.h SR-IOV ext cap)
+>   struct eeh_dev.pcix_cap (powerpc/include/asm/eeh.h PCI-X cap)
+>   struct eeh_dev.pcie_cap (powerpc/include/asm/eeh.h PCIe cap)
+>   struct eeh_dev.aer_cap (powerpc/include/asm/eeh.h AER ext cap)
+>   struct eeh_dev.af_cap (powerpc/include/asm/eeh.h AF cap)
+>   struct icm.vnd_cap (drivers/thunderbolt/icm.c VNDR ext cap)
+>
+> [1] https://lore.kernel.org/all/20240325220633.1453180-1-helgaas@kernel.o=
+rg/
+> [2] https://lore.kernel.org/all/20240325224931.1462051-1-helgaas@kernel.o=
+rg/
+>
+> Bjorn
 
