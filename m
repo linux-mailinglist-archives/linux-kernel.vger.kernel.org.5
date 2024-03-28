@@ -1,131 +1,186 @@
-Return-Path: <linux-kernel+bounces-122744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532BE88FC68
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:06:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD64288FC7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E88CFB23199
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:06:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 443BF1F2381F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6277BB01;
-	Thu, 28 Mar 2024 10:06:30 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B897CF17;
+	Thu, 28 Mar 2024 10:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="kuMfx8bc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E7CyJ3/s"
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8EB5FBA7;
-	Thu, 28 Mar 2024 10:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A118C53E28;
+	Thu, 28 Mar 2024 10:09:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711620390; cv=none; b=GnQVB2JLD7ktMJbuy3UbNpVvyYQf7FJdbtIRxEyhBhMbl7UBWgL3exSC7EuuXwhB5cuvEGqqyvQJEQueyz03Jqfff8nlZo0gnj3dCjtUJT8kj1bTLqPlKb7SzxMp9wxAeSWysYa4+yikvE70PUi5VLn1LkGnIWTFg2yMWRkYG2c=
+	t=1711620553; cv=none; b=EnaqEe2QUFIs8TC+WICkGDZbH4V8VpB9vOelr1DsNs9YtqAYOAIa/mBICx9YxJiwnEsxPvQS5vlFEWVUmlAvKQsRXykysudS9WqM7sEUZDvolOSPnv30jAG5PYAtHA2x8d5p0M4iPkY+BywZmg8+n+hp/he8ZVLTlPQr3XoCr1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711620390; c=relaxed/simple;
-	bh=KoV9EWm2WP6vyCwUzJIAVOD/ptSRjz9hScW/LbJkF6c=;
-	h=From:Subject:To:CC:Message-ID:Date:MIME-Version:Content-Type; b=Eowvsnf6bf9sQXhQqUzgpUx+hGIwxQBl4Ei7Q5U9cA3i0OVdeAny0GxCjc8YOFSsotrWFmIQBKaTPsr4jjSQJdvkPFB21LlkBsWf0QtESw5Kigij3yqw/drorsdEU+/sckS+ro3fC7+sStGRSnhtV5G7PvuUXjO3g3CzHBp/c9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V4zdW1KYMz1h4G7;
-	Thu, 28 Mar 2024 18:03:43 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5FFE31A016C;
-	Thu, 28 Mar 2024 18:06:23 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Mar 2024 18:06:22 +0800
-From: Zenghui Yu <yuzenghui@huawei.com>
-Subject: [report] WARN_ON_ONCE triggered in for_each_sibling_event()
-To: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-	<namhyung@kernel.org>, <mark.rutland@arm.com>, <will@kernel.org>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<irogers@google.com>, <adrian.hunter@intel.com>,
-	<wanghaibin.wang@huawei.com>, <linux-arm-kernel@lists.infradead.org>
-Message-ID: <d4491035-9f9c-d3c2-bd26-a5133d8233fe@huawei.com>
-Date: Thu, 28 Mar 2024 18:06:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+	s=arc-20240116; t=1711620553; c=relaxed/simple;
+	bh=rjRj8lT9t8c0kTmFFh6anVK23ZDO/NaAc4KKhIVP/Dg=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=pgza2ybZzsFYyiDRMB00k8z+4gp+4nQ1/S3jErV3GuJ8R3SVhCGZn6iVeaacnIEWLdEE88n1HW1qqaHtFNDNDsP2T97nvLBlcTVTE6YnPn5VsxT50sYycS3D4MZCd64kB66n5ZcCtiHH575KJwjfztDT1XdLN/SnYNC1oghyDb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=kuMfx8bc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=E7CyJ3/s; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 93C1413800CC;
+	Thu, 28 Mar 2024 06:09:10 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 28 Mar 2024 06:09:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1711620550; x=1711706950; bh=pYBjGEQadh
+	25rkMc0fkoc5Y7p79L1tP3xKDkS0IogRA=; b=kuMfx8bc1R4WUipcKL3tIzF3N4
+	t3zOBlcnNWDIjDe7ipHZ2vdT8gjFEPI1e+ODQbTkh7dUk5LNLdH719riG/7S23u9
+	309OowkR1D0rX5rjd1oDDkcNZe/zfRVVl/h7s7JfZ0aDU1bPjSm0hIEnzbFG9z5d
+	fZQs/LIhA7ZaDgthlMZZPByr7T+nIaqNafh0zRk/d9JNzTnIwNM75wPeatuGsvJu
+	Vq9S8uOTkkaEMlwp3RXo+JBYMzLwFYLCKo/A1UzzbQWuBCuXekHkJzt6XPQ8TNq0
+	tQYhv/S7h0++y+XLR2ohIzKvK/W4GKBW0sO7O0tHfshYhs7bYX0yHfgvb/2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711620550; x=1711706950; bh=pYBjGEQadh25rkMc0fkoc5Y7p79L
+	1tP3xKDkS0IogRA=; b=E7CyJ3/sS3/gu76u1633stL9057wQIWYvG9vs6NHo239
+	7KFVH5M+YFwRBpbadfOh0IrOE9j4E7XE2sRBAIPKToAbDSVOK/ax1a0sOrbNo1ee
+	HE2lX3ra68I5G6+wDY65qsdnqLej3HDSJFNyvB6/pL9He2U4fdOMxGYaZ0mva4gx
+	tJF6Lfvk2fEXAm0uFD9oIE3EiQrZhWq8TW2d9nb3vmsns61RTvDrPIxeT4GFvMi/
+	wMG6FliHZtmYgvC6R+hGoAU23GBHUBuECiPfrHriLa5i6tczRd0gr63KSOr/UuG+
+	wWszyTwz22LUBqLfZhgf0rb6euQgm1MTKFDblo6DTg==
+X-ME-Sender: <xms:xEEFZolFPnT81Y-rndenCatO24lANcXwvUAv5AbEcS6B-fVcESzGpg>
+    <xme:xEEFZn3NPqHUVb1AhRyUqb5lXl84u2sw1P5dnDZdhqRie4xQImtwjSJc52BIh0l55
+    tLPsrk9hiHSfeAkQ-U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduledgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:xEEFZmok-OCemU4JAF5NU7jOeDZ0210zw_dLM7C15bHf57_OfZn3fQ>
+    <xmx:xEEFZkkp-nxlq4w1XAeOI--fNjf8CgUJC5qdXlw0QOLYa6255LvI2g>
+    <xmx:xEEFZm3uKpGPWEVtVjuP0m1GHYswkywEhk7aH97h7ry4lumVs3mO8w>
+    <xmx:xEEFZrsO4DTwAwnWN8Y9emNtvmcbBvklHjtDyl9-an0DJHfoFqkixQ>
+    <xmx:xkEFZk17tDydakQ4cViz-gWKfkvwjCrZ3ZRO6zwIJ5CzvibKhGcP5g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id E6410B6008D; Thu, 28 Mar 2024 06:09:07 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+Message-Id: <2e9257af-c123-406b-a189-eaebeecc1d71@app.fastmail.com>
+In-Reply-To: <ZgUGXTKPVhrA1tam@matsya>
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-3-apais@linux.microsoft.com> <ZgUGXTKPVhrA1tam@matsya>
+Date: Thu, 28 Mar 2024 11:08:47 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Vinod Koul" <vkoul@kernel.org>, "Allen Pais" <apais@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, "Tejun Heo" <tj@kernel.org>,
+ "Kees Cook" <keescook@chromium.org>, "Hector Martin" <marcan@marcan.st>,
+ "Sven Peter" <sven@svenpeter.dev>,
+ "Florian Fainelli" <florian.fainelli@broadcom.com>,
+ "Ray Jui" <rjui@broadcom.com>, "Scott Branden" <sbranden@broadcom.com>,
+ "Paul Cercueil" <paul@crapouillou.net>, Eugeniy.Paltsev@synopsys.com,
+ "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>,
+ "Viresh Kumar" <vireshk@kernel.org>, "Frank Li" <Frank.Li@nxp.com>,
+ "Leo Li" <leoyang.li@nxp.com>, zw@zh-kernel.org,
+ "Zhou Wang" <wangzhou1@hisilicon.com>, haijie1@huawei.com,
+ "Shawn Guo" <shawnguo@kernel.org>,
+ "Sascha Hauer" <s.hauer@pengutronix.de>,
+ "Sean Wang" <sean.wang@mediatek.com>,
+ "Matthias Brugger" <matthias.bgg@gmail.com>,
+ "AngeloGioacchino Del Regno" <angelogioacchino.delregno@collabora.com>,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, logang@deltatee.com,
+ "Daniel Mack" <daniel@zonque.org>,
+ "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Bjorn Andersson" <andersson@kernel.org>,
+ "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+ "Orson Zhai" <orsonzhai@gmail.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Chunyan Zhang" <zhang.lyra@gmail.com>,
+ "Patrice Chotard" <patrice.chotard@foss.st.com>,
+ "Linus Walleij" <linus.walleij@linaro.org>,
+ "Chen-Yu Tsai" <wens@csie.org>,
+ "Jernej Skrabec" <jernej.skrabec@gmail.com>, peter.ujfalusi@gmail.com,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ "Haiyang Zhang" <haiyangz@microsoft.com>, "Wei Liu" <wei.liu@kernel.org>,
+ "Dexuan Cui" <decui@microsoft.com>,
+ "Jassi Brar" <jassisinghbrar@gmail.com>,
+ "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+ maintainers@bluecherrydvr.com, aubin.constans@microchip.com,
+ "Ulf Hansson" <ulf.hansson@linaro.org>,
+ "Manuel Lauss" <manuel.lauss@gmail.com>,
+ =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+ "jh80.chung" <jh80.chung@samsung.com>, oakad@yahoo.com,
+ "Kunihiko Hayashi" <hayashi.kunihiko@socionext.com>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>, brucechang@via.com.tw,
+ HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr,
+ "Alan Stern" <stern@rowland.harvard.edu>,
+ "Oliver Neukum" <oneukum@suse.com>,
+ openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
+ asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+ linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-media@vger.kernel.org,
+ "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ linux-s390@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/9] dma: Convert from tasklet to BH workqueue
+Content-Type: text/plain
 
-Hi folks,
+On Thu, Mar 28, 2024, at 06:55, Vinod Koul wrote:
+> On 27-03-24, 16:03, Allen Pais wrote:
+>> The only generic interface to execute asynchronously in the BH context is
+>> tasklet; however, it's marked deprecated and has some design flaws. To
+>> replace tasklets, BH workqueue support was recently added. A BH workqueue
+>> behaves similarly to regular workqueues except that the queued work items
+>> are executed in the BH context.
+>
+> Thanks for conversion, am happy with BH alternative as it helps in
+> dmaengine where we need shortest possible time between tasklet and
+> interrupt handling to maximize dma performance
 
-The following splat is triggered when I execute `perf stat -e
-smmuv3_pmcg_100020/config_cache_miss/` on mainline kernel (built with
-arm64-defconfig + PROVE_LOCKING).
+I still feel that we want something different for dmaengine,
+at least in the long run. As we have discussed in the past,
+the tasklet context in these drivers is what the callbacks
+from the dma client device is run in, and a lot of these probably
+want something other than tasklet context, e.g. just call
+complete() on a client-provided completion structure.
 
-| ------------[ cut here ]------------
-| WARNING: CPU: 36 PID: 72452 at drivers/perf/arm_smmuv3_pmu.c:434 
-smmu_pmu_event_init+0x298/0x2b0 [arm_smmuv3_pmu]
-| Modules linked in: xt_MASQUERADE iptable_nat xt_addrtype xt_conntrack 
-nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c overlay 
-ip6table_filter ip6_tables xt_tcpudp iptable_filter ip_tables x_tables 
-md_mod arm_smmuv3_pmu hibmc_drm drm_vram_helper drm_ttm_helper ttm 
-drm_kms_helper spi_dw_mmio spi_dw fuse drm backlight crct10dif_ce 
-onboard_usb_hub xhci_pci xhci_pci_renesas hisi_sec2 hisi_qm uacce 
-authenc ipmi_si ipmi_devintf ipmi_msghandler dm_mod br_netfilter bridge 
-stp llc nvme nvme_core nbd ipv6
-| CPU: 36 PID: 72452 Comm: perf Kdump: loaded Not tainted 
-6.9.0-rc1-00061-g8d025e2092e2-dirty #1700
-| Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.05 09/18/2019
-| pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-| pc : smmu_pmu_event_init+0x298/0x2b0 [arm_smmuv3_pmu]
-| lr : smmu_pmu_event_init+0x290/0x2b0 [arm_smmuv3_pmu]
-| sp : ffff8000c8ce3be0
-| x29: ffff8000c8ce3be0 x28: 0000000000000000 x27: ffff8000802a2c1c
-| x26: ffff8000c8ce3d70 x25: ffff8000802a2bc8 x24: 0000000000000000
-| x23: 0000000000000001 x22: ffff0028045d52b0 x21: ffff002807228168
-| x20: 0000000000000002 x19: ffff002807228000 x18: 0000000000000000
-| x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-| x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000040
-| x11: ffff0020804016d0 x10: ffff0020804016d2 x9 : ffff800083b29b18
-| x8 : ffff0020804016f8 x7 : 0000000000000000 x6 : ffff0020804018c0
-| x5 : ffff0020804016d0 x4 : ffff80007bf07a58 x3 : 0000000000000002
-| x2 : ffff802f5db37000 x1 : 0000000000000000 x0 : 0000000000000000
-| Call trace:
-|  smmu_pmu_event_init+0x298/0x2b0 [arm_smmuv3_pmu]
-|  perf_try_init_event+0x54/0x140|  perf_event_alloc+0x3e4/0x1080
-|  __do_sys_perf_event_open+0x178/0xfa8
-|  __arm64_sys_perf_event_open+0x28/0x34
-|  invoke_syscall+0x48/0x114
-|  el0_svc_common.constprop.0+0x40/0xe0
-|  do_el0_svc+0x1c/0x28
-|  el0_svc+0x4c/0x11c
-|  el0t_64_sync_handler+0xc0/0xc4
-|  el0t_64_sync+0x190/0x194
-| irq event stamp: 174338
-| hardirqs last  enabled at (174337): [<ffff800080357774>] 
-___slab_alloc+0x3bc/0xf38
-| hardirqs last disabled at (174338): [<ffff8000812a7ee0>] el1_dbg+0x24/0x8c
-| softirqs last  enabled at (174292): [<ffff8000800185bc>] 
-fpsimd_restore_current_state+0x34/0xc4
-| softirqs last disabled at (174290): [<ffff80008001858c>] 
-fpsimd_restore_current_state+0x4/0xc4
-| ---[ end trace 0000000000000000 ]---
+Instead of open-coding the use of the system_bh_wq in each
+dmaengine, how about we start with a custom WQ_BH
+specifically for the dmaengine subsystem and wrap them
+inside of another interface.
 
-Note that this is not specific to the arm_smmuv3_pmu driver as I can
-also reproduce it with some HiSilicon uncore PMU events (e.g., executing
-`perf stat -e hisi_sccl1_ddrc0/flux_rd/`).
+Since almost every driver associates the tasklet with the
+dma_chan, we could go one step further and add the
+work_queue structure directly into struct dma_chan,
+with the wrapper operating on the dma_chan rather than
+the work_queue.
 
-For your convenience, the assertion was added by commit f3c0eba28704
-("perf: Add a few assertions").
-
-Post it out for visibility, not sure if there are already similar
-reports on the list though. Please have a look.
-
-Thanks,
-Zenghui
+      Arnd
 
