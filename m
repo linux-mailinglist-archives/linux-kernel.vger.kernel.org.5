@@ -1,312 +1,266 @@
-Return-Path: <linux-kernel+bounces-122759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA02088FCBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:17:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC6F88FCC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5242C1F2280B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:17:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E8361C26AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B717C090;
-	Thu, 28 Mar 2024 10:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C78250EC;
+	Thu, 28 Mar 2024 10:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b="b1njhYOw"
-Received: from SE2P216CU007.outbound.protection.outlook.com (mail-koreacentralazon11020002.outbound.protection.outlook.com [52.101.154.2])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c6L4usuu"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28C47C0B5;
-	Thu, 28 Mar 2024 10:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.154.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E68D2DF92;
+	Thu, 28 Mar 2024 10:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621019; cv=fail; b=Ajq8rBRjr+ZXuX+rESY7A0GFwF9+Eeei6d8bzRaz/4TJvsFazNktBptE1vrnN3kKHhEe5vr+GzgSgT5JONVh1RTq65bO6l4maYWGYPIw+54ZHOkMgXRFMVKNMkRY1zE9DXGwAkHfr5ogY4uDyCw3RgAWZ7dxZDECK2yN/SWM+8U=
+	t=1711621068; cv=fail; b=Lh+MnKRZPsIr45PzPz7ZTJb1fPSWVQsEqqW+jZmr1jrvV14bXC5gWv4wBVDWIX8UJf2xa8kLS0L/7UCDI9GxrtjBLoRwFkPMnCV+al4WvuAPKd1cs5tT3ViYtjK6KBCwko6XhDVzP4FRDNgcjMZVyVdEcaNNY30pPX6F5oZOKQ0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621019; c=relaxed/simple;
-	bh=bp7zLxhtTOW9PD+jlcR05WUT06DAvhBEtnVLlBFIQMU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=TSgp7iJxGdr3PjJRQMrmyLXMHpLyDuUF/KVMs61AojMBzrQpLWj/L1eO3pKKy0K0klnaTj+kjXmT/csizgIecN0eQpktp3PtviFKuNG7pBr4c1nHd6Weu07FxBpSgcyKztNI19pPwCBy4XxV4EkNZP7NkYsJxxrjrW4C9ilN3As=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com; spf=pass smtp.mailfrom=chipsnmedia.com; dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b=b1njhYOw; arc=fail smtp.client-ip=52.101.154.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chipsnmedia.com
+	s=arc-20240116; t=1711621068; c=relaxed/simple;
+	bh=+iQkUXeHE5zfQdpqUkcMjtp4TkoFfahZyMcTPUu1m6M=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=u9qypYiEKw/WgRuhHxCZ3Bu91r3Lu2cpJj9rw6pRZP1CXVTNk/LjrFPsV2Eza3l0k9ffgQTPuy6NbtfVh2T+/aqGOoY8qsOmaxwAGf+vExrnD8SPjnqrFr2gTr/UH+8G2xckskOSKgec3QPAIU0nKIsWgvrXauW2IRoVeKJ4E0U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c6L4usuu; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711621067; x=1743157067;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=+iQkUXeHE5zfQdpqUkcMjtp4TkoFfahZyMcTPUu1m6M=;
+  b=c6L4usuuUwy4jIWLV/g3VYh3fn10JfSMYsEkt3eG6HKu5DA/Yz7vTWAU
+   lOQIaZtemaU7aBs9jML9OL6K5KwnidAqBC0QE5ERoFKDF4BbvDzOOlS0z
+   +JICuist3gb501+FJV2OaGw6qt6b8gmWkjXeAMUclnSj51eDPDCLuTnw3
+   LOHTlXSCQoubardHj1m15HgQokoBjxCm3yspFzkoeg/FGcpSwUzUWhTPN
+   z8qYcVOdgfHohaMCpi4k1KTIVgC+xyIkSgL40x+Lx2nS5ajmyfAbhjl+5
+   VkwpH6jnDYOgp7Ci0/3cbQUim6wUfvNSN+LUtgFCYle5/6O/ozJcQ3vUs
+   A==;
+X-CSE-ConnectionGUID: yS7P1bKWTHC18wGXxCdfuQ==
+X-CSE-MsgGUID: G49BPqgeRuKv2Zv8sSvi9w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17492526"
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="17492526"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 03:17:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="16620308"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 03:17:46 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 03:17:45 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 03:17:45 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 03:17:45 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 03:17:45 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KWi7IDEH5bL9T9oy9BHQT3o9CdUDFZ1Lvz54IeoHm/9zkrl0tbF/M5hWQy5sBjuMDHle72IMW7ThVqId7em0QJnAgNn2Jq8DE2ZB23dorR8hBHUIrPIMiWGPLCKuXumwHQIm5UIo5e0AxSOnwSVw7PqciIJI2i5vkkVN2ZW9ZO3H1o2JJ/aY/GkFGLH6TI/w9kxk7lShm3wSJ+TlXGlD4wknbE05iaLw2alPrFNeXLkAHhljFJUza9rSd7bb0gWKpj+898kHK94z/AiM9UeYz5Tv/XXG55TQgIALJ4vcmq9XCuux16wQV4LSakWdapfSMatE+NG5kFsOQz/9wSCdEw==
+ b=MnOKgRbxv792ggro8lSLawlxbbLmFGPKh7/Zse91IbayTWnAhyO+d4CcyD1p0Ob3iYXjluOIkPmOH6ceBRTJwJK19ilVq3HwWhHYEYNjFDL5fxp9ErLZGXWLsz0blnQqmeH/ZFiZJ+kgKDn36TayP92+QzdVsYvZNMGggPk8ZzbD2Ca8P8JBMYiZ5QAZ66SfzoQplKLeL70zK7Y0JKr1qd7Jz7mN6WF2MvBsd6yjEt+4DM1E3meb7QhgrLx0apZGukrVwTZTtvdoG3lqz3fk6YPDD3Hc87L57lA9L8Yq7HGHoGl3d7DbL2xVoRB/1ZB+YuoC0HjQ0bQxqBd99oauVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g4jS0Bo7AkRlGe92vb28kwO7Pjp1hQgjCSUlu/A9x7E=;
- b=juuxjiWKtWgpz83Kalc/jjQGECsu1onKyoi3DF1455A88lmMSda2Ojlsq3/PoI3UEarUJmyeHK9yB261pFu2tEa6gvpOAr5mUELsDN5gzULIlTqvqg3q+5S81HUxeNKYXz7NnQTfZJ4da3yUXTRtYPUDA8O44rD10dx0DUATG8GeW+2yxh5GtJ9htyfzAfhZkimBYs+A088rlBxHhzcc72a+kkOFdnxuIp6u20l2WWfO1n3jdZNNoYHQMeMQgM0mjc2AaiMwb9yuUMg5V/i2rBFJeS1OE5JJbSKeiRpyvew9eG0yKV4lEHVfbJd8ES7K1VmvNTLJowXdFdlg6wLmYA==
+ bh=SExnGu0tJ1z14ouwqkC1X9ngNRy6s4aDKGwCJEh/vsQ=;
+ b=oDe2ddCQfb+j7ONzuabBPRt/AEw4bO+R5UGyr9uYlmF+THRGaYW0Ax+WQPRpO1zzTeyQldQIM0aUlnSc4xzhp9BQcSS1SiCbFQzNSHLqeOyUjI29EFtHE9zrKvz3CzZLsxYHLE0dwp7jTBTG6b2NA1GXUikg129c9sFowSPs8ULrLTk5NPR8P1dCkvUp8s6aiqSzq0QesCpHlPRdMsxDQStLawmhzugNc3QfnOOGDIjAP8Iw6BVZpeo5kQzz8YoA/QN+fe4qyWXyPuzrjHVGA2xiszAAq+zgcjiuttnh/xJEynRvSgyruXr8rxQQc4ZOdxJmQSM8n6TNLBRh1GpbZg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=chipsnmedia.com; dmarc=pass action=none
- header.from=chipsnmedia.com; dkim=pass header.d=chipsnmedia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chipsnmedia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g4jS0Bo7AkRlGe92vb28kwO7Pjp1hQgjCSUlu/A9x7E=;
- b=b1njhYOwn++zh2UYEh4TJiyjEBD3BTZbLEVb0ZFK1sMm7mF0sIFeSL3ObyiX7Px0dKI8P03ewiILuVfz4TalCcSdinMyxzZC3i3hauI4p9c/8gsAgmD81hST9S3XQiU+LyVABG7DCa/q70Vsrdc3WoSK4LpypaYJDkCocemKDe8=
-Received: from SL2P216MB1246.KORP216.PROD.OUTLOOK.COM (2603:1096:101:a::9) by
- PU4P216MB1915.KORP216.PROD.OUTLOOK.COM (2603:1096:301:109::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.36; Thu, 28 Mar 2024 10:16:53 +0000
-Received: from SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
- ([fe80::5b8:35f1:821f:4f57]) by SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
- ([fe80::5b8:35f1:821f:4f57%2]) with mapi id 15.20.7386.025; Thu, 28 Mar 2024
- 10:16:53 +0000
-From: Nas Chung <nas.chung@chipsnmedia.com>
-To: Ivan Bornyakov <brnkv.i1@gmail.com>
-CC: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, jackson.lee
-	<jackson.lee@chipsnmedia.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Subject: RE: RE: [PATCH v2 4/5] media: chips-media: wave5: drop "sram-size" DT
- prop
-Thread-Topic: RE: [PATCH v2 4/5] media: chips-media: wave5: drop "sram-size"
- DT prop
-Thread-Index: AQHafn94hZZm1U4NUE6FWrHOISEj9rFLXGrQgAAqpQCAAWluEA==
-Date: Thu, 28 Mar 2024 10:16:53 +0000
-Message-ID:
- <SL2P216MB1246499CC9FED9BFB5B11DA3FB3B2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
-References: <20240325064102.9278-1-brnkv.i1@gmail.com>
- <20240325064102.9278-5-brnkv.i1@gmail.com>
- <SL2P216MB1246537DD623B813453B28F9FB342@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <5hd7duzqhgdxpmvom3opkhwxkq55dmitk4gwdl4dy46q662in6@xxkmvdj6plqb>
-In-Reply-To: <5hd7duzqhgdxpmvom3opkhwxkq55dmitk4gwdl4dy46q662in6@xxkmvdj6plqb>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=chipsnmedia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SL2P216MB1246:EE_|PU4P216MB1915:EE_
-x-ms-office365-filtering-correlation-id: c1f72d6d-239d-480a-43a1-08dc4f10309a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- R29EMh3twhYU465MtQ0PvQmkjieH5/Hb+wumpZQ9qxtD8Q2dHYt1FyCJy5fe8h0JZDQntE/ouoqKq5OAzwYJksEz3n6iPaHmfcHESCtLVpKKyGkfjtT6TEsWiM0tKPkyUqV9vxjZowPXMahoaosQ3NFdEz+RoHD3j4bHS7/hNS7FDEsOlK6PuayO/diuIU1TqHfxBy7h0YthYT4x0gAjmr0N0Q+aQfzlhnwS4vVXiTvW3S3CaZaBKK14IjrvVTfsSzYGkJ6WNcUQtMcImlmkfaAdZ2/KCKEznax55EltddVGAA+BSnzp4w34R89MoXNK2bhYx3outgvoJIXlcbMVnJXVJNAIgK+L67PwRp02SFHqXka+qwCET9E5Ot82XiWRqWk9PSEV7o41NnLMAjwa+PuBTaBvVRzLqfB0NEtsroKpdqr9c5RG40y/a/hnp12XHltsOkDbCl+peta2C1xIsSe2DJRy1V6fvxVVQeSg/65PCHdechyjFPxD2+x3OOSvA+lqgyCZaPv+AGYfzy9FOVthMRV0qmc9kwtgxA84S2oB1UhYHbby08EYQFQwKLEXkJxzalTka7JF+3W/ByAEPmB1zLavVYoTSp3oHrbyx02rOjpJJ18HwrfOxEtM9Hp1Ir7pk9gYcp8O60i719WwODd8J1hmP1YSUEObLf5lsx5Uxt69EjW83nvcm4hjIxMKJU0e8PBzHDahTswYTG3QQ1dDr7x3xki50mn9LU4cijg=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2P216MB1246.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?OoamVhWpp2Yvu6WKLYhPXV0OIbPYKa91dg09S86lHBCDwvP/yKJtzaOmjrvW?=
- =?us-ascii?Q?WMstP4bXEVWdid5j965bNgyTNywGJBAK8AMRl+tGHcfxtBHYgOtEE0s3a3zJ?=
- =?us-ascii?Q?lkMET+eex5LVnn3aFis7t9IznP92ypishO9I0/mrQ1Q3Ov7rcWScu4kxxonM?=
- =?us-ascii?Q?Kh/XwJudyDeoueufJ3cYe+m5eovsIWO/1LeCTzS5bRBWHCkVAFiDvHPppOU2?=
- =?us-ascii?Q?bida8WWBqQZA5OO41M6devk4QpRV4bMI5PjgroJZYgbTja5A1x0EWzgeK060?=
- =?us-ascii?Q?+hvLJ4G5hbhESSVMfJJguBoz0BaDTzMR8NnAwOZCFJr1TST6xpaLI3KB/Rw4?=
- =?us-ascii?Q?krBMbUUPL3wSP22zOb0N5G0u8I/K4ZkDih5AV5OoeuCeSy5nbFLS7fZZNrgA?=
- =?us-ascii?Q?Dbfq3TjnrRJYfZY+hZmMA8R7W6wV26qeVY3kt6gbLMZFOMyx1aYzkOFESwr6?=
- =?us-ascii?Q?12gmvmvs9Imol27SpPrdTEEo9z7MLLPFnyB42cg4aXDrThrRpVWr2inZohj4?=
- =?us-ascii?Q?wgcdMc3jWHR8UaNZ7ftpxgrqXfxFqpon9a+DwQmdgOly2NpZlb9vu8FZaQ6V?=
- =?us-ascii?Q?b+DJoBA38IzgXM6n+VsVbJRF2IcYu6+0p1PKyl7hha2F5xjpCpvpPY2FG28f?=
- =?us-ascii?Q?guSmTUb4/GKgpTzlO0nCrWJaRDW6cQ08TTU5nwgmjB8PdM97xw1oRj7vOMQv?=
- =?us-ascii?Q?cjOx+0m7lf19vMVrkWN7+M9+R+hhHFRA3jvUnl/LBrsmuWdFgtXkWxHH5sc2?=
- =?us-ascii?Q?1t5KJxGcp0Wj34qcz5oLsx2OjxbNa5hgnbyJjuKS0YmxTbde+dl9P8Wr7fqz?=
- =?us-ascii?Q?bQc1rZ5RMJpCeUxZJVc6/7hD51/uBIG0LCjMBYUYHtx1wKftkwkTrKs1SDuC?=
- =?us-ascii?Q?AJ4sGOLb2hszKYQAs4bm2geUWiR5AV/mF0O/pPpXViszqnqFyNNj0slTlu42?=
- =?us-ascii?Q?fEDQy35Lh7hR7D2eJ//M/bsKySZm1Hf9foB2aA5p0PqxFlixreGHf9R2D47X?=
- =?us-ascii?Q?AZibZvn5SwbL277vSHY6TvRjEP45nko1oR1venJwy8uqFPRk1GHnjGKVXBVG?=
- =?us-ascii?Q?xyt+tlzaJfSijDZGk2XRA78/wk6blouYVYnCRs3S1hzAsaWoPwkeXYuJ8Q2o?=
- =?us-ascii?Q?oGcJDDQLUeg7+/q3dY3BuMjIc1EqDZmMneB4tnRsVLu8/+79U+irKwqjbE2h?=
- =?us-ascii?Q?XoazQC+JUkHcF03m3KsvTz38ogGL1BXoYP+JCLQllYLT4b8mQLqIpNgASHhK?=
- =?us-ascii?Q?n3lIm4bxT9NIuKRU+/c9ewCvqLCgfZelidu+QBXiB5mD7eRBJ6Ca+WRixRZk?=
- =?us-ascii?Q?mazDjQVvHMjqd797am9FLUPolNq+9a9a+uXzWNC6to8fMq0YMp+GC6F88cGm?=
- =?us-ascii?Q?oxYIgqyuUGVT+Nuirh3fglFNjwpoU5DFp7yQQTWRCZ4KL1qRBQy5sed+e6Nl?=
- =?us-ascii?Q?TROw2zssmk/uvaC5JAP3lGGKn8WrUIbiKYzGFqGrPv+OOMCKRBkcz9CFHJLF?=
- =?us-ascii?Q?uhO0rMbH1UFcWC+3z9nO4Hb32nLYZ8JEs8dvHdjDfBls9yIqTREDx0V+I7tQ?=
- =?us-ascii?Q?OwJlk9YQ5L0fSAyLSdAXqgvAD+1XeWRt1J4xi0Jo?=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by DS0PR11MB8761.namprd11.prod.outlook.com (2603:10b6:8:1a1::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Thu, 28 Mar
+ 2024 10:17:42 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 10:17:42 +0000
+Date: Thu, 28 Mar 2024 18:17:32 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+CC: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "Yamahata, Isaku"
+	<isaku.yamahata@intel.com>, "Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
+	"Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Aktas, Erdem"
+	<erdemaktas@google.com>, "isaku.yamahata@linux.intel.com"
+	<isaku.yamahata@linux.intel.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
+ for unsupported cases
+Message-ID: <ZgVDvCePGwKWv0wd@chao-email>
+References: <20240326174859.GB2444378@ls.amr.corp.intel.com>
+ <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
+ <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
+ <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
+ <e0ac83c57da3c853ffc752636a4a50fe7b490884.camel@intel.com>
+ <5f07dd6c-b06a-49ed-ab16-24797c9f1bf7@intel.com>
+ <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
+ <20ef977a-75e5-4bbc-9acf-fa1250132138@intel.com>
+ <783d85acd13fedafc6032a82f202eb74dc2bd214.camel@intel.com>
+ <f499ee87-0ce3-403e-bad6-24f82933903a@intel.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <f499ee87-0ce3-403e-bad6-24f82933903a@intel.com>
+X-ClientProxiedBy: SG3P274CA0022.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::34)
+ To CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: chipsnmedia.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|DS0PR11MB8761:EE_
+X-MS-Office365-Filtering-Correlation-Id: cbd86131-810f-4e5c-5f52-08dc4f104de1
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mPabO1GHQqb+xlAhq6ltfhYhGeyfeQyOI89JwhwUHr4rySyq9KQVKhZmFscHw3XemcSgpkZbF2fciDBQ88+D0i0/bLID+4xARJCA1bEOZKeqV9KgIlacVLOJZzuVdKlaqxgIb/Utz0pBs1NGsNOQIYZH/qjrYay9yFBm9SZjzJH2f3WCn2h+TJVclcLErU0HC9Efc08FbFSsvvqOIaWMn4Yn9LktyxFKfC7FmIiMQ0a9ZHN6s5c0xWPFRpQfGNIihn6Cvjh5elyDKsD+6yxZdyv1k0zI9XGJf+w7Gucs8bERLHOlKBYXEjSUXYU2KoP9vCdBTfHN1M4hFHW7qwAEaeCCuMN9CieZdkUKyueIeT6Iinp11DbDwp8CHwfNWYIKYdO1aWF2ZMIpIWjpBC8amQZz6GKMlI0x8gc0SGx0XfuKC7wHLRRlHHEj6oj/yZ0MtAoakqqQ21r+pmc1DxRgJqw5wwENR90+k4k61nh7FEcVK5lar4hje9vSikcSEo7BRYIQlAifaxawmXFNQ3kawz5vmbBXp+nzQ75YyRanqXm0RNWiR9+qEVcy78nNFiQ9WFp1lYJCe9got45Tr9bKquhSk/GTwHrxfk+ktEYRScZdqgiRz+tMWRaKcr8dS5VsakZ16ERgFlKBRBxyJR90h1Xnac+rs7VeFODP9HFaDBE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3Y+GJAJRvnODxylf5fHyqBSoAhDF0jjgjNl5hwZD9e18TWoNQdghr59p73F1?=
+ =?us-ascii?Q?9qOhhSQ3YZ2WeUPzrTEvIAnquZYTLF7m7Ld5XSiUSIY5sa03PjlGq48i6evX?=
+ =?us-ascii?Q?+ZF/waDuFGtC6ePTyRgPHEZ6sqqwVSWtJQZn7tZYHuuy5CKN6Qbg7dLZOFTu?=
+ =?us-ascii?Q?PGzLtIxzRUQ28OnSFf0BmuAW6nEJVHG6ZpIevF8LTsHoOjXj4a+1+U8DmgaZ?=
+ =?us-ascii?Q?qnwhCJWyUP1xt/bsE4GEOfDwi/MSQBQs8s9Bfognwg9jRE3sJ5X15CiNHOZ5?=
+ =?us-ascii?Q?OLJ/fIJbMp93UxaDxfIY+pp26qTK1QdyJLyIukgZhKHGi+k1DdcLmIVYqVOk?=
+ =?us-ascii?Q?DYGM9S2Dj1eZZa3JKGTUFZP/JlbF8X40GBffVSbSlvi6VUO2VjHs78nXOXly?=
+ =?us-ascii?Q?/zD5HhTnlWs6Ifc3AjP36Fdo3wafr9iwr5A9FNg9cp4oAhB1pFhu0D41Bt2A?=
+ =?us-ascii?Q?yqTqsTvqm4OmJl6CGLpWmqdZgQxqVDpqLjhfFMu3Uf3wpWo/GIDj2I432/V/?=
+ =?us-ascii?Q?qVjsx2J8+sopgDKj8oB497TsRWEV5uMH7/ChOcQk4Pf1P8kGC4qfc/VXhCrO?=
+ =?us-ascii?Q?N3gnIW83zBMtMvjX/l8aKRWQDN6bdkn1NVphb7xYnuN/vuYqBPtSYIDGSBRt?=
+ =?us-ascii?Q?Pt87i0mpgvIMyS36GXalvhSogJK/omQeBPXVYDFuCvPKTWBrkJHZ7YEzkkW3?=
+ =?us-ascii?Q?Wo3lGUZ+QSEHmowYKEa6hIttFojUtOiCARBS4uH7e9UJ96u76VotHCynZdNr?=
+ =?us-ascii?Q?IdjruZPrjPLPjdepALAVY3Foun0XyH6Ku6xp+I6beiahXKJ7qTTC2Z2C/wm9?=
+ =?us-ascii?Q?hCetTlOF0yJjPSXWJIFwRTzDUCIA3DO8eHymEf55JsN34CkeoR1dYo0iHlUG?=
+ =?us-ascii?Q?+NBX4L4OEOsuXQUc/VfpdvjfzqCqUO+fuU+eJh1FRgy2Gjtqqjcckb9TTEVu?=
+ =?us-ascii?Q?rEDDXgUmcRT69lkT+sgpQwQSB0JNHvCha8oSB16phyfJsVlzjLfSbNcoMXs2?=
+ =?us-ascii?Q?UwKKYm1pdQmfytzPgonQP2DXAT2k/+xG5gF/w48oUXkHEGya9OSZurEa/BTx?=
+ =?us-ascii?Q?Vd2518FtOTkF35WivnuCuIZ9ZvBnCUa9XFqWlmZtVVpj60g/PBLd/QiiqnfY?=
+ =?us-ascii?Q?L6PEq14g/xdyTXAGvQkUDSIypKOiiFasZ1AfnzS6Y8Nu4m50UqS6SOp8Put2?=
+ =?us-ascii?Q?6xWguhJbfrKazH7aTQY8kyRJpMfoBLp+scrnNg2TvQpTOCzCXXlbTUt6JyAq?=
+ =?us-ascii?Q?Zbpymx9CB/opJcbQsgwpyuyAl7rtnHE+UW3bSrK/L/5GcwXAIp0Mjk8xhHFY?=
+ =?us-ascii?Q?A5jYBRRbBJAx4qKY/xuf/GRZro63qX1oMXv+tncdPHXhZqJewi+84uwDXh/O?=
+ =?us-ascii?Q?wSEhiPmrU2CBS/+pWkDlav6Mkio/0ypDvPWFhho2H6ZH+SEYlj98rWj7FzL4?=
+ =?us-ascii?Q?o47AOyZivBq5qjFm9PIFHyZN+iiHj+gXPEXX54IZMsH0SwrajM9EH8M0DjZn?=
+ =?us-ascii?Q?fg4Dl0kYD3PD6/K0fw0XqTWCXo24U/OME3SaDr3E58ISXtJJTv4wj5IdvK9z?=
+ =?us-ascii?Q?2fFbiQqUf6CHePrYleubmaHP2ru/SQR4SijqkoDX?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbd86131-810f-4e5c-5f52-08dc4f104de1
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1f72d6d-239d-480a-43a1-08dc4f10309a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 10:16:53.2716
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 10:17:42.6730
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4d70c8e9-142b-4389-b7f2-fa8a3c68c467
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Eu38k9xH+XDb5i183QU0BQ7I+JS4J+3tUxmQaEOOE5iNcbO7hhVHExyOY80/6TMXPG4E5Zs/NmAw5jqtEddOdBHEoCslsbLzg64l89EQEC8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU4P216MB1915
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: c/f+ibZK0NhWRcUyr+0DMzFQq2aAIItvcjXQ8oNDvJkiCiLFarJKkHqMcuJPeySH8O+8IgmKuZ0dOBlyXNuy8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8761
+X-OriginatorOrg: intel.com
 
-Hi, Ivan.
-
->-----Original Message-----
->From: Ivan Bornyakov <brnkv.i1@gmail.com>
->Sent: Wednesday, March 27, 2024 9:27 PM
->To: Nas Chung <nas.chung@chipsnmedia.com>
->Cc: linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
->jackson.lee <jackson.lee@chipsnmedia.com>; Mauro Carvalho Chehab
-><mchehab@kernel.org>; Philipp Zabel <p.zabel@pengutronix.de>
->Subject: Re: RE: [PATCH v2 4/5] media: chips-media: wave5: drop "sram-
->size" DT prop
+On Thu, Mar 28, 2024 at 11:40:27AM +0800, Xiaoyao Li wrote:
+>On 3/28/2024 11:04 AM, Edgecombe, Rick P wrote:
+>> On Thu, 2024-03-28 at 09:30 +0800, Xiaoyao Li wrote:
+>> > > The current ABI of KVM_EXIT_X86_RDMSR when TDs are created is nothing. So I don't see how this
+>> > > is
+>> > > any kind of ABI break. If you agree we shouldn't try to support MTRRs, do you have a different
+>> > > exit
+>> > > reason or behavior in mind?
+>> > 
+>> > Just return error on TDVMCALL of RDMSR/WRMSR on TD's access of MTRR MSRs.
+>> 
+>> MTRR appears to be configured to be type "Fixed" in the TDX module. So the guest could expect to be
+>> able to use it and be surprised by a #GP.
+>> 
+>>          {
+>>            "MSB": "12",
+>>            "LSB": "12",
+>>            "Field Size": "1",
+>>            "Field Name": "MTRR",
+>>            "Configuration Details": null,
+>>            "Bit or Field Virtualization Type": "Fixed",
+>>            "Virtualization Details": "0x1"
+>>          },
+>> 
+>> If KVM does not support MTRRs in TDX, then it has to return the error somewhere or pretend to
+>> support it (do nothing but not return an error). Returning an error to the guest would be making up
+>> arch behavior, and to a lesser degree so would ignoring the WRMSR.
 >
->On Wed, Mar 27, 2024 at 10:27:19AM +0000, Nas Chung wrote:
->> Hi, Ivan.
->>
->> >-----Original Message-----
->> >From: Ivan Bornyakov <brnkv.i1@gmail.com>
->> >Sent: Monday, March 25, 2024 3:41 PM
->> >To: Nas Chung <nas.chung@chipsnmedia.com>; jackson.lee
->> ><jackson.lee@chipsnmedia.com>; Mauro Carvalho Chehab
-><mchehab@kernel.org>;
->> >Philipp Zabel <p.zabel@pengutronix.de>
->> >Cc: Ivan Bornyakov <brnkv.i1@gmail.com>; linux-media@vger.kernel.org;
->> >linux-kernel@vger.kernel.org
->> >Subject: [PATCH v2 4/5] media: chips-media: wave5: drop "sram-size" DT
->> >prop
->> >
->> >Use all available SRAM memory up to WAVE5_MAX_SRAM_SIZE. Remove
->> >excessive "sram-size" device-tree property as genalloc is already able
->> >to determine available memory.
->> >
->> >Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
->> >---
->> > .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++++++++---------
->> > .../platform/chips-media/wave5/wave5-vpu.c    |  7 -------
->> > .../platform/chips-media/wave5/wave5-vpuapi.h |  1 -
->> > .../chips-media/wave5/wave5-vpuconfig.h       |  2 ++
->> > 4 files changed, 13 insertions(+), 18 deletions(-)
->> >
->> >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->> >b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->> >index 3809f70bc0b4..a63fffed55e9 100644
->> >--- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->> >+++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->> >@@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
->> >*vpu_dev, struct vpu_buf *array,
->> > void wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)
->> > {
->> > 	struct vpu_buf *vb =3D &vpu_dev->sram_buf;
->> >+	dma_addr_t daddr;
->> >+	void *vaddr;
->> >+	size_t size;
->> >
->> >-	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
->> >+	if (!vpu_dev->sram_pool || vb->vaddr)
->> > 		return;
->> >
->> >-	if (!vb->vaddr) {
->> >-		vb->size =3D vpu_dev->sram_size;
->> >-		vb->vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
->> >-					       &vb->daddr);
->> >-		if (!vb->vaddr)
->> >-			vb->size =3D 0;
->> >+	size =3D min_t(size_t, WAVE5_MAX_SRAM_SIZE, gen_pool_avail(vpu_dev-
->> >>sram_pool));
->> >+	vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
->> >+	if (vaddr) {
->> >+		vb->vaddr =3D vaddr;
->> >+		vb->daddr =3D daddr;
->> >+		vb->size =3D size;
->> > 	}
->> >
->> > 	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
->> >0x%p\n",
->> >@@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct vpu_device
->*vpu_dev)
->> > 	if (!vb->size || !vb->vaddr)
->> > 		return;
->> >
->> >-	if (vb->vaddr)
->> >-		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
->> >-			      vb->size);
->> >+	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
->> >>size);
->> >
->> > 	memset(vb, 0, sizeof(*vb));
->> > }
->> >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->> >b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->> >index 1e631da58e15..2a972cddf4a6 100644
->> >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->> >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->> >@@ -177,13 +177,6 @@ static int wave5_vpu_probe(struct platform_device
->> >*pdev)
->> > 		goto err_reset_assert;
->> > 	}
->> >
->> >-	ret =3D of_property_read_u32(pdev->dev.of_node, "sram-size",
->> >-				   &dev->sram_size);
->> >-	if (ret) {
->> >-		dev_warn(&pdev->dev, "sram-size not found\n");
->> >-		dev->sram_size =3D 0;
->> >-	}
->> >-
->> > 	dev->sram_pool =3D of_gen_pool_get(pdev->dev.of_node, "sram", 0);
->> > 	if (!dev->sram_pool)
->> > 		dev_warn(&pdev->dev, "sram node not found\n");
->> >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> >b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> >index da530fd98964..975d96b22191 100644
->> >--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> >@@ -750,7 +750,6 @@ struct vpu_device {
->> > 	struct vpu_attr attr;
->> > 	struct vpu_buf common_mem;
->> > 	u32 last_performance_cycles;
->> >-	u32 sram_size;
->> > 	struct gen_pool *sram_pool;
->> > 	struct vpu_buf sram_buf;
->> > 	void __iomem *vdb_register;
->> >diff --git a/drivers/media/platform/chips-media/wave5/wave5-
->vpuconfig.h
->> >b/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h
->> >index d9751eedb0f9..9d99afb78c89 100644
->> >--- a/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h
->> >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuconfig.h
->> >@@ -28,6 +28,8 @@
->> > #define WAVE521ENC_WORKBUF_SIZE         (128 * 1024)      //HEVC 128K,
->AVC
->> >40K
->> > #define WAVE521DEC_WORKBUF_SIZE         (1784 * 1024)
->> >
->> >+#define WAVE5_MAX_SRAM_SIZE		(64 * 1024)
->>
->> WAVE521 can support 8K stream decoding/encoding.
->> So, I suggest the MAX_SRAME_SIZE to 128 * 1024 (128KB).
->>
->> And, Current driver always enable sec_axi_info option if sram buffer is
->allocated.
->> But, we have to enable/disable the sec_axi_info option after checking
->the allocated sram size is enough to decode/encode current bitstream
->resolution.
->
->Do we really? As an experiment I tried to provide to Wave515 1KB of SRAM
->memory and decoded 4k sample file was fine...
->
+>The root cause is that it's a bad design of TDX to make MTRR fixed1. When
+>guest reads MTRR CPUID as 1 while getting #VE on MTRR MSRs, it already breaks
+>the architectural behavior. (MAC faces the similar issue , MCA is fixed1 as
 
-You can think It seems like driver works fine.
-But, This is not the behavior we expect.
-There is a possibility that unexpected problems may occur.
+I won't say #VE on MTRR MSRs breaks anything. Writes to other MSRs (e.g.
+TSC_DEADLINE MSR) also lead to #VE. If KVM can emulate the MSR accesses, #VE
+should be fine.
 
->> Wave5 can enable/disable the sec_axi_info option for each instance.
->>
->> How about handle sram-size through match_data ?
->> I can find some drivers which use match_data to configure the sram size.
->>
->> We can use current "ti,k3-j721s2-wave521c" device as a 4K supported
->device.
->> - .sram_size =3D (64 * 1024);
->> Driver just allocate the sram-size for max supported resolution of each
->device, and we don't need to check the sram-size is enough or not.
->>
->> Thanks.
->> Nas.
->>
->> >+
->> > #define MAX_NUM_INSTANCE                32
->> >
->> > #define W5_MIN_ENC_PIC_WIDTH            256
->> >--
->> >2.44.0
->>
+The problem is: MTRR CPUID feature is fixed 1 while KVM/QEMU doesn't know how
+to virtualize MTRR especially given that KVM cannot control the memory type in
+secure-EPT entries.
+
+>well while accessing MCA related MSRs gets #VE. This is why TDX is going to
+>fix them by introducing new feature and make them configurable)
+>
+>> So that is why I lean towards
+>> returning to userspace and giving the VMM the option to ignore it, return an error to the guest or
+>> show an error to the user.
+>
+>"show an error to the user" doesn't help at all. Because user cannot fix it,
+>nor does QEMU.
+
+The key point isn't who can fix/emulate MTRR MSRs. It is just KVM doesn't know
+how to handle this situation and ask userspace for help.
+
+Whether or how userspace can handle the MSR writes isn't KVM's problem. It may be
+better if KVM can tell userspace exactly in which cases KVM will exit to
+userspace. But there is no such an infrastructure.
+
+An example is: in KVM CET series, we find it is complex for KVM instruction
+emulator to emulate control flow instructions when CET is enabled. The
+suggestion is also to punt to userspace (w/o any indication to userspace that
+KVM would do this).
+
+>
+>> If KVM can't support the behavior, better to get an actual error in
+>> userspace than a mysterious guest hang, right?
+>What behavior do you mean?
+>
+>> Outside of what kind of exit it is, do you object to the general plan to punt to userspace?
+>> 
+>> Since this is a TDX specific limitation, I guess there is KVM_EXIT_TDX_VMCALL as a general category
+>> of TDVMCALLs that cannot be handled by KVM.
+
+Using KVM_EXIT_TDX_VMCALL looks fine.
+
+We need to explain why MTRR MSRs are handled in this way unlike other MSRs.
+
+It is better if KVM can tell userspace that MTRR virtualization isn't supported
+by KVM for TDs. Then userspace should resolve the conflict between KVM and TDX
+module on MTRR. But to report MTRR as unsupported, we need to make
+GET_SUPPORTED_CPUID a vm-scope ioctl. I am not sure if it is worth the effort.
+
+
+>
+>I just don't see any difference between handling it in KVM and handling it in
+>userspace: either a) return error to guest or b) ignore the WRMSR.
 
