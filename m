@@ -1,139 +1,90 @@
-Return-Path: <linux-kernel+bounces-122595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D617688FA3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6451388FA3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91738294701
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:45:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD3329541E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6369F44C67;
-	Thu, 28 Mar 2024 08:45:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAF24E1C3
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C84EB50279;
+	Thu, 28 Mar 2024 08:46:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="hSBAOKSm"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952C238396
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711615522; cv=none; b=Z+oidHmXJc4ZxFk3QaUj41Tf2dDtgBtecScum8cnHeiSn/5wG8eG8/JFgEfylOjcnfL0gEZ/DrBX1TS2Mjlpu8M8CaFZqiQxorOG+PxS9yY9aVEQJKt3cYocr9Q/mro5gFmXCqnOGv0OoU4mVykS7x2RoOfSwq7Oy+ibfbPAiLk=
+	t=1711615605; cv=none; b=VdeRv8ACUOEAY7bxFPApzeeAuTu7KeAA+JGgNHdy9SJOV/DNcOUIoTzrfjuAZBJdi7e89FAhuRE+Bsx1NStUsE+kynbY8Oj7+IAtZY8vV4e+CKabMJYqLkGVU6e7UDVXk1Agj2e0TA8V7t4wbOWduHInuF72OySdi+PfkUQ+ZuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711615522; c=relaxed/simple;
-	bh=Y5Xd8Q2+cKEbaBnX1DP+dwC6AhteJyqc2e+mytwPLN4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MS5jTl0hH8RThgPhw4BWM60Ll7Bmzs0PiR+sjlwpzpGmb939OwcrEqvkVPU2Lk35j0d4aun4JJ52Z+IMW8SrNiighTjRbgxRjbTzc6eli1Sm+fBBPYNbvbWexVuUYjI8d7wOs2xMDS2VgsjLYPTTWiAAcEbkjRN1AqrqDTOnOqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C36612F4;
-	Thu, 28 Mar 2024 01:45:52 -0700 (PDT)
-Received: from [10.57.72.121] (unknown [10.57.72.121])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA03A3F64C;
-	Thu, 28 Mar 2024 01:45:16 -0700 (PDT)
-Message-ID: <a6da59d1-28b5-4cc0-aae9-fca1286be577@arm.com>
-Date: Thu, 28 Mar 2024 08:45:14 +0000
+	s=arc-20240116; t=1711615605; c=relaxed/simple;
+	bh=TYFqbUHOJ3/hT9xWTRUIGd5P6PahnEHSypeL9bbT9Fk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pGFxi6hl+iaJM7E9Ipq7VOWKgexMp7eTMpjZODgDcwK/uVE/wskL1ZeHlT7PCN6c9aW0AuQUmSFaFpeEYyJPXtqdNuXHs1B0uuejpo+szd40vwOsF5DEqiePuQwjMF8v4JySq/y8g/QjA0upShRX2dR5L9Fbbxfp7CA3UiS0fCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=hSBAOKSm; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=TYFqbUHOJ3/hT9xWTRUIGd5P6PahnEHSypeL9bbT9Fk=;
+	t=1711615603; x=1712825203; b=hSBAOKSmmjauuyTNEVWKak+hnMgmYT6Y54+Ldg/PqcyNW9m
+	I5YBfCpmJBWJ1Yo5xrsi3afGO5QMKqjGweRxZSuQg9MKDUvP3drP+frY2Gf+0JYjh8lH/VjoAnoCD
+	kyn1Z/ACMoC00OvnnuhH2xgXchyzZDOXuthL94jVEqVU8CvNhmq9g+F3QEfuOo7cFPQLEy/Q23cbm
+	BVxgnfZzdauHp7tIZ0tJDC60Kf55Nk7nI3I4M+zDi3JqgWv9JjLF/oFArak7ZMaRzw07Ik2Dv7mbe
+	Sfx+ZfQW+fG0hURizjmgc3P5VN9TVVJQ4bG2VqQlRJC+gCZ586its2CA/uKlu18A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rplPC-00000000nLU-0aP3;
+	Thu, 28 Mar 2024 09:46:38 +0100
+Message-ID: <9577110df4512a82dd27af0f831b569b502fe528.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 0/9] um: Minor fixes and cleanups
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
+Cc: jani.nikula@intel.com, linux-um@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
+Date: Thu, 28 Mar 2024 09:46:36 +0100
+In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
+References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] arm64: mm: Batch dsb and isb when populating pgtables
-Content-Language: en-GB
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240326101448.3453626-1-ryan.roberts@arm.com>
- <20240327190723.185232-1-ryan.roberts@arm.com>
- <CAMj1kXF68MH0HUH8FHpHAoSs_tPbMGek5mY2U4BL-i_RWoZ+5Q@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAMj1kXF68MH0HUH8FHpHAoSs_tPbMGek5mY2U4BL-i_RWoZ+5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 
-On 28/03/2024 07:23, Ard Biesheuvel wrote:
-> On Wed, 27 Mar 2024 at 21:07, Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> After removing uneccessary TLBIs, the next bottleneck when creating the
->> page tables for the linear map is DSB and ISB, which were previously
->> issued per-pte in __set_pte(). Since we are writing multiple ptes in a
->> given pte table, we can elide these barriers and insert them once we
->> have finished writing to the table.
->>
-> 
-> Nice!
-> 
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  arch/arm64/include/asm/pgtable.h |  7 ++++++-
->>  arch/arm64/mm/mmu.c              | 13 ++++++++++++-
->>  2 files changed, 18 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index bd5d02f3f0a3..81e427b23b3f 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -271,9 +271,14 @@ static inline pte_t pte_mkdevmap(pte_t pte)
->>         return set_pte_bit(pte, __pgprot(PTE_DEVMAP | PTE_SPECIAL));
->>  }
->>
->> -static inline void __set_pte(pte_t *ptep, pte_t pte)
->> +static inline void ___set_pte(pte_t *ptep, pte_t pte)
-> 
-> IMHO, we should either use WRITE_ONCE() directly in the caller, or
-> find a better name.
+On Wed, 2024-03-06 at 18:19 +0800, Tiwei Bie wrote:
+> A series of minor fixes and cleanups for UML.
+>=20
+> Most changes in this series are very straightforward. Please consider
+> picking this series for v6.9.
+>=20
+> There are still some remaining -Wmissing-prototypes warnings. I plan to
+> send a followup RFC series first to fix those warnings.
+>=20
+> Feedbacks on this series would be appreciated. Thanks!
 
-How about __set_pte_nosync() ?
+LGTM, thanks.
 
-> 
->>  {
->>         WRITE_ONCE(*ptep, pte);
->> +}
->> +
->> +static inline void __set_pte(pte_t *ptep, pte_t pte)
->> +{
->> +       ___set_pte(ptep, pte);
->>
->>         /*
->>          * Only if the new pte is valid and kernel, otherwise TLB maintenance
->> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->> index 1b2a2a2d09b7..c6d5a76732d4 100644
->> --- a/arch/arm64/mm/mmu.c
->> +++ b/arch/arm64/mm/mmu.c
->> @@ -301,7 +301,11 @@ static pte_t *init_pte(pte_t *ptep, unsigned long addr, unsigned long end,
->>         do {
->>                 pte_t old_pte = __ptep_get(ptep);
->>
->> -               __set_pte(ptep, pfn_pte(__phys_to_pfn(phys), prot));
->> +               /*
->> +                * Required barriers to make this visible to the table walker
->> +                * are deferred to the end of alloc_init_cont_pte().
->> +                */
->> +               ___set_pte(ptep, pfn_pte(__phys_to_pfn(phys), prot));
->>
->>                 /*
->>                  * After the PTE entry has been populated once, we
->> @@ -358,6 +362,13 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
->>         } while (addr = next, addr != end);
->>
->>         ops->unmap(TYPE_PTE);
->> +
->> +       /*
->> +        * Ensure all previous pgtable writes are visible to the table walker.
->> +        * See init_pte().
->> +        */
->> +       dsb(ishst);
->> +       isb();
->>  }
->>
->>  static pmd_t *init_pmd(pmd_t *pmdp, unsigned long addr, unsigned long end,
->> --
->> 2.25.1
->>
+For the series, including 8 and 9 that were discussed before
+(but Richard, feel free not to add that individually):
 
+Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+
+I also did build-testing for this, on 64-bit only though right now.
+
+johannes
 
