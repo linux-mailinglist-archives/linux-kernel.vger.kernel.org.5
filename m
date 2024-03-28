@@ -1,168 +1,162 @@
-Return-Path: <linux-kernel+bounces-122302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C8388F4DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2575588F4E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:48:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F829292BF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:41:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1F3E29500D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193B220B21;
-	Thu, 28 Mar 2024 01:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124B122092;
+	Thu, 28 Mar 2024 01:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="it0jMVq8"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CFJDa28K"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D78847C;
-	Thu, 28 Mar 2024 01:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C585320332
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711590061; cv=none; b=mpZCm+ANdIeXwFBaphI2jLcN2fAvwW09kYXYQ7s7AXlvKMhAUJnZfJWlvX3evpMO7qCnpV2c8taOSd046+KTsCRDq0VXpvdPurJh07U8XkvdZJ3WRHI6uRncicADaP7s7t840WLfyT/yfsBl4U/63LwPmExsofdotEugvgAOCfI=
+	t=1711590519; cv=none; b=WcsZH757uL/sR2Puk3LYuVMgBFFNfhburqLDoxiN1cCcSZYOOnLOJYOl/0iqDQAysnz7d6ArWa3jLj1s+TfXNSXkOzy3HXvKsBZXBSEMcen03JLrB3dxU/38lWTb2i4LtTRtn7Q7yjgvvUUQL98+RaGdg+zjfcBoCnTZjbq6KCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711590061; c=relaxed/simple;
-	bh=WxIUwzIRX245RWvPJ1HE1kAUL98+daIiJa1ylRa9i2w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aqYJwS+GF6k+VD250X74ZZmnqgIoA7W94h8obeVnuplD0z12FU6LboG7QFLT6xd9d5upfG8AJ1sJ7MUpulFdle/GHYhf38mp6NYlhz85viZR7aq+kwBiVC76upIxQKUvBLSMLBBFUeq/J7RKPwfkauMjNvUMadKPs6+12Pk/mOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=it0jMVq8; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c3d7e7402dso365122b6e.1;
-        Wed, 27 Mar 2024 18:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711590059; x=1712194859; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQew5YYLgTvT6DTiJ19Nkd1adlHoEpKqIs98rlN2rko=;
-        b=it0jMVq8Spwz64IQiCeyhTQPhD4tsV2cpx6DrEtozVJ6EzQlZcDmjXIVKFWlt0dqzD
-         0zXsT9JxHDPCWVszY+xGp82FPQG8MGLK3LFUzDwTN+gZKetig1CmWpDsD3/i6WI1mtAh
-         cyFjIuVCYGjDpAUEI0MFvb/qiiZehD41XuyV3GrO1zDkNUBvjfmZ6SF1Y257A5I1S3+e
-         vT6EwFbcSu+nk5+zbbX3VFEYAf/Li8QLj8y88AuFmZCLHunGrkFqeUcJwuBejqgUbbL4
-         57CK0PZaJxbfOPGZXUgbbjqV1YzgXT/OXjfzVzOEMA/rXI4Ej925sEyvQ8RxkaK/hEJo
-         PrXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711590059; x=1712194859;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UQew5YYLgTvT6DTiJ19Nkd1adlHoEpKqIs98rlN2rko=;
-        b=SIeyotOeyNZTjPzGYHmkiisR8tFoeqYt3f+H3/zaS/xGmIiH4hdDYb2YhCDJAaQkRS
-         OoXtxurrMXQnhrPjG2NMPZyzODT08cs+I9jTSFDwIe6fVkVb1oVR9DTeqM1f0CeneMbZ
-         dG9zExjMvg9Ya60SsX5k1+NSKG5zcqUGfhHdphG7I3hPDmddcbhSL4fPc6zxcFvkm2DC
-         j6HjPNAa7PQ7zdxJoew4wJYC0WOWHsidHpyQtcSHZlibB/5h0+1IeRjkOIoIKs0AZC8b
-         CB0yMXFUy39QV8rtmnmImqUp8yQbTbf6Tfef5DbOnpGQT4QbGzlxE7pMWdQxD03zNP/n
-         Ktig==
-X-Forwarded-Encrypted: i=1; AJvYcCUx4+3HCnf1xKew9VZtQW299yIo9O7CjOTGuxJEx3Pl5yM32dqfvIsIoMBQrl66+XRnWjzC05ZWX6hDM5K3oKXhmLZIkx/BGxP3Up9fvd8Vgce+J4uvCnWGwu0xBWB+XJW4pLfRE60xTQ==
-X-Gm-Message-State: AOJu0Yx8fTCFdPbhDMUzq7HeXoqHkmqbR4X586F6DxhU0MZt6dyaXV+7
-	Y61CwpBcXyFZ+hkop9UvukuUPGLYCZ76fDoRmLA/r2a+p4phf7OE
-X-Google-Smtp-Source: AGHT+IGcSrsak0kpRYq7vxFaL/0IQ4DAeYAFSWyaYVF7T1dV3iRr67NiFP1pVnKmxrcjunLsF/cv+A==
-X-Received: by 2002:a05:6808:23d2:b0:3c3:d66f:239e with SMTP id bq18-20020a05680823d200b003c3d66f239emr1737695oib.54.1711590059033;
-        Wed, 27 Mar 2024 18:40:59 -0700 (PDT)
-Received: from localhost.localdomain ([122.187.117.179])
-        by smtp.gmail.com with ESMTPSA id t4-20020a62ea04000000b006e6bda407b6sm188831pfh.202.2024.03.27.18.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 18:40:58 -0700 (PDT)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: ti,pcm1681: Convert to dtschema
-Date: Thu, 28 Mar 2024 07:10:24 +0530
-Message-ID: <20240328014029.9710-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711590519; c=relaxed/simple;
+	bh=eOkbu3OBv4Si34quW3MgK7iQ7dO1Yuh23hV9JYBs7P4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EmO4xQCiU5oANWwQRoG4gwLxDa+q/CjnQr1FiYueFg0bOgQ6dlcUqctc3AMvKMzWyP7eZil4y+gkk4Lu68WVGCebGdwFecAw+kwI6hVBBnBnssaqm82Ke4tF/XRt+sA+TB6SisCTlHGQsRj+iwJQ+AhIkf6X7XbrZgn61Rrh4Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CFJDa28K; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711590516;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ms3mo6grZ1J92R+XQiZMnioOtLmeHwZYPWNCbExS/N4=;
+	b=CFJDa28KSV9dRMvT8sSdE4ECy31J5rrq9nzsaIkeGceXA2SBxRrtt9qzsW7/oDS4ZWBmSp
+	ILRaRE1eSx0RXlVMDBY5XT/6PM9SmkyaDPVaiWWLae7UVCXCcKqE3qfRzWtuB2NRb7wQ9N
+	HpkFqSSFMTJhLNGGZXwJ1M1uPk451OY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-294-lFeLVmLoN8m1AheDhDE6vA-1; Wed,
+ 27 Mar 2024 21:48:32 -0400
+X-MC-Unique: lFeLVmLoN8m1AheDhDE6vA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 03AA02803622;
+	Thu, 28 Mar 2024 01:48:32 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 17290111E3F3;
+	Thu, 28 Mar 2024 01:48:30 +0000 (UTC)
+Date: Thu, 28 Mar 2024 09:48:23 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] vmcore: replace strncpy with strtomem
+Message-ID: <ZgTMZ1HYheBMDbei@MiWiFi-R3L-srv>
+References: <20240327-strncpy-fs-proc-vmcore-c-v1-1-e025ed08b1b0@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327-strncpy-fs-proc-vmcore-c-v1-1-e025ed08b1b0@google.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Convert the Texas Instruments PCM1681 bindings to DT schema.
+On 03/27/24 at 09:10pm, Justin Stitt wrote:
+> strncpy() is in the process of being replaced as it is deprecated in
+> some situations [1]. While the specific use of strncpy that this patch
+> targets is not exactly deprecated, the real mission is to rid the kernel
+> of all its uses.
+> 
+> Looking at vmcoredd_header's definition:
+> |	struct vmcoredd_header {
+> |		__u32 n_namesz; /* Name size */
+> |		__u32 n_descsz; /* Content size */
+> |		__u32 n_type;   /* NT_VMCOREDD */
+> |		__u8 name[8];   /* LINUX\0\0\0 */
+> |		__u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
+> |	};
+> ... we can see that both `name` and `dump_name` are u8s. It seems `name`
+> wants to be NUL-padded (based on the comment above), but for the sake of
+> symmetry lets NUL-pad both of these.
+> 
+> Mark these buffers as __nonstring and use strtomem_pad.
 
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
----
- .../devicetree/bindings/sound/ti,pcm1681.txt  | 15 --------
- .../devicetree/bindings/sound/ti,pcm1681.yaml | 35 +++++++++++++++++++
- 2 files changed, 35 insertions(+), 15 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/ti,pcm1681.txt
- create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
+Thanks.
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,pcm1681.txt b/Documentation/devicetree/bindings/sound/ti,pcm1681.txt
-deleted file mode 100644
-index 4df17185ab80..000000000000
---- a/Documentation/devicetree/bindings/sound/ti,pcm1681.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--Texas Instruments PCM1681 8-channel PWM Processor
--
--Required properties:
--
-- - compatible:		Should contain "ti,pcm1681".
-- - reg:			The i2c address. Should contain <0x4c>.
--
--Examples:
--
--	i2c_bus {
--		pcm1681@4c {
--			compatible = "ti,pcm1681";
--			reg = <0x4c>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml b/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
-new file mode 100644
-index 000000000000..4093d0ff654d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,pcm1681.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments PCM1681 8-channel PWM Processor
-+
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: ti,pcm1681
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pcm1681@4c {
-+            compatible = "ti,pcm1681";
-+            reg = <0x4c>;
-+        };
-+    };
--- 
-2.44.0
+I didn't build, wondering if '__nonstring' has to be set so that
+strtomem_pad() can be used.
+
+Thanks
+Baoquan
+
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  fs/proc/vmcore.c            | 5 ++---
+>  include/uapi/linux/vmcore.h | 4 ++--
+>  2 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+> index 1fb213f379a5..5d7ecf3b75e8 100644
+> --- a/fs/proc/vmcore.c
+> +++ b/fs/proc/vmcore.c
+> @@ -1370,9 +1370,8 @@ static void vmcoredd_write_header(void *buf, struct vmcoredd_data *data,
+>  	vdd_hdr->n_descsz = size + sizeof(vdd_hdr->dump_name);
+>  	vdd_hdr->n_type = NT_VMCOREDD;
+>  
+> -	strncpy((char *)vdd_hdr->name, VMCOREDD_NOTE_NAME,
+> -		sizeof(vdd_hdr->name));
+> -	memcpy(vdd_hdr->dump_name, data->dump_name, sizeof(vdd_hdr->dump_name));
+> +	strtomem_pad(vdd_hdr->name, VMCOREDD_NOTE_NAME, 0);
+> +	strtomem_pad(vdd_hdr->dump_name, data->dump_name, 0);
+
+
+
+>  }
+>  
+>  /**
+> diff --git a/include/uapi/linux/vmcore.h b/include/uapi/linux/vmcore.h
+> index 3e9da91866ff..7053e2b62fa0 100644
+> --- a/include/uapi/linux/vmcore.h
+> +++ b/include/uapi/linux/vmcore.h
+> @@ -11,8 +11,8 @@ struct vmcoredd_header {
+>  	__u32 n_namesz; /* Name size */
+>  	__u32 n_descsz; /* Content size */
+>  	__u32 n_type;   /* NT_VMCOREDD */
+> -	__u8 name[8];   /* LINUX\0\0\0 */
+> -	__u8 dump_name[VMCOREDD_MAX_NAME_BYTES]; /* Device dump's name */
+> +	__u8 name[8] __nonstring;   /* LINUX\0\0\0 */
+> +	__u8 dump_name[VMCOREDD_MAX_NAME_BYTES] __nonstring; /* Device dump's name */
+>  };
+>  
+>  #endif /* _UAPI_VMCORE_H */
+> 
+> ---
+> base-commit: 928a87efa42302a23bb9554be081a28058495f22
+> change-id: 20240327-strncpy-fs-proc-vmcore-c-b18d761feaef
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
 
