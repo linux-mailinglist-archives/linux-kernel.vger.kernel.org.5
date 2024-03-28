@@ -1,163 +1,176 @@
-Return-Path: <linux-kernel+bounces-122716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1FEB88FBF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B960D88FC00
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 217B91C2B176
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:48:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCC391C2C136
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E19F657A3;
-	Thu, 28 Mar 2024 09:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DF4657D5;
+	Thu, 28 Mar 2024 09:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TbHa/c5G"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Nv3tEDuf"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AE941C62
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE1564CF7
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711619308; cv=none; b=Ay8UiFJqt5VaXl2KclzvMiZc/2KVAm4zQN4uWTd5F2jGIUrOk9YDo3p8+0kAe4BcMP5CdDBCotsaQC4Gg2Dr8ECV9rakGA37lu2CTEIloyUufsrsuzZ9MrN/BKDvZPbMO66wJenvWhy1tUFOw/7Zy011L4fh9NwJKi2miYj9nsM=
+	t=1711619363; cv=none; b=E6I7Mk7d7J9w4GmTq24Ua9iikw2s6a3wqFcz9LPGHQf6i4x1l1W5adts04aqoLlVcUj0Pdsg8QUIOpTtxDz4BXnvx2bY3uJ998Rno7dYMqMGKum5+AbdjaBjrxCNb+4x6Zs8FvzDJuMQxJRONGq/GRfdjkPI7ZQagJ36InKPIag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711619308; c=relaxed/simple;
-	bh=9vnJI+0gpz+i/GYyu2HPCOAIRPNpTxit1kEdQXpnsP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pTxA3e+cFTEgq8Z0kqzlz6H4215+Z/tQnkW3qNSVu30dd8Pmw+RoVoYE2QJUC4WSmlzAM8OmSw5dI2rPD486K+vpOQPLy7F0w7Dd81t0mGhJnrST0GdLBcnQzWukNk8qDiTCBob20SSmnKUyhAGh1Wg4vvBXVyuZqF3pTCK+QHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TbHa/c5G; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711619306;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sJEzAodsfnEL0K0FhCD5vo7II0EhJAX4+qdJjboZa+Y=;
-	b=TbHa/c5GPWgM5fMt6EwT8SHwLUvQI1uE98XopdS2C8qAQzNptffeajOLtNmO23cBraKW13
-	LgjIgucFcbYhFEEryM1ABbBRmbprh377vwtlN8COvi2ghKFp1HShVTP/mXgsx1wxQmGMUH
-	uLdtM8z8m6f1YLOzuX5hy6NEU2RTQkE=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-79-I_AMSvXFOBC0Lis4zCCnxQ-1; Thu, 28 Mar 2024 05:48:24 -0400
-X-MC-Unique: I_AMSvXFOBC0Lis4zCCnxQ-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d6f7def478so6608081fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:48:24 -0700 (PDT)
+	s=arc-20240116; t=1711619363; c=relaxed/simple;
+	bh=hzmvgD34ISPJE+AouaRVXOuDSIWXTiOaZypBcAViVmg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fmFQ5KgfqKh0D8TG/daZpk77oH26N2kWl5Jve9CAoBqJbobL0M7vWZ6UYcXfHe6JCvib6bfPhISx2Mmln/WI46n4H6UKaMzfOS4x0EF9pSp2bvl8HzDVh5wmMym/u5WPRc4FF6qWqLYp6hVffKbJyfjUFHCDZeBl8njfPiHrCCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Nv3tEDuf; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41545616455so2388205e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711619360; x=1712224160; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=v77UoLBLsIld8XmVs+b2QBRLQe7ErVFpEjJbNjK04qs=;
+        b=Nv3tEDufYfzp9xf3ADvUzJRmpowxjuqshWWRaX5MA8/WrDqtT7a5hQ9XffiZR0TOVq
+         v6xIbYKml2YNu4cd2hIPcbQ3TOX4s2HdNSMWpUtQQJEKxkt7Syk7DsLdIYbCaG7yvFSa
+         ZJNhugVr40AOIOixGAPZMrUeSEmnZzU5mfd5f4uInnBfbEQ/0fa6fr7oKhb5MvrSh8r6
+         ewJCt4UXpXtVOZV5XoZBQa7ic5842iX/tgXdagkjz+Rf6LRUF7QuAc6kEsWLt0LO7pOa
+         5/NOTqk0aPfvckoy/L014H3oklkO2WGmFMPDMnBo7cPN3tViPRikTHi8XYFu54/HAtLc
+         U4Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711619303; x=1712224103;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1711619360; x=1712224160;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sJEzAodsfnEL0K0FhCD5vo7II0EhJAX4+qdJjboZa+Y=;
-        b=CfE8owiLQXbGDYGD3mbdUSGm3g+xoEKMW3sJxM59wXZ4nkc5IB2S/SQcz3BsJhDVD+
-         5xuo7IrJtwoMSc/UTLwV6drKRerG/XavzFX0WN2XrdED3AaJCFoMJwPzrcrg6JRtAYjH
-         wf+Xq38tNOLvthrPFI875KlXSc4YJ/w6tnV27H6XnDQkQ25W1BwEa7EQ1RjZbeDQbIaZ
-         amstVXXixwNR0uZmxWNKTfR5asvwR7jLnE5UU97vWw9x+bo3Clx7Fzwr8e71iv1Cn4g2
-         X9LJ8mWZd9ksc/2OWa49xx8YKVfn1Xhi0kmX1aFKwKm7DzOygDDvD1qVOIsOqWy5oHaA
-         a+mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+ncn1lrkTkD3nkRykI11XzbSuO66+x42tZd5QzGTvUmmEzun4dtQ4pORF/SIUuOgaWuXPt1tgFBPEGUGTwIXjRNHy5t2DUysLC5ZR
-X-Gm-Message-State: AOJu0YzlLYVMD0IwzP0cvnPP3IStXV3wg3qQyU3nxvUpO69ZT96fmild
-	/KrAmwS3w1jUP6Wvvowr8FQujo/2AYF2HCX7cF8tw6LKI5BMv0du1UV4gRNMcNFT8AkXlHiM/MQ
-	WrF94WT0dAVhVKDEV678xzxrAhqksfXsfxnhhXK5Nokzw1nn+nazJkiEHfxaZCA==
-X-Received: by 2002:a2e:3005:0:b0:2d4:a8cf:e798 with SMTP id w5-20020a2e3005000000b002d4a8cfe798mr2029991ljw.14.1711619303295;
-        Thu, 28 Mar 2024 02:48:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFlr8XFRSqwaakS5+LO2iJaNYyntFn/LVoEhKaEqAKjIjW0cL05vZPccbrBZ3Q4IxQ5b5nPZA==
-X-Received: by 2002:a2e:3005:0:b0:2d4:a8cf:e798 with SMTP id w5-20020a2e3005000000b002d4a8cfe798mr2029979ljw.14.1711619302927;
-        Thu, 28 Mar 2024 02:48:22 -0700 (PDT)
-Received: from sgarzare-redhat (host-87-12-25-33.business.telecomitalia.it. [87.12.25.33])
-        by smtp.gmail.com with ESMTPSA id fm26-20020a05600c0c1a00b0041547fef66dsm871554wmb.15.2024.03.28.02.48.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 02:48:22 -0700 (PDT)
-Date: Thu, 28 Mar 2024 10:48:18 +0100
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Gavin Shan <gshan@redhat.com>
-Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	mst@redhat.com, jasowang@redhat.com, will@kernel.org, davem@davemloft.net, 
-	stefanha@redhat.com, keirf@google.com, yihyu@redhat.com, shan.gavin@gmail.com
-Subject: Re: [PATCH v3 2/3] vhost: Add smp_rmb() in vhost_enable_notify()
-Message-ID: <yt64yc2lawevdw3ptgt4nkaqub5kzvh75ch2ertchcx7ubzmgw@k2mkbsfsjehy>
-References: <20240328002149.1141302-1-gshan@redhat.com>
- <20240328002149.1141302-3-gshan@redhat.com>
+        bh=v77UoLBLsIld8XmVs+b2QBRLQe7ErVFpEjJbNjK04qs=;
+        b=FyGJXTTm5cXAJfSqu6vf39RICGGPiisNEOkgqdYeJWAcG/ThQp9MN9mWmx5qixwqoe
+         jqCr1EDseimj3u6kS0UWFJ1sUVY9ONkcN5kK2SUfYJhyq88UCaN7O6TS9nBoTgtxnxNm
+         xDBlvQz5Sl0lYFtgO5g4/ZxOVccNytOz3sOsbM8veprVipJjyMrwBLor3dQJgWR+g8xU
+         Q7ReahVSiKa8x9c0R9DvbH5vBsRgTqhQWx9MT8yK7P8Di8q/AYbSz07O1t2Q/sw7LN8K
+         g9mjicICncNZVKr4FtcsL5OmvPfjdruBtZeEZ70h1MKEdQdnzghdA8TrtGO9RaobvFLn
+         CnNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0L1c/CiTUUozFXFpUgrrLrPigwS1Q+jt3tTvaDWg4fBdfBY4VPfM5UvyWcULBNoUQ0HJtLezSr0zzZxgziRt72KMFgNwGj1Rf/U5G
+X-Gm-Message-State: AOJu0YxdgDMmfn17AmKY1+W1MYM06T7VxJ4eh6QGXybhKzyOgvgARx4j
+	7pctSjwfqVfcSPgD8mrTfxhTsp0c7b3NwbaY61FmVYlLuys+TPy8iGeQ6FPpSqw=
+X-Google-Smtp-Source: AGHT+IF8/V9vViTXm0hMhm+pxnBd3cPTY38qxFZ3M/IzVD0AG9F0j/daJRVYLpqaCWPwXKHSqjP47Q==
+X-Received: by 2002:a05:600c:46d1:b0:414:8870:9c1a with SMTP id q17-20020a05600c46d100b0041488709c1amr1344121wmo.7.1711619359773;
+        Thu, 28 Mar 2024 02:49:19 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.148])
+        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00414688af147sm4881034wms.20.2024.03.28.02.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 02:49:19 -0700 (PDT)
+Message-ID: <1a7f1818-2f2c-4e89-b2dd-4ad0f72ae3c2@linaro.org>
+Date: Thu, 28 Mar 2024 10:49:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240328002149.1141302-3-gshan@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] arm64: dts: exynos: gs101: join lines close to 80
+ chars
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>, peter.griffin@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ andre.draszik@linaro.org, willmcvicker@google.com, kernel-team@android.com
+References: <20240326103620.298298-1-tudor.ambarus@linaro.org>
+ <CGME20240326103631epcas5p37bc95c57becdeb63b0d8b01ffc6606fb@epcas5p3.samsung.com>
+ <20240326103620.298298-4-tudor.ambarus@linaro.org>
+ <001801da7f6e$40545650$c0fd02f0$@samsung.com>
+ <454b88d5-885d-4933-ae49-46eaee99d75d@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <454b88d5-885d-4933-ae49-46eaee99d75d@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 28, 2024 at 10:21:48AM +1000, Gavin Shan wrote:
->A smp_rmb() has been missed in vhost_enable_notify(), inspired by
->Will. Otherwise, it's not ensured the available ring entries pushed
->by guest can be observed by vhost in time, leading to stale available
->ring entries fetched by vhost in vhost_get_vq_desc(), as reported by
->Yihuang Yu on NVidia's grace-hopper (ARM64) platform.
->
->  /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
->  -accel kvm -machine virt,gic-version=host -cpu host          \
->  -smp maxcpus=1,cpus=1,sockets=1,clusters=1,cores=1,threads=1 \
->  -m 4096M,slots=16,maxmem=64G                                 \
->  -object memory-backend-ram,id=mem0,size=4096M                \
->   :                                                           \
->  -netdev tap,id=vnet0,vhost=true                              \
->  -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0
->   :
->  guest# netperf -H 10.26.1.81 -l 60 -C -c -t UDP_STREAM
->  virtio_net virtio0: output.0:id 100 is not a head!
->
->Add the missed smp_rmb() in vhost_enable_notify(). When it returns true,
->it means there's still pending tx buffers. Since it might read indices,
->so it still can bypass the smp_rmb() in vhost_get_vq_desc(). Note that
->it should be safe until vq->avail_idx is changed by commit d3bb267bbdcb
->("vhost: cache avail index in vhost_enable_notify()").
->
->Fixes: d3bb267bbdcb ("vhost: cache avail index in vhost_enable_notify()")
->Cc: <stable@kernel.org> # v5.18+
->Reported-by: Yihuang Yu <yihyu@redhat.com>
->Suggested-by: Will Deacon <will@kernel.org>
->Signed-off-by: Gavin Shan <gshan@redhat.com>
->Acked-by: Jason Wang <jasowang@redhat.com>
->---
-> drivers/vhost/vhost.c | 12 +++++++++++-
-> 1 file changed, 11 insertions(+), 1 deletion(-)
+On 26/03/2024 15:48, Tudor Ambarus wrote:
+> 
+> 
+> On 3/26/24 11:10, Alim Akhtar wrote:
+>> Hi Tudor
+> 
+> Hi, Alim!
+>>
+>>> -----Original Message-----
+>>> From: Tudor Ambarus <tudor.ambarus@linaro.org>
+>>> Sent: Tuesday, March 26, 2024 4:06 PM
+>>> To: peter.griffin@linaro.org; robh+dt@kernel.org;
+>>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org
+>>> Cc: alim.akhtar@samsung.com; linux-arm-kernel@lists.infradead.org; linux-
+>>> samsung-soc@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>>> kernel@vger.kernel.org; andre.draszik@linaro.org;
+>>> willmcvicker@google.com; kernel-team@android.com; Tudor Ambarus
+>>> <tudor.ambarus@linaro.org>
+>>> Subject: [PATCH v2 3/4] arm64: dts: exynos: gs101: join lines close to 80
+>> chars
+>>>
+>>> These lines fit 81 characters, which is pretty close to 80.
+>>> Join the lines.
+>>>
+>> Does this breaks checkpatch flow?
+> 
+> ./scripts/checkpatch --strict does not complain
 
-Thanks for fixing this!
+Because checkpatch does not have limit of 80... Coding style has, but
+for readability it is fine to stretch or even break this rule.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
->
->diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
->index 29df65b2ebf2..32686c79c41d 100644
->--- a/drivers/vhost/vhost.c
->+++ b/drivers/vhost/vhost.c
->@@ -2848,9 +2848,19 @@ bool vhost_enable_notify(struct vhost_dev *dev, struct vhost_virtqueue *vq)
-> 		       &vq->avail->idx, r);
-> 		return false;
-> 	}
->+
-> 	vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
->+	if (vq->avail_idx != vq->last_avail_idx) {
->+		/* Since we have updated avail_idx, the following
->+		 * call to vhost_get_vq_desc() will read available
->+		 * ring entries. Make sure that read happens after
->+		 * the avail_idx read.
->+		 */
->+		smp_rmb();
->+		return true;
->+	}
->
->-	return vq->avail_idx != vq->last_avail_idx;
->+	return false;
-> }
-> EXPORT_SYMBOL_GPL(vhost_enable_notify);
->
->-- 
->2.44.0
->
+Best regards,
+Krzysztof
 
 
