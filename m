@@ -1,205 +1,369 @@
-Return-Path: <linux-kernel+bounces-122274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1627888F489
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:25:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3056888F485
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6E0629A486
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:25:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8973AB2368D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D34B208B0;
-	Thu, 28 Mar 2024 01:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8AF1C680;
+	Thu, 28 Mar 2024 01:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZlhEfXJZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="PXXY7wCk"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEA9FBEE;
-	Thu, 28 Mar 2024 01:24:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711589089; cv=fail; b=DuWwmtgACfmiFDX8ZJYTSyH77n+m33AybYIOUJbG4HJ5JJKGaUJ3cRys4zjmuu1LmfZVyy29lsSegUA3ZS3Vd25urPuYvR5GBBVlT1iqqXMp88D68W7libOUoJpk/4VRLec0Yi3l4lBjKKAchAyAtTj2R2Ifk7iOrcR5KP5Bg0U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711589089; c=relaxed/simple;
-	bh=qf5nys2JZU1s7uqltsRp9bh411OkwP6eERN6oGzgqlA=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=b9MN3fnxDGlHEcx+iQv2Q4xEzt1s+38pfnKqO2O7j5L8AzX0nJiT/skXUyWY14iQkMws2fXgp7S3bYnP++2Le9oHSKEoFAXt7S1ueywe30OARnP9rRrsFxZYR1cW9odR0BB62t3KSdRzSOjrjTKFa7VH40MI7xmpywYpKQPVD7E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZlhEfXJZ; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711589088; x=1743125088;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qf5nys2JZU1s7uqltsRp9bh411OkwP6eERN6oGzgqlA=;
-  b=ZlhEfXJZgSd3OugEKiRZn2ydyegdNCOyC3NiVfBDXRV/zedYNOjopP4L
-   AYtfPdDY0/2iewI4JEpkjM0IffMWxNsgM5T6ZEW7kS5u5cOyV+WtLt9/g
-   405OS5DWT8HBoF/sLCaUU9a5oL7JydCdCbx1du40N54JYC1odNawailyI
-   BPYv5n34KWpIbayw9Sr52Rq5DfDYrnBUMYZwtqHenuafX+nc1K/910ajq
-   Gm2AdzkD/GFJLRxwxowabunQT1kznr9CqKXn0/HsvWDd2E+lP72qdMKEI
-   LpsPoI2NHdjRZFOgZD26iftva6NZC8Zz3HIKpNWfbUjf7WUQ3SVffBakm
-   Q==;
-X-CSE-ConnectionGUID: lGP6cH6VSNKx2gZhv0MqtQ==
-X-CSE-MsgGUID: oxW43SK9RTmque6NQ5hRAA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17452763"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="17452763"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:24:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="16310675"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Mar 2024 18:24:29 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 27 Mar 2024 18:24:29 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 27 Mar 2024 18:24:29 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 27 Mar 2024 18:23:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cHVAu+p7yOVhS4hB8R+ubo5Sf0VuPsbpbJO0wISQJhGVwl5i6jla3O0vLwyulfzv9veKgUppjHep2IwfpW0Gd886o7wMUUVUPf7TlIPEF0yv0Dx9mZlpHxylYRlcXMDk8uKoImZSMneAeW4NFxNtLtzKTyaesgE/Jx9PC7D4/8Mcr8E5fCHeRx619YRwMTttDLG1DHGxHCxG52zczuITVK0n7rriI/a2XL6MnF5puB4P8vJg+6iQ4khrsgtqA/sfnSvfu/rC4KixWveoaRCgN6jGHp2jtWHywr4rOiN5jBSWtdW207Tr3/t2gYfgbctpj8hXJ0duxm8seUcA+BT52g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W5gkRquqd9UgRIL+UgYY3LS02HEjDTGY177SS3Z0WLA=;
- b=NWKZNhYqJg5EZ2o4t39Apt9BVfukq15CvmRE300IhBDrxUbHk9Cvt2/W0J94xgfufOL+JepPmgIP6108XPAKPZyq30T6+hriwQLS+DRudeoXP+UDEjIF7EFC/r5kPTRvBo4bmpIt6OZ/ywbuS1FZKvNp7PiRCWDKlsPDsO/Ky0BhjA8ULelYOPHJqC7yPRAhwevBoAzLSipd34KO4MZANDmJw57LMDPhLfeK1JIiBz0Q7zPqSNQRu83gAbDBeeRhT3Ti4GqRIT4Obo+vuLoL8nN5vuAGIlxCcIeSFkmI5ZBoZZf5/GxD7R+/Q88r8Bsw+tCid5siezjYTIeETVvmRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by DS0PR11MB8720.namprd11.prod.outlook.com (2603:10b6:8:1aa::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
- 2024 01:23:45 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::3e4d:bb33:667c:ecff]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::3e4d:bb33:667c:ecff%5]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 01:23:45 +0000
-Message-ID: <359fe9cf-d12b-4f75-8cae-7ce830ec76d9@intel.com>
-Date: Thu, 28 Mar 2024 09:23:35 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [kvm-unit-tests Patch v3 06/11] x86: pmu: Remove blank line and
- redundant space
-To: Dapeng Mi <dapeng1.mi@linux.intel.com>
-CC: Jim Mattson <jmattson@google.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Zhenyu Wang <zhenyuw@linux.intel.com>,
-	"Zhang, Xiong Y" <xiong.y.zhang@intel.com>, Mingwei Zhang
-	<mizhang@google.com>, Like Xu <like.xu.linux@gmail.com>, Jinrong Liang
-	<cloudliang@tencent.com>, "Mi, Dapeng1" <dapeng1.mi@intel.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
- <20240103031409.2504051-7-dapeng1.mi@linux.intel.com>
-Content-Language: en-US
-From: "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <20240103031409.2504051-7-dapeng1.mi@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR01CA0020.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::6) To PH0PR11MB4965.namprd11.prod.outlook.com
- (2603:10b6:510:34::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9613625776;
+	Thu, 28 Mar 2024 01:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711589039; cv=none; b=Cojjq04zRSKw8HutjnkJJ9MZF4F8qo8shQ8N2BZ5/D5wOu68oGQ4ahihYW0R5wzRMFINDv7psv7hJwxJU+YU09xqxLdQX0V1ZWbhC0dqqBulxZVJiHXKFq65GGWK2XGim+CHZAY43uuWWbT6jkPBCQSJGia7GBIHkrRjYep3akA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711589039; c=relaxed/simple;
+	bh=A3EEkpVzq1kmZYO0UtLCp2XPP882vqIpF4vymx2E8iA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mblHAu2CCafv/ogsiD46yUivTGFaco1W98GwR3VlKsodrU6HiZJq4KfgXOA0MAv42Jswrp7XHJnAYccKZgTWLZysPF98aCv6hKi9Qs0zTU5sG22bfcluIshxFx8BgOUK7Hdn871VgC7DPqCVY4eSefnIqezJGQ5OiNZ7X8fBLbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=PXXY7wCk; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1711589024; x=1712193824; i=w_armin@gmx.de;
+	bh=F0gsGYX1MarytRW2DK4b7MvHfuYjgZGhqOukEJujug0=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=PXXY7wCkT8geOf6zIcGUuRjaMaM6Jz095WMJCUXwkzIlYyyMRkaaCHl0zv993BlB
+	 HuFXAWz88eQsgj73QPoMq+ID21JOkcK6a4Kzy3KQdY18Q6hmzC+cZ1AonfFEg93ZY
+	 zSjaTfE393k5dCk8bCsE/uuUl+BhAvqm1Wew3K2sc+AliEX0i8fOxVbb5Mm5Ia3Mi
+	 fFJg+XLaS7rMVHe8OUXevRtHe73MDF3bjr3JbIMAAwq3CAuqL7yIT5oLECczkSE2I
+	 4L3aB4B6FIzBNSpDy7Y1DeQhNVz3hfI850teORrg/sWdWdaauokjxhQg810y8otO5
+	 nKVy56FJt+kGHnPx5Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MysRu-1slCte30GA-00vtWt; Thu, 28 Mar 2024 02:23:44 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: corbet@lwn.net,
+	linux-doc@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 4/4] platform/x86: wmi: Add driver development guide
+Date: Thu, 28 Mar 2024 02:23:36 +0100
+Message-Id: <20240328012336.145612-4-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240328012336.145612-1-W_Armin@gmx.de>
+References: <20240328012336.145612-1-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|DS0PR11MB8720:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2704decd-7bd5-4a2b-ae9a-08dc4ec5b623
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gwGM9pfEctAzIgXLEKEYDb1X9qXw36gFe2hiVpB3v91RMPVfRO73dPIjvKQX90OwYNwiNVEH3L/ONNn65vjoFsddSn6aOviWtwm5CL1L13yBB7jOonGNgIZxVRTH7c+rUwgXt0dnhPsWQmtUDK3MHk/CV3anRL3y6YM5PEz8xXZyZun/8Nq+Wnr+Bfi/pRjkg/zHe3caipSHXw8PASLQLBEWA38CRk5w9zXtNnfFv/mPSPeY0tvGyCkOMJQT4YyP96h2tDP1NKsSLAg0df6heFaQnbjtpLp6BhtqQq+cCDg0niEVJAQxm83b75mh+8jq4WE8/CxaHWV+iX82r9c8Gzfqti+Psdo+MZBqB4pQvOAnJ1J30ZhlRJxIq34InQrLWO1/lAl2XJT07RqTbhqECZC/Mgb642ziA0ER9HOTZjrgZnjQMHUZXvhdxZKjiMDWXR9is4bOO/eOWXaM/2hO0eaAoCO3EoFp2/U6pjZUK761cQGS7eADuOsdTxjIewvX7ZifZkAcfg4xvbOt1/ZV4J0qXLlMGHr0fq2pKErdz4SQDOWc5qwK9IWqt3J+BXdezN5VgH7iReMh3g8yENHHEZOEJtW/iobjHH+np/lXdq40VDYDufNTG1z0j+/aWO7cnPjgxw5YWKB2YGSDwGswBOkj0C1OXYbji/BRAvDBC2s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SlpYdFJqNk1qeStoNXg4ZDlhOVdDa2E3NXFHYllQUWV6ejVKZmhDOUlyb29r?=
- =?utf-8?B?Z2dWMmx2MEZEcEdyOEZoZktMZnBIekpTZUFrSFNRSzN0OWZ1VVhmMlVKRk5O?=
- =?utf-8?B?S1lGV0kyRlozejVUQnBuMGNtQnFUaVVuQmJYaTZENENXZC8zZ1dYV3NpWkM4?=
- =?utf-8?B?bUF6TkFING15K1B3a1pWZEY5clE5VGkzQUJ0N0F6QzVVT09XalpINzZVeWZG?=
- =?utf-8?B?dytKdFZsMk1iUnRFZzBaanRPamVaV3E5ZkRYUHE3MnE2OW9xS0d2NTVPUERw?=
- =?utf-8?B?YU44eWppY0VTTzFrem11VDhvWSt5QUVRMHJzWGo0RmdxQ3A3VU1Va215QjF2?=
- =?utf-8?B?dEM2UkdrVFNWR05kVHl2MWc5aDhhTG5jaTYyWGNGQkZ5ODFGZWxpRjNTekN1?=
- =?utf-8?B?Y2I5NkpjZGlDaU9iS2wzLzNwUXI2M0k4Y1dSTmtXeDQ3a1UxUEhtdVBkeEJl?=
- =?utf-8?B?TTI4L0IxYW0ydEp5UktjWUJEUnkzTFNhQkxTdUNGZ1ZyK3FkZ3NzendYNGFY?=
- =?utf-8?B?bEtlZDVBeHhhRnJiWStkZUNwNVA1eFd3bFVpNEF5RXNweHl1allGbzQrU2M5?=
- =?utf-8?B?ZzM5b0R6L0h6RzNGeDltcTNGejVpbEQvTjdwRVlHSzF5UDdhSWN6LzdDd0gy?=
- =?utf-8?B?M1BEVzdJRnlrbE1Bb0VpMFp2eWpiazNiazJmT1JyQlpKWEMwY3pJSi9LODR6?=
- =?utf-8?B?ajUycWZCTHNhaUNGK0RDbm1BOUsvVDFEcEYxM203dUMydnRoUkxsS0dUMG5p?=
- =?utf-8?B?WU05cXM1TU9qZTBQN25yeTBoOXFwMFJ0M25ZOEhmZWFtRlVoVWdOcmNqRVNm?=
- =?utf-8?B?cWwwV2VWODhNeFRNakF4Z3RhWGVyT2dTb2ZOckZRQ2lya2Z0cEZpMFlaVS9B?=
- =?utf-8?B?SXMzbkx3aHEwei9iUU4wMFZyanVNaFlONlJCVFdWWlVlb05EcndNdVZPWmlj?=
- =?utf-8?B?OXhneHBsN0k0K1kzTm9vQ2NXZVRkUTFwMlFEMTlna1I1Ry9Pd3B2a2pObFZ6?=
- =?utf-8?B?YnBjZnluQko3eUlIdXFKM2RqZjNTdzhaZXlLUVIzMWZsK0pnajhrWlFJM0hT?=
- =?utf-8?B?dGlTNGxJRk1od0hWZ1E2anpLbzJCYzVtV1FWTko5WUdGTUZkV2k1Vmp2TlM1?=
- =?utf-8?B?ekhOam84YktXaXB6VTljOHlSdWVNWDlGMkxSOTcwdkxtbVVkcWQ2Zy9oTTYx?=
- =?utf-8?B?YzBSL2phYVU0eENPME1ZT2FNbDF6SUZPbTdid1RBbFA3MG5nN2xuZVJzck9n?=
- =?utf-8?B?djJqSXc1dUo4OHVIMVJlKzNnTWJiTEhTYXZJK2V5WjBpMFpkWlFDaXUzM21x?=
- =?utf-8?B?YjNKSzdacU5rV2VFQzQzc2NMb0lIQk54eS91YzJGOWluVGtJVm5QV1BwT1JP?=
- =?utf-8?B?a3ZJdXUrUEllRmhIWVp4bFRQN21UbEVCUFdzTzkrZ3EyYk5qR05QWXdmWGt5?=
- =?utf-8?B?aEplV0IxVGp6azdwcGN2Sm9ObHBiM0tHSFRsN1hBcmhnSzNKajRBQ3lPK0lL?=
- =?utf-8?B?RkRvMlo3WjNkdllSSHFna0NLUGhZUEJJdnZqSWxSRThxZzA2ZkphYWRNTVVU?=
- =?utf-8?B?MzBGWEwyNjcvUm5kWWR0bDloZ2hOZ1YrU1ZHbHhPM2hnMG93K2ZiSkVYYjl5?=
- =?utf-8?B?bE44S1RDbnErQVM2WUVEemZjSUswVVZPOUgvTlpadmhxRU5WK3Bia283ek9G?=
- =?utf-8?B?aDRGaDBaTXpkZWQwaGpDUGNDZ3NGTUtqbWpjbDBVUVJuWlFWem9XbXFuVVND?=
- =?utf-8?B?NkpaSzlBZGVjMmgrOHBTczhWRUxXSFRVTkdreWxBM1hwTitCaUN2TzBuWE9Y?=
- =?utf-8?B?WEVlSGJPNzVXUlFHS3Qya0dCclJEZHJoYkRKc0JldkhHQ3RIN2RCdEZwVzRP?=
- =?utf-8?B?MmtQeWFQYS94K3lrWFBBY1libTJiRzlNMG51WWxkTWdRVlJMaW9zVGFMcEN2?=
- =?utf-8?B?MG96N3Uvdm5oN21BKzVnZEU0MUF1ZHMwa2lITCsrRXNON2xSVjUxTi9qTjZ4?=
- =?utf-8?B?TEZndUp1bWNwMnRZazNCY1I4QUpET2hZMU5DZjdpbktTUWZMcCtlOUlLTmhT?=
- =?utf-8?B?ajNBOG80VEdTQ1A2U1YwS0ZoQ1dZVkRWbjJaL3hSZVpDbllDMHZyd0dkazhM?=
- =?utf-8?B?TjJJemd0K21WVmZ6Ri95MnhxZlJzMEhJVTN4QTBwS3FVUkYwenZXUXAvcmYw?=
- =?utf-8?B?NHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2704decd-7bd5-4a2b-ae9a-08dc4ec5b623
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 01:23:45.4162
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xQxCkxWjjiQ/PNk0hoViqxqbYGsbHllQSjcNYsD3kRRfTdjm7Y+nyokveoVDLWx+V5NID0G/awYfK8VFcS2ACA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8720
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bLJwqVkH80BP8n5guaaVCsqTT3aVY+jZILx2R7Pl4TSuPFZICZ5
+ WgmpZvM4Ofgd8JsnsfMLL/qvGxCNALzsJsZzozcYewh53TMY8BwJVdtkn8sLx1ja+Qy4PcU
+ 44I0mF23TH/JkyldHK4QUsBakjH8cw1UIU+kx8HwGmw2X4GZzQdFMoTsIQ/AuYQOeF+vlUi
+ nRAuwZilLr4GqP1OcW6xA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:BYwcXPbrfJs=;0QW8kRtKbBNqknne2ZHJAFkIMqA
+ Tx0D7UsVUmbRh9E0Xi10v8XGvrHL3sqlTMFwvxHiXB50ypwoF17TugnUXlSAuygxdziahb4nD
+ sRmlsgVfMiGSETZ5G3p62FKpmEBfUId3mo2o/SwJFGW2aYB3FeZqpdKHLuBZ1I5Id9jIocBb/
+ rm3YWwsRNNhkzPBTvAXrXZU6ABS4hV8ieIvSzl/lPACHmMgNOJ06CaHWJY8cQog8eonWVJ8LF
+ 1/EqSKgqNzGMT3imSUWwV1ScWzbCxnRP5Yal0JxjrzAEPvt714YFqO8qFeA4B2804O1ZjwXfw
+ h6n9E2h6N0W++Ouu2f8M3Udc6MbfN+/EOngxWk3cqvKoUJEP6l6azIvxFnDqGVFQ3Zxtw4rWm
+ ptdc4TMoHBCj0HloqCGpZ/jY5lPEG3nXvRhwwSaE5FfppiUlCIGAqYJ2tOYf5EEwBiXm2RnSI
+ v2LlJz+g7SPnmGWCGSSXWdMZxxjGcUSFVjMOniXZ67X5iev3pcZSIMd6AWDca2JyI3Cslw7Rh
+ ciFYuOwqlZ+XEN99z3Z75VsgmJNzr1v5JVNCqKj36+7+l0WxF03atkpnjau6Bc5/w4Mwc5xLZ
+ 46tBCYjEjENgFMN4bBefHLnIrGMgnKbCtUUJwq+JhB4R7XzDOGQbbIlAtnwmuaqKhperkRWh5
+ Kts1nEcgZjtY/3GZrvsM6Gfv7IblwqJqz16l2G34dBUiEqrYXz1rAUWluxtkCNx/HLi95Qwxq
+ CpV6EzihByErFpxsfUyh22jzOMOgeIOXqa7nanEI855v8Xn+IwuDLTm2hcPgiHEkWyn9+0IeX
+ odMq5wPh+dZ5DlhvzSROjkXho31xSkCuvm4ZINA+0Mf1o=
 
-On 1/3/2024 11:14 AM, Dapeng Mi wrote:
-> code style changes.
->
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> ---
->   x86/pmu.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/x86/pmu.c b/x86/pmu.c
-> index a2c64a1ce95b..46bed66c5c9f 100644
-> --- a/x86/pmu.c
-> +++ b/x86/pmu.c
-> @@ -207,8 +207,7 @@ static noinline void __measure(pmu_counter_t *evt, uint64_t count)
->   static bool verify_event(uint64_t count, struct pmu_event *e)
->   {
->   	// printf("%d <= %ld <= %d\n", e->min, count, e->max);
-> -	return count >= e->min  && count <= e->max;
-> -
-> +	return count >= e->min && count <= e->max;
+Since 2010, an LWN article covering WMI drivers exists:
 
-I don't think it's necessary to fix the nit in a separate patch, just squash it in some patch with
-"Opportunistically ...."
+	https://lwn.net/Articles/391230/
 
->   }
->   
->   static bool verify_counter(pmu_counter_t *cnt)
+Since the introduction of the modern bus-based interface
+and other userspace tooling (bmfdec, lswmi, ...), this
+article is outdated and causes people to still submit new
+WMI drivers using the deprecated GUID-based interface.
+Fix this by adding a short guide on how to develop WMI drivers
+using the modern bus-based interface.
+
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ .../wmi/driver-development-guide.rst          | 173 ++++++++++++++++++
+ Documentation/wmi/index.rst                   |   1 +
+ 2 files changed, 174 insertions(+)
+ create mode 100644 Documentation/wmi/driver-development-guide.rst
+
+diff --git a/Documentation/wmi/driver-development-guide.rst b/Documentatio=
+n/wmi/driver-development-guide.rst
+new file mode 100644
+index 000000000000..9a1b0a8490bb
+=2D-- /dev/null
++++ b/Documentation/wmi/driver-development-guide.rst
+@@ -0,0 +1,173 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
++WMI driver development guide
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
++
++The WMI subsystem provides a rich driver API for implementing WMI drivers=
+,
++documented at Documentation/driver-api/wmi.rst. This document will serve
++as an introductory guide for WMI driver writers using this API. It is sup=
+posed
++to be an successor to the original `LWN article <https://lwn.net/Articles=
+/391230/>`_
++which deals with WMI drivers using the deprecated GUID-based WMI interfac=
+e.
++
++Obtaining WMI device information
++--------------------------------
++
++Before developing an WMI driver, information about the WMI device in ques=
+tion
++must be obtained. The `lswmi <https://pypi.org/project/lswmi>`_ utility c=
+an be
++used to display detailed WMI device information using the following comma=
+nd:
++
++::
++
++  lswmi -V
++
++The resulting output will contain information about all WMI devices avail=
+able on
++a given machine, plus some extra information.
++
++In order to find out more about the interface used to communicate with a =
+WMI device,
++the `bmfdec <https://github.com/pali/bmfdec>`_ utilities can be used to d=
+ecode
++the Binary MOF (Managed Object Format) information used to describe WMI d=
+evices.
++The ``wmi-bmof`` driver exposes this information to userspace, see
++Documentation/wmi/devices/wmi-bmof.rst.
++
++In order to retrieve the decoded Binary MOF information, use the followin=
+g command (requires root):
++
++::
++
++  ./bmf2mof /sys/bus/wmi/devices/05901221-D566-11D1-B2F0-00A0C9062910[-X]=
+/bmof
++
++Sometimes, looking at the disassembled ACPI tables used to describe the W=
+MI device
++helps in understanding how the WMI device is supposed to work. The path o=
+f the ACPI
++method associated with a given WMI device can be retrieved using the ``ls=
+wmi`` utility
++as mentioned above.
++
++Basic WMI driver structure
++--------------------------
++
++The basic WMI driver is build around the struct wmi_driver, which is then=
+ bound
++to matching WMI devices using a struct wmi_device_id table:
++
++::
++
++  static const struct wmi_device_id foo_id_table[] =3D {
++         { "936DA01F-9ABD-4D9D-80C7-02AF85C822A8", NULL },
++         { }
++  };
++  MODULE_DEVICE_TABLE(wmi, foo_id_table);
++
++  static struct wmi_driver foo_driver =3D {
++        .driver =3D {
++                .name =3D "foo",
++                .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,        /* reco=
+mmended */
++                .pm =3D pm_sleep_ptr(&foo_dev_pm_ops),            /* opti=
+onal */
++        },
++        .id_table =3D foo_id_table,
++        .probe =3D foo_probe,
++        .remove =3D foo_remove,         /* optional, devres is preferred =
+*/
++        .notify =3D foo_notify,         /* optional, for event handling *=
+/
++        .no_notify_data =3D true,       /* optional, enables events conta=
+ining no additional data */
++        .no_singleton =3D true,         /* required for new WMI drivers *=
+/
++  };
++  module_wmi_driver(foo_driver);
++
++The probe() callback is called when the WMI driver is bound to a matching=
+ WMI device. Allocating
++driver-specific data structures and initialising interfaces to other kern=
+el subsystems should
++normally be done in this function.
++
++The remove() callback is then called when the WMI driver is unbound from =
+a WMI device. In order
++to unregister interfaces to other kernel subsystems and release resources=
+, devres should be used.
++This simplifies error handling during probe and often allows to omit this=
+ callback entirely, see
++Documentation/driver-api/driver-model/devres.rst for details.
++
++Please note that new WMI drivers are required to be able to be instantiat=
+ed multiple times,
++and are forbidden from using any deprecated GUID-based WMI functions. Thi=
+s means that the
++WMI driver should be prepared for the scenario that multiple matching WMI=
+ devices are present
++on a given machine.
++
++Because of this, WMI drivers should use the state container design patter=
+n as described in
++Documentation/driver-api/driver-model/design-patterns.rst.
++
++WMI method drivers
++------------------
++
++WMI drivers can call WMI device methods using wmidev_evaluate_method(), t=
+he
++structure of the ACPI buffer passed to this function is device-specific a=
+nd usually
++needs some tinkering to get right. Looking at the ACPI tables containing =
+the WMI
++device usually helps here. The method id and instance number passed to th=
+is function
++are also device-specific, looking at the decoded Binary MOF is usually en=
+ough to
++find the right values.
++
++The maximum instance number can be retrieved during runtime using wmidev_=
+instance_count().
++
++Take a look at drivers/platform/x86/inspur_platform_profile.c for an exam=
+ple WMI method driver.
++
++WMI data block drivers
++----------------------
++
++WMI drivers can query WMI device data blocks using wmidev_block_query(), =
+the
++structure of the returned ACPI object is again device-specific. Some WMI =
+devices
++also allow for setting data blocks using wmidev_block_set().
++
++The maximum instance number can also be retrieved using wmidev_instance_c=
+ount().
++
++Take a look at drivers/platform/x86/intel/wmi/sbl-fw-update.c for an exam=
+ple
++WMI data block driver.
++
++WMI event drivers
++-----------------
++
++WMI drivers can receive WMI events by providing the notify() callback ins=
+ide the struct wmi_driver.
++The WMI subsystem will then take care of setting up the WMI event accordi=
+ngly. Please note that
++the structure of the ACPI object passed to this callback is device-specif=
+ic, and freeing the
++ACPI object is being done by the WMI subsystem, not the driver.
++
++The WMI driver core will take care that the notify() callback will only b=
+e called after
++the probe() callback has been called, and that no events are being receiv=
+ed by the driver
++right before and after calling its remove() callback.
++
++However WMI driver developers should be aware that multiple WMI events ca=
+n be received concurrently,
++so any locking (if necessary) needs to be provided by the WMI driver itse=
+lf.
++
++In order to be able to receive WMI events containg no additional event da=
+ta,
++the ``no_notify_data`` flag inside struct wmi_driver should be set to ``t=
+rue``.
++
++Take a look at drivers/platform/x86/xiaomi-wmi.c for an example WMI event=
+ driver.
++
++Handling multiple WMI devices at once
++-------------------------------------
++
++There are many cases of firmware vendors using multiple WMI devices to co=
+ntrol different aspects
++of a single physical device. This can make developing WMI drivers complic=
+ated, as those drivers
++might need to communicate with each other to present a unified interface =
+to userspace.
++
++On such case involves a WMI event device which needs to talk to a WMI dat=
+a block device or WMI
++method device upon receiving an WMI event. In such a case, two WMI driver=
+s should be developed,
++one for the WMI event device and one for the other WMI device.
++
++The WMI event device driver has only one purpose: to receive WMI events, =
+validate any additional
++event data and invoke a notifier chain. The other WMI driver adds itself =
+to this notifier chain
++during probing and thus gets notified every time a WMI event is received.=
+ This WMI driver might
++then process the event further for example by using an input device.
++
++For other WMI device constellations, similar mechanisms can be used.
++
++Things to avoid
++---------------
++
++When developing WMI drivers, there are a couple of things which should be=
+ avoided:
++
++- usage of the deprecated GUID-based WMI interface which uses GUIDs inste=
+ad of WMI device structs
++- bypassing of the WMI subsystem when talking to WMI devices
++- WMI drivers which cannot be instantiated multiple times.
++
++Many older WMI drivers violate one or more points from this list. The rea=
+son for
++this is that the WMI subsystem evolved significantly over the last two de=
+cades,
++so there is a lot of legacy cruft inside older WMI drivers.
++
++New WMI drivers are also required to conform to the linux kernel coding s=
+tyle as specified in
++Documentation/process/coding-style.rst. The checkpatch utility can catch =
+many common coding style
++violations, you can invoke it with the following command:
++
++::
++
++  ./scripts/checkpatch.pl --strict <path to driver file>
+diff --git a/Documentation/wmi/index.rst b/Documentation/wmi/index.rst
+index 537cff188e14..fec4b6ae97b3 100644
+=2D-- a/Documentation/wmi/index.rst
++++ b/Documentation/wmi/index.rst
+@@ -8,6 +8,7 @@ WMI Subsystem
+    :maxdepth: 1
+
+    acpi-interface
++   driver-development-guide
+    devices/index
+
+ .. only::  subproject and html
+=2D-
+2.39.2
 
 
