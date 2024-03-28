@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-123505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803B88909B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:50:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 457AC8909D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F8051F2306D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:50:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 007EF2A26F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2435913A271;
-	Thu, 28 Mar 2024 19:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C51413AD29;
+	Thu, 28 Mar 2024 19:50:17 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F547EF00;
-	Thu, 28 Mar 2024 19:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF39213AD19;
+	Thu, 28 Mar 2024 19:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655406; cv=none; b=lGe3ZV3PxxYYTdoyESpmGNCYTMuXf5ERko3HdXAOqvQ9G5CUd+ClkaD2PvqQPtUfLbmPoTThwDUdhNcpUG2SfDAm2pti9O0zAKZBAwFF2jAdIVLH6MbdtTruW7sgm9hsPPiW20l8p8U3VgmNvluXr/NeNRFscGR9BV/sf9Znm74=
+	t=1711655417; cv=none; b=FcWzRVlnUGyQ9wMpay8xYmRhjJ17avb3h3cnTJW21FZSUx6a5ABvfUL7b91b54hYZI/eOJFpIp1WAJK2154gwOOwtWBIFpnhKF7hLkVzKI0WYwGtm0jQrS7iFsiKdmU/Qfmfv3dLAtMzPy6ET+gBOH+ALrl8VOe16kaowvKGJRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655406; c=relaxed/simple;
-	bh=69+80hLz3Wx6y+bqUYfkCRVRC/cWOyQclieDPFYEN9Q=;
+	s=arc-20240116; t=1711655417; c=relaxed/simple;
+	bh=MsjVy3pXx6S7JGgK0WAo4NJeUMxth3LTHSIPWMxIYEE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iAQaKUoGv/RfoIZxJksx3sSOEIHCR+Jau09uA+4/HF5c7eNjtAiKQlzl2snI2XVlshICpltFnw7iewOcssrJOk43koHN/IlNU9ytTy22MgfxVCme6U0Y0Ihm1lYLsb/mjGKZeqj7LL+ebAp2zxBQirV1BxpJACxBtrkGHF4UkCo=
+	 In-Reply-To:To:Cc; b=ARZN/rMa+R8IwBnHlfRsCt0r0aA30nHABn9x4C+I0QYZY//UIVjRilY6Crg8DQvKvljVvDA0BZohRrIdXmbncpr/x965yMbdrFcUovrYf7iE4ra0JtTLUMpzEPaNlRCcIgJvL0mJNMiiydij0GPnthpFmV7BL01P0EfeEU6I21c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EA1EC43601;
-	Thu, 28 Mar 2024 19:49:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9286AC433C7;
+	Thu, 28 Mar 2024 19:50:06 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 20:49:12 +0100
-Subject: [PATCH v2 02/19] Input: atlas - drop owner assignment
+Date: Thu, 28 Mar 2024 20:49:13 +0100
+Subject: [PATCH v2 03/19] net: fjes: drop owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,7 +39,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-b4-module-owner-acpi-v2-2-1e5552c2c69f@linaro.org>
+Message-Id: <20240328-b4-module-owner-acpi-v2-3-1e5552c2c69f@linaro.org>
 References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -66,49 +66,47 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=856;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=769;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=69+80hLz3Wx6y+bqUYfkCRVRC/cWOyQclieDPFYEN9Q=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnAx7XrsoWBm3vh56nw5/LChv2E8G75G7P9c
- jusiIE+kU6JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJwAAKCRDBN2bmhouD
- 1/SdD/9deyAcM29a6zSRH1dyIrGO1oRwUG5KH/LY76CRVBouqq0VNXz8+b8D6LG3FLXCdb5TjUl
- ZFGcjY3s/r11M6njxehb5HG3maBLFySMoSyiV8qcm1K885e6u27KW3vI7GW9zU+ffsSLzy8DC+G
- q/XU4pegC8A/hWjNqXHH/XQMRCJJKNe1NDrEalZwlscHFzz6M47g6Ns9D1+jq4HWVF7SPk/qLDV
- sPOn1hiNPuLw3Nwm/6ppKh4cQEjiHWRuIKn9VumSHFMZE+Z49Jp5L30SiHN8vIR9ip+NVY5YZUN
- H22pGcW283TvPPN5jso66K/Fi5GmVNqETa2DfPIDI68iR7t9oBS4qB5+j+meVkLXDBfvlgakI6i
- 0LbGRaHzsjAdu6rIT+wYXqq6alvDQH6huGt+MhAntWKPwwgUNUJbN7Ak5t/MrFumcZTYBIC/Jod
- VbVJEEs+oFg2LdDjIKVeIxEKDOdFmlafMrfE09zev2JSJngthIZyF/3GlbU+SobZTnB5ty3kYng
- Q+WkeLi3Xp3q0KVZ8/HCScv8+RLqLa8Is0bzpHbfoStRVVlaHJg1H6VBFwCK+czr/MVBv7LDysS
- SU4XuIPpzdQnnbZL+sXpTFfZzq4Pj7r6jGtXujNzoldabhgdBVaKJi5y65RmYcbuq1hZtgGgEjA
- So+avUKp+giVMnQ==
+ bh=MsjVy3pXx6S7JGgK0WAo4NJeUMxth3LTHSIPWMxIYEE=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnBtRWQl6ZYHznmyg2cZvZglj/opzjF7UQL6
+ K9ZRGfvUd6JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJwQAKCRDBN2bmhouD
+ 131MD/9qobODC4LHr0QcwQD1Ek1mT2dadDc/sgVnRogQ6PH+5kWak7NmdJiCwPn0Ds5QN4zb8C4
+ tRg4ySY1o+WmBb+eCjyzHe/gUei3Df0ZOE2LxcFel1HseCxb/FIrRB0l0l9me1A6XRSkUSz33wo
+ FgGkw70HL7n3CF3IwJnjlu8XYuWMCjCqbvOxp5idfn0keCBA4n3uudB61HswG9ugNRqL2CnTrci
+ RZbirFtNkWPuXuUK+j++6SLt9fblN3XUp25iQMZV0mwCkhMVtwY1NMtKi/2cA/zP6/h9h2KGIwQ
+ dzjdQartmFGj6CsiFcHdcuqFU/njtVzhRb7RrR6BsD3OLk674hmU0eqkljGzeGqFcXAv9X72kke
+ ZsvIvqMwJ0XDtaTxyJJezFWn41HBSCwAmaIB107g9KgUGD5OImeWzzcBPEaOel5o7BH01MJtpk6
+ iXVa8czcAVa6R1O7kRTjtZ6OWTMIYN/f5XIZ7D6KZj6eSeqPSkL/9MfZWCLyTZB7OWrzJqh+qGu
+ /ki5qUJMgBFQLKIQAEHjqmaiyyu9OE1LESYFd2l12FjO3xnNnPU69iKcA1nKHno+2C8cU2heM4u
+ HNIg106PuiaN7/DDJwHNr0eVEv2sYhM1uYJXwR7fQTjMkQSrNEW/mOTQ3t/2gFkS4LBFtuizR4X
+ iduA4hS8L3MVOpw==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
 ACPI bus core already sets the .owner, so driver does not need to.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 ---
 
 Depends on the first patch.
 ---
- drivers/input/misc/atlas_btns.c | 1 -
+ drivers/net/fjes/fjes_main.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/input/misc/atlas_btns.c b/drivers/input/misc/atlas_btns.c
-index 3c9bbd04e143..5b9be2957746 100644
---- a/drivers/input/misc/atlas_btns.c
-+++ b/drivers/input/misc/atlas_btns.c
-@@ -127,7 +127,6 @@ MODULE_DEVICE_TABLE(acpi, atlas_device_ids);
- static struct acpi_driver atlas_acpi_driver = {
- 	.name	= ACPI_ATLAS_NAME,
- 	.class	= ACPI_ATLAS_CLASS,
--	.owner	= THIS_MODULE,
- 	.ids	= atlas_device_ids,
- 	.ops	= {
- 		.add	= atlas_acpi_button_add,
+diff --git a/drivers/net/fjes/fjes_main.c b/drivers/net/fjes/fjes_main.c
+index 5fbe33a09bb0..324b34f3ac93 100644
+--- a/drivers/net/fjes/fjes_main.c
++++ b/drivers/net/fjes/fjes_main.c
+@@ -156,7 +156,6 @@ static void fjes_acpi_remove(struct acpi_device *device)
+ static struct acpi_driver fjes_acpi_driver = {
+ 	.name = DRV_NAME,
+ 	.class = DRV_NAME,
+-	.owner = THIS_MODULE,
+ 	.ids = fjes_acpi_ids,
+ 	.ops = {
+ 		.add = fjes_acpi_add,
 
 -- 
 2.34.1
