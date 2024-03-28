@@ -1,194 +1,217 @@
-Return-Path: <linux-kernel+bounces-122476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DD5488F833
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B14F88F83A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B82E81F26677
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:55:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBFBB1F23DEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1F550A68;
-	Thu, 28 Mar 2024 06:55:20 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E2B50A77;
+	Thu, 28 Mar 2024 06:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="D6i/RBwi"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2041.outbound.protection.outlook.com [40.107.237.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66894E1BC
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711608919; cv=none; b=cpHDKQATWSE/e6GTDJKiqFLFWt17RO+Y4KBCQC2ruVSXrCda36lx+dOm6QQC6TPpYdrbSt86By2OzJWHCZFk6VY7wyZzEMLiPI95XHI/ipn8YsF66+kHGFc5E8zPa9qZS0EEHnhh0fYhH/dLsnqeJ5iQ8TE8m6vmME4LE0PeXqQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711608919; c=relaxed/simple;
-	bh=2fyVaUsZFTan7wuwhsap+GM+OrmCodYjQgxDz3cqFxs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=JV7p3aUPH5JkHRhLPj4pEz63JbiqzwRx3vJzXGbHaNQNdZmePWbLU6gSpl2j3EE2Ml3Ywf7TuJcyoiOIVrgxnTgF+tQFdDAkObMZ0foD4eaAf+t43ZgxyQ0WWLOyqO5BjLLPQksMoTx0g2/pFgvJzNt6+KlxKnrRtjXVSD/yreI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-368a9314612so4665455ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:55:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711608917; x=1712213717;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4E/rXIt+7CvbLzlbJO4yXgpA0XKHTyInmlxo4zDQfLE=;
-        b=PdrRxuW7qHbe7aoqW4fzpBiilCjxraNAW9R1R995cZd746d0+x5bc1MN4a2yvxeaAE
-         dhXLpzoITFPi11U9sIwDtVRn513gx6sy0JuFMIURtr3JSSRU4VoEAM3yS6DNkV+yXlKO
-         zW6AaLPc6IuaXCrbXnUtAzG8Gzp6614gQNrglpwugy1KakJx8Jio41Iw2fLXwRIas2oq
-         1bwbHJJBi9BSBKMlQRz36kyT602Jg5H33k11fpDt302AbQufpFPWguznErJY3KB4kmZD
-         LKOIUPmxadCV9iFEQSkr83sPL9b95rxHqeKJrgrMcLUn6NIfDT24L83XpCgwvnyjT657
-         u5zA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaTrKN7ptstrLM5umnNKOz9tauWdFe+yTMcobTQyzmp+aOpr1EKMmPOmnRylYB/N8917XUzwUcw3E1wN6g0B6m7j0wVJR6C7eRuvEV
-X-Gm-Message-State: AOJu0YwSxub8t6KPJWjTH6HyShEWkq1v5cAAea+QhB/2GaCulOfRyfJq
-	Eiw8JesdPJ9GJMRGs3CGixAj1ph62SQq9LSmVeTnlIUS/de1awXnrgHlw5UhLNQ1HMeEmp/g8Hw
-	+uK9kCzaFHP0n+eEXUwXcLtYV9YHoaR6MXgU+JFye9okn8rpxALnNal0=
-X-Google-Smtp-Source: AGHT+IG3vAY+ssWCjAmwFEXyLitc8vwEwCfM1d4gXp1HX3hujFGheiW1S1aKADUng0Rc0gQZPGwVC1VW0Xw4KwZpFm/BPAB52QNL
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3FA4F898;
+	Thu, 28 Mar 2024 06:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711609037; cv=fail; b=SZTdIVEL0xhGjJFPu7bU3AePZQw+VPb+GRWWL5zSCpHM9yJgS5yjAAv2403bbVK8Pq/GVjmtFYBPatywwiedI8t+T3llaQT0cnWMb+y8R1OCHWKwasBrutCEgE7OzfikMdS5OGgfCqjxvklsj9r+HdjK3ZCr9aK86W0QlBXz7jY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711609037; c=relaxed/simple;
+	bh=pLdZdeaWp9cnI3TMEyOcpO1Hnl3e6CFYPPqjA00Awvg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J2qsS79x4NunK2/d8m91KWP0nQ7aQAf08iiQGW8PyDkcEZdFrUKoomotdzFWEJa85je+cskDwlGhE1XzLKFLbbjK5EodRxpRTZoe5zvG8Yz+tOxgaaRRmQLia5S2RAi7dmzc/tPLn0gLhXOwByZXZ3BzEX9mJbZaqaM11SuRia4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=D6i/RBwi; arc=fail smtp.client-ip=40.107.237.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AtZFt0IxYHgItse27FCHsFxRIIGThckNW7utmemJ4fqYk0FZHDrvEw6wADCXB+uPSp2zUKa6tbfDA5Rl25TF25UqhBePrNJrSnGuXATsHUKYr1vddifO7TBZciPwLrrQNCmv7rh1dKm7x/EI+CGZ9tfeSogFYzHNmFO/g8pTkF4JX+MvKUjVML+lOkGaf42mx4BwiU3b93im6mzzP5vum7D4gJigBfSMLGCJ3q6UatGHOyFDVc2ZsUTPlTJiIOjc2CFzmg7mX5IttXg5cjZXYBocIt0MMjao8UivulNSxQa85AEGiu0Do5hx/jvhKLjPPWa8D33pYhbKFtXUSFvMVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=273GWbU6VWbGodhCopaUDbY7XBraT91TwLrR/sYxOpM=;
+ b=by+oFFmFBxCjbiNn9GNW9vfLT4aJfncdRA0Q06x2wD1Eq7Nn8L0lANR+OW5/3KnsAQUxrUL+gPMiHVdxdIVUtctDfJX6flLtCshmgCDStdx+pbpMg8LcnMX2pwInJUazpyslT7fTAhW3Y4/r3VXQ086MDwIirQp8BU+J6y8JkfrO/TBDDqSzWbB6NpHu51IRpREC3XEd5rWhTVNrvhsES8J7jwMKLYwE0S66R3N1dPMEEzifn/5OuvCQfsxHwZiSMdVQMSxDWvg1K5mRxRVBd274NSGK5lY9V8R4fb+X9iYyKLK8isMvXpf0ughgpHfeE0BLofPc0coAUYiqI9T40A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=suse.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=273GWbU6VWbGodhCopaUDbY7XBraT91TwLrR/sYxOpM=;
+ b=D6i/RBwilg2pSxSu0PWifsO9uzeaf7yoLE+yyQDYENktQ9odPH+q7AvabJK9MAvTYfJUScbPgX2ajDfAXOlNp44eU2YbQHyKnIawVOzgRi52+W5+nfXVV1QH5hcKn/kg3cLEWHZrBshfGGxyrvvFDAWw176nv1mCXuFLxgvLTjg=
+Received: from BN7PR02CA0008.namprd02.prod.outlook.com (2603:10b6:408:20::21)
+ by PH7PR12MB5925.namprd12.prod.outlook.com (2603:10b6:510:1d8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Thu, 28 Mar
+ 2024 06:57:11 +0000
+Received: from BN2PEPF000044A5.namprd04.prod.outlook.com
+ (2603:10b6:408:20:cafe::6e) by BN7PR02CA0008.outlook.office365.com
+ (2603:10b6:408:20::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Thu, 28 Mar 2024 06:57:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN2PEPF000044A5.mail.protection.outlook.com (10.167.243.104) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Thu, 28 Mar 2024 06:57:10 +0000
+Received: from cjq-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Mar
+ 2024 01:57:06 -0500
+From: Jiqian Chen <Jiqian.Chen@amd.com>
+To: Juergen Gross <jgross@suse.com>, Stefano Stabellini
+	<sstabellini@kernel.org>, Oleksandr Tyshchenko
+	<oleksandr_tyshchenko@epam.com>, Boris Ostrovsky
+	<boris.ostrovsky@oracle.com>, Bjorn Helgaas <bhelgaas@google.com>, "Rafael J
+ . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	=?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
+CC: <xen-devel@lists.xenproject.org>, <linux-pci@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>, "Stewart
+ Hildebrand" <Stewart.Hildebrand@amd.com>, Huang Rui <Ray.Huang@amd.com>,
+	Jiqian Chen <Jiqian.Chen@amd.com>
+Subject: [RFC KERNEL PATCH v5 0/3] Support device passthrough when dom0 is PVH on Xen
+Date: Thu, 28 Mar 2024 14:56:43 +0800
+Message-ID: <20240328065646.354782-1-Jiqian.Chen@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:4af:b0:368:7775:2df2 with SMTP id
- e15-20020a056e0204af00b0036877752df2mr27444ils.5.1711608917110; Wed, 27 Mar
- 2024 23:55:17 -0700 (PDT)
-Date: Wed, 27 Mar 2024 23:55:17 -0700
-In-Reply-To: <000000000000f94ee2061458a2e0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007fc08e0614b30176@google.com>
-Subject: Re: [syzbot] [usb?] WARNING: ODEBUG bug in netdev_freemem (3)
-From: syzbot <syzbot+83845bb93916bb30c048@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	netdev@vger.kernel.org, oneukum@suse.com, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044A5:EE_|PH7PR12MB5925:EE_
+X-MS-Office365-Filtering-Correlation-Id: 888fe74a-700a-4cea-f84c-08dc4ef44a8e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HgZUZST/R0HcwDjruN1lqM/2ALz1RSyEfSbVrUG4q94FbgCaKgOgYgarzAb96wtPXa60MFiGi4/t359g2IUreSrwGiGAccvQA6H7R0lTnF1B2212+H28Av0u2rak3+I1i6R+giRhIzojQ/gXqWjHy79nH9pVRidm8rf1Mha9OFe2HvF1dXmGqGSfQt0wSxacttqLliIark3rzgdqXQoXEzYqtIHMoaio5PJwskd158M6tCfV4CtizLuGsrU/MKFPQ92+rQpfevnol6TPugLviFsPnjHg31fzJ5VrKmHKkp9Wj9yhOWLZPQNWt/bQx5yCot+WZsOu1fuw4mUqznDeYcIgvDPKDYLOD/Ab+ZBgpwVSv8KQTElltbxxOprtfQNSb1kMYGmU3rZ9uieEYjrytCOEy+daTydnrDazgDFaIu2P3gPOstrOyx/eyBFpls5UnD2HE8nyiyTSe8M3zyAdPZbrYggn8Blw6/flEtLWN0ZGdaT7jJUKtI8TKJC1ZkmD3ZvYsIHlLYycVixGW9FDt9lXQBcwkMyVCFzn1hE5UOzGaK1CkAG59wnf6oJH0OLTOgx7TPV3Z10U8hxm54E1pJBZTRAvVKypxEyIT2Mh4MoBYNxAFRi83DZrb8cV0lqTHGOqE3wxGRsaZW3CHQcJwWJFbcmuY3+oE+eK2r2MR7Omhm5B5j6+xYFF6PiUlu5s/DDyM37nHg58DF14Kss1Dg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 06:57:10.9169
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 888fe74a-700a-4cea-f84c-08dc4ef44a8e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF000044A5.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5925
 
-syzbot has found a reproducer for the following issue on:
+Hi All,
+This is v5 series to support passthrough on Xen when dom0 is PVH.
+patch#2 change function acpi_pci_irq_lookup from a static function to non-static, need ACPI Maintainer to give some comments.
+patch#3 linux internal changes, need PCI and ACPI Maintainer to give more comments.
+v4->v5 changes:
+* patch#1: Add Reviewed-by Stefano
+* patch#2: Add Reviewed-by Stefano
+* patch#3: No changes
 
-HEAD commit:    498e47cd1d1f Fix build errors due to new UIO_MEM_DMA_COHER..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15236d7e180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=43f1e0cbdb852271
-dashboard link: https://syzkaller.appspot.com/bug?extid=83845bb93916bb30c048
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a9c4f9180000
+v3->v4 changes:
+* patch#1: change the comment of PHYSDEVOP_pci_device_state_reset; use a new function pcistub_reset_device_state to wrap __pci_reset_function_locked and xen_reset_device_state, and call pcistub_reset_device_state in pci_stub.c
+* patch#2: remove map_pirq from xen_pvh_passthrough_gsi
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-498e47cd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/88de02166e48/vmlinux-498e47cd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2f2f314f3da3/zImage-498e47cd.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+83845bb93916bb30c048@syzkaller.appspotmail.com
-
-cdc_ncm 2-1:1.0 usb0: register 'cdc_ncm' at usb-dummy_hcd.1-1, CDC NCM (NO ZLP), 42:42:42:42:42:42
-usb 2-1: USB disconnect, device number 80
-cdc_ncm 2-1:1.0 usb0: unregister 'cdc_ncm' usb-dummy_hcd.1-1, CDC NCM (NO ZLP)
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 44 at lib/debugobjects.c:514 debug_print_object+0xc4/0xd8 lib/debugobjects.c:514
-ODEBUG: free active (active state 0) object: 84e6c7ac object type: work_struct hint: usbnet_deferred_kevent+0x0/0x388 drivers/net/usb/usbnet.c:630
-Modules linked in:
-Kernel panic - not syncing: kernel: panic_on_warn set ...
-CPU: 1 PID: 44 Comm: kworker/1:1 Not tainted 6.9.0-rc1-syzkaller #0
-Hardware name: ARM-Versatile Express
-Workqueue: usb_hub_wq hub_event
-Call trace: 
-[<81878e9c>] (dump_backtrace) from [<81878f98>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:256)
- r7:00000000 r6:82622e44 r5:00000000 r4:81fc4710
-[<81878f80>] (show_stack) from [<81896734>] (__dump_stack lib/dump_stack.c:88 [inline])
-[<81878f80>] (show_stack) from [<81896734>] (dump_stack_lvl+0x54/0x7c lib/dump_stack.c:114)
-[<818966e0>] (dump_stack_lvl) from [<81896774>] (dump_stack+0x18/0x1c lib/dump_stack.c:123)
- r5:00000000 r4:82858d18
-[<8189675c>] (dump_stack) from [<81879a40>] (panic+0x120/0x358 kernel/panic.c:348)
-[<81879920>] (panic) from [<8024390c>] (check_panic_on_warn kernel/panic.c:241 [inline])
-[<81879920>] (panic) from [<8024390c>] (print_tainted+0x0/0xa0 kernel/panic.c:236)
- r3:8260c584 r2:00000001 r1:81fad394 r0:81fb4f3c
- r7:8080b850
-[<80243898>] (check_panic_on_warn) from [<80243b00>] (__warn+0x7c/0x180 kernel/panic.c:694)
-[<80243a84>] (__warn) from [<80243dec>] (warn_slowpath_fmt+0x1e8/0x1f4 kernel/panic.c:727)
- r8:00000009 r7:820112e0 r6:df915a7c r5:82ee6c00 r4:00000000
-[<80243c08>] (warn_slowpath_fmt) from [<8080b850>] (debug_print_object+0xc4/0xd8 lib/debugobjects.c:514)
- r10:00000005 r9:84e6c000 r8:81a02b44 r7:820391e8 r6:828bc414 r5:df915b24
- r4:8260ce18
-[<8080b78c>] (debug_print_object) from [<8080d0e8>] (__debug_check_no_obj_freed lib/debugobjects.c:989 [inline])
-[<8080b78c>] (debug_print_object) from [<8080d0e8>] (debug_check_no_obj_freed+0x254/0x2a0 lib/debugobjects.c:1019)
- r8:84e6c800 r7:84e6c7ac r6:00000100 r5:00000003 r4:00000000
-[<8080ce94>] (debug_check_no_obj_freed) from [<804b2650>] (slab_free_hook mm/slub.c:2078 [inline])
-[<8080ce94>] (debug_check_no_obj_freed) from [<804b2650>] (slab_free mm/slub.c:4280 [inline])
-[<8080ce94>] (debug_check_no_obj_freed) from [<804b2650>] (kfree+0x1a0/0x334 mm/slub.c:4390)
- r10:82775a30 r9:84d86080 r8:84e6c000 r7:8045a7ac r6:82c023c0 r5:ddea96a0
- r4:84e6c000
-[<804b24b0>] (kfree) from [<8045a7ac>] (kvfree+0x2c/0x30 mm/util.c:680)
- r10:82775a30 r9:84d86080 r8:84e6c000 r7:00000000 r6:84f41900 r5:84f71480
- r4:84e6c000
-[<8045a780>] (kvfree) from [<813b36cc>] (netdev_freemem+0x1c/0x20 net/core/dev.c:10797)
- r5:84f71480 r4:84e6c000
-[<813b36b0>] (netdev_freemem) from [<813ee72c>] (netdev_release+0x2c/0x34 net/core/net-sysfs.c:2031)
-[<813ee700>] (netdev_release) from [<80a41a70>] (device_release+0x38/0xa8 drivers/base/core.c:2565)
- r5:84f71480 r4:84e6c3b8
-[<80a41a38>] (device_release) from [<81852e00>] (kobject_cleanup lib/kobject.c:689 [inline])
-[<80a41a38>] (device_release) from [<81852e00>] (kobject_release lib/kobject.c:720 [inline])
-[<80a41a38>] (device_release) from [<81852e00>] (kref_put include/linux/kref.h:65 [inline])
-[<80a41a38>] (device_release) from [<81852e00>] (kobject_put+0xc8/0x1f8 lib/kobject.c:737)
- r5:81b485c4 r4:84e6c3b8
-[<81852d38>] (kobject_put) from [<80a41cf8>] (put_device+0x18/0x1c drivers/base/core.c:3813)
- r7:84d86400 r6:84e6c10c r5:84e6c000 r4:00000000
-[<80a41ce0>] (put_device) from [<813a4a18>] (free_netdev+0x108/0x188 net/core/dev.c:10993)
-[<813a4910>] (free_netdev) from [<80d110f0>] (usbnet_disconnect+0xac/0xf0 drivers/net/usb/usbnet.c:1636)
- r6:84e6c774 r5:84e6c660 r4:00000000
-[<80d11044>] (usbnet_disconnect) from [<80d6c068>] (usb_unbind_interface+0x84/0x2c4 drivers/usb/core/driver.c:461)
- r8:00000044 r7:84d86430 r6:82775a30 r5:00000000 r4:84d86400
-[<80d6bfe4>] (usb_unbind_interface) from [<80a49b4c>] (device_remove drivers/base/dd.c:568 [inline])
-[<80d6bfe4>] (usb_unbind_interface) from [<80a49b4c>] (device_remove+0x64/0x6c drivers/base/dd.c:560)
- r10:84d86080 r9:828eccc4 r8:00000044 r7:84d86474 r6:82775a30 r5:00000000
- r4:84d86430
-[<80a49ae8>] (device_remove) from [<80a4b064>] (__device_release_driver drivers/base/dd.c:1270 [inline])
-[<80a49ae8>] (device_remove) from [<80a4b064>] (device_release_driver_internal+0x18c/0x200 drivers/base/dd.c:1293)
- r5:00000000 r4:84d86430
-[<80a4aed8>] (device_release_driver_internal) from [<80a4b0f0>] (device_release_driver+0x18/0x1c drivers/base/dd.c:1316)
- r9:828eccc4 r8:82eaa540 r7:82eaa538 r6:82eaa50c r5:84d86430 r4:82eaa530
-[<80a4b0d8>] (device_release_driver) from [<80a491f0>] (bus_remove_device+0xcc/0x120 drivers/base/bus.c:574)
-[<80a49124>] (bus_remove_device) from [<80a43274>] (device_del+0x15c/0x3bc drivers/base/core.c:3894)
- r9:828eccc4 r8:84d86400 r7:82ee6c00 r6:84f72e08 r5:04208060 r4:84d86430
-[<80a43118>] (device_del) from [<80d69ac4>] (usb_disable_device+0xdc/0x1f0 drivers/usb/core/message.c:1418)
- r10:00000000 r9:00000000 r8:84d86400 r7:84d86000 r6:84f72e08 r5:00000001
- r4:00000038
-[<80d699e8>] (usb_disable_device) from [<80d5e930>] (usb_disconnect+0xec/0x29c drivers/usb/core/hub.c:2296)
- r10:00000001 r9:84110200 r8:84d860c4 r7:8391e400 r6:84d86080 r5:84d86000
- r4:60000013
-[<80d5e844>] (usb_disconnect) from [<80d615e0>] (hub_port_connect drivers/usb/core/hub.c:5352 [inline])
-[<80d5e844>] (usb_disconnect) from [<80d615e0>] (hub_port_connect_change drivers/usb/core/hub.c:5652 [inline])
-[<80d5e844>] (usb_disconnect) from [<80d615e0>] (port_event drivers/usb/core/hub.c:5812 [inline])
-[<80d5e844>] (usb_disconnect) from [<80d615e0>] (hub_event+0xe78/0x194c drivers/usb/core/hub.c:5894)
- r10:00000001 r9:00000100 r8:83b28500 r7:84d86000 r6:8391dc00 r5:8391e610
- r4:00000001
-[<80d60768>] (hub_event) from [<802665fc>] (process_one_work+0x1b8/0x508 kernel/workqueue.c:3254)
- r10:83400a05 r9:82ee6c00 r8:00000180 r7:ddde3f00 r6:83400a00 r5:83b28500
- r4:82eae680
-[<80266444>] (process_one_work) from [<80267320>] (process_scheduled_works kernel/workqueue.c:3335 [inline])
-[<80266444>] (process_one_work) from [<80267320>] (worker_thread+0x1ec/0x418 kernel/workqueue.c:3416)
- r10:82ee6c00 r9:82eae6ac r8:61c88647 r7:ddde3f20 r6:82604d40 r5:ddde3f00
- r4:82eae680
-[<80267134>] (worker_thread) from [<80270034>] (kthread+0x104/0x134 kernel/kthread.c:388)
- r10:00000000 r9:df879e90 r8:82eb0500 r7:82eae680 r6:80267134 r5:82ee6c00
- r4:82eb0280
-[<8026ff30>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-Exception stack(0xdf915fb0 to 0xdf915ff8)
-5fa0:                                     00000000 00000000 00000000 00000000
-5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:8026ff30 r4:82eb0280
-Rebooting in 86400 seconds..
+v3 link:
+https://lore.kernel.org/lkml/20231210161519.1550860-1-Jiqian.Chen@amd.com/T/#t
+v2->v3 changes:
+* patch#1: add condition to limit do xen_reset_device_state for no-pv domain in pcistub_init_device.
+* patch#2: Abandoning previous implementations that call unmask_irq. To setup gsi and map pirq for passthrough device in pcistub_init_device.
+* patch#3: Abandoning previous implementations that adds new syscall to get gsi from irq. To add a new sysfs for gsi, then userspace can get gsi number from sysfs.
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+v2 link:
+https://lore.kernel.org/lkml/20231124103123.3263471-1-Jiqian.Chen@amd.com/T/#t
+
+Below is the description of v2 cover letter:
+This series of patches are the v2 of the implementation of passthrough when dom0 is PVH on Xen.
+We sent the v1 to upstream before, but the v1 had so many problems and we got lots of suggestions.
+I will introduce all issues that these patches try to fix and the differences between v1 and v2.
+
+Issues we encountered:
+1. pci_stub failed to write bar for a passthrough device.
+Problem: when we run “sudo xl pci-assignable-add <sbdf>” to assign a device, pci_stub will call “pcistub_init_device() -> pci_restore_state() -> pci_restore_config_space() ->
+pci_restore_config_space_range() -> pci_restore_config_dword() -> pci_write_config_dword()”, the pci config write will trigger an io interrupt to bar_write() in the xen, but the
+bar->enabled was set before, the write is not allowed now, and then when 
+bar->Qemu config the
+passthrough device in xen_pt_realize(), it gets invalid bar values.
+
+Reason: the reason is that we don't tell vPCI that the device has been reset, so the current cached state in pdev->vpci is all out of date and is different from the real device state.
+
+Solution: to solve this problem, the first patch of kernel(xen/pci: Add xen_reset_device_state
+function) and the fist patch of xen(xen/vpci: Clear all vpci status of device) add a new hypercall to reset the state stored in vPCI when the state of real device has changed.
+Thank Roger for the suggestion of this v2, and it is different from v1 (https://lore.kernel.org/xen-devel/20230312075455.450187-3-ray.huang@amd.com/), v1 simply allow domU to write pci bar, it does not comply with the design principles of vPCI.
+
+2. failed to do PHYSDEVOP_map_pirq when dom0 is PVH
+Problem: HVM domU will do PHYSDEVOP_map_pirq for a passthrough device by using gsi. See xen_pt_realize->xc_physdev_map_pirq and pci_add_dm_done->xc_physdev_map_pirq. Then xc_physdev_map_pirq will call into Xen, but in hvm_physdev_op(), PHYSDEVOP_map_pirq is not allowed.
+
+Reason: In hvm_physdev_op(), the variable "currd" is PVH dom0 and PVH has no X86_EMU_USE_PIRQ flag, it will fail at has_pirq check.
+
+Solution: I think we may need to allow PHYSDEVOP_map_pirq when "currd" is dom0 (at present dom0 is PVH). The second patch of xen(x86/pvh: Open PHYSDEVOP_map_pirq for PVH dom0) allow PVH dom0 do PHYSDEVOP_map_pirq. This v2 patch is better than v1, v1 simply remove the has_pirq check(xen https://lore.kernel.org/xen-devel/20230312075455.450187-4-ray.huang@amd.com/).
+
+3. the gsi of a passthrough device doesn't be unmasked
+ 3.1 failed to check the permission of pirq
+ 3.2 the gsi of passthrough device was not registered in PVH dom0
+
+Problem:
+3.1 callback function pci_add_dm_done() will be called when qemu config a passthrough device for domU.
+This function will call xc_domain_irq_permission()-> pirq_access_permitted() to check if the gsi has corresponding mappings in dom0. But it didn’t, so failed. See XEN_DOMCTL_irq_permission->pirq_access_permitted, "current" is PVH dom0 and it return irq is 0.
+3.2 it's possible for a gsi (iow: vIO-APIC pin) to never get registered on PVH dom0, because the devices of PVH are using MSI(-X) interrupts. However, the IO-APIC pin must be configured for it to be able to be mapped into a domU.
+
+Reason: After searching codes, I find "map_pirq" and "register_gsi" will be done in function vioapic_write_redirent->vioapic_hwdom_map_gsi when the gsi(aka ioapic's pin) is unmasked in PVH dom0.
+So the two problems can be concluded to that the gsi of a passthrough device doesn't be unmasked.
+
+Solution: to solve these problems, the second patch of kernel(xen/pvh: Unmask irq for passthrough device in PVH dom0) call the unmask_irq() when we assign a device to be passthrough. So that passthrough devices can have the mapping of gsi on PVH dom0 and gsi can be registered. This v2 patch is different from the v1( kernel https://lore.kernel.org/xen-devel/20230312120157.452859-5-ray.huang@amd.com/,
+kernel https://lore.kernel.org/xen-devel/20230312120157.452859-5-ray.huang@amd.com/ and xen https://lore.kernel.org/xen-devel/20230312075455.450187-5-ray.huang@amd.com/),
+v1 performed "map_pirq" and "register_gsi" on all pci devices on PVH dom0, which is unnecessary and may cause multiple registration.
+
+4. failed to map pirq for gsi
+Problem: qemu will call xc_physdev_map_pirq() to map a passthrough device’s gsi to pirq in function xen_pt_realize(). But failed.
+
+Reason: According to the implement of xc_physdev_map_pirq(), it needs gsi instead of irq, but qemu pass irq to it and treat irq as gsi, it is got from file /sys/bus/pci/devices/xxxx:xx:xx.x/irq in function xen_host_pci_device_get(). But actually the gsi number is not equal with irq. On PVH dom0, when it allocates irq for a gsi in function acpi_register_gsi_ioapic(), allocation is dynamic, and follow the principle of applying first, distributing first. And if you debug the kernel codes(see function __irq_alloc_descs), you will find the irq number is allocated from small to large by order, but the applying gsi number is not, gsi 38 may come before gsi 28, that causes gsi 38 get a smaller irq number than gsi 28, and then gsi != irq.
+
+Solution: we can record the relation between gsi and irq, then when userspace(qemu) want to use gsi, we can do a translation. The third patch of kernel(xen/privcmd: Add new syscall to get gsi from irq) records all the relations in acpi_register_gsi_xen_pvh() when dom0 initialize pci devices, and provide a syscall for userspace to get the gsi from irq. The third patch of xen(tools: Add new function to get gsi from irq) add a new function xc_physdev_gsi_from_irq() to call the new syscall added on kernel side.
+And then userspace can use that function to get gsi. Then xc_physdev_map_pirq() will success. This v2 patch is the same as v1( kernel https://lore.kernel.org/xen-devel/20230312120157.452859-6-ray.huang@amd.com/ and xen https://lore.kernel.org/xen-devel/20230312075455.450187-6-ray.huang@amd.com/)
+
+About the v2 patch of qemu, just change an included head file, other are similar to the v1 ( qemu https://lore.kernel.org/xen-devel/20230312092244.451465-19-ray.huang@amd.com/), just call
+xc_physdev_gsi_from_irq() to get gsi from irq.
+
+
+Jiqian Chen (3):
+  xen/pci: Add xen_reset_device_state function
+  xen/pvh: Setup gsi for passthrough device
+  PCI/sysfs: Add gsi sysfs for pci_dev
+
+ arch/x86/xen/enlighten_pvh.c       | 92 ++++++++++++++++++++++++++++++
+ drivers/acpi/pci_irq.c             |  3 +-
+ drivers/pci/pci-sysfs.c            | 11 ++++
+ drivers/xen/pci.c                  | 12 ++++
+ drivers/xen/xen-pciback/pci_stub.c | 26 ++++++++-
+ include/linux/acpi.h               |  1 +
+ include/linux/pci.h                |  2 +
+ include/xen/acpi.h                 |  6 ++
+ include/xen/interface/physdev.h    |  7 +++
+ include/xen/pci.h                  |  6 ++
+ 10 files changed, 162 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
+
 
