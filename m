@@ -1,264 +1,196 @@
-Return-Path: <linux-kernel+bounces-123227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71DB38904CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:18:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36EE98904C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB65BB22889
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:18:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6CCA298525
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53ED130E3B;
-	Thu, 28 Mar 2024 16:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8CF12F360;
+	Thu, 28 Mar 2024 16:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="OSCiqtkn"
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="tr4BIZvH"
+Received: from sender-of-o51.zoho.eu (sender-of-o51.zoho.eu [136.143.169.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF2B130A4D;
-	Thu, 28 Mar 2024 16:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711642676; cv=none; b=X2BlFPVTpWNqDhcrDeKaCanz4d8qleED+DU3p/+ribJhYRxaF+OcWR9D2vpXctnv0PLkZjqc6VZmhc3dxA++1DIC9lbnb6lfg/x2ueuAi7i3mFgkIdisdHhho2cyYmFyV1KGI8TnHyb1WvM903qpK5aK3v1CS0nPgbaY7Q1+qgA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711642676; c=relaxed/simple;
-	bh=XXzHklSlwZUBc70mb+IrCrGHDHHicLnr6FwTlMm8dZ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=lSimGF5uZI734DqLJXU1D+bCk3QXwp896bkCqtNl5bZpRwrydlDziAK3atuUQf3SFHFvjHPCQAKtJm60y2RyWJaWZukbAnLN+l7TCZiEN0O2VMh8hOHyw8sEVFjz/az//0YZL+Uhj0Bh76sJwHkHC+TorGOiJIKjV0+xWTKAWcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=OSCiqtkn; arc=none smtp.client-ip=148.163.147.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
-Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
-	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42SGGknu029299;
-	Thu, 28 Mar 2024 16:17:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pps0720; bh=O1mCM99rDKh1WnktnKGuwlFcn5k0KykkoCp2lndeuMg=;
- b=OSCiqtkn8xZcj7dr0jQBJM5mHq+Izb5Ir7I+Xzk/K8ZeLGHC/r7pLTDegj/BubOKPyol
- oCR8CBxkG0QMHMhRPGH8PmMVI09Tf0NAWaIVYuolQ4VLPi2VTd4tlIPiLEI1Up3iO+0t
- u5+N2X0xnNezU9MslN+WKpxNmaSdfWOEzMgBADr1KisT+gFKxq9DAWDFwYu60CYUefnF
- QOS+0/fMql4uW0HaT714ZHrzQNj8avHslcd3l9NUzAB990JQk/j4aRkSY7qWAXU10O1W
- WlMDmE8PXQf2oBAu+c4EjXRvrNVBudb3DILoXPyjTwC/c1B77T0DL6/pSM18lqfvcXEW Zg== 
-Received: from p1lg14879.it.hpe.com ([16.230.97.200])
-	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3x51q7da27-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 16:17:10 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 86D3313045;
-	Thu, 28 Mar 2024 16:17:09 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.231.227.39])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id 90E168014FE;
-	Thu, 28 Mar 2024 16:17:05 +0000 (UTC)
-Date: Thu, 28 Mar 2024 11:17:03 -0500
-From: Steve Wahl <steve.wahl@hpe.com>
-To: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
-        Eric Hagberg <ehagberg@gmail.com>
-Cc: Simon Horman <horms@verge.net.au>, Eric Biederman <ebiederm@xmission.com>,
-        Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
-        Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>,
-        Hou Wenlong <houwenlong.hwl@antgroup.com>,
-        Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>,
-        Yuntao Wang <ytcoode@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v4] x86/mm/ident_map: On UV systems, use gbpages only
- where full GB page should be mapped.
-Message-ID: <ZgWX_x-CB7OjKAGD@swahl-home.5wahls.com>
-References: <20240328160614.1838496-1-steve.wahl@hpe.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328160614.1838496-1-steve.wahl@hpe.com>
-X-Proofpoint-GUID: yktVL9b0sBOCXIFUqc1t4HYfWi__5IaH
-X-Proofpoint-ORIG-GUID: yktVL9b0sBOCXIFUqc1t4HYfWi__5IaH
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09D012F5BE
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711642656; cv=pass; b=iJPnbFYa/vgDr96oZZdLMKlVNcM55aJVYwMPSkl9oFou/gJ1YQsDhSaYm44FPf9qFFpqGeRgCFfgy3xTbPtFyDHylTY3KGiOPOKQVyFTmmVAgDcxY8Ccn/+RArbbz8ttDo/bZHtkyvZby7Sp9Hv5TiCkGzwf4uRPxwoYWnZdIGI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711642656; c=relaxed/simple;
+	bh=gknboZ9VLfFibIr5GpDjvhiL04nyLirhlWJTroxz5nM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rp4Jem9gewVIjRCyLGIPRrv05MGqpSC32Y51a47Z7aIb6A7WfT1ogWbxQZKhbt72FgArCXyBqND0IHlqoekXRKHRZQMOeXCBZKR7jd+zuVmPvHXPT/TwcWRDt7+jT0xLUAN5Rb1fB6+FeBpPKnm3hF9w3kOhrjH2a+AsRkUdBEE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=tr4BIZvH; arc=pass smtp.client-ip=136.143.169.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
+ARC-Seal: i=1; a=rsa-sha256; t=1711642647; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=ecNS74Hj9GkESSpC4oUlxx7bgHc6TxO1XSUHZZzepPXxV1p3CPkCMICrHvR97Uq65ImAt6NBnfhhKihrZLxH2sysl46a52e0NyukboAM8mKbgpSIFU9sAeDaKht786IEDOWzRi/99X3ETAEw/mdHl3ULI4OgDZAkNjaaTZR/8dY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1711642647; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=/3k01wFQYd9N4aYBAzoi47ZmUyAsnxRiLt/UYoqv2y8=; 
+	b=RwwOAzW/qDeeZ26VxL1ttcb17v2nsN2UoOYUo+rlqVCZXJ6TfVXJju6ge86BySFsr3/qVkVohF6bjHNC/fXoVkzWovWNVe9cgGDh6lPiRFgkfMVK2A3ZBTmx2hMaImqR0vFv20ilix5VHUP+cp53E3zgoBQtWveVeBpmqTPiY2Y=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=bursov.com;
+	spf=pass  smtp.mailfrom=vitaly@bursov.com;
+	dmarc=pass header.from=<vitaly@bursov.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1711642647;
+	s=zoho; d=bursov.com; i=vitaly@bursov.com;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=/3k01wFQYd9N4aYBAzoi47ZmUyAsnxRiLt/UYoqv2y8=;
+	b=tr4BIZvHxU9oWLFLYLLYVxWJJj3YEgaM2c/qOYx+DcRZaRC+MXyt9Io3If0ND1gK
+	/AdGuEIfiGhRW67rZnKYTpZZlAT/1AfZQ70dYRmMk/do3crr8RkPorLPyjyA4zpgBgb
+	berLdxqAwsNHi+pKDzXxoxgR0iZBD2llH45br6x8=
+Received: from [192.168.11.99] (217.20.170.230 [217.20.170.230]) by mx.zoho.eu
+	with SMTPS id 1711642645855196.55526618397528; Thu, 28 Mar 2024 17:17:25 +0100 (CET)
+Message-ID: <94c1c0d1-43c1-478e-9a98-188cd85803c9@bursov.com>
+Date: Thu, 28 Mar 2024 18:17:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-28_15,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 clxscore=1015 lowpriorityscore=0
- impostorscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2403210000
- definitions=main-2403280111
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/1] sched/fair: allow disabling newidle_balance with
+ sched_relax_domain_level
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org
+References: <cover.1711584739.git.vitaly@bursov.com>
+ <29b1db65-03c6-41a6-8556-f788c4161efd@linux.ibm.com>
+Content-Language: en-US, ru-RU, uk-UA
+From: Vitalii Bursov <vitaly@bursov.com>
+In-Reply-To: <29b1db65-03c6-41a6-8556-f788c4161efd@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 
-Note: I cc:'d stable in the email headers by mistake.  NO CC: stable
-tag, I don't want this to go into stable.
 
-Thanks,
+On 28.03.24 07:48, Shrikanth Hegde wrote:
+> 
+> 
+> On 3/28/24 6:17 AM, Vitalii Bursov wrote:
+>> Hi,
+>>
+>> During the upgrade from Linux 5.4 we found a small (around 3%) 
+>> performance regression which was tracked to commit 
+> 
+> You see the regression since it is doing more newidle balance? 
 
---> Steve
+In some sense, yes.
 
-On Thu, Mar 28, 2024 at 11:06:14AM -0500, Steve Wahl wrote:
-> When ident_pud_init() uses only gbpages to create identity maps, large
-> ranges of addresses not actually requested can be included in the
-> resulting table; a 4K request will map a full GB.  On UV systems, this
-> ends up including regions that will cause hardware to halt the system
-> if accessed (these are marked "reserved" by BIOS).  Even processor
-> speculation into these regions is enough to trigger the system halt.
-> And MTRRs cannot be used to restrict this speculation, there are not
-> enough MTRRs to cover all the reserved regions.
-> 
-> The fix for that would be to only use gbpages when map creation
-> requests include the full GB page of space, and falling back to using
-> smaller 2M pages when only portions of a GB page are included in the
-> request.
-> 
-> But on some other systems, possibly due to buggy bios, that solution
-> leaves some areas out of the identity map that are needed for kexec to
-> succeed.  It is believed that these areas are not marked properly for
-> map_acpi_tables() in arch/x86/kernel/machine_kexec_64.c to catch and
-> map them.  The nogbpages kernel command line option also causes these
-> systems to fail even without these changes.
-> 
-> So, create kexec identity maps using full GB pages on all platforms
-> but UV; on UV, use narrower 2MB pages in the identity map where a full
-> GB page would include areas outside the region requested.
-> 
-> No attempt is made to coalesce mapping requests. If a request requires
-> a map entry at the 2M (pmd) level, subsequent mapping requests within
-> the same 1G region will also be at the pmd level, even if adjacent or
-> overlapping such requests could have been combined to map a full
-> gbpage.  Existing usage starts with larger regions and then adds
-> smaller regions, so this should not have any great consequence.
-> 
-> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-> 
-> Fixes: d794734c9bbf ("x86/mm/ident_map: Use gbpages only where full GB page should be mapped.")
-> Reported-by: Pavin Joseph <me@pavinjoseph.com>
-> Closes: https://lore.kernel.org/all/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
-> Link: https://lore.kernel.org/all/20240322162135.3984233-1-steve.wahl@hpe.com/
-> Tested-by: Pavin Joseph <me@pavinjoseph.com>
-> Tested-by: Eric Hagberg <ehagberg@gmail.com>
-> Tested-by: Sarah Brofeldt <srhb@dbc.dk>
-> ---
-> 
-> v4: Incorporate fix for regression on systems relying on gbpages
->     mapping more than the ranges actually requested for successful
->     kexec, by limiting the effects of the change to UV systems.
->     This patch based on tip/x86/urgent.
-> 
-> v3: per Dave Hansen review, re-arrange changelog info,
->     refactor code to use bool variable and split out conditions.
-> 
-> v2: per Dave Hansen review: Additional changelog info,
->     moved pud_large() check earlier in the code, and
->     improved the comment describing the conditions
->     that restrict gbpage usage.
->    
-> 
->  arch/x86/include/asm/init.h        |  1 +
->  arch/x86/kernel/machine_kexec_64.c | 10 ++++++++++
->  arch/x86/mm/ident_map.c            | 24 +++++++++++++++++++-----
->  3 files changed, 30 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/init.h b/arch/x86/include/asm/init.h
-> index cc9ccf61b6bd..371d9faea8bc 100644
-> --- a/arch/x86/include/asm/init.h
-> +++ b/arch/x86/include/asm/init.h
-> @@ -10,6 +10,7 @@ struct x86_mapping_info {
->  	unsigned long page_flag;	 /* page flag for PMD or PUD entry */
->  	unsigned long offset;		 /* ident mapping offset */
->  	bool direct_gbpages;		 /* PUD level 1GB page support */
-> +	bool direct_gbpages_only;	 /* use 1GB pages exclusively */
->  	unsigned long kernpg_flag;	 /* kernel pagetable flag override */
->  };
->  
-> diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-> index b180d8e497c3..3a2f5d291a88 100644
-> --- a/arch/x86/kernel/machine_kexec_64.c
-> +++ b/arch/x86/kernel/machine_kexec_64.c
-> @@ -28,6 +28,7 @@
->  #include <asm/setup.h>
->  #include <asm/set_memory.h>
->  #include <asm/cpu.h>
-> +#include <asm/uv/uv.h>
->  
->  #ifdef CONFIG_ACPI
->  /*
-> @@ -212,6 +213,15 @@ static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
->  
->  	if (direct_gbpages)
->  		info.direct_gbpages = true;
-> +	/*
-> +	 * UV systems need restrained use of gbpages in the identity
-> +	 * maps to avoid system halts.  But some other systems rely on
-> +	 * using gbpages to expand mappings outside the regions
-> +	 * actually listed, to include areas required for kexec but
-> +	 * not explicitly named by the bios.
-> +	 */
-> +	if (!is_uv_system())
-> +		info.direct_gbpages_only = true;
->  
->  	for (i = 0; i < nr_pfn_mapped; i++) {
->  		mstart = pfn_mapped[i].start << PAGE_SHIFT;
-> diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
-> index 968d7005f4a7..a538a54aba5d 100644
-> --- a/arch/x86/mm/ident_map.c
-> +++ b/arch/x86/mm/ident_map.c
-> @@ -26,18 +26,32 @@ static int ident_pud_init(struct x86_mapping_info *info, pud_t *pud_page,
->  	for (; addr < end; addr = next) {
->  		pud_t *pud = pud_page + pud_index(addr);
->  		pmd_t *pmd;
-> +		bool use_gbpage;
->  
->  		next = (addr & PUD_MASK) + PUD_SIZE;
->  		if (next > end)
->  			next = end;
->  
-> -		if (info->direct_gbpages) {
-> -			pud_t pudval;
-> +		/* if this is already a gbpage, this portion is already mapped */
-> +		if (pud_leaf(*pud))
-> +			continue;
-> +
-> +		/* Is using a gbpage allowed? */
-> +		use_gbpage = info->direct_gbpages;
->  
-> -			if (pud_present(*pud))
-> -				continue;
-> +		if (!info->direct_gbpages_only) {
-> +			/* Don't use gbpage if it maps more than the requested region. */
-> +			/* at the beginning: */
-> +			use_gbpage &= ((addr & ~PUD_MASK) == 0);
-> +			/* ... or at the end: */
-> +			use_gbpage &= ((next & ~PUD_MASK) == 0);
-> +		}
-> +		/* Never overwrite existing mappings */
-> +		use_gbpage &= !pud_present(*pud);
-> +
-> +		if (use_gbpage) {
-> +			pud_t pudval;
->  
-> -			addr &= PUD_MASK;
->  			pudval = __pud((addr - info->offset) | info->page_flag);
->  			set_pud(pud, pudval);
->  			continue;
-> 
-> base-commit: b6540de9b5c867b4c8bc31225db181cc017d8cc7
-> -- 
-> 2.26.2
-> 
+Before this commit or with this commit reverted on newer kernels,
+newidle balance almost never called in this code path because
+sysctl_sched_migration_cost is too high (it's set to 5ms by tuned
+in "performance" profiles).
 
--- 
-Steve Wahl, Hewlett Packard Enterprise
+So, it's not exactly more, my understanding is that it had started
+working on this and similar servers.
+
+When it's working, perf for the process and kernel shows:
+* slightly more (+10%), or much more cpu-migrations (10x or more).
+It looks like new migrations come from futex syscalls in our case.
+* more "cycles" and "instructions", which is understandable, as
+newidle requires some work to be done. However, IPC ratio falls.
+* more L1 and L2 load misses.
+(I haven't checked other performance counters on this CPU)
+
+The above certainly depends on a workload, and it concerns a specific
+case when we see the overall performance regression. Perhaps, all
+mentioned factors and consequences contribute. For example,
+additional cache pressure may have a higher negative impact than the
+benefit of newidle, but I don't know if it's the case exactly.
+
+We haven't tried running a production workload with newidle restricted
+only to SMP level yet, but a synthetic test (which may be totally
+different from our real workload) shows that it is possible for SMP
+newidle to be a little better compared to when it's fully disabled.
+About 0.5% better in the test case instead of 1.5% worse when fully
+enabled.
+
+>> c5b0a7eefc70150caf23e37bc9d639c68c87a097
+>>
+>>     sched/fair: Remove sysctl_sched_migration_cost condition
+>>
+>>     With a default value of 500us, sysctl_sched_migration_cost is
+>>     significanlty higher than the cost of load_balance. Remove the
+>>     condition and rely on the sd->max_newidle_lb_cost to abort
+>>     newidle_balance.
+>>
+>>
+>> Looks like "newidle" balancing is beneficial for a lot of workloads, 
+>> just not for this specific one. The workload is video encoding, there 
+>> are 100s-1000s of threads, some are synchonized with mutexes and
+> 
+> s/synchonized/synchronized/
+Thanks
+
+>> conditional variables. The process aims to have a portion of CPU idle, 
+>> so no CPU cores are 100% busy. Perhaps, the performance impact we see 
+>> comes from additional processing in the scheduler and additional cost 
+>> like more cache misses, and not from an incorrect balancing. See
+>> perf output below.
+>>
+>> My understanding is that "sched_relax_domain_level" cgroup parameter 
+>> should control if newidle_balance() is called and what's the scope
+> 
+> s/newidle_balance()/sched_balance_newidle()   at all the places since the 
+> name has been changed recently. Thanks
+
+>> of the balancing is, but it doesn't fully work for this case.
+>>
+>> cpusets.rst documentation:
+>>> The 'cpuset.sched_relax_domain_level' file allows you to request changing
+>>> this searching range as you like.  This file takes int value which
+>>> indicates size of searching range in levels ideally as follows,
+>>> otherwise initial value -1 that indicates the cpuset has no request.
+>>>  
+>>> ====== ===========================================================
+>>>   -1   no request. use system default or follow request of others.
+>>>    0   no search.
+>>>    1   search siblings (hyperthreads in a core).
+>>>    2   search cores in a package.
+>>>    3   search cpus in a node [= system wide on non-NUMA system]
+>>>    4   search nodes in a chunk of node [on NUMA system]
+>>>    5   search system wide [on NUMA system]
+>>> ====== ===========================================================
+>>
+> 
+> I think this document needs to be updated. levels need not be serial order 
+> due to sched domains degenation. It should have a paragraph which tells the user
+> to take a look at /sys/kernel/debug/sched/domains/cpu*/domain*/ for system 
+> specific details. 
+> 
+Agree, it's little confusing. I can add something like this.
+Thanks
+
+>> Setting cpuset.sched_relax_domain_level to 0 works as 1.
+>>
+>> On a dual-CPU server, domains and levels are as follows:
+>>   domain 0: level 0, SMT
+>>   domain 1: level 2, MC
+>>   domain 2: level 5, NUMA
+>>
+>> So, to support "0 no search", the value in 
+>> cpuset.sched_relax_domain_level should disable SD_BALANCE_NEWIDLE for a 
+>> specified level and keep it enabled for prior levels. For example, SMT 
+>> level is 0, so sched_relax_domain_level=0 should exclude levels >=0.
+>>
+>> Instead, cpuset.sched_relax_domain_level enables the specified level,
+>> which effectively removes "no search" option. See below for domain
+>> flags for all cpuset.sched_relax_domain_level values.
+>>
+>> Proposed patch allows clearing SD_BALANCE_NEWIDLE flags when 
+>> cpuset.sched_relax_domain_level is set to 0 and extends max
+>> value validation range beyond sched_domain_level_max. This allows
+>> setting SD_BALANCE_NEWIDLE on all levels and override platform
+>> default if it does not include all levels.
+>>
 
