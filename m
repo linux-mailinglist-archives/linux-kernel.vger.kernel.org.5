@@ -1,138 +1,102 @@
-Return-Path: <linux-kernel+bounces-123066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E7E8901AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:24:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1648901AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ABB41F25405
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:24:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 175E41C227FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75FA1272AC;
-	Thu, 28 Mar 2024 14:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD12126F33;
+	Thu, 28 Mar 2024 14:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ORguJtxs"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EB914011;
-	Thu, 28 Mar 2024 14:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="oqvZ3Slr"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25E083CB2;
+	Thu, 28 Mar 2024 14:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711635858; cv=none; b=Q3/qt7wWBwAN2NAMRVZ9bIiBwq0wifcVFr/N41LTip6YsVrxnbAFPxOmWbmGgtAw1IvSZCG90PQIP/0xftgDaEtYok05wBT7WQtaZ3AIQH0huOlogHWf4BdE82ymm1UHO52ax7+5IyfjbHOLfQqcrfxdKCbviLwVmzJx3XlAols=
+	t=1711635874; cv=none; b=YMJJahB5qgdNim4oLX3q1/zNDKrmxrVPiSSEflU/vXDQjm2ScrmQU5SzEZ0UAf1Lzmi9coGhgBiw/fDFhA46lQeTIjOni1QpcNn1hilc7EKj3amUDJqNghz2kNgpd/idedNLAVc+R0HZdvZZOr9x7e3uU6Xt2W0Sa+m8yGpN48M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711635858; c=relaxed/simple;
-	bh=GpSW9qy/DbCkeanF/WDNIkt+UbrGs1BU2sGeTKT1BZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SKH+moJ+q33xyN1mnb0QnSffdXqegqIpKj0kq+4nXUCGIEX7nFCcH+RG1/RqNmSyOjz9dXKVwRRsY35R1Bcxz2n9Z2VJALE/vbimDbKduoCtu0VDgWsy59N5+YWNATrIrfGO3n3vc8dUoNfbfAmbCxcS1kHsNZeYNY29azIpAy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ORguJtxs; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E012760002;
-	Thu, 28 Mar 2024 14:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711635847;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XPK8OWtA7r2lnM0J492qYwHtOe3RtTG+NnxTRXgMEzE=;
-	b=ORguJtxsDZUdBCmxS9tQJ3NMnzZ/VeROyKqHmRgFQEMnKdwLvphs8X2Niycnfnh2+obNGB
-	twnVypHhM1PgDDy8u5f/49EpRAKmxxPIP7bjr18BYamJJTqeHlhWIhSoZsHSyrhvxUm7Wf
-	C4JLbjTiQPeGiA6oqw19YN+IipmTT0M/Dr8jhTuSKw+S2IJmyFMwfNgKMvqcoADvZIFbVE
-	0j7qIBfzzB09U+EKC/1y0qAARFC+uJtO0r2HgZQOFSqaCOs6bgaUujSqLmXU5y+N9OqlBP
-	lu30+/I1XcrkVsDV5rAFn2v+b4V+1qVK330MnPQcGLoya/3G2cNJdaIIsvyjZg==
-Date: Thu, 28 Mar 2024 15:23:59 +0100
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 11/17] dt-bindings: net: pse-pd: Add another
- way of describing several PSE PIs
-Message-ID: <20240328152359.63f8e93a@kmaincent-XPS-13-7390>
-In-Reply-To: <2d325acb-fc35-4ca3-80f2-ac88359578fd@lunn.ch>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
-	<20240326-feature_poe-v6-11-c1011b6ea1cb@bootlin.com>
-	<2d325acb-fc35-4ca3-80f2-ac88359578fd@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711635874; c=relaxed/simple;
+	bh=BK5T9ghNxG0GFU69c70sqjesTdNe8K2qsWISPcbW/BI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NJ0rPbgQxZEbHPTESlENXEdD/FWRtp59OobtsE8YiKltpe1G2tHLc/TmFcgvkBL5eJ9lrAHegHnYxBj0SgKsLGGruyioI+zQJrBUvemOc/kI01fNjk5/+QLySotlFg/F+mfvq5btlepeoj7iRNhZq3YGLk86zNFQDkm/dE4afzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=oqvZ3Slr; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.66.160.44] (unknown [108.143.43.187])
+	by linux.microsoft.com (Postfix) with ESMTPSA id F15E820E6AC1;
+	Thu, 28 Mar 2024 07:24:30 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F15E820E6AC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711635872;
+	bh=1l+2SEDIwQkqSvND2rBzNts74gzDdFBM4fPcS3as+CA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oqvZ3Slr8vDh7h6VgMDWNVpWOIqxlXFCFZHQOp45V68Q8+xA6vEFY21zOQ7yJKqRD
+	 28qc6wSFHrMymbwBKatxXWfZzjf4TeqeXww66jc+AHRExNGKP0WQs5MAvnUa3y+vkZ
+	 kJXKZR1QB+DTCdaqTcoEBu5eJ403qnuAF9ZoR5lg=
+Message-ID: <ac4f34a0-036a-48b9-ab56-8257700842fc@linux.microsoft.com>
+Date: Thu, 28 Mar 2024 15:24:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] x86/CPU/AMD: Track SNP host status with
+ cc_platform_*()
+To: Borislav Petkov <bp@alien8.de>
+Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ KVM <kvm@vger.kernel.org>, Ashish Kalra <ashish.kalra@amd.com>,
+ Joerg Roedel <joro@8bytes.org>, Michael Roth <michael.roth@amd.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>
+References: <20240327154317.29909-1-bp@alien8.de>
+ <20240327154317.29909-6-bp@alien8.de>
+ <f6bb6f62-c114-4a82-bbaf-9994da8999cd@linux.microsoft.com>
+ <20240328134109.GAZgVzdfQob43XAIr9@fat_crate.local>
+Content-Language: en-CA
+From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20240328134109.GAZgVzdfQob43XAIr9@fat_crate.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-On Thu, 28 Mar 2024 13:31:06 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+On 28/03/2024 14:41, Borislav Petkov wrote:
+> On Thu, Mar 28, 2024 at 12:51:17PM +0100, Jeremi Piotrowski wrote:
+>> Shouldn't this line be inside the cpu_has(c, X86_FEATURE_SEV_SNP) check?
+> 
+> The cc_vendor is not dependent on X86_FEATURE_SEV_SNP.
+>
 
-> > +          pairsets:
-> > +            $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +            description:
-> > +              List of phandles, each pointing to the power supply for =
-the
-> > +              corresponding pairset named in 'pairset-names'. This pro=
-perty
-> > +              aligns with IEEE 802.3-2022, Section 33.2.3 and 145.2.4.
-> > +              PSE Pinout Alternatives (as per IEEE 802.3-2022 Table
-> > 145\u20133)
-> > +
-> > |-----------|---------------|---------------|---------------|----------=
------|
-> > +              | Conductor | Alternative A | Alternative A | Alternativ=
-e B
-> > | Alternative B |
-> > +              |           |    (MDI-X)    |     (MDI)     |      (X)
-> > |      (S)      |
-> > +
-> > |-----------|---------------|---------------|---------------|----------=
------|
-> > +              | 1         | Negative VPSE | Positive VPSE | \u2014
-> >     | \u2014             |
-> > +              | 2         | Negative VPSE | Positive VPSE | \u2014
-> >     | \u2014             |
-> > +              | 3         | Positive VPSE | Negative VPSE | \u2014
-> >     | \u2014             |
-> > +              | 4         | \u2014             | \u2014             |
-> > Negative VPSE | Positive VPSE |
-> > +              | 5         | \u2014             | \u2014             |
-> > Negative VPSE | Positive VPSE |
-> > +              | 6         | Positive VPSE | Negative VPSE | \u2014
-> >     | \u2014             |
-> > +              | 7         | \u2014             | \u2014             |
-> > Positive VPSE | Negative VPSE |
-> > +              | 8         | \u2014             | \u2014             |
-> > Positive VPSE | Negative VPSE | =20
->=20
-> Is it possible to avoid \u encoding? Ideally this documentation should
-> be understandable without having to render it using a toolset. I just
-> want to use less(1).
->=20
-> Or is this a email problem? Has something converted your UTF-8 file to
-> this \u notation?
+It's not but if you set it before the check it will be set for all AMD systems,
+even if they are neither CC hosts nor CC guests.
 
-It seems to come from the documentation I copied pasted from Oleksij mail.
-Will fix it.
+cc_vendor being unset is handled correctly in cc_platform_has() checks.
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+>> How about turning this into a more specific check:
+>>
+>>   if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP) &&
+> 
+> Why?
+> 
+
+To leave open the possibility of an SNP hypervisor running nested.
+
+> The check is "am I running as a hypervisor on baremetal".
+> 
+
+I thought you wanted to filter out SEV-SNP guests, which also have X86_FEATURE_SEV_SNP
+CPUID bit set.
+
+My understanding is that these are the cases:
+
+CPUID(SEV_SNP) | MSR(SEV_SNP)     | what am I
+---------------------------------------------
+set            | set              | SNP-guest
+set            | unset            | SNP-host
+unset          | ??               | not SNP
 
