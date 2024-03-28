@@ -1,247 +1,703 @@
-Return-Path: <linux-kernel+bounces-123186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 369C48903D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:49:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63AC8903DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94EB6B23C7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:48:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 168111C2EBD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD1F130AF0;
-	Thu, 28 Mar 2024 15:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="fl/Zz0X2"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2085.outbound.protection.outlook.com [40.107.20.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47F2129E81;
-	Thu, 28 Mar 2024 15:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711640926; cv=fail; b=C+fVbZevV65/p5JrpuSfMl7o4CWKSOCY0kf9bhP0yhl9lOv8A8neS486EeMfnLwv7C0Qx//ZrqMh4GUSYnBjb8uWWEZeEvWY2VgD8lCh/BcglBqWZ19zxNDUj3zQfN3f46LEeDitA9TFjrrJnAcCwfdJZLmWgP0YLX/K8Dulk2g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711640926; c=relaxed/simple;
-	bh=HFEf840cChStFOd184B+wpOQkKXRGELS4FqAgblF82I=;
-	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=rjpS5ngWkg6PG4+vfPKcOnB9o9jb1g2M5ELUw8b09F9xN5PxmM0IcINHekemnTBjGc7pg5BRCFLG99g/5F5mMUa7DPr6Kqcb+8zBjI9ajLGB16CIf93WpsK0SdCcizL+rWi8hqprIRUhOw4nRbOP6POO7snkAc2VH7fQkpURoW8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=fl/Zz0X2; arc=fail smtp.client-ip=40.107.20.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nr7ffwfamO/vv0AmqUY0OvDvB0d5WK26sAQaTLszlsIj3m3iAhjB1Qm3u4W4RSp6ewS8kPfPDR+1ETCVWRvrSV9AWGvxnfiqtHscx+uAWRjIySVu/d1Isyd8y0Rah5X8+ZiOlHajXKgkCa988pTD8sw+dOne91j0FmbPemAWyhUT3TiGVqZZb71GohQJQwOOScGe5pnqiTsy3X+BkyTqFphvgzEPN2kAbB6qCtoW6PmLv4kihTpIpUeFmIgh2kM/aQ0KiVQylrj9DC8h0LFf/k9WhHnV4XWw42ZUKpl5axXx5Thg0TRp1q0pmivAlmBWfT6Fb4tnVLyNlOOoEb6nbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WkHe/8n3QtMDjxbwwuvhKNkqGevFly2mGicqDv0ysUo=;
- b=gPTzDOhEII02JCy5Kk6C2Y/81ytmX1yUUbJAMQicl/iLczN6L3zwq4K2jhGY+Z1QXung1e3XO82nGsn+E4X6vMqgV4cpWuUvBKWBMJXpY7ycEnR4lPtcPoXe1h9WzEIXbWw3/Ns97kQQmZ5eQc7uMj6bhIkaYwAkMy/8jhSGx2dz1rnmim2XJFpATtZ/oXJfgCGVPdHly0cI19+8wEEadSXKq6rvF5nulu7EbHA49fbSEtQeuHrjvAtHx4L3nDaCUtIzXFem1K+xjHqNQ3Olfk2HI5+ji6mVCRtr/C97Okf556Lt/ndS0caKEytbfWMXgS1PHF+MdiQXBf7ieLWLTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WkHe/8n3QtMDjxbwwuvhKNkqGevFly2mGicqDv0ysUo=;
- b=fl/Zz0X2Jol+Bzr6JSog259oYtdqw/JJzfW+dRFB+e80SHTlENlSyM6Lc0WNDEDbJA12KaiBiDdw0Lwt6oVjzMR4RlIrh+CB6VUzHYWAn/iWOtZDh3WxUr+pAKaF1CshLL83Y87Wl5zm+GukBn8VVTI5RThlEk0w/4w7O7wRLgM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by GV1PR04MB10273.eurprd04.prod.outlook.com (2603:10a6:150:1a5::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.26; Thu, 28 Mar
- 2024 15:48:42 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.028; Thu, 28 Mar 2024
- 15:48:42 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: imx@lists.linux.dev,
-	linux-pci@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Li Zhijian <lizhijian@fujitsu.com>,
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/1] docs: dma: correct dma_set_mask() sample code
-Date: Thu, 28 Mar 2024 11:48:26 -0400
-Message-Id: <20240328154827.809286-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR02CA0015.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::28) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A9712F59C;
+	Thu, 28 Mar 2024 15:50:12 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C82E26AF6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711641011; cv=none; b=X04/xI7R8Bk3BRgmOo9vxbx7vlD30lX8ncsqK7bs9pNqU6N3jOWfSE9o6BOFBFGYVZQV4WTazGp/e1XyJWNG13s8EhHXqja7ECdr2xBbjDfxotSCBoAOnb5bCCJ1wn9Mwfhjt4avH8OlWhmSmH09be3tVMWooyN733WSWcxQusc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711641011; c=relaxed/simple;
+	bh=7v84MP2F4frlYZyhy/7y2FLDM/WDoKPakarbFBpGtcI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gl6UDafxT5OO6QzE9Ypll2vVmlfmEi99XTh09LTJNVkm9bS+fyb/DEnz05Z5wSCLGrSbM3QalWlqN+Q8VmKfPvSpbvKAmxRogbxpsQ/AQE1JGtravpu7XCs7MuNEicv+qsl+0sbfDgCx+TT/4r2WEhGp+zApdf/5sRCv+BJ5nuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED5031476
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:50:41 -0700 (PDT)
+Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D5C553F694
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:50:07 -0700 (PDT)
+Date: Thu, 28 Mar 2024 15:49:55 +0000
+From: Liviu Dudau <liviu.dudau@arm.com>
+To: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+Cc: boris.brezillon@collabora.com, steven.price@arm.com,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	kernel@collabora.com
+Subject: Re: [PATCH 1/2] drm/panthor: Enable fdinfo for cycle and time
+ measurements
+Message-ID: <ZgWRo1z8NvCEqP0r@e110455-lin.cambridge.arm.com>
+References: <20240305211000.659103-1-adrian.larumbe@collabora.com>
+ <20240305211000.659103-2-adrian.larumbe@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GV1PR04MB10273:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3c970c6-8270-4f40-5ecb-08dc4f3e8b10
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	MhXqa9Oj0oE+hw+8KShMDyCctySdW2mBu+I0rrreAZjZOOxadSNtN5G58ltVEKQKec4mGYb/wwc7w7NHiozs88QWKO8KAGmDQU9SuVQlgJNCS5idpyJTPqpIlyK6s+UgHyuSKKDM5TAJ3NtzNowXPVbNzvpBQpE2mtOolwpPzf4LErASi77qN5qWhFgD5xjZqlk/CSuleT2jT2pFbhdVUzGtDW2eBiY7jslOfMk65WUAQWlLbSg3R8XNdtJyfgRiyVPaHxEI09JEMOBq4baiDMMOsdv0VPnPBdn+jet7MvI3sbXSfCiQQYsYN58EJRrwlS12cuNDvHVf4J66OsCJ8Qno37Gf57ljATZ8DkRkdnCYN1aqRvnnRcD2wRBEHEQIyrCnbbjkIVLHH+DmPRf4X7Fb/V+445F4CJlLrVpELHprWaAZSg2a0lh66IqhBQG5lvM1zV5Z8Wg/tJdSWKp5+sMVlER+NYMsolXXRINmgWvmTbRCCAZZSiSkccU14bYtb342nXFlY17YucIvbHstVHQCmcJL67W4edbeMOkncJXh/HL65LXwrL9HC1Cf8yeh48zB2i5n90/oitVv+oDOREPj9/d/uRE56egAWPiYHWv0krsQi+37Kr51CJ33lZ6VG0H+teJ5AZ1eL+rmdCC8FP19Aw+Aj6UfsuDeApvpO5a1t3GukCIs2vxnIz6NrtNgKb7s7/C2avZza/lI6U38WPqu8GkedES+QoYwhbhx5rE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1+wYiuPjONw3ixlMq1LeyKjHSiQmEckqmGDq6NB34Jwh9BRhW6HRpD3JS9N+?=
- =?us-ascii?Q?O2V0IZEp2lfZxsxJCKa5octwdDbCTH9XXyfNJT4948q1KEQGpOPjbBetJvDz?=
- =?us-ascii?Q?sC7cYIOtZ19a3yDgLxBzw+qmAwMnPfhtms0kDnhnCwYnQwb+d7kO+KI5YPbi?=
- =?us-ascii?Q?C4yYdgLYqMOBv109gi1xFpBLmOZV1B6DCAthmZ8L7RMbuhFAHJqvS/lFL2tf?=
- =?us-ascii?Q?g6gz9yA86DM03RdQg/UbB2/isffSyOxeh+6Bygu22COTMNdQoVg1Pkla4iqG?=
- =?us-ascii?Q?7fQCQPi0onZye/9IBbgm1P4c/tzKxaQi0Tg2gTVVdXWhRi1+J2+WWxpYy620?=
- =?us-ascii?Q?LXS0MloWJhSI/HVl+qXEDEpFYyops6SHb2eZtkU98WfrZuQb+q5enWgHSaZS?=
- =?us-ascii?Q?Pjb6aFkEXgK76s4jK0Yu4sAE9/i5lA1XBuBndyJ7/5Mf1otPtLcFlb2u/pfC?=
- =?us-ascii?Q?sxFyBp1xmKjgjrZa9zGmCX7EhGVQopXia3b1EMQp77Bz6wBb6xXnVmywp9qb?=
- =?us-ascii?Q?xLEaNxlsLzZXTU6M3455wX9W0hc0fHHuxvX4jICF887unFW0+xW1yNkvERdq?=
- =?us-ascii?Q?TGy6MXH0Uc/RVp4yl2evuuAZxtaGbScPvTV8HT10BOvBcTXD9XV851xRkCP4?=
- =?us-ascii?Q?4O537acMRLffJ0a9RdSvCcycU2XLn7/kVXfqRUOteVicVNzeLrOKq3saRgyT?=
- =?us-ascii?Q?8OEntZIrtmgDMMAbFPznfQufs3wonEPJb7qy+iaLGYBVgNJbCfYV7SP695TX?=
- =?us-ascii?Q?LR7h4cKYG504JayvqQn7DW6xkWpTO2m7JygjnCOcTtvubvp4AZnMNrsUie/R?=
- =?us-ascii?Q?znlI5P7ieCaSLSENZ+cKBxvWH3gGyig2TF4VwSbdCh1HhV2DjYtzsk43LmrA?=
- =?us-ascii?Q?cdF938ec4Zm4+UG1EdtR6vkbiZAFf6yAJLJnAQx9fzLhGfUbFLhnf3eHEubr?=
- =?us-ascii?Q?6wbWBRpK9tlgjtiNi/scuKvwMXvo8OfgECL3Xv4uKN4l2TW2LP3B80KdtGh+?=
- =?us-ascii?Q?pwVYptAykrKkCsmSj4LLufLLHZmyjcdvYYW3GoV+e1IJDGpvsVKdFXvzH7/E?=
- =?us-ascii?Q?3Tlrh08G7E98ednuathASECx5OEYrgGuQ2H70BXFtrpfhFGOQX2wodEH8+CH?=
- =?us-ascii?Q?sS4tg6mY5v7j65hBub3R7pxS4OBoQ2rESv4fRrIU74U1keRI1zoMB/irTejt?=
- =?us-ascii?Q?YfbJ7POpVGdllXs1P+R89CNijBUFx27KXlu6MZXjH/Bd4MBtkU1WTrb6Ayf/?=
- =?us-ascii?Q?QY1MM+z5CmQ9LIR3XIyWK8Z8j6PY/fpPZCPaIVRYGWZ0RbcwO2rHbfoqQNbZ?=
- =?us-ascii?Q?78g9xzf844iV/7XvrJ+h6PNabHrjWVgEeQyWG/SqHyesorXj+LxrUt4J9lF0?=
- =?us-ascii?Q?ZnxgdVzP4qdHBgA0xqzJ+5B3r/Kn00WrAi4q39WJ1QZF8BeuTM4Q0ufXVGgb?=
- =?us-ascii?Q?kaz6R4VzUzjZZbWcDUHwWSCe8AN9DZqkhW140ge45xr9n9UV1k0gMtFNGM+b?=
- =?us-ascii?Q?4j9k8q2s3Cjrh+IzIWP0koZl3ECLmpSWkrsvGjnUkbkH/8oN4tB1BBFScY6l?=
- =?us-ascii?Q?GMCNxSnww/6L5ewe10MFF40xe/axkzarolwHeJGA?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3c970c6-8270-4f40-5ecb-08dc4f3e8b10
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 15:48:42.1019
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YZ37RoKBorA6FCWoyjJj07QaD2rThRhs79DKSEhcqvKzhbx/of0x3o3XWxKa7IoYUZSg4Cx7FXfgk8Eqr/eZ+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB10273
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240305211000.659103-2-adrian.larumbe@collabora.com>
 
-There are bunch of codes in driver like
+Hi Adrián,
 
-       if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)))
-               dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32))
+Appologies for the delay in reviewing this.
 
-Actaully it is wrong because if dma_set_mask_and_coherent(64) failure,
-dma_set_mask_and_coherent(32) will be failure by the same reason.
+On Tue, Mar 05, 2024 at 09:05:49PM +0000, Adrián Larumbe wrote:
+> These values are sampled by the firmware right before jumping into the UM
+> command stream and immediately after returning from it, and then kept inside a
+> per-job accounting structure. That structure is held inside the group's syncobjs
+> buffer object, at an offset that depends on the job's queue slot number and the
+> queue's index within the group.
 
-And dma_set_mask_and_coherent(64) never return failure.
+I think this commit message is misleadingly short compared to the size of the
+changes. If I may, I would like to suggest that you split this commit into two
+parts, one introducing the changes in the ringbuf and syncobjs structures and
+the other exporting the statistics in the fdinfo.
 
-According to defination of dma_set_mask(), it indicate the width of address
-that device DMA can access. If it can access 64bit address, it must access
-32bit address inherently. So only need set biggest address width.
+> 
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panthor/panthor_devfreq.c |  10 +
+>  drivers/gpu/drm/panthor/panthor_device.h  |  11 ++
+>  drivers/gpu/drm/panthor/panthor_drv.c     |  31 ++++
+>  drivers/gpu/drm/panthor/panthor_sched.c   | 217 +++++++++++++++++++---
+>  4 files changed, 241 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panthor/panthor_devfreq.c b/drivers/gpu/drm/panthor/panthor_devfreq.c
+> index 7ac4fa290f27..51a7b734edcd 100644
+> --- a/drivers/gpu/drm/panthor/panthor_devfreq.c
+> +++ b/drivers/gpu/drm/panthor/panthor_devfreq.c
+> @@ -91,6 +91,7 @@ static int panthor_devfreq_get_dev_status(struct device *dev,
+>  	spin_lock_irqsave(&pdevfreq->lock, irqflags);
+>  
+>  	panthor_devfreq_update_utilization(pdevfreq);
+> +	ptdev->current_frequency = status->current_frequency;
+>  
+>  	status->total_time = ktime_to_ns(ktime_add(pdevfreq->busy_time,
+>  						   pdevfreq->idle_time));
+> @@ -130,6 +131,7 @@ int panthor_devfreq_init(struct panthor_device *ptdev)
+>  	struct panthor_devfreq *pdevfreq;
+>  	struct dev_pm_opp *opp;
+>  	unsigned long cur_freq;
+> +	unsigned long freq = ULONG_MAX;
+>  	int ret;
+>  
+>  	pdevfreq = drmm_kzalloc(&ptdev->base, sizeof(*ptdev->devfreq), GFP_KERNEL);
+> @@ -204,6 +206,14 @@ int panthor_devfreq_init(struct panthor_device *ptdev)
+>  
+>  	dev_pm_opp_put(opp);
+>  
+> +	/* Find the fastest defined rate  */
+> +	opp = dev_pm_opp_find_freq_floor(dev, &freq);
+> +	if (IS_ERR(opp))
+> +		return PTR_ERR(opp);
+> +	ptdev->fast_rate = freq;
+> +
+> +	dev_pm_opp_put(opp);
+> +
+>  	/*
+>  	 * Setup default thresholds for the simple_ondemand governor.
+>  	 * The values are chosen based on experiments.
+> diff --git a/drivers/gpu/drm/panthor/panthor_device.h b/drivers/gpu/drm/panthor/panthor_device.h
+> index 51c9d61b6796..10e970921ca3 100644
+> --- a/drivers/gpu/drm/panthor/panthor_device.h
+> +++ b/drivers/gpu/drm/panthor/panthor_device.h
+> @@ -162,6 +162,14 @@ struct panthor_device {
+>  		 */
+>  		u32 *dummy_latest_flush;
+>  	} pm;
+> +
+> +	unsigned long current_frequency;
+> +	unsigned long fast_rate;
+> +};
+> +
+> +struct panthor_gpu_usage {
+> +	u64 time;
+> +	u64 cycles;
+>  };
+>  
+>  /**
+> @@ -176,6 +184,9 @@ struct panthor_file {
+>  
+>  	/** @groups: Scheduling group pool attached to this file. */
+>  	struct panthor_group_pool *groups;
+> +
+> +	/** @stats: cycle and timestamp measures for job execution. */
+> +	struct panthor_gpu_usage stats;
+>  };
+>  
+>  int panthor_device_init(struct panthor_device *ptdev);
+> diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
+> index ff484506229f..fa06b9e2c6cd 100644
+> --- a/drivers/gpu/drm/panthor/panthor_drv.c
+> +++ b/drivers/gpu/drm/panthor/panthor_drv.c
+> @@ -3,6 +3,10 @@
+>  /* Copyright 2019 Linaro, Ltd., Rob Herring <robh@kernel.org> */
+>  /* Copyright 2019 Collabora ltd. */
+>  
+> +#ifdef CONFIG_HAVE_ARM_ARCH_TIMER
+> +#include <asm/arch_timer.h>
+> +#endif
+> +
+>  #include <linux/list.h>
+>  #include <linux/module.h>
+>  #include <linux/of_platform.h>
+> @@ -28,6 +32,8 @@
+>  #include "panthor_regs.h"
+>  #include "panthor_sched.h"
+>  
+> +#define NS_PER_SEC      1000000000ULL
+> +
+>  /**
+>   * DOC: user <-> kernel object copy helpers.
+>   */
+> @@ -1336,6 +1342,29 @@ static int panthor_mmap(struct file *filp, struct vm_area_struct *vma)
+>  	return ret;
+>  }
+>  
+> +static void panthor_gpu_show_fdinfo(struct panthor_device *ptdev,
+> +				    struct panthor_file *pfile,
+> +				    struct drm_printer *p)
+> +{
+> +#ifdef CONFIG_HAVE_ARM_ARCH_TIMER
+> +	drm_printf(p, "drm-engine-panthor:\t%llu ns\n",
+> +		   DIV_ROUND_UP_ULL((pfile->stats.time * NS_PER_SEC),
+> +				    arch_timer_get_cntfrq()));
+> +#endif
+> +	drm_printf(p, "drm-cycles-panthor:\t%llu\n", pfile->stats.cycles);
+> +	drm_printf(p, "drm-maxfreq-panthor:\t%lu Hz\n", ptdev->fast_rate);
+> +	drm_printf(p, "drm-curfreq-panthor:\t%lu Hz\n", ptdev->current_frequency);
+> +}
+> +
+> +static void panthor_show_fdinfo(struct drm_printer *p, struct drm_file *file)
+> +{
+> +	struct drm_device *dev = file->minor->dev;
+> +	struct panthor_device *ptdev = container_of(dev, struct panthor_device, base);
+> +
+> +	panthor_gpu_show_fdinfo(ptdev, file->driver_priv, p);
+> +
+> +}
+> +
+>  static const struct file_operations panthor_drm_driver_fops = {
+>  	.open = drm_open,
+>  	.release = drm_release,
+> @@ -1345,6 +1374,7 @@ static const struct file_operations panthor_drm_driver_fops = {
+>  	.read = drm_read,
+>  	.llseek = noop_llseek,
+>  	.mmap = panthor_mmap,
+> +	.show_fdinfo = drm_show_fdinfo,
+>  };
+>  
+>  #ifdef CONFIG_DEBUG_FS
+> @@ -1363,6 +1393,7 @@ static const struct drm_driver panthor_drm_driver = {
+>  			   DRIVER_SYNCOBJ_TIMELINE | DRIVER_GEM_GPUVA,
+>  	.open = panthor_open,
+>  	.postclose = panthor_postclose,
+> +	.show_fdinfo = panthor_show_fdinfo,
+>  	.ioctls = panthor_drm_driver_ioctls,
+>  	.num_ioctls = ARRAY_SIZE(panthor_drm_driver_ioctls),
+>  	.fops = &panthor_drm_driver_fops,
+> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
+> index 5f7803b6fc48..751d1453e7a1 100644
+> --- a/drivers/gpu/drm/panthor/panthor_sched.c
+> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
+> @@ -93,6 +93,8 @@
+>  #define MIN_CSGS				3
+>  #define MAX_CSG_PRIO				0xf
+>  
+> +#define SLOTSIZE				(NUM_INSTRS_PER_SLOT * sizeof(u64))
 
-See below code fragment:
+Worth moving NUM_INSTRS_PER_SLOT here too?
 
-dma_set_mask(mask)
-{
-	mask = (dma_addr_t)mask;
+> +
+>  struct panthor_group;
+>  
+>  /**
+> @@ -393,7 +395,13 @@ struct panthor_queue {
+>  #define CSF_MAX_QUEUE_PRIO	GENMASK(3, 0)
+>  
+>  	/** @ringbuf: Command stream ring-buffer. */
+> -	struct panthor_kernel_bo *ringbuf;
+> +	struct {
+> +		/** @ringbuf: Kernel BO that holds ring buffer. */
+> +		struct panthor_kernel_bo *bo;
+> +
+> +		/** @nelem: Number of slots in the ring buffer. */
+> +		unsigned int nelem;
 
-	if (!dev->dma_mask || !dma_supported(dev, mask))
-		return -EIO;
+I'm not convinced this nelem is needed. The only place it is used is to check that
+job->ringbuf_idx is not too big, which is something we should do in queue_run_job()
+function rather than in update_fdinfo_stats(). If we don't change ringbuf to a
+structure the patch slims down by more than a dozen lines.
 
-	arch_dma_set_mask(dev, mask);
-	*dev->dma_mask = mask;
-	return 0;
-}
+> +	} ringbuf;
+>  
+>  	/** @iface: Firmware interface. */
+>  	struct {
+> @@ -466,6 +474,9 @@ struct panthor_queue {
+>  		 */
+>  		struct list_head in_flight_jobs;
+>  	} fence_ctx;
+> +
+> +	/** @time_offset: Offset of fdinfo stats structs in queue's syncobj. */
+> +	unsigned long time_offset;
+>  };
+>  
+>  /**
+> @@ -580,7 +591,26 @@ struct panthor_group {
+>  	 * One sync object per queue. The position of the sync object is
+>  	 * determined by the queue index.
+>  	 */
+> -	struct panthor_kernel_bo *syncobjs;
+> +
+> +	struct {
+> +		/** @bo: Kernel BO holding the sync objects. */
+> +		struct panthor_kernel_bo *bo;
+> +
+> +		/** @times_offset: Beginning of time stats after objects of sync pool. */
+> +		size_t times_offset;
+> +	} syncobjs;
+> +
+> +	/** @fdinfo: Per-file total cycle and timestamp values reference. */
+> +	struct {
+> +		/** @data: Pointer to actual per-file sample data. */
+> +		struct panthor_gpu_usage *data;
+> +
+> +		/**
+> +		 * @lock: Mutex to govern concurrent access from drm file's fdinfo callback
+> +		 * and job post-completion processing function
+> +		 */
+> +		struct mutex lock;
+> +	} fdinfo;
+>  
+>  	/** @state: Group state. */
+>  	enum panthor_group_state state;
+> @@ -639,6 +669,18 @@ struct panthor_group {
+>  	struct list_head wait_node;
+>  };
+>  
+> +struct panthor_job_times {
+> +	struct {
+> +		u64 before;
+> +		u64 after;
+> +	} cycles;
+> +
+> +	struct {
+> +		u64 before;
+> +		u64 after;
+> +	} time;
+> +};
+> +
+>  /**
+>   * group_queue_work() - Queue a group work
+>   * @group: Group to queue the work for.
+> @@ -718,6 +760,9 @@ struct panthor_job {
+>  	/** @queue_idx: Index of the queue inside @group. */
+>  	u32 queue_idx;
+>  
+> +	/** @ringbuf_idx: Index of the queue inside @queue. */
 
-dma_supported() will call dma_direct_supported or iommux's dma_supported
-call back function.
+Index of the ringbuffer inside @queue.
 
-int dma_direct_supported(struct device *dev, u64 mask)
-{
-	u64 min_mask = (max_pfn - 1) << PAGE_SHIFT;
+> +	u32 ringbuf_idx;
+> +
+>  	/** @call_info: Information about the userspace command stream call. */
+>  	struct {
+>  		/** @start: GPU address of the userspace command stream. */
+> @@ -814,7 +859,7 @@ static void group_free_queue(struct panthor_group *group, struct panthor_queue *
+>  
+>  	panthor_queue_put_syncwait_obj(queue);
+>  
+> -	panthor_kernel_bo_destroy(group->vm, queue->ringbuf);
+> +	panthor_kernel_bo_destroy(group->vm, queue->ringbuf.bo);
+>  	panthor_kernel_bo_destroy(panthor_fw_vm(group->ptdev), queue->iface.mem);
+>  
+>  	kfree(queue);
+> @@ -828,12 +873,14 @@ static void group_release_work(struct work_struct *work)
+>  	struct panthor_device *ptdev = group->ptdev;
+>  	u32 i;
+>  
+> +	mutex_destroy(&group->fdinfo.lock);
+> +
+>  	for (i = 0; i < group->queue_count; i++)
+>  		group_free_queue(group, group->queues[i]);
+>  
+>  	panthor_kernel_bo_destroy(panthor_fw_vm(ptdev), group->suspend_buf);
+>  	panthor_kernel_bo_destroy(panthor_fw_vm(ptdev), group->protm_suspend_buf);
+> -	panthor_kernel_bo_destroy(group->vm, group->syncobjs);
+> +	panthor_kernel_bo_destroy(group->vm, group->syncobjs.bo);
+>  
+>  	panthor_vm_put(group->vm);
+>  	kfree(group);
+> @@ -970,8 +1017,8 @@ cs_slot_prog_locked(struct panthor_device *ptdev, u32 csg_id, u32 cs_id)
+>  	queue->iface.input->extract = queue->iface.output->extract;
+>  	drm_WARN_ON(&ptdev->base, queue->iface.input->insert < queue->iface.input->extract);
+>  
+> -	cs_iface->input->ringbuf_base = panthor_kernel_bo_gpuva(queue->ringbuf);
+> -	cs_iface->input->ringbuf_size = panthor_kernel_bo_size(queue->ringbuf);
+> +	cs_iface->input->ringbuf_base = panthor_kernel_bo_gpuva(queue->ringbuf.bo);
+> +	cs_iface->input->ringbuf_size = panthor_kernel_bo_size(queue->ringbuf.bo);
+>  	cs_iface->input->ringbuf_input = queue->iface.input_fw_va;
+>  	cs_iface->input->ringbuf_output = queue->iface.output_fw_va;
+>  	cs_iface->input->config = CS_CONFIG_PRIORITY(queue->priority) |
+> @@ -1926,7 +1973,7 @@ tick_ctx_init(struct panthor_scheduler *sched,
+>  	}
+>  }
+>  
+> -#define NUM_INSTRS_PER_SLOT		16
+> +#define NUM_INSTRS_PER_SLOT		32
 
-	/*
-	 * Because 32-bit DMA masks are so common we expect every architecture
-	 * to be able to satisfy them - either by not supporting more physical
-	 * memory, or by providing a ZONE_DMA32.  If neither is the case, the
-	 * architecture needs to use an IOMMU instead of the direct mapping.
-	 */
-	if (mask >= DMA_BIT_MASK(32))
-		return 1;
+I guess this macro has to be a value that is a power of 2, as it used to divide the ringbuffer size, right?
 
-	...
-}
+>  
+>  static void
+>  group_term_post_processing(struct panthor_group *group)
+> @@ -1964,7 +2011,7 @@ group_term_post_processing(struct panthor_group *group)
+>  		spin_unlock(&queue->fence_ctx.lock);
+>  
+>  		/* Manually update the syncobj seqno to unblock waiters. */
+> -		syncobj = group->syncobjs->kmap + (i * sizeof(*syncobj));
+> +		syncobj = group->syncobjs.bo->kmap + (i * sizeof(*syncobj));
+>  		syncobj->status = ~0;
+>  		syncobj->seqno = atomic64_read(&queue->fence_ctx.seqno);
+>  		sched_queue_work(group->ptdev->scheduler, sync_upd);
+> @@ -2715,6 +2762,30 @@ void panthor_sched_post_reset(struct panthor_device *ptdev)
+>  	sched_queue_work(sched, sync_upd);
+>  }
+>  
+> +static void update_fdinfo_stats(struct panthor_job *job)
+> +{
+> +	struct panthor_group *group = job->group;
+> +	struct panthor_queue *queue = group->queues[job->queue_idx];
+> +	struct panthor_device *ptdev = group->ptdev;
+> +	struct panthor_gpu_usage *fdinfo;
+> +	struct panthor_job_times *times;
+> +
+> +	if (drm_WARN_ON(&ptdev->base, job->ringbuf_idx >= queue->ringbuf.nelem))
+> +		return;
+> +
+> +	times = (struct panthor_job_times *)
+> +		((unsigned long)group->syncobjs.bo->kmap + queue->time_offset +
+> +		 (job->ringbuf_idx * sizeof(struct panthor_job_times)));
+> +
+> +	mutex_lock(&group->fdinfo.lock);
+> +	if ((group->fdinfo.data)) {
+> +		fdinfo = group->fdinfo.data;
+> +		fdinfo->cycles += times->cycles.after - times->cycles.before;
+> +		fdinfo->time += times->time.after - times->time.before;
+> +	}
+> +	mutex_unlock(&group->fdinfo.lock);
+> +}
+> +
+>  static void group_sync_upd_work(struct work_struct *work)
+>  {
+>  	struct panthor_group *group =
+> @@ -2732,7 +2803,7 @@ static void group_sync_upd_work(struct work_struct *work)
+>  		if (!queue)
+>  			continue;
+>  
+> -		syncobj = group->syncobjs->kmap + (queue_idx * sizeof(*syncobj));
+> +		syncobj = group->syncobjs.bo->kmap + (queue_idx * sizeof(*syncobj));
+>  
+>  		spin_lock(&queue->fence_ctx.lock);
+>  		list_for_each_entry_safe(job, job_tmp, &queue->fence_ctx.in_flight_jobs, node) {
+> @@ -2750,6 +2821,7 @@ static void group_sync_upd_work(struct work_struct *work)
+>  	dma_fence_end_signalling(cookie);
+>  
+>  	list_for_each_entry_safe(job, job_tmp, &done_jobs, node) {
+> +		update_fdinfo_stats(job);
+>  		list_del_init(&job->node);
+>  		panthor_job_put(&job->base);
+>  	}
+> @@ -2765,13 +2837,19 @@ queue_run_job(struct drm_sched_job *sched_job)
+>  	struct panthor_queue *queue = group->queues[job->queue_idx];
+>  	struct panthor_device *ptdev = group->ptdev;
+>  	struct panthor_scheduler *sched = ptdev->scheduler;
+> -	u32 ringbuf_size = panthor_kernel_bo_size(queue->ringbuf);
+> +	u32 ringbuf_size = panthor_kernel_bo_size(queue->ringbuf.bo);
+>  	u32 ringbuf_insert = queue->iface.input->insert & (ringbuf_size - 1);
+> +	u32 ringbuf_index = ringbuf_insert / (SLOTSIZE);
+>  	u64 addr_reg = ptdev->csif_info.cs_reg_count -
+>  		       ptdev->csif_info.unpreserved_cs_reg_count;
+>  	u64 val_reg = addr_reg + 2;
+> -	u64 sync_addr = panthor_kernel_bo_gpuva(group->syncobjs) +
+> -			job->queue_idx * sizeof(struct panthor_syncobj_64b);
+> +	u64 cycle_reg = addr_reg;
+> +	u64 time_reg = val_reg;
+> +	u64 sync_addr = panthor_kernel_bo_gpuva(group->syncobjs.bo) +
+> +		job->queue_idx * sizeof(struct panthor_syncobj_64b);
+> +	u64 times_addr = panthor_kernel_bo_gpuva(group->syncobjs.bo) + queue->time_offset +
+> +		(ringbuf_index * sizeof(struct panthor_job_times));
+> +
+>  	u32 waitall_mask = GENMASK(sched->sb_slot_count - 1, 0);
+>  	struct dma_fence *done_fence;
+>  	int ret;
+> @@ -2783,6 +2861,18 @@ queue_run_job(struct drm_sched_job *sched_job)
+>  		/* FLUSH_CACHE2.clean_inv_all.no_wait.signal(0) rX+2 */
+>  		(36ull << 56) | (0ull << 48) | (val_reg << 40) | (0 << 16) | 0x233,
+>  
+> +		/* MOV48 rX:rX+1, cycles_offset */
+> +		(1ull << 56) | (cycle_reg << 48) | (times_addr + offsetof(struct panthor_job_times, cycles.before)),
+> +
+> +		/* MOV48 rX:rX+1, time_offset */
+> +		(1ull << 56) | (time_reg << 48) | (times_addr + offsetof(struct panthor_job_times, time.before)),
+> +
+> +		/* STORE_STATE cycles */
+> +		(40ull << 56) |  (cycle_reg << 40) | (1ll << 32),
+> +
+> +		/* STORE_STATE timer */
+> +		(40ull << 56) |  (time_reg << 40) | (0ll << 32),
+> +
+>  		/* MOV48 rX:rX+1, cs.start */
+>  		(1ull << 56) | (addr_reg << 48) | job->call_info.start,
+>  
+> @@ -2795,6 +2885,18 @@ queue_run_job(struct drm_sched_job *sched_job)
+>  		/* CALL rX:rX+1, rX+2 */
+>  		(32ull << 56) | (addr_reg << 40) | (val_reg << 32),
+>  
+> +		/* MOV48 rX:rX+1, cycles_offset */
+> +		(1ull << 56) | (cycle_reg << 48) | (times_addr + offsetof(struct panthor_job_times, cycles.after)),
+> +
+> +		/* MOV48 rX:rX+1, time_offset */
+> +		(1ull << 56) | (time_reg << 48) | (times_addr + offsetof(struct panthor_job_times, time.after)),
+> +
+> +		/* STORE_STATE cycles */
+> +		(40ull << 56) |  (cycle_reg << 40) | (1ll << 32),
+> +
+> +		/* STORE_STATE timer */
+> +		(40ull << 56) |  (time_reg << 40) | (0ll << 32),
+> +
+>  		/* MOV48 rX:rX+1, sync_addr */
+>  		(1ull << 56) | (addr_reg << 48) | sync_addr,
+>  
+> @@ -2839,7 +2941,7 @@ queue_run_job(struct drm_sched_job *sched_job)
+>  		       queue->fence_ctx.id,
+>  		       atomic64_inc_return(&queue->fence_ctx.seqno));
+>  
+> -	memcpy(queue->ringbuf->kmap + ringbuf_insert,
+> +	memcpy(queue->ringbuf.bo->kmap + ringbuf_insert,
+>  	       call_instrs, sizeof(call_instrs));
+>  
+>  	panthor_job_get(&job->base);
+> @@ -2849,6 +2951,7 @@ queue_run_job(struct drm_sched_job *sched_job)
+>  
+>  	job->ringbuf.start = queue->iface.input->insert;
+>  	job->ringbuf.end = job->ringbuf.start + sizeof(call_instrs);
+> +	job->ringbuf_idx = ringbuf_index;
+>  
+>  	/* Make sure the ring buffer is updated before the INSERT
+>  	 * register.
+> @@ -2939,7 +3042,8 @@ static const struct drm_sched_backend_ops panthor_queue_sched_ops = {
+>  
+>  static struct panthor_queue *
+>  group_create_queue(struct panthor_group *group,
+> -		   const struct drm_panthor_queue_create *args)
+> +		   const struct drm_panthor_queue_create *args,
+> +		   unsigned int slots_so_far)
+>  {
+>  	struct drm_gpu_scheduler *drm_sched;
+>  	struct panthor_queue *queue;
+> @@ -2965,21 +3069,23 @@ group_create_queue(struct panthor_group *group,
+>  
+>  	queue->priority = args->priority;
+>  
+> -	queue->ringbuf = panthor_kernel_bo_create(group->ptdev, group->vm,
+> +	queue->ringbuf.bo = panthor_kernel_bo_create(group->ptdev, group->vm,
+>  						  args->ringbuf_size,
+>  						  DRM_PANTHOR_BO_NO_MMAP,
+>  						  DRM_PANTHOR_VM_BIND_OP_MAP_NOEXEC |
+>  						  DRM_PANTHOR_VM_BIND_OP_MAP_UNCACHED,
+>  						  PANTHOR_VM_KERNEL_AUTO_VA);
+> -	if (IS_ERR(queue->ringbuf)) {
+> -		ret = PTR_ERR(queue->ringbuf);
+> +	if (IS_ERR(queue->ringbuf.bo)) {
+> +		ret = PTR_ERR(queue->ringbuf.bo);
+>  		goto err_free_queue;
+>  	}
+>  
+> -	ret = panthor_kernel_bo_vmap(queue->ringbuf);
+> +	ret = panthor_kernel_bo_vmap(queue->ringbuf.bo);
+>  	if (ret)
+>  		goto err_free_queue;
+>  
+> +	queue->ringbuf.nelem = (args->ringbuf_size / (SLOTSIZE));
+> +
+>  	queue->iface.mem = panthor_fw_alloc_queue_iface_mem(group->ptdev,
+>  							    &queue->iface.input,
+>  							    &queue->iface.output,
+> @@ -2990,6 +3096,9 @@ group_create_queue(struct panthor_group *group,
+>  		goto err_free_queue;
+>  	}
+>  
+> +	queue->time_offset = group->syncobjs.times_offset +
+> +		(slots_so_far * sizeof(struct panthor_job_times));
+> +
+>  	ret = drm_sched_init(&queue->scheduler, &panthor_queue_sched_ops,
+>  			     group->ptdev->scheduler->wq, 1,
+>  			     args->ringbuf_size / (NUM_INSTRS_PER_SLOT * sizeof(u64)),
 
-The iommux's dma_supported() actual means iommu require devices's minimized
-dma capatiblity.
+You can use the newly added SLOTSIZE here.
 
-An example:
+> @@ -3020,6 +3129,7 @@ int panthor_group_create(struct panthor_file *pfile,
+>  	struct panthor_scheduler *sched = ptdev->scheduler;
+>  	struct panthor_fw_csg_iface *csg_iface = panthor_fw_get_csg_iface(ptdev, 0);
+>  	struct panthor_group *group = NULL;
+> +	unsigned int total_slots;
+>  	u32 gid, i, suspend_size;
+>  	int ret;
+>  
+> @@ -3086,33 +3196,77 @@ int panthor_group_create(struct panthor_file *pfile,
+>  		goto err_put_group;
+>  	}
+>  
+> -	group->syncobjs = panthor_kernel_bo_create(ptdev, group->vm,
+> -						   group_args->queues.count *
+> -						   sizeof(struct panthor_syncobj_64b),
+> +	/*
+> +	 * Need to add size for the fdinfo sample structs, as many as the sum
+> +	 * of the number of job slots for every single queue ringbuffer.
+> +	 */
+> +
+> +	for (i = 0, total_slots = 0; i < group_args->queues.count; i++)
+> +		total_slots += (queue_args[i].ringbuf_size / (SLOTSIZE));
 
-static int sba_dma_supported( struct device *dev, u64 mask)()
-{
-	...
-	 * check if mask is >= than the current max IO Virt Address
-         * The max IO Virt address will *always* < 30 bits.
-         */
-        return((int)(mask >= (ioc->ibase - 1 +
-                        (ioc->pdir_size / sizeof(u64) * IOVP_SIZE) )));
-	...
-}
+Minor nit: We should pre-compute here (group_args->queues.count * sizeof(struct panthor_syncobj_64b)) + \
+total_slots * sizeof(struct panthor_job_times) and then use it later as argument to panthor_kernel_bo_create()
+and memset().
 
-1 means supported. 0 means unsupported.
+> +
+> +	/*
+> +	 * Memory layout of group's syncobjs BO
+> +	 * group->syncobjs.bo {
+> +	 *	struct panthor_syncobj_64b sync1;
+> +	 *	struct panthor_syncobj_64b sync2;
+> +	 *		...
+> +	 *		As many as group_args->queues.count
+> +	 *		...
+> +	 *	struct panthor_syncobj_64b syncn;
+> +	 *	struct panthor_job_times queue_1slot_1
+> +	 *	struct panthor_job_times queue_1slot_2
+> +	 *		...
+> +	 *		As many as queue[i].ringbuf_size / SLOTSIZE
+> +	 *		...
+> +	 *	struct panthor_job_times queue_1slot_p
+> +	 *		...
+> +	 *		As many as group_args->queues.count
+> +	 *		...
+> +	 *	struct panthor_job_times queue_nslot_1
+> +	 *	struct panthor_job_times queue_nslot_2
+> +	 *		...
+> +	 *		As many as queue[n].ringbuf_size / SLOTSIZE
+> +	 *	struct panthor_job_times queue_nslot_q
 
-Correct document to make it more clear and provide correct sample code.
+Minor nit: I find it more readable the form "queue1_slotP"... "queueN_slotQ".
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- Documentation/core-api/dma-api-howto.rst | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+> +	 *
+> +	 *	Linearly, group->syncobjs.bo = {syncojb1,..,syncobjN,
+> +	 *	{queue1 = {js1,..,jsp},..,queueN = {js1,..,jsq}}}
+> +	 * }
+> +	 *
+> +	 */
+> +
+> +	group->syncobjs.bo = panthor_kernel_bo_create(ptdev, group->vm,
+> +						   (group_args->queues.count *
+> +						    sizeof(struct panthor_syncobj_64b))
+> +						   + (total_slots * sizeof(struct panthor_job_times)),
+>  						   DRM_PANTHOR_BO_NO_MMAP,
+>  						   DRM_PANTHOR_VM_BIND_OP_MAP_NOEXEC |
+>  						   DRM_PANTHOR_VM_BIND_OP_MAP_UNCACHED,
+>  						   PANTHOR_VM_KERNEL_AUTO_VA);
+> -	if (IS_ERR(group->syncobjs)) {
+> -		ret = PTR_ERR(group->syncobjs);
+> +	if (IS_ERR(group->syncobjs.bo)) {
+> +		ret = PTR_ERR(group->syncobjs.bo);
+>  		goto err_put_group;
+>  	}
+>  
+> -	ret = panthor_kernel_bo_vmap(group->syncobjs);
+> +	ret = panthor_kernel_bo_vmap(group->syncobjs.bo);
+>  	if (ret)
+>  		goto err_put_group;
+>  
+> -	memset(group->syncobjs->kmap, 0,
+> -	       group_args->queues.count * sizeof(struct panthor_syncobj_64b));
+> +	memset(group->syncobjs.bo->kmap, 0,
+> +	       (group_args->queues.count * sizeof(struct panthor_syncobj_64b)) +
+> +	       (total_slots * sizeof(struct panthor_job_times)));
+>  
+> -	for (i = 0; i < group_args->queues.count; i++) {
+> -		group->queues[i] = group_create_queue(group, &queue_args[i]);
+> +	group->syncobjs.times_offset =
+> +		group_args->queues.count * sizeof(struct panthor_syncobj_64b);
+> +
+> +	for (i = 0, total_slots = 0; i < group_args->queues.count; i++) {
+> +		group->queues[i] = group_create_queue(group, &queue_args[i], total_slots);
+>  		if (IS_ERR(group->queues[i])) {
+>  			ret = PTR_ERR(group->queues[i]);
+>  			group->queues[i] = NULL;
+>  			goto err_put_group;
+>  		}
+>  
+> +		total_slots += (queue_args[i].ringbuf_size / (SLOTSIZE));
+>  		group->queue_count++;
+>  	}
+>  
+> @@ -3133,6 +3287,9 @@ int panthor_group_create(struct panthor_file *pfile,
+>  	}
+>  	mutex_unlock(&sched->reset.lock);
+>  
+> +	group->fdinfo.data = &pfile->stats;
+> +	mutex_init(&group->fdinfo.lock);
+> +
+>  	return gid;
+>  
+>  err_put_group:
+> @@ -3172,6 +3329,10 @@ int panthor_group_destroy(struct panthor_file *pfile, u32 group_handle)
+>  	mutex_unlock(&sched->lock);
+>  	mutex_unlock(&sched->reset.lock);
+>  
+> +	mutex_lock(&group->fdinfo.lock);
+> +	group->fdinfo.data = NULL;
+> +	mutex_unlock(&group->fdinfo.lock);
+> +
+>  	group_put(group);
+>  	return 0;
+>  }
+> -- 
+> 2.43.0
+>
 
-diff --git a/Documentation/core-api/dma-api-howto.rst b/Documentation/core-api/dma-api-howto.rst
-index e8a55f9d61dbc..7871d3b906104 100644
---- a/Documentation/core-api/dma-api-howto.rst
-+++ b/Documentation/core-api/dma-api-howto.rst
-@@ -203,13 +203,33 @@ setting the DMA mask fails.  In this manner, if a user of your driver reports
- that performance is bad or that the device is not even detected, you can ask
- them for the kernel messages to find out exactly why.
- 
--The standard 64-bit addressing device would do something like this::
-+The 24-bit addressing device would do something like this::
- 
--	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64))) {
-+	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(24))) {
- 		dev_warn(dev, "mydev: No suitable DMA available\n");
- 		goto ignore_this_device;
- 	}
- 
-+The standard 64-bit addressing device would do something like this::
-+
-+	dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64))
-+
-+dma_set_mask_and_coherence never return fail when DMA_BIT_MASK(64). Typical
-+error code like::
-+
-+	/* Wrong code */
-+	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)))
-+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32))
-+
-+dma_set_mask_and_coherence() will never return failure when bigger then 32.
-+So typical code like::
-+
-+	/* Recommented code */
-+	if (support_64bit)
-+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-+	else
-+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+
- If the device only supports 32-bit addressing for descriptors in the
- coherent allocations, but supports full 64-bits for streaming mappings
- it would look like this::
+I've tried to review the patch as best as I could, specially the math. AFAICT it all checks out,
+would be good for others to have a look.
+
+Best regards,
+Liviu
+
 -- 
-2.34.1
-
+====================
+| I would like to |
+| fix the world,  |
+| but they're not |
+| giving me the   |
+ \ source code!  /
+  ---------------
+    ¯\_(ツ)_/¯
 
