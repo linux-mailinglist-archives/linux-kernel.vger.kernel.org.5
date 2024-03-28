@@ -1,52 +1,82 @@
-Return-Path: <linux-kernel+bounces-123295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BE9F890637
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:49:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDEC189063A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:49:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A9C91C305F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:49:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94D221F27FB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3ECE12F391;
-	Thu, 28 Mar 2024 16:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8EB3D55B;
+	Thu, 28 Mar 2024 16:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KBgiB3V1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FBKp0cH6"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EFA3BBEF;
-	Thu, 28 Mar 2024 16:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CA1225D0
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711644274; cv=none; b=p5tiNUyLWiCfZVoE7MzyzEm3PjA62kDL1DoLaXefY/huCU1EO1gRbucK+hCaFpmch4Z+yYqqachvAwZkf4uRArgHmSeeBi89Zg/VYc2enft/oqnYSe9g0mafnhH4MlNmRIZnktMfXDn/kjD6oCzEyQCvMzlbLyu4JYVOoZxJaY0=
+	t=1711644311; cv=none; b=UdI693lebZsiRiNYKLThwz+vr//DddgTevCcCJT4LDos64rLQMCCPsZ1uRq69tFvZoA3zsfYAZ1mjcd0yGu5pCGwBCTearCuFcDZCF0aSWb6GwMLowmbKdggEjC7hrVi8mERakfV5pG+N2S2acPxHZMbCkg18b++8eqWQ68ieVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711644274; c=relaxed/simple;
-	bh=VTys3YpvicCW7hzI150+v9+jo5zNzxdDN4MVR7jcuPo=;
+	s=arc-20240116; t=1711644311; c=relaxed/simple;
+	bh=/Zja/MFSFGzAJAXJparFQCQuW62bnc3U1YwOvbEie24=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xj+XEgkVOsJI8f3ji6Ver0vCgUjpFkQ8QiGXUe6qyhs8ftBeOLZaV/IP+KEzvUhZNTAU8bZ0Z2aXKsgH3ukY1U3beokS8Gm0KpGZrwV7w9tEN39riMc0j/ClIYFzO24SBc++30CzvDIq45uHPrsKZYqqkQpKR/W5qP17AKEG2xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=KBgiB3V1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E52A1C433F1;
-	Thu, 28 Mar 2024 16:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711644273;
-	bh=VTys3YpvicCW7hzI150+v9+jo5zNzxdDN4MVR7jcuPo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KBgiB3V1j9rN1RR05OFTvoN7/73Wg2r8aV4sIl2jbQrjFN15IVV5zffH0hXavzegq
-	 czSRjnPDWpThJoeaFkzlfbJnMtiHsV+0IjQ0f9mQBHarKdGLTvoPOYHQV1VuxXajov
-	 YRsvddH/bbe9YxTKUg1Dq0MINGU3I5tpIaQzh6e4=
-Date: Thu, 28 Mar 2024 17:44:29 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Abdel Alkuor <abdelalkuor@geotab.com>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH RESEND 0/2] usb: typec: tipd: fix event checking in
- interrupt service routines
-Message-ID: <2024032824-rasping-zone-7564@gregkh>
-References: <20240328-tps6598x_fix_event_handling-v1-0-865842a30009@wolfvision.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LAcGxgtq+BSmnA5S1ksBrKSOc9FRUwwyd/mxV/YGNQPvWNBWwNl9Bzta/hn2nKwq348vtrAD9r74zNClryYxB523rgrfZTiWpsrl7hLYYQ8V6xGJ7iNlWzaX4QxlPKWwccT1MJD4NGedHUCQkVmThn8TTv2upqG1L3hsHzHfYYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FBKp0cH6; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56c36f8f932so3943355a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711644308; x=1712249108; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9i7dgEJFTBVALJHo9iymqx4jH03OiP2GHtz27o4I/YA=;
+        b=FBKp0cH6JBI5BTwRg4YB1wQnoUJwePw10SH6p1CtR2lTZtZgzOKFIAfDTGISK0Falw
+         qONzuR8MS+Tm30ysJ7aHuOW4BAcgmEEra/wWDys/lxw34Qe37S9iNZ3n8TBechxlH1N8
+         81+lvMEisjylwiB1xfaUB/o+QNILhxOQ47MeGAjMZS8QjsktFiibvmkM++3HHicKBiyN
+         6dfTt6wctjjp5TkTj284IloxfxA18brkCY7LK+HMavjOU0iuAoeQeIL79qUVOUiIbWF5
+         o1ZoPyGmOUYmtyJ0r0pH6eqwJAPB+FH4TUk3jRHwvbq4JZNKMj49zWNyT+CKdJuNN5ZO
+         SXMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711644308; x=1712249108;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9i7dgEJFTBVALJHo9iymqx4jH03OiP2GHtz27o4I/YA=;
+        b=iVuVj+1RvHhMEo3erXFC5fSbTLpN9g0Q6Row8YAGHrvyeMo+kQBD9A2VZWflCF6M+7
+         b19js0mpnL4h5zuj9/49bdxyJO8in6+hWNHs0m4sF2J5X0nF3d9Y93TjJEOqK8Kbeiti
+         5PePDh+aRHh1+7MCjlDevq6f1BQfoV/HP5CcpXCRMijRs5JzhZv/HzcJHzsP7zZzQKII
+         c/b3WCetpiqUSCNu4gx01pK5UDEQz/zL6vAvBbje7mCUJrQF1PKIGKSVKvkHYFUAmcon
+         zePHynCQlneYkxK2gtGbH0GbWsL9zDREktvqIAOSEPI7K9umj+Kdq3jZ1V0D2zrt54Iu
+         NsKg==
+X-Forwarded-Encrypted: i=1; AJvYcCXk7Jz094ZvSTcEeweVKz7Hzvx4l8e225kAEY5uM1S/CygPHuB81TtgXGJkYrgNt7RpwUs2wskZi5kghYO8SU6iUiI0mnV2OeBw/hSq
+X-Gm-Message-State: AOJu0YwjU/MewGBsdFad1tIZQsxrHSJOl+zgzbNPpQo+VWJBw8E16FeN
+	GcwJk4+PAAcMGQvM8khgyWe5OKwPHGY5flSBpcapyy59yO2Pp5vE+g1v/l+Xn/8=
+X-Google-Smtp-Source: AGHT+IE0k8W/uLy+pu3KFmEyPFgRSutvM+32xUNhKooZng/RRL2AQD0j9iJCAcXm19WSPYGUAycJqQ==
+X-Received: by 2002:a17:906:388a:b0:a46:852e:2a63 with SMTP id q10-20020a170906388a00b00a46852e2a63mr2269137ejd.29.1711644307845;
+        Thu, 28 Mar 2024 09:45:07 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id r18-20020a170906c29200b00a4e2a1146f8sm343291ejz.48.2024.03.28.09.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 09:45:07 -0700 (PDT)
+Date: Thu, 28 Mar 2024 19:45:03 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Aleksandr Mishin <amishin@t-argos.ru>, Keerthy <j-keerthy@ti.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, "Andrew F. Davis" <afd@ti.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: Re: [PATCH] gpio: davinci: Fix potential buffer overflow
+Message-ID: <cbfb9094-2574-4e00-b401-1ddd81a2850b@moroto.mountain>
+References: <20240328091021.18027-1-amishin@t-argos.ru>
+ <b2c6bc3e-11c5-4a20-8a30-666821ab2613@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,38 +85,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328-tps6598x_fix_event_handling-v1-0-865842a30009@wolfvision.net>
+In-Reply-To: <b2c6bc3e-11c5-4a20-8a30-666821ab2613@intel.com>
 
-On Thu, Mar 28, 2024 at 05:25:20PM +0100, Javier Carrasco wrote:
-> The ISRs of the tps25750 and tps6598x do not handle generated events
-> properly under all circumstances.
+On Thu, Mar 28, 2024 at 04:27:24PM +0100, Alexander Lobakin wrote:
+> > diff --git a/drivers/gpio/gpio-davinci.c b/drivers/gpio/gpio-davinci.c
+> > index bb499e362912..b65df1f2b83f 100644
+> > --- a/drivers/gpio/gpio-davinci.c
+> > +++ b/drivers/gpio/gpio-davinci.c
+> > @@ -257,6 +257,9 @@ static int davinci_gpio_probe(struct platform_device *pdev)
+> >  	spin_lock_init(&chips->lock);
+> >  
+> >  	nbank = DIV_ROUND_UP(ngpio, 32);
+> > +    if (nbank > MAX_REGS_BANKS || nbank > 5) {
+> > +        nbank = MAX_REGS_BANKS < 5 ? MAX_REGS_BANKS : 5;
+> > +	}
 > 
-> The tps6598x ISR does not read all bits of the INT_EVENTX registers,
-> leaving events signaled with bits above 64 unattended. Moreover, these
-> events are not cleared, leaving the interrupt enabled.
-> 
-> The tps25750 reads all bits of the INT_EVENT1 register, but the event
-> checking is not right because the same event is checked in two different
-> regions of the same register by means of an OR operation.
-> 
-> This series aims to fix both issues by reading all bits of the
-> INT_EVENTX registers, and limiting the event checking to the region
-> where the supported events are defined (currently they are limited to
-> the first 64 bits of the registers, as the are defined as BIT_ULL()).
-> 
-> If the need for events above the first 64 bits of the INT_EVENTX
-> registers arises, a different mechanism might be required. But for the
-> current needs, all definitions can be left as they are.
-> 
-> Note: resend to add 'stable' mailing list (fixes in the series).
+> Static analysis warnings make no sense until you provide a reliable way
+> to trigger the problem on real systems.
 
+This patch isn't correct, but we merge a few static checker fixes every
+day.
 
-<formletter>
-
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
-
-</formletter>
+regards,
+dan carpenter
 
