@@ -1,148 +1,192 @@
-Return-Path: <linux-kernel+bounces-123413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CCCE890838
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:27:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7762789084B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:29:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88B681F232BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:27:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C74A4B22D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEFC1350C6;
-	Thu, 28 Mar 2024 18:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5750613777B;
+	Thu, 28 Mar 2024 18:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="z8LJgOgn"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d/yG/doR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F1B130E3B
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A81136E29;
+	Thu, 28 Mar 2024 18:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711650439; cv=none; b=GYatNWIExwtxGdBtHrpGFCygyzw8/qyFrAlcmJyNrHOel1eLbDc+Wn3v3wrdGsqvCaSFJQ/GjQHtlGVg6GQe3+1u77iMTp7i9GBhcSBdXrYGkUIAjh1uOXl4MjO6qNW4wOps6bH6EJxcKPqEuPKvlZac3FLSijnuPkEBHaYExcg=
+	t=1711650506; cv=none; b=RWO+xypqnhY/5wo8iMzBkWKfk6+UGu83i7eq9FW3GlMpBdO9qopL/d19xWWSKdC9Lhq+INg+3hSdKkSvoFmFvoHugE4jiJrYGk8NY4JHCB/uNxhAz/+mqAxCINg4NjCVqWQtR2I0zzgpwfezrLU5OdGc8GOnv0xBXR88AfBJW+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711650439; c=relaxed/simple;
-	bh=gqw95WreaXzk3tMtnlHwBkwwBSkVdhBkoy3UNovDKa0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b70gVPS60ErCoJihU92V99LeWXXpvSizy6MSk1B4ec9cO2IW8zeVSbjbSLQHmmfziyIPO3vSVgEfv4P2boeY+5L5jngbmx9F29VRBBU7yubvVb4yzBEbcPcp5NgEyZjP14Hwu5UL8McZwEizUfxIyijq1LfK8Wl8gBo+LKwE+90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=z8LJgOgn; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56beb6e68aeso1251a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 11:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711650434; x=1712255234; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=85okgPI5wmbRinylcWdySXAu6sDEJZPcZsliJr3EhXc=;
-        b=z8LJgOgnrwMqle+GIquH01Fabr8jP4LsXvMPDVfpqJmtQbRVcAOmb9hi8P9DM2vYB/
-         9/8aCRzvhIoEP7q8fVyjIXdY1G+NNDuZNNNErMi3NNzOz7nJmLHHkxD7p4GC7k3QxsMz
-         NxQCOtPevO/USSxnjRQPzdpz6wSa2DF++8BepS++RKdAW9VhHBwmdMsTwJqZahvKUSGb
-         A+IF244xSG0KKVMOeABtEFEvQ0AVoSsV9nUzKJCMTV86RiTdF9locAxPj4cDSevWKtUP
-         9nuFRoD7/cC05LRDAMdBFP9U6dIANqfolcMfPReR2RpJN6923ZUZtVQlalah/H7za/lk
-         4l+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711650434; x=1712255234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=85okgPI5wmbRinylcWdySXAu6sDEJZPcZsliJr3EhXc=;
-        b=g6dMcIEBLPWJb+gBkKeL/jqL2mzj7JzgRqzqTM27eJmx+8kaWC0XWD8pO8JTM1Ntw+
-         2ZExHOMNS6uyP6qSlKads6xXSaq0XTr1enZ6F/BP0uxdwNHMNNgu96UlR8pG6m/Hvr9f
-         q2cbANuetMpjEGfKJTN2A8fPlBzDJIByTEjEfZSGiLunaRS1UvHzH6KYmIX5ICBmWpck
-         EoG4aFL2dwZKU0WXCPD2BhqpFonaFZr37n75Y66x0kT4bZoQEjcn9bfRBicwDvqgFCgd
-         XCAd/4qb3LDUnXtoCfgVdK4MoP2j09z9lzMFWpGAmynaNawAZji5aCWkdJ2dPgrmVA2T
-         0MBg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3tCe64LmY2/6RhYz7CcTCIievGdL3obBBX0zicUZwoNuVMRw6JTioZEcwQhngKfylSH+nqSk9m+5gG4U8hxiRu5OV0UXU65AZ9j6l
-X-Gm-Message-State: AOJu0YwMquhLxzKOyV8ZZxdYKXX/SHgJ1SSkvgmsNc3hcMPdpBLXGndu
-	DV0NieI7eBm52fmG6Y5SRbuT1rTsZ64MzJAbYGqOkmtpiNJuvrKN+LHf+nvBIxnaOfYMdjCgFFq
-	Whyl1gmZ7XOuAUHHpUrpjlMjnH7r4wqJv8QmD
-X-Google-Smtp-Source: AGHT+IHv6+ovKmGeILX0PNxbWAx4gi+qItJhFc9E/82fPI5xJuf6KrzJPUedneSe7yPE7D3rJKz2FyvDSWy8TPjOzGc=
-X-Received: by 2002:aa7:cd1a:0:b0:56c:53ac:b34 with SMTP id
- b26-20020aa7cd1a000000b0056c53ac0b34mr15774edw.1.1711650434337; Thu, 28 Mar
- 2024 11:27:14 -0700 (PDT)
+	s=arc-20240116; t=1711650506; c=relaxed/simple;
+	bh=fCpsuqpXPx6EiIEqbV6/oK+Mco4Eg3WQcaCu8FFYxmE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=szC01qJIyRbhFpJ2EdWWwRN8BTvKblSusZFXnbGqVAt9h9OFgkWngQ4p+w2eGOUCY3feMg5MP4zH4njT8c1LYGmNiAIa3Fu3UR5j066mxjzIUIpkwm6IucL8beqWx3rzRqGNz9tpBXr5tkJrYmpwPpMhjzpiTDf6fx/X2PtbAec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d/yG/doR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27A2C433F1;
+	Thu, 28 Mar 2024 18:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711650505;
+	bh=fCpsuqpXPx6EiIEqbV6/oK+Mco4Eg3WQcaCu8FFYxmE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d/yG/doRGyXpqxmVEGZRl29Gx01ZBHRqsLyBFhmaT8mmf44tImPwfhWbq/+onqqYQ
+	 Mk7belOYYdf/oaQElpAohzTOcmJEhrO4/oBdC872X4+PkuC19MXZYEObKWc8b1DXht
+	 E4JJM33unaXbObP+98zU5UfutVyF0MSVFb61PFWrUjcxtA1CoRmOrTxZIvLd/2j5Xc
+	 i2AR4w5A19X/edVUb5L7inWvNDxXBn2PViw3xzrRFzrBAWN5Ov77wY7xaniySz8nzx
+	 dj+p8Y9PBq0IYtN+jR1hn0KR4MgR7mupP9oDLO77XhK2IZq0VluR8c5zcvoWCrB8P2
+	 oprZ6oa0nyp9A==
+Date: Thu, 28 Mar 2024 18:28:12 +0000
+From: Simon Horman <horms@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [RFC PATCH net-next v7 04/14] netdev: support binding dma-buf to
+ netdevice
+Message-ID: <20240328182812.GJ651713@kernel.org>
+References: <20240326225048.785801-1-almasrymina@google.com>
+ <20240326225048.785801-5-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328142004.2144568-1-jackmanb@google.com>
-In-Reply-To: <20240328142004.2144568-1-jackmanb@google.com>
-From: Daniel Latypov <dlatypov@google.com>
-Date: Thu, 28 Mar 2024 11:27:01 -0700
-Message-ID: <CAGS_qxr_vdix2mnoZve+L4EZv4wO-XdnJ1burnn7fM-at6EuEg@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: Clarify test filter format
-To: Brendan Jackman <jackmanb@google.com>
-Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Brendan Higgins <brendan.higgins@linux.dev>, davidgow@google.com, rmoar@google.com, 
-	corbet@lwn.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326225048.785801-5-almasrymina@google.com>
 
-On Thu, Mar 28, 2024 at 7:20=E2=80=AFAM 'Brendan Jackman' via KUnit
-Development <kunit-dev@googlegroups.com> wrote:
->
-> It seems obvious once you know, but at first I didn't realise that the
-> suite name is part of this format. Document it and add example.
->
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  Documentation/dev-tools/kunit/run_wrapper.rst | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/dev-tools/kunit/run_wrapper.rst b/Documentatio=
-n/dev-tools/kunit/run_wrapper.rst
-> index 19ddf5e07013..e75a5fc05814 100644
-> --- a/Documentation/dev-tools/kunit/run_wrapper.rst
-> +++ b/Documentation/dev-tools/kunit/run_wrapper.rst
-> @@ -156,13 +156,20 @@ Filtering tests
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->  By passing a bash style glob filter to the ``exec`` or ``run``
-> -commands, we can run a subset of the tests built into a kernel . For
-> +commands, we can run a subset of the tests built into a kernel,
-> +identified by a string like ``$suite_name.$test_name``. For
+On Tue, Mar 26, 2024 at 03:50:35PM -0700, Mina Almasry wrote:
+> Add a netdev_dmabuf_binding struct which represents the
+> dma-buf-to-netdevice binding. The netlink API will bind the dma-buf to
+> rx queues on the netdevice. On the binding, the dma_buf_attach
+> & dma_buf_map_attachment will occur. The entries in the sg_table from
+> mapping will be inserted into a genpool to make it ready
+> for allocation.
+> 
+> The chunks in the genpool are owned by a dmabuf_chunk_owner struct which
+> holds the dma-buf offset of the base of the chunk and the dma_addr of
+> the chunk. Both are needed to use allocations that come from this chunk.
+> 
+> We create a new type that represents an allocation from the genpool:
+> net_iov. We setup the net_iov allocation size in the
+> genpool to PAGE_SIZE for simplicity: to match the PAGE_SIZE normally
+> allocated by the page pool and given to the drivers.
+> 
+> The user can unbind the dmabuf from the netdevice by closing the netlink
+> socket that established the binding. We do this so that the binding is
+> automatically unbound even if the userspace process crashes.
+> 
+> The binding and unbinding leaves an indicator in struct netdev_rx_queue
+> that the given queue is bound, but the binding doesn't take effect until
+> the driver actually reconfigures its queues, and re-initializes its page
+> pool.
+> 
+> The netdev_dmabuf_binding struct is refcounted, and releases its
+> resources only when all the refs are released.
+> 
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-Apologies for the overly terse docs, that's my fault :)
-I'm wondering if we can further improve it while we're here.
+..
 
-Note, the format for the glob is: $suite_name[.$test_name].
+> +int net_devmem_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> +				    struct net_devmem_dmabuf_binding *binding)
+> +{
+> +	struct netdev_rx_queue *rxq;
+> +	u32 xa_idx;
+> +	int err;
+> +
+> +	if (rxq_idx >= dev->num_rx_queues)
+> +		return -ERANGE;
+> +
+> +	rxq = __netif_get_rx_queue(dev, rxq_idx);
+> +	if (rxq->mp_params.mp_priv)
+> +		return -EEXIST;
+> +
+> +	err = xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_limit_32b,
+> +		       GFP_KERNEL);
+> +	if (err)
+> +		return err;
+> +
+> +	/* We hold the rtnl_lock while binding/unbinding dma-buf, so we can't
+> +	 * race with another thread that is also modifying this value. However,
+> +	 * the driver may read this config while it's creating its * rx-queues.
+> +	 * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> +	 */
+> +	WRITE_ONCE(rxq->mp_params.mp_ops, &dmabuf_devmem_ops);
 
-This current wording and examples (before and after this change) might
-make the user think otherwise, i.e. that it works like
-  effective_name =3D suite_name + '.' + test_name
-  return glob_matches(effective_name, filter_glob)
+Hi Mina,
 
-E.g. given a test name like `suite.test_name` and glob=3D'suite*name'
-they might expect it to match, but it does *not*.
+This causes a build failure because mabuf_devmem_ops is not added until a
+subsequent patch in this series.
 
-The logic actually works like:
-  suite_glob, test_glob =3D split(filter_glob)
-  if not_glob_matches(suite_name, suite_glob):
-     return False
-  if test_glob and not glob_matches(test_name, test_glob):
-     return False
-  return True
+> +	WRITE_ONCE(rxq->mp_params.mp_priv, binding);
+> +
+> +	err = net_devmem_restart_rx_queue(dev, rxq_idx);
+> +	if (err)
+> +		goto err_xa_erase;
+> +
+> +	return 0;
+> +
+> +err_xa_erase:
+> +	WRITE_ONCE(rxq->mp_params.mp_ops, NULL);
+> +	WRITE_ONCE(rxq->mp_params.mp_priv, NULL);
+> +	xa_erase(&binding->bound_rxq_list, xa_idx);
+> +
+> +	return err;
+> +}
 
-Perhaps expanding the list of examples to cover more of the edge cases
-could help get the right intuition?
-
-E.g. perhaps these:
-  kunit.py run <suite_name>  # runs all tests in a specific suite
-  kunit.py run <suite_name>.<test_name>  # run a specific test
-
-  kunit.py run suite_prefix*  # what the current example shows
-  kunit.py run *.*test_suffix  # matches all suites, only tests w/ a
-certain suffix
-  kunit.py run suite_prefix*.*test_suffix # combined version of above
-
-Thoughts?
-
-Thanks,
-Daniel
+..
 
