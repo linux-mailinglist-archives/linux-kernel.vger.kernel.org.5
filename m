@@ -1,168 +1,185 @@
-Return-Path: <linux-kernel+bounces-122544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F09A88F93C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:54:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F90C88F940
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 627051C2AC4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:54:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05C5AB26507
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8AD050276;
-	Thu, 28 Mar 2024 07:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6128A54743;
+	Thu, 28 Mar 2024 07:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gtHr+Wsr"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZqZubEzo"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528CC537E0;
-	Thu, 28 Mar 2024 07:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F8F29CEF
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711612490; cv=none; b=N57xoxsTPP65lmTwxiMtFoptx3YHnPR0/kS/3B4B8FZGMOTBiXPMU6HfPNP7O6Vx7q9fqYHS9Xqul1rqp2ip6uspl8EKuBjz7ckKiMb09U/oLmOVgmrw2vdLSe6KsJBo9JAfU3jQU94ut4DpCfpa3IgmKXytaynh37x2dVuBlAk=
+	t=1711612510; cv=none; b=fHjFaBesIDoL1OBNAnCm7fxyE9+ISBLA1ThcZp9dniBGz4g/b0x8nUmfLtYgNAAUHoR5Z99kre3JRGKjtntph2DAVHnaXTJaJ5SmrhzfY8jY2h+85vbztvnN90gEirpJblSz3sqTfdA3x4McMWywOLPrfjkzcW9LUqZZSfbwT6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711612490; c=relaxed/simple;
-	bh=7TuQoMUJ6APooA15msUPA1QoRn2CnlT4blDuFPO0e+k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=G7RsTgsVGmgTB8g2727+BBqfzUDURwy2lMEyxGd3RTCYxsdQbxsiZ/yMmFBa56W4HWTj7S8cJTctTcubxTpSkBMkinRGcVomBjKBmVQS+8kejE8PjVT0KND4Hwm805vdV/ue8Un2USOxMDw544UlXg00MPe6mQDFmAkiSz+CPdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gtHr+Wsr; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-415482307b0so1023405e9.0;
-        Thu, 28 Mar 2024 00:54:48 -0700 (PDT)
+	s=arc-20240116; t=1711612510; c=relaxed/simple;
+	bh=gZ1qyJh2Qrd3XWQIyBxd5BobVBXzD3p79JpF8h4a0So=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cqZ9jQKiyNjroKaNJ5WB1crxsFB7o7QA/7X4Z446XCCni4SAstQ+pLRiA3WfqbLLL1bfQs1YGikPxeH1rCyARuoHylaIHJ3V21CSs0t8Xzig6FI5S3q90qeqNa2067Tne3UvUjOVY8CMBu4KYoegim/zxZdgzQhVqiRZmXenASw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZqZubEzo; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-431347c6c99so168531cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 00:55:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711612487; x=1712217287; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z/9k825Fqxzz9jmkn3nJFGHIDNvvQD/xvUg6iDj53dY=;
-        b=gtHr+WsrSWA3TwdphK7gmjAqWeh6VER4m13wzcLh6z/zZJ4MbVmT6Eo7TEWHFfp1c5
-         nU5khv7GGnyu/lYIBg5h3uzfKRgLsdgfVWg6w2YZ8DTzoUxqXG3umew/FCnUdtwdNsSg
-         itValM0uX0VCix9FLXMg5JRbP8LUWBDvjNyjzukI+DwuzBes13K9ZopXZVAsnGzwN3M9
-         bn+C1ekZFA9vgicGoBiY3wiJgNDn/NJJD6n8S2I0zjHqX/OOD9fZQfPobsXp7lcioboq
-         Aj5dk6x+U+2UNhr50PrQ5ioyFNDyabNe+dWIQz4zMoZhqiQJmxU3NHys84wV5v4Qghig
-         nXZQ==
+        d=google.com; s=20230601; t=1711612508; x=1712217308; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SmYk1ChOh2+sYhuhWKZpvOeBoBDTF/kZuwK0JAtFJW0=;
+        b=ZqZubEzo3KqxSua8J0qz0gZi9G7QfWI9cpXzhWXINjG3dPGaG9Gld7ufN4RFDv0kBV
+         0vzv9NZNYAZhhLfawEHUe2w0RcFIdhJPysFJRnlNE+jyZX7Su+9o/1USw+mjmwsVtXk9
+         krhqTxz0m81+Umtgf9SzXUupmbKMySGHhSWYO2+ye/JmupW86ryAHN2xjI2y9RHik7Bl
+         r1jWJweXj3wNR3O190cb5DG9REkWz51OxvV36PIXg2Pv6Idf1sQqF90SP/vLqos/v9Ct
+         pYPFZrew7NixNYw5ki1KTgJacyXb0x0A9oPoo+jXni7oIYogajsf40zSULLIDQWPIBd6
+         8CNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711612487; x=1712217287;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z/9k825Fqxzz9jmkn3nJFGHIDNvvQD/xvUg6iDj53dY=;
-        b=j9QSYyTb7c34ojK8UxcsTyiWHT5ziIs5H+A6bGwlPNSNUSedPkaQWKXyI28/IAtIRB
-         BTCqD/ERgZUCBX4aNLVZvm8R3Dyc1sjfhXFtTkSJ/2FLvwN2O8uZ32WZRgwMi+5l0m6y
-         xxxfRSceV8BMPmKQ/Oq4uort363tbH0BG73Tg+ypR+YWvfprqqk2t8HH2+wPwmfXsIDz
-         E2mVnc/i1nqOxqnNSJd25YczLhK4tkBR1TiuZd7R/NPntN4SYEM78pOKVIvg4pus5Qd/
-         Es8sMGrsAeHpOb6tdXvFQqfytrkXP4gkN64T8MIzOlf/hh2yWJqvc38RDPHxFMBvtoBQ
-         0exg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+hrH2sjLeQ39KQkLmD3Bx1GzVS+E8DFsFRzXZugGGc2PMu9LCVTTUmRpH29yWJIDvK6NyUgikHrREMBpCQUMike+1cafBoeDfukjuImDcsXAD7leW6m2UAwN0dfK7Eh1/zZXJX5d2yk4nHJ+ifxq/q75zfP4QzRxqmuQGvvzV
-X-Gm-Message-State: AOJu0YzUQtEOC8xWkWjq+9EAFyAv5SHEZoZkGr4HfQNdemkyC1wjbYXF
-	JR0oYWmC3GTeUSFvQoIrOhQtTLn6yBpq/pLazc4UOZlFLAFfvSlqswBwG5bMn0k=
-X-Google-Smtp-Source: AGHT+IHZs9twLePrVnJ1cVOtuujAwLRvaOgRuObZxlafswz4BIhH6CPle3cRX9DVemoO803NyyQIMg==
-X-Received: by 2002:a05:600c:3505:b0:413:7f3:8d5 with SMTP id h5-20020a05600c350500b0041307f308d5mr2229096wmq.0.1711612486695;
-        Thu, 28 Mar 2024 00:54:46 -0700 (PDT)
-Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id v12-20020a05600c470c00b004131310a29fsm1425083wmo.15.2024.03.28.00.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 00:54:46 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 28 Mar 2024 08:54:31 +0100
-Subject: [PATCH v3] clk: qcom: clk-alpha-pll: fix rate setting for Stromer
- PLLs
+        d=1e100.net; s=20230601; t=1711612508; x=1712217308;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SmYk1ChOh2+sYhuhWKZpvOeBoBDTF/kZuwK0JAtFJW0=;
+        b=P1+gtUcW0xEZhufwTMrC4r57DOiUDxioletYKCt2SgxjJtKdCVFa0iETF6ZXvXYhkc
+         0lJkhhlb9JZHngQLeOv93d6devPmXSgXy71vcInAANSaxKiJ3vNpSoosiNRfz78K9Qa5
+         SqlmYRxlmxk61aHRjHen7yrkv4aK2vpveK/HB1dItDGRRe3kyzkrEll93Hy8MXE1GZ//
+         6mgk+0bs4nITKAYo8jS+tXO2TGj3JCZO837h7dxrb3tzO0OITn1NQYA1DZ8cGuJVNXbp
+         qOaDr2gQ+TYtxxDkPtftgZpaAy/rAl+OpnWw/Epe5vVQ5UsECh8iEzwyGkcO3auvOVNO
+         2xOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUN6k9FmB1U1h0px7mvBN1b37NHVANC1E48rPUBiSW6LX1tW6cSQ/ePrhH1fAoIBz6Px49QOsf0R7HFrKOz9jnEWXHlebdgZnZpJiJB
+X-Gm-Message-State: AOJu0YzhakRjdojq9mb/LPOXZjLU2r2TsHTcIG7qTwFyM61dNr6Q3+JD
+	fxvdyLI5wMcjA2hCiQH7M4chJN1fZqghl42+x6RVJajqiKja9NmV0CvhOfcvHM0Ywyf1AIEgmkC
+	N+WwGwQ4M+237TF1C1Z1z0zN0Pwk0nBsDEL4B
+X-Google-Smtp-Source: AGHT+IE7qL4ZajIWelVJF5EIJxvF4LYzspcZJp+tq9C1DskYuPv5mLz3VhFsNepq9yGLX98SN7fOKG8JtHC6UySCzwo=
+X-Received: by 2002:a05:622a:410a:b0:431:8151:e7c1 with SMTP id
+ cc10-20020a05622a410a00b004318151e7c1mr239703qtb.4.1711612507578; Thu, 28 Mar
+ 2024 00:55:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-alpha-pll-fix-stromer-set-rate-v3-1-1b79714c78bc@gmail.com>
-X-B4-Tracking: v=1; b=H4sIADYiBWYC/43NQQ6CMBCF4auYrh3TTgtFV97DuCg4QBOgpG0aD
- eHuFlbsdPlPJt9bWCBvKbDbaWGekg3WTTnk+cSa3kwdgX3lZshRcYkKzDD3BuZhgNa+IUTvRvI
- QKII3kUBplLqkElXLWUZmT/lvH3g8c/c2ROc/+14S2/VvOgkQIGVR81oUGsX13o3GDpfGjWyjE
- x658ieHmVOVoUqaVoumOnLrun4BROUC6hsBAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Sricharan R <quic_srichara@quicinc.com>, 
- Kathiravan T <quic_kathirav@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.13.0
+References: <20240116141801.396398-1-khtsai@google.com> <02bec7b8-7754-4b9d-84ae-51621d6aa7ec@kernel.org>
+ <2024012724-chirpy-google-51bb@gregkh> <CAKzKK0oEO5_-CBKvYSw4DKY4Wp5UPrrt1ehBFRd79idy7FsUuQ@mail.gmail.com>
+ <CAKzKK0pmswLnGa8zabp_wo=6BcvCd9DR368FCJ5mcpZ38i4Jdw@mail.gmail.com>
+In-Reply-To: <CAKzKK0pmswLnGa8zabp_wo=6BcvCd9DR368FCJ5mcpZ38i4Jdw@mail.gmail.com>
+From: Kuen-Han Tsai <khtsai@google.com>
+Date: Thu, 28 Mar 2024 15:54:41 +0800
+Message-ID: <CAKzKK0rWPzEM8e76oY+PB3ZWUbUaQS21dLbcbTiPufbnFkxbgw@mail.gmail.com>
+Subject: Re: [PATCH] usb: gadget: u_serial: Add null pointer checks after
+ RX/TX submission
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>, quic_prashk@quicinc.com, 
+	stern@rowland.harvard.edu, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The clk_alpha_pll_stromer_set_rate() function writes inproper
-values into the ALPHA_VAL{,_U} registers which results in wrong
-clock rates when the alpha value is used.
+Hi Greg and Jiri
 
-The broken behaviour can be seen on IPQ5018 for example, when
-dynamic scaling sets the CPU frequency to 800000 KHz. In this
-case the CPU cores are running only at 792031 KHz:
+On Fri, Mar 8, 2024 at 7:47=E2=80=AFPM Kuen-Han Tsai <khtsai@google.com> wr=
+ote:
+> On Sun, Jan 28, 2024 at 9:29=E2=80=AFAM Greg KH <gregkh@linuxfoundation.o=
+rg> wrote:
+> >
+> > On Thu, Jan 18, 2024 at 10:27:54AM +0100, Jiri Slaby wrote:
+> > > On 16. 01. 24, 15:16, Kuen-Han Tsai wrote:
+> > > > Commit ffd603f21423 ("usb: gadget: u_serial: Add null pointer check=
+ in
+> > > > gs_start_io") adds null pointer checks to gs_start_io(), but it doe=
+sn't
+> > > > fully fix the potential null pointer dereference issue. While
+> > > > gserial_connect() calls gs_start_io() with port_lock held, gs_start=
+_rx()
+> > > > and gs_start_tx() release the lock during endpoint request submissi=
+on.
+> > > > This creates a window where gs_close() could set port->port_tty to =
+NULL,
+> > > > leading to a dereference when the lock is reacquired.
+> > > >
+> > > > This patch adds a null pointer check for port->port_tty after RX/TX
+> > > > submission, and removes the initial null pointer check in gs_start_=
+io()
+> > > > since the caller must hold port_lock and guarantee non-null values =
+for
+> > > > port_usb and port_tty.
+> > >
+> > > Or you switch to tty_port refcounting and need not fiddling with this=
+ at all
+> > > ;).
+> >
+> > I agree, Kuen-Han, why not do that instead?
+>
+> The u_serial driver has already maintained the usage count of a TTY
+> structure for open and close. While the driver tracks the usage count
+> via open/close, it doesn't fully eliminate race conditions. Below are
+> two potential scenarios:
+>
+> Case 1 (Observed):
+> 1. gs_open() sets usage count to 1.
+> 2. gserial_connect(), gs_start_io(), and gs_start_rx() execute in
+> sequence (lock held).
+> 3. Lock released, usb_ep_queue() called.
+> 4. In parallel, gs_close() executes, sees count of 1, clears TTY, release=
+s lock.
+> 5. Original thread resumes in gs_start_rx(), potentially leading to
+> kernel panic on an invalid TTY.
 
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
-  800000
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
-  792031
+The same issue happens in the f_acm function.
 
-This happens because the function ignores the fact that the alpha
-value calculated by the alpha_pll_round_rate() function is only
-32 bits wide which must be extended to 40 bits if it is used on
-a hardware which supports 40 bits wide values.
+[  369.926837][ T9731] Unable to handle kernel NULL pointer
+dereference at virtual address 00000000000001f8
+[  369.930098][ T9731] Call trace:
+[  369.930108][ T9731]  tty_wakeup+0x28/0x160
+[  369.930124][ T9731]  gs_start_io+0x128/0x214
+[  369.930136][ T9731]  gserial_connect+0xb8/0x158
+[  369.930150][ T9731]  acm_set_alt+0xf8/0x118
+[  369.930162][ T9731]  set_config+0x258/0x3c0
+[  369.930179][ T9731]  composite_setup+0x484/0x984
+[  369.930193][ T9731]  android_setup+0x13c/0x24c
+[  369.930206][ T9731]  dwc3_ep0_interrupt+0x8c4/0x122c
+[  369.930224][ T9731]  dwc3_thread_interrupt+0xa4/0x1918
+[  369.930238][ T9731]  irq_thread_fn+0x44/0xa4
+[  369.930260][ T9731]  irq_thread+0x2a8/0x588
+[  369.930272][ T9731]  kthread+0x1d0/0x23c
+[  369.930289][ T9731]  ret_from_fork+0x10/0x20
+[  369.930314][ T9731] Code: d5384108 aa0003f3 f9431d08 f81f83a8 (f940fc08)
 
-Extend the clk_alpha_pll_stromer_set_rate() function to convert
-the alpha value to 40 bits before wrinting that into the registers
-in order to ensure that the hardware really uses the requested rate.
+> Since both gserial_connect() and gs_open() initiate gs_start_io(),
+> there's a brief window where gs_start_rx() releases a spinlock for USB
+> submission. If gs_close() executes during this window, it could
+> acquire the lock and clear the TTY structure prematurely. This happens
+> because the lock is released and the usage count remains 1, making it
+> appear like a valid final reference, even though gs_start_io() is
+> still in progress.
 
-After the change the CPU frequency is correct:
+The f_acm function invokes gserial_connect while configuring the
+altsetting. A similar issue arises when the TTY file node is already
+opened but closed when the gs_start_io function is executing. The
+current code includes a spinlock and the usage_count is 1; however,
+the problem persists, suggesting that the existing spinlock and
+usage_count are ineffective in preventing the issue. A straightforward
+solution is to double-check the TTY status before calling the
+tty_wakeup function.
 
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
-  800000
-  # cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
-  800000
+> My only solution so far is to recheck the TTY structure after
+> gs_start_rx() or gs_start_tx(). I would greatly appreciate your
+> insights on how to address this race condition effectively.
 
-Cc: stable@vger.kernel.org
-Fixes: e47a4f55f240 ("clk: qcom: clk-alpha-pll: Add support for Stromer PLLs")
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
-Changes in v3:
-  - remove constants' comparison (Konrad)
-  - Link to v2: https://lore.kernel.org/r/20240326-alpha-pll-fix-stromer-set-rate-v2-1-48ae83af71c8@gmail.com
+I'd like to get your perspective on this issue. Do you have any ideas
+on how we can move this solution forward?
 
-Changes in v2:
-  - fix subject prefix
-  - rebase on v6.9-rc1
-  - Link to v1: https://lore.kernel.org/r/20240324-alpha-pll-fix-stromer-set-rate-v1-1-335b0b157219@gmail.com
-
-Depends on the following patch:
-  https://lore.kernel.org/r/20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com
----
- drivers/clk/qcom/clk-alpha-pll.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-index 8a412ef47e16..8a8abb429577 100644
---- a/drivers/clk/qcom/clk-alpha-pll.c
-+++ b/drivers/clk/qcom/clk-alpha-pll.c
-@@ -2490,6 +2490,8 @@ static int clk_alpha_pll_stromer_set_rate(struct clk_hw *hw, unsigned long rate,
- 	rate = alpha_pll_round_rate(rate, prate, &l, &a, ALPHA_REG_BITWIDTH);
- 
- 	regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
-+
-+	a <<= ALPHA_REG_BITWIDTH - ALPHA_BITWIDTH;
- 	regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
- 	regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL_U(pll),
- 		     a >> ALPHA_BITWIDTH);
-
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240324-alpha-pll-fix-stromer-set-rate-472376e624f0
-
-Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
-
+Regards,
+Kuen-Han
 
