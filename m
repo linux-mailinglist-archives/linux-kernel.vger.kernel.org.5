@@ -1,102 +1,313 @@
-Return-Path: <linux-kernel+bounces-123628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD79890BEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:48:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27341890BF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CE181C31238
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:48:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92B50B258C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3574513A875;
-	Thu, 28 Mar 2024 20:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E3C13AA23;
+	Thu, 28 Mar 2024 20:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gTACBJGa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bTOECzv/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CB91C6BD;
-	Thu, 28 Mar 2024 20:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F2512F385;
+	Thu, 28 Mar 2024 20:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658924; cv=none; b=IEFuGgkgmVaQheXrPOkmkbcg7Piw8cJq8D40eVDUtmPwrTrZEochiHxSfeic+EDJOvEiJ0svJDLQXhS3XIhu3KWm+kkpYAb2Ih5Yj0ci+oes4xEaNDcqHde/ekh3oEnwym3MbLz48Nz7jAp1fjfZsSZ7ypfaY6ISkaid66odWro=
+	t=1711658970; cv=none; b=He3irxTyMO5MPHcsvw/Q9+M1n6zHAa6USN5HKSa+Dip1zSGwv+VjciD7xGgKlpX46wnI1Dp+CRzLb/2Ob/0BcOCcF4PtjEJZNnhuMMqo0ZL3PdHIC87/WdXUSQUHNDa3+MrbXBH1es2Kzv5QNuOuI9XeIP9+FUjxJNJzgELYYH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658924; c=relaxed/simple;
-	bh=9tNr+tXXI2ik4cysZcYTVu5UqP8gxh751wRXV35uwxs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GX9kNg4fBHqCTYt5IraRh43L9yfKR8NuPS2+yDYr9uB53EAv9YksWCBkHf0q1O5DA6wzFdQsOobCO6tagQqDXbLhWVj10uA8RMbGKBY55wAc1PdBG3/2qd2H9ioLhFNnuNUJZ8l+04sA67vP1Sd6mkOlLUGGX+J45NlzGqv8XTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gTACBJGa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1071C433F1;
-	Thu, 28 Mar 2024 20:48:43 +0000 (UTC)
+	s=arc-20240116; t=1711658970; c=relaxed/simple;
+	bh=3XCMYkBoPq+Idec9DAdMOiIFbT5SeMUB/mlilzXLUWc=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=BYWeYBRkvkREDsSX7iQRInSJF7FogM4ScvDHqg/b+96g72T3zYCsUrRed5E9PIf3LnkORVYia9aduwFHFA2eHVLH6RgEludsttyQiBq2W2UIL2GVZ+rMDVzRhG0U80ssrNjf4VmAWQwmii8BrAF+VERSP5/PkarzGbrL4BIC9Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bTOECzv/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED608C433C7;
+	Thu, 28 Mar 2024 20:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711658923;
-	bh=9tNr+tXXI2ik4cysZcYTVu5UqP8gxh751wRXV35uwxs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gTACBJGaBX2UDIyTb4/FLQUHUm47twuspkQFKdMLS0BSC2FbS98Kf1Jz5j0i9ygmh
-	 LAgaQRZ8w30D7TjuYLfCGkaGqW8TG0NCHvThBTwF0wLR2A5Jc46aXqh5Z+lxa+FYpT
-	 a+jpyuYJsPRza6qio/5kzFYeFUGLN7/q/SdyygFEgaZhI1hTGa1lM/ZPSVBAga4Xh2
-	 lQCAxxVRFaRMIlq2EDyR/nI/GqUnpw6SvM8UI6Fg0Vad0WeHk1/1PC9K22pd5ai6rp
-	 y7vFtT2SeT6RFgCZzz7pcWetybe3S0mLu7rzxT03mSN3cnefVmtNNaXshDRJ5Sx6M5
-	 Ag0IjbVaxkAjQ==
-Date: Thu, 28 Mar 2024 15:48:41 -0500
-From: Rob Herring <robh@kernel.org>
-To: git@luigi311.com
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
-	jacopo.mondi@ideasonboard.com, mchehab@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, sakari.ailus@linux.intel.com,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Ondrej Jirman <megi@xff.cz>
-Subject: Re: [PATCH 22/23] drivers: media: i2c: imx258: Add support for
- powerdown gpio
-Message-ID: <20240328204841.GA318468-robh@kernel.org>
-References: <20240327231710.53188-1-git@luigi311.com>
- <20240327231710.53188-23-git@luigi311.com>
+	s=k20201202; t=1711658970;
+	bh=3XCMYkBoPq+Idec9DAdMOiIFbT5SeMUB/mlilzXLUWc=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=bTOECzv/yf0h6rScIKYBe0I8AjSUM5shZNlXeItcF4aAaYsC4mWjd/EZ7t4lpuebD
+	 RsUqXkYo89zrkJQzmK7yr+Jdkfj2F9q4zKHo4JwwFjujLJiltFtCCrDde041g9RWiL
+	 c8cFnFVKhx9IZqspbIuJClC2UcTi0uunh7vb894Vo7y7bX8fqZaDf5YXjVtsxQhpBw
+	 ogON2hGHCYWpoMGiFGfoSIbBKX5gdQ+iYtY5e/fAanEZkm5ElbYy7DzOcOe5oZ2LYA
+	 zxSak7P6qMYl52azITVkbiaBsvT5VMuvhh/CV8ec8qjTucu8LDiPms5LYSRoSJNHVd
+	 9n281ruKCwDIQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327231710.53188-23-git@luigi311.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 28 Mar 2024 22:49:24 +0200
+Message-Id: <D05OGOTS265U.1AKOJIR5TQJBF@kernel.org>
+Cc: <linux-doc@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+ <linux-security-module@vger.kernel.org>, <fsverity@lists.linux.dev>,
+ <linux-block@vger.kernel.org>, <dm-devel@lists.linux.dev>,
+ <audit@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Deven Bowers"
+ <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v16 03/20] ipe: add evaluation loop
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Fan Wu" <wufan@linux.microsoft.com>, <corbet@lwn.net>,
+ <zohar@linux.ibm.com>, <jmorris@namei.org>, <serge@hallyn.com>,
+ <tytso@mit.edu>, <ebiggers@kernel.org>, <axboe@kernel.dk>,
+ <agk@redhat.com>, <snitzer@kernel.org>, <eparis@redhat.com>,
+ <paul@paul-moore.com>
+X-Mailer: aerc 0.17.0
+References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
+ <1711657047-10526-4-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1711657047-10526-4-git-send-email-wufan@linux.microsoft.com>
 
-On Wed, Mar 27, 2024 at 05:17:08PM -0600, git@luigi311.com wrote:
-> From: Luigi311 <git@luigi311.com>
-> 
-> On some boards powerdown signal needs to be deasserted for this
-> sensor to be enabled.
-> 
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+On Thu Mar 28, 2024 at 10:17 PM EET, Fan Wu wrote:
+> From: Deven Bowers <deven.desai@linux.microsoft.com>
+>
+> IPE must have a centralized function to evaluate incoming callers
+> against IPE's policy. This iteration of the policy for against the rules
+> for that specific caller is known as the evaluation loop.
+>
+> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>
 > ---
->  .../devicetree/bindings/media/i2c/sony,imx258.yaml  |  4 ++++
-
-Bindings should be a separate patch.
-
->  drivers/media/i2c/imx258.c                          | 13 +++++++++++++
->  2 files changed, 17 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
-> index c7856de15ba3..0414085bf22f 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
-> @@ -35,6 +35,10 @@ properties:
->    reg:
->      maxItems: 1
->  
-> +  powerdown-gpios:
-> +    description: |-
-
-Don't need '|-' if no formatting.
-
-> +      Reference to the GPIO connected to the PWDN pin, if any.
+> v2:
+> + Split evaluation loop, access control hooks, and evaluation loop from p=
+olicy parser and userspace interface to pass mailing list character limit
+>
+> v3:
+> + Move ipe_load_properties to patch 04.
+> + Remove useless 0-initializations Prefix extern variables with ipe_
+> + Remove kernel module parameters, as these are exposed through sysctls.
+> + Add more prose to the IPE base config option help text.
+> + Use GFP_KERNEL for audit_log_start.
+> + Remove unnecessary caching system.
+> + Remove comments from headers
+> + Use rcu_access_pointer for rcu-pointer null check
+> + Remove usage of reqprot; use prot only.
+> +Move policy load and activation audit event to 03/12
+>
+> v4:
+> + Remove sysctls in favor of securityfs nodes
+> + Re-add kernel module parameters, as these are now exposed through secur=
+ityfs.
+> + Refactor property audit loop to a separate function.
+>
+> v5:
+> + fix minor grammatical errors
+> + do not group rule by curly-brace in audit record,
+> + reconstruct the exact rule.
+>
+> v6:
+> + No changes
+>
+> v7:
+> + Further split lsm creation into a separate commit from the evaluation l=
+oop and audit system, for easier review.
+> + Propagating changes to support the new ipe_context structure in the eva=
+luation loop.
+>
+> v8:
+> + Remove ipe_hook enumeration; hooks can be correlated via syscall record=
+.
+>
+> v9:
+> + Remove ipe_context related code and simplify the evaluation loop.
+>
+> v10:
+> + Split eval part and boot_verified part
+>
+> v11:
+> + Fix code style issues
+>
+> v12:
+> + Correct an rcu_read_unlock usage
+> + Add a WARN to unknown op during evaluation
+>
+> v13:
+> + No changes
+>
+> v14:
+> + No changes
+>
+> v15:
+> + No changes
+>
+> v16:
+> + No changes
+> ---
+>  security/ipe/Makefile |   1 +
+>  security/ipe/eval.c   | 100 ++++++++++++++++++++++++++++++++++++++++++
+>  security/ipe/eval.h   |  24 ++++++++++
+>  3 files changed, 125 insertions(+)
+>  create mode 100644 security/ipe/eval.c
+>  create mode 100644 security/ipe/eval.h
+>
+> diff --git a/security/ipe/Makefile b/security/ipe/Makefile
+> index c09aec4904f2..57fe922cf1fc 100644
+> --- a/security/ipe/Makefile
+> +++ b/security/ipe/Makefile
+> @@ -6,6 +6,7 @@
+>  #
+> =20
+>  obj-$(CONFIG_SECURITY_IPE) +=3D \
+> +	eval.o \
+>  	ipe.o \
+>  	policy.o \
+>  	policy_parser.o \
+> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> new file mode 100644
+> index 000000000000..af56815ed0fa
+> --- /dev/null
+> +++ b/security/ipe/eval.c
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
 > +
->    reset-gpios:
->      description: |-
->        Reference to the GPIO connected to the XCLR pin, if any.
+> +#include <linux/fs.h>
+> +#include <linux/types.h>
+> +#include <linux/slab.h>
+> +#include <linux/file.h>
+> +#include <linux/sched.h>
+> +#include <linux/rcupdate.h>
+> +
+> +#include "ipe.h"
+> +#include "eval.h"
+> +#include "policy.h"
+> +
+> +struct ipe_policy __rcu *ipe_active_policy;
+> +
+> +/**
+> + * evaluate_property - Analyze @ctx against a property.
+> + * @ctx: Supplies a pointer to the context to be evaluated.
+> + * @p: Supplies a pointer to the property to be evaluated.
+> + *
+> + * Return:
+> + * * true	- The current @ctx match the @p
+> + * * false	- The current @ctx doesn't match the @p
+> + */
+> +static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
+> +			      struct ipe_prop *p)
+
+What a descriptive name (not)
+
+Also short descriptino tells absolute nothing relevant (as good as it
+did not exist at all).
+
+It would be also senseful to carry the prefix.
+
+
+> +{
+> +	return false;
+> +}
+> +
+> +/**
+> + * ipe_evaluate_event - Analyze @ctx against the current active policy.
+> + * @ctx: Supplies a pointer to the context to be evaluated.
+> + *
+> + * This is the loop where all policy evaluation happens against IPE poli=
+cy.
+> + *
+> + * Return:
+> + * * 0		- OK
+> + * * -EACCES	- @ctx did not pass evaluation.
+> + * * !0		- Error
+> + */
+> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx)
+> +{
+> +	bool match =3D false;
+> +	enum ipe_action_type action;
+> +	struct ipe_policy *pol =3D NULL;
+> +	const struct ipe_rule *rule =3D NULL;
+> +	const struct ipe_op_table *rules =3D NULL;
+> +	struct ipe_prop *prop =3D NULL;
+> +
+> +	rcu_read_lock();
+> +
+> +	pol =3D rcu_dereference(ipe_active_policy);
+> +	if (!pol) {
+> +		rcu_read_unlock();
+> +		return 0;
+> +	}
+> +
+> +	if (ctx->op =3D=3D IPE_OP_INVALID) {
+> +		if (pol->parsed->global_default_action =3D=3D IPE_ACTION_DENY) {
+> +			rcu_read_unlock();
+> +			return -EACCES;
+> +		}
+> +		if (pol->parsed->global_default_action =3D=3D IPE_ACTION_INVALID)
+> +			WARN(1, "no default rule set for unknown op, ALLOW it");
+> +		rcu_read_unlock();
+> +		return 0;
+> +	}
+> +
+> +	rules =3D &pol->parsed->rules[ctx->op];
+> +
+> +	list_for_each_entry(rule, &rules->rules, next) {
+> +		match =3D true;
+> +
+> +		list_for_each_entry(prop, &rule->props, next) {
+> +			match =3D evaluate_property(ctx, prop);
+> +			if (!match)
+> +				break;
+> +		}
+> +
+> +		if (match)
+> +			break;
+> +	}
+> +
+> +	if (match)
+> +		action =3D rule->action;
+> +	else if (rules->default_action !=3D IPE_ACTION_INVALID)
+> +		action =3D rules->default_action;
+> +	else
+> +		action =3D pol->parsed->global_default_action;
+> +
+> +	rcu_read_unlock();
+> +	if (action =3D=3D IPE_ACTION_DENY)
+> +		return -EACCES;
+> +
+> +	return 0;
+> +}
+> diff --git a/security/ipe/eval.h b/security/ipe/eval.h
+> new file mode 100644
+> index 000000000000..6b434515968f
+> --- /dev/null
+> +++ b/security/ipe/eval.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef _IPE_EVAL_H
+> +#define _IPE_EVAL_H
+> +
+> +#include <linux/file.h>
+> +#include <linux/types.h>
+> +
+> +#include "policy.h"
+> +
+> +extern struct ipe_policy __rcu *ipe_active_policy;
+> +
+> +struct ipe_eval_ctx {
+> +	enum ipe_op_type op;
+> +
+> +	const struct file *file;
+> +};
+> +
+> +int ipe_evaluate_event(const struct ipe_eval_ctx *const ctx);
+> +
+> +#endif /* _IPE_EVAL_H */
+
+BR, Jarkko
 
