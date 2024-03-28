@@ -1,157 +1,247 @@
-Return-Path: <linux-kernel+bounces-122900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA82C88FF31
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:40:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E17888FF58
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:42:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8371C2820E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:40:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E9F21F25292
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AEDE7F481;
-	Thu, 28 Mar 2024 12:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AACB12AAC3;
+	Thu, 28 Mar 2024 12:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="mKB8vWPv"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="r3mlxuV6"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B064F208;
-	Thu, 28 Mar 2024 12:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA9C83A14;
+	Thu, 28 Mar 2024 12:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711629611; cv=none; b=O8FSiCkzAfJFw3d0KuPc/HAEc8sIC6LCGUylIWMhddqnJsOPgYEWHttw3dsJBi/ijd2Xsw7w718EpEprrJPw0y3EkUFg/H7L9KgZ00VXS/ENhq44YP5wDaBO+luH4d3YbGjlVN/ajoOeNpd6ExJ0tpA3HDS8p7UTbfUky6OllHU=
+	t=1711629649; cv=none; b=fJr3CBDTqEUqgnp/D+hCiPdSxw1iq3SfskuXe4Bcg1qtB3mbJZcEGdadidCDSbIMlIhEur4Oq36GTTu0lc4GzvMHabXQj98FrepVqOl4Q2g9tRzgkzy/dafBDDLvyHHDn66cjhMPKsLVg5LqcWeOFUnN8w4UM8zWEO1v2RiwlnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711629611; c=relaxed/simple;
-	bh=oZOsfm72DJFPdo+Ma1cBA1aIH+t/Ab5Yx45MSHSwUlU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aGRuRX1rpLMRIpkUeZ4iN2H7suwhKU307ZMzd8yvro5gV9hA6lGzp5WezBrcU9TIZkZce2nnDAHG2VtcPPf/CRZ489RAjMPyP7ety7iHof0b1Qo3AkQqTC+ZWcO3PD/AAwCKu7FoXhlM4a+OlxyYcTDu7GeveQoIVa6Qnkzq/1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=mKB8vWPv; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=JXm7K82jLtWg1VPIcy9g3aAbs1bY6vhIc6AnyNaOJ/A=; b=mKB8vWPvqezitANxKHzqo/ndrR
-	DRYKB0GMxgDF/Zilsy2tgDkup6uo9bWJd93JMRzkMyD9EXwj6202WEeWZSn8EfESZ948Ki5sXt/3O
-	NmsyP/lrFSrhQGDPjPHR7kWec1fMitA65R6fHd6W4309RrevvkX+Gxj77l31kop1//T0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rpp2m-00BUsX-UA; Thu, 28 Mar 2024 13:39:44 +0100
-Date: Thu, 28 Mar 2024 13:39:44 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: MD Danish Anwar <danishanwar@ti.com>
-Cc: Diogo Ivo <diogo.ivo@siemens.com>, Rob Herring <robh@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Jan Kiszka <jan.kiszka@siemens.com>,
-	Simon Horman <horms@kernel.org>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Roger Quadros <rogerq@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, srk@ti.com, r-gunasekaran@ti.com
-Subject: Re: [PATCH net-next v3 3/3] net: ti: icssg-prueth: Add support for
- ICSSG switch firmware
-Message-ID: <cca25c3d-a352-4531-a8ae-5a0fb7de44df@lunn.ch>
-References: <20240327114054.1907278-1-danishanwar@ti.com>
- <20240327114054.1907278-4-danishanwar@ti.com>
- <27d960ed-8e67-431b-a910-e6b2fc12e292@lunn.ch>
- <c94815f8-798a-4167-8f69-359b9b28b7ce@ti.com>
+	s=arc-20240116; t=1711629649; c=relaxed/simple;
+	bh=x3TQGYCfxqNJk2v0Ut1AFO+Oo3+WufsKYamV7ax/lvA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c3jZTQAwRO+bZsdvPmrs6LF7xosZ6mNn4W4ebuan86Jbk0X8I282KudzOzpBmMsA9cmsVti3ZvXp0AD/CyUVNNWohb9hgbwYes6Pgqh88yT9A/m7av9GXFYbiujRckdKYZRX95DnzUXiHGcfDnlB2IzuZZWWskDxYHDlVd4JaHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=r3mlxuV6; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1711629595; x=1712234395; i=deller@gmx.de;
+	bh=OcaPQ/YLAkQ4Yfs0ARFNRC7QTLGsd2CnFzORCuSApDw=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=r3mlxuV6fZG4GNUbwLTgqCELwOPup6gs6/aJ9BW15Z9DXrPFwbDCGn1uv7TV5D3a
+	 vG8RgcSevNYbSTgPQF5GrZIWuFxCzTyyD/x5NolpnMTIjeM9S/wnbLoJ0OZfrqxf4
+	 7f3D4JMj8DQaK25n4dRkKVqrepc+L+o+JgmTU6GT2tn3AloonGA50hRe5ZJuIhmi+
+	 cN1QYMIjkZD5bEmTLBFuQcKwB6N4KRIfYIwU/LdYcU3qZFD3qmpORB9+Xk04bBBr3
+	 0hlTidX7LQ009X/BVxug8463q2lBy/XoF9fdJugkpGaugBQ00En9zSFWYxC7PHUPC
+	 8lxYE+fAD2UhNM1+IA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MPokN-1sC2tE1Kvz-00MpkI; Thu, 28
+ Mar 2024 13:39:55 +0100
+Message-ID: <70aefe08-b4c4-4738-a223-e4b04562cd56@gmx.de>
+Date: Thu, 28 Mar 2024 13:39:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c94815f8-798a-4167-8f69-359b9b28b7ce@ti.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] arch: Select fbdev helpers with CONFIG_VIDEO
+To: Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
+ javierm@redhat.com, sui.jingfeng@linux.dev
+Cc: linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>
+References: <20240327204450.14914-1-tzimmermann@suse.de>
+ <20240327204450.14914-2-tzimmermann@suse.de>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20240327204450.14914-2-tzimmermann@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tdzWKBL0P5Wfrjj8yny8Q2lhw+7grSIiFh5Q0dWgyFJJyQtp97n
+ 7yW0OxyxmQ4RmQZcPMPcfWKLpDiA9fV7zmf5VhxMbyIqH/cEqbjd6qlgZE0mNtummvbAHsL
+ drn/A1jBNNjPS387hymUaTCxPHw8T2VxgIQ2CKXP8w9BQIIhn7y8YrJnQlIsn6MorknokHj
+ ntFVjgd6CuyklDh/qiPog==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:D2qBu+HavM4=;k8FmDd1t1U1FjeH6FKiF1DaXqYp
+ ROvL0p1wFzp/tzOYRBoZWPN7tAQG+ZrP7pQ6ztPNN73BLJkKyVKE9Isru3oEjXw3MTOVA9Ezd
+ gZppMzAiEgcBQhHIorV+2MLgsEuRrdVQU85oLX4dFfQ5iYlphg7nXi/5jmYERLvy7VPnteB+8
+ 9eDFe9KP6RKOwhVEZt+9G6O+LS7xvljRdO8CPRNnfvd5e4rthXGNzuMqSasE06QkJmCJgT3W6
+ K/t2s5ODVZm/cVghaFaLuc79Xk9Iy/vGIAImToxZomxiqcuuxUi/aaldKJ9fir6sXYm0eGMdm
+ QYYe8TcqkgPIElCEYL3tasSqJQRWhtYSmOELTetYLJsWKLX/enbTtrBMNBzXxQXu7yczo/J+H
+ 4ZO3x6peJ5Khv/0ksPyzMXMLXthWkC1qvr7ldnSmg3pk8+gYxOeiYlhRol/XT+DQ4hK1Re/jx
+ KMzsF2tfPLir94oe3ogkGu/92gxxG5NXZoi/waZ8R/pL8K9AzblzBg8WrRWCHzWum0CXt8Nlw
+ lNUQNfwXy60ZS7ApLwTsYjZd5LvmI6QcgO6IumiIHcKavIKm1VaLW/jDEq3TpOz8rLTARH+78
+ zxH6iSHkEKPN0KpGbCUH09wGlt5VFajvDMbxhL0d+TRMT8Kgc7ZQg1rtn9DhvEWs8P0EkWlSl
+ dKzwPwQzQ7farrNoJPW/ud0xqBoQDv+GAcYNOttNfn8dHtcNTdq0Rn++VaprFX7y55vpUCVw7
+ Q6SqB0EwgzbwOr2cQRuc6WZXFwjxMucMerAxReY1nAa+62ehK0nK9Fx8SD8ObYiTwkKDKXhXN
+ CJKPwBIsReEyp7tEUVxQfOtPNSP7pCBzF2pIeGHr60eiY=
 
-On Thu, Mar 28, 2024 at 11:39:33AM +0530, MD Danish Anwar wrote:
-> Hi Andrew,
-> 
-> On 27/03/24 6:05 pm, Andrew Lunn wrote:
-> > On Wed, Mar 27, 2024 at 05:10:54PM +0530, MD Danish Anwar wrote:
-> >> Add support for ICSSG switch firmware using existing Dual EMAC driver
-> >> with switchdev.
-> >>
-> >> Limitations:
-> >> VLAN offloading is limited to 0-256 IDs.
-> >> MDB/FDB static entries are limited to 511 entries and different FDBs can
-> >> hash to same bucket and thus may not completely offloaded
-> >>
-> >> Switch mode requires loading of new firmware into ICSSG cores. This
-> >> means interfaces have to taken down and then reconfigured to switch
-> >> mode.
-> > 
-> > Patch 0/3 does not say this. It just shows the interfaces being added
-> 
-> I will modify the cover letter to state that.
-> 
-> > to the bridge. There should not be any need to down the interfaces.
-> > 
-> 
-> The interfaces needs to be turned down for switching between dual emac
-> and switch mode.
-> 
-> Dual Emac mode runs with ICSSG Dual Emac firmware where as Switch mode
-> works with ICSSG Switch firmware. These firmware are running on the
-> dedicated PRU RPROC cores (pru0, rtu0, txpru0). When switch mode is
-> enabled, these pru cores need to be stopped and then Switch firmware is
-> loaded on these cores and then the cores are started again.
-> 
-> We stop the cores when interfaces are down and start the cores when
-> interfaces are up.
-> 
-> In short, Dual EMAC firmware runs on pru cores, we put down the
-> interface, stop pru cores, load switch firmware on the cores, bring the
-> interface up and start the pru cores and now Switch mode is enabled.
+On 3/27/24 21:41, Thomas Zimmermann wrote:
+> Various Kconfig options selected the per-architecture helpers for
+> fbdev. But none of the contained code depends on fbdev. Standardize
+> on CONFIG_VIDEO, which will allow to add more general helpers for
+> video functionality.
+>
+> CONFIG_VIDEO protects each architecture's video/ directory.
 
-This is not the Linux model. Try it, add an interface to a software
-bridge. It does not care if it is admin up or down.
+Your patch in general looks good.
+But is renaming the config option from CONFIG_FB_CORE to CONFIG_VIDEO
+the best choice?
+CONFIG_VIDEO might be mixed up with multimedia/video-streaming.
 
-You need to hide this difference in your driver.
+Why not e.g. CONFIG_GRAPHICS_CORE?
+I'm fine with CONFIG_VIDEO as well, but if someone has a better idea
+we maybe should go with that instead now?
 
-> > I keep asking this, so it would be good to explain it in the commit
-> > message. What configuration is preserved over a firmware reload, and
-> > what is lost?
-> > 
-> > Can i add VLAN in duel MAC mode and then swap into the switch firmware
-> > and all the VLANs are preserved? Can i add fdb entries to a port in
-> > dual MAC mode, and then swap into the swtich firmware and the FDB
-> > table is preserved? What about STP port state? What about ... ?
-> > 
-> 
-> When ports are brought up (firmware reload) we do a full cleaning of all
-> the shared memories i.e. SMEM (shared RAM). [1]
-> 
-> Vlan table and FDB table are stored in SMEM so all the configuration
-> done to VLAN / FDB tables will be lost.
-> 
-> We don't clear DRAM. DRAM is used for sending r30 commands [see
-> emac_r30_cmd_init()], configure half duplex [see
-> icssg_config_half_duplex()] and configure link speed [see
-> icssg_config_set_speed()]. r30 commands are used to set port state (stp).
-> 
-> Now when the interfaces are brought up (firmware reload) r30 command is
-> reconfigured as a result any changes done to port state (stp) will be
-> lost. But the duplex and speed settings will be preserved.
-> 
-> To summarize,
-> VLAN table / FDB table and port states are lost during a firmware reload.
+Helge
 
-So you also need to work around this in your driver. I think it is
-possible to get the network stack to enumerate the configuration. Take
-a look at the Mellanox driver. If i remember it does something like
-this, but i don't remember the details.
+> This
+> allows for the use of more fine-grained control for each directory's
+> files, such as the use of CONFIG_STI_CORE on parisc.
+>
+> v2:
+> - sparc: rebased onto Makefile changes
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Andreas Larsson <andreas@gaisler.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> ---
+>   arch/parisc/Makefile      | 2 +-
+>   arch/sparc/Makefile       | 4 ++--
+>   arch/sparc/video/Makefile | 2 +-
+>   arch/x86/Makefile         | 2 +-
+>   arch/x86/video/Makefile   | 3 ++-
+>   5 files changed, 7 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+> index 316f84f1d15c8..21b8166a68839 100644
+> --- a/arch/parisc/Makefile
+> +++ b/arch/parisc/Makefile
+> @@ -119,7 +119,7 @@ export LIBGCC
+>
+>   libs-y	+=3D arch/parisc/lib/ $(LIBGCC)
+>
+> -drivers-y +=3D arch/parisc/video/
+> +drivers-$(CONFIG_VIDEO) +=3D arch/parisc/video/
+>
+>   boot	:=3D arch/parisc/boot
+>
+> diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
+> index 2a03daa68f285..757451c3ea1df 100644
+> --- a/arch/sparc/Makefile
+> +++ b/arch/sparc/Makefile
+> @@ -59,8 +59,8 @@ endif
+>   libs-y                 +=3D arch/sparc/prom/
+>   libs-y                 +=3D arch/sparc/lib/
+>
+> -drivers-$(CONFIG_PM) +=3D arch/sparc/power/
+> -drivers-$(CONFIG_FB_CORE) +=3D arch/sparc/video/
+> +drivers-$(CONFIG_PM)    +=3D arch/sparc/power/
+> +drivers-$(CONFIG_VIDEO) +=3D arch/sparc/video/
+>
+>   boot :=3D arch/sparc/boot
+>
+> diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
+> index d4d83f1702c61..9dd82880a027a 100644
+> --- a/arch/sparc/video/Makefile
+> +++ b/arch/sparc/video/Makefile
+> @@ -1,3 +1,3 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>
+> -obj-$(CONFIG_FB_CORE) +=3D fbdev.o
+> +obj-y	+=3D fbdev.o
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index 15a5f4f2ff0aa..c0ea612c62ebe 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -265,7 +265,7 @@ drivers-$(CONFIG_PCI)            +=3D arch/x86/pci/
+>   # suspend and hibernation support
+>   drivers-$(CONFIG_PM) +=3D arch/x86/power/
+>
+> -drivers-$(CONFIG_FB_CORE) +=3D arch/x86/video/
+> +drivers-$(CONFIG_VIDEO) +=3D arch/x86/video/
+>
+>   ####
+>   # boot loader support. Several targets are kept for legacy purposes
+> diff --git a/arch/x86/video/Makefile b/arch/x86/video/Makefile
+> index 5ebe48752ffc4..9dd82880a027a 100644
+> --- a/arch/x86/video/Makefile
+> +++ b/arch/x86/video/Makefile
+> @@ -1,2 +1,3 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+> -obj-$(CONFIG_FB_CORE)		+=3D fbdev.o
+> +
+> +obj-y	+=3D fbdev.o
 
-      Andrew
 
