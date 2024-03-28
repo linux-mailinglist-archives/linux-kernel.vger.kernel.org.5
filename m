@@ -1,156 +1,117 @@
-Return-Path: <linux-kernel+bounces-122203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 642B888F36B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:07:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFE588F36D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD649B21B73
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:07:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53E221F29DB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A2117F6;
-	Thu, 28 Mar 2024 00:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38218EBB;
+	Thu, 28 Mar 2024 00:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D9S5p5Gv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="etO8HyR4"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72FD8363;
-	Thu, 28 Mar 2024 00:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE3518D
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 00:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711584422; cv=none; b=hAJzBpBlcq/FaycVFRVeBrtXXnw6RRpkhZQVB0oJ0gxla/4DbY01H2plaMX1KKWneOX2xSMjCZQ/4pcHh5Hk+dUxOpacI3nAMVsFn0jnm2YeU52L384kIt/AkoMZzP6IzjuIVHboitJ8JwuFhukF4vwrextetjFEJuJ6JCsPMpk=
+	t=1711584537; cv=none; b=J7+V3ykR5qvuhcTcd1YG1shOstUF34xrvqdMSFwnQgPZkHz6an3tjw2eMDGWA5LDc3mfmZ+8r5f6v58Z8PDh09EgrIsAeR6ceo5P4qT8QKWiItwWmznYTarYviqzCQpxbePs6vz/idmWN/KcQEiF3NSkfqMcI/Hb+jx7RxmGcCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711584422; c=relaxed/simple;
-	bh=3hEkNgmQddH/2BXruNuYCtM/9XJkyRMeb2eNMB6zyP0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QCC58BxhnAuDYk9s5TOIeKRcfV1jHOW48XRoC/7KtDpvCWs5lC0WEnqfPVxaZGcEX/8yb6e4cpY9AF/JnYiGRtbMAyLFYoHlxjGjO2UeGTC4F0t+JSygtpRBfDqpzXPUIByyyKOzIOGnDqFmEeSA0qqGfgvdj5PWa2Mc6CC/taE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D9S5p5Gv; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711584420; x=1743120420;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3hEkNgmQddH/2BXruNuYCtM/9XJkyRMeb2eNMB6zyP0=;
-  b=D9S5p5GvPs/p8N+jPcgUyv/bVPMVFoYOVJngL5v5B3D8v6EIiSXia6a0
-   SfFj33PsKqG9/Q19m00jxgIFwLbFqDWH+rkfMxwgMj3WfDK4Vrs5+Vv4r
-   bOPzinnTddrnEunEr/G/YlRXboXulVzqbPZ5y3jL5yA/ePHkTUNlb2awK
-   RGvEkl175IdktLn4rzHU8nLsS8Q5I4azBDQYkWn2Dk2DTrrjY6enHgTzy
-   1MWABQTeY6nINqcmxv8nWSjaICkPtzNJp16NoNpd4Xoo5+voQPdxORI26
-   lQ2yib9JFn85ujiApw2lViC2IbQygA5VGkkoiVhA+MUyNEAURRY1vGOAX
-   w==;
-X-CSE-ConnectionGUID: XXCtWHNUSFilZN2cioTzog==
-X-CSE-MsgGUID: mrEVqmV+Q06BYOLWv6uGkg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6908643"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="6908643"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 17:06:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="20937873"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 17:06:56 -0700
-Message-ID: <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
-Date: Thu, 28 Mar 2024 08:06:53 +0800
+	s=arc-20240116; t=1711584537; c=relaxed/simple;
+	bh=+hVgvJhRkV9zAky4dYe3lOHAIoU37e/j8bI++LQDzpM=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=cIP1vRgkN/l44cVkEHt2x8sHm0UPwpyA5SpkweVG7mwlCuC9eVJ6Hpb4KQa/tlNgIvdMUlXZcNoVDqVbhptfsUeoopOOqi9Hr6WKGWjO0pQQo30SkKvDcEO1FyXVFlgNJ/2HNLGi9uzHPmEpdS7puAmcxa6xbaml5UEnGsLJnr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=etO8HyR4; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-789f00aba19so25835085a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1711584535; x=1712189335; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hqu5KZ7ANiufBKIVwu8ItEdmpm8TUn3oazGE5q2jtwQ=;
+        b=etO8HyR40NrGl3wB4MpxK+0TU/OOsBLu43JRTLcH4VslHBbYjw8X7N9foIwpJ9Ua8O
+         EF9+NzNG7IzQchCIJsFZLG61V7PjxCHoX7opurPv8az1jH8Brvq2PcvBvMsANCD0f6X2
+         bk/LhIgtXZlvTG1ot4z0BucPeBZWgKpXAe7T3MRmlMSAVbozzqvihr87n2ud6qN6f5E3
+         c3VfbNuyiTKbwhsrG/nzlE87vkyWt4cGfz3nWwH9oNe7BGt235q8i+u53X7BVDZnZ2iN
+         FQ6s41+YSvATGuZfUDBNgpor/uLJ5FqFlxmLMyL8WW9rhJzipwty0RuWNWrEynDQfRm2
+         tUvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711584535; x=1712189335;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hqu5KZ7ANiufBKIVwu8ItEdmpm8TUn3oazGE5q2jtwQ=;
+        b=DgMeLuiCbVK7MxTY5xGfsXa5PjU7omBEKciAyR0u5V7aQmBVGgQ7qdIzLnJAfDBOgk
+         r1ewGKXYf3htXCw46E9WBStY/g4dH7k0/sv49BkOe3FX+TY3u4pLMXHEF1thk3tTeqBU
+         fgqe3T1wUw9c91GkG3oLM/jYVFcUbe3V0YwWh6AdiFfM7y6Ozq9LtUdqbCC/YiZRNzbM
+         KXEMnzaF4i9CM6TPfmnyDkLItwjazakPRNRaMYa8fpweFFkvGxpno84b+2gYiWM1V6tN
+         Qs83uJ+033j+s0Yd8iPXLKpPYFZlyWMBj7UxZEAP38j/+VXp09msWsvXblBODbwYBx0x
+         8N/w==
+X-Forwarded-Encrypted: i=1; AJvYcCXvXffa60bGm9gH6Y3ME05vINxfKyqVjQbW5xGy1N4Efwx7v8CSBUha7Bsz0JCkxHncIu7Vhre5gzpQr9ZC+3CP+gCdwZ8Hy/KCZ6+3
+X-Gm-Message-State: AOJu0YwOI0VhqWzl4Yoh7OFIIzG2wrh/tKT3CWiOojsSlGBxt1oQn84u
+	ckYkCCYyzgvRhxAp9UJkoGeq/Dr0ObcLnotz7Eepy4QkYfoRXW4K7QH4KddiRA==
+X-Google-Smtp-Source: AGHT+IEuIiA6yL+s6fMX+s9dyz58T/Y6tcHTA6rblF3C6b6P+/XkoqUiOpYvjDoJ26nVCFVeRsH9Lw==
+X-Received: by 2002:a05:620a:2016:b0:78b:b5d4:d86e with SMTP id c22-20020a05620a201600b0078bb5d4d86emr760810qka.40.1711584534784;
+        Wed, 27 Mar 2024 17:08:54 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id j15-20020a05620a146f00b00788481cdf4csm111872qkl.111.2024.03.27.17.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 17:08:54 -0700 (PDT)
+Date: Wed, 27 Mar 2024 20:08:54 -0400
+Message-ID: <54c3ff6d6a7c8e8aed0e5e3facf00271@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
- unsupported cases
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "Gao, Chao" <chao.gao@intel.com>, "Yamahata, Isaku"
- <isaku.yamahata@intel.com>
-Cc: "Zhang, Tina" <tina.zhang@intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
- "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
- "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
- "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aktas, Erdem" <erdemaktas@google.com>,
- "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Yuan, Hang"
- <hang.yuan@intel.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>
-References: <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
- <20240325190525.GG2357401@ls.amr.corp.intel.com>
- <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
- <20240325221836.GO2357401@ls.amr.corp.intel.com>
- <20240325231058.GP2357401@ls.amr.corp.intel.com>
- <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
- <20240325233528.GQ2357401@ls.amr.corp.intel.com>
- <ZgIzvHKobT2K8LZb@chao-email>
- <20db87741e356e22a72fadeda8ab982260f26705.camel@intel.com>
- <ZgKt6ljcmnfSbqG/@chao-email>
- <20240326174859.GB2444378@ls.amr.corp.intel.com>
- <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
- <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
 Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>, selinux@vger.kernel.org
+Cc: Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selinux: use u32 as bit type in ebitmap code
+References: <20240315173234.637629-1-cgzones@googlemail.com>
+In-Reply-To: <20240315173234.637629-1-cgzones@googlemail.com>
 
-On 3/28/2024 1:36 AM, Edgecombe, Rick P wrote:
-> On Wed, 2024-03-27 at 10:54 +0800, Xiaoyao Li wrote:
->>>> If QEMU doesn't configure the msr filter list correctly, KVM has to handle
->>>> guest's MTRR MSR accesses. 
->>>> In my understanding, the suggestion is KVM zap private memory mappings. 
-
-TDX spec states that
-
-   18.2.1.4.1 Memory Type for Private and Opaque Access
-
-   The memory type for private and opaque access semantics, which use a
-   private HKID, is WB.
-
-   18.2.1.4.2 Memory Type for Shared Accesses
-
-   Intel SDM, Vol. 3, 28.2.7.2 Memory Type Used for Translated Guest-
-   Physical Addresses
-
-   The memory type for shared access semantics, which use a shared HKID,
-   is determined as described below. Note that this is different from the
-   way memory type is determined by the hardware during non-root mode
-   operation. Rather, it is a best-effort approximation that is designed
-   to still allow the host VMM some control over memory type.
-     • For shared access during host-side (SEAMCALL) flows, the memory
-       type is determined by MTRRs.
-     • For shared access during guest-side flows (VM exit from the guest
-       TD), the memory type is determined by a combination of the Shared
-       EPT and MTRRs.
-       o If the memory type determined during Shared EPT walk is WB, then
-         the effective memory type for the access is determined by MTRRs.
-       o Else, the effective memory type for the access is UC.
-
-My understanding is that guest MTRR doesn't affect the memory type for 
-private memory. So we don't need to zap private memory mappings.
-
->>>> But guests won't accept memory again because no one
->>>> currently requests guests to do this after writes to MTRR MSRs. In this case,
->>>> guests may access unaccepted memory, causing infinite EPT violation loop
->>>> (assume SEPT_VE_DISABLE is set). This won't impact other guests/workloads on
->>>> the host. But I think it would be better if we can avoid wasting CPU resource
->>>> on the useless EPT violation loop.
->>>
->>> Qemu is expected to do it correctly.  There are manyways for userspace to go
->>> wrong.  This isn't specific to MTRR MSR.
->>
->> This seems incorrect. KVM shouldn't force userspace to filter some
->> specific MSRs. The semantic of MSR filter is userspace configures it on
->> its own will, not KVM requires to do so.
+On Mar 15, 2024 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
 > 
-> I'm ok just always doing the exit to userspace on attempt to use MTRRs in a TD, and not rely on the
-> MSR list. At least I don't see the problem.
+> The extensible bitmap supports bit positions up to U32_MAX due to the
+> type of the member highbit being u32.  Use u32 consistently as the type
+> for bit positions to announce to callers what range of values is
+> supported.
+> 
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> ---
+> v4:
+>   - apply format style
+>   I hope i addressed all comment from [1] in [2].
+> v3:
+>   - revert type change of unrelated iter variable
+>   - use U32_MAX instead of (u32)-1
+> v2: avoid declarations in init-clauses of for loops
+> 
+> [1]: https://lore.kernel.org/selinux/67cee6245e2895e81a0177c4c1ed01ba.paul@paul-moore.com/
+> [2]: https://lore.kernel.org/selinux/CAJ2a_DdLR40CB6Ua5cNjYhtexNmGkzQRsVrJn+dhVaZO-aVKsA@mail.gmail.com/
+> 
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> ---
+>  security/selinux/ss/ebitmap.c | 31 +++++++++++++++-------------
+>  security/selinux/ss/ebitmap.h | 38 ++++++++++++++++-------------------
+>  2 files changed, 34 insertions(+), 35 deletions(-)
 
-What is the exit reason in vcpu->run->exit_reason? 
-KVM_EXIT_X86_RDMSR/WRMSR? If so, it breaks the ABI on 
-KVM_EXIT_X86_RDMSR/WRMSR.
+Merged into selinux/dev, thanks for following up on this.
+
+--
+paul-moore.com
 
