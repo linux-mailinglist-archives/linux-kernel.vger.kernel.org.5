@@ -1,180 +1,174 @@
-Return-Path: <linux-kernel+bounces-122253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9610888F448
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:02:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87B388F449
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94911C2EDFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:02:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 427C61F227D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EC11CAA4;
-	Thu, 28 Mar 2024 01:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7A81BDEB;
+	Thu, 28 Mar 2024 01:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NYx+HLra"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cj/wRyZG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B465ED8;
-	Thu, 28 Mar 2024 01:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C902386;
+	Thu, 28 Mar 2024 01:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711587712; cv=none; b=YZmRiobntaw6niMU9psJZG3BZEt8144YV8qozl4kMpANkmxYe9/fa47ZvfSM/k+xnWf3c14k7lJzwG/ur78glMbqWwc38V2ClPV87a8Ggmicrrelub3mOucCsHBDSfpiZSxy0zp3cRLvmz0sSlNvykbsxD8VAnve1RlrR/IEB3A=
+	t=1711587889; cv=none; b=XYsesrF3tQ5qGcvgJH6wAg+3JCAs01wXzmYBKm2KRUFhsCGNMnTkisk6S4mDlmn+bT7ix05ivkWX1StODf6V4I0ONPhiXclzu956J5LDr/31fDeItoq6jNIOiyJi0EGSXJcWbky4M7FxxaxAUJ0/YEKV8hxbnCx3zaG/RBwOgzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711587712; c=relaxed/simple;
-	bh=2cfHzOeZI9Z39CzJ/8BNbKRI3djDCKB8bHXvwRGu0Y8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CpNXdFPD2WS0EV8CG+S7vNjGupSzaHd8GC/4w4vqwFqo7HDxwHC5GFc1CSF6LOWtWAxq05inyaCWKYl93kvcJJlx3YOUPuu7CvmHZnVCgywZbkuPRSzZ8ObQ/Z7Hf5EytxRxELcvksVOA7ISYP+p0G7RJ4D+49WrBfBGieSmf1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NYx+HLra; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56c2c41cbdaso218563a12.2;
-        Wed, 27 Mar 2024 18:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711587709; x=1712192509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QVMPOgXiwV6xXIBa4FmJiAt/efk5dy0MaILdoXE0w4A=;
-        b=NYx+HLraYKv81LwJy2p4DS27KEY6U3sJD7mvNm8fDLYfqOZB3aCXJK3dEdhiXScLbh
-         KzzSf75SBIo68jwWC7x+Psn66a9q46gS4dM+KEt6b7s4LNL4KRjw36gvXcl0bEvqi3P0
-         40C/b1po4KEWqPkP16AsgGOEgn3dXCreXepUu5qOQhEaDQ+03lfEvzs2Ul4bw8rCmXh/
-         h2JrAJzrTzedLrIs6k0pp8tJewYZoMAnc+Y3TKbh0BoOyACk1XCaiyP5XpBwI3HjvehG
-         HeCf6EgTfsRYbOQG21ya4mJCcG6NToz4tVp1li7cu/5u1fTRqjCtr2Z4FL7qvFhViXie
-         /pKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711587709; x=1712192509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QVMPOgXiwV6xXIBa4FmJiAt/efk5dy0MaILdoXE0w4A=;
-        b=u1Uwmfku0zQNbxirUxaARW2t21oJcOZLeLL4+MW/43x8gic4NRyXRcgZRJtw+hLF1b
-         cNkgOt7e1uiRys269b4INDThtJyfEinxbQrQlW2HDlpAJpTvJJMi5SvB/3ukH8sDrqJp
-         cRt4gaNCb82wDSGHG/RbnHqp34/591Tcgu6WXvQqTwk+tgVyHDUYSScENA6yaYINY58e
-         AB+YuCZX35XseSkPZWoQeDODGsxxGvxAkVHWlnvXHRXoAhiIrX/vnXYmYbsYyIPWWw45
-         tUEeHKFC7BxvY+AAEivQwP75ttSmppS3puSJKxrcyUXfyNVfD8B9PToP0UFF/oKruVBC
-         PXwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVbv1/k5GoQSUKWoloiVFvFpMqBmUNxpdC2Y862FKj1PG8qRDyHS34Cc3DavktC6/+bJ2rLLu4clAUPnwHjlqZLmXzds7uTSjsh+AmnGp9oYFNPe8itE5qmvr7FRgYIAUHnAXbVIdkSpKpc006vpFl/u9e5oprDl+wd5FUTkNBOCZAv
-X-Gm-Message-State: AOJu0YzvQr7UkCwoKZEWouCcA/Q9nhWIGmumkmurkCoPAekr9dtfjUlF
-	yKQ8Uz0SWs8sMJS49dDa6z6w8U4jTvYjCWGzi2JIEmAXbqaSQUZtAui+uu3ns5TsExDXdlOuk4J
-	xO8Hfr9kxSOmraSKxD66CEVINOMY=
-X-Google-Smtp-Source: AGHT+IEVlIyJhQ6HxIzqq7Q5sGErXONlDcW77WKjJYQRC2KjOqtAmGKq33df+o5TBuuUG/8ZMsEdI7NhLu6jizZM5aA=
-X-Received: by 2002:a50:9302:0:b0:56b:7f43:5a49 with SMTP id
- m2-20020a509302000000b0056b7f435a49mr1004214eda.40.1711587708441; Wed, 27 Mar
- 2024 18:01:48 -0700 (PDT)
+	s=arc-20240116; t=1711587889; c=relaxed/simple;
+	bh=ODTY/+5GEj70aq4Me3Q78wpIvSHWibrd9gcFfA1okEk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=owntYpJepqaq/F6A0xKF13amSvrA02SqEx4DbAU7sbNp3+2N3rLUIZfxVukTM96a538meG4TAhiYj46VdSuCq48oYbKqQjIPufplwcQZHn1BUhaEW6NAT9o0WgfYBsDy9IG9Yp++s6gpUDIbzMHRParHpOOU2DEirfjUcJG81bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cj/wRyZG; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711587887; x=1743123887;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ODTY/+5GEj70aq4Me3Q78wpIvSHWibrd9gcFfA1okEk=;
+  b=cj/wRyZGiYQkFzNLNGOgzZnl9CVrRQUKMSt1IWjVHPR6iCxUAQeBgvR+
+   5PPWVmYUnG7labxm+DIbjH19TiSnuOZcgOIEAhQj5GJ11bOow/bgsWtb6
+   EeVzE5Oe3n9fY1kkCNljcGmNgppwgW+evDTxFeDFgN7l4gQ8LqFH98HAI
+   h72+o6tqrjefBumI7mvTqbgqKmncFZTB5q0ht8V4OR5sBROjl9LLcNceQ
+   YCNvNhpzvt2zxScVcQ9teGjeBpNC3AXxGAQkiGSpZub/PnUXgFv7KUqwf
+   ZoGFtqHe8wKbf4Bcg8AtNRjeSf4K9gc90VERvZxfWyCD2KS1ewOv7gze9
+   g==;
+X-CSE-ConnectionGUID: OzRFaG3gScmnXe2pBlHxsg==
+X-CSE-MsgGUID: y9g6QfNJQ5qzNfW/0UNbDw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6579149"
+X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
+   d="scan'208";a="6579149"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:04:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
+   d="scan'208";a="47685904"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:04:42 -0700
+Message-ID: <494b2a74-1351-49f6-9d2e-57eda908c2b5@intel.com>
+Date: Thu, 28 Mar 2024 09:04:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327214831.1544595-1-helgaas@kernel.org> <20240327214831.1544595-3-helgaas@kernel.org>
-In-Reply-To: <20240327214831.1544595-3-helgaas@kernel.org>
-From: Ben Chuang <benchuanggli@gmail.com>
-Date: Thu, 28 Mar 2024 09:01:39 +0800
-Message-ID: <CACT4zj9BFwMLsDSzNQ=wHSBCHqoydggtM-7-7rsfo0pRV2iLEg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci-pci-gli: Use pci_set_power_state(), not
- direct PMCSR writes
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	Victor Shih <victor.shih@genesyslogic.com.tw>, 
-	Ben Chuang <ben.chuang@genesyslogic.com.tw>, 
-	Kai-Heng Feng <kai.heng.geng@canonical.com>, Sven van Ashbrook <svenva@chromium.org>, 
-	Stanislaw Kardach <skardach@google.com>, Brian Norris <briannorris@chromium.org>, 
-	Jason Lai <jasonlai.genesyslogic@gmail.com>, Renius Chen <reniuschengl@gmail.com>, 
-	linux-pci@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
+ unsupported cases
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+ "Gao, Chao" <chao.gao@intel.com>, "Zhang, Tina" <tina.zhang@intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+ "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Aktas, Erdem" <erdemaktas@google.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Yuan, Hang"
+ <hang.yuan@intel.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>
+References: <20240325231058.GP2357401@ls.amr.corp.intel.com>
+ <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
+ <20240325233528.GQ2357401@ls.amr.corp.intel.com>
+ <ZgIzvHKobT2K8LZb@chao-email>
+ <20db87741e356e22a72fadeda8ab982260f26705.camel@intel.com>
+ <ZgKt6ljcmnfSbqG/@chao-email>
+ <20240326174859.GB2444378@ls.amr.corp.intel.com>
+ <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
+ <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
+ <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
+ <20240328003637.GM2444378@ls.amr.corp.intel.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240328003637.GM2444378@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 28, 2024 at 5:49=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> From: Bjorn Helgaas <bhelgaas@google.com>
->
-> d7133797e9e1 ("mmc: sdhci-pci-gli: A workaround to allow GL9750 to enter
-> ASPM L1.2") and 36ed2fd32b2c ("mmc: sdhci-pci-gli: A workaround to allow
-> GL9755 to enter ASPM L1.2") added writes to the Control register in the
-> Power Management Capability to put the device in D3hot and back to D0.
->
-> Use the pci_set_power_state() interface instead because these are generic
-> operations that don't need to be driver-specific.  Also, the PCI spec
-> requires some delays after these power transitions, and
-> pci_set_power_state() takes care of those, while d7133797e9e1 and
-> 36ed2fd32b2c did not.
->
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+On 3/28/2024 8:36 AM, Isaku Yamahata wrote:
+> On Thu, Mar 28, 2024 at 08:06:53AM +0800,
+> Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+> 
+>> On 3/28/2024 1:36 AM, Edgecombe, Rick P wrote:
+>>> On Wed, 2024-03-27 at 10:54 +0800, Xiaoyao Li wrote:
+>>>>>> If QEMU doesn't configure the msr filter list correctly, KVM has to handle
+>>>>>> guest's MTRR MSR accesses. In my understanding, the
+>>>>>> suggestion is KVM zap private memory mappings.
+>>
+>> TDX spec states that
+>>
+>>    18.2.1.4.1 Memory Type for Private and Opaque Access
+>>
+>>    The memory type for private and opaque access semantics, which use a
+>>    private HKID, is WB.
+>>
+>>    18.2.1.4.2 Memory Type for Shared Accesses
+>>
+>>    Intel SDM, Vol. 3, 28.2.7.2 Memory Type Used for Translated Guest-
+>>    Physical Addresses
+>>
+>>    The memory type for shared access semantics, which use a shared HKID,
+>>    is determined as described below. Note that this is different from the
+>>    way memory type is determined by the hardware during non-root mode
+>>    operation. Rather, it is a best-effort approximation that is designed
+>>    to still allow the host VMM some control over memory type.
+>>      • For shared access during host-side (SEAMCALL) flows, the memory
+>>        type is determined by MTRRs.
+>>      • For shared access during guest-side flows (VM exit from the guest
+>>        TD), the memory type is determined by a combination of the Shared
+>>        EPT and MTRRs.
+>>        o If the memory type determined during Shared EPT walk is WB, then
+>>          the effective memory type for the access is determined by MTRRs.
+>>        o Else, the effective memory type for the access is UC.
+>>
+>> My understanding is that guest MTRR doesn't affect the memory type for
+>> private memory. So we don't need to zap private memory mappings.
+> 
+> So, there is no point to (try to) emulate MTRR.  The direction is, don't
+> advertise MTRR to the guest (new TDX module is needed.) or enforce
+> the guest to not use MTRR (guest command line clearcpuid=mtrr).  
 
-Hi Bjorn,
+Ideally, it would be better if TD guest learns to disable/not use MTRR 
+itself.
 
-Thanks. It looks better than the vendor specific.
+> KVM will
+> simply return error to guest access to MTRR related registers.
+> 
+> QEMU or user space VMM can use the MSR filter if they want.
+> 
+> 
+>>>>>> But guests won't accept memory again because no one
+>>>>>> currently requests guests to do this after writes to MTRR MSRs. In this case,
+>>>>>> guests may access unaccepted memory, causing infinite EPT violation loop
+>>>>>> (assume SEPT_VE_DISABLE is set). This won't impact other guests/workloads on
+>>>>>> the host. But I think it would be better if we can avoid wasting CPU resource
+>>>>>> on the useless EPT violation loop.
+>>>>>
+>>>>> Qemu is expected to do it correctly.  There are manyways for userspace to go
+>>>>> wrong.  This isn't specific to MTRR MSR.
+>>>>
+>>>> This seems incorrect. KVM shouldn't force userspace to filter some
+>>>> specific MSRs. The semantic of MSR filter is userspace configures it on
+>>>> its own will, not KVM requires to do so.
+>>>
+>>> I'm ok just always doing the exit to userspace on attempt to use MTRRs in a TD, and not rely on the
+>>> MSR list. At least I don't see the problem.
+>>
+>> What is the exit reason in vcpu->run->exit_reason? KVM_EXIT_X86_RDMSR/WRMSR?
+>> If so, it breaks the ABI on KVM_EXIT_X86_RDMSR/WRMSR.
+> 
+> It's only when the user space requested it with the MSR filter.
 
-Best regards,
-Ben Chuang
-
-> ---
->  drivers/mmc/host/sdhci-pci-gli.c | 20 ++++----------------
->  1 file changed, 4 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pc=
-i-gli.c
-> index 3d5543581537..0f81586a19df 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -25,9 +25,6 @@
->  #define   GLI_9750_WT_EN_ON        0x1
->  #define   GLI_9750_WT_EN_OFF       0x0
->
-> -#define PCI_GLI_9750_PM_CTRL   0xFC
-> -#define   PCI_GLI_9750_PM_STATE          GENMASK(1, 0)
-> -
->  #define SDHCI_GLI_9750_CFG2          0x848
->  #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
->  #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
-> @@ -149,9 +146,6 @@
->  #define PCI_GLI_9755_MISC          0x78
->  #define   PCI_GLI_9755_MISC_SSC_OFF    BIT(26)
->
-> -#define PCI_GLI_9755_PM_CTRL     0xFC
-> -#define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
-> -
->  #define SDHCI_GLI_9767_GM_BURST_SIZE                   0x510
->  #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET    BIT(8)
->
-> @@ -556,11 +550,8 @@ static void gl9750_hw_setting(struct sdhci_host *hos=
-t)
->         sdhci_writel(host, value, SDHCI_GLI_9750_CFG2);
->
->         /* toggle PM state to allow GL9750 to enter ASPM L1.2 */
-> -       pci_read_config_dword(pdev, PCI_GLI_9750_PM_CTRL, &value);
-> -       value |=3D PCI_GLI_9750_PM_STATE;
-> -       pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
-> -       value &=3D ~PCI_GLI_9750_PM_STATE;
-> -       pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
-> +       pci_set_power_state(pdev, PCI_D3hot);
-> +       pci_set_power_state(pdev, PCI_D0);
->
->         /* mask the replay timer timeout of AER */
->         aer =3D pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_ERR);
-> @@ -774,11 +765,8 @@ static void gl9755_hw_setting(struct sdhci_pci_slot =
-*slot)
->         pci_write_config_dword(pdev, PCI_GLI_9755_CFG2, value);
->
->         /* toggle PM state to allow GL9755 to enter ASPM L1.2 */
-> -       pci_read_config_dword(pdev, PCI_GLI_9755_PM_CTRL, &value);
-> -       value |=3D PCI_GLI_9755_PM_STATE;
-> -       pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
-> -       value &=3D ~PCI_GLI_9755_PM_STATE;
-> -       pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
-> +       pci_set_power_state(pdev, PCI_D3hot);
-> +       pci_set_power_state(pdev, PCI_D0);
->
->         /* mask the replay timer timeout of AER */
->         aer =3D pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_ERR);
-> --
-> 2.34.1
->
->
+right. But userspace has no reason to filter them because userspace can 
+do nothing except 1) either kill the TD, or 2) eat the instruction.
 
