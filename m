@@ -1,100 +1,161 @@
-Return-Path: <linux-kernel+bounces-123659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E5C890C4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:12:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648B5890C50
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B7A3B214DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:12:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956EF1C22712
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC27313A884;
-	Thu, 28 Mar 2024 21:12:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BB11384A3;
+	Thu, 28 Mar 2024 21:12:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Juk/qcjE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AFbRNhmP"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B970D52F62;
-	Thu, 28 Mar 2024 21:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6387E110
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711660325; cv=none; b=SMoXZTj8Ke8nKnvz2ixM8XgiiS0w3REYdfAy3sg4HaAZ3T9ARjxHJNLdcTFjBrdFS3qVmUTPm/q9zJh2LZI9r05jPKuK2kmDelHTh8O3XTtYR1jQHH9xOLv9GeNMAf2cjv9i5JydSw/ABzBSBEeaK5qjpw71hkQ8M20QlnDOnXU=
+	t=1711660361; cv=none; b=YxBxbtoMboscr5G4MpgC46AUxQyf5EbllLM0XGYrkrj2XzZt2Pf2zZQY+r/Z/TnviTizNA1/Io9DZrECWQc0ewQDoEjp3UOdsZ3L8h9S/nCQMn+FfvU7sO42vUEHtUjP0faFA07Gpnweq8r/hnpu9bk7+OHTnWqqHdQh63vG15A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711660325; c=relaxed/simple;
-	bh=yngr6HDotAuV0LR72q3d5ZVpN+T8z4EOF6b3Ti3s9X0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MY64ovDjoSTcTkqRivJWQaIY9xGXvOyF8GbpLH7TDBhVDM93fCrhRwFYGWH7EaegOqYGCzUvedSV01XJDG3lvA0vp3J2FoS8EdK3IOgzvMFtCS1ccN0dKJag5qQhT4YKRYj2lQqY3A10GR9BaVEIAvMuVBSC3MYwz37LSeNtz4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Juk/qcjE; arc=none smtp.client-ip=198.175.65.17
+	s=arc-20240116; t=1711660361; c=relaxed/simple;
+	bh=z7VVmEPOHLzIbHYO1FWd+nTI8cZCOzNKAmnVJMjZBAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NqScRpB780Aq3G/UmHC56wklI1TMk+mWVBQ66VoQG04BZz/sl44pxE9/6Y21GA14HBkVcylWyHFZQLi7rT+WQIK77KKkxlHwZgMZtgO0iKf+J0TAFrxfrHxhjIy1chy0nTmdYJqvqXYvUbuQ5Jf3TSulF5F2z4uvqH3mFzztsS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AFbRNhmP; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711660324; x=1743196324;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yngr6HDotAuV0LR72q3d5ZVpN+T8z4EOF6b3Ti3s9X0=;
-  b=Juk/qcjEv3HR2WRYWmo/665+1TVIy3eBI8SbNzNjZXl/ylu9XwdeY9kB
-   K/ejLKbDjD0Ob06JS2PNEvgZGHtpKlRPeaV2h6lct2ye/zo304k5AMKg9
-   5Rh+2BjXbqATdTksRBlkRCAYiqz+IqRbh8ZJL+2J1HZLVbgfjpoG7nu8I
-   vJt7m7mhjXWTXfye/7u9dRHY9dMDRJKY+HVEmwrjgdZeIIk1NJZJ2nSW5
-   dwodLgVHqOQyrcX/X6YSh7NPjGndJm8f4klwRK9x2m5yJ75dDCirPjPAp
-   mTJFzZDS0VDoUxpc5GORzSpPljilmwd3ainOl1IQS+dEQQiE6UrwnIvBv
-   g==;
-X-CSE-ConnectionGUID: oYlcoPYVQhGJLYRmckojEA==
-X-CSE-MsgGUID: z6hH4Fr8TwGQUeMwLs3agg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6955602"
+  t=1711660360; x=1743196360;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=z7VVmEPOHLzIbHYO1FWd+nTI8cZCOzNKAmnVJMjZBAA=;
+  b=AFbRNhmPY0LHNcLYLXqyEpsUr2UwrFjEC7vhABNkZP3Kf5IeixvPJ04v
+   Rbcp4ik+n1q/HewtB54jjQ3624QSBmcaw+aSHZf2+SXZjHOKMAXm5kAWW
+   z4AZMWe9dM+jDbsRdjs4IIzPGFoI4pPX9K88HFCFFU0Mo2dslk5oHp/Qh
+   8ZBFaEwik9UEtqNdEiWDZYpVCDVgjthK10SXII2B+zUZpeu5mGz8U3E6G
+   5x8ndEKrNcycr83QyI3gsusFaXmYPIslgsVZepkk4cCAdhRFh2oZEbmoP
+   SbPZSU5rrq+ulG+NCyEzKv073GoUt5Dk8PabhEKYNSGV+6RoqWpshlaZy
+   Q==;
+X-CSE-ConnectionGUID: ZdCLZif7RlycqrJwLxCGdQ==
+X-CSE-MsgGUID: BI7PdRBsTP2s2ykqgygz1A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6956627"
 X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6955602"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:12:04 -0700
+   d="scan'208";a="6956627"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:12:36 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="16805142"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:12:03 -0700
-Date: Thu, 28 Mar 2024 14:12:02 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 092/130] KVM: TDX: Implement interrupt injection
-Message-ID: <20240328211202.GT2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <b2d9539b23f155b95864db3eacce55e0e24eed4d.1708933498.git.isaku.yamahata@intel.com>
- <ZgVM2kJTx1p4BjbM@chao-email>
+   d="scan'208";a="16825426"
+Received: from rchatre-ws.ostc.intel.com ([10.54.69.144])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:12:35 -0700
+From: Reinette Chatre <reinette.chatre@intel.com>
+To: fenghua.yu@intel.com,
+	bp@alien8.de,
+	james.morse@arm.com,
+	tony.luck@intel.com,
+	peternewman@google.com,
+	babu.moger@amd.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org
+Cc: reinette.chatre@intel.com,
+	hpa@zytor.com,
+	james.greenhalgh@arm.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/resctrl: Fix uninitialized memory read when last CPU of domain goes offline
+Date: Thu, 28 Mar 2024 14:12:29 -0700
+Message-Id: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZgVM2kJTx1p4BjbM@chao-email>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 28, 2024 at 06:56:26PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+Tony encountered the OOPS below when the last CPU of a domain goes
+offline while running a kernel built with CONFIG_NO_HZ_FULL:
 
-> >@@ -848,6 +853,12 @@ fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
-> > 
-> > 	trace_kvm_entry(vcpu);
-> > 
-> >+	if (pi_test_on(&tdx->pi_desc)) {
-> >+		apic->send_IPI_self(POSTED_INTR_VECTOR);
-> >+
-> >+		kvm_wait_lapic_expire(vcpu);
-> 
-> it seems the APIC timer change was inadvertently included.
+    BUG: kernel NULL pointer dereference, address: 0000000000000000
+    #PF: supervisor read access in kernel mode
+    #PF: error_code(0x0000) - not-present page
+    PGD 0
+    Oops: 0000 [#1] PREEMPT SMP NOPTI
+    ...
+    RIP: 0010:__find_nth_andnot_bit+0x66/0x110
+    ...
+    Call Trace:
+     <TASK>
+     ? __die+0x1f/0x60
+     ? page_fault_oops+0x176/0x5a0
+     ? exc_page_fault+0x7f/0x260
+     ? asm_exc_page_fault+0x22/0x30
+     ? __pfx_resctrl_arch_offline_cpu+0x10/0x10
+     ? __find_nth_andnot_bit+0x66/0x110
+     ? __cancel_work+0x7d/0xc0
+     cpumask_any_housekeeping+0x55/0x110
+     mbm_setup_overflow_handler+0x40/0x70
+     resctrl_offline_cpu+0x101/0x110
+     resctrl_arch_offline_cpu+0x19/0x260
+     cpuhp_invoke_callback+0x156/0x6b0
+     ? cpuhp_thread_fun+0x5f/0x250
+     cpuhp_thread_fun+0x1ca/0x250
+     ? __pfx_smpboot_thread_fn+0x10/0x10
+     smpboot_thread_fn+0x184/0x220
+     kthread+0xe0/0x110
+     ? __pfx_kthread+0x10/0x10
+     ret_from_fork+0x2d/0x50
+     ? __pfx_kthread+0x10/0x10
+     ret_from_fork_asm+0x1a/0x30
+     </TASK>
 
-Oops. Thanks for catching it.
+The NULL pointer dereference is encountered while searching for another
+online CPU in the domain (of which there are none) that can be used to
+run the MBM overflow handler.
+
+Because the kernel is configured with CONFIG_NO_HZ_FULL the search for
+another CPU (in its effort to prefer those CPUs that aren't marked
+nohz_full) consults the mask representing the nohz_full CPUs,
+tick_nohz_full_mask. On a kernel with CONFIG_CPUMASK_OFFSTACK=y
+tick_nohz_full_mask is not allocated unless the kernel is booted with
+the "nohz_full=" parameter and because of that any access to
+tick_nohz_full_mask needs to be guarded with tick_nohz_full_enabled().
+
+Add a tick_nohz_full_enabled() check to ensure that tick_nohz_full_mask
+has been initialized and can thus be accessed safely.
+
+Fixes: a4846aaf3945 ("x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow")
+Reported-by: Tony Luck <tony.luck@intel.com>
+Closes: https://lore.kernel.org/lkml/ZgIFT5gZgIQ9A9G7@agluck-desk3/
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+---
+ arch/x86/kernel/cpu/resctrl/internal.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index c99f26ebe7a6..4f9ef35626a7 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -85,6 +85,10 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+ 	if (cpu < nr_cpu_ids && !tick_nohz_full_cpu(cpu))
+ 		return cpu;
+ 
++	/* Only continue if tick_nohz_full_mask has been initialized. */
++	if (!tick_nohz_full_enabled())
++		return cpu;
++
+ 	/* Try to find a CPU that isn't nohz_full to use in preference */
+ 	hk_cpu = cpumask_nth_andnot(0, mask, tick_nohz_full_mask);
+ 	if (hk_cpu == exclude_cpu)
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+2.34.1
+
 
