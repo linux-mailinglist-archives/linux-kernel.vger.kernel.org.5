@@ -1,219 +1,102 @@
-Return-Path: <linux-kernel+bounces-122708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA11E88FBE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:43:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A9188FBE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:44:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88DA429C273
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:43:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA4971F2AAAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72CA7C0B2;
-	Thu, 28 Mar 2024 09:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4F6657CB;
+	Thu, 28 Mar 2024 09:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="uezifShB"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ydN9hIpm"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575475FBBE
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B496657B5
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711618988; cv=none; b=MlrgRv3J037qTEssQudmn2Pyy27vt+oH2iVgQ2wBvOsTP79CcaUcYoGSG6uw0WD/AGnS5A0KV+AGrzIPKYIbQtqK6/Abptx7YNGX5wL4D+iigrF/TYVHkEHuLamcdUn4pE864+BFkJR2cD/TWpkemGLzrUHJ6iEGfz8cq4U+u6Q=
+	t=1711619000; cv=none; b=ZUNqJiXTUZGc+Jw3IhdS+8hP5U67PkdT7fn59pHPLw6vW3TdpUgiDGmJoVS3c5mTcVau1I/fF2c+BVLjJDveOhzyq8dnDpuZ4qqIOR/DhLZC0PAhxwa7y0kYcwkb47UAwXZTVu9PPeucoGrDPH1SfJFBmVP+Kl1YBA20rWC1Oxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711618988; c=relaxed/simple;
-	bh=jS0gUBcbIu+ubLTGyGNXFxfk5voz45VrMtkV8CJFN7k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eq+A9+mgARL2leUJFSKZrbts/sZQ74Kdnas6JZ26YyM28tIZP31xHTOEbhX4fTBbItzFEXLXYOItY181kqLp6LkVMhmI/lZ/RyUBkbsoPCv92ctV1OMZyn7NSE9YJiLwHd1XwrnGPgJt01olMU8SN7jQ/d8ia4taj+6e2St9TqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=uezifShB; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56bb22ff7baso803531a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:43:06 -0700 (PDT)
+	s=arc-20240116; t=1711619000; c=relaxed/simple;
+	bh=2bC4RkEx+VkqZ7aTbIqI3D4kCHyp83VRJ0WWVsVi87U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iuvKO6JbZmCJecdpz8L4UyQisGqqeFE31X2e+JG2CZe/1+0EdGZZXz9T+sWhg5VKdVZ9bMXVLa9L/XLH7vpht25YPjTekLthwIxbRATvYhcXNIh6BjdGYbQUFa7qVc960JAFYNa8Tx0xw4DwXlr9mtflWPOT85ZKA44eUdMxD+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ydN9hIpm; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-609f4155b76so7853917b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:43:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1711618985; x=1712223785; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mMlfiDzriuD+cu/wjObegNb+/syb0i9il2tTyX7RS7Q=;
-        b=uezifShBlSM/+BjlXimMZwxeD8ucKhZm8FeO91hzzezNwdmiZ7etVOTGla0/vJMZKi
-         5ffhpDGXPT32GTrpkRuh1KHHYstyGVA3lZ9iPz3UwlR2J5+E3NgM1O2ApgVBBnnEQkgt
-         DUKvSjBJjZiQdcPVZ4JLJtwhtMr4fWT0N3FAKD6qUFEG+Ivtts+Jnc74L2LHjOgd8ZJv
-         6VBhjvq4G/QQwBvG6sbHMlenZJa0IKj6eP8ZiZQIM7XVWI0wgX/UGbokgPsIdtg8v70M
-         mkJYAwNDDQOd0px0nYCegZpxvuRI3usYiBMzxVSNukfZmN1qzOEiHAvwIbJBcd11bQ6f
-         SYRQ==
+        d=linaro.org; s=google; t=1711618997; x=1712223797; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2bC4RkEx+VkqZ7aTbIqI3D4kCHyp83VRJ0WWVsVi87U=;
+        b=ydN9hIpmcogzKvl5hikYQtlK69+8rKQr5lag4xz9Z/ibEB6b8wITlrw4WchT/O6Ntj
+         qUGx02EKx5nrJQ39V8e4nylcpJCPVnwhQnds7vxwDw02zirYN/Vwgg3r+9PyySuHeUlB
+         XRbeGEPNEfuaaXCyaYXo2NeaPLbcNEtNb/Qlzim0aD3Dr5zqn/1He3vTGqHhaTV4FLPb
+         +kKvxSOg5a9voknmbX89j4PE81vqYPtqx2oA+IcqHLqSo6CskMC/Wjx1XtQty1DQIEpU
+         YRfunZGPqOPAn3pXid0J0NfcyBqDpK2E+OfjZYr9zu2odV1cw5Zrb+rORROCcGpyojmW
+         gWBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711618985; x=1712223785;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711618997; x=1712223797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mMlfiDzriuD+cu/wjObegNb+/syb0i9il2tTyX7RS7Q=;
-        b=jr26ee+UrmgnuA20FYXUk5piAijSUjd2EnzvioVLnGK96UjNlPiEHOWwQhb5hvcKha
-         vaKg/a94jkFDNRT1jcZ/VAt5KS400x4qsLcgoNdW+pDPGojBYBghUIjNQKnPOBKDRAOh
-         KFWdLrhyJvWsjyYd6zbHWxwUHtKl8FarDUJ/ZFaa/AHw24636faZzgLvzNZFJwQwU8sD
-         Arn70Q4xd8nS6IjO5mugFFwmy1yInmeuxCby0ayBc3fRQtO2kR7wi3DUHZAz/Z/itvDY
-         h2o1bFHUYwyLTJ8+LQafDjjNIRRQ3e933Qt72ZsYEicfkmISGHBhxh3fmxHJ4mdVxCuB
-         ZieA==
-X-Forwarded-Encrypted: i=1; AJvYcCXGnd785L+z4580n2KV0oOO7CREP9R8HYYRyNDXSe5pyn0h31w/AfkUPlLUn/U7N36coGtWskEf1Ao1DIseH4ukopuoJnP50vy3HtNK
-X-Gm-Message-State: AOJu0YznK13R1FVU78uVd1G5HUHWzvyWfs59lR0RAMvMYg74fgzV37hH
-	YfzSgrXycxNzPWZu9T5CrqRL14FkzPRuA+Q5VTGi2gV3SyY+ngcWXiQoz/usvz0=
-X-Google-Smtp-Source: AGHT+IHdcM/mh0t3Gi4q9lyyrXi7Rv7pOtysjwB3fu9r0BHc1uHuutv4DERQBvDamLZ59FU09Yffcg==
-X-Received: by 2002:a50:9e65:0:b0:565:7ce5:abdc with SMTP id z92-20020a509e65000000b005657ce5abdcmr1494032ede.10.1711618984945;
-        Thu, 28 Mar 2024 02:43:04 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id l2-20020aa7c302000000b005645961ad39sm631362edq.47.2024.03.28.02.43.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 02:43:04 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Thu, 28 Mar 2024 10:42:46 +0100
-Subject: [PATCH 3/3] arm64: dts: qcom: sm6350: Add DisplayPort controller
+        bh=2bC4RkEx+VkqZ7aTbIqI3D4kCHyp83VRJ0WWVsVi87U=;
+        b=PzPyLueDNYdHuv8G0s8y+8bWF1RetW58d864qrlFmQFmUk9qqfWwoO0Xt8Eh+wg+/m
+         QHBRjpdezNsKeCo1AnMUOM76M3JfGmYaETD2IhH5N56YMdObLsxEs4kOOh68c/QyhXYE
+         gh80iPIzoay/hSUD7CKn4CvFTjknDP5dFLDAoUIFKGuKngdXfuNLTQJy+awr42zMV6P8
+         E7A38ZLkCNEYaKXfo9lmjriRna3qWFqQv1kHyY49u5SHJR3W/fo0S4L9s42+FOxK2CUF
+         a+xixC/bme8mVZ4sl22TI0LsaOy34z+qA2SoztAP4XSq6w6hSWc8RUNGTDuxh0pJPmt5
+         nidw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcaP4qA59r+ZkOCYGRPtcvJ24wvJZxcEEDvnZ0j9hp/arrqk31g/ozSjxMgDyRjwO2LNt1cqRLkGWYDv3Pw6PUM9EnveXN4G4TVA/I
+X-Gm-Message-State: AOJu0YxtkImP28BBawjXyJA3tVlT0aSIFMd6H3Rq1Wg1U1aGWbokNTzx
+	gzNMJfGfQFAFF95DD1fqo+XDdqSbVAFhidDSYPm6h+d++d1/ktgpUOAq2cBtJ7nPN3NffFS/PNT
+	55Wdp/JjElLFxlRhbVG/Bdgk3HIvKVem5v1s6VA==
+X-Google-Smtp-Source: AGHT+IGIBgCifC94WWbmk1WL90a5JSXQTsvL9yU0DsuBNrPusLMZEBcn0E7fKCz4fiSDpZHvOK565KZ6ERPKVg6UNMQ=
+X-Received: by 2002:a25:b9c3:0:b0:dcc:4b44:3377 with SMTP id
+ y3-20020a25b9c3000000b00dcc4b443377mr2227810ybj.25.1711618997667; Thu, 28 Mar
+ 2024 02:43:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-sm6350-dp-v1-3-215ca2b81c35@fairphone.com>
-References: <20240328-sm6350-dp-v1-0-215ca2b81c35@fairphone.com>
-In-Reply-To: <20240328-sm6350-dp-v1-0-215ca2b81c35@fairphone.com>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
- Krishna Manikandan <quic_mkrishn@quicinc.com>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.13.0
+References: <20240325113058.248022-1-jan.dakinevich@salutedevices.com>
+In-Reply-To: <20240325113058.248022-1-jan.dakinevich@salutedevices.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 28 Mar 2024 10:43:07 +0100
+Message-ID: <CACRpkdZPVTZvjbQ19vjPWVvdW35DO2U-CgVi3r1q9jJA0OupJQ@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl/meson: fix typo in PDM's pin name
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
+	Jerome Brunet <jbrunet@baylibre.com>, 
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, linux-gpio@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add the node for the DisplayPort controller found on the SM6350 SoC.
+On Mon, Mar 25, 2024 at 12:32=E2=80=AFPM Jan Dakinevich
+<jan.dakinevich@salutedevices.com> wrote:
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 88 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+> Other pins have _a or _x suffix, but this one doesn't have any. Most
+> likely this is a typo.
+>
+> Fixes: dabad1ff8561 ("pinctrl: meson: add pinctrl driver support for Meso=
+n-A1 SoC")
+> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 24bcec3366ef..d7cf4b5ceea6 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -2033,6 +2033,14 @@ dpu_intf1_out: endpoint {
- 							remote-endpoint = <&mdss_dsi0_in>;
- 						};
- 					};
-+
-+					port@2 {
-+						reg = <2>;
-+
-+						dpu_intf0_out: endpoint {
-+							remote-endpoint = <&mdss_dp_in>;
-+						};
-+					};
- 				};
- 
- 				mdp_opp_table: opp-table {
-@@ -2070,6 +2078,86 @@ opp-560000000 {
- 				};
- 			};
- 
-+			mdss_dp: displayport-controller@ae90000 {
-+				compatible = "qcom,sm6350-dp", "qcom,sm8350-dp";
-+				reg = <0 0xae90000 0 0x200>,
-+				      <0 0xae90200 0 0x200>,
-+				      <0 0xae90400 0 0x600>,
-+				      <0 0xae91000 0 0x400>,
-+				      <0 0xae91400 0 0x400>;
-+				interrupt-parent = <&mdss>;
-+				interrupts = <12>;
-+				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-+				clock-names = "core_iface",
-+					      "core_aux",
-+					      "ctrl_link",
-+					      "ctrl_link_iface",
-+					      "stream_pixel";
-+
-+				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-+						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-+				assigned-clock-parents = <&usb_1_qmpphy QMP_USB43DP_DP_LINK_CLK>,
-+							 <&usb_1_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>;
-+
-+				phys = <&usb_1_qmpphy QMP_USB43DP_DP_PHY>;
-+				phy-names = "dp";
-+
-+				#sound-dai-cells = <0>;
-+
-+				operating-points-v2 = <&dp_opp_table>;
-+				power-domains = <&rpmhpd SM6350_CX>;
-+
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						mdss_dp_in: endpoint {
-+							remote-endpoint = <&dpu_intf0_out>;
-+						};
-+					};
-+
-+					port@1 {
-+						reg = <1>;
-+
-+						mdss_dp_out: endpoint {
-+						};
-+					};
-+				};
-+
-+				dp_opp_table: opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-160000000 {
-+						opp-hz = /bits/ 64 <160000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-270000000 {
-+						opp-hz = /bits/ 64 <270000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-540000000 {
-+						opp-hz = /bits/ 64 <540000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+
-+					opp-810000000 {
-+						opp-hz = /bits/ 64 <810000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+			};
-+
- 			mdss_dsi0: dsi@ae94000 {
- 				compatible = "qcom,sm6350-dsi-ctrl", "qcom,mdss-dsi-ctrl";
- 				reg = <0 0x0ae94000 0 0x400>;
+Patch applied for fixes!
 
--- 
-2.44.0
-
+Yours,
+Linus Walleij
 
