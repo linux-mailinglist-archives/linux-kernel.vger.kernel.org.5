@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-123521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6238890A39
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E428890A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826342923B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:56:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5998B2950E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0486313E414;
-	Thu, 28 Mar 2024 19:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8678713E6C8;
+	Thu, 28 Mar 2024 19:52:27 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CD5139D07;
-	Thu, 28 Mar 2024 19:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3768139CF6;
+	Thu, 28 Mar 2024 19:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655539; cv=none; b=Z7+zrPXauWbQBUwnIhKrxcHAicJkJrDRO+SDDbEvQjefkS2g7jT8Tou7uiWkhuHHzwdF1cbdJd77pS6NrJ9YxWRB6LmEaTmokefN2YQvI0H00MU7mBjPGTsjNt4F/a5nPV2XJXyGg/4mzV1hhvlw05sDaT+bZQ+bdtxEx42I/j4=
+	t=1711655547; cv=none; b=uJX3ZFO2JN0gu/OL58SgOEF0rOBC0PQepsPUEoBVuXdJpQdL/GM2QNpXzf6u61mAuh0iAyZH5yzJBZbJFN1SnBkx2enNNIFcRBBChahUGgRNouHS5BCWx60aahhSOZYMuxyScKzaRohJwSXo/GRNACjB7gnXj0sIYkSNjeCOLks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655539; c=relaxed/simple;
-	bh=khf7terHbtPWIrrbnKNLxPcFHL/7yWbxaISMdJE7KVA=;
+	s=arc-20240116; t=1711655547; c=relaxed/simple;
+	bh=8K0Tk05vHjsLv5OTTjcqwFzqs0iqpDP0i+VNxkkswqE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=o3uk8Y9HIOiQWsMKWJdDLtaVCLvmGy21p+3F2DhmQWL7siWd+DY8/hT/UwsuDSj4u3ZXsHIkt0gdtjI7Tv/osIRvvLZiFW4Y6E/5nnBteU16z6FsBZX30c3hUl1u+4R8Bol7fDxOgjM3Tbeej3Nthok32YV+UVOLNn+xZDnby6w=
+	 In-Reply-To:To:Cc; b=OL3Ul2G/BA+PrCwWEEuf5uCYDsKsnSfcLyRxxFGwfenU4Y+0J/xNrldY4V1Ib78Ml1JQC/MbzlNcRkgWS2EMA2dgoK94XJJgT+/kilUBxoVpIthmhzjE/tbKtTHBYIicOS+gKID4MYWhC3jMCWxxYqeKauUWtVju0TyaDEM59AM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30657C433C7;
-	Thu, 28 Mar 2024 19:52:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACFE4C43143;
+	Thu, 28 Mar 2024 19:52:19 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 20:49:27 +0100
-Subject: [PATCH v2 17/19] ptp: vmw: drop owner assignment
+Date: Thu, 28 Mar 2024 20:49:28 +0100
+Subject: [PATCH v2 18/19] virt: vmgenid: drop owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,7 +39,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-b4-module-owner-acpi-v2-17-1e5552c2c69f@linaro.org>
+Message-Id: <20240328-b4-module-owner-acpi-v2-18-1e5552c2c69f@linaro.org>
 References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -66,21 +66,21 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=651;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=699;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=khf7terHbtPWIrrbnKNLxPcFHL/7yWbxaISMdJE7KVA=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnNqUS96sjoffNSE8XYoncIwtw82+UO9dqr3
- nWfPOlHjkGJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJzQAKCRDBN2bmhouD
- 1z6UD/43DOuPoMrN5aIi+8knUY9cMhfmlOL4x2aCCfKT1JSb6Sea4qOF/kZXQrZ1MPI1gSO3Ky9
- vGqQqubY6/yytl+3WsXzFPckVfKTvUnJkhSf4N9ZdyWvp1i03ROFqOS523Im9mF3AxEuzbjRNXH
- I8NZ/7dhGCqtk9X8qNbaeS0EfgAUPQLFde4yJ0tanJN9z8+AWlGAznd2wOpCYxuI8kSCMsl1yqU
- Ebp55H+2nxRUDoyePPCHuCnqKMFZtTXS3er3N6unkPBVcNQyjTAU0T5XITO3CYCneXSGuR22fCW
- FhM51xJ4B1iuayddPP+YgIQaPQagf/kqajy/mxYc55FCge/Hbx7AaCJ+XwLAh76IM2IMI/Z0Lto
- kbk+vbHKACzbzbmdONyvGxwU3qCX9/oeI/IBLYp/WZBqnMbXNu8Eo9EJ956uX0Mv7mxgrrw9vsK
- asD4q70l8GkBo3je9IhfNFJmQpAquc0rK8Ln3+oMQdyACn8iJSxZIhKAxsA7l6LwQ/C0gFCy7nm
- ScByNSyYFgbefFnSts2UGDNsB0FZXGC6co/uxUe7wKoJIPNL2hcafSGdjduBnZZLUDSd6uO5NB3
- kVDR62mcssJeUgAYgXLc0ZcY+m06C4sqfdQvnenIx7l98mnRHPgEWI6Z65MDtbmE1CB+UrKnPds
- d3lyexL5c0944ow==
+ bh=8K0Tk05vHjsLv5OTTjcqwFzqs0iqpDP0i+VNxkkswqE=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnOKPbyS0IIixjJbv3BHHEXsQ31pkxjywnsN
+ oLTz8EQY6yJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJzgAKCRDBN2bmhouD
+ 1/VJEACV1noeShYwrbEDeG27Ox+LOhb/t7QcqwWoqvCvJcYr3KuJuZFMHuvWggNnjE8XqFH4zqC
+ 68XxMKErTMJUYzvTHZgN71HE9OA1yQN8WRW+yPqwVSH300CH96NrzTLwmIiPvfYddVF9++/Txzq
+ H5HAAMj299gtGHD9nNE25M47a+ZyUt8XamKVVNu1JwdulmZeOJtthLl8VjHHq9YWCV+IApmVxyx
+ E+3TNsuzBxOWeGouGNrj2T1O8XHeLt7nRdFQAG9G4oazWpUyFLmKGeT5DvphkRyBdvzSNg2SsxR
+ SKRNzLdlu0ZXJ9QQmB1PXX9tzlydL0TJ1si1Y1bGL7X8lFdI5i+o2fkaXLO57i8RHvUQ4j6ewNI
+ P7qkeS8dn1XhDg4h2IeLQkrPLu0KCRF/xCGWbv+GQkyri4HAneaSAQKyRXs5NLCMVc6ecYu3h8w
+ Wy2yGHn042oTE6Ps0XMIJMr/xIAeAfG+MITJy/eJ0/opwvPRIdjt1MjqGiMGcRjRl3nonH3jd24
+ D+e9aLJmEsjjtzCktB7AYZu/mLN518ejcnOHvTh/JxRPa4Gb+r7GJS1jiwSwSUSHMrwnAimqyLn
+ hsp9Rkiu5dib3YH5LlbJaPnW+jltO54q8PBlYbB8Egvb0TJObpOnDbdDvlVxFWL99Rr7OundGL9
+ OfvGFCpb6qChajA==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -89,21 +89,21 @@ ACPI bus core already sets the .owner, so driver does not need to.
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/ptp/ptp_vmw.c | 1 -
+ drivers/virt/vmgenid.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/ptp/ptp_vmw.c b/drivers/ptp/ptp_vmw.c
-index 27c5547aa8a9..7ec90359428a 100644
---- a/drivers/ptp/ptp_vmw.c
-+++ b/drivers/ptp/ptp_vmw.c
-@@ -120,7 +120,6 @@ static struct acpi_driver ptp_vmw_acpi_driver = {
- 		.add = ptp_vmw_acpi_add,
- 		.remove	= ptp_vmw_acpi_remove
- 	},
--	.owner	= THIS_MODULE
- };
- 
- static int __init ptp_vmw_init(void)
+diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
+index b67a28da4702..8f6880c3a87f 100644
+--- a/drivers/virt/vmgenid.c
++++ b/drivers/virt/vmgenid.c
+@@ -88,7 +88,6 @@ static const struct acpi_device_id vmgenid_ids[] = {
+ static struct acpi_driver vmgenid_driver = {
+ 	.name = "vmgenid",
+ 	.ids = vmgenid_ids,
+-	.owner = THIS_MODULE,
+ 	.ops = {
+ 		.add = vmgenid_add,
+ 		.notify = vmgenid_notify
 
 -- 
 2.34.1
