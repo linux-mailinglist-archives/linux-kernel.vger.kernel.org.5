@@ -1,210 +1,100 @@
-Return-Path: <linux-kernel+bounces-123586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42EC9890B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:34:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E0C890B62
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E59801F2778D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:34:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243D11F275F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31E813A258;
-	Thu, 28 Mar 2024 20:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E95013A3E9;
+	Thu, 28 Mar 2024 20:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqyQfO1b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oYSUfcMa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76FB3224;
-	Thu, 28 Mar 2024 20:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D412F13A3F3;
+	Thu, 28 Mar 2024 20:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658073; cv=none; b=m8dTzHkxnFyfX7WoDUWQ0m0fKMndEH1iCh9l+TOs6awEhz4QvDyrIQ8zoFP4lu2/S3pPtCGtkYH4v0bgUZHO+KUOYtd4iMH8g+Feexo9n607Lkn3nMmbPl28tzfQ7SYX2y+1ZTxYBPuJm2R/CRBi8LkhhYHgCBOJEFDuebIjEk0=
+	t=1711658084; cv=none; b=XMsW4yB5+yd67NWReF6qVtxvVZFyh7LCKdyKm7Tk7cGQqPx88bx+PMsrgrqlakOMGVrb/Z4Ni11JJ47ssqF9pPOu2CupdJckQeYYg3ieQv28was2v9teWm29br3pFPTEoTL+gKFC79BoP8ivEigiPeho7OcmiFYcdPD79qg5U4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658073; c=relaxed/simple;
-	bh=PNbWtH6pb1bFU8mR75ZCza2MSEsYFINscoc85iE3ivM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dqbimiozqkTbVMqvt6FJHN429u0gRg37CnxlhI4ABlPFegELkA+1XztbtNuILbNwnbtRQyZJ77cVS8Hr0bI5hokuBWh058Bk5WSP2t5+Zt1G+5SRam0xcMqXZqpin9uoCSA3ZIcuDThBGjla0SxJ8ucQhee4XnfSgKLkQqFC7+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sqyQfO1b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5468CC433C7;
-	Thu, 28 Mar 2024 20:34:31 +0000 (UTC)
+	s=arc-20240116; t=1711658084; c=relaxed/simple;
+	bh=WciXvisTwwn5YpRXywBpuRTQE+pnq4LwgKyjmCglPu4=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=qyXtLAGRaHbDYRnsIrntuIiocibwLbzxOqn3y2XrhV5vqi0Pppfh6LcYwisRGDX66784n+3p1yq7Q6Py3YUIRjuBPgp7DF3Z/qtfQv3w8Ibr4W3GPrSZwrB8+Q7Mff6hC1ne+XQzbaLAgNjgz7gdruRQs7jxQ4c2gtC9Px5g+xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oYSUfcMa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DFC1C433C7;
+	Thu, 28 Mar 2024 20:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711658073;
-	bh=PNbWtH6pb1bFU8mR75ZCza2MSEsYFINscoc85iE3ivM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sqyQfO1b26epdd/+5n8N7eLLOrgVkfDQyn4sz+V8MLUGXxXLMXbOC8Ug7n3SOBGGU
-	 QDBOIkLaYEhsmsfrt1g4o95UCTGblkOakcQERPyQ5HqlQ4s7cMDJIU09Aa7ICrBFxW
-	 9ifYIlblCISyxVkl5wDd2k6Eh8FENilnKRYIhxl7HlfTD5vyicDngXl+9Z3S5lZAJX
-	 6uqGuYJueM3Vxe+5dSewnuRiuqgNNbkoKwbJxit5MoSgrenHic7iYWA+D/OwXbzM9Q
-	 Yd9+a0tOeaJHMwa+k7jAo2oX4mTejQyPsnZOgIeg3PAc6PVJBz3z6gJzXapKuYnae8
-	 zly2t5zeyttWQ==
-Date: Thu, 28 Mar 2024 20:34:29 +0000
-From: Simon Horman <horms@kernel.org>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v9 17/38] net: cirrus: add DT support for Cirrus EP93xx
-Message-ID: <20240328203429.GK651713@kernel.org>
-References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
- <20240326-ep93xx-v9-17-156e2ae5dfc8@maquefel.me>
+	s=k20201202; t=1711658084;
+	bh=WciXvisTwwn5YpRXywBpuRTQE+pnq4LwgKyjmCglPu4=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=oYSUfcMaex/0M99AkW+zTpwgWbtyyT2Ob8xqoAphU9x8Kqcw9fbpz31JZi+auJYlf
+	 oVPhG0dfpaczBNfFVm8d5kowTuyJzkbo8AirEt2ySSicbkxj8s17SRq+yILk+Ttk6F
+	 ULIMsu/85U0QJTIB+B1iOpj1mE8x5CPId+fJShQgIqjo0lugWDUjofPsts+896u+//
+	 l3UiBMsEoktjo8mEsq5/M8c5ZU/nujkmSB3SL2uBYgswUtl8lbSlboiHnF/fN4DS4/
+	 cS3Yc0iHzECowHzuzOZnv0vnyB9bZ00puqT5wkMdMEvD7BaekAh6OYQ/7IBhl7WdTY
+	 Mw2lYIXfbh16Q==
+From: Mark Brown <broonie@kernel.org>
+To: Vladimir Oltean <olteanv@gmail.com>, linux-spi@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240327174737.519637-1-krzysztof.kozlowski@linaro.org>
+References: <20240327174737.519637-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/3] spi: loopback-test: drop driver owner assignment
+Message-Id: <171165808327.133439.1100068523499926685.b4-ty@kernel.org>
+Date: Thu, 28 Mar 2024 20:34:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326-ep93xx-v9-17-156e2ae5dfc8@maquefel.me>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Tue, Mar 26, 2024 at 12:18:44PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Wed, 27 Mar 2024 18:47:35 +0100, Krzysztof Kozlowski wrote:
+> Core in spi_register_driver() already sets the .owner, so driver
+> does not need to.
 > 
-> - add OF ID match table
-> - get phy_id from the device tree, as part of mdio
-> - copy_addr is now always used, as there is no SoC/board that aren't
-> - dropped platform header
 > 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  drivers/net/ethernet/cirrus/ep93xx_eth.c | 63 ++++++++++++++++----------------
->  1 file changed, 32 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cirrus/ep93xx_eth.c b/drivers/net/ethernet/cirrus/ep93xx_eth.c
-> index 1f495cfd7959..2523d9c9d1b8 100644
-> --- a/drivers/net/ethernet/cirrus/ep93xx_eth.c
-> +++ b/drivers/net/ethernet/cirrus/ep93xx_eth.c
-> @@ -16,13 +16,12 @@
->  #include <linux/ethtool.h>
->  #include <linux/interrupt.h>
->  #include <linux/moduleparam.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/delay.h>
->  #include <linux/io.h>
->  #include <linux/slab.h>
->  
-> -#include <linux/platform_data/eth-ep93xx.h>
-> -
->  #define DRV_MODULE_NAME		"ep93xx-eth"
->  
->  #define RX_QUEUE_ENTRIES	64
-> @@ -738,25 +737,6 @@ static const struct net_device_ops ep93xx_netdev_ops = {
->  	.ndo_set_mac_address	= eth_mac_addr,
->  };
->  
-> -static struct net_device *ep93xx_dev_alloc(struct ep93xx_eth_data *data)
-> -{
-> -	struct net_device *dev;
-> -
-> -	dev = alloc_etherdev(sizeof(struct ep93xx_priv));
-> -	if (dev == NULL)
-> -		return NULL;
-> -
-> -	eth_hw_addr_set(dev, data->dev_addr);
-> -
-> -	dev->ethtool_ops = &ep93xx_ethtool_ops;
-> -	dev->netdev_ops = &ep93xx_netdev_ops;
-> -
-> -	dev->features |= NETIF_F_SG | NETIF_F_HW_CSUM;
-> -
-> -	return dev;
-> -}
-> -
-> -
->  static void ep93xx_eth_remove(struct platform_device *pdev)
->  {
->  	struct net_device *dev;
-> @@ -786,27 +766,47 @@ static void ep93xx_eth_remove(struct platform_device *pdev)
->  
->  static int ep93xx_eth_probe(struct platform_device *pdev)
->  {
-> -	struct ep93xx_eth_data *data;
->  	struct net_device *dev;
->  	struct ep93xx_priv *ep;
->  	struct resource *mem;
-> +	void __iomem *base_addr;
-> +	struct device_node *np;
-> +	u32 phy_id;
->  	int irq;
->  	int err;
 
-Please consider preserving reverse xmas tree order - longest line to
-shortest, for local variables in Networking code.
+Applied to
 
->  
->  	if (pdev == NULL)
->  		return -ENODEV;
-> -	data = dev_get_platdata(&pdev->dev);
->  
->  	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	irq = platform_get_irq(pdev, 0);
->  	if (!mem || irq < 0)
->  		return -ENXIO;
->  
-> -	dev = ep93xx_dev_alloc(data);
-> +	base_addr = ioremap(mem->start, resource_size(mem));
-> +	if (!base_addr)
-> +		return dev_err_probe(&pdev->dev, -EIO, "Failed to ioremap ethernet registers\n");
-> +
-> +	np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
-> +	if (!np)
-> +		return dev_err_probe(&pdev->dev, -ENODEV, "Please provide \"phy-handle\"\n");
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-This function, not entirely due to this patch, seems to leak
-resources in error paths.
+Thanks!
 
-F.e., here base_addr is not unmapped and mem->start is not released.
+[1/3] spi: loopback-test: drop driver owner assignment
+      commit: f04cff14e2a4fff4068bd25455531e01089103a8
+[2/3] spi: coldfire-qspi: drop driver owner assignment
+      commit: 6c360d3e4962dfb5a525dfef1fe75620f6a29bc8
+[3/3] spi: fsl-dspi: drop driver owner assignment
+      commit: a5bef84422eb066ee8fa5c13960657a79b3cc1e7
 
-I expect that to resolve this problem it would be best to move
-to idiomatic error handling by:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-* using a ladder of goto labels in ep93xx_eth_probe(); and
-* as a clean up, remove the conditions from ep93xx_eth_remove.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +
-> +	err = of_property_read_u32(np, "reg", &phy_id);
-> +	of_node_put(np);
-> +	if (err)
-> +		return dev_err_probe(&pdev->dev, -ENOENT, "Failed to locate \"phy_id\"\n");
-> +
-> +	dev = alloc_etherdev(sizeof(struct ep93xx_priv));
->  	if (dev == NULL) {
->  		err = -ENOMEM;
->  		goto err_out;
->  	}
-> +
-> +	eth_hw_addr_set(dev, base_addr + 0x50);
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-This doesn't look right.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-eth_hw_addr_set() expects it's second argument to
-be a char * which represents an Ethernet address.
-But the type of base_addr + 0x50 is __iomem *.
+Thanks,
+Mark
 
-I suspect that you need some construction based on readb/readw/readl
-to copy the Ethernet address from io memory into a buffer,
-taking into account endiness and possibly taking into account
-unaligned access.
-
-Also, it would be good a descriptively named #define in place of 0x50.
-
-> +	dev->ethtool_ops = &ep93xx_ethtool_ops;
-> +	dev->netdev_ops = &ep93xx_netdev_ops;
-> +	dev->features |= NETIF_F_SG | NETIF_F_HW_CSUM;
-> +
->  	ep = netdev_priv(dev);
->  	ep->dev = dev;
->  	SET_NETDEV_DEV(dev, &pdev->dev);
-
-..
 
