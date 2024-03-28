@@ -1,133 +1,81 @@
-Return-Path: <linux-kernel+bounces-122996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF2518900D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:52:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6769B8900D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FF601F25AA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:52:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13C9E1F22EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ADD781ABE;
-	Thu, 28 Mar 2024 13:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB328175E;
+	Thu, 28 Mar 2024 13:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jlQ1qYjw"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C697E576;
-	Thu, 28 Mar 2024 13:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="B2GyGhGb"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4060314294;
+	Thu, 28 Mar 2024 13:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711633968; cv=none; b=ZpxPGMrrOogq9xCj0XjNZ69TSgR393aTFf1JyyQxKZZ+KkprpSAEVIIQQJw95xCFU2TKeBkT4dE4DZDLsm8BQTOw2uVfhCdN8YtyLZuEIwRk8xdulWt4j1EGybAXE8w0dLwmtOgQb21UoHrnmnR1UFXhhZuN3Wh4iInB12El+Bk=
+	t=1711634116; cv=none; b=WZ6/Bnw1l1IabIA8odxlZx3Pc7+wUbTEP0QbdQZOR6aQMlSlQgEUfepXePQpYIDsoR/Xx+DeCEy2aOmOXHlgwg1UfBtI83wyXPzyePgOwzNF1oXFi15wXvObf4x363L7eLjYUSMwSpXqZi+0TuYQZK9ice5ovwaN7vXLSU1dT2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711633968; c=relaxed/simple;
-	bh=1aPjyoXqmFxLfK6o+5iZel4+zDjnpr9bD3BghFXePn0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XuHsrfbps4+AtfjJ/wxbh1Bm5WWktRYl4njL6P3qjcPr1zZghwycDa22Ha/E64z0cIWyiDq4P/ijM74KCKL3L2zvg0xgGRqgMCo2qY1LezY/Y3K7AH3WZc1GTLmmi+/eNo5B+XWlrgufQxZ3yXW5gIFEp50CRCcwTwQuR5GvYac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jlQ1qYjw; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a467d8efe78so119237866b.3;
-        Thu, 28 Mar 2024 06:52:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711633964; x=1712238764; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vzaEWnUOwAlG7dJRIzF1qLENohK2A9mrRih4ZTj2DJY=;
-        b=jlQ1qYjwm6USRhdgklsUPFiussJkRv/hnpba7UY/tyljcI9OKk9UMT+0eMBgXUGvrt
-         kcuvJVcMehDGAHs5yZ3PdKjByYn/amtfMhpHJa2inlZ6lCNzX4PRRaTValgDiMfOb+VF
-         nG+AkT3+Mg34Y4FpEOq91+OPenM3D9t1d4LHQxkcz70Rk6a7wKC4dbH/dyqiQ4zQFmGg
-         45XZo6nAm2WVHv5ruv+gz6UIai8TbQbTNjcYDq9BL8s0OhH4F8KGZHNAFzruKxNyiKw1
-         gsBGGgVt8ExBuN4iawqwJ/4QD2F3w74UByBWARCyVeqsBM2lYESWPnpLXW+1DPE/NnTT
-         YyFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711633964; x=1712238764;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vzaEWnUOwAlG7dJRIzF1qLENohK2A9mrRih4ZTj2DJY=;
-        b=fKoXPUx4Mnv81dEIPFwuVvnBmhgFUeBbrSiAIuMJFucDnd5J/VN79lkgfESlCBL4hm
-         Jtiv8Y1FG6a2nvpoSSoXwkmLn3JHuvyjf/4mAbMNYlHh2LlDVQzewazdtTRgxglJd9nM
-         jT8XsA0Rguz2NmjRO8PEoVpQi6f/1myyDqiuL7JoW09ckIr6DIe9vJnDu38nYBK1usgT
-         5BzlmGsEUzkwSGdA/j693V5T1sGE4rLPsIx0766KN2oaIOyYmmZbX9pZM7diSJbiMgQS
-         5Jtbcn5o9d2EZcBQCtZf49I/HB/yMCB8zlYsRxDW7Qq4XQAag+25TIyNck9f7QvM35rj
-         33uw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHbu6aVLzGaRer8PlYbRI/33rqrfu/SHz+gb1IpoKqjCXFvyR0mwHNsAE2arPc1jmAU83cEOB0ZVz1WA5QpXhiBX/MMtvSDGRqxUslR3LB0rYzxNali80XDe8Dfz07XdQBt5509CHD
-X-Gm-Message-State: AOJu0Yx65IO9LZPcw2aLlTSGHJx7pGCjPAfqE3lOcC+95OyMAtjqAgLm
-	H3pOei6OPxmPS39VKI0VSTLJhyFcCk+W2xFRl+otak9yYm9DdEUM
-X-Google-Smtp-Source: AGHT+IHjIbBVxTsKxHOyi9aLa7fb+eKUlD7d5l5hLW76KyIoVNxG75GiAjx3gTFkW95dm/1ZrsJC3g==
-X-Received: by 2002:a17:906:7854:b0:a4e:26a:6558 with SMTP id p20-20020a170906785400b00a4e026a6558mr1758497ejm.24.1711633964122;
-        Thu, 28 Mar 2024 06:52:44 -0700 (PDT)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id n7-20020a170906840700b00a46caa13e67sm776638ejx.105.2024.03.28.06.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 06:52:43 -0700 (PDT)
-Message-ID: <3db9a68c6f71a67d95d25886fdc708de6269adc2.camel@gmail.com>
-Subject: Re: [PATCH][next] iio: addac: ad74115: remove redundant if statement
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Colin Ian King <colin.i.king@gmail.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, Cosmin
- Tanislav <cosmin.tanislav@analog.com>, Jonathan Cameron <jic23@kernel.org>,
-  linux-iio@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 28 Mar 2024 14:52:43 +0100
-In-Reply-To: <20240328112211.761618-1-colin.i.king@gmail.com>
-References: <20240328112211.761618-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711634116; c=relaxed/simple;
+	bh=DfrrIRMhf7F8dxUPrgdMEfjKADIvaXWsP4TCkcLf8oU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GEyS0GKjnyPVkDS9txmRLS1jWbm+Acnv6+77/DQhj2FGnlDpGKxGMkyLZW7wSsWvyWdqNjd/uXymft9HsVFNNpuKcsZ52MTO6zFWfhtftnaftx238n95OZfx0KSCgRV4Cp+wlDyxT4Al3wz4mPmJvq+zF7K/o9KWo+C0AiX6NQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=B2GyGhGb; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=7HuHZRVaWONhQpUVLGaH8mCBo7oDHLgcq9J6Ysi17V0=;
+	b=B2GyGhGbnijYUIE6ovaPBfHzlyeGNvjf5Hhrjr8xzi9lf6SKybB5fCzs2nsSwP
+	8yRBh9ydcmcMzpDLlDtl85B3L+9oYj7BH7B362RxH/J9yoXxb/KNunXRYX4qiDyw
+	N+hCK6djPwQlH1MPT/ayTcKoR+M5tH4kvAtUz6U8IMvfM=
+Received: from dragon (unknown [183.213.196.225])
+	by smtp2 (Coremail) with SMTP id C1UQrACX_heAdgVmyl1aAg--.12337S3;
+	Thu, 28 Mar 2024 21:54:09 +0800 (CST)
+Date: Thu, 28 Mar 2024 21:54:07 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, imx@lists.linux.dev,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Stefan Wahren <wahrenst@gmx.net>
+Subject: Re: [PATCH v5 6/6] ARM: dts: imx: Add UNI-T UTi260B thermal camera
+ board
+Message-ID: <ZgV2fyfV5/SW/v+x@dragon>
+References: <20240226212740.2019837-1-sre@kernel.org>
+ <20240226212740.2019837-7-sre@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226212740.2019837-7-sre@kernel.org>
+X-CM-TRANSID:C1UQrACX_heAdgVmyl1aAg--.12337S3
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUIzB-DUUUU
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiGBCvZV6NnpnNkwACsK
 
-Hi Colin,
+On Mon, Feb 26, 2024 at 10:26:28PM +0100, Sebastian Reichel wrote:
+> Add DT for the UNI-T UTi260B handheld thermal camera.
+> 
+> Reviewed-by: Stefan Wahren <wahrenst@gmx.net>
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
 
-Thanks for your patch...
-
-On Thu, 2024-03-28 at 11:22 +0000, Colin Ian King wrote:
-> The if statement is redundant because the variable i being
-> assigned in the statement is never read afterwards. Remove it.
->=20
-> Cleans up clang scan build warning:
-> drivers/iio/addac/ad74115.c:570:3: warning: Value stored to 'i'
-> is never read [deadcode.DeadStores]
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
-> =C2=A0drivers/iio/addac/ad74115.c | 3 ---
-> =C2=A01 file changed, 3 deletions(-)
->=20
-> diff --git a/drivers/iio/addac/ad74115.c b/drivers/iio/addac/ad74115.c
-> index e6bc5eb3788d..d31d4adb017e 100644
-> --- a/drivers/iio/addac/ad74115.c
-> +++ b/drivers/iio/addac/ad74115.c
-> @@ -566,9 +566,6 @@ static int ad74115_set_comp_debounce(struct ad74115_s=
-tate *st,
-> unsigned int val)
-> =C2=A0		if (val <=3D ad74115_debounce_tbl[i])
-> =C2=A0			break;
-> =C2=A0
-> -	if (i =3D=3D len)
-> -		i =3D len - 1;
-> -
-
-Hmm, this change is clearly good but I think we're actually missing the pro=
-per fix in
-here. I'm being lazy and not checking the datasheet and Cosmin can further =
-comment.
-But I'm fairly sure that the intent of the code is actually to use i in the=
- call to
-regmap_update_bits(). I mean if we look at the mask AD74115_DIN_DEBOUNCE_MA=
-SK and the
-possible values of val...
-
-- Nuno S=C3=A1
+Applied, thanks!
 
 
