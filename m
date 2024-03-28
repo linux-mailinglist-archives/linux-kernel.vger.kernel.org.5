@@ -1,183 +1,110 @@
-Return-Path: <linux-kernel+bounces-123205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41F8F890474
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:03:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9178089047B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 660C51C24172
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:03:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D5EEB22451
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EB4131BA7;
-	Thu, 28 Mar 2024 16:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807BC130A40;
+	Thu, 28 Mar 2024 16:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Axv+du0e"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="c/gyCv7C"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60D81311B5
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C36F130A4D
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711641768; cv=none; b=h4NtPOpB+vK0PbB5DeoY92Vtl8Pn4u/zmDQWgnNS6NeOl3xzvsEPywS7l75jPFDnYZIktwvvy7qkWG/Uby0dDOIeUCDrKmv/nD+51yCsIpOiCei+rlA97OOvsGhS+7mWuLftkTYIOFErSsHudGlXzXwaCKdU5Lp3EjV+AE91MnU=
+	t=1711641900; cv=none; b=KKB7VqLHYGT2Gkp3u+KsVV935iwbAlpcB60W4n6BRuTK1gMD38WVOVjOwprTbcWDA97htn6qbo2ZNzx6PUnCC/2U/wVRi5u1AF4kMQd9tc+uyryrl3ApW+G3G+fZIVsABluIGlm8R+56fN5ZKBxC44vGjFnk2qxFjsMz6MGDvs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711641768; c=relaxed/simple;
-	bh=3edFfHGuTgBNAtyipnLKn6bXij3/XaZeoLIupKMiaqI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gVUSVB/1ysgqyxuxgCXOFgqAQyiz73Xq0C3FIdqVett4PIApKBL3DlI8OETkNtjCh8BXQmaeZij8gBmFlEAAcVDWffBICESbO1czvjSxT+N8C8OU3/PLaNQOELVQ/mVi/IEcE3HaBBn57hQsekjwuMElJlJdTJgGtSAGG7aAF5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Axv+du0e; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36899c4e544so95595ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:02:46 -0700 (PDT)
+	s=arc-20240116; t=1711641900; c=relaxed/simple;
+	bh=jkgQqEjhRXI9Kg5HCJwBu1K2XFo6+zfHCumlEZPCDJs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Y9s02T6XjWFsnTZOLz+5HKX/1hmcwASc1ZuapQP52EVcsvY0xwYmWvcHQpypy64GwhReNM/tufwQsYzQhI1GeCvrDHeBLhjlL9J17jhUKi76b1uVcPIPJejHTcjz03rFfSYsmASQQdJMClGsmLoibXNFGhPfEnHmu6dYFA7A6/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=c/gyCv7C; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so1421684a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711641766; x=1712246566; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cBP7eIuQCT3cz5tMBaiLfJfh0r9VLr4sISDdgfizVcc=;
-        b=Axv+du0e20K0bEUGJkG0c6h8oCQxsiNH3REaD/MaU+c+6f/kqQUlSU5nB6qPZ/KMn6
-         nXZvSnJEz+GOIEDz95dUxrTp9S5nTYYvfXSC6ZhfcS3ifyUmSjxNc7h7B6bWpBDF2vZ2
-         N5fUlZ57z1vvli75VtmoGjlMXNnpdEkuVxzmzawY/pgJfJodFYiErakRw5Qo+ic57892
-         LXcDEwhKfiixzvfy7Ek7S8VxeDF5mADV4PmkE6mpDFjfCu3IfU+G/j37DEptDZKD8xVP
-         j3A0df5eZMfyc7Z+gd+EUQ1atmJYSrZWsWUfxbSR2Pus5i9kryArldHXWLUIHiywZl7l
-         xqig==
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1711641896; x=1712246696; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vI6ZoGEa9V83cdHy08Sxu7AfclgAoun/MX2DchJITXI=;
+        b=c/gyCv7Chpj+xmXlPn2peXeDHMRQ90+JLVKbjNiG4d0MDTiQdwwkqRCAhqhPfKqZEI
+         N8TwhFckxAKh6NYK9lH5s4POuyS9i4/y8iEvwKM4I7zviE2X7RJb425NBp1FaVXILE5U
+         SF0ma12p6Q3CeXlTbM1kKwsoH1A+Xp3CecxJpLqYaaW/ibWBDsoKk0NR5ACRRU8bqMiI
+         sfknNLeQRRrZasa++uEfiV0dvo1aPA4Drtny/el7CMCBI2XYWyvUTnd4GF2ZNtg/JXYp
+         hnhaFieYAKbaXN4ai6mJFuJMkUHZIBGpnSB0ot8YW+rg9k3YNK1wikUNHounDgyVVyr+
+         akJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711641766; x=1712246566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cBP7eIuQCT3cz5tMBaiLfJfh0r9VLr4sISDdgfizVcc=;
-        b=XaM9XaaiZdK40IYC5rBK44hk/JibOSLX8uRGx+uV35FF/7MBcJdtRkuk2DAEP4+8CS
-         QNo2CmHy4zQ3kPC0FggYCP9ct4VUbG24oViSERZ58ju0MKI4eq4uZnh+pqXHL6U/OQAm
-         jtKl3o2/5epldNxAwPupUMXfF8PRo32HnCnwMMC2BLO3wYBlrythyMag17x1+NBP3DbB
-         mgdgxPLNM3qhmPHxuqyaCgqNuwVZdFkQceIaKG5F7jT2DVeoMsfIo7JspEa3mLUdWkGe
-         6rWeSXXmZEgpZZmJ9GC1hMTb42Ufl8VwMBwUJT9RXpKtV1H5HMCIGfgV5MNKggi6KESh
-         sNIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVcIUIcSTjvPat7B+KVqnzAegL/kdzt1Nm7+UQevc7sVa0sY+glt8QERkre1MMA3H6st5u2LOMMs5jr2mppWpOsRWanFC/TBOF6NPAe
-X-Gm-Message-State: AOJu0YwexUqipLRNcRrLbC86K4LM+fHP4gtYBgIyvC/lCp8uspgg12b5
-	36/O/M5rjrDehuMxPitp/H9AL1+XjEQr0jixOOSC0PYl1qMd8hpM+EezJAAWTTSsVATgjAd//78
-	+CqeYuPithvCkXBNoubjEqHndSS/vD614dCs1
-X-Google-Smtp-Source: AGHT+IE5sRRSnP6efrA0k65ve35cCb8jUxUvvFxl3PT4/ywpy6rDE0IK6F6PHTRirrQJFC7P30wEEgmC93Ik8v/WnaU=
-X-Received: by 2002:a05:6e02:1647:b0:366:4365:e83d with SMTP id
- v7-20020a056e02164700b003664365e83dmr264174ilu.4.1711641765514; Thu, 28 Mar
- 2024 09:02:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711641896; x=1712246696;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vI6ZoGEa9V83cdHy08Sxu7AfclgAoun/MX2DchJITXI=;
+        b=Jpkn3WROQmkAsaeZCIjIpsKSVDrL0aBE7096j/eMEC/xp+CTXM61R7txX1uht2xhoO
+         144Oao+8HaRgfRhOAKP0wM/dV7NJU2yLFMFYAdC+ZnCrcn/a6AmplV4rncm96GS22cPF
+         ZUN5TS4qo6H8WV366Fc63Ebfxe1AEnsJ1AQAJK2ll4IcXvre+8sitwvJz9PSfSzgX+Pg
+         vweMa0jCaHmYl+Nk/on4aBdwonhF11NBP3Eh228YJo7mRCFE+BVzCLTPGURBskOpG8eB
+         PZRtnII4c6YoN99tJxmWmCUo9ZMdv4zZkVo5pI/8LPmJIxg86od0Wet3eweixmSVLEJp
+         Rz5w==
+X-Forwarded-Encrypted: i=1; AJvYcCW0WkhUExTVeZyMaBDa+6IlX8C9HEoK7sN2svBC7cJS0Dz3j+laP4GCOdsHY3N/NpQpfn3HK/i9E2It5SpSlZi8scYrqW767y5+a74Z
+X-Gm-Message-State: AOJu0YzBNiZH6AuBhDIxlAZIkrfovO9Wnaq2b9d6WvZFLfhSN+GYU2Jo
+	P1WYCPP20ia7NNCDNLYlXWgjqvVO3HDGjRIJhGWHZ7wVVB7wZs75avmjxnNfA9U=
+X-Google-Smtp-Source: AGHT+IEY0llE5S1AsYzABRko/je7SVUd0HjrRfskEzSp9n9Aqx94IpT8XC7p7f934G10wxckne9PCA==
+X-Received: by 2002:a50:d68d:0:b0:56b:9f91:d26b with SMTP id r13-20020a50d68d000000b0056b9f91d26bmr2950294edi.14.1711641896547;
+        Thu, 28 Mar 2024 09:04:56 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id i40-20020a0564020f2800b0056c36a36389sm986115eda.19.2024.03.28.09.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 09:04:56 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] crypto: jitter - Remove duplicate word in comment
+Date: Thu, 28 Mar 2024 17:03:47 +0100
+Message-ID: <20240328160401.445647-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328055857.383180-1-yangjihong@bytedance.com>
-In-Reply-To: <20240328055857.383180-1-yangjihong@bytedance.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 28 Mar 2024 09:02:31 -0700
-Message-ID: <CAP-5=fXms1noWT8PXqBu89QogcwVsvAGpxq3Q_bNUYOYL7PpKA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf sched timehist: Fix -g/--call-graph option failure
-To: Yang Jihong <yangjihong@bytedance.com>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
-	james.clark@arm.com, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 27, 2024 at 10:59=E2=80=AFPM Yang Jihong <yangjihong@bytedance.=
-com> wrote:
->
-> When perf-sched enables the call-graph recording, sample_type of dummy
-> event does not have PERF_SAMPLE_CALLCHAIN, timehist_check_attr() checks
-> that the evsel does not have a callchain, and set show_callchain to 0.
->
-> Currently perf sched timehist only saves callchain when processing
-> sched:sched_switch event, timehist_check_attr() only needs to determine
-> whether the event has PERF_SAMPLE_CALLCHAIN.
->
-> Before:
->   # perf sched record -g true
->   [ perf record: Woken up 0 times to write data ]
->   [ perf record: Captured and wrote 4.153 MB perf.data (7536 samples) ]
->   # perf sched timehist
->   Samples do not have callchains.
->              time    cpu  task name                       wait time  sch =
-delay   run time
->                           [tid/pid]                          (msec)     (=
-msec)     (msec)
->   --------------- ------  ------------------------------  ---------  ----=
------  ---------
->     147851.826019 [0000]  perf[285035]                        0.000      =
-0.000      0.000
->     147851.826029 [0000]  migration/0[15]                     0.000      =
-0.003      0.009
->     147851.826063 [0001]  perf[285035]                        0.000      =
-0.000      0.000
->     147851.826069 [0001]  migration/1[21]                     0.000      =
-0.003      0.006
->   <SNIP>
->
-> After:
->   # perf sched record -g true
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 2.572 MB perf.data (822 samples) ]
->   # perf sched timehist
->              time    cpu  task name                       wait time  sch =
-delay   run time
->                           [tid/pid]                          (msec)     (=
-msec)     (msec)
->   --------------- ------  ------------------------------  ---------  ----=
------  ---------
->     144193.035164 [0000]  perf[277062]                        0.000      =
-0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <-=
- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_=
-for_common <- wait_for_completion
->     144193.035174 [0000]  migration/0[15]                     0.000      =
-0.003      0.009    __traceiter_sched_switch <- __traceiter_sched_switch <-=
- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
->     144193.035207 [0001]  perf[277062]                        0.000      =
-0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <-=
- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_=
-for_common <- wait_for_completion
->     144193.035214 [0001]  migration/1[21]                     0.000      =
-0.003      0.007    __traceiter_sched_switch <- __traceiter_sched_switch <-=
- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
-> <SNIP>
+s/in//
 
-This looks good, should there be a Fixes tag for the sake of backports?
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ crypto/jitterentropy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Ian
+diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
+index f2ffd6332c6c..d7056de8c0d7 100644
+--- a/crypto/jitterentropy.c
++++ b/crypto/jitterentropy.c
+@@ -157,8 +157,8 @@ struct rand_data {
+ /*
+  * See the SP 800-90B comment #10b for the corrected cutoff for the SP 800-90B
+  * APT.
+- * In in the syntax of R, this is C = 2 + qbinom(1 − 2^(−30), 511, 2^(-1/osr)).
+  * https://www.untruth.org/~josh/sp80090b/UL%20SP800-90B-final%20comments%20v1.9%2020191212.pdf
++ * In the syntax of R, this is C = 2 + qbinom(1 − 2^(−30), 511, 2^(-1/osr)).
+  * (The original formula wasn't correct because the first symbol must
+  * necessarily have been observed, so there is no chance of observing 0 of these
+  * symbols.)
+-- 
+2.44.0
 
-> Signed-off-by: Yang Jihong <yangjihong@bytedance.com>
-> ---
->  tools/perf/builtin-sched.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> index b248c433529a..1bfb22347371 100644
-> --- a/tools/perf/builtin-sched.c
-> +++ b/tools/perf/builtin-sched.c
-> @@ -2963,8 +2963,11 @@ static int timehist_check_attr(struct perf_sched *=
-sched,
->                         return -1;
->                 }
->
-> -               if (sched->show_callchain && !evsel__has_callchain(evsel)=
-) {
-> -                       pr_info("Samples do not have callchains.\n");
-> +               /* only need to save callchain related to sched_switch ev=
-ent */
-> +               if (sched->show_callchain &&
-> +                   evsel__name_is(evsel, "sched:sched_switch") &&
-> +                   !evsel__has_callchain(evsel)) {
-> +                       pr_info("Samples of sched_switch event do not hav=
-e callchains.\n");
->                         sched->show_callchain =3D 0;
->                         symbol_conf.use_callchain =3D 0;
->                 }
-> --
-> 2.25.1
->
 
