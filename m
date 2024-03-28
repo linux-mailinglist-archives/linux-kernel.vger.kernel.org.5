@@ -1,100 +1,124 @@
-Return-Path: <linux-kernel+bounces-123589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 576D2890B6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:36:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9B4890B6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88EBE1C2F1BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:36:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDD501F25993
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241C813A3EF;
-	Thu, 28 Mar 2024 20:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11D9139D05;
+	Thu, 28 Mar 2024 20:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iRJtWg8p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M91K4TnG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456FC1849;
-	Thu, 28 Mar 2024 20:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0AD46BF;
+	Thu, 28 Mar 2024 20:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658176; cv=none; b=SXDhEzuI9PTq8gTz712+aOk8miOo2/gpMBpDU98rOYDyTfoOoxOfg4xOYwDdGd7E3xYn/fxf/6z2EKlFLTkfU0IYVGvXxmDRFPnxLzkGoao1KOzXNZsmF0VpQstn24HyDrNKm8HVaL04reYbprsRS1yLINCJowB0xV4N2ZBpWOg=
+	t=1711658236; cv=none; b=dP/74f2EhktnedUdM/4RcEl2cP/lZU4bmcnB2BcGf87VGsAavWMvMnkqaqjID+eGLZEviZ9k9QV4DVqKn6QZOHPNqMOmlDvSvLSkI/MAPjc4hYjwm4JzDdFEIOY2oGGpAr22z9aTxC3h1WWC0+xZnXMKLa11NRNXqvbnttifQhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658176; c=relaxed/simple;
-	bh=SsY0lErYnKoP8ZzYMd9Gd75kk+sED7eEk6p0jqXABP8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=X1NQHlx19rXTe7I59j+tIIWv2I2YFV1/WfinL53Bpmky+R6Nxj6VzS5hWagFwGajAc7OQXfkCCFjTpcudCpJtoUb/W2JTlA52UzbuqQzrrRoEVhvXlOS5o1gBhSToGAWfekVW2aYL9PC+zTSy8mw4zemOzWdEWHsyg76AxKXxpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iRJtWg8p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF1D3C433F1;
-	Thu, 28 Mar 2024 20:36:11 +0000 (UTC)
+	s=arc-20240116; t=1711658236; c=relaxed/simple;
+	bh=o3TMU6J+1La8rLs2zcigdVj1AgPp6xVFZzSdMIJZ+dg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e9mKGUfXFSraGg6AeccuWVKq6fOAaHd6ks+9Rj1699/mOiOnGKjHWVf0dHIRxbullG3WuUs9ZKqKVlC7IHIJyh0UD/YiB1/MiF4rCN6htH+6T2J7AR0VibzMMkg2qP67mpz/nRAQzOY/ynrR78hmJRWwwpQU9X1QYapz6rBUZtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M91K4TnG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C2B2C433C7;
+	Thu, 28 Mar 2024 20:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711658175;
-	bh=SsY0lErYnKoP8ZzYMd9Gd75kk+sED7eEk6p0jqXABP8=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=iRJtWg8plLpE36aezR0aiTBqaMV7IPIeoxz1iKvE0BwrZ2uagndDaOO349iknA8Jq
-	 TQ4+DMAZbkIJaio4SyKIRbbqgKj2JfP1TwqoD9UKxKT4PYNMeG4fN94S3wqX7sfxJ/
-	 i6Ku7lini1Pt/Ud7oZ5L1gX4+KnqteCffeObvEDPLEubIvdv6JVKNFdBZTJaE/4dyM
-	 rLdj5nXUG1mxTwYHG4+0LloleAJ9OvTzxV51o+BQsek63Z97E3IuKHQyHLkm5SPGHL
-	 t2n/O8grNx9cMVkzPwCdHsOnxi9gc3n8JlhYbxW6fT4e6u9D5Gsvyv1LOj6+F2zxZA
-	 w6bbtrGAOsfBA==
+	s=k20201202; t=1711658235;
+	bh=o3TMU6J+1La8rLs2zcigdVj1AgPp6xVFZzSdMIJZ+dg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M91K4TnGiHgnYf7fli2rIaNCPFSkgB6FKdjUAO5LIu+nLxhre2FmA5y0q+G5YL4e6
+	 MiTAjHYTr1oxozM2m47RyyTZJ/LT5eG4uPj2MAyGRBedG6rcsR5Tax0POrIqgAoMyU
+	 LKosAXuzI2Uy4snnO31W2VpbtqGm1tCav8w8LVxJNoRhfxmAtOS1HfewJiBVSdspFY
+	 EC3ZzPqtPr9KcLWvpsmo5rzrdvQonI72X/tvdCOqtD8Sh92lPUEqy+SU2V6MiK52AD
+	 +eMkSrIuaBew8BqY8qbXt9b8o7KxmCl99ESbA45vXyLDpOJr9RApK8z2FR4V2aPbqu
+	 GVrhTPC293Q1A==
+Date: Thu, 28 Mar 2024 15:37:13 -0500
+From: Rob Herring <robh@kernel.org>
+To: Simon Glass <sjg@chromium.org>
+Cc: Michael Walle <mwalle@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	U-Boot Mailing List <u-boot@lists.denx.de>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+	Tom Rini <trini@konsulko.com>
+Subject: Re: [PATCH v10 2/2] dt-bindings: mtd: fixed-partition: Add binman
+ compatibles
+Message-ID: <171165823084.305347.5584935515178377776.robh@kernel.org>
+References: <20240326200645.1182803-1-sjg@chromium.org>
+ <20240326200645.1182803-2-sjg@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 28 Mar 2024 22:36:09 +0200
-Message-Id: <D05O6JVMMZY7.5ZUBAPJH22FC@kernel.org>
-Cc: <linux-doc@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-security-module@vger.kernel.org>, <fsverity@lists.linux.dev>,
- <linux-block@vger.kernel.org>, <dm-devel@lists.linux.dev>,
- <audit@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v16 00/20] Integrity Policy Enforcement LSM (IPE)
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Fan Wu" <wufan@linux.microsoft.com>, <corbet@lwn.net>,
- <zohar@linux.ibm.com>, <jmorris@namei.org>, <serge@hallyn.com>,
- <tytso@mit.edu>, <ebiggers@kernel.org>, <axboe@kernel.dk>,
- <agk@redhat.com>, <snitzer@kernel.org>, <eparis@redhat.com>,
- <paul@paul-moore.com>
-X-Mailer: aerc 0.17.0
-References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326200645.1182803-2-sjg@chromium.org>
 
-On Thu Mar 28, 2024 at 10:17 PM EET, Fan Wu wrote:
-> Overview:
-> ---------
 
-s/://
+On Tue, 26 Mar 2024 14:06:45 -0600, Simon Glass wrote:
+> Add two compatibles for binman entries, as a starting point for the
+> schema.
+> 
+> Note that, after discussion on v2, we decided to keep the existing
+> meaning of label so as not to require changes to existing userspace
+> software when moving to use binman nodes to specify the firmware
+> layout.
+> 
+> Note also that, after discussion on v6, we decided to use the same
+> 'fixed-partition' schema for the binman features, so this version
+> adds a new 'binman.yaml' file providing the new compatibles to the
+> existing partition.yaml binding.
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+> 
+> Changes in v10:
+> - Drop binman,entry since it is likely not necessary
+> - Put the description back
+> 
+> Changes in v8:
+> - Switch the patch ordering so the partition change comes first
+> 
+> Changes in v7:
+> - Adjust MAINTAINERS entry
+> - Put compatible strings into the 'fixed-partition' binding
+> 
+> Changes in v5:
+> - Add mention of why 'binman' is the vendor
+> - Drop  'select: false'
+> - Tidy up the compatible setings
+> - Use 'tfa-bl31' instead of 'atf-bl31'
+> 
+> Changes in v4:
+> - Correct selection of multiple compatible strings
+> 
+> Changes in v3:
+> - Drop fixed-partitions from the example
+> - Use compatible instead of label
+> 
+> Changes in v2:
+> - Use plain partition@xxx for the node name
+> 
+>  .../bindings/mtd/partitions/binman.yaml       | 53 +++++++++++++++++++
+>  .../bindings/mtd/partitions/partition.yaml    | 21 ++++++++
+>  MAINTAINERS                                   |  5 ++
+>  3 files changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> 
 
-It is already a heading.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
->
-> IPE is a Linux Security Module which takes a complimentary approach to
- =20
-  Integrity Policy Enforcement (IPE) is a ...
-
-> access control. Whereas existing mandatory access control mechanisms
-> base their decisions on labels and paths, IPE instead determines
-> whether or not an operation should be allowed based on immutable
-> security properties of the system component the operation is being
-> performed on.
-
-What is "a immutable property of the system component", or even,
-what is "a immutable property" and what is "a system component".
-
-These should be defined per context of use as there is no unambiguous
-definitions of these "properties".
-
-So can you add a paragraph before this defining these concepts?
-Otherwise, it would be pretty hard to review any of this.
-
-I.e. I have to make my own imaginary definitions of them and possibly
-make completely false conclusions what was meant.
-
-/Jarkko
 
