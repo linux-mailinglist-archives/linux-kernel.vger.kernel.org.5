@@ -1,94 +1,87 @@
-Return-Path: <linux-kernel+bounces-122852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C30088FE6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:56:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2AD788FE70
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1B4BB21A6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70E1D2960A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6656E7EEEA;
-	Thu, 28 Mar 2024 11:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB15F7E78B;
+	Thu, 28 Mar 2024 11:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="38NP34lc"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bW9WXA0V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36618847C;
-	Thu, 28 Mar 2024 11:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3862C43ABE;
+	Thu, 28 Mar 2024 11:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711626974; cv=none; b=TGgFlCx9NJGL+img0OIEEk5v170sC+hE4zsVnBV5q+FTcAtPl37/tQw26gW+XMYCEx8VjMzP8dWfpb0o4FDeWLJyDghc0MkeZDHUPCbwDsfubXsob3xE3EtEVgIRNjc6fEb/iPt8jWKPiZc0KYT5gM/xsj449YJyGzPpFg3qCRY=
+	t=1711627052; cv=none; b=oitU3ssk5x0Wvsm2Wslqc9wtpoHivd7ugE1ixbikyLfG8agRvH6SD1Fqvlfl43jdrcj0DKQDAJN4qzabqBljiiGmOX/+turgK6rUnBD93zwZDExobmhGuSVxyCQpstnPYzvsOWEtvK3Vm3fdzMvqmzGyoJygFUEJ3yezPzneFbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711626974; c=relaxed/simple;
-	bh=HJeDevFss7ftGKoBs7GBo8wdqcUpCcQWRd0Z0rC7J60=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mn6w5A28VhTorBL5FGglh1hinmWPM7bArSHsA/JGAOL+tJN2UG4QZFuppyNGwX7kIsAd6MbTc1/F4IcxP6ioX77dgqmkbe+x6XRKcfR2Sv2vJf+g6C/XjXMfN4f676kPqqdhGyuAlUGSpEJ44rGjfBc6bhBvpEyZGK82PEFx0Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=38NP34lc; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=h07olpqTWWJnF5ca3/Hz06zgL23i68HGqWz1fSaO55k=; b=38NP34lcVYqYrxp0jp2ticTsJL
-	ObXLl0cK8LOGyLO96nkCDesLhiIeENEwBsZtDv0wswHEAgPd29yL74QUkzzX1SSRjz3EOdkcgDZsO
-	D3abpWAbUNeh4oCeXqjSSBBrg3oaEkWs72kDvDCAwKodFq2gC9TowM68HBB5AxdhSzqY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rpoME-00BUYx-Ca; Thu, 28 Mar 2024 12:55:46 +0100
-Date: Thu, 28 Mar 2024 12:55:46 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 01/17] MAINTAINERS: net: Add Oleksij to
- pse-pd maintainers
-Message-ID: <a5ebd46c-80e4-4063-82e1-bcbb1accffbe@lunn.ch>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
- <20240326-feature_poe-v6-1-c1011b6ea1cb@bootlin.com>
+	s=arc-20240116; t=1711627052; c=relaxed/simple;
+	bh=64P0HBrfHBSQY4VcXPfTyJICSzTfeEDo2oupPZJVBMc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=cYWYYJlXQpcDmDvEfdt+DqjKhngQZd76iNozIe6CEfLfI594P3z5nEHIrY2s+SQHdce+EiFsmMEo+MCrBh+NfDZGP7cNJxTMCGzZsFgldgrDesPrkk7FM03BQ+zRP6dEJt//ZR4hfBGaGYDJp7j5EpmsZ6xy8+JEJVOquf69800=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bW9WXA0V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02FFFC433C7;
+	Thu, 28 Mar 2024 11:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711627051;
+	bh=64P0HBrfHBSQY4VcXPfTyJICSzTfeEDo2oupPZJVBMc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=bW9WXA0VaLxoVYD59peOxcjrvOk81J3xzXZzEq4JxLGRFHV5cG62nrpQkKa4wpaKC
+	 cMmjH20c8vo6mJpsSqYwaxP7mtV2eD/o5tGrvdFI3qaX59pt1+EHg1B1HWcqEQNdBA
+	 lS4J0sFtjloKxg/iBcRH39H9bXgDTy4XABHf5xYwQX7q1hHa/q8XKckjrSa+u+uR+q
+	 DAkpWpL3jo4elrjB7ZGw3e9qYqG9G8JeXwTcuMSgSX2jyBUAQyxTt47nd4skXlwOV3
+	 1e3tAs1HkZphKIqL+OHX2niONakBMmSYqeSmjj8VTgUFU/ERnULN5tXw12D8VBWnNB
+	 873olkhN1fJwQ==
+From: Lee Jones <lee@kernel.org>
+To: pavel@ucw.cz, lee@kernel.org, robh@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+ INAGAKI Hiroshi <musashino.open@gmail.com>
+Cc: linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240323074326.1428-1-musashino.open@gmail.com>
+References: <20240323074326.1428-1-musashino.open@gmail.com>
+Subject: Re: [PATCH v2 0/2] dt-bindings: leds: add LED_FUNCTION_* mainly
+ for router devices
+Message-Id: <171162704973.1976766.8383604452247666252.b4-ty@kernel.org>
+Date: Thu, 28 Mar 2024 11:57:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326-feature_poe-v6-1-c1011b6ea1cb@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-On Tue, Mar 26, 2024 at 03:04:38PM +0100, Kory Maincent wrote:
-> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+On Sat, 23 Mar 2024 16:36:08 +0900, INAGAKI Hiroshi wrote:
+> This patch series adds some LED_FUNCTION_* definitions mainly for router
+> devices.
+> Those definitions are useful for OpenWrt or something.
 > 
-> Oleksij was the first to add support for pse-pd net subsystem.
-> Add himself to the maintainers seems logical.
+> v1 -> v2
 > 
-> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> - fix sort order of LED_FUNCTION_MOBILE
+> - improve the commit description of the first commit
+> 
+> [...]
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Applied, thanks!
 
-    Andrew
+[1/2] dt-bindings: leds: add LED_FUNCTION_MOBILE for mobile network
+      commit: c332f0450f33c123a538a8fcc69fa8e4e5aedfbb
+[2/2] dt-bindings: leds: add LED_FUNCTION_SPEED_* for link speed on LAN/WAN
+      commit: 2588a5d98532244a7faf4514f79dc684fddf4c14
+
+--
+Lee Jones [李琼斯]
+
 
