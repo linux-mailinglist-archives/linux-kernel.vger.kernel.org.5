@@ -1,156 +1,88 @@
-Return-Path: <linux-kernel+bounces-122372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BC488F5CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:18:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D16C88F5CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47125B24512
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:18:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA67629A34D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648D232C89;
-	Thu, 28 Mar 2024 03:17:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6521DA53;
+	Thu, 28 Mar 2024 03:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kfih91cp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rBPk926m"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25703847C;
-	Thu, 28 Mar 2024 03:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53642E405
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 03:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711595874; cv=none; b=IJn6LHUVjAbd8fMgV2B/4Nb572on0igkYVF2bjd93ybLaM+TYpo+PTQzzClZXaspTepV7eCupY12an25VUbgLtCusFK18YUcjkmiDat3QvT+b702fviXo1rV/Xw+hmHKHNO49qRwrDvZC7YIPDMccTMIs9zI1h857RCyKE5cOCk=
+	t=1711595918; cv=none; b=jX0eruN+jNivoaP1+Ia7qQwvCZIZGo3Y7uH+4mIBvAkr85gPcgSRwG2nEpXwPtIZEFxNKFQrUFt4u9H+tdQIAVeLj4mPdPu5geanTh9rePl6ypsHzZOLzNK6sUCuRX0O72WtC39CKvtHLXrCi6kDKREFNUi7Mq3rL0oWs4pROKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711595874; c=relaxed/simple;
-	bh=XTmhB6KCgprB9lbSRIt9hvN2bAm4xpXhWQrdKlPHOVk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X6x1CrVBvodeoa99OvlQAfxvoWrrqxGyplLhtE265VRATZvlNUfR81KBuQ1HADoe3kUkCEVkycuW3MioJstSWPNbizD/JazI2eU9GqtZFoJXlCScXBMjACHV/UMQXcmAazb7sAwytVfCT3tLw78RoM7r24V06oOhhEKEX7AW9kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kfih91cp; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711595871; x=1743131871;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XTmhB6KCgprB9lbSRIt9hvN2bAm4xpXhWQrdKlPHOVk=;
-  b=kfih91cpL4KsA/MCrUTeetAOgQSuYmWh2hUC3ycOfeyOEoqa5oRQ5HNC
-   bPKnH4CsNr06UwExIx7VkvEi9HS4TW4PDjKMeFF03rx7MBp4Q/wA0MN6f
-   FO5pqWBJqE74+xfdG6rZZCkiwzInfZ5pq5kTiiJlwtvixTdncGBy9XRQ9
-   AafLYDfTUKdlh1t5E0F7CrewNOe1e6GVMMo/a1cdgzShwGiSzWsi3VN5h
-   dbLN3Nns1LuA216TCmB0kmT0MaMDNKZfVgoMpzKoX4HJltZgxgNN1Jvnn
-   X6CCCaJ+zvB7rQw+kms8zIkdA+E6EDVt7FL8D6kNvp5cub30yKMO9HsgV
-   A==;
-X-CSE-ConnectionGUID: /m3vnnwfTIOSyizIW8+bkg==
-X-CSE-MsgGUID: SyBJQxkmSG6B7oxE5Tj7ig==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="32129556"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="32129556"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 20:17:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="16529666"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 20:17:48 -0700
-Message-ID: <d6285364-f6cd-49e6-a438-2ae87f965e4f@linux.intel.com>
-Date: Thu, 28 Mar 2024 11:17:45 +0800
+	s=arc-20240116; t=1711595918; c=relaxed/simple;
+	bh=5vFqVpmltv+FRFSlK6Bry9PygRX8oCEWOYykkGWoI1o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bD/ctGj0jpiUT1gpsQUymkBCzr2EzHN/8BGxRYKaWbQBrm21sgy2WQl8jsvskr3UeezFpcdiJ2uAwr/EewzkiP2LPP5lhwlcRUEIJRpPmjcF86wgZ/Fgbbs/B/BlhVLs/9aTZYTvcjnwF3XxRoQZ2Tlk83nLzRzoDNtZKDEZlJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rBPk926m; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=667BZ75JN63p2WibLec/d2R/US6udjc5iPxuUlTOhFo=; b=rBPk926mRFY/QwL4bURPl80+6M
+	fLu3StBjBVRVOWOT1NG3We3/FABD4QBgwrR7DHPnbZGCoJgTpFWYTmxp+ZjFR4t2RVnT6GrfNsyAu
+	mGkCQJxickvizzyG2eRgE5NDTBHvgtI9GaBeluZgbdXBY/Q1QjFaAjI6HbLp3xY+wXi0KIdoMJ48j
+	p/IRKSWNb/9wBKFoZiL0dw552yb2sf8+Ct7+ajSCevLC3sPLRBttVN2ocj8d9Lt3w8wZprj5Bs4qs
+	FPlb4i9N7lHMWIFl0i2RICuNKiM35jyryq0QDlLWQT1rb42Zp8qMgnSS3YjMjgj+klAGA1SKiCUDh
+	NBR4wcgQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpgHb-00000005O6U-43VH;
+	Thu, 28 Mar 2024 03:18:28 +0000
+Date: Thu, 28 Mar 2024 03:18:27 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
+ mm: fix a race scenario in folio_isolate_lru
+Message-ID: <ZgThg-pzQzRl3ckF@casper.infradead.org>
+References: <ZfwpuRjAZV07_lc3@casper.infradead.org>
+ <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
+ <Zfz4_GJAHRInB8ul@casper.infradead.org>
+ <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
+ <ZgDt9mwN-Py5Y-xr@casper.infradead.org>
+ <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
+ <ZgK91II_eSYY6D2F@casper.infradead.org>
+ <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
+ <ZgQRtQ60mrvOUKXo@casper.infradead.org>
+ <CAGWkznF3GfCs8odhR-Hue5H8MZ=eXb82V20ZoCCjeoSjAPQ9cw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 058/130] KVM: x86/mmu: Add a private pointer to struct
- kvm_mmu_page
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "Huang, Kai" <kai.huang@intel.com>, "Zhang, Tina" <tina.zhang@intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>,
- "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
- "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aktas, Erdem" <erdemaktas@google.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>,
- "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <9d86b5a2787d20ffb5a58f86e43601a660521f16.1708933498.git.isaku.yamahata@intel.com>
- <50dc7be78be29bbf412e1d6a330d97b29adadb76.camel@intel.com>
- <20240314181000.GC1258280@ls.amr.corp.intel.com>
- <bfde1328-2d1c-4b75-970f-69c74f3a74f9@intel.com>
- <ada65e3e977c8cde0044b7fa9de5f918e3b1b638.camel@intel.com>
- <20240315010940.GE1258280@ls.amr.corp.intel.com>
- <35090f7e-4f4d-403c-b95e-f09248fc272d@linux.intel.com>
- <20240328000205.GJ2444378@ls.amr.corp.intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240328000205.GJ2444378@ls.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznF3GfCs8odhR-Hue5H8MZ=eXb82V20ZoCCjeoSjAPQ9cw@mail.gmail.com>
 
+On Thu, Mar 28, 2024 at 09:27:31AM +0800, Zhaoyang Huang wrote:
+> ok, I missed the refcnt from alloc_pages. However, I still think it is
+> a bug to call readahead_folio in read_pages as the refcnt obtained by
+> alloc_pages should be its final guard which is paired to the one which
+> checked in shrink_folio_list->__remove_mapping->folio_ref_freeze(2)(this
+> 2 represent alloc_pages & page cache). If we removed this one without
 
-
-On 3/28/2024 8:02 AM, Isaku Yamahata wrote:
-> On Wed, Mar 27, 2024 at 09:49:14PM +0800,
-> Binbin Wu <binbin.wu@linux.intel.com> wrote:
->
->>
->> On 3/15/2024 9:09 AM, Isaku Yamahata wrote:
->>> Here is the updated one. Renamed dummy -> mirroed.
->>>
->>> When KVM resolves the KVM page fault, it walks the page tables.  To reuse
->>> the existing KVM MMU code and mitigate the heavy cost of directly walking
->>> the private page table, allocate one more page to copy the mirrored page
->> Here "copy" is a bit confusing for me.
->> The mirrored page table is maintained by KVM, not copied from anywhere.
-> How about, "maintain" or "keep"?
-
-Or just use "for"?
-
-i.e, allocate one more page for the mirrored page table ...
-
-
-
->
->>> table for the KVM MMU code to directly walk.  Resolve the KVM page fault
->>> with the existing code, and do additional operations necessary for the
->>> private page table.  To distinguish such cases, the existing KVM page table
->>> is called a shared page table (i.e., not associated with a private page
->>> table), and the page table with a private page table is called a mirrored
->>> page table.  The relationship is depicted below.
->>>
->>>
->>>                 KVM page fault                     |
->>>                        |                           |
->>>                        V                           |
->>>           -------------+----------                 |
->>>           |                      |                 |
->>>           V                      V                 |
->>>        shared GPA           private GPA            |
->>>           |                      |                 |
->>>           V                      V                 |
->>>       shared PT root      mirrored PT root         |    private PT root
->>>           |                      |                 |           |
->>>           V                      V                 |           V
->>>        shared PT           mirrored PT ----propagate---->  private PT
->>>           |                      |                 |           |
->>>           |                      \-----------------+------\    |
->>>           |                                        |      |    |
->>>           V                                        |      V    V
->>>     shared guest page                              |    private guest page
->>>                                                    |
->>>                              non-encrypted memory  |    encrypted memory
->>>                                                    |
->>> PT: Page table
->>> Shared PT: visible to KVM, and the CPU uses it for shared mappings.
->>> Private PT: the CPU uses it, but it is invisible to KVM.  TDX module
->>>               updates this table to map private guest pages.
->>> Mirrored PT: It is visible to KVM, but the CPU doesn't use it.  KVM uses it
->>>                to propagate PT change to the actual private PT.
->>>
->>
-
+__remove_mapping()  requires that the caller holds the folio locked.
+Since the readahead code unlocks the folio, __remove_mapping() cannot
+be run because the caller of __remove_mapping() will wait for the folio
+lock.
 
