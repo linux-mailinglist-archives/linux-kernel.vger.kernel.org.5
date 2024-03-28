@@ -1,108 +1,147 @@
-Return-Path: <linux-kernel+bounces-123461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D98B8908F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:16:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC89890909
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1408B2171E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:16:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 201C61F272BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3527B137C22;
-	Thu, 28 Mar 2024 19:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF83137C31;
+	Thu, 28 Mar 2024 19:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wa+m6+Zi"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="qwCXm9BF"
+Received: from mail-108-mta37.mxroute.com (mail-108-mta37.mxroute.com [136.175.108.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0FD13790B;
-	Thu, 28 Mar 2024 19:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C4C657C6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711653370; cv=none; b=Ck8NfRy25yJNlBOFK4HpJJrsHW9p2hrLC4HEMwMFLmqdd4cs0VOqSv+or8sGU4rDnroeEjhHxWXdjsOXVCokWiFMTBf7XiWmB9zlunZFKP4UCXMdhqysr8YTBCpe6LPENukJhD68Z29YwlLIetNNRtBTKaU52PF2phiaGAy4GuI=
+	t=1711653701; cv=none; b=jEgQL764HgQ7/F5B83mUdS4G20G3k42tlSROt7zMp3vmE9A3WIdL/V9E4Oqnn22i4TL2dx2rk7ycUereqw15mqOn30ryhkypzbTOwZcZy2gIlMKZz34YIe5Y5VGNCP1BPksMoB8yFTtjYWe+L6YQniqaCzEx+CpnqN4kXESh64c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711653370; c=relaxed/simple;
-	bh=9Lgv0V7X4JpFVS6gpkChpJio0Trbpgps85IWj8gCbhM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EfPs51unCTMvjEvkIrvkSV06XFkrDo6Vwruemew/54nRkYXMt69KZEaFAThMPbsAJJEm+xjazGur/dobWRVzJS31U3CMGo/c9g1oI2RLN86qVRLScuykKiaKL79VvCJz+ThJsqBkkFBPaNGvUIQyxvBmA8lkfjQPXhDoATSSAI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wa+m6+Zi; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-690be110d0dso7394056d6.3;
-        Thu, 28 Mar 2024 12:16:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711653368; x=1712258168; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Lgv0V7X4JpFVS6gpkChpJio0Trbpgps85IWj8gCbhM=;
-        b=Wa+m6+Zit5RrC7da8xkMnqvc2/Xrsij64z+RdqAVBWxLeej+Ti9G6/oDPIn4s4KoqW
-         Y4OujmENKNe9IWZ6oAbcWdT3fLvBkgc7JjqARf8n+y6lh2h6SZQp9CWD66HEx1rrt2XN
-         iKtTs3OetJxJK4ovYijGFRDXNZj1fDSnL03xT5abbYrVSm4xaI2tK2dzSFvQy1lNwErs
-         jLRIuOf5FOmdn7vw9ym+bcVAo9+VkkWfOCpVBXUR3D4MxhXBFoONwxxHH8OZvn1LsbW4
-         2flIb5PSVDaol+3UcEPjnNDiB8O1y3cOGa5EI9DqGiBh+6JF38mlYNr4nle9PEUV85P4
-         sMrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711653368; x=1712258168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Lgv0V7X4JpFVS6gpkChpJio0Trbpgps85IWj8gCbhM=;
-        b=CuZyAarqxeu/TOO8gUTkeMh3blM6r6cw0l1ue3Z8BnXrcUMOPlq0R7kiIPTf28pzIp
-         q29WVYuONOzGqCGfNhlYRrlBzxzERDpDhI9Yqaj3+Cxt4q6ZwrFOtMju0imzYsNqSvOP
-         ldO8IrQeOiXUqcqk76iXfNH8+0ixctU04LeGRI8cQI6s7KhhN0c4f89XZ0o+Vdty6ulb
-         WJfWLQJraCVauYZeLzBTv/bqDk9HzHTNde97DCuw31/8YVUCJnbAhalkoGucjTo11QiY
-         +CRCwBRBGp+VCLgzcqPzi67hYxfhTLW9r6OmkLRVUa6pUY7HbbJuH/A1SXodWL2hLFEd
-         aVDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjkHmrQ7/8kLYCisod/vsV6MqWhbir8C1Bw3KZgd6CWcmtYYekNYDhbaPwcusa3kvXhSOv1oUQT9hCvA4oefR90Kon+9OIam+o/OL2h86OF/sXgynEPd3FOM9eyQoc+e0xJOLr0KY/ew==
-X-Gm-Message-State: AOJu0YzOT4vX0c5Z/WC1mGTn1yOiVFdv/EGwOsKejDkCX0gotuxpFm2U
-	fgkMOsm3F8gNkseZMMnbn8JH/FUJaMt4KXUVNQxAhRtxv9/lo8RwAlKQKa/yKStiw+zPeBQXRXE
-	uIiImX7WVZCsa3UEhjQ7qhnQpkF1vTJ+NCFU=
-X-Google-Smtp-Source: AGHT+IGoq/C70EcDddBRk46x0pF+WHP98cR4N2Udzd6XL+evhCo+RhymPI2X1noY93YiN54R+wumOFnJfECgqCxnbZ0=
-X-Received: by 2002:a05:6214:2b47:b0:696:5363:7787 with SMTP id
- jy7-20020a0562142b4700b0069653637787mr135402qvb.62.1711653368006; Thu, 28 Mar
- 2024 12:16:08 -0700 (PDT)
+	s=arc-20240116; t=1711653701; c=relaxed/simple;
+	bh=+P6JDdjJ1Ex7kuwioyIjjSETZSNuTHoLH51U4FVMcjg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u0e6jvtewsS/oPQab6o+xPS0+vTPw18xgzlCB9NuUYCCblZ5hoBG+uVSy+U/2+1IxnrlVxJdy9g6qWRjM0O9E0DPdUQt1LVH6Qf/Jj8q6nh6jrE14jdVJbbUohGI5Sf/WCofozmlT9/uhjFxDoRTwBxQePLovHLBVQ1l/xJQSWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=qwCXm9BF; arc=none smtp.client-ip=136.175.108.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta37.mxroute.com (ZoneMTA) with ESMTPSA id 18e867e00920003bea.00f
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Thu, 28 Mar 2024 19:16:28 +0000
+X-Zone-Loop: a9895551fbf5b6096aa45139c742d6e239e08287b159
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=tQJb1jl0+k5VWPtDnFdvdOzbEiK5LWRoPsu+EFTE44M=; b=qwCXm9BF5B/BKG1LMbYhN94yUV
+	rAc3/t4oTkVHcORDV9B8HrlemSm+v5kD/t39rjI6ws/L1XXVKQc+i7KbjwCBB3NAAxMyt6oXQ1EfD
+	IlhlxeC1iAParASXRSIBb+oE/zna2MuWrkPKPO3l9gROf39Fs21jOlpBJqFu10PqisHRKMl6kjNEs
+	Jahj+QjNfU9EwqGze4OsIvNSOts0YMcTLDSyvubePtWWK2F9R9GVJI0nuN0jtfVHViTaIo6lOu3qn
+	aRtavdTKoklJWGZYZx6JUB9w2wB3k9wPEXoOAViWsskP1Jok9Yibg6Z30Qwhewbeb2ybGBRRe9khs
+	pEyvc0EQ==;
+Message-ID: <76f999a7-55e0-4676-aa75-8fcd466e046b@luigi311.com>
+Date: Thu, 28 Mar 2024 13:16:22 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328191205.82295-1-robertcnelson@gmail.com> <20240328191205.82295-2-robertcnelson@gmail.com>
-In-Reply-To: <20240328191205.82295-2-robertcnelson@gmail.com>
-From: Robert Nelson <robertcnelson@gmail.com>
-Date: Thu, 28 Mar 2024 14:15:41 -0500
-Message-ID: <CAOCHtYiSYat771sfx-Pdv59GDUBH_TzqkxUM+BMf0Q7Z0KEC9A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: ti: Add k3-j722s-beagley-ai
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Cc: Nishanth Menon <nm@ti.com>, Jared McArthur <j-mcarthur@ti.com>, 
-	Jason Kridner <jkridner@beagleboard.org>, Deepak Khatri <lorforlinux@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 18/23] dt-bindings: media: imx258: Add alternate
+ compatible strings
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
+ jacopo.mondi@ideasonboard.com, mchehab@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ sakari.ailus@linux.intel.com, devicetree@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240327231710.53188-1-git@luigi311.com>
+ <20240327231710.53188-19-git@luigi311.com>
+ <20240328185526.GA88354-robh@kernel.org>
+From: Luigi311 <git@luigi311.com>
+In-Reply-To: <20240328185526.GA88354-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Id: git@luigi311.com
 
-On Thu, Mar 28, 2024 at 2:12=E2=80=AFPM Robert Nelson <robertcnelson@gmail.=
-com> wrote:
->
-> BeagleBoard.org BeagleY-AI is an easy to use, affordable open source
-> hardware single board computer based on the Texas Instruments AM67A,
-> which features a quad-core 64-bit Arm CPU subsystem, 2 general-purpose
-> digital-signal-processors (DSP) and matrix-multiply-accelerators (MMA),
-> GPU, vision and deep learning accelerators, and multiple Arm Cortex-R5
-> cores for low-power, low-latency GPIO control.
->
-> https://beagley-ai.org/
-> https://openbeagle.org/beagley-ai/beagley-ai
+On 3/28/24 12:55, Rob Herring wrote:
+> On Wed, Mar 27, 2024 at 05:17:04PM -0600, git@luigi311.com wrote:
+>> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+>>
+>> There are a number of variants of the imx258 modules that can not
+>> be differentiated at runtime, so add compatible strings for them.
+>> But you are only adding 1 variant.
 
-@Jason Kridner we need this to become public when you are ready ^ ;)
+I can not speak for Dave but as to why this was added here but looking
+at the imx296 yaml that has something similar where there are multiple
+variants that may not be detectable at run time but does not include
+similar verbiage in the main description. Should I drop this from the
+description so it matches the imx296?
 
-Boot log:
+> 
+>>
+>> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+>> Signed-off-by: Luigi311 <git@luigi311.com>
+>> ---
+>>  .../devicetree/bindings/media/i2c/sony,imx258.yaml          | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+>> index bee61a443b23..c7856de15ba3 100644
+>> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+>> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+>> @@ -14,10 +14,14 @@ description: |-
+>>    type stacked image sensor with a square pixel array of size 4208 x 3120. It
+>>    is programmable through I2C interface.  Image data is sent through MIPI
+>>    CSI-2.
+>> +  There are a number of variants of the sensor which cannot be detected at
+>> +  runtime, so multiple compatible strings are required to differentiate these.
+> 
+> That's more reasoning/why for the patch than description of the h/w.
+> 
+>>  properties:
+>>    compatible:
+>> -    const: sony,imx258
+>> +    - enum:
+>> +        - sony,imx258
+>> +        - sony,imx258-pdaf
+> 
+> How do I know which one to use? Please define what PDAF means somewhere 
+> as well as perhaps what the original/default variant is or isn't.
 
-https://gist.github.com/RobertCNelson/9db8ea04848e7ce2ca52c038fab0e1b7
+Would it make sense to change the properties to include a description like so
 
---=20
-Robert Nelson
-https://rcn-ee.com/
+properties:
+  compatible:
+    enum:
+      - sony,imx258
+      - sony,imx258-pdaf
+    description:
+      The IMX258 sensor exists in two different models, a standard variant
+      (IMX258) and a variant with phase detection autofocus (IMX258-PDAF).
+      The camera module does not expose the model through registers, so the
+      exact model needs to be specified.
+
+> 
+>>  
+>>    assigned-clocks: true
+>>    assigned-clock-parents: true
+>> -- 
+>> 2.42.0
+>>
+
 
