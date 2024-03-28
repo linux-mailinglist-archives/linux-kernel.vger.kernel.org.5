@@ -1,223 +1,189 @@
-Return-Path: <linux-kernel+bounces-122930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D7688FFB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:56:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4BA488FFB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8334D1C2AB89
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:56:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 476E31F24514
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6322B7FBA9;
-	Thu, 28 Mar 2024 12:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709C17F48D;
+	Thu, 28 Mar 2024 12:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SEQ+2Jlv"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="VMFc7l9N"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5A37BB14;
-	Thu, 28 Mar 2024 12:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86A657334;
+	Thu, 28 Mar 2024 12:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711630593; cv=none; b=ALBTDnbG/6A2Ma1pyi181TYgZOKELjFNDKG5vaGkAgvpolUbDEgHvZ8AMKE6+Ld1OAC/A9WtIbI9I/iXSFer3XvqJnIKBU9wNlayxFOS7WIMQyfLd/PeSVBMjeBzWK4Ib7rmp7vzDJvo2+zVMK9v7w4UFf2J/35lwo8+3U8k2rg=
+	t=1711630620; cv=none; b=q5vPfmMkkwLZHpEUVmXO0IEj2r789o1sAl1tdTV5U0bVT4og2w4Vi6tkCEPEwLbEQZGSikJtKqVyVY5l36kL/TRZPJe6WZ/MR6XPnxZHhxJNGJK8+CTE/o3SpK155kPBaNUdFNLzwIYrVGrUdv7tOiVqIprsf8L4NgdLkMRV97s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711630593; c=relaxed/simple;
-	bh=hQzmvbxhNNSAwoVfixFw3/NX8Dks0Gpga5/5/VJjYVc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PmIeRv18cTAo2mYaVHjbbXypX2UT6+6YVxtUSmgVRPq3qMOHtr2nWLtNVAo69JJ1UQLFMaKnoHI67PRcYM3PlJBP/2ONPJWhEGF068LS/lC4xUjALuP0vuPWgBn6quT/tPZ8gykNzlfn03DEubq+0tpzIEZd9/yFqV+V2HVWKpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SEQ+2Jlv; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6114c9b4d83so8203027b3.3;
-        Thu, 28 Mar 2024 05:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711630591; x=1712235391; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=53348LneH/B5psreK0+yHl8Gf7XqOlbsOvfHAb0AlJY=;
-        b=SEQ+2Jlv3BSulrNHt6iBAXJUx0oUUurrzJMw780JAVGQCyTF0GUdIUtM/0qsaN1E9l
-         JOC8X9AWEQebHB+sbb6yWY8/UWVrpIuJNylPgJ+Gyxkqpt5AgcSr5fbtKpbG34S193Gp
-         w210meMdXcq2E6OVdqRNecCYsLV4JEQe1T58onOMgP0VCkeErlA4dH5ARgQ0ZnQ6Of9B
-         GN0hma2r0HE6UEtG2DzkSSh4kQ/DcJWpAPS4sglBfAKtu3g3cpeJKB2FoaQaweqTCeDd
-         PknHjpFFVTp0br9cZL/sCCueJ/rRew9lmBTZfvJ8XrdQDFaavPUfthH9qRHi6QHCGhz1
-         7vzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711630591; x=1712235391;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=53348LneH/B5psreK0+yHl8Gf7XqOlbsOvfHAb0AlJY=;
-        b=CT2jOaD/Gwgd4jawaAIjZ3klaY2VTxnfU2HU9R/eJmKpPvb3wmX7PkzoHJh8fX+gS0
-         XucjiUJbaXhcbgNW7Z+D1ny2C1t5OxfG/YfsUi9mfXp+ZoK+pF+T8iKdAJx6nzJQxeC4
-         6/Y/ooFVerwiVGIQzNuZHkF0b6u8x7E8q2BwTrvPdQScSSZ2ag18b1z7xkjysNKpX/6s
-         ml0q4Ju506MQkqbQoD62HveYwAqYNwM1PN/2yr9SeDue1+tShVXfSWurYIfNDOc6D53r
-         BpOA8LmXleKHtPqg3k0qE0tL+dWfvLMyEq+JG30liBqsKwwa2Mo85cwC88fXFNR8HjZj
-         ZNZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWYEQ0e1zGjD1DkgU2zsOMXab1EHbdD/Xr+UnX+pTl9O2HLZxQCgofKtuy/ljIdwlPAASi9I+uApLSWBVShSelpeLSew5b+R6NC0y2L
-X-Gm-Message-State: AOJu0YxWz61yX/EglNsUC2QYdtFb6jUsFH5jd6c7oxjRk6jQxryBGzC6
-	TX1XRtJfoKZVCnhBc2hK4E4vK9ncEvdX0PQnotoonJI17TyW9JnN4tLvwy42R6hnIV1EQxP1+rm
-	vVJ0y5bK8v1TPceW4vZ4iLXmb2sNTw3Qq
-X-Google-Smtp-Source: AGHT+IERv0U/5ChTdKjMEfziFMGM5U1eEKHd+Sii3rl9PtPcL0cF0GOOaE68QkIl8WJaFOqP4Ii6zw66SFkvk6ZKOME=
-X-Received: by 2002:a0d:eb8c:0:b0:611:9a29:b2f2 with SMTP id
- u134-20020a0deb8c000000b006119a29b2f2mr2641958ywe.34.1711630590768; Thu, 28
- Mar 2024 05:56:30 -0700 (PDT)
+	s=arc-20240116; t=1711630620; c=relaxed/simple;
+	bh=JHDGhy5VkAZfslj0S+264BFj36Pb1yYIhb66Fr42nZM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LX4uqmOsIs1EJ+TDYWGH4OpwmJayM44g2522XL7zyrI67uEtvggt91plbY6zWloe4tgEg8vRWXHzLUJvvHmNgsGCJ9ZUabwsp8qNIIo6ibxb+xbupcpd3RrQ/rGdW793eGhS1X+hL7LYWhriuZlbkSlplM0nF619qeMXtRzwfsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=VMFc7l9N; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: lukma@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 16F1D8811D;
+	Thu, 28 Mar 2024 13:56:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1711630617;
+	bh=yBC4qKgCP2u86B3cHPsOZFo0pl6JDvKQ65pAG65n3FY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VMFc7l9NbOY1VqiCXf3IGopkdESWrY/Ldwslyxi3gJgbF6C5hCaxpkxeoX1l1I2UE
+	 C0FZEC3PiVMIeU/omXt9FNd9hRSgM8G35cxlW5cCM513I/TIHbWj7wK8LNC6rai1f+
+	 JDsf7Ms4pEv2AZzJBovF3gAOrzYmaUIzi7JixI/VTn+lcPEx2d8ikeKxoNHvHxMU54
+	 xyU7p+SZmJHaMVLXAybhHmeIOm8ghdytIKOfIqMSASE9si5QSas27LRvyvT+1ppFnR
+	 HWOZNxcPQQY1Hp0i2RRkYQbZfXTgdKLNqgEKQs7rxug6wf4NRE608k8uDzaImwc5C8
+	 bUIW7gPN95WHw==
+Date: Thu, 28 Mar 2024 13:56:55 +0100
+From: Lukasz Majewski <lukma@denx.de>
+To: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Eric Dumazet
+ <edumazet@google.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
+ Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Oleksij
+ Rempel <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian
+ Andrzej Siewior <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>,
+ Ravi Gunasekaran <r-gunasekaran@ti.com>, Nikita Zhandarovich
+ <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, Jiri
+ Pirko <jiri@resnulli.us>, Dan Carpenter <dan.carpenter@linaro.org>, Ziyang
+ Xuan <william.xuanziyang@huawei.com>, Shigeru Yoshida
+ <syoshida@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RESEND] net: hsr: Provide RedBox support
+Message-ID: <20240328135655.48c8e7d1@wsk>
+In-Reply-To: <20240328122549.GJ403975@kernel.org>
+References: <20240326090220.3259927-1-lukma@denx.de>
+	<20240328122549.GJ403975@kernel.org>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327032337.188938-1-wedsonaf@gmail.com> <20240327032337.188938-2-wedsonaf@gmail.com>
- <b5ef6fdb-781f-4caf-98ac-1f2ceca9f6d0@proton.me>
-In-Reply-To: <b5ef6fdb-781f-4caf-98ac-1f2ceca9f6d0@proton.me>
-From: Wedson Almeida Filho <wedsonaf@gmail.com>
-Date: Thu, 28 Mar 2024 09:56:19 -0300
-Message-ID: <CANeycqr1oW9dh6vQkO1y5GjoVHH99XKmqrNOx=ajL=yaOHOCVA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rust: introduce `InPlaceModule`
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
-	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/i1lim4VRYcicmxtzQ+h1Fh/";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-On Wed, 27 Mar 2024 at 13:16, Benno Lossin <benno.lossin@proton.me> wrote:
->
-> On 27.03.24 04:23, Wedson Almeida Filho wrote:
-> > From: Wedson Almeida Filho <walmeida@microsoft.com>
-> >
-> > This allows modules to be initialised in-place in pinned memory, which
-> > enables the usage of pinned types (e.g., mutexes, spinlocks, driver
-> > registrations, etc.) in modules without any extra allocations.
-> >
-> > Drivers that don't need this may continue to implement `Module` without
-> > any changes.
-> >
-> > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
->
-> I have some suggestions below, with those fixed,
->
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
->
-> > ---
-> >  rust/kernel/lib.rs    | 25 ++++++++++++++++++++++++-
-> >  rust/macros/module.rs | 18 ++++++------------
-> >  2 files changed, 30 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-> > index 5c641233e26d..64aee4fbc53b 100644
-> > --- a/rust/kernel/lib.rs
-> > +++ b/rust/kernel/lib.rs
-> > @@ -62,7 +62,7 @@
-> >  /// The top level entrypoint to implementing a kernel module.
-> >  ///
-> >  /// For any teardown or cleanup operations, your type may implement [`Drop`].
-> > -pub trait Module: Sized + Sync {
-> > +pub trait Module: Sized + Sync + Send {
-> >      /// Called at module initialization time.
-> >      ///
-> >      /// Use this method to perform whatever setup or registration your module
-> > @@ -72,6 +72,29 @@ pub trait Module: Sized + Sync {
-> >      fn init(module: &'static ThisModule) -> error::Result<Self>;
-> >  }
-> >
-> > +/// A module that is pinned and initialised in-place.
-> > +pub trait InPlaceModule: Sync + Send {
-> > +    /// Creates an initialiser for the module.
-> > +    ///
-> > +    /// It is called when the module is loaded.
-> > +    fn init(module: &'static ThisModule) -> impl init::PinInit<Self, error::Error>;
-> > +}
-> > +
-> > +impl<T: Module> InPlaceModule for T {
-> > +    fn init(module: &'static ThisModule) -> impl init::PinInit<Self, error::Error> {
-> > +        let initer = move |slot: *mut Self| {
-> > +            let m = <Self as Module>::init(module)?;
-> > +
-> > +            // SAFETY: `slot` is valid for write per the contract with `pin_init_from_closure`.
-> > +            unsafe { slot.write(m) };
-> > +            Ok(())
-> > +        };
-> > +
-> > +        // SAFETY: On success, `initer` always fully initialises an instance of `Self`.
-> > +        unsafe { init::pin_init_from_closure(initer) }
-> > +    }
-> > +}
-> > +
-> >  /// Equivalent to `THIS_MODULE` in the C API.
-> >  ///
-> >  /// C header: [`include/linux/export.h`](srctree/include/linux/export.h)
-> > diff --git a/rust/macros/module.rs b/rust/macros/module.rs
-> > index 27979e582e4b..0b2bb4ec2fba 100644
-> > --- a/rust/macros/module.rs
-> > +++ b/rust/macros/module.rs
-> > @@ -208,7 +208,7 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
-> >              #[used]
-> >              static __IS_RUST_MODULE: () = ();
-> >
-> > -            static mut __MOD: Option<{type_}> = None;
-> > +            static mut __MOD: core::mem::MaybeUninit<{type_}> = core::mem::MaybeUninit::uninit();
->
-> I would prefer `::core::mem::MaybeUninit`, since that prevents
-> accidentally referring to a module named `core`.
+--Sig_/i1lim4VRYcicmxtzQ+h1Fh/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Makes sense, changed in v3.
+Hi Simon,
 
-I also added a patch to v3 that adds `::` to all cases in the code
-generated by the macro.
+> On Tue, Mar 26, 2024 at 10:02:20AM +0100, Lukasz Majewski wrote:
+> > Introduce RedBox support (HSR-SAN to be more precise) for HSR
+> > networks. Following traffic reduction optimizations have been
+> > implemented:
+> > - Do not send HSR supervisory frames to Port C (interlink)
+> > - Do not forward to HSR ring frames addressed to Port C
+> > - Do not forward to Port C frames from HSR ring
+> > - Do not send duplicate HSR frame to HSR ring when destination is
+> > Port C
+> >=20
+> > The corresponding patch to modify iptable2 sources has already been
+> > sent:
+> > https://lore.kernel.org/netdev/20240308145729.490863-1-lukma@denx.de/T/
+> >=20
+> > Testing procedure:
+> > ------------------
+> > The EVB-KSZ9477 has been used for testing on net-next branch
+> > (SHA1: 709776ea8562).
+> >=20
+> > Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for
+> > ports 1/2 (with HW offloading for ksz9477) was created. Port 3 has
+> > been used as interlink port (single USB-ETH dongle).
+> >=20
+> > Configuration - RedBox (EVB-KSZ9477):
+> > ifconfig lan1 down;ifconfig lan2 down
+> > ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision
+> > 45 version 1 ip link add name hsr1 type hsr slave1 lan4 slave2 lan5
+> > interlink lan3 supervision 45 version 1 ifconfig lan4 up;ifconfig
+> > lan5 up ifconfig lan3 up
+> > ifconfig hsr1 192.168.0.11 up
+> >=20
+> > Configuration - DAN-H (EVB-KSZ9477):
+> >=20
+> > ifconfig lan1 down;ifconfig lan2 down
+> > ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision
+> > 45 version 1 ip link add name hsr1 type hsr slave1 lan4 slave2 lan5
+> > supervision 45 version 1 ifconfig lan4 up;ifconfig lan5 up
+> > ifconfig hsr1 192.168.0.12 up
+> >=20
+> > This approach uses only SW based HSR devices (hsr1).
+> >=20
+> > --------------          -----------------       ------------
+> > DAN-H  Port5 | <------> | Port5         |       |
+> >        Port4 | <------> | Port4   Port3 | <---> | PC
+> >              |          | (RedBox)      |       | (USB-ETH)
+> > EVB-KSZ9477  |          | EVB-KSZ9477   |       |
+> > --------------          -----------------       ------------
+> >=20
+> > Signed-off-by: Lukasz Majewski <lukma@denx.de> =20
+>=20
+> Hi Lukasz,
+>=20
+> this patch (2) seems to have a build dependency on:
+> (1) [v2,RESEND] net: hsr: Use full string description when opening
+> HSR network device
+> https://lore.kernel.org/all/20240326085649.3259424-1-lukma@denx.de/
+>=20
+> Which is pending review.
+>=20
+> With this in mind, I suggest waiting for the review of 1 to be
+> completed and then either:
+>=20
+> * If 1 is accepted, then follow-up by sending v4 of this patch (2)
 
->
-> >
-> >              // SAFETY: `__this_module` is constructed by the kernel at load time and will not be
-> >              // freed until the module is unloaded.
-> > @@ -275,23 +275,17 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
-> >              }}
-> >
-> >              fn __init() -> core::ffi::c_int {{
-> > -                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
-> > -                    Ok(m) => {{
-> > -                        unsafe {{
-> > -                            __MOD = Some(m);
-> > -                        }}
-> > -                        return 0;
-> > -                    }}
-> > -                    Err(e) => {{
-> > -                        return e.to_errno();
-> > -                    }}
-> > +                let initer = <{type_} as kernel::InPlaceModule>::init(&THIS_MODULE);
->
-> Ditto with `::kernel::InPlaceModule`.
->
-> > +                match unsafe {{ initer.__pinned_init(__MOD.as_mut_ptr()) }} {{
->
-> This requires that the `PinInit` trait is in scope, I would use:
->
->      match unsafe {{ ::kernel::init::PinInit::__pinned_init(initer, __MOD.as_mut_ptr()) }} {{
+It has been reviewed by Andrew 2 days ago, so hopefully it will be
+merged soon, and then I can prepare v4 of the HSR Redbox support.
 
-Also changed in v3.
+> ; or
+> * If changes are requested to 1, include 1 and 2 together in
+>    a patchset after addressing relevant feedback
+>=20
+> ...
 
-> --
-> Cheers,
-> Benno
->
-> > +                    Ok(m) => 0,
-> > +                    Err(e) => e.to_errno(),
-> >                  }}
-> >              }}
-> >
-> >              fn __exit() {{
-> >                  unsafe {{
-> >                      // Invokes `drop()` on `__MOD`, which should be used for cleanup.
-> > -                    __MOD = None;
-> > +                    __MOD.assume_init_drop();
-> >                  }}
-> >              }}
-> >
-> > --
-> > 2.34.1
-> >
->
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/i1lim4VRYcicmxtzQ+h1Fh/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYFaRcACgkQAR8vZIA0
+zr1USQf/ePJ/H3ZbaxXuaPYKSe9LvI3xfehs/BHhayjH/IDytSVl7jxEhqJLriGl
+Eeaa/3s8p5Dv+P3chcDW9oaPdylamrkUDQQHhEMToDwFhgMTAb3BmzrWQhVyzE6r
+/boTH4PJwWTbSIm5PBgl+7Pi4CzHSxqKo4Qm1FNzQEp/kjeGXM3ioRJp+SlPZL09
+AY/77g2Ir/tOVuDP2on5m6G496EOeY2w/zwE4ELiqQD2xwEvRu58fETtb58X+cQj
+B8bo6WDUvep5N4uS5kv+vJNRShPCQeydN+r530diGzeY3WLOncTfwc99tZM5u+Vi
+WD9KHweC9ouEpITpVTnPC+FUr1/Kpw==
+=FL86
+-----END PGP SIGNATURE-----
+
+--Sig_/i1lim4VRYcicmxtzQ+h1Fh/--
 
