@@ -1,117 +1,106 @@
-Return-Path: <linux-kernel+bounces-122844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48BFE88FE4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:45:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 960E288FE4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02C1529525E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:45:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F7CB296739
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7639E7E793;
-	Thu, 28 Mar 2024 11:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FE47E789;
+	Thu, 28 Mar 2024 11:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CvDvHfnc"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="dT5uxZjg"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA1D7BAE5;
-	Thu, 28 Mar 2024 11:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6BB2D792;
+	Thu, 28 Mar 2024 11:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711626300; cv=none; b=eUpiDzRfMUQ2QUaiho4KSLM9Lz/4fpu/jRtILtT5htPgtOhBmYv99Z0B6yAi3PiESlC1CXAB19WnNCOdvyYt3v4LVrRkObByDPwXxE60bPlZl9TEmFI5PL+HbfsW4ZbIqywP7dpAVEhbFvTSLQUN5JOi2rXRqazYerBPq/a1s1U=
+	t=1711626322; cv=none; b=L9KQcxLbaCnxymrUYEQpLMfaIeXYgRHVM2vWaMKONKAU4eLsOIlRQ+mlfZKZvcZ5C1FiA36tdtgwvEQuhHr4FIwE16AVjITEcOLfzUcsbjbW2H+EAr97/RDKLH9zom8GwVF07VsJ7AS7+8+d/n629i4ITAM85OASKP5Fg2CpODI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711626300; c=relaxed/simple;
-	bh=OYM8k1EiWPWpNf5LRNyDFFCvXpyMLeqLULX1HXll2yM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=GD4OBDWhT7/WGRfBaeBuV0bpeZ2s8N0pkZQTpi8An5A6xk9+U5GriR9U8yc6JMfFTsv5EgVl/Z+sjUiKl77s8TXl7NZP55dLlQ6NyA3CC+zRgotKNEICLUonIRDjE4GHQcpLAQFPrwvzMuuyWWEaRIXIaWpSulH6wukSm9TPmFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CvDvHfnc; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513e134f73aso898489e87.2;
-        Thu, 28 Mar 2024 04:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711626297; x=1712231097; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e9MZemIHH/wBwBEQSnrQYLhJvhCNeO4YGhKFn3AbGPg=;
-        b=CvDvHfncRAuH6IVn/DzViCnCdrn1DwVWFosoHQgEn+CLxGaW3tOMkAohZPysyPNE17
-         xnknKCruI6HOqWGdURoKY1A9KI18J/4893ifYJJABlJ2UeykkskUa9YBYjyXA5tM8YEF
-         R6UF0wBp0fsyTXzLvf50tpdGDjaj3Pozj27tHyGUggMGCrjUI7B7XksNxT0V40LmL2Lw
-         w1/y+3NUzVaYGks+SdY3iSTphAucmz7MQjpX0VEoxfK2jNIBewnZVSFQ2lk1T6O6Z0bw
-         j+oGaMkxyj7N8hIVndso9ssnhb49aEZw6v+g1qX1GKxxGeA/NeYpwGzIai3EkpcYSKQ6
-         hyZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711626297; x=1712231097;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e9MZemIHH/wBwBEQSnrQYLhJvhCNeO4YGhKFn3AbGPg=;
-        b=OGydKMyehlAswNbpDdXLsghOUDPqsGeZAuKr0NES6t0UfrrtgJPnzMjDZQPo2nSw9i
-         6nri0LimLRljxs/CasXpiWO8OUwDnLd0e0dcp/xsA0EYe3cgCi2eRwB4ISCjdg8RXHcy
-         HSaf913++6Bh62YMohEJJ1xc9Gcg2KbElYxqL4KYy5EllFZ0eOpNLtZCS0RJns3UypFD
-         +2HKWzczipEGSfBjmRAX3MKCtVsPRQnCfA9HT+NPAwUDIQweG/YgOJkTOF1JCke26R8E
-         JyK4vJ+rJVqT5UbAD2dvqHE3WlgXnAJyvgu5WVBrowuIaBrlR1FceIbF+fTLh7/vQP2x
-         LMOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgzWOwe9oOR51h9FWjd7BF2O56x+zQaY9t8uIsqWKRC+3kRIOMcMq/hVcvtbx298eUl4qLWN3WiZmXfwygQq42eXSlv5qq7IA++R1iBc5qZWaHdWgysc/7POE4BxI+FAGwkGVfPm1eLxc=
-X-Gm-Message-State: AOJu0YxmzyjSWdqfsJ9jrF1/LbJdKTW+JfJuidGuwUgPpFOpKPWlsU1v
-	N5E1gF1EafDtICjJwWlrdRJzUui1QgpOSrLpx+bcL1tKTy5oj6gu
-X-Google-Smtp-Source: AGHT+IGEl6kIo0nRaR4sdMsNwoiqAEZ+tfdSkPUMmYpwE3JGZWyrDnwFHzDvEeA7KMSIxgFR1yAEjQ==
-X-Received: by 2002:ac2:504c:0:b0:515:9ee7:ce45 with SMTP id a12-20020ac2504c000000b005159ee7ce45mr1914760lfm.49.1711626296973;
-        Thu, 28 Mar 2024 04:44:56 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id bp29-20020a5d5a9d000000b00341d28586afsm1581112wrb.2.2024.03.28.04.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 04:44:56 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] staging: media: ipu3: remove redundant assignment to pointer css_pipe
-Date: Thu, 28 Mar 2024 11:44:55 +0000
-Message-Id: <20240328114455.762195-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1711626322; c=relaxed/simple;
+	bh=B/NLA0JqUu9nGEsxqIfEeqxUghyu4idtZeiguQk7wxc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mD/mJV1EHa3wnaPjMin7c6f4z15qJYUlbqlTzPG9TiLnFE8NA5iIvPs9h4dgoMED2RKpj/tloC8i7uNWxboqgizUWhv5iyJxWDXdwPvIuouq1a7i1+LHpbjf6pOImShfS/HnfJJ/at2KeOMvpg8hrRPX89TlBEyKZX83bj3rubA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=dT5uxZjg; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=sWdWCgyZ6xlfuvIzR+ofSNpFmValQUTb1NvuAPBYTns=;
+	t=1711626320; x=1712835920; b=dT5uxZjgz8i09sSqkEHIY9ZnZFnyW/x53aF4teYBjL1wSa7
+	nuITPAcVfDj9g891BCdodZgryXfJnlqAUxYc5FKTo0NvECT3T/0wC4VlV2e8KBDj1+JrY+JHec7SI
+	do5gT6iCOxBvwra1NUwJZVOFhGtH1fNsJCsQhBqkhEuJmeI9EHvf+la5oMgLvx+IGT+w2Oq5cSJka
+	Hu1MYQE0cFJRspevDkB9QkuaV4cXVRVOlHwonUQ+kqt8av5R2p2L69/DXHWlh5pB+WNL2ac7LWgUW
+	a47N1j51p2GnB1l3LpCdX3XrSqKZDG2uvcqaLMQSzXJPSzJ0sgnfBXNFccHnX4bQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rpoBz-00000000vii-2O2d;
+	Thu, 28 Mar 2024 12:45:11 +0100
+Message-ID: <550cc81a3dffd07ec1235dc32fd7bbde22d9bf57.camel@sipsolutions.net>
+Subject: Re: [syzbot] [wireless?] WARNING in kcov_remote_start (3)
+From: Johannes Berg <johannes@sipsolutions.net>
+To: syzbot <syzbot+0438378d6f157baae1a2@syzkaller.appspotmail.com>, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Cc: Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov
+ <dvyukov@google.com>,  Aleksandr Nogikh <nogikh@google.com>
+Date: Thu, 28 Mar 2024 12:45:10 +0100
+In-Reply-To: <0000000000007b02500614b66e31@google.com>
+References: <0000000000007b02500614b66e31@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 
-Pointer css_pipe is being assigned a value that is never read afterwards.
-The assignment is redundant and can be removed.
+On Thu, 2024-03-28 at 04:00 -0700, syzbot wrote:
+>=20
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 2400 at kernel/kcov.c:860 kcov_remote_start+0x549/0x=
+7e0 kernel/kcov.c:860
 
-Cleans up clang scan build warning:
-drivers/staging/media/ipu3/ipu3-css.c:2058:3: warning: Value stored
-to 'css_pipe' is never read [deadcode.DeadStores]
+This is
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/staging/media/ipu3/ipu3-css.c | 1 -
- 1 file changed, 1 deletion(-)
+        /*
+         * Check that kcov_remote_start() is not called twice in background
+         * threads nor called by user tasks (with enabled kcov).
+         */
+        mode =3D READ_ONCE(t->kcov_mode);
+        if (WARN_ON(in_task() && kcov_mode_enabled(mode))) {
+                local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+                return;
+        }
 
-diff --git a/drivers/staging/media/ipu3/ipu3-css.c b/drivers/staging/media/ipu3/ipu3-css.c
-index 9c10f1474c35..1b0a59b78949 100644
---- a/drivers/staging/media/ipu3/ipu3-css.c
-+++ b/drivers/staging/media/ipu3/ipu3-css.c
-@@ -2055,7 +2055,6 @@ struct imgu_css_buffer *imgu_css_buf_dequeue(struct imgu_css *css)
- 			return ERR_PTR(-EIO);
- 		}
- 
--		css_pipe = &css->pipes[pipe];
- 		dev_dbg(css->dev, "event: pipeline done 0x%8x for pipe %d\n",
- 			event, pipe);
- 		break;
--- 
-2.39.2
+but I have no idea what that even means?
 
+> Workqueue: events_unbound cfg80211_wiphy_work
+> RIP: 0010:kcov_remote_start+0x549/0x7e0 kernel/kcov.c:860
+..
+> Call Trace:
+>  <TASK>
+>  kcov_remote_start_common include/linux/kcov.h:48 [inline]
+>  ieee80211_iface_work+0x21f/0xf10 net/mac80211/iface.c:1654
+>  cfg80211_wiphy_work+0x221/0x260 net/wireless/core.c:437
+>  process_one_work kernel/workqueue.c:3218 [inline]
+>  process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
+>  worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
+
+It's a worker thread. Was this not intended to be called in threads?
+
+johannes
 
