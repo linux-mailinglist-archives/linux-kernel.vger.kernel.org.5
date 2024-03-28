@@ -1,128 +1,123 @@
-Return-Path: <linux-kernel+bounces-123784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640BA890DBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:39:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB6A890DC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AA611F27F0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:39:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBADA29D53B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C1B536B17;
-	Thu, 28 Mar 2024 22:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CeX/vjxD"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6066381AD;
+	Thu, 28 Mar 2024 22:40:35 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06715225CF;
-	Thu, 28 Mar 2024 22:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A81381AF
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711665571; cv=none; b=Q2sD969OZih307MK3vzacwHJxwOB5PPmgI8PDBJIsOP864sP0MeHMXvLlSmbRrNTe/lASbW+5rwK9z1kErrwwqh+VdMRN6Sj0iZSL8+N1G1NrAx/BHUfvvT8tHo8KjM+m1Df65PJeN8DnQ57pjh3unhZ+eNA9RpKXYTRqu5wfc8=
+	t=1711665635; cv=none; b=uCoHDqaSyXSuz5yDmAbaHGEiebkbURuCSa4vNdQg09b2e+NQgawYTuJ1aE93OAVxtD+d3Sp7zOiU/FNPD1HJPjovpeg3FYSQ3Vls9myvekTefivm4EsB5xbyp6KhjpOUfTMrFJiN1c81opWxnnbLtBwh5w17Ae64x29OLmdFYiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711665571; c=relaxed/simple;
-	bh=SItJvabCDnAcEk1FDDPnUYg29uH0ygr0YwnH/xLN6Lg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bSEANzzWJoRLF2RHsL1HXcuKLtFFJJ3NAuEOujZvhvmmUir9aSaUnhSEJUJS3/Dt9U5ExuODxtfh5SxoAa1B30QzZwpOVKJ83Dvviu8Np6HH1h4GNPVrbtDYHv+fkt7cByb5bdPX8nwX8Ah4w4EbbwOJ5Hij/2zK8F7tR4itJHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CeX/vjxD; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41544650225so8083935e9.2;
-        Thu, 28 Mar 2024 15:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711665568; x=1712270368; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DxAkMuGKIXRo2hx02pxk/kvCrTlB4fgMbIxtUPHcx7A=;
-        b=CeX/vjxDVFb+gKZePatHrHD/K8Q4U/tXXArPq9Kw/B7WdQEGri43vrz6nn+Ai8Yt6z
-         ZqSswQGbEP3e/N1/W5EClNW+hGNu7uwHLGOmO01hAyQKd9429Wk0z+nlHnemH3CeWTX3
-         8f54KDaaVtrz6/tTvYc32XzNIgEqH0MfmB+wrEO/f6T9q7y34p8PzBo+PX1ty81/6PfK
-         sDh1n8D/VQefufy07Fyjpp+69n0RiP5B5g2RnHxe0+kNCL5ALhreF+RU4V56k4QsiJzW
-         UD36UqDCaWTq5tOWulTh3rYfGNM/UrGs9lfoHonufun88JVxeWHLdERCPsckCf/1jsuK
-         meWw==
+	s=arc-20240116; t=1711665635; c=relaxed/simple;
+	bh=HI/v0WHbSk0wzAb8UhjwcDSY6xEmxwCKLJg2x/PfvZ0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=pOF6CHjW19Nt5fDGVZqgVxx2bbu2OJePbjApSiPQ7OOdJeoWo92ZEeMY489kxKOw/JLJ/8L/07PbHEQpySQaCXEn+TbMhgAj7lLH8PVFTK0OlHrm8xrSEK882219pARcw9Kg7qora3z/3RAgHdLmgGJ4qlbM0377xCyBIFUfJpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc7a930922so151633839f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:40:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711665568; x=1712270368;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1711665633; x=1712270433;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DxAkMuGKIXRo2hx02pxk/kvCrTlB4fgMbIxtUPHcx7A=;
-        b=aoAE6UDsD5OUqnVvmUtDmzThKtjTsafkclXG/upAsYbX20RMgVvhikb/5KPm54H5vi
-         7YFYf5aHe8wg6wQdTbcQDY4pEq8INZtAOlWCfDjRDBbxqAR0AzkWQ8wmqvu3VkMAFKCe
-         /LZSC0vc6+x30/LMbs7okxFATE0drrt/6p0f6oitCj8glskDMaLUNBrLX2MuzmQ5Kjuw
-         E4wAhdPT6Ivi71kX7zz0dalf0tDtxP3qmiT6F3oh/Sv9RZjzElYD6JdR5PHOBwz4C812
-         fJyaH+Al9+9rm+ApVs3QRyGBJ/N8TcvDOzpyJXHzohoMMNwGHRrDAlZKEcJY4wzGvn4a
-         2Jvg==
-X-Forwarded-Encrypted: i=1; AJvYcCXwGjO0jvgti+izKkYVc7mdnL/c/DOm91kuULQtO4yWzhx8i19sGgbwfFEzRaFAVQsqGo1tgguZAw7SNyi35ATguZxCSFG/Yv/Gtp4tc36urnccG6RNfL5+VuSWfcgNwuGCwbZqLmbsELBTjdBIxe5ARrp0nwWB9d4pNf6wbzHcrQ==
-X-Gm-Message-State: AOJu0YyacI8T8Gm7SXz2mxcphhueoQ8g2CRXDuBnYKa6VMs7x07k8SXB
-	11RX2knOKQ94Q+olowB7tz2/SjMtshHkGKUNcjvxKo7kK6vZIt9B
-X-Google-Smtp-Source: AGHT+IGtuupE/qp9ctW5zpvMpCcAD6pw+81arQy9Ewg8HbRTEXTfNfS1uS63GnRpo9iBoBdI63Whow==
-X-Received: by 2002:a05:600c:4f85:b0:414:8a28:6c88 with SMTP id n5-20020a05600c4f8500b004148a286c88mr433614wmq.14.1711665568247;
-        Thu, 28 Mar 2024 15:39:28 -0700 (PDT)
-Received: from [172.27.34.173] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id u8-20020a05600c19c800b0041478393b8fsm6625632wmq.42.2024.03.28.15.39.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 15:39:28 -0700 (PDT)
-Message-ID: <d8381c87-6123-4df0-97d3-ea8d0e17c6bb@gmail.com>
-Date: Fri, 29 Mar 2024 00:39:23 +0200
+        bh=6xtIx2TZz8Z96xJXyNpi0OMbULKEa9YAPVsP8DsAzLY=;
+        b=pDNy/Z9/p4hCNjzDkNmKaK4QtVrC8Av05hLD3UBWtl+vnixmDE5UXhEZeJCV8S8x6M
+         GaFSmOF4q2y8FgAMN2tEvMekuopvSiangM/z51a72uMIYU9OMClGw4uhuFN7+pWWW1U5
+         yODAWI+V9VPp5+2GFI1UA1bo5ainvsfdtepCL2oP7mlx5i8tE7aSwGj5wUDaKGSSFgzC
+         D79LnH9933qMdvY5Q2S9S47UWS6sAZGcvd2OTsvHxmdAXku9tfrbB43MAjQcFIcI7j9j
+         Z5XPXQOrASdoe66BRm3NxDC5kd9U07HxRANRdJ8TOGigQxdtfkLSs0d0+pbUVW+x0cRs
+         JFUw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzU2s/pblnj54nHWiN1wspuobnk6qmc45XVeI5mTn9jbYMQ9OJYxCcRyw2HchE6jOL5jkmGFbYEvEom6rmOJLYs/TaxsunThBtxw6X
+X-Gm-Message-State: AOJu0YwikXem/hOIoN5lWkrD4fZlTtVH0S0xazCqXp2mZ1qJhWIH6GTB
+	fD8HERdogAtBIJFU3umSWAHa5z1HCTHbxlPvKs/nanbO3AIXBA6LJ+p5bHErmZepu9MEwS6i2bN
+	W7jp1sdM6GOApiVnrsagQeEIzmWZGIXKMIZuDRIBRF4XOabsrDHJgYLg=
+X-Google-Smtp-Source: AGHT+IElOK1Ba5Fi0C1JxYzslfIOonqs3qcCtqo6fRZt373qfgWYxdGt1QW83X5Oje+uK+uy5SOEQvWtr+ySnItpr83t5YwsXYqV
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/9] mlx5: stop warning for 64KB pages
-To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Maxim Mikityanskiy <maxtram95@gmail.com>,
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: Arnd Bergmann <arnd@arndb.de>, Nick Desaulniers
- <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, Gal Pressman <gal@nvidia.com>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org, llvm@lists.linux.dev,
- Tariq Toukan <tariqt@nvidia.com>
-References: <20240328143051.1069575-1-arnd@kernel.org>
- <20240328143051.1069575-9-arnd@kernel.org>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20240328143051.1069575-9-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:3799:b0:47b:fd8e:c03 with SMTP id
+ w25-20020a056638379900b0047bfd8e0c03mr13790jal.1.1711665633022; Thu, 28 Mar
+ 2024 15:40:33 -0700 (PDT)
+Date: Thu, 28 Mar 2024 15:40:33 -0700
+In-Reply-To: <000000000000a6e0450614b960ac@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000007e8290614c036a6@google.com>
+Subject: Re: [syzbot] [scsi?] WARNING in sg_remove_sfp_usercontext
+From: syzbot <syzbot+93cdc797590ffc710918@syzkaller.appspotmail.com>
+To: dgilbert@interlog.com, jejb@linux.ibm.com, linux-kernel@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, martin.petersen@oracle.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    a6bd6c933339 Add linux-next specific files for 20240328
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17e3ac29180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b0058bda1436e073
+dashboard link: https://syzkaller.appspot.com/bug?extid=93cdc797590ffc710918
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c87791180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1013ac29180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7c1618ff7d25/disk-a6bd6c93.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/875519f620fe/vmlinux-a6bd6c93.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ad92b057fb96/bzImage-a6bd6c93.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+93cdc797590ffc710918@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 24 at drivers/scsi/sg.c:2236 sg_remove_sfp_usercontext+0x3f3/0x530 drivers/scsi/sg.c:2236
+Modules linked in:
+CPU: 1 PID: 24 Comm: kworker/1:0 Not tainted 6.9.0-rc1-next-20240328-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: events sg_remove_sfp_usercontext
+RIP: 0010:sg_remove_sfp_usercontext+0x3f3/0x530 drivers/scsi/sg.c:2236
+Code: 8b 36 49 8d 96 4d 01 00 00 48 c7 c7 a0 fe 4b 8c 48 c7 c1 c0 07 4c 8c 4d 89 e0 e8 d8 a3 eb ff e9 f7 fe ff ff e8 8e 9d 74 fb 90 <0f> 0b 90 e9 3f ff ff ff e8 80 9d 74 fb 48 8b 44 24 08 48 b9 00 00
+RSP: 0018:ffffc900001e7b48 EFLAGS: 00010293
+RAX: ffffffff8620cd42 RBX: 0000000000000002 RCX: ffff8880176f8000
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
+RBP: 0000000000008000 R08: ffffffff8620cc7c R09: 1ffff11003fccfaf
+R10: dffffc0000000000 R11: ffffed1003fccfb0 R12: ffff888022830000
+R13: ffff888022831688 R14: ffff88801fe67d78 R15: ffff888022830148
+FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 000000000e134000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ process_one_work kernel/workqueue.c:3218 [inline]
+ process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
 
 
-
-On 28/03/2024 16:30, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When building with 64KB pages, clang points out that xsk->chunk_size
-> can never be PAGE_SIZE:
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error: result of comparison of constant 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->          if (xsk->chunk_size > PAGE_SIZE ||
->              ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
-> 
-> In older versions of this code, using PAGE_SIZE was the only
-> possibility, so this would have never worked on 64KB page kernels,
-> but the patch apparently did not address this case completely.
-> 
-> As Maxim Mikityanskiy suggested, 64KB chunks are really not all that
-> useful, so just shut up the warning by adding a cast.
-> 
-> Fixes: 282c0c798f8e ("net/mlx5e: Allow XSK frames smaller than a page")
-> Link: https://lore.kernel.org/netdev/20211013150232.2942146-1-arnd@kernel.org/
-> Link: https://lore.kernel.org/lkml/a7b27541-0ebb-4f2d-bd06-270a4d404613@app.fastmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks for your patch.
-
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
