@@ -1,154 +1,106 @@
-Return-Path: <linux-kernel+bounces-122229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F73788F3A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD3288F3AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A0F52A65E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:26:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 773B62A6C07
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:26:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBA214011;
-	Thu, 28 Mar 2024 00:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95505EEDD;
+	Thu, 28 Mar 2024 00:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WcRTjBq6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Zj6lr0AL"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA044FBF0;
-	Thu, 28 Mar 2024 00:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5951E498;
+	Thu, 28 Mar 2024 00:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711585401; cv=none; b=ZeSXFThYtPXlQ8ZuxcMq85RsS3ADXyGAgawxtdczaLy2h+Qce3RrufO4egSQ9dNWKsLV1RjnryV6cOdmvQ/+i6qhNHtYlZQqhjtJLo8JEClsuJ8mI1bmzDTeoBf9HlgZail5zHhAmzaZwTyTj1oQZCubFJLAVTS3fJ4BUbRu97Y=
+	t=1711585406; cv=none; b=BcMuXeUGWUHaEnLQZrWpY7tOyYqu/jtojRcgXwxVCS9KWjXsTKghUjddymbpy6MMSSehi0ZyM51pQmmBPCKgm4RNMZbMFRATShioxfK5XHEFpmiyDx82TNEJS27Pk4duPOHAI4Mz8dsE+QO1ONwucvS69pC/9I6z8ArJxx9BxI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711585401; c=relaxed/simple;
-	bh=adqtvT35VWw2tK6LKPCT9cc6amygwx8QBJXdyBFlnOg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dSIuCEVxv5cl90zLYJ4MRp1pRiYY7qqMqmPxm4GB0S0oSHftt+4q4GJKl+rkLorjknJ5ztZeHySbzEYRtYgZV+W6NVMubzZiTlJSnmm9U/CNK33u5uU7lCDUqXAfH9vOzsqgo3QpamqyFn2jDLoXFDBQYp++wXcEY4Y6QspQIPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WcRTjBq6; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711585400; x=1743121400;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=adqtvT35VWw2tK6LKPCT9cc6amygwx8QBJXdyBFlnOg=;
-  b=WcRTjBq6Z08n4Q5+kDlJxD1pb5P7vpmfKSYaumjjNN6a3jm2sMRZQ96r
-   e2Pm5/o2h41ks2Eu6RWIGFhF2r/iixkNYkz04lIeFkPRAWKHnvi7yqxqE
-   KymllMhTX7umzGdtFGDtjvPzab71anFlhwHfUKAhy+N8O4yqPkIP4zbbQ
-   JpErv86abRpAeIprQQpNeFRgX3otv0+LZxnhs7Sgo3WzLPq7nXdAQdLX6
-   khwypgxXnHgX/AUMbB3zVALs07VFJAckGOK533P+PtvrgtI+0wLFLaXjw
-   szmJWKRY//CQo/kYdysc2wDIEg+xEuTkTy5mLn0S7fNRDyljk0TqkFufY
-   w==;
-X-CSE-ConnectionGUID: HIR7DxGmTSS7AnDdQe6Hvg==
-X-CSE-MsgGUID: DMbFAspsT/KhgjvHtQsidQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="10501379"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="10501379"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 17:23:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="21183889"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 17:23:15 -0700
-Message-ID: <8fd5caa9-c606-49e1-90a0-bfc407f0c016@intel.com>
-Date: Thu, 28 Mar 2024 08:23:12 +0800
+	s=arc-20240116; t=1711585406; c=relaxed/simple;
+	bh=QBhJNdXt3ZDE1KYix7kVNCLNrhefe3LPg7AK/U9VUX4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EYmj9afwlijNeXYr1FVsyj/Z2f78J8j71Jh9MS1Qf9Sm2rvNtI712wmFC67qvMvmSJcHl8CLO4sWcnTASgpYdjM84X/HKWQ+h8wc5xgLb4THgdu38q6Spv3wOSTofdbAZaq3KSqTUybb7TZl2Bc3SFU4Kp0a1G88EyaQgSTxbuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Zj6lr0AL; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 71C63FF802;
+	Thu, 28 Mar 2024 00:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711585396;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wrkfJcTuEi+D+HvBe61cn2FoxEmO6/EMkOnHD/GfbVk=;
+	b=Zj6lr0AL5lpyDHEmBNKHoDUp8yYNVdu+j6B2c/n+9L4YqqNlPbqUykWamyW25LRM7Zl2n0
+	4gBIpQViRbWJi50k/2DGDhQoluW7Mx2v5juh32IvkijyCIXq/oTpkCD7HT5VRhJwcATOWL
+	j38C8hYFXRA+OjFsOorQUiUzwWY7DgvKekSna9OBvnB9/jLcp0E4G0CY48x5zSfA78ec/h
+	6jlZrsYjsyOWsxKeOrtZVbJpLTr1z86o74MT4buG1l3QBFMb8gAN0ZUR6z2aadu1DpZrOU
+	kaugZr7iYw0QuWll34OHEdvLE9nN2GQhGces5PpaaOA23A7wp3LNPmxlAYDeYg==
+Date: Thu, 28 Mar 2024 01:23:13 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Lizhi Hou <lizhi.hou@amd.com>
+Cc: Louis Chauvet <louis.chauvet@bootlin.com>, Brian Xu <brian.xu@amd.com>,
+ Raj Kumar Rampelli <raj.kumar.rampelli@amd.com>, Vinod Koul
+ <vkoul@kernel.org>, Michal Simek <michal.simek@amd.com>, Jan Kuliga
+ <jankul@alatek.krakow.pl>, <dmaengine@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <stable@vger.kernel.org>
+Subject: Re: [PATCH 2/3] dmaengine: xilinx: xdma: Fix synchronization issue
+Message-ID: <20240328012257.4a5955f2@xps-13>
+In-Reply-To: <b59dd8cd-fd75-5342-d411-817f33e0ff48@amd.com>
+References: <20240327-digigram-xdma-fixes-v1-0-45f4a52c0283@bootlin.com>
+	<20240327-digigram-xdma-fixes-v1-2-45f4a52c0283@bootlin.com>
+	<b59dd8cd-fd75-5342-d411-817f33e0ff48@amd.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
- unsupported cases
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "Yamahata, Isaku" <isaku.yamahata@intel.com>
-Cc: "Zhang, Tina" <tina.zhang@intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>, "Chen, Bo2"
- <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
- "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aktas, Erdem" <erdemaktas@google.com>,
- "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
- "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
- "Yuan, Hang" <hang.yuan@intel.com>, "kvm@vger.kernel.org"
- <kvm@vger.kernel.org>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1ed955a44cd81738b498fe52823766622d8ad57f.1708933498.git.isaku.yamahata@intel.com>
- <618614fa6c62a232d95da55546137251e1847f48.camel@intel.com>
- <20240319235654.GC1994522@ls.amr.corp.intel.com>
- <1c2283aab681bd882111d14e8e71b4b35549e345.camel@intel.com>
- <f63d19a8fe6d14186aecc8fcf777284879441ef6.camel@intel.com>
- <20240321225910.GU1994522@ls.amr.corp.intel.com>
- <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
- <20240325190525.GG2357401@ls.amr.corp.intel.com>
- <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 3/26/2024 3:55 AM, Edgecombe, Rick P wrote:
-> On Mon, 2024-03-25 at 12:05 -0700, Isaku Yamahata wrote:
->> Right, the guest has to accept it on VE.  If the unmap was intentional by guest,
->> that's fine.  The unmap is unintentional (with vMTRR), the guest doesn't expect
->> VE with the GPA.
->>
->>
->>> But, I guess we should punt to userspace is the guest tries to use
->>> MTRRs, not that userspace can handle it happening in a TD...  But it
->>> seems cleaner and safer then skipping zapping some pages inside the
->>> zapping code.
->>>
->>> I'm still not sure if I understand the intention and constraints fully.
->>> So please correct. This (the skipping the zapping for some operations)
->>> is a theoretical correctness issue right? It doesn't resolve a TD
->>> crash?
->>
->> For lapic, it's safe guard. Because TDX KVM disables APICv with
->> APICV_INHIBIT_REASON_TDX, apicv won't call kvm_zap_gfn_range().
-> Ah, I see it:
-> https://lore.kernel.org/lkml/38e2f8a77e89301534d82325946eb74db3e47815.1708933498.git.isaku.yamahata@intel.com/
-> 
-> Then it seems a warning would be more appropriate if we are worried there might be a way to still
-> call it. If we are confident it can't, then we can just ignore this case.
-> 
->>
->> For MTRR, the purpose is to make the guest boot (without the guest kernel
->> command line like clearcpuid=mtrr) .
->> If we can assume the guest won't touch MTRR registers somehow, KVM can return an
->> error to TDG.VP.VMCALL<RDMSR, WRMSR>(MTRR registers). So it doesn't call
->> kvm_zap_gfn_range(). Or we can use KVM_EXIT_X86_{RDMSR, WRMSR} as you suggested.
-> 
-> My understanding is that Sean prefers to exit to userspace when KVM can't handle something, versus
-> making up behavior that keeps known guests alive. So I would think we should change this patch to
-> only be about not using the zapping roots optimization. Then a separate patch should exit to
-> userspace on attempt to use MTRRs. And we ignore the APIC one.
+Hi Lizhi,
 
-Certainly no. If exit to userspace, what is the exit reason and what is 
-expected for userspace to do? userspace can do nothing, except either 
-kill the TD or eat the RDMSR/WRMSR.
+> > @@ -376,6 +378,8 @@ static int xdma_xfer_start(struct xdma_chan *xchan)
+> >   		return ret; =20
+> >   >   	xchan->busy =3D true; =20
+> > +	xchan->stop_requested =3D false;
+> > +	reinit_completion(&xchan->last_interrupt); =20
+>=20
+> If stop_requested is true, it should not start another transfer. So I wou=
+ld suggest to add
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0 if (xchan->stop_requested)
+>=20
+>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
+=A0 return -ENODEV;
 
-There is nothing to do with userspace. MTRR is virtualized as fixed1 for 
-TD (by current TDX architecture). Userspace can do nothing on it and 
-it's not userspace's fault to let TD guest manipulate on MTRR MSRs.
+Maybe -EBUSY in this case?
 
-This is the bad design of current TDX, what KVM should do is return 
-error to TD on TDVMCALL of WR/RDMSR on MTRR MSRs. This should be a known 
-flaw of TDX that MTRR is not supported though TD guest reads the MTRR 
-CPUID as 1.
+I thought synchronize() was mandatory in-between. If that's not the
+case then indeed we need to block or error-out if a new transfer
+gets started.
 
-This flaw should be fixed by TDX architecture that making MTRR 
-configurable. At that time, userspace is responsible to set MSR filter 
-on MTRR MSRs if it wants to configure the MTRR CPUID to 1.
+>=20
+> at the beginning of xdma_xfer_start().
+>=20
+> xdma_xfer_start() is protected by chan lock.
+>=20
+> >   >   	return 0; =20
+> >   }
 
-> This is trying to guess what maintainers would want here. I'm less sure what Paolo prefers.
-
+Thanks,
+Miqu=C3=A8l
 
