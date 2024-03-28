@@ -1,197 +1,172 @@
-Return-Path: <linux-kernel+bounces-122385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C9F288F608
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:45:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B805188F60B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24C201F27757
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:45:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13D94B23421
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C9D36AEC;
-	Thu, 28 Mar 2024 03:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE62376F4;
+	Thu, 28 Mar 2024 03:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Z+OCcGhR"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2100.outbound.protection.outlook.com [40.92.53.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rKX317pG"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40FC10A1A;
-	Thu, 28 Mar 2024 03:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711597544; cv=fail; b=F3sSyPiy7ShA5L3RV6yyl2HFE+7NjmtG8ZRFnB3RU9CEJMnQjG1iVsasZWZYj2XwOCBrs1ctDQf15Oo+AXM+lNcD88XJwGr5weuhfh3rhsZzCfoZ1lyPzgJB3HGq/5bm2j6t727Xxy/KMmsEavhgX7Pfh21+7aFg5NrMBSMO0z0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711597544; c=relaxed/simple;
-	bh=IZPw23lu4jUX7uVbBnRl/6RsttZkafcU+sXhbwlttZY=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=WV680ZSMQmOdN6VrRJJs+zous7Pnwbp71jwi8V1eLxwf7xWPtxQtXEwt0tT7BjyO2ek2gLAR2LENhB2D5CEPMkc7FVZbQ9MbYAqrDxQ7sU0R0z0TxxHoxVj7IlNiGH4/M6kVsMTBpE5qkVnQo+J4oU9WkBqazA8VxgszQgCi42I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Z+OCcGhR; arc=fail smtp.client-ip=40.92.53.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ocTZjWLewp2LVGhPkMyfZjmKCcw+uwsV/fiVUA3j7O7YEhrbh3A6PBD9mVOyvMCap0QhrZCU5mG3jldpc2gRN+kN9IASWpFsGTznBxac9zUaJ/640fAXs0lYNZjNT6iMwvW7a+lk+1ctP1KDdjPBcpOQyToJ5v3KVYaSeE4m+85bzHVw45OVE1ipBCQyUpoubwzZJDY6cDJy1SOn+J9dv7/x5B6w7zimSBCyYzEyInsd1Q7eYxKkBx/tmynRPGTPYtimQrWR/VYASFwbq307gSVb1xss73od48m3lLCM4UshgdPw9QIZ3jNYY9CDG3Y+fUdpkzEVE1KNqm+aCSmWQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PNsZ4n8XXW7sNxGaujszT6kznVhwG/J/IPGIoJAeZMk=;
- b=GpZXCeFrzjTF9W3KIobTd6O8vaFEBjXJXsTdWvwcsZfbK5cchKjin0NBrU/bT2Nezh/qRG9rrYM20UbWRXURCIsUsO41QuUaE/UEKC76e13JHlDK9c/R6mZZgy9UQo1l7XKQmYU30Ke4aLmzFsnrL53aMZcQZJDMVl7NgmG7fenjgl2+kSohd+eOrG4YuxLx9jKbEp9vcyIhiw9yZaNlHBPz7d1B1Gp9l4as4fGbdEATjfODVP64HKqkbHz8E640bEYEiit8eT9m8gzMaB8Es4xIkhDNvn0Yy6cQ2pMl9gO2HMZgRAkcQdlmQpIcVQtkPttxIqRVwIWFE+S4IesGqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PNsZ4n8XXW7sNxGaujszT6kznVhwG/J/IPGIoJAeZMk=;
- b=Z+OCcGhRnFnk9MWQUC4dNGxhDeLqhIDaJcODZTw8UU7y11cKYNW5hj9TsdOGo7y9CsqclUqQJ2/GzoRRPAoEMwT+7frE036O+cg5NKXfiPqOflyqsYrgdo54HG12kuFjtWU0gMS+wznjc9cPVq14uq4JkYFalxn3Yrcufx8DgyDpo7KkECu0UBgTIvxiA/L+P8Lr88ve/HbduLDQ3WjfJAXLRaiWgGIV6po5b926kBdhG7tvSO8BvXF3686wldqJvx+DLKDBGjs0IP1hZEAAAzAv+i7mYmwPRWn2u8c5jIVGfHAlLIb2Owmg8KiGDXYDNknN5deCF19yDLCaRCUcdg==
-Received: from SG2PR06MB4953.apcprd06.prod.outlook.com (2603:1096:4:17c::13)
- by KL1PR06MB7009.apcprd06.prod.outlook.com (2603:1096:820:11a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
- 2024 03:45:38 +0000
-Received: from SG2PR06MB4953.apcprd06.prod.outlook.com
- ([fe80::bdea:96b0:398:97d]) by SG2PR06MB4953.apcprd06.prod.outlook.com
- ([fe80::bdea:96b0:398:97d%6]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 03:45:37 +0000
-From: Guanbing Huang <albanhuang@outlook.com>
-To: gregkh@linuxfoundation.org,
-	andriy.shevchenko@intel.com
-Cc: jirislaby@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	lvjianmin@loongson.cn,
-	albanhuang@tencent.com,
-	tombinfan@tencent.com
-Subject: [PATCH v3] serial: 8250_pnp: Support configurable reg shift property
-Date: Thu, 28 Mar 2024 11:45:29 +0800
-Message-ID:
- <SG2PR06MB4953D0E0A40FDAC34FF130C8C93B2@SG2PR06MB4953.apcprd06.prod.outlook.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-TMN: [rR5/VevygyKCu/kC2kAjcl4A5/HnvCeP]
-X-ClientProxiedBy: SG3P274CA0017.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::29)
- To SG2PR06MB4953.apcprd06.prod.outlook.com (2603:1096:4:17c::13)
-X-Microsoft-Original-Message-ID:
- <20240328034529.96748-1-albanhuang@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934C928DD1
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 03:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711597660; cv=none; b=pOmwR9QGGlyw7JS8ZZxtb41YxRBWEht9kUO9SB/tvhrtrvoM8dhN4K5k3BjEz6pcaLGH2IXsQXFal94RqtDgGhnQRSfNtd67/Q+d7I1latWY+IE5dR8dtzVnXLp/61TNMl92M9+qOn+dQUfLSWISbaLgXoQOuSbvkPmzsTIOcaE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711597660; c=relaxed/simple;
+	bh=+T8+oibyFXQseWnRP1RvqNoOK9iWnGTIOM6XcBrSfHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G6LMjWG2blhC+dci108uXVso5REHPJ71hwI//1EPwdS3tjqYz5eDpdGzjY91phNUMndogZW5icTVbRwUJhg9ayp/CIv7GkM+FhTkvCL82HTfmIq7XOn+ZDV5SZBbegGEE/ejQKkjFnqH9HwJMyNbnOtaKy8Wbj0ojL0Idet0unk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rKX317pG; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ea9a60f7f5so487882b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 20:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711597658; x=1712202458; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=z/WHCgPvut6hI6qyx5z8tojeBqigzDZUqYNvjOT4a48=;
+        b=rKX317pGKvHAm9GVzGfofDM+Vgw7heOFld+v9fAvU0S4BcOLR9ytMF5ubJcdEEbyCI
+         XPIu7yz7B/uMzvOUSJcYQT/zyLJlftlpOxfTQHhRVYAREiz3kWMyCyVqikEVxdkad8Y3
+         nPCfPEM5VJE5WibwSQB0+7jwLit91ZmKHEmxytROb1amaFk1CH4uReYhZiouaDbC9P+J
+         9Q1HfG9qDCYLtIMFSTB03kwLF0E6ALVbPWDgh22jny/razXpNzVHzcW8HTYAXGkwFh+K
+         DHOy9tIwL1SvxagtecCr+QSH87LVHPIhFiuYALokGoHTweKMGcmLaVmzfwnABaOZUuNj
+         EdXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711597658; x=1712202458;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z/WHCgPvut6hI6qyx5z8tojeBqigzDZUqYNvjOT4a48=;
+        b=mpfQ5FxfaVz+1l5KwuUqWiMaT+PPgceRsgVKgt7cXZ0tS+zmbsY8A6Z5qdz3KLFePm
+         IC6HvtcLHEhXpcXjFEYjoz3Uvcqi9xNYWL78Odia4n45NyNxH+KbdvEvzFFB05aVJTXh
+         WMgKNCO8/5ni7zGo54y4aYjY0HHYqYC8NJPqDFEBhIxjxZ/l2poubrGbDaBJeUqABg7z
+         OJf3+nGh3yHOcFxDM4pr3IgX2xkJukghEkPprIjXzDWYD7SLX8w1OF09CDHZV/OhCdHR
+         9+oTjHkyjk8IDcH/C6KxnE3dMTZl14RZGfBZkM7wu87MixEl7BL29WDOquw4pOwe6ewa
+         buRA==
+X-Forwarded-Encrypted: i=1; AJvYcCXKqVLDGWW180m5sHWilBXf7gaIaJSJ2po+lijbVEvHdBz2hXEXCRVi6RU2mNvBDMgOAtzetgAYMxQ5sbYpBfd/guDGzZ/cMtgZWZMw
+X-Gm-Message-State: AOJu0YyFuYuWcVJ6onxWUzSHP7qrRCC63tNDPubXrbiTC+sYSCp1Sjfa
+	TOcA1TFC02og+CaYKA7OBZirBvQrAhgnBZCGNXe5wnEg04h46GbO+KUtX53acg==
+X-Google-Smtp-Source: AGHT+IFW8Ftt5Bl/FbK/TnyOqAWEKoBzX1S89JTvlxTfnXlgLZ1WsKpzD4IlN1QhZseJ6ZbHIVvikg==
+X-Received: by 2002:a05:6a00:182a:b0:6ea:c2a2:5637 with SMTP id y42-20020a056a00182a00b006eac2a25637mr2027249pfa.12.1711597657716;
+        Wed, 27 Mar 2024 20:47:37 -0700 (PDT)
+Received: from thinkpad ([2409:40f2:201b:315f:8cec:6523:95f2:3f93])
+        by smtp.gmail.com with ESMTPSA id p6-20020a056a000b4600b006ea7b343877sm325711pfo.9.2024.03.27.20.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 20:47:37 -0700 (PDT)
+Date: Thu, 28 Mar 2024 09:17:32 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Christian Marangi <ansuelsmth@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: qcom: Fix broken erase in
+ misc_cmd_type in exec_op
+Message-ID: <20240328034732.GA3212@thinkpad>
+References: <20240325103053.24408-1-ansuelsmth@gmail.com>
+ <20240326072512.GA8436@thinkpad>
+ <66044bea.050a0220.dee16.c250@mx.google.com>
+ <20240327175131.3c0100c3@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB4953:EE_|KL1PR06MB7009:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c6d801f-a003-4a63-ff86-08dc4ed987f9
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	WeouQVmtPdHCmR8Mhlx5g4MItMiTHXnrYr9/Zpt/NTrjsXmUZX/0UM3SzrO8pU2miguvA1SUJya71bBp35GDcN6tY5cRCmYRs0EKGFFT0kqw9BwIo7Vrvv0zrg+9LUsOWPZaM6Mh/JenR1zr3v3PqMuCDy3Jvnu6xWai4i3NnzPIYUiKd0QLRcA5oBdS/K/t95Gw2m/8CuwF6h7M2BL0DnUDUxcRAUjBLSp/+PdbRTM550AhQrLIxijQN9DQ4Rl2xsRF8YHN1ULSmOFN/QfXuX67zJ7rPu9QkMhi/2h/LR3skjbldk40KuvOYfpqs5XlPVApWyul+Mu+bGNqA7BAxmloPvGq6qSI8t+UjAr/I9j6U3JFiVg+jEjg4x7YGIU21oogTnCruNH7emf5uFWqpvLXdtnKUFiuBvx7OHDDgf1qDvGXjv0rgs1IRBMKjb9zGo+e9M9RtmdOfNSN9s4FqoUEZeTA4l04Oo7qpa4Pkfl9zxbbgT9YxHr7Xn7l0+BIKfJP0DUV7HxEiOLGveo5uy4yBIKz65SCzlGl6M/MxwU0AvTMwAlvpn1+cPxHUIuf
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?vvYEn/AcuDmPwma7A1qQbkLcCm0xcH/Qgol9x5ffyf2sUnjoCcyt0HfCT37j?=
- =?us-ascii?Q?KRYEna6ImgqrHrJ+HScaJdne6MvhRtyHzXyKFWcIKO76W2nzDsYvdSqulZGN?=
- =?us-ascii?Q?t8eTx2Z+n+YF8tMXL2GsryTL+Knr4Qy5eeRRqAoOMcbRI3OQo9jylfZFnWfi?=
- =?us-ascii?Q?mLEyPb4tee01zaimobobmjtMh2iAj1SD3cJKpkpBNhjzuZhhjojys43f8S/H?=
- =?us-ascii?Q?y/dAqvzp3zETp6DQdoqVOThLHcXO+A4cEldWjQ8XBoAfiiZ0Kz/FBihAoojQ?=
- =?us-ascii?Q?g+7R98eNgtsiKFYRtGd7zxFxDkDF37c77UHeryvuDVnYPm1xZKwHF2PqDdFf?=
- =?us-ascii?Q?b2jVKKkQLdPJEBjT2Ygwl9DpSkul8jsjgEARxulWD8dLdWeBeMX4HgQpBQD+?=
- =?us-ascii?Q?333KwHkKpLPeZ04/0KkhFqawRREX8dk9Fo6XbEOH7W5l15vWn+RXuFHyzaO8?=
- =?us-ascii?Q?lyMZRFXRLFeeRyq90p1Az3LglmECQPi7XekImQZSF5Uz0WIA80Q+FmmmuhaA?=
- =?us-ascii?Q?gKG2S0WV+MJi3VShEYFiJqECF/GrClFT/CgORm1NVyTGOe8NpRIlF73lDdQA?=
- =?us-ascii?Q?LdiNPl15c2XdUG9RJ4VBgX7HF4JLm5sO9sppQtr0QNWT4Z0fB01wxnvkswej?=
- =?us-ascii?Q?A4hk6r6WsnieVcJOn59h2DI+qLyU6hQIXuytV5UNqWGCVQvVGGa0k2C+4oW2?=
- =?us-ascii?Q?SQHwYRNQwBN2uqC6OFD30SbGaJmFFon/T+p3ZBwBmKQ+uz0U9wjI+bioxM9k?=
- =?us-ascii?Q?MASuo4HgS40LpC7wPjWz0ExyzGN8f+FF8oRc4XNh6rWqn5ZBJPOnMd5yhSiA?=
- =?us-ascii?Q?zllidveB8hGtWiBWHAKXi9MAKcCDuxg9drggr7Mn8I/8dHq9xeW8aSvgphhw?=
- =?us-ascii?Q?dGwvVgw+pEBOiOqbtfe7oxyhmscZOL7KxvDvpusjU5HFZAEwA1sWDrgCQeSi?=
- =?us-ascii?Q?yBpkwkvhqIYUt36jTTRTQj755sPn65So5YtCE2/BF7SEK0HhHnUAtj+faTTe?=
- =?us-ascii?Q?rlRR8OrjavDRL67rkcbiwIeYBJawNEqaKXsLOcGG6aLfS4um5lfw0reyPJhE?=
- =?us-ascii?Q?ELv1MnWYOl3mR+l5qR/KS6E+ZeSoG7p+YrwYMwOIh59Bwoy3w+PCXUycz32X?=
- =?us-ascii?Q?bYo48Vj8PzU+ETpF8XoL6tAumq+gOHwg+BJlde6R2XY/lzuawhr4srS8LH+n?=
- =?us-ascii?Q?Vj7FhDIhkkAXUaLTM9soZrsaGSPW3FYDHyLnjosfIkNcCK1bFU5v3W1OZY8?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c6d801f-a003-4a63-ff86-08dc4ed987f9
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB4953.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 03:45:37.7765
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB7009
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240327175131.3c0100c3@xps-13>
 
-From: Guanbing Huang <albanhuang@tencent.com>
+On Wed, Mar 27, 2024 at 05:51:31PM +0100, Miquel Raynal wrote:
+> Hi,
+> 
+> ansuelsmth@gmail.com wrote on Wed, 27 Mar 2024 16:20:58 +0100:
+> 
+> > On Tue, Mar 26, 2024 at 12:55:12PM +0530, Manivannan Sadhasivam wrote:
+> > > On Mon, Mar 25, 2024 at 11:30:47AM +0100, Christian Marangi wrote:  
+> > > > misc_cmd_type in exec_op have multiple problems. With commit a82990c8a409
+> > > > ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path") it was
+> > > > reworked and generalized but actually broke the handling of the
+> > > > ERASE_BLOCK command.
+> > > > 
+> > > > Additional logic was added to the erase command cycle without clear
+> > > > explaination causing the erase command to be broken on testing it on
+> > > > a ipq806x nandc.
+> > > > 
+> > > > Fix the erase command by reverting the additional logic and only adding
+> > > > the NAND_DEV0_CFG0 additional call (required for erase command).
+> > > > 
+> > > > Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > > > ---
+> > > > Changes v2:
+> > > > - Split this and rework commit description and title
+> > > > 
+> > > >  drivers/mtd/nand/raw/qcom_nandc.c | 5 ++---
+> > > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> > > > index b079605c84d3..19d76e345a49 100644
+> > > > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> > > > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> > > > @@ -2830,9 +2830,8 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
+> > > >  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
+> > > >  
+> > > >  	write_reg_dma(nandc, NAND_FLASH_CMD, instrs, NAND_BAM_NEXT_SGL);
+> > > > -	(q_op.cmd_reg == OP_BLOCK_ERASE) ? write_reg_dma(nandc, NAND_DEV0_CFG0,
+> > > > -	2, NAND_BAM_NEXT_SGL) : read_reg_dma(nandc,
+> > > > -	NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+> > > > +	if (q_op.cmd_reg == OP_BLOCK_ERASE)
+> > > > +		write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);  
+> > > 
+> > > So this only avoids the call to, 'read_reg_dma(nandc, NAND_FLASH_STATUS, 1,
+> > > NAND_BAM_NEXT_SGL)' if q_op.cmd_reg != OP_BLOCK_ERASE. But for q_op.cmd_reg ==
+> > > OP_BLOCK_ERASE, the result is the same.
+> > > 
+> > > I'm wondering how it results in fixing the OP_BLOCK_ERASE command.
+> > > 
+> > > Can you share the actual issue that you are seeing? Like error logs etc...
+> > >  
+> > 
+> > Issue is that nandc goes to ADM timeout as soon as a BLOCK_ERASE is
+> > called. BLOCK_ERASE operation match also another operation from MTD
+> > read. (parser also maps to other stuff)
+> > 
+> > I will be away from the testing board for 7-10 days so I can't provide
+> > logs currently.
+> 
+> So, shall we wait for additional logs from Christian or shall I merge
+> the two-patches series? I'm not sure what's the status anymore.
+> 
 
-The 16550a serial port based on the ACPI table requires obtaining the
-reg-shift attribute. In the ACPI scenario, If the reg-shift property
-is not configured like in DTS, the 16550a serial driver cannot read or
-write controller registers properly during initialization.
+TBH, I don't know how OP_BLOCK_ERASE can fail without this change. But I can
+clearly see the 2 patches required for OP_RESET_DEVICE command. But merging the
+patches as it is doesn't look good to me.
 
-Signed-off-by: Guanbing Huang <albanhuang@tencent.com>
-Reviewed-by: Bing Fan <tombinfan@tencent.com>
-Tested-by: Linheng Du <dylanlhdu@tencent.com>
----
-v2 -> v3: switch to use uart_read_port_properties(), change "Signed-off-by" to "Reviewed-by" and "Tested-by".
-v1 -> v2: change the names after "Signed off by" to the real names
+So I think if Christian can club the two patches into 1 as like v1 and reword
+the commit message and subject to reflect the fact that OP_RESET_DEVICE command
+is being fixed would work for me.
 
- drivers/tty/serial/8250/8250_pnp.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+- Mani
 
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/8250/8250_pnp.c
-index 1974bbadc975..aafddede783a 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -443,25 +443,22 @@ serial_pnp_probe(struct pnp_dev *dev, const struct pnp_device_id *dev_id)
- 	}
- 
- 	memset(&uart, 0, sizeof(uart));
--	if (pnp_irq_valid(dev, 0))
--		uart.port.irq = pnp_irq(dev, 0);
- 	if ((flags & CIR_PORT) && pnp_port_valid(dev, 2)) {
- 		uart.port.iobase = pnp_port_start(dev, 2);
--		uart.port.iotype = UPIO_PORT;
- 	} else if (pnp_port_valid(dev, 0)) {
- 		uart.port.iobase = pnp_port_start(dev, 0);
--		uart.port.iotype = UPIO_PORT;
- 	} else if (pnp_mem_valid(dev, 0)) {
- 		uart.port.mapbase = pnp_mem_start(dev, 0);
--		uart.port.iotype = UPIO_MEM;
- 		uart.port.flags = UPF_IOREMAP;
- 	} else
- 		return -ENODEV;
- 
--	dev_dbg(&dev->dev,
--		 "Setup PNP port: port %#lx, mem %#llx, irq %u, type %u\n",
--		 uart.port.iobase, (unsigned long long)uart.port.mapbase,
--		 uart.port.irq, uart.port.iotype);
-+	uart.port.uartclk = 1843200;
-+	uart.port.dev = &dev->dev;
-+
-+	ret = uart_read_port_properties(&uart.port);
-+	if (ret < 0)
-+		return ret;
- 
- 	if (flags & CIR_PORT) {
- 		uart.port.flags |= UPF_FIXED_PORT | UPF_FIXED_TYPE;
-@@ -469,11 +466,11 @@ serial_pnp_probe(struct pnp_dev *dev, const struct pnp_device_id *dev_id)
- 	}
- 
- 	uart.port.flags |= UPF_SKIP_TEST | UPF_BOOT_AUTOCONF;
--	if (pnp_irq_flags(dev, 0) & IORESOURCE_IRQ_SHAREABLE)
--		uart.port.flags |= UPF_SHARE_IRQ;
--	uart.port.uartclk = 1843200;
--	device_property_read_u32(&dev->dev, "clock-frequency", &uart.port.uartclk);
--	uart.port.dev = &dev->dev;
-+
-+	dev_dbg(&dev->dev,
-+		 "Setup PNP port: port %#lx, mem %#llx, irq %u, type %u\n",
-+		 uart.port.iobase, (unsigned long long)uart.port.mapbase,
-+		 uart.port.irq, uart.port.iotype);
- 
- 	line = serial8250_register_8250_port(&uart);
- 	if (line < 0 || (flags & CIR_PORT))
 -- 
-2.17.1
-
+மணிவண்ணன் சதாசிவம்
 
