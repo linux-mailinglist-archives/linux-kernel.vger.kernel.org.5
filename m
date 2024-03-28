@@ -1,165 +1,188 @@
-Return-Path: <linux-kernel+bounces-123829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EC2890E93
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:36:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B16890E96
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:38:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D994B2211D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:36:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 759E81F24324
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3661369AA;
-	Thu, 28 Mar 2024 23:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D424137C29;
+	Thu, 28 Mar 2024 23:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JuFeTuoZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=alpsalpine.com header.i=@alpsalpine.com header.b="KatDiuXK"
+Received: from TYVP286CU001.outbound.protection.outlook.com (mail-japaneastazon11020003.outbound.protection.outlook.com [52.101.229.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5053645946;
-	Thu, 28 Mar 2024 23:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711668985; cv=none; b=TmWDTBJOX5IxrDbVaKp8jKZ+nduJuaBkbkNRT1z1DnKHX4KzgsFAQ4G/U3DQjnx3WYzKnoJWq6v84mxk03dms4z9bm4CfPVkXZc68gTcZQzUbfikeBOOHi7+ZkQZ9u0f3xVu0D7mI8L1/OLPV/WPb7l7URzlMwGmiAng+ksmhm4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711668985; c=relaxed/simple;
-	bh=NnMJNMeGqiueLLDh7TDKU7YX0ZhibM0QI0SnK7T9+jw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qvmUcJ2LXUhvIg8udbigOWKtRwdU5/LzR9ONv3zzzLm013m6t9znquZ1kjFXw8c4dVd/fMOqQGSD6Lnk37q+tm9BV/y/5e5NtxR/kRd1lQpVGAvqrVHT4akq8Hx6wJYSZKhb25AGYbn5EiYq1nWlsCQ+QqjAkRNCEcdCkSJJ3f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JuFeTuoZ; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711668983; x=1743204983;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NnMJNMeGqiueLLDh7TDKU7YX0ZhibM0QI0SnK7T9+jw=;
-  b=JuFeTuoZxaOLNGyl7W4dAwxUvfaaPERdBJL7zNAAdp0aGFTKMSC/g5B/
-   NguCOi/5lwHhzVtXUBPIvgBtmgSi4KFWxUbNHTcwwv1rV3wFjJQqXX1A1
-   TP3x9tpjrbb/9e6LzXbWQzecqoXOWOGJ2o5twmsY/m/Pi0OAqCvqtep1Z
-   U7abDKYMyd6LyZpSuy/Xq44eadr6cCWS8HBIraCD+ALwpKVp9imahh7LD
-   foht+bUu+r5QGo/1tX+EjBYFCzq5c8bwKztIp7T09rmXRgHHycvX6S8qE
-   n0oer4drRTWOpC9x0/JfNVH1XU68EnRSNPM6h22V7Rw+g1gEPnxU/Z4h2
-   g==;
-X-CSE-ConnectionGUID: oFCqViAWQCqjQLV5jhUhWw==
-X-CSE-MsgGUID: JeYVmvlRSGCOTR18iichXA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="17407991"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="17407991"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 16:36:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="21457516"
-Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 16:36:23 -0700
-From: Peter Colberg <peter.colberg@intel.com>
-To: Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Lee Jones <lee@kernel.org>,
-	linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Russ Weight <russell.h.weight@intel.com>,
-	Peter Colberg <peter.colberg@intel.com>
-Subject: [PATCH] mfd: intel-m10-bmc: Change staging size to a variable
-Date: Thu, 28 Mar 2024 19:35:59 -0400
-Message-ID: <20240328233559.6949-1-peter.colberg@intel.com>
-X-Mailer: git-send-email 2.44.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D9238FA1;
+	Thu, 28 Mar 2024 23:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.229.3
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711669125; cv=fail; b=UHcV847Bsrpvae8p3PBFyvz5tZ5WafPID7c1yNYlG3vTRbl2vLegQwf7X54lp+MiWYmsGguHXckTmX3ltLM2+OrYB62uCDwWpDjaymMbsXL1kCbMobHh7rc7HFTeNTXE/u3KiNuI9MAyqmDWncE7/PKxD9lQ6JevF+RJwElvTpk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711669125; c=relaxed/simple;
+	bh=ecosBrlN7dNeoPPibmTdZn884affcUgWCF2aFgxPPW8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ICV3fn3fh5EXBbzWtc1BzyQEfS1qrRLWwth0u3dw9kerL/8UWRKNgDB5KCivoYjbek2mmkD4vUtokavJ68qYAsofe00JDWw/j5TaOWA9G97NjOYaD+yiHcojGmV+8WS3GfNfiizK7aaAkTAg8odPETVXgtvWsW5i3xYflkbDRkA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alpsalpine.com; spf=pass smtp.mailfrom=alpsalpine.com; dkim=pass (2048-bit key) header.d=alpsalpine.com header.i=@alpsalpine.com header.b=KatDiuXK; arc=fail smtp.client-ip=52.101.229.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alpsalpine.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpsalpine.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cDPaOXmKlKpLA3HsWOeIvk49dAjEf7IMSRlkMTaIBORtdN8UepQQ6XvNuaISfakDa3dGqrDs5+8V3CcKETf1qg6rIeWuD1qWUYUX5A9UjTRFwVEQlqxCQ65NZC4bzmU42MKiI+5YzY0s/p+jCK3XXEO30goNIOrZNAiFGxi4HyY7Mqe8m7QCgjuQGNA5sMQ+XYnv0PFzZK2z/8eA6XH+M3Kju0GPNBkLFBk7fDPIx5Ccd3CjvFn36az9y8HhhtCYT2q97sReDeD5JN8mtIe9Gqpsk3xFztEpIK9fNEbV8c1YCy6xEikkNjoXk89khOBATa9gau7YBiPURMANbsgPlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DZ94iaN0ow7vQ+UztB1LuKe70e+0ZrDMkvhS+11krq4=;
+ b=D9leNROErwWre/mXXcZPiDXCjF8UOSaj08n2KDpUMEmz78qUEyH26MjzgDRkqKoy/nd4Fd0LulnhvIMBOGEcpA1kziUxOERS6WUyRxaCvc+9g046KFYyEypTkA0zGC/rQM6B05OYp7YmkjSf8NDeYeGn9WU/tKXJluGvXdWH3gpeDxYvg1eUdHM77yuZYXgHsO6QTxk/XkdzMFbyPEQZ1MA9i1hiCdneJAu498/y1x0qUJy0CK0888lTdr4ArUvmsLpuRl+ixBdeR1oGvPCkeDfu1+ceG7SFRPpeOdk6YvIgEQPf4WwHWEjOhd+R5Qpvryq1yeutoflQ6SZ1tv7xUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=alpsalpine.com; dmarc=pass action=none
+ header.from=alpsalpine.com; dkim=pass header.d=alpsalpine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alpsalpine.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZ94iaN0ow7vQ+UztB1LuKe70e+0ZrDMkvhS+11krq4=;
+ b=KatDiuXK+RL0pINfFyotkyVbQts2/hSmJnh3Nu7KVcL/R8J7u9pORHCiEKi5tzPXnVxmnAyXdpRFYZFzPkFO18AvqiYffLlAOT4HKnjzcg/lVaaBGi0+IfePIoXYKkveHB1jui1dJ0asT1rRicl4GS5H+ssmQ+R9afwfy1eibu3lK8XXbTLkQYTlswOSkKEiM3TUfFaLm7iP5pUf4YiC5jJnf2vGzuuewo0hKYx5Qhz/WsQBJUPYIpTpGcNi3k4RAnVjw0yteIFB6e6Z/8sPEejYRtYdh2GXsFBk1n4ni34tpLIntE9M6bQEuWlv3k64SmpSZOZ3tCWRgU9N1+zSGw==
+Received: from TYVPR01MB10781.jpnprd01.prod.outlook.com
+ (2603:1096:400:2ae::14) by OS0PR01MB5761.jpnprd01.prod.outlook.com
+ (2603:1096:604:b3::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40; Thu, 28 Mar
+ 2024 23:38:37 +0000
+Received: from TYVPR01MB10781.jpnprd01.prod.outlook.com
+ ([fe80::b541:f53c:6306:6e2b]) by TYVPR01MB10781.jpnprd01.prod.outlook.com
+ ([fe80::b541:f53c:6306:6e2b%4]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 23:38:37 +0000
+From: Norihiko Hama <norihiko.hama@alpsalpine.com>
+To: Alan Stern <stern@rowland.harvard.edu>, Matthew Dharm
+	<mdharm-usb@one-eyed-alien.net>
+CC: Greg KH <gregkh@linuxfoundation.org>, "linux-usb@vger.kernel.org"
+	<linux-usb@vger.kernel.org>, "usb-storage@lists.one-eyed-alien.net"
+	<usb-storage@lists.one-eyed-alien.net>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] usb-storage: Optimize scan delay more precisely
+Thread-Topic: [PATCH] usb-storage: Optimize scan delay more precisely
+Thread-Index: AQHagSuLspWlvFs4ZkGDPqS33FWwALFNzt0g
+Date: Thu, 28 Mar 2024 23:38:37 +0000
+Message-ID:
+ <TYVPR01MB107818669DF1EB88BA7D9D2A7903B2@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+References: <20240327055130.43206-1-Norihiko.Hama@alpsalpine.com>
+ <2024032757-surcharge-grime-d3dd@gregkh>
+ <TYVPR01MB107814D7A583CB986884AD4B290342@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+ <a446cdf4-3a9b-43d8-b22b-78c20cce2b4f@rowland.harvard.edu>
+ <TYVPR01MB10781AA8B37E147E318597B46903B2@TYVPR01MB10781.jpnprd01.prod.outlook.com>
+ <0c99daaf-c727-467f-b8c1-ba8846d8a9ab@rowland.harvard.edu>
+ <CAA6KcBBcpug-rOytgnbb=c4O54m-Pfy=divqp12qOMrgmQrz7w@mail.gmail.com>
+ <2483fb37-8939-4723-ae8d-7a7a7dba3322@rowland.harvard.edu>
+In-Reply-To: <2483fb37-8939-4723-ae8d-7a7a7dba3322@rowland.harvard.edu>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYVPR01MB10781:EE_|OS0PR01MB5761:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ /Oxog5YQ7dwy+Q0YFJ9S1GKIK52fVM2U1ZsJF9pVBaF9O4QS3AlbTDW8XuPxCzBcipGsniNuoW2Rar89n31yWjwjwEQorCENoubqU2JwglSE6mtgCiLfgEHSZy3mOxYGXekyV77SDHdkoOVXb1AnEC2BD5Z0XR4npKwaGbBXNt6453N/9rlvKpP2TG9AnC7/U7m4atKmM5vBlQe+obMfUFjfp7VH/YV3vbbIdwvjYxMGYFJ+WS9xpVPNWr7oMAJOciQC7bLlUsb794cPbqcKk8DG6XWsuT9j2L7IPeHIo4ja0jnlcrUbpOOU+209PRWvN/PaddVJWov1apxOhO/+Du0hp3ikGl2jjsv1JEKOAkyqXs+eR/oc+kZ6BkbbvWlFKDI8/1wpYlkHeHUF8qYoG5CUc7P3xrYidACiTWWHFnLykmwjxR2EmLWfxRdvHRyMuUcewCvRRhViPz5mSv2T+qslPDMhaBgsLJAFMeGHnZVgbFLG2ahWeu8J5QacBwUPkSSxifb6KCD+5EWFXZcfra6tGN4h54WDyIFYpU5DDumQtcXhp7WCGSNQ8Kx2XE3EK9lXabfZ1vC8dzbxS8G3Nc+MDnofqIj+lgN7N7R6ar3ifECN1OODrFMj4vDE2nrSIjKB9mO7Bk9vvqP4tRE9AR3L5PmQYjUlFHQzCA+eKtE=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYVPR01MB10781.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-7?B?bVIwa2tvd01zcG04OTZoNVBHSFcxZmRHQlFtYUhORGliYUM4NkJMS25waWNK?=
+ =?utf-7?B?ZTNIdW1OQWxZYXZIMUVDZHR0ZElhNG9iQUhvM1ZtOVlzVzV2bjl6NTJvQ3pE?=
+ =?utf-7?B?VmFINXAxRzlvZ0daWS9heGpCOG1SaUtoODJNWEtzdDFlanl1SDhmcU5JbDQz?=
+ =?utf-7?B?OFBrWDI1UXpkL3h3UUhSRkV3VVVqWG83enozbWZRMjhLQXU3bmZ5d090VEh0?=
+ =?utf-7?B?TzNRYmtPYTBMaGZlY1Q2MFpZWmFGU2pMZ2lQbnE5UnBSUENiT3JIQzRtTVVX?=
+ =?utf-7?B?a2tKdDd1azQ3bDBQWU5obkR4ZC9sckpZbFdIejNGblZzUTQwem9LMTZaNVAz?=
+ =?utf-7?B?UklzMDJzMUVWNHN0MGN3bzRJeFNvUWFURHg5SGhwUlIrLWYzNUpwTTUvZTVM?=
+ =?utf-7?B?WkRoVGtXU1VkOHo1dGd1Z2YxbGNFWVprbzVjNDBTaHlOTjljdTVxVE52M3Vt?=
+ =?utf-7?B?NWFyYnJIbUhYSVhKd056ajNoRjZhY2M4S29nMk1BUCstTkZQZW5kcUxWMHJP?=
+ =?utf-7?B?dzFIMnl0UWxaUEI4YzhCTDRsR2VQbTJlM2ZRVlJGZFNWRm9CZXpNUkk1RHM1?=
+ =?utf-7?B?d3NJYXZwNkRaUm03azV0QXRXMUxNcDVUeGpSWDg0Y1ZmU0YrLS85RmJ4V1Ex?=
+ =?utf-7?B?WFB2VDVlalI1S3p3U2dhZ1FGSEJPdnN4Vlh5S1ZjaU1BM3B3aWFreEVXMkJa?=
+ =?utf-7?B?SDIzM3pkcld4M0NMVnkzTEtwM0thbFkxZjQyMmh5cm40ZVB3N1RvdmU1bmRQ?=
+ =?utf-7?B?Z09QN2d5MkRKbXdPWExBR2VLaThFSi9DMTJnbGxSMW9JSjZpY2FyeEtkbjNz?=
+ =?utf-7?B?WnhqblE1ZmdPdVBUYy9EdzA1TjRCZlQvTDFtMUhhQ29KRE1IMC9md2FxaTdS?=
+ =?utf-7?B?Ky1haGhtY00zL3hXQ05kMFEvMXZGc2FiVFdjM1FxSThSdjFiNExlYzYzM1RJ?=
+ =?utf-7?B?MzVqWktMNDZoVVRnSUdKYWlZU0xLY1cyWExoMGhVRVhtRWZ3bk5TMGRGTUdh?=
+ =?utf-7?B?QmR5ZFBRYUZrNGROTnZNVFJsWUR5UUZjVUdYKy1INHNDZ3hWVUJ1OXg2R0pR?=
+ =?utf-7?B?cXFoKy1CT1E0S3UrLUtBNE94aDgrLXZET04zVzdtN2M3cFJJOFpMcnkyNllW?=
+ =?utf-7?B?bDByTUQxNlBnZ2ZFVUJpZU9hYWFPeDhLNTc2V243RzZkWWNrVzl4T2FtRHRt?=
+ =?utf-7?B?R2F0MnllUUtvaG9xcnhmb2hwdElTRmdQeXZNNUIySUs0bnFWSHdDeWx5L0Ey?=
+ =?utf-7?B?YystR01aY09YL0RoTU1xUCsteGNPSWdURHJhUS9mbDEzSENFOHhhbDNmR2NY?=
+ =?utf-7?B?YTZWaHFPcTNwTTArLUJDWXNlVHJTZUhMS2traW93ZHI2dWd3dVBjdlk3Ymdz?=
+ =?utf-7?B?b01YUjM4V3oweG1zNm4wTmRHTVlVM1NuMjZoWTRtMHR4NlZVT0dBSWZmcm9i?=
+ =?utf-7?B?clNkKy1MMnIvT3A3b1VBWTdHRVBDQjM0amsvNDJFcDd0M0NMZnp2UnN5ZFFk?=
+ =?utf-7?B?Sm9HV3lWWWIwcDk5ODZLb25YTm5COERrUWFYanJxc2hiY0o4dWtiTDE4aTZN?=
+ =?utf-7?B?d2ttYkwySzcvNWZCUGZTcmljZ0JkMDJtSW0wQTluU2NFUHVmSmJaNVc2Ukg2?=
+ =?utf-7?B?RlJvOEJWVmZ5WUpOVi9lOFVGTmo3YVJ1ZHV4WnUrLXRKVVRab3lOMll6TlJz?=
+ =?utf-7?B?ZnR4RDdXbW5iNnhJMkw1RFNNenZLOUpESTE1U3FHMnIrLVpSem9QRHdvTkJ1?=
+ =?utf-7?B?ZlZiT1RsU1kxaDU0M1gvRkRscE9Jc3RnWmNoc0hta0s2NlYzMGpiUmw1czZq?=
+ =?utf-7?B?YndLbld6WW05UUFZRUhHRjJKVFpINXdVRThKWXcrLWIrLU84VXN6aVdYbzY3?=
+ =?utf-7?B?SFp3VkJuSktUVUkrLTR4enFFNUxuTEcxKy1aUGpZWWN2NlIrLXI1b3BDNDNp?=
+ =?utf-7?B?akdRQ2FFYS96NVJ6MXBaMHVIcUxLTGtZNlVYTXMvWkhrVXF2Ky00UWY4Zkk4?=
+ =?utf-7?B?dW42R1dESWFkTG0rLURJMGI2ZzN1NjhEbzBva1BNajJNWGJiNkx1NDZLNS9y?=
+ =?utf-7?B?ZlV1cW5hRk10ZHBQRlFIODU5UHBFM044NDg4VlQvSlRubkNRNHhLL25yRnRr?=
+ =?utf-7?B?WDFkNEFBMnk4WURnbk9FT3ZpT1ZzamJjcmh3S3B6RWk2RFVFWjI5YThKeWp6?=
+ =?utf-7?B?cA==?=
+Content-Type: text/plain; charset="utf-7"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: alpsalpine.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYVPR01MB10781.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54c3fa4e-a693-4679-cb2a-08dc4f803122
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 23:38:37.8001
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 57e76998-77bd-4b82-a424-198f46eb2254
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3tF5w5cGrUl3/973/hizyfxPEdkUs1KO7ytUxFhVjzu+JzwiZlwj/RJX/HJrfSx2edEBNbr5phbdzKUHcah7tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5761
 
-From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
++AD4- +AD4- +AD4- Here's an approach that Greg might accept.
++AD4- +AD4- +AD4-
++AD4- +AD4- +AD4- Since we already have a delay+AF8-use module parameter, w=
+e could add a=20
++AD4- +AD4- +AD4- delay+AF8-use+AF8-ms parameter.  The two module parameter=
+s would display the=20
++AD4- +AD4- +AD4- same value, but delay+AF8-use+AF8-ms would be in millisec=
+onds instead of in=20
++AD4- +AD4- +AD4- seconds.  (This is similar to what we did for the autosus=
+pend and=20
++AD4- +AD4- +AD4- autosuspend+AF8-delay+AF8-ms sysfs attributes.)
++AD4- +AD4-=20
++AD4- +AD4- What about just changing the parser on the currently delay+AF8-=
+use=20
++AD4- +AD4- parameter to accept an optional suffix?  If it's just digits, i=
+t is in=20
++AD4- +AD4- seconds.  If it ends in +ACI-ms+ACI-, then interpret it as mill=
+iseconds.  This=20
++AD4- +AD4- would be backwards compatible with existing uses, give you the=
+=20
++AD4- +AD4- flexibility you want, avoid adding another modules parameter, a=
+nd=20
++AD4- +AD4- potentially be expandable in the future (if, for some reason, s=
+omeone=20
++AD4- +AD4- wanted microseconds or kiloseconds).
++AD4-
++AD4- A little unconventional, I think (at least, I don't know offhand of a=
+ny other module parameters or sysfs attributes that work this way), but it =
+would work.
++AD4-
++AD4- Noriko, would you like to write a patch to do this?
 
-The size of the staging area in FLASH for FPGA updates is dependent on the
-size of the FPGA. Currently, the staging size is defined as a constant.
-Larger FPGAs are coming soon and it will soon be necessary to support
-different sizes for the staging area. Add a new staging_size member to the
-csr_map structure to support a variable staging size.
+Thank you for your advice.
+I understand and will try to do that.
 
-The secure update driver does a sanity-check of the image size in
-comparison to the size of the staging area in FLASH. Change the
-staging size reference to a variable instead of a constant in order
-to more readily support future, larger FPGAs.
-
-Co-developed-by: Russ Weight <russell.h.weight@intel.com>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Peter Colberg <peter.colberg@intel.com>
----
- drivers/fpga/intel-m10-bmc-sec-update.c | 3 ++-
- drivers/mfd/intel-m10-bmc-pmci.c        | 1 +
- drivers/mfd/intel-m10-bmc-spi.c         | 1 +
- include/linux/mfd/intel-m10-bmc.h       | 1 +
- 4 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/fpga/intel-m10-bmc-sec-update.c b/drivers/fpga/intel-m10-bmc-sec-update.c
-index 89851b133709..7ac9f9f5af12 100644
---- a/drivers/fpga/intel-m10-bmc-sec-update.c
-+++ b/drivers/fpga/intel-m10-bmc-sec-update.c
-@@ -529,11 +529,12 @@ static enum fw_upload_err m10bmc_sec_prepare(struct fw_upload *fwl,
- 					     const u8 *data, u32 size)
- {
- 	struct m10bmc_sec *sec = fwl->dd_handle;
-+	const struct m10bmc_csr_map *csr_map = sec->m10bmc->info->csr_map;
- 	u32 ret;
- 
- 	sec->cancel_request = false;
- 
--	if (!size || size > M10BMC_STAGING_SIZE)
-+	if (!size || size > csr_map->staging_size)
- 		return FW_UPLOAD_ERR_INVALID_SIZE;
- 
- 	if (sec->m10bmc->flash_bulk_ops)
-diff --git a/drivers/mfd/intel-m10-bmc-pmci.c b/drivers/mfd/intel-m10-bmc-pmci.c
-index 0392ef8b57d8..698c5933938b 100644
---- a/drivers/mfd/intel-m10-bmc-pmci.c
-+++ b/drivers/mfd/intel-m10-bmc-pmci.c
-@@ -370,6 +370,7 @@ static const struct m10bmc_csr_map m10bmc_n6000_csr_map = {
- 	.pr_reh_addr = M10BMC_N6000_PR_REH_ADDR,
- 	.pr_magic = M10BMC_N6000_PR_PROG_MAGIC,
- 	.rsu_update_counter = M10BMC_N6000_STAGING_FLASH_COUNT,
-+	.staging_size = M10BMC_STAGING_SIZE,
- };
- 
- static const struct intel_m10bmc_platform_info m10bmc_pmci_n6000 = {
-diff --git a/drivers/mfd/intel-m10-bmc-spi.c b/drivers/mfd/intel-m10-bmc-spi.c
-index cbeb7de9e041..d64d28199df6 100644
---- a/drivers/mfd/intel-m10-bmc-spi.c
-+++ b/drivers/mfd/intel-m10-bmc-spi.c
-@@ -109,6 +109,7 @@ static const struct m10bmc_csr_map m10bmc_n3000_csr_map = {
- 	.pr_reh_addr = M10BMC_N3000_PR_REH_ADDR,
- 	.pr_magic = M10BMC_N3000_PR_PROG_MAGIC,
- 	.rsu_update_counter = M10BMC_N3000_STAGING_FLASH_COUNT,
-+	.staging_size = M10BMC_STAGING_SIZE,
- };
- 
- static struct mfd_cell m10bmc_d5005_subdevs[] = {
-diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-index ee66c9751003..988f1cd90032 100644
---- a/include/linux/mfd/intel-m10-bmc.h
-+++ b/include/linux/mfd/intel-m10-bmc.h
-@@ -205,6 +205,7 @@ struct m10bmc_csr_map {
- 	unsigned int pr_reh_addr;
- 	unsigned int pr_magic;
- 	unsigned int rsu_update_counter;
-+	unsigned int staging_size;
- };
- 
- /**
--- 
-2.44.0
-
+Best regards,
+Norihiko Hama
 
