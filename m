@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-123750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE13890D53
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:18:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 640E7890D55
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C28B2B23C18
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4578B23E5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD114148829;
-	Thu, 28 Mar 2024 22:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2098F148847;
+	Thu, 28 Mar 2024 22:08:06 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721F613B29F;
-	Thu, 28 Mar 2024 22:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C4814883D;
+	Thu, 28 Mar 2024 22:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711663683; cv=none; b=iVHyvNwpDY3BODDtXrPqchRtfKm6ni4UeccqSIjc+b4qyFMUjiJ90q3O9tWU1PkOxZSzodi3noq2ZlwuOreeYFG9EFSKHNJK3Hg/Hl1nc/Mm2tmfLx3PUQ1AARScIFNs+w3QL/RF3geJWAOhDKacjYC7aOO8Yxk/O5aH7LVrxkc=
+	t=1711663685; cv=none; b=gE33cFY9R9RKMRI6AswpsdlYYjD58MtWZoNLWS5YLLoY/Va19M1tVx4sCaXpfuNv5Q/yxoOqhxaTb6JVMoyOXS+/P3ti9iMS+Xz2TjGsRkEVGbBY97FtI9ZMgsLS6w53b9scpI52DPXfqQ0Yj1zwusnFJ09vPNVZx8dRgAeN/QU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711663683; c=relaxed/simple;
-	bh=Z5DlnbUr8G+qcFQBgBzjcHM9HuIpnWv9wjU/Zhwm4zY=;
+	s=arc-20240116; t=1711663685; c=relaxed/simple;
+	bh=mF7psN+EswNE0qvj04SULuiCK6HE8Vl10yB9Iadw9rA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iZQvxfb/CtnCX9GZNn4hwWp9AK9j1ryJDVVUhYhzuQWIeAywNrOzZons93I4llZ3q891iDX7xub2g0NPi3Cqn8FOgW/TX/21NhX7GuyUfGIiEzScXRxYXSI1FqJLFN5KKNaSqsH4UQ3epUE2MriUxHA+8svz6NnXVUd4fw9X0Jw=
+	 In-Reply-To:To:Cc; b=ItkWlJCw9FY+AnedP8SLDSPFZSngBt8wL4AXVOjq2uUPiHaO1UQsqYE99dqKhNz7OkEKZDFp8PVF4TJvnDSAFCx5HS0ZPnGoIc9TOy/YfPBqRt0kfZgYRUBKh03notGAbo5nA4EHOkyyJYXY3wGNYnJthDgI0YBXNBMTutVXMwo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C76BFC43390;
-	Thu, 28 Mar 2024 22:08:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10596C433F1;
+	Thu, 28 Mar 2024 22:08:03 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 23:06:22 +0100
-Subject: [PATCH 44/52] USB: serial: ti_usb_3410_5052: drop driver owner
+Date: Thu, 28 Mar 2024 23:06:23 +0100
+Subject: [PATCH 45/52] USB: serial: upd78f0730: drop driver owner
  initialization
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-module-owner-usb-serial-v1-44-bc46c9ffbf56@linaro.org>
+Message-Id: <20240328-module-owner-usb-serial-v1-45-bc46c9ffbf56@linaro.org>
 References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
 In-Reply-To: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
 To: Johan Hovold <johan@kernel.org>, 
@@ -48,21 +48,21 @@ To: Johan Hovold <johan@kernel.org>,
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1022;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=695;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=Z5DlnbUr8G+qcFQBgBzjcHM9HuIpnWv9wjU/Zhwm4zY=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBenhm6sUOW608c8pQ+qYpyS+UFE41uzt0vA6r
- b8WrlgX1ZCJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXp4QAKCRDBN2bmhouD
- 1yhND/97zJ5jCi2Nx9vg1BKkssn1OVHz/78HKURATVDVsaIMBoyqFy1aXE8LUckOFyKmrihcczl
- 43EkJiW1HWfJjU0pwTr2YjmChOOoKQKwC9Vo19Lm9bd7hRfkOLsmRcZl2rvL/grCrCM77wmQbsU
- hSf4pWo6meIwWTF9H8wX842CveOvv1+Oy33lWPpUp9jp7yEFcQLLsNFT8OxAxXjbKYa/n2Yn6ts
- poBVF57uuXGvvazLuZruRd025QOKkGeqvr2lTgW8ks50KejywbYT/q4g8WZD024J/o6fpSfVEsB
- 2NDB/fj25nKLNZqjamYoKY8g0J84zcALSVkcJL0JXGSPjYxA5bPtgorPprnDcKFj3XR6awD14eG
- UB+5rfN8zqO685CqUIKksKuMGNBnawr/CiRFK10V/RqAuohjfP0i6a7yu1c5JtRwJssniIDprha
- 6mK8sIDhaumjiahQTTKprSdKQfvGDpPoS+txdQspkGPlnbruYQpsnJfeP7ZDNGZpD9gKVBz9j5a
- hn1ppDFR9TcfOXcZM/MJB2qT2CSHe/nWCMKF4OFv5vff7DCP0G9IuohyY3tRwvoQiiZiVdeoKoS
- NOiAWcKHdhw8KHfWA5Cu2YGXO0jcUx10T0SpSgYaDNi5hHBaljM/6yxwhv4wVV+Qj1HF5UcHlpx
- SQLAHD4Rs4BpCZA==
+ bh=mF7psN+EswNE0qvj04SULuiCK6HE8Vl10yB9Iadw9rA=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBeniPbkVBzEDhGSTWjWtMOVWYZFcDsqgly4Gx
+ qeGpTqRdbmJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXp4gAKCRDBN2bmhouD
+ 18EyD/9XHLoum6xilFXiFBpqbP2NJgnLk1e1pOBnkleE6YpVp/WYgteNWAw+hR3WMKboYK2Pv4E
+ pjrqmfXU6SKGjGTKcLZAW15+70A7QUBKl2Fsq1DsDduhU0ZrYZRZnv9jH5VWMhVKH7XEd0X66Ur
+ rs0II6QMlryDGBJ+dno2/4pJRrubbBj1BHxHad7EwK0gIiK9YcD95zeNPVfFwlXldfclNAyAD5u
+ qzMneJqOTxtI84afkMXAAfqXVkAMQVAKD8ixrle+AZijSRWmmAmg9nC8zAPZLK8CbhiRbebLLQu
+ f7gXDjv0byurAgd0UAMBxbENrUWONskdYcxTQYmCrWJR7G8pwchPgSM7Eg5cPHx97wtYH7R1HIg
+ PqCTHqb0cltZRnkf/T9g/35crmZYtfveA3nh0PcHS8IMAGSMlNjdrb2R3kn2Iolf6WVjeYDbrfh
+ Rsxrid9uhPyfRxZ5v8fYU+xjDmfM3vvziHhZZDj5haUwYEFPoVS4ZONpifnj55w8Kz0NbYbD0CO
+ QqzrKL0uKon8tA55Ibd2jbozRcGSwP1wf8Nxwfr4Zb6LuNi4T6IRL/cdgQQEin6pBylF7/U0dE9
+ YRacdLsE7oBbtGo+BYBtO7VfU/lDSoYYXAt24v4XKZWypZGYoO8FD+Ad/PIR7hH0o6c5i4/l7bB
+ wBP0BGvZ6QKSBmg==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -71,29 +71,21 @@ does not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/usb/serial/ti_usb_3410_5052.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/usb/serial/upd78f0730.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/usb/serial/ti_usb_3410_5052.c b/drivers/usb/serial/ti_usb_3410_5052.c
-index 0fba25abf671..a0c244bc77c0 100644
---- a/drivers/usb/serial/ti_usb_3410_5052.c
-+++ b/drivers/usb/serial/ti_usb_3410_5052.c
-@@ -417,7 +417,6 @@ static const struct usb_device_id ti_id_table_combined[] = {
+diff --git a/drivers/usb/serial/upd78f0730.c b/drivers/usb/serial/upd78f0730.c
+index 46952182e04f..15a17bf111f1 100644
+--- a/drivers/usb/serial/upd78f0730.c
++++ b/drivers/usb/serial/upd78f0730.c
+@@ -407,7 +407,6 @@ static void upd78f0730_close(struct usb_serial_port *port)
  
- static struct usb_serial_driver ti_1port_device = {
- 	.driver = {
--		.owner		= THIS_MODULE,
- 		.name		= "ti_usb_3410_5052_1",
+ static struct usb_serial_driver upd78f0730_device = {
+ 	.driver	 = {
+-		.owner	= THIS_MODULE,
+ 		.name	= "upd78f0730",
  	},
- 	.description		= "TI USB 3410 1 port adapter",
-@@ -450,7 +449,6 @@ static struct usb_serial_driver ti_1port_device = {
- 
- static struct usb_serial_driver ti_2port_device = {
- 	.driver = {
--		.owner		= THIS_MODULE,
- 		.name		= "ti_usb_3410_5052_2",
- 	},
- 	.description		= "TI USB 5052 2 port adapter",
+ 	.id_table	= id_table,
 
 -- 
 2.34.1
