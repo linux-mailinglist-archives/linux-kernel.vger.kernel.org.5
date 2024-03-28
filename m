@@ -1,116 +1,89 @@
-Return-Path: <linux-kernel+bounces-122841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB96A88FE3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:39:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B17188FE40
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:41:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9390D295238
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:39:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C837C29703B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694907D08A;
-	Thu, 28 Mar 2024 11:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C087D411;
+	Thu, 28 Mar 2024 11:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="mKPdRH/9"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mwwfk5BR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061A22D792;
-	Thu, 28 Mar 2024 11:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5721D2D792;
+	Thu, 28 Mar 2024 11:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711625942; cv=none; b=r9iNNfRzuuv2rJVyV2AQ4Sj/JM1PzlKpavyvmqR76vuSAGSMKzV4erJ6nt0jTMhTxjT0wjvnbpdHbxIjk4QHh25hGdWMtNlT2KSE5szEaC6qmDAtCe+WlQpv/R/YJhCjxgzBeAdAfDgaGNDnrH+eb0Ey6QkeaAUBcCHAiAOsu6Q=
+	t=1711626096; cv=none; b=Ro1a2j3n8NFo82m3L6dvGyYAKw44M2QPRT8raOhtHyD8UMSW/oA4502M1+Bh0CQXjvQfFwXnYp1OtVMKECL6eCxZvR4tqlM6Z+2M9a7waHZm7O5OeKos0fdvbeCbckSbxF+ZoemLnxpjCjUHkZwJpODL3/FckT+SBzh3UyD0bRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711625942; c=relaxed/simple;
-	bh=8RmK43ggvfQ1+WvpcWl0NYjVeNhqoikpnYsbFbW3j/M=;
+	s=arc-20240116; t=1711626096; c=relaxed/simple;
+	bh=TY9UdTz3r/g/8VoI8unboOjtiBgPLji8N1MUYjw9Drc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lucML9/6L6nI1A3rgbvChuSAg6iKJX0yQfCx0z6rRM69WsGg0g/DcrwXu1H3A7rMPo9Qcso04F908aUY1qCAoWuJdW2ocq4MI8/7KwEmn6QNt84qTp631txdEX0pxkh1dSl3QNbIbVAJSeBYxOWAeYa6aM6ZhLgf0YZcAFkeP9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=mKPdRH/9; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 36AC5609EB;
-	Thu, 28 Mar 2024 11:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1711625939;
-	bh=8RmK43ggvfQ1+WvpcWl0NYjVeNhqoikpnYsbFbW3j/M=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=mtSFJUSrK8J/MgelzSfjU17E/PzNaQNseEaOm0soyVNUjUlG4oqx5mZL0jRgyPRUTleJoz7owfkbuHn/ltf6+iT9zZlNymdP5W4KLSmeAZCIjpBYthiWyrDPJIFYv9u0xSfxtmI96Keh9WhasgUNK0H0RJ+YRfEnGIvWxN+Ofos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mwwfk5BR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72B79C433F1;
+	Thu, 28 Mar 2024 11:41:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711626096;
+	bh=TY9UdTz3r/g/8VoI8unboOjtiBgPLji8N1MUYjw9Drc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mKPdRH/9zOwwU9H2YcgUUwdq5iUKUx6g9oxw2e/eKPuxkN8OweTp1WWZsbGA0WAcI
-	 L4tlmXt215Gs+8h7J7hKjm/b8nsTTn+svvULk9LRsUXidnEF2PJlFk78d3jFAe7sr5
-	 +33ADM15JgMKew990UW2mqb3gAS++HmeGuxmwq1f6bCVKh3AD36zYwLlTT6ahOwRmf
-	 OjNw2L2CnOs5eqGYN7ysNVan8GVsyz128jzLlcJTzFkdvO4tVZk028dk+gyhVBBM/n
-	 4VvQDRnlskomUPXlLNDrA4wXLr8+HjCfg1fU5U0iq4pI6tvMB5KlDtmQJMriU8Hoal
-	 NmLJ28gS9hDxg==
-Date: Thu, 28 Mar 2024 13:38:45 +0200
-From: Tony Lindgren <tony@atomide.com>
-To: Dhruva Gole <d-gole@ti.com>
-Cc: linux-omap@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, nm@ti.com, vigneshr@ti.com
-Subject: Re: [PATCH 2/5] bus: ti-sysc: Add a description and copyrights
-Message-ID: <20240328113845.GI5132@atomide.com>
-References: <20240327081508.36747-1-tony@atomide.com>
- <20240327081508.36747-3-tony@atomide.com>
- <20240328111907.cknfqe3qpiyeipsp@dhruva>
+	b=Mwwfk5BRZF/2X+CIdxwFIXcyxaxEIIU3PRZH/lFenk/+rSm7CyDbxXjfT7gVPA8kB
+	 yLvTrVO3+wK9AHJhJxaJmEfVDR7f/rY2qZjN9Vcmxhw0Y6Zj1tLbggrbMxSpA+NUnN
+	 GBb5M7aGp+jX0cwUzVXZsC2Kb2v2xlgen2neBv0T9pVq7o0ppVj3D8V7EkTecFy9Nf
+	 t6MrZr/HJwS2mIX6S9ke+zfeUpqxdiASAo37YQCbAYHgXCUAnMlKxEqRh4q2Z9c9CL
+	 XlC5OkOMeu8o4hPzU4AUHP7qBAFZduH8XH17KYKxiBoLFQLZH40SF5MWoyJ7BpDmJZ
+	 dTNrwGp5eIGsQ==
+Date: Thu, 28 Mar 2024 11:41:31 +0000
+From: Lee Jones <lee@kernel.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] video: backlight: constify struct class usage
+Message-ID: <20240328114131.GB13211@google.com>
+References: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240328111907.cknfqe3qpiyeipsp@dhruva>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
 
-* Dhruva Gole <d-gole@ti.com> [240328 11:19]:
-> On Mar 27, 2024 at 10:15:05 +0200, Tony Lindgren wrote:
-> > The ti-sysc driver is missing coprights and description, let's add
-> > those.
-> > 
-> > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > ---
-> >  drivers/bus/ti-sysc.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-> > --- a/drivers/bus/ti-sysc.c
-> > +++ b/drivers/bus/ti-sysc.c
-> > @@ -1,6 +1,17 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  /*
-> >   * ti-sysc.c - Texas Instruments sysc interconnect target driver
-> > + *
-> > + * TI SoCs have an interconnect target wrapper IP for many devices. The wrapper
-> > + * IP manages clock gating, resets, and PM capabilities for the connected devices.
-> > + *
-> > + * Copyright (C) 2017-2024 Texas Instruments Incorporated - https://www.ti.com/
-> > + *
-> > + * Many features are based on the earlier omap_hwmod arch code with thanks to all
-> > + * the people who developed and debugged the code over the years:
-> > + *
-> > + * Copyright (C) 2009-2011 Nokia Corporation
-> > + * Copyright (C) 2011-2012 Texas Instruments, Inc.
+On Tue, 05 Mar 2024, Ricardo B. Marliere wrote:
+
+> This is a simple and straight forward cleanup series that aims to make the
+> class structures in backlight constant. This has been possible since 2023
+> [1].
 > 
-> +Nishant
+> [1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
 > 
-> I am no expert on the copyrights part of it, but who gets copyright from
-> 2012 - 2017?
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+> Ricardo B. Marliere (2):
+>       video: backlight: make backlight_class constant
+>       video: backlight: lcd: make lcd_class constant
+> 
+>  drivers/video/backlight/backlight.c | 29 ++++++++++++++++-------------
+>  drivers/video/backlight/lcd.c       | 23 +++++++++++++----------
+>  2 files changed, 29 insertions(+), 23 deletions(-)
 
-Well this particular driver did not exist until 2017 :) But for the
-earlier hwmod arch code reference above, we could make it 2011-2024.
+No longer apply.
 
-> Also, for TI should we stick to this format as you did above?
-> Copyright (C) 2011-2024 Texas Instruments Incorporated
-> perhaps?
+Please rebase on top of v6.9-rc1 or for-backlight-next.
 
-Sure that works for me.
-
-> But otherwise,
-> Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
-Thanks,
-
-Tony
+-- 
+Lee Jones [李琼斯]
 
