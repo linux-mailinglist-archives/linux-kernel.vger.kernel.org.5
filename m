@@ -1,154 +1,162 @@
-Return-Path: <linux-kernel+bounces-122934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD78C88FFBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:59:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F3488FFBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:00:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D8FF1F257FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:59:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B98A4293B90
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A359F7EF13;
-	Thu, 28 Mar 2024 12:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356337F492;
+	Thu, 28 Mar 2024 13:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SZ9i9kI+"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgOmWPFW"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E4F852F6F
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769112D792;
+	Thu, 28 Mar 2024 13:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711630768; cv=none; b=nPTIyiS9MfcT856xoAVgVBCbBpF7YSpR42l8JfNjgMaXyHUkprrtiZhHZZo8mq5TJQTZ9kJPwZQLq7s2MQDl8sCJfk3SIu+YIrHDD5xA9TLaVLyxDLiHDBf5h/zjSZr6NsinLsYVYTDzxMZhXPOTG60hLleKV14arTujAcS62kM=
+	t=1711630830; cv=none; b=QeT2eL4Q9gwpkZ1InHZlazedrooRfK3xYO9y0EuNbZcrGQp/Z114/qqZ6JGbJ/uNFLB9L66uFKtkCIdP74U6z0Dr7/nQQZdKNZpDyvLOz+ML7haXuOtLzzo5EtOE/9mFwL5osLeK3PpnBQ5U18/LdV51By5aAeWC3WW7xg/CBWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711630768; c=relaxed/simple;
-	bh=VoNwYI0BpMUamtvxeLEmRm86/HziZqT+7mbcMtBT4aw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l0IcW/6wNS3Aqltgc4whMSJPEC8SF/BAbTMM6lRyieFvv8/2Uwv80hppD+AVo5EhcmqYhDf+h5hrOJRpXkB8Zloe3pBHhZXFUxxbwgjpnpM2uW8h8cmSxKlFcA/4v50qyWxw5Fkex/VTSbt1KZOOqaO+lL7SCdjrd6xCcObPPk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SZ9i9kI+; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42SC0CNG001805;
-	Thu, 28 Mar 2024 12:59:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=5vaAlGKoMasCss0O/Zs1kybRjPorfY06TxnoBIa4oKI=;
- b=SZ9i9kI+MiHYMeEKGnkAdkyyEKf9n+N7xaDXcZ4owj6GVIa75pSCqCdtHL5nZCyE5Ok2
- 9eTkfybFmYlK8x6aefKzrb8oG5BGt8KwaN3jtuXHr27eb+GncVJVAzGqaXYjXqEWI4nR
- u9QUPRixo5PxEBQja2m7o7nO62Lv58AJZV0atgIepcHTvUpdp7/0DQaEClYxCXMFDM0x
- a839hPgEyYa1vdQte1MYHWu8wjgh4jbUX7ICCa/+gjOnzJB3xHvz9zJFjGRdj0PbGNo1
- K8SLR83VHIYlvjGBK51T9/uQQG+rFmrq0Kowm5VdsiCwMsI7YTwyP498zwM2dPjOs/K0 7w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5829g521-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 12:59:10 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42SCx9ei012223;
-	Thu, 28 Mar 2024 12:59:09 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5829g51t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 12:59:09 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42SAftkE028685;
-	Thu, 28 Mar 2024 12:59:08 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x2adpnhsq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 12:59:08 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42SCx6aa24183318
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 28 Mar 2024 12:59:08 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0E35C58059;
-	Thu, 28 Mar 2024 12:59:06 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C701C5805F;
-	Thu, 28 Mar 2024 12:59:03 +0000 (GMT)
-Received: from [9.79.190.254] (unknown [9.79.190.254])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 28 Mar 2024 12:59:03 +0000 (GMT)
-Message-ID: <d0a7eebf-eab0-4a8d-b1bb-b4cbc9da18b8@linux.ibm.com>
-Date: Thu, 28 Mar 2024 18:28:59 +0530
+	s=arc-20240116; t=1711630830; c=relaxed/simple;
+	bh=ytlDWQ3r0yK5DRXkZh2+9C09CjyHTWVJS0gSnhKeG1g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SuogrpNjQbyE1X9PPQdUe2nmtAiARhGD9epsyCs++uJQoDL+1hszumH0JTV37Ej4bB4RYHNwm+qlIDPD7ZxzeNxbCTGfsKIAJUAQ13m/SvMinN/4ACNSBQ/lbLessbYvBm3+JgX5Z/BeilOeHFAVAGJH7ExqP5XazG4CCIQn2GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EgOmWPFW; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-61149e50602so7254057b3.0;
+        Thu, 28 Mar 2024 06:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711630827; x=1712235627; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=f/AjMOT3HT8tt2clqaveH3JYtGktFT3MJvxhAn7/WUU=;
+        b=EgOmWPFWrFER7QZhHz9BkULp2rvqocyUBeeNn6BomHeaaAZlogpYPjyIBTRMzPGJLN
+         kV8vJlfCb/mk+vQjBFCVR9VRWUOdh0QczuLWZ8Yf9VQqbQjZiH2ERegMc+7LsT7AiKyc
+         SOq9tPXjerqK2JRM2HMBAve9+XXLdFeNapdHIVyymGYEsGvfKxMEUSLJ4SKHSIY3B3rN
+         B6yRbqS8OpYdsAl1K2fPPqGdfY0lqYJ7jQC/D74eYYXzmuCVxUXT2ULPFb1TJGHATWcC
+         jhklbHryB5oD18cBXhttn/ZjyVrrR8BQaj6ypse10svKv1UQhMoca8QgFMLC+DYl4A7E
+         ypqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711630827; x=1712235627;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f/AjMOT3HT8tt2clqaveH3JYtGktFT3MJvxhAn7/WUU=;
+        b=Vu6zzpsplfE9Z+/Nwx3p80255uihqVKjSeWafN+tmjaYB+fxO9vYQxomwRwBcfR3ax
+         u4FXujBUiWGAB0jbQ7P0fEYt5omKXGYj/pg6wOGsObsolNSiRqTNoUheUuXX2dvUjWMa
+         1jxS1+Ldg5ZN7pSMHziKDGnn9RHD0R0FjCNgQdFYV3ies2eJpowqTOb2PIVLTU2B1yid
+         IKCQK4ovOA2Xz4g2x1Y/djDSzHSq/MP++lmRWkjyGmnhFJJ+1jXlng9saAbmSp8HNSfW
+         mZSPfbOGU1dX/HhJREIKK5gEpaRTprq13f7GD1b71cg5UZfBjnRqMnyVBe6kPO1TjMI3
+         ek+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWi5EpqC5ssCPfvYjz8r7vOciOVWX6GXomtwxh2GzjPPXbEqa7xuYZ8SDWTUh39pXv7hfRAKe2d1hXPdhpC+aTVvY/uqDIICYb3+li/
+X-Gm-Message-State: AOJu0Yx6Un4ue9oH5F+nYFtbA/zthe/u9XuLYTbdkYqZpml7s6a3u5Bp
+	gKdY22PtvoXcnv2DQ8lDT/IJB1QGumAjjJV99ZPGByYrU3c8vJxFsxTY292vYWc5Sa+J2/1dF0D
+	CnaqRZbBMBpYlRrzZAJukPzqbLGE=
+X-Google-Smtp-Source: AGHT+IFIS1ir+HV9i+A50lcERS3uuHvos/1q6/p2/DPOxQHumrqAlPqWxS8NZtvVFTPkDZB6iPwVOPr3TTVui6ePPOE=
+X-Received: by 2002:a81:47c1:0:b0:613:fb28:b694 with SMTP id
+ u184-20020a8147c1000000b00613fb28b694mr1127105ywa.3.1711630827494; Thu, 28
+ Mar 2024 06:00:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] sched: Minor changes for rd->overload access
-To: Ingo Molnar <mingo@kernel.org>
-Cc: peterz@infradead.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        qyousef@layalina.io, linux-kernel@vger.kernel.org, vschneid@redhat.com
-References: <20240325054505.201995-1-sshegde@linux.ibm.com>
- <ZgFTtAOw39tIyfzR@gmail.com>
- <3c92c18b-6a19-4477-9972-1219c29b3d71@linux.ibm.com>
- <ZgKApcWeuwxc2+WO@gmail.com>
- <38c39ea6-21df-44e9-96e7-6f6fd35822a7@linux.ibm.com>
- <ZgVHq65XKsOZpfgK@gmail.com>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <ZgVHq65XKsOZpfgK@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: pTvmYwOe2dICIwkoa57mg-DdUCA-w5-P
-X-Proofpoint-GUID: G_07Evd_MSLo-9-taBEhCJvm70RIpAU_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-28_13,2024-03-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 suspectscore=0 clxscore=1015
- lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2403210000 definitions=main-2403280088
+References: <20240327032337.188938-1-wedsonaf@gmail.com> <20240327032337.188938-3-wedsonaf@gmail.com>
+ <ffuYV4VQCfRoM7Fws9Z7TOVXS_dJp89q9--Sv9fipzWpOUqkjad5EfXsZPcBZ8ciGzrPo-U-2rEy5CUOitXNp4e4hAJHwZ0uH_u3zDxr0zE=@proton.me>
+In-Reply-To: <ffuYV4VQCfRoM7Fws9Z7TOVXS_dJp89q9--Sv9fipzWpOUqkjad5EfXsZPcBZ8ciGzrPo-U-2rEy5CUOitXNp4e4hAJHwZ0uH_u3zDxr0zE=@proton.me>
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+Date: Thu, 28 Mar 2024 10:00:16 -0300
+Message-ID: <CANeycqp08CFeh4rO+b1ocGDp_nViN2uYhL6_RZ4PWn5TeVmNVQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] samples: rust: add in-place initialisation sample
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 27 Mar 2024 at 10:53, Benno Lossin <benno.lossin@proton.me> wrote:
+>
+> On 27.03.24 04:23, Wedson Almeida Filho wrote:
+> > diff --git a/samples/rust/rust_inplace.rs b/samples/rust/rust_inplace.rs
+> > new file mode 100644
+> > index 000000000000..ba8d051cac56
+> > --- /dev/null
+> > +++ b/samples/rust/rust_inplace.rs
+> > @@ -0,0 +1,42 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +//! Rust minimal in-place sample.
+> > +
+> > +use kernel::prelude::*;
+> > +
+> > +module! {
+> > +    type: RustInPlace,
+> > +    name: "rust_inplace",
+> > +    author: "Rust for Linux Contributors",
+> > +    description: "Rust minimal in-place sample",
+> > +    license: "GPL",
+> > +}
+> > +
+> > +#[pin_data(PinnedDrop)]
+> > +struct RustInPlace {
+> > +    numbers: Vec<i32>,
+> > +}
+> > +
+> > +impl kernel::InPlaceModule for RustInPlace {
+> > +    fn init(_module: &'static ThisModule) -> impl PinInit<Self, Error> {
+> > +        pr_info!("Rust minimal sample (init)\n");
+>
+> This text needs updating.
 
+Fixed in v2.
 
-On 3/28/24 4:04 PM, Ingo Molnar wrote:
-> 
-> * Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
-> 
+>
+> > +        pr_info!("Am I built-in? {}\n", !cfg!(MODULE));
+> > +        try_pin_init!(Self {
+> > +            numbers: {
+> > +                let mut numbers = Vec::new();
+> > +                numbers.push(72, GFP_KERNEL)?;
+> > +                numbers.push(108, GFP_KERNEL)?;
+> > +                numbers.push(200, GFP_KERNEL)?;
+> > +                numbers
+> > +            },
+> > +        })
+>
+> I think it might be useful to also have a field that needs pin-init, eg
+> a `Mutex` or similar. What about placing the `Vec` inside of a mutex?
 
->>
->> Hi Ingo. 
->>
->> These two patches apply cleanly now to sched/core. 
->>
->> 7a9dd7ef946c (HEAD -> sched/core) sched/fair: Use helper functions to access rd->overload
->> 4f24aa918558 sched/fair: Check rd->overload value before update
->> c829d6818b60 (origin/sched/core) sched/fair: Simplify the continue_balancing logic in sched_balance_newidle()
->> d0f5d3cefc25 sched/fair: Introduce is_rd_overutilized() helper function to access root_domain::overutilized
-> 
-> I've applied them, but note that there were quite a few avoidable typos 
-> and grammar mistakes in the changelogs. Please always review what 
-> you've submitted versus what I have applied and try to learn from that: 
-> I almost invariable have to edit some detail to make the changelog more 
-> presentable... Could you please take more care with future patches?
-> 
+I'm not sure this belongs in a "minimal" example.
 
-Noted. 
-I will learn for it, thank you. 
+But I added it in v2 because we're already violating minimality with
+vectors anyway. Perhaps we should later have minimal samples and
+rename these to something else.
 
-> I also renamed the accessor functions in the second patch to:
-> 
->       get_rd_overload()
->       set_rd_overload()
-> 
-> Plus I've applied a patch to rename ::overload to ::overloaded. It is 
-> silly to use an ambiguous noun instead of a clear adjective when naming 
-> such a flag ...
-> 
-
-sure. looks fine.
-
-> Thanks,
-> 
-> 	Ingo
+> --
+> Cheers,
+> Benno
+>
+> > +    }
+> > +}
+> > +
+> > +#[pinned_drop]
+> > +impl PinnedDrop for RustInPlace {
+> > +    fn drop(self: Pin<&mut Self>) {
+> > +        pr_info!("My numbers are {:?}\n", self.numbers);
+> > +        pr_info!("Rust minimal inplace sample (exit)\n");
+> > +    }
+> > +}
+> > --
+> > 2.34.1
+> >
+>
 
