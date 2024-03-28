@@ -1,94 +1,120 @@
-Return-Path: <linux-kernel+bounces-123308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F7C890658
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:53:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F7389066C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C947D1C30AEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:53:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5B841F22F45
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BA52B9C5;
-	Thu, 28 Mar 2024 16:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2C83D965;
+	Thu, 28 Mar 2024 16:57:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AXgyMlRc"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="iBeAoiSb"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026B8BA53
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:53:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716001DDCE;
+	Thu, 28 Mar 2024 16:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711644782; cv=none; b=BpejlWC0vgbgWE0oYPpXeCc17DMIuLIV2UAFzgg2H5txW1ibnxnz6aer/LyuV95eHx7Ijh2d007Lwk0gGDKQ5JCjxBiZ1Qbyi691S6jp17307xnlW7Y2e0Nf6hgXoikKwpvPztE74yPhP/IpXgYv0Rr3oIw0/Mw+lHMScOryhIE=
+	t=1711645033; cv=none; b=MzDt9+sS4SOFnYshABVQlUI5q9djeUQ9iwym6dT7Nv88GoNxFYq90suWbwLJ7i4U+ES14KwohjIoxve4uPpE9DcEvtmYQhmO7ZkCA3Hjbhtrf8BiluqZ3iYHBo1NXgNyPP+iDhvlQIJEw8yIsatw51kq1J21fgaq69RxqS9ETQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711644782; c=relaxed/simple;
-	bh=etv6yKFumyy5iQLZpAkhMvD76t/Nfc3D73t7VekdT6E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mmN7QeXwVDCPidQaFwDIbDkT9N80IOo+IM/O9alnsOCAmHnsH4FEUhEOGXuhLCIIJo1YUHvxrt4iucveKhUOqd2FDw3FNXxmpU/sAXAPQqWeJ6OI472vC1G/kHrLiuejQHOYKE4/N+HLlTs3GnkUT92lonwD0FcHs0bhygQJnbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AXgyMlRc; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EAD5A40E024C;
-	Thu, 28 Mar 2024 16:52:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id IRVAOuVOnFlK; Thu, 28 Mar 2024 16:52:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711644775; bh=hjRzpKf/97lQo2QX+OoARQ9cMuHfEGa9DXxXws2ZSrc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AXgyMlRc9uLZ1qUlTqO1udny1BnyRNmfcBvu4lUxhCWPp5ov4AS9RvcC7OHOBOVvA
-	 GD8+oNYe/1KiHIPmZWL1qwRDn5qwyisKR3t35l0nh8aoK5dzg/RhJrhRt39pHQRxT/
-	 2oBz+ID9C56Iom3XDsReL3+e33+lr6yfDf17wDqTEkVdh4akN+4R8QtNMsiYCBj+Jh
-	 FER2yZnU/3jdwoZ5megZsfjDJ8h2h0sVZDiGKkduy2iuKILlmq7pE7nYRugkWlkkHC
-	 CJLRuEhwSXi8R5goa9DKCkepm0QMI/t/TzXOjPnWQqJobt6yt1a4OiLLe6hEsnK+bA
-	 DCiqB6w2LdthBWA7M9wQqFJ6YQEId+lEy8okRJtxG21K4J/kXbtTu7R88eWPVjYHpx
-	 JTy8ie3OuBCgBlBdKLj5IWa6yCJ7+JFIIsZzwakikOeWYpf2kd4SpQkCs6uch1rmt7
-	 XQCg4cSecLzFVhT9N8yyfJ7OlRqym6fw3NTSuhEGyuO3YCNJaVFBJdyFxCHEUQTxZO
-	 MDu2ouY44kjJEAGFlDkOVxMyqeEdRAc2uwJ6bkhg2oDV+kc7C7tKuEM3IF6TePC/U7
-	 LuNQB17xt7ecFgUS64p5IpbOhSqg185v6z83ofd+23qM4cppqjRgIpJzIWFlwv98eO
-	 En7iow05FU05qJnj5urSPWyA=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 23BFE40E00B2;
-	Thu, 28 Mar 2024 16:52:52 +0000 (UTC)
-Date: Thu, 28 Mar 2024 17:52:51 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Tony Luck <tony.luck@intel.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
- struct cpuinfo_x86
-Message-ID: <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
-References: <20240328163746.243023-1-tony.luck@intel.com>
- <20240328163746.243023-2-tony.luck@intel.com>
- <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
+	s=arc-20240116; t=1711645033; c=relaxed/simple;
+	bh=EHJUzSEdjzJ/cmKsFNEvG7B/Q1Bo729hqrAONKDR4so=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NzMO9bdgHu8WsuTnpsxfXA2aZpstBzGW2ft5bRcFHxBtz7CQynXvyhHdofKYgQUFcpbkvccGnu+oXzuUcWalVdwMXikPljqAM/Rg0Gge6gaue+elN0fMONdho9Hi1GxoRjONUjycRsVxraaPAExrWE33KwY6kZQDwOzRhdQNmGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=iBeAoiSb; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id 09146100002;
+	Thu, 28 Mar 2024 19:56:51 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1711645011; bh=JCP/D9Zpg32pYmuOTl3bze6wQcVUGIRiAN7maoEjdPY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=iBeAoiSbFz0WxHExYG2lu08xrzugFz9q8AqvjJbP+ttnmnmtuwBQqQbSngvhCi/st
+	 IVcqxnqBY/TaoyflxCx990IQuq0AXsaIEYl8spe0YK4V1fv4Th7kuT+jXXnJNooNej
+	 q6LN6+obz6/6H8YvgwxNO1Ru8oYopXAPgDoAaax5hGx3bAt/WQGtTwijHtH3YlLBFM
+	 CasuIu47gIzq6Y7g6O9eGYy6bExmB8/EGR69dVSgl67dncPyi19mXx9D7GlyeVrfwg
+	 1KQHJctjOlxnJQKckWJmck4kGa8mTYkG8+WXA5ohPgviuMCBMlWQTZGQnd20jwn9CV
+	 bFKhduICU5vzg==
+Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Thu, 28 Mar 2024 19:55:33 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 28 Mar
+ 2024 19:55:13 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: Sunil Goutham <sgoutham@marvell.com>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, Linu Cherian
+	<lcherian@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Jerin Jacob
+	<jerinj@marvell.com>, hariprasad <hkelam@marvell.com>, Subbaraya Sundeep
+	<sbhatta@marvell.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH net v2] octeontx2-af: Add array index check
+Date: Thu, 28 Mar 2024 19:55:05 +0300
+Message-ID: <20240328165505.19106-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184474 [Mar 28 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_from_domain_doesnt_match_to}, mx1.t-argos.ru.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;t-argos.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/28 16:17:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/28 12:50:00 #24493847
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Thu, Mar 28, 2024 at 05:48:11PM +0100, Borislav Petkov wrote:
-> > +		struct {
-> > +			__u8	x86_vendor;	/* CPU vendor */
+In rvu_map_cgx_lmac_pf() the 'iter', which is used as an array index, can reach
+value (up to 14) that exceed the size (MAX_LMAC_COUNT = 8) of the array.
+Fix this bug by adding 'iter' value check.
 
-Looking at this more - you don't really need the vendor to be part of
-this as the CPUID leaf ranges should *actually* be disjunct. Actually...
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
+Fixes: 91c6945ea1f9 ("octeontx2-af: cn10k: Add RPM MAC support")
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+v2: Fix subject according to the networking rules
+
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index 72e060cf6b61..e9bf9231b018 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -160,6 +160,8 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+ 			continue;
+ 		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
+ 		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
++			if (iter >= MAX_LMAC_COUNT)
++				continue;
+ 			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
+ 					      iter);
+ 			rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
