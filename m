@@ -1,180 +1,129 @@
-Return-Path: <linux-kernel+bounces-123300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97172890646
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:50:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE305890647
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAEC51C3089C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:50:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4FD52A3A89
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8AB1353E1;
-	Thu, 28 Mar 2024 16:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57291369BC;
+	Thu, 28 Mar 2024 16:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="2MsMQ547"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2120.outbound.protection.outlook.com [40.107.7.120])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ipepdLq6"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD4641A84;
-	Thu, 28 Mar 2024 16:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.120
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711644483; cv=fail; b=DxUvVvhZ2qz7i+/WZ8wDiGMR2rj/fszfRRIa9Yq5xIUbMJf2hGYfSUa8tu8q/G+AdwiUJJeoyL+lqZoLN+TKQxK+z7FUFR+mpZPDn+CFC1GEfakQLT7BfIOgfLpu3r8C8R9m20wwPUSqET1WIAlFNT1ng9PaibvxihnXb3XVy+A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711644483; c=relaxed/simple;
-	bh=7C2UW8vibpdfbPQli54dJt4Oh4puXD+9H7a8XXWE7uE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=PRQ+/QIveh/SyVrqaiQnOPzUKrFJWDY6WXvScUbhfbzg/50GuuWnYTFmmerW/B68jpXeOuysM/HHKytYsYNA59FGPFCQqent4wBWBKlHs+/r6z9qA2X1C/Y9DthJ9KvzKqyKdkmGXmVp02rZ86QgMTsob61H6VmG38njkA0xMNo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=2MsMQ547; arc=fail smtp.client-ip=40.107.7.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MDcwIIQOxQXMJcew+PQnCIamxsGY3mz5hGWuuDF+M6T/53xvYL9ZyTrNg68Hh0bCiWKkyHL9XziAUzvntOpBPoys9gf5jlgEQ23FkQSSlg/I/ZnydSM8+DCI1/LJWLaj9rOpNPiwidcKlz6PUw+6IXZwGBddqIaRfWQvo48goaLnQuOaFDz2dPILmHUrSUgi6grPyDhmpyMAIA8QW5inZQlwKz0sF/wA4EaDdtpzObBcGP8GC6IPCCvWBHolI8ichJopb7KiK2ObAPhyyA270okIvBJbt7Ks74lU+ZdF9C3LHrHAXphpas3PGDDteRRMIanLPyHGXip9eB/F1Pqy/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3VvWii6Ovb3OvYCA0nkoN+0k/qhcPCxH/MYSIjHFG9c=;
- b=f2iJdtiBBogyneMJiyaJG8G/VWOJa/4ehh0aJAY7aHociGWebWwEEcSHFARTC/wgen0C1V5f6124WNTDQK5a8D4LduNsluu71PIEvRsKsX+PJSfUURJyBW0fHcK86xD/e12ACkQC4C5k4wR29L/xBoiVGwyt+wWpLzeSdxHtLkxYwOJ4g5z3X3ZaXYy1Elj0ih6yLOuyaiSKJjYJiLvejlTHZbmCn3vIGQ3T1uSToMzgMAZjn2rPgOO0pNKAA7N7bcZ4kNZn9rrIeonKVzOKf4ip3yn/yEfkncTlz/vxvDGni4sJUGiu9nHc20PDDwFfZA0JcPm87CHctgO4W8KXEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3VvWii6Ovb3OvYCA0nkoN+0k/qhcPCxH/MYSIjHFG9c=;
- b=2MsMQ547mnuwnkjzkUmFoCSH9NM9udNVka1+5AEcHry38ZSz4UFsn3AAFY3AaZNGSoMX6pSoTu7wUJIIMlDDs9s5uAKmIEo/KcUPHXaWDWzNrwodwAfLpnXzeF3E70EmiTGlVV4OkoO7Vx+LgiqDrS6HuSD7u/RE+nvUfgVARIk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by DU2PR08MB10013.eurprd08.prod.outlook.com (2603:10a6:10:49c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.30; Thu, 28 Mar
- 2024 16:47:57 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9e35:6de9:e4fc:843f]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9e35:6de9:e4fc:843f%7]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 16:47:57 +0000
-Message-ID: <91b5c977-2d24-4a31-bc8f-3ad7cbdb8237@wolfvision.net>
-Date: Thu, 28 Mar 2024 17:47:55 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 0/2] usb: typec: tipd: fix event checking in
- interrupt service routines
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Abdel Alkuor <abdelalkuor@geotab.com>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240328-tps6598x_fix_event_handling-v1-0-865842a30009@wolfvision.net>
- <2024032824-rasping-zone-7564@gregkh>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <2024032824-rasping-zone-7564@gregkh>
-Content-Type: text/plain; charset=UTF-8
-X-ClientProxiedBy: VI1PR09CA0101.eurprd09.prod.outlook.com
- (2603:10a6:803:78::24) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A785041A84
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711644508; cv=none; b=QgAKNhyIHARQxoYSw/cYSl02bl+ybueiXGTYf3SVp1fJv7laTZBS+TFldHQBgrphK0aCppWJoAf4Bx5TLaN/oK6LI6FlMR1JUXYlbdJaPvFjd54GlRiUJqyUGdVVvG2KV4LK2Wfsg07mMSzfuxDEuFZRb2Ghe0ttTVW3rQhuvtI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711644508; c=relaxed/simple;
+	bh=eIs4O4s4xJQE5+HpKhCWd4AZ6Ys4Zcuc4A/6FsaEj30=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l+eDiKN5pWEJjRgAJBHG+wcszYmm2LS3dgZMAkNypx1nQGoVf5e3ENDruU5dbiYiCbBngzyBGrZNsnIf1IFgkknrxXjxwjv8hk1uH6tUkXdOesL7PGeXhgJ6ni0HLp7/rF7jOjTjTD9bVcxs7YV/idQupCvBIyktZ97HZtTEWUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ipepdLq6; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5E1BC40E024C;
+	Thu, 28 Mar 2024 16:48:24 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id YiQoA9Pr1ltk; Thu, 28 Mar 2024 16:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711644499; bh=ZvLxj9Ez3rRsztf8ZFy8bTWKEto+yVyhTFTt+eJhk+0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ipepdLq6zzVo1CcWwYq7hN5L1KtQSSJ9szDHKlpn7WIvjk7yxKf0jqkhujmpngQTR
+	 W6N68hfJeDWxvyoPxzn5xoDjud5Hn3KYhs6lECSfpFsngYMZSFgMAirD3iqx+bEHd7
+	 iA2v391J5B7fOckmzOCyBclFxE+wG84n/bsznV45rqmn5uKWLJ86kYHrKN3WROH7ah
+	 w7tatg2RxpDq5xqAGTTeFyl61PxHYfkDR51GYUhjP6wnOrTiaefcaALP3VOsmBLHzt
+	 DqIzKf4a3ccGyfWanjEToEfyTREFjs7zWWYnGdT0/hXsllpZgwUScZSEiWFJyfSvZy
+	 VhJaIquBusaxdocMMMFv6cEv8yLB1gLpUQgK4KtI4I2aVL2jREK6McWZ8mVJ89O00D
+	 3XffKzY6T12vXyuQuXlwDM6TI2FR115S5pF3QbEje5SVVW7w1eI9LrMcWX5m6sURTG
+	 xpzcj+zqVV0mL10m77uhIHYNW+SUh8XZ1dh5DpzaxATnBwU1kT5TbDY14Uww5yBUo3
+	 14sh3RttV68yBnCaBM+YaS0TYvq0iDiKYmpom73tpLHayagm7rwGu7EVWfNLs2nr0s
+	 dSo0uo7kWgnnGsK878dDPSjxaAKHEyBysWJQG1aXRWeaVb1RAe9bcpy3ZBNSM5B3b2
+	 4KI1Wi+CkJh8P2aWaziC/GjE=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CBB0140E00B2;
+	Thu, 28 Mar 2024 16:48:16 +0000 (UTC)
+Date: Thu, 28 Mar 2024 17:48:11 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Tony Luck <tony.luck@intel.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
+ struct cpuinfo_x86
+Message-ID: <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
+References: <20240328163746.243023-1-tony.luck@intel.com>
+ <20240328163746.243023-2-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DU2PR08MB10013:EE_
-X-MS-Office365-Filtering-Correlation-Id: c00d054b-8471-464d-f08d-08dc4f46d243
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	dtpxceUgNgtJ9F7Cm+cJI8mR1jhm2v/y1XYvNGm8/ZsJQoXdXBcbxNgf3NrRVsUI+ZX4CDPbzeMH9Lhw0renjkxVebjptxAlgcrI5mdDCgkCEcTA3EzouSnscP2RnaSpZufnJ+XTw+q/xLs7WNNYuZmX3esAR2KKCDYa9DxasTWOBx64R7wTty4B19nqsX6kAK3gxVssr6Pblkhye5VFx0Meu1ZLXt42mHVEwdg5UnMBn55gGVdHapR3lFRaNz7Ml1/6xl9RRs0U3iJWG2Ju/NFTjdkH5D52xxskK7ciZbgdR40bru1oOnTLiGTZCIH1NXUF3tUPKmG8YnDFPHCVDfi8Yfu4VlnbQMgKzwl7TgDIEM0W27ON+mjVtwcImxNFtMBTjlH97NdeWLFXI5z55N4fuDsSwe5PnUI4IvcBYj66Ps89knMoG+jT4QIgm18r38jNNZq3K4+KcUNXlCkjHLNA0UVbtWZkSRl0xgbeob2hM9zHy3QOt7HM3bSExxI0/tIlEgOJgKBmDcKm+bOLvf8bdtnms8LSBGxGyXghzzjkg2cYmAKz9FlLrmrPuI9opk7c2c8lk8Sx/vcAVjTzy9FAZpdEqOffn0H6rpSWmWU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bnBVY2dGZHZ0cTdtZHVucG9jZVB0WVh0Skhqd0NrN2VGc09YR3ZKRzg0ZTRx?=
- =?utf-8?B?U0hVMFI0ZFVTbzJVb2RyWnZ2QmFBbjAwd0w3anFUbEdjaHh5REFBdjhvMUlv?=
- =?utf-8?B?ay81dU8zN05xMXhLcHc5cHVnektvMnBIMmZMUm1kZ1l4NndmUzBWN3NaRVhj?=
- =?utf-8?B?RE9nbldFSmFPQzVnOGRDZ1pSNmlENFNtdlBDWWJlZ3ZoNHIrWVRxaEhSS3M2?=
- =?utf-8?B?RndrdmEwcVlkWFhqdzdlYk1KODhpdlVKTTdzYWhrcVhjWXhxWG5jNVJiRThP?=
- =?utf-8?B?S2lzVTFsK0Ria2lRM2dlUmZiYzBqNHpQaG9LTnByaXZmRWNsSzZoWWliNHBz?=
- =?utf-8?B?WVgxd3d4ek9CY09kQmphdG9UanF1UGlwNXFsWjY0aE5ienVoOXovOFQyMEgy?=
- =?utf-8?B?NTlJa2ZNSTRKUHV1Y0hXZHZoS2lVTXF0NnoxYnFaZUNlOXRxQURUT1U1RnBB?=
- =?utf-8?B?S2lKQUZZRW1CN2poeURwUUQ4WFhCQ3hwRHN2ZWlwZ1hUbFNHaU1Db1d2NjlZ?=
- =?utf-8?B?U0xXb0ZwS0VMR25BajZIMDRrazhjN09pSzJBbmhmZ0gxSzQyNFhNc0M0NThJ?=
- =?utf-8?B?NWFvMzBZeUcrNXl4MFhSeHF0L1ZjUEc1bWtzWlJObjdFWk1wNUhaZ0wrMHo4?=
- =?utf-8?B?T3ErSzRFcEEwUGtCVzc2T3IyRFQ4amNuRXVVTmhTdjZnR2dZdGVIN0ZId3pZ?=
- =?utf-8?B?UTh6cVhEenlVcnRTSmJNNjdVVzB4YkJnMHc4Y09sRmorZlBkZk40UXFyYTJ1?=
- =?utf-8?B?UG02SDB4d01hYzJYSksyclpGTjJrOVh5Y1dFb1cxZXNRNXVpTnFUQU1IYnVh?=
- =?utf-8?B?YjZDZFRzREhwdXcwNmdiVE9veDJNdGhRS0dvR3k3Q0Z5NVNENG1OVVpJYXlB?=
- =?utf-8?B?NXM4QVJwanl3aUtyTjJ4VXk5Z29BQ2FUbXFhUWppQjBSWEd1d1Q2Yzdvb0ZU?=
- =?utf-8?B?R3hLV0tpSzVnUnJHM2ttajVYQVpoR1R0cCt0RVdudlNSTVpqNmdrR0Z2NHdV?=
- =?utf-8?B?bE9Md05kWk9Lb0RZdmJwSDFJK25Td0N1NWk3UTRkbE5aMmREa1ZlMmdvMVFG?=
- =?utf-8?B?ZEFqak1TU1I1bFZUZG5ha0phQ2FKZmhoSjc0VmdwcmxIdmNJZmpSdHFMSkxh?=
- =?utf-8?B?aDdrbjRlclVFeTFyUnIrR3dZS0txaXVMQ0c0Y1NlWWVBSGhXb2srWm1QZGZo?=
- =?utf-8?B?YXRTcS9DVGhpUlJqWXF0MFhtOGY3NXJRdjJHK3p3ZmkyZXhDTTlqQWVxU2Z2?=
- =?utf-8?B?M0R4REZwNmVNUTE4NzZWcnFjK0NkTk1BMW5FSzNvMzlISnRXdmo5R092djB1?=
- =?utf-8?B?WXdzTWpqZSt1QlNkc0VXeW9LeFhDK0RnaitSTVltaTl3SWNDS1JoMzQ2dllF?=
- =?utf-8?B?VmM5WVlSSjlianJMWHk1OE5nWXdjdnZmYXNCU0lNcGdoZnNucm1yZUw3eGg0?=
- =?utf-8?B?VGR6aTFUdnB4MThQQWt6MmR6eStlb05jeUhiUnQyUGZzUVBrSFEyVmVDQmRK?=
- =?utf-8?B?OW5LTmRWVHQwcXJwVG1YNFZ3RkV0MmY5ZjRBSjlUSWlLSHRFbXpxeElGZGlQ?=
- =?utf-8?B?STQ5QUk1VW9uNFJaYUtSWmtOdisrV0tNTUdWbmUzY3Z6aS8xWFZKRFdYS2FV?=
- =?utf-8?B?a0JpYkYwblVUbUlxYkl3L2NJbWNJSmxSSnZHOTl6L1lJcHpaM2hCTXgrUExK?=
- =?utf-8?B?NEk1czJkblVJUzg4QUdINWVZVFRldlhMcXlHYng5MHJteDZWUkFMb3lmNFlL?=
- =?utf-8?B?UEY5c2RrVFlaRTN4UnV2aVQ0VHhneE1WRi8zQ1NSR2dHRHBrTFlOelNDWWN2?=
- =?utf-8?B?K0dlcm9wUW5FdUZwc3BabmpHNHI5OThpcVVzQmV3cXlLWCtCSGp5OFRia3Fm?=
- =?utf-8?B?UCtkTThoSytDbFhiaGJZWHcvSGsxQjVyRGkxa0JOVXBkT2dFSFJRcHVpdUJH?=
- =?utf-8?B?QytsRlZyUFhCaFQxZWwrT0s3VmNMV2N5MFJiNTBBSzFVc1MwUkhNOCthQkpL?=
- =?utf-8?B?RDM1WWtDUUZua28rYjNaMmY5cmxKMy9BMUsrL0VaU1hMbnZvMG83QUVEUUN1?=
- =?utf-8?B?YXF5TGw5TmlEcFNzMHh3R0FqTkkyaXNHK3Nia0lTYkRvTzlSVVBlN0g2WExw?=
- =?utf-8?B?d0Z6WmYyaHZGdXEwLzVZSXFKLzEycWJRRHdodk1xWVRFdGMyLytSbTVqNldV?=
- =?utf-8?B?K0E9PQ==?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: c00d054b-8471-464d-f08d-08dc4f46d243
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 16:47:57.4885
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: swId12ns5ww17Rco+9eWwF6R4qTlPN+PRHVervoXJVv9mnWJJXzxp7oygXZxLud3iYFDIoW6FEH1hj6fXQY9Jov9s/uVHtecSGqNOnWNfuw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR08MB10013
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240328163746.243023-2-tony.luck@intel.com>
 
-On 3/28/24 17:44, Greg Kroah-Hartman wrote:
-> On Thu, Mar 28, 2024 at 05:25:20PM +0100, Javier Carrasco wrote:
->> The ISRs of the tps25750 and tps6598x do not handle generated events
->> properly under all circumstances.
->>
->> The tps6598x ISR does not read all bits of the INT_EVENTX registers,
->> leaving events signaled with bits above 64 unattended. Moreover, these
->> events are not cleared, leaving the interrupt enabled.
->>
->> The tps25750 reads all bits of the INT_EVENT1 register, but the event
->> checking is not right because the same event is checked in two different
->> regions of the same register by means of an OR operation.
->>
->> This series aims to fix both issues by reading all bits of the
->> INT_EVENTX registers, and limiting the event checking to the region
->> where the supported events are defined (currently they are limited to
->> the first 64 bits of the registers, as the are defined as BIT_ULL()).
->>
->> If the need for events above the first 64 bits of the INT_EVENTX
->> registers arises, a different mechanism might be required. But for the
->> current needs, all definitions can be left as they are.
->>
->> Note: resend to add 'stable' mailing list (fixes in the series).
+On Thu, Mar 28, 2024 at 09:37:44AM -0700, Tony Luck wrote:
+> Refactor struct cpuinfo_x86 so that the vendor, family, and model
+> fields are overlayed in a union with a 32-bit field that combines
+> all three (together with a one byte reserved field in the upper
+> byte).
 > 
+> This will make it easy, cheap, and reliable to check all three
+> values at once.
 > 
-> <formletter>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/include/asm/processor.h | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 > 
-> This is not the correct way to submit patches for inclusion in the
-> stable kernel tree.  Please read:
->     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> for how to do this properly.
-> 
-> </formletter>
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index 811548f131f4..87115e5d884f 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -108,9 +108,15 @@ struct cpuinfo_topology {
+>  };
+>  
+>  struct cpuinfo_x86 {
+> -	__u8			x86;		/* CPU family */
+> -	__u8			x86_vendor;	/* CPU vendor */
+> -	__u8			x86_model;
+> +	union {
+> +		struct {
+> +			__u8	x86_vendor;	/* CPU vendor */
+> +			__u8	x86;		/* CPU family */
+> +			__u8	x86_model;
+> +			__u8	x86_reserved;
+> +		};
+> +		__u32		x86_vfm;	/* combined vendor, family, model */
+> +	};
+>  	__u8			x86_stepping;
 
-Sorry, I will add stable@vger.kernel.org right above the Signed-off-by:
-instead of adding to the Cc list and resend again.
+Why are you leaving out stepping?
+
+And since we want to simplify all this, why aren't we replacing all
+f/m/s checks by using the whole CPUID(1).EAX u32 instead?
+
+Then the macros need to build that CPUID leaf simply.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
