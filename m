@@ -1,71 +1,103 @@
-Return-Path: <linux-kernel+bounces-122776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9003688FD14
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:32:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB4A88FD18
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17F79B2714F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:32:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6C9E1F28E35
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FDA51C5F;
-	Thu, 28 Mar 2024 10:32:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F76B57334
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964047CF18;
+	Thu, 28 Mar 2024 10:32:37 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BB9374EF;
+	Thu, 28 Mar 2024 10:32:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621932; cv=none; b=m5GKuWoC+ONhrj51d9JRP5ISHieinSVdoAeuuVBpSj4iVi5jVvz+o8SWnKboanxJL0Frw2vcPnktr3+RskvStKXt+5SmssSQ3BAuQ4p5vDemNPKxeOvqT77OontVEBt9ESN4+pgITp+Fz63aO3A+C7kV4lilxwaSRDSvGO5XxYk=
+	t=1711621957; cv=none; b=GUjHvFUan4EJP1jXpKQ0tYyQAvktgBM8yFHnr3cs/89J8RuAToAsOEqwO42nv8gym+DAmiSTSHscCxXZHcQLAxOeDse21BRozLfGmhMG/j7+Puu1Vq/g3bmMp9KN3SOd9XIXUcwmM5aeGryJo1ja10/6vYz2Gv+ozIvIwpfBAuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621932; c=relaxed/simple;
-	bh=YDrVwEqPMtsYCuUtb7WKSyTOxQktEVVxbtraOrs3Wqw=;
+	s=arc-20240116; t=1711621957; c=relaxed/simple;
+	bh=gJjwnPA5KjooGl87TFDJ3ZltuPlXUlbe+Rsm9exKeC8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KnYK8NfRirPQCvfUiFo/v0Xridhv3EmwfgDHx+yjwwLw3N5ITDEP9SKFPNZyH0lUx2XSy+Egn6EUXCDLnjvw6QpQncysy7ewTy5iMixmYP6bczBxDoUTRd1MH+MK5Zw0GzvDidr/qPS8urCBH+5m9mUZaFHGGedytJxgR3WMEoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F3A615A1;
-	Thu, 28 Mar 2024 03:32:43 -0700 (PDT)
-Received: from bogus (unknown [10.57.81.195])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC6443F7BD;
-	Thu, 28 Mar 2024 03:32:07 -0700 (PDT)
-Date: Thu, 28 Mar 2024 10:32:05 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Dejia Shang <Dejia.Shang@armchina.com>
-Cc: "ogabbay@kernel.org" <ogabbay@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	"airlied@redhat.com" <airlied@redhat.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: About upstreaming ArmChina NPU driver
-Message-ID: <20240328103205.seht2hbog3o4giv5@bogus>
-References: <SH0PR01MB063461EBC046437C88A6AE84983BA@SH0PR01MB0634.CHNPR01.prod.partner.outlook.cn>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gRY+J2hvK8AnDRuDTEjDrBkevFHQGAlKHHNBVvN2Ar9eTcnkPVGYdGxf0DMYT7rFCiPlHhEX6PNnhzeAXkrNHU3EnqVFwZ4jbzXg0rmkjnEFwlpPK/ny1KlGCJGg36LroEQXsRpqZjmpYS1MWAIKpv5geZ5g8TfDc5KB9gG7gNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 3E65D1C0081; Thu, 28 Mar 2024 11:32:33 +0100 (CET)
+Date: Thu, 28 Mar 2024 11:32:32 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Chanho Min <chanho.min@lge.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 6.1 039/451] arm64: dts: Fix dtc interrupt_provider
+ warnings
+Message-ID: <ZgVHQOxoMtMyoM5X@duo.ucw.cz>
+References: <20240324231207.1351418-1-sashal@kernel.org>
+ <20240324231207.1351418-40-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="D92MlPntT2pFP0sD"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SH0PR01MB063461EBC046437C88A6AE84983BA@SH0PR01MB0634.CHNPR01.prod.partner.outlook.cn>
+In-Reply-To: <20240324231207.1351418-40-sashal@kernel.org>
 
-On Thu, Mar 28, 2024 at 07:46:01AM +0000, Dejia Shang wrote:
-> IMPORTANT NOTICE: The contents of this email and any attachments may be privileged and confidential. If you are not the intended recipient, please delete the email immediately. It is strictly prohibited to disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you. ©Arm Technology (China) Co., Ltd copyright and reserve all rights. 重要提示：本邮件（包括任何附件）可能含有专供明确的个人或目的使用的机密信息，并受法律保护。如果您并非该收件人，请立即删除此邮件。严禁通过任何渠道，以任何目的，向任何人披露、储存或复制邮件信息或者据此采取任何行动。感谢您的配合。 ©安谋科技（中国）有限公司 版权所有并保留一切权利。
 
-You need to get this fixed, otherwise people will delete this email
-as you have suggested and/or refrain from responding to this email.
+--D92MlPntT2pFP0sD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please talk to your local IT and get a setup without this disclaimer for
-all mailing list activities.
+Hi!
 
---
-Regards,
-Sudeep
+> [ Upstream commit 91adecf911e5df78ea3e8f866e69db2c33416a5c ]
+>=20
+> The dtc interrupt_provider warning is off by default. Fix all the warnings
+> so it can be enabled.
+
+Does not fix a bug, does not belong in stable.
+
+Best regards,
+								Pavel
+
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com> #
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Florian Fainelli <florian.fainelli@broadcom.com> #Broadcom
+> Acked-by: Chanho Min <chanho.min@lge.com>
+> Link: https://lore.kernel.org/r/20240213-arm-dt-cleanups-v1-3-f2dee129252=
+5@kernel.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--D92MlPntT2pFP0sD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgVHQAAKCRAw5/Bqldv6
+8pKJAJoD29/iXsgbXvJqPWh8fvbA3zP1sgCgpeXKl2soxiMgFzR66rrOw+Ne7ng=
+=Nu0/
+-----END PGP SIGNATURE-----
+
+--D92MlPntT2pFP0sD--
 
