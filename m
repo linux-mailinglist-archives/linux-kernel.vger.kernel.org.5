@@ -1,152 +1,138 @@
-Return-Path: <linux-kernel+bounces-123399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214918907F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:06:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E504F890806
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D05A9297E52
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:06:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32E05B21F12
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63611350C0;
-	Thu, 28 Mar 2024 18:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F461327E2;
+	Thu, 28 Mar 2024 18:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="amIIv37z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VSQmZLzN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4AD130AF3;
-	Thu, 28 Mar 2024 18:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EA712F38B;
+	Thu, 28 Mar 2024 18:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711649146; cv=none; b=iiIR4V4CWHuFNCPpX0vW+Nu4uIL9DTPiiYh9Y18Mm25Q440qnC8j/hCd6gadK4+/QBBkpkW3YCQlcf2Vx0OGVfOsJih505ijys2ce7oQVdNfU3MpdiPViutInYArxT1swbCNoo5Nvr+bhQz5+pvSEU5FYWCGnq7UKadQGKgEUKQ=
+	t=1711649382; cv=none; b=Wk7Nfm8uf3upeOiivZXJDNaX4XZyUJhRNYZlSIuSFH842KV23ymwaj3mcmyCtXTA7KjyKykqU7bRSqG8uYik8DlVIVDGWLHGgHzkk05bDCW80jusB1iPrmnLkNRKtjOp5e39+epraritoQ631dGIzriC/4iQeyVy5rVihqdKoTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711649146; c=relaxed/simple;
-	bh=3MqZnBO4d7QJ3guNTI35OK7E3ghU/Al0mtjXKpwqklc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A7/Cro398bZwZfjrwXq/iOxut8hezHnXyFCMDjqbhRnZWMc8sLF7fIH8xa4HxT1LArAhuYavB5iSnP1pK5r6xXy1G97WvHDfCeJj8ldLcFv5CwnjZJr1l8osViSmfuLg0EgfpJmhXduGlATR6eDC6z4JtnmIPb+V5RVnwwUXiTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=amIIv37z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41042C433C7;
-	Thu, 28 Mar 2024 18:05:43 +0000 (UTC)
+	s=arc-20240116; t=1711649382; c=relaxed/simple;
+	bh=He0L7am/V5CNl3ns9fu9G7ieIRAiLhmsEOwrMaSCWFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=lhzol7vvuB9y8Ozet7QYN3S/RtkZPVV0cQQKs7NTi/h8AvLMk5eetpiraKXOYmPtzVE+XoIfDlVG+gF1PEH60gXZtXO6dRvPYt4B5i4cxU4IQnBHHuIDfq/CdZI9T/5L5TyCjwQHp0VCVUNVyOmopBYQYc861U8Kfio7y4K5n8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VSQmZLzN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC21C433C7;
+	Thu, 28 Mar 2024 18:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711649145;
-	bh=3MqZnBO4d7QJ3guNTI35OK7E3ghU/Al0mtjXKpwqklc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=amIIv37zBVYiCXIBbTF3+xg+ZHST2c8rOQqL4isDGYcoXRGb9vJcqvFpMj2GKPCoS
-	 R7p75W1poh0fgdZD2kmlPQw2ZvNze/2ZFXojpmnBedZu/Az4QmyzBvkPuIQRhJUO8f
-	 C9FrFHSR6dqsd77QtUr4r370E0IKL3DTZpetsTH1nJekdtcW713qbx3Ezno2ThpDCM
-	 r+qhzTyrbq4yNiEp9Tlr78r0xOvlVuvbHOgG97kuTetfuLigRMDQD0xkFhRtq1K9Xn
-	 Gb08gXEPodEHKVbXrdxjq0YiNe9qa0ph3z8HGmeHNEBHQiYeWkuXVARadkrYNHVB2k
-	 /qmIkVFgDsfCQ==
-Date: Thu, 28 Mar 2024 18:05:41 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Allen Lin <allencl_lin@hotmail.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Rob Herring <robh@kernel.org>, dmitry.torokhov@gmail.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	jikos@kernel.org, benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
-Message-ID: <20240328-aggregate-greasily-9d57e3ebf3ce@spud>
-References: <20240322-mammary-boil-f9a4c347fba1@spud>
- <20240322183009.GA1227164-robh@kernel.org>
- <20240322-rectified-udder-fef9102f58da@spud>
- <TY0PR06MB56110ADEA805B68BE2B887069E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
- <20240326-whoever-spotter-1fe7ace35428@wendy>
- <TY0PR06MB561197578717990F4BEA93D29E352@TY0PR06MB5611.apcprd06.prod.outlook.com>
- <20240326-granite-snipping-7c8b04480b2e@spud>
- <TY0PR06MB5611AE812B72B349E85118D59E342@TY0PR06MB5611.apcprd06.prod.outlook.com>
- <20240327-pegboard-deodorize-17d8b0f1e31c@spud>
- <TY0PR06MB5611F7123B22C4FDEE319C049E3B2@TY0PR06MB5611.apcprd06.prod.outlook.com>
+	s=k20201202; t=1711649381;
+	bh=He0L7am/V5CNl3ns9fu9G7ieIRAiLhmsEOwrMaSCWFo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=VSQmZLzN3F4Id6PkBByDxRYNwwmIAroujPN5YkCElzd/mjXqvezyVpjkeRliiYSCW
+	 EJLp7TuXhHEmBTAKBNJu1B9IUjKnEC+85kL4hSc0r8m2CAo1/G/Sz1oaylVAIsco+y
+	 MXE+kom41uvsAFX4q9OOIaEyyYyWWYZyOlgPekP4mrpsMhx/NmIJcw3+n+509pYJMn
+	 2fVkvEbiqwg0Z8Tn5UxmR6kgwXMiIIy4OFhAMU3BvPy7+ibQvQhjtRUsHYu8HZ2ULz
+	 6SBGwKNGO0yeWeQSVqE7IIGT/rJNyd42pE14ztptszfNeF09E5rM2q6/GPk9Oq1qbG
+	 siXvNn7gagnXA==
+Date: Thu, 28 Mar 2024 13:09:40 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: Re: [PATCH v2] PCI: dwc: Use the correct sleep function in
+ wait_for_link
+Message-ID: <20240328180940.GA1575046@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Mfo/8yhR1A6ClAQa"
-Content-Disposition: inline
-In-Reply-To: <TY0PR06MB5611F7123B22C4FDEE319C049E3B2@TY0PR06MB5611.apcprd06.prod.outlook.com>
-
-
---Mfo/8yhR1A6ClAQa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240215-topic-pci_sleep-v2-1-79334884546b@linaro.org>
 
-On Thu, Mar 28, 2024 at 02:05:17PM +0800, Allen Lin wrote:
+On Wed, Mar 27, 2024 at 07:24:49PM +0100, Konrad Dybcio wrote:
+> According to [1], msleep should be used for large sleeps, such as the
+> 100-ish ms one in this function. Comply with the guide and use it.
+> 
+> [1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> OK, I will list all supplies required by the driver in the Yaml
-> document as shown below,
->=20
-> properties:
->   compatible:
->     const: himax,hx83102j
->=20
->   reg:
->     maxItems: 1
->=20
->   interrupts:
->     maxItems: 1
->=20
->   reset-gpios:
->     maxItems: 1
->=20
->   vccd-supply:
->     description: A phandle for the regualtor supplying IO power.
->=20
->   vsn-supply:
->     description: Negative supply regulator.
->=20
->   vsp-supply:
->     description: Positive supply regulator.
->=20
->   ddreset-gpios:
+Thanks for fixing this up!
 
-I think this should be s/dd// with the description explaining how this
-display reset is related to this device.
+No need to repost, but whoever applies this, please update the subject
+to be more specific:
 
-Otherwise, this looks okay to me.
+s/the correct sleep function/msleep()/
+s/wait_for_link/dw_pcie_wait_for_link()/
 
-On another note - every time you reply to me I get it 3 times. Can you
-fix that please?
+Also update the doc link to something like this since timers-howto.txt
+no longer exists, and even timers-howto might be renamed or moved in
+the future:
 
-Thanks,
-Conor.
+https://docs.kernel.org/6.8/timers/timers-howto.html
 
->     description: A phandle of gpio for display reset controlled by the
-> LCD driver.
->=20
-> required:
->   - compatible
->   - reg
->   - interrupts
->   - reset-gpios
->   - panel
->   - vccd-supply
->   - vsn-supply
->   - vsp-supply
->   - ddreset-gpios
->=20
->=20
-> Thanks,
-> Allen
->=20
-
---Mfo/8yhR1A6ClAQa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgWxdQAKCRB4tDGHoIJi
-0vS2AQDVKCfNhoux/bC73lKwK5MggLxe6/BaQ+SFiWnlPp5UmwEA7qgpLq6NEiIz
-Q/jEyL++OjVlGLmSuojJktze+2x77gk=
-=LUxA
------END PGP SIGNATURE-----
-
---Mfo/8yhR1A6ClAQa--
+> ---
+> Tested on Qualcomm SC8280XP CRD
+> ---
+> Changes in v2:
+> - Rename the define
+> - Sleep for 90ms (the lower boundary) instead of 100
+> - Link to v1: https://lore.kernel.org/r/20240215-topic-pci_sleep-v1-1-7ac79ac9739a@linaro.org
+> ---
+>  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
+>  drivers/pci/controller/dwc/pcie-designware.h | 3 +--
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 250cf7f40b85..62915e4b2ebd 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -655,7 +655,7 @@ int dw_pcie_wait_for_link(struct dw_pcie *pci)
+>  		if (dw_pcie_link_up(pci))
+>  			break;
+>  
+> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> +		msleep(LINK_WAIT_SLEEP_MS);
+>  	}
+>  
+>  	if (retries >= LINK_WAIT_MAX_RETRIES) {
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index 26dae4837462..b17e8ff54f55 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -63,8 +63,7 @@
+>  
+>  /* Parameters for the waiting for link up routine */
+>  #define LINK_WAIT_MAX_RETRIES		10
+> -#define LINK_WAIT_USLEEP_MIN		90000
+> -#define LINK_WAIT_USLEEP_MAX		100000
+> +#define LINK_WAIT_SLEEP_MS		90
+>  
+>  /* Parameters for the waiting for iATU enabled routine */
+>  #define LINK_WAIT_MAX_IATU_RETRIES	5
+> 
+> ---
+> base-commit: 26074e1be23143b2388cacb36166766c235feb7c
+> change-id: 20240215-topic-pci_sleep-368108a1fb6f
+> 
+> Best regards,
+> -- 
+> Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
 
