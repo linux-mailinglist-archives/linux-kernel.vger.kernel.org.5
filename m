@@ -1,76 +1,155 @@
-Return-Path: <linux-kernel+bounces-123779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE64A890DAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:36:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47C92890DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2471C31F2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:36:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F23151F27A90
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDA525753;
-	Thu, 28 Mar 2024 22:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581E12C19D;
+	Thu, 28 Mar 2024 22:36:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ISvWRiMA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K9BSxo05"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268091D68F;
-	Thu, 28 Mar 2024 22:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123881D68F
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711665360; cv=none; b=YGYen09pj+YbotcgifqRn16SJ2tUjvGQjhrL6WVxd1N4mKD4exhdAPAMoOasEkQreEzOm5f/b8Wk3De/fF/iD2mrWijh1zFe7NnhZ1Ca0+PDtqGTEHchvr0Ge2Lv8CiVNvHnoxnfuTuXZHNUi4a/zZl5mzKW5kbzQ2sgX7LUvrs=
+	t=1711665379; cv=none; b=FpoS/pp/RBYi87lFt7yIz7O4ml6OQoWuwXCEtGUU5DFQSVFIzn7Bp59TcYzlK3CMTmc/NX+EZ5unzV32Huu7oeaS/wpTjN5aBwHjnHH+i2oRqWYJrF2porZ2ihu6bIFgbXl4f5sjukPJMgb6YHWAQ+B3t7fyF5pEGi7o4J4lmcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711665360; c=relaxed/simple;
-	bh=rvKtehwqnoxcmSN8NJNR3HB3kRar7BGFCncNbtbOnyA=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=rWu8pM8hR7Z3LNOFC+2xWFqisZeyP3uJ7hyRHp9PLRZVJ+YseCn8EEWh8n9UlnoLXkuFE/6zrMMUPYshUAX0T8QXSm2fiS0BM4xKhfLGIF9jGHAQCQ/H7Q7d4kt/T5pWkcJ9Svvm4byne8dxI1/Exa4WUq+x0LZMXG8MD2a7uAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ISvWRiMA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA27C433F1;
-	Thu, 28 Mar 2024 22:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711665359;
-	bh=rvKtehwqnoxcmSN8NJNR3HB3kRar7BGFCncNbtbOnyA=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=ISvWRiMAPRsPznDPIhk/gvq27KHn4eT3kzjQPlvdxCV5Lma7AiRhTS7Jtst4LnTUF
-	 RvgXgUQBB4glRDuFIlHq3qeAr6hoMUlIeve/zid2LADwCuekRHx+L3sKuxNnBQMQwk
-	 5S2G+Cp5yTkVtlq7Idxfy2XAaqmxYjbYiUGuoK511oT0CMxEdFcYG+FcjG2jk2lL76
-	 DYcEIuugn9YiBt2obFSG80G2LXW+9vj1C7z8DyPdJtTjKo8h+KRoGKZpEMCJwx8CM7
-	 Bu8VquHxxTE6+TcgBjmH3XbwgE/urw3AxPMApgL3iZygE+TWEmq2TKC8l+/+uetXw8
-	 ZrNlQ2t881+ug==
-Message-ID: <d95554f623f023a2f5499fa2f6f76567.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711665379; c=relaxed/simple;
+	bh=DyXMPntpHzTM8gI5S4nIpWoHbAT9e7zLas+AdBIkAVQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PL28dbwzuvSvRfm+/qvM2znjSlirY3zSR3CmOIImvvDTrFC6NqLAisPM+5c0A+dY7ScvZKJ2ApohNptDybBwg5JdPnnbXmkHhCW7a1jDdgmsw6A5z4h/k/RhLSmLkeWXoHI3WsVkEu4hg2AJsengJEwOzRHOPypGjwMOa0s6Ceo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K9BSxo05; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc74435c428so1527987276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:36:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711665377; x=1712270177; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LjY+wgOUFRoXu57CnEBA1CkVg+Yjx2wYh83Heq0qxKg=;
+        b=K9BSxo05EwMlWixUhBUNSqQmHk5Vojr2loqHQi4pHNw0Ig6ZAz+k22xIbN79g/8bWW
+         uRGTROIpkGu0ywMRdUbPJGCzFVQYHyJx3wyezBJG3mFxsF+uBNvekrGN662L56frIUOd
+         jyp8qcAjKRDoSZHGzCB4Gb7GKn0CH0hszQGJr01HDZ/D5gFwuJc+DrSybP8xTmpejCZU
+         aR+AyMc6SK6NS7vS54cZzokfZGgvGPR9b6Li4GUQHrGzLY0TI+cdG68VLmnhmdWmae8p
+         9UeGfiuURjLANYIdS5liHV9em0GnGyb5eUK0QeaLGDfYHmHZHFk3vZHMAuMQbLUpheUh
+         3Ubg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711665377; x=1712270177;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LjY+wgOUFRoXu57CnEBA1CkVg+Yjx2wYh83Heq0qxKg=;
+        b=QfxbEKdcB7cXml81Bnt2xD1kLe1OI6ISZ5RujpKXhtQHIqcGWulL2Tp469d0ktSijA
+         WRP9l3u73zYUFamxVeiSF+ss/kKkd8huE2Ln4+VlIXQQVBH+WhI7jmo7y1ogdPtl5K4E
+         w+xPu7UiEDIFajARaeCbgs0rLTTK7IV9+U7Na5o2/TMImvOGSb2Kt0oc/tBWsH+w3DLN
+         S4CQMy2X7QyouqQY7muE/QHqDrAfWnyxqwJO0p1baD985QgLL5Xj+IsUrAdmbNIKUH2J
+         Hg8oV28TbWH+Sr5uOThIme7fqLwU18KvI4OCek3gyezm0WY8RMhVBpEVJ9kdvfRvCYPR
+         HBQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVnhat7ObKEpphzYVKiuTIOeiBn7JwcfS5dt/QJexLFhiz63Pb416507rGzcuawqaKHwozS5WTF0rAy4YMpx6ky8FYSsrK1Fy7wsInY
+X-Gm-Message-State: AOJu0YzbRVNiOMtxirsIGPy7+BjSgr+6b7VxTEnF5l7Wk7yGBes7CpjP
+	7c0VlC9FIcWZs+Wa0IkJYefOFmK4GgYmp3SnDKjlDUDOopnku964mg+cvI12ZRY7meS/xL0L7Sa
+	MGBei5Ji59Jj72o410sYZ2y5pU+Cae+Z6micRFg==
+X-Google-Smtp-Source: AGHT+IHaI+kjiLOUYNKBR/srDk7VFG1X/iL9Lyrl5XxlS/w0akawROX6LC6YYP28982DF251YeuCQALSFyoyvb3mAX4=
+X-Received: by 2002:a5b:183:0:b0:dcd:24b6:1ae7 with SMTP id
+ r3-20020a5b0183000000b00dcd24b61ae7mr643047ybl.63.1711665377097; Thu, 28 Mar
+ 2024 15:36:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240327073310.520950-2-u.kleine-koenig@pengutronix.de>
-References: <202403270305.ydvX9xq1-lkp@intel.com> <20240327073310.520950-2-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] clk: Provide !COMMON_CLK dummy for devm_clk_rate_exclusive_get()
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev, kernel test robot <lkp@intel.com>
-To: Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Thu, 28 Mar 2024 15:35:57 -0700
-User-Agent: alot/0.10
+References: <1711660035-9656-1-git-send-email-quic_khsieh@quicinc.com> <6641b5c9-1685-3d90-ac15-0b2e9d546bc5@quicinc.com>
+In-Reply-To: <6641b5c9-1685-3d90-ac15-0b2e9d546bc5@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 29 Mar 2024 00:36:06 +0200
+Message-ID: <CAA8EJpoXgtodevy_AHGRR8o3yB08dK1oeHdWUrnx13rsYgY=Dg@mail.gmail.com>
+Subject: Re: [PATCH v1] phy/qcom-qmp-combo: propagate correct return value at phy_power_on()
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>, dri-devel@lists.freedesktop.org, 
+	robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org, 
+	dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com, 
+	agross@kernel.org, abel.vesa@linaro.org, andersson@kernel.org, 
+	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com, 
+	marijn.suijten@somainline.org, freedreno@lists.freedesktop.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Quoting Uwe Kleine-K=C3=B6nig (2024-03-27 00:33:10)
-> To be able to compile drivers using devm_clk_rate_exclusive_get() also
-> on platforms without the common clk framework, add a dummy
-> implementation that does the same as clk_rate_exclusive_get() in that
-> case (i.e. nothing).
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202403270305.ydvX9xq1-lkp@i=
-ntel.com/
-> Fixes: b0cde62e4c54 ("clk: Add a devm variant of clk_rate_exclusive_get()=
-")
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
+On Thu, 28 Mar 2024 at 23:36, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 3/28/2024 2:07 PM, Kuogee Hsieh wrote:
+> > Currently qmp_combo_dp_power_on() always return 0 in regardless of
+> > return value of cfg->configure_dp_phy(). This patch propagate
+> > return value of cfg->configure_dp_phy() all the way back to caller.
+> >
+>
+> This is good. But I am also thinking if we should add some prints in
+> this driver like it doesnt even tell where it failed like here
+>
+>
+>          ret = qmp_v456_configure_dp_phy(qmp);
+>          if (ret < 0)
+>                  return ret;
+>
+> > Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> > ---
+> >   drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 5 +++--
+> >   1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+>
+> Also, I think we should have
+>
+> Fixes: 94a407cc17a4 ("phy: qcom-qmp: create copies of QMP PHY driver")
+>
+> If there is a better fixes tag for this, please let me know.
 
-Applied to clk-fixes
+Fixes: 52e013d0bffa ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy")
+
+Otherwise LGTM
+
+>
+> > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+> > index 36632fa..884973a 100644
+> > --- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+> > +++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+> > @@ -2754,6 +2754,7 @@ static int qmp_combo_dp_power_on(struct phy *phy)
+> >       const struct qmp_phy_cfg *cfg = qmp->cfg;
+> >       void __iomem *tx = qmp->dp_tx;
+> >       void __iomem *tx2 = qmp->dp_tx2;
+> > +     int ret = 0;
+> >
+> >       mutex_lock(&qmp->phy_mutex);
+> >
+> > @@ -2766,11 +2767,11 @@ static int qmp_combo_dp_power_on(struct phy *phy)
+> >       cfg->configure_dp_tx(qmp);
+> >
+> >       /* Configure link rate, swing, etc. */
+> > -     cfg->configure_dp_phy(qmp);
+> > +     ret = cfg->configure_dp_phy(qmp);
+> >
+> >       mutex_unlock(&qmp->phy_mutex);
+> >
+> > -     return 0;
+> > +     return ret;
+> >   }
+> >
+> >   static int qmp_combo_dp_power_off(struct phy *phy)
+
+
+
+-- 
+With best wishes
+Dmitry
 
