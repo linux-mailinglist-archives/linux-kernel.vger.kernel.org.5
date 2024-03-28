@@ -1,111 +1,112 @@
-Return-Path: <linux-kernel+bounces-122869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E67588FEB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FAE88FEBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:12:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A5F72935FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:10:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E759028D767
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA1C7EEF6;
-	Thu, 28 Mar 2024 12:10:54 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60CE7EF02;
+	Thu, 28 Mar 2024 12:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GbAptNwU"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED005474B
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D667E799
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711627854; cv=none; b=gyHdBs4ffLYjnN+6IzlKsQfjTxX3OwE6Hnn5iPWCl+o4+EbDgOKIU67LungrXvcziT5sIlTdP9yxYeOtUzrrfFEMqVVBjGaADXGx5O2r9VNAskRpDVIN46/N2u1WgxULkofFQdS8axw7v6BT/gPwn7C+68mYoP4ww8/UftF86dI=
+	t=1711627973; cv=none; b=VX5St+abRl/Cehs5jquHXX2ptUyrcyeMz4P6RbOIhq4pm3g9Sg0Ij7fOnBSBGEZJdXJTgkj2tFTMuLhiK/YccWkYkqYGKOmnnjrbG2pN3gg03EFV8mvfMVb4Qc0iTwlSTuTePwVP2ZgsMQ111TXrhGQkeVUorC20AUryBQ62lRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711627854; c=relaxed/simple;
-	bh=XLR5seFyaOZ89hdv/Ug8D4XWdLSyEghesi9PWjNcV6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uZ0056mjwogczEW5ZoD8Hzhrc0kiF/tkqAtchWIClvg2LWYKrbgj0LvFvgXIZrPRNGnYwRYrzek37vIzivwmkah3ad15kp7LS9CDRYfYrYFffP2idN5vrZLbJr+nSng0+/x/Z/c+ENKVAIqHd5k/4stDM6+wyK1xHIRduOXgcTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rpoam-0003cy-1q; Thu, 28 Mar 2024 13:10:48 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rpoal-008zxt-FO; Thu, 28 Mar 2024 13:10:47 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rpoal-00CxMb-1I;
-	Thu, 28 Mar 2024 13:10:47 +0100
-Date: Thu, 28 Mar 2024 13:10:47 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] pwm: add missing kernel-doc for pwm_chip:cdev
-Message-ID: <3xqcgvyz2dunxxnmstt63d3v235r3cfh6ddsajrnogpw4zvy7b@w7tzawgexthc>
-References: <20240328045515.15874-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1711627973; c=relaxed/simple;
+	bh=eQPwDOS/et2gGh2U5lbLbgdW+2Fr6vfgAdlGcEfpeUU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A5w/hQAbJ0iHJlRmNWb1ac2LdTq4uSQSUdPPxWq64K/nxZxJhdD+vzYJf7NOkk2Y3ehYQ+RdIK7zHOJtkmO8DqyxGwrCHJXBV4cC5jGEyH+fhdFvw5WGiNtyiOS/TDuMlCyLzrFIgQ+r7PdS/NP0wilazaknh8ugWZbhafxIybY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GbAptNwU; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d6c220a377so10151921fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711627969; x=1712232769; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHDJ6rlEEebln0ELZLhFxdjJ4IMCGnn3th1c8YTYOtw=;
+        b=GbAptNwU6lMCNGXbqhRLu8kZXW8Fr2UX8ZIdTulIeuB5JvRaNtYULUU6dL+bUyj+WS
+         h21Uacel5lLvUqaWf1smzM7MmFV/MgxU6xLO8Bpa5GcZ4E/CnaCsI5CVQINnCnrbaLgO
+         xzI/oNC+x7xbHa7BkBdJUyntLoBuDkvJULMioXPiP5FP1H89PPB6P0HBeOwuQadQ8v3v
+         k9v+1lW/QkEfN9k4hBWsqvfcIkVODuErpE5Vt/xEXSK4WyO2/C0nvb2LRDlFZjYqqdns
+         6PfMYDWu8jj1uTHsu199Oqlsj2El/tIVfRRHFK/Iver/pyEyvwfv3oazjACqN9Yol/Qb
+         WE9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711627969; x=1712232769;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IHDJ6rlEEebln0ELZLhFxdjJ4IMCGnn3th1c8YTYOtw=;
+        b=WWhIbKx+xR/t82jjgi4Dc/3t56fSiFKP7oehzi75JL7PKy2kO78AV1XFXQwNoG10EQ
+         U993Fvv0mChfhd72n2HG6r8WJnf6E3Oc53JUEl4MO1rDjQ7dAO12fI/nkwzJSsIXYP1s
+         otK0BnqFxKtuOKS0NLExgFbT6FCy2xizI3SM+wKpXjbvChEApD10Zt1dyhrV9bdAf5tv
+         neh76pFLcDlLjYi/pwMwpmDi/mpG8wZgXCNLVeDlEYzYMFB8XLaKR8/AoMOgDymuCjIr
+         ETd2HGnNV4ixLkt3+yyMiPAtuvkzqztsn3owC12QV+5TiGr7SMkw1PdYqRvmf+1lgbvE
+         4gmA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3zRHgUFwGXPp/rYLae9mrXWRNbcECcXuwjM5CKwK5N0WFZ2BAloJikdwQi5ybBYnI72pjpr2DBJYA9hfRiCO2M3ygJgVymo5eq5cs
+X-Gm-Message-State: AOJu0YxEP2jKnH6WS9Jz4FO/7b1ZiuXQzbvMbmBA9PQscOVVXzq3CltL
+	HlEYWLnw+EryloDkv5E+L/tVB76QqG7VHeYCuUwxGvubRxdDt5Ak4dtg0jjI
+X-Google-Smtp-Source: AGHT+IHwlz6BzdFgPSHNY37ZWQvhFtbbZArhAgaM/MNTbOlDBkFm7N0qsXklr2nX7WXuUysQCuB+Dg==
+X-Received: by 2002:a2e:6a18:0:b0:2d4:99f8:8b9f with SMTP id f24-20020a2e6a18000000b002d499f88b9fmr2235018ljc.50.1711627969345;
+        Thu, 28 Mar 2024 05:12:49 -0700 (PDT)
+Received: from YOGA.local ([2a06:c701:736b:f200:125e:963c:4e4b:b7c5])
+        by smtp.gmail.com with ESMTPSA id bd11-20020a05600c1f0b00b00415460a63ebsm1416456wmb.29.2024.03.28.05.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 05:12:48 -0700 (PDT)
+From: Shahar Avidar <ikobh7@gmail.com>
+To: gregkh@linuxfoundation.org,
+	hverkuil-cisco@xs4all.nl,
+	andriy.shevchenko@linux.intel.com,
+	robh@kernel.org,
+	felixkimbu1@gmail.com
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] staging: pi433: Rename vars, update param type & remove duplicated code.
+Date: Thu, 28 Mar 2024 14:12:38 +0200
+Message-Id: <20240328121244.1244719-1-ikobh7@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vl5k7ifaxjvijgw2"
-Content-Disposition: inline
-In-Reply-To: <20240328045515.15874-1-rdunlap@infradead.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+
+This patchset improves readability & maintainability:
+        - Rename device related vars.
+        - Update pi433_receive param type.
+        - Remove duplicated code in pi433_init.
+
+Shahar Avidar (5):
+  staging: pi433: Rename struct pi433_device buffer field to tx_buffer.
+  staging: pi433: Rename struct pi433_device instances to pi433.
+  staging: pi433: Replace pi433_receive param void type to struct
+    pi433_device.
+  staging: pi433: Rename "pi433_dev" of type "dev_t" to "pi433_devt"
+  staging: pi433: Remove duplicated code using the "goto" error recovery
+    scheme.
+
+ drivers/staging/pi433/pi433_if.c | 690 +++++++++++++++----------------
+ 1 file changed, 345 insertions(+), 345 deletions(-)
 
 
---vl5k7ifaxjvijgw2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+base-commit: 20952655235dd9b1447829591774f1d8561f7c6a
+prerequisite-patch-id: 91943193af2fea74182be67fb583235a3fbeb77b
+prerequisite-patch-id: 2cad031ba6a0782a67ab1645ff034a8be65c2e76
+prerequisite-patch-id: 1a852ed8f9d133aec7c651fd9007e59e39c55fb7
+-- 
+2.34.1
 
-Hello Randy,
-
-On Wed, Mar 27, 2024 at 09:55:13PM -0700, Randy Dunlap wrote:
-> Add a kernel-doc description of @cdev to prevent a build warning:
->=20
-> include/linux/pwm.h:308: warning: Function parameter or struct member 'cd=
-ev' not described in 'pwm_chip'
->=20
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks for the fix, I applied it to my for-next branch at
-https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git pwm/for-=
-next
-=2E
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---vl5k7ifaxjvijgw2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYFXkYACgkQj4D7WH0S
-/k6cKQf/RspDnaB8B793IIf5VGeniUSJQJ6Y+ZbSnl7Nd5F8rpMpZ+V2dNkJ02eA
-sO64DEi9sdjm/xhiJh1qyZgJi4cmuHwl5SmZCOlQi4gVTtGXMydMUW8gL4MtsUiR
-ZS3KXz57oDWs6ZPRz2cAUwfut/b1Qs/9R9qOnb2JM/KFrYFxlQgtwxaXga1wweFB
-TJL7hElzajXZygks1pq7LNocMhvtdRz4hUBGjBekqLyLFXTLkY6TP2m0vep5UHJC
-U9irHFFFh5y0a2yhoQDEwqG2AYsLa3uFPEMC/GjKM85sUngv6O1C1QrCA4D2FRnT
-Adj9LPGcE8BWs4zr8UHUBElzBILs8g==
-=0Tli
------END PGP SIGNATURE-----
-
---vl5k7ifaxjvijgw2--
 
