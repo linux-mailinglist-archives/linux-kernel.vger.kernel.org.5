@@ -1,166 +1,195 @@
-Return-Path: <linux-kernel+bounces-122569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D3BE88F9CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:13:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7359B88F9CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:13:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 672471C2B86F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:13:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC3F0B26EB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A3254673;
-	Thu, 28 Mar 2024 08:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE45A54672;
+	Thu, 28 Mar 2024 08:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E4z2wUN7"
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bcBGgQic"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10E054773
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711613565; cv=none; b=RWiz8dY7FKoquLdh+GtBJDHEWfjlwIYs+5HpZ6nPcMgfk06nifwbKtR97Cxr7iWeP1KJUHsAS93/fIr4LYdQbKUO+bC5En9OI15o5WAG0BzQGlk692aqNc4fpVh0CzsYaJOjuY2SpqdgD6McVtJG2JoBwWCnjisJ6+CI1YglDG0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711613565; c=relaxed/simple;
-	bh=PFeWiLIAKM8JaPmrSFnV15YMIsPtkTmht+d/gq6PPKM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hxIQwkKeWnb7BKRLOz4G71Crnvlhv9ZuT0l7nuePwYR9cHlRjuPTcmf8myn9jxJZfAeJnCEDp5Xme2eBrx+8kP9AbK63imXkykwqXpwdqPp1R3P1fA2ET/thhwvFqKiOV1usuAk+C41XL452DFwJxhLxnlvrFmxk7PpuOKT4GkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E4z2wUN7; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <098bfa48-75d5-45b5-b81d-a2a84b394352@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711613559;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+z86Nxu+WnBrjtSTW47HkgM2M7XmIhiMD7Mp8KdBeRU=;
-	b=E4z2wUN7Sx3Tt3DqFMxB2tqqJACJcSfpHfhXm5Sonb0EWOesDfpI9WYWmmVmtcR2n6omSs
-	QVjfIZUZoHljMcySgJHhu+52Tdn+uVmT3yuARaa3wsZ5hTlQBv3b07wsfOxKOiiLfoJXM0
-	7ZgNghLmGreRRgQrZnP0Zbea29codik=
-Date: Thu, 28 Mar 2024 16:12:14 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B40053804;
+	Thu, 28 Mar 2024 08:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711613577; cv=fail; b=tiZ6xh2XLXS+NL2sq8jdni38mDyF3Lz4cIfYk91KFgsG+VUUdzuhRy5FG2kM1sBJFinrD+OlwunQTEIzFb9rHsQge7HFkC6PNNNFGMtknXeT246N/m9zoQUVENFiWyqI8Bjno0IK9fcUKg2TR/jqLS/21FKQut9u+sAF9yDWvvc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711613577; c=relaxed/simple;
+	bh=sunIeWDx8susiaFheRxJw85Y5l9oIxjanG14uXffjXE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ojtrLnJASPr9+QxDoC/2qw0FDostuhk4dtaRuLPV+jCug+o4yMrX9ISwO38SloB++BvU6VOSu2cP5ifHl/UGjvuU8NPDbSW+UtF8oyY4oQlQOPQ7SoAY+RgdT6OVD9qDqnxOt2jYvNfL3JNJcxqRZsB+y2f6fPUFGhc2GiQBPkg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bcBGgQic; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711613576; x=1743149576;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=sunIeWDx8susiaFheRxJw85Y5l9oIxjanG14uXffjXE=;
+  b=bcBGgQicf6Twbf1p+AZgX/w6X5LRXhn+aZPfGi0wIIxxd1rV2GUx7lgk
+   2SWXmKbvv+9+ZVOzo0eEvWS4a/SwEUm8OQKg2raZ5V3aw2G0dhbUr8kQT
+   Rrw1IdngmSKRTpsPTecVoB75LZGgg1zYiddQ8sq9OXv+wh+rlLZ1yyJVQ
+   80zSAziy8YPZzVN5u/vTrfOHXMSgbz4h9JDhtvT8nwr5pSVQPn7HGwPUE
+   iuNUrNMMiJIc41w8GwemCICZhdF/Yx9t9AQJeUrg8EU41et1GI26U7zmn
+   Koli7yC9Jbrv8O5vaPyf+c98Loe+ps9MvguWTU+XriVesdTnDRvoGAnBR
+   w==;
+X-CSE-ConnectionGUID: YDLtwnWnT7a9A8+XYM2j8g==
+X-CSE-MsgGUID: SK6u5/9vRk+XXPUtEyMaZQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17481084"
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="17481084"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 01:12:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
+   d="scan'208";a="16604381"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 01:12:51 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 01:12:51 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 01:12:51 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 01:12:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O62CcwGVt5j9urwv7aCF+jX94hHOQ9MMUv9q7CF9o9gk3HRsIhsJizfXEBu3NNF8D4T7DBLE4ftSATqnNtIXYr5Afpw6/q73gnQ6QQtSj1XBXpeTjPNgw8E1xD9D5NE4P91atxAFV7ncS7p7fVThcb1WWPo9tBU+ODCh15TBeuSz8Ae+IuNEnwhKFP0h144g3tItF+iTjyQo1BAmYZTVZWPpckLom0cTED9RvAQnatIa4l5YiDi5P4+zb2oQcobpdqdKpk0zOOoZIzjxm0A/qAdP7qrpKnyCOKxJrF13y7SpErh+L9u9grEhq6974hgZNIlcw9P+OQiJXUbWFo/6pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FFufGMDYtGfRxH9EvBG7jQwW4xSN//imvdQTkmDmOB8=;
+ b=JzJR/uZVrb+I48e2bngbiEGo2mUln4Sy/1vnTPZEc85xEkmq9oqppAEqAxIRBW++XpMHq0GUKulyEFxoAldzK3BXvzV+GY2TyCwDDis3vFOokZHpQzEjdMkZ60UzWkLkI1N4lnI/uqcaj+YQ4jXoQUDQ0Kp1sketUWS63j4y0TQx/FqG1DdRYiezQZrJAzt3Oh68Y//7kCfPZJuozMWvZBkHcHHfhmQAprRcn1nSw7klGL3Br+65ryQM0WIshyScx+8I1jjl1Oyo0C1E2X7euwBVv20fBYxsFXUK7tBw+xCc6Ze+qIvQuQDi4PvxAy8vSr1GfaEHE555SXKUtqc2MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by DM4PR11MB5996.namprd11.prod.outlook.com (2603:10b6:8:5f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
+ 2024 08:12:46 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 08:12:46 +0000
+Date: Thu, 28 Mar 2024 16:12:36 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: <isaku.yamahata@intel.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
+	<sagis@google.com>, Kai Huang <kai.huang@intel.com>, <chen.bo@intel.com>,
+	<hang.yuan@intel.com>, <tina.zhang@intel.com>
+Subject: Re: [PATCH v19 091/130] KVM: TDX: remove use of struct vcpu_vmx from
+ posted_interrupt.c
+Message-ID: <ZgUmdIM67dybDTCn@chao-email>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <6c7774a44515d6787c9512cb05c3b305e9b5855c.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <6c7774a44515d6787c9512cb05c3b305e9b5855c.1708933498.git.isaku.yamahata@intel.com>
+X-ClientProxiedBy: SG2PR02CA0010.apcprd02.prod.outlook.com
+ (2603:1096:3:17::22) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH 7/9] mm: zswap: store zero-filled pages without a
- zswap_entry
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-8-yosryahmed@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240325235018.2028408-8-yosryahmed@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|DM4PR11MB5996:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1f90f63b-1350-4a8e-ad00-08dc4efed9b1
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: beEAre1K0qElt/N+BlOBFs5s8tkdVEJQu2Rxw8SxmPjZ7fI/6ZXmKgC3PaEgcRbzXYITRdFjcIqXhSpoAr70yAKbMXjNa21Yq3cppq8lsTCdmtwTBlRXusw1HWOjzufaEZF8km7kTPz2IBglkQ1uzuKXiuWBrjmN2rdkXoitGkuoMTmNCm+6LxkpIZCZ0ngIdchqnfNwTIna+FiWnFyJ6Ce2g8XG8BozyRwnBuvDNYHSoT049h2imG2YlLfbqkKAh/mJSZqsAgJS1RMMjQa2VFAPeSSIetjXKNbpSQRH3Qcmt2J9EaZOlHLsl1/HL7LyWzHYUmjttHhee25cNGVCUCmcrne9ZCE5+6+KEm7ceJ48+DW3tiweDibkX57bi4VfMjynvlHn5KFAXzjEopAFZqzWMtE1nMthl5+g/bmHOKh4zCX+YI7bJYtAOyo6OMGsKOuQpAyrw1OpJmaKVfyfZbNWYV00cmq3EBczoQqHcQUFsCHtNkkessDYWh+FEEs1+EcPPmL6JSekPdUvEW32ykGkGmCkp6R3ux7wFdvJp9JapR6Cx0+FcNGOfYrZiJRLoOjpNqdC6qNISiPzW1yVtSfhk0pf00LcvS1cqlkqGRSxWjYzCvZs9eCVy//rJ6lu1Exzc76HxqYssRlzDkywS+LJBTHKduZq6SRizK+CSBk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MQzZmwKgoDIw35b+jtUD6ksnoNq9U+/uB23DLF9tKckR1mg30vRDJpr8kcyO?=
+ =?us-ascii?Q?oyhOtoEjZA0yhB53J1y8ipByFexTW42a2xukroDyT0d5KE7d/AffXS1NadmS?=
+ =?us-ascii?Q?ae2XzJKBSrtKq2BTBimA0NOmHMeuXIyW14PDayVGiyk4lDYnC+2hjbbXKXom?=
+ =?us-ascii?Q?v85O67yBNpwg933kPAFu3G4Pmg0mEVacx3dr+6FZ4t6TZZF53ZHA0P3unQQx?=
+ =?us-ascii?Q?lBcpQb5ppV6RjwTfTZWlrWRxA6MzMt/EYfUa9h6C3q9cki8fbcyuy/3ZA8Mx?=
+ =?us-ascii?Q?TyM/cypvUs9XdptCm4bY9drE+cjFBQnDMTeMftHCcdLYaYosvHyaTtsLA/TH?=
+ =?us-ascii?Q?kfXLxr3i05oQsaj9CVU4NIPR7AxSB5uonWpSlt1H8mFx51PwCIZDUP3zUJFD?=
+ =?us-ascii?Q?nNHNDzSPhAVfzNR1Nh8GwtZoTvhsU+b3lNsg+4Gykptv9e/aZ0cVqXqh0aQD?=
+ =?us-ascii?Q?X6qclm4RUjIybM8EsBZXUA+vjCgI0dBER5tr3TDeZl75D0JdmkFIBoirgNWp?=
+ =?us-ascii?Q?GBZ8q8us5ifpHSY8POSnM1SD83qlnsPiWK0r+j89QcKoHO0cj7R+S2JNcYDN?=
+ =?us-ascii?Q?7PTtNXGcCZaCRRo0lXTgK/8WYCE2tPoVxeoOVyEil50pu1GKi/WUAKY6BWQk?=
+ =?us-ascii?Q?iOND30o7TmSXVF5YIYvKavnHJ9fhvyApru4+WBe1yMynXoyOuxIx0GkC7cGD?=
+ =?us-ascii?Q?nDPLpjxAXC2cv9IcmvF+5jBYvMjmJ6yykBeUpRp4376sHx8GhSymZo7gE2km?=
+ =?us-ascii?Q?C6VVC4czruRdQ/392l7qVP9/zCkLHDSHTHPmOdspAJyOy3E3UklKvpf5D2oG?=
+ =?us-ascii?Q?RWoGsWceXEmE3s2Pa7SUGfQD+Lhi2Vkojbszbn2LaTTaCksC4OPJ2iSc1wXi?=
+ =?us-ascii?Q?sgqbe3aIfT7K/pUsY2M1cpvzubQnoZyO1VPqrfVh1urlCmkXKUhpK/jfHb8F?=
+ =?us-ascii?Q?OeWMsIXTD2L++DyjGDCq6sjBia+WkTxhMPe4Tf2FApPKM3P987PNRmdpGoP+?=
+ =?us-ascii?Q?RGNU7fV4VTivUJH/7RmZClxMkGMPrUhhflR2H5t7y/dBbACJqiYx9E9HOT73?=
+ =?us-ascii?Q?OKTa/NCYEEnMrYZzETkuwDF41jLb1Bn3dQyTVumNOfrTH1auz/yeTd3HoPtO?=
+ =?us-ascii?Q?OnoH/rH14rYfLsFFl4nZ1rWpqewdY5lBdKzzPuSU2AFecxiWq98mO8iJnYy9?=
+ =?us-ascii?Q?yXG0Fp6TOtsfgeT9AsllSi7PEt8tcVqsn+IT2lVC9ZUNOmXpTrao2E9BHhvy?=
+ =?us-ascii?Q?LC960IjC2IauZAF6wDlTbfhfGpm03R8rAPhi2vvGbG2mkdppj3wCkyc7bIAS?=
+ =?us-ascii?Q?GwIy3P5NA86qATqMf8WWZUjB6jWJPrM3uWXc+QWcewwKxIGDqID8TJdNOHkE?=
+ =?us-ascii?Q?BNj8dHy4Y/rXwH7jgLIZhv3Nlrnsha+gvgJIfY+MmqP8h/I4HYm/8OWgEuCB?=
+ =?us-ascii?Q?4nCchd8oPewxir/nbtrUMzL7pf3HCWiKO9wmJ00UwVpbwaSPUNl1+bJ9FB41?=
+ =?us-ascii?Q?urd2YH6m/ctoIIkIfrQcFp/xF3cCUp2sKO/lQSkj4XSgrAScVp21kpi5ETmz?=
+ =?us-ascii?Q?X5xXpFvcs7gbx6GdS+fXfUK0bMw8yLmHonJMRXq4?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f90f63b-1350-4a8e-ad00-08dc4efed9b1
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 08:12:46.2097
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i7soK+zwdkOLf1hX2577do7+VAl+bQcXDJC9C0W7F8yKZgdY5nAY8HEHZqnVMUOou4EXlgd1LJd+M/2assGxtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5996
+X-OriginatorOrg: intel.com
 
-On 2024/3/26 07:50, Yosry Ahmed wrote:
-> After the rbtree to xarray conversion, and dropping zswap_entry.refcount
-> and zswap_entry.value, the only members of zswap_entry utilized by
-> zero-filled pages are zswap_entry.length (always 0) and
-> zswap_entry.objcg. Store the objcg pointer directly in the xarray as a
-> tagged pointer and avoid allocating a zswap_entry completely for
-> zero-filled pages.
-> 
-> This simplifies the code as we no longer need to special case
-> zero-length cases. We are also able to further separate the zero-filled
-> pages handling logic and completely isolate them within store/load
-> helpers.  Handling tagged xarray pointers is handled in these two
-> helpers, as well as the newly introduced helper for freeing tree
-> elements, zswap_tree_free_element().
-> 
-> There is also a small performance improvement observed over 50 runs of
-> kernel build test (kernbench) comparing the mean build time on a skylake
-> machine when building the kernel in a cgroup v1 container with a 3G
-> limit. This is on top of the improvement from dropping support for
-> non-zero same-filled pages:
-> 
-> 		base            patched         % diff
-> real            69.915          69.757		-0.229%
-> user            2956.147        2955.244	-0.031%
-> sys             2594.718        2575.747	-0.731%
-> 
-> This probably comes from avoiding the zswap_entry allocation and
-> cleanup/freeing for zero-filled pages. Note that the percentage of
-> zero-filled pages during this test was only around 1.5% on average.
-> Practical workloads could have a larger proportion of such pages (e.g.
-> Johannes observed around 10% [1]), so the performance improvement should
-> be larger.
-> 
-> This change also saves a small amount of memory due to less allocated
-> zswap_entry's. In the kernel build test above, we save around 2M of
-> slab usage when we swap out 3G to zswap.
-> 
-> [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmpxchg.org/
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Mon, Feb 26, 2024 at 12:26:33AM -0800, isaku.yamahata@intel.com wrote:
+>@@ -190,7 +211,8 @@ static bool vmx_needs_pi_wakeup(struct kvm_vcpu *vcpu)
+> 	 * notification vector is switched to the one that calls
+> 	 * back to the pi_wakeup_handler() function.
+> 	 */
+>-	return vmx_can_use_ipiv(vcpu) || vmx_can_use_vtd_pi(vcpu->kvm);
+>+	return (vmx_can_use_ipiv(vcpu) && !is_td_vcpu(vcpu)) ||
+>+		vmx_can_use_vtd_pi(vcpu->kvm);
 
-The code looks good, just one comment below.
+It is better to separate this functional change from the code refactoring.
 
-Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
-
-> ---
->  mm/zswap.c | 137 ++++++++++++++++++++++++++++++-----------------------
->  1 file changed, 78 insertions(+), 59 deletions(-)
+> }
 > 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 413d9242cf500..efc323bab2f22 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -183,12 +183,11 @@ static struct shrinker *zswap_shrinker;
->   * struct zswap_entry
->   *
-[..]
->  
-> @@ -1531,26 +1552,27 @@ bool zswap_load(struct folio *folio)
->  	struct page *page = &folio->page;
->  	struct xarray *tree = swap_zswap_tree(swp);
->  	struct zswap_entry *entry;
-> +	struct obj_cgroup *objcg;
-> +	void *elem;
->  
->  	VM_WARN_ON_ONCE(!folio_test_locked(folio));
->  
-> -	entry = xa_erase(tree, offset);
-> -	if (!entry)
-> +	elem = xa_erase(tree, offset);
-> +	if (!elem)
->  		return false;
->  
-> -	if (entry->length)
-> +	if (!zswap_load_zero_filled(elem, page, &objcg)) {
-> +		entry = elem;
+> void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+>@@ -200,7 +222,8 @@ void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu)
+> 	if (!vmx_needs_pi_wakeup(vcpu))
+> 		return;
+> 
+>-	if (kvm_vcpu_is_blocking(vcpu) && !vmx_interrupt_blocked(vcpu))
+>+	if (kvm_vcpu_is_blocking(vcpu) &&
+>+	    (is_td_vcpu(vcpu) || !vmx_interrupt_blocked(vcpu)))
 
-nit: entry seems no use anymore.
+Ditto.
 
-> +		objcg = entry->objcg;
->  		zswap_decompress(entry, page);
-> -	else
-> -		clear_highpage(page);
-> +	}
->  
->  	count_vm_event(ZSWPIN);
-> -	if (entry->objcg)
-> -		count_objcg_event(entry->objcg, ZSWPIN);
-> -
-> -	zswap_entry_free(entry);
-> +	if (objcg)
-> +		count_objcg_event(objcg, ZSWPIN);
->  
-> +	zswap_tree_free_element(elem);
->  	folio_mark_dirty(folio);
-> -
->  	return true;
->  }
-[..]
+This looks incorrect to me. here we assume interrupt is always enabled for TD.
+But on TDVMCALL(HLT), the guest tells KVM if hlt is called with interrupt
+disabled. KVM can just check that interrupt status passed from the guest.
+
+> 		pi_enable_wakeup_handler(vcpu);
+> 
 
