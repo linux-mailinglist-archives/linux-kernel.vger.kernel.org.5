@@ -1,158 +1,248 @@
-Return-Path: <linux-kernel+bounces-122585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 196CE88FA05
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:30:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552D788FA07
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8421CB2338D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:30:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA2A31F283BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F9655E40;
-	Thu, 28 Mar 2024 08:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB06F44C6F;
+	Thu, 28 Mar 2024 08:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="euVUhZE7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LMkhFwCT"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C294B26AD8;
-	Thu, 28 Mar 2024 08:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685F428DB3
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711614597; cv=none; b=N7sSZAQf9HIjXtyts8QBNj4JvS/0cUzLAcFTwi4xFbS0vdb8cp/F+1Ye3xBbifKhsvQh2MWzFDvXy/EJDHpJiHpiLJsWMWT4VlFQOFS/XBpW+1XQWfrb+uBvjzFfy9SJUY19H7yYMOAZswucgimPgOr21uoIsp3Trovkw6Y3vAk=
+	t=1711614706; cv=none; b=tSTNqn7B3yxyxN8r4AdT9R2In9h3MM2uGLep75Zz2krK0Oi1CVKlSM4JuEV/kJoAGA4uWFnDSp14fpjsrZ0nt3GM0zuoBxosp8PNVdg+qi6z04plGSIx0qJylOcUSilvhBQ8VhhHBbcwwKoZ92q0P3FZT3nKZ6sDS34aXUVacsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711614597; c=relaxed/simple;
-	bh=Xn5SRbo/tLLp83oxDcrfhoXAe/uHOAEhMew1J903Plo=;
+	s=arc-20240116; t=1711614706; c=relaxed/simple;
+	bh=qm6MN9HJBj2/qglfnTiwAPaiTq94YBkgyy2nwy+si5I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pgjs8zvUEtoPWhI5kXV+7ox5QroeZo7JYhZpzB3MJQXkwCvnnVBur7IoXamv1W2xrDjG5nI07MrbTYyIcPakJytjbzpAT4DMc9e7+cqos+j0mW5YiFQvVkxjeNH0aFX/ZDXWABib0sCuv/2yS2a3VeaMT0KBhEKO2c3PnngGUS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=euVUhZE7; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711614596; x=1743150596;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Xn5SRbo/tLLp83oxDcrfhoXAe/uHOAEhMew1J903Plo=;
-  b=euVUhZE7FIukN1euL84833Fd+GVjjvNXQqoyhHjHC2ocVPkjoOYPe1Bd
-   lBVkMAqt+uatu41qeCwLs+j57F2DL3RYiHJpuVbFzkCwfS62ngtcSeVQ1
-   vhxBV+PJ74bxus0SYxsd2szQU5z8HoJFgzHX8+kDqFyGXJZGz8zwcxOR3
-   7xKGPI1hl0939YP6hrYoe3t33kCt6wg1D2k1QYJ6/GsxKR3GbcxHplvmv
-   VR+3G4/L26hY+VXdQw+JB3TMtILfnmacg1YKQmGuxg8jvDNyws28m4Cq+
-   g3Aih16rx2KonZ1T/bf5/oyJkf4CsQW39fDsHXi4kQGRz3PcRfApL+wTI
-   w==;
-X-CSE-ConnectionGUID: Pep6WMONSfWA3qWYbL29iQ==
-X-CSE-MsgGUID: b4zQk01GR9urSzFUcOgUbA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6689945"
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="6689945"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 01:29:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="16518109"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 01:29:52 -0700
-Message-ID: <2f2b4b37-2b99-4373-8d0d-cc6bc5eed33f@linux.intel.com>
-Date: Thu, 28 Mar 2024 16:29:50 +0800
+	 In-Reply-To:Content-Type; b=U7S2Mrr5Wuz4sn90LrfnAwLFZ3AIHxTaew3fLwQIGQ7BiJGA+H3H5tiJrq5/cgB7SKuKBrgq1A0gZC6g1i0Bn3wWwe2XWY33R+Fk9gYe68ZnJFIgPnTueFIAA+GsGu7KnrtQlexPALjyHDIDU5ucPnBjAZptSVm+kvyqbd45eng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LMkhFwCT; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6352794b-f5a2-4525-8185-c910739683e6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711614702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GrTMwHNtGxgQoxiGyZ4qpRHY+py29G4illAnWUnjIPg=;
+	b=LMkhFwCTqMPuIwWNQ6SzbIJcFT5HOU/A4szBZAjclAVYCtm8MpakStdwHfPS5A4IaoG7xa
+	PyAlMeeFsanRnRAS9xIOVUjVa99uoaGRsXfA7dp++c2Z1BhJJQDAaM+RxmNji3uSdjwRo4
+	fqeJPO64D9K+pe3+1/o7TXHjar9Am2Y=
+Date: Thu, 28 Mar 2024 16:31:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 060/130] KVM: x86/tdp_mmu: Apply mmu notifier callback
- to only shared GPA
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <dead197f278d047a00996f636d7eef4f0c8a67e8.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <dead197f278d047a00996f636d7eef4f0c8a67e8.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [RFC PATCH 9/9] mm: zswap: use zswap_entry_free() for partially
+ initialized entries
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240325235018.2028408-1-yosryahmed@google.com>
+ <20240325235018.2028408-10-yosryahmed@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240325235018.2028408-10-yosryahmed@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
+On 2024/3/26 07:50, Yosry Ahmed wrote:
+> zswap_entry_free() performs four types of cleanups before freeing a
+> zswap_entry:
+> - Deletes the entry from the LRU.
+> - Frees compressed memory.
+> - Puts the pool reference.
+> - Uncharges the compressed memory and puts the objcg.
+> 
+> zswap_entry_free() always expects a fully initialized entry. Allow
+> zswap_entry_free() to handle partially initialized entries by making it
+> possible to identify what cleanups are needed as follows:
+> - Allocate entries with __GFP_ZERO and initialize zswap_entry.lru when
+>   the entry is allocated. Points are NULL and length is zero upon
+>   initialization.
+> - Use zswap_entry.length to identify if there is compressed memory to
+>   free. This is possible now that zero-filled pages are handled
+>   separately, so a length of zero means we did not successfully compress
+>   the page.
+> - Only initialize entry->objcg after the memory is charged in
+>   zswap_store().
+> 
+> With this in place, use zswap_entry_free() in the failure path of
+> zswap_store() to cleanup partially initialized entries. This simplifies
+> the cleanup code in zswap_store(). While we are at it, rename the
+> remaining cleanup labels to more meaningful names.
 
+Not sure if it's worthwhile to clean up the fail path with the normal path
+gets a little verbose.
 
-On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> The private GPAs that typically guest memfd backs aren't subject to MMU
-> notifier because it isn't mapped into virtual address of user process.
-> kvm_tdp_mmu_handle_gfn() handles the callback of the MMU notifier,
-> clear_flush_young(), clear_young(), test_young()() and change_pte().  Make
-                                                    ^
-                                                    an extra "()"
-> kvm_tdp_mmu_handle_gfn() aware of private mapping and skip private mapping.
->
-> Even with AS_UNMOVABLE set, those mmu notifier are called.  For example,
-> ksmd triggers change_pte().
-
-The description about the "AS_UNMOVABLE", you are refering to shared 
-memory, right?
-Then, it seems not related to the change of this patch.
-
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 > ---
-> v19:
-> - type: test_gfn() => test_young()
->
-> v18:
-> - newly added
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/mmu/tdp_mmu.c | 22 +++++++++++++++++++++-
->   1 file changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index e7514a807134..10507920f36b 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1157,9 +1157,29 @@ static __always_inline bool kvm_tdp_mmu_handle_gfn(struct kvm *kvm,
->   	 * into this helper allow blocking; it'd be dead, wasteful code.
->   	 */
->   	for_each_tdp_mmu_root(kvm, root, range->slot->as_id) {
-> +		gfn_t start, end;
-> +
-> +		/*
-> +		 * This function is called on behalf of mmu_notifier of
-> +		 * clear_flush_young(), clear_young(), test_young()(), and
-
-^
-                                                                an extra 
-"()""
-
-> +		 * change_pte().  They apply to only shared GPAs.
-> +		 */
-> +		WARN_ON_ONCE(range->only_private);
-> +		WARN_ON_ONCE(!range->only_shared);
-> +		if (is_private_sp(root))
-> +			continue;
-> +
-> +		/*
-> +		 * For TDX shared mapping, set GFN shared bit to the range,
-> +		 * so the handler() doesn't need to set it, to avoid duplicated
-> +		 * code in multiple handler()s.
-> +		 */
-> +		start = kvm_gfn_to_shared(kvm, range->start);
-> +		end = kvm_gfn_to_shared(kvm, range->end);
-> +
->   		rcu_read_lock();
->   
-> -		tdp_root_for_each_leaf_pte(iter, root, range->start, range->end)
-> +		tdp_root_for_each_leaf_pte(iter, root, start, end)
->   			ret |= handler(kvm, &iter, range);
->   
->   		rcu_read_unlock();
-
+>  mm/zswap.c | 62 ++++++++++++++++++++++++++----------------------------
+>  1 file changed, 30 insertions(+), 32 deletions(-)
+> 
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 9357328d940af..c50f9df230ca3 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -774,12 +774,13 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+>  **********************************/
+>  static struct kmem_cache *zswap_entry_cache;
+>  
+> -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+> +static struct zswap_entry *zswap_entry_cache_alloc(int nid)
+>  {
+>  	struct zswap_entry *entry;
+> -	entry = kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+> -	if (!entry)
+> -		return NULL;
+> +	entry = kmem_cache_alloc_node(zswap_entry_cache,
+> +				      GFP_KERNEL | __GFP_ZERO, nid);
+> +	if (entry)
+> +		INIT_LIST_HEAD(&entry->lru);
+>  	return entry;
+>  }
+>  
+> @@ -795,9 +796,12 @@ static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
+>  
+>  static void zswap_entry_free(struct zswap_entry *entry)
+>  {
+> -	zswap_lru_del(&zswap_list_lru, entry);
+> -	zpool_free(zswap_find_zpool(entry), entry->handle);
+> -	zswap_pool_put(entry->pool);
+> +	if (!list_empty(&entry->lru))
+> +		zswap_lru_del(&zswap_list_lru, entry);
+> +	if (entry->length)
+> +		zpool_free(zswap_find_zpool(entry), entry->handle);
+> +	if (entry->pool)
+> +		zswap_pool_put(entry->pool);
+>  	if (entry->objcg) {
+>  		obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
+>  		obj_cgroup_put(entry->objcg);
+> @@ -1447,7 +1451,7 @@ bool zswap_store(struct folio *folio)
+>  		return false;
+>  
+>  	if (!zswap_enabled)
+> -		goto check_old;
+> +		goto erase_old;
+>  
+>  	/* Check cgroup limits */
+>  	objcg = get_obj_cgroup_from_folio(folio);
+> @@ -1455,54 +1459,52 @@ bool zswap_store(struct folio *folio)
+>  		memcg = get_mem_cgroup_from_objcg(objcg);
+>  		if (shrink_memcg(memcg)) {
+>  			mem_cgroup_put(memcg);
+> -			goto reject;
+> +			goto put_objcg;
+>  		}
+>  		mem_cgroup_put(memcg);
+>  	}
+>  
+>  	if (zswap_is_folio_zero_filled(folio)) {
+>  		if (zswap_store_zero_filled(tree, offset, objcg))
+> -			goto reject;
+> +			goto put_objcg;
+>  		goto stored;
+>  	}
+>  
+>  	if (!zswap_non_zero_filled_pages_enabled)
+> -		goto reject;
+> +		goto put_objcg;
+>  
+>  	if (!zswap_check_limit())
+> -		goto reject;
+> +		goto put_objcg;
+>  
+> -	entry = zswap_entry_cache_alloc(GFP_KERNEL, folio_nid(folio));
+> +	entry = zswap_entry_cache_alloc(folio_nid(folio));
+>  	if (!entry) {
+>  		zswap_reject_kmemcache_fail++;
+> -		goto reject;
+> +		goto put_objcg;
+>  	}
+>  
+> -	/* if entry is successfully added, it keeps the reference */
+>  	entry->pool = zswap_pool_current_get();
+>  	if (!entry->pool)
+> -		goto freepage;
+> +		goto free_entry;
+>  
+>  	if (objcg) {
+>  		memcg = get_mem_cgroup_from_objcg(objcg);
+>  		if (memcg_list_lru_alloc(memcg, &zswap_list_lru, GFP_KERNEL)) {
+>  			mem_cgroup_put(memcg);
+> -			goto put_pool;
+> +			goto free_entry;
+>  		}
+>  		mem_cgroup_put(memcg);
+>  	}
+>  
+>  	if (!zswap_compress(folio, entry))
+> -		goto put_pool;
+> -
+> -	entry->swpentry = swp;
+> -	entry->objcg = objcg;
+> +		goto free_entry;
+>  
+>  	if (zswap_tree_store(tree, offset, entry))
+> -		goto store_failed;
+> +		goto free_entry;
+>  
+> -	if (objcg)
+> +	if (objcg) {
+>  		obj_cgroup_charge_zswap(objcg, entry->length);
+> +		entry->objcg = objcg;
+> +	}
+>  
+>  	/*
+>  	 * We finish initializing the entry while it's already in xarray.
+> @@ -1514,7 +1516,7 @@ bool zswap_store(struct folio *folio)
+>  	 *    The publishing order matters to prevent writeback from seeing
+>  	 *    an incoherent entry.
+>  	 */
+> -	INIT_LIST_HEAD(&entry->lru);
+> +	entry->swpentry = swp;
+>  	zswap_lru_add(&zswap_list_lru, entry);
+>  
+>  stored:
+> @@ -1525,17 +1527,13 @@ bool zswap_store(struct folio *folio)
+>  
+>  	return true;
+>  
+> -store_failed:
+> -	zpool_free(zswap_find_zpool(entry), entry->handle);
+> -put_pool:
+> -	zswap_pool_put(entry->pool);
+> -freepage:
+> -	zswap_entry_cache_free(entry);
+> -reject:
+> +free_entry:
+> +	zswap_entry_free(entry);
+> +put_objcg:
+>  	obj_cgroup_put(objcg);
+>  	if (zswap_pool_reached_full)
+>  		queue_work(shrink_wq, &zswap_shrink_work);
+> -check_old:
+> +erase_old:
+>  	/*
+>  	 * If the zswap store fails or zswap is disabled, we must invalidate the
+>  	 * possibly stale entry which was previously stored at this offset.
 
