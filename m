@@ -1,107 +1,116 @@
-Return-Path: <linux-kernel+bounces-123348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F21C8906F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:11:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 914658906FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD8DFB25B84
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:11:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C36A81C23306
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED0B59B4E;
-	Thu, 28 Mar 2024 17:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9292942AA1;
+	Thu, 28 Mar 2024 17:12:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JELJL5bi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fspmrUkF"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FBC1CD24;
-	Thu, 28 Mar 2024 17:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD6B3CF58
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711645855; cv=none; b=tiKzBUI5sd7YLUEoqXt51P55k5X0Ak9ZG/FoHoWKBQ10cheB281zePyKBclTFyNYLNBzH1M0qYuw+E1NqP/zkp8kca4D8cIlafhCfJfG/EhinutqA9rQ3UK5Q/pOcxBiq98SKralnA7GkFpXmHD3iOd0omLRFO7aiyk9GJpRk7Y=
+	t=1711645936; cv=none; b=O3UWTvLjn0rvoiCPlvZgg7hUgN2X7OinDv4SKAf5s872YUnGhlwyPSdmiM7ECyLKu3iJveOwnhgxXr9MYpLkVoeFyp6A4s0/IrwTgBeFnDBCz8nHLQ66QLTZrzp0457fO9LUqsNayUsDCuAgpNvcKRrGpo0YIK3j7hTaydMyadk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711645855; c=relaxed/simple;
-	bh=R8LpNjl8m4fubf+pY59w77ALbveltFnOc5DHBVdn/08=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IrufnF3cBqCw8an148n/s/s8kx5J1wVzDdbtTb1GsK8sbcRFk63dbe3Vytve3G3/mnJekgL/hD61qAm2GMh9jdYDC/PUU50D+uIvLGLFaPGo889nIPmEFiP19w8NTEs8FBRft4Ke2O5V4EvSHaOt5/P/DfuxSMg/LnXk60ZwZy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JELJL5bi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A6FC43390;
-	Thu, 28 Mar 2024 17:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711645855;
-	bh=R8LpNjl8m4fubf+pY59w77ALbveltFnOc5DHBVdn/08=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JELJL5biHYV9q1YEvBoGXM2gCd44ho1PIKaxqhn+7X3Na5tue1FvPcWVDknuu2lrA
-	 gbyj1UXAxEMAvtd/3/ydrcp2cHV/45zjhGh1qYcVHG/CBdpgZfZ5btt+/YSY7d8oXH
-	 Kkm2E2Rck7d5sz+y9LYoMMDfY3TmxLUrutcP5ZDY58ez0E/yEVL2zNHuYT2/KPwi29
-	 U+k2AUYv3B6oxuRLfsYLzW5V3hGXRDjJbT6qYvN2j2BR7pQUltvrDqPtE9ehKNOUrF
-	 puqLKyxESL0/eyelmzhhwLzztquc01WxLX9p9xoYUvTP8v9Qin8wfVT2tcrB5uVQKy
-	 01meEHIh0Kb3w==
-Date: Thu, 28 Mar 2024 10:10:53 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Breno Leitao <leitao@debian.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Paolo Abeni"
- <pabeni@redhat.com>, <quic_jjohnson@quicinc.com>, <kvalo@kernel.org>,
- <leon@kernel.org>, <dennis.dalessandro@cornelisnetworks.com>, Jiri Pirko
- <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li
- <lixiaoyan@google.com>, "open list:NETWORKING DRIVERS"
- <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: create a dummy net_device allocator
-Message-ID: <20240328101053.69a968ec@kernel.org>
-In-Reply-To: <10d89693-21af-4560-a088-d58d16cbb9dd@intel.com>
-References: <20240327200809.512867-1-leitao@debian.org>
-	<10d89693-21af-4560-a088-d58d16cbb9dd@intel.com>
+	s=arc-20240116; t=1711645936; c=relaxed/simple;
+	bh=Hja3vS9thXGLKLww3PEJRfT0NndQJhzm8qU4nnPcckM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h9Ft+ttRdiysGd4PRxsbVNNJecwjuQVxEfT16IRz54FR8ckaYA3d6v2q+w8d7cYoKxJPSbdkdFG4stjfK9/EH7iC6kn6JlWamFVbnfrf40bUmCH6yULA3aIlMWC5IsQso5Ij3M7t/ctPWOYY1dQx8YNbdUCl5vcHr4WyXqmWI88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=fspmrUkF; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2F68D40E016C;
+	Thu, 28 Mar 2024 17:12:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id yWgCufbJBk8l; Thu, 28 Mar 2024 17:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711645928; bh=Luztintl3VI4viG+hHFnCoG31Xw06cMSvxb1/x6Ek5s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fspmrUkFNWKeYONhOmlTwuBXeH8WlHc7ja0t+GF0Axve3WHZ9ymx6jR5SGIWT8cA/
+	 r/2SuhTwW2VHXswsG1MPPwDLIvtCpFFt81g8VL8305+Zadp5pOaOMDDUOn1hIKN0Z9
+	 7SRgbTVH+Wkrinblkj3FILy5qVdyO/0vTDdKj635y9vlf6EZQQd/l2CqXyaW8tjDcE
+	 qd7L+kyz1BOs0A/sUrh/d9YsROIEExCItrFTyXEnjzxbircMr7DVqvNfqge8HFNaTM
+	 t5ID26FzgM/wMGlcwWH5Dc75dJVsQVDRIg8G8vyezktlw7zqKaq/S1u1ZlWyxGw3/x
+	 waeQDrKZ9fhHOtQvea2scqFpnk3DSZqISc9urEJatmchBhPcgStLCpqKX6G7ZgA77e
+	 A8+3RCJOcbV+x4nhY8Llry64HPVltpPdZkLktBsduv5IAMlZs5/b7eZjAzsl02V9YT
+	 1aKST/oJvgWgYA/4Pln8pT4flfDnaKF8uC9IaW7pPtYn9d0nx0Xm88QfXXUTZWZAYR
+	 Fv9Su4Ou/y0uHzuy9F3MjUDAkTPTMU+ruv4+0aqj7i37Y7nbkXCUWP2+I+PDnB1RhC
+	 IP1QBTA1ZUH7+VpdF6JTwVVZqSVqSt1dKGwps1k1D8eSmbJOzogtz83EzQw9Rvr8T8
+	 e4HJ6oXXHJSjHbnT42Z16vHs=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A161A40E016B;
+	Thu, 28 Mar 2024 17:12:05 +0000 (UTC)
+Date: Thu, 28 Mar 2024 18:12:04 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: "x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
+ struct cpuinfo_x86
+Message-ID: <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
+References: <20240328163746.243023-1-tony.luck@intel.com>
+ <20240328163746.243023-2-tony.luck@intel.com>
+ <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
+ <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
+ <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-On Thu, 28 Mar 2024 16:02:12 +0100 Alexander Lobakin wrote:
-> > +/**
-> > + * alloc_netdev_dummy - Allocate and initialize a dummy net device.
-> > + * @sizeof_priv: size of private data to allocate space for
-> > + * @name: device name format string
-> > + */
-> > +struct net_device *alloc_netdev_dummy(int sizeof_priv, const char *name)  
-> 
-> Since the users of init_dummy_netdev embed &net_device into their
-> private structures, do we need sizeof_priv here at all? Or maybe we
-> could unconditionally pass 0?
+On Thu, Mar 28, 2024 at 05:00:59PM +0000, Luck, Tony wrote:
+> It's essentially free to do this, and it makes the code more robust. It
+> becomes impossible to check model without also checking vendor
+> and family at the same time.
 
-FWIW similar thing could be said about @name, if we never intend to
-register the device - it will never have a legitimate (user visible)
-name. So we may be better off naming them "dummy#" or some such.
-No strong preference, tho. Adding params back later may be a bit
-of a pain.
+I see that but if we want to use CPUID(1).EAX, there's no vendor in
+there.
 
-> > +{
-> > +	return alloc_netdev(sizeof_priv, name, NET_NAME_UNKNOWN,
-> > +			    init_dummy_netdev_core);
-> > +}
-> > +EXPORT_SYMBOL_GPL(alloc_netdev_dummy);
-> > +
-> >  /**
-> >   *	synchronize_net -  Synchronize with packet receive processing
-> >   *  
-> 
-> As Jakub mentioned, you need to introduce consumers of the functionality
-> you add within the same series. Personally, I'd like to see a series
-> with agressive conversion of all the affected drivers from
-> init_dummy_netdev() to alloc_dummy_netdev() and final removal of
-> init_dummy_netdev() :D
+And frankly, the x86 vendor is a Linux thing so I wouldn't mind if
+checks are
 
-We can, and put it on a shared branch so other trees can also pull in
-the conversions. No preference on my side, tho. I think that Breno
-doesn't have any of the HW in question, so starting with one and making
-sure it works could be more "work conserving", than redoing all
-patches..
+	if (c->x86_vendor  == X86_VENDOR... &&
+	    c->cpuid_1_eax == MACRO_BUILD_CPUID_1_EAX(fam, model, stepping))
+
+Anyway, using CPUID(1).EAX is just a suggestion so that we don't have to
+invent our own format and convert to and fro.
+
+And that would be advantageous when we convert to dealing with
+CPUID(1).EAX values everywhere and we compare them straightaway. We'd
+need macros only when we need only some data elements from that leaf.
+
+And since that leaf's layout is commonly known, the conversion errors
+should be at a minimum...
+
+I'd say.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
