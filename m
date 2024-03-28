@@ -1,59 +1,63 @@
-Return-Path: <linux-kernel+bounces-122466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C0988F805
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D1788F818
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56B5EB23E89
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:36:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD9A9B21A05
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C772D627;
-	Thu, 28 Mar 2024 06:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E104F898;
+	Thu, 28 Mar 2024 06:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FxaDDeOa"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE37386;
-	Thu, 28 Mar 2024 06:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="UeAbq32Q"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28473386;
+	Thu, 28 Mar 2024 06:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711607809; cv=none; b=WX8lHZvj+FrF4fZv2ghsU+qxYVgQV+cXu48A4ljT7/2GBNfFl/pnUxp2l/hoACeD9HyrqplUl47RvsK0cf0izr1z1+lXKMZJBcyCQVBlX1zWpJIzevnymxkFIySdvAIr5+uqioPQZV1amw4adAdfpkc0Qndz8T/o+B4Ac4PyOdI=
+	t=1711608614; cv=none; b=IYzwVQNBNa4wYurWXLN2k6pDnDSOj/NeKqmLsZNV9bs9ssS9aOBP+yjVJpuLQoN3DZpZPAjJ/kUmxuhv/sAzYoGyuwBnIMVbWieaKbNNLg1aJtjgxYQOIZZkOnWt01/JsnqWJBB/wncjIvTlRPE48U5JPw6656R0xzmfMtf7W0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711607809; c=relaxed/simple;
-	bh=ea2by/qeZT2l6ppuo3THkAJCJQiBcyLHkCBFfTWqsN4=;
+	s=arc-20240116; t=1711608614; c=relaxed/simple;
+	bh=RN8R+2Bx93C58W1vJP5YX6XlUXPug8ucJerzaITw4BU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=djjITSyZyweLrgcBm3Ff/K6OlGoL3y6im+PKlGDj7QXsi6ZtqlI4nt7GUZzV/G9rjNQ8w3aUt1D0eqgaY9wDWCKirLkm0srHamgC0UQVJoFnVoY6EkfMLIzBttDChO/UMv/c+gnp3NPl/voroEcV+ZMYHnp4wfXPGaxQ1A2yAM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FxaDDeOa; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=h4MAWcCbj2efFunFuP241C6fJdcqGNqHSuM51ikvYgU=; b=FxaDDeOa8hTBN4jqG/Z62cf5gF
-	MlqOVS7S+oBcY21wNFslpOBgiL4xj93n5yeLZk7otVAqstqbCskEQP4h/v8Iv6p1t1fCFg5PG6kO4
-	aSZ/pK56frZVSHZQmIUQXfZrDybwWk013Yx8xDxpuxThQLsS1vlS5IR9Hx52AQ6kyFnRth01TiJIf
-	SzxUl2gFP8QHffaBEPDnFXWBQSP8+G4C0TY3kpQLEt5HBlVqZjRaEZkeKDztmUvAasOArMGlvK5kd
-	oAmr0esHsJYVkfvq7tmFuRb4VsiCoUAmwSnVIc0QCq6BIse/K09F4EwmC+ALkYeGrJ8jmCWiwK3IY
-	ARWZljQA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpjNV-0000000Cjm8-36qH;
-	Thu, 28 Mar 2024 06:36:45 +0000
-Date: Wed, 27 Mar 2024 23:36:45 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Yihang Li <liyihang9@huawei.com>
-Cc: john.g.garry@oracle.com, yanaijie@huawei.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, dlemoal@kernel.org,
-	chenxiang66@hisilicon.com, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-	prime.zeng@huawei.com, yangxingui@huawei.com
-Subject: Re: [PATCH v3] scsi: libsas: Allocation SMP request is aligned to 16B
-Message-ID: <ZgUP_ZhWPxHQwZvl@infradead.org>
-References: <20240328062657.581460-1-liyihang9@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JHfq+nPk6t4vyXkdqs6zTsHMoRnu5pmuAaZhBiJYZzO7G/DmuYE4yegMx0vpeQMVQBN6YaQud5R/bzzkAHhfe/8my98PwSLUIfhip/s4KoeHklRJsDxcALk07cVMO/IICR9SuRrjzRVZnXwMbj9FfRrRqJuLYJKwp9nDA3OrSyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=UeAbq32Q; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=tSkiYsm4pDu47eWsaJ3ZWcRIMjz3TMoXclE8uV647yk=;
+	b=UeAbq32Qtqwkg3fMxSNUclzzR6l2ob3VQJrNgRefoPY292PlVbWh7CJdRaaQVF
+	iippjvr6nigu/D7jaAQEW8Ogu5hNVweLYnGgZ2rV4TXi3H975ChhrIyNhzuzIcWV
+	rn3f3LUTLkubbfhwlJa/mwIqJ2PNoQWhGGP9Cm/cNs7pU=
+Received: from dragon (unknown [183.213.196.225])
+	by smtp2 (Coremail) with SMTP id C1UQrAD3H1BBEAVmnM1UAg--.36602S3;
+	Thu, 28 Mar 2024 14:37:56 +0800 (CST)
+Date: Thu, 28 Mar 2024 14:37:53 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>
+Cc: Chester Lin <chester62515@gmail.com>, Andreas Farber <afaerber@suse.de>,
+	Matthias Brugger <mbrugger@suse.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, NXP S32 Linux Team <s32@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+Subject: Re: [PATCH v2 0/2] add uSDHC and SCMI nodes to the S32G2 SoC
+Message-ID: <ZgUQQVGJGtQnFT5p@dragon>
+References: <20240122140602.1006813-1-ghennadi.procopciuc@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,12 +66,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328062657.581460-1-liyihang9@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20240122140602.1006813-1-ghennadi.procopciuc@oss.nxp.com>
+X-CM-TRANSID:C1UQrAD3H1BBEAVmnM1UAg--.36602S3
+X-Coremail-Antispam: 1Uf129KBjvdXoWruF4fKr45Gr1fXw48Ar4fZrb_yoWxCFg_ur
+	W8K3yrC348JFZ7J3ZYka1DAF4UGFW09r18KrZ7Ww4Iqr9xtFs5tFs8K3yrXrWYk3WfKF9a
+	yF15tr4DZr43ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnYhF7UUUUU==
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDQSvZVszXW7RXgAAsX
 
-> +	u8 *p = kzalloc(ALIGN(size, 16), GFP_KERNEL);
+On Mon, Jan 22, 2024 at 04:05:59PM +0200, Ghennadi Procopciuc wrote:
+> From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+> 
+> This patchset adds device tree support for S32G2 SCMI firmware and uSDHC
+> node. The SCMI clock IDs are based on a downstream version of the TF-A
+> stored on GitHub [0].
+> 
+> I can send the patches individually if you prefer that instead of
+> submitting them all at once.??
+> 
+> [0] https://github.com/nxp-auto-linux/arm-trusted-firmware
+> 
+> Changes in v2:
+>  - The SCMI clock bindings header has been removed.
+> 
+> Ghennadi Procopciuc (2):
+>   arm64: dts: s32g: add SCMI firmware node
+>   arm64: dts: s32g: add uSDHC node
 
-No, a magic undocumented 16 here max no sense at all.  See the
-discussion on the previous iteration.
+Applied both, thanks!
 
 
