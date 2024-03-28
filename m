@@ -1,63 +1,61 @@
-Return-Path: <linux-kernel+bounces-123080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 609988901DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:33:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 851C18901DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 917391C2CBF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:33:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1799BB238E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9874A54BCB;
-	Thu, 28 Mar 2024 14:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6C51311A0;
+	Thu, 28 Mar 2024 14:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="liAm5gps"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WanTW1Lx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A62130E45;
-	Thu, 28 Mar 2024 14:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C6112EBC3;
+	Thu, 28 Mar 2024 14:32:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636320; cv=none; b=D+dT1TUN4HfcfLaedb4L3Hm0NXxqJkZyC69qaF01gV1/JaMi+Pd1abMZDe5qy7tlK+cfKxLQmxDLkaWwMXLYWQ9FmHKTgE7V1MdpZ5j547Ty1aC5tTKeeQlS0zyJ277jJIBjWolGkifOaRsHKgmGrS/m1h32dB07BrH5WVeidm8=
+	t=1711636328; cv=none; b=CI6JyHWPs7c6EUY7d1gfUKdtOz93HQxy3IXBMd41Cb32lfEbCcxLLExpiebbcn+DQrvDZMdMlStclx1cPh3k7EqnLQyVPW///uZpjGpmofp3iNZD7VBtNRso6o0wWnbj72LDc0UfvcFAu7PYeiQB8bgyHb5yPXF/epdg+3TbmIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636320; c=relaxed/simple;
-	bh=bQir+LnXysAhPZ396iMcqboZJXRv11Qwf6prsi0Igo8=;
+	s=arc-20240116; t=1711636328; c=relaxed/simple;
+	bh=5/qbxUkF4XswjPzTkOHdQkkFpw7qxD+eOfPSj/d7hr4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tNOUi/TzKrMCQ7w9BMx05VwdgguSWHpqbnUPnrbRFB5DhPvXLiR3oAjwrku8qvYw88DxxoqF4xbBdhHDZhGx4w4yCn6bjOkNTsETH4G7oLgVx4epKzEA98f1g2D5a1Qp0eL4u7jP7iiV2ZT2eg4D3fS5MpZTq/8mpbGyPh7Ggl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=liAm5gps; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A30DC433F1;
-	Thu, 28 Mar 2024 14:31:57 +0000 (UTC)
+	 MIME-Version; b=m4a7n+UKtvSLhlhVFBrx5upet8qpSctGA+/efERpYQGd6VGSVbDXLmDBsAo4UvzfQotKIydnBFz/3u4OJwQdYanQhwfWIJOJyIR3a6K3rWLeWcRlICALfXNoo2v+cLrc3jRu5xVaITfNRUFKJPbzVLK2maVR94JC//g31ryYlF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WanTW1Lx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37564C433C7;
+	Thu, 28 Mar 2024 14:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711636320;
-	bh=bQir+LnXysAhPZ396iMcqboZJXRv11Qwf6prsi0Igo8=;
+	s=k20201202; t=1711636327;
+	bh=5/qbxUkF4XswjPzTkOHdQkkFpw7qxD+eOfPSj/d7hr4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=liAm5gpsUU3TfhVsQ0ds/wY4LTN/URRYHe8wfWIMPMwve7nP8Tx0ppkFakNHWeFoG
-	 G9zUo7Xb9xSrzVNuWGM6AmS9LJ2h7SA/YK890UR7pm3ZCL3iHJ5ytr2vILOXZc6Pvy
-	 IvTi01GNrvQjFvVdEa+BmDvmrxSqIPitR/WoSyv5ZC9JVGWvwDMm8EhrwbnA+2esr4
-	 8l0MIBo6tv0tvEFirVLddDTLvk+QRRamCltTRizGF5UEIXY7QpWF4mIpjgP2DEun7P
-	 zHwDYRs3rRoeSuUOXdxp4i5a2hYw29lh/0tbRmGPW4DyLFW/PfoBf8fsaSzyZRi+S7
-	 jHCOTMtOeo9kQ==
+	b=WanTW1LxmCiyp25kaYKbNaTCXXDTjSDownunWR9JZmRwCTDNGNQxSdcnN1xIHNJSo
+	 L3iz0NAMG51wKLLXAlB1NEoMc2VAFg39cTLa913tDH1T7eeD2GRVJ4Z+0XsQ4WJSsY
+	 660ztX8dQxR2cUwhRiT/l/cnSgF4JNtWwG1w9ZFzZe5w2BTNo0c1tVmwOmnH3Dnj2d
+	 x1ut9KB1UHF61fzwASMGFwpRm0+BHMHInvkysZnnPuxhZ6qHDwC2L/S/wFzEJzWpd9
+	 pCH3aAxaKW2O4hhYvNdWZV95xXK6FFGhvvuqOVqVJi38rornVhrtKjryCxqQ/fhdNQ
+	 NIHFYujkzPDtw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
 	Nick Desaulniers <ndesaulniers@google.com>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Philipp Stanner <pstanner@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Jeff Layton <jlayton@kernel.org>,
-	Thorsten Blum <thorsten.blum@toblux.com>,
-	linux-nilfs@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-rdma@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH 6/9] nilfs2: fix out-of-range warning
-Date: Thu, 28 Mar 2024 15:30:44 +0100
-Message-Id: <20240328143051.1069575-7-arnd@kernel.org>
+Subject: [PATCH 7/9] infiniband: uverbs: avoid out-of-range warnings
+Date: Thu, 28 Mar 2024 15:30:45 +0100
+Message-Id: <20240328143051.1069575-8-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240328143051.1069575-1-arnd@kernel.org>
 References: <20240328143051.1069575-1-arnd@kernel.org>
@@ -71,33 +69,48 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-clang-14 points out that v_size is always smaller than a 64KB
-page size if that is configured by the CPU architecture:
+clang warns for comparisons that are always true, which is the case
+for these two page size checks on architectures with 64KB pages:
 
-fs/nilfs2/ioctl.c:63:19: error: result of comparison of constant 65536 with expression of type '__u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (argv->v_size > PAGE_SIZE)
-            ~~~~~~~~~~~~ ^ ~~~~~~~~~
+drivers/infiniband/core/uverbs_ioctl.c:90:39: error: result of comparison of constant 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        WARN_ON_ONCE(method_elm->bundle_size > PAGE_SIZE);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+include/asm-generic/bug.h:104:25: note: expanded from macro 'WARN_ON_ONCE'
+        int __ret_warn_on = !!(condition);                      \
+                               ^~~~~~~~~
+drivers/infiniband/core/uverbs_ioctl.c:621:17: error: result of comparison of constant 65536 with expression of type '__u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (hdr.length > PAGE_SIZE ||
+            ~~~~~~~~~~ ^ ~~~~~~~~~
 
-This is ok, so just shut up that warning with a cast.
+Add a cast to u32 in both cases, so it never warns about this.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/nilfs2/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/uverbs_ioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-index f1a01c191cf5..8be471ce4f19 100644
---- a/fs/nilfs2/ioctl.c
-+++ b/fs/nilfs2/ioctl.c
-@@ -60,7 +60,7 @@ static int nilfs_ioctl_wrap_copy(struct the_nilfs *nilfs,
- 	if (argv->v_nmembs == 0)
- 		return 0;
+diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
+index f80da6a67e24..e0cc3ddae71b 100644
+--- a/drivers/infiniband/core/uverbs_ioctl.c
++++ b/drivers/infiniband/core/uverbs_ioctl.c
+@@ -90,7 +90,7 @@ void uapi_compute_bundle_size(struct uverbs_api_ioctl_method *method_elm,
+ 		ALIGN(bundle_size + 256, sizeof(*pbundle->internal_buffer));
  
--	if (argv->v_size > PAGE_SIZE)
-+	if ((size_t)argv->v_size > PAGE_SIZE)
+ 	/* Do not want order-2 allocations for this. */
+-	WARN_ON_ONCE(method_elm->bundle_size > PAGE_SIZE);
++	WARN_ON_ONCE((u32)method_elm->bundle_size > PAGE_SIZE);
+ }
+ 
+ /**
+@@ -636,7 +636,7 @@ long ib_uverbs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	if (err)
+ 		return -EFAULT;
+ 
+-	if (hdr.length > PAGE_SIZE ||
++	if ((u32)hdr.length > PAGE_SIZE ||
+ 	    hdr.length != struct_size(&hdr, attrs, hdr.num_attrs))
  		return -EINVAL;
  
- 	/*
 -- 
 2.39.2
 
