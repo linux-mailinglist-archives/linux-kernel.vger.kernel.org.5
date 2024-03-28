@@ -1,140 +1,142 @@
-Return-Path: <linux-kernel+bounces-122768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02EA788FCF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A696088FD11
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F261C2F0FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:25:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7D761C28869
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0351B7BB1C;
-	Thu, 28 Mar 2024 10:25:34 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F37957895;
+	Thu, 28 Mar 2024 10:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LKRKJw9i"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD987D080;
-	Thu, 28 Mar 2024 10:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B797E2561D
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621533; cv=none; b=lcg0c9k9yu7cBLC2mgKdkGzgGhVh1B6CFhLT77mUveGURadIwL/jvKQ9W7lVBypFFuK536YCVtVVN86fMZH+vS7w4Ah53jQ4FQsZ2A+TPo8zHHilM/Fos/uJHO2J550wQCuMnazaTOS7iYYD4HhlRawQGRMsHBDzYOMDe/u8ImE=
+	t=1711621926; cv=none; b=phdxv6QUk1iKDFK5rAG1wkxilALARNWsesCOtuU31C2NfeQWIaIK/9sKknsH10YUqS9Hd9GcTQVpuw7OCQTqzEySnfIvnzcoZMfuxhUVZiD8Mxbg26I3Rczhe12FoYjla95bL/vOANNN8HmTbGykSSsEOPgu7DSswLR0zOnQ3sY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621533; c=relaxed/simple;
-	bh=A/lOwqEy3arJTpWQhOi6ni6ni0jKTDQHCogOxMQolk8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pjjWmI4FEyNezAxqaJ2ragaYYoCv5JaYozvCvMfl+lOBhpPL2jdft91vix8GAYYWxrMMz1hXAbevDsFecuO0FNNAuFglKYy5P2JrpoVoldbWRxQ0W7v3as/EZpQ/KEqaYEFZBXIBc/ZY27TUw0R0PEHwSpk8Z/NzsQnkAiW7n1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 8E2BD1C007E; Thu, 28 Mar 2024 11:25:21 +0100 (CET)
-Date: Thu, 28 Mar 2024 11:25:21 +0100
-From: Pavel Machek <pavel@denx.de>
-To: David Sterba <dsterba@suse.cz>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>, Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 5.10 005/238] btrfs: add and use helper to check if block
- group is used
-Message-ID: <ZgVFkYnPf9aLeFFM@duo.ucw.cz>
-References: <20240324234027.1354210-1-sashal@kernel.org>
- <20240324234027.1354210-6-sashal@kernel.org>
- <20240325182614.GO14596@twin.jikos.cz>
+	s=arc-20240116; t=1711621926; c=relaxed/simple;
+	bh=DbApLdDZAmNNw+lBFSYQMYJ85045pjEt/MqBmNGIQHQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mffMZnUMwmxJJF6kxnuJUFpqAMNbD3efTXY5smzz7V37zKgc0iC/xMDTlh167hWQ0PWhrccfFV9ZCksJ1AsUciLfbqzwlvR5OADMj9nWf4TOK274Ofqt5rOI4f45C+WQetDwcVWgHHfKsgv8Z016ngERmTdo+8fHS+O7RZf3Ghg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LKRKJw9i; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42SADI01017816;
+	Thu, 28 Mar 2024 10:31:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : reply-to : from :
+ in-reply-to : content-type : content-transfer-encoding; s=pp1;
+ bh=xq1vdUjsxLabunhH0HEjKDIOKqNQwqt0iOgnsoCq9ao=;
+ b=LKRKJw9iQ+Wa2o4VIy9baJSdFHtK8Ys98tKiHYBa3FOvwtEDZyn9L4UjF2gXscgDPsvq
+ uUIpH7K6WgqIPB5mjg30OHCgHB0p0LyfoFmlWUaEECM4tLgFGmQ0Qe1dCxCHvCgmALcX
+ sgpg07bZ4MAaF+O5xqyoxTDijbsDno18xQyOVljctGYDMh6ZWosUTtCUdZ3C0SxSHCEi
+ uBv48E73dl7fUBwBdgccecYeuBS6fDoCaZ3LumY3Po7z9xioV8N5yng+lIcfjaW/enm5
+ SPCLdxdRan1lpXTEirDGoM5fKxb0K+9lXJ9q6pXL4E14mj9T1qHbRlNauG9446+BNufL Kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x56ke014e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 10:31:41 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42SAVfC3015323;
+	Thu, 28 Mar 2024 10:31:41 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x56ke0148-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 10:31:41 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42S908Yo011358;
+	Thu, 28 Mar 2024 10:26:39 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2bmmcgfj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 10:26:39 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42SAQbrl38797786
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 28 Mar 2024 10:26:39 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6A79F5805E;
+	Thu, 28 Mar 2024 10:26:37 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8328758066;
+	Thu, 28 Mar 2024 10:26:29 +0000 (GMT)
+Received: from [9.43.118.127] (unknown [9.43.118.127])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 28 Mar 2024 10:26:29 +0000 (GMT)
+Message-ID: <8bce19b2-37d9-4722-ba83-0088a4c9fc6a@linux.ibm.com>
+Date: Thu, 28 Mar 2024 15:56:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IC1LsnMc0PRuSvj6"
-Content-Disposition: inline
-In-Reply-To: <20240325182614.GO14596@twin.jikos.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/1] sched/eevdf: Curb wakeup preemption further
+To: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira
+ <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+        Tobias Huschle <huschle@linux.ibm.com>,
+        Luis Machado <luis.machado@arm.com>, Chen Yu <yu.c.chen@intel.com>,
+        Abel Wu <wuyun.abel@bytedance.com>,
+        Tianchen Ding
+ <dtcccc@linux.alibaba.com>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Xuewen Yan <xuewen.yan94@gmail.com>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar
+ <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20240325060226.1540-1-kprateek.nayak@amd.com>
+Content-Language: en-US
+Reply-To: 20240325060226.1540-1-kprateek.nayak@amd.com
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+In-Reply-To: <20240325060226.1540-1-kprateek.nayak@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aENkfz_59so_ETzrpR3Nu2gWvO2tvIiW
+X-Proofpoint-ORIG-GUID: zh8Eo6U9UnoE-zQvMXu7JZu83wE4E-ej
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_10,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 mlxlogscore=823 spamscore=0 clxscore=1011
+ impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403280070
 
+Hi Prateek,
 
---IC1LsnMc0PRuSvj6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 25/03/24 11:32, K Prateek Nayak wrote:
+> Wakeup preemption problem
+> =========================
+> 
+> With the curr entity's eligibility check, a wakeup preemption is very
+> likely when an entity with positive lag joins the runqueue pushing the
+> avg_vruntime of the runqueue backwards, making the vruntime of the
+> current entity ineligible. This leads to aggressive wakeup preemption
+> which was previously guarded by wakeup_granularity_ns in legacy CFS.
 
-Hi!
+Is base_slice_ns not guarding it in EEVDF?
 
-> > From: Filipe Manana <fdmanana@suse.com>
-> >=20
-> > [ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
-> >=20
-> > Add a helper function to determine if a block group is being used and m=
-ake
-> > use of it at btrfs_delete_unused_bgs(). This helper will also be used in
-> > future code changes.
-> >=20
-> > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > Reviewed-by: Boris Burkov <boris@bur.io>
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > Reviewed-by: David Sterba <dsterba@suse.com>
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->=20
-> Please drop this patch from all stable branches unless it's a
-> prerequisite for some other patch. This is clearly a cleanup.
+> Below figure depicts one such aggressive preemption scenario with EEVDF:
 
-This was reported multiple times, and you have even said you have
-dropped the patch. What went wrong here?
-
-Best regards,
-								Pavel
-
-Date: Mon, 18 Mar 2024 10:18:36 -0400
-=46rom: Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.10 1/7] btrfs: add and use helper to check if=
- block group is used
-
-On Mon, Mar 11, 2024 at 10:05:40PM +0100, David Sterba wrote:
-> On Mon, Mar 11, 2024 at 10:00:43PM +0100, Pavel Machek wrote:
-> > Hi!
-> >
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > [ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
-> > >
-> > > Add a helper function to determine if a block group is being used and=
- make
-> > > use of it at btrfs_delete_unused_bgs(). This helper will also be used=
- in
-> > > future code changes.
-> >
-> > Does not fix a bug and does not seem to be preparation for anything,
-> > so probably should not be here.
->
-> Agreed, this patch does not belong to stable and I objected in
-> https://lore.kernel.org/all/20240229155207.GA2604@suse.cz/
->
-> for version 6.7 and all other stable versions.
-
-Dropped, thanks!
-
---
-Thanks,
-Sasha
-
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---IC1LsnMc0PRuSvj6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgVFkQAKCRAw5/Bqldv6
-8ojwAJ9Pnk+1GB7Ggwaymnkbf/yDH4T46wCeMlzAmFmDEhArhKnO4nJ1EJS2EyA=
-=53ZJ
------END PGP SIGNATURE-----
-
---IC1LsnMc0PRuSvj6--
+Thanks and Regards
+Madadi Vineeth Reddy
 
