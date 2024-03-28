@@ -1,176 +1,168 @@
-Return-Path: <linux-kernel+bounces-122299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 157AB88F4D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:39:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C8388F4DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391711C3030A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F829292BF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:41:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AFB439FD4;
-	Thu, 28 Mar 2024 01:37:20 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193B220B21;
+	Thu, 28 Mar 2024 01:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="it0jMVq8"
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B1A39ADD
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D78847C;
+	Thu, 28 Mar 2024 01:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711589839; cv=none; b=ZZZM5ZJCvzPleCShTckBgCFp8OSoGiuSX5+qC7DtOBzVTHxLctA8V0TxggZXkfphF4p3gx+xptqOgmrHKZZgEd3HltPpjYd4t6cqNbxn1uluQVzWWts7nykHrXmC9wvl2oTx9CTB4xROt8Yxrox6Hir0GGqnVxXEcCJi2I4D8rk=
+	t=1711590061; cv=none; b=mpZCm+ANdIeXwFBaphI2jLcN2fAvwW09kYXYQ7s7AXlvKMhAUJnZfJWlvX3evpMO7qCnpV2c8taOSd046+KTsCRDq0VXpvdPurJh07U8XkvdZJ3WRHI6uRncicADaP7s7t840WLfyT/yfsBl4U/63LwPmExsofdotEugvgAOCfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711589839; c=relaxed/simple;
-	bh=0PXBV+XsQFF1qQr9BQWAxqxWMVqsMgeG34vwDH5X3vs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=i+xy0w98i0V3cYyaE2mB6WKGT6wRtNPggdYmjqUQiqwBmjL6LQEzFx9WiKKRz56qYTQq67L9inA3g8hDR8AcdJ4ON7ZoCytxzD6W56jftev8/lhbmfaS/0KRk4gOXS3gcsb9EU0jno9COplz2ro1amYYVfGrzGJLKt2PUpoZawc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc78077032so47499639f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:37:17 -0700 (PDT)
+	s=arc-20240116; t=1711590061; c=relaxed/simple;
+	bh=WxIUwzIRX245RWvPJ1HE1kAUL98+daIiJa1ylRa9i2w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aqYJwS+GF6k+VD250X74ZZmnqgIoA7W94h8obeVnuplD0z12FU6LboG7QFLT6xd9d5upfG8AJ1sJ7MUpulFdle/GHYhf38mp6NYlhz85viZR7aq+kwBiVC76upIxQKUvBLSMLBBFUeq/J7RKPwfkauMjNvUMadKPs6+12Pk/mOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=it0jMVq8; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c3d7e7402dso365122b6e.1;
+        Wed, 27 Mar 2024 18:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711590059; x=1712194859; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UQew5YYLgTvT6DTiJ19Nkd1adlHoEpKqIs98rlN2rko=;
+        b=it0jMVq8Spwz64IQiCeyhTQPhD4tsV2cpx6DrEtozVJ6EzQlZcDmjXIVKFWlt0dqzD
+         0zXsT9JxHDPCWVszY+xGp82FPQG8MGLK3LFUzDwTN+gZKetig1CmWpDsD3/i6WI1mtAh
+         cyFjIuVCYGjDpAUEI0MFvb/qiiZehD41XuyV3GrO1zDkNUBvjfmZ6SF1Y257A5I1S3+e
+         vT6EwFbcSu+nk5+zbbX3VFEYAf/Li8QLj8y88AuFmZCLHunGrkFqeUcJwuBejqgUbbL4
+         57CK0PZaJxbfOPGZXUgbbjqV1YzgXT/OXjfzVzOEMA/rXI4Ej925sEyvQ8RxkaK/hEJo
+         PrXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711589837; x=1712194637;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sd6cZws7s3j1CmzuJQzJmY1iOL4n/PGz5SWGIACnpt8=;
-        b=VHki4/QIyx7ZSvqxNoQPV2WXn0BNT5wTJcK9HG4k5e0aADGJ41ZIs5gvl3UYl4uNyd
-         uhPn4ejjePZXK1oBqSVvZYj1iYcTtZU7lwP2r4+UjC/Qxf9ZFSIhp0QnH8h+AUfWC+gu
-         Oo4SeQDP1UoeWMRwh1y5U1CMOh8U3yk+18Rl6sO1aDEX/04CJKKX9ast+AtVsRdDViud
-         Hly6MvFLgpY2BIaEHP/w1FUAWHkpzD4BjCSyQSKPM23hB/qm/q/4UhYOBrlTxQH9bdGJ
-         +88EQQ9/LfXZ0NH8m8htqmV+UJ1R4IDdwiEYkZvIzXI5EoUWUqyqKuldfApdllgwWcjV
-         xl2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWnxpllJdMxNEdZfZdE3gBs4gHdYZK8VgoBL23xmfbGweG1fvBpOrNoqo/NM7oM3x+vFtxQp0qS8GZQnGmj1eulL/mcCkase/wdmsob
-X-Gm-Message-State: AOJu0YzR43CwCAlJuEOXEtBVDMcZkkEqZskw3zBW5+kPQobOVGXoESG0
-	/YYgfI1onQ/si86kvwnvBw7zKdGay6WCKPKu+YypnD3uQZs5brJKVO9fFktisC4IOOj8Y6GRyd6
-	Q9mHg4lKgWnlJHn5uF9EqGWdz72UpYL6J+oKxdEq0e9sl+vUGTMUlXs4=
-X-Google-Smtp-Source: AGHT+IFlvLB8emNotRqYRLvmA3j46U4XOsfI22YqJ6yR7lHtLTb8gya8KwRVSp1PXLi6yUBBMHXi1h3smdm8xNZ4nMz98CbwXNv5
+        d=1e100.net; s=20230601; t=1711590059; x=1712194859;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UQew5YYLgTvT6DTiJ19Nkd1adlHoEpKqIs98rlN2rko=;
+        b=SIeyotOeyNZTjPzGYHmkiisR8tFoeqYt3f+H3/zaS/xGmIiH4hdDYb2YhCDJAaQkRS
+         OoXtxurrMXQnhrPjG2NMPZyzODT08cs+I9jTSFDwIe6fVkVb1oVR9DTeqM1f0CeneMbZ
+         dG9zExjMvg9Ya60SsX5k1+NSKG5zcqUGfhHdphG7I3hPDmddcbhSL4fPc6zxcFvkm2DC
+         j6HjPNAa7PQ7zdxJoew4wJYC0WOWHsidHpyQtcSHZlibB/5h0+1IeRjkOIoIKs0AZC8b
+         CB0yMXFUy39QV8rtmnmImqUp8yQbTbf6Tfef5DbOnpGQT4QbGzlxE7pMWdQxD03zNP/n
+         Ktig==
+X-Forwarded-Encrypted: i=1; AJvYcCUx4+3HCnf1xKew9VZtQW299yIo9O7CjOTGuxJEx3Pl5yM32dqfvIsIoMBQrl66+XRnWjzC05ZWX6hDM5K3oKXhmLZIkx/BGxP3Up9fvd8Vgce+J4uvCnWGwu0xBWB+XJW4pLfRE60xTQ==
+X-Gm-Message-State: AOJu0Yx8fTCFdPbhDMUzq7HeXoqHkmqbR4X586F6DxhU0MZt6dyaXV+7
+	Y61CwpBcXyFZ+hkop9UvukuUPGLYCZ76fDoRmLA/r2a+p4phf7OE
+X-Google-Smtp-Source: AGHT+IGcSrsak0kpRYq7vxFaL/0IQ4DAeYAFSWyaYVF7T1dV3iRr67NiFP1pVnKmxrcjunLsF/cv+A==
+X-Received: by 2002:a05:6808:23d2:b0:3c3:d66f:239e with SMTP id bq18-20020a05680823d200b003c3d66f239emr1737695oib.54.1711590059033;
+        Wed, 27 Mar 2024 18:40:59 -0700 (PDT)
+Received: from localhost.localdomain ([122.187.117.179])
+        by smtp.gmail.com with ESMTPSA id t4-20020a62ea04000000b006e6bda407b6sm188831pfh.202.2024.03.27.18.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 18:40:58 -0700 (PDT)
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+To: 
+Cc: animeshagarwal28@gmail.com,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: ti,pcm1681: Convert to dtschema
+Date: Thu, 28 Mar 2024 07:10:24 +0530
+Message-ID: <20240328014029.9710-1-animeshagarwal28@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2163:b0:368:727e:ec80 with SMTP id
- s3-20020a056e02216300b00368727eec80mr39235ilv.5.1711589837054; Wed, 27 Mar
- 2024 18:37:17 -0700 (PDT)
-Date: Wed, 27 Mar 2024 18:37:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003d360f0614ae902b@google.com>
-Subject: [syzbot] [kernel?] BUG: using smp_processor_id() in preemptible code
- in pwq_release_workfn
-From: syzbot <syzbot+60f75ab7624f6e44392b@syzkaller.appspotmail.com>
-To: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
-	linux-kernel@vger.kernel.org, mingo@redhat.com, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Convert the Texas Instruments PCM1681 bindings to DT schema.
 
-syzbot found the following issue on:
-
-HEAD commit:    61df575632d6 libbpf: Add new sec_def "sk_skb/verdict"
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17683185180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=60f75ab7624f6e44392b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0d2d0f91bfad/disk-61df5756.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0b0f2fd80260/vmlinux-61df5756.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0450c835a85f/bzImage-61df5756.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+60f75ab7624f6e44392b@syzkaller.appspotmail.com
-
-BUG: using smp_processor_id() in preemptible [00000000] code: pool_workqueue_/3
-caller is pv_init_node kernel/locking/qspinlock_paravirt.h:284 [inline]
-caller is __pv_queued_spin_lock_slowpath+0x192/0xc60 kernel/locking/qspinlock.c:439
-CPU: 1 PID: 3 Comm: pool_workqueue_ Not tainted 6.8.0-syzkaller-05238-g61df575632d6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_preemption_disabled+0x10e/0x120 lib/smp_processor_id.c:49
- pv_init_node kernel/locking/qspinlock_paravirt.h:284 [inline]
- __pv_queued_spin_lock_slowpath+0x192/0xc60 kernel/locking/qspinlock.c:439
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
- queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- lockdep_lock+0x1b0/0x2b0 kernel/locking/lockdep.c:144
- lockdep_unregister_key+0x20d/0x540 kernel/locking/lockdep.c:6456
- wq_unregister_lockdep kernel/workqueue.c:4655 [inline]
- pwq_release_workfn+0x6e0/0x840 kernel/workqueue.c:4958
- kthread_worker_fn+0x4bf/0xab0 kernel/kthread.c:841
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-BUG: using __this_cpu_add() in preemptible [00000000] code: pool_workqueue_/3
-caller is __pv_queued_spin_lock_slowpath+0x945/0xc60 kernel/locking/qspinlock.c:565
-CPU: 1 PID: 3 Comm: pool_workqueue_ Not tainted 6.8.0-syzkaller-05238-g61df575632d6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_preemption_disabled+0x10e/0x120 lib/smp_processor_id.c:49
- __pv_queued_spin_lock_slowpath+0x945/0xc60 kernel/locking/qspinlock.c:565
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
- queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- lockdep_lock+0x1b0/0x2b0 kernel/locking/lockdep.c:144
- lockdep_unregister_key+0x20d/0x540 kernel/locking/lockdep.c:6456
- wq_unregister_lockdep kernel/workqueue.c:4655 [inline]
- pwq_release_workfn+0x6e0/0x840 kernel/workqueue.c:4958
- kthread_worker_fn+0x4bf/0xab0 kernel/kthread.c:841
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-BUG: using __this_cpu_add() in preemptible [00000000] code: pool_workqueue_/3
-caller is lockdep_unlock+0x16a/0x300 kernel/locking/lockdep.c:157
-CPU: 1 PID: 3 Comm: pool_workqueue_ Not tainted 6.8.0-syzkaller-05238-g61df575632d6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_preemption_disabled+0x10e/0x120 lib/smp_processor_id.c:49
- lockdep_unlock+0x16a/0x300 kernel/locking/lockdep.c:157
- lockdep_unregister_key+0x45c/0x540 kernel/locking/lockdep.c:6471
- wq_unregister_lockdep kernel/workqueue.c:4655 [inline]
- pwq_release_workfn+0x6e0/0x840 kernel/workqueue.c:4958
- kthread_worker_fn+0x4bf/0xab0 kernel/kthread.c:841
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
+Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../devicetree/bindings/sound/ti,pcm1681.txt  | 15 --------
+ .../devicetree/bindings/sound/ti,pcm1681.yaml | 35 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 15 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/ti,pcm1681.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/Documentation/devicetree/bindings/sound/ti,pcm1681.txt b/Documentation/devicetree/bindings/sound/ti,pcm1681.txt
+deleted file mode 100644
+index 4df17185ab80..000000000000
+--- a/Documentation/devicetree/bindings/sound/ti,pcm1681.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-Texas Instruments PCM1681 8-channel PWM Processor
+-
+-Required properties:
+-
+- - compatible:		Should contain "ti,pcm1681".
+- - reg:			The i2c address. Should contain <0x4c>.
+-
+-Examples:
+-
+-	i2c_bus {
+-		pcm1681@4c {
+-			compatible = "ti,pcm1681";
+-			reg = <0x4c>;
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml b/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
+new file mode 100644
+index 000000000000..4093d0ff654d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ti,pcm1681.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments PCM1681 8-channel PWM Processor
++
++maintainers:
++  - Animesh Agarwal <animeshagarwal28@gmail.com>
++
++properties:
++  compatible:
++    const: ti,pcm1681
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pcm1681@4c {
++            compatible = "ti,pcm1681";
++            reg = <0x4c>;
++        };
++    };
+-- 
+2.44.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
