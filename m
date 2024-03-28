@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-122871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6427088FEBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:13:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0BE088FEC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 872C51C25C32
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:13:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5AC81C27586
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D88F7F46E;
-	Thu, 28 Mar 2024 12:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23ED7FBC0;
+	Thu, 28 Mar 2024 12:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IDwhS+vT"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAiS6c6n"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C137D414
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773227EF16
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711627974; cv=none; b=L4kkeCxK837w255WGDLLZA2MbCWqVSJrylzQNYzmWScYft/XmST07ecgUOrMYmPLTRQsiXxcf9+918AFA9LucaoRP0E+CdmHP5/plviNnS1rEhwdqe4Pk5crrpDtA4FBZFBchF1m6GWXDbn0HVrK+i4dTgbOQhnPqHWCEGnQFPc=
+	t=1711627977; cv=none; b=sPaU431CYdfTjfOREH65NL0xa8owJbnTM65h6dInOlWEQal72Ih9LbLu8L/iHhvJOZyT/iZcfgpknXWwX5Pyii+uizQlqzRX3t1T4+Wqu3OuzXEiiLRwMshmqWK/6UyqHs+o+VNPd44stb0EThfB2X+J9HNnYhauoEZpfiH0O8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711627974; c=relaxed/simple;
-	bh=URk7fibNLFgzKg25jKRBtY4kibQ99F3/DTCHeKbgi78=;
+	s=arc-20240116; t=1711627977; c=relaxed/simple;
+	bh=WfR3fzgOc+lYO6U7TgwGQD81mZqIEEtqO9tFKn6iuM4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=H3WsqBH95R/pB30qv8g3qzZ7U81be1urLp5ggzHLP9QQQz1Otu9FAUGg08BsuudAFzQB+d1WXlwBTz3+B7BlJRUWFej/sxg461wnPpYq7hd3ewgvwHaeFJNMhj4FaAxXjpTaR6eOefPwvUSG3Sb4Y7QmRdVZC1QWYaOtDRT0WxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IDwhS+vT; arc=none smtp.client-ip=209.85.208.173
+	 MIME-Version; b=f4AyIq9x2C74DC+SCD/uEeDkl9EVfII45o/4vKE5W7OIt/dGr+pjmJh+wtgGigowrekWPmrLEzlyH0lxbETh/CmFqaXcEQFu/q2jnhibHTcClogpvWRYwU59GtNtnPgpKnR3M7KUDyuLZlVYFbTz1R+DVyJQb8UxHkVRm7ZFQ7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAiS6c6n; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so12402891fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:12:52 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-415482308f8so2137265e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711627971; x=1712232771; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711627973; x=1712232773; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/pHbsx3RtRZlv3pDf9iCJ8YxxZWB5X7vBVRsbvu4oC4=;
-        b=IDwhS+vTLO2Z/mGH3tzEBeNsw5ef4uTbJc9nCJFRq/pRczqnERAw74DIcuki9/wlLR
-         w2DeVG5VUK5QXWvuOteowwEjrWX8JPrl/cXRwL89g1HI8kNFzD/HQSeiUL6WltIEMFBI
-         6e5ZHZTwS/WY6CvvyA7413zXjJzmG/ebSuo6ojA090gKp94WOgwzm36hM07OTaMuSYfh
-         AGAg3RWxhIH8UwnLJ645u4bXjZTvd0NYQ05XFW2kC8Z27BBrHBhWnVICddWqk4OVsHH4
-         4zv8zKopQNuYZz2cA2YiV0nNsvAVOb5fQOGsL1D4ueUfzf49C83cP+fkTQViHVNLG7T7
-         dqZA==
+        bh=9LP7LwhNxKs9alceF3MwlRSStgVkDK9Wscv2B2RIGfw=;
+        b=FAiS6c6nKDiH6o8M6tf/TOKeTFqpovwdJiwLCA6+Yf4tKD+5G5JoCb/H9+83m6rVp8
+         XSFVWLbOF1v9xXvGdri63LdF5C78n/vuhwY/JXcEGAyk/wpiWefoNR9iNH8yzCtrUq9H
+         NXtLTGSN+bwywb9A+RUWIExFZwLDcGEoc5PG9zJs+ejOIeIyNbvmdVT3vxcvd2Ey9oYH
+         5HUQ6vWiwuSsQbmsLg6rC1JKAmP+4feTp/CYg8q8zwxuUYTC+H8s6X2r8+i2EBtyNNza
+         ORjuGst5zHC3bfILw4Y7lLNa50B7i+TO12ERihCHfvQV0rnTn4YPNTdTOt/5zGlu5bRR
+         PEJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711627971; x=1712232771;
+        d=1e100.net; s=20230601; t=1711627973; x=1712232773;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/pHbsx3RtRZlv3pDf9iCJ8YxxZWB5X7vBVRsbvu4oC4=;
-        b=czmF+3lIgPRqt7L/3hvahtVU6N2mjs4qaLp1gcyB4XqEHWMVzvy8ddbgX4khiUBfXJ
-         SbTRI/phLwKmd41V1ZYqh+zzSKGGldqxMgjGMjp1RoZK1s/3Yy3BShfie6xYIAKqBVRA
-         o7b6sQK6cpBW9tnqzfmYm3HwTj4yF8yl3MGLi4JYiWtvF/sl0ktnHvA9DczqC89Kxdch
-         UloTSVXzqadfk2m1SldcubvRDKNXWblLKrQCpeqbmKnsPm6gIrvlOjucofVrPsyKOH8j
-         elrW15FoqtT8a+mRaLiE1OCzw2hkK9qHrBCPJRvo+CQNYgUVAgCEjLk7lBlhq8WoDlNE
-         fUEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWH5sMxoEb4nSxlDE/L6kXJ7K4ydMnKiUCyp/17+E8BFh3XuxL0pVWoc1cgK8TmRj7IvLmsBC+ZwBT0vQwwHjh0eUiPodeJFmOScAO8
-X-Gm-Message-State: AOJu0Yzl4sDwqqJe4bqcwUau+H7q9Eu8BuU8HMufyYzP5MYclLoXOro4
-	9ZNOQuullXYwYiDljb+c94kV1mUlumZKP2aOFgAqzmvSqVMQN4bd
-X-Google-Smtp-Source: AGHT+IGdaMYhdpddVfAxwiAOprPo8P0Hi3KDjALTqxK6436N8wfrHsCU3tjwnVQqr/iQ10Asu3PZmg==
-X-Received: by 2002:a2e:99cb:0:b0:2d4:9ac6:6d00 with SMTP id l11-20020a2e99cb000000b002d49ac66d00mr2061402ljj.36.1711627970818;
-        Thu, 28 Mar 2024 05:12:50 -0700 (PDT)
+        bh=9LP7LwhNxKs9alceF3MwlRSStgVkDK9Wscv2B2RIGfw=;
+        b=lL5fztzsp35l3B8a4aGXcmQI0yoA0XpXiXBaPCKCBnQV6XrnwyEzM3aZLzO+SBZxGI
+         wrFEfyQfXVPSxuJgcRq/G2aDgIGKadKpwNpk31YqvAnbra+9bt78x+abrRjb0Zugzoij
+         Wz1I9loLcCtVHPHqCNBHMIRu8sPHf9k503S0jOlRz7nM7bC1PXuhSxzKsu4YlhEi5zlX
+         ztEdR7rZ6rW226afJugRn9mL5RwFcd3U8yvs6lOfM1yBhDQKUJESE6AC9vb3VZwW0PC0
+         0cScoQcWkfMaADqv1cF5IUMD68BHEDpWnZg4L5pZk+0OsNc3kD1Pr412FasUJafaYrQk
+         PtOA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3sRo21lN4pOAMciIJNT+YL/kKPO8H/Oo2KIFe1p74w1cAPcIa926xJ/vD2ndzZiBmx10A/28BC9H3lScFt3SvCnDHOboNg3mJQy+s
+X-Gm-Message-State: AOJu0YztiDQtYl0+i6MQBAfrESB4V6Qr3z6/uvPSYffLCxioZjLBMNvJ
+	uiWjA9dMhJPB4rYQREDtd1lrUZeQFU0rp+WYWK/zJ+cfBmjXbgqv
+X-Google-Smtp-Source: AGHT+IFeSgatKUgor7KYQX1DQeEUnNehC9VQbJ+N+wPhlx4V09Lqjq5yJBhLrCmtV8Nes5RO2g5GnQ==
+X-Received: by 2002:a05:600c:4688:b0:414:69ae:bcfc with SMTP id p8-20020a05600c468800b0041469aebcfcmr1844704wmo.24.1711627972367;
+        Thu, 28 Mar 2024 05:12:52 -0700 (PDT)
 Received: from YOGA.local ([2a06:c701:736b:f200:125e:963c:4e4b:b7c5])
-        by smtp.gmail.com with ESMTPSA id bd11-20020a05600c1f0b00b00415460a63ebsm1416456wmb.29.2024.03.28.05.12.49
+        by smtp.gmail.com with ESMTPSA id bd11-20020a05600c1f0b00b00415460a63ebsm1416456wmb.29.2024.03.28.05.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 05:12:50 -0700 (PDT)
+        Thu, 28 Mar 2024 05:12:51 -0700 (PDT)
 From: Shahar Avidar <ikobh7@gmail.com>
 To: gregkh@linuxfoundation.org,
 	hverkuil-cisco@xs4all.nl,
@@ -74,9 +74,9 @@ To: gregkh@linuxfoundation.org,
 	felixkimbu1@gmail.com
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] staging: pi433: Rename struct pi433_device buffer field to tx_buffer.
-Date: Thu, 28 Mar 2024 14:12:39 +0200
-Message-Id: <20240328121244.1244719-2-ikobh7@gmail.com>
+Subject: [PATCH 2/5] staging: pi433: Rename struct pi433_device instances to pi433.
+Date: Thu, 28 Mar 2024 14:12:40 +0200
+Message-Id: <20240328121244.1244719-3-ikobh7@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328121244.1244719-1-ikobh7@gmail.com>
 References: <20240328121244.1244719-1-ikobh7@gmail.com>
@@ -88,81 +88,1426 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Driver holds buffers in different structs, as does the HW.
-Using explicit names for buffers increases readability.
+Just as other devices use specific names for instantiation,
+struct_pi433 should also have a distinct name.
+Moreover, some other structs use the "dev" or "device" in their naming
+conventions for members, which can be confusing.
 
 Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
 ---
- drivers/staging/pi433/pi433_if.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/staging/pi433/pi433_if.c | 654 +++++++++++++++----------------
+ 1 file changed, 327 insertions(+), 327 deletions(-)
 
 diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index 8c513ac62156..13b464ab7db8 100644
+index 13b464ab7db8..7efe6b8501e3 100644
 --- a/drivers/staging/pi433/pi433_if.c
 +++ b/drivers/staging/pi433/pi433_if.c
-@@ -90,7 +90,7 @@ struct pi433_device {
- 	struct task_struct	*tx_task_struct;
- 	wait_queue_head_t	tx_wait_queue;
- 	u8			free_in_fifo;
--	char			buffer[MAX_MSG_SIZE];
-+	char			tx_buffer[MAX_MSG_SIZE];
+@@ -113,7 +113,7 @@ struct pi433_device {
+ };
  
- 	/* rx related values */
- 	struct pi433_rx_cfg	rx_cfg;
-@@ -613,8 +613,8 @@ static int pi433_tx_thread(void *data)
- 		if (tx_cfg.enable_address_byte == OPTION_ON)
+ struct pi433_instance {
+-	struct pi433_device	*device;
++	struct pi433_device	*pi433;
+ 	struct pi433_tx_cfg	tx_cfg;
+ 
+ 	/* control flags */
+@@ -125,19 +125,19 @@ struct pi433_instance {
+ /* GPIO interrupt handlers */
+ static irqreturn_t DIO0_irq_handler(int irq, void *dev_id)
+ {
+-	struct pi433_device *device = dev_id;
+-
+-	if (device->irq_state[DIO0] == DIO_PACKET_SENT) {
+-		device->free_in_fifo = FIFO_SIZE;
+-		dev_dbg(device->dev, "DIO0 irq: Packet sent\n");
+-		wake_up_interruptible(&device->fifo_wait_queue);
+-	} else if (device->irq_state[DIO0] == DIO_RSSI_DIO0) {
+-		dev_dbg(device->dev, "DIO0 irq: RSSI level over threshold\n");
+-		wake_up_interruptible(&device->rx_wait_queue);
+-	} else if (device->irq_state[DIO0] == DIO_PAYLOAD_READY) {
+-		dev_dbg(device->dev, "DIO0 irq: Payload ready\n");
+-		device->free_in_fifo = 0;
+-		wake_up_interruptible(&device->fifo_wait_queue);
++	struct pi433_device *pi433 = dev_id;
++
++	if (pi433->irq_state[DIO0] == DIO_PACKET_SENT) {
++		pi433->free_in_fifo = FIFO_SIZE;
++		dev_dbg(pi433->dev, "DIO0 irq: Packet sent\n");
++		wake_up_interruptible(&pi433->fifo_wait_queue);
++	} else if (pi433->irq_state[DIO0] == DIO_RSSI_DIO0) {
++		dev_dbg(pi433->dev, "DIO0 irq: RSSI level over threshold\n");
++		wake_up_interruptible(&pi433->rx_wait_queue);
++	} else if (pi433->irq_state[DIO0] == DIO_PAYLOAD_READY) {
++		dev_dbg(pi433->dev, "DIO0 irq: Payload ready\n");
++		pi433->free_in_fifo = 0;
++		wake_up_interruptible(&pi433->fifo_wait_queue);
+ 	}
+ 
+ 	return IRQ_HANDLED;
+@@ -145,19 +145,19 @@ static irqreturn_t DIO0_irq_handler(int irq, void *dev_id)
+ 
+ static irqreturn_t DIO1_irq_handler(int irq, void *dev_id)
+ {
+-	struct pi433_device *device = dev_id;
++	struct pi433_device *pi433 = dev_id;
+ 
+-	if (device->irq_state[DIO1] == DIO_FIFO_NOT_EMPTY_DIO1) {
+-		device->free_in_fifo = FIFO_SIZE;
+-	} else if (device->irq_state[DIO1] == DIO_FIFO_LEVEL) {
+-		if (device->rx_active)
+-			device->free_in_fifo = FIFO_THRESHOLD - 1;
++	if (pi433->irq_state[DIO1] == DIO_FIFO_NOT_EMPTY_DIO1) {
++		pi433->free_in_fifo = FIFO_SIZE;
++	} else if (pi433->irq_state[DIO1] == DIO_FIFO_LEVEL) {
++		if (pi433->rx_active)
++			pi433->free_in_fifo = FIFO_THRESHOLD - 1;
+ 		else
+-			device->free_in_fifo = FIFO_SIZE - FIFO_THRESHOLD - 1;
++			pi433->free_in_fifo = FIFO_SIZE - FIFO_THRESHOLD - 1;
+ 	}
+-	dev_dbg(device->dev,
+-		"DIO1 irq: %d bytes free in fifo\n", device->free_in_fifo);
+-	wake_up_interruptible(&device->fifo_wait_queue);
++	dev_dbg(pi433->dev,
++		"DIO1 irq: %d bytes free in fifo\n", pi433->free_in_fifo);
++	wake_up_interruptible(&pi433->fifo_wait_queue);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -165,94 +165,94 @@ static irqreturn_t DIO1_irq_handler(int irq, void *dev_id)
+ /*-------------------------------------------------------------------------*/
+ 
+ static int
+-rf69_set_rx_cfg(struct pi433_device *dev, struct pi433_rx_cfg *rx_cfg)
++rf69_set_rx_cfg(struct pi433_device *pi433, struct pi433_rx_cfg *rx_cfg)
+ {
+ 	int ret;
+ 	int payload_length;
+ 
+ 	/* receiver config */
+-	ret = rf69_set_frequency(dev->spi, rx_cfg->frequency);
++	ret = rf69_set_frequency(pi433->spi, rx_cfg->frequency);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_modulation(dev->spi, rx_cfg->modulation);
++	ret = rf69_set_modulation(pi433->spi, rx_cfg->modulation);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_bit_rate(dev->spi, rx_cfg->bit_rate);
++	ret = rf69_set_bit_rate(pi433->spi, rx_cfg->bit_rate);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_antenna_impedance(dev->spi, rx_cfg->antenna_impedance);
++	ret = rf69_set_antenna_impedance(pi433->spi, rx_cfg->antenna_impedance);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_rssi_threshold(dev->spi, rx_cfg->rssi_threshold);
++	ret = rf69_set_rssi_threshold(pi433->spi, rx_cfg->rssi_threshold);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_ook_threshold_dec(dev->spi, rx_cfg->threshold_decrement);
++	ret = rf69_set_ook_threshold_dec(pi433->spi, rx_cfg->threshold_decrement);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_bandwidth(dev->spi, rx_cfg->bw_mantisse,
++	ret = rf69_set_bandwidth(pi433->spi, rx_cfg->bw_mantisse,
+ 				 rx_cfg->bw_exponent);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_bandwidth_during_afc(dev->spi, rx_cfg->bw_mantisse,
++	ret = rf69_set_bandwidth_during_afc(pi433->spi, rx_cfg->bw_mantisse,
+ 					    rx_cfg->bw_exponent);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_dagc(dev->spi, rx_cfg->dagc);
++	ret = rf69_set_dagc(pi433->spi, rx_cfg->dagc);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	dev->rx_bytes_to_drop = rx_cfg->bytes_to_drop;
++	pi433->rx_bytes_to_drop = rx_cfg->bytes_to_drop;
+ 
+ 	/* packet config */
+ 	/* enable */
+ 	if (rx_cfg->enable_sync == OPTION_ON) {
+-		ret = rf69_enable_sync(dev->spi);
++		ret = rf69_enable_sync(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		ret = rf69_set_fifo_fill_condition(dev->spi,
++		ret = rf69_set_fifo_fill_condition(pi433->spi,
+ 						   after_sync_interrupt);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_disable_sync(dev->spi);
++		ret = rf69_disable_sync(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		ret = rf69_set_fifo_fill_condition(dev->spi, always);
++		ret = rf69_set_fifo_fill_condition(pi433->spi, always);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 	if (rx_cfg->enable_length_byte == OPTION_ON) {
+-		ret = rf69_set_packet_format(dev->spi, packet_length_var);
++		ret = rf69_set_packet_format(pi433->spi, packet_length_var);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_set_packet_format(dev->spi, packet_length_fix);
++		ret = rf69_set_packet_format(pi433->spi, packet_length_fix);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	ret = rf69_set_address_filtering(dev->spi,
++	ret = rf69_set_address_filtering(pi433->spi,
+ 					 rx_cfg->enable_address_filtering);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	if (rx_cfg->enable_crc == OPTION_ON) {
+-		ret = rf69_enable_crc(dev->spi);
++		ret = rf69_enable_crc(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_disable_crc(dev->spi);
++		ret = rf69_disable_crc(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	/* lengths */
+-	ret = rf69_set_sync_size(dev->spi, rx_cfg->sync_length);
++	ret = rf69_set_sync_size(pi433->spi, rx_cfg->sync_length);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (rx_cfg->enable_length_byte == OPTION_ON) {
+-		ret = rf69_set_payload_length(dev->spi, 0xff);
++		ret = rf69_set_payload_length(pi433->spi, 0xff);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else if (rx_cfg->fixed_message_length != 0) {
+@@ -261,26 +261,26 @@ rf69_set_rx_cfg(struct pi433_device *dev, struct pi433_rx_cfg *rx_cfg)
+ 			payload_length++;
+ 		if (rx_cfg->enable_address_filtering != filtering_off)
+ 			payload_length++;
+-		ret = rf69_set_payload_length(dev->spi, payload_length);
++		ret = rf69_set_payload_length(pi433->spi, payload_length);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_set_payload_length(dev->spi, 0);
++		ret = rf69_set_payload_length(pi433->spi, 0);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	/* values */
+ 	if (rx_cfg->enable_sync == OPTION_ON) {
+-		ret = rf69_set_sync_values(dev->spi, rx_cfg->sync_pattern);
++		ret = rf69_set_sync_values(pi433->spi, rx_cfg->sync_pattern);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 	if (rx_cfg->enable_address_filtering != filtering_off) {
+-		ret = rf69_set_node_address(dev->spi, rx_cfg->node_address);
++		ret = rf69_set_node_address(pi433->spi, rx_cfg->node_address);
+ 		if (ret < 0)
+ 			return ret;
+-		ret = rf69_set_broadcast_address(dev->spi,
++		ret = rf69_set_broadcast_address(pi433->spi,
+ 						 rx_cfg->broadcast_address);
+ 		if (ret < 0)
+ 			return ret;
+@@ -290,76 +290,76 @@ rf69_set_rx_cfg(struct pi433_device *dev, struct pi433_rx_cfg *rx_cfg)
+ }
+ 
+ static int
+-rf69_set_tx_cfg(struct pi433_device *dev, struct pi433_tx_cfg *tx_cfg)
++rf69_set_tx_cfg(struct pi433_device *pi433, struct pi433_tx_cfg *tx_cfg)
+ {
+ 	int ret;
+ 
+-	ret = rf69_set_frequency(dev->spi, tx_cfg->frequency);
++	ret = rf69_set_frequency(pi433->spi, tx_cfg->frequency);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_modulation(dev->spi, tx_cfg->modulation);
++	ret = rf69_set_modulation(pi433->spi, tx_cfg->modulation);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_bit_rate(dev->spi, tx_cfg->bit_rate);
++	ret = rf69_set_bit_rate(pi433->spi, tx_cfg->bit_rate);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_deviation(dev->spi, tx_cfg->dev_frequency);
++	ret = rf69_set_deviation(pi433->spi, tx_cfg->dev_frequency);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_pa_ramp(dev->spi, tx_cfg->pa_ramp);
++	ret = rf69_set_pa_ramp(pi433->spi, tx_cfg->pa_ramp);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_modulation_shaping(dev->spi, tx_cfg->mod_shaping);
++	ret = rf69_set_modulation_shaping(pi433->spi, tx_cfg->mod_shaping);
+ 	if (ret < 0)
+ 		return ret;
+-	ret = rf69_set_tx_start_condition(dev->spi, tx_cfg->tx_start_condition);
++	ret = rf69_set_tx_start_condition(pi433->spi, tx_cfg->tx_start_condition);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* packet format enable */
+ 	if (tx_cfg->enable_preamble == OPTION_ON) {
+-		ret = rf69_set_preamble_length(dev->spi,
++		ret = rf69_set_preamble_length(pi433->spi,
+ 					       tx_cfg->preamble_length);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_set_preamble_length(dev->spi, 0);
++		ret = rf69_set_preamble_length(pi433->spi, 0);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	if (tx_cfg->enable_sync == OPTION_ON) {
+-		ret = rf69_set_sync_size(dev->spi, tx_cfg->sync_length);
++		ret = rf69_set_sync_size(pi433->spi, tx_cfg->sync_length);
+ 		if (ret < 0)
+ 			return ret;
+-		ret = rf69_set_sync_values(dev->spi, tx_cfg->sync_pattern);
++		ret = rf69_set_sync_values(pi433->spi, tx_cfg->sync_pattern);
+ 		if (ret < 0)
+ 			return ret;
+-		ret = rf69_enable_sync(dev->spi);
++		ret = rf69_enable_sync(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_disable_sync(dev->spi);
++		ret = rf69_disable_sync(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	if (tx_cfg->enable_length_byte == OPTION_ON) {
+-		ret = rf69_set_packet_format(dev->spi, packet_length_var);
++		ret = rf69_set_packet_format(pi433->spi, packet_length_var);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_set_packet_format(dev->spi, packet_length_fix);
++		ret = rf69_set_packet_format(pi433->spi, packet_length_fix);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	if (tx_cfg->enable_crc == OPTION_ON) {
+-		ret = rf69_enable_crc(dev->spi);
++		ret = rf69_enable_crc(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+-		ret = rf69_disable_crc(dev->spi);
++		ret = rf69_disable_crc(pi433->spi);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -369,38 +369,38 @@ rf69_set_tx_cfg(struct pi433_device *dev, struct pi433_tx_cfg *tx_cfg)
+ 
+ /*-------------------------------------------------------------------------*/
+ 
+-static int pi433_start_rx(struct pi433_device *dev)
++static int pi433_start_rx(struct pi433_device *pi433)
+ {
+ 	int retval;
+ 
+ 	/* return without action, if no pending read request */
+-	if (!dev->rx_active)
++	if (!pi433->rx_active)
+ 		return 0;
+ 
+ 	/* setup for receiving */
+-	retval = rf69_set_rx_cfg(dev, &dev->rx_cfg);
++	retval = rf69_set_rx_cfg(pi433, &pi433->rx_cfg);
+ 	if (retval)
+ 		return retval;
+ 
+ 	/* setup rssi irq */
+-	retval = rf69_set_dio_mapping(dev->spi, DIO0, DIO_RSSI_DIO0);
++	retval = rf69_set_dio_mapping(pi433->spi, DIO0, DIO_RSSI_DIO0);
+ 	if (retval < 0)
+ 		return retval;
+-	dev->irq_state[DIO0] = DIO_RSSI_DIO0;
+-	irq_set_irq_type(dev->irq_num[DIO0], IRQ_TYPE_EDGE_RISING);
++	pi433->irq_state[DIO0] = DIO_RSSI_DIO0;
++	irq_set_irq_type(pi433->irq_num[DIO0], IRQ_TYPE_EDGE_RISING);
+ 
+ 	/* setup fifo level interrupt */
+-	retval = rf69_set_fifo_threshold(dev->spi, FIFO_SIZE - FIFO_THRESHOLD);
++	retval = rf69_set_fifo_threshold(pi433->spi, FIFO_SIZE - FIFO_THRESHOLD);
+ 	if (retval < 0)
+ 		return retval;
+-	retval = rf69_set_dio_mapping(dev->spi, DIO1, DIO_FIFO_LEVEL);
++	retval = rf69_set_dio_mapping(pi433->spi, DIO1, DIO_FIFO_LEVEL);
+ 	if (retval < 0)
+ 		return retval;
+-	dev->irq_state[DIO1] = DIO_FIFO_LEVEL;
+-	irq_set_irq_type(dev->irq_num[DIO1], IRQ_TYPE_EDGE_RISING);
++	pi433->irq_state[DIO1] = DIO_FIFO_LEVEL;
++	irq_set_irq_type(pi433->irq_num[DIO1], IRQ_TYPE_EDGE_RISING);
+ 
+ 	/* set module to receiving mode */
+-	retval = rf69_set_mode(dev->spi, receive);
++	retval = rf69_set_mode(pi433->spi, receive);
+ 	if (retval < 0)
+ 		return retval;
+ 
+@@ -411,50 +411,50 @@ static int pi433_start_rx(struct pi433_device *dev)
+ 
+ static int pi433_receive(void *data)
+ {
+-	struct pi433_device *dev = data;
+-	struct spi_device *spi = dev->spi;
++	struct pi433_device *pi433 = data;
++	struct spi_device *spi = pi433->spi;
+ 	int bytes_to_read, bytes_total;
+ 	int retval;
+ 
+-	dev->interrupt_rx_allowed = false;
++	pi433->interrupt_rx_allowed = false;
+ 
+ 	/* wait for any tx to finish */
+-	dev_dbg(dev->dev, "rx: going to wait for any tx to finish\n");
+-	retval = wait_event_interruptible(dev->rx_wait_queue, !dev->tx_active);
++	dev_dbg(pi433->dev, "rx: going to wait for any tx to finish\n");
++	retval = wait_event_interruptible(pi433->rx_wait_queue, !pi433->tx_active);
+ 	if (retval) {
+ 		/* wait was interrupted */
+-		dev->interrupt_rx_allowed = true;
+-		wake_up_interruptible(&dev->tx_wait_queue);
++		pi433->interrupt_rx_allowed = true;
++		wake_up_interruptible(&pi433->tx_wait_queue);
+ 		return retval;
+ 	}
+ 
+ 	/* prepare status vars */
+-	dev->free_in_fifo = FIFO_SIZE;
+-	dev->rx_position = 0;
+-	dev->rx_bytes_dropped = 0;
++	pi433->free_in_fifo = FIFO_SIZE;
++	pi433->rx_position = 0;
++	pi433->rx_bytes_dropped = 0;
+ 
+ 	/* setup radio module to listen for something "in the air" */
+-	retval = pi433_start_rx(dev);
++	retval = pi433_start_rx(pi433);
+ 	if (retval)
+ 		return retval;
+ 
+ 	/* now check RSSI, if low wait for getting high (RSSI interrupt) */
+ 	while (!(rf69_read_reg(spi, REG_IRQFLAGS1) & MASK_IRQFLAGS1_RSSI)) {
+ 		/* allow tx to interrupt us while waiting for high RSSI */
+-		dev->interrupt_rx_allowed = true;
+-		wake_up_interruptible(&dev->tx_wait_queue);
++		pi433->interrupt_rx_allowed = true;
++		wake_up_interruptible(&pi433->tx_wait_queue);
+ 
+ 		/* wait for RSSI level to become high */
+-		dev_dbg(dev->dev, "rx: going to wait for high RSSI level\n");
+-		retval = wait_event_interruptible(dev->rx_wait_queue,
++		dev_dbg(pi433->dev, "rx: going to wait for high RSSI level\n");
++		retval = wait_event_interruptible(pi433->rx_wait_queue,
+ 						  rf69_read_reg(spi, REG_IRQFLAGS1) &
+ 						  MASK_IRQFLAGS1_RSSI);
+ 		if (retval) /* wait was interrupted */
+ 			goto abort;
+-		dev->interrupt_rx_allowed = false;
++		pi433->interrupt_rx_allowed = false;
+ 
+ 		/* cross check for ongoing tx */
+-		if (!dev->tx_active)
++		if (!pi433->tx_active)
+ 			break;
+ 	}
+ 
+@@ -462,97 +462,97 @@ static int pi433_receive(void *data)
+ 	retval = rf69_set_dio_mapping(spi, DIO0, DIO_PAYLOAD_READY);
+ 	if (retval < 0)
+ 		goto abort;
+-	dev->irq_state[DIO0] = DIO_PAYLOAD_READY;
+-	irq_set_irq_type(dev->irq_num[DIO0], IRQ_TYPE_EDGE_RISING);
++	pi433->irq_state[DIO0] = DIO_PAYLOAD_READY;
++	irq_set_irq_type(pi433->irq_num[DIO0], IRQ_TYPE_EDGE_RISING);
+ 
+ 	/* fixed or unlimited length? */
+-	if (dev->rx_cfg.fixed_message_length != 0) {
+-		if (dev->rx_cfg.fixed_message_length > dev->rx_buffer_size) {
++	if (pi433->rx_cfg.fixed_message_length != 0) {
++		if (pi433->rx_cfg.fixed_message_length > pi433->rx_buffer_size) {
+ 			retval = -1;
+ 			goto abort;
+ 		}
+-		bytes_total = dev->rx_cfg.fixed_message_length;
+-		dev_dbg(dev->dev, "rx: msg len set to %d by fixed length\n",
++		bytes_total = pi433->rx_cfg.fixed_message_length;
++		dev_dbg(pi433->dev, "rx: msg len set to %d by fixed length\n",
+ 			bytes_total);
+ 	} else {
+-		bytes_total = dev->rx_buffer_size;
+-		dev_dbg(dev->dev, "rx: msg len set to %d as requested by read\n",
++		bytes_total = pi433->rx_buffer_size;
++		dev_dbg(pi433->dev, "rx: msg len set to %d as requested by read\n",
+ 			bytes_total);
+ 	}
+ 
+ 	/* length byte enabled? */
+-	if (dev->rx_cfg.enable_length_byte == OPTION_ON) {
+-		retval = wait_event_interruptible(dev->fifo_wait_queue,
+-						  dev->free_in_fifo < FIFO_SIZE);
++	if (pi433->rx_cfg.enable_length_byte == OPTION_ON) {
++		retval = wait_event_interruptible(pi433->fifo_wait_queue,
++						  pi433->free_in_fifo < FIFO_SIZE);
+ 		if (retval) /* wait was interrupted */
+ 			goto abort;
+ 
+ 		rf69_read_fifo(spi, (u8 *)&bytes_total, 1);
+-		if (bytes_total > dev->rx_buffer_size) {
++		if (bytes_total > pi433->rx_buffer_size) {
+ 			retval = -1;
+ 			goto abort;
+ 		}
+-		dev->free_in_fifo++;
+-		dev_dbg(dev->dev, "rx: msg len reset to %d due to length byte\n",
++		pi433->free_in_fifo++;
++		dev_dbg(pi433->dev, "rx: msg len reset to %d due to length byte\n",
+ 			bytes_total);
+ 	}
+ 
+ 	/* address byte enabled? */
+-	if (dev->rx_cfg.enable_address_filtering != filtering_off) {
++	if (pi433->rx_cfg.enable_address_filtering != filtering_off) {
+ 		u8 dummy;
+ 
+ 		bytes_total--;
+ 
+-		retval = wait_event_interruptible(dev->fifo_wait_queue,
+-						  dev->free_in_fifo < FIFO_SIZE);
++		retval = wait_event_interruptible(pi433->fifo_wait_queue,
++						  pi433->free_in_fifo < FIFO_SIZE);
+ 		if (retval) /* wait was interrupted */
+ 			goto abort;
+ 
+ 		rf69_read_fifo(spi, &dummy, 1);
+-		dev->free_in_fifo++;
+-		dev_dbg(dev->dev, "rx: address byte stripped off\n");
++		pi433->free_in_fifo++;
++		dev_dbg(pi433->dev, "rx: address byte stripped off\n");
+ 	}
+ 
+ 	/* get payload */
+-	while (dev->rx_position < bytes_total) {
++	while (pi433->rx_position < bytes_total) {
+ 		if (!(rf69_read_reg(spi, REG_IRQFLAGS2) & MASK_IRQFLAGS2_PAYLOAD_READY)) {
+-			retval = wait_event_interruptible(dev->fifo_wait_queue,
+-							  dev->free_in_fifo < FIFO_SIZE);
++			retval = wait_event_interruptible(pi433->fifo_wait_queue,
++							  pi433->free_in_fifo < FIFO_SIZE);
+ 			if (retval) /* wait was interrupted */
+ 				goto abort;
+ 		}
+ 
+ 		/* need to drop bytes or acquire? */
+-		if (dev->rx_bytes_to_drop > dev->rx_bytes_dropped)
+-			bytes_to_read = dev->rx_bytes_to_drop -
+-					dev->rx_bytes_dropped;
++		if (pi433->rx_bytes_to_drop > pi433->rx_bytes_dropped)
++			bytes_to_read = pi433->rx_bytes_to_drop -
++					pi433->rx_bytes_dropped;
+ 		else
+-			bytes_to_read = bytes_total - dev->rx_position;
++			bytes_to_read = bytes_total - pi433->rx_position;
+ 
+ 		/* access the fifo */
+-		if (bytes_to_read > FIFO_SIZE - dev->free_in_fifo)
+-			bytes_to_read = FIFO_SIZE - dev->free_in_fifo;
++		if (bytes_to_read > FIFO_SIZE - pi433->free_in_fifo)
++			bytes_to_read = FIFO_SIZE - pi433->free_in_fifo;
+ 		retval = rf69_read_fifo(spi,
+-					&dev->rx_buffer[dev->rx_position],
++					&pi433->rx_buffer[pi433->rx_position],
+ 					bytes_to_read);
+ 		if (retval) /* read failed */
+ 			goto abort;
+ 
+-		dev->free_in_fifo += bytes_to_read;
++		pi433->free_in_fifo += bytes_to_read;
+ 
+ 		/* adjust status vars */
+-		if (dev->rx_bytes_to_drop > dev->rx_bytes_dropped)
+-			dev->rx_bytes_dropped += bytes_to_read;
++		if (pi433->rx_bytes_to_drop > pi433->rx_bytes_dropped)
++			pi433->rx_bytes_dropped += bytes_to_read;
+ 		else
+-			dev->rx_position += bytes_to_read;
++			pi433->rx_position += bytes_to_read;
+ 	}
+ 
+ 	/* rx done, wait was interrupted or error occurred */
+ abort:
+-	dev->interrupt_rx_allowed = true;
+-	if (rf69_set_mode(dev->spi, standby))
++	pi433->interrupt_rx_allowed = true;
++	if (rf69_set_mode(pi433->spi, standby))
+ 		pr_err("rf69_set_mode(): radio module failed to go standby\n");
+-	wake_up_interruptible(&dev->tx_wait_queue);
++	wake_up_interruptible(&pi433->tx_wait_queue);
+ 
+ 	if (retval)
+ 		return retval;
+@@ -562,8 +562,8 @@ static int pi433_receive(void *data)
+ 
+ static int pi433_tx_thread(void *data)
+ {
+-	struct pi433_device *device = data;
+-	struct spi_device *spi = device->spi;
++	struct pi433_device *pi433 = data;
++	struct spi_device *spi = pi433->spi;
+ 	struct pi433_tx_cfg tx_cfg;
+ 	size_t size;
+ 	bool   rx_interrupted = false;
+@@ -572,9 +572,9 @@ static int pi433_tx_thread(void *data)
+ 
+ 	while (1) {
+ 		/* wait for fifo to be populated or for request to terminate*/
+-		dev_dbg(device->dev, "thread: going to wait for new messages\n");
+-		wait_event_interruptible(device->tx_wait_queue,
+-					 (!kfifo_is_empty(&device->tx_fifo) ||
++		dev_dbg(pi433->dev, "thread: going to wait for new messages\n");
++		wait_event_interruptible(pi433->tx_wait_queue,
++					 (!kfifo_is_empty(&pi433->tx_fifo) ||
+ 					  kthread_should_stop()));
+ 		if (kthread_should_stop())
+ 			return 0;
+@@ -585,17 +585,17 @@ static int pi433_tx_thread(void *data)
+ 		 * - size of message
+ 		 * - message
+ 		 */
+-		retval = kfifo_out(&device->tx_fifo, &tx_cfg, sizeof(tx_cfg));
++		retval = kfifo_out(&pi433->tx_fifo, &tx_cfg, sizeof(tx_cfg));
+ 		if (retval != sizeof(tx_cfg)) {
+-			dev_dbg(device->dev,
++			dev_dbg(pi433->dev,
+ 				"reading tx_cfg from fifo failed: got %d byte(s), expected %d\n",
+ 				retval, (unsigned int)sizeof(tx_cfg));
+ 			continue;
+ 		}
+ 
+-		retval = kfifo_out(&device->tx_fifo, &size, sizeof(size_t));
++		retval = kfifo_out(&pi433->tx_fifo, &size, sizeof(size_t));
+ 		if (retval != sizeof(size_t)) {
+-			dev_dbg(device->dev,
++			dev_dbg(pi433->dev,
+ 				"reading msg size from fifo failed: got %d, expected %d\n",
+ 				retval, (unsigned int)sizeof(size_t));
+ 			continue;
+@@ -614,7 +614,7 @@ static int pi433_tx_thread(void *data)
  			size++;
  
--		/* prime buffer */
--		memset(device->buffer, 0, size);
-+		/* prime tx_buffer */
-+		memset(device->tx_buffer, 0, size);
+ 		/* prime tx_buffer */
+-		memset(device->tx_buffer, 0, size);
++		memset(pi433->tx_buffer, 0, size);
  		position = 0;
  
  		/* add length byte, if requested */
-@@ -623,15 +623,15 @@ static int pi433_tx_thread(void *data)
+@@ -623,16 +623,16 @@ static int pi433_tx_thread(void *data)
  			 * according to spec, length byte itself must be
  			 * excluded from the length calculation
  			 */
--			device->buffer[position++] = size - 1;
-+			device->tx_buffer[position++] = size - 1;
+-			device->tx_buffer[position++] = size - 1;
++			pi433->tx_buffer[position++] = size - 1;
  
  		/* add adr byte, if requested */
  		if (tx_cfg.enable_address_byte == OPTION_ON)
--			device->buffer[position++] = tx_cfg.address_byte;
-+			device->tx_buffer[position++] = tx_cfg.address_byte;
+-			device->tx_buffer[position++] = tx_cfg.address_byte;
++			pi433->tx_buffer[position++] = tx_cfg.address_byte;
  
  		/* finally get message data from fifo */
--		retval = kfifo_out(&device->tx_fifo, &device->buffer[position],
--				   sizeof(device->buffer) - position);
-+		retval = kfifo_out(&device->tx_fifo, &device->tx_buffer[position],
-+				   sizeof(device->tx_buffer) - position);
- 		dev_dbg(device->dev,
+-		retval = kfifo_out(&device->tx_fifo, &device->tx_buffer[position],
+-				   sizeof(device->tx_buffer) - position);
+-		dev_dbg(device->dev,
++		retval = kfifo_out(&pi433->tx_fifo, &pi433->tx_buffer[position],
++				   sizeof(pi433->tx_buffer) - position);
++		dev_dbg(pi433->dev,
  			"read %d message byte(s) from fifo queue.\n", retval);
  
-@@ -715,7 +715,7 @@ static int pi433_tx_thread(void *data)
+ 		/*
+@@ -642,23 +642,23 @@ static int pi433_tx_thread(void *data)
+ 		 * place otherwise we need to  wait for the incoming telegram
+ 		 * to finish
+ 		 */
+-		wait_event_interruptible(device->tx_wait_queue,
+-					 !device->rx_active ||
+-					  device->interrupt_rx_allowed);
++		wait_event_interruptible(pi433->tx_wait_queue,
++					 !pi433->rx_active ||
++					  pi433->interrupt_rx_allowed);
  
- 				device->free_in_fifo = 0;
+ 		/*
+ 		 * prevent race conditions
+ 		 * irq will be re-enabled after tx config is set
+ 		 */
+-		disable_irq(device->irq_num[DIO0]);
+-		device->tx_active = true;
++		disable_irq(pi433->irq_num[DIO0]);
++		pi433->tx_active = true;
+ 
+ 		/* clear fifo, set fifo threshold, set payload length */
+ 		retval = rf69_set_mode(spi, standby); /* this clears the fifo */
+ 		if (retval < 0)
+ 			goto abort;
+ 
+-		if (device->rx_active && !rx_interrupted) {
++		if (pi433->rx_active && !rx_interrupted) {
+ 			/*
+ 			 * rx is currently waiting for a telegram;
+ 			 * we need to set the radio module to standby
+@@ -680,7 +680,7 @@ static int pi433_tx_thread(void *data)
+ 		}
+ 
+ 		/* configure the rf chip */
+-		retval = rf69_set_tx_cfg(device, &tx_cfg);
++		retval = rf69_set_tx_cfg(pi433, &tx_cfg);
+ 		if (retval < 0)
+ 			goto abort;
+ 
+@@ -688,16 +688,16 @@ static int pi433_tx_thread(void *data)
+ 		retval = rf69_set_dio_mapping(spi, DIO1, DIO_FIFO_LEVEL);
+ 		if (retval < 0)
+ 			goto abort;
+-		device->irq_state[DIO1] = DIO_FIFO_LEVEL;
+-		irq_set_irq_type(device->irq_num[DIO1], IRQ_TYPE_EDGE_FALLING);
++		pi433->irq_state[DIO1] = DIO_FIFO_LEVEL;
++		irq_set_irq_type(pi433->irq_num[DIO1], IRQ_TYPE_EDGE_FALLING);
+ 
+ 		/* enable packet sent interrupt */
+ 		retval = rf69_set_dio_mapping(spi, DIO0, DIO_PACKET_SENT);
+ 		if (retval < 0)
+ 			goto abort;
+-		device->irq_state[DIO0] = DIO_PACKET_SENT;
+-		irq_set_irq_type(device->irq_num[DIO0], IRQ_TYPE_EDGE_RISING);
+-		enable_irq(device->irq_num[DIO0]); /* was disabled by rx active check */
++		pi433->irq_state[DIO0] = DIO_PACKET_SENT;
++		irq_set_irq_type(pi433->irq_num[DIO0], IRQ_TYPE_EDGE_RISING);
++		enable_irq(pi433->irq_num[DIO0]); /* was disabled by rx active check */
+ 
+ 		/* enable transmission */
+ 		retval = rf69_set_mode(spi, transmit);
+@@ -705,61 +705,61 @@ static int pi433_tx_thread(void *data)
+ 			goto abort;
+ 
+ 		/* transfer this msg (and repetitions) to chip fifo */
+-		device->free_in_fifo = FIFO_SIZE;
++		pi433->free_in_fifo = FIFO_SIZE;
+ 		position = 0;
+ 		repetitions = tx_cfg.repetitions;
+ 		while ((repetitions > 0) && (size > position)) {
+-			if ((size - position) > device->free_in_fifo) {
++			if ((size - position) > pi433->free_in_fifo) {
+ 				/* msg to big for fifo - take a part */
+-				int write_size = device->free_in_fifo;
++				int write_size = pi433->free_in_fifo;
+ 
+-				device->free_in_fifo = 0;
++				pi433->free_in_fifo = 0;
  				rf69_write_fifo(spi,
--						&device->buffer[position],
-+						&device->tx_buffer[position],
+-						&device->tx_buffer[position],
++						&pi433->tx_buffer[position],
  						write_size);
  				position += write_size;
  			} else {
-@@ -723,7 +723,7 @@ static int pi433_tx_thread(void *data)
- 				device->free_in_fifo -= size;
+ 				/* msg fits into fifo - take all */
+-				device->free_in_fifo -= size;
++				pi433->free_in_fifo -= size;
  				repetitions--;
  				rf69_write_fifo(spi,
--						&device->buffer[position],
-+						&device->tx_buffer[position],
+-						&device->tx_buffer[position],
++						&pi433->tx_buffer[position],
  						(size - position));
  				position = 0; /* reset for next repetition */
  			}
-
-base-commit: 20952655235dd9b1447829591774f1d8561f7c6a
-prerequisite-patch-id: 91943193af2fea74182be67fb583235a3fbeb77b
-prerequisite-patch-id: 2cad031ba6a0782a67ab1645ff034a8be65c2e76
-prerequisite-patch-id: 1a852ed8f9d133aec7c651fd9007e59e39c55fb7
+ 
+-			retval = wait_event_interruptible(device->fifo_wait_queue,
+-							  device->free_in_fifo > 0);
++			retval = wait_event_interruptible(pi433->fifo_wait_queue,
++							  pi433->free_in_fifo > 0);
+ 			if (retval) {
+-				dev_dbg(device->dev, "ABORT\n");
++				dev_dbg(pi433->dev, "ABORT\n");
+ 				goto abort;
+ 			}
+ 		}
+ 
+ 		/* we are done. Wait for packet to get sent */
+-		dev_dbg(device->dev,
++		dev_dbg(pi433->dev,
+ 			"thread: wait for packet to get sent/fifo to be empty\n");
+-		wait_event_interruptible(device->fifo_wait_queue,
+-					 device->free_in_fifo == FIFO_SIZE ||
++		wait_event_interruptible(pi433->fifo_wait_queue,
++					 pi433->free_in_fifo == FIFO_SIZE ||
+ 					 kthread_should_stop());
+ 		if (kthread_should_stop())
+ 			return 0;
+ 
+ 		/* STOP_TRANSMISSION */
+-		dev_dbg(device->dev, "thread: Packet sent. Set mode to stby.\n");
++		dev_dbg(pi433->dev, "thread: Packet sent. Set mode to stby.\n");
+ 		retval = rf69_set_mode(spi, standby);
+ 		if (retval < 0)
+ 			goto abort;
+ 
+ 		/* everything sent? */
+-		if (kfifo_is_empty(&device->tx_fifo)) {
++		if (kfifo_is_empty(&pi433->tx_fifo)) {
+ abort:
+ 			if (rx_interrupted) {
+ 				rx_interrupted = false;
+-				pi433_start_rx(device);
++				pi433_start_rx(pi433);
+ 			}
+-			device->tx_active = false;
+-			wake_up_interruptible(&device->rx_wait_queue);
++			pi433->tx_active = false;
++			wake_up_interruptible(&pi433->rx_wait_queue);
+ 		}
+ 	}
+ }
+@@ -770,7 +770,7 @@ static ssize_t
+ pi433_read(struct file *filp, char __user *buf, size_t size, loff_t *f_pos)
+ {
+ 	struct pi433_instance	*instance;
+-	struct pi433_device	*device;
++	struct pi433_device	*pi433;
+ 	int			bytes_received;
+ 	ssize_t			retval;
+ 
+@@ -779,31 +779,31 @@ pi433_read(struct file *filp, char __user *buf, size_t size, loff_t *f_pos)
+ 		return -EMSGSIZE;
+ 
+ 	instance = filp->private_data;
+-	device = instance->device;
++	pi433 = instance->pi433;
+ 
+ 	/* just one read request at a time */
+-	mutex_lock(&device->rx_lock);
+-	if (device->rx_active) {
+-		mutex_unlock(&device->rx_lock);
++	mutex_lock(&pi433->rx_lock);
++	if (pi433->rx_active) {
++		mutex_unlock(&pi433->rx_lock);
+ 		return -EAGAIN;
+ 	}
+ 
+-	device->rx_active = true;
+-	mutex_unlock(&device->rx_lock);
++	pi433->rx_active = true;
++	mutex_unlock(&pi433->rx_lock);
+ 
+ 	/* start receiving */
+ 	/* will block until something was received*/
+-	device->rx_buffer_size = size;
+-	bytes_received = pi433_receive(device);
++	pi433->rx_buffer_size = size;
++	bytes_received = pi433_receive(pi433);
+ 
+ 	/* release rx */
+-	mutex_lock(&device->rx_lock);
+-	device->rx_active = false;
+-	mutex_unlock(&device->rx_lock);
++	mutex_lock(&pi433->rx_lock);
++	pi433->rx_active = false;
++	mutex_unlock(&pi433->rx_lock);
+ 
+ 	/* if read was successful copy to user space*/
+ 	if (bytes_received > 0) {
+-		retval = copy_to_user(buf, device->rx_buffer, bytes_received);
++		retval = copy_to_user(buf, pi433->rx_buffer, bytes_received);
+ 		if (retval)
+ 			return -EFAULT;
+ 	}
+@@ -816,12 +816,12 @@ pi433_write(struct file *filp, const char __user *buf,
+ 	    size_t count, loff_t *f_pos)
+ {
+ 	struct pi433_instance	*instance;
+-	struct pi433_device	*device;
++	struct pi433_device	*pi433;
+ 	int                     retval;
+ 	unsigned int		required, available, copied;
+ 
+ 	instance = filp->private_data;
+-	device = instance->device;
++	pi433 = instance->pi433;
+ 
+ 	/*
+ 	 * check, whether internal buffer (tx thread) is big enough
+@@ -835,7 +835,7 @@ pi433_write(struct file *filp, const char __user *buf,
+ 	 * config the RF trasmitter correctly due to invalid settings
+ 	 */
+ 	if (!instance->tx_cfg_initialized) {
+-		dev_notice_once(device->dev,
++		dev_notice_once(pi433->dev,
+ 				"write: failed due to unconfigured tx_cfg (see PI433_IOC_WR_TX_CFG)\n");
+ 		return -EINVAL;
+ 	}
+@@ -846,49 +846,49 @@ pi433_write(struct file *filp, const char __user *buf,
+ 	 * - size of message
+ 	 * - message
+ 	 */
+-	mutex_lock(&device->tx_fifo_lock);
++	mutex_lock(&pi433->tx_fifo_lock);
+ 
+ 	required = sizeof(instance->tx_cfg) + sizeof(size_t) + count;
+-	available = kfifo_avail(&device->tx_fifo);
++	available = kfifo_avail(&pi433->tx_fifo);
+ 	if (required > available) {
+-		dev_dbg(device->dev, "write to fifo failed: %d bytes required but %d available\n",
++		dev_dbg(pi433->dev, "write to fifo failed: %d bytes required but %d available\n",
+ 			required, available);
+-		mutex_unlock(&device->tx_fifo_lock);
++		mutex_unlock(&pi433->tx_fifo_lock);
+ 		return -EAGAIN;
+ 	}
+ 
+-	retval = kfifo_in(&device->tx_fifo, &instance->tx_cfg,
++	retval = kfifo_in(&pi433->tx_fifo, &instance->tx_cfg,
+ 			  sizeof(instance->tx_cfg));
+ 	if (retval != sizeof(instance->tx_cfg))
+ 		goto abort;
+ 
+-	retval = kfifo_in(&device->tx_fifo, &count, sizeof(size_t));
++	retval = kfifo_in(&pi433->tx_fifo, &count, sizeof(size_t));
+ 	if (retval != sizeof(size_t))
+ 		goto abort;
+ 
+-	retval = kfifo_from_user(&device->tx_fifo, buf, count, &copied);
++	retval = kfifo_from_user(&pi433->tx_fifo, buf, count, &copied);
+ 	if (retval || copied != count)
+ 		goto abort;
+ 
+-	mutex_unlock(&device->tx_fifo_lock);
++	mutex_unlock(&pi433->tx_fifo_lock);
+ 
+ 	/* start transfer */
+-	wake_up_interruptible(&device->tx_wait_queue);
+-	dev_dbg(device->dev, "write: generated new msg with %d bytes.\n", copied);
++	wake_up_interruptible(&pi433->tx_wait_queue);
++	dev_dbg(pi433->dev, "write: generated new msg with %d bytes.\n", copied);
+ 
+ 	return copied;
+ 
+ abort:
+-	dev_warn(device->dev,
++	dev_warn(pi433->dev,
+ 		 "write to fifo failed, non recoverable: 0x%x\n", retval);
+-	mutex_unlock(&device->tx_fifo_lock);
++	mutex_unlock(&pi433->tx_fifo_lock);
+ 	return -EAGAIN;
+ }
+ 
+ static long pi433_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	struct pi433_instance	*instance;
+-	struct pi433_device	*device;
++	struct pi433_device	*pi433;
+ 	struct pi433_tx_cfg	tx_cfg;
+ 	void __user *argp = (void __user *)arg;
+ 
+@@ -897,9 +897,9 @@ static long pi433_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		return -ENOTTY;
+ 
+ 	instance = filp->private_data;
+-	device = instance->device;
++	pi433 = instance->pi433;
+ 
+-	if (!device)
++	if (!pi433)
+ 		return -ESHUTDOWN;
+ 
+ 	switch (cmd) {
+@@ -911,32 +911,32 @@ static long pi433_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	case PI433_IOC_WR_TX_CFG:
+ 		if (copy_from_user(&tx_cfg, argp, sizeof(struct pi433_tx_cfg)))
+ 			return -EFAULT;
+-		mutex_lock(&device->tx_fifo_lock);
++		mutex_lock(&pi433->tx_fifo_lock);
+ 		memcpy(&instance->tx_cfg, &tx_cfg, sizeof(struct pi433_tx_cfg));
+ 		instance->tx_cfg_initialized = true;
+-		mutex_unlock(&device->tx_fifo_lock);
++		mutex_unlock(&pi433->tx_fifo_lock);
+ 		break;
+ 	case PI433_IOC_RD_RX_CFG:
+-		if (copy_to_user(argp, &device->rx_cfg,
++		if (copy_to_user(argp, &pi433->rx_cfg,
+ 				 sizeof(struct pi433_rx_cfg)))
+ 			return -EFAULT;
+ 		break;
+ 	case PI433_IOC_WR_RX_CFG:
+-		mutex_lock(&device->rx_lock);
++		mutex_lock(&pi433->rx_lock);
+ 
+ 		/* during pending read request, change of config not allowed */
+-		if (device->rx_active) {
+-			mutex_unlock(&device->rx_lock);
++		if (pi433->rx_active) {
++			mutex_unlock(&pi433->rx_lock);
+ 			return -EAGAIN;
+ 		}
+ 
+-		if (copy_from_user(&device->rx_cfg, argp,
++		if (copy_from_user(&pi433->rx_cfg, argp,
+ 				   sizeof(struct pi433_rx_cfg))) {
+-			mutex_unlock(&device->rx_lock);
++			mutex_unlock(&pi433->rx_lock);
+ 			return -EFAULT;
+ 		}
+ 
+-		mutex_unlock(&device->rx_lock);
++		mutex_unlock(&pi433->rx_lock);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -949,13 +949,13 @@ static long pi433_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 
+ static int pi433_open(struct inode *inode, struct file *filp)
+ {
+-	struct pi433_device	*device;
++	struct pi433_device	*pi433;
+ 	struct pi433_instance	*instance;
+ 
+ 	mutex_lock(&minor_lock);
+-	device = idr_find(&pi433_idr, iminor(inode));
++	pi433 = idr_find(&pi433_idr, iminor(inode));
+ 	mutex_unlock(&minor_lock);
+-	if (!device) {
++	if (!pi433) {
+ 		pr_debug("device: minor %d unknown.\n", iminor(inode));
+ 		return -ENODEV;
+ 	}
+@@ -965,7 +965,7 @@ static int pi433_open(struct inode *inode, struct file *filp)
+ 		return -ENOMEM;
+ 
+ 	/* setup instance data*/
+-	instance->device = device;
++	instance->pi433 = pi433;
+ 
+ 	/* instance data as context */
+ 	filp->private_data = instance;
+@@ -987,7 +987,7 @@ static int pi433_release(struct inode *inode, struct file *filp)
+ 
+ /*-------------------------------------------------------------------------*/
+ 
+-static int setup_gpio(struct pi433_device *device)
++static int setup_gpio(struct pi433_device *pi433)
+ {
+ 	char	name[5];
+ 	int	retval;
+@@ -1000,89 +1000,89 @@ static int setup_gpio(struct pi433_device *device)
+ 	for (i = 0; i < NUM_DIO; i++) {
+ 		/* "construct" name and get the gpio descriptor */
+ 		snprintf(name, sizeof(name), "DIO%d", i);
+-		device->gpiod[i] = gpiod_get(&device->spi->dev, name,
+-					     0 /*GPIOD_IN*/);
++		pi433->gpiod[i] = gpiod_get(&pi433->spi->dev, name,
++					    0 /*GPIOD_IN*/);
+ 
+-		if (device->gpiod[i] == ERR_PTR(-ENOENT)) {
+-			dev_dbg(&device->spi->dev,
++		if (pi433->gpiod[i] == ERR_PTR(-ENOENT)) {
++			dev_dbg(&pi433->spi->dev,
+ 				"Could not find entry for %s. Ignoring.\n", name);
+ 			continue;
+ 		}
+ 
+-		if (device->gpiod[i] == ERR_PTR(-EBUSY))
+-			dev_dbg(&device->spi->dev, "%s is busy.\n", name);
++		if (pi433->gpiod[i] == ERR_PTR(-EBUSY))
++			dev_dbg(&pi433->spi->dev, "%s is busy.\n", name);
+ 
+-		if (IS_ERR(device->gpiod[i])) {
+-			retval = PTR_ERR(device->gpiod[i]);
++		if (IS_ERR(pi433->gpiod[i])) {
++			retval = PTR_ERR(pi433->gpiod[i]);
+ 			/* release already allocated gpios */
+ 			for (i--; i >= 0; i--) {
+-				free_irq(device->irq_num[i], device);
+-				gpiod_put(device->gpiod[i]);
++				free_irq(pi433->irq_num[i], pi433);
++				gpiod_put(pi433->gpiod[i]);
+ 			}
+ 			return retval;
+ 		}
+ 
+ 		/* configure the pin */
+-		retval = gpiod_direction_input(device->gpiod[i]);
++		retval = gpiod_direction_input(pi433->gpiod[i]);
+ 		if (retval)
+ 			return retval;
+ 
+ 		/* configure irq */
+-		device->irq_num[i] = gpiod_to_irq(device->gpiod[i]);
+-		if (device->irq_num[i] < 0) {
+-			device->gpiod[i] = ERR_PTR(-EINVAL);
+-			return device->irq_num[i];
++		pi433->irq_num[i] = gpiod_to_irq(pi433->gpiod[i]);
++		if (pi433->irq_num[i] < 0) {
++			pi433->gpiod[i] = ERR_PTR(-EINVAL);
++			return pi433->irq_num[i];
+ 		}
+-		retval = request_irq(device->irq_num[i],
++		retval = request_irq(pi433->irq_num[i],
+ 				     DIO_irq_handler[i],
+ 				     0, /* flags */
+ 				     name,
+-				     device);
++				     pi433);
+ 
+ 		if (retval)
+ 			return retval;
+ 
+-		dev_dbg(&device->spi->dev, "%s successfully configured\n", name);
++		dev_dbg(&pi433->spi->dev, "%s successfully configured\n", name);
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static void free_gpio(struct pi433_device *device)
++static void free_gpio(struct pi433_device *pi433)
+ {
+ 	int i;
+ 
+ 	for (i = 0; i < NUM_DIO; i++) {
+ 		/* check if gpiod is valid */
+-		if (IS_ERR(device->gpiod[i]))
++		if (IS_ERR(pi433->gpiod[i]))
+ 			continue;
+ 
+-		free_irq(device->irq_num[i], device);
+-		gpiod_put(device->gpiod[i]);
++		free_irq(pi433->irq_num[i], pi433);
++		gpiod_put(pi433->gpiod[i]);
+ 	}
+ }
+ 
+-static int pi433_get_minor(struct pi433_device *device)
++static int pi433_get_minor(struct pi433_device *pi433)
+ {
+ 	int retval = -ENOMEM;
+ 
+ 	mutex_lock(&minor_lock);
+-	retval = idr_alloc(&pi433_idr, device, 0, N_PI433_MINORS, GFP_KERNEL);
++	retval = idr_alloc(&pi433_idr, pi433, 0, N_PI433_MINORS, GFP_KERNEL);
+ 	if (retval >= 0) {
+-		device->minor = retval;
++		pi433->minor = retval;
+ 		retval = 0;
+ 	} else if (retval == -ENOSPC) {
+-		dev_err(&device->spi->dev, "too many pi433 devices\n");
++		dev_err(&pi433->spi->dev, "too many pi433 devices\n");
+ 		retval = -EINVAL;
+ 	}
+ 	mutex_unlock(&minor_lock);
+ 	return retval;
+ }
+ 
+-static void pi433_free_minor(struct pi433_device *dev)
++static void pi433_free_minor(struct pi433_device *pi433)
+ {
+ 	mutex_lock(&minor_lock);
+-	idr_remove(&pi433_idr, dev->minor);
++	idr_remove(&pi433_idr, pi433->minor);
+ 	mutex_unlock(&minor_lock);
+ }
+ 
+@@ -1106,35 +1106,35 @@ static const struct file_operations pi433_fops = {
+ 
+ static int pi433_debugfs_regs_show(struct seq_file *m, void *p)
+ {
+-	struct pi433_device *dev;
++	struct pi433_device *pi433;
+ 	u8 reg_data[114];
+ 	int i;
+ 	char *fmt = "0x%02x, 0x%02x\n";
+ 	int ret;
+ 
+-	dev = m->private;
++	pi433 = m->private;
+ 
+-	mutex_lock(&dev->tx_fifo_lock);
+-	mutex_lock(&dev->rx_lock);
++	mutex_lock(&pi433->tx_fifo_lock);
++	mutex_lock(&pi433->rx_lock);
+ 
+ 	// wait for on-going operations to finish
+-	ret = wait_event_interruptible(dev->rx_wait_queue, !dev->tx_active);
++	ret = wait_event_interruptible(pi433->rx_wait_queue, !pi433->tx_active);
+ 	if (ret)
+ 		goto out_unlock;
+ 
+-	ret = wait_event_interruptible(dev->tx_wait_queue, !dev->rx_active);
++	ret = wait_event_interruptible(pi433->tx_wait_queue, !pi433->rx_active);
+ 	if (ret)
+ 		goto out_unlock;
+ 
+ 	// skip FIFO register (0x0) otherwise this can affect some of uC ops
+ 	for (i = 1; i < 0x50; i++)
+-		reg_data[i] = rf69_read_reg(dev->spi, i);
++		reg_data[i] = rf69_read_reg(pi433->spi, i);
+ 
+-	reg_data[REG_TESTLNA] = rf69_read_reg(dev->spi, REG_TESTLNA);
+-	reg_data[REG_TESTPA1] = rf69_read_reg(dev->spi, REG_TESTPA1);
+-	reg_data[REG_TESTPA2] = rf69_read_reg(dev->spi, REG_TESTPA2);
+-	reg_data[REG_TESTDAGC] = rf69_read_reg(dev->spi, REG_TESTDAGC);
+-	reg_data[REG_TESTAFC] = rf69_read_reg(dev->spi, REG_TESTAFC);
++	reg_data[REG_TESTLNA] = rf69_read_reg(pi433->spi, REG_TESTLNA);
++	reg_data[REG_TESTPA1] = rf69_read_reg(pi433->spi, REG_TESTPA1);
++	reg_data[REG_TESTPA2] = rf69_read_reg(pi433->spi, REG_TESTPA2);
++	reg_data[REG_TESTDAGC] = rf69_read_reg(pi433->spi, REG_TESTDAGC);
++	reg_data[REG_TESTAFC] = rf69_read_reg(pi433->spi, REG_TESTAFC);
+ 
+ 	seq_puts(m, "# reg, val\n");
+ 
+@@ -1148,8 +1148,8 @@ static int pi433_debugfs_regs_show(struct seq_file *m, void *p)
+ 	seq_printf(m, fmt, REG_TESTAFC, reg_data[REG_TESTAFC]);
+ 
+ out_unlock:
+-	mutex_unlock(&dev->rx_lock);
+-	mutex_unlock(&dev->tx_fifo_lock);
++	mutex_unlock(&pi433->rx_lock);
++	mutex_unlock(&pi433->tx_fifo_lock);
+ 
+ 	return ret;
+ }
+@@ -1159,7 +1159,7 @@ DEFINE_SHOW_ATTRIBUTE(pi433_debugfs_regs);
+ 
+ static int pi433_probe(struct spi_device *spi)
+ {
+-	struct pi433_device	*device;
++	struct pi433_device	*pi433;
+ 	int			retval;
+ 	struct dentry		*entry;
+ 
+@@ -1196,37 +1196,37 @@ static int pi433_probe(struct spi_device *spi)
+ 	}
+ 
+ 	/* Allocate driver data */
+-	device = kzalloc(sizeof(*device), GFP_KERNEL);
+-	if (!device)
++	pi433 = kzalloc(sizeof(*pi433), GFP_KERNEL);
++	if (!pi433)
+ 		return -ENOMEM;
+ 
+ 	/* Initialize the driver data */
+-	device->spi = spi;
+-	device->rx_active = false;
+-	device->tx_active = false;
+-	device->interrupt_rx_allowed = false;
++	pi433->spi = spi;
++	pi433->rx_active = false;
++	pi433->tx_active = false;
++	pi433->interrupt_rx_allowed = false;
+ 
+ 	/* init rx buffer */
+-	device->rx_buffer = kmalloc(MAX_MSG_SIZE, GFP_KERNEL);
+-	if (!device->rx_buffer) {
++	pi433->rx_buffer = kmalloc(MAX_MSG_SIZE, GFP_KERNEL);
++	if (!pi433->rx_buffer) {
+ 		retval = -ENOMEM;
+ 		goto RX_failed;
+ 	}
+ 
+ 	/* init wait queues */
+-	init_waitqueue_head(&device->tx_wait_queue);
+-	init_waitqueue_head(&device->rx_wait_queue);
+-	init_waitqueue_head(&device->fifo_wait_queue);
++	init_waitqueue_head(&pi433->tx_wait_queue);
++	init_waitqueue_head(&pi433->rx_wait_queue);
++	init_waitqueue_head(&pi433->fifo_wait_queue);
+ 
+ 	/* init fifo */
+-	INIT_KFIFO(device->tx_fifo);
++	INIT_KFIFO(pi433->tx_fifo);
+ 
+ 	/* init mutexes and locks */
+-	mutex_init(&device->tx_fifo_lock);
+-	mutex_init(&device->rx_lock);
++	mutex_init(&pi433->tx_fifo_lock);
++	mutex_init(&pi433->rx_lock);
+ 
+ 	/* setup GPIO (including irq_handler) for the different DIOs */
+-	retval = setup_gpio(device);
++	retval = setup_gpio(pi433);
+ 	if (retval) {
+ 		dev_dbg(&spi->dev, "setup of GPIOs failed\n");
+ 		goto GPIO_failed;
+@@ -1256,105 +1256,105 @@ static int pi433_probe(struct spi_device *spi)
+ 		goto minor_failed;
+ 
+ 	/* determ minor number */
+-	retval = pi433_get_minor(device);
++	retval = pi433_get_minor(pi433);
+ 	if (retval) {
+ 		dev_dbg(&spi->dev, "get of minor number failed\n");
+ 		goto minor_failed;
+ 	}
+ 
+ 	/* create device */
+-	device->devt = MKDEV(MAJOR(pi433_dev), device->minor);
+-	device->dev = device_create(&pi433_class,
+-				    &spi->dev,
+-				    device->devt,
+-				    device,
+-				    "pi433.%d",
+-				    device->minor);
+-	if (IS_ERR(device->dev)) {
++	pi433->devt = MKDEV(MAJOR(pi433_dev), pi433->minor);
++	pi433->dev = device_create(&pi433_class,
++				   &spi->dev,
++				   pi433->devt,
++				   pi433,
++				   "pi433.%d",
++				   pi433->minor);
++	if (IS_ERR(pi433->dev)) {
+ 		pr_err("pi433: device register failed\n");
+-		retval = PTR_ERR(device->dev);
++		retval = PTR_ERR(pi433->dev);
+ 		goto device_create_failed;
+ 	} else {
+-		dev_dbg(device->dev,
++		dev_dbg(pi433->dev,
+ 			"created device for major %d, minor %d\n",
+ 			MAJOR(pi433_dev),
+-			device->minor);
++			pi433->minor);
+ 	}
+ 
+ 	/* start tx thread */
+-	device->tx_task_struct = kthread_run(pi433_tx_thread,
+-					     device,
+-					     "pi433.%d_tx_task",
+-					     device->minor);
+-	if (IS_ERR(device->tx_task_struct)) {
+-		dev_dbg(device->dev, "start of send thread failed\n");
+-		retval = PTR_ERR(device->tx_task_struct);
++	pi433->tx_task_struct = kthread_run(pi433_tx_thread,
++					    pi433,
++					    "pi433.%d_tx_task",
++					    pi433->minor);
++	if (IS_ERR(pi433->tx_task_struct)) {
++		dev_dbg(pi433->dev, "start of send thread failed\n");
++		retval = PTR_ERR(pi433->tx_task_struct);
+ 		goto send_thread_failed;
+ 	}
+ 
+ 	/* create cdev */
+-	device->cdev = cdev_alloc();
+-	if (!device->cdev) {
+-		dev_dbg(device->dev, "allocation of cdev failed\n");
++	pi433->cdev = cdev_alloc();
++	if (!pi433->cdev) {
++		dev_dbg(pi433->dev, "allocation of cdev failed\n");
+ 		retval = -ENOMEM;
+ 		goto cdev_failed;
+ 	}
+-	device->cdev->owner = THIS_MODULE;
+-	cdev_init(device->cdev, &pi433_fops);
+-	retval = cdev_add(device->cdev, device->devt, 1);
++	pi433->cdev->owner = THIS_MODULE;
++	cdev_init(pi433->cdev, &pi433_fops);
++	retval = cdev_add(pi433->cdev, pi433->devt, 1);
+ 	if (retval) {
+-		dev_dbg(device->dev, "register of cdev failed\n");
++		dev_dbg(pi433->dev, "register of cdev failed\n");
+ 		goto del_cdev;
+ 	}
+ 
+ 	/* spi setup */
+-	spi_set_drvdata(spi, device);
++	spi_set_drvdata(spi, pi433);
+ 
+-	entry = debugfs_create_dir(dev_name(device->dev), root_dir);
+-	debugfs_create_file("regs", 0400, entry, device, &pi433_debugfs_regs_fops);
++	entry = debugfs_create_dir(dev_name(pi433->dev), root_dir);
++	debugfs_create_file("regs", 0400, entry, pi433, &pi433_debugfs_regs_fops);
+ 
+ 	return 0;
+ 
+ del_cdev:
+-	cdev_del(device->cdev);
++	cdev_del(pi433->cdev);
+ cdev_failed:
+-	kthread_stop(device->tx_task_struct);
++	kthread_stop(pi433->tx_task_struct);
+ send_thread_failed:
+-	device_destroy(&pi433_class, device->devt);
++	device_destroy(&pi433_class, pi433->devt);
+ device_create_failed:
+-	pi433_free_minor(device);
++	pi433_free_minor(pi433);
+ minor_failed:
+-	free_gpio(device);
++	free_gpio(pi433);
+ GPIO_failed:
+-	kfree(device->rx_buffer);
++	kfree(pi433->rx_buffer);
+ RX_failed:
+-	kfree(device);
++	kfree(pi433);
+ 
+ 	return retval;
+ }
+ 
+ static void pi433_remove(struct spi_device *spi)
+ {
+-	struct pi433_device	*device = spi_get_drvdata(spi);
++	struct pi433_device	*pi433 = spi_get_drvdata(spi);
+ 
+-	debugfs_lookup_and_remove(dev_name(device->dev), root_dir);
++	debugfs_lookup_and_remove(dev_name(pi433->dev), root_dir);
+ 
+ 	/* free GPIOs */
+-	free_gpio(device);
++	free_gpio(pi433);
+ 
+ 	/* make sure ops on existing fds can abort cleanly */
+-	device->spi = NULL;
++	pi433->spi = NULL;
+ 
+-	kthread_stop(device->tx_task_struct);
++	kthread_stop(pi433->tx_task_struct);
+ 
+-	device_destroy(&pi433_class, device->devt);
++	device_destroy(&pi433_class, pi433->devt);
+ 
+-	cdev_del(device->cdev);
++	cdev_del(pi433->cdev);
+ 
+-	pi433_free_minor(device);
++	pi433_free_minor(pi433);
+ 
+-	kfree(device->rx_buffer);
+-	kfree(device);
++	kfree(pi433->rx_buffer);
++	kfree(pi433);
+ }
+ 
+ static const struct of_device_id pi433_dt_ids[] = {
 -- 
 2.34.1
 
