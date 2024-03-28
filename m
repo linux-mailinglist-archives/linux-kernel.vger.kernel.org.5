@@ -1,101 +1,211 @@
-Return-Path: <linux-kernel+bounces-123591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AA3A890B70
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:37:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A1B890B7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:38:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 049F9296DF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:37:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A526B1C2A219
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319A013A405;
-	Thu, 28 Mar 2024 20:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAABC13AA31;
+	Thu, 28 Mar 2024 20:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="igUckRLN"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRfKVHSc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFF146BF;
-	Thu, 28 Mar 2024 20:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA73913A407;
+	Thu, 28 Mar 2024 20:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658243; cv=none; b=GX5yWC9YYLpztbKxf5+5P8SNvdpsx24FPeFhKBhSm9Yz5FMOc0ikBue3pNPKKgR09DcEDBHTgkWa6pUaQJIoWrHVVDsbTczMmO8kjMoMGVnP9T20+NMsnhw2YYUBgXJd6BZfZxS+oudzAKiF30tLrBUt5DPaKNSAcUIPUCYzTX0=
+	t=1711658302; cv=none; b=hHHaFNqYuI9fyEIptO1yDSE6C2TaxhafvFDW7XVfYu0V70oeiOPIUzAPvGkp8QnpD9Jge4jlhBifd4jb9+7j2z/vQv7M5d7j3oIkb47ZVKnxYu+mDXeCBmB1P3TcpMhutuLlxdtl+R8UA3e5ZKvTLCblKI4mRuAhUYd/1rXK6Eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658243; c=relaxed/simple;
-	bh=vnHYx314qwSCkOWwj1tKTXE0ChWHnu2vxdHGmjAP+YM=;
+	s=arc-20240116; t=1711658302; c=relaxed/simple;
+	bh=4V4w7fC0EBbm7te+ffIKRQDvDxxoYpzMpaa3f0AoWlE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JXqOfzplRUcS7bjlAj5x5Rybk60hOKrT4kNAo3/PBk/n82HLPFOw73nq8YszNQRm8dATTNq4G7fNLVGhWrtqeQXqFNf2UDxocDxQTX7wFT1c7rbv64QojTUtL9umftT/XOPFNmZy82xkbwadoqIA5lCEVqxrix0G+R/DA26/rdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=igUckRLN; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso894188b3a.2;
-        Thu, 28 Mar 2024 13:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711658241; x=1712263041; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3mekUCLeBEm209UcyPPjf4dbkIOApvmlN6pXh76P0Gc=;
-        b=igUckRLNm2C5Z6YmvRvxiZ6+Czme64sF/LHC45XEVf5/EvZs5kDmmFKkldpAsS5u9T
-         UkME44AtCRoBbr/7PMudAxOYMHF+pTHmFSkWOqoHQqA/SZTAMvKcN/cwuZgnyQhyJUm8
-         8P1KR7ZXhzco1YT7hnFM3foJwGrOTozvDy7ATV0fjoId4kfjzk7e+E9OzRbJmdFYL/Q9
-         WYcj4xa9FUZcBLfdrgZtdXrdZj98ZMnUAb11vWmrZiUDaqPbyhT7rEIckvz5x849wFh1
-         C4LZ2TQxc465fvwy6IwCtjZQLiU4GwFxG10ELhRQ+eVlEbTsGek06yYUyiMArV0j7hLF
-         IAlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711658241; x=1712263041;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3mekUCLeBEm209UcyPPjf4dbkIOApvmlN6pXh76P0Gc=;
-        b=i8N0BC/dWUdQF9AoGjgJ4bDUSRolvoxGYimL27v5YoYTuVncI4p8BaQ0M1aWhO9dik
-         TZCriUonmpUPu4ArA2fayULQyQnaZF/0mm1cN1E1U8TReKRX8Qibn4reyMD2xqXG02cR
-         PJNOVYoiuXLJpqZ8LbQDR2VcE5Ii9+DmnQPzpX1zVaprFgSqC5luVM2sWf21bowyYquL
-         Qdvmcqs8TZBV3nRpfCvwRBUYM6nqN2CgZ2PgijrHyWRL0kpxhkPvchcxo6w6LIuMKe0i
-         2QTbV7rvfFVXogf516vukGmmhu1WSyzZChqyWQKP2c9AZs30F03WK2PhaCgajRd0zzyJ
-         Y4kA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJpWGzw1Q9fpRNg86oklrHqgAIVPpd8Ch9ztZ0Y4fH84NA5MyNC+x65wKKl8jCDDqnrlDCb9fjHquK9wm1a86BxWtft1vEqReCpAJi0Q3N8oMPgUrg6y47XeIEMA2SJ6R3fnjv4RhTgbk=
-X-Gm-Message-State: AOJu0YyZ0CCA0XfPBQgqyPsmoV+2dStpAuujkoHtePfeZyMRSeFZLR0t
-	aoPUFmltMnIlZNsk1FpNrLp9gxIXyoAJtOMvkRXh3qxpSjhALIM77uf/V9ejOfw=
-X-Google-Smtp-Source: AGHT+IElNpwrorBm8kulfC0t9Ae1oILrqeaxMakhHrW9s5jS4jQAyEOdezW1rFDRTcVk7uHfQV9yWg==
-X-Received: by 2002:a05:6a20:914e:b0:1a3:9566:2784 with SMTP id x14-20020a056a20914e00b001a395662784mr303483pzc.16.1711658241486;
-        Thu, 28 Mar 2024 13:37:21 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:493e:82a3:49f9:d88])
-        by smtp.gmail.com with ESMTPSA id o20-20020a63e354000000b005dc36279d6dsm1736090pgj.73.2024.03.28.13.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:37:20 -0700 (PDT)
-Date: Thu, 28 Mar 2024 13:37:18 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Anshul Dalal <anshulusr@gmail.com>
-Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: adafruit-seesaw - only report buttons that
- changed state
-Message-ID: <ZgXU_tYvR22zgSdQ@google.com>
-References: <ZZ-U_bmZpIdoYA6c@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=R9ZcLK3fDdjNJfw7QbQUGOnuhDgy38LU7BworcsUB7xsk6qRlaD8OuwBstohGL4I/Wg9Z3iSOAtE/ECbk5jHMVMx/vc6KyO4uoPHFcx/ObqiA3pQicp+SEQ0bsEcQR41UB+25r4A1cvT3uMDjYF118Mqfxna02nTb90zZ8bukHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRfKVHSc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEC19C433F1;
+	Thu, 28 Mar 2024 20:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711658301;
+	bh=4V4w7fC0EBbm7te+ffIKRQDvDxxoYpzMpaa3f0AoWlE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dRfKVHScDsH8tRE1//91CYwzd5KWuDIPzdzz4FYy70fYNQxTI4FdYsr0rnVlRlDzy
+	 bg2yy/d0f1eEfdelx5bbivx7vjt1I2XcdZlEKOdXeDikFSelU1LkYAktJZJQE5tLsR
+	 aWlyXBPbOFfiGkb1rQ9ZnTbgEL0YbJ4i2SbETO+aCf/YHhMcqNdelehX5uFfKS1xll
+	 hu+eiqfLfnMN5AkY0NodQO3KanPcw3aHDw1BYdD1SX/2LmnaHHwN/NMDk0K7Em2Psg
+	 C2FdKw3cfmIzQDuZNhqbtY1LdZDhPcphkaPSG7Rh5XQWxlmM7Qthw7AzeTMMxiHvhg
+	 jCFiIDoVfirww==
+Date: Thu, 28 Mar 2024 20:38:08 +0000
+From: Simon Horman <horms@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [RFC PATCH net-next v7 04/14] netdev: support binding dma-buf to
+ netdevice
+Message-ID: <20240328203808.GL651713@kernel.org>
+References: <20240326225048.785801-1-almasrymina@google.com>
+ <20240326225048.785801-5-almasrymina@google.com>
+ <20240328182812.GJ651713@kernel.org>
+ <CAHS8izMZuRwQZsL7PQdoRcrgeh6rEa7n1NMhbm-aZMes2QHVzg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZZ-U_bmZpIdoYA6c@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izMZuRwQZsL7PQdoRcrgeh6rEa7n1NMhbm-aZMes2QHVzg@mail.gmail.com>
 
-On Wed, Jan 10, 2024 at 11:13:01PM -0800, Dmitry Torokhov wrote:
-> If a button has not changed its state when we poll the device the
-> driver does not need to report it. While duplicate events will be
-> filtered out by the input core anyway we can do it very cheaply
-> directly in the driver.
+On Thu, Mar 28, 2024 at 11:55:23AM -0700, Mina Almasry wrote:
+> On Thu, Mar 28, 2024 at 11:28 AM Simon Horman <horms@kernel.org> wrote:
+> >
+> > On Tue, Mar 26, 2024 at 03:50:35PM -0700, Mina Almasry wrote:
+> > > Add a netdev_dmabuf_binding struct which represents the
+> > > dma-buf-to-netdevice binding. The netlink API will bind the dma-buf to
+> > > rx queues on the netdevice. On the binding, the dma_buf_attach
+> > > & dma_buf_map_attachment will occur. The entries in the sg_table from
+> > > mapping will be inserted into a genpool to make it ready
+> > > for allocation.
+> > >
+> > > The chunks in the genpool are owned by a dmabuf_chunk_owner struct which
+> > > holds the dma-buf offset of the base of the chunk and the dma_addr of
+> > > the chunk. Both are needed to use allocations that come from this chunk.
+> > >
+> > > We create a new type that represents an allocation from the genpool:
+> > > net_iov. We setup the net_iov allocation size in the
+> > > genpool to PAGE_SIZE for simplicity: to match the PAGE_SIZE normally
+> > > allocated by the page pool and given to the drivers.
+> > >
+> > > The user can unbind the dmabuf from the netdevice by closing the netlink
+> > > socket that established the binding. We do this so that the binding is
+> > > automatically unbound even if the userspace process crashes.
+> > >
+> > > The binding and unbinding leaves an indicator in struct netdev_rx_queue
+> > > that the given queue is bound, but the binding doesn't take effect until
+> > > the driver actually reconfigures its queues, and re-initializes its page
+> > > pool.
+> > >
+> > > The netdev_dmabuf_binding struct is refcounted, and releases its
+> > > resources only when all the refs are released.
+> > >
+> > > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ...
+> >
+> > > +int net_devmem_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> > > +                                 struct net_devmem_dmabuf_binding *binding)
+> > > +{
+> > > +     struct netdev_rx_queue *rxq;
+> > > +     u32 xa_idx;
+> > > +     int err;
+> > > +
+> > > +     if (rxq_idx >= dev->num_rx_queues)
+> > > +             return -ERANGE;
+> > > +
+> > > +     rxq = __netif_get_rx_queue(dev, rxq_idx);
+> > > +     if (rxq->mp_params.mp_priv)
+> > > +             return -EEXIST;
+> > > +
+> > > +     err = xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_limit_32b,
+> > > +                    GFP_KERNEL);
+> > > +     if (err)
+> > > +             return err;
+> > > +
+> > > +     /* We hold the rtnl_lock while binding/unbinding dma-buf, so we can't
+> > > +      * race with another thread that is also modifying this value. However,
+> > > +      * the driver may read this config while it's creating its * rx-queues.
+> > > +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> > > +      */
+> > > +     WRITE_ONCE(rxq->mp_params.mp_ops, &dmabuf_devmem_ops);
+> >
+> > Hi Mina,
+> >
+> > This causes a build failure because mabuf_devmem_ops is not added until a
+> > subsequent patch in this series.
+> >
 > 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> My apologies. I do notice the failure in patchwork now. I'll do a
+> patch by patch build for the next iteration.
 
-I guess there's no objections so I am applying it.
+Thanks, much appreciated.
 
-Thanks.
-
--- 
-Dmitry
+> > > +     WRITE_ONCE(rxq->mp_params.mp_priv, binding);
+> > > +
+> > > +     err = net_devmem_restart_rx_queue(dev, rxq_idx);
+> > > +     if (err)
+> > > +             goto err_xa_erase;
+> > > +
+> > > +     return 0;
+> > > +
+> > > +err_xa_erase:
+> > > +     WRITE_ONCE(rxq->mp_params.mp_ops, NULL);
+> > > +     WRITE_ONCE(rxq->mp_params.mp_priv, NULL);
+> > > +     xa_erase(&binding->bound_rxq_list, xa_idx);
+> > > +
+> > > +     return err;
+> > > +}
+> >
+> > ...
+> 
+> 
+> 
+> -- 
+> Thanks,
+> Mina
+> 
 
