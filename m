@@ -1,173 +1,199 @@
-Return-Path: <linux-kernel+bounces-123344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042268906E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:10:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CDA8906EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD5C629FDA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F18229FFF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B655446A5;
-	Thu, 28 Mar 2024 17:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713CF7E788;
+	Thu, 28 Mar 2024 17:08:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4TOsC4u"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nbt7lRk2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2AA3BBDE;
-	Thu, 28 Mar 2024 17:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE5B39FFE;
+	Thu, 28 Mar 2024 17:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711645646; cv=none; b=Xg3g0/k4E2EOinzgOsn8ZEzmu3kPuRaW0f5WvH1Or/pYdXtqpSwU84JpYaIy/zYWjo23F4dhajZK/cEuwAInav2Y4pYSRoeBJEN2jLCpxrBr4AKsQMMRIJi/onOzm0gOIqj4LA9N8kPyIUxTrOauxNrIVgf6uGWF5dZhJLdhbx0=
+	t=1711645703; cv=none; b=Sjqw0MoHpHI1A2V7z9Fm17ZLjUYTJ/8tzKsB+duatJXQkXeCjA+8oMkRUG+V9Jv3P/vjvoBBkAe9glSl/XWaD3746j8f12Adsaw3gvsYeDaOikixrc0F+e9mtcatU/ZB9ZbTaRJkUrMKRYVb3Lf2fhWgkrE+N+oJ+9xNvLcCcXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711645646; c=relaxed/simple;
-	bh=6RQDoGeT546Pixy+4SXFxoN5IeqOGhhfiLlcwZ1C7v4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XooakCZMl+YbESaDGiiLzG3RnTAGu/1HjbqPelZCZbZceKwxjxjlAhPDP4gVOD3J/JjcmTOOoRQYPlEHvPg5INZWoen/5hI0yWhrZVNR57J49nZ4o5jfhEn2yFVK3b0O0rPNCWR8n8sBzPr2C3u04wvA20LXlAcnEi8H92y99bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D4TOsC4u; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d485886545so19131401fa.2;
-        Thu, 28 Mar 2024 10:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711645643; x=1712250443; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6RQDoGeT546Pixy+4SXFxoN5IeqOGhhfiLlcwZ1C7v4=;
-        b=D4TOsC4uazCP1AdIxcB83L5IkaZGM+PhyZFYEwFzGdui8Eizd2SEFek3PQa7Gjx5em
-         t1yRgwcfClP7UzL0Hr5xOSG5nMl9pzQ9JVdGYwrB29AuKgJ5tI7N5iXt9GODb/iLrcDF
-         gwhcX3zE4ayjlzgCHJ5skC7kKvGo7pgOPxjpsLptFC0FpbNwKIIrYUuAB3AlOPegJskB
-         JezbJJ+h8RYesegqnxPXgP95wBNB/CxwuMij4c0FjA0F46zOmMz8CkAZdKAnCqjqFvWR
-         U6b4L1wW5Scx52seB+NAyqnALElPK+QV0v7PzYKjU9ucgcQvmMBX51qx8OTpTfdUpr63
-         sj3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711645643; x=1712250443;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6RQDoGeT546Pixy+4SXFxoN5IeqOGhhfiLlcwZ1C7v4=;
-        b=h6vc/cnmZwQAeBkIxkogY3EEmyQJcJlOD9pbqz1k2RqZZn2YB4wAjw97vqnFrZpy1+
-         oVarEi4HDAQGfI5WE0anldNMgfiVzMZg4MIBggfwcs9wwwKW0K5+Yrs/jggBJnA3qg8Q
-         iGur3+81TJSZ87QCU6+qxb2cLghhRrauXDCLW2wD7os8oYFpKO7Xh0qJLMiU/mxAiwnC
-         FAGpdpSHDrB21cbKI2EYRpghuuvGwh2QuxKDwc8N/JQyHix3iA8ACSIAEMWYZxtC9yXN
-         vzqd9ZL5Q43P5XdroeNoGKG87okcDjIUnx56wqCtWFaxyRAvUnWGaFMKvC+Eo7wyJXuo
-         X3tg==
-X-Forwarded-Encrypted: i=1; AJvYcCVeuXbDEtP3tENbNXkHQGun2YrlZlQpr4yWAmZchgcSqFaXRoG6E/c7YRRRvx6lvfEk808s45YuvGBOnrSL2KOsceR2reGCcmKANC7woPcOei/QP98T+Nts9Tq0XOZ+0IxaLpW09cz/FTA3FmbjI9vLr6Fs00ssXVMKBBW9xXWOajpEpw==
-X-Gm-Message-State: AOJu0YzroxUvm0nnZGYPB1/9hEyb+fVTSO4KAHU+VxgWMaQL0twvwJc+
-	/s/L62MpC08DpRZMm6GlYEEfHKuqPH79mP4zhdvYnzt5S7kUVMuU+iYJPl/ydlE=
-X-Google-Smtp-Source: AGHT+IF19/bTSLmocLvHDNnbKFhlGwux/gbwAyZC0eU4UfCDTw3v32QFG8iLu+fAymtIhkqZwx6Fxg==
-X-Received: by 2002:a2e:819a:0:b0:2d6:a11f:b4b2 with SMTP id e26-20020a2e819a000000b002d6a11fb4b2mr2996588ljg.25.1711645642712;
-        Thu, 28 Mar 2024 10:07:22 -0700 (PDT)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id bk5-20020a170907360500b00a46b4c09670sm942429ejc.131.2024.03.28.10.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:07:22 -0700 (PDT)
-Message-ID: <f0f985b272af85aea912479ced50ff52f29506b1.camel@gmail.com>
-Subject: Re: [PATCH v4 0/6] iio: temperature: ltc2983: small improvements
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>, Nuno Sa via B4 Relay
-	 <devnull+nuno.sa.analog.com@kernel.org>
-Cc: nuno.sa@analog.com, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org,  devicetree@vger.kernel.org, Lars-Peter Clausen
- <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, Rob
- Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
- Olivier Moysan <olivier.moysan@foss.st.com>, Jyoti Bhayana
- <jbhayana@google.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 18:07:21 +0100
-In-Reply-To: <20240328165650.1d8d4216@jic23-huawei>
-References: <20240328-ltc2983-misc-improv-v4-0-0cc428c07cd5@analog.com>
-	 <20240328165650.1d8d4216@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711645703; c=relaxed/simple;
+	bh=UCnU67HeXYoqYdj4S5dBKZ2Q4xHzdK3/OCAHu2KUfBI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EQOzDEg/Tbylz/gXhPcSgQ1Fc87Khc172Hn2d75d6TZ1y02ih2Lxe6teguUnZjlj2ZvkxxTlQwVtI5Bwevx4WrHmkNLUuxI2N/zwo61Dteb9iGcOUZzVcxanFK+PfeTNBAxGWGXupj1z0f4KJ9KRoc2VITfA9RRsNqIKRflJmT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nbt7lRk2; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711645701; x=1743181701;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UCnU67HeXYoqYdj4S5dBKZ2Q4xHzdK3/OCAHu2KUfBI=;
+  b=Nbt7lRk294+zepCU7jnY/4BlzLmzfQHNIYoCDoTfUUzx5pwidfcPzH64
+   9KODxFPwn3hLHcZBVXDEDIZDeNVTfNld/N+km4ANtBDHVM/Ayk/8aTXU7
+   mQW5ImjZ6IXzFthZ6elqRhGWcON9S78u9P0rjhVdDttTcgWdluvJCrene
+   duMO5fhorj3qpt6gS2y4d/BKyK4ZNx+gMLPdTf4m4xEJ/kn2ZqxtdrBHa
+   gprL7BFiGpUOjURsusQdTSFnyYxofzPEK5sKab0qdxMXn8zMrlOAjbh3K
+   2Adrlsjom26hxu87Yn92k2xGLz/kIT55HTPbF7TsVD8clH0/lfv9MOv3W
+   Q==;
+X-CSE-ConnectionGUID: 1ye/Oi/jQsCv30UPnsNRpw==
+X-CSE-MsgGUID: WXpS8vqAQ8ic/wwBB9Z6aQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="7417542"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="7417542"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 10:08:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="39865448"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 28 Mar 2024 10:08:17 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rptEc-0002NC-2v;
+	Thu, 28 Mar 2024 17:08:14 +0000
+Date: Fri, 29 Mar 2024 01:07:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Mina Almasry <almasrymina@google.com>,
+	Ayush Sawal <ayush.sawal@chelsio.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Mirko Lindner <mlindner@marvell.com>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Boris Pismenny <borisp@nvidia.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+Subject: Re: [PATCH net-next v2 2/3] net: mirror skb frag ref/unref helpers
+Message-ID: <202403290006.WfusvToB-lkp@intel.com>
+References: <20240327214523.2182174-3-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327214523.2182174-3-almasrymina@google.com>
 
-On Thu, 2024-03-28 at 16:56 +0000, Jonathan Cameron wrote:
-> On Thu, 28 Mar 2024 17:22:00 +0100
-> Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
->=20
-> > The v4 introduces an new dev_errp_probe() helper to deal with cases
-> > where we want to return error pointers. The refactor in the IIO ltc2983
-> > is an heavy user of the pattern and was the main motivation for this.
-> >=20
-> > Also added two new patches so we have three users of the new
-> > dev_errp_probe() helper.=20
->=20
-> Probably better to do this as 2 series. The other ltc2983 changes in one =
-series
-> and one with a cover letter title that will get noticed by
-> those who care about dev_printk helpers.
->=20
+Hi Mina,
 
-That makes sense, yes.
+kernel test robot noticed the following build errors:
 
-- Nuno S=C3=A1
+[auto build test ERROR on net-next/main]
 
-> From a quick look the content of the patches is fine.
->=20
-> Jonathan
->=20
-> >=20
-> > ---
-> > Changes in v4:
-> > - Link to v3:
-> > https://lore.kernel.org/r/20240301-ltc2983-misc-improv-v3-0-c09516ac0ef=
-c@analog.com
-> > - Patch 1
-> > =C2=A0* New patch
-> > - Patch 2
-> > =C2=A0* Use dev_errp_probe() instead of local variant
-> > - Patch 5
-> > =C2=A0* New patch
-> > - Patch 6
-> > =C2=A0* New patch
-> >=20
-> > ---
-> > Nuno Sa (6):
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printk: add new dev_errp_probe() helper
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: temperature: ltc2983: convert to de=
-v_err_probe()
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dt-bindings: iio: temperature: ltc2983: =
-document power supply
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: temperature: ltc2983: support vdd r=
-egulator
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: backend: make use dev_errp_probe()
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iio: common: scmi_iio: convert to dev_er=
-r_probe()
-> >=20
-> > =C2=A0.../bindings/iio/temperature/adi,ltc2983.yaml=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0 4 +
-> > =C2=A0drivers/iio/common/scmi_sensors/scmi_iio.c=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 45 ++--
-> > =C2=A0drivers/iio/industrialio-backend.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
-=C2=A0 8 +-
-> > =C2=A0drivers/iio/temperature/ltc2983.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | =
-260 ++++++++++-----------
-> > =C2=A0include/linux/dev_printk.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 5 +
-> > =C2=A05 files changed, 151 insertions(+), 171 deletions(-)
-> > ---
-> > base-commit: 27eea4778db8268cd6dc80a5b853c599bd3099f1
-> > change-id: 20240227-ltc2983-misc-improv-d9c4a3819b1f
-> > --
-> >=20
-> > Thanks!
-> > - Nuno S=C3=A1
-> >=20
-> >=20
->=20
+url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/net-make-napi_frag_unref-reuse-skb_page_unref/20240328-054816
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240327214523.2182174-3-almasrymina%40google.com
+patch subject: [PATCH net-next v2 2/3] net: mirror skb frag ref/unref helpers
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20240329/202403290006.WfusvToB-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403290006.WfusvToB-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403290006.WfusvToB-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> net/tls/tls_device_fallback.c:280:22: error: too few arguments to function call, expected 2, have 1
+     280 |                 __skb_frag_ref(frag);
+         |                 ~~~~~~~~~~~~~~     ^
+   include/linux/skbuff.h:3517:20: note: '__skb_frag_ref' declared here
+    3517 | static inline void __skb_frag_ref(skb_frag_t *frag, bool recycle)
+         |                    ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 error generated.
+
+
+vim +280 net/tls/tls_device_fallback.c
+
+e8f69799810c32 Ilya Lesokhin  2018-04-30  228  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  229  /* This function may be called after the user socket is already
+e8f69799810c32 Ilya Lesokhin  2018-04-30  230   * closed so make sure we don't use anything freed during
+e8f69799810c32 Ilya Lesokhin  2018-04-30  231   * tls_sk_proto_close here
+e8f69799810c32 Ilya Lesokhin  2018-04-30  232   */
+e8f69799810c32 Ilya Lesokhin  2018-04-30  233  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  234  static int fill_sg_in(struct scatterlist *sg_in,
+e8f69799810c32 Ilya Lesokhin  2018-04-30  235  		      struct sk_buff *skb,
+d80a1b9d186057 Boris Pismenny 2018-07-13  236  		      struct tls_offload_context_tx *ctx,
+e8f69799810c32 Ilya Lesokhin  2018-04-30  237  		      u64 *rcd_sn,
+e8f69799810c32 Ilya Lesokhin  2018-04-30  238  		      s32 *sync_size,
+e8f69799810c32 Ilya Lesokhin  2018-04-30  239  		      int *resync_sgs)
+e8f69799810c32 Ilya Lesokhin  2018-04-30  240  {
+504148fedb8542 Eric Dumazet   2022-06-30  241  	int tcp_payload_offset = skb_tcp_all_headers(skb);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  242  	int payload_len = skb->len - tcp_payload_offset;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  243  	u32 tcp_seq = ntohl(tcp_hdr(skb)->seq);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  244  	struct tls_record_info *record;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  245  	unsigned long flags;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  246  	int remaining;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  247  	int i;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  248  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  249  	spin_lock_irqsave(&ctx->lock, flags);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  250  	record = tls_get_record(ctx, tcp_seq, rcd_sn);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  251  	if (!record) {
+e8f69799810c32 Ilya Lesokhin  2018-04-30  252  		spin_unlock_irqrestore(&ctx->lock, flags);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  253  		return -EINVAL;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  254  	}
+e8f69799810c32 Ilya Lesokhin  2018-04-30  255  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  256  	*sync_size = tcp_seq - tls_record_start_seq(record);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  257  	if (*sync_size < 0) {
+e8f69799810c32 Ilya Lesokhin  2018-04-30  258  		int is_start_marker = tls_record_is_start_marker(record);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  259  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  260  		spin_unlock_irqrestore(&ctx->lock, flags);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  261  		/* This should only occur if the relevant record was
+e8f69799810c32 Ilya Lesokhin  2018-04-30  262  		 * already acked. In that case it should be ok
+e8f69799810c32 Ilya Lesokhin  2018-04-30  263  		 * to drop the packet and avoid retransmission.
+e8f69799810c32 Ilya Lesokhin  2018-04-30  264  		 *
+e8f69799810c32 Ilya Lesokhin  2018-04-30  265  		 * There is a corner case where the packet contains
+e8f69799810c32 Ilya Lesokhin  2018-04-30  266  		 * both an acked and a non-acked record.
+e8f69799810c32 Ilya Lesokhin  2018-04-30  267  		 * We currently don't handle that case and rely
+a0e128ef88e4a0 Yueh-Shun Li   2023-06-22  268  		 * on TCP to retransmit a packet that doesn't contain
+e8f69799810c32 Ilya Lesokhin  2018-04-30  269  		 * already acked payload.
+e8f69799810c32 Ilya Lesokhin  2018-04-30  270  		 */
+e8f69799810c32 Ilya Lesokhin  2018-04-30  271  		if (!is_start_marker)
+e8f69799810c32 Ilya Lesokhin  2018-04-30  272  			*sync_size = 0;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  273  		return -EINVAL;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  274  	}
+e8f69799810c32 Ilya Lesokhin  2018-04-30  275  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  276  	remaining = *sync_size;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  277  	for (i = 0; remaining > 0; i++) {
+e8f69799810c32 Ilya Lesokhin  2018-04-30  278  		skb_frag_t *frag = &record->frags[i];
+e8f69799810c32 Ilya Lesokhin  2018-04-30  279  
+e8f69799810c32 Ilya Lesokhin  2018-04-30 @280  		__skb_frag_ref(frag);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  281  		sg_set_page(sg_in + i, skb_frag_page(frag),
+b54c9d5bd6e38e Jonathan Lemon 2019-07-30  282  			    skb_frag_size(frag), skb_frag_off(frag));
+e8f69799810c32 Ilya Lesokhin  2018-04-30  283  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  284  		remaining -= skb_frag_size(frag);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  285  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  286  		if (remaining < 0)
+e8f69799810c32 Ilya Lesokhin  2018-04-30  287  			sg_in[i].length += remaining;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  288  	}
+e8f69799810c32 Ilya Lesokhin  2018-04-30  289  	*resync_sgs = i;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  290  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  291  	spin_unlock_irqrestore(&ctx->lock, flags);
+e8f69799810c32 Ilya Lesokhin  2018-04-30  292  	if (skb_to_sgvec(skb, &sg_in[i], tcp_payload_offset, payload_len) < 0)
+e8f69799810c32 Ilya Lesokhin  2018-04-30  293  		return -EINVAL;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  294  
+e8f69799810c32 Ilya Lesokhin  2018-04-30  295  	return 0;
+e8f69799810c32 Ilya Lesokhin  2018-04-30  296  }
+e8f69799810c32 Ilya Lesokhin  2018-04-30  297  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
