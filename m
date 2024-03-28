@@ -1,142 +1,174 @@
-Return-Path: <linux-kernel+bounces-123352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 797AB890703
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:19:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C72C890707
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A1829A431
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:19:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 937371F295C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3EC7F464;
-	Thu, 28 Mar 2024 17:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86AD7F464;
+	Thu, 28 Mar 2024 17:20:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HeDLCZYi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JCPJwRD2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60984436B;
-	Thu, 28 Mar 2024 17:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846BE4436B
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711646364; cv=none; b=iv/QRYR3H7+/tOGmtDAxYsWClNWe9FqEaDPCud4xRG1/KdujCqsPqL1zokBv2ihpunfZ/JA8vNxn+YeJ34xMRsarWS+OU9stFUUq7XgKzBc4S4WKP2QpU8rOcBUky4Ia/wiaQDodK6z3H1Gq7vKZNeWgF1E+1C9S/cHldOPo0Jc=
+	t=1711646405; cv=none; b=u7O2N7keLdnijPhOPbn8P6ANzUpNvB2Z0Vhmz89JG5c5G7Owg+zyLNnA7OmFOPbPAy3yQ7s3zYuyM8gGTfNREe9yzlk5kLQwgu1kokikdMkjNgccyG0W3Hw+5tuLvEAfVxBEgUX3KCVuyWkCOvvkF5pxAJmf/w1ShZOeATusECI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711646364; c=relaxed/simple;
-	bh=SjNBm760kIgx8JgQnDyaM+FCHFSFE+fqSaoT+RmVu3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vj/WMk+JAdkqP6xzICepayScoY3z/erGHeGpIV1miBgL+LvXDwaTnd+xGAU+OeSet1lBMs3DWJbd+JpDgL7j2OXfLsUboSPMxBDCX2gpemVxwtKiIOCuv5PsyxUm9rAqg5gkURnkMfm1pYfPT7spfIh1f8cv8810C4rh2bPWZLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HeDLCZYi; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711646363; x=1743182363;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SjNBm760kIgx8JgQnDyaM+FCHFSFE+fqSaoT+RmVu3s=;
-  b=HeDLCZYiPgOOFq/O0fhdvcdSeVBGQXjR8+lDh6KGvNoxNqCZExhilQIX
-   sA3EyAy9rnCe/j8xeP2vHFAAt+B3U0WGJ4imY3MRbGVbfifVLlMnO97hs
-   hth/c0USk4tXV/G3OY3UUBIHknUEq+cgcY/uyvFcWirc0Izrnrw0qZ8JQ
-   4LYvn64iPpUjSwm6QYD2AyKfqsJrZYUonOLTEMxRnd5qxw7QFfDwL70Nj
-   +Up2dcRu0SzW9ZwCOlv/ACxtZYFXitryzV4ny+RxEui3kgKFtwTKKcTnb
-   NSA5BX+KPt+OF6sB6SXN+IMzkoljGfCQJp6xXsSNF+j1kIaWDmFzIr+RQ
-   g==;
-X-CSE-ConnectionGUID: kzj5ylgQTnayGTO3sJQ26A==
-X-CSE-MsgGUID: BA20fvUITAapxucO6lh2hg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="24302618"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="24302618"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 10:19:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="21446717"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 28 Mar 2024 10:19:17 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rptPH-0002NY-0G;
-	Thu, 28 Mar 2024 17:19:15 +0000
-Date: Fri, 29 Mar 2024 01:18:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Mina Almasry <almasrymina@google.com>,
-	Ayush Sawal <ayush.sawal@chelsio.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Mirko Lindner <mlindner@marvell.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net-next v2 2/3] net: mirror skb frag ref/unref helpers
-Message-ID: <202403290103.BHENUIYW-lkp@intel.com>
-References: <20240327214523.2182174-3-almasrymina@google.com>
+	s=arc-20240116; t=1711646405; c=relaxed/simple;
+	bh=4fOayRX3S5Jxu3sgYNPny0lYFK450ICrctDD0gaS9/w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H+e77O4KXQrVE17oE/EWW1BSI5oSV8q3t3/SbUHkpN0+a3sCHeyGlvLGLRpJ86WzJRvQF/66POLYiRq17nARoQI+CBGT0eW9wna3LF9Tg8QkFOr6T7ATCbs38p1SHurq77KCDfDTmSnJUfaK5yYAqV4bGNqhUNiY9fmvQlC+ZNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JCPJwRD2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711646402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FsmXoDAazFRAkcA6ArNgYSzB+6AfTdpq8nAX83CAIS4=;
+	b=JCPJwRD2SA+NUn+qBesqDGaxmBuE22hNgVXb90Sa4ELYgGeyWNQczdVm5DPafxYo59co0M
+	ru3JCt/0V1hyFzjB28Zz1eiCHOlcoDeU/0lI1Y4Ze9v06WeTD7iezQQE166/5W/PMXJN1X
+	g3Q6YZNXtM2WLXImYhQ94O/uV37Qgmk=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-207-xxXWwooRPTCrghJT6ZDahA-1; Thu, 28 Mar 2024 13:20:01 -0400
+X-MC-Unique: xxXWwooRPTCrghJT6ZDahA-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-69181af8ceaso16362846d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:20:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711646401; x=1712251201;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FsmXoDAazFRAkcA6ArNgYSzB+6AfTdpq8nAX83CAIS4=;
+        b=QWhXWyf90PF3oDop2g6EPKB3JBH6RBFh5rlfANqTWGO09X/HKg/l9L0JkDKiW5sL6h
+         Jvpq3eCglAiN/dlu9W25IEz08BYz7U9c+22PMUTXbuYIDoi53u9X3IaOqxDCT8oWVfp1
+         hTvanJZjiWSLSWS8gwkLLcV55nPi6I8q4H3xnpAWnjV8B4/LYlFHBoieu/mxceOIBeyS
+         BjPRImh0yZGcxvzN7GztfdxEBnjG8KcpJDS6JC3D//7f9QUhF3xTLl8YsR7OvR3SGi4T
+         NjzNuxP/ulhSv0U1tWuhuTQuQJjy705Mrpkzz7LBOrw0aUQIjN30YO5BK+gbKg1/D3zu
+         55OA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfYWKQ4vofpGQgmn294OBas55x6NZIykQSr4rvNIAWmEb+vyOot8sSSm94PmCkwZ25211r7IDQn5PnyfLzRVPwKkekzUVqJW1fumwL
+X-Gm-Message-State: AOJu0YztVWKQk2pWqYx7lX/eY93FOMSFHsudH0Svugk1Yf7z2UZEwcYS
+	/IfgdmX3KaH6JJWQT5ax6sZbxTWGj9PndfmXWRkQHaELvgoh22uuZw9oy7Di9gj5zh0FKecv2JK
+	LLHq0dd+Cd/MhHyt08on42pSySo81nQK/xXDZWvHRnLbi5mamIvSf6KE5lNH55Q==
+X-Received: by 2002:a0c:e283:0:b0:696:533e:b003 with SMTP id r3-20020a0ce283000000b00696533eb003mr3622580qvl.18.1711646400882;
+        Thu, 28 Mar 2024 10:20:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+1wsa0IIYLVifTd3mmfaqBCTcpRrQtIhBo5V/XU7W0TxfgmUPDSlig2ELspzHcYJY7gn3jA==
+X-Received: by 2002:a0c:e283:0:b0:696:533e:b003 with SMTP id r3-20020a0ce283000000b00696533eb003mr3622550qvl.18.1711646400549;
+        Thu, 28 Mar 2024 10:20:00 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a801:d7ed:4b57:3fcd:d5e6:a613])
+        by smtp.gmail.com with ESMTPSA id m13-20020ad45dcd000000b00696944e3ce6sm809078qvh.74.2024.03.28.10.19.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 10:19:59 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Date: Thu, 28 Mar 2024 14:19:45 -0300
+Message-ID: <20240328171949.743211-1-leobras@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327214523.2182174-3-almasrymina@google.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Mina,
+I am dealing with a latency issue inside a KVM guest, which is caused by
+a sched_switch to rcuc[1].
 
-kernel test robot noticed the following build errors:
+During guest entry, kernel code will signal to RCU that current CPU was on
+a quiescent state, making sure no other CPU is waiting for this one.
 
-[auto build test ERROR on net-next/main]
+If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+issued somewhere since guest entry, there is a chance a timer interrupt
+will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/net-make-napi_frag_unref-reuse-skb_page_unref/20240328-054816
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240327214523.2182174-3-almasrymina%40google.com
-patch subject: [PATCH net-next v2 2/3] net: mirror skb frag ref/unref helpers
-config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240329/202403290103.BHENUIYW-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 23de3862dce582ce91c1aa914467d982cb1a73b4)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403290103.BHENUIYW-lkp@intel.com/reproduce)
+rcu_sched_clock_irq() will check rcu_pending() which will return true,
+and cause invoke_rcu_core() to be called, which will (in current config)
+cause rcuc/N to be scheduled into the current cpu.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403290103.BHENUIYW-lkp@intel.com/
+On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+idle or userspace, since both are considered quiescent states.
 
-All errors (new ones prefixed by >>):
+Since this is also true to guest context, my idea to solve this latency
+issue by avoiding rcu_core() invocation if it was running a guest vcpu.
 
-   In file included from net/core/skbuff.c:40:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> net/core/skbuff.c:1016:21: error: use of undeclared identifier 'head_page'
-    1016 |         page_pool_ref_page(head_page);
-         |                            ^
-   1 warning and 1 error generated.
+On the other hand, I could not find a way of reliably saying the current
+cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+for keeping the time (jiffies) of the last guest exit.
+
+In patch #2 I compare current time to that time, and if less than a second
+has past, we just skip rcu_core() invocation, since there is a high chance
+it will just go back to the guest in a moment.
+
+What I know it's weird with this patch:
+1 - Not sure if this is the best way of finding out if the cpu was
+    running a guest recently.
+
+2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+    overhead, even though it's supposed to be in local cache. If that's
+    an issue, I would suggest having this part compiled out on 
+    !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+    enabled seems more expensive than just setting this out.
+
+3 - It checks if the guest exit happened over than 1 second ago. This 1
+    second value was copied from rcu_nohz_full_cpu() which checks if the
+    grace period started over than a second ago. If this value is bad,
+    I have no issue changing it.
+
+4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+    rcu/tree_plugin.h, which is the first time it's getting included
+    outside of kvm or arch code, and can be weird. An alternative would
+    be to create a new header for providing data for non-kvm code.
+
+Please provide feedback.
+
+Thanks!
+Leo
+									...
+[1]: It uses a PREEMPT_RT kernel, with the guest cpus running on isolated,
+rcu_nocbs, nohz_full cpus.
+
+Leonardo Bras (2):
+  kvm: Implement guest_exit_last_time()
+  rcu: Ignore RCU in nohz_full cpus if it was running a guest recently
+
+ include/linux/kvm_host.h | 13 +++++++++++++
+ kernel/rcu/tree_plugin.h | 14 ++++++++++++++
+ kernel/rcu/tree.c        |  4 +++-
+ virt/kvm/kvm_main.c      |  3 +++
+ 4 files changed, 33 insertions(+), 1 deletion(-)
 
 
-vim +/head_page +1016 net/core/skbuff.c
-
-  1010	
-  1011		page = compound_head(page);
-  1012	
-  1013		if (!is_pp_page(page))
-  1014			return false;
-  1015	
-> 1016		page_pool_ref_page(head_page);
-  1017		return true;
-  1018	}
-  1019	EXPORT_SYMBOL(napi_pp_get_page);
-  1020	
-
+base-commit: 8d025e2092e29bfd13e56c78e22af25fac83c8ec
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.44.0
+
 
