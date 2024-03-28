@@ -1,199 +1,138 @@
-Return-Path: <linux-kernel+bounces-123346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CDA8906EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:10:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F808906F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F18229FFF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:10:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FF5129FBB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713CF7E788;
-	Thu, 28 Mar 2024 17:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1875040842;
+	Thu, 28 Mar 2024 17:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nbt7lRk2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="T46JQNJ9"
+Received: from sender-of-o58.zoho.eu (sender-of-o58.zoho.eu [136.143.169.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE5B39FFE;
-	Thu, 28 Mar 2024 17:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711645703; cv=none; b=Sjqw0MoHpHI1A2V7z9Fm17ZLjUYTJ/8tzKsB+duatJXQkXeCjA+8oMkRUG+V9Jv3P/vjvoBBkAe9glSl/XWaD3746j8f12Adsaw3gvsYeDaOikixrc0F+e9mtcatU/ZB9ZbTaRJkUrMKRYVb3Lf2fhWgkrE+N+oJ+9xNvLcCcXw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711645703; c=relaxed/simple;
-	bh=UCnU67HeXYoqYdj4S5dBKZ2Q4xHzdK3/OCAHu2KUfBI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EQOzDEg/Tbylz/gXhPcSgQ1Fc87Khc172Hn2d75d6TZ1y02ih2Lxe6teguUnZjlj2ZvkxxTlQwVtI5Bwevx4WrHmkNLUuxI2N/zwo61Dteb9iGcOUZzVcxanFK+PfeTNBAxGWGXupj1z0f4KJ9KRoc2VITfA9RRsNqIKRflJmT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nbt7lRk2; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711645701; x=1743181701;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UCnU67HeXYoqYdj4S5dBKZ2Q4xHzdK3/OCAHu2KUfBI=;
-  b=Nbt7lRk294+zepCU7jnY/4BlzLmzfQHNIYoCDoTfUUzx5pwidfcPzH64
-   9KODxFPwn3hLHcZBVXDEDIZDeNVTfNld/N+km4ANtBDHVM/Ayk/8aTXU7
-   mQW5ImjZ6IXzFthZ6elqRhGWcON9S78u9P0rjhVdDttTcgWdluvJCrene
-   duMO5fhorj3qpt6gS2y4d/BKyK4ZNx+gMLPdTf4m4xEJ/kn2ZqxtdrBHa
-   gprL7BFiGpUOjURsusQdTSFnyYxofzPEK5sKab0qdxMXn8zMrlOAjbh3K
-   2Adrlsjom26hxu87Yn92k2xGLz/kIT55HTPbF7TsVD8clH0/lfv9MOv3W
-   Q==;
-X-CSE-ConnectionGUID: 1ye/Oi/jQsCv30UPnsNRpw==
-X-CSE-MsgGUID: WXpS8vqAQ8ic/wwBB9Z6aQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="7417542"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="7417542"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 10:08:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="39865448"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 28 Mar 2024 10:08:17 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rptEc-0002NC-2v;
-	Thu, 28 Mar 2024 17:08:14 +0000
-Date: Fri, 29 Mar 2024 01:07:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Mina Almasry <almasrymina@google.com>,
-	Ayush Sawal <ayush.sawal@chelsio.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Mirko Lindner <mlindner@marvell.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net-next v2 2/3] net: mirror skb frag ref/unref helpers
-Message-ID: <202403290006.WfusvToB-lkp@intel.com>
-References: <20240327214523.2182174-3-almasrymina@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8C13BBC5
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:11:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711645871; cv=pass; b=kEvcUbia8HKpjwsjAqyDZgoUsRA/wBeitDU6RVD09/LXfCWpDddu7q8f3bL/fAareD/bs8UabIEYIY4+uA/sUI0QvhuLjizw60j9zA1KQSKduT50N+pd3NINrBqqWsd/URSXLM4/dtxCWZEJnFC1guVNdcZHX/1Sw6tU3SUzkGo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711645871; c=relaxed/simple;
+	bh=6APAIIP6Iu8uhBPiP4+nplcZGdT+3EuubTzekx7NgQs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yd1rdGS9RmN0RYZZZFFhIvXJbFFP1JsYLYPUrosDXtMu/T8LBzAPdeIJJJqQaypLOe4uvlnzFgU8czwo0ZRUhfcA8OazRNcSs+iNTx88XNHpS+Tkqb3q7ih+iGFS59ujnoQT0PdBjagBWPGLLqDoQ0s4ZBQQAK9aLeHZL5I4xGk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=T46JQNJ9; arc=pass smtp.client-ip=136.143.169.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
+ARC-Seal: i=1; a=rsa-sha256; t=1711645844; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=PyVQ+2/h8Sz170gJhF8C4cm1S8Pooes3SI5S1Yx3wAoumwaLRXjEkJ6KDwqYn9FloDkq07JcvTjzNRuF+d2xRltZ+u+rBOJjlRD3TSTQt0PeiVEdjP7aEVXaRyR7JVmG0p/20h0HOLiypVt1YUYmh76dqslMFJy/hsP/iRkk9KI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1711645844; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=ZPoFcPyLcDvpSZuEBD9w5JR4kbrua7Xy19ysxDlZfiE=; 
+	b=chR8VfbqxON2PPMqRKfp47eVgBSpRnNLIHZado/RfA3BKXFebRPKrwApFXuLEAAtmj0nOpVfgS6rRc8mwtdWK43T/nPVyhSJM4keT35BMnXRj8evmUPkCcjtCR0DYDqppfxo1cyGGL/Vsr47Et2yHRQlEq+vG9JLN4kVN+TElw4=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=bursov.com;
+	spf=pass  smtp.mailfrom=vitaly@bursov.com;
+	dmarc=pass header.from=<vitaly@bursov.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1711645844;
+	s=zoho; d=bursov.com; i=vitaly@bursov.com;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=ZPoFcPyLcDvpSZuEBD9w5JR4kbrua7Xy19ysxDlZfiE=;
+	b=T46JQNJ9AhgRY8pJJ3lt2pOZcITbuQjRCIrsufsl+T0PVNhj5a5Nh/4Xep+NMzz/
+	au4kmfzsjgAgzqCtuq+cL4xC5euxOa2LPmJhzBhsNPw29wsubqIiEPVG6VwzaUkffWU
+	vDGNftWthgQZHqBe4leueIovKD4XA6rDuKjFfeas=
+Received: from [192.168.11.99] (217.20.170.230 [217.20.170.230]) by mx.zoho.eu
+	with SMTPS id 1711645842705803.0613795359005; Thu, 28 Mar 2024 18:10:42 +0100 (CET)
+Message-ID: <163e1980-41ff-4a5f-9d93-431e65fd3a9d@bursov.com>
+Date: Thu, 28 Mar 2024 19:10:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327214523.2182174-3-almasrymina@google.com>
-
-Hi Mina,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mina-Almasry/net-make-napi_frag_unref-reuse-skb_page_unref/20240328-054816
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240327214523.2182174-3-almasrymina%40google.com
-patch subject: [PATCH net-next v2 2/3] net: mirror skb frag ref/unref helpers
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20240329/202403290006.WfusvToB-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403290006.WfusvToB-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403290006.WfusvToB-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> net/tls/tls_device_fallback.c:280:22: error: too few arguments to function call, expected 2, have 1
-     280 |                 __skb_frag_ref(frag);
-         |                 ~~~~~~~~~~~~~~     ^
-   include/linux/skbuff.h:3517:20: note: '__skb_frag_ref' declared here
-    3517 | static inline void __skb_frag_ref(skb_frag_t *frag, bool recycle)
-         |                    ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 error generated.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] sched/fair: allow disabling newidle_balance with
+ sched_relax_domain_level
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org
+References: <cover.1711584739.git.vitaly@bursov.com>
+ <da4454bf368e51369c74e4574d22e8f0bfd9d368.1711584739.git.vitaly@bursov.com>
+ <CAKfTPtCux6diCArXcF11w+D1VMKLwj-eWUeXQq3d=2=2Xfe8uw@mail.gmail.com>
+ <1679cb16-a4a1-4a5f-9742-3523555d33f9@bursov.com>
+ <CAKfTPtDbRUNEQ4g3rBxuC8daa6Dj_Eba8mHhVr+9UZ9eAFTPkw@mail.gmail.com>
+Content-Language: en-US, ru-RU, uk-UA
+From: Vitalii Bursov <vitaly@bursov.com>
+In-Reply-To: <CAKfTPtDbRUNEQ4g3rBxuC8daa6Dj_Eba8mHhVr+9UZ9eAFTPkw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 
 
-vim +280 net/tls/tls_device_fallback.c
 
-e8f69799810c32 Ilya Lesokhin  2018-04-30  228  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  229  /* This function may be called after the user socket is already
-e8f69799810c32 Ilya Lesokhin  2018-04-30  230   * closed so make sure we don't use anything freed during
-e8f69799810c32 Ilya Lesokhin  2018-04-30  231   * tls_sk_proto_close here
-e8f69799810c32 Ilya Lesokhin  2018-04-30  232   */
-e8f69799810c32 Ilya Lesokhin  2018-04-30  233  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  234  static int fill_sg_in(struct scatterlist *sg_in,
-e8f69799810c32 Ilya Lesokhin  2018-04-30  235  		      struct sk_buff *skb,
-d80a1b9d186057 Boris Pismenny 2018-07-13  236  		      struct tls_offload_context_tx *ctx,
-e8f69799810c32 Ilya Lesokhin  2018-04-30  237  		      u64 *rcd_sn,
-e8f69799810c32 Ilya Lesokhin  2018-04-30  238  		      s32 *sync_size,
-e8f69799810c32 Ilya Lesokhin  2018-04-30  239  		      int *resync_sgs)
-e8f69799810c32 Ilya Lesokhin  2018-04-30  240  {
-504148fedb8542 Eric Dumazet   2022-06-30  241  	int tcp_payload_offset = skb_tcp_all_headers(skb);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  242  	int payload_len = skb->len - tcp_payload_offset;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  243  	u32 tcp_seq = ntohl(tcp_hdr(skb)->seq);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  244  	struct tls_record_info *record;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  245  	unsigned long flags;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  246  	int remaining;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  247  	int i;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  248  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  249  	spin_lock_irqsave(&ctx->lock, flags);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  250  	record = tls_get_record(ctx, tcp_seq, rcd_sn);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  251  	if (!record) {
-e8f69799810c32 Ilya Lesokhin  2018-04-30  252  		spin_unlock_irqrestore(&ctx->lock, flags);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  253  		return -EINVAL;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  254  	}
-e8f69799810c32 Ilya Lesokhin  2018-04-30  255  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  256  	*sync_size = tcp_seq - tls_record_start_seq(record);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  257  	if (*sync_size < 0) {
-e8f69799810c32 Ilya Lesokhin  2018-04-30  258  		int is_start_marker = tls_record_is_start_marker(record);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  259  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  260  		spin_unlock_irqrestore(&ctx->lock, flags);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  261  		/* This should only occur if the relevant record was
-e8f69799810c32 Ilya Lesokhin  2018-04-30  262  		 * already acked. In that case it should be ok
-e8f69799810c32 Ilya Lesokhin  2018-04-30  263  		 * to drop the packet and avoid retransmission.
-e8f69799810c32 Ilya Lesokhin  2018-04-30  264  		 *
-e8f69799810c32 Ilya Lesokhin  2018-04-30  265  		 * There is a corner case where the packet contains
-e8f69799810c32 Ilya Lesokhin  2018-04-30  266  		 * both an acked and a non-acked record.
-e8f69799810c32 Ilya Lesokhin  2018-04-30  267  		 * We currently don't handle that case and rely
-a0e128ef88e4a0 Yueh-Shun Li   2023-06-22  268  		 * on TCP to retransmit a packet that doesn't contain
-e8f69799810c32 Ilya Lesokhin  2018-04-30  269  		 * already acked payload.
-e8f69799810c32 Ilya Lesokhin  2018-04-30  270  		 */
-e8f69799810c32 Ilya Lesokhin  2018-04-30  271  		if (!is_start_marker)
-e8f69799810c32 Ilya Lesokhin  2018-04-30  272  			*sync_size = 0;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  273  		return -EINVAL;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  274  	}
-e8f69799810c32 Ilya Lesokhin  2018-04-30  275  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  276  	remaining = *sync_size;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  277  	for (i = 0; remaining > 0; i++) {
-e8f69799810c32 Ilya Lesokhin  2018-04-30  278  		skb_frag_t *frag = &record->frags[i];
-e8f69799810c32 Ilya Lesokhin  2018-04-30  279  
-e8f69799810c32 Ilya Lesokhin  2018-04-30 @280  		__skb_frag_ref(frag);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  281  		sg_set_page(sg_in + i, skb_frag_page(frag),
-b54c9d5bd6e38e Jonathan Lemon 2019-07-30  282  			    skb_frag_size(frag), skb_frag_off(frag));
-e8f69799810c32 Ilya Lesokhin  2018-04-30  283  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  284  		remaining -= skb_frag_size(frag);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  285  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  286  		if (remaining < 0)
-e8f69799810c32 Ilya Lesokhin  2018-04-30  287  			sg_in[i].length += remaining;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  288  	}
-e8f69799810c32 Ilya Lesokhin  2018-04-30  289  	*resync_sgs = i;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  290  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  291  	spin_unlock_irqrestore(&ctx->lock, flags);
-e8f69799810c32 Ilya Lesokhin  2018-04-30  292  	if (skb_to_sgvec(skb, &sg_in[i], tcp_payload_offset, payload_len) < 0)
-e8f69799810c32 Ilya Lesokhin  2018-04-30  293  		return -EINVAL;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  294  
-e8f69799810c32 Ilya Lesokhin  2018-04-30  295  	return 0;
-e8f69799810c32 Ilya Lesokhin  2018-04-30  296  }
-e8f69799810c32 Ilya Lesokhin  2018-04-30  297  
+On 28.03.24 18:48, Vincent Guittot wrote:
+> On Thu, 28 Mar 2024 at 17:27, Vitalii Bursov <vitaly@bursov.com> wrote:
+>>
+>>
+>> On 28.03.24 16:43, Vincent Guittot wrote:
+>>> On Thu, 28 Mar 2024 at 01:31, Vitalii Bursov <vitaly@bursov.com> wrote:
+>>>>
+>>>> Change relax_domain_level checks so that it would be possible
+>>>> to exclude all domains from newidle balancing.
+>>>>
+>>>> This matches the behavior described in the documentation:
+>>>>   -1   no request. use system default or follow request of others.
+>>>>    0   no search.
+>>>>    1   search siblings (hyperthreads in a core).
+>>>>
+>>>> "2" enables levels 0 and 1, level_max excludes the last (level_max)
+>>>> level, and level_max+1 includes all levels.
+>>>
+>>> I was about to say that max+1 is useless because it's the same as -1
+>>> but it's not exactly the same because it can supersede the system wide
+>>> default_relax_domain_level. I wonder if one should be able to enable
+>>> more levels than what the system has set by default.
+>>
+>> I don't know is such systems exist, but cpusets.rst suggests that
+>> increasing it beyoud the default value is possible:
+>>> If your situation is:
+>>>
+>>>  - The migration costs between each cpu can be assumed considerably
+>>>    small(for you) due to your special application's behavior or
+>>>    special hardware support for CPU cache etc.
+>>>  - The searching cost doesn't have impact(for you) or you can make
+>>>    the searching cost enough small by managing cpuset to compact etc.
+>>>  - The latency is required even it sacrifices cache hit rate etc.
+>>>    then increasing 'sched_relax_domain_level' would benefit you.
+> 
+> Fair enough. The doc should be updated as we can now clear the flags
+> but not set them
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+SD_BALANCE_NEWIDLE is always set by default in sd_init() and cleared
+in set_domain_attribute() depending on default_relax_domain_level
+("relax_domain_level" kernel parameter) and cgroup configuration
+if it's present.
+
+So, it should work both ways - clearing flags when relax level
+is decreasing, and not clearing the flag when it's increasing,
+isn't it?
+
+Also, after a closer look at set_domain_attribute(), it looks like
+default_relax_domain_level is -1 on all systems, so if cgroup does
+not set relax level, it won't clear any flags, which probably means
+that level_max+1 is redundant today.
 
