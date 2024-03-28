@@ -1,165 +1,178 @@
-Return-Path: <linux-kernel+bounces-123375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F99589076E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:47:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CA189077E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09B5A29628C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:47:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10F94B23172
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0711311B3;
-	Thu, 28 Mar 2024 17:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AFF9131BDC;
+	Thu, 28 Mar 2024 17:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f0dgZsew"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MUsNPf2L"
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0B04437B;
-	Thu, 28 Mar 2024 17:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD0A128370;
+	Thu, 28 Mar 2024 17:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711648013; cv=none; b=iHvl/TV/6Wp93vqmwr+2qnaJWhj0/ds2wULTpKP3q9CP7Q3dne0x/jYC/ePraxfJ37AyZp1r6ZXnbVsdglSCVDenCb8FtSZmIt6R759tEyfn3tjYr5dkeD9OCK1cfEzSF09a6+TPVT2E6Ea8AlI8PtqvoHYcCGMoeB2RlVEkncI=
+	t=1711648041; cv=none; b=XAKCScK08pev/G397T6wbBVjFDQDs0QchDKNhkKXlOxurVxNXi7IVr3Yo+uVP1hT84HgHCZIRWjg6fsO/pPP7gDEcrXGfg9znMr6Y7aFkf3PmpJLZpIj7wGBgRVbncdZWFP8x/VnD7VdPPqnUBknJK61m57RNBoQY+rJFUA2QUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711648013; c=relaxed/simple;
-	bh=YNR7A+kRgAjMXDjHr2JB1yywFqUpQ/6e+8DUHAu4Nlg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nm/tXP2+yIQtZXI2ONJodO/9rf7GC3aUVWsbRsSTqQ9eFG8xrAaOojvomVLTGu8xrB3Jz8S1oiB8j8oh45v0Ox1GzQuUBpwf8yqnh+6QVKxw2ShsHUqjxKk8TUyQfXNy5E4rvNbX4vZU/S2/gpU4X7IvNhS3YQvYj50G+44/mGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f0dgZsew; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F2CC433C7;
-	Thu, 28 Mar 2024 17:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711648012;
-	bh=YNR7A+kRgAjMXDjHr2JB1yywFqUpQ/6e+8DUHAu4Nlg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=f0dgZsewbfCG8PiA45FJQw1TL/EasYUMhLz2/QhlXeqqfXOMfSFzRv9IkgTHijlFV
-	 FhqTfFXUmCq641ywYGBQNJBov/tcSVKyclO43CvFgYl4vG0jR5PyLIGzGCMyZLU3uq
-	 upLsVvNze+XfKUgkqPNlhtRQ4CV0x+8HigCh3u2WrcBvzfPqQuTABnjeZ6Hvb3VE8w
-	 6ZvOi3ANgqwkkwdMuKgaXo07dtclbN/G0YdTFjA+6G2vfiNmaVW0Ibuf2jgixdXOzz
-	 yzc01GzZXuDW31OzbOufYEa/h1z/NE2Qj9VquGG7bkMy752oMrsKA8KOWYY6NXnc2q
-	 ClRqTQBAOutLg==
-Message-ID: <1ea303d0-b5c6-4185-b6ae-8836c5ac0469@kernel.org>
-Date: Thu, 28 Mar 2024 10:46:50 -0700
+	s=arc-20240116; t=1711648041; c=relaxed/simple;
+	bh=2RJ4UftN8nrBTsBDUrVAd7hn5NaOKJnB1Fl2J9lWRkU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M4/nI/blH1MF8+2yoP/n1fZ+Ue/1Zx6s/9F0+I9GEGsw21dTfK1ZAwTXK3KCQUbiBITvPcn46h3FwKAgJgYu9OGwaKRpSPSShNzL85kmxOwYRjcvVG/3s5MfwxHtMLZ+KurFtgPiiEtZf2RyPLR4/oeTxD/M/1HRHXjg8tW/f/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MUsNPf2L; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4d43d602cd6so385137e0c.0;
+        Thu, 28 Mar 2024 10:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711648038; x=1712252838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WOul4usuPisehHXyQcZLwgce2H6JwRccYEaJQWtP1Jo=;
+        b=MUsNPf2LdIJPPW0QsF9yWj+TtesSZvxodFKQx4SR1NwzBHA0FZwXBUMhCjEMxw9C2t
+         HhjFYUYs90eF6MJZkELF1PoTcSZqcyg/5bRNddJJv0cS9PWo+4uQ2iSCQaC4XlC8UlRR
+         7egy4uDmdazuOYjKAbr8/w/EJX5F5+Zpd9ah1DVfw25rSA+S4sG4xkMp2StUJJ7b4JHU
+         N7LQMQMNr3dOAfB6CyReNMnb9qVkNTrfAY7khKDxiJa+E6t2DvdnnnTJsNr633HfFdbb
+         ve1ickFoQcPaFy+3G/clglw6CJNhDXstrWbS38QiA1yLB7Lk4oUL2cIVTDzzuTJMxcUx
+         5ujw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711648038; x=1712252838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WOul4usuPisehHXyQcZLwgce2H6JwRccYEaJQWtP1Jo=;
+        b=FTqdh7Qk9JUJtRMcc6U9AWiJZGvkUNp0voAseEjoQewVGVAc3vTEffGhoAflhGfud8
+         Mfaet/iY/IDEOywdwNGMeKoghpSj02DmYYy0LMkxlZUJvj4G2Sh4lx2cJ5QTkFX/I2XX
+         UgCdGZLQsSArbO2qPmgRxRuSY46aMb07pCqmUGiqi0yZIsk2gBnt96UFMdm98OefxRnz
+         cuvgJdBxWLmtZds2Qak9hzCx+W79SzMd3E7xm4sNbO+/iU3Sd+dR8LSCfqNhCqEIKVBh
+         GCLCesRRD8bh/B5VzuJURvSs7ZXd1fEdCa7c2HaPH3uRbAIE4BCMNKaxaAVEc7wLSqbc
+         lmbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2AELX+s3Ri/P1sMvSyKP4y170FcrAHR5R4xijzssxgnT9+w/CF5jlOw3hu9L0uKOh0BgUp8GVe0AcNTWcTdhIMiMgszexhFm423YsTOj9To8G7Kipun2zblgphJwkXs6+xnFOh4JqoWW3bt+6swEwZxtEkgmojS4M5bwCXHFdxo9A7iESoYlxpF/TMFug7qWAuqcEyCVUXRa8VEXgNhRjFHRSj3kTKFu5QWzRLePJ1jtlzstVjVp1UYFjXGGIiXeyChjvNrcPdQYah2RtQqOYvUj1J6T/MP5LLWZnoSyVTNALjJ/R7QPPVJKf51oU7gpyMh5YR5nRKEL8/WXjc3082Lfa6qXNcmUxMuFoQJ94qniYC4XagaGURaDTrQ15tKqw6+K5ha2egriX3IrBYSegT8gN5gczoopOxwRH3RKKS8jjo0uogQCHJ5i9J/5B6KVTKcxqQu9hkR4meUMdVk1umbe7BFpTog+4utMcRX27sIuWDfOZQ1te4rASDtKZGma9Ql6Hm2z3IyHXHY08sHGtSL004EOIWsc/9wglMYvLy5gKmGNQ+Ub+myDLrEBoLDzHVKiRPj90vxFMsm460SY=
+X-Gm-Message-State: AOJu0Yx7+7ACXHzYJTfbS1syhBNOfHroiuYIKQOqusVbIshZNPMgLSaI
+	O+iv3mUT3CfIy15IZD0eRSTn3JEej3LMQ2ey6q9cVscvLqqXMvD2mUbdao+vHw+gyrcq5S2tmDJ
+	PrmEbnyAv3kOMN9yBIA0Z81J+Yok=
+X-Google-Smtp-Source: AGHT+IHhsrATdsPlGDNfn/hR7BQXc3o4d86Rd7NcYHBOy9LUQjNRQoJ0rDqs8OMJuSA4Qyiba22Ugt9rz6m/+ouyIBc=
+X-Received: by 2002:a67:f7c6:0:b0:476:fbbb:14bc with SMTP id
+ a6-20020a67f7c6000000b00476fbbb14bcmr3836850vsp.30.1711648038557; Thu, 28 Mar
+ 2024 10:47:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/3] mm/gup: consistently call it GUP-fast
-To: Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Vineet Gupta <vgupta@kernel.org>, David Hildenbrand <david@redhat.com>,
- peterx <peterx@redhat.com>, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@nvidia.com>,
- John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-mm@kvack.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- x86@kernel.org, Ryan Roberts <ryan.roberts@arm.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Matt Turner <mattst88@gmail.com>,
- Alexey Brodkin <abrodkin@synopsys.com>
-References: <20240327130538.680256-1-david@redhat.com> <ZgQ5hNltQ2DHQXps@x1n>
- <3922460a-4d01-4ecb-b8c5-7c57fd46f3fd@redhat.com>
- <dc1433ea-4e59-4ab7-83fb-23b393020980@app.fastmail.com>
- <3360dba8-0fac-4126-b72b-abc036957d6a@kernel.org>
- <10da3ced-9a79-4ebb-a77d-1aa49cc61952@app.fastmail.com>
- <ZgUZCBNloC-grPWJ@kernel.org>
-Content-Language: en-US
-From: Vineet Gupta <vgupta@kernel.org>
-In-Reply-To: <ZgUZCBNloC-grPWJ@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-10-apais@linux.microsoft.com> <9c31b697-3d80-407a-82b3-cfbb19fafb31@arm.com>
+In-Reply-To: <9c31b697-3d80-407a-82b3-cfbb19fafb31@arm.com>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 28 Mar 2024 10:47:06 -0700
+Message-ID: <CAOMdWSL9GUkoOOX4LNwMOV24-8xnmFKep15xj8NnmnBss-RYAQ@mail.gmail.com>
+Subject: Re: [PATCH 9/9] mmc: Convert from tasklet to BH workqueue
+To: Christian Loehle <christian.loehle@arm.com>
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org, tj@kernel.org, 
+	keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
+	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
+	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
+	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
+	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
+	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
+	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
+	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
+	patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org, 
+	jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com, 
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
+	jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com, 
+	aubin.constans@microchip.com, ulf.hansson@linaro.org, manuel.lauss@gmail.com, 
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com, 
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org, brucechang@via.com.tw, 
+	HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr, 
+	stern@rowland.harvard.edu, oneukum@suse.com, 
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 3/28/24 00:15, Mike Rapoport wrote:
-> On Thu, Mar 28, 2024 at 07:09:13AM +0100, Arnd Bergmann wrote:
->> On Thu, Mar 28, 2024, at 06:51, Vineet Gupta wrote:
->>> On 3/27/24 09:22, Arnd Bergmann wrote:
->>>> On Wed, Mar 27, 2024, at 16:39, David Hildenbrand wrote:
->>>>> On 27.03.24 16:21, Peter Xu wrote:
->>>>>> On Wed, Mar 27, 2024 at 02:05:35PM +0100, David Hildenbrand wrote:
->>>>>>
->>>>>> I'm not sure what config you tried there; as I am doing some build tests
->>>>>> recently, I found turning off CONFIG_SAMPLES + CONFIG_GCC_PLUGINS could
->>>>>> avoid a lot of issues, I think it's due to libc missing.  But maybe not the
->>>>>> case there.
->>>>> CCin Arnd; I use some of his compiler chains, others from Fedora directly. For
->>>>> example for alpha and arc, the Fedora gcc is "13.2.1".
->>>>> But there is other stuff like (arc):
->>>>>
->>>>> ./arch/arc/include/asm/mmu-arcv2.h: In function 'mmu_setup_asid':
->>>>> ./arch/arc/include/asm/mmu-arcv2.h:82:9: error: implicit declaration of 
->>>>> function 'write_aux_reg' [-Werro
->>>>> r=implicit-function-declaration]
->>>>>     82 |         write_aux_reg(ARC_REG_PID, asid | MMU_ENABLE);
->>>>>        |         ^~~~~~~~~~~~~
->>>> Seems to be missing an #include of soc/arc/aux.h, but I can't
->>>> tell when this first broke without bisecting.
->>> Weird I don't see this one but I only have gcc 12 handy ATM.
->>>
->>>     gcc version 12.2.1 20230306 (ARC HS GNU/Linux glibc toolchain -
->>> build 1360)
->>>
->>> I even tried W=1 (which according to scripts/Makefile.extrawarn) should
->>> include -Werror=implicit-function-declaration but don't see this still.
->>>
->>> Tomorrow I'll try building a gcc 13.2.1 for ARC.
->> David reported them with the toolchains I built at
->> https://mirrors.edge.kernel.org/pub/tools/crosstool/
->> I'm fairly sure the problem is specific to the .config
->> and tree, not the toolchain though.
-> This happens with defconfig and both gcc 12.2.0 and gcc 13.2.0 from your
-> crosstools. I also see these on the current Linus' tree:
+On Thu, Mar 28, 2024 at 3:16=E2=80=AFAM Christian Loehle
+<christian.loehle@arm.com> wrote:
 >
-> arc/kernel/ptrace.c:342:16: warning: no previous prototype for 'syscall_trace_enter' [-Wmissing-prototypes]
-> arch/arc/kernel/kprobes.c:193:15: warning: no previous prototype for 'arc_kprobe_handler' [-Wmissing-prototypes]
+> On 27/03/2024 16:03, Allen Pais wrote:
+> > The only generic interface to execute asynchronously in the BH context =
+is
+> > tasklet; however, it's marked deprecated and has some design flaws. To
+> > replace tasklets, BH workqueue support was recently added. A BH workque=
+ue
+> > behaves similarly to regular workqueues except that the queued work ite=
+ms
+> > are executed in the BH context.
+> >
+> > This patch converts drivers/infiniband/* from tasklet to BH workqueue.
+> s/infiniband/mmc
 
-Yep these two I could trigger and fix posted [1]
+Will fix it in v2.
+> >
+> > Based on the work done by Tejun Heo <tj@kernel.org>
+> > Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6=
+10
+> >
+> > Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+> > ---
+> >  drivers/mmc/host/atmel-mci.c                  | 35 ++++-----
+> >  drivers/mmc/host/au1xmmc.c                    | 37 ++++-----
+> >  drivers/mmc/host/cb710-mmc.c                  | 15 ++--
+> >  drivers/mmc/host/cb710-mmc.h                  |  3 +-
+> >  drivers/mmc/host/dw_mmc.c                     | 25 ++++---
+> >  drivers/mmc/host/dw_mmc.h                     |  9 ++-
+> For dw_mmc:
+> Performance numbers look good FWIW.
+> for i in $(seq 0 5); do echo performance > /sys/devices/system/cpu/cpu$i/=
+cpufreq/scaling_governor; done
+> for i in $(seq 0 4); do fio --name=3Dtest --rw=3Drandread --bs=3D4k --run=
+time=3D30 --time_based --filename=3D/dev/mmcblk1 --minimal --numjobs=3D6 --=
+iodepth=3D32 --group_reporting | awk -F ";" '{print $8}'; sleep 30; done
+> Baseline:
+> 1758
+> 1773
+> 1619
+> 1835
+> 1639
+> to:
+> 1743
+> 1643
+> 1860
+> 1638
+> 1872
+> (I'd call that equivalent).
+> This is on a RK3399.
+> I would prefer most of the naming to change from "work" to "workqueue" in=
+ the driver
+> code.
+> Apart from that:
+> Reviewed-by: Christian Loehle <christian.loehle@arm.com>
+> Tested-by: Christian Loehle <christian.loehle@arm.com>
 
-> This fixed the warning about write_aux_reg for me, probably Vineet would
-> want this include somewhere else...
->
-> diff --git a/arch/arc/include/asm/mmu-arcv2.h b/arch/arc/include/asm/mmu-arcv2.h
-> index ed9036d4ede3..0fca342d7b79 100644
-> --- a/arch/arc/include/asm/mmu-arcv2.h
-> +++ b/arch/arc/include/asm/mmu-arcv2.h
-> @@ -69,6 +69,8 @@
->  
->  #ifndef __ASSEMBLY__
->  
-> +#include <asm/arcregs.h>
-> +
->  struct mm_struct;
->  extern int pae40_exist_but_not_enab(void);
+ Thank you very much for testing and the review. Will have your
+concerns addressed in v2.
 
-Thx Mike. Indeed the fix is trivial but on tip of tree I still can't
-trigger the warning to even test anything. I'm at following with my
-other fixes.
-
-    2024-03-27 962490525cff Merge tag 'probes-fixes-v6.9-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace  
-
-I tried defconfig build as well as the exact config from Linaro report
-[2], and/or various toolchains: from snps github, Arnd's crosstool
-toolchain.
-Granted all of these are linux toolchains - I vaguely remember at some
-time, baremetal elf32 toolchain behaved differently due to different
-defaults etc.
-I have a feeling this was something transient which got fixed up due to
-order of header includes etc.
-
-Anyone in the followup email David only reported 2 warnings which have
-been tended to as mentioned above - will be sent to Linus soon.
-
-[1]
-http://lists.infradead.org/pipermail/linux-snps-arc/2024-March/007916.html
-[2]
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2eA2VSZdDsL0DMBBhjoauN9IVoK/
-
-Thx,
--Vineet
+- Allen
 
