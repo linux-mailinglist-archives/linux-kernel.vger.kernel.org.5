@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-123530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA43E890A62
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:59:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 643AF890A63
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:59:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB94F1C2EE48
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:59:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DFBB29BBF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF5C13B7AA;
-	Thu, 28 Mar 2024 19:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC57346BF;
+	Thu, 28 Mar 2024 19:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gPWPu2UM"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQe1+o/L"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D5013B791;
-	Thu, 28 Mar 2024 19:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E6A13B5B5;
+	Thu, 28 Mar 2024 19:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655724; cv=none; b=I/hWT3f2q4eETqKllJBk+/0y+12HNeLjsMHw4CG3TJZ/ak0AZTjj7mQZaETluykr52HUiAyouF8S26Yt0OW/jw5R5mVzyJ2UR5lGsPLAOhgbk1MO9FcG/5OdXcrnZKGgEcw9V4ikm7TxEk+dDu545XjORx1l+G4bqDSk4C9IAX4=
+	t=1711655729; cv=none; b=m8ImBDwlRFr3i+S0Jko7QcHgHihdtWdxS5RwXALc+lD3diZDgjaXzb0Ubh/0YPKCHeuQyKTeibf7PlEkOKWm/Zf1xdk/7PiX/19+11keQ+VpMHtO+3cVLcr6rct/mIjIQ23LvGLxK8wbly3SyABGCMm/Kcgo/Xy5TnRTUr7InX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655724; c=relaxed/simple;
-	bh=cjEsbiErL4GEiLgWPr00zMhV+ra7917lJ1keLF6jIuU=;
+	s=arc-20240116; t=1711655729; c=relaxed/simple;
+	bh=fwHF+9VfvjyLijiOuriTU4phk/vNv1/uaYRVz+QNv7A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=f3nlPS7Iay+xmHrqX3yqb+u0KovwtLLbBD3y6DKEfjRz+qKzII7DcQ37OR7V7dNBaA8LfPte7DbR0XR4FI4P+ucmq7h4qUN4d83xx7qZti/i0ii7yQXS2H9qZbWlJMUQnJxP8vFD4zPGW++rRp39z3NXsRQRCXaYymA8vOjlpGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gPWPu2UM; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=isvx6wr31I4dyPVQSUzuwotnTz5MYxZDQdt4ZY3P+90+//9inmpM9PVspibp6yFmkFB/7ztaNT0PdE4l380Jfa699t/4eMIpNzplBMzfD2jWUC+n/Vblqv8GxW1S1IQ/tCri6iMty3OnEYEH+bCdfZaaLJ2NFGxBrcJUMXHHjnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQe1+o/L; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6b22af648so1810277b3a.0;
-        Thu, 28 Mar 2024 12:55:23 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e04ac4209eso11812105ad.1;
+        Thu, 28 Mar 2024 12:55:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711655723; x=1712260523; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711655727; x=1712260527; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3onkuNTqsbsPIhsygl1fro8dFk+/knTOJGgy1+clLaE=;
-        b=gPWPu2UMrdNMHAZtDJp8iahagtqXaTKstTkTrUSr/k7+F9uI5F25MsM8vSdH6qfYUL
-         Eh9r5I9feTiNtqtIGRU1fJqWBw5LzTucgGinku1zcC3CcT8wmhwFYB12t7DUQUFtNyUm
-         DHtsxm7IShaBcJK+oryafg86T2pPdkHINxm/bB2QdLcP/X/XVFm2MWxXIRNtfskTp4Oz
-         fJ4WzUXP9H/naottyJouNLOS7/C7BcmwTkWbXMUWr1c7bMTingRodQPVDNuoGqfGYY1C
-         66FfVLkKNloKXHF5kOI1YFtrUzlmllB91L6GGtCi/nJ7IVH5/60/068ommHKvBQeCxZy
-         jEuA==
+        bh=FaV84KT2HRtfO0aaQj0mOFU/al8Iv6el5mE2P2C4AwY=;
+        b=OQe1+o/L32zVC66/Yf0xaT18an0+S8chAJIN1F2YZ+5iphBaWjraL0WCFMi8MDDeke
+         9n8i3yHsP8C5Ghcq/irjQYrHs8juzuvqw3YU49DkD/QMPUHI6CoSOFqmYL1i37D2H2Ei
+         y8y02yfZvQS5ePuvVrwo0yU3uHD74Z/UZgSQ2SRpferKXyNn0zdv29BiT6vhbgMsdXGw
+         t2T7aITcJGPSfBlLGAIKY2VSExq6VdnwCxtRtCV5pXv+s4q64nx9WSKOM9bZdJE0B1tH
+         hdOMpIoELl03EL2HKd26OIyZ4+cFnH1Sr0AnKQ+BeHUjGGB86r6OQ6LdVc9+ePnCQVRF
+         EgEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711655723; x=1712260523;
+        d=1e100.net; s=20230601; t=1711655727; x=1712260527;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3onkuNTqsbsPIhsygl1fro8dFk+/knTOJGgy1+clLaE=;
-        b=c70/XWa16ITaHO5BAmzJrjm61bAsWjn8/ZTH4lAcdSBycyDlG6avflqmYOMLL5LcR7
-         csM/3esfC0wsHY3rqo/Gk68oXa1IqWwFM7BUlF23Q0T54Tj1MArdONovPnUdRkQfE7pi
-         VZTgKahiD/T2MQYlCvT0HV1tzU5BoGuUAlX897qwlrbecK2qTWtOZm/828jP3K80oF5K
-         ZzFEDfypqr0VZ6nd64ndBF70cmvOLMdVFpbmftqkn03Jt993yp9LRAr+gCw9/9qkw8kM
-         rGXPvGLCB6mJ5ePdFWfeQdj+DLjZSbtxTM2b2csbaiclphUg+sc7sBdaqxV4yCdRCiA6
-         NwVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGvW1Gb0JZNIegFvAYTj+vhRU/UuainNVBj+7E1A4HgwgzGuT07HC0oSLF3vn2yJTRVpN6n4Yi2I8twe7iGQ7qteIm5KqYa4jnKkYw
-X-Gm-Message-State: AOJu0Yzu+2+sDTdPIi+wOyNxI2oWiHgB1PxGyII2VpwFrEj893XXeaLQ
-	COGJM3Eq9NPL7MJjVeOBZ+RqkQ2NedcHU1I6DJnoPVI6LDlFoZnhTXVWZ0Ev
-X-Google-Smtp-Source: AGHT+IFHIFFoXRxFAQKTg7a2ng7z0GqOTb5sKGnRXt/T4T4naasjHmM5jKwJejoXUwY2joLDaGiA7w==
-X-Received: by 2002:a17:902:f54a:b0:1e0:aca5:fd24 with SMTP id h10-20020a170902f54a00b001e0aca5fd24mr498128plf.24.1711655722792;
-        Thu, 28 Mar 2024 12:55:22 -0700 (PDT)
+        bh=FaV84KT2HRtfO0aaQj0mOFU/al8Iv6el5mE2P2C4AwY=;
+        b=arZhbnjLiJrcOYhIm9qwxcuJyiTg8/2V3smv2oUDBDTgxxlUcehz/jHGWux0jujD9+
+         yDZ443k9R+PDDoy/1kKE3aacvVjToGWOsyW7T/4mAQ17+HdtfkCv/6yWU7+poA5N7fK0
+         VdXWJrSLsAP+pF9usNGZTKBFW0bx5QL5EB03blDUzYNtNxcatGnLis//6TJWfNbspGs6
+         fpIhha7yDL5HvXBJ5/sO754deFjANii7Pgspr9Bzy89FJAqLEfp4QElnC9S06VDZeisr
+         /fD8Kcd2jfulPE0HdOhaCA/X2nqHXEbzPB0Zffg1IY3ymRXGKm4mWbeay+qQwfxl1Uq4
+         P1CA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVXNpv2wK1t9BpCXbfgcZsmQtBPD34/Cbas90LaJXCC7kTaI2yqnWG5dawHjezIgStlw5Moyq4YMuy64/GeuFYVL2a2zozeT+glzrw
+X-Gm-Message-State: AOJu0YzmjjJsk2/883NiMewotDhn0hsq+IHCc2pB/e1QWCIQ31f1Hh7M
+	1ik52yQeHuPVj/+maYKLnBtVe8KkdiDbZfjM8VvtUc7xJoM4lNvUDLBJo3Dy
+X-Google-Smtp-Source: AGHT+IHtnVuR83rlRhJFX22O35yxSF4w2PJlJYzX7KvTLxFR+XM7g0omTJVVf70kwzut9sZDcrSPXg==
+X-Received: by 2002:a17:903:555:b0:1e0:af99:819e with SMTP id jo21-20020a170903055500b001e0af99819emr478073plb.20.1711655726788;
+        Thu, 28 Mar 2024 12:55:26 -0700 (PDT)
 Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id p16-20020a170902e75000b001dd7a97a266sm2006520plf.282.2024.03.28.12.55.18
+        by smtp.googlemail.com with ESMTPSA id p16-20020a170902e75000b001dd7a97a266sm2006520plf.282.2024.03.28.12.55.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 12:55:22 -0700 (PDT)
+        Thu, 28 Mar 2024 12:55:26 -0700 (PDT)
 From: Wedson Almeida Filho <wedsonaf@gmail.com>
 To: rust-for-linux@vger.kernel.org
 Cc: Miguel Ojeda <ojeda@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Alice Ryhl <aliceryhl@google.com>,
 	linux-kernel@vger.kernel.org,
 	Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: [PATCH v2 2/5] rust: kernel: require `Send` for `Module` implementations
-Date: Thu, 28 Mar 2024 16:54:54 -0300
-Message-Id: <20240328195457.225001-3-wedsonaf@gmail.com>
+Subject: [PATCH v2 3/5] rust: module: prefix all module paths with `::`
+Date: Thu, 28 Mar 2024 16:54:55 -0300
+Message-Id: <20240328195457.225001-4-wedsonaf@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328195457.225001-1-wedsonaf@gmail.com>
 References: <20240328195457.225001-1-wedsonaf@gmail.com>
@@ -94,30 +94,79 @@ Content-Transfer-Encoding: 8bit
 
 From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-The thread that calls the module initialisation code when a module is
-loaded is not guaranteed [in fact, it is unlikely] to be the same one
-that calls the module cleanup code on module unload, therefore, `Module`
-implementations must be `Send` to account for them moving from one
-thread to another implicitly.
+This prevents the macro-generated code from accidentally referring to
+the wrong symbol if the caller's code happens to have submodules called
+`core` or `kernel`.
 
 Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 ---
- rust/kernel/lib.rs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ rust/macros/module.rs | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index 5c641233e26d..9141a95efb25 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -62,7 +62,7 @@
- /// The top level entrypoint to implementing a kernel module.
- ///
- /// For any teardown or cleanup operations, your type may implement [`Drop`].
--pub trait Module: Sized + Sync {
-+pub trait Module: Sized + Sync + Send {
-     /// Called at module initialization time.
-     ///
-     /// Use this method to perform whatever setup or registration your module
+diff --git a/rust/macros/module.rs b/rust/macros/module.rs
+index 27979e582e4b..6da1246742a5 100644
+--- a/rust/macros/module.rs
++++ b/rust/macros/module.rs
+@@ -213,12 +213,12 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
+             // SAFETY: `__this_module` is constructed by the kernel at load time and will not be
+             // freed until the module is unloaded.
+             #[cfg(MODULE)]
+-            static THIS_MODULE: kernel::ThisModule = unsafe {{
+-                kernel::ThisModule::from_ptr(&kernel::bindings::__this_module as *const _ as *mut _)
++            static THIS_MODULE: ::kernel::ThisModule = unsafe {{
++                ::kernel::ThisModule::from_ptr(&::kernel::bindings::__this_module as *const _ as *mut _)
+             }};
+             #[cfg(not(MODULE))]
+-            static THIS_MODULE: kernel::ThisModule = unsafe {{
+-                kernel::ThisModule::from_ptr(core::ptr::null_mut())
++            static THIS_MODULE: ::kernel::ThisModule = unsafe {{
++                ::kernel::ThisModule::from_ptr(::core::ptr::null_mut())
+             }};
+ 
+             // Loadable modules need to export the `{{init,cleanup}}_module` identifiers.
+@@ -230,7 +230,7 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
+             #[doc(hidden)]
+             #[no_mangle]
+             #[link_section = \".init.text\"]
+-            pub unsafe extern \"C\" fn init_module() -> core::ffi::c_int {{
++            pub unsafe extern \"C\" fn init_module() -> ::core::ffi::c_int {{
+                 __init()
+             }}
+ 
+@@ -248,11 +248,11 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
+             #[doc(hidden)]
+             #[link_section = \"{initcall_section}\"]
+             #[used]
+-            pub static __{name}_initcall: extern \"C\" fn() -> core::ffi::c_int = __{name}_init;
++            pub static __{name}_initcall: extern \"C\" fn() -> ::core::ffi::c_int = __{name}_init;
+ 
+             #[cfg(not(MODULE))]
+             #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
+-            core::arch::global_asm!(
++            ::core::arch::global_asm!(
+                 r#\".section \"{initcall_section}\", \"a\"
+                 __{name}_initcall:
+                     .long   __{name}_init - .
+@@ -263,7 +263,7 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
+             #[cfg(not(MODULE))]
+             #[doc(hidden)]
+             #[no_mangle]
+-            pub extern \"C\" fn __{name}_init() -> core::ffi::c_int {{
++            pub extern \"C\" fn __{name}_init() -> ::core::ffi::c_int {{
+                 __init()
+             }}
+ 
+@@ -274,8 +274,8 @@ pub(crate) fn module(ts: TokenStream) -> TokenStream {
+                 __exit()
+             }}
+ 
+-            fn __init() -> core::ffi::c_int {{
+-                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
++            fn __init() -> ::core::ffi::c_int {{
++                match <{type_} as ::kernel::Module>::init(&THIS_MODULE) {{
+                     Ok(m) => {{
+                         unsafe {{
+                             __MOD = Some(m);
 -- 
 2.34.1
 
