@@ -1,87 +1,114 @@
-Return-Path: <linux-kernel+bounces-123638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1E68890C0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:54:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC572890C0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5231EB25236
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:54:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 198AC1C316FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CC813A879;
-	Thu, 28 Mar 2024 20:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0F713A875;
+	Thu, 28 Mar 2024 20:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E3GmzLix"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="myihduew"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370284594C;
-	Thu, 28 Mar 2024 20:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C18C4594C;
+	Thu, 28 Mar 2024 20:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711659288; cv=none; b=CfKRkrGZNMj3HWoHNsJp4O6Bb7tq+pbaiJocZ4SFOHfAk9sKhk6cBjSpVHRRVY9bcQEzvQJWze5GVdvZ0+xlNlmiXvqfbWKrCXCwhee6YjGVW+vGo/d0x/xjYxiEWP/VEXROopRUHoHG9dOCeLn7aZvpxJ8OslOenwQTII+eoBQ=
+	t=1711659321; cv=none; b=uM2bP9lJk1I5PG29XP/h0cFbIJROAjsNw28W+oZoEP5nHV8urzR/dK5ikcahnfvmUBiLZF/52g6hrmS3GSghGMVGMkVNzjo1r/QgI0q/I8xYbMjpjkj7Ru/vCdyUKAynA/2UmKNevDibPHJ9+mPaAuUWbn+6m1RMpMTuKnuwYL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711659288; c=relaxed/simple;
-	bh=tnxhmYo+aIMTZ7hUCuZ2Munr4Hlnba/v6s+s7n46tus=;
+	s=arc-20240116; t=1711659321; c=relaxed/simple;
+	bh=NlPf3KGnVETWty2mAwv7g0uKCHiSOl4SH1FWESdoYrc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A9n4RmCYAFnECA3fqARWYThwCGL5r/G4NYXLvsvOoWepcEl80z1/HggrWctNPkVYEtpiHo4pXWUyaqZFolgc0PYraNKa6aqnJ2uWQarKBADLNJmlYXbroLe6W1qwzpNCmBcMAqTbGR1Cu2MPEAoJek3FkrpX0TIM5Hus2F42a80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E3GmzLix; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80063C433C7;
-	Thu, 28 Mar 2024 20:54:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711659287;
-	bh=tnxhmYo+aIMTZ7hUCuZ2Munr4Hlnba/v6s+s7n46tus=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E3GmzLix6HyR/Kt7l8QmDD8iTZjBz8uo08lYmxs+Y21ilofyVZylnVhbG0PJ9cK7R
-	 D5X+799u/SI2BvGrnqVsvm76+PhszXExERgvTzOS3inUd89xlPDaDK3zn4soHNVaA7
-	 CCOwIgP/3avvMJ9xdvIg49oARvRD5VhRtc4XBvFgB2VIlVL/t7U+H0j0fn7CXgEI1j
-	 NKOHHGONygPwTUGqPoikDRB4ecmEwWH6AMWiypMb1prpegBTb9T6WpnDUpi21TRvNU
-	 8PkHNZNCoJIr09Prj+S1WRssGOmVS8JCensZDPETPYP1Zdv/KQjYmgfkeZ9NL4ILfu
-	 ob7iK/ebgVS0A==
-Date: Thu, 28 Mar 2024 15:54:45 -0500
-From: Rob Herring <robh@kernel.org>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, cristian.marussi@arm.com, andersson@kernel.org,
-	konrad.dybcio@linaro.org, jassisinghbrar@gmail.com,
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	quic_rgottimu@quicinc.com, quic_kshivnan@quicinc.com,
-	conor+dt@kernel.org, quic_gkohli@quicinc.com,
-	quic_nkela@quicinc.com, quic_psodagud@quicinc.com
-Subject: Re: [PATCH 1/5] dt-bindings: mailbox: qcom: Add CPUCP mailbox
- controller bindings
-Message-ID: <20240328205445.GA326382-robh@kernel.org>
-References: <20240328095044.2926125-1-quic_sibis@quicinc.com>
- <20240328095044.2926125-2-quic_sibis@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FCY2KMC0Rpg4GVZIah8JnDhXFMR8kj2WrO++MYWvZIZ6TtESs2OprhvnaQc3WXC1YucyJCcP658uQWmkKBY0UNsHZa18YwkMeAmMNxX71akKxaID38pPcN/SVurF4AbmcuwUuhV5XznVb2I7Si2ocB6Hl2QEoJdIFEkJkAxn/hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=myihduew; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711659320; x=1743195320;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NlPf3KGnVETWty2mAwv7g0uKCHiSOl4SH1FWESdoYrc=;
+  b=myihduewvEXAcX8PwFO4zNnu8OkGdhIIDzfQQzKaXWvYT969xpz/KkG2
+   TFCExXj/YLq/EYs2NQzhwwo4AYTggA08bxkIFDWLa60vQpxtdFkTyuc29
+   jYuK9t4Rqtg1nCp7U5eKDkTDH6JuMaX5eMD2vrT5wWz1V333D3QGf+8S+
+   lYOnZmviPIwvp+FHO/1O2ehusrTU2Oiqh9lY7lJ05muWd/Iq7Hja1Cmu/
+   TXua6DBQgtqPJbK1nI7WM7EKcYexG2NglRCxNToi5U/H/VV9an85IWp9K
+   z78J50ra+ug8x7j4aNDHhaZWtiJTpFM5eKDWc1AKUc23KB0LQik2hcnuG
+   Q==;
+X-CSE-ConnectionGUID: rj9XjWBdTMal1W0jh5KYag==
+X-CSE-MsgGUID: tusWMITURbOSzByzs43GwA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="10655603"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="10655603"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 13:55:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="17408469"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 13:55:19 -0700
+Date: Thu, 28 Mar 2024 13:55:17 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 060/130] KVM: x86/tdp_mmu: Apply mmu notifier
+ callback to only shared GPA
+Message-ID: <20240328205517.GQ2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <dead197f278d047a00996f636d7eef4f0c8a67e8.1708933498.git.isaku.yamahata@intel.com>
+ <2f2b4b37-2b99-4373-8d0d-cc6bc5eed33f@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240328095044.2926125-2-quic_sibis@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2f2b4b37-2b99-4373-8d0d-cc6bc5eed33f@linux.intel.com>
 
-On Thu, Mar 28, 2024 at 03:20:40PM +0530, Sibi Sankar wrote:
-> Add devicetree binding for CPUSS Control Processor (CPUCP) mailbox
-> controller.
+On Thu, Mar 28, 2024 at 04:29:50PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
+
 > 
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
 > 
-> rfc:
+> On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > The private GPAs that typically guest memfd backs aren't subject to MMU
+> > notifier because it isn't mapped into virtual address of user process.
+> > kvm_tdp_mmu_handle_gfn() handles the callback of the MMU notifier,
+> > clear_flush_young(), clear_young(), test_young()() and change_pte().  Make
+>                                                    ^
+>                                                    an extra "()"
 
-rfc is not a version, but a "state of the patch" tag. This should be v2.
+Will fix it. Thanks.
 
-> * Use x1e80100 as the fallback for future SoCs using the cpucp-mbox
->   controller. [Krzysztoff/Konrad/Rob]
+> > kvm_tdp_mmu_handle_gfn() aware of private mapping and skip private mapping.
+> > 
+> > Even with AS_UNMOVABLE set, those mmu notifier are called.  For example,
+> > ksmd triggers change_pte().
 > 
->  .../bindings/mailbox/qcom,cpucp-mbox.yaml     | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
+> The description about the "AS_UNMOVABLE", you are refering to shared memory,
+> right?
+> Then, it seems not related to the change of this patch.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Ok, will remove this sentence.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
