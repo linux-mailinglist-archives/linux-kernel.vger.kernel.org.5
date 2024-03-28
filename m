@@ -1,162 +1,128 @@
-Return-Path: <linux-kernel+bounces-123765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A8B2890D75
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AF40890D72
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F7829E24F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:21:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45DC029DAFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91ADE13E6DC;
-	Thu, 28 Mar 2024 22:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D127B13BAFF;
+	Thu, 28 Mar 2024 22:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YJjV2iSO"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V1zyR1Q0"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C3D13E6D4;
-	Thu, 28 Mar 2024 22:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F89C13BACD
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711664017; cv=none; b=jE926ST6TUF85e0+z+CdVhYokIjkPDjnH8Ij1vzP1VsP0ws0Z2a6NU0yvq/FedmfVYgTDu6fXohigKUWm/ICN/jRD6BUBvXHE91wSo1qt5oemudWvEASKBLT7SXotzWmVC1WBwxirvxfOiFv2p+BX86myHT3EC/MuwJL8DtElm0=
+	t=1711663984; cv=none; b=KgPJjdniPZcx8euIurBLocgMm/Wlyk1VyrXf/oCNnNANEjysbNblN/Zeo6UOePbA8jocCmUIOYYlc11NSI03N+pFnRig/048ObqaJtB7PBErcuNkCrEz7u7HEgFAlmEuR4UeP8FDMfquIJN1mVVXfECT/Vc6H97wva8KslJcbFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711664017; c=relaxed/simple;
-	bh=2lMT6KNPvKzbBMwVwrI0RDmqQ5yOjbh0txjmVUXqLU0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bLQLCzHq80BHXipMn6i4+Wsm9mS1lscjHPZSDc+xHLVmCKw5MMlHpnX+jhP9LeCosgpD51QylkbwawrDZgk/fd26yBuBW71FMzPerABZl9yfzQ4ReemTjR1Odjg6SpgQd4Rk8lEg7ihnAwjyFz2hEIvDRkYou9rt2hc0g9ga4YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YJjV2iSO; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so18433351fa.0;
-        Thu, 28 Mar 2024 15:13:36 -0700 (PDT)
+	s=arc-20240116; t=1711663984; c=relaxed/simple;
+	bh=UIn7MGUsViPkQt8ICxQrkMUs2JY8jgTueQwbo2IwpX4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WLoPcjOKcd3/3PTU5b3YXlvwvOpyuLO1cjF+z3gZCjwBAR3Du+XpybGyonAmqWpluFrseoVb5DZzeCQs78c+i9QL+ggyNbkrDD29+0CfDnB/vdFwb2AHzXM/DV9M9Nbs7mgBahvRHOoEdH2asim0QaIX7R1nmMbGjYdnFgn9CuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V1zyR1Q0; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5101cd91017so1767616e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711664014; x=1712268814; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1711663981; x=1712268781; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aZDt6XPS0X9RrCsopZrtOFphc1SwMJgyr4eQSlHmJ/w=;
-        b=YJjV2iSO+rmmmXNCQDupEnIu+EVekdFoaMhN7vD2k9msuhAteuD7jPIdC//jtVRB5c
-         4atDpAm0BXEWQnhmm+fIRVuk/snhvGKM67JO4If79iz1KvJXEPrnlzOV5qtI/wEdFMiN
-         xWDiBI0LO5ZjlzVO9HRVGZHTb+j3uWuSGC+eWb8pnSS4ceDcW5tN5rJPrCb3oUJg5s6y
-         U/D1r9CwxKHQMOiTcOvULfZRgGoXm72BWuuGofqmcs+hifNJe3XyIYISm7Q9UawzRbWe
-         xJ9G4AQaC5EHMGtJfx30sMpSS7gwRFPaZC/b8xdzr/tytKXK6hznPhJkZ+i02dP1OqQP
-         aYMg==
+        bh=ICkGbpRzf1cYfCwK/zqGbOtZejo0e91jUNy63Mscxkw=;
+        b=V1zyR1Q0y6TqJnwmOsTdIL3JDajG1kHMyBr1E7eAPAB0UygW79aF3+NovP84MPjKPb
+         ZVN/akcr/g69eumHLuHJr9sIGHyiNwaXkiY7ByObmQbiGN4OuXSinXKC6WFF72BJAy1R
+         nN3CobxrOb0g//L/HuXprN5DnaAmu1pkXM+pkEthITpf3Z77gPzLHfSloTXoj8//T/Sw
+         oeNFsAAh7mMTDBisCO17zKcHXUTSTVIYO5xvXZSeFH3o2v8PKxQ2Rk3VPlIkbKPbAyVs
+         J85XB8nz0KoBRyLpRMBOs6h6GxuFjGUhLzZNW/b3EM3byrsy7lrAoiBg48CpuChMJHHV
+         fudQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711664014; x=1712268814;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711663981; x=1712268781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aZDt6XPS0X9RrCsopZrtOFphc1SwMJgyr4eQSlHmJ/w=;
-        b=RFNMBOQ9aOJke3Om/vUHwbQqZGqAIKO5OtiDJMEC8w6utH3BVwE+lmxNnuGxKIYviJ
-         TbLrzdxgSyGikPTADy4Xo2LGlbCvSnnEqEh5PIvqlgNLpkbpkSiOElQYsrPuQi5izKBV
-         iLd/JHOrx2RDfYOBJY2O5a6A2ZKJHkK3Jie8hN3NkBevBg9myoTqUNkDSD6BW5YEaIS3
-         bN+PyNS1MB9o7Q3x2FqjxDgmdWdLfSb0NDifkXNwCAsRUiatCZ0AWne9KJ/tSjuwJfMv
-         rcTh6IWIvX+swa/dzTZKk3yqMglAPYneBGFgivt0N5d/EPB4A7YVty32/V1Wyq3Dq61l
-         3/OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX9sTICMr+Wpk4p9FKLvnMshPqKVhJUQ5QhJxPZEj27PGktZcuKDJnGetEcGFLOtDH12srfsDwgrnFlbec+EmvkXi8YOp8P8GJnSX0svSBRZROMKBXSzzt8jpGugWK7mZrHfiNtKcuyJt4=
-X-Gm-Message-State: AOJu0YzBEqQ0FQHhCBlEb6Gsk+LWb+y44Sey5JFc9yruaAPENFCRdUlA
-	msbT+7VX5iUeppm4JG3EsTgBB+Z6nmeIcr/cMYROQxXmN8iNNc10S5631dbpcNc=
-X-Google-Smtp-Source: AGHT+IEQXyiCKApTwZRRWL08M7GZqI7Ri9/gYPz/35OH0zL1qkQi4HnbVQl7wV1Kcip+ZffOmf4zUg==
-X-Received: by 2002:a2e:9d45:0:b0:2d4:707e:623 with SMTP id y5-20020a2e9d45000000b002d4707e0623mr254372ljj.37.1711664014152;
-        Thu, 28 Mar 2024 15:13:34 -0700 (PDT)
-Received: from lmc-playground.localdomain ([188.25.208.244])
-        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00414688af147sm6666778wms.20.2024.03.28.15.13.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 15:13:33 -0700 (PDT)
-From: Laurentiu Mihalcea <laurentiumihalcea111@gmail.com>
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com,
-	peter.ujfalusi@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	daniel.baluta@nxp.com,
-	iuliana.prodan@nxp.com,
-	linux-sound@vger.kernel.org,
-	imx@lists.linux.dev,
-	laurentiu.mihalcea@nxp.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: SOF: imx: remove imx8_*_clocks API
-Date: Fri, 29 Mar 2024 00:12:01 +0200
-Message-Id: <20240328221201.24722-3-laurentiumihalcea111@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240328221201.24722-1-laurentiumihalcea111@gmail.com>
-References: <20240328221201.24722-1-laurentiumihalcea111@gmail.com>
+        bh=ICkGbpRzf1cYfCwK/zqGbOtZejo0e91jUNy63Mscxkw=;
+        b=POxOsRMw7EkR8uTdZI65NASbj/vgdn4VVKyIXEo1J4LW8MAUYxceyLHT5fMqb580O1
+         cyxnaBK+2xjWzvFR22lu8XDRXDJjxrOaxkxIkRK2sfgA+YtE1OiiSE7yZ+je0mzqGCKL
+         xl8CMAnFkJvlFh0bn12IutTO9pOrzyA/7CeFhB1Cl1H3J96oEEnSxc9CWScy9NgR0bJa
+         mJI9JpDeBi8Hq3E40OgqxXZGfEZKZ4KdURMIth42ThxcYR4hwn6IQpCUe0iX2OR2+FFm
+         mKWhA1e8fYH5hsmn7XVk+lnFon4h+a575MGdJff/+crRusWLR7g144GbDsW1hi/BPWW4
+         AcGg==
+X-Gm-Message-State: AOJu0Yzjz7GPjKFWinipeVPuWfs5L3dSrfypUxxjIi8waDHrhXokseSI
+	IYvwQ/KWwgWBJDOCJH7bjqsWXjcicRtO93sp8l858tlHyk/7ed88vqVBRucfCAAxoR4Y4wP+ffW
+	NzRkC1cMC5g8qlDHbKYqHNNaQSFPh88tTV+AzpByOllXiJPwAv0h3
+X-Google-Smtp-Source: AGHT+IHSqMcf1h2xQB5wa4ZUcWCBKayE/iQN+78kFaOeI10I6ErDFcmpdz42xUhwteOa3FVAVroi2xGibnGqS3oLTFc=
+X-Received: by 2002:a19:6902:0:b0:513:d484:da51 with SMTP id
+ e2-20020a196902000000b00513d484da51mr440445lfc.65.1711663981372; Thu, 28 Mar
+ 2024 15:13:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240328143051.1069575-1-arnd@kernel.org> <20240328143051.1069575-8-arnd@kernel.org>
+In-Reply-To: <20240328143051.1069575-8-arnd@kernel.org>
+From: Justin Stitt <justinstitt@google.com>
+Date: Thu, 28 Mar 2024 15:12:49 -0700
+Message-ID: <CAFhGd8ojRE3no8K--Nanj5PJz4oO-eG2J8Q_4579pDEEJz8uNw@mail.gmail.com>
+Subject: Re: [PATCH 7/9] infiniband: uverbs: avoid out-of-range warnings
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Kees Cook <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	linux-rdma@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
+On Thu, Mar 28, 2024 at 7:32=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
+te:
+> Add a cast to u32 in both cases, so it never warns about this.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Since the i.MX drivers no longer use the imx8_*_clocks API
-this can be removed.
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 
-Signed-off-by: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
-Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/sof/imx/imx-common.c | 24 ------------------------
- sound/soc/sof/imx/imx-common.h |  9 ---------
- 2 files changed, 33 deletions(-)
-
-diff --git a/sound/soc/sof/imx/imx-common.c b/sound/soc/sof/imx/imx-common.c
-index 36e3d414a18f..2981aea123d9 100644
---- a/sound/soc/sof/imx/imx-common.c
-+++ b/sound/soc/sof/imx/imx-common.c
-@@ -74,28 +74,4 @@ void imx8_dump(struct snd_sof_dev *sdev, u32 flags)
- }
- EXPORT_SYMBOL(imx8_dump);
- 
--int imx8_parse_clocks(struct snd_sof_dev *sdev, struct imx_clocks *clks)
--{
--	int ret;
--
--	ret = devm_clk_bulk_get(sdev->dev, clks->num_dsp_clks, clks->dsp_clks);
--	if (ret)
--		dev_err(sdev->dev, "Failed to request DSP clocks\n");
--
--	return ret;
--}
--EXPORT_SYMBOL(imx8_parse_clocks);
--
--int imx8_enable_clocks(struct snd_sof_dev *sdev, struct imx_clocks *clks)
--{
--	return clk_bulk_prepare_enable(clks->num_dsp_clks, clks->dsp_clks);
--}
--EXPORT_SYMBOL(imx8_enable_clocks);
--
--void imx8_disable_clocks(struct snd_sof_dev *sdev, struct imx_clocks *clks)
--{
--	clk_bulk_disable_unprepare(clks->num_dsp_clks, clks->dsp_clks);
--}
--EXPORT_SYMBOL(imx8_disable_clocks);
--
- MODULE_LICENSE("Dual BSD/GPL");
-diff --git a/sound/soc/sof/imx/imx-common.h b/sound/soc/sof/imx/imx-common.h
-index ec4b3a5c7496..13d7f3ef675e 100644
---- a/sound/soc/sof/imx/imx-common.h
-+++ b/sound/soc/sof/imx/imx-common.h
-@@ -15,13 +15,4 @@ void imx8_get_registers(struct snd_sof_dev *sdev,
- 
- void imx8_dump(struct snd_sof_dev *sdev, u32 flags);
- 
--struct imx_clocks {
--	struct clk_bulk_data *dsp_clks;
--	int num_dsp_clks;
--};
--
--int imx8_parse_clocks(struct snd_sof_dev *sdev, struct imx_clocks *clks);
--int imx8_enable_clocks(struct snd_sof_dev *sdev, struct imx_clocks *clks);
--void imx8_disable_clocks(struct snd_sof_dev *sdev, struct imx_clocks *clks);
--
- #endif
--- 
-2.34.1
-
+> ---
+>  drivers/infiniband/core/uverbs_ioctl.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/=
+core/uverbs_ioctl.c
+> index f80da6a67e24..e0cc3ddae71b 100644
+> --- a/drivers/infiniband/core/uverbs_ioctl.c
+> +++ b/drivers/infiniband/core/uverbs_ioctl.c
+> @@ -90,7 +90,7 @@ void uapi_compute_bundle_size(struct uverbs_api_ioctl_m=
+ethod *method_elm,
+>                 ALIGN(bundle_size + 256, sizeof(*pbundle->internal_buffer=
+));
+>
+>         /* Do not want order-2 allocations for this. */
+> -       WARN_ON_ONCE(method_elm->bundle_size > PAGE_SIZE);
+> +       WARN_ON_ONCE((u32)method_elm->bundle_size > PAGE_SIZE);
+>  }
+>
+>  /**
+> @@ -636,7 +636,7 @@ long ib_uverbs_ioctl(struct file *filp, unsigned int =
+cmd, unsigned long arg)
+>         if (err)
+>                 return -EFAULT;
+>
+> -       if (hdr.length > PAGE_SIZE ||
+> +       if ((u32)hdr.length > PAGE_SIZE ||
+>             hdr.length !=3D struct_size(&hdr, attrs, hdr.num_attrs))
+>                 return -EINVAL;
+>
+> --
+> 2.39.2
+>
 
