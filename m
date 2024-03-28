@@ -1,90 +1,59 @@
-Return-Path: <linux-kernel+bounces-122956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B400890052
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:34:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53744890054
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C55AF290EBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:34:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76B5B1C23220
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B72280BF8;
-	Thu, 28 Mar 2024 13:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B5C81751;
+	Thu, 28 Mar 2024 13:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="oRof7uaY"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2053.outbound.protection.outlook.com [40.107.8.53])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oRSajtaA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474B0405FF;
-	Thu, 28 Mar 2024 13:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711632846; cv=fail; b=ltBLJGJQy9qsWt2eadxVI2TMfRdN0psWdrrpLt4C3Fvgj3KJMqeLFZCUOLIQdnZEpbp84fPC6LSWbOdEkXKd6ZVBBASCw8DYES9PsEmbeO4cgmSma3YzrsNi/fV0VYTzI+LYkZJzuzGou28K8Qi7k/iXjjMMAzP724a8PmIr6Y8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711632846; c=relaxed/simple;
-	bh=SHNLdxp/PLdrt7wrL9aZNVpCDC53Mvoey/oz4VBlsjo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=j7gwFKIb92tO4MwhxdLUEVHgAf5EfAYRdqVzQUIJlXEaB65QKxZwLWDCE/7nwoWQVN73ii3QMrfYmJowExg0tmhB7Q/tZtepV1uDyy9Ph+53pWCpWSUtdZRhJXhUvy7HTJ68c9ev7b3TYj1GXndwK04rtZQ6w82e5ujZkTsMr0E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=oRof7uaY; arc=fail smtp.client-ip=40.107.8.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CI9alzlEvOVsYOVWMIYv9XR8t7rKLgJGFqfX6UZWWSqAiSlcsuskI+wYLKnJFqgqhNv94e/RMToDrG3jy53Fmix2iurjnyS1b83BKi3BMpFf/Qo83PJfLiHY+Yd4jv0KHTb3fPJg0aYLhfZ7uw9eB3x7zGbq8wy8hTPwVjCh060v6ii8pH9rOEuAe72tTZrYlBGTa0+kJ5k3vl65mInq9M4s/mRoerHDIKW6yvtCuVpDFBeFlrqTbeZuKVNeujmb+hE4yaFZXom/jacrkLNkd7aznqK1Oleg2w2VlACDVvwxCI8udFvJW2bqRPErMLq/X5rnxkf3WzWjxiMmEmeAVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C7qTa1e5gL04NahTXWBkAoJ3nAXRX0dNz+AleYJucY0=;
- b=oaBKT3OvcIRVX6s01VeivDBQIEjs73s0EpXNLLXdZs+5e11wTUh1a4XJ+jgESHw0UB/Y9lpVWaMJe+JxbvIGOBOG5yvuZl4tg2D2qRLO/Xv49+270tyHnsMcCdif/frSD2L6MtpxsCf2Qa/4MHJYYnljUXRGNWFXDcZ9mK7uGGFVILPwU+6td91npCm4aswOWvjKxQbFMgRs8s459IhGy3zmOu85gbkyX2WS27SvSphUjSdJJh1tmlpLuAUAs7zE7N42jquKSwFYnsX6BNEs+SpNZLu4vld0RpYzOOOZCH9YdU8T5cIwA+hUuUdL32dxeyVZQ/mF4TlTEU4fZBEfvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.8.40.94) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
- action=none header.from=leica-geosystems.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C7qTa1e5gL04NahTXWBkAoJ3nAXRX0dNz+AleYJucY0=;
- b=oRof7uaYikauF4Uur7Qm9uRl8DKYrBBVatN1HNBSSrlxqpkQvBioGA1W3c9nXQdeQmYgKDALaRblJK2vmlFRv8IpRz/9MVnJ8SeliMqJ8OXWK47lSFKJAEHNCq0jz+IXd7RCqSdeA81s5SPBqn0iovPjSFxkbN7+XVYAgyn1aZw=
-Received: from AS9PR04CA0036.eurprd04.prod.outlook.com (2603:10a6:20b:46a::29)
- by PAXPR06MB8424.eurprd06.prod.outlook.com (2603:10a6:102:22f::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
- 2024 13:34:01 +0000
-Received: from AMS0EPF000001A2.eurprd05.prod.outlook.com
- (2603:10a6:20b:46a:cafe::cb) by AS9PR04CA0036.outlook.office365.com
- (2603:10a6:20b:46a::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Thu, 28 Mar 2024 13:34:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
- smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
-Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
- designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.8.40.94; helo=hexagon.com; pr=C
-Received: from hexagon.com (193.8.40.94) by
- AMS0EPF000001A2.mail.protection.outlook.com (10.167.16.235) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.10 via Frontend Transport; Thu, 28 Mar 2024 13:34:01 +0000
-Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
-	 Thu, 28 Mar 2024 14:34:00 +0100
-From: Catalin Popescu <catalin.popescu@leica-geosystems.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8089D405FF;
+	Thu, 28 Mar 2024 13:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711632854; cv=none; b=ozOP/i682DLl5YVI43aIXYna/qI5c9XC/F3GXWRvDFDsGLTZD0jz6NhDz3BFUQjS+HjiiF5EOblRHX13zoin9zIKF84vAKjQvO9+FDEQTjTnVaCZaBbloBIJcBDN22SssSeAS2zfJsDMi1K2SJssd+yByNFo2yKbdzSwrMXdDBY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711632854; c=relaxed/simple;
+	bh=MTl+MqWhM6jFgml8aciVqT+UCwUjsKjEyPmh+mIzli8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SdRZRUKyMQSKpR4Jc/8UVXKI+hPZsBUpd/SZfOaFxrn2sx5bksJBfTPGDNFVWx73soHJ9LHlyt9t5pwr2KGvWqQH5Aq2TRRQt3jqXHO7bXqUWLVfbyTu82BpTNS2tr27VVtXjzxNcHxNeNP0NI9x4Gz2Oh76aySS6AST7/xwUO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oRSajtaA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4713C43390;
+	Thu, 28 Mar 2024 13:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711632854;
+	bh=MTl+MqWhM6jFgml8aciVqT+UCwUjsKjEyPmh+mIzli8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=oRSajtaAg2292U7sKWoJVPr5I6l9Ou3Ab4TTn3OJQP2jHoXgjivlAv6NRgY1OmdlX
+	 6YwdaUicc5iopAXC/FejF8GMKHJw1qljOavV/tCZFDKdgOR9TG/gDpRylqYPDvvhBJ
+	 0CSdyU6ek/wcS1dwtLUVwmqks8sM9cPv8XVHw4vpvsAQh5YB3BGilHHluXVNKe9i3y
+	 3+iyc/KLSqI5fyTvUtjuJwMDwT5Num+iIHq8HpXaB2TU71bg8CcMhlBRj9XVYCTYVp
+	 BC9C//xuNHqCzb0IYeh1A9bU4eZLxPbUa7l6XQJmmu6AtCTJ01ChDGmdZxVlYbyT23
+	 SUJX4L5be6hsQ==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: x86@kernel.org,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	tglx@linutronix.de
+Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	m.felsch@pengutronix.de,
-	bsp-development.geo@leica-geosystems.com,
-	Catalin Popescu <catalin.popescu@leica-geosystems.com>
-Subject: [PATCH net-next v2] net: phy: dp8382x: keep WOL settings across suspends
-Date: Thu, 28 Mar 2024 14:33:58 +0100
-Message-Id: <20240328133358.30544-1-catalin.popescu@leica-geosystems.com>
-X-Mailer: git-send-email 2.34.1
+	jolsa@kernel.org,
+	song@kernel.org,
+	kernel-team@meta.com,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2] perf/x86/amd: support capturing LBR from software events
+Date: Thu, 28 Mar 2024 06:33:59 -0700
+Message-ID: <20240328133359.731818-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,139 +61,158 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 28 Mar 2024 13:34:00.0873 (UTC) FILETIME=[97E7C990:01DA8114]
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF000001A2:EE_|PAXPR06MB8424:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: f491de73-da5b-4cda-9aa2-08dc4f2bba90
-X-SET-LOWER-SCL-SCANNER: YES
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	LQhhmbDxFxkkaMtJGRZUwVjjTOVpcxVBLP+BzfgHcC/50lelVQlLUJ49VVxCuzo6A7LT0zMz1840xmENpmnwoihpgYNHMzYqMSJ2a/4aSYB1ZHvb1S47kfhqtZrvB6ulxu2zEWQbp+JmkE8biphnflejUtdOifg6gqnMQSX1dMe3AARYJ/v4kNkcW2giAMUX5y0q7I1zsUdd9EwGUy3hbtpSsPUYQtjP5YcKl2q+wrxXQAHOpOzmFm4BRMrqvQhsVjyWuT5r5biflINQcXRDu/wwNAwWlwoR4GGs7arGlfwjjvKjK9XnLCJ290P/PyS1giOJY2/cME49C+VtR2YHVWWaWCH8C1jiTSngzmEWNkl+8egKJspmmn6quhFQvnfonXaDGvQk5GVk7tepmG3+cLP0EIGtMk83jTta/EBZ+6ckev8lKIvVMLAuCB8F294ab74pIAD0YTkk62oNclm/Y7q9QPKdE5lEgxc7SKDCX97R+e4ZOL0d73uP5r4rdLPaxy7KPvWLLHfjgKXCUBaFyO3MMdKQ1/yeZJ2CrxKy/+KmKwFbSeIVHCG7R+qD5buV9f6moIuPBewkYS/FRfOLpxHAbANnkA/xVLNJ+0G98M02sRHDIDvLY0w9p0VWYpVTY5AzGRKbqiMxZC8AgCDQbHx+FFUcSDrQ0Rgj560nqbtkUqWUuBbPv5EBZwz0BbYH/PpvJnsjzboTzXs19spoHCoH5TD1W45arjabBfupyZvGVJmnQNCphyQtIMcnSpi3
-X-Forefront-Antispam-Report:
-	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(36860700004)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 13:34:01.0901
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f491de73-da5b-4cda-9aa2-08dc4f2bba90
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF000001A2.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR06MB8424
 
-Unlike other ethernet PHYs from TI, PHY dp8382x has WOL enabled
-at reset. The driver explicitly disables WOL in config_init callback
-which is called during init and during resume from suspend. Hence,
-WOL is unconditionally disabled during resume, even if it was enabled
-before the suspend. We make sure that WOL configuration is persistent
-across suspends.
+[0] added ability to capture LBR (Last Branch Records) on Intel CPUs
+from inside BPF program at pretty much any arbitrary point. This is
+extremely useful capability that allows to figure out otherwise
+hard-to-debug problems, because LBR is now available based on some
+application-defined conditions, not just hardware-supported events.
 
-Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+retsnoop ([1]) is one such tool that takes a huge advantage of this
+functionality and has proved to be an extremely useful tool in
+practice.
+
+Now, AMD Zen4 CPUs got support for similar LBR functionality, but
+necessary wiring inside the kernel is not yet setup. This patch seeks to
+rectify this and follows a similar approach to the original patch [0]
+for Intel CPUs.
+
+Given LBR can be set up to capture any indirect jumps, it's critical to
+minimize indirect jumps on the way to requesting LBR from BPF program,
+so we split amd_pmu_lbr_disable_all() into a wrapper with some generic
+conditions vs always-inlined __amd_pmu_lbr_disable() called directly
+from BPF subsystem (through perf_snapshot_branch_stack static call).
+
+Now that it's possible to capture LBR on AMD CPU from BPF at arbitrary
+point, there is no reason to artificially limit this feature to sampling
+events. So corresponding check is removed. AFAIU, there is no
+correctness implications of doing this (and it was possible to bypass
+this check by just setting perf_event's sample_period to 1 anyways, so
+it doesn't guard all that much).
+
+This was tested on AMD Bergamo CPU and worked well when utilized from
+the aforementioned retsnoop tool.
+
+  [0] https://lore.kernel.org/bpf/20210910183352.3151445-2-songliubraving@fb.com/
+  [1] https://github.com/anakryiko/retsnoop
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
-Changes in v2:
- - store the whole WoL settings not only the wol_enabled flag
- - in config_init, reconfigure WoL from stored settings, overriding
-   any setting from BIOS/bootloader
- - fix device name in commit message (dp8382x vs dp83822x)
----
- drivers/net/phy/dp83822.c | 37 ++++++++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+ arch/x86/events/amd/core.c   | 29 ++++++++++++++++++++++++++++-
+ arch/x86/events/amd/lbr.c    | 11 +----------
+ arch/x86/events/perf_event.h | 11 +++++++++++
+ 3 files changed, 40 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index c3426a17e6d0..683ebb13bd4f 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -140,10 +140,11 @@ struct dp83822_private {
- 	u16 fx_sd_enable;
- 	u8 cfg_dac_minus;
- 	u8 cfg_dac_plus;
-+	struct ethtool_wolinfo wol;
- };
- 
--static int dp83822_set_wol(struct phy_device *phydev,
--			   struct ethtool_wolinfo *wol)
-+static int _dp83822_set_wol(struct phy_device *phydev,
-+			    struct ethtool_wolinfo *wol)
- {
- 	struct net_device *ndev = phydev->attached_dev;
- 	u16 value;
-@@ -197,10 +198,25 @@ static int dp83822_set_wol(struct phy_device *phydev,
- 				     MII_DP83822_WOL_CFG, value);
- 	} else {
- 		return phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
--					  MII_DP83822_WOL_CFG, DP83822_WOL_EN);
-+					  MII_DP83822_WOL_CFG,
-+					  DP83822_WOL_EN |
-+					  DP83822_WOL_MAGIC_EN |
-+					  DP83822_WOL_SECURE_ON);
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index aec16e581f5b..88f6d0701342 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -618,7 +618,7 @@ static void amd_pmu_cpu_dead(int cpu)
  	}
  }
  
-+static int dp83822_set_wol(struct phy_device *phydev,
-+			   struct ethtool_wolinfo *wol)
+-static inline void amd_pmu_set_global_ctl(u64 ctl)
++static __always_inline void amd_pmu_set_global_ctl(u64 ctl)
+ {
+ 	wrmsrl(MSR_AMD64_PERF_CNTR_GLOBAL_CTL, ctl);
+ }
+@@ -878,6 +878,29 @@ static int amd_pmu_handle_irq(struct pt_regs *regs)
+ 	return amd_pmu_adjust_nmi_window(handled);
+ }
+ 
++static int amd_pmu_v2_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
 +{
-+	struct dp83822_private *dp83822 = phydev->priv;
-+	int ret;
++	struct cpu_hw_events *cpuc;
++	unsigned long flags;
 +
-+	ret = _dp83822_set_wol(phydev, wol);
-+	if (!ret)
-+		memcpy(&dp83822->wol, wol, sizeof(*wol));
-+	return ret;
++	/* must not have branches... */
++	local_irq_save(flags);
++	amd_pmu_core_disable_all();
++	__amd_pmu_lbr_disable();
++	/*            ... until here */
++
++	cpuc = this_cpu_ptr(&cpu_hw_events);
++
++	amd_pmu_lbr_read();
++	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
++	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
++
++	amd_pmu_v2_enable_all(0);
++	local_irq_restore(flags);
++
++	return cnt;
 +}
 +
- static void dp83822_get_wol(struct phy_device *phydev,
- 			    struct ethtool_wolinfo *wol)
+ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
  {
-@@ -346,13 +362,6 @@ static irqreturn_t dp83822_handle_interrupt(struct phy_device *phydev)
- 	return IRQ_HANDLED;
- }
- 
--static int dp8382x_disable_wol(struct phy_device *phydev)
--{
--	return phy_clear_bits_mmd(phydev, DP83822_DEVADDR, MII_DP83822_WOL_CFG,
--				  DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
--				  DP83822_WOL_SECURE_ON);
--}
--
- static int dp83822_read_status(struct phy_device *phydev)
- {
- 	struct dp83822_private *dp83822 = phydev->priv;
-@@ -496,7 +505,7 @@ static int dp83822_config_init(struct phy_device *phydev)
- 				return err;
- 		}
- 	}
--	return dp8382x_disable_wol(phydev);
-+	return _dp83822_set_wol(phydev, &dp83822->wol);
- }
- 
- static int dp83826_config_rmii_mode(struct phy_device *phydev)
-@@ -575,12 +584,14 @@ static int dp83826_config_init(struct phy_device *phydev)
- 			return ret;
- 	}
- 
--	return dp8382x_disable_wol(phydev);
-+	return _dp83822_set_wol(phydev, &dp83822->wol);
- }
- 
- static int dp8382x_config_init(struct phy_device *phydev)
- {
--	return dp8382x_disable_wol(phydev);
-+	struct dp83822_private *dp83822 = phydev->priv;
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+@@ -1414,6 +1437,10 @@ static int __init amd_core_pmu_init(void)
+ 		static_call_update(amd_pmu_branch_reset, amd_pmu_lbr_reset);
+ 		static_call_update(amd_pmu_branch_add, amd_pmu_lbr_add);
+ 		static_call_update(amd_pmu_branch_del, amd_pmu_lbr_del);
 +
-+	return _dp83822_set_wol(phydev, &dp83822->wol);
++		/* only support branch_stack snapshot on perfmon v2 */
++		if (x86_pmu.handle_irq == amd_pmu_v2_handle_irq)
++			static_call_update(perf_snapshot_branch_stack, amd_pmu_v2_snapshot_branch_stack);
+ 	} else if (!amd_brs_init()) {
+ 		/*
+ 		 * BRS requires special event constraints and flushing on ctxsw.
+diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
+index 4a1e600314d5..75920f895d67 100644
+--- a/arch/x86/events/amd/lbr.c
++++ b/arch/x86/events/amd/lbr.c
+@@ -310,10 +310,6 @@ int amd_pmu_lbr_hw_config(struct perf_event *event)
+ {
+ 	int ret = 0;
+ 
+-	/* LBR is not recommended in counting mode */
+-	if (!is_sampling_event(event))
+-		return -EINVAL;
+-
+ 	ret = amd_pmu_lbr_setup_filter(event);
+ 	if (!ret)
+ 		event->attach_state |= PERF_ATTACH_SCHED_CB;
+@@ -412,16 +408,11 @@ void amd_pmu_lbr_enable_all(void)
+ void amd_pmu_lbr_disable_all(void)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	u64 dbg_ctl, dbg_extn_cfg;
+ 
+ 	if (!cpuc->lbr_users || !x86_pmu.lbr_nr)
+ 		return;
+ 
+-	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
+-	rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
+-
+-	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
+-	wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
++	__amd_pmu_lbr_disable();
  }
  
- static int dp83822_phy_reset(struct phy_device *phydev)
-
-base-commit: a6bd6c9333397f5a0e2667d4d82fef8c970108f2
-prerequisite-patch-id: 0000000000000000000000000000000000000000
+ __init int amd_pmu_lbr_init(void)
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index fb56518356ec..4dddf0a7e81e 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1329,6 +1329,17 @@ void amd_pmu_lbr_enable_all(void);
+ void amd_pmu_lbr_disable_all(void);
+ int amd_pmu_lbr_hw_config(struct perf_event *event);
+ 
++static __always_inline void __amd_pmu_lbr_disable(void)
++{
++	u64 dbg_ctl, dbg_extn_cfg;
++
++	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
++	rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
++
++	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
++	wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
++}
++
+ #ifdef CONFIG_PERF_EVENTS_AMD_BRS
+ 
+ #define AMD_FAM19H_BRS_EVENT 0xc4 /* RETIRED_TAKEN_BRANCH_INSTRUCTIONS */
 -- 
-2.34.1
+2.43.0
 
 
