@@ -1,116 +1,161 @@
-Return-Path: <linux-kernel+bounces-123370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3464890744
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:35:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D0F890749
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D25929C4CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:35:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C027B2560A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A8512F399;
-	Thu, 28 Mar 2024 17:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F43535CA;
+	Thu, 28 Mar 2024 17:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="fcRqWyBO"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DtS9F50v"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F14B14A84;
-	Thu, 28 Mar 2024 17:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E68814A84
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711647320; cv=none; b=QW3N5dpVxWUVDNCK13WYkv1b6SA4/zDdPozRj1RYX3T6YheIR/XHPVjc87Y4cJem4X5KeppOYP2B2OsbXec/u6vc5aWS/mSFSymqG2qwbw8ez1IqQX+Gmj0uKITQG7QNccUTz6r5iL/kAZclF3zf39eRakgDAk1sIDuJMy1q1Gw=
+	t=1711647532; cv=none; b=amagwZzR0RQwzmOjhfVsdmIQh2AtjwkB65gFTFU302jiR3gnUECEr/bRWeOyxfmKGC1I22wT5kwznNmDAT5uZJwubpqRcNC2pjNzYYNfsRAcQeaVW05oYAdxEFwgefbnlgkmNcEBt/IlfA5nUUpgwMZ7jyirZuE/KpjTEoTo0o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711647320; c=relaxed/simple;
-	bh=pgpRjdYvE6XkBLzVGAuv411UInyEJ+Ima53o7NfjVLo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pZKCl5bcbC00VFAzgMHobbfsMTKtY0qPEMfZxxP5pS38DwPk7i8UG4B+5x72t1+ldY57s3xDRU1k0gTQ+wkGbFZ4meH9OnBqGzUbiVg7y9Wq6Pc3wkZhwNetLmhLDtpHbWmh+tQryrt3MUuqtVY3dI6vERDNa6zixUXYrzt2o10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=fcRqWyBO; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id DA28B100002;
-	Thu, 28 Mar 2024 20:34:55 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1711647295; bh=woseDRdyM4juKO+cAWZ27r4/vCdyFNNlrp2AGifkU38=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=fcRqWyBOhVtuk2UBYQi9x6cOUr5ApkyJr8Jdk7j4b67G8m/6CAuISxAcuSzDkue25
-	 PuNsjybe0pS/g1YoBt9vDLJJoyZFCxIGCYEvotx+wxccw3RXFZZfm4uC4TyMaEQCTP
-	 wnM35fHneXEkq9Imc2A1VvjuKp8WZYnRFGdymIImaq8yc6E+Xxv7AS3EXnTOcRgwS5
-	 KBjyRRG9PJ1HCn7qUfqBL3SQ4EH64X2DfEvfvMIhzQbrG33O/OF8+oJjR6zYFsyjmO
-	 VOBGa/H2HYoPkLVUqOlf1zEeos4j+dNnZWBULNoGVYILr8Tgl4qk9tgEUahdZqGwsB
-	 Y5u2us+x8LYLQ==
-Received: from mx1.t-argos.ru.ru (ta-mail-02.ta.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Thu, 28 Mar 2024 20:34:05 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 28 Mar
- 2024 20:33:44 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Liam Girdwood <lgirdwood@gmail.com>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
- Morimoto <kuninori.morimoto.gx@renesas.com>, <linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] ASoC: kirkwood: Fix potential NULL dereference
-Date: Thu, 28 Mar 2024 20:33:37 +0300
-Message-ID: <20240328173337.21406-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1711647532; c=relaxed/simple;
+	bh=mTJ0nmtG0NZNp0eWCead9GHxzS4WDqTAoa7fzaxOO1g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ScRA+pbQKN57+LOxaVLcTCpAoK9MaxLVugXS1BpK76Rplp7aUvmnroHX6kREQGFVmlFVzgOtjzDCT744RIe+5qxRdgw/bF/M+oYutrKBXujb37bxH+i/b+RQL0JZUoQOY8Gmwn5qLpkLPqGfG9FI4ecwyPvpnZ+/mgW6cI3jhck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DtS9F50v; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2a20c054811so437036a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711647530; x=1712252330; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EcQTD2Kr0y2yHUjxPpxpF3woyw+SyS6YRJDLTY40Bqo=;
+        b=DtS9F50vd1BVL/7SxNEYhcpuX8LewK0x8GsUaesHVTp60rtrr9cnDj8bVaYEcSS7Y3
+         V8FWtyRzwfETD0oJhbPHYlVZj9NL4TvExDK4+q4uEob7kcGPSJJL+ZvdSDUeXU9eDp6y
+         KRSbNeOoB9X78kf90aJciSKX/zIvEfmzSdjASnq0xaLdiAvRvkn9UNoOXiF20SgssptM
+         Tp3EB0W6w58wZRyd7gPN1VZhmR9s+NmWXJRDaKttIF+EiRdJNYOmgR4KFgzN5yD/rpqi
+         iXc1VXPEoAAiqRs1wVSyNIyo3PU2KGTK5WTJ6MlU3W1qja34LwQf9ZICbBfngh3LNPJp
+         Eacw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711647530; x=1712252330;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EcQTD2Kr0y2yHUjxPpxpF3woyw+SyS6YRJDLTY40Bqo=;
+        b=fXxBayvqafeSTUTK7N4Yt7mr8jIBnMfZWT2T6zsXqnEey5FY/JZs+cHRYtwLVmi/sn
+         jWZNib6Xmu8lPD6kFBj8JOtYNCiTfImMy0XR7I1kyD1iHtebgZ8qvaHPGHKeXzhCLgC+
+         Ivv65UQUN9lQxzv3vbZyZg0MFpc1ba/jUzV1XsJkExZQiK1rqFNjO5V/PhZKQTXyaR3E
+         3GHYCa35OEONjfvaYt7wJMfb92XTevetZq2ku0KmU4N8Aj2I2Fhmeg00+sHOY8eEyd+5
+         Wvp1W+CnyHJaxzfCiwyOS6d1sC5R1jnPIOovOqRBvOiLPK2crpUe9b+yalkls4csTH1r
+         zrvw==
+X-Forwarded-Encrypted: i=1; AJvYcCW62WBJOVhEis5d3yj1VQ2eofY2dcfBYrl1I6+LWVxQqWT+M4iW3/RYSssHnK9lkZNe/3KTSrBM/LwtVTiCp1h8iGqGvMNQjLbBUHPu
+X-Gm-Message-State: AOJu0YzSceC0VVIn/DOwrJPOK8RiirIGC7P5HIcFD8dG88cY4C38Fomy
+	Pjot2a6ihd1oqYD+PxNnGCBd7LkK7qhBnhMKyeqwfzYfAuORbZxwdd61J5rzWgVXrb5ZF9gMQHh
+	VXIzOeXSXnvogD+jl1Fn8tphRJR9I2dyenhjuWA==
+X-Google-Smtp-Source: AGHT+IE3WwtFIH0kVnVKEFAwqITjKvf/SjYZPDfN1LKWvwo5hkfPrdMbq7NnfsGNxpX6ZYOqgDyDogM9TBn4IGF+rMM=
+X-Received: by 2002:a17:90b:682:b0:29b:331e:ec47 with SMTP id
+ m2-20020a17090b068200b0029b331eec47mr117121pjz.27.1711647529777; Thu, 28 Mar
+ 2024 10:38:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184474 [Mar 28 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;t-argos.ru:7.1.1;127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/28 17:08:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/28 12:50:00 #24493847
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <cover.1711584739.git.vitaly@bursov.com> <da4454bf368e51369c74e4574d22e8f0bfd9d368.1711584739.git.vitaly@bursov.com>
+ <CAKfTPtCux6diCArXcF11w+D1VMKLwj-eWUeXQq3d=2=2Xfe8uw@mail.gmail.com>
+ <1679cb16-a4a1-4a5f-9742-3523555d33f9@bursov.com> <CAKfTPtDbRUNEQ4g3rBxuC8daa6Dj_Eba8mHhVr+9UZ9eAFTPkw@mail.gmail.com>
+ <163e1980-41ff-4a5f-9d93-431e65fd3a9d@bursov.com>
+In-Reply-To: <163e1980-41ff-4a5f-9d93-431e65fd3a9d@bursov.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 28 Mar 2024 18:38:38 +0100
+Message-ID: <CAKfTPtDu_kMMMfgToyTqhiPQ6biBo1ROjccUBrPuaQwyqG14=w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair: allow disabling newidle_balance with sched_relax_domain_level
+To: Vitalii Bursov <vitaly@bursov.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-In kirkwood_dma_hw_params() mv_mbus_dram_info() returns NULL if
-CONFIG_PLAT_ORION macro is not defined.
-Fix this bug by adding NULL check.
+On Thu, 28 Mar 2024 at 18:10, Vitalii Bursov <vitaly@bursov.com> wrote:
+>
+>
+>
+> On 28.03.24 18:48, Vincent Guittot wrote:
+> > On Thu, 28 Mar 2024 at 17:27, Vitalii Bursov <vitaly@bursov.com> wrote:
+> >>
+> >>
+> >> On 28.03.24 16:43, Vincent Guittot wrote:
+> >>> On Thu, 28 Mar 2024 at 01:31, Vitalii Bursov <vitaly@bursov.com> wrote:
+> >>>>
+> >>>> Change relax_domain_level checks so that it would be possible
+> >>>> to exclude all domains from newidle balancing.
+> >>>>
+> >>>> This matches the behavior described in the documentation:
+> >>>>   -1   no request. use system default or follow request of others.
+> >>>>    0   no search.
+> >>>>    1   search siblings (hyperthreads in a core).
+> >>>>
+> >>>> "2" enables levels 0 and 1, level_max excludes the last (level_max)
+> >>>> level, and level_max+1 includes all levels.
+> >>>
+> >>> I was about to say that max+1 is useless because it's the same as -1
+> >>> but it's not exactly the same because it can supersede the system wide
+> >>> default_relax_domain_level. I wonder if one should be able to enable
+> >>> more levels than what the system has set by default.
+> >>
+> >> I don't know is such systems exist, but cpusets.rst suggests that
+> >> increasing it beyoud the default value is possible:
+> >>> If your situation is:
+> >>>
+> >>>  - The migration costs between each cpu can be assumed considerably
+> >>>    small(for you) due to your special application's behavior or
+> >>>    special hardware support for CPU cache etc.
+> >>>  - The searching cost doesn't have impact(for you) or you can make
+> >>>    the searching cost enough small by managing cpuset to compact etc.
+> >>>  - The latency is required even it sacrifices cache hit rate etc.
+> >>>    then increasing 'sched_relax_domain_level' would benefit you.
+> >
+> > Fair enough. The doc should be updated as we can now clear the flags
+> > but not set them
+> >
+>
+> SD_BALANCE_NEWIDLE is always set by default in sd_init() and cleared
+> in set_domain_attribute() depending on default_relax_domain_level
+> ("relax_domain_level" kernel parameter) and cgroup configuration
+> if it's present.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Yes, I meant that before
+9ae7ab20b483 ("sched/topology: Don't set SD_BALANCE_WAKE on cpuset
+domain relax")
+The flags SD_BALANCE_NEWIDLE and SD_BALANCE_WAKE could also be set
+even though sd_init() would not set them
 
-Fixes: bb6a40fc5a83 ("ASoC: kirkwood: Fix reference to PCM buffer address")
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- sound/soc/kirkwood/kirkwood-dma.c | 3 +++
- 1 file changed, 3 insertions(+)
+>
+> So, it should work both ways - clearing flags when relax level
+> is decreasing, and not clearing the flag when it's increasing,
+> isn't it?
+>
+> Also, after a closer look at set_domain_attribute(), it looks like
+> default_relax_domain_level is -1 on all systems, so if cgroup does
+> not set relax level, it won't clear any flags, which probably means
+> that level_max+1 is redundant today.
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index dd2f806526c1..ef00792e1d49 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -182,6 +182,9 @@ static int kirkwood_dma_hw_params(struct snd_soc_component *component,
- 	const struct mbus_dram_target_info *dram = mv_mbus_dram_info();
- 	unsigned long addr = substream->runtime->dma_addr;
- 
-+	if (!dram)
-+		return 0;
-+
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		kirkwood_dma_conf_mbus_windows(priv->io,
- 			KIRKWOOD_PLAYBACK_WIN, addr, dram);
--- 
-2.30.2
+Except if the boot parameter has set it to another level which was my
+point. Does it make sense to be able to set a relax_level to level_max
+in one cgroup if  we have "relax_domain_level=1" in boot params as an
+example ? But this is out of the scope of this patch because it
+already works for level_max-1 so why not for level_max
 
+So keep your change in update_relax_domain_level()
+
+Thanks
 
