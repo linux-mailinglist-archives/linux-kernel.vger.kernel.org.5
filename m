@@ -1,100 +1,123 @@
-Return-Path: <linux-kernel+bounces-123368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84277890737
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:31:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A0D89073C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:32:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D8B91F25D65
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:31:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 992FA1C28494
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BD280C13;
-	Thu, 28 Mar 2024 17:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAA81272AC;
+	Thu, 28 Mar 2024 17:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O7CKwW0i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ilfbABG2"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C19A210EC;
-	Thu, 28 Mar 2024 17:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B18BA53;
+	Thu, 28 Mar 2024 17:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711647088; cv=none; b=aM3wSwo3/DsUjVcvHiwLgN8d9S+O3ABIKSY9ObTnMiuVUGEUNkCDdf/AygEhlr0Zm5zo58kQevLnJQ5+mQET9mEHx3N9P/lJCTpweW9b8tMMNmksB/ys+QHoBqrNkpqQxN7JF3hAJ6EgiLkJRv2zD7/UAv/vn5AZcqh9UQ89g44=
+	t=1711647158; cv=none; b=DJIn+o1HxTaFpXB+9fQT2MfKX4VDaMnzkixh8s0GmDvag5nYBi7Ve1Fh8aQCKw21f2UYYc5mvf+zHkO3SvLDte2AjWnQtSab+z2MntNAXLPgtOni9/ngmaQNUQt8KS6gHRMNkeKvPsXVSNDALyiwazKl1tyzDkGRno/G1Y3Fjtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711647088; c=relaxed/simple;
-	bh=CflzFWQh3G9/XCdPqBoPfmOZwAkygYyYMrqOyjig4YI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uHZ0hrwSLroxTGHzU0xQLqmYABgZExnHOnVef17katyjF70qxgB9lybc7jw0VwWHABOcoyjx4YDpSg79WlWkiHpL36Y5vNylsAIATLyA1DKaUdACLDY8PLtag37umQtBLosdNAnsQoezO0htLRaqxglMkgfWGoRXIl6q7sT5YEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O7CKwW0i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 427E3C433F1;
-	Thu, 28 Mar 2024 17:31:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711647088;
-	bh=CflzFWQh3G9/XCdPqBoPfmOZwAkygYyYMrqOyjig4YI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O7CKwW0igy/TGcZ71MLSuOwuJ3fS5eykSGJpBXKVXlSUtWOMtmLs+e0+wxtCp2imW
-	 1eR75PLHDUSZ0e/yoOoJnicoQ9SYbGPGEkoX1b3k0pyknZA/W+kFUFaBf9UVhYL7N/
-	 7lU91ZjkJe9EsNDguSswstsgC313gQMqBbvi/cCaV7eQGbIhQV0rsZKmfVRrK+Aufz
-	 ylQcXRHmxw8a/CH2CHUkDZ+YMZ8v71ITaABVZBPMjxe624wj2kg+TcRaDyDeblMxs6
-	 duCn3IVCK7YErOXT9y5XwRpbKG3uY1tdOAnKCFtqWYC52APUy5BF1+xsL3jbz+MYN3
-	 oazqvDpxaKZXA==
-Date: Thu, 28 Mar 2024 17:31:23 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: linux-riscv@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>, linux-gpio@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] riscv: Kconfig.socs: Deprecate SOC_CANAAN and use
- SOC_CANAAN_K210 for K210
-Message-ID: <20240328-persuaded-arbitrary-805f12ecfe18@spud>
-References: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
- <20240328-daytime-hankie-41a57ad9fbce@spud>
+	s=arc-20240116; t=1711647158; c=relaxed/simple;
+	bh=Jba/NBEtobnWwSOLGRTSPW+X4r7PO9y8nFeOlUUwwJk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A2saZwotQY2nRxtntJSaQ5l9SNRe0goKV6D2UnNbaPiq5msayfRaXW4P94iyKIsE3tfUqDFjC6E8kTSsxbC2HnsAFtx1YvNqXbbume/XrgJPAsqT8XeavLYH5z+2PvZyhWna03nFhxuYN4rkR0rqcwYOlAc2SSbisWAMsqQYuNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ilfbABG2; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-34261edaf7eso798691f8f.1;
+        Thu, 28 Mar 2024 10:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711647155; x=1712251955; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jba/NBEtobnWwSOLGRTSPW+X4r7PO9y8nFeOlUUwwJk=;
+        b=ilfbABG2VVWiigBk1SamGdenbe3i2CG5k7DhHWaiy9O3k8M5i+qS3kTsmxEJTi4IyX
+         km7uyLmGPUgnVfxqJx/OiDlSLc/MFIQ2DT+FP8dKYShnn9Y8T0JllfcsZBpPF6KKmzX0
+         zcRTg0c8hdf/U3fnBmPAgsh1aTE+2OweoVz2pyV3AlkJHz0BEFfZ4Vidaaqq8a4jIYJ5
+         0bTnZA3b2G+B244aNCh4bPzxaK12LP/P/cXLg+f6MkHrGxooK5TTb77pDKL86pFStouD
+         7fxxP3DkOU5CMr9Wnp0/JUeaH0cTEM2QV8OjG2fPYyc4DwJ2P0pb/0EZJzT4AzTP6hvB
+         Uk4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711647155; x=1712251955;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jba/NBEtobnWwSOLGRTSPW+X4r7PO9y8nFeOlUUwwJk=;
+        b=qGRNjnDBWk/50UngZ69fy8UlzEMtDhtWkWylwpgyU1HhrguZvUG6A9nwJH7V8eaDTE
+         T2hikUs/lB0+Jyw+Bp8HogdBeCT68/mjPMOVcYFpewbBm8QbMwi/RJH4bR+tqNPfqUhU
+         /VF6usJkyrpLzeX3zko555belBFwFicRxDQUIPre34rvz+yb8Y4reydL56nZVKVGp/hX
+         WVoklbJEMSuK8jn8FC7oCGjOgpm6wWEzqv4KpoiUEb8NP5DNErom5aTUMdfbmr2LOSru
+         j/Wad69b/C36lBUTXhvUt4r7L2KpaeA65AwqYvw2sSRamw85z9bZDD3BJYYuKGoozjCA
+         Xk7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCViulTH7jUfsC2l4Uby6WOlWGzB9V5w/TKidxSAaZcv73fNUAbWgK7oxRzyxtHMw+w0OjWJEn7gdYxHyGGlhniT1HE3SLvP1tDbLKG/FylWHY76vm7/t1mxNg6gga1zQiR9r9TV2MfFqNfq4Ikj8OKMhAN/iM6NOSGVbGROvNEOwOZUoF9AuUrSLdiVLRcK/NjnJmQQ+HBFnF0xaw==
+X-Gm-Message-State: AOJu0Yyb8nIT61mgj1kd5BT77pVB3+oY2Bz2rFtcTqrmD3glSNWlJ9S1
+	OsX7guAXaisvcQDvlWJeUYtnToLZj2cJPm16bwYE5iPqFAhYS6L97sazhUb+I5qmBBpFlmp2eZn
+	Ir6fPDKK9cjlmWHT2ztD3YXTJhy4=
+X-Google-Smtp-Source: AGHT+IGxHxpYSrQE3BHdMGUjeDCOpPh1GjOHwBrRWkc7YiXCuhlL0gSm0Kum/fOUSJFZW35T+vzZwvKYVqopgwk2PRc=
+X-Received: by 2002:a5d:67c3:0:b0:33e:7f5c:a75d with SMTP id
+ n3-20020a5d67c3000000b0033e7f5ca75dmr2368612wrw.57.1711647155284; Thu, 28 Mar
+ 2024 10:32:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UcrsAOfCVzAaCjLs"
-Content-Disposition: inline
-In-Reply-To: <20240328-daytime-hankie-41a57ad9fbce@spud>
+References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
+ <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
+In-Reply-To: <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 28 Mar 2024 10:32:24 -0700
+Message-ID: <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+To: Tejun Heo <tj@kernel.org>
+Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Mar 28, 2024 at 10:22=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello, Djalal.
+>
+> On Wed, Mar 27, 2024 at 11:53:22PM +0100, Djalal Harouni wrote:
+> > This patch series adds support to freeze the task cgroup hierarchy
+> > that is on a default cgroup v2 without going through kernfs interface.
+> >
+> > For some cases we want to freeze the cgroup of a task based on some
+> > signals, doing so from bpf is better than user space which could be
+> > too late.
+> >
+> > Planned users of this feature are: tetragon and systemd when freezing
+> > a cgroup hierarchy that could be a K8s pod, container, system service
+> > or a user session.
+> >
+> > Patch 1: cgroup: add cgroup_freeze_no_kn() to freeze a cgroup from bpf
+> > Patch 2: bpf: add bpf_task_freeze_cgroup() to freeze the cgroup of a ta=
+sk
+> > Patch 3: selftests/bpf: add selftest for bpf_task_freeze_cgroup
+>
+> It bothers me a bit that it's adding a dedicated interface for something
+> which already has a defined userspace interface. Would it be better to ha=
+ve
+> kfunc wrappers for kernel_read() and kernel_write()?
 
---UcrsAOfCVzAaCjLs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Mar 28, 2024 at 05:29:47PM +0000, Conor Dooley wrote:
-
-> Please, if you don't completely understand what I tell you to do, ask me
-> to clarify. Asking for more information on what to do is not a problem,
-> it saves effort for everyone if you ask rather than submit another
-> version.
-
-I'm always on IRC, so you can always ping me or DM me there, I don't
-mind. I'm conchuod in #riscv.
-
-
---UcrsAOfCVzAaCjLs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgWpawAKCRB4tDGHoIJi
-0u+wAP98BVScCz300OtHsu6ac1F9Gb4jC1iDLDZ7+TYfuDcO8gD9HiyZqmhfGKd0
-jeCBdh9KSJWrMxr5ra61LsdIg7xSMgk=
-=3yJ9
------END PGP SIGNATURE-----
-
---UcrsAOfCVzAaCjLs--
+How would that look ?
+prog cannot and shouldn't open a file.
+The seq_file would be passed/pinned by user space?
 
