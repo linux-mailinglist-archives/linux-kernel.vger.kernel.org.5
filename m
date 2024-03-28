@@ -1,59 +1,47 @@
-Return-Path: <linux-kernel+bounces-122515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4BF88F8EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:40:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C7A88F8E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1255DB25862
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:40:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91E29296180
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082AC51C21;
-	Thu, 28 Mar 2024 07:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A50950279;
+	Thu, 28 Mar 2024 07:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="hDEvtKWY";
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="mmVn94K0"
-Received: from mta-04.yadro.com (mta-04.yadro.com [89.207.88.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OTsrj5/y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7180539FC6
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.207.88.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC33251C3E;
+	Thu, 28 Mar 2024 07:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711611619; cv=none; b=goIWvbbrq5/Qm17UtI/gBAM6IHqVyEGW8Y1n4UXNPlvHMPeESUswC70RL+zH82dqxddsNo6dgKj8TDxXMRyIo6ktfnwH5Dop2sOtDpyoacHbY7CcmVjRStY7enpOVVD6h61xrkrTEQZAXw8cpeGYRAJsFQPYAgpwwkEewkZ06Vg=
+	t=1711611376; cv=none; b=Ne2oSMB9GXGCB9HnI+GdBInJPiTwY8OBr/mgzsrT0GUV3oWKhvyi0SzK65vufrEIghE/BEtNT1LFbaZiWjMMZD56wSqf9JGWib9dF7h0Hw4mEKGj/6oRClyTRUkqmswAa9CtvPi8Wimknlj36JUGtbyFkQrdyHaIYL6DpqPJN7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711611619; c=relaxed/simple;
-	bh=ZbOA7cQBnwcYuFarB35iNEmCOhuX3PT8ziPIpbB6uGo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=mnrxKFa7LaeZWmW9ocduMLqLCD5E8IpRRoDJGGi/IBZOPh2Z53ohH1i7SILAHI1tYXK2GQv1KTkpVfD3KOWYVSDm2068xGqOs3L0sDkExVsmR94qUdljITjsXJlaOnGJ2nkOKDxutmu7hrBLZuw3/Ub7gmmch6grkYZr1Zs/SDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com; spf=fail smtp.mailfrom=syntacore.com; dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b=hDEvtKWY; dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b=mmVn94K0; arc=none smtp.client-ip=89.207.88.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=syntacore.com
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-04.yadro.com 6909EC0011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-04; t=1711611128;
-	bh=/Rj61iC0oZxd7dGL2v5n+B0zL+Y+qY+UXJbpEedJLvQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=hDEvtKWYhFo2AWZSmlNj5ja6wWfNlL51jNz7DCGFhB3Oiw/EurUXBEHYRWVN9+qHv
-	 bWJGsm83AaFCb3RfhTEWCnjmasm/ww1uzvBBdidW1Ydai2aFVn1R7kv+Pphu8eYhwi
-	 uf+5qKVpPfidLk066sQs0BZZzPdHiPNGEXO7OlF9KJLaUfEjmHiYc2UdKktwB3rA5N
-	 vDlXtUCmdkpLCe7tMC1RRP2hHFAEljeAnh+CUMG32smpNVev0KQDfsAYtjwOZjo3rE
-	 Spb4VpiFdesRzUBal8lDiTyVE2V/2epU4C53dvwcBL3t4unrAeFN4PAw/Ka0TQk5ls
-	 MSQiKqVpIL1sw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-03; t=1711611128;
-	bh=/Rj61iC0oZxd7dGL2v5n+B0zL+Y+qY+UXJbpEedJLvQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=mmVn94K0zC4przTgvepIALBY9SaSP2N+597VCWMcZV3Hx4tATYRfgRuhQVIYF+rH0
-	 yr28VMLTqPDu+6XKr6RZMqdcDRIwTAnUFQl4kfGCP6dtgOTxN3K/A9E0/YzNItcNEK
-	 a8qx6P+qgRBHQbVGph/jnNCk4riPjmHv0CaWGHGGIdcyP4JUbd+IUwxb5ezqOycs0d
-	 Pr8DWmhVdYcsBlHtJDoFoYnIdXmLpeRjxljrAHgttR961f2GK7sC4LwrsJGqOB0iCo
-	 9PbENpAvKyS9AvKRg1VbsrFwRT892defzSJR+IqwwfQugf2GWU9FHXyXyXcSEl2nl6
-	 dTbXlez4LiGtw==
-Message-ID: <352f8101-01c3-45b9-9d53-ef0021cc6f46@syntacore.com>
-Date: Thu, 28 Mar 2024 10:32:06 +0300
+	s=arc-20240116; t=1711611376; c=relaxed/simple;
+	bh=E0xlW2CX/m4Lsu+pWv53RNQvI+T8j1SSWWH4AEJ0ZTE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mToZOxKhhyIDw/RolCw18+XebVFE6udwgCcFUsSyApwuKf/ZoyzTAWAcYXjnOepXzOeVn0QLF+QkJ0tXaKKNADsDeptcothzJRek5p1o2d0f7ZX+Y6HXpRg7eJpopLwVILFPRIR5n5tzUmkP8/wugPOllnE7B1rCO8/8qQ7RPXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OTsrj5/y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A64C2C433F1;
+	Thu, 28 Mar 2024 07:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711611375;
+	bh=E0xlW2CX/m4Lsu+pWv53RNQvI+T8j1SSWWH4AEJ0ZTE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OTsrj5/yuI9HrDeYC88Dy5LI7sOBqHTuh8HRW1ucI8jv3M33MU55h60Miw93JHe1n
+	 y+uZOcTRtLcQNy+CygyIi9j7DniRqXMfm7QBbf3s8icNKzb9AuEmQVAE4KXePw7scM
+	 6xQopNIUHFyzW/UEB7UxUx5jvEfEAS6gMkIT7M8ohVEgOB/k5lqVhVCs7ioIZypIdk
+	 1Oc9qSo2Dz5Ue3nbX+rqydCPJs7ClA42eLZuNrZP1Ce+k8QUSYhjIDnI+NGrSNfCVV
+	 dmgc47avnlbwPCBHkFI7LrlE9LVvOATK0IndzhHUNRIrEYG94hHpvm0IZEF2iT9+Dq
+	 PE/4zJlUMK5KA==
+Message-ID: <ba7d201b-3746-4ee1-9574-5782cccbc88e@kernel.org>
+Date: Thu, 28 Mar 2024 16:36:12 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,68 +49,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Check that vdso does not contain any dynamic
- relocations
-To: Alexandre Ghiti <alexghiti@rivosinc.com>, Roman Artemev
-	<roman.artemev@syntacore.com>, Guo Ren <guoren@kernel.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240326113831.283025-1-alexghiti@rivosinc.com>
-Content-Language: en-US, ru-RU
-From: Vladimir Isaev <vladimir.isaev@syntacore.com>
-In-Reply-To: <20240326113831.283025-1-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2] scsi: libsas: Allocation SMP request is aligned to
+ ARCH_DMA_MINALIGN
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Yihang Li <liyihang9@huawei.com>, John Garry <john.g.garry@oracle.com>,
+ yanaijie@huawei.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+ chenxiang66@hisilicon.com, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linuxarm@huawei.com, prime.zeng@huawei.com,
+ yangxingui@huawei.com
+References: <20240326124358.2466259-1-liyihang9@huawei.com>
+ <5b5b9392-7fd2-4c87-8e41-5e54adf20003@kernel.org>
+ <0ba9914d-7060-498a-beac-2b19770e1963@oracle.com>
+ <ZgUPpwhkE9bRwHec@infradead.org>
+ <75df3e2d-10c3-5370-3cd8-fe2fb0ff2acc@huawei.com>
+ <03ed6449-eb57-4a55-b2bf-ecbb9787feca@kernel.org>
+ <ZgUcTLQnoLuqhOxO@infradead.org>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <ZgUcTLQnoLuqhOxO@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: T-EXCH-10.corp.yadro.com (172.17.11.60) To
- S-Exch-01.corp.yadro.com (10.78.5.241)
 
-Hi Alexandre,
+On 3/28/24 16:29, Christoph Hellwig wrote:
+> On Thu, Mar 28, 2024 at 04:23:22PM +0900, Damien Le Moal wrote:
+>> But I thought that the original issue was that some arch have ARCH_DMA_MINALIGN
+>> down to 8B but hisi driver needs at least 16 ?
+>>
+>> So in the end, you need something like:
+>>
+>> 	size = ALIGN(size, max(16, ARCH_DMA_MINALIGN));
+>>
+>> no ?
+> 
+> I don't think we ever have an 8 byte dma minalign.  With 8-byte
+> aligned addresses dma_mapping_error could run into problems.
 
-26.03.2024 14:38, Alexandre Ghiti wrote:
-> 
-> Like other architectures, use the common cmd_vdso_check to make sure of
-> that.
-> 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/kernel/vdso/Makefile | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> index 9b517fe1b8a8..dd4877f25928 100644
-> --- a/arch/riscv/kernel/vdso/Makefile
-> +++ b/arch/riscv/kernel/vdso/Makefile
-> @@ -49,7 +49,7 @@ $(obj)/vdso.o: $(obj)/vdso.so
-> 
->  # link rule for the .so file, .lds has to be first
->  $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
-> -       $(call if_changed,vdsold)
-> +       $(call if_changed,vdsold_and_check)
->  LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
->         --build-id=sha1 --hash-style=both --eh-frame-hdr
-> 
-> @@ -69,7 +69,8 @@ include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
->  # actual build commands
->  # The DSO images are built using a special linker script
->  # Make sure only to export the intended __vdso_xxx symbol offsets.
-> -quiet_cmd_vdsold = VDSOLD  $@
-> -      cmd_vdsold = $(LD) $(ld_flags) -T $(filter-out FORCE,$^) -o $@.tmp && \
-> +quiet_cmd_vdsold_and_check = VDSOLD  $@
-> +      cmd_vdsold_and_check = $(LD) $(ld_flags) -T $(filter-out FORCE,$^) -o $@.tmp && \
->                     $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
-> -                   rm $@.tmp
-> +                   rm $@.tmp && \
-> +                   $(cmd_vdso_check)
+My bad: it is kmalloc() that can return something aligned to 8B...
+So "size = ALIGN(size, ARCH_DMA_MINALIGN);" is the right thing to do.
 
-For some reason I thought that this check is in the common vdso code and just missed hwprobe relocation...
+-- 
+Damien Le Moal
+Western Digital Research
 
-Tested-by: Vladimir Isaev <vladimir.isaev@syntacore.com>
-
-> --
-> 2.39.2
-> 
-
-Thank you,
-Vladimir Isaev
 
