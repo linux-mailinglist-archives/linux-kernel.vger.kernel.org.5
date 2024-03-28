@@ -1,77 +1,78 @@
-Return-Path: <linux-kernel+bounces-123609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7DF890BB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:42:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D32890B9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD6B129C461
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:42:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 886E71F27D9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A89013A400;
-	Thu, 28 Mar 2024 20:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D91F13B5B4;
+	Thu, 28 Mar 2024 20:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WkeU1nLy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="da+QjHq/"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2036C13A271
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CEB13A86A
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658462; cv=none; b=QYBo8QZ+kEVS59EWQEbLRmGesO3Bb0xojrj3fLKFwjaqbBCWE0SMkF/vEf6ErDsw5kbcc3MwugPkSXkrciO7zHPaFT34Nb0fKHf9+K+pRJJaoUwCeCA8xxV8qVGMXFxFQYi6ZCOpnrqkTf/asuHPneXPwuQfDBMoXycyM8F2Zdk=
+	t=1711658409; cv=none; b=g835vQD41DymzmL7iraHvEOp4mINIk2F4h53R8Zw7eIgm25A5k5oWdBtsOyzCKsGRwFztqZizfu0TqrH2E+rTHnaZAH7LTv5VRqlzEQNCyucTn5ua4FhXmxYNnKzrfDaGY6XdAH651CzruMcdm/idtPFJgf8rGM8SDf98RCiiu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658462; c=relaxed/simple;
-	bh=4LVr4XIyTxfxImYgjXFnrBvXpjmjemBkyYv51+FUVj0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VpNaNNmB666R6KCDXV2xfEv54R94VfYmlnYj6tOgR5rwoGRXXBlh7XYItz4y0g/ncBe2E5FZnYiiFkX27C89WKYeBwtIY1o8yO2TYUQbiiP+SGlV1uQgN/WbYny0v6/TyWelT3MfgrdG/2JNIKY/twC2eex4z57ADy4fvQ0B4zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WkeU1nLy; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711658460;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y4QwQ4LobXpOZeMcmZtW4ftxyW2t074qf+BN+wufuQA=;
-	b=WkeU1nLyZwpjusMGdTH8N7QNbPk1F7C7Q9lF2HmqjBKle6zFMIuGpfG/1ps70H/eFr6uOz
-	cjOCQLV3z2z+OSYacIsIfXRSwCuldg0QareOS8jaQK5kl8xWBobFEfqJ/aDV8tID7+K8eo
-	Jq/nMox66h5/LImMEl9UyXMlSyTdKe8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-631-FGHnscCFOt2rRDtvRy7V4Q-1; Thu, 28 Mar 2024 16:40:56 -0400
-X-MC-Unique: FGHnscCFOt2rRDtvRy7V4Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C74A8007A7;
-	Thu, 28 Mar 2024 20:40:56 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B0F5B3C54;
-	Thu, 28 Mar 2024 20:40:54 +0000 (UTC)
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: linux-block@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	eblake@redhat.com,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	dm-devel@lists.linux.dev,
-	David Teigland <teigland@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>,
-	Joe Thornber <ejt@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>
-Subject: [RFC 9/9] selftests: block_seek_hole: add dm-thin test
-Date: Thu, 28 Mar 2024 16:39:10 -0400
-Message-ID: <20240328203910.2370087-10-stefanha@redhat.com>
-In-Reply-To: <20240328203910.2370087-1-stefanha@redhat.com>
-References: <20240328203910.2370087-1-stefanha@redhat.com>
+	s=arc-20240116; t=1711658409; c=relaxed/simple;
+	bh=zEWlRAVtFaEI8DxadpGvvAtmxe8dbfjOZtl4xLuLmKA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HqKfMTvcUnCjrGfD5z21miJxZOThsqYsVXcHhULkeGQOzHaTyDTwURRGooJw6RwUUCNjnZWkJBS2z2bawZPkoqm67sVNc5k3qitkwE1pAg/U4q4hc5Q0bFdv57cEV75xseX7tXLFcK+N1EZgh0OfsoV+24KuFoyuldx5COPIwE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=da+QjHq/; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-415482307b0so7492275e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711658406; x=1712263206; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VLbQp2aBj3c8Sf1EyYJHd+FXAjE39Y7t3rCCxWRWwVc=;
+        b=da+QjHq/bIUcVHRMOclxlJakNVF3864/aS4CnbxYpvKD0vqToR+kOtf2mPTDrJzsHt
+         /Lwlz7xJzu5bh7br1UpQfNQyu83iJZiO4t0jFkkawqqBsxTsXIZGB6ZKQqTFBVaHQ6Zb
+         xOKtlG7lM4fCdX5TkmDFF/lRU9GKkrNjCJtI2sZ7JfiDD+DUhpVdl8gmbX9y4yfKq5ll
+         TwbY24hYhRT5++Ww1VMHk3pY2bAqc+itIJeNk9e/rTnNR3e1ySRTVV8ouVhPEFw0RPuf
+         MPnSwhDEgbcxoyrS/3JY8UQo29ogw4JJYMQo0u3WPc2fqsTS3/9MxpgIBqnCoy01wEIU
+         HrwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711658406; x=1712263206;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VLbQp2aBj3c8Sf1EyYJHd+FXAjE39Y7t3rCCxWRWwVc=;
+        b=MPIRXbD59R1HGxr89IbhNrYdOrQvVQIUwDMkxCuUxHewROsol7Kbd+1p3bR5pNlryb
+         nDoEeDGwAzyFh0dFqPcXf9DW2gJGwY381X62lLrQFheV7gWM8hvyr2gNCoWj2xah7xwD
+         EUuvwU542crlyjC3awMOIDwLbGsBtzzbYcVQoSu2tkIpvGtjv1N32dTi0RW3F2xtXG1U
+         +CFACy6XT+EfKp65JCIBqkIzDFYK+K0uY8tmV8wNfdWpRf7w0BHkB1K5GCmDDeXJ+sak
+         Jj1I0ywRGQuohV3i1gRi3mz/qKdx3wPRb1aD1/N70LluN8hiF+y7UPBvpETGr2iuFYQc
+         dIzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXXORYOJJL6z5ZaWhZqK5W7bakU+FpkdyPqUQGvORrVPxnxuHOQIJiH7gcXQSBZcTHyygqaxCKosKXE8HChzGTlhAVQfEhE2cF6wgmd
+X-Gm-Message-State: AOJu0Yw+f1QE5Kc8oTk2Zk/sACrBh9ovp9tOTRGWoCDctGeS4+0KJlYg
+	NyQB2Z2OMPnbNkzRGHc8QakkW2ucFbWAofiJGLFC/T8R3MUTPKZopZM53wghK3w=
+X-Google-Smtp-Source: AGHT+IF++QFH8AOoYnDjeOKcnQ9MoOPe8E5nq8m+tccUcRQiEMmq4UK7spHzq8R7jkKYNFuy2/G//g==
+X-Received: by 2002:a7b:c3d3:0:b0:415:45ea:9904 with SMTP id t19-20020a7bc3d3000000b0041545ea9904mr422278wmj.21.1711658406441;
+        Thu, 28 Mar 2024 13:40:06 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.50])
+        by smtp.gmail.com with ESMTPSA id b16-20020a5d6350000000b0033e7715bafasm2586613wrw.59.2024.03.28.13.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 13:40:06 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] spi: docs: drop driver owner initialization
+Date: Thu, 28 Mar 2024 21:39:27 +0100
+Message-Id: <20240328203927.156184-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,115 +80,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+Core in spi_register_driver() already sets the .owner, so driver
+does not need to.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../selftests/block_seek_hole/Makefile        |  2 +-
- .../selftests/block_seek_hole/dm_thin.sh      | 80 +++++++++++++++++++
- 2 files changed, 81 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/block_seek_hole/dm_thin.sh
+ Documentation/spi/spi-summary.rst | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/tools/testing/selftests/block_seek_hole/Makefile b/tools/testing/selftests/block_seek_hole/Makefile
-index 1bd9e748b2acc..3b4ee1b1fb6e7 100644
---- a/tools/testing/selftests/block_seek_hole/Makefile
-+++ b/tools/testing/selftests/block_seek_hole/Makefile
-@@ -3,7 +3,7 @@ PY3 = $(shell which python3 2>/dev/null)
+diff --git a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
+index 546de37d6caf..35e1970a76a9 100644
+--- a/Documentation/spi/spi-summary.rst
++++ b/Documentation/spi/spi-summary.rst
+@@ -348,7 +348,6 @@ SPI protocol drivers somewhat resemble platform device drivers::
+ 	static struct spi_driver CHIP_driver = {
+ 		.driver = {
+ 			.name		= "CHIP",
+-			.owner		= THIS_MODULE,
+ 			.pm		= &CHIP_pm_ops,
+ 		},
  
- ifneq ($(PY3),)
- 
--TEST_PROGS := test.py dm_zero.sh
-+TEST_PROGS := test.py dm_zero.sh dm_thin.sh
- 
- include ../lib.mk
- 
-diff --git a/tools/testing/selftests/block_seek_hole/dm_thin.sh b/tools/testing/selftests/block_seek_hole/dm_thin.sh
-new file mode 100755
-index 0000000000000..a379b7c875f28
---- /dev/null
-+++ b/tools/testing/selftests/block_seek_hole/dm_thin.sh
-@@ -0,0 +1,80 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# dm_thin.sh
-+#
-+# Test that dm-thin supports SEEK_HOLE/SEEK_DATA.
-+
-+set -e
-+
-+# check <actual> <expected>
-+# Check that the actual output matches the expected output.
-+check() {
-+	if [ "$1" != "$2" ]; then
-+		echo 'FAIL expected:'
-+		echo "$2"
-+		echo 'Does not match device output:'
-+		echo "$1"
-+		exit 1
-+	fi
-+}
-+
-+cleanup() {
-+	if [ -n "$thin_name" ]; then
-+		dmsetup remove $thin_name
-+	fi
-+	if [ -n "$pool_name" ]; then
-+		dmsetup remove $pool_name
-+	fi
-+	if [ -n "$metadata_path" ]; then
-+		losetup --detach "$metadata_path"
-+	fi
-+	if [ -n "$data_path" ]; then
-+		losetup --detach "$data_path"
-+	fi
-+	rm -f pool-metadata pool-data
-+}
-+trap cleanup EXIT
-+
-+rm -f pool-metadata pool-data
-+truncate -s 256M pool-metadata
-+truncate -s 1G pool-data
-+
-+size_sectors=$((1024 * 1024 * 1024 / 512)) # 1 GB
-+metadata_path=$(losetup --show --find pool-metadata)
-+data_path=$(losetup --show --find pool-data)
-+pool_name=pool-$$
-+thin_name=thin-$$
-+
-+dmsetup create $pool_name \
-+	--table "0 $size_sectors thin-pool $metadata_path $data_path 128 $size_sectors"
-+dmsetup message /dev/mapper/$pool_name 0 'create_thin 0'
-+dmsetup create $thin_name --table "0 $size_sectors thin /dev/mapper/$pool_name 0"
-+
-+# Verify that the device is empty
-+check "$(./map_holes.py /dev/mapper/$thin_name)" 'TYPE START END SIZE
-+HOLE 0 1073741824 1073741824'
-+
-+# Write 4k at offset 128M but dm-thin will actually map an entire 64k block
-+dd if=/dev/urandom of=/dev/mapper/$thin_name bs=4k count=1 seek=32768 status=none
-+check "$(./map_holes.py /dev/mapper/$thin_name)" 'TYPE START END SIZE
-+HOLE 0 134217728 134217728
-+DATA 134217728 134283264 65536
-+HOLE 134283264 1073741824 939458560'
-+
-+# Write at the beginning of the device
-+dd if=/dev/urandom of=/dev/mapper/$thin_name bs=4k count=1 status=none
-+check "$(./map_holes.py /dev/mapper/$thin_name)" 'TYPE START END SIZE
-+DATA 0 65536 65536
-+HOLE 65536 134217728 134152192
-+DATA 134217728 134283264 65536
-+HOLE 134283264 1073741824 939458560'
-+
-+# Write at the end of the device
-+dd if=/dev/urandom of=/dev/mapper/$thin_name bs=4k count=1 seek=262143 status=none
-+check "$(./map_holes.py /dev/mapper/$thin_name)" 'TYPE START END SIZE
-+DATA 0 65536 65536
-+HOLE 65536 134217728 134152192
-+DATA 134217728 134283264 65536
-+HOLE 134283264 1073676288 939393024
-+DATA 1073676288 1073741824 65536'
 -- 
-2.44.0
+2.34.1
 
 
