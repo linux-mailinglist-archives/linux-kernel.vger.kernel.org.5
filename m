@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-123832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD59890E9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:41:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8548D890EA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B45961F241E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:41:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCC90B227B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373581386A4;
-	Thu, 28 Mar 2024 23:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186AC13956C;
+	Thu, 28 Mar 2024 23:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="M7SzFza5"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2132.outbound.protection.outlook.com [40.107.244.132])
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="eh7wC19G"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2092.outbound.protection.outlook.com [40.107.244.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F5A31A89;
-	Thu, 28 Mar 2024 23:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7054E38FA1;
+	Thu, 28 Mar 2024 23:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.92
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711669268; cv=fail; b=RGnFmKvZN7P9y+YhCnq2IcBkx3DCvXKBMJFUq9c+DS7T2TnB0CLJq9CJL7we8xj25u5fYaoUIzaIvgU9c5rGGvyDXvfgJZjmA0QhwC8jKDcVKfiwC5/t829D1nMWJS7K9O1KjOjaJbz+3yDtHXKjBs9jTh92YbA3QUZgLpnRzKg=
+	t=1711669285; cv=fail; b=ivT93aXg9SO1UXMA4A52xLlnCqs1yOYEdbdr5N5QrShGJrfUIyMlW7X1bT8X1SdVItHgPusz4faYyXv3BZIYS9Cl4RFGWZ2U/+zJ1CKsaqxXCMYcp5whyiDz515eNdUws4icv3a1UvB8uwWycVeY9cAVXcXpSjf1fXTlAyNP1j8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711669268; c=relaxed/simple;
-	bh=M42AXlrYoWZPlZrmnTbyWvcvUcF3z2XTxddrFK8UFMc=;
+	s=arc-20240116; t=1711669285; c=relaxed/simple;
+	bh=K1EbGR//cNxoepaVsUt2asFYmA562aoc7bpv4D1h5fI=;
 	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LttwwYSbhVfTmSrx3ut5y6ow4W78/A9t9KOpYqhHRPTcyWhwhqcYk6d1UYRAIdUco89KFaOULfyjj6IKb9HksB83PNqAJno3rrYOLR4pby1esm0sqWiAHfNNbVJLnzo3wS8QK2S2yft+aJKz9Bp6yB1L0tKXw8R7lTigpcDolwU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=M7SzFza5; arc=fail smtp.client-ip=40.107.244.132
+	 Content-Type:MIME-Version; b=Pr8kSbG8cpAZxEV99PyEOwXjZODUXWRA4gI2GWFClLxs33HIA1bKMWgft9Od5RAChrhjPasbRDSbQrCbjPVVep7ly+FFNgEYsVpVdfAhe5Mho8+LiMWra9H4kCVPXdzZ5c33DvWwvSbfl03uxlN3/gYnq91hlOou7+YAn3ZmkR8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=eh7wC19G; arc=fail smtp.client-ip=40.107.244.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PKcXWm9PFUczcLxegPJlv/4ny4H64FxAAvLdSs6hMo7f+Bcc1zKUIk/9Zdqgut6sQtSobqq8quqpYx6NDDpOmsqMcARWAPZEU2GIdHQ213NTjwpdg+6aTTZ+V6IaulSqoWsoKAYYPJV92MvbkeKYHX3+L749Hoa7s2g5N4Rq0u9drJyDruy6SKdhhUfLjAVGDsXR69tEnPecqAyfNWAWGq3jOfyENeMe2Yq/yOY0oHMCoTzMq8OWxJhKykJtsD3Yzvq+I8lcGleHMWJ2Dcvrqd02w3tiY7e+1ZVSLWzA9uT7IhCED0/naJq38A5sEW6rkGQMMaftNDzZ2TPvTcvKxw==
+ b=OLlYYa4IgswAHo/W6RKf4nvc9OC4Zndg2oWfTKOhQQM5Uw+HrDrNe/oEoqEMTSTrxG9ONyCVKbfQ1AwQ+R/qxylF2ERuue2OrWjO6wlUdtmclfyVuIz2etGf0C6AsUf2O/+8pG2ErQjGxtrceGX0d9KFKjiCP7zeHqQatfBG1JPKJHv/plEZsbTw3+XIVM/g1aQmLwE7fDCPu2LSQFGTrSv69WkiyO2uuf7ksNtAsFjOZJ3k7Q4azhoZbBl8ZeKGXkoC+Ds5AWFPDRuxqtEVA1P5VOsl+11Vls5wS0jo+7w1hZPTJokQMcxWWHvBna3zMg4a9JmaBusmJv+sivp7lA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ifdDr9Pm/vCS2faiLvXwMKlUrOVmpwk2L+9S97LuZOM=;
- b=NWdJpqnJeH82XsnIXR4gGIpo9uESKFF8+o4SDzXL4plppw/Ofe8grYND+I+s3ptKd0QglGAwDrvKLU5R9/WIyMKOKzOKcI9UxEwIFV7g9MZbjlf390UrdrGZ4byEnWsRIdIs6qZYnJQC2mTCYX3uts7+5OHee/HO/b2zMIeeldGNdVb6f4OuOXwp3SI8qRo9BfLxxS/veJgM3nKiTEzfEgliCNYGvGzIR4Oy60bujnyDfQntkws/txNrBo0XEX4AdJ0tNS5mbI1vdt8CF8SkSB8mvvTDgM+0WdJGnxAOl+fCu7KZm3yX7VRwLNRIfyoEa64ne0KqEpD21ROUxGu2bQ==
+ bh=XJx/YV0TFwouXt8PvLCFfp7+wDAcQhhbNpHx+MrnQzU=;
+ b=dACxjbmp7mWBgEQYfSo8kNZqk+RNjprHqM8PL75aNhpjezYcwp+dbBW6b0kQQvqIW78oavNApHUNjWJbY9fR3sRLHMHiCdJz8YpZIwA48I++nPo6p0PdUjrVQZcyy0qzqiCJ08V9slU01aY8r0VESGA7P/BO5+CFAtaneG26WTQxtMjgdUZ1tXF8Amr4gxLVyeBOp/taEJxNwnm3KB3Yr9LjY1xbjBibkCsdUXCk0owzSF1ypnxhzb7nn6AMGXuRUk97kD+S04AvotUZOZz8SwsF5j+E11tzusIpM2I433kaQdGfCH030+WUPCGxeYL5BXOboqVp1S6x4cn/yiVyyg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -44,22 +44,22 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ifdDr9Pm/vCS2faiLvXwMKlUrOVmpwk2L+9S97LuZOM=;
- b=M7SzFza50WnPNBBysi9LJAgYUVwUNygpELCwoWjMnEB04JzoF85Q1bsVJFPw4GTrPn7TU21DcXF2OzpKYFYfgIeT377W+sSBLXEQ87q0ldJQ8QUUMUvif0eIe4ivUrrFKiKUpaxkqSYtKrkU/ifaclaAAQvC+sygfU9JH5T2jHU=
+ bh=XJx/YV0TFwouXt8PvLCFfp7+wDAcQhhbNpHx+MrnQzU=;
+ b=eh7wC19GpSgHDW+SCNb6hoM5KZn84YLMeO+L1mzjcs7NxAbLApgs4SzugqWxlz/7MFr1XURM/R7vY5KFpK+OOySicZmUjfWH1R8m4usy09EGw1cW3WqNMxd6ug47VhYY7t7bkQ/8UsOW0g/QGUvtB8StX4CSrzCFaLBxlT6HEu4=
 Received: from CO1PR01MB7370.prod.exchangelabs.com (2603:10b6:303:159::16) by
  SA1PR01MB8180.prod.exchangelabs.com (2603:10b6:806:339::19) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.33; Thu, 28 Mar 2024 23:41:03 +0000
+ 15.20.7409.33; Thu, 28 Mar 2024 23:41:21 +0000
 Received: from CO1PR01MB7370.prod.exchangelabs.com
  ([fe80::994c:4200:8a4b:6882]) by CO1PR01MB7370.prod.exchangelabs.com
  ([fe80::994c:4200:8a4b:6882%6]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 23:41:03 +0000
-Message-ID: <3fa20038-347f-48c3-814c-0dc1ed109244@os.amperecomputing.com>
-Date: Thu, 28 Mar 2024 16:40:58 -0700
+ 23:41:21 +0000
+Message-ID: <0d398f19-b8df-4936-97e0-fba8eb041d88@os.amperecomputing.com>
+Date: Thu, 28 Mar 2024 16:41:17 -0700
 User-Agent: Mozilla Thunderbird
 From: Daniel Ferguson <danielf@os.amperecomputing.com>
-Subject: Re: [RFC PATCH v7 10/12] ACPI:RAS2: Add common library for RAS2 PCC
- interfaces
+Subject: Re: [RFC PATCH v7 11/12] ACPI:RAS2: Add driver for ACPI RAS2 feature
+ table (RAS2)
 To: shiju.jose@huawei.com, linux-cxl@vger.kernel.org,
  linux-acpi@vger.kernel.org, linux-mm@kvack.org, dan.j.williams@intel.com,
  dave@stgolabs.net, jonathan.cameron@huawei.com, dave.jiang@intel.com,
@@ -77,13 +77,13 @@ Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
  kangkang.shen@futurewei.com, wanghuiqiang@huawei.com, linuxarm@huawei.com,
  wbs@os.amperecomputing.com
 References: <20240223143723.1574-1-shiju.jose@huawei.com>
- <20240223143723.1574-11-shiju.jose@huawei.com>
+ <20240223143723.1574-12-shiju.jose@huawei.com>
 Content-Language: en-US
-In-Reply-To: <20240223143723.1574-11-shiju.jose@huawei.com>
+In-Reply-To: <20240223143723.1574-12-shiju.jose@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR03CA0181.namprd03.prod.outlook.com
- (2603:10b6:610:e4::6) To CO1PR01MB7370.prod.exchangelabs.com
+X-ClientProxiedBy: CH0PR03CA0195.namprd03.prod.outlook.com
+ (2603:10b6:610:e4::20) To CO1PR01MB7370.prod.exchangelabs.com
  (2603:10b6:303:159::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -97,95 +97,136 @@ X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	x9U8wRyPi+zxslJVSyV/8r7cszUcc9hmYG8s2UXPgYz9wK+G8KIosxFpHeZATJCPEWDQderhmH4/RBvi+Np2BKebfpDFe8xrnfJDoOzVj/cWJQcnoraIOBnGvQ2TE3eWnbfp0kN04ArsliTD0/S7YEbSSeZiqfa0f1CI+YUPqlUE1E+Oa+lBCu5xPwWTDq/1H6SpCiFouGe/ATzK7rLSQw3uT6N/Mv7loi0bm6BqzKnhfhH6pKJ9wuwSDSPvdndlvp37+qPjErkcOXnxlC+SqVkXB5o5Ate1VsYdKA/xpyDijrsa2bj591KyrufIXsF7VhzEAbEmaFQ6i6l6H+FqU/XNEAF7iNMkI4A0NisOqTFQawzZjaZ8KsHm50uA5qwqUh8mWtTCjbRrFzm1S+LFps4Tgg06x4xmQGKAFopr4rFFUqfcMYNIDe0lf1i+gipJQ4/xmEUQNnotx/pZMaF0OUJf+eFW6fdUrD0gRzPLT+VyB0USj59IaEmX+t1iB6SMmvBwphfpBzALFL2FXNn3d2t3xVzHJbB6d+9K2xv6ozroryHz7IXEPbdnhcI+lmGDLhCMfPD6sG3LIfzSJxxaJQ+3deXipPEj+AkSw7+NbeEWxGWUrKdxmnPmgel/OH4xW9Q8tzjyYySQTYr4JKEeFrGJd3LYl8O/ra4+5g+CMYopVeyc7FfcjdNnQ2fqQ2DB1LnI2emzzDIYJGeTkAN84YoMLA1aONLGtUm9sLoOD4Y=
+	EaLGzZY7xB8EHyRyUgAuQJSuow52527ozdgFC9g0OnTW8SKdYcdcATqE8Pv35GVZQ73xTkhyP8LpDmAui4DqsRaDd12eWMEWvSrDL18zATUjouSgY5IqxkrJQ7E0bet8V9mYsaFujlX9H+J3R7JJlTrHJ5I1iUieGP5uXzZv/9SMpF2h5C51XN0xZDHtP/GKIZXWx+3CqBraOp+RyAGbB24X+OEDFHBZnAKz2FUWuR+Yg4bnVz2Qb9HjA/IpZ1ja8nfJrc8GW7EQwHc74ir4SbFDyPs7sSIeSQZCTe7R5Ehk5twhtv2IaPuhaKyc/WhOrXHwW6ycPlKRAwS22l9CUWKzFK8eMsJFf1qIoeh/lX9xGqbym85o3FpZEVAIfxCLnKeAM5vU1mDGIpaVAx6VATg73b4lhb5zheMRgdVtiKl+CZ5HGvdp0VGtKr49801kJTb+L/o/xQYjaOo/99ZoQ80SXwe1jfIwOwXOTcHf7J/v4ki3YnNMNXsMOVd4/Yi/yKkWMLl0koRjnhI0+NAJ3wlIt0yzhOjaW8LTYU7EtlcgFw0I9VGMR6ycsy52VM9V1Xkg64iPgQwmdcfZRmaHKNhdQG7jesFwWrXP+13BZkFfYYVSq9fP28lWjGKNaPIDXbCgKS+3JoyldjBOZK27gWpkrFdiEKIHJn4AHJKlZJXF6kcFHkMX/Ilw3kPwY7NKNoQWs8gRDB+t/bYe7J/EtVAh58jqidye/RZ8mT5omYM=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR01MB7370.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005)(52116005)(921011)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?N1ZPQmF3ZU9LVkdiZ3U2bmcraFZNeDZoWHhwVjFpZWp1WldyZWlTTktibUVy?=
- =?utf-8?B?VERqVGsvMEJ6V1JwVzNpSG04c0JmL0oxUXE2RDhxOHFSWFdvUjlnbXQ5SCto?=
- =?utf-8?B?bHBjOUtxMzBBTlI0ZlRqZUIzOTdVem5rcTNETU5zaFJQVEtvL2FySHJNeUMr?=
- =?utf-8?B?QTVhUlFlZnA0TVVjTGhiejFuUFNwS2NoYkRKb1V3MHpFUlZ2K1NqZzE5WllS?=
- =?utf-8?B?aXI3ZG94b28rTTF5MHdrZEVDT0lSQ2JJd0RLL2RoNTJBOG1jUXNKV1NLYWla?=
- =?utf-8?B?M01OUUxiRFY5L2VxWHdJbkpSdzZNU3kyaTZRNU1OWHd2dU43MXREZy83bGoz?=
- =?utf-8?B?U0g5OVM5NC9DSnZzT00vNzVZTFBiTVVMNzZreHZIUVB4OXVhZVNHU0dsZW9J?=
- =?utf-8?B?WFNvM3VmWW5ZMmQrYmhLVm0ycTh1c0tmN1YxRHYwL1BtM3hSRW1ESmZTZHdC?=
- =?utf-8?B?d1ZWb3c4L1A5Y3JMUE10ZGJiZm5sa2R2QVZHYm04NUdMVnUrckNIUjVNTk1i?=
- =?utf-8?B?Y0RLSHcxV0xKemhoN3FyN0taeFZ4VFp6eUxpTnhTNTVNT0IwN3lvVE5GTDk4?=
- =?utf-8?B?T2hOUnBkTVdtUVpUVG5Dend4OFRBdTFiK3dhTmNkU3VydWs0SnpUZDFZRzFD?=
- =?utf-8?B?WjhXbE9hUnRLelF3Ry9TWkxlTFJaSHZhdWNQT3VldGJEL21jN2VKOEI5RGs0?=
- =?utf-8?B?Ry85eUc5U01DUjI5SjV2VlVKMWt0SFErLzNNYy9sWC9rRXJZREVPdFRsWjZj?=
- =?utf-8?B?NGhkRHBNeW8ybmxMQ29qcEMwK1RzQTZvT1Z6T1E0QnIrbVlNQTBvWkpxZVJR?=
- =?utf-8?B?aVVseW4wUkdma082VzNtNkh1YzdvUWIxMldjb3ExSGRpUmQ0RDBqeGxmdTZU?=
- =?utf-8?B?OG5zSndJSmpwT1dEV0N0ZitNaUtQaEtEckQ4aTdodnY4S2x0d3J2Zis3V2lr?=
- =?utf-8?B?VWxqUWwwQTZTZWFUamQ4N25iUVNPL3l3TEZDREo4NVhwZ3pnRnlzTmpya1gy?=
- =?utf-8?B?TmIrYjJQSWQrTE1lNHRxamNGZzFKSk85K1NUL0hFVDBtNVl2V2xpUjUwQlB3?=
- =?utf-8?B?cTdwQzBCOUd2aGk1ZENzNmRiWWFEVTVwd1o4RmJLaGRDRDZrdmVXV1BYK3d4?=
- =?utf-8?B?MzVBZGtTSHdUM2h1NkNqVjhJRkJYdTJRK1FxcGpkcDNOSnU5ZDd1UHJWeWRo?=
- =?utf-8?B?dENURkQzV1B5R2tyTVZyNm5RRE5zb2dUek1TR29BZ2tFSm0wdEQxMkEvd21l?=
- =?utf-8?B?Qm5RZjBTOS93aTlIbHRwb2MrY2VPb1liWWdxMVdQcFlvOStEQkVOYzE5UTJ4?=
- =?utf-8?B?dFZoVEc0NjZkNmRWTGROWUNPMU05WHg1QXFOcm5WL0VGMElNQUdZbnlHZ0ll?=
- =?utf-8?B?SjlyNzRZN3VVYXcyMGxTVm9LRk52bktSUmcrZWs1dGdDVGRXZzFUNkZTdHFG?=
- =?utf-8?B?RHAyT0FKcmpXaEtQL3dma3ZsNXc1UEF6RjZqR0FxdkZqbWVTd0FTYUZSRWJB?=
- =?utf-8?B?REFrLzFUWWJMOERnOThhR0lsTmNGWWd1NE9WL0ZpNkJRVDlhYllLM1VXbEJj?=
- =?utf-8?B?cXdMWlFPZHpkRWhNUVBadmNabVU0eDJxckx5cHJwWWZKRUtBZEl1TUhpVmlL?=
- =?utf-8?B?aWpicStBcmo4TE5UQTQrRFh5dEtDNWo5bURQa2ZOR21zZFhwYkNuQllneDVQ?=
- =?utf-8?B?N1RmVU9pS3ZCQTBjaUMwZU9pemJ4aUtic1JTazFWN1JoY2JlRzBhK2NDQjNN?=
- =?utf-8?B?b2N1d2kzU2l2dlZacHZ2eVpRVFpSdnlMS0Uza1Z2WkNpbEdXOU1aL3JsL2Jy?=
- =?utf-8?B?SnZUYWF1UDgvczlEVUMvSGZ0bTR2OXpEdEN2a1BCMmVTNlNNZmZRd3RQY2xU?=
- =?utf-8?B?S0hUYm5CM1lpbGRFY3UyTmtQbGU0MUVnSWEyRWJQUFFIeFdic01zZzdvNHln?=
- =?utf-8?B?eFBwZGJBSUljci9wSkRPUTZQRDVvaGorVGh0MmlGdjV4U21XKy9PaVZUQXVS?=
- =?utf-8?B?ZnJDWVhMaWhtcWNMYmVFYktFaVBaOWsyQnQwVTZyWWFhZjM1aW16azFSaHEz?=
- =?utf-8?B?R0U5YnBMazRueUxiL0pyWXoyS3I5L2ZKc09TZUJnZUp5czFJRHJYZjlVNXVY?=
- =?utf-8?B?RmVrT2JiK0wwQWMramZYbDh2VVd4Szh0VGhtaldKdEVpcmNKRmJ2WGFyZFVr?=
- =?utf-8?Q?ScWHCD6mRsCMYLf8MKO9LAw=3D?=
+	=?utf-8?B?RmZXbWp6SEZaTUloczVUbFk2QTVYZmc5Si9yMWcya1J1Y0ljQ0krY09iUDJH?=
+ =?utf-8?B?ciswc0hZK1V0eHpyTjBKVnExWjI5WnlkT3h4T2t3M0Y4eXJoV3llTmljaU5C?=
+ =?utf-8?B?T2lYNWdIS3puSm5QbnRHTFgwRnVEQ0E4Y0sraHMxOEovNStGcnVhQjBYbmlr?=
+ =?utf-8?B?TjNhNmhSaTdUQUk4cGVWd2QwZnZmNnkrZHF0V1luNTJJeDZ3SkliNjJRbEVE?=
+ =?utf-8?B?WFRvSWRwNzJZbFVFRkRxemlsenU5RlU4RFlGZ0JKRTVlcUhDWnp2b3dydWxO?=
+ =?utf-8?B?WjBZTTNkc1V5U1hVYXBIVWw0RmNyck1GVkRSL2N4b2tHUWQ1dDNaOGdoTHNj?=
+ =?utf-8?B?NTVxU1N0MUMvTFIxMlVHYjQ4QTFXZXRhTDdGREV5TCttZjBGZUh5K3RKZkdY?=
+ =?utf-8?B?emhPY2FCaWlPV3FlMTRzQnJDQkFvdlNna2VPOGZGaFpPMXUvSHVMYnptV3Ay?=
+ =?utf-8?B?cDFHVVJMdjMwdDhTc0hIVFFxcHY5U3dPdmdLNENnM29vMUlsaVdsaUkzSlM5?=
+ =?utf-8?B?MTRPSC8rcmlDVWN3dEFQL3VnR25sdkkwdE80c0tyWDdXMkgzUDkyRzdsZEhv?=
+ =?utf-8?B?VkoyNXVvMm11WnRBRVJCUklYcThmUWdWMjIyemxWVXgrVU5mcTNLTlJVWGM2?=
+ =?utf-8?B?NTBxayswSjBNSlZrdHBEZWg0VVZ4U0RQdk96c1hQTFlPWUlSdTFKSHVzbkVh?=
+ =?utf-8?B?bTNaWkQrY1ZIeTAvOE1seUJWcS9IeU9WRlpKZyt3VHJXTGhMVWRmUm9YUkor?=
+ =?utf-8?B?ZDVTLzRwTUVkZDgvWlc4dUlYK3Y2Qzhrc3NoZG01QnN6ZTdZbG9jOERlUzRP?=
+ =?utf-8?B?YkU1ZzN1N2hGN0duOFVNUGdZU2VWQWZvc0NvSytGdFM2WXJwcWZEdS94YzdH?=
+ =?utf-8?B?MC8xdnZSd2Vva0FWOW5JOEoyWGl4WFQxMnd1SlNESzZwY2dIWE9Va1NCZUFH?=
+ =?utf-8?B?MHpKaUhMU1VNazQrZEFSbUhqNSszVHUzQ0sxY0NOU3JVVHZOSEZKaWlzeXFJ?=
+ =?utf-8?B?QVhadjFGSlBQcVNLazdMZy9vVUs5Rm8rOUVrVmJqRTd3eENBa3ZCWG5WUWhq?=
+ =?utf-8?B?TmJtTXQrbFI5S0pCSk0wQld0V2JzLzFlTUh0RG1GRzVlcVdlUm15cTVXTXlQ?=
+ =?utf-8?B?Z21ueWRoK005M2dlcmJTWGNTd2NqaGV2b0ZLMHVvUENhanZiVUJFeGVRRGR3?=
+ =?utf-8?B?R2tSdlJuSGIvL1l3QUQ0aGxSUFlYQ05GQUZ5OHJRUzhDK3lzc0g5OGh3NUhm?=
+ =?utf-8?B?bUFOOFArOVVVdDRwSjNvNWhZNXdZYTJYYno5K2VQd0E5RWNPUHZEN3FXT3Jx?=
+ =?utf-8?B?MTZZSWJvRm51Q1RIZkhjaVZ6a0daZ0NEU1VBb0NVUmZqc2ozV01kOHNrdjh3?=
+ =?utf-8?B?WnQ3VjZBZHhRUFhRcmxma1ZSTFdaNkIzMFduK29yUXhOaDg1dmVCVGRuMEQv?=
+ =?utf-8?B?T3FJYlMxQis4VFFDbEFzUjVFRDFmL2VVWXZwRjFQMWZzTUdMWExiS0lOTzRF?=
+ =?utf-8?B?NjlEWCtlNGVESnllLys4aWs4VjJTaDlVVCtjRWZaalAzMjNVRHpUQkFXYTNQ?=
+ =?utf-8?B?Qml5MmtXZmFOSkZ3V1V0SkV5L3ZZcUpScTNrUUJ6TUZLSTVDZmRXYStIa0lH?=
+ =?utf-8?B?WGZudm1GL29OOHhoL0NmK05aVHpOM3pCNy9FVXlTYWlmVENmdDJNYnNXbUpv?=
+ =?utf-8?B?WnByak9KVXFEQy9oUmJCV3hrRWRlUXBMMzhnTXdnbnpmZFF1Z0p3UEh6Vngw?=
+ =?utf-8?B?MUViRHBqTWVhbVE5dFhSR1dwNHhndml2UkRkam5UR1AxV0lxZmdCU0xSb25T?=
+ =?utf-8?B?RERlczUvM2dxanYwYTVPejY4Q0RzR0xyNUY1TDV6a0ZTQzdYTDQ1NitJNGVC?=
+ =?utf-8?B?aUhPTU52QUNFRy9YZEszajlvY29pTXNhNjREQWNGYTVDc0dDSHhvTEkwdUxS?=
+ =?utf-8?B?WjdVcVI5WHVxUWdhN2xESlIzZTBpQ29sRklMVlBHUHlENGpNQW5qaHoxWjh3?=
+ =?utf-8?B?WjlRdENKS3RaNjd3VHNscHFDbGVmUGhDaXBlWFRKWGZmMDd0T3JvVHBwQUtR?=
+ =?utf-8?B?bzRJdWJxZC9VYVF6N3FwN3NPMXdNRllJS0dybm9xUE9NUmw0TzV4ZmNXeHJT?=
+ =?utf-8?B?M1lUdlB5b2hCdU4rSzFGbk1lOTczS0JRVTkrS3lWaG9kdldudWZDRTVmOU1E?=
+ =?utf-8?Q?SKHFAVRB9PwXQgBx7KaAV7Y=3D?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31f6dbdc-47d1-423a-3a02-08dc4f8087cd
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc8870d1-fdb7-48b4-05c9-08dc4f809286
 X-MS-Exchange-CrossTenant-AuthSource: CO1PR01MB7370.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 23:41:03.4497
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 23:41:21.3307
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UD5iQSivVZDHIqDm83n1MzCQAm1PXSlT/4mSH989GCOSZ9P43Udlt7KUfR+6Ed+Da9mduu6dVnGL9JOb6uK1DEIgTv0Z9UByPXxHEjBa7vtuxcAfhfizAsvHBOxqKI8s
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bs6aT1qO1aA2smAkxHbD/Brb+wOXHYzhcfwd3/nSWNmwBJqwp25a+usPaXY52R8dOJZ1hOr74SeQh4sCaLQmGT9t3G71p9J80GsAOZqQFtr3cb7AslMRIu8pNxkVp2VQ
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB8180
 
-> +static int ras2_check_pcc_chan(struct ras2_context *ras2_ctx)
+> +static int __init ras2_acpi_init(void)
 > +{
-> +	struct acpi_ras2_shared_memory  __iomem *generic_comm_base = ras2_ctx->pcc_comm_addr;
-> +	ktime_t next_deadline = ktime_add(ktime_get(), ras2_ctx->deadline);
+> +	u8 count;
+> +	acpi_status status;
+> +	acpi_size ras2_size;
+> +	int pcc_subspace_idx;
+> +	struct platform_device *pdev;
+> +	struct acpi_table_ras2 *pRas2Table;
+> +	struct acpi_ras2_pcc_desc *pcc_desc_list;
+> +	struct platform_device **pdev_list = NULL;
+> +	struct acpi_table_header *pAcpiTable = NULL;
 > +
-> +	while (!ktime_after(ktime_get(), next_deadline)) {
-> +		/*
-> +		 * As per ACPI spec, the PCC space wil be initialized by
-> +		 * platform and should have set the command completion bit when
-> +		 * PCC can be used by OSPM
-> +		 */
-> +		if (readw_relaxed(&generic_comm_base->status) & RAS2_PCC_CMD_COMPLETE)
-> +			return 0;
-
-We should consider adding error checking here. In a modification of this
-driver in our enabling efforts, we are checking bit 2 in the status register
-for errors. For example, in our FW, we will set bit 2 if you try to 
-disable an
-already disabled scrub.
-> +		/*
-> +		 * Reducing the bus traffic in case this loop takes longer than
-> +		 * a few retries.
-> +		 */
-> +		udelay(10);
+> +	status = acpi_get_table("RAS2", 0, &pAcpiTable);
+> +	if (ACPI_FAILURE(status) || !pAcpiTable) {
+> +		pr_err("ACPI RAS2 driver failed to initialize, get table failed\n");
+> +		return RAS2_FAILURE;
 > +	}
 > +
-> +	return -EIO;
+> +	ras2_size = pAcpiTable->length;
+> +	if (ras2_size < sizeof(struct acpi_table_ras2)) {
+> +		pr_err("ACPI RAS2 table present but broken (too short #1)\n");
+> +		goto free_ras2_table;
+> +	}
+> +
+> +	pRas2Table = (struct acpi_table_ras2 *)pAcpiTable;
+> +
+> +	if (pRas2Table->num_pcc_descs <= 0) {
+> +		pr_err("ACPI RAS2 table does not contain PCC descriptors\n");
+> +		goto free_ras2_table;
+> +	}
+> +
+> +	pdev_list = kzalloc((pRas2Table->num_pcc_descs * sizeof(struct platform_device *)),
+> +			     GFP_KERNEL);
+> +	if (!pdev_list)
+> +		goto free_ras2_table;
+> +
+> +	pcc_desc_list = (struct acpi_ras2_pcc_desc *)
+> +				((void *)pRas2Table + sizeof(struct acpi_table_ras2));
+> +	count = 0;
+> +	while (count < pRas2Table->num_pcc_descs) {
+> +		if (pcc_desc_list->feature_type == RAS2_FEATURE_TYPE_MEMORY) {
+> +			pcc_subspace_idx = pcc_desc_list->channel_id;
+> +			/* Add the platform device and bind ras2 memory driver */
+> +			pdev = ras2_add_platform_device("ras2", &pcc_subspace_idx,
+> +							sizeof(pcc_subspace_idx));
+> +			if (!pdev)
+> +				goto free_ras2_pdev;
+> +			pdev_list[count] = pdev;
+> +		}
+> +		count++;
+> +		pcc_desc_list = pcc_desc_list + sizeof(struct acpi_ras2_pcc_desc);
+
+This line needs to be:
+pcc_desc_list = pcc_desc_list + 1
+because pcc_desc_list is a type larger than a byte.
+This bug will crash the module when num_pcc_descs
+is greater than 1
+
+> +	}
+> +
+> +	acpi_put_table(pAcpiTable);
+> +	return RAS2_SUCCESS;
+> +
+> +free_ras2_pdev:
+> +	count = 0;
+> +	while (count < pRas2Table->num_pcc_descs) {
+> +		if (pcc_desc_list->feature_type ==
+> +				RAS2_FEATURE_TYPE_MEMORY)
+> +			platform_device_put(pdev_list[count++]);
+> +	}
+> +	kfree(pdev_list);
+> +
+> +free_ras2_table:
+> +	acpi_put_table(pAcpiTable);
+> +	return RAS2_FAILURE;
 > +}
-
-
-
-
-
-
-
 
 
 
