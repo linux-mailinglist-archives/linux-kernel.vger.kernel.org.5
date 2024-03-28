@@ -1,107 +1,96 @@
-Return-Path: <linux-kernel+bounces-123603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8D32890B9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:41:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A0AB890B92
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 886E71F27D9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:41:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 742411C2DED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D91F13B5B4;
-	Thu, 28 Mar 2024 20:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216AC13AA4C;
+	Thu, 28 Mar 2024 20:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="da+QjHq/"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MgEJipg7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CEB13A86A
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E7513A3F3;
+	Thu, 28 Mar 2024 20:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711658409; cv=none; b=g835vQD41DymzmL7iraHvEOp4mINIk2F4h53R8Zw7eIgm25A5k5oWdBtsOyzCKsGRwFztqZizfu0TqrH2E+rTHnaZAH7LTv5VRqlzEQNCyucTn5ua4FhXmxYNnKzrfDaGY6XdAH651CzruMcdm/idtPFJgf8rGM8SDf98RCiiu0=
+	t=1711658392; cv=none; b=Czb3LQsT5mn4D0WrS45GN4YTKYJ3Ch1a7W1I6fSVvooueqhp9dMnISAcTgOimB1sukrGVpJGcnsRvQ8YzFUp3nF4zTDkDPBLhbt7Ri3y1oll1ls25P7WUQoFDqHr1fgamUVtqN1HiH3WnSXJMR1xTx6XZN3dTO4E050bU1rId1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711658409; c=relaxed/simple;
-	bh=zEWlRAVtFaEI8DxadpGvvAtmxe8dbfjOZtl4xLuLmKA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HqKfMTvcUnCjrGfD5z21miJxZOThsqYsVXcHhULkeGQOzHaTyDTwURRGooJw6RwUUCNjnZWkJBS2z2bawZPkoqm67sVNc5k3qitkwE1pAg/U4q4hc5Q0bFdv57cEV75xseX7tXLFcK+N1EZgh0OfsoV+24KuFoyuldx5COPIwE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=da+QjHq/; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-415482307b0so7492275e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711658406; x=1712263206; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VLbQp2aBj3c8Sf1EyYJHd+FXAjE39Y7t3rCCxWRWwVc=;
-        b=da+QjHq/bIUcVHRMOclxlJakNVF3864/aS4CnbxYpvKD0vqToR+kOtf2mPTDrJzsHt
-         /Lwlz7xJzu5bh7br1UpQfNQyu83iJZiO4t0jFkkawqqBsxTsXIZGB6ZKQqTFBVaHQ6Zb
-         xOKtlG7lM4fCdX5TkmDFF/lRU9GKkrNjCJtI2sZ7JfiDD+DUhpVdl8gmbX9y4yfKq5ll
-         TwbY24hYhRT5++Ww1VMHk3pY2bAqc+itIJeNk9e/rTnNR3e1ySRTVV8ouVhPEFw0RPuf
-         MPnSwhDEgbcxoyrS/3JY8UQo29ogw4JJYMQo0u3WPc2fqsTS3/9MxpgIBqnCoy01wEIU
-         HrwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711658406; x=1712263206;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VLbQp2aBj3c8Sf1EyYJHd+FXAjE39Y7t3rCCxWRWwVc=;
-        b=MPIRXbD59R1HGxr89IbhNrYdOrQvVQIUwDMkxCuUxHewROsol7Kbd+1p3bR5pNlryb
-         nDoEeDGwAzyFh0dFqPcXf9DW2gJGwY381X62lLrQFheV7gWM8hvyr2gNCoWj2xah7xwD
-         EUuvwU542crlyjC3awMOIDwLbGsBtzzbYcVQoSu2tkIpvGtjv1N32dTi0RW3F2xtXG1U
-         +CFACy6XT+EfKp65JCIBqkIzDFYK+K0uY8tmV8wNfdWpRf7w0BHkB1K5GCmDDeXJ+sak
-         Jj1I0ywRGQuohV3i1gRi3mz/qKdx3wPRb1aD1/N70LluN8hiF+y7UPBvpETGr2iuFYQc
-         dIzg==
-X-Forwarded-Encrypted: i=1; AJvYcCXXORYOJJL6z5ZaWhZqK5W7bakU+FpkdyPqUQGvORrVPxnxuHOQIJiH7gcXQSBZcTHyygqaxCKosKXE8HChzGTlhAVQfEhE2cF6wgmd
-X-Gm-Message-State: AOJu0Yw+f1QE5Kc8oTk2Zk/sACrBh9ovp9tOTRGWoCDctGeS4+0KJlYg
-	NyQB2Z2OMPnbNkzRGHc8QakkW2ucFbWAofiJGLFC/T8R3MUTPKZopZM53wghK3w=
-X-Google-Smtp-Source: AGHT+IF++QFH8AOoYnDjeOKcnQ9MoOPe8E5nq8m+tccUcRQiEMmq4UK7spHzq8R7jkKYNFuy2/G//g==
-X-Received: by 2002:a7b:c3d3:0:b0:415:45ea:9904 with SMTP id t19-20020a7bc3d3000000b0041545ea9904mr422278wmj.21.1711658406441;
-        Thu, 28 Mar 2024 13:40:06 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.50])
-        by smtp.gmail.com with ESMTPSA id b16-20020a5d6350000000b0033e7715bafasm2586613wrw.59.2024.03.28.13.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 13:40:06 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] spi: docs: drop driver owner initialization
-Date: Thu, 28 Mar 2024 21:39:27 +0100
-Message-Id: <20240328203927.156184-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711658392; c=relaxed/simple;
+	bh=wNEOt6nhkwgxlBg+GMM4yjneoi9cWEwTzl98ewOO420=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GN5HUGz4Ytuf+CN5RRPEukeIkBPhH1s0ZBQ+zomWXhrLzSIXWhEmO8FG9QmrzM7tLSUjvZF7Rg4Mjj5GxHskRwRYiCTM/lfvpVCJIaHxQYLIgRKdgj2Zd6S5Nazr/4lGltCHSRIMa1KwHYWQkgLP5TfBXOiwZIt4TwePxNQAZZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MgEJipg7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86231C433C7;
+	Thu, 28 Mar 2024 20:39:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711658391;
+	bh=wNEOt6nhkwgxlBg+GMM4yjneoi9cWEwTzl98ewOO420=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=MgEJipg7BZ/754JMJHKXgeKjLH176NZLsTXmtVLrvKdyP0VMh3TR1/JX3TvNgkoLL
+	 N7YKW7C7bG8Eynwl5xFwOXDlApOan5+v+UNR8w4+5A+8Jzj8axLQcaR90CZJO3c4R3
+	 R3+qfW+dY5qU1LApyEXXxHFOJxAu3wutofCzxkcoHMz3nvH9lKt+H1CeUuZiu/u/I1
+	 5zynv11b7kaO1rvJ/JqfQCLth0GQ8/OV8wIiVChsb4CpdginmFrMSy0O2+5B8dwdXV
+	 mkUE3IpIaFm+H6SeYaXCAlBKr3pxHiFOt7fi5mWx1eEb62RCGvxdahszMLaP88UN7j
+	 Vg65e8SlqyHXQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 7074611A1DC6; Thu, 28 Mar 2024 21:39:48 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, syzbot
+ <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
+In-Reply-To: <42106158-ca2b-48f5-9397-87e7cd9d4fc8@kernel.org>
+References: <000000000000f6531b061494e696@google.com>
+ <00000000000069ee1a06149ff00c@google.com>
+ <CAADnVQLpJwEfLoF9ORc7bSsDPG7Y05mWUpWWyfi7qjY+2LhC+Q@mail.gmail.com>
+ <42106158-ca2b-48f5-9397-87e7cd9d4fc8@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 28 Mar 2024 21:39:48 +0100
+Message-ID: <878r222iqz.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Core in spi_register_driver() already sets the .owner, so driver
-does not need to.
+Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/spi/spi-summary.rst | 1 -
- 1 file changed, 1 deletion(-)
+> On 27/03/2024 16.19, Alexei Starovoitov wrote:
+>> Toke, Jesper,
+>> 
+>> please take a look.
+>> It's reproducible 100% of the time.
+>> dst is NULL in dev_map_enqueue().
+>> 
+>
+> The `dst` (NULL) is basically `ri->tgt_value` being passed through
+> (unmodified) via xdp_do_redirect_frame() and __xdp_do_redirect_frame()
+> into dev_map_enqueue().
+>
+> I think something is wrong in xdp_test_run_batch().
+> The `ri->tgt_value` is being set in __bpf_xdp_redirect_map(), but I
+> cannot see __bpf_xdp_redirect_map() being used in xdp_test_run_batch().
+>
+> Toke, can you take a look at xdp_test_run_batch() and where
+> `ri->tgt_value` is getting set?
 
-diff --git a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
-index 546de37d6caf..35e1970a76a9 100644
---- a/Documentation/spi/spi-summary.rst
-+++ b/Documentation/spi/spi-summary.rst
-@@ -348,7 +348,6 @@ SPI protocol drivers somewhat resemble platform device drivers::
- 	static struct spi_driver CHIP_driver = {
- 		.driver = {
- 			.name		= "CHIP",
--			.owner		= THIS_MODULE,
- 			.pm		= &CHIP_pm_ops,
- 		},
- 
--- 
-2.34.1
+Sure! I'm off for Easter, but I'll take a look when I get back next week :)
 
+-Toke
 
