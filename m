@@ -1,37 +1,36 @@
-Return-Path: <linux-kernel+bounces-123503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52BBA89099F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:50:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 803B88909B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845291C2DA2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:50:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F8051F2306D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A84B139CF8;
-	Thu, 28 Mar 2024 19:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2435913A271;
+	Thu, 28 Mar 2024 19:50:07 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6AB27EF00;
-	Thu, 28 Mar 2024 19:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F547EF00;
+	Thu, 28 Mar 2024 19:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655396; cv=none; b=CPDRBBcGgH/XLNO1e7R5a1JfxPb4Xmto98Y4miDTMiSHYlwCCEStTFozd+AZVgOLS2f15BPLwptGsLRPKZXDl+dcCldVXKDI/L04WMZNGHzw7JvvVTzggi1I7m3fDa7XvMT1Ev16ypCgtSNgVVqoDq+okcJUk3apjkdN1Jrduos=
+	t=1711655406; cv=none; b=lGe3ZV3PxxYYTdoyESpmGNCYTMuXf5ERko3HdXAOqvQ9G5CUd+ClkaD2PvqQPtUfLbmPoTThwDUdhNcpUG2SfDAm2pti9O0zAKZBAwFF2jAdIVLH6MbdtTruW7sgm9hsPPiW20l8p8U3VgmNvluXr/NeNRFscGR9BV/sf9Znm74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655396; c=relaxed/simple;
-	bh=tpKvb2WpKtL2F2WNCvHRKcNrzS9sLlPv7e2EtZRo3D0=;
+	s=arc-20240116; t=1711655406; c=relaxed/simple;
+	bh=69+80hLz3Wx6y+bqUYfkCRVRC/cWOyQclieDPFYEN9Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=M+1T55MqsKCReWbRKCCSGT4Q9M7qir9AvUZ53FisWodKnPpN+7TI/k+xCMsgG6ghoA8VuIiaMjeLRKcJbAL6OeSTjv+1STiTwwuTFmkz1WqmJhhXMIcYnpj9oUvPH+lGadFbJ2EW0qtZbtnbqS2AhP0V5WPCEsg8VAszWY3+oOg=
+	 In-Reply-To:To:Cc; b=iAQaKUoGv/RfoIZxJksx3sSOEIHCR+Jau09uA+4/HF5c7eNjtAiKQlzl2snI2XVlshICpltFnw7iewOcssrJOk43koHN/IlNU9ytTy22MgfxVCme6U0Y0Ihm1lYLsb/mjGKZeqj7LL+ebAp2zxBQirV1BxpJACxBtrkGHF4UkCo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0D52C433A6;
-	Thu, 28 Mar 2024 19:49:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EA1EC43601;
+	Thu, 28 Mar 2024 19:49:57 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 20:49:11 +0100
-Subject: [PATCH v2 01/19] ACPI: store owner from modules with
- acpi_bus_register_driver()
+Date: Thu, 28 Mar 2024 20:49:12 +0100
+Subject: [PATCH v2 02/19] Input: atlas - drop owner assignment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -40,7 +39,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-b4-module-owner-acpi-v2-1-1e5552c2c69f@linaro.org>
+Message-Id: <20240328-b4-module-owner-acpi-v2-2-1e5552c2c69f@linaro.org>
 References: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 In-Reply-To: <20240328-b4-module-owner-acpi-v2-0-1e5552c2c69f@linaro.org>
 To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
@@ -67,94 +66,49 @@ Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2838;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=856;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=tpKvb2WpKtL2F2WNCvHRKcNrzS9sLlPv7e2EtZRo3D0=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcm/75CHfzjauSbERmtADmBfBhznS/UR7cdHP
- 7RSIzEIjuqJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJvwAKCRDBN2bmhouD
- 12kZD/wKOlbTJcRyBA4FiiG2tO7BfZ67V0INUdhmDGivj2/Ggl5gIwsgQxpvM0Km09hAXaPDRjj
- lyvAdF6rG2LBOIlP33IwbcAPFrA8fjnr5ltFUN1skrf+SDugMGrU1wtf3C1kf6/+xPkobyzjlQ4
- Isfqjvx2iysJaFE7Kpn1sA8m53l0y8brqihEWhfgSZ3TptyxCDX+exyoA8mQMFzVM0VNXuXrqSV
- LoGM50PnqYH9ndhsCftOZgg1TmWMRXe7Mdd57OBs6eHxBJ742SpMPoAHdLEagTqS7mPjz0j+kPc
- x6MkHs8/D5AVaukXcOY0ojZgxWCJfsf7tnki5Kwre+iW/sEigYZ70Hj92WRyycYbP7kJ2guCN0U
- hzSkW3RS3zIrWGWbjvXL+Byk8RdIbtZQy6+V/EryhSXR6Bv0z0EioRwVT7ski+bwKrkhLJkGEhe
- 1v1NMiWCIXHq1MQCRm4Ry8WQ0RJmFdMblkXNLSeroIVu3Lh7kGDjA6H0MpPoatGxBY9vqJ1LxUV
- ADP4YQz6rN6Z4e1Eldu0DpGsspM70VVocPfy9v8ri0bevotCiQAAhK6l643bePl2W2PxPb6a8Rc
- 8et0Wt3qsExffw1JbsNmWJgsSXsIDT+OZgetPTPsylHOtqn44KXrb/p9cAAb0SuCHoQeN0S8lR1
- wA98xZcpjAv6e1w==
+ bh=69+80hLz3Wx6y+bqUYfkCRVRC/cWOyQclieDPFYEN9Q=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBcnAx7XrsoWBm3vh56nw5/LChv2E8G75G7P9c
+ jusiIE+kU6JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXJwAAKCRDBN2bmhouD
+ 1/SdD/9deyAcM29a6zSRH1dyIrGO1oRwUG5KH/LY76CRVBouqq0VNXz8+b8D6LG3FLXCdb5TjUl
+ ZFGcjY3s/r11M6njxehb5HG3maBLFySMoSyiV8qcm1K885e6u27KW3vI7GW9zU+ffsSLzy8DC+G
+ q/XU4pegC8A/hWjNqXHH/XQMRCJJKNe1NDrEalZwlscHFzz6M47g6Ns9D1+jq4HWVF7SPk/qLDV
+ sPOn1hiNPuLw3Nwm/6ppKh4cQEjiHWRuIKn9VumSHFMZE+Z49Jp5L30SiHN8vIR9ip+NVY5YZUN
+ H22pGcW283TvPPN5jso66K/Fi5GmVNqETa2DfPIDI68iR7t9oBS4qB5+j+meVkLXDBfvlgakI6i
+ 0LbGRaHzsjAdu6rIT+wYXqq6alvDQH6huGt+MhAntWKPwwgUNUJbN7Ak5t/MrFumcZTYBIC/Jod
+ VbVJEEs+oFg2LdDjIKVeIxEKDOdFmlafMrfE09zev2JSJngthIZyF/3GlbU+SobZTnB5ty3kYng
+ Q+WkeLi3Xp3q0KVZ8/HCScv8+RLqLa8Is0bzpHbfoStRVVlaHJg1H6VBFwCK+czr/MVBv7LDysS
+ SU4XuIPpzdQnnbZL+sXpTFfZzq4Pj7r6jGtXujNzoldabhgdBVaKJi5y65RmYcbuq1hZtgGgEjA
+ So+avUKp+giVMnQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Modules registering driver with acpi_bus_register_driver() often forget to
-set .owner field.  The field is used by some of other kernel parts for
-reference counting (try_module_get()), so it is expected that drivers
-will set it.
+ACPI bus core already sets the .owner, so driver does not need to.
 
-Solve the problem by moving this task away from the drivers to the core
-ACPI bus code, just like we did for platform_driver in
-commit 9447057eaff8 ("platform_device: use a macro instead of
-platform_driver_register").
-
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/acpi/bus.c      | 9 +++++----
- include/acpi/acpi_bus.h | 7 ++++++-
- 2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index d9fa730416f1..eda951032f3c 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -990,25 +990,26 @@ EXPORT_SYMBOL_GPL(acpi_driver_match_device);
-    -------------------------------------------------------------------------- */
- 
- /**
-- * acpi_bus_register_driver - register a driver with the ACPI bus
-+ * __acpi_bus_register_driver - register a driver with the ACPI bus
-  * @driver: driver being registered
-+ * @owner: owning module/driver
-  *
-  * Registers a driver with the ACPI bus.  Searches the namespace for all
-  * devices that match the driver's criteria and binds.  Returns zero for
-  * success or a negative error status for failure.
-  */
--int acpi_bus_register_driver(struct acpi_driver *driver)
-+int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner)
- {
- 	if (acpi_disabled)
- 		return -ENODEV;
- 	driver->drv.name = driver->name;
- 	driver->drv.bus = &acpi_bus_type;
--	driver->drv.owner = driver->owner;
-+	driver->drv.owner = owner;
- 
- 	return driver_register(&driver->drv);
- }
- 
--EXPORT_SYMBOL(acpi_bus_register_driver);
-+EXPORT_SYMBOL(__acpi_bus_register_driver);
- 
- /**
-  * acpi_bus_unregister_driver - unregisters a driver with the ACPI bus
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 5de954e2b18a..7453be56f855 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -656,7 +656,12 @@ void acpi_scan_lock_release(void);
- void acpi_lock_hp_context(void);
- void acpi_unlock_hp_context(void);
- int acpi_scan_add_handler(struct acpi_scan_handler *handler);
--int acpi_bus_register_driver(struct acpi_driver *driver);
-+/*
-+ * use a macro to avoid include chaining to get THIS_MODULE
-+ */
-+#define acpi_bus_register_driver(drv) \
-+	__acpi_bus_register_driver(drv, THIS_MODULE)
-+int __acpi_bus_register_driver(struct acpi_driver *driver, struct module *owner);
- void acpi_bus_unregister_driver(struct acpi_driver *driver);
- int acpi_bus_scan(acpi_handle handle);
- void acpi_bus_trim(struct acpi_device *start);
+---
+
+Depends on the first patch.
+---
+ drivers/input/misc/atlas_btns.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/input/misc/atlas_btns.c b/drivers/input/misc/atlas_btns.c
+index 3c9bbd04e143..5b9be2957746 100644
+--- a/drivers/input/misc/atlas_btns.c
++++ b/drivers/input/misc/atlas_btns.c
+@@ -127,7 +127,6 @@ MODULE_DEVICE_TABLE(acpi, atlas_device_ids);
+ static struct acpi_driver atlas_acpi_driver = {
+ 	.name	= ACPI_ATLAS_NAME,
+ 	.class	= ACPI_ATLAS_CLASS,
+-	.owner	= THIS_MODULE,
+ 	.ids	= atlas_device_ids,
+ 	.ops	= {
+ 		.add	= atlas_acpi_button_add,
 
 -- 
 2.34.1
