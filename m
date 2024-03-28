@@ -1,169 +1,191 @@
-Return-Path: <linux-kernel+bounces-123809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B55C0890E5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:14:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D5FF890E62
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CA051F24993
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:14:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5421B291833
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243B2657C6;
-	Thu, 28 Mar 2024 23:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BCC1327ED;
+	Thu, 28 Mar 2024 23:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xjIPwrrx"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FZORLLVM"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF743BBEC
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 23:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89F73BBF1;
+	Thu, 28 Mar 2024 23:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711667659; cv=none; b=kMggNIy/5USO4rznpd3GbOPFL2rH3eq7AYSkatATxbbVzirHUlIlUq6PDQogCQw2q/abNUBEfdT/aRzO8R14yZWYgFDHvA5TWsAhw/claHVWcC0HW4PyjOZ4fRAhaikRnmN/FEyE69Gzz4LSEsSpa74NE8pUCxkgF7SipIUenBU=
+	t=1711667854; cv=none; b=GXxLly7f42ZVPohQUJrkguieuROh8N+zEdKyQb56kiNhdvp8POAgArD5exAMwV6QkDULSaoYxipMDgWgU2Nfv9RheM7nQsRuoabVtkzsLZaXnBaP2tcxYAd1BngnxixHwJa6NJy47kYInW+nAh24wzgqv0dASW7JVqpd2kSebPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711667659; c=relaxed/simple;
-	bh=WiXIsSsAAXXP8GI+Q+1vrfltJK8d/e6I9B7eNWiEYqc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tZ09gmW9CjjQ23Am2IPwml9PVWrFfAlcgD7a1p7Ek/3m8j7h1sg59AMyxngLCSdRv9DYBMMmen09F/Cl4zYAkZaN/9O8ujZpj0Cg84siQqjRdnpv2pgZBd/ZsxTX5RNzSSPQq5ocE7ud+A1L80xGNPlqp3tjm5gzkkNCKxHBQlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xjIPwrrx; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7d03a66e895so71498139f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:14:17 -0700 (PDT)
+	s=arc-20240116; t=1711667854; c=relaxed/simple;
+	bh=lxs2ZFR/bExqKNMSEhSfupLSlYECG6xtGJZ2Htju2B4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FIHMp4GUzrUUQ3yTRz/G/FMagjavFSfHSAJrrYmzV7/hTROS/LtudG66Fm/dZ0199SEms9GgsmwvQmVjkXoORw/rIdTZ5VB+sOE40K7GzykLs5AOmru4r53RlmfsmiWuCM6ZiAef1Gh6t7E7diOrBeLx+KgrekEJNREJAwu0wQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FZORLLVM; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d717603aa5so586161fa.0;
+        Thu, 28 Mar 2024 16:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711667657; x=1712272457; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=msb6psWW+3hiWjyOBZ+wbNycHLPrZ3SKQfLCbuKlM1E=;
-        b=xjIPwrrxGEe9Z6zlKB+rcM+faEAPHSin0lwmRTCaif+L+ZTlC3eu5Q980FouZmdqi1
-         e3sSCo9ebTGVyBYIrt7cDEYHDWfM0GffYrIfdCogDcl6nDDxuU1PJMxI8t/45ZyWqIEp
-         K2g0wlW/spnOrITVaTAbJIOWTjREgtb77jorYJsciLATA4Dx32vt4kd97mIbdsYLuqeb
-         zvPwwthVv5Qx2tVKeZchZlRQgpkGHY0uqe6gT1AMLWWrfxigSkZfOJJhiDXyJAiiDnmF
-         aEkb75458gOAvvRuA02U9yf1OQjU9KXMEp2K3D9xEfY9vHkSzb6vHAktZ+Rf6sIwHgUZ
-         YdpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711667657; x=1712272457;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711667851; x=1712272651; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=msb6psWW+3hiWjyOBZ+wbNycHLPrZ3SKQfLCbuKlM1E=;
-        b=fHNRoJVgMhRE/B5wXhuoJOPlghsUVof8jDTOQn7DgJigxsexqcTszcmyfqVjGquco0
-         f3Uqy1kc9GNgAQ/KyLWsloMyxNpnBIaS0gBRpSMy+MaShDfhFf3aMNBzJGWDQb9Kqw/B
-         yWPmdBcNwFbt8u3K3Bkf0SucIUSR9ee8yAiEiG9ge4Si+Fj9J2QMFAxqO8mWcjXT2gdT
-         QsnbXzefkFZgf0Ltq9umN4HZ6/Z8m7y4s7TDp1tldio7xaLnztnZdZQV26/YnGGtoWHG
-         ihMrhTT7VOLIBdM1EHV2cnxhv5GnW3JmgyjeahmhmdZi2kxNhPPv+f1ORXNYSB94Voyj
-         g1JQ==
-X-Gm-Message-State: AOJu0YxlrdKnmY8gJJeL/onH+pLZP1kGX6js+p7h7aEIwXlmizVEnVfR
-	CxleCSSN76MFlEJJkOjoqTQ8WUN4wH/QauSeCV9weIp9gFtgifDvseoKel03UHv+uzG14f9k76K
-	hAg==
-X-Google-Smtp-Source: AGHT+IFKvQ7/53HFcbFk+6y1y4y4CvPYxbZdNZKdrmpFm8anXm7QVAyOCuYkU0VDmFYqYVvqla7/vw==
-X-Received: by 2002:a05:6e02:10cf:b0:366:99e7:aa9 with SMTP id s15-20020a056e0210cf00b0036699e70aa9mr2200970ilj.2.1711667657098;
-        Thu, 28 Mar 2024 16:14:17 -0700 (PDT)
-Received: from google.com (30.64.135.34.bc.googleusercontent.com. [34.135.64.30])
-        by smtp.gmail.com with ESMTPSA id l10-20020a05663814ca00b0047edace1dc8sm732jak.137.2024.03.28.16.14.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 16:14:16 -0700 (PDT)
-Date: Thu, 28 Mar 2024 23:14:13 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Chris Down <chris@chrisdown.name>, 
-	Petr Mladek <pmladek@suse.com>, Bart Van Assche <bvanassche@acm.org>, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 02/11] scsi: devinfo: rework scsi_strcpy_devinfo()
-Message-ID: <opeccmuhptoldyr2xfwstb4uwwgfiupk3kmjkxvke2itq6cuyn@jcx4v3a5ww2f>
-References: <20240328140512.4148825-1-arnd@kernel.org>
- <20240328140512.4148825-3-arnd@kernel.org>
+        bh=VBPtswbRJVFEjRlZATnnC5PXpnMT+l8bd9tpx27HnBM=;
+        b=FZORLLVM4zTQrqx2Nmbsi0cxFMKlY+f0aT4H8rCdE6yZSJYjqMDcdjuqe/TEn+Wo7F
+         ghBvacZZoOJOcpwzMcXvG0TG3S/0fOKIdwHFmFRxu2LYqVYBt+rMN7bjgyQnaJBxPkf9
+         h+liqXbkE9MUNcLcxMa0vOhpY7I582D/xgj+HRQALIYoSnC6YUy45xGAbxV5SB/1JeCy
+         6BMhl4d9G3np8DiZMRhYLdJ2NDZd9berzJVlhWriMAj/RaXWcZ2fqquz1dnEdRGvTgGw
+         cT79hNvmyuCk+jFeZoKG0m2pdrOzjq4LEZYArlYYR9pzXxo4ZxayLmm+RDHtfH7PcfSu
+         u3mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711667851; x=1712272651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VBPtswbRJVFEjRlZATnnC5PXpnMT+l8bd9tpx27HnBM=;
+        b=xBC3yMEy+HMKWfXGDitVEIWuIyFzdFfJiXpOKiUUO55CbpduuFFsIX6Q1nmtUIiqAa
+         yrh0Z7vpFFSJbot1mO0B24HeDaMMxLSdUgOElK38mwLLx/JvhSShIKrH6zcCEwgzCFz0
+         EjIVA8mk/ITVub1JKA1wPoflbfpkYtdZWUqpIr3wxmVRMmDBw3VASGu2r5MDfvStJP/3
+         EiZ/w40Vwv7pAb7wrcVkSCcYva05Fy1SZ7lAuezqiZdBD03BB0kiagmOIiTcri9SUOCx
+         FEgcPpaDRxaW6WU9myeJA6xhY8P4eBl++2bSBMep53snjpUDpxqH0Wn3m4khbZkdzx1Z
+         dIdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrEhk9ZCNz2T3dkDxm800rRE2SbENK0BG54VELoFgUmeu90XQvXJYAaBWTJb0R/vKfbyGH1N+YU+X4V6FmXQZhvezuJm96cn+XHgqFU/L7f+19eWedq3rADJ3G6q2Y4iTpjdYR3e1CuDm7MUcY7d+Hu1xZxHYiBEshJBjQU/NIS33K7Hx5f3u+u2mk5hjYCHQjjZvuyu3Q0gNUpiOA+w36R7dhy7k4zS9tUlEmDs6kXHb9HgvmU72zuHkzrunOk3HnMrroQzgUNW1kPcmiBr06JnzXwNwo7keA5A==
+X-Gm-Message-State: AOJu0YzLkPKp0+yi/a53yiskBjpLMm/atVgfDkEzvBTNZVeSz9RK3D39
+	0c6gtF6WEEu20HS2BbEKxaMfXuNlIJXO6MBhMDxIvA0xoCXpUQq3YmQb+BLMhmo6KjNFzPleVX6
+	jUb/86upMXvx4sSYsD90CpFmTiPs=
+X-Google-Smtp-Source: AGHT+IG5xIH2Dr8kwrbaPKFwGkwQN2RxPioeS2J7HN42D01hRwbUDEoBKIDHKJKBLqNdT3QFt8lsl8OnqZLOHWZb5Wo=
+X-Received: by 2002:a05:651c:1692:b0:2d6:c7b5:989c with SMTP id
+ bd18-20020a05651c169200b002d6c7b5989cmr378385ljb.28.1711667850565; Thu, 28
+ Mar 2024 16:17:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328140512.4148825-3-arnd@kernel.org>
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+ <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+ <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+ <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+ <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+ <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
+ <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com> <20240328111330.194dcbe5@gandalf.local.home>
+In-Reply-To: <20240328111330.194dcbe5@gandalf.local.home>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 28 Mar 2024 16:17:19 -0700
+Message-ID: <CAADnVQKsuV2OhT4rc+k=WDmVMQxbjDiC4+zNbre2Kpj1hod5xw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Thu, Mar 28, 2024 at 03:04:46PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> scsi_strcpy_devinfo() appears to work as intended but its semantics are
-> so confusing that gcc warns about it when -Wstringop-truncation is enabled:
-> 
-> In function 'scsi_strcpy_devinfo',
->     inlined from 'scsi_dev_info_list_add_keyed' at drivers/scsi/scsi_devinfo.c:370:2:
-> drivers/scsi/scsi_devinfo.c:297:9: error: 'strncpy' specified bound 16 equals destination size [-Werror=stringop-truncation]
->   297 |         strncpy(to, from, to_length);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Reorganize the function to completely separate the nul-terminated from
-> the space-padded/non-terminated case. The former is just strscpy_pad(),
-> while the latter does not have a standard function.
+On Thu, Mar 28, 2024 at 8:10=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
 >
+> On Thu, 28 Mar 2024 22:43:46 +0800
+> =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
+>
+> > I have done a simple benchmark on creating 1000
+> > trampolines. It is slow, quite slow, which consume up to
+> > 60s. We can't do it this way.
+> >
+> > Now, I have a bad idea. How about we introduce
+> > a "dynamic trampoline"? The basic logic of it can be:
+> >
+> > """
+> > save regs
+> > bpfs =3D trampoline_lookup_ip(ip)
+> > fentry =3D bpfs->fentries
+> > while fentry:
+> >   fentry(ctx)
+> >   fentry =3D fentry->next
+> >
+> > call origin
+> > save return value
+> >
+> > fexit =3D bpfs->fexits
+> > while fexit:
+> >   fexit(ctx)
+> >   fexit =3D fexit->next
+> >
+> > xxxxxx
+> > """
+> >
+> > And we lookup the "bpfs" by the function ip in a hash map
+> > in trampoline_lookup_ip. The type of "bpfs" is:
+> >
+> > struct bpf_array {
+> >   struct bpf_prog *fentries;
+> >  struct bpf_prog *fexits;
+> >   struct bpf_prog *modify_returns;
+> > }
+> >
+> > When we need to attach the bpf progA to function A/B/C,
+> > we only need to create the bpf_arrayA, bpf_arrayB, bpf_arrayC
+> > and add the progA to them, and insert them to the hash map
+> > "direct_call_bpfs", and attach the "dynamic trampoline" to
+> > A/B/C. If bpf_arrayA exist, just add progA to the tail of
+> > bpf_arrayA->fentries. When we need to attach progB to
+> > B/C, just add progB to bpf_arrayB->fentries and
+> > bpf_arrayB->fentries.
+> >
+> > Compared to the trampoline, extra overhead is introduced
+> > by the hash lookuping.
+> >
+> > I have not begun to code yet, and I am not sure the overhead is
+> > acceptable. Considering that we also need to do hash lookup
+> > by the function in kprobe_multi, maybe the overhead is
+> > acceptable?
+>
+> Sounds like you are just recreating the function management that ftrace
+> has. It also can add thousands of trampolines very quickly, because it do=
+es
+> it in batches. It takes special synchronization steps to attach to fentry=
+.
+> ftrace (and I believe multi-kprobes) updates all the attachments for each
+> step, so the synchronization needed is only done once.
+>
+> If you really want to have thousands of functions, why not just register =
+it
+> with ftrace itself. It will give you the arguments via the ftrace_regs
+> structure. Can't you just register a program as the callback?
+>
+> It will probably make your accounting much easier, and just let ftrace
+> handle the fentry logic. That's what it was made to do.
 
-I did the same in a patch sent earlier (few weeks ago):
+Absolutely agree.
+There is no point re-inventing this logic.
 
-https://lore.kernel.org/all/20240305-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v3-5-5b78a13ff984@google.com/
-
-Maybe reviewers can chime in on which version is preferred and go from
-there.
-
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/scsi/scsi_devinfo.c | 30 ++++++++++++++++++++----------
->  1 file changed, 20 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-> index ba7237e83863..58726c15ebac 100644
-> --- a/drivers/scsi/scsi_devinfo.c
-> +++ b/drivers/scsi/scsi_devinfo.c
-> @@ -290,18 +290,28 @@ static struct scsi_dev_info_list_table *scsi_devinfo_lookup_by_key(int key)
->  static void scsi_strcpy_devinfo(char *name, char *to, size_t to_length,
->  				char *from, int compatible)
->  {
-> -	size_t from_length;
-> +	int ret;
->  
-> -	from_length = strlen(from);
-> -	/* This zero-pads the destination */
-> -	strncpy(to, from, to_length);
-> -	if (from_length < to_length && !compatible) {
-> -		/*
-> -		 * space pad the string if it is short.
-> -		 */
-> -		memset(&to[from_length], ' ', to_length - from_length);
-> +	if (compatible) {
-> +		/* This zero-pads and nul-terminates the destination */
-> +		ret = strscpy_pad(to, from, to_length);
-> +	} else {
-> +		/* no nul-termination but space-padding for short strings */
-> +		size_t from_length = strlen(from);
-> +		ret = from_length;
-> +
-> +		if (from_length > to_length) {
-> +			from_length = to_length;
-> +			ret = -E2BIG;
-> +		}
-> +
-> +		memcpy(to, from, from_length);
-> +
-> +		if (from_length < to_length)
-> +			memset(&to[from_length], ' ', to_length - from_length);
->  	}
-> -	if (from_length > to_length)
-> +
-> +	if (ret < 0)
->  		 printk(KERN_WARNING "%s: %s string '%s' is too long\n",
->  			__func__, name, from);
->  }
-> -- 
-> 2.39.2
-> 
-Thanks
-Justin
+Menlong,
+before you hook up into ftrace check whether
+it's going to be any different from kprobe-multi,
+since it's the same ftrace underneath.
+I suspect it will look exactly the same.
+So it sounds like multi-fentry idea will be shelved once again.
 
