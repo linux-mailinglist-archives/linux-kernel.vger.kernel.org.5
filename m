@@ -1,144 +1,119 @@
-Return-Path: <linux-kernel+bounces-123056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1C9989018A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:20:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3A5B89018D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F1A11C28820
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:20:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 479ACB22DE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337D912DD90;
-	Thu, 28 Mar 2024 14:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1089384FCE;
+	Thu, 28 Mar 2024 14:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUAG8QBE"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VJn6ShWU"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD11D12D1FC;
-	Thu, 28 Mar 2024 14:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D081F80027
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711635574; cv=none; b=FkxojQ1cB2SQcGJM8jq1JG2Di0ih/8QY2EmC/akPRwxubxnp6rqq3pBY1aO24yBAOMy9IOITgl8sdw2dvK1OqZzKJbyPa90oAWlC/ATkz+duTcACfyy/ZJVDdb520fJJDzYwelb6sf5be07wmxZbA66tb1uSQKWpuPgldRRKqog=
+	t=1711635615; cv=none; b=r4Xdm0Tnp8pH5aQPLAfkMday20ERzzpCQt0aSU1Owhxj3/lvwJFbQ7W/tYKg/V9bISUlMO6HHjYxeJjWF7DXHTKo3ANrN0/IidQ4eOhTiMMPYRLXJq/mzgTvPUJunjhEE4yEHNn3FsVac0rMEA1JNqNqx8ygc9DKwmryTYa7Rjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711635574; c=relaxed/simple;
-	bh=2xwyGLOOj3aMO5bTl8Wvb2iK0ag8hGdp7A/E/1Ppr/k=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oI3yeYbxpfh65OF47m0QhVjy8+GCM1Q0WE8LaJRA84/HW/VTDcTzWpQgmemAP1EFnsZCVcjD624e4BcqfKKADL0Kws+YkRDkxbuLp3vNLf+6IKgBYQriSfjc6HtgArsadoB1uGV5CPsP4pIp8x/g6ujJZYgLhLgatkU8klY+84o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RUAG8QBE; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41488f9708fso6912195e9.3;
-        Thu, 28 Mar 2024 07:19:31 -0700 (PDT)
+	s=arc-20240116; t=1711635615; c=relaxed/simple;
+	bh=YHZ2qDQtrHJ7X6uQMFA19oqP0aMOKlutpOAK5TIojS8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=OfikdFn3m3Jyinxw/s/xw9bolAbYXUqIxY6nhTJHjcoPXtiQYG0lmYrWDKqzmE+bWzvBaatHLMz3GdDSqxYk0CfvX8/NdOy1wpCM29+PYs9AvqQyODixtP6kJRo07kxxitQZKe9gMjppsTS2Hyqkqu9KeOME/ScY/wR+hOylyKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VJn6ShWU; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd933a044baso2532186276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711635570; x=1712240370; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WrB39jskNAQxk3poTjDI2WVUKziiXPl2M1zSpgJNL0Y=;
-        b=RUAG8QBEPB9MYq1SyIYGvwzTjpbJ5a21Ed5+gKkJFnko9mfAkPFXXxOlD2Cz9RsAlJ
-         pRupcoF5ArLyLbaCt3eVoI4gSj1ifuL8LFcsCGDt5rlhzOlJH/itzleyXKelUWwM1UJs
-         Thbyavp1IEWN8TMKdnK98unh6jPs1WQZUi+YcsEch8pKB85s4OQa1n5780NiTObO9s5v
-         Pf7ccN6cGT8rd9s2vGDvsgQDvMkXAi/W+swuYmLMXwRbniC0wp3BS2S0jj7nAmSe3/Gx
-         YLWSO4SUsCR8pskmjK/+LVyY5kNqVtHvn9kFzhy5ciCW7oJjPBqsYjn85dWEXpvwQFAA
-         yQYw==
+        d=google.com; s=20230601; t=1711635613; x=1712240413; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ywi9W0+VrdEwTHjF11TkVgGoMgKOQYfnHN16lHNeHLA=;
+        b=VJn6ShWUsDGhgwyIAESpUvN+73/Tm07JGNVBcPqPRuzcYaop7wLxMq4rM1gBWQaIII
+         gs5guBZyrHpywU6wcTzoDAAXFK/rJI4mQD/0rdyMm5eGnOX749TQEXwQAMJDrSHjxZPT
+         E5VcsEMzLrxJuAsb9dT9sXeFU8qUS8CbRB/DQSTG5Yug5fT3sq+OPfmjD4RrT5Ptcd8d
+         yvblBrnSq01YUNvrbkUceMqUDB9IviJCEgFRpSelBNwFrXGIvSCUMiC5gyxld2HpIqmf
+         po8axAGEANyVb5maOSTLXJKjGjQfHB74EgLGyL5oOQ3meWfCBk7KZI9oMxCHEJ8Ik1xm
+         MZcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711635570; x=1712240370;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WrB39jskNAQxk3poTjDI2WVUKziiXPl2M1zSpgJNL0Y=;
-        b=nsCvPWCgPGptI8CLMMBIvBbrlp6LywiBxcNPThjrnbJboAuTXM5qQt1+HbsqtX1VD2
-         C33y5KEJEaQY10wzP+4SsHnDTSOUveJ65pOSDs7bGIj3+HD2IdC8z5aH8E8saVrvMbVO
-         z9+a/s1hTbzWeDhDHOCr4S4FfjWmKdnPIcJMqUObHtzzw+zNDCIqtMn/fKdCP13JulUr
-         LHTlKO36IGk6aJC1ea97e+E3ITkR3/h9+CMFuF5RjEMM/rJX0ekHVz3c13RayJJFdyrD
-         4ATscOeGXnMt/XLyq4hQXbzqO4CB4eu90yZN4k5MkgLsrVl2HX90H1bTqlyNDBPsDQ/r
-         Jq2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVaWiRIY0s26ox6IhgSGCag6xGC8w2T58u9wltYlRGI9+KfX2eybclN1HdbkkaE/kBTvxc6PNfdI+rVygPXECVBl5vv4/wG5Ee2sdjcB3JTDE1a0E/n8d3uu0byFBWE3lKfWAvk
-X-Gm-Message-State: AOJu0YzzeNTfKp13Q3YwmSU3d2v+XrKvr7s62QhsNW0TB/+n7YalAMmq
-	ra8UiNQj4fS+RRL2QbUnweKgg0iX6rS9BFRiwXgsmuWldMocnGf1
-X-Google-Smtp-Source: AGHT+IHWrLZeKk2CojUjAsEcno3P9RlE2RJMQ3G0SD3pycUW+URPzK2IyGZs4uxY7GtMdfxhVmrWqg==
-X-Received: by 2002:a05:600c:45ca:b0:414:8948:621c with SMTP id s10-20020a05600c45ca00b004148948621cmr2718071wmo.8.1711635569770;
-        Thu, 28 Mar 2024 07:19:29 -0700 (PDT)
-Received: from Ansuel-XPS. (host-87-1-248-55.retail.telecomitalia.it. [87.1.248.55])
-        by smtp.gmail.com with ESMTPSA id l14-20020a05600c1d0e00b0041477f95cf6sm2457876wms.13.2024.03.28.07.19.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 07:19:29 -0700 (PDT)
-Message-ID: <66057c71.050a0220.e4ba.97dc@mx.google.com>
-X-Google-Original-Message-ID: <ZgV8bS19nCFV8iQm@Ansuel-XPS.>
-Date: Thu, 28 Mar 2024 15:19:25 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
-References: <20240322040951.16680-1-ansuelsmth@gmail.com>
- <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
+        d=1e100.net; s=20230601; t=1711635613; x=1712240413;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ywi9W0+VrdEwTHjF11TkVgGoMgKOQYfnHN16lHNeHLA=;
+        b=YQuk/OIKtGCwvvNu2smC++5gkOiqsv7KRBhEABxQNexck46h293DosE4d9rTiBRagt
+         CEQqHUjoCVzmF48Q9mGbK9Gm733nCiZ4OaNCBB4CyRKSGECImKtUXRSia5NWD1MZQPNP
+         xc1k6hPYXh1ZFxopyQOauI1N2QqJ7wnmxJ1E12KyHX9C0n/7e3asiCs/T95Nsze6MNZW
+         AH0I4/LQBKNSme1YBb+67bGSYRmqKLUnWOuqeqyCbgqW4Si1kfnWdAnXyYi8caw3Licr
+         96C/p64hCKqQj51jIJykyrbGm6JgQXPNwWYmGiVhmpOi60eRZVLsWg3r4LoDfdr34Irn
+         gnbA==
+X-Forwarded-Encrypted: i=1; AJvYcCXUFNJx1UN4JTBMB3rSNw4/UoseU5Q14uqsjMGjupMspsK2tZ8XIkb9QJuWnuzhH87wXpXZQ5iUOA1hImKehbVBbkfCtyqktfmIqh7i
+X-Gm-Message-State: AOJu0Yw/pHEyMuUXbgGqERyuIhc8eqox0lbnLgNz6hCSqrMHSgbqUzeZ
+	ssoYzHI9Jal9sDKboDoglInqVZirKlC3wzQArwcEzkrLIIuXUHEYUJCTktXunRkxDXj6NsNbJlV
+	a1oj4tRuIFg==
+X-Google-Smtp-Source: AGHT+IF5T/UC/ZI+sJghdQaQT7RB77mNf5c73vZHpF2Z2msrfpy5Y10FafAMAzCctl95KssMUBsd0WjxxlFQSA==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:6902:1507:b0:dbd:ee44:8908 with SMTP
+ id q7-20020a056902150700b00dbdee448908mr759573ybu.0.1711635612898; Thu, 28
+ Mar 2024 07:20:12 -0700 (PDT)
+Date: Thu, 28 Mar 2024 14:20:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+Message-ID: <20240328142004.2144568-1-jackmanb@google.com>
+Subject: [PATCH] Documentation: kunit: Clarify test filter format
+From: Brendan Jackman <jackmanb@google.com>
+To: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, davidgow@google.com, rmoar@google.com, 
+	corbet@lwn.net, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 27, 2024 at 11:15:02PM +0100, Rafał Miłecki wrote:
-> On 22.03.2024 05:09, Christian Marangi wrote:
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 5887feb347a4..0de87bc63840 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
-> >   	config.name = compatible;
-> >   	config.id = NVMEM_DEVID_AUTO;
-> >   	config.owner = THIS_MODULE;
-> > -	config.add_legacy_fixed_of_cells = true;
-> > +	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
-> >   	config.type = NVMEM_TYPE_OTP;
-> >   	config.root_only = true;
-> >   	config.ignore_wp = true;
-> 
-> I think there may be even more unwanted behaviour here. If
-> mtd_otp_nvmem_register() fails to find node with "user-otp" /
-> "factory-otp" compatible then it sets "config.of_node" to NULL but that
-> means NVMEM core still looks for NVMEM cells in device's "of_node".
-> 
-> I believe we should not look for OTP NVMEM cells out of the "user-otp" /
-> "factory-otp" compatible nodes.
-> 
-> So maybe what we need in the first place is just:
-> config.add_legacy_fixed_of_cells = !!np;
-> ?
-> 
-> Any extra limitation of .add_legacy_fixed_of_cells should probably be
-> used only if we want to prevent new users of the legacy syntax. The
-> problem is that mtd.yaml binding allowed "user-otp" and "factory-otp"
-> with old syntax cells. It means every MTD device was allowed to have
-> them.
-> 
-> No in-kernel DTS even used "user-otp" or "factory-otp" with NVMEM legacy
-> cells but I'm not sure about downstream DTS files. Ideally we would do
-> config.add_legacy_fixed_of_cells = false;
-> but that could break compatibility with some downstream DTS files.
+It seems obvious once you know, but at first I didn't realise that the
+suite name is part of this format. Document it and add example.
 
-Yes the main problem is prevent regression in downstream. I feel for the
-nand usage, this is 100% of the times broken. For SPI and other corner
-case MTD devices it's not?
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ Documentation/dev-tools/kunit/run_wrapper.rst | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Anyway did you by chance have a suggestion for a better fixes tag?
-
+diff --git a/Documentation/dev-tools/kunit/run_wrapper.rst b/Documentation/dev-tools/kunit/run_wrapper.rst
+index 19ddf5e07013..e75a5fc05814 100644
+--- a/Documentation/dev-tools/kunit/run_wrapper.rst
++++ b/Documentation/dev-tools/kunit/run_wrapper.rst
+@@ -156,13 +156,20 @@ Filtering tests
+ ===============
+ 
+ By passing a bash style glob filter to the ``exec`` or ``run``
+-commands, we can run a subset of the tests built into a kernel . For
++commands, we can run a subset of the tests built into a kernel,
++identified by a string like ``$suite_name.$test_name``. For
+ example: if we only want to run KUnit resource tests, use:
+ 
+ .. code-block::
+ 
+ 	./tools/testing/kunit/kunit.py run 'kunit-resource*'
+ 
++Or to run just one specific test from that suite:
++
++.. code-block::
++
++	./tools/testing/kunit/kunit.py run 'kunit-resource-test.kunit_resource_test_init_resources'
++
+ This uses the standard glob format with wildcard characters.
+ 
+ .. _kunit-on-qemu:
 -- 
-	Ansuel
+2.44.0.396.g6e790dbe36-goog
+
 
