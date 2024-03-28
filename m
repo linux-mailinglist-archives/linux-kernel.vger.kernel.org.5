@@ -1,154 +1,172 @@
-Return-Path: <linux-kernel+bounces-122393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D793788F61D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:03:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82C2388F621
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 867FE1F29F66
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:03:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4086B24102
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 04:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F8B381C9;
-	Thu, 28 Mar 2024 04:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1281A39FE4;
+	Thu, 28 Mar 2024 04:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NqWwDxwS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K+++a+v3"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C85291E
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 04:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBBA291E
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 04:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711598591; cv=none; b=JgTfcu8VyzjwUgTXszdbl7EbXeUDPy7HkegaWjYTrqlVFruL8m+vfriORiRIcziT/eSytW8aDS3aTzcIshcuyea04uDZP4ui9Ozp9b6bj9g8nnSf5Q0ySKTSM1FGUdU+T4rYO7L2lv7aoxkinhTLF/9chotbihA/eCcfJAsF6nc=
+	t=1711598597; cv=none; b=JWzSMHviXNNaFIQfgLn1b6mUqr4p5c13G8lfzmXYK3Y9OyOwTivDWsMgdz135oSKR7vkzh7IVqQkkQltdqXgh/hD7qIJQ7fU4cX+UwbEnsMtXU1Mx0TE+Q4VR3xXQjIn752sUQTY12UJMg11TD/+tMWJ0mgF9+ld3hZMcaa2OPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711598591; c=relaxed/simple;
-	bh=MA0vU3W1LZn4Qn1ileNbbCmxahwffPLbnt6IdvVY1DQ=;
+	s=arc-20240116; t=1711598597; c=relaxed/simple;
+	bh=MHiwrnlxm3X9TucZVoG5eoIPRM8WLETsvftNaUwZtSU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RY2c75zYSkLH6HjZYWgFxS1x35bTnce5O9ZmdpaZ4peyWyEINVtjDok+6a77VDgegAsVovugsH53t4rmgiDKVfg63VWQN9E+IzOc6t8BSaP8kZSYM6k2UioEVsA84dW6WIXoZI8wNpwZSqz7vLJyIuJ4AsjDjwxocx621JuysX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NqWwDxwS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711598589;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VR9QH5sWK+/AEwJzme4Yl+zpIsFT2eAe45QtEGaUS2M=;
-	b=NqWwDxwSYGuV5Cpq6ssZRGnCZWSLZ7qYFHuTugIF1K3svlIfpHC0xL902wfSZ7t3rvwatu
-	QT6K0MZScf8F9F/MlLw/4lks20Rm+xgSgwzzgvIm8jJdRz5RSvtm4XlEyL1n7Z3IegYOHs
-	X3rAUkmHn0OCPvlCMWR1MH/wrvMq7zM=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-zlhKVtOlOVy1CLqnS2-AKQ-1; Thu, 28 Mar 2024 00:03:06 -0400
-X-MC-Unique: zlhKVtOlOVy1CLqnS2-AKQ-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2a05923dbd9so468201a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:03:06 -0700 (PDT)
+	 To:Cc:Content-Type; b=hgNqK5hsPBrKPAPTRHxFeYiF6VWezc20G+9tyFAOVNfYWwboGiQvQINlO7Ka+NZ407odkQB7DB863WxS80bg2u4g+wJOaaKeufh3JMYSf9Bs7TfzPgBt0rdrUr/eb6KSQ5o/2zt+0MrP7TaZA2HNs9XHMK80J6MfDxyH3ibuuSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K+++a+v3; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51588f70d2dso509993e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 21:03:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711598594; x=1712203394; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y26LU5IaRA0ySvMRHMq2FysiOdELeoSdL42Vw4YgFQU=;
+        b=K+++a+v3lvVHubTAIOkzeIvdYKCRDHYhYT/GKCrrhOGxROYXd8NwDkZyV6SBCmNjEu
+         OlgXJABENBYrcE+ZKHTiFrrdeq3S3hmRCRrLhS0Iwj/ljYgaldH6vQHzmnijvBz7sV8l
+         GQ/bHK6pczOHdDNsYNvugW8u83gMl5W/amX8HG6B46wRNeEabycCBvCxXKGvMj6MDpMy
+         XFW6olHf0uj5Rmzy9pJSoQXtpQl9OPIHvnVL5ICNTdW0KMO/sKAWjtEJrXyx/ZWkWnJ9
+         qNQCkcQVkk4qJ47jNYJ5o6rRzGeWlGFyk+Qju5oU5SGVDJQvc4UJ+Zh93Y31bP34TBdw
+         NBPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711598586; x=1712203386;
+        d=1e100.net; s=20230601; t=1711598594; x=1712203394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VR9QH5sWK+/AEwJzme4Yl+zpIsFT2eAe45QtEGaUS2M=;
-        b=KkdDyt5Vx9W2v4cX1FJIxv6a2c+bXWGVbBn7j9qvL8dTGh176lOkdp55DwTmJP49vs
-         JA67wp/T5wsOAKbcifnmlkqdI2rAFLmS1KimvIeYgmZN23siYcw/coSYgplF4SB6ciMQ
-         aBH/qVH/ZMUh5+05DA5ZYiZbdXohwrXAlTxeKZVzbNFsJOOzdzb8d6x1u4pZvG0w9pS1
-         V+Ne8y2KwfIwq4w8czXHLaXqA5uZr+Vl+SxAaHlM81jRSURkHOGcX+yaGBsB65sIPygc
-         HtjMdkLO0ow3jugqYl5YzciF+Ctsdur5sjDmgslIEex9HSBxMjrs5XSMX/s3GYd5friO
-         GCtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXhafqUHby0jxrhtqxSP4K7vUI3+brVsnwaLMWhVv9JuCMjEEthPjeiM8NaaumRj4Mq4bAe5Q0p1MyEW1Rk9/54a/yf95gPMuUFxpPB
-X-Gm-Message-State: AOJu0YzQmfA96EbWYXkj80vqyNinaw+KtR5GPU176/Apgld1cY6O+7Iy
-	i0ju2L6LOofSimESejwDHc77DkjTzMTY3hWFn1bx+U1dHBJgub04pmldeGEWEktzQAKtLROYs5l
-	DOdMjX0pUaokXwLTK9rDv/Q2ZOypuNBuPwA65V1c8HbAAQvLWHC19P6IMlDaCrKofsBtwbN8UQK
-	8nhWvTZ9ueqex7Efvxc6zimM0tyQbJ/wZYbTLN
-X-Received: by 2002:a17:90b:14a:b0:2a0:7815:dd25 with SMTP id em10-20020a17090b014a00b002a07815dd25mr1734990pjb.20.1711598585816;
-        Wed, 27 Mar 2024 21:03:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG/veJ62gWCxJH+rJXD0BAZFk49zg7RYhlAQmbs4vW7XEiQGECvkaoiOerml1BopvTt9smdmlPuOr7dLI1u01k=
-X-Received: by 2002:a17:90b:14a:b0:2a0:7815:dd25 with SMTP id
- em10-20020a17090b014a00b002a07815dd25mr1734975pjb.20.1711598585557; Wed, 27
- Mar 2024 21:03:05 -0700 (PDT)
+        bh=y26LU5IaRA0ySvMRHMq2FysiOdELeoSdL42Vw4YgFQU=;
+        b=XCtWaGf4utq8FIbAQyhKKvu+pw0Y+k1iOZfsiE6SSjp9k+7ypsQGqvGPREzYI11tbb
+         B++4rTBkwaTz+uR+C+gMQ0DjJB+AxU+NzzqOPy0I18gqKgyexrAZtfrOGdfezSEqk1DO
+         I1vWY+Fp8hq457UiaRFL24IQYghjYcnrI6Wrgwp4M4dwbwYLfdVvv3q5ZZ737ZaDF4Xa
+         14mYrWJtzDb2wBOBlye6UKxkiIWrP3bD8cKj5lavmXq4IaD1gplmKxELQh6Rm24T7ZME
+         np3IVKhksY1QdbMBeBerRsf1V+juc/YKpVuBxf4UwzG0KnpehkszxLFvAfZsR2sj3qNO
+         7Psw==
+X-Forwarded-Encrypted: i=1; AJvYcCXBwy2X/mVxWsEb5i+Fa+yl7BFBwQTDH/ZfmxFvpI3WBnxy5TKr81wGRFBwtEEQ+9oUgkRHDClVyn1ZRw01datmipPdP7JaEVDQXWrf
+X-Gm-Message-State: AOJu0Yx0+o0Tk8PUEU6ARCOzoPOTxcyjF2s8ypwbit3Kvcof3PoOQ3jO
+	R+9icnvF6KTHFoh9dO6OimKqvITe/K2aljnsU43pb4G+aNP7xnIHwsGErX19/YDRbkUVxWsN8te
+	0X6l+meuxQNhg/jjlH3AHhM/5FgM=
+X-Google-Smtp-Source: AGHT+IHWYxXbkvHuAYVca52UgrVPta+8NGXkypikoZTNY3AvWAgzhKMpCVfrkv3KLZQu53L40XNZDPiZmlO+yqZb6cY=
+X-Received: by 2002:a05:6512:3f0:b0:515:96ab:4183 with SMTP id
+ n16-20020a05651203f000b0051596ab4183mr742364lfq.37.1711598593481; Wed, 27 Mar
+ 2024 21:03:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327231826.1725488-1-andrew@daynix.com>
-In-Reply-To: <20240327231826.1725488-1-andrew@daynix.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 28 Mar 2024 12:02:54 +0800
-Message-ID: <CACGkMEuW8jLvje0_oqCT=-ih9JEgxOrWRsvjvfwQXw=OWT_RtQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] vhost: Added pad cleanup if vnet_hdr is not present.
-To: Andrew Melnychenko <andrew@daynix.com>
-Cc: mst@redhat.com, ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
-	kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com, 
-	kvm@vger.kernel.org, virtualization@lists.linux.dev, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	yuri.benditovich@daynix.com, yan@daynix.com
+References: <ZfwpuRjAZV07_lc3@casper.infradead.org> <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
+ <Zfz4_GJAHRInB8ul@casper.infradead.org> <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
+ <ZgDt9mwN-Py5Y-xr@casper.infradead.org> <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
+ <ZgK91II_eSYY6D2F@casper.infradead.org> <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
+ <ZgQRtQ60mrvOUKXo@casper.infradead.org> <CAGWkznF3GfCs8odhR-Hue5H8MZ=eXb82V20ZoCCjeoSjAPQ9cw@mail.gmail.com>
+ <ZgThg-pzQzRl3ckF@casper.infradead.org>
+In-Reply-To: <ZgThg-pzQzRl3ckF@casper.infradead.org>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Thu, 28 Mar 2024 12:03:02 +0800
+Message-ID: <CAGWkznEMCXQSe10E-pbdxk2uFgQO038wH6g=iojtSU6-N+GJdg@mail.gmail.com>
+Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
+ mm: fix a race scenario in folio_isolate_lru
+To: Matthew Wilcox <willy@infradead.org>
+Cc: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 7:44=E2=80=AFAM Andrew Melnychenko <andrew@daynix.c=
-om> wrote:
+On Thu, Mar 28, 2024 at 11:18=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
 >
-> When the Qemu launched with vhost but without tap vnet_hdr,
-> vhost tries to copy vnet_hdr from socket iter with size 0
-> to the page that may contain some trash.
-> That trash can be interpreted as unpredictable values for
-> vnet_hdr.
-> That leads to dropping some packets and in some cases to
-> stalling vhost routine when the vhost_net tries to process
-> packets and fails in a loop.
+> On Thu, Mar 28, 2024 at 09:27:31AM +0800, Zhaoyang Huang wrote:
+> > ok, I missed the refcnt from alloc_pages. However, I still think it is
+> > a bug to call readahead_folio in read_pages as the refcnt obtained by
+> > alloc_pages should be its final guard which is paired to the one which
+> > checked in shrink_folio_list->__remove_mapping->folio_ref_freeze(2)(thi=
+s
+> > 2 represent alloc_pages & page cache). If we removed this one without
 >
-> Qemu options:
->   -netdev tap,vhost=3Don,vnet_hdr=3Doff,...
->
-> From security point of view, wrong values on field used later
-> tap's tap_get_user_xdp() and will affect skb gso and options.
-> Later the header(and data in headroom) should not be used by the stack.
-> Using custom socket as a backend to vhost_net can reveal some data
-> in the vnet_hdr, although it would require kernel access to implement.
->
-> The issue happens because the value of sock_len in virtqueue is 0.
-> That value is set at vhost_net_set_features() with
-> VHOST_NET_F_VIRTIO_NET_HDR, also it's set to zero at device open()
-> and reset() routine.
-> So, currently, to trigger the issue, we need to set up qemu with
-> vhost=3Don,vnet_hdr=3Doff, or do not configure vhost in the custom progra=
-m.
->
-> Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
+> __remove_mapping()  requires that the caller holds the folio locked.
+> Since the readahead code unlocks the folio, __remove_mapping() cannot
+> be run because the caller of __remove_mapping() will wait for the folio
+> lock.
+repost the whole timing sequence to make it more clear and fix
+incorrect description of previous feedback
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Follow the refcount through.
 
-It seems it has been merged by Michael.
+In page_cache_ra_unbounded():
 
-Thanks
+                folio =3D filemap_alloc_folio(gfp_mask, 0);
+(folio has refcount 1)
+                ret =3D filemap_add_folio(mapping, folio, index + i, gfp_ma=
+sk);
+(folio has refcount 2, PG_lru)
 
-> ---
->  drivers/vhost/net.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> index f2ed7167c848..57411ac2d08b 100644
-> --- a/drivers/vhost/net.c
-> +++ b/drivers/vhost/net.c
-> @@ -735,6 +735,9 @@ static int vhost_net_build_xdp(struct vhost_net_virtq=
-ueue *nvq,
->         hdr =3D buf;
->         gso =3D &hdr->gso;
->
-> +       if (!sock_hlen)
-> +               memset(buf, 0, pad);
-> +
->         if ((gso->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) &&
->             vhost16_to_cpu(vq, gso->csum_start) +
->             vhost16_to_cpu(vq, gso->csum_offset) + 2 >
-> --
-> 2.43.0
->
+Then we call read_pages()
+First we call ->readahead() which for some reason stops early.
+Then we call readahead_folio() which calls folio_put()
+(folio has refcount 1)
+Then we call folio_get()
+(folio has refcount 2)
+Then we call filemap_remove_folio()
+(folio has refcount 1)
+Then we call folio_unlock()
+Then we call folio_put()
 
+Amending steps for previous timing sequence below where [1] races with
+[2] that has nothing to do with __remove_mapping(). IMO, no file_folio
+should be freed by folio_put as the refcnt obtained by alloc_pages
+keep it always imbalanced until shrink_folio_list->__remove_mapping,
+where the folio_ref_freeze(2) implies the refcnt of alloc_pages and
+isolation should be the last two. release_pages is a special scenario
+that the refcnt of alloc_pages is freed implicitly in
+delete_from_page_cache_batch->filemap_free_folio.
+
+    folio_put()
+    {
+         if(folio_put_test_zero())
+*** we should NOT be here as the refcnt of alloc_pages should NOT be droppe=
+d ***
+         if (folio_test_lru())
+***  preempted here with refcnt =3D=3D 0 and pass PG_lru check ***
+[1]
+         lruvec_del_folio()
+Then thread_isolate call folio_isolate_lru()
+      folio_isolate_lru()
+      {
+         folio_test_clear_lru()
+         folio_get()
+[2]
+         lruvec_del_folio()
+      }
+---------------------------------------------------------------------------=
+-----------------
+shrink_folio_list()
+{
+    __remove_mapping()
+    {
+        refcount =3D 1 + folio_nr_pages;
+*** the refcount =3D 1 + 1 implies there should be only the refcnt of
+alloc_pages and previous isolation for a no-busy folio as all PTE has
+gone***
+        if (!folio_ref_freeze(refcount))
+             goto keeplock;
+     }
+}
 
