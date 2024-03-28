@@ -1,197 +1,126 @@
-Return-Path: <linux-kernel+bounces-123576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A7F890B42
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:26:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A949A890B48
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:26:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 387411F25CE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:26:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2981F2816A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D2913AD2A;
-	Thu, 28 Mar 2024 20:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D152113B287;
+	Thu, 28 Mar 2024 20:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2eqn1aOe"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NjBtLTQD"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18E6137C2A
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C760813AD36;
+	Thu, 28 Mar 2024 20:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711657462; cv=none; b=mf0n0VAmHcFbi+1XlYatyj8ZXR300XNHqJGhvslysHIJi44VCb4tfvjiPQUrO7dwW+z0jjM7OdxJ7LP4vQdjxlGXPllHv4Yg+NuvKSWlu5UyXQ4VGDvNdWekcdKR2GH0WBnUb6YoA133PJ6Z+uIH5zEOmMDguaSOrfFMoO9j1nA=
+	t=1711657496; cv=none; b=oygy/FGGQGW9sPDkKGX5zWYWsHkGhJN9ndGxlgElvqmfY+ldKo4yz14P/jiO9AhKbZXxp6nJ91IoR1HRrpGlvJHFUCra2MY7X1M0BLaJkOOp4CnUBLiqbTDF8yFnj72quDij3N4wqN0Iwtkuge/RMhgxPkIT/zFJSjUOOwZsWkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711657462; c=relaxed/simple;
-	bh=qmxf34bTMVgxH0f4NNBYG+HHviiW1iKApL+RlIdON68=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HGA83CDM15nSYtIYTEJZcNYeC+itHjJPD2kv6CbwfJ6UMMwrnqOh2c2BqC85ER/ELFZHebKvKKZN+1a4zlP0OugbgHtgOPJxfDqRI07keH0bX5cNdHw1FU7qZWTjzSx38pV3FZzH7BiBcpfbkqVe4UjrhLRm9wfDz9dgNTIm8wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2eqn1aOe; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3417a3151c4so1230560f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711657458; x=1712262258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s6wzOI8f0nNiuU7SM67JbM3AAeU2GfbdXdqb/BOOqV4=;
-        b=2eqn1aOesEfXvERF1AgEg1ZKalq/F3Ex+9mt9T6D5AAbvEEB7V72V/Gf8koaGVWQjW
-         dQJTr2tnqVwVZOVfXk/4HmsIlWoHagg/x8kfkVsZpUDgdqZdBDHdZiv+DwJAHynrZPYj
-         6/cNK8eL/TqouD3l1yCFy+rxwIN07k6y6Mrsrp7O74Ca4epDmxjGxvawAZN4K39yqxAG
-         m66f4u8ykCH46g6wDAAA51F3vPiBmKHjuDLukq7dIIXTCO8unvN8J1r3mjEJkUwnLVnP
-         zYFKm7nywZwyUJFFjrhb5UwakRz6z81BrH1PSHTF+fnEUmenIVhY3bAzSxX7f36/GMLh
-         Y2Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711657458; x=1712262258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s6wzOI8f0nNiuU7SM67JbM3AAeU2GfbdXdqb/BOOqV4=;
-        b=lxByp+04iLH1vdPTmVH9UmAi5Y/1tLk3InmYsoFKAQzmPrvHDE6RFsF1ADPTvrqrwJ
-         2kcNfl23Ah8d+Pi4NoAszwoLWQIQPdtHhgPBeGNAHvFeBoG8qJIAmnUoIA7H8Chs4lCe
-         OjsQJXZvw/M2SkQs6KPEuhcSZCOk/dNw8sLe3uEQd+mrKkduuKiUuYL3uFgMIBmsxQfh
-         UeEHnMukbos8Es8JLTess0vu3ytVuwRPVInE9Pcv7PHBCeB7T2+L93dW979DhknaETTp
-         pU1qs4NP/lI/1jLGhfHuoeid0YV5MKag53vpVX4o2Bb/lWsfkVyjTm7Gk+5RCh3AC4uX
-         erXw==
-X-Forwarded-Encrypted: i=1; AJvYcCWKFvLwaLDOej3XCmjtjV6apctonW7ifSdZ5cMdbq9nbdxoyYY0W6+wbD0Izhfe7I1F1YTe7WsjmS1k2L0KAgXQKjqRo8ignNLBYWP2
-X-Gm-Message-State: AOJu0YwyharX2frEqqXKGx1H+cdoyGaet0nqUF6CEPgdW3g4/a6XJIuj
-	C8BszQXHM9xS+9kPCKdZYedUhYJAHYwITf2woY6+5aj9lHE40pqKQNA0bYIqo1LmFWQx0e4j8Jw
-	50YXCC5Qm38Ho/C3vZjGiW2txTztZ5+T/5VJdkibWDt7aEdWXLH+v
-X-Google-Smtp-Source: AGHT+IFXkGygkGArDNlR3c03YewcMnsXn2Y3WZHSXGvnNDU1C+7dW3MQ3mb3DZucF5DN+YcgsADtFr+OPnTSdxO7Axs=
-X-Received: by 2002:a05:6000:1d86:b0:33e:76a1:d031 with SMTP id
- bk6-20020a0560001d8600b0033e76a1d031mr160319wrb.50.1711657458197; Thu, 28 Mar
- 2024 13:24:18 -0700 (PDT)
+	s=arc-20240116; t=1711657496; c=relaxed/simple;
+	bh=PIRIvrYiHNZgQf3d/hLxVGZTRs6ZytJARCae/W3aJZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bN6cS/mQxxAibxc75d7fH9dO0TiIZ8wEuE1MW83kn+LuhqDmsy9aBbBSEVcv4j61Q/eh8mWa/idq+lnax8KhjtXmp2mCNXef8uoujD9ya5BgRJ0jZXISzFKgiLMb2xGml8K8qAq/pdFkz96C5LjkdF1Thpduoe7XwMVOfHeXLIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NjBtLTQD; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SIJEQZ017493;
+	Thu, 28 Mar 2024 20:24:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=TXLmFLlzA/Fy9pUe2OqNGbO48JH9rpbJApRfQlvaxk8=; b=Nj
+	BtLTQDs6aOc4iMHBBDxNq4d0bu96YBwVo/dYgSFTdveaDn02YluqXUa2fHCsHJBz
+	HWQlAHHLe+auPLOlWWk5t3RTkwtEUfcR90+oR45Maq3QvMrP63hIiLP6kWErtmzl
+	seOmpyQSwKlMMDt0FjPlnbG+NgR4ZltVbgndn9dyT2jZ81d7nbAIQHnZUNRwz2Ev
+	gvkAoG+Nj9s737Zi/hEmI2eppZWgZFoGGCAZT5l72dKgaX6DIXosL3AoGoqjUzLb
+	lrXbOOwh/xe40YuI7rVUROFpaRk/EiYfNUznGH2Y3qPLx+BRnySDDCprxVHvnGBu
+	NGJLs1mrstB1qwyu/qDg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5aeg8x73-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 20:24:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SKOfAI008710
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 20:24:41 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
+ 2024 13:24:36 -0700
+Message-ID: <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com>
+Date: Thu, 28 Mar 2024 13:24:34 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-7-yosryahmed@google.com> <20240328193149.GF7597@cmpxchg.org>
-In-Reply-To: <20240328193149.GF7597@cmpxchg.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 28 Mar 2024 13:23:42 -0700
-Message-ID: <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
- pages handling
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
+ dp_hpd_unplug_handle() directly
+Content-Language: en-US
+To: Kuogee Hsieh <quic_khsieh@quicinc.com>, <dri-devel@lists.freedesktop.org>,
+        <robdclark@gmail.com>, <sean@poorly.run>, <swboyd@chromium.org>,
+        <dianders@chromium.org>, <vkoul@kernel.org>, <daniel@ffwll.ch>,
+        <airlied@gmail.com>, <agross@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <abel.vesa@linaro.org>,
+        <andersson@kernel.org>, Johan Hovold
+	<johan@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+ <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 22RjLSnJ9oM0GTsHGxvgET7PocTL5uIN
+X-Proofpoint-GUID: 22RjLSnJ9oM0GTsHGxvgET7PocTL5uIN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_17,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 mlxlogscore=884 impostorscore=0 adultscore=0 suspectscore=0
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403280145
 
-On Thu, Mar 28, 2024 at 12:31=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
->
-> On Mon, Mar 25, 2024 at 11:50:14PM +0000, Yosry Ahmed wrote:
-> > The current same-filled pages handling supports pages filled with any
-> > repeated word-sized pattern. However, in practice, most of these should
-> > be zero pages anyway. Other patterns should be nearly as common.
-> >
-> > Drop the support for non-zero same-filled pages, but keep the names of
-> > knobs exposed to userspace as "same_filled", which isn't entirely
-> > inaccurate.
-> >
-> > This yields some nice code simplification and enables a following patch
-> > that eliminates the need to allocate struct zswap_entry for those pages
-> > completely.
-> >
-> > There is also a very small performance improvement observed over 50 run=
-s
-> > of kernel build test (kernbench) comparing the mean build time on a
-> > skylake machine when building the kernel in a cgroup v1 container with =
-a
-> > 3G limit:
-> >
-> >               base            patched         % diff
-> > real          70.167          69.915          -0.359%
-> > user          2953.068        2956.147        +0.104%
-> > sys           2612.811        2594.718        -0.692%
-> >
-> > This probably comes from more optimized operations like memchr_inv() an=
-d
-> > clear_highpage(). Note that the percentage of zero-filled pages during
-> > this test was only around 1.5% on average, and was not affected by this
-> > patch. Practical workloads could have a larger proportion of such pages
-> > (e.g. Johannes observed around 10% [1]), so the performance improvement
-> > should be larger.
-> >
-> > [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmpxchg.org=
-/
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->
-> This is an interesting direction to pursue, but I actually thinkg it
-> doesn't go far enough. Either way, I think it needs more data.
->
-> 1) How frequent are non-zero-same-filled pages? Difficult to
->    generalize, but if you could gather some from your fleet, that
->    would be useful. If you can devise a portable strategy, I'd also be
->    more than happy to gather this on ours (although I think you have
->    more widespread zswap use, whereas we have more disk swap.)
++ Johan and Bjorn for FYI
 
-I am trying to collect the data, but there are.. hurdles. It would
-take some time, so I was hoping the data could be collected elsewhere
-if possible.
+On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
+> For internal HPD case, hpd_event_thread is created to handle HPD
+> interrupts generated by HPD block of DP controller. It converts
+> HPD interrupts into events and executed them under hpd_event_thread
+> context. For external HPD case, HPD events is delivered by way of
+> dp_bridge_hpd_notify() under thread context. Since they are executed
+> under thread context already, there is no reason to hand over those
+> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
+> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
+> 
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>   drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
 
-The idea I had was to hook a BPF program to the entry of
-zswap_fill_page() and create a histogram of the "value" argument. We
-would get more coverage by hooking it to the return of
-zswap_is_page_same_filled() and only updating the histogram if the
-return value is true, as it includes pages in zswap that haven't been
-swapped in.
+Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
 
-However, with zswap_is_page_same_filled() the BPF program will run in
-all zswap stores, whereas for zswap_fill_page() it will only run when
-needed. Not sure if this makes a practical difference tbh.
+Looks right to me,
 
->
-> 2) The fact that we're doing any of this pattern analysis in zswap at
->    all strikes me as a bit misguided. Being efficient about repetitive
->    patterns is squarely in the domain of a compression algorithm. Do
->    we not trust e.g. zstd to handle this properly?
-
-I thought about this briefly, but I didn't follow through. I could try
-to collect some data by swapping out different patterns and observing
-how different compression algorithms react. That would be interesting
-for sure.
-
->
->    I'm guessing this goes back to inefficient packing from something
->    like zbud, which would waste half a page on one repeating byte.
->
->    But zsmalloc can do 32 byte objects. It's also a batching slab
->    allocator, where storing a series of small, same-sized objects is
->    quite fast.
->
->    Add to that the additional branches, the additional kmap, the extra
->    scanning of every single page for patterns - all in the fast path
->    of zswap, when we already know that the vast majority of incoming
->    pages will need to be properly compressed anyway.
->
->    Maybe it's time to get rid of the special handling entirely?
-
-We would still be wasting some memory (~96 bytes between zswap_entry
-and zsmalloc object), and wasting cycling allocating them. This could
-be made up for by cycles saved by removing the handling. We will be
-saving some branches for sure. I am not worried about kmap as I think
-it's a noop in most cases.
-
-I am interested to see how much we could save by removing scanning for
-patterns. We may not save much if we abort after reading a few words
-in most cases, but I guess we could also be scanning a considerable
-amount before aborting. On the other hand, we would be reading the
-page contents into cache anyway for compression, so maybe it doesn't
-really matter?
-
-I will try to collect some data about this. I will start by trying to
-find out how the compression algorithms handle same-filled pages. If
-they can compress it efficiently, then I will try to get more data on
-the tradeoff from removing the handling.
-
-Thanks for the insights.
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
