@@ -1,191 +1,143 @@
-Return-Path: <linux-kernel+bounces-123105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78847890234
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:47:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054D5890237
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:47:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E064293B95
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF10C29513B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A728912BEA5;
-	Thu, 28 Mar 2024 14:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A0C12D745;
+	Thu, 28 Mar 2024 14:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OEGxisbI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JTq25Hrs"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5B181ABE
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111F47D071
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637216; cv=none; b=fT/Yu0OVf7GDNTVrwk66zVS/HkoUySrvHYyILmZHHGcJN+pNI8lAxqPiLwVAXddNUFerGX1kbKPko4yca+iYU3woSbbkZloCbftpK8klKuPQY8Efn470H82Haco1KPZ2JL8aE/cv4Sc0HNlsOXQP39OzlmFWYRuyWvHOOWHuE3A=
+	t=1711637232; cv=none; b=cF4W8D4/tWTGFEm1OLKgZMXsXlK2XY+LMiw3QdakPjsAiIsBryqJBKxPRLVkAkikaTSgvk001xeor3lXEnQYQXj1lIm9TMzs3CS/cJeLqpxIZqhDeTu/8m5czjkQ4ugPktGnQpoVh34QoT8E3ykFPV9pfKCK8CR0cZ1y0E0HJls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637216; c=relaxed/simple;
-	bh=GBmw0u0sk6raQ2641DnVvOuLU698WOt7jEDcGyiJFg8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PdJlwXH93d2OtpbFl0clkxczQkihH8RrG+oJtPuEZO4A5gebSfkzgCLF5RYyTr10ahxJ1tlgGTrznhb0EzUiow3qztrhDJNUOeA+53nYPa4gdA30V+O5r+a7oUGcBQdm7RR1bfjnahDss3BFX4CsucasvsjZic+oiDKgd8kqVzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OEGxisbI; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711637213;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cPAuSkYgy+MUhS8KdVZMaOcLOllCqbF/NxocVA82LN4=;
-	b=OEGxisbIvkcODE/KYGbXLdMJX1OcpXd4c8b9WzIOiTzQyQlS+Lq4+qVJ3cqIub4lhBZKkZ
-	/PzGTH1u+IT7C+DO/GTZFceXrffpVYQdzB30YQvKf6gjClpvY0YVKaoyPYuGOLpvPKfmJK
-	dQy9Hg4UAxAE1jxZfKQXleqcC/B/JFQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-509-PInHT43-PY2c36tojWgsHg-1; Thu, 28 Mar 2024 10:46:50 -0400
-X-MC-Unique: PInHT43-PY2c36tojWgsHg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1E226801906;
-	Thu, 28 Mar 2024 14:46:49 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4FD432024517;
-	Thu, 28 Mar 2024 14:46:48 +0000 (UTC)
-Date: Thu, 28 Mar 2024 22:46:39 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
-Subject: Re: [PATCH v2 4/6] mm/mm_init.c: remove meaningless calculation of
- zone->managed_pages in free_area_init_core()
-Message-ID: <ZgWCzx7+OxPgFIaU@MiWiFi-R3L-srv>
-References: <20240325145646.1044760-1-bhe@redhat.com>
- <20240325145646.1044760-5-bhe@redhat.com>
- <ZgUrJuatQqAT0QA1@MiWiFi-R3L-srv>
- <ZgU9_zpuIOu2b_gT@kernel.org>
+	s=arc-20240116; t=1711637232; c=relaxed/simple;
+	bh=n1HQmUHKBroyBMQujO5c42Joq0+GVgze8L6DxO1rOxo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BoJz5zokHP7HL+bsScjviFR+QCbPM+GB2HGMdJxXTnaBsZbu44rVu3JbYwENfPGKqfCNqqPWDDAnVdDtOKeWOGBpC+/sqPUpS8YuF6ONHIu8zFflC3zYmpleOVS+eQwpH3qMilIhkoBzq/YiTPtgNPUi9PsxsZyZgONlcrltIMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JTq25Hrs; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a472f8c6a55so138143066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711637229; x=1712242029; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=NNfnpvUaxIjqgept1H9JPNTektamoKYhe963ZSnN0sA=;
+        b=JTq25HrsN10vPk37dRcd0gbm0gnXNWCraKme9BVBd/h9uUer/TSWwk7DIovGnY0xSb
+         4eaGG0eOZkZheGwI/iFL6rVDHCdnzu9gLxO7PE9Ns5poZ6vJZfCIhFGGWv++1HPmSjv+
+         WAjuvsgmQACNZbAnSMnRvDw8NB2NYFAcWu57v7gz+V2kSYL3isT0uWxqTc/YLsoNkv/f
+         pvF4bzQXVPBbg2dceoQqhNgybGTa25nyAwSQx9tqDuOmRrdIQH+PhLSG4JfG8cK8O+Y0
+         zBT1eBQXPDxuP9mPxo+BAWs2h0bxQ8BPHsyB5uOXA0RasUSLmyNfnbEpaGMgaTLM9CDI
+         T42A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711637229; x=1712242029;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NNfnpvUaxIjqgept1H9JPNTektamoKYhe963ZSnN0sA=;
+        b=qmWsEc41XM6g8ufWZpn/QHYrsj4lP+fcVr5lRpbhsaehjLz5ohnh8sIngIop7cvsqD
+         mksLENpR1iZ5kGcoG0jcFMiNhS5w31W1vM73elwseHIm3Ciq56qnhEcDocis43gQX84a
+         h1AN/JgbZO66tvaWjHBCywGeKoSL1hgbYZveZIvtR6Sg8wIIHXAIkKbhueLVTwAWqLo0
+         hZFal3goT4NVOWQrlgeQd9BOZ0+X2RgbhS/ob4JOmT11LDnNFdAybpmQTzeWlR1RthVO
+         Ank90Y+q6hBVJXe+Yak1+J+uTHq1HWUqQU5YAoFuBRGi7HjgqOc9gpToViRaXhMopwOI
+         Ps3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWD9dlLSLP4LvHjYSEfU9aMWke/8Y3sBx7jExp+oU+Ve+LmZKeg6syITPofjp4cI+B0gNwxZoDHEQuQxj4zr+2dhBF8JDd5XPHTkf8V
+X-Gm-Message-State: AOJu0Yx/8UxeESjzq0T1dUL3AjOLxS8VYodFZhfEu2IyBqGsTS+/og9C
+	mXI4DVyQyEOta3fGik5EQwnG0fqIsTLQwvNq8nJvY97+30HmPEfrx795YMbNJM9EW++HA14NO4u
+	j
+X-Google-Smtp-Source: AGHT+IFg5oo8KN4OdRQm06Vbk0P3S3xRqgJbhzWurMvglwATXbwqfiNl5OCap2pbOV3Zy/uJY0t09A==
+X-Received: by 2002:a17:906:f888:b0:a47:535e:1dc2 with SMTP id lg8-20020a170906f88800b00a47535e1dc2mr1999654ejb.40.1711637229373;
+        Thu, 28 Mar 2024 07:47:09 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id f6-20020a170906ef0600b00a46af0fbf5dsm821413ejs.103.2024.03.28.07.47.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 07:47:08 -0700 (PDT)
+Message-ID: <8e09b779-a18f-46b4-926c-40e2a5782d85@linaro.org>
+Date: Thu, 28 Mar 2024 15:47:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgU9_zpuIOu2b_gT@kernel.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: arm: qcom: Add Samsung Galaxy Z Fold5
+To: Alexandru Serdeliuc <serdeliuk@yahoo.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240328-dt-bindings-arm-qcom-add-support-for-samsung-galaxy-zfold5-v1-1-cb612e3ade18@yahoo.com>
+ <ca4ed5e3-32ea-451a-82ca-25fba07877dc@linaro.org>
+ <33e23d1c-5b6f-4111-9631-0f8db1100d0c@yahoo.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <33e23d1c-5b6f-4111-9631-0f8db1100d0c@yahoo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 03/28/24 at 11:53am, Mike Rapoport wrote:
-> On Thu, Mar 28, 2024 at 04:32:38PM +0800, Baoquan He wrote:
-> > On 03/25/24 at 10:56pm, Baoquan He wrote:
-> > >  
-> > >  		/*
-> > > -		 * Set an approximate value for lowmem here, it will be adjusted
-> > > -		 * when the bootmem allocator frees pages into the buddy system.
-> > > -		 * And all highmem pages will be managed by the buddy system.
-> > > +		 * Initialize zone->managed_pages as 0 , it will be reset
-> > > +		 * when memblock allocator frees pages into buddy system.
-> > >  		 */
-> > > -		zone_init_internals(zone, j, nid, freesize);
-> > > +		zone_init_internals(zone, j, nid, 0);
-> > 
-> > Here, we should initialize zone->managed_pages as zone->present_pages
-> > because later page_group_by_mobility_disabled need be set according to
-> > zone->managed_pages. Otherwise page_group_by_mobility_disabled will be
-> > set to 1 always. I will sent out v3.
+On 28.03.2024 3:42 PM, Alexandru Serdeliuc wrote:
+> Hi Konrad,
 > 
-> With zone->managed_pages set to zone->present_pages we won't account for
-> the reserved memory for initialization of page_group_by_mobility_disabled.
-
-The old zone->managed_pages didn't account for the reserved pages
-either. It's calculated by (zone->present_pages - memmap_pages). memmap
-pages only is only a very small portion, e.g on x86_64, 4K page size,
-assuming size of struct page is 64, then it's 1/64 of system memory.
-On arm64, 64K page size, it's 1/1024 of system memory.
-
-And about the setting of page_group_by_mobility_disabled, the compared
-value pageblock_nr_pages * MIGRATE_TYPES which is very small. On x86_64,
-it's 4M*6=24M; on arm64 with 64K size and 128M*6=768M which should be
-the biggest among ARCH-es. 
-
-	if (vm_total_pages < (pageblock_nr_pages * MIGRATE_TYPES)) 
-                page_group_by_mobility_disabled = 1;
-        else    
-                page_group_by_mobility_disabled = 0;
-
-So page_group_by_mobility_disabled could be set to 1 only on system with
-very little memory which is very rarely seen. And setting
-zone->managed_pages as zone->present_pages is very close to its old
-value: (zone->present_pages - memmap_pages). Here we don't need be very
-accurate, just a rough value.
-
 > 
-> As watermarks are still not initialized at the time build_all_zonelists()
-> is called, we may use nr_all_pages - nr_kernel_pages instead of
-> nr_free_zone_pages(), IMO.
-
-nr_all_pages should be fine if we take this way. nr_kernel_pages is a
-misleading name, it's all low memory pages excluding kernel reserved
-apges. nr_all_pages is all memory pages including highmema and exluding
-kernel reserved pages.
-
-Both is fine to me. The first one is easier, simply setting
-zone->managed_pages as zone->present_pages. The 2nd way is a little more
-accurate.
-
->  
-> > From a17b0921b4bd00596330f61ee9ea4b82386a9fed Mon Sep 17 00:00:00 2001
-> > From: Baoquan He <bhe@redhat.com>
-> > Date: Thu, 28 Mar 2024 16:20:15 +0800
-> > Subject: [PATCH] mm/mm_init.c: set zone's ->managed_pages as ->present_pages
-> >  for now
-> > Content-type: text/plain
-> > 
-> > Because page_group_by_mobility_disabled need be set according to zone's
-> > managed_pages later.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > ---
-> >  mm/mm_init.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > index cc24e7958c0c..dd875f943cbb 100644
-> > --- a/mm/mm_init.c
-> > +++ b/mm/mm_init.c
-> > @@ -1561,7 +1561,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
-> >  		 * Initialize zone->managed_pages as 0 , it will be reset
-> >  		 * when memblock allocator frees pages into buddy system.
-> >  		 */
-> > -		zone_init_internals(zone, j, nid, 0);
-> > +		zone_init_internals(zone, j, nid, zone->present_pages);
-> >  
-> >  		if (!size)
-> >  			continue;
-> > -- 
-> > 2.41.0
-> > 
-> > 
-> > >  
-> > >  		if (!size)
-> > >  			continue;
-> > > @@ -1915,6 +1878,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
-> > >  		check_for_memory(pgdat);
-> > >  	}
-> > >  
-> > > +	calc_nr_kernel_pages();
-> > >  	memmap_init();
-> > >  
-> > >  	/* disable hash distribution for systems with a single node */
-> > > -- 
-> > > 2.41.0
-> > > 
-> > 
+> Thanks, yes, I am new to b4 and sending patches, in a few minutes I will add the second patch.
 > 
-> -- 
-> Sincerely yours,
-> Mike.
-> 
+> That actually add the device tree, but  without the previous patch it showed me a warning, and with both patches provided another  warning that i need to split them in two.
 
+Oh no, you should send them together! Could you please paste the warning so that
+we can work out the issue?
+
+Konrad
 
