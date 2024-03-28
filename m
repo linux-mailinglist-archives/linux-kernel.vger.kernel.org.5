@@ -1,129 +1,222 @@
-Return-Path: <linux-kernel+bounces-122826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3558688FDFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:24:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7986588FE06
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:25:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66FF01C257E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:24:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A291F242BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F076F7E564;
-	Thu, 28 Mar 2024 11:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nxi3K+om"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7357E775;
+	Thu, 28 Mar 2024 11:24:56 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6861F7CF1F;
-	Thu, 28 Mar 2024 11:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404C07E574;
+	Thu, 28 Mar 2024 11:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711625039; cv=none; b=kenvsjlnbZv3RQJxrO9ho7AuOwu3zRNojtN6ahQi+z9RMOo2Q4N7M7lw32UO1O9O74AHdYk3HVu4Sc7Zfu5zb+D8KOynrVTZ/nX5G9phJ6XGdaEJZDQ1cnwEIP1k0dKoaJR4XvL4vSPN+rCH9mSlQNOrpmASplq0WNtG6ZT6re4=
+	t=1711625095; cv=none; b=KwuMoV2fgvtuRSennm6okgK17DSH/SDJqjnKjZnLu5+mal8eUEe5Yd7MtlpeUI7M7oLR1XzJh1Z8j1sj22EaJFsHRLig24r1pwnvZlYniN+lCcLWiJOzRY7m+ruXOY9JBI65eJZOx1tEEuPI9DkzPmddbvQ4HwvARPyRAkIpNUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711625039; c=relaxed/simple;
-	bh=86h0emdJ0YBYZjZ1r0P4UPOx03+47D7Z3e3EeA+98Mg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WCKZGu6van7yU0qBRUvNHbKKQOyztHeUNNhNb0Nz7jP0d36tl2QsipCap1pqAegQTz0I29vXTqxTm/OdzV9BigOFhwcGNihxTEC6vB59yjX3F5LeIboZqS/UMBasGkM8YkGGuB863iHLfn491yOsUZA8mm0z54gQ7k8OAZKUKWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=nxi3K+om; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42SBNr4T127106;
-	Thu, 28 Mar 2024 06:23:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711625033;
-	bh=IwVEGYlbyeUCCcamPvrjgWzCcvQsaU0T56u+4M4+IEc=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=nxi3K+omcpO5Efj2HEmE0HpTA2idSjREEbURpnyUYT2FTXmD7+bQAEYrEuCjC0rgG
-	 +nmigKekEci23CjjReXkr3UQsAh2XURCFd/NaxlUvGXUnHHCni+hV98f4gDRmSPGlT
-	 ct/pJ/n5RfA8qNV5Qe80tOVCjtAGskjJmc8VLEwc=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42SBNrO0014612
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 28 Mar 2024 06:23:53 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
- Mar 2024 06:23:53 -0500
-Received: from fllvsmtp7.itg.ti.com (10.64.40.31) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 28 Mar 2024 06:23:53 -0500
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by fllvsmtp7.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42SBNq4s107593;
-	Thu, 28 Mar 2024 06:23:52 -0500
-Date: Thu, 28 Mar 2024 16:53:51 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-CC: <linux-omap@vger.kernel.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/5] bus: ti-sysc: Drop legacy quirk handling for
- smartreflex
-Message-ID: <20240328112351.e7klcl7zjz6uov2j@dhruva>
-References: <20240327081508.36747-1-tony@atomide.com>
- <20240327081508.36747-5-tony@atomide.com>
+	s=arc-20240116; t=1711625095; c=relaxed/simple;
+	bh=IVWuMXHvJ24EzomPmVm//u7gaDNCPlrLrRC0bENfsmo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OaKL0UbU2k6VE8oi5JhvOLhrMznqM7YU5hY0h2FwSgYPJ2FL7iTy8v6vci8dFuYs4sikzEVx+IQDYh1M3TVdTjPzuf7QulxOEiTGkAZd/yMVBLkIheaeWkhkJeW8rYotPgwhsPrUznK3z8cB3nkCiUrcVSv2oQ9lDbmYhLXbBg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4V514V66wjz9xqx0;
+	Thu, 28 Mar 2024 19:08:42 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 4A515140801;
+	Thu, 28 Mar 2024 19:24:43 +0800 (CST)
+Received: from [10.81.200.225] (unknown [10.81.200.225])
+	by APP1 (Coremail) with SMTP id LxC2BwAXCxRwUwVmbnglBQ--.8766S2;
+	Thu, 28 Mar 2024 12:24:42 +0100 (CET)
+Message-ID: <4ad908dc-ddc5-492e-8ed4-d304156b5810@huaweicloud.com>
+Date: Thu, 28 Mar 2024 13:24:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240327081508.36747-5-tony@atomide.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel crash in mknod
+Content-Language: en-US
+To: Christian Brauner <brauner@kernel.org>
+Cc: Roberto Sassu <roberto.sassu@huawei.com>,
+ Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@manguebit.com>,
+ Christian Brauner <christian@brauner.io>, Mimi Zohar <zohar@linux.ibm.com>,
+ Paul Moore <paul@paul-moore.com>,
+ "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+ "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV> <3441a4a1140944f5b418b70f557bca72@huawei.com>
+ <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
+ <cb267d1c7988460094dbe19d1e7bcece@huawei.com>
+ <20240326-halbkreis-wegstecken-8d5886e54d28@brauner>
+ <4a0b28ba-be57-4443-b91e-1a744a0feabf@huaweicloud.com>
+ <20240328-raushalten-krass-cb040068bde9@brauner>
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240328-raushalten-krass-cb040068bde9@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwAXCxRwUwVmbnglBQ--.8766S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrWrXrW7uryfJFykZFWDJwb_yoWrCr1kpF
+	4rt3WDGws5JFW3Wr1IyF17ua1Sva4rWFW5AF4Fgw15ArnxKr1jqF1SvFyY9FW5Kr4xW34I
+	qa17trsxWw4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj5fjZQABs3
 
-Hi,
-
-On Mar 27, 2024 at 10:15:07 +0200, Tony Lindgren wrote:
-> With the smartreflex driver no longer relying on the use of
-> pm_runtime_irq_safe(), we can finally drop the related legacy quirk
-> handling.
-
-Just for some more context can you describe from which commit of
-smartreflex driver did this happen?
-
+On 3/28/2024 12:08 PM, Christian Brauner wrote:
+> On Thu, Mar 28, 2024 at 12:53:40PM +0200, Roberto Sassu wrote:
+>> On 3/26/2024 12:40 PM, Christian Brauner wrote:
+>>>> we can change the parameter of security_path_post_mknod() from
+>>>> dentry to inode?
+>>>
+>>> If all current callers only operate on the inode then it seems the best
+>>> to only pass the inode. If there's some reason someone later needs a
+>>> dentry the hook can always be changed.
+>>
+>> Ok, so the crash is likely caused by:
+>>
+>> void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry
+>> *dentry)
+>> {
+>>          if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>>
+>> I guess we can also simply check if there is an inode attached to the
+>> dentry, to minimize the changes. I can do both.
+>>
+>> More technical question, do I need to do extra checks on the dentry before
+>> calling security_path_post_mknod()?
 > 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  drivers/bus/ti-sysc.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> Why do you need the dentry? The two users I see are ima in [1] and evm in [2].
+> Both of them don't care about the dentry. They only care about the
+> inode. So why is that hook not just:
+
+Sure, I can definitely do that. Seems an easier fix to do an extra check 
+in security_path_post_mknod(), rather than changing the parameter 
+everywhere.
+
+Next time, when we introduce new LSM hooks we can try to introduce more 
+specific parameters.
+
+Also, consider that the pre hook security_path_mknod() has the dentry as 
+parameter. For symmetry, we could keep it in the post hook.
+
+What I was also asking is if I can still call d_backing_inode() on the 
+dentry without extra checks, and avoiding the IS_PRIVATE() check if the 
+former returns NULL.
+
+> diff --git a/security/security.c b/security/security.c
+> index 7e118858b545..025689a7e912 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1799,11 +1799,11 @@ EXPORT_SYMBOL(security_path_mknod);
+>    *
+>    * Update inode security field after a file has been created.
+>    */
+> -void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+> +void security_inode_post_mknod(struct mnt_idmap *idmap, struct inode *inode)
+>   {
+> -       if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> +       if (unlikely(IS_PRIVATE(inode)))
+>                  return;
+> -       call_void_hook(path_post_mknod, idmap, dentry);
+> +       call_void_hook(path_post_mknod, idmap, inode);
+>   }
 > 
-> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-> --- a/drivers/bus/ti-sysc.c
-> +++ b/drivers/bus/ti-sysc.c
-> @@ -2869,8 +2869,7 @@ static const struct sysc_capabilities sysc_34xx_sr = {
->  	.type = TI_SYSC_OMAP34XX_SR,
->  	.sysc_mask = SYSC_OMAP2_CLOCKACTIVITY,
->  	.regbits = &sysc_regbits_omap34xx_sr,
-> -	.mod_quirks = SYSC_QUIRK_USE_CLOCKACT | SYSC_QUIRK_UNCACHED |
-> -		      SYSC_QUIRK_LEGACY_IDLE,
-> +	.mod_quirks = SYSC_QUIRK_USE_CLOCKACT | SYSC_QUIRK_UNCACHED,
->  };
->  
->  /*
-> @@ -2891,13 +2890,12 @@ static const struct sysc_capabilities sysc_36xx_sr = {
->  	.type = TI_SYSC_OMAP36XX_SR,
->  	.sysc_mask = SYSC_OMAP3_SR_ENAWAKEUP,
->  	.regbits = &sysc_regbits_omap36xx_sr,
-> -	.mod_quirks = SYSC_QUIRK_UNCACHED | SYSC_QUIRK_LEGACY_IDLE,
-> +	.mod_quirks = SYSC_QUIRK_UNCACHED,
->  };
->  
->  static const struct sysc_capabilities sysc_omap4_sr = {
->  	.type = TI_SYSC_OMAP4_SR,
->  	.regbits = &sysc_regbits_omap36xx_sr,
-> -	.mod_quirks = SYSC_QUIRK_LEGACY_IDLE,
+>   /**
+> 
+> And one another thing I'd like to point out is that the security hook is
+> called "security_path_post_mknod()" while the evm and ima hooks are
+> called evm_post_path_mknod() and ima_post_path_mknod() respectively. In
+> other words:
+> 
+> git grep _path_post_mknod() doesn't show the implementers of that hook
+> which is rather unfortunate. It would be better if the pattern were:
+> 
+> <specific LSM>_$some_$ordered_$words()
 
-I'm good with the changes,
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+I know, yes. Didn't want to change just yet since people familiar with 
+the IMA code know the current function name. I don't see any problem to 
+rename the functions.
 
--- 
-Best regards,
-Dhruva
+Thanks
+
+Roberto
+
+> [1]:
+> static void evm_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+> {
+>          struct inode *inode = d_backing_inode(dentry);
+>          struct evm_iint_cache *iint = evm_iint_inode(inode);
+> 
+>          if (!S_ISREG(inode->i_mode))
+>                  return;
+> 
+>          if (iint)
+>                  iint->flags |= EVM_NEW_FILE;
+> }
+> 
+> [2]:
+> static void ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+> {
+>          struct ima_iint_cache *iint;
+>          struct inode *inode = dentry->d_inode;
+>          int must_appraise;
+> 
+>          if (!ima_policy_flag || !S_ISREG(inode->i_mode))
+>                  return;
+> 
+>          must_appraise = ima_must_appraise(idmap, inode, MAY_ACCESS,
+>                                            FILE_CHECK);
+>          if (!must_appraise)
+>                  return;
+> 
+>          /* Nothing to do if we can't allocate memory */
+>          iint = ima_inode_get(inode);
+>          if (!iint)
+>                  return;
+> 
+>          /* needed for re-opening empty files */
+>          iint->flags |= IMA_NEW_FILE;
+> }
+> 
+> 
+> 
+>>
+>> Thanks
+>>
+>> Roberto
+>>
+>>> For bigger changes it's also worthwhile if the object that's passed down
+>>> into the hook-based LSM layer is as specific as possible. If someone
+>>> does a change that affects lifetime rules of mounts then any hook that
+>>> takes a struct path argument that's unused means going through each LSM
+>>> that implements the hook only to find out it's not actually used.
+>>> Similar for dentry vs inode imho.
+>>
+
 
