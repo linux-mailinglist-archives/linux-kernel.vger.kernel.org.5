@@ -1,200 +1,201 @@
-Return-Path: <linux-kernel+bounces-122626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798A788FA89
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:58:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D63088FA8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:00:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00601F26D06
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FE61C22A12
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EC559B6A;
-	Thu, 28 Mar 2024 08:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE885810A;
+	Thu, 28 Mar 2024 09:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaoOkLhU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VmO4KkI+"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BD328DD5;
-	Thu, 28 Mar 2024 08:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF5A54BDA;
+	Thu, 28 Mar 2024 09:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711616320; cv=none; b=s9dVW/Y1heYmqNtRSLrjj5wh8Kv54Co5BlPVxz8Nq0S8NP9vH6veyCwYReV/TEZ4rHtQMHwBpvsNwcS9iDTc8zcdb3AqO/WvtAxfqVCJx4Ny2B2LGu5Xxv7LjivaxZIUm8r996N43ccHfjx4cSeu8La+nhLyU3n39gqD/p44n38=
+	t=1711616438; cv=none; b=AC9F/bAUCyGIJrjyyjaFmjNjoe3U/EBRT/L7PmANNfzhCV4rxKX/H8jz7rFSITmbZy7TdBBpts5SMuga2xg6pyOwOROqbZhhJ7NdXTdDnmuuKenaOSL5dZAjeJ6BRs4eQopWnHSe0mrws+Z85c/GIU+tAzqCsL37Ekw4SPh4tG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711616320; c=relaxed/simple;
-	bh=NLceuoXWSrAw6KtncQrzxljx54OGZehtk2tzm/mFNk4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Puct+839VIqqKL9NwUbDBj931eASdeOhCqhue50xsCPOAYU8jYkLt+WxB0a5182cO2+hvdHiqtnhzrvidChHDIbs/hzdFpnJ6CSvIHu9CRPn0GhB935ACQ6R2Ka12BQ3sifEdnO2R8oAtnw23IQlnkWP5QAp0T0eNS2wqeuLq8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaoOkLhU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D90BC433F1;
-	Thu, 28 Mar 2024 08:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711616319;
-	bh=NLceuoXWSrAw6KtncQrzxljx54OGZehtk2tzm/mFNk4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aaoOkLhUIgB3iGvDT31YBh4+7cJSzPQuYBzI1zwq4IfwOCnvIwkUDJ3LGuJ5AGApj
-	 ueeO1wenYQeU106nTOPdtB2iMDhYJI/O/boFxm/CxbH4SAyFg4DtCIoxCkGOgy7uS6
-	 IhWZCPVvr0MbeAIU0punZ1QcWGzRI0TTR2eii/euy02NyJ2HzIQwLmCGHza4Cixxuy
-	 kLaF2IslR68YaXAfL/3IAWwi9vy5KVHLGStCL3USM3iwAToQ8X+KnlNj3pS1hh+hiE
-	 KsELCMWZJRqkUm9tAnReehFF8pbVAWDECkzhMSLXFHwu9K2brjRc2q5C4Pu9sVyfUe
-	 vBgUzmywPD/3Q==
-Message-ID: <42106158-ca2b-48f5-9397-87e7cd9d4fc8@kernel.org>
-Date: Thu, 28 Mar 2024 09:58:34 +0100
+	s=arc-20240116; t=1711616438; c=relaxed/simple;
+	bh=GKIEvQajVEoW3lcq/KMK1mQOWTmIcBZg/Y41L6hdBqY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ca72kXE666jhwxD37YPE6tyIsxgLfce5m7tagSwOwMZNWTyv3qzaMu2SdHVs/NaqjxMdlIdKhN0+SNKXaAlS6x2t9showv24W1ZAskQimnF8PQDr6aqIzUUmd1i3x0xgAWHvsB1ETFU7lQUimFGn7LuDbo6ty1qXArc7yJf1S8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VmO4KkI+; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42S8xu24021914;
+	Thu, 28 Mar 2024 09:00:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=cP1wgP/DVc7Se0b+n2O/NoJFwey3Ye5k1NuTvcEqC7w=;
+ b=VmO4KkI+OfRxi5Zf+9LgI0j6yKnQfzgZFfuxrG3oP2FE1Oe1ysCphcaRIXqR2b5YymwS
+ t3fYVnllmAvNQqfGlwaT5/Jnm7TSnrnEOAfcTipHYwUIu4u2qP8T+EBTitL8/HZZZakF
+ ilNnFsbgjzDk2CFDLXFbQICvXRjCNwxJKTneQ1ZNvnJBEaSTlDUpRoIPpF3Mt85tFj2o
+ ToO234oSBcbLMXrpPUzI7oU2RhksGvROYNPopA6OFobe7H5kv+xvPzORxaMM2FiMJVYJ
+ yKQuOTdrRNMxYmbq63flJhlf1BFAa4GEq179MF29ksO6PaYYnkGtock0DjS6+EKlcSjI qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x55hb0021-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 09:00:18 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42S90HAf023260;
+	Thu, 28 Mar 2024 09:00:17 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x55hb001w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 09:00:17 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42S63qqu011267;
+	Thu, 28 Mar 2024 09:00:17 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2bmmc2rq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 09:00:16 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42S90Dsl49414452
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 28 Mar 2024 09:00:15 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1A3E020063;
+	Thu, 28 Mar 2024 09:00:13 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9FC5E2004D;
+	Thu, 28 Mar 2024 09:00:08 +0000 (GMT)
+Received: from li-fdfde5cc-27d0-11b2-a85c-e224154bf6d4.ibm.com.com (unknown [9.43.87.71])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 28 Mar 2024 09:00:08 +0000 (GMT)
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: vineethr@linux.ibm.com
+Subject: [PATCH] perf sched: Rename switches to count and add usage description, options for latency
+Date: Thu, 28 Mar 2024 14:30:05 +0530
+Message-ID: <20240328090005.8321-1-vineethr@linux.ibm.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [bpf?] [net?] general protection fault in
- dev_map_enqueue
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
- song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-References: <000000000000f6531b061494e696@google.com>
- <00000000000069ee1a06149ff00c@google.com>
- <CAADnVQLpJwEfLoF9ORc7bSsDPG7Y05mWUpWWyfi7qjY+2LhC+Q@mail.gmail.com>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAADnVQLpJwEfLoF9ORc7bSsDPG7Y05mWUpWWyfi7qjY+2LhC+Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iHHZR2THhGI1J9DjZnmLMnLNdI-ypmY5
+X-Proofpoint-GUID: sLhF550g9e88-IFxtcEfw5cteEMG7lFy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_07,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ suspectscore=0 spamscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
+ definitions=main-2403280058
 
+Rename 'Switches' to 'Count' and document metrics shown for perf
+sched latency output. Also add options possible with perf sched
+latency.
 
+Initially, after seeing the output of 'perf sched latency', the term
+'Switches' seemed like it's the number of context switches-in for a
+particular task, but upon going through the code, it was observed that
+it's actually keeping track of number of times a delay was calculated so
+that it is used in calculation of the average delay.
 
-On 27/03/2024 16.19, Alexei Starovoitov wrote:
-> Toke, Jesper,
-> 
-> please take a look.
-> It's reproducible 100% of the time.
-> dst is NULL in dev_map_enqueue().
-> 
+Actually, the switches here is a subset of number of context switches-in
+because there are some cases where the count is not incremented in
+switch-in handler 'add_sched_in_event'. For example when a task is
+switched-in while it's state is not ready to run(!= THREAD_WAIT_CPU).
 
-The `dst` (NULL) is basically `ri->tgt_value` being passed through
-(unmodified) via xdp_do_redirect_frame() and __xdp_do_redirect_frame()
-into dev_map_enqueue().
+commit d9340c1db3f5 ("perf sched: Display time in milliseconds, reorganize
+output") changed it from the original count to switches.
 
-I think something is wrong in xdp_test_run_batch().
-The `ri->tgt_value` is being set in __bpf_xdp_redirect_map(), but I
-cannot see __bpf_xdp_redirect_map() being used in xdp_test_run_batch().
+So, renamed switches to count to make things a bit more clearer and
+added the metrics description of latency in the document.
 
-Toke, can you take a look at xdp_test_run_batch() and where
-`ri->tgt_value` is getting set?
+Signed-off-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+---
+ tools/perf/Documentation/perf-sched.txt | 36 +++++++++++++++++++++++++
+ tools/perf/builtin-sched.c              |  2 +-
+ 2 files changed, 37 insertions(+), 1 deletion(-)
 
+diff --git a/tools/perf/Documentation/perf-sched.txt b/tools/perf/Documentation/perf-sched.txt
+index 5fbe42bd599b..a216d2991b19 100644
+--- a/tools/perf/Documentation/perf-sched.txt
++++ b/tools/perf/Documentation/perf-sched.txt
+@@ -20,6 +20,26 @@ There are several variants of 'perf sched':
+   'perf sched latency' to report the per task scheduling latencies
+   and other scheduling properties of the workload.
+ 
++   Example usage:
++       perf sched record -- sleep 1
++       perf sched latency
++
++  -------------------------------------------------------------------------------------------------------------------------------------------
++  Task                  |   Runtime ms  |  Count   | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |
++  -------------------------------------------------------------------------------------------------------------------------------------------
++  perf:(2)              |      2.804 ms |       66 | avg:   0.524 ms | max:   1.069 ms | max start: 254752.314960 s | max end: 254752.316029 s
++  NetworkManager:1343   |      0.372 ms |       13 | avg:   0.008 ms | max:   0.013 ms | max start: 254751.551153 s | max end: 254751.551166 s
++  kworker/1:2-xfs:4649  |      0.012 ms |        1 | avg:   0.008 ms | max:   0.008 ms | max start: 254751.519807 s | max end: 254751.519815 s
++  kworker/3:1-xfs:388   |      0.011 ms |        1 | avg:   0.006 ms | max:   0.006 ms | max start: 254751.519809 s | max end: 254751.519815 s
++  sleep:147736          |      0.938 ms |        3 | avg:   0.006 ms | max:   0.007 ms | max start: 254751.313817 s | max end: 254751.313824 s
++
++  It shows Runtime(time that a task spent actually running on the CPU),
++  Count(number of times a delay was calculated) and delay(time that a
++  task was ready to run but was kept waiting).
++
++  Tasks with the same command name are merged and the merge count is
++  given within (), However if -p option is used, pid is mentioned.
++
+   'perf sched script' to see a detailed trace of the workload that
+    was recorded (aliased to 'perf script' for now).
+ 
+@@ -78,6 +98,22 @@ OPTIONS
+ --force::
+ 	Don't complain, do it.
+ 
++OPTIONS for 'perf sched latency'
++-------------------------------
++
++-C::
++--CPU <n>::
++        CPU to profile on.
++
++-p::
++--pids::
++        latency stats per pid instead of per command name.
++
++-s::
++--sort <key[,key2...]>::
++        sort by key(s): runtime, switch, avg, max
++        by default it's sorted by "avg ,max ,switch ,runtime".
++
+ OPTIONS for 'perf sched map'
+ ----------------------------
+ 
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index b248c433529a..e66a935eab6f 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -3210,7 +3210,7 @@ static int perf_sched__lat(struct perf_sched *sched)
+ 	perf_sched__sort_lat(sched);
+ 
+ 	printf("\n -------------------------------------------------------------------------------------------------------------------------------------------\n");
+-	printf("  Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |\n");
++	printf("  Task                  |   Runtime ms  |  Count   | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |\n");
+ 	printf(" -------------------------------------------------------------------------------------------------------------------------------------------\n");
+ 
+ 	next = rb_first_cached(&sched->sorted_atom_root);
+-- 
+2.39.1
 
-> On Wed, Mar 27, 2024 at 1:10 AM syzbot
-> <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com> wrote:
->>
->> syzbot has found a reproducer for the following issue on:
->>
->> HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
->> git tree:       bpf
->> console+strace: https://syzkaller.appspot.com/x/log.txt?x=17d370b1180000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
->> dashboard link: https://syzkaller.appspot.com/bug?extid=af9492708df9797198d6
->> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d6b041180000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1060cc81180000
->>
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
->>
->> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN PTI
->> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->> CPU: 1 PID: 5078 Comm: syz-executor295 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
->> RIP: 0010:dev_map_enqueue+0x31/0x3e0 kernel/bpf/devmap.c:539
->> Code: 41 56 41 55 41 54 53 48 83 ec 18 49 89 d4 49 89 f5 48 89 fd 49 be 00 00 00 00 00 fc ff df e8 a6 42 d8 ff 48 89 e8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 ef e8 10 8a 3b 00 4c 8b 7d 00 48 83 c5
->> RSP: 0018:ffffc90003bef688 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888022169e00
->> RDX: 0000000000000000 RSI: ffff88802ef65070 RDI: 0000000000000000
->> RBP: 0000000000000000 R08: 0000000000000005 R09: ffffffff894ff90e
->> R10: 0000000000000004 R11: ffff888022169e00 R12: ffff888015bd0000
->> R13: ffff88802ef65070 R14: dffffc0000000000 R15: ffff8880b953c088
->> FS:  000055558e3b9380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f1141b380d0 CR3: 0000000021838000 CR4: 00000000003506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>   <TASK>
->>   __xdp_do_redirect_frame net/core/filter.c:4384 [inline]
->>   xdp_do_redirect_frame+0x20d/0x4d0 net/core/filter.c:4438
->>   xdp_test_run_batch net/bpf/test_run.c:336 [inline]
->>   bpf_test_run_xdp_live+0xe8a/0x1e90 net/bpf/test_run.c:384
->>   bpf_prog_test_run_xdp+0x813/0x11b0 net/bpf/test_run.c:1267
->>   bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4240
->>   __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5649
->>   __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
->>   __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
->>   __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
->>   do_syscall_64+0xfb/0x240
->>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
->> RIP: 0033:0x7f1141ac0fb9
->> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007ffe180a1958 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
->> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1141ac0fb9
->> RDX: 0000000000000048 RSI: 0000000020000340 RDI: 000000000000000a
->> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
->> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
->> R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000001
->>   </TASK>
->> Modules linked in:
->> ---[ end trace 0000000000000000 ]---
->> RIP: 0010:dev_map_enqueue+0x31/0x3e0 kernel/bpf/devmap.c:539
->> Code: 41 56 41 55 41 54 53 48 83 ec 18 49 89 d4 49 89 f5 48 89 fd 49 be 00 00 00 00 00 fc ff df e8 a6 42 d8 ff 48 89 e8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 ef e8 10 8a 3b 00 4c 8b 7d 00 48 83 c5
->> RSP: 0018:ffffc90003bef688 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888022169e00
->> RDX: 0000000000000000 RSI: ffff88802ef65070 RDI: 0000000000000000
->> RBP: 0000000000000000 R08: 0000000000000005 R09: ffffffff894ff90e
->> R10: 0000000000000004 R11: ffff888022169e00 R12: ffff888015bd0000
->> R13: ffff88802ef65070 R14: dffffc0000000000 R15: ffff8880b953c088
->> FS:  000055558e3b9380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f1141b380d0 CR3: 0000000021838000 CR4: 00000000003506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> ----------------
->> Code disassembly (best guess):
->>     0:   41 56                   push   %r14
->>     2:   41 55                   push   %r13
->>     4:   41 54                   push   %r12
->>     6:   53                      push   %rbx
->>     7:   48 83 ec 18             sub    $0x18,%rsp
->>     b:   49 89 d4                mov    %rdx,%r12
->>     e:   49 89 f5                mov    %rsi,%r13
->>    11:   48 89 fd                mov    %rdi,%rbp
->>    14:   49 be 00 00 00 00 00    movabs $0xdffffc0000000000,%r14
->>    1b:   fc ff df
->>    1e:   e8 a6 42 d8 ff          call   0xffd842c9
->>    23:   48 89 e8                mov    %rbp,%rax
->>    26:   48 c1 e8 03             shr    $0x3,%rax
->> * 2a:   42 80 3c 30 00          cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
->>    2f:   74 08                   je     0x39
->>    31:   48 89 ef                mov    %rbp,%rdi
->>    34:   e8 10 8a 3b 00          call   0x3b8a49
->>    39:   4c 8b 7d 00             mov    0x0(%rbp),%r15
->>    3d:   48                      rex.W
->>    3e:   83                      .byte 0x83
->>    3f:   c5                      .byte 0xc5
->>
->>
->> ---
->> If you want syzbot to run the reproducer, reply with:
->> #syz test: git://repo/address.git branch-or-commit-hash
->> If you attach or paste a git patch, syzbot will apply it before testing.
 
