@@ -1,186 +1,153 @@
-Return-Path: <linux-kernel+bounces-122275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E0488F48B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:27:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B0F88F4D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 088001F28241
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:27:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A13E1C32785
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435041804A;
-	Thu, 28 Mar 2024 01:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D633BBF5;
+	Thu, 28 Mar 2024 01:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWgsu5tL"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="E5YEks9c"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4788465
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F5E3BB25;
+	Thu, 28 Mar 2024 01:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711589266; cv=none; b=PJ0F2m7VhQPhGuunlGRXM/9EqYEgqDcspQ+eDZlV/LxUnsLf81kF3GEDhq8OmQhfKNS99exe9O5cenfpTWoiapcwRgxUZZ4vl8tdDQN2c3xLoWxCaCr6fPyVAPu0g4tTUUFBfkG37eCZnum09TNqMKgnu8N8AM9+ri46Au6r47Y=
+	t=1711589847; cv=none; b=VxpkcvS2WvFCjq2iHv6yu4frzgJVRKUYM3YprKcLx/gmHkmWFqWY2n1TVuUvKpoP2ouhJB58qp8n6mtg8wTar9KDeG6itb9jkD2YosaWNnADNInPPVvJrYmv3PkcKa0zFhHjXx0DrV9hpXwgN9lpjwZCW7tu4ioAcZslALS7DYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711589266; c=relaxed/simple;
-	bh=fBO8KAJmy3wMi2rgjJu6UmFyCOj/5ge41qGaheG6254=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bzcgxPvHkyT8KtbPZegFChIhW0GVzea47CVpR136s7fwHIXsQJBx4FtcYwcPUkIoxisD3sy38PKEUi7a0gD6b2F+e5/yr1EV09XFsLO06msQzuWbTDFBoJGtGIXEO0D7Z4JKKV0x3rIJOnp7ZydpMZhjVN05XfF1yEAAAahwglY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWgsu5tL; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d485886545so5983301fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711589263; x=1712194063; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a4+6bhV4ASkyXzhB6rRjo48e6+mgSPLqfD3+eCsrCCs=;
-        b=iWgsu5tLNneGAI8ArfZPjiBnze9Cbxblk/hUzM50dnEUcpBxwcNomO28paj/vD9S74
-         R2v14eX59VmKihIuZDyqhKYmqNzmMJ67qOmgXtzF4hdLSrRY2EabLXi4YR/hZjjz9mKC
-         Nb5kXgQsQCaQvS+E+p2W267ACEkBwSbA8Z9hNkZNj8Fxw6IcyQ+ymFp++M2D0mTYGjlK
-         ZtQOVLIDrSwmUrYXAr4BVzKu8WNAcBeZ21UaJg+Sy+X/qrkepcj42h8uoCcxJjE/kltZ
-         G+Kohp5GJDCxa+c36n7EdoUq5KgKBUPY/2k7bETVBbvTxoIoUsZ2bz9EGcZCBMwx3nZI
-         vwyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711589263; x=1712194063;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a4+6bhV4ASkyXzhB6rRjo48e6+mgSPLqfD3+eCsrCCs=;
-        b=Ci2l419iPFxvc2Rg+KPG3NA2cTI5KB/muhgnvsnMz6QdJHS3gKoV4/UrYzpfQCdMxQ
-         85Kt4sVDcSK3MwGGPhTL7oIMkVif+KhbNlA0n6T6wv8d/ySiLhtumMIhc6U4gVmA6+HA
-         997qMZypeSksTGrhyRaKEZuN/stGvMjkT7E6pGRcvYc/ElN62OysfaW69zfcpI6FhB9I
-         ynY5sKKUb3Pzkm0exkEMnWfZNQqg17kFCNAGNn+bmCbUYn9FO4TP2MWRqUHOn+G9fULP
-         XgTVXSDeiln2n+OTgZmz9Nrz6OYmK6RjpYesiBITFil1ijMVw/NPO8tOdx09S2r5ONAP
-         ljgA==
-X-Forwarded-Encrypted: i=1; AJvYcCU4BXJazgR2lnWnzSO6IoYFw4DJERdhS1MYcdjtNerqsL6atHeVn5mQ8jkhR7OdvLIixctnheB9Hc3bSFXPGaJb5QGYLLWFeXcNdp7t
-X-Gm-Message-State: AOJu0YyT2RmG1BDdL17LHpmz/wyUPCPkCuAJl0yqmIb3HqOZbKKp7nL7
-	PUjOa/3SPKSeXq7uDye+av83XakJ2yE/qb5E6Yv+k+CMq/biaNGILEUmnIxwNHO/EtlYYyS/eMm
-	dVESviF39Vf0D35LZyE77M4rxrXk=
-X-Google-Smtp-Source: AGHT+IHjHc/M5wg8Kjv4Xh41rdEpeSo18qi7fVeBXzM21c5hf+atpQ+Bm9FW8uywUPCAPYwN/gDi0QxSLifoeLU+Wbk=
-X-Received: by 2002:a2e:8551:0:b0:2d5:acde:9065 with SMTP id
- u17-20020a2e8551000000b002d5acde9065mr1501774ljj.34.1711589262680; Wed, 27
- Mar 2024 18:27:42 -0700 (PDT)
+	s=arc-20240116; t=1711589847; c=relaxed/simple;
+	bh=ufJutT73Z+lUzAoxlRPNMe5+qxbNbjQJyVoWy3hjDaA=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=untORWMF28MsvLiad0BeQB37CQdC0ihaWXQSx13c6ZLKDPDWw4ql2P7rxS2R83hiJ4e5Kk2S/xQcGKVjM64HX2/jF33UTccnD4Nqu1hGM23kJp2TbSX890VLw3C5dL+dgjkI8huwAKz5OeYvvXgOmOmJQs12NS145tpofQslgIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=E5YEks9c; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711589840; h=Message-ID:Subject:Date:From:To;
+	bh=v7bS5t8QiDMoASYcN5lpCGZoaZnfviWiy8N1d5+w1eE=;
+	b=E5YEks9cwDFMuVnGqCgjQ7pWOGumODwyeYQOIYyaKyjMo5MrjQ+PrelyXHspCf6Q71ciTUkpqF+D7qkrthraK5WmvZk+uhIuS3oNEsP1j09x52woHK0WtE5fR1GHZSrHV4wv6ylTT+X3gRc8pt+7enOp6OEVOqmUT8kKVn5tWkM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W3QICuj_1711589839;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W3QICuj_1711589839)
+          by smtp.aliyun-inc.com;
+          Thu, 28 Mar 2024 09:37:20 +0800
+Message-ID: <1711589335.4973893-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net v2 1/2] virtio_net: Do not set rss_indir if RSS is not supported
+Date: Thu, 28 Mar 2024 09:28:55 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Breno Leitao <leitao@debian.org>
+Cc: rbc@meta.com,
+ riel@surriel.com,
+ "open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
+ "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ hengqi@linux.alibaba.com,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+References: <20240326151911.2155689-1-leitao@debian.org>
+ <1711503463.632461-1-xuanzhuo@linux.alibaba.com>
+ <ZgQkXfMd6GIEndXm@gmail.com>
+In-Reply-To: <ZgQkXfMd6GIEndXm@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <Zfj_-LbiIsAVWcPX@casper.infradead.org> <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
- <ZfwpuRjAZV07_lc3@casper.infradead.org> <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
- <Zfz4_GJAHRInB8ul@casper.infradead.org> <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
- <ZgDt9mwN-Py5Y-xr@casper.infradead.org> <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
- <ZgK91II_eSYY6D2F@casper.infradead.org> <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
- <ZgQRtQ60mrvOUKXo@casper.infradead.org>
-In-Reply-To: <ZgQRtQ60mrvOUKXo@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Thu, 28 Mar 2024 09:27:31 +0800
-Message-ID: <CAGWkznF3GfCs8odhR-Hue5H8MZ=eXb82V20ZoCCjeoSjAPQ9cw@mail.gmail.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-To: Matthew Wilcox <willy@infradead.org>
-Cc: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 8:31=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
+On Wed, 27 Mar 2024 06:51:25 -0700, Breno Leitao <leitao@debian.org> wrote:
+> Hello Xuan,
 >
-> On Wed, Mar 27, 2024 at 09:25:59AM +0800, Zhaoyang Huang wrote:
-> > > Ignoring any other thread, you're basically saying that there's a
-> > > refcount imbalance here.  Which means we'd hit an assert (that folio
-> > > refcount went below zero) in the normal case where another thread was=
-n't
-> > > simultaneously trying to do anything.
-> > Theoretically Yes but it is rare in practice as aops->readahead will
-> > launch all pages to IO under most scenarios.
->
-> Rare, but this path has been tested.
->
-> > read_pages
-> >     aops->readahead[1]
-> > ...
-> >     while (folio =3D readahead_folio)[2]
-> >         filemap_remove_folio
+> On Wed, Mar 27, 2024 at 09:37:43AM +0800, Xuan Zhuo wrote:
+> > On Tue, 26 Mar 2024 08:19:08 -0700, Breno Leitao <leitao@debian.org> wrote:
+> > > Do not set virtnet_info->rss_indir_table_size if RSS is not available
+> > > for the device.
+> > >
+> > > Currently, rss_indir_table_size is set if either has_rss or
+> > > has_rss_hash_report is available, but, it should only be set if has_rss
+> > > is set.
+> > >
+> > > On the virtnet_set_rxfh(), return an invalid command if the request has
+> > > indirection table set, but virtnet does not support RSS.
+> > >
+> > > Suggested-by: Heng Qi <hengqi@linux.alibaba.com>
+> > > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > > ---
+> > >  drivers/net/virtio_net.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index c22d1118a133..c640fdf28fc5 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -3813,6 +3813,9 @@ static int virtnet_set_rxfh(struct net_device *dev,
+> > >  	    rxfh->hfunc != ETH_RSS_HASH_TOP)
+> > >  		return -EOPNOTSUPP;
+> > >
+> > > +	if (rxfh->indir && !vi->has_rss)
+> > > +		return -EINVAL;
+> > > +
+> > >  	if (rxfh->indir) {
 > >
-> > IMO, according to the comments of readahead_page, the refcnt
-> > represents page cache dropped in [1] makes sense for two reasons, '1.
-> > The folio is going to do IO and is locked until IO done;2. The refcnt
-> > will be added back when found again from the page cache and then serve
-> > for PTE or vfs' while it doesn't make sense in [2] as the refcnt of
-> > page cache will be dropped in filemap_remove_folio
-> >
-> >  * Context: The page is locked and has an elevated refcount.  The calle=
-r
-> >  * should decreases the refcount once the page has been submitted for I=
-/O
-> >  * and unlock the page once all I/O to that page has completed.
-> >  * Return: A pointer to the next page, or %NULL if we are done.
+> > Put !vi->has_rss here?
 >
-> Follow the refcount through.
+> I am not sure I understand the suggestion. Where do you suggest we have
+> !vi->has_rss?
 >
-> In page_cache_ra_unbounded():
+> If we got this far, we either have:
 >
->                 folio =3D filemap_alloc_folio(gfp_mask, 0);
-> (folio has refcount 1)
->                 ret =3D filemap_add_folio(mapping, folio, index + i, gfp_=
-mask);
-> (folio has refcount 2)
+> a) rxfh->indir set and vi->has_rss is also set
+> b) rxfh->indir not set. (vi->has_rss could be set or not).
+
+
+This function does two tasks.
+1. update indir table
+2. update rss key
+
+#1 only for has_rss
+#2 for has_rss or has_rss_hash_report
+
+
+So I would code:
+
+	bool update = false
+
+	if (rxfh->indir) {
+		if (!vi->has_rss)
+			return -EINVAL;
+
+		for (i = 0; i < vi->rss_indir_table_size; ++i)
+			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
+
+		update = true
+	}
+
+	if (rxfh->key) {
+		if (!vi->has_rss && !vi->has_rss_hash_report)
+			return -EINVAL;
+
+		memcpy(vi->ctrl->rss.key, rxfh->key, vi->rss_key_size);
+		update = true
+	}
+
+
+	if (update)
+		virtnet_commit_rss_command(vi);
+
+Thanks.
+
+
 >
-> Then we call read_pages()
-> First we call ->readahead() which for some reason stops early.
-> Then we call readahead_folio() which calls folio_put()
-> (folio has refcount 1)
-> Then we call folio_get()
-> (folio has refcount 2)
-> Then we call filemap_remove_folio()
-> (folio has refcount 1)
-> Then we call folio_unlock()
-> Then we call folio_put()
-ok, I missed the refcnt from alloc_pages. However, I still think it is
-a bug to call readahead_folio in read_pages as the refcnt obtained by
-alloc_pages should be its final guard which is paired to the one which
-checked in shrink_folio_list->__remove_mapping->folio_ref_freeze(2)(this
-2 represent alloc_pages & page cache). If we removed this one without
-isolating the folio from LRU, the following race could happen.
-Furthermore, the refcnt dropped in the readahead_folio represents page
-cache, it doesn't make sense to drop it twice in read_pages.
-
-0. Thread_readahead:
-    folio_put()
-        folio_put_test_zero() =3D=3D true
-        __folio_put()
-            folio_test_lru() =3D=3D true
-            <preempted>
-
-1. Thread_isolate
-     folio_isolate_lru
-         folio_test_clear_lru()
-         lruvec_del_folio()
-
-2. Thread_readahead
-    folio_put()
-        folio_put_test_zero() =3D=3D true
-        __folio_put
-            folio_test_lru() =3D=3D true
-            <schedule back from 0>
-            lruvec_del_folio()
-
-
-
-> (folio has refcount 0 and is freed)
->
-> Yes, other things can happen in there to increment the refcount, so this
-> folio_put() might not be the last put, but we hold the folio locked the
-> entire time, so many things which might be attempted will block on the
-> folio lock.  In particular, nobody can remove it from the page cache,
-> so its refcount cannot reach 0 until the last folio_put() of the
-> sequence.
+> Thanks for the review,
+> Breno
 
