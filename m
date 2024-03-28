@@ -1,158 +1,143 @@
-Return-Path: <linux-kernel+bounces-123492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A17689096D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:41:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E4889097F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10AAC1F2375E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:41:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F43B1F2212F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D851384B1;
-	Thu, 28 Mar 2024 19:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC0613958D;
+	Thu, 28 Mar 2024 19:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kaA9Q3h4"
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cNbH+dr2"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 701641849;
-	Thu, 28 Mar 2024 19:40:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7FF480617;
+	Thu, 28 Mar 2024 19:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711654860; cv=none; b=n+00L757N3vT1dZ82YdB3MOdwSfoospGHoxMUWUMLIaS0khyDCncM+yfoWz1HspulBqPej4M2WKiKCLMxmZH6UBePKjNdpJdxUCxtvxCgHV8way5NTenBFRIaxnT21aWPr/ZcG4k671BZ8FFW5nleeptDp0M6jlaqN2ud7AHCdI=
+	t=1711654896; cv=none; b=suRQMJOk4UNnpitTNy9j7/WlfY3TuubpGcCGMoRQigRv1qBx2WmX7THHmTirW7upeSJKgjFNdwPCekblm+ib1j3OEerRFQA3jf0w9Yxcrle8GKL7o6P/ypDV1ZUVIFGCNIXu31RP1Je8rN6VA8CrTG4hW4SF/dDgLwbDDeT42K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711654860; c=relaxed/simple;
-	bh=+3NWWwXtkzvrmA576fnyloztaGBywL+XKq+YksdA5gQ=;
+	s=arc-20240116; t=1711654896; c=relaxed/simple;
+	bh=t4KQY4ygYmx+OB/j4jytyezWMylsTqngvr/2VLyyCA8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qHDj/yQVgG6GaPJlEoUIAFSKe1lc8CGfwP9G+eSe9AJvOKUuRw4DfGmBVAOi1OYoc7i47o25Gymm6o/wheYEd04wsUMUmk4yXBN1J/Be/F+jQPajk4Yx6Hwi4tAYiusTWIKgb9Zn6OtGGRp+R5pKWLYqVyXLodOYUb8fQSCLNV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kaA9Q3h4; arc=none smtp.client-ip=209.85.221.182
+	 To:Cc:Content-Type; b=nAWBwEfynDA2Hy4LVHSlIGU+4fcn4fkT+L+P0cKA0sl2rvVLL3EfM76RvCJ7guKQ+8hi/drhcdiwlfMNiCbjY4QDXj4IwVpDBCQ2BlySofu6nx5fHOQdSOqFfFzkaDoppxWF9o/HATp87vIEqJ+JHGSYpUKiWftz3xNyMdcs5mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cNbH+dr2; arc=none smtp.client-ip=209.85.221.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4d438e141d5so714815e0c.0;
-        Thu, 28 Mar 2024 12:40:58 -0700 (PDT)
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4d42c30a968so434276e0c.1;
+        Thu, 28 Mar 2024 12:41:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711654857; x=1712259657; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pGCaq9OrigqbkBbwFdgSJ7iz+P7VgNUODi7EL0TTbPM=;
-        b=kaA9Q3h42sLRsltH3mK4bf+Kysp/vEkP2EoztKKfGf4F4xo6le+/mbcT4YLDaCYv6Z
-         xyRCPRRVYeFeLtWk60JRQo/lhm0nVbAhWwQdEyuJnCQ5FDVND7S6fF/lESZh8AuAEglD
-         U5rHDu9EO38SqP7eEn3ts72lj4BNehdOye1oINE4wx1KUm189/ee4LkA6rD0DGLNJmC+
-         SKi87e9FI4Wkw1Ts62f9Pta9G9aT1yB2xZRb8KwCWW2yUnbXQy4G33SLOJKEwEa4h5YX
-         IpJgUApWG5cCCjpunC0CbLCFKtnk7uSvKiCvxuSjCLl37Y8abg1i/SJ6qikSxLAIA+eJ
-         3Gyg==
+        d=gmail.com; s=20230601; t=1711654894; x=1712259694; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WIYRUJlYf8k4Ww5l6bxXyNzs1Z7gSD0K+4rAhlyLzPk=;
+        b=cNbH+dr2gW6ot8DEwnUB2fXvabAjj+01jQbhI9+1y1IG1lUzwG2ot/cuOK0cmlmfgO
+         Homs/+UuR8M5g/1coScTfMeVKB8Gjz7xilM0dEp9WeVZASqeWVLGzsuJtIVfEnXvuu+7
+         Kxk28CszjAKKqsaDPqFWeilUZAXGdcrabRT1WS+SBG6F+4UMuG6gDiNQD3z2Xm7Dsi2O
+         U7YoNIeYvX2/wqaxsnaxHnqEj7iG2Agvepxabd9P+3MobYXVzGdDjUgYPggEj6UNnmp7
+         e4pThct+uHwZAyUo3Lsm15yoTLf9uj9AxzsQC+cl6BdUsybDtY6oRPp4K0P11wWU+j7o
+         Xnww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711654857; x=1712259657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pGCaq9OrigqbkBbwFdgSJ7iz+P7VgNUODi7EL0TTbPM=;
-        b=a3s489Fbi4hZfjyX/B0EKYrhCm1t3VuQs570uBZTQCl31R2SPSsrdiKvd8pudOzjBx
-         wXI6pTPTISpwU3jOt/is6cC6Qm8WaJSl0+eVmiN9fccXoJGgPZN92iz7AywAKzrxi1oE
-         2h4TyqZN4soRrKPv0SqhnLShTQhWljzSh7Al5RhhPGFbT1aNurlrlvcN2Y7Qdi7i+XjH
-         RbbF7/Grlq6HugKq181Wd3nSuo9fc3LIAhsXkPE3ZB89V5pAuszm3MfqmeQCzkovpD6T
-         wuAMUp9jknOFj3z2Q58t4iTlFmGMca30Tu7OZLCXtJNiwsVyt48XfT08MetR0LTelxdP
-         CrGg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+nzXZJ9kY0ZKk29e1ABHDbAnsnGpfFLM1Q+wWuFcJkBW1QOsw2UH9oWE52rJlV3BjmQcKFxpMAUz32imU8kEFgVg9OK1p5oOzvXxfFd0KdOY2AQ5pP3NkkP8QB93HmgWoJhhE5Sa0PW5KToP9RJmDEd9pBxbXfuWUuN+xdkoMlTonsENPBIggZpE/YT9n86drMwA0phvXEsrTVRvzAVxfLZENcx94wg==
-X-Gm-Message-State: AOJu0YyEFheS7pG4zIkBH9fn3j9FjjOfXf2bgvMXLfTTC3ZXZQ2mKKZy
-	GC20hOjHjnUGRcUW5UsNipqMfHhTX/u98H51iq2VifWd3MgEZr3flsUqtiH6l6IJhHZOtoG/Ohn
-	scYD7hQ3XVt16n4chIV3glVm8xic=
-X-Google-Smtp-Source: AGHT+IGGIZX5yS8mpZls/4SrlztMQeLHRiz+4BGAHryeTkdghkFMlHhUz+zkCt0bmRB5EW/857MaTjogeo0ycR0LGVQ=
-X-Received: by 2002:a05:6122:2806:b0:4c8:df97:139d with SMTP id
- en6-20020a056122280600b004c8df97139dmr2962055vkb.2.1711654857269; Thu, 28 Mar
- 2024 12:40:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711654894; x=1712259694;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WIYRUJlYf8k4Ww5l6bxXyNzs1Z7gSD0K+4rAhlyLzPk=;
+        b=rDbKGXktGip+5XnYIPjuNpImj92eFnI9qAAO8VWA2taZNDGNPNTUAEAeEvsy294k/m
+         kSov6fN1zcpwViiyFJF8WvAgFWZKDSxP7u2Z3/5R//Mr3c4sYlFYESlZ7GY84SgEylZ7
+         Mnr+T3y/mJ1/FwferyDO8RfGCFVtSogIvs3d41T3jnnH5ceMp/0GLbXVGdTKpyT3nENs
+         ooAatDMkhw9GM06pu8OGjyvJ4rO7Rk3nb7JtznrzAzYro8DsOggqDoDGsf0wbinzFEFn
+         C+0AcNkIc9K38LE+YikhboBWds3oAm7YD6gjPU3tNnS7WjvgYoeuAEeQ7F7h9iI4l7aK
+         yOqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUIptqr43SOuMFZVW49EOi8Ov8c2VH8PlyCITsZPgtDfcOrgBJNke+3szNVaMr4gihWiA+4zX/9nuwWJyFy0a2o4kHweSPk/tq+bOoh0meQbFIi2jKudUTcSzAHbqgin0W2+7PMkgTDuvochfNmkY+u44cCsVolMw5sHhxjfOQzry58XXc3rgIQp0EdJq+IMLDAG9ju7NZ99aYtxA2MIfeCIg+g/WOy0Chvhg0a1T1Lb9ikSEMbcsjIu2jrKPsmuW0GtQHmEjKHowIETmA8nC0TUMWck3D4wa85vqdl7zJ1SMd/FHJUd5phAZPpHKwc6DhpfSjxD+8pnI6eThDzaDAlcpZG3D80ff4u//DLuhKY7+/0XquR8D554lw5ODdSTwWY7iN/limevjoqURNxDujNXcUDfBUlYRp15gcMYV9yGjrDInpsjqs/srYVmdqaZRlL6JyT5YEeqf9Jh9GfexLq7gQjS/FfGBJRlpeTGIiTGoiaBnPralKoxCKYlLBqpvId9wwnRDNPe3+zvp3iemH+4YdNDXYziJYb+MbCm/4qPZrkgNY/7p6Ecrt6hHKf4Myeqx1DK4ySwfVpaMVDm1Q=
+X-Gm-Message-State: AOJu0Yyxgaxdxfl3R6arGWv0Ebar3bNFtbMdEx1QVYEoTH22esdVTUh/
+	xECQs5mNpgIV6kA/mSA8FuJmVt+czZ8bCyhE8D89ME9XFKVVpcLxMxT0zmtCtM0aj3OzDTnB24U
+	HILcG2WaFxFnZeuC86FskH21pq9w=
+X-Google-Smtp-Source: AGHT+IF7RrkP6jmtYq8PnUCxuTgzt2Qt4CTC9MlCAHIq165hbFM88DzkJJ/z4aTnoTdb1soUmIZQWdyI4gYKg4Ogr2U=
+X-Received: by 2002:a1f:ebc2:0:b0:4d3:43f8:8541 with SMTP id
+ j185-20020a1febc2000000b004d343f88541mr348710vkh.1.1711654893631; Thu, 28 Mar
+ 2024 12:41:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240326222844.1422948-8-prabhakar.mahadev-lad.rj@bp.renesas.com> <c200e87e-1c65-4926-9307-16229e90594e@tuxon.dev>
-In-Reply-To: <c200e87e-1c65-4926-9307-16229e90594e@tuxon.dev>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 28 Mar 2024 19:40:31 +0000
-Message-ID: <CA+V-a8vcyxrEmHrhgwDf2bhL1QpiXW6r1+aoH3my3uAJZfCtQA@mail.gmail.com>
-Subject: Re: [RFC PATCH 07/13] pinctrl: renesas: pinctrl-rzg2l: Validate power
- registers for SD and ETH
-To: claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Linus Walleij <linus.walleij@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-7-apais@linux.microsoft.com> <ZgRePyo2zC4A1Fp4@mail.minyard.net>
+ <CAOMdWS+1AFxEqmACiBYzPHc+q0Ut6hp15tdV50JHvfVeUNCGQw@mail.gmail.com> <ZgXDmx1HvujsMYAR@mail.minyard.net>
+In-Reply-To: <ZgXDmx1HvujsMYAR@mail.minyard.net>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 28 Mar 2024 12:41:22 -0700
+Message-ID: <CAOMdWS+nB5EENp_Vb=k1j77nrch5JgbZP2XYPJ2ieTja14zB0w@mail.gmail.com>
+Subject: Re: [PATCH 6/9] ipmi: Convert from tasklet to BH workqueue
+To: minyard@acm.org
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org, tj@kernel.org, 
+	keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
+	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
+	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
+	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
+	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
+	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
+	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
+	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
+	patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org, 
+	jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com, 
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
+	jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com, 
+	aubin.constans@microchip.com, ulf.hansson@linaro.org, manuel.lauss@gmail.com, 
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com, 
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org, brucechang@via.com.tw, 
+	HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr, 
+	stern@rowland.harvard.edu, oneukum@suse.com, 
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Claudiu,
+> > > I believe that work queues items are execute single-threaded for a work
+> > > queue, so this should be good.  I need to test this, though.  It may be
+> > > that an IPMI device can have its own work queue; it may not be important
+> > > to run it in bh context.
+> >
+> >   Fair point. Could you please let me know once you have had a chance to test
+> > these changes. Meanwhile, I will work on RFC wherein IPMI will have its own
+> > workqueue.
+> >
+> >  Thanks for taking time out to review.
+>
+> After looking and thinking about it a bit, a BH context is still
+> probably the best for this.
+>
+> I have tested this patch under load and various scenarios and it seems
+> to work ok.  So:
+>
+> Tested-by: Corey Minyard <cminyard@mvista.com>
+> Acked-by: Corey Minyard <cminyard@mvista.com>
+>
+> Or I can take this into my tree.
+>
+> -corey
 
-Thank you for the review.
+ Thank you very much. I think it should be okay for you to carry it into
+your tree.
 
-On Thu, Mar 28, 2024 at 8:01=E2=80=AFAM claudiu beznea <claudiu.beznea@tuxo=
-n.dev> wrote:
->
-> Hi, Prabhakar,
->
-> On 27.03.2024 00:28, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > On RZ/V2H(P) SoC, the power registers for SD and ETH do not exist,
-> > resulting in invalid register offsets. Ensure that the register offsets
-> > are valid before any read/write operations are performed. If the power
-> > registers are not available, both SD and ETH will be set to -EINVAL.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/pinctrl/renesas/pinctrl-rzg2l.c | 16 ++++++++++------
-> >  1 file changed, 10 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/=
-renesas/pinctrl-rzg2l.c
-> > index 348fdccaff72..705372faaeff 100644
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > @@ -184,8 +184,8 @@
-> >   */
-> >  struct rzg2l_register_offsets {
-> >       u16 pwpr;
-> > -     u16 sd_ch;
-> > -     u16 eth_poc;
-> > +     int sd_ch;
-> > +     int eth_poc;
-> >  };
-> >
-> >  /**
-> > @@ -2567,8 +2567,10 @@ static int rzg2l_pinctrl_suspend_noirq(struct de=
-vice *dev)
-> >       rzg2l_pinctrl_pm_setup_dedicated_regs(pctrl, true);
-> >
-> >       for (u8 i =3D 0; i < 2; i++) {
-> > -             cache->sd_ch[i] =3D readb(pctrl->base + SD_CH(regs->sd_ch=
-, i));
-> > -             cache->eth_poc[i] =3D readb(pctrl->base + ETH_POC(regs->e=
-th_poc, i));
-> > +             if (regs->sd_ch !=3D -EINVAL)
->
-> As of my knowledge, the current users of this driver uses SD and ETH
-> offsets different from zero. To avoid populating these values for all the
-> SoCs and avoid increasing the size of these fields I think you can add
-> checks like these:
->
-> if (regs->sd_ch)
->         // set sd_ch
->
-Agreed.
-
->
-> Same for the rest.
->
-OK.
-
-Cheers,
-Prabhakar
+- Allen
 
