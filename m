@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-123325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96A789069A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:02:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E70A89069C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42C9A1F226F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:02:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E23B2B26BA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89195136E37;
-	Thu, 28 Mar 2024 17:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91DB137763;
+	Thu, 28 Mar 2024 17:00:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R+lMY3K4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZrkXxdgD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5F3136E23
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E9A5B678
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711645208; cv=none; b=r43OBpWAtVtVBc3LCseqBrb1PQ0doWdOjIYbY5SjvAWoipN/lExNshJIDhwOqmScPu5mCQohnzTB0/9q6i7JiySRGXIjghZc+vlyBXhNwp9lQD1Vqwo2eFrWbr+Bv/jtykSddkckjC3SsW8R6eIpJ+DsdrLHnsg7JZJ3W33lfJM=
+	t=1711645216; cv=none; b=DntERKyoE5cvgSTtnPCj18716QW3seOPXQHK1//87ap1+F2JzNrwSl/fUnz5rMiYi7p+03+pA76TuLLkn8k0Zb3DkkPSMxX9z83fjsxu8vOiYZpDQ2h8hNaK7Y/AKc25DTQ0O1jpz57rCdT2tvt9gOYDUvTuV3Ea5sSXCzqjOsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711645208; c=relaxed/simple;
-	bh=1H+o+v897zLhA37MJj9BJEjve71vHhPdyEjqxJssFSQ=;
+	s=arc-20240116; t=1711645216; c=relaxed/simple;
+	bh=a7ZDTPEmZI5vb0iw+H7BOuZ7gMj6e/DdhQq/AVsEQy4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N+LoByZoCNDGF/6k/NQ5HZae95XWVqVsIACCirnegTOmKCO3QZuFa+9WRg9MxZCbwnAno71ePKuHpnpljCp2tu5cEp9iKOe7Cr4CXma1kJJoFzmVsG7KO3ST/oSz7ow33qgsABBWymTnxOMI1RWFUvlTZimXu9/709mW5EbjelQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R+lMY3K4; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=jW9XRTj916C/y/SYxsuA6xtg9phwcNY/jMh0ky76ocj6Y5AJ3QZ7iKPS4yhn20+gSDHZTg8hkuRWi3Rono1M+QAzkc/G7j3Y8qLEG+PV8otNpSlftccW0+LdJGhrysxl83ospuqImUvnPD/7Zs1XhPnskKYmXHRfxCJKMJ9ZOgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZrkXxdgD; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711645206;
+	s=mimecast20190719; t=1711645213;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FdETRfB8DnsEfVd472r7IU+9uzPySp2hW2I+XAgROTY=;
-	b=R+lMY3K4u8aEFaVCjYaXD0JtSBB6E+mqBZ9wrsnhMIV27vlPSeCG05VmHz10UT2CJBep99
-	Z7GXYHVjehK2kJG6UgQOeAGcw3PiFzBGCGlY6lif65/hua65fR9NbXz0j3WQFBMY4SpwwM
-	av0O5sFH/IIPWpRuJx/xeIeLpFEiSuw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-400-B-6RQZNSNq6woioU60vOtQ-1; Thu,
- 28 Mar 2024 13:00:00 -0400
-X-MC-Unique: B-6RQZNSNq6woioU60vOtQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	bh=CntTp3Jyu1WRS7BeCEXY9WjviKzEFkeTql7WaUHGCEY=;
+	b=ZrkXxdgDwNGfSE37YOwudII2+JPvp0rZPONs3i/QD/mVZpmTB2dGOwBNW1NlMD1ZGWIorO
+	GCWnBfBEui3bjFWGcHQn/1tXnfx94zqTujuW6XTfZOzl3ReNPUe9z+kawYwz0dKcVHpQwy
+	0Eq868dUKsp+JxftJ0LG4RNc0mgkDUg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-661-WeYapp8YNLeeFBVwym_fhQ-1; Thu, 28 Mar 2024 13:00:06 -0400
+X-MC-Unique: WeYapp8YNLeeFBVwym_fhQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E51281C2CDE3;
-	Thu, 28 Mar 2024 16:59:59 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 68888101A56C;
+	Thu, 28 Mar 2024 17:00:05 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.146])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F29CF2166B31;
-	Thu, 28 Mar 2024 16:59:57 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8565E1121306;
+	Thu, 28 Mar 2024 17:00:03 +0000 (UTC)
 From: David Howells <dhowells@redhat.com>
 To: Steve French <smfrench@gmail.com>
 Cc: David Howells <dhowells@redhat.com>,
@@ -72,9 +72,9 @@ Cc: David Howells <dhowells@redhat.com>,
 	Steve French <sfrench@samba.org>,
 	Shyam Prasad N <nspmangalore@gmail.com>,
 	Rohith Surabattula <rohiths.msft@gmail.com>
-Subject: [PATCH v6 08/15] cifs: Add mempools for cifs_io_request and cifs_io_subrequest structs
-Date: Thu, 28 Mar 2024 16:57:59 +0000
-Message-ID: <20240328165845.2782259-9-dhowells@redhat.com>
+Subject: [PATCH v6 09/15] cifs: Make add_credits_and_wake_if() clear deducted credits
+Date: Thu, 28 Mar 2024 16:58:00 +0000
+Message-ID: <20240328165845.2782259-10-dhowells@redhat.com>
 In-Reply-To: <20240328165845.2782259-1-dhowells@redhat.com>
 References: <20240328165845.2782259-1-dhowells@redhat.com>
 Precedence: bulk
@@ -84,11 +84,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Add mempools for the allocation of cifs_io_request and cifs_io_subrequest
-structs for netfslib to use so that it can guarantee eventual allocation in
-writeback.
+Make add_credits_and_wake_if() clear the amount of credits in the
+cifs_credits struct after it has returned them to the overall counter.
+This allows add_credits_and_wake_if() to be called multiple times during
+the error handling and cleanup without accidentally returning the credits
+again and again.
+
+Note that the wake_up() in add_credits_and_wake_if() may also be
+superfluous as ->add_credits() also does a wake on the request_q.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: Steve French <sfrench@samba.org>
@@ -98,124 +103,27 @@ cc: Jeff Layton <jlayton@kernel.org>
 cc: linux-cifs@vger.kernel.org
 cc: netfs@lists.linux.dev
 cc: linux-fsdevel@vger.kernel.org
-cc: linux-mm@kvack.org
 ---
- fs/smb/client/cifsfs.c   | 55 +++++++++++++++++++++++++++++++++++++++-
- fs/smb/client/cifsglob.h |  2 ++
- 2 files changed, 56 insertions(+), 1 deletion(-)
+ fs/smb/client/cifsglob.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index 2dd29663dab1..d8c31383752a 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -370,9 +370,13 @@ static struct kmem_cache *cifs_inode_cachep;
- static struct kmem_cache *cifs_req_cachep;
- static struct kmem_cache *cifs_mid_cachep;
- static struct kmem_cache *cifs_sm_req_cachep;
-+static struct kmem_cache *cifs_io_request_cachep;
-+static struct kmem_cache *cifs_io_subrequest_cachep;
- mempool_t *cifs_sm_req_poolp;
- mempool_t *cifs_req_poolp;
- mempool_t *cifs_mid_poolp;
-+mempool_t cifs_io_request_pool;
-+mempool_t cifs_io_subrequest_pool;
- 
- static struct inode *
- cifs_alloc_inode(struct super_block *sb)
-@@ -1746,6 +1750,48 @@ static void destroy_mids(void)
- 	kmem_cache_destroy(cifs_mid_cachep);
- }
- 
-+static int cifs_init_netfs(void)
-+{
-+	cifs_io_request_cachep =
-+		kmem_cache_create("cifs_io_request",
-+				  sizeof(struct netfs_io_request), 0,
-+				  SLAB_HWCACHE_ALIGN, NULL);
-+	if (!cifs_io_request_cachep)
-+		goto nomem_req;
-+
-+	if (mempool_init_slab_pool(&cifs_io_request_pool, 100, cifs_io_request_cachep) < 0)
-+		goto nomem_reqpool;
-+
-+	cifs_io_subrequest_cachep =
-+		kmem_cache_create("cifs_io_subrequest",
-+				  sizeof(struct cifs_io_subrequest), 0,
-+				  SLAB_HWCACHE_ALIGN, NULL);
-+	if (!cifs_io_subrequest_cachep)
-+		goto nomem_subreq;
-+
-+	if (mempool_init_slab_pool(&cifs_io_subrequest_pool, 100, cifs_io_subrequest_cachep) < 0)
-+		goto nomem_subreqpool;
-+
-+	return 0;
-+
-+nomem_subreqpool:
-+	kmem_cache_destroy(cifs_io_subrequest_cachep);
-+nomem_subreq:
-+	mempool_destroy(&cifs_io_request_pool);
-+nomem_reqpool:
-+	kmem_cache_destroy(cifs_io_request_cachep);
-+nomem_req:
-+	return -ENOMEM;
-+}
-+
-+static void cifs_destroy_netfs(void)
-+{
-+	mempool_destroy(&cifs_io_subrequest_pool);
-+	kmem_cache_destroy(cifs_io_subrequest_cachep);
-+	mempool_destroy(&cifs_io_request_pool);
-+	kmem_cache_destroy(cifs_io_request_cachep);
-+}
-+
- static int __init
- init_cifs(void)
- {
-@@ -1843,10 +1889,14 @@ init_cifs(void)
- 	if (rc)
- 		goto out_destroy_deferredclose_wq;
- 
--	rc = init_mids();
-+	rc = cifs_init_netfs();
- 	if (rc)
- 		goto out_destroy_inodecache;
- 
-+	rc = init_mids();
-+	if (rc)
-+		goto out_destroy_netfs;
-+
- 	rc = cifs_init_request_bufs();
- 	if (rc)
- 		goto out_destroy_mids;
-@@ -1901,6 +1951,8 @@ init_cifs(void)
- 	cifs_destroy_request_bufs();
- out_destroy_mids:
- 	destroy_mids();
-+out_destroy_netfs:
-+	cifs_destroy_netfs();
- out_destroy_inodecache:
- 	cifs_destroy_inodecache();
- out_destroy_deferredclose_wq:
-@@ -1937,6 +1989,7 @@ exit_cifs(void)
- #endif
- 	cifs_destroy_request_bufs();
- 	destroy_mids();
-+	cifs_destroy_netfs();
- 	cifs_destroy_inodecache();
- 	destroy_workqueue(deferredclose_wq);
- 	destroy_workqueue(cifsoplockd_wq);
 diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 6436d360b9f4..057a7933b175 100644
+index 057a7933b175..704f526a9e81 100644
 --- a/fs/smb/client/cifsglob.h
 +++ b/fs/smb/client/cifsglob.h
-@@ -2089,6 +2089,8 @@ extern __u32 cifs_lock_secret;
- extern mempool_t *cifs_sm_req_poolp;
- extern mempool_t *cifs_req_poolp;
- extern mempool_t *cifs_mid_poolp;
-+extern mempool_t cifs_io_request_pool;
-+extern mempool_t cifs_io_subrequest_pool;
+@@ -881,11 +881,12 @@ add_credits(struct TCP_Server_Info *server, const struct cifs_credits *credits,
  
- /* Operations for different SMB versions */
- #define SMB1_VERSION_STRING	"1.0"
+ static inline void
+ add_credits_and_wake_if(struct TCP_Server_Info *server,
+-			const struct cifs_credits *credits, const int optype)
++			struct cifs_credits *credits, const int optype)
+ {
+ 	if (credits->value) {
+ 		server->ops->add_credits(server, credits, optype);
+ 		wake_up(&server->request_q);
++		credits->value = 0;
+ 	}
+ }
+ 
 
 
