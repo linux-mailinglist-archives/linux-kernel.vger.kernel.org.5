@@ -1,56 +1,60 @@
-Return-Path: <linux-kernel+bounces-122318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0E8688F523
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:07:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 576F488F525
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 03:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B652D1C2A34F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:07:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EB4F1C29A02
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1502C288DF;
-	Thu, 28 Mar 2024 02:07:27 +0000 (UTC)
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id CBF8524B34;
-	Thu, 28 Mar 2024 02:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB022561F;
+	Thu, 28 Mar 2024 02:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="awpXWp+3"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA78824B2F
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711591646; cv=none; b=OltYwOaSZWjoIp+lfyVGP2IVE3W/icqz4QFIkSCVVJMuK16Y/mW0Q6xyaBvGtWSlgPXlcvieS9fJUMiz5JcanwvGgjkYWsbDTer4rDs7Onhch0p0xNGeU+Ykv9PNZ2zJnnzMD4zdxi8StNJ/uyNKNw/40iPIkiQErIPv4vf/j0A=
+	t=1711591652; cv=none; b=GjeYW1upM62X0QR96VWrfF/s+bkL9SOKLtz+8CdNJ9yW+Pl1caW58IhacZAqfcwy5D+nhHdqhZdkyorye0QxB8O9lTb3BvciyIi5Ews/3t9e5u8uwmWw9nsU37tzanlDIwQbqPusVVcttWXMfWkjx69f+qvD9PXuLyLUEgZBQ8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711591646; c=relaxed/simple;
-	bh=yTwuu2u8c8H/maO1abDOAOXZoUPJjJZpGVG8tk6jnHo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tOYAkBpwwBFhPhqmxr3D/ts8Dr1xfOwhEqxmAeab6oO/s4nHNIsemXqP0z1pPT2sSTrZK6DUC/sFuvjLXPIEPdDcx9/IYCdDIIjNS6biusFOgECF8LfQOfgk41X/KLV0BkCQTX1WAhJszspU1r6oYNa0w1zD47q7YrJigT2NmCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
-Received: from localhost.localdomain (unknown [180.167.10.98])
-	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 56BBE609FFAEA;
-	Thu, 28 Mar 2024 10:07:12 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From: Su Hui <suhui@nfschina.com>
-To: sgoutham@marvell.com,
-	gakula@marvell.com,
-	sbhatta@marvell.com,
-	hkelam@marvell.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: Su Hui <suhui@nfschina.com>,
-	dan.carpenter@linaro.org,
-	saikrishnag@marvell.com,
-	netdev@vger.kernel.org,
+	s=arc-20240116; t=1711591652; c=relaxed/simple;
+	bh=HFjG8R+kmOBzPPdi6ipJuusDY05lFaXEQWIAKo/fFQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dUaqxzmzDpY0+GrFsmJyRMbV/Ek5H7edm0CsfmpRARXRlDDLyDZakzObZii3xRz/YdXSxxPSzvzNPxLOQgda0R+8hJ4Z1ihU/O/zaDSKYAswDT7QgOcfkL6FXDm9vgOLluvjNDRmfi+eqb5+NcZ22g6ep5xvCwoVrIbH0L95E1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=awpXWp+3; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711591642; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=pUm4ue8Vi8UQo3ShQ4H5J76PcermzomnRDaL1C/gRhw=;
+	b=awpXWp+3S13QMFYoayDQtn7NtsSDH0FcY+xEG8qRKe91vkJB59eWsM+MricKbABSEoFpimTigj5LtCjnAfjJKTqx0EgaxFLnHFmXLeF0v06aQC0ixcPao/1y1SDdV3bWRYnaAkvjl8O+Rrn0XTYYBApYSk2os+IySEoAsWU5oL0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W3QD7w3_1711591632;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W3QD7w3_1711591632)
+          by smtp.aliyun-inc.com;
+          Thu, 28 Mar 2024 10:07:20 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: cl@linux.com
+Cc: penberg@kernel.org,
+	rientjes@google.com,
+	iamjoonsoo.kim@lge.com,
+	akpm@linux-foundation.org,
+	vbabka@suse.cz,
+	roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Simon Horman <horms@kernel.org>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Subject: [PATCH net v3] octeontx2-pf: check negative error code in otx2_open()
-Date: Thu, 28 Mar 2024 10:06:21 +0800
-Message-Id: <20240328020620.4054692-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] mm/slab_common: Modify mismatched function name
+Date: Thu, 28 Mar 2024 10:07:11 +0800
+Message-Id: <20240328020711.125070-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,37 +63,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-otx2_rxtx_enable() return negative error code such as -EIO,
-check -EIO rather than EIO to fix this problem.
+No functional modification involved.
 
-Fixes: c926252205c4 ("octeontx2-pf: Disable packet I/O for graceful exit")
-Signed-off-by: Su Hui <suhui@nfschina.com>
-Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+mm/slab_common.c:1215: warning: expecting prototype for krealloc(). Prototype was for krealloc_noprof() instead.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8659
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-v3:
- - split the v2 patchset into individual patches
-v2:
- - add "net" in subject
-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 2 +-
+ mm/slab_common.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index b40bd0e46751..3f46d5e0fb2e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1933,7 +1933,7 @@ int otx2_open(struct net_device *netdev)
- 	 * mcam entries are enabled to receive the packets. Hence disable the
- 	 * packet I/O.
- 	 */
--	if (err == EIO)
-+	if (err == -EIO)
- 		goto err_disable_rxtx;
- 	else if (err)
- 		goto err_tx_stop_queues;
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 8664da88e843..8af45e9bd2b2 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1199,7 +1199,7 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
+ }
+ 
+ /**
+- * krealloc - reallocate memory. The contents will remain unchanged.
++ * krealloc_noprof - reallocate memory. The contents will remain unchanged.
+  * @p: object to reallocate memory for.
+  * @new_size: how many bytes of memory are required.
+  * @flags: the type of memory to allocate.
 -- 
-2.30.2
+2.20.1.7.g153144c
 
 
