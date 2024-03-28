@@ -1,117 +1,136 @@
-Return-Path: <linux-kernel+bounces-122204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EFE588F36D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:09:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0323088F36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53E221F29DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:09:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 971111F2B72E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38218EBB;
-	Thu, 28 Mar 2024 00:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B17B63B8;
+	Thu, 28 Mar 2024 00:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="etO8HyR4"
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmqnBj0N"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE3518D
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 00:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B823193;
+	Thu, 28 Mar 2024 00:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711584537; cv=none; b=J7+V3ykR5qvuhcTcd1YG1shOstUF34xrvqdMSFwnQgPZkHz6an3tjw2eMDGWA5LDc3mfmZ+8r5f6v58Z8PDh09EgrIsAeR6ceo5P4qT8QKWiItwWmznYTarYviqzCQpxbePs6vz/idmWN/KcQEiF3NSkfqMcI/Hb+jx7RxmGcCU=
+	t=1711584791; cv=none; b=XHFxAf14J8XHUq8MMshCY5vrzrZ1FhblrNu+QZ/SRFyce9UXchS6QoH34SlrmU9Ueu46/18HSqFEqCCPyZG2LxJp0ccIwea27BTP44iU2FTxsq3vb6wl/KfBAmXHREPeB2+F6oyH7xMmtUwkToj6xYZeOew4sqnvyXvft66FaGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711584537; c=relaxed/simple;
-	bh=+hVgvJhRkV9zAky4dYe3lOHAIoU37e/j8bI++LQDzpM=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=cIP1vRgkN/l44cVkEHt2x8sHm0UPwpyA5SpkweVG7mwlCuC9eVJ6Hpb4KQa/tlNgIvdMUlXZcNoVDqVbhptfsUeoopOOqi9Hr6WKGWjO0pQQo30SkKvDcEO1FyXVFlgNJ/2HNLGi9uzHPmEpdS7puAmcxa6xbaml5UEnGsLJnr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=etO8HyR4; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-789f00aba19so25835085a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:08:55 -0700 (PDT)
+	s=arc-20240116; t=1711584791; c=relaxed/simple;
+	bh=DyNxlN+eZeRw9Yeq75xoGqiNrNHyIXDie/JPcFLU8ow=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jj8hYvJG67Zgvtwx7fBK/sQ7SYHiDzfHBUK4Bzh0YhPMcD79a+wNYa1wRoJoytARQkvzNiCw3/PjStEpaVilwzInAssPregB5uak2PfuKPshZbmjVpaaC7saFqjtC7QbAF6hjTEun4Ue0s0uzAMEOiScwkK7k2X9B/UPdUcAgQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cmqnBj0N; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ed6078884so827404f8f.1;
+        Wed, 27 Mar 2024 17:13:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1711584535; x=1712189335; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hqu5KZ7ANiufBKIVwu8ItEdmpm8TUn3oazGE5q2jtwQ=;
-        b=etO8HyR40NrGl3wB4MpxK+0TU/OOsBLu43JRTLcH4VslHBbYjw8X7N9foIwpJ9Ua8O
-         EF9+NzNG7IzQchCIJsFZLG61V7PjxCHoX7opurPv8az1jH8Brvq2PcvBvMsANCD0f6X2
-         bk/LhIgtXZlvTG1ot4z0BucPeBZWgKpXAe7T3MRmlMSAVbozzqvihr87n2ud6qN6f5E3
-         c3VfbNuyiTKbwhsrG/nzlE87vkyWt4cGfz3nWwH9oNe7BGt235q8i+u53X7BVDZnZ2iN
-         FQ6s41+YSvATGuZfUDBNgpor/uLJ5FqFlxmLMyL8WW9rhJzipwty0RuWNWrEynDQfRm2
-         tUvg==
+        d=gmail.com; s=20230601; t=1711584788; x=1712189588; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VYP5DWUrKLTTwT+sg5pB8c1G5q9nAtl+vodYL3+O2EI=;
+        b=cmqnBj0NtnetiBdVXzBBLpkphzD6TtNqxyz3cOIx02WqexFaboj/SWLjwmLa+o1UYg
+         HbrierlIDh7zUcs7BorUEi359Qk9YXM0nUuH4VJxEdF1/m6pMMV4vtlOGGfVjs/3MN0x
+         vO8nwud/9kVaKyW1buSFkjiqi3m+8UB3eTtKCFQ8WwnPDY4EuxOUapQOwspCTOqe323Y
+         fisF68gBXRaKMlh0O+cCTU/SXUPxaC8Te3PNciVp5FJiKd+zYgfWmGO8i/kpFlShsHNE
+         3xZ4kixUcGPtJrksv5Qcc1HDcIrTHgkDUpHm2U/4XU/Xcm6GSuLNxkT1gdKVFKfUzJP8
+         YbEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711584535; x=1712189335;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hqu5KZ7ANiufBKIVwu8ItEdmpm8TUn3oazGE5q2jtwQ=;
-        b=DgMeLuiCbVK7MxTY5xGfsXa5PjU7omBEKciAyR0u5V7aQmBVGgQ7qdIzLnJAfDBOgk
-         r1ewGKXYf3htXCw46E9WBStY/g4dH7k0/sv49BkOe3FX+TY3u4pLMXHEF1thk3tTeqBU
-         fgqe3T1wUw9c91GkG3oLM/jYVFcUbe3V0YwWh6AdiFfM7y6Ozq9LtUdqbCC/YiZRNzbM
-         KXEMnzaF4i9CM6TPfmnyDkLItwjazakPRNRaMYa8fpweFFkvGxpno84b+2gYiWM1V6tN
-         Qs83uJ+033j+s0Yd8iPXLKpPYFZlyWMBj7UxZEAP38j/+VXp09msWsvXblBODbwYBx0x
-         8N/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXvXffa60bGm9gH6Y3ME05vINxfKyqVjQbW5xGy1N4Efwx7v8CSBUha7Bsz0JCkxHncIu7Vhre5gzpQr9ZC+3CP+gCdwZ8Hy/KCZ6+3
-X-Gm-Message-State: AOJu0YwOI0VhqWzl4Yoh7OFIIzG2wrh/tKT3CWiOojsSlGBxt1oQn84u
-	ckYkCCYyzgvRhxAp9UJkoGeq/Dr0ObcLnotz7Eepy4QkYfoRXW4K7QH4KddiRA==
-X-Google-Smtp-Source: AGHT+IEuIiA6yL+s6fMX+s9dyz58T/Y6tcHTA6rblF3C6b6P+/XkoqUiOpYvjDoJ26nVCFVeRsH9Lw==
-X-Received: by 2002:a05:620a:2016:b0:78b:b5d4:d86e with SMTP id c22-20020a05620a201600b0078bb5d4d86emr760810qka.40.1711584534784;
-        Wed, 27 Mar 2024 17:08:54 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id j15-20020a05620a146f00b00788481cdf4csm111872qkl.111.2024.03.27.17.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 17:08:54 -0700 (PDT)
-Date: Wed, 27 Mar 2024 20:08:54 -0400
-Message-ID: <54c3ff6d6a7c8e8aed0e5e3facf00271@paul-moore.com>
+        d=1e100.net; s=20230601; t=1711584788; x=1712189588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VYP5DWUrKLTTwT+sg5pB8c1G5q9nAtl+vodYL3+O2EI=;
+        b=ELrWIQQgmehRERb4i148SGUwnuoQCyfRC/4W/91RBRYDCxDGbjNWglcezF3X25Nq7q
+         TeSKw/w0NzA//OP5aXEXXEHXtDwlbJpz12VdY1f4f3gs+ETR6d7kTY5lsGnFFG18lBG6
+         0q55FQQ6PoFyiAgDCijeZ9rKJ5a1gF+i9swxtPCoLstGxExmd1DSylIDjMVMTP+8Uonb
+         pjigfmaniRwmYySpBP0Vcb+U4G4FXNZh4WY/q9THnHRH/3DEC+VUiQO1JDDdezufKePD
+         WAbWtjB+1I9ItcOk+EpY/lzLrgfs/9BCJK94FIbv68tlGxFvhbxASj8kpZWIfQ1ujvP0
+         UOcg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMSh6tYiRpXoav+IF6UwtBOzapi4SJEFmEa9r/iuPec9cXuFn48O6LFWZORrhEAGq+aPX/2VXxSi7k4lZ4pEXT38+p3OcDkEL46V12XBno49WzEWbIFEOjT8lAjZRWVUb297CqW5wlBNCyJvsGlPzRjR10X6wK
+X-Gm-Message-State: AOJu0YxQuecK0BwnZ/Mlxb9pCru8Nbw41K43Hqy+0mKsFMC12ndOczDP
+	klrSk9Di7g3xvCkxT6zkAz7XY2skPQvYcQg1tsiVkpAtToTAO63MhtS/wDp34i8JgtGLnt+Nqag
+	BxSVgSg2Rq3pVzHc5LFDunCcfATguOpMc
+X-Google-Smtp-Source: AGHT+IFiABvKuRN82z03WIvitfsoxZgDOKps9I68JRIy2YOPVAH6dn+n39+2GwRGYDFeX67RZlh5XeLIE35CSN4Nyd8=
+X-Received: by 2002:a5d:680e:0:b0:33e:9763:75e1 with SMTP id
+ w14-20020a5d680e000000b0033e976375e1mr538773wru.33.1711584788213; Wed, 27 Mar
+ 2024 17:13:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>, selinux@vger.kernel.org
-Cc: Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selinux: use u32 as bit type in ebitmap code
-References: <20240315173234.637629-1-cgzones@googlemail.com>
-In-Reply-To: <20240315173234.637629-1-cgzones@googlemail.com>
+MIME-Version: 1.0
+References: <000000000000f2f0c0061494e610@google.com> <CAADnVQKEU0yL=GpaNQw=z0J9f_S=i+rQp9QZK3mYv6632WhfUg@mail.gmail.com>
+ <6fd11cc9-9376-4742-8f54-1d2988622a6d@paulmck-laptop> <4dc396d9-b57c-4ccf-bbef-887d5a42ab66@paulmck-laptop>
+In-Reply-To: <4dc396d9-b57c-4ccf-bbef-887d5a42ab66@paulmck-laptop>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 27 Mar 2024 17:12:57 -0700
+Message-ID: <CAADnVQLKzumBG0GG3cSxQMVRKM_Km9YMb6ub=n9C957qx8=ExQ@mail.gmail.com>
+Subject: Re: false positive deadlock? Was: [syzbot] [bpf?] possible deadlock
+ in kvfree_call_rcu
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mar 15, 2024 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
-> 
-> The extensible bitmap supports bit positions up to U32_MAX due to the
-> type of the member highbit being u32.  Use u32 consistently as the type
-> for bit positions to announce to callers what range of values is
-> supported.
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> ---
-> v4:
->   - apply format style
->   I hope i addressed all comment from [1] in [2].
-> v3:
->   - revert type change of unrelated iter variable
->   - use U32_MAX instead of (u32)-1
-> v2: avoid declarations in init-clauses of for loops
-> 
-> [1]: https://lore.kernel.org/selinux/67cee6245e2895e81a0177c4c1ed01ba.paul@paul-moore.com/
-> [2]: https://lore.kernel.org/selinux/CAJ2a_DdLR40CB6Ua5cNjYhtexNmGkzQRsVrJn+dhVaZO-aVKsA@mail.gmail.com/
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> ---
->  security/selinux/ss/ebitmap.c | 31 +++++++++++++++-------------
->  security/selinux/ss/ebitmap.h | 38 ++++++++++++++++-------------------
->  2 files changed, 34 insertions(+), 35 deletions(-)
+On Tue, Mar 26, 2024 at 10:04=E2=80=AFPM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+>
+> On Tue, Mar 26, 2024 at 09:37:43PM -0700, Paul E. McKenney wrote:
+> > On Tue, Mar 26, 2024 at 12:53:35PM -0700, Alexei Starovoitov wrote:
+> > > Hi Paul,
+> > >
+> > > syzbot found an interesting false positive deadlock.
+> > > See below.
+> > > My understanding is the following:
+> > >
+> > > cpu 2:
+> > >   grabs timer_base lock
+> > >     spins on bpf_lpm lock
+> > >
+> > > cpu 1:
+> > >   grab rcu krcp lock
+> > >     spins on timer_base lock
+> > >
+> > > cpu 0:
+> > >   grab bpf_lpm lock
+> > >     spins on rcu krcp lock
+> > >
+> > > bpf_lpm lock can be the same.
+> > > timer_base lock can also be the same due to timer migration.
+> > >
+> > > but rcu krcp lock is always per-cpu, so it cannot be the same lock.
+> > > Hence it's a false positive, but still interesting.
+> > >
+> > > I don't think rcu can tell lockdep that these are different locks.
+> >
+> > It might be possible.  I will play with this tomorrow, modeling after
+> > the use of lockdep_set_class_and_name() in rcu_init_one().  I am a bit
+> > concerned about systems with thousands of CPUs, but it just might be OK=
+.
+>
+> Except that each of the resulting separate locks would eventually be
+> classified as participating in the same type of potential deadlock cycle.=
+  :-(
 
-Merged into selinux/dev, thanks for following up on this.
-
---
-paul-moore.com
+That sounds like we have to address it on bpf side,
+since we're being spammed with syzbot reports of various
+forms and all of them are about this false positive.
 
