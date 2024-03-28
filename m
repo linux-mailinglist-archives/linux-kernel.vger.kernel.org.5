@@ -1,54 +1,60 @@
-Return-Path: <linux-kernel+bounces-122629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4076888FA9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:02:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 921C788FAA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 719DB1C23326
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:02:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26161C22C2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E2658108;
-	Thu, 28 Mar 2024 09:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="b2FZwegd"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654AB5A0E4;
+	Thu, 28 Mar 2024 09:02:49 +0000 (UTC)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225953FBB3;
-	Thu, 28 Mar 2024 09:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6B45024E;
+	Thu, 28 Mar 2024 09:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711616541; cv=none; b=WTsGgeeEcRNEe0vbzWDyP4Bp8XzRl7/y4+O9wstMRWCRFMka7cTn77UB3Jl8UrmdsGFEAYJfHunUQY7L1jbMO4nBGeOC+c5zce1FGV1DnEg3p4BfuWc56wfiYREhrFFFUCXeFWVfh8G8Je777resR9udUk0fnt9GSONvDgt60Qo=
+	t=1711616568; cv=none; b=eneVz9lrttgX0QqePcc+GcAF15mxMaTgfEHfR21ZEysLq54xeQBwWC5fvYIgfW0gRJ+AR+q8IegjqWGO1oNoqf3pD5ayLdIvfQivlm4l0uXj5KYPIq2F+p0hnOi64K95TJ6JZlSJa4HOBhb8CrwZXQnYOcVWCGrRs1DI8cmfAn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711616541; c=relaxed/simple;
-	bh=Ufh8ofbcGIpZqebBgeU63gQtywNxj6fTHPQwgJxbxWg=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=mFc2Uok5j88T/6LsXh53Ih5jqkpO9ejQf8l5/iRRuu207PufEHlRRoUqN86UqtPWujxeJVsvHw4fZYQdSHtoSfJIbzVktDaucrgXeoi8b7BQhyvPrONsSw6q8lTnwMxnKkPQg72dgUoiVUDEOjfxUxA48jMNYOoFCqlD0WfjLww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=b2FZwegd; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711616533;
-	bh=Ufh8ofbcGIpZqebBgeU63gQtywNxj6fTHPQwgJxbxWg=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=b2FZwegdsqBcB5ZhCCFwc/bldEv6XVivywv06kdoiGWU0RcYjHt5zMCWulL3/NR1r
-	 23xglYTKKi+7RS/HgMV4gOr2rj8wVGGG+UYU9fo9W+2F2WBT9t4AQbrRB1KzkiHTUK
-	 F6KqIPM+KaKmq+vvh9Itvt7mlQz4i049g8DVeNZradHZ6S78T4o5/Ps+rokYDOsAP8
-	 CWKuBOfTG6JfAAtFdigDMwPjBm7GVSeH5LWf+MSbxKDir8s1iEds7Ln0sAAvNLuQlG
-	 qk/0S0dub42+CpvkX5ezpk4YMpKk8R+TEqF+YlyBbvl6ryPwMGUQn3ZOVkOm5pibg6
-	 2HKQnaGsx/law==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6D43B3782115;
-	Thu, 28 Mar 2024 09:02:09 +0000 (UTC)
-Message-ID: <6d82298b-b17b-440a-beef-590177d0ff50@collabora.com>
-Date: Thu, 28 Mar 2024 14:02:37 +0500
+	s=arc-20240116; t=1711616568; c=relaxed/simple;
+	bh=xXKAKa461tS7heJrO1tiCk3yWmnxZb0FebuFA1FpwBY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P7/zz4PAf1qUIquPZnQoxIlfrII7VK0JM6KpwsJqls+ubg3YUW0ti6PdlsjnFl6D+wp7283qMncxYcQHfe947AfdILbiaVp8gxIlXLysLZHJTtHJ/92m2ffsxRO1AIPjbu9oqi/8Ngjgb7/7b/urYC/vbLtMB0JZS1/2oDr+YaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c4ca65dc6so795866a12.1;
+        Thu, 28 Mar 2024 02:02:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711616565; x=1712221365;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9bqYXlCwIs2wM5lxl+u/GBLyORU2sWUj1TtKfTDIg6o=;
+        b=n2HYUwQ0HERc6rsn6DeiD89NfvtL6sloFypSDnKFWBS7HLPczqDL9p7VYshnTug+eC
+         rYKlIrxubHI+QhAkCmzYV23jHXah2pRgcQSfJfnIq6+1b/1n2ppVCIH+N8ybQXIFKpxG
+         SbufMR5D+ARxKSX3Qs3lgCyT9up1NpwDnZ1zEazC28eQPCIibife0283DndOwsPVOS7w
+         +DL0BOkhCOCEce/kY6MI9UGW9pVBvMxXJ58nGSFj16QCngbTRABYH3rgRTCiSoSCUnl4
+         VtmBPdVcJk7YEW68FNbwhkaciaRDd9+238T2KbhYvxUXeP72naFIL5IgHuUC6yUOT9OJ
+         Krug==
+X-Forwarded-Encrypted: i=1; AJvYcCUrNAlE6+I0tlpUWabqmBrIVjlDsnYfaBt0AKRu7ieYXuOl42lNTd53KHkt0fclXiB9oOwBRdILOpO38iFHoPgewRiZhOc5V+tjLpE6FlMKHOsNIsMUzB1x6oCyFP76+Z/eKGRqSL4v749dz7trXw/zfRD+a5+rqI/rQ08iN1++
+X-Gm-Message-State: AOJu0Yz+Zj7di3JMqkne1fXgoRSiQvzRDAnHMV6TRPyAbRmZ1JyEzW7P
+	wRuJrXMOssInEwopsYQZbOYhSsK2K/vdJNRj8oGxburgEGBYt/c+
+X-Google-Smtp-Source: AGHT+IFOjI652gqr39QAfZc8oGELUdiRXBh3F8C3zUj/MqRmHFhhviBXstnTYlinyXx660dJ5OkYvw==
+X-Received: by 2002:a50:d604:0:b0:568:231e:5e9f with SMTP id x4-20020a50d604000000b00568231e5e9fmr1537821edi.26.1711616565282;
+        Thu, 28 Mar 2024 02:02:45 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
+        by smtp.gmail.com with ESMTPSA id t35-20020a056402242300b0056c2d0052c0sm578654eda.60.2024.03.28.02.02.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 02:02:44 -0700 (PDT)
+Message-ID: <f9f0fb8b-2261-452c-878d-8b0f831bdf5d@kernel.org>
+Date: Thu, 28 Mar 2024 10:02:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,76 +62,109 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>,
- Axel Rasmussen <axelrasmussen@google.com>,
- Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Peter Zijlstra <peterz@infradead.org>, Guillaume Tucker <gtucker@gtucker.io>
-Subject: Re: [PATCH 0/2] Fix selftests/mm build without requiring "make
- headers"
+Subject: Re: [PATCH] usb: gadget: u_serial: Add null pointer checks after
+ RX/TX submission
+To: Kuen-Han Tsai <khtsai@google.com>, Greg KH <gregkh@linuxfoundation.org>
+Cc: quic_prashk@quicinc.com, stern@rowland.harvard.edu,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20240116141801.396398-1-khtsai@google.com>
+ <02bec7b8-7754-4b9d-84ae-51621d6aa7ec@kernel.org>
+ <2024012724-chirpy-google-51bb@gregkh>
+ <CAKzKK0oEO5_-CBKvYSw4DKY4Wp5UPrrt1ehBFRd79idy7FsUuQ@mail.gmail.com>
+ <CAKzKK0pmswLnGa8zabp_wo=6BcvCd9DR368FCJ5mcpZ38i4Jdw@mail.gmail.com>
 Content-Language: en-US
-To: John Hubbard <jhubbard@nvidia.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-References: <20240328033418.203790-1-jhubbard@nvidia.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240328033418.203790-1-jhubbard@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <CAKzKK0pmswLnGa8zabp_wo=6BcvCd9DR368FCJ5mcpZ38i4Jdw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 3/28/24 8:34 AM, John Hubbard wrote:
-> Hi,
+On 08. 03. 24, 12:47, Kuen-Han Tsai wrote:
+> Hi Greg & Jiri,
 > 
-> As mentioned in each patch, this implements the solution that we discussed in
-> December 2023, in [1]. This turned out to be very clean and easy. It should also
-> be quite easy to maintain.
-There is another way. The headers should be built automatically by make
-dependency. The topmost make file always builds headers before building
-kselftest i.e., make kselftest
+> On Sun, Jan 28, 2024 at 9:29 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>>
+>> On Thu, Jan 18, 2024 at 10:27:54AM +0100, Jiri Slaby wrote:
+>>> On 16. 01. 24, 15:16, Kuen-Han Tsai wrote:
+>>>> Commit ffd603f21423 ("usb: gadget: u_serial: Add null pointer check in
+>>>> gs_start_io") adds null pointer checks to gs_start_io(), but it doesn't
+>>>> fully fix the potential null pointer dereference issue. While
+>>>> gserial_connect() calls gs_start_io() with port_lock held, gs_start_rx()
+>>>> and gs_start_tx() release the lock during endpoint request submission.
+>>>> This creates a window where gs_close() could set port->port_tty to NULL,
+>>>> leading to a dereference when the lock is reacquired.
+>>>>
+>>>> This patch adds a null pointer check for port->port_tty after RX/TX
+>>>> submission, and removes the initial null pointer check in gs_start_io()
+>>>> since the caller must hold port_lock and guarantee non-null values for
+>>>> port_usb and port_tty.
+>>>
+>>> Or you switch to tty_port refcounting and need not fiddling with this at all
+>>> ;).
+>>
+>> I agree, Kuen-Han, why not do that instead?
+> 
+> The u_serial driver has already maintained the usage count of a TTY
+> structure for open and close. While the driver tracks the usage count
+> via open/close, it doesn't fully eliminate race conditions. Below are
+> two potential scenarios:
+> 
+> Case 1 (Observed):
+> 1. gs_open() sets usage count to 1.
+> 2. gserial_connect(), gs_start_io(), and gs_start_rx() execute in
+> sequence (lock held).
+> 3. Lock released, usb_ep_queue() called.
+> 4. In parallel, gs_close() executes, sees count of 1, clears TTY, releases lock.
+> 5. Original thread resumes in gs_start_rx(), potentially leading to
+> kernel panic on an invalid TTY.
 
-The tools/testing/selftests/Makefile and others Makefiles in test suites
-should be updated to build the headers as well. This used to be the
-behavior until there were un-resolvable bugs in the Makefiles and it was
-reverted:
-https://lore.kernel.org/all/cover.1657614127.git.guillaume.tucker@collabora.com/
+If it used refcounting -- tty_port_tty_get(), how comes?
 
-We should come up with the revert of this series such that all the
-different scenarios are covered instead of yet again a new solution;
-resorting to the duplication of header files or any sort of duplication.
-
-> 
-> This should also make Peter Zijlstra happy, because it directly addresses the
-> root cause of his "NAK NAK NAK" reply [2]. :)
-> 
-> I haven't done much build testing, because selftests are not so easy to build
-> with a cross-compiler. So it's just tested on x86 64-bit so far.
-> 
-> [1] https://lore.kernel.org/all/783a4178-1dec-4e30-989a-5174b8176b09@redhat.com/
-> [2] https://lore.kernel.org/lkml/20231103121652.GA6217@noisy.programming.kicks-ass.net/
-> 
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> 
-> John Hubbard (2):
->   selftests: break the dependency upon local header files
->   selftests/mm: fix additional build errors for selftests
-> 
->  tools/include/uapi/linux/memfd.h       |  39 +++
->  tools/include/uapi/linux/userfaultfd.h | 386 +++++++++++++++++++++++++
->  tools/testing/selftests/lib.mk         |   9 +
->  tools/testing/selftests/mm/Makefile    |   2 +-
->  4 files changed, 435 insertions(+), 1 deletion(-)
->  create mode 100644 tools/include/uapi/linux/memfd.h
->  create mode 100644 tools/include/uapi/linux/userfaultfd.h
-> 
-> 
-> base-commit: 98560e9019851bf55b8a4073978a623a3bcf98c0
-
+thanks,
 -- 
-BR,
-Muhammad Usama Anjum
+js
+suse labs
+
 
