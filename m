@@ -1,108 +1,98 @@
-Return-Path: <linux-kernel+bounces-123381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D7578907A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:54:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 030B88907A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:54:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B17E9B2460F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:54:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2AC7298B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE4F12FB35;
-	Thu, 28 Mar 2024 17:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aq54SIwT"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3607F487;
+	Thu, 28 Mar 2024 17:54:00 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FE240852;
-	Thu, 28 Mar 2024 17:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D500FBA53
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711648432; cv=none; b=EjQ61KdV3SEcI+I0ANmaLYFYVVgm2RLdclW1HqvmA1A7URsNJ/vVvJLbg6UHhRPQeEkO3HphuDi5rkFq8obqcJXKiJAz/vcHnQb1WkHaG4fv0fu+scpVmCUNp0KtVRX3M18xJTxAg3S6lwXrpvc22FwVxi9D/PgqTYwHWNIqM8M=
+	t=1711648440; cv=none; b=kFo2UG3X+lpqHBPJecPucryPfQck9ZoO5hpTXwhnXPziH1EgObzTziQYwtjpvqGFcwD1a8vD3VCM9pfeE7FcFphmFNymGUIa8RaNZMteD8B8JX4jOJC35XQQYfV7tbwWJmGHUB6+lXcvFJO2g4AaWmuujyfN6hgCSu9CZLVWpUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711648432; c=relaxed/simple;
-	bh=5Zvbq6SSDLSVgY2hx7xF+iMbXVGMa05lQvv15AxbGv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GaAct6qGBCz06lmCm8gtwqwUUn5pOUHTw35ErktgvqzPVJNiVVlyurB6EWUw+Ck47v0b1phKtPhO0yQV8+d8Y0RW3kZRzfskKU1sCytfsaNCOLdT5ycJKOfbx8X1r22kvR0FrRMO0GrHlHieZQCPigQfdJAIknZ+do8aXTxdj4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aq54SIwT; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1def3340682so11900135ad.1;
-        Thu, 28 Mar 2024 10:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711648431; x=1712253231; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PkvuiONoAPmS4J3DvPiNOVFVt8Zrpei3L6fZbSR1vK4=;
-        b=Aq54SIwTTpKDAz0q7MLrOSCO9fesCJQpFLRMmM+qjW/+64IBA4k16SWlN6+ws+PL/n
-         hJugovN5RwK5KEKEc6S3sBWwqkXZneJlMCx1sS4MSsPxeNNyITz+skaJNaAhwB519djc
-         Q8khK/tdz1CMFJc3rGgbuu/49hznw8ZDD2P+l1prUgeKFfvkjXSRgpJC1kD7/mLfyjcc
-         lbeoVCQGdbFs+4q4fSAoJFIy4lewzmeFpLo0aCSqCpsdJh1xeYIKG1VTQsPHs2e9Nb6r
-         QP4Ur0VH4T+JL9ohlWVzkG6iIb7jJDnjqjbIuyK5ypisgCMHSQObLV9TXtlsT1wQ9uLX
-         Gaow==
+	s=arc-20240116; t=1711648440; c=relaxed/simple;
+	bh=uD7lnkomkmSg8JCXL0Iuo7sCZReryyNqtT8v/xSOq70=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ior/uBARbW2naDelbvueDMnjDVRAGoD2G9vJN8vwdp+XPpwjwxdKZvouD9RMzES698+z9gu9kI+Qs13M725wve/83TLPPgTJPKKS7bn4lPlLr6TTPLUv4MLU0fY/dJCXMHu+TO8hWVzQvkLADa6uwtlYNcvhISDYEySwT0u9q+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbf1ea053cso117966039f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 10:53:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711648431; x=1712253231;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PkvuiONoAPmS4J3DvPiNOVFVt8Zrpei3L6fZbSR1vK4=;
-        b=YSUYsHYbXcBFfQ3vj3Q8+STMp08XdykutZ4CniMjvTMjCn5AQq6jsqSjuSGdDnZLD1
-         Rbov0g76DiV12PVrcJab4g1w2hmueh0l+G8zw1e8qiepSfg5TFHXJyTRYbqy0vuVyJTo
-         42XIEv10zuYiUGpZ7mUJNjgik2FaiAML7CtBNaueptD/CpYBEAQwhSO3qjKGLA4HSQPT
-         a3ar70o5iwW2XWCMb1LPR5HDOBlBGnIPM5Dv69uRJli0vGb0uTaLVZK4yPtzxVHYIPwK
-         u/djr/lUfZEfV2zJDNAYWgyuVxJjxsn91nj52Crr1a4YBAdlIIFXx6mNKdNgt21ozxDP
-         8R6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWJfWXsDu3D6CQX3ONDzYj8C51LOd3bM6u9Nexv5Ar/c7gkh2xmDWfukuM/OzX5qybxKlkygHJzK2unm/jCD81sa8ibyG4ToLpAnLGC
-X-Gm-Message-State: AOJu0YwIgVHyqBwCJIAcOSQotixY3ItrCr/EJXOcRc29K/sSy9PxLLop
-	zXnv0lt3vrrpUMH+1k+iXKa+I9kPA7GtW7Aii6HrOLzomtwQrOTeMcOYxT1C
-X-Google-Smtp-Source: AGHT+IF/w2JF7Yg+0NBSCWcyatQGo5LuV/VN7nZPG/h/MqUyETB1iCFlW9dVc8z7gEgzhLOX+SGD9g==
-X-Received: by 2002:a17:902:eacb:b0:1e2:1027:d0d1 with SMTP id p11-20020a170902eacb00b001e21027d0d1mr156929pld.39.1711648430490;
-        Thu, 28 Mar 2024 10:53:50 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:493e:82a3:49f9:d88])
-        by smtp.gmail.com with ESMTPSA id n14-20020a170902e54e00b001e0f2dc4165sm1897906plf.60.2024.03.28.10.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:53:50 -0700 (PDT)
-Date: Thu, 28 Mar 2024 10:53:47 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Frieder Hannenheim <friederhannenheim@riseup.net>,
-	Marge Yang <marge.yang@tw.synaptics.com>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
-Message-ID: <ZgWuq1bDWNRtrImD@google.com>
-References: <20240327214643.7055-1-friederhannenheim@riseup.net>
+        d=1e100.net; s=20230601; t=1711648438; x=1712253238;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9EYU7AJ+Exp+XJ8IbMPR769miCw2zXKMTxgWr85+aA=;
+        b=EuC8tu9FGdtXXA7i9e+hd/IS0ytJaoH39/7GmYj/AUzbgS6g3ITtj7ATlzbNcDN2/2
+         qZ2dAIHStS+rn6MTqhT6kdxiLOowaTB8hiKI71957A3fd8uKsysdcqGNq8oY5EucF36y
+         8iJPXg0aCQyroTobryZ4K/Tm5/e91bPgOqfBArlBdr7HrbXIgEwrtkz/tMJiVR3vPIoI
+         CxLK5Gc++AE8I3zaycl9JpFVYld/3tk84m42e6cdUkBUNR3YX2ftOQaVbkdSJxNEfR09
+         F8b023PwFKZTcK0ld4oxt3Fq3ZCaq8rTr3BaEUYDBeO+iAMVjRpF+42F4MKD8nYN3EXf
+         jabQ==
+X-Gm-Message-State: AOJu0YxsiXrPBpHoFYS9vuom5rSLpqQNW71C54g6mUqjCFxYhnwCTH+p
+	woi47u/2C4Tnb6ZMi2jje6HtCVbInLzEiHPKoill1zcG4kMnCuqv/mCU0sjeTDXGMKtab7lsxHu
+	QcR3V7flxQ946s8ZmqY7nYLLIMHMpywsinPfkkIa/QmEUxKJcjt2p9KTxyg==
+X-Google-Smtp-Source: AGHT+IGjWLuR8PPQw8BWyLo79ONXmKXHpktErlT+M4pn8SRAwucGa7HIsMauPP4CbQWHbN7UgEnxp+rbUG7p/bIBWJvR6zqdX14i
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327214643.7055-1-friederhannenheim@riseup.net>
+X-Received: by 2002:a05:6638:8903:b0:47e:c4a2:f774 with SMTP id
+ jc3-20020a056638890300b0047ec4a2f774mr90632jab.4.1711648438054; Thu, 28 Mar
+ 2024 10:53:58 -0700 (PDT)
+Date: Thu, 28 Mar 2024 10:53:58 -0700
+In-Reply-To: <000000000000aacdcb0614b939ad@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002196c50614bc3573@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [fs?] WARNING: ODEBUG bug in bdev_super_lock
+From: syzbot <syzbot+9c0a93c676799fdf466c@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-[ now CCing for real ]
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-Hi Frieder,
+***
 
-On Wed, Mar 27, 2024 at 10:39:12PM +0100, Frieder Hannenheim wrote:
-> This is a bit of a stripped down and partially reworked driver for the
-> synaptics_tcm_oncell touchscreen. I based my work off the driver in the
-> LineageOS kernel found at
-> https://github.com/LineageOS/android_kernel_oneplus_sm8250 branch
-> lineage-20. The code was originally written by OnePlus developers but
-> I'm not sure how to credit them correctly.
+Subject: Re: [syzbot] [fs?] WARNING: ODEBUG bug in bdev_super_lock
+Author: brauner@kernel.org
 
-So the first question is: does this device not use Synaptics RMI4
-protocol?
+On Thu, Mar 28, 2024 at 07:20:29AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=17d1c4f9180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9c0a93c676799fdf466c
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16577eb1180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106fa941180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+9c0a93c676799fdf466c@syzkaller.appspotmail.com
 
-I am CCing Marge Yang of Synaptics who may shed some light on the kind
-of touch controller this is.
-
-Thanks.
-
--- 
-Dmitry
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.fixes
 
