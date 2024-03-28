@@ -1,93 +1,58 @@
-Return-Path: <linux-kernel+bounces-123357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC6589070F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:22:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52BA7890712
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 764F8299C1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:22:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 842981C26B27
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7337FBB5;
-	Thu, 28 Mar 2024 17:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642D67F49E;
+	Thu, 28 Mar 2024 17:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKf6inN+"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t4I3A/48"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BAC1EA6E;
-	Thu, 28 Mar 2024 17:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A320F5A780;
+	Thu, 28 Mar 2024 17:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711646529; cv=none; b=AFH25Fscp9VGig1Gx2XgwrwQSarjjVg/Z5LyBRpjd6+Hr8DyI7AaQH+74XTqRsI8YO/7wkjJMeVZwQ32HKiBFYFHZ78ESD4chF+eldF9pchOo3oJfMs2DjqRQbw2uNMm2TYO9hdWQnJIgZmWg2QoNaEBCrpfLIlyMfxrAiWYzg4=
+	t=1711646564; cv=none; b=sGS3BfPr3kwLG5ugmzPRoTlXO9zepV309apmA2dzx5ivf9zeI1C4DJopEXJPsrBGLKfc4oP9btRpa5Nh08vsDhwG0WgG+339tPH2fJRN2VpWMima1id2ecF6ScMm0TGpEukpdN/0GrndWA2T5q9XdmYtJBluxNj7TZlxAmNxXTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711646529; c=relaxed/simple;
-	bh=rTVGMrfwkd+NlU1R9C/m47OpxkWT83eOW/pXXryVqcc=;
+	s=arc-20240116; t=1711646564; c=relaxed/simple;
+	bh=zvaTfL5i0i12k1PkvRyuQpdi6paxqsJzTnBVoQrSthA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bn1D9TmIHPigIqj7jeFQTHTsyDewiFVSX8Pbo64Q7ueSUc+0FtCPyub0W1tMwGMLxOED0wfqXpIoG9sp8nYgylzwdvUCW402yUNqZUgyM1anZCAyD/iCSxjY2ShwJHyKuBXYQG2rQ0wxxQuWuotgzloFiYTVbA57u4AjVqXENXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKf6inN+; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e6b54a28d0so989242b3a.2;
-        Thu, 28 Mar 2024 10:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711646528; x=1712251328; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nJTs2T19ZBiaUU6XEnV+BuULbMh1YwOJefd/Q2W0TsI=;
-        b=VKf6inN+ywJknsS50jG5870ZVt4uTBvXS/YhJyDKGoRxb+cTmts+c1EChjZ7LUhC/a
-         zmREgWU4OwDxm+NMG7HMPS18CGK2v/KxxSG3LyEiIqCChWFFsdMXPKl0rgufFVmWR6AO
-         3H8jVYKeZeISLiUR4KLIqw5NNk/DYt1oA41RjU3Q4eVRSTLReLoGtDp7/vsbMTKmTwAP
-         etycr06zN/jR2XX9aK0K88BbndPVBvYpmxQMxhD60poZs7O+raLG65zJ6dKYL1bR0G5R
-         VoDfufXBogD2h1nQxHlXOrHpVGHgRu12dGfZzsQANl/pvOkdrb/V2pj/JEoJlpt0tklK
-         xFgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711646528; x=1712251328;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nJTs2T19ZBiaUU6XEnV+BuULbMh1YwOJefd/Q2W0TsI=;
-        b=OcwKIC0YMI/ocLQtGKL+/2pBIlo3z1WNB9URjWt51mjYZS3j5MB+ahiqzRIR9HtFQx
-         1K3kFQ71MuiutBSYhIenPBjYotAnPga8PXSuE0ZxSvKpvVORC5wEFVbTyJ5ZxC1Jc+PL
-         +Dz1ACp8LunyAnnDjJb9kIhEpQGgyBBVBFbHhoBXuD8qvSVNzvTorNOsPRYeLgYvaRTq
-         lPJTvrXRFREN+wiMs2okT66a+3a7nqMihEGqV6MTdXSmO7jf2cm8Py1grB7IlvfXpwjL
-         abxjNHIYp4utYfmqU+XCdAngzpNMQ9RQY6aHtohX4LO4JYC3BaxSyY4U8xwsp7a6o8L3
-         4WoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBSGh/uVwvzYqW7br/GecEyF1ZDcnskdTx9Ia5S3oCd+SAJl7bzAavJ3EEYi3FbvulAzabF41qIHWBv/MrOw3i6UGrbWRVqaPyhsyEFUxCfVkciDeXL+ES9k2Jji6EvRH/ugLoLWHL1vHJ1TR9dxN5ceSTsEw4kquhH3oK5gxkWddIiDkC5y3cPwPy+pbzZbWeLBCmoj6WZEKu6g==
-X-Gm-Message-State: AOJu0Yy8mGhM1Vp9bXI1qhyQyOIVpmJ0mV/2imvHfaxjI/nnwinEKb5F
-	42E/yAGQgAqNXUcPD1J4X72Qai8wbehtsrA12IVLH5SzV3qw7G4W
-X-Google-Smtp-Source: AGHT+IEQw6JvwbE25jnXK5NyR/sgTVhJaXMx83kTTEkRAeXjs5/u197o7f4DiVoEvkuWqC97fCG8OA==
-X-Received: by 2002:aa7:8893:0:b0:6ea:c4f4:13cc with SMTP id z19-20020aa78893000000b006eac4f413ccmr4333915pfe.26.1711646527638;
-        Thu, 28 Mar 2024 10:22:07 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4d4e])
-        by smtp.gmail.com with ESMTPSA id gu5-20020a056a004e4500b006ead4eb1b09sm1619509pfb.124.2024.03.28.10.22.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:22:07 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 28 Mar 2024 07:22:05 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Djalal Harouni <tixxdz@gmail.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EzQZCpzBVMwx1U5/PeIwLDU4yJxbmP2M8D/OvDSMKvR9ZlPNtGIq5yNa/UmO4ZJB+PRK6+0c3ZXA3CQBvvytxjpDGomfdzDYIJ17REIovKY9O9hhJMdm7jk+Sq8pBU/Aq6xW6ifir+6MtBMR63rq/EEAr0hARbKsQhRDCoZH7l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t4I3A/48; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC3FC433C7;
+	Thu, 28 Mar 2024 17:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711646564;
+	bh=zvaTfL5i0i12k1PkvRyuQpdi6paxqsJzTnBVoQrSthA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t4I3A/48nhIb+L1iaJu5fwn1VAQusll0dPaugv+hKN7sjAQkljRIPiUqP5lSUd/yi
+	 Ta/Sy95JRaawTvdMkFdyHR8n1la7mVSEtFHpZWB/DDCjkQ6PRa3+Bkl28a5E9LX+30
+	 6r9vdgnnGXKsgJuddSVGo3+JkoqBT42A84nAkYZ/DP54F1/pE5lzvew/Lld6PqO/a3
+	 lmLuanHA+4EUqZ7FKx/8A2ed3REAma5J8+ytAdYllHGir+mOzpXHnY1s5eb/FAxO49
+	 zFOaqyyiZ3rOA++2e59cWssHVrkhA4iul4UbGTgUKieYInytY/e73XzG0lIYuySS0C
+	 WZr5vBSFqrQxQ==
+Date: Thu, 28 Mar 2024 17:22:39 +0000
+From: Simon Horman <horms@kernel.org>
+To: Ivan Vecera <ivecera@redhat.com>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mschmidt@redhat.com,
+	aleksandr.loktionov@intel.com, jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH iwl-next v2 2/7] i40e: Refactor argument of several
+ client notification functions
+Message-ID: <20240328172239.GA651713@kernel.org>
+References: <20240327075733.8967-1-ivecera@redhat.com>
+ <20240327075733.8967-3-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,32 +61,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240327225334.58474-1-tixxdz@gmail.com>
+In-Reply-To: <20240327075733.8967-3-ivecera@redhat.com>
 
-Hello, Djalal.
-
-On Wed, Mar 27, 2024 at 11:53:22PM +0100, Djalal Harouni wrote:
-> This patch series adds support to freeze the task cgroup hierarchy
-> that is on a default cgroup v2 without going through kernfs interface.
+On Wed, Mar 27, 2024 at 08:57:28AM +0100, Ivan Vecera wrote:
+> Commit 0ef2d5afb12d ("i40e: KISS the client interface") simplified
+> the client interface so in practice it supports only one client
+> per i40e netdev. But we have still 2 notification functions that
+> uses as parameter a pointer to VSI of netdevice associated with
+> the client. After the mentioned commit only possible and used
+> VSI is the main (LAN) VSI.
+> So refactor these functions so they are called with PF pointer argument
+> and the associated VSI (LAN) is taken inside them.
 > 
-> For some cases we want to freeze the cgroup of a task based on some
-> signals, doing so from bpf is better than user space which could be
-> too late.
-> 
-> Planned users of this feature are: tetragon and systemd when freezing
-> a cgroup hierarchy that could be a K8s pod, container, system service
-> or a user session.
-> 
-> Patch 1: cgroup: add cgroup_freeze_no_kn() to freeze a cgroup from bpf
-> Patch 2: bpf: add bpf_task_freeze_cgroup() to freeze the cgroup of a task
-> Patch 3: selftests/bpf: add selftest for bpf_task_freeze_cgroup
+> Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 
-It bothers me a bit that it's adding a dedicated interface for something
-which already has a defined userspace interface. Would it be better to have
-kfunc wrappers for kernel_read() and kernel_write()?
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Thanks.
-
--- 
-tejun
 
