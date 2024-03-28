@@ -1,49 +1,72 @@
-Return-Path: <linux-kernel+bounces-122722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C33788FC11
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:51:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66C388FC1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:51:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7F81C2EC07
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:51:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55BA429917F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CD87C6CA;
-	Thu, 28 Mar 2024 09:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE3E7BB1F;
+	Thu, 28 Mar 2024 09:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dt4wAvzN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VMZTHzrQ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC58B7C08C;
-	Thu, 28 Mar 2024 09:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F142657DF;
+	Thu, 28 Mar 2024 09:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711619430; cv=none; b=qt+bUBLwBBBTgo3o5r96KCQJ65xvGpt3rBjoeOkOI1lrcLWzJ+c/+gw+sVLG5DGZ5yGFmlZsn0FU0o2uUsPTwZWHOLLxIIJjtKX9b36riR/l48mOqSYUCo8ge7wSDPBZW1ttB/Uk+R06XoASjUDnVQGDhxQg3VHGSYU7PBCBbGk=
+	t=1711619479; cv=none; b=Tlde+PuWpI/nEQP5w1PGN330R/QvgPAn+NQO6Qx/DvSIFCaxwFWnZaZC8oIorqRGGfYeE/8TRamfgiOPqk0+2xcLz8LlcjaLRYRBm2zqBFox3X63o2n0l59Xyup6LOObSdLk+VLR54H1VGFaoK05U/AWJnl3zfub0j8pEg3H8EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711619430; c=relaxed/simple;
-	bh=hw9CXjyBt1jqIOFA9VS3MGEAq01vM/E+/Dnp8mAip2U=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=svNcDgiSAulIeMdB4lp5KzDdZSxNQmjO7ruF8M1ganbFVHfSlN9X69UsNdSGiFkljt13JsCW+hUE9sR5hg8TD21DLr1ZrJ7ursupY2il4lHO4rzlfjCIqZkgaNJkCEuPPbEnzJ02SUkoAwRp5UJINPd638OAJb4WzW8sXMfgE+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dt4wAvzN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D448C43399;
-	Thu, 28 Mar 2024 09:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711619430;
-	bh=hw9CXjyBt1jqIOFA9VS3MGEAq01vM/E+/Dnp8mAip2U=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dt4wAvzN5ozOMy2FY9l0OWR8MfisK06g3BLLGmuDYQZFOoEwAtdrFwQanMBgM80Xu
-	 Cbh0EKEp2O3Bl3B224dqiSyfedWDiywmJk+M4s54hE3BAXOAhYDKgFcTtzj2pWiagl
-	 zM9Kmj8AcJ4mlItwBaI1oK0Jhc6IfeS33CHVGjT9cQ9eHKVthr+AutAaurFflo4QmZ
-	 H661gJJl/ZXFco7TuNL5UxTjLk1+fi/l7mz5NWAlXmu+O+n+g3WxM4xs1O2OVxjU4X
-	 P/mjoMgEl5IQjAoLQZ/uS3L9ooXMFwsiqyYjFnxMZ1DpyA3sdKcdM0dP/CyzQyhHm7
-	 j5IcpRUD1EF8Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46445D8C965;
-	Thu, 28 Mar 2024 09:50:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711619479; c=relaxed/simple;
+	bh=dmJQuzuTv7qtd0Egsch88hhsMYO6t/lsMl5eID3n1+A=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MqgIWdyo9Fj8OkA8I1tXptV2m48X2UBgH/FSEEqnffP09TQOX7G05c3Yxwzi+Zr+hLUQv97yQvCBVAgzYqqn5UgRZlo7VkSfXnnjpPKthAlarkPKgE4yP6AfYZkzRvCVOUUGid4e9kC26ndUbDPRDjtFLKvZISw91yuhtHCe7WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VMZTHzrQ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42S9pAES020942;
+	Thu, 28 Mar 2024 09:51:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=STjd2lI
+	jolqXQuuf3EMmg2wIG0RNi33p443oS4piWuU=; b=VMZTHzrQ8z/nvm5iBiMe/RD
+	aUjKpv0NI4qTccXB8ku2BMbu0W6X2e6pKL5HInIHbh4K31nodb07fKvRLs3dBFIb
+	MVFXFGQYdFx9nii2y3ryAjR1TbeoS8oVu0H1619EDrfNKbyQnCfE2YUgif05gGGK
+	Gz2xxvk2FOjKFlnJFIwqML7NHMfg2hXBDeJZd8oMjzPx7W4Oi4ARZNvGSr31dr0T
+	BvpUUPt2hNRaC4KPos9atJ7H+L5JA9pu8B5PsKKsHIdCkkvTT2dONa+QNSPxL6sl
+	gPbEpfoUJcWsfYUfo+qCIdGDLDZIm8NyxFzqfwPUri21md0FMZneNl7mCNQQkBw=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x4u1wtss6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 09:51:10 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42S9p9sd019991
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 09:51:09 GMT
+Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 28 Mar 2024 02:51:03 -0700
+From: Sibi Sankar <quic_sibis@quicinc.com>
+To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
+        <quic_kshivnan@quicinc.com>, <quic_sibis@quicinc.com>,
+        <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
+        <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>
+Subject: [PATCH 0/5] qcom: x1e80100: Enable CPUFreq
+Date: Thu, 28 Mar 2024 15:20:39 +0530
+Message-ID: <20240328095044.2926125-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,46 +74,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net PATCH] net: phy: qcom: at803x: fix kernel panic with
- at8031_probe
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171161943028.10354.7334071604258663095.git-patchwork-notify@kernel.org>
-Date: Thu, 28 Mar 2024 09:50:30 +0000
-References: <20240325190621.2665-1-ansuelsmth@gmail.com>
-In-Reply-To: <20240325190621.2665-1-ansuelsmth@gmail.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
- andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, wwortel@dorpstraat.com, stable@vger.kernel.org
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: g_SSgvyePb39rRVbz_AVB0TjYAj_pQG_
+X-Proofpoint-GUID: g_SSgvyePb39rRVbz_AVB0TjYAj_pQG_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_09,2024-03-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 clxscore=1011 priorityscore=1501
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=982
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403280066
 
-Hello:
+This series enables CPUFreq support on the X1E SoC using the SCMI perf
+protocol. This was originally part of the RFC: firmware: arm_scmi:
+Qualcomm Vendor Protocol [1]. I've split it up so that this part can
+land earlier.
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+RFC:
+* Use x1e80100 as the fallback for future SoCs using the cpucp-mbox
+  controller. [Krzysztoff/Konrad/Rob]
+* Use chan->lock and chan->cl to detect if the channel is no longer
+  Available. [Dmitry]
+* Use BIT() instead of using manual shifts. [Dmitry]
+* Don't use integer as a pointer value. [Dmitry]
+* Allow it to default to of_mbox_index_xlate. [Dmitry]
+* Use devm_of_iomap. [Dmitry]
+* Use module_platform_driver instead of module init/exit. [Dmitry]
+* Get channel number using mailbox core (like other drivers) and
+  further simplify the driver by dropping setup_mbox func.
 
-On Mon, 25 Mar 2024 20:06:19 +0100 you wrote:
-> On reworking and splitting the at803x driver, in splitting function of
-> at803x PHYs it was added a NULL dereference bug where priv is referenced
-> before it's actually allocated and then is tried to write to for the
-> is_1000basex and is_fiber variables in the case of at8031, writing on
-> the wrong address.
-> 
-> Fix this by correctly setting priv local variable only after
-> at803x_probe is called and actually allocates priv in the phydev struct.
-> 
-> [...]
+[1]: https://lore.kernel.org/lkml/20240117173458.2312669-1-quic_sibis@quicinc.com/#r
 
-Here is the summary with links:
-  - [net] net: phy: qcom: at803x: fix kernel panic with at8031_probe
-    https://git.kernel.org/netdev/net/c/6a4aee277740
+Other relevant Links:
+https://lore.kernel.org/lkml/be2e475a-349f-4e98-b238-262dd7117a4e@linaro.org/
 
-You are awesome, thank you!
+Sibi Sankar (5):
+  dt-bindings: mailbox: qcom: Add CPUCP mailbox controller bindings
+  mailbox: Add support for QTI CPUCP mailbox controller
+  arm64: dts: qcom: x1e80100: Resize GIC Redistributor register region
+  arm64: dts: qcom: x1e80100: Add cpucp mailbox and sram nodes
+  arm64: dts: qcom: x1e80100: Enable cpufreq
+
+ .../bindings/mailbox/qcom,cpucp-mbox.yaml     |  49 +++++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi        |  55 ++++-
+ drivers/mailbox/Kconfig                       |   8 +
+ drivers/mailbox/Makefile                      |   2 +
+ drivers/mailbox/qcom-cpucp-mbox.c             | 205 ++++++++++++++++++
+ 5 files changed, 318 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
+ create mode 100644 drivers/mailbox/qcom-cpucp-mbox.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
