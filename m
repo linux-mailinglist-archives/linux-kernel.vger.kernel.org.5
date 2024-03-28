@@ -1,130 +1,123 @@
-Return-Path: <linux-kernel+bounces-123650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B11E890C3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:08:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF0C890C39
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F9771F239C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 470021C227C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0E213777B;
-	Thu, 28 Mar 2024 21:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7F813B293;
+	Thu, 28 Mar 2024 21:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fvu49aws"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iEyYmbUE"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BA113AA4E;
-	Thu, 28 Mar 2024 21:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2109A13AD37
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711660058; cv=none; b=GxbjpyoBL1YIECeYvJON5gSNI+UG54+Cbo7uLxBtvklxutm9HNht9yvBL1kSio5tt6rRZ2By68F+Kd9pnGG2+RIIbOWpwJ7PHM7zafHRTGBnLsFmIhimCcPyUhW3yLKzPyRbSMBOHkWaVgr1FfzVI99X9V6GBg8pmQ28GfA8m+s=
+	t=1711660053; cv=none; b=WTRIUqOIj2kke6aOA0B7bStqkg1IGGSLOS44xrmLIaW5wiVPh1ukwFxsqp/Z4ce9wRnIzlgmqsc8qP0RFUUayt2PfZJxvRX0EW4mZb1TEMx1+CjpZfxKlk9flzIESP+goWC09RrVLuKJ+81+5R4kSDHRDvqNgbDIAwgAxf9W9Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711660058; c=relaxed/simple;
-	bh=ajrl5xFbmylF1E3F9VzWsJKto7vjAyCDVhsDuTeVjBA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QRQUvUdhMYBlS1HjdTPnDwk/0xnHluig1ArkC2w7E/w67cY/6skwFF/RgnxvDQ7TYyfcK++bKS4vOBDsvGPOHsS8WIWf+c78g/WQKVGo2sCN+U25XKkEygxXr018Y2Gwu4HK60iyCls0NwqNah7WF5IUrIaTShVWra7b48hxSf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fvu49aws; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SIJV4g022597;
-	Thu, 28 Mar 2024 21:07:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=JOF2Pbv30CLpNYimCGXkm/AAsQpZuvKl6VsyKwY+MtM=; b=fv
-	u49awsQlGVBan5iThbE8Y9qeMaX1KEAUK9JUhm0714nanPZ7oSDRmJKNtBkQTsL8
-	G9VrrgRXEIQqGUz/qhP0u6dY08k4o0m8Z6hFHvSfQjTRMlTX3ctYYjY6w1RGCNvm
-	BL7xfz8Yg8gBhx9yV5HTiNCzNhJa2PUqGVtp/kzuieXVrOR/yzTE0tGVGOgXXY3m
-	yMdQLjwqxVVMUwso0/Zbgs4Zff/Ts3e8qhPXs8eDS4ScLJ2LOvwPWPdZfSNnqfzv
-	RhO//+DKsR0+y9Z7Q7DTvyn+WkNz3b0sxgus+6o8gsBE9E2cnqMTMdYi2wrH/gDv
-	PaN0UZD8+VqVYQwp55DA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x562rhtpe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 21:07:25 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SL7NR0031485
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 21:07:23 GMT
-Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 28 Mar 2024 14:07:23 -0700
-From: Kuogee Hsieh <quic_khsieh@quicinc.com>
-To: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
-        <abel.vesa@linaro.org>, <andersson@kernel.org>
-CC: Kuogee Hsieh <quic_khsieh@quicinc.com>, <quic_abhinavk@quicinc.com>,
-        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1] phy/qcom-qmp-combo: propagate correct return value at phy_power_on()
-Date: Thu, 28 Mar 2024 14:07:15 -0700
-Message-ID: <1711660035-9656-1-git-send-email-quic_khsieh@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	s=arc-20240116; t=1711660053; c=relaxed/simple;
+	bh=x20Z9wO4XWd6/hqsTvUJ9C5xuiCT/PGoUlQnMNRKhnA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rpiFGvkTGxeSpyjL2dulXwnms0CTz8O+9o3ana6xWWo6dwUYDRJ9KfBKy28t3I9t1O60l6cBZmZ2ymwNZn2pdL/4u7/XXfUX2sa+qTk+ihXQlxl2AmYJCBLDi8U+PekUGjthY2bnCpcUspyf0UWRFC8nRsyRAGjyX3fdvkeJrf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iEyYmbUE; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dbed0710c74so1289035276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:07:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711660049; x=1712264849; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x20Z9wO4XWd6/hqsTvUJ9C5xuiCT/PGoUlQnMNRKhnA=;
+        b=iEyYmbUEKVoEMLSfm+1dgqqjW6ZSjsrKhnwEgQhuqVelEQdeGl+DinyIFq09FvZxsc
+         icO69KX7mM0OQMgX+nUaflyBQNaEhqo4tIgCtqWh9nf0Z6M/a2GEuOOgtKDonzgxoDIt
+         mK04J3Y/5BcUoV9owDicNq5Ty8wxETWzZNsz4USadunTA7W4uhginvNOklE9YF34bX/v
+         HS3wUdPaMudoWNlzBrOv5AgAI//49/9nGrfOroUnKzEajzVfO4OeiXgLh7vb9zIvBAC8
+         B6LunEHMRIMgVXBENEfOEncCnEIYXkkfpYu5fnNsLhCF/n8XwOthAQ/VUuCNIEU3pa86
+         9mIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711660049; x=1712264849;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x20Z9wO4XWd6/hqsTvUJ9C5xuiCT/PGoUlQnMNRKhnA=;
+        b=YaDcBmn5Snnh/mVkoQWKDNCIpMrTjbCDlG7bVGxTKTy82R+yjLVgXBVOP5MBrGjrX5
+         LIC9eqGwZw7PNC0jclLuH9JZbeQEoyZZF+Fez8VqCVU2sz4xW8RX2ErCkvhW67PulTiI
+         htH6/HGvjsZRfuPypL750RY+Bv7NVKSYu/KuG8f5U3LoX2psyWPUbtZJz4kwifxvXd6g
+         snD/L1cm+29ksb0Ip5b6RvwEyNRn9aqVtFjSOhM6kNG4XF1YUITjihOImaZH+IoyCk8X
+         TCPAe2g1VqyZq/CysL0z1i5g1SWys8WFvVOUmbBBslbikIof39cuYyW03xAKQBQ5KRc3
+         /Q5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXqJnHkVuUAbNnCRkPWzxOTeZlC0Sf0i2+LDcF5nqsjkFkI+d+HxI2Nr5nZ+bf1vprDBcVlmxCP8h5hMkg9IrJgACursPgGibDGudjB
+X-Gm-Message-State: AOJu0YwN8YBBVm5PnGrXvFBTZ1n1jDgdU/QBRRZfb60DMQ6ToMCqCCwp
+	6z4MFjpa4nbatn+5xvGHNs2En4uxmfRLMdUVt9J1JSpuMkznnWvxGqOMvjVdm5QvQoKmbjgapeF
+	y1VjYu8rYanVnUlGS5rsIyES/4SFyM6l+BX1B9Q==
+X-Google-Smtp-Source: AGHT+IEZ00FIAL54100s1/gTVa8Y+4TfoCNoj6CJTr4a+YUNR3bthOuQhK7OnCvzxoRuhI+9C1J8CAiCPfUv2a7d2bw=
+X-Received: by 2002:a25:9e83:0:b0:dc6:bbbd:d4f4 with SMTP id
+ p3-20020a259e83000000b00dc6bbbdd4f4mr470298ybq.33.1711660049195; Thu, 28 Mar
+ 2024 14:07:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KTSCs0on7MkxkVW-TvwmjEUi-JuSKZSE
-X-Proofpoint-GUID: KTSCs0on7MkxkVW-TvwmjEUi-JuSKZSE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-28_17,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403280151
+References: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com> <20240102-j7200-pcie-s2r-v4-2-6f1f53390c85@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v4-2-6f1f53390c85@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 28 Mar 2024 22:07:18 +0100
+Message-ID: <CACRpkdYemzkVW4fjBtHtFPaa-Uy969j5Ti2zmRgjFiZK+jGS7g@mail.gmail.com>
+Subject: Re: [PATCH v4 02/18] pinctrl: pinctrl-single: move suspend()/resume()
+ callbacks to noirq
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently qmp_combo_dp_power_on() always return 0 in regardless of
-return value of cfg->configure_dp_phy(). This patch propagate
-return value of cfg->configure_dp_phy() all the way back to caller.
+On Mon, Mar 4, 2024 at 4:36=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
 
-Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
----
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-index 36632fa..884973a 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-@@ -2754,6 +2754,7 @@ static int qmp_combo_dp_power_on(struct phy *phy)
- 	const struct qmp_phy_cfg *cfg = qmp->cfg;
- 	void __iomem *tx = qmp->dp_tx;
- 	void __iomem *tx2 = qmp->dp_tx2;
-+	int ret = 0;
- 
- 	mutex_lock(&qmp->phy_mutex);
- 
-@@ -2766,11 +2767,11 @@ static int qmp_combo_dp_power_on(struct phy *phy)
- 	cfg->configure_dp_tx(qmp);
- 
- 	/* Configure link rate, swing, etc. */
--	cfg->configure_dp_phy(qmp);
-+	ret = cfg->configure_dp_phy(qmp);
- 
- 	mutex_unlock(&qmp->phy_mutex);
- 
--	return 0;
-+	return ret;
- }
- 
- static int qmp_combo_dp_power_off(struct phy *phy)
--- 
-2.7.4
+> The goal is to extend the active period of pinctrl.
+> Some devices may need active pinctrl after suspend() and/or before
+> resume().
+> So move suspend()/resume() to suspend_noirq()/resume_noirq() in order to
+> have active pinctrl until suspend_noirq() (included), and from
+> resume_noirq() (included).
+>
+> The deprecated API has been removed to use the new one (dev_pm_ops struct=
+).
+>
+> No need to check the pointer returned by dev_get_drvdata(), as
+> platform_set_drvdata() is called during the probe.
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 
+Since this patch looks independent from the rest I ripped it out of the
+patch series and applied it to the pinctrl tree for kernel v6.10.
+
+Yours,
+Linus Walleij
 
