@@ -1,234 +1,198 @@
-Return-Path: <linux-kernel+bounces-122619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47BA688FA78
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2575888FA7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0799D2A6D76
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:55:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE15F2A6F03
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2605054BCB;
-	Thu, 28 Mar 2024 08:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB8A59B7A;
+	Thu, 28 Mar 2024 08:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OLVMBC2m"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="GuEXMZmt"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6B73C0B;
-	Thu, 28 Mar 2024 08:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711616139; cv=none; b=RK1YtJIcESihg3/JuitRjmQTW0GUHo5klO+rpefA7AWsRTKuP0tCS/k5aPAXcVruYzmCgXBDE8MooJg1eFXxh8c1lfMDUTexfi9JIb0euflySyt11AYAKZXYdKCO0nbAtUq/BI4n3RfsRb8UT/NqP5m3AJO9bFAEsnpZ39K6Yh4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711616139; c=relaxed/simple;
-	bh=SwBW22qcadeQkdheN+7fvVJxa3pXoLgtNXHI9mpQwMQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QQeDAZ044dH2hTVVW+aSYEVpNIKEm9gTUV1K6rmrpBoaecmzY4VGPtRH67j60zvb2SO2hSSpHKGa/jkbtet1yLK1wcrTaC5VsVb51Vg2JnHl03pjPeItSZ88O4ktxb6m4WSxHqz01aOf3WBjcuazOTJgA3MLjJsMlGptE9Vvkfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OLVMBC2m; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56899d9bf52so861131a12.2;
-        Thu, 28 Mar 2024 01:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711616136; x=1712220936; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VZ3BMMhKAmNs4bhyvnKkEZ82vtuSNj39yw+KO8d5Hvg=;
-        b=OLVMBC2mxMDY7aZaVLrGjedUwVH0dALObfWJkVPY6EkI03jEE8dYVKYBjiyqdQQNXY
-         wJvLghol2GvG4zbNa3tbDy2txfAQh+o/HWCP4pvfiTBB+y7PptxmxD4sP4sFEBo/5UA7
-         ZNafiL3r0PO658cNJ6VVraYMnXHBAizE26PTxtQHI8jV4Er9s04lLkm3yMupVVuDx/h6
-         c6uaW3hR+psloD9er4a1inNoJkaCLONwmoOq/VAI1uvxUM98f2XjRH1PVGgIMWuBk2xY
-         zMDd40nxcl3Smw4eRg0ySsoRcLXrKbOuHeoLx+kGuapxXjFwd1BitTRqlP+bv3GdG+D5
-         teAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711616136; x=1712220936;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VZ3BMMhKAmNs4bhyvnKkEZ82vtuSNj39yw+KO8d5Hvg=;
-        b=VT3dg2YmLas9ojNp08jEPD4yEA44LmdR8msGYkxjBVF6bWV4aIB1iB8mWVnws68zj5
-         pfiQEubratZypnF5BUtXZeyvos3XlfLEIIz/7U5XFt++WnulcyL6vhDvyrKa/gBBKlVp
-         JjvGYln1e5mOiA8MhipkZ3xanJywPw1zzG14Ii1vJJBYlUwrTziCY/zqO3hpGV/2XwHT
-         lA+TRhXdcsGyBLZlB4hZCXlzz2vrkbxlY9PY3lMzze5mSPmiTcROKnIpUQZ5dSklVPxP
-         jr5A3BcHG/LzAzvbYoKo1UhTqyalozqOCoWaMc/kkN6TagZ+z7lqknw01PeVJXX8X1g1
-         RCcw==
-X-Forwarded-Encrypted: i=1; AJvYcCXaiFM+p/tGBfu0DGuzhU+Hm5T9qI9+fCjWPxLfU1xJU7Fcoszx1NKqjIsRg1qd9P5vf3iBjAz1HWQ3QWsSUI5zM1l52Yt4RNxsUDDOVdx6sCVm/0D3TA0VEHpjKDl9o/R8omanQu6Rr/SIySgslvdphHE4ny1Ob4twWVhQBeM28D8Ikz4=
-X-Gm-Message-State: AOJu0YyWakyeAQCbOX9HKqNlyszxw4+f8Cqs9t3gZhWO9JSuGZXQvWR5
-	nmVVIdFowZUieK1InX6HGx9K7WxfjVotzu63+lZGXUsDPAUYECyD4RpGbtSDO31L8WQ6ztSp+Qt
-	t10xd662KjzrHw4d+UkwSTPw4mqCGy7zZxpfjKw==
-X-Google-Smtp-Source: AGHT+IF/Gh0fqkummHE++ODJJmmDYUghD6sTKPcA5xCjIEGld6dcTsKYDT2r02IGeAmJKxsFDo1HaPJup4R1syV1vdI=
-X-Received: by 2002:a05:6402:34cd:b0:56c:56dd:3b5f with SMTP id
- w13-20020a05640234cd00b0056c56dd3b5fmr438045edc.3.1711616135807; Thu, 28 Mar
- 2024 01:55:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3232E645;
+	Thu, 28 Mar 2024 08:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711616195; cv=fail; b=Ce2BXA1CH4/pIRuXBdFUrC3MLJAvNlWmg+wTvqMgqFrPzFL7x6VIUl6sutOo8nH2Lsl31MlfYNhAmNol5y79oeyAQrXOjQ1M9t3y5p2MDjX4Sxhd5Gzpqk4RFy34qR+SfB+HZhOfz6e3IokLcpqdwo+iTjBj/ukCD0Xmr+3+WcE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711616195; c=relaxed/simple;
+	bh=QN3wkGrjx8E60QDE+bQ9su29NEehP8PG1/uPimSKTzU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=s2/SKKFZdaliL6H/prwvsf7tPpg3Q6Lx2z/7q7yqlLHWUKq/XLyuhWrRkYuB/eseR2SOsN5Ynh57B4AO6c+owjWvItPC6tE/swbpM5LUkDwCaVHtLxocyXrepSdk5Sb4rbepk9XCsLz2eOCjLshn4BaQTCEd8pR5D3ue7gtipys=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=GuEXMZmt; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42S4BMRJ011623;
+	Thu, 28 Mar 2024 01:55:43 -0700
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x4jd1pa2h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 01:55:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZZM+3xFISA9uDOZgNf5WBB7cVogBe5R2j7zLHIWCzvgiAvddo0uimdacf6aGWJQN3CTgi0J2T9SngWICM6s8mxVCKs/fpZA4uoZu2TZ1v1q1VlZfDBB1o0XaEiweRlLyFQ0nDmd39kofuTrmQe4poXugTV7kZgNglSVbgW7ulvrM91MRQiwzsJemakUfIXCo1W9nXtdcCgpCZB5c99ScFxobVpc+iLbTcuCsLIEVKGfgNFTbdqIr/v1w2poa0hcEpcLVCI7PA9oqBYBiQZ2WtdLSwgEymiwfATUbowInwdBQ0OtAiW4WZrfTEgtIiKcG/bx8FSEbyGAotEUKkpqWRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QN3wkGrjx8E60QDE+bQ9su29NEehP8PG1/uPimSKTzU=;
+ b=D43nZcd786Xl2uLCo3g0djWv8LHd9yPBe7BZaqUsxx6FvvLkPh58ratNo0jhgfy4uiEvmZ8ByirtxBSN65J0PN81DESaKdIXISKff70eFSQwauTBEFEfMc1rtV8Xm91hPn1zratw7o5nsm3y3WCvBuoKVyRViC1grCjq8MB9ABkaYONhdjlN1V2Vk+tsx4+pCIqRRmfzwb1KfOpah7WUncRUYtBpv3Fn+2JPSK8wfqwDdMtFWrn2C4qI7lAEcdG9g750LYaGFZaBGYoOIkHTRMR78PjDKMCN5QgKZ3dwibwNgn1UYBsvuyKkuuo2idvZ9allthDNxBJVC0zpKlLBtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QN3wkGrjx8E60QDE+bQ9su29NEehP8PG1/uPimSKTzU=;
+ b=GuEXMZmtXPKrtJUSzNFktms0ypwsnX1t2EehvZwqB7CheEjv/1soBmE/ZMo1Jw5j0B4PwR37oZl4UEjWqwo5ZlcNXIpFTZFhqM6piUgOpPnD1JcBBJ0fJ14EXhslDgvOapRaetLNvw/Q8CXuFG1CRMsSL6PJDhA/enk7t2+1q7M=
+Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
+ (2603:10b6:301:68::33) by CO1PR18MB4604.namprd18.prod.outlook.com
+ (2603:10b6:303:e3::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
+ 2024 08:55:40 +0000
+Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
+ ([fe80::cfab:d22:63d2:6c72]) by MWHPR1801MB1918.namprd18.prod.outlook.com
+ ([fe80::cfab:d22:63d2:6c72%4]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 08:55:40 +0000
+From: Ratheesh Kannoth <rkannoth@marvell.com>
+To: James Lee <lizheng043@gmail.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "nhorman@tuxdriver.com"
+	<nhorman@tuxdriver.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "James.Z.Li@dell.com"
+	<James.Z.Li@dell.com>,
+        Simon Horman <horms@kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH] neighbour: guarantee the localhost
+ connections be established successfully even the ARP table is full
+Thread-Topic: [EXTERNAL] Re: [PATCH] neighbour: guarantee the localhost
+ connections be established successfully even the ARP table is full
+Thread-Index: AQHaeQ/FomqULxvNBkC/k1/miqR3YLE9iUYggAFIJACABFCioIAJwzkAgAADoPA=
+Date: Thu, 28 Mar 2024 08:55:40 +0000
+Message-ID: 
+ <MWHPR1801MB1918800A2309E838FD2CB2E0D33B2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+References: <20240311122401.6549-1-lizheng043@gmail.com>
+ <20240311135117.GA1244788@maili.marvell.com>
+ <CAPCnf4zS=FN0MHM2tQV0b468zN0yqRHbaNMsk3cDQ7Vu8wiHKA@mail.gmail.com>
+ <MWHPR1801MB19185089A3147123D1E877D0D32D2@MWHPR1801MB1918.namprd18.prod.outlook.com>
+ <CAPCnf4z0gp47TkxP+PFw3bd_Weh7=jn9Q2t-z6QB654Ckc36Pg@mail.gmail.com>
+ <MWHPR1801MB1918BF213DD974CB5A6CF032D3312@MWHPR1801MB1918.namprd18.prod.outlook.com>
+ <CAPCnf4ysy032UZbHjtymkPHcJUOXef6ZUX13+L4yEC=eEYzLEQ@mail.gmail.com>
+In-Reply-To: 
+ <CAPCnf4ysy032UZbHjtymkPHcJUOXef6ZUX13+L4yEC=eEYzLEQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR1801MB1918:EE_|CO1PR18MB4604:EE_
+x-ms-office365-filtering-correlation-id: b6b8c4b3-3fc0-4850-0e96-08dc4f04d831
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ YVWj3sUT25d/4RLi7QeFrmldKTs90zDQzYkNrnDGfkl9ikIV2Sw4y65oupaMBUP5WKO714OWLQttD7PYKVrkxntAqJGw9rcI6c/zRkAdsxDmZEnKsvbW1eRuY8AkehNEwnlJMzWR14+udnRNtGlKDRL6cIcg9kG7oRZU3MVdwOn2AgGdLGiMnYgbRDdc6iZgYClzy6yZMEHlm9JU9mPtfankVv1/9HFhCNK5sBpCF1DyCQHMD3R4rKNmXGWLtNWUpVUXtDOZG0ivLXT3ksSanzAGApdNblmIv0xjpmd2QInj+366k1fSmMtXq1OZbvVkTeDpkheq7x9DfnFTWsSJVE3FaBh/7Ze+r7lgQ+ixSrCPSLBvnmPeas64PWfqdWQILAkAfyL/8qWKljncbxytjcMIUCS3xplPDESPpcLeCWiK8QrL7sJP5B2Ea+Z3COq7AIbOdSX5xm7q9ZJZkwV02QGobXtueDHIurZ/rbgjQh1/RBWuKu6n9gmBKoc2um+1i5kAyfLi/sArCqkdRJGFZ5FImhFEMqRUDKtXQYNy2aAD8PPhx+zCijii1UXtsrjVAPiRU5Hq/HWVTUWpOISyMaqZawhHpcnYv7cpoQMTzyqu2711YBacPvDaklYfIwqkALUYj3KtBHA4XCxr3DYaSx7np8Al811JNUBGsT9o3CI=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1801MB1918.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?Q0hlNW05bDJ5YkJvMUcrd3o2dDZWS1FvT0padEhrUWNOYVg1YXVQKzFqR2w3?=
+ =?utf-8?B?SHM5d1dUOUR6Sk1KdVhwL2xvT21acXJjaTlEN2FUSHI4LzU4QmJxK0R2dmMz?=
+ =?utf-8?B?N0FraW1nYytWa0dDWXNtQ1oxQ0V0aExKaDJnSDQyb1lNVE9iT0EyOHZsNG9V?=
+ =?utf-8?B?U3lNenV4V1BJL1dobU1YbFU5RzhmbDlUZVFrQWxSay9KeVNsa3VBWStJNW1O?=
+ =?utf-8?B?aWtldXhXNmZ3d1doQ201TVl4bkJxSUVvWmhHN1BpeUhMUVp4alJBdU41aDBE?=
+ =?utf-8?B?RjJRVHlrL09pNWV4TThBSDZOYUFHYldqWEczN1A1WVV5aG5kSjR6RUZKdmFO?=
+ =?utf-8?B?WUNEVVd6VjduT3RBek5meDkwWVZVeDlBekNtaVdOZ0xwQmNmYWgrbE04VkNw?=
+ =?utf-8?B?dWgvZ1NGdVVRNVk1M0xKSnNRVEJ5R25qQWRISnlydWZaanJnN2M5bHF2ZEx1?=
+ =?utf-8?B?MnVKak1RYUpHZHlZQ3p2R2hLTFlSSzNWTkFyYVN1WFEvT2RDTUk2dHpCUVl0?=
+ =?utf-8?B?Ui85bHdKSUJpMGVxWUpJRGUxQXR6S1lIbzBGcFR2ZU9abzVvWGRqYmEwN0ZE?=
+ =?utf-8?B?TEVyb29vL3FYcW9XeVpCUGRCcFVsbkNKaGRNTzViMDBhbExXd1RtNUJwc1V2?=
+ =?utf-8?B?dlpjY04yWkRVcWpyL3lqNFNac282akR2c3pnbXBMUWMrcXMvMjlhZ0drM1Ux?=
+ =?utf-8?B?ME5pZkVhMlkvU25qMWxhc2s5dXV4UmVVSXRwYVdCTkpSOVZ1ZXZCSWk4RS9T?=
+ =?utf-8?B?VnB5T0dqUU0wLzdXYVBLOW10U0o1Sy9kdVVIcExOeCt5NHYveUxzNlczUFJs?=
+ =?utf-8?B?dFkxQnArTHM3YkowcDBEckJaZHJ1TW9SazlUcEhsczhJaC91RTFCTm5zdGxS?=
+ =?utf-8?B?TEV1dXpsRXArMFJDeGxadUxicG5SWjJ0TFJRTlpTTFZYcFMzOTEzNUNVcVIv?=
+ =?utf-8?B?Uk5OMUtzRkwzdzhBVkJ5cUJtcmlIckxRbFNOSFIzM1NHdFljMjlRT3NVdkY1?=
+ =?utf-8?B?THI2TkRPcjdjM2dhSUZzOG0xZWFEa284Qy9KLytHVmxDUWVKMk4ycVRUbmI0?=
+ =?utf-8?B?THhyKzNzSUo5V0VjY3pmc2ZSZkMxYXNQSU91YS9XemkxRTdpRk9pSi9iU3du?=
+ =?utf-8?B?SGpWWXZKZWtxOG93d3hQcXJKVXk5ZWpGOTZjbE1qT2FMU3cwTmRwdWlYeVpi?=
+ =?utf-8?B?NUVHL3lqb0wyVFI1YWNmelp6WURNSjZBcndvWC9oQnc5d0tkS2p1SGlpQWpo?=
+ =?utf-8?B?M25sdXlleEl5UjJ0RE5nT0xUdHo2Z1NZWHllYzNjTnpIcnRKOXpva2ZCQUYr?=
+ =?utf-8?B?MTdYdjUwSVBNei9VZElvaVdoaVYvYkNUMmJraTl5QU5IVHU5Z1haeXpEMEFX?=
+ =?utf-8?B?QzJIVVdKcmdxOXpIUk9BUzhndVZQNEtUWGZXYXFTTEtlR3BvcWg1eExhWm5w?=
+ =?utf-8?B?cms5eFdWaW1SczVXaGNLeiswRmVadkY5dlN2dmEvTm9GcGFXN0pYUXJ2V2tR?=
+ =?utf-8?B?c1pGYUlqQjJ2Vm11NmF5UW1kMnRJNXQwdDRJM2VxcTZJdHM3b0RySkJxbEFa?=
+ =?utf-8?B?UUNieU5BTEJqaEZBbGduaFI0S0FUckVKcytnZHZoREM5TUpLOENJaENXeEY0?=
+ =?utf-8?B?Mlh2VXluU29vY2RtN0JTS3pUZmtMRVVuSy9pZEI5SFJ6MWw5N1lTa2tjNVo2?=
+ =?utf-8?B?WjZsSmVtT2hDQlBCQUl3WlEyYjFNNUNyRGtqNTdRVFNZaGhSYnQzbktyWXRD?=
+ =?utf-8?B?YnUxbmVFYkRCZXczQm81eVpsMnkzRytEQmFta2E0QUhPTUVhYU4vbC9hWVU3?=
+ =?utf-8?B?S0E0TDgveFZYeFJWUmRzUlNkMUF6ODloeU5RK3pOdkQra0Ftc05hREdmTm9J?=
+ =?utf-8?B?TjlIR2lkbUhhdGgxQzJTMU9zdGliOFNFSEpySlRoRU12eVR6VllnVVlhaTBy?=
+ =?utf-8?B?YzlENVRlM2xKODZ5TGhXZG44eWJNdU9rUEcreHptQ2lTMENYUTJmNFJSd2FF?=
+ =?utf-8?B?ZHNCcTZHYll4OWgrQXdZL3RiY05WeDVDT2lpOE9tT2QrMXV5NWh3WFp2alJt?=
+ =?utf-8?B?by8vcVp6RXBLNlIxUUNaeGhTRnU2M28ydXlrVTZYaE5UZkdQekJndDFoeTJs?=
+ =?utf-8?Q?vqAsgFRjfXHvgWLuM0ZtLTBaN?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-loongson1-nand-v6-0-7f9311cef020@gmail.com>
- <20240327-loongson1-nand-v6-1-7f9311cef020@gmail.com> <20240327-bonehead-handlebar-1ca8dab95179@spud>
-In-Reply-To: <20240327-bonehead-handlebar-1ca8dab95179@spud>
-From: Keguang Zhang <keguang.zhang@gmail.com>
-Date: Thu, 28 Mar 2024 16:54:59 +0800
-Message-ID: <CAJhJPsX7Ds-UdFpTpLgFMW+rTGAgAYSKAieAMn12Z8RjNn-A8A@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: Add Loongson-1 NAND Controller
-To: Conor Dooley <conor@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mips@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1801MB1918.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6b8c4b3-3fc0-4850-0e96-08dc4f04d831
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 08:55:40.5300
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6c8UOrndUwGOrZprcs1AvNjCx9i/pnC6byxQ8C7jlQoNyTxQfHzY26wK0t8tVeV1kB8jFxAg9wpxa78pAWIHbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR18MB4604
+X-Proofpoint-GUID: FNUh1zp54m6lYekg_IH5pOX_c0CyYNm2
+X-Proofpoint-ORIG-GUID: FNUh1zp54m6lYekg_IH5pOX_c0CyYNm2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_09,2024-03-27_01,2023-05-22_02
 
-On Thu, Mar 28, 2024 at 12:23=E2=80=AFAM Conor Dooley <conor@kernel.org> wr=
-ote:
->
-> On Wed, Mar 27, 2024 at 06:43:59PM +0800, Keguang Zhang via B4 Relay wrot=
-e:
-> > From: Keguang Zhang <keguang.zhang@gmail.com>
-> >
-> > Add devicetree binding document for Loongson-1 NAND Controller.
-> >
-> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> > Changes in v6:
-> > - A newly added patch
-> > ---
-> >  .../devicetree/bindings/mtd/loongson,ls1x-nfc.yaml | 66 ++++++++++++++=
-++++++++
-> >  1 file changed, 66 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.ya=
-ml b/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml
-> > new file mode 100644
-> > index 000000000000..2494c7b3b506
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml
-> > @@ -0,0 +1,66 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/loongson,ls1x-nfc.yaml#
->
-> Please make the filename match the compatible.
->
-Got it. I'll rename it to loongson,ls1-nfc.yaml and change the
-compatible as follows.
-  compatible:
-   items:
-     - enum:
-         - loongson,ls1a-nfc
-         - loongson,ls1b-nfc
-         - loongson,ls1c-nfc
-     - const: loongson,ls1-nfc
-
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Loongson-1 NAND Controller
-> > +
-> > +maintainers:
-> > +  - Keguang Zhang <keguang.zhang@gmail.com>
-> > +
-> > +allOf:
-> > +  - $ref: nand-controller.yaml
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - const: loongson,ls1b-nfc
-> > +      - items:
-> > +          - enum:
-> > +              - loongson,ls1a-nfc
-> > +              - loongson,ls1c-nfc
-> > +          - const: loongson,ls1b-nfc
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  dmas:
-> > +    maxItems: 1
-> > +
-> > +  dma-names:
-> > +    const: rxtx
->
-> If you only have one dma, why do you need a dma-names entry for it?
->
-Without "dma-names", the following error will come out when doing
-dt_binding_check.
-  nand-controller@1fe78000: 'dma-names' is a required property
-
-In addition, loongson1_nand.c calls dma_request_chan(). Then
-dma_request_chan() calls of_dma_request_slave_channel(), in which the
-'dma-names' is necessary.
-struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-                                             const char *name)
-{
-       ...
-       count =3D of_property_count_strings(np, "dma-names");
-       if (count < 0) {
-               pr_err("%s: dma-names property of node '%pOF' missing
-or empty\n",
-                       __func__, np);
-               return ERR_PTR(-ENODEV);
-       }
-       ...
-}
-
-Thanks for your review!
-
-> Looks fine to me otherwise though,
-> COnor.
->
-> > +
-> > +patternProperties:
-> > +  "^nand@[0-3]$":
-> > +    type: object
-> > +    $ref: raw-nand-chip.yaml
-> > +
-> > +    unevaluatedProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - dmas
-> > +  - dma-names
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    nand-controller@1fe78000 {
-> > +        compatible =3D "loongson,ls1b-nfc";
-> > +        reg =3D <0x1fe78000 0x40>;
-> > +
-> > +        #address-cells =3D <1>;
-> > +        #size-cells =3D <0>;
-> > +
-> > +        dmas =3D <&dma 0>;
-> > +        dma-names =3D "rxtx";
-> > +
-> > +        nand@0 {
-> > +            reg =3D <0>;
-> > +            nand-use-soft-ecc-engine;
-> > +            nand-ecc-algo =3D "hamming";
-> > +        };
-> > +    };
-> >
-> > --
-> > 2.40.1
-> >
-> >
-
-
-
---
-Best regards,
-
-Keguang Zhang
+PiBGcm9tOiBKYW1lcyBMZWUgPGxpemhlbmcwNDNAZ21haWwuY29tPg0KPiBTZW50OiBUaHVyc2Rh
+eSwgTWFyY2ggMjgsIDIwMjQgMjoxMSBQTQ0KPiBUbzogUmF0aGVlc2ggS2Fubm90aCA8cmthbm5v
+dGhAbWFydmVsbC5jb20+DQo+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBuZXRk
+ZXZAdmdlci5rZXJuZWwub3JnOw0KPiBuaG9ybWFuQHR1eGRyaXZlci5jb207IGRhdmVtQGRhdmVt
+bG9mdC5uZXQ7IGptb3JyaXNAbmFtZWkub3JnOw0KPiBKYW1lcy5aLkxpQGRlbGwuY29tOyBTaW1v
+biBIb3JtYW4gPGhvcm1zQGtlcm5lbC5vcmc+DQo+IFN1YmplY3Q6IFJlOiBbRVhURVJOQUxdIFJl
+OiBbUEFUQ0hdIG5laWdoYm91cjogZ3VhcmFudGVlIHRoZSBsb2NhbGhvc3QNCj4gY29ubmVjdGlv
+bnMgYmUgZXN0YWJsaXNoZWQgc3VjY2Vzc2Z1bGx5IGV2ZW4gdGhlIEFSUCB0YWJsZSBpcyBmdWxs
+DQo+IA0KDQo+IEl0J3Mgbm90IGFuIGlzc3VlLCANClBsZWFzZSBkb27igJl0IHRvcCBwb3N0DQoN
+CiA+d2h5IG5lZWQgInBvc3QgYSBuZXcgcGF0Y2ggdmVyc2lvbiI/DQpBU0ZBSUssIG9ubHkgaHR0
+cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9saXN0LyB3aWxsIGJl
+IGFjdGl2ZWx5IGxvb2tlZCB1cCB0byBtZXJnZSBwYXRjaGVzLg0KSSBjb3VsZCBiZSB3cm9uZy4g
+DQoNCj4gDQo+IFJhdGhlZXNoIEthbm5vdGggPHJrYW5ub3RoQG1hcnZlbGwuY29tPiDkuo4yMDI0
+5bm0M+aciDIy5pel5ZGo5LqUDQo+IDExOjM35YaZ6YGT77yaDQo+ID4NCj4gPiA+IEZyb206IEph
+bWVzIExlZSA8bGl6aGVuZzA0M0BnbWFpbC5jb20+DQo+ID4gPiBTZW50OiBUdWVzZGF5LCBNYXJj
+aCAxOSwgMjAyNCAzOjEzIFBNDQo+ID4gPiBUbzogUmF0aGVlc2ggS2Fubm90aCA8cmthbm5vdGhA
+bWFydmVsbC5jb20+DQo+ID4gPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbmV0
+ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gPiA+IG5ob3JtYW5AdHV4ZHJpdmVyLmNvbTsgZGF2ZW1A
+ZGF2ZW1sb2Z0Lm5ldDsgam1vcnJpc0BuYW1laS5vcmc7DQo+ID4gPiBKYW1lcy5aLkxpQGRlbGwu
+Y29tDQo+ID4gPiBTdWJqZWN0OiBSZTogW0VYVEVSTkFMXSBSZTogW1BBVENIXSBuZWlnaGJvdXI6
+IGd1YXJhbnRlZSB0aGUNCj4gPiA+IGxvY2FsaG9zdCBjb25uZWN0aW9ucyBiZSBlc3RhYmxpc2hl
+ZCBzdWNjZXNzZnVsbHkgZXZlbiB0aGUgQVJQIHRhYmxlDQo+ID4gPiBpcyBmdWxsDQo+ID4gPg0K
+PiA+ID4gSXQncyBub3QgYW4gaXNzdWUsIHRoZSBsb29wYmFjayBkZXZpY2UgY2FuIG9ubHkgYmUg
+Y3JlYXRlZCBieSBrZXJuZWwNCj4gPiA+IGl0c2VsZiwgbG9vcGJhY2sgbmVpZ2ggZW50cnkgYWxz
+byBjYW4gb25seSBiZSBjcmVhdGVkIGJ5IGtlcm5lbCwgb25lDQo+ID4gPiBsb29wYmFjayBuZWln
+aCBmb3IgaXB2NCAsb25lIGZvciBpcHY2LCBpbXBvc3NpYmxlIHRoYXQgdGhlIG51bSBvZg0KPiA+
+ID4gbG9vcGJhY2sgbmVpZ2ggZW50cmllcyBleGNlZWRzIDIuDQo+ID4gQUNLLiBJIHN0aWxsIGZl
+ZWwgbGlrZSBhIGhhY2suIFBsZWFzZSBwb3N0IGEgbmV3IHBhdGNoIHZlcnNpb24uIExldCBtYWlu
+dGFpbmVycw0KPiB0YWtlIGEgY2FsbC4NCg==
 
