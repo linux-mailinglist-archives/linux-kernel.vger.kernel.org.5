@@ -1,132 +1,125 @@
-Return-Path: <linux-kernel+bounces-122276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4017788F4A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:30:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B78D88F4A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E94F51F2A9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:30:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF3A1C28B78
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFCA20DF1;
-	Thu, 28 Mar 2024 01:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11AF3208B0;
+	Thu, 28 Mar 2024 01:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qcz63bWB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n1iYHakG"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90D0200D5;
-	Thu, 28 Mar 2024 01:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540B33D7A
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711589420; cv=none; b=pSTL5P1zNyLZqnBZ6Mlpy6NWfEVTyV4ZEBYtGY2v3k/X4r2GfxtGhSbs7GBw/Jo9y2PmlIUPGDBI9q8IwA/qP06l9bqzeGBFVOe4k8AZ+Q2r0Jjk/skLYWYzrgFYmBvtS5PurQvj+n3idicSH+psa6Xwogn2u7ZvArIFO6sYYxQ=
+	t=1711589512; cv=none; b=lMduUzbvciVap4R0IXtgbhpboxvrELZMm60nnKy1fE9ZMEKWPGxqoHt/bzUkh1Vee/PqY+VwxMMFgR85jQjwyG7YOjxVf06UPwKHLFloHinDuZFR9XVCriJU/cgZlP3KDrULFzzQX4kL2q/dgC8S2CWvpqFNeh9Cf5kHBQQClAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711589420; c=relaxed/simple;
-	bh=5aCurHOHta8QRuhaeNAeu28tMitK//VvdG5YQ9yPLRU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CcQe9YMDwxBhTD5ZmhAbcCOTUR73idTvt/m37UFBlhvbFt9u9aK0BKqcTtxC7KRHkBtAU81E7SCMHMEqf7+JyuH5p5X1LkEH/Dtq8GY2hUmYEUKy/FW4dcYXsT9LmpUi5f09khHV/ivND4jv9H7ymWhTbyM9R8uoalfyz5atwAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qcz63bWB; arc=none smtp.client-ip=192.198.163.12
+	s=arc-20240116; t=1711589512; c=relaxed/simple;
+	bh=ldZ7FHyLIiyTh7OMYtqC0ADh9QERRbTQgkL8bAWBlbU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vvm2bu5WfBSMdjtQ2+3N0VKIcnxaTdlXnF0ssAz/Ve+oKR4ZsqzgHKJdAgaxhJfqom41LosmgjoYDMocKCzKBGIAsZT0CecW4Hq7G3k3CAKEopqgnllK3QDiZbrvy6mE4CScmdQJnr/qFd2cgHzjhNHGD4uepkg7LPBh2Bz120k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n1iYHakG; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711589419; x=1743125419;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=5aCurHOHta8QRuhaeNAeu28tMitK//VvdG5YQ9yPLRU=;
-  b=Qcz63bWBPtmy7lOkscUGrcUQECXgbPvX+Yz31sppPlo4YO8BDsqW0GJT
-   nt+iI3bBhVDhfljeYRql7Ql5CFLnRQm5gI+kVv8OPvHYMFuNbvwW3sxSB
-   bryATcOyfMuvfKmPouCAHm9ZuKWfglTCYm9W2f2lWK7cdy0HRqrrBu2bN
-   H98JYGr/fLhz5oqXqJzlse2jBILHBiNdutO3WR1gS6dgbSmjH98sw8Gft
-   zB5Ba5m6AgZCQfgVk8Db01TBqPo6FzIVjCdOqXJI+25BXd7TcA+cjX7rM
-   uzmour0+YU/7o9B30RFfozS3m2PTrkakK5aqoo4Hd4ikDLWs4Yoq/hldV
+  t=1711589510; x=1743125510;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ldZ7FHyLIiyTh7OMYtqC0ADh9QERRbTQgkL8bAWBlbU=;
+  b=n1iYHakGFpFvTWVjH8NXCe8TDC4pzc4Vh2YPyIv5TYuZMqdZnqd1brsF
+   utLhA4B/gNYR1N5i1wPnyRNaSMvAB4V9765aOMFMuYCKN6ty8Sr8pphrF
+   QGAtkKv6I89k23MBvEnx54/bqV5StWBE4ujjYsisuY3Bspxhz0WeP+dCc
+   GHLWLroz3Omj5vIEMtOf68uL48ZZWj5sP3xwGPG2jXjBuXRlDHu+I6ZpM
+   LtzRedLJllfPc1/hlWoTYdfrKUbciRHUJCaBg1uaDl2Zg61Gy5LSQKwG+
+   R7JZ1MvF4g0sLs5NkvWmbfpMPF6J5Sbx6oKHPy0jbSuz+/c25YbYn5bcm
    A==;
-X-CSE-ConnectionGUID: dj0kqkB6S5Wm/jj9/XyOaw==
-X-CSE-MsgGUID: AuSX9eYQTLKZ/X2D64uq/A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="10505872"
+X-CSE-ConnectionGUID: suCwEBRJTPi9qV85cQFx/Q==
+X-CSE-MsgGUID: siBiAXUGSUeXHjQiMtA2NA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="10506076"
 X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="10505872"
+   d="scan'208";a="10506076"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:30:18 -0700
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:31:50 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="21145884"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:30:15 -0700
-Message-ID: <20ef977a-75e5-4bbc-9acf-fa1250132138@intel.com>
-Date: Thu, 28 Mar 2024 09:30:11 +0800
+   d="scan'208";a="21146002"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 27 Mar 2024 18:31:47 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rpecL-0001fz-06;
+	Thu, 28 Mar 2024 01:31:45 +0000
+Date: Thu, 28 Mar 2024 09:31:14 +0800
+From: kernel test robot <lkp@intel.com>
+To: Gowthami Thiagarajan <gthiagarajan@marvell.com>, will@kernel.org,
+	mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, sgoutham@marvell.com,
+	bbhushan2@marvell.com, gcherian@marvell.com,
+	Gowthami Thiagarajan <gthiagarajan@marvell.com>
+Subject: Re: [RESEND PATCH v4 2/3] perf/marvell: perf/marvell: Odyssey DDR
+ Performance
+Message-ID: <202403280921.NALZ6Tp8-lkp@intel.com>
+References: <20240327071832.1556576-3-gthiagarajan@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
- unsupported cases
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "Gao, Chao" <chao.gao@intel.com>, "Yamahata, Isaku"
- <isaku.yamahata@intel.com>
-Cc: "Zhang, Tina" <tina.zhang@intel.com>,
- "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
- "seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
- "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
- "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aktas, Erdem" <erdemaktas@google.com>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>, "Yuan, Hang"
- <hang.yuan@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
- <20240325190525.GG2357401@ls.amr.corp.intel.com>
- <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
- <20240325221836.GO2357401@ls.amr.corp.intel.com>
- <20240325231058.GP2357401@ls.amr.corp.intel.com>
- <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
- <20240325233528.GQ2357401@ls.amr.corp.intel.com>
- <ZgIzvHKobT2K8LZb@chao-email>
- <20db87741e356e22a72fadeda8ab982260f26705.camel@intel.com>
- <ZgKt6ljcmnfSbqG/@chao-email>
- <20240326174859.GB2444378@ls.amr.corp.intel.com>
- <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
- <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
- <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
- <e0ac83c57da3c853ffc752636a4a50fe7b490884.camel@intel.com>
- <5f07dd6c-b06a-49ed-ab16-24797c9f1bf7@intel.com>
- <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327071832.1556576-3-gthiagarajan@marvell.com>
 
-On 3/28/2024 9:06 AM, Edgecombe, Rick P wrote:
-> On Thu, 2024-03-28 at 08:58 +0800, Xiaoyao Li wrote:
->>> How so? Userspace needs to learn to create a TD first.
->>
->> The current ABI of KVM_EXIT_X86_RDMSR/WRMSR is that userspace itself
->> sets up MSR fitler at first, then it will get such EXIT_REASON when
->> guest accesses the MSRs being filtered.
->>
->> If you want to use this EXIT reason, then you need to enforce userspace
->> setting up the MSR filter. How to enforce?
-> 
-> I think Isaku's proposal was to let userspace configure it.
-> 
-> For the sake of conversation, what if we don't enforce it? The downside of not enforcing it is that
-> we then need to worry about code paths in KVM the MTRRs would call. But what goes wrong
-> functionally? If userspace doesn't fully setup a TD things can go wrong for the TD.
-> 
-> A plus side of using the MSR filter stuff is it reuses existing functionality.
-> 
->>   If not enforce, but exit with
->> KVM_EXIT_X86_RDMSR/WRMSR no matter usersapce sets up MSR filter or not.
->> Then you are trying to introduce divergent behavior in KVM.
-> 
-> The current ABI of KVM_EXIT_X86_RDMSR when TDs are created is nothing. So I don't see how this is
-> any kind of ABI break. If you agree we shouldn't try to support MTRRs, do you have a different exit
-> reason or behavior in mind?
+Hi Gowthami,
 
-Just return error on TDVMCALL of RDMSR/WRMSR on TD's access of MTRR MSRs.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on soc/for-next]
+[also build test WARNING on linus/master v6.9-rc1 next-20240327]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Gowthami-Thiagarajan/perf-marvell-Refactor-to-extract-platform-data/20240327-152242
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20240327071832.1556576-3-gthiagarajan%40marvell.com
+patch subject: [RESEND PATCH v4 2/3] perf/marvell: perf/marvell: Odyssey DDR Performance
+config: sparc-allmodconfig (https://download.01.org/0day-ci/archive/20240328/202403280921.NALZ6Tp8-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240328/202403280921.NALZ6Tp8-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403280921.NALZ6Tp8-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/perf/marvell_cn10k_ddr_pmu.c:982:34: warning: 'ddr_pmu_v2_data' defined but not used [-Wunused-const-variable=]
+     982 | static const struct ddr_pmu_data ddr_pmu_v2_data = {
+         |                                  ^~~~~~~~~~~~~~~
+
+
+vim +/ddr_pmu_v2_data +982 drivers/perf/marvell_cn10k_ddr_pmu.c
+
+   981	
+ > 982	static const struct ddr_pmu_data ddr_pmu_v2_data = {
+   983		.id   = DDR_PMU_V2,
+   984	};
+   985	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
