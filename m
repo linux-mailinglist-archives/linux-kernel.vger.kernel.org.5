@@ -1,133 +1,143 @@
-Return-Path: <linux-kernel+bounces-123337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5298906CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2A48906F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6527E1F2792C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:08:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E378F1F2903C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2B87E787;
-	Thu, 28 Mar 2024 17:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A7953368;
+	Thu, 28 Mar 2024 17:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="pA7jMrWI"
-Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="ytSYbPaf"
+Received: from mail-108-mta98.mxroute.com (mail-108-mta98.mxroute.com [136.175.108.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA513BBEB;
-	Thu, 28 Mar 2024 17:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236EB3BBF9
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711645549; cv=none; b=Se6/gMu5UcebWBOkJs2vgLvSp8Cnzf4YyU59JRuACeX6+6bpoglp+RoCXFQSqd8ssYEUjaq5PwZunqAqDDK3PaBTEg8DYmdqwMbzghBIQMp89i5SWDRyyhouEP3z6iTSe/Oq1Wo9PGb0hDyqRNlDGcmdQQ+cSaDcsLN622okIWA=
+	t=1711645823; cv=none; b=PgeZuV3fKL7gOdmGltg3cc7oH+aLhOSbTVOmyCp8h2eYVg1vl1SnKAsSBovO9tNzuGYgtZGa/nCBIHSM9sDycdLo8FaHJRfDldtask97P80GbdJPOr6qsMDgcR2zE++Jh7tx4tC6/UoX1/iPg7/GJMISWvR6BgA22pk3eFGxDoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711645549; c=relaxed/simple;
-	bh=gJC9/6C1oV101Vj85n8xf1JyGlC/E4qL1YrA06etUf4=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=Jm2mShk19YIrISLWOXS8ns/PnSBYThTQxBxMqjUvEXWLPn/1fpLs3lPjp+rzA4OLJysVRgLdvk1o22ahEpDzJAszrcj/kCi9bK2fK3SfrfoSBtbKX2nYVHKfMo1DC0L8R0hBEjfU7hwrEvYE6pcTRB7iN10P9mb+n4XD2uq4xaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=pA7jMrWI; arc=none smtp.client-ip=203.205.251.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711645537; bh=8ssu01htiYsJMJRjHgP4bblrXVq0qnGeiqD2k3sHcKg=;
-	h=From:To:Cc:Subject:Date;
-	b=pA7jMrWIuxQHr6YxFCLosUI6tQUdS37m6QxE24bg6NOKxXkzYKKStC1cKtdayabMt
-	 3dm5tYOJNiGLi6PRPBPwpE2/Detr7ja3bYudWcpe9cgn63FRehSN84bn+0oTteWMU9
-	 zsTsLiNT7tgS2VOihCcx/PErnEDg64WvhNxQA5wg=
-Received: from cyy-pc.lan ([240e:379:2277:8a00:7feb:196a:dd5b:c05f])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id 11335EFA; Fri, 29 Mar 2024 01:04:19 +0800
-X-QQ-mid: xmsmtpt1711645459tb1h7s37q
-Message-ID: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
-X-QQ-XMAILINFO: ORuEwgb9eurk937hgCQc/4UpQ04yu+q4iEC8YqNyGIVokpunePyEspOAdrFfaD
-	 TAZUrsoAzBa67OyGvySF9OBMgKTkKIA8T9Hh4gpac+UcW8/4s8lQd7TSLbfRX04oJHBeBehpJkfd
-	 yfaeUq2t9XWRzewmbxDNmZnmNbLP0qX+UD/NwvtecOIdyIqwxui8BLG5InboZ6yxLJUzWx18OJaZ
-	 NInfgjkEajkg2BM2REbaOoWjRfEjruia2KRNVsPlJAq07Pf3d8zvtf73tlBgwJOi+FkldoXYgh2h
-	 w8cm0GXPJCQiCABsLHlJhR3UE4HV1eovUOFvp+8cfgJv+sXKzcDxPojDqRVeA3uhvkj1zmEdtWJ5
-	 WATnrSDp6GF4vwgZrQfZVpD1tcR/vLF62gE4KXr5PoUfbOzucC2qH2Fu5iWBGqlvazAO6MPD9JwC
-	 2e1PCvQJKcUdhJ9BXsZDw7GBRAY5uFPBasxEqEQqJVXjDYBZbvIk6dGK+Z79sRji0ZaaHfrFaIl6
-	 bTxdAcHvVxeooFqsHRn6Tu/UurCPRsVP9RD05M2SzsfydgKujJ1yZXmD8YTC+K6PmbBC+tQVRcLP
-	 FzMqCVelVo0RRmDRgM6ZnQS7rZ2jMxAjJ5hdHig09+STq9uLx9ttCE+ntZF0m4K4skbvjZT2cmW2
-	 JqFBLShKuoCiwkasVXJC3httmDVrxUWLnwLBfpl2povSQkyM2m+QjAj7jyxESOZW54MTRMuTuvZ9
-	 vve4pLChyAuYBQOmOtLXzgUkEectMa7nVL9xCuK9JfzmmZ+HNx07qcUoHQK5gVuXrsA9tsHLT3Ac
-	 frPaHmtg1waA/McJfGlhrLlS9LtG5cWUvX3kUHHXPVZ5Zg6M+uq5bAUzXbkyL/mzikYXO8aPQnjG
-	 88UNSETFrJ0WKvwOHTukplXk3KVJLDf38eukbzd+h0TMgFaI4DHnWcnCqgH/nc0L/6EIQZIc1rsz
-	 rHe+cUi8/DeoWlc8u8r3mEN5P63Q5VE2QVS/0iyLsEP6/UYJ46cW0iuvjx3UbtZw4LwejHYFCDI2
-	 uCQC8CZQ==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Conor Dooley <conor@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Guo Ren <guoren@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-gpio@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v1 0/5] riscv: Kconfig.socs: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
-Date: Fri, 29 Mar 2024 01:03:22 +0800
-X-OQ-MSGID: <20240328170322.119305-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711645823; c=relaxed/simple;
+	bh=9zNP92bNPgp9w0XFvKSF/0xg28mBtIKDRH7jxflanx0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WlbBEvEKhQbJLeUKEAa5TtCUUe67dd7E0d4+1bjyRr3VDCLiingVoUm6Mf3B1iAUEv/kxjCu/3Fns105UmcJOQZT0vwVCqSHwtipCqccX93ZeypYOtzOJPNZwbrZBWQbKRn0S/ONE5I9DFaXCUNVAnXgiqkiSeDE7O21bFyUz/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=ytSYbPaf; arc=none smtp.client-ip=136.175.108.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta98.mxroute.com (ZoneMTA) with ESMTPSA id 18e8605d28c0003bea.010
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Thu, 28 Mar 2024 17:05:12 +0000
+X-Zone-Loop: 2e6eb48510aad9f9c42fc20b45c616eed76f18f744e2
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=mZL5hLBkloRsl6YhllysqkuiGbw1qHa4I22VeBcbYtE=; b=ytSYbPafdQBqFW/aT7tiYbrWV2
+	vCDSLcj/SXxrXAEOyX7t//p6PPq+Fne+0Kcnb7Ie5h8X63HWNxJBYSLEKNzAA33O4nEE5r6B6WVV+
+	EXlEH+oH/+qZRIwHLX4KChloLIYrXkHu4qdajB2S0q8uVSuBzZksOzFF4aS7A9gDlFqdqLEo7l+qw
+	t9xKAIgM6QhretsOfuKTDPilYyGXf5PPYMM344OtVOZ9b9lGSFBveuZayUo801/N8eZfKyoM0Se2d
+	X1umR6FA73bFEhY8XCAAxFl/Ht6t6hmqVKiTpgfSim60XGUAM587LvOf42kDCig3Q8NY7JUSaZ9C9
+	+dBivuRQ==;
+Message-ID: <30d886be-cac8-400a-9b2f-dd2ce64b34d8@luigi311.com>
+Date: Thu, 28 Mar 2024 11:05:00 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 18/23] dt-bindings: media: imx258: Add alternate
+ compatible strings
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, git@luigi311.com,
+ linux-media@vger.kernel.org
+Cc: dave.stevenson@raspberrypi.com, jacopo.mondi@ideasonboard.com,
+ mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, sakari.ailus@linux.intel.com,
+ devicetree@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240327231710.53188-1-git@luigi311.com>
+ <20240327231710.53188-19-git@luigi311.com>
+ <586bdcc9-793d-4cbe-9544-9012a665288e@linaro.org>
+Content-Language: en-US
+From: Luigi311 <personal@luigi311.com>
+In-Reply-To: <586bdcc9-793d-4cbe-9544-9012a665288e@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Id: personal@luigi311.com
 
-Since SOC_FOO should be deprecated from patch [1], and cleanup for other
-SoCs is already in the mailing list [2,3,4], so we deprecate the use of
-SOC_CANAAN and use ARCH_CANAAN for SoCs vendored by Canaan instead from now
-on.
+On 3/28/24 01:47, Krzysztof Kozlowski wrote:
+> On 28/03/2024 00:17, git@luigi311.com wrote:
+>> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+>>
+>> There are a number of variants of the imx258 modules that can not
+>> be differentiated at runtime, so add compatible strings for them.
+>>
+>> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+>> Signed-off-by: Luigi311 <git@luigi311.com>
+>> ---
+>>  .../devicetree/bindings/media/i2c/sony,imx258.yaml          | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+>> index bee61a443b23..c7856de15ba3 100644
+>> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+>> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+>> @@ -14,10 +14,14 @@ description: |-
+>>    type stacked image sensor with a square pixel array of size 4208 x 3120. It
+>>    is programmable through I2C interface.  Image data is sent through MIPI
+>>    CSI-2.
+>> +  There are a number of variants of the sensor which cannot be detected at
+>> +  runtime, so multiple compatible strings are required to differentiate these.
+>>  
+>>  properties:
+>>    compatible:
+>> -    const: sony,imx258
+>> +    - enum:
+>> +        - sony,imx258
+> 
+> Two people working on patch but no one tested it before sending. Do not
+> send untested code.
+> 
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> Maybe you need to update your dtschema and yamllint.
 
-However, the K210 SoC is so special for NoMMU and built for loader.bin, if
-we share the ARCH_CANAAN symbol directly for K210 and other new SoCs which
-has MMU and no need for loader, it will confuse some users who may try to
-boot MMU Kernel on K210, but it will fail. Thus, this patch set renamed the
-original use of SOC_CANAAN to SOC_CANAAN_K210 for K210 SoC, as Damien
-suggested from the list [5]. Then, it made some adaptations for soc, clk,
-pinctrl, and reset drivers.
+Hello, looks like I messed this up during my v2 (sorry missed the v in 
+my format patch) when I took this off Dave's hands. This is all new to
+me so thank you for the command used to check, I was only compiling
+the kernel and testing that so I didn't realize this needed separate 
+testing. 
 
-Note: This patch set is used to prepare for Canaan K230 Support, which is
-on the mailing list [6]. The next revision for the K230 support patch will
-be based on this patch set.
+Looks like it no longer complains when i run
+make dt_binding_check DT_SCHEMA_FILES=media/i2c/sony,imx258
 
-[1] https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@kernel.org/
-[2] https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7ed0a@spud/
-[3] https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c46bb29@spud/
-[4] https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb8655a4d@spud/
-[5] https://lore.kernel.org/linux-riscv/2b0511af-1b5b-4c90-a673-c9113bb58142@kernel.org/
-[6] https://lore.kernel.org/linux-riscv/tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com/
+with the following
 
-Yangyu Chen (5):
-  riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210
-  soc: canaan: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
-  clk: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
-  pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
-  reset: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+properties:
+  compatible:
+    enum:
+      - sony,imx258
+      - sony,imx258-pdaf
 
- arch/riscv/Kconfig.socs                        | 10 ++++++++--
- arch/riscv/Makefile                            |  2 +-
- arch/riscv/configs/nommu_k210_defconfig        |  3 ++-
- arch/riscv/configs/nommu_k210_sdcard_defconfig |  3 ++-
- drivers/clk/Kconfig                            |  4 ++--
- drivers/pinctrl/Kconfig                        |  4 ++--
- drivers/reset/Kconfig                          |  4 ++--
- drivers/soc/Makefile                           |  2 +-
- drivers/soc/canaan/Kconfig                     |  4 ++--
- 9 files changed, 22 insertions(+), 14 deletions(-)
+If that looks good I can go ahead and include that in the v3
 
--- 
-2.43.0
+> 
+> Best regards,
+> Krzysztof
+> 
 
 
