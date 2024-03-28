@@ -1,85 +1,76 @@
-Return-Path: <linux-kernel+bounces-123373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D62289075C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D83FF890769
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F62E1F25EAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:43:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88D021F261E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECD412F360;
-	Thu, 28 Mar 2024 17:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Nbi9gXcO"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C4212F588;
+	Thu, 28 Mar 2024 17:46:44 +0000 (UTC)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7499C42AA1;
-	Thu, 28 Mar 2024 17:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E07171A1;
+	Thu, 28 Mar 2024 17:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711647808; cv=none; b=KPALXklfqlTKL32bjD0+d+w542i0X7LAIJdXv/KhcXso9smwclC+LjiTD4tzH23z9fh/qL+cydju8bLMRt/2N9ua9mTPqdyZjjL/GGRR9M6VVi6bVvspJVDNrV06CFulQotQckQfbHw5q0Z5+vVvEdwQ7nL8r/V8/n21QW/GsNk=
+	t=1711648004; cv=none; b=ZeNiCT1oXzwz9Wskxy/Co4Bt/3cJWE2ZU4CTlgMaEuvtR6V5Br+mwR9OYN8Hc8wpUO/yMibz9f+R8tXAryTpyKjmjzo0Fmnn83Vvm9Z/zudB+0x7fxf/0gXOVAVKfjiE+bTGSCJjqM6/sUCtUUu4LEQVFLjetLXv1JxJGHbQj2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711647808; c=relaxed/simple;
-	bh=KXXurivZyV3iaL8JT2YK2Yn98ezt/cj9OLREbuE7Wb0=;
+	s=arc-20240116; t=1711648004; c=relaxed/simple;
+	bh=9pXHYyR5tBuX3O4p6ixDQaABJ3dpYZ5TmNERGWzz1CU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RrIpg+fdz8qw33ZCqCDwlqkUnSjzv4tr9pRbk45k46O4/ZdzWxdhHihyaXX0+yXm6jI0iqeK49k/qFcFeI63i/JDpkks6y2XS6Y5zD7vwCYgZ+M3zDIICg6wBhyA/Mvwc/PW5FIBwk1fu2GL+LwcqEe5ielH1Gdc732DechPOXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Nbi9gXcO; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	 Content-Type:Content-Disposition:In-Reply-To; b=IUsUXcYUKH5HSy+VfvoITt+DHTvtv73/lkOkiOgxkPBN4oddbll+fK1yFEEgGSt3tlws4UaZrhLscR/k8zuDOed4sKUrx0BiBiASmPDSD4Qoeyw6WxPACWaiAROzCHQP220p3wgrVsBjM2n7uLKVLp+ricjCnoo315q1JBbRHd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a56710cdccso488365eaf.3;
-        Thu, 28 Mar 2024 10:43:26 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c147205b9so2206441a12.0;
+        Thu, 28 Mar 2024 10:46:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711647805; x=1712252605;
+        d=1e100.net; s=20230601; t=1711648001; x=1712252801;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9vr5XsWFJLw7ybCrrKVxNz1sn6zwz/bJc/6H6RbUNG0=;
-        b=dJ4RiPVgDQpg94eG5Thautu+ZQObu3NQ0Wiyp58nYegIlMcz0AS6+BvzviXj1Prt1c
-         KiCinUkyv4rBhmtD5B6OZcPOeVOzFAnALSfv3Gws1Chy60IogSltybcVm2GQjrUk6+Ex
-         RytNhCR/usBauupzCkaLg5TxHfmipBq0H5YU5LyGzb9CmCWwi0fEalKEN6Ig7dVGIK/y
-         F1wNm/kfnAlu0sWGCv3VEqJ88sD9wnyOMeiAW//GskTWk5Q9iU1bF92exr/eB9u5tCdD
-         CghhzLAgVd5e+RHMLWhq8vuLZuzbcg9LKuL7YRUkldzNhat5QrJkOdeu/JP0pjLlSHQl
-         n7tA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyiBzDajtZuw7C6sCRKp/XvCCEU5Km5cT81JC3mbxyyWUsSPGKUO9a0eHFg/B1QMFwrDrCK4gK9qyIxB/AOGsmx5JKufJ+11Esc4eAC8K37P15aPEiNVA8wephCigw/1zwC6WjNaYYJqc=
-X-Gm-Message-State: AOJu0YxFhT5WZnuDHZcej4TgEEN8m0RoZWqjf9PVOTvuCSx20ByK1+YP
-	CwxHjJMHar6/wT2CFSRRER0U8BfxjIPzmg8Qy96TfLiFFiff70NP
-X-Google-Smtp-Source: AGHT+IHaNpbaz/HDGu7VcRVzlq5wmBVR+jd4KotHDGtbxum8Y0dFyx1RYgsRz1lnxxh3nMkEQZYc3Q==
-X-Received: by 2002:a05:6358:8a9:b0:183:55a6:b239 with SMTP id m41-20020a05635808a900b0018355a6b239mr50469rwj.2.1711647805317;
-        Thu, 28 Mar 2024 10:43:25 -0700 (PDT)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id c192-20020a6335c9000000b005dab535fac2sm1545837pga.90.2024.03.28.10.43.24
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gvors8q39VXXaq9ZdPwa40whQzgJb2pO5+vkfKvwSKc=;
+        b=Hee7ZLTOLP46e1eNr/6EwvXewYqEnSHj+5eD/FU+R+7BIgGgY1DhUMStyfBkgm2BgZ
+         Xq1UJtUP2CTeKV3weVGLraXES3QmPeIhLkARccq5jWQyAcyR7rBaMPBuUkwkb1lCvA1p
+         yt1EzuQvdX9m2iB65QXlaUg7Np4iZ0a3bqHlXBqmI25vnUlPjRahfQF84uhvq5OW3AQx
+         dnFrhRBR9VABSIB2zgEY6U9QouRN4DcV8rfvT8meG7GmCoG1McWXnR5XCjRH99V+nXNw
+         VT2JndQoVTzleBycrpOIRN9vrUXzWblbCUabRkpVLSv/omMGvceGCfgWd9+VURffzHfD
+         6S8g==
+X-Forwarded-Encrypted: i=1; AJvYcCW62YMoe1bOFANuOjdsiocELjmYZM+iLpBu2Ak1HxFAAxK+iouzimlAcnniG+n1NuzGwuSrwGUzEmW/RBPOjI6Mt6SQPN6Yju9Jg/rm6eHs46VAcGDESrs1Dk8pYd+HCzYgP08X
+X-Gm-Message-State: AOJu0YwdSJb4DxZU/r3MZLn7fk8yAM5d22IvfUrH4aF2uBUyupT1wwfe
+	8SZTrRARJFrvD1UnsiTtzq4VtAG9VIkg8o/gosWfvzokezH2c1Kd
+X-Google-Smtp-Source: AGHT+IF0BeJyTJJ8JTj2sfLsm8ROWVomNPAATFI3EDfA3JpyIWA1lvRFjEf/b0U3Krkct630C/tlzA==
+X-Received: by 2002:a50:c019:0:b0:566:6a9d:6147 with SMTP id r25-20020a50c019000000b005666a9d6147mr2847573edb.0.1711648000523;
+        Thu, 28 Mar 2024 10:46:40 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id j10-20020aa7c40a000000b0056be25367absm1082811edq.40.2024.03.28.10.46.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:43:24 -0700 (PDT)
-Date: Thu, 28 Mar 2024 14:43:18 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1711647802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9vr5XsWFJLw7ybCrrKVxNz1sn6zwz/bJc/6H6RbUNG0=;
-	b=Nbi9gXcOc5NcUrstW9X8nn8RlBwi2uHsy2Y32aP2LfHT9yVaTezwxWLxd8PgX5FGtM36DQ
-	J2t1xftR/bP/t7FKdz2Y8CUF3W614ML3MHYihRpCfNNbc3+3dn2AjIhqOXzysJrVMP0hf7
-	1UzenDadzbEhOnYdG0JsM64KojgNdSryHwTUmQ5K8wDfQNgAymvxvXo8ChVeK6LJUTqoE3
-	z8u5RzABxwyrQq0C2ZsxGqMXCzHOLLoFtif0v5pfic0F/IM3bjrl5D17HlBqnMrDxFcR+0
-	kQ0rIy8dWwO9Ca3kh1eplvOwhTvsqGcGLWY01wc5zsbRNYczMrUG/EGIdHCskQ==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Lee Jones <lee@kernel.org>, 
-	Daniel Thompson <daniel.thompson@linaro.org>, Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] video: backlight: constify struct class usage
-Message-ID: <zzbvkpcaxgmj3t5qzgiacazsaf5cfn7vjopt56c3ngfvtiskq2@igc4vue7ltqp>
-References: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
- <20240328114131.GB13211@google.com>
- <2024032816-tightrope-lushness-00f1@gregkh>
- <anuaxqt2zlravjpepkuhqmii3adjdeh3lzal3wwb7rg7krv6uu@7sbwczq3flot>
- <2024032817-avatar-agony-c17d@gregkh>
+        Thu, 28 Mar 2024 10:46:40 -0700 (PDT)
+Date: Thu, 28 Mar 2024 10:46:37 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	quic_jjohnson@quicinc.com, kvalo@kernel.org, leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>,
+	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: create a dummy net_device allocator
+Message-ID: <ZgWs/Z7d1hgFyytO@gmail.com>
+References: <20240327200809.512867-1-leitao@debian.org>
+ <10d89693-21af-4560-a088-d58d16cbb9dd@intel.com>
+ <20240328101053.69a968ec@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,50 +79,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024032817-avatar-agony-c17d@gregkh>
+In-Reply-To: <20240328101053.69a968ec@kernel.org>
 
-On 28 Mar 17:49, Greg Kroah-Hartman wrote:
-> On Thu, Mar 28, 2024 at 09:46:01AM -0300, Ricardo B. Marliere wrote:
-> > On 28 Mar 13:01, Greg Kroah-Hartman wrote:
-> > > On Thu, Mar 28, 2024 at 11:41:31AM +0000, Lee Jones wrote:
-> > > > On Tue, 05 Mar 2024, Ricardo B. Marliere wrote:
-> > > > 
-> > > > > This is a simple and straight forward cleanup series that aims to make the
-> > > > > class structures in backlight constant. This has been possible since 2023
-> > > > > [1].
-> > > > > 
-> > > > > [1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
-> > > > > 
-> > > > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > > > > ---
-> > > > > Ricardo B. Marliere (2):
-> > > > >       video: backlight: make backlight_class constant
-> > > > >       video: backlight: lcd: make lcd_class constant
-> > > > > 
-> > > > >  drivers/video/backlight/backlight.c | 29 ++++++++++++++++-------------
-> > > > >  drivers/video/backlight/lcd.c       | 23 +++++++++++++----------
-> > > > >  2 files changed, 29 insertions(+), 23 deletions(-)
-> > > > 
-> > > > No longer apply.
-> > > > 
-> > > > Please rebase on top of v6.9-rc1 or for-backlight-next.
-> > > 
-> > > As I already had this in my local tree, I've sent out a v2 at:
-> > > 	https://lore.kernel.org/lkml/2024032805-putdown-mushy-a0f9@gregkh/
+On Thu, Mar 28, 2024 at 10:10:53AM -0700, Jakub Kicinski wrote:
+> On Thu, 28 Mar 2024 16:02:12 +0100 Alexander Lobakin wrote:
+> > > +/**
+> > > + * alloc_netdev_dummy - Allocate and initialize a dummy net device.
+> > > + * @sizeof_priv: size of private data to allocate space for
+> > > + * @name: device name format string
+> > > + */
+> > > +struct net_device *alloc_netdev_dummy(int sizeof_priv, const char *name)  
 > > 
-> > Thank you Greg. I will see what is left to be made const for -next.
+> > Since the users of init_dummy_netdev embed &net_device into their
+> > private structures, do we need sizeof_priv here at all? Or maybe we
+> > could unconditionally pass 0?
 > 
-> Many of your patches were not picked up for -rc1, I'll be taking a bunch
-> of them into my tree "soon" as that usually means the subsystem isn't as
-> active.
+> FWIW similar thing could be said about @name, if we never intend to
+> register the device - it will never have a legitimate (user visible)
+> name. So we may be better off naming them "dummy#" or some such.
+> No strong preference, tho. Adding params back later may be a bit
+> of a pain.
 
-Yup, I was keeping them in my inbox so as to resend but if you could
-pick them that would be great!
+Removing the @name seems to be safer than @sizeof_priv. I can remove it
+in v2 if any one has any strong preference.
 
-Cheers,
+Unfortunately removing @sizeof_priv might not be possible given cases as
+iwlwifi.
 
+> > > +{
+> > > +	return alloc_netdev(sizeof_priv, name, NET_NAME_UNKNOWN,
+> > > +			    init_dummy_netdev_core);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(alloc_netdev_dummy);
+> > > +
+> > >  /**
+> > >   *	synchronize_net -  Synchronize with packet receive processing
+> > >   *  
+> > 
+> > As Jakub mentioned, you need to introduce consumers of the functionality
+> > you add within the same series. Personally, I'd like to see a series
+> > with agressive conversion of all the affected drivers from
+> > init_dummy_netdev() to alloc_dummy_netdev() and final removal of
+> > init_dummy_netdev() :D
 > 
-> thanks,
-> 
-> greg k-h
+> We can, and put it on a shared branch so other trees can also pull in
+> the conversions. No preference on my side, tho. I think that Breno
+> doesn't have any of the HW in question, so starting with one and making
+> sure it works could be more "work conserving", than redoing all
+> patches..
+
+I would prefer to do the more conservative approach first and make sure
+there is no major regression, and then complete the work once the risk
+is low.
 
