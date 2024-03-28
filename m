@@ -1,184 +1,212 @@
-Return-Path: <linux-kernel+bounces-122436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A937088F768
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CB0A88F769
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCB821C24042
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:48:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F8E71C2576C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D4D48CC6;
-	Thu, 28 Mar 2024 05:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D519348CC6;
+	Thu, 28 Mar 2024 05:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hpVB75HD"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GsdEcJrL"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2062.outbound.protection.outlook.com [40.107.223.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581593E480
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711604914; cv=none; b=VpjJlcoyrEeMhbLAz1QQJ0YScHifqYOQgGji9gsc7VmW1Kg+zQpxU2uHzK+eirVRrw3J5FlLUO/fkRVvRgon0dBXVc8R35Byed1ficrf0Cr0Q+mxIfZrJol5Mx/xoQ+iB4oCNl0cuYsbn+CnY0MIoxzhB5+F32DtqSOQosz5tkk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711604914; c=relaxed/simple;
-	bh=MvuqPwvbbbqdvPlx+rA7zYrmOuh+SWcfcVfPClp2XC0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=ijXFNwK5ftoNy3rQkQMzIu7/o6INRUddNKJ/AHHzBNyfTuawRuSHUUflQ5ZP5PA2D0iMHEd6H0LFqt7/0BeMK7EIbc+zGFXpuWoeElXhylFItWmxiXyCxEvTrPemvWPiC9Aken43gs92M1+iR1lTucfygcVpuTqacUISIm0lp9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hpVB75HD; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42S57QJY030861;
-	Thu, 28 Mar 2024 05:48:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : cc : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=1mBPQSp6iJK9AjeMtP5x2An5DOX3bsekImLaSP/w6aU=;
- b=hpVB75HDSYKc2nUoR1Wdx0ck8XQKC+evPVmTFpCMnwxuy5rYGEnoYarVh9G7P5xNv2fB
- /ipp4sy13GjIb6LG6i+nfS+0YU6LRESWihfQpP67SM4AJCPht3Sj61opD4AyOcEpdkTo
- CK8dFAvLcUBkjVDIZ0eyrZ67mi/GarkxMc2MwGWJLVVg3eqpJ/RdvGowbP9LT49UEMan
- c4KF7hqb0V6NiP+o1tzUI6mYFUeycWUpJUiHs3y1wELF0vHstIwxHjvm61uOo0Pw4jQ4
- gZYsY7b2VzI5UGLCwJZVUMGe+TS/gnY4jsc4JBhzIQLIyyuIZMBJjiJSFqR9UDKXus2N gQ== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x524a02hy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 05:48:28 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42S3W2S9003747;
-	Thu, 28 Mar 2024 05:48:27 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x2c4332p8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 28 Mar 2024 05:48:27 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42S5mPqq38142284
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 28 Mar 2024 05:48:27 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0EDEE58063;
-	Thu, 28 Mar 2024 05:48:25 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3A8DF58056;
-	Thu, 28 Mar 2024 05:48:24 +0000 (GMT)
-Received: from [9.109.201.126] (unknown [9.109.201.126])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 28 Mar 2024 05:48:23 +0000 (GMT)
-Message-ID: <29b1db65-03c6-41a6-8556-f788c4161efd@linux.ibm.com>
-Date: Thu, 28 Mar 2024 11:18:22 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE0D40878
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 05:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.62
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711604994; cv=fail; b=vE9x8MzmNCrYBCM9a34ggPTvk3rt4QFZrFzKE2Yx1H54di6fpWDcPTcFzD8WmCySZogcsO6U4ta+rQHTFiz9aXlNf8rPSpuLj2SMBEQ0uRSG8vhBaVAZhxNKp/d/6YllLd/n/BmI02ikp/itSBFxkCSr4opzC8JvsdzVlpvNvfc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711604994; c=relaxed/simple;
+	bh=OT11zYtyVZpOj9ewb6nt9skUaA74Op5HrQV0zxQzM0A=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=eYp4zLD/rmuzzizxy3CRieN3aio3u0ioV1WI4uYEXr8KhSHQs/9fSNPVlysPLMqxt3t9H1WrNDq9wfhehgWw9oHIptdWVa0MZdskLz6A//A6KgJzRl4/Nw6O+DGMpqCoN/k2UQP8P7IslyPkYVua/PTCkoUO2V+PDOYZoSZzFRM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GsdEcJrL; arc=fail smtp.client-ip=40.107.223.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z6ja0cUROkWw+YfBc1GtL8aI5jeMgfzYcCOQ7SbqWK8bawXv7BBNLSr5e2D0PAg9MTwxtLCY4dnIkoqqjI1Prp+tSv/oJGJjyxVrMasuw14W+x3/XSSwQTXyUcSZBTi3xXL44PCX+StKiqrM4lNZsgCf0WXSNg7FmZRvvPrQX0n662BYfTgsHAVPfFQJzIcTw2F/4rLfhA3p+8iz6UUEMGKdbo2H/fXNfCAmZ0b+0vfwIEKjFmnzV5EAZV007pzinnyIZoVXMGjh1xT5XteUE1/eHrAYLlYkwnU5hiJsIRagygwh9zDEHw9Qvv/aIUkg+yDvW528DPO3L2862ft58g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JpfeUPr0I/YaETe9n5IlM0+Ca4a0g9N0BHTw8A9MreM=;
+ b=Szt8E6IZbdLHFa/6fUDKDZMRIG6ttuz35MyOoI1v4cVcYL2EqoBIdmZirWU+Aw2KqgsnwTvZiZriXc2W+4vku8YXRlTKiIpKRUtvDhy62EXf4rTNQfNTF08jpv2ySgsCI0RG4e8Efs1IXkc/0wlS+/JQH4a8tvMlB5YEtOAZFHmd3U1jzw0cvMDiIYom9rX+3+dfI4rwTzIPihTFITQYzeZxz9RVX4sSyuTe2sJXNCLR4zyuZ6X8CwdBKeQhA5ibiDRtYlP2z0n8t1emZIcRxNOkxcqnfwPwcPpJaXTQwccgvaWrPfSrHby7vU7SPfzATQ6PImRzPQ/mUsmUXeMIKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JpfeUPr0I/YaETe9n5IlM0+Ca4a0g9N0BHTw8A9MreM=;
+ b=GsdEcJrLOA7DFBEAqUabmMp94Esml013pg1tIEvVFvVHe4KuJWy8XZ4iqydEUxtAdUbWS6nODi60VqIO7HMoP3J8lbwvs5HdJbrbNkAKVzILeHeg3zJuvmHbyROlDXA0fRsLAIFl8Nzl3R/dujvm+WwXRaGUoiqL5dC2G8MZTtg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from IA1PR12MB6434.namprd12.prod.outlook.com (2603:10b6:208:3ae::10)
+ by SJ2PR12MB8943.namprd12.prod.outlook.com (2603:10b6:a03:547::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Thu, 28 Mar
+ 2024 05:49:50 +0000
+Received: from IA1PR12MB6434.namprd12.prod.outlook.com
+ ([fe80::a628:d2dc:a0e9:67e2]) by IA1PR12MB6434.namprd12.prod.outlook.com
+ ([fe80::a628:d2dc:a0e9:67e2%5]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
+ 05:49:50 +0000
+Message-ID: <dd2bc563-7654-4d83-896e-49a7291dd1aa@amd.com>
+Date: Thu, 28 Mar 2024 11:19:40 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] Hot page promotion optimization for large address
+ space
+Content-Language: en-US
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+ mgorman@techsingularity.net, raghavendra.kt@amd.com,
+ dave.hansen@linux.intel.com, hannes@cmpxchg.org
+References: <20240327160237.2355-1-bharata@amd.com>
+ <87il16lxzl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Bharata B Rao <bharata@amd.com>
+In-Reply-To: <87il16lxzl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PEPF0000017F.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c04::4f) To IA1PR12MB6434.namprd12.prod.outlook.com
+ (2603:10b6:208:3ae::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] sched/fair: allow disabling newidle_balance with
- sched_relax_domain_level
-To: Vitalii Bursov <vitaly@bursov.com>
-References: <cover.1711584739.git.vitaly@bursov.com>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-Content-Language: en-US
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <cover.1711584739.git.vitaly@bursov.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: CH4bubbfE5UEaRYt5C2KMMgtHhF2DhhS
-X-Proofpoint-ORIG-GUID: CH4bubbfE5UEaRYt5C2KMMgtHhF2DhhS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-28_04,2024-03-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 mlxscore=0 spamscore=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403280034
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6434:EE_|SJ2PR12MB8943:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0063099-d9ae-409f-4ccf-08dc4eeae201
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fy/EQ5o17EoeMq2lGvJ/nsK7c16DxpM5Y4jRVB2s74ihi9nPx+JLwFlRGHLB5DJ0NDT/zMAvvpmlzZD01gMHtHmMfcwW/l53FqXcJd5tP/IinXcFtsomeu1Y0hYj5Q9lvSuuU1+z11UA8we0y6xKHtpL4gVEjEmxVqLIzUWVXyH3qEsCn9eUaUYxgdzCaVLjSKNcRjMfecshThhQMTiJF4nqj4aeephX/C5ejzieohw01CrQhyispY35oYdzo4XnwR1mL7/Fh3LsxYyLRl0TYgYMMFKOSrC0bxSRrj30YRvsyjGyhdD2vP6zQuJfI0iy0uo5LYFSey1hUH5D46NXFFKLb9Hfw06TvhkfSkjd9NGYOCeSqPbPE57L51FIaeic9/Ua/5ltKZS5MlD5Z3qdeNQ3kvEt0XYuIxlR6VKEiEORzK7516sy4V/ZILRZsZt88hpkxYTUf6E2gP1OQG9bw1E5idOua5G9onP/GUfmXTj1vpqf/ggEIxaGwrsSmJQctrLPI4UCaMMgQ2bMMvr4Hfz04HkNeaOWR1P/IUBaR/GEda+pCIZqizoZvcks/oWLpHf1s5NF5bjIY0WMFcvWgND0a1B0IjlaayO4tDmC9amCRwWMchZVSCI58/ooDkrQgW9HkOEUG3iIja82JrauiQLuW9+ilpWwBo333Hz3ago=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6434.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?T0VIWXdVUktobXVBb0JjYUN2R0hmRWJZVEJIRHhLOTRQQlNKTmk4SlpMWG9j?=
+ =?utf-8?B?cU9QaHdHUmNxWHBndkdYNVh0ZVQ2Tk96VzZRVkZ4L2o3V1VxYStUeXBoaEo0?=
+ =?utf-8?B?Nnd3dytQOUx2NkxpSDlLM3ViK0lXRGluREZseU9yVEluaGh0OU00M1h2Z1hU?=
+ =?utf-8?B?RkxJYmtaN0VPbmNSOE1oNXVVZU9oSGRyMngzK1grd014VVpNNysxd21JZjJO?=
+ =?utf-8?B?bGNoYzV6YlVna3BTQ056elBIdmJoV0tkVTlFeFN6enZyblh0UGZIaGV1dEc5?=
+ =?utf-8?B?MWRqejlMeGZsaFZWdDA0aTNicXJHNEo2UkEweGZoR1NreENCL0pZTGkyOGkw?=
+ =?utf-8?B?MG9DVHY3eC9ZVnNwRGc3RUpuajRaU1FFVXJwMlBXY1h1clNXM3RwT095SnNL?=
+ =?utf-8?B?OS9PMmRqUzRRZXp5eVByQ05yeDY4aHZQUldlQUVNajZWZmJzVklZSjdsYnVH?=
+ =?utf-8?B?Wkp6SWJUdVY5Q05oZUZ0SkxnblZmOXkzOTArcjVtL1J6SDdyUzNBWkRhQ094?=
+ =?utf-8?B?alF4ZjFWZWZqdDBKSWZHbEEzUURFZkNWUWhXZVN3dTRhVUhDVWxnN0xteGRv?=
+ =?utf-8?B?RFU0emZvM3BVblU5REloWlRTc1NHZFN4R2txNUJ3aUZLd1BLUENsekVZN3ZZ?=
+ =?utf-8?B?WGxQZEpKR0xFZnFRWnh2YlZlaTVIUFlHMFpLcmJRS2h4a0YwaW1VZ093eE84?=
+ =?utf-8?B?cFlrN3lwODRFSzBzUXJrUHlzREUwU3FXREU2emhaTThWZk9rTHB3emVid3Zq?=
+ =?utf-8?B?T1pPcTVTSmVJWUpYcUlncW9GNlA3UGJpQzdTbnlPaUNxTTlNbGpuRC9ORE55?=
+ =?utf-8?B?YThQRC9qSkZHYVpQSElraklhbkUyYkJLZ1hVM3c3aXV6enlja0VQY2RIUity?=
+ =?utf-8?B?RVpzRlJ6aVJRdlRnYUhPRE1ONFdiZWhHanJRSFVzMVFSaHlpUnJEVExENVJy?=
+ =?utf-8?B?Wjh1QUdpUFJjZDE0d1VURkpwTm9IN1lGSXhDQ3lwd3Y4T0JsSGlCTEs5VzAr?=
+ =?utf-8?B?czlYcHlTV0JEaEoweW5raGhMQW95Zng1YTA4Ym9MQTR1ZG1reTlhZW0wWTVZ?=
+ =?utf-8?B?ZkJQb04wMHI3L0ZjT2J0NEsrUGN4cVp0eXVNTGprYmswY3ZUN1JEenMyd1Rz?=
+ =?utf-8?B?TDR0OU4rUTJDb1JVanhXUDdxWjA0U0QzZE5lQk5YYTdnU0MvSFlrNDduald5?=
+ =?utf-8?B?YUVzbFdKd3N4QmZOQUZIT0ZqTmVWTkVLNkk1L2MvN2lZbWtaRXVuYnBNSmlx?=
+ =?utf-8?B?ZGNwcGsvYTVQWmZLeUNBdlNCTC9UaXFjamFFelpEMXpkdU9NcGNEL29JcUt6?=
+ =?utf-8?B?UE42N284UVlLQzAyeGZ2SWhvamZRUEp3WGtwVmtpUDlmZy9pTTFaa0t4RjhW?=
+ =?utf-8?B?WCt3L0dyWVEvTFJyM2hnVmZuREljbnUvR05KOFB6cERlWkcrQ0pjMnBYVTRS?=
+ =?utf-8?B?WWgvdmYyeTNVTDVDNVlTT1M0aTQ0dHlUejY3bnFEbThzeUxrUlFVSERxL29F?=
+ =?utf-8?B?MDFmVzEyL0lxUHVXekNIQUdQbXVIOSs5WFF3MUVvajVRYXl2N0NkREZvZE9I?=
+ =?utf-8?B?ZlRwc3pGT3htdmV1OUxEc1hFUXZSWndHQis4NFdDRGdqQThVM2JsTkhxUnRH?=
+ =?utf-8?B?c2RScXkyS00rRXBzUkdJWDcyRVYrVTBlMnFCdXhQUWZ5S3M2azNEK0xzZTUv?=
+ =?utf-8?B?RFY3ZkZmWTZJbENjWUdoWWhFNmdzaHBONWprQlpVZWhValZYZ2Nnd1dDeWxF?=
+ =?utf-8?B?TnZFSkV2VEhQLzZ5aEtnTXpPL0JzL0d5YjdMK3VPaURuK2FKTU5pRXdiWjcy?=
+ =?utf-8?B?a05BZEViRXh4R09oMHpxdWljUzQyQktkYkN6YlFxOFpKOTR4UXZxL05EclZq?=
+ =?utf-8?B?RGdGWlJmdHpxcmpxN0REaXduTDdRVFZqem1hTWJtdHhucGlxakpLTHlKMG90?=
+ =?utf-8?B?WHpWN0FWaHJ6U1E4UmtsUk03L0NOUGFuSlRQZUE3bFAzM2N2TGtuVTlxb0VH?=
+ =?utf-8?B?Q1VZSGZpTnRHZkVnaS84cG13TGlURGNXYytGSG9wb2lIRVQ4bW9Da2dlVDBj?=
+ =?utf-8?B?R2tGUzlQb2NSZUJuZHU3SFByd2p6MVVsL0Q1d2lmckYvMTQzYzJhVWNVcytX?=
+ =?utf-8?Q?9IwBEv8lGDu/Fj9imHqtWd8KX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0063099-d9ae-409f-4ccf-08dc4eeae201
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6434.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 05:49:50.3761
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YNvpWwdZpEX92/cAaeuqQYDNo2NnbM8+FDwYhMfZhJHzjTNMVCWK6V+JLQWl54ruVBkE/bOjbOy7mrHVrlk7zg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8943
 
+On 28-Mar-24 11:05 AM, Huang, Ying wrote:
+> Bharata B Rao <bharata@amd.com> writes:
+> 
+>> In order to check how efficiently the existing NUMA balancing
+>> based hot page promotion mechanism can detect hot regions and
+>> promote pages for workloads with large memory footprints, I
+>> wrote and tested a program that allocates huge amount of
+>> memory but routinely touches only small parts of it.
+>>
+>> This microbenchmark provisions memory both on DRAM node and CXL node.
+>> It then divides the entire allocated memory into chunks of smaller
+>> size and randomly choses a chunk for generating memory accesses.
+>> Each chunk is then accessed for a fixed number of iterations to
+>> create the notion of hotness. Within each chunk, the individual
+>> pages at 4K granularity are again accessed in random fashion.
+>>
+>> When a chunk is taken up for access in this manner, its pages
+>> can either be residing on DRAM or CXL. In the latter case, the NUMA
+>> balancing driven hot page promotion logic is expected to detect and
+>> promote the hot pages that reside on CXL.
+>>
+>> The experiment was conducted on a 2P AMD Bergamo system that has
+>> CXL as the 3rd node.
+>>
+>> $ numactl -H
+>> available: 3 nodes (0-2)
+>> node 0 cpus: 0-127,256-383
+>> node 0 size: 128054 MB
+>> node 1 cpus: 128-255,384-511
+>> node 1 size: 128880 MB
+>> node 2 cpus:
+>> node 2 size: 129024 MB
+>> node distances:
+>> node   0   1   2 
+>>   0:  10  32  60 
+>>   1:  32  10  50 
+>>   2:  255  255  10
+>>
+>> It is seen that number of pages that get promoted is really low and
+>> the reason for it happens to be that the NUMA hint fault latency turns
+>> out to be much higher than the hot threshold most of the times. Here
+>> are a few latency and threshold sample values captured from
+>> should_numa_migrate_memory() routine when the benchmark was run:
+>>
+>> latency	threshold (in ms)
+>> 20620	1125
+>> 56185	1125
+>> 98710	1250
+>> 148871	1375
+>> 182891	1625
+>> 369415	1875
+>> 630745	2000
+> 
+> The access latency of your workload is 20s to 630s, which appears too
+> long.  Can you try to increase the range of threshold to deal with that?
+> For example,
+> 
+> echo 100000 > /sys/kernel/debug/sched/numa_balancing/hot_threshold_ms
 
+That of course should help. But I was exploring alternatives where the
+notion of hotness can be de-linked from the absolute scanning time to
+the extent possible. For large memory workloads where only parts of memory
+get accessed at once, the scanning time can lag from the actual access
+time significantly as the data above shows. Wondering if such cases can
+be addressed without having to be workload-specific.
 
-On 3/28/24 6:17 AM, Vitalii Bursov wrote:
-> Hi,
-> 
-> During the upgrade from Linux 5.4 we found a small (around 3%) 
-> performance regression which was tracked to commit 
-
-You see the regression since it is doing more newidle balance? 
-
-> c5b0a7eefc70150caf23e37bc9d639c68c87a097
-> 
->     sched/fair: Remove sysctl_sched_migration_cost condition
-> 
->     With a default value of 500us, sysctl_sched_migration_cost is
->     significanlty higher than the cost of load_balance. Remove the
->     condition and rely on the sd->max_newidle_lb_cost to abort
->     newidle_balance.
-> 
-> 
-> Looks like "newidle" balancing is beneficial for a lot of workloads, 
-> just not for this specific one. The workload is video encoding, there 
-> are 100s-1000s of threads, some are synchonized with mutexes and
-
-s/synchonized/synchronized/
- 
-> conditional variables. The process aims to have a portion of CPU idle, 
-> so no CPU cores are 100% busy. Perhaps, the performance impact we see 
-> comes from additional processing in the scheduler and additional cost 
-> like more cache misses, and not from an incorrect balancing. See
-> perf output below.
-> 
-> My understanding is that "sched_relax_domain_level" cgroup parameter 
-> should control if newidle_balance() is called and what's the scope
-
-s/newidle_balance()/sched_balance_newidle()   at all the places since the 
-name has been changed recently. 
-
-> of the balancing is, but it doesn't fully work for this case.
-> 
-> cpusets.rst documentation:
->> The 'cpuset.sched_relax_domain_level' file allows you to request changing
->> this searching range as you like.  This file takes int value which
->> indicates size of searching range in levels ideally as follows,
->> otherwise initial value -1 that indicates the cpuset has no request.
->>  
->> ====== ===========================================================
->>   -1   no request. use system default or follow request of others.
->>    0   no search.
->>    1   search siblings (hyperthreads in a core).
->>    2   search cores in a package.
->>    3   search cpus in a node [= system wide on non-NUMA system]
->>    4   search nodes in a chunk of node [on NUMA system]
->>    5   search system wide [on NUMA system]
->> ====== ===========================================================
-> 
-
-I think this document needs to be updated. levels need not be serial order 
-due to sched domains degenation. It should have a paragraph which tells the user
-to take a look at /sys/kernel/debug/sched/domains/cpu*/domain*/ for system 
-specific details. 
-
-> Setting cpuset.sched_relax_domain_level to 0 works as 1.
-> 
-> On a dual-CPU server, domains and levels are as follows:
->   domain 0: level 0, SMT
->   domain 1: level 2, MC
->   domain 2: level 5, NUMA
-> 
-> So, to support "0 no search", the value in 
-> cpuset.sched_relax_domain_level should disable SD_BALANCE_NEWIDLE for a 
-> specified level and keep it enabled for prior levels. For example, SMT 
-> level is 0, so sched_relax_domain_level=0 should exclude levels >=0.
-> 
-> Instead, cpuset.sched_relax_domain_level enables the specified level,
-> which effectively removes "no search" option. See below for domain
-> flags for all cpuset.sched_relax_domain_level values.
-> 
-> Proposed patch allows clearing SD_BALANCE_NEWIDLE flags when 
-> cpuset.sched_relax_domain_level is set to 0 and extends max
-> value validation range beyond sched_domain_level_max. This allows
-> setting SD_BALANCE_NEWIDLE on all levels and override platform
-> default if it does not include all levels.
-> 
+Regards,
+Bharata.
 
