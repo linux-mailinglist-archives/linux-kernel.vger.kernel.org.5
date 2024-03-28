@@ -1,204 +1,406 @@
-Return-Path: <linux-kernel+bounces-123418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93DE6890864
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:32:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98DA8890867
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8162B23EE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:32:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D4631F233B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07D7137746;
-	Thu, 28 Mar 2024 18:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B160136E07;
+	Thu, 28 Mar 2024 18:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZqIe8eeV"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="gC2eiEeO"
+Received: from mail-4325.protonmail.ch (mail-4325.protonmail.ch [185.70.43.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A535612FB3B
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711650763; cv=fail; b=qR5QNSYA/YQoyGW3BKldO/2zZ09XRtKJEPMe0IGR5v4bi80X35Z/GZ34krfcHeQytHHMpLleKk97QZS98EkHGl2J3pTcBwZV5zNllYWnyz8yNUY6i5Ur+r7wBAymNYicp0IBUMc/+NlrwJ97TKCiAp+av+jG8cSgzU0Y1AiTMYc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711650763; c=relaxed/simple;
-	bh=jFH/ars57/1YZlDAwfSrH52Nv3SD7ZuN4oDCP218Na0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=VCW/brQ0Ju16e+rUWM5x+2Ve2OJgi3r22NkYRs+017NzU9YwLEPrCORIrpm1PCgqpVM9d9Bjfr5lIEYUYnhGQQMENxUTgZtwTS30qwP6qsDcsLUtjMa21NSRcM1eEJk8qsvRjjLq2ckUTR/atTPvnYlMiZofrMURKDfkEKqQ6N8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZqIe8eeV; arc=fail smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711650762; x=1743186762;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=jFH/ars57/1YZlDAwfSrH52Nv3SD7ZuN4oDCP218Na0=;
-  b=ZqIe8eeVIf1AqY+dP6k7hHSe/rq9HjNK/yD9T7vPmHTXwdDHkIRozTA9
-   U96JyARkv9a71CJ5dyKfuar3H8iwBNgo2fCzZ5U8UQt05TDcLpKFTm1rm
-   yibuZnma2grsAqca3CGIe3YdlkOhu8sXAtz4X2vTTmzOZM6Y/zpABvaUF
-   40ZI/3pfPYnTBVT9yyCgoxDwjvLXabynSVOdXpgGxqmzmR8ViZeOHStxR
-   VcJuF2ZBeNXXM9ktqLX3KO64A8WtXEx099O3cfMd+c+UYGecTopOggHi4
-   EYFRx9/MhC8aQT4/ICXbhPWge+gDb0hqnQpKnDIC7dKdUaZmu2e3WgQB+
-   g==;
-X-CSE-ConnectionGUID: BPsvf0+ZR8i7fLzXROwQ2Q==
-X-CSE-MsgGUID: nGKEywVWQDiOat0CMqi3XA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6687558"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6687558"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 11:32:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="21467284"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 11:32:41 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 11:32:40 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 11:32:38 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 11:32:38 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Mar 2024 11:32:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QmVL+rcuNJTTWb+cUF6xOBzXJ0iskHXP5xwaP28J/IRxjf66azN5slSLWDW7SJcLRQI599SYCulY9M9QuEf+CKlKVDo48gOGXv4Sma62U+Uybuu2FrX2dXv1Ha2YbNc8sQ9d/xOxoklHOmokytQ9d8UcgW/mxRdqIXZeF5Xg8pW9x/bpiLCsYLIA4S+0PeoOpJcg+flz1NJLw4vjn7PncDn+j2D7CU6pi/V7L52zfLEwhftshbZ44vfSL1VsM1bS4mJZG79BCSywR8rUhCVngGG0T7Haf1e7xPkXCcrYCWZ2OoHqeL4SgIBwC421+t+43/UAlqj0tTrn0sVeI7OMyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jFH/ars57/1YZlDAwfSrH52Nv3SD7ZuN4oDCP218Na0=;
- b=XejDtQrBdhJaaG226SFVbeNpMt5hpz2CLffWW3hZfHsiXjCEG6LGHfvb7rgyaP7pPyEgTaL6CHdSJTRM31xgBTxEIKe/D0QSjTa2NEhNW5jlwx2atLp4aJ5RYofbQPuHtLFDlRv15sue3cIQryxBCFAWZbJ2BWzA/krvrTqPf6UT+kePY9/ZaU0NRO5ZmPEDNA1L6fva5VlPZZZWHq2leM15YKqOAsdcNqW3j35HzBOMc6X6yjBS+sJfOjIfxQcZ+zJwIYTll3FYx56rdm9TNxunNqNgz54H8EuwG5TDV46AQYTB44GECazENdJ5i9wZ22jlPfWTy82CzzOwjHhnQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by CH3PR11MB8436.namprd11.prod.outlook.com (2603:10b6:610:173::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Thu, 28 Mar
- 2024 18:32:36 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62%5]) with mapi id 15.20.7409.031; Thu, 28 Mar 2024
- 18:32:35 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
-CC: "x86@kernel.org" <x86@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to struct
- cpuinfo_x86
-Thread-Topic: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
- struct cpuinfo_x86
-Thread-Index: AQHagS5KoaFl1e6FLU2YPMaZiCLmO7FNXROAgAABToCAAAEjsIAABDsAgAASPNA=
-Date: Thu, 28 Mar 2024 18:32:35 +0000
-Message-ID: <SJ1PR11MB6083D8BB65748452B204ED8AFC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20240328163746.243023-1-tony.luck@intel.com>
- <20240328163746.243023-2-tony.luck@intel.com>
- <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
- <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
- <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
-In-Reply-To: <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|CH3PR11MB8436:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bm+GcwNFY/oJBArZXRUIWIty8wtpL7OsBHOMCir0udPcBAcUvHe2ZpTrsCwQ4OvRRL9332LI8vfMX4clv/CLBmKhRscL6lIa/S5klf+thx8An7WzwKnMKUys9AHNFpDoQS9BfFwbBhKwgneKl3me3K/+psrjfECg/22184K3CAvKL90htIFP9CSgs70HYjker4TqCQweaEdB9zcUcPVljITfa7uNME7osKxnjNnXfQNzDwKvUd+22d0R2Nh4wa7QJBZ6+IVNxuEjoQl6xAG8G8cvKQCTwn6e9oJtr6No1prLGDCBChqaGR1PxE9uiMbXycjRSj1zfEUZLoG6W1HrgZPsfh90Yb/BIxqqHTtQUSCFwj0YfUpRaBa/DkfITvWtTaAQwy3n8i6oS0O7teyNbD51ZHFZIZHliQvc0KrQpRyFNngbQItyBjHgGe40gVHqMFkTfMmaONXRZwUFfivyHgjKK4DRcvbxnKKd3LBIytQhtURqrUBsxDK2Wm3Ra5SUpFsxZDfpYwC9r8b1/VdTPCISX9Zcxiy7GMdAfV4c3qSyFluIPd6Ir2twPXhAvPTlCDiY8o+hajp90I3mKw9fxbY2ihS57uiDXiPAO3CAnU6jg4VCxxOBr9xYldK7URzupOhvppWaFOoq1chjXv8GZiiGKYIjbZFF13JZNys7rtY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VUx5V2ZNQzJIZVRJR2N5T0tpd1R6MnFjaXN5OW1kR3plZVZXV1dDNzJ0aUVm?=
- =?utf-8?B?RFpFYjdsdXJJMGRnKy9vZFE1dGFnaG8vSWRBMWpDcEVxOGVERklrUTZpQjNS?=
- =?utf-8?B?YW5TUi90SFVmN0RqRDF3bnhCcFFDVEtTTXBMUFIwYzdwQ0FvV1NSQVo5Tysv?=
- =?utf-8?B?dWFjQ1NqMEk2am1zTXBRdzh6d1krc3lFRk9QaS8zQUdTWUk4VkdKMDlhK05M?=
- =?utf-8?B?KzRLVzJVenBXZDZ1QUc0UElkTlluOW5YZlVkQ0pKOW1KNmF4SHJFVGZseGww?=
- =?utf-8?B?aVZNTWEvU081aFlXcEpZeDl3eHRGcmpjSGNEUHRRK3NrYU50U0tFNVBpMkc2?=
- =?utf-8?B?VlZzeW9zaWpiY2gxMjlkODhhTDlhK1h0K2lqMmVRM0d6MTZhSVcxc3N5VjVI?=
- =?utf-8?B?aXRRZVZiMTdHSnpkMitta2hRS2s3bnZkbmZ3c05Hak95NjBDUHdHV1ZZSzcz?=
- =?utf-8?B?VFk5dkZldk9wb0x3bDBWQW5hcnlSWEw5TTNBb29mKzZvK1FVUHhWSlhINm85?=
- =?utf-8?B?eEFZMzlhRWFSYS9uNDV4bUdZbktuM2Z6Q0V5aDdQamw0cGNHQUhPaUhqK3hs?=
- =?utf-8?B?NUZlMlhhVW9xdWFxejd6WkdNWE5SZVZ0WTh1elBsSDlJcVZMWlZKci9TM21P?=
- =?utf-8?B?N2FSYWFWV2R2UERzSFdVK2hZSGVLSllsSUptUlBOdHNuaFdnKzBoQkRGL3pR?=
- =?utf-8?B?aXNLRlVMTjhHdS9jZXQ0KzVsOVU3UlhKS3ozU01HdkRHbDRNTmZOYlJGcUZN?=
- =?utf-8?B?NXNmTVovZzBzTEFIUm1wZm9ZRk9QYTJGdFVPaU5IYWpzSzBjbkx5bGovRWt6?=
- =?utf-8?B?bSsvZFROSGlOaGZVbXMyWW11UWFSVVFBZlVQbHRFS3FmWEptWU5Rb1ZsQ0NE?=
- =?utf-8?B?K3hmdllFSzRidm11T2tBRTc0OXRhaFNFU3lTZi9zWEtUZVhydVgzWlMyZldL?=
- =?utf-8?B?QjNVT2R5SUw5VkVBSGFGaVF4c29kT3hhQnNWRXB6OVh2WDBuNThjN2FVTHV3?=
- =?utf-8?B?K2IwYUh0cy8zekJkMTlLYnBFSm1hZ0g5aU5DVW9wRlVXVzdnWHUxS0toQjJG?=
- =?utf-8?B?NVRuazlmMlVoTHAvUXppUlRJTDVqQ094SkJaTUZtZ0xMYjUyTytWd3lLV3o5?=
- =?utf-8?B?RmlGOEVsSEFqOFZma3RjQmpnVllsb2YrS25aWEVnMEY0YzRxVGhoZ05HMVpB?=
- =?utf-8?B?MXhZRVM5cXhYWExqZVJHbnFWY1hqK2FTeXZzY3AzTUFCSUJFKzlyRzN3ajZ0?=
- =?utf-8?B?M3FqOHVweXlOd3k3bXlEZXFPMGRBdXBPVUkybXoxNHY3S0dseC96QzhKNnd5?=
- =?utf-8?B?YjFhOGQ1ZVgxUVFJMFpwTTBpUG5UUmlXUUJBRXgxd1BLV2Zna01HV05KSGVN?=
- =?utf-8?B?ZEhDRFRwaDNjOGlZMXZhcEVkWVJzTkgwZXdnY25Cb0Q5L3luYnMwU2NVOG02?=
- =?utf-8?B?c1FjR0srZXZnMWJEOVVIQjJiN2VaelAycEVlSXNTUXBUUG9Pc3UyTkxJRms1?=
- =?utf-8?B?ckNTYXFIWGE5bDYrMVZDZDY2Z3FKTnZYc1UzS20wdDBva1BQS3ZsdlViN2ZV?=
- =?utf-8?B?SnFxcmVZNzFxemp6SHhNd0tyaE5CS2hWcFhRWFpJOE51UmpKN3Y4d0M2ekhI?=
- =?utf-8?B?dnhXZWhxeXpoQUt3Zy9jTzN5OGRFMkRBQU9wemFTdmlDTGZZTlZEYndWcDdn?=
- =?utf-8?B?Y1lvekNKTVlIZmhOMEJ4NHU4eVRxcnA5NnFPendVZVVYWUlFTDlMOU5MT3Fk?=
- =?utf-8?B?ajlZQkQ2clRGRjdocUVPWHBpaS8rOWhLeUtuUkpRMWlqQ1NxNUdkTFVpQUE2?=
- =?utf-8?B?bEJsM0tMZElIcncyY2RIem5hMGpWbngrVmdidFQ0VllVL0tXcHFhMG52bHRr?=
- =?utf-8?B?YjZoRGU4TC9qV2lVcnl5cWduMWFZcVlrdnhNWm1FMkxxNmt3R1NUWmRFWmIw?=
- =?utf-8?B?V2h5ZkthT2Vqb0t1MDIxMlZuRFdzTGFiRkZ0cm1rcDlxb2o3OC9PYmswWE41?=
- =?utf-8?B?TlRyUnpUY01yQVkvMyt4dXJYTGFYQ3dBdXloczZrSWsvd2gzQS92Tjhpd01y?=
- =?utf-8?B?cDhuaUNSRXh2VkZXcTZPQUdWNWJWbDZ5bUJXbjZYZzVqWUlEWGxrVFZ1Qy9W?=
- =?utf-8?Q?qyfDCQJ0Znz6W5Q8b6Xv6Zn6L?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8675D14294
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.25
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711650949; cv=none; b=UcfzHXF3pY1HAAzmU3eltL845wQdq1044yruyIuyXVcX6SXYDlhoQLxzw8loLVg1G/n3SFZ8QrjnrUDL1ESEOsaD1KQvHy7a5JchYEWJEPPgO4jmVFzJF3UMEJdKVBjP0+T1x8CkkzoNT2G08/9T1bIvp51T7XHkb/fLd0oc9J0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711650949; c=relaxed/simple;
+	bh=iLrEPB+5fU9F1qjc333b8sqZ5yJuXVogRhNNU1xtFQc=;
+	h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f+MawQwehw5XyCV9THLaZVEnw6RuCaRppk08YSfb2DrwzTLuiILkdaDlqXsyqJVx9GB6QOpf8lhUzAy3XRJmH9Qt6Qc7y7q/t5TntmoX+tMaFPutIVnabpFx1Ep1gpEZ+ycUI2fvv1D7vfH2g1ot714xaS/HiARnRD5XSxz8B34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=gC2eiEeO; arc=none smtp.client-ip=185.70.43.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=3iqmzdauw5dizhfxw6f6oczsau.protonmail; t=1711650938; x=1711910138;
+	bh=h6ehau0PffhsLY5il9mr/+zmzmgkRB4owQoSHWA/Vjk=;
+	h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=gC2eiEeO7bYr+BXxeww9/GyDUnAfevwM6VAARFpMnuFdy7vVf+TbYF/PFvCWCTgEp
+	 Kc78fa499vXgHc/3RoHuJedtwiFYCee9sL5dR9p3AjsizC6WJdir7pH3h1WLOEx397
+	 fdGxMxSUQWHHYcYKhGAmVfreQe12tUm4qyy+YUCW+KhRmbUlwI8R9SaWcJdZHfLvs8
+	 0aWN00O4VokPgeqtzGVUSrftrw3cYrxMnUk9MdsV1lkpnf2no6xvb7erMu91JpXMO8
+	 mBeLJAN+N0X1mQDhNwyCF89ircwfwPP8Iu6+FOCjTllnP2NUFT2tT87h0NHcp09IPf
+	 W/qPjtO+Sl/uA==
+Date: Thu, 28 Mar 2024 18:35:29 +0000
+To: helgaas@kernel.org, o-takashi@sakamocchi.jp, linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+From: "edmund.raile" <edmund.raile@proton.me>
+Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
+Message-ID: <kodgse5nq6gqor6iaf5s4qo2h7mfykbor34ewtkjvcgh4iraq5@7fxn3rdch2sl>
+In-Reply-To: <20240326131858.GA140624@workstation.local>
+References: <20240325012135.36861-1-o-takashi@sakamocchi.jp> <20240325144149.GA1432902@bhelgaas> <20240326131858.GA140624@workstation.local>
+Feedback-ID: 45198251:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24f66729-36db-422f-7465-08dc4f557096
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2024 18:32:35.8223
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hAdI3OHRfyD5gpofuZO/M/HiXZ1+cJS0fHaJ7++ltEbBwNHD68TcLAwqueepvTgoQjhmD9ppQkQJAXkxEOIPlQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8436
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-PiBBbmQgZnJhbmtseSwgdGhlIHg4NiB2ZW5kb3IgaXMgYSBMaW51eCB0aGluZyBzbyBJIHdvdWxk
-bid0IG1pbmQgaWYNCj4gY2hlY2tzIGFyZQ0KPg0KPglpZiAoYy0+eDg2X3ZlbmRvciAgPT0gWDg2
-X1ZFTkRPUi4uLiAmJg0KPgkgICAgYy0+Y3B1aWRfMV9lYXggPT0gTUFDUk9fQlVJTERfQ1BVSURf
-MV9FQVgoZmFtLCBtb2RlbCwgc3RlcHBpbmcpKQ0KDQpUaGF0IGh1cnRzIG15IGV5ZXMgY29tcGFy
-ZWQgdG86DQoNCglpZiAoYy0+eDg2X3ZmbSA9PSBJTlRFTF9ET1VHTEFTQ09WRSkNCg0KPg0KPiBB
-bnl3YXksIHVzaW5nIENQVUlEKDEpLkVBWCBpcyBqdXN0IGEgc3VnZ2VzdGlvbiBzbyB0aGF0IHdl
-IGRvbid0IGhhdmUgdG8NCj4gaW52ZW50IG91ciBvd24gZm9ybWF0IGFuZCBjb252ZXJ0IHRvIGFu
-ZCBmcm8uDQoNCkFsbCB0aGUgY29udmVyc2lvbiBpcyBhdCBjb21waWxlIHRpbWUgdG8gZ2VuZXJh
-dGUgdGhlIHZhbHVlcyBmb3IgdGhlIENQVSBtb2RlbA0KbmFtZSAjZGVmaW5lcy4NCg0KPiBBbmQg
-dGhhdCB3b3VsZCBiZSBhZHZhbnRhZ2VvdXMgd2hlbiB3ZSBjb252ZXJ0IHRvIGRlYWxpbmcgd2l0
-aA0KPiBDUFVJRCgxKS5FQVggdmFsdWVzIGV2ZXJ5d2hlcmUgYW5kIHdlIGNvbXBhcmUgdGhlbSBz
-dHJhaWdodGF3YXkuIFdlJ2QNCj4gbmVlZCBtYWNyb3Mgb25seSB3aGVuIHdlIG5lZWQgb25seSBz
-b21lIGRhdGEgZWxlbWVudHMgZnJvbSB0aGF0IGxlYWYuDQoNCkl0J3MgYSBodW11bmdvdXMgYW1v
-dW50IG1vcmUgY29kZSBjaHVybi4gTW9zdCBvZiB0aGUgY2hhbmdlcyBpbiB0aGlzIHNldCB3ZXJl
-DQphY2hpZXZlZCB3aXRoIHNvbWUgc2ltcGxlIHNlZCBzY3JpcHRzIChmb2xsb3dlZCBieSBoYW5k
-IG1hc3NhZ2UgdG8gYWRqdXN0IFRBQnMNCnRvIG1ha2UgdGhpbmdzIHByZXR0eSBiZWNhdXNlIGxl
-bmd0aHMgb2Ygc3RyaW5ncyBhcmUgZGlmZmVyZW50KS4NCg0KVGFrZSBhIGxvb2sgYXQgYSBmZXcg
-b2YgdGhlIHBhdGNoZXMgdGhhdCBpbXBsZW1lbnQgdGhpcyBjaGFuZ2UgYW5kIGNvbnNpZGVyDQpo
-b3cgdGhleSB3b3VsZCBsb29rIGJhc2VkIG9uIGEgQ1BVSUQoMSkuRUFYIHZhbHVlLg0KDQo+IEFu
-ZCBzaW5jZSB0aGF0IGxlYWYncyBsYXlvdXQgaXMgY29tbW9ubHkga25vd24sIHRoZSBjb252ZXJz
-aW9uIGVycm9ycw0KPiBzaG91bGQgYmUgYXQgYSBtaW5pbXVtLi4uDQo+DQo+IEknZCBzYXkuDQoN
-CkkgZG9uJ3QgdGhpbmsgdGhlIGZvcm1hdCBpcyByZWFsbHkgdGhhdCBiaWcgYW4gaXNzdWUuIElu
-Y2x1ZGluZyBzdGVwcGluZyBpbiB0aGUNCmZvcm1hdCBhZGRzIGNvbXBsZXhpdHkgdG8gYSB0aG91
-c2FuZCBwbGFjZXMgdGhlc2UgY2hlY2tzIGFyZSBtYWRlIHdoaWxlDQpvbmx5IGJlaW5nIHVzZWZ1
-bCBpbiBhIGZldyBkb3plbi4NCg0KLVRvbnkNCg==
+So Bjorn Helgaas beat me to it,
+
+I'm monitoring kernel messages with
+```
+sudo journalctl --system -f
+```
+
+Indeed all that is necessary to generate the trace from the patch is to unb=
+ind the FW643 from ohci on my system (unpatched kernel):
+```
+su -c 'echo -n "0000:03:00.0" > /sys/bus/pci/drivers/firewire_ohci/unbind'
+```
+
+In combination with the kernel parameters intel_iommu=3Don iommu=3Dpt, I ca=
+n then bind it to vfio-pci
+```
+su -c 'echo -n "0000:03:00.0" > /sys/bus/pci/drivers/vfio-pci/bind'
+```
+
+And then I'd attach it to a qemu Windows VM using `-device vfio-pci,host=3D=
+03:00.0 \`.
+The OS finds the firewire card straightaway and the RME FireFace driver con=
+nects on booting just like it would when booting the guest on bare metal.
+
+> $ echo 1 > sudo tee -a /sys/devices/pci0000:00/0000:00:01.2/0000:03:00.0/=
+0000:04:02.0/0000:06:00.0/reset
+> (nothing happens)
+
+Replicating the reset line Takashi sent on my system, there is no error in =
+the kernel log but playback doesn't stop either, leading me to believe that=
+ permissions of sudo may be insufficient (root-only)?
+```
+echo 1 > sudo tee -a /sys/devices/pci0000\:00/0000\:00\:1c.1/0000\:03\:00.0=
+/reset
+```
+
+So instead I ran this:
+```
+su -c 'echo 1 > /sys/devices/pci0000\:00/0000\:00\:1c.1/0000\:03\:00.0/rese=
+t'
+```
+Playback stopped immediately and could not be resumed.
+
+Then I received this trace:
+
+INFO: task alsa-sink-Firef:4110 blocked for more than 245 seconds.
+      Tainted: G        W  OE      6.6.10-1-MANJARO #1
+task:alsa-sink-Firef state:D stack:0     pid:4110  ppid:2657   flags:0x0000=
+0002
+Call Trace:
+ <TASK>
+ __schedule+0x3e7/0x1410
+ ? tlb_batch_pages_flush+0x3d/0x70
+ schedule+0x5e/0xd0
+ schedule_timeout+0x151/0x160
+ wait_for_completion+0x8a/0x160
+ fw_run_transaction+0xe5/0x120 [firewire_core d9ff4eaf1ffb23a203d413e851f40=
+5323b49fec7]
+ ? __pfx_split_transaction_timeout_callback+0x10/0x10 [firewire_core d9ff4e=
+af1ffb23a203d413e851f405323b49fec7]
+ ? __pfx_transmit_complete_callback+0x10/0x10 [firewire_core d9ff4eaf1ffb23=
+a203d413e851f405323b49fec7]
+ ? __pfx_transaction_callback+0x10/0x10 [firewire_core d9ff4eaf1ffb23a203d4=
+13e851f405323b49fec7]
+ snd_fw_transaction+0x70/0x110 [snd_firewire_lib 30b43a591db389bbc6be51459c=
+b243ba1fe1e662]
+ ff800_finish_session+0x43/0x70 [snd_fireface 5f7f3f556960f4838886792be8e9c=
+18aa5089b0a]
+ snd_ff_stream_stop_duplex+0x39/0x70 [snd_fireface 5f7f3f556960f4838886792b=
+e8e9c18aa5089b0a]
+ pcm_hw_free+0x3c/0x50 [snd_fireface 5f7f3f556960f4838886792be8e9c18aa5089b=
+0a]
+ snd_pcm_common_ioctl+0xe28/0x12b0 [snd_pcm 24933227879438b755ef98bc4844113=
+025f38cdf]
+ ? __seccomp_filter+0x32c/0x510
+ ? __vm_munmap+0xbb/0x150
+ snd_pcm_ioctl+0x2e/0x50 [snd_pcm 24933227879438b755ef98bc4844113025f38cdf]
+ __x64_sys_ioctl+0x94/0xd0
+ do_syscall_64+0x5d/0x90
+ ? syscall_exit_to_user_mode+0x2b/0x40
+ ? do_syscall_64+0x6c/0x90
+ ? do_syscall_64+0x6c/0x90
+ entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+Now of course yanking the device from underneath streaming snd_firewire is =
+not an intended usecase and I get that this has good cause to produce a tra=
+ce but it shows that root privileges are necessary here.
+
+Doing this without running playback yields the same result.
+
+In both instances, I had to REISUO the system as it would keep waiting for =
+that thread to finish when shutting down.
+
+When I instead turned the FireFace off, I got this kernel message:
+snd_fireface fw1.0: transaction failed: bus reset
+snd_fireface fw1.0: transaction failed: bus reset
+snd_fireface fw1.0: transaction failed: bus reset
+Then running the same command, this time no threads went into D state and s=
+tart producing spinlock messages/traces but by that point, BUT I wasn't abl=
+e to use the FireFace after powering it back on again.
+At least shutdown worked normally this time.
+
+Are there other steps necessary to get the FW643 back working again after t=
+his?
+
+System:
+MSI PRO Z690-A DDR4(MS-7D25)
+StarTech FW800 PCIe card (LSI FW643)
+
+A peculiarity about this system that may or may not be of relevance here:
+When rebooting, the FW643 can not be seen by the system any more.
+Its root port also won't show up, regardless of slot used.
+I have to perform a full shutdown for it to be recognized again.
+This behavior is OS-independent, but it never happened on my previous Z68 s=
+ystem with this card (or any), there reboot worked as you'd expect.
+The original MSI BIOS was buggy in this regard (and many others) in that it=
+ would not even recognize the card half the time booting from power-off.
+MSI support did not care, said it was an "old device". How they can claim P=
+CIe compliance is beyond me.
+This is why I'm running Dasharo (coreboot), it always picks up the card fro=
+m full power-off and behaves very predictably in other regards.
+It might even be an issue with modern Intel since I've read of very similar=
+ issues on other manufacturer's Z690 and even Z790 boards (missing PCIe dev=
+ices after reboot).
+I've learned to live with this as I don't know how to solve it and I'm
+stuck on this platform. Should of bought AMD again this time around.
+
+> Can you both collect the output of "sudo lspci -vvv" so we can try to fig=
+ure out the difference?
+> This is my 1394 OHCI hardware.
+```
+sudo lspci -vvv
+03:00.0 FireWire (IEEE 1394): LSI Corporation FW643 [TrueFire] PCIe 1394b C=
+ontroller (rev 08) (prog-if 10 [OHCI])
+=09Subsystem: Device 5901:1101
+=09Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Step=
+ping- SERR- FastB2B- DisINTx+
+=09Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort=
+- <MAbort- >SERR- <PERR- INTx-
+=09Latency: 0, Cache Line Size: 64 bytes
+=09Interrupt: pin A routed to IRQ 136
+=09IOMMU group: 13
+=09Region 0: Memory at 50800000 (64-bit, non-prefetchable) [size=3D4K]
+=09Capabilities: [44] Power Management version 3
+=09=09Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=3D375mA PME(D0+,D1+,D2+,D3hot+=
+,D3cold+)
+=09=09Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME+
+=09Capabilities: [4c] MSI: Enable+ Count=3D1/1 Maskable- 64bit+
+=09=09Address: 00000000fee00358  Data: 0000
+=09Capabilities: [60] Express (v1) Endpoint, MSI 00
+=09=09DevCap:=09MaxPayload 256 bytes, PhantFunc 0, Latency L0s <4us, L1 <64=
+us
+=09=09=09ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 10W
+=09=09DevCtl:=09CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
+=09=09=09RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
+=09=09=09MaxPayload 256 bytes, MaxReadReq 2048 bytes
+=09=09DevSta:=09CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr+ TransPend=
+-
+=09=09LnkCap:=09Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency=
+ L0s <512ns, L1 <64us
+=09=09=09ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp-
+=09=09LnkCtl:=09ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+=09=09=09ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+=09=09LnkSta:=09Speed 2.5GT/s, Width x1
+=09=09=09TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+=09Capabilities: [100 v1] Advanced Error Reporting
+=09=09UESta:=09DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- Mal=
+fTLP- ECRC- UnsupReq- ACSViol-
+=09=09UEMsk:=09DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- Mal=
+fTLP- ECRC- UnsupReq- ACSViol-
+=09=09UESvrt:=09DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ Ma=
+lfTLP+ ECRC- UnsupReq- ACSViol-
+=09=09CESta:=09RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+=09=09CEMsk:=09RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
+=09=09AERCap:=09First Error Pointer: 00, ECRCGenCap+ ECRCGenEn- ECRCChkCap+=
+ ECRCChkEn-
+=09=09=09MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+=09=09HeaderLog: 00000000 00000000 00000000 00000000
+=09Capabilities: [140 v1] Virtual Channel
+=09=09Caps:=09LPEVC=3D0 RefClk=3D100ns PATEntryBits=3D1
+=09=09Arb:=09Fixed- WRR32- WRR64- WRR128-
+=09=09Ctrl:=09ArbSelect=3DFixed
+=09=09Status:=09InProgress-
+=09=09VC0:=09Caps:=09PATOffset=3D00 MaxTimeSlots=3D1 RejSnoopTrans-
+=09=09=09Arb:=09Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+=09=09=09Ctrl:=09Enable+ ID=3D0 ArbSelect=3DFixed TC/VC=3Dff
+=09=09=09Status:=09NegoPending- InProgress-
+=09=09VC1:=09Caps:=09PATOffset=3D00 MaxTimeSlots=3D1 RejSnoopTrans-
+=09=09=09Arb:=09Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+=09=09=09Ctrl:=09Enable- ID=3D0 ArbSelect=3DFixed TC/VC=3D00
+=09=09=09Status:=09NegoPending- InProgress-
+=09Capabilities: [170 v1] Device Serial Number 00-00-00-00-00-00-00-00
+=09Kernel driver in use: firewire_ohci
+=09Kernel modules: firewire_ohci
+```
+This does not change whether I boot patched or unpatched kernel.
+
+> > > Can you collect the output of:
+> > >
+> > >   $ find /sys/devices -name reset_method | xargs grep .
+> Edmund, could you run this command, too?
+
+with patch applied:
+```
+sudo find /sys/devices -name reset_method | xargs grep .
+/sys/devices/pci0000:00/0000:00:1c.0/0000:02:00.0/reset_method:pm bus
+/sys/devices/pci0000:00/0000:00:1c.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:1c.1/0000:03:00.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:1c.1/reset_method:pm
+/sys/devices/pci0000:00/0000:00:1a.0/0000:01:00.0/reset_method:flr bus
+/sys/devices/pci0000:00/0000:00:1a.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:1d.0/reset_method:pm
+/sys/devices/pci0000:00/0000:00:1d.0/0000:05:00.0/reset_method:flr bus
+/sys/devices/pci0000:00/0000:00:02.0/reset_method:flr pm
+/sys/devices/pci0000:00/0000:00:1c.2/reset_method:pm
+/sys/devices/pci0000:00/0000:00:1c.2/0000:04:00.0/reset_method:flr bus
+```
+without applied patch only bus reset method is added, everything else
+stays the same:
+```
+/sys/devices/pci0000:00/0000:00:1c.1/0000:03:00.0/reset_method:pm bus
+```
+
+This is the root port it is currently connected to:
+```
+sudo lspci -vvv
+00:1c.1 PCI bridge: Intel Corporation Alder Lake-S PCH PCI Express Root Por=
+t #2 (rev 11) (prog-if 00 [Normal decode])
+=09Subsystem: Micro-Star International Co., Ltd. [MSI] Alder Lake-S PCH PCI=
+ Express Root Port
+=09Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Step=
+ping- SERR+ FastB2B- DisINTx+
+=09Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort=
+- <MAbort- >SERR- <PERR- INTx-
+=09Latency: 0, Cache Line Size: 64 bytes
+=09Interrupt: pin B routed to IRQ 124
+=09IOMMU group: 7
+=09Bus: primary=3D00, secondary=3D03, subordinate=3D03, sec-latency=3D0
+=09I/O behind bridge: f000-0fff [disabled] [16-bit]
+=09Memory behind bridge: 50800000-508fffff [size=3D1M] [32-bit]
+=09Prefetchable memory behind bridge: 00000000fff00000-00000000000fffff [di=
+sabled] [64-bit]
+=09Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort=
+- <MAbort- <SERR- <PERR-
+=09BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16+ MAbort- >Reset- FastB2B-
+=09=09PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
+=09Capabilities: [40] Express (v2) Root Port (Slot+), MSI 00
+=09=09DevCap:=09MaxPayload 256 bytes, PhantFunc 0
+=09=09=09ExtTag- RBE+
+=09=09DevCtl:=09CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
+=09=09=09RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
+=09=09=09MaxPayload 256 bytes, MaxReadReq 128 bytes
+=09=09DevSta:=09CorrErr+ NonFatalErr- FatalErr- UnsupReq- AuxPwr+ TransPend=
+-
+=09=09LnkCap:=09Port #2, Speed 8GT/s, Width x1, ASPM not supported
+=09=09=09ClockPM- Surprise- LLActRep+ BwNot+ ASPMOptComp+
+=09=09LnkCtl:=09ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+=09=09=09ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+=09=09LnkSta:=09Speed 2.5GT/s, Width x1
+=09=09=09TrErr- Train- SlotClk+ DLActive+ BWMgmt+ ABWMgmt-
+=09=09SltCap:=09AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
+=09=09=09Slot #1, PowerLimit 10W; Interlock- NoCompl+
+=09=09SltCtl:=09Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt- HPIrq- Link=
+Chg-
+=09=09=09Control: AttnInd Unknown, PwrInd Unknown, Power- Interlock-
+=09=09SltSta:=09Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet+ Interlock=
+-
+=09=09=09Changed: MRL- PresDet- LinkState+
+=09=09RootCap: CRSVisible-
+=09=09RootCtl: ErrCorrectable- ErrNon-Fatal- ErrFatal- PMEIntEna+ CRSVisibl=
+e-
+=09=09RootSta: PME ReqID 0000, PMEStatus- PMEPending-
+=09=09DevCap2: Completion Timeout: Range ABC, TimeoutDis+ NROPrPrP- LTR+
+=09=09=09 10BitTagComp- 10BitTagReq- OBFF Via WAKE#, ExtFmt+ EETLPPrefix+, =
+MaxEETLPPrefixes 2
+=09=09=09 EmergencyPowerReduction Not Supported, EmergencyPowerReductionIni=
+t-
+=09=09=09 FRS- LN System CLS Not Supported, TPHComp- ExtTPHComp- ARIFwd+
+=09=09=09 AtomicOpsCap: Routing- 32bit- 64bit- 128bitCAS-
+=09=09DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR+ 10BitTagR=
+eq- OBFF Disabled, ARIFwd-
+=09=09=09 AtomicOpsCtl: ReqEn- EgressBlck-
+=09=09LnkCap2: Supported Link Speeds: 2.5-8GT/s, Crosslink- Retimer+ 2Retim=
+ers+ DRS-
+=09=09LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
+=09=09=09 Transmit Margin: Normal Operating Range, EnterModifiedCompliance-=
+ ComplianceSOS-
+=09=09=09 Compliance Preset/De-emphasis: -6dB de-emphasis, 0dB preshoot
+=09=09LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- Equ=
+alizationPhase1-
+=09=09=09 EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
+=09=09=09 Retimer- 2Retimers- CrosslinkRes: unsupported
+=09Capabilities: [80] MSI: Enable+ Count=3D1/1 Maskable- 64bit+
+=09=09Address: 00000000fee00278  Data: 0000
+=09Capabilities: [98] Subsystem: Micro-Star International Co., Ltd. [MSI] A=
+lder Lake-S PCH PCI Express Root Port
+=09Capabilities: [a0] Power Management version 3
+=09=09Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D0mA PME(D0+,D1-,D2-,D3hot+,D=
+3cold+)
+=09=09Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME-
+=09Capabilities: [100 v1] Advanced Error Reporting
+=09=09UESta:=09DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- Mal=
+fTLP- ECRC- UnsupReq- ACSViol-
+=09=09UEMsk:=09DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- Mal=
+fTLP- ECRC- UnsupReq- ACSViol-
+=09=09UESvrt:=09DLP+ SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ Ma=
+lfTLP+ ECRC- UnsupReq- ACSViol-
+=09=09CESta:=09RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+=09=09CEMsk:=09RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
+=09=09AERCap:=09First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap-=
+ ECRCChkEn-
+=09=09=09MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+=09=09HeaderLog: 00000000 00000000 00000000 00000000
+=09=09RootCmd: CERptEn+ NFERptEn+ FERptEn+
+=09=09RootSta: CERcvd- MultCERcvd- UERcvd- MultUERcvd-
+=09=09=09 FirstFatal- NonFatalMsg- FatalMsg- IntMsg 0
+=09=09ErrorSrc: ERR_COR: 0000 ERR_FATAL/NONFATAL: 0000
+=09Capabilities: [220 v1] Access Control Services
+=09=09ACSCap:=09SrcValid+ TransBlk+ ReqRedir+ CmpltRedir+ UpstreamFwd+ Egre=
+ssCtrl- DirectTrans-
+=09=09ACSCtl:=09SrcValid+ TransBlk- ReqRedir+ CmpltRedir+ UpstreamFwd+ Egre=
+ssCtrl- DirectTrans-
+=09Capabilities: [150 v1] Precision Time Measurement
+=09=09PTMCap: Requester:- Responder:+ Root:+
+=09=09PTMClockGranularity: 4ns
+=09=09PTMControl: Enabled:+ RootSelected:+
+=09=09PTMEffectiveGranularity: Unknown
+=09Capabilities: [a30 v1] Secondary PCI Express
+=09=09LnkCtl3: LnkEquIntrruptEn- PerformEqu-
+=09=09LaneErrStat: 0
+=09Capabilities: [a90 v1] Data Link Feature <?>
+=09Kernel driver in use: pcieport
+```
+
+`lspci -tv` reveals that it is connected to root port #2:
+           +-1c.1-[03]----00.0  LSI Corporation FW643 [TrueFire] PCIe 1394b=
+ Controller
+
+I hope this information is of use to you.
+Maybe there is a better solution?
+
+Kind regards,
+Edmund Raile
+
 
