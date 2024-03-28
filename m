@@ -1,836 +1,167 @@
-Return-Path: <linux-kernel+bounces-123525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3AFA890A56
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:57:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 649B3890A4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 20:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99D97298AA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:57:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04ED5B22692
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247D413B2B2;
-	Thu, 28 Mar 2024 19:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6280513F424;
+	Thu, 28 Mar 2024 19:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BpD/cHVN"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DSZjD/ti"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA4A13A240;
-	Thu, 28 Mar 2024 19:53:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D2F13E6D0;
+	Thu, 28 Mar 2024 19:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655583; cv=none; b=uL8K4JsC/OvmaMKP2ABlM+C06t15cWOQnf5c+Y3/23RMuuxZwVq36mpMdZGN5IDnaeO/M/+2jDPrFdJRwXeu/sZwaflb5iU2a9d9lkL84Cc5XucgmWCoB0MuJ/btKaSzW1DZiR/pjb1mfjtfa9+6miaOps/a2U+nb1aYmyVTmec=
+	t=1711655549; cv=none; b=G8iCXSuIcdYKcIbYGG308uWA28EJpLf7XXNpfrfZPczb7e7/F8zJq4UHd88AlyZO8OK8BL3R/aHEzcBchYI1sUZx60XC4TDrrsYrDzh+uuVud66n41wMS8vFUzLsXhXFNOAlGB8yHIVDWY8gmoCmyRd1kfaoMScn/Re9OBWEdR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655583; c=relaxed/simple;
-	bh=I3CyfHyxYRSB1OhUmLaDVJxwNsOSs0Ryn4RFazu4dIg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mvhbq08a2wwSCloq6KCScPC5QGV7n1ESX//fGkIokq8UPEonjJshSudL+lCqicoxEHiH2ahGGELMlnd7oBai0wwO2rQ6fjIDGXM6jUpnxdz/DNXZHrhfWsVQi9QxKpUXJSiuhIX0wD3Ns1SCZzz49V0HD75dnUq6jhuqlicroog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BpD/cHVN; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711655549; c=relaxed/simple;
+	bh=qmQFGHYUei7BOkNgnnntn6VCVy9UtjipJi0ZJ6b8pZo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WJbdZtoySnpArpKIq3Y++q+4noEuikoyvfCKGgU8nniqriLp3WjGlhCSIQN2aO4CrNverX+/B/cC/BW8I6UvBtosmiOx8siUe/3mvobdXBRnWiXZaeixC20ZngOUUvSRuBphg/9H4753nOZ4nW1WhH/TYgI+Dba7Tiwa3tKER0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DSZjD/ti; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4d4404fbdf5so508665e0c.0;
-        Thu, 28 Mar 2024 12:53:00 -0700 (PDT)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c3ceeb2d04so901583b6e.1;
+        Thu, 28 Mar 2024 12:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711655579; x=1712260379; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711655547; x=1712260347; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lUzwAPkG8d1fPsMXTjjGp2IOrUnCgMssObvH6aKPzQ8=;
-        b=BpD/cHVN4tNawijC2joRnXCLQ/hpANUBAoh5foDvWEHsA9QIC0ll63QlkGMQRXku/A
-         85YVETPjWAeOYv1AKGPUDjVQNYJTnFU9QvmCYy5zcy/3kCw9mtiKrK3XXzO3PHW6EJzS
-         a4Wz9FpnczD33WNGsQSkJwKTZkwf97n6/7QQCNteU9zCnl+yJRmqaWKhguNTBPfS/UoU
-         39K4nCcspGXHn8puluFr2gsWgbtAgiCoQkaFlMOxCo/nCmLBz4gdyw9b+bdsQpYDvo1a
-         hotg8Hp6YlbXXBpn6KfZCxwElOFa5cBLYUsHWaE8+EPNDOXxXKoFW/VwE90rGK+67QQ/
-         P12A==
+        bh=YT6C4kyGaXJTnO4s5bmEmPWYlNQPKErlDo5CuGDxbV8=;
+        b=DSZjD/tiqsflzsxPPIOjMyejt0NBAWGlYrE2Wvot3e2jzuoCM7HG1rkaLTYcDhFPbC
+         6JJVcTkheE8+myU/0c2kKCD+JeGq9uPq2wvOFjjZhhDSNSp0mCwxKDs4pYOeM9dneme+
+         rQMJ5kN8T1EPBxkfQv5GDoArt3WXZnsrrLTpOXQ2PldTrs9wil7tjOS2ppDuZxDigVNj
+         WMSJJEI4YSQXkA36kT/PwmFc+KbfYrbBUZOdcXvfNgFNC7npGmcxED87Trhu5D8gSnC1
+         xTcLxX25ONlDU1LnLheM/+AU8swKE3a8XmzqovSYzvtKKhyDzp9rIaLDdRlOra2Of76J
+         OKUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711655579; x=1712260379;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lUzwAPkG8d1fPsMXTjjGp2IOrUnCgMssObvH6aKPzQ8=;
-        b=t2reWTOeEHNfhYDW6zYDIr5zxPR+ufc41fBC3c5BCX28aA92+0nyLBy9eC7B04Bgms
-         /pWZR2tPZtJEWuSkZa9SbVGnLrq5KNZb+u8A6O0YkOyeJgPP9SLn2n/txTYNAZ3KroLp
-         Et4///QeEenD0uF7Tqnrk4YqXlnTAXPhfq6EsPPYF6EMNbf2i892aHtljwXBGrGUn9TT
-         /1nJMx8m7A+2cLyYPUp0Qde2Q/z26WPPBRQb+03SRhwvjm2adRTIjTvTkXufCOZ2iB9u
-         yyQ4x9QDzTP/q7sks6l2qUvtNl2dCEv6ioEEtA7FMEFQGG9t41PuGJ4W0a7O7ZvXRO4D
-         bwig==
-X-Forwarded-Encrypted: i=1; AJvYcCXYZDXFzz5zvjhxMx/qqoEkeioM0CtEz7zo1PtJYia5gT1yeWMMJkfGzgCOCjZ79+0OVRE/5phwDyh8o7AGtisXuxt48bSVkNmL2kF/3+SmAas6fLFMiWZmnpk14gbMqJIxoxvbmo7BO7EStVTSsM3bq0c8Bzm8b+HFO2desTwGkP8dJICuT7yh30bvAlrrwaHDbkANU/1Jw1HMWMO5ii3K8x/v+Q93zw==
-X-Gm-Message-State: AOJu0YxZZURjGglZsu3gMyYuNZyTcsMfZT/sV2WPBaiLlCuvAUYzcNiX
-	moAXGtmcqXRKtGeGIMYUjWnLDDh1uWnMO1HXHlJuwPriCRLb7vhppc3DNkOqzvNfIFYdK8Mr5UB
-	wwmi7e598+DaqQVzXSEBUDc5Dvis=
-X-Google-Smtp-Source: AGHT+IEAfrXoISJBJ+OZlnUPknP3xw5RLWlSJt5XP0/Vx67e/1qTuFZBU8w1UR49eKCaXGu7fCO9iZwa/pgCpYW6hQw=
-X-Received: by 2002:a1f:738d:0:b0:4ca:80c5:753d with SMTP id
- o135-20020a1f738d000000b004ca80c5753dmr365204vkc.4.1711655579543; Thu, 28 Mar
- 2024 12:52:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711655547; x=1712260347;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=YT6C4kyGaXJTnO4s5bmEmPWYlNQPKErlDo5CuGDxbV8=;
+        b=GHxTWz3eZFtKTpj2JYaz9XJyvfZgYbWOcFm55wd/HQ+1ybTDC7fW8VozjpP0K4Q1v2
+         dYHvMcxjFAeL8D4EgosuIUAniUGwBUlTn6u6/s40SDOxasgEYKy7ii8oW8+UWv2gIuOq
+         50d4z7Uy3YYWGX3ij8SJ1ifu8YgSBaWNK5IUNnorkX7fATMRHtZ2CEDv98fpLPUcoo5+
+         6++7jJBP4QaVfY02gMF9NQIYByLPJy0njLlVYaJHmVcCZ7RXYaYGmmFsBlLaN43Svby3
+         c5eaKKr/6a91koJPXrgEiTY6mae3zfqckAnQd/DpGNDwK6SCHuoSgDUhX9tYX7jBEZo8
+         Ctzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXngZi6NV1xWSwl46mmaCS/lRJprCGnNUF5tvTYqkxHzjRJ9kBHF+HEe3CgNSPvgSmLgbg9WATEEfSu4arW/HaAsKqlCA66XzeaxJpfK/kir+QVpyZluM1EgCEYqVBDe09DrFYzjyOweTdyf4EZL10KMnTUjspiVwGsduQDqgdrdcoyeU1jli+yNkOMLBA+SzR3cc5GYiV6Z63pLdt0Wfwlq+DJJU4CQOQSynFm6okMnOdr+EWdKlvPZ1kVBOxTTw39YCHs+MbYN/J/dxiuiegzLxiPd+nMDcx25djrqmPMqeiZl6jU1TsQxbS/ODJGnP5jkuIUnwQtX2IHMK7WoVQeWI+LbRFlGVnqY3+f2hsPE2wUrRJ3vqFUXDTjuC53OlZBF6/X9mXEwOOABw5g+bi/8zau3uMyicxHJSNbbW7FiSm4tAzg5pSLV+bKwpxa59zZjQdfqxKHOldoTghq5dYtBdI60KdZt9EtrV4NGrJ26PZTU5AbIf8nE8q9Bw6Gqoal9ZAGLk3A4AYLQEgG5RPckvRZjCEl4m0PJ609n0wILfgk1BcZtnMbl/woNwWBAZw8j62XbJ3uVPubsSk2j/c=
+X-Gm-Message-State: AOJu0YyvXq7J/e6xvMdgvbJKc/measjiCe7T07f8gLtC4S2Yx+tgo37m
+	sDKyRqpR0Ualfik/5wj3qOb2zUlx8Ve+Mtylw6bHQvfE3OfGqbk=
+X-Google-Smtp-Source: AGHT+IGa6m7tWMYIWy51l607HYGlrsX0qHDQfT9gmhvhIngwQWHc2ccP79f2XqPzu8hB8uCGkbHOGQ==
+X-Received: by 2002:a05:6808:1790:b0:3c3:d1a8:6d14 with SMTP id bg16-20020a056808179000b003c3d1a86d14mr306232oib.35.1711655546757;
+        Thu, 28 Mar 2024 12:52:26 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.181.2])
+        by smtp.gmail.com with ESMTPSA id 22-20020aca2816000000b003c3d6dab111sm345409oix.30.2024.03.28.12.52.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 12:52:26 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:b987:69e:202a:697a])
+	by serve.minyard.net (Postfix) with ESMTPSA id 4B51A180059;
+	Thu, 28 Mar 2024 19:52:25 +0000 (UTC)
+Date: Thu, 28 Mar 2024 14:52:24 -0500
+From: Corey Minyard <minyard@acm.org>
+To: Allen <allen.lkml@gmail.com>
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org,
+	tj@kernel.org, keescook@chromium.org, vkoul@kernel.org,
+	marcan@marcan.st, sven@svenpeter.dev, florian.fainelli@broadcom.com,
+	rjui@broadcom.com, sbranden@broadcom.com, paul@crapouillou.net,
+	Eugeniy.Paltsev@synopsys.com, manivannan.sadhasivam@linaro.org,
+	vireshk@kernel.org, Frank.Li@nxp.com, leoyang.li@nxp.com,
+	zw@zh-kernel.org, wangzhou1@hisilicon.com, haijie1@huawei.com,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, sean.wang@mediatek.com,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	afaerber@suse.de, logang@deltatee.com, daniel@zonque.org,
+	haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+	andersson@kernel.org, konrad.dybcio@linaro.org, orsonzhai@gmail.com,
+	baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
+	patrice.chotard@foss.st.com, linus.walleij@linaro.org,
+	wens@csie.org, jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com,
+	kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, jassisinghbrar@gmail.com, mchehab@kernel.org,
+	maintainers@bluecherrydvr.com, aubin.constans@microchip.com,
+	ulf.hansson@linaro.org, manuel.lauss@gmail.com,
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com,
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org,
+	brucechang@via.com.tw, HaraldWelte@viatech.com, pierre@ossman.eu,
+	duncan.sands@free.fr, stern@rowland.harvard.edu, oneukum@suse.com,
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-mediatek@lists.infradead.org,
+	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 6/9] ipmi: Convert from tasklet to BH workqueue
+Message-ID: <ZgXKeL36ckOyNpI/@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-7-apais@linux.microsoft.com>
+ <ZgRePyo2zC4A1Fp4@mail.minyard.net>
+ <CAOMdWS+1AFxEqmACiBYzPHc+q0Ut6hp15tdV50JHvfVeUNCGQw@mail.gmail.com>
+ <ZgXDmx1HvujsMYAR@mail.minyard.net>
+ <CAOMdWS+nB5EENp_Vb=k1j77nrch5JgbZP2XYPJ2ieTja14zB0w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240326222844.1422948-14-prabhakar.mahadev-lad.rj@bp.renesas.com> <25bc9ceb-c5cb-40a2-8c3d-d9666b88546c@tuxon.dev>
-In-Reply-To: <25bc9ceb-c5cb-40a2-8c3d-d9666b88546c@tuxon.dev>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 28 Mar 2024 19:51:15 +0000
-Message-ID: <CA+V-a8uegButH84aUY1N+0GzZx2LkRBTxNtg7y1Y-cUvvFfJpw@mail.gmail.com>
-Subject: Re: [RFC PATCH 13/13] pinctrl: renesas: pinctrl-rzg2l: Add support
- for RZ/V2H SoC
-To: claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Linus Walleij <linus.walleij@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMdWS+nB5EENp_Vb=k1j77nrch5JgbZP2XYPJ2ieTja14zB0w@mail.gmail.com>
 
-Hi Claudiu,
+On Thu, Mar 28, 2024 at 12:41:22PM -0700, Allen wrote:
+> > > > I believe that work queues items are execute single-threaded for a work
+> > > > queue, so this should be good.  I need to test this, though.  It may be
+> > > > that an IPMI device can have its own work queue; it may not be important
+> > > > to run it in bh context.
+> > >
+> > >   Fair point. Could you please let me know once you have had a chance to test
+> > > these changes. Meanwhile, I will work on RFC wherein IPMI will have its own
+> > > workqueue.
+> > >
+> > >  Thanks for taking time out to review.
+> >
+> > After looking and thinking about it a bit, a BH context is still
+> > probably the best for this.
+> >
+> > I have tested this patch under load and various scenarios and it seems
+> > to work ok.  So:
+> >
+> > Tested-by: Corey Minyard <cminyard@mvista.com>
+> > Acked-by: Corey Minyard <cminyard@mvista.com>
+> >
+> > Or I can take this into my tree.
+> >
+> > -corey
+> 
+>  Thank you very much. I think it should be okay for you to carry it into
+> your tree.
 
-Thank you for the review.
+Ok, it's in my for-next tree.  I fixed the directory reference, and I
+changed all the comments where you changed "tasklet" to "work" to
+instead say "workqueue".
 
-On Thu, Mar 28, 2024 at 8:04=E2=80=AFAM claudiu beznea <claudiu.beznea@tuxo=
-n.dev> wrote:
->
-> Hi, Prabhakar,
->
-> On 27.03.2024 00:28, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Add pinctrl driver support for RZ/V2H(P) SoC.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> >  drivers/pinctrl/renesas/pinctrl-rzg2l.c | 483 +++++++++++++++++++++++-
-> >  1 file changed, 481 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/=
-renesas/pinctrl-rzg2l.c
-> > index 6f0c85bb97a8..716c11ca5a8f 100644
-> > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > @@ -59,6 +59,13 @@
-> >  #define PIN_CFG_OEN                  BIT(15)
-> >  #define PIN_CFG_VARIABLE             BIT(16)
-> >  #define PIN_CFG_NOGPIO_INT           BIT(17)
-> > +#define PIN_CFG_OPEN_DRAIN           BIT(18)
-> > +#define PIN_CFG_SCHMIT_CTRL          BIT(19)
-> > +#define PIN_CFG_ELC                  BIT(20)
-> > +#define PIN_CFG_IOLH_1                       BIT(21)
-> > +#define PIN_CFG_IOLH_2                       BIT(22)
-> > +#define PIN_CFG_IOLH_3                       BIT(23)
-> > +#define PIN_CFG_IOLH_4                       BIT(24)
-> >
-> >  #define RZG2L_MPXED_COMMON_PIN_FUNCS(group) \
-> >                                       (PIN_CFG_IOLH_##group | \
-> > @@ -70,6 +77,10 @@
-> >  #define RZG2L_MPXED_PIN_FUNCS                (RZG2L_MPXED_COMMON_PIN_F=
-UNCS(A) | \
-> >                                        PIN_CFG_SR)
-> >
-> > +#define RZV2H_MPXED_PIN_FUNCS(group) (RZG2L_MPXED_COMMON_PIN_FUNCS(gro=
-up) | \
-> > +                                      PIN_CFG_OPEN_DRAIN | \
-> > +                                      PIN_CFG_SR)
-> > +
-> >  #define RZG3S_MPXED_PIN_FUNCS(group) (RZG2L_MPXED_COMMON_PIN_FUNCS(gro=
-up) | \
-> >                                        PIN_CFG_SOFT_PS)
-> >
-> > @@ -133,6 +144,8 @@
-> >
-> >  #define PWPR_B0WI            BIT(7)  /* Bit Write Disable */
-> >  #define PWPR_PFCWE           BIT(6)  /* PFC Register Write Enable */
-> > +#define PWPR_REGWE_A         BIT(6)  /* PFC and PMC Register Write Ena=
-ble */
-> > +#define PWPR_REGWE_B         BIT(5)  /* OEN Register Write Enable */
-> >
-> >  #define PM_MASK                      0x03
-> >  #define PFC_MASK             0x07
-> > @@ -149,6 +162,19 @@
-> >  #define RZG2L_TINT_IRQ_START_INDEX   9
-> >  #define RZG2L_PACK_HWIRQ(t, i)               (((t) << 16) | (i))
-> >
-> > +/* Custom pinconf parameters */
-> > +#define RENESAS_RZV2H_PIN_CONFIG_OUTPUT_IMPEDANCE    (PIN_CONFIG_END +=
- 1)
-> > +
-> > +static const struct pinconf_generic_params renesas_rzv2h_custom_bindin=
-gs[] =3D {
-> > +     { "renesas-rzv2h,output-impedance", RENESAS_RZV2H_PIN_CONFIG_OUTP=
-UT_IMPEDANCE, 1 },
-> > +};
-> > +
-> > +#ifdef CONFIG_DEBUG_FS
-> > +static const struct pin_config_item renesas_rzv2h_conf_items[] =3D {
-> > +     PCONFDUMP(RENESAS_RZV2H_PIN_CONFIG_OUTPUT_IMPEDANCE, "output-impe=
-dance", "x", true),
-> > +};
-> > +#endif
-> > +
-> >  /* Read/write 8 bits register */
-> >  #define RZG2L_PCTRL_REG_ACCESS8(_read, _addr, _val)  \
-> >       do {                                            \
-> > @@ -324,6 +350,8 @@ struct rzg2l_pinctrl {
-> >       spinlock_t                      lock; /* lock read/write register=
-s */
-> >       struct mutex                    mutex; /* serialize adding groups=
- and functions */
-> >
-> > +     raw_spinlock_t                  pwpr_lock; /* serialize PWPR regi=
-ster access */
-> > +
-> >       struct rzg2l_pinctrl_pin_settings *settings;
-> >       struct rzg2l_pinctrl_reg_cache  *cache;
-> >       struct rzg2l_pinctrl_reg_cache  *dedicated_cache;
-> > @@ -348,6 +376,79 @@ static u64 rzg2l_pinctrl_get_variable_pin_cfg(stru=
-ct rzg2l_pinctrl *pctrl,
-> >       return 0;
-> >  }
-> >
-> > +static const struct rzg2l_variable_pin_cfg r9a09g057_variable_pin_cfg[=
-] =3D {
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 0,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 1,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 2,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 3,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 4,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 5,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 6,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 9,
-> > +             .pin =3D 7,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 11,
-> > +             .pin =3D 0,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL,
-> > +     },
-> > +     {
-> > +             .port =3D 11,
-> > +             .pin =3D 1,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL |=
- PIN_CFG_IEN,
-> > +     },
-> > +     {
-> > +             .port =3D 11,
-> > +             .pin =3D 2,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL |=
- PIN_CFG_IEN,
-> > +     },
-> > +     {
-> > +             .port =3D 11,
-> > +             .pin =3D 3,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL |=
- PIN_CFG_IEN,
-> > +     },
-> > +     {
-> > +             .port =3D 11,
-> > +             .pin =3D 4,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL |=
- PIN_CFG_IEN,
-> > +     },
-> > +     {
-> > +             .port =3D 11,
-> > +             .pin =3D 5,
-> > +             .cfg =3D RZV2H_MPXED_PIN_FUNCS(2) | PIN_CFG_SCHMIT_CTRL |=
- PIN_CFG_IEN,
-> > +     },
-> > +};
-> > +
-> >  #ifdef CONFIG_RISCV
-> >  static const struct rzg2l_variable_pin_cfg r9a07g043f_variable_pin_cfg=
-[] =3D {
-> >       {
-> > @@ -474,6 +575,19 @@ static void rzg2l_pmc_writeb(struct rzg2l_pinctrl =
-*pctrl, u8 val, void __iomem *
-> >       writeb(val, addr);
-> >  }
-> >
-> > +static void rzv2h_pmc_writeb(struct rzg2l_pinctrl *pctrl, u8 val, void=
- __iomem *addr)
-> > +{
-> > +     const struct rzg2l_register_offsets *regs =3D &pctrl->data->hwcfg=
-->regs;
-> > +     u8 pwpr;
-> > +
-> > +     raw_spin_lock(&pctrl->pwpr_lock);
-> > +     pwpr =3D readb(pctrl->base + regs->pwpr);
-> > +     writeb(pwpr | PWPR_REGWE_A, pctrl->base + regs->pwpr);
->
-> What about having a device specific function that locks/unlocks the PWPR,
-> this part ^ being the lock.
->
->
-OK, ill have SoC specific function to lock/unlock.
->
-> > +     writeb(val, addr);
->
-> And this starting here:
->
-> > +     writeb(pwpr & ~PWPR_REGWE_A, pctrl->base + regs->pwpr);
-> > +     raw_spin_unlock(&pctrl->pwpr_lock);
->
-> ending here: the unlock function. It should generate les diffs at least i=
-n
-> this patch.
->
-> And you can add, were needed:
->
-> if (pctrl->pwpr_lock_function)
->         pctrl->pwpr_lock_function();
->
-> write(val, addr);
->
-> if (pctrl->pwpr_unlock_function)
->         pctrl->pwpr_unlock_function();
->
->
-> With this you can avoid adding rzv2h_pinctrl_set_pfc_mode() which is alom=
-st
-> identical w/ rzg2l_pinctrl_set_pfc_mode(), or adding
-> rzv2h_pinctrl_pm_setup_pfc() almost identical with
-> rzg2l_pinctrl_pm_setup_pfc().
->
-Agreed.
+-corey
 
-> > +}
-> > +
-> >  static void rzg2l_pinctrl_set_pfc_mode(struct rzg2l_pinctrl *pctrl,
-> >                                      u8 pin, u8 off, u8 func)
-> >  {
-> > @@ -512,6 +626,47 @@ static void rzg2l_pinctrl_set_pfc_mode(struct rzg2=
-l_pinctrl *pctrl,
-> >       spin_unlock_irqrestore(&pctrl->lock, flags);
-> >  };
-> >
-> > +static void rzv2h_pinctrl_set_pfc_mode(struct rzg2l_pinctrl *pctrl,
-> > +                                    u8 pin, u8 off, u8 func)
-> > +{
-> > +     const struct rzg2l_register_offsets *regs =3D &pctrl->data->hwcfg=
-->regs;
-> > +     unsigned long flags;
-> > +     u32 reg;
-> > +     u8 pwpr;
-> > +
-> > +     spin_lock_irqsave(&pctrl->lock, flags);
-> > +
-> > +     /* Set pin to 'Non-use (Hi-Z input protection)'  */
-> > +     reg =3D readw(pctrl->base + PM(off));
-> > +     reg &=3D ~(PM_MASK << (pin * 2));
-> > +     writew(reg, pctrl->base + PM(off));
-> > +
-> > +     /* Set the PWPR register to allow PFC and PMC register to write *=
-/
-> > +     raw_spin_lock(&pctrl->pwpr_lock);
-> > +     pwpr =3D readb(pctrl->base + regs->pwpr);
-> > +     writeb(PWPR_PFCWE | pwpr, pctrl->base + regs->pwpr);
-> > +
-> > +     /* Temporarily switch to GPIO mode with PMC register */
-> > +     reg =3D readb(pctrl->base + PMC(off));
-> > +     writeb(reg & ~BIT(pin), pctrl->base + PMC(off));
-> > +
-> > +     /* Select Pin function mode with PFC register */
-> > +     reg =3D readl(pctrl->base + PFC(off));
-> > +     reg &=3D ~(PFC_MASK << (pin * 4));
-> > +     writel(reg | (func << (pin * 4)), pctrl->base + PFC(off));
-> > +
-> > +     /* Switch to Peripheral pin function with PMC register */
-> > +     reg =3D readb(pctrl->base + PMC(off));
-> > +     writeb(reg | BIT(pin), pctrl->base + PMC(off));
-> > +
-> > +     /* Set the PWPR register to be write-protected */
-> > +     pwpr =3D readb(pctrl->base + regs->pwpr);
-> > +     writeb(pwpr & ~PWPR_PFCWE, pctrl->base + regs->pwpr);
-> > +     raw_spin_unlock(&pctrl->pwpr_lock);
-> > +
-> > +     spin_unlock_irqrestore(&pctrl->lock, flags);
-> > +};
-> > +
-> >  static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
-> >                                unsigned int func_selector,
-> >                                unsigned int group_selector)
-> > @@ -1087,14 +1242,26 @@ static int rzg2l_write_oen(struct rzg2l_pinctrl=
- *pctrl, u32 caps, u32 offset, u8
-> >       return 0;
-> >  }
-> >
-> > +static u32 rzv2h_read_oen(struct rzg2l_pinctrl *pctrl, u32 caps, u32 o=
-ffset, u8 pin)
-> > +{
-> > +     /* stub */
-> > +     return 0;
-> > +}
-> > +
-> > +static int rzv2h_write_oen(struct rzg2l_pinctrl *pctrl, u32 caps, u32 =
-offset, u8 pin, u8 oen)
-> > +{
-> > +     /* stub */
-> > +     return -EINVAL;
-> > +}
-> > +
->
-> What about chekcing:
-> if (pctrl->data->read_oen)
->         ret =3D pctrl->data->read_oen()
->
-> if (pctrl->data->write_oen)
->         ret =3D pctrl->data->write_oen()
->
-> Accross the driver. This will avoid adding stubs each time suppor for a n=
-ew
-> IP is added.
->
-I plan to fill this up in a non-rfc series.
-
-> >  static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
-> >                                    unsigned int _pin,
-> >                                    unsigned long *config)
-> >  {
-> >       struct rzg2l_pinctrl *pctrl =3D pinctrl_dev_get_drvdata(pctldev);
-> > -     enum pin_config_param param =3D pinconf_to_config_param(*config);
-> >       const struct rzg2l_hwcfg *hwcfg =3D pctrl->data->hwcfg;
-> >       const struct pinctrl_pin_desc *pin =3D &pctrl->desc.pins[_pin];
-> > +     u32 param =3D pinconf_to_config_param(*config);
-> >       u64 *pin_data =3D pin->drv_data;
-> >       unsigned int arg =3D 0;
-> >       u32 off, cfg;
-> > @@ -1180,6 +1347,30 @@ static int rzg2l_pinctrl_pinconf_get(struct pinc=
-trl_dev *pctldev,
-> >               break;
-> >       }
-> >
-> > +     case RENESAS_RZV2H_PIN_CONFIG_OUTPUT_IMPEDANCE: {
-> > +             u8 val;
-> > +
-> > +             if (!(cfg & (PIN_CFG_IOLH_1 | PIN_CFG_IOLH_2 | PIN_CFG_IO=
-LH_3 | PIN_CFG_IOLH_4)))
-> > +                     return -EINVAL;
-> > +
-> > +             val =3D rzg2l_read_pin_config(pctrl, IOLH(off), bit, IOLH=
-_MASK);
-> > +             switch (val) {
-> > +             case 0:
-> > +                     arg =3D 1;
-> > +                     break;
-> > +             case 1:
-> > +                     arg =3D 2;
-> > +                     break;
-> > +             case 2:
-> > +                     arg =3D 4;
-> > +                     break;
-> > +             default:
-> > +                     arg =3D 6;
-> > +                     break;
-> > +             }
-> > +             break;
-> > +     }
-> > +
-> >       default:
-> >               return -ENOTSUPP;
-> >       }
-> > @@ -1199,9 +1390,9 @@ static int rzg2l_pinctrl_pinconf_set(struct pinct=
-rl_dev *pctldev,
-> >       const struct rzg2l_hwcfg *hwcfg =3D pctrl->data->hwcfg;
-> >       struct rzg2l_pinctrl_pin_settings settings =3D pctrl->settings[_p=
-in];
-> >       u64 *pin_data =3D pin->drv_data;
-> > -     enum pin_config_param param;
-> >       unsigned int i, arg, index;
-> >       u32 cfg, off;
-> > +     u32 param;
-> >       int ret;
-> >       u8 bit;
-> >
-> > @@ -1283,6 +1474,32 @@ static int rzg2l_pinctrl_pinconf_set(struct pinc=
-trl_dev *pctldev,
-> >                       rzg2l_rmw_pin_config(pctrl, IOLH(off), bit, IOLH_=
-MASK, index);
-> >                       break;
-> >
-> > +             case RENESAS_RZV2H_PIN_CONFIG_OUTPUT_IMPEDANCE:
-> > +                     arg =3D pinconf_to_config_argument(_configs[i]);
-> > +
-> > +                     if (!(cfg & (PIN_CFG_IOLH_1 | PIN_CFG_IOLH_2 |
-> > +                                  PIN_CFG_IOLH_3 | PIN_CFG_IOLH_4)))
-> > +                             return -EINVAL;
-> > +
-> > +                     switch (arg) {
-> > +                     case 1:
-> > +                             index =3D 0;
-> > +                             break;
-> > +                     case 2:
-> > +                             index =3D 1;
-> > +                             break;
-> > +                     case 4:
-> > +                             index =3D 2;
-> > +                             break;
-> > +                     case 6:
-> > +                             index =3D 3;
-> > +                             break;
-> > +                     default:
-> > +                             return -EINVAL;
-> > +                     }
-> > +                     rzg2l_rmw_pin_config(pctrl, IOLH(off), bit, IOLH_=
-MASK, index);
-> > +                     break;
-> > +
-> >               default:
-> >                       return -EOPNOTSUPP;
-> >               }
-> > @@ -1730,6 +1947,38 @@ static const u64 r9a08g045_gpio_configs[] =3D {
-> >       RZG2L_GPIO_PORT_PACK(6, 0x2a, RZG3S_MPXED_PIN_FUNCS(A)),         =
-               /* P18 */
-> >  };
-> >
-> > +static const char * const rzv2h_gpio_names[] =3D {
-> > +     "P00", "P01", "P02", "P03", "P04", "P05", "P06", "P07",
-> > +     "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17",
-> > +     "P20", "P21", "P22", "P23", "P24", "P25", "P26", "P27",
-> > +     "P30", "P31", "P32", "P33", "P34", "P35", "P36", "P37",
-> > +     "P40", "P41", "P42", "P43", "P44", "P45", "P46", "P47",
-> > +     "P50", "P51", "P52", "P53", "P54", "P55", "P56", "P57",
-> > +     "P60", "P61", "P62", "P63", "P64", "P65", "P66", "P67",
-> > +     "P70", "P71", "P72", "P73", "P74", "P75", "P76", "P77",
-> > +     "P80", "P81", "P82", "P83", "P84", "P85", "P86", "P87",
-> > +     "P90", "P91", "P92", "P93", "P94", "P95", "P96", "P97",
-> > +     "PA0", "PA1", "PA2", "PA3", "PA4", "PA5", "PA6", "PA7",
-> > +     "PB0", "PB1", "PB2", "PB3", "PB4", "PB5", "PB6", "PB7",
-> > +};
-> > +
-> > +static const u64 r9a09g057_gpio_configs[] =3D {
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x20, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* P0 */
-> > +     RZG2L_GPIO_PORT_PACK(6, 0x21, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* P1 */
-> > +     RZG2L_GPIO_PORT_PACK(2, 0x22, RZV2H_MPXED_PIN_FUNCS(4)),         =
-               /* P2 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x23, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* P3 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x24, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* P4 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x25, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* P5 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x26, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL |
-> > +                          PIN_CFG_ELC),                               =
-               /* P6 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x27, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* P7 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x28, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL |
-> > +                         PIN_CFG_ELC),                                =
-               /* P8 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x29, PIN_CFG_VARIABLE),                 =
-               /* P9 */
-> > +     RZG2L_GPIO_PORT_PACK(8, 0x2a, RZV2H_MPXED_PIN_FUNCS(3) | PIN_CFG_=
-SCHMIT_CTRL),  /* PA */
-> > +     RZG2L_GPIO_PORT_PACK(6, 0x2b, PIN_CFG_VARIABLE),                 =
-               /* PB */
-> > +};
-> > +
-> >  static const struct {
-> >       struct rzg2l_dedicated_configs common[35];
-> >       struct rzg2l_dedicated_configs rzg2l_pins[7];
-> > @@ -1856,6 +2105,139 @@ static const struct rzg2l_dedicated_configs rzg=
-3s_dedicated_pins[] =3D {
-> >                                                      PIN_CFG_IO_VMC_SD1=
-)) },
-> >  };
-> >
-> > +static struct rzg2l_dedicated_configs rzv2h_dedicated_pins[] =3D {
-> > +     { "NMI", RZG2L_SINGLE_PIN_PACK(0x1, 0, (PIN_CFG_FILONOFF | PIN_CF=
-G_FILNUM |
-> > +                                             PIN_CFG_FILCLKSEL)) },
-> > +     { "TMS_SWDIO", RZG2L_SINGLE_PIN_PACK(0x3, 0, (PIN_CFG_IOLH_1 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_IEN)) },
-> > +     { "TDO", RZG2L_SINGLE_PIN_PACK(0x3, 2, (PIN_CFG_IOLH_1 | PIN_CFG_=
-SR)) },
-> > +     { "WDTUDFCA", RZG2L_SINGLE_PIN_PACK(0x5, 0, (PIN_CFG_IOLH_1 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_PUPD)) },
-> > +     { "WDTUDFCM", RZG2L_SINGLE_PIN_PACK(0x5, 1, (PIN_CFG_IOLH_1 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_PUPD)) },
-> > +     { "SCIF_RXD", RZG2L_SINGLE_PIN_PACK(0x6, 0, (PIN_CFG_IOLH_1 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_PUPD)) },
-> > +     { "SCIF_TXD", RZG2L_SINGLE_PIN_PACK(0x6, 1, (PIN_CFG_IOLH_1 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_PUPD)) },
-> > +     { "XSPI0_CKP", RZG2L_SINGLE_PIN_PACK(0x7, 0, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD | PIN_=
-CFG_OEN)) },
-> > +     { "XSPI0_CKN", RZG2L_SINGLE_PIN_PACK(0x7, 1, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD | PIN_=
-CFG_OEN)) },
-> > +     { "XSPI0_CS0N", RZG2L_SINGLE_PIN_PACK(0x7, 2, (PIN_CFG_IOLH_1 | P=
-IN_CFG_SR |
-> > +                                                    PIN_CFG_PUPD | PIN=
-_CFG_OEN)) },
-> > +     { "XSPI0_DS", RZG2L_SINGLE_PIN_PACK(0x7, 3, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_PUPD)) },
-> > +     { "XSPI0_RESET0N", RZG2L_SINGLE_PIN_PACK(0x7, 4, (PIN_CFG_IOLH_1 =
-| PIN_CFG_SR |
-> > +                                                       PIN_CFG_PUPD | =
-PIN_CFG_OEN)) },
-> > +     { "XSPI0_RSTO0N", RZG2L_SINGLE_PIN_PACK(0x7, 5, (PIN_CFG_PUPD)) }=
-,
-> > +     { "XSPI0_INT0N", RZG2L_SINGLE_PIN_PACK(0x7, 6, (PIN_CFG_PUPD)) },
-> > +     { "XSPI0_ECS0N", RZG2L_SINGLE_PIN_PACK(0x7, 7, (PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO0", RZG2L_SINGLE_PIN_PACK(0x8, 0, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO1", RZG2L_SINGLE_PIN_PACK(0x8, 1, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO2", RZG2L_SINGLE_PIN_PACK(0x8, 2, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO3", RZG2L_SINGLE_PIN_PACK(0x8, 3, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO4", RZG2L_SINGLE_PIN_PACK(0x8, 4, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO5", RZG2L_SINGLE_PIN_PACK(0x8, 5, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO6", RZG2L_SINGLE_PIN_PACK(0x8, 6, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "XSPI0_IO7", RZG2L_SINGLE_PIN_PACK(0x8, 7, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "SD0CLK", RZG2L_SINGLE_PIN_PACK(0x9, 0, (PIN_CFG_IOLH_2 | PIN_C=
-FG_SR)) },
-> > +     { "SD0CMD", RZG2L_SINGLE_PIN_PACK(0x9, 1, (PIN_CFG_IOLH_2 | PIN_C=
-FG_SR)) },
-> > +     { "SD0RSTN", RZG2L_SINGLE_PIN_PACK(0x9, 2, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT0", RZG2L_SINGLE_PIN_PACK(0xa, 0, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT1", RZG2L_SINGLE_PIN_PACK(0xa, 1, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT2", RZG2L_SINGLE_PIN_PACK(0xa, 2, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT3", RZG2L_SINGLE_PIN_PACK(0xa, 3, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT4", RZG2L_SINGLE_PIN_PACK(0xa, 4, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT5", RZG2L_SINGLE_PIN_PACK(0xa, 5, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD0DAT6", RZG2L_SINGLE_PIN_PACK(0xa, 6, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IOLH_2 | PIN_=
-CFG_PUPD)) },
-> > +     { "SD0DAT7", RZG2L_SINGLE_PIN_PACK(0xa, 7, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD1_CLK", RZG2L_SINGLE_PIN_PACK(0xb, 0, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR)) },
-> > +     { "SD1_CMD", RZG2L_SINGLE_PIN_PACK(0xb, 1, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_IEN | PIN_CFG=
-_PUPD)) },
-> > +     { "SD1_DAT0", RZG2L_SINGLE_PIN_PACK(0xc, 0, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_IEN | PIN_CF=
-G_PUPD)) },
-> > +     { "SD1_DAT1", RZG2L_SINGLE_PIN_PACK(0xc, 1, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_IEN | PIN_CF=
-G_PUPD)) },
-> > +     { "SD1_DAT2", RZG2L_SINGLE_PIN_PACK(0xc, 2, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_IEN | PIN_CF=
-G_PUPD)) },
-> > +     { "SD1_DAT3", RZG2L_SINGLE_PIN_PACK(0xc, 3, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_IEN | PIN_CF=
-G_PUPD)) },
-> > +     { "PCIE0_RSTOUTB", RZG2L_SINGLE_PIN_PACK(0xe, 0, (PIN_CFG_IOLH_1 =
-| PIN_CFG_SR)) },
-> > +     { "PCIE1_RSTOUTB", RZG2L_SINGLE_PIN_PACK(0xe, 1, (PIN_CFG_IOLH_1 =
-| PIN_CFG_SR)) },
-> > +     { "ET0_MDIO", RZG2L_SINGLE_PIN_PACK(0xf, 0, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_IEN | PIN_CF=
-G_PUPD)) },
-> > +     { "ET0_MDC", RZG2L_SINGLE_PIN_PACK(0xf, 1, (PIN_CFG_IOLH_2 | PIN_=
-CFG_SR |
-> > +                                                 PIN_CFG_PUPD)) },
-> > +     { "ET0_RXCTL_RXDV", RZG2L_SINGLE_PIN_PACK(0x10, 0, (PIN_CFG_PUPD)=
-) },
-> > +     { "ET0_TXCTL_TXEN", RZG2L_SINGLE_PIN_PACK(0x10, 1, (PIN_CFG_IOLH_=
-2 | PIN_CFG_SR |
-> > +                                                         PIN_CFG_PUPD)=
-) },
-> > +     { "ET0_TXER", RZG2L_SINGLE_PIN_PACK(0x10, 2, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET0_RXER", RZG2L_SINGLE_PIN_PACK(0x10, 3, (PIN_CFG_PUPD)) },
-> > +     { "ET0_RXC_RXCLK", RZG2L_SINGLE_PIN_PACK(0x10, 4, (PIN_CFG_PUPD))=
- },
-> > +     { "ET0_TXC_TXCLK", RZG2L_SINGLE_PIN_PACK(0x10, 5, (PIN_CFG_IOLH_2=
- | PIN_CFG_SR |
-> > +                                                        PIN_CFG_PUPD |=
- PIN_CFG_OEN)) },
-> > +     { "ET0_CRS", RZG2L_SINGLE_PIN_PACK(0x10, 6, (PIN_CFG_PUPD)) },
-> > +     { "ET0_COL", RZG2L_SINGLE_PIN_PACK(0x10, 7, (PIN_CFG_PUPD)) },
-> > +     { "ET0_TXD0", RZG2L_SINGLE_PIN_PACK(0x11, 0, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET0_TXD1", RZG2L_SINGLE_PIN_PACK(0x11, 1, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET0_TXD2", RZG2L_SINGLE_PIN_PACK(0x11, 2, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET0_TXD3", RZG2L_SINGLE_PIN_PACK(0x11, 3, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET0_RXD0", RZG2L_SINGLE_PIN_PACK(0x11, 4, (PIN_CFG_PUPD)) },
-> > +     { "ET0_RXD1", RZG2L_SINGLE_PIN_PACK(0x11, 5, (PIN_CFG_PUPD)) },
-> > +     { "ET0_RXD2", RZG2L_SINGLE_PIN_PACK(0x11, 6, (PIN_CFG_PUPD)) },
-> > +     { "ET0_RXD3", RZG2L_SINGLE_PIN_PACK(0x11, 7, (PIN_CFG_PUPD)) },
-> > +     { "ET1_MDIO", RZG2L_SINGLE_PIN_PACK(0x12, 0, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_SR | PIN_CF=
-G_IEN |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET1_MDC", RZG2L_SINGLE_PIN_PACK(0x12, 1, (PIN_CFG_IOLH_2 | PIN=
-_CFG_SR |
-> > +                                                  PIN_CFG_PUPD)) },
-> > +     { "ET1_RXCTL_RXDV", RZG2L_SINGLE_PIN_PACK(0x13, 0, (PIN_CFG_PUPD)=
-) },
-> > +     { "ET1_TXCTL_TXEN", RZG2L_SINGLE_PIN_PACK(0x13, 1, (PIN_CFG_IOLH_=
-2 | PIN_CFG_SR |
-> > +                                                         PIN_CFG_PUPD)=
-) },
-> > +     { "ET1_TXER", RZG2L_SINGLE_PIN_PACK(0x13, 2, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                    PIN_CFG_PUPD)) },
-> > +     { "ET1_RXER", RZG2L_SINGLE_PIN_PACK(0x13, 3, (PIN_CFG_PUPD)) },
-> > +     { "ET1_RXC_RXCLK", RZG2L_SINGLE_PIN_PACK(0x13, 4, (PIN_CFG_PUPD))=
- },
-> > +     { "ET1_TXC_TXCLK", RZG2L_SINGLE_PIN_PACK(0x13, 5, (PIN_CFG_IOLH_2=
- | PIN_CFG_SR |
-> > +                                                        PIN_CFG_PUPD |=
- PIN_CFG_OEN)) },
-> > +     { "ET1_CRS", RZG2L_SINGLE_PIN_PACK(0x13, 6, (PIN_CFG_PUPD)) },
-> > +     { "ET1_COL", RZG2L_SINGLE_PIN_PACK(0x13, 7, (PIN_CFG_PUPD)) },
-> > +     { "ET1_TXD0", RZG2L_SINGLE_PIN_PACK(0x14, 0, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET1_TXD1", RZG2L_SINGLE_PIN_PACK(0x14, 1, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET1_TXD2", RZG2L_SINGLE_PIN_PACK(0x14, 2, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET1_TXD3", RZG2L_SINGLE_PIN_PACK(0x14, 3, (PIN_CFG_IOLH_2 | PI=
-N_CFG_SR |
-> > +                                                   PIN_CFG_PUPD)) },
-> > +     { "ET1_RXD0", RZG2L_SINGLE_PIN_PACK(0x14, 4, (PIN_CFG_PUPD)) },
-> > +     { "ET1_RXD1", RZG2L_SINGLE_PIN_PACK(0x14, 5, (PIN_CFG_PUPD)) },
-> > +     { "ET1_RXD2", RZG2L_SINGLE_PIN_PACK(0x14, 6, (PIN_CFG_PUPD)) },
-> > +     { "ET1_RXD3", RZG2L_SINGLE_PIN_PACK(0x14, 7, (PIN_CFG_PUPD)) },
-> > +};
-> > +
-> >  static int rzg2l_gpio_get_gpioint(unsigned int virq, struct rzg2l_pinc=
-trl *pctrl)
-> >  {
-> >       const struct pinctrl_pin_desc *pin_desc =3D &pctrl->desc.pins[vir=
-q];
-> > @@ -2380,6 +2762,9 @@ static int rzg2l_pinctrl_probe(struct platform_de=
-vice *pdev)
-> >       BUILD_BUG_ON(ARRAY_SIZE(r9a08g045_gpio_configs) * RZG2L_PINS_PER_=
-PORT >
-> >                    ARRAY_SIZE(rzg2l_gpio_names));
-> >
-> > +     BUILD_BUG_ON(ARRAY_SIZE(r9a09g057_gpio_configs) * RZG2L_PINS_PER_=
-PORT >
-> > +                  ARRAY_SIZE(rzv2h_gpio_names));
-> > +
-> >       pctrl =3D devm_kzalloc(&pdev->dev, sizeof(*pctrl), GFP_KERNEL);
-> >       if (!pctrl)
-> >               return -ENOMEM;
-> > @@ -2402,6 +2787,7 @@ static int rzg2l_pinctrl_probe(struct platform_de=
-vice *pdev)
-> >
-> >       spin_lock_init(&pctrl->lock);
-> >       spin_lock_init(&pctrl->bitmap_lock);
-> > +     raw_spin_lock_init(&pctrl->pwpr_lock);
-> >       mutex_init(&pctrl->mutex);
-> >       atomic_set(&pctrl->wakeup_path, 0);
-> >
-> > @@ -2578,6 +2964,65 @@ static void rzg2l_pinctrl_pm_setup_pfc(struct rz=
-g2l_pinctrl *pctrl)
-> >       writel(PWPR_B0WI, pctrl->base + regs->pwpr);    /* B0WI=3D1, PFCW=
-E=3D0 */
-> >  }
-> >
-> > +static void rzv2h_pinctrl_pm_setup_pfc(struct rzg2l_pinctrl *pctrl)
->
-> Have you managed to test this?
->
-No S2R isn't tested and is just added for completeness, I wonder if we
-should have a SoC specific flag "pm_supported" for this, as apart from
-RZ/G3S  nothing has been tested I believe?
-
-Cheers,
-Prabhakar
+> 
+> - Allen
+> 
 
