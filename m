@@ -1,188 +1,165 @@
-Return-Path: <linux-kernel+bounces-123093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6086589020A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:38:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF2F89020C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5506B23A34
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:38:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3627528C252
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947D31272CA;
-	Thu, 28 Mar 2024 14:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A3082D7F;
+	Thu, 28 Mar 2024 14:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="flsy+nfw"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XVFvDtJv"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021737E10B
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD5E80BF0
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636698; cv=none; b=VbShlrhRn2anDVe7S5BbOFqZl4ZZksdnfaGBDt53GbYSF0WYkW1hFfSW/sqdy61zBF/bOVw4+fo8XxmM49LjtIxMq3TCawDXGmw5OR6yG5zydgFkubOUhsQ7pKRsVQMsIKCWcAx37wO+c/Mf09h7eSbAvjIoMd4dFhBTUrYquig=
+	t=1711636738; cv=none; b=IRmBtC7BT3v2dUJ5TueyUEZ44610S/rzuatqztRqCc3NsJbyyDlnAXvymUVKO/x/YMv5lDaAEPLm4Gk/cTs1/Dv3vqZlRtQ1Z4R1QSSwfkSc0YpOzLVxeqwnj1kJz9NaQ4cDuvQsGhyhKTaBojmo3HEYmAfyXb53uOn5oXqfpDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636698; c=relaxed/simple;
-	bh=Je2UAtEY68if5uMZucjTLmJZ569unNwJAEX8q4vFPRs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SfkV2MQ6IpYAPHMO3+COFNLw4Rmv3e8IFXVtGYOwpGHp/5M8rv+O2DhzANkEvtnQNCbdaz81UTUHmwGK9hruh/cQcvICbpmV4ixXuj7QMa9IqKYqP70jQNbN/vZQty9TxezxWBsgoLP+poCequWehcXwCTn02Nsvin6NLx/yPWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=flsy+nfw; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56c3689ad32so12311a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:38:16 -0700 (PDT)
+	s=arc-20240116; t=1711636738; c=relaxed/simple;
+	bh=xVj5HRDyXjXywf0BrqhT5YR5lLz9+FQIXUJqKdaQyvM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=haonZHtOey8672guY64S6Bu4/pukZ7TkS6bmgY2O8EbEXJUGDUEJtuPqcyup8kTbsjiQoQyPih0wqgjplPGZaDEizjLa/b7lIhxvFGQqE5sPk+YeJbhFEeLctmJ3NrTUkwBL9DieX31xie3X/eG4HMAoyZ/ZM2Hnvahb7mC5vHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XVFvDtJv; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so931809b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711636695; x=1712241495; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mBDqCwUo0BszO/p4vM05OTn+yRfN49/fU9/chw4uLSk=;
-        b=flsy+nfwkO1ZbK426PFd7YABXbLYkGaaW1V9v6akdpzEsaj61F1qk6RJlJbj1E3f/e
-         pjpAxK7JGumtfzg9aiYogJEtRiIrpMhVEDFriaIPxplEfDmAH8YnOGo3ivqJUysWLsoT
-         Yvipt4FUyeXFle4lCPKo4zyD0DAggUnhN5O7nEQKD6LF3d6BvY2O7ttL4g6LrMyWApJ1
-         sCAZIJL4c5bx6b0ZKZt6J15IxX0o9Bi16uxl6P/5DXPuQ/PimBn+DiQpQBWfAhIRa/Sm
-         N7bT6zSJ8qqZ6tOLedR/WHRz4Qv7VP5cvkvuK9efNsj2EtoH3k4aH5Yk8CNusCKnC4QA
-         rmHg==
+        d=linaro.org; s=google; t=1711636736; x=1712241536; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vMY8NVnOF97MA9cY4uKJK6Z1YfV/geMkbCzYeBNB1p0=;
+        b=XVFvDtJv1rGW8RgtpHJqm7D/W79K8kB+Ows0fla089cINuEmOWBletLi6QU7swDVLM
+         OJUJhCrienLMcvbmJghhqoRYTe6gMfgiKSLHv95BkagqaQrl+vsSO8QUukuoSDHguTAo
+         sKdjNpI9ybEtDL1qgFPrea8F527+Ic1ORVoGb6ypF1QwqIDKM/5Z9d6d21ZZIEugVHUI
+         +WXIDyC3fnLmxQuGv5r+XUMYYAOkulZeR5YYZvUx6bs7IRNlccbtncY+1AHXwGTAi5md
+         CitLc+AzczgSBiRv0AmEvKtlzLtx0xyotIW9g6IvH/z0usT3xpwKKb2gD8KGBM+lF4MZ
+         /YYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711636695; x=1712241495;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mBDqCwUo0BszO/p4vM05OTn+yRfN49/fU9/chw4uLSk=;
-        b=gx+5kGl0txlanZlxxJkBtnqEV7+iT3QJDYbS3czqhfK6DM4vrt1K/0CqW+Wy5+cWDO
-         C8HoBc7+EaGXfW/qYeg2Z/pEfC1849In8utO2i/yebh2RqbQ7kuq7qWbibBUpjzrZmbY
-         lUQGCHmo5jifI6OY7jKVNf9lRIzhmfn9JQKcxCKsnUqYybzg8+4QMXz4WaJ6ayPy0poS
-         vkmKurgIa4pD90mICNzjlqY0KSN281WzzpY+uBdECOV6G/JSh0jeVhGIEipqDtJRWZ9M
-         DoCQkR5uPFUgfdWtrPW/ddBPL0+qkkUThVORpsdbo9oE3DkqLi6KwzJo3vYo9hvoYalv
-         DE7g==
-X-Gm-Message-State: AOJu0YwEJxZ6kciT0bJ1pkSqqm6FJSZ6tUFrdBOtrIAatmUwYlGMb7w+
-	1T/Xh2uNr0Z6RUOOQrvRKunvjzeIe3XCNSUy8bGDgxS/SFdJAV0qmT4TvWnASXZ7bGlI2gGt1R5
-	TpYj7YUCNQhuA/Jox75hB3orrfsOWJtyvkQJUHVim2YvYoSmf6vuU
-X-Google-Smtp-Source: AGHT+IFpCb+hAEMXqJRx+znyNHc29XT0UrNVUxB6VWgzCxHc/S/gsBG3CXhdt+RzMQsIPrDbBmYFcfOf8JEENWeNtM0=
-X-Received: by 2002:a50:bb21:0:b0:56c:18df:f9e1 with SMTP id
- y30-20020a50bb21000000b0056c18dff9e1mr142319ede.5.1711636695048; Thu, 28 Mar
- 2024 07:38:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711636736; x=1712241536;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vMY8NVnOF97MA9cY4uKJK6Z1YfV/geMkbCzYeBNB1p0=;
+        b=OKpJc5JGWxLCLicGCpWd3tprPB1QFYNCOAGrJ8H4b6AloyEk8eCFgQGWJ/QRg9N7Od
+         WG/8uohsLvhIX0wLClGtyxftQdARDBzTgg26VfxwGW2saE/7Eo39srHmiw4gWius5r6L
+         RhIHFC7NUqh1YjSgw+YPAuSMqJAelEIuE9WvyOnJiWX54sAeA6DCLyN/KsSAieRmXZr3
+         VOdJw2Hc/iznCqoXuP6BiTFviOg358DcVv1VYGLFoPDTh4F6TbNtetS2myNZtLcrkUq3
+         7kt/W+dsScmYX6RmHzc0PTj5eVe7JDycieu8gls8y9aRuBZ3x30rIkiDk/ciG5qJfAc/
+         /daw==
+X-Forwarded-Encrypted: i=1; AJvYcCWB681Vn6zy+TF1plbVqcJj3I+UWZKeMOZBxa1Oei6ud/pY7N9IEk3Mdvsf7NceyK8JvqGQ0ou6RPpVftqOt4oM5SaxxNdFT6LdEIGr
+X-Gm-Message-State: AOJu0YyHrmgPamhvF7+2lt1dsMSMk+U8uVWTyFYHw5/pYqeql10ltZxs
+	DEUyIBPE4Uy79hgHMWOUaS30fUFuWV9q7yqMPw8a0VJSxwdtTEmP2H5UBl4TIeA=
+X-Google-Smtp-Source: AGHT+IHSRHXvmH5VZNmwCTDuXN846Z1hCir5wFWdCEOx0hNfK6aMIMOd1COe/h7RuCB3uRw7DmjA6g==
+X-Received: by 2002:a05:6a00:464f:b0:6ea:7b29:3ab7 with SMTP id kp15-20020a056a00464f00b006ea7b293ab7mr3081643pfb.23.1711636736154;
+        Thu, 28 Mar 2024 07:38:56 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:ff63:c57b:4625:b68c])
+        by smtp.gmail.com with ESMTPSA id p43-20020a056a0026eb00b006e6b12d650asm1439220pfw.31.2024.03.28.07.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 07:38:55 -0700 (PDT)
+Date: Thu, 28 Mar 2024 08:38:52 -0600
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: andersson@kernel.org, matthias.bgg@gmail.com, tzungbi@kernel.org,
+	tinghan.shen@mediatek.com, linux-remoteproc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, wenst@chromium.org,
+	kernel@collabora.com
+Subject: Re: [PATCH 2/2] remoteproc: mediatek: Don't parse extraneous
+ subnodes for multi-core
+Message-ID: <ZgWA/E46i/CaoM74@p14s>
+References: <20240321084614.45253-1-angelogioacchino.delregno@collabora.com>
+ <20240321084614.45253-3-angelogioacchino.delregno@collabora.com>
+ <ZfxRyMyUqyqtXy8n@p14s>
+ <9ef4e974-740e-4698-bb38-f236521a425c@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328143051.1069575-1-arnd@kernel.org> <20240328143051.1069575-6-arnd@kernel.org>
-In-Reply-To: <20240328143051.1069575-6-arnd@kernel.org>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 28 Mar 2024 15:38:03 +0100
-Message-ID: <CANn89i+3FuKc1RsYaciNe3uQMZuJBjSmvC_ueuQ=NaFVzEnyuA@mail.gmail.com>
-Subject: Re: [PATCH 5/9] ipv4: tcp_output: avoid warning about NET_ADD_STATS
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Dmitry Safonov <0x7f454c46@gmail.com>, 
-	Neal Cardwell <ncardwell@google.com>, "mfreemon@cloudflare.com" <mfreemon@cloudflare.com>, 
-	Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ef4e974-740e-4698-bb38-f236521a425c@collabora.com>
 
-On Thu, Mar 28, 2024 at 3:31=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Clang warns about a range check in percpu_add_op() being impossible
-> to hit for an u8 variable:
->
-> net/ipv4/tcp_output.c:188:3: error: result of comparison of constant -1 w=
-ith expression of type 'u8' (aka 'unsigned char') is always false [-Werror,=
--Wtautological-constant-out-of-range-compare]
->                 NET_ADD_STATS(sock_net(sk), LINUX_MIB_TCPACKCOMPRESSED,
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/net/ip.h:291:41: note: expanded from macro 'NET_ADD_STATS'
->  #define NET_ADD_STATS(net, field, adnd) SNMP_ADD_STATS((net)->mib.net_st=
-atistics, field, adnd)
->                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~~~~~~~~
-> include/net/snmp.h:143:4: note: expanded from macro 'SNMP_ADD_STATS'
->                         this_cpu_add(mib->mibs[field], addend)
->                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/percpu-defs.h:509:33: note: expanded from macro 'this_cpu_a=
-dd'
->  #define this_cpu_add(pcp, val)          __pcpu_size_call(this_cpu_add_, =
-pcp, val)
->                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~
-> note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=3D=
-0 to see all)
-> <scratch space>:187:1: note: expanded from here
-> this_cpu_add_8
-> ^
-> arch/x86/include/asm/percpu.h:326:35: note: expanded from macro 'this_cpu=
-_add_8'
->  #define this_cpu_add_8(pcp, val)                percpu_add_op(8, volatil=
-e, (pcp), val)
->                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~
-> arch/x86/include/asm/percpu.h:127:31: note: expanded from macro 'percpu_a=
-dd_op'
->                               ((val) =3D=3D 1 || (val) =3D=3D -1)) ?     =
-       \
->                                              ~~~~~ ^  ~~
+On Wed, Mar 27, 2024 at 01:49:58PM +0100, AngeloGioacchino Del Regno wrote:
+> Il 21/03/24 16:27, Mathieu Poirier ha scritto:
+> > On Thu, Mar 21, 2024 at 09:46:14AM +0100, AngeloGioacchino Del Regno wrote:
+> > > When probing multi-core SCP, this driver is parsing all sub-nodes of
+> > > the scp-cluster node, but one of those could be not an actual SCP core
+> > > and that would make the entire SCP cluster to fail probing for no good
+> > > reason.
+> > > 
+> > > To fix that, in scp_add_multi_core() treat a subnode as a SCP Core by
+> > > parsing only available subnodes having compatible "mediatek,scp-core".
+> > > 
+> > > Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-core SCP")
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> > > ---
+> > >   drivers/remoteproc/mtk_scp.c | 3 +++
+> > >   1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+> > > index 67518291a8ad..fbe1c232dae7 100644
+> > > --- a/drivers/remoteproc/mtk_scp.c
+> > > +++ b/drivers/remoteproc/mtk_scp.c
+> > > @@ -1096,6 +1096,9 @@ static int scp_add_multi_core(struct platform_device *pdev,
+> > >   	cluster_of_data = (const struct mtk_scp_of_data **)of_device_get_match_data(dev);
+> > >   	for_each_available_child_of_node(np, child) {
+> > > +		if (!of_device_is_compatible(child, "mediatek,scp-core"))
+> > > +			continue;
+> > > +
+> > 
+> > Interesting - what else gets stashed under the remote processor node?  I don't
+> > see anything specified in the bindings.
+> > 
+> 
+> Sorry for the late reply - well, in this precise moment in time, upstream,
+> nothing yet.
+> 
+> I have noticed this while debugging some lockups and wanted to move the scp_adsp
+> clock controller node as child of the SCP node (as some of those clocks are located
+> *into the SCP's CFG register space*, and it's correct for that to be a child as one
+> of those do depend on the SCP being up - and I'll spare you the rest) and noticed
+> the unexpected behavior, as the SCP driver was treating those as an SCP core.
+> 
+> There was no kernel panic, but the SCP would fail probing.
+> 
+> This is anyway a missed requirement ... for platforms that want *both* two SCP
+> cores *and* the AudioDSP, as that'd at least be two nodes with the same iostart
+> (scp@1072000, clock-controller@1072000), other than the reasons I explained some
+> lines back.
+> 
+> ...and that's why this commit was sent :-)
 >
 
-This seems like a bug in the macro or the compiler, because val is not
-a constant ?
+Please update the bindings with the extra clock requirement in your next
+revision. 
 
-__builtin_constant_p(val) should return false ???
-
-+#define percpu_add_op(size, qual, var, val)                            \
-+do {                                                                   \
-+       const int pao_ID__ =3D (__builtin_constant_p(val) &&              \
-+                             ((val) =3D=3D 1 || (val) =3D=3D -1)) ?       =
-     \
-+                               (int)(val) : 0;                         \
-+       if (0) {                                                        \
-+               typeof(var) pao_tmp__;                                  \
-+               pao_tmp__ =3D (val);                                      \
-+               (void)pao_tmp__;                                        \
-+       }                                                               \
-+       if (pao_ID__ =3D=3D 1)                                             =
- \
-+               percpu_unary_op(size, qual, "inc", var);                \
-+       else if (pao_ID__ =3D=3D -1)                                       =
- \
-+               percpu_unary_op(size, qual, "dec", var);                \
-+       else                                                            \
-+               percpu_to_op(size, qual, "add", var, val);              \
-+} while (0)
-+
-
-
-
-> Avoid this warning with a cast to a signed 'int'.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  net/ipv4/tcp_output.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index e3167ad96567..dbe54fceee08 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -183,7 +183,7 @@ static inline void tcp_event_ack_sent(struct sock *sk=
-, u32 rcv_nxt)
->
->         if (unlikely(tp->compressed_ack)) {
->                 NET_ADD_STATS(sock_net(sk), LINUX_MIB_TCPACKCOMPRESSED,
-> -                             tp->compressed_ack);
-> +                             (int)tp->compressed_ack);
->                 tp->compressed_ack =3D 0;
->                 if (hrtimer_try_to_cancel(&tp->compressed_ack_timer) =3D=
-=3D 1)
->                         __sock_put(sk);
-> --
-> 2.39.2
->
+> P.S.: The reason why platforms don't crash without the scp_adsp clock controller
+>       as a child of SCP is that the bootloader is actually doing basic init for
+>       the SCP, hence the block is powered on when booting ;-)
+> 
+> Cheers,
+> Angelo
+> 
+> > Thanks,
+> > Mathieu
+> > 
+> > >   		if (!cluster_of_data[core_id]) {
+> > >   			ret = -EINVAL;
+> > >   			dev_err(dev, "Not support core %d\n", core_id);
+> > > -- 
+> > > 2.44.0
+> > > 
+> 
+> 
 
