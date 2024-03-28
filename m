@@ -1,128 +1,116 @@
-Return-Path: <linux-kernel+bounces-122718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1545A88FC02
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:49:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469C088FC04
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46A691C2C5B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:49:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE17B1F2D915
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6464E6A00E;
-	Thu, 28 Mar 2024 09:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="m+kIphZG"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DD5657BF;
+	Thu, 28 Mar 2024 09:50:06 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D9C41C62
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D0F41C62;
+	Thu, 28 Mar 2024 09:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711619363; cv=none; b=AjkRu+89jnAKsvH1faW0PpOEoQc0AFvA5ETKvZRwfpFOKPHEAzTsFo52x0wUMpML70wfmgRqz+ICEy0e0hp+oqY+iPPjwZIYGQ8EmQoc7TnZyffuf/zYK1yKy4hYNqtCVAy+krvl0lSeHwMF/YfuVxACtbzkJ1iQhb18eUmwm14=
+	t=1711619405; cv=none; b=q5Vvmr0Onvq1+aNFkwSiDvKk2k1ha4JTK+seE3nHkWXecaE3ayu1uIwLc0ez1DM542xdVZd8WIHO65NAxHwpNaEQX2AjZx3a6W/pXmW2e6fl/+0a3GLs51PSbNGNl7AdbC4L2Q8GYf3vlfK+hRUjIFufBKxejW1juqHs91e4Cl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711619363; c=relaxed/simple;
-	bh=NGAu0Wues6upFNlxfKrI9TDym/OgXLE2E4Jz/pnzxis=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=dqps6WEfazrEb+syM0fm07xZ7ingPtRL1vzCRuHKi0mRkQP+hFsgH2XFBjZW14xsq6XS0SR2E/nUszFbQbqFQodMzt7z8eZ7/1lFZM9WyFrL7777o/01ywuJtdrIj7le/vWRk+0mDoeOkJqRYGsP2rVPTXC+flkT5Viy0HaWArA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=m+kIphZG; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a4e1566610fso78443566b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 02:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1711619360; x=1712224160; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s2FlcFMwv9/mxZZUbTMV8sm8mZF2ziq8g+DEQybJDFU=;
-        b=m+kIphZGysprPE69JLfucvUfx8YVagZTGnFKino86wl2sfLIT5cFasJgkSnJAQEl22
-         cH4+i7tkd7CxHhpZlwDV8auDxJ+GMg7Gpn7SRoCwjCQ/kzhuA/kR0SYR5xwh3R6Wmv5L
-         VCxv+GtERDajDWYLn3VEvBQhMrgXol+qSc4dEiCL9kvPfByWv29tL/nZKVUtR2y0ae79
-         jeU4hxazH2wHNbmleWbghqCViIh4JGXQLoZlQLJssfSGe/1jpFsW61RTsCNEcg8OVmdj
-         MyZJg6OTbmmT+JUFQynVVf+aQQf7Xjp+thSmjm2aGSzl4hTq2WPY2I89eYWYCuXsB0uM
-         Sw/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711619360; x=1712224160;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=s2FlcFMwv9/mxZZUbTMV8sm8mZF2ziq8g+DEQybJDFU=;
-        b=bsmU+BUgAXqt1fkdfNF22SiRB7AbHiOKhgy4AmlzT6S96LU6AZV3QgC9EW9+TiPuSw
-         r8kKopQ3KDfvec2rjB3Bh/N2YiXsZLOkbuoNiuOTBCIcjDPp4tMBOu63nNujQtw6S0VA
-         bjOQTkhuFKJJOd7QcX8w2rUj9BpIdRouMi8F2ns0P/Hwr9bfjMTm9rrHNoKgCf7V2I9y
-         uqNq6BhGvnLSJiKqerPdTVhdPSiS3DR+MPEi0GpTaFBjC8f2jx5OaLi6l/vGM6CMRMCA
-         MkFqrsshk+7vRtBZKnnXcWoS7ClBucCTKmVZbUbscUTaFyIqQ203adfvBhq6WLQIu5lR
-         df/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUlhPJXpb3ncaF/3YIeKmkQ7ggUhQ3VMxArKqr4/cDFrM5YhuVk+UGNyG4/tf8DJQElvvPRNdPvcBvQWJxEehm/uRPLrjvRHohGoYuc
-X-Gm-Message-State: AOJu0YxLV4oLlie9t7wMCufvGcTREzGHpuP1RWjG+WV0wYBdFB4rZL88
-	zNlBMwDGgc4iJZHdhstPKGqEdb7fzaoSAJF3npJvTgfstHuvGpSja/qNVTnUUyw=
-X-Google-Smtp-Source: AGHT+IHQj43uF1oRw2agLwmax83BUP4TUUSTe802FM7CxRtHEbgYpfc/GypNFhLDLarI2m22J/4eHg==
-X-Received: by 2002:a17:906:26db:b0:a46:8c40:7a3a with SMTP id u27-20020a17090626db00b00a468c407a3amr1170962ejc.26.1711619360465;
-        Thu, 28 Mar 2024 02:49:20 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id cd1-20020a170906b34100b00a4a396ba54asm555999ejb.93.2024.03.28.02.49.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 02:49:20 -0700 (PDT)
+	s=arc-20240116; t=1711619405; c=relaxed/simple;
+	bh=XBHE/uu+Z4wWTdk0CrlvoxxR3xMTv2slwoV1UnlURD8=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Cm4ZBQ1MBevaM8jvC5tlEvbYBelwt6k5nYPPlnWyhVCZh7RHsed1SvHyXac7vdD6ObvBuhA3T6+L4DG0yGdWE5eK11K5Rl/PrU9gnXmkhUkNeiD4jOwQUcRpNtFribCR8w9JBcqDuSUgCQBJlntu8ZbZDFfFyfvfbXxUdu6d0xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V4zGs1896ztQrt;
+	Thu, 28 Mar 2024 17:47:33 +0800 (CST)
+Received: from canpemm100001.china.huawei.com (unknown [7.192.105.122])
+	by mail.maildlp.com (Postfix) with ESMTPS id A87941404F6;
+	Thu, 28 Mar 2024 17:49:59 +0800 (CST)
+Received: from canpemm500004.china.huawei.com (7.192.104.92) by
+ canpemm100001.china.huawei.com (7.192.105.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 17:49:59 +0800
+Received: from [10.174.179.14] (10.174.179.14) by
+ canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 17:49:58 +0800
+Subject: Re: [PATCH v4] scsi: libsas: Allocation SMP request is aligned to
+ ARCH_DMA_MINALIGN
+To: Yihang Li <liyihang9@huawei.com>, <john.g.garry@oracle.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <dlemoal@kernel.org>,
+	<chenxiang66@hisilicon.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@huawei.com>, <yangxingui@huawei.com>
+References: <20240328090626.621147-1-liyihang9@huawei.com>
+From: Jason Yan <yanaijie@huawei.com>
+Message-ID: <bd975860-8872-8bf9-0bd6-da69c2f2973d@huawei.com>
+Date: Thu, 28 Mar 2024 17:49:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 28 Mar 2024 10:49:19 +0100
-Message-Id: <D05AFAI1G7CY.3EURGL4VGKHB@fairphone.com>
-Cc: <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
- <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <freedreno@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: display: msm: dp-controller: document
- SM8250 compatible
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Luca Weiss" <luca.weiss@fairphone.com>, "Rob Clark"
- <robdclark@gmail.com>, "Abhinav Kumar" <quic_abhinavk@quicinc.com>, "Dmitry
- Baryshkov" <dmitry.baryshkov@linaro.org>, "Sean Paul" <sean@poorly.run>,
- "Marijn Suijten" <marijn.suijten@somainline.org>, "Maarten Lankhorst"
- <maarten.lankhorst@linux.intel.com>, "Maxime Ripard" <mripard@kernel.org>,
- "Thomas Zimmermann" <tzimmermann@suse.de>, "David Airlie"
- <airlied@gmail.com>, "Daniel Vetter" <daniel@ffwll.ch>, "Rob Herring"
- <robh@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Kuogee Hsieh" <quic_khsieh@quicinc.com>, "Krishna Manikandan"
- <quic_mkrishn@quicinc.com>, "Bjorn Andersson" <andersson@kernel.org>,
- "Konrad Dybcio" <konrad.dybcio@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <20240328-sm6350-dp-v1-0-215ca2b81c35@fairphone.com>
- <20240328-sm6350-dp-v1-1-215ca2b81c35@fairphone.com>
-In-Reply-To: <20240328-sm6350-dp-v1-1-215ca2b81c35@fairphone.com>
+MIME-Version: 1.0
+In-Reply-To: <20240328090626.621147-1-liyihang9@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500004.china.huawei.com (7.192.104.92)
 
-Stupid typo in subject, should of course be SM6350, not SM8250.
-
-On Thu Mar 28, 2024 at 10:42 AM CET, Luca Weiss wrote:
-> Add the compatible string for the DisplayPort controller on SM6350 which
-> is compatible with the one on SM8350.
->
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+On 2024/3/28 17:06, Yihang Li wrote:
+> This series [1] reducing the kmalloc() minimum alignment on arm64 to 8
+> (from 128). In libsas, this will cause SMP requests to be 8-byte-aligned
+> through kmalloc() allocation. However, for the hisi_sas hardware, all
+> commands address must be 16-byte-aligned. Otherwise, the commands fail to
+> be executed.
+> 
+> ARCH_DMA_MINALIGN represents the minimum (static) alignment for safe DMA
+> operations, so use ARCH_DMA_MINALIGN as the alignment for SMP request.
+> 
+> Link: https://lkml.kernel.org/r/20230612153201.554742-1-catalin.marinas@arm.com [1]
+> Signed-off-by: Yihang Li <liyihang9@huawei.com>
+> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 > ---
->  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.=
-yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> index ae53cbfb2193..97993feda193 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> @@ -29,6 +29,7 @@ properties:
->            - qcom,sm8650-dp
->        - items:
->            - enum:
-> +              - qcom,sm6350-dp
->                - qcom,sm8150-dp
->                - qcom,sm8250-dp
->                - qcom,sm8450-dp
+> Changes since v3:
+> - Still aligned to ARCH_DMA_MINALIGN for safe DMA operations.
+> 
+> Changes since v2:
+> - Use 16B as alignment for SMP requests instead of ARCH_DMA_MINALIGN.
+> 
+> Changes since v1:
+> - Directly modify alloc_smp_req() instead of using handler callback.
+> ---
+>   drivers/scsi/libsas/sas_expander.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
+> index a2204674b680..c989d182fc75 100644
+> --- a/drivers/scsi/libsas/sas_expander.c
+> +++ b/drivers/scsi/libsas/sas_expander.c
+> @@ -135,7 +135,7 @@ static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
+>   
+>   static inline void *alloc_smp_req(int size)
+>   {
+> -	u8 *p = kzalloc(size, GFP_KERNEL);
+> +	u8 *p = kzalloc(ALIGN(size, ARCH_DMA_MINALIGN), GFP_KERNEL);
+>   	if (p)
+>   		p[0] = SMP_REQUEST;
+>   	return p;
+> 
 
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
+
+Thanks,
+Jason
 
