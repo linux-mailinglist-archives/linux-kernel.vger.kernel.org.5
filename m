@@ -1,308 +1,172 @@
-Return-Path: <linux-kernel+bounces-123380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C0FE8907A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:52:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42BF4890794
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC7791F26B30
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:52:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB604B21509
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1669B132490;
-	Thu, 28 Mar 2024 17:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE25012F360;
+	Thu, 28 Mar 2024 17:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V9pQ6ut5"
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TJ9cJQBV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7902D792;
-	Thu, 28 Mar 2024 17:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F8E82894
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:51:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711648352; cv=none; b=h4UwFm/2C8WwLA/137XsCoFYMTCJE8O8dyioFOzpnyN/7Vus7Z+6cis2LKp3axt0CVC51/kagOJ246myrBaw9eoKsp/9T3O1UzQgZrO3gN1j+3nZL4rv3t2oxMSGDdxTl282guf/TanJ9ktxjC9fISAABsuNOuXzjOhiGDwOKRw=
+	t=1711648305; cv=none; b=aYXvxBm1/S74JTGwF41lajsOJb6v/itI/YNAK4+Bj1Q5VJY+/5Zw5SNBGUzH9D9m4DmT/lAZv9TM2Gaozrn4IJvZrDW0ze8tu1H2sEfRhkaQ3kstdylfPYuxdhBRVvz09NulftaJNZfJmZSiptMVsf68LJiKEbHDN5db+MjFKp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711648352; c=relaxed/simple;
-	bh=Qwdw60z6oMDysUfGMzlX8E0xv//XCx4FdSiUv7NZ47Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sHPp35240mrsPRnXpOMn3IM952L9kxiBTp2rbKfkIJAhXaepoFeMoJL7BG9K4Ja5uwguc+slPAXhAPlYv0LQfgK4nhWy95tY+S99PI4PPBgjDcoPDlYF8ArNDA4Wu2TCyhTLkGizZCbFXlrvLK3o4E8jvpgMKhQpn1AH1JDzd0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V9pQ6ut5; arc=none smtp.client-ip=209.85.222.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7e2f87fb677so326711241.0;
-        Thu, 28 Mar 2024 10:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711648348; x=1712253148; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K7LBZgef3OmAKuVME1pwiv1MCdqK5azmNzQAONOqk24=;
-        b=V9pQ6ut5ITPKqJOvmKCdN2NsugVHVWmrwNLkLL+axhRPVdW5/PdJtAFFD5lRXPzZrF
-         Dn4WFLEjU9jz9tGHMtPm9Z3BtksEB7fu3/A9tIviX41vjOj3+0khbfHBfvQ5cDhD7uBe
-         3OxdLzJzY3sg17vfztzR9NBdQpsFBn83ZTkfY4EHsT6yTjczcBQTcYi2/Hi4yeBq2QLe
-         gpgK8870L2hQERX53InpnnKjDwAp6pnMwq+FSU0Cs4aXU0VFfT88hagU7MakHU02YIR0
-         wbTwtrV3SkTFQUsY7NI81AZYqazELK5tSwiEpFfalw0FfkgjEP8qtjCauBLPatBJjpPz
-         WvJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711648348; x=1712253148;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K7LBZgef3OmAKuVME1pwiv1MCdqK5azmNzQAONOqk24=;
-        b=vslTenLOgYXqmmQ/QUIFzGfRt4uHxtVrO1PtB0a859z7MKDBCVpgvsmf6JCpx+Fsjt
-         AZY82walVS1Ytra1c8V9DbvMsV1SbOJkvVVNYR4Ejno22sEb979x4NEnZTFwtCpmpiU7
-         5sqWwL83fKSMT9q9872Cy7xjlAJPE883LEKu8ZsoZRsXNCMWa44GTnZI8su00bvZ+J8d
-         vk1fXPOEG1cnoxZ5W4G/RZBVy0CpoXMEjJW4NA2shrb5/wKowCgzaxgKZMskX580qThY
-         eydwwqvgb48wTefxsNf59Yb3StkONJA+fXsGH4OI0VsCc0Jfhq5eAbCdTpKihwx0UXBR
-         JnRw==
-X-Forwarded-Encrypted: i=1; AJvYcCWYtyxLJJ3p4nxo5fo/LxzdqgxmBWQfCj3VMaQ/bZOG8mYCszehWBceaqi/Y9US+S47k2DPkE9qT2hQ2d39uXPuSpAHgnlj0m+1kbQcSkLXVNJ2o1PqgVqQ1IjV/fdY5721KQrx/gPu+WJrjirKZOa4+PTzAV69KjGd9r8iUtLJmCc58TQmsS+52y8f28x0WH7yLENjTq3iEpKvc0evYIMzsdkx0B0P3UAeoxXp+onx4ohOqwvPBa38HYd1OPrfe8cTW/XMxKYz/6Z6wutzuspqABSEY4exGYWnjPfcHmPtDKctTUcAyQ1mziHjjRMtAPp4fgAvBUz6PjOC0tEFGfnUr+0Fusg3+MlGUrtr5ixgG+sxk1PP0KYacB6jqC7iPn+4D6u1sglpP/zynUD6oKzfIJqADqpKNs76Gm03tAyR2UsnvJVWgAP26phoWor6YRBUvWZptJ9eryJH8oTYbP8P6dwEUdvpdKEWQuuniLVxV5ztbfCMCZ/9Sojyz0SKgKARYy/hbaBLH8XX1we+ISxBkSCrqDcfxhe0q/vy/xRSjuv6jfhfbUcjHScwF+LevC/R9n5YDVjlaneoYPDL+Gc=
-X-Gm-Message-State: AOJu0YxWqYIkuEPs7eWb6HASpSd1TtzKE/S4HLDVwKeF/gHkGAFAn5xX
-	IrYM1bk3IOjfDprWNSVw3uBfmMPERcPZhOIKVtjDADINbVpMQGdULF1ktC0gsYStI256W7BsbCG
-	/PW6maq6gFzxPtmJhM7GMQZL9vJo=
-X-Google-Smtp-Source: AGHT+IE95pKnkyYhJyn8YRFxcJ3UpRrXG0+tqWRBp7m1EgSmM0bJzOr09iKkrzG5ElLe1R0ae4jladZnXe+pzUi/Iq8=
-X-Received: by 2002:a05:6102:6d1:b0:478:4c1a:efbd with SMTP id
- m17-20020a05610206d100b004784c1aefbdmr2262487vsg.13.1711648347936; Thu, 28
- Mar 2024 10:52:27 -0700 (PDT)
+	s=arc-20240116; t=1711648305; c=relaxed/simple;
+	bh=U4yHXTHHMRwN8YtzD2Qg5Gh+ldlnMTRFcRkbgd4PyW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lM7qvgS6wSOfEmyEy/RgoLkWi1WUuZ7N8qrbjLr4jcUaGIFQXC2RlxFHtUio5O7HxBZpPjXIsH5LmVIuKqOMgB0FvsXugT4iM8ooWh9LrEghH76Jt7hRxFOOQNazrQEsBfDLzzD18EbP4ooZWgzoCvaKmsngkpcpvsxslpKkpwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TJ9cJQBV; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711648301;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J+QcM3gk0UOb/w55XoDEIwmQlkoTEaF8u9uo8lDJ1ss=;
+	b=TJ9cJQBV9VyeOlgP4PQ6S14qJj6yiLh5Va+xKjfBiqSadz962wjO3T0FRycBPLBAPpxf4r
+	ygAZgxSxWPvGvEJcPxNVx4uk1WTQTbpPXjjaTc3sZsTCFSL3GosBUk/oull1GYx7d1DdbI
+	/nwqgpnlq8u0nCCzTglj2YCECrJobSI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-108-4zpXVmEIOq2rWiH1sW_bfg-1; Thu, 28 Mar 2024 13:51:34 -0400
+X-MC-Unique: 4zpXVmEIOq2rWiH1sW_bfg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 621ED185A781;
+	Thu, 28 Mar 2024 17:51:34 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.57])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id D78E84B4405;
+	Thu, 28 Mar 2024 17:51:33 +0000 (UTC)
+Date: Thu, 28 Mar 2024 13:53:31 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
+	tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com,
+	dhowells@redhat.com, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] writeback: protect race between bdi release and
+ bdi_debug_stats_show
+Message-ID: <ZgWum7SWr44w0rie@bfoster>
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <20240327155751.3536-2-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327160314.9982-1-apais@linux.microsoft.com>
- <20240327160314.9982-7-apais@linux.microsoft.com> <ZgRePyo2zC4A1Fp4@mail.minyard.net>
-In-Reply-To: <ZgRePyo2zC4A1Fp4@mail.minyard.net>
-From: Allen <allen.lkml@gmail.com>
-Date: Thu, 28 Mar 2024 10:52:16 -0700
-Message-ID: <CAOMdWS+1AFxEqmACiBYzPHc+q0Ut6hp15tdV50JHvfVeUNCGQw@mail.gmail.com>
-Subject: Re: [PATCH 6/9] ipmi: Convert from tasklet to BH workqueue
-To: minyard@acm.org
-Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org, tj@kernel.org, 
-	keescook@chromium.org, vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
-	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
-	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
-	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
-	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
-	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
-	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
-	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
-	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
-	patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org, 
-	jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com, 
-	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
-	jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com, 
-	aubin.constans@microchip.com, ulf.hansson@linaro.org, manuel.lauss@gmail.com, 
-	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com, 
-	hayashi.kunihiko@socionext.com, mhiramat@kernel.org, brucechang@via.com.tw, 
-	HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr, 
-	stern@rowland.harvard.edu, oneukum@suse.com, 
-	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org, 
-	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
-	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
-	linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327155751.3536-2-shikemeng@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Wed, Mar 27, 2024 at 11:05=E2=80=AFAM Corey Minyard <minyard@acm.org> wr=
-ote:
->
-> On Wed, Mar 27, 2024 at 04:03:11PM +0000, Allen Pais wrote:
-> > The only generic interface to execute asynchronously in the BH context =
-is
-> > tasklet; however, it's marked deprecated and has some design flaws. To
-> > replace tasklets, BH workqueue support was recently added. A BH workque=
-ue
-> > behaves similarly to regular workqueues except that the queued work ite=
-ms
-> > are executed in the BH context.
-> >
-> > This patch converts drivers/infiniband/* from tasklet to BH workqueue.
->
-> I think you mean drivers/char/ipmi/* here.
+On Wed, Mar 27, 2024 at 11:57:46PM +0800, Kemeng Shi wrote:
+> There is a race between bdi release and bdi_debug_stats_show:
+> /* get debug info */		/* bdi release */
+> bdi_debug_stats_show
+>   bdi = m->private;
+>   wb = &bdi->wb;
+> 				bdi_unregister
+> 				bdi_put
+> 				  release_bdi
+> 				    kfree(bdi)
+>   /* use after free */
+>   spin_lock(&wb->list_lock);
+> 
 
- My apologies, my scripts messed up the commit messages for this series.
-Will have it fixed in v2.
+Maybe I'm missing something, but it looks to me that
+bdi_unregister_debug() can't complete until active readers of associated
+debugfs files have completed. For example, see __debugfs_file_removed()
+and use of ->active_users[_drained]. Once the dentry is unlinked,
+further reads fail (I think) via debugfs_file_get(). Hm?
 
->
-> I believe that work queues items are execute single-threaded for a work
-> queue, so this should be good.  I need to test this, though.  It may be
-> that an IPMI device can have its own work queue; it may not be important
-> to run it in bh context.
+Brian
 
-  Fair point. Could you please let me know once you have had a chance to te=
-st
-these changes. Meanwhile, I will work on RFC wherein IPMI will have its own
-workqueue.
+> Search bdi on bdi_list under rcu lock in bdi_debug_stats_show to ensure
+> the bdi is not freed to fix the issue.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  mm/backing-dev.c | 33 +++++++++++++++++++++++++++++++--
+>  1 file changed, 31 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 5f2be8c8df11..70f02959f3bd 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -46,16 +46,44 @@ static void bdi_debug_init(void)
+>  	bdi_debug_root = debugfs_create_dir("bdi", NULL);
+>  }
+>  
+> -static int bdi_debug_stats_show(struct seq_file *m, void *v)
+> +static struct backing_dev_info *lookup_bdi(struct seq_file *m)
+>  {
+> +	const struct file *file = m->file;
+>  	struct backing_dev_info *bdi = m->private;
+> -	struct bdi_writeback *wb = &bdi->wb;
+> +	struct backing_dev_info *exist;
+> +
+> +	list_for_each_entry_rcu(exist, &bdi_list, bdi_list) {
+> +		if (exist != bdi)
+> +			continue;
+> +
+> +		if (exist->debug_dir == file->f_path.dentry->d_parent)
+> +			return bdi;
+> +		else
+> +			return NULL;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +
+> +static int bdi_debug_stats_show(struct seq_file *m, void *v)
+> +{
+> +	struct backing_dev_info *bdi;
+> +	struct bdi_writeback *wb;
+>  	unsigned long background_thresh;
+>  	unsigned long dirty_thresh;
+>  	unsigned long wb_thresh;
+>  	unsigned long nr_dirty, nr_io, nr_more_io, nr_dirty_time;
+>  	struct inode *inode;
+>  
+> +	rcu_read_lock();
+> +	bdi = lookup_bdi(m);
+> +	if (!bdi) {
+> +		rcu_read_unlock();
+> +		return -EEXIST;
+> +	}
+> +
+> +	wb = &bdi->wb;
+>  	nr_dirty = nr_io = nr_more_io = nr_dirty_time = 0;
+>  	spin_lock(&wb->list_lock);
+>  	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
+> @@ -101,6 +129,7 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
+>  		   nr_dirty_time,
+>  		   !list_empty(&bdi->bdi_list), bdi->wb.state);
+>  
+> +	rcu_read_unlock();
+>  	return 0;
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(bdi_debug_stats);
+> -- 
+> 2.30.0
+> 
 
- Thanks for taking time out to review.
-
-- Allen
-
->
-> -corey
->
-> >
-> > Based on the work done by Tejun Heo <tj@kernel.org>
-> > Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6=
-10
-> >
-> > Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-> > ---
-> >  drivers/char/ipmi/ipmi_msghandler.c | 30 ++++++++++++++---------------
-> >  1 file changed, 15 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ip=
-mi_msghandler.c
-> > index b0eedc4595b3..fce2a2dbdc82 100644
-> > --- a/drivers/char/ipmi/ipmi_msghandler.c
-> > +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> > @@ -36,12 +36,13 @@
-> >  #include <linux/nospec.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/delay.h>
-> > +#include <linux/workqueue.h>
-> >
-> >  #define IPMI_DRIVER_VERSION "39.2"
-> >
-> >  static struct ipmi_recv_msg *ipmi_alloc_recv_msg(void);
-> >  static int ipmi_init_msghandler(void);
-> > -static void smi_recv_tasklet(struct tasklet_struct *t);
-> > +static void smi_recv_work(struct work_struct *t);
-> >  static void handle_new_recv_msgs(struct ipmi_smi *intf);
-> >  static void need_waiter(struct ipmi_smi *intf);
-> >  static int handle_one_recv_msg(struct ipmi_smi *intf,
-> > @@ -498,13 +499,13 @@ struct ipmi_smi {
-> >       /*
-> >        * Messages queued for delivery.  If delivery fails (out of memor=
-y
-> >        * for instance), They will stay in here to be processed later in=
- a
-> > -      * periodic timer interrupt.  The tasklet is for handling receive=
-d
-> > +      * periodic timer interrupt.  The work is for handling received
-> >        * messages directly from the handler.
-> >        */
-> >       spinlock_t       waiting_rcv_msgs_lock;
-> >       struct list_head waiting_rcv_msgs;
-> >       atomic_t         watchdog_pretimeouts_to_deliver;
-> > -     struct tasklet_struct recv_tasklet;
-> > +     struct work_struct recv_work;
-> >
-> >       spinlock_t             xmit_msgs_lock;
-> >       struct list_head       xmit_msgs;
-> > @@ -704,7 +705,7 @@ static void clean_up_interface_data(struct ipmi_smi=
- *intf)
-> >       struct cmd_rcvr  *rcvr, *rcvr2;
-> >       struct list_head list;
-> >
-> > -     tasklet_kill(&intf->recv_tasklet);
-> > +     cancel_work_sync(&intf->recv_work);
-> >
-> >       free_smi_msg_list(&intf->waiting_rcv_msgs);
-> >       free_recv_msg_list(&intf->waiting_events);
-> > @@ -1319,7 +1320,7 @@ static void free_user(struct kref *ref)
-> >  {
-> >       struct ipmi_user *user =3D container_of(ref, struct ipmi_user, re=
-fcount);
-> >
-> > -     /* SRCU cleanup must happen in task context. */
-> > +     /* SRCU cleanup must happen in work context. */
-> >       queue_work(remove_work_wq, &user->remove_work);
-> >  }
-> >
-> > @@ -3605,8 +3606,7 @@ int ipmi_add_smi(struct module         *owner,
-> >       intf->curr_seq =3D 0;
-> >       spin_lock_init(&intf->waiting_rcv_msgs_lock);
-> >       INIT_LIST_HEAD(&intf->waiting_rcv_msgs);
-> > -     tasklet_setup(&intf->recv_tasklet,
-> > -                  smi_recv_tasklet);
-> > +     INIT_WORK(&intf->recv_work, smi_recv_work);
-> >       atomic_set(&intf->watchdog_pretimeouts_to_deliver, 0);
-> >       spin_lock_init(&intf->xmit_msgs_lock);
-> >       INIT_LIST_HEAD(&intf->xmit_msgs);
-> > @@ -4779,7 +4779,7 @@ static void handle_new_recv_msgs(struct ipmi_smi =
-*intf)
-> >                        * To preserve message order, quit if we
-> >                        * can't handle a message.  Add the message
-> >                        * back at the head, this is safe because this
-> > -                      * tasklet is the only thing that pulls the
-> > +                      * work is the only thing that pulls the
-> >                        * messages.
-> >                        */
-> >                       list_add(&smi_msg->link, &intf->waiting_rcv_msgs)=
-;
-> > @@ -4812,10 +4812,10 @@ static void handle_new_recv_msgs(struct ipmi_sm=
-i *intf)
-> >       }
-> >  }
-> >
-> > -static void smi_recv_tasklet(struct tasklet_struct *t)
-> > +static void smi_recv_work(struct work_struct *t)
-> >  {
-> >       unsigned long flags =3D 0; /* keep us warning-free. */
-> > -     struct ipmi_smi *intf =3D from_tasklet(intf, t, recv_tasklet);
-> > +     struct ipmi_smi *intf =3D from_work(intf, t, recv_work);
-> >       int run_to_completion =3D intf->run_to_completion;
-> >       struct ipmi_smi_msg *newmsg =3D NULL;
-> >
-> > @@ -4866,7 +4866,7 @@ void ipmi_smi_msg_received(struct ipmi_smi *intf,
-> >
-> >       /*
-> >        * To preserve message order, we keep a queue and deliver from
-> > -      * a tasklet.
-> > +      * a work.
-> >        */
-> >       if (!run_to_completion)
-> >               spin_lock_irqsave(&intf->waiting_rcv_msgs_lock, flags);
-> > @@ -4887,9 +4887,9 @@ void ipmi_smi_msg_received(struct ipmi_smi *intf,
-> >               spin_unlock_irqrestore(&intf->xmit_msgs_lock, flags);
-> >
-> >       if (run_to_completion)
-> > -             smi_recv_tasklet(&intf->recv_tasklet);
-> > +             smi_recv_work(&intf->recv_work);
-> >       else
-> > -             tasklet_schedule(&intf->recv_tasklet);
-> > +             queue_work(system_bh_wq, &intf->recv_work);
-> >  }
-> >  EXPORT_SYMBOL(ipmi_smi_msg_received);
-> >
-> > @@ -4899,7 +4899,7 @@ void ipmi_smi_watchdog_pretimeout(struct ipmi_smi=
- *intf)
-> >               return;
-> >
-> >       atomic_set(&intf->watchdog_pretimeouts_to_deliver, 1);
-> > -     tasklet_schedule(&intf->recv_tasklet);
-> > +     queue_work(system_bh_wq, &intf->recv_work);
-> >  }
-> >  EXPORT_SYMBOL(ipmi_smi_watchdog_pretimeout);
-> >
-> > @@ -5068,7 +5068,7 @@ static bool ipmi_timeout_handler(struct ipmi_smi =
-*intf,
-> >                                      flags);
-> >       }
-> >
-> > -     tasklet_schedule(&intf->recv_tasklet);
-> > +     queue_work(system_bh_wq, &intf->recv_work);
-> >
-> >       return need_timer;
-> >  }
-> > --
-> > 2.17.1
-> >
-> >
->
-
-
---=20
-       - Allen
 
