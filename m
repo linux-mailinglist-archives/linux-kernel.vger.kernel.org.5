@@ -1,201 +1,231 @@
-Return-Path: <linux-kernel+bounces-123292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A09B189062B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:48:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA70689062F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:48:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 149F1B22A71
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:48:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD60E1C30288
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FA8135A4D;
-	Thu, 28 Mar 2024 16:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27B1137779;
+	Thu, 28 Mar 2024 16:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="gg0BjxU8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="P252tgkR"
-Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="K5bLOviP"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FC538388;
-	Thu, 28 Mar 2024 16:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485A2137774
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711643999; cv=none; b=YeSpjW72iBDeEA4hjLBh1YdVFcAXu+CxZlvhH64v0e/dQvKaxmOXOpB2SYjuTqzT2mxp5c2b/A2vWl8AQ5Y+fs1PnQ8H5LZkiqzZ612MyWkqJ/g8nKU3CacHvSVtdyS6gg8NPCZCBDajK1O+MAlrhlf4pZLH3wiUOpGf81pkKbw=
+	t=1711644020; cv=none; b=ArifEUbg3+KsJmvFEw5nadSrwGzmgBslBnMaOKmxR07qgQ8KrCGoa48U6kbkdu/Yyae1MZm3ejfpJvLhLP61pw1PZSduen1l4935UkUb39VmNuR/iB+PDx6kjctXIBVkein2lAH2HGwT58ZjlElexDr1IewoB9gcZOqw9EAe4dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711643999; c=relaxed/simple;
-	bh=wb/qSsrG9p00H2YgbJ23G128MXHEa52O+6iF8sj5TtY=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=q3uZ5aI0oJ9iKIfdZtPn7UWcyHVkubWh4vEu8mNYyqPSURkIJ57Uxsmc0ogcIYqkrewMP84G65TSq9MNzW0PxBm1l6SHL9zXJArdI/Ih0zFvdU863RS+bOjkdGcSd/06Mz0AV4ahH0dnlVDvmwOP790N2pjshueyWUZ15igNmYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=gg0BjxU8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=P252tgkR; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 19D5E1140163;
-	Thu, 28 Mar 2024 12:39:57 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 28 Mar 2024 12:39:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1711643997;
-	 x=1711730397; bh=aUszvSWxiA8AwwpnjADcGdmlaqvcxRRc2keJGjADuiU=; b=
-	gg0BjxU8PF7wrDeOt6Y5eATYhX9zfvEDFJryGM3FP7AW4kzWeWUpBA3JHkR31B1S
-	o+rfhUCKwSa3OF46LOGI9ZEv9LpOAuctp4lhvmve/dYt0byJqTMau9JGOrvEpJNn
-	BhqYzMiX28wGv8kRplwNab3ZmxW077ysB+UgrO2/TeNtvmjNl9Aaqcm+Pjw9hMmJ
-	ewTxMwnmaF93R8ybTZYBPIF/CS224Q6fgMHYHQItyc7lqGz4S2BioMqm8kxfZcRX
-	aOy65p2eXBBPXlKRh+YonNkl9ZBrCiWiewZq+gwfahCbHmZBo7S0deYHYRqll2O3
-	v6htgafYrusq6SSbapwc5A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711643997; x=
-	1711730397; bh=aUszvSWxiA8AwwpnjADcGdmlaqvcxRRc2keJGjADuiU=; b=P
-	252tgkRJqRLht28QLlqUwvcrHXIU5eVMmvtXPt4OY0VLSMjif5s5Uy7LblkJscpB
-	pnzdzLn9jYb0iIoJjtFi3+G72Bw5s9PiVxpPv/sPvbfZO2ba939EwqIysGjLigsr
-	tBBN4TFt/1FrScYofwBU+nnUtCg7bPRT9BV5+hge1VyCtPrf2+0Iv9QXLqleYy8O
-	LNJ8ygqSqdk5fZTWfFKJWyCtwhAM6rP97yfZsQk434BK8CoysODn9F+QOLc5yDiD
-	Ifhz6MnXfNMokqfn1dIP4eCF1xoJH+S/r0WdznRkKVz9uRPHsc4YRSfVIGo/QjH7
-	zzx+Df5kndBtLaDByuISQ==
-X-ME-Sender: <xms:XJ0FZh_qGSFOV6xuzvQjQYgjiuNbHX_scIdkv4_aKCt1GnNS8gxcwg>
-    <xme:XJ0FZlul6l4MgvQnW8S8TxKPExyXlIufw6n7BtXUTksesfcRAD_THHm78MEePYIin
-    BsPQ0ibIA35qSjL6bs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduledgledtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeelfefgueeviefgudduueefueffkeelleeijeelkefgudfgueelledtuddu
-    ieegvdenucffohhmrghinhepghhouggsohhlthdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:XJ0FZvCBvIuhQGbw6wfmrNS_mOA1m9wAwTnp16NiHEkRhrR-S7YuqQ>
-    <xmx:XJ0FZldfJAr9PnAVtMDXWsMRg3Ohlu2mqn6cBs6YxP8vboVblKtUtg>
-    <xmx:XJ0FZmOGnJHZWmYnJHn87hCccqcF8HAmrpPl0u6Mp1LeSsmgOBkAOQ>
-    <xmx:XJ0FZnnGjN49gJA-VQJ5K6DAWlhfQTcJ_IUrdWtisP4JaboD3Y5rcA>
-    <xmx:XZ0FZrxA9XI3f_xAV6-xNT6gLwiSkQ4SSB7b_dlue5OM1q4-ITlQFA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 9F1EAB6008D; Thu, 28 Mar 2024 12:39:56 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1711644020; c=relaxed/simple;
+	bh=JukYux1lE2QutH9NWRSXKyGW55kBvsXf0kklaYf/Sz8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AI5tuiRPSaNDr0XVK5SW5TPaI9lSFgWKbv6nFooMfVGuNGarFZVKkwtCjTexTvxlDq+rLb9iFVuU/hccVR12GDlKWLdxPxmNhas2t/D5nBz4PLqXuvydLvxPBy6j7wcYXb3wksE2p/GwO3WerbO6Voqn+VlNqfffYGRCWEEmt9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=K5bLOviP; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78a746759b4so75659285a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711644012; x=1712248812; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JPv1IlNNd25MIWO2snW+UJ+Z3ASjHN9LM0c86t+nKQY=;
+        b=K5bLOviP3mNl3nVMjA+qtDEOE6lbXd/RvD2zGCw4w7wGy1T6Uk++RvUuYg09SsBYrg
+         E76lW4mTM5GuZFOE3rnnYy1YRvWCgOjYFzyQ9G78/B30GqTg/CmQXQTkrbgVYTXia9ex
+         1tCjqitBHT0TepmYOGbufkF4szk9dqeENxQnY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711644012; x=1712248812;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JPv1IlNNd25MIWO2snW+UJ+Z3ASjHN9LM0c86t+nKQY=;
+        b=XRyIJrN/jtwoVEHrn+wX3Rzu/SNNg+JxktsplHEc4OUMNlyJfV9QqbTr6xuiSiGsmj
+         RnHHyqcfOAyNmnuXWDtIPmGED67xJesP7u42oMU/SSXsuYLQFjE+04LxoySeSM4Nl8tc
+         2/wXr3hKx5Iw+VBUTicgYe6ZzwM9LaDjNjAS8ubBWg/XkdyYPTa/l8gQ/btdXULIsA5F
+         nnYGkcee3xHR31wOhWZEwPLlkIvpRgBr/JJ/zgg1pfXIGRSw53708OlXf1h/qnPmIkqf
+         lEMVQfpk83P5kQoUmsEtBWdSH+EMdHmreUMsGlAzMt+sF/2tDVcpswXQTYyi/wagqA1R
+         L1fg==
+X-Forwarded-Encrypted: i=1; AJvYcCV414fYUVkuX0PhMyGhxe41/aoIp7VPsYI46+nXmjMSiDUuS/rFMHX+CJ8zRFrxdwtP6Gj0asDQCtqA9UdEUiOPxo/zEypQqeBLYjtb
+X-Gm-Message-State: AOJu0YzQ9hZCOPWqSgV4PMcwTDOPpoTETZ8K9Ah1FNgymd4BF25F0Pui
+	HjADRGCxRAS6aUlQyMxtE6/et3Yix96IXbC9O615XO/eWfenNGeHXxuFrpcceHgOydD9A7TgGLg
+	=
+X-Google-Smtp-Source: AGHT+IFwmjGri9VT2QsbqfC0FTzNJ6YFY+Hb6p68Al0FX4W6c03JOs6VNo7pti8KCvMWjWuwZf6XnA==
+X-Received: by 2002:a05:620a:2fc:b0:78a:5d41:d1ee with SMTP id a28-20020a05620a02fc00b0078a5d41d1eemr2957425qko.72.1711644012166;
+        Thu, 28 Mar 2024 09:40:12 -0700 (PDT)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id h29-20020a05620a21dd00b00789f57cadc5sm658335qka.10.2024.03.28.09.40.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 09:40:11 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-431347c6c99so5481cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 09:40:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUToKvkkHomxXPEC9eWRf5mqtz7u6lOfzVkPBWKjBRfi0xOVm4NA6XdhtxnrmNeCXO3shvwmP3Wy+KHB16d1eptAwj6DYNAYqDMbJbS
+X-Received: by 2002:a05:622a:410a:b0:431:8151:e7c1 with SMTP id
+ cc10-20020a05622a410a00b004318151e7c1mr379066qtb.4.1711644008766; Thu, 28 Mar
+ 2024 09:40:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <62cf1c3c-29b7-48cc-9d52-cd47a6c07aa4@app.fastmail.com>
-In-Reply-To: 
- <CANn89i+3FuKc1RsYaciNe3uQMZuJBjSmvC_ueuQ=NaFVzEnyuA@mail.gmail.com>
-References: <20240328143051.1069575-1-arnd@kernel.org>
- <20240328143051.1069575-6-arnd@kernel.org>
- <CANn89i+3FuKc1RsYaciNe3uQMZuJBjSmvC_ueuQ=NaFVzEnyuA@mail.gmail.com>
-Date: Thu, 28 Mar 2024 17:39:36 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Eric Dumazet" <edumazet@google.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
- "David Ahern" <dsahern@kernel.org>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- "Dmitry Safonov" <0x7f454c46@gmail.com>,
- "Neal Cardwell" <ncardwell@google.com>,
- "mfreemon@cloudflare.com" <mfreemon@cloudflare.com>,
- "Yan Zhai" <yan@cloudflare.com>, Netdev <netdev@vger.kernel.org>,
- llvm@lists.linux.dev
-Subject: Re: [PATCH 5/9] ipv4: tcp_output: avoid warning about NET_ADD_STATS
-Content-Type: text/plain;charset=utf-8
+References: <20240327202740.3075378-1-swboyd@chromium.org>
+In-Reply-To: <20240327202740.3075378-1-swboyd@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 28 Mar 2024 09:39:54 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VLwa0AFsrXXxKGG+hcyW+h7u7-tyg3uoDB8M_XdPti_Q@mail.gmail.com>
+Message-ID: <CAD=FV=VLwa0AFsrXXxKGG+hcyW+h7u7-tyg3uoDB8M_XdPti_Q@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Fix a black screen on sc7180 Trogdor devices
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
+	linux-arm-msm@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Taniya Das <quic_tdas@quicinc.com>, Laura Nao <laura.nao@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024, at 15:38, Eric Dumazet wrote:
-> On Thu, Mar 28, 2024 at 3:31=E2=80=AFPM Arnd Bergmann <arnd@kernel.org=
-> wrote:
-^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/percpu.h:127:31: note: expanded from macro 'perc=
-pu_add_op'
->>                               ((val) =3D=3D 1 || (val) =3D=3D -1)) ? =
-           \
->>                                              ~~~~~ ^  ~~
->>
+Hi,
+
+On Wed, Mar 27, 2024 at 1:27=E2=80=AFPM Stephen Boyd <swboyd@chromium.org> =
+wrote:
 >
-> This seems like a bug in the macro or the compiler, because val is not
-> a constant ?
+> This patch series fixes a black screen seen at boot on Trogdor devices.
+> The details of that problem are in the second patch, but the TL;DR is
+> that shared RCGs report the wrong parent to the clk framework and shared
+> RCGs never get turned off if they're left force enabled out of boot,
+> wedging the display GDSC causing the display bridge to fail to probe
+> because it can't turn on DSI.
 >
-> __builtin_constant_p(val) should return false ???
+> The first patch is basically a hack. It avoids a problem where the mdss
+> driver probes, turns on and off the mdp clk, and hangs the rotator clk
+> because the rotator clk is using the same parent. We don't care about
+> this case on sc7180, so we simply disable the clk at driver probe so it
+> can't get stuck on.
 >
-> +#define percpu_add_op(size, qual, var, val)                          =
-  \
-> +do {                                                                 =
-  \
-> +       const int pao_ID__ =3D (__builtin_constant_p(val) &&          =
-    \
-> +                             ((val) =3D=3D 1 || (val) =3D=3D -1)) ?  =
-          \
-> +                               (int)(val) : 0;                       =
-  \
+> The second patch fixes the shared RCG implementation so that the parent
+> is properly reported and so that the force enable bit is cleared. Fixing
+> the parent causes the problem that the first patch is avoiding, which is
+> why that patch is first. Just applying this second patch will make it so
+> that disabling the mdp clk disables the display pll that the rotator clk
+> is also using, causing the rotator clk to be stuck on.
+>
+> This problem comes about because of a combination of issues. The clk
+> framework doesn't handle the case where two clks share the same parent
+> and are enabled at boot. The first clk to enable and disable will turn
+> off the parent. The mdss driver doesn't stay out of runtime suspend
+> while populating the child devices. In fact, of_platform_populate()
+> triggers runtime resume and suspend of the mdss device multiple times
+> while devices are being added. These patches side-step the larger issues
+> here with the goal of fixing Trogdor in the short-term. Long-term we
+> need to fix the clk framework and display driver so that shared parents
+> aren't disabled during boot and so that mdss can't runtime suspend until
+> the display pipeline/card is fully formed.
+>
+> Stephen Boyd (2):
+>   clk: qcom: dispcc-sc7180: Force off rotator clk at probe
+>   clk: qcom: Properly initialize shared RCGs upon registration
+>
+>  drivers/clk/qcom/clk-rcg2.c      | 19 +++++++++++++++++++
+>  drivers/clk/qcom/dispcc-sc7180.c | 14 ++++++++++++++
+>  2 files changed, 33 insertions(+)
 
-It looks like gcc does the same thing, with the broader and
-still disabled -Wtype-limits, see: https://godbolt.org/z/3EPTGx68n
+I spent a bunch of time discussing this offline with Stephen and I'll
+try to summarize. Hopefully this isn't too much nonsense...
 
-As far as I can tell, it does not matter that the comparison
-against -1 is never actually evaluated, since the warning
-is already printed before it simplifies the condition.
+1. We'll likely land the patches downstream in ChromeOS for now while
+we're figuring things out since we're seeing actual breakages. Whether
+to land upstream is a question. The first patch is a bit of a hack but
+unlikely to cause any real problems. The second patch seems correct
+but it also feels like it's going to cause stuck clocks for a pile of
+other SoCs because we're not adding hacks similar to the sc7180 hack
+for all the other SoCs. I guess we could hope we get lucky or play
+whack-a-mole? ...or we try to find a more generic solution... Dunno
+what others think.
 
-This is the only such warning I got from percpu, but
-I guess we could also add the cast inside of the macro,
-such as
+2. One thing we talked about would be adding something like
+`CLK_OPS_PARENT_ENABLE_FOR_DISABLE` for all the RCGs. That should get
+rid of the actual error we're seeing. Essentially what we're seeing
+today is:
 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu=
-h
-index 44958ebaf626..5923d786e67a 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -181,12 +181,14 @@ do {                                              =
-                        \
-  */
- #define percpu_add_op(size, qual, var, val)                            \
- do {                                                                   \
--       const int pao_ID__ =3D (__builtin_constant_p(val) &&            =
-  \
--                             ((val) =3D=3D 1 || (val) =3D=3D -1)) ?    =
-        \
--                               (int)(val) : 0;                         \
-+       __auto_type __val =3D (val);                                    =
-  \
-+       const int pao_ID__ =3D (__builtin_constant_p(__val) &&          =
-  \
-+                             ((__val) =3D=3D (typeof(__val))1 ||       =
-    \
-+                              (__val) =3D=3D (typeof(__val))-1)) ?     =
-    \
-+                               (int)(__val) : 0;                       \
-        if (0) {                                                        \
-                typeof(var) pao_tmp__;                                  \
--               pao_tmp__ =3D (val);                                    =
-  \
-+               pao_tmp__ =3D (__val);                                  =
-  \
-                (void)pao_tmp__;                                        \
-        }                                                               \
-        if (pao_ID__ =3D=3D 1)                                          =
-    \
-@@ -194,7 +196,7 @@ do {                                                =
-                        \
-        else if (pao_ID__ =3D=3D -1)                                    =
-    \
-                percpu_unary_op(size, qual, "dec", var);                \
-        else                                                            \
--               percpu_to_op(size, qual, "add", var, val);              \
-+               percpu_to_op(size, qual, "add", var, __val);            \
- } while (0)
-=20
- #define percpu_from_op(size, qual, op, _var)                           \
+* RCG1 is parented on a PLL
+* RCG2 is parented on the same PLL
+* RCG1, RCG2, and the PLL are left enabled by the BIOS
 
-I added a temporary variable there to avoid expanding
-the argument too many times.
+When we enable/disable RCG1 then the PLL turns off (since we propagate
+our disable to our parent and nothing else is keeping the PLL on). At
+this time RCG2 is implicitly off (it's not producing a clock) since
+its parent (the PLL) is off. ...but the hardware "force enable" bit
+for RCG2 is still set to on and the kernel still thinks the child of
+this clock is on.
 
-       Arnd
+If, after this, we "disabled" a branch clock child of RCG2 (because
+it's unused and we get to the part of the kernel that disables unused
+clocks) then we were getting the error since you can't change the
+hardware "enable" bit for a branch clock if its parent is not
+clocking.
+
+..so `CLK_OPS_PARENT_ENABLE_FOR_DISABLE` would fix this specific case
+because we'd turn the PLL on for the duration of the "disable" call.
+
+..but there is still the concern here that there will be a period of
+time that the RCG2 child is "stuck" even if we're not paying attention
+to it. This would be the period of time between when we turned the PLL
+off and we got around to disabling the RCG2 child because it was
+unused. Stephen thought that perhaps something else in hardware
+(perhaps a GDSC) might notice that the RCG2 child's hardware "enable"
+bit was set and would assume that it was clocking. Then that other bit
+of hardware would be unhappy because no clock came out. This concern
+made us think that perhaps `CLK_OPS_PARENT_ENABLE_FOR_DISABLE` isn't
+the right way to go.
+
+3. Another idea was essentially to implement the long talked about
+idea of "handoff". Essentially check the state of the clocks at boot
+and if they're enabled then propagate the enable to our parents.
+
+If we implement this then it would solve the problem because RCG1 and
+RCG2 would add an implicit request for the PLL to be on. If we
+enable/disable RCG1 at boot then the PLL will still stay on because
+there's a request from RCG2. If/when we disable children of RCG2 then
+the PLL will lose its request but that's fine. In no cases will we
+have a hardware "enable" bit set without the parent.
+
+This seems solid and probably the right solution.
+
+
+Stephen was a bit concerned, though, because you don't know when all
+your children have been registered. If a child shows up after "disable
+unused" runs then you can get back into the situation again. That
+probably isn't concern for the immediate problem at hand because all
+the clocks involved show up in early boot, but it means that the
+problem is half solved and that's not super satisfying.
+
+To solve this, we need to overall solve the "disable_unused" problem
+to be at the right time, after everything has had a chance to probe.
+To me this feels a bit like the "sync state" problem with all the
+baggage involved there. Specifically (like sync state) I think it
+would have to be heavily based on analysis of the device tree and
+links and that has the standard problem where you never enter sync
+state when DT has a node "enabled" but you didn't happen to enable the
+relevant driver in your kernel config. ...though I guess we've "sorta"
+solved that with the timeout. NOTE: if I understand correctly this
+would only be possible if drivers are using "struct clk_parent_data"
+and not if they're just using global names to match clocks.
+
+I'll also note that in general I believe Stephen isn't a fan of
+"disable_unused", but (my opinion) is that it's important to have
+something in the kernel that disables unused clocks when everything is
+done loading. Without this we add a lot of complexity to the firmware
+to turn off all the clocks that the SoC might have had on by default
+and that's non-ideal.
+
+-Doug
 
