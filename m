@@ -1,124 +1,108 @@
-Return-Path: <linux-kernel+bounces-122984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103248900AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:45:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3528900A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41A351C28ADE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:45:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 388FE29439B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183D78172E;
-	Thu, 28 Mar 2024 13:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F4D8173C;
+	Thu, 28 Mar 2024 13:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASfoX7nY"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="eALxJRbv"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2667651AE
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E67681AB1
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 13:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711633492; cv=none; b=X60e5cmzPTjo9wKcahstKg13wbwnQoqwEneHeQ64KurhynIbVz/u226B0ntj1k7bXmkkdMBicZ4cF2EywxJhgv3cHH4F4I4HDEG42B7XKFCLCnKdYyBMM5oqU+s8fTINxy7mBlrSVQWqlsM4qiGxSCe3IeA5JlDQb1hlaW/qSXA=
+	t=1711633439; cv=none; b=NrvaS8oP0TqPVFqNLJAZOiEJm4cLQOurYX7HJyYIo59/tgGu/C69Zv9aNaSyJzVFFxO23X8lHVrbCW6SZJ7BgjfUxYiSm3x1fDqPqXDAW29yUUD1E1tnT8aAOLsUNLHMWiy+wTw2SMFuRbrERG8rObkMKeeHEuDqaGeuTPj84B8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711633492; c=relaxed/simple;
-	bh=1b0kDwcvNj5vH5K0pAK4HupQheat89mZSwQWjzdBGDQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EQ597jsuSHDOx3cUrXfZvdKdZt5l7bQR9SKfzD4DN5zRpmRzrzfs0usvXYJwRAEQ2bd/gTREgi7C85wo+tkcJ0nWM81bbZghJqlzsWzXhwLSfNknMd/uOjx3PPODNkqN5kKIGjOpdDfzzdWmowVbd1H0BmUwBpMM60DDxjt0cso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ASfoX7nY; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513e25afabaso979276e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:44:50 -0700 (PDT)
+	s=arc-20240116; t=1711633439; c=relaxed/simple;
+	bh=qxebtBwnyGPsO2kNr2fwFrTYCj37epzSvHLje1owcyI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Y7wrTnPybJImZoA+HFOXbjGLEOz4LduqwY8oPRO4anQPTIuENkGV03Hpcz8aE4QHnC1b9U5QrR5neZX1MMAK5dRL1HV7+v7pbY1lfHUh22k/9NP4Sr9MJhbjw7NDc8y/APJJPSiUKUYGzSqs4421auOferLJHR7xNHddZHfP4pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=eALxJRbv; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e21e09abbcso215175ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:43:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711633489; x=1712238289; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=S0ld9ottGtMP3PSLHeDCuhhunV2RKSWGGUbt6pNFLTE=;
-        b=ASfoX7nYjpQbJfFxFU/oJWW8pxd61ieqf8IUmgk7aFcdkycZg4nspm7XOWgoOy1nQw
-         LAkAwkg+SaJv/IC9uvo3WEEC/p2W52+y37fRQF+qK2keUNdvPflQ+PxI7pzixmBp6bxG
-         vs6txCKb+oLPfq/AKeiJ40dtn7kvOft2vfUP+QUmqE7N071sOyvZjQixvFKqDPZaePtA
-         wdlKdB9+BJVTK5G4kCkNcWzaSnpWwG5k9CVaQjczRgImiaapkhoxxlVQ1u1qI5+oIylv
-         Q5+m21Ls5DMdoSrelILEHrVPXCIlhKteOhQDoS04IaNzmKx7E5R1DrxRC/4zcyQ1uXHb
-         BKRg==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1711633436; x=1712238236; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J0z5YahbsAjIT5061DUG7My51zSMHhvhSzF4hs3eYCc=;
+        b=eALxJRbvLkcPw68Yc2Y728cC8WX2NkckD+ZZwmNG9obp9VoogGGjlsB+WtRiUD76AH
+         i5UnV4yNLme7WlmEvtWSY6FPbsLggSgSm7oGktcloHCk0ZrTQZrQB2a3snmMxhkPZmXl
+         KCS1/hhtaHlqWZDXF5k4Nvmzjsw/2AcCrMpAbn2HwrvXHXPbkhdOTgmf57f04U4SE8Zy
+         lCmJWTknH9xsXN9QCagdiZr9n8BtrGdWY/hJ6gwCbIfMcU/YUtzxceeoD/OtRP+76TfW
+         2hB++xk3IkL51YPpPandKgzcKEFbBHWHvJ0XcIbLFhmdDH5CA0Zy0lyl1pSSLjRM8BKA
+         xEOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711633489; x=1712238289;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S0ld9ottGtMP3PSLHeDCuhhunV2RKSWGGUbt6pNFLTE=;
-        b=SX7vOsRaAb1NWZ0BROkbtc2/FFNkJW0EtUMHjxNwDuNRyMYvz3xIswKxKuU+bY+KWb
-         bDsXqwWLWB6EHUEvTDB6c7HpH4UbqxKpvKs+hKWv9d+1m2oGuLCgdzAHAfRKWptMgRjf
-         wVSPHWbOEba/yUjBdlOHidO1noMjakXD4ko7phd8I/qw8Qhie0MwH4RQGEDCkC+T/73S
-         /o32e+q9WgLKXAEMo7gy1A9nZynWXLzA4yQvNU0qtA1Hp6JcZiYSK0wmqzCva+99h4kk
-         fBRNR1eJsCjB2iHo6Woiy9FxlhiWY2bKYDfcG96HEK9OvxPmXtPvLKgd0s2Vb7T+gNXC
-         pqZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWXDJLS6gSXlt7vgmprpfmwsajk2U6utGJkqEiI5neUwIuuigG/wYL/0gzTtd9vhplIX0Qd/x+se4RTHqZ+RJRjz8/gpZOTe7KTSA/k
-X-Gm-Message-State: AOJu0YxCLdbLam+hY4njtuY/qX7MTXISqreXLnkBX+FNcMBoM+882OA4
-	RihnECXF8q7iscu8UrWGyk05chxVPQgdrEdzoGarsaxAODVxQHI4
-X-Google-Smtp-Source: AGHT+IGgUYdZXvk1Jxa+qm2IRi+ZxbQKQ2cbC6z+k22XLHpAg517MrIY7J9tdrqnczVNq3X2Isc3Jw==
-X-Received: by 2002:ac2:4642:0:b0:513:bf6e:bf05 with SMTP id s2-20020ac24642000000b00513bf6ebf05mr1858320lfo.14.1711633487520;
-        Thu, 28 Mar 2024 06:44:47 -0700 (PDT)
-Received: from localhost.localdomain ([212.22.67.162])
-        by smtp.gmail.com with ESMTPSA id b26-20020ac247fa000000b005159b7007aesm212501lfp.153.2024.03.28.06.44.46
+        d=1e100.net; s=20230601; t=1711633436; x=1712238236;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J0z5YahbsAjIT5061DUG7My51zSMHhvhSzF4hs3eYCc=;
+        b=UkSCCCzk0Ta0PQk7KrKhQtAC/bS/vNNOAJNqIPzQr7TuBGi1raIov2cn9j+Om9j/fs
+         fdgnBTs60a1sR33PDwG8BongJ3ps75Cv9vr9w1bwg6hqxUJJllZGDzgkv2TfUw+ikb8C
+         cly3xiZ+tD1qIcw0zsi1J1tEWVEoSFOz/dp5fZ7kaPtmTQuWLs9pbUxwcyrG5ppRLCaN
+         hHg8ogUkN4iMO52MVFLTd3x0N1VZbWZZTZGxTgTbrdlzvlexsys6ACRJlwi0nsLEXzsQ
+         dH5q9+2dyAknG3d9bCqR443C0KEZ9pW8yNL7nKxhMEbp8RjeKiiebXgeUGMbHj0LyzIM
+         q4Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQPOfgu/mptcSTtFBNO6u2cVYEmvhE9HD5cX8BEPe/s42TYXh8H+U46us2JDxNJ0fGMpmbFQbQuxw7E9SqbZo899CvZyIs0EXnwzHt
+X-Gm-Message-State: AOJu0YxR3Bx5WeAw4cbgGc0hCNX0+JiFaoTgmtCcxq4l4F876ONCRv8Q
+	Q5VKpdp2zGXh6g06qaGfayTPicezIylW6xgCo1Cnbg9vtL3dpjGal8TMxM4J92w=
+X-Google-Smtp-Source: AGHT+IFnQRsHsmxK4vwmS9Tg55Qe1iLFntXEoAK8JTSx6l+VP7TfB+ycddefH0KZHVT5td0CkdLzTw==
+X-Received: by 2002:a17:902:7b87:b0:1dd:e128:16b1 with SMTP id w7-20020a1709027b8700b001dde12816b1mr2739817pll.6.1711633435683;
+        Thu, 28 Mar 2024 06:43:55 -0700 (PDT)
+Received: from [127.0.0.1] ([50.234.116.5])
+        by smtp.gmail.com with ESMTPSA id y4-20020a170902ed4400b001e0abeb8fb5sm1564522plb.271.2024.03.28.06.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 06:44:47 -0700 (PDT)
-From: Maxim Korotkov <korotkov.maxim.s@gmail.com>
-To: David Airlie <airlied@redhat.com>
-Cc: Maxim Korotkov <korotkov.maxim.s@gmail.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Emil Velikov <emil.velikov@collabora.com>,
-	Ivan Kapranov <i.kapranov@securitycode.ru>,
-	lvc-project@linuxtesting.org,
-	dri-devel@lists.freedesktop.org,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/virtio: add driver_priv validation in virtio_gpu_create_context
-Date: Thu, 28 Mar 2024 16:43:51 +0300
-Message-Id: <20240328134351.298050-1-korotkov.maxim.s@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 28 Mar 2024 06:43:55 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc: asml.silence@gmail.com, io-uring@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+In-Reply-To: <20240328022324.78029-1-jiapeng.chong@linux.alibaba.com>
+References: <20240328022324.78029-1-jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] io_uring: Remove unused function
+Message-Id: <171163343470.657312.11623417523875571291.b4-ty@kernel.dk>
+Date: Thu, 28 Mar 2024 07:43:54 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-The pointer file->driver_priv was dereferenced without checking
-against NULL, but in the "virtio_gpu_transfer_to_host_ioctl" function
-it was checked against NULL after calling virtio_gpu_create_context
-function.
 
-Found by Security Code and Linux Verification Center(linuxtesting.org)
-Fixes: 72b48ae800da ("drm/virtio: enqueue virtio_gpu_create_context after the first 3D ioctl")
-Signed-off-by: Maxim Korotkov <korotkov.maxim.s@gmail.com>
----
- drivers/gpu/drm/virtio/virtgpu_ioctl.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Thu, 28 Mar 2024 10:23:24 +0800, Jiapeng Chong wrote:
+> The function are defined in the io_uring.c file, but not called
+> elsewhere, so delete the unused function.
+> 
+> io_uring/io_uring.c:646:20: warning: unused function '__io_cq_unlock'.
+> 
+> 
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_ioctl.c b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-index e4f76f315550..98fe9ad4ed15 100644
---- a/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-@@ -64,6 +64,9 @@ void virtio_gpu_create_context(struct drm_device *dev, struct drm_file *file)
- 	struct virtio_gpu_device *vgdev = dev->dev_private;
- 	struct virtio_gpu_fpriv *vfpriv = file->driver_priv;
- 
-+	if (!vfpriv)
-+		return;
-+
- 	mutex_lock(&vfpriv->context_lock);
- 	if (vfpriv->context_created)
- 		goto out_unlock;
+Applied, thanks!
+
+[1/1] io_uring: Remove unused function
+      commit: 976a421d86422abb554b4544ddcad31f1cade3a4
+
+Best regards,
 -- 
-2.34.1
+Jens Axboe
+
+
 
 
