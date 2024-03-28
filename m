@@ -1,237 +1,129 @@
-Return-Path: <linux-kernel+bounces-122426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CECC888F74B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FAE88F74E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECD801C2472E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:34:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E5711C24B23
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 05:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F8545971;
-	Thu, 28 Mar 2024 05:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SuoXD+Wl"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2EA29CFB;
-	Thu, 28 Mar 2024 05:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B2645BFE;
+	Thu, 28 Mar 2024 05:35:12 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1496C2E630;
+	Thu, 28 Mar 2024 05:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.237.72.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711604076; cv=none; b=jyv2o5J7QLdKWWuTv66a0gsOrplZOFl2PGiSxerml8KuGVGaT3HExkxkaYXjDraMTJnZFgaOhOX0/R6DTRBp0aV/Mhef6DP6+Xpe/Gx5pdUCMysPsXaLGRdRMmGxsnJ/O5CZqdCDPYDT63fXH7bUqd6QopiCjXvGxpZKHPNxZWY=
+	t=1711604111; cv=none; b=GNjytftecE6PJ9tyLe2mgCbmCn7T7gCSnZtA5PpSgwkJ5KBmkAaRBkkAwWtM82M4URjGnTQWnw8oWWMd4Uplc3daHSdUoMUdbstl7SEdttH8Se+kwna6YPuLZcD3fsBWgJKKYhseMGjvDT6YwnMAgajurSAc92Ao0IWlCmX3Rao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711604076; c=relaxed/simple;
-	bh=mD9mu8ljlH9TWKDCVXvuWCIuqCU25f2hMJJw0FVXMn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fWUgAl6uCBSxk2lfVHWs/lA3iRBKH4UuJzh/YG+VWtI6GvJt8Z53bUkEy1aFADlCx8Z6MOTDyMRLuDUQrhj3bVBs+mE/79DM6fDjS9WrgBK+hCo7YCN8Vwe090ZiAo3d1CaadRZ3wRPwITeskKREXKyW+DtdHkoai8FWgnW8kZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SuoXD+Wl; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711604075; x=1743140075;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mD9mu8ljlH9TWKDCVXvuWCIuqCU25f2hMJJw0FVXMn0=;
-  b=SuoXD+Wlqu53QvAVOBdkay6Ld6oCb/D9+/MjzCFFPy66aNZd8goWfCR1
-   KJhPnyFJwok+up1RMzKn3MglI8sbCqwwGI5c814RnmSZhMc8tyWeiNBmt
-   Ai0U0bFvB9OaiJFrphT1aojG6PD2I8ek383pcxua2fcvG4JpnbYRrJieb
-   njDlj7HfpJFKmrKNcOF5SNcnpL7rfKsoj1e0PVQ2DllBhnTtZBBa7/ZKC
-   62rm5+X8IFrXBds8xgHcgFa0+WB//BUoDPfLJYgWXCDikUZfJQpE7ezQU
-   QuG4j/N1ZBH9neaciq7ZHFLmaKhFyVnw4r04ID/QGO1UtrRoLb6PKJejM
-   g==;
-X-CSE-ConnectionGUID: O829oumkQDGS3vy26fujCg==
-X-CSE-MsgGUID: ZahUq5iwTdWYm5jvYMnpaw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="10532019"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="10532019"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 22:34:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="16554966"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 22:34:33 -0700
-Date: Wed, 27 Mar 2024 22:34:32 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
-Message-ID: <20240328053432.GO2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
- <a0627c0f-5c2d-4403-807f-fc800b43fd3b@intel.com>
- <20240327225337.GF2444378@ls.amr.corp.intel.com>
- <4d925a79-d3cf-4555-9c00-209be445310d@intel.com>
+	s=arc-20240116; t=1711604111; c=relaxed/simple;
+	bh=Lgd4O19vrz5qqCNALb/TQFydB9SMVctddaeUCF0e9so=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=Mk3n9I4U2m+RwGhz/azC2R1RQvccC9UNlW0M5fT53Q+m7uvCrPAOwQq4ycpfb9lIE+iiZEmnFBCUXwm458BNpwZVMUSA6wl3EEsKb0ikzh02Q6rkV2Z4R6uOGsDVNiT+l7W9ZgIhh9ImDIJ+78Bt6AP5jFHi0LFu7UGaxtnNql8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=52.237.72.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from duoming$zju.edu.cn ( [218.12.18.152] ) by
+ ajax-webmail-mail-app3 (Coremail) ; Thu, 28 Mar 2024 13:34:48 +0800
+ (GMT+08:00)
+Date: Thu, 28 Mar 2024 13:34:48 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: duoming@zju.edu.cn
+To: "Simon Horman" <horms@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hams@vger.kernel.org, pabeni@redhat.com, kuba@kernel.org,
+	edumazet@google.com, davem@davemloft.net, jreuter@yaina.de
+Subject: Re: [PATCH net] ax25: fix use-after-free bugs caused by
+ ax25_ds_del_timer
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20240327191025.GU403975@kernel.org>
+References: <20240326142542.118058-1-duoming@zju.edu.cn>
+ <20240327191025.GU403975@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4d925a79-d3cf-4555-9c00-209be445310d@intel.com>
+Message-ID: <7192041a.9d52.18e838dbf1b.Coremail.duoming@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cC_KCgCXvMd5AQVmOTZDAQ--.26395W
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwUOAWYEJBkNNgAAst
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-On Thu, Mar 28, 2024 at 02:49:56PM +1300,
-"Huang, Kai" <kai.huang@intel.com> wrote:
-
-> 
-> 
-> On 28/03/2024 11:53 am, Isaku Yamahata wrote:
-> > On Tue, Mar 26, 2024 at 02:43:54PM +1300,
-> > "Huang, Kai" <kai.huang@intel.com> wrote:
-> > 
-> > > ... continue the previous review ...
-> > > 
-> > > > +
-> > > > +static void tdx_reclaim_control_page(unsigned long td_page_pa)
-> > > > +{
-> > > > +	WARN_ON_ONCE(!td_page_pa);
-> > > 
-> > >  From the name 'td_page_pa' we cannot tell whether it is a control page, but
-> > > this function is only intended for control page AFAICT, so perhaps a more
-> > > specific name.
-> > > 
-> > > > +
-> > > > +	/*
-> > > > +	 * TDCX are being reclaimed.  TDX module maps TDCX with HKID
-> > > 
-> > > "are" -> "is".
-> > > 
-> > > Are you sure it is TDCX, but not TDCS?
-> > > 
-> > > AFAICT TDCX is the control structure for 'vcpu', but here you are handling
-> > > the control structure for the VM.
-> > 
-> > TDCS, TDVPR, and TDCX.  Will update the comment.
-> 
-> But TDCX, TDVPR are vcpu-scoped.  Do you want to mention them _here_?
-
-So I'll make the patch that frees TDVPR, TDCX will change this comment.
-
-
-> Otherwise you will have to explain them.
-> 
-> [...]
-> 
-> > > > +
-> > > > +void tdx_mmu_release_hkid(struct kvm *kvm)
-> > > > +{
-> > > > +	bool packages_allocated, targets_allocated;
-> > > > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > > > +	cpumask_var_t packages, targets;
-> > > > +	u64 err;
-> > > > +	int i;
-> > > > +
-> > > > +	if (!is_hkid_assigned(kvm_tdx))
-> > > > +		return;
-> > > > +
-> > > > +	if (!is_td_created(kvm_tdx)) {
-> > > > +		tdx_hkid_free(kvm_tdx);
-> > > > +		return;
-> > > > +	}
-> > > 
-> > > I lost tracking what does "td_created()" mean.
-> > > 
-> > > I guess it means: KeyID has been allocated to the TDX guest, but not yet
-> > > programmed/configured.
-> > > 
-> > > Perhaps add a comment to remind the reviewer?
-> > 
-> > As Chao suggested, will introduce state machine for vm and vcpu.
-> > 
-> > https://lore.kernel.org/kvm/ZfvI8t7SlfIsxbmT@chao-email/
-> 
-> Could you elaborate what will the state machine look like?
-> 
-> I need to understand it.
-
-Not yet. Chao only propose to introduce state machine. Right now it's just an
-idea.
-
-
-> > How about this?
-> > 
-> > /*
-> >   * We need three SEAMCALLs, TDH.MNG.VPFLUSHDONE(), TDH.PHYMEM.CACHE.WB(), and
-> >   * TDH.MNG.KEY.FREEID() to free the HKID.
-> >   * Other threads can remove pages from TD.  When the HKID is assigned, we need
-> >   * to use TDH.MEM.SEPT.REMOVE() or TDH.MEM.PAGE.REMOVE().
-> >   * TDH.PHYMEM.PAGE.RECLAIM() is needed when the HKID is free.  Get lock to not
-> >   * present transient state of HKID.
-> >   */
-> 
-> Could you elaborate why it is still possible to have other thread removing
-> pages from TD?
-> 
-> I am probably missing something, but the thing I don't understand is why
-> this function is triggered by MMU release?  All the things done in this
-> function don't seem to be related to MMU at all.
-
-The KVM releases EPT pages on MMU notifier release.  kvm_mmu_zap_all() does. If
-we follow that way, kvm_mmu_zap_all() zaps all the Secure-EPTs by
-TDH.MEM.SEPT.REMOVE() or TDH.MEM.PAGE.REMOVE().  Because
-TDH.MEM.{SEPT, PAGE}.REMOVE() is slow, we can free HKID before kvm_mmu_zap_all()
-to use TDH.PHYMEM.PAGE.RECLAIM().
-
-
-> IIUC, by reaching here, you must already have done VPFLUSHDONE, which should
-> be called when you free vcpu?
-
-Not necessarily.
-
-
-> Freeing vcpus is done in
-> kvm_arch_destroy_vm(), which is _after_ mmu_notifier->release(), in which
-> this tdx_mmu_release_keyid() is called?
-
-guest memfd complicates things.  The race is between guest memfd release and mmu
-notifier release.  kvm_arch_destroy_vm() is called after closing all kvm fds
-including guest memfd.
-
-Here is the example.  Let's say, we have fds for vhost, guest_memfd, kvm vcpu,
-and kvm vm.  The process is exiting.  Please notice vhost increments the
-reference of the mmu to access guest (shared) memory.
-
-exit_mmap():
-  Usually mmu notifier release is fired. But not yet because of vhost.
-
-exit_files()
-  close vhost fd. vhost starts timer to issue mmput().
-
-  close guest_memfd.  kvm_gmem_release() calls kvm_mmu_unmap_gfn_range().
-    kvm_mmu_unmap_gfn_range() eventually this calls TDH.MEM.SEPT.REMOVE()
-    and TDH.MEM.PAGE.REMOVE().  This takes time because it processes whole
-    guest memory. Call kvm_put_kvm() at last.
-
-  During unmapping on behalf of guest memfd, the timer of vhost fires to call
-  mmput().  It triggers mmu notifier release.
-
-  Close kvm vcpus/vm. they call kvm_put_kvm().  The last one calls
-  kvm_destroy_vm().  
-
-It's ideal to free HKID first for efficiency. But KVM doesn't have control on
-the order of fds.
-
-
-> But here we are depending vcpus to be freed before tdx_mmu_release_hkid()?
-
-Not necessarily.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+T24gV2VkLCAyNyBNYXIgMjAyNCAxOToxMDoyNSArMDAwMCBTaW1vbiBIb3JtYW4gd3JvdGU6Cj4g
+PiBXaGVuIHRoZSBheDI1IGRldmljZSBpcyBkZXRhY2hpbmcsIHRoZSBheDI1X2Rldl9kZXZpY2Vf
+ZG93bigpCj4gPiBjYWxscyBheDI1X2RzX2RlbF90aW1lcigpIHRvIGNsZWFudXAgdGhlIHNsYXZl
+X3RpbWVyLiBXaGVuCj4gPiB0aGUgdGltZXIgaGFuZGxlciBpcyBydW5uaW5nLCB0aGUgYXgyNV9k
+c19kZWxfdGltZXIoKSB0aGF0Cj4gPiBjYWxscyBkZWxfdGltZXIoKSBpbiBpdCB3aWxsIHJldHVy
+biBkaXJlY3RseS4gQXMgYSByZXN1bHQsCj4gPiB0aGUgdXNlLWFmdGVyLWZyZWUgYnVncyBjb3Vs
+ZCBoYXBwZW4sIG9uZSBvZiB0aGUgc2NlbmFyaW9zCj4gPiBpcyBzaG93biBiZWxvdzoKPiA+IAo+
+ID4gICAgICAgKFRocmVhZCAxKSAgICAgICAgICB8ICAgICAgKFRocmVhZCAyKQo+ID4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8IGF4MjVfZHNfdGltZW91dCgpCj4gPiBheDI1X2Rldl9kZXZp
+Y2VfZG93bigpICAgIHwKPiA+ICAgYXgyNV9kc19kZWxfdGltZXIoKSAgICAgfAo+ID4gICAgIGRl
+bF90aW1lcigpICAgICAgICAgICB8Cj4gPiAgIGF4MjVfZGV2X3B1dCgpIC8vRlJFRSAgIHwKPiA+
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgYXgyNV9kZXYtPiAvL1VTRQo+ID4gCj4gPiBJ
+biBvcmRlciB0byBtaXRpZ2F0ZSBidWdzLCB3aGVuIHRoZSBkZXZpY2UgaXMgZGV0YWNoaW5nLCB1
+c2UKPiA+IHRpbWVyX3NodXRkb3duX3N5bmMoKSB0byBzdG9wIHRoZSB0aW1lci4KPiAKPiBGV0lJ
+VywgaW4gbXkgcmVhZGluZyBvZiB0aGluZ3MgdGhlcmUgaXMgYW5vdGhlciBmYWlsdXJlIG1vZGUg
+d2hlcmVieQo+IGF4MjVfZHNfdGltZW91dCBtYXkgcmVhcm0gdGhlIHRpbWVyIGFmdGVyIHRoZSBj
+YWxsIHRvIGRlbF90aW1lcigpIGJ1dAo+IGJlZm9yZSB0aGUgY2FsbCB0byBheDI1X2Rldl9wdXQo
+KS4KCkkgdGhpbmsgdXNpbmcgdGltZXJfc2h1dGRvd25fc3luYygpIG9yIGRlbF90aW1lcl9zeW5j
+KCkgdG8gcmVwbGFjZSBkZWxfdGltZXIoKQpjb3VsZCBwcmV2ZW50IHRoZSByZWFybS4KCj4gPiBG
+aXhlczogMWRhMTc3ZTRjM2Y0ICgiTGludXgtMi42LjEyLXJjMiIpCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBEdW9taW5nIFpob3UgPGR1b21pbmdAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIG5ldC9heDI1
+L2F4MjVfZHNfdGltZXIuYyB8IDcgKysrKysrLQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2Vy
+dGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL25ldC9heDI1L2F4
+MjVfZHNfdGltZXIuYyBiL25ldC9heDI1L2F4MjVfZHNfdGltZXIuYwo+ID4gaW5kZXggYzRmOGFk
+YmY4MTQuLjU2MjRjMGQxNzRjIDEwMDY0NAo+ID4gLS0tIGEvbmV0L2F4MjUvYXgyNV9kc190aW1l
+ci5jCj4gPiArKysgYi9uZXQvYXgyNS9heDI1X2RzX3RpbWVyLmMKPiA+IEBAIC00Myw3ICs0Mywx
+MiBAQCB2b2lkIGF4MjVfZHNfc2V0dXBfdGltZXIoYXgyNV9kZXYgKmF4MjVfZGV2KQo+ID4gIAo+
+ID4gIHZvaWQgYXgyNV9kc19kZWxfdGltZXIoYXgyNV9kZXYgKmF4MjVfZGV2KQo+ID4gIHsKPiA+
+IC0JaWYgKGF4MjVfZGV2KQo+ID4gKwlpZiAoIWF4MjVfZGV2KQo+ID4gKwkJcmV0dXJuOwo+ID4g
+Kwo+ID4gKwlpZiAoIWF4MjVfZGV2LT5kZXZpY2VfdXApCj4gPiArCQl0aW1lcl9zaHV0ZG93bl9z
+eW5jKCZheDI1X2Rldi0+ZGFtYS5zbGF2ZV90aW1lcik7Cj4gPiArCWVsc2UKPiA+ICAJCWRlbF90
+aW1lcigmYXgyNV9kZXYtPmRhbWEuc2xhdmVfdGltZXIpOwo+ID4gIH0KPiAKPiBJIHRoaW5rIHRo
+YXQgYSkgaXQgaXMgYWx3YXlzIGNvcnJlY3QgdG8gY2FsbCB0aW1lcl9zaHV0ZG93bl9zeW5jLAo+
+IGFuZCBiKSBheDI1X2Rldi0+ZGV2aWNlX3VwIGlzIGFsd2F5cyB0cnVlLiBTbyBhIGNhbGwgdG8K
+PiB0aW1lcl9zaHV0ZG93bl9zeW5jIGNhbiBzaW1wbHkgcmVwbGFjZSB0aGUgY2FsbCB0byBkZWxf
+dGltZXIuCgpJIHRoaW5rIHRpbWVyX3NodXRkb3duKigpIGlzIHVzZWQgZm9yIHRoZSBjb2RlIHBh
+dGggdG8gY2xlYW4gdXAgdGhlCmRyaXZlciBvciBkZXRhY2ggdGhlIGRldmljZS4gSWYgdGltZXIg
+aXMgc2h1dCBkb3duIGJ5IHRpbWVyX3NodXRkb3duKigpLAppdCBjb3VsZCBub3QgYmUgcmUtYXJt
+ZWQgYWdhaW4gdW5sZXNzIHdlIHJlaW5pdGlhbGl6ZSB0aGUgdGltZXIuIFRoZQpzbGF2ZV90aW1l
+ciBzaG91bGQgb25seSBiZSBzaHV0IGRvd24gd2hlbiB0aGUgYXgyNSBkZXZpY2UgaXMgZGV0YWNo
+aW5nIG9yCnRoZSBkcml2ZXIgaXMgcmVtb3ZpbmcuIEFuZCBpdCBzaG91bGQgbm90IGJlIHNodXQg
+ZG93biBpbiBvdGhlciBzY2VuYXJpb3MsCnN1Y2ggYXMgY2FsbGVkIGluIGF4MjVfZHNfc3RhdGUy
+X21hY2hpbmUoKSBvciBheDI1X2RzX3N0YXRlM19tYWNoaW5lKCkuClNvIEkgdGhpbmsgY2FsbGlu
+ZyB0aW1lcl9zaHV0ZG93bl9zeW5jKCkgaXMgbm90IGFsd2F5cyBjb3JyZWN0LgoKV2hhdCdzIG1v
+cmUsIHRoZSBheDI1X2Rldi0+ZGV2aWNlX3VwIGlzIG5vdCBhbHdheXMgdHJ1ZS4gSXQgaXMgc2V0
+IHRvCmZhbHNlIGluIGF4MjVfa2lsbF9ieV9kZXZpY2UoKS4KCkluIGEgd29yZCwgdGhlIHRpbWVy
+X3NodXRkb3duX3N5bmMoKSBjb3VsZCBub3QgcmVwbGFjZSB0aGUgZGVsX3RpbWVyKCkKY29tcGxl
+dGVseS4KCj4gQWxzbywgbm90IHN0cmljdGx5IHJlbGF0ZWQsIEkgdGhpbmsgYXgyNV9kZXYgY2Fu
+bm90IGJlIE5VTEwsCj4gc28gdGhhdCBjaGVjayBjb3VsZCBiZSBkcm9wcGVkLiBCdXQgcGVyaGFw
+cyB0aGF0IGlzIGJldHRlciBsZWZ0IGFsb25lLgoKVGhlIGF4MjVfZGV2IGNhbm5vdCBub3QgYmUg
+TlVMTCwgYmVjYXVzZSB3ZSBvbmx5IHVzZSBheDI1X2Rldl9wdXQoKSB0bwpmcmVlIHRoZSBheDI1
+X2RldiBpbnN0ZWFkIG9mIHNldHRpbmcgaXMgdG8gTlVMTC4gU28gSSB0aGluayB0aGUgY2hlY2sK
+Y291bGQgYmUgZHJvcHBlZC4KCkRvIHlvdSB0aGluayB0aGUgZm9sbG93aW5nIHBsYW4gaXMgcHJv
+cGVyPwoKZGlmZiAtLWdpdCBhL25ldC9heDI1L2F4MjVfZHNfdGltZXIuYyBiL25ldC9heDI1L2F4
+MjVfZHNfdGltZXIuYwppbmRleCBjNGY4YWRiZjgxNDQuLmYxY2FiNGVmZmE0NCAxMDA2NDQKLS0t
+IGEvbmV0L2F4MjUvYXgyNV9kc190aW1lci5jCisrKyBiL25ldC9heDI1L2F4MjVfZHNfdGltZXIu
+YwpAQCAtNDMsOCArNDMsNyBAQCB2b2lkIGF4MjVfZHNfc2V0dXBfdGltZXIoYXgyNV9kZXYgKmF4
+MjVfZGV2KQoKIHZvaWQgYXgyNV9kc19kZWxfdGltZXIoYXgyNV9kZXYgKmF4MjVfZGV2KQogewot
+ICAgICAgIGlmIChheDI1X2RldikKLSAgICAgICAgICAgICAgIGRlbF90aW1lcigmYXgyNV9kZXYt
+PmRhbWEuc2xhdmVfdGltZXIpOworICAgICAgIGRlbF90aW1lcl9zeW5jKCZheDI1X2Rldi0+ZGFt
+YS5zbGF2ZV90aW1lcik7CiB9CgpUaGVyZSBpcyBubyBkZWFkbG9jayB3aWxsIGhhcHBlbi4KCj4g
+Wm9vbWluZyBvdXQgYSBiaXQsIGhhcyByZW1vdmFsIG9mIGF4MjUgYmVlbiBjb25zaWRlcmVkLgo+
+IEkgZGlkbid0IGNoZWNrIHRoZSBsb2dzIHRob3JvdWdobHksIGJ1dCBJJ20gbm90IGNvbnZpbmNl
+ZCBpdCdzIGJlZW4KPiBtYWludGFpbmVkIC0gb3RoZXIgdGhhbiBjbGVhbi11cHMgYW5kIGJ5LWlu
+c3BlY3Rpb24gYnVnIGZpeGVzIC0gc2luY2UgZ2l0Cj4gaGlzdG9yeSBiZWdhbi4KCkJlc3QgcmVn
+YXJkcywKRHVvbWluZyBaaG91
 
