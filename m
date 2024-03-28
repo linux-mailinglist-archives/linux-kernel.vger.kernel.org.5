@@ -1,153 +1,132 @@
-Return-Path: <linux-kernel+bounces-122301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B0F88F4D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:39:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4017788F4A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A13E1C32785
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:39:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E94F51F2A9E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D633BBF5;
-	Thu, 28 Mar 2024 01:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFCA20DF1;
+	Thu, 28 Mar 2024 01:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="E5YEks9c"
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qcz63bWB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F5E3BB25;
-	Thu, 28 Mar 2024 01:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90D0200D5;
+	Thu, 28 Mar 2024 01:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711589847; cv=none; b=VxpkcvS2WvFCjq2iHv6yu4frzgJVRKUYM3YprKcLx/gmHkmWFqWY2n1TVuUvKpoP2ouhJB58qp8n6mtg8wTar9KDeG6itb9jkD2YosaWNnADNInPPVvJrYmv3PkcKa0zFhHjXx0DrV9hpXwgN9lpjwZCW7tu4ioAcZslALS7DYc=
+	t=1711589420; cv=none; b=pSTL5P1zNyLZqnBZ6Mlpy6NWfEVTyV4ZEBYtGY2v3k/X4r2GfxtGhSbs7GBw/Jo9y2PmlIUPGDBI9q8IwA/qP06l9bqzeGBFVOe4k8AZ+Q2r0Jjk/skLYWYzrgFYmBvtS5PurQvj+n3idicSH+psa6Xwogn2u7ZvArIFO6sYYxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711589847; c=relaxed/simple;
-	bh=ufJutT73Z+lUzAoxlRPNMe5+qxbNbjQJyVoWy3hjDaA=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=untORWMF28MsvLiad0BeQB37CQdC0ihaWXQSx13c6ZLKDPDWw4ql2P7rxS2R83hiJ4e5Kk2S/xQcGKVjM64HX2/jF33UTccnD4Nqu1hGM23kJp2TbSX890VLw3C5dL+dgjkI8huwAKz5OeYvvXgOmOmJQs12NS145tpofQslgIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=E5YEks9c; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1711589840; h=Message-ID:Subject:Date:From:To;
-	bh=v7bS5t8QiDMoASYcN5lpCGZoaZnfviWiy8N1d5+w1eE=;
-	b=E5YEks9cwDFMuVnGqCgjQ7pWOGumODwyeYQOIYyaKyjMo5MrjQ+PrelyXHspCf6Q71ciTUkpqF+D7qkrthraK5WmvZk+uhIuS3oNEsP1j09x52woHK0WtE5fR1GHZSrHV4wv6ylTT+X3gRc8pt+7enOp6OEVOqmUT8kKVn5tWkM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W3QICuj_1711589839;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W3QICuj_1711589839)
-          by smtp.aliyun-inc.com;
-          Thu, 28 Mar 2024 09:37:20 +0800
-Message-ID: <1711589335.4973893-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net v2 1/2] virtio_net: Do not set rss_indir if RSS is not supported
-Date: Thu, 28 Mar 2024 09:28:55 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: rbc@meta.com,
- riel@surriel.com,
- "open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- hengqi@linux.alibaba.com,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-References: <20240326151911.2155689-1-leitao@debian.org>
- <1711503463.632461-1-xuanzhuo@linux.alibaba.com>
- <ZgQkXfMd6GIEndXm@gmail.com>
-In-Reply-To: <ZgQkXfMd6GIEndXm@gmail.com>
+	s=arc-20240116; t=1711589420; c=relaxed/simple;
+	bh=5aCurHOHta8QRuhaeNAeu28tMitK//VvdG5YQ9yPLRU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CcQe9YMDwxBhTD5ZmhAbcCOTUR73idTvt/m37UFBlhvbFt9u9aK0BKqcTtxC7KRHkBtAU81E7SCMHMEqf7+JyuH5p5X1LkEH/Dtq8GY2hUmYEUKy/FW4dcYXsT9LmpUi5f09khHV/ivND4jv9H7ymWhTbyM9R8uoalfyz5atwAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qcz63bWB; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711589419; x=1743125419;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5aCurHOHta8QRuhaeNAeu28tMitK//VvdG5YQ9yPLRU=;
+  b=Qcz63bWBPtmy7lOkscUGrcUQECXgbPvX+Yz31sppPlo4YO8BDsqW0GJT
+   nt+iI3bBhVDhfljeYRql7Ql5CFLnRQm5gI+kVv8OPvHYMFuNbvwW3sxSB
+   bryATcOyfMuvfKmPouCAHm9ZuKWfglTCYm9W2f2lWK7cdy0HRqrrBu2bN
+   H98JYGr/fLhz5oqXqJzlse2jBILHBiNdutO3WR1gS6dgbSmjH98sw8Gft
+   zB5Ba5m6AgZCQfgVk8Db01TBqPo6FzIVjCdOqXJI+25BXd7TcA+cjX7rM
+   uzmour0+YU/7o9B30RFfozS3m2PTrkakK5aqoo4Hd4ikDLWs4Yoq/hldV
+   A==;
+X-CSE-ConnectionGUID: dj0kqkB6S5Wm/jj9/XyOaw==
+X-CSE-MsgGUID: AuSX9eYQTLKZ/X2D64uq/A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="10505872"
+X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
+   d="scan'208";a="10505872"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:30:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
+   d="scan'208";a="21145884"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:30:15 -0700
+Message-ID: <20ef977a-75e5-4bbc-9acf-fa1250132138@intel.com>
+Date: Thu, 28 Mar 2024 09:30:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages for
+ unsupported cases
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+ "Gao, Chao" <chao.gao@intel.com>, "Yamahata, Isaku"
+ <isaku.yamahata@intel.com>
+Cc: "Zhang, Tina" <tina.zhang@intel.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
+ "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Aktas, Erdem" <erdemaktas@google.com>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>, "Yuan, Hang"
+ <hang.yuan@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
+ <20240325190525.GG2357401@ls.amr.corp.intel.com>
+ <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
+ <20240325221836.GO2357401@ls.amr.corp.intel.com>
+ <20240325231058.GP2357401@ls.amr.corp.intel.com>
+ <edcfc04cf358e6f885f65d881ef2f2165e059d7e.camel@intel.com>
+ <20240325233528.GQ2357401@ls.amr.corp.intel.com>
+ <ZgIzvHKobT2K8LZb@chao-email>
+ <20db87741e356e22a72fadeda8ab982260f26705.camel@intel.com>
+ <ZgKt6ljcmnfSbqG/@chao-email>
+ <20240326174859.GB2444378@ls.amr.corp.intel.com>
+ <481141ba-4bdf-40f3-9c32-585281c7aa6f@intel.com>
+ <34ca8222fcfebf1d9b2ceb20e44582176d2cef24.camel@intel.com>
+ <873263e8-371a-47a0-bba3-ed28fcc1fac0@intel.com>
+ <e0ac83c57da3c853ffc752636a4a50fe7b490884.camel@intel.com>
+ <5f07dd6c-b06a-49ed-ab16-24797c9f1bf7@intel.com>
+ <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <d7a0ed833909551c24bf1c2c52b8955d75359249.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 27 Mar 2024 06:51:25 -0700, Breno Leitao <leitao@debian.org> wrote:
-> Hello Xuan,
->
-> On Wed, Mar 27, 2024 at 09:37:43AM +0800, Xuan Zhuo wrote:
-> > On Tue, 26 Mar 2024 08:19:08 -0700, Breno Leitao <leitao@debian.org> wrote:
-> > > Do not set virtnet_info->rss_indir_table_size if RSS is not available
-> > > for the device.
-> > >
-> > > Currently, rss_indir_table_size is set if either has_rss or
-> > > has_rss_hash_report is available, but, it should only be set if has_rss
-> > > is set.
-> > >
-> > > On the virtnet_set_rxfh(), return an invalid command if the request has
-> > > indirection table set, but virtnet does not support RSS.
-> > >
-> > > Suggested-by: Heng Qi <hengqi@linux.alibaba.com>
-> > > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > > ---
-> > >  drivers/net/virtio_net.c | 9 +++++++--
-> > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index c22d1118a133..c640fdf28fc5 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -3813,6 +3813,9 @@ static int virtnet_set_rxfh(struct net_device *dev,
-> > >  	    rxfh->hfunc != ETH_RSS_HASH_TOP)
-> > >  		return -EOPNOTSUPP;
-> > >
-> > > +	if (rxfh->indir && !vi->has_rss)
-> > > +		return -EINVAL;
-> > > +
-> > >  	if (rxfh->indir) {
-> >
-> > Put !vi->has_rss here?
->
-> I am not sure I understand the suggestion. Where do you suggest we have
-> !vi->has_rss?
->
-> If we got this far, we either have:
->
-> a) rxfh->indir set and vi->has_rss is also set
-> b) rxfh->indir not set. (vi->has_rss could be set or not).
+On 3/28/2024 9:06 AM, Edgecombe, Rick P wrote:
+> On Thu, 2024-03-28 at 08:58 +0800, Xiaoyao Li wrote:
+>>> How so? Userspace needs to learn to create a TD first.
+>>
+>> The current ABI of KVM_EXIT_X86_RDMSR/WRMSR is that userspace itself
+>> sets up MSR fitler at first, then it will get such EXIT_REASON when
+>> guest accesses the MSRs being filtered.
+>>
+>> If you want to use this EXIT reason, then you need to enforce userspace
+>> setting up the MSR filter. How to enforce?
+> 
+> I think Isaku's proposal was to let userspace configure it.
+> 
+> For the sake of conversation, what if we don't enforce it? The downside of not enforcing it is that
+> we then need to worry about code paths in KVM the MTRRs would call. But what goes wrong
+> functionally? If userspace doesn't fully setup a TD things can go wrong for the TD.
+> 
+> A plus side of using the MSR filter stuff is it reuses existing functionality.
+> 
+>>   If not enforce, but exit with
+>> KVM_EXIT_X86_RDMSR/WRMSR no matter usersapce sets up MSR filter or not.
+>> Then you are trying to introduce divergent behavior in KVM.
+> 
+> The current ABI of KVM_EXIT_X86_RDMSR when TDs are created is nothing. So I don't see how this is
+> any kind of ABI break. If you agree we shouldn't try to support MTRRs, do you have a different exit
+> reason or behavior in mind?
 
-
-This function does two tasks.
-1. update indir table
-2. update rss key
-
-#1 only for has_rss
-#2 for has_rss or has_rss_hash_report
-
-
-So I would code:
-
-	bool update = false
-
-	if (rxfh->indir) {
-		if (!vi->has_rss)
-			return -EINVAL;
-
-		for (i = 0; i < vi->rss_indir_table_size; ++i)
-			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
-
-		update = true
-	}
-
-	if (rxfh->key) {
-		if (!vi->has_rss && !vi->has_rss_hash_report)
-			return -EINVAL;
-
-		memcpy(vi->ctrl->rss.key, rxfh->key, vi->rss_key_size);
-		update = true
-	}
-
-
-	if (update)
-		virtnet_commit_rss_command(vi);
-
-Thanks.
-
-
->
-> Thanks for the review,
-> Breno
+Just return error on TDVMCALL of RDMSR/WRMSR on TD's access of MTRR MSRs.
 
