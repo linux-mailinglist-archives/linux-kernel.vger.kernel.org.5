@@ -1,215 +1,116 @@
-Return-Path: <linux-kernel+bounces-123116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABF3890254
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:54:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AD5189022F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C59FEB2386A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:54:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEA761C2D04D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C7312F5BB;
-	Thu, 28 Mar 2024 14:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="0RoR5jKm"
-Received: from smtp-8fae.mail.infomaniak.ch (smtp-8fae.mail.infomaniak.ch [83.166.143.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4438172F;
+	Thu, 28 Mar 2024 14:45:41 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3757525763
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6894E1C9
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637599; cv=none; b=RBwli8nTVY3CCEsDimlEyezQ+wQlezPXLYEVFb/4OAmuecWxwXb4r3zci93s0ooU9mvWw2vfweMSWNq0ZVa5spHp5fMoGZM23vKlV4qgpguYBKldC3BbNhtHvSt2OOgzNfIcJkBKzFToeyFdGy5B417OuLC3KdGLm8XqLveWktU=
+	t=1711637140; cv=none; b=pVXN4Yx5Bf3rUcplyuYOSuYtYCeW+hsty6KYTRYs5xzLOacxAoL9kne1iB9HaKNgCkhLLQoQyg4kMyzlPcup2FX+rjPCxWix3YXRQgSsbQ/Ft1YlyoCAtZVkcAtBesfJ5V2IOpNdDTJ1v6Qm5haMmOEt8FARI26M3t8QnCAl+6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637599; c=relaxed/simple;
-	bh=m6ExSO75re8+h+0kqgmc3taw/nhfvJpWp0RzVChKUD8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aSIyJLkQbv21Z0McJAGR0MOKt7wMoE+cgkFp6mm9IG66YQwRdaZBxNPepTi1cIyqVoq91jthRzhf3lvU3mQ+Xc+BxrHl/bg9HdhFUGo8zV5gbnTCpPkBtww4OmVi2TeC47V59yOgxVTSRSmPwH8g9qQKUby0xLx21dujBjtD1yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=0RoR5jKm; arc=none smtp.client-ip=83.166.143.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V55tK0jHzzh88;
-	Thu, 28 Mar 2024 15:45:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1711637112;
-	bh=m6ExSO75re8+h+0kqgmc3taw/nhfvJpWp0RzVChKUD8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=0RoR5jKmSZESMEyzyyfqQCBdDMidK2YEM0S6giPp/MumsJXKnukq6p0yh+n8lBUDh
-	 +Ly2A2jkpU9UJdKMMJ6cjtSIPEwpe4ycoBks2M1+RnFT/H4YsiMgWes0h2Ema/J11K
-	 C0XwLrdz1/Cpkjimu+R6Lc8YtVwHzWf4nOEcEtsg=
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4V55tJ47G7zsZc;
-	Thu, 28 Mar 2024 15:45:12 +0100 (CET)
-Date: Thu, 28 Mar 2024 15:45:12 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Paul Moore <paul@paul-moore.com>, alison.schofield@intel.com, 
-	fabio.maria.de.francesco@linux.intel.com, linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	gregkh@linuxfoundation.org, outreachy@lists.linux.dev, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] LANDLOCK: use kmem_cache for landlock_object
-Message-ID: <20240328.aiPh0phaJ6ai@digikod.net>
-References: <ZgSrBVidW1U6yP+h@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
- <CAHC9VhRYDNoqkbkgdUSg-kYSHVbheD5NtezmVxyRakZ0-DzuSg@mail.gmail.com>
- <ZgUh7cIQIsOgvWpw@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1711637140; c=relaxed/simple;
+	bh=oT2G2hzKBk5ZN70wX2Z/woZGyJvOk1Ns97niHF7wanE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LC6F2qrh70kSRARjSxAO0A+bjb3lDPtELSH3anOuaMr++E6xa79iuvqSHVX0UDwAoOiX0KX03J3ue/cc19AQGvJ3svY4Fk0Ea353OEaW462Dj44ke99V9z0Ze+mUESCA366OoaGlESFiNbOlP2qlNa8bY1gP7BNVwCNFKLYYiUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a0599f631so9494607b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:45:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711637136; x=1712241936;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+fjaRGcSgf8xsTZBcLTiZ5jbt+B1Ifd5p00AndFjlLw=;
+        b=jfqfxRWps1tzZF6vpqTiFungodkZDd0hzXQk/akC4WVyMH3Lv2D46wwbdhNtyVydJx
+         yGY5KYh95MWbfijS+ilqzghDWLP5KN9zsaPCmI0OHxUVFdVvbRnIGG7KzQPNiZIys5Wa
+         C/cMQx7XwpkeTdBjCm2nk2nebg7Qt3416u2qhwQ597f5AndyqSymHVg9LtBwtVXcwLv4
+         5BJsTCTwptiGSVrcwzXUuG/z1cl10n7fGqBdVjVjB+44IDKj1yobh0vn+NWSdQIFmr2M
+         QTu3MvmNRhd6WhCVl0NNzTD3I+FjQipJbggImy7d8QW4PD9vPhfaEGONu8Ypx3pLFsiW
+         jlQg==
+X-Forwarded-Encrypted: i=1; AJvYcCV81HGSrtiqzBD26lRoxHdubPSiUy58T64K7lHSWoLD/9HHF3wFnu70FeqlwxDBROYX3SP9yUWqVKMP6XmeEKXKpmL7+7gmWM3tGsaD
+X-Gm-Message-State: AOJu0YyVPMahpCM39LsK/0YSg47jrvW2RCAnmu5awiiJ/PUiYppoDdvw
+	axqc2IgjbG3Le36T3utfk7+8xnCp33JrF4Ls5LeMi9X44l/Y/yZvMMeSZVIXhMI=
+X-Google-Smtp-Source: AGHT+IG2iIc6VoFUZ5ivLymGIQcfAS3Z80xV3+lwx3YzsM7nUMsQSm2oLveRRUzkvIVhzgfHwNkhzg==
+X-Received: by 2002:a81:8416:0:b0:611:200c:9229 with SMTP id u22-20020a818416000000b00611200c9229mr3287517ywf.8.1711637136614;
+        Thu, 28 Mar 2024 07:45:36 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id n14-20020a81eb0e000000b00610e2f00407sm324132ywm.114.2024.03.28.07.45.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 07:45:36 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dd045349d42so988781276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:45:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUkZTrZI5Y8Ft9Lmf5G5idWQhRB7JNT+LbBW1y+saQuoK7diqotJ5NyX+mXy1epSkxL/4x6pqaZr5AuF6e1s2Tmo5VZJv/8VdRLgUGM
+X-Received: by 2002:a25:ff19:0:b0:dc7:32ea:c89f with SMTP id
+ c25-20020a25ff19000000b00dc732eac89fmr2988417ybe.15.1711637135802; Thu, 28
+ Mar 2024 07:45:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZgUh7cIQIsOgvWpw@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-X-Infomaniak-Routing: alpha
+References: <20240327054537.424980-1-samuel.holland@sifive.com>
+In-Reply-To: <20240327054537.424980-1-samuel.holland@sifive.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 28 Mar 2024 15:45:24 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX7HoJc+67VkqZk+KH8LzauQoTofP2ZrALvbpAtnbNRtw@mail.gmail.com>
+Message-ID: <CAMuHMdX7HoJc+67VkqZk+KH8LzauQoTofP2ZrALvbpAtnbNRtw@mail.gmail.com>
+Subject: Re: [PATCH] cache: sifive_ccache: Partially convert to a platform driver
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Conor Dooley <conor@kernel.org>, Anup Patel <apatel@ventanamicro.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The subject should start with "landlock: Use" instead of "LANDLOCK: use"
+Hi Samuel,
 
-On Thu, Mar 28, 2024 at 01:23:17PM +0530, Ayush Tiwari wrote:
-> Hello Paul
-> Thanks a lot for the feedback. Apologies for the mistakes. Could you
-> help me in some places so that I can correct the errors, like:
-> On Wed, Mar 27, 2024 at 07:43:36PM -0400, Paul Moore wrote:
-> > On Wed, Mar 27, 2024 at 7:26 PM Ayush Tiwari <ayushtiw0110@gmail.com> wrote:
-> > >
-> > > Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
-> > > struct landlock_object and update the related dependencies.
-> > >
-> > > Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> > > ---
-> > >  security/landlock/fs.c     |  2 +-
-> > >  security/landlock/object.c | 14 ++++++++++++--
-> > >  security/landlock/object.h |  4 ++++
-> > >  security/landlock/setup.c  |  2 ++
-> > >  4 files changed, 19 insertions(+), 3 deletions(-)
-> > 
-> > Hi Ayush,
-> > 
-> > Mickaël has the final say on Landlock patches, but I had a few
-> > comments that I've included below ...
-> > 
-> > > diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-> > > index fc520a06f9af..227dd67dd902 100644
-> > > --- a/security/landlock/fs.c
-> > > +++ b/security/landlock/fs.c
-> > > @@ -124,7 +124,7 @@ static struct landlock_object *get_inode_object(struct inode *const inode)
-> > >         if (unlikely(rcu_access_pointer(inode_sec->object))) {
-> > >                 /* Someone else just created the object, bail out and retry. */
-> > >                 spin_unlock(&inode->i_lock);
-> > > -               kfree(new_object);
-> > > +               kmem_cache_free(landlock_object_cache, new_object);
-> > 
-> > See my comment below, but you may want to wrap this in a Landlock
-> > object API function.
-> Sure. I will definitely implement this.
-> > 
-> > >                 rcu_read_lock();
-> > >                 goto retry;
-> > > diff --git a/security/landlock/object.c b/security/landlock/object.c
-> > > index 1f50612f0185..df1354215617 100644
-> > > --- a/security/landlock/object.c
-> > > +++ b/security/landlock/object.c
-> > > @@ -17,6 +17,15 @@
-> > >
-> > >  #include "object.h"
-> > >
-> > > +struct kmem_cache *landlock_object_cache;
-> > > +
-> > > +void __init landlock_object_init(void)
-> > > +{
-> > > +       landlock_object_cache = kmem_cache_create(
-> > > +               "landlock_object_cache", sizeof(struct landlock_object), 0,
+On Wed, Mar 27, 2024 at 6:45=E2=80=AFAM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+> Commit 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a
+> platform driver") broke ccache initialization because the PLIC IRQ
+> domain is no longer available during an arch_initcall:
+>
+>   [    0.087229] irq: no irq domain found for interrupt-controller@c00000=
+0 !
+>   [    0.087255] CCACHE: Could not request IRQ 0
+>
+> Fix this by moving the IRQ handling code to a platform driver.
+>
+> Fixes: 8ec99b033147 ("irqchip/sifive-plic: Convert PLIC driver into a pla=
+tform driver")
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 
-No need for the "_cache" name suffix.
+Thanks, this fixes the Starlight boot failure I didn't get to bisect yet.
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> > > +               SLAB_PANIC, NULL);
-> > 
-> > The comments in include/linux/slab.h suggest using the KMEM_CACHE()
-> > macro, instead of kmem_cache_create(), as a best practice for creating
-> > slab caches.
-> > 
-> Sure. Apologies I didn't see that, I tried to implement it from scratch
-> using the reference from linux memory management APIs.
-> > > +}
-> > > +
-> > >  struct landlock_object *
-> > >  landlock_create_object(const struct landlock_object_underops *const underops,
-> > >                        void *const underobj)
-> > > @@ -25,7 +34,8 @@ landlock_create_object(const struct landlock_object_underops *const underops,
-> > >
-> > >         if (WARN_ON_ONCE(!underops || !underobj))
-> > >                 return ERR_PTR(-ENOENT);
-> > > -       new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
-> > > +       new_object =
-> > > +               kmem_cache_zalloc(landlock_object_cache, GFP_KERNEL_ACCOUNT);
-> > 
-> > If the line is too long, you might want to consider splitting the
-> > function parameters like this:
-> > 
-> >   new_object = kmem_cache_zalloc(landlock_object_cache,
-> >                                  GFP_KERNEL_ACCOUNT);
-> > 
-> 
-> Sure. I didn't do as it was below the 100 columns limit, but will
-> definitely implement it.
+Gr{oetje,eeting}s,
 
-Please just use clang-format.
+                        Geert
 
-> > >         if (!new_object)
-> > >                 return ERR_PTR(-ENOMEM);
-> > >         refcount_set(&new_object->usage, 1);
-> > > @@ -62,6 +72,6 @@ void landlock_put_object(struct landlock_object *const object)
-> > >                  * @object->underobj to @object (if it still exists).
-> > >                  */
-> > >                 object->underops->release(object);
-> > > -               kfree_rcu(object, rcu_free);
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-Is it safe?
-
-According to commit ae65a5211d90 ("mm/slab: document kfree() as allowed
-for kmem_cache_alloc() objects"), no change should be needed (and it
-must not be backported to kernels older than 6.4 with CONFIG_SLOB). This
-way we can avoid exporting landlock_object_cache.  Please add a note
-about this commit and the related warning in the commit message.
-
-> > > +               kmem_cache_free(landlock_object_cache, object);
-> > >         }
-> > >  }
-> > > diff --git a/security/landlock/object.h b/security/landlock/object.h
-> > > index 5f28c35e8aa8..8ba1af3ddc2e 100644
-> > > --- a/security/landlock/object.h
-> > > +++ b/security/landlock/object.h
-> > > @@ -13,6 +13,10 @@
-> > >  #include <linux/refcount.h>
-> > >  #include <linux/spinlock.h>
-> > >
-> > > +extern struct kmem_cache *landlock_object_cache;
-> > 
-> > This really is a decision for Mickaël, but you may want to make
-> > @landlock_object_cache private to object.c and create functions to
-> > manage it as needed, e.g. put/free operations.
-> > 
-> Okay. I didn't make it private as I was using it in fs.c to use
-> kmem_cache_free, but if this is supposed to be private, I can modify the
-> approach and expose it via some function, not directly exposing
-> landlock_object_cache.
-
-Yes, that would be better.
-
-> > > +void __init landlock_object_init(void);
-> > > +
-> > >  struct landlock_object;
-> > >
-> > >  /**
-> > > diff --git a/security/landlock/setup.c b/security/landlock/setup.c
-> > > index f6dd33143b7f..a5fca4582ee1 100644
-> > 
-> > -- 
-> > paul-moore.com
-> I will make all the changes you mentioned, and as you said, I will
-> wait for Mickael's say.
-
-Agree with Paul and Greg unless commented otherwise. Thanks
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
