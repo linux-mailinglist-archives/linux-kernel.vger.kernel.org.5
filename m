@@ -1,133 +1,117 @@
-Return-Path: <linux-kernel+bounces-122312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778F688F4FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:58:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2EC88F4FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 158E71F2D94D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:58:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFF7A1C294B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320212263A;
-	Thu, 28 Mar 2024 01:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE732554B;
+	Thu, 28 Mar 2024 01:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R2PCkL1R"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KX7zyqJg"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC588465
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7E98465;
+	Thu, 28 Mar 2024 01:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711591102; cv=none; b=qc4u8aJXyrh/QqA1dI5FYErWa4iMYD4ScKLi/FPblEnlC9Jz3swOVteVNICI9+rL5UKL4sTF1+MXLc54i5ZwjA7OBjx2bRsBM6ZyryFx5WsuSguyHGB6d7Is6rEyWCGb2gqk8ppYwMC/5rZKzrMoCTt29e2njNiAZJj4bPJ3CtU=
+	t=1711591083; cv=none; b=LIl7ic2C5yyzC8N6uqL51dW9qJtOpbny7gtMDVBlWP5aPeiev/q+uZlzS96fWxgHipwysqEsiKa1O/vcDnPCQ3rm1ZZPMIcQCO/KjWXUZ8Sx3UE/Qyh90X1BF4oAHCvw/oOcHue4xohvHdBZNq36cbiWUw49FWrviJalL88IXyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711591102; c=relaxed/simple;
-	bh=5MbqHnqaARWljlVlxclPNn7WRcRf2Q/HvQgsbE3BT4M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=hLrTR2yrZu8BsRuFcd4yidHiVUrKhGxTGpY4ekzkuz3krYAUeWKERNeEjBZvRVJeHLj9duB2cRG4KKDYH3iAmyeBRxzlnGZdy93c8mx7GUhJupFanDjX+GZEPM+TKOS2J5uIIabQKNgFT7zGhivyQ5YB3+CltUASgn9BAUkZHZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R2PCkL1R; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711591102; x=1743127102;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=5MbqHnqaARWljlVlxclPNn7WRcRf2Q/HvQgsbE3BT4M=;
-  b=R2PCkL1R6+ZG+1wohgrP9Jb0H8yddJJWMcRw0YB58KGUEIQOrd6NIFSF
-   up/Z0cq+nj0w0XLVZE5l1wZOKSpJyKYLKjPF3300Of9LongkHNaLEbtBi
-   gBtFu9xDIl/y9uxijwnOxcADJuEy2q7lCYfYODsVhWo0q0HYNyvDKgPxM
-   yDHSsE7Bs+deK15DuHozZNZq14k1dY7/X4Kdx1p1Fuwu0YlVF5Upf/zUe
-   G+s+8oGlPgJr7CW0o73elLV3r8eb97Z2etzDcAZ632KanTccaMLq8G2TB
-   6riNEJ3lcShoCCDwjrADzAcwh6tTY8nz5EwNfiQ1EoATDLYw6ZKNEoGgm
-   w==;
-X-CSE-ConnectionGUID: zIY5qAEWSruTcHAWo7yQBg==
-X-CSE-MsgGUID: w4qhIX98QB+lSRQ5/0sDNg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="10517383"
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="10517383"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:58:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="47476595"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 18:58:17 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Bharata B Rao <bharata@amd.com>
-Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
-  <akpm@linux-foundation.org>,  <mingo@redhat.com>,
-  <peterz@infradead.org>,  <mgorman@techsingularity.net>,
-  <raghavendra.kt@amd.com>,  <dave.hansen@linux.intel.com>,
-  <hannes@cmpxchg.org>
-Subject: Re: [RFC PATCH 1/2] sched/numa: Fault count based NUMA hint fault
- latency
-In-Reply-To: <20240327160237.2355-2-bharata@amd.com> (Bharata B. Rao's message
-	of "Wed, 27 Mar 2024 21:32:36 +0530")
-References: <20240327160237.2355-1-bharata@amd.com>
-	<20240327160237.2355-2-bharata@amd.com>
-Date: Thu, 28 Mar 2024 09:56:24 +0800
-Message-ID: <87r0fvktkn.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711591083; c=relaxed/simple;
+	bh=17frHZKHa4HTS0M444Swz4V9jidjHHSAtk9DQb/zVs8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gCwsCHJYB2KLGY0CXZhBUvWEueqtUAdCpcEwgUBww1zPWCdfgvcvWl5++lbb43WzoF302jA4KDzgBrTA4gi/8T9c6CHF/FYNEdexW1PztDa7LdxuwATv/4NPDTzZ31HXX32XbTfJ3ZvTSa8qAoV5mt1tVzZM1ZyDmA6qsua7ZOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KX7zyqJg; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so241524f8f.2;
+        Wed, 27 Mar 2024 18:58:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711591079; x=1712195879; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tosp/xHwhQFOv14TlgTnZk/pGUufTB1z88IENWTkKck=;
+        b=KX7zyqJgBoyUxD9psSlG4exqFfRjo/QdJ2GFaaq15bCl+5jHJbB/s3TwKXWfc14bqb
+         +wYMZP6+fKJZxwhKn9J4UpwgZXuc6DiPNs3G2NgHFTm455CRaiLA30rE3hmrg5GkZFI2
+         YCG6jFSyMcIOIQOydDQaD9Z5URKbbeKCXFqGxjefwGI2BUHvERHtGrm607Y/cNoB4x8W
+         0gVJP2cedfe/CkSgWprQGNa3oLulvYB9ZHm1CW0xMMNazpMeHlF3ElqhXIr7QU59PTgd
+         8jbGDlLBJxQqaumIUqrEUtgWPuC1xRAoqJemt0B+PHGx8XBNChSdzqNp+fiGr7ikpik2
+         HGiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711591079; x=1712195879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tosp/xHwhQFOv14TlgTnZk/pGUufTB1z88IENWTkKck=;
+        b=eCunpIlnN7xz04k09abi7b5nkxNYDUAkwCH1w+qjTadSC9/SPya75aUiaTIX/694Fd
+         7BDt/rzeqs5LT/ZtkEl5ysS89WoenNCQ8XiiFGdsTREkGmeDqez3jm/d2y6WT3BBPcHn
+         Eo5gr+L4IP39k04jDFzKf/0OxrF9sX/FuOXUSnugAq9j3Tio7B7WdqsIXJJzfy3ZMjhC
+         gTJ17p2w6954n3y7U3ihBHinhowSUv+iSQJ2szx8b+1vU00e6dFK94xQWzchlT8SWNE6
+         ruNxYnFLavnGlcMa6fHKL8Vzrpd+rJY3xMEt/Id5o4rXaB8JyUIF7RJaVRtR3mdI+Ngt
+         xrFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDyC0/Z2TvBh0wkZRp5667OAI49Pe0ToLxFAWqkSHwH7Bwr/WRUGPHmdMwo7nSYLz9C3PYV+NPmnjXxLZPw75M9LW5A3xNGwEdMVW2SlszTV/CW/OScoUNp8RqpAaTtR8P91W+Ugx2BastKtGJUwzT/5EhJANMPo6xLiAMcJyyKOdqbLWp9abHVNvty/15Zy3k+pmj5Q==
+X-Gm-Message-State: AOJu0YwrZNLtkXYXl18o1pih5tqn5zV/FdnIPAWJ4dZLAb4g/K9mUMjR
+	y14pAF9h2gBR4O8xDpwig0DNpSFg2o0GpdYzohtyhFra9jUBQODg4rNsxdymy4tU7HhqUFdI3Os
+	xNECOMak8632yo/Lz8LZjVJQUvoA=
+X-Google-Smtp-Source: AGHT+IHsz6xL8bOK7aBf8BF761yTQJSarhpeyqPNrxEeiReNWPZGeG4ZKWWYpHZ4dezNtkqzoqFjScaO3BflrBK3mSs=
+X-Received: by 2002:a5d:5486:0:b0:341:c775:68b8 with SMTP id
+ h6-20020a5d5486000000b00341c77568b8mr1135611wrv.57.1711591079229; Wed, 27 Mar
+ 2024 18:57:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20240328125500.2582492e@canb.auug.org.au>
+In-Reply-To: <20240328125500.2582492e@canb.auug.org.au>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 27 Mar 2024 18:57:47 -0700
+Message-ID: <CAADnVQJ3S2DpCTe6m2xxjwgmUO5wLknDdV68Y5S7Lit+jZy51Q@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, David Miller <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>, 
+	Networking <netdev@vger.kernel.org>, Haiyue Wang <haiyue.wang@intel.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Bharata B Rao <bharata@amd.com> writes:
-
-[snip]
-
-> @@ -1750,25 +1753,20 @@ static bool pgdat_free_space_enough(struct pglist_data *pgdat)
->  }
->  
->  /*
-> - * For memory tiering mode, when page tables are scanned, the scan
-> - * time will be recorded in struct page in addition to make page
-> - * PROT_NONE for slow memory page.  So when the page is accessed, in
-> - * hint page fault handler, the hint page fault latency is calculated
-> - * via,
-> + * For memory tiering mode, when page tables are scanned, the current
-> + * hint fault count will be recorded in struct page in addition to
-> + * make page PROT_NONE for slow memory page.  So when the page is
-> + * accessed, in hint page fault handler, the hint page fault latency is
-> + * calculated via,
->   *
-> - *	hint page fault latency = hint page fault time - scan time
-> + * hint page fault latency = current hint fault count - fault count at scan time
->   *
->   * The smaller the hint page fault latency, the higher the possibility
->   * for the page to be hot.
->   */
-> -static int numa_hint_fault_latency(struct folio *folio)
-> +static inline int numa_hint_fault_latency(struct folio *folio, int count)
->  {
-> -	int last_time, time;
-> -
-> -	time = jiffies_to_msecs(jiffies);
-> -	last_time = folio_xchg_access_time(folio, time);
-> -
-> -	return (time - last_time) & PAGE_ACCESS_TIME_MASK;
-> +	return count - folio_xchg_fault_count(folio, count);
->  }
-
-I found count is task->mm->hint_faults.  That is a process wide
-counting.  How do you connect the hotness of a folio with the count of
-hint page fault in the process?  How do you compare the hotness of
-folios among different processes?
-
->  /*
-> @@ -1794,35 +1792,6 @@ static bool numa_promotion_rate_limit(struct pglist_data *pgdat,
->  	return false;
->  }
+On Wed, Mar 27, 2024 at 6:55=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
 >
+> Hi all,
+>
+> Today's linux-next merge of the bpf-next tree got a conflict in:
+>
+>   kernel/bpf/arena.c
+>
+> between commit:
+>
+>   ee498a38f317 ("bpf: Clarify bpf_arena comments.")
+>
+> from the net tree and commit:
+>
+>   45a683b2d815 ("bpf,arena: Use helper sizeof_field in struct accessors")
+>
+> from the bpf-next tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
---
-Best Regards,
-Huang, Ying
+Thanks for headsup.
+We'll fix it up when bpf-next gets ffwded in a day or two.
 
