@@ -1,419 +1,225 @@
-Return-Path: <linux-kernel+bounces-122811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B88F88FDB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:05:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C797088FDB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:07:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B09DE1F27444
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 488061F277C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37CF7E0F2;
-	Thu, 28 Mar 2024 11:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4846D7E0EA;
+	Thu, 28 Mar 2024 11:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="C4TYakAa"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="o6QBuku6"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2051.outbound.protection.outlook.com [40.107.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6C0535A4;
-	Thu, 28 Mar 2024 11:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711623933; cv=none; b=Q24Te9j1kCpdzR7sF1e71oe8T6U4LfyMu8Cq/rT9ez3ZBlK8F1Wuty2EMg2n8FbHHdaNjPatc2vBOsrbLcVeqQwgno1w8jVMejf9CduZ8HPIm7NaWQwogZwm8CPpXFx2QkPuJx4So75blHU0PA+G58Vvev1i1ceWjUbAlH9yb3U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711623933; c=relaxed/simple;
-	bh=RxwgDtb3KKDcytkXAi7wGQBpphqqgNo2Idn6VQ7P3jw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g+NWqeFWrnPNeBrjDS02c5tQcI6IDdX0D0gbVnHHd7TIjnEZywM4rmSOUK2lc17hIqvdr/d4tRVj1ldhN5U+ofRVvt5L/pxk1PybQ2/wCl7y3JNtDHzBXXI2vEHEIp6tJIJeenvjiVXA6H6oaKJz/0mn9L1kz86Eh33/yIIAQPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=C4TYakAa; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1711623862; x=1712228662; i=deller@gmx.de;
-	bh=9/16Qzrw3seVqIzw3vOPat5jqGCo0xh0NQwrsRCPyY4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=C4TYakAaZ0uRrmB4kYbMMObcroodqai+f8r9F+1JkXTmB34rM6P4dApxX3VVfiJu
-	 djO9PSqy8gALD4P1buiRcQwbplf3kvVIJBpsze9N9dHIys97x9j8e7xB9Fbo8YiP/
-	 FnVL/uuTY2Z7Ar9YuAocpSn0q46F5dLPp08TMHaNi50wSPQJZPScHEcz42YGW+P0E
-	 902g/MEPvKRc7k8IIaKGKFaCGXqMHEG6oi/EMgdDS+tosgXvLSPfhGHm7n9ok5XCV
-	 D1sYs1erxG+lSoRLxADDe9jJ/P+3Osre6YItkylC10Pwv3B6ZyiGmwGnuZ8Qxohs0
-	 c+a/oQjsSG3p/OBJ+w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MC34X-1rzRet11Th-00CVKE; Thu, 28
- Mar 2024 12:04:22 +0100
-Message-ID: <b5a8bc60-ad16-407d-9e57-c224467c3f06@gmx.de>
-Date: Thu, 28 Mar 2024 12:04:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7975D2C6AE;
+	Thu, 28 Mar 2024 11:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711624064; cv=fail; b=qnCWyaswWTQVL+kAPf5uhPZiQPPVN0q1DR3Zoy5Z29siS2xd038gMevvvJPXWQ0nFVA8WNaUQoKRO6iE1LcKiUaTJzGqC8WvXlLD1kk6mc1M+erWUm/qQtGC/NH/LFBTOrVexCjEg4OKHktjg30jURJqm4PNX7vUOA8Yetac+k4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711624064; c=relaxed/simple;
+	bh=N0L0DeYUU63CqTU4tjvj4Es2vglSMWPzx3eXEbXcS64=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DvCP+AVRA4kthmEQ+r78anWGLuUFuqjCVnChfJ4aWTlPfG79Nu8tLk99Wdt2qRwAjBtSgpeSPxv4cC3KrdNRWTNg2cSHadurkedr6mvcp6vOge60fEVueki/H9KTtMwkBsQ7NpT6JpOuBC3BtIzMKn/So/wbTZT2Q0h9nbAKHgY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=o6QBuku6; arc=fail smtp.client-ip=40.107.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PoX3hiQFwxPX87Q4KADtJFm1Q1QnLulNbQED/cVp0oIJm3eP1n5AohsOthT+STBUvAkORMjwPLmPoWw7JU3T70spn7GfzjqWt6lrpUGiIbzJzI62JgL3DpWN8wX5oZwY8IeiSheFJEVn+akEu+7EiwEkepMwXSrU+eLIWGWb3dJOzY5GUqdG3x3UeFznTAI7I+V/TeQIxpFJon66upEzdm2PK9gTX87EWm3urOOnaLJ709/v25WgpklLfgFGy6sEHBJKrvRp3V+hB6rFfI55WOcPsVCmQrKnjX99XEtcDEaeyoJswHye+z8AEZwyRmUUBKA7kjDQR4z6ttMcVKqywg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6Et8G2vu59srS7J8zOOGchcYM2OjutpVKweGXSqJNEc=;
+ b=nKl/+e1JT9Ls65bILBaz6DkhYiQXs+Repca7vbMNDPh1ETYNxsJ5ewvH7aDfjfHBOIF5Jw7kRJ+qiDexAycDSK1h7WwSLbbpjtlTMyZqAqMf/ZWggowNz4TrMWwJnlWg6paQeh0k+fHLkxOGjo6JYZ5Kc/FLX+BUCp1uIsBAqmBMfFmGc2EwQ2eoZY5h8+jQbGazgdQwMSkYlA8u8tc0d6B8mym9USTOcLoxJ7H2hGH7scKXJWuGa99JPAIYqEUsF5QQATqUl004Y5+8nob183YGv21Z4sJ3UBXfJUYuioShwcfTANorHWe7qZvxr9phs4Cf7dny3fw14rek17F/Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Et8G2vu59srS7J8zOOGchcYM2OjutpVKweGXSqJNEc=;
+ b=o6QBuku6ORf1WdZSuOJ5zwAbQmrOGYUZ9Qi3Ts4VSsSJ0IboMhu9JI41MZaA7ASQsMtzcoNsk7qfVJkjekHn273lVp/EJIPzYEyTnefsJ5t2+F9d0WiCrhcpgKtLBWruEY5XSZ3RWnR0nq1C4+PVWasMMsRo3t4M9A2P5IKOsw8=
+Received: from SJ0PR13CA0240.namprd13.prod.outlook.com (2603:10b6:a03:2c1::35)
+ by SJ2PR12MB8158.namprd12.prod.outlook.com (2603:10b6:a03:4f7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.38; Thu, 28 Mar
+ 2024 11:07:37 +0000
+Received: from SJ1PEPF00001CE9.namprd03.prod.outlook.com
+ (2603:10b6:a03:2c1:cafe::ae) by SJ0PR13CA0240.outlook.office365.com
+ (2603:10b6:a03:2c1::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12 via Frontend
+ Transport; Thu, 28 Mar 2024 11:07:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE9.mail.protection.outlook.com (10.167.242.25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Thu, 28 Mar 2024 11:07:36 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Mar
+ 2024 06:07:33 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Mar
+ 2024 06:07:33 -0500
+Received: from xhdharinik40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Thu, 28 Mar 2024 06:07:30 -0500
+From: Suraj Gupta <suraj.gupta2@amd.com>
+To: <radhey.shyam.pandey@amd.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<michal.simek@amd.com>, <netdev@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+CC: <linux-kernel@vger.kernel.org>, <git@amd.com>, <harini.katakam@amd.com>,
+	<suraj.gupta2@amd.com>
+Subject: [PATCH net-next v2] net: axienet: Fix kernel doc warnings
+Date: Thu, 28 Mar 2024 16:37:13 +0530
+Message-ID: <20240328110713.12885-1-suraj.gupta2@amd.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] arch: Remove struct fb_info from video helpers
-To: Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
- javierm@redhat.com, sui.jingfeng@linux.dev
-Cc: linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>
-References: <20240327204450.14914-1-tzimmermann@suse.de>
- <20240327204450.14914-3-tzimmermann@suse.de>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20240327204450.14914-3-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MkWerH/kos999V3d+lXJIMTQR7GQxw4lOR8ujKMTFrxBBP7ED+v
- nCbh+i8OdPfgMXpIGn8F/RzVnZUcX6qDw8V3E3UjKq7SahbOvuUOOuYxXCXnsnkfPvuPSPx
- NctfQzZG6pYQPeGTYdE4BZyLtBUkECsbnyx+wy41zWcvFfBUL0ZdEV+vBIMDG1cUK97B23Y
- bYcjwlnnFHbk9uuxDY1Pg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Dx/DFQx+Tp4=;1jQ9Mrb8iRQltfotF+w9pgqJHIU
- iECm7T+rje2zL8zTenHrlnXQeSQONr+FaCg++dwSppO9FrKmnOynFxtQ1jyXodrNmfRA4EM2C
- /kdonCGFZRVMEC4AcjMX7CNdfXgsm1PmDtM2PS0PsIbyNKOmJmCtNuuG9DOEoRGaKT/OmufGQ
- cPT3e2vNV5TO0H5v5dN3qXQpwQcMUyCRRykHrNNkHaaDaRr/ZzOBfPtwoGtzil4eqbx0TIkOo
- 8I9XEksMi45hN+vQgsIabvbBnXPxG+Fuihr1d57qQ+/UR6jSOef4YNJR55CwHf1yV8LWeYcB9
- tMEXYafQh0yPfMWzJ/yu1u/wJ3NKEd2pT+8YrPOaGbbIZdkF8PejKNoHpYUdHS2t/xLztKwTh
- rhlz/heBK6RM48buMgfEBqNqUpsDlZKNwFNN7Z4o95iliHLA7+giKcS18HKNrDh3XshSVQ2rZ
- VjcTSxmIH+kh7TpiRLkEqeKTKJS0KelvWbmjfRs9p6Kzhvwo29FqEGgfH1hafrj9jW6PzlK/h
- A/QFPSlM7XYYaxDZleWtbvkBLV1BepzjXr5+iOVTsm4uM4c25HzPeMxhc8oDU4L6YKB+pLEO3
- Aw+jKKaQp4sVRDwv9GzTF3Q55ZVvXsp/UU7zdvWVV4TxP3x3RxjHolkwUKBZujW9XbU4hlCvT
- BLm2eTF4CFq1OGxuF4fB8uaJdeSD3OhcfM1hRXrkJhc63H2CmU8Ox39fu3XsON7uxF6uoGbKr
- oR/lcEwnqlmBE3cSgbdmfMEkH+kJSathXvIL/qcBBkiopu6f0im4JDJQZnzpo5SbJjDZAQ0uQ
- uiyyFR4ac2BxBvD3fYVQocyztn+eex+y0OBO5nR6HM7pM=
+Content-Type: text/plain
+Received-SPF: None (SATLEXMB05.amd.com: suraj.gupta2@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE9:EE_|SJ2PR12MB8158:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6618f4e1-250d-404b-0f0f-08dc4f1746c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8p1BdVnx2Snp2TlKG+PCyN2OY0yN8oHI1gOcDfvWaGvgykQrKnl85f+OEVMt+OSqRRXfnDeF4XSM8+jFKGjslmIJSGbIG/CVtYH1xTWFTusFsCLaLYgrrfWWB3a3ygER11aXxv3Ncut7vEeE7tBSz76wNgTpwCtckJ4iREBxIIWFttfHKfz+G0REWxAo0Q9LWydxYWGYiXdxBse+JCOsogx+u4b/q6+FeZ2/KF3J4KpwkAGZnzvdbgqhtXZ59qP7we8H4ArvMQmtnU5wzksYUYu6aXxF+dtBMS1LKC91Gdd2Y0T8R2Qpj+H8A6uOhxWfIuj2aJITziF9m8JQh9Wtj8X03ksJz/dAfTQEllbrMpoJnD+F9vn+mpGchlvdqPLpI/lChpY1PT/WrPaGjsRnP+VH2szjnSw9+ez1DIBMbHwGz+rIjvNwtt1Za7sc+mXLr090up/xQxQF7eVwShrk7/FJOpOQxMhu5XydjSKKZAnDsjK8U+mIpZMLTs2X0D2+R+pX5IrS49rvrwYedKMZRvjYpRrJp6R9vU+MagoHZOEiiDxUHxGGy7tZTnPvmoRML0dWeBPli2e8ZuNoXM1f5piq99FFWatYD/icPPormD0Wu0eUwhEkwN2WAcOUPzdqnFi0tKAJY71LlHyAHvC3RB7uNKE/lvKmtgi0izdr8bg/uVJYK3Kgbp245Z1eDVwdzwOmbJ9w8jJQn1oVNigPUJW8z5IKEcDZCsmELcJB0OOL/DkmZyApziXerDmcs1dZ
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2024 11:07:36.7923
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6618f4e1-250d-404b-0f0f-08dc4f1746c3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8158
 
-On 3/27/24 21:41, Thomas Zimmermann wrote:
-> The per-architecture video helpers do not depend on struct fb_info
-> or anything else from fbdev. Remove it from the interface and replace
-> fb_is_primary_device() with video_is_primary_device(). The new helper
+Add description of mdio enable, mdio disable and mdio wait functions.
+Add description of skb pointer in axidma_bd data structure.
+Remove 'phy_node' description in axienet local data structure since
+it is not a valid struct member.
+Correct description of struct axienet_option.
 
-Since you rename this function, wouldn't something similar to
+Fix below kernel-doc warnings in drivers/net/ethernet/xilinx/:
+1) xilinx_axienet_mdio.c:1: warning: no structured comments found
+2) xilinx_axienet.h:379: warning: Function parameter or struct member
+'skb' not described in 'axidma_bd'
+3) xilinx_axienet.h:538: warning: Excess struct member 'phy_node'
+description in 'axienet_local'
+4) xilinx_axienet.h:1002: warning: expecting prototype for struct
+axiethernet_option. Prototype was for struct axienet_option instead
 
-device_is_primary_display()
-	or
-device_is_primary_console()
-	or
-is_primary_graphics_device()
-	or
-is_primary_display_device()
+Signed-off-by: Suraj Gupta <suraj.gupta2@amd.com>
+Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+---
+Changes in V2:                                                             
+Correct alignment of skb struct description in struct axidma_bd.
 
-be a better name?
+ drivers/net/ethernet/xilinx/xilinx_axienet.h  |  4 ++--
+ .../net/ethernet/xilinx/xilinx_axienet_mdio.c | 23 ++++++++++++++++---
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
-Helge
-
-> is similar in functionality, but can operate on non-fbdev devices.
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Andreas Larsson <andreas@gaisler.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> ---
->   arch/parisc/include/asm/fb.h     |  8 +++++---
->   arch/parisc/video/fbdev.c        |  9 +++++----
->   arch/sparc/include/asm/fb.h      |  7 ++++---
->   arch/sparc/video/fbdev.c         | 17 ++++++++---------
->   arch/x86/include/asm/fb.h        |  8 +++++---
->   arch/x86/video/fbdev.c           | 18 +++++++-----------
->   drivers/video/fbdev/core/fbcon.c |  2 +-
->   include/asm-generic/fb.h         | 11 ++++++-----
->   8 files changed, 41 insertions(+), 39 deletions(-)
->
-> diff --git a/arch/parisc/include/asm/fb.h b/arch/parisc/include/asm/fb.h
-> index 658a8a7dc5312..ed2a195a3e762 100644
-> --- a/arch/parisc/include/asm/fb.h
-> +++ b/arch/parisc/include/asm/fb.h
-> @@ -2,11 +2,13 @@
->   #ifndef _ASM_FB_H_
->   #define _ASM_FB_H_
->
-> -struct fb_info;
-> +#include <linux/types.h>
-> +
-> +struct device;
->
->   #if defined(CONFIG_STI_CORE)
-> -int fb_is_primary_device(struct fb_info *info);
-> -#define fb_is_primary_device fb_is_primary_device
-> +bool video_is_primary_device(struct device *dev);
-> +#define video_is_primary_device video_is_primary_device
->   #endif
->
->   #include <asm-generic/fb.h>
-> diff --git a/arch/parisc/video/fbdev.c b/arch/parisc/video/fbdev.c
-> index e4f8ac99fc9e0..540fa0c919d59 100644
-> --- a/arch/parisc/video/fbdev.c
-> +++ b/arch/parisc/video/fbdev.c
-> @@ -5,12 +5,13 @@
->    * Copyright (C) 2001-2002 Thomas Bogendoerfer <tsbogend@alpha.franken=
-de>
->    */
->
-> -#include <linux/fb.h>
->   #include <linux/module.h>
->
->   #include <video/sticore.h>
->
-> -int fb_is_primary_device(struct fb_info *info)
-> +#include <asm/fb.h>
-> +
-> +bool video_is_primary_device(struct device *dev)
->   {
->   	struct sti_struct *sti;
->
-> @@ -21,6 +22,6 @@ int fb_is_primary_device(struct fb_info *info)
->   		return true;
->
->   	/* return true if it's the default built-in framebuffer driver */
-> -	return (sti->dev =3D=3D info->device);
-> +	return (sti->dev =3D=3D dev);
->   }
-> -EXPORT_SYMBOL(fb_is_primary_device);
-> +EXPORT_SYMBOL(video_is_primary_device);
-> diff --git a/arch/sparc/include/asm/fb.h b/arch/sparc/include/asm/fb.h
-> index 24440c0fda490..07f0325d6921c 100644
-> --- a/arch/sparc/include/asm/fb.h
-> +++ b/arch/sparc/include/asm/fb.h
-> @@ -3,10 +3,11 @@
->   #define _SPARC_FB_H_
->
->   #include <linux/io.h>
-> +#include <linux/types.h>
->
->   #include <asm/page.h>
->
-> -struct fb_info;
-> +struct device;
->
->   #ifdef CONFIG_SPARC32
->   static inline pgprot_t pgprot_framebuffer(pgprot_t prot,
-> @@ -18,8 +19,8 @@ static inline pgprot_t pgprot_framebuffer(pgprot_t pro=
-t,
->   #define pgprot_framebuffer pgprot_framebuffer
->   #endif
->
-> -int fb_is_primary_device(struct fb_info *info);
-> -#define fb_is_primary_device fb_is_primary_device
-> +bool video_is_primary_device(struct device *dev);
-> +#define video_is_primary_device video_is_primary_device
->
->   static inline void fb_memcpy_fromio(void *to, const volatile void __io=
-mem *from, size_t n)
->   {
-> diff --git a/arch/sparc/video/fbdev.c b/arch/sparc/video/fbdev.c
-> index bff66dd1909a4..e46f0499c2774 100644
-> --- a/arch/sparc/video/fbdev.c
-> +++ b/arch/sparc/video/fbdev.c
-> @@ -1,26 +1,25 @@
->   // SPDX-License-Identifier: GPL-2.0
->
->   #include <linux/console.h>
-> -#include <linux/fb.h>
-> +#include <linux/device.h>
->   #include <linux/module.h>
->
-> +#include <asm/fb.h>
->   #include <asm/prom.h>
->
-> -int fb_is_primary_device(struct fb_info *info)
-> +bool video_is_primary_device(struct device *dev)
->   {
-> -	struct device *dev =3D info->device;
-> -	struct device_node *node;
-> +	struct device_node *node =3D dev->of_node;
->
->   	if (console_set_on_cmdline)
-> -		return 0;
-> +		return false;
->
-> -	node =3D dev->of_node;
->   	if (node && node =3D=3D of_console_device)
-> -		return 1;
-> +		return true;
->
-> -	return 0;
-> +	return false;
->   }
-> -EXPORT_SYMBOL(fb_is_primary_device);
-> +EXPORT_SYMBOL(video_is_primary_device);
->
->   MODULE_DESCRIPTION("Sparc fbdev helpers");
->   MODULE_LICENSE("GPL");
-> diff --git a/arch/x86/include/asm/fb.h b/arch/x86/include/asm/fb.h
-> index c3b9582de7efd..999db33792869 100644
-> --- a/arch/x86/include/asm/fb.h
-> +++ b/arch/x86/include/asm/fb.h
-> @@ -2,17 +2,19 @@
->   #ifndef _ASM_X86_FB_H
->   #define _ASM_X86_FB_H
->
-> +#include <linux/types.h>
-> +
->   #include <asm/page.h>
->
-> -struct fb_info;
-> +struct device;
->
->   pgprot_t pgprot_framebuffer(pgprot_t prot,
->   			    unsigned long vm_start, unsigned long vm_end,
->   			    unsigned long offset);
->   #define pgprot_framebuffer pgprot_framebuffer
->
-> -int fb_is_primary_device(struct fb_info *info);
-> -#define fb_is_primary_device fb_is_primary_device
-> +bool video_is_primary_device(struct device *dev);
-> +#define video_is_primary_device video_is_primary_device
->
->   #include <asm-generic/fb.h>
->
-> diff --git a/arch/x86/video/fbdev.c b/arch/x86/video/fbdev.c
-> index 1dd6528cc947c..4d87ce8e257fe 100644
-> --- a/arch/x86/video/fbdev.c
-> +++ b/arch/x86/video/fbdev.c
-> @@ -7,7 +7,6 @@
->    *
->    */
->
-> -#include <linux/fb.h>
->   #include <linux/module.h>
->   #include <linux/pci.h>
->   #include <linux/vgaarb.h>
-> @@ -25,20 +24,17 @@ pgprot_t pgprot_framebuffer(pgprot_t prot,
->   }
->   EXPORT_SYMBOL(pgprot_framebuffer);
->
-> -int fb_is_primary_device(struct fb_info *info)
-> +bool video_is_primary_device(struct device *dev)
->   {
-> -	struct device *device =3D info->device;
-> -	struct pci_dev *pci_dev;
-> +	struct pci_dev *pdev;
->
-> -	if (!device || !dev_is_pci(device))
-> -		return 0;
-> +	if (!dev_is_pci(dev))
-> +		return false;
->
-> -	pci_dev =3D to_pci_dev(device);
-> +	pdev =3D to_pci_dev(dev);
->
-> -	if (pci_dev =3D=3D vga_default_device())
-> -		return 1;
-> -	return 0;
-> +	return (pdev =3D=3D vga_default_device());
->   }
-> -EXPORT_SYMBOL(fb_is_primary_device);
-> +EXPORT_SYMBOL(video_is_primary_device);
->
->   MODULE_LICENSE("GPL");
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core=
-/fbcon.c
-> index 46823c2e2ba12..85c5c8cbc680a 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -2939,7 +2939,7 @@ void fbcon_remap_all(struct fb_info *info)
->   static void fbcon_select_primary(struct fb_info *info)
->   {
->   	if (!map_override && primary_device =3D=3D -1 &&
-> -	    fb_is_primary_device(info)) {
-> +	    video_is_primary_device(info->device)) {
->   		int i;
->
->   		printk(KERN_INFO "fbcon: %s (fb%i) is primary device\n",
-> diff --git a/include/asm-generic/fb.h b/include/asm-generic/fb.h
-> index 6ccabb400aa66..4788c1e1c6bc0 100644
-> --- a/include/asm-generic/fb.h
-> +++ b/include/asm-generic/fb.h
-> @@ -10,8 +10,9 @@
->   #include <linux/io.h>
->   #include <linux/mm_types.h>
->   #include <linux/pgtable.h>
-> +#include <linux/types.h>
->
-> -struct fb_info;
-> +struct device;
->
->   #ifndef pgprot_framebuffer
->   #define pgprot_framebuffer pgprot_framebuffer
-> @@ -23,11 +24,11 @@ static inline pgprot_t pgprot_framebuffer(pgprot_t p=
-rot,
->   }
->   #endif
->
-> -#ifndef fb_is_primary_device
-> -#define fb_is_primary_device fb_is_primary_device
-> -static inline int fb_is_primary_device(struct fb_info *info)
-> +#ifndef video_is_primary_device
-> +#define video_is_primary_device video_is_primary_device
-> +static inline bool video_is_primary_device(struct device *dev)
->   {
-> -	return 0;
-> +	return false;
->   }
->   #endif
->
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+index 807ead678551..fa5500decc96 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+@@ -359,6 +359,7 @@
+  * @app2:         MM2S/S2MM User Application Field 2.
+  * @app3:         MM2S/S2MM User Application Field 3.
+  * @app4:         MM2S/S2MM User Application Field 4.
++ * @skb:          Pointer to SKB transferred using DMA
+  */
+ struct axidma_bd {
+ 	u32 next;	/* Physical address of next buffer descriptor */
+@@ -399,7 +400,6 @@ struct skbuf_dma_descriptor {
+  * struct axienet_local - axienet private per device data
+  * @ndev:	Pointer for net_device to which it will be attached.
+  * @dev:	Pointer to device structure
+- * @phy_node:	Pointer to device node structure
+  * @phylink:	Pointer to phylink instance
+  * @phylink_config: phylink configuration settings
+  * @pcs_phy:	Reference to PCS/PMA PHY if used
+@@ -537,7 +537,7 @@ struct axienet_local {
+ };
+ 
+ /**
+- * struct axiethernet_option - Used to set axi ethernet hardware options
++ * struct axienet_option - Used to set axi ethernet hardware options
+  * @opt:	Option to be set.
+  * @reg:	Register offset to be written for setting the option
+  * @m_or:	Mask to be ORed for setting the option in the register
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c b/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
+index 2f07fde361aa..9ca2643c921e 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
+@@ -20,7 +20,14 @@
+ #define DEFAULT_MDIO_FREQ	2500000 /* 2.5 MHz */
+ #define DEFAULT_HOST_CLOCK	150000000 /* 150 MHz */
+ 
+-/* Wait till MDIO interface is ready to accept a new transaction.*/
++/**
++ * axienet_mdio_wait_until_ready - MDIO wait function
++ * @lp:	Pointer to axienet local data structure.
++ *
++ * Return :	0 on success, Negative value on errors
++ *
++ * Wait till MDIO interface is ready to accept a new transaction.
++ */
+ static int axienet_mdio_wait_until_ready(struct axienet_local *lp)
+ {
+ 	u32 val;
+@@ -30,14 +37,24 @@ static int axienet_mdio_wait_until_ready(struct axienet_local *lp)
+ 				  1, 20000);
+ }
+ 
+-/* Enable the MDIO MDC. Called prior to a read/write operation */
++/**
++ * axienet_mdio_mdc_enable - MDIO MDC enable function
++ * @lp:	Pointer to axienet local data structure.
++ *
++ * Enable the MDIO MDC. Called prior to a read/write operation
++ */
+ static void axienet_mdio_mdc_enable(struct axienet_local *lp)
+ {
+ 	axienet_iow(lp, XAE_MDIO_MC_OFFSET,
+ 		    ((u32)lp->mii_clk_div | XAE_MDIO_MC_MDIOEN_MASK));
+ }
+ 
+-/* Disable the MDIO MDC. Called after a read/write operation*/
++/**
++ * axienet_mdio_mdc_disable - MDIO MDC disable function
++ * @lp:	Pointer to axienet local data structure.
++ *
++ * Disable the MDIO MDC. Called after a read/write operation
++ */
+ static void axienet_mdio_mdc_disable(struct axienet_local *lp)
+ {
+ 	u32 mc_reg;
+-- 
+2.17.1
 
 
