@@ -1,118 +1,134 @@
-Return-Path: <linux-kernel+bounces-122468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8AC888F80E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:43:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0764488F814
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 585E6B22DD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:43:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39C3D1C2423F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 06:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDAB3F9EC;
-	Thu, 28 Mar 2024 06:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610A54F616;
+	Thu, 28 Mar 2024 06:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="1njjI6LS"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AGEG+uJG"
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F731D68F
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB9E29CEF
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 06:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711608188; cv=none; b=BosaddXFnF4l8Hl5YM8uHRMkM0h3XiUlCT8PbxoNSCvX/Hq48gdh26LmejBui2XzLY/4fYrtnSRwxDU4l/e7ciRJFSVt0JSpunNb9q2qBs4UbQOcRJStuaUBKVDM8p3QXhMARerWNZ2CMsEqGIQv+E5z3m1U8gyzmHPK4eGLCj0=
+	t=1711608376; cv=none; b=r53u+kkEQESZbE+cPY1x1NmMzviJQPVS8dp4MAqeOz56wIxI0PDP8tQwFDSuqO8qfyE45T4rQlC5T0ACoX6G+yfaw0wYiVI3dz4+SgxXpmPKY/tZ36sKIEsICsILzSgALHqdzyZeiIkbO6MK2zpAg9/u6cSZoaAmYQCSdr6Gwyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711608188; c=relaxed/simple;
-	bh=6hpZTtVg7DBigESi1cAJtwT8SmxuOgbugRw5UvIMzsw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=aR2QEltzk+g0LL57u7ovKwu0Ru9wpInL9xVbzhVNj+/BNkKP56+Hdr/oGUvu9sR4CKVCjyonVz/PtBNACBdBtBVdQkx56MR1kwL1imOZy6yR5GPBasaIIEAO+TIvSQWBAdAs4R8AEh/2SLAFH50Xru8Pyr31vLouYQyEzFa7s/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1njjI6LS; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc746178515so1029862276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:43:07 -0700 (PDT)
+	s=arc-20240116; t=1711608376; c=relaxed/simple;
+	bh=A0eqZc2Idq8YoVPpTu2o6tJ994aWXVyAWN+lD2sX1Fg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HTndsJIU/hDTFFF3T5dCXpcsuBcsOPoWvzB34vMZxz1GZLmcttIumnIhd41LiCoxiNyQGhbTgufAY4kH5ozI3METsDweu/BmNLG1ZYRhYLy8K/qtBB4779PFeUwAmrF2ECWujvrhUiYmk4yq6qsw0NMietohr+M3Rp4ofTtzbD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AGEG+uJG; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a48320f0f3so151761eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 23:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711608186; x=1712212986; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=pmZRfwQqC0r+PYK2LVYGrEcGN9aIJWj03b1dC2yPLlE=;
-        b=1njjI6LSRrdqz7cHUm/9i60QScoMeA2OWQUkheomigOZHyHSDFcZF5n7ekgK80unJG
-         Hcu8EsL8oSWzmOfJyT4BEHgFASf/4p9EkO3xDuJEAC23okpUR7KoxfWT7atMdXzWi5L/
-         kVhqCFcFFM8wUqak6yxBywfV0xpfMusnjWFS5qYsjuLDBbgB5o9dxF6QwxhmO1yDHsF/
-         hqKG5683z2sJvp9wE5QSpP0aNaAwGVqStiIX+6dkMFT+vAtpJL3fJPJ6k7GMQLV244pZ
-         ajhkIE/H7x+C5qP1QmdtUcxa2PyH9zBXr3UDFSZu2seXAa2wknc9aFDfAUruyDxYVYYE
-         wjxw==
+        d=gmail.com; s=20230601; t=1711608374; x=1712213174; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CdajnQBU4jDnyCtQCC669gXeD7BjwrpkfYPJe3b08SU=;
+        b=AGEG+uJGy9QXmsVXybA6ArKZIo8Iwh+PiXDSBYfOFlhKffXiwSTyUV2Jiex2oC4lPl
+         pHXpS3yJid2vwj5OWmeY/qSeVvhm9mFM75LPO4mahrOKOsNw2bzS0zJH52h7G/owS7HS
+         mTLGI0SQmSvRut1qjYzcSngfFRf541fF/aLHw4lxcypjqYqNI2WJqGZrqzrMk8RQWNYH
+         ok+w6jIS9Wq7jtOApDBn1ECIeEEFGhL8Om9IaqIPqhFS3RY0WZ7JCdTF6+nvPQKLm85O
+         XrNKIdpaJwYzN47xkwE59TJxyZrkWJJynme0ywrFJNvOdqLNavkDgookQNCBsvr1d24L
+         2gpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711608186; x=1712212986;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pmZRfwQqC0r+PYK2LVYGrEcGN9aIJWj03b1dC2yPLlE=;
-        b=d4IY30ZXi6wVuvic67b4LniuU95LYt3Q9R8HIroToaDJ91Qalhj+5kIQcDCiM8Sswy
-         DXFVwGl+o56fUwIDzdhgiB0Z/EqnVhf2GPpa9cBDODXoq39iKmqi/mWIzLd0PuR+9XVq
-         IWsWI1UV/vqDO0gC6cwsS7tmLOvC59e242zGutc1Md94YZm581txEccn71odyzF2n7Az
-         XJUVy72SD0YxkaMt2kHjYnhrP3laIo+vmpjnwpyeRMCjgeOi2UgOOybX50CgxPW0H3WS
-         +x8AgUGalmOUrTPTIhhB1CaAYKVydNdea4Je8zUVNCo2rAefRGEEGcGmKNN3buegeTir
-         D1tg==
-X-Forwarded-Encrypted: i=1; AJvYcCWd9q/r1ymNfpq1gSlW/wzcCUUFFhKsHl2ipc1/GFM9RRYyWxADzG3WChjaQB0sAP1TKu8/CT0JF6yal4+5LzR7CG0nFfi+I/NPbSZa
-X-Gm-Message-State: AOJu0YyuPfUu6UT2mwlbRpQqk2a9yrxGXHiVEjmnZGcg52EEWtQ53jux
-	kGgxF1XVjnkGAp1nEoJumgvhLcb8LmHsYk1heYcMzSmcZBU8ztRRDOnQ32lOC2hWmhHigw==
-X-Google-Smtp-Source: AGHT+IEIWxqsw6aZUc5toAwEr6h8i4YlzAtlPm6RiOTheZrZZ/liER36onbNeqtuRC3ksBNvRBMSjoCz
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:6902:702:b0:dcd:88e9:e508 with SMTP id
- k2-20020a056902070200b00dcd88e9e508mr653277ybt.5.1711608186267; Wed, 27 Mar
- 2024 23:43:06 -0700 (PDT)
-Date: Thu, 28 Mar 2024 07:42:57 +0100
+        d=1e100.net; s=20230601; t=1711608374; x=1712213174;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CdajnQBU4jDnyCtQCC669gXeD7BjwrpkfYPJe3b08SU=;
+        b=oUuDUQLfaETIxrncVvNCIH7ZlDkdyWLWw2q9zZVxPik3eAtSeFCdVGFlYDbfdn/a8V
+         C8Rk65//2aA2xniV1PpkSqA6Ew44Wxr5gFIY2+LgF+T4mR+Cxsu98Xng4r1Xc7TfHF6r
+         xMRZdAxT9WYC08+YCvFCCUNXWALQpJLqd9AdN9LrW4peKeiiQQKKoilTbQfOLd91MYOc
+         olnAMnlPxHUkPcngRitJ92PQAGODRUzD3M3ytqOoueksGQH3DU6+Jh3u3d44MxGVCh2z
+         KyMxFPUdb5qsqxupjFj/gQq5w/cnMFJbDXhFszG5SfvIBIeCzwji3ZhGKHq/w8XrBlwa
+         sIiw==
+X-Gm-Message-State: AOJu0YyXSrIx6gtAKXXu1eOiBhWwiBWTieJ159WQPaLQ4IDRsBUJ+yyJ
+	pKUTK+DO0l0cIdxkUOOknrcKPsOa0MPq1ZlesR0CVpFDzCFX7w4j
+X-Google-Smtp-Source: AGHT+IFegp8DMhCskJJfBONUhKvJscDzs4jPfvx4ybQq1Y6D1vPon/xwZFbkG9T5qmfrTTDbkJ4HFQ==
+X-Received: by 2002:a05:6808:1829:b0:3c3:c913:2709 with SMTP id bh41-20020a056808182900b003c3c9132709mr2378923oib.2.1711608374146;
+        Wed, 27 Mar 2024 23:46:14 -0700 (PDT)
+Received: from vaxr-BM6660-BM6360.. ([2001:288:7001:2703:7dc2:a884:7fe:b8b5])
+        by smtp.gmail.com with ESMTPSA id p43-20020a056a0026eb00b006e6b12d650asm636734pfw.31.2024.03.27.23.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 23:46:13 -0700 (PDT)
+From: I Hsin Cheng <richard120310@gmail.com>
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	I Hsin Cheng <richard120310@gmail.com>
+Subject: [PATCH] rbtree: Introduce rb_remove()
+Date: Thu, 28 Mar 2024 14:45:39 +0800
+Message-Id: <20240328064539.95795-1-richard120310@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1140; i=ardb@kernel.org;
- h=from:subject; bh=cIGqJV3rxKfieDaf+vcIrdgAd6gKVSXsQlf65gRhojA=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIY1VsHDpuTnqi7JC+oSXr9c8w39AeV6F8hWB2+oqIhUhE
- UsDLtV3lLIwiHEwyIopsgjM/vtu5+mJUrXOs2Rh5rAygQxh4OIUgIn4LmdkeGq8Kicl5kryR06V
- xzr33/y9za3xUb1XsCHI57PZxG0HNzL8Yj5/2FPAcNms+c5RFc02woFm5VKhdf8/Ssza5iHHe1S SHQA=
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240328064256.2358634-2-ardb+git@google.com>
-Subject: [PATCH] gcc-plugins/stackleak: Avoid .head.text section
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-hardening@vger.kernel.org
-Cc: keescook@chromium.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	kevinloughlin@google.com, thomas.lendacky@amd.com, 
-	Ard Biesheuvel <ardb@kernel.org>, kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: Ard Biesheuvel <ardb@kernel.org>
+Implement the function "rb_remove()", which can perform the removal of a
+certain key from the tree. Once the node with the searched key is found,
+we call "rb_erase()" to perform the removal of the node, otherwise the
+key doesn't exists in the tree then we return NULL.
 
-The .head.text section carries the startup code that runs with the MMU
-off or with a translation of memory that deviates from the ordinary one.
-So avoid instrumentation with the stackleak plugin, which already avoids
-init.text and .noinstr.text entirely.
-
-Fixes: 48204aba801f1b51 ("x86/sme: Move early SME kernel encryption handling into .head.text")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202403221630.2692c998-oliver.sang@intel.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
 ---
- scripts/gcc-plugins/stackleak_plugin.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/rbtree.h | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackleak_plugin.c
-index c5c2ce113c92..d20c47d21ad8 100644
---- a/scripts/gcc-plugins/stackleak_plugin.c
-+++ b/scripts/gcc-plugins/stackleak_plugin.c
-@@ -467,6 +467,8 @@ static bool stackleak_gate(void)
- 			return false;
- 		if (STRING_EQUAL(section, ".entry.text"))
- 			return false;
-+		if (STRING_EQUAL(section, ".head.text"))
-+			return false;
- 	}
+diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
+index f7edca369..1958be66f 100644
+--- a/include/linux/rbtree.h
++++ b/include/linux/rbtree.h
+@@ -302,6 +302,34 @@ rb_find_first(const void *key, const struct rb_root *tree,
+ 	return match;
+ }
  
- 	return track_frame_size >= 0;
++/**
++ * rb_remove() - remove @key in tree @tree
++ * @key: key to remove
++ * @tree: tree to modify
++ * @less: operator defining the (partial) node order
++ */
++static __always_inline struct rb_node *
++rb_remove(const void *key, const struct rb_root *tree,
++	  int (*cmp)(const void *key, const struct rb_node *))
++{
++	struct rb_node *node = tree->rb_node;
++
++	while (node) {
++		int c = cmp(key, node);
++
++		if (c < 0)
++			node = node->rb_left;
++		else if (c > 0)
++			node = node->rb_right;
++		else {
++			rb_erase(node, tree->rb_node);
++			return node;
++		}
++	}
++
++	return NULL;
++}
++
+ /**
+  * rb_next_match() - find the next @key in @tree
+  * @key: key to match
 -- 
-2.44.0.396.g6e790dbe36-goog
+2.34.1
 
 
