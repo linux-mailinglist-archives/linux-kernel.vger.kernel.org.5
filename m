@@ -1,101 +1,111 @@
-Return-Path: <linux-kernel+bounces-123761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25857890D6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:21:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9817890D73
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA420B2389A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:21:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E05C29E5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AA813DDDA;
-	Thu, 28 Mar 2024 22:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA3913E410;
+	Thu, 28 Mar 2024 22:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NbJm49eL"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T221bxNJ"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C87E13B795;
-	Thu, 28 Mar 2024 22:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F3D13E40D;
+	Thu, 28 Mar 2024 22:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711663875; cv=none; b=gYDnPeRwWDAiw010+aaNRme+hUw9d48G4cccWYVNA0UN2lk8KNw/J606svMds958LXcCelqUTE0TID9y/T53FrllDTumrisQFY2YjRFl1iNUNK7nkdtDTFGxzHjNe6Vqdwbgj+q9kUQNyouB+1wUYuyvBXLZzuJFU3m+B+u4pQU=
+	t=1711663998; cv=none; b=lhKZFQws/cW26b/IH2CUxmy0qoXMlTfUTZIu8Do4jR+ObyLqCByQ17E2uw9Pp46fTMtv8o3eDyBX14edMfKHm7i62r8A9Ps5y+CBvbIFetLVincu2uWQP72jUqIrZ+KuLsbVKeU1YU0NQpLZB5Bu+rrQuhbFe+GYlQoHYuD/9Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711663875; c=relaxed/simple;
-	bh=JVuXWZU7ypGWL4ciDE6dFgx2siJQMrXVakqC0WXbnd0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WjeDCmuy1zQEgYuBc0cmLt/E+KI2gpzycBQwmosnnTAi1GhqDTKRxyMBaBVgIdj5LgyPaMP4UK4C2itEHA0ipl6v8GxdaIBpg23DCtvsyP8WeEGWkGgoV7m+6ziOAZVXgdApHJGz+vp7swO6jKbWcA/5IzPtklv4RE9Ral8R39o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NbJm49eL; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=HnoWopqeEhgUSDrAxtnUhuDZR8QdjUiaKbpLIYgV22M=; b=NbJm49eLsaBJIDmaaGUPIwTP6s
-	RdCdHdp9gJrWgLOyWIaGiU2iEa3h0mDLeFNu8MpWBCcjIt+F1mBI8g082Y+IpFySLM/hEsNJi6SK1
-	JBk39TG18J9OCNVQporM5qOQ71kG0TDUjkZcnc4dAvsUfuM70hJvQAllMyhnggYK0MKVKGnTD8s/J
-	pwz0gob9RjN5DyrV1KCIE79TcNpQT0Fn18OWvlWWNJjye4FkmJFqE0E/qDklUsVta8jWE3bO374Mz
-	wFZ7SPWQCxzZ1K0xUYogPf2vhybumDglajK78Iq4x/BmSLLRdWq0eNniSqEvN8UThtFfomA7d21P3
-	PMZSsxhQ==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpxxf-0000000Fs9X-3pVK;
-	Thu, 28 Mar 2024 22:11:04 +0000
-Message-ID: <cde3dc6e-ca77-445e-a4b7-fc21a934999a@infradead.org>
-Date: Thu, 28 Mar 2024 15:11:03 -0700
+	s=arc-20240116; t=1711663998; c=relaxed/simple;
+	bh=1PzBA1ZhDSUeePpyVhsP/xK3wpo45qQhYq7BBmEtqKk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ukb2FrTa0bj0+lWlEQHvpf+V+gk/4bGZnqc6asvqBFy+Ki5OcmgNf/ZoRCNECZ8xdRyOHXTmk3lt/JF1ot58XJdHVW/knztj3690ztDknczRtt4pq18fIspDEigUpZ6ojcLNbfVlTy2FsZsb+W2M+KohpveDS4AwSlUKZ+/yryQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T221bxNJ; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34175878e30so1031811f8f.3;
+        Thu, 28 Mar 2024 15:13:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711663995; x=1712268795; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rgeFRnsuK46b4mipKZoJnQ86ybGPBmi/R5eXJ/VqwjU=;
+        b=T221bxNJPZSSsr9Spty+/d38LiyI16TlNpS/PpKnNBSn7lCaJ5Pi+a8vcLOfmRcYBb
+         yKDtS1+R6r3uIumg6gkw+JA+y9NeDD/IZGd023RsaIDL6HYuCLRf4+ba162VuSMKxd18
+         sp7Q5zVYv8QzR94ha1yd36ae2ITdTg7hqh55WHzIvQmQPFLPZRUIacGN06pcaxtW09gy
+         VS0zUjdkuc6358dMpUCxUEtoloOvqxAJVmLNVqyeSvj5U0ZXtVstYthSY89v18dIntuv
+         m9wUkm+RjHNfX2R3B91zOno/hD6fABpKX1QLnISoUzMgog646LO5w5f0u9GDXZW4nU/X
+         En9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711663995; x=1712268795;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rgeFRnsuK46b4mipKZoJnQ86ybGPBmi/R5eXJ/VqwjU=;
+        b=QNsJthAtcscvrBr0r9ovlj7b/+LUT0FL5LHUuQ7KRgKlaRCr3R5HRwWhV6roTnVtNA
+         4PuEEbGab2Keaw4ahySspsg8KH7AVSdlWXgwcr2LXDwz0+VF+0HyPcpLa+g4Mmfwllhe
+         wHEjlre2o3eQq3bD9ZuCW5wlbWxZzGzEhC0lTHLSMTMYoK8cmiisH5EMjuYa7y+5BlQD
+         KvaZ3oip5PEC4HtRAw32VC4qIie2sVmQiBcjBs4H5C1HplZOr5rCMi/LAKBuglw36iCm
+         fFdCpJF40SkbZxAV/koJibUjwEfU8sIx3m84Dw9vM0rHj95VH6XCtie6YgQdx4bp8PbY
+         6YUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVUDh9Avm5ST66hM9mypDZxr/vKJY/Bxw8MES1Ie9eDs1fWjx8SbzMlEY4m1E1xsNpuKizgJwCP4NfqAhM/X2nv1ilnEl0oakYs45U2TIIobGSlqoh2fmgur14NsofFI6rsZxeuu3mz6Po=
+X-Gm-Message-State: AOJu0Yw4m/j4Fi9uHGRRzJeg8r6l5UM2pm/kBGNWtoOsbTYmvD0h0OZ+
+	z+Nzs8RlyfNcz2d6GavAQyZCrHK1PkGrIat+jFwRVumg/iQdNgsE
+X-Google-Smtp-Source: AGHT+IG7j0PIvRS2ho64WTC9ZlQn1UU5XV7+bm1YY6W6CbLSDzZDBXi8iOrAmHVFr+wqVDakZH45TQ==
+X-Received: by 2002:adf:f189:0:b0:341:b9dc:eb03 with SMTP id h9-20020adff189000000b00341b9dceb03mr256125wro.3.1711663995131;
+        Thu, 28 Mar 2024 15:13:15 -0700 (PDT)
+Received: from lmc-playground.localdomain ([188.25.208.244])
+        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00414688af147sm6666778wms.20.2024.03.28.15.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 15:13:14 -0700 (PDT)
+From: Laurentiu Mihalcea <laurentiumihalcea111@gmail.com>
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com,
+	peter.ujfalusi@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	daniel.baluta@nxp.com,
+	iuliana.prodan@nxp.com,
+	linux-sound@vger.kernel.org,
+	imx@lists.linux.dev,
+	laurentiu.mihalcea@nxp.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] ASoC: SOF: imx: stop using the imx8_*_clocks API
+Date: Fri, 29 Mar 2024 00:11:59 +0200
+Message-Id: <20240328221201.24722-1-laurentiumihalcea111@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 01/20] security: add ipe lsm
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, Fan Wu <wufan@linux.microsoft.com>,
- corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
- tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
- snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
- linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
- audit@vger.kernel.org, linux-kernel@vger.kernel.org,
- Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
- <1711657047-10526-2-git-send-email-wufan@linux.microsoft.com>
- <D05ODONHFJ9O.3VG0HLFPA1OB0@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <D05ODONHFJ9O.3VG0HLFPA1OB0@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
 
+The imx8_*_clocks API requires keeping track of all of the clocks used
+by the IMX SOF driver via an array. This is unnecessary and doesn't
+scale well. As such, remove it altogether and replace it with
+devm_clk_bulk_get_all() and friends.
 
-On 3/28/24 13:45, Jarkko Sakkinen wrote:
->> +/**
->> + * ipe_init - Entry point of IPE.
->> + *
->> + * This is called at LSM init, which happens occurs early during kernel
->> + * start up. During this phase, IPE registers its hooks and loads the
->> + * builtin boot policy.
->> + * Return:
->> + * * 0		- OK
->> + * * -ENOMEM	- Out of memory
-> Just a suggestion:
-> 
-> * 0:		OK
-> * -ENOMEM:	Out of memory (OOM)
-> 
-> Rationale being more readable (less convoluted).
-> 
-> And also sort of symmetrical how parameters are formatted in kdoc.
+Laurentiu Mihalcea (2):
+  ASoC: SOF: imx: drop usage of the imx8_*_clocks API
+  ASoC: SOF: imx: remove imx8_*_clocks API
 
-It needs the " * *" to make a formatted list in the generated output.
-Otherwise the use of '- or ':' as a separator doesn't matter AFAIK.
+ sound/soc/sof/imx/imx-common.c | 24 -------------------
+ sound/soc/sof/imx/imx-common.h |  9 --------
+ sound/soc/sof/imx/imx8.c       | 41 ++++++++++++++-------------------
+ sound/soc/sof/imx/imx8m.c      | 40 ++++++++++++++------------------
+ sound/soc/sof/imx/imx8ulp.c    | 42 +++++++++++++++-------------------
+ 5 files changed, 53 insertions(+), 103 deletions(-)
 
 -- 
-#Randy
+2.34.1
+
 
