@@ -1,275 +1,155 @@
-Return-Path: <linux-kernel+bounces-122242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08A888F42F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C154888F431
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B7CD295160
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C4C12A3E44
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 00:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD66828DB3;
-	Thu, 28 Mar 2024 00:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DF71CAB2;
+	Thu, 28 Mar 2024 00:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzMKjw6D"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bkF3se81"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5861619479;
-	Thu, 28 Mar 2024 00:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6648F1CFB6
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 00:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711586751; cv=none; b=Ua8Ywi8ScUwa1VfPEWWVnAt/pZztzwZq+ckFig4ylLnlqimjnkQg3K8MdMcV4xH+im9Ujl1AotskxV31pbJMgm6+uyIKHjx9aCLFMgf3ppWVZ7irJCXqPXye0dRCeVkRJi7qz+zSp58HsiTg9aIZEYsjKGQ1nao/k/fMEeCRjxE=
+	t=1711586785; cv=none; b=V3drsOud4xrikLFfmsLgsVJzBavUW6tGD4rDz6B2E96r4jBVp8nYYPOPfxOSdG8Uz5qVuR4/fZtJO0E7Psme+JzgNyWaI9+uv+SjlsWAzpq48KSsQR1bXzOkldKbC79ZKkBWs53/psLxIptftWpd5D++WlyHxv5meynrOix2n9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711586751; c=relaxed/simple;
-	bh=ZT60A2mwFpyTdyfb6cjW6OdhzBClWNMVq24Fogaaf3c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FAE69v16QRBUzrCpEXBlaeqGRfK6KuQgLvt8feMG38w3/VhIa8Iv1c8t8L6maDb/fPP7e+JAzCYhcI/AM+HTSGHQB0zc6L4vabgQqQslQUYbskBi5U9IyWp2CaFDQyMoicaIfpn9X6/MnDUD+w3a0xzA7HBpgyp/8xEn7hO4yEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mzMKjw6D; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ead4093f85so441637b3a.3;
-        Wed, 27 Mar 2024 17:45:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711586749; x=1712191549; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9jgFg7/Se2gP2Slxoyf+gmLzNt05ZQGYEDydGAiD2AQ=;
-        b=mzMKjw6D65a3hEv1u9ZdTZn9hxzuPqIdcYE+D69/o6bbHzcv0fdSgDm/lgGwfrRc0G
-         FInWA0yBch+DyTQIjX8gATsToOJ8BlTyco/e9epKfB4asY4VE19hNWk+dPs//Wn18RSp
-         zcqkh/2gCA9bSQw+c/OHcSCuljXAtG2Jicdbekov+CnqecOAkLJeBqLnFJA49ExJIRSB
-         lAM/1/womCprSyOWUcvGQhQVKCEKOiI1fMm0m87cepVEOxK8dzQQY5F8k0ha3fvyeVRe
-         q0wt/sbK4WEA9Q95ukFDSizoLZAkFP8vE9ITZdyIdgl+G1/FX6Z4n+9zNwL6CUVTJWDf
-         zi4A==
+	s=arc-20240116; t=1711586785; c=relaxed/simple;
+	bh=cIKRD/G7PLOI2YOYcwuWsF+zEX2GT3alAs4z8dQkNe0=;
+	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RkdsV27cDLKBTFr94XF7N9en2zoTpnG3kKHb2Hgy4xbNegNl9lW3nj6VZQ3f1beQhgK4kSJ+kM9+AlktPgStvU2yy5FmppavNnrrd65rV6GYml8iSBT6lHKGjDsxGHmqhTs3hQzffrXbMaisRD2oR7Zpfd0h72LtfbbTxL4SSj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bkF3se81; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711586782;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=muo4TQlECPjAqvpC/FPfgccK18lah8VpjdpT8uaBVqU=;
+	b=bkF3se81efQ5YHRWSvLynMHt0IVCbS8QJVBOZHZKMInYD+p1dYdiD+NsmBsIqAkSAWPovB
+	JsyScgQZQJIvJ+tVIaNxXiDg+A4HWFoF073ORUyGvGJntVG8vu0nGgMPgND+L8bO4dpH/J
+	pBXIBCE+HTRSsZWDWX9fB7OWkaJR748=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-587-SPOtB4T4PyqHH8uqUcZ6Qw-1; Wed, 27 Mar 2024 20:46:21 -0400
+X-MC-Unique: SPOtB4T4PyqHH8uqUcZ6Qw-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-56c465f6756so249886a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 17:46:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711586749; x=1712191549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9jgFg7/Se2gP2Slxoyf+gmLzNt05ZQGYEDydGAiD2AQ=;
-        b=IhdrpNekCgLHteD8vP4iGVkhwsRF5sEC0ci6WtrMT6FhAejF73hUK2AMEgXUF1IQeV
-         5Evk5vtliVhTiU66Doxs/rxJmEjug/mCAxV0+qQDnqXrsG1udrZ3Y+wC5wy/dDrcFFLP
-         I2A/ufyKg4f3boNdFmBYqTRRVdEkYiLqK42ZSjtSaUPo51Xbwzs5E+si9m1EznK8n585
-         aQQckEOmKNSxL/wAR+TBefaT02hSxqFhWB+jvhzT4VD+QIilmKqLfUfnZZy/E7OrISh2
-         VV3a69iVyMvpZLpF/gBgsJh9xH3o7HmmNUftlZL0KiwIjJb5Sh7qFW9VCFIvbJW2NV+l
-         nsUA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXK5lRu6NzdpXeqBP0db+MLBxvkjiBzI5IOLY5pVz3XFCmeAWNGIMP9c/qFKp/WlJ/a4j8TJjOp4j6U+bDMbIipPiksiLMr7Lc24673F/MLepP5q/WiZPJSwaWd+YMZ88gQAhQ2PmNkeAxInxcATJXaoNPyg/EhIO0mvgt7k85wjE8CxalDiHMACrV8RfzLb1+ggFXKwTBwCC7qP8XPVyNfKAap4C0sw==
-X-Gm-Message-State: AOJu0YwyjmPq8qz6sgcwlBrfRTIvaq25qyI9c7Ur56v1Pnx2czMVhBnI
-	A6KUkh8eeqb4/+6WglDJcy7OUf8LZIYHp6GuUfrn9aPJPQwWJs2XsDM5KxlhPv6qJqpmewMCw+t
-	sdhZO0mm8hYjdQ21B3NSPUiarufw=
-X-Google-Smtp-Source: AGHT+IFlKICW8fz6iHVeO34uBd3ttW60uqKrvw2Bvh9gRLxr0htA6R2XTOfaVpcr13VrMRzeVaXelEnyPNY9lvIUoZg=
-X-Received: by 2002:a05:6a20:af14:b0:1a3:67cb:f7c4 with SMTP id
- dr20-20020a056a20af1400b001a367cbf7c4mr1323907pzb.34.1711586748531; Wed, 27
- Mar 2024 17:45:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711586779; x=1712191579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
+         :mime-version:references:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=muo4TQlECPjAqvpC/FPfgccK18lah8VpjdpT8uaBVqU=;
+        b=YwCUtOet6yas03tPJTiRoR6RLNGnWH6s1FFkmGin+2+8PG7x2WqQMEq5TWXCAyRCWL
+         1OvQus80NKrx9XzOwE79tQy84Hzex2EM+X5gMqm++0HAcEUMzYl98hpGQTRLESJhpkXh
+         W1u1m2lzWS9n/vRLP67sDDGR+rcUV2xBwER5WSeirHpFPEBHtFJmrAKSRtqa4h1WZBse
+         cBKboDioCDHug5ugJMqnT/aEk69EgJia2koz/jdhEaO2zdnALGRr3LU9z/jJRyonRLza
+         4TgA6PDNgAmZEv/FnzK1cFbfFZdpKO65/UUbZIod4HoIdJ1M/Jqw2k4JZ+9sTyX66x9+
+         aDIg==
+X-Forwarded-Encrypted: i=1; AJvYcCXj4lzpqvkQo1Xi26S0utkCrZbMiQqze3m4wjZjxAe4P43jw8+MbwfQwfa7IGt/C5Nqqc5v+CgZchwByMCqOfAL9/VIRlcBrYeLKR45
+X-Gm-Message-State: AOJu0Yw2zqJ3iM0Z75utdq2bmbfCLCkozGwI91l3sI21et48MCbH1/3k
+	yWkDlS6Y156ish7P7HYlcFVOZOvQ/ynAVT81AEPiG7ttyutrkr9QaHr/NBgegz0cl+Ne3X120SS
+	wU+96pK5ebR57lcOty+n5vj3xVxlsR/YXjahuBmf7QyD1sk313KuedS/78jWp/IDpNyzZFP+TPj
+	0PK6FlTg8K+dSijd6XU2mcmQQ2ZyJPEdpWdGTNV7ACWuA7
+X-Received: by 2002:a50:f610:0:b0:56c:3644:9945 with SMTP id c16-20020a50f610000000b0056c36449945mr1077040edn.7.1711586778969;
+        Wed, 27 Mar 2024 17:46:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFidnp8svLeqqOiMFaZBQdHriQ6yQSJBxUFB9NmDeKPwAn4bbF2S49CUU2kuwcWR3b40LAt3ECQeQnDWDQh7H0=
+X-Received: by 2002:a50:f610:0:b0:56c:3644:9945 with SMTP id
+ c16-20020a50f610000000b0056c36449945mr1077024edn.7.1711586778491; Wed, 27 Mar
+ 2024 17:46:18 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 27 Mar 2024 17:46:17 -0700
+From: Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20240325204740.1393349-1-ast@fiberby.net> <20240325204740.1393349-4-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
- <20240325120323.ec3248d330b2755e73a6571e@kernel.org> <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
- <20240327084245.a890ae12e579f0be1902ae4a@kernel.org> <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
- <20240328091841.ce9cc613db375536de843cfb@kernel.org>
-In-Reply-To: <20240328091841.ce9cc613db375536de843cfb@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 27 Mar 2024 17:45:36 -0700
-Message-ID: <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jonthan Haslam <jonathan.haslam@gmail.com>, linux-trace-kernel@vger.kernel.org, 
-	andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240325204740.1393349-4-ast@fiberby.net>
+Date: Wed, 27 Mar 2024 17:46:17 -0700
+Message-ID: <CALnP8ZbmCUM8EP-jAGaFqvMbYTm+=18AG0h-DEvZ81+Vrea9hw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 3/3] net: sched: make skip_sw actually skip software
+To: =?UTF-8?B?QXNiasO4cm4gU2xvdGggVMO4bm5lc2Vu?= <ast@fiberby.net>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Vlad Buslov <vladbu@nvidia.com>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, llu@fiberby.dk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 5:18=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
-> On Wed, 27 Mar 2024 17:06:01 +0000
-> Jonthan Haslam <jonathan.haslam@gmail.com> wrote:
->
-> > > > Masami,
-> > > >
-> > > > Given the discussion around per-cpu rw semaphore and need for
-> > > > (internal) batched attachment API for uprobes, do you think you can
-> > > > apply this patch as is for now? We can then gain initial improvemen=
-ts
-> > > > in scalability that are also easy to backport, and Jonathan will wo=
-rk
-> > > > on a more complete solution based on per-cpu RW semaphore, as
-> > > > suggested by Ingo.
-> > >
-> > > Yeah, it is interesting to use per-cpu rw semaphore on uprobe.
-> > > I would like to wait for the next version.
-> >
-> > My initial tests show a nice improvement on the over RW spinlocks but
-> > significant regression in acquiring a write lock. I've got a few days
-> > vacation over Easter but I'll aim to get some more formalised results o=
-ut
-> > to the thread toward the end of next week.
->
-> As far as the write lock is only on the cold path, I think you can choose
-> per-cpu RW semaphore. Since it does not do busy wait, the total system
-> performance impact will be small.
+On Mon, Mar 25, 2024 at 08:47:36PM +0000, Asbj=C3=B8rn Sloth T=C3=B8nnesen =
+wrote:
+..
+>  +----------------------------+--------+--------+--------+
+>  | tests with only skip_sw rules below:                  |
+>  +----------------------------+--------+--------+--------+
+>  | 1 non-matching rule        | 2694.7 | 3058.7 |  1.14x |
+>  | 1 n-m rule, match trap     | 2611.2 | 3323.1 |  1.27x |
+>  | 1 n-m rule, goto non-chain | 2886.8 | 2945.9 |  1.02x |
+>  | 5 non-matching rules       | 1958.2 | 3061.3 |  1.56x |
+>  | 5 n-m rules, match trap    | 1911.9 | 3327.0 |  1.74x |
+>  | 5 n-m rules, goto non-chain| 2883.1 | 2947.5 |  1.02x |
+>  | 10 non-matching rules      | 1466.3 | 3062.8 |  2.09x |
+>  | 10 n-m rules, match trap   | 1444.3 | 3317.9 |  2.30x |
+>  | 10 n-m rules,goto non-chain| 2883.1 | 2939.5 |  1.02x |
+>  | 25 non-matching rules      |  838.5 | 3058.9 |  3.65x |
+>  | 25 n-m rules, match trap   |  824.5 | 3323.0 |  4.03x |
+>  | 25 n-m rules,goto non-chain| 2875.8 | 2944.7 |  1.02x |
+>  | 50 non-matching rules      |  488.1 | 3054.7 |  6.26x |
+                                            [A]
 
-No, Masami, unfortunately it's not as simple. In BPF we have BPF
-multi-uprobe, which can be used to attach to thousands of user
-functions. It currently creates one uprobe at a time, as we don't
-really have a batched API. If each such uprobe registration will now
-take a (relatively) long time, when multiplied by number of attach-to
-user functions, it will be a horrible regression in terms of
-attachment/detachment performance.
+>  | 50 n-m rules, match trap   |  484.9 | 3318.5 |  6.84x |
 
-So when we switch to per-CPU rw semaphore, we'll need to provide an
-internal batch uprobe attach/detach API to make sure that attaching to
-multiple uprobes is still fast.
+Interesting. I can't explain why it consistently got 10% better than
+[A] after the patch. If you check tcf_classify(), even though it
+resumes to action, it still searches for the right chain. Maybe
+something works differently in the driver.
 
-Which is why I was asking to land this patch as is, as it relieves the
-scalability pains in production and is easy to backport to old
-kernels. And then we can work on batched APIs and switch to per-CPU rw
-semaphore.
+In on the logs,
+https://files.fiberby.net/ast/2024/tc_skip_sw/v2_tests/test_runs/netnext/te=
+sts/non_matching_and_trap_007/tc.txt
 
-So I hope you can reconsider and accept improvements in this patch,
-while Jonathan will keep working on even better final solution.
-Thanks!
+filter protocol 802.1Q pref 8 flower chain 0
+filter protocol 802.1Q pref 8 flower chain 0 handle 0x1
+  vlan_ethtype ip
+  eth_type ipv4
+  dst_ip 10.53.22.3
+  skip_sw
+  in_hw in_hw_count 1
+	action order 1: gact action trap
+	 random type none pass val 0
+	 index 8 ref 1 bind 1 installed 20 sec used 0 sec
+	Action statistics:
+	Sent 29894330340 bytes 439622505 pkt (dropped 0, overlimits 0 requeues 0)
+	Sent software 0 bytes 0 pkt
+	Sent hardware 29894330340 bytes 439622505 pkt
+	backlog 0b 0p requeues 0
+	used_hw_stats delayed
 
-> I look forward to your formalized results :)
->
-> Thank you,
->
-> >
-> > Jon.
-> >
-> > >
-> > > Thank you,
-> > >
-> > > >
-> > > > >
-> > > > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > > > will depend on how much lock contention happens.
-> > > > >
-> > > > > Thank you,
-> > > > >
-> > > > > >
-> > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > >
-> > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > > > ---
-> > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > >
-> > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > --- a/kernel/events/uprobes.c
-> > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree =3D RB_ROO=
-T;
-> > > > > >   */
-> > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > > > >
-> > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtr=
-ee access */
-> > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtr=
-ee access */
-> > > > > >
-> > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > >  /* serialize uprobe->pending_list */
-> > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct in=
-ode *inode, loff_t offset)
-> > > > > >  {
-> > > > > >       struct uprobe *uprobe;
-> > > > > >
-> > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > +     read_lock(&uprobes_treelock);
-> > > > > >       uprobe =3D __find_uprobe(inode, offset);
-> > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > >
-> > > > > >       return uprobe;
-> > > > > >  }
-> > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct =
-uprobe *uprobe)
-> > > > > >  {
-> > > > > >       struct uprobe *u;
-> > > > > >
-> > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > +     write_lock(&uprobes_treelock);
-> > > > > >       u =3D __insert_uprobe(uprobe);
-> > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > >
-> > > > > >       return u;
-> > > > > >  }
-> > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *up=
-robe)
-> > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > >               return;
-> > > > > >
-> > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > +     write_lock(&uprobes_treelock);
-> > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active(=
-) */
-> > > > > >       put_uprobe(uprobe);
-> > > > > >  }
-> > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode=
- *inode,
-> > > > > >       min =3D vaddr_to_offset(vma, start);
-> > > > > >       max =3D min + (end - start) - 1;
-> > > > > >
-> > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > +     read_lock(&uprobes_treelock);
-> > > > > >       n =3D find_node_in_range(inode, min, max);
-> > > > > >       if (n) {
-> > > > > >               for (t =3D n; t; t =3D rb_prev(t)) {
-> > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode=
- *inode,
-> > > > > >                       get_uprobe(u);
-> > > > > >               }
-> > > > > >       }
-> > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > >  }
-> > > > > >
-> > > > > >  /* @vma contains reference counter, not the probed instruction=
- */
-> > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vm=
-a, unsigned long start, unsigned long e
-> > > > > >       min =3D vaddr_to_offset(vma, start);
-> > > > > >       max =3D min + (end - start) - 1;
-> > > > > >
-> > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > +     read_lock(&uprobes_treelock);
-> > > > > >       n =3D find_node_in_range(inode, min, max);
-> > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > >
-> > > > > >       return !!n;
-> > > > > >  }
-> > > > > > --
-> > > > > > 2.43.0
-> > > > > >
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > >
-> > >
-> > > --
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+It matched nicely.
+
+>  | 50 n-m rules,goto non-chain| 2884.1 | 2939.7 |  1.02x |
+                                   [B]
+
+If we compare [A] and [B], there's still a 5.9% increase, plus
+not requiring somewhat hacky rules.
+
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+
 
