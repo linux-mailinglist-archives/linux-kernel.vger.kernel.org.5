@@ -1,115 +1,99 @@
-Return-Path: <linux-kernel+bounces-123083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DB948901E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:34:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E47989020E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2044D293FC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:34:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADFAFB21A46
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED9E982D7F;
-	Thu, 28 Mar 2024 14:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8002127B66;
+	Thu, 28 Mar 2024 14:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nvW1KE+9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="Zfp/zxg8"
+Received: from forward206c.mail.yandex.net (forward206c.mail.yandex.net [178.154.239.215])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C3142061;
-	Thu, 28 Mar 2024 14:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EDA80BF0;
+	Thu, 28 Mar 2024 14:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.215
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711636342; cv=none; b=T0OA4yWB2fwfUFfyoTri3uHnpw33BfyH1EfnRESsh4PdnZCxMreu5xT1tl9duXohib8d0sBbKWO/bP2WrRIKAobjqZXWZXmcYu4OpxCSQ0Lj99bI+5N/EYWYd/JL/9ADBt6bX/wRDoaifyCLvLY8rvAvsDNsYDOwvTHVnuZD+eo=
+	t=1711636746; cv=none; b=L6aPE0fMumudfk3j8pFWFYOMWkiwEMcnqen+1Bc6zv39C54zL0Tk23KKrvWz2QyeTKMyTdugIdD1R917Q2Nbje2wjE4HggLFaoDoR2lTbX0Qvo3IrhWqfy+ngMV619hA6VYcQLopDaa2bP76XtQrPaqSoe/GezCIqOixS136RTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711636342; c=relaxed/simple;
-	bh=DniBv7HDuOSFJ9Q/K/rkEYhPtiwkAM9wDfWrElmwlbM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=V9/kIokIuLHVy0j5j1MGuDWXvcoxHVVXmIcwNWYiPOUzfDJMhm83hmJWAWur6yKZRoobi4YonEh5RGwwsxgfLAw7mU+LArGqFXB4hlP4Z3tDZSp9QcD8+VMdq7F1+vIw32p4YR+f2u0GoGZMu0A/gksdNWuHYpufLKws4kRciLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nvW1KE+9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A04D9C433F1;
-	Thu, 28 Mar 2024 14:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711636341;
-	bh=DniBv7HDuOSFJ9Q/K/rkEYhPtiwkAM9wDfWrElmwlbM=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=nvW1KE+9FE0GhHRQIATdCjTTgBBITil9f1CWyHaYGjAgwuPPZ6NTGa+eTUMepBmdo
-	 AW26qtGpKx9GY94U86oDEy3SniVBDdNo42uNTncueyCdTD1iU4c67bzrGTk8+6tOuy
-	 gGF0iSNBqxn3/WeYggTzJGRPjj0VwqFO8lW3EHJ6gemLnrroZg2AW8dzJwkQjHDlN7
-	 g5LzMD1b8tKh1Y/dWJcdziMsKvdQW5qpDOXxG2Q3pHXhRpKbfLm+aypl/kpy4ZgIbG
-	 PXs55R6f+rJCzkI2RUH+VZKuZTlggBhkOM9BKC++oiUhFp6qcEpQStaGCDX9BzvUmI
-	 yJ6DN4D5+xryw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86769CD1283;
-	Thu, 28 Mar 2024 14:32:21 +0000 (UTC)
-From: Alexandru Marc Serdeliuc via B4 Relay <devnull+serdeliuk.yahoo.com@kernel.org>
-Date: Thu, 28 Mar 2024 15:31:54 +0100
-Subject: [PATCH] dt-bindings: arm: qcom: Add Samsung Galaxy Z Fold5
+	s=arc-20240116; t=1711636746; c=relaxed/simple;
+	bh=pJMDg1eg6ejbUQsB/VhRS6kuW8PWYItofZ8I/HU16ok=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AKQ+9GMSfPnNj1vaGS8LGzBs+o37+WM8N7yAMICg2dzxk/uy/gG4aTVtGZHnzC4zSNHU9dYF+J3/FuYB0BdFumCh2kG/GN+6jpSIlQg9RNWOhTsz46Oo8cvUrNkEKqg+kbFMSDqVZ9yGdmvW18/y1Xpr9C3xWpvKn94oaRx3RP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=Zfp/zxg8; arc=none smtp.client-ip=178.154.239.215
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from forward100b.mail.yandex.net (forward100b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d100])
+	by forward206c.mail.yandex.net (Yandex) with ESMTPS id C89A2677E3;
+	Thu, 28 Mar 2024 17:33:32 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:530c:0:640:30f1:0])
+	by forward100b.mail.yandex.net (Yandex) with ESMTPS id 77ECA60913;
+	Thu, 28 Mar 2024 17:33:24 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 5XOBdK9Oia60-B64OuWg0;
+	Thu, 28 Mar 2024 17:33:23 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1711636403; bh=agUHuLc6sWYp/vb7zT9L+aoPJ6k5EpklUa4uldWqnX4=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=Zfp/zxg8iv++i+MnpV5ba4KflU4IQqfwliLuog2m4i3VOGR2BkJITavjGML9t4h4o
+	 nJvZfpx/dwKXW363ysOlJWQT7QLZEb+4hQtU03faEZ53iHmc8uymIlcDTtChl73xHS
+	 q2VDBHjn+HibcbMhIaEtmyZhxWT1RnT0vMzfiLww=
+Authentication-Results: mail-nwsmtp-smtp-production-main-42.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Michail Ivanov <iwanov-23@bk.ru>,
+	Pavel Koshutin <koshutin.pavel@yandex.ru>,
+	Artem Sadovnikov <ancowi69@gmail.com>
+Subject: [PATCH] ext4: fix semaphore unlocking order
+Date: Thu, 28 Mar 2024 17:33:01 +0300
+Message-Id: <20240328143301.6432-1-mish.uxin2012@yandex.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-dt-bindings-arm-qcom-add-support-for-samsung-galaxy-zfold5-v1-1-cb612e3ade18@yahoo.com>
-X-B4-Tracking: v=1; b=H4sIAFl/BWYC/x3Nyw6CMBBA0V8hXTtJRUysv2JcDH05CX04AwQl/
- LuNy7O5d1fimbyoe7cr9isJldxwPnXKvjBHD+SaVa/7QV/6G7gZRsqOchRATvC2JQE6B7LUWni
- GUBgEkyw5QsQJtw98Q5ncFbQxg9XGttao2qCyD7T954/ncfwAtNAm74wAAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711636340; l=1106;
- i=serdeliuk@yahoo.com; s=20240326; h=from:subject:message-id;
- bh=IpQsriBYvSNLQMd2YJDhHVpK6OXYCGczgxGgUDxifKw=;
- b=Z4u1H1PWLX9nzxHNm1NxgRKIFZIAJe45DtsuFdFLAk59N198RnTlEnBQXghV2Try2UAsBPFQx
- C9trdRB/AT4AnGa0/edd20Wic9fm4u6aQ+D37uW+jv726xKpDaUko4b
-X-Developer-Key: i=serdeliuk@yahoo.com; a=ed25519;
- pk=aWyveUE11qfDOOlRIFayXukrNn39BvZ9k9uq94dAsgY=
-X-Endpoint-Received: by B4 Relay for serdeliuk@yahoo.com/20240326 with
- auth_id=147
-X-Original-From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
-Reply-To: serdeliuk@yahoo.com
+Content-Transfer-Encoding: 8bit
 
-From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
 
-This documents Samsung Galaxy Z Fold5 (samsung,q5q)
-which is a foldable phone by Samsung based on the sm8550 SoC.
+The problem occurs in ext4_ind_migrate due to an incorrect order of
+unlocking of the journal and write semaphores - the order of unlocking
+must be the reverse of the order of locking.
 
-Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+Found by Linux Verification Center (linuxtesting.org) with syzkaller.
+
+Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
 ---
-This documents Samsung Galaxy Z Fold5 (samsung,q5q)
-which is a foldable phone by Samsung based on the sm8550 SoC.
----
- Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/migrate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 66beaac60e1d..dea2a23b8fc2 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -1003,6 +1003,7 @@ properties:
-               - qcom,sm8550-hdk
-               - qcom,sm8550-mtp
-               - qcom,sm8550-qrd
-+              - samsung,q5q
-           - const: qcom,sm8550
- 
-       - items:
-
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240328-dt-bindings-arm-qcom-add-support-for-samsung-galaxy-zfold5-0994c09c202b
-
-Best regards,
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index d98ac2af8199..a5e1492bbaaa 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -663,8 +663,8 @@ int ext4_ind_migrate(struct inode *inode)
+ 	if (unlikely(ret2 && !ret))
+ 		ret = ret2;
+ errout:
+-	ext4_journal_stop(handle);
+ 	up_write(&EXT4_I(inode)->i_data_sem);
++	ext4_journal_stop(handle);
+ out_unlock:
+ 	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
+ 	return ret;
 -- 
-Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
-
+2.25.1
 
 
