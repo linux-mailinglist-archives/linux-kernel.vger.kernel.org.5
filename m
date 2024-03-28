@@ -1,135 +1,207 @@
-Return-Path: <linux-kernel+bounces-123701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2AB890CE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:05:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBC1E890CEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578941F25E0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:05:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E13CE1C2167B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D68513B591;
-	Thu, 28 Mar 2024 22:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3e9R8CFY"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859BC13B5AC;
+	Thu, 28 Mar 2024 22:06:36 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305FC13173E
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4EE12F5A4;
+	Thu, 28 Mar 2024 22:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711663504; cv=none; b=UUJxBGk8XdB0ShHQvY6j1Z/h2/ORW+PihQ5Pg+2rftoiHbbUu1CjW+cgD+1o6C/nBwNTnWlhPC2s08CTfbEKA/Zm4/VY3OyER1LEkUf8X4n9ivBil636z8qvwg6Ffva9ZBSuwNMiBVPu7i7RDku2s4EPoBFad0DBkhVD+Ry95iM=
+	t=1711663596; cv=none; b=ksOGMPW6P6UFa9uX8pJpuNB1/s9aER2mIc6lF3IkNTY0Ok+p+pwRURp51+wQIMxLace0Coe9D6+3fI3+7Vew0mc+kn2FbJMXJ3JMxIY2dIdol2rV6r1Xh412zG9l0gUOBPy6RWb6P9RRW1hKxgK1huVpvPTsCJ0ftzW5B36HO/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711663504; c=relaxed/simple;
-	bh=9ZSPvENfmgfhIsnuJFWhvL6BmUkVhFz5PSQ7INGUgHQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P1Z/yfD1RankBlPeAiTs1QEqrjJijMJehfn8Qw9NXdCwaLZucOSjlziUzzMt/pjhDme0uIKMUcjTyejKDqHwgDe2LUEgy66LmZduaIUpIyCmpKLDMVkETDyIBtn/yTFO7rHAVaH2hgllq2oS6V4EK4ZZ8ikgPiDi8eArybS2dOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3e9R8CFY; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56c404da0ebso2248876a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711663501; x=1712268301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MGMxoG8AQ8BGP67PTNjLH3VS7bl1OwfTgMURF7OtwG4=;
-        b=3e9R8CFYk4xjW7QBhCdJc/gM8mLEfGvLcbf051vzhpu2zFvFzZX0urTkZ6D3i9795p
-         29DbUncFM+7y1IktSL96E1UC5aMZlFJnO0g6C9vb9wIqcsVtNxCMXqMpSV2n/q+ecnzv
-         pYmuMpikZ9fkSnRWZMhYqQAl51UYAnQeMul8Jyjp2vlvxdRmX0Iyyd4EA0qi+XcFUxG4
-         rT6uKbHEHvYaEsI+nhXf2DR5WZclKPXe9/tV37YTK9Z3CQVu4kVQMmizqwbkVfBoDvIg
-         CZmjqR9MuDLE9xf4gftr5D33nqTy1cuyuHeF+ZBzWix/r5u70eh3ACzKBJ3uTYcMYgTp
-         ibuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711663501; x=1712268301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MGMxoG8AQ8BGP67PTNjLH3VS7bl1OwfTgMURF7OtwG4=;
-        b=Ljf/gtr+BTCNb1gS/AtdIeGrXGsjlsYu0H7N1Sdfls/m9gFhaDhjJXM6Ja1TpC8YR6
-         gWGPsPYWJ7Aup6A5c7UzYthhb6/HsGIO4tYB+FjIqVLapne7MpOX3VMZTrUyCKeXj1Y4
-         sPGAFRMdO7Ufe39MEugA7VBFQWnntBWQXjzdkO90Yk0PIRoh5zqtFmzFYLOjpEVH3dDQ
-         FBvw8trn56kPoNdxyrT4LrZW+LB3/r/wRKhKP9/6EvTjwHKij5iHup/kz+hJGbtli7VI
-         ow9EjG8szbObl2/LKwsSv5ANvjmzYfYSxotNZakBPoXb/tvVYivQYvGX5kwNeytm88Yt
-         swfA==
-X-Gm-Message-State: AOJu0YzlKKCcwCgU9VfJqAy0UWA01ZmlcPU8VKUknJRx4pQj9LDbaPf8
-	G7/HgFWfk6GYp6dKoOUEH++ir6/N2NwoZk5zu8OD8Nen3sqPx3ZzguTJdDrrR20zSHfcEQJ97Gg
-	H11HiFUvXbM+IGGQk8k9DtpVQqUDEt38dSWXnyaB5zWPx6lpDpbHt
-X-Google-Smtp-Source: AGHT+IGI1NuivKb4Ji1liwhmjoNA08qow9K2J1nHBY2lkA7t+bjvkMMP3tHaIzK6dIha9lwR+QhUcEEc6nDcKmlEY7E=
-X-Received: by 2002:a05:6402:35ca:b0:56c:2ef7:f3ed with SMTP id
- z10-20020a05640235ca00b0056c2ef7f3edmr442959edc.35.1711663501455; Thu, 28 Mar
- 2024 15:05:01 -0700 (PDT)
+	s=arc-20240116; t=1711663596; c=relaxed/simple;
+	bh=rgYJ+hvcel3iKJrUWBInSqobvK0vUg62K3lxOg+9uVw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KyO0t3S6bEGx/BXu669/rb1afBI39q9bsqXkOitWcHWz86gOD1uzHHZ9Sn6ZCHf/OOiqhAS3Fum8kRdPvxdETL6GLbw+b+Ixj6hJlnIPc8tF1syskBZvnG+l6Pam62nHBHyzzdXVp4p+v318dMEYiO8OU3q4SKapCy9qt+qVY8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A47DEC433F1;
+	Thu, 28 Mar 2024 22:06:33 +0000 (UTC)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 00/52] USB: store owner from modules with
+ usb_serial_register_drivers()
+Date: Thu, 28 Mar 2024 23:05:38 +0100
+Message-Id: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328143051.1069575-1-arnd@kernel.org> <20240328143051.1069575-7-arnd@kernel.org>
-In-Reply-To: <20240328143051.1069575-7-arnd@kernel.org>
-From: Justin Stitt <justinstitt@google.com>
-Date: Thu, 28 Mar 2024 15:04:49 -0700
-Message-ID: <CAFhGd8oJ5trNE7na9jCDbEt5kox1rg0mia59EHj+XikHUnay5w@mail.gmail.com>
-Subject: Re: [PATCH 6/9] nilfs2: fix out-of-range warning
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Philipp Stanner <pstanner@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
-	Thorsten Blum <thorsten.blum@toblux.com>, linux-nilfs@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALLpBWYC/x3MQQ5AMBBA0avIrE1SQxBXEYtiMAmttCkScXdl+
+ Rb/3+DZCXtokhscH+LFmogsTWBYtJkZZYwGUlSonGrc7BhWRnsadhh8j99Ar1hrVVZTSdRXCmK
+ 9O57k+s9t9zwvjAzICWkAAAA=
+To: Johan Hovold <johan@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6726;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=rgYJ+hvcel3iKJrUWBInSqobvK0vUg62K3lxOg+9uVw=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBem7P90A6+d5czXeaa2TzeB9KiQmqJFykqfao
+ fBEM1oOFvWJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXpuwAKCRDBN2bmhouD
+ 160PD/9rXK1Yby2eUNddT+VNITlT16L+nNRFAdBDTWh+HNqNJw2gO2qNmb4lNROzD8BdhJAjvGo
+ H6aZgu04GThTEAPRfXHctd+a66EmryksYsRqskV/hMquSQYdFCupTbNkN1eoy9TUWfO7gHl2xWr
+ PWQhMslMmUl2+UJkLFRS8LIpD6Q69b2bvE+Vg1JY0dD3zIFFgjOALzeKLNa9k9Kbips7bCn4U0U
+ KB/qXaA/w1hdjLlpOAvj+vFnb6KQ6oQXKRCI5kyYR1L5pW5rvavK3ry5/KrVkXKRpzLV6CoGfDS
+ eWBUD7a38CQj1dzl63eYfI5KkHZzyjyOcjNx/peimw25fm19dpOBy5Nk1PGwUgWr9LOedE5NdKc
+ hTNXE4rYhRztT1THErLyRmCYqEnQar7NvOPi3G2adfGlWrf/Sbn8KTDMKKhSCFOIed2FJaJgU6W
+ z5xcl+8o/fiieQl25UJgN1/HURmalzs+WzwmdkJXW2ryZJz3KGyQqIojQAYcCDRuna3luYWJz9F
+ ebHpQNyfm7TKFoGVkjST4HlGugjwL9eTWVkkzqxjDx+JZ/UXeuc7Oc/9EI+TjI0LhtJEWlQaysD
+ WleQJUxD80OUcjUmuxu08HMOG3WLIRjfbHxzJcP7fIMDNGeuUcO6IuePMUtpQ4+7tWRh6mpt7gY
+ agn5++yjYjuojgg==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-On Thu, Mar 28, 2024 at 7:32=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang-14 points out that v_size is always smaller than a 64KB
-> page size if that is configured by the CPU architecture:
+Merging
+=======
+All further patches depend on the first patch.
 
-Is this only with clang-14?
+Description
+===========
+This is going to be a bit of a patch-bomb, but with trivial patches, so
+I think it is still acceptable. If it is too much, apologies and I will
+solve it.
 
->
-> fs/nilfs2/ioctl.c:63:19: error: result of comparison of constant 65536 wi=
-th expression of type '__u16' (aka 'unsigned short') is always false [-Werr=
-or,-Wtautological-constant-out-of-range-compare]
->         if (argv->v_size > PAGE_SIZE)
->             ~~~~~~~~~~~~ ^ ~~~~~~~~~
->
-> This is ok, so just shut up that warning with a cast.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Modules registering driver with usb_serial_register_drivers() might
+forget to set .owner field.
 
-My question out of curiosity aside,
+Solve the problem by moving this task away from the drivers to the core
+amba bus code, just like we did for platform_driver in commit
+9447057eaff8 ("platform_device: use a macro instead of
+platform_driver_register").
 
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+Best regards,
+Krzysztof
 
-> ---
->  fs/nilfs2/ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-> index f1a01c191cf5..8be471ce4f19 100644
-> --- a/fs/nilfs2/ioctl.c
-> +++ b/fs/nilfs2/ioctl.c
-> @@ -60,7 +60,7 @@ static int nilfs_ioctl_wrap_copy(struct the_nilfs *nilf=
-s,
->         if (argv->v_nmembs =3D=3D 0)
->                 return 0;
->
-> -       if (argv->v_size > PAGE_SIZE)
-> +       if ((size_t)argv->v_size > PAGE_SIZE)
->                 return -EINVAL;
->
->         /*
-> --
-> 2.39.2
->
+---
+Krzysztof Kozlowski (52):
+      USB: serial: store owner from modules with usb_serial_register_drivers()
+      USB: serial: aircable: drop driver owner initialization
+      USB: serial: ark3116: drop driver owner initialization
+      USB: serial: belkin_sa: drop driver owner initialization
+      USB: serial: ch341: drop driver owner initialization
+      USB: serial: cp210x: drop driver owner initialization
+      USB: serial: cyberjack: drop driver owner initialization
+      USB: serial: cypress_m8: drop driver owner initialization
+      USB: serial: digi_acceleport: drop driver owner initialization
+      USB: serial: empeg: drop driver owner initialization
+      USB: serial: f81232: drop driver owner initialization
+      USB: serial: ftdi_sio: drop driver owner initialization
+      USB: serial: garmin_gps: drop driver owner initialization
+      USB: serial: generic: drop driver owner initialization
+      USB: serial: io_edgeport: drop driver owner initialization
+      USB: serial: io_ti: drop driver owner initialization
+      USB: serial: ipaq: drop driver owner initialization
+      USB: serial: ipw: drop driver owner initialization
+      USB: serial: ir-usb: drop driver owner initialization
+      USB: serial: iuu: drop driver owner initialization
+      USB: serial: keyspan: drop driver owner initialization
+      USB: serial: keyspan_pda: drop driver owner initialization
+      USB: serial: kl5kusb105: drop driver owner initialization
+      USB: serial: kobil_sct: drop driver owner initialization
+      USB: serial: mct_u232: drop driver owner initialization
+      USB: serial: metro_usb: drop driver owner initialization
+      USB: serial: mos7720: drop driver owner initialization
+      USB: serial: mos7840: drop driver owner initialization
+      USB: serial: mxuport: drop driver owner initialization
+      USB: serial: navman: drop driver owner initialization
+      USB: serial: omninet: drop driver owner initialization
+      USB: serial: opticon: drop driver owner initialization
+      USB: serial: option: drop driver owner initialization
+      USB: serial: oti6858: drop driver owner initialization
+      USB: serial: pl2303: drop driver owner initialization
+      USB: serial: qcaux: drop driver owner initialization
+      USB: serial: qcserial: drop driver owner initialization
+      USB: serial: quatech2: drop driver owner initialization
+      USB: serial: safe_serial: drop driver owner initialization
+      USB: serial: sierra: drop driver owner initialization
+      USB: serial: spcp8x5: drop driver owner initialization
+      USB: serial: ssu100: drop driver owner initialization
+      USB: serial: symbol: drop driver owner initialization
+      USB: serial: ti_usb_3410_5052: drop driver owner initialization
+      USB: serial: upd78f0730: drop driver owner initialization
+      USB: serial: simple: drop driver owner initialization
+      USB: serial: debug: drop driver owner initialization
+      USB: serial: visor: drop driver owner initialization
+      USB: serial: whiteheat: drop driver owner initialization
+      USB: serial: wishbone: drop driver owner initialization
+      USB: serial: xr: drop driver owner initialization
+      USB: serial: xsens_mt: drop driver owner initialization
+
+ drivers/usb/serial/aircable.c          |  1 -
+ drivers/usb/serial/ark3116.c           |  1 -
+ drivers/usb/serial/belkin_sa.c         |  1 -
+ drivers/usb/serial/ch341.c             |  1 -
+ drivers/usb/serial/cp210x.c            |  1 -
+ drivers/usb/serial/cyberjack.c         |  1 -
+ drivers/usb/serial/cypress_m8.c        |  3 ---
+ drivers/usb/serial/digi_acceleport.c   |  2 --
+ drivers/usb/serial/empeg.c             |  1 -
+ drivers/usb/serial/f81232.c            |  2 --
+ drivers/usb/serial/ftdi_sio.c          |  1 -
+ drivers/usb/serial/garmin_gps.c        |  1 -
+ drivers/usb/serial/generic.c           |  1 -
+ drivers/usb/serial/io_edgeport.c       |  4 ----
+ drivers/usb/serial/io_ti.c             |  2 --
+ drivers/usb/serial/ipaq.c              |  1 -
+ drivers/usb/serial/ipw.c               |  1 -
+ drivers/usb/serial/ir-usb.c            |  1 -
+ drivers/usb/serial/iuu_phoenix.c       |  1 -
+ drivers/usb/serial/keyspan.c           |  4 ----
+ drivers/usb/serial/keyspan_pda.c       |  2 --
+ drivers/usb/serial/kl5kusb105.c        |  1 -
+ drivers/usb/serial/kobil_sct.c         |  1 -
+ drivers/usb/serial/mct_u232.c          |  1 -
+ drivers/usb/serial/metro-usb.c         |  1 -
+ drivers/usb/serial/mos7720.c           |  1 -
+ drivers/usb/serial/mos7840.c           |  1 -
+ drivers/usb/serial/mxuport.c           |  1 -
+ drivers/usb/serial/navman.c            |  1 -
+ drivers/usb/serial/omninet.c           |  1 -
+ drivers/usb/serial/opticon.c           |  1 -
+ drivers/usb/serial/option.c            |  1 -
+ drivers/usb/serial/oti6858.c           |  1 -
+ drivers/usb/serial/pl2303.c            |  1 -
+ drivers/usb/serial/qcaux.c             |  1 -
+ drivers/usb/serial/qcserial.c          |  1 -
+ drivers/usb/serial/quatech2.c          |  1 -
+ drivers/usb/serial/safe_serial.c       |  1 -
+ drivers/usb/serial/sierra.c            |  1 -
+ drivers/usb/serial/spcp8x5.c           |  1 -
+ drivers/usb/serial/ssu100.c            |  1 -
+ drivers/usb/serial/symbolserial.c      |  1 -
+ drivers/usb/serial/ti_usb_3410_5052.c  |  2 --
+ drivers/usb/serial/upd78f0730.c        |  1 -
+ drivers/usb/serial/usb-serial-simple.c |  1 -
+ drivers/usb/serial/usb-serial.c        | 12 +++++++-----
+ drivers/usb/serial/usb_debug.c         |  2 --
+ drivers/usb/serial/visor.c             |  3 ---
+ drivers/usb/serial/whiteheat.c         |  2 --
+ drivers/usb/serial/wishbone-serial.c   |  1 -
+ drivers/usb/serial/xr_serial.c         |  1 -
+ drivers/usb/serial/xsens_mt.c          |  1 -
+ include/linux/usb/serial.h             |  7 +++++--
+ 53 files changed, 12 insertions(+), 75 deletions(-)
+---
+base-commit: 7fdcff3312e16ba8d1419f8a18f465c5cc235ecf
+change-id: 20240328-module-owner-usb-serial-8a067f622b70
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
