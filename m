@@ -1,93 +1,97 @@
-Return-Path: <linux-kernel+bounces-123758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0132890D63
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:20:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C06890CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 23:08:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DF6C1C31194
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:20:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8429A1F2284D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7949F14A0A2;
-	Thu, 28 Mar 2024 22:08:19 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB9913B599;
+	Thu, 28 Mar 2024 22:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HVKRRefZ"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C59149DF1;
-	Thu, 28 Mar 2024 22:08:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9995A13CC77
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711663699; cv=none; b=DkmjuLbh3wXtw2kitnctp9LtVGjLfqSwzMt0oCSJz0qK7HrTEHKFJ3psf708Of8WBxPKlzzcXZCM9oedGxvgywI6pv6Hlw0GDm0ph3wjnuGON+fOByD8z0hNWt2bcepcIC5q3qYHDo6lbmEnTdc6FlrYlqCfT26R2kjuYDaz8wM=
+	t=1711663605; cv=none; b=s1WRdKQjDeJ/Ti7ua+/Y3nwmethnj3Uo7/eqNxPQoqzWLFWEgBR17qGxMXqacS1rL7o19k7h40SrT/E/r9AMRuzEpFiAiK2efa6+vXwudxPwJJswgGXMrDqevyc5/LkyaQLgQmRzNa3RbZNVJas1Shg/J8pfo6HOLnMlqggT60U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711663699; c=relaxed/simple;
-	bh=LLgiLkEII5evsgK2AeBKp1W4Vw206VrKkeb0L7m1FcA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ElCOk//0r2s0J9rqci5S0HCCzyG90qgoK4QwCYMyF1Pxhe5Q+g5PnHBIweZW99cJ8/5Xf9LdK+gCzBXQ4mdBiH/DhtBiXzuZNaS/vfjAbUwPUQwQFTRX5gt7OPq4sYjEe1blL4HH6kxHioTsXsbiStS4vvoOvQ2R8usxJGqlO2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B7A9C433C7;
-	Thu, 28 Mar 2024 22:08:17 +0000 (UTC)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 28 Mar 2024 23:06:30 +0100
-Subject: [PATCH 52/52] USB: serial: xsens_mt: drop driver owner
- initialization
+	s=arc-20240116; t=1711663605; c=relaxed/simple;
+	bh=uoxE7PhxoFrPFSaL6qMa4cEt83/6H2mJrsOoFabR0CY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j3HLc1/xMfOD099iP2p0DWO2+8OLHOkVKyMxXRJSQtYIeAMdP7nU/zw+Uro7+6ep0tfE+TBTrLI31EYumIjC2ZuFbWVs8DMmENViNF0GoXU2O+tzeJ/7qcguRB4RT4UzlsJ/ADgTXJnxB8zfLBZDtci/plNPDrXESxyWYW46jTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HVKRRefZ; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e034607879so12473685ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711663604; x=1712268404; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6KiZxiesCbvSLPbFTMf3kTBinr8ev0hUdvWiChdToEs=;
+        b=HVKRRefZfPSOBroy3yc3vb0+K/40eX4J+0P91V5SZjVq12/7siepkeFYrUDZnmfdOq
+         sWJ1zAuKZyQG4LgXnvBU26IUpY9QpxFwgA/8Gv6bSPJrdscHJFzWbHpGJWaiCK/BFbtt
+         FgmZFOC418H2xuhq87Qm5YdC2VTR+BxaFEzjM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711663604; x=1712268404;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6KiZxiesCbvSLPbFTMf3kTBinr8ev0hUdvWiChdToEs=;
+        b=wjv3ln4NgYKDCY6fwmXKqJ57+AmstGVSlV7yzT0ruw8dfa/h2HJjKGQpw/0K4YR+RR
+         EHe1LS56OdrxTFTCRnxy2mkJPO2YHI8qjS6A7U9bLgzZNd+f901YpwQG08WXUCqgOtMz
+         4qDoTX+38aYFxG1hK5CBEDqO83TofuNCM7YGrVpBwbbCB2tMWPebmFD84Vi8G6KPaaoc
+         LNa803MytlRjDyDd4oRxJjh9gj4iZULwPXPdkqHIHNfW9l2nlSnPtK6uFBrXuNu+Njky
+         EasLODqLXEkXET0K4ToyOwjIAJmZgFoRmMFTDwU7nIILRvK8o7hVegXMsO9f253XU1Un
+         Tadw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFB8zHWH2ii2jcDr04nGdKPsKHMEgnuYNvR6VPuYaZp8ivDqnwdmkDYIU2T398CTepOVWHdAkShXrfaSkHBbYbck5v9u+eIehM30Z7
+X-Gm-Message-State: AOJu0YxcNI/atWGPmgaH310qNT4BGb80eXi9NH6+Z3WNFcEIi6xsypLT
+	9I6nIb0ROazrJY1HItG0z94/Q+y98TjZHqaxo86KJ7az7W160/mdxrkHDaLvYA==
+X-Google-Smtp-Source: AGHT+IF0ahQIhXtH0Mm5HvMCxO2IHtnyeHGy61YZR+rY3O0P7+1ImCbuQoPl7zqjcO0b7rQIv2AfXQ==
+X-Received: by 2002:a17:903:24c:b0:1e2:573:eef7 with SMTP id j12-20020a170903024c00b001e20573eef7mr1030952plh.0.1711663603977;
+        Thu, 28 Mar 2024 15:06:43 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170903230900b001e14807c7dfsm2142788plh.86.2024.03.28.15.06.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 15:06:43 -0700 (PDT)
+Date: Thu, 28 Mar 2024 15:06:43 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>
+Cc: linux-security-module@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] yama: document function parameter
+Message-ID: <202403281506.46D9C5BEEA@keescook>
+References: <20240315125418.273104-1-cgzones@googlemail.com>
+ <20240315125418.273104-2-cgzones@googlemail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-module-owner-usb-serial-v1-52-bc46c9ffbf56@linaro.org>
-References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
-In-Reply-To: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
-To: Johan Hovold <johan@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=672;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=LLgiLkEII5evsgK2AeBKp1W4Vw206VrKkeb0L7m1FcA=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBenomRGUsL6cULpwOBe0G2bVuRPfxmlAfgNA+
- 2cWHgqoT3aJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgXp6AAKCRDBN2bmhouD
- 1/g2D/9fX5oDeyuAqMHK3i1Su4fUJkok1yK3RHtQTFrpbA1qln3eumD102qFjnVBiHhunYN1mq0
- LBOue/jhu7eFeGMiFLUex6gx7kctOD3Tj4V02cIdV5C8OGwQZmhGAGHexnlDxNMGjYIdqZjY5u+
- QlSDDigE30r7Ydh/ue+6Dr/9kK9G1hDbA8OserSt0wckd+Lyaa/YRtilgupADpmOZGtQSAeN4xl
- nQLQBXTT2q1NKbgT4h6/dUOQ4D6HyMLN7yclKdPFEPmM/Zn4eBUWy2SSVrgU8t35jpHCYQ5hvmy
- Uk4UhTJeQwPIOk09ZC1I9u2q+wcM9M4rRItSJjV6DvW4DDDeljtoe6Xz+9ymq0o088jZnWej3Zl
- TXlOEI4UzjUPQi2ONSfcBgD9vYKleUVmwZIjTQcP76fgfY60hCuYUzfb6qy8+0FjwWSjMjDPjwe
- xuxCugPHIQL8bvqsxNC90xFYF/x7h1nBDLIXZQsBqn5xmSKbtXNgvQk3OS+BWHmn4nb2hGs4Y7F
- L+SyTh0DPfYcv5oeidnTOzDdrF7SG1w+iJ5VQidawuyI3oHprrWic5CdJg/JXGQHd3C+Cp8wilv
- qj1csNu7CL/o9HDe2pUTgXdNLNCM1GZDRRSPaTJA+z3TqBmQ4vFITzK6hNBgB5f/GK1W5Cz8rhu
- SI8fYbC8zRfnfIA==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240315125418.273104-2-cgzones@googlemail.com>
 
-Core in usb_serial_register_drivers() already sets the .owner, so driver
-does not need to.
+On Fri, Mar 15, 2024 at 01:54:10PM +0100, Christian Göttsche wrote:
+> Document the unused function parameter of yama_relation_cleanup() to
+> please kernel doc warnings.
+> 
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/usb/serial/xsens_mt.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/usb/serial/xsens_mt.c b/drivers/usb/serial/xsens_mt.c
-index cf262c9a9638..382b3698c1d5 100644
---- a/drivers/usb/serial/xsens_mt.c
-+++ b/drivers/usb/serial/xsens_mt.c
-@@ -49,7 +49,6 @@ static int xsens_mt_probe(struct usb_serial *serial,
- 
- static struct usb_serial_driver xsens_mt_device = {
- 	.driver = {
--		.owner = THIS_MODULE,
- 		.name = "xsens_mt",
- 	},
- 	.id_table = id_table,
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-2.34.1
-
+Kees Cook
 
