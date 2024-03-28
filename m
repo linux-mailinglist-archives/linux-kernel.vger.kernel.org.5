@@ -1,148 +1,190 @@
-Return-Path: <linux-kernel+bounces-122493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9B188F87B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:21:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D805A88F882
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:22:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A23E1C247CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:21:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51A6C1F24E09
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A48851C3E;
-	Thu, 28 Mar 2024 07:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3F050279;
+	Thu, 28 Mar 2024 07:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lifRrg5Q"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gyEAHABQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AD64F5F2
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25606849C;
+	Thu, 28 Mar 2024 07:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711610506; cv=none; b=ts0irAAxRClD/FIz+gT+U9dE7KvifY+UwSmlZNbhaa+LHFtLbJLLFn0Gfibdu++ROsu8CraNYlWe0bLhpNz3aSw5Zz/FG4cjTx2ssLNtjFq/AMBk3X8iwB3NNjnL+IDygwLdfRyxbpr6KkSrRgA8BFf8X6ZNvQ3oW5HYpoTz5Z4=
+	t=1711610550; cv=none; b=Esm4oQ6bxDjQAo/AwghyDz7QpVAFPxw15AtDAwCxKxd12MsboUgCUcW8BOfgyIFDDMlG56sjTaYuLyZ5mRPjpDf2Odrrjb3pm3scg9eVdJpqGtcCle3gu0wdk7mI1Vr7J+k4gRkeYS32ebtT+LJMudTPmYkJ5mJe0EgC44MS5ug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711610506; c=relaxed/simple;
-	bh=+c2g+QOTgg3995dvAWPf1MaHsDGDdMPE+6RXTZkhIfU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=neEnPif2gEKHDtUkcpoHovz8z32ZiuNAB1EO9wXwtofb7AcAvFJfB9Zd6dZqhmkA7TZCJOZJFFRD+7TkNtP4p1YA+5xW9Jc1ay/1mM5Qi3KiUZ8WGgNlGS9StiPmBVsnu54ifriODBe/MdMtL6GczBxVYhDgwKK3TXFVxBat1ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lifRrg5Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDBE2C433F1;
-	Thu, 28 Mar 2024 07:21:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711610506;
-	bh=+c2g+QOTgg3995dvAWPf1MaHsDGDdMPE+6RXTZkhIfU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lifRrg5QafFFOULEjnABkBHqjSe3HGSscym8oS9j8noUEpXmokgf5nu5DkPvMfv1e
-	 KnSKru2ZKysI2Td1Zlj9qUtsow7d/Qtd0JD1/Idy8JteuuLfdR4TrTNCM5OAaZ8Qsa
-	 8nh6NGByrO7433qrcNrszUCD/6GZ84aeJwlaIEy3VlaN3BSOGh5xwxmLLm4cUgEZN3
-	 nLEik4Ll6Nn9ZyKPipX4MvpUyRBHHNRG9kmlpYc64k0fI0rC+BvuR6i8N+ZVUvJASQ
-	 XeAOB5QOFiTsFxLdrecXzj5ijVMNnGtm+6bqqFwroDqo6BcHLV6Z5qCiutJAdKjk0g
-	 0BWix70blxtgA==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Wenjie Qi <qwjhust@gmail.com>,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v6] f2fs: fix zoned block device information initialization
-Date: Thu, 28 Mar 2024 15:21:36 +0800
-Message-Id: <20240328072136.3023135-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1711610550; c=relaxed/simple;
+	bh=hiuS5t2lQWNJFOtvJipQHkQ+4rNrV1yVGvL5Ol0zhKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fpak4TIKK3Bo5YFZYom7TjepyAnt0dCeEB3CbgkytOWkbgpjukuWfSwASxGb2AR+SalpPWRMAy/c9Rf1AvMIQIWoW95kVBkRnh142LUEHSpfgcYp1poQSB8AIEObeSIUNhEbSL7vVk4LpXGiDge/qnBqWmvR5P5OR7Tz3tDB43E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gyEAHABQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08251C433C7;
+	Thu, 28 Mar 2024 07:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711610549;
+	bh=hiuS5t2lQWNJFOtvJipQHkQ+4rNrV1yVGvL5Ol0zhKw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gyEAHABQAOXEaDE2eUHd+AvzyH/aWOHeeO+fh5qBiDREXjVngZB5Adj0TtNccYEM7
+	 KHjq51WVF199wxpVIpQMwmGmLfW3bNGFRXx05M5FIeYdh/7qkyxd7dBQk4Kg3YKTZA
+	 hDp/xaz5XlV1gcGT7c3uUo/pN46cC+jlohAHmAxc=
+Date: Thu, 28 Mar 2024 08:22:26 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Dhruva Gole <d-gole@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Jiri Slaby <jirislaby@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Johan Hovold <johan@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v7 4/7] serial: core: Add support for DEVNAME:0.0 style
+ naming for kernel console
+Message-ID: <2024032859-subscript-marshy-7508@gregkh>
+References: <20240327110021.59793-1-tony@atomide.com>
+ <20240327110021.59793-5-tony@atomide.com>
+ <20240328063152.bjkdtdsu42cqbgf3@dhruva>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328063152.bjkdtdsu42cqbgf3@dhruva>
 
-From: Wenjie Qi <qwjhust@gmail.com>
+On Thu, Mar 28, 2024 at 12:01:52PM +0530, Dhruva Gole wrote:
+> Hi,
+> 
+> On Mar 27, 2024 at 12:59:38 +0200, Tony Lindgren wrote:
+> > We can now add hardware based addressing for serial ports. Starting with
+> > commit 84a9582fd203 ("serial: core: Start managing serial controllers to
+> > enable runtime PM"), and all the related fixes to this commit, the serial
+> > core now knows to which serial port controller the ports are connected.
+> > 
+> > The serial ports can be addressed with DEVNAME:0.0 style naming. The names
+> > are something like 00:04:0.0 for a serial port on qemu, and something like
+> > 2800000.serial:0.0 on platform device using systems like ARM64 for example.
+> > 
+> > The DEVNAME is the unique serial port hardware controller device name, AKA
+> > the name for port->dev. The 0.0 are the serial core controller id and port
+> > id.
+> > 
+> > Typically 0.0 are used for each controller and port instance unless the
+> > serial port hardware controller has multiple controllers or ports.
+> > 
+> > Using DEVNAME:0.0 style naming actually solves two long term issues for
+> > addressing the serial ports:
+> > 
+> > 1. According to Andy Shevchenko, using DEVNAME:0.0 style naming fixes an
+> >    issue where depending on the BIOS settings, the kernel serial port ttyS
+> >    instance number may change if HSUART is enabled
+> > 
+> > 2. Device tree using architectures no longer necessarily need to specify
+> >    aliases to find a specific serial port, and we can just allocate the
+> 
+> This is GOOD!
+> 
+> >    ttyS instance numbers dynamically in whatever probe order
+> > 
+> > To do this, let's match the hardware addressing style console name to
+> > the character device name used, and add a preferred console using the
+> > character device name.
+> > 
+> > Note that when using console=DEVNAME:0.0 style kernel command line, the
+> > 8250 serial console gets enabled later compared to using console=ttyS
+> > naming for ISA ports. This is because the serial port DEVNAME to character
+> > device mapping is not known until the serial driver probe time. If used
+> > together with earlycon, this issue is avoided.
+> > 
+> > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> > ---
+> >  drivers/tty/serial/serial_base.h     | 16 +++++++
+> >  drivers/tty/serial/serial_base_bus.c | 66 ++++++++++++++++++++++++++++
+> >  drivers/tty/serial/serial_core.c     |  4 ++
+> >  3 files changed, 86 insertions(+)
+> > 
+> > diff --git a/drivers/tty/serial/serial_base.h b/drivers/tty/serial/serial_base.h
+> > --- a/drivers/tty/serial/serial_base.h
+> > +++ b/drivers/tty/serial/serial_base.h
+> > @@ -45,3 +45,19 @@ void serial_ctrl_unregister_port(struct uart_driver *drv, struct uart_port *port
+> >  
+> >  int serial_core_register_port(struct uart_driver *drv, struct uart_port *port);
+> >  void serial_core_unregister_port(struct uart_driver *drv, struct uart_port *port);
+> > +
+> > +#ifdef CONFIG_SERIAL_CORE_CONSOLE
+> > +
+> > +int serial_base_add_preferred_console(struct uart_driver *drv,
+> > +				      struct uart_port *port);
+> > +
+> > +#else
+> > +
+> > +static inline
+> > +int serial_base_add_preferred_console(struct uart_driver *drv,
+> > +				      struct uart_port *port)
+> > +{
+> > +	return 0;
+> > +}
+> > +
+> > +#endif
+> > diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
+> > --- a/drivers/tty/serial/serial_base_bus.c
+> > +++ b/drivers/tty/serial/serial_base_bus.c
+> > @@ -8,6 +8,7 @@
+> >   * The serial core bus manages the serial core controller instances.
+> >   */
+> >  
+> > +#include <linux/cleanup.h>
+> >  #include <linux/container_of.h>
+> >  #include <linux/device.h>
+> >  #include <linux/idr.h>
+> > @@ -204,6 +205,71 @@ void serial_base_port_device_remove(struct serial_port_device *port_dev)
+> >  	put_device(&port_dev->dev);
+> >  }
+> >  
+> > +#ifdef CONFIG_SERIAL_CORE_CONSOLE
+> > +
+> > +static int serial_base_add_one_prefcon(const char *match, const char *dev_name,
+> > +				       int port_id)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = add_preferred_console_match(match, dev_name, port_id);
+> > +	if (ret == -ENOENT)
+> > +		return 0;
+> > +
+> > +	return ret;
+> 
+> Can we do this instead?
+> return (ret == -ENOENT ? 0 : ret);
 
-If the max open zones of zoned devices are less than
-the active logs of F2FS, the device may error due to
-insufficient zone resources when multiple active logs
-are being written at the same time.
+No, please no.
 
-Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v6:
-- add check condition to avoid remount failure.
- fs/f2fs/f2fs.h  |  1 +
- fs/f2fs/super.c | 27 +++++++++++++++++++++++++++
- 2 files changed, 28 insertions(+)
+Just spell it out, like was done here, dealing with ? : is a pain to
+read and follow and the generated code should be identical.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 0550929dc6e5..694f8a52cb84 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1559,6 +1559,7 @@ struct f2fs_sb_info {
- 
- #ifdef CONFIG_BLK_DEV_ZONED
- 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
-+	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
- #endif
- 
- 	/* for node-related operations */
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 7c45929671ad..642540782471 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2326,6 +2326,17 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	if (err)
- 		goto restore_opts;
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (f2fs_is_multi_device(sbi) &&
-+		sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-+		f2fs_err(sbi,
-+			"zoned: max open zones %u is too small, need at least %u open zones",
-+				 sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-+		err = -EINVAL;
-+		goto restore_opts;
-+	}
-+#endif
-+
- 	/* flush outstanding errors before changing fs state */
- 	flush_work(&sbi->s_error_work);
- 
-@@ -3868,11 +3879,24 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
- 	sector_t nr_sectors = bdev_nr_sectors(bdev);
- 	struct f2fs_report_zones_args rep_zone_arg;
- 	u64 zone_sectors;
-+	unsigned int max_open_zones;
- 	int ret;
- 
- 	if (!f2fs_sb_has_blkzoned(sbi))
- 		return 0;
- 
-+	if (bdev_is_zoned(FDEV(devi).bdev)) {
-+		max_open_zones = bdev_max_open_zones(bdev);
-+		if (max_open_zones && (max_open_zones < sbi->max_open_zones))
-+			sbi->max_open_zones = max_open_zones;
-+		if (sbi->max_open_zones < F2FS_OPTION(sbi).active_logs) {
-+			f2fs_err(sbi,
-+				"zoned: max open zones %u is too small, need at least %u open zones",
-+				sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
-+			return -EINVAL;
-+		}
-+	}
-+
- 	zone_sectors = bdev_zone_sectors(bdev);
- 	if (sbi->blocks_per_blkz && sbi->blocks_per_blkz !=
- 				SECTOR_TO_BLOCK(zone_sectors))
-@@ -4186,6 +4210,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 
- 	logical_blksize = bdev_logical_block_size(sbi->sb->s_bdev);
- 	sbi->aligned_blksize = true;
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	sbi->max_open_zones = UINT_MAX;
-+#endif
- 
- 	for (i = 0; i < max_devices; i++) {
- 		if (i == 0)
--- 
-2.40.1
+Only use ? : in places where it's the only way to do it (i.e. as
+function parameters or in printk-like lines.)
 
+Write for people first, compilers second.
+
+thanks,
+
+greg k-h
 
