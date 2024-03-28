@@ -1,122 +1,76 @@
-Return-Path: <linux-kernel+bounces-122754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D0888FCA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D719688FCA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:13:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED5B4B2618B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:12:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 764F6B26E42
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA447C090;
-	Thu, 28 Mar 2024 10:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l7mAlx9I"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B7E7C0BE;
+	Thu, 28 Mar 2024 10:13:34 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B9A28DD2;
-	Thu, 28 Mar 2024 10:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936114F898;
+	Thu, 28 Mar 2024 10:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711620747; cv=none; b=hTaxagQV1SqeO+HKBFN6Zbp1q3LDf3OseA3sThiFFd58uKr/LAfoDeT1t5D+bFNJbVmiyuiixNeNzVOEDH0xlQQat3fpiloDlaSyOJH6Q4RecLuEYAopUoM76h0PKzhfSNxkZ5Gpwjg3eFNFDJKbyRzLzhbz4w5GbLAGsObMLRM=
+	t=1711620813; cv=none; b=sg+tNeTTlqv0OkOUZYBR9d20G7auHGAZllavZcrVtDE0XQ9j6QZn5AvCTbc3ITWh7OTQ632bZYCf5zCX1vOJmt7WdKAHT/XWW+Q3wby45RVxunfa2CIp8KUdsxHU+AyZSzshUGhIjj4gP/+yg3P+QPOmu8/CnhDKfBHzYPs+QfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711620747; c=relaxed/simple;
-	bh=IBseJtEVdKixpDWmfRv1vc/DdeQwRLSFWGuoAtvnUDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YexmdMQQ1sCEPGlBglIHzCewK1wbC/VZ0M06eVMUPZPyJ48tRD7BA+Xue/TqCkPRp9UoqtH/FAfqgPix9opiz3aATHu8R3AniAIRp0O9HrnDWi3GX44NppT9L3Amf7AenwbTTbNIDOLx45EDv2ch32h+uF/m+ERrQJa0ftW1p34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l7mAlx9I; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711620746; x=1743156746;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=IBseJtEVdKixpDWmfRv1vc/DdeQwRLSFWGuoAtvnUDQ=;
-  b=l7mAlx9I4CtpiIN2QBxbWcdUzr9rfX7b/o7KtsYwD37sUt9MUtakKM2Z
-   gWhYOFabTRJzi7squ0KUvoIKo5t0lprB+T72AOxP3FOwiUOoxr2phNU2/
-   6Ox2FHqKGuvxxiDtQhsbcM6+P1s25DRwnGp4sZDnIP5BL3/wjP/uWj3oC
-   0nU1gCyEMlh9oF1FHXG4uCuhXseIRNjj1jSytFmbNkpQ4gAvbHjo5pwzb
-   eWyGQUj9wKFeFcJITNCrt1ATaxxv/i4P9d+6iAJ3J+dlz/LTHNboKGp8S
-   i4cWSfy7FNYrUS/Y8s0VjQYoKrgEQbqC7pCOmVoIN5Gc55hjLI2NE6ufC
-   A==;
-X-CSE-ConnectionGUID: /1qk2lJMTv2kKaoK8fvzTw==
-X-CSE-MsgGUID: OhtSu4EhRvmXBXrNid1ZhQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="18199784"
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="18199784"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 03:12:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="47586339"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.125.242.198]) ([10.125.242.198])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 03:12:22 -0700
-Message-ID: <97b5d746-2f65-4063-a33a-5556421fa481@linux.intel.com>
-Date: Thu, 28 Mar 2024 18:12:19 +0800
+	s=arc-20240116; t=1711620813; c=relaxed/simple;
+	bh=pTxd538wVuXNyNcE4MbNtDi3ldZbzx8ENExdQ/8ndl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CM/FQ17xsszZo2Sn2eskHF2gT7YTKK/GVXOt9h3Dz9vZ1ngYL+FCiOOnT9b8gBc+kzNKrKaozXry7nuIUD7Kae3uNRBoFUbp1ixgZfB4O19+opHoaTOJtG9r4j8eUQhDf4ABaSwQV4CWE8YYNHFmVw5egH+ih6af1r6sPNDnR3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rpmkw-00C7Rn-5k; Thu, 28 Mar 2024 18:13:11 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 28 Mar 2024 18:13:26 +0800
+Date: Thu, 28 Mar 2024 18:13:26 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Akhil R <akhilrajeev@nvidia.com>
+Cc: davem@davemloft.net, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+	catalin.marinas@arm.com, will@kernel.org, mperttunen@nvidia.com,
+	airlied@gmail.com, daniel@ffwll.ch, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v6 3/5] crypto: tegra: Add Tegra Security Engine driver
+Message-ID: <ZgVCxnI0sZcE04io@gondor.apana.org.au>
+References: <20240319082306.34716-1-akhilrajeev@nvidia.com>
+ <20240319082306.34716-4-akhilrajeev@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [kvm-unit-tests Patch v3 06/11] x86: pmu: Remove blank line and
- redundant space
-Content-Language: en-US
-To: "Yang, Weijiang" <weijiang.yang@intel.com>
-Cc: Jim Mattson <jmattson@google.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Zhenyu Wang <zhenyuw@linux.intel.com>,
- "Zhang, Xiong Y" <xiong.y.zhang@intel.com>,
- Mingwei Zhang <mizhang@google.com>, Like Xu <like.xu.linux@gmail.com>,
- Jinrong Liang <cloudliang@tencent.com>, "Mi, Dapeng1" <dapeng1.mi@intel.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
- <20240103031409.2504051-7-dapeng1.mi@linux.intel.com>
- <359fe9cf-d12b-4f75-8cae-7ce830ec76d9@intel.com>
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <359fe9cf-d12b-4f75-8cae-7ce830ec76d9@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319082306.34716-4-akhilrajeev@nvidia.com>
 
-
-On 3/28/2024 9:23 AM, Yang, Weijiang wrote:
-> On 1/3/2024 11:14 AM, Dapeng Mi wrote:
->> code style changes.
->>
->> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
->> ---
->>   x86/pmu.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/x86/pmu.c b/x86/pmu.c
->> index a2c64a1ce95b..46bed66c5c9f 100644
->> --- a/x86/pmu.c
->> +++ b/x86/pmu.c
->> @@ -207,8 +207,7 @@ static noinline void __measure(pmu_counter_t 
->> *evt, uint64_t count)
->>   static bool verify_event(uint64_t count, struct pmu_event *e)
->>   {
->>       // printf("%d <= %ld <= %d\n", e->min, count, e->max);
->> -    return count >= e->min  && count <= e->max;
->> -
->> +    return count >= e->min && count <= e->max;
+On Tue, Mar 19, 2024 at 01:53:04PM +0530, Akhil R wrote:
 >
-> I don't think it's necessary to fix the nit in a separate patch, just 
-> squash it in some patch with
-> "Opportunistically ...."
+> +struct tegra_sha_reqctx {
+> +	struct ahash_request fallback_req;
 
-Not sure this, I was always required to use a separate patch to refactor 
-the code style faults by reviewers. It looks a unwritten rule for Linux.
+This doesn't work because ahash_request is dynamically sized.
+So you'll end up clobbering the rest of the struct if a fallback
+ends up being used.
 
+You should place the fallback_req at the end of the reqctx and set
+the reqsize based on the fallback reqsize.
 
->
->>   }
->>     static bool verify_counter(pmu_counter_t *cnt)
->
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
