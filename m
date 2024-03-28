@@ -1,223 +1,141 @@
-Return-Path: <linux-kernel+bounces-122770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C2C88FD03
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:28:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9E3088FCFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 204001F27902
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:28:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24CD2B25CEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3C77D086;
-	Thu, 28 Mar 2024 10:28:14 +0000 (UTC)
-Received: from esa2.ltts.com (unknown [14.140.155.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5489B7C6CA;
+	Thu, 28 Mar 2024 10:28:00 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222BC7CF06;
-	Thu, 28 Mar 2024 10:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001F743AC4;
+	Thu, 28 Mar 2024 10:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621694; cv=none; b=JN/0eT0khcZT2/04oWSnFaiNywjcKKs418zrhC6AMTmD1+C7lXMVMysrXY/cdg4X1Cfp77WbLo0itZqdJQsxlnHSNlfR3Tlz5JWdaMHFuyUlRicsQJJ1EJMf5KCTVMRxMZ72MZ3nG6cnJ6Hb84LbmlC+HboY46PAflj9uNzHODs=
+	t=1711621679; cv=none; b=inhvfMmaPR0NCra6fvqhIO6j3xUikllKRimK4w1HQ+M7ZyW+G7IRBIJIqVcKpnq8g6Iaw6tEDYvOXEkogihbE4NKOU3Je7SSzS0hel7znjN7q0M2ifym2J5GBwkXSJuTD+a2rJRyfyIf1zr84ny/j9/EYCmm6kiUHolJ26dBrHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621694; c=relaxed/simple;
-	bh=qtc1MXLZn7FEn8KgHG6xPeg0xgRrPQ4xvqv3ZhHDgA0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aPFv00NAd6zkhnf5w1hTlvLqSSu366+7uDbmYakuNBH1h/knfK0BHhQFiy/UuhbsY1/FTnhaCSNQEOL7zeR3qegMPDEpMHQY4K5CfFsvE3xqV0MTY9R5ShKw/8I60UcmFR/1mZq2TqHoDoRK1LYD3infNyfgd3xOWgcJE/90JIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
-IronPort-SDR: KUz5rQSlcfr/Mw9N6fjq2piC1tQJnPh6sv/S9KPw/N/UHS9LT8WuxxS4pjgEQAROVxczDc34p5
- Xmy7mddYt11A==
-Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
-  by esa2.ltts.com with ESMTP; 28 Mar 2024 15:58:06 +0530
-From: Bhargav Raviprakash <bhargav.r@ltts.com>
-To: eblanc@baylibre.com
-Cc: arnd@arndb.de,
-	bhargav.r@ltts.com,
-	broonie@kernel.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org,
-	jpanis@baylibre.com,
-	kristo@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	lee@kernel.org,
-	lgirdwood@gmail.com,
-	linus.walleij@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	m.nirmaladevi@ltts.com,
-	nm@ti.com,
-	robh+dt@kernel.org,
-	vigneshr@ti.com
-Subject: Re: [PATCH v4 10/11] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
-Date: Thu, 28 Mar 2024 15:57:55 +0530
-Message-Id: <20240328102755.147142-1-bhargav.r@ltts.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <D00EM8TTYGXL.3MMIBWJT03M5R@baylibre.com>
-References: <D00EM8TTYGXL.3MMIBWJT03M5R@baylibre.com>
+	s=arc-20240116; t=1711621679; c=relaxed/simple;
+	bh=YdFMD05ICo4B3HtKvN5Kni+11Fpe39uVvX7nJWykwYI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NWaoWzIuK8vF/84zOFKEKCg5C2Is+SvHKaf7xsGF4xScbBM1Ubj5sYuXvnZDmKVtUVlIipcGtJLgeaGPR5Q/NVg8NCrN1KC1RcfPhq7GSjwE3zc926i2fBqb/ihprciqsCrzvFCgGP+8DQ+a69acTyDJlBLPpIsP0w6uAJnMpKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id B9F1C1C007E; Thu, 28 Mar 2024 11:27:55 +0100 (CET)
+Date: Thu, 28 Mar 2024 11:27:55 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Michael Klein <michael@fossekall.de>,
+	Maxime Ripard <maxime@cerno.tech>
+Subject: Re: [PATCH 5.4 177/183] ARM: dts: sun8i-h2-plus-bananapi-m2-zero:
+ add regulator nodes vcc-dram and vcc1v2
+Message-ID: <ZgVGK6fxuLb6PREs@duo.ucw.cz>
+References: <20240324234638.1355609-1-sashal@kernel.org>
+ <20240324234638.1355609-178-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KIjWPteef1tgOPZm"
+Content-Disposition: inline
+In-Reply-To: <20240324234638.1355609-178-sashal@kernel.org>
 
-Hi,
 
-On Fri, 22 Mar 2024 17:03:08 +0100, Esteban Blanc wrote:
-> On Wed Mar 20, 2024 at 11:25 AM CET, Bhargav Raviprakash wrote:
-> > From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
-> >
-> > Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they have
-> > significant functional overlap.
-> > TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
-> > dedicated device functions.
-> >
-> > Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
-> > Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> > ---
-> >  drivers/pinctrl/pinctrl-tps6594.c | 258 +++++++++++++++++++++++++-----
-> >  1 file changed, 215 insertions(+), 43 deletions(-)
-> >
-> > diff --git a/drivers/pinctrl/pinctrl-tps6594.c b/drivers/pinctrl/pinctrl-tps6594.c
-> > index 66985e54b..db0f5d2a8 100644
-> > --- a/drivers/pinctrl/pinctrl-tps6594.c
-> > +++ b/drivers/pinctrl/pinctrl-tps6594.c
-> > @@ -320,8 +451,18 @@ static int tps6594_pinctrl_probe(struct platform_device *pdev)
-> >  		return -ENOMEM;
-> >  	pctrl_desc->name = dev_name(dev);
-> >  	pctrl_desc->owner = THIS_MODULE;
-> > -	pctrl_desc->pins = tps6594_pins;
-> > -	pctrl_desc->npins = ARRAY_SIZE(tps6594_pins);
-> > +	switch (tps->chip_id) {
-> > +	case TPS65224:
-> > +		pctrl_desc->pins = tps65224_pins;
-> > +		pctrl_desc->npins = ARRAY_SIZE(tps65224_pins);
-> > +		break;
-> > +	case TPS6594:
-> > +		pctrl_desc->pins = tps6594_pins;
-> > +		pctrl_desc->npins = ARRAY_SIZE(tps6594_pins);
-> > +		break;
-> > +	default:
-> > +		break;
-> > +	}
-> >  	pctrl_desc->pctlops = &tps6594_pctrl_ops;
-> >  	pctrl_desc->pmxops = &tps6594_pmx_ops;
-> 
-> See below.
-> 
-> > @@ -329,8 +470,28 @@ static int tps6594_pinctrl_probe(struct platform_device *pdev)
-> >  	if (!pinctrl)
-> >  		return -ENOMEM;
-> >  	pinctrl->tps = dev_get_drvdata(dev->parent);
-> > -	pinctrl->funcs = pinctrl_functions;
-> > -	pinctrl->pins = tps6594_pins;
-> > +	switch (pinctrl->tps->chip_id) {
-> 
-> You could use tps->chip_id like in the previous switch.
-> 
-> > +	case TPS65224:
-> > +		pinctrl->funcs = tps65224_pinctrl_functions;
-> > +		pinctrl->func_cnt = ARRAY_SIZE(tps65224_pinctrl_functions);
-> > +		pinctrl->pins = tps65224_pins;
-> > +		pinctrl->num_pins = ARRAY_SIZE(tps65224_pins);
-> > +		pinctrl->mux_sel_mask = TPS65224_MASK_GPIO_SEL;
-> > +		pinctrl->remap = tps65224_muxval_remap;
-> > +		pinctrl->remap_cnt = ARRAY_SIZE(tps65224_muxval_remap);
-> > +		break;
-> > +	case TPS6594:
-> > +		pinctrl->funcs = pinctrl_functions;
-> 
-> This should be tps6594_pinctrl_functions
-> 
-> > +		pinctrl->func_cnt = ARRAY_SIZE(pinctrl_functions);
-> > +		pinctrl->pins = tps6594_pins;
-> > +		pinctrl->num_pins = ARRAY_SIZE(tps6594_pins);
-> > +		pinctrl->mux_sel_mask = TPS6594_MASK_GPIO_SEL;
-> > +		pinctrl->remap = tps6594_muxval_remap;
-> > +		pinctrl->remap_cnt = ARRAY_SIZE(tps6594_muxval_remap);
-> > +		break;
-> > +	default:
-> > +		break;
-> > +	}
-> 
-> See blow.
-> 
-> >  	pinctrl->pctl_dev = devm_pinctrl_register(dev, pctrl_desc, pinctrl);
-> >  	if (IS_ERR(pinctrl->pctl_dev))
-> >  		return dev_err_probe(dev, PTR_ERR(pinctrl->pctl_dev),
-> > @@ -338,8 +499,18 @@ static int tps6594_pinctrl_probe(struct platform_device *pdev)
-> >  
-> >  	config.parent = tps->dev;
-> >  	config.regmap = tps->regmap;
-> > -	config.ngpio = TPS6594_PINCTRL_PINS_NB;
-> > -	config.ngpio_per_reg = 8;
-> > +	switch (pinctrl->tps->chip_id) {
-> 
-> Same here, use tps->chip_id
-> 
-Sure, will do!
-> > +	case TPS65224:
-> > +		config.ngpio = ARRAY_SIZE(tps65224_gpio_func_group_names);
-> > +		config.ngpio_per_reg = TPS65224_NGPIO_PER_REG;
-> > +		break;
-> > +	case TPS6594:
-> > +		config.ngpio = ARRAY_SIZE(tps6594_gpio_func_group_names);
-> > +		config.ngpio_per_reg = TPS6594_NGPIO_PER_REG;
-> > +		break;
-> > +	default:
-> > +		break;
-> > +	}
-> >  	config.reg_dat_base = TPS6594_REG_GPIO_IN_1;
-> >  	config.reg_set_base = TPS6594_REG_GPIO_OUT_1;
-> >  	config.reg_dir_out_base = TPS6594_REG_GPIOX_CONF(0);
-> 
-> Regarding all the switch case, they should be use to set all the struct
-> fields that are known at runtime only. For example, pinctrl->funcs, and
-> pinctrl->func_cnt are known at compile time. You should create template
-> structs, one for TPS6594 the other TPS65224, initialise the allocated
-> struct with the template and then fill the remaining fields with the
-> runtime values. Something like this:
-> 
-> ```c
-> struct test {
->     int a;
->     int *b;
-> };
-> 
-> static struct test template = {
->     .a = 42,
-> };
-> 
-> int main(void) {
->     struct test *test = malloc(sizeof(*test));
->     *test = sample;
->     test->b = NULL;
-> 
->     return 0;
-> }
-> ```
-> 
-> You could also try to reduce the number of switch case, there is no good
-> reason to have 2 switch instead of one for pctrl_desc and pinctrl
-> structs.
-> 
-> Best regards,
-> 
-> -- 
-> Esteban "Skallwar" Blanc
-> BayLibre
+--KIjWPteef1tgOPZm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for bringing these issues to our attention.
-We will follow the template struct way as suggested and also try to reduce the number of switch
-cases. These changes will be available in the next version.
+Hi!
 
-Regards,
-Bhargav
+> From: Michael Klein <michael@fossekall.de>
+>=20
+> [ Upstream commit 23e85be1ec81647374055f731488cc9a7c013a5c ]
+>=20
+> Add regulator nodes vcc-dram and vcc1v2 to the devicetree. These
+> regulators correspond to U4 and U5 in the schematics:
+>=20
+> http://forum.banana-pi.org/t/bpi-m2-zero-schematic-diagram-public/4111
+>=20
+> Signed-off-by: Michael Klein <michael@fossekall.de>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> Link: https://lore.kernel.org/r/20201130183841.136708-1-michael@fossekall=
+=2Ede
+> Stable-dep-of: 4a0e7f2decbf ("netfilter: nf_tables: do not compare
+> internal table flags on updates")
+
+Iti s hard to believe dts update is dependency of netfilter core
+change. Please investigate and drop.
+
+Best regards,
+								Pavel
+
+> ---
+>  .../dts/sun8i-h2-plus-bananapi-m2-zero.dts    | 24 +++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/arch/=
+arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> index 4c6704e4c57ec..74d5732c412ba 100644
+> --- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> +++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> @@ -62,6 +62,30 @@ reg_vdd_cpux: vdd-cpux-regulator {
+>  		states =3D <1100000 0>, <1300000 1>;
+>  	};
+> =20
+> +	reg_vcc_dram: vcc-dram {
+> +		compatible =3D "regulator-fixed";
+> +		regulator-name =3D "vcc-dram";
+> +		regulator-min-microvolt =3D <1500000>;
+> +		regulator-max-microvolt =3D <1500000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		enable-active-high;
+> +		gpio =3D <&r_pio 0 9 GPIO_ACTIVE_HIGH>; /* PL9 */
+> +		vin-supply =3D <&reg_vcc5v0>;
+> +	};
+> +
+> +	reg_vcc1v2: vcc1v2 {
+> +		compatible =3D "regulator-fixed";
+> +		regulator-name =3D "vcc1v2";
+> +		regulator-min-microvolt =3D <1200000>;
+> +		regulator-max-microvolt =3D <1200000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		enable-active-high;
+> +		gpio =3D <&r_pio 0 8 GPIO_ACTIVE_HIGH>; /* PL8 */
+> +		vin-supply =3D <&reg_vcc5v0>;
+> +	};
+> +
+>  	wifi_pwrseq: wifi_pwrseq {
+>  		compatible =3D "mmc-pwrseq-simple";
+>  		reset-gpios =3D <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--KIjWPteef1tgOPZm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgVGKwAKCRAw5/Bqldv6
+8jtDAJ0bCDM9bjLfGfmyeacQZp9rBEvLjwCfT3T65JCBteZupfYyxllvSSMqxE4=
+=LPLr
+-----END PGP SIGNATURE-----
+
+--KIjWPteef1tgOPZm--
 
