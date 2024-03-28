@@ -1,59 +1,61 @@
-Return-Path: <linux-kernel+bounces-122999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5743D8900DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:55:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832688900DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2E1A2951F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:55:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2372B1F26042
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C201272AC;
-	Thu, 28 Mar 2024 13:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1190382D66;
+	Thu, 28 Mar 2024 13:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LPK5V3Kg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eZjGgAqL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD797F7DB;
-	Thu, 28 Mar 2024 13:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5069181AC1;
+	Thu, 28 Mar 2024 13:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634127; cv=none; b=W9xc5Nzd5bvJJzlP2tc+WzOsgkk3U312x6QVxjnAFzIfho9H7pMl65ZAb62RlLxix/peAWKOiZYC9SO820mh2RxwUorm0/22EdSS6OiYyBgEflfjNSDddfn3ygE8JlcocHjnjKQ+zJ3lsOwWQf71uwFzfX4DW2qZeNZBZiL+UtI=
+	t=1711634136; cv=none; b=oAZQq0iLjqMH6m/c2CWuQPEArsrQDRezCaKNbwztnrllCG8KwlBhy0p8OW3nmFElWWbdIcz0CCnKUcaMziV/3fyHrauDtk7OlELxdntumFMw1Z8lF7Jxnv8+94BWjtWc+oqxy+5+/daVbAXdQSqOfoXP4YHfHQeyW7mg3ckb5mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634127; c=relaxed/simple;
-	bh=AU0EMWvZcfI57/ucjAuU6FCtNN0yNuSL0V35UAUAfX8=;
+	s=arc-20240116; t=1711634136; c=relaxed/simple;
+	bh=B1bIIrooihislE1mX6BRJC65yAmjnRAiaxE9OMZQxAY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=A4uWIzW1X7c16eTBBqe+PoL8xd7TBO4skQsBq5S81syNVvU3gS7McyXvP8P5aHuRQG34J3VtTZ1HTSWyk+7FHdLS96tMlQbvaYcA5hNa2ol6fimGMaqNvQ5qkj5ZOg33kWakV/LLBZ2WgmK6BvH+bvjVy9ZY6diUPLFPGe9Bw0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LPK5V3Kg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2670C433F1;
-	Thu, 28 Mar 2024 13:55:24 +0000 (UTC)
+	 MIME-Version; b=RqCENXwZp8ijks5Y4brg+iD+Kd4bondaHdyQyKJbqJffhFxf1gZop8QHdoJ3ilXcDwVyURX7vSGEI4mj8OJBCqjXKhMBrwxP+2Za8xtKd6Gz/3m4zDQX6qUJbaTnpgpVJD5teND7J3NkPE9Rq1LTg076u+PbWxlWCOYrIuz2hFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eZjGgAqL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97163C433C7;
+	Thu, 28 Mar 2024 13:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711634127;
-	bh=AU0EMWvZcfI57/ucjAuU6FCtNN0yNuSL0V35UAUAfX8=;
+	s=k20201202; t=1711634136;
+	bh=B1bIIrooihislE1mX6BRJC65yAmjnRAiaxE9OMZQxAY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LPK5V3KgPDkyj3iTIIBxKJxVjFdAg8jtYxbSd9SRHGKJqF8w4Rc8EqPC3TaKvjyU/
-	 bgKo9GkSE1AFpeVXz2S9LbS7ORvv3ukXYjA6TyUqvX1b19xQsQcezSY9o5rIT9xsMH
-	 +wIFLxweqQWOd/L+kX+B7DNCLQQCE4DX7rasYwQQcb30t+Hito2SggNYyfuOHU+8MY
-	 KSU/6dNpRl/BXWOjKc+hAMA9d5WlJAlKAR+Fdjq4YQv5x1HbsyPqje5Ka4S3fGhv13
-	 sOb/XQg90RWKyVj1SuNKMlqYPXiuA85o3kbQWnXp1cfwrUTtSR5ogA2hJhX9Lg0AXj
-	 d3tcuroXYjCtw==
+	b=eZjGgAqL4xfmx+WtA+DkKBbpM0763PjFCAfx7FMQr7cL7//eBJVQP5QwfqrQ/WbVZ
+	 qB2za8R9/WhWcvAsK3nUbTZjLQQFP1GHR5RneRJPQWh3jbhr3mDMhdlp7mr8Wp1gCN
+	 riwiiWjnA2CGUMpMjzlBXYXevIlkmuBlUJ7zkZy/shsLb4Y4GW0X4+Ei69Y67wLgip
+	 T3zN8gEsbmh0DVdesbL8czMAUOJIB3ZMDxxs8X5Xi+NClNLGzIcMx3aZn0HtQzLC7U
+	 usJ1xUL/E/RS3M0JU3jwITusYF0fwi6QxFOT8/+lJXikBKde7hEab2/RORmzN7zIQB
+	 aj+BkIsu2YE7Q==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Kees Cook <keescook@chromium.org>,
-	Christian Lamparter <chunkeey@googlemail.com>,
 	Kalle Valo <kvalo@kernel.org>,
-	Johannes Berg <johannes.berg@intel.com>
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 Cc: linux-hardening@vger.kernel.org,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
 	linux-wireless@vger.kernel.org,
 	Arnd Bergmann <arnd@arndb.de>,
-	Colin Ian King <colin.i.king@gmail.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Dmitry Antipov <dmantipov@yandex.ru>,
+	Hancheng Yang <hyang@freebox.fr>,
+	Remi Pommarel <repk@triplefau.lt>,
+	Johannes Berg <johannes.berg@intel.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] [RESEND] wifi: carl9170: re-fix fortified-memset warning
-Date: Thu, 28 Mar 2024 14:55:04 +0100
-Message-Id: <20240328135509.3755090-2-arnd@kernel.org>
+Subject: [PATCH 2/2] wifi: ath9k: work around memset overflow warning
+Date: Thu, 28 Mar 2024 14:55:05 +0100
+Message-Id: <20240328135509.3755090-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240328135509.3755090-1-arnd@kernel.org>
 References: <20240328135509.3755090-1-arnd@kernel.org>
@@ -67,55 +69,61 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The carl9170_tx_release() function sometimes triggers a fortified-memset
-warning in my randconfig builds:
+gcc-9 and some other older versions produce a false-positive warning
+for zeroing two fields
 
-In file included from include/linux/string.h:254,
-                 from drivers/net/wireless/ath/carl9170/tx.c:40:
+In file included from include/linux/string.h:369,
+                 from drivers/net/wireless/ath/ath9k/main.c:18:
 In function 'fortify_memset_chk',
-    inlined from 'carl9170_tx_release' at drivers/net/wireless/ath/carl9170/tx.c:283:2,
-    inlined from 'kref_put' at include/linux/kref.h:65:3,
-    inlined from 'carl9170_tx_put_skb' at drivers/net/wireless/ath/carl9170/tx.c:342:9:
-include/linux/fortify-string.h:493:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-  493 |                         __write_overflow_field(p_size_field, size);
+    inlined from 'ath9k_ps_wakeup' at drivers/net/wireless/ath/ath9k/main.c:140:3:
+include/linux/fortify-string.h:462:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+  462 |                         __write_overflow_field(p_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Kees previously tried to avoid this by using memset_after(), but it seems
-this does not fully address the problem. I noticed that the memset_after()
-here is done on a different part of the union (status) than the original
-cast was from (rate_driver_data), which may confuse the compiler.
+Using a struct_group seems to reliably avoid the warning and
+not make the code much uglier. The combined memset() should even
+save a couple of cpu cycles.
 
-Unfortunately, the memset_after() trick does not work on driver_rates[]
-because that is part of an anonymous struct, and I could not get
-struct_group() to do this either. Using two separate memset() calls
-on the two members does address the warning though.
-
-Fixes: fb5f6a0e8063b ("mac80211: Use memset_after() to clear tx status")
-Link: https://lore.kernel.org/lkml/20230623152443.2296825-1-arnd@kernel.org/
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-I found this while testing randconfig builds, a .config that shows this
-for me is at https://pastebin.com/yWFKvZYu
-
-Sorry I failed to follow up to Kees' request for a reproducer when
-I posted this last year.
+This is from randconfig testing, see https://pastebin.com/yjKk5N81
+for a reproducer
 ---
- drivers/net/wireless/ath/carl9170/tx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath.h        | 6 ++++--
+ drivers/net/wireless/ath/ath9k/main.c | 3 +--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/carl9170/tx.c b/drivers/net/wireless/ath/carl9170/tx.c
-index e902ca80eba7..0226c31a6cae 100644
---- a/drivers/net/wireless/ath/carl9170/tx.c
-+++ b/drivers/net/wireless/ath/carl9170/tx.c
-@@ -280,7 +280,8 @@ static void carl9170_tx_release(struct kref *ref)
- 	 * carl9170_tx_fill_rateinfo() has filled the rate information
- 	 * before we get to this point.
- 	 */
--	memset_after(&txinfo->status, 0, rates);
-+	memset(&txinfo->pad, 0, sizeof(txinfo->pad));
-+	memset(&txinfo->rate_driver_data, 0, sizeof(txinfo->rate_driver_data));
+diff --git a/drivers/net/wireless/ath/ath.h b/drivers/net/wireless/ath/ath.h
+index f02a308a9ffc..34654f710d8a 100644
+--- a/drivers/net/wireless/ath/ath.h
++++ b/drivers/net/wireless/ath/ath.h
+@@ -171,8 +171,10 @@ struct ath_common {
+ 	unsigned int clockrate;
  
- 	if (atomic_read(&ar->tx_total_queued))
- 		ar->tx_schedule = true;
+ 	spinlock_t cc_lock;
+-	struct ath_cycle_counters cc_ani;
+-	struct ath_cycle_counters cc_survey;
++	struct_group(cc,
++		struct ath_cycle_counters cc_ani;
++		struct ath_cycle_counters cc_survey;
++	);
+ 
+ 	struct ath_regulatory regulatory;
+ 	struct ath_regulatory reg_world_copy;
+diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
+index a2943aaecb20..01173aac3045 100644
+--- a/drivers/net/wireless/ath/ath9k/main.c
++++ b/drivers/net/wireless/ath/ath9k/main.c
+@@ -135,8 +135,7 @@ void ath9k_ps_wakeup(struct ath_softc *sc)
+ 	if (power_mode != ATH9K_PM_AWAKE) {
+ 		spin_lock(&common->cc_lock);
+ 		ath_hw_cycle_counters_update(common);
+-		memset(&common->cc_survey, 0, sizeof(common->cc_survey));
+-		memset(&common->cc_ani, 0, sizeof(common->cc_ani));
++		memset(&common->cc, 0, sizeof(common->cc));
+ 		spin_unlock(&common->cc_lock);
+ 	}
+ 
 -- 
 2.39.2
 
