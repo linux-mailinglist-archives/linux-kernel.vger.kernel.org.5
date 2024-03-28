@@ -1,235 +1,300 @@
-Return-Path: <linux-kernel+bounces-122587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2CD88FA09
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:32:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F2388FA0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 09:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE75C1C27212
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:32:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBE861F2505E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99FE04F8AB;
-	Thu, 28 Mar 2024 08:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636F851C5F;
+	Thu, 28 Mar 2024 08:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZI+74/pc"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VC+WA3m6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2861621344
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6262B41757;
+	Thu, 28 Mar 2024 08:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711614772; cv=none; b=WdodS9AwZ/bbs79XMzG8WUPMytSeXfCzaXdDzXCSQJ5GVI+IPNsWxxftNt1kq3R5xzSKpltKiOks4qGiMz6iD8NQu7G/sy8zkaiKX31d/FmfffFSXxS4Tpw9t2VGHH22+v9FcsX3y1qtFLFZ+d7xjxwIDfVle3Wl7JWK24nNS5s=
+	t=1711614851; cv=none; b=DgTi3z2+8Euozhhxp8ED5tvSicLZGA/gFw256OKzjjyM5TUjE9ponCQPxupqtm45qqCLCO2qhhBXr0VuuDFz/V+RpZpHoKcVoEZ2+kN9Rhs1+4ePD+Wq27KgkFhA7eKx+O3nzQ73R86jj7Fj8k6aSvmXM/Ixlc8NVtokywjYDDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711614772; c=relaxed/simple;
-	bh=5hmL0Us1EtMexYH5BrqNgE1/GbtXwYapuj2tsnxoLIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q6LDEBghi+2ZU40vlw8QUAN6lIG3ZVglb/SudNO+9etN7vsP3scMsA5z2ak+vBWpSfLv4WqqXYWqAL4bhAYaS8dSNvff2nf76zYgfinANxlSs/9FKbQtjY4ril0URtGm/40ZrVw7rsg1YoyLAFqAyiD86P0uuMqJFWdnBdnn7Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZI+74/pc; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711614770;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YU98x6HKPS4cGaJBRCphv0qa0ztW8Hkud3KMpoGM99k=;
-	b=ZI+74/pctXFNa6WO8YAbdAb3gXtbEk87hsx9wAH0UKrqFhYKtkUnur36MOK+9RaIQSPOdA
-	iE9EvzGyl0Ly4MK5U6f2dBh0YDJCUk0R0ITx8U5uy4JD3IuBKkRsHF8GB0Z22W4/phVeSk
-	Cp7dK7KVTXJ7lGz0DGkh09NuAVLe5Xs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-252-Jahxg1_oOjKaLrJVe7kmLQ-1; Thu, 28 Mar 2024 04:32:46 -0400
-X-MC-Unique: Jahxg1_oOjKaLrJVe7kmLQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0B332852000;
-	Thu, 28 Mar 2024 08:32:46 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4F752C01600;
-	Thu, 28 Mar 2024 08:32:45 +0000 (UTC)
-Date: Thu, 28 Mar 2024 16:32:38 +0800
-From: Baoquan He <bhe@redhat.com>
-To: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org,
-	rppt@kernel.org
-Subject: Re: [PATCH v2 4/6] mm/mm_init.c: remove meaningless calculation of
- zone->managed_pages in free_area_init_core()
-Message-ID: <ZgUrJuatQqAT0QA1@MiWiFi-R3L-srv>
-References: <20240325145646.1044760-1-bhe@redhat.com>
- <20240325145646.1044760-5-bhe@redhat.com>
+	s=arc-20240116; t=1711614851; c=relaxed/simple;
+	bh=OC40G0SGkVpDUWU+MI8Q0vqzOKDBI+Tgu+nObT4hr7I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TqY4S9Dqn19fatv/IqcXQL3rRfILuEP5SB527kCW11xHh2TH/gb/qUN31rt2oIQeAU6TCtl45Sf5wnm9MQNiu32imU8n4dcrA3FdCVf8Rfex2u2h6ymVbtoyTXFngAkBsQu6siMXHca10WWy79wGhYf6FLORVmcdEiwxScEprsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VC+WA3m6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78345C433C7;
+	Thu, 28 Mar 2024 08:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711614850;
+	bh=OC40G0SGkVpDUWU+MI8Q0vqzOKDBI+Tgu+nObT4hr7I=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=VC+WA3m6AeorAww6zgpsMkzLQrCeoUnutrPDnToJgqFHT8LKpqiyivDUEZktU5g4t
+	 C7hUr4C29sU3X+tqhBVb8J6HeLa0r18Ml3YdNoXKM8dNA5H5fJ2EcJLsKsdKh+zbIO
+	 2F9t+dua+h+tTI4tf5rPFzw6G71PFrkjz9UopYm4o6DYn2QW1tGBOdsHl8RdAw15lC
+	 WxBeCT7+Laejz/vXfxFt7C9q+CFpfOfZvanZ2n1raM842vhqRrWzIgZH8nhoDOchFH
+	 eIe6sTjkJItSDlyTFFOK56s+DKV87DwCP6AkseN2+vmnvN/8grsGEi3wvFG5c+vvmf
+	 qWUN3Wm7GeVgQ==
+Message-ID: <22594615-7929-4529-b010-ceb8d387742e@kernel.org>
+Date: Thu, 28 Mar 2024 09:34:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325145646.1044760-5-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
+To: Frieder Hannenheim <friederhannenheim@riseup.net>,
+ dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240327214643.7055-1-friederhannenheim@riseup.net>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240327214643.7055-1-friederhannenheim@riseup.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 03/25/24 at 10:56pm, Baoquan He wrote:
-> Currently, in free_area_init_core(), when initialize zone's field, a
-> rough value is set to zone->managed_pages. That value is calculated by
-> (zone->present_pages - memmap_pages).
+On 27/03/2024 22:39, Frieder Hannenheim wrote:
+> This is a bit of a stripped down and partially reworked driver for the
+> synaptics_tcm_oncell touchscreen. I based my work off the driver in the
+> LineageOS kernel found at
+> https://github.com/LineageOS/android_kernel_oneplus_sm8250 branch
+> lineage-20. The code was originally written by OnePlus developers but
+> I'm not sure how to credit them correctly.
 > 
-> In the meantime, add the value to nr_all_pages and nr_kernel_pages which
-> represent all free pages of system (only low memory or including HIGHMEM
-> memory separately). Both of them are gonna be used in
-> alloc_large_system_hash().
+> Currently the driver is in a pretty good shape, the only thing that is
+> not working is setting a report config. To me it looks like some data is
+> sent by the touchscreen firmware after setting the report config that is
+> making the irq handler crash. Sadly I haven't been able to test out why.
+> The driver works fine also with the default touch report config so maybe
+> we can just use that and not set our own. 
 > 
-> However, the rough calculation and setting of zone->managed_pages is
-> meaningless because
->   a) memmap pages are allocated on units of node in sparse_init() or
->      alloc_node_mem_map(pgdat); The simple (zone->present_pages -
->      memmap_pages) is too rough to make sense for zone;
->   b) the set zone->managed_pages will be zeroed out and reset with
->      acutal value in mem_init() via memblock_free_all(). Before the
->      resetting, no buddy allocation request is issued.
-> 
-> Here, remove the meaningless and complicated calculation of
-> (zone->present_pages - memmap_pages), initialize zone->managed_pages as 0
-> which reflect its actual value because no any page is added into buddy
-> system right now. It will be reset in mem_init().
-> 
-> And also remove the assignment of nr_all_pages and nr_kernel_pages in
-> free_area_init_core(). Instead, call the newly added calc_nr_kernel_pages()
-> to count up all free but not reserved memory in memblock and assign to
-> nr_all_pages and nr_kernel_pages. The counting excludes memmap_pages,
-> and other kernel used data, which is more accurate than old way and
-> simpler, and can also cover the ppc required arch_reserved_kernel_pages()
-> case.
-> 
-> And also clean up the outdated code comment above free_area_init_core().
-> And free_area_init_core() is easy to understand now, no need to add
-> words to explain.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Signed-off-by: Frieder Hannenheim <friederhannenheim@riseup.net>
 > ---
->  mm/mm_init.c | 46 +++++-----------------------------------------
->  1 file changed, 5 insertions(+), 41 deletions(-)
-> 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index c57a7fc97a16..7f71e56e83f3 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -1565,15 +1565,6 @@ void __ref free_area_init_core_hotplug(struct pglist_data *pgdat)
->  }
->  #endif
->  
-> -/*
-> - * Set up the zone data structures:
-> - *   - mark all pages reserved
-> - *   - mark all memory queues empty
-> - *   - clear the memory bitmaps
-> - *
-> - * NOTE: pgdat should get zeroed by caller.
-> - * NOTE: this function is only called during early init.
-> - */
->  static void __init free_area_init_core(struct pglist_data *pgdat)
->  {
->  	enum zone_type j;
-> @@ -1584,41 +1575,13 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  
->  	for (j = 0; j < MAX_NR_ZONES; j++) {
->  		struct zone *zone = pgdat->node_zones + j;
-> -		unsigned long size, freesize, memmap_pages;
-> -
-> -		size = zone->spanned_pages;
-> -		freesize = zone->present_pages;
-> -
-> -		/*
-> -		 * Adjust freesize so that it accounts for how much memory
-> -		 * is used by this zone for memmap. This affects the watermark
-> -		 * and per-cpu initialisations
-> -		 */
-> -		memmap_pages = calc_memmap_size(size, freesize);
-> -		if (!is_highmem_idx(j)) {
-> -			if (freesize >= memmap_pages) {
-> -				freesize -= memmap_pages;
-> -				if (memmap_pages)
-> -					pr_debug("  %s zone: %lu pages used for memmap\n",
-> -						 zone_names[j], memmap_pages);
-> -			} else
-> -				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
-> -					zone_names[j], memmap_pages, freesize);
-> -		}
-> -
-> -		if (!is_highmem_idx(j))
-> -			nr_kernel_pages += freesize;
-> -		/* Charge for highmem memmap if there are enough kernel pages */
-> -		else if (nr_kernel_pages > memmap_pages * 2)
-> -			nr_kernel_pages -= memmap_pages;
-> -		nr_all_pages += freesize;
-> +		unsigned long size = zone->spanned_pages;
->  
->  		/*
-> -		 * Set an approximate value for lowmem here, it will be adjusted
-> -		 * when the bootmem allocator frees pages into the buddy system.
-> -		 * And all highmem pages will be managed by the buddy system.
-> +		 * Initialize zone->managed_pages as 0 , it will be reset
-> +		 * when memblock allocator frees pages into buddy system.
->  		 */
-> -		zone_init_internals(zone, j, nid, freesize);
-> +		zone_init_internals(zone, j, nid, 0);
+>  .../input/touchscreen/syna,s3908.yaml         |   63 +
 
-Here, we should initialize zone->managed_pages as zone->present_pages
-because later page_group_by_mobility_disabled need be set according to
-zone->managed_pages. Otherwise page_group_by_mobility_disabled will be
-set to 1 always. I will sent out v3.
+Please run scripts/checkpatch.pl and fix reported warnings. Then please
+run `scripts/checkpatch.pl --strict` and (probably) fix more warnings.
+Some warnings can be ignored, especially from --strict run, but the code
+here looks like it needs a fix. Feel free to get in touch if the warning
+is not clear.
 
-From a17b0921b4bd00596330f61ee9ea4b82386a9fed Mon Sep 17 00:00:00 2001
-From: Baoquan He <bhe@redhat.com>
-Date: Thu, 28 Mar 2024 16:20:15 +0800
-Subject: [PATCH] mm/mm_init.c: set zone's ->managed_pages as ->present_pages
- for now
-Content-type: text/plain
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-Because page_group_by_mobility_disabled need be set according to zone's
-managed_pages later.
+Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, instead use mainline), work on fork of kernel
+(don't, instead use mainline) or you ignore some maintainers (really
+don't). Just use b4 and everything should be fine, although remember
+about `b4 prep --auto-to-cc` if you added new patches to the patchset.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- mm/mm_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index cc24e7958c0c..dd875f943cbb 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -1561,7 +1561,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 		 * Initialize zone->managed_pages as 0 , it will be reset
- 		 * when memblock allocator frees pages into buddy system.
- 		 */
--		zone_init_internals(zone, j, nid, 0);
-+		zone_init_internals(zone, j, nid, zone->present_pages);
- 
- 		if (!size)
- 			continue;
--- 
-2.41.0
+Please kindly resend and include all necessary To/Cc entries.
 
 
->  
->  		if (!size)
->  			continue;
-> @@ -1915,6 +1878,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
->  		check_for_memory(pgdat);
->  	}
->  
-> +	calc_nr_kernel_pages();
->  	memmap_init();
->  
->  	/* disable hash distribution for systems with a single node */
-> -- 
-> 2.41.0
-> 
+>  drivers/input/touchscreen/Kconfig             |   11 +
+
+
+(skipping untested bindings)
+
+..
+
+> +
+> +static int syna_tcm_probe(struct i2c_client *client)
+> +{
+> +	struct syna_tcm_data *tcm_info;
+> +	int err;
+> +
+> +	pr_info("starting probe for syna_tcm_oncell touchscreen");
+
+No, drop. Drop such msgs everywhere if you have more than only here.
+
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_I2C | I2C_FUNC_SMBUS_BYTE_DATA |
+> +					     I2C_FUNC_SMBUS_I2C_BLOCK))
+> +		return -ENODEV;
+> +
+> +	tcm_info = devm_kzalloc(&client->dev, sizeof(*tcm_info), GFP_KERNEL);
+> +	if (!tcm_info)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(client, tcm_info);
+> +	tcm_info->client = client;
+> +	tcm_info->response_buf = NULL;
+> +
+> +	of_property_read_u32(client->dev.of_node, "max-objects",
+> +			     &tcm_info->touchpanel_max_objects);
+> +
+> +	tcm_info->reset_gpio =
+> +		gpiod_get_index(&client->dev, "reset", 0, GPIOD_OUT_HIGH);
+
+Misaligned / wrongly wrapped. There is no wrapping of code after =.
+
+
+> +
+> +	tcm_info->regulators[SYNA_TCM_ONCELL_REGULATOR_VDD].supply = "vdd";
+> +	tcm_info->regulators[SYNA_TCM_ONCELL_REGULATOR_VCC].supply = "vcc";
+> +	err = devm_regulator_bulk_get(&client->dev,
+> +				      ARRAY_SIZE(tcm_info->regulators),
+> +				      tcm_info->regulators);
+> +	if (err)
+> +		return err;
+> +
+> +	// TODO: uncomment once syna_tcm_power_off is implemented
+> +	// err = devm_add_action_or_reset(&client->dev, syna_tcm_oncell_power_off, tcm_info);
+> +	// if (err)
+> +	//     return err;
+
+No dead code.
+
+> +
+> +	err = syna_tcm_power_on(tcm_info);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	// This needs to happen before the first write to the device
+> +	err = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+> +					syna_irq_handler,
+> +					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> +					"syna_tcm_oncell_irq", tcm_info);
+> +	if (err)
+> +		return err;
+> +
+> +	err = syna_tcm_run_application_firmware(tcm_info);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	// err = syna_tcm_set_normal_report_config(tcm_info);
+> +	// if (err < 0)
+> +		// pr_err("syna_tcm: failed to set normal touch report config")
+
+No dead code in the driver.
+
+> +
+> +	err = syna_tcm_get_report_config(tcm_info);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	tcm_info->input = devm_input_allocate_device(&client->dev);
+> +	if (!tcm_info->input)
+> +		return -ENOMEM;
+> +
+> +	tcm_info->input->name = TOUCHPANEL_DEVICE;
+> +	tcm_info->input->id.bustype = BUS_I2C;
+> +
+> +	input_set_abs_params(tcm_info->input, ABS_MT_POSITION_X, 0,
+> +			     le2_to_uint(tcm_info->app_info.max_x), 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_POSITION_Y, 0,
+> +			     le2_to_uint(tcm_info->app_info.max_y), 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_TOUCH_MINOR, 0, 255, 0, 0);
+> +	input_set_abs_params(tcm_info->input, ABS_MT_PRESSURE, 0, 255, 0, 0);
+> +
+> +	touchscreen_parse_properties(tcm_info->input, true, &tcm_info->prop);
+> +
+> +	err = input_mt_init_slots(tcm_info->input,
+> +				  tcm_info->touchpanel_max_objects,
+> +				  INPUT_MT_DIRECT);
+> +	if (err)
+> +		return err;
+> +
+> +	input_set_drvdata(tcm_info->input, tcm_info);
+> +
+> +	err = input_register_device(tcm_info->input);
+> +	if (err)
+> +		return err;
+> +
+> +	pr_info("syna_tcm: probe done");
+
+No, no simple function success messages. There is already infrastructure
+for this (tracing, sysfs).
+
+> +	tcm_info->initialize_done = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id syna_driver_ids[] = {
+> +	{
+> +		.compatible = "syna,s3908",
+> +	},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, syna_driver_ids);
+> +
+> +static const struct i2c_device_id syna_i2c_ids[] = { { TOUCHPANEL_DEVICE, 0 },
+
+That does not look like kernel coding style.
+
+> +						     {} };
+> +MODULE_DEVICE_TABLE(i2c, syna_i2c_ids);
+> +
+> +// static const struct dev_pm_ops syna_pm_ops = {
+> +//     .suspend = syna_i2c_suspend,
+> +//     .resume = syna_i2c_resume,
+> +// };
+
+Please do not submit dead code.
+
+
+Best regards,
+Krzysztof
 
 
