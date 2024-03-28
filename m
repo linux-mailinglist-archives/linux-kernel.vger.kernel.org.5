@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-122537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B9488F924
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:52:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0D1C88F925
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 08:52:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 824C91C2502F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:52:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C43701C25989
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 07:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D784E5D8FD;
-	Thu, 28 Mar 2024 07:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B705FB99;
+	Thu, 28 Mar 2024 07:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VefAOzEl"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+vPaUDi"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41D15B1E3;
-	Thu, 28 Mar 2024 07:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7305FB89;
+	Thu, 28 Mar 2024 07:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711612278; cv=none; b=sRETaakQfKJa8DOUHEnU1gu2jed4bzVCEWhwb6VcwY0XeGCgjdcUBQ/IlR8xwBERxftYEBDUVrGsw0FDMpbee1ReXAdNhoR2lLjXW3KDoRXS6DNr7UJqN2REYwfAqbtpQY3ESdnFEmJyopd48gG6pvmL97xuRGORWQIvtPVdmdY=
+	t=1711612281; cv=none; b=LqSxlIgXdPBVJ2hyWzTwBXHiO9hMZqOf1m0WHFfWYzx/csAPNqrajjPVMYq/MrWpPR+MByvuhcEWke/hhQw7BIOhOWhUOxF99YUh3ZtU2gGIi2VKTATlV18wfNPh+K/QtIe8mFEPY7Qr+LgfYjPKmAe3MF2Rz14vB1uKEzFepo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711612278; c=relaxed/simple;
-	bh=N3g/1gJrg9TfDFHDhZDcoAnyjd3OaQOWBx3iO3g+BTI=;
+	s=arc-20240116; t=1711612281; c=relaxed/simple;
+	bh=e2O4iV9sJsNP5W8dr/Q+G/8c4Lr9bkbWeoqiWsoecC4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NUBRrT/N/EVtpxVrQgWH3RR/ogUz7wY0EEng1rwHYJVoz0rll5gzjpMasMoKeN10GnqXxzxK/eKtoZHrezgn9FHb4oNC1ugkWvez6RW4RVXff5Tz8Zfn0DCwNVnw72hc8VeLtaoeF5PCQnenleM06rhmfh7hUp9q/AWHKfG25qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VefAOzEl; arc=none smtp.client-ip=209.85.210.178
+	 MIME-Version; b=PhBXAgxynvfC4YR96B4Kk4qLg5QlYmBtbEuXdAFY9X9F2j46KZo7KtYn0tepT5m3pWHqSlGMxVkDx1r5APl7533//b3t4zQ9JEQ1fbzFxz8WcMH4Sc7muVJFvphOxyklu2fXRxGKIjbkKTCOhRTIPnrvoSIVP9WQfA0+b7WcBnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+vPaUDi; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6eac64f2205so598209b3a.2;
-        Thu, 28 Mar 2024 00:51:16 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e6b5432439so633865b3a.1;
+        Thu, 28 Mar 2024 00:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711612276; x=1712217076; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711612279; x=1712217079; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kZNpgupDg2bfZqoYSY4w9xqU9rN1cJ0j5BbUJd8co30=;
-        b=VefAOzElDp++U70u98m1ge/rw+6oF+FFgwC/63cnPNFC/f3dlCHMI5IR3wVsOJNGzS
-         j8zrfeJHWdVtLAwS9tRxsCd6Mb8CVnH2vJTNg67F6q89OatooniDd2onJJ95/Gh/OapN
-         mgw0j1xuPqNwqnEICD/dwc/DNUoiJVVYPsAWMqJQfCd27vHxngKeMPCLtKOSB/UUAcLG
-         3Wn0JMnKatgLOCrz4DPzjM7rLw75lEM8Zg8rNSvpCW0EJ39UbQATNp7OFCgzvrHKcKMX
-         xgmILeEGhcyf3bwoOfsU/zFeEQqgaynjloof6DPj5dB/JQsXwd3zX9vbYc7uEJr/tOnW
-         px3Q==
+        bh=rGirO6AjDMqe2sVAIHTJAIXsudaabgHkxaTMsIO4NV8=;
+        b=c+vPaUDi+VTlvTWYMvruQJn+2q4IYplPBkTpJq4S+p0whW2vWO+kQ5r4lFhdfZ5Xf2
+         59C1iuXy5ovTJ3O/HpnSNkAnrJhaLF1vmUaui4D5GbfJncoC9TggNPz7WaekzgWEu9U5
+         OGnaLOLUri+/LFEzMkqNudTQ9szc53dMdwtgFsSGGP25iX+F2PBtJize5rKGw0cn0I3Z
+         NmdmYAWyiZCVgr6/+cWAXzWAEGERgz/mREZvddfeAXb9lKDyjihgaH6SD0lFaa/XqaoO
+         KQ9pyrj0yg+aGkwSNl1lIc1ZXFhP7Gx813RyuAp7ctw6ai95LGi47ybTN+KBBSfSSrBZ
+         lGYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711612276; x=1712217076;
+        d=1e100.net; s=20230601; t=1711612279; x=1712217079;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kZNpgupDg2bfZqoYSY4w9xqU9rN1cJ0j5BbUJd8co30=;
-        b=G/ke1aEPOu/YkNZjSjTOt1jrQkhIrN5oKBT6D6XqIzfg50Y//XmBTJj2UOGh77zGlm
-         n1WTDoJrpg7y6gzxPsNaNCTEpuq1k5q76XtMp8L8M3RFlPCJlPjANyhWQ08yft/c5rd7
-         5YHwW1i0jU9OkiXkimjf3lYfsr5tKAkf8yNcUD5G/zptJHAvk1txAnf+Z56ug8z7oG9a
-         SUO5xjgWv8RefpnVcpXIXOfxcENf4TPNA2aE969xPtIplHrB+QOvGJxC/VqeaAozHDfa
-         wCYyrLDHpC51gsRERDTdqQ/IcDsacbqUQn/Li1M0he8kCcsqa6/k/Tlesw/f24WDfh4N
-         /hlw==
-X-Gm-Message-State: AOJu0YwUQY9AsFevOtdgDM2PFA+kax3p7KxqHaFHX/DB1EO4NHX2ndom
-	HvE+mEilaivn1INzEmCwz+rKAA1yLfIVA/tQFnK0s8W30hAseS1GgVCtYXSO
-X-Google-Smtp-Source: AGHT+IEIaoWEFLOj5YGQX0oavQNxsIj6yrF25pRpP3Mp20xsQmW90Qs/s+goFqivAkIitJ0zpE6Mdw==
-X-Received: by 2002:a05:6a00:1d08:b0:6ea:df40:8a18 with SMTP id a8-20020a056a001d0800b006eadf408a18mr93965pfx.16.1711612275673;
-        Thu, 28 Mar 2024 00:51:15 -0700 (PDT)
-Received: from localhost ([198.11.176.14])
-        by smtp.gmail.com with ESMTPSA id g5-20020aa79f05000000b006eac4d7b2e1sm746500pfr.113.2024.03.28.00.51.15
+        bh=rGirO6AjDMqe2sVAIHTJAIXsudaabgHkxaTMsIO4NV8=;
+        b=NDnDEwuy1has6ql6qjjmFT+uglQQWVI32oCQrZzH/2eh3xXGlEhnICtiMPZbJNUpyh
+         5x6TSxThEBjvwFDGUJBHd1JDvn2IMd4+o4cbqRYBc2+6a55Gwfirsj5EhZ6aQVLpR+Zw
+         x7wLGUmAm8TUbfSadhlwURut/YW/6E6E2QYhvvZP2SWL5k2fvWgkZkUmChqFDL02PBQt
+         wZQeUNK7XUxQOvyjWgLv+go3WYh5IqA/AY/vUunHftwOaxjr6mEb5xLtZ2fgJd3/9cWT
+         W/K+b5QC4HLIvyEkYS16DkwA1xDkpiFzGvghotxfBuQqK7LYeX2C0SA/XXUcvCXE7mzR
+         95ow==
+X-Gm-Message-State: AOJu0YwOSuGdFFG4HyqtN/O2vlm1zt/TED8EGlDgWPs8aOZgi7t2PuD9
+	z4oxo6E9oL79aG95+RC4u1ITz2x1QifmA3Z5aLFi43EEkb20+LhsWtT5CqoW
+X-Google-Smtp-Source: AGHT+IG1e0Su/WUp6fMVEFwpsiDpgQVWG/zovyoLs1TQAfdSlcIQWafNpLlbpYUzDm1mm7e7t5ivfg==
+X-Received: by 2002:aa7:8889:0:b0:6e7:48ef:aeca with SMTP id z9-20020aa78889000000b006e748efaecamr2351976pfe.9.1711612279071;
+        Thu, 28 Mar 2024 00:51:19 -0700 (PDT)
+Received: from localhost ([47.254.32.37])
+        by smtp.gmail.com with ESMTPSA id g18-20020a62e312000000b006eadf4c2b67sm71991pfh.92.2024.03.28.00.51.18
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Mar 2024 00:51:15 -0700 (PDT)
+        Thu, 28 Mar 2024 00:51:18 -0700 (PDT)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: rcu@vger.kernel.org,
@@ -80,18 +80,10 @@ Cc: rcu@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH 07/10] sched/core: Add rcu_preempt_switch()
-Date: Thu, 28 Mar 2024 15:53:15 +0800
-Message-Id: <20240328075318.83039-8-jiangshanlai@gmail.com>
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH 08/10] rcu: Implement PCPU_RCU_PREEMPT_COUNT framework
+Date: Thu, 28 Mar 2024 15:53:16 +0800
+Message-Id: <20240328075318.83039-9-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240328075318.83039-1-jiangshanlai@gmail.com>
 References: <20240328075318.83039-1-jiangshanlai@gmail.com>
@@ -105,54 +97,149 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-When the per-cpu rcu_preempt_count is used, it has to be switched too
-on context-switching.  And the instructions to switch the per-cpu
-rcu_preempt_count are meager, so it is inlined to avoid the overhead
-in the scheduler.
+When the arch code provides HAVE_PCPU_RCU_PREEMPT_COUNT and the
+corresponding functions, rcu_preempt core uses the functions to
+implement rcu_read_[un]lock, rcu_preempt_depth(), special bits,
+switching and so on.
 
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 ---
- kernel/rcu/rcu.h    | 5 +++++
- kernel/sched/core.c | 2 ++
- 2 files changed, 7 insertions(+)
+ include/linux/rcupdate.h | 33 +++++++++++++++++++++++++++++++++
+ kernel/rcu/Kconfig       |  8 ++++++++
+ kernel/rcu/rcu.h         |  4 ++++
+ kernel/rcu/tree_plugin.h |  8 ++++++++
+ 4 files changed, 53 insertions(+)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index b17b2ed657fc..ea5ae957c687 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -668,4 +668,9 @@ int rcu_stall_notifier_call_chain(unsigned long val, void *v);
- static inline int rcu_stall_notifier_call_chain(unsigned long val, void *v) { return NOTIFY_DONE; }
- #endif // #else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index cc77d76a870b..bf369741ef93 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -70,6 +70,8 @@ static inline bool same_state_synchronize_rcu(unsigned long oldstate1, unsigned
  
-+static inline void
-+rcu_preempt_switch(struct task_struct *prev, struct task_struct *next)
+ void rcu_read_unlock_special(void);
+ 
++#ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT
++
+ void __rcu_read_lock(void);
+ void __rcu_read_unlock(void);
+ 
+@@ -81,6 +83,37 @@ void __rcu_read_unlock(void);
+  */
+ #define rcu_preempt_depth() READ_ONCE(current->rcu_read_lock_nesting)
+ #define rcu_preempt_depth_set(val) WRITE_ONCE(current->rcu_read_lock_nesting, (val))
++#define pcpu_rcu_preempt_special_set() do { } while (0)
++#define pcpu_rcu_preempt_special_clear() do { } while (0)
++
++#else /* #ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT */
++
++#include <asm/rcu_preempt.h>
++
++static __always_inline void __rcu_read_lock(void)
 +{
++	pcpu_rcu_preempt_count_add(1);
++	barrier();
 +}
 +
++static __always_inline void __rcu_read_unlock(void)
++{
++	barrier();
++	if (unlikely(pcpu_rcu_preempt_count_dec_and_test()))
++		pcpu_rcu_read_unlock_special();
++}
++
++static inline int rcu_preempt_depth(void)
++{
++	return pcpu_rcu_preempt_count();
++}
++
++static inline void rcu_preempt_depth_set(int val)
++{
++	pcpu_rcu_preempt_count_set(val);
++}
++
++#endif /* #else #ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT */
+ 
+ #else /* #ifdef CONFIG_PREEMPT_RCU */
+ 
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index e7d2dd267593..5d91147bc9a3 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -345,4 +345,12 @@ config RCU_DOUBLE_CHECK_CB_TIME
+ 	  Say Y here if you need tighter callback-limit enforcement.
+ 	  Say N here if you are unsure.
+ 
++config HAVE_PCPU_RCU_PREEMPT_COUNT
++	bool
++
++config PCPU_RCU_PREEMPT_COUNT
++	def_bool y
++	depends on PREEMPT_RCU && HAVE_PCPU_RCU_PREEMPT_COUNT
++	depends on !PROVE_LOCKING && !RCU_STRICT_GRACE_PERIOD
++
+ endmenu # "RCU Subsystem"
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index ea5ae957c687..2322b040c5cd 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -671,6 +671,10 @@ static inline int rcu_stall_notifier_call_chain(unsigned long val, void *v) { re
+ static inline void
+ rcu_preempt_switch(struct task_struct *prev, struct task_struct *next)
+ {
++#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
++	prev->rcu_read_lock_nesting = rcu_preempt_depth();
++	pcpu_rcu_preempt_switch(next->rcu_read_lock_nesting, next->rcu_read_unlock_special.s);
++#endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
+ }
+ 
  #endif /* __KERNEL_RCU_H */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d44efa0d0611..7c3fedd9180c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -95,6 +95,7 @@
- #include "../workqueue_internal.h"
- #include "../../io_uring/io-wq.h"
- #include "../smpboot.h"
-+#include "../rcu/rcu.h"
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 880b3fef1158..db68d0c1c1f2 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -107,10 +107,13 @@ static bool sync_rcu_exp_done(struct rcu_node *rnp);
  
- EXPORT_TRACEPOINT_SYMBOL_GPL(ipi_send_cpu);
- EXPORT_TRACEPOINT_SYMBOL_GPL(ipi_send_cpumask);
-@@ -6727,6 +6728,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		 */
- 		++*switch_count;
+ #define set_rcu_preempt_special(reason)	do {				\
+ 	WRITE_ONCE(current->rcu_read_unlock_special.b.reason, true);	\
++	pcpu_rcu_preempt_special_set();					\
+ 	} while (0)
  
-+		rcu_preempt_switch(prev, next);
- 		migrate_disable_switch(rq, prev);
- 		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
+ #define clear_rcu_preempt_special(reason)	do {			\
+ 	WRITE_ONCE(current->rcu_read_unlock_special.b.reason, false);	\
++	if (!current->rcu_read_unlock_special.s)			\
++		pcpu_rcu_preempt_special_clear();			\
+ 	} while (0)
  
+ /*
+@@ -379,6 +382,8 @@ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
+ 	return READ_ONCE(rnp->gp_tasks) != NULL;
+ }
+ 
++#ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT
++
+ /* limit value for ->rcu_read_lock_nesting. */
+ #define RCU_NEST_PMAX (INT_MAX / 2)
+ 
+@@ -436,6 +441,8 @@ void __rcu_read_unlock(void)
+ }
+ EXPORT_SYMBOL_GPL(__rcu_read_unlock);
+ 
++#endif /* #ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT */
++
+ /*
+  * Advance a ->blkd_tasks-list pointer to the next entry, instead
+  * returning NULL if at the end of the list.
+@@ -489,6 +496,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 		return;
+ 	}
+ 	t->rcu_read_unlock_special.s = 0;
++	pcpu_rcu_preempt_special_clear();
+ 	if (special.b.need_qs) {
+ 		if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
+ 			rdp->cpu_no_qs.b.norm = false;
 -- 
 2.19.1.6.gb485710b
 
