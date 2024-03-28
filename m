@@ -1,139 +1,120 @@
-Return-Path: <linux-kernel+bounces-123133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 696F189029B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:05:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09CE78902A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 995E81C282D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:05:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5E621F274FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A60E128826;
-	Thu, 28 Mar 2024 15:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59CF12DD90;
+	Thu, 28 Mar 2024 15:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HuYVPnyW"
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="zC7qQt9D"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8347E772
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 15:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E027E772;
+	Thu, 28 Mar 2024 15:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711638333; cv=none; b=Is16FNttQtmSkoQDqqQ1iG/supOJs/g9KpCU4Q5vRbwyzTe4AR3eohEqSnbI28VAMVG9XQWe2P155v/VzQGMZyRUlV/l7ksGnh/hCdMDjwRIfphliBCILsfiel2BPLubO4NBy83tesfo5Nqu76yxazoFysAWLn7bQs7yYvd4lAI=
+	t=1711638401; cv=none; b=AEL81ssOhYVARd3aFOjQtgS+mdwAgrJmdSVCH7eXMoknmde9Al0hINXKcXosnGrdYLqvn5nCK5mY5Dd0fy7DJaI1xY4qZqHP17Ykc1BQikv8hazYDKoB+Ebg/eLv0z73IOYq5lfGb5osC1uxJcQOI5JETAw52X923R2fZPLdG8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711638333; c=relaxed/simple;
-	bh=DvVtVkdj/xq9SPMDDWqV0PydJ85/r49KUBHLzmjWpFM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tUUoT75r/HFY1N8qY9Oiaak3W7GzN8wZcHY1SQTYEqcyT/gxdoulwm6DNW4/QCxF655KJN9tOxR53hlqc4B3rthmWPC0BeoKYhOrzEO/nmeNn1do3N1q0sWdwQ7CKXZ7U5+qhrK0EbuQl8w8RYti0hI+TWEo3a3EL0nprs4j+lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HuYVPnyW; arc=none smtp.client-ip=209.85.221.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-33ec06aac83so777560f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 08:05:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711638330; x=1712243130; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jmyU6Yu7TOVivZ+D+Eulo3umiyHrJM2iYAbO8iKOjRU=;
-        b=HuYVPnyWiNdzdrAJ7vnssUFkd7g1XfSItNCwNViBDMtbHY/ayMUHVVHbcki8g/jwcP
-         5xUaIGo9ttQzds6Gri0KNsbk3xO3gPoVz/kvZSqBrAW9XTb5xSAmtfb6YQrspjBhi9+G
-         rHSA+hGRhJXcU6IIZAiSm0n+OPnnpJFcK0ZJYLQp8F9q3fq4mpKs/THxcw8g0Wt2tc4m
-         c3mgpk+T7E2iwy77wrJk7ujxnwg4VzWJn2Q5Q2weknWH+BbcezOs+I/iNv5i4/F1+HxE
-         c+DTXhYG3/oobV8YGWMabL7YHrfcIELtj9ohV0yrGClb8nbl+FStnv4iLAXIumtVJ6T6
-         yugQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711638330; x=1712243130;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jmyU6Yu7TOVivZ+D+Eulo3umiyHrJM2iYAbO8iKOjRU=;
-        b=UaLsDNUwdC+3nYiMJgBvd4WZ+W2C66JviXq97oG4XFr3lPQdTwaS3MvjnGZymj0xSd
-         ivrJGPV20Yr1ic5Xf+7QTRseVKUVEv40w2rt8OFgp76FRdKipdnmgafpuHobZUEiCMtC
-         c+eEnoaOpeYxIOxuQR41Xh0q7SlybRzPz7wl7/GS+khTq+pk7z11eQr8/FPlz4I2atg8
-         zrSPoePXBPXHidwM7ftKlUuDOBomYCEDLWIUIjx7wk7tUgT7rHHChQih+MT1P5hY+QQ8
-         MTBVP1Qjo9U3vdZzEW7ELEhDAopdOIw2SGUqLsT5aFjR5GhDnLB3Uennb0rzRXd83Oay
-         fLtA==
-X-Forwarded-Encrypted: i=1; AJvYcCU94lNffmXNDE709D88C7BKKXolZBSuaWPgyFG9E/pa0Of9BzJgu66f+RVA9PA7hjDSWDvWTUpTzqN2J0tnyT9OTcG1nAE3uen71uBe
-X-Gm-Message-State: AOJu0Yyr4MbSEL9MinNs4dtBDb6GhQWGZbGih+EKU3wN22flrUqKWzNF
-	9vfqz0cmuoQfc4dI3d5z6oi0u9NRfzJ56V1htQootoQ5UXtQnNxoGbu45JGqDU4Yux4Inw==
-X-Google-Smtp-Source: AGHT+IHeQavSUikChNW3HWA6yHXSdwGP1+pS+iG/BsqefW9XS1E63O6QhSB+Rx7xIOBwQ0pIy9D5+P6V
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a5d:484b:0:b0:33d:7187:3102 with SMTP id
- n11-20020a5d484b000000b0033d71873102mr6600wrs.9.1711638329971; Thu, 28 Mar
- 2024 08:05:29 -0700 (PDT)
-Date: Thu, 28 Mar 2024 16:05:18 +0100
+	s=arc-20240116; t=1711638401; c=relaxed/simple;
+	bh=tFIN/tKvxw1OPQyXxVyqG9hoRwQxc5PdtvaAaSxuREw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uWVDhbofI225QAXVabZ1oANOmpnqtoT3abQ879zxsamtD5LqulobpDGmc+Jk2owD2UxrflM6nQB6z03da+q3t2N+uDcYzBRQwtqwKPzi04V+KHkHl/9sG8CunffSGiQde12d3qFgPeTthvrvOaLK2H5BPpAXfNuDA6tQ537rHVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=zC7qQt9D; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=HlX7rSDT+xTTJ0yT83bN1/Fuwujcx7/ZH4CK3LA5S8Q=;
+	t=1711638399; x=1712070399; b=zC7qQt9DAfcLxsoFIpmLF77yysU10TQLtSicYa2HvaoHOcJ
+	hdXNT7O+di3Sa7THW+G6YXui+N8Aao61AREokP3BThG3I0JZLO6VPFQyzIIFUTCLeZB6VmsbmwWJY
+	a2+8NXyzcLKoQJjLSxjgbAmF03x7ZfJowBstutquIO86/Vizv7xE30QIuJu3PFJ+RR5SbB514yQpg
+	gLvlnQJRolohgeUq4IvLbaaJ7ghUBQ3P+A5PfOGWeYtQ0uJs7UPHHRBlxSj1+nvE3kI1kqAieT3F1
+	LRFT8pnkz0PmtOiTLjslBaGdnNOUQksRXtYJTtWWlIlHoN0DrYmKKKqOfSemImPw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rprKn-0000Xu-B6; Thu, 28 Mar 2024 16:06:29 +0100
+Message-ID: <2b2a6c9f-4df2-4962-b926-09adccd20715@leemhuis.info>
+Date: Thu, 28 Mar 2024 16:06:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2271; i=ardb@kernel.org;
- h=from:subject; bh=ZTMdFQoy1C+mpy8vjsEBBo2nOP7zfUzVYdaGjwTiF4M=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIY21XXfJxkkuS05/fLcpLXuH846uB3tm6WUyPnkjUx5Sx
- vjjrOzKjlIWBjEOBlkxRRaB2X/f7Tw9UarWeZYszBxWJpAhDFycAjCRLhNGhh3yn9Puc8bFPPpR
- b+F72jNpzQr2KZ/tNp7MyUnzmsOac4SR4cOhVSmCO3ZfXn5mtuTHZxG3JJuj70kJFxUH7d543PD NcQYA
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240328150517.2584470-2-ardb+git@google.com>
-Subject: [PATCH] x86/efistub: Reinstate soft limit for initrd loading
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-efi@vger.kernel.org
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Ard Biesheuvel <ardb@kernel.org>, Radek Podgorny <radek@podgorny.cz>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: dmaengine: CPU stalls while loading bluetooth module
+To: Vinod Koul <vkoul@kernel.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+ parthiban@linumiz.com, saravanan@linumiz.com,
+ 'karthikeyan' <karthikeyan@linumiz.com>,
+ "bumyong.lee" <bumyong.lee@samsung.com>
+References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
+ <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
+ <000001da6ecc$adb25420$0916fc60$@samsung.com>
+ <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
+ <000001da7140$6a0f1570$3e2d4050$@samsung.com>
+ <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
+ <001001da7a60$78603130$69209390$@samsung.com>
+ <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
+ <8734a80b-c7a9-4cc2-91c9-123b391d468c@leemhuis.info>
+ <ZgUTbiL86_bg0ZkZ@matsya>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZgUTbiL86_bg0ZkZ@matsya>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711638399;3bbc3f2a;
+X-HE-SMSGID: 1rprKn-0000Xu-B6
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On 28.03.24 07:51, Vinod Koul wrote:
+> On 26-03-24, 14:50, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+>> for once, to make this easily accessible to everyone.
+>>
+>> Vinod Koul, what's your option here? We have two reports about
+>> regressions caused by 22a9d958581244 ("dmaengine: pl330: issue_pending
+>> waits until WFP state") [v6.8-rc1] now:
+>>
+>> https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
+>>
+>> https://lore.kernel.org/all/ZYhQ2-OnjDgoqjvt@wens.tw/
+>> [the first link points to the start of this thread]
+>>
+>> To me it sounds like this is a change that better should be reverted,
+>> but you are of course the better judge here.
+> 
+> Sure I have reverted this,
 
-Commit
+Thx!
 
-  8117961d98fb2 ("x86/efi: Disregard setup header of loaded image")
+> so original issue exist as is now...
 
-dropped the memcopy of the image's setup header into the boot_params
-struct provided to the core kernel, on the basis that EFI boot does not
-need it and should rely only on a single protocol to interface with the
-boot chain. It is also a prerequisite for being able to increase the
-section alignment to 4k, which is needed to enable memory protections
-when running in the boot services.
+Yeah, that's a downside, but that's afaik how Linus wants these
+situations to be handled. Hopefully it will motivate someone to fix the
+original issue without causing a regression.
 
-So only the setup_header fields that matter to the core kernel are
-populated explicitly, and everything else is ignored. One thing was
-overlooked, though: the initrd_addr_max field in the setup_header is not
-used by the core kernel, but it is used by the EFI stub itself when it
-loads the initrd, where its default value of INT_MAX is used as the soft
-limit for memory allocation.
+Thx again! Ciao, Thorsten
 
-This means that, in the old situation, the initrd was virtually always
-loaded in the lower 2G of memory, but now, due to initrd_addr_max being
-0x0, the initrd may end up anywhere in memory. This should not be an
-issue principle, as most systems can deal with this fine. However, it
-does appear to tickle some problems in older UEFI implementations, where
-the memory ends up being corrupted, resulting in errors when unpacking
-the initramfs.
+P.S.:
 
-So set the initrd_addr_max field to INT_MAX like it was before.
+#regzbot fix: dmaengine: Revert "dmaengine: pl330: issue_pending waits
+until WFP state"
 
-Fixes: 8117961d98fb2 ("x86/efi: Disregard setup header of loaded image")
-Reported-by: Radek Podgorny <radek@podgorny.cz>
-Closes: https://lore.kernel.org/all/a99a831a-8ad5-4cb0-bff9-be637311f771@podgorny.cz
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/libstub/x86-stub.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 6a6ffc6707bd..d5a8182cf2e1 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -496,6 +496,7 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
- 	hdr->vid_mode	= 0xffff;
- 
- 	hdr->type_of_loader = 0x21;
-+	hdr->initrd_addr_max = INT_MAX;
- 
- 	/* Convert unicode cmdline to ascii */
- 	cmdline_ptr = efi_convert_cmdline(image, &options_size);
--- 
-2.44.0.396.g6e790dbe36-goog
-
+(that's
+https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git/commit/?h=fixes&id=afc89870ea677bd5a44516eb981f7a259b74280c
+currently)
 
