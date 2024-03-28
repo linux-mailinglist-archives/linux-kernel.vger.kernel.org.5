@@ -1,151 +1,320 @@
-Return-Path: <linux-kernel+bounces-123272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A258905C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D7738905DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 17:43:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D583B1F26E90
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:41:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8A831F244A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B591139596;
-	Thu, 28 Mar 2024 16:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B0A13A418;
+	Thu, 28 Mar 2024 16:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="nwqpFkoD"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OtvsOjQ6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC1F3BBF3;
-	Thu, 28 Mar 2024 16:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B0D13A41B
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 16:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711643834; cv=none; b=k6CGDXCM9aMBEAi2Gm1//Kh+NdhZKZv73k87mUWe7V1zgmKFDLvObXxRI8mFQtCGfXCgIUdS8jiTqJV26JSzKeJmUou/fdiF/BoIc1sB101XdxDAUfqbKkO1giH2Dqo+ddznGqIEv1HcL+EWpzF8RxWo9CiEc1YaGUsWG6ttt4U=
+	t=1711643876; cv=none; b=hySP2QbEs1w6y7tD40lYLkHjS2BltfbbMbK+QOFhOLCQ03JpbItrcn5sVEuI1lnGAmeRVwGXWrmU7ajADMk1XDV3nuZhwCFsau9//IWTMInyh8qOOappUd5qzzBmCLuXmlVRW/45fctLtbt/Ok9GBEuTLVZacddPq3RRxsoiUG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711643834; c=relaxed/simple;
-	bh=/iFXd2bzZPhj4ozZeU0FU3oFCOqJ/fd5qZILAEiheyc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IpwL5yQ3uSN5SJX010gLG3cKbxWvD3YrhUkYkPr3bPa8vB2WW3QSJNirxkRR6R8hfsQbF4K0nbT5lFXrigyQvOlAetYXL4ae5tekWucJPG+cHKzMIboHlfysdoug9q5HrlW30St4DqqSB4caYBKqdg1sf0S/oe+zf5NlUmkke0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=nwqpFkoD; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3E566D20;
-	Thu, 28 Mar 2024 17:36:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711643797;
-	bh=/iFXd2bzZPhj4ozZeU0FU3oFCOqJ/fd5qZILAEiheyc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=nwqpFkoD5oaC+xPHjSJyuDP0OZF+tppig+7BmRgQFdX6Xgoy2qU1h4Cg2L200Y14F
-	 xwvFHVehOa7lOAaiGkEARFKZ3XtrUjvYaTE9AwOlf28aSB2PVm+l1PrFYGxAvcAyBh
-	 QMzqCzQZzkmEGmsWm6k2Ei+YODdNm7sb91OnT2VM=
-Message-ID: <4f994662-347d-4562-9108-5d7e3798fa51@ideasonboard.com>
-Date: Thu, 28 Mar 2024 18:37:06 +0200
+	s=arc-20240116; t=1711643876; c=relaxed/simple;
+	bh=0kNwVzCbfCMNGoOxBfZPY7zyoeVfnGaCcVqz433zuec=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gTjUahNWzGZShItWdXTIh1oeYDwnQ43Q5zu9wlyvPM2ZZLFuDOB3Skq9kd8SJWyJoRFcsWMLR9+7NL1LUtGTo32/OaDxLuFrjvXyuWxuDBleQaz5W/KyjIEG7FslyWRHue2sElRVGmBgu0Du+eL+KqblUPAYJbs8WyJ+czWdwP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OtvsOjQ6; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711643873; x=1743179873;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0kNwVzCbfCMNGoOxBfZPY7zyoeVfnGaCcVqz433zuec=;
+  b=OtvsOjQ66UUO3LhndydQ5qk3GrVsqK73/Jun7/3/+Nj8GOQZfcjBIZ8w
+   qH7qk0yYh5AYehL6QQCgcImbMulNhRmY8eLNusjsYxSzJNrLn/z6SH1He
+   ZbKO8k9lWNVJdKxDTj07BB00jxqJMJNHIU5b1dXi1sIazz5lrVdBMbNYO
+   Y5YrfEQCvsIohqh2OnrNb0umzcJxWzb9Ulp4ByPX05PSw5u7GLOJhrJ2j
+   1wtJXD0fzf2lh85Eo4a7qmhHqMU69DFKaIePozOWEn7qJdIzrlVOAsAAg
+   Dr+m3RRo/JFChbL76AxOiHUv98461SMf/h1VuIdhMPQKjbb9sjo+/XcrT
+   A==;
+X-CSE-ConnectionGUID: Wzn2dY5tTuSdEge/4l3DmA==
+X-CSE-MsgGUID: J5LTghV7RKqROv/Ss9/VSg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="24296525"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="24296525"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 09:37:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="39852819"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 09:37:52 -0700
+From: Tony Luck <tony.luck@intel.com>
+To: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Tony Luck <tony.luck@intel.com>
+Subject: [PATCH 00/74] New Intel CPUID families
+Date: Thu, 28 Mar 2024 09:37:43 -0700
+Message-ID: <20240328163746.243023-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dma: xilinx_dpdma: Remove unnecessary use of
- irqsave/restore
-Content-Language: en-US
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
-References: <20240308210034.3634938-1-sean.anderson@linux.dev>
- <20240308210034.3634938-3-sean.anderson@linux.dev>
- <0652c82f-b0a2-4881-ac51-38399b180ad4@ideasonboard.com>
- <d6a8c1c8-258a-447b-b6cd-199f33199388@linux.dev>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <d6a8c1c8-258a-447b-b6cd-199f33199388@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 28/03/2024 17:00, Sean Anderson wrote:
-> On 3/27/24 08:27, Tomi Valkeinen wrote:
->> Hi,
->>
->> On 08/03/2024 23:00, Sean Anderson wrote:
->>> xilinx_dpdma_chan_done_irq and xilinx_dpdma_chan_vsync_irq are always
->>> called with IRQs disabled from xilinx_dpdma_irq_handler. Therefore we
->>> don't need to save/restore the IRQ flags.
->>
->> I think this is fine, but a few thoughts:
->>
->> - Is spin_lock clearly faster than the irqsave variant, or is this a pointless optimization? It's safer to just use irqsave variant, instead of making sure the code is always called from the expected contexts.
-> 
-> It's not an optimization. Technically this will save a few instructions,
-> but...
-> 
->> - Is this style documented/recommended anywhere? Going through docs, I only found docs telling to use irqsave when mixing irq and non-irq contexts.
-> 
-> The purpose is mainly to make it clear that this is meant to be called
-> in IRQ context. With irqsave, there's an implication that this could be
-> called in non-IRQ context, which it never is.
+Q1: Where are all the other parts of this series. I only got 1-3.
+A1: There are ~2700 subscribers to LKML. I want to get some feedback
+on the approach and naming etc. before spamming everyone with a 74
+patch series.
 
-Hmm, I see. Yes, I think that makes sense.
+Q2: Can I get the other parts?
+A2: Sure. I posted them to patches@lists.linux.dev so you can get them
+with:
+$ b4 am 20240328090459.242500-tony.luck@intel.com
+or get from kernel.org with:
+$ git fetch git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git new_families
 
->> - Does this cause issues on PREEMPT_RT?
-> 
-> Why would it?
+Q3: When are CPUs using new families coming?
+A3: Soon-ish. We have some time to get the infrastructure right.
 
-I was reading locktypes.rst, I started wondering what it means if 
-spinlocks are changed into sleeping locks. But thinking about it again, 
-it doesn't matter, as the irq will still be masked when in irq-context.
+Intel has been using family 6 almost exclusively for many
+years. As a result, Linux has built up infrastructure like
+X86_MATCH_INTEL_FAM6_MODEL() to make it easy for model specific code to
+use the #defines for each Intel CPU model.
 
-So:
+But the reign of family 6 is about to end. Intel will begin using non-zero
+values for the extended family field in CPUID(1).EAX. The minimal patch
+size approach to handle these would be to clone the FAM6 macros. But
+that will get messy as these prolifrate. This approach does not have an
+elegant solution if a switch() statement needs to choose between CPUs
+from different families.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Dave Hansen suggested that a more general cleanup that provides
+CPU #defines that encode all of <vendor, family, model> would make
+existing code better, and provide infrastructure that makes it trivial
+to incorporate new families.
 
-  Tomi
+Big picture view is that code like this:
 
+  if (c->x86_vendor == X86_VENDOR_INTEL && c->x86 == 6 && c->x86_model == INTEL_FAM6_ICELAKE_X)
+
+can become:
+
+  if (c->x86_vfm == INTEL_ICELAKE_X)
+
+which is:
+a)	Simpler
+b)	Faster
+c)	More resilient (can't forget to check vendor & family along with model)
+d)	Code style doesn't change for every new family.
+
+Note that "struct cpuinfo_x86" gains a new xf6_vfm field and the ICELAKE
+#define loses the "FAM6_" substring and will be initialized with a macro
+that does the bit shuffling to fit X86_VENDOR_INTEL and a family and
+model into a "u32":
+
+#define INTEL_ICELAKE_X                 IFM(6, 0x6A) /* Sunny Cove */
+
+New CPUs in other families might look like:
+
+#define INTEL_DOUGLASCOVE		IFM(42, 0x01) /* Adams Lake */
+#define INTEL_SHELDONMONT		IFM(73, 0x01) /* Cooper Forest */
+
+Model specific "if" statements then follow the same pattern
+regardless of family:
+
+  if (c->x86_vfm == INTEL_DOUGLASCOVE || c->x86_vfm == INTEL_SHELDONMONT) {
+  }
+
+If needed these could even appear in the same switch statement:
+
+	switch (c->x86_vfm) {
+	case INTEL_ICELAKE_X:
+		...
+	case INTEL_DOUGLASCOVE:
+		...
+	case INTEL_SHELDONMONT:
+		...
+	}
+
+The existing X86_MATCH_INTEL_FAM6_MODEL() can be replaced with a new
+X86_MATCH_VFM() macro.
+
+Update can happen in three phases:
+
+1) Add infrastructure macros, new "x86_vfm" field, new CPU #defines
+
+2) Treewide update from old to new (around 70 files at current count)
+
+3) Delete the old INTEL_FAM6 and X86_MATCH_INTEL_FAM6 macros
+
+Tony Luck (74):
+  x86/cpu/vfm: Add/initialize x86_vfm field to struct cpuinfo_x86
+  x86/cpu/vfm: Add new macros to work with (vendor/family/model) values
+  x86/cpu/vfm: Update arch/x86/include/asm/intel-family.h
+  x86/cpu/vfm: Update arch/x86/crypto/poly1305_glue.c
+  x86/cpu/vfm: Update arch/x86/crypto/twofish_glue_3way.c
+  x86/cpu/vfm: Update arch/x86/events/intel/cstate.c
+  x86/cpu/vfm: Update arch/x86/events/intel/lbr.c
+  x86/cpu/vfm: Update arch/x86/events/intel/pt.c
+  x86/cpu/vfm: Update arch/x86/events/intel/uncore.c
+  x86/cpu/vfm: Update arch/x86/events/intel/uncore_nhmex.c
+  x86/cpu/vfm: Update arch/x86/events/intel/uncore_snbep.c
+  x86/cpu/vfm: Update arch/x86/events/msr.c
+  x86/cpu/vfm: Update arch/x86/events/rapl.c
+  x86/cpu/vfm: Update arch/x86/kernel/apic/apic.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/aperfmperf.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/bugs.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/common.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/intel.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/intel_epb.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/match.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/mce/core.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/mce/intel.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/mce/severity.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/microcode/intel.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/resctrl/core.c
+  x86/cpu/vfm: Update arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+  x86/cpu/vfm: Update arch/x86/kernel/smpboot.c
+  x86/cpu/vfm: Update arch/x86/kernel/tsc.c
+  x86/cpu/vfm: Update arch/x86/kernel/tsc_msr.c
+  x86/cpu/vfm: Update arch/x86/kvm/pmu.c
+  x86/cpu/vfm: Update arch/x86/kvm/vmx/vmx.c
+  x86/cpu/vfm: Update arch/x86/mm/init.c
+  x86/cpu/vfm: Update arch/x86/pci/intel_mid_pci.c
+  x86/cpu/vfm: Update arch/x86/virt/vmx/tdx/tdx.c
+  x86/cpu/vfm: Update drivers/acpi/acpi_lpss.c
+  x86/cpu/vfm: Update drivers/acpi/x86/utils.c
+  x86/cpu/vfm: Update tpm files
+  x86/cpu/vfm: Update drivers/cpufreq/intel_pstate.c
+  x86/cpu/vfm: Update drivers/cpufreq/speedstep-centrino.c
+  x86/cpu/vfm: Update drivers/edac/i10nm_base.c
+  x86/cpu/vfm: Update drivers/edac/pnd2_edac.c
+  x86/cpu/vfm: Update drivers/edac/sb_edac.c
+  x86/cpu/vfm: Update drivers/edac/skx_base.c
+  x86/cpu/vfm: Update drivers/extcon/extcon-axp288.c
+  x86/cpu/vfm: Update drivers/hwmon/peci/cputemp.c
+  x86/cpu/vfm: Update drivers/idle/intel_idle.c
+  x86/cpu/vfm: Update drivers/pci/pci-mid.c
+  x86/cpu/vfm: Update drivers/peci/cpu.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel/ifs/core.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel_ips.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel/pmc/core.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel/pmc/pltdrv.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel_scu_wdt.c
+  x86/cpu/vfm: Update
+    drivers/platform/x86/intel/speed_select_if/isst_if_common.c
+  x86/cpu/vfm: Update
+    drivers/platform/x86/intel/speed_select_if/isst_if_mbox_msr.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel/telemetry/debugfs.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel/telemetry/pltdrv.c
+  x86/cpu/vfm: Update drivers/platform/x86/intel/turbo_max_3.c
+  x86/cpu/vfm: Update
+    drivers/platform/x86/intel/uncore-frequency/uncore-frequency.c
+  x86/cpu/vfm: Update drivers/platform/x86/p2sb.c
+  x86/cpu/vfm: Update drivers/powercap/intel_rapl_common.c
+  x86/cpu/vfm: Update drivers/powercap/intel_rapl_msr.c
+  x86/cpu/vfm: Update
+    drivers/staging/media/atomisp/include/linux/atomisp_platform.h
+  x86/cpu/vfm: Update intel_soc_dts_thermal.c
+  x86/cpu/vfm: Update drivers/thermal/intel/intel_tcc_cooling.c
+  x86/cpu/vfm: Update sound/soc/intel/avs/boards/es8336.c
+  x86/cpu/vfm: Update arch/x86/events/intel/core.c
+  x86/cpu/vfm: Update arch/x86/platform/intel-mid/intel-mid.c
+  x86/cpu/vfm: Update arch/x86/platform/atom/punit_atom_debug.c
+  x86/cpu/vfm: Update arch/x86/events/intel/core.c
+  x86/cpu/vfm: Update tools/power/x86/turbostat/turbostat.c
+  x86/cpu/vfm: Update arch/x86/boot/cpucheck.c
+  x86/cpu/vfm: Delete X86_MATCH_INTEL_FAM6_MODEL[_STEPPING]() macros
+  x86/cpu/vfm: Delete all the *_FAM6_ CPU #defines
+
+ .../atomisp/include/linux/atomisp_platform.h  |  26 +--
+ include/linux/peci-cpu.h                      |   1 +
+ include/linux/platform_data/x86/soc.h         |  12 +-
+ arch/x86/include/asm/cpu_device_id.h          | 103 +++++++--
+ arch/x86/include/asm/intel-family.h           | 167 +++++++-------
+ arch/x86/include/asm/processor.h              |  12 +-
+ drivers/char/tpm/tpm.h                        |   1 +
+ drivers/char/tpm/tpm_tis_core.h               |   2 +-
+ arch/x86/boot/cpucheck.c                      |   2 +-
+ arch/x86/crypto/poly1305_glue.c               |   3 +-
+ arch/x86/crypto/twofish_glue_3way.c           |  10 +-
+ arch/x86/events/intel/core.c                  | 212 +++++++++---------
+ arch/x86/events/intel/cstate.c                | 144 ++++++------
+ arch/x86/events/intel/lbr.c                   |   3 +-
+ arch/x86/events/intel/pt.c                    |  11 +-
+ arch/x86/events/intel/uncore.c                | 100 ++++-----
+ arch/x86/events/intel/uncore_nhmex.c          |   3 +-
+ arch/x86/events/intel/uncore_snbep.c          |   5 +-
+ arch/x86/events/msr.c                         | 131 +++++------
+ arch/x86/events/rapl.c                        |  84 +++----
+ arch/x86/kernel/apic/apic.c                   |  38 ++--
+ arch/x86/kernel/cpu/aperfmperf.c              |  17 +-
+ arch/x86/kernel/cpu/bugs.c                    |  29 +--
+ arch/x86/kernel/cpu/common.c                  | 154 +++++++------
+ arch/x86/kernel/cpu/intel.c                   | 115 +++++-----
+ arch/x86/kernel/cpu/intel_epb.c               |  12 +-
+ arch/x86/kernel/cpu/match.c                   |   5 +-
+ arch/x86/kernel/cpu/mce/core.c                |   5 +-
+ arch/x86/kernel/cpu/mce/intel.c               |  20 +-
+ arch/x86/kernel/cpu/mce/severity.c            |   9 +-
+ arch/x86/kernel/cpu/microcode/intel.c         |   4 +-
+ arch/x86/kernel/cpu/resctrl/core.c            |   9 +-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c     |  21 +-
+ arch/x86/kernel/smpboot.c                     |   6 +-
+ arch/x86/kernel/tsc.c                         |   5 +-
+ arch/x86/kernel/tsc_msr.c                     |  14 +-
+ arch/x86/kvm/pmu.c                            |   8 +-
+ arch/x86/kvm/vmx/vmx.c                        |  20 +-
+ arch/x86/mm/init.c                            |  16 +-
+ arch/x86/pci/intel_mid_pci.c                  |   4 +-
+ arch/x86/platform/atom/punit_atom_debug.c     |  11 +-
+ arch/x86/platform/intel-mid/intel-mid.c       |   7 +-
+ arch/x86/virt/vmx/tdx/tdx.c                   |   7 +-
+ drivers/acpi/acpi_lpss.c                      |   4 +-
+ drivers/acpi/x86/utils.c                      |  42 ++--
+ drivers/cpufreq/intel_pstate.c                |  90 ++++----
+ drivers/cpufreq/speedstep-centrino.c          |   8 +-
+ drivers/edac/i10nm_base.c                     |  20 +-
+ drivers/edac/pnd2_edac.c                      |   4 +-
+ drivers/edac/sb_edac.c                        |  14 +-
+ drivers/edac/skx_base.c                       |   2 +-
+ drivers/extcon/extcon-axp288.c                |   2 +-
+ drivers/hwmon/peci/cputemp.c                  |   7 +-
+ drivers/idle/intel_idle.c                     | 116 +++++-----
+ drivers/pci/pci-mid.c                         |   4 +-
+ drivers/peci/cpu.c                            |  28 +--
+ drivers/platform/x86/intel/ifs/core.c         |  15 +-
+ drivers/platform/x86/intel/pmc/core.c         |  46 ++--
+ drivers/platform/x86/intel/pmc/pltdrv.c       |  16 +-
+ .../intel/speed_select_if/isst_if_common.c    |   4 +-
+ .../intel/speed_select_if/isst_if_mbox_msr.c  |   2 +-
+ .../platform/x86/intel/telemetry/debugfs.c    |   4 +-
+ drivers/platform/x86/intel/telemetry/pltdrv.c |   4 +-
+ drivers/platform/x86/intel/turbo_max_3.c      |   4 +-
+ .../intel/uncore-frequency/uncore-frequency.c |  56 ++---
+ drivers/platform/x86/intel_ips.c              |   3 +-
+ drivers/platform/x86/intel_scu_wdt.c          |   2 +-
+ drivers/platform/x86/p2sb.c                   |   2 +-
+ drivers/powercap/intel_rapl_common.c          | 118 +++++-----
+ drivers/powercap/intel_rapl_msr.c             |  16 +-
+ drivers/thermal/intel/intel_soc_dts_thermal.c |   2 +-
+ drivers/thermal/intel/intel_tcc_cooling.c     |  30 +--
+ sound/soc/intel/avs/boards/es8336.c           |   7 +-
+ tools/power/x86/turbostat/turbostat.c         | 161 +++++++------
+ 74 files changed, 1258 insertions(+), 1143 deletions(-)
+
+
+base-commit: 4cece764965020c22cff7665b18a012006359095
+-- 
+2.44.0
 
 
