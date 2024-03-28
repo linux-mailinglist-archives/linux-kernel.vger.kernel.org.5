@@ -1,155 +1,172 @@
-Return-Path: <linux-kernel+bounces-122305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE59488F4E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:50:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1E188F4E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 02:52:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AB4329D9A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4211C256F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 01:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9712374E;
-	Thu, 28 Mar 2024 01:50:15 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748BB224D0;
+	Thu, 28 Mar 2024 01:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D4GNVCUX"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611A91804A;
-	Thu, 28 Mar 2024 01:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245B5A921
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 01:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711590615; cv=none; b=df4FsJPbbA27RIuvD0gCAkRfk3MpqzZD/tmGH2vTyCWdVhPmtp1sGlVYU8yYqNUahG28qfwgyItikn2BYbIx0zw9FlDair8IjRDPPRbGPT8rXghmDtMkpFGT871PfzPTA2gWApqOuzoVGV/sa9rVIlP3eOMnuleB/fVpoeztUUo=
+	t=1711590727; cv=none; b=EgOIExFFzq+9UXMpjoKEixQ+OStOk52W5rx/H4P+l24R5te4VipDfj9sKfL0sC5H9NeKoT2iBx3+js1xe22dP9jR9tD6a+1W3KmsK3s56VK8eNhSib/c6eOM52AyyLi+BxXFfmeIZ8iiitYz//3xPDDDWZSqIhxRw7rf1/GDfvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711590615; c=relaxed/simple;
-	bh=bCc3hgIaTxZx0x4kXtgyejnC6eC3hJer74tT/KCfGyI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=E+RTWfGARPAKKMEJfwybiZdBJw9FX9l1UBTzgXXvQ5ToJlQEZnDiI2vXY8FwBsgwuckEIhZG78yfQLQMfGp6fxPabjSTIYUK6k58HK3NvmSJ1zXwrBNs7cy1UumVCajfm0hr1Ao3d/B3cBoHp3W6C6YCxzRrokqoaQ719RxBU6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V4mgl2xxwz4f3jY5;
-	Thu, 28 Mar 2024 09:49:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id A4A041A0BA6;
-	Thu, 28 Mar 2024 09:50:01 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP4 (Coremail) with SMTP id gCh0CgDnOWzHzARmkrC_IQ--.19172S2;
-	Thu, 28 Mar 2024 09:50:01 +0800 (CST)
-Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
-To: Jan Kara <jack@suse.cz>
-Cc: Tejun Heo <tj@kernel.org>, akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- willy@infradead.org, bfoster@redhat.com, dsterba@suse.com,
- mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-7-shikemeng@huaweicloud.com>
- <Zfr9my_tfxO-N6HS@mtj.duckdns.org>
- <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
- <20240327093309.ejuzjus2zcixb4qt@quack3>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <c2fc01e2-f15a-d331-6c4f-64319f3adc8a@huaweicloud.com>
-Date: Thu, 28 Mar 2024 09:49:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1711590727; c=relaxed/simple;
+	bh=mkM6R0KgpBbz4KudbiA6fw95cLUuvRuwLR/2IvSvuQM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nQGQnP/laNB5d2RGJ8qrQiclcX05Xd/E3QmXqoXeCA+lTRyos70qDphv+qYTW3bzAGbto9kZ21ZiVsSagKD/P+yi9+5HbZ0X8m81g1zrN6wR3QSDSAfmh/+XkHJn+/M3QuA0RUu8PTRTgJMVsHQ1rJUFoSmx/01jPcmItbRzQeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D4GNVCUX; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-ddaebc9d6c9so484899276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Mar 2024 18:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711590725; x=1712195525; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xeRupraePyxNUCGKwkTwjgmBsjpIgZkoxz4iGu5JFgM=;
+        b=D4GNVCUXFpdKjKpZy4B4yr8vhONdvnIwjwp34MmdMERiVmsLzVW3kPf2NudIFy2BR+
+         UJ/yK0TsAFi2HUP8/puMsIEbzcrglnwrpDD1Kzg5sqwROPppvCjdm1Buw9MnfCK2JrhK
+         zPYdWB6GZjXx4ZfXn6KmoCRrAei2VActP8/S9zEVnthJSBj0xXRuTLA3vL3Z6l6Wq2Mj
+         stx5sdnH3F1rnExa8Bub81vBYPd1JKW8NFjWc7ih6snNSJCY1iHfowqRWFJu2wPmdtU5
+         IaNqDFSf+odUP/xp4jlncO4JdWzNZJC9UZb+BZaqykyi52jF7GPz2n8s7b4Eo+s20Tfz
+         So1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711590725; x=1712195525;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xeRupraePyxNUCGKwkTwjgmBsjpIgZkoxz4iGu5JFgM=;
+        b=q1ETSE/GtBDB+NoZJf1vF3DEWDvfUDe6fXkMV5LzsyBwlikqjcxLJpUmd6PcMf8CyH
+         U9iGnxyaxc27VPUPMheSza42Le5ICgewof6F6BoPSUnttaauf9xNzrk4xsd+pctKyx7I
+         T0tFKtdUDgKgly4WWcMM36+7Dba+6Ar72zhGBoi/BzSg43JrHIzOXYCO/0nEIDfEzu9/
+         hsDwAFUd83L6TLoLTOEiBeRTJO80P3gsUZqTIvtqjHGT+zlwt6435aetZRYhKqQPm0NI
+         JhMjGBYKlADogqDxKJXY0U9GbrwyxsGTko8lM2g6876w4Y6p5kPzbsZ53wQWIqeQnRmO
+         UsMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQSfU4D7zequcmNBQgUzWO98wOPbqflTGSuMDUofaJ25/fTax5R/tT3ZPnsMzUdEmZgQ83kPQrlUvOAaFB4o4s50E11Xe14D1W5UXh
+X-Gm-Message-State: AOJu0YzIhUMX3MfZz0zh2v9Ch7G0NqmkgeeO7yckZ165PyNtmAKGlcIq
+	dN96FLt8lIqMLAD6PYvAQcPoirfutSw6hScuNWtWDcYJnf1YqBzzlpmvmlGuppksOqvxxHnuu7o
+	UYb/CEjy8xaVgqcbK356eU6fUiihgZItO8htJcg==
+X-Google-Smtp-Source: AGHT+IHT/ujAoEbhu8rLTehIuWRBp/B6kdAP54AQCRbG7T5Aw1Z01ibd0Fm1N0Q2G2mnLCjO54IRJqd2ObldP8kjPj4=
+X-Received: by 2002:a25:29c4:0:b0:dd1:2f58:292b with SMTP id
+ p187-20020a2529c4000000b00dd12f58292bmr1517178ybp.9.1711590725160; Wed, 27
+ Mar 2024 18:52:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240327093309.ejuzjus2zcixb4qt@quack3>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDnOWzHzARmkrC_IQ--.19172S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFyUGry8Jry8Cw1kurW8tFb_yoW5trW3pF
-	W3Wa1DK3W5Ja4SvrnxKwn7X3Z8KrZ7try7X3s0kw4DZrs5Grn7Krn2qa1ruF12yr1xXr1r
-	ZFWSqas7Za1UCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+References: <20240326-rb3gen2-dp-connector-v2-0-a9f1bc32ecaf@quicinc.com> <20240326-rb3gen2-dp-connector-v2-2-a9f1bc32ecaf@quicinc.com>
+In-Reply-To: <20240326-rb3gen2-dp-connector-v2-2-a9f1bc32ecaf@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 28 Mar 2024 03:51:54 +0200
+Message-ID: <CAA8EJpoe7A94608V1GdQ-oU9UXagHPm0mVBUe4Yxi=HF2pMd7w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] arm64: dts: qcom: qcs6490-rb3gen2: Add DP output
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: cros-qcom-dts-watchers@chromium.org, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+
+On Wed, 27 Mar 2024 at 04:04, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
+>
+> The RB3Gen2 board comes with a mini DP connector, describe this, enable
+> MDSS, DP controller and the PHY that drives this.
+>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 40 ++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> index 63ebe0774f1d..f90bf3518e98 100644
+> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> @@ -39,6 +39,20 @@ chosen {
+>                 stdout-path = "serial0:115200n8";
+>         };
+>
+> +       dp-connector {
+> +               compatible = "dp-connector";
+> +               label = "DP";
+> +               type = "mini";
+> +
+> +               hpd-gpios = <&tlmm 60 GPIO_ACTIVE_HIGH>;
+
+Is it the standard hpd gpio? If so, is there any reason for using it
+through dp-connector rather than as a native HPD signal?
+
+> +
+> +               port {
+> +                       dp_connector_in: endpoint {
+> +                               remote-endpoint = <&mdss_edp_out>;
+> +                       };
+> +               };
+> +       };
+> +
+>         reserved-memory {
+>                 xbl_mem: xbl@80700000 {
+>                         reg = <0x0 0x80700000 0x0 0x100000>;
+> @@ -471,6 +485,25 @@ &gcc {
+>                            <GCC_WPSS_RSCP_CLK>;
+>  };
+>
+> +&mdss {
+> +       status = "okay";
+> +};
+> +
+> +&mdss_edp {
+> +       status = "okay";
+> +};
+> +
+> +&mdss_edp_out {
+> +       data-lanes = <0 1 2 3>;
+> +       link-frequencies = /bits/ 64 <1620000000 2700000000 5400000000 8100000000>;
+> +
+> +       remote-endpoint = <&dp_connector_in>;
+> +};
+> +
+> +&mdss_edp_phy {
+> +       status = "okay";
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+> @@ -511,3 +544,10 @@ &usb_1_qmpphy {
+>  &wifi {
+>         memory-region = <&wlan_fw_mem>;
+>  };
+> +
+> +/* PINCTRL - ADDITIONS TO NODES IN PARENT DEVICE TREE FILES */
+> +
+> +&edp_hot_plug_det {
+> +       function = "gpio";
+> +       bias-disable;
+> +};
+>
+> --
+> 2.25.1
+>
 
 
-
-on 3/27/2024 5:33 PM, Jan Kara wrote:
-> On Thu 21-03-24 15:12:21, Kemeng Shi wrote:
->>
->>
->> on 3/20/2024 11:15 PM, Tejun Heo wrote:
->>> Hello,
->>>
->>> On Wed, Mar 20, 2024 at 07:02:22PM +0800, Kemeng Shi wrote:
->>>> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
->>>> GDTC_INIT_NO_WB
->>>>
->>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->>> ...
->>>>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
->>>>  {
->>>> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
->>>> +	struct dirty_throttle_control gdtc = { };
->>>
->>> Even if it's currently not referenced, wouldn't it still be better to always
->>> guarantee that a dtc's dom is always initialized? I'm not sure what we get
->>> by removing this.
->> As we explicitly use GDTC_INIT_NO_WB to set global_wb_domain before
->> calculating dirty limit with domain_dirty_limits, I intuitively think the
->> dirty limit calculation in domain_dirty_limits is related to
->> global_wb_domain when CONFIG_WRITEBACK_CGROUP is enabled while the truth
->> is not. So this is a little confusing to me.
-> 
-Hi Jan,
-> I'm not sure I understand your confusion. domain_dirty_limits() calculates
-> the dirty limit (and background dirty limit) for the dirty_throttle_control
-> passed in. If you pass dtc initialized with GDTC_INIT[_NO_WB], it will
-> compute global dirty limits. If the dtc passed in is initialized with
-> MDTC_INIT() it will compute cgroup specific dirty limits.
-No doubt about this.
-> 
-> Now because domain_dirty_limits() does not scale the limits based on each
-> device throughput - that is done only later in __wb_calc_thresh() to avoid> relatively expensive computations when we don't need them - and also
-> because the effective dirty limit (dtc->dom->dirty_limit) is not updated by
-> domain_dirty_limits(), domain_dirty_limits() does not need dtc->dom at all.
-Acutally, here is the thing confusing me. For wb_calc_thresh, we always pass
-dtc initialized with a wb (GDTC_INIT(wb) or MDTC_INIT(wb,..). The dtc
-initialized with _NO_WB is only passed to domain_dirty_limits. However, The
-dom initialized by _NO_WB for domain_dirty_limits is not needed at all.
-> But that is a technical detail of implementation and I don't want this
-> technical detail to be relied on by even more code.
-Yes, I agree with this. So I wonder if it's acceptable to simply define
-GDTC_INIT_NO_WB to empty for now instead of remove defination of
-GDTC_INIT_NO_WB. When implementation of domain_dirty_limits() or any
-other low level function in future using GDTC_INIT(_NO_WB) changes to
-need dtc->domain, we re-define GDTC_INIT_NO_WB to proper value.
-As this only looks confusing to me. I will drop this one in next version
-if you still prefer to keep definatino of GDTC_INIT_NO_WB in the old way.
-
-Thanks,
-Kemeng
-> 
-> What might have confused you is that GDTC_INIT_NO_WB is defined to be empty
-> when CONFIG_CGROUP_WRITEBACK is disabled. But this is only because in that
-> case dtc_dom() function unconditionally returns global_wb_domain so we
-> don't bother with initializing (or even having) the 'dom' field anywhere.
-> 
-> Now I agree this whole code is substantially confusing and complex and it
-> would all deserve some serious thought how to make it more readable. But
-> even after thinking about it again I don't think removing GDTC_INIT_NO_WB is
-> the right way to go.
-> 
-> 								Honza
-> 
-
+-- 
+With best wishes
+Dmitry
 
