@@ -1,107 +1,96 @@
-Return-Path: <linux-kernel+bounces-122762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49B7188FCC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:20:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F51188FCCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 11:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005C01F28FDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:20:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E247B1F297DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 10:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE887BB17;
-	Thu, 28 Mar 2024 10:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5790B7D07C;
+	Thu, 28 Mar 2024 10:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPa5VPxI"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IRmKzIRW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441D21EA8F;
-	Thu, 28 Mar 2024 10:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E0A7C090;
+	Thu, 28 Mar 2024 10:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711621240; cv=none; b=maJXbdRan2qqK4BVrawagdqQ1fTFvdfcj9sKjWMJPexOC+5wv2pOImD3bx2qMEGfa6b5OfmbiGMcT8oi7YJrtdFO0HWOs3HNXi/LoxVJ+eDGXV7S2m3jJ+Y3/GKen2E2Vlc3M7phwzOOmzlYdHmVqmZuICKZ2vjbwbVedxYUXXE=
+	t=1711621241; cv=none; b=Q9m9VFHuyOnmYHyuIciFh6K0QgZ89QttzfbqG3bjFajBNbOU2dYMakmC+VIDnibrGwElsR3VFqtzX69NdZ0hmdBgkHCoU2e4k0hOGrXUCCQkpbwioViojjeuI+QQ+cVa2pOuQLuBz3sDzWzzZNvPvYSVR0EmaeTWdAi8dSHncRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711621240; c=relaxed/simple;
-	bh=dFfbT4R29DplG5nbWguPk4hVE2SH+TwGco0Cl6FKVvg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EOfytt33MDqR63YcxTiGAmAD5ZR/iSL0YuGQ4wmzERnK+FzVkXIYoT6SD23LJZg7H6dd823C0r6KHIxHUQLcgnb14fubx4dE3QA10VsQhbl+1vBiSrtu1MjU1DrY3zPUXOhvdfqyyHlXltlUN+Cpkvot3YEOrMAvQVuwnEdvXGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RPa5VPxI; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-609fc742044so9152767b3.1;
-        Thu, 28 Mar 2024 03:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711621238; x=1712226038; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dFfbT4R29DplG5nbWguPk4hVE2SH+TwGco0Cl6FKVvg=;
-        b=RPa5VPxIMo6KzMl7VVNc6fYxpg1W68GUlmVc5vGB6/zTDeAhzGppcS0tzfMVIhJgWd
-         l0Lq7hzGsJBLFpuIcPtZ3LhV7QWZv4lL6MSePmfrBg+WQyjBBJLoG7zid6B31MIeBsVo
-         5HruhtJHsXL8UYAPSW82Ok/uWVX4p0tqs4P9O8SUrVJgHRfgDh+fikcWb3+8gozplRS5
-         q2XqXLjeOT/lVpVQsvgt3pGhTRpzx2j3AeYZ+KYLHnKu8F1QYWOkkv4Auf9mXKihahy4
-         MHqQQVIgbSPblF1yBKIcUh81xah5g7zhHLLdRJRr015IqcpRjzlppO1nbIdF7QX638IU
-         +RUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711621238; x=1712226038;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dFfbT4R29DplG5nbWguPk4hVE2SH+TwGco0Cl6FKVvg=;
-        b=db4gW9UuICNSkFwKh0pcnIeemsvtSZiD/39fSC5EhNDqmoa+DysAshZ4scy+fMp3rP
-         qnieQaoQi/7BvoxRpKe4/dAAL7qQm+wrbFj/44RcSEKPcNmfO/wVVMB+I1LdX7VGoAzV
-         ksfS59M+7c8La6pdUgYG3POK1nUDd+qlgnwf4rd3Nxsnxr9AaL0UgFdZ8tRCBAfL9jjo
-         oFyB3YnanaM7SW2Om2QHgM1j7XZyOnBNraJwTo3+sbR5vT27quyZBYquGbRl14CK9cVC
-         Tl9dUe2tfpokF9/2uHxr91w/IQG1D/61JLYVGUhewx7mYSfa4ZhDutoiLU/rKEbuht8f
-         uhNA==
-X-Forwarded-Encrypted: i=1; AJvYcCVGxxKVbwTpiF8OLTvpURHTWc0r4TOsnh91QJwiGsU5S1c/XDmtAwg4X5gH8Hy4znAQ4fsiDZo9b7E2GRombux08GNtQIuQJL9sCcZaNr212jj44my9KcAqd9CcP0ABILIIIKATeK09TZ7I6qN0JgY8X3XAUT/M0wAcZS9085U1kA5lNQ==
-X-Gm-Message-State: AOJu0Yzlj9GIgLTZrCTD/JnzuUJyxXPhYLPkHOmBPKWO25GbkPFOeC1G
-	58TT96bW7lnSAgLcb9Cvhj0xxOkWiozKCtTweq+hB7Mys+0AScFIfA7G9Ov91zzeDYDrp+u2e5x
-	Oso7qz+uSwOxBx/aT0UorsJUUg9w=
-X-Google-Smtp-Source: AGHT+IFi3DZWKmlRmlJDkasacGqfWkgcDy+WQNzg9p8xoAOHDvfmaJ3gX6Rg4YeK1AS1UxcZIQliUbOdK/3N0aQIv/Q=
-X-Received: by 2002:a25:81d1:0:b0:dd1:6fab:81e4 with SMTP id
- n17-20020a2581d1000000b00dd16fab81e4mr2315769ybm.37.1711621238324; Thu, 28
- Mar 2024 03:20:38 -0700 (PDT)
+	s=arc-20240116; t=1711621241; c=relaxed/simple;
+	bh=fWlJ01QF5Xi33HgqI7U4KP63mnAjujPsD7CIjtecFAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BzafSjCcJXZEpR6OZAVkQe+z5/KbnKhu+ScQuI4t4XfOPM8amzFfatPYl1kFAKCZCUZYgT6UtJmY8Cd0/lPC668HoQ8UT6GdNMQyFsEXEeDAzTHGWdiJIdQ0ME4XvEdSJ5g0Y4fPZHhzhPbJxaOImV39tigv9Hz7moU31IxeLWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IRmKzIRW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE85C433C7;
+	Thu, 28 Mar 2024 10:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711621241;
+	bh=fWlJ01QF5Xi33HgqI7U4KP63mnAjujPsD7CIjtecFAU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IRmKzIRWnByfWLhp7RMlDfqPDmwN1nCrz/1T+9IJ+gYuEFyfpddAuHMKb9RZ1KJJs
+	 G7IpM0JBSDz5uenOCl5HHhPse3wfbnayY0b/EZZO4UtxrhLxkrqY/3cqHxKQdM6L3Q
+	 s5Fz5L4p6dIDOWX2yjSo+LsR15PFlIHK+D23n0IwTcn+wHINiVDkcCsmQVp/1Myz6Z
+	 R0Jmau0wn8SKIZi669ImftysH390bFxfoPmg+ojmyMti69n2l02LAVP6HePGO9Emz5
+	 uM+riMv6kkAb91uLuZgVtf0LBhUgQbasUVc98b35ji9dM/kc5k/PgRATjTyX5sz3YW
+	 4z9cJTvH9YO2Q==
+Date: Thu, 28 Mar 2024 18:20:34 +0800
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Benson Leung <bleung@chromium.org>,
+	Corentin Chary <corentin.chary@gmail.com>,
+	"Luke D. Jones" <luke@ljones.dev>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>,
+	Daniel Oliveira Nascimento <don@syst.com.br>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Matan Ziv-Av <matan@svgalib.org>,
+	Mattia Dongili <malattia@linux.it>,
+	Azael Avalos <coproscefalo@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Jeff Sipek <jsipek@vmware.com>, Ajay Kaher <akaher@vmware.com>,
+	Alexey Makhalov <amakhalov@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev, linux-input@vger.kernel.org,
+	netdev@vger.kernel.org, chrome-platform@lists.linux.dev,
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 04/19] platform: chrome: drop owner assignment
+Message-ID: <ZgVEcnQnFUG0dVkO@google.com>
+References: <20240327-b4-module-owner-acpi-v1-0-725241a2d224@linaro.org>
+ <20240327-b4-module-owner-acpi-v1-4-725241a2d224@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327220320.15509-1-l.rubusch@gmail.com> <20240327220320.15509-5-l.rubusch@gmail.com>
- <9ab1fc70-fd01-437b-9020-49618924ab30@linaro.org>
-In-Reply-To: <9ab1fc70-fd01-437b-9020-49618924ab30@linaro.org>
-From: Lothar Rubusch <l.rubusch@gmail.com>
-Date: Thu, 28 Mar 2024 11:20:02 +0100
-Message-ID: <CAFXKEHainYo6esvdy5-hMppPk_WNbXWQKA8Np4Vsxh9KPrrwTw@mail.gmail.com>
-Subject: Re: [PATCH v5 4/7] dt-bindings: iio: accel: adxl345: Add spi-3wire
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327-b4-module-owner-acpi-v1-4-725241a2d224@linaro.org>
 
-On Thu, Mar 28, 2024 at 10:22=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 27/03/2024 23:03, Lothar Rubusch wrote:
-> > Add spi-3wire because the device allows to be configured for spi 3-wire
-> > communication.
-> >
-> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
->
-> I don't understand why after my last message you still ignore my
-> feedback, but fine. I'll ignore this patchset.
->
+On Wed, Mar 27, 2024 at 08:43:51AM +0100, Krzysztof Kozlowski wrote:
+> ACPI bus core already sets the .owner, so driver does not need to.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I'm sorry. I found it now. Please ignore my last v5. I'll repatch an
-adjusted v6.
+Acked-by: Tzung-Bi Shih <tzungbi@kernel.org>
 
-> Best regards,
-> Krzysztof
->
+I would prefer to use "platform/chrome: wilco_ec: " prefix though.
 
