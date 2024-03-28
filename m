@@ -1,156 +1,130 @@
-Return-Path: <linux-kernel+bounces-123044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C0F7890166
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:13:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19DA789016B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:14:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42BEA1F248D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:13:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8B3FB2422F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94DD48172F;
-	Thu, 28 Mar 2024 14:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aSw1bPJv"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54434823CB;
+	Thu, 28 Mar 2024 14:14:14 +0000 (UTC)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AC17E10C
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44C814294;
+	Thu, 28 Mar 2024 14:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711635183; cv=none; b=cmyGH4YN1WGyGc520OB4paNwqf4aXNgGKWxaOO905EFho2ebBKTp+H5+TqhFN/lqH8kJ0TCqG3+cYmnr8HpTn0MuhnskmLo6bGPwEybFn6WPzIM4qmWCCm380h67QqVVmpjz36xUNeabGUcgXUP7FqDJmhSwGpHcz61WbyhL8gw=
+	t=1711635253; cv=none; b=gbCbA+fOBmw0aApEBzHRANuLeVHe745R16Qvw4gFLKmY0Jhw0JeWIrHwxskDdC1sK9q42ZwMHXtP44Q8v42dsZK7pytvfstOpYc8vaqjG51dhSaMJmRps+6+6vf42rljiwx+4gEt5ZIcX0tgpasfipyabuXTIz6MNKjGqnnunso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711635183; c=relaxed/simple;
-	bh=vGm+HT3Ib63mObN1zAwD7VdLLJDq+gJbUTgKUnwQ6JY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kjswDX1HR1U8uLs8n21fmuG94MpIQap34jVNg4JDIOQAbO7bjBVNuWQ9r1mKvUBHl5tckCD/tPR1rEmW1lyZVDItjCF4KFd9p8xFl/plKhfRzZaeALneV0xyNRW1geDxaN7GKEM8rOPNu89FYY5pkpsZWoqbz77hX2h1VhEgJEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aSw1bPJv; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=6M0JjTgPpVxG5fBfSzA5TFEpVDFwxFOSbAPU01cFVuA=; b=aSw1bPJv1K6haWj1FpTAbHPJMN
-	Eu+x2QWdUimWeLeVSyrDjrdFbBU/WWogT56C+BfDLR2Wy8mRXog1B60RFetdRlNMSvdjnkDxCM+ZP
-	RxcO2FD6tdf0QZwGMkE4seB1rFn8a2xohtovgS/6g/7CjQNCAR57mhULH0F8+6DfkhA6kaYcz8RtK
-	o0OvHvRXvkmIpYfwBXxZSAS8R0DCHnmlgeMi9KsjRFQljYteX8hjf0y9UTrMlfX0stBASwAMlfK+g
-	74rzUrv3VNaV8MlUaKb/JSKQ4SNyK1Mkd0eZ7gUmX/voOKpQ/+RmLDBHBw4gXLBMrdpGV+UbWJy40
-	zTs+5jrA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpqUv-00000006UyX-43Jl;
-	Thu, 28 Mar 2024 14:12:53 +0000
-Date: Thu, 28 Mar 2024 14:12:53 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-Message-ID: <ZgV65ercduTnVWCA@casper.infradead.org>
-References: <Zfz4_GJAHRInB8ul@casper.infradead.org>
- <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
- <ZgDt9mwN-Py5Y-xr@casper.infradead.org>
- <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
- <ZgK91II_eSYY6D2F@casper.infradead.org>
- <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
- <ZgQRtQ60mrvOUKXo@casper.infradead.org>
- <CAGWkznF3GfCs8odhR-Hue5H8MZ=eXb82V20ZoCCjeoSjAPQ9cw@mail.gmail.com>
- <ZgThg-pzQzRl3ckF@casper.infradead.org>
- <CAGWkznEMCXQSe10E-pbdxk2uFgQO038wH6g=iojtSU6-N+GJdg@mail.gmail.com>
+	s=arc-20240116; t=1711635253; c=relaxed/simple;
+	bh=aHiAHQZ4NABASJrYqh8ebkIampi71CgvClYUPY03YUQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AiCh8qTyKvN7YHUztruo22jr3og+g1TCaVTVrguhSCv4Q2Oam7EljPmLcAfJbgzoNOM4KC8VSUCvpKySTi/951ycThhVufvskAf1yt3PfGhN9YQ+bIfMV6PgSnENTEvhncor/qEQ7NQtnadNy4blyr1Q3koniX1wsxw8Ir6ivaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so969315276.1;
+        Thu, 28 Mar 2024 07:14:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711635250; x=1712240050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4NefUZqr+Yfj8Qez7QQphPqdSKucudQKpoHbpjj/G5I=;
+        b=pQ91T2CR07oeEsCc9BdxYATtIcoUrUsbgH2N9S+cRpHoymRXhIuzcgXgHOpiIvUuXR
+         5I0crJGQNYv9FIuPB34FfiCd2cqOqsjEXLP0O4hu1IOyOzaNf8IRS2bVBDrqVymvD5cj
+         eaScmUPIXm4Zx+I1nctvVNqNR9e0Ep/Kr1onvtAosWUXg5T0Y72M1f+NWtxI5cBx4Gav
+         bKK4DFeS1PZ0DHatrJLRquBmETct2f84NpDgmtM9q+Xh35eRTMa8/sxVxxCPvCMVj9ZX
+         DFW22oRtCSOi8D3KaVL8ixes9bhO0f7GuPQ07bCXh9H7Bos18xTmyD8Y7FFistNrbOq5
+         h0jg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/THNq4a9naDxLR0OxrKjeQc6VV/iN+uddXlT5t14ZMhg2ZxHcb7+bxKFcBF1vwoZv5N0fvncNIoLnS3K584VQWfJ6T9UnkBplmz8rZrnlK/PqOYGwI+9Pjm+bWGbkihEA7Qjbayd18qQBxkR7UpgDO4r7evYWqQObCtJauqmMGuf87BLZMJSLj24jEBvyqiisQJM7jo3mI559K7S3ClcKgi7VTOirXA==
+X-Gm-Message-State: AOJu0YwF1vhlBbFUdRrJzEejMEqosNtBRuHEeLjxb2VqdMzQwonE57rm
+	pg8DNP/n9SnRjKILVgQCyiJwxc/jUdln+agL64G5kl3b7fukspVBhKlS4zw6tNw=
+X-Google-Smtp-Source: AGHT+IEM3zssbWOSnDMrjyNKrON0pNmD2juCMJCOs6F4V4C3Sl2CLvlLZkgK76K0PWAovpQeiWOy8Q==
+X-Received: by 2002:a25:a290:0:b0:dcc:a446:553 with SMTP id c16-20020a25a290000000b00dcca4460553mr2759135ybi.57.1711635249889;
+        Thu, 28 Mar 2024 07:14:09 -0700 (PDT)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id p15-20020a25818f000000b00dce0a67ac8bsm304046ybk.23.2024.03.28.07.14.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 07:14:09 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcc4de7d901so915906276.0;
+        Thu, 28 Mar 2024 07:14:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW7xbfqe46XVmSa/BltuNY40XqQVNM5lrIWhcQ8iJWq5jkPxsZx8Om/aL0O2Ojqnoq3zUQsJw8o+6IJQ8ZY5ee0xazn+yrZ8wKLna8WtXF4Y14GngOHeAi2VK7RekV7xuuJNPd0+Why/kVu/4jjmAjctS/fL9L4Mhxj4pX8d4plOS78SEvYBg+eORehxnJsPfxUn22kMadu+zShP8Pi1DrXHn4FgWJ5qw==
+X-Received: by 2002:a25:bc49:0:b0:dcd:5e5d:4584 with SMTP id
+ d9-20020a25bc49000000b00dcd5e5d4584mr3267859ybk.34.1711635249059; Thu, 28 Mar
+ 2024 07:14:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGWkznEMCXQSe10E-pbdxk2uFgQO038wH6g=iojtSU6-N+GJdg@mail.gmail.com>
+References: <20240326222844.1422948-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240326222844.1422948-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240326222844.1422948-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 28 Mar 2024 15:13:56 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWdaiSer10agMytpv9h_gb4bEpEHjThDwRkMShXkKMxzA@mail.gmail.com>
+Message-ID: <CAMuHMdWdaiSer10agMytpv9h_gb4bEpEHjThDwRkMShXkKMxzA@mail.gmail.com>
+Subject: Re: [RFC PATCH 06/13] pinctrl: renesas: pinctrl-rzg2l: Make cfg to
+ u64 in struct rzg2l_variable_pin_cfg
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-renesas-soc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 12:03:02PM +0800, Zhaoyang Huang wrote:
-> On Thu, Mar 28, 2024 at 11:18 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, Mar 28, 2024 at 09:27:31AM +0800, Zhaoyang Huang wrote:
-> > > ok, I missed the refcnt from alloc_pages. However, I still think it is
-> > > a bug to call readahead_folio in read_pages as the refcnt obtained by
-> > > alloc_pages should be its final guard which is paired to the one which
-> > > checked in shrink_folio_list->__remove_mapping->folio_ref_freeze(2)(this
-> > > 2 represent alloc_pages & page cache). If we removed this one without
-> >
-> > __remove_mapping()  requires that the caller holds the folio locked.
-> > Since the readahead code unlocks the folio, __remove_mapping() cannot
-> > be run because the caller of __remove_mapping() will wait for the folio
-> > lock.
-> repost the whole timing sequence to make it more clear and fix
-> incorrect description of previous feedback
+Hi Prabhakar,
 
-I can't understand what you think the problem is here.  Please try
-again.
+On Tue, Mar 26, 2024 at 11:30=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Now that we have updated the macro PIN_CFG_MASK to allow for the maximum
+> configuration bits, update the size of 'cfg' to 'u64' in the
+> 'struct rzg2l_variable_pin_cfg'.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-> Follow the refcount through.
-> 
-> In page_cache_ra_unbounded():
-> 
->                 folio = filemap_alloc_folio(gfp_mask, 0);
-> (folio has refcount 1)
->                 ret = filemap_add_folio(mapping, folio, index + i, gfp_mask);
-> (folio has refcount 2, PG_lru)
-> 
-> Then we call read_pages()
-> First we call ->readahead() which for some reason stops early.
-> Then we call readahead_folio() which calls folio_put()
-> (folio has refcount 1)
-> Then we call folio_get()
-> (folio has refcount 2)
-> Then we call filemap_remove_folio()
-> (folio has refcount 1)
-> Then we call folio_unlock()
-> Then we call folio_put()
-> 
-> Amending steps for previous timing sequence below where [1] races with
-> [2] that has nothing to do with __remove_mapping(). IMO, no file_folio
-> should be freed by folio_put as the refcnt obtained by alloc_pages
-> keep it always imbalanced until shrink_folio_list->__remove_mapping,
-> where the folio_ref_freeze(2) implies the refcnt of alloc_pages and
-> isolation should be the last two. release_pages is a special scenario
-> that the refcnt of alloc_pages is freed implicitly in
-> delete_from_page_cache_batch->filemap_free_folio.
-> 
->     folio_put()
->     {
->          if(folio_put_test_zero())
-> *** we should NOT be here as the refcnt of alloc_pages should NOT be dropped ***
->          if (folio_test_lru())
-> ***  preempted here with refcnt == 0 and pass PG_lru check ***
-> [1]
->          lruvec_del_folio()
-> Then thread_isolate call folio_isolate_lru()
->       folio_isolate_lru()
->       {
->          folio_test_clear_lru()
->          folio_get()
-> [2]
->          lruvec_del_folio()
->       }
-> --------------------------------------------------------------------------------------------
-> shrink_folio_list()
-> {
->     __remove_mapping()
->     {
->         refcount = 1 + folio_nr_pages;
-> *** the refcount = 1 + 1 implies there should be only the refcnt of
-> alloc_pages and previous isolation for a no-busy folio as all PTE has
-> gone***
->         if (!folio_ref_freeze(refcount))
->              goto keeplock;
->      }
-> }
+Thanks for your patch!
+
+> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> @@ -241,7 +241,7 @@ struct rzg2l_dedicated_configs {
+>   * @pin: port pin
+>   */
+>  struct rzg2l_variable_pin_cfg {
+> -       u32 cfg:20;
+> +       u64 cfg:46;
+>         u32 port:5;
+>         u32 pin:3;
+
+Doesn't this store the 46 cfg bits in a 64-bit word, and the 8 port
+and pin bits in a different 32-bit word?  Worse, you'll get 4 bytes
+of padding at the end of the structure.
+Changing the port and pin to u64 should make sure everything is
+stored together in a single 64-bit word.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
