@@ -1,51 +1,64 @@
-Return-Path: <linux-kernel+bounces-123134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09CE78902A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:06:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B468902A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 16:09:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5E621F274FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:06:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 801251C29B0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59CF12DD90;
-	Thu, 28 Mar 2024 15:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D83512EBC7;
+	Thu, 28 Mar 2024 15:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="zC7qQt9D"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="zpu+15rj"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E027E772;
-	Thu, 28 Mar 2024 15:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEAA81AB1;
+	Thu, 28 Mar 2024 15:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711638401; cv=none; b=AEL81ssOhYVARd3aFOjQtgS+mdwAgrJmdSVCH7eXMoknmde9Al0hINXKcXosnGrdYLqvn5nCK5mY5Dd0fy7DJaI1xY4qZqHP17Ykc1BQikv8hazYDKoB+Ebg/eLv0z73IOYq5lfGb5osC1uxJcQOI5JETAw52X923R2fZPLdG8c=
+	t=1711638541; cv=none; b=FUin7t3z822Ow0QrNIlnxzw+JRrKeZXSnsCQY6dPy7DQfsHBgofs4QCAKkzCfw+b8OJjs7R0g5x7SbXrI4M/rwq/6EF4y+8qePFFOnyzsLQR1UHlFpEwLNvvUY7jzdCcu73IMMzNFP1KyGORY+KGUT16E7I9nXm4w98R8Iy2G3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711638401; c=relaxed/simple;
-	bh=tFIN/tKvxw1OPQyXxVyqG9hoRwQxc5PdtvaAaSxuREw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uWVDhbofI225QAXVabZ1oANOmpnqtoT3abQ879zxsamtD5LqulobpDGmc+Jk2owD2UxrflM6nQB6z03da+q3t2N+uDcYzBRQwtqwKPzi04V+KHkHl/9sG8CunffSGiQde12d3qFgPeTthvrvOaLK2H5BPpAXfNuDA6tQ537rHVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=zC7qQt9D; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=HlX7rSDT+xTTJ0yT83bN1/Fuwujcx7/ZH4CK3LA5S8Q=;
-	t=1711638399; x=1712070399; b=zC7qQt9DAfcLxsoFIpmLF77yysU10TQLtSicYa2HvaoHOcJ
-	hdXNT7O+di3Sa7THW+G6YXui+N8Aao61AREokP3BThG3I0JZLO6VPFQyzIIFUTCLeZB6VmsbmwWJY
-	a2+8NXyzcLKoQJjLSxjgbAmF03x7ZfJowBstutquIO86/Vizv7xE30QIuJu3PFJ+RR5SbB514yQpg
-	gLvlnQJRolohgeUq4IvLbaaJ7ghUBQ3P+A5PfOGWeYtQ0uJs7UPHHRBlxSj1+nvE3kI1kqAieT3F1
-	LRFT8pnkz0PmtOiTLjslBaGdnNOUQksRXtYJTtWWlIlHoN0DrYmKKKqOfSemImPw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rprKn-0000Xu-B6; Thu, 28 Mar 2024 16:06:29 +0100
-Message-ID: <2b2a6c9f-4df2-4962-b926-09adccd20715@leemhuis.info>
-Date: Thu, 28 Mar 2024 16:06:28 +0100
+	s=arc-20240116; t=1711638541; c=relaxed/simple;
+	bh=4RMpfFVGWhEWafnefWiakyA1PM0ClZPXcn1uGjIvT/k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MLBBokwIL1FQmsP40qxK5ehJI+JErHI6gW0qj5RpschzRVL9KrylHGpw2Eo42lv/Hwr+3jN2O3Od+GFHpj/5FOD6uDiZyYAEHBP5Er/IrgXf83paPB6Fx6ZBKVD60AzkFc2ZYROjyj/Qao1IjwwM5PsHgPrC/RjzhAzOuPP7+zE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=zpu+15rj; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SENT78017636;
+	Thu, 28 Mar 2024 16:08:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=iLOweYbCsmn698CJ46dWyC3tf2LxrlF3WpWQb+3oxRE=; b=zp
+	u+15rjkBN0yym8/YKQUXKM7KkDrPXNb9xjRmvtVUWcwUoAA7fwTn2+GqQbrvk1fD
+	07bu7tF8IK1QJaSKPiZDfuu6HSMjHkn9NObrsultisKGcOfQHHseo1zme7sMk3BY
+	8wiGfR4FwPkyXwXQeSRWiDPDWABG7RXz85nwtKpB4IurCvxQNxyA5dvJIRbxhqWM
+	LiMrXzMQAO0SnLYOJwIlt4zg0lvvFdZ8rjPlEQSv6RHauyNw34Uz/jU59xwIN4W9
+	vDg32W4tGw5vo06quCrMLd3mr4pOquc8b5ELSfyQmv8EvWnt6FnnPnGXV0tMLuPK
+	7cx7o3DgklHKP0reBu0g==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3x1n39tw26-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 16:08:23 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7EC9B40044;
+	Thu, 28 Mar 2024 16:08:19 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BFE3F2248BB;
+	Thu, 28 Mar 2024 16:07:03 +0100 (CET)
+Received: from [10.201.21.128] (10.201.21.128) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 28 Mar
+ 2024 16:07:02 +0100
+Message-ID: <6df41c81-0aa4-48a5-a069-d8a742f412ef@foss.st.com>
+Date: Thu, 28 Mar 2024 16:07:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,68 +66,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: dmaengine: CPU stalls while loading bluetooth module
-To: Vinod Koul <vkoul@kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com,
- 'karthikeyan' <karthikeyan@linumiz.com>,
- "bumyong.lee" <bumyong.lee@samsung.com>
-References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
- <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
- <000001da6ecc$adb25420$0916fc60$@samsung.com>
- <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
- <000001da7140$6a0f1570$3e2d4050$@samsung.com>
- <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
- <001001da7a60$78603130$69209390$@samsung.com>
- <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
- <8734a80b-c7a9-4cc2-91c9-123b391d468c@leemhuis.info>
- <ZgUTbiL86_bg0ZkZ@matsya>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZgUTbiL86_bg0ZkZ@matsya>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711638399;3bbc3f2a;
-X-HE-SMSGID: 1rprKn-0000Xu-B6
+Subject: Re: [PATCH v5 1/1] dt-bindings: net: dwmac: Document STM32 property
+ st,ext-phyclk
+Content-Language: en-US
+To: Marek Vasut <marex@denx.de>, "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo
+ Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Richard Cochran
+	<richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Liam Girdwood
+	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+CC: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240328140803.324141-1-christophe.roullier@foss.st.com>
+ <20240328140803.324141-2-christophe.roullier@foss.st.com>
+ <480d4064-b553-4005-ad98-499a862703ff@denx.de>
+From: Christophe ROULLIER <christophe.roullier@foss.st.com>
+In-Reply-To: <480d4064-b553-4005-ad98-499a862703ff@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_15,2024-03-27_01,2023-05-22_02
 
-On 28.03.24 07:51, Vinod Koul wrote:
-> On 26-03-24, 14:50, Linux regression tracking (Thorsten Leemhuis) wrote:
->> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
->> for once, to make this easily accessible to everyone.
+
+On 3/28/24 15:19, Marek Vasut wrote:
+> On 3/28/24 3:08 PM, Christophe Roullier wrote:
+>
+> [...]
+>
+>> | RMII    |    -   |     eth-ck    | eth-ck        |       n/a        |
+>> |         |        | st,ext-phyclk | st,eth-ref-clk-sel 
+>> |                  |
+>> |         |        |               | or st,ext-phyclk 
+>> |                  |
 >>
->> Vinod Koul, what's your option here? We have two reports about
->> regressions caused by 22a9d958581244 ("dmaengine: pl330: issue_pending
->> waits until WFP state") [v6.8-rc1] now:
+>> --------------------------------------------------------------------------- 
 >>
->> https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
 >>
->> https://lore.kernel.org/all/ZYhQ2-OnjDgoqjvt@wens.tw/
->> [the first link points to the start of this thread]
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+>> ---
+>>   Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 7 +++++++
+>>   1 file changed, 7 insertions(+)
 >>
->> To me it sounds like this is a change that better should be reverted,
->> but you are of course the better judge here.
-> 
-> Sure I have reverted this,
-
-Thx!
-
-> so original issue exist as is now...
-
-Yeah, that's a downside, but that's afaik how Linus wants these
-situations to be handled. Hopefully it will motivate someone to fix the
-original issue without causing a regression.
-
-Thx again! Ciao, Thorsten
-
-P.S.:
-
-#regzbot fix: dmaengine: Revert "dmaengine: pl330: issue_pending waits
-until WFP state"
-
-(that's
-https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git/commit/?h=fixes&id=afc89870ea677bd5a44516eb981f7a259b74280c
-currently)
+>> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml 
+>> b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> index fc8c96b08d7dc..b35eae80ed6ac 100644
+>> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> @@ -82,6 +82,13 @@ properties:
+>>         Should be phandle/offset pair. The phandle to the syscon node 
+>> which
+>>         encompases the glue register, and the offset of the control 
+>> register
+>>   +st,ext-phyclk:
+>
+> Don't you need two spaces in front of the 'st,' here ?
+Sorry, that's right.
+>
+>> +    description:
+>> +      set this property in RMII mode when you have PHY without 
+>> crystal 50MHz and want to
+>> +      select RCC clock instead of ETH_REF_CLK. OR in RGMII mode when 
+>> you want to select
+>> +      RCC clock instead of ETH_CLK125.
+>> +    type: boolean
+>> +
+>
+> With that fixed:
+>
+> Reviewed-by: Marek Vasut <marex@denx.de>
 
