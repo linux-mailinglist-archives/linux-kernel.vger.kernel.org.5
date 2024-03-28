@@ -1,328 +1,154 @@
-Return-Path: <linux-kernel+bounces-123010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052CF890101
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:01:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5685489010B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 15:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D5591F25082
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:01:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B223729851A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 14:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684277FBA5;
-	Thu, 28 Mar 2024 14:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E6281737;
+	Thu, 28 Mar 2024 14:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rjNbN4Uv"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OvhIG+G8"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1527F847C
-	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282C17D417
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 14:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634465; cv=none; b=llHhji/uLs3LKgTMvJx6/SXGGXw+9Itr4Wtwasx+5dHx8p5Z41ejW+uLUP65CxncdIpYjYD6DFihZPc3PFJnG8UBSU7W7iLXSG9se/Uy0xC4TcaozlU7EejL5MFdBwI8dOlsDYsgBf/lp3eGY2Hz9s0oTIHlnev79WZ0SiJACZo=
+	t=1711634604; cv=none; b=QbF79HUh3KBJF9/lAshBuA5lXu++/HLHCPjfgxzrl9v/srRNbC4rJcJ9ISoBch8Tv49RPOOj25yzZqZl+u26WZeylV1WiDzU8TcJdPtpIlNi+tk3JYATwQsGSZxjoILhegWNZPijyOYZrSvmYWmrJz1ci8rP3yVlesajNa6X+vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634465; c=relaxed/simple;
-	bh=4eyuktlj3zT+S0v4lDjOGGPXuz5uyxEP9zOsIuqV3IU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UJ4l9YXLHvfBr6NiIdIkvmx5eFgAUkLsTM4l01xapxg+3AnAOce8duiWtejgWCdmjrqfIMp5Q+vO2OTQ7a1O22X20AtTBFz3Cj8B6NRHm60Hi89BCGI7GJ05q9IUEKVr1PG3UDoLcUMDCG0JCfpuZItYL+QdArCg8wLHNZX5aU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rjNbN4Uv; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711634460;
-	bh=4eyuktlj3zT+S0v4lDjOGGPXuz5uyxEP9zOsIuqV3IU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rjNbN4UvU30FBUsy6OLV1q02Y4AR8Sd4StjrsgDfdkbqqEeuT/4bchJz0gddXxLao
-	 qKtA/XmCUKifgYKiVHgGLHKCqlaIiX81cnL9d1hCslPv62yrh5KswPVYe94B3qxeZN
-	 ptrzmGrPZUF/W4c3IKTwgObjRVhD+bKmngET2b0gu6S92jOwx9hQ4KBVYfYC9P1nl5
-	 MW/CxvJHniM/6ia9vRcE7LKvVV4VHJQ7TPVkxmp8A2kgUIa0ehfPPfEtlrZ7uu+L0e
-	 b4CAXXEGnvZ8RNug8Wq5VxToeyMOBlFxyV3tPA0ekP1c3+Wq1NgIFWkK2fseN3Kus0
-	 WldEfaMgvh19A==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1D3A73780629;
-	Thu, 28 Mar 2024 14:00:59 +0000 (UTC)
-Date: Thu, 28 Mar 2024 16:00:57 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-Subject: Re: [PATCH v5 16/16] drm/vkms: Add support for DRM_FORMAT_R*
-Message-ID: <20240328160057.124b32c4.pekka.paalanen@collabora.com>
-In-Reply-To: <20240313-yuv-v5-16-e610cbd03f52@bootlin.com>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-16-e610cbd03f52@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711634604; c=relaxed/simple;
+	bh=1CRhwGIJSKhMbpQ/RBExx1bECy0jy3gMQ+/TAbtgpUg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iSwLA0tx9QChQD/rv4bjVzUZ80Rk1yuNQILQF3LiFrVQF9jbg1+W6MG27atfdNS53isBmM7Yl3dnbtJgb0lad9WA5rKsKS5epsg2wLU4Lq35A43kmGTyi1NcSiz6sDwtPWKmZx+7/qqvsfHFC8knd87vSk6auoBXsunrU4XeEIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OvhIG+G8; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so1226875a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 07:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711634601; x=1712239401; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7sKGYLNVMGXVEBGiVnvjU98J22psaopjpEMp6FYlRJU=;
+        b=OvhIG+G8M/PBoly+ggOtEA+9GvmMtXLnLwpjJYt++QNLm5CYTdPIagM6P6GpKuBNkf
+         pk7byB2dVlr5rFBrknb1RJjpMvI9OxSIVRwM73FzE6zZ73VTENFELD5DIQ72GgmqnwX0
+         7hvs1AyK3fHxMe14knOsWxEsC/dOcaY1wqX40heIzWG/49Cx6WlQ8FSTkub9n71UcUr4
+         q+NhaB1OMQ5uV6BJTQLTrRMFW/n7XeK4zj5ozj99pJftcPgAZEuyedgszQZpsSYpDwHM
+         Tg4LB9Gr0YaxcA/BKD15WcPgX1BNPhw6DM8WFvuviSNr89PtX3BlOdmCf4FTohyuQWDA
+         8AXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711634601; x=1712239401;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7sKGYLNVMGXVEBGiVnvjU98J22psaopjpEMp6FYlRJU=;
+        b=FY41tKFcZ2E2wtdIaYh5cozsd+fAGAxYfRl1dOEbfEDQEebentTq1rVMPpYeM4YWXM
+         tIhFUvRsZbBR/s5sKPz72LqsFdhSQbyfwReggwnjKyUop3rIYM4cH/qq7rYbFsb2ROla
+         dntILJvMMU18uNEUhMqY+4INV65T7FW71ef5sZbuTYF+ZJqh5OkSQsb8GfXfqBhLaRwP
+         ax+36nzeTiOae/yrE3UbLnX6isZTiGkuVRhsxcMYKcXl7X5MftZxNCTMsvaEq4uIi6Hv
+         GrpTfi8LR647krt3PW/IN8mQsRFjVHRsFsOQ9b4+TI9mleVVJxoUaKDuLSt/+QSTOlIG
+         x72A==
+X-Forwarded-Encrypted: i=1; AJvYcCW2kt1FgA1ghqPSaAnyT4+LGbJZJuT4Su9/wEGiH3vSLfZo7LbniUgeF2pfIdImfEucmeT8RoLoR+n/ibsPVz+4MpIRaXdPP4iUTeKw
+X-Gm-Message-State: AOJu0YzMGyRCjokskMP3NwRSbH6baWbbXCIWta6SA9j7tCUI1U3W9t2V
+	KMRo/Dryt2Mf6I3UP7fm0rEjlQ88ySyAFuRhqmGE5ZI9TJRA3T/mND1+ybJ2cOk=
+X-Google-Smtp-Source: AGHT+IFCInzZpL9neFPC+ou6pgAku6KUY9RgTMC2MkaJLzHuJMtbTOz1CQwMNI0J3x0j2Qa4AC/izQ==
+X-Received: by 2002:a17:907:6d1a:b0:a4e:1ff7:5c79 with SMTP id sa26-20020a1709076d1a00b00a4e1ff75c79mr1982741ejc.14.1711634601273;
+        Thu, 28 Mar 2024 07:03:21 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id f5-20020a1709062c4500b00a455519bcb3sm788519ejh.55.2024.03.28.07.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 07:03:20 -0700 (PDT)
+Date: Thu, 28 Mar 2024 17:03:17 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Shahar Avidar <ikobh7@gmail.com>
+Cc: gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+	andriy.shevchenko@linux.intel.com, robh@kernel.org,
+	felixkimbu1@gmail.com, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] staging: pi433: Remove duplicated code using the
+ "goto" error recovery scheme.
+Message-ID: <9c5b4159-da26-49d8-9682-445c01b19a51@moroto.mountain>
+References: <20240328121244.1244719-1-ikobh7@gmail.com>
+ <20240328121244.1244719-7-ikobh7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P3OiAf8YwdepAoHMsEV.zAB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328121244.1244719-7-ikobh7@gmail.com>
 
---Sig_/P3OiAf8YwdepAoHMsEV.zAB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 13 Mar 2024 18:45:10 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-
-> This add the support for:
-> - R1/R2/R4/R8
->=20
-> R1 format was tested with [1] and [2].
->=20
-> [1]: https://lore.kernel.org/r/20240313-new_rotation-v2-0-6230fd5cae59@bo=
-otlin.com
-> [2]: https://lore.kernel.org/igt-dev/20240306-b4-kms_tests-v1-0-8fe451efd=
-2ac@bootlin.com/
->=20
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+On Thu, Mar 28, 2024 at 02:12:44PM +0200, Shahar Avidar wrote:
+> pi433_init had "unregister_chrdev" called twice.
+> Remove it using goto statements.
+> 
+> Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
 > ---
->  drivers/gpu/drm/vkms/vkms_formats.c | 100 ++++++++++++++++++++++++++++++=
-++++++
->  drivers/gpu/drm/vkms/vkms_plane.c   |   6 ++-
->  2 files changed, 105 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
-kms_formats.c
-> index 863fc91d6d48..cbb2ec09564a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -201,6 +201,11 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(co=
-nst u16 *pixel)
->  	return out_pixel;
+>  drivers/staging/pi433/pi433_if.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
+> index 62ce75b07bf0..e538f1d4e787 100644
+> --- a/drivers/staging/pi433/pi433_if.c
+> +++ b/drivers/staging/pi433/pi433_if.c
+> @@ -1400,24 +1400,25 @@ static int __init pi433_init(void)
+>  	 */
+>  	status = alloc_chrdev_region(&pi433_devt, 0, N_PI433_MINORS, "pi433");
+>  	if (status < 0)
+> -		return status;
+> +		goto fail;
+
+Just return directly.  Do nothing gotos are bad for readability and they
+create Forgot to Set the Error Code bugs.  Also there was a direct
+return earlier in the function so it's better to do things consistently.
+
+>  
+>  	status = class_register(&pi433_class);
+> -	if (status) {
+> -		unregister_chrdev(MAJOR(pi433_devt),
+> -				  pi433_spi_driver.driver.name);
+> -		return status;
+> -	}
+> +	if (status)
+> +		goto unreg_chrdev;
+>  
+>  	root_dir = debugfs_create_dir(KBUILD_MODNAME, NULL);
+>  
+>  	status = spi_register_driver(&pi433_spi_driver);
+> -	if (status < 0) {
+> -		class_unregister(&pi433_class);
+> -		unregister_chrdev(MAJOR(pi433_devt),
+> -				  pi433_spi_driver.driver.name);
+> -	}
+> +	if (status < 0)
+> +		goto unreg_class;
+>  
+> +	return 0;
+> +
+> +unreg_class:
+> +	class_unregister(&pi433_class);
+
+There is a debugfs_remove() missing.  I have written a blog that might
+be helpful:
+
+https://staticthinking.wordpress.com/2022/04/28/free-the-last-thing-style/
+
+regards,
+dan carpenter
+
+> +unreg_chrdev:
+> +	unregister_chrdev(MAJOR(pi433_devt), pi433_spi_driver.driver.name);
+> +fail:
+>  	return status;
 >  }
-> =20
-> +static struct pixel_argb_u16 argb_u16_from_gray8(u8 gray)
-> +{
-> +	return argb_u16_from_u8888(255, gray, gray, gray);
-> +}
-> +
->  VISIBLE_IF_KUNIT struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb,=
- u8 cr,
->  							    struct conversion_matrix *matrix)
->  {
-> @@ -269,6 +274,89 @@ static void black_to_argb_u16(const struct vkms_plan=
-e_state *plane, int x_start,
->  	}
->  }
-> =20
-> +static void Rx_read_line(const struct vkms_plane_state *plane, int x_sta=
-rt,
-> +			 int y_start, enum pixel_read_direction direction, int count,
-> +			 struct pixel_argb_u16 out_pixel[], u8 bit_per_pixel, u8 lum_per_leve=
-l)
-> +{
-> +	struct pixel_argb_u16 *end =3D out_pixel + count;
-> +	u8 *src_pixels;
-> +	int rem_x, rem_y;
-> +
-> +	packed_pixels_addr(plane->frame_info, x_start, y_start, 0, &src_pixels,=
- &rem_x, &rem_y);
 
-Maybe assert that rem_y =3D 0? Or block_h =3D 1.
-
-> +	int bit_offset =3D (int)rem_x * bit_per_pixel;
-
-Why cast rem_x to int when it was defined to be int?
-
-> +	int step =3D get_step_next_block(plane->frame_info->fb, direction, 0);
-> +	int mask =3D (0x1 << bit_per_pixel) - 1;
-
-Since mask will interact with u8, it should be unsigned too.
-
-> +
-> +	if (direction =3D=3D READ_LEFT_TO_RIGHT || direction =3D=3D READ_RIGHT_=
-TO_LEFT) {
-> +		int restart_bit_offset =3D 0;
-> +		int step_bit_offset =3D bit_per_pixel;
-> +
-> +		if (direction =3D=3D READ_RIGHT_TO_LEFT) {
-> +			restart_bit_offset =3D 8 - bit_per_pixel;
-> +			step_bit_offset =3D -bit_per_pixel;
-> +		}
-> +
-> +		while (out_pixel < end) {
-> +			u8 val =3D (*src_pixels & (mask << bit_offset)) >> bit_offset;
-
-or shorter: (*src_pixels >> bit_offset) & mask
-
-However, shouldn't the first pixel be on the high bits?
-
-That how I would understand the comments in drm_fourcc.h.
-
-Again a reason to avoid a solid color fill in IGT.
-
-> +
-> +			*out_pixel =3D argb_u16_from_gray8(val * lum_per_level);
-> +
-> +			bit_offset +=3D step_bit_offset;
-> +			if (bit_offset < 0 || 8 <=3D bit_offset) {
-> +				bit_offset =3D restart_bit_offset;
-> +				src_pixels +=3D step;
-> +			}
-> +			out_pixel +=3D 1;
-> +		}
-> +	} else if (direction =3D=3D READ_TOP_TO_BOTTOM || direction =3D=3D READ=
-_BOTTOM_TO_TOP) {
-> +		while (out_pixel < end) {
-> +			u8 val =3D (*src_pixels & (mask << bit_offset)) >> bit_offset;
-> +			*out_pixel =3D argb_u16_from_gray8(val * lum_per_level);
-> +			src_pixels +=3D step;
-> +			out_pixel +=3D 1;
-> +		}
-> +	}
-> +}
-> +
-> +static void R1_read_line(const struct vkms_plane_state *plane, int x_sta=
-rt,
-> +			 int y_start, enum pixel_read_direction direction, int count,
-> +			 struct pixel_argb_u16 out_pixel[])
-> +{
-> +	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 1, 0=
-xFF);
-> +}
-> +
-> +static void R2_read_line(const struct vkms_plane_state *plane, int x_sta=
-rt,
-> +			 int y_start, enum pixel_read_direction direction, int count,
-> +			 struct pixel_argb_u16 out_pixel[])
-> +{
-> +	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 2, 0=
-x55);
-> +}
-> +
-> +static void R4_read_line(const struct vkms_plane_state *plane, int x_sta=
-rt,
-> +			 int y_start, enum pixel_read_direction direction, int count,
-> +			 struct pixel_argb_u16 out_pixel[])
-> +{
-> +	Rx_read_line(plane, x_start, y_start, direction, count, out_pixel, 4, 0=
-x11);
-> +}
-> +
-> +static void R8_read_line(const struct vkms_plane_state *plane, int x_sta=
-rt,
-> +			 int y_start, enum pixel_read_direction direction, int count,
-> +			 struct pixel_argb_u16 out_pixel[])
-> +{
-> +	struct pixel_argb_u16 *end =3D out_pixel + count;
-> +	u8 *src_pixels;
-> +	int rem_x, rem_y;
-> +	int step =3D get_step_next_block(plane->frame_info->fb, direction, 0);
-> +
-> +	packed_pixels_addr(plane->frame_info, x_start, y_start, 0, &src_pixels,=
- &rem_x, &rem_y);
-
-Assert on block size?
-
-
-> +
-> +	while (out_pixel < end) {
-> +		*out_pixel =3D argb_u16_from_gray8(*src_pixels);
-> +		src_pixels +=3D step;
-> +		out_pixel +=3D 1;
-> +	}
-> +}
-> +
->  static void ARGB8888_read_line(const struct vkms_plane_state *plane, int=
- x_start, int y_start,
->  			       enum pixel_read_direction direction, int count,
->  			       struct pixel_argb_u16 out_pixel[])
-> @@ -582,6 +670,14 @@ pixel_read_line_t get_pixel_read_line_function(u32 f=
-ormat)
->  	case DRM_FORMAT_YVU422:
->  	case DRM_FORMAT_YVU444:
->  		return &planar_yuv_read_line;
-> +	case DRM_FORMAT_R1:
-> +		return &R1_read_line;
-> +	case DRM_FORMAT_R2:
-> +		return &R2_read_line;
-> +	case DRM_FORMAT_R4:
-> +		return &R4_read_line;
-> +	case DRM_FORMAT_R8:
-> +		return &R8_read_line;
->  	default:
->  		/*
->  		 * This is a bug in vkms_plane_atomic_check. All the supported
-> @@ -855,6 +951,10 @@ get_conversion_matrix_to_argb_u16(u32 format, enum d=
-rm_color_encoding encoding,
->  	case DRM_FORMAT_ARGB16161616:
->  	case DRM_FORMAT_XRGB16161616:
->  	case DRM_FORMAT_RGB565:
-> +	case DRM_FORMAT_R1:
-> +	case DRM_FORMAT_R2:
-> +	case DRM_FORMAT_R4:
-> +	case DRM_FORMAT_R8:
->  		/*
->  		 * Those formats are supported, but they don't need a conversion matri=
-x. Return
-
-It is strange that you need to list irrelevant formats here.
-
-
->  		 * a valid pointer to avoid kernel panic in case this matrix is used/c=
-hecked
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
-s_plane.c
-> index e21cc92cf497..dc9d62acf350 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -29,7 +29,11 @@ static const u32 vkms_formats[] =3D {
->  	DRM_FORMAT_YUV444,
->  	DRM_FORMAT_YVU420,
->  	DRM_FORMAT_YVU422,
-> -	DRM_FORMAT_YVU444
-> +	DRM_FORMAT_YVU444,
-> +	DRM_FORMAT_R1,
-> +	DRM_FORMAT_R2,
-> +	DRM_FORMAT_R4,
-> +	DRM_FORMAT_R8
->  };
-> =20
->  static struct drm_plane_state *
->=20
-
-Thanks,
-pq
-
---Sig_/P3OiAf8YwdepAoHMsEV.zAB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYFeBkACgkQI1/ltBGq
-qqeHVhAAoWHtPFfcwQBZAL8Q2nrXxgfDguVWiSRZBMVFBhBnGc2t1v3U+BSBNy6u
-lENqEU1LrzRR3aN9LCJVKvz6/7Iq/qvSZXjsqwbs9WRNSytcOxWAXlss+7yn1TS0
-k0DxI1JhJWGCX2D9LyGVc0EzaWKx/GiPqZfAu2F0Tft16IOSUVZ1CT3//XakQGPS
-6mNuyC42XPEWkJVyfXz6tNkLrOS8HIYvLPtsNFzJIv/Z5oDGE72N5ZwWma9UfrEa
-/3c/szbVru6gYzHn7Yhvm0W/H1zOTMqQFRNuRap4EbjKv4XYd9ZwRexn5r23mGpA
-TPZegTlUotCoPUD95ZqQ5oCobP0+K+5CyFy6atBjX0tXkEIdYU1cht4XPeZ2GfsX
-4Pwcpzv3ptCgOZXdjZrz9OkwSzpNsMzdUEVsnGTSqpoxGemJpqNUslQ951HvQvri
-SIC4ZBQ3WQI7BpjekupY9z/BXnR8VOkGQXdaX8+bkEBVW3zD60A3WQXrUAl71RRP
-f1moRzIrRJZYjndttF++GLsBMsTVuUcO6Kce7+n93w8Gzo9tXQzCIRS20uAFJJ0b
-C8H/+mBgboXBfq3oZINHsv/F3T2ttxdh7E8cVNsiLChAJzuskdO2kSddPI+vZVqG
-GWTBF6l0KNI6qKzoS0r/RqbEQQapSFMm/tPnSk7JV4EAkScMxG4=
-=jP0O
------END PGP SIGNATURE-----
-
---Sig_/P3OiAf8YwdepAoHMsEV.zAB--
 
