@@ -1,53 +1,61 @@
-Return-Path: <linux-kernel+bounces-122914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-122915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6685788FF60
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:43:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9EBF88FF61
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 13:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0855C299B52
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:43:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075311C24783
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 12:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473D77FBC0;
-	Thu, 28 Mar 2024 12:41:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1428004B;
+	Thu, 28 Mar 2024 12:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="QLgCbDzj"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BOPKzIbB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7179C7FBB2;
-	Thu, 28 Mar 2024 12:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37A88004A
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 12:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711629672; cv=none; b=rlYrl0QXe12l8+bgByjwIvJ96Amkf+q4CBpL1pIGCwXmbGV2r2ySnRo4ZTcvF1lQeEmaEBv6LTyygv8xSc6vyX+TxPT7BsEeNaveofcRvgWJM7KM0Kq70cho/3Hm2cq/ruahTeUwzOG5KY5F5E2/EVlCXScnKToLyk0aygUxbqw=
+	t=1711629680; cv=none; b=u3QdXAEROrR7rNymYdWxYlDNKcb8etc19UggIriGr12xxZtAdZfFoXFY0CyKbZg/UeLBUWKWHfrWH7bBp0cQUB/zTaCUnOSqxxJYsjYJjsM5RbYsVCEmgmJ0XeGgc9i2ALgFRVEyyt/L1y6cUb3rZc67ioNFT54wPvWqM6ZNpv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711629672; c=relaxed/simple;
-	bh=Jn6wq+9Xr3mn74xd/q0Un6JHaY21LvNhXdbrx6wuhUU=;
+	s=arc-20240116; t=1711629680; c=relaxed/simple;
+	bh=gWnlaW8LZL1wZ69PEGGLMwZiyLxgmZeR9EPAdAwAqyg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PbHGSbnz+UFvm96L9YZs64FK+7AZey0ELPaNjdVYrcQ5rUHg+hDeqiI748j2U73o7W1M6b6e1UHF0YthtO/U3EOU5wyhWXs53F/LGjhnYdKWu02r3DIK++EnmulFTs6ujLwNEgjEuTY5IT3bPOOLbHCOEzT0zsMly2Hjp44zhxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=QLgCbDzj; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (pd9e59192.dip0.t-ipconnect.de [217.229.145.146])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id C90FE2FC0063;
-	Thu, 28 Mar 2024 13:41:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1711629662;
+	 In-Reply-To:Content-Type; b=b+Ao6tnZ1ZxvnshGL+ZS0rBR2HZyU8hwXer3l2mPnYDXFiKgnauC5xm/7BHf+h/p1zlbakdJbKBbHpBr59B/8w6Wp+eUlJyPmGXZauWfoSd963hGQQgkT9WS6cWowRX/BPuSn+nMkCclVVQV7WbagC1tE+GOI6PRn5CAHjnJduw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BOPKzIbB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711629676;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6siALVMfEPEJpNoLpevoBQw2RtVVAom0abFD3I1ypZI=;
-	b=QLgCbDzjyhUPH/aw0w7bNV6J6yyJyVQETrdChkN7IGiq6QsQrBTeytp3fCHJLAf4QSvtgR
-	Bl/nmyvWaUthWcZsd4kLOmcmhYCv6ME1XxnVJp//s5XY7yHSpwer3QSRV6IuqboUuUisn5
-	Zmsxj6mLJ97C739Fc1fLMxkfXViFSRU=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <9c32995c-e73e-416d-958d-f9960ad24686@tuxedocomputers.com>
-Date: Thu, 28 Mar 2024 13:41:02 +0100
+	bh=TNWi9PDkJybSv2Ekqt8s2egj3Hex4qjep5ZKFQ1qOHk=;
+	b=BOPKzIbBYkA3rw6fxHDNOKSQeuXn3Xgm7jrrLRqhx0j2AGHSOq0p/t9wZZFR7cB4GeyheT
+	UXe2i6KS8tjskLKlk3uUzFTc4JBObxx2HTNPM7oC/HFj8ZnFPAh0s3gKO/s7IqjR4GNYHl
+	WkpfOuw1Ul1ZqxjaZcs4t8mbmf0FQ6s=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-271-ktgfc1VaPPuGCzQhBYrbvQ-1; Thu, 28 Mar 2024 08:41:12 -0400
+X-MC-Unique: ktgfc1VaPPuGCzQhBYrbvQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF01B181B203;
+	Thu, 28 Mar 2024 12:41:11 +0000 (UTC)
+Received: from [10.22.9.3] (unknown [10.22.9.3])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5EC5F111E3F3;
+	Thu, 28 Mar 2024 12:41:11 +0000 (UTC)
+Message-ID: <9b15de60-b593-4b0c-bacc-ebe79de5d541@redhat.com>
+Date: Thu, 28 Mar 2024 08:41:10 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,50 +63,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ALSA: hda/realtek - Fix inactive headset mic jack
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Christoffer Sandberg <cs@tuxedo.de>, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240328102757.50310-1-wse@tuxedocomputers.com>
+Subject: Re: [PATCH] lockdep: Use str_plural() to fix Coccinelle warning
 Content-Language: en-US
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <20240328102757.50310-1-wse@tuxedocomputers.com>
+To: Thorsten Blum <thorsten.blum@toblux.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+References: <20240328100952.200379-3-thorsten.blum@toblux.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240328100952.200379-3-thorsten.blum@toblux.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Hi all,
-
-Forgot to add cc stable
-
-@Takashi can you do that on merge?
-
-Kind Regards,
-
-Werner
-
-Am 28.03.24 um 11:27 schrieb Werner Sembach:
-> From: Christoffer Sandberg <cs@tuxedo.de>
+On 3/28/24 06:09, Thorsten Blum wrote:
+> Fixes the following Coccinelle/coccicheck warning reported by
+> string_choices.cocci:
 >
-> This patch adds the existing fixup to certain TF platforms implementing
-> the ALC274 codec with a headset jack. It fixes/activates the inactive
-> microphone of the headset.
+> 	opportunity for str_plural(depth)
 >
-> Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 > ---
->   sound/pci/hda/patch_realtek.c | 1 +
->   1 file changed, 1 insertion(+)
+>   kernel/locking/lockdep.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index a1facdb98d9a0..3b75934ee62c1 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10365,6 +10365,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->   	SND_PCI_QUIRK(0x1d05, 0x1147, "TongFang GMxTGxx", ALC269_FIXUP_NO_SHUTUP),
->   	SND_PCI_QUIRK(0x1d05, 0x115c, "TongFang GMxTGxx", ALC269_FIXUP_NO_SHUTUP),
->   	SND_PCI_QUIRK(0x1d05, 0x121b, "TongFang GMxAGxx", ALC269_FIXUP_NO_SHUTUP),
-> +	SND_PCI_QUIRK(0x1d05, 0x1387, "TongFang GMxIXxx", ALC2XX_FIXUP_HEADSET_MIC),
->   	SND_PCI_QUIRK(0x1d72, 0x1602, "RedmiBook", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
->   	SND_PCI_QUIRK(0x1d72, 0x1701, "XiaomiNotebook Pro", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE),
->   	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index 151bd3de5936..31d7720c9b8d 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -786,7 +786,7 @@ static void lockdep_print_held_locks(struct task_struct *p)
+>   		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
+>   	else
+>   		printk("%d lock%s held by %s/%d:\n", depth,
+> -		       depth > 1 ? "s" : "", p->comm, task_pid_nr(p));
+> +		       str_plural(depth), p->comm, task_pid_nr(p));
+>   	/*
+>   	 * It's not reliable to print a task's held locks if it's not sleeping
+>   	 * and it's not the current task.
+Acked-by: Waiman Long <longman@redhat.com>
+
 
