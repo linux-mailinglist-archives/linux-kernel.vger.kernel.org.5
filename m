@@ -1,100 +1,82 @@
-Return-Path: <linux-kernel+bounces-123409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BFFA890828
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A39789082C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 19:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB057299FDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:19:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B19B2290F4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 18:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CCC12F5B1;
-	Thu, 28 Mar 2024 18:19:54 +0000 (UTC)
-Received: from relay164.nicmail.ru (relay164.nicmail.ru [91.189.117.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB54B135A7E;
+	Thu, 28 Mar 2024 18:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ARG4bkyD"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0709B1879;
-	Thu, 28 Mar 2024 18:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8935A783
+	for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711649993; cv=none; b=dUy5oMO5YFvV6C4rRPekf3naXWfH0lt2RNLurq13k58Ic0CCCycj1//2xIQXeXbQKwuTC/8XdO1UuitV7Wcc6M6k4Z7PYdRlyw6OS/FpL8wvJX0bw+Iy6MyA2xh2YT48hh+Mb02MqwSHi2kLTqdlBeCnqkD/9XcXh2ZwlWKVWRU=
+	t=1711650202; cv=none; b=UpfpIxobUcXNU5giMk4LOx/Qt7fRrkK1HX9m8rJ3LAGvXh0/p1a3B8JnZMOyMNW5WK6ZjC9pWo8sR+qBM3gXyoIqNSkSTIGYXvXnzj+iRuFZ5slstQ/OU6qogFU6AwHL4Lzwrh9Ngj2LAv++KhuqnRXyZ0UzymFuhMnxXYhoWYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711649993; c=relaxed/simple;
-	bh=/0iYGmx0+L/9J0BF+wBfl+vJ657RoLBgKRvZRDBFOQw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oDUZcuyF2Wlvhnq26a6ibYd2DfOJggRLjlutMeCXjk/R3cF3wGIaPjyT23Vhfy/f3xT/tUTeWMLUriuHtunvg97kiKZpAWcStV2PxLZ+4I61AK6a76Ve2rETqm9R7gEioBHFHi86zMtntHVUGtmL9Dt4byUX5gf/r/muD9IlJ2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
-Received: from [10.28.138.149] (port=41536 helo=mitx-gfx..)
-	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
-	(envelope-from <kiryushin@ancud.ru>)
-	id 1rpuLh-0004jl-D2;
-	Thu, 28 Mar 2024 21:19:37 +0300
-Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
-	by incarp1102.mail.hosting.nic.ru (Exim 5.55)
-	with id 1rpuLg-00BqTj-30;
-	Thu, 28 Mar 2024 21:19:37 +0300
-From: Nikita Kiryushin <kiryushin@ancud.ru>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] rcu: Fix buffer overlow in print_cpu_stall_info()
-Date: Thu, 28 Mar 2024 21:19:14 +0300
-Message-Id: <20240328181914.869332-1-kiryushin@ancud.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711650202; c=relaxed/simple;
+	bh=rhMs+IW+LjgjgJG2bjuDC2kRA/YBDohWPyTnq4wTmlw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=UwmBR/LZwhnbB+O8nOhoJ9HxOjevzlv37rf7N6I3qWFIVwCxbii2nBYRu2u/tXXGby2OdhQ7Hgl/Vxj2ElrxTGeW0MxlTLr5lAVecMIwR+CQ8Kv/FmBgaAKwg1xCnDgXUB/I/uOaCgKE9zdZ9zuCaFJoDZVV0JA0dyoOU3bPUJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ARG4bkyD; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <16b32b53-5a01-43e8-93db-64778378fa09@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711650197;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bvccjBgvV8FPnWLETfwa5X6p1gUwr/hfB1axJ8LOH4E=;
+	b=ARG4bkyDA/Vzrk5HPV4L8uXDHlS+KGa6BXgc+OWOCZOzz7yMadsTRX1+yWr1QLiRWQXK4Y
+	5FJJjHUw4vhZdXTsHFY817EuoGtAsGuiYKpCMm0rH7CZiEEOUgYbNTM2iUAL002W3KPZEb
+	LZaNF09ZJ9DXkVnlxWO0mx+/2tPYIlA=
+Date: Thu, 28 Mar 2024 11:23:07 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MS-Exchange-Organization-SCL: -1
+Subject: Re: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_lookup_elem
+Content-Language: en-US
+To: ast@kernel.org, yonghong.song@linux.dev
+References: <000000000000c8d6b00614b599a2@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+ haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, andrii@kernel.org,
+ alexei.starovoitov@gmail.com, bpf@vger.kernel.org,
+ syzbot <syzbot+1a3cf6f08d68868f9db3@syzkaller.appspotmail.com>
+In-Reply-To: <000000000000c8d6b00614b599a2@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-rcuc info output in print_cpu_stall_info() contains
-posiible buffer overflow in the case of huge jiffies
-difference. The situation seems improbable, but, buffer
-overflow, still. Also, unsigned jiffies difference printed
-as (signed) %ld (which can be a bad format, if the values
-are huge).
+On 3/28/24 3:01 AM, syzbot wrote:
+> Killed
+> make[2]: *** [scripts/Makefile.vmlinux_o:62: vmlinux.o] Error 137
+> make[2]: *** Deleting file 'vmlinux.o'
+> make[1]: *** [/syzkaller/jobs/linux/kernel/Makefile:1141: vmlinux_o] Error 2
+> make: *** [Makefile:240: __sub-make] Error 2
 
-Change sprintf to snprintf and change %ld to %lu in format.
+My second syzbot test attempt passed the build stage and passed the reproducer 
+also. https://lore.kernel.org/all/000000000000b7bdd80614bc433f@google.com/
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: 245a62982502 ("rcu: Dump rcuc kthread status for CPUs not reporting quiescent state")
-Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
----
- kernel/rcu/tree_stall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 5d666428546b..d4542c6e7c60 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -504,7 +504,7 @@ static void print_cpu_stall_info(int cpu)
- 			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
- 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
- 	if (rcuc_starved)
--		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
-+		snprintf(buf, sizeof(buf), " rcuc=%lu jiffies(starved)", j);
- 	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
- 	       cpu,
- 	       "O."[!!cpu_online(cpu)],
--- 
-2.34.1
+Not sure what caused the syzbot build error in the first attempt but should be 
+unrelated to the fix. I will post the patch.
 
 
