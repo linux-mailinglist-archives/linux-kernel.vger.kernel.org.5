@@ -1,160 +1,147 @@
-Return-Path: <linux-kernel+bounces-123670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9302890C6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:19:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18F5C890C70
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 22:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB0761C29FF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:19:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C24C828FE6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Mar 2024 21:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C7413B596;
-	Thu, 28 Mar 2024 21:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C973A13A3FF;
+	Thu, 28 Mar 2024 21:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QOGyc+MQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oEHKJdhS"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A229713BAFE;
-	Thu, 28 Mar 2024 21:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1CA2BAE7;
+	Thu, 28 Mar 2024 21:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711660681; cv=none; b=l1RGwtmif76Dx38O++x+0+F+jfjt7WHF5w2Uwc3fwdGL0LadRuGsbhJmO+Oacaocb/p/f123QwI6AqoY16npsklsIeP5ieeHSLlHuzOrgXrbHc5fGiNf2BYmyOCvIotKWLIhujCDExvZfIBMy/NyXrDEsIBqhkOoEjJnGgmZ9Uo=
+	t=1711660895; cv=none; b=SfGvEzRXflarlpftHZWUpmoKXrVSkhc+gWb7s1LozfEcI4TZiz1yCb+oNcWme/NI3H8Lb/6O+/5O3UT0OHxC/4Abo9u5+cA+P0+wSNmRoa0RKVUn31UdBDh4ppsmEu0Oif52WHnu0UNlhpsJmc+Tq+L4V1GyZRVdVnfhkaWfZ/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711660681; c=relaxed/simple;
-	bh=uJLczxzSRbonCzhxHzP2vHB8XJBIrX/JXXJpvxZMeGc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gMnZnodfWhkNBBiMAgD1MivO9I5o/ElYD0mnPhz2aCk1AZDyfj9h1FtSbOiKIklZtVpKcE+AbPfytmR7Xoos+FTsxVH71/EX4dDYC2r6pXrRrgeJMb1uvWp/PfH/nBkevqk6LOwnee25BVjbI0Pyi9UmekxPRynEdcb2NP4NOis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QOGyc+MQ; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711660680; x=1743196680;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uJLczxzSRbonCzhxHzP2vHB8XJBIrX/JXXJpvxZMeGc=;
-  b=QOGyc+MQwr35+coky2fpSBx5Npa3a+yRhuQdMZHMXAM3sgIzUlgmi7mz
-   6KbiHyDp9gIf1x+e2MYTUllSO87+hJwSQeEvk38SzXgHx+eEOGACgbizp
-   PGoHF7z2T2PE++6ocbEZznCXlDdnMeWybbtM1N2nBmdwYvOF6ktXFvXqw
-   Qc3nU02xTQfDmTHFB9cBpa/7NT8vEzpDmuXwC7KeHpuXYIclmI9LfMH/Z
-   TIeMrbKsO9kxf8x0e8Itgkhbm/jK42XWKqxpBv1NLNB8J3TEdyPecpJVz
-   XtvVkFx9CwVR2RbImb02mfpiGYhfwZ8V3E9cvGnN3n/EUVkpUdgXRhTIY
-   w==;
-X-CSE-ConnectionGUID: EZJtklJHTiK9ThPT8x65qw==
-X-CSE-MsgGUID: hjwswY1CQYWyuz4SsXFGAQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6780460"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6780460"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:17:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="16806360"
-Received: from atanneer-mobl.amr.corp.intel.com (HELO desk) ([10.209.84.81])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 14:17:50 -0700
-Date: Thu, 28 Mar 2024 14:17:42 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	Dave Hansen <dave.hansen@linux.intel.com>, kvm@vger.kernel.org
-Subject: Re: [linus:master] [x86/bugs]  6613d82e61:
- general_protection_fault:#[##]
-Message-ID: <20240328211742.bh2y3zsscranycds@desk>
-References: <202403281553.79f5a16f-lkp@intel.com>
+	s=arc-20240116; t=1711660895; c=relaxed/simple;
+	bh=Zj9xVaW5VxIj77MDr1gWeh7JZ6hMmrUu9YoKUpzwMWo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tPG27DUAQad+avKXNiR+U6EXE7aEImKnzxCQrkmGW2uLqru/uV/n/TkZs2z7RsJjpKBB2phKrRWXYR4qSAp7R3u384xHz4OPWN4GyRsykvfObvwRYr8Z0bOmR6zl/TmXTmYQgJcp9Gd8sv3PftlQ3/aFXSI7/ioaXI2w2HSG6Bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oEHKJdhS; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SLLN0e030916;
+	Thu, 28 Mar 2024 21:21:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=YqluI44oCwIMb2uPkFQarghRCXAwIcfSImWcvajff8o=; b=oE
+	HKJdhSQh3m7dimSMxiQTnAeQomAIRnhX5E2tYs1ZZAaNew9QOsq+nbxKbbiFGjpG
+	417lUfoVUeheW6K3CLdhDCOe7SvGyOVA6fmxfLSKleG+A5sk8q5eDBgVafa0T4PN
+	kyNgj1T/Fkt89wOfXCnlYDzE8xGzbxV35Fpxzk8mZYhrtRNcTnpvZD4oLNceP6Pm
+	zl9fqkEPrV3tyKSqoVgHvSPLavVP2nEbH87wR0UmNNxeVo4Txv8Gn9Auj6unh3r+
+	SbzEDSvWu0Q0WKbAjW9qGDcu864R4lu0AOYFfIVcualX/jmJXAGYvnQtjOJW3hIb
+	Ebt0HhTkNo424Ky3O2NQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x562rhuew-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 21:21:23 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42SLLMEF005080
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 28 Mar 2024 21:21:22 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
+ 2024 14:21:17 -0700
+Message-ID: <23de89e9-3ef3-c52d-7abf-93dc2dbb51a4@quicinc.com>
+Date: Thu, 28 Mar 2024 14:21:14 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403281553.79f5a16f-lkp@intel.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
+ dp_hpd_unplug_handle() directly
+Content-Language: en-US
+To: Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Kuogee Hsieh
+	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
+        <agross@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <dianders@chromium.org>, <dmitry.baryshkov@linaro.org>,
+        <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <vkoul@kernel.org>
+CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+ <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
+ <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com>
+ <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: xSN-cC30vJQgqcjGx3Mjnt0ZAam_B0JM
+X-Proofpoint-GUID: xSN-cC30vJQgqcjGx3Mjnt0ZAam_B0JM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-28_17,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403280153
 
-On Thu, Mar 28, 2024 at 03:36:28PM +0800, kernel test robot wrote:
-> compiler: clang-17
-> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+
+On 3/28/2024 1:58 PM, Stephen Boyd wrote:
+> Quoting Abhinav Kumar (2024-03-28 13:24:34)
+>> + Johan and Bjorn for FYI
+>>
+>> On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
+>>> For internal HPD case, hpd_event_thread is created to handle HPD
+>>> interrupts generated by HPD block of DP controller. It converts
+>>> HPD interrupts into events and executed them under hpd_event_thread
+>>> context. For external HPD case, HPD events is delivered by way of
+>>> dp_bridge_hpd_notify() under thread context. Since they are executed
+>>> under thread context already, there is no reason to hand over those
+>>> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
+>>> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
+>>>
+>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>> ---
+>>>    drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
+>>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>
+>> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
 > 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> Is this a bug fix or an optimization? The commit text doesn't tell me.
 > 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202403281553.79f5a16f-lkp@intel.com
-> 
-> 
-> [   25.175767][  T670] VFS: Warning: trinity-c2 using old stat() call. Recompile your binary.
-> [   25.245597][  T669] general protection fault: 0000 [#1] PREEMPT SMP
-> [   25.246417][  T669] CPU: 1 PID: 669 Comm: trinity-c1 Not tainted 6.8.0-rc5-00004-g6613d82e617d #1 85a4928d2e6b42899c3861e57e26bdc646c4c5f9
-> [   25.247743][  T669] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [ 25.248865][ T669] EIP: restore_all_switch_stack (kbuild/src/consumer/arch/x86/entry/entry_32.S:957) 
-> [ 25.249510][ T669] Code: 4c 24 10 36 89 48 fc 8b 4c 24 0c 81 e1 ff ff 00 00 36 89 48 f8 8b 4c 24 08 36 89 48 f4 8b 4c 24 04 36 89 48 f0 59 8d 60 f0 58 <0f> 00 2d 00 94 d5 c1 cf 6a 00 68 88 6b d4 c1 eb 00 fc 0f a0 50 b8
-> All code
-> ========
->    0:	4c 24 10             	rex.WR and $0x10,%al
->    3:	36 89 48 fc          	ss mov %ecx,-0x4(%rax)
->    7:	8b 4c 24 0c          	mov    0xc(%rsp),%ecx
->    b:	81 e1 ff ff 00 00    	and    $0xffff,%ecx
->   11:	36 89 48 f8          	ss mov %ecx,-0x8(%rax)
->   15:	8b 4c 24 08          	mov    0x8(%rsp),%ecx
->   19:	36 89 48 f4          	ss mov %ecx,-0xc(%rax)
->   1d:	8b 4c 24 04          	mov    0x4(%rsp),%ecx
->   21:	36 89 48 f0          	ss mov %ecx,-0x10(%rax)
->   25:	59                   	pop    %rcx
->   26:	8d 60 f0             	lea    -0x10(%rax),%esp
->   29:	58                   	pop    %rax
->   2a:*	0f 00 2d 00 94 d5 c1 	verw   -0x3e2a6c00(%rip)        # 0xffffffffc1d59431		<-- trapping instruction
 
-This is due to 64-bit addressing with CONFIG_X86_32=y on clang.
+I would say both.
 
-I haven't tried with clang, but I don't see this happening with gcc-11:
+optimization as it avoids the need to go through the hpd_event thread 
+processing.
 
-	entry_INT80_32:
-	...
-	<+446>:   mov    0x4(%esp),%ecx
-	<+450>:   mov    %ecx,%ss:-0x10(%eax)
-	<+454>:   pop    %ecx
-	<+455>:   lea    -0x10(%eax),%esp
-	<+458>:   pop    %eax
-	<+459>:   verw   0xc1d5c700              <----------
-	<+466>:   iret
+bug fix because once you go through the hpd event thread processing it 
+exposes and often breaks the already fragile hpd handling state machine 
+which can be avoided in this case.
 
->   31:	cf                   	iret
->   32:	6a 00                	push   $0x0
->   34:	68 88 6b d4 c1       	push   $0xffffffffc1d46b88
->   39:	eb 00                	jmp    0x3b
-..
-
-The config has CONFIG_X86_32=y, but it is possible that in 32-bit build
-with clang, 64-bit mode expansion of "VERW (_ASM_RIP(addr))" is getting
-used i.e. __ASM_FORM_RAW(b) below:
-
-  file: arch/x86/include/asm/asm.h
-  ...
-  #ifndef __x86_64__
-  /* 32 bit */
-  # define __ASM_SEL(a,b)         __ASM_FORM(a)
-  # define __ASM_SEL_RAW(a,b)     __ASM_FORM_RAW(a)
-  #else
-  /* 64 bit */
-  # define __ASM_SEL(a,b)         __ASM_FORM(b)
-  # define __ASM_SEL_RAW(a,b)     __ASM_FORM_RAW(b)   <--------
-  #endif
-  ...
-  /* Adds a (%rip) suffix on 64 bits only; for immediate memory references */
-  #define _ASM_RIP(x)     __ASM_SEL_RAW(x, x (__ASM_REGPFX rip))
-
-Possibly __x86_64__ is being defined with clang even when CONFIG_X86_32=y.
-
-I am not sure about current level of 32-bit mode support in clang. This
-seems inconclusive:
-
-  https://discourse.llvm.org/t/x86-32-bit-testing/65480
-
-Does anyone care about 32-bit mode builds with clang?
+>>
+>> Looks right to me,
+>>
+>> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
