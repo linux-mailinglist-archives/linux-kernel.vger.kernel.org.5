@@ -1,119 +1,235 @@
-Return-Path: <linux-kernel+bounces-125052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61226891F3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:01:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A79EF891F38
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1FDD1F2FE21
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:01:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C5862893EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A02C85629;
-	Fri, 29 Mar 2024 13:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE13821100;
+	Fri, 29 Mar 2024 13:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lhU5rtPP"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jI628nSq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCF55B1E6;
-	Fri, 29 Mar 2024 13:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BE91C0DEE
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711717456; cv=none; b=DOWZk0Cmp0iT1BhBHVSQoZQGoQAjQl1/oIGVUE5Mqv+pCkLitgVkZT9b+uojBIM7wLdMDH+AjmKEHnof6LkJM13V5KNZvs5u/eVJ3GmwSrulmMx96VFPRBe5MeSYV+8cqRpLereiGf0YzIQ/Rqf8DJX40YVcdif4ytEoJ1STbIM=
+	t=1711717342; cv=none; b=XHFzsSt15pnEr/O6duspZfsXam7JS/w89ubbk2z8bD1fAncWTCseWklYAugjrloTSJtYg5xIA14lQTAXqJOXepPRyNj2H6g1E6BFBNo3MOjNw0EzMAsd2gCxabG45zJQzNioAarUawMXJaXkW26acuzbqQONNrplyHl8zePdma0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711717456; c=relaxed/simple;
-	bh=HK+pW1Lv5cKPG7rzuoUit2Wj63jl66zbNwCyYBCxG3Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hMPtijCeK2Am3ydp20eGFc2wtJNvsFdwUE5uiyMOvXzi35sG/mgM/xYmODoKA90j/G+cEgZyeqKeaZLUSJpee7AGFiabmDb6vg1o+fRSVuzaVwaRPiAkjx8uOK1sVZhY9Dyq5VO2P69gwkLQDUUrQbs7CfNZDC/oPUa3k//4Qgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lhU5rtPP; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a07b092c4fso1548614a91.0;
-        Fri, 29 Mar 2024 06:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711717454; x=1712322254; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ENCOr2sA1qbshksM0GrDXVMpVc6dVoIzN1WRClTF0qw=;
-        b=lhU5rtPPjppdj/CnvUmHEJBRy6uw0Z0Hfzgb9+IQjP+N+VeCGb9EeuV9i8Cac4AvwQ
-         4Zof98r6BoPRAczgax4/QfCDNURGRK/8rZ7ckcnqno4OiA40d78iH21tuzDiRZVfkg1B
-         1c2LhwcS5X28wQ60N8EmqzxKaKA817jsXcSsqhvSV5J/tD0sLeK2jOx2Y6UQjSuiP5sB
-         WPyKpS58x9EuQX9h6jiD/xdCUAJK9/RczQfW79S9G0+GwmzvitqwH9zsNOJRoto+7zxc
-         r/WR1/jbjeOwQ8NhBwU6h8HY9SXZGA9k33qABk1ds8NGeUE3A39biCLYPuZHY6UKmRL3
-         wGbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711717454; x=1712322254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ENCOr2sA1qbshksM0GrDXVMpVc6dVoIzN1WRClTF0qw=;
-        b=ZUVC6W9mcOEZ4F2Bv0t4vrVlzykK3cHKqjOCIru4n57kQWEe4iHmKktSRDlVQBjxET
-         lvnz/W2sSTz3DaoEhYYIyRYEiA0RngTVGHQyR/MKu/3ZBM9hQudVUtwq2rPgQLrsBc8k
-         m27fI67nJHM1s3B0OgZ7YcQWNQLUrMpsAoi9GNVY4QPXis4zzYMBb5UuuGfWh0sk+cqk
-         STG83pPzyZSKSSdORo1W5vPjbWz23KAtVMnEMSN6Jq9sGg5u4ZVa917B7drqESx9DsY7
-         pLBq/ijoULn4YVqCLyfurlj/grZm+18PtZdneWl9Xez0rnyoOuEf6yZ4rUHl1mdod4Rr
-         +NAg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMLQEOZSvObMipzLE8luxKMHQER3wyG5p7i8BjHc8ygm3UxdWP6jeq+xh+/YBHqodHM1TdUXXR63dUyPxZ3e5+3Q11nePNapG92utVn/G67++VLqCcAfayVVtRipUxKgsrEdD6J5HfY2hUtZ8=
-X-Gm-Message-State: AOJu0YzF/aQnzmsbGh64DqDgpzoKYyePP7tQtBeFLbxEDQD8g+QeRsq7
-	Qby9Iez/JUr0cHvSCBh25kWzJM0Lu+BU/WP3GQKoTGw1xjbowbaw2r18TAHiJiiUFpM1jCFresS
-	gvCR5d/Yv2XOVU1cgZjNXmeFcbmU=
-X-Google-Smtp-Source: AGHT+IGbsz/GfbSim5fxK+qHD5P3CZN6CHz4jdK38k7IiMbNqgQTqHeSVSATZ+6GtAVQqObA3FZjqKl+K0pYO5bt840=
-X-Received: by 2002:a17:90a:dc05:b0:2a0:4de8:875f with SMTP id
- i5-20020a17090adc0500b002a04de8875fmr2303229pjv.8.1711717454485; Fri, 29 Mar
- 2024 06:04:14 -0700 (PDT)
+	s=arc-20240116; t=1711717342; c=relaxed/simple;
+	bh=c+1ZeFaaDmnKz5Vjo8G1Iz7uVJGxgmB2tDVp7hqd8mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vCzY93Xru/JDajD33HUs0Sa+5mw1oZtfqaXfMnpVI0x6LaHnxMppAfG6UfQnAcvkyP1c1iah7/t7xF+FAdqEq3Ra5yJt5wJrjvO2KnPT3/x5iFJ/+oVjdmEnxre7BJi0u3enM+oQVe9Ujwc5XXEc/xiTlKsD+10Qo2Zkk1J1eas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jI628nSq; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711717339;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yN1Le78gH2spFQsvHwZ2DbTI7S30kof/5Z3400NZP38=;
+	b=jI628nSq5RS4UunOwBWakCx3i0K0W1KK5PGfvrE1iWT9V60HAn86qnQuW3aVj1N0s4DjPc
+	fREazcdRM2QB5EHVbaMVVD6L/JWYyThyDmWzI5qkRsfG3ivOA+ii5316dZ+rXTUV2eUwF2
+	NqLJQL1cZq6s2yvh3kS4FCiqrptpHO0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-226-Kgz-TJJCPN2MsAeuWC5f0w-1; Fri,
+ 29 Mar 2024 09:02:12 -0400
+X-MC-Unique: Kgz-TJJCPN2MsAeuWC5f0w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4504C3C02788;
+	Fri, 29 Mar 2024 13:02:12 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.57])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E09040C6CB4;
+	Fri, 29 Mar 2024 13:02:11 +0000 (UTC)
+Date: Fri, 29 Mar 2024 09:04:09 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
+	tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com,
+	dhowells@redhat.com, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] writeback: collect stats of all wb of bdi in
+ bdi_debug_stats_show
+Message-ID: <Zga8Sf1DIxMevdcw@bfoster>
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <20240327155751.3536-3-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328195457.225001-1-wedsonaf@gmail.com> <20240329121033.401403-1-kernel@valentinobst.de>
-In-Reply-To: <20240329121033.401403-1-kernel@valentinobst.de>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 29 Mar 2024 14:03:40 +0100
-Message-ID: <CANiq72mkHM3qfq66oDZyZMCuLK8Y1tJxEqFhSYpFWg7ihfcvEA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] In-place module initialisation
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: wedsonaf@gmail.com, a.hindborg@samsung.com, alex.gaynor@gmail.com, 
-	aliceryhl@google.com, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
-	boqun.feng@gmail.com, gary@garyguo.net, linux-kernel@vger.kernel.org, 
-	ojeda@kernel.org, rust-for-linux@vger.kernel.org, walmeida@microsoft.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327155751.3536-3-shikemeng@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Fri, Mar 29, 2024 at 1:11=E2=80=AFPM Valentin Obst <kernel@valentinobst.=
-de> wrote:
->
-> I think the idea in [1] was to have this patch being included in the
-> stable trees. I got little experience with stable trees but wouldn't the
-> easiest way be that you add:
->
->         Cc: stable@vger.kernel.org # 6.8.x: 715dd8950d4e rust: phy: imple=
-ment `Send` for `Registration`
->         Cc: stable@vger.kernel.org
->         Fixes: 247b365dc8dc ("rust: add `kernel` crate")
->
-> in the sign-off section for this patch? (Or mark the first one for stable
-> inclusion as well, [2] has more information on that).
+On Wed, Mar 27, 2024 at 11:57:47PM +0800, Kemeng Shi wrote:
+> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
+> of whole bdi, but only writeback information of bdi in root cgroup is
+> collected. So writeback information in non-root cgroup are missing now.
+> To be more specific, considering following case:
+> 
+> /* create writeback cgroup */
+> cd /sys/fs/cgroup
+> echo "+memory +io" > cgroup.subtree_control
+> mkdir group1
+> cd group1
+> echo $$ > cgroup.procs
+> /* do writeback in cgroup */
+> fio -name test -filename=/dev/vdb ...
+> /* get writeback info of bdi */
+> cat /sys/kernel/debug/bdi/xxx/stats
+> The cat result unexpectedly implies that there is no writeback on target
+> bdi.
+> 
+> Fix this by collecting stats of all wb in bdi instead of only wb in
+> root cgroup.
+> 
+> Following domain hierarchy is tested:
+>                 global domain (320G)
+>                 /                 \
+>         cgroup domain1(10G)     cgroup domain2(10G)
+>                 |                 |
+> bdi            wb1               wb2
+> 
+> /* all writeback info of bdi is successfully collected */
+> cat stats
+> BdiWriteback:             2912 kB
+> BdiReclaimable:        1598464 kB
+> BdiDirtyThresh:      167479028 kB
+> DirtyThresh:         195038532 kB
+> BackgroundThresh:     32466728 kB
+> BdiDirtied:           19141696 kB
+> BdiWritten:           17543456 kB
+> BdiWriteBandwidth:     1136172 kBps
+> b_dirty:                     2
+> b_io:                        0
+> b_more_io:                   1
+> b_dirty_time:                0
+> bdi_list:                    1
+> state:                       1
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  mm/backing-dev.c | 100 +++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 71 insertions(+), 29 deletions(-)
+> 
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 70f02959f3bd..8daf950e6855 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+..
+> @@ -65,16 +78,54 @@ static struct backing_dev_info *lookup_bdi(struct seq_file *m)
+>  	return NULL;
+>  }
+>  
+> +static void collect_wb_stats(struct wb_stats *stats,
+> +			     struct bdi_writeback *wb)
+> +{
+> +	struct inode *inode;
+> +
+> +	spin_lock(&wb->list_lock);
+> +	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
+> +		stats->nr_dirty++;
+> +	list_for_each_entry(inode, &wb->b_io, i_io_list)
+> +		stats->nr_io++;
+> +	list_for_each_entry(inode, &wb->b_more_io, i_io_list)
+> +		stats->nr_more_io++;
+> +	list_for_each_entry(inode, &wb->b_dirty_time, i_io_list)
+> +		if (inode->i_state & I_DIRTY_TIME)
+> +			stats->nr_dirty_time++;
+> +	spin_unlock(&wb->list_lock);
+> +
+> +	stats->nr_writeback += wb_stat(wb, WB_WRITEBACK);
+> +	stats->nr_reclaimable += wb_stat(wb, WB_RECLAIMABLE);
+> +	stats->nr_dirtied += wb_stat(wb, WB_DIRTIED);
+> +	stats->nr_written += wb_stat(wb, WB_WRITTEN);
+> +	stats->wb_thresh += wb_calc_thresh(wb, stats->dirty_thresh);
 
-715dd8950d4e is your local hash for 1/5, right? So I would drop the
-hash, because it may be confusing.
+Kinda nitty question, but is this a sum of per-wb writeback thresholds?
+If so, do you consider that useful information vs. the per-wb threshold
+data presumably exposed in the next patch?
 
-It may be possible to remove the first line (since 1/5 will only apply
-to 6.8.x and it is already the previous patch in the series, while the
-`Fixes` tag here may make it clear that 2/5 should still go everywhere
-regardless of 1/5), but I guess it does not hurt to be extra clear.
+I'm not really that worried about what debug data we expose, it just
+seems a little odd. How would you document this value in a sentence or
+two, for example?
 
-What about:
+> +}
+> +
+> +#ifdef CONFIG_CGROUP_WRITEBACK
+> +static void bdi_collect_stats(struct backing_dev_info *bdi,
+> +			      struct wb_stats *stats)
+> +{
+> +	struct bdi_writeback *wb;
+> +
+> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node)
+> +		collect_wb_stats(stats, wb);
 
-    Cc: stable@vger.kernel.org # 6.8.x: rust: phy: implement `Send`
-for `Registration`
-    Cc: stable@vger.kernel.org # 6.1+
-    Fixes: 247b365dc8dc ("rust: add `kernel` crate")
+Depending on discussion on the previous patch and whether the higher
+level rcu protection in bdi_debug_stats_show() is really necessary, it
+might make more sense to move it here.
 
-Cheers,
-Miguel
+I'm also wondering if you'd want to check the state of the individual wb
+(i.e. WB_registered?) before reading it..?
+
+> +}
+> +#else
+> +static void bdi_collect_stats(struct backing_dev_info *bdi,
+> +			      struct wb_stats *stats)
+> +{
+> +	collect_wb_stats(stats, &bdi->wb);
+> +}
+> +#endif
+..
+> @@ -115,18 +157,18 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
+>  		   "b_dirty_time:       %10lu\n"
+>  		   "bdi_list:           %10u\n"
+>  		   "state:              %10lx\n",
+> -		   (unsigned long) K(wb_stat(wb, WB_WRITEBACK)),
+> -		   (unsigned long) K(wb_stat(wb, WB_RECLAIMABLE)),
+> -		   K(wb_thresh),
+> +		   K(stats.nr_writeback),
+> +		   K(stats.nr_reclaimable),
+> +		   K(stats.wb_thresh),
+>  		   K(dirty_thresh),
+>  		   K(background_thresh),
+> -		   (unsigned long) K(wb_stat(wb, WB_DIRTIED)),
+> -		   (unsigned long) K(wb_stat(wb, WB_WRITTEN)),
+> -		   (unsigned long) K(wb->write_bandwidth),
+> -		   nr_dirty,
+> -		   nr_io,
+> -		   nr_more_io,
+> -		   nr_dirty_time,
+> +		   K(stats.nr_dirtied),
+> +		   K(stats.nr_written),
+> +		   K(tot_bw),
+> +		   stats.nr_dirty,
+> +		   stats.nr_io,
+> +		   stats.nr_more_io,
+> +		   stats.nr_dirty_time,
+>  		   !list_empty(&bdi->bdi_list), bdi->wb.state);
+
+Is it worth showing a list count here rather than list_empty() state?
+
+Brian
+
+>  
+>  	rcu_read_unlock();
+> -- 
+> 2.30.0
+> 
+
 
