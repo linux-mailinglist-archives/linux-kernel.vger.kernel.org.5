@@ -1,152 +1,222 @@
-Return-Path: <linux-kernel+bounces-125290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF0B892396
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:51:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EF1B892399
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E740F1F241B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:51:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28361C210B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5415B1EE;
-	Fri, 29 Mar 2024 18:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E4B4383A5;
+	Fri, 29 Mar 2024 18:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="pXGtnHj3"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26134225A8;
-	Fri, 29 Mar 2024 18:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="n303v0oN"
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CBCE4AEED
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711738286; cv=none; b=UAlb+3EXqVNo6T6D8sRiILvBAGrMUWclut0sx3HXq5xEjcC4EebwPlOvFT8XaLPYXERk4Gc2lIcNKBqGSRuiJbUEbRRBFEOr6GsYGVHKaJMkC4aXe02APKrxfvCvLN4xo+m8LoZm6naPWDVOT1FlWXxl0D1KtOvDTyLuA+C8cos=
+	t=1711738317; cv=none; b=Zv4E2xNy7R7uqDVb+Nq8szkpgiIYRulkbTQKRp3TeLarskDAaooJNcrk8sZiOrj7BcQe2AJJimaMSfYuzhZXZb8Fq51yr+pL2i+ikYQL5gwEkdtxLVKDbI+Bi3J60xiATgJmSpYB1P0x3+lYILLX0YT3+qpVkVA7NWwKmcdwROs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711738286; c=relaxed/simple;
-	bh=Ys+kBNBHijzDi2YWXzThWwp5KAH+FSeQOJSrMGqWnb0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p2xo8iMtj5HnHCWnpW+bi1CfAIrq4TzNnxD8dSVG24rNIw6touU/R6DhpGysdaPNbHvSxoBgNyBIyyI6gSk/aNL4OxgLPwCwn5jtKD7fNwccTsYEZt2Gspz6oa9RGBXajeQDGqItxh7Nu5LRrUSufuumYg/ybmuv1HCqTHQxojg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=pXGtnHj3; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.128.229] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3DC7F20E6F42;
-	Fri, 29 Mar 2024 11:51:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3DC7F20E6F42
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711738284;
-	bh=/pwtgF4mJa43U7u8eGPihHXysR53d8MYCc7SQXhSzb8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pXGtnHj3DxKqLXh0cvZCSvcaLvUsOJN/dP3lwRNbukpYU9EaB53wcWvXKvtfs1jy5
-	 bJOw7CGRycUoouJw+APpXY6nb+neaFD76BLiDLQVXc02pqRxYlxecAeIpSrNcIxic/
-	 vz7SB5uqZmwS7X85Y0Jv1eOtFAQjodiyD0paH60Y=
-Message-ID: <a667a8b9-f7c3-4cb3-9a19-858f10d8bb9d@linux.microsoft.com>
-Date: Fri, 29 Mar 2024 11:51:21 -0700
+	s=arc-20240116; t=1711738317; c=relaxed/simple;
+	bh=KWwIotW1y1EPwjgR1d0C1AaUU+YymQBsrG5xC4C9Lxk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I/gat0p1TSdcXNT6cgaLAtQu+JFr8DxWV1a+qmvfYdlCKgU3XGGgK2HAlnAFOhG+BgYIC6CAcZMsS1peYZMYYUxzG/9evgDiGBLEeUTFrYZljWUVqny8mryuOmI7mCWvzh5PuGe6sTHKCprdPwTnjXDMTdpqSwlkMYrPYYNzx5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=n303v0oN; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c38eced701so1332991b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711738313; x=1712343113; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FuM8ecOFJyJDtovRpu4FBUR1Iu1DTOXn5oqcF8xzseE=;
+        b=n303v0oNs3k059VoNXimzdi58PWrl8cBTwg51Y9ZKDl+2MholVKpJt5LstOgGN7jx7
+         lwRtiGFtBmX9KnkWgsPNo1jyk2DoA/6lpCdHNoqAd85PBOAQTt3u3p5WWrKm+pYRUAbb
+         dFDd6RkNLqBABzQ/42jo9ZNMykHjZtGL2mudtKvYJvHMGlfeYVuFXrzViUjgVvm2FK9L
+         JnT7W63p5JXMPU3KZ8QTfM0oMTw9GU/NugiAZl6m6rxgelHVHsuMLnG2aIAe5jzXfcaT
+         S6qlr94GpW++mYy57uJrtIQxSY8Y4Zpe5ATXr5vecgGvv1oE/1S5qGiryMPKHIlKaeEe
+         rdZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711738313; x=1712343113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FuM8ecOFJyJDtovRpu4FBUR1Iu1DTOXn5oqcF8xzseE=;
+        b=f34HxsWbZhv2ES/cXgdmlsepXLhATgia9hMMjr688YmOCu7r3J+N37OL7p/6RaWgW+
+         +Rl21ELtOKe3CQtcZjnp/OTdtYVqb37SgGoYz1wfeu/ZUvb8A+L0enC2W/llniZ6U1zn
+         TsJMmeSEhb78WpBHi0WxDRErV9HITevddA8SVNQqgZqaiMwSGqtiYDebkkmq8cXVEOD0
+         wczZkweYWdZaMHzQEl7bNDa1BkKhA+4RIudJSnBb9iM4LHtg2xe23YH928JsCoijCiyx
+         jr4M7vb8oo+2TBi4vQTW3Bt1HHYzzAi1NGWpHlJ6dDGmGfk9nvEvhIhg5EStk6HQPipQ
+         D1xQ==
+X-Gm-Message-State: AOJu0YzGcGg3a9QMWNzljI/EbB+7GsE6MVCW7n7SLYOhlFUcFW/3v3yd
+	bcRGy4AiD3mXnERoMIn+5OlCT+UIxsJww4BgGvEGlSqj82+AngzbSM4qug/lvzc=
+X-Google-Smtp-Source: AGHT+IFXddigHRumW63Y3jjiJPRozwcYTAhSquX8GQJmEd1lDmf8MJoUemBAVzmoY4+qHgZ2sLfDOQ==
+X-Received: by 2002:a05:6808:238a:b0:3c3:e89a:94b7 with SMTP id bp10-20020a056808238a00b003c3e89a94b7mr3501594oib.22.1711738313089;
+        Fri, 29 Mar 2024 11:51:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:bb1f])
+        by smtp.gmail.com with ESMTPSA id hh1-20020a05622a618100b00430b0f40532sm1854785qtb.9.2024.03.29.11.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 11:51:52 -0700 (PDT)
+Date: Fri, 29 Mar 2024 14:51:47 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Tvrtko Ursulin <tursulin@igalia.com>
+Cc: linux-kernel@vger.kernel.org, Tvrtko Ursulin <tursulin@ursulin.net>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Peter Ziljstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, kernel-dev@igalia.com
+Subject: Re: [PATCH] sched/psi: Optimise psi_group_change a bit
+Message-ID: <20240329185147.GA877460@cmpxchg.org>
+References: <20240329160648.86999-1-tursulin@igalia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology more
- inclusive
-To: Andi Shyti <andi.shyti@linux.intel.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Harry Wentland <harry.wentland@amd.com>,
- Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Evan Quan <evan.quan@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
- Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
- Alexander Richards <electrodeyt@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Heiner Kallweit <hkallweit1@gmail.com>, Hamza Mahfooz
- <hamza.mahfooz@amd.com>, Ruan Jinjie <ruanjinjie@huawei.com>,
- Alan Liu <haoping.liu@amd.com>, Aurabindo Pillai <aurabindo.pillai@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
- Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
- Sohaib Nadeem <sohaib.nadeem@amd.com>, Lewis Huang <lewis.huang@amd.com>,
- Tom Chung <chiahsuan.chung@amd.com>,
- Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
- Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
- George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
- Jun Lei <jun.lei@amd.com>, Nicholas Kazlauskas
- <nicholas.kazlauskas@amd.com>, Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
- Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
- Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
- Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Yang Wang <kevinyang.wang@amd.com>, Darren Powell <darren.powell@amd.com>,
- Yifan Zhang <yifan1.zhang@amd.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
- open list <linux-kernel@vger.kernel.org>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-gfx@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-xe@lists.freedesktop.org>,
- "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
- <nouveau@lists.freedesktop.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
- Andi Shyti <andi.shyti@kernel.org>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
- <20240329170038.3863998-3-eahariha@linux.microsoft.com>
- <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
- <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
- <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329160648.86999-1-tursulin@igalia.com>
 
-On 3/29/2024 10:38 AM, Andi Shyti wrote:
-> Hi,
+On Fri, Mar 29, 2024 at 04:06:48PM +0000, Tvrtko Ursulin wrote:
+> From: Tvrtko Ursulin <tursulin@ursulin.net>
 > 
+> The current code loops over the psi_states only to call a helper which
+> then resolves back to the action needed for each state using a switch
+> statement. That is effectively creating a double indirection of a kind
+> which, given how all the states need to be explicitly listed and handled
+> anyway, we can simply remove. Both the for loop and the switch statement
+> that is.
+> 
+> The benefit is both in the code size and CPU time spent in this function.
+> YMMV but on my Steam Deck, while in a game, the patch makes the CPU usage
+> go from ~2.4% down to ~1.2%. Text size at the same time went from 0x323 to
+> 0x2c1.
+> 
+> Signed-off-by: Tvrtko Ursulin <tursulin@ursulin.net>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Peter Ziljstra <peterz@infradead.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kernel-dev@igalia.com
 
-<snip>
+This is great.
 
-> 
->>>> with more appropriate terms. Inspired by and following on to Wolfram's
->>>> series to fix drivers/i2c/[1], fix the terminology for users of
->>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
->>>> in the specification.
->>>
->>> The specification talks about:
->>>
->>>  - master -> controller
->>>  - slave -> target (and not client)
->>>
->>> But both you and Wolfram have used client. I'd like to reach
->>> some more consistency here.
->>
->> I had the impression that remote targets (i.e external to the device) were to be called clients,
->> e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
->> I chose the terminology according to that understanding, but now I can't find where I got that
->> information.
-> 
-> The word "client" does not even appear in the documentation (only
-> one instance in the i3c document), so that the change is not
-> related to the document as stated in the commit log. Unless, of
-> course, I am missing something.
-> 
-> I'm OK with choosing a "customized" naming, but we need to reach
-> an agreement.
-> 
-> I raised the same question to Wolfram.
-> 
-> Thanks,
-> Andi
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I don't have a preference between using target and client. As I mentioned in the thread fork, my
-information came entirely from Wolfram's cover letter and patch messages. I'll follow along with
-whatever you and Wolfram settle on.
+Ingo, would you mind please taking this through the scheduler tree? I
+think Peter is still out.
 
-Thanks,
-Easwar
+Remaining quote below.
 
+Thanks
+
+> ---
+>  kernel/sched/psi.c | 54 +++++++++++++++++++++++-----------------------
+>  1 file changed, 27 insertions(+), 27 deletions(-)
+> 
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index 7b4aa5809c0f..55720ecf420e 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -218,28 +218,32 @@ void __init psi_init(void)
+>  	group_init(&psi_system);
+>  }
+>  
+> -static bool test_state(unsigned int *tasks, enum psi_states state, bool oncpu)
+> +static u32 test_states(unsigned int *tasks, u32 state_mask)
+>  {
+> -	switch (state) {
+> -	case PSI_IO_SOME:
+> -		return unlikely(tasks[NR_IOWAIT]);
+> -	case PSI_IO_FULL:
+> -		return unlikely(tasks[NR_IOWAIT] && !tasks[NR_RUNNING]);
+> -	case PSI_MEM_SOME:
+> -		return unlikely(tasks[NR_MEMSTALL]);
+> -	case PSI_MEM_FULL:
+> -		return unlikely(tasks[NR_MEMSTALL] &&
+> -			tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING]);
+> -	case PSI_CPU_SOME:
+> -		return unlikely(tasks[NR_RUNNING] > oncpu);
+> -	case PSI_CPU_FULL:
+> -		return unlikely(tasks[NR_RUNNING] && !oncpu);
+> -	case PSI_NONIDLE:
+> -		return tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] ||
+> -			tasks[NR_RUNNING];
+> -	default:
+> -		return false;
+> +	const bool oncpu = state_mask & PSI_ONCPU;
+> +
+> +	if (tasks[NR_IOWAIT]) {
+> +		state_mask |= BIT(PSI_IO_SOME);
+> +		if (!tasks[NR_RUNNING])
+> +			state_mask |= BIT(PSI_IO_FULL);
+>  	}
+> +
+> +	if (tasks[NR_MEMSTALL]) {
+> +		state_mask |= BIT(PSI_MEM_SOME);
+> +		if (tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING])
+> +			state_mask |= BIT(PSI_MEM_FULL);
+> +	}
+> +
+> +	if (tasks[NR_RUNNING] > oncpu)
+> +		state_mask |= BIT(PSI_CPU_SOME);
+> +
+> +	if (tasks[NR_RUNNING] && !oncpu)
+> +		state_mask |= BIT(PSI_CPU_FULL);
+> +
+> +	if (tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] || tasks[NR_RUNNING])
+> +		state_mask |= BIT(PSI_NONIDLE);
+> +
+> +	return state_mask;
+>  }
+>  
+>  static void get_recent_times(struct psi_group *group, int cpu,
+> @@ -770,7 +774,6 @@ static void psi_group_change(struct psi_group *group, int cpu,
+>  {
+>  	struct psi_group_cpu *groupc;
+>  	unsigned int t, m;
+> -	enum psi_states s;
+>  	u32 state_mask;
+>  
+>  	groupc = per_cpu_ptr(group->pcpu, cpu);
+> @@ -841,10 +844,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
+>  		return;
+>  	}
+>  
+> -	for (s = 0; s < NR_PSI_STATES; s++) {
+> -		if (test_state(groupc->tasks, s, state_mask & PSI_ONCPU))
+> -			state_mask |= (1 << s);
+> -	}
+> +	state_mask = test_states(groupc->tasks, state_mask);
+>  
+>  	/*
+>  	 * Since we care about lost potential, a memstall is FULL
+> @@ -1194,7 +1194,7 @@ void psi_cgroup_restart(struct psi_group *group)
+>  	/*
+>  	 * After we disable psi_group->enabled, we don't actually
+>  	 * stop percpu tasks accounting in each psi_group_cpu,
+> -	 * instead only stop test_state() loop, record_times()
+> +	 * instead only stop test_states() loop, record_times()
+>  	 * and averaging worker, see psi_group_change() for details.
+>  	 *
+>  	 * When disable cgroup PSI, this function has nothing to sync
+> @@ -1202,7 +1202,7 @@ void psi_cgroup_restart(struct psi_group *group)
+>  	 * would see !psi_group->enabled and only do task accounting.
+>  	 *
+>  	 * When re-enable cgroup PSI, this function use psi_group_change()
+> -	 * to get correct state mask from test_state() loop on tasks[],
+> +	 * to get correct state mask from test_states() loop on tasks[],
+>  	 * and restart groupc->state_start from now, use .clear = .set = 0
+>  	 * here since no task status really changed.
+>  	 */
+> -- 
+> 2.44.0
+> 
 
