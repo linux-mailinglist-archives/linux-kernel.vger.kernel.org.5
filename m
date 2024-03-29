@@ -1,151 +1,149 @@
-Return-Path: <linux-kernel+bounces-124252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2086B89146A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:38:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FB4689146B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBD551F22ECC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16AE1C22992
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676DB41215;
-	Fri, 29 Mar 2024 07:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17EA34086E;
+	Fri, 29 Mar 2024 07:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MKCxx4XL"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eyGqzBo4"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1B8405C6
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69F740866;
+	Fri, 29 Mar 2024 07:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697894; cv=none; b=iryFtbKJKZ36xbuee027JopvXRCKhSsNP+rGvk5/aQew+bFx3BvkdfStYUHFDJOAD2sOkEDdx6JqH/c7WrZ8jxkB3rtGCZJ6kZ1mj8fsTMzdsczqq2QudDdmffgPFgVS9ctct70haEyItNvQTy2cTBMGpS7nSXQ0iI/Nlrxosq4=
+	t=1711697927; cv=none; b=qISOp775fgOP9BBlPqmBG1rJvr0TvxNaICkSwfEXdd2DXMuQ1z7YLpq6/g4Dr0D7cPI3W3IHsYGiRXurbi7/TOT7azu3Mo+V863dTQ5QqnCRf3tesEs2ZdrVSrcNIYVb8e150Gm2Qb5dsEhn5qs8B05aF64aSfZt6uv2s6y0OR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697894; c=relaxed/simple;
-	bh=FUlOMVV+kz2YMNGT63W3yd2gzTWaCE9vrvtG+jeCVEA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A3GHlXmo81KYtOa0kFar3effNCeRTVnXyz7T03Xt0AUlbxead8xgGGVsCVMPDzHvyK76PSd95kvoqNAk73w7AmxJr6+zd43SBke5IhnmbxFnXirDdG8MmB8wV4A87sHprXiqTR02+SnTXf5pWtJHFDnJWolDFznRFMjkg2v1KsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MKCxx4XL; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0bec01232so15430285ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711697892; x=1712302692; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UH6LjJfXkA91u7B+LxuK1VjYI0jSAUD0s0KZGUYpa9s=;
-        b=MKCxx4XLK8W5kJuZ7i2UBXqUzb3sk6xRwzuhZ8kgqZCGJXyaajPQiTYMewkAgYD+zT
-         EIpeDyGsR5FS8n8IHFgyRpNqq0SKfj3hjuNETvFm0V2LJay2cC7X9j4abuANzJF9yl07
-         lgvTeY3nBFtJZFQQVsvAqYwhmXoEC/qxNu/zZsy+QSgNZeqFwicbusx48iZQ8hnj1Lh4
-         tSZsnDXySGj3ae7tQry06vNP79y0xSdEV/VFfgIirnf5Dys13BC4ozKoPOD8wlkitBUk
-         bg6heR09KM9gvCN0pL24KpeWpQOD54n/IUOHSKy3zT/3sPHbBMVmeo+wwQDCU0h+eBR6
-         qMcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711697892; x=1712302692;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UH6LjJfXkA91u7B+LxuK1VjYI0jSAUD0s0KZGUYpa9s=;
-        b=ZHdS6F6l9NUeL+IvTsqarXlmjQ/AQwkLu2XMpM58yTvqZVd1N8dKcxCeZQUTGJb07W
-         KR/fDoz1lUb0GdZ7vYMAzWNhcjvuy6dwqOsRSk+drYjr5HFV5s4RFE/iEim3/zdaJIbA
-         KIJWub+ZWo/Z2CtljVDgN6Ow5Vk/22TPwhCU3ggjAfW1X5NFgQ6x1KkIjc9pqBOCp9ue
-         qsCkhQ6dPUHKyhol382kQrLIHO0vl5Y6tclPOcndIR48RKkJxWNpZ3SSn4TUEVKv3bzw
-         zpPULOlavDzvsYT7ksYsBqmhBp1aVcXVUkGSuqaUOZ9mxe4OuXvdQQuQeKzzP/HR9ScR
-         y8Ww==
-X-Gm-Message-State: AOJu0YwHH2utqJDplh3leJWLnJxdVUABdYv/IgxrSSkTMjA4Yse6cs8/
-	NvfXwTMpUQsggXG5O47Zf435EfDmObw9yZp6DSItucw72Dt1Ctep44uCDEwWCpo=
-X-Google-Smtp-Source: AGHT+IEHulJckipKHW1jh4cvk4Vt+Pdv4pdpJpi4h6lIXpXVb/IaR9agZUhqfR979Q95p2x2DSl7ug==
-X-Received: by 2002:a17:902:f790:b0:1e0:93a:e681 with SMTP id q16-20020a170902f79000b001e0093ae681mr1833427pln.58.1711697892361;
-        Fri, 29 Mar 2024 00:38:12 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id h6-20020a170902f7c600b001e0b60dfe1bsm2844821plw.197.2024.03.29.00.38.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:38:12 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	David Hildenbrand <david@redhat.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	David Rientjes <rientjes@google.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	Hugh Dickins <hughd@google.com>,
-	Itaru Kitayama <itaru.kitayama@gmail.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Yang Shi <shy828301@gmail.com>,
-	Yin Fengwei <fengwei.yin@intel.com>,
-	Yu Zhao <yuzhao@google.com>,
-	Zi Yan <ziy@nvidia.com>
-Subject: [PATCH] mm: alloc_anon_folio: avoid doing vma_thp_gfp_mask in fallback cases
-Date: Fri, 29 Mar 2024 20:37:50 +1300
-Message-Id: <20240329073750.20012-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711697927; c=relaxed/simple;
+	bh=OtiL7hYIGDS1cNsv/IDRa43LiaIOTcDvq0KTA6y72sA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DaD49fRh+ndr2+G6AtZGRrMEJ2/vSxpXK+EnX/B7MuI2IFlUOZ5f4LH+ibboNkU86dpTELUb2yleFtC2JRV5HaxDaOuQrCO/lH9ifuAawFyd8XjHvPnvpSYY52LuB8YVeTw4xgBbuovzykZppLlDesqG3mvUaxhnQGrcAs4lAOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eyGqzBo4; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711697926; x=1743233926;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OtiL7hYIGDS1cNsv/IDRa43LiaIOTcDvq0KTA6y72sA=;
+  b=eyGqzBo4R9dvGgIgaVEzuCralb+Ma5RM9R7Y/TyET5lC33mm1pAxQyjr
+   PXpvYguMyq7USpOmWL/PbqHNQANQp4pqPgHh5MzkjWSVHV4H1RUvX+H/+
+   Qp9lSv0B2O9rxClL0FTxO84UcLiXB5IL81zaTAFHoaeH11H+m/eYy6Rlo
+   e1XCKDI1OM3+zJ3jSSUMwOpBBLv7eNLREJZooeRiVKZ53L3LXxVM+51QX
+   MHHd5iimEjIoeXKMhZlbhoSOlVb3FZ/l+5eRengVCMb4qEHGsSjmIZ9uD
+   GeMfZMGNMnm+yq2lFm3+WiO51FOFaGGBk8Aj/cK3JYpDh7YHLPbHWmjCH
+   g==;
+X-CSE-ConnectionGUID: uAo9vU6hRWWawPkJQozE+Q==
+X-CSE-MsgGUID: zSSfN6EEQCOoGJitWggWYg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="9837902"
+X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
+   d="scan'208";a="9837902"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:38:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
+   d="scan'208";a="16962746"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 29 Mar 2024 00:38:40 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rq6ov-0002xC-1I;
+	Fri, 29 Mar 2024 07:38:37 +0000
+Date: Fri, 29 Mar 2024 15:37:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org, x86@kernel.org,
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Uros Bizjak <ubizjak@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>,
+	Breno Leitao <leitao@debian.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
+Message-ID: <202403291422.SOVYexxO-lkp@intel.com>
+References: <20240328075318.83039-10-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328075318.83039-10-jiangshanlai@gmail.com>
 
-From: Barry Song <v-songbaohua@oppo.com>
+Hi Lai,
 
-Fallback rates surpassing 90% have been observed on phones utilizing 64KiB
-CONT-PTE mTHP. In these scenarios, when one out of every 16 PTEs fails
-to allocate large folios, the remaining 15 PTEs fallback. Consequently,
-invoking vma_thp_gfp_mask seems redundant in such cases. Furthermore,
-abstaining from its use can also contribute to improved code readability.
+kernel test robot noticed the following build errors:
 
-Cc: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Alistair Popple <apopple@nvidia.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Itaru Kitayama <itaru.kitayama@gmail.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/memory.c | 3 +++
- 1 file changed, 3 insertions(+)
+[auto build test ERROR on paulmck-rcu/dev]
+[also build test ERROR on tip/locking/core tip/sched/core tip/x86/asm tip/master linus/master v6.9-rc1 next-20240328]
+[cannot apply to tip/x86/core tip/auto-latest]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/mm/memory.c b/mm/memory.c
-index c9c1031c2ecb..010e7bb20d2b 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4353,6 +4353,9 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
- 
- 	pte_unmap(pte);
- 
-+	if (!orders)
-+		goto fallback;
-+
- 	/* Try allocating the highest of the remaining orders. */
- 	gfp = vma_thp_gfp_mask(vma);
- 	while (orders) {
+url:    https://github.com/intel-lab-lkp/linux/commits/Lai-Jiangshan/lib-Use-rcu_preempt_depth-to-replace-current-rcu_read_lock_nesting/20240328-155513
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+patch link:    https://lore.kernel.org/r/20240328075318.83039-10-jiangshanlai%40gmail.com
+patch subject: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
+config: x86_64-randconfig-161-20240328 (https://download.01.org/0day-ci/archive/20240329/202403291422.SOVYexxO-lkp@intel.com/config)
+compiler: gcc-10 (Ubuntu 10.5.0-1ubuntu1) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403291422.SOVYexxO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403291422.SOVYexxO-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+>> arch/x86/kernel/cpu/common.c:1998:3: error: 'struct pcpu_hot' has no member named 'rcu_preempt_count'; did you mean 'preempt_count'?
+    1998 |  .rcu_preempt_count = RCU_PREEMPT_INIT,
+         |   ^~~~~~~~~~~~~~~~~
+         |   preempt_count
+>> arch/x86/kernel/cpu/common.c:1998:23: error: 'RCU_PREEMPT_INIT' undeclared here (not in a function); did you mean 'RCUREF_INIT'?
+    1998 |  .rcu_preempt_count = RCU_PREEMPT_INIT,
+         |                       ^~~~~~~~~~~~~~~~
+         |                       RCUREF_INIT
+>> arch/x86/kernel/cpu/common.c:1998:23: warning: excess elements in struct initializer
+   arch/x86/kernel/cpu/common.c:1998:23: note: (near initialization for 'pcpu_hot')
+
+
+vim +1998 arch/x86/kernel/cpu/common.c
+
+  1993	
+  1994	DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) = {
+  1995		.current_task		= &init_task,
+  1996		.preempt_count		= INIT_PREEMPT_COUNT,
+  1997		.top_of_stack		= TOP_OF_INIT_STACK,
+> 1998		.rcu_preempt_count	= RCU_PREEMPT_INIT,
+  1999	};
+  2000	EXPORT_PER_CPU_SYMBOL(pcpu_hot);
+  2001	EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
+  2002	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
