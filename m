@@ -1,290 +1,140 @@
-Return-Path: <linux-kernel+bounces-124063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B7558911B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:43:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A8F58911BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1164289AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:43:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 421FB28A219
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DE935280;
-	Fri, 29 Mar 2024 02:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qi5/uoF/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1413A36AF9;
+	Fri, 29 Mar 2024 02:46:17 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F571C691;
-	Fri, 29 Mar 2024 02:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711680189; cv=fail; b=YIujUwBKLHotGIx/JWiIbT+NtyrKKLTAw9PIYZ6v2KUly15+NMzMyeO0YXUtH2j6EuW4GbDMD+VL7yBjR0w8rmLJHaYJVs3tLZAuJ3728acRY0kle49b2AmAxaTsR0D1/qGPyYW4zpfCxVQ6IYXJca8JgGeFIPAqWh3Fo/r5os8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711680189; c=relaxed/simple;
-	bh=xPsUM2eGtelz6uETpbh7bkTi9YMrj2Jo20fvTvdjpiw=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=o/kPTbMIjITZ21XL306nJsBsUZiAkgKay+KgAstFbjgoXhdj+l/igzFYyCU/OMMRQfDVeuyH085yGxEWiVhafMk2gnoPkmrixy/nfgHzEEsoOLl5G5w4nfur2/4BfPA11Eep1coUQR8VEqHIShujoif8yHkCGwnV94V5pVgHQZU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qi5/uoF/; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711680187; x=1743216187;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xPsUM2eGtelz6uETpbh7bkTi9YMrj2Jo20fvTvdjpiw=;
-  b=Qi5/uoF/r6YsNKZefJUEzV+qjjQ3BGSvr4nWD63jHqJVDI792h9lWQbn
-   feoggCsAjfLpblBJbUpYDzXBGWGzeTROG04fZh5WS/rZ6zabq3Y5OqMWA
-   emso2arY+5tJuI/iBGLzbAquUx5uDizDedBzbvXrSMqr8HHKbQcEKww8l
-   snjuC9zBEMVwy7sD2XxshiiGNU27cESwvHvrPLRTcbxWl5hQ70NwkVpeM
-   J30PbGjhzqxMZyviQUr4ySorFoi7pZ1/wrLsvC6yFnZY3ou2L0nFOLMQ0
-   UMlOGaOYO9vJW7mLe+aGlN/pxhQXTRCz8RB0RESLPxs0P2vkR9N2hjRJh
-   A==;
-X-CSE-ConnectionGUID: XngZ92GMQtGDbD3INqe8dg==
-X-CSE-MsgGUID: RVsbUseWTX2uv2XLjrzDjA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="10671217"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="10671217"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:43:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="16808812"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 19:43:06 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 19:43:05 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 19:43:05 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 19:43:05 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Mar 2024 19:43:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M/SG+t76nDPlMdKGOV1M5nc3xDS5VQRrTQYFjHu4NY85gI8dxRKfwXxLayF3lxjXVFouL6QIkKkc2wh4QH4Igt1uqP0LI+AqaKROyzBTF1ikc/H7RyiVfSYrSw+25lMB4xCSZRMGJ5rUvvzcFZaH12+NwgqMLkjRet/SMo2gQoZBJIESGvYc0SLVwlcgDVhVQSkCqo/Ls3zWcrf7X0+sEc3jZ5leBiQcTm4+ObLLyVp1lPD+Zd/87dmaHaXn8wIBx+3VP9YYp5h1WaUUCuhMbqma97HDkpaSSv/TOUSL7YQy/c/VaZbcu1cCZoWOD7D9n27em0D4nRdBIF9Gas+tOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kt+FO5SozjCYlJahjvba7azpiF0n0F/nmL82Bjtx7Qk=;
- b=BGxsF0xAvg88ql8kM9DH8VieA70uLlm/XfqnJtpIniYz5q0tzMeSLxapuD8m0BiN+Xi2InMV05GjYKYYC8F+uVxbfsIOur5qAl8a9IayQI9sbguCKpoqdlOATw6gru3qXraRm2GMy/iu2KUiceQHnk1bDUUpK/7ASMUOgVSCT/XhRm0phg8scD9j1Z3J/e3NEp7zOTn4dnNIdGqk+bKDggBbgGuFLpJftKUEO+xhEUyMvx9CPzwa+SJagM2szMHavK0PIpsSDMs4yEHdQmgDqeaHcQMn/3eubeoa5Ct4sQXxI+O35fcI1/JAmQMJ7zp/hIZLAuiOL8WfJrZHzvvnzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by MW4PR11MB6714.namprd11.prod.outlook.com (2603:10b6:303:20f::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Fri, 29 Mar
- 2024 02:43:02 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7409.031; Fri, 29 Mar 2024
- 02:43:01 +0000
-Date: Fri, 29 Mar 2024 10:42:51 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>, =?iso-8859-1?Q?G=FCnther?= Noack
-	<gnoack@google.com>, Shuah Khan <shuah@kernel.org>, Will Drewry
-	<wad@chromium.org>, Kees Cook <keescook@chromium.org>, Jakub Kicinski
-	<kuba@kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<linux-security-module@vger.kernel.org>, <oliver.sang@intel.com>
-Subject: [linus:master] [selftests/harness]  0710a1a73f:
- kernel-selftests.pidfd.pidfd_setns_test.fail
-Message-ID: <202403291015.1fcfa957-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SG2PR06CA0213.apcprd06.prod.outlook.com
- (2603:1096:4:68::21) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E7C33070;
+	Fri, 29 Mar 2024 02:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711680376; cv=none; b=vAlaJ7EFWujuY+/pXfCLtfW86vpjSrW4goXdStI6bQSw6sksjC6iSuc28gn/liF9PB1+laltM8rdQ+ZADLwPxaJ174vWF+WlzlxarLXPovDPlJdBMm8VbUZepw0/yeVFBuBT/pdyyMcL6JF7NkR2uk67MEONtLr0c94hWP5cSaM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711680376; c=relaxed/simple;
+	bh=mO5pDF4ppVBRq6mSFl/EZBnRAtwgeKIJXHKAIeHEMZs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lRVWNffwth5CFzl6guRW4mprjGqiCdnn4UJLf8PmiG3qT2HbkKq80EogLyAgzBTAyyGB+r5qbQZn0KBv7aXBNlUUcAdwpKCkBUNMQDHcNB+1+EpfhBHu1u5jyJt/tb0dc090Jvkm3VHKZEFSDvdkvF2ff5YElIrlojMSGX8hXgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 42T2iY6c066183;
+	Fri, 29 Mar 2024 10:44:34 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4V5PpH2xSzz2L8K10;
+	Fri, 29 Mar 2024 10:42:47 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 29 Mar 2024 10:44:31 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <axboe@kernel.dk>
+CC: <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
+        <hongyu.jin@unisoc.com>
+Subject: [PATCH] block/mq-deadline: Fix WARN when set async_depth by sysfs
+Date: Fri, 29 Mar 2024 10:44:21 +0800
+Message-ID: <1711680261-5789-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|MW4PR11MB6714:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vmtGMTr6Xwn9Ep/6Cc7uUomAIoWrf9XAVlR0NA2hDEq8BV/Hn5qGDi/HHX5RC/Ley4wiF4mVByOQWZ0HQdAckN8lri2iYFhdPfSMkm/RcGUUXc+NB6nLfPLJ5RT0sDaq6VqWpuOFgGle2DauF6WTQUibJ9IBhoZB897mnBv2rUyhyfygFH/h+5RYiun69Zwh8x2ngrH8U77vXo/tz6G+7F0cabwEMWt5CePYmjr7ihsvQHIt8ZTb3Okln6MhkB2eoWm/rgWLSLakJCL8ywq+Xt5o6KSmF6nI/W7+rBT5XMUOU6wXUxSu4foBUwi9lF5U+Zz83KjKJmINPeYZ9AxUJh+ZQkuQvLYP7RukHd4l0O/2lZfLnmq05GsvTLgzkZcXbB7FDAlz/ovDHbDU8DLt8V+p0VjwPH9G35j4YAsnRylXWop3s0Yst4o4wNALslrJF4HrxF3kknN6/UE0YRkDAg3X2/FuqBFQeviAQhuj4MvQX1gjq3uKATVLXAhadtMk65fcCaSL0ZXRxXc/tGR3ENw8Bsht5TU+aADY28Gi8OtElXeF/v6uLKudB/CPHO+aSsbxFf0cIFpsL71A/m/Nich8FnXOFkb2N0YEbSfMCaN0CufXpQXb/IEVR0LVXX6S
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?y2ZYMm5prznj/nWejske8FqZjnlQ8KD3qSbO+68V7gbe2D15fskTIegDKpcI?=
- =?us-ascii?Q?2SHrfFCB8oeisbPG+uB+v6m9y0In713LNTtUYNJrZTAvOonSuY6pJ4QqNxVe?=
- =?us-ascii?Q?sQddxzPx4NhEoH3lveti/nPxxeyxMtwmLW9f9C2qkYPgLTd8Wb0AWuPhoNko?=
- =?us-ascii?Q?XPJGozX7gD0PIEWbKyydPMUVCAvxY/P8cgaX8je9RBvaeQXefbgd2HrKda3P?=
- =?us-ascii?Q?AymbMHVRhOXEAr7HEV+Yzse/RUOE/La0MFYZJpoBeQQN3h2T9A+9ip1TTLLX?=
- =?us-ascii?Q?T8jqRZLK22uTtB7TMnCmIWUp6R4t/YsKSzeA5LPo9g3pYGoum92dC2SU1ILV?=
- =?us-ascii?Q?8tEvl/si3GxJRt1mZLk/t6cz0ii1YtzwgBQnOfewvXrg8VzbhY575eH4r082?=
- =?us-ascii?Q?Qjg8HdWHDg3+wSvMfrg0ugYqGDcIq2eLnhlGSmt4o+0gAw6Ry0LfyOOa3KWg?=
- =?us-ascii?Q?qzIn/cpeYrTtGOVcLewp/pNuXVY6sK+KWNjTjz6YhX+iCjaB3gn+NNWr9oT0?=
- =?us-ascii?Q?ptIEWYVZBqJ7TGAqlblmtIsqvuzOMp+Qu2/hx35zTpxTsHAmP8cTya66R4ix?=
- =?us-ascii?Q?wvVGF4gxT2+5Ai/nKPqBQ8zpb0SFaoOc9KBrne16OnyH25kRhQMKKNV8hsRp?=
- =?us-ascii?Q?/Ug3Cs8EsUN4G/Xc/mK13eTnZj3R/qw3+QMB73g+QJMhJ0VMajInbJCbCLPD?=
- =?us-ascii?Q?D9zsvKrEIC8aP29ojBmGUu7EvIfY8+wu/xi2P+kPmdC64iEgm24okCrLvaXr?=
- =?us-ascii?Q?G/zem3AQjiHAajFhobr88Xt6A7yaqsndDZtYVlEd1bIp7/3PYStt658XhEwP?=
- =?us-ascii?Q?BJu/5iBWzwbweKhloeiAVkPeNnZa9IHMtmPkrxWlaNLxwfUhmo/h6S2Qrhei?=
- =?us-ascii?Q?J1lqmxbDZljdCeq4wtO/ccB2PMoVamls0xbtsZljp2Otg7i6w5FNFj+tInLN?=
- =?us-ascii?Q?+UNUlUUwJm1jczaiPa6tPTn31rC17h4zR2Q6wEHhapbSDHApA4K1epdvnOeq?=
- =?us-ascii?Q?hKVBm8AO9J7jZ822Uq3nlofQu9FirmN61wSYryLYVZf9eWY7XZwiOfq+UZ9g?=
- =?us-ascii?Q?1l3jQl7ZqCKRr+8pKI5E8LUi5laF8GOfOVz5HDvYFZZnQuwQUIpejvSdkUtb?=
- =?us-ascii?Q?7exyz9OccQ0ySWw+6eKkte96HeOTCGZfTztTJF6MkC2ke/r3ix0nx7gM4u0j?=
- =?us-ascii?Q?aT1YjRsxAATvDkm8TVhKItlPlHE0Jai4ktRFitqZZ99h1XmsApninUA+U4yr?=
- =?us-ascii?Q?rxLS7FSlrFTmKvkJnFIobQf+L3skaEY3L0wRpRXlDok8S1D4mvp5/TfPNAAy?=
- =?us-ascii?Q?1QPOEUyxyT17d1XRxn0s2My7MjT75oddaaRHJapDniPbDOrXJF9LU6SZJTRy?=
- =?us-ascii?Q?Hpxheg/LYFfjm4AQu01z5wm0kVrSF4R/c9US4FnZMIOwhV25ZBLMDVa4L5jR?=
- =?us-ascii?Q?9+V0S1zzDPHcl4zSEECGiAR3Um1woufvy7PCbblnQyC18kH8Ab1NMau0BmYs?=
- =?us-ascii?Q?XTpHT7G5OWiup+n7WdIhkAfjVYIvf/wo3gVbnxBQy5FJsR6yvXbCYEOwUCZ9?=
- =?us-ascii?Q?6ALxPnQBgBcL8d4ivgxTHsg3LvAJ6++w4hmxhjrn/k4lt7wBY9NgxCfzXCbu?=
- =?us-ascii?Q?7g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4634e923-7739-4ae1-37d0-08dc4f99f336
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 02:43:01.1677
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bjGeTQr9UQ51L5fZsSGu+ySDx4pzljbYmv/iFBs9035EatLWYiDegraoyZjK68FeLHGVBcgTTBLMlp8jonTNOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6714
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 42T2iY6c066183
 
+A WARN may occur when async_depth is set from user by sysfs,
+the warning log is as following:
 
+[  623.848659] WARNING: CPU: 0 PID: 7798 at lib/sbitmap.c:537 sbitmap_queue_get_shallow+0x2c/0x38
+[  623.878550] CPU: 0 PID: 7798 Comm: kworker/u16:2 Tainted: G        W  OE      6.6.0-mainline-g8d9254e6f4a0-dirty-ab000013 #1
+[  623.880091] Hardware name: Unisoc UMS9621-base Board (DT)
+[  623.880906] Workqueue: writeback wb_workfn (flush-254:48)
+[  623.881748] pstate: 20400005 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  623.882763] pc : sbitmap_queue_get_shallow+0x2c/0x38
+[  623.883525] lr : __blk_mq_get_tag+0x50/0xd4
+[  623.884198] sp : ffffffc08a073230
+[  623.884745] x29: ffffffc08a073230 x28: ffffffc0821445e0 x27: 0000000000000000
+[  623.885799] x26: ffffff8087de8000 x25: 0000000000000000 x24: 0000000000000002
+[  623.886849] x23: ffffffc0820f2008 x22: ffffff8088ac3918 x21: ffffff808c358f10
+[  623.887897] x20: ffffff808c358f00 x19: ffffffc08a073360 x18: ffffffc08bde70a8
+[  623.888946] x17: 000000007e57c819 x16: 000000007e57c819 x15: fffffffdfe000000
+[  623.889993] x14: 0000000000000001 x13: 0000000000000004 x12: 00000003c6c931ed
+[  623.891038] x11: ffffff80939a3800 x10: ffffffc0801ac88c x9 : 0000000000000000
+[  623.892086] x8 : 0000000000000006 x7 : 0000000000000000 x6 : ffffffc080765204
+[  623.893131] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+[  623.894174] x2 : ffffffc080765224 x1 : 0000000000000005 x0 : ffffff808c358f10
+[  623.895221] Call trace:
+[  623.895660] sbitmap_queue_get_shallow+0x2c/0x38
+[  623.896379] blk_mq_get_tag+0xa0/0x350
+[  623.896992] __blk_mq_alloc_requests+0x218/0x300
+[  623.897715] blk_mq_submit_bio+0x314/0x774
+[  623.898369] __submit_bio+0xb4/0xe0
+[  623.898950] submit_bio_noacct_nocheck+0x110/0x324
+[  623.899692] submit_bio_noacct+0x278/0x3f8
+[  623.900344] submit_bio+0xcc/0xe8
+[  623.900900] f2fs_submit_write_bio+0x100/0x428
+[  623.901605] __submit_merged_bio+0x74/0x1ac
+[  623.902269] __submit_merged_write_cond+0x188/0x1f4
+[  623.903022] f2fs_write_data_pages+0xb10/0xc2c
+[  623.903727] do_writepages+0xf4/0x618
+[  623.904332] __writeback_single_inode+0x78/0x60c
+[  623.905055] writeback_sb_inodes+0x294/0x520
+[  623.905734] __writeback_inodes_wb+0xa0/0xf4
+[  623.906413] wb_writeback+0x188/0x4e8
+[  623.907014] wb_workfn+0x420/0x608
+[  623.907582] process_one_work+0x23c/0x55c
+[  623.908227] worker_thread+0x2ac/0x3e4
+[  623.908838] kthread+0x108/0x12c
+[  623.909389] ret_from_fork+0x10/0x20
 
-Hello,
+The rootcause is user may set async_depth to a value which is less
+than its initial value from dd_init_hctx->dd_depth_updated, and this
+initial value is set to sbq->min_shallow_depth, when async_depth is
+modified by user from sysfs, sbq->min_shallow_depth will not be changed
+simultaneously, and it is also not easy to obtain tag sbitmap information
+in deadline_async_depth_store.
 
-kernel test robot noticed "kernel-selftests.pidfd.pidfd_setns_test.fail" on:
+So a suitable value should be set to min_shallow_depth in dd_depth_updated.
 
-commit: 0710a1a73fb45033ebb06073e374ab7d44a05f15 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+---
+ block/mq-deadline.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-[test failed on linus/master 4cece764965020c22cff7665b18a012006359095]
-
-in testcase: kernel-selftests
-version: kernel-selftests-x86_64-4306b286-1_20240301
-with following parameters:
-
-	group: pidfd
-
-
-
-compiler: gcc-12
-test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202403291015.1fcfa957-oliver.sang@intel.com
-
-
-
-# timeout set to 300
-# selftests: pidfd: pidfd_setns_test
-# TAP version 13
-# 1..7
-# # Starting 7 tests from 2 test cases.
-# #  RUN           global.setns_einval ...
-# #            OK  global.setns_einval
-# ok 1 global.setns_einval
-# #  RUN           current_nsset.invalid_flags ...
-# # pidfd_setns_test.c:161:invalid_flags:Expected self->child_pid_exited (0) > 0 (0)
-# #            OK  current_nsset.invalid_flags
-# ok 2 current_nsset.invalid_flags
-# #  RUN           current_nsset.pidfd_exited_child ...
-# # pidfd_setns_test.c:161:pidfd_exited_child:Expected self->child_pid_exited (0) > 0 (0)
-# #            OK  current_nsset.pidfd_exited_child
-# ok 3 current_nsset.pidfd_exited_child
-# #  RUN           current_nsset.pidfd_incremental_setns ...
-# # pidfd_setns_test.c:161:pidfd_incremental_setns:Expected self->child_pid_exited (0) > 0 (0)
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to user namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to mnt namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to pid namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to uts namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to ipc namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to net namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to cgroup namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:408:pidfd_incremental_setns:Managed to correctly setns to pid_for_children namespace of 45423 via pidfd 20
-# # pidfd_setns_test.c:391:pidfd_incremental_setns:Expected setns(self->child_pidfd1, info->flag) (-1) == 0 (0)
-# # pidfd_setns_test.c:392:pidfd_incremental_setns:Too many users - Failed to setns to time namespace of 45423 via pidfd 20
-# # pidfd_incremental_setns: Test terminated by timeout
-# #          FAIL  current_nsset.pidfd_incremental_setns
-# not ok 4 current_nsset.pidfd_incremental_setns
-# #  RUN           current_nsset.nsfd_incremental_setns ...
-# # pidfd_setns_test.c:161:nsfd_incremental_setns:Expected self->child_pid_exited (0) > 0 (0)
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to user namespace of 45524 via nsfd 19
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to mnt namespace of 45524 via nsfd 24
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to pid namespace of 45524 via nsfd 27
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to uts namespace of 45524 via nsfd 30
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to ipc namespace of 45524 via nsfd 33
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to net namespace of 45524 via nsfd 36
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to cgroup namespace of 45524 via nsfd 39
-# # pidfd_setns_test.c:444:nsfd_incremental_setns:Managed to correctly setns to pid_for_children namespace of 45524 via nsfd 42
-# # pidfd_setns_test.c:427:nsfd_incremental_setns:Expected setns(self->child_nsfds1[i], info->flag) (-1) == 0 (0)
-# # pidfd_setns_test.c:428:nsfd_incremental_setns:Too many users - Failed to setns to time namespace of 45524 via nsfd 45
-# # nsfd_incremental_setns: Test terminated by timeout
-# #          FAIL  current_nsset.nsfd_incremental_setns
-# not ok 5 current_nsset.nsfd_incremental_setns
-# #  RUN           current_nsset.pidfd_one_shot_setns ...
-# # pidfd_setns_test.c:161:pidfd_one_shot_setns:Expected self->child_pid_exited (0) > 0 (0)
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding user namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding mnt namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding pid namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding uts namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding ipc namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding net namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding cgroup namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding pid_for_children namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:462:pidfd_one_shot_setns:Adding time namespace of 45630 to list of namespaces to attach to
-# # pidfd_setns_test.c:466:pidfd_one_shot_setns:Expected setns(self->child_pidfd1, flags) (-1) == 0 (0)
-# # pidfd_setns_test.c:467:pidfd_one_shot_setns:Too many users - Failed to setns to namespaces of 45630
-# # pidfd_one_shot_setns: Test terminated by timeout
-# #          FAIL  current_nsset.pidfd_one_shot_setns
-# not ok 6 current_nsset.pidfd_one_shot_setns
-# #  RUN           current_nsset.no_foul_play ...
-# # pidfd_setns_test.c:161:no_foul_play:Expected self->child_pid_exited (0) > 0 (0)
-# # pidfd_setns_test.c:506:no_foul_play:Adding user namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding mnt namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding pid namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding uts namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding ipc namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding net namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding cgroup namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:506:no_foul_play:Adding time namespace of 45737 to list of namespaces to attach to
-# # pidfd_setns_test.c:510:no_foul_play:Expected setns(self->child_pidfd1, flags) (-1) == 0 (0)
-# # pidfd_setns_test.c:511:no_foul_play:Too many users - Failed to setns to namespaces of 45737 vid pidfd 20
-# # no_foul_play: Test terminated by timeout
-# #          FAIL  current_nsset.no_foul_play
-# not ok 7 current_nsset.no_foul_play
-# # FAILED: 3 / 7 tests passed.
-# # Totals: pass:3 fail:4 xfail:0 xpass:0 skip:0 error:0
-not ok 7 selftests: pidfd: pidfd_setns_test # exit=1
-make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-8.3-kselftests-0710a1a73fb45033ebb06073e374ab7d44a05f15/tools/testing/selftests/pidfd'
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240329/202403291015.1fcfa957-oliver.sang@intel.com
-
-
-
+diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+index 02a916b..89c516e 100644
+--- a/block/mq-deadline.c
++++ b/block/mq-deadline.c
+@@ -646,10 +646,12 @@ static void dd_depth_updated(struct blk_mq_hw_ctx *hctx)
+ 	struct request_queue *q = hctx->queue;
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+ 	struct blk_mq_tags *tags = hctx->sched_tags;
++	unsigned int shift = tags->bitmap_tags.sb.shift;
++	unsigned int dd_min_depth = max(1U, 3 * (1U << shift)  / 4);
+ 
+ 	dd->async_depth = max(1UL, 3 * q->nr_requests / 4);
+ 
+-	sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async_depth);
++	sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd_min_depth);
+ }
+ 
+ /* Called by blk_mq_init_hctx() and blk_mq_init_sched(). */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+1.9.1
 
 
