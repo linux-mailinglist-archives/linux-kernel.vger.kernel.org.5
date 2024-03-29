@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-124481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E80098918B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0E1489198A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:43:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25C161C22089
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:27:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DD711C22912
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C368D4D110;
-	Fri, 29 Mar 2024 12:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8D61494D8;
+	Fri, 29 Mar 2024 12:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d1xEhmSz"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70312DF9D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="A6JWQORY"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD2113A3E7;
+	Fri, 29 Mar 2024 12:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715211; cv=none; b=Ok1O2fHB4jP8whNL2H/RlvrEaGDbkDcme1/B3ybVz85fiDi+Q+eWilIIdJPO6Bojqq0372zb2NANicwr9thsxoEhHOkeH7DYqCMMcqYSJh1mUuE6Zjtt67blq2yD1+EgTb/cUMQ29Jc8aJmCHeBBzdmg4QkwxK7iOhUhVLfuwdI=
+	t=1711715340; cv=none; b=FFbzmp+pPyTOKEF7mR4tpNuuDO8Ax1GmbgJnBXsZ/SfIbH4UkrgvocWMXEdYRueZdit+jUsy6FEZiJg2SUYeRkTSRkKWazJ329vihhRV4kRVzqcdGa0p8YxJiG2JqzLVg4F9r+Rz5gHVNlehmZ8NBmtDnX2K0bdaVV7LqEJ7D6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715211; c=relaxed/simple;
-	bh=6GKVduxyKft6+aqo8OJZghbXgEyFPiqU0To2JY0hPLg=;
+	s=arc-20240116; t=1711715340; c=relaxed/simple;
+	bh=764c3pjO6u5CEwXzE5Ddk/WTGKPMneIjFGs1pBnqEVI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u0j+2gqHqRsanVDiEHCks9GEffBJ9IyDnOXZsMKh02S52xd3/ULCmSXciZpLWYzMjnfjuTLTxraqENs1y16xmPo5U7+pEe9tBViJ4DG7Ae58jR/01TDbPtcrEGbnIlhSmzXZd6serxoJ8IoVgX9c5vRe8/XhTVfM/JsHb4gkonM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d1xEhmSz; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZKa+ASXdo1cZjsSafEP2q+atVyr7ARDRo2pQvhN/Kj0=; b=d1xEhmSzYPQMlBB7Oof3HhACB1
-	spkoUuyRBhnjM9/BbRPGJTaLRqMwsVxf7ZBMADJaQWAswuXN8klCNAAIx/Tv95NQuPg+4danNJMpB
-	RZwqBdDFTJDJLE++WqaP+SDSGHiuIQjuDSWnjfqqsY9J5Jd28vVoiU0xXM3DR5w+dOYMFls6j5rLk
-	1AswbXOAxluDebsTh2TxgAdgRPWCq4YYMAe2iaxTuZYBiS7TqZFr8ayWqntIc6mjhstgH6aQpnbJT
-	cnqQfJuHv4K6uc9nCRG8zsXe6MnTR61rMEJOAJ+7Zz1zVJcpRyGEBhotZ92kIf0e4Mv0mNUMCHwoY
-	1Z4LuMsQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBJm-00000009Ar6-1nL2;
-	Fri, 29 Mar 2024 12:26:46 +0000
-Date: Fri, 29 Mar 2024 12:26:46 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: York Jasper Niebuhr <yjnworkstation@gmail.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	willy@linux.intel.com, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: init_mlocked_on_free_v3
-Message-ID: <ZgazhqoK2Icgahy9@casper.infradead.org>
-References: <20240329115446.424923-1-yjnworkstation@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FtB3g/JDmYtx0ksyjTRa4UKgIew5DKeUAzKbFAwh6OPs8Aj84Juc7FlXtWCt5YwmIJpAUiQRQZ4xnH/wU1T4O9wbAVnNb/SUFNx9G9UMcsCRwzi3z6lH8ajLeFFlJVJLj23W42oy8hYFs8SD6hXrwNkoo4qvp51WlaNNoUzybgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=A6JWQORY; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=LGyBgMV35yeeHHBEgeXzXGS0G5EIZCLqefBgjneqAWo=;
+	b=A6JWQORY4YFGFIHy0WRDX4l8vTe1JOogRDHRkDWgOCnDR8y6QWGLvIadIP+i3q
+	ptuJRgXdOB2KqYThCcXIWl1EosjQdxZMvXaOSoTb9I9mDT/D37TtQJwhBlLvIsLT
+	M8ijXCsi2q5OlXuZoyjWQYMpGYDOno9avUW7n+z3e6lmA=
+Received: from dragon (unknown [183.213.196.225])
+	by smtp2 (Coremail) with SMTP id C1UQrADnTxnOswZmO0ZqAg--.19469S3;
+	Fri, 29 Mar 2024 20:27:59 +0800 (CST)
+Date: Fri, 29 Mar 2024 20:27:58 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] arm64: dts: imx8dxl: update cm40 irq number
+ informaiton
+Message-ID: <ZgazzrWidHHn6eg4@dragon>
+References: <20240305-m4_lpuart-v3-0-592463ef1d22@nxp.com>
+ <20240305-m4_lpuart-v3-3-592463ef1d22@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,35 +61,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240329115446.424923-1-yjnworkstation@gmail.com>
+In-Reply-To: <20240305-m4_lpuart-v3-3-592463ef1d22@nxp.com>
+X-CM-TRANSID:C1UQrADnTxnOswZmO0ZqAg--.19469S3
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF43Aw4xCr47GF1rCFy5XFb_yoWkXFgEy3
+	WxWw15Ja4rAFZYyas5Krs5XryUK3yxGr95Xw1kWF4DWa4vvF909Fs7Jan5Jay3WFWjkryD
+	Ca1rXr48A34agjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0I38UUUUUU==
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiBRGwZVsVCawBUQAAs6
 
-On Fri, Mar 29, 2024 at 12:54:46PM +0100, York Jasper Niebuhr wrote:
-> +	if (want_init_mlocked_on_free() && folio_test_mlocked(folio)
-> +		&& !delay_rmap && folio_test_anon(folio)) {
-> +		kernel_init_pages(page, 1);
+On Tue, Mar 05, 2024 at 10:54:57AM -0500, Frank Li wrote:
+> Update cm40 irq number for imx8dxl chip.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Confusing indentation.  One of these two options:
+s/informaiton/information in subject.
 
-	if (want_init_mlocked_on_free() && folio_test_mlocked(folio) &&
-	    !delay_rmap && folio_test_anon(folio)) {
-		kernel_init_pages(page, 1);
+Shawn
 
-	if (want_init_mlocked_on_free() && folio_test_mlocked(folio) &&
-			!delay_rmap && folio_test_anon(folio)) {
-		kernel_init_pages(page, 1);
-
-Also, '1' is incorrect.  Should be folio_nr_pages(folio).
-
-> @@ -2559,12 +2570,21 @@ static void __init mem_debugging_and_hardening_init(void)
->  	}
->  #endif
->  
-> -	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early) &&
-> +	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early
-> +		|| _init_mlocked_on_free_enabled_early) &&
->  	    page_poisoning_requested) {
-
-Wrong indentation again.  I'm not going to point these out every time,
-just fix it throughout.
+> ---
+>  arch/arm64/boot/dts/freescale/imx8dxl.dtsi | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi b/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
+> index 9d49c75a26222..b9d137d69f5a7 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
+> @@ -243,3 +243,14 @@ xtal24m: clock-xtal24m {
+>  #include "imx8dxl-ss-conn.dtsi"
+>  #include "imx8dxl-ss-lsio.dtsi"
+>  #include "imx8dxl-ss-ddr.dtsi"
+> +
+> +&cm40_intmux {
+> +	interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>,
+> +		     <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+> +};
+> 
+> -- 
+> 2.34.1
+> 
 
 
