@@ -1,111 +1,94 @@
-Return-Path: <linux-kernel+bounces-124217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CDFD8913F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:58:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 745DE8913F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:59:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80FC5B22D94
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:57:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 164C7B23AE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 698633FE2B;
-	Fri, 29 Mar 2024 06:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844183D54B;
+	Fri, 29 Mar 2024 06:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RPeog6it"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fTOUGTCQ"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F293FB8C;
-	Fri, 29 Mar 2024 06:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153823D0AD
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 06:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711695471; cv=none; b=P44/vE3hjlBgAUKwqwCsCYC6kmX55WBd3RtvwgNhCe/lwVIovBSOVWqVVSNZqbz+lYrvxM0o/wB1pzbSRKKeKW0+454reCzv2ra+7U4Uq1GP2a4B38iTslF53WSn9JZ7q8uQDfn6xX4VZzDHatm55/dk0vz+Rom+U5eBvRjKCyI=
+	t=1711695586; cv=none; b=pzgFsI5MDU6B7aLjAQKkYH5+K2YEU7y/Avveq8cZxmJksHgB6JF61TAFMaMTjxDUyXMuevI0YICzbzIdBKy+uv6ZyupyfoIrqWGaX4nadVwrlt2VaIxHkJNauMpWIyepNITyd/SGS1LJlLGkhLznKeZHROWmx7Y7GOCuQdOPTe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711695471; c=relaxed/simple;
-	bh=3tp0OjNh8FoNAxu2MnETSB9plHBlxQ/kYzlSx8y1UpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QyteSu2uykixX1DVdkIx/2rBSWRwB62rtmQzPSXSnEefnfcBJOnmMG1dKfz6xiomo2rGPp3LUPymIwoJ8U8WJoXsf5BJPNz4ofACp4hYnY38i2QbRyxvqAeyJVdPC5d6mP7foeAhflCZlu0GvjANLDrswb7+3GRfVlLaCtE6lHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RPeog6it; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711695470; x=1743231470;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3tp0OjNh8FoNAxu2MnETSB9plHBlxQ/kYzlSx8y1UpU=;
-  b=RPeog6itdr8XcKWKrmQNUQYPfkYt/pQ0yJ5HsnRnfRWG+72H7uAXjtBy
-   7dPHRIvrEg2u3pS9+J8aImXKCwXoeF8JXSzv+kSDCudzj47gxdsSxWasa
-   bq/mWvG3UIkYJmFm7EoPQIfNrOj0LMnhYLPzAEeb+u0y47XI4adcq6EKL
-   Kxoc6FXctL/kGVxb+JxUhMITgXzxGJeN/kZlUdsm7J0COYofjWQy08Vzb
-   65IcXd7WhXZYgye2gwUyk0qC2EmCPmD6bDsr4lIfR/Z2IDHe0WyivA84+
-   MWXuUqJzROS34qTYqiv/ntsIO4VHtQTEVvJfuhnivg34Fta5Jw5jZKOqQ
-   Q==;
-X-CSE-ConnectionGUID: Vr6mqM4oQ1aS2gFIn90QCw==
-X-CSE-MsgGUID: eK9qESqfTnWfuHLKAK91ag==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="18027410"
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="18027410"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 23:57:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="54351691"
-Received: from atanneer-mobl.amr.corp.intel.com (HELO desk) ([10.209.84.81])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 23:57:49 -0700
-Date: Thu, 28 Mar 2024 23:57:42 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	dm-devel@redhat.com, ebiggers@kernel.org, luto@kernel.org,
-	dave.hansen@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-	mingo@kernel.org, x86@kernel.org, herbert@gondor.apana.org.au,
-	ardb@kernel.org, elliott@hpe.com, dan.j.williams@intel.com,
-	bernie.keany@intel.com, charishma1.gairuboyina@intel.com,
-	Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH v9 10/14] x86/cpu/keylocker: Check Gather Data Sampling
- mitigation
-Message-ID: <20240329065742.fc5of75e776y2g4b@desk>
-References: <20230603152227.12335-1-chang.seok.bae@intel.com>
- <20240329015346.635933-1-chang.seok.bae@intel.com>
- <20240329015346.635933-11-chang.seok.bae@intel.com>
+	s=arc-20240116; t=1711695586; c=relaxed/simple;
+	bh=MlvTnEko9J0D72PKDus8a0pEMZiiHf0b5YcP7UzLbdE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gyPIvqX+DzwU1xpF9ituWUG956fSYBacPBLAck5P9FjSNyDe4criwHPhbXl9Z3YtR98VLhNBtAunX+Y6R5NXaI7MCMXYpxAwCNEZ9+bN/Dci/5PheHN6pvSZ9F+brWlrGvL33ERNqKSXpvPGD5Pg0AqMxUbIPaySyL2Fd1zRr84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fTOUGTCQ; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711695583; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=+X5dDvewMP3Tm1C12o/ZlZF+7bV0b6t6gUSDEC10khs=;
+	b=fTOUGTCQE3bN2OB3zN8m2guHWxFqAN6EHQJulzemav+T4I5/vtEnHISWBOylp7KYYBBuclBpmZxTl4KUnMq4fCsAxdJEcg4hkH26JJSHB/+3LeI1OzRXGP57CShIQ6F0pJBePplyfvoVEg2Hsr/LYLkpodaYVGS279GyjL0NQ3E=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W3Vft4F_1711695582;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3Vft4F_1711695582)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Mar 2024 14:59:42 +0800
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: baolin.wang@linux.alibaba.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: huge_memory: add the missing folio_test_pmd_mappable() for THP split statistics
+Date: Fri, 29 Mar 2024 14:59:33 +0800
+Message-Id: <a5341defeef27c9ac7b85c97f030f93e4368bbc1.1711694852.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329015346.635933-11-chang.seok.bae@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 28, 2024 at 06:53:42PM -0700, Chang S. Bae wrote:
-> +/*
-> + * The mitigation is implemented at a microcode level. Ensure that the
-> + * microcode update is applied and the mitigation is locked.
-> + */
-> +static bool __init have_gds_mitigation(void)
-> +{
-> +	u64 mcu_ctrl;
-> +
-> +	/* GDS_CTRL is set if new microcode is loaded. */
-> +	if (!(x86_read_arch_cap_msr() & ARCH_CAP_GDS_CTRL))
-> +		goto vulnerable;
-> +
-> +	/* If GDS_MITG_LOCKED is set, GDS_MITG_DIS is forced to 0. */
-> +	rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
-> +	if (mcu_ctrl & GDS_MITG_LOCKED)
-> +		return true;
+Now the mTHP can also be split or added into the deferred list, so add
+folio_test_pmd_mappable() validation for PMD mapped THP, to avoid confusion
+with PMD mapped THP related statistics.
 
-Similar to RFDS, above checks can be simplified to:
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ mm/huge_memory.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-	if (gds_mitigation == GDS_MITIGATION_FULL_LOCKED)
-		return true;
-> +
-> +vulnerable:
-> +	pr_warn("x86/keylocker: Susceptible to the GDS vulnerability.\n");
-> +	return false;
-> +}
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 1683de78c313..3ca9282a0dc9 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -3109,7 +3109,8 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 		i_mmap_unlock_read(mapping);
+ out:
+ 	xas_destroy(&xas);
+-	count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAILED);
++	if (folio_test_pmd_mappable(folio))
++		count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAILED);
+ 	return ret;
+ }
+ 
+@@ -3171,7 +3172,8 @@ void deferred_split_folio(struct folio *folio)
+ 
+ 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+ 	if (list_empty(&folio->_deferred_list)) {
+-		count_vm_event(THP_DEFERRED_SPLIT_PAGE);
++		if (folio_test_pmd_mappable(folio))
++			count_vm_event(THP_DEFERRED_SPLIT_PAGE);
+ 		list_add_tail(&folio->_deferred_list, &ds_queue->split_queue);
+ 		ds_queue->split_queue_len++;
+ #ifdef CONFIG_MEMCG
+-- 
+2.39.3
+
 
