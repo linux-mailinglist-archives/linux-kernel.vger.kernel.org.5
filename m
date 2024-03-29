@@ -1,299 +1,249 @@
-Return-Path: <linux-kernel+bounces-124056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF3889119B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7345689119F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1981F23A37
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:19:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E86701F241BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40490224D1;
-	Fri, 29 Mar 2024 02:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306E92C85A;
+	Fri, 29 Mar 2024 02:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LNKrvssN"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQYkeOkp"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9DD1DA3A
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D48224D1;
+	Fri, 29 Mar 2024 02:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678777; cv=none; b=hy+PeX+0Rz2hv7qhPs6gPo5H+hWJwbQXYT6Wpff09601IJAQofkh1+My1aqedOIeh1tHqrcIa4WdGG0FEp1v8ZRDpvb2p+QN+Aum9OLjIAcU4MCEHcq+aJ/1W1Ed+KB07uAyPj1I8b4dT4dvD0MQdGA93JBr0B3Sc8H17TTE64Y=
+	t=1711678791; cv=none; b=Tddl499isusfIGoAW8Dlk2ldf8YuMfgJPkQNI065M6u6gC4/GOmmEfzzU3YpvsY4Pr1vqoJJPR2nD06K+DBiIm01xuAhLZn1pBkQrHdyMGEvcQdhppO8N+gaqrkxsyj3lOMryWJnYpYgxp/Db9DYiShGixEcIg46O36UdzDmOKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678777; c=relaxed/simple;
-	bh=R9NBX9LPbWr5A4mPCN6VB5vOL4g0qPRT4ByREsND4jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ntCvXDQQ2SlItB4D5zoPZm0ZyNHhQrIv6WnAXtGE+NdpN2lwiGfwpDUfxUVItCuxc0ToCpoBuHMsL9mXMcDwyBcphDgvHVHIfND9ySdY6lf+d4B1MaCI6tNKciDk/bGAquINjfJSkOISPxzu9uFeQ+EeU8l2MVcND5QtIaN1Fkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LNKrvssN; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711678775; x=1743214775;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=R9NBX9LPbWr5A4mPCN6VB5vOL4g0qPRT4ByREsND4jw=;
-  b=LNKrvssNJDnopFPVm1oE/K5pKi2nOJqAfwW4aq0a0RPpqvwiCqSVJPB6
-   AV6bVY56jGg4qaa1ohfCsSwdEObwect+F5tQYfoVLqIcXk1FXhddH3MFm
-   0gxdhgqbZPx3M6wOBkMGzno+VcXVqqPPnLE9KXTOsejZ4Gd8dO5qGSaPe
-   qqqeZFpy3gdQKbHwLLBJ0eiWpG1Pa4a2DtQpQLbDDV9hw3lznSSk7F5Lg
-   vbPjP8OpLUtkn4gIM4NSA+4Qk+qYq6SSxaqYpUJ1yTAIY2owiHhSWv3It
-   sfEoMPRYwCFfuemyeJPatFP95RG+CS3CkXvKmny8gCZJbPkapWbH8ywzs
-   Q==;
-X-CSE-ConnectionGUID: TETMaTBeS5ikBugkE9ZQjQ==
-X-CSE-MsgGUID: TJ6gB+odRy+Aih2jzEsr/w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6729656"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6729656"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:19:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="21583407"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 28 Mar 2024 19:19:32 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rq1q5-0002kw-0i;
-	Fri, 29 Mar 2024 02:19:29 +0000
-Date: Fri, 29 Mar 2024 10:19:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT'
- undeclared; did you mean 'CONFIG_LOG_BUF_SHIFT'?
-Message-ID: <202403291057.uo43Mlue-lkp@intel.com>
+	s=arc-20240116; t=1711678791; c=relaxed/simple;
+	bh=pM4r28R4O0XiKgV1w8evOjFQxQQi4y0kqsHq1Ox+cHs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BGLXGQB6dsupWRolOZRXzx4tmB0FFeLoqTyzROL/KEVd1o1+T0nne204643PT4hO2prYezHQkzuwOXe8TNlAlmKL+NLHjfI+VKGZUTTnC2dLHt/JkOjKzLJb1elwmEHEptPfiCgvPo0Cd0xSlef0MMvfcThdmPx+84VHKQbpyoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fQYkeOkp; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cedfc32250so1148246a12.0;
+        Thu, 28 Mar 2024 19:19:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711678788; x=1712283588; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PPnYnYEiLIlR/yOzXCJQfKbBHw7UwGViL9JcBPvqOX8=;
+        b=fQYkeOkpgoaCkSyEvovA46PCbvCxet7KrYzfUWWnkuJjqhiZ0uWScZW+ErNoENyJPA
+         XlqzUm7DoGWTHyrffDPz2t9O9z370fh0A5VGcQ2WmBjpmtknWK5QwrAvoFkOZxuiVGxQ
+         O7xhLLq0c8YZ87AW3Ezq97GJeuj+qei+oa7tG1plnoPQQ/YAyEeBTjrMi0fjJ1BDfv8L
+         AOwAGWrLNxMXNvJHzGjacJ6/k6Xb62AsvPt1HYipQ+iGmPRN6WvqE9JcWwwfafI1FjKp
+         nUoKxsqxpyG0Koo7YBpQmKRu8HaxvhPUvuuYnZqqonBYNDYiVXPiGU9QkwHfL1UiTJXQ
+         3mLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711678788; x=1712283588;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PPnYnYEiLIlR/yOzXCJQfKbBHw7UwGViL9JcBPvqOX8=;
+        b=OyZMBmUP7PYI8oI0P9D7F5VMItWU59NpQJ7CsyMe4UluGBUxi2CaGiLwQ7ncNtb5wX
+         Cu2i3Fcjq0lnPhmcKK5txpJU5wqCn4E+ehn11U4rbtOzuMmKa8ACyUsZxnjqHpWBapJs
+         8P+ddArMma2pLkWQMLGq2VgpunkXL+ws1Px1/nUOuAB1zHub97NfKRxmgbyNgLVnN1Mz
+         9D+DcyJIjyyAP+Gz4JQ7o1sjE9rCvcnTduBE6JGhLB8/Z+4CsE67hZ6K8GHuA0DCHDuG
+         kIFkL/83BsbbWQ5Hr8zQz20dNjMc5/RFgIGd8e2pI5Cm7tdGbM5CatoDrvhYFRnFxzaB
+         KGPw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/pjpVYFS76+1fPd6GHLfBBqM/2WkVNhz2vMmZanTZ51a/aKUBM+X6I8J2PpCCaeLZUWd4jNAUMaBMF2199kwfaD/3/P2ZYMrdglDatnOVvgeBml6MWxHgMjbL0o/mGdnC8dyMLyY6eUWZ4jBhPiqok6YQ
+X-Gm-Message-State: AOJu0YyWqx9KvG4/ZzdlJIRPauAfpM0BRPPeyMI9ppZlY16gwNE3Y1Sg
+	WUUy4UHS1PYHqdkLJ0OZSXjwMpL5ExpVwGxQZHQ3H1HhW4s87IO6
+X-Google-Smtp-Source: AGHT+IHmDTTiLCtRHhuKzloYq78VsTqePUHAKSBRT79w1pCLj1qy1CgzY5cbxg/HuGG561/9pe1BHg==
+X-Received: by 2002:a05:6a21:a5aa:b0:1a3:af03:6b0 with SMTP id gd42-20020a056a21a5aa00b001a3af0306b0mr1141550pzc.7.1711678788468;
+        Thu, 28 Mar 2024 19:19:48 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([2401:4900:4e59:88b8:f462:3eea:57c6:a15a])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170903230900b001e14807c7dfsm2358346plh.86.2024.03.28.19.19.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 19:19:48 -0700 (PDT)
+Date: Fri, 29 Mar 2024 07:49:39 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: paul@paul-moore.com, alison.schofield@intel.com,
+	fabio.maria.de.francesco@linux.intel.com,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org, outreachy@lists.linux.dev,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH] LANDLOCK: use kmem_cache for landlock_object
+Message-ID: <ZgYlO8jGSH/6KTEe@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+References: <ZgSrBVidW1U6yP+h@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+ <CAHC9VhRYDNoqkbkgdUSg-kYSHVbheD5NtezmVxyRakZ0-DzuSg@mail.gmail.com>
+ <ZgUh7cIQIsOgvWpw@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+ <20240328.aiPh0phaJ6ai@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240328.aiPh0phaJ6ai@digikod.net>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8d025e2092e29bfd13e56c78e22af25fac83c8ec
-commit: 5394f1e9b687bcf26595cabf83483e568676128d arch: define CONFIG_PAGE_SIZE_*KB on all architectures
-date:   3 weeks ago
-config: m68k-alldefconfig (https://download.01.org/0day-ci/archive/20240329/202403291057.uo43Mlue-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403291057.uo43Mlue-lkp@intel.com/reproduce)
+On Thu, Mar 28, 2024 at 03:45:12PM +0100, Mickaël Salaün wrote:
+> The subject should start with "landlock: Use" instead of "LANDLOCK: use"
+> 
+> On Thu, Mar 28, 2024 at 01:23:17PM +0530, Ayush Tiwari wrote:
+> > Hello Paul
+> > Thanks a lot for the feedback. Apologies for the mistakes. Could you
+> > help me in some places so that I can correct the errors, like:
+> > On Wed, Mar 27, 2024 at 07:43:36PM -0400, Paul Moore wrote:
+> > > On Wed, Mar 27, 2024 at 7:26 PM Ayush Tiwari <ayushtiw0110@gmail.com> wrote:
+> > > >
+> > > > Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
+> > > > struct landlock_object and update the related dependencies.
+> > > >
+> > > > Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> > > > ---
+> > > >  security/landlock/fs.c     |  2 +-
+> > > >  security/landlock/object.c | 14 ++++++++++++--
+> > > >  security/landlock/object.h |  4 ++++
+> > > >  security/landlock/setup.c  |  2 ++
+> > > >  4 files changed, 19 insertions(+), 3 deletions(-)
+> > > 
+> > > Hi Ayush,
+> > > 
+> > > Mickaël has the final say on Landlock patches, but I had a few
+> > > comments that I've included below ...
+> > > 
+> > > > diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> > > > index fc520a06f9af..227dd67dd902 100644
+> > > > --- a/security/landlock/fs.c
+> > > > +++ b/security/landlock/fs.c
+> > > > @@ -124,7 +124,7 @@ static struct landlock_object *get_inode_object(struct inode *const inode)
+> > > >         if (unlikely(rcu_access_pointer(inode_sec->object))) {
+> > > >                 /* Someone else just created the object, bail out and retry. */
+> > > >                 spin_unlock(&inode->i_lock);
+> > > > -               kfree(new_object);
+> > > > +               kmem_cache_free(landlock_object_cache, new_object);
+> > > 
+> > > See my comment below, but you may want to wrap this in a Landlock
+> > > object API function.
+> > Sure. I will definitely implement this.
+> > > 
+> > > >                 rcu_read_lock();
+> > > >                 goto retry;
+> > > > diff --git a/security/landlock/object.c b/security/landlock/object.c
+> > > > index 1f50612f0185..df1354215617 100644
+> > > > --- a/security/landlock/object.c
+> > > > +++ b/security/landlock/object.c
+> > > > @@ -17,6 +17,15 @@
+> > > >
+> > > >  #include "object.h"
+> > > >
+> > > > +struct kmem_cache *landlock_object_cache;
+> > > > +
+> > > > +void __init landlock_object_init(void)
+> > > > +{
+> > > > +       landlock_object_cache = kmem_cache_create(
+> > > > +               "landlock_object_cache", sizeof(struct landlock_object), 0,
+> 
+> No need for the "_cache" name suffix.
+> 
+> > > > +               SLAB_PANIC, NULL);
+> > > 
+> > > The comments in include/linux/slab.h suggest using the KMEM_CACHE()
+> > > macro, instead of kmem_cache_create(), as a best practice for creating
+> > > slab caches.
+> > >
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403291057.uo43Mlue-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   In file included from arch/m68k/include/asm/thread_info.h:6,
-                    from include/linux/thread_info.h:60,
-                    from include/asm-generic/preempt.h:5,
-                    from ./arch/m68k/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:79,
-                    from arch/m68k/include/asm/processor.h:11,
-                    from include/linux/sched.h:13,
-                    from arch/m68k/kernel/asm-offsets.c:15:
-   arch/m68k/include/asm/page_mm.h: In function 'virt_to_pfn':
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page_mm.h:125:31: note: in expansion of macro 'PAGE_SHIFT'
-     125 |         return __pa(kaddr) >> PAGE_SHIFT;
-         |                               ^~~~~~~~~~
-   arch/m68k/include/asm/page.h:10:25: note: each undeclared identifier is reported only once for each function it appears in
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page_mm.h:125:31: note: in expansion of macro 'PAGE_SHIFT'
-     125 |         return __pa(kaddr) >> PAGE_SHIFT;
-         |                               ^~~~~~~~~~
-   arch/m68k/include/asm/page_mm.h: In function 'pfn_to_virt':
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page_mm.h:130:28: note: in expansion of macro 'PAGE_SHIFT'
-     130 |         return __va(pfn << PAGE_SHIFT);
-         |                            ^~~~~~~~~~
-   include/asm-generic/getorder.h: In function 'get_order':
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   include/asm-generic/getorder.h:33:48: note: in expansion of macro 'PAGE_SHIFT'
-      33 |                         return BITS_PER_LONG - PAGE_SHIFT;
-         |                                                ^~~~~~~~~~
-   arch/m68k/include/asm/thread_info.h: At top level:
->> arch/m68k/include/asm/page.h:10:25: warning: "CONFIG_PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/thread_info.h:13:5: note: in expansion of macro 'PAGE_SHIFT'
-      13 | #if PAGE_SHIFT < 13
-         |     ^~~~~~~~~~
->> arch/m68k/include/asm/page.h:10:25: warning: "CONFIG_PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page.h:11:40: note: in expansion of macro 'PAGE_SHIFT'
-      11 | #define PAGE_SIZE       (_AC(1, UL) << PAGE_SHIFT)
-         |                                        ^~~~~~~~~~
-   include/linux/mm_types_task.h:40:30: note: in expansion of macro 'PAGE_SIZE'
-      40 | #if (BITS_PER_LONG > 32) || (PAGE_SIZE >= 65536)
-         |                              ^~~~~~~~~
->> arch/m68k/include/asm/page.h:10:25: warning: "CONFIG_PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page.h:11:40: note: in expansion of macro 'PAGE_SHIFT'
-      11 | #define PAGE_SIZE       (_AC(1, UL) << PAGE_SHIFT)
-         |                                        ^~~~~~~~~~
-   include/linux/mm_types.h:502:6: note: in expansion of macro 'PAGE_SIZE'
-     502 | #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-         |      ^~~~~~~~~
-   In file included from include/vdso/const.h:5,
-                    from include/linux/const.h:4,
-                    from include/linux/bits.h:5,
-                    from include/linux/ratelimit_types.h:5,
-                    from include/linux/printk.h:9,
-                    from include/asm-generic/bug.h:22,
-                    from arch/m68k/include/asm/bug.h:32,
-                    from include/linux/bug.h:5,
-                    from include/linux/thread_info.h:13:
->> arch/m68k/include/asm/page.h:10:25: warning: "CONFIG_PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   include/uapi/linux/const.h:32:50: note: in definition of macro '__ALIGN_KERNEL_MASK'
-      32 | #define __ALIGN_KERNEL_MASK(x, mask)    (((x) + (mask)) & ~(mask))
-         |                                                  ^~~~
-   include/linux/mm_types.h:479:41: note: in expansion of macro '__ALIGN_MASK'
-     479 | #define PAGE_FRAG_CACHE_MAX_SIZE        __ALIGN_MASK(32768, ~PAGE_MASK)
-         |                                         ^~~~~~~~~~~~
-   arch/m68k/include/asm/page.h:11:40: note: in expansion of macro 'PAGE_SHIFT'
-      11 | #define PAGE_SIZE       (_AC(1, UL) << PAGE_SHIFT)
-         |                                        ^~~~~~~~~~
-   arch/m68k/include/asm/page.h:12:28: note: in expansion of macro 'PAGE_SIZE'
-      12 | #define PAGE_MASK       (~(PAGE_SIZE-1))
-         |                            ^~~~~~~~~
-   include/linux/mm_types.h:479:62: note: in expansion of macro 'PAGE_MASK'
-     479 | #define PAGE_FRAG_CACHE_MAX_SIZE        __ALIGN_MASK(32768, ~PAGE_MASK)
-         |                                                              ^~~~~~~~~
-   include/linux/mm_types.h:502:18: note: in expansion of macro 'PAGE_FRAG_CACHE_MAX_SIZE'
-     502 | #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-         |                  ^~~~~~~~~~~~~~~~~~~~~~~~
->> arch/m68k/include/asm/page.h:10:25: warning: "CONFIG_PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   include/uapi/linux/const.h:32:61: note: in definition of macro '__ALIGN_KERNEL_MASK'
-      32 | #define __ALIGN_KERNEL_MASK(x, mask)    (((x) + (mask)) & ~(mask))
-         |                                                             ^~~~
-   include/linux/mm_types.h:479:41: note: in expansion of macro '__ALIGN_MASK'
-     479 | #define PAGE_FRAG_CACHE_MAX_SIZE        __ALIGN_MASK(32768, ~PAGE_MASK)
-         |                                         ^~~~~~~~~~~~
-   arch/m68k/include/asm/page.h:11:40: note: in expansion of macro 'PAGE_SHIFT'
-      11 | #define PAGE_SIZE       (_AC(1, UL) << PAGE_SHIFT)
-         |                                        ^~~~~~~~~~
-   arch/m68k/include/asm/page.h:12:28: note: in expansion of macro 'PAGE_SIZE'
-      12 | #define PAGE_MASK       (~(PAGE_SIZE-1))
-         |                            ^~~~~~~~~
-   include/linux/mm_types.h:479:62: note: in expansion of macro 'PAGE_MASK'
-     479 | #define PAGE_FRAG_CACHE_MAX_SIZE        __ALIGN_MASK(32768, ~PAGE_MASK)
-         |                                                              ^~~~~~~~~
-   include/linux/mm_types.h:502:18: note: in expansion of macro 'PAGE_FRAG_CACHE_MAX_SIZE'
-     502 | #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-         |                  ^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmalloc.h: In function 'arch_vmap_pte_range_map_size':
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page.h:11:40: note: in expansion of macro 'PAGE_SHIFT'
-      11 | #define PAGE_SIZE       (_AC(1, UL) << PAGE_SHIFT)
-         |                                        ^~~~~~~~~~
-   include/linux/vmalloc.h:109:16: note: in expansion of macro 'PAGE_SIZE'
-     109 |         return PAGE_SIZE;
-         |                ^~~~~~~~~
-   include/linux/vmalloc.h: In function 'arch_vmap_pte_supported_shift':
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   include/linux/vmalloc.h:116:16: note: in expansion of macro 'PAGE_SHIFT'
-     116 |         return PAGE_SHIFT;
-         |                ^~~~~~~~~~
-   include/linux/vmalloc.h: In function 'get_vm_area_size':
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   arch/m68k/include/asm/page.h:11:40: note: in expansion of macro 'PAGE_SHIFT'
-      11 | #define PAGE_SIZE       (_AC(1, UL) << PAGE_SHIFT)
-         |                                        ^~~~~~~~~~
-   include/linux/vmalloc.h:200:37: note: in expansion of macro 'PAGE_SIZE'
-     200 |                 return area->size - PAGE_SIZE;
-         |                                     ^~~~~~~~~
-   include/linux/slab.h: At top level:
->> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared here (not in a function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   include/linux/slab.h:309:34: note: in expansion of macro 'PAGE_SHIFT'
-     309 | #define KMALLOC_SHIFT_HIGH      (PAGE_SHIFT + 1)
-         |                                  ^~~~~~~~~~
-   include/linux/slab.h:379:34: note: in expansion of macro 'KMALLOC_SHIFT_HIGH'
-     379 | kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
-         |                                  ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/init.h:5,
-                    from include/linux/printk.h:6:
->> arch/m68k/include/asm/page.h:10:25: error: expression in static assertion is not an integer
-      10 | #define PAGE_SHIFT      CONFIG_PAGE_SHIFT
-         |                         ^~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
-      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-         |                                                        ^~~~
-   include/linux/slab.h:475:1: note: in expansion of macro 'static_assert'
-     475 | static_assert(PAGE_SHIFT <= 20);
-         | ^~~~~~~~~~~~~
-   include/linux/slab.h:475:15: note: in expansion of macro 'PAGE_SHIFT'
-     475 | static_assert(PAGE_SHIFT <= 20);
-         |               ^~~~~~~~~~
-   In file included from include/linux/irq.h:21,
-                    from include/asm-generic/hardirq.h:17,
-                    from ./arch/m68k/include/generated/asm/hardirq.h:1,
-                    from include/linux/hardirq.h:11,
-                    from include/linux/interrupt.h:11,
-                    from include/linux/kernel_stat.h:9,
-                    from arch/m68k/kernel/asm-offsets.c:16:
->> include/linux/slab.h:522:47: warning: 'assume_aligned' attribute argument <erroneous-expression> is not an integer constant [-Wattributes]
-     522 |                                               __alloc_size(1);
-         |                                               ^~~~~~~~~~~~
-   include/linux/slab.h:525:62: warning: 'assume_aligned' attribute argument <erroneous-expression> is not an integer constant [-Wattributes]
-     525 |                                                              __alloc_size(1);
-         |                                                              ^~~~~~~~~~~~
-   include/linux/slab.h: In function 'kmalloc':
->> include/linux/slab.h:584:30: warning: variable 'index' set but not used [-Wunused-but-set-variable]
-     584 |                 unsigned int index;
-         |                              ^~~~~
-   include/linux/slab.h: In function 'kmalloc_node':
-   include/linux/slab.h:600:30: warning: variable 'index' set but not used [-Wunused-but-set-variable]
-     600 |                 unsigned int index;
-         |                              ^~~~~
-   make[3]: *** [scripts/Makefile.build:116: arch/m68k/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1199: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:240: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:240: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
-
-
-vim +10 arch/m68k/include/asm/page.h
-
-     8	
-     9	/* PAGE_SHIFT determines the page size */
-  > 10	#define PAGE_SHIFT	CONFIG_PAGE_SHIFT
-  > 11	#define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
-    12	#define PAGE_MASK	(~(PAGE_SIZE-1))
-    13	#define PAGE_OFFSET	(PAGE_OFFSET_RAW)
-    14	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Hello mentors
+I am facing some problem regarding replacing kzalloc with
+kmem_cache_zalloc when using KMEM macro from include/linux/slab.h as for
+kmem_cache_zalloc I will be needing a cache pointer to cache but KMEM macro
+doesn't provide any macro. So is there any way to do this or should I
+not use macro?
+> > Sure. Apologies I didn't see that, I tried to implement it from scratch
+> > using the reference from linux memory management APIs.
+> > > > +}
+> > > > +
+> > > >  struct landlock_object *
+> > > >  landlock_create_object(const struct landlock_object_underops *const underops,
+> > > >                        void *const underobj)
+> > > > @@ -25,7 +34,8 @@ landlock_create_object(const struct landlock_object_underops *const underops,
+> > > >
+> > > >         if (WARN_ON_ONCE(!underops || !underobj))
+> > > >                 return ERR_PTR(-ENOENT);
+> > > > -       new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
+> > > > +       new_object =
+> > > > +               kmem_cache_zalloc(landlock_object_cache, GFP_KERNEL_ACCOUNT);
+> > > 
+> > > If the line is too long, you might want to consider splitting the
+> > > function parameters like this:
+> > > 
+> > >   new_object = kmem_cache_zalloc(landlock_object_cache,
+> > >                                  GFP_KERNEL_ACCOUNT);
+> > > 
+> > 
+> > Sure. I didn't do as it was below the 100 columns limit, but will
+> > definitely implement it.
+> 
+> Please just use clang-format.
+> 
+> > > >         if (!new_object)
+> > > >                 return ERR_PTR(-ENOMEM);
+> > > >         refcount_set(&new_object->usage, 1);
+> > > > @@ -62,6 +72,6 @@ void landlock_put_object(struct landlock_object *const object)
+> > > >                  * @object->underobj to @object (if it still exists).
+> > > >                  */
+> > > >                 object->underops->release(object);
+> > > > -               kfree_rcu(object, rcu_free);
+> 
+> Is it safe?
+> 
+> According to commit ae65a5211d90 ("mm/slab: document kfree() as allowed
+> for kmem_cache_alloc() objects"), no change should be needed (and it
+> must not be backported to kernels older than 6.4 with CONFIG_SLOB). This
+> way we can avoid exporting landlock_object_cache.  Please add a note
+> about this commit and the related warning in the commit message.
+> 
+> > > > +               kmem_cache_free(landlock_object_cache, object);
+> > > >         }
+> > > >  }
+> > > > diff --git a/security/landlock/object.h b/security/landlock/object.h
+> > > > index 5f28c35e8aa8..8ba1af3ddc2e 100644
+> > > > --- a/security/landlock/object.h
+> > > > +++ b/security/landlock/object.h
+> > > > @@ -13,6 +13,10 @@
+> > > >  #include <linux/refcount.h>
+> > > >  #include <linux/spinlock.h>
+> > > >
+> > > > +extern struct kmem_cache *landlock_object_cache;
+> > > 
+> > > This really is a decision for Mickaël, but you may want to make
+> > > @landlock_object_cache private to object.c and create functions to
+> > > manage it as needed, e.g. put/free operations.
+> > > 
+> > Okay. I didn't make it private as I was using it in fs.c to use
+> > kmem_cache_free, but if this is supposed to be private, I can modify the
+> > approach and expose it via some function, not directly exposing
+> > landlock_object_cache.
+> 
+> Yes, that would be better.
+> 
+> > > > +void __init landlock_object_init(void);
+> > > > +
+> > > >  struct landlock_object;
+> > > >
+> > > >  /**
+> > > > diff --git a/security/landlock/setup.c b/security/landlock/setup.c
+> > > > index f6dd33143b7f..a5fca4582ee1 100644
+> > > 
+> > > -- 
+> > > paul-moore.com
+> > I will make all the changes you mentioned, and as you said, I will
+> > wait for Mickael's say.
+> 
+> Agree with Paul and Greg unless commented otherwise. Thanks
 
