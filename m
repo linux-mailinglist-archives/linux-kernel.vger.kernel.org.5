@@ -1,100 +1,139 @@
-Return-Path: <linux-kernel+bounces-123858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E369890EF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E35D890EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 796B9B23245
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:11:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A815FB2320D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757DD184F;
-	Fri, 29 Mar 2024 00:11:19 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69FC1C2D;
+	Fri, 29 Mar 2024 00:12:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SFdSDuyM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C2EA29
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:11:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6451A5F
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711671079; cv=none; b=Sfc2VkIKykCa70jmDNtwN5AkccpEe5loS1Cp75HmXQGXWbELGd9hFlRGPS6qQXZNYdWSrp3fnYLPVIdyrBYRnibnnKb/JnLdsfSRL2f4U4U+hB9pPemQvnME30RkhhXFXw7ZtytPFqGZgsX9Hh316oHctlri3f1SQK6PsEiOkhA=
+	t=1711671121; cv=none; b=FfRQsbUMsQSprKkaP21eDynjFgpYDwgJBbv0hIqpIMEKr7zUVwUroVBYTy2EG/L42ZB8JShMru27QL1aDD1QRwnpBzTiRiLSpNU8PwIHqtmiZR3KkJ75aSwC3FH5O+onux4lrAmG17bxT39fSvq1TjwFlojMbFfpZpht4gQHuaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711671079; c=relaxed/simple;
-	bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=J4VEnUKx92rQYaKAzgOAzUc+6vWm+HHlKD5/gJgTOQRKTxK95DR9naZWvZeO0i2HmzvJ+NKjSXPxNbngymHvmFIirdl8tEwlmeZEqiuEKXbNyar3UZgpLFszE752lqT1hnJmF8alsLcB1GbSyoY7k3CmmIAuEOgYs+SgLf2aDLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbef888187so132856039f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:11:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711671077; x=1712275877;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=PHr8eDHuUZYCMLc1lUOvEUcTzQBeC1nf6xkkqaKCjl6EKfAsZnql+2KwFj8ZvDIABt
-         +AFFJCM4ZBlRovM35I2sunC1R4XaXGL5RII6KL801KAbKRZkLHX2V1fQT52rtqWSM+DG
-         utq+SjSwgjrYklYAbigZdzbMmFGCorQ2LmCmb0VKxqkDpxJ0MrEeojT40xU53fYR6kWS
-         f2D8spBewtyqmTcwZRlR/Ucd5tZtLwZMX7k325enDSucLigCAyGr65H7umHhxe95Mh8y
-         dTvN+uO14oPsiaAxAPBG6bvl962gx+ZAaaYqXERmEGQJK9pxyN1PcsSAkLHQNJV6wYiC
-         SP3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWkqtQ56MS+aZQeoqKYOE/BQqpvf31wZ9Gk+mys8GooYyJaK86pn3OMM6B5yB5nLBMMc2zQUpzLB+yVNh3NEj4B2PntcfhYRl2Wb4k2
-X-Gm-Message-State: AOJu0YzJIQ0dl73XhCfdSGcdE3XXA9+YMBbADAtzQkhlEhdUq8vOeQhk
-	N7WbDIR4EIyY1Ac/ESVTWZrVnOxA8nBxytCn+0w1jU48OZNktdQSLaaBkPwXu7u0X2cB/0zqebz
-	IXIrz4CXqIwOBjD9BOfxakAlcdXJNSM+Jl8ZJpEh34+ng572ze45/SEM=
-X-Google-Smtp-Source: AGHT+IFkuzBOXLL0qovYepiBhl4jyh5xiqBtn4XTNWP9BC4uhLKwBQok6OoN5qt/kdcWfaL0mr2Wio+as2oxhYmU6Eq/0T3j6aeR
+	s=arc-20240116; t=1711671121; c=relaxed/simple;
+	bh=6wtHnx5aHAflr5DF9YkYkeu6eoyg/MQpUEZgak5DzX0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JcnxoS6GaITurdZlui8oT8a6M6RqvZxrlfVBIYTIbrnpVldjxgUXgMCyVJTwhrIWViuRMplFE/oXp6Pv3KiXO5gkYUzqEva+2WaxqJQZeT37TSAg8e5vfSwrPGM7Btfme7buQA9d3YHTciwmj7/6IHfHR+M560azRJ8b27hd7fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SFdSDuyM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711671118;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ehgSCj3GfjkXw0aHOEvtMuIGQ4Ldvig/G2OmaVA7+S0=;
+	b=SFdSDuyM81PRDNm0wvzL5cc2/dHtfQa3Q+rXO7rGu1A/DHrSasSYhwArzNt5CSWoympwWI
+	7ETGVaFBe93Lk3VNk4ODSV0DzRcOFCMG5zR8W8yUyJq3379VYPGjl5SFjnF7jjClcn0Xzw
+	/A72wa0dw1U0UK9USstaNw0qAvtRENI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-125-3jGYByT2MzOhp1gl9WdmJQ-1; Thu,
+ 28 Mar 2024 20:11:55 -0400
+X-MC-Unique: 3jGYByT2MzOhp1gl9WdmJQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D490A3801F4C;
+	Fri, 29 Mar 2024 00:11:54 +0000 (UTC)
+Received: from redhat.com (unknown [10.2.16.33])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A32D40C6DAD;
+	Fri, 29 Mar 2024 00:11:52 +0000 (UTC)
+Date: Thu, 28 Mar 2024 19:11:30 -0500
+From: Eric Blake <eblake@redhat.com>
+To: Stefan Hajnoczi <stefanha@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alasdair Kergon <agk@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
+	David Teigland <teigland@redhat.com>, Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
+Subject: Re: [RFC 3/9] selftests: block_seek_hole: add loop block driver tests
+Message-ID: <xh2nqmndk4rfnvghhmv6xlueleb4mdfa6v5vvamnxfyxb3eomb@yz5u2nldqewf>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
+ <20240328203910.2370087-4-stefanha@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c90:b0:7cc:8980:5ae4 with SMTP id
- i16-20020a0566022c9000b007cc89805ae4mr21732iow.2.1711671076996; Thu, 28 Mar
- 2024 17:11:16 -0700 (PDT)
-Date: Thu, 28 Mar 2024 17:11:16 -0700
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008461a90614c17a44@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328203910.2370087-4-stefanha@redhat.com>
+User-Agent: NeoMutt/20240201
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Thu, Mar 28, 2024 at 04:39:04PM -0400, Stefan Hajnoczi wrote:
+> Run the tests with:
+> 
+>   $ make TARGETS=block_seek_hole -C tools/selftests run_tests
+> 
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> ---
+>  tools/testing/selftests/Makefile              |   1 +
+>  .../selftests/block_seek_hole/Makefile        |  17 +++
+>  .../testing/selftests/block_seek_hole/config  |   1 +
+>  .../selftests/block_seek_hole/map_holes.py    |  37 +++++++
+>  .../testing/selftests/block_seek_hole/test.py | 103 ++++++++++++++++++
+>  5 files changed, 159 insertions(+)
+>  create mode 100644 tools/testing/selftests/block_seek_hole/Makefile
+>  create mode 100644 tools/testing/selftests/block_seek_hole/config
+>  create mode 100755 tools/testing/selftests/block_seek_hole/map_holes.py
+>  create mode 100755 tools/testing/selftests/block_seek_hole/test.py
+> 
+> +++ b/tools/testing/selftests/block_seek_hole/test.py
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+> +
+> +# Different data layouts to test
+> +
+> +def data_at_beginning_and_end(f):
+> +    f.write(b'A' * 4 * KB)
+> +    f.seek(256 * MB)
+> +
+> +    f.write(b'B' * 64 * KB)
+> +
+> +    f.seek(1024 * MB - KB)
+> +    f.write(b'C' * KB)
+> +
+> +def holes_at_beginning_and_end(f):
+> +    f.seek(128 * MB)
+> +    f.write(b'A' * 4 * KB)
+> +
+> +    f.seek(512 * MB)
+> +    f.write(b'B' * 64 * KB)
+> +
+> +    f.truncate(1024 * MB)
+> +
+> +def no_holes(f):
+> +    # Just 1 MB so test file generation is quick
+> +    mb = b'A' * MB
+> +    f.write(mb)
+> +
+> +def empty_file(f):
+> +    f.truncate(1024 * MB)
 
-#syz fix: exact-commit-title
+Is it also worth attempting to test a (necessarily sparse!) file
+larger than 2GiB to prove that we are 64-bit clean, even on a 32-bit
+system where lseek is different than lseek64?  (I honestly have no
+idea if python always uses 64-bit seek even on 32-bit systems,
+although I would be surprised if it were not)
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+-- 
+Eric Blake, Principal Software Engineer
+Red Hat, Inc.
+Virtualization:  qemu.org | libguestfs.org
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
