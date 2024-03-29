@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-125000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8BD891EA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:48:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 795CC891EA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 079E21C2279B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:48:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19D841F26969
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5081C1B31D3;
-	Fri, 29 Mar 2024 12:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1491B2C3C;
+	Fri, 29 Mar 2024 12:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORlXxmYa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kPyDVh6j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8151B31B5;
-	Fri, 29 Mar 2024 12:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668091B31D6;
+	Fri, 29 Mar 2024 12:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716592; cv=none; b=RxKHKgBrpoDFfhG0uj/kB0EelfIgOocvkMsfE0ibBKOUs+fydTVMXGrGv/KB8bRYQBfiBzla+co8sn0rw5ZfRJqEwsVUQ72sTtrcGBnSl0ePfzHQMmPqCi19xigYi1vjvtH7OLlgmhpbhWxRkmeDF9E22Vp9Bcmw4z93KABPRfA=
+	t=1711716593; cv=none; b=Qw6PYjkrmbnywUK49qCGsGXhP2SfQ3APhE0gWXpISZoK2HE6Z/skQW/sf3obUSwG7xuDDkTdnk5fE/RPHzxJGgjcxbPQtIGXf7PlLBRt1pMkw4bXz8s6N+6fAGzgVnyUCOefs+c1sJbvdySYPs99q/lYBZqpX4ghDOudraTuo6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716592; c=relaxed/simple;
-	bh=9YD3BM9uRahPuP1kXHn2qyvJIJeAECrE7wwxmS57VZE=;
+	s=arc-20240116; t=1711716593; c=relaxed/simple;
+	bh=QMG4VHrykYqFxPVOwR6KEP8EbtPKU123pCqjdzZ/Ttk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Wagj+8/V/kQEanm2Zs1sd6vyDbAxu6fgXEwuLNZKT0RZRdSGEvvc5zzJWq8rbEpSSJ2DawrXmv8WdMCIK9tjIq7SLQpJxWEOu+9g+iznBEuvCVbFs5JJHEyM3cc+LsLFcXSAscmt9O0OJs9m3GVf5EJ5R+TTMpLffDHuFrV0Oyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORlXxmYa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AAA1C433F1;
-	Fri, 29 Mar 2024 12:49:51 +0000 (UTC)
+	 MIME-Version; b=IOjGxukd1GW6bKjqH1usN4HEHMDjUeapowgCusx6PXqIv4S5QTNgBSzMNAOymAcPV3btwCRrNy3u/ciowVWgCMcSUDF9RumYqeZBK3Zt5Lv1lem1SJIXFQHGfWgMRV0MA0lt2+xdV9AVGHHJXM1kdvV6y3Hs91XkGCmKa0Qm54k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kPyDVh6j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91A5CC43394;
+	Fri, 29 Mar 2024 12:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716592;
-	bh=9YD3BM9uRahPuP1kXHn2qyvJIJeAECrE7wwxmS57VZE=;
+	s=k20201202; t=1711716593;
+	bh=QMG4VHrykYqFxPVOwR6KEP8EbtPKU123pCqjdzZ/Ttk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ORlXxmYaQkCS45XSffEMW5KBFPdYIDIRg10qIzUESgaPiOBkJNlwMYiQmQGemOQTQ
-	 mCdunaaPdbJkBXepb3YXTTaaL38LIgPrieM5DwpkiaU52QOenyR5ipx6lXAuoezsjs
-	 pz3rY1ODu2FVOxA2IcF8eC3LwftjT35Qxuclym3HMaU0NbpZWFrudeognhvqDIPZIj
-	 DicjOKFUK6AA74wipAk1okzHCzBJHrpRQbOP6wTtJg5FAllU3HFoApyBVEZcZkqsIG
-	 V2eiVMYNWxlq5sQAxnRCiqM+Bejz4r0LAiRZbTVAeR1IRRHWMsB2VpPUNnF2XtS0Lc
-	 pILTRJN1ShqOA==
+	b=kPyDVh6j+L2Ra/wOosiq+h0rcU4+sgY+GIHhTDzE1lXjlkSdkBIXFFE6wf+ykL8Kv
+	 eUIrSdvXK72BaCeXYyzc1RP91Tv7uyDqnrMFb/FFf+SDuX0YAWPlbvNQTt9xwx9XNy
+	 cLLCQE/9gfi2NpfGTlW+w6TohgSi6IsveiFjm21lj1yUBWbmTDhyHqnZ06XYxDaDcc
+	 BARsbqm77QGpFWNoW1E9bavnt+sQr/viUTaeQ0BBl8LpsgGkGorBtLTTUV2lUuJZ/x
+	 081kf1Nb07Y1d018FZWSoG11lFA7KtY2S+suKy/3jZ5NQApuwDG32zX4DAC9ApUGAF
+	 q0bCxDYFHy7OA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Alban=20Boy=C3=A9?= <alban.boye@protonmail.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	hdegoede@redhat.com,
-	linux-input@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 29/31] platform/x86: touchscreen_dmi: Add an extra entry for a variant of the Chuwi Vi8 tablet
-Date: Fri, 29 Mar 2024 08:48:46 -0400
-Message-ID: <20240329124903.3093161-29-sashal@kernel.org>
+Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
+	John Hawley <warthog9@eaglescrag.net>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 30/31] ktest: force $buildonly = 1 for 'make_warnings_file' test type
+Date: Fri, 29 Mar 2024 08:48:47 -0400
+Message-ID: <20240329124903.3093161-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124903.3093161-1-sashal@kernel.org>
 References: <20240329124903.3093161-1-sashal@kernel.org>
@@ -61,45 +59,44 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
-From: Alban Boyé <alban.boye@protonmail.com>
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
 
-[ Upstream commit 1266e2efb7512dbf20eac820ca2ed34de6b1c3e7 ]
+[ Upstream commit 07283c1873a4d0eaa0e822536881bfdaea853910 ]
 
-Signed-off-by: Alban Boyé <alban.boye@protonmail.com>
-Link: https://lore.kernel.org/r/20240227223919.11587-1-alban.boye@protonmail.com
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+The test type "make_warnings_file" should have no mandatory configuration
+parameters other than the ones required by the "build" test type, because
+its purpose is to create a file with build warnings that may or may not be
+used by other subsequent tests. Currently, the only way to use it as a
+stand-alone test is by setting POWER_CYCLE, CONSOLE, SSH_USER,
+BUILD_TARGET, TARGET_IMAGE, REBOOT_TYPE and GRUB_MENU.
+
+Link: https://lkml.kernel.org/r/20240315-ktest-v2-1-c5c20a75f6a3@marliere.net
+
+Cc: John Hawley <warthog9@eaglescrag.net>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/touchscreen_dmi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ tools/testing/ktest/ktest.pl | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-index ebe959db1eeb9..fbaa618594628 100644
---- a/drivers/platform/x86/touchscreen_dmi.c
-+++ b/drivers/platform/x86/touchscreen_dmi.c
-@@ -1084,6 +1084,15 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI.D86JLBNR"),
- 		},
- 	},
-+	{
-+		/* Chuwi Vi8 dual-boot (CWI506) */
-+		.driver_data = (void *)&chuwi_vi8_data,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "i86"),
-+			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI2.D86JHBNR02"),
-+		},
-+	},
- 	{
- 		/* Chuwi Vi8 Plus (CWI519) */
- 		.driver_data = (void *)&chuwi_vi8_plus_data,
+diff --git a/tools/testing/ktest/ktest.pl b/tools/testing/ktest/ktest.pl
+index ea26f2b0c1bc2..f72da30795dd6 100755
+--- a/tools/testing/ktest/ktest.pl
++++ b/tools/testing/ktest/ktest.pl
+@@ -773,6 +773,7 @@ sub set_value {
+     if ($lvalue =~ /^(TEST|BISECT|CONFIG_BISECT)_TYPE(\[.*\])?$/ &&
+ 	$prvalue !~ /^(config_|)bisect$/ &&
+ 	$prvalue !~ /^build$/ &&
++	$prvalue !~ /^make_warnings_file$/ &&
+ 	$buildonly) {
+ 
+ 	# Note if a test is something other than build, then we
 -- 
 2.43.0
 
