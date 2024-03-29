@@ -1,51 +1,73 @@
-Return-Path: <linux-kernel+bounces-125292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 104E689239A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:53:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9905D89239C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF332285F3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:53:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6875B23C3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7BA4AEDA;
-	Fri, 29 Mar 2024 18:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643B94D9F9;
+	Fri, 29 Mar 2024 18:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cm/ZnJ42"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FH/mjfvs"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F305F3B293
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4041DA5E;
+	Fri, 29 Mar 2024 18:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711738387; cv=none; b=el9sYXpQubtcCt/6G5RjEANV32izNmrxkJRfxKtdKk+vOu1V+3yw0RGB8XXVbW+4vw+itORNAwVM1oyBRbkJawMxXy3J0exedSmCv6ttl+lxuIRL6vr0dja/EGsdbgOrwofdLnFM++q6IPZMw36FPa1985v8IVVUOsRm9sYey0k=
+	t=1711738430; cv=none; b=J6DI/fClfC+Sgwpc7dzDjA/ZFf/L5AD8PJhC11roPycctRL0jYMW8jw3RmBeJhtBk7E+gIHYsQxC1mOK6k6kWJY9CBIOWvzV1BfhBqvqtOfhLGZHLpP0EjkId7mk605a+x5qmLX5pqtc2b5pmJfnNJmAQoN26Oku5c4Ym8WnCfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711738387; c=relaxed/simple;
-	bh=FTeT8ULC1ExZMKUm41jU3/hSaj3inVSYADFFINc3td0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=rkASTG+E0HVY+L9yqKKUzzdJPTu1miJ+n7KJQtVN8ljNY0tEfy9Rae9UZ788cdYNg08tr90RaU/h8nxEcN+vyOJLROHNJ/eVQyEbXxezYm3iHhX/CXqpaX/iQuAdx9aT0CcAkJWaG18QL0X1K13l/EwcUjXEko69W/tjqJMBu8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Cm/ZnJ42; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=4ZC551KYY/VIbg9NK3ODQRo8+r60/N0IS6/gca/Yq8o=; b=Cm/ZnJ42BXrFBhh4bevYsajY5l
-	/KqE1y6AGa3Us2+Me3qJMX37Z9p+X9ZMBufLtID2xZn8DcbXD9690/tGTZYV5gMEoIWRki6MIl/cz
-	kEdssg77hEhgFGdv1VvY4VZod8LMbGkH1mk/YJ1yoE+sbj2o/1GCf2FDdzlP5expRtDCGYvBAYi7d
-	8wORYkTEYhj7y+f6XD9D3lKml66k1M/qvbVjFGHE8FnhFriEMXj6XWRPhd3tML4WhSgvlVOtonunK
-	tWRKXRLTnxJVeEhtwNmpM0mX9q3mAjH4jFLoFwnk4xxZDguRumA0Ll4hPZE4U3daVBXld71szy5Mg
-	S4dUuZ/w==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqHLZ-00000001ede-3UGF;
-	Fri, 29 Mar 2024 18:53:02 +0000
-Message-ID: <9d84481e-6a21-41fa-ae7c-1a9c52fc48ad@infradead.org>
-Date: Fri, 29 Mar 2024 11:53:00 -0700
+	s=arc-20240116; t=1711738430; c=relaxed/simple;
+	bh=MrcWaccHuWO26Oo0rz+WLEjrhuK5Slp6ybTdJPwnkUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tAQ/ABMY0LXTxGXW+ymVZ1VDwhzbBZuF6NSNKRkQ+8zBrfqVdkQua3ot61OXY4NLo5GmZh07JUFq1Gsy1GLX+smYSZQb+/V/AYYj45fKdQ+ChtibiPqZPKOrlAqHZwdiy+VJwMHL212WStYKMXh1A/NNabTitpCbc3W00Sw0F0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FH/mjfvs; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41551639550so4244285e9.2;
+        Fri, 29 Mar 2024 11:53:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711738427; x=1712343227; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qvFwD0VdyHpD42fxMgclHLAoEOf/dK1nAyEahgoL8Ow=;
+        b=FH/mjfvsP7cjaD8Y15aEl/Q/UbG7sNwZz1H9jOkMMjopAbbKfJ2hTdPTffgdi0LKJv
+         Db/EuUBNjZwJYmNCOZOaMBSUidHfSUYFm/kOB+qnJ+9l/3cfC8ystfzKgcWEwSX47rRe
+         5ZY7/xemZAuDNLP3LICFhV61UygiU5cnreQb28EBWaCTNctGlAr0ViUDxibIwYB4AFCD
+         pQ9DNYBbQji3MNwikvjaLgG/+KErXMIaErLlwco40Kuyy5Asvm/wAbQFmNvEWSPikWTp
+         7FW1/240S5+j9SIn/dMOokX3jnaJAxHsZ44F3vpXRmbg2rXe87w8GIs2lFyJU8ug7/tz
+         uygQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711738427; x=1712343227;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qvFwD0VdyHpD42fxMgclHLAoEOf/dK1nAyEahgoL8Ow=;
+        b=JIfjlKFJ9M7W9nSTsfkUlrYpFcagv/5kmJW3mlFNQKfn9jI7vg55z6hQhaTV679tRX
+         xynDGTQi1WiJpnzwtmvwbMxTkwhiHB0h9aZ+pvehewn2/qzyuACbxFSDcKBWIaihUdWX
+         t5LufI4DrqE7L0riihqMAuixvMTLPudX5JaNtynjCpZvDjnT+CB3BmzOCmioXk2ygo3H
+         Imyb+U3mViDwMj6HO8+O564D8hz5ZKnKf7ynNJG7w8QQh58OH6OW5AljTKQG+JRsIPpe
+         wMiU+PIRHcGudjjHU7pB4a0Tru1qh++95PvReckkWSMHY+uWPlXqovK+HB1YV79ROrlW
+         odUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUKRugg1357y0nRUYGqGm8uFhBWOTf/tPrgL0768kNIN4kmEIm4oGiQ6TyNq3pKRTEM1YV3J1yHkWVOpoDde13noEYj6blHLiPHcHsa147PbKnsops/dha+JczhCE1TfMS+ilgy7jITGdXTmQ==
+X-Gm-Message-State: AOJu0YzH0+8Y5HEzBdl2a+mEN5WGteA79N23ydUEW9uNcxV/FyMsnRxx
+	uK3sVE/bodkPo+ZRSLVY5AZQSWMUSEx1dxV+ivb+mkIxuvKxEcq0
+X-Google-Smtp-Source: AGHT+IELe0KtVPfoSVZEkGdtTR/jfCpqwbpre3tc4QE7Gw5yu0BJvPt8AEdvpdIbAVOLH+DXXLT5Dg==
+X-Received: by 2002:a05:600c:3587:b0:414:887f:6167 with SMTP id p7-20020a05600c358700b00414887f6167mr2456768wmq.7.1711738427084;
+        Fri, 29 Mar 2024 11:53:47 -0700 (PDT)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id o10-20020a05600c510a00b004148a5e3188sm9331808wms.25.2024.03.29.11.53.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 11:53:46 -0700 (PDT)
+Message-ID: <82f94b54-82d1-49b9-badf-63d948b347fc@gmail.com>
+Date: Fri, 29 Mar 2024 19:53:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,41 +75,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: workqueue: name exceeds WQ_NAME_LEN. Truncating to:
- events_freezable_power_efficien
+Subject: Re: [PATCH v9 00/13] firmware: qcom: qseecom: convert to using the TZ
+ allocator
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Elliot Berman <quic_eberman@quicinc.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Guru Das Srinagesh <quic_gurus@quicinc.com>,
+ Andrew Halaney <ahalaney@redhat.com>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@quicinc.com, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240325100359.17001-1-brgl@bgdev.pl>
+ <56e1c63a-4c09-4d92-9ef2-aad5390879cc@gmail.com>
+ <CAMRc=Mf_pvrh2VMfTVE-ZTypyO010p=to-cd8Q745DzSDXLGFw@mail.gmail.com>
+ <CAMRc=MfsVWcoMC-dB-fdxy332h-ucUPTfEUMAnCt5L-q3zJxWg@mail.gmail.com>
 Content-Language: en-US
-To: "Artem S. Tashkinov" <aros@gmx.com>, linux-kernel@vger.kernel.org,
- Tejun Heo <tj@kernel.org>, Audra Mitchell <audra@redhat.com>
-References: <cb894653-6e20-4759-8dd1-7b03ae8614cf@gmx.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <cb894653-6e20-4759-8dd1-7b03ae8614cf@gmx.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <CAMRc=MfsVWcoMC-dB-fdxy332h-ucUPTfEUMAnCt5L-q3zJxWg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
-
-On 3/27/24 03:37, Artem S. Tashkinov wrote:
-> Hello,
+On 3/29/24 11:22 AM, Bartosz Golaszewski wrote:
+> On Thu, Mar 28, 2024 at 7:55 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>
+>> On Thu, Mar 28, 2024 at 5:50 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>>
+>>> If I understand correctly, it enters an atomic section in
+>>> qcom_tzmem_alloc() and then tries to schedule somewhere down the line.
+>>> So this shouldn't be qseecom specific.
+>>>
+>>> I should probably also say that I'm currently testing this on a patched
+>>> v6.8 kernel, so there's a chance that it's my fault. However, as far as
+>>> I understand, it enters an atomic section in qcom_tzmem_alloc() and then
+>>> later tries to expand the pool memory with dma_alloc_coherent(). Which
+>>> AFAIK is allowed to sleep with GFP_KERNEL (and I guess that that's the
+>>> issue here).
+>>>
+>>> I've also tried the shmem allocator option, but that seems to get stuck
+>>> quite early at boot, before I even have usb-serial access to get any
+>>> logs. If I can find some more time, I'll try to see if I can get some
+>>> useful output for that.
+>>>
+>>
+>> Ah, I think it happens here:
+>>
+>> +       guard(spinlock_irqsave)(&pool->lock);
+>> +
+>> +again:
+>> +       vaddr = gen_pool_alloc(pool->genpool, size);
+>> +       if (!vaddr) {
+>> +               if (qcom_tzmem_try_grow_pool(pool, size, gfp))
+>> +                       goto again;
+>>
+>> We were called with GFP_KERNEL so this is what we pass on to
+>> qcom_tzmem_try_grow_pool() but we're now holding the spinlock. I need
+>> to revisit it. Thanks for the catch!
+>>
+>> Bart
 > 
-> There's a new warning message in kernel 6.8 which I guess shouldn't be
-> there. Linux 6.7 did not have it.
+> Can you try the following tree?
 > 
-> No idea where it comes from:
+>      https://git.codelinaro.org/bartosz_golaszewski/linux.git
+> topic/shm-bridge-v10
 > 
-> workqueue: name exceeds WQ_NAME_LEN. Truncating to:
-> events_freezable_power_efficien
-> 
-> A relevant bug report: https://bugzilla.kernel.org/show_bug.cgi?id=218649
-> 
-> Please fix.
+> gen_pool_alloc() and gen_pool_add_virt() can be used without external
+> serialization. We only really need to protect the list of areas in the
+> pool when adding a new element. We could possibly even use
+> list_add_tail_rcu() as it updates the pointers atomically and go
+> lockless.
 
+Thanks! That fixes the allocations for CONFIG_QCOM_TZMEM_MODE_GENERIC=y.
+Unfortunately, with the shmbridge mode it still gets stuck at boot (and
+I haven't had the time to look into it yet).
 
-Tejun, should 8318d6a6362f5 be backported to 6.8? or maybe it has been already?
+And for more bad news: It looks like the new allocator now fully exposes
+a bug that I've been tracking down the last couple of days. In short,
+uefisecapp doesn't seem to be happy when we split the allocations for
+request and response into two, causing commands to fail. Instead it
+wants a single buffer for both. Before, it seemed to be fairly sporadic
+(likely because kzalloc in sequence just returned consecutive memory
+almost all of the time) but now it's basically every call that fails.
 
-Also, it look like Documentation/core-api/workqueue.rst needs to be updated
-with the new workqueue name. Audra?
+I have a fix for that almost ready and I'll likely post it in the next
+hour. But that means that you'll probably have to rebase this series
+on top of it...
 
-thanks.
--- 
-#Randy
+Best regards,
+Max
+
 
