@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-124538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22309891986
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:43:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 301AE8918A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5B02B23B23
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:43:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42281F24A23
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971E5149011;
-	Fri, 29 Mar 2024 12:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F1848792;
+	Fri, 29 Mar 2024 12:25:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YqbPdho2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dHkRKH2P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C08135A50;
-	Fri, 29 Mar 2024 12:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B986AF88;
+	Fri, 29 Mar 2024 12:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715339; cv=none; b=fEHSTY3xKq/pXHhrQKo/oVgiLgCDymmVJ9ttTy84zY5SpF/HI/zacF/8DsqFWYNCGPWJZG78LFM4CAMMGh2+aMH5xiVilBVewJmFtyS7T1UGQSIuE6Nj9DuH51WO91LjbHDlDxRjwhsNiZPvHxxzhwMCxX8BBT1+COY3fPLKASo=
+	t=1711715155; cv=none; b=t1hW/XADKElMvmnRHQ1RbxNomAUREh7EGb9HZsOjPB46eY5A5wJU6hRumgI2Rd5abrOIKYO2craex0cOPniFG2pD2QoV9RGISyq79aSC74nR2RReG8iTE6VRyrNBlWDpsdt3r6ccTKpMtlRaMSlIqAKrl+Pvy2Zx06Aem6X0XgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715339; c=relaxed/simple;
-	bh=2blYHZzTgc/Bt86ve41KFu0JQMEdKOXO3SMGTZkGYg8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B24HromVRlf1/W7ndpZshPiFpvzLDpaO62ivnpFoOCwYiu8yoy+77lOKY2LS+OMHnyr+2bgd7XyuUu89LHDxPt9w8sqqDlkEHxih5sC1yVoPWgbvrZicyx07YP4pvF1VH2c2K2I3tOY5Gc5CFC5XBMrbZVqM7kr3DA7akFfTuSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YqbPdho2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99188C433C7;
-	Fri, 29 Mar 2024 12:28:58 +0000 (UTC)
+	s=arc-20240116; t=1711715155; c=relaxed/simple;
+	bh=XWkniX1skEKP4mTzuIar8LWCn5vxSw8q1Y8+BUx3AOw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cfRbomVEJHbxPEoHvDoYLObFh1wusiLM0o5DuTQye/vNyuUzaXcS1qeOI29fofc5kTQqelkim1U4cW2DR2/ScYPAserCI9Elb52TNrjhbdONC/pkdoI/VZy353A1KsZarYOWkE5RP7I5bzMTXZ9pP7qFlxTuB5st/AwB6NNlEps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dHkRKH2P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A156CC433C7;
+	Fri, 29 Mar 2024 12:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715339;
-	bh=2blYHZzTgc/Bt86ve41KFu0JQMEdKOXO3SMGTZkGYg8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YqbPdho2P8BTGlG8b+CDlKQDPldse6c/L583JImTyRD7NafIBBoklJAiBWWdcX4o5
-	 Fd6przGtyLFALm0v1hK5wjqOr8W2Z1TRgMTD42YroC5xwVMBQ2YwNP3PHjg20+Ab+e
-	 cCwpBzLW718KK282VHDNUSFzt0QW1K919Ijlbi5KK+sW4USEcfHks6A+ZYIk+Tan0E
-	 NS2Wh2dcDny/QAK5wT/HlDnAGFdYwXn8MhiYhlIslmulYmFNaRPhh/RDnlWPBCJ03R
-	 M+xH0pC5jqTU4Fwz+9mAf1PndSdCUlsRG7ZLVW8+mkSgb7MPPIogVVS53pBGkdIhpd
-	 mH7CTachJ8z/g==
+	s=k20201202; t=1711715154;
+	bh=XWkniX1skEKP4mTzuIar8LWCn5vxSw8q1Y8+BUx3AOw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dHkRKH2PzDTecZvBIcA2hzUR+7/cass3uUOTo9sSIwScxZFYYkELUWS4ABZWD8dxs
+	 f4f/Mj8mt4YEjQdSszfWH5mPyKLJUQzQx3D0YqIYre5nZv3/6TNn4WC5KcQYdBIJHD
+	 b772UyLxAA9xdt9wz16YH0Y6u8lrs47GrD4yRUxHyxpizYkJqJorw0Tp6qLtDL0mj/
+	 lrKzYomrAZmPn+ryWwXUQvTlUf8ZUdDo2ZPxXCh1Nglp3MHUykDu8dKEph7rP67gu6
+	 gxlksFRTcYJ4jlmehLVvjZmQq1vBfLkfoXCGGUgN2FNBBuNY4yPL0nQednkk0eyYvC
+	 4vDKZjyM9aJQg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
 	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	gregory.greenman@intel.com,
-	mukesh.sisodiya@intel.com,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 57/68] wifi: iwlwifi: Add missing MODULE_FIRMWARE() for *.pnvm
+	luto@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org
+Subject: [PATCH AUTOSEL 6.8] x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
 Date: Fri, 29 Mar 2024 08:25:53 -0400
-Message-ID: <20240329122652.3082296-57-sashal@kernel.org>
+Message-ID: <20240329122553.3082213-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
-References: <20240329122652.3082296-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,57 +66,103 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-[ Upstream commit 4223675d2b5912060a85e48fd8fee51207e00957 ]
+[ Upstream commit b388e57d4628eb22782bdad4cd5b83ca87a1b7c9 ]
 
-A few models require *.pnvm files while we don't declare them via
-MODULE_FIRMWARE().  This resulted in the breakage of WiFi on the
-system that relies on the information from modinfo (e.g. openSUSE
-installer image).
+For CONFIG_RETHUNK kernels, objtool annotates all the function return
+sites so they can be patched during boot.  By design, after
+apply_returns() is called, all tail-calls to the compiler-generated
+default return thunk (__x86_return_thunk) should be patched out and
+replaced with whatever's needed for any mitigations (or lack thereof).
 
-This patch adds those missing MODULE_FIRMWARE() entries for *.pnvm
-files.
+The commit
 
-type=feature
-ticket=none
+  4461438a8405 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
 
-Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1207553
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://msgid.link/20240228163837.4320-1-tiwai@suse.de
-[move to appropriate files]
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+adds a runtime check and a WARN_ONCE() if the default return thunk ever
+gets executed after alternatives have been applied.  This warning is
+a sanity check to make sure objtool and apply_returns() are doing their
+job.
+
+As Nathan reported, that check found something:
+
+  Unpatched return thunk in use. This should not happen!
+  WARNING: CPU: 0 PID: 1 at arch/x86/kernel/cpu/bugs.c:2856 __warn_thunk+0x27/0x40
+  RIP: 0010:__warn_thunk+0x27/0x40
+  Call Trace:
+   <TASK>
+   ? show_regs
+   ? __warn
+   ? __warn_thunk
+   ? report_bug
+   ? console_unlock
+   ? handle_bug
+   ? exc_invalid_op
+   ? asm_exc_invalid_op
+   ? ia32_binfmt_init
+   ? __warn_thunk
+   warn_thunk_thunk
+   do_one_initcall
+   kernel_init_freeable
+   ? __pfx_kernel_init
+   kernel_init
+   ret_from_fork
+   ? __pfx_kernel_init
+   ret_from_fork_asm
+   </TASK>
+
+Boris debugged to find that the unpatched return site was in
+init_vdso_image_64(), and its translation unit wasn't being analyzed by
+objtool, so it never got annotated.  So it got ignored by
+apply_returns().
+
+This is only a minor issue, as this function is only called during boot.
+Still, objtool needs full visibility to the kernel.  Fix it by enabling
+objtool on vdso-image-{32,64}.o.
+
+Note this problem can only be seen with !CONFIG_X86_KERNEL_IBT, as that
+requires objtool to run individually on all translation units rather on
+vmlinux.o.
+
+  [ bp: Massage commit message. ]
+
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240215032049.GA3944823@dev-arch.thelio-3990X
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/cfg/ax210.c | 6 ++++++
- drivers/net/wireless/intel/iwlwifi/cfg/bz.c    | 2 ++
- 2 files changed, 8 insertions(+)
+ arch/x86/entry/vdso/Makefile | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c b/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c
-index 134635c70ce85..73cbb120a49b4 100644
---- a/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c
-+++ b/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c
-@@ -299,3 +299,9 @@ MODULE_FIRMWARE(IWL_MA_B_HR_B_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_MA_B_GF_A_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_MA_B_GF4_A_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_MA_B_MR_A_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index b1b8dd1608f7e..4ee59121b9053 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -34,8 +34,12 @@ obj-y					+= vma.o extable.o
+ KASAN_SANITIZE_vma.o			:= y
+ UBSAN_SANITIZE_vma.o			:= y
+ KCSAN_SANITIZE_vma.o			:= y
+-OBJECT_FILES_NON_STANDARD_vma.o		:= n
+-OBJECT_FILES_NON_STANDARD_extable.o	:= n
 +
-+MODULE_FIRMWARE("iwlwifi-so-a0-gf-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-so-a0-gf4-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-ty-a0-gf-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-ma-b0-gf-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-ma-b0-gf4-a0.pnvm");
-diff --git a/drivers/net/wireless/intel/iwlwifi/cfg/bz.c b/drivers/net/wireless/intel/iwlwifi/cfg/bz.c
-index 82da957adcf6e..1b6249561cd58 100644
---- a/drivers/net/wireless/intel/iwlwifi/cfg/bz.c
-+++ b/drivers/net/wireless/intel/iwlwifi/cfg/bz.c
-@@ -179,3 +179,5 @@ MODULE_FIRMWARE(IWL_BZ_A_FM_C_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_BZ_A_FM4_B_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_GL_B_FM_B_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_GL_C_FM_C_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
-+
-+MODULE_FIRMWARE("iwlwifi-gl-c0-fm-c0.pnvm");
++OBJECT_FILES_NON_STANDARD_extable.o		:= n
++OBJECT_FILES_NON_STANDARD_vdso-image-32.o 	:= n
++OBJECT_FILES_NON_STANDARD_vdso-image-64.o 	:= n
++OBJECT_FILES_NON_STANDARD_vdso32-setup.o	:= n
++OBJECT_FILES_NON_STANDARD_vma.o			:= n
+ 
+ # vDSO images to build
+ vdso_img-$(VDSO64-y)		+= 64
+@@ -43,7 +47,6 @@ vdso_img-$(VDSOX32-y)		+= x32
+ vdso_img-$(VDSO32-y)		+= 32
+ 
+ obj-$(VDSO32-y)				 += vdso32-setup.o
+-OBJECT_FILES_NON_STANDARD_vdso32-setup.o := n
+ 
+ vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
+ vobjs32 := $(foreach F,$(vobjs32-y),$(obj)/$F)
 -- 
 2.43.0
 
