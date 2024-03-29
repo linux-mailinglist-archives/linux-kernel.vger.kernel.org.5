@@ -1,56 +1,60 @@
-Return-Path: <linux-kernel+bounces-124773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10623891C63
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E149891C62
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:49:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D791B2964D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:47:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E243DB29FBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305BC184103;
-	Fri, 29 Mar 2024 12:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3245A18412C;
+	Fri, 29 Mar 2024 12:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NOmRhm4G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DP7wEXLb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7611487CC;
-	Fri, 29 Mar 2024 12:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14045184114;
+	Fri, 29 Mar 2024 12:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716117; cv=none; b=Yivp9l2WQVBHZWVGlNjOdSN2hbyLwHIBa0LT8rME+uW+GFjjcG4sLTDhIJ+8bFYE21muRTmgDTp7XAG44yvObutzdotvhqPjk19Ba8FHMoSQ9/RKrFf7hJLN+fSpRzdH6/Qnc+sdEn8oCsVd9dH5Ep7pOv0DT8aK2nZh1SedAsY=
+	t=1711716119; cv=none; b=aiGTRDhA2zG/nIdc2AKcrwWhoEsuraywJi4o5AM6ZYmSHl93KYwekWR/eHJ3fvfBp9MJSujePVMFRPuOYQW/fdSPc7rB0CHlaHKKBqRlFCQHD4Q+vAVimT6daLU41ZADg6PxcKJixHj/WJlD2ndbyKAEZ63cW+U+5aY3PdC+PKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716117; c=relaxed/simple;
-	bh=gy+jUNA+O1Dke5XEhLYl2A8HvP/VJgKAGU8g/kUqfFY=;
+	s=arc-20240116; t=1711716119; c=relaxed/simple;
+	bh=KJj80toGRyUHGB9zSpiYu8RJfRwBfqJLj+0HoKTTkDI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P/s988Mlm1As5uwQdvQ7LR6DNYaIY4dI7tg4QZghA+cO0F0rkbtTucuNgmrgakUWzyrglcLk3XCSnp3NpXx206TfhM2UuYpIIz5r1LBoHhKAhWLiYgwlKDpwGWYJPishf8QdCFYieYFAoMGKEAYIOTdrOoR7ua4xVUoi4Q0chuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NOmRhm4G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DC8EC433A6;
-	Fri, 29 Mar 2024 12:41:56 +0000 (UTC)
+	 MIME-Version; b=EWF5WgxVBnKvzSXBSIHYObR7CHLjIr4Exc54XIVSFC9SYOZVtFbYFU9xFyrJ9zIGOJrUbkWY453F2QlQSfJFg1ZthgPlumALIbpUwEbqJ9dE/5gwVwfWuZn+q3hrLXOGOy/ff0S5949p/ut6yBRHJZ3wtHhuijQEVg8yypStCVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DP7wEXLb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD243C433C7;
+	Fri, 29 Mar 2024 12:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716117;
-	bh=gy+jUNA+O1Dke5XEhLYl2A8HvP/VJgKAGU8g/kUqfFY=;
+	s=k20201202; t=1711716119;
+	bh=KJj80toGRyUHGB9zSpiYu8RJfRwBfqJLj+0HoKTTkDI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NOmRhm4GBRVkIudsBInRWC9jg4BUUTwn1yCwW87VDmPTFTwWv7a9IQALWQVrkvo4m
-	 JzHOZnqvHfcBAXPvw4yI+rolwqILpU18JKyRioqDgpcyzp8h238mgXSUeLqO3+rDLT
-	 ofl2Fu0AxL9teSEAKWAkK95COFTRZkQt8JgPC/sSMGtq3Ixg5q3jnv46P2NG2nhXoz
-	 gSY6REW+XCGvDgvPrK/3RQOkbI9aVTZaHlb8U3CKnqM2ilOxVL8Mg98qrcGlvD11Bf
-	 +iY/pzLUCmQ7kf5FdXevrwIFuFMUpOOXz6hJAlla/P7bsYXebRwFi1hkVqFhK+bvR/
-	 mFeH32hiWpgUw==
+	b=DP7wEXLbUdBKrTD8oBfzhZomUF9geHdQzWckK2d1Cba0uA5P/hlW7mLttxsMdoOQf
+	 viI6aUbf+aTiGPf+2fDSYC8SfLDJSvIoEVPYIxpgKoWYJcm5FLLPCX46FE7r2xOasN
+	 Y08tpJO+P1iz/5meJyoFVt/1ObWY10kpmRGsNjpTrjnbRB8ZvW2k7MHtzjyeMc9d+w
+	 iIUgmrCvzdB32jJoOBQyo4JhvDvRrJHN2VzNErfeRMjG8xOsjwhUis5U7+aF59k0j7
+	 KGoxyfaOwElD6U+7FZ43Gsz8gxWrdTAyZiCx22PkUlMdWWA36yfMNL+hDppiDm/sUa
+	 UzErEE5sBpEzw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Christoph Hellwig <hch@lst.de>,
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
 	Sasha Levin <sashal@kernel.org>,
-	m.szyprowski@samsung.com,
-	iommu@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.8 63/98] dma-direct: Leak pages on dma_set_decrypted() failure
-Date: Fri, 29 Mar 2024 08:37:34 -0400
-Message-ID: <20240329123919.3087149-63-sashal@kernel.org>
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.8 64/98] drm: Check output polling initialized before disabling
+Date: Fri, 29 Mar 2024 08:37:35 -0400
+Message-ID: <20240329123919.3087149-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -65,64 +69,183 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
 
-[ Upstream commit b9fa16949d18e06bdf728a560f5c8af56d2bdcaf ]
+[ Upstream commit 5abffb66d12bcac84bf7b66389c571b8bb6e82bd ]
 
-On TDX it is possible for the untrusted host to cause
-set_memory_encrypted() or set_memory_decrypted() to fail such that an
-error is returned and the resulting memory is shared. Callers need to
-take care to handle these errors to avoid returning decrypted (shared)
-memory to the page allocator, which could lead to functional or security
-issues.
+In drm_kms_helper_poll_disable() check if output polling
+support is initialized before disabling polling. If not flag
+this as a warning.
+Additionally in drm_mode_config_helper_suspend() and
+drm_mode_config_helper_resume() calls, that re the callers of these
+functions, avoid invoking them if polling is not initialized.
+For drivers like hyperv-drm, that do not initialize connector
+polling, if suspend is called without this check, it leads to
+suspend failure with following stack
+[  770.719392] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  770.720592] printk: Suspending console(s) (use no_console_suspend to debug)
+[  770.948823] ------------[ cut here ]------------
+[  770.948824] WARNING: CPU: 1 PID: 17197 at kernel/workqueue.c:3162 __flush_work.isra.0+0x212/0x230
+[  770.948831] Modules linked in: rfkill nft_counter xt_conntrack xt_owner udf nft_compat crc_itu_t nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink vfat fat mlx5_ib ib_uverbs ib_core mlx5_core intel_rapl_msr intel_rapl_common kvm_amd ccp mlxfw kvm psample hyperv_drm tls drm_shmem_helper drm_kms_helper irqbypass pcspkr syscopyarea sysfillrect sysimgblt hv_balloon hv_utils joydev drm fuse xfs libcrc32c pci_hyperv pci_hyperv_intf sr_mod sd_mod cdrom t10_pi sg hv_storvsc scsi_transport_fc hv_netvsc serio_raw hyperv_keyboard hid_hyperv crct10dif_pclmul crc32_pclmul crc32c_intel hv_vmbus ghash_clmulni_intel dm_mirror dm_region_hash dm_log dm_mod
+[  770.948863] CPU: 1 PID: 17197 Comm: systemd-sleep Not tainted 5.14.0-362.2.1.el9_3.x86_64 #1
+[  770.948865] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 05/09/2022
+[  770.948866] RIP: 0010:__flush_work.isra.0+0x212/0x230
+[  770.948869] Code: 8b 4d 00 4c 8b 45 08 89 ca 48 c1 e9 04 83 e2 08 83 e1 0f 83 ca 02 89 c8 48 0f ba 6d 00 03 e9 25 ff ff ff 0f 0b e9 4e ff ff ff <0f> 0b 45 31 ed e9 44 ff ff ff e8 8f 89 b2 00 66 66 2e 0f 1f 84 00
+[  770.948870] RSP: 0018:ffffaf4ac213fb10 EFLAGS: 00010246
+[  770.948871] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8c992857
+[  770.948872] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9aad82b00330
+[  770.948873] RBP: ffff9aad82b00330 R08: 0000000000000000 R09: ffff9aad87ee3d10
+[  770.948874] R10: 0000000000000200 R11: 0000000000000000 R12: ffff9aad82b00330
+[  770.948874] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+[  770.948875] FS:  00007ff1b2f6bb40(0000) GS:ffff9aaf37d00000(0000) knlGS:0000000000000000
+[  770.948878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  770.948878] CR2: 0000555f345cb666 CR3: 00000001462dc005 CR4: 0000000000370ee0
+[  770.948879] Call Trace:
+[  770.948880]  <TASK>
+[  770.948881]  ? show_trace_log_lvl+0x1c4/0x2df
+[  770.948884]  ? show_trace_log_lvl+0x1c4/0x2df
+[  770.948886]  ? __cancel_work_timer+0x103/0x190
+[  770.948887]  ? __flush_work.isra.0+0x212/0x230
+[  770.948889]  ? __warn+0x81/0x110
+[  770.948891]  ? __flush_work.isra.0+0x212/0x230
+[  770.948892]  ? report_bug+0x10a/0x140
+[  770.948895]  ? handle_bug+0x3c/0x70
+[  770.948898]  ? exc_invalid_op+0x14/0x70
+[  770.948899]  ? asm_exc_invalid_op+0x16/0x20
+[  770.948903]  ? __flush_work.isra.0+0x212/0x230
+[  770.948905]  __cancel_work_timer+0x103/0x190
+[  770.948907]  ? _raw_spin_unlock_irqrestore+0xa/0x30
+[  770.948910]  drm_kms_helper_poll_disable+0x1e/0x40 [drm_kms_helper]
+[  770.948923]  drm_mode_config_helper_suspend+0x1c/0x80 [drm_kms_helper]
+[  770.948933]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+[  770.948942]  hyperv_vmbus_suspend+0x17/0x40 [hyperv_drm]
+[  770.948944]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
+[  770.948951]  dpm_run_callback+0x4c/0x140
+[  770.948954]  __device_suspend_noirq+0x74/0x220
+[  770.948956]  dpm_noirq_suspend_devices+0x148/0x2a0
+[  770.948958]  dpm_suspend_end+0x54/0xe0
+[  770.948960]  create_image+0x14/0x290
+[  770.948963]  hibernation_snapshot+0xd6/0x200
+[  770.948964]  hibernate.cold+0x8b/0x1fb
+[  770.948967]  state_store+0xcd/0xd0
+[  770.948969]  kernfs_fop_write_iter+0x124/0x1b0
+[  770.948973]  new_sync_write+0xff/0x190
+[  770.948976]  vfs_write+0x1ef/0x280
+[  770.948978]  ksys_write+0x5f/0xe0
+[  770.948979]  do_syscall_64+0x5c/0x90
+[  770.948981]  ? syscall_exit_work+0x103/0x130
+[  770.948983]  ? syscall_exit_to_user_mode+0x12/0x30
+[  770.948985]  ? do_syscall_64+0x69/0x90
+[  770.948986]  ? do_syscall_64+0x69/0x90
+[  770.948987]  ? do_user_addr_fault+0x1d6/0x6a0
+[  770.948989]  ? do_syscall_64+0x69/0x90
+[  770.948990]  ? exc_page_fault+0x62/0x150
+[  770.948992]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[  770.948995] RIP: 0033:0x7ff1b293eba7
+[  770.949010] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+[  770.949011] RSP: 002b:00007ffde3912128 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[  770.949012] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007ff1b293eba7
+[  770.949013] RDX: 0000000000000005 RSI: 00007ffde3912210 RDI: 0000000000000004
+[  770.949014] RBP: 00007ffde3912210 R08: 000055d7dd4c9510 R09: 00007ff1b29b14e0
+[  770.949014] R10: 00007ff1b29b13e0 R11: 0000000000000246 R12: 0000000000000005
+[  770.949015] R13: 000055d7dd4c53e0 R14: 0000000000000005 R15: 00007ff1b29f69e0
+[  770.949016]  </TASK>
+[  770.949017] ---[ end trace e6fa0618bfa2f31d ]---
 
-DMA could free decrypted/shared pages if dma_set_decrypted() fails. This
-should be a rare case. Just leak the pages in this case instead of
-freeing them.
-
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Built-on: Rhel9, Ubuntu22
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/1706856208-9617-1-git-send-email-shradhagupta@linux.microsoft.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/dma/direct.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_modeset_helper.c | 19 ++++++++++++++++---
+ drivers/gpu/drm/drm_probe_helper.c   | 13 +++++++++++--
+ 2 files changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 98b2e192fd696..4d543b1e9d577 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -286,7 +286,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 	} else {
- 		ret = page_address(page);
- 		if (dma_set_decrypted(dev, ret, size))
--			goto out_free_pages;
-+			goto out_leak_pages;
+diff --git a/drivers/gpu/drm/drm_modeset_helper.c b/drivers/gpu/drm/drm_modeset_helper.c
+index f858dfedf2cfc..2c582020cb423 100644
+--- a/drivers/gpu/drm/drm_modeset_helper.c
++++ b/drivers/gpu/drm/drm_modeset_helper.c
+@@ -193,13 +193,22 @@ int drm_mode_config_helper_suspend(struct drm_device *dev)
+ 
+ 	if (!dev)
+ 		return 0;
++	/*
++	 * Don't disable polling if it was never initialized
++	 */
++	if (dev->mode_config.poll_enabled)
++		drm_kms_helper_poll_disable(dev);
+ 
+-	drm_kms_helper_poll_disable(dev);
+ 	drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 1);
+ 	state = drm_atomic_helper_suspend(dev);
+ 	if (IS_ERR(state)) {
+ 		drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 0);
+-		drm_kms_helper_poll_enable(dev);
++		/*
++		 * Don't enable polling if it was never initialized
++		 */
++		if (dev->mode_config.poll_enabled)
++			drm_kms_helper_poll_enable(dev);
++
+ 		return PTR_ERR(state);
  	}
  
- 	memset(ret, 0, size);
-@@ -307,6 +307,8 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- out_free_pages:
- 	__dma_direct_free_pages(dev, page, size);
- 	return NULL;
-+out_leak_pages:
-+	return NULL;
- }
+@@ -239,7 +248,11 @@ int drm_mode_config_helper_resume(struct drm_device *dev)
+ 	dev->mode_config.suspend_state = NULL;
  
- void dma_direct_free(struct device *dev, size_t size,
-@@ -367,12 +369,11 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
+ 	drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 0);
+-	drm_kms_helper_poll_enable(dev);
++	/*
++	 * Don't enable polling if it is not initialized
++	 */
++	if (dev->mode_config.poll_enabled)
++		drm_kms_helper_poll_enable(dev);
  
- 	ret = page_address(page);
- 	if (dma_set_decrypted(dev, ret, size))
--		goto out_free_pages;
-+		goto out_leak_pages;
- 	memset(ret, 0, size);
- 	*dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
- 	return page;
--out_free_pages:
--	__dma_direct_free_pages(dev, page, size);
-+out_leak_pages:
- 	return NULL;
+ 	return ret;
  }
+diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
+index 23b4e9a3361d8..249eb8d8bd6b9 100644
+--- a/drivers/gpu/drm/drm_probe_helper.c
++++ b/drivers/gpu/drm/drm_probe_helper.c
+@@ -293,14 +293,17 @@ static void reschedule_output_poll_work(struct drm_device *dev)
+  * Drivers can call this helper from their device resume implementation. It is
+  * not an error to call this even when output polling isn't enabled.
+  *
++ * If device polling was never initialized before, this call will trigger a
++ * warning and return.
++ *
+  * Note that calls to enable and disable polling must be strictly ordered, which
+  * is automatically the case when they're only call from suspend/resume
+  * callbacks.
+  */
+ void drm_kms_helper_poll_enable(struct drm_device *dev)
+ {
+-	if (!dev->mode_config.poll_enabled || !drm_kms_helper_poll ||
+-	    dev->mode_config.poll_running)
++	if (drm_WARN_ON_ONCE(dev, !dev->mode_config.poll_enabled) ||
++	    !drm_kms_helper_poll || dev->mode_config.poll_running)
+ 		return;
+ 
+ 	if (drm_kms_helper_enable_hpd(dev) ||
+@@ -873,12 +876,18 @@ EXPORT_SYMBOL(drm_kms_helper_is_poll_worker);
+  * not an error to call this even when output polling isn't enabled or already
+  * disabled. Polling is re-enabled by calling drm_kms_helper_poll_enable().
+  *
++ * If however, the polling was never initialized, this call will trigger a
++ * warning and return
++ *
+  * Note that calls to enable and disable polling must be strictly ordered, which
+  * is automatically the case when they're only call from suspend/resume
+  * callbacks.
+  */
+ void drm_kms_helper_poll_disable(struct drm_device *dev)
+ {
++	if (drm_WARN_ON(dev, !dev->mode_config.poll_enabled))
++		return;
++
+ 	if (dev->mode_config.poll_running)
+ 		drm_kms_helper_disable_hpd(dev);
  
 -- 
 2.43.0
