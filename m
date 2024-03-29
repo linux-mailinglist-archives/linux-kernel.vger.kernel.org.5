@@ -1,238 +1,189 @@
-Return-Path: <linux-kernel+bounces-125454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB2A89265C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:53:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C69892661
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A8B61F24EC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:53:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38978B223FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE26613CC53;
-	Fri, 29 Mar 2024 21:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B684313AA38;
+	Fri, 29 Mar 2024 21:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtFEeVUc"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QM+Pwc2s"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F92E1E897;
-	Fri, 29 Mar 2024 21:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803E81E862;
+	Fri, 29 Mar 2024 21:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711749199; cv=none; b=YcUIPWpHs7mLZnVdaPh2sGq8r5F5xF21yFPDxMZ/gm0YeJrT/TWfFs/Gh9WnFRa71L3nMBK9Nnv6q1uk/kZxQqMajeyclU7BgxRjaaMsw/eReYwfsEd5M1f1xxGZ/6c71chWZmsbAHPSHVYj437pvbvRgRDUvYwenfjdDa7AKfY=
+	t=1711749249; cv=none; b=m9axsYNIiKyt/W6unG2hO3ovZOurbHb+XwAruut0w/AJhzoi3VWIhdDoRqVKd9c+Lrn3aZuXOUKv0Iw6y6p5ILp8BsYfy4nHEDzIKP7rcgyIVyrhq0NMv1gUANlOTi/GT4pPQzKYxrQJ/PUIrMDJffNo9rJp2NC7o+4DL2d5HTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711749199; c=relaxed/simple;
-	bh=ZkGv2aECxPpKjlvqInjY5t6BAWJ1JpiWyKfHeeHLgFY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N4wUMXak4yyRayehjv1ar0r8EyyPLMwBc3uJ0bwl/C4uF0p7B7G/bWOwvNeZYeq6b3W3Vcfr0NdbT29Ffwzm149FPXaVcG2iO3WP/b1G80f4/vw74ISsQwa8epN/zn528A3NyNmNXX0nycQdjpBblQ7EyQAtFDKts98b9c+Xxik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtFEeVUc; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-341e3682c78so1377084f8f.0;
-        Fri, 29 Mar 2024 14:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711749195; x=1712353995; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oSnIkrXKOxIFx664NuP3H7hYth27RezAKOIyptzRih0=;
-        b=DtFEeVUcXHxQSM1acoLPB3xIZ2HSM6vWTSGbB4Vn2PTFo59S2qm9Wdb/PYmKmlkt7q
-         bweDNoN2FkFdd+biODVbvTAWaLZraY63rTLXLI3Uj2YXC5gXRj51NmN6ndvk0CmDMb0e
-         HIob6o5pR32SYbzkWHSn4Jg4Btu/S+g0UAjgMXPRMh1EcOgJV/whXSYiykrw7f/6s77P
-         /H5ZCsxnDWl4kNYCj9mzXKbfqQBAv6Lnt80sLG1vRk3gD9HqNaAkNP/seJmggh7Vb0eo
-         x3i++yNtv1UR3TkN0hCOiKzOfpwFxG/x3+oaCYHUq4IcorpsSpcrx239+6AZFAOrQdbA
-         WyHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711749195; x=1712353995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oSnIkrXKOxIFx664NuP3H7hYth27RezAKOIyptzRih0=;
-        b=oKWLVHtPvz9J+QXVTc54yStjx+NkapzU4nW5NsuqPQ5h82t98mF43eq2fZPnUSPhaT
-         MGdf9ycXYZkO41VrOpN62JqHNhZQR/quC5iGCtAX8SbX3Zql03mdeT6pd9hdt04AMwNI
-         v7s3h6cmiqq3SNt6pWwVBYRqxOm+JPpZT5yDuDLXj7HFAWYEdMSKpeIILWSrLfRqeGmF
-         0Wu0zy7UE5pH6ZQnPhhEBhM4jmoqIk7Jl9U1SyEn4ioN3y3x18oyrKxSulpIT55d/yc8
-         64AGB3PNnhGmaMJktfTQg6iokvhAcecEo9Sr4wvXZuzD5l1KTyylDAgGYGp2D5OwKZyP
-         iGgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUd4xvQHL/oaQCMtCuugnR3C+1mNP+kYnHMed8zOGO5hdRvAX21HlPyuCzWSAKy8Bt5pMwgz3toD1E3Xn4ARVBMo22+kQWtIVLj26ICYQSx1B5RhgBvSbm3JXQKMiyRL5E4gFZ/VAumoFjE2Vcpg7zLq5/DEIrGAbwW
-X-Gm-Message-State: AOJu0YyKhnyWxAp7UfXLi6lEMSL4950T9e1nKDvTnmG9yMcApYpszSgu
-	6nlrYsSq1udaQLoImKyk+HbI3U4g2GsYOT0pZe1ZoHsOJsdjCd5+EVv1QU8gEWIM6DBowMLNfme
-	dpizDXQEt670AhG7mMjM3Cbt2ZFB5CMSUPpA=
-X-Google-Smtp-Source: AGHT+IESQ34cqmbczYM0CtTFQ4n7hfhahLrps7uGUEuczD5xhOvFv09EChC/YJ/FIRR8VtuzAy4gIzrPZKwGa0EMMVQ=
-X-Received: by 2002:a5d:6d49:0:b0:341:e4f4:4399 with SMTP id
- k9-20020a5d6d49000000b00341e4f44399mr1687491wri.68.1711749195364; Fri, 29 Mar
- 2024 14:53:15 -0700 (PDT)
+	s=arc-20240116; t=1711749249; c=relaxed/simple;
+	bh=aBs1Gl5l/nMbTRC+mcVuHiYzyIsEp4vfE2N7N6KGDZ8=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=eKKGP0WXseo7X0nlY2EKjOqhi52xfrMOgLTzxZQugJaQhZTjbu96RGf1SsqKxn+TDByptap40kCxFZCByN1CHX47tfEkv/zVN3UxL/IA+X3PbaHI/nC5sfmC/uRLda/JitdwY6oQNSnOv48xExDghfVxiW9BF4OAEWFZEQp270c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QM+Pwc2s; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TLMNWB003527;
+	Fri, 29 Mar 2024 21:54:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=l+JCdp0zS2nex5
+	0S7DCvLlV/fiJaj7p2bIfcKxqukAk=; b=QM+Pwc2sPkJrFoUBJ8SIhVc60ubcNS
+	vAmc3db1cQAbSzctZaYLt1GVUFU+TECrBMbQ7Af3fHAsfxCO/a0ZD8oLRXpdACmX
+	VR14qaJgXY9R9URGpFVgI1eucxU3a6uroqO7dGmXKO7a2j7JxV7nlFIQrWF9shsu
+	Gj3x0m37HA3xwDE7TP3vcbNJI6gpj9owdcizXm4nLAzvJaVuMXZWHMd0zT3GafIo
+	AyyUsfui4OYtqzFjVFsBbPNcB+PfDvtvg0bkmpgU4dZ4fLp6ExOo00drfSwQX/4h
+	wKlo/CYY8q3b4voKnhVQ+ZnBzrrbnPQgNGHl+9xR7M2bK/6btzFMPl0w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5vn99c38-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 21:54:03 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TLs3Z8002066
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 21:54:03 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 29 Mar
+ 2024 14:54:00 -0700
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+Subject: [PATCH v4 0/5] LLCC: Support for Broadcast_AND region
+Date: Fri, 29 Mar 2024 14:53:39 -0700
+Message-ID: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329094906.18147-1-ubizjak@gmail.com> <20240329094906.18147-3-ubizjak@gmail.com>
-In-Reply-To: <20240329094906.18147-3-ubizjak@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 29 Mar 2024 14:53:03 -0700
-Message-ID: <CAADnVQ+6D++hCXaP=aK+Q5wienMzhHo3h9YCvpA_7sHjMt+q6A@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf 2/2] x86/bpf: Fix IP for relocating call depth accounting
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?Q?Joan_Bruguera_Mic=C3=B3?= <joanbrugueram@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGM4B2YC/x3Nyw6CMBCF4Vchs7ZNuWl15XsYY+p0gEmg1SkYE
+ 8K7W1l+i/OfFRIJU4JLsYLQhxPHkNEcCsDBhZ4U+2yoTNWYujqrcURUT4nOo0uzcsErIjS2trW
+ x/gh5+BLq+LtHb/fsTuKk5kHI7SmMHxJdnoxt29K2Rvc86/fC+Fjy5cg4XP/igBrjBNv2A6eJq
+ XClAAAA
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        Unnathi Chalicheemala
+	<quic_uchalich@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711749240; l=3642;
+ i=quic_uchalich@quicinc.com; s=20240202; h=from:subject:message-id;
+ bh=aBs1Gl5l/nMbTRC+mcVuHiYzyIsEp4vfE2N7N6KGDZ8=;
+ b=HLS9DMMzpzHNS+JPYjVSyto+T/47v/UFtMRXceJ2EKV+rnS2YSe/YsspB6B3V/F2GlVnyFFhr
+ sBbGxZbf90IC9RXlrI/Z1gN0MJYOHWf49drHdW+vzETbO/Um9MPxmlu
+X-Developer-Key: i=quic_uchalich@quicinc.com; a=ed25519;
+ pk=8n+IFmsCDcEIg91sUP/julv9kf7kmyIKT2sR+1yFd4A=
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1vuYOtRN4_b6Pu4u_ZC_meoW2-X6Tvw7
+X-Proofpoint-GUID: 1vuYOtRN4_b6Pu4u_ZC_meoW2-X6Tvw7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ mlxscore=0 clxscore=1011 adultscore=0 priorityscore=1501 mlxlogscore=750
+ phishscore=0 impostorscore=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403290194
 
-On Fri, Mar 29, 2024 at 2:49=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
->
-> From: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
->
-> The recently introduced support for %rip-relative relocations in the
-> call thunk template assumes that the code is being patched in-place,
-> so the destination of the relocation matches the address of the code.
-> This is not true for the call depth accounting emitted by the BPF JIT,
-> so the calculated address is wrong and usually causes a page fault.
+This series adds:
+1. Device tree register mapping for Broadcast_AND region in SM8450,
+SM8550, SM8650.
+2. LLCC driver updates to reflect addition of Broadcast_AND regmap.
 
-Could you share the link to what this 'rip-relative' relocation is ?
+To support CSR programming, a broadcast interface is used to program all
+channels in a single command. Until SM8450 there was only one broadcast
+region (Broadcast_OR) used to broadcast write and check for status bit
+0. From SM8450 onwards another broadcast region (Broadcast_AND) has been
+added which checks for status bit 1.
 
-> Pass the destination IP when the BPF JIT emits call depth accounting.
->
-> Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in=
- call thunk template")
+This series updates the device trees from SM8450 onwards to have a
+mapping to this Broadcast_AND region. It also updates the llcc_drv_data
+structure with a regmap for Broadcast_AND region and corrects the
+broadcast region used to check for status bit 1.
 
-Ohh. It's buried inside that patch.
-Pls make commit log a bit more clear that that commit 17bce3b2ae2d
-broke x86_call_depth_emit_accounting logic.
+Changes in v4:
+- Updated Devicetree patches' commit messages to make problem statement
+clearer
+- Resolved Konrad's comments on driver code patch
+- Updated v3 changelog to include dropped R-b tag
 
-> Signed-off-by: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
-> Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
-> Acked-by: Ingo Molnar <mingo@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  arch/x86/include/asm/alternative.h |  4 ++--
->  arch/x86/kernel/callthunks.c       |  4 ++--
->  arch/x86/net/bpf_jit_comp.c        | 19 ++++++++-----------
->  3 files changed, 12 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/al=
-ternative.h
-> index fcd20c6dc7f9..67b68d0d17d1 100644
-> --- a/arch/x86/include/asm/alternative.h
-> +++ b/arch/x86/include/asm/alternative.h
-> @@ -117,7 +117,7 @@ extern void callthunks_patch_builtin_calls(void);
->  extern void callthunks_patch_module_calls(struct callthunk_sites *sites,
->                                           struct module *mod);
->  extern void *callthunks_translate_call_dest(void *dest);
-> -extern int x86_call_depth_emit_accounting(u8 **pprog, void *func);
-> +extern int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *=
-ip);
->  #else
->  static __always_inline void callthunks_patch_builtin_calls(void) {}
->  static __always_inline void
-> @@ -128,7 +128,7 @@ static __always_inline void *callthunks_translate_cal=
-l_dest(void *dest)
->         return dest;
->  }
->  static __always_inline int x86_call_depth_emit_accounting(u8 **pprog,
-> -                                                         void *func)
-> +                                                         void *func, voi=
-d *ip)
->  {
->         return 0;
->  }
-> diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-> index 30335182b6b0..e92ff0c11db8 100644
-> --- a/arch/x86/kernel/callthunks.c
-> +++ b/arch/x86/kernel/callthunks.c
-> @@ -314,7 +314,7 @@ static bool is_callthunk(void *addr)
->         return !bcmp(pad, insn_buff, tmpl_size);
->  }
->
-> -int x86_call_depth_emit_accounting(u8 **pprog, void *func)
-> +int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip)
->  {
->         unsigned int tmpl_size =3D SKL_TMPL_SIZE;
->         u8 insn_buff[MAX_PATCH_LEN];
-> @@ -327,7 +327,7 @@ int x86_call_depth_emit_accounting(u8 **pprog, void *=
-func)
->                 return 0;
->
->         memcpy(insn_buff, skl_call_thunk_template, tmpl_size);
-> -       apply_relocation(insn_buff, tmpl_size, *pprog,
-> +       apply_relocation(insn_buff, tmpl_size, ip,
+Changes in v3:
+- Removed new example in dt-bindings patch and ran 'make
+DT_CHECKER_FLAGS=-m dt_binding_check'
+- Dropped Krzysztof's R-b tag on dt-bindings patch
+- Use of ternary operator in llcc_update_act_ctrl()
+- Add comment before initialization of Broadcast_AND regmap in probe
+function
+- Move DeviceTree patches to the end
 
-Did the logic inside apply_relocation() change to have
-a new meaning for 'dest' and 'src'?
-Answering to myself... yes. in that commit.
-Better commit log would have made the code review so much easier.
+Changes in v2:
+- Added an additional check in the case old DT files are used for
+above mentioned chipsets for backwards compatibility
+- Moved addition of if check in llcc_update_act_ctrl() to a separate
+"Fixes" patch; not part of this series
 
->                          skl_call_thunk_template, tmpl_size);
->
->         memcpy(*pprog, insn_buff, tmpl_size);
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 09f7dc9d4d65..f2e8769f5eee 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -481,7 +481,7 @@ static int emit_rsb_call(u8 **pprog, void *func, void=
- *ip)
->  {
->         void *adjusted_ip;
->         OPTIMIZER_HIDE_VAR(func);
-> -       adjusted_ip =3D ip + x86_call_depth_emit_accounting(pprog, func);
-> +       adjusted_ip =3D ip + x86_call_depth_emit_accounting(pprog, func, =
-ip);
+Link to v3: https://lore.kernel.org/all/cover.1708551850.git.quic_uchalich@quicinc.com/
+Link to v2: https://lore.kernel.org/all/cover.1707202761.git.quic_uchalich@quicinc.com/
+Link to v1: https://lore.kernel.org/all/cover.1706296015.git.quic_uchalich@quicinc.com/
 
-Now I see why you added extra var in the previous patch.
-Should have mentioned it in the commit log.
+Unnathi Chalicheemala (5):
+  dt-bindings: arm: msm: Add llcc Broadcast_AND register
+  soc: qcom: llcc: Add regmap for Broadcast_AND region
+  arm64: dts: qcom: sm8450: Add mapping to llcc Broadcast_AND region
+  arm64: dts: qcom: sm8550: Add mapping to llcc Broadcast_AND region
+  arm64: dts: qcom: sm8650: Add mapping to llcc Broadcast_AND region
 
->         return emit_patch(pprog, func, adjusted_ip, 0xE8);
->  }
->
-> @@ -1973,20 +1973,17 @@ st:                     if (is_imm8(insn->off))
->
->                         /* call */
->                 case BPF_JMP | BPF_CALL: {
-> -                       int offs;
-> +                       u8 *ip =3D image + addrs[i - 1];
->
->                         func =3D (u8 *) __bpf_call_base + imm32;
->                         if (tail_call_reachable) {
->                                 RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stac=
-k_depth);
-> -                               if (!imm32)
-> -                                       return -EINVAL;
-> -                               offs =3D 7 + x86_call_depth_emit_accounti=
-ng(&prog, func);
-> -                       } else {
-> -                               if (!imm32)
-> -                                       return -EINVAL;
-> -                               offs =3D x86_call_depth_emit_accounting(&=
-prog, func);
-> +                               ip +=3D 7;
->                         }
-> -                       if (emit_call(&prog, func, image + addrs[i - 1] +=
- offs))
-> +                       if (!imm32)
-> +                               return -EINVAL;
-> +                       ip +=3D x86_call_depth_emit_accounting(&prog, fun=
-c, ip);
-> +                       if (emit_call(&prog, func, ip))
->                                 return -EINVAL;
->                         break;
->                 }
-> @@ -2836,7 +2833,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *rw_im
->                  * Direct-call fentry stub, as such it needs accounting f=
-or the
->                  * __fentry__ call.
->                  */
-> -               x86_call_depth_emit_accounting(&prog, NULL);
-> +               x86_call_depth_emit_accounting(&prog, NULL, image);
+ .../devicetree/bindings/cache/qcom,llcc.yaml  | 27 ++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sm8450.dtsi          |  5 ++--
+ arch/arm64/boot/dts/qcom/sm8550.dtsi          |  6 +++--
+ arch/arm64/boot/dts/qcom/sm8650.dtsi          |  6 +++--
+ drivers/soc/qcom/llcc-qcom.c                  | 15 ++++++++++-
+ include/linux/soc/qcom/llcc-qcom.h            |  4 ++-
+ 6 files changed, 54 insertions(+), 9 deletions(-)
 
-Overall it all makes sense.
-Pls respin with more precise commit logs.
+--
+2.25.1
+
+---
+Unnathi Chalicheemala (5):
+      dt-bindings: arm: msm: Add llcc Broadcast_AND register
+      soc: qcom: llcc: Add regmap for Broadcast_AND region
+      arm64: dts: qcom: sm8450: Add mapping to llcc Broadcast_AND region
+      arm64: dts: qcom: sm8550: Add Broadcast_AND register in LLCC block
+      arm64: dts: qcom: sm8650: Add Broadcast_AND register in LLCC block
+
+ .../devicetree/bindings/cache/qcom,llcc.yaml       | 27 +++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               |  5 ++--
+ arch/arm64/boot/dts/qcom/sm8550.dtsi               |  6 +++--
+ arch/arm64/boot/dts/qcom/sm8650.dtsi               |  6 +++--
+ drivers/soc/qcom/llcc-qcom.c                       | 14 ++++++++++-
+ include/linux/soc/qcom/llcc-qcom.h                 |  4 +++-
+ 6 files changed, 53 insertions(+), 9 deletions(-)
+---
+base-commit: 4535e1a4174c4111d92c5a9a21e542d232e0fcaa
+change-id: 20240329-llcc-broadcast-and-eec0838308d6
+
+Best regards,
+-- 
+Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+
 
