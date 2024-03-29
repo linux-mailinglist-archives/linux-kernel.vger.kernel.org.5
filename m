@@ -1,63 +1,55 @@
-Return-Path: <linux-kernel+bounces-124583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E928891A3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:56:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B005C891A3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D34DEB23D57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:56:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AB292857C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4B7156C7D;
-	Fri, 29 Mar 2024 12:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F81156F35;
+	Fri, 29 Mar 2024 12:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BBr4qt8a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lVEZsVTU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE52C156C5E;
-	Fri, 29 Mar 2024 12:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018A1156C7F;
+	Fri, 29 Mar 2024 12:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715468; cv=none; b=IEZjPlFoWzTvdmUprp3dOsHd1D9UnmaWrTIIpvCmH8X3tbaS5s1H1/Jipyars2Bl9YglQBFRsPW7hFE5iK3x3gmA5j3x2yfmX7W++Z7/NdOEXgoxEMoCohEXCVZdBLHhODmfUmVFmMtScWSACHve1bMnkThsp1akt9p7WU8ziRY=
+	t=1711715469; cv=none; b=uVOqcVQkbs8cFzMSD3sKJAPdojsDfNuHkp6/BMF8WoOrshYyrzH75OkSDQh/CdpscrP1vUNu2mAOxw9ye0GyzBunn5s6lHZz0FY6x5ATXaGRSu3g7ivBiWn5Pq7HD3TODJt+E7PbKw5by/YFY5s8wvMS9xBDfN1BvyY3nD8RYfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715468; c=relaxed/simple;
-	bh=XooxLjpXXfGU922eAkYTNAx+aBe681fCNba+85D9r94=;
+	s=arc-20240116; t=1711715469; c=relaxed/simple;
+	bh=tPEViQjo1qr7FojiB4E3SuTTfzc9SXQ7WNdOd9cbvoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H9vtSCJ0ESb1duAeRI4h6cpyDSZEoGm39qy/zyuYYa1g2C0sTSCSlPvDMLSI6p5dz8nYtf0ocFi9EbrK31Gwez/iQGlk2UbROYZJoYnPJ8/w5TttpfLesByjBfaoMxUyKTs69yPOM+2CxQqwcNaGzVj76UUBR4e865PHrq+HAL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BBr4qt8a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CBEAC433F1;
-	Fri, 29 Mar 2024 12:31:05 +0000 (UTC)
+	 MIME-Version; b=LqdEHEr/lPNHJCfN+g2jeY740L8qf3TMAiBv8ao4TYkSHpEYI0yrM5eF06/wedEmiYBA+0AW8xgjC4f04OBelQ4O+m+B24Y/lT9TyvPcenaDUuD3QMXXYaiVPyz8W+f42BmIPHXA8dW95r4nPev7BQvzgWgLQcX1Q8O+LjkzCsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lVEZsVTU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D778DC43399;
+	Fri, 29 Mar 2024 12:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715467;
-	bh=XooxLjpXXfGU922eAkYTNAx+aBe681fCNba+85D9r94=;
+	s=k20201202; t=1711715468;
+	bh=tPEViQjo1qr7FojiB4E3SuTTfzc9SXQ7WNdOd9cbvoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BBr4qt8aMTJrW17WZfecMJKN+rANAMvR2VmxD3l2Z2DQ3I2Z9VuYFx5sA6KuPi+S2
-	 erOPJUzzgLyo2afvJGVUCsQwZ7YUolT5NOvVjSKLlZYOdknyuqZ+xFPlItG2f5rqkP
-	 8bosAl8NRBR9OosR9/hB1Eu2fD8/FW72SDnSuMxEGkHq6dc4AFFpKrONSeOoYgq4fJ
-	 967WpLrOTaoKVN9EYfOrt/a9jZijUpq1epGecJWtkwjEdEHwgdXaW5HXWKsShnhm5D
-	 +RSaC20BtXwk1hKaJlAG9ujN67UNUpFmSwREOa5vJ7FiY1DJQ9OTsAq226LgEGr+SJ
-	 hMq4pmn6l1c/Q==
+	b=lVEZsVTUP/RPIkAR5NE+qQUHbnJTNECn69qJbe6dFxitCyvpt/cjNJ5dCIlyuqmHf
+	 nWknBUO/+kMuTXgBi4OG5G6aPLbSw0IchikK2aO7p33FVmmTz49b214jzPF0MXoR7C
+	 6TxzQUTmD2DsarqIkWSg/I+ikiniWBlho3kqRe9e+Wl3Mhc1cKlbBJmZ3PQ6qb+CHk
+	 hBNg/LkNMT0ckRl2+oHBgfE26YSPVBxUDH7Yj1gmiRvRCAIbNpL975dDfeuNgGrvy4
+	 +Fa5rP2dq6QH6gKb3Qd38bxDqsnhSasovVEMj/6R3NUWcK+0nMLksqq8UEI6zEgCm6
+	 I20xOzWaVR//Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Kees Cook <keescook@chromium.org>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	robert.moore@intel.com,
-	raag.jadav@intel.com,
-	mika.westerberg@linux.intel.com,
-	mail@mariushoch.de,
-	michal.wilczynski@intel.com,
-	mario.limonciello@amd.com,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 32/52] ACPI: x86: Move acpi_quirk_skip_serdev_enumeration() out of CONFIG_X86_ANDROID_TABLETS
-Date: Fri, 29 Mar 2024 08:29:02 -0400
-Message-ID: <20240329122956.3083859-32-sashal@kernel.org>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 33/52] pstore/zone: Add a null pointer check to the psz_kmsg_read
+Date: Fri, 29 Mar 2024 08:29:03 -0400
+Message-ID: <20240329122956.3083859-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -72,126 +64,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 7c86e17455de1a442ec906d3449148b5e9a218a4 ]
+[ Upstream commit 98bc7e26e14fbb26a6abf97603d59532475e97f8 ]
 
-Some recent(ish) Dell AIO devices have a backlight controller board
-connected to an UART.
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-This UART has a DELL0501 HID with CID set to PNP0501 so that the UART is
-still handled by 8250_pnp.c. Unfortunately there is no separate ACPI device
-with an UartSerialBusV2() resource to model the backlight-controller.
-
-The next patch in this series will use acpi_quirk_skip_serdev_enumeration()
-to still create a serdev for this for a backlight driver to bind to
-instead of creating a /dev/ttyS0.
-
-This new acpi_quirk_skip_serdev_enumeration() use is not limited to Android
-X86 tablets, so move it out of the ifdef CONFIG_X86_ANDROID_TABLETS block.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Link: https://lore.kernel.org/r/20240118100206.213928-1-chentao@kylinos.cn
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/x86/utils.c | 18 ++++++++++++++----
- include/acpi/acpi_bus.h  | 14 +++++++-------
- 2 files changed, 21 insertions(+), 11 deletions(-)
+ fs/pstore/zone.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
-index 63d834dd38112..c708524576df4 100644
---- a/drivers/acpi/x86/utils.c
-+++ b/drivers/acpi/x86/utils.c
-@@ -429,7 +429,7 @@ bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev)
- }
- EXPORT_SYMBOL_GPL(acpi_quirk_skip_i2c_client_enumeration);
- 
--int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(controller_parent);
- 	const struct dmi_system_id *dmi_id;
-@@ -437,8 +437,6 @@ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *s
- 	u64 uid;
- 	int ret;
- 
--	*skip = false;
--
- 	ret = acpi_dev_uid_to_integer(adev, &uid);
- 	if (ret)
- 		return 0;
-@@ -464,7 +462,6 @@ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *s
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
- 
- bool acpi_quirk_skip_gpio_event_handlers(void)
- {
-@@ -479,8 +476,21 @@ bool acpi_quirk_skip_gpio_event_handlers(void)
- 	return (quirks & ACPI_QUIRK_SKIP_GPIO_EVENT_HANDLERS);
- }
- EXPORT_SYMBOL_GPL(acpi_quirk_skip_gpio_event_handlers);
-+#else
-+static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+{
-+	return 0;
-+}
- #endif
- 
-+int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+{
-+	*skip = false;
-+
-+	return acpi_dmi_skip_serdev_enumeration(controller_parent, skip);
-+}
-+EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
-+
- /* Lists of PMIC ACPI HIDs with an (often better) native charger driver */
- static const struct {
- 	const char *hid;
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 0b7eab0ef7d7f..d9c20ae23b632 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -652,6 +652,7 @@ bool acpi_device_override_status(struct acpi_device *adev, unsigned long long *s
- bool acpi_quirk_skip_acpi_ac_and_battery(void);
- int acpi_install_cmos_rtc_space_handler(acpi_handle handle);
- void acpi_remove_cmos_rtc_space_handler(acpi_handle handle);
-+int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
- #else
- static inline bool acpi_device_override_status(struct acpi_device *adev,
- 					       unsigned long long *status)
-@@ -669,23 +670,22 @@ static inline int acpi_install_cmos_rtc_space_handler(acpi_handle handle)
- static inline void acpi_remove_cmos_rtc_space_handler(acpi_handle handle)
- {
- }
-+static inline int
-+acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+{
-+	*skip = false;
-+	return 0;
-+}
- #endif
- 
- #if IS_ENABLED(CONFIG_X86_ANDROID_TABLETS)
- bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev);
--int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
- bool acpi_quirk_skip_gpio_event_handlers(void);
- #else
- static inline bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev)
- {
- 	return false;
- }
--static inline int
--acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
--{
--	*skip = false;
--	return 0;
--}
- static inline bool acpi_quirk_skip_gpio_event_handlers(void)
- {
- 	return false;
+diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+index 2770746bb7aa1..abca117725c81 100644
+--- a/fs/pstore/zone.c
++++ b/fs/pstore/zone.c
+@@ -973,6 +973,8 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
+ 		char *buf = kasprintf(GFP_KERNEL, "%s: Total %d times\n",
+ 				      kmsg_dump_reason_str(record->reason),
+ 				      record->count);
++		if (!buf)
++			return -ENOMEM;
+ 		hlen = strlen(buf);
+ 		record->buf = krealloc(buf, hlen + size, GFP_KERNEL);
+ 		if (!record->buf) {
 -- 
 2.43.0
 
