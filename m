@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-124953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1EA3891E2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:35:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB59891E33
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AE8E28763D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:35:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99131F2E750
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDE118646;
-	Fri, 29 Mar 2024 12:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087C81A9714;
+	Fri, 29 Mar 2024 12:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H/K8zeYF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4JLQLSd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F1D16C87A;
-	Fri, 29 Mar 2024 12:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443451A972E;
+	Fri, 29 Mar 2024 12:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716501; cv=none; b=n9L7SelBlDyUoAY2q2vfoebr7SNyzExW3bc2WR/kX2ZEZBnPdWy4eSQOOVzHdgkbBAPY1q5nULPLdCqKYNrB3toCMrNifAxP8sJFcEHWGFH6nFjaBvvqRtxhCMZHllHbl+Cpb/YyWpHohg18+GMiTHSUR4lOEKd8CDAV39DPTIc=
+	t=1711716504; cv=none; b=qup/0UCcbmdyK4thNarv4CTLMYAm4QIiu+usmkDt6+G75eKQT4EQRaUqKIYE389jFI9LRdqSnuXKUEhTHKuJL0Bv3XYZZt3kP8PPVEE/3RBl4p2wmlFzR7P33mC52wkH408mkhG9cO2UPggzPUGEi8nSNJy+rmmVYhi9vU6QIb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716501; c=relaxed/simple;
-	bh=atLbCrAFF/AvlcWQ0EJKEUSz3x7UDvnUlEl5LvVKMzI=;
+	s=arc-20240116; t=1711716504; c=relaxed/simple;
+	bh=QxAspnF+Q/762ofMmENnwvPkf4tzEDzjKXMF/otpWVs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=odiGr9WowVavccBWXpj8+W1Ta/Lu66VWwjjOX3/fp9XsxyLnuZaOKDLfaZTl520bZTI3JoRSJTO+cJt2/r5uA9aDfduQRxGvyZiU3LLqkF3Rw7YwOD/7ZXaL9hyT7cyO7cE8U0LNC0NKFEE44X+LSVBKF9kw5NP4voh2brR1PAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H/K8zeYF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53FF0C433A6;
-	Fri, 29 Mar 2024 12:48:20 +0000 (UTC)
+	 MIME-Version; b=CBRICLj5ZWqDYMUwwNMw5jkE1Y39ce70BMwkA2Pb+2EqXzU55sQOVt37wzbEwRLCjdIaONIMZzbBxtR5o+vXFlpuTLc0bZLsIV1U4S07DEHWaniyNLP/DRx/yCecWZlG4d9TOcSnAAjD2+46W/H4CcH+6wUcgW4sqs6vNtZXx7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4JLQLSd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F73C433C7;
+	Fri, 29 Mar 2024 12:48:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716501;
-	bh=atLbCrAFF/AvlcWQ0EJKEUSz3x7UDvnUlEl5LvVKMzI=;
+	s=k20201202; t=1711716504;
+	bh=QxAspnF+Q/762ofMmENnwvPkf4tzEDzjKXMF/otpWVs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H/K8zeYF8/87DWCtPI7vLQElY0LhGeHfQkHlnr/4A5PBFqc+7g0Oe1OyQgEFDzqHu
-	 hoxUq28SU0nDcgqpBzCRwNgD2PS7esZnmQZKFGitPug566oGjiCbNIfJXQc22lu3uL
-	 9GjXxhpbRXRMyZBhmPwQ/TX/rkkzRtLYl5eLWYUQvHDVLCagK2amYaNp6zDrnuZ5Oe
-	 gCGbiTsSEBUBAL2P0d7m7mCRSq9c2zfA7mszcqJOJFTy+t14SyPHNEqLkdhX8MR5GV
-	 0is2za82/h8LtgWnon0EPmG3b3cJwdfkE2OhZOIbcLh4E9Eg7TxsgVzBIo3n7/L9nX
-	 Pyc1O2Wv/KXJw==
+	b=i4JLQLSdIAQlr+Lyk8qNXyKwcQVQ5GuGFnBwYDJvHqdCT/eGQFqcTLkcFQrM9LlSk
+	 HbIh9tM1PRxZj6UhjpoGm5Hm5rklAQ2opCo8TwAey+4/IHyXqxWR2Wc8/VHa/+Er1H
+	 I2c701Vf2WUxxjY7OoJkW3jyzszYybJJytRtOdqxQHi4ZJRwpnzVTbAaQPxnNXInRg
+	 fpn/4AceeHYfrQRR4zHGtA6f4wJ0PSk2Ad1UxQ5tv2EICC+W6IBum6qRcxWnhmSJ9E
+	 6apKusDXYEIbY0h6SmOdfNU3HBYA7S2qMeo5GwOnXQk5cAgdkb0y3xVmqvaX3G4fm8
+	 RPKp6SlMIq0bQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kunwu Chan <chentao@kylinos.cn>,
-	Kees Cook <keescook@chromium.org>,
+Cc: Dai Ngo <dai.ngo@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 17/34] pstore/zone: Add a null pointer check to the psz_kmsg_read
-Date: Fri, 29 Mar 2024 08:47:18 -0400
-Message-ID: <20240329124750.3092394-17-sashal@kernel.org>
+	anna@kernel.org,
+	chuck.lever@oracle.com,
+	linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 19/34] SUNRPC: increase size of rpc_wait_queue.qlen from unsigned short to unsigned int
+Date: Fri, 29 Mar 2024 08:47:20 -0400
+Message-ID: <20240329124750.3092394-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
 References: <20240329124750.3092394-1-sashal@kernel.org>
@@ -64,35 +67,84 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <chentao@kylinos.cn>
+From: Dai Ngo <dai.ngo@oracle.com>
 
-[ Upstream commit 98bc7e26e14fbb26a6abf97603d59532475e97f8 ]
+[ Upstream commit 2c35f43b5a4b9cdfaa6fdd946f5a212615dac8eb ]
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+When the NFS client is under extreme load the rpc_wait_queue.qlen counter
+can be overflowed. Here is an instant of the backlog queue overflow in a
+real world environment shown by drgn helper:
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Link: https://lore.kernel.org/r/20240118100206.213928-1-chentao@kylinos.cn
-Signed-off-by: Kees Cook <keescook@chromium.org>
+rpc_task_stats(rpc_clnt):
+-------------------------
+rpc_clnt: 0xffff92b65d2bae00
+rpc_xprt: 0xffff9275db64f000
+  Queue:  sending[64887] pending[524] backlog[30441] binding[0]
+XMIT task: 0xffff925c6b1d8e98
+     WRITE: 750654
+        __dta_call_status_580: 65463
+        __dta_call_transmit_status_579: 1
+        call_reserveresult: 685189
+        nfs_client_init_is_complete: 1
+    COMMIT: 584
+        call_reserveresult: 573
+        __dta_call_status_580: 11
+    ACCESS: 1
+        __dta_call_status_580: 1
+   GETATTR: 10
+        __dta_call_status_580: 4
+        call_reserveresult: 6
+751249 tasks for server 111.222.333.444
+Total tasks: 751249
+
+count_rpc_wait_queues(xprt):
+----------------------------
+**** rpc_xprt: 0xffff9275db64f000 num_reqs: 65511
+wait_queue: xprt_binding[0] cnt: 0
+wait_queue: xprt_binding[1] cnt: 0
+wait_queue: xprt_binding[2] cnt: 0
+wait_queue: xprt_binding[3] cnt: 0
+rpc_wait_queue[xprt_binding].qlen: 0 maxpriority: 0
+wait_queue: xprt_sending[0] cnt: 0
+wait_queue: xprt_sending[1] cnt: 64887
+wait_queue: xprt_sending[2] cnt: 0
+wait_queue: xprt_sending[3] cnt: 0
+rpc_wait_queue[xprt_sending].qlen: 64887 maxpriority: 3
+wait_queue: xprt_pending[0] cnt: 524
+wait_queue: xprt_pending[1] cnt: 0
+wait_queue: xprt_pending[2] cnt: 0
+wait_queue: xprt_pending[3] cnt: 0
+rpc_wait_queue[xprt_pending].qlen: 524 maxpriority: 0
+wait_queue: xprt_backlog[0] cnt: 0
+wait_queue: xprt_backlog[1] cnt: 685801
+wait_queue: xprt_backlog[2] cnt: 0
+wait_queue: xprt_backlog[3] cnt: 0
+rpc_wait_queue[xprt_backlog].qlen: 30441 maxpriority: 3 [task cnt mismatch]
+
+There is no effect on operations when this overflow occurs. However
+it causes confusion when trying to diagnose the performance problem.
+
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/pstore/zone.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/sunrpc/sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
-index 5d3f944f60185..295040c249d91 100644
---- a/fs/pstore/zone.c
-+++ b/fs/pstore/zone.c
-@@ -973,6 +973,8 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
- 		char *buf = kasprintf(GFP_KERNEL, "%s: Total %d times\n",
- 				      kmsg_dump_reason_str(record->reason),
- 				      record->count);
-+		if (!buf)
-+			return -ENOMEM;
- 		hlen = strlen(buf);
- 		record->buf = krealloc(buf, hlen + size, GFP_KERNEL);
- 		if (!record->buf) {
+diff --git a/include/linux/sunrpc/sched.h b/include/linux/sunrpc/sched.h
+index ba047a145e092..f5fe330e4f4da 100644
+--- a/include/linux/sunrpc/sched.h
++++ b/include/linux/sunrpc/sched.h
+@@ -199,7 +199,7 @@ struct rpc_wait_queue {
+ 	unsigned char		maxpriority;		/* maximum priority (0 if queue is not a priority queue) */
+ 	unsigned char		priority;		/* current priority */
+ 	unsigned char		nr;			/* # tasks remaining for cookie */
+-	unsigned short		qlen;			/* total # tasks waiting in queue */
++	unsigned int		qlen;			/* total # tasks waiting in queue */
+ 	struct rpc_timer	timer_list;
+ #if IS_ENABLED(CONFIG_SUNRPC_DEBUG) || IS_ENABLED(CONFIG_TRACEPOINTS)
+ 	const char *		name;
 -- 
 2.43.0
 
