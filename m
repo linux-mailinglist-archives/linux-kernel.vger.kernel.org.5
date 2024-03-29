@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-123875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96F3890F21
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:21:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18D3890F25
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40A9BB22059
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:21:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 233221F21250
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686588F5C;
-	Fri, 29 Mar 2024 00:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06B86FC3;
+	Fri, 29 Mar 2024 00:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DgnHmVUc"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2051.outbound.protection.outlook.com [40.107.101.51])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="P6u1Ne8X"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2050.outbound.protection.outlook.com [40.107.92.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E158F4A;
-	Fri, 29 Mar 2024 00:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD6911CA0;
+	Fri, 29 Mar 2024 00:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711671704; cv=fail; b=Sm5xMEP2EEbAkj3KYAeQmLElESOT8rIBH1AvowKgsLkG6CDnpmkxPNabHvCQ3LkpwsKitEXtheRegqOuewgUZu3Xw4SBFi/cnIPwmX18fSOWOBLKZtJHR9EotcGSU8VY2EQrHbm0bC+NEGKBZafSFb9QmZXFkVz0dxt3Op+aXGE=
+	t=1711671716; cv=fail; b=gOHRKNfiMMXoYAtFXMvhvR/adFIFxCR2I15GGR1jnTC4t5M3ZKwsabAvto2Osc80jd1cS8i+Y9gCG01tjH0Jed+mZww9+ykTP9llT8v9iAu7A1apjh3fK2dRTnqVpwm22feTSYFFBGbx8Gks87Eo3+1HDnSIKuGXM0QRcHV66qI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711671704; c=relaxed/simple;
-	bh=JNhYmKBUnMoBrfohVEozKaFOpmhMZ1PUZVhcCQUQBmo=;
+	s=arc-20240116; t=1711671716; c=relaxed/simple;
+	bh=Gua7hd0PKOqtmndmLeAr4YM/Zql2Sbh/dUvUNuhpz8w=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CsQpG3Jb5XKi1qeBICLkeBv4Ej5719ysyhh/QOpSGj8MQpL37YHUk+POf2eLsF5wQ3RfL9Y9CVSzvYSHd8sZDByoc71cWkC0qoOjI7J3ySGFFNoUKR/l9HWhiO1ed0PSvqDp0551kw1JxiL6I6qLd4oHPzWrkBG2jq/laXs9wQE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DgnHmVUc; arc=fail smtp.client-ip=40.107.101.51
+	 MIME-Version:Content-Type; b=P4RK00Iv399x/p6HXh1XgPWGSKkxIpFA/agM3D85LfNpqQy8ZJqwvFRrGq0PpQM6hFE84g9ll7pdol1QH3UNwWiMqG6eo5PpEU2j91mnt6aixL8Gg4Hgk8qaEXxiCLXfiun1DTPPV3PrvgVEh/TL3DBf/bZ2oWZqZEGLLvURiLA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=P6u1Ne8X; arc=fail smtp.client-ip=40.107.92.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oIpYTULv0ePnCSOZ/xpyyY0vUEHqCzNU7qd+6In/DIoNK4d7hemme/iEPytT38VbmXDJSmC2AbA0dh/wZZT2ISjl0Twq9WJ8uxcngWLKqFh8tzzHfmCSJ9nDkJjAtGFAqM9VVN30+1LQkFdJa9nh8DDQ8DcHC/gidG85IzI8cHuMyyS/pXqHgkY5uPqxNMJYgFEJgUO1tiXKogo09zYWiw1ISbhHlgZqQ4OypILzlv6io99uTWh3v/GWzxM+0+/KxO1Ab2K/+CH7soZgkR8symCEbElOQJ3aX3sq2heKQ1mYwY1te1/8CfHsxIiutPeuLlohWMDAxV1T3w9oPZgb0w==
+ b=nvCG/KH8Db7HDhTguATCEoNnLWt/TGVAT+YG5R3mz0rOR40Qg/u2Jd/fA6n9MGhJycXQo/Eh0qZ37OyIDwsBbV0RVoCzjfw0aVmWDOSUH2As7fHiNt/6iBZ3017w3Ob659+Hh92fGZ2O4ZDJGmxGaKRN7EuU8WvASFWGI8jIto0zdpAklkXdYu8gaqVssqFwDixqn/T0cRJD18fELgvNHbFzlJ1FDEY6aG0vtF/m5FEP0M+MgkuNd8hw88vn/Aoz98z0NlN4IuiSiwa3oqbwf/L5S0TvFuXwWOQgvfGWCkl8JHM3L54Q7dFHjQZhdeCJ9veHYuR0f9o+/p1ik/Zp/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hM3RVu/Yq+xz+WubqeZNExCSlS0NGkq4s08Xy+zSjsA=;
- b=hBYzYNj0BlPFJxrqeYyLhah3KNjBR2fzfG9EaUvENjI/hTa3sBuMpcPrTnkQXreUOD+YY6ORvZoxS/viNZGDTNfVpihIJF5ouFLNwtQI6I66K+wI8UBlYwhRbslwRoyZMqVaxvyVwnOizdWX72EzRNeQtvgd8FzJMlhOwceBHiy5dDjL2O2fSek3ElZBDO0WVriiHBMNUwZ1dIBwc2D9bDydQvCtfEprvlJLcrTT4NsfcXeqawcbqhK+qsY7ND7v7ojm6rskfVam988Gp2IMF/41IvFAY6BrmSudIo6j7M2eQXQygD8LwJ3KwH0Qf7PiVdoSPJfAK5E8A9dVFGiJDQ==
+ bh=8i/4pchHJNfrh5ln2ekkaxw5d7lPbqrkW/4irDCvtxg=;
+ b=ViPjBkYhedRIkBokTz6JurQE9P8zm8xtmrM15zKiIoexIxWoXAV1oHRcVd5svjM6rfwneXaHO/ufmMccr9ns1hkMVfbwzvVZ61HOIWdmmHUvqPuqWFeOZ/KTlPgkTIEnaEYXwJrJjJybFd+XpIvkDuscI7Hxt2KM/UiFJ88B07xUQyYLPHGPsGmXOPKNPMEglBiE3X9D4bgfmsaOThyXqG4jJW0wRfiAUHaromh15XLLVdFwQE4LRyZRkNkDu0GGQSwGKe/YLSTOsdeanDEweuKn8lyZe6lioO/oNOdXZCacHqGmPQa/HmAZjQon56eV92yWlN/4NkBFCV8ykKacpw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hM3RVu/Yq+xz+WubqeZNExCSlS0NGkq4s08Xy+zSjsA=;
- b=DgnHmVUc9gmuTNe/5ukPTB3VYBoHJMWsMdH8PvagseCBvXwbt/PzR8tQsky7s69su42KrG7orbKH+NRjLiuiIIH1BnPr+wT4wWEqR6pbvI3ulGDEIUVmAYG3qNPpPuP4th/wPvQg6htsPpbqv9BsmjzA8fEoBg+q2J5mPZEvZ2c=
-Received: from CY5PR15CA0080.namprd15.prod.outlook.com (2603:10b6:930:18::32)
- by IA1PR12MB6332.namprd12.prod.outlook.com (2603:10b6:208:3e2::13) with
+ bh=8i/4pchHJNfrh5ln2ekkaxw5d7lPbqrkW/4irDCvtxg=;
+ b=P6u1Ne8Xo9YxLDurPeiTXPLvkt0x6wrhjWwZjta9eTOh6I4yBRRhyg7nYxEcJFlpeUqzSEWKY/NRVj+A7qoFrriY1iRTbMRJjNQFt/ve6GubYQDDUfDshPY5JpGfruMR0TeTNTxIXY4z+H+zBGWwWjwHtIKIKguX6ZeJc2tt5zM=
+Received: from DS7PR03CA0287.namprd03.prod.outlook.com (2603:10b6:5:3ad::22)
+ by SA1PR12MB9246.namprd12.prod.outlook.com (2603:10b6:806:3ac::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40; Fri, 29 Mar
- 2024 00:21:39 +0000
-Received: from CY4PEPF0000FCBE.namprd03.prod.outlook.com
- (2603:10b6:930:18:cafe::4d) by CY5PR15CA0080.outlook.office365.com
- (2603:10b6:930:18::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.38; Fri, 29 Mar
+ 2024 00:21:50 +0000
+Received: from CY4PEPF0000FCBF.namprd03.prod.outlook.com
+ (2603:10b6:5:3ad:cafe::2d) by DS7PR03CA0287.outlook.office365.com
+ (2603:10b6:5:3ad::22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.38 via Frontend
- Transport; Fri, 29 Mar 2024 00:21:38 +0000
+ Transport; Fri, 29 Mar 2024 00:21:49 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,21 +62,21 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000FCBE.mail.protection.outlook.com (10.167.242.100) with Microsoft
+ CY4PEPF0000FCBF.mail.protection.outlook.com (10.167.242.101) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 00:21:38 +0000
+ 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 00:21:49 +0000
 Received: from titanite-d354host.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 19:21:37 -0500
+ 15.1.2507.35; Thu, 28 Mar 2024 19:21:48 -0500
 From: Avadhut Naik <avadhut.naik@amd.com>
 To: <linux-trace-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>
 CC: <rostedt@goodmis.org>, <tony.luck@intel.com>, <bp@alien8.de>,
 	<x86@kernel.org>, <sohil.mehta@intel.com>, <linux-kernel@vger.kernel.org>,
 	<yazen.ghannam@amd.com>, <avadnaik@amd.com>
-Subject: [RESEND v5 1/2] tracing: Include PPIN in mce_record tracepoint
-Date: Thu, 28 Mar 2024 19:21:15 -0500
-Message-ID: <20240329002116.436824-2-avadhut.naik@amd.com>
+Subject: [RESEND v5 2/2] tracing: Include Microcode Revision in mce_record tracepoint
+Date: Thu, 28 Mar 2024 19:21:16 -0500
+Message-ID: <20240329002116.436824-3-avadhut.naik@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240329002116.436824-1-avadhut.naik@amd.com>
 References: <20240329002116.436824-1-avadhut.naik@amd.com>
@@ -92,100 +92,80 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBE:EE_|IA1PR12MB6332:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5293a31-6159-416f-9c93-08dc4f863368
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBF:EE_|SA1PR12MB9246:EE_
+X-MS-Office365-Filtering-Correlation-Id: ed7051df-e2be-475c-0068-08dc4f8639f3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	tmy5BXZKoLtYtFvVfc/ysLeWQBnewPJaaPI6U73Y3+gbXiEAb+vlRCWEQr7ANj7yID9RXJPwNbnDnxng+tLxp9LBhJ5icmAVSc6Rh0L+sHL80PMmiTFf7lc9uAEjd7G5l7KgAE7tt5K2cDGGZFTIqYH+C08v/ht1bHw6H20nzDPSfE90nkg4L3UbICRMyq2k8YdA5DR1Z9HTxUW0uvDa0loO3AHbmD5ClNiijVdFNw7FkccljGIiHxQM8dYT1K3VEuC9mJhqfWgLPO3GrW9AjAMTOUlkWpqfSWwVFckr/AjNlH7uvlozX8OP0IkDgUsCbKX2EHWXiNnQFuTWJPTqWDt7rD69zy6KlliGL2VZ5jFbI2eFtDaSYIT1f3rFHIkx3znKCBvw4RONIyjVauzKM7a87AZiNf/HKvQDykCh9LSCDZhtB1jGpWgYtzJZSXvUkB0LKuocRX80HNhtMN9A8jLyMorXB/EdUGd4a+Vg+AR9jxGpumPkteUA+yk/tfXotw0pykGja4kn0QxiKwcv50L+cgBrsrC4wNazaX6NUvb8OpJoYIuCV5KmrFlyPqY62CLivlja5gY/PBU2SKtZUEbJJvJvdM1l9h7Si/GpBwL93odaqzFYIsNTyhHmvXP2VIL2/B4lih9TRsHLRqOyQkLCx7VzWN8J6+ymqPNuVxmNq06K8N1kQWEDcRO/DZG4Nr3NMWcclzcW21KkpT5TEZp2ZXHD0s6l22RwAcDtMKJZp/WHX4gQs1uKw/jZwcRh
+	ydCThkJ7x6fc6NQNVdSoJIqvuxEytzi4KQyhMIQY4ZIJoCHeAh2d3l0+km7NtuJ/NrNwuG5JlkQYWm8WFDFF6KPfxQ43ySL4HBnRsx2xj/JL5rDFwKUgFYAAn4A1fmDl25PjGutKT34MoRQ/Jne4Edh8QsASR1a3bXCzjL7KRKuA1dX3zgD0BAw7bV3BQw9aLsW7a8/M+58SKTUl5qwam0TbDv32j0JlWCZ3ZWSbUWaZySwjKjgG4Js0C2fNlcR6/r2hwmjnoLruN0sqxnISTnaZM1Z9Ly86KFDf0Yhm+jib38YPddoMZJtH8fQOYwFqpUuROq1lQlU+X2FTwk+UjYJPUnhWLNzQdq7UD4xl4JpZevV9TwQn6+Cx0/KeVcsh+EoeTw5GRF940V0GWbSwZq7yNG/lDTH//uGREQD9gxpM6TpkvkYra7aifuR6RXk0eWCd6iFA7hvnQB1bFdvfaCFOMFIDxIOF7+15vquIfYtxYuT7/g/iEHhJLSjf6DhvpTbLp+r1X4TbIVv+osTVmfjdEK5fEoqU7OaCXnnHPNeLtkMsPpzWtqyfzlSorZgKODTmlKVKjFKLfnQl13kJRgm0dnxPPa5a9NmbPDmB8qs3ngZKibyZSHRXK8LNgP/+XQvWq3CMgUOrWmCzoyJ+7sZUa/Bb8nMdlcw2UcpM2RPrsdFD5kM+Flsoimur9xe8HyGxcpbF4bB3dEL5vE+dMU+FF1dOEerTnLyzB4faK1m8tm1iTTOWkG9C2vjkKfjN
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(82310400014)(36860700004)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 00:21:38.5379
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 00:21:49.5268
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5293a31-6159-416f-9c93-08dc4f863368
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed7051df-e2be-475c-0068-08dc4f8639f3
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000FCBE.namprd03.prod.outlook.com
+	CY4PEPF0000FCBF.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6332
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB9246
 
-Machine Check Error information from struct mce is exported to userspace
-through the mce_record tracepoint.
+Currently, the microcode field (Microcode Revision) of struct mce is not
+exported to userspace through the mce_record tracepoint.
 
-Currently, however, the PPIN (Protected Processor Inventory Number) field
-of struct mce is not exported through the tracepoint.
+Knowing the microcode version on which the MCE was received is critical
+information for debugging. If the version is not recorded, later attempts
+to acquire the version might result in discrepancies since it can be
+changed at runtime.
 
-Export PPIN through the tracepoint as it provides a unique identifier for
-the system (or socket in case of multi-socket systems) on which the MCE
-has been received.
-
-Additionally, also change words which are not acronyms from uppercase
-(ALL CAPS) to lowercase in tracepoint's output.
+Export microcode version through the tracepoint to prevent ambiguity over
+the active version on the system when the MCE was received.
 
 Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
 Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
 Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- include/trace/events/mce.h | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ include/trace/events/mce.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/include/trace/events/mce.h b/include/trace/events/mce.h
-index 1391ada0da3b..2e339ac9d706 100644
+index 2e339ac9d706..c7d0edc778c3 100644
 --- a/include/trace/events/mce.h
 +++ b/include/trace/events/mce.h
-@@ -9,6 +9,14 @@
- #include <linux/tracepoint.h>
- #include <asm/mce.h>
- 
-+/*
-+ * MCE Event Record.
-+ *
-+ * Only very relevant and transient information which cannot be
-+ * gathered from a system by any other means or which can only be
-+ * acquired arduously should be added to this record.
-+ */
-+
- TRACE_EVENT(mce_record,
- 
- 	TP_PROTO(struct mce *m),
-@@ -25,6 +33,7 @@ TRACE_EVENT(mce_record,
- 		__field(	u64,		ipid		)
- 		__field(	u64,		ip		)
- 		__field(	u64,		tsc		)
-+		__field(	u64,		ppin		)
- 		__field(	u64,		walltime	)
- 		__field(	u32,		cpu		)
- 		__field(	u32,		cpuid		)
-@@ -45,6 +54,7 @@ TRACE_EVENT(mce_record,
- 		__entry->ipid		= m->ipid;
- 		__entry->ip		= m->ip;
- 		__entry->tsc		= m->tsc;
-+		__entry->ppin		= m->ppin;
- 		__entry->walltime	= m->time;
- 		__entry->cpu		= m->extcpu;
- 		__entry->cpuid		= m->cpuid;
-@@ -55,7 +65,7 @@ TRACE_EVENT(mce_record,
- 		__entry->cpuvendor	= m->cpuvendor;
+@@ -42,6 +42,7 @@ TRACE_EVENT(mce_record,
+ 		__field(	u8,		cs		)
+ 		__field(	u8,		bank		)
+ 		__field(	u8,		cpuvendor	)
++		__field(	u32,		microcode	)
  	),
  
--	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PROCESSOR: %u:%x, TIME: %llu, SOCKET: %u, APIC: %x",
-+	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PPIN: %llx, processor: %u:%x, time: %llu, socket: %u, APIC: %x",
+ 	TP_fast_assign(
+@@ -63,9 +64,10 @@ TRACE_EVENT(mce_record,
+ 		__entry->cs		= m->cs;
+ 		__entry->bank		= m->bank;
+ 		__entry->cpuvendor	= m->cpuvendor;
++		__entry->microcode	= m->microcode;
+ 	),
+ 
+-	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PPIN: %llx, processor: %u:%x, time: %llu, socket: %u, APIC: %x",
++	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PPIN: %llx, processor: %u:%x, time: %llu, socket: %u, APIC: %x, microcode: %x",
  		__entry->cpu,
  		__entry->mcgcap, __entry->mcgstatus,
  		__entry->bank, __entry->status,
-@@ -63,6 +73,7 @@ TRACE_EVENT(mce_record,
- 		__entry->addr, __entry->misc, __entry->synd,
- 		__entry->cs, __entry->ip,
- 		__entry->tsc,
-+		__entry->ppin,
+@@ -77,7 +79,8 @@ TRACE_EVENT(mce_record,
  		__entry->cpuvendor, __entry->cpuid,
  		__entry->walltime,
  		__entry->socketid,
+-		__entry->apicid)
++		__entry->apicid,
++		__entry->microcode)
+ );
+ 
+ #endif /* _TRACE_MCE_H */
 -- 
 2.34.1
 
