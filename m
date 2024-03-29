@@ -1,62 +1,54 @@
-Return-Path: <linux-kernel+bounces-124686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C43F4891B64
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:24:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 193B9891B67
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20241C265A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:24:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD131C2653A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D571F172BC4;
-	Fri, 29 Mar 2024 12:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7BE173320;
+	Fri, 29 Mar 2024 12:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BBpS68+a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwrXKkvo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B4E142905;
-	Fri, 29 Mar 2024 12:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77B9172BCC;
+	Fri, 29 Mar 2024 12:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715703; cv=none; b=dwdgGM9TTN0xYQ+3v51lIH/q+Ekb09AFSSU+J6Uc4pSVawKj9vjKNjPuQ4yMFNzcx6Eja/aP9IBFFCNi4tZfgdOef6X+aBNrbMfp82jPjy4Nk5COOA4NAph4j1+7O05+ymfAHhA9x9QiYeDCQe5LbqnIx3JpX6JrlUK7IjPI2rk=
+	t=1711715704; cv=none; b=ufTJgmQLLXekDvJeTCSaNcU8bGHxHgyoXAtI/Zt3oJ/2QYRE9dGQ292eBYAoqgzl1ra/2GszKSJ6Wmefr5isRlve4ob6d2oICffdkJEZBEGFu8jOoPPZ3OwtodbraxjBg4fk+rBmiHB0+sZcNgSrl9RowljTYz4mQ4DikBROH5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715703; c=relaxed/simple;
-	bh=/ff5m3Zms0CWVB8orfwGazc8g2xENcIWok7CRnZDuBY=;
+	s=arc-20240116; t=1711715704; c=relaxed/simple;
+	bh=M9GujlUegVE05j0NOorQPyeqLctEmeISmm7vzvi1KZY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r7YCOCh3yp7czx0CGLY7jiVPNcB4Q1Gt2kbMmyR5qfzsSvvGRezEUfdb33PXPG5Bnhx+yM3ZLz43a7YCS44wScnoT4EtJ83hejcSc7la3tRteDALJ4sb9QkLpJpbQJS8xzTkhd8pAUVe8iiAG0QSZCoHJ0ENeBVBm1O1CE6P2uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BBpS68+a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83EB3C433C7;
-	Fri, 29 Mar 2024 12:35:01 +0000 (UTC)
+	 MIME-Version; b=uB9xiEiBf7oZqZim2CU5sFuspcz4DFO9SotaGIkxsIUZnmw88xFrVrX+oJsQhwsHATHnO/7r+uVR0ZWJRJv4UcmsJl7HjJ0+RCTdAsw5I/I2cnn9jIOeEBkKnsdcv1MytF0whN8KV9QnjJwl30THG4lDDSstwmJkBLV16nc5/Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwrXKkvo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BCA3C433F1;
+	Fri, 29 Mar 2024 12:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715702;
-	bh=/ff5m3Zms0CWVB8orfwGazc8g2xENcIWok7CRnZDuBY=;
+	s=k20201202; t=1711715704;
+	bh=M9GujlUegVE05j0NOorQPyeqLctEmeISmm7vzvi1KZY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BBpS68+axyXRek01E0ijZY8o+mB9r3sE3bn4BGojZvJFtYNtuwW3zhFFtL/vT6aSW
-	 zXA1ZTiE6L1bvG5Z64h09rlbKh00A+HWWjdRByLRNlTPuEyifuYwuiJbsxUyaOoa0+
-	 9h1NxPV4ipbGGJ4Cch8bht9Y32bXHK1pseTLw3R0I/1FsBzwF/smUpMib/cWsTPmd2
-	 pBBs7Ca41l4bwEhdIAZkgShMuDY20I/yqaF0dFGS5CFtf5LPyUqaYkZof7aV5+ig/w
-	 BqrMlK6N2Y+RTJVc5YpPdfVZYXqRFXwrFiwqY4O7RQAC4gAFFnQORTEA6GuXVCimMh
-	 JW+1RraChE8yw==
+	b=NwrXKkvo6o3D6aCHXLwqYX2bFB5gAge6bCoUKmHmtQWJjpkMiB9KdRGL/UAgE2uZj
+	 LFb5bpMvJ5cHuPjzffctT7CLlM5w3f4ivY/5XP9/anh3Gukoa80NENw4EeJKklizAj
+	 g0+c2ReFfZUN/X3oDmnrB05hARKBbuL+1vWuJ8RC6mtUwuKU7xGAr6AzxU2sirAfFK
+	 7blsdi1d8r9WaK7fMLLji9JG5taO7hGf5MyV6g9FQPoRAzcKA/RvCi9BRRRwxeJvSC
+	 l/4SSWTt29I7lYh1l57lDNCRQr0ncoXyKFXUhq/JyfH6sldMpEWXiS91M/iKk+nW/C
+	 1t4yX+OGkTZyA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shannon Nelson <shannon.nelson@amd.com>,
-	Brett Creeley <brett.creeley@amd.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Sasha Levin <sashal@kernel.org>,
-	drivers@pensando.io,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	nitya.sunkad@amd.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 08/15] ionic: set adminq irq affinity
-Date: Fri, 29 Mar 2024 08:34:31 -0400
-Message-ID: <20240329123445.3086536-8-sashal@kernel.org>
+Cc: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 09/15] tools/power x86_energy_perf_policy: Fix file leak in get_pkg_num()
+Date: Fri, 29 Mar 2024 08:34:32 -0400
+Message-ID: <20240329123445.3086536-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123445.3086536-1-sashal@kernel.org>
 References: <20240329123445.3086536-1-sashal@kernel.org>
@@ -71,40 +63,32 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.273
 Content-Transfer-Encoding: 8bit
 
-From: Shannon Nelson <shannon.nelson@amd.com>
+From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
 
-[ Upstream commit c699f35d658f3c21b69ed24e64b2ea26381e941d ]
+[ Upstream commit f85450f134f0b4ca7e042dc3dc89155656a2299d ]
 
-We claim to have the AdminQ on our irq0 and thus cpu id 0,
-but we need to be sure we set the affinity hint to try to
-keep it there.
+In function get_pkg_num() if fopen_or_die() succeeds it returns a file
+pointer to be used. But fclose() is never called before returning from
+the function.
 
-Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-Reviewed-by: Brett Creeley <brett.creeley@amd.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/pensando/ionic/ionic_lif.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-index d718c1a6d5fc7..e7d868da6a380 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-@@ -1874,9 +1874,12 @@ static int ionic_lif_adminq_init(struct ionic_lif *lif)
- 
- 	napi_enable(&qcq->napi);
- 
--	if (qcq->flags & IONIC_QCQ_F_INTR)
-+	if (qcq->flags & IONIC_QCQ_F_INTR) {
-+		irq_set_affinity_hint(qcq->intr.vector,
-+				      &qcq->intr.affinity_mask);
- 		ionic_intr_mask(idev->intr_ctrl, qcq->intr.index,
- 				IONIC_INTR_MASK_CLEAR);
-+	}
- 
- 	qcq->flags |= IONIC_QCQ_F_INITED;
+diff --git a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
+index 3fe1eed900d41..165eb4da8a644 100644
+--- a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
++++ b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
+@@ -1111,6 +1111,7 @@ unsigned int get_pkg_num(int cpu)
+ 	retval = fscanf(fp, "%d\n", &pkg);
+ 	if (retval != 1)
+ 		errx(1, "%s: failed to parse", pathname);
++	fclose(fp);
+ 	return pkg;
+ }
  
 -- 
 2.43.0
