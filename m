@@ -1,146 +1,117 @@
-Return-Path: <linux-kernel+bounces-125275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A65C892341
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:23:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 455ED89234C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2C2D1C211D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:23:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFFF1B22443
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708F8137900;
-	Fri, 29 Mar 2024 18:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E34613A3E2;
+	Fri, 29 Mar 2024 18:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KtW2BC8H"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="O5o/hWK1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C676812B7D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7518C137928;
+	Fri, 29 Mar 2024 18:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711736601; cv=none; b=ScdoTImEJwuVOQgef+8Mr+C095yfulEiBKgjvHYkYHYa0W+ZfemhkTGo+izMXpmfrTVipSIvoV3AqizZZYgq+xXB0YJkEfUtwPFdvI0FCS15PdgKagRQILLpc+cwLJIXhBDvq/iFhaeZtX9Q2ULO1795t84CJApHlHIOQo1Ys+Q=
+	t=1711736678; cv=none; b=LkAzdFO9kroRLlTsyrMjwVY6Fwa67PAs69gIHGQhdF4qjFkJXWOqiRLBIu50kUeD3kEupcPqvCiHlgYnGLEHv9Az43Ep/YgYqmnExeqDng1J7Jsd71udQnXYjNiHDno1dC5cBf6QLlgnijqHKmHqK/cICZSa67Xv257QFPTuekA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711736601; c=relaxed/simple;
-	bh=Ri886Lw8jukx1prPJ32EUubdstdqvHgl3TtWW0FFYq8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uiQGzoCq79eW59PKD36tQ1yaYLZcAGV5WQxyLgMnLusdz7dsHGHRCp8QJPY0QyUVz6yXFnQOtZqHkDr3Ocs2eBqP7+5quUAvAImMv00hkW3d9kgclG9tFfY5AB/qoMaJGfGREPoBOVoRly3Z+xWpJq/UdbCgJUQns2SToZo5spY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KtW2BC8H; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-515c198e835so2471244e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711736598; x=1712341398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ri886Lw8jukx1prPJ32EUubdstdqvHgl3TtWW0FFYq8=;
-        b=KtW2BC8H249s1oOQzzxpKgavGGUINGaAZclGSOG0RPDd38baiMo7yTTVa/+1yrUwAj
-         Ly7JvTj3M1nmEYt0kRWrmRZ8ruP8Zv2eVBoGTBUqA4xZvNejM45Z8xMLq0jrYfRCKnON
-         QBd8NaLP+Ypiwjn/U8x54ExP3AhufatSSninvgyhrrvIZ9WSa9hbNeQaEkH5CAOkj4iV
-         4kI6MkJ0XosbsyaLuI7FVjFX9LazsonZiUOH6LGNhXzRS7/NFkMy5hZnQ1Wr4uQSuQHn
-         +hVxZJUZ+yxtUuOczIxHqw7k/Maxs3p0tH7KWu6XJ3l9E4LehYIJ9e4EvBU0MztRKkT/
-         2GTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711736598; x=1712341398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ri886Lw8jukx1prPJ32EUubdstdqvHgl3TtWW0FFYq8=;
-        b=QdnN5gnjD16G7Bv9cG/NVA60jCj2TkUAQzhGW0YyZIeVkIRZlQOXycIohVDnWVfznP
-         2CefSxXJVipRV7rj7FgvM8hEYrUxQZDQWhCp2nEjtvaH4MOGdGF4RhNuT7u+LMFBrcDd
-         YyqX1RvF3q07JF775NU3JqMEWbaKbxLWeju30wKeHqpVdEZZmP8aUJn9wXDzh3ukIMrl
-         ppo6GkKGsVFnGjxoX+ETQ7BskFUfGDr6n82Q/wvglWlriODXYDHsOdB3SjlmgmvToB1w
-         /Wqwku76Og/LxYdtjDIuAEM2AycJGKzDnragDcAXqoN0wRQYrVNinw1sSSHNelY725cZ
-         UuQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWmVsuhGvRhmAx3eLj2WYQAhUwVl9cjvBjM+QrEpX3cwb9dHFbAW6IMDANL7qwZ2wPWKRIU0ajsD8NZBT22R0gmK2N51RYk+cNw+DG6
-X-Gm-Message-State: AOJu0Yw8zAOGv9EazWwaf0pO0Vzde9wuR0Hxpgzz9u4CrFTnYzxmWWXr
-	zwJBSkf+u9or/FJqgoy5dg3U4CFpH/nkoV51Yy6TSoqzx1PzRGHGRz4mR2AdMYGqDDhzdQUiQS8
-	K/Zi5XuUZ33cPBlzH9IXYuEDcTVRTDMQvlgbzjSmdqELHc8tCbfKZ
-X-Google-Smtp-Source: AGHT+IHDOJqPMLXcyCbIlwaancqWKBwZDloy959OYM9mZhvLf8RyPOrb+rJYSzvZz/bwaIPa0lPnoCZbtii+fl/4ow8=
-X-Received: by 2002:a05:6512:2213:b0:514:e5a7:110f with SMTP id
- h19-20020a056512221300b00514e5a7110fmr2342410lfu.54.1711736597606; Fri, 29
- Mar 2024 11:23:17 -0700 (PDT)
+	s=arc-20240116; t=1711736678; c=relaxed/simple;
+	bh=SBRY8LbiYQaRQ8017OUfrC32voO7NVyDDikYmo475J4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=GYzg0QiH6RAOfJfDZAl4/U7Wjgn0sIBCxTXp1Wqlni13947cyHY+UfPUJvyDv0dI4dZ1W5rIbXRUA5scg3acg7Pq/CNcAhrrsuq4lkAf60lEmjzVK7Ye/Jp3WD4zPCiBy/rChi7j4wCV5FBVjmfuwUuiwZpfAGe3cJZxUk8sqi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=O5o/hWK1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42THep9x004230;
+	Fri, 29 Mar 2024 18:24:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Qh3m4g8y3ZINF4whjQq7eyoFI2/8iK7n4ltsiqUmFfM=; b=O5
+	o/hWK1uLjJQgMce3C8zJLwBgFXFSzJ4UY4MV39JGvDwmHr8/te4jNwhtL6A+xFBD
+	FaDe3XB0Roqm43K5jQSelFEZmlUxOWJp34mqevFG4NTSV1uJATjTK3XSyp/jMffi
+	H8Kc+GgTDTcUZauzHXixKB537lv+pso8Vuz55IYerd2n39zSBgOq0vSa/cVnj48i
+	cZhwFxI7XJvPe1hdX8caY1BgXBmX/XZ9Oh+kDFuY+DfgPiL9bhA8/vx9OB+MHivy
+	M3ZDzIugO5HIKX8LjVIGa0WiKGbd/wmvq21YkUtciwo5z2TFWBqa5wONmniKpXuf
+	l5pQErFttyJZUKLHcKEA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5xcy0m98-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 18:24:20 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TIOIqA020876
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 18:24:18 GMT
+Received: from [10.110.118.161] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
+ 2024 11:24:14 -0700
+Message-ID: <6dcdc5f6-6e4a-f486-26fb-fd37f44316e8@quicinc.com>
+Date: Fri, 29 Mar 2024 11:24:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-6-yosryahmed@google.com> <20240328191109.GE7597@cmpxchg.org>
- <CAJD7tka4iKD0=MOkj7iBCXvG6Jmq6WQgvRNV3mY+YRWPnYWmAg@mail.gmail.com>
- <CAJD7tkYo90ynKfBcWyMZLu7r-GJj3egnnJyGiJ5T2SN-Tn3d9A@mail.gmail.com>
- <19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name> <20240329174457.GJ7597@cmpxchg.org>
-In-Reply-To: <20240329174457.GJ7597@cmpxchg.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 29 Mar 2024 11:22:39 -0700
-Message-ID: <CAJD7tkaXtbM6_6+Oe08_xorMRrU94nvEeDj4_R78nKdZZWqAMw@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/9] mm: zswap: remove zswap_same_filled_pages_enabled
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Andrew Morton <akpm@linux-foundation.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] phy/qcom-qmp-combo: propagate correct return value at
+ phy_power_on()
+Content-Language: en-US
+To: Kuogee Hsieh <quic_khsieh@quicinc.com>, <dri-devel@lists.freedesktop.org>,
+        <robdclark@gmail.com>, <sean@poorly.run>, <swboyd@chromium.org>,
+        <dianders@chromium.org>, <vkoul@kernel.org>, <daniel@ffwll.ch>,
+        <airlied@gmail.com>, <agross@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <abel.vesa@linaro.org>,
+        <andersson@kernel.org>
+CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1711730495-30330-1-git-send-email-quic_khsieh@quicinc.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <1711730495-30330-1-git-send-email-quic_khsieh@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: j4A-oPxM-XLrv410vidVyQJhg8DWe4OF
+X-Proofpoint-ORIG-GUID: j4A-oPxM-XLrv410vidVyQJhg8DWe4OF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=970 adultscore=0 malwarescore=0 mlxscore=0 priorityscore=1501
+ spamscore=0 phishscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403290163
 
-On Fri, Mar 29, 2024 at 10:45=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
->
-> On Fri, Mar 29, 2024 at 03:02:10PM +0100, Maciej S. Szmigiero wrote:
-> > On 29.03.2024 03:14, Yosry Ahmed wrote:
-> > > On Thu, Mar 28, 2024 at 1:06=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
-e.com> wrote:
-> > >>
-> > >> On Thu, Mar 28, 2024 at 12:11=E2=80=AFPM Johannes Weiner <hannes@cmp=
-xchg.org> wrote:
-> > >>>
-> > >>> On Mon, Mar 25, 2024 at 11:50:13PM +0000, Yosry Ahmed wrote:
-> > >>>> There is no logical reason to refuse storing same-filled pages mor=
-e
-> > >>>> efficiently and opt for compression. Remove the userspace knob.
-> > >>>>
-> > >>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > >>>
-> > >>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > >>>
-> > >>> I also think the non_same_filled_pages_enabled option should go
-> > >>> away. Both of these tunables are pretty bizarre.
-> > >>
-> > >> Happy to remove both in the next version :)
-> > >
-> > > I thought non_same_filled_pages_enabled was introduced with the
-> > > initial support for same-filled pages, but it was introduced
-> > > separately (and much more recently):
-> > > https://lore.kernel.org/all/7dbafa963e8bab43608189abbe2067f4b9287831.=
-1641247624.git.maciej.szmigiero@oracle.com/
-> > >
-> > > I am CCing Maciej to hear more about the use case for this.
-> >
-> > Thanks for CCing me.
-> >
-> > I introduced "non_same_filled_pages_enabled" a few years ago to
-> > enable using zswap in a lightweight mode where it is only used for
-> > its ability to store same-filled pages effectively.
->
-> But all the pages it rejects go to disk swap instead, which is much
-> slower than compression...
->
-> > As far as I remember, there were some interactions between full
-> > zswap and the cgroup memory controller - like, it made it easier
-> > for an aggressive workload to exceed its cgroup memory.high limits.
->
-> Ok, that makes sense! A container fairness measure, rather than a
-> performance optimization.
->
-> Fair enough, but that's moot then with cgroup accounting of the
-> backing memory, f4840ccfca25 ("zswap: memcg accounting").
 
-Right, this should no longer be needed with the zswap charging.
 
-Maciej, is this still being used on kernels with f4840ccfca25 (5.19+)?
-Any objections to removing it now?
+On 3/29/2024 9:41 AM, Kuogee Hsieh wrote:
+> Currently qmp_combo_dp_power_on() always return 0 in regardless of
+> return value of cfg->configure_dp_phy(). This patch propagate
+> return value of cfg->configure_dp_phy() all the way back to caller.
+> 
+> Fixes: 52e013d0bffa ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy")
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>   drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 13 +++++++++----
+>   1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+
+Thanks for the cleanup!
+
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
