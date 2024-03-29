@@ -1,77 +1,60 @@
-Return-Path: <linux-kernel+bounces-125200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B216189220B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:01:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E01BB892210
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:01:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 678B4288110
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:01:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 952F728805B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F43A137C38;
-	Fri, 29 Mar 2024 17:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AFB1369A4;
+	Fri, 29 Mar 2024 17:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="clBmNzVr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A22991369A4;
-	Fri, 29 Mar 2024 17:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="s/NFcY4W"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A68812D1E8;
+	Fri, 29 Mar 2024 17:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711731646; cv=none; b=CF0C36p+NjgYobo0ff1vqF9KW41FiFg3qXchlP1SkO19fWm4kgHWYgaKC+lqzM54WUvdX0KLKmAZMW79hzw659yRb8mLKw8NLpl53sgyHZUC4gNArwX6iaRq/9OBBEHxOm0Tpk1cbXyNjFs8cLCNOTsw7dPMsfx/Jng+4kNUx1g=
+	t=1711731659; cv=none; b=nqkZbKFmBSaMAHgfW3/gQfUNQO33cOwo+P+nDzQmPXIDXIBjwJGjQnozHnmO7hb3hyjYKrp9irLDVF8CB8ZdNrcjrb8AJ3D0Y90+skiloxthT2Nnph21or1Wfgyn/jAhG93nLMwimtl39FgyRxyRUdIlLJ399OHu/hf1rtJRN3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711731646; c=relaxed/simple;
-	bh=WeazQOW8wdRtFlvcL7dquXjhXH5BZ+2tlYJx7xq4fYk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NyFcQ2czxyryTfuhg3M4GwlKZLMvOeNih5bfnblrlCVxSyLymklW4RwEHQCNOi4jCskVPaea5yXj1yNNKYeMpVPd/uzxaVDylBRbxeXiLi+ynwf3h+RYPo4czXsJANKSSCgH3VJYvwo8l23pi6AejRJmNqhz1VsnS1EeUfh+/N8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=clBmNzVr; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711731645; x=1743267645;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WeazQOW8wdRtFlvcL7dquXjhXH5BZ+2tlYJx7xq4fYk=;
-  b=clBmNzVrqSq2uTJAlEqkcyM/sxSeDlXc66C7r5V0lDS6VDY0Pe3xfc0z
-   4IMSWgt6m5ZyHz92WY5YWwuL+6Wz1OZyc834R1cisVvSIoZduIr8gd3qC
-   aSCzVCVLE4MipwZcpK6bFJwTYzD4Su9L7MHNp9e8IBALG7OFsVO76+j/o
-   54MnF9zO4kNam0lEWtsVXnTgDxOtYZMnbCP+I/I6wi749nqfdClp+EuGS
-   uz6K95Sy4Zyx3ymgihb3n2sEx17Ay2kCFX36Muw7bE2RBDpiIoS4LqU/r
-   ARlmE3pfPGeyXonvjj6UxgvgkO0nxS9lCOp8ITaWQaI4AcYSOqDoUIg/J
-   w==;
-X-CSE-ConnectionGUID: 0ETOfJjmQPC6Ct/S41zHHQ==
-X-CSE-MsgGUID: B/CLeIGPSbewe3DOtgEe1Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="18367623"
-X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
-   d="scan'208";a="18367623"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 10:00:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
-   d="scan'208";a="48231990"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa001.fm.intel.com with ESMTP; 29 Mar 2024 10:00:41 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Dmitry Safonov <0x7f454c46@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] netdev_queues: fix -Wshadow / Sparse shadow warnings throughout the file
-Date: Fri, 29 Mar 2024 18:00:00 +0100
-Message-ID: <20240329170000.3241460-3-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240329170000.3241460-1-aleksander.lobakin@intel.com>
-References: <20240329170000.3241460-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1711731659; c=relaxed/simple;
+	bh=rGzkhCoCql412b0v0irxjjOmwed0wQxUo/oUvclWMTQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RaHBECz6y09KIJWOGk6tOEcssq5mv4oNHT4i2y0G3XzkXzSMcxVBxlUxqjvlY39mzyRVihuAvR4WELUA+KuEWTGcETRvE6z2Qxx6zIL0gTETpGNxkF2dmZluZVMjaT6RV+dE5iFEienK582PzN24k79q5FrQFsryKqO9PTv+D7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=s/NFcY4W; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.147.137])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 2915720E6F3E;
+	Fri, 29 Mar 2024 10:00:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2915720E6F3E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711731651;
+	bh=R1kI4fSdjXgmDTBK4gwdz/7qy7m6HdXCoh75MR5W1fU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=s/NFcY4WhBBLC6P0yXaPdWjdSd1KLEhzt5QlU8HUQPolmdd//5jDkAXQu4mn4SjCo
+	 bn4fbp4Ho3VTBmf5gX48VajFN/A7PdTHE1O7evCm9ovfbS/jyxuny9FcLln7MTu1me
+	 /f8k2ymXnbN/1Rh3AQVd0O93PYUn/pPgQtCm+y+U=
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+To: 
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
+	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+	linux-kernel@vger.kernel.org (open list),
+	intel-gfx@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
+	intel-xe@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
+	nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS),
+	linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM HOST DRIVERS),
+	linux-media@vger.kernel.org (open list:BTTV VIDEO4LINUX DRIVER),
+	linux-fbdev@vger.kernel.org (open list:FRAMEBUFFER LAYER),
+	Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: [PATCH v0 00/14] Make I2C terminology more inclusive for I2C Algobit and consumers
+Date: Fri, 29 Mar 2024 17:00:24 +0000
+Message-Id: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,198 +63,137 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix the following spam coming from <net/netdev_queues.h> when building
-with W=12 and/or C=1:
+I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+with more appropriate terms. Inspired by and following on to Wolfram's
+series to fix drivers/i2c/[1], fix the terminology for users of the
+I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+in the specification.
 
-Clang:
+Compile tested, no functionality changes intended
 
-drivers/net/ethernet/intel/idpf/idpf_txrx.c:1992:9: warning: declaration shadows a local variable [-Wshadow]
- 1992 |         return netif_txq_maybe_stop(nq, IDPF_DESC_UNUSED(tx_q), size, size);
-      |                ^
-/include/net/netdev_queues.h:137:11: note: expanded from macro 'netif_txq_maybe_stop'
-  137 |                         _res = netif_txq_try_stop(txq, get_desc, start_thrs); \
-      |                                ^
-/include/net/netdev_queues.h:92:7: note: expanded from macro 'netif_txq_try_stop'
-   92 |                 int _res;                                               \
-      |                     ^
-drivers/net/ethernet/intel/idpf/idpf_txrx.c:1992:9: note: previous declaration is here
-/include/net/netdev_queues.h:133:7: note: expanded from macro 'netif_txq_maybe_stop'
-  133 |                 int _res;                                               \
-      |                     ^
+The last patch updating the .master_xfer method to .xfer depends on
+patch 1 of Wolfram's series below, but the series is otherwise
+independent. It may make sense for the last patch to go in with
+Wolfram's patch series via the I2C tree. Please chime in with your
+opinions and suggestions.
 
-Sparse:
+This series is based on v6.9-rc1.
 
-drivers/net/ethernet/intel/idpf/idpf_txrx.c:1992:16: warning: symbol '_res' shadows an earlier one
-drivers/net/ethernet/intel/idpf/idpf_txrx.c:1992:16: originally declared here
+[1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
 
-Use __UNIQUE_ID() in all of the macros which declare local variables.
+Easwar Hariharan (14):
+  IB/hfi1, IB/qib: Make I2C terminology more inclusive
+  drm/amdgpu,drm/radeon: Make I2C terminology more inclusive
+  drm/gma500,drm/i915: Make I2C terminology more inclusive
+  media: au0828: Make I2C terminology more inclusive
+  media: cobalt: Make I2C terminology more inclusive
+  media: cx18: Make I2C terminology more inclusive
+  media: cx25821: Make I2C terminology more inclusive
+  media: ivtv: Make I2C terminology more inclusive
+  media: cx23885: Make I2C terminology more inclusive
+  sfc: falcon: Make I2C terminology more inclusive
+  fbdev/smscufx: Make I2C terminology more inclusive
+  fbdev/viafb: Make I2C terminology more inclusive
+  drm/nouveau: Make I2C terminology more inclusive
+  i2c and treewide: Make I2C terminology more inclusive
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/netdev_queues.h | 54 +++++++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 14 deletions(-)
+ .../gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c  |  8 ++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c       | 12 +++----
+ drivers/gpu/drm/amd/amdgpu/atombios_i2c.c     |  8 ++---
+ drivers/gpu/drm/amd/amdgpu/smu_v11_0_i2c.c    | 18 +++++-----
+ .../gpu/drm/amd/display/dc/bios/bios_parser.c |  2 +-
+ .../drm/amd/display/dc/bios/bios_parser2.c    |  2 +-
+ .../drm/amd/display/dc/core/dc_link_exports.c |  4 +--
+ drivers/gpu/drm/amd/display/dc/dc.h           |  2 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_i2c.c  |  4 +--
+ .../display/include/grph_object_ctrl_defs.h   |  2 +-
+ drivers/gpu/drm/amd/include/atombios.h        |  2 +-
+ drivers/gpu/drm/amd/include/atomfirmware.h    | 26 +++++++-------
+ .../powerplay/hwmgr/vega20_processpptables.c  |  4 +--
+ .../amd/pm/powerplay/inc/smu11_driver_if.h    |  2 +-
+ .../inc/pmfw_if/smu11_driver_if_arcturus.h    |  2 +-
+ .../inc/pmfw_if/smu11_driver_if_navi10.h      |  2 +-
+ .../pmfw_if/smu11_driver_if_sienna_cichlid.h  |  2 +-
+ .../inc/pmfw_if/smu13_driver_if_aldebaran.h   |  2 +-
+ .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |  2 +-
+ .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |  2 +-
+ .../gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c |  4 +--
+ .../amd/pm/swsmu/smu11/sienna_cichlid_ppt.c   |  8 ++---
+ drivers/gpu/drm/gma500/cdv_intel_dp.c         |  2 +-
+ drivers/gpu/drm/gma500/cdv_intel_lvds.c       |  2 +-
+ drivers/gpu/drm/gma500/intel_bios.c           | 22 ++++++------
+ drivers/gpu/drm/gma500/intel_bios.h           |  4 +--
+ drivers/gpu/drm/gma500/intel_gmbus.c          |  6 ++--
+ drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c    |  2 +-
+ drivers/gpu/drm/gma500/psb_drv.h              |  2 +-
+ drivers/gpu/drm/gma500/psb_intel_drv.h        |  2 +-
+ drivers/gpu/drm/gma500/psb_intel_lvds.c       |  4 +--
+ drivers/gpu/drm/gma500/psb_intel_sdvo.c       | 28 +++++++--------
+ drivers/gpu/drm/i915/display/dvo_ch7017.c     | 14 ++++----
+ drivers/gpu/drm/i915/display/dvo_ch7xxx.c     | 18 +++++-----
+ drivers/gpu/drm/i915/display/dvo_ivch.c       | 16 ++++-----
+ drivers/gpu/drm/i915/display/dvo_ns2501.c     | 18 +++++-----
+ drivers/gpu/drm/i915/display/dvo_sil164.c     | 18 +++++-----
+ drivers/gpu/drm/i915/display/dvo_tfp410.c     | 18 +++++-----
+ drivers/gpu/drm/i915/display/intel_bios.c     | 22 ++++++------
+ drivers/gpu/drm/i915/display/intel_ddi.c      |  2 +-
+ .../gpu/drm/i915/display/intel_display_core.h |  2 +-
+ drivers/gpu/drm/i915/display/intel_dsi.h      |  2 +-
+ drivers/gpu/drm/i915/display/intel_dsi_vbt.c  | 18 +++++-----
+ drivers/gpu/drm/i915/display/intel_dvo.c      | 14 ++++----
+ drivers/gpu/drm/i915/display/intel_dvo_dev.h  |  2 +-
+ drivers/gpu/drm/i915/display/intel_gmbus.c    |  8 ++---
+ drivers/gpu/drm/i915/display/intel_sdvo.c     | 34 +++++++++---------
+ drivers/gpu/drm/i915/display/intel_vbt_defs.h |  4 +--
+ drivers/gpu/drm/i915/gvt/edid.c               | 28 +++++++--------
+ drivers/gpu/drm/i915/gvt/edid.h               |  4 +--
+ drivers/gpu/drm/i915/gvt/opregion.c           |  2 +-
+ drivers/gpu/drm/nouveau/dispnv04/dfp.c        | 14 ++++----
+ .../nouveau/include/nvkm/subdev/bios/dcb.h    |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_bios.c        |  4 +--
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/aux.c |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/bus.c |  2 +-
+ drivers/gpu/drm/radeon/atombios.h             |  2 +-
+ drivers/gpu/drm/radeon/atombios_i2c.c         |  4 +--
+ drivers/gpu/drm/radeon/radeon_combios.c       | 28 +++++++--------
+ drivers/gpu/drm/radeon/radeon_i2c.c           | 14 ++++----
+ drivers/gpu/drm/radeon/radeon_mode.h          |  6 ++--
+ drivers/i2c/algos/i2c-algo-bit.c              | 12 +++----
+ drivers/infiniband/hw/hfi1/chip.c             |  6 ++--
+ drivers/infiniband/hw/hfi1/chip.h             |  2 +-
+ drivers/infiniband/hw/hfi1/chip_registers.h   |  2 +-
+ drivers/infiniband/hw/hfi1/file_ops.c         |  2 +-
+ drivers/infiniband/hw/hfi1/firmware.c         | 22 ++++++------
+ drivers/infiniband/hw/hfi1/pcie.c             |  2 +-
+ drivers/infiniband/hw/hfi1/qsfp.c             | 36 +++++++++----------
+ drivers/infiniband/hw/hfi1/user_exp_rcv.c     |  2 +-
+ drivers/infiniband/hw/qib/qib_twsi.c          |  6 ++--
+ drivers/media/pci/bt8xx/bttv-i2c.c            |  2 +-
+ drivers/media/pci/cobalt/cobalt-i2c.c         |  8 ++---
+ drivers/media/pci/cx18/cx18-av-firmware.c     |  8 ++---
+ drivers/media/pci/cx18/cx18-cards.c           |  6 ++--
+ drivers/media/pci/cx18/cx18-cards.h           |  4 +--
+ drivers/media/pci/cx18/cx18-gpio.c            |  6 ++--
+ drivers/media/pci/cx23885/cx23885-f300.c      |  8 ++---
+ drivers/media/pci/cx23885/cx23885-i2c.c       |  8 ++---
+ drivers/media/pci/cx25821/cx25821-i2c.c       |  8 ++---
+ drivers/media/pci/dm1105/dm1105.c             |  2 +-
+ drivers/media/pci/ivtv/ivtv-i2c.c             | 18 +++++-----
+ drivers/media/pci/saa7164/saa7164-i2c.c       |  2 +-
+ drivers/media/usb/au0828/au0828-i2c.c         |  6 ++--
+ drivers/media/usb/au0828/au0828-input.c       |  2 +-
+ drivers/net/ethernet/sfc/falcon/falcon.c      |  2 +-
+ drivers/video/fbdev/mb862xx/mb862xx-i2c.c     |  2 +-
+ drivers/video/fbdev/smscufx.c                 |  4 +--
+ drivers/video/fbdev/via/chip.h                |  8 ++---
+ drivers/video/fbdev/via/dvi.c                 | 24 ++++++-------
+ drivers/video/fbdev/via/lcd.c                 |  6 ++--
+ drivers/video/fbdev/via/via_aux.h             |  2 +-
+ drivers/video/fbdev/via/via_i2c.c             | 12 +++----
+ drivers/video/fbdev/via/vt1636.c              |  6 ++--
+ 94 files changed, 381 insertions(+), 381 deletions(-)
 
-diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
-index 1ec408585373..317d6bfe32c7 100644
---- a/include/net/netdev_queues.h
-+++ b/include/net/netdev_queues.h
-@@ -87,14 +87,14 @@ struct netdev_stat_ops {
-  * be updated before invoking the macros.
-  */
- 
--#define netif_txq_try_stop(txq, get_desc, start_thrs)			\
-+#define _netif_txq_try_stop(txq, get_desc, start_thrs, _res)		\
- 	({								\
- 		int _res;						\
- 									\
- 		netif_tx_stop_queue(txq);				\
- 		/* Producer index and stop bit must be visible		\
- 		 * to consumer before we recheck.			\
--		 * Pairs with a barrier in __netif_txq_completed_wake(). \
-+		 * Pairs with a barrier in ___netif_txq_completed_wake(). \
- 		 */							\
- 		smp_mb__after_atomic();					\
- 									\
-@@ -107,16 +107,20 @@ struct netdev_stat_ops {
- 			_res = -1;					\
- 		}							\
- 		_res;							\
--	})								\
-+	})
-+#define netif_txq_try_stop(txq, get_desc, start_thrs)			\
-+	_netif_txq_try_stop(txq, get_desc, start_thrs,			\
-+			    __UNIQUE_ID(res_))
- 
- /**
-- * netif_txq_maybe_stop() - locklessly stop a Tx queue, if needed
-+ * _netif_txq_maybe_stop() - locklessly stop a Tx queue, if needed
-  * @txq:	struct netdev_queue to stop/start
-  * @get_desc:	get current number of free descriptors (see requirements below!)
-  * @stop_thrs:	minimal number of available descriptors for queue to be left
-  *		enabled
-  * @start_thrs:	minimal number of descriptors to re-enable the queue, can be
-  *		equal to @stop_thrs or higher to avoid frequent waking
-+ * @_res: __UNIQUE_ID() to avoid variable name clash
-  *
-  * All arguments may be evaluated multiple times, beware of side effects.
-  * @get_desc must be a formula or a function call, it must always
-@@ -128,7 +132,8 @@ struct netdev_stat_ops {
-  *	 1 if the queue was left enabled
-  *	-1 if the queue was re-enabled (raced with waking)
-  */
--#define netif_txq_maybe_stop(txq, get_desc, stop_thrs, start_thrs)	\
-+#define _netif_txq_maybe_stop(txq, get_desc, stop_thrs, start_thrs,	\
-+			      _res)					\
- 	({								\
- 		int _res;						\
- 									\
-@@ -136,7 +141,10 @@ struct netdev_stat_ops {
- 		if (unlikely(get_desc < stop_thrs))			\
- 			_res = netif_txq_try_stop(txq, get_desc, start_thrs); \
- 		_res;							\
--	})								\
-+	})
-+#define netif_txq_maybe_stop(txq, get_desc, stop_thrs, start_thrs)	\
-+	_netif_txq_maybe_stop(txq, get_desc, stop_thrs, start_thrs,	\
-+			      __UNIQUE_ID(res_))
- 
- /* Variant of netdev_tx_completed_queue() which guarantees smp_mb() if
-  * @bytes != 0, regardless of kernel config.
-@@ -152,7 +160,7 @@ netdev_txq_completed_mb(struct netdev_queue *dev_queue,
- }
- 
- /**
-- * __netif_txq_completed_wake() - locklessly wake a Tx queue, if needed
-+ * ___netif_txq_completed_wake() - locklessly wake a Tx queue, if needed
-  * @txq:	struct netdev_queue to stop/start
-  * @pkts:	number of packets completed
-  * @bytes:	number of bytes completed
-@@ -160,6 +168,7 @@ netdev_txq_completed_mb(struct netdev_queue *dev_queue,
-  * @start_thrs:	minimal number of descriptors to re-enable the queue
-  * @down_cond:	down condition, predicate indicating that the queue should
-  *		not be woken up even if descriptors are available
-+ * @_res: __UNIQUE_ID() to avoid variable name clash
-  *
-  * All arguments may be evaluated multiple times.
-  * @get_desc must be a formula or a function call, it must always
-@@ -171,15 +180,15 @@ netdev_txq_completed_mb(struct netdev_queue *dev_queue,
-  *	 1 if the queue was already enabled (or disabled but @down_cond is true)
-  *	-1 if the queue was left unchanged (@start_thrs not reached)
-  */
--#define __netif_txq_completed_wake(txq, pkts, bytes,			\
--				   get_desc, start_thrs, down_cond)	\
-+#define ___netif_txq_completed_wake(txq, pkts, bytes, get_desc,		\
-+				    start_thrs, down_cond, _res)	\
- 	({								\
- 		int _res;						\
- 									\
- 		/* Report to BQL and piggy back on its barrier.		\
- 		 * Barrier makes sure that anybody stopping the queue	\
- 		 * after this point sees the new consumer index.	\
--		 * Pairs with barrier in netif_txq_try_stop().		\
-+		 * Pairs with barrier in _netif_txq_try_stop().		\
- 		 */							\
- 		netdev_txq_completed_mb(txq, pkts, bytes);		\
- 									\
-@@ -194,30 +203,43 @@ netdev_txq_completed_mb(struct netdev_queue *dev_queue,
- 		}							\
- 		_res;							\
- 	})
-+#define __netif_txq_completed_wake(txq, pkts, bytes, get_desc,		\
-+				   start_thrs, down_cond)		\
-+	___netif_txq_completed_wake(txq, pkts, bytes, get_desc,		\
-+				    start_thrs, down_cond,		\
-+				    __UNIQUE_ID(res_))
- 
- #define netif_txq_completed_wake(txq, pkts, bytes, get_desc, start_thrs) \
- 	__netif_txq_completed_wake(txq, pkts, bytes, get_desc, start_thrs, false)
- 
- /* subqueue variants follow */
- 
--#define netif_subqueue_try_stop(dev, idx, get_desc, start_thrs)		\
-+#define _netif_subqueue_try_stop(dev, idx, get_desc, start_thrs, txq)	\
- 	({								\
- 		struct netdev_queue *txq;				\
- 									\
- 		txq = netdev_get_tx_queue(dev, idx);			\
- 		netif_txq_try_stop(txq, get_desc, start_thrs);		\
- 	})
-+#define netif_subqueue_try_stop(dev, idx, get_desc, start_thrs)		\
-+	_netif_subqueue_try_stop(dev, idx, get_desc, start_thrs,	\
-+				 __UNIQUE_ID(txq_))
- 
--#define netif_subqueue_maybe_stop(dev, idx, get_desc, stop_thrs, start_thrs) \
-+#define _netif_subqueue_maybe_stop(dev, idx, get_desc, stop_thrs,	\
-+				   start_thrs, txq)			\
- 	({								\
- 		struct netdev_queue *txq;				\
- 									\
- 		txq = netdev_get_tx_queue(dev, idx);			\
- 		netif_txq_maybe_stop(txq, get_desc, stop_thrs, start_thrs); \
- 	})
-+#define netif_subqueue_maybe_stop(dev, idx, get_desc, stop_thrs,	\
-+				  start_thrs)				\
-+	_netif_subqueue_maybe_stop(dev, idx, get_desc, stop_thrs,	\
-+				   start_thrs, __UNIQUE_ID(txq_))
- 
--#define netif_subqueue_completed_wake(dev, idx, pkts, bytes,		\
--				      get_desc, start_thrs)		\
-+#define _netif_subqueue_completed_wake(dev, idx, pkts, bytes, get_desc,	\
-+				       start_thrs, txq)			\
- 	({								\
- 		struct netdev_queue *txq;				\
- 									\
-@@ -225,5 +247,9 @@ netdev_txq_completed_mb(struct netdev_queue *dev_queue,
- 		netif_txq_completed_wake(txq, pkts, bytes,		\
- 					 get_desc, start_thrs);		\
- 	})
-+#define netif_subqueue_completed_wake(dev, idx, pkts, bytes, get_desc,	\
-+				      start_thrs)			\
-+	_netif_subqueue_completed_wake(dev, idx, pkts, bytes, get_desc,	\
-+				       start_thrs, __UNIQUE_ID(txq_))
- 
- #endif
 -- 
-2.44.0
+2.34.1
 
 
