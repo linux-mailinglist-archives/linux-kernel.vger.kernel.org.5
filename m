@@ -1,468 +1,177 @@
-Return-Path: <linux-kernel+bounces-125391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDA7892548
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:29:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9466889254B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:30:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B09B7B2326B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:29:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ED4C1F23DCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2610148CCD;
-	Fri, 29 Mar 2024 20:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B3838FA5;
+	Fri, 29 Mar 2024 20:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="glwg6VLw"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Vlmwz0fK"
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11024022.outbound.protection.outlook.com [52.101.61.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB732125CA
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711744160; cv=none; b=aJSUe1da62t2ibK8OCXIjk5YfczWmOrGJaHQwTPoQttCGZWp+ucqcqiAwX0IpLQpNnPJp3E7XMdtX3Zt+9BRN+ShEwPYJnP/vSueEw4++SmjgEugVedAuDq0tbDISveydoXnpBoc+RoRYVruUZTwVb7wXeCP3wnXdsRR1ZcY0yM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711744160; c=relaxed/simple;
-	bh=YHgLRwhYLEF+yFf7f+VJVNE7+aleXgVGd0+b0j1Z/2M=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=YS5ScixssT7OLEoerBBM4lKCTw7OzMlVv5DbZyFj1JL0YTasn0tjDPHPEIneYwbp41gOpILe47T/lYnJ6AXGhychX4/vrSBBDc6fQII2JLzwarvaEHU+A9GzehwT4f4xSXQOe6ox10lOBDR1Md9wjdy8Uc+A7zTgaLm/9QYY1V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=glwg6VLw; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a470d7f77eeso300058966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711744156; x=1712348956; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dCWlSotjvCGlRdJzAtkZV2YGveK7qqoLd01P5YRtAdk=;
-        b=glwg6VLw6lelDwlCdk2tiN3PpMTfhrlCrNWVY1CzJxljWEhZ9wIW5W8dtDJLU8LORx
-         +9zVavXhqAkODjtjZ6U0cOy0HJq1lBFgkzkgeiyLu7xnTxFhL6rwwAApEg1puX4l7tLl
-         PsfxQlMKyOGnr5tnNofF0CW6jlFMBfluZKDAH1VLu3Gz6hqWZB/hbZ5t3f1HmKLQIPl5
-         16qwS4z5+P9NVi1pLYKf61xf7EbQvb+Kv7UBxmgqHyqDDQ+eZw6+bSJXxlk6G3fcflyW
-         vNEBmeyMz0OWV6Rl8hHcBIWmF9cHF+D0DlsX/owlISOQWWa8SNcDbt9UjJgR1JLQMQm+
-         zgTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711744156; x=1712348956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dCWlSotjvCGlRdJzAtkZV2YGveK7qqoLd01P5YRtAdk=;
-        b=pLrlJ0UXNUG4KS11uaJk+gHiGMVhjVgtsc4g0pCdymzjfUb1XyMEKpJj4RB5Wbaa7w
-         wRFd7fYgSrgWWPcqDLur+qAO04FTx/JXWWGu5LPDy7nNIYX2a/A+KbpXpc8PofNQ1N6l
-         y2hRlrfUYOqpntVE3QySflXVVPrQyrLMxRXpeg6X0UL/GnfpITkWkhtzccxd/IP8ESpz
-         56QJL/ijQmO7cbK1XbYhbxwksvdUSXeEdTJxr22pbU0lFCCSqorUMc0x0ZFZAfBs1vBX
-         aOLJSMwn3G8JOr/KA+Vh5BOENFsEb7bmKvYs0PGbeY7m3LITyak/8RfenIzqmmAFjhUm
-         u2nA==
-X-Forwarded-Encrypted: i=1; AJvYcCXtfxrFIbicst1YUrXeTP6Q4Y81x1pWLk2smmbRRHcbNHlz+7IgUTjrhr1MTFg/EAWQ7HcLwnOQt0Z+mV0OFuzQvC09qvPohOiwK4ne
-X-Gm-Message-State: AOJu0YzRQ0QgoYH5tygMiFOagLF1THKMnS+jyJqKHFm9Vctmq3Y/pJAc
-	9olFx/UnUwuVKg95J8pg957ullW8RNiDLifrzuGU85WX0GnNpNFBO8Soqt8RbJsIFXuPtAJhwHI
-	x2ctD+xE2xi3gXmACaD+FppABwaE=
-X-Google-Smtp-Source: AGHT+IG9knaQtIRqfn4ZHCwMfQvYe8puPmTuerbrkxt1+4O7bN51WTFbnfOqGAYAD0O+trK2dNbyNLhrGBCMETeQvao=
-X-Received: by 2002:a17:906:b104:b0:a4e:1154:fa46 with SMTP id
- u4-20020a170906b10400b00a4e1154fa46mr2313605ejy.70.1711744156041; Fri, 29 Mar
- 2024 13:29:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7251119F;
+	Fri, 29 Mar 2024 20:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.22
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711744235; cv=fail; b=GDzU4MvlHuughD008EaBb4ArdmPSxvrw7lehhP4Ncrz1fV/5qz45MP6ygToUjWmIvwe98xVVErb8OqCTWIqixJRHMh1j2mgE2kWJZB+vae7XvO0Kf4jtQStQ9cSV7sb4ZnqhSkKFcjJpmSuK07VYx9xdj/jf39OF9cJmFScyXAI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711744235; c=relaxed/simple;
+	bh=SWefshFct54xFJD/iH0Dx6/CawPkEeCNsirAqclfn4Y=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=FQ1CAalUxft7s1no1Q/FdVvIrqDcTpcKm3pasmlJn5RFR2rtgt7vp9+ykHw1Z0EmUEvtZFgsN/47vcyXGykgxwYpKanBioUhpw+ejXHXNBe2sPxOge4XHljxLBzaeKsxGi8rvbmU7QrEsr9kADqZDMg+Lmyow0mtfWGrSUvS/9Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Vlmwz0fK; arc=fail smtp.client-ip=52.101.61.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gp6k/LsymeJXS/W3+/YC5+vbobyboQq61fJ/4bdbNKJfhh+c4bKgymWng3wj8slQSAGqVJExgCD1wfI3ZFolfStDuNwbWDMbkPiD6kJFr2L8HgeGm9Rc9fqHy6jaizd0nNIQ4pvL1/FIRDEUy84mYxvCzqU47EeNaO9n9AQpq8oGqv+paZ+C2mLEMX7KLmCwDGyBcO7jI2OizvOt05VcSHxfxStHzM2t0cV/Ux3waEIY39gnyS9G5awwg/aQnhIho3cTJoLdXiCqAlrB/MRIsIN/8Ds5jDv8+Lgo1U8BybhzINyvrdl7sfkDfPRQPV37APnG9woFuX1ZrTfsJvWijQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SWefshFct54xFJD/iH0Dx6/CawPkEeCNsirAqclfn4Y=;
+ b=MzyThPycBW9Ipyc0VWsTRoF+PmU0eHtW9Pnnl5gghgcK60joX2jTplKkcc3CZFK2fUjj8mcnfRUuB2DQdSHHXQHYp8G+xbKY3RTzqu80xtcwl7AekPK2sNirIXcSXfv4s9wrZP8i8nfovIXXtmnjAXkB3f1LM7rf7sWvYmCRV6ti/eLDvy2WGeLH5/vEmRN4gbdSho8tWaH09oa6pycpxJrzfY5LRVvYNbP/93UrJpgqAI0TqvYhht6XeshlkApKOQwrx0V3wVp35FVBlYuYH5hjsDY7rYk9Yq/N1MzxnJcvtBLM8RzAJ0czGWlYzbhNHvCpGki4xcw5UANU+jl4jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SWefshFct54xFJD/iH0Dx6/CawPkEeCNsirAqclfn4Y=;
+ b=Vlmwz0fKSRCNDLEEiuqEMPVC1+mOyonpyeXtacJXHW5kS8GlwCBVvEzMjq6Fee6kzpwNon068XfiA0/zpfyiYV63tIPlaraLUpK/If1PITvTTPODM2feV7LB5Gqh836ZcaaYMPxSdF8PtqcQVjpTPi5usq+kBoY1lm3RP3emqak=
+Received: from CY5PR21MB3759.namprd21.prod.outlook.com (2603:10b6:930:c::10)
+ by PH0PR21MB2079.namprd21.prod.outlook.com (2603:10b6:510:a8::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.17; Fri, 29 Mar
+ 2024 20:30:31 +0000
+Received: from CY5PR21MB3759.namprd21.prod.outlook.com
+ ([fe80::1c76:5d37:cef1:f135]) by CY5PR21MB3759.namprd21.prod.outlook.com
+ ([fe80::1c76:5d37:cef1:f135%5]) with mapi id 15.20.7452.001; Fri, 29 Mar 2024
+ 20:30:30 +0000
+From: Dexuan Cui <decui@microsoft.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, "hch@lst.de"
+	<hch@lst.de>, "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>, "zhangpeng362@huawei.com"
+	<zhangpeng362@huawei.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"mhklinux@outlook.com" <mhklinux@outlook.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] swiotlb: Do not set total_used to 0 in
+ swiotlb_create_debugfs_files()
+Thread-Topic: [PATCH] swiotlb: Do not set total_used to 0 in
+ swiotlb_create_debugfs_files()
+Thread-Index: AQHaghHPup60+Vul2EyICRlEmMkd0LFPJ6JggAACmpA=
+Date: Fri, 29 Mar 2024 20:30:30 +0000
+Message-ID:
+ <CY5PR21MB3759C7C9F4637F6D157635A1BF3A2@CY5PR21MB3759.namprd21.prod.outlook.com>
+References: <20240329192809.17318-1-decui@microsoft.com>
+ <07ed50c1-75a9-494c-8a6a-5edcc2d6f932@linux.microsoft.com>
+ <CY5PR21MB3759BEE344CCD8F20FBB4E4CBF3A2@CY5PR21MB3759.namprd21.prod.outlook.com>
+In-Reply-To:
+ <CY5PR21MB3759BEE344CCD8F20FBB4E4CBF3A2@CY5PR21MB3759.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f62ef308-7ef8-4c3c-bba0-bb7106167ec4;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-29T20:15:47Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR21MB3759:EE_|PH0PR21MB2079:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ZOkhUj5bTDK2dSeGYbXHSowvUO13M3+ta/i4Q5//H9mZRXPepGYhZQcSm1OcutDZ7h6P/1oNHa9nztW4fbVLecPRp9DMl3suHcgI+U7x3J82j142rw1FLL4USHwmW/COShThDVk4ur9dWJKX072wY91Hm8hshtvHyl8xeE297/QigdM6wuk7HmRPXProZjEVzMV8MGjSM9RLe/cBc41Kjs7TidNiYn/4uyOs+Z6eNxSxmxUvuPdn/yphoVvMOjCgXpEwKYEvITA3vn3rWTukDrEUyRrU4Y/ota+VIm62pGycLGTi0uYISg4TOR+edhVyZGHSCjf6frQGqeKOPC1ySoBqJyuwEzfCO/V4tRFoIjhELkpBAqSTxFUNWu3Sii2Zhcp1l3wItveKqlvAPvTBxdeaqFrNXeQR7KUbAv0Dc2Wrui4wm/RRvBQcCYZkxDuwcVcgDUDW4DUkJz+6QoPV2cszGoJkUdUwOdTAMaJVLOg4WEI7+uxefW+82J7U/VdYv+UJLRuPLqJNTIUn1A5SRhMnx250PoMMm48ToicnVvOcgzsJBHISmICQmKuzZS7bEn5cLMRv63sIzCHzxiVBmOHqiletrr8nfoLoxevjhYSUDDzhMvN15iW7aHNklI5eb/JQJ+rXcrv4B+3lrTWS+BW/fZkkoybOC7GjH3xpuss=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR21MB3759.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?d1hiUGlFeTloeXJ1U3FnSkc2clhuRmRRRk9oeDBGanJ5RVplcVJ6czlYTW5I?=
+ =?utf-8?B?UEpyUXc3bDZ1b3JYTW9FUzJzOEc4dVkycnJ0L0dvZCtLRVM0MkNvb0lPVWFV?=
+ =?utf-8?B?Y2lCNTZNazRwRlA3WFp0NTBtcDEyL04yVnJNK1hGZGNHRHBNUTNVWWdFSjJk?=
+ =?utf-8?B?c1NSMFU0UlNJTXVYSkJnRUR1TnR2d0dUalFDazRzMEV0TWZkWDRnUmpLNFN6?=
+ =?utf-8?B?Qk9lUm81em5oUUIramQzY05aRlZDVkJaUHBwWnAxZWhaOEJoNlVpQnlvajJY?=
+ =?utf-8?B?eThkR04yQkVQOVJZUkZ3eUh0ZWV4ODBjY3ZXUFg1RnRBWFpOMlJEVXVpdFlD?=
+ =?utf-8?B?UmRNVDBZSnZqakNUWnNxMEdIS1pRNkNBbjMwUjB3bWtNbDdqMTF1dzBwZTd3?=
+ =?utf-8?B?REFkWU81UFBWUlRwMC9ObVV6ZFY1N3pvdjlPRjRXd2VwODQ3YURGb3ZoMG5s?=
+ =?utf-8?B?d2lodlFaOURjMlBnd0NyR0MxcXd4ait2TmJ1djlsK2V5d3N3cTdZaEV4eWwx?=
+ =?utf-8?B?MGEzNnZnV3VCM3lIeUNUNWFuTjE4YmlxMmhneW1yME8va0xLVGtZdUpob3J4?=
+ =?utf-8?B?azNSMTJLeWhSWGh1U01mcGZSdTg3YzVYcnlKTjFSTVROdnI2SWFoNG5zZU1K?=
+ =?utf-8?B?V3I1VGM1MzFaajF5NXQ4amxpd1ArMU10Q2ZDZEErNDAreEVkWC9tOXM1ZnpL?=
+ =?utf-8?B?M3ZuOE92UmVRM1dQRXlZYURwMDlOWjZWV0dGWEk3SGttRGhDVmJwMHZnd0VY?=
+ =?utf-8?B?TzA4N21rOFgya3pvaldpazBXRysrRGRQTHlhTUlBak8xbS9YTVg1dGtjRmxW?=
+ =?utf-8?B?VTZ4OWZ6RTlKZDRHK0JkWTh4TnBGSUJDWDNhNGtFNzFlV3p0cFpPc3VBMndX?=
+ =?utf-8?B?RlZpVEVhaXd1K1oyMUw4S1BPT3BqcytVcTVka0VqNVRhamRGY3NEMEMwOFZl?=
+ =?utf-8?B?M2UxNU93TTdpWXBVOWNPbzhiTVFzNTczTElnQ2Y1K1l3U0JDRVV2SDNSUGtq?=
+ =?utf-8?B?bS93WGZ4UG5SUENvaGRZOGpidnBYc1FuYzhQeUljTElqbVFnZWl1ZTdwZTZP?=
+ =?utf-8?B?UEp5YyszMWViN1h3ckpaeElnMlFsazB4c0NpNFpidWtUVVZveFdtNDk5bWpl?=
+ =?utf-8?B?MFd4REMrdFRwakcvWkhMMFpoWUsyNGRwbE8rb0hodEdTa2x6bGZtMWxCMGtn?=
+ =?utf-8?B?dFNwWEhiWnV1bFRFVW9Gd2d3YkF3a2d2dzZFbmNXTkZOenZZczlSckwwWVpH?=
+ =?utf-8?B?clMyNEcwUTJGTW5kSnR6WTk2S0lnRitSR2g4U1FxNW1aLzRKeW1BZ2l0ZWtO?=
+ =?utf-8?B?Z3NuSUxIV0dpZlkxZ2xramNvdFhEME5UdkhiSUhXTElOR25QaHNobXpScXZL?=
+ =?utf-8?B?TFVvZ1BPeUF0MHIrMDNpVXNXRkxjbTRXaFpYZmE5TnBJVHp2c2JWS0FRWGdO?=
+ =?utf-8?B?QkN5UHNFTU1RWi9tclpzZUhJa3YrMUhyWlVPbUluWlUrSkhuZVZ4ZjBGRVJS?=
+ =?utf-8?B?Y1FOY2R2emlZRXNGOUgwbG4xR1hDZUFwWVlRWFc0N1dkaTdrOENSSGRYK0Zy?=
+ =?utf-8?B?WGp0TVJMaytFVVBjcXhOTmp0SUJ5K08xSUg0bnVncWUyT2xaMXMza25Nbk9r?=
+ =?utf-8?B?UnRhdnNHMVBVSFJWOHE5Ylo1L0J0bGt4T3lJVnNPN2xtZmw4NURiMXpyNjFO?=
+ =?utf-8?B?N0YvcWpITHNUVzNER1NzSGpGaU1pQmhCRE56ZkN5Vzlya2ZoeUgxbEhISE5q?=
+ =?utf-8?B?UW02bGd2SXQyc0RCRmk2Ym5VTDgyM2tmMDBFUzNraXZiMk5pK3FsWXFtWFd5?=
+ =?utf-8?B?VG1DUFhPRGZ0V3FHcnh3RWRzU0ZCNUR4SWJPNVEyUXpPN3EvOHNxTjdqQ1Jy?=
+ =?utf-8?B?SGZ4VHNsTHd1VjdMZ0NoWUpyaGNQMjZnZWMrenBreDlsR0JyaFdEZ1VodnFt?=
+ =?utf-8?B?QnhwVnVDRzJKdU1SRTh6aEo2RmJRNE1CSlkyWnJZdTJrSDd5N3dHWiswQTVD?=
+ =?utf-8?B?NnUwejhUcmR2S3RmMHgwcTZHWjZ2NFFpUy8vcUdxY0gzTVNhYlVIeWhFTTRq?=
+ =?utf-8?B?eDZSQ2hCa0hTV3pRTW9hdXFZVjA3UWswcE50T2prd0I1OEVyR3BhbW1NWnJ6?=
+ =?utf-8?B?RlgwSGxIRGttcWJCM2pLUTdCcVBSeU01OFNRc1k5RFYwRitzekJzUVhWaGVk?=
+ =?utf-8?Q?NDusLId4JLsw6eHbr8q+WPA=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Dave Airlie <airlied@gmail.com>
-Date: Sat, 30 Mar 2024 06:29:04 +1000
-Message-ID: <CAPM=9tyTKh_qXRW8MaTrRnjN=Da_hLLm66dj2_WcwFQ3e3O+kg@mail.gmail.com>
-Subject: [git pull] drm fixes for 6.9-rc2
-To: Linus Torvalds <torvalds@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: dri-devel <dri-devel@lists.freedesktop.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Linus,
-
-Regular fixes for rc2, quite a few i915/amdgpu as usual, some xe, and
-then mostly scattered around. rc3 might be quieter with the holidays
-but we shall see.
-
-Regards.
-Dave.
-
-drm-fixes-2024-03-30:
-drm fixes for 6.9-rc2
-
-bridge:
-- select DRM_KMS_HELPER
-
-dma-buf:
-- fix NULL-pointer deref
-
-dp:
-- fix div-by-zero in DP MST unplug code
-
-fbdev:
-- select FB_IOMEM_FOPS for SBus
-
-sched:
-- fix NULL-pointer deref
-
-xe:
-- Fix build on mips
-- Fix wrong bound checks
-- Fix use of msec rather than jiffies
-- Remove dead code
-
-amdgpu:
-- SMU 14.0.1 updates
-- DCN 3.5.x updates
-- VPE fix
-- eDP panel flickering fix
-- Suspend fix
-- PSR fix
-- DCN 3.0+ fix
-- VCN 4.0.6 updates
-- debugfs fix
-
-amdkfd:
-- DMA-Buf fix
-- GFX 9.4.2 TLB flush fix
-- CP interrupt fix
-
-i915:
-- Fix for BUG_ON/BUILD_BUG_ON IN I915_memcpy.c
-- Update a MTL workaround
-- Fix locking inversion in hwmon's sysfs
-- Remove a bogus error message around PXP
-- Fix UAF on VMA
-- Reset queue_priority_hint on parking
-- Display Fixes:
-- Remove duplicated audio enable/disable on SDVO and DP
-- Disable AuxCCS for Xe driver
-- Revert init order of MIPI DSI
-- DRRS debugfs fix with an extra refactor patch
-- VRR related fixes
-- Fix a JSL eDP corruption
- - Fix the cursor physical dma address
-- BIOS VBT related fix
-
-nouveau:
-- dmem: handle kcalloc() allocation failures
-
-qxl:
-- remove unused variables
-
-rockchip:
-- vop2: remove support for AR30 and AB30 formats
-
-vmwgfx:
-- debugfs: create ttm_resource_manager entry only if needed
-The following changes since commit 4cece764965020c22cff7665b18a012006359095=
-:
-
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
-
-are available in the Git repository at:
-
-  https://gitlab.freedesktop.org/drm/kernel.git tags/drm-fixes-2024-03-30
-
-for you to fetch changes up to b01f596ab1dd027ce937358007dc1fa3e5a25917:
-
-  Merge tag 'drm-intel-fixes-2024-03-28' of
-https://anongit.freedesktop.org/git/drm/drm-intel into drm-fixes
-(2024-03-30 05:34:06 +1000)
-
-----------------------------------------------------------------
-drm fixes for 6.9-rc2
-
-bridge:
-- select DRM_KMS_HELPER
-
-dma-buf:
-- fix NULL-pointer deref
-
-dp:
-- fix div-by-zero in DP MST unplug code
-
-fbdev:
-- select FB_IOMEM_FOPS for SBus
-
-sched:
-- fix NULL-pointer deref
-
-xe:
-- Fix build on mips
-- Fix wrong bound checks
-- Fix use of msec rather than jiffies
-- Remove dead code
-
-amdgpu:
-- SMU 14.0.1 updates
-- DCN 3.5.x updates
-- VPE fix
-- eDP panel flickering fix
-- Suspend fix
-- PSR fix
-- DCN 3.0+ fix
-- VCN 4.0.6 updates
-- debugfs fix
-
-amdkfd:
-- DMA-Buf fix
-- GFX 9.4.2 TLB flush fix
-- CP interrupt fix
-
-i915:
-- Fix for BUG_ON/BUILD_BUG_ON IN I915_memcpy.c
-- Update a MTL workaround
-- Fix locking inversion in hwmon's sysfs
-- Remove a bogus error message around PXP
-- Fix UAF on VMA
-- Reset queue_priority_hint on parking
-- Display Fixes:
-- Remove duplicated audio enable/disable on SDVO and DP
-- Disable AuxCCS for Xe driver
-- Revert init order of MIPI DSI
-- DRRS debugfs fix with an extra refactor patch
-- VRR related fixes
-- Fix a JSL eDP corruption
- - Fix the cursor physical dma address
-- BIOS VBT related fix
-
-nouveau:
-- dmem: handle kcalloc() allocation failures
-
-qxl:
-- remove unused variables
-
-rockchip:
-- vop2: remove support for AR30 and AB30 formats
-
-vmwgfx:
-- debugfs: create ttm_resource_manager entry only if needed
-
-----------------------------------------------------------------
-Andy Yan (1):
-      drm/rockchip: vop2: Remove AR30 and AB30 format support
-
-Bhanuprakash Modem (2):
-      drm/i915/drrs: Refactor CPU transcoder DRRS check
-      drm/i915/display/debugfs: Fix duplicate checks in i915_drrs_status
-
-Chris Bainbridge (1):
-      drm/dp: Fix divide-by-zero regression on DP MST unplug with nouveau
-
-Chris Park (1):
-      drm/amd/display: Prevent crash when disable stream
-
-Chris Wilson (1):
-      drm/i915/gt: Reset queue_priority_hint on parking
-
-Dave Airlie (5):
-      Merge tag 'drm-xe-fixes-2024-03-26' of
-https://gitlab.freedesktop.org/drm/xe/kernel into drm-fixes
-      Merge tag 'amd-drm-fixes-6.9-2024-03-27' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-      drm/i915: add bug.h include to i915_memcpy.c
-      Merge tag 'drm-misc-fixes-2024-03-28' of
-https://gitlab.freedesktop.org/drm/misc/kernel into drm-fixes
-      Merge tag 'drm-intel-fixes-2024-03-28' of
-https://anongit.freedesktop.org/git/drm/drm-intel into drm-fixes
-
-Duoming Zhou (1):
-      nouveau/dmem: handle kcalloc() allocation failure
-
-Eric Huang (1):
-      drm/amdkfd: fix TLB flush after unmap for GFX9.4.2
-
-George Shen (1):
-      drm/amd/display: Remove MPC rate control logic from DCN30 and above
-
-Hamza Mahfooz (1):
-      drm/amd/display: fix IPX enablement
-
-Harry Wentland (1):
-      Revert "drm/amd/display: Fix sending VSC (+ colorimetry) packets
-for DP/eDP displays without PSR"
-
-Janusz Krzysztofik (2):
-      drm/i915/hwmon: Fix locking inversion in sysfs getter
-      drm/i915/vma: Fix UAF on destroy against retire race
-
-Jocelyn Falempe (1):
-      drm/vmwgfx: Create debugfs ttm_resource_manager entry only if needed
-
-Johannes Weiner (1):
-      drm/amdgpu: fix deadlock while reading mqd from debugfs
-
-Jonathan Kim (1):
-      drm/amdkfd: range check cp bad op exception interrupts
-
-Jonathon Hall (1):
-      drm/i915: Do not match JSL in ehl_combo_pll_div_frac_wa_needed()
-
-Joonas Lahtinen (1):
-      drm/i915: Add includes for BUG_ON/BUILD_BUG_ON in i915_memcpy.c
-
-Jos=C3=A9 Roberto de Souza (1):
-      drm/i915: Do not print 'pxp init failed with 0' when it succeed
-
-Juha-Pekka Heikkila (1):
-      drm/i915/display: Disable AuxCCS framebuffers if built for Xe
-
-Lang Yu (2):
-      drm/amdgpu/umsch: update UMSCH 4.0 FW interface
-      drm/amdgpu: enable UMSCH 4.0.6
-
-Luca Weiss (1):
-      drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-
-Lucas De Marchi (1):
-      drm/xe: Fix END redefinition
-
-Mario Limonciello (1):
-      drm/amd: Flush GFXOFF requests in prepare stage
-
-Matthew Auld (5):
-      drm/xe/guc_submit: use jiffies for job timeout
-      drm/xe/queue: fix engine_class bounds check
-      drm/xe/device: fix XE_MAX_GT_PER_TILE check
-      drm/xe/device: fix XE_MAX_TILES_PER_DEVICE check
-      drm/xe/query: fix gt_id bounds check
-
-Miguel Ojeda (2):
-      drm/qxl: remove unused `count` variable from `qxl_surface_id_alloc()`
-      drm/qxl: remove unused variable from `qxl_process_single_command()`
-
-Mukul Joshi (1):
-      drm/amdkfd: Check cgroup when returning DMABuf info
-
-Natanel Roizenman (1):
-      drm/amd/display: Increase Z8 watermark times.
-
-Neil Armstrong (1):
-      Revert "drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE"
-
-Nirmoy Das (1):
-      drm/xe: Remove unused xe_bo->props struct
-
-Pavel Sakharov (1):
-      dma-buf: Fix NULL pointer dereference in sanitycheck()
-
-Peyton Lee (1):
-      drm/amdgpu/vpe: power on vpe when hw_init
-
-Roman Li (1):
-      drm/amd/display: Fix bounds check for dcn35 DcfClocks
-
-Sung Joon Kim (1):
-      drm/amd/display: Update dcn351 to latest dcn35 config
-
-Taimur Hassan (1):
-      drm/amd/display: Send DTBCLK disable message on first commit
-
-Tejas Upadhyay (1):
-      drm/i915/mtl: Update workaround 14018575942
-
-Thomas Zimmermann (3):
-      Merge drm/drm-fixes into drm-misc-fixes
-      Merge drm/drm-fixes into drm-misc-fixes
-      fbdev: Select I/O-memory framebuffer ops for SBus
-
-Ville Syrj=C3=A4l=C3=A4 (6):
-      drm/i915: Stop doing double audio enable/disable on SDVO and g4x+ DP
-      drm/i915/dsi: Go back to the previous INIT_OTP/DISPLAY_ON order, most=
-ly
-      drm/i915/vrr: Generate VRR "safe window" for DSB
-      drm/i915/dsb: Fix DSB vblank waits when using VRR
-      drm/i915: Pre-populate the cursor physical dma address
-      drm/i915/bios: Tolerate devdata=3D=3DNULL in
-intel_bios_encoder_supports_dp_dual_mode()
-
-Vitaly Prosyak (1):
-      drm/sched: fix null-ptr-deref in init entity
-
-Wenjing Liu (1):
-      drm/amd/display: fix a dereference of a NULL pointer
-
-Xi Liu (2):
-      drm/amd/display: increase bb clock for DCN351
-      drm/amd/display: Set DCN351 BB and IP the same as DCN35
-
-lima1002 (1):
-      drm/amd/swsmu: add smu 14.0.1 vcn and jpeg msg
-
- drivers/dma-buf/st-dma-fence-chain.c               |   6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   2 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c      |   1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c           |  46 +++++----
- drivers/gpu/drm/amd/amdgpu/amdgpu_umsch_mm.c       |  12 ++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_umsch_mm.h       |  20 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c            |   6 ++
- drivers/gpu/drm/amd/amdgpu/umsch_mm_v4_0.c         |   7 +-
- drivers/gpu/drm/amd/amdkfd/kfd_chardev.c           |   4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_int_process_v10.c   |   3 +-
- drivers/gpu/drm/amd/amdkfd/kfd_int_process_v11.c   |   3 +-
- drivers/gpu/drm/amd/amdkfd/kfd_int_process_v9.c    |   3 +-
- drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |   2 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |   8 +-
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.c  |   8 +-
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_psr.h  |   2 +-
- .../amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c   |   7 +-
- drivers/gpu/drm/amd/display/dc/core/dc.c           |   6 +-
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.c   |  54 ++++++-----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_mpc.h   |  14 +--
- drivers/gpu/drm/amd/display/dc/dcn32/dcn32_mpc.c   |   5 +-
- .../gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c   |   4 +-
- .../gpu/drm/amd/display/dc/dml/dcn351/dcn351_fpu.c | 103 +++++++++++++++++=
-----
- .../amd/display/dc/dml2/dml2_translation_helper.c  |   6 +-
- .../drm/amd/display/dc/hwss/dce110/dce110_hwseq.c  |   3 +-
- .../drm/amd/display/dc/hwss/dcn314/dcn314_hwseq.c  |  41 --------
- .../drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c    |  41 --------
- .../drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c    |  41 --------
- .../drm/amd/display/dc/hwss/dcn351/dcn351_init.c   |   2 +-
- .../display/dc/resource/dcn351/dcn351_resource.c   |  11 ++-
- .../amd/display/modules/info_packet/info_packet.c  |  13 +--
- drivers/gpu/drm/amd/include/umsch_mm_4_0_api_def.h |  13 ++-
- .../amd/pm/swsmu/inc/pmfw_if/smu_v14_0_0_ppsmc.h   |  28 +++---
- drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h       |  10 ++
- drivers/gpu/drm/amd/pm/swsmu/smu14/smu_v14_0.c     |  50 ++++++++--
- .../gpu/drm/amd/pm/swsmu/smu14/smu_v14_0_0_ppt.c   |  21 +++--
- drivers/gpu/drm/display/drm_dp_helper.c            |   7 ++
- drivers/gpu/drm/i915/display/g4x_dp.c              |   2 -
- drivers/gpu/drm/i915/display/icl_dsi.c             |   3 +-
- drivers/gpu/drm/i915/display/intel_bios.c          |  46 +++++++--
- drivers/gpu/drm/i915/display/intel_cursor.c        |   4 +-
- drivers/gpu/drm/i915/display/intel_display_types.h |   1 +
- drivers/gpu/drm/i915/display/intel_dp.c            |  12 +--
- drivers/gpu/drm/i915/display/intel_dpll_mgr.c      |   2 +-
- drivers/gpu/drm/i915/display/intel_drrs.c          |  14 ++-
- drivers/gpu/drm/i915/display/intel_drrs.h          |   3 +
- drivers/gpu/drm/i915/display/intel_dsb.c           |  14 +++
- drivers/gpu/drm/i915/display/intel_fb_pin.c        |  10 ++
- drivers/gpu/drm/i915/display/intel_sdvo.c          |   4 -
- drivers/gpu/drm/i915/display/intel_vrr.c           |   7 +-
- drivers/gpu/drm/i915/display/skl_universal_plane.c |   3 +
- drivers/gpu/drm/i915/gt/intel_engine_pm.c          |   3 -
- .../gpu/drm/i915/gt/intel_execlists_submission.c   |   3 +
- drivers/gpu/drm/i915/gt/intel_workarounds.c        |   1 +
- drivers/gpu/drm/i915/i915_driver.c                 |   2 +-
- drivers/gpu/drm/i915/i915_hwmon.c                  |  37 ++++----
- drivers/gpu/drm/i915/i915_memcpy.c                 |   2 +
- drivers/gpu/drm/i915/i915_reg.h                    |   2 +-
- drivers/gpu/drm/i915/i915_vma.c                    |  50 ++++++++--
- drivers/gpu/drm/nouveau/nouveau_dmem.c             |  12 +--
- drivers/gpu/drm/qxl/qxl_cmd.c                      |   2 -
- drivers/gpu/drm/qxl/qxl_ioctl.c                    |   4 +-
- drivers/gpu/drm/rockchip/rockchip_vop2_reg.c       |   2 -
- drivers/gpu/drm/scheduler/sched_entity.c           |  12 ++-
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c                |  15 +--
- drivers/gpu/drm/xe/xe_bo.c                         |  59 ++----------
- drivers/gpu/drm/xe/xe_bo_types.h                   |  19 ----
- drivers/gpu/drm/xe/xe_device.h                     |   4 +-
- drivers/gpu/drm/xe/xe_exec_queue.c                 |   2 +-
- drivers/gpu/drm/xe/xe_guc_submit.c                 |   2 +-
- drivers/gpu/drm/xe/xe_lrc.c                        |  20 ++--
- drivers/gpu/drm/xe/xe_query.c                      |   2 +-
- drivers/video/fbdev/Kconfig                        |   3 +
- include/uapi/linux/kfd_ioctl.h                     |  17 +++-
- 74 files changed, 565 insertions(+), 448 deletions(-)
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR21MB3759.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1682ad3b-ce5c-4b61-f180-08dc502f13f1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2024 20:30:30.7604
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aleZ3OzunMwhjq1SZ2miNbEDX9ILoHLc8ePHhc57HduApEmR/J9o6PC3HgZ9A9lHRS8ONVx2tDm3aKOZxhlaZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB2079
+
+PiBGcm9tOiBEZXh1YW4gQ3VpDQo+IFNlbnQ6IEZyaWRheSwgTWFyY2ggMjksIDIwMjQgMToyMyBQ
+TQ0KPiBUbzogRWFzd2FyIEhhcmloYXJhbiA8ZWFoYXJpaGFAbGludXgubWljcm9zb2Z0LmNvbT47
+IGhjaEBsc3QuZGU7DQo+IG0uc3p5cHJvd3NraUBzYW1zdW5nLmNvbTsgcm9iaW4ubXVycGh5QGFy
+bS5jb207DQo+IHpoYW5ncGVuZzM2MkBodWF3ZWkuY29tOyBpb21tdUBsaXN0cy5saW51eC5kZXY7
+DQo+IG1oa2xpbnV4QG91dGxvb2suY29tDQo+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
+b3JnOyBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0hdIHN3aW90
+bGI6IERvIG5vdCBzZXQgdG90YWxfdXNlZCB0byAwIGluDQo+IHN3aW90bGJfY3JlYXRlX2RlYnVn
+ZnNfZmlsZXMoKQ0KPiANCj4gPiBGcm9tOiBFYXN3YXIgSGFyaWhhcmFuIDxlYWhhcmloYUBsaW51
+eC5taWNyb3NvZnQuY29tPg0KPiA+IFNlbnQ6IEZyaWRheSwgTWFyY2ggMjksIDIwMjQgMTI6NDcg
+UE0NCj4gPiBbLi4uXQ0KPiA+IFNvcnJ5LCBJJ20gbWlzc2luZyBhIHdoeSBpbiB0aGlzIGNvbW1p
+dCBtZXNzYWdlLiBDYW4geW91IHNheSB3aGF0DQo+IGhhcHBlbnMNCj4gPiBpZiB0aGUgdG90YWxf
+dXNlZCBhbmQgdXNlZF9oaXdhdGVyIElTIGJsaW5kbHkgc2V0IHRvIDA/IElzIHRoZSBvbmx5IGVm
+ZmVjdA0KPiA+IHRoZSBjaGFuZ2UgIGluIHRoZSByZWFkb3V0IG9mIHRoZSBzd2lvdGxiIGRlYnVn
+ZnMgZmlsZXM/DQo+ID4NCj4gPiBUaGFua3MsDQo+ID4gRWFzd2FyDQo+IA0KPiBSaWdodCwgd2hl
+biB0aGUgc3lzdGVtIGlzIG5vdCBkb2luZyBhbnkgSS9PLCB0aGUgcmVhZG91dCBtYXkNCj4gcmV0
+dXJuIGEgaHVnZSBudW1iZXIgd2hpbGUgaXQgc2hvdWxkIHJldHVybiAwLiBUaGlzIGlzIHRoZSBv
+bmx5IGVmZmVjdC4NCj4gDQo+IFRoYW5rcywNCj4gRGV4dWFuDQoNCkxldCBtZSBzaGFyZSBtb3Jl
+IGRldGFpbHMuDQoNCmtlcm5lbC9kbWEvc3dpb3RsYi5jIHVzZXMgaW5jX3VzZWRfYW5kX2hpd2F0
+ZXIoKSBhbmQgZGVjX3VzZWQoKQ0KdG8gZG8gdGhlIGFjY291bnRpbmcuDQoNClRoZSBpc3N1ZSBo
+YXBwZW5zIHRoaXMgd2F5Og0KDQoxLiBpbmNfdXNlZF9hbmRfaGl3YXRlcigpIGFkZHMgbiB0byB0
+b3RhbF91c2VkLg0KMi4gc3dpb3RsYl9jcmVhdGVfZGVidWdmc19maWxlcygpIHNldHMgdG90YWxf
+dXNlZCB0byAwLg0KMy4gZGVjX3VzZWQoKSBkZWNyZWFzZXMgdG90YWxfdXNlZCBieSBuLCBpLmUu
+IHRvdGFsX3VzZWQgaW5jb3JyZWN0bHkgDQpiZWNvbWVzIGEgbmVnYXRpdmUgbnVtYmVyIC1uLCB3
+aGljaCBpcyBhIGh1Z2UgbnVtYmVyIHNpbmNlDQptZW1fdXNlZCgpIGNvbnZlcnRzIHRoZSAnbG9u
+ZycgdG8gJ3Vuc2lnbmVkIGxvbmcnLg0KDQpUaGFua3MsDQpEZXh1YW4NCg0K
 
