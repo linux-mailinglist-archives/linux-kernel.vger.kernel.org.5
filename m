@@ -1,49 +1,50 @@
-Return-Path: <linux-kernel+bounces-124514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D369189192B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:36:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19061891930
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:37:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BE90B2227C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:36:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3F71C24BFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09B01442E5;
-	Fri, 29 Mar 2024 12:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B981A1448C3;
+	Fri, 29 Mar 2024 12:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NCjt5GTP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIECqaRV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB48F143C6B;
-	Fri, 29 Mar 2024 12:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CE713342F;
+	Fri, 29 Mar 2024 12:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715278; cv=none; b=smhVXWC5R8C/Fdu2yKq08l2l1QXuDma8Ap6Eejn16buk30Zd6PQZmvfeTDqEKT+pSw+8OG28BLXWE3T5Vd4NP0ztn3SrqycLHRM4kCloeUCIQGJSJeCfvEqmqelm2QgQQFxgvqSahPo3pqzZHucv/orfXzIvr+K7EFzbKu+Czbw=
+	t=1711715279; cv=none; b=Yfr5w2nuP7NUpFWCAWaDlQ7alvBgsMiCs7HegI0nb67Yt/hj8WTh/vSwIJUb+2IVvZ7B39xZvVyaBeZ6LTkXKkH0JDqkYQT+3mQ98ja0dge3igy0XBDFAWv8rNz0v5JpJYNlK54IzQiEQRnbbCeQZG/r9aKrcdQT0pQdqazixmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715278; c=relaxed/simple;
-	bh=yZjEyQ6wVYJcUJHFayk7cT+3Wo/67muuoddgJbxgicw=;
+	s=arc-20240116; t=1711715279; c=relaxed/simple;
+	bh=Kps7FkLHl15XxPJabm+dtUCA7YF7PfDf7FI2VXBD8Ps=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jJqd4PH1gdkjCWDfRO7oWraEVOAcfiMwFbw7eqy+2t/LAkvNO+33tx1GltuwW5lP8U6j0LGy1iQUxKgXgBICvpCqiUtKWL8GRgi3Ng1KjFV+xbyQxO1Girjhy8RhSqqyHAIax/voVvRhFAfZBoqSKa9BMwrLtOnHyUIXRe9jfB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NCjt5GTP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92097C43399;
-	Fri, 29 Mar 2024 12:27:56 +0000 (UTC)
+	 MIME-Version; b=YWXM2yifJDCEkQK1XVQeu8SqDzKU4t+vd3nnmAI0zOAipuseC6RVn1SsumMDdDBpnb/A9fgB5yi3Rqh9lfePOh/C7EOuKh7pm9IdgeFwDwPILBkXJ6pjZiMSeWOUvq46U/U1W6GfvDKrgPOWx9wV6yPNinxJ7/FiVKivKXe6IwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UIECqaRV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D43AC433F1;
+	Fri, 29 Mar 2024 12:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715277;
-	bh=yZjEyQ6wVYJcUJHFayk7cT+3Wo/67muuoddgJbxgicw=;
+	s=k20201202; t=1711715279;
+	bh=Kps7FkLHl15XxPJabm+dtUCA7YF7PfDf7FI2VXBD8Ps=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NCjt5GTPQrdq0BGsR8wn+sL1G6SNRPqoX341P0x5v2aUKgyZ8X4qt8jYlU9K8mADy
-	 zn+csPrICh2pYPyNYALCrSzQHD0bOJwvJpVMIpe+RKrwelInrEFaQaVE+VB76Ym2Q8
-	 a2R1qwFkNichJTobYPVFGzQLLBEE//8BU4Ip9eXcZdjF6zkodUs4UdETeM9/dwO+8B
-	 2ikRwoFdfEv30TNyiqPr98ENKrX3ck5WlfvKyWUeqiHiHGD4zmXNHCmgJu0lJtIW+y
-	 z/KbTSoS65uCPQhpruv1WWaIU7OlfuEnulJxglE//5osA04fm/0yO2RQLlDYOp7SPb
-	 ZWpW+8Pz9av+Q==
+	b=UIECqaRVmPdcX7JUnUxIsh+5MreHWoTVA9JlZkLMi9IGDYC+/fFiwHMRblS4JRzGs
+	 N8OJsY9cSSeNNLfIuU9cHZa14ozvuJJ9KHYK3UOji0C73Fs9FhU/RQjCqoRkLwRVv/
+	 p7sEJkDABNz8DZuiXkuRFXewG91dqjSXq/jNxUpbAHmPxfqFXtN4wqsgvPXF6aIlkr
+	 qSJrChbcWMpewsQUElFIaWxQyqvJLJhbSDOywZ6JoG5aNjJ7L8fe+ucrBQ8lwoc5eY
+	 650srB6MddVY4HJB0XKd/uC/pdp0kPml7XCBu2wLbudVfYWdyofDcM9Tj8uWNAFZ8b
+	 R32JllQgy+MzA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	konrad.dybcio@linaro.org,
@@ -52,9 +53,9 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	conor+dt@kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 33/68] arm64: dts: sm8450: correct DMIC2 and DMIC3 pin config node names
-Date: Fri, 29 Mar 2024 08:25:29 -0400
-Message-ID: <20240329122652.3082296-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 34/68] arm64: dts: sm8550: correct DMIC2 and DMIC3 pin config node names
+Date: Fri, 29 Mar 2024 08:25:30 -0400
+Message-ID: <20240329122652.3082296-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
 References: <20240329122652.3082296-1-sashal@kernel.org>
@@ -71,39 +72,26 @@ Content-Transfer-Encoding: 8bit
 
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 0d3eb7ff1f3a994a5b3e49a9bd48f0c2f3c80ef5 ]
+[ Upstream commit c6e5bf9278749eaa094dc944add747f10a15dceb ]
 
 Correct the TLMM pin configuration and muxing node names used for DMIC2
 and DMIC3 (dmic01 -> dmic23).  This has no functional impact, but
 improves code readability and avoids any confusion when reading the DTS.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/r/20240212172335.124845-2-krzysztof.kozlowski@linaro.org
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Link: https://lore.kernel.org/r/20240212172335.124845-3-krzysztof.kozlowski@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8450-hdk.dts | 2 +-
- arch/arm64/boot/dts/qcom/sm8450.dtsi    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
-index a20d5d76af352..5a6e0b34934cb 100644
---- a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
-@@ -1147,7 +1147,7 @@ &usb_1_qmpphy_usb_ss_in {
- };
- 
- &vamacro {
--	pinctrl-0 = <&dmic01_default>, <&dmic02_default>;
-+	pinctrl-0 = <&dmic01_default>, <&dmic23_default>;
- 	pinctrl-names = "default";
- 	vdd-micb-supply = <&vreg_s10b_1p8>;
- 	qcom,dmic-sample-rate = <600000>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-index 01e4dfc4babd2..0a802c9a3c8f7 100644
---- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-@@ -3934,7 +3934,7 @@ data-pins {
+diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+index ee1ba5a8c8fc2..a6663eefd3a30 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+@@ -2507,7 +2507,7 @@ data-pins {
  				};
  			};
  
