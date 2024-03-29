@@ -1,403 +1,197 @@
-Return-Path: <linux-kernel+bounces-125156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5917C89213F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:07:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 658FF892152
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:11:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F998288627
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:07:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8723B234DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E7D85C5D;
-	Fri, 29 Mar 2024 16:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E3885620;
+	Fri, 29 Mar 2024 16:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gXP3Yvn2"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="n8fm4s9G"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB1B85620
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B7017E
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711728439; cv=none; b=NI5tAvYFJ9OPU7/sUOeY13G6jFxe46urQahxsNAeqlFGbD7bWucqQOVZow6Dfoo8tMDxFv33apJuQRlKKutrB69mOHmfE2HxJQVyWW3XLLePOtP9Xznxf0f65h3A9+f2DEHIX/X5HibjaKRs61Yof3kgft8/d1t505DoRRqkfsU=
+	t=1711728495; cv=none; b=HBceoGFcy5+7tSVp1Qwvpd0nsPQ9oNR5UJaNh5zA/pRvFZfaRDO2PnNDGnOYZ5Fs+aoAOA5wFj4PFAdgDl17NBpGli8+By+8VzYs+P/+novNcsmDVB0c/Y0BNCJWLGBs7HuX/69YdL0PS3JWPxpnNJjPfqoqRrP9q4pbVKT9EMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711728439; c=relaxed/simple;
-	bh=uVZ8lncSEx9CgZgnVNmxK+Avk1jx1A/buaRNSBdBkc8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bR7RKn+1uSU/p77dJWEorphiOKxaUM/mlAzW0SzQuaOA2jtKC9ObUVnihDPNIpuIHUAr7SkQBa5d49RtVOBEA13Zr0meUijc8OkAIrEuEzCEvJ2EnlRFEEiXhChI4jZNrNU4ugC4dkMIfJYbbiFeR5bUwNGzUYK4LlKcSRlfmBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gXP3Yvn2; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-341cf77b86bso1390286f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:07:16 -0700 (PDT)
+	s=arc-20240116; t=1711728495; c=relaxed/simple;
+	bh=ORDMO7iq+qG47Ethl6mIy/3F1xWCTVmKAZEo+I/HjQE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YfbKEX0PSyuhjiB2ZtaT2aE/O7s1cAjIVerlUjxWqWS1rCYErBhywJ5VEYNE/xaL3UJlvGDZO4KsJHc4KakLlswCyjWeZRIifO1RhhoR9u4P8nD8CoGoh4sq/9JYI6ENuNoC807PHlAypDXUtefJXYGvOe/ZvKyWjbD6O2/QtHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=n8fm4s9G; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e062f3a47bso128745ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711728435; x=1712333235; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NkjrKE6IuMRJrcH8UKGD1gXPrQ5QNm+lu1/8bGgH4ic=;
-        b=gXP3Yvn2nCksWB2s+DQJfXyA3DLjho1vR825qPT5s3tzWzpW58ryo79uLPKRAf2maP
-         xlf/UDF7v3OCcYWim1I6y7yrTdFatTtouQJzA86quESJSl0lLKWvEiLBuZ/lDwpkR57L
-         OQXSGD9k8Cm+SkQx1qhRttL1HFx2m3B6iycF6lF0SF/XwnG5vPRqecm70Kc9hNqAxNxh
-         EeGgsOF+msCM/1SYb4J927KoWPqpgeWM2vTJIsGeDI+HzlPCX906HtGbthqb2opxnw54
-         XYJ9//9sQ6T6fwKrI6gdxrzEUHFWjwGvEGBjpTnl+vZitgvMUUrHHferetWT2ffofYg/
-         219g==
+        d=google.com; s=20230601; t=1711728493; x=1712333293; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LjmlQ3HD86lPrX4N3/sKMd9ZFH0zbBs9cXcgFLc2t20=;
+        b=n8fm4s9G+feAxDHUibBXslYDeiI0SiPzvFToPgGKl7v1vPxcoWQ7zxJCZhASohW26e
+         Uhq7PPFtCSWx0IhHzeWFG6YeP02p5fnuwGk53YrC18xjrsZOUOINSYqEOkWBsdiSY5OJ
+         uac/q41GZ1ho0t1ICZrL5WwkzrdtKLQm9TArFi81K58OW9BCqfeAX9CAOKoaBwLOOK7G
+         C7Ypg+AL+8JN1cuQl2bI1pQgyvlhDdaeMmy4a8ewuAuVCoUJRcDxvilNXeOGupw3wYmo
+         fDv/4MvFCadxy+Ko5cO8xPY0lB/9jdMTq++WLeZms2s0XsP8Cf+zaqCv5UcZNPujNMjH
+         PqMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711728435; x=1712333235;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NkjrKE6IuMRJrcH8UKGD1gXPrQ5QNm+lu1/8bGgH4ic=;
-        b=pKtkm+g5OuAOuRaigzsFCBOOi62Jyulm+/fh+CE2y1jSysvj3KhnEx8OVhbDFB6hon
-         fat3iIR5MsvL4dsIzF3zbJQwp/bp+tTFzwentyXl4Fd4qzIdjgD2h0QRMrricyx+gGbb
-         FXYH4hMz5ITORb0NUq11cbbhqj8Ym5Z/oYEEwxhVBX6NBeAOiBFGnU2qc6GtZO5xOMa/
-         9cZgScyafb3fJq5fFvtmRLxvTedumrtEXtWEplutYXLrTyIQdOM9F2XvjOcmBc0vUe1a
-         RST/4obnrzf0oGHfJSw1eBucrl3/XGshruh+NXxBoSVhp1SHwRhkOgaRKvtrPIR87QN1
-         qmow==
-X-Forwarded-Encrypted: i=1; AJvYcCWrT+7a8ZmmeKPX1cfc33vH6FOArpjDT4K1CIYYNTfMyRil5IrQa6vhJdO+Ljyl6qj3v0UQe8eIX9xJFtuZUniZmymA5VXpgTxDSGm4
-X-Gm-Message-State: AOJu0Yy6iEMZSyLMgWHG/odV/R2LWZ+S9vQC11aLv73CTGKbD59OLJwM
-	Wzt8MyLCS0KemyFiRkKnojx4tLLe/gNVRG3HTVMuklCkYMeHcNslvrSrlNl/JRE=
-X-Google-Smtp-Source: AGHT+IFuCPG+afiseNRtV6C8sMI1cvLkX2q2Mn+253xYnh8lGDw5llJy33URLv+YoNPPIFIxTDY2Ag==
-X-Received: by 2002:a5d:4b08:0:b0:341:8c2e:5001 with SMTP id v8-20020a5d4b08000000b003418c2e5001mr1696413wrq.64.1711728435308;
-        Fri, 29 Mar 2024 09:07:15 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:3cd8:c97b:1468:c232? ([2a01:e0a:982:cbb0:3cd8:c97b:1468:c232])
-        by smtp.gmail.com with ESMTPSA id k17-20020adff5d1000000b00341b7388dafsm4478433wrp.77.2024.03.29.09.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 09:07:14 -0700 (PDT)
-Message-ID: <7424b114-05df-4603-88ac-ba59aec45c9e@linaro.org>
-Date: Fri, 29 Mar 2024 17:07:13 +0100
+        d=1e100.net; s=20230601; t=1711728493; x=1712333293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LjmlQ3HD86lPrX4N3/sKMd9ZFH0zbBs9cXcgFLc2t20=;
+        b=jum6d0PjCxYNns5n0kUtbT924y1Hq759diIFtlv0E0ExIP3dnM9LgLPX8FOKvxTYAs
+         7sgpgMyUNTaRsDOGExJTaTgUbc9nV7sQUy93folhUrdkXZEcWjGldENprula1EpC+Jsy
+         XMPywn5rNx0zZQSyIf3q1lheTXTP8WGz59kluG1xl5NBKxJ1DFXDIOY8uydW0OJ+c/kC
+         h6TO36GHh2y4UW5EWdcwkLBcBIwoLLbrab+CnZFkHydatwDLgNcMUMCPwoY4KJG3+Jj+
+         NRkVHYPReapLO6/oh1q+kzrK1B/GhoQOCHb6e4Idt2Y8KBhywL+zOEquOVr91IyLBC0h
+         YeBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNfhKr6UxBYG6wP0KSxlQN/065b0L2v+tuTzbVaCYlkBvdqfdLLvYjnGbkZPCGqYhqOIRGGCig/8SAS74XNJMrkvFpxu0sl2j3r5ax
+X-Gm-Message-State: AOJu0YyRrny9/MOhYchajW/CnGnV1CfVXft3tFCtFf77g4JDVVtH2vGs
+	niHadgVPUcLmJ9TNPqikdVPek6wV94/PhbMwdYpk3AAF53b2EWKe44U9I/dWGg+gp1Mhl8zoGTq
+	MxMtDya3NsGdZp4Yta4sCl9slWDs4sgLAAmxf
+X-Google-Smtp-Source: AGHT+IHi6OBA8+HHba49tAMrF0+49yLt28nckztPyAAHs4YZnyDvMq8fTZY26cB8lS7oxNChTnry3NOO6svsqsw+DrI=
+X-Received: by 2002:a17:902:f54a:b0:1e2:578:b531 with SMTP id
+ h10-20020a170902f54a00b001e20578b531mr217572plf.14.1711728492740; Fri, 29 Mar
+ 2024 09:08:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v11 2/7] clk: meson: add vclk driver
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Nicolas Belin <nbelin@baylibre.com>, Jagan Teki
- <jagan@amarulasolutions.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- dri-devel@lists.freedesktop.org
-References: <20240325-amlogic-v6-4-upstream-dsi-ccf-vim3-v11-0-04f55de44604@linaro.org>
- <20240325-amlogic-v6-4-upstream-dsi-ccf-vim3-v11-2-04f55de44604@linaro.org>
- <1jzfuh8bd7.fsf@starbuckisacylon.baylibre.com>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <1jzfuh8bd7.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240328055857.383180-1-yangjihong@bytedance.com>
+ <CAP-5=fXms1noWT8PXqBu89QogcwVsvAGpxq3Q_bNUYOYL7PpKA@mail.gmail.com> <2e44ae50-d4af-4788-9274-aaf345bac066@bytedance.com>
+In-Reply-To: <2e44ae50-d4af-4788-9274-aaf345bac066@bytedance.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 29 Mar 2024 09:08:01 -0700
+Message-ID: <CAP-5=fWDY9Aj+qHNOuwJ9yE==G=vmCzECXYEZAifOhGHX7yr6w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 1/2] perf sched timehist: Fix
+ -g/--call-graph option failure
+To: Yang Jihong <yangjihong@bytedance.com>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
+	james.clark@arm.com, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 29/03/2024 13:33, Jerome Brunet wrote:
-> 
-> On Mon 25 Mar 2024 at 12:09, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> 
->> The VCLK and VCLK_DIV clocks have supplementary bits.
->>
->> The VCLK gate has a "SOFT RESET" bit to toggle after the whole
->> VCLK sub-tree rate has been set, this is implemented in
->> the gate enable callback.
->>
->> The VCLK_DIV clocks as enable and reset bits used to disable
->> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
->> the rate is set while the divider is disabled and in reset mode.
->>
->> The VCLK_DIV enable bit isn't implemented as a gate since it's part
->> of the divider logic and vendor does this exact sequence to ensure
->> the divider is correctly set.
-> 
-> checkpatch reports a few easy CHECKs and one WARNING.
-> Could you please fix these ?
-> 
-> Other than that, It looks OK.
+On Thu, Mar 28, 2024 at 8:02=E2=80=AFPM Yang Jihong <yangjihong@bytedance.c=
+om> wrote:
+>
+> Hello,
+>
+> Sorry, due to the new email settings, the last reply email was in html
+> format, resend it now.
+>
+> On 3/29/24 00:02, Ian Rogers wrote:
+> > On Wed, Mar 27, 2024 at 10:59=E2=80=AFPM Yang Jihong <yangjihong@byteda=
+nce.com> wrote:
+> >>
+> >> When perf-sched enables the call-graph recording, sample_type of dummy
+> >> event does not have PERF_SAMPLE_CALLCHAIN, timehist_check_attr() check=
+s
+> >> that the evsel does not have a callchain, and set show_callchain to 0.
+> >>
+> >> Currently perf sched timehist only saves callchain when processing
+> >> sched:sched_switch event, timehist_check_attr() only needs to determin=
+e
+> >> whether the event has PERF_SAMPLE_CALLCHAIN.
+> >>
+> >> Before:
+> >>    # perf sched record -g true
+> >>    [ perf record: Woken up 0 times to write data ]
+> >>    [ perf record: Captured and wrote 4.153 MB perf.data (7536 samples)=
+ ]
+> >>    # perf sched timehist
+> >>    Samples do not have callchains.
+> >>               time    cpu  task name                       wait time  =
+sch delay   run time
+> >>                            [tid/pid]                          (msec)  =
+   (msec)     (msec)
+> >>    --------------- ------  ------------------------------  ---------  =
+---------  ---------
+> >>      147851.826019 [0000]  perf[285035]                        0.000  =
+    0.000      0.000
+> >>      147851.826029 [0000]  migration/0[15]                     0.000  =
+    0.003      0.009
+> >>      147851.826063 [0001]  perf[285035]                        0.000  =
+    0.000      0.000
+> >>      147851.826069 [0001]  migration/1[21]                     0.000  =
+    0.003      0.006
+> >>    <SNIP>
+> >>
+> >> After:
+> >>    # perf sched record -g true
+> >>    [ perf record: Woken up 1 times to write data ]
+> >>    [ perf record: Captured and wrote 2.572 MB perf.data (822 samples) =
+]
+> >>    # perf sched timehist
+> >>               time    cpu  task name                       wait time  =
+sch delay   run time
+> >>                            [tid/pid]                          (msec)  =
+   (msec)     (msec)
+> >>    --------------- ------  ------------------------------  ---------  =
+---------  ---------
+> >>      144193.035164 [0000]  perf[277062]                        0.000  =
+    0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switc=
+h <- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __w=
+ait_for_common <- wait_for_completion
+> >>      144193.035174 [0000]  migration/0[15]                     0.000  =
+    0.003      0.009    __traceiter_sched_switch <- __traceiter_sched_switc=
+h <- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
+> >>      144193.035207 [0001]  perf[277062]                        0.000  =
+    0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switc=
+h <- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __w=
+ait_for_common <- wait_for_completion
+> >>      144193.035214 [0001]  migration/1[21]                     0.000  =
+    0.003      0.007    __traceiter_sched_switch <- __traceiter_sched_switc=
+h <- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
+> >> <SNIP>
+> >
+> > This looks good, should there be a Fixes tag for the sake of backports?
+> >
+> The direct cause is commit 9c95e4ef0657 ("perf evlist: Add
+> evlist__findnew_tracking_event() helper"). perf-record uses
+> evlist__add_aux_dummy() to replace evlist__add_dummy() to add a dummy
+> event. The difference is that evlist__add_aux_dummy() sets
+> no_aux_samples to true (this is expected behavior, for dummy event, no
+> need to sample aux data), resulting in evsel__config() not adding the
+> PERF_SAMPLE_CALLCHAIN bit to dummy's sample_type.
+>
+> In summary, the direct cause is the problem introduced by commit
+> 9c95e4ef0657 ("perf evlist: Add evlist__findnew_tracking_event()
+> helper"), but the root cause is the timehist_check_attr() logic problem,
+> The dummy event itself does not need to have PERF_SAMPLE_CALLCHAIN, so
+> there is no need to check it.
+>
+>
+> So, maybe add fixes-tag:
+>
+> Fixes: 9c95e4ef0657 ("perf evlist: Add evlist__findnew_tracking_event()
+> helper")
+>
+> If it is ok, I will send v2 version with this fixes-tag.
 
-Ack
-thx
+I think the maintainer can add the fixes tag when they add the reviewed-by =
+tag:
 
-Neil
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-> 
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   drivers/clk/meson/Kconfig  |   4 ++
->>   drivers/clk/meson/Makefile |   1 +
->>   drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
->>   drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
->>   4 files changed, 197 insertions(+)
->>
->> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
->> index 29ffd14d267b..8a9823789fa3 100644
->> --- a/drivers/clk/meson/Kconfig
->> +++ b/drivers/clk/meson/Kconfig
->> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
->>   	tristate
->>   	select COMMON_CLK_MESON_REGMAP
->>   
->> +config COMMON_CLK_MESON_VCLK
->> +	tristate
->> +	select COMMON_CLK_MESON_REGMAP
->> +
->>   config COMMON_CLK_MESON_CLKC_UTILS
->>   	tristate
->>   
->> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
->> index 9ee4b954c896..9ba43fe7a07a 100644
->> --- a/drivers/clk/meson/Makefile
->> +++ b/drivers/clk/meson/Makefile
->> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
->> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
->>   
->>   # Amlogic Clock controllers
->>   
->> diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
->> new file mode 100644
->> index 000000000000..3ea813a0a995
->> --- /dev/null
->> +++ b/drivers/clk/meson/vclk.c
->> @@ -0,0 +1,141 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2024 Neil Armstrong <neil.armstrong@linaro.org>
->> + */
->> +
->> +#include <linux/module.h>
->> +#include "vclk.h"
->> +
->> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
->> +
->> +static inline struct meson_vclk_gate_data *
->> +clk_get_meson_vclk_gate_data(struct clk_regmap *clk)
->> +{
->> +	return (struct meson_vclk_gate_data *)clk->data;
->> +}
->> +
->> +static int meson_vclk_gate_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
->> +
->> +	meson_parm_write(clk->map, &vclk->enable, 1);
->> +
->> +	/* Do a reset pulse */
->> +	meson_parm_write(clk->map, &vclk->reset, 1);
->> +	meson_parm_write(clk->map, &vclk->reset, 0);
->> +
->> +	return 0;
->> +}
->> +
->> +static void meson_vclk_gate_disable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
->> +
->> +	meson_parm_write(clk->map, &vclk->enable, 0);
->> +}
->> +
->> +static int meson_vclk_gate_is_enabled(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
->> +
->> +	return meson_parm_read(clk->map, &vclk->enable);
->> +}
->> +
->> +const struct clk_ops meson_vclk_gate_ops = {
->> +	.enable = meson_vclk_gate_enable,
->> +	.disable = meson_vclk_gate_disable,
->> +	.is_enabled = meson_vclk_gate_is_enabled,
->> +};
->> +EXPORT_SYMBOL_GPL(meson_vclk_gate_ops);
->> +
->> +/* The VCLK Divider has supplementary reset & enable bits */
->> +
->> +static inline struct meson_vclk_div_data *
->> +clk_get_meson_vclk_div_data(struct clk_regmap *clk)
->> +{
->> +	return (struct meson_vclk_div_data *)clk->data;
->> +}
->> +
->> +static unsigned long meson_vclk_div_recalc_rate(struct clk_hw *hw,
->> +						     unsigned long prate)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
->> +
->> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
->> +				   vclk->table, vclk->flags, vclk->div.width);
->> +}
->> +
->> +static int meson_vclk_div_determine_rate(struct clk_hw *hw,
->> +					      struct clk_rate_request *req)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
->> +
->> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
->> +				      vclk->flags);
->> +}
->> +
->> +static int meson_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
->> +					unsigned long parent_rate)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
->> +	int ret;
->> +
->> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
->> +			      vclk->flags);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	meson_parm_write(clk->map, &vclk->div, ret);
->> +
->> +	return 0;
->> +};
->> +
->> +static int meson_vclk_div_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
->> +
->> +	/* Unreset the divider when ungating */
->> +	meson_parm_write(clk->map, &vclk->reset, 0);
->> +	meson_parm_write(clk->map, &vclk->enable, 1);
->> +
->> +	return 0;
->> +}
->> +
->> +static void meson_vclk_div_disable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
->> +
->> +	/* Reset the divider when gating */
->> +	meson_parm_write(clk->map, &vclk->enable, 0);
->> +	meson_parm_write(clk->map, &vclk->reset, 1);
->> +}
->> +
->> +static int meson_vclk_div_is_enabled(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
->> +
->> +	return meson_parm_read(clk->map, &vclk->enable);
->> +}
->> +
->> +const struct clk_ops meson_vclk_div_ops = {
->> +	.recalc_rate = meson_vclk_div_recalc_rate,
->> +	.determine_rate = meson_vclk_div_determine_rate,
->> +	.set_rate = meson_vclk_div_set_rate,
->> +	.enable = meson_vclk_div_enable,
->> +	.disable = meson_vclk_div_disable,
->> +	.is_enabled = meson_vclk_div_is_enabled,
->> +};
->> +EXPORT_SYMBOL_GPL(meson_vclk_div_ops);
->> +
->> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
->> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
->> new file mode 100644
->> index 000000000000..20b0b181db09
->> --- /dev/null
->> +++ b/drivers/clk/meson/vclk.h
->> @@ -0,0 +1,51 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (c) 2024 Neil Armstrong <neil.armstrong@linaro.org>
->> + */
->> +
->> +#ifndef __VCLK_H
->> +#define __VCLK_H
->> +
->> +#include "clk-regmap.h"
->> +#include "parm.h"
->> +
->> +/**
->> + * struct meson_vclk_gate_data - vclk_gate regmap backed specific data
->> + *
->> + * @enable:	vclk enable field
->> + * @reset:	vclk reset field
->> + * @flags:	hardware-specific flags
->> + *
->> + * Flags:
->> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
->> + */
->> +struct meson_vclk_gate_data {
->> +	struct parm enable;
->> +	struct parm reset;
->> +	u8 flags;
->> +};
->> +
->> +extern const struct clk_ops meson_vclk_gate_ops;
->> +
->> +/**
->> + * struct meson_vclk_div_data - vclk_div regmap back specific data
->> + *
->> + * @div:	divider field
->> + * @enable:	vclk divider enable field
->> + * @reset:	vclk divider reset field
->> + * @table:	array of value/divider pairs, last entry should have div = 0
->> + *
->> + * Flags:
->> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
->> + */
->> +struct meson_vclk_div_data {
->> +	struct parm div;
->> +	struct parm enable;
->> +	struct parm reset;
->> +	const struct clk_div_table *table;
->> +	u8 flags;
->> +};
->> +
->> +extern const struct clk_ops meson_vclk_div_ops;
->> +
->> +#endif /* __VCLK_H */
-> 
-> 
+Thanks,
+Ian
 
+> Thanks,
+> Yang
 
