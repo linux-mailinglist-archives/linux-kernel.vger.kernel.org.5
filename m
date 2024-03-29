@@ -1,60 +1,55 @@
-Return-Path: <linux-kernel+bounces-124557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536408919E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:49:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDE88919ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0889B1F23258
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:49:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B2261F24D34
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1851509AA;
-	Fri, 29 Mar 2024 12:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E78152181;
+	Fri, 29 Mar 2024 12:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P684yqp7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwlOfhRa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3549F9E5;
-	Fri, 29 Mar 2024 12:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F45150997;
+	Fri, 29 Mar 2024 12:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715408; cv=none; b=TrBZazCQbidz+VCvd9eZlg14ejzGyEdSZ6vU/IE/a/a3mSu20+2GaKKB4Ehm+1fmcoc6EwakRNLml3nXBCFDceag9b0m5pdQnvFUpNs3sILfToiCj76rIovkQ5hmLwFHbDS3wVXdF2t2dRfAwiZG6mtf/Vo9WfJZXBYOCf/yUvk=
+	t=1711715409; cv=none; b=kzrKEm0BsQ1j2nuuatoiH9hPwXoM+f4Mjd+T1NDYiHTx/ybq4Omf+o9JHV8HsEgjvO7DfpmvwKTfZloIVAIUyRghOFfhsfNHIXm502C7SXVueWF3Qg/i1BHh5ULn1XgQMG/4pUh/4aqXMVaC4PTWl0BqDwCbwYJ5+zyTVm7wuXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715408; c=relaxed/simple;
-	bh=0xMwJ9TvgJBDEoufIBeFLKxqxfdrL1JbYItPbCYjdNg=;
+	s=arc-20240116; t=1711715409; c=relaxed/simple;
+	bh=WasJpCSSIFNcR7eK7Br91kvJYRBw+AnpK17WiTx7Ozs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I8+XJCibOpwFiipUxm2zEylm/800AUva9/3DDJkICJTSwVUl39lcc+gj3PyfDCvU2kJg7KsO7EeIbzGDuGmNbbcFynFLGtzSefPuCdv9jczaeU7GmV9tE8JFH6mvD01ySmJuvHiQS0rg9VUcYBuysieSZUsR7gTLtzrLy2YVYH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P684yqp7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98443C43399;
-	Fri, 29 Mar 2024 12:30:06 +0000 (UTC)
+	 MIME-Version; b=quDTX8yhj+UJ2J6Snyh/w7ahCkgHtaMWfrULHVdzA53fcDdwGjdaqLDdXGM7F/pgytz2ZHSvVVkQZlscw3iv2ZkgwQdv3eCra4OQqm+WnoPNOCKlltRcs7fgnoW2Ywl58eKbldW4ev/aGyVT7mHe+szMOmmJndDCMFTm7uDijNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VwlOfhRa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 315B3C43394;
+	Fri, 29 Mar 2024 12:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715407;
-	bh=0xMwJ9TvgJBDEoufIBeFLKxqxfdrL1JbYItPbCYjdNg=;
+	s=k20201202; t=1711715408;
+	bh=WasJpCSSIFNcR7eK7Br91kvJYRBw+AnpK17WiTx7Ozs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P684yqp7C9IPRpW9hjCvauTTmQbJet/J7YywsD8rkmmijHF2zUr5FcCxHvgKmRgBM
-	 RNdyNpbnQ7ywmw8tKyQ0se860xDSmGvpk40nzdfy+IqydYCd9eGWChEu+atJhKsXDS
-	 VXGhxLgfbZ+0ESN5rDpBkLHAjLz7AXXwe7Opm1kq7KTLZNl0XXe8D4m4xDpmA1ISuK
-	 79pTNNvNz17BBuqiYLB9DZI4GgL2DurDLs3MYbA6IbmyRelhRobb5Lz03QxvIADtyA
-	 08IFs/WU9RmOmaPIANXWD7PD/1yjh+9TMkSvDw5xAOC+WX7BAztpMydgs0A54j+t/B
-	 m4CSvQT7acDaw==
+	b=VwlOfhRa2cbU9FfB6d47vbAe6gP0t8eAJrho0LCUo13uRdp3TSNr8KtbB7VBvd9G/
+	 cFqo5nQZlPGsN1rtNwGQmcRpHZDIf65dltS4ZzZEEkOjK84KpzEK4V1y6fCLByxSGZ
+	 a0g7FG+jFyFg2XEZp08f6ZsJlZ4FOoesOC1wJ2mmw06iZoHFZ+J31RkOeaHmEdwhUW
+	 RCeU2WATrBUdqjb83fM8pOmCFl42Iqeafi66JRMtBII4GdcewpFFHstMdQnh5HSvMo
+	 6DuJh7VRaEaUB1AEWbNvqXeETPaxRUbHs5LWBuMecwpKpjj2NFSzlITLvReha0fHs9
+	 HPv1nHGzbuvWQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andre Werner <andre.werner@systec-electronic.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Ping-Ke Shih <pkshih@realtek.com>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	hkallweit1@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 07/52] net: phy: phy_device: Prevent nullptr exceptions on ISR
-Date: Fri, 29 Mar 2024 08:28:37 -0400
-Message-ID: <20240329122956.3083859-7-sashal@kernel.org>
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 08/52] wifi: rtw89: pci: enlarge RX DMA buffer to consider size of RX descriptor
+Date: Fri, 29 Mar 2024 08:28:38 -0400
+Message-ID: <20240329122956.3083859-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -69,61 +64,37 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Andre Werner <andre.werner@systec-electronic.com>
+From: Ping-Ke Shih <pkshih@realtek.com>
 
-[ Upstream commit 61c81872815f46006982bb80460c0c80a949b35b ]
+[ Upstream commit c108b4a50dd7650941d4f4ec5c161655a73711db ]
 
-If phydev->irq is set unconditionally, check
-for valid interrupt handler or fall back to polling mode to prevent
-nullptr exceptions in interrupt service routine.
+Hardware puts RX descriptor and packet in RX DMA buffer, so it could be
+over one buffer size if packet size is 11454, and then it will be split
+into two segments. WiFi 7 chips use larger size of RX descriptor, so
+enlarge DMA buffer size according to RX descriptor to have better
+performance and simple flow.
 
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20240129135734.18975-2-andre.werner@systec-electronic.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20240121071826.10159-5-pkshih@realtek.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/phy_device.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/wireless/realtek/rtw89/pci.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index a42df2c1bd043..c544d3576c2f9 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1411,6 +1411,11 @@ int phy_sfp_probe(struct phy_device *phydev,
- }
- EXPORT_SYMBOL(phy_sfp_probe);
+diff --git a/drivers/net/wireless/realtek/rtw89/pci.h b/drivers/net/wireless/realtek/rtw89/pci.h
+index 2f3d1ad3b0f7d..4259b79b138fb 100644
+--- a/drivers/net/wireless/realtek/rtw89/pci.h
++++ b/drivers/net/wireless/realtek/rtw89/pci.h
+@@ -559,7 +559,7 @@
+ #define RTW89_PCI_TXWD_NUM_MAX		512
+ #define RTW89_PCI_TXWD_PAGE_SIZE	128
+ #define RTW89_PCI_ADDRINFO_MAX		4
+-#define RTW89_PCI_RX_BUF_SIZE		11460
++#define RTW89_PCI_RX_BUF_SIZE		(11454 + 40) /* +40 for rtw89_rxdesc_long_v2 */
  
-+static bool phy_drv_supports_irq(struct phy_driver *phydrv)
-+{
-+	return phydrv->config_intr && phydrv->handle_interrupt;
-+}
-+
- /**
-  * phy_attach_direct - attach a network device to a given PHY device pointer
-  * @dev: network device to attach
-@@ -1525,6 +1530,9 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
- 	if (phydev->dev_flags & PHY_F_NO_IRQ)
- 		phydev->irq = PHY_POLL;
- 
-+	if (!phy_drv_supports_irq(phydev->drv) && phy_interrupt_is_valid(phydev))
-+		phydev->irq = PHY_POLL;
-+
- 	/* Port is set to PORT_TP by default and the actual PHY driver will set
- 	 * it to different value depending on the PHY configuration. If we have
- 	 * the generic PHY driver we can't figure it out, thus set the old
-@@ -2987,11 +2995,6 @@ s32 phy_get_internal_delay(struct phy_device *phydev, struct device *dev,
- }
- EXPORT_SYMBOL(phy_get_internal_delay);
- 
--static bool phy_drv_supports_irq(struct phy_driver *phydrv)
--{
--	return phydrv->config_intr && phydrv->handle_interrupt;
--}
--
- static int phy_led_set_brightness(struct led_classdev *led_cdev,
- 				  enum led_brightness value)
- {
+ #define RTW89_PCI_POLL_BDRAM_RST_CNT	100
+ #define RTW89_PCI_MULTITAG		8
 -- 
 2.43.0
 
