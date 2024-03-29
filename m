@@ -1,113 +1,111 @@
-Return-Path: <linux-kernel+bounces-125283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890B289236A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0AF89236E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DD621F22E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:36:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E02841F2407F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F1739FFD;
-	Fri, 29 Mar 2024 18:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="baXQHGmu"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B83E3B781;
+	Fri, 29 Mar 2024 18:37:32 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F36012770B
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5AA22075
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711737360; cv=none; b=r5EqoJPzI7nAhDu/+6ndas1qdr2/8HsLoaoFHRFKDIBvab4HKKgaKlyIv4lNtQRjXITqLBfZkM+akExhu95zhLT/ci8Uk8Lnbv4Kd8fWNN6zM2ihsJak+l63aWMWvX2ID0tf211VkAByelkYNa1q0iMlkuvTsaYv2GXxpB0QXp0=
+	t=1711737452; cv=none; b=BpSsxApzFcdERSNO8MkfM+TpB2TjHKaxJ5x38+0mE+221HuPMF+kOY5YtsLrnAAEGMji3Owq7q4z5POXHZz9JILHSyx/cOOaUuJUi53T+tL6uZPF7v2+CSoVLIDM+G+dZyH/eJ8yFzpLQ+ZHoIUjXkIaWJBCAeLVBGbz4jMmC7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711737360; c=relaxed/simple;
-	bh=PUnyjfXXPF54h7ZF04sgHvTy7l4JjKQESDtGtP1iwdY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kjmgqW9E3PEDHoqPY2aVHTLAz7frBhW7/4480pvYtN6Zzkh9vi1OfDp4WXzXckNhdNOEl4CmLsh1YDyMsDNhKea5o2L8oxP6zmuhI2S7KSSaup6jBX+GAwMzZsaCveJk9VPOetrdmCGhR3sh77vLrZB9Kpo4PE0VyQykIt5isMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=baXQHGmu; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6144369599bso6207947b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711737357; x=1712342157; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aHkx7Y32QoW56rz0JNMHjO97URPHnDH9wV5JpFER38E=;
-        b=baXQHGmu8Rwgvp69XdbWZuF0wiL8DgcojkAy+cP+pRq5wbvypzYmzg4HG1nsrhWlDv
-         2kY4HriwHn3fm1OjuHVX/RWVWot/irXjHFX1hnHpOO74KcUUBoI59m6zpqAy0xOR4HRh
-         t0FdYvTIFVa1/jznovcF4TGJmXljHFhUoK5mhZkINu/DADF8Saelxpw/wZ92Jf7YQ7KK
-         bsiusV/EteqhRYHPI2w6y0DHr5Ys1sDieoU5unM2jZR5MkzgaA7DfIzAnXU/oWRKnuN7
-         cqgFHVsMhldhtKvlHPNhyMi3jaMXKyJO4nw4ugAVsNCcLUZHomxqZNYOTeEAtJ5XMG+L
-         10ZQ==
+	s=arc-20240116; t=1711737452; c=relaxed/simple;
+	bh=F2gfhsww7XTA3P50A1RX32InMlF8Q/9z+ZW7DdeTxgM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qmGl26BHCWX8kZUgRqnlvOJQogEHx79OC/kor4CDeymctE5U58mFvQfX5rB1JS94z0Ti25efL6iISUpBU47HfdT8FbN84vofg7i3DS9PBfJn5vv6LWhyio4X2d33LOPvQF2FHFnbSM0mbTLV3AZnyt7/U3IsFtaLN5dGbYsLl8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc764c885bso239412639f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:37:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711737357; x=1712342157;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aHkx7Y32QoW56rz0JNMHjO97URPHnDH9wV5JpFER38E=;
-        b=hezC83wNrLD832SOirrx5bETsHg3JZ5gj2GTmVsHOIgujIUA96s4TD+YWsJcBiluYB
-         lMlysstP91U45rWyGh75eYd/zQj7uYax1ehAtS1govok9cAOHx1mVAz2LLVDrsHWYIIX
-         1ht1qZWaKsMhBG+d/XrN0K0+0msJDom+zlNR5lqIfVvPBV5AYcqNXNBDvtwA3UGeZlNg
-         +ILVIpUuaF7ROoOdfSwA9QH1EEUfSTcBNWwgLF1yfhfsZSO38E/7Lv3HdGj9x8PZSly3
-         bDj66l/eBpQJ41BK9f69+airUhYtj/rUOqnB1bwwS4Nn30TSPRzAOVz1c6lejVeQWJ4K
-         434g==
-X-Forwarded-Encrypted: i=1; AJvYcCWgmmhIgIzTMiHfyPNUEZ/VBt0zkhqjLpdfCl7ePf3JPgL3RW/69A57ONRli0q0YJmbfFhJiIvTSjYuBGzC0RN+HVIBJNsOyGV/ZjNN
-X-Gm-Message-State: AOJu0YwaZ6JAROj08F7Zwi5STpx6tru7IZ2XfpJITRBdprKOHEUfoEj9
-	snWdNX7uNzvKD+oeBgB1p8FKSKa2RCvCNqI5fmufjMZSGJBJ3FqnHNEvVTgJC51kD+xuT7eNFK3
-	sqXT6aK6XwG6UXxuYDH02Bj24IHgJCHEXquD3SA==
-X-Google-Smtp-Source: AGHT+IERevB97IF6pH84hlBH+caFIrkRJzR3o4Bk7fPLKGsiOONa8kVzkW96kXFtazpyF80yhz0+Wdm8wZl5aBtqr10=
-X-Received: by 2002:a25:4903:0:b0:dc7:1d:5db4 with SMTP id w3-20020a254903000000b00dc7001d5db4mr2911776yba.34.1711737356997;
- Fri, 29 Mar 2024 11:35:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711737450; x=1712342250;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DLH3G/wi97DU/DtrnW/ODIbuNOVKTyxl862AdQPOt0k=;
+        b=XRt8ku/MJXlhJLEGCue999n0oaJKVZIrAIuelQRDuCpbTZCez2IaQeVxwVxnYAV3Y/
+         s5WM22HmYIBpY+2gjSG+77MGheSpACFF8QQkn8sTJvwMFOZaVT0H37B53456E3KhUCQP
+         1k7/lMhKWUXa7DlCQJATNpl53Xec1ffawwjXcD3eBBJ5l+p8i34CUtwUFZBAc4BiSBOu
+         HPUzt6WsZsJmFlmDXReVbnU2NMXM10WnBpqTYfmo9ewRgF/LuUVResqaHVKwEDG7jIk7
+         sbhmpzWyDQL84yefDU9vzTw8NoNLOkoneqRqYlp8E32YnbmLTlLYdFdgbrwFfZmzSR39
+         In4A==
+X-Gm-Message-State: AOJu0YzsA+XtERetQEHZBnrgzS9KufTogrgBevd9RilguiuficPce5+S
+	p2dZrgCegPKdHSWaniTbXBp+rdBEcOKuQyL9EXNSAnLmC+prFSXnEwxm7ayNWjSCSH3yYeaK3Db
+	mzGuYhc20LOuglWw+RgknaZ/HzIhrEDFXUDTHhZZeRuTX2N9bvjPh0ZZzEQ==
+X-Google-Smtp-Source: AGHT+IFRfpXx1VnfI0V7Zv8tfOUmGGmfvDvfktxzjg0GMDbH6xeORJdCTMoNoHwSU1EO7q6fta4nRuojWuGCc7GjOPpRVjDT3z+b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1711730896-16637-1-git-send-email-quic_khsieh@quicinc.com>
-In-Reply-To: <1711730896-16637-1-git-send-email-quic_khsieh@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 29 Mar 2024 20:35:45 +0200
-Message-ID: <CAA8EJpppQSTm7fH5fUXef0gdc-+zeKfFGw6uF1j8FJqBMySFjQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: assign correct DP controller ID to
- x1e80100 interface table
-To: Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc: dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run, 
-	swboyd@chromium.org, dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch, 
-	airlied@gmail.com, agross@kernel.org, abel.vesa@linaro.org, 
-	andersson@kernel.org, quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com, 
-	quic_sbillaka@quicinc.com, marijn.suijten@somainline.org, 
-	freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+X-Received: by 2002:a92:c267:0:b0:368:9839:d232 with SMTP id
+ h7-20020a92c267000000b003689839d232mr182469ild.4.1711737449863; Fri, 29 Mar
+ 2024 11:37:29 -0700 (PDT)
+Date: Fri, 29 Mar 2024 11:37:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a5ee120614d0eef8@google.com>
+Subject: [syzbot] Monthly net report (Mar 2024)
+From: syzbot <syzbot+liste7bfc894f5476da05e96@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 29 Mar 2024 at 18:48, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->
-> At current x1e80100 interface table, interface #3 is wrongly
-> connected to DP controller #0 and interface #4 wrongly connected
-> to DP controller #2. Fix this problem by connect Interface #3 to
-> DP controller #0 and interface #4 connect to DP controller #1.
-> Also add interface #6, #7 and #8 connections to DP controller to
-> complete x1e80100 interface table.
->
-> Fixes: e3b1f369db5a ("drm/msm/dpu: Add X1E80100 support")
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+Hello net maintainers/developers,
 
-Changelog?
+This is a 31-day syzbot report for the net subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/net
 
-> ---
->  .../drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h   | 34 ++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 3 deletions(-)
->
+During the period, 25 new issues were detected and 14 were fixed.
+In total, 83 issues are still open and 1401 have been fixed so far.
 
+Some of the still happening issues:
 
--- 
-With best wishes
-Dmitry
+Ref  Crashes Repro Title
+<1>  5716    Yes   WARNING in rxrpc_alloc_data_txbuf
+                   https://syzkaller.appspot.com/bug?extid=150fa730f40bce72aa05
+<2>  4782    Yes   WARNING in sock_map_delete_elem
+                   https://syzkaller.appspot.com/bug?extid=2f4f478b78801c186d39
+<3>  4300    Yes   KMSAN: uninit-value in eth_type_trans (2)
+                   https://syzkaller.appspot.com/bug?extid=0901d0cc75c3d716a3a3
+<4>  3586    Yes   WARNING in sock_hash_delete_elem
+                   https://syzkaller.appspot.com/bug?extid=1c04a1e4ae355870dc7a
+<5>  981     Yes   possible deadlock in __dev_queue_xmit (3)
+                   https://syzkaller.appspot.com/bug?extid=3b165dac15094065651e
+<6>  896     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
+                   https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
+<7>  684     Yes   unregister_netdevice: waiting for DEV to become free (8)
+                   https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
+<8>  509     No    possible deadlock in __lock_task_sighand (2)
+                   https://syzkaller.appspot.com/bug?extid=34267210261c2cbba2da
+<9>  378     Yes   KMSAN: uninit-value in nci_rx_work
+                   https://syzkaller.appspot.com/bug?extid=d7b4dc6cd50410152534
+<10> 323     Yes   INFO: rcu detected stall in tc_modify_qdisc
+                   https://syzkaller.appspot.com/bug?extid=9f78d5c664a8c33f4cce
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
