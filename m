@@ -1,148 +1,164 @@
-Return-Path: <linux-kernel+bounces-123929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4E4890FE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:54:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03967890FE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E52C1F23BE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:54:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 274651C24939
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91A6182AF;
-	Fri, 29 Mar 2024 00:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B74125B2;
+	Fri, 29 Mar 2024 00:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BfOd+3b1"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EIkVkHvn"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F66BA920
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E309312E48
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711673657; cv=none; b=qCZbKrykx1Q5jo8RMdGd7hDAfHrVSDaMtTrBEsrcdeYqV/r96etv4fxCvkot0rTRl3VrHVPSzJaz5rItcItOrw/3ksMM4/40g+Rx2ckUIraqOt6hw8i7CvCoa+6ccCeyl/a3htFkJjkndyuko8Im/kxvpzksaEoqKH5Cw5UAFSE=
+	t=1711673678; cv=none; b=b9Pwmm5CjGyYO3Z02U8qjyo+n+Yiom+joKz91FahVdPsl+qlhKjwxFn47yiPWnnI2a+G7pg92pP1PODYEyedoobCl5aWD3pZwnNIoYxbP991orjaihCQTOJEuVK5k3dWdWZ42RIKKkRCmmQyzwwfkxMEJqLWM58qHvYBNMHOQ5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711673657; c=relaxed/simple;
-	bh=j/1rgdbmuMmpxGy1Qp+LCPqELie2gUYPNcbR8OOy5yE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EplJ1+qMCGgKWWzkTYyo/cpa/0/eh9IxoqmkptIkZLpxZeS3UkLnV02wUl9hJPtDTBw/ccfQzaiHs6rZgCsmNHdMQVVT22p8ZvRGzEL7I6933v6n5/GT82jgHDFUeMS7g/JKaC8EGuOHVJP2yFatQ3Rzjuqv0hMTdn4o3clpy5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BfOd+3b1; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56c404da0ebso2370797a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711673654; x=1712278454; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=mYUSjIVZMnLfL2FeoKjHJweuFEhZehPAV531EqV0QWs=;
-        b=BfOd+3b1rDH29nBi7IzGPC+24301nlTWlCkZxfyr2zkBhEy5i14uUNva+/9C6RvuSF
-         R7kWJd1hgpcaEwozY4+wxH4TRujMn5xYu9gsPCrc39to6zBWCX2umkS5aTpMHfZIA3SP
-         tx+rCks911SKFY16HLuPvMNWFw9fGLa+wqM767RjT3+oAnxika4Ygo6AuxMXna23Kup+
-         RK8V/MEwZjO3WXiS1PBMTSdYIUp+Gcka1UDV84lKf85ejk3aMbu5LzB+Mq4ADD0UFS00
-         oT6Gu7pbycm8qUDWfrmbuoloZbYmWTpvNZYlQvfDZIWYAXfG5hucWMQV/HuQaLk2HDdX
-         31tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711673654; x=1712278454;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mYUSjIVZMnLfL2FeoKjHJweuFEhZehPAV531EqV0QWs=;
-        b=De53jPcVIAEBgjFOqsMFmbbx3lP5ZlRSGHGF3RScgs2WsCJnw8l5ECVYrcLSO2yy2p
-         OvOzgz3NqBIZjsCGAcGdhziSdOSu8bYTuMCOrkwyjXocCCR9xXrdxNPjEEzjYdm5ZyP+
-         ersB4haptxcZ6/TFEk7kLUStlQlqRdYhTWxy5tWnVBYfmXAzdJCTMIjFISe6hMhKtq5+
-         yVjhO0iHQXYsJVXXRIEHQmgEkuXH+ba2dbUs6SljU+PGIRMFjsbMpr7QAAfwS+m0rLVQ
-         YjXYGMhe/L+obxZEwHMS6wKrGV++Yi2ioe+peg9vUIPn5HDfczp3cpeUNtJrEDIUWWVM
-         9oAg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9nMbXqYhW46zxzQGB9dZSEECJCBZJf+HjFTaDtzp5xmleUdY2GOAluldRehL2RMFQO0v1C+iTvwAQr5slbjUsqE1U8YF3N2vrStYU
-X-Gm-Message-State: AOJu0YwSK7Aj2s6e1WLe+rApi+5DjV54gHhUpS6ujVHChZ76+yD+Gl0B
-	kD/wW7Dfg4+2rUePLDHDzfqgGi1t47ZsgfA2P+8reupXFjr2HfgOUQ8qtqG6nDss3Tt6nMrLqCI
-	g
-X-Google-Smtp-Source: AGHT+IFp6G2F1CpG2TFo1DwIArWeXB/T4Oo3zIvlThoJku6qoamJAHyRxK8G8ABpsb7KxmUSaoZlPw==
-X-Received: by 2002:a17:906:3993:b0:a4e:2d69:e379 with SMTP id h19-20020a170906399300b00a4e2d69e379mr524194eje.4.1711673653662;
-        Thu, 28 Mar 2024 17:54:13 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id dp14-20020a170906c14e00b00a4734125fd2sm1308229ejc.31.2024.03.28.17.54.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 17:54:13 -0700 (PDT)
-Message-ID: <4e1c225f-9b9a-4300-b4d3-2fc38c9b573c@linaro.org>
-Date: Fri, 29 Mar 2024 01:54:11 +0100
+	s=arc-20240116; t=1711673678; c=relaxed/simple;
+	bh=yqVTYnwDDcFXueqNFnLAymJnOE8hQMqwwCmtGw1XHBE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dNXe7hb9UWaQJPFJq+AQlNRjNIlgNN7TjvEPsYBLQxJgx0m44e5fi+Bq05PhJiJIHHgPMOKs4Nhlc55Pd2P5AWsGPRBphYt/PaYUpcd9kIFjI72ECYEtX79JMDhaJEAz91Dj6RkCzg/wlP3Ybh/AwNg3iUNWebCwAS1HYj7i2ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EIkVkHvn; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711673675;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FFbjCyFMWwfVTQ7/3Wxygk8+OAR68hADZgcsWJnmq0U=;
+	b=EIkVkHvnYC1hEXJDsHXWexrwogFCg6pM17lA0bYL6+c0Kh5j0LwMLcuFFtlLN1eIi2ES/s
+	PsE6cmWBEc8gHIvW4x6ltWPuCOfe+F0vp8L6uWf5UpwLdwCmK0fzQeofO6KQWUUloi/ThC
+	8GSDBcwkaeu0FVQttHwRsGtJfzTWV68=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-437-N0BlVr9xPpmKD97oO2Z2uw-1; Thu, 28 Mar 2024 20:54:31 -0400
+X-MC-Unique: N0BlVr9xPpmKD97oO2Z2uw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EFE8D8164E3;
+	Fri, 29 Mar 2024 00:54:30 +0000 (UTC)
+Received: from redhat.com (unknown [10.2.16.33])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4E0E8200AFFC;
+	Fri, 29 Mar 2024 00:54:28 +0000 (UTC)
+Date: Thu, 28 Mar 2024 19:54:21 -0500
+From: Eric Blake <eblake@redhat.com>
+To: Stefan Hajnoczi <stefanha@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alasdair Kergon <agk@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
+	David Teigland <teigland@redhat.com>, Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
+Subject: Re: [RFC 6/9] dm-linear: add llseek(SEEK_HOLE/SEEK_DATA) support
+Message-ID: <zetfekdpoq6rmas26o7jl2uvricjcv6zygi6cngf6mkmiev5kn@e5d4ie3m77ku>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
+ <20240328203910.2370087-7-stefanha@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] v2 arm64: dts: qcom: Add support for Samsung Galaxy Z
- Fold5
-To: serdeliuk@yahoo.com, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-0-9a91e635cacc@yahoo.com>
- <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-2-9a91e635cacc@yahoo.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-2-9a91e635cacc@yahoo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328203910.2370087-7-stefanha@redhat.com>
+User-Agent: NeoMutt/20240201
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On 29.03.2024 12:08 AM, Alexandru Marc Serdeliuc via B4 Relay wrote:
-> From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
-> 
-> Add support for Samsung Galaxy Z Fold5 (q5q) foldable phone
-> 
-> Currently working features:
-> - Framebuffer
-> - UFS
-> - i2c
-> - Buttons
-> 
-> Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+On Thu, Mar 28, 2024 at 04:39:07PM -0400, Stefan Hajnoczi wrote:
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
 > ---
+>  drivers/md/dm-linear.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/drivers/md/dm-linear.c b/drivers/md/dm-linear.c
+> index 2d3e186ca87e3..9b6cdfa4f951d 100644
+> --- a/drivers/md/dm-linear.c
+> +++ b/drivers/md/dm-linear.c
+> @@ -147,6 +147,30 @@ static int linear_report_zones(struct dm_target *ti,
+>  #define linear_report_zones NULL
+>  #endif
+>  
+> +static loff_t linear_seek_hole_data(struct dm_target *ti, loff_t offset,
+> +		int whence)
+> +{
+> +	struct linear_c *lc = ti->private;
+> +	loff_t ti_begin = ti->begin << SECTOR_SHIFT;
+> +	loff_t ti_len = ti->len << SECTOR_SHIFT;
+> +	loff_t bdev_start = lc->start << SECTOR_SHIFT;
+> +	loff_t bdev_offset;
 
-Looks like the commit message and contents got mixed up!
+Okay, given my questions in 4/9, it looks like your intent is that
+each callback for dm_seek_hole_data will obey its own ti-> limits.
 
-Konrad
+> +
+> +	/* TODO underflow/overflow? */
+> +	bdev_offset = offset - ti_begin + bdev_start;
+> +
+> +	bdev_offset = blkdev_seek_hole_data(lc->dev->bdev, bdev_offset,
+> +					    whence);
+> +	if (bdev_offset < 0)
+> +		return bdev_offset;
+> +
+> +	offset = bdev_offset - bdev_start;
+> +	if (offset >= ti_len)
+> +		return whence == SEEK_DATA ? -ENXIO : ti_begin + ti_len;
+
+However, this is inconsistent with dm_blk_seek_hole_data_default in
+4/9; I think you want to unconditionally return -ENXIO here, and let
+the caller figure out when to turn -ENXIO back into end to proceed
+with the next ti in the list.
+
+OR, you may want to document the semantics that dm_seek_hole_data
+callbacks must NOT return -ENXIO, but always return ti_begin + ti_len
+when the answer (either SEEK_HOLE or SEEK_END) did not lie within the
+current ti - it is DIFFERENT than the semantics for
+blkdev_seek_hole_data, but gets normalized back into the expected
+-ENXIO answer when dm_blk_do_seek_hole_data finally advances past the
+last ti.
+
+At any rate, I know this is an RFC series, but it goes to show that
+comments will be essential, whichever interface you decide for
+callbacks to honor (both a guarantee that callbacks will only ever see
+SEEK_HOLE/SEEK_DATA in bounds, because earlier points in the call
+stack have filtered out out-of-bounds and SEEK_SET; and constraints on
+what the return value(s) must be for the various callbacks, especially
+if it is different from the eventual return value of the overall
+llseek syscall)
+
+> +
+> +	return offset + ti_begin;
+> +}
+> +
+>  static int linear_iterate_devices(struct dm_target *ti,
+>  				  iterate_devices_callout_fn fn, void *data)
+>  {
+> @@ -212,6 +236,7 @@ static struct target_type linear_target = {
+>  	.direct_access = linear_dax_direct_access,
+>  	.dax_zero_page_range = linear_dax_zero_page_range,
+>  	.dax_recovery_write = linear_dax_recovery_write,
+> +	.seek_hole_data = linear_seek_hole_data,
+>  };
+>  
+>  int __init dm_linear_init(void)
+> -- 
+> 2.44.0
+> 
+
+-- 
+Eric Blake, Principal Software Engineer
+Red Hat, Inc.
+Virtualization:  qemu.org | libguestfs.org
+
 
