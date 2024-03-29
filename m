@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-125150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CD1892145
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:08:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B925D89211F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E642B23121
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:00:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 446FB1F262F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC9B6AFB9;
-	Fri, 29 Mar 2024 15:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57BFE85653;
+	Fri, 29 Mar 2024 16:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jxzC7z6B"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="io2cJRWm"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41291EB2D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 15:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB9C4D110
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711727995; cv=none; b=W9RhButx3Z6vKuBKRQc0gGY61se9EgVrdrpUC5lsrJ95Mx5H5TCOlzU1rJEFnA00vvlM8VnXEqgyvu2VghPbZrp98YC9Illc/ytfdOMVsX7PmdleStrwSaSdHuRgtn4SGrgqmXhL+hd8ebVLfYQwmE7Evx1v8pnWLDFFMzIqo14=
+	t=1711728123; cv=none; b=junbozSuUeCG3g4kWhKxRzIz0rErXrZGHwy35J07PtzuShdQYRH50tCYsTbeMZY3+nm3/WQeUcko74CSlxrRQFGnGk11yCbtIOW1F+F+8/Eul1hDu9wsNddXjvNVE5idwOc0T5PDdeHO2VtEfacbid344mt99s2PETqB/VSbVjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711727995; c=relaxed/simple;
-	bh=Z3H/x8qf0vlqXXqKEWRoaywb7qKvIf4MBSqZm42tGAU=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
-	 In-Reply-To:Content-Type; b=XnlWvOYrqbik1D4FaGEwZ4+IAvpZounYDvqHMWLhlXHvw1cet2L7EBkp3XCW9Sb50LD5gslLSV3ydMA4k9CE7PyIUw3nKzpJFanqBPO5+7Zj0IEqelGyYSlnxoem+lexfR6HKYUy83u4QsdcXxS53hFwcr6xcOvbDEiJqdm/02Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jxzC7z6B; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1711728123; c=relaxed/simple;
+	bh=L8+1iqD1UKDmdElfzLXxH11absC54R8ftjQtS/mWJyA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P9FWudLbQvIIsqeO6x6cg/Vrwf/JXejj660/WRDvxKGqjke9jJqUTKj+c76t3r2/rnXWrJvfI8ol9N68nXqzLb/gnzKfeFhFAHE4K++ZAiTyUJb+7+RjUBqMYrOy5dIDN7tK5bZnM0n9Tb+4X4vkCJa0xXQw8HgQjTD1Si0szRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=io2cJRWm; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-415523d9824so4179725e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 08:59:53 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-414970d4185so14979285e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711727992; x=1712332792; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GGsD0hCZS0RGyO3uN5UGL0orhZAJeWGJYHahHUXwehI=;
-        b=jxzC7z6BiJfuhQXDDgmNJOwvww/h1ZyScOAZMex0fdWW7q9Pv40RSdo3wUrHIlmUT2
-         eN4bCZqC6WwaEat1615q1mWRT0rAqg4UgK+ajz5lyYSyPFSkwokXulzzniE9SGsID8mD
-         Ob8OurzvLfIaGqH43Tk+2HSnrOHtI8xdpafe+rKyQ9/9G2VtsmN1wxoAiaRS9HAQAJ2T
-         Iz+unOCRe0gdYCGh/LD4+nf7JOtMdWxTcqdAHKbfpglLqKF/Izwy9/LgCCLizHZhHUrU
-         6+yvw4SCy35fIUbNXfVBQWjbXnR5KMq6pMdjbeUq4ePs+HXEfeB51CtUzgF+yYUKo00P
-         8jdw==
+        d=linaro.org; s=google; t=1711728120; x=1712332920; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=bFFHNWdBMBRnZh/Xixjl6/7JeoW3k4wZ85ixXvuMxUQ=;
+        b=io2cJRWmpHq704Gh0310L8S7G8PFglSCYEts+uLSebbnmqo352wpK2AkURoM3BwulF
+         bXveK/l2qXw0tyNvsfv7exPOU/2lL3L2JLXajNGMixWbOjcavBsT98mdlD807AM93kRk
+         MNpDIiNesgbDV79X4FCKdDJSMnaAIviHuMvw03bVkql9rEmG3S5cKCUTX3CkiWmPAYgo
+         PCiWJWWUbgoZxHW2MD/v2utK7J2dDYhjrG6fP0mocHmnG0oQ2Kp57DOSBpXtrx2dyVkf
+         vEghOaZBk6zLSnfgTeN1725UDfHrjvhXQ0dLrmOxmCu/U1CIc5pNF6b4YnD46jobxIhD
+         0ung==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711727992; x=1712332792;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GGsD0hCZS0RGyO3uN5UGL0orhZAJeWGJYHahHUXwehI=;
-        b=as27o5qOTtx8Ysfezh2h1ixbMn7RAgvgj0PNEdI2JjDQ7c5cG5//yQq18bTLaqBQhi
-         byuJ+CdC5g+3rx8n6FUwDMxFu29h4Me7MfTKK0rdfrRyr0GXM1sC3dbm/TXPUiRQphRq
-         wO/5owjFsb8W5WGJ5CS1sAjsYKW37iheH3NWawDTVnA3It98gI2b2P6l/DODPfnc0aFr
-         KKYCj18abFeTHhWK8r7dELnXQX1A0M4q97FSh/+CR9qNfenuPFzJrO3mi/r7EedN0I4c
-         WT2iO5EDQglWf0UbsKibbjAS4qMp8B7csrM71NdxBg06Q+05Nr3rIYx+oeNLsWdV7DG5
-         TTGg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6SooVkEQAug31siiafW5NMlUOe1t9RPOABA16Pp9wNlktglUKLB+wgLa5CoSc+AKvXkk74M5oKxrf0PnqxVyeWlD1TU8sTvsUhibF
-X-Gm-Message-State: AOJu0YzzG4TFq/8HuYjM5RkMMjW96LvEyrqYOQkFAiIxPXBJbZCd5yNj
-	fJq0QZXbNIJ/N+HK5N25xdIeX6b1HSBlzvqKEEOVOLbq04E/Zz8rg8JYErEPvGk=
-X-Google-Smtp-Source: AGHT+IHe6XeEQuR3I0AFMivdopvZfiDF+TwSwHOYyhqm4U6929+iEoj0HbGpgG496qoYCKqwv8vuxQ==
-X-Received: by 2002:a05:600c:3550:b0:414:227:fc66 with SMTP id i16-20020a05600c355000b004140227fc66mr2446342wmq.2.1711727992106;
-        Fri, 29 Mar 2024 08:59:52 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:3cd8:c97b:1468:c232? ([2a01:e0a:982:cbb0:3cd8:c97b:1468:c232])
-        by smtp.gmail.com with ESMTPSA id t14-20020a05600c450e00b004148b9272a7sm5919058wmo.0.2024.03.29.08.59.50
+        d=1e100.net; s=20230601; t=1711728120; x=1712332920;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bFFHNWdBMBRnZh/Xixjl6/7JeoW3k4wZ85ixXvuMxUQ=;
+        b=FgmJyHesTdwLzjFzV1GBnJ78OWlb9iSPus6HRSJ47oH8vymUWZ8p0ZcmsvH9FTkBke
+         2vAV+jZpn2vE9nRFzvkq8d8VyBgX/vr3TXfvY1mlGopYB1CrOnCiTP40xHwFg3FyoYwm
+         vPZhgJnahv7aZw2VMk8iPAA03xlc0OCdefmYMHAp2N0ylH09NFB4uVtfGn+TCU0f5fv/
+         rMMQFnnzhe/P97RT8lNsv2RwI/35ggvb87CUW1o86z/SulHPDp2dRf9opTzJhWypGSOC
+         hvV61JvAgQDFyn/v5vxV2xE2nbD3Z3by/cN7Z2Qr8GdqcpdXTSRlRmHop80GISFmsyoL
+         b5Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCVafMwbusBWE29nE4PvnNEf30Al978kxDXjt6YAM5iqd1ozem/x9j3txPl9/DycxINrj0bClaPq66DUSNEzhEYXs8phxVrbgIKum9dH
+X-Gm-Message-State: AOJu0YzJCBwuEyEuuHIJT22kz4jRfK8hI+6DONhP1/4G/rdgG/smRdz8
+	DPYVsVe2bEQIyQbTVQ4V/8scrSOBrieyIzkVDsxNdfS4QHiVqDDzZAeTzmFwAfk=
+X-Google-Smtp-Source: AGHT+IGlf76ZFo7enpn/TIJKsmshD5ys3tj2AM3CNMbcaOwbYvFNj6HA0V/ZJkHNSo7Pm5iUe6Bpog==
+X-Received: by 2002:a05:600c:4e8b:b0:414:c1b:4bbc with SMTP id f11-20020a05600c4e8b00b004140c1b4bbcmr1751398wmq.6.1711728119935;
+        Fri, 29 Mar 2024 09:01:59 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id ay1-20020a05600c1e0100b0041554f8eafesm387365wmb.13.2024.03.29.09.01.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 08:59:51 -0700 (PDT)
-Message-ID: <bef2bda3-c2c1-46b3-b6ae-af09941e298f@linaro.org>
-Date: Fri, 29 Mar 2024 16:59:50 +0100
+        Fri, 29 Mar 2024 09:01:59 -0700 (PDT)
+Message-ID: <7297bd78-4f74-4d23-afb3-9b7aecbe451d@linaro.org>
+Date: Fri, 29 Mar 2024 17:01:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,104 +76,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/meson: vclk: fix calculation of 59.94 fractional
- rates
-To: Christian Hewitt <christianshewitt@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240109230704.4120561-1-christianshewitt@gmail.com>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240109230704.4120561-1-christianshewitt@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHYyIDEvMl0gQVNvQzogZHQtYmluZGlu?=
+ =?UTF-8?Q?gs=3A_Add_bindings_for_Cadence_I2S-MC_controller?=
+To: Mark Brown <broonie@kernel.org>
+Cc: Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
+References: <20240320090239.168743-1-xingyu.wu@starfivetech.com>
+ <20240320090239.168743-2-xingyu.wu@starfivetech.com>
+ <9d9efb8a-0b3c-4e7a-8673-07cd3b1f5f87@linaro.org>
+ <NTZPR01MB0956BD6189974378958562D99F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+ <9b1a5100-8536-4b59-b2e7-d6ebd2ba9e66@linaro.org>
+ <NTZPR01MB0956230296D881F112F92D119F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+ <16f72b4a-2aa9-49d5-a4aa-ed94eea1f32a@linaro.org>
+ <NTZPR01MB09563633F5C3B5FBC95D61289F3AA@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+ <7b4a35d0-6764-4c6a-9f1d-57481324c680@linaro.org>
+ <ZgbDx6oD+mMUIvH1@finisterre.sirena.org.uk>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZgbDx6oD+mMUIvH1@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 10/01/2024 00:07, Christian Hewitt wrote:
-> Playing 4K media with 59.94 fractional rate (typically VP9) causes the screen to lose
-> sync with the following error reported in the system log:
+On 29/03/2024 14:36, Mark Brown wrote:
+> On Fri, Mar 29, 2024 at 12:42:22PM +0100, Krzysztof Kozlowski wrote:
 > 
-> [   89.610280] Fatal Error, invalid HDMI vclk freq 593406
+>> I stated and I keep my statement that such block is usually not usable
+>> on its own and always needs some sort of quirks or SoC-specific
+>> implementation. At least this is what I saw in other similar cases, but
+>> not exactly I2S.
 > 
-> Modetest shows the following:
-> 
-> 3840x2160 59.94 3840 4016 4104 4400 2160 2168 2178 2250 593407 flags: xxxx, xxxx,
-> drm calculated value -------------------------------------^
-> 
-> Change the fractional rate calculation to stop DIV_ROUND_CLOSEST rounding down which
-> results in vclk freq failing to match correctly.
-> 
-> Fixes: e5fab2ec9ca4 ("drm/meson: vclk: add support for YUV420 setup")
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
-> I'm unable to give a better mathematical description of the fix as I can barely read
-> code. The change was inspired by [0] which I chanced upon while looking at how other
-> dw-hdmi drivers handle fractional rates.
-> 
-> [0] https://github.com/torvalds/linux/commit/4f510aa10468954b1da4e94689c38ac6ea8d3627
-> 
->   drivers/gpu/drm/meson/meson_vclk.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/meson/meson_vclk.c b/drivers/gpu/drm/meson/meson_vclk.c
-> index 2a82119eb58e..2a942dc6a6dc 100644
-> --- a/drivers/gpu/drm/meson/meson_vclk.c
-> +++ b/drivers/gpu/drm/meson/meson_vclk.c
-> @@ -790,13 +790,13 @@ meson_vclk_vic_supported_freq(struct meson_drm *priv, unsigned int phy_freq,
->   				 FREQ_1000_1001(params[i].pixel_freq));
->   		DRM_DEBUG_DRIVER("i = %d phy_freq = %d alt = %d\n",
->   				 i, params[i].phy_freq,
-> -				 FREQ_1000_1001(params[i].phy_freq/10)*10);
-> +				 FREQ_1000_1001(params[i].phy_freq/1000)*1000);
->   		/* Match strict frequency */
->   		if (phy_freq == params[i].phy_freq &&
->   		    vclk_freq == params[i].vclk_freq)
->   			return MODE_OK;
->   		/* Match 1000/1001 variant */
-> -		if (phy_freq == (FREQ_1000_1001(params[i].phy_freq/10)*10) &&
-> +		if (phy_freq == (FREQ_1000_1001(params[i].phy_freq/1000)*1000) &&
->   		    vclk_freq == FREQ_1000_1001(params[i].vclk_freq))
->   			return MODE_OK;
->   	}
-> @@ -1070,7 +1070,7 @@ void meson_vclk_setup(struct meson_drm *priv, unsigned int target,
->   
->   	for (freq = 0 ; params[freq].pixel_freq ; ++freq) {
->   		if ((phy_freq == params[freq].phy_freq ||
-> -		     phy_freq == FREQ_1000_1001(params[freq].phy_freq/10)*10) &&
-> +		     phy_freq == FREQ_1000_1001(params[freq].phy_freq/1000)*1000) &&
->   		    (vclk_freq == params[freq].vclk_freq ||
->   		     vclk_freq == FREQ_1000_1001(params[freq].vclk_freq))) {
->   			if (vclk_freq != params[freq].vclk_freq)
+> I wouldn't be so pessimistic, especially not for I2S - a good portion of
+> quirks there are extra features rather than things needed for basic
+> operation, a lot of things that might in the past have been quirks for
+> basic operation are these days hidden behind the DT bindings.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+OK, I trust your judgement, so cdns as fallback seems okay, but I don't
+think it warrants cdns as used alone. Not particularly because cdns is
+different, but because we expect specific SoC compatible always.
+
+Thus if cdns,i2s-mc stays, then:
+
+items:
+  - enum:
+      - starfive,jh8100-i2s
+  - cdns,i2s-mc
+
+Best regards,
+Krzysztof
+
 
