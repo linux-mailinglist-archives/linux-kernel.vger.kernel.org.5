@@ -1,191 +1,139 @@
-Return-Path: <linux-kernel+bounces-124359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D46891635
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:41:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C41E891631
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAA2C2859FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:41:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DE7B1C23D2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232F44879E;
-	Fri, 29 Mar 2024 09:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1172645962;
+	Fri, 29 Mar 2024 09:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JWhPEvOl"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b="eULRZUXM"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB09B3BBC6
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AD92D622
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711705258; cv=none; b=eMvRlU7oQK2m4ZBkt/oN0jJwCjCQBtbBFCIkqerJgP5/B4sQwHlB5nzFOpAp0LQ/nxopPNlBAv8NYZ28yQKORd04fGcEvZYfgTZnqh6x7zZ8aAZ8xwM88O3wXk65/leTV3jC8lxLA2qYQTX82eZ4mNaW4XhUpfIL4D0377BdtaE=
+	t=1711705230; cv=none; b=uAn2YXmT0DbmOUvOGEQj/pw+4HUgeVWcUHaK4WmO/NjXqEjn4F6wD7pj5bshU2rd6vLCxZrXHsGrOjDUA4WX2wIc/oWG8UNTgVmDeApG+GVJgaiDIETERDsDI9XBPL3g7+luyMZ5+6v5Zr6AOUxk0GsotzvjIvO00ukqRSq5W7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711705258; c=relaxed/simple;
-	bh=2HdMA2GVi4vvBuZqc7GAV19/6biZzG2XxYPUOtB9kRc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kJbqnKb9nU85QtteXFyiJUo0SVyxbJ5bLmkN2RejvihTHVpPQRQWK3celwVGThWknIdT1po10upXfywUww5iIB2jHJnC8tLnpw0SBmJCFMXmh1LCMKbn9FN4ZRRBOaKAWE5D6X0t5BiTsIhZimyKSMgFo3lQ/5ejl1yyfjZqTXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=JWhPEvOl; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0025ef1efso13669265ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711705256; x=1712310056; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PzKyNHk5YN39zEK5kgu7WDIZLg9yL65BlTGSnWRCjJs=;
-        b=JWhPEvOlCw6tOH5y/YiJBXkikpaAB3Ng4uf/eBDyu4l6G2BmFV4uP6w+DmGxpMOnHx
-         hBD9t7qjM4N+ggnUnBUCgdR7cMuocAyyzk/5KzaUmaF0tJ5F6ELLuyuBA8V7SrVlaI4V
-         3lf5DDdhH+gQRZP0CEMtv/cK3o6NKeOlD7SN4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711705256; x=1712310056;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PzKyNHk5YN39zEK5kgu7WDIZLg9yL65BlTGSnWRCjJs=;
-        b=RSbqQYyIatekxPdRRRetgGuDZw6czyltgzBzEVR1QcC8cG0mzT4NEadrigrAIvxQSB
-         c/EeEbyUGRsO9pKESTvHaB7yzxpUQ/6nWDrrMZXDSBVY6l7wQ0keEI3cDjVBVnN5e5Vw
-         dnsJdpActjJShavIjWNHID0ccqpYmaahIhEtDjZnvdZLwnfB4DbSrdHUJ82eVy3SQsHI
-         FEGFKsgWKqp0yafjLxm9OSd3d5HHDFw/K6iZzr9JFzaDUsgQ0l7psg2Lw1zd5O98HgQj
-         ZP74fUzBeaGe9ZpMV2GFrJAuRKG0Smj11Wr0rqDueQ8gSi6UVOOppV5IYDhRRjSGpIm7
-         BuMg==
-X-Forwarded-Encrypted: i=1; AJvYcCUxEyG0Dg1Arz5+fe81mq5p6RQ8okLc8dW2Xa6gqEEna1prrfLjE7uRP+DYdYSv1zWEgbBJRm6WUHeBdMNgKHIRfqrJeHWN99Ka9hTp
-X-Gm-Message-State: AOJu0YxkG6bkFay6W2Ds005cVK0y4r4poym4TMekFRd/tnELpbhqqzRe
-	kvpTlm/om/LPi0KNJkKevb4WRzmsLCDtZwODLthlHLU0H2v9nB3A49DOyXTjoQ==
-X-Google-Smtp-Source: AGHT+IEAoJmQJQFXz2QVZ4UibB4fev1lwxr2gnC9WVva0sEsNWFbD9aC5yO424w2M93S6TXMTV31ZA==
-X-Received: by 2002:a17:902:9a0c:b0:1e0:342b:af6f with SMTP id v12-20020a1709029a0c00b001e0342baf6fmr1818929plp.16.1711705256212;
-        Fri, 29 Mar 2024 02:40:56 -0700 (PDT)
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:91ca:ac62:b18d:2b7])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170902cec400b001e0c5be4e2esm3065460plg.48.2024.03.29.02.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 02:40:55 -0700 (PDT)
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Minchan Kim <minchan@kernel.org>
-Cc: Brian Geffon <bgeffon@google.com>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv2] zram: add max_pages param to recompression
-Date: Fri, 29 Mar 2024 18:39:41 +0900
-Message-ID: <20240329094050.2815699-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+	s=arc-20240116; t=1711705230; c=relaxed/simple;
+	bh=IlTVpUHVnbFvNddzhPvo8GZp772CDt/oDefqMRPIkU4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qrk4ICm8IWOsjtg4XpbBir5fHpub7tIsNc/2ZAS9E81nVzIjcMXJKGpQOhPCH03iU8Xf/0MGXu10KBNnzW59GljnPu3BX6YyEU1UqYC//B5JeK9vX98ee3Sf2cyJDGjjqut7nQGCqRezywk8AkBo0muVDtX/gjVj+E/yD8PvIFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com; spf=pass smtp.mailfrom=linumiz.com; dkim=pass (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b=eULRZUXM; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linumiz.com
+Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
+	by cmsmtp with ESMTPS
+	id pglCrcLYkPM1hq8ijrD9AO; Fri, 29 Mar 2024 09:40:22 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+	by cmsmtp with ESMTPS
+	id q8igr0U7IYakKq8ihr3wQm; Fri, 29 Mar 2024 09:40:20 +0000
+X-Authority-Analysis: v=2.4 cv=a4T79lSF c=1 sm=1 tr=0 ts=66068c84
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=kofhyyBXuK/oEhdxNjf66Q==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8
+ a=CkiI2OoxxAuuNGj3sd8A:9 a=QEXdDO2ut3YA:10 a=rsP06fVo5MYu2ilr0aT5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+	; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kULNzBIMUoeRMVOdp6S7pdnsbj6mCT91q7TkSpxtW7A=; b=eULRZUXMIiGeI5Ei5c3ID1tga0
+	JNMrbsAGbwKaegMaZQCvwmDytzpJ1DomZq5QU/WMFbAzqVop2rSHr06kVigqgv3b270TuK8F0Zjhf
+	Dhxcp67b4qt3rUqACq71Gt4gkeBO4Hz/JH1L6HSnU0+quXXQ5NuCFtDxhaG6GX6RA6OxcCJ7ryCQm
+	Va7yEmRjy889FMWcNImUjFyYbRmmJMo7ZjBo3n/vi05a6RzTn3coOUL737UaL9K8jilL9OK5ndL33
+	HsB4DSagFlSpSs3+b+NsSM7MHsKlO6j6q+TwkS528pdx1l+cR6zbwDANqFP7P+H5/TnXiQB45ZDe4
+	TlW2Mg8w==;
+Received: from [122.165.245.213] (port=58934 helo=[192.168.1.4])
+	by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <parthiban@linumiz.com>)
+	id 1rq8ib-004Dis-2W;
+	Fri, 29 Mar 2024 15:10:13 +0530
+Message-ID: <454e1850-87e3-44ac-aa90-03d628a97f1a@linumiz.com>
+Date: Fri, 29 Mar 2024 15:10:10 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ARM: dts: imx6ull: add seeed studio NPi dev board
+To: Shawn Guo <shawnguo2@yeah.net>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Parthiban <parthiban@linumiz.com>
+References: <20240229082337.3090778-1-parthiban@linumiz.com>
+ <20240229082337.3090778-2-parthiban@linumiz.com> <ZgY82LADJS9FuvY6@dragon>
+Content-Language: en-US
+From: Parthiban <parthiban@linumiz.com>
+Organization: Linumiz
+In-Reply-To: <ZgY82LADJS9FuvY6@dragon>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 122.165.245.213
+X-Source-L: No
+X-Exim-ID: 1rq8ib-004Dis-2W
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.4]) [122.165.245.213]:58934
+X-Source-Auth: parthiban@linumiz.com
+X-Email-Count: 2
+X-Org: HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPADPYP4FFbS+ToD1ONqIHaLCB68NQTsiRPGHHnE/yhqNnZPLrZ4NwbLjLYEOtz6dNegOQmbQb6U0OJp47XA7UWd98XhaGB/WtYbDZXMOEYsgekml5Bf
+ P0qYAX/pTpZeAE4mjUyRDNGmAt0qAHVWUKllwQjUjqfIcgNHhEB9v72XYjxjRMK1IPNNpTZ6vvk+fzBHvQdT6Nd7TYIWWqi6Coc=
 
-Introduce "max_pages" param to recompress device attribute
-which sets an upper limit on the number of entries (pages)
-zram attempts to recompress (in this particular recompression
-call). S/W recompression can be quite expensive so limiting
-the number of pages recompress touches can be quite helpful.
+Dear Shawn,
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- Documentation/admin-guide/blockdev/zram.rst |  5 ++++
- drivers/block/zram/zram_drv.c               | 31 +++++++++++++++++++--
- 2 files changed, 33 insertions(+), 3 deletions(-)
+On 3/29/24 09:30, Shawn Guo wrote:
+> On Thu, Feb 29, 2024 at 01:53:37PM +0530, Parthiban Nallathambi wrote:
+>> Add support for Seed Stuidos NPi i.MX6ULL SoM equipped with
+>> 512MB RAM and 8GB eMMC or 512MB NAND flash. Development
+>> board comes with either eMMC or NAND based SoM with peripheral
+>> interfaces like 2 x ethernet, 2 x USB, LCD, CSI and more.
+>>
+>> Signed-off-by: Parthiban Nallathambi <parthiban@linumiz.com>
+>> ---
+>>  arch/arm/boot/dts/nxp/imx/Makefile            |   2 +
+>>  .../imx/imx6ull-seeed-npi-dev-board-emmc.dts  |  19 +
+>>  .../imx/imx6ull-seeed-npi-dev-board-nand.dts  |  19 +
+>>  .../nxp/imx/imx6ull-seeed-npi-dev-board.dtsi  | 424 ++++++++++++++++++
+>>  .../boot/dts/nxp/imx/imx6ull-seeed-npi.dtsi   | 155 +++++++
+>>  5 files changed, 619 insertions(+)
+>>  create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dts
+>>  create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dts
+>>  create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board.dtsi
+>>  create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi.dtsi
+> 
+> Could you elaborate a bit the point of splitting imx6ull-seeed-npi.dtsi
+> and imx6ull-seeed-npi-dev-board.dtsi?  Why cannot they be a single file?
+imx6ull-seeed-npi.dtsi is for the npi SoM and -dev-board is for the board which uses the SoM.
 
-diff --git a/Documentation/admin-guide/blockdev/zram.rst b/Documentation/admin-guide/blockdev/zram.rst
-index ee2b0030d416..091e8bb38887 100644
---- a/Documentation/admin-guide/blockdev/zram.rst
-+++ b/Documentation/admin-guide/blockdev/zram.rst
-@@ -466,6 +466,11 @@ of equal or greater size:::
- 	#recompress idle pages larger than 2000 bytes
- 	echo "type=idle threshold=2000" > /sys/block/zramX/recompress
- 
-+It is also possible to limit the number of pages zram re-compression will
-+attempt to recompress:::
-+
-+	echo "type=huge_idle max_pages=42" > /sys/block/zramX/recompress
-+
- Recompression of idle pages requires memory tracking.
- 
- During re-compression for every page, that matches re-compression criteria,
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index f0639df6cd18..4cf38f7d3e0a 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1568,7 +1568,8 @@ static int zram_bvec_write(struct zram *zram, struct bio_vec *bvec,
-  * Corresponding ZRAM slot should be locked.
-  */
- static int zram_recompress(struct zram *zram, u32 index, struct page *page,
--			   u32 threshold, u32 prio, u32 prio_max)
-+			   u64 *num_recomp_pages, u32 threshold, u32 prio,
-+			   u32 prio_max)
- {
- 	struct zcomp_strm *zstrm = NULL;
- 	unsigned long handle_old;
-@@ -1645,6 +1646,15 @@ static int zram_recompress(struct zram *zram, u32 index, struct page *page,
- 	if (!zstrm)
- 		return 0;
- 
-+	/*
-+	 * Decrement the limit (if set) on pages we can recompress, even
-+	 * when current recompression was unsuccessful or did not compress
-+	 * the page below the threshold, because we still spent resources
-+	 * on it.
-+	 */
-+	if (*num_recomp_pages)
-+		*num_recomp_pages -= 1;
-+
- 	if (class_index_new >= class_index_old) {
- 		/*
- 		 * Secondary algorithms failed to re-compress the page
-@@ -1710,6 +1720,7 @@ static ssize_t recompress_store(struct device *dev,
- 	struct zram *zram = dev_to_zram(dev);
- 	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
- 	char *args, *param, *val, *algo = NULL;
-+	u64 num_recomp_pages = ULLONG_MAX;
- 	u32 mode = 0, threshold = 0;
- 	unsigned long index;
- 	struct page *page;
-@@ -1732,6 +1743,17 @@ static ssize_t recompress_store(struct device *dev,
- 			continue;
- 		}
- 
-+		if (!strcmp(param, "max_pages")) {
-+			/*
-+			 * Limit the number of entries (pages) we attempt to
-+			 * recompress.
-+			 */
-+			ret = kstrtoull(val, 10, &num_recomp_pages);
-+			if (ret)
-+				return ret;
-+			continue;
-+		}
-+
- 		if (!strcmp(param, "threshold")) {
- 			/*
- 			 * We will re-compress only idle objects equal or
-@@ -1788,6 +1810,9 @@ static ssize_t recompress_store(struct device *dev,
- 	for (index = 0; index < nr_pages; index++) {
- 		int err = 0;
- 
-+		if (!num_recomp_pages)
-+			break;
-+
- 		zram_slot_lock(zram, index);
- 
- 		if (!zram_allocated(zram, index))
-@@ -1807,8 +1832,8 @@ static ssize_t recompress_store(struct device *dev,
- 		    zram_test_flag(zram, index, ZRAM_INCOMPRESSIBLE))
- 			goto next;
- 
--		err = zram_recompress(zram, index, page, threshold,
--				      prio, prio_max);
-+		err = zram_recompress(zram, index, page, &num_recomp_pages,
-+				      threshold, prio, prio_max);
- next:
- 		zram_slot_unlock(zram, index);
- 		if (err) {
--- 
-2.44.0.478.gd926399ef9-goog
+Thanks,
+Parthiban N
 
+
+> 
+> Shawn
+> 
 
