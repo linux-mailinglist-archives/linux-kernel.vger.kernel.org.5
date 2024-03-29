@@ -1,333 +1,377 @@
-Return-Path: <linux-kernel+bounces-124112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F6FC891264
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:28:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2CF9891266
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CAC2B229A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:28:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22342B22CD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D973F3A8C0;
-	Fri, 29 Mar 2024 04:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A4D37152;
+	Fri, 29 Mar 2024 04:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="2oM+oqxc"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UZbMpBAB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93573A1CF
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711686478; cv=none; b=YHUuPwaz/Q4LTGnRZKu5E/avwwCxqHwqeSjmtUKVkhmsDmQ3xnucUMaM5mUWkTi9TNEyYN5lMflFmvctq2kWCsfXGqcs97EVeD2AY21zVH21wE/35UKx8xATVr525tGcsgUnLD1FCE8ezTB+MYtF4N9w2J5fGYDdwWE71dhxNuU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711686478; c=relaxed/simple;
-	bh=sBlzYKxX2N1Rzd9itK6T89IXsUbte6bJpJvkf/pAeQg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YwSwaRiI9lhipYPeE7QC+JMgQd4WxMMjZbImYSWxsQ+Vnf4Zri24S940AJYNXr5OCb5NHoimvN95iNNqlQutp4w5Re238gvCs1JzELbr8G8HemTDPcXOWSdGGTIWOERGYA7aYo+eGNcyPU2NxK3E8344jVyg0Z+7QnBQ2x+2yaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2oM+oqxc; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d6ee6c9945so13443481fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711686475; x=1712291275; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c/vAyJ4a5RQBFlL1Mz9qHhkQoRCF3uS+NkBJETvCGyY=;
-        b=2oM+oqxcP5VSVTPmLeH1UXVQ4XyYHghMk8RO3vjYHovTQrT2L15I+iH2kv+CNX1lvU
-         +SFOoomxpeseTQ0Laui86HDQYeHMDoo012NbT8mSKMAMF7bLHoScLq/83IZo9Juu/ovO
-         2ASIrcts2o5flD+ar3Jo+YjmvQLwV3SZs4Nr2NAkO8GX5iTE7KKwrqeLiDAOEUxPWd7a
-         XjP0NmyhNsTne7RoP0EJziVnbAnmK3eZQjrm8J8wgy6ub5oJHM+qXBBQoPpS8qlbOZ0O
-         Fl64sHA8eu+W/b9qg7iqsPy146ZKRVOO8E9PcORctMqkIYGqfOtbi416u8tKr7H/EOj6
-         HErQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711686475; x=1712291275;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c/vAyJ4a5RQBFlL1Mz9qHhkQoRCF3uS+NkBJETvCGyY=;
-        b=dE0SrEKPQFFaL74Y8ecvnCZS0z2N6wKi9S80+yyj+SLfJXd10Qj7hPrVtiCTiCRzBU
-         ffZNRrZvd+qiL4oKQsLqzORe7ns/VnVyJNn9DaSY3cJyw3UQ9b3v+IaWAvk+VVkckyza
-         sSIHArpeejMBUpddlSRlKTKjph6kSSyeoa2iNAlXmmN3IP+8Pa/zFQd1U/mFqJG1plN7
-         rzVB7zDXVPjhl/WFkTmB7NvkslAtUHdA5vGN7wN37cFyi+0rv0vJaa4iEzL5ujQQVwAp
-         Asb7Ryh/nucVs087r9AfA3FrEStyyQo9sujanrZKUQdnW6DrUZRTRjwAr1LnkqV8KHaX
-         mtFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUahXhb7z8tbhltaW3ETnrEqxp5NPYsr7VzcFm7/lZ8jOjyZm3ItmBFLxI6v4klR21FudViUi+oK1H5V1mKypMV7IuDkdNozd0MIhf
-X-Gm-Message-State: AOJu0YwNX2L8JF7Klj0BByPFBus8u6hWLDetGMndh0eqLIHxtzq+3ycD
-	7Vk7fUQlfMvCs7++5ciD+3EzZrsS6K+piYWfr/6ySNIxiFdx6zzpaQGIu7007IlYOsmgnLCP5FM
-	rjRckHEVbMeyV0j7rSoFTDKeB+32xdThfh5+S
-X-Google-Smtp-Source: AGHT+IGJk5o1bduZOx1XkmIoLSUMm6ZQnfDKEkl2dt0ysbqUb2ufvf4hhNYO99cHR06Sr1kn5VgzlsS+iCHEX9AHYZA=
-X-Received: by 2002:a05:6512:48c6:b0:515:cedb:a518 with SMTP id
- er6-20020a05651248c600b00515cedba518mr526032lfb.16.1711686474537; Thu, 28 Mar
- 2024 21:27:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F762576F
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711686927; cv=fail; b=W4iHcpyPX/gzDttDbnvWisybGAVtE4/+r1d/174HVsQmPpmNVpEj3xBN8W+WweL2trl3w6MrkAHekwP4b8QuFF0lILEnXTyIM6qz6oNmkpg0n5s6yOGqfSHlGwwJjFfZQDNAdLxMSjcW+AaYAzJL5BSouTYszZUj3VvGJA8ROug=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711686927; c=relaxed/simple;
+	bh=8fTY2EbgDP8eWt63+KfZNfZ7gtsvPtOafnDEGO0HwxM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mviWV2DwAc4h6IjCmRdXmVoJUmM3bRK81nqXMutwiPEgSV8Zav6G+yfua3mnoMtcq8Fbk4WxsbwVB6Ltr861DXFPjl28HyM+y+1VMqxd8lPz6sKFfb4cP0v0/e/rA1nTUFRg5o3OD1IJVMpjasgKqpzrMuIY4mkkGWPkJBd0S6Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UZbMpBAB; arc=fail smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711686925; x=1743222925;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8fTY2EbgDP8eWt63+KfZNfZ7gtsvPtOafnDEGO0HwxM=;
+  b=UZbMpBABTJsBTMgWNz7RZgcVZdmakj8Ko8xrd8La8rjype031FN7XuaS
+   K6XBKgAhNoOybyMWPMUK2k4AWd5jzlmnTbpSeUhopTg8pxhWg1qZzSrMp
+   nicurd+1HzAMplLP9JqkEuX7RtpluRreRHT5UoFPGB7ibk5PDKqSfwCJ3
+   6dw8JLAyDgopCFBuvUuN7XdppCY4ZTX3oPD9XNVZwOe93G4R+m5YnZgkg
+   YXppvbMsBqtXSZf7kwI1qbbj7xkO616L0KdA6wY7c7iGAVpX8r2szE8yF
+   JB2Bh6epyTNC5Hx76ZJ1c9qhU43pEiQAT9tQblkZLcnI3fsi6CBIqChZU
+   g==;
+X-CSE-ConnectionGUID: 0EQXFv6LRZ2Im4L7vOJm/g==
+X-CSE-MsgGUID: Uz+sXWQhStyOjdcXvvDg3g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="32274992"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="32274992"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 21:35:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="16901099"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 21:35:24 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 21:35:23 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 21:35:23 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 21:35:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MjegHMx8v/kM3Ue/SwzB3L5PLKME9jxQ/B4PAbHpQOBxR/foxNn5ddtFdfEI7A/H3uLK6eBwiI2OW3wN1Gv4rmWjCHKFtaN3yCPrxJZ+E7bHnXGOHxYClfyqT1ZGP83AVV4SXi7GJj8fhpO8E7uTKn1jSm/vwUzIkGBGhaquZByxs3crBrRw0jF/I7g9zFtW0M9mE2/l+qKjH5b4fgCSKlnpCtkCcpgjR4FxYf9/c7A4qBSYfJpv56O2o1rbP+/mVB8sMiKZbBn3VPdvf2T0XZCJjkXRWgIF/uEhpq95244Loqmaztz3jMTFMkjDXkF2YK7ynLPhC1M3w0C9lNCBrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=W4+sVMDgduRy4xs3R2+bvVLtWACg/2w+j63WkwM+6TY=;
+ b=fFQnxVnI8flBkBtDgorl7JDcyoBLzm5MklsWMSs/xJ34TdfrmCBilTiWBLybm8qR6qcVnDUHf58tWtK35Nb03ruvbQkvrieSV+d4+hb2TbUwd0PBHFAdg5/owhfWpRUX8zBCJ38gi2DdGvExozUZtIwYtRK/lMbrwQlTeBqkJXFIbRVD6/bVGQalS4HO6A2KVQxfdHw7rSd+7bTFJ2rPqFshLrSLvHvDEs+PlRfI1rWjhjH/MLA3/EU3R0AxAwjfQD/RRoxw/0NY/GK3ymEmGV0zJ7uBrTPusPbXxiBG3rb+xkM8h96fJNeEWqaJLcEESg3Q78OmWEFo5VQXPEgZPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MW5PR11MB5787.namprd11.prod.outlook.com (2603:10b6:303:192::7)
+ by CY8PR11MB7059.namprd11.prod.outlook.com (2603:10b6:930:51::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Fri, 29 Mar
+ 2024 04:35:21 +0000
+Received: from MW5PR11MB5787.namprd11.prod.outlook.com
+ ([fe80::8814:40fd:3adb:8de2]) by MW5PR11MB5787.namprd11.prod.outlook.com
+ ([fe80::8814:40fd:3adb:8de2%6]) with mapi id 15.20.7409.031; Fri, 29 Mar 2024
+ 04:35:21 +0000
+From: "Wu, Wentong" <wentong.wu@intel.com>
+To: "Winkler, Tomas" <tomas.winkler@intel.com>, Dominik Brodowski
+	<linux@dominikbrodowski.net>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sakari Ailus
+	<sakari.ailus@linux.intel.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH RESEND 1/1] mei: vsc: Unregister interrupt handler for
+ system suspend
+Thread-Topic: [PATCH RESEND 1/1] mei: vsc: Unregister interrupt handler for
+ system suspend
+Thread-Index: AQHaepKfMLIeIMH/HU2UeptXIGcJFbFOL00Q
+Date: Fri, 29 Mar 2024 04:35:21 +0000
+Message-ID: <MW5PR11MB5787724639DF1BE59CE0D62B8D3A2@MW5PR11MB5787.namprd11.prod.outlook.com>
+References: <20240320064810.3265489-1-sakari.ailus@linux.intel.com>
+In-Reply-To: <20240320064810.3265489-1-sakari.ailus@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW5PR11MB5787:EE_|CY8PR11MB7059:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: c9HtSWxfMNzQiYaqqeEWrYsPLA97i0MPFNG7DD419fKAtBc5M1zn6kawa3BiAfuMhx1yMxaPCr2oznwUfayHnJIJIPwK5ou+qu3LsGoFYBDQxzp/hRZrrNhdTEGOuiOW4m4MAAOiN0ZVbv7mNofsKay7HttzOX9gtGLSrgwf/Bk7yKpGIELbZD4AtQlkJqjKcZCJHT9U6Amb1vYcfUXEBzhqlcGNE5F1qqCOKlbmd9ecZq3J7EYGGPTkPFmkxn+z4lcBLi1OqndvcsjJKuhUAXmpnRbPn9UgNX7AQxXYhUZY9li80Ns4WI7js+Ai1AyPIL88fPReoh15quuNAm9e8cxr26WHmMlLswJuLZWEHbiT5P0RDCAWXi4Pho1XFm/TeENf/pr6uVoYgGMoefO6hg1Y6y8hg+IXBINn5pvt/Mf43I0sW45cwWI9WOpQ6YdaB5oqX7qzVbSmQXwDT+xyG7yS+LhSkjGbJGYd+9tuFW10np81iaAEEq9fPWk1cm0ID59gyEeZdHKrz26cHFXgbKZfml+d4wu1sROE88O8GtfYLYxWDqUlAyJ7t7MtZgdygcXtgXwz9xUaIWOnaAmcqV8vQJh40jrIYUw+kViYt+Ro3/WVyHjQIjkMPo2tlZWgeUGey9OdfpBQFGAxHt3JrnX1mrMrv+E2rF/5d39CGEk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5787.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iJWfWmCFgwVjNCIYPrZv77zh/bYoZex9meECcmP2t1DEs5ra4aS1yJzAU0Sv?=
+ =?us-ascii?Q?KzBJAKjZVplhCcE0TvlNVRd94zW2Nn1A9bW2qicR6xTH6A/24eQThM01Hzeh?=
+ =?us-ascii?Q?AZR8r7pUBT5KFGIDHhP+AYW0tMqaayGvYpuA3GW7T891e6/Ksr1NNoLxB67s?=
+ =?us-ascii?Q?/KBm0/Us/mFUrOMuOhwShta1Eln/TDXIsUscnrTkL02Ih+II2eIL9b9ENYsw?=
+ =?us-ascii?Q?fAueIA/gu0NphCE8dZ803K+Xpve8JxdlwoWw68FgPqk1+SN8KJxMzPrmr4Ov?=
+ =?us-ascii?Q?0NW40NP3Prg8C6+om3GmlHvbQctQRLZhPiR4jYeXNm3y3ARoIDa8egzuestI?=
+ =?us-ascii?Q?jytIK/ffXIA9VQPf2wsWuHwR/U+2cVnhgp8VgP4VmINO1MH+s4dxmBVTc8Yh?=
+ =?us-ascii?Q?GJttlfjc7QSdec0xvCLt570/tsgL1e6FmOhvhxj6xS3kAr1UPp8oA1FXeHUZ?=
+ =?us-ascii?Q?exOMqErqWjH52EimvXkjZBmG4eA0lCQ4Yw1PTPG8t663vMyKyPiE1SxiN+bX?=
+ =?us-ascii?Q?VaIlRxGOsDip0jNWSnhV5l6hTAPsvI8N4CwlafuAuE4OGKBk/zuJCoXJ/sdO?=
+ =?us-ascii?Q?VXGB9rZbV1C8Kd+6QCttUQbKiuUALD2ZqaISgBFgMtGutKpOQmNuf2xMjP5H?=
+ =?us-ascii?Q?XwuxAUyfYXZF1BV0KeXVHNltP9Vnx9LXANuJWNyFJtqrxg0dgaRoMBl6e9l0?=
+ =?us-ascii?Q?dycC+DbJwYSUpNXprzaQXVt4Yh2KV4faXCbnm53z/L6O/pXrku9p4eNzdqxh?=
+ =?us-ascii?Q?R59colky8qF9cgNXcc27S6FMsej9UqS4PY9fXjQ2gR1JdaNIIpgxFjzx51+C?=
+ =?us-ascii?Q?8v0YTy4XZ+PXdsYrAvrmAZvsvPP7y4gXzaUhwFAx1v33BVwOSrXi5nMUas49?=
+ =?us-ascii?Q?YBoS8BjLToF80y9/sAlcturFUj3G+jb9aQksSg+xXN7O8M7Lq7hNGoD4+8mN?=
+ =?us-ascii?Q?hVnuuqLyhIlDJ/L33Qm49KrzcMTNTn6aIOrzxr4tQxpxCHv0vESVEnK8vt5H?=
+ =?us-ascii?Q?FQsfmuiK31ih1KDqMON1HIn/HIJIdKWo13dtUOf6V9P7kRXJuvN2Q2FXRjEJ?=
+ =?us-ascii?Q?akP9+OdVNhV6D7HEA9M3HlA3oVFJHVPbFGaiGJ8wBmPPdjsb8YIU3PkTj596?=
+ =?us-ascii?Q?zCfXp492YNT1kKD70Hg7qoYhGNHYd2EyjrBw6ZZeUUt0VMp7P0UoLzcJaVm8?=
+ =?us-ascii?Q?6Rrlq/2q9jZPQ98nn5OGHD4Oe4cPGDDLP8PcfFMdxofV3IUgtLAttfCqUPN8?=
+ =?us-ascii?Q?JdZOJDYZckIXnJibNyL8IqIsuXv3YbCL8MLIPwfkUVwSBUP9p/sMrQPpPcmO?=
+ =?us-ascii?Q?tA3dfwtKPlnU2Om+1ggksfRckACDVxF81zW03WaTYsqnq7LB/Z9+++nZn0gQ?=
+ =?us-ascii?Q?jXdVtEwxM0jzgSE8d1NcR/KOXFEapuSBYvRrusTR9r3NmkynJ7MVyYmWzQt4?=
+ =?us-ascii?Q?4HYieoPBGw0UBUpBMhuuOA+NlCoWJqgSb18c0VaO7ikevnjPv9E26v25J1i0?=
+ =?us-ascii?Q?/Kxvup1h3QLEkxu168644+RrCDKkmQLISFnGytypD1tazfmS4M8H+luBJzNj?=
+ =?us-ascii?Q?BbYmroIgfrltVt3iogqzUiNCKEsG1LicRd/4tZdU?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-7-yosryahmed@google.com> <20240328193149.GF7597@cmpxchg.org>
- <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com>
- <20240328210709.GH7597@cmpxchg.org> <CAKEwX=OPDLxH-0-3F+xOc2SL5Ouj-R-HEC5QQrW+Q9Fn8pyeRg@mail.gmail.com>
- <CAJD7tkaGBofWm1eGBffEtpuKUDBVB_6RfHbYKQSKOX3fKn2jeg@mail.gmail.com>
-In-Reply-To: <CAJD7tkaGBofWm1eGBffEtpuKUDBVB_6RfHbYKQSKOX3fKn2jeg@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 28 Mar 2024 21:27:17 -0700
-Message-ID: <CAJD7tkbKY0T6jd5v_GhNFyCO0578SNqfMgs1ZrZiCckY05hzZA@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
- pages handling
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5787.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2beb852-03aa-48fc-d89f-08dc4fa9a51b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2024 04:35:21.7572
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +XHIoiYTf7w1vtruTjck4j1pRCGEya04OM3qwYTBCUhH++iRD2vRGLBeZGi/Vc+UKZZvhKUwR7691xDON0jC0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7059
+X-OriginatorOrg: intel.com
 
-On Thu, Mar 28, 2024 at 7:05=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+> From: Sakari Ailus <sakari.ailus@linux.intel.com>
 >
-> On Thu, Mar 28, 2024 at 4:19=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> >
-> > On Thu, Mar 28, 2024 at 2:07=E2=80=AFPM Johannes Weiner <hannes@cmpxchg=
-org> wrote:
-> > >
-> > > On Thu, Mar 28, 2024 at 01:23:42PM -0700, Yosry Ahmed wrote:
-> > > > On Thu, Mar 28, 2024 at 12:31=E2=80=AFPM Johannes Weiner <hannes@cm=
-pxchg.org> wrote:
-> > > > >
-> > > > > On Mon, Mar 25, 2024 at 11:50:14PM +0000, Yosry Ahmed wrote:
-> > > > > > The current same-filled pages handling supports pages filled wi=
-th any
-> > > > > > repeated word-sized pattern. However, in practice, most of thes=
-e should
-> > > > > > be zero pages anyway. Other patterns should be nearly as common=
-.
-> > > > > >
-> > > > > > Drop the support for non-zero same-filled pages, but keep the n=
-ames of
-> > > > > > knobs exposed to userspace as "same_filled", which isn't entire=
-ly
-> > > > > > inaccurate.
-> > > > > >
-> > > > > > This yields some nice code simplification and enables a followi=
-ng patch
-> > > > > > that eliminates the need to allocate struct zswap_entry for tho=
-se pages
-> > > > > > completely.
-> > > > > >
-> > > > > > There is also a very small performance improvement observed ove=
-r 50 runs
-> > > > > > of kernel build test (kernbench) comparing the mean build time =
-on a
-> > > > > > skylake machine when building the kernel in a cgroup v1 contain=
-er with a
-> > > > > > 3G limit:
-> > > > > >
-> > > > > >               base            patched         % diff
-> > > > > > real          70.167          69.915          -0.359%
-> > > > > > user          2953.068        2956.147        +0.104%
-> > > > > > sys           2612.811        2594.718        -0.692%
-> > > > > >
-> > > > > > This probably comes from more optimized operations like memchr_=
-inv() and
-> > > > > > clear_highpage(). Note that the percentage of zero-filled pages=
- during
-> > > > > > this test was only around 1.5% on average, and was not affected=
- by this
-> > > > > > patch. Practical workloads could have a larger proportion of su=
-ch pages
-> > > > > > (e.g. Johannes observed around 10% [1]), so the performance imp=
-rovement
-> > > > > > should be larger.
-> > > > > >
-> > > > > > [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmp=
-xchg.org/
-> > > > > >
-> > > > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > > >
-> > > > > This is an interesting direction to pursue, but I actually thinkg=
- it
-> > > > > doesn't go far enough. Either way, I think it needs more data.
-> > > > >
-> > > > > 1) How frequent are non-zero-same-filled pages? Difficult to
-> > > > >    generalize, but if you could gather some from your fleet, that
-> > > > >    would be useful. If you can devise a portable strategy, I'd al=
-so be
-> > > > >    more than happy to gather this on ours (although I think you h=
-ave
-> > > > >    more widespread zswap use, whereas we have more disk swap.)
-> > > >
-> > > > I am trying to collect the data, but there are.. hurdles. It would
-> > > > take some time, so I was hoping the data could be collected elsewhe=
-re
-> > > > if possible.
-> > > >
-> > > > The idea I had was to hook a BPF program to the entry of
-> > > > zswap_fill_page() and create a histogram of the "value" argument. W=
-e
-> > > > would get more coverage by hooking it to the return of
-> > > > zswap_is_page_same_filled() and only updating the histogram if the
-> > > > return value is true, as it includes pages in zswap that haven't be=
-en
-> > > > swapped in.
-> > > >
-> > > > However, with zswap_is_page_same_filled() the BPF program will run =
-in
-> > > > all zswap stores, whereas for zswap_fill_page() it will only run wh=
-en
-> > > > needed. Not sure if this makes a practical difference tbh.
-> > > >
-> > > > >
-> > > > > 2) The fact that we're doing any of this pattern analysis in zswa=
-p at
-> > > > >    all strikes me as a bit misguided. Being efficient about repet=
-itive
-> > > > >    patterns is squarely in the domain of a compression algorithm.=
- Do
-> > > > >    we not trust e.g. zstd to handle this properly?
-> > > >
-> > > > I thought about this briefly, but I didn't follow through. I could =
-try
-> > > > to collect some data by swapping out different patterns and observi=
-ng
-> > > > how different compression algorithms react. That would be interesti=
-ng
-> > > > for sure.
-> > > >
-> > > > >
-> > > > >    I'm guessing this goes back to inefficient packing from someth=
-ing
-> > > > >    like zbud, which would waste half a page on one repeating byte=
-.
-> > > > >
-> > > > >    But zsmalloc can do 32 byte objects. It's also a batching slab
-> > > > >    allocator, where storing a series of small, same-sized objects=
- is
-> > > > >    quite fast.
-> > > > >
-> > > > >    Add to that the additional branches, the additional kmap, the =
-extra
-> > > > >    scanning of every single page for patterns - all in the fast p=
-ath
-> > > > >    of zswap, when we already know that the vast majority of incom=
-ing
-> > > > >    pages will need to be properly compressed anyway.
-> > > > >
-> > > > >    Maybe it's time to get rid of the special handling entirely?
-> > > >
-> > > > We would still be wasting some memory (~96 bytes between zswap_entr=
-y
-> > > > and zsmalloc object), and wasting cycling allocating them. This cou=
-ld
-> > > > be made up for by cycles saved by removing the handling. We will be
-> > > > saving some branches for sure. I am not worried about kmap as I thi=
-nk
-> > > > it's a noop in most cases.
-> > >
-> > > Yes, true.
-> > >
-> > > > I am interested to see how much we could save by removing scanning =
-for
-> > > > patterns. We may not save much if we abort after reading a few word=
-s
-> > > > in most cases, but I guess we could also be scanning a considerable
-> > > > amount before aborting. On the other hand, we would be reading the
-> > > > page contents into cache anyway for compression, so maybe it doesn'=
-t
-> > > > really matter?
-> > > >
-> > > > I will try to collect some data about this. I will start by trying =
-to
-> > > > find out how the compression algorithms handle same-filled pages. I=
-f
-> > > > they can compress it efficiently, then I will try to get more data =
-on
-> > > > the tradeoff from removing the handling.
-> > >
-> > > I do wonder if this could be overthinking it, too.
-> > >
-> > > Double checking the numbers on our fleet, a 96 additional bytes for
-> > > each same-filled entry would result in a
-> > >
-> > > 1) p50 waste of 0.008% of total memory, and a
-> > >
-> > > 2) p99 waste of 0.06% of total memory.
->
-> Right. Assuming the compressors do not surprise us and store
-> same-filled pages in an absurd way, it's not worth it in terms of
-> memory savings.
->
-> > >
-> > > And this is without us having even thought about trying to make
-> > > zsmalloc more efficient for this particular usecase - which might be
-> > > the better point of attack, if we think it's actually worth it.
-> > >
-> > > So my take is that unless removing it would be outright horrible from
-> > > a %sys POV (which seems pretty unlikely), IMO it would be fine to jus=
-t
-> > > delete it entirely with a "not worth the maintenance cost" argument.
-> > >
-> > > If you turn the argument around, and somebody would submit the code a=
-s
-> > > it is today, with the numbers being what they are above, I'm not sure
-> > > we would even accept it!
-> >
-> > The context guy is here :)
-> >
-> > Not arguing for one way or another, but I did find the original patch
-> > that introduced same filled page handling:
-> >
-> > https://github.com/torvalds/linux/commit/a85f878b443f8d2b91ba76f09da21a=
-c0af22e07f
-> >
-> > https://lore.kernel.org/all/20171018104832epcms5p1b2232e2236258de3d03d1=
-344dde9fce0@epcms5p1/T/#u
->
-> Thanks for digging this up. I don't know why I didn't start there :)
->
-> Following in your footsteps, and given that zram has the same feature,
-> I found the patch that added support for non-zero same-filled pages in
-> zram:
-> https://lore.kernel.org/all/1483692145-75357-1-git-send-email-zhouxianron=
-g@huawei.com/#t
->
-> Both of them confirm that most same-filled pages are zero pages, but
-> they show a more significant portion of same-filled pages being
-> non-zero (17% to 40%). I suspect this will be less in data centers
-> compared to consumer apps.
->
-> The zswap patch also reports significant performance improvements from
-> the same-filled handling, but this is with 17-22% same-filled pages.
-> Johannes mentioned around 10% in your data centers, so the performance
-> improvement would be less. In the kernel build tests I ran with only
-> around 1.5% same-filled pages I observed 1.4% improvements just by
-> optimizing them (only zero-filled, skipping allocations).
->
-> So I think removing the same-filled pages handling completely may be
-> too aggressive, because it doesn't only affect the memory efficiency,
-> but also cycles spent when handling those pages. Just avoiding going
-> through the allocator and compressor has to account for something :)
+> Unregister the MEI VSC interrupt handler before system suspend and re-
+> register it at system resume time. This mirrors implementation of other M=
+EI
+> devices.
+>=20
+> This patch fixes the bug that causes continuous stream of MEI VSC errors
+> after system resume.
 
-Here is another data point. I tried removing the same-filled handling
-code completely with the diff Johannes sent upthread. I saw 1.3%
-improvement in the kernel build test, very similar to the improvement
-from this patch series. _However_, the kernel build test only produces
-~1.5% zero-filled pages in my runs. More realistic workloads have
-significantly higher percentages as demonstrated upthread.
+Hi Tomas,
 
-In other words, the kernel build test (at least in my runs) seems to
-be the worst case scenario for same-filled/zero-filled pages. Since
-the improvement from removing same-filled handling is quite small in
-this case, I suspect there will be no improvement, but possibly a
-regression, on real workloads.
+Could you please help review this patch? Thanks
 
-As the zero-filled pages ratio increases:
-- The performance with this series will improve.
-- The performance with removing same-filled handling completely will
-become worse.
+BR
+Wentong
+>=20
+> Fixes: 386a766c4169 ("mei: Add MEI hardware support for IVSC device")
+> Cc: stable@vger.kernel.org # for 6.8
+> Reported-by: Dominik Brodowski <linux@dominikbrodowski.net>
+> Signed-off-by: Wentong Wu <wentong.wu@intel.com>
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+>  drivers/misc/mei/platform-vsc.c | 17 ++++++-
+>  drivers/misc/mei/vsc-tp.c       | 84 +++++++++++++++++++++++----------
+>  drivers/misc/mei/vsc-tp.h       |  3 ++
+>  3 files changed, 78 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/drivers/misc/mei/platform-vsc.c b/drivers/misc/mei/platform-=
+vsc.c
+> index 8d303c6c0000..8db0fcf24e70 100644
+> --- a/drivers/misc/mei/platform-vsc.c
+> +++ b/drivers/misc/mei/platform-vsc.c
+> @@ -402,25 +402,40 @@ static int mei_vsc_remove(struct platform_device
+> *pdev)  static int mei_vsc_suspend(struct device *dev)  {
+>  	struct mei_device *mei_dev =3D dev_get_drvdata(dev);
+> +	struct mei_vsc_hw *hw =3D mei_dev_to_vsc_hw(mei_dev);
+>=20
+>  	mei_stop(mei_dev);
+>=20
+> +	mei_disable_interrupts(mei_dev);
+> +
+> +	vsc_tp_free_irq(hw->tp);
+> +
+>  	return 0;
+>  }
+>=20
+>  static int mei_vsc_resume(struct device *dev)  {
+>  	struct mei_device *mei_dev =3D dev_get_drvdata(dev);
+> +	struct mei_vsc_hw *hw =3D mei_dev_to_vsc_hw(mei_dev);
+>  	int ret;
+>=20
+> -	ret =3D mei_restart(mei_dev);
+> +	ret =3D vsc_tp_request_irq(hw->tp);
+>  	if (ret)
+>  		return ret;
+>=20
+> +	ret =3D mei_restart(mei_dev);
+> +	if (ret)
+> +		goto err_free;
+> +
+>  	/* start timer if stopped in suspend */
+>  	schedule_delayed_work(&mei_dev->timer_work, HZ);
+>=20
+>  	return 0;
+> +
+> +err_free:
+> +	vsc_tp_free_irq(hw->tp);
+> +
+> +	return ret;
+>  }
+>=20
+>  static DEFINE_SIMPLE_DEV_PM_OPS(mei_vsc_pm_ops, mei_vsc_suspend,
+> mei_vsc_resume); diff --git a/drivers/misc/mei/vsc-tp.c
+> b/drivers/misc/mei/vsc-tp.c index 03486bebae09..870c70ef3bb8 100644
+> --- a/drivers/misc/mei/vsc-tp.c
+> +++ b/drivers/misc/mei/vsc-tp.c
+> @@ -94,6 +94,27 @@ static const struct acpi_gpio_mapping
+> vsc_tp_acpi_gpios[] =3D {
+>  	{}
+>  };
+>=20
+> +static irqreturn_t vsc_tp_isr(int irq, void *data) {
+> +	struct vsc_tp *tp =3D data;
+> +
+> +	atomic_inc(&tp->assert_cnt);
+> +
+> +	wake_up(&tp->xfer_wait);
+> +
+> +	return IRQ_WAKE_THREAD;
+> +}
+> +
+> +static irqreturn_t vsc_tp_thread_isr(int irq, void *data) {
+> +	struct vsc_tp *tp =3D data;
+> +
+> +	if (tp->event_notify)
+> +		tp->event_notify(tp->event_notify_context);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  /* wakeup firmware and wait for response */  static int
+> vsc_tp_wakeup_request(struct vsc_tp *tp)  { @@ -383,6 +404,37 @@ int
+> vsc_tp_register_event_cb(struct vsc_tp *tp, vsc_tp_event_cb_t event_cb,  =
+}
+> EXPORT_SYMBOL_NS_GPL(vsc_tp_register_event_cb, VSC_TP);
+>=20
+> +/**
+> + * vsc_tp_request_irq - request irq for vsc_tp device
+> + * @tp: vsc_tp device handle
+> + */
+> +int vsc_tp_request_irq(struct vsc_tp *tp) {
+> +	struct spi_device *spi =3D tp->spi;
+> +	struct device *dev =3D &spi->dev;
+> +	int ret;
+> +
+> +	irq_set_status_flags(spi->irq, IRQ_DISABLE_UNLAZY);
+> +	ret =3D request_threaded_irq(spi->irq, vsc_tp_isr, vsc_tp_thread_isr,
+> +				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> +				   dev_name(dev), tp);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(vsc_tp_request_irq, VSC_TP);
+> +
+> +/**
+> + * vsc_tp_free_irq - free irq for vsc_tp device
+> + * @tp: vsc_tp device handle
+> + */
+> +void vsc_tp_free_irq(struct vsc_tp *tp) {
+> +	free_irq(tp->spi->irq, tp);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(vsc_tp_free_irq, VSC_TP);
+> +
+>  /**
+>   * vsc_tp_intr_synchronize - synchronize vsc_tp interrupt
+>   * @tp: vsc_tp device handle
+> @@ -413,27 +465,6 @@ void vsc_tp_intr_disable(struct vsc_tp *tp)  }
+> EXPORT_SYMBOL_NS_GPL(vsc_tp_intr_disable, VSC_TP);
+>=20
+> -static irqreturn_t vsc_tp_isr(int irq, void *data) -{
+> -	struct vsc_tp *tp =3D data;
+> -
+> -	atomic_inc(&tp->assert_cnt);
+> -
+> -	wake_up(&tp->xfer_wait);
+> -
+> -	return IRQ_WAKE_THREAD;
+> -}
+> -
+> -static irqreturn_t vsc_tp_thread_isr(int irq, void *data) -{
+> -	struct vsc_tp *tp =3D data;
+> -
+> -	if (tp->event_notify)
+> -		tp->event_notify(tp->event_notify_context);
+> -
+> -	return IRQ_HANDLED;
+> -}
+> -
+>  static int vsc_tp_match_any(struct acpi_device *adev, void *data)  {
+>  	struct acpi_device **__adev =3D data;
+> @@ -485,10 +516,9 @@ static int vsc_tp_probe(struct spi_device *spi)
+>  	tp->spi =3D spi;
+>=20
+>  	irq_set_status_flags(spi->irq, IRQ_DISABLE_UNLAZY);
+> -	ret =3D devm_request_threaded_irq(dev, spi->irq, vsc_tp_isr,
+> -					vsc_tp_thread_isr,
+> -					IRQF_TRIGGER_FALLING |
+> IRQF_ONESHOT,
+> -					dev_name(dev), tp);
+> +	ret =3D request_threaded_irq(spi->irq, vsc_tp_isr, vsc_tp_thread_isr,
+> +				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> +				   dev_name(dev), tp);
+>  	if (ret)
+>  		return ret;
+>=20
+> @@ -522,6 +552,8 @@ static int vsc_tp_probe(struct spi_device *spi)
+>  err_destroy_lock:
+>  	mutex_destroy(&tp->mutex);
+>=20
+> +	free_irq(spi->irq, tp);
+> +
+>  	return ret;
+>  }
+>=20
+> @@ -532,6 +564,8 @@ static void vsc_tp_remove(struct spi_device *spi)
+>  	platform_device_unregister(tp->pdev);
+>=20
+>  	mutex_destroy(&tp->mutex);
+> +
+> +	free_irq(spi->irq, tp);
+>  }
+>=20
+>  static const struct acpi_device_id vsc_tp_acpi_ids[] =3D { diff --git
+> a/drivers/misc/mei/vsc-tp.h b/drivers/misc/mei/vsc-tp.h index
+> f9513ddc3e40..14ca195cbddc 100644
+> --- a/drivers/misc/mei/vsc-tp.h
+> +++ b/drivers/misc/mei/vsc-tp.h
+> @@ -37,6 +37,9 @@ int vsc_tp_xfer(struct vsc_tp *tp, u8 cmd, const void
+> *obuf, size_t olen,  int vsc_tp_register_event_cb(struct vsc_tp *tp,
+> vsc_tp_event_cb_t event_cb,
+>  			     void *context);
+>=20
+> +int vsc_tp_request_irq(struct vsc_tp *tp); void vsc_tp_free_irq(struct
+> +vsc_tp *tp);
+> +
+>  void vsc_tp_intr_enable(struct vsc_tp *tp);  void vsc_tp_intr_disable(st=
+ruct
+> vsc_tp *tp);  void vsc_tp_intr_synchronize(struct vsc_tp *tp);
+> --
+> 2.39.2
+
 
