@@ -1,189 +1,111 @@
-Return-Path: <linux-kernel+bounces-124302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F311891553
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0150A89155A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:03:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8100287A02
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:02:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0FA8282F6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A470B38391;
-	Fri, 29 Mar 2024 09:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="aQlaMaCh"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8A240862;
+	Fri, 29 Mar 2024 09:03:40 +0000 (UTC)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D70B16423
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62C53FB8D;
+	Fri, 29 Mar 2024 09:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711702963; cv=none; b=NrBBDMJ/54E2svkKL33b028XkhRnKveVt10GPhweB8yZ7N5u18vtxzv/AuGwdfoqxRPk79ARwVHhtNwuC6d57we/NUPtGejP7i6LEJfKZbYo1L1YCfxmzyxADyaHtrkazEav3BeKqO5/Xh7F8F945QhRli/SZ6BarxDEuR02Oak=
+	t=1711703020; cv=none; b=o1qY9MKLd7wV2Sc5bDHcoF8UIXhNwd+/6UAmru/t8yFCGytr1CJhuYE64UySv/97jNRsUlCjRkqZ9veTZXVxU0UD+3ey7cOYsm6CzwQqW2s0rH/svEbvcKEf3YIaI71K1Cbz/L1SmQUDo1DYWoMJILvN57U48wGtMwUSgQtyBFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711702963; c=relaxed/simple;
-	bh=2Zf6R6CkxmywhczgQqEZn7MwHGL6FseyM974DXmnTHk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=heOH0Q2z1irh6IUFeJm4dD2IAKyXWUdHBK6cVr5l6eK1D+3qGKJ7l8R+bvOZIwdyGpjTqIzVVmAJn12pr70y7WcHwWUxtSQR+P+SzO3h5BgsQOgvghDz2FEd13BZ+QOhP/YOZbIsej4h5/FyKclDqw24BiPBCSTbwJHgtbiprXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=aQlaMaCh; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-566e869f631so1917259a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:02:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1711702960; x=1712307760; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/kJ07VpxBwuIm+C747GAvreUMoyvQyj4KBvI0bB+Uzs=;
-        b=aQlaMaChlqZLgNMrRR//nqXZA339Pk95vx19E3iAhym81R4Tzhv9dvj1L0Otd1Q9jo
-         IJFqSIb6h9HOjECNUJCA1f9tt4buUCfsL8wsUTXhXsizJMKIHYgSGvY4vQXdbAVPmA51
-         zBk9eKhdDN1OhvXdF548yIMTVyUdsTtepEC4Z9PcVtRLWFICwgUXHhGfBOYctfZlpSvv
-         veXAlK12PZBUao5czn4Qf5x9AIquQYkqRCDMfWCYJz4mAbDv8jHkGCRapcc2E9dP6aFW
-         ryUcVC8999Jl8lGBHzr0t8uy38YGTV6zaicrAhVqVy8z057j6NJKGRnbq833Lp1bMM/5
-         DVwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711702960; x=1712307760;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/kJ07VpxBwuIm+C747GAvreUMoyvQyj4KBvI0bB+Uzs=;
-        b=JAq9GyxlemH2ZQOk6D+7TVJpi8DF5rP94QY6x7shuaMdByqFGNr2l4NRep2/ygbnEd
-         2XYJDn+8TuB5k8KM0Mo5gQxGJX82Hc4pUWpYMtPU6M1uXe3la0+vEdgt0J4GWznVB8B3
-         EA3B0WAJDEFlibzSa9gsRlYMOPbemt+Q2tcVDFJSPHU9Yvi1bt4wreYoTkJd+ThKCKCb
-         53Wq6Q9CDnUvuRC4hZ13yDjLO99sf2Fi+i6+xbhmo/UyOJ7Z7b461UG41lLaKinPBgz2
-         NI8t0v3fv0bWq9r9K8NqIzpl80zrbKVQlx2sLI6mEXRcKs9f2G/Y2OrS6uQkI1uIcldI
-         3ffQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUd51okVEEwFABTDIlqiHI/Bl3UsWoAsHNWkjgEwpuecomFYG1+/gmLODk89Cv/dW7Gu21iDTb360mRD+mhmopmSK73lvB1vVg2ubxT
-X-Gm-Message-State: AOJu0YzEOuqvK2AEuNpm2xyzCT7ZeFuePst+dOPLjoep9F/uPFfxTOY1
-	oiJFoi9r7d8wpZKDVOXcQHrxnwSOAZ+TL0R8h9BQ1sI4U8ZBnto0ajBhk/FhzGI=
-X-Google-Smtp-Source: AGHT+IEtXOU314+1cqrx8WlAN41P0sJaaz6HVv7Pvuse+LMvU2V1oey2adNfDS+zVoFYLe2kFcwhTw==
-X-Received: by 2002:a50:c351:0:b0:567:56a4:3940 with SMTP id q17-20020a50c351000000b0056756a43940mr1190062edb.19.1711702960448;
-        Fri, 29 Mar 2024 02:02:40 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id b20-20020aa7cd14000000b0056bf9b4ec32sm1816243edw.78.2024.03.29.02.02.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 02:02:40 -0700 (PDT)
+	s=arc-20240116; t=1711703020; c=relaxed/simple;
+	bh=ssMs2fsOpy/An9vC4sIE90j8WGcxFV/Y8XaqyuHtBnM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=FUt4VuEihVThzv0qpOQI+WUIWGCu4GEhBNZRk9Ws6GFfTdA72dQrDpkccxX7dqUgIVBMnh6w1Me0bBAOlqQk5dMJAbmp8JgeArTY8vNx8xo8TKQl/vZby6KiyivmUGrr8r9wwTsbTUAg39FAhImnjclwFqqHny6i3VUCMON5Wx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 42T934ybC3661992, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 42T934ybC3661992
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Mar 2024 17:03:04 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 29 Mar 2024 17:03:05 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 29 Mar 2024 17:03:04 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975]) by
+ RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975%5]) with mapi id
+ 15.01.2507.035; Fri, 29 Mar 2024 17:03:04 +0800
+From: Ricky WU <ricky_wu@realtek.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+CC: "wenchao.chen@unisoc.com" <wenchao.chen@unisoc.com>,
+        "ricardo@marliere.net" <ricardo@marliere.net>,
+        "marex@denx.de"
+	<marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mmc: core: resume not check card exist before powerup
+Thread-Topic: [PATCH] mmc: core: resume not check card exist before powerup
+Thread-Index: AQHaf/Di2MMAmClaHUaVpFhOVxydUrFMk6cAgAHWPUA=
+Date: Fri, 29 Mar 2024 09:03:04 +0000
+Message-ID: <99ead06da8a94f518d40f7aba475ed35@realtek.com>
+References: <20240327024545.138351-1-ricky_wu@realtek.com>
+ <CAPDyKFo3dkzDDEU7Lk14zH0td0AP=z2RJQibj8SP6JeUuz=iFA@mail.gmail.com>
+In-Reply-To: <CAPDyKFo3dkzDDEU7Lk14zH0td0AP=z2RJQibj8SP6JeUuz=iFA@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 29 Mar 2024 10:02:39 +0100
-Message-Id: <D064242SMIVM.1GUC1I9GE9IGC@fairphone.com>
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Bjorn Andersson"
- <andersson@kernel.org>, "Neil Armstrong" <neil.armstrong@linaro.org>
-Cc: "Vinod Koul" <vkoul@kernel.org>, "Kishon Vijay Abraham I"
- <kishon@kernel.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Abhinav Kumar" <quic_abhinavk@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFT 0/7] arm64: qcom: allow up to 4 lanes for the Type-C
- DisplayPort Altmode
-X-Mailer: aerc 0.15.2
-References: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-0-07e24a231840@linaro.org> <CZUHV429NTF7.1GW9TN9NXB4J1@fairphone.com> <7a7aa05f-9ae6-4ca0-a423-224fc78fbd0c@linaro.org> <liah4xvkfattlen7s2zi3vt2bl5pbbxqgig3k5ljqpveoao656@iacnommxkjkt> <236a104c-fc16-4b3d-9a00-e16517c00e3a@linaro.org>
-In-Reply-To: <236a104c-fc16-4b3d-9a00-e16517c00e3a@linaro.org>
+MIME-Version: 1.0
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-On Tue Mar 26, 2024 at 10:02 PM CET, Konrad Dybcio wrote:
-> On 16.03.2024 5:01 PM, Bjorn Andersson wrote:
-> > On Fri, Mar 15, 2024 at 06:35:15PM +0100, Neil Armstrong wrote:
-> >> On 15/03/2024 18:19, Luca Weiss wrote:
-> >>> On Thu Feb 29, 2024 at 2:07 PM CET, Neil Armstrong wrote:
-> >>>> Register a typec mux in order to change the PHY mode on the Type-C
-> >>>> mux events depending on the mode and the svid when in Altmode setup.
-> >>>>
-> >>>> The DisplayPort phy should be left enabled if is still powered on
-> >>>> by the DRM DisplayPort controller, so bail out until the DisplayPort
-> >>>> PHY is not powered off.
-> >>>>
-> >>>> The Type-C Mode/SVID only changes on plug/unplug, and USB SAFE state=
-s
-> >>>> will be set in between of USB-Only, Combo and DisplayPort Only so
-> >>>> this will leave enough time to the DRM DisplayPort controller to
-> >>>> turn of the DisplayPort PHY.
-> >>>>
-> >>>> The patchset also includes bindings changes and DT changes.
-> >>>>
-> >>>> This has been successfully tested on an SM8550 board, but the
-> >>>> Thinkpad X13s deserved testing between non-PD USB, non-PD DisplayPor=
-t,
-> >>>> PD USB Hubs and PD Altmode Dongles to make sure the switch works
-> >>>> as expected.
-> >>>>
-> >>>> The DisplayPort 4 lanes setup can be check with:
-> >>>> $ cat /sys/kernel/debug/dri/ae01000.display-controller/DP-1/dp_debug
-> >>>> 	name =3D msm_dp
-> >>>> 	drm_dp_link
-> >>>> 		rate =3D 540000
-> >>>> 		num_lanes =3D 4
-> >>>
-> >>> Hi Neil,
-> >>>
-> >>> I tried this on QCM6490/SC7280 which should also support 4-lane DP bu=
-t I
-> >>> haven't had any success so far.
-> >>>
-> > [..]
-> >>> [ 1775.563969] [drm:dp_ctrl_link_train] *ERROR* max v_level reached
-> >>> [ 1775.564031] [drm:dp_ctrl_link_train] *ERROR* link training #1 fail=
-ed. ret=3D-11
-> >>
-> >> Interesting #1 means the 4 lanes are not physically connected to the o=
-ther side,
-> >> perhaps QCM6490/SC7280 requires a specific way to enable the 4 lanes i=
-n the PHY,
-> >> or some fixups in the init tables.
-> >>
-> >=20
-> > I tested the same on rb3gen2 (qcs6490) a couple of weeks ago, with the
-> > same outcome. Looking at the AUX reads, after switching to 4-lane the
-> > link training is failing on all 4 lanes, in contrast to succeeding only
-> > on the first 2 if you e.g. forget to mux the other two.
-> >=20
-> > As such, my expectation is that there's something wrong in the QMP PHY
-> > (or possibly redriver) for this platform.
->
-> Do we have any downstream tag where 4lane dp works? I'm willing to believ=
-e
-> the PHY story..
-
-Just tested on Fairphone 5 downstream and 4 lane appears to work there.
-This is with an USB-C to HDMI adapter that only does HDMI.
-
-FP5:/ # cat /sys/kernel/debug/drm_dp/dp_debug
-        state=3D0x20a5
-        link_rate=3D270000
-        num_lanes=3D4
-        resolution=3D2560x1440@60Hz
-        pclock=3D241500KHz
-        bpp=3D24
-        test_req=3DDP_LINK_STATUS_UPDATED
-        lane_count=3D4
-        bw_code=3D10
-        v_level=3D0
-        p_level=3D0
-
-Sources are here:
-https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-5.4/+/r=
-efs/heads/odm/rc/target/13/fp5
-And probably more importantly techpack/display:
-https://gerrit-public.fairphone.software/plugins/gitiles/platform/vendor/op=
-ensource/display-drivers/+/refs/heads/odm/rc/target/13/fp5
-Dts if useful:
-https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-extra/d=
-evicetree/+/refs/heads/kernel/13/fp5
-
-Regards
-Luca
-
->
-> Konrad
-
+PiBPbiBXZWQsIDI3IE1hciAyMDI0IGF0IDAzOjQ2LCBSaWNreSBXdSA8cmlja3lfd3VAcmVhbHRl
+ay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gX21tY19zZF9yZXN1bWUNCj4gPiBhZGQgZ2V0X2NkIGJl
+Zm9yZSBjYWxsIHBvd2VydXAsIG1ha2Ugc3VyZSB0aGUgY2FyZCBleGlzdA0KPiANCj4gUGxlYXNl
+IGVsYWJvcmF0ZSBtb3JlIG9uIHdoYXQgcHJvYmxlbSB5b3UgYXJlIHRyeWluZyB0byBzb2x2ZSwg
+dGhlDQo+IGFib3ZlIGRvZXNuJ3QgbWFrZSBtdWNoIHNlbnNlIHRvIG1lLCBzb3JyeS4NCj4gDQo+
+IFllcywgdGhlIGNhcmQgbWF5IGJlIHJlbW92ZWQgd2hpbGUgdGhlIHN5c3RlbSBpcyBzdXNwZW5k
+ZWQuIFRoZW4sIGV2ZW4NCj4gaWYgLT5nZXRfY2QoKSBpbmRpY2F0ZXMgdGhhdCB0aGVyZSBpcyBu
+byBjYXJkIGluc2VydGVkIGluIHRoZQ0KPiBTRC1jYXJkLXNsb3QsIHdlIG1heSBzdGlsbCBoYXZl
+IHRoZSBjYXJkIGJlaW5nIHJlZ2lzdGVyZWQgLSBhbmQgdGhlbg0KPiB3ZSBuZWVkIHRvIHVucmVn
+aXN0ZXIgaXQuDQo+IFRoYXQgc2FpZCwgd2UgbmVlZCB0byBjYWxsIG1tY19wb3dlcl91cCgpIGlu
+IG9yZGVyIHRvIHRyeSB0bw0KPiBjb21tdW5pY2F0ZSB3aXRoIHRoZSBjYXJkIGFnYWluLiBBdCBs
+ZWFzdCB0aGF0IGlzIHdoYXQgdGhlDQo+IG1tY19yZXNjYW4oKSB3b3JrIGFzc3VtZXMgd2hlbiBp
+dCBydW5zIHRoZSBidXNfb3BzLT5kZXRlY3QoKSBjYWxsYmFjaw0KPiBhdCBzb21lIHBvaW50IGxh
+dGVyIGluIHRpbWUuDQo+IA0KDQpXZSBzYXcgdGhlIHBvd2VyIHVwIGluIGEgc2hvcnQgdGltZSBm
+cm9tIHdhdmVmb3JtIHdoZW4gcmVtb3ZpbmcgdGhlIGNhcmQsDQpTbyB3ZSBzYXcgbW1jX3NkX3Jl
+c3VtZSBjYWxsIHRoZSBwb3dlciB1cCBkaWQgbm90IGNoZWNrIHRoZSBjYXJkIGV4aXN0Lg0KDQpX
+ZSB0aGluayB0aGlzIHRoZSBzaG9ydCB0aW1lIHBvd2VyIHVwIG1heWJlIGNhdXNlIE9DUCBpZiBu
+byBjYXJkIGV4aXN0Lg0KQW5kIHRoaXMgcG93ZXIgdXAgd2UgdGhpbmsgaXMgdW5uZWNlc3Nhcnkg
+d2hlbiBubyBjYXJkIGV4aXN0LiAgDQoNCg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUmlja3kg
+V3UgPHJpY2t5X3d1QHJlYWx0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL21tYy9jb3Jl
+L3NkLmMgfCAzICsrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspDQo+ID4N
+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tbWMvY29yZS9zZC5jIGIvZHJpdmVycy9tbWMvY29y
+ZS9zZC5jDQo+ID4gaW5kZXggMWM4MTQ4Y2RkYTUwLi4zNWUwMzY2NzJjZmIgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy9tbWMvY29yZS9zZC5jDQo+ID4gKysrIGIvZHJpdmVycy9tbWMvY29yZS9z
+ZC5jDQo+ID4gQEAgLTE3NTAsNiArMTc1MCw5IEBAIHN0YXRpYyBpbnQgX21tY19zZF9yZXN1bWUo
+c3RydWN0IG1tY19ob3N0DQo+ICpob3N0KQ0KPiA+ICAgICAgICAgaWYgKCFtbWNfY2FyZF9zdXNw
+ZW5kZWQoaG9zdC0+Y2FyZCkpDQo+ID4gICAgICAgICAgICAgICAgIGdvdG8gb3V0Ow0KPiA+DQo+
+ID4gKyAgICAgICBpZiAoaG9zdC0+b3BzLT5nZXRfY2QgJiYgIWhvc3QtPm9wcy0+Z2V0X2NkKGhv
+c3QpKQ0KPiA+ICsgICAgICAgICAgICAgICBnb3RvIG91dDsNCj4gPiArDQo+ID4gICAgICAgICBt
+bWNfcG93ZXJfdXAoaG9zdCwgaG9zdC0+Y2FyZC0+b2NyKTsNCj4gPiAgICAgICAgIGVyciA9IG1t
+Y19zZF9pbml0X2NhcmQoaG9zdCwgaG9zdC0+Y2FyZC0+b2NyLCBob3N0LT5jYXJkKTsNCj4gPiAg
+ICAgICAgIG1tY19jYXJkX2Nscl9zdXNwZW5kZWQoaG9zdC0+Y2FyZCk7DQo+ID4gLS0NCj4gPiAy
+LjI1LjENCj4gPg0KPiANCj4gS2luZCByZWdhcmRzDQo+IFVmZmUNCg==
 
