@@ -1,171 +1,153 @@
-Return-Path: <linux-kernel+bounces-124199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C64F08913C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:32:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4BBB8913CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 815F1288C68
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:32:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA6A289829
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE022249F7;
-	Fri, 29 Mar 2024 06:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A68F2C6A4;
+	Fri, 29 Mar 2024 06:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RZ2x+jpW"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="T4aeuhhb"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852F8A5F;
-	Fri, 29 Mar 2024 06:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282828BFC
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 06:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711693950; cv=none; b=bO0bE+xd2dyjp21N0+tgDHo8RARxdzpoRje1ig2wQIpDr51RiG8ZQ+OvtIlSe2PoPC/J1cvwJiM9o0fhngJpCjx8no+6MnEbhin8y3aS6Fw09Bc8LqohvZzsy6ppSLM6nrKmtO9OTFMl1T8JbwnOv6SzK1UN26A4k6YBadgtbRY=
+	t=1711694062; cv=none; b=YoJTgAv8ZE2/UQwERr0GTz0aTcsXLGjMAUv/TZoCuWE5iF3CfJ5ZuO+w8g1R/rpaISWxS5KnQJBA02np4Wto2ETs2wJjO8+vP9p71drN3q+ZN8NqPbQjrTl+7AMjl2ZNF5gTYSge6YuT33fsP/nlVyivcfAkVR2ijraaI9mjHSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711693950; c=relaxed/simple;
-	bh=gmr2fGvLS//TG94CAfSgeLtnfySif1Al3X5cocCuKwk=;
+	s=arc-20240116; t=1711694062; c=relaxed/simple;
+	bh=InZLmeQ3D9yy+muH32Y9kpVlOGSmf5QONrD2IJR4d/8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D+iDmP+0MAHF/gRH8ZbCkw9EDO0Ytn/F3VknIIQlfJiozRnGD/UjsvWOOIfbRjxP/xgM/HtF3dMebWtCSoVowKCcrHBBrlr5ZoINidwsygtEzgAW3fP7SioUoBvTdNwIqJTcZMQp/cfADZZUlWdAhRbghbgRxFBB6hX72PmxId0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RZ2x+jpW; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0b213efa3so15859645ad.0;
-        Thu, 28 Mar 2024 23:32:29 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=MIYrcBSmlizHneF5ai/PFyYHyKABONrDszIuNaDsKHpte+T+C2ldKCvQznCPU67P4hIx94CJF0Oh+QM7Ab3vMND3r6wHH5Pl235v0MfuZ6bc/J4JdD95TBLb8Tz8MBB3q5mFk+zlbQU52LA6LjJgzaMIstwAUp6wC2PD+rxj4hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=T4aeuhhb; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a47385a4379so494267466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 23:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711693949; x=1712298749; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ndZTDMZkOJjEBIZTkRxOowZw+YYG8BnbmCDk2dhnrRA=;
-        b=RZ2x+jpWsUYpppki59ltJxVmZo8IshWzCeDjgN/b+9xu6y87YW+voOiJVy/KOx/DMB
-         41RKZPwHNIvNEtfRJ8eTpkg9LWAoxiwOez6q2seTZedaN8Qd1Svp0/uUcB1+4y/fnAOD
-         D1oSVnPeRT9m2xi2sv/lvvQuVZZT76FkdCsAvwq+Zy5sUM9PolUOZgEuWFXjUnZtcVgq
-         ZMux27gRbTjBc91UXHySGtfe1hZdqGsh8VTT3jmVJv0AyH72Pp1ZJ90adyQNXLsZykGJ
-         /YT7malO5g9CwTYBGDHbOMDguSwcbpUG0bjo7NBjPRns0W2O8FnxYtIE2Lv0SaYqX0P+
-         zSAw==
+        d=suse.com; s=google; t=1711694058; x=1712298858; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Ma+vtqvSlr0gujBxsYgzn0X6HBjLP9HhEs0oHeEYF4=;
+        b=T4aeuhhbPtsoYaHdWuoJfZ8F3X8nbY50dfgFPit6OCc6XqJDw7ndHJBqT7WIGiWizK
+         umClgGSBSI2grtI9/26hSI3YWJRAX2GGNxbI0FWfN83QgnStCaq4ZFZJ+m6B+FIIlZdu
+         Lh+1kVaEd+2t1WNC41YjhJaeHWH9B9qvFIOtd8Rd8+1ifTfIggS8YmpfzjrOxv4HSz2T
+         XTlgD6rrCQmClg8zNyLpSeXlTOLAPGBGnqcQ0Tejv/y1E5oY0JxQb5d7v2hc3JatuFjl
+         NV5gg6VUrl8OWPjNpw7gkJDe6jLXFSyK5ipteo7EytMGNgrRYGiaCR2occiH3L+0VU3l
+         ZC6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711693949; x=1712298749;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ndZTDMZkOJjEBIZTkRxOowZw+YYG8BnbmCDk2dhnrRA=;
-        b=HvmimAu9EjbcKf3qVbnWP8GgOhUnf07tQ8TGajFP4jRjtaCmcoyRqOIZ/kU/IzGepc
-         jaZhBf4bsgp6tOKGNTJoLU2n02LwbWEJ9CM44YqlKskhzAO+ECkEcnAnPBc4lm0pbUJf
-         NoXwpHI8cGdSRdqGvVYuDbN68OoeGkNgIIEmIi7K+imictJ4mxMTe8WxlcasVHM8neZc
-         6oXx9z8DO+UoYfOt/fULJotFfHKlT4tKXo7hASwjWXB66+SZrDAB/KgVBgpBb5xw62jV
-         ItSaSVPOkKOfLAdfpSPk4L6ffZtgibP5RZW01fr+N+tr22B+o2pG1FSkFrCAWJqEZ+FU
-         cJSg==
-X-Forwarded-Encrypted: i=1; AJvYcCXFzbcOXCXZ35SV01URDq2asQSQ+uLAQZyI+ub1FSdEruQdwzC1ovRDN+1S7MgJj/nuz+mVMb2TBK5QM3laByJKkG+1envCf8Hn9ttkfR72n+xfJK6GO6T3bXSJadn5NHxN4SHZ3FzJk7Fv1xg24Hab0qhK
-X-Gm-Message-State: AOJu0YyvvU0GSYT9I5Z562BktwacbwXGlXlxpF/0m4EKTG66waBmg35j
-	A4fyClp7B5q2LkQx5ej2/+a7tIQlUluUJjl4xwRqHNAHMDr7epF5
-X-Google-Smtp-Source: AGHT+IFRmRQDyi7wwRtuc+POHnQVkysYigDwuTM6Oj37xtRf77j8LUvU+FV6uM1zEsYDb2Kum7ldDQ==
-X-Received: by 2002:a17:902:c406:b0:1de:eac5:9294 with SMTP id k6-20020a170902c40600b001deeac59294mr1828172plk.13.1711693948781;
-        Thu, 28 Mar 2024 23:32:28 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([2401:4900:3a8b:cfcd:75f4:f0e2:44ea:221c])
-        by smtp.gmail.com with ESMTPSA id l4-20020a170902f68400b001db8a5ea0a3sm2742058plg.94.2024.03.28.23.32.23
+        d=1e100.net; s=20230601; t=1711694058; x=1712298858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9Ma+vtqvSlr0gujBxsYgzn0X6HBjLP9HhEs0oHeEYF4=;
+        b=Txt3pcSaOWgnF4VQru/YRVtQa2LXIA3CrMMEPbcAPtWM1lcdC7zsbMZKj9VFAGy8UG
+         LQDz6Xg1FKCEHpkzvTOgAIxUg4d5qLFhqDKV3YnZlEjr4nnb5mq0JxZPcv3RYIDTbfzG
+         Yv0Ly2mSGCQOV9uvbgZ/APXjCK8LzNwRhNx9RWryQZ6Y/w7s+WnEJF+axx/elzyAPT+r
+         4d98QtGV0bed+FRlCpFoxaHYx0cslKLqh5Ik4i+Dn8Z7kDccUyoE8sGwDRHnGIivYdEQ
+         pl+gPzoAW1uq4wE2j2Wgs968Um5lM1aKMNkXnRiKN2y7v9lE5RtG4wKyAYuM75c9fV1K
+         wS9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWB/4RZyWxct5ymwmq6AU5mTy7Rvg6pCsFEbaMOxnshits+4d3i1QDsyYV5QUIqmDDKOFY3+F5PjA7x7NYqWqyuqDz/Q4FJtXGnDgPn
+X-Gm-Message-State: AOJu0YxJGS1AZsb6wynfng0VkyAZ/vx0ZhVtUsIP//5cnnEtsbQ14y4W
+	CGYlN30rCANOgy3kyobTaJ80exzcWLJGL2h2Tmuu9FKhyOkw6BUozS9GEdbLAMQ=
+X-Google-Smtp-Source: AGHT+IH1VcKzFcTm54dsRZaQxbNj3vOYMOpgXud+tLc/JjE1XgeD1l3eoB/yHtw3XXtCfSLCUPRrGQ==
+X-Received: by 2002:a17:906:d112:b0:a4e:3910:72fd with SMTP id b18-20020a170906d11200b00a4e391072fdmr353448ejz.20.1711694058444;
+        Thu, 28 Mar 2024 23:34:18 -0700 (PDT)
+Received: from u94a ([2401:e180:8810:bf68:a132:2657:d239:3e12])
+        by smtp.gmail.com with ESMTPSA id bw17-20020a170906c1d100b00a46b4544da2sm1558477ejb.125.2024.03.28.23.34.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 23:32:28 -0700 (PDT)
-Date: Fri, 29 Mar 2024 12:02:16 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: paul@paul-moore.com, alison.schofield@intel.com,
-	fabio.maria.de.francesco@linux.intel.com,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	gregkh@linuxfoundation.org, outreachy@lists.linux.dev,
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] LANDLOCK: use kmem_cache for landlock_object
-Message-ID: <ZgZgcPxkG1TEVnt6@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-References: <ZgSrBVidW1U6yP+h@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
- <CAHC9VhRYDNoqkbkgdUSg-kYSHVbheD5NtezmVxyRakZ0-DzuSg@mail.gmail.com>
- <ZgUh7cIQIsOgvWpw@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
- <20240328.aiPh0phaJ6ai@digikod.net>
+        Thu, 28 Mar 2024 23:34:17 -0700 (PDT)
+Date: Fri, 29 Mar 2024 14:34:00 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Cc: ast@kernel.org, harishankar.vishwanathan@rutgers.edu, 
+	sn624@cs.rutgers.edu, sn349@cs.rutgers.edu, m.shachnai@rutgers.edu, paul@isovalent.com, 
+	Srinivas Narayana <srinivas.narayana@rutgers.edu>, Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] Fix latent unsoundness in and/or/xor value
+ tracking
+Message-ID: <7s76qe3ucxiyjctbztrpuevwu4hxeogrm7bbarewjbu6bhsyfr@m4dkjap7hiyy>
+References: <20240329030119.29995-1-harishankar.vishwanathan@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240328.aiPh0phaJ6ai@digikod.net>
+In-Reply-To: <20240329030119.29995-1-harishankar.vishwanathan@gmail.com>
 
-On Thu, Mar 28, 2024 at 03:45:12PM +0100, Mickaël Salaün wrote:
-> The subject should start with "landlock: Use" instead of "LANDLOCK: use"
+On Thu, Mar 28, 2024 at 11:01:19PM -0400, Harishankar Vishwanathan wrote:
+> The scalar(32)_min_max_and/or/xor functions can exhibit unsound behavior
+> when setting signed bounds. The following example illustrates the issue for
+> scalar_min_max_and(), but it applies to the other functions.
 > 
-> On Thu, Mar 28, 2024 at 01:23:17PM +0530, Ayush Tiwari wrote:
-> > Hello Paul
-> > Thanks a lot for the feedback. Apologies for the mistakes. Could you
-> > help me in some places so that I can correct the errors, like:
-> > On Wed, Mar 27, 2024 at 07:43:36PM -0400, Paul Moore wrote:
-> > > On Wed, Mar 27, 2024 at 7:26 PM Ayush Tiwari <ayushtiw0110@gmail.com> wrote:
-> > > >
-> > > > Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
-> > > > struct landlock_object and update the related dependencies.
-> > > >
-> > > > Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> > > > ---
-> > > >  security/landlock/fs.c     |  2 +-
-> > > >  security/landlock/object.c | 14 ++++++++++++--
-> > > >  security/landlock/object.h |  4 ++++
-> > > >  security/landlock/setup.c  |  2 ++
-> > > >  4 files changed, 19 insertions(+), 3 deletions(-)
-> > > 
-> > > Hi Ayush,
-> > > 
-> > > Mickaël has the final say on Landlock patches, but I had a few
-> > > comments that I've included below ...
-> > > 
-> > > > diff --git a/security/landlock/fs.c b/security/landlock/fs.c
-> > > > index fc520a06f9af..227dd67dd902 100644
-> > > > --- a/security/landlock/fs.c
-> > > > +++ b/security/landlock/fs.c
-> > > > @@ -124,7 +124,7 @@ static struct landlock_object *get_inode_object(struct inode *const inode)
-> > > >         if (unlikely(rcu_access_pointer(inode_sec->object))) {
-> > > >                 /* Someone else just created the object, bail out and retry. */
-> > > >                 spin_unlock(&inode->i_lock);
-> > > > -               kfree(new_object);
-> > > > +               kmem_cache_free(landlock_object_cache, new_object);
-> > > 
-> > > See my comment below, but you may want to wrap this in a Landlock
-> > > object API function.
-> > Sure. I will definitely implement this.
-> > > 
-> > > >                 rcu_read_lock();
-> > > >                 goto retry;
-> > > > diff --git a/security/landlock/object.c b/security/landlock/object.c
-> > > > index 1f50612f0185..df1354215617 100644
-> > > > --- a/security/landlock/object.c
-> > > > +++ b/security/landlock/object.c
-> > > > @@ -17,6 +17,15 @@
-> > > >
-> > > >  #include "object.h"
-> > > >
-> > > > +struct kmem_cache *landlock_object_cache;
-> > > > +
-> > > > +void __init landlock_object_init(void)
-> > > > +{
-> > > > +       landlock_object_cache = kmem_cache_create(
-> > > > +               "landlock_object_cache", sizeof(struct landlock_object), 0,
+> In scalar_min_max_and() the following clause is executed when ANDing
+> positive numbers:
 > 
-> No need for the "_cache" name suffix.
+> 		/* ANDing two positives gives a positive, so safe to
+> 		 * cast result into s64.
+> 		 */
+> 		dst_reg->smin_value = dst_reg->umin_value;
+> 		dst_reg->smax_value = dst_reg->umax_value;
 > 
-> > > > +               SLAB_PANIC, NULL);
-> > > 
-> > > The comments in include/linux/slab.h suggest using the KMEM_CACHE()
-> > > macro, instead of kmem_cache_create(), as a best practice for creating
-> > > slab caches.
-> > > 
+> However, if umin_value and umax_value of dst_reg cross the sign boundary
+> (i.e., if (s64)dst_reg->umin_value > (s64)dst_reg->umax_value), then we
+> will end up with smin_value > smax_value, which is unsound.
+> 
+> Previous works [1, 2] have discovered and reported this issue. Our tool
+> Agni [3] consideres it a false positive. This is because, during the
+> verification of the abstract operator scalar_min_max_and(), Agni restricts
+> its inputs to those passing through reg_bounds_sync(). This mimics
+> real-world verifier behavior, as reg_bounds_sync() is invariably executed
+> at the tail of every abstract operator. Therefore, such behavior is
+> unlikely in an actual verifier execution.
+> 
+> However, it is still unsound for an abstract operator to exhibit behavior
+> where smin_value > smax_value. This patch fixes it, making the abstract
+> operator sound for all (well-formed) inputs.
+> 
+> It's worth noting that this patch only modifies the output signed bounds
+> (smin/smax_value) in cases where it was previously unsound. As such, there
+> is no change in precision. When the unsigned bounds (umin/umax_value) cross
+> the sign boundary, they shouldn't be used to update  the signed bounds
+> (smin/max_value). In only such cases, we set the output signed bounds to
+> unbounded [S64_MIN, S64_MAX]. We confirmed through SMT verification that
+> the problem occurs if and only if the unsigned bounds cross the sign
+> boundary.
+> 
+> [1] https://sanjit-bhat.github.io/assets/pdf/ebpf-verifier-range-analysis22.pdf
+> [2] https://github.com/bpfverif/agni
+> [3] https://link.springer.com/chapter/10.1007/978-3-031-37709-9_12
+> 
+> Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
+> Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
+> Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+> Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+> Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+> Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+> Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
 
-Hello mentors
-I was trying to work on the above suggestion and I am facing some problem
-regarding replacing kzalloc with kmem_cache_zalloc calls when using KMEM
-macro from include/linux/slab.h because for kmem_cache_zalloc I will be
-needing a cache pointer, but KMEM macro doesn't return any such pointer.
-So is there any way to do this using macro or do i have to avoid using
-that macro for this case and use all methods regarding kmem as defined in
-the linux memory management API doc?
+I'd suggest adding a fixes tag as well. This seems to go all the way
+back to the signed/unsigned split.
 
-> Agree with Paul and Greg unless commented otherwise. Thanks
+Fixed: b03c9f9fdc37 ("bpf/verifier: track signed and unsigned min/max values")
+
+Otherwise
+
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
