@@ -1,376 +1,144 @@
-Return-Path: <linux-kernel+bounces-124384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A528916B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:23:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097FF8916AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A45A2B23330
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:23:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BDEC1C2183F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A9B53E18;
-	Fri, 29 Mar 2024 10:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECB4535C6;
+	Fri, 29 Mar 2024 10:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="AcWaRrdt"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="D5nmmMwQ"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25F0535A2;
-	Fri, 29 Mar 2024 10:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853A43D69
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711707781; cv=none; b=dbBGry+kaYaEGGFerCrENzJOuJctNTgxTYOea2f1bYXYnzalISx166H/D2iJTTu15KBP9wWC/WKYOqSGU//WKLvTkPM+4AJfnvboPWM+AZsrzvcCt/T4l1/4YOfbREf2aIU4Rf9GxXEYHu7jPiKzcSI2ksbK53hhUHRyv6AJZKg=
+	t=1711707737; cv=none; b=fwLcQpnuT2fZ9uQY/8IEmYP+63GuaJ4EWte3mm4DepFOdGwXL/rCfnljUGm/KI5ZHfVj1MDtCGiAANZmpRxHj4GTd7mnM0iECDMY75dz9NSjCm/vznl4nwPY3kbTv5AbUZlQJ+1Avq09vj4QXAnAVnCinS08Tg1t6bMNkFOsO0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711707781; c=relaxed/simple;
-	bh=1r6x7Gswn3GUpeRZpRuR1fp00nqTBQ5kSjmps/2V46Q=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=te5V7AaR4MMaUiSQC1K+metUh3nKUXsiGtKMkR7ZSdRIj2/oByAwMHvS2Z1F4EsB+OgDktbEt3Cf/MCIDHksq5jXIDQkVN48bUNRWO4sOFwNZwLjaiLnteOnkYY+0skORWRZRRTouwY96qvpP3vrv/rb7XqGE54WpHMZehSijIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=AcWaRrdt; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1711707779; x=1743243779;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1r6x7Gswn3GUpeRZpRuR1fp00nqTBQ5kSjmps/2V46Q=;
-  b=AcWaRrdtfDvyPFfk+czcCaofglZV7rRAfD36NRL5PQTOr9bfuqY+iR5W
-   3nBzjfDeLYqFUv+d6Q9C7cmO2qb8yspzbroZp/7MaWAQAfSwqBJWmFU9w
-   VeGP4eXevNwgGpWjANxs2v3osYX2ladur4frnjNPyGw12KCiMD+wBN3rQ
-   3iA39W/jHNIn1XBS/wBgfhtklVaer1MlU3jP+aXogF8tW7H/ZJlX8PzgA
-   21UYhWD/ineGGjr0EjPOzh9OcAhixEF4HlLtgBsOzEjojyuqfc86vGs6e
-   WXlaSvHQ8EuaGD5Do9iP9DlFVS33OAwJtrNNEewcfN7GFXl04DlxqfvZK
-   g==;
-X-CSE-ConnectionGUID: QbvD0OvjTziR5bNjZW4tvQ==
-X-CSE-MsgGUID: rph7hLVDQvOEe5l5cj2xvA==
-X-IronPort-AV: E=Sophos;i="6.07,164,1708412400"; 
-   d="asc'?scan'208";a="18638556"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2024 03:22:52 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 29 Mar 2024 03:22:31 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 29 Mar 2024 03:22:27 -0700
-Date: Fri, 29 Mar 2024 10:21:39 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Max Hsu <max.hsu@sifive.com>
-CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel
- Machek <pavel@ucw.cz>, Anup Patel <anup@brainfault.org>, Atish Patra
-	<atishp@atishpatra.org>, Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, Palmer Dabbelt <palmer@sifive.com>,
-	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RFC 05/11] riscv: cpufeature: Add Sdtrig optional CSRs
- checks
-Message-ID: <20240329-avid-footgear-ed5e7f8788ba@wendy>
-References: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
- <20240329-dev-maxh-lin-452-6-9-v1-5-1534f93b94a7@sifive.com>
+	s=arc-20240116; t=1711707737; c=relaxed/simple;
+	bh=5iGLeKg1B+c+xy7usHfD7DuolFxdePCGQGv5moChJAs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=POJdbvkQrbZRKOu3LArM2pvl2+ftUcOsKNLhZCXShH4jmKfb/iWRSJPCklgFiJAlCevBFWNPCX8yMQocxcvKdu8rUR6XzoIIPNXe+GP2imjpOUUM+sBkLAR+BFqNo96vEbmdmNo7I5P6waoKBveOT7s7Ws3jpAiYfi0FqcMHCGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=D5nmmMwQ; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513dc9d6938so2226138e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711707733; x=1712312533; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/J6gP3oWZ32r+n62bhK72ncVvhRHUkReUApoR4TBfF0=;
+        b=D5nmmMwQBHIiDlqLVRDTEsQLdm1ly5ZHftIyHaPe8srZRdnuGX+n96g8iKxNVrUFeD
+         0g0R55AGwWIXOppIRnwfxG8n5FLVIWRTeHPOAhU7WmD6LCUDf37VdquWLcfTTf09e3pi
+         YTXapUgA0utZLEpAzs2ol+4mKyjSA2FGcUtqSBHE3kST0wv0y0Mo/ShyZTBgi9OUZaN3
+         OZsjSFr3EY8qICdJq6zkAGq0W37g2CylDcFM+jbq0eN4X9lkeHLm5f0dqtDIFKygBnm1
+         RFyK/C0b2RTdWcErBeKUQl0KCj8hCa46piyyHkjYw4yW/NGQm+TZf1Rf6RuS5CqBqToc
+         lVRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711707733; x=1712312533;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/J6gP3oWZ32r+n62bhK72ncVvhRHUkReUApoR4TBfF0=;
+        b=MPNqtOgIzWoEb3vNBVG9FOVtD3JdOCf18epzzoGWKg+97eZOtwojcAQqQacCB8LLrI
+         CC+Ff+9ytBi346n27vmsPYRvUApXw1P/cmBnZneTp4Qr66E5lpNEp+VDre/0iONbilrZ
+         Jf0zmeQWmqQAnn6WWJWKx9VKqD9wUXyNtUjEV2Gho13ioDXNVwrwEnTTJ+sEGl9eVcx7
+         ls2DGN22tp8VFIxnfWFKJ25V0xZWUVfTwMn7CyV5QEidIDR47y7mwq8dvLyPTT5JYRvd
+         spxkLfpJ5n3aMi61m3EM8ngvYiDeDtuNkKueSnbxVyjKr4aIlx6/fxqh+aTHUTq2WLtJ
+         MdZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGb5+DGadZ+qW4R4raELyqRJgGnNPvZKkl4CzYOi9T6p7+L+1tMqmjW+kTq21+r35Uk/4HAk575JldOL2qD6DHO0BDyyCPIvVcQQV7
+X-Gm-Message-State: AOJu0YyXzsOx8r8xVPSwtuH0irU2ynPRdha278ZU9DlLrLUnSAMVh9LT
+	pRyQDnyLFiBWCkNSZdAEAfrZnQz8ywk0u8FlWv865m8hzLmOxYsZTth/cQJLlTgBPfBHwEnokKX
+	Ahg+5pQP+GcT9VnIF+aFRggOUvMOdyYcImN1kmQ==
+X-Google-Smtp-Source: AGHT+IFR4sAXfJH8jLEP1t7TjlkcUZ9XMDWJPhv7FUv8k9zXllRTrbpTxelFPbzAnEHArC8D9K4FgriWWJSfYZnh8xk=
+X-Received: by 2002:a05:6512:6cd:b0:513:5e6b:a191 with SMTP id
+ u13-20020a05651206cd00b005135e6ba191mr1439757lff.50.1711707733433; Fri, 29
+ Mar 2024 03:22:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8okYWFxSwcNviT76"
-Content-Disposition: inline
-In-Reply-To: <20240329-dev-maxh-lin-452-6-9-v1-5-1534f93b94a7@sifive.com>
-
---8okYWFxSwcNviT76
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240325100359.17001-1-brgl@bgdev.pl> <56e1c63a-4c09-4d92-9ef2-aad5390879cc@gmail.com>
+ <CAMRc=Mf_pvrh2VMfTVE-ZTypyO010p=to-cd8Q745DzSDXLGFw@mail.gmail.com>
+In-Reply-To: <CAMRc=Mf_pvrh2VMfTVE-ZTypyO010p=to-cd8Q745DzSDXLGFw@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 29 Mar 2024 11:22:02 +0100
+Message-ID: <CAMRc=MfsVWcoMC-dB-fdxy332h-ucUPTfEUMAnCt5L-q3zJxWg@mail.gmail.com>
+Subject: Re: [PATCH v9 00/13] firmware: qcom: qseecom: convert to using the TZ allocator
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 05:26:21PM +0800, Max Hsu wrote:
-> Sdtrig extension introduce two optional CSRs [hcontext/scontext],
-> that will be storing PID/Guest OS ID for the debug feature.
->=20
-> The availability of these two CSRs will be determined by
-> DTS and Smstateen extension [h/s]stateen0 CSR bit 57.
->=20
-> If all CPUs hcontext/scontext checks are satisfied, it will enable the
-> use_hcontext/use_scontext static branch.
->=20
-> Signed-off-by: Max Hsu <max.hsu@sifive.com>
-> ---
->  arch/riscv/include/asm/switch_to.h |   6 ++
->  arch/riscv/kernel/cpufeature.c     | 161 +++++++++++++++++++++++++++++++=
-++++++
->  2 files changed, 167 insertions(+)
->=20
-> diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/=
-switch_to.h
-> index 7efdb0584d47..07432550ed54 100644
-> --- a/arch/riscv/include/asm/switch_to.h
-> +++ b/arch/riscv/include/asm/switch_to.h
-> @@ -69,6 +69,12 @@ static __always_inline bool has_fpu(void) { return fal=
-se; }
->  #define __switch_to_fpu(__prev, __next) do { } while (0)
->  #endif
-> =20
-> +DECLARE_STATIC_KEY_FALSE(use_scontext);
-> +static __always_inline bool has_scontext(void)
-> +{
-> +	return static_branch_likely(&use_scontext);
-> +}
+On Thu, Mar 28, 2024 at 7:55=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Thu, Mar 28, 2024 at 5:50=E2=80=AFPM Maximilian Luz <luzmaximilian@gma=
+il.com> wrote:
+> >
+> > If I understand correctly, it enters an atomic section in
+> > qcom_tzmem_alloc() and then tries to schedule somewhere down the line.
+> > So this shouldn't be qseecom specific.
+> >
+> > I should probably also say that I'm currently testing this on a patched
+> > v6.8 kernel, so there's a chance that it's my fault. However, as far as
+> > I understand, it enters an atomic section in qcom_tzmem_alloc() and the=
+n
+> > later tries to expand the pool memory with dma_alloc_coherent(). Which
+> > AFAIK is allowed to sleep with GFP_KERNEL (and I guess that that's the
+> > issue here).
+> >
+> > I've also tried the shmem allocator option, but that seems to get stuck
+> > quite early at boot, before I even have usb-serial access to get any
+> > logs. If I can find some more time, I'll try to see if I can get some
+> > useful output for that.
+> >
+>
+> Ah, I think it happens here:
+>
+> +       guard(spinlock_irqsave)(&pool->lock);
 > +
->  extern struct task_struct *__switch_to(struct task_struct *,
->  				       struct task_struct *);
-> =20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 080c06b76f53..44ff84b920af 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -35,6 +35,19 @@ static DECLARE_BITMAP(riscv_isa, RISCV_ISA_EXT_MAX) __=
-read_mostly;
->  /* Per-cpu ISA extensions. */
->  struct riscv_isainfo hart_isa[NR_CPUS];
-> =20
-> +atomic_t hcontext_disable;
-> +atomic_t scontext_disable;
-> +
-> +DEFINE_STATIC_KEY_FALSE_RO(use_hcontext);
-> +EXPORT_SYMBOL(use_hcontext);
-> +
-> +DEFINE_STATIC_KEY_FALSE_RO(use_scontext);
-> +EXPORT_SYMBOL(use_scontext);
-> +
-> +/* Record the maximum number that the hcontext CSR allowed to hold */
-> +atomic_long_t hcontext_id_share;
-> +EXPORT_SYMBOL(hcontext_id_share);
-> +
->  /**
->   * riscv_isa_extension_base() - Get base extension word
->   *
-> @@ -719,6 +732,154 @@ unsigned long riscv_get_elf_hwcap(void)
->  	return hwcap;
->  }
-> =20
-> +static void __init sdtrig_percpu_csrs_check(void *data)
-> +{
-> +	struct device_node *node;
-> +	struct device_node *debug_node;
-> +	struct device_node *trigger_module;
-> +
-> +	unsigned int cpu =3D smp_processor_id();
-> +
-> +	/*
-> +	 * Expect every cpu node has the [h/s]context-present property
-> +	 * otherwise, jump to sdtrig_csrs_disable_all to disable all access to
-> +	 * [h/s]context CSRs
+> +again:
+> +       vaddr =3D gen_pool_alloc(pool->genpool, size);
+> +       if (!vaddr) {
+> +               if (qcom_tzmem_try_grow_pool(pool, size, gfp))
+> +                       goto again;
+>
+> We were called with GFP_KERNEL so this is what we pass on to
+> qcom_tzmem_try_grow_pool() but we're now holding the spinlock. I need
+> to revisit it. Thanks for the catch!
+>
+> Bart
 
-I think the wording of this comment is kinda strange. What you're trying
-to say is that homogeneous support for sdtrig (and the contexts) is
-required.
+Can you try the following tree?
 
-> +	 */
-> +	node =3D of_cpu_device_node_get(cpu);
+    https://git.codelinaro.org/bartosz_golaszewski/linux.git
+topic/shm-bridge-v10
 
-If there's no ACPI support, shouldn't the first thing here by a fast
-path out before you start assuming DT?
+gen_pool_alloc() and gen_pool_add_virt() can be used without external
+serialization. We only really need to protect the list of areas in the
+pool when adding a new element. We could possibly even use
+list_add_tail_rcu() as it updates the pointers atomically and go
+lockless.
 
-> +	if (!node)
-> +		goto sdtrig_csrs_disable_all;
-> +
-> +	debug_node =3D of_get_compatible_child(node, "riscv,debug-v1.0.0");
-> +	of_node_put(node);
-> +
-> +	if (!debug_node)
-> +		goto sdtrig_csrs_disable_all;
-> +
-> +	trigger_module =3D of_get_child_by_name(debug_node, "trigger-module");
-> +	of_node_put(debug_node);
-> +
-> +	if (!trigger_module)
-> +		goto sdtrig_csrs_disable_all;
-> +
-> +	if (!(IS_ENABLED(CONFIG_KVM) &&
-> +	      of_property_read_bool(trigger_module, "hcontext-present")))
-> +		atomic_inc(&hcontext_disable);
-> +
-> +	if (!of_property_read_bool(trigger_module, "scontext-present"))
-> +		atomic_inc(&scontext_disable);
-
-I think we should define pseudo extensions for {h,s}context-present and
-parse this out of riscv,isa-extensions. That'd also give you the per-cpu
-checks for homogeneous support for "free".
-My immediate thought is that sdtrig doesn't seem valuable in isolation,
-if you're gonna need additional properties that communicate support for
-additional modes.
-
-> +	of_node_put(trigger_module);
-> +
-> +	/*
-> +	 * Before access to hcontext/scontext CSRs, if the smstateen
-> +	 * extension is present, the accessibility will be controlled
-> +	 * by the hstateen0[H]/sstateen0 CSRs.
-> +	 */
-> +	if (__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_SMSTATEEN)) {
-
-Why can't you use the non-underscore prefixed version of this function
-here?
-
-> +		u64 hstateen_bit, sstateen_bit;
-> +
-> +		if (__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_h)) {
-> +#if __riscv_xlen > 32
-> +			csr_set(CSR_HSTATEEN0, SMSTATEEN0_HSCONTEXT);
-
-For zkr we require the CSR to be usable at the privilege level to which
-the DT is passed:
-        - const: zkr
-          description:
-            The standard Zkr entropy source extension as ratified in version
-            1.0 of RISC-V Cryptography Extensions Volume I specification.
-            This string being present means that the CSR associated to this
-            extension is accessible at the privilege level to which that
-            device-tree has been provided.
-
-I wonder if we should do something similar here and make this a
-requirement for anything with bits in stateen registers. I'd love to
-avoid having to read CSRs on all harts before being able to make
-judgements about whether or not an extension is enabled. I dunno if that
-is possible here though, given you want to also make some checks on the
-exact nature of the support below.
-
-Cheers,
-Conor.
-
-> +			hstateen_bit =3D csr_read(CSR_HSTATEEN0);
-> +#else
-> +			csr_set(CSR_HSTATEEN0H, SMSTATEEN0_HSCONTEXT >> 32);
-> +			hstateen_bit =3D csr_read(CSR_HSTATEEN0H) << 32;
-> +#endif
-> +			if (!(hstateen_bit & SMSTATEEN0_HSCONTEXT))
-> +				goto sdtrig_csrs_disable_all;
-> +
-> +		} else {
-> +			if (IS_ENABLED(CONFIG_KVM))
-> +				atomic_inc(&hcontext_disable);
-> +
-> +			/*
-> +			 * In RV32, the smstateen extension doesn't provide
-> +			 * high 32 bits of sstateen0 CSR which represent
-> +			 * accessibility for scontext CSR;
-> +			 * The decision is left on whether the dts has the
-> +			 * property to access the scontext CSR.
-> +			 */
-> +#if __riscv_xlen > 32
-> +			csr_set(CSR_SSTATEEN0, SMSTATEEN0_HSCONTEXT);
-> +			sstateen_bit =3D csr_read(CSR_SSTATEEN0);
-> +
-> +			if (!(sstateen_bit & SMSTATEEN0_HSCONTEXT))
-> +				atomic_inc(&scontext_disable);
-> +#endif
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * The code can only access hcontext/scontext CSRs if:
-> +	 * The cpu dts node have [h/s]context-present;
-> +	 * If Smstateen extension is presented, then the accessibility bit
-> +	 * toward hcontext/scontext CSRs is enabled; Or the Smstateen extension
-> +	 * isn't available, thus the access won't be blocked by it.
-> +	 *
-> +	 * With writing 1 to the every bit of these CSRs, we retrieve the
-> +	 * maximum bits that is available on the CSRs. and decide
-> +	 * whether it's suit for its context recording operation.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_KVM) &&
-> +	    !atomic_read(&hcontext_disable)) {
-> +		unsigned long hcontext_available_bits =3D 0;
-> +
-> +		csr_write(CSR_HCONTEXT, -1UL);
-> +		hcontext_available_bits =3D csr_swap(CSR_HCONTEXT, hcontext_available_=
-bits);
-> +
-> +		/* hcontext CSR is required by at least 1 bit */
-> +		if (hcontext_available_bits)
-> +			atomic_long_and(hcontext_available_bits, &hcontext_id_share);
-> +		else
-> +			atomic_inc(&hcontext_disable);
-> +	}
-> +
-> +	if (!atomic_read(&scontext_disable)) {
-> +		unsigned long scontext_available_bits =3D 0;
-> +
-> +		csr_write(CSR_SCONTEXT, -1UL);
-> +		scontext_available_bits =3D csr_swap(CSR_SCONTEXT, scontext_available_=
-bits);
-> +
-> +		/* scontext CSR is required by at least the sizeof pid_t */
-> +		if (scontext_available_bits < ((1UL << (sizeof(pid_t) << 3)) - 1))
-> +			atomic_inc(&scontext_disable);
-> +	}
-> +
-> +	return;
-> +
-> +sdtrig_csrs_disable_all:
-> +	if (IS_ENABLED(CONFIG_KVM))
-> +		atomic_inc(&hcontext_disable);
-> +
-> +	atomic_inc(&scontext_disable);
-> +}
-> +
-> +static int __init sdtrig_enable_csrs_fill(void)
-> +{
-> +	if (__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_SDTRIG)) {
-> +		atomic_long_set(&hcontext_id_share, -1UL);
-> +
-> +		/* check every CPUs sdtrig extension optional CSRs */
-> +		sdtrig_percpu_csrs_check(NULL);
-> +		smp_call_function(sdtrig_percpu_csrs_check, NULL, 1);
-> +
-> +		if (IS_ENABLED(CONFIG_KVM) &&
-> +		    !atomic_read(&hcontext_disable)) {
-> +			pr_info("riscv-sdtrig: Writing 'GuestOS ID' to hcontext CSR is enable=
-d\n");
-> +			static_branch_enable(&use_hcontext);
-> +		}
-> +
-> +		if (!atomic_read(&scontext_disable)) {
-> +			pr_info("riscv-sdtrig: Writing 'PID' to scontext CSR is enabled\n");
-> +			static_branch_enable(&use_scontext);
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +arch_initcall(sdtrig_enable_csrs_fill);
-> +
->  void riscv_user_isa_enable(void)
->  {
->  	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_=
-ZICBOZ))
->=20
-> --=20
-> 2.43.2
->=20
-
---8okYWFxSwcNviT76
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgaWMwAKCRB4tDGHoIJi
-0h1GAP4+5oXB5cobRxRtWLslJG09DwwJGYWbihRkLfHJDm/UFgD/S1TTku0iG2+W
-X79DFf9P7rs4DeI4yWy2X6xC2rQfGgY=
-=hWrB
------END PGP SIGNATURE-----
-
---8okYWFxSwcNviT76--
+Bart
 
