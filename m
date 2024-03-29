@@ -1,102 +1,155 @@
-Return-Path: <linux-kernel+bounces-123847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48578890ECB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:00:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA210890ECE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC0CCB22782
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:00:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8576B28F880
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1162A935;
-	Fri, 29 Mar 2024 00:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21026846D;
+	Fri, 29 Mar 2024 00:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pBr2MLfh"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Uf0eyr3J"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0B27FB
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD71A946
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711670423; cv=none; b=GdYVXmbrMNk0oBZrnFHqpPAkh7bLCfeAsc3kRy45VP0lm5SBxJPdI8IfZiNCZ3afllt5QxT4oby11uWtHuS8+/gR8TI+e++5tD9Zm5SdWRM/j4EDtxBsUJyeI1wZ9uJTcb096EsW5gATKOJ3qKCbr9cwgifm6r2roSKIEojsFkw=
+	t=1711670445; cv=none; b=nn1AbwAyr4P99gru5uTRgdjmQG9RGjx2tS9GFIB8LO9wYacvfoA/dOpIakMaFnBcOFmJWpEu0fa4doF4umxC3FJvhUrfx2J2RPMwvY8CaDdKagiKNAu+o5yB4th0rxm5ujmcbgGTi1eFeZaCyJMHHlCx7O6Bq4prXJ1sqt09ppE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711670423; c=relaxed/simple;
-	bh=T11tKOiumhan7/aJq4T1XnpxT0P/7w0lhoUT1uDz5xc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tFlZ9VBRZg3YqNfYSldFwMDrtLUSmAq/ADLSOmbIA76k2HzNPBEJtq0aLrLXUJqyVxVlEZ+JFzpYZTJhaJz2HKYwNGMBs7IghgAEGaRiV5iZNSgKRaQpz1oFWR7X/pnoGzFlI9qCPhmvP4lOy8DWpqjQNFHF5nFN2UNCPq/TZ28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pBr2MLfh; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso1596403276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711670419; x=1712275219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T11tKOiumhan7/aJq4T1XnpxT0P/7w0lhoUT1uDz5xc=;
-        b=pBr2MLfhvMUStzof151jmDBPoDuxmWoDcbB+JOWt1oxnRuZSBFjbVdLXYRnqzYw3nd
-         P6OmUZnsiU+wtDW2xQ2LP8oHzEXw+7Y1jryQ40pT+ItZjCrWCNunIoVgN0MZ8qXMuSKd
-         G3Gs/AHyZ37OuPIaxFdtFbFPY4MqRClMGvCEZCXctSfRKgHDRBJ3a9kc3DTGKwsoS3SC
-         NycENPBJ2BpjVIlPs1yFECw+Wwk45l3G6kueZq72FiBG5A+qbNue05aQF4cckMsNjlxO
-         mLj+l1TKP324ka/M6DOCfg/5Hh9qJpn79Dbf0s9cSz8Z5i5gugRGosrPrliq4pype/iB
-         2GQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711670419; x=1712275219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T11tKOiumhan7/aJq4T1XnpxT0P/7w0lhoUT1uDz5xc=;
-        b=SXOKF8HMjhRotkCn80cIjj8zDwkMxsklD/aiKwFuF4QAxDSrErff7UN16kvtPB/HFm
-         wOWBpMwkUR4MV4v0sXDX5Xy9NlrDpAnCk2797edMLBAGa+jf7IN+re80dmT6CYNZ7uJB
-         c2kIpJYzvKtDPRgJ0apHRMBrLy/XVLQysWOmIdd5T0rKmFf/ADxZeV7bG/hPk0fmiqNs
-         CCFlsEAM9xTXhFqLlBoZkdZ2huXR3AzLJZLdJqMzBKzshpER1D3U6Gzqq4ZT6eWmDkpr
-         J0lF2/nXpYk+aeMpZ6FJpwyS3l7CjQEdq2gB3biQypc5UwVY9Qmbhc512nchp6XmKKv4
-         wbMA==
-X-Forwarded-Encrypted: i=1; AJvYcCXDm3f2RxqLBG8UJz+GoWBcwbgeS4ajo3Zgy2pDPT9Vsr5UFhkUBpuczDiIHm6OM7ymgNc519roxNe4FgKULzGKxmtgxugQyONxL5eM
-X-Gm-Message-State: AOJu0Yy/NNqDz96vjX3XEclf/FmDPTzyk7x362O1Sbh0fakhDtlVVxXl
-	jYLhOLeArq5vCVxK7cfaW3RhNLM5Dy12N1jQcFIgtUNaLRxDoHy5bVb79NRokZLgcVyLa7CBctA
-	O2btxuugXxvPWVYWMcQeAJywpQ+8we71QHIyp
-X-Google-Smtp-Source: AGHT+IGF3VENnshqQcApg+O/wjOuPYywblLF9c/PO9GX1CsUXA48nDaHFlPvXqTRUPIpQ75kg493PggsfmaoNGiJqu4=
-X-Received: by 2002:a25:9b05:0:b0:dcd:2f89:6aac with SMTP id
- y5-20020a259b05000000b00dcd2f896aacmr820996ybn.10.1711670419054; Thu, 28 Mar
- 2024 17:00:19 -0700 (PDT)
+	s=arc-20240116; t=1711670445; c=relaxed/simple;
+	bh=ENZlmKNxpzlLiGBo6kS0UnjmR03CylTphFoCV+u4xmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FK8Sws5BUaX+hEYUCh6MGndff9pGiaf8yWCjZ19/lwLJF1C1Ywt997u7eYorKUstfgkzaYBCmtgPLQjtqfgHsftegWsMOD0S6vbEe+gEtcoUK2QggXCO6LYZzkhUewMOMbxh1ybaG5tNimAX3Y+la8HNL2kWDXRmbjRAa3EO8VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Uf0eyr3J; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711670441;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KOh0bGzRFscdK7n0pRRU7ddpBbKZJGLB2WZV3d0SUpI=;
+	b=Uf0eyr3J3huzYiqVX/oxfL4X1MV1mZfP8jIhEn/3xKJqGE5i67dJq4Lvwaey3qu+iu8M7d
+	CLfLVKRgv/kEYofoCdG0o/kqI0jjsx+p/B22Pji4k8NgasSWjnC7TPAN+XlpX9QlAIqL9B
+	UIBpAkD32EqJnLKG/EBbBLBgCpImtGk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-14-OPZRQc8PPO2s2otDIOSCEQ-1; Thu,
+ 28 Mar 2024 20:00:35 -0400
+X-MC-Unique: OPZRQc8PPO2s2otDIOSCEQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 086C43801F53;
+	Fri, 29 Mar 2024 00:00:35 +0000 (UTC)
+Received: from redhat.com (unknown [10.2.16.33])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 599E12166B36;
+	Fri, 29 Mar 2024 00:00:32 +0000 (UTC)
+Date: Thu, 28 Mar 2024 19:00:26 -0500
+From: Eric Blake <eblake@redhat.com>
+To: Stefan Hajnoczi <stefanha@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alasdair Kergon <agk@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
+	David Teigland <teigland@redhat.com>, Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
+Subject: Re: [RFC 2/9] loop: add llseek(SEEK_HOLE/SEEK_DATA) support
+Message-ID: <wvdjesmnq6xrkanncathyciocbtxa6m3fefvx3za3ikxfs7uqx@wo22n4cvndr3>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
+ <20240328203910.2370087-3-stefanha@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328145323.68872-1-tursulin@igalia.com>
-In-Reply-To: <20240328145323.68872-1-tursulin@igalia.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Thu, 28 Mar 2024 17:00:06 -0700
-Message-ID: <CABdmKX3V3HGA4mNQvqHqhcLqyr-A5kJK8v9vmuDybRvV-KsiOg@mail.gmail.com>
-Subject: Re: [PATCH] dma-buf: Do not build debugfs related code when !CONFIG_DEBUG_FS
-To: Tvrtko Ursulin <tursulin@igalia.com>
-Cc: dri-devel@lists.freedesktop.org, Tvrtko Ursulin <tursulin@ursulin.net>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org, 
-	linux-kernel@vger.kernel.org, kernel-dev@igalia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328203910.2370087-3-stefanha@redhat.com>
+User-Agent: NeoMutt/20240201
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Thu, Mar 28, 2024 at 7:53=E2=80=AFAM Tvrtko Ursulin <tursulin@igalia.com=
-> wrote:
->
-> From: Tvrtko Ursulin <tursulin@ursulin.net>
->
-> There is no point in compiling in the list and mutex operations which are
-> only used from the dma-buf debugfs code, if debugfs is not compiled in.
->
-> Put the code in questions behind some kconfig guards and so save some tex=
-t
-> and maybe even a pointer per object at runtime when not enabled.
->
-> Signed-off-by: Tvrtko Ursulin <tursulin@ursulin.net>
+On Thu, Mar 28, 2024 at 04:39:03PM -0400, Stefan Hajnoczi wrote:
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> ---
+> Open issues:
+> - The file offset is updated on both the blkdev file and the backing
+>   file. Is there a way to avoid updating the backing file offset so the
+>   file opened by userspace is not affected?
+> - Should this run in the worker or use the cgroups?
+> ---
+>  drivers/block/loop.c | 36 ++++++++++++++++++++++++++++++------
+>  1 file changed, 30 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index 28a95fd366fea..6a89375de82e8 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -750,6 +750,29 @@ static void loop_sysfs_exit(struct loop_device *lo)
+>  				   &loop_attribute_group);
+>  }
+>  
+> +static loff_t lo_seek_hole_data(struct block_device *bdev, loff_t offset,
+> +		int whence)
+> +{
+> +	/* TODO need to activate cgroups or use worker? */
+> +	/* TODO locking? */
+> +	struct loop_device *lo = bdev->bd_disk->private_data;
+> +	struct file *file = lo->lo_backing_file;
+> +
+> +	if (lo->lo_offset > 0)
+> +		offset += lo->lo_offset; /* TODO underflow/overflow? */
+> +
+> +	/* TODO backing file offset is modified! */
+> +	offset = vfs_llseek(file, offset, whence);
 
-Reviewed-by: T.J. Mercier <tjmercier@google.com>
+Not only did you modify the underlying offset...
+
+> +	if (offset < 0)
+> +		return offset;
+> +
+> +	if (lo->lo_offset > 0)
+> +		offset -= lo->lo_offset; /* TODO underflow/overflow? */
+> +	if (lo->lo_sizelimit > 0 && offset > lo->lo_sizelimit)
+> +		offset = lo->lo_sizelimit;
+
+..but if this code kicks in, you have clamped the return result to
+EOF of the loop device while leaving the underlying offset beyond the
+limit, which may mess up assumptions of other code expecting the loop
+to always have an in-bounds offset for the underlying file (offhand, I
+don't know if there is any such code; but since loop_ctl_fops.llseek =
+noop_lseek, there may be code relying on an even-tighter restriction
+that the offset of the underlying file never changes, not even within
+bounds).
+
+Furthermore, this is inconsistent with all other seek-beyond-end code
+that fails with -ENXIO instead of returning size.
+
+But for an RFC, the idea of being able to seek to HOLEs in a loop
+device is awesome!
+
+> @@ -2140,7 +2164,7 @@ static int loop_control_remove(int idx)
+>  		pr_warn_once("deleting an unspecified loop device is not supported.\n");
+>  		return -EINVAL;
+>  	}
+> -		
+> +
+>  	/* Hide this loop device for serialization. */
+>  	ret = mutex_lock_killable(&loop_ctl_mutex);
+>  	if (ret)
+
+Unrelated whitespace change?
+
+-- 
+Eric Blake, Principal Software Engineer
+Red Hat, Inc.
+Virtualization:  qemu.org | libguestfs.org
+
 
