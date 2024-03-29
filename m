@@ -1,54 +1,71 @@
-Return-Path: <linux-kernel+bounces-125368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593578924AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:54:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F41088924AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:55:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FB00285070
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B72CE28502E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C20513AD14;
-	Fri, 29 Mar 2024 19:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2731D13AA3C;
+	Fri, 29 Mar 2024 19:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GKkycvFk"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="DxqF0inF"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E8F12FB12;
-	Fri, 29 Mar 2024 19:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C4B12FB12
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711742046; cv=none; b=ouE3rxCtJwhYADvaQnL9nlupheQcLw3+NdASrliPDQTsPbYAZh03TwttJnaEuGKCs+ylQgVLeNzleQbL6BOyvd6XwcVFBr4ilxwjUUjeb6KnmBoNFPSjdYOYOU9W8J3IaCxXdX83HKXQOvydbM39sgHd1VEX4Tk/3p3UC/NXvbE=
+	t=1711742151; cv=none; b=HkJTUiZo4QSLQ18U8c4EHqpMPTySgOxFkaGQKSfTfDnTU4GNeZvqnND75HTkLKU1UI1R1H7V4eqeNVtdDiFkMDa8xcz10p7Ogsgd6gKeaCcGc9lDF0xkemb22yN1TfHDKYzARoys9NCz0leZ8Eux9k8p4vHZLC+Ox2979qUXIjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711742046; c=relaxed/simple;
-	bh=7FIgZdhSuFmBFq7x61DjTJQ6bzsgrfBW8fIPAWIE+MU=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=n6PikM7JyVbcz/ILB1pCaYVakWY7coAO0Q1F8epSZlNYh3fiZU7PcQUw/opb/qrJKXSpns6vPxsdE3opxDLzMku8PdSH01/QlSC9v+Qz/ZUbkHQD8vkPOMWPjfC3id0ysxdyqZ1+UJRYSMynWFOebhGytOV1nHSM/Ipvl4V5CZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=GKkycvFk; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711742042;
-	bh=7FIgZdhSuFmBFq7x61DjTJQ6bzsgrfBW8fIPAWIE+MU=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=GKkycvFkCWp+5HTjbw8G0xXWaauEjnFnSHlwt8uaT6BT4Bg/7HmDKPatTDArsxdRm
-	 G+Lcy90jN5PMAcqWlHcl/GVZpMc1HPY/ckbwi0RXmo5Qjp0g3WKVHfyOd5TX79bwWy
-	 CfRH41Gu6cQjnLTEUjGg9EcODbPekwDb+vR3jzVzkx7zrV0z2AzNMnat27He8ow+dV
-	 UGZ1nAyaT1MDSBBJuGm+sMND3htxnkklKcJUZbF0+3ECEj/PIbmBFV+XfUKNE2vMlP
-	 PRmK74mnrrbVPG6NMDXqSyk5PY/vQDEyX9XWJ5pRTK1+y9pgiGeO/N5kkwJyYRUBFy
-	 Ba0POAplPiXKA==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 94ED33781FCE;
-	Fri, 29 Mar 2024 19:53:50 +0000 (UTC)
-Message-ID: <c54bae70-3655-4188-aad7-358bb7897c3c@collabora.com>
-Date: Sat, 30 Mar 2024 00:54:20 +0500
+	s=arc-20240116; t=1711742151; c=relaxed/simple;
+	bh=LkAx5cpqKJA/f7RawwxSb4SGqCnIjolDiMqhEFnnFAk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X9Fi0S3zCSjIugHf0y1wBqks3/riEDBoGvX8RtPEJMebU9iTVmwqOArKnxu7cnk3KYY/7b8uc5hfb+C/ZgDTRoA0GqwulwwMFH3OhU5sfKIj0iNQlcQ2AnzCF3ToYpzpbtN6ugsyE9pHVDGLICGiUdjpOCgjoLX7XVFHnTfbkWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=DxqF0inF; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-368539ef3dfso1905315ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:55:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1711742149; x=1712346949; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PschPcZk1PmI1OFMglYy1kMU6CIeKkX26n3x+fr0kKs=;
+        b=DxqF0inFbwxFMkFSl/K4WTaVh4yy7eaErcEMg1bL2NDXM3A/f4Xl3XQqdvhQ1N9J/e
+         z6mdMmqtZ8P3/bQp3QsA4Stv8n+SfzhzPnDusII68nir3eV7wvRvWbpSIGuvArI39OUf
+         ufD5KVItRkHDMY3hY2I8I/hJmVU0mk7kWNU/o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711742149; x=1712346949;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PschPcZk1PmI1OFMglYy1kMU6CIeKkX26n3x+fr0kKs=;
+        b=c8t/0B11xnWsJRbOiM3BN2srQ+JpR/Kvf4obGr5JR5aJRmFDcazne8g3GqMHwsXeNW
+         xZXRBsW3s3s3NfZv955ngOChntrD46GdWCwGhA1HRmjg/rrsUf9YWyZjKO3vtrQKRREk
+         7fCAO8szrkZTezOaoSYN7LSKKxZdT8U9kfUQsnokgLFWpCR85jKr6X+atScGyOfRt7LY
+         0QMcXNwoScOn/+Dtm/C6K7fAZSKVP/QfZ0m/Abm8UR//ZRudKifqB+s3Ka+hmZijsXf0
+         q35bUBi/mB9ZIOvwur8Ise1eQUAM3bC3PgVm0ac+zzi4Bd/87duLEOrw3dkYpELdMlRb
+         kWXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIm5Vf6qFRYz36QGIAKAhmxPzGw7jlQXEp1rmhkfaysGOWEBWp2fu/65Ckm/KsncjS6JjZj9Ui0SorlPSPRQaakRJJuyxh0uoQn+jG
+X-Gm-Message-State: AOJu0Yw5zLzH6FWVX/e4BmZjG0R3hrThaCdEG2uUyG8LW61I9mq67o7u
+	4wYiRCv4Jvb05fT3sWWqlK2WmeeIS81vd/7l7SAOM8LHe18Dn9f5HLpjh53IGasEgFxGrQzTLs2
+	c
+X-Google-Smtp-Source: AGHT+IGRWxtPEMClc3GD1YuiNVAMyflNpK+NgYEs3OLFay8hBgdipqgLNnAM+SDhRKGAlp6PSPSKNw==
+X-Received: by 2002:a5e:8a47:0:b0:7d0:a740:a9b8 with SMTP id o7-20020a5e8a47000000b007d0a740a9b8mr1156254iom.2.1711742148910;
+        Fri, 29 Mar 2024 12:55:48 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id gs20-20020a0566382d9400b00476cca7d5b9sm1143917jab.166.2024.03.29.12.55.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 12:55:48 -0700 (PDT)
+Message-ID: <1aba5312-6ff0-4497-b633-8d6edbef5c3b@linuxfoundation.org>
+Date: Fri, 29 Mar 2024 13:55:47 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,147 +73,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- linux-kselftest@vger.kernel.org, kernel-team@android.com,
- Lokesh Gidra <lokeshgidra@google.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-mm@kvack.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v3] selftests/mm: Fix ARM related issue with fork after
- pthread_create
-To: Edward Liaw <edliaw@google.com>, linux-kernel@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Jann Horn <jannh@google.com>
-References: <20240325194100.775052-1-edliaw@google.com>
+Subject: Re: [PATCH v3] kselftest/clone3: Make test names for set_tid test
+ stable
+To: Mark Brown <broonie@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240325-kselftest-clone3-set-tid-v3-1-6fdd91506e53@kernel.org>
+ <0cee99af-f058-47a0-9119-94cc9a37e88b@linuxfoundation.org>
+ <91f2e916-2f90-4970-9448-09f821597083@linuxfoundation.org>
+ <ce20762a-9ab4-49d4-adc5-e8eb5e5ac848@sirena.org.uk>
 Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240325194100.775052-1-edliaw@google.com>
-Content-Type: text/plain; charset=UTF-8
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <ce20762a-9ab4-49d4-adc5-e8eb5e5ac848@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 3/26/24 12:40 AM, Edward Liaw wrote:
-> Following issue was observed while running the uffd-unit-tests selftest
-> on ARM devices. On x86_64 no issues were detected:
+On 3/26/24 14:27, Mark Brown wrote:
+> On Tue, Mar 26, 2024 at 02:20:08PM -0600, Shuah Khan wrote:
 > 
-> pthread_create followed by fork caused deadlock in certain cases
-> wherein fork required some work to be completed by the created thread.
-> Used synchronization to ensure that created thread's start function has
-> started before invoking fork.
+>> I am seeing the following compile warnings. Please fix and send patch
+>> on top pf linux-kselftest fixes.
 > 
-> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> [edliaw: Refactored to use atomic_bool]
-> Signed-off-by: Edward Liaw <edliaw@google.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Which toolchain and architecture are you using?  These compile cleanly
+> for me.
 
-> ---
-> 
-> v2: restored accidentally removed uffd_test_case_ops when merging
-> v3: fixed commit subject to use selftests/mm prefix
-> 
->  tools/testing/selftests/mm/uffd-common.c     |  3 +++
->  tools/testing/selftests/mm/uffd-common.h     |  2 ++
->  tools/testing/selftests/mm/uffd-unit-tests.c | 10 ++++++++++
->  3 files changed, 15 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
-> index b0ac0ec2356d..7ad6ba660c7d 100644
-> --- a/tools/testing/selftests/mm/uffd-common.c
-> +++ b/tools/testing/selftests/mm/uffd-common.c
-> @@ -18,6 +18,7 @@ bool test_uffdio_wp = true;
->  unsigned long long *count_verify;
->  uffd_test_ops_t *uffd_test_ops;
->  uffd_test_case_ops_t *uffd_test_case_ops;
-> +atomic_bool ready_for_fork;
-> 
->  static int uffd_mem_fd_create(off_t mem_size, bool hugetlb)
->  {
-> @@ -518,6 +519,8 @@ void *uffd_poll_thread(void *arg)
->  	pollfd[1].fd = pipefd[cpu*2];
->  	pollfd[1].events = POLLIN;
-> 
-> +	ready_for_fork = true;
-> +
->  	for (;;) {
->  		ret = poll(pollfd, 2, -1);
->  		if (ret <= 0) {
-> diff --git a/tools/testing/selftests/mm/uffd-common.h b/tools/testing/selftests/mm/uffd-common.h
-> index cb055282c89c..cc5629c3d2aa 100644
-> --- a/tools/testing/selftests/mm/uffd-common.h
-> +++ b/tools/testing/selftests/mm/uffd-common.h
-> @@ -32,6 +32,7 @@
->  #include <inttypes.h>
->  #include <stdint.h>
->  #include <sys/random.h>
-> +#include <stdatomic.h>
-> 
->  #include "../kselftest.h"
->  #include "vm_util.h"
-> @@ -103,6 +104,7 @@ extern bool map_shared;
->  extern bool test_uffdio_wp;
->  extern unsigned long long *count_verify;
->  extern volatile bool test_uffdio_copy_eexist;
-> +extern atomic_bool ready_for_fork;
-> 
->  extern uffd_test_ops_t anon_uffd_test_ops;
->  extern uffd_test_ops_t shmem_uffd_test_ops;
-> diff --git a/tools/testing/selftests/mm/uffd-unit-tests.c b/tools/testing/selftests/mm/uffd-unit-tests.c
-> index 2b9f8cc52639..4a48dc617c6b 100644
-> --- a/tools/testing/selftests/mm/uffd-unit-tests.c
-> +++ b/tools/testing/selftests/mm/uffd-unit-tests.c
-> @@ -775,6 +775,8 @@ static void uffd_sigbus_test_common(bool wp)
->  	char c;
->  	struct uffd_args args = { 0 };
-> 
-> +	ready_for_fork = false;
-> +
->  	fcntl(uffd, F_SETFL, uffd_flags | O_NONBLOCK);
-> 
->  	if (uffd_register(uffd, area_dst, nr_pages * page_size,
-> @@ -790,6 +792,9 @@ static void uffd_sigbus_test_common(bool wp)
->  	if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
->  		err("uffd_poll_thread create");
-> 
-> +	while (!ready_for_fork)
-> +		; /* Wait for the poll_thread to start executing before forking */
-> +
->  	pid = fork();
->  	if (pid < 0)
->  		err("fork");
-> @@ -829,6 +834,8 @@ static void uffd_events_test_common(bool wp)
->  	char c;
->  	struct uffd_args args = { 0 };
-> 
-> +	ready_for_fork = false;
-> +
->  	fcntl(uffd, F_SETFL, uffd_flags | O_NONBLOCK);
->  	if (uffd_register(uffd, area_dst, nr_pages * page_size,
->  			  true, wp, false))
-> @@ -838,6 +845,9 @@ static void uffd_events_test_common(bool wp)
->  	if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
->  		err("uffd_poll_thread create");
-> 
-> +	while (!ready_for_fork)
-> +		; /* Wait for the poll_thread to start executing before forking */
-> +
->  	pid = fork();
->  	if (pid < 0)
->  		err("fork");
-> --
-> 2.44.0.396.g6e790dbe36-goog
-> 
-> 
+This is what I have:
+  
+gcc version 13.2.0 (Ubuntu 13.2.0-4ubuntu3)
 
--- 
-BR,
-Muhammad Usama Anjum
+I am seeing warnings with this patch. No warnings without
+the patch.
+
+thanks,
+-- Shuah
 
