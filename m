@@ -1,102 +1,88 @@
-Return-Path: <linux-kernel+bounces-125540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B310E8927FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:57:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68278927FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF0AE1C2106E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:57:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AD37283F88
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5316F13E3EC;
-	Fri, 29 Mar 2024 23:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6725613E401;
+	Fri, 29 Mar 2024 23:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BMMFkQnJ"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xz2rWwEN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B189196
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 23:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4F8196
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 23:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711756627; cv=none; b=Yhko3qz4CtzsJLab2KeUcFmot0gNh20+haguAzXemj/3y4092cwhqJUfHbzXtNnN9PNcY1TI1VMwUu3YIrQh0RhAwIdln0zaiqEQbBMaNFvM+ePjlErvh3po3QJ76e896AsErWePttlUVKgngFQeLc058qo+x9llgtUNyN4JxD8=
+	t=1711756719; cv=none; b=MyqDEyp7Nfzge3i/m8s5iYg/dicOTj+MepiGVD1qVMh0YfLBEz/nuB1um365V7xUiuKf93rRt7tkNXsuZiMv6Is6w13q/ZHG4Q2ifJPFd43vsHLHFHRCmOUJJ2YiFJBBvbWpIKg3LJ6bZHspBi01uyIc0I4msCthmFo9Et+FAcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711756627; c=relaxed/simple;
-	bh=QQoLyPTSu4GTKIPi2mx8qV2xviu/j5AVh7cDGqQcRf4=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=rBovZsukcC6L0PTAtw4BmsdTvMa+BjnX8//tTn2fezughMZ0PGMDzfsGIK+6wkAkr7HqhMIrMhRnyX+wLd717B6EqsbNGJpYiPJUiROGYtmTpux/ot0qS34G3trn2E6dQ9avobbgjep5PpxjDmeK9eopwwVwmFjN5Vv4zJt64Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BMMFkQnJ; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-430bf84977dso13781881cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711756625; x=1712361425; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QQoLyPTSu4GTKIPi2mx8qV2xviu/j5AVh7cDGqQcRf4=;
-        b=BMMFkQnJZyeFcYpgxPDGKet2EXNSaU0GKOvOGecDTEKUTxF0xdLaddN4YxIgPSGn1x
-         x/8ZNAhoHQ8EhZRNf3YFx3yf2HgP9ryh/gciuzmbzGwgxtjcZYouF3LW3jrP+TFzvpCg
-         tW/WA2+zCQFIvqR6LyxDYkwudkVKhjrqCx5Y5RrHdi36Lm4zecZ6NZmxW1QzjiD3qE/C
-         xfNXWSffuQpmlBOXiHJCTFoOaz9C1ItiznSVri9DRv99ITUKz7HrtVYrPFbf2eknrFuY
-         Olu2f8mH8m4FiLWHdWIzJHTVO5x5Tw0iu9ZKUZpGEirhrMvqU8VL6mFJqIaERJxRv9P7
-         T82w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711756625; x=1712361425;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QQoLyPTSu4GTKIPi2mx8qV2xviu/j5AVh7cDGqQcRf4=;
-        b=dcdi91yjzGzv4Zr06RxRRhhy41KjXizENTg9rgzkOfCa/Wlv6C4DNpofS2KIpLJmpp
-         od+uodeAFwF8nnOykVo05aGXTYETdcLpsMtjDuA+3o1Kt1c7ZTvhBW6SAN6Bc6AhmvTd
-         Ntf6QXJRHzmzemcGZOFDdJcC64yHJPia/ihFUiAKk8fEB8fDiq9XV3gY6YALEtewrkoh
-         nxiJC7np3V5uWzouZyhcMVcy7Vyf7IzmJo25tv3ih8TIfxRdWojhTROVmEoZ0u9UBpy/
-         HPm5Jtnc8Ace9gjeF/un6nHxWWVUSc8jFuLvcA0QX0O+hvkUtkz5+MqpTTMiabWJl/As
-         rGrA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbGTPNe0XGY5DIaBwMxuqpjxWPZX+OLes/x41Af2OAlN801vjco88lbUsAxJfZx5UgbN9VP5mSgMCijde17suElkspxZRI0QUw/6m2
-X-Gm-Message-State: AOJu0Yyeq7xzv9VcRsmJc+0h0TlaadXWOPhqCQDZjEULZ1RDa4abG/VZ
-	98WbGS8vxUxK7P95b5IpeaQRYgzFS5eA9r52iQByLetppTI342jDJh/9CF9GdWMbBfkAh6d1uVX
-	L0nNEckgRXFD74HA5IiAsbzJTv1A=
-X-Google-Smtp-Source: AGHT+IHiMMcHdHcmNb0+QRGBXPjiDBSzWOAtrHWyPjOBUgA11i0OJSDjXZ/p+6bAo0f5q5lVLmCOLsPD/z/bai+cP2E=
-X-Received: by 2002:a05:622a:1044:b0:432:c44d:8912 with SMTP id
- f4-20020a05622a104400b00432c44d8912mr2859042qte.18.1711756625103; Fri, 29 Mar
- 2024 16:57:05 -0700 (PDT)
+	s=arc-20240116; t=1711756719; c=relaxed/simple;
+	bh=cJaitjfY5WidVNtM7vvFrtqfN1QF2TDI+z/3GVbG1Pc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C6Zv/pfWliBHyhVwf25dAp1W168h+lCWSb91HFF4pgJSQSbhyXCtfiex89Z5dq+P9eseDMehzbzEUurPf7x+kPHhaaFQaWJKFKYsyrErInixVtHpcY4jTHBubSKi9RmcdlbSBF7MYiHDpYmpUeMsh34NJ29SVRQ++4Rk97gdvM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xz2rWwEN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 899BAC433C7;
+	Fri, 29 Mar 2024 23:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711756719;
+	bh=cJaitjfY5WidVNtM7vvFrtqfN1QF2TDI+z/3GVbG1Pc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Xz2rWwEN+IOqbdKxzgSXLM9KdAddMeiT8mmdctMG1jwnJnh5RIlo5uRvd2xabkvkk
+	 t+lLJ2oVJbllMXzyvHjH6XCEVVsdw4J2UxXWIreF2AVn3opvpO5JIUUIQhYzIMxh/q
+	 z736jv9QxyU3a0C2iYTjEsJ7+8vPDnJjolDQ+Mc5S09ERJIMO9pe1dJsbrG/xVvtID
+	 TyOA2CQU5uOyUHSPrNajwWS6vEKOLvuuH44fbpLeNfo4F5pe3stXoyUdhglfyiAi/F
+	 xBvpoOEdjjNePjk6IvGXpqyKZJxu/YY6PSf1zZsgmVKEL8t7gZqvelzx7NaM5uJMmI
+	 haj2ce8D2Rq4g==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH 0/4] perf: Fix leaked events when sigtrap = 1
+Date: Sat, 30 Mar 2024 00:58:08 +0100
+Message-ID: <20240329235812.18917-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Charlemagne Lasse <charlemagnelasse@gmail.com>
-Date: Sat, 30 Mar 2024 00:56:54 +0100
-Message-ID: <CAFGhKbzev7W4aHwhFPWwMZQEHenVgZUj7=aunFieVqZg3mt14A@mail.gmail.com>
-Subject: warning: cast removes address space '__percpu' of expression
-To: x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Luc Van Oostenryck <lucvoo@kernel.org>
-Cc: Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
-	Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>, 
-	Denys Vlasenko <dvlasenk@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-After switching to linux 6.9-rc1, I get a lot of these errors (when
-compiling with cgcc/sparse):
+While looking at task_work users I just noticed that perf doesn't flush
+its own upon event exiting. This looks especially problematic with child
+events. Please have a thourough look at the last patch, I may easily
+have missed something within the maze.
 
-/include/linux/netdevice.h:4033:17: warning: cast removes address
-space '__percpu' of expression
+Frederic Weisbecker (4):
+  task_work: s/task_work_cancel()/task_work_cancel_func()/
+  task_work: Introduce task_work_cancel() again
+  perf: Fix event leak upon exit
+  perf: Fix event leak upon exec and file release
 
-This is around code which wasn't changed and which correctly uses the
-per cpu helper. Sparse flags were -Wsparse-all for sparse 0.6.4
-(latest release). Sparse was enabled via C=1 parameter and sparse was
-configured using CHECK="sparse -Wsparse-all"
+ include/linux/perf_event.h |  1 +
+ include/linux/task_work.h  |  3 ++-
+ kernel/events/core.c       | 40 +++++++++++++++++++++++++++++++-------
+ kernel/irq/manage.c        |  2 +-
+ kernel/task_work.c         | 34 +++++++++++++++++++++++++++-----
+ security/keys/keyctl.c     |  2 +-
+ 6 files changed, 67 insertions(+), 15 deletions(-)
 
-Problem was introduced between commit 8ae292c66dcb ("x86/lib: Address
-kernel-doc warnings") and 3a1d3829e193 ("x86/percpu: Avoid sparse
-warning with cast to named address space").
+-- 
+2.44.0
 
-I would even go as far as saying that 1ca3683cc6d2 ("x86/percpu:
-Enable named address spaces with known compiler version") together
-with 3a1d3829e193 ("x86/percpu: Avoid sparse warning with cast to
-named address space") triggered this problem
 
