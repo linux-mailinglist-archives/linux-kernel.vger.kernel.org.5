@@ -1,61 +1,66 @@
-Return-Path: <linux-kernel+bounces-124762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E60E891C3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:45:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F3E4891C46
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDCA628B1F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:45:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5AD2B26F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2923181315;
-	Fri, 29 Mar 2024 12:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C1A180A7D;
+	Fri, 29 Mar 2024 12:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAI0V5vS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uKPyu6CV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE13180A9A;
-	Fri, 29 Mar 2024 12:41:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368B518132E;
+	Fri, 29 Mar 2024 12:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716099; cv=none; b=oAz2NxhS/Yg0bgSXyoxYWbMWNlL0rvi0rhiY81bJcjIDAfu3oIypZUmm/aDAHEtHESZlqXDcx++jzotqAzTW0bCE+Vb3UeRFXdDLA8UfsVxlDwcLs1jpqESFqDQnJAqH5YUaZ8ndJ/VLW3l+abG++Zt5hThIfsin/mdqwy82A/4=
+	t=1711716102; cv=none; b=aNIWw17OkRd31O4yBLwrdPqkUtWAmJmXKK2G5wYO0wdS9UjVEXpVi7o5mA/MG5wrk5UC5qqIOdnDWQtSgjFMm/ZCWbu0aTGK4Rkt4LVb/Zb3HJr3z9t7QsZNl3s3YOPlCKfn08lzYo8no9zLlnzVsRXy3Au27nVfNhE4tAFfJeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716099; c=relaxed/simple;
-	bh=6BB67VKYQcGGM39DP5isCx0F37YiOyTglODRH4ADdI8=;
+	s=arc-20240116; t=1711716102; c=relaxed/simple;
+	bh=58rZfvaFipaxYd8uXFiVRAcZUdsrKwMl21wU3vpq4q4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IsDJW/Q4vlyKsB30efXIv2ZV3JrKkAwTVNyZNHdfGHKLu5NaMpy3+LNl5Yc/GeYFnB3hDwxhjjBqZeoDxl4LHxumOTheCiPGZzZo8SfbmfxNYkvM7foWogRCSBGbKmuJfH/OGXj92Yszk4mlToqKBdbKIe8yGd4i0P17xm8pFoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XAI0V5vS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64AD9C433F1;
-	Fri, 29 Mar 2024 12:41:37 +0000 (UTC)
+	 MIME-Version; b=QdsNQbWy1sK4tVTguiifP3MOew1oqY+7OkkCQwpBp2fTeAf6fZ71Db819kYkiTrhLs630AXOeJ3uul1WtiGPqz7UrZtN9VqiYRdHH+ojcglPSp6OLFwtUH99ezt5e0UxIQqeoPyjRW4vLmhIWmKiO9cIsU+6+t8TIZzwFtmZQO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uKPyu6CV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 147F8C43390;
+	Fri, 29 Mar 2024 12:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716098;
-	bh=6BB67VKYQcGGM39DP5isCx0F37YiOyTglODRH4ADdI8=;
+	s=k20201202; t=1711716101;
+	bh=58rZfvaFipaxYd8uXFiVRAcZUdsrKwMl21wU3vpq4q4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XAI0V5vSGY63cWGH5PmYi9yrfrM4UPTxnn4toWN2+UU0ZxjguAdtLNxWWtrob9Kcd
-	 ldb/Yn7u/zZR3q1rPYZf6/maJJKXG+Uk4tIxQxkK+jdAF40R7pYawnQBpHzObIUvRa
-	 kD0D8bPTNiFuBFCCugdAbwZJ9kzuabysYk4XrMNZiqzoHysgQRFE3Rt9PZKyLY5JJo
-	 Plq1PFORFDPC7FMBQaKwXHcn7ioK+pTBHxDGor47y2cJQ5bpbSS5z951wv2DhHMkAF
-	 Fbktahis0qmo4vn53LJ6Dko7hMbs8vejXlFxrPORRY6w4xp1tFsvjAL3jZv2wK0sq4
-	 j7UIfardCtMbQ==
+	b=uKPyu6CVVWdWaA+vz6/uZEEaFEkg3aIaFDwGNtx01yBYNuezoXkMxpHzTef1kbsT5
+	 QCz9n3xgNAyn2XGiuRHKEM8jvoyYenXCZ6Sh7aqod7z9OzbsP7SAMtM76oenlU8Ja1
+	 oauW/eokLc8gz13KD52zD5/eVAO82QwNsKe3mGPydQXkJFj21bfqNy1NkztsnO1GQN
+	 cBMtFWhueOjc6f7uceG67tOdcWr7aUTMeNeKr/z8tCZ4EPRg3bxNms4AreNMahgKBN
+	 AWy935ihw67H7+BU8v/uvO0CkobvZUeE3p7nwxKX257HfVLj1ZWk/rj6HyZ+Ys4NPi
+	 EP1aFm/BekePQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Aric Cyr <aric.cyr@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Daniel Wheeler <daniel.wheeler@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	mika.westerberg@linux.intel.com,
-	mario.limonciello@amd.com,
-	michal.wilczynski@intel.com,
-	raag.jadav@intel.com,
-	mail@mariushoch.de,
-	linux-acpi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 53/98] ACPI: x86: Add DELL0501 handling to acpi_quirk_skip_serdev_enumeration()
-Date: Fri, 29 Mar 2024 08:37:24 -0400
-Message-ID: <20240329123919.3087149-53-sashal@kernel.org>
+	harry.wentland@amd.com,
+	sunpeng.li@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dillon.varone@amd.com,
+	aurabindo.pillai@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.8 54/98] drm/amd/display: Fix nanosec stat overflow
+Date: Fri, 29 Mar 2024 08:37:25 -0400
+Message-ID: <20240329123919.3087149-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -70,72 +75,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Aric Cyr <aric.cyr@amd.com>
 
-[ Upstream commit 99b572e6136eab69a8c91d72cf8595b256e304b5 ]
+[ Upstream commit 14d68acfd04b39f34eea7bea65dda652e6db5bf6 ]
 
-Some recent(ish) Dell AIO devices have a backlight controller board
-connected to an UART.
+[Why]
+Nanosec stats can overflow on long running systems potentially causing
+statistic logging issues.
 
-This UART has a DELL0501 HID with CID set to PNP0501 so that the UART is
-still handled by 8250_pnp.c. Unfortunately there is no separate ACPI device
-with an UartSerialBusV2() resource to model the backlight-controller.
-This causes the kernel to create a /dev/ttyS0 char-device for the UART
-instead of creating an in kernel serdev-controller + serdev-device pair
-for a kernel backlight driver.
+[How]
+Use 64bit types for nanosec stats to ensure no overflow.
 
-Use the existing acpi_quirk_skip_serdev_enumeration() mechanism to work
-around this by returning skip=true for tty-ctrl parents with a HID
-of DELL0501.
-
-Like other cases where the UartSerialBusV2() resource is missing or broken
-this will only create the serdev-controller device and the serdev-device
-itself will need to be instantiated by platform code.
-
-Unfortunately in this case there is no device for the platform-code
-instantiating the serdev-device to bind to. So also create
-a platform_device for this.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Aric Cyr <aric.cyr@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/x86/utils.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/gpu/drm/amd/display/modules/inc/mod_stats.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
-index 8829a907eee02..90c3d2eab9e99 100644
---- a/drivers/acpi/x86/utils.c
-+++ b/drivers/acpi/x86/utils.c
-@@ -484,8 +484,28 @@ static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bo
+diff --git a/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h b/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h
+index 5960dd760e91c..8ce6c22e5d041 100644
+--- a/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h
++++ b/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h
+@@ -57,10 +57,10 @@ void mod_stats_update_event(struct mod_stats *mod_stats,
+ 		unsigned int length);
  
- int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
- {
-+	struct acpi_device *adev = ACPI_COMPANION(controller_parent);
-+
- 	*skip = false;
+ void mod_stats_update_flip(struct mod_stats *mod_stats,
+-		unsigned long timestamp_in_ns);
++		unsigned long long timestamp_in_ns);
  
-+	/*
-+	 * The DELL0501 ACPI HID represents an UART (CID is set to PNP0501) with
-+	 * a backlight-controller attached. There is no separate ACPI device with
-+	 * an UartSerialBusV2() resource to model the backlight-controller.
-+	 * Set skip to true so that the tty core creates a serdev ctrl device.
-+	 * The backlight driver will manually create the serdev client device.
-+	 */
-+	if (acpi_dev_hid_match(adev, "DELL0501")) {
-+		*skip = true;
-+		/*
-+		 * Create a platform dev for dell-uart-backlight to bind to.
-+		 * This is a static device, so no need to store the result.
-+		 */
-+		platform_device_register_simple("dell-uart-backlight", PLATFORM_DEVID_NONE,
-+						NULL, 0);
-+		return 0;
-+	}
-+
- 	return acpi_dmi_skip_serdev_enumeration(controller_parent, skip);
- }
- EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
+ void mod_stats_update_vupdate(struct mod_stats *mod_stats,
+-		unsigned long timestamp_in_ns);
++		unsigned long long timestamp_in_ns);
+ 
+ void mod_stats_update_freesync(struct mod_stats *mod_stats,
+ 		unsigned int v_total_min,
 -- 
 2.43.0
 
