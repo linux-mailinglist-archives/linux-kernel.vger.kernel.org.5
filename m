@@ -1,60 +1,56 @@
-Return-Path: <linux-kernel+bounces-124924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A67ED891F7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6596891FFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:15:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BADE4B2F291
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:27:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B019BB33B67
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF091A2B8C;
-	Fri, 29 Mar 2024 12:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224541A6480;
+	Fri, 29 Mar 2024 12:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gp32yP2E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bxYyOnKM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCB21A2B72;
-	Fri, 29 Mar 2024 12:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A40B1A6463;
+	Fri, 29 Mar 2024 12:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716437; cv=none; b=R7opnKyYflDU66w8BIVgFqZf76s+v9TKZV+/TYI9P6Iea9U7S/GPzpX9lrxY+NyftwLfoEaY9TkYK6WN3utuGAjDx+OZNXZJ++4KpKr2z/6pgLcL+7moyHflMMlnrzvutPkduYP1bBt9DmFxWvEiMfrsBHKnk2x4c8H4q8d3ssI=
+	t=1711716471; cv=none; b=PFjY7nxPR4Q6fLJfCjlVZdfHKeTPATdDd3ClaswmA1y8Lir/+XoS8+7iDRrfsvufKZM6EgtfiTZi4vMfEuDPwUjCjKzkoDlBWYbTDhwsvQb+51/mXy6OpHEBtseaExUTZW01WTgvqze1eWDo0+KgRgyi1/JzmJ2aXMgdl0L14dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716437; c=relaxed/simple;
-	bh=KWF5woA40Y3P0zjBP6wmfQIo/JmwcFCBoVMPAt+k7cU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oqeBXsFzDVPGOc0/JrO7azhN8ZyLP8U2+mPZhIDh8nJu2cIF/IAYMxGoUiQjvQFhQnX27fx9jGkUlhXlUN/dYpZH8smfC66Ej0ITZqDmtNiFJ6vXfnxJVYKgQ0cLHKSg6YDEYAbcXdXAdq1h32+71L57x27sydQ3ImgtfYoQvOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gp32yP2E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72AA7C433B1;
-	Fri, 29 Mar 2024 12:47:16 +0000 (UTC)
+	s=arc-20240116; t=1711716471; c=relaxed/simple;
+	bh=KrtLP2+xQcj9c07YWsMGvUeNakHzSGnJr64CquHleek=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZeI+vngTz0nQcKfbOkWRaSpYF9Bvt749ER3akT7elZZQMGYKKkpWiMb+dk5e/4r7PRzOuaHv6I785MpGIpkkA7j4R2x4gZmtrogPlh1SlNJwW5dZ0DISs8uoqzA4VJwI9G85H4MKcctZAKbmParSVfjfYq38HVhlpwwstvpVdpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bxYyOnKM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 649D8C433F1;
+	Fri, 29 Mar 2024 12:47:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716437;
-	bh=KWF5woA40Y3P0zjBP6wmfQIo/JmwcFCBoVMPAt+k7cU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gp32yP2ECJOWsiDxxf69xsDyKhaSl/UgFeZ1VXOci2+CEsq93oNrWldrMfFuzV6hk
-	 LB9mIiVBYZCQN3LDh5IDNxXrkMm7JW5fmyeIwST8BI6lson47K1pJ2sJDssF6XC2L4
-	 Xt3F3w1tXZi4Ho+yat6SuW1/biMD+DaDU9NHilPCDnAZVS/SqbieEBmvEJldF3CLWO
-	 TGK65VXWvKSY/j9OCs2WlgPlrFE5G6jmkXng5+MtumrvWzIMcVt4jc1wJYQM4KrNfj
-	 v0KSExnhwD5WklO9UKWGB1WdhjsREs44JEg8+eKmL4CesqD17hlIqOs+iV4+L5VbIs
-	 ivCg1yPRv5O9g==
+	s=k20201202; t=1711716471;
+	bh=KrtLP2+xQcj9c07YWsMGvUeNakHzSGnJr64CquHleek=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bxYyOnKMediWNUcVlJK/bxCisJ+Ii51JZ0YG+JEJrst5PY4vbCTUWsV5FWQGwpCdq
+	 gj5adxV68pui6Zytmu2wxgRKCFYeNbx8eXi8Bb5q3dmlXP9VGfosGaDrdNIDCmb1Dp
+	 6BQR+wlG8gXyzdPqvnJ53/vdc8f8tUqtXjwet11iTC8ULI9sfhV6W8DUb2+QCmYAwg
+	 9j3iZwmwMTnR8/kVjhfp5MWicxH5yE/CyOjMIqc/7mWxQoj37RB6kUefWSuXvS+snq
+	 RmdYcZAkaaV+8QFxUj/NKk5Qo6Dq+0L3OrEmyq2fv/ouyHQyEf8N5iSbt5lIZ/ZEFz
+	 JwHweG+7v+VEA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Anand Jain <anand.jain@oracle.com>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 40/52] btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()
-Date: Fri, 29 Mar 2024 08:45:34 -0400
-Message-ID: <20240329124605.3091273-40-sashal@kernel.org>
+	minipli@grsecurity.net,
+	linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 01/34] Input: synaptics-rmi4 - fail probing if memory allocation for "phys" fails
+Date: Fri, 29 Mar 2024 08:47:02 -0400
+Message-ID: <20240329124750.3092394-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
-References: <20240329124605.3091273-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,57 +59,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.83
+X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: David Sterba <dsterba@suse.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 7411055db5ce64f836aaffd422396af0075fdc99 ]
+[ Upstream commit bc4996184d56cfaf56d3811ac2680c8a0e2af56e ]
 
-The unhandled case in btrfs_relocate_sys_chunks() loop is a corruption,
-as it could be caused only by two impossible conditions:
+While input core can work with input->phys set to NULL userspace might
+depend on it, so better fail probing if allocation fails. The system must
+be in a pretty bad shape for it to happen anyway.
 
-- at first the search key is set up to look for a chunk tree item, with
-  offset -1, this is an inexact search and the key->offset will contain
-  the correct offset upon a successful search, a valid chunk tree item
-  cannot have an offset -1
-
-- after first successful search, the found_key corresponds to a chunk
-  item, the offset is decremented by 1 before the next loop, it's
-  impossible to find a chunk item there due to alignment and size
-  constraints
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Link: https://lore.kernel.org/r/20240117073124.143636-1-chentao@kylinos.cn
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/volumes.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/input/rmi4/rmi_driver.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6fc2d99270c18..06db09c20df2d 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3381,7 +3381,17 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
- 			mutex_unlock(&fs_info->reclaim_bgs_lock);
- 			goto error;
+diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
+index 258d5fe3d395c..aa32371f04af6 100644
+--- a/drivers/input/rmi4/rmi_driver.c
++++ b/drivers/input/rmi4/rmi_driver.c
+@@ -1196,7 +1196,11 @@ static int rmi_driver_probe(struct device *dev)
  		}
--		BUG_ON(ret == 0); /* Corruption */
-+		if (ret == 0) {
-+			/*
-+			 * On the first search we would find chunk tree with
-+			 * offset -1, which is not possible. On subsequent
-+			 * loops this would find an existing item on an invalid
-+			 * offset (one less than the previous one, wrong
-+			 * alignment and size).
-+			 */
-+			ret = -EUCLEAN;
-+			goto error;
+ 		rmi_driver_set_input_params(rmi_dev, data->input);
+ 		data->input->phys = devm_kasprintf(dev, GFP_KERNEL,
+-						"%s/input0", dev_name(dev));
++						   "%s/input0", dev_name(dev));
++		if (!data->input->phys) {
++			retval = -ENOMEM;
++			goto err;
 +		}
+ 	}
  
- 		ret = btrfs_previous_item(chunk_root, path, key.objectid,
- 					  key.type);
+ 	retval = rmi_init_functions(data);
 -- 
 2.43.0
 
