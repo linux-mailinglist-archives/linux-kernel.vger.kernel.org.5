@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-124424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AF7B89175D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:01:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939CD891757
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF550B21CD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:01:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C801D2893B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A467BB0F;
-	Fri, 29 Mar 2024 10:59:43 +0000 (UTC)
-Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65D356A33A;
+	Fri, 29 Mar 2024 10:59:17 +0000 (UTC)
+Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4356A8AD;
-	Fri, 29 Mar 2024 10:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D195E6A034;
+	Fri, 29 Mar 2024 10:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.128
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711709983; cv=none; b=QjapkStGAf2FAtJnjoh7G41TJlUX9x4uIjKhYuLXbVMcGVCqXA2E3ftIH5McHgk5n7wMLUQfGZnKAlG8kh/PsvkY3ED46buUF0euIjs0YKn9zJ2uIeUn+CXVXbKUOfRWnZojDiOYRIwmoPO6rCGAV7PIZjnYehEn1YSQjhwe1y4=
+	t=1711709956; cv=none; b=Rioe8QRGYcwlwQk4+bCwRvmshfXuDpUzo0+r+W/i2UT0RHgIEQkStE20rzOgQ6GUpcjrp902b6zKk6xekGYUKzm4H6/IqVSair5dOvstRsQq3pGnpHfWZ7bmny8AVb+K4CGYOOhZ+3AhVleJA3K1pnqZSmms9KdS68m6GXRLQ18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711709983; c=relaxed/simple;
-	bh=BGdVHyXu2nvr+uV8Gq6vq1qthRDesSy50eK+N7uOi2c=;
+	s=arc-20240116; t=1711709956; c=relaxed/simple;
+	bh=nxx+6xNwnVOmWpIQMEjVW/rRZuWaUlN8c6YVrXlsBh0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jGbDGl5Hj0peVRLcdC0ZXvFd9kEW57ttwXvpDB8BkGj5zFdzciD7zL9NIGPN84nEZS7M/bLOLH4Lo/5cBZxICsnB5c5ct50w9GL9LrSSVTCFP0BHyDmIhB9PUyLqnj8HUX+d3urCzM4IKw5tOAfgeb4T6v0Ruzk8y99h/pl4T64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.243.244.52
+	 MIME-Version; b=UUkZ8XgYsON73kfruYhcZ4jTE9dS9qEKdhcM543GUOgNUkOBW0QcqLKeYfnj4z0tK2UEnckQNk9wlX3JiaTHoiz0hYQ/SemXjTXiiYfRG9s/7qXSz9vrQvkXdZcpNu+N8lVKE5lq241GoXLyiHJOIErPp100DXcntzYKcoL6fwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.254.200.128
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp82t1711709843tv80s7ov
-X-QQ-Originating-IP: 71LQnl3NJNsvgOKyfpSvsNrOkPFMxIaohKLax+fnpYk=
+X-QQ-mid: bizesmtp78t1711709854t315a8p1
+X-QQ-Originating-IP: H8w4LcerRMqb3ebuPNSs3LfNThRRyFFZSFHvYx23/XE=
 Received: from localhost ( [112.0.147.175])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 29 Mar 2024 18:57:21 +0800 (CST)
+	id ; Fri, 29 Mar 2024 18:57:32 +0800 (CST)
 X-QQ-SSF: 01400000000000704000000A0000000
-X-QQ-FEAT: 3M0okmaRx3i4lw8jCv5pReqk8XBDZo4W2Lqox8v053W7I2EUN6+uz7amykeXY
-	UGZSGgJiwCVnbILlJeIBx1IXvUentjK22EK6gxsv37dyLssoRUBFH2RJWuDFQY9XyKeux0x
-	UFxv+MynwpUjZ6Aw/i78cnflRKmEh2TnySUC9C0m6y69i5LVTSZ3UF40Rk10mpqdsB2qdwH
-	3rVww06rDMc5xTqH+llDnXZ2yYgHlBUY3zw6PCNuVQHHIot+AbntyodfvCHjMOvxrnvkQfE
-	bz+WS+INwVRfOTOONWmPMQWkqCbMtaPGXTn4GTd2K4W9y64FtzyAzbB1Ii6rOKbXHDmpIXK
-	c2+2sdCJORS2jNEAs1llYOElRKG3J1SfYVgAdadpbkNwJ91qwMBY0gV70ZhPSoQFwWHkOdr
-	bD7DvGsT4JI=
+X-QQ-FEAT: 3M0okmaRx3i4lw8jCv5pRXp7qaLjIhH0Nom7X39gKEaZDUM6z97qAS+K1xyiV
+	uPemEmElYeZZ9MUIMSmYEYFWjkUfeioSa/IBg8MTJgqd5mJTURBXQkRogmBUVfa0DjxpoHT
+	/ct1PrtM9lkrVLQEXtIVpFge1a0v1UwWuAEAkcE6ylNn/zRf5ZZ5DHHc+c2uN4RUKu15lJ9
+	fQqIU0EpHK4oYC8Ury5lbzEOO5wdG3fgWm4LjJyOSbUpP+dDW4/+iFemu+VY178tutQ133a
+	XrCMHstzq/eYYgILgAj4Oe3+U14R3IEbJEg/fqmbsCkFxNWNwbVhKBXH6H4Ug0H2PonnIbA
+	u0f1zayFQkLzJK6Hr+sf6XBpYTpE9W8E6OaHFChg5v/COuEruju3laTNc6ky9N1Y6NB0dkZ
+	AeybAHcHGbw=
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 8489316982251753822
+X-BIZMAIL-ID: 6166159861030876298
 From: Dawei Li <dawei.li@shingroup.cn>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -55,9 +55,9 @@ Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-s390@vger.kernel.org,
 	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH net-next 1/2] net/iucv: Avoid explicit cpumask var allocation on stack
-Date: Fri, 29 Mar 2024 18:56:09 +0800
-Message-Id: <20240329105610.922675-2-dawei.li@shingroup.cn>
+Subject: [PATCH net-next 2/2] net/dpaa2: Avoid explicit cpumask var allocation on stack
+Date: Fri, 29 Mar 2024 18:56:10 +0800
+Message-Id: <20240329105610.922675-3-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20240329105610.922675-1-dawei.li@shingroup.cn>
 References: <20240329105610.922675-1-dawei.li@shingroup.cn>
@@ -83,78 +83,51 @@ Use *cpumask_var API(s) to address it.
 
 Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 ---
- net/iucv/iucv.c | 37 ++++++++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
-index a4ab615ca3e3..b51f46ec32f9 100644
---- a/net/iucv/iucv.c
-+++ b/net/iucv/iucv.c
-@@ -520,14 +520,19 @@ static void iucv_setmask_mp(void)
-  */
- static void iucv_setmask_up(void)
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+index 888509cf1f21..40e881829595 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -2896,11 +2896,14 @@ static int dpaa2_eth_xdp_xmit(struct net_device *net_dev, int n,
+ static int update_xps(struct dpaa2_eth_priv *priv)
  {
--	cpumask_t cpumask;
-+	cpumask_var_t cpumask;
- 	int cpu;
+ 	struct net_device *net_dev = priv->net_dev;
+-	struct cpumask xps_mask;
+-	struct dpaa2_eth_fq *fq;
+ 	int i, num_queues, netdev_queues;
++	struct dpaa2_eth_fq *fq;
++	cpumask_var_t xps_mask;
+ 	int err = 0;
  
-+	if (!alloc_cpumask_var(&cpumask, GFP_KERNEL))
-+		return;
-+
- 	/* Disable all cpu but the first in cpu_irq_cpumask. */
--	cpumask_copy(&cpumask, &iucv_irq_cpumask);
--	cpumask_clear_cpu(cpumask_first(&iucv_irq_cpumask), &cpumask);
--	for_each_cpu(cpu, &cpumask)
-+	cpumask_copy(cpumask, &iucv_irq_cpumask);
-+	cpumask_clear_cpu(cpumask_first(&iucv_irq_cpumask), cpumask);
-+	for_each_cpu(cpu, cpumask)
- 		smp_call_function_single(cpu, iucv_block_cpu, NULL, 1);
-+
-+	free_cpumask_var(cpumask);
- }
- 
- /*
-@@ -628,23 +633,33 @@ static int iucv_cpu_online(unsigned int cpu)
- 
- static int iucv_cpu_down_prep(unsigned int cpu)
- {
--	cpumask_t cpumask;
-+	cpumask_var_t cpumask;
-+	int ret = 0;
- 
- 	if (!iucv_path_table)
- 		return 0;
- 
--	cpumask_copy(&cpumask, &iucv_buffer_cpumask);
--	cpumask_clear_cpu(cpu, &cpumask);
--	if (cpumask_empty(&cpumask))
-+	if (!alloc_cpumask_var(&cpumask, GFP_KERNEL))
++	if (!alloc_cpumask_var(&xps_mask, GFP_KERNEL))
 +		return -ENOMEM;
 +
-+	cpumask_copy(cpumask, &iucv_buffer_cpumask);
-+	cpumask_clear_cpu(cpu, cpumask);
-+	if (cpumask_empty(cpumask)) {
- 		/* Can't offline last IUCV enabled cpu. */
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto __free_cpumask;
-+	}
+ 	num_queues = dpaa2_eth_queue_count(priv);
+ 	netdev_queues = (net_dev->num_tc ? : 1) * num_queues;
  
- 	iucv_retrieve_cpu(NULL);
- 	if (!cpumask_empty(&iucv_irq_cpumask))
--		return 0;
-+		goto __free_cpumask;
-+
- 	smp_call_function_single(cpumask_first(&iucv_buffer_cpumask),
- 				 iucv_allow_cpu, NULL, 1);
--	return 0;
-+
-+__free_cpumask:
-+	free_cpumask_var(cpumask);
-+	return ret;
+@@ -2910,16 +2913,17 @@ static int update_xps(struct dpaa2_eth_priv *priv)
+ 	for (i = 0; i < netdev_queues; i++) {
+ 		fq = &priv->fq[i % num_queues];
+ 
+-		cpumask_clear(&xps_mask);
+-		cpumask_set_cpu(fq->target_cpu, &xps_mask);
++		cpumask_clear(xps_mask);
++		cpumask_set_cpu(fq->target_cpu, xps_mask);
+ 
+-		err = netif_set_xps_queue(net_dev, &xps_mask, i);
++		err = netif_set_xps_queue(net_dev, xps_mask, i);
+ 		if (err) {
+ 			netdev_warn_once(net_dev, "Error setting XPS queue\n");
+ 			break;
+ 		}
+ 	}
+ 
++	free_cpumask_var(xps_mask);
+ 	return err;
  }
  
- /**
 -- 
 2.27.0
 
