@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-124118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE6B9891277
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:45:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D3489127C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DA971C20F3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:45:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07DA7B22DE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8CF3B7A0;
-	Fri, 29 Mar 2024 04:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D0D3B1A4;
+	Fri, 29 Mar 2024 04:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="dTb5TpmU"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="u54K+nRe"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AA93B79F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:45:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F963B79F
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711687515; cv=none; b=YZ3nb4sPlmhzGySmjpNV9ewEzJFYfXLNZH0fBMabAp9XDliv4wBtM1blr7IavuQLXhhGz/2yIxLDZwWoTnI3GKWTXWSBfOpOmNR6dWauhod7P27lnD99cfBxVmt5qm6wgWNpscrSOIDnAKkyNffkysDCpd/MDk5sXs5Rz70HjDM=
+	t=1711687522; cv=none; b=A7i3LExxEKRMQG1a72Muo7hdA1Hy0U+6NsJqc+g4n3gcfmj9SxxNgBMcVdeEgtPNG7JlpPOconmNS981P2gZfig6epHxbPS0VudSBCoJaAHnCOEM0VPv3TgNWpE8iA4x+Z+bB8ZY2zlvztMUHxo6nRo94Dxx5DoquHrK3spfg1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711687515; c=relaxed/simple;
-	bh=zG0tEeBP+zvlyz5cnQr5MClbjEm8rVN8C4s+1xfpDqQ=;
+	s=arc-20240116; t=1711687522; c=relaxed/simple;
+	bh=h2y9fFmmx6EsZ6oLRRR8+V7ERys+JFhYFmzE85pUkAY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D1FpnD4eOrF/TR7kdShZbjtT33eXZWDGQRnhBUPNUULYARxXzyvA8Wo888wqx1BrdNrkEb0QmCXAx7QpVDkLaDq4cbHXmBjqp2a3nVxu5N3cXhijWaviL+OyUrYEIB+TAs/5bmnrBJ4T1fA8zUZG4yu9o3Tfp4xx4fsmwpSOHZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=dTb5TpmU; arc=none smtp.client-ip=209.85.167.172
+	 MIME-Version; b=dAJgFk6uee0BjWfageZsGXfkWUpGQT+M04rKjAZLVWkG0vhWe1EQhTbSMFfAFz4DezudswB3SwosBaTLmBlDLNwdjxr4TIJbPRBMtDc0fhCdoUXqYrR5QVD40VkrnZYmNtW9RuJ0iJ552xIFZEzXCFa8+d28G9ihEAcEGK1zrCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=u54K+nRe; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c38eced701so1017798b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:45:14 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e88e4c8500so1391743b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711687513; x=1712292313; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711687520; x=1712292320; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=txT/LccY8POETQDQkXcfynUkPCv6cjOV6zf46WX/Pcw=;
-        b=dTb5TpmUPw7ef/9qYzYpDdie7SYJme4gr3jRsPvSkzT4PmfBFG95GBons5rIe8N3Hq
-         2caUTED1gHdCKxfrfGiT5xiE3WaIJCTSwzhjXFreo6E5blO+BQCxiMqyxh6FW1c5O2B6
-         luw8GRlioxxTSLmA0KFWVJ/p997w9Nzafs7h4rmY9NNRr/cWE0IPWaFdk1Kadgu6RbZt
-         L4yz2L7Ld0fceVtMB3hSUyISo1lXE+ZDN6pPmfcWEERqasct2J+x6scnLXaLKP+fDnnV
-         v0SkR39pDdaZYoT+lJeGO4apudmmc9haVKmR5rNdJvHvb3+s/opzSWJnw3qYlartL/dH
-         Pctw==
+        bh=3HlYvLaJr4l3bVtwLdV9ET8gn8bkDD3ErKtF/Cp9Ezk=;
+        b=u54K+nRelGXPc+EZDYA1XUL/GP9W6FTdzYJCXy3mGERcI9mNLXf8NR7A6NQdrT28Ud
+         r0ML9kBaS6O2IvhZzlbBGn7npvuPxpl24zM9P139WQkOUJ89ygIZrswLB9w5ugk6NC1c
+         j/+JG+s5qpaXHAm8H/qTUXxhdJF+YWxn+/pdqCV2MNkF6OxLBwOL0hrZiZv8KMaTf5jC
+         sVC+pyHzdkjS2ZCTIp7o0FhCe4etlqglqSTAFoOACGwqjgtVHqlrtUxcjOXgbsejFHaR
+         2ebnUNuGx2hcT8XK6CGZepmrCJSuMtqc2ljMXZya4LUxBzv6xrJU72NNbuQh8moZaX/6
+         AiPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711687513; x=1712292313;
+        d=1e100.net; s=20230601; t=1711687520; x=1712292320;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=txT/LccY8POETQDQkXcfynUkPCv6cjOV6zf46WX/Pcw=;
-        b=ItuNKEI5EsKOSNrwDL1JrLEhVJurbnWkOOabM4TCqrM4U8tFOyIQPRpoez5T72b+R0
-         bTOEieIgnBjiL4eUD99dFn9K233oFzc0JrxpTF8kGH0Wd69OsCb8ClYj+9OX25JLowp7
-         NGJXOwlSzrz1i3AmGh2OvcMZ/1JWH9AZPdyNO50Icr0tAqPXzeS8Zrbsror1JmB5W9Vm
-         tThngDYECcHjz2FJmdF8bHpTaU+qILzmfaTZN1ojS0WpP8S7UynREE1b8cPAjcl5H4V2
-         uRqGZOVodgChVdZzQGRcoSTaJ0Xo5cMXwS30nAVALEZ+ZVnnaS2ozJ9vw0kbIvs+dPy5
-         EyzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX9W3RDXCjabMthyJClA70OXfG6tKacc8vmtAcKnPJv64qaJmHoq4Enxu23W0uCuHBysWu2Va9BeC+jpJGs1gLnfG+6oTQtuyqtqwbo
-X-Gm-Message-State: AOJu0YxKPh0diak5HLVZIoSj1JZbyv2FJq//37fpI1P3qux0IjIE4Ymb
-	5gvoSq33VHwQIZg7aAfRLAXJA16niBvoZe89zgn1WAY2qUG9XuKJvtGLKnxoS0Y=
-X-Google-Smtp-Source: AGHT+IEg1KTq7jE0OLYYVBAFrVsprg4r4Srip8vRVS899kAu1nJanfI5DM3TwMhj/+BfX0hVCMH91w==
-X-Received: by 2002:a05:6808:1584:b0:3c3:e05c:f499 with SMTP id t4-20020a056808158400b003c3e05cf499mr1508075oiw.39.1711687513312;
-        Thu, 28 Mar 2024 21:45:13 -0700 (PDT)
+        bh=3HlYvLaJr4l3bVtwLdV9ET8gn8bkDD3ErKtF/Cp9Ezk=;
+        b=hKh5t6BNbp1tn7Uu+8mE3xlidrZj623g+DXGpUa/8JB67JFCJcztHL9R9nFMkf7fcn
+         cLNmKBLNtVRvAMeqBs/5/E99ZTNRaYSitw2PI2yklBerfG3HYen4SFvDtDm64zPOMxyg
+         TWhqvhql3TBubVFbDCXLOhQR+bFX3PU3Lg5QKJPpURC+FZANeq0wmhVPJy4TZ97AjiVJ
+         f84AzBRPt1mcevm5JSH/1iUCg0V9tV2e4FSWphBASPwLDg46t0FjH2Zu/On3igi+xfDs
+         O9FUwcmUdojDFWionVQrr0ClHFs03WxcHHmYVtQ4kcRMQNU3dkEMgZJphEm8ameGBxCH
+         n4qA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXoTw/icLLpGIBJVXkXO1vrn1sBim8HWHwoZDs1wLmS6veDP+QkNPK38/PLTILelilHU0uDU08qyL2e8Ke8qEREYFJ7TZGJSpXcmcg
+X-Gm-Message-State: AOJu0YyWxQ28lIWJM7RTT2t4gdt5OHKcd4vcDqT9C7mQ1+NARIbWVz/w
+	itFqUoxIPk/mGojW//09jAto1+YTpHVVUVavrh9fFDwzfiNgUiHhCGChyQmfEEM=
+X-Google-Smtp-Source: AGHT+IFTo+txCMZKEE06IZ+V4dIOgngRem/aEEKbckfraBrrpL/AYZj752mW4B4fwSBOz0hRyqWgfA==
+X-Received: by 2002:a05:6a00:1c85:b0:6ea:c7bb:187b with SMTP id y5-20020a056a001c8500b006eac7bb187bmr1078563pfw.5.1711687520251;
+        Thu, 28 Mar 2024 21:45:20 -0700 (PDT)
 Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id i18-20020aa78b52000000b006ea7e972947sm2217120pfd.130.2024.03.28.21.45.10
+        by smtp.gmail.com with ESMTPSA id i18-20020aa78b52000000b006ea7e972947sm2217120pfd.130.2024.03.28.21.45.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 21:45:12 -0700 (PDT)
+        Thu, 28 Mar 2024 21:45:19 -0700 (PDT)
 From: Deepak Gupta <debug@rivosinc.com>
 To: paul.walmsley@sifive.com,
 	rick.p.edgecombe@intel.com,
@@ -145,9 +145,9 @@ Cc: corbet@lwn.net,
 	omosnace@redhat.com,
 	ojeda@kernel.org,
 	jhubbard@nvidia.com
-Subject: [PATCH v2 01/27] riscv: envcfg save and restore on task switching
-Date: Thu, 28 Mar 2024 21:44:33 -0700
-Message-Id: <20240329044459.3990638-2-debug@rivosinc.com>
+Subject: [PATCH v2 02/27] riscv: define default value for envcfg
+Date: Thu, 28 Mar 2024 21:44:34 -0700
+Message-Id: <20240329044459.3990638-3-debug@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240329044459.3990638-1-debug@rivosinc.com>
 References: <20240329044459.3990638-1-debug@rivosinc.com>
@@ -159,61 +159,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-envcfg CSR defines enabling bits for cache management instructions and soon
-will control enabling for control flow integrity and pointer masking features.
-
-Control flow integrity enabling for forward cfi and backward cfi is controlled
-via envcfg and thus need to be enabled on per thread basis.
-
-This patch creates a place holder for envcfg CSR in `thread_info` and adds
-logic to save and restore on task switching.
+Defines a base default value for envcfg per task. By default all tasks
+should have cache zeroing capability. Any future base capabilities that
+apply to all tasks can be turned on same way.
 
 Signed-off-by: Deepak Gupta <debug@rivosinc.com>
 ---
- arch/riscv/include/asm/switch_to.h   | 10 ++++++++++
- arch/riscv/include/asm/thread_info.h |  1 +
- 2 files changed, 11 insertions(+)
+ arch/riscv/include/asm/csr.h | 2 ++
+ arch/riscv/kernel/process.c  | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-index 7efdb0584d47..2d9a00a30394 100644
---- a/arch/riscv/include/asm/switch_to.h
-+++ b/arch/riscv/include/asm/switch_to.h
-@@ -69,6 +69,15 @@ static __always_inline bool has_fpu(void) { return false; }
- #define __switch_to_fpu(__prev, __next) do { } while (0)
+diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+index 2468c55933cd..bbd2207adb39 100644
+--- a/arch/riscv/include/asm/csr.h
++++ b/arch/riscv/include/asm/csr.h
+@@ -202,6 +202,8 @@
+ #define ENVCFG_CBIE_FLUSH		_AC(0x1, UL)
+ #define ENVCFG_CBIE_INV			_AC(0x3, UL)
+ #define ENVCFG_FIOM			_AC(0x1, UL)
++/* by default all threads should be able to zero cache */
++#define ENVCFG_BASE			ENVCFG_CBZE
+ 
+ /* Smstateen bits */
+ #define SMSTATEEN0_AIA_IMSIC_SHIFT	58
+diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+index 92922dbd5b5c..9a85c9d4c902 100644
+--- a/arch/riscv/kernel/process.c
++++ b/arch/riscv/kernel/process.c
+@@ -152,6 +152,7 @@ void start_thread(struct pt_regs *regs, unsigned long pc,
+ 	else
+ 		regs->status |= SR_UXL_64;
  #endif
++	current->thread_info.envcfg = ENVCFG_BASE;
+ }
  
-+static inline void __switch_to_envcfg(struct task_struct *next)
-+{
-+	register unsigned long envcfg = next->thread_info.envcfg;
-+
-+	asm volatile (ALTERNATIVE("nop", "csrw " __stringify(CSR_ENVCFG) ", %0", 0,
-+							  RISCV_ISA_EXT_XLINUXENVCFG, 1)
-+							  :: "r" (envcfg) : "memory");
-+}
-+
- extern struct task_struct *__switch_to(struct task_struct *,
- 				       struct task_struct *);
- 
-@@ -80,6 +89,7 @@ do {							\
- 		__switch_to_fpu(__prev, __next);	\
- 	if (has_vector())					\
- 		__switch_to_vector(__prev, __next);	\
-+	__switch_to_envcfg(__next);				\
- 	((last) = __switch_to(__prev, __next));		\
- } while (0)
- 
-diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
-index 5d473343634b..a503bdc2f6dd 100644
---- a/arch/riscv/include/asm/thread_info.h
-+++ b/arch/riscv/include/asm/thread_info.h
-@@ -56,6 +56,7 @@ struct thread_info {
- 	long			user_sp;	/* User stack pointer */
- 	int			cpu;
- 	unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
-+	unsigned long envcfg;
- #ifdef CONFIG_SHADOW_CALL_STACK
- 	void			*scs_base;
- 	void			*scs_sp;
+ void flush_thread(void)
 -- 
 2.43.2
 
