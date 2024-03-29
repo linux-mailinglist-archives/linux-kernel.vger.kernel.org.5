@@ -1,216 +1,199 @@
-Return-Path: <linux-kernel+bounces-124360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91F8D891638
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:42:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A443589163A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:43:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B39BA1C235F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:42:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03694B21689
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2EA45971;
-	Fri, 29 Mar 2024 09:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F084AEED;
+	Fri, 29 Mar 2024 09:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="qP0Osn8N"
-Received: from sonic312-23.consmr.mail.ne1.yahoo.com (sonic312-23.consmr.mail.ne1.yahoo.com [66.163.191.204])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GWUxQpAP"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD383EA8A
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A726B4594F;
+	Fri, 29 Mar 2024 09:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711705352; cv=none; b=A3/JOtTbSME4PAQ7WjsHzm5ebiNRA3/QihggzEen3T6sJ3OUjD49C/RQVbcOeOWTlBiDEBRAsbhJTEpx0FA9Mo/ouXsRB5vR/1cyTCzG2TPXkSVaSa8FgyCoG2UxcGeXgWJYVgAvCmbCTLHPG1guwuBDrkWjDYOdOF/9kf/GYJw=
+	t=1711705399; cv=none; b=gxIU6HrPO0ZiDkapDQcogV+AaVoZomeHKDQ9l+oSNJHoMiH79Rwi4zRprFHGDjnk8AkOPU/VnnZFI+XBCCp7H8OYCKVgEsZqZ/Afo5RN4/sA6R+73B0F9YWtWhyRT+3tY3BXZFfeWeoYWSEPvHO9h4+6/r5OUXDFRBtb8B/QsJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711705352; c=relaxed/simple;
-	bh=9bhZAagYnhyc0XJ059rEA+DZruPfYX0CNjIi1zz95xQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G+wkrGDlYh/pZbmgnFiA7M+QV0JWgTSejU6Wgq+qdyX//Ssfh3Nla1k8VnMVTZ9AD49MdFtuhYifp5WQKVslTJA1jZhnNL0wRli/3NSp1SoOjaaGTbTcQJ2XlfTnYHTYW/vXCkz/9mLCqq91iL/52QqDYkg1CdBJrviiYlAA4aA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=qP0Osn8N; arc=none smtp.client-ip=66.163.191.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1711705349; bh=90ky2frqnuFOvlqQMi/ghKyPwofOOLJUR1qU/c20GSE=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=qP0Osn8NI+2sycsfgk9wKm3lIhTFhZnu1imhOf6y6JlBeSugwOxj6AIJPvsENjr3Ddlk6g9QrFHyBziSd6RvBusE6A1N/lUbRNpFAI9WAux5QNbW8IypmQXjbNclS5S8ftoEw2nG24KcvtCV9cS2e7QdIUcttBEEaV7gIjfQvdZTQXWH/iAFq+8x29wi9gHmttiA4vuY/Jw28zMMKEE1h0AqQnMts7J1UssSHvc4b5QT68k6PvknJ0SrsV4RA6Ae5SZgo9H75X5oVBqIHOQX//pekxOwTsjr+LuQ6mCARR740HKeRwweUC36N9zvmEVfTK4P/tTtTGO/VERQFrIx1g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1711705349; bh=5Lz6CX0NgTLEJzx4JHl/oxvYgMuqGaWM6umP7DpA9Yc=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=GPn07lx6jzm6Yrk/6j84RzLaq1x1lxcPYtu+DHRCqO7xpaRLbgD/0TEXmuBPUHhz8N6wp7dkfl6kV4oP/C0dx8k4+HcVFBmpVIJg/beLw5jKX2TjE8qMOUZGqoLlluSadCioxRnmMFRsiKX+54nzu3gTOyms2OYZO8DlPc3kOhxUNYAxkRyT916iwTwAv9I4k+qWnzgGdn938TEe0Wac4gRaa7l7kuct0xc76ZG57RpJreQE83t6hapYJbI/ao8wdpyGYuUGVAx9oOmYcA+FJK4eTXT3u5HjUyjWSgCZDnTsL0zssXaHFnCky7lqN4q7XmkYXOTi2lSFNmLwOz9YYg==
-X-YMail-OSG: yh4cmsgVM1lWs90KRm6irab9JP05KYEFKFuQqcAN9KfI6ERvehjKJ30CGUB_.kf
- 9qJLr.IZhIdZ20DHigny60OIfUi_XunjFqtvqw8J08WWi1wGxuDvMYcYcTIFeaWTNkYR5CoIXvya
- RAzFhQYB3h08kDv7DmXoyfX5808z5ULy0Lvxr.yaO0JTbTEkckjCVIJAE2czjQMWvjU2LkCAdXHV
- 3D6xcym3CGp7oXw448o_o_ztbR.MOVHqkFLB71mYhgsSkP7tFjymGqokFkkAcuc9J7JMXhK3A1IQ
- qEaNzY03KVZNrsQfAOsWiOPYAPhtVL0EkOyvIZF7o9klHRIVg16NOFief4uT3Nr6xc93i5wY8sIb
- .dG2WzQideH1b0utr.ChCVB019U6D8AGbIZKwYFBK8pq8dI2iH.jF2xUu4oLcaxZawmhhsa1IO0h
- jwwtj43cBh_H.5zBVhAUK63ewVJQQoW6PnhTol5s2YbACi.u51Lksq7Nu9RwGCq.JSSitmWgNzLh
- kcR6nX6LY73wbOrMsHWacVIWYsvH4yANgEeeucHM1FsbmFE85gthm6p299fM8Vt9nz1QDQJnbwkl
- cSM.up1hJ5gVIJzJtZBRcIgLw2ncZP3.cl7otIy00p1oPjsXmgO9OLuQ0GtFw0XIRac08191WOu6
- 9Qts3B3gL0IZHEJH0AQwEIlp4oPCORWA.eOtxsl82fU5wfCXcX000uOyydmHXEaeezIbPh0vsnDy
- iC_eBVJR6xaunn0Q2D18jtcvcjDzRgJakCqnRR3JFRm9npO945BpNVmcGYEHonWXK8iQBqhtuvi.
- Q_W9kveyE0g2XJDKTGAv95r4xKUs6C1XO9usnrvjmu0od5EWJI6ABS482N_Vk2GAyDk3T99V1mlU
- lh14ZaF4EdcPUcaFSuO8rQFq9ClzN5E3aUzF9kmZkuM8FffTfv9jwX3tOikmFsf1dmretYs.iY5D
- eWWEII0glEqo5cQMumGXyzcBXpiJp1dTfB.r3TQ7u5Ajze2n5pPPl.r0wtQqQ58uqyFZ5n3Bzr4v
- J4A0Z62oK1y9i4QuI9NpSRd0don.qGOKoMaa78CiDM0TkluSE_OyU1.YEvl..CyHcRevtBbzEB14
- RpyTE0pw1qE9XhgaiGkfxkSsZJn0pYdxqfnCWHM0fVwb4ASbMAs.sYCwi4q6Wi63YB5642ypeVbx
- rKsZS0f3PBJ4EcjC4Ruv3V5iECqlOvdLltgHmgWjDPcGnXWp1U05Oeut.Q8pGGF61.ba_D5RCCCt
- PD2m7a7FJu4lJ9a1gS5lR4SHgOrssTW4qxSjweugbYBklJ.FQVsD7YW6lBxGvCblFu2KbJs0Uhyw
- a5LW..91Nr4MzStkcyx2kBkwlNTJ2nUDalg2iVp0aj4XR_u_Nqsg1AcK_8ofYGIekEFU_.4fu78a
- mu.TaWMhLtLIkm5i4L_PLVdWNUxlNgX2_9Z9pxoJmSDty8SUy9YMv7e67rhKAonr2mJWxW7okiQy
- NwAbbdzivcsWNZFApkrBSbOeIHklLwFd6TPleGAH.YGFDEekbCKIdGnJR1u3R7LKwFy6s0OAEFWL
- 6um9XeuxS.AzKLYCKTb.WfWmJVIlT35KKHVVjm4TdCeYp2CsDyYLsEzjzvlPrCIHiupYJ3P.Wv6A
- K7wpIg7Q2UhRK49yKiuj5eDb.EwNFItbopASgmwnxlBRkp99i22vQ7Z8pyTmpdWGmSXn0xCT2T8u
- zE2cjIHAWdDCl4.TD_sQPP866rQSSQBY46o2MpgJmLACcctpnOn4FlrlMvGn4swPiJ2Plmx2VBWb
- G2ppgVDzKqGAC.T80gGw0loIiFAj_F2EvrmA0EGHHwF0KgKvoObCj.AemNmxzrclB5ACVOnblKx3
- z1F6X6Sk8Scm7oSezNvXFHS9.6j_HsNxnDfQ2F6lPQkR3AG.Lw5a6YLFV49oNZOIluQdGKwXQ49m
- mt_9LLfT2uQUg_sydCCg8EFKzRC.U8UlWCH5Hn_5vZL8M45BIJowqr0Klxz8ohHBcofY9WM6Z8F1
- ZksSuLQR9g3Dsh5nmTdGLA37SX3tP8h.LvZyT3G5MrHr30p6X2XRBFGMg5J.P8bdiQFFuS7fIreT
- hCzHSq7otEpSSMhXvR9lij3vih58GM839p4we9g1jtxz7ioLdKbKNBWe2liJoScN1RuWXYgluEHV
- arvmz0ser5QYaydCr9dWiTOu2Jz.X.i6pWxjZPLVgDQ7gNGNu8ZIiIPizoNyl.H64TBgF_.1DTMa
- VrhFhBys.Ly9PB_bLoM2F.7J6y3f7BUKrEn_NqCIBI_Y9cgVY4bmC4vBMoW2YWgmoWXM-
-X-Sonic-MF: <serdeliuk@yahoo.com>
-X-Sonic-ID: f2927a9f-48fc-4dd1-a7d5-c578f13d313c
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Fri, 29 Mar 2024 09:42:29 +0000
-Received: by hermes--production-ir2-7bc88bfc75-9nfhm (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 765ec3141b99f80c289d78adc4080c41;
-          Fri, 29 Mar 2024 09:42:24 +0000 (UTC)
-Message-ID: <5c9523db-0cbd-44b7-ab49-4ef0ee48dd80@yahoo.com>
-Date: Fri, 29 Mar 2024 10:42:22 +0100
+	s=arc-20240116; t=1711705399; c=relaxed/simple;
+	bh=m/1irspid2yhG/ZRvOgLcpF7TGDSpxl6shghAlMMFM8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=txovwwNyz3DHL6QIs5JwttodHfBzCT58iFhMZgOvaNPsnhJS40gAjYJlw8rx28eILs6bzkf3uRWg1TcP/6FhSpAnhJFIBwD59NajtW44Gs2KPJbCbZoxc9Gcq9GkceekRlfWfUlfhk0Y6ZvA1MRo+95qmEH71F9O3Z3hCKGcvqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GWUxQpAP; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so1209235f8f.2;
+        Fri, 29 Mar 2024 02:43:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711705396; x=1712310196; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jq5J+3hpMTsfHTgbS2ASWTSfU51EuKZyXWloCoK4DVI=;
+        b=GWUxQpAPGq6HH2Nj/6oX0fhluJqOAKcoC0tNS2jqAdK9Cjtg4OXk8m2Fq10cs+ktwI
+         CA+oIYMRby5wi/Slnb1S6LYAjHUfN64DILk/MFbdk6R0pjmEErk+uEuLJ+E21Mteirr4
+         /XwdcEPCfmCVh3/1Jkl4HEj8DAKJ8gKz45a0Memvsnu2hSMnop6/ajm3B8prwvM9iV14
+         jQoZ6h0evPpcq+86dHvH77FMzAp6nJ2W0brkyViAx6xtxgEvN/jQPAroX3nEbq1KhMLC
+         MCJKwxurubDYfUmaqP9MTKzvUulfb/VEYQwO/QFPRbYaFc0feiO+Ady9xw/t6NZnKuEr
+         SjwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711705396; x=1712310196;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jq5J+3hpMTsfHTgbS2ASWTSfU51EuKZyXWloCoK4DVI=;
+        b=Ib6K6pYYdLlUZBcjhZ0EuM7xotSKqNoa7r48YUwHvd6IsWEG1Nw7l29WPYU79rgctt
+         LLnJaRVYXpXaRf9p+Q79YdBpwcACQMcQaqFWx50D04D77Ifp4TYlY8Z8JwR8cfiD4+80
+         dd8BOkAGM1W9iAzFDuxWQAqvA3TwCeNq/pXKRBL58EsnPvh9rdR5GGQEDyCqva0KTJIr
+         KfB/iHrtMCGHCRdvzO7OysnkY8TihqxN4f7+nq4Xkr/UADGOcFmR/6MJXnA0+LdkrwNh
+         HWF7St2ZbXAcrB+fTPThbLbX5FxKb0BmMY1oomLKdyhkg3plVK20NsF9NbwmFOFzylHP
+         jpKw==
+X-Forwarded-Encrypted: i=1; AJvYcCXhxUVlwE4xsKGpz4BU+p+y6hG5GSxpD9pTA65aH9JDu78kQcLCwYBqwSXeXPOcBVf9UMVMMxUfOLv351IREp+Ro9UhKlXl9KlqjazofLOFb1rPMlMv0rj4ZRkBO95hL2ZsiDV6O63Qo68=
+X-Gm-Message-State: AOJu0YzfqFQ90mdR2xQROazpYsHZyQPnCeSh39f0MqMeSgl9CR5H1kqk
+	gptUTC01frjTqZsogA1UE7Gb9sEOzvFm4D6K/Zv6kh8aWBjczcAR0PIHL1YHHw6tzAZ+yNqPbny
+	uJ/BrdN5AzQoSF+e0wqGtLoQ+wv8=
+X-Google-Smtp-Source: AGHT+IFUhvqc+Uk3QWp1JwfgwRfahkXFz0WEW4YuyzEaJ4EY/YMklo7HsZNOOleaOUrxa+yvy8BttXBBmCVUxfwvohc=
+X-Received: by 2002:a5d:6102:0:b0:33d:f3c4:6002 with SMTP id
+ v2-20020a5d6102000000b0033df3c46002mr1141766wrt.1.1711705395737; Fri, 29 Mar
+ 2024 02:43:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] V2 arm64: dts: qcom: Add support for Samsung Galaxy Z
- Fold5
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-0-9a91e635cacc@yahoo.com>
- <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-1-9a91e635cacc@yahoo.com>
- <1cdbd387-e937-4d5c-bedb-b4275fdf84cc@linaro.org>
-Content-Language: en-US
-From: Alexandru Serdeliuc <serdeliuk@yahoo.com>
-In-Reply-To: <1cdbd387-e937-4d5c-bedb-b4275fdf84cc@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.22205 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <1711680261-5789-1-git-send-email-zhiguo.niu@unisoc.com> <5e10988d-5652-4e03-b866-7f0daccafcad@kernel.org>
+In-Reply-To: <5e10988d-5652-4e03-b866-7f0daccafcad@kernel.org>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Fri, 29 Mar 2024 17:43:04 +0800
+Message-ID: <CAHJ8P3KEOC_DXQmZK3u7PHgZFmWpMVzPa6pgkOgpyoH7wgT5nw@mail.gmail.com>
+Subject: Re: [PATCH] block/mq-deadline: Fix WARN when set async_depth by sysfs
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, axboe@kernel.dk, linux-kernel@vger.kernel.org, 
+	linux-block@vger.kernel.org, ke.wang@unisoc.com, hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, i added some notes inline as I do not know how to proceed with 
-some if the requirements.
-
-Just to be noted, the sm8550-samsung-q5q.dts it is based on 
-sm8550-mtp.dts so most of the stuff is from there
-
-
-On 29/3/24 1:52, Konrad Dybcio wrote:
-> On 29.03.2024 12:08 AM, Alexandru Marc Serdeliuc via B4 Relay wrote:
->> From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
->>
->> Add support for Samsung Galaxy Z Fold5 (q5q) foldable phone
->>
->> Currently working features:
->> - Framebuffer
->> - UFS
->> - i2c
->> - Buttons
->>
->> Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
->> ---
-The [PATCH] string is added automatically to the subject by b4, I don't 
-know how to add/insert custom text in there, I am going to read the b4 
-docs and see if i can spot how to do it.
-> Your commit title now includes "V2". Move it inside the square braces the
-> next time around, so it's like [PATCH v3 1/2]. With b4, this should be done
-> automagically, though..
+On Fri, Mar 29, 2024 at 11:40=E2=80=AFAM Damien Le Moal <dlemoal@kernel.org=
+> wrote:
 >
-> [...]
+> On 3/29/24 11:44, Zhiguo Niu wrote:
+> > A WARN may occur when async_depth is set from user by sysfs,
+> > the warning log is as following:
+> >
+> > [  623.848659] WARNING: CPU: 0 PID: 7798 at lib/sbitmap.c:537 sbitmap_q=
+ueue_get_shallow+0x2c/0x38
+> > [  623.878550] CPU: 0 PID: 7798 Comm: kworker/u16:2 Tainted: G        W=
+  OE      6.6.0-mainline-g8d9254e6f4a0-dirty-ab000013 #1
+> > [  623.880091] Hardware name: Unisoc UMS9621-base Board (DT)
+> > [  623.880906] Workqueue: writeback wb_workfn (flush-254:48)
+> > [  623.881748] pstate: 20400005 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BT=
+YPE=3D--)
+> > [  623.882763] pc : sbitmap_queue_get_shallow+0x2c/0x38
+> > [  623.883525] lr : __blk_mq_get_tag+0x50/0xd4
+> > [  623.884198] sp : ffffffc08a073230
+> > [  623.884745] x29: ffffffc08a073230 x28: ffffffc0821445e0 x27: 0000000=
+000000000
+> > [  623.885799] x26: ffffff8087de8000 x25: 0000000000000000 x24: 0000000=
+000000002
+> > [  623.886849] x23: ffffffc0820f2008 x22: ffffff8088ac3918 x21: ffffff8=
+08c358f10
+> > [  623.887897] x20: ffffff808c358f00 x19: ffffffc08a073360 x18: ffffffc=
+08bde70a8
+> > [  623.888946] x17: 000000007e57c819 x16: 000000007e57c819 x15: fffffff=
+dfe000000
+> > [  623.889993] x14: 0000000000000001 x13: 0000000000000004 x12: 0000000=
+3c6c931ed
+> > [  623.891038] x11: ffffff80939a3800 x10: ffffffc0801ac88c x9 : 0000000=
+000000000
+> > [  623.892086] x8 : 0000000000000006 x7 : 0000000000000000 x6 : ffffffc=
+080765204
+> > [  623.893131] x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000=
+000000000
+> > [  623.894174] x2 : ffffffc080765224 x1 : 0000000000000005 x0 : ffffff8=
+08c358f10
+> > [  623.895221] Call trace:
+> > [  623.895660] sbitmap_queue_get_shallow+0x2c/0x38
+> > [  623.896379] blk_mq_get_tag+0xa0/0x350
+> > [  623.896992] __blk_mq_alloc_requests+0x218/0x300
+> > [  623.897715] blk_mq_submit_bio+0x314/0x774
+> > [  623.898369] __submit_bio+0xb4/0xe0
+> > [  623.898950] submit_bio_noacct_nocheck+0x110/0x324
+> > [  623.899692] submit_bio_noacct+0x278/0x3f8
+> > [  623.900344] submit_bio+0xcc/0xe8
+> > [  623.900900] f2fs_submit_write_bio+0x100/0x428
+> > [  623.901605] __submit_merged_bio+0x74/0x1ac
+> > [  623.902269] __submit_merged_write_cond+0x188/0x1f4
+> > [  623.903022] f2fs_write_data_pages+0xb10/0xc2c
+> > [  623.903727] do_writepages+0xf4/0x618
+> > [  623.904332] __writeback_single_inode+0x78/0x60c
+> > [  623.905055] writeback_sb_inodes+0x294/0x520
+> > [  623.905734] __writeback_inodes_wb+0xa0/0xf4
+> > [  623.906413] wb_writeback+0x188/0x4e8
+> > [  623.907014] wb_workfn+0x420/0x608
+> > [  623.907582] process_one_work+0x23c/0x55c
+> > [  623.908227] worker_thread+0x2ac/0x3e4
+> > [  623.908838] kthread+0x108/0x12c
+> > [  623.909389] ret_from_fork+0x10/0x20
+> >
+> > The rootcause is user may set async_depth to a value which is less
+> > than its initial value from dd_init_hctx->dd_depth_updated, and this
+> > initial value is set to sbq->min_shallow_depth, when async_depth is
+> > modified by user from sysfs, sbq->min_shallow_depth will not be changed
+> > simultaneously, and it is also not easy to obtain tag sbitmap informati=
+on
+> > in deadline_async_depth_store.
+> >
+> > So a suitable value should be set to min_shallow_depth in dd_depth_upda=
+ted.
+> >
+> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > ---
+> >  block/mq-deadline.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+> > index 02a916b..89c516e 100644
+> > --- a/block/mq-deadline.c
+> > +++ b/block/mq-deadline.c
+> > @@ -646,10 +646,12 @@ static void dd_depth_updated(struct blk_mq_hw_ctx=
+ *hctx)
+> >       struct request_queue *q =3D hctx->queue;
+> >       struct deadline_data *dd =3D q->elevator->elevator_data;
+> >       struct blk_mq_tags *tags =3D hctx->sched_tags;
+> > +     unsigned int shift =3D tags->bitmap_tags.sb.shift;
+> > +     unsigned int dd_min_depth =3D max(1U, 3 * (1U << shift)  / 4);
 >
->> +/ {
->> +	model = "Samsung Galaxy Z Fold5";
->> +	compatible = "samsung,q5q", "qcom,sm8550";
->> +	#address-cells = <0x02>;
->> +	#size-cells = <0x02>;
-
-thanks, going to remove them
-
-> These two can go
+> Extra blank space before "/".
+Hi Damien Le Moal
+Thank you for this detailed review, I will fix it with suggestions
+from other reviewers.
+> That division could also be replaced with ">> 2".
+yes, I just refer to the original code "dd->async_depth =3D max(1UL, 3 *
+q->nr_requests / 4);"
+thanks!
 >
-> [...]
+> >
+> >       dd->async_depth =3D max(1UL, 3 * q->nr_requests / 4);
+> >
+> > -     sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async_dep=
+th);
+> > +     sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd_min_depth)=
+;
+> >  }
+> >
+> >  /* Called by blk_mq_init_hctx() and blk_mq_init_sched(). */
 >
->> +	reserved-memory {
->> +		/*
->> +		 * The bootloader will only keep display hardware enabled
->> +		 * if this memory region is named exactly 'splash_region'
->> +		 */
-this is a reality, without it the framebuffer do not work, due to abl
-
-https://git.codelinaro.org/clo/la/abl/tianocore/edk2/-/blob/LA.VENDOR.1.0.r2-09400-WAIPIO.QSSI14.0/QcomModulePkg/Library/BootLib/UpdateDeviceTree.c?ref_type=tags#L220
-
-How to proceed?
-
-> Ouch.
+> --
+> Damien Le Moal
+> Western Digital Research
 >
-> [...]
->
->> +		vreg_l15b_1p8: ldo15 {
->> +			regulator-name = "vreg_l15b_1p8";
->> +			regulator-min-microvolt = <1800000>;
->> +			regulator-max-microvolt = <1800000>;
->> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->> +			regulator-allow-set-load;
->> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
->> +						   RPMH_REGULATOR_MODE_HPM>;
->> +			regulator-always-on;
-
-I have removed the nodes that uses this as the driver for "Texas 
-Instruments i2c eUSB2" is not yet submitted by the porter, however, 
-those are took from the existing sm8550-mtp.dts
-
-How to proceed?
-
-> Any particular reason as to why?
->
-> [...]
->
->> +&remoteproc_adsp {
->> +	firmware-name = "qcom/sm8550/adsp.mbn",
->> +			"qcom/sm8550/adsp_dtb.mbn";
->> +	status = "okay";
->> +};
->> +
->> +&remoteproc_cdsp {
->> +	firmware-name = "qcom/sm8550/cdsp.mbn",
->> +			"qcom/sm8550/cdsp_dtb.mbn";
->> +	status = "okay";
->> +};
->> +
->> +&remoteproc_mpss {
->> +	firmware-name = "qcom/sm8550/modem.mbn",
->> +			"qcom/sm8550/modem_dtb.mbn";
->> +	status = "okay";
-
-Those are took from the device's running Android /firmware and load 
-without error, I used this kind of firmware loaded on other devices as 
-well and seems to do the job, the lines are as well on existing 
-sm8550-mtp.dts
-
-How to proceed?
-
-> Unless you stole one from the factory, these firmwares will not
-> load on your phone..
->
->> +};
->> +
->> +&sleep_clk {
->> +	clock-frequency = <32000>;
->> +};
->> +
->> +&tlmm {
->> +	gpio-reserved-ranges = <36 4>, <50 2>;
-I have no idea, i took the ranges from  the running Android FDT, without 
-those ranges the kernel do not boot, i can dig more into these ranges if 
-required
-> Would you have an idea what these GPIOs are used for?
->
-> Konrad
 
