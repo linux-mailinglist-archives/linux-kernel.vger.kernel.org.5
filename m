@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-124664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89272891B29
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7292891B2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43B2128B8CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:19:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A36D428BCC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4D416F0F0;
-	Fri, 29 Mar 2024 12:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B140D16F271;
+	Fri, 29 Mar 2024 12:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FXatLA2W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uoXgVs5/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E8416EC16;
-	Fri, 29 Mar 2024 12:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EF916F0FF;
+	Fri, 29 Mar 2024 12:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715659; cv=none; b=gM+B7SevJg9khiIdsfDR8pKSmYEIo3Ifj12T802TGj33H00GQTiI1Il4akcRG1H/pJwjV0XRF2zaQQu2av6b3D2ze4h0sBSQ7OrFKXH/NaQmoiqFFlc/MYjOlYMz+8lal4MkNvH1NR7tGrx5Er+ZaHfdKh6r78qDmFb7wB53NRA=
+	t=1711715661; cv=none; b=H+JtD5Y3Rire78tN1RLMF9Si94hToKzsFqf+gbtn2KE7qQ+oT66OsEOezuQinQMPm7WreRLbbGtmco1Gmscoe/Piuk4SwWO1zC1uGyXTKaaZBLNrRGEOcI9N5OJdXGT7jnv6SZWm4G+ZW1uPU3dcy/GizoHNhJezTcX+LyPGhVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715659; c=relaxed/simple;
-	bh=Ff+zqhtmUWqAGNSwKyOPavq5Ele1ON8FhCxX2fbAZR8=;
+	s=arc-20240116; t=1711715661; c=relaxed/simple;
+	bh=MZQ3qOHSd8N8zCilE9VhLvAhy0edj/JTTJ8t/X1AVKA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=UXJMeCZTg2MeEQAoqsT6joJRqhkdcBce9GjVEQl3sqDk2BG1d76JQnGqK//6qoiytOM9Q0lzcy72yCrMEUqMXwYN5Gp1UBq1C+ASSZeOYIVgpJI/hqHhkj8S27z6VLD4kkmI2Sia6LCMH0XyzIh8CiwG+It6GazowZs/EkEQaDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FXatLA2W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62B35C43394;
-	Fri, 29 Mar 2024 12:34:17 +0000 (UTC)
+	 MIME-Version:Content-Type; b=rFs3xMcBLIaFhaEXk8n0KLQL49gT7th7XP13E++cjHL8tXPPYs1NIQMIqyGG+OHT6XJROvSi7CjWAMlAYMTYbKFJp8u1jFQMhM8mF7dpH9iu7y+rMFmNXuaKtoKKgB/sNpxkmnRKf07re3NPIfMAK09IFFmuiEhe/QxlfDSRLNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uoXgVs5/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5798EC433A6;
+	Fri, 29 Mar 2024 12:34:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715658;
-	bh=Ff+zqhtmUWqAGNSwKyOPavq5Ele1ON8FhCxX2fbAZR8=;
+	s=k20201202; t=1711715660;
+	bh=MZQ3qOHSd8N8zCilE9VhLvAhy0edj/JTTJ8t/X1AVKA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FXatLA2WgaNyAp7ER7eTVV7MUgJWaOA0QhoDm/2k3kQDB23b2ehvwWPPtHI94Vr3+
-	 SNyaoEqIgf6kCHjmh5AcwRdji4w+f9TpnRoGp+RVkrJ2X2O50SFn+jZaNE3pVgG4Am
-	 xau1AcUvJcDliMUS9ADjyTJ1E/IcIxizXi5HI9jKwfVALip0v65vnfGUJdFJU+CC7y
-	 IkM/gos5WA9EepFqsrRPQaQJTpPJoQVWRssXXXR4qZYCGXExusV8gaG5+dM86P7nvf
-	 3lvF0dBRHrXp6vPzRvE5X4bjomF2rYOXYeGVpfYEuFg6yG5D0d95TlWqzN1jSQYjXO
-	 bUKvtkIfZNRdQ==
+	b=uoXgVs5/fyVnsoBtpZ6mRPaYJ0eyGNnLSvl9PTmKfbOQmAR84Kw02esHna1nBd4Rd
+	 ekCg7dgtEY45JWjj/EvZOcu0YeCL9X+fvbukaN0sTTOdC+SkXfLWQ1YW2BrXTMPw54
+	 5vTIJqRDsFixPxKIEL51rH9Btxu8mhkHaLBfit7dqhP/lH7T5cmN5TRvoKHHg/OxBb
+	 1xYX9+v8xiHp7HYxpovz2zMZ15QOWyGBtlr/tCBrDh10/KL7HpSPdaPfq532d6wx9N
+	 dZmtkS8Fch5cg8+0SNwrvnm1yRbyF3Zvitfj6UMh45QrMF0+zLwE49/8gJjtSws6nk
+	 cmFzja8x1alxg==
 From: Mark Brown <broonie@kernel.org>
 To: Louis Chauvet <louis.chauvet@bootlin.com>
 Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
  thomas.petazzoni@bootlin.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
  yen-mei.goh@keysight.com, koon-kee.lie@keysight.com, 
  jeremie.dautheribes@bootlin.com
-In-Reply-To: <20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com>
-References: <20240223-spi-omap2-mcspi-multi-mode-v2-0-afe94476b9c3@bootlin.com>
-Subject: Re: [PATCH v2 0/3] Add multi mode support for omap-mcspi
-Message-Id: <171171565713.8069.1119556185211827014.b4-ty@kernel.org>
-Date: Fri, 29 Mar 2024 12:34:17 +0000
+In-Reply-To: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
+References: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
+Subject: Re: [PATCH v3 0/3] Add multi mode support for omap-mcspi
+Message-Id: <171171565909.8069.14365505303739525487.b4-ty@kernel.org>
+Date: Fri, 29 Mar 2024 12:34:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,7 +61,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Fri, 23 Feb 2024 10:32:10 +0100, Louis Chauvet wrote:
+On Wed, 27 Mar 2024 09:43:35 +0100, Louis Chauvet wrote:
 > This series adds the support for the omap-mcspi multi mode which allows
 > sending SPI messages with a shorter delay between CS and the message.
 > 
