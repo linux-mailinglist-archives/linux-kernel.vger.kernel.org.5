@@ -1,92 +1,78 @@
-Return-Path: <linux-kernel+bounces-125263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9428922FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:48:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F19892304
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1345E1F23308
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:48:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2CF1287C00
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4237482E9;
-	Fri, 29 Mar 2024 17:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8054C1369BC;
+	Fri, 29 Mar 2024 17:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jl3wMsN8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dwIAnNRX"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5761C0DC2
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF4F130A5C
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711734488; cv=none; b=mbZDFkzK161PxWzMJ1zNNevu14CqXfVJpgOnezFDYu2jZ9wt9ZLp57H9DCy4BmO4UcM6LOuph5XZdjtCyo3ygrCwtafX3/MZJfKc+83M2mTcy0Esuan3+E8OwDXE4LgW0CuWKhA/RVlJrpMmKU7CcvKoZkMhMhfFC/qb83GErSk=
+	t=1711734515; cv=none; b=N21RGUw1EjBT7y+LpANMsLexZIBepbMbUSlT6LQheORuTkmhxhB0T9QaSvkTkhhrf5wR//+kbO9wWzn5xWxTyMLU0MqGecl+XNoWzvhisltZln4jIunPRgeRfyK4qzPkPvXA8TyXJ2ciDqckSpz1/hVZwrGB1qaFkuPXUDTQCHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711734488; c=relaxed/simple;
-	bh=973ZqU4LV/o8oIgHaoOlO0jC2gNX0j0wWK0Yc79NMGM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b5aRVnGrrOZwPwu4RMV5ut6b4E8gJljN0p3gSbfqFDjLdS3mx6RotjcZr0eaKpSsxwc8uMG81oh/YqdrOcK2ewq0M5zU2U6inFOHIO84IR7rHbov0E9cB8nsJp1Q0s0SguYIP4eQfntYzcs8HnX7U1YD9TRqM9zavPWRcyjODKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jl3wMsN8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711734485;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=x3/DpX6QupEcauZLwMrHtNsSzaJ+r7G/yL5hqFelshU=;
-	b=Jl3wMsN83VMoP+fM6a5mr8gY5mNAw9s60rVrgyxkm50wyY4U+wacQ3/+caIFIEVR6oYc/I
-	7fWf1dGDWtf+T6npwWxjdEzDeBr9tXXB5zqJLLJyBLb0XiC9hcxxfe3VJebKtTC+hXHMDS
-	jgs24roMXyfiVlGqWstK/ttdcmzuUwo=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-ti0gU6-sOEi9NQTBV--DPw-1; Fri, 29 Mar 2024 13:48:04 -0400
-X-MC-Unique: ti0gU6-sOEi9NQTBV--DPw-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-698f2c392aaso9659376d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:48:04 -0700 (PDT)
+	s=arc-20240116; t=1711734515; c=relaxed/simple;
+	bh=/lMEaQ5FWLqHxvVKuDHkZPuDwH08gzMnjgffT2YIXAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jekxqp4GCYxynzFlZcaNrtRZDP2tUOs64vZ8jTqJyiyaO/E+QDmT8/rPHWNouRa7E+jfrgQrDBzyjTGmpAXYsRphQ5pfLGr7mhzcMwS9WVxQt54e8yCVXMOQ7+P+3myhszF8bnd3E0+7IePRxB3/bYMTGqpy6dZpSx1l25mBrmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dwIAnNRX; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34100f4f9a2so1475731f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711734511; x=1712339311; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ui/J5zKmEsVywXjm0Kgz2mYnNVlOw/q5qR+FEIy068E=;
+        b=dwIAnNRXbWnOZJ43Vwpr0sC0+4gDA1CkVOZ6ZTZBYwI13c7Iz2R3ll+d7nScXPYte7
+         CJEH0fiGg1zyz34N3/9NSWlAxQzsQ+HuQlnTamSKstrIWJRD/bORDdXw8GClGd9vbRmw
+         mNANwTO9SYeN65Dh7Nzyb/h7yS7wOmXD2OrhkNNz0Ug2H5xUwZBADR6thDk0zp5K83YZ
+         vuS+kaz7INCrDeG4MwaCfCD4gI4u/Ip6Adkwc02xwSMYGGnrzX/3djKqmRwHe/5V8t4B
+         KPQ66NlmOf7NAXBpWqQbL+9Ohv5koqHHe4MW5B29l0iIsWVZasPRr011WvLS15Awwr3i
+         SKMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711734483; x=1712339283;
+        d=1e100.net; s=20230601; t=1711734511; x=1712339311;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=x3/DpX6QupEcauZLwMrHtNsSzaJ+r7G/yL5hqFelshU=;
-        b=mQ1EzAmNjPl5XN9orL2CebG7wM4tmIP9tM9Poulpez9AD2KT0Xd6cn76EO0ROcm20m
-         6niRbjb5YkiW63JuTh0+yqsVi1hh0NhHEkWPh6tL7YG5E55gJLIPmdpafhrwAp5CEr9d
-         qgb+bqJDvhlO/L3rwO+OHM9R7ddk7Q77J9lyio/snN7iIEtfgSzzoQStRTHrzqRcjHat
-         6L3V2J4p3nEMRBDDcS++NTc1Ea9qNSzcGECIXSFQCxsl/5o01iH79FB5ufmoCHsj56vM
-         CdCt00/D+fyYBLdAnu6NfMk83qP/0h3uu+6ya/8S/8/6PolsUnGbLeFQ7hWsykji5EQd
-         D9Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXKQFhNKvlg2pNukhdKchVjEgWz0EBoaWDNLBrLo+UIPECP7MqMcNCDT1KQ6hg1HP1TTw6K1X2yC4GA+itjFMyo5MzB1vOHLLjzQ/K
-X-Gm-Message-State: AOJu0Yx1IYer/4HJJRWoxhvbj7gSH9QZcQ3WcNtTdp3oG39qu4TJsL8M
-	AFtXYz5cfbaQH4UYKtPuQMAyzq9M7qTEIp8Kdt5O4RCFl1gxrtJ8IamwHQEIFCN+xft5QsrqPuL
-	KOl6k+IBD2l7eDMnAwgLcfq3tpFdlf15hO6rkd5tenSb4fHw2HaBb5TzwigS2
-X-Received: by 2002:ad4:448e:0:b0:696:2efd:ab27 with SMTP id m14-20020ad4448e000000b006962efdab27mr4627644qvt.16.1711734483550;
-        Fri, 29 Mar 2024 10:48:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGhaiRy9L/U2xYhifLOYfnfKwxe0YwCfdSfzeXDDjXLH0sS5Tk3kEF+w/OyhpGNxfkxPKmm1w==
-X-Received: by 2002:ad4:448e:0:b0:696:2efd:ab27 with SMTP id m14-20020ad4448e000000b006962efdab27mr4627617qvt.16.1711734483240;
-        Fri, 29 Mar 2024 10:48:03 -0700 (PDT)
-Received: from klayman.redhat.com (net-2-34-30-89.cust.vodafonedsl.it. [2.34.30.89])
-        by smtp.gmail.com with ESMTPSA id kk15-20020a056214508f00b00692bd4905c9sm1850291qvb.15.2024.03.29.10.48.01
+        bh=Ui/J5zKmEsVywXjm0Kgz2mYnNVlOw/q5qR+FEIy068E=;
+        b=tiJkZXJu14QQEG63qWizXM/sxpW0+d2Jp9JYtquuO2gCwInTdKD37It1R8gACWOzRy
+         0qzvMZiDhJRI3NHeTFKyFJyKnzSDTK46Tri4cDYYpLl9H6+AfpPsBnaCkQ+2GyRzoNA9
+         YuA0jOtWqnwe6BtJZyuXeuxWFxVXtLlBDn73tHLnipBnFhVvuy3bJ2BO/hsHNs3I3ZJB
+         UzrWcy7Q31SPKm5waCc0Q3ZJJs9bQVKDGa43bcvKu0Rk1LjGfkTh2SD1veVbA32Qq0/g
+         loLNZWxUsCN7qsvJfu09/Ygz0UzCkF+Sb+s3/5Cy7uZiCodXjtlncThrKC9gBFpBEfxX
+         N3rA==
+X-Forwarded-Encrypted: i=1; AJvYcCXq2GorKmZ0rnSuMYo3GHXLa6QP0KClVq+Wx+l9Sl3nz7A/kC4IPdkX2NfAyiivjEHkG6/A8z/zf3dYVGmJF0NRsBwIf89ukGpOICpB
+X-Gm-Message-State: AOJu0YwyIR1VeInw+BqdXMjs96OhG4qtpreFWYnTpsgTgsDBena95Wdu
+	21FUBVuL+QzYa6/S+++dKy0C+XGwslVwcwH84WivS+6Rt1l0gpqoGXdwOE01mL4=
+X-Google-Smtp-Source: AGHT+IGfd2HZTroy7a6ljeuF6eUNe+t5bfgbd6ICXavZQWyRpJL8AzYiWUdWFmwHAudmGtcksOQWoA==
+X-Received: by 2002:a05:6000:1143:b0:33e:4d34:f40f with SMTP id d3-20020a056000114300b0033e4d34f40fmr1804706wrx.46.1711734511133;
+        Fri, 29 Mar 2024 10:48:31 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g16-20020adfa490000000b00341dd083371sm4687089wrb.90.2024.03.29.10.48.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 10:48:02 -0700 (PDT)
-From: Marco Pagani <marpagan@redhat.com>
-To: Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Alan Tull <atull@opensource.altera.com>
-Cc: Marco Pagani <marpagan@redhat.com>,
-	Russ Weight <russ.weight@linux.dev>,
-	linux-fpga@vger.kernel.org,
-	linux-doc@vger.kernel.org,
+        Fri, 29 Mar 2024 10:48:30 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] fpga: region: add owner module and take its refcount
-Date: Fri, 29 Mar 2024 18:47:28 +0100
-Message-ID: <20240329174729.248144-1-marpagan@redhat.com>
-X-Mailer: git-send-email 2.44.0
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] MAINTAINERS: Change Krzysztof Kozlowski's email address
+Date: Fri, 29 Mar 2024 18:48:23 +0100
+Message-Id: <20240329174823.74918-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,216 +81,189 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The current implementation of the fpga region assumes that the low-level
-module registers a driver for the parent device and uses its owner pointer
-to take the module's refcount. This approach is problematic since it can
-lead to a null pointer dereference while attempting to get the region
-during programming if the parent device does not have a driver.
+Switch Krzysztof Kozlowski's to @kernel.org account.
 
-To address this problem, add a module owner pointer to the fpga_region
-struct and use it to take the module's refcount. Modify the functions for
-registering a region to take an additional owner module parameter and
-rename them to avoid conflicts. Use the old function names for helper
-macros that automatically set the module that registers the region as the
-owner. This ensures compatibility with existing low-level control modules
-and reduces the chances of registering a region without setting the owner.
-
-Also, update the documentation to keep it consistent with the new interface
-for registering an fpga region.
-
-Other changes: unlock the mutex before calling put_device() in
-fpga_region_put() to avoid potential use after release issues.
-
-Fixes: 0fa20cdfcc1f ("fpga: fpga-region: device tree control for FPGA")
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Xu Yilun <yilun.xu@intel.com>
-Reviewed-by: Russ Weight <russ.weight@linux.dev>
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
+ MAINTAINERS | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-v3:
-- Add reviewed-by Russ Weight
-v2:
-- Fixed typo in the documentation sets -> set
-- Renamed owner pointer get_br_owner -> br_owner
----
- Documentation/driver-api/fpga/fpga-region.rst | 13 ++++++----
- drivers/fpga/fpga-region.c                    | 26 +++++++++++--------
- include/linux/fpga/fpga-region.h              | 13 +++++++---
- 3 files changed, 33 insertions(+), 19 deletions(-)
-
-diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
-index dc55d60a0b4a..77190a5ef330 100644
---- a/Documentation/driver-api/fpga/fpga-region.rst
-+++ b/Documentation/driver-api/fpga/fpga-region.rst
-@@ -46,13 +46,16 @@ API to add a new FPGA region
- ----------------------------
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 56aa6108b58b..aa97210edb41 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2698,7 +2698,7 @@ F:	sound/soc/rockchip/
+ N:	rockchip
  
- * struct fpga_region - The FPGA region struct
--* struct fpga_region_info - Parameter structure for fpga_region_register_full()
--* fpga_region_register_full() -  Create and register an FPGA region using the
-+* struct fpga_region_info - Parameter structure for __fpga_region_register_full()
-+* __fpga_region_register_full() -  Create and register an FPGA region using the
-   fpga_region_info structure to provide the full flexibility of options
--* fpga_region_register() -  Create and register an FPGA region using standard
-+* __fpga_region_register() -  Create and register an FPGA region using standard
-   arguments
- * fpga_region_unregister() -  Unregister an FPGA region
+ ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ R:	Alim Akhtar <alim.akhtar@samsung.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ L:	linux-samsung-soc@vger.kernel.org
+@@ -5555,7 +5555,7 @@ F:	drivers/cpuidle/cpuidle-big_little.c
+ CPUIDLE DRIVER - ARM EXYNOS
+ M:	Daniel Lezcano <daniel.lezcano@linaro.org>
+ M:	Kukjin Kim <kgene@kernel.org>
+-R:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++R:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-pm@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+@@ -8998,7 +8998,7 @@ F:	drivers/i2c/muxes/i2c-mux-gpio.c
+ F:	include/linux/platform_data/i2c-mux-gpio.h
  
-+Helper macros ``fpga_region_register()`` and ``fpga_region_register_full()``
-+automatically set the module that registers the FPGA region as the owner.
-+
- The FPGA region's probe function will need to get a reference to the FPGA
- Manager it will be using to do the programming.  This usually would happen
- during the region's probe function.
-@@ -82,10 +85,10 @@ following APIs to handle building or tearing down that list.
-    :functions: fpga_region_info
+ GENERIC GPIO RESET DRIVER
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ S:	Maintained
+ F:	drivers/reset/reset-gpio.c
  
- .. kernel-doc:: drivers/fpga/fpga-region.c
--   :functions: fpga_region_register_full
-+   :functions: __fpga_region_register
+@@ -13286,7 +13286,7 @@ F:	drivers/iio/adc/max11205.c
  
- .. kernel-doc:: drivers/fpga/fpga-region.c
--   :functions: fpga_region_register
-+   :functions: __fpga_region_register_full
+ MAXIM MAX17040 FAMILY FUEL GAUGE DRIVERS
+ R:	Iskren Chernev <iskren.chernev@gmail.com>
+-R:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++R:	Krzysztof Kozlowski <krzk@kernel.org>
+ R:	Marek Szyprowski <m.szyprowski@samsung.com>
+ R:	Matheus Castello <matheus@castello.eng.br>
+ L:	linux-pm@vger.kernel.org
+@@ -13296,7 +13296,7 @@ F:	drivers/power/supply/max17040_battery.c
  
- .. kernel-doc:: drivers/fpga/fpga-region.c
-    :functions: fpga_region_unregister
-diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
-index b364a929425c..1beb7415c2dc 100644
---- a/drivers/fpga/fpga-region.c
-+++ b/drivers/fpga/fpga-region.c
-@@ -53,7 +53,7 @@ static struct fpga_region *fpga_region_get(struct fpga_region *region)
- 	}
+ MAXIM MAX17042 FAMILY FUEL GAUGE DRIVERS
+ R:	Hans de Goede <hdegoede@redhat.com>
+-R:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++R:	Krzysztof Kozlowski <krzk@kernel.org>
+ R:	Marek Szyprowski <m.szyprowski@samsung.com>
+ R:	Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+ R:	Purism Kernel Team <kernel@puri.sm>
+@@ -13354,7 +13354,7 @@ F:	Documentation/devicetree/bindings/power/supply/maxim,max77976.yaml
+ F:	drivers/power/supply/max77976_charger.c
  
- 	get_device(dev);
--	if (!try_module_get(dev->parent->driver->owner)) {
-+	if (!try_module_get(region->br_owner)) {
- 		put_device(dev);
- 		mutex_unlock(&region->mutex);
- 		return ERR_PTR(-ENODEV);
-@@ -75,9 +75,9 @@ static void fpga_region_put(struct fpga_region *region)
+ MAXIM MUIC CHARGER DRIVERS FOR EXYNOS BASED BOARDS
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-pm@vger.kernel.org
+ S:	Maintained
+ B:	mailto:linux-samsung-soc@vger.kernel.org
+@@ -13365,7 +13365,7 @@ F:	drivers/power/supply/max77693_charger.c
  
- 	dev_dbg(dev, "put\n");
+ MAXIM PMIC AND MUIC DRIVERS FOR EXYNOS BASED BOARDS
+ M:	Chanwoo Choi <cw00.choi@samsung.com>
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ B:	mailto:linux-samsung-soc@vger.kernel.org
+@@ -14157,7 +14157,7 @@ F:	lib/alloc_tag.c
+ F:	lib/pgalloc_tag.c
  
--	module_put(dev->parent->driver->owner);
--	put_device(dev);
-+	module_put(region->br_owner);
- 	mutex_unlock(&region->mutex);
-+	put_device(dev);
- }
+ MEMORY CONTROLLER DRIVERS
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ B:	mailto:krzysztof.kozlowski@linaro.org
+@@ -15538,7 +15538,7 @@ F:	include/uapi/linux/nexthop.h
+ F:	net/ipv4/nexthop.c
  
- /**
-@@ -181,14 +181,16 @@ static struct attribute *fpga_region_attrs[] = {
- ATTRIBUTE_GROUPS(fpga_region);
+ NFC SUBSYSTEM
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/nfc/
+@@ -15914,7 +15914,7 @@ F:	Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+ F:	drivers/regulator/pf8x00-regulator.c
  
- /**
-- * fpga_region_register_full - create and register an FPGA Region device
-+ * __fpga_region_register_full - create and register an FPGA Region device
-  * @parent: device parent
-  * @info: parameters for FPGA Region
-+ * @owner: owner module containing the get_bridges function
-  *
-  * Return: struct fpga_region or ERR_PTR()
-  */
- struct fpga_region *
--fpga_region_register_full(struct device *parent, const struct fpga_region_info *info)
-+__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
-+			    struct module *owner)
- {
- 	struct fpga_region *region;
- 	int id, ret = 0;
-@@ -213,6 +215,7 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
- 	region->compat_id = info->compat_id;
- 	region->priv = info->priv;
- 	region->get_bridges = info->get_bridges;
-+	region->br_owner = owner;
+ NXP PTN5150A CC LOGIC AND EXTCON DRIVER
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/extcon/extcon-ptn5150.yaml
+@@ -16525,7 +16525,7 @@ K:	of_overlay_remove
  
- 	mutex_init(&region->mutex);
- 	INIT_LIST_HEAD(&region->bridge_list);
-@@ -241,13 +244,14 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
+ OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+ M:	Rob Herring <robh@kernel.org>
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
++M:	Krzysztof Kozlowski <krzk+dt@kernel.org>
+ M:	Conor Dooley <conor+dt@kernel.org>
+ L:	devicetree@vger.kernel.org
+ S:	Maintained
+@@ -17483,7 +17483,7 @@ F:	Documentation/devicetree/bindings/pinctrl/renesas,*
+ F:	drivers/pinctrl/renesas/
  
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL_GPL(fpga_region_register_full);
-+EXPORT_SYMBOL_GPL(__fpga_region_register_full);
+ PIN CONTROLLER - SAMSUNG
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ R:	Alim Akhtar <alim.akhtar@samsung.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+@@ -19420,7 +19420,7 @@ F:	Documentation/devicetree/bindings/sound/samsung*
+ F:	sound/soc/samsung/
  
- /**
-- * fpga_region_register - create and register an FPGA Region device
-+ * __fpga_region_register - create and register an FPGA Region device
-  * @parent: device parent
-  * @mgr: manager that programs this region
-  * @get_bridges: optional function to get bridges to a list
-+ * @owner: owner module containing get_bridges function
-  *
-  * This simple version of the register function should be sufficient for most users.
-  * The fpga_region_register_full() function is available for users that need to
-@@ -256,17 +260,17 @@ EXPORT_SYMBOL_GPL(fpga_region_register_full);
-  * Return: struct fpga_region or ERR_PTR()
-  */
- struct fpga_region *
--fpga_region_register(struct device *parent, struct fpga_manager *mgr,
--		     int (*get_bridges)(struct fpga_region *))
-+__fpga_region_register(struct device *parent, struct fpga_manager *mgr,
-+		       int (*get_bridges)(struct fpga_region *), struct module *owner)
- {
- 	struct fpga_region_info info = { 0 };
+ SAMSUNG EXYNOS PSEUDO RANDOM NUMBER GENERATOR (RNG) DRIVER
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-crypto@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+@@ -19455,7 +19455,7 @@ S:	Maintained
+ F:	drivers/platform/x86/samsung-laptop.c
  
- 	info.mgr = mgr;
- 	info.get_bridges = get_bridges;
+ SAMSUNG MULTIFUNCTION PMIC DEVICE DRIVERS
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+@@ -19481,7 +19481,7 @@ F:	drivers/media/platform/samsung/s3c-camif/
+ F:	include/media/drv-intf/s3c_camif.h
  
--	return fpga_region_register_full(parent, &info);
-+	return __fpga_region_register_full(parent, &info, owner);
- }
--EXPORT_SYMBOL_GPL(fpga_region_register);
-+EXPORT_SYMBOL_GPL(__fpga_region_register);
+ SAMSUNG S3FWRN5 NFC DRIVER
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
+ F:	drivers/nfc/s3fwrn5
+@@ -19502,7 +19502,7 @@ S:	Supported
+ F:	drivers/media/i2c/s5k5baf.c
  
- /**
-  * fpga_region_unregister - unregister an FPGA region
-diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
-index 9d4d32909340..d175babc3d68 100644
---- a/include/linux/fpga/fpga-region.h
-+++ b/include/linux/fpga/fpga-region.h
-@@ -36,6 +36,7 @@ struct fpga_region_info {
-  * @mgr: FPGA manager
-  * @info: FPGA image info
-  * @compat_id: FPGA region id for compatibility check.
-+ * @br_owner: module containing the get_bridges function
-  * @priv: private data
-  * @get_bridges: optional function to get bridges to a list
-  */
-@@ -46,6 +47,7 @@ struct fpga_region {
- 	struct fpga_manager *mgr;
- 	struct fpga_image_info *info;
- 	struct fpga_compat_id *compat_id;
-+	struct module *br_owner;
- 	void *priv;
- 	int (*get_bridges)(struct fpga_region *region);
- };
-@@ -58,12 +60,17 @@ fpga_region_class_find(struct device *start, const void *data,
+ SAMSUNG S5P Security SubSystem (SSS) DRIVER
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ M:	Vladimir Zapolskiy <vz@mleia.com>
+ L:	linux-crypto@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+@@ -19524,7 +19524,7 @@ F:	Documentation/devicetree/bindings/media/samsung,fimc.yaml
+ F:	drivers/media/platform/samsung/exynos4-is/
  
- int fpga_region_program_fpga(struct fpga_region *region);
+ SAMSUNG SOC CLOCK DRIVERS
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ M:	Chanwoo Choi <cw00.choi@samsung.com>
+ R:	Alim Akhtar <alim.akhtar@samsung.com>
+@@ -19556,7 +19556,7 @@ F:	drivers/net/ethernet/samsung/sxgbe/
  
-+#define fpga_region_register_full(parent, info) \
-+	__fpga_region_register_full(parent, info, THIS_MODULE)
- struct fpga_region *
--fpga_region_register_full(struct device *parent, const struct fpga_region_info *info);
-+__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
-+			    struct module *owner);
+ SAMSUNG THERMAL DRIVER
+ M:	Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-pm@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+@@ -23740,7 +23740,7 @@ S:	Orphan
+ F:	drivers/mmc/host/vub300.c
  
-+#define fpga_region_register(parent, mgr, get_bridges) \
-+	__fpga_region_register(parent, mgr, get_bridges, THIS_MODULE)
- struct fpga_region *
--fpga_region_register(struct device *parent, struct fpga_manager *mgr,
--		     int (*get_bridges)(struct fpga_region *));
-+__fpga_region_register(struct device *parent, struct fpga_manager *mgr,
-+		       int (*get_bridges)(struct fpga_region *), struct module *owner);
- void fpga_region_unregister(struct fpga_region *region);
- 
- #endif /* _FPGA_REGION_H */
-
-base-commit: b1a91ca25f15b6d7b311de4465854a5981dee3d3
+ W1 DALLAS'S 1-WIRE BUS
+-M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++M:	Krzysztof Kozlowski <krzk@kernel.org>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/w1/
+ F:	Documentation/w1/
 -- 
-2.44.0
+2.34.1
 
 
