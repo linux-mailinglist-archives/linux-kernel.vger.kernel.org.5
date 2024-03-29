@@ -1,156 +1,176 @@
-Return-Path: <linux-kernel+bounces-125188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95E5E8921EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:46:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D2938921F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 490501F254CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F4C287183
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607214D110;
-	Fri, 29 Mar 2024 16:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866FA4AEF3;
+	Fri, 29 Mar 2024 16:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZPV+4gn/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QT2vnQ8F"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317B92562E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314B311721;
+	Fri, 29 Mar 2024 16:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711730788; cv=none; b=KQJAbC6gMhRdnA39k9Dp0hORh20jCfGDXdF3bYnbhtXHp8rJ5gtHKvmiGnGG4csI8jM0M8VqKTBoKmYcEBgD0Y6B3NUso1M9A9vvhWiIZ9tpQVA5PnGa1ZKrrWz4aq+pneyDDYSsFUfnZZFkC5Ml0SAsdZwLPdR915V6lyJkUr4=
+	t=1711730918; cv=none; b=UpT83RlfjTgHQ0TdCQy2GKaYC31OM0yKUDQ9lp+eVmwxk+tXMhSFCz955MWRkRBQ+/8A3Jgk3PnC54hSNYK3UPWpZbg60+vO8RrTsyz2wFISj+2/GCvmHfQujI1DDapRQ6Nxs4IOLm92KuCcYswH3b7ZcLi3j/xEnZAmFpmmj+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711730788; c=relaxed/simple;
-	bh=9J9/SVQoxobDsgFffjqeuaYTm5tfTP8Boo3RqpviRwc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sfHKLa07FZEHpGvmXzjcycu9WvZZe1Zhmi3Kb9Gd78S/AwdiPwtgq+zeQtuYrBzgI6/wLV8kY6SjitzVhKh2TP0eK41Pvw4evRjZJEvP2pu5Y4fIxFGZ5eXZWXUILtMm1bKRn7lKH1EeRd6IbDWN0KkJ0aEos0lxGfZKCHEuQTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZPV+4gn/; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711730787; x=1743266787;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9J9/SVQoxobDsgFffjqeuaYTm5tfTP8Boo3RqpviRwc=;
-  b=ZPV+4gn/ZfoMuQEeC3jjoKYsAhtg5NTIRic4qQIoj5dfuoE3F+XnZoPQ
-   y9r3lxh5kCwFRKXtb1hg3OKeE5Wv6SzddpP4wMIhjbNMLHOjqrQ0je1/6
-   syQ1gZT7hxM8v/O/NpAG29zI4bb7tEndDr+3a4JkqIc6TU3R4IxVx94CF
-   HRIAuWxdFHtT72vUOCE8MU2FqevBpNJZI8XNL64zXSjxUhXmbvFE1SWrb
-   hi27Z2Rjcs0DdPFHKEx/RblcttxvYPRB6y2Uz+G/Xq51oySXpV57WbgJD
-   Joh0xJHQoalaNHFwmOIp8hAdwZehWiIKv/y29d+dDFIeAb6XyMYvct4QP
-   w==;
-X-CSE-ConnectionGUID: WlHTzRu2SPipae7NpORK7Q==
-X-CSE-MsgGUID: L4cfAz5KRUyrDK+Vu9d+NQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="10707776"
-X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
-   d="scan'208";a="10707776"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 09:46:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
-   d="scan'208";a="17062236"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 09:46:26 -0700
-Date: Fri, 29 Mar 2024 09:46:25 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
- struct cpuinfo_x86
-Message-ID: <ZgbwYb3D3tBtXZ8y@agluck-desk3>
-References: <20240328163746.243023-1-tony.luck@intel.com>
- <20240328163746.243023-2-tony.luck@intel.com>
- <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
- <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
- <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
- <SJ1PR11MB6083D8BB65748452B204ED8AFC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240329114007.GAZgaolwSFtjHStiuL@fat_crate.local>
+	s=arc-20240116; t=1711730918; c=relaxed/simple;
+	bh=hvHg/9C+3eVnHYXATalmrgecb+1ZlS3+7aYSID2BU90=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FCCaFtBIeSi0Wu1u91WWNnzUVhsdZpF8iXJKZVoGm9gX7sAnYbpdP1eWwAjpKVI9b53HhVEQv+/8ZpbrE5XsbBTb6wn7Fu2/2HQiodX+Sgo1J5ASKV/dR8vMKIeSinXXAovyRSA+hBQU26gT7h5HjtSfuL7HMrLjAxykk4lxJs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QT2vnQ8F; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TGZAux016124;
+	Fri, 29 Mar 2024 16:48:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=NQ3gGO7tawnFzTN0sD8TN9O73Rb37GQlk0B1YwEqEpI=; b=QT
+	2vnQ8F29WshB2ogPHhWd1ODeEWjkD6WNNCBMFS/TSkD7h4Gqj9cEa8eEoHNPqSWZ
+	w1iHhFmWs5qZTGIf5GcZJ/ecpdpD2odEJhrUwGH/WQpjT0/IkeqnUg/6u1zN/GL4
+	rr7fkzp1ODtG16iM9LCLVKrcOo3+IRoXZGeYTza8mkSvs3WTlRaOggSlsuUvlRrd
+	nuK6bjc53DEELMHzHqwCPkMgPdT2wHZ+78uZwLegLGFL2xWJK+YpfPXyV1UL1kge
+	2JRC1OwM2caMsxNusMwSTt42Yw9yNeNu283mmVjL8GFukTHI85oHaxE2k9Eces2H
+	iRGV1nFwAzVOk8iG/L1w==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5ybmr910-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 16:48:27 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TGmQdd004467
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 16:48:26 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 29 Mar 2024 09:48:25 -0700
+From: Kuogee Hsieh <quic_khsieh@quicinc.com>
+To: <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <abel.vesa@linaro.org>, <andersson@kernel.org>
+CC: Kuogee Hsieh <quic_khsieh@quicinc.com>, <quic_abhinavk@quicinc.com>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/msm/dp: assign correct DP controller ID to x1e80100 interface table
+Date: Fri, 29 Mar 2024 09:48:16 -0700
+Message-ID: <1711730896-16637-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329114007.GAZgaolwSFtjHStiuL@fat_crate.local>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: wHWfh20e3zFEdn7IxfT62se4JQRvdaHj
+X-Proofpoint-GUID: wHWfh20e3zFEdn7IxfT62se4JQRvdaHj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403290148
 
-On Fri, Mar 29, 2024 at 12:40:07PM +0100, Borislav Petkov wrote:
-> On Thu, Mar 28, 2024 at 06:32:35PM +0000, Luck, Tony wrote:
-> > I don't think the format is really that big an issue. Including stepping in the
-> > format adds complexity to a thousand places these checks are made while
-> > only being useful in a few dozen.
-> 
-> I've figured out what the problem is with steppings - ranges. If you
-> have a range of steppings which all belong to the same model, then you
-> have to complicate the checks by either masking out the stepping or use
-> the X86_STEPPING_ANY thing which forces you to use x86_match_cpu()
-> instead of a simple integer comparison.
+At current x1e80100 interface table, interface #3 is wrongly
+connected to DP controller #0 and interface #4 wrongly connected
+to DP controller #2. Fix this problem by connect Interface #3 to
+DP controller #0 and interface #4 connect to DP controller #1.
+Also add interface #6, #7 and #8 connections to DP controller to
+complete x1e80100 interface table.
 
-I think you are talking about a range of models that all belong to
-the same family (rather than steppings in the same model).
+Fixes: e3b1f369db5a ("drm/msm/dpu: Add X1E80100 support")
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+---
+ .../drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h   | 34 ++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 3 deletions(-)
 
-> And you should talk to your folks what their plan is for the new
-> families because if they do a range of model numbers which all belong to
-> the same CPU model like AMD does, then your simple comparison scheme
-> goes out the window because it can't really deal with ranges.
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
+index 9a9f709..a3e60ac 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_2_x1e80100.h
+@@ -324,6 +324,7 @@ static const struct dpu_wb_cfg x1e80100_wb[] = {
+ 	},
+ };
+ 
++/* TODO: INTF 3, 8 and 7 are used for MST, marked as INTF_NONE for now */
+ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 	{
+ 		.name = "intf_0", .id = INTF_0,
+@@ -358,8 +359,8 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 		.name = "intf_3", .id = INTF_3,
+ 		.base = 0x37000, .len = 0x280,
+ 		.features = INTF_SC7280_MASK,
+-		.type = INTF_DP,
+-		.controller_id = MSM_DP_CONTROLLER_1,
++		.type = INTF_NONE,
++		.controller_id = MSM_DP_CONTROLLER_0,	/* pair with intf_0 for DP MST */
+ 		.prog_fetch_lines_worst_case = 24,
+ 		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 30),
+ 		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 31),
+@@ -368,7 +369,7 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 		.base = 0x38000, .len = 0x280,
+ 		.features = INTF_SC7280_MASK,
+ 		.type = INTF_DP,
+-		.controller_id = MSM_DP_CONTROLLER_2,
++		.controller_id = MSM_DP_CONTROLLER_1,
+ 		.prog_fetch_lines_worst_case = 24,
+ 		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 20),
+ 		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 21),
+@@ -381,6 +382,33 @@ static const struct dpu_intf_cfg x1e80100_intf[] = {
+ 		.prog_fetch_lines_worst_case = 24,
+ 		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 22),
+ 		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 23),
++	}, {
++		.name = "intf_6", .id = INTF_6,
++		.base = 0x3A000, .len = 0x280,
++		.features = INTF_SC7280_MASK,
++		.type = INTF_DP,
++		.controller_id = MSM_DP_CONTROLLER_2,
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 17),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 16),
++	}, {
++		.name = "intf_7", .id = INTF_7,
++		.base = 0x3b000, .len = 0x280,
++		.features = INTF_SC7280_MASK,
++		.type = INTF_NONE,
++		.controller_id = MSM_DP_CONTROLLER_2,	/* pair with intf_6 for DP MST */
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 18),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 19),
++	}, {
++		.name = "intf_8", .id = INTF_8,
++		.base = 0x3c000, .len = 0x280,
++		.features = INTF_SC7280_MASK,
++		.type = INTF_NONE,
++		.controller_id = MSM_DP_CONTROLLER_1,	/* pair with intf_4 for DP MST */
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 12),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 13),
+ 	},
+ };
+ 
+-- 
+2.7.4
 
-History of Intel model number allocations apparently looks like
-we just throw a dart in the general area of a block of unused
-model numbers :-)  I will check with the relevent folks, but this
-seems unlikely. There's more push (from the Linux community!) to
-assign CPUID feature bits for stuff that goes more than 2-3
-CPU generations. That leaves the stuff that is different almost
-every time (perfomaance counters, power management, EDAC, etc.).
-
-> Because from looking at your set, I don't see a slick way to check
-> whether a concrete f/m/s tuple belongs to a range without involved
-> checking.
-> 
-> For example, models:
-> 
->                 case 0x30 ... 0x4f:
->                 case 0x60 ... 0x7f:
->                 case 0x90 ... 0x91:
->                 case 0xa0 ... 0xaf:
-> 
-> are all Zen2. I could do a X86_MATCH_VF_MODEL_RANGE and we even had
-
-I'm glad I don't have to keep track of groups of hex numbers like that.
-
-> a patch like that at some point but it didn't go in. But even if I did
-> that, I'd still need to do x86_match_cpu() instead of the current
-> X86_FEATURE_ZEN* checks we're doing.
-
-My patch doesn't help with this, but doesn't prevent you from doing
-a switch (c->x86_model).  If that list of model number ranges shows
-up more than twice you could add a helper that converts that list to
-a #define AMD_ZEN2 to make the code clearer.
-
-> So I don't think I can switch AMD to use that. It looks like the 'V' in
-> "VFM" could just as well turn into "I".
-
-Patch 3 includes:
-
-#define IFM(_fam, _model)      VFM_MAKE(X86_VENDOR_INTEL, _fam, _model)
-
-as a helper to build model numbers in <asm/intel-family.h>
-> 
-> :-)
-> 
-> I'd say.
-
-So keep the "V" in the common code. Maybe one of the other x86
-vendors will want to have #define names for their CPU models
-some day.
-
-Thanks for digging into this.
-
--Tony
 
