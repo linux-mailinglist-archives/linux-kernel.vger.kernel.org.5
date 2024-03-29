@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-125268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C6B189231B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:03:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9435389231C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CB7BB22768
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:03:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C578E1C2115F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33047137776;
-	Fri, 29 Mar 2024 18:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A86136E18;
+	Fri, 29 Mar 2024 18:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="l1NnkLAV"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K8a+xQJy"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F179A52F79
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D6C5B1E7
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711735381; cv=none; b=ki18wsgYX34HqueBEvMa0ZPGyxls7UJNwMYvMiPxWx3VYn+bRwxJctIw+/33/oRjxKYueQb+Pc1noE2IsI8iPicgG1W1w2nBzQK5asUuJXbXtHeskrvnxtosOw7uNzKCQjurqMHLhg4gzxb5dIaYazO0A91ygTbJGEdyOnHSZjg=
+	t=1711735409; cv=none; b=l5odkzzItxW/KQZApds9DvokHi/FMUEgL6zndj26TDlfVLJJV689DyrK90wf+jgytHIOpZp+e/SVZxTPng0a7yaVAXcxdS8m1SBTqaPO3mIYJeESaLxiXnNWmIF3wZKCgIbi7omPT2hGMy4laTIx68VZDFXt+OCBz7blTcLtK9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711735381; c=relaxed/simple;
-	bh=+S3hlEF4bZldPHqmLCThWpT6aoGahvI+J6fFNIlvYoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RpTpbIj6kV7N8a+sC6tWOJ/MUiLXj4d1CSWkFdUoSbvBvdC/6bWlCcHa3qBptzsEjWUEbBxsKEi1MnOw64dWQG/E2z3q5vm+qyFBfT0rgpWIxAMMfSLRsSpKdBVN0Hpm+gcV+ArNlhdrX3xRn4WCx5YVlvr1RivybWOjrnEKPt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=l1NnkLAV; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3666affcb59so8544725ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711735379; x=1712340179; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QdcMw9p8wYMiyXmXvRCHMMbWNQHaQ3aY6vG2uVIiJB8=;
-        b=l1NnkLAV8jpGHw8+yZzd6AWT6yP57DzKtKZX+GioxGIKexWlgIW0fhWfFb2cv4x/xH
-         cNPzgK6ASnebgSbnHirtnFrN5pR2RlrryO9oZq5+rmfqvBCd2GSY082+KLpkCo6q05VB
-         /q+4N0igCBX4IKPSGy43sr0HBa/ZJvZaW0cCnto1tH4+mvBLdaJcxd5r+gosgK4kX5Zz
-         ISMgUToRYfB5k7+f4nIAZEOnJyZC/copoActlzd4P8bgRdAay8mt5VB/8ACwg+K25Jju
-         PHFA8tnylcTeb7CxGWM3L8Z8+l9xuuKMFWqJosmZa+8fNU8n6uTGcYFg3mHH2OeuhAaP
-         oLKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711735379; x=1712340179;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QdcMw9p8wYMiyXmXvRCHMMbWNQHaQ3aY6vG2uVIiJB8=;
-        b=kDUFJ3mlr9+TNOTzU9EK5sLKA4zVldfJ1/SNm1ZHq+k1nTPHdfpb8rpJmr8mN20Gby
-         EDeyZcbBSRGnxiYbF76QE5jkhtAdHN8bKTd80TDJEcgEzVHoFxWRWzK77+Ze3I01sJnG
-         QQ5whnwi/IBxLm5YTXvzEvHcj3VMWCBxulHMoQiQyZzWNgoiAUzZw40fZidNBNlEcPFi
-         7CauGNovk20K7QNFr//UFXCMrRS/cXbo8XUkQqGhGCVMY/6WZVbDxY/dUm45s2NVQDZT
-         C/Zt8c+LU0pjjPuaq1uJfj7AqTvb7s1/6qNqQ5X5eL3A2/JAyFAIYk7WlNUhL1PMzDct
-         r6Cw==
-X-Gm-Message-State: AOJu0YxUESUEBQa5yWcOJs87674dgAFPxpNBUdCnqGkDuIHpIm7CcL7q
-	zjU4zMn5mr7st6CqY3xFVNTUspEXd4a7wCh84KCdfnhjRbrTO8vb1r/BMgKt5ew=
-X-Google-Smtp-Source: AGHT+IFqMNmDL2GVO2cyYm+vIEEaj43NPiUKo2CRXyyGfQmLknY9TtLFDSxdZDVwWotlePg1wJz6nw==
-X-Received: by 2002:a92:ca4e:0:b0:366:ab6f:f6a with SMTP id q14-20020a92ca4e000000b00366ab6f0f6amr3003624ilo.24.1711735379197;
-        Fri, 29 Mar 2024 11:02:59 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.6.190])
-        by smtp.gmail.com with ESMTPSA id k4-20020a056e021a8400b003689a9e5017sm1217549ilv.47.2024.03.29.11.02.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 11:02:58 -0700 (PDT)
-Message-ID: <0319d84e-ec4c-45a6-9edd-a606809371d8@sifive.com>
-Date: Fri, 29 Mar 2024 13:02:56 -0500
+	s=arc-20240116; t=1711735409; c=relaxed/simple;
+	bh=faWTYxB1r1z8LEj2RAEE4Pfe9THEg2xwzyWfz3IND+8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=AtpVNhgVQK0mEpyIx3UwrWcAfBYNgDMNgfQ5c52j4MuG01IN2a25/nHLIAA8jc5bmhRFrqNkkVNT5nLOiV28Yq2wGADr5vML1J76Jjurmb9SZg3kMV7r8EI1XDrKgFXNglSJRPfhCxwlJdLJNrwcNfaQM+zkWz79qrG0ayMHMPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K8a+xQJy; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <60264dc3-dea2-48d0-a616-ae14d7c2c14b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711735405;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ejLXMVX3gjZPYohzkFccFuN4Dj+w6Yn3L9HdWfGuzpQ=;
+	b=K8a+xQJyyfQLbT9xqxl/4wD9yMcTrGniICFmVVaYXg0Sjhl68hRGEzeAcAvNcbJymemmcj
+	LjOGdS/jTWmRZDD+e1JSnKIBgK6COMviqMtZHURRjlAuTRX4TFZeqk9UTtfpHbtXIk9OBI
+	yIJnhgj+HlUW41Ld4sfORFVPoZBlnDo=
+Date: Fri, 29 Mar 2024 11:03:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/15] x86: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
-To: Dave Hansen <dave.hansen@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- Christoph Hellwig <hch@lst.de>, loongarch@lists.linux.dev,
- amd-gfx@lists.freedesktop.org, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, Ingo Molnar <mingo@redhat.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org
-References: <20240329072441.591471-1-samuel.holland@sifive.com>
- <20240329072441.591471-11-samuel.holland@sifive.com>
- <d2c3cd78-cdc6-4a39-9804-4f30402751b1@intel.com>
-From: Samuel Holland <samuel.holland@sifive.com>
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in __bpf_strtoull
 Content-Language: en-US
-In-Reply-To: <d2c3cd78-cdc6-4a39-9804-4f30402751b1@intel.com>
-Content-Type: text/plain; charset=UTF-8
+To: syzbot <syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com>,
+ syzkaller-bugs@googlegroups.com
+References: <0000000000009925b60614c3d39d@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, linux-kernel@vger.kernel.org, samsun1006219@gmail.com,
+ sdf@google.com, song@kernel.org, xrivendell7@gmail.com,
+ yonghong.song@linux.dev
+In-Reply-To: <0000000000009925b60614c3d39d@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024-03-29 12:28 PM, Dave Hansen wrote:
-> On 3/29/24 00:18, Samuel Holland wrote:
->> +#
->> +# CFLAGS for compiling floating point code inside the kernel.
->> +#
->> +CC_FLAGS_FPU := -msse -msse2
->> +ifdef CONFIG_CC_IS_GCC
->> +# Stack alignment mismatch, proceed with caution.
->> +# GCC < 7.1 cannot compile code using `double` and -mpreferred-stack-boundary=3
->> +# (8B stack alignment).
->> +# See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
->> +#
->> +# The "-msse" in the first argument is there so that the
->> +# -mpreferred-stack-boundary=3 build error:
->> +#
->> +#  -mpreferred-stack-boundary=3 is not between 4 and 12
->> +#
->> +# can be triggered. Otherwise gcc doesn't complain.
->> +CC_FLAGS_FPU += -mhard-float
->> +CC_FLAGS_FPU += $(call cc-option,-msse -mpreferred-stack-boundary=3,-mpreferred-stack-boundary=4)
->> +endif
+On 3/28/24 7:59 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> I was expecting to see this (now duplicate) hunk come _out_ of
-> lib/Makefile somewhere in the series.
+> HEAD commit:    8d025e2092e2 Merge tag 'erofs-for-6.9-rc2-fixes' of git://..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10f2ffe6180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e2599baf258ef795
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8ac8b7b2292ea867a162
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b3ac29180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160153c9180000
 > 
-> Did I miss that, or is there something keeping the duplicate there?
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/5ccde1a19e22/disk-8d025e20.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/45420817e7d9/vmlinux-8d025e20.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/354bdafd8c8f/bzImage-8d025e20.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
+>   __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
+>   __bpf_strtoll kernel/bpf/helpers.c:504 [inline]
+>   ____bpf_strtol kernel/bpf/helpers.c:525 [inline]
+>   bpf_strtol+0x7c/0x270 kernel/bpf/helpers.c:519
+>   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+>   __bpf_prog_run96+0xb5/0xe0 kernel/bpf/core.c:2236
 
-This hunk is removed in patch 15/15, after the conversion of lib/test_fpu.c:
+This should be similar to the other KMSAN reports on the interpreter using
+the uninit stack in the map_lookup/delete_elem helpers. The bpf prog used
+in this C reproducer:
 
-https://lore.kernel.org/linux-kernel/20240329072441.591471-16-samuel.holland@sifive.com/
+    0: (18) r0 = 0x0
+    2: (b7) r8 = 0
+    3: (7b) *(u64 *)(r10 -72) = r8
+    4: (b7) r8 = 0
+    5: (7b) *(u64 *)(r10 -16) = r8
+    6: (bf) r1 = r10
+    7: (07) r1 += -8
+            ^^^^^^^^
 
-Regards,
-Samuel
+    8: (bf) r4 = r10
+    9: (07) r4 += -16
+   10: (b7) r2 = 8
+   11: (18) r3 = map[id:68][0]+0
+   13: (b7) r3 = 0
+   14: (85) call bpf_strtol#896752
+   15: (95) exit
+
+#syz fix: bpf: Mark bpf prog stack with kmsan_unposion_memory in interpreter mode
+
 
 
