@@ -1,214 +1,146 @@
-Return-Path: <linux-kernel+bounces-125166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3C2892186
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:21:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FB5489218A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED341F270F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:21:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8411AB24361
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221B58594D;
-	Fri, 29 Mar 2024 16:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8B786146;
+	Fri, 29 Mar 2024 16:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UZDwbE7I"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z5mYIRFy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E5B2576F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC519482E9
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711729274; cv=none; b=WyW/0LP0D3E3ERquHxaFBcijiR/MXrgTTHCquPPlsUbmln/vneG9LAPQYPhAcQpSlkYiMHRtGga1Xrgb+nDRHmdbvh6nKUSEvtFyzBykwARtO3MA+VM2C8P7RQyvqbYOB5MvelJeQ6naJiwLQ7BdPj6DBzetVhN2N7KYmrhxTEg=
+	t=1711729330; cv=none; b=P3Ayl4OjoERaRKMe3sHl9O2ZD9wvjvwmRjZDeoDaSutIWrE6h9kiYBNnAtr9CEX+RYAFyTliKCWKv9AR54kFkKiOZ+zM8sE9ZH+dsF3YLMh4L9vo+rytphZfRbBj2RGpiyr0nn43vUb/5RQqLl7o0DArgN0yZKhxzxRMlXIsxhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711729274; c=relaxed/simple;
-	bh=dcSFld6UCTdTL/5vjYeiOxLyFOuvbsJONzbcmxgsYaI=;
+	s=arc-20240116; t=1711729330; c=relaxed/simple;
+	bh=riODE1dPTaLbQpz/0beewzGEpd2nIe52VyxmuEiuHaY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EyZkvayJim9ZTplnFnuWUu60C7elRUlteYc1xYmdOh8IaLHAIuZL+8lC/euCstLdw9pYsYSY86y7MQOOKVR4tFQ39eycnS54e/cuqg5QM5kCUThYRQ/aZF2fzTz4dnFxOyhRv5gIxcZTf7paSCgMdBX/JjaekA6XFkAQVGLaWjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UZDwbE7I; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5157af37806so2420448e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:21:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711729270; x=1712334070; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9TdQntOQdC+RwwerKG1DtWz7PRsJo1psWkBJYy0GaAE=;
-        b=UZDwbE7IKUwpGHw3U6rPNsQqmHtlWTUNVhqRUcwhfvaiDlwGT0wny7injIO+/yG7ik
-         6uWUm5hv3giwQ1E4ivlYo+kYGF98vAuYLSVEi9J6jmlTz1FNnWpgm4fig3yu9NAQIYJU
-         U6b3mXrrRqkGF1jaF68YNpmi21j5PdwDAkoTabD4r0mYIXH3WH6ICJvJ0MqYp+riq3OV
-         PoNLx2ZeK8Z0zOKmO737xFQMPzoaY9eptTVo02YaiXQBwQXN0D8MxVSZAEctSt6R/qnk
-         pBSYHy/wmyxBi7X3iZveMkVL9l8NhMQ4CbqQFoHDDJcOs9ERux48pIhbwXGJG2IUEtIh
-         opTw==
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZBa5v4Ve/Sqmi1YDVhfJ726IZjXGw2JE1nFxrnSFXleu9VoUU1ZOlE+TY2kxJW29WoaDfxzEMae5gXbMuhvIw7zw6K/B0Se9Y7qgyOnHjJ+nPh65OfUhQtygYehr1XAfDx/wyHb3ub0m1b6m2RxEQiQRr9Rh5yAPygxRfrC+faU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z5mYIRFy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711729327;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fmEyRcPuEinvJiX6Dq129jlFJ6SCvYGxlVcOYHlmNDQ=;
+	b=Z5mYIRFysSKKhXSsiWcg2tj7AzXJCNCgb3TiuUYiVFy3QmUBQSiB63Nh8M/YEQoUTiCekF
+	6LIOVq/R9D/ebdKobrHe1mIn7zQRHwsDeKRg4A/WtkqUp/tu1A6ywlFUoAg/o6Pfx0/f8q
+	Xyvk+mgkR35fTovgn1YY7JrrCOHK/ko=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-546-GqS8nmMhMKqz7-XZzmeSsA-1; Fri, 29 Mar 2024 12:22:06 -0400
+X-MC-Unique: GqS8nmMhMKqz7-XZzmeSsA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33ed44854ddso1044055f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:22:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711729270; x=1712334070;
+        d=1e100.net; s=20230601; t=1711729325; x=1712334125;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9TdQntOQdC+RwwerKG1DtWz7PRsJo1psWkBJYy0GaAE=;
-        b=Je1lbiFCqTLeuea5jIVjELXle9v2jzOFzdxMUSPSaUa0P1fHE9ZGLZKp9SGx3XRTZ7
-         mQ5YOO/7G4mLPXr8iF5XXJWM6Q2sNtR0nYFVRmJ82xTo17d6fmWLoTc19i9cR9Oo8khD
-         f1agxldL1072LV7MYo5EB2waIGib0fTpWuaNSRxw3N2uXxCCskSHMPnJhbCTFgnaTPUD
-         lTKStlr3UkEu7EHeKS92MfSxFXMbqO/hLqHEGnOe4/Rb7nuj9RJuKiH+AwbiEeBU8qN1
-         6C5Zq8JKKyFF3ZDWTd8PxeRcLbEUjt6iipr+EjIE7TTPCJOjalv9u2FjR7Xkm1dkjQRv
-         P4QA==
-X-Gm-Message-State: AOJu0YzW9JqLwkpEhoq7CSlf+Ii00KLYuFVOODvsSWbm2+jQtv9sOwGD
-	DgzaaRh/Z8aCwGReEE4IsxcwLHC3PthU6xqhvSH1XI7mwstFLG/lFvVDWfPomDM=
-X-Google-Smtp-Source: AGHT+IGYcvpSz7jI5yxeagCBVOiO2Xfh0dOk6NVOG3vgeY7eKDGqNcF+bUdJzGLSflCAfgeQkL2bjw==
-X-Received: by 2002:a19:2d4c:0:b0:513:ed0f:36c9 with SMTP id t12-20020a192d4c000000b00513ed0f36c9mr2085718lft.45.1711729270454;
-        Fri, 29 Mar 2024 09:21:10 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id z10-20020ac25dea000000b00515d4457ff9sm87172lfq.89.2024.03.29.09.21.09
+        bh=fmEyRcPuEinvJiX6Dq129jlFJ6SCvYGxlVcOYHlmNDQ=;
+        b=irhJ04vVahezwBuCXxuvg3gshtCSZkQ3j7OmtATCSR6Ai8vaMswiFG96qZUHA9i1M1
+         F7SELYw5jlIohSyaFyJOnsdw9Vsz4hgPe0VD0g0xqQhF7wS+cWBdAFFlNTu7RAGX6WfI
+         O8gsh6qjR/VSDkAJigo8YJSFYQwPsv8kPnernaLceKXe3ocpgPYiAi/FGYf4Q5xXRGDu
+         CD7Nuu1JdpTNcG7334KCM3cvEnrkxikf3uCOmRff1kffd3baUyyl054oEicLEXWLQJom
+         a6IyDAQL9YIrkVAFR9i67cDsPXwwUJpUEEAo9gRo7Ws46o69u+VqQ9yi3xAvsqntgYe0
+         ovfg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2fmKQVjVnmJpGf8yIYNcqYrEd7FQOEuYk//t0CKVcYTgTnuOEFUlLY1Bx+dtmrIXqO/Hv24bzFGNfX+GqH6PmhGNqLoJtGYZvbTgw
+X-Gm-Message-State: AOJu0YyjpdYa0gxaRtDSfd3NuriCCXvH+XIpyTDhp3dxfeagoa0wDg3J
+	EsB8Pftpzlx55uOm9dx3SrwZb47cdt5HyXr69cNvzr3kXbJpvaM91h7zQj1NKKcC1UDyWAQ4eMD
+	lNl1149YPVhRLuKsq4dHgbI8gA7GhkH+vhS5nGqbsQQ/ZYXXZY5bOB2z/2/WxBQ==
+X-Received: by 2002:adf:f810:0:b0:33e:7750:781d with SMTP id s16-20020adff810000000b0033e7750781dmr1813657wrp.56.1711729325171;
+        Fri, 29 Mar 2024 09:22:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEbg6+AHNtlfHpBhKeqnWBXMq04cVofQNecZMc0Hx1QL8O3mLHrvSVma3HCLwksp4G60St5Bw==
+X-Received: by 2002:adf:f810:0:b0:33e:7750:781d with SMTP id s16-20020adff810000000b0033e7750781dmr1813641wrp.56.1711729324802;
+        Fri, 29 Mar 2024 09:22:04 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-12-25-33.business.telecomitalia.it. [87.12.25.33])
+        by smtp.gmail.com with ESMTPSA id u4-20020adff884000000b00341d9e8cc62sm4478654wrp.100.2024.03.29.09.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 09:21:10 -0700 (PDT)
-Date: Fri, 29 Mar 2024 18:21:08 +0200
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: "Christian A. Ehrhardt" <lk@c--e.de>
-Cc: linux-kernel@vger.kernel.org,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Prashant Malani <pmalani@chromium.org>,
-	Jameson Thies <jthies@google.com>,
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>,
-	linux-usb@vger.kernel.org, Kenneth Crudup <kenny@panix.com>
-Subject: Re: [PATCH 2/5] usb: typec: ucsi: Check for notifications after init
-Message-ID: <ZgbqdBd1OiWgDN-_@eriador.lumag.spb.ru>
-References: <20240320073927.1641788-1-lk@c--e.de>
- <20240320073927.1641788-3-lk@c--e.de>
+        Fri, 29 Mar 2024 09:22:04 -0700 (PDT)
+Date: Fri, 29 Mar 2024 17:22:00 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Marco Pinna <marco.pinn95@gmail.com>
+Cc: stefanha@redhat.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, ggarcia@deic.uab.cat, jhansen@vmware.com, 
+	kvm@vger.kernel.org, virtualization@lists.linux.dev, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vge.kernel.org
+Subject: Re: [PATCH net v2] vsock/virtio: fix packet delivery to tap device
+Message-ID: <tglqxtqa47wu53idfssswmrb6ulhnkdlavt27qoxhp2hniwgxc@j3fmzh5wowbc>
+References: <20240329161259.411751-1-marco.pinn95@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240320073927.1641788-3-lk@c--e.de>
+In-Reply-To: <20240329161259.411751-1-marco.pinn95@gmail.com>
 
-On Wed, Mar 20, 2024 at 08:39:23AM +0100, Christian A. Ehrhardt wrote:
-> The completion notification for the final SET_NOTIFICATION_ENABLE
-> command during initialization can include a connector change
-> notification.  However, at the time this completion notification is
-> processed, the ucsi struct is not ready to handle this notification.
-> As a result the notification is ignored and the controller
-> never sends an interrupt again.
-> 
-> Re-check CCI for a pending connector state change after
-> initialization is complete. Adjust the corresponding debug
-> message accordingly.
-> 
-> Fixes: 71a1fa0df2a3 ("usb: typec: ucsi: Store the notification mask")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
-> ---
->  drivers/usb/typec/ucsi/ucsi.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 8a6645ffd938..dceeed207569 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -1237,7 +1237,7 @@ void ucsi_connector_change(struct ucsi *ucsi, u8 num)
->  	struct ucsi_connector *con = &ucsi->connector[num - 1];
->  
->  	if (!(ucsi->ntfy & UCSI_ENABLE_NTFY_CONNECTOR_CHANGE)) {
-> -		dev_dbg(ucsi->dev, "Bogus connector change event\n");
-> +		dev_dbg(ucsi->dev, "Early connector change event\n");
->  		return;
->  	}
->  
-> @@ -1636,6 +1636,7 @@ static int ucsi_init(struct ucsi *ucsi)
->  {
->  	struct ucsi_connector *con, *connector;
->  	u64 command, ntfy;
-> +	u32 cci;
->  	int ret;
->  	int i;
->  
-> @@ -1688,6 +1689,13 @@ static int ucsi_init(struct ucsi *ucsi)
->  
->  	ucsi->connector = connector;
->  	ucsi->ntfy = ntfy;
-> +
-> +	ret = ucsi->ops->read(ucsi, UCSI_CCI, &cci, sizeof(cci));
-> +	if (ret)
-> +		return ret;
-> +	if (UCSI_CCI_CONNECTOR(READ_ONCE(cci)))
-> +		ucsi_connector_change(ucsi, cci);
-> +
+On Fri, Mar 29, 2024 at 05:12:59PM +0100, Marco Pinna wrote:
+>Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
+>virtio_transport_deliver_tap_pkt() for handing packets to the
+>vsockmon device. However, in virtio_transport_send_pkt_work(),
+>the function is called before actually sending the packet (i.e.
+>before placing it in the virtqueue with virtqueue_add_sgs() and checking
+>whether it returned successfully).
+>Queuing the packet in the virtqueue can fail even multiple times.
+>However, in virtio_transport_deliver_tap_pkt() we deliver the packet
+>to the monitoring tap interface only the first time we call it.
+>This certainly avoids seeing the same packet replicated multiple times
+>in the monitoring interface, but it can show the packet sent with the
+>wrong timestamp or even before we succeed to queue it in the virtqueue.
+>
+>Move virtio_transport_deliver_tap_pkt() after calling virtqueue_add_sgs()
+>and making sure it returned successfully.
+>
+>Fixes: 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks")
+>Cc: stable@vge.kernel.org
+>Signed-off-by: Marco Pinna <marco.pinn95@gmail.com>
+>---
+> net/vmw_vsock/virtio_transport.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I think this leaves place for the race. With this patchset + "Ack
-connector change early" in place Neil triggered the following backtrace
-on sm8550 HDK while testing my UCSI-qcom-fixes patchset:
-What happens:
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-[   10.421640] write: 00000000: 05 00 e7 db 00 00 00 00
+>
+>diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>index 1748268e0694..ee5d306a96d0 100644
+>--- a/net/vmw_vsock/virtio_transport.c
+>+++ b/net/vmw_vsock/virtio_transport.c
+>@@ -120,7 +120,6 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+> 		if (!skb)
+> 			break;
+>
+>-		virtio_transport_deliver_tap_pkt(skb);
+> 		reply = virtio_vsock_skb_reply(skb);
+> 		sgs = vsock->out_sgs;
+> 		sg_init_one(sgs[out_sg], virtio_vsock_hdr(skb),
+>@@ -170,6 +169,8 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+> 			break;
+> 		}
+>
+>+		virtio_transport_deliver_tap_pkt(skb);
+>+
+> 		if (reply) {
+> 			struct virtqueue *rx_vq = vsock->vqs[VSOCK_VQ_RX];
+> 			int val;
+>-- 
+>2.44.0
+>
 
-SET_NOTIFICATION_ENABLE
-
-[   10.432359] read: 00000000: 10 01 00 00 00 00 00 80 00 00 00 00 00 00 00 00
-[   10.469553] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
-[   10.476783] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[   10.489552] notify: 00000000: 00 00 00 80
-
-COMMAND_COMPLETE
-
-[   10.494194] read: 00000000: 10 01 00 00 00 00 00 80 00 00 00 00 00 00 00 00
-[   10.501370] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
-[   10.508578] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[   10.515757] write: 00000000: 04 00 02 00 00 00 00 00
-
-ACK_CC_CI(command completed)
-
-[   10.521100] read: 00000000: 10 01 00 00 00 00 00 20 00 00 00 00 00 00 00 00
-[   10.528363] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
-[   10.535603] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[   10.549549] notify: 00000000: 00 00 00 20
-
-ACK_COMPLETE
-
-[Here ucsi->connector and ucsi->ntfy are being set by ucsi_init()
-
-[   10.566654] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
-[   10.593553] notify: 00000000: 02 00 00 20
-
-Event with CONNECTION_CHANGE. It also schedules connector_change work,
-because ucsi->ntfy is already set
-
-[   10.595796] read: 00000000: 10 01 00 00 02 00 00 20 00 00 00 00 00 00 00 00
-[   10.595798] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
-[   10.595799] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-
-The CCI read coming from ucsi_init()
-
-[   10.595807] ------------[ cut here ]------------
-[   10.595808] WARNING: CPU: 6 PID: 101 at kernel/workqueue.c:2384 __queue_work+0x374/0x474
-
-[skipped the register dump]
-
-[   10.595953]  __queue_work+0x374/0x474
-[   10.595956]  queue_work_on+0x68/0x84
-[   10.595959]  ucsi_connector_change+0x54/0x88 [typec_ucsi]
-[   10.595963]  ucsi_init_work+0x834/0x85c [typec_ucsi]
-[   10.595968]  process_one_work+0x148/0x29c
-[   10.595971]  worker_thread+0x2fc/0x40c
-[   10.595974]  kthread+0x110/0x114
-[   10.595978]  ret_from_fork+0x10/0x20
-[   10.595985] ---[ end trace 0000000000000000 ]---
-
-Warning, because the work is already scheduled.
-
-
->  	return 0;
->  
->  err_unregister:
-> -- 
-> 2.40.1
-> 
 
