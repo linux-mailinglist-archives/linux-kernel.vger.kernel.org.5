@@ -1,57 +1,66 @@
-Return-Path: <linux-kernel+bounces-124832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDF6D891CF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:04:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 522D9891CF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 826981F26111
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:04:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 048F4289474
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEED81B6742;
-	Fri, 29 Mar 2024 12:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF5E149E06;
+	Fri, 29 Mar 2024 12:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="porQ4QwY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JOpij4LK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90FE1B5DCC;
-	Fri, 29 Mar 2024 12:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271571B6758;
+	Fri, 29 Mar 2024 12:44:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716254; cv=none; b=H/rdUTA5Y/bBaaaGdNthAEJd+jYPO7vGrSUtpCfMvAxi9ADf9I+b74/ZFq3EvezmbEsRGtLMuFgVMB+VOjLFrxMmUYUugGJExlLSic3c5EZfwqZUWv6NMXhyYo3FRFiOcpYznySJmd2f124kzvGMnn2N0HNzfSfm3ZMwX66yaaI=
+	t=1711716257; cv=none; b=lLWXT9w5xQfDP4hYxwffun1iugmx/9QIttqxFgvOiRuOJGDIQrzkaBKYB511J6v8QfIXxi9sK+F7IVlABAtK0kxDZOYAu5UId6+tvYR4++bVpK/uLwg+p+s+N8ZdYskLLJ9+8QFZThcYzr9++0coxaszXHRpoD/w6atjLJDHTFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716254; c=relaxed/simple;
-	bh=yEd0TIh/lRZcOAMIPybsRJxzmRYTgRG5NAGV2GK4dAk=;
+	s=arc-20240116; t=1711716257; c=relaxed/simple;
+	bh=IcBZv3SzKonQC6Je+MdRBI/FShiONCtFBUzie7WvtW8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T+P5WBNLsKn1i/C29xc299fCXzQEliTbBdei1xxVVzUVNhmSle2E4P1k2acE9Vt3KLJhpf/7YUmoGL4VPG2vZd0Y3TxoJNkJTEVMRXsDIEh2/A7oczlquqyMeO5Ip2CjtqvYrL6SUlBiLdX37VId6NbdqR92/n+Fzuo/iWJwsMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=porQ4QwY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE2DC433B2;
-	Fri, 29 Mar 2024 12:44:12 +0000 (UTC)
+	 MIME-Version; b=Gx6A9bw1qEwBS+ZgPbM5nD3tF1VsgQJ50O8OBItaWrWlJTb/01yX0lU2sBQbzaUe48j71SsoYu9V85K0CzY70K5+QT929gm5IikMkiLZ8jsM3JlsyNWZQQHCjBlQY4o7uLDAjg1FnuzeFZB5vLZy1sfw1DAd6G4hwZDHlQaX1Uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JOpij4LK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F228C43399;
+	Fri, 29 Mar 2024 12:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716253;
-	bh=yEd0TIh/lRZcOAMIPybsRJxzmRYTgRG5NAGV2GK4dAk=;
+	s=k20201202; t=1711716256;
+	bh=IcBZv3SzKonQC6Je+MdRBI/FShiONCtFBUzie7WvtW8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=porQ4QwYEAWtWs7THmyABLVeICWdo4nooftQCppgnkRNacFVqBNUf8JViq+yt/B5a
-	 VOvbzi+mfXd+nTfgZkzLpMPtp/GVu/usGRZHGj0ifWNBVOPD6qNqFa19KIbOevGXwK
-	 sFsojl4FcywGl1bwFkvNmhDhz1rHcf18te+TJ6I85VKhgW9ClIuwLCs1SFh4N86dPh
-	 0x7XmBQuKKW6Xl+7Po6t/bmzkvxrZAX8j08U9KbJDD5dsobnKws5pWiuruYshP8nPz
-	 lZr16UFvCBvh7WT6jVD5wY/qJ5LPkEtGd9JydqipMBmgofdzOQUP0jkpkqRBei2z6E
-	 4nsBqs4H10FXQ==
+	b=JOpij4LK+7++k/CQgp+/S6ll7VMljB0HXSbeGzFZP1RUWsGuCUNE8+afA1pms/XXr
+	 u/Ye4jbBhHHdBcGlkP835uq1H6J1r0i/blnGMwH9cOaTnulJ44eAl0zjRzrlfuRv8w
+	 Sv5tlotpvOUUuyGKZ2e8k9JcuIgU0ZH3qeYH8IfHHiSM7S7y2HB0sIvse+nOKSKu0Z
+	 /Vt6E9/KRqhya716ei3hZCNw7Jyco+Yav6L88wmmlopiitzxC9PCtISuriIMsm4lE/
+	 RSi6gS/TZQAzC4qA5hFhyuLewVM2zIp3tiDmQ9AOrrmHAppRjjM+at8AG7eHvVk/Mw
+	 j2aqHWUKLJMSg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kunwu Chan <chentao@kylinos.cn>,
+Cc: Adam Ford <aford173@gmail.com>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Sandor Yu <Sandor.yu@nxp.com>,
 	Ulf Hansson <ulf.hansson@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
-	nm@ti.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 23/75] pmdomain: ti: Add a null pointer check to the omap_prm_domain_init
-Date: Fri, 29 Mar 2024 08:42:04 -0400
-Message-ID: <20240329124330.3089520-23-sashal@kernel.org>
+	shawnguo@kernel.org,
+	geert+renesas@glider.be,
+	linus.walleij@linaro.org,
+	rafael@kernel.org,
+	festevam@gmail.com,
+	u.kleine-koenig@pengutronix.de,
+	marex@denx.de,
+	linux-pm@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 24/75] pmdomain: imx8mp-blk-ctrl: imx8mp_blk: Add fdcc clock to hdmimix domain
+Date: Fri, 29 Mar 2024 08:42:05 -0400
+Message-ID: <20240329124330.3089520-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
 References: <20240329124330.3089520-1-sashal@kernel.org>
@@ -66,35 +75,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <chentao@kylinos.cn>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit 5d7f58ee08434a33340f75ac7ac5071eea9673b3 ]
+[ Upstream commit 697624ee8ad557ab5417f985d2c804241a7ad30d ]
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+According to i.MX8MP RM and HDMI ADD, the fdcc clock is part of
+hdmi rx verification IP that should not enable for HDMI TX.
+But actually if the clock is disabled before HDMI/LCDIF probe,
+LCDIF will not get pixel clock from HDMI PHY and print the error
+logs:
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Link: https://lore.kernel.org/r/20240118054257.200814-1-chentao@kylinos.cn
+[CRTC:39:crtc-2] vblank wait timed out
+WARNING: CPU: 2 PID: 9 at drivers/gpu/drm/drm_atomic_helper.c:1634 drm_atomic_helper_wait_for_vblanks.part.0+0x23c/0x260
+
+Add fdcc clock to LCDIF and HDMI TX power domains to fix the issue.
+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Jacky Bai <ping.bai@nxp.com>
+Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+Link: https://lore.kernel.org/r/20240203165307.7806-5-aford173@gmail.com
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pmdomain/ti/omap_prm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pmdomain/imx/imx8mp-blk-ctrl.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pmdomain/ti/omap_prm.c b/drivers/pmdomain/ti/omap_prm.c
-index c2feae3a634ca..b8ceb3c2b81c2 100644
---- a/drivers/pmdomain/ti/omap_prm.c
-+++ b/drivers/pmdomain/ti/omap_prm.c
-@@ -695,6 +695,8 @@ static int omap_prm_domain_init(struct device *dev, struct omap_prm *prm)
- 	data = prm->data;
- 	name = devm_kasprintf(dev, GFP_KERNEL, "prm_%s",
- 			      data->name);
-+	if (!name)
-+		return -ENOMEM;
+diff --git a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+index c6ac32c1a8c17..31693add7d633 100644
+--- a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
++++ b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
+@@ -55,7 +55,7 @@ struct imx8mp_blk_ctrl_domain_data {
+ 	const char *gpc_name;
+ };
  
- 	prmd->dev = dev;
- 	prmd->prm = prm;
+-#define DOMAIN_MAX_CLKS 2
++#define DOMAIN_MAX_CLKS 3
+ #define DOMAIN_MAX_PATHS 3
+ 
+ struct imx8mp_blk_ctrl_domain {
+@@ -457,8 +457,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx8mp_hdmi_domain_data[] = {
+ 	},
+ 	[IMX8MP_HDMIBLK_PD_LCDIF] = {
+ 		.name = "hdmiblk-lcdif",
+-		.clk_names = (const char *[]){ "axi", "apb" },
+-		.num_clks = 2,
++		.clk_names = (const char *[]){ "axi", "apb", "fdcc" },
++		.num_clks = 3,
+ 		.gpc_name = "lcdif",
+ 		.path_names = (const char *[]){"lcdif-hdmi"},
+ 		.num_paths = 1,
+@@ -483,8 +483,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx8mp_hdmi_domain_data[] = {
+ 	},
+ 	[IMX8MP_HDMIBLK_PD_HDMI_TX] = {
+ 		.name = "hdmiblk-hdmi-tx",
+-		.clk_names = (const char *[]){ "apb", "ref_266m" },
+-		.num_clks = 2,
++		.clk_names = (const char *[]){ "apb", "ref_266m", "fdcc" },
++		.num_clks = 3,
+ 		.gpc_name = "hdmi-tx",
+ 	},
+ 	[IMX8MP_HDMIBLK_PD_HDMI_TX_PHY] = {
 -- 
 2.43.0
 
