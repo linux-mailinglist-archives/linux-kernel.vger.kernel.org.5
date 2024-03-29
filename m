@@ -1,61 +1,60 @@
-Return-Path: <linux-kernel+bounces-124648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0B5891AFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:15:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21A22891AFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:15:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 079FA1C26201
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:15:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B56671F29F5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23559161B58;
-	Fri, 29 Mar 2024 12:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3014916A1E8;
+	Fri, 29 Mar 2024 12:33:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7r35N7V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tiY1/JF0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E67A1649DD;
-	Fri, 29 Mar 2024 12:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC8A85C65;
+	Fri, 29 Mar 2024 12:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715625; cv=none; b=Nalj5PyHUNsaB+A+44hIV5AgIUOPULUpW2wieFeaTgDX9C8i3d1J5gqjoxXUV2OZXOcTnvjKFOPGLDnb377BhN+ums0xjvjNIvepaWmpZC/vMq4NlksCxHdHPoRLLJfoIxlsAVJzIr9RCYO2t8WKwt9WKHHIdv+NSUvTV/vL7Lk=
+	t=1711715627; cv=none; b=oDtEx5CICknFTVJGmzjcXYI9OTqn+EqjnR+bbNlufEa0I1KXUEg7a6Ufs7JmZEjk6Cn1X9KoMJ9V1CqkWpHU9ckV5xIfg7I6VjN9zngpIbCgsiI+I/ralrxrsezjHi0JFbY5Mbu47Ypk3rWpX/B1mzvonngEk2443tF9jHTuFF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715625; c=relaxed/simple;
-	bh=z3XiLMh0cK+G0ZnTWiXCzpuT2OM6i7XU0zkUIoZQdhc=;
+	s=arc-20240116; t=1711715627; c=relaxed/simple;
+	bh=ORrkXhOEFKtoASG7lh/cLzIJoH6liO4TrWq0yY57hWU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HpIHa0aB3nkzxF9RCp+hCzc/oHrDE7g9imz+DYYLm169HSMqxnZynRltHrtyeDwx+MIDip5/DhaUl+7/azd9/MQFPzl8CA69IKjoPGaUph03ntlfjcbUUn47PZH2hONzgz8HawUac5+zea038taGVDR/oQiDjCl9FbqrMv+4UnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L7r35N7V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97D86C433C7;
-	Fri, 29 Mar 2024 12:33:43 +0000 (UTC)
+	 MIME-Version; b=MCM0CAaeFxDpJLsth9isczIGrU/sliWujOj5QGro7+xYrEt/26/ouLsqLDc3NPuR0wsBnNIvfG49I0eb4Co/xzgvkXqFRk5hry1q5eAP02WwD6WiHCTcdD08IdcOSVFL3KdCyHH9XssRObLBnWf0w9p8oD7k5GAtDhZuJLH+m6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tiY1/JF0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B2EDC433F1;
+	Fri, 29 Mar 2024 12:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715624;
-	bh=z3XiLMh0cK+G0ZnTWiXCzpuT2OM6i7XU0zkUIoZQdhc=;
+	s=k20201202; t=1711715627;
+	bh=ORrkXhOEFKtoASG7lh/cLzIJoH6liO4TrWq0yY57hWU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L7r35N7V0OTvmvfHzlmdCa3141ryDTzS/BUzRWY1pcCSkPmPnlbTOziESx3EHrkvf
-	 oSe9LKHfaLKRRfki6xhOkgHxvDUdlBhSoAEb66kIcKiCHAdI9f8cQDxqz37H+jTgMH
-	 r5HuzJqzvtFjKsJUZnEbbf7DBGfLDUDlnQVck14Ns7PrGhUxG4TWnnDOUChlK27t0/
-	 G6YH0YWfl5bZod67oqEcIKEso35Na4ysCJ7zo7cn6z/vpiF6ngLTx3cFGdCYsCrTeZ
-	 v0VYUWYzNsZTX+8QqgBaeX4K58XCskyz8RpcHr5gON2Vcjamag+QMA8FowfKkEcsfv
-	 HPZSq3o8ERMPA==
+	b=tiY1/JF0XIXwDpo1OMVG1lqTDJn1IGaLfLx/MTCcVGrstYtpEafEOaXoSufbKu23r
+	 sesDhIKgMmc3lfJoZSJTyk3wmNCA14i07AlU9XhJ00LGoX9/USSAoN/7sS+dzfm9hH
+	 X4zkTvCCIclE8MkndveFqNUPdz7qxiP6gNoppjUybQ9YFQ4MGih+eW6HI29+uBRjGS
+	 k48ew7STGzGpSh537/ytoo4OLf4bUUNSUiB91wyEVpwlroELMhjmwvA/reJkrq23yC
+	 e6TjxqHnvYm/jkEIue9dHQJ7w3TRCwmfEhc0ZIoWxOtqBy5oa3JjYM44AHbI1zuoFL
+	 0OUSn2MEx3acA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Sasha Levin <sashal@kernel.org>,
-	davem@davemloft.net,
-	andreas@gaisler.com,
-	masahiroy@kernel.org,
-	catalin.marinas@arm.com,
-	rmk+kernel@armlinux.org.uk,
-	svens@linux.ibm.com,
-	sparclinux@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 14/20] sparc: vdso: Disable UBSAN instrumentation
-Date: Fri, 29 Mar 2024 08:33:02 -0400
-Message-ID: <20240329123316.3085691-14-sashal@kernel.org>
+	kernel test robot <lkp@intel.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nicolas Schier <n.schier@avm.de>,
+	linux-sh@vger.kernel.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 15/20] sh: Fix build with CONFIG_UBSAN=y
+Date: Fri, 29 Mar 2024 08:33:03 -0400
+Message-ID: <20240329123316.3085691-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123316.3085691-1-sashal@kernel.org>
 References: <20240329123316.3085691-1-sashal@kernel.org>
@@ -72,34 +71,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit d4be85d068b4418c341f79b654399f7f0891069a ]
+[ Upstream commit e36b70fb8c707a0688960184380bc151390d671b ]
 
-The UBSAN instrumentation cannot work in the vDSO since it is executing
-in userspace, so disable it in the Makefile. Fixes the build failures
-such as:
+The early boot stub for sh had UBSan instrumentation present where it is
+not supported. Disable it for this part of the build.
 
-arch/sparc/vdso/vclock_gettime.c:217: undefined reference to `__ubsan_handle_shift_out_of_bounds'
+  sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate_table':
+  misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_out_of_bounds'
 
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://lore.kernel.org/all/20240224073617.GA2959352@ravnborg.org
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp@intel.com/
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nicolas Schier <n.schier@avm.de>
+Cc:  <linux-sh@vger.kernel.org>
+Link: https://lore.kernel.org/r/20240130232717.work.088-kees@kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/vdso/Makefile | 1 +
+ arch/sh/boot/compressed/Makefile | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
-index c5e1545bc5cf9..d0f6487d1e790 100644
---- a/arch/sparc/vdso/Makefile
-+++ b/arch/sparc/vdso/Makefile
-@@ -2,6 +2,7 @@
- #
- # Building vDSO images for sparc.
- #
+diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/Makefile
+index 589d2d8a573db..edc9dc36115dc 100644
+--- a/arch/sh/boot/compressed/Makefile
++++ b/arch/sh/boot/compressed/Makefile
+@@ -13,6 +13,7 @@ targets		:= vmlinux vmlinux.bin vmlinux.bin.gz \
+ OBJECTS = $(obj)/head_32.o $(obj)/misc.o $(obj)/cache.o
+ 
+ GCOV_PROFILE := n
 +UBSAN_SANITIZE := n
  
- VDSO64-$(CONFIG_SPARC64)	:= y
- VDSOCOMPAT-$(CONFIG_COMPAT)	:= y
+ #
+ # IMAGE_OFFSET is the load offset of the compression loader
 -- 
 2.43.0
 
