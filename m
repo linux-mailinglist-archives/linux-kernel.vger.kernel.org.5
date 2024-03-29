@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-124761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAFD891C3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:44:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E60E891C3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 100391F2205F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:44:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDCA628B1F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1777D180A90;
-	Fri, 29 Mar 2024 12:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2923181315;
+	Fri, 29 Mar 2024 12:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKedmES6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAI0V5vS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E5A180A7D;
-	Fri, 29 Mar 2024 12:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE13180A9A;
+	Fri, 29 Mar 2024 12:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716096; cv=none; b=PS44Vm6pghE35mSWN1zx39PXTkihhPmc/OSa4YGiYktOBSIWjUEgof9CIvzuZZqpEcwAVUfAID9lLDsUpePrMOYydyz61b3ePSgFQTHe4YdnVmGdZpoyDHunSy+G8UNIlDzHrp/3uu+MDgxE/PpmhpvpxPt6Hnpvog7CsykFV4M=
+	t=1711716099; cv=none; b=oAz2NxhS/Yg0bgSXyoxYWbMWNlL0rvi0rhiY81bJcjIDAfu3oIypZUmm/aDAHEtHESZlqXDcx++jzotqAzTW0bCE+Vb3UeRFXdDLA8UfsVxlDwcLs1jpqESFqDQnJAqH5YUaZ8ndJ/VLW3l+abG++Zt5hThIfsin/mdqwy82A/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716096; c=relaxed/simple;
-	bh=QPLVn594emU0I3NOpLawSQgMidgeuHWuB6usbt5H/qc=;
+	s=arc-20240116; t=1711716099; c=relaxed/simple;
+	bh=6BB67VKYQcGGM39DP5isCx0F37YiOyTglODRH4ADdI8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jxdLLrcfFEsE9p04ynPX1roDeB3TqKVI9Exx2yt9G+E5+iGjQn0o9H2aQofTZHhGrXoiefhSdFX+C76SRJNWAhi7mNCCrWDPBevG4Jp7E3S8k9+cr9n/beNmPp07YBomgfQPsKDPwHaw4ZpuO6A+gzPSRta6Jg/Im0yDIjobzNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKedmES6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1B76C433F1;
-	Fri, 29 Mar 2024 12:41:34 +0000 (UTC)
+	 MIME-Version; b=IsDJW/Q4vlyKsB30efXIv2ZV3JrKkAwTVNyZNHdfGHKLu5NaMpy3+LNl5Yc/GeYFnB3hDwxhjjBqZeoDxl4LHxumOTheCiPGZzZo8SfbmfxNYkvM7foWogRCSBGbKmuJfH/OGXj92Yszk4mlToqKBdbKIe8yGd4i0P17xm8pFoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XAI0V5vS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64AD9C433F1;
+	Fri, 29 Mar 2024 12:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716096;
-	bh=QPLVn594emU0I3NOpLawSQgMidgeuHWuB6usbt5H/qc=;
+	s=k20201202; t=1711716098;
+	bh=6BB67VKYQcGGM39DP5isCx0F37YiOyTglODRH4ADdI8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FKedmES6H/JWp8nR2f6srX7xgMyyP4C3pLqROWjk+r/vdVOwi63CsqmXY9taUaK6Z
-	 UYfh2yTt4eSXquor0J/8JsqcyoJtzog2wRwe6oTX8wldNfQRdkNeqQgybeepRA3E7r
-	 9W3ICBPLEK9kA57Ut9zZH8DKNVUNg50X2VvN5hkamktVSIi60CiMc7GW51bGO389E7
-	 91EJS/JAaemet3Ou9+YX1UU89++uEErfmj0bVoBnCkmLp4Uz97jqOJcIGocBIrm/Ds
-	 591w7qY3xDodG7i+jpr9zpYcurgr05W7PAsUexCWdhG4Gm6fxuPLB0NATuo5TYqQot
-	 PpM7ue27z6TlQ==
+	b=XAI0V5vSGY63cWGH5PmYi9yrfrM4UPTxnn4toWN2+UU0ZxjguAdtLNxWWtrob9Kcd
+	 ldb/Yn7u/zZR3q1rPYZf6/maJJKXG+Uk4tIxQxkK+jdAF40R7pYawnQBpHzObIUvRa
+	 kD0D8bPTNiFuBFCCugdAbwZJ9kzuabysYk4XrMNZiqzoHysgQRFE3Rt9PZKyLY5JJo
+	 Plq1PFORFDPC7FMBQaKwXHcn7ioK+pTBHxDGor47y2cJQ5bpbSS5z951wv2DhHMkAF
+	 Fbktahis0qmo4vn53LJ6Dko7hMbs8vejXlFxrPORRY6w4xp1tFsvjAL3jZv2wK0sq4
+	 j7UIfardCtMbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,17 +47,15 @@ Cc: Hans de Goede <hdegoede@redhat.com>,
 	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	rafael@kernel.org,
-	robert.moore@intel.com,
 	mika.westerberg@linux.intel.com,
 	mario.limonciello@amd.com,
 	michal.wilczynski@intel.com,
 	raag.jadav@intel.com,
 	mail@mariushoch.de,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.8 52/98] ACPI: x86: Move acpi_quirk_skip_serdev_enumeration() out of CONFIG_X86_ANDROID_TABLETS
-Date: Fri, 29 Mar 2024 08:37:23 -0400
-Message-ID: <20240329123919.3087149-52-sashal@kernel.org>
+	linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 53/98] ACPI: x86: Add DELL0501 handling to acpi_quirk_skip_serdev_enumeration()
+Date: Fri, 29 Mar 2024 08:37:24 -0400
+Message-ID: <20240329123919.3087149-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -74,7 +72,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 7c86e17455de1a442ec906d3449148b5e9a218a4 ]
+[ Upstream commit 99b572e6136eab69a8c91d72cf8595b256e304b5 ]
 
 Some recent(ish) Dell AIO devices have a backlight controller board
 connected to an UART.
@@ -82,116 +80,62 @@ connected to an UART.
 This UART has a DELL0501 HID with CID set to PNP0501 so that the UART is
 still handled by 8250_pnp.c. Unfortunately there is no separate ACPI device
 with an UartSerialBusV2() resource to model the backlight-controller.
+This causes the kernel to create a /dev/ttyS0 char-device for the UART
+instead of creating an in kernel serdev-controller + serdev-device pair
+for a kernel backlight driver.
 
-The next patch in this series will use acpi_quirk_skip_serdev_enumeration()
-to still create a serdev for this for a backlight driver to bind to
-instead of creating a /dev/ttyS0.
+Use the existing acpi_quirk_skip_serdev_enumeration() mechanism to work
+around this by returning skip=true for tty-ctrl parents with a HID
+of DELL0501.
 
-This new acpi_quirk_skip_serdev_enumeration() use is not limited to Android
-X86 tablets, so move it out of the ifdef CONFIG_X86_ANDROID_TABLETS block.
+Like other cases where the UartSerialBusV2() resource is missing or broken
+this will only create the serdev-controller device and the serdev-device
+itself will need to be instantiated by platform code.
+
+Unfortunately in this case there is no device for the platform-code
+instantiating the serdev-device to bind to. So also create
+a platform_device for this.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/x86/utils.c | 18 ++++++++++++++----
- include/acpi/acpi_bus.h  | 14 +++++++-------
- 2 files changed, 21 insertions(+), 11 deletions(-)
+ drivers/acpi/x86/utils.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
-index bc65ebfcdf767..8829a907eee02 100644
+index 8829a907eee02..90c3d2eab9e99 100644
 --- a/drivers/acpi/x86/utils.c
 +++ b/drivers/acpi/x86/utils.c
-@@ -428,7 +428,7 @@ bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev)
- }
- EXPORT_SYMBOL_GPL(acpi_quirk_skip_i2c_client_enumeration);
+@@ -484,8 +484,28 @@ static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bo
  
--int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
+ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
  {
- 	struct acpi_device *adev = ACPI_COMPANION(controller_parent);
- 	const struct dmi_system_id *dmi_id;
-@@ -436,8 +436,6 @@ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *s
- 	u64 uid;
- 	int ret;
- 
--	*skip = false;
--
- 	ret = acpi_dev_uid_to_integer(adev, &uid);
- 	if (ret)
- 		return 0;
-@@ -463,7 +461,6 @@ int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *s
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
- 
- bool acpi_quirk_skip_gpio_event_handlers(void)
- {
-@@ -478,8 +475,21 @@ bool acpi_quirk_skip_gpio_event_handlers(void)
- 	return (quirks & ACPI_QUIRK_SKIP_GPIO_EVENT_HANDLERS);
- }
- EXPORT_SYMBOL_GPL(acpi_quirk_skip_gpio_event_handlers);
-+#else
-+static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+{
-+	return 0;
-+}
- #endif
- 
-+int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+{
-+	*skip = false;
++	struct acpi_device *adev = ACPI_COMPANION(controller_parent);
 +
-+	return acpi_dmi_skip_serdev_enumeration(controller_parent, skip);
-+}
-+EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
-+
- /* Lists of PMIC ACPI HIDs with an (often better) native charger driver */
- static const struct {
- 	const char *hid;
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index e4d24d3f9abb5..446225aada50d 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -749,6 +749,7 @@ bool acpi_device_override_status(struct acpi_device *adev, unsigned long long *s
- bool acpi_quirk_skip_acpi_ac_and_battery(void);
- int acpi_install_cmos_rtc_space_handler(acpi_handle handle);
- void acpi_remove_cmos_rtc_space_handler(acpi_handle handle);
-+int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
- #else
- static inline bool acpi_device_override_status(struct acpi_device *adev,
- 					       unsigned long long *status)
-@@ -766,23 +767,22 @@ static inline int acpi_install_cmos_rtc_space_handler(acpi_handle handle)
- static inline void acpi_remove_cmos_rtc_space_handler(acpi_handle handle)
- {
- }
-+static inline int
-+acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
-+{
-+	*skip = false;
-+	return 0;
-+}
- #endif
+ 	*skip = false;
  
- #if IS_ENABLED(CONFIG_X86_ANDROID_TABLETS)
- bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev);
--int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
- bool acpi_quirk_skip_gpio_event_handlers(void);
- #else
- static inline bool acpi_quirk_skip_i2c_client_enumeration(struct acpi_device *adev)
- {
- 	return false;
++	/*
++	 * The DELL0501 ACPI HID represents an UART (CID is set to PNP0501) with
++	 * a backlight-controller attached. There is no separate ACPI device with
++	 * an UartSerialBusV2() resource to model the backlight-controller.
++	 * Set skip to true so that the tty core creates a serdev ctrl device.
++	 * The backlight driver will manually create the serdev client device.
++	 */
++	if (acpi_dev_hid_match(adev, "DELL0501")) {
++		*skip = true;
++		/*
++		 * Create a platform dev for dell-uart-backlight to bind to.
++		 * This is a static device, so no need to store the result.
++		 */
++		platform_device_register_simple("dell-uart-backlight", PLATFORM_DEVID_NONE,
++						NULL, 0);
++		return 0;
++	}
++
+ 	return acpi_dmi_skip_serdev_enumeration(controller_parent, skip);
  }
--static inline int
--acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
--{
--	*skip = false;
--	return 0;
--}
- static inline bool acpi_quirk_skip_gpio_event_handlers(void)
- {
- 	return false;
+ EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
 -- 
 2.43.0
 
