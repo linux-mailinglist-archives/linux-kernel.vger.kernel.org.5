@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-124328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE1308915B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6008915C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BA1B1F22D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0F731F22D0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D437B3FB86;
-	Fri, 29 Mar 2024 09:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF9D4F5F2;
+	Fri, 29 Mar 2024 09:25:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mAI+6F8z"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BURO8ZOR"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2303E2B9B0
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C114439E
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:25:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711704335; cv=none; b=sG2K4iQeTj4m9203HmS0SV6WnnBxCm2JD6zZMp7VaDvzfoVQ7GbWzfNnwp5ukMrLyYL0KOtxaL/iHIcQUIZfuXPI09IKoyh6HZYALcZQhQXffdmgrbteqdZGH2+ji3ye4psh/RPk8D1X+k0Ob4mm7lrpDjyCTVwID6d5FAkTH9E=
+	t=1711704356; cv=none; b=E1EL/M6IWgUbY+kxxbeqe3vX8TCM8xRxatxL7INxmBx62S+2J09jTxC3+Vd7Fl0bYvU1KfIjZIc/T5X7iuxLDRuc6HmNLe8GMRSia6j6nh4nR2SlKpXo3iLzNWQPy9XnsD1WASf+B8WlhetRD8t94sWIaHXceWPljO55zxO3M2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711704335; c=relaxed/simple;
-	bh=dZMd+hjwWBu0w3Nr26MjlG54+9irZNQQ5J2LGMlr7cM=;
+	s=arc-20240116; t=1711704356; c=relaxed/simple;
+	bh=MF1Ku/gLWWSReWgKcH2HCIF0NvNzfqUrCw4PYMelJgA=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=muw1s0qvjKNzHZYKmrE7tKRYPWNSXf/PAD8gXESIcHBuXAEMpYLoAkHIu7Hq6FcnG5f8gs1jEshQ8YVDSsIVu2ms245X5X1tayRkEmr8UcE1U3jHoNrqyHmiM8mlcCBJvn79Fz98aujf6R0LdMbd8I9g4/L6HFAb5wzE9khAP4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mAI+6F8z; arc=none smtp.client-ip=209.85.221.46
+	 In-Reply-To:Content-Type; b=iWSG7j6MkT20aHrI/InQN1R3Mwbvufx9TDajqDpbL0+Vd+vlgJZuA+Bf+/7x+AZse7BPZcbj11Z/e9+ZgNpayHI+nC3kAJ2Jg+Npz7XfmmH8/piCe7vTZYTl2fgt1UZUOIQlPbpA1ufsF2yZrudQbvnfAYaWjX9Zc1SzuBa7MFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BURO8ZOR; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-341cf28e055so1292549f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:25:32 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33edbc5932bso1256412f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711704331; x=1712309131; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711704353; x=1712309153; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GEQURDN2hc0rSK6rdl4NmLGBAAhTVwyKdlzTTBj2f1Y=;
-        b=mAI+6F8zjKJ9QZ6icpJr1kulzBogw8afqLcl1BnCfe86M4vnnmlPsgV7eB/idRXS3u
-         1r1c1hSEmiWQ9kgwae4WEzj+AhumoJVQgWwcb7PSEJvwUp7+wH7OJIsALroAnpx4dxf4
-         iRBq7pFx9UKCrzCV1V8czS4UGLU4uKrnFiyk9JYWmVMYsxEv5cL+zF9r4LOfBDbfoCNc
-         2mPHKCTSstamp1Eh5pJWxOkWqXXMuMriUXj/PMyehYgHY2V4VcIPwyS0ubLB9LST8yha
-         zoYkiAnIc9upxv7O12pu4jUT1wCCwKzD58fyLfdvoHcr7AGcGJKkc4DJWu2cYv2rfk2u
-         GY4g==
+        bh=ZbqAjvcUfXjEMKsMx6DWt6hGRbZ/4fw+xrXlGf6rT+k=;
+        b=BURO8ZORorh4e+9lhJ45tBmmkjHTQHMtg44jySVxHtSpmIzigT48qOo6+IEEOxVMgu
+         qJqVh1vuMBRc+s+cfTjpAxTisg1r/uiE8i9NO01ezl+0lv4+PtjlKPkHbpc+sLYPEHs+
+         TfYLZXAtNMsC/yoKtpCnJwqcPATaqy7S8N8rzyTqs8qe/JkM6voyxus7AkkFKggRrBft
+         dQ1DG/5WS1My1NMHwWkOg5kuUYJldM7Q4c8Ll7uziaEfO1c3g5PmJxof0oHR3thpy1eX
+         FhR4eM2JZmyirRW23+wru/roHC3D2X+PKWRd6uNRZmhu+w+/u7L/ej06eCR36APD6SNZ
+         ofpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711704331; x=1712309131;
+        d=1e100.net; s=20230601; t=1711704353; x=1712309153;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:references:cc:to:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=GEQURDN2hc0rSK6rdl4NmLGBAAhTVwyKdlzTTBj2f1Y=;
-        b=RDr/7Xvbsey7HCWkQLX8q/4T6xv0oDfhh5LTIpUeiSVo753nZttAzKwgjPOrZc3Jkt
-         xfr0SAWFSAGJm22F1s7r4WBDCJ+/u6oVbB/7h1TJIdJvuvE2hY677SnFnWi8uXbc9b3X
-         lGKTF1gI3fekVV9rkUEynkFKv9syHs1/2jLGKX5n63VV7JnOrF7228Z3sk2VO0td9ADj
-         eVaUGfGH4WjXPXDYwuIuKbTy3Nexz6xnXu1QEDYX8jVLfKH3b+NztegBrhrpLAKxgpPX
-         MY/h9dNQIuC/7+QGG5n7/gijuiQPZ0S+5lqMkBRPTCUhm+yybnSupL3QsfLGpW1sE2L9
-         6iyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWvb/TnNSLVLdkIYMrUpnCA5zQ6qncPLmq8rMlMvqgjuJ0l4OggAwvgZjNfeAK7QUrcXUxh3eNE3kT/LEUFcQFm+pUT8lnI7/m8t+P6
-X-Gm-Message-State: AOJu0YxBeW5c+EtQEm9d0mT3xsnNKuAyNDcZpp6iFDx/rjB3e2I4WEVz
-	W1YVAVce+m8pSSay/PFoq0M2CBvl19VcylEWLrZkGT3w4hxaW2tFYhuxkvRVSwI=
-X-Google-Smtp-Source: AGHT+IHMYXV+HQAfMGTkNrpH0Nc8z57jRzmZssTg62uPFuuEAS0jJ9N+Vu7WdhPYRHT4wOscd1BfoA==
-X-Received: by 2002:adf:ea0a:0:b0:343:2e06:9a10 with SMTP id q10-20020adfea0a000000b003432e069a10mr1254676wrm.15.1711704331306;
-        Fri, 29 Mar 2024 02:25:31 -0700 (PDT)
+        bh=ZbqAjvcUfXjEMKsMx6DWt6hGRbZ/4fw+xrXlGf6rT+k=;
+        b=nwEk1PHDcdxMU5rQRoqZx9PoZlE13rF6E8vyTg0lxQ9BIKCFYkfQtWIQ0cdHJahu2M
+         R9H1qwJiQsWkxbS1j4F31FrYhbwiWjQhgY4EUv9nalAZES+Uf8dVeDYOQnD/pVPM/oe5
+         spB2g+F7vFETxTQc0iHcYaHYi7MAdCWhMmN/CV8l2lDanW0c1jH8VK1AQa22Q/zUbZct
+         yeqLqMJrc3J/EwlTpuO8b2fYXWMuoQUjeSSeNF0xCVaLel3OfhxpM2yE/2K+tEuVkM9q
+         H3WaNBe8XPTjXS6DS9tLDoSpRvFnxKrKeM5mq8GLh/d1i5U3E/y+KhisMGnCTBEEbpUJ
+         pzOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJjVpDEO9KnO2G6UrkgSJBxjZvLhmcuLiknNH5c9EEH155Gy0xyTAQGg8HktLqS8UfizfJp4tsVLhj+pqsnkKDKTV3VAxQcK8B97YF
+X-Gm-Message-State: AOJu0Ywkd3dZxFM9paid4fDUZwCjGyqhPlMV4LnQayqt0SRH3mF5sqiC
+	Ahh3/LHhZ1DNKvNESg/KM+/PR36cmzAdQgEjzpZn9+QRBwq3vt4avT4y9NI1Fd8=
+X-Google-Smtp-Source: AGHT+IH50re5PV/7C69XBqtrNUv+0lTseoO19JlUo4rrIVUwOSr28cjIJZSndIqjgSoPac8lxMlu5g==
+X-Received: by 2002:a05:6000:1b04:b0:341:a802:3d25 with SMTP id f4-20020a0560001b0400b00341a8023d25mr840814wrz.53.1711704352929;
+        Fri, 29 Mar 2024 02:25:52 -0700 (PDT)
 Received: from ?IPV6:2a01:e0a:982:cbb0:3cd8:c97b:1468:c232? ([2a01:e0a:982:cbb0:3cd8:c97b:1468:c232])
-        by smtp.gmail.com with ESMTPSA id n3-20020a5d67c3000000b00341ddb65b07sm3742703wrw.63.2024.03.29.02.25.30
+        by smtp.gmail.com with ESMTPSA id bk5-20020a0560001d8500b003418364032asm3779716wrb.112.2024.03.29.02.25.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 02:25:30 -0700 (PDT)
-Message-ID: <15e3114d-0446-4668-83a9-1d28d50f4eb9@linaro.org>
-Date: Fri, 29 Mar 2024 10:25:29 +0100
+        Fri, 29 Mar 2024 02:25:52 -0700 (PDT)
+Message-ID: <ab23d0fe-7c94-4170-9776-2d7696a02665@linaro.org>
+Date: Fri, 29 Mar 2024 10:25:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,8 +79,8 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/3] reset: reset-meson: add support for Amlogic T7 SoC
- Reset Controller
+Subject: Re: [PATCH 3/3] arm64: dts: amlogic: add reset controller for Amlogic
+ T7 SoC
 To: kelvin.zhang@amlogic.com, Philipp Zabel <p.zabel@pengutronix.de>,
  Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -91,7 +91,7 @@ Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
  Zelong Dong <zelong.dong@amlogic.com>
 References: <20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com>
- <20240329-t7-reset-v1-2-4c6e2e68359e@amlogic.com>
+ <20240329-t7-reset-v1-3-4c6e2e68359e@amlogic.com>
 Content-Language: en-US, fr
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -118,48 +118,46 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro
-In-Reply-To: <20240329-t7-reset-v1-2-4c6e2e68359e@amlogic.com>
+In-Reply-To: <20240329-t7-reset-v1-3-4c6e2e68359e@amlogic.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 29/03/2024 10:17, Kelvin Zhang via B4 Relay wrote:
 > From: Zelong Dong <zelong.dong@amlogic.com>
 > 
-> There are 7 sets of Reset Source in Amlogic T7 SoC Reset Controller,
-> and the offset between base and level registers is 0x40.
-> Add a new compatible string and struct meson_reset_param to support
-> the reset controller on T7 SoC.
+> Add the reset controller device of Amlogic T7 SoC family
 > 
 > Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
 > Signed-off-by: Kelvin Zhang <kelvin.zhang@amlogic.com>
 > ---
->   drivers/reset/reset-meson.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+>   arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 7 +++++++
+>   1 file changed, 7 insertions(+)
 > 
-> diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
-> index f78be97898bc..1e9fca3e30e8 100644
-> --- a/drivers/reset/reset-meson.c
-> +++ b/drivers/reset/reset-meson.c
-> @@ -102,6 +102,11 @@ static const struct meson_reset_param meson_s4_param = {
->   	.level_offset	= 0x40,
->   };
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+> index 5248bdf824ea..e94bb85b5292 100644
+> --- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+> @@ -5,6 +5,7 @@
 >   
-> +static const struct meson_reset_param t7_param = {
-> +	.reg_count      = 7,
-> +	.level_offset   = 0x40,
-> +};
+>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>   #include <dt-bindings/power/amlogic,t7-pwrc.h>
+> +#include <dt-bindings/reset/amlogic,t7-reset.h>
+>   
+>   / {
+>   	interrupt-parent = <&gic>;
+> @@ -149,6 +150,12 @@ apb4: bus@fe000000 {
+>   			#size-cells = <2>;
+>   			ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
+>   
+> +			reset: reset-controller@2000 {
+> +				compatible = "amlogic,t7-reset";
+> +				reg = <0x0 0x2000 0x0 0x98>;
+> +				#reset-cells = <1>;
+> +			};
 > +
->   static const struct of_device_id meson_reset_dt_ids[] = {
->   	 { .compatible = "amlogic,meson8b-reset",    .data = &meson8b_param},
->   	 { .compatible = "amlogic,meson-gxbb-reset", .data = &meson8b_param},
-> @@ -109,6 +114,7 @@ static const struct of_device_id meson_reset_dt_ids[] = {
->   	 { .compatible = "amlogic,meson-a1-reset",   .data = &meson_a1_param},
->   	 { .compatible = "amlogic,meson-s4-reset",   .data = &meson_s4_param},
->   	 { .compatible = "amlogic,c3-reset",   .data = &meson_s4_param},
-> +	 { .compatible = "amlogic,t7-reset",   .data = &t7_param},
->   	 { /* sentinel */ },
->   };
->   MODULE_DEVICE_TABLE(of, meson_reset_dt_ids);
+>   			watchdog@2100 {
+>   				compatible = "amlogic,t7-wdt";
+>   				reg = <0x0 0x2100 0x0 0x10>;
 > 
 
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
