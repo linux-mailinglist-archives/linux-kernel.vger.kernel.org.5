@@ -1,122 +1,117 @@
-Return-Path: <linux-kernel+bounces-125269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9435389231C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:03:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07B60892322
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:06:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C578E1C2115F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:03:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEABB1F22891
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A86136E18;
-	Fri, 29 Mar 2024 18:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB86137900;
+	Fri, 29 Mar 2024 18:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K8a+xQJy"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V94ku2tA"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D6C5B1E7
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5361752F79;
+	Fri, 29 Mar 2024 18:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711735409; cv=none; b=l5odkzzItxW/KQZApds9DvokHi/FMUEgL6zndj26TDlfVLJJV689DyrK90wf+jgytHIOpZp+e/SVZxTPng0a7yaVAXcxdS8m1SBTqaPO3mIYJeESaLxiXnNWmIF3wZKCgIbi7omPT2hGMy4laTIx68VZDFXt+OCBz7blTcLtK9I=
+	t=1711735574; cv=none; b=UbJf/NIkyy89E9yREApR0EidGtKVe68bA2sQRhp6MP/LJV3hMerexjZS0VrcDQoyuWibie/211KOgt0/Zgeonz7+pSLK2TkT0HeCDCylgpLvs0qHnXY6tqLGWv8RolWHp31NsX5kWG4Szhuxhv/leWO1Bat7Ut7rP0WBm1/am0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711735409; c=relaxed/simple;
-	bh=faWTYxB1r1z8LEj2RAEE4Pfe9THEg2xwzyWfz3IND+8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=AtpVNhgVQK0mEpyIx3UwrWcAfBYNgDMNgfQ5c52j4MuG01IN2a25/nHLIAA8jc5bmhRFrqNkkVNT5nLOiV28Yq2wGADr5vML1J76Jjurmb9SZg3kMV7r8EI1XDrKgFXNglSJRPfhCxwlJdLJNrwcNfaQM+zkWz79qrG0ayMHMPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K8a+xQJy; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <60264dc3-dea2-48d0-a616-ae14d7c2c14b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711735405;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ejLXMVX3gjZPYohzkFccFuN4Dj+w6Yn3L9HdWfGuzpQ=;
-	b=K8a+xQJyyfQLbT9xqxl/4wD9yMcTrGniICFmVVaYXg0Sjhl68hRGEzeAcAvNcbJymemmcj
-	LjOGdS/jTWmRZDD+e1JSnKIBgK6COMviqMtZHURRjlAuTRX4TFZeqk9UTtfpHbtXIk9OBI
-	yIJnhgj+HlUW41Ld4sfORFVPoZBlnDo=
-Date: Fri, 29 Mar 2024 11:03:16 -0700
+	s=arc-20240116; t=1711735574; c=relaxed/simple;
+	bh=R3BSlNZGjpe56WqazE4wFdBARmf3FVEmHM7BHsgVa9M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ShPxQk5oTx8zt4N/k4ujEZCIEi0NZBZDdxJFW8KMW8j+yoOgl1AWHZXnFFXqnf5KbpBaQ2rySmqTi1KqY2Dp7qwqofMsxvDtAwRu5XyTJbYcQ44ZchjBoRMKIy24z8FekQsh1MiPhEGjp0RaX9a0TnpSLn/8bhZMa1ejr6WcaUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V94ku2tA; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a47680a806so512065eaf.0;
+        Fri, 29 Mar 2024 11:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711735572; x=1712340372; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R3BSlNZGjpe56WqazE4wFdBARmf3FVEmHM7BHsgVa9M=;
+        b=V94ku2tAY7EKQBBJuDasqWg1jH8odq0g9dqRR22Wn+DC580jstkq7zocqO0uYGV4ua
+         u2Xy84yUlA4VA2AcYF9co0YvcaU2/Qk7zWV4LBDcvsjWhJojCMbJ576MR0v6JrpsUkju
+         azAP2x4DRla/SS2LQU07fygIm6j0vvCsmR1QWqvi74XFfcNKudSGRYRfAJCtjYSDlrtd
+         5fu1q7zrS6KrRzvPo4VOzlIhuzqLPilgJlrAkZu5Mea2ciX0JpERckv2JVYmd20uydSK
+         nG7gbd7SzqTjcW+7Cu/uU2L2qrfD2lr+Y/NX2CDwHtLeIFCPcti6lnbEbVhZFCjQIGVX
+         Xr5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711735572; x=1712340372;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R3BSlNZGjpe56WqazE4wFdBARmf3FVEmHM7BHsgVa9M=;
+        b=Zn5v+PHbOA1qVUVlPnhYIyF7pgy/C7RN9Lkrbr+n9Qk4Ud3DNUo/OhZlHXHaRkW0mV
+         YOXxv3OY1DQku8QhkhiineiH6TREE8vp0VZwjoMHchz/JoSWnEdFmRycuOt23HEd9Eqz
+         Xm6QEikY0zrVWf2QqdSavgjl+Ji/hzAleiF8+S59feg4QZoeThWwPOoPmANT+xybe/yo
+         1CYinkdV9YJoJ2EVE+GzQrwsl9KQSvcEnTbdKgqNhhuMt/itDlWQzb2OfgM7u5hh7rOz
+         hvexFlYpDAGDiSxLi1GN3cpYg7sK4CeAXXOH58vUt+ayVN50Wo7TSPXYNRM6CTdGyfgx
+         n0/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUoyXBhL74gyq5F6wGi6MxmncloLd5fYDmAxLwq/TX3aJMWgYA0sZtyd+Oe+XDWoVkRkE1rCF1bgCfBCw/EP+HL4gppGpDVFVISOuao66U7DkiEk45V4VHORts9D0v34OmGs2xFLhVIycOFGoab8/Hv7NL1lkR7vtz7PLOjQ3kx2F1mYotjiJ6RE1yP
+X-Gm-Message-State: AOJu0Yyl7kV/rO4oGWctMX2TywsA47SGe99cGVPgqsXqc9buePRTp2zT
+	4xMleOr8Bgy2H8D9191BLxjdqSl93bXedWXxuUuBCGpUnCr3mF1u9IWO21c2HI0=
+X-Google-Smtp-Source: AGHT+IGOg/geWD4v+qwNlFlaTa+hTI8kOf/RVIEj1oqLw5OnBFGg4z0B/qqLXoBgpz1gwipqIOngrw==
+X-Received: by 2002:a05:6830:1d61:b0:6e6:c6ef:cb3 with SMTP id l1-20020a0568301d6100b006e6c6ef0cb3mr3019879oti.0.1711735572023;
+        Fri, 29 Mar 2024 11:06:12 -0700 (PDT)
+Received: from office-nix (hlfxns018gw-134-41-63-216.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.63.216])
+        by smtp.gmail.com with ESMTPSA id jt12-20020a05621427ec00b00696766401adsm1860527qvb.38.2024.03.29.11.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 11:06:11 -0700 (PDT)
+From: David McFarland <corngood@gmail.com>
+To: "Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>
+Cc: Chris Feng <chris.feng@mediatek.com>,  Linux regressions mailing list
+ <regressions@lists.linux.dev>,  "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>,  Alex Hung <alexhung@gmail.com>,  Hans de
+ Goede <hdegoede@redhat.com>,  Ilpo =?utf-8?Q?J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>,  "platform-driver-x86@vger.kernel.org"
+ <platform-driver-x86@vger.kernel.org>,  LKML
+ <linux-kernel@vger.kernel.org>,  linux-pm@vger.kernel.org
+Subject: Re: [PATCH 1/1] platform/x86/intel/hid: Don't wake on 5-button
+ releases
+In-Reply-To: <1198933e-bf89-4237-a6e8-f7daeeebf885@leemhuis.info> (Linux
+	regression tracking's message of "Fri, 29 Mar 2024 14:51:47 +0100")
+References: <20240318191153.6978-1-corngood@gmail.com>
+	<20240318191153.6978-2-corngood@gmail.com>
+	<1198933e-bf89-4237-a6e8-f7daeeebf885@leemhuis.info>
+Date: Fri, 29 Mar 2024 15:06:10 -0300
+Message-ID: <87bk6wlxpp.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in __bpf_strtoull
-Content-Language: en-US
-To: syzbot <syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com>,
- syzkaller-bugs@googlegroups.com
-References: <0000000000009925b60614c3d39d@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kpsingh@kernel.org, linux-kernel@vger.kernel.org, samsun1006219@gmail.com,
- sdf@google.com, song@kernel.org, xrivendell7@gmail.com,
- yonghong.song@linux.dev
-In-Reply-To: <0000000000009925b60614c3d39d@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-On 3/28/24 7:59 PM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    8d025e2092e2 Merge tag 'erofs-for-6.9-rc2-fixes' of git://..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10f2ffe6180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e2599baf258ef795
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8ac8b7b2292ea867a162
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b3ac29180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160153c9180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/5ccde1a19e22/disk-8d025e20.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/45420817e7d9/vmlinux-8d025e20.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/354bdafd8c8f/bzImage-8d025e20.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
->   __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
->   __bpf_strtoll kernel/bpf/helpers.c:504 [inline]
->   ____bpf_strtol kernel/bpf/helpers.c:525 [inline]
->   bpf_strtol+0x7c/0x270 kernel/bpf/helpers.c:519
->   ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
->   __bpf_prog_run96+0xb5/0xe0 kernel/bpf/core.c:2236
+"Linux regression tracking (Thorsten Leemhuis)"
+<regressions@leemhuis.info> writes:
 
-This should be similar to the other KMSAN reports on the interpreter using
-the uninit stack in the map_lookup/delete_elem helpers. The bpf prog used
-in this C reproducer:
+> David, from here is looks like this is stalled for ten days now. Or was
+> there some progress and I just missed it?
 
-    0: (18) r0 = 0x0
-    2: (b7) r8 = 0
-    3: (7b) *(u64 *)(r10 -72) = r8
-    4: (b7) r8 = 0
-    5: (7b) *(u64 *)(r10 -16) = r8
-    6: (bf) r1 = r10
-    7: (07) r1 += -8
-            ^^^^^^^^
+No, I've not seen any emails since your last.
 
-    8: (bf) r4 = r10
-    9: (07) r4 += -16
-   10: (b7) r2 = 8
-   11: (18) r3 = map[id:68][0]+0
-   13: (b7) r3 = 0
-   14: (85) call bpf_strtol#896752
-   15: (95) exit
+> From the cover letter[1] is sounds a lot like a "Fixes: 0c4cae1bc00d31
+> ("PM: hibernate: Avoid missing wakeup events during hibernation")" would
+> be appropriate here.
 
-#syz fix: bpf: Mark bpf prog stack with kmsan_unposion_memory in interpreter mode
+The specific behaviour I encountered (failure to hibernate) started with
+that commit, but I think it just exposed the underlying behaviour (wake
+on button release), which probably dates to when the driver was
+introduced.
 
+I believe it would have been possible to reproduce the other behaviour I
+mentioned (long hold of button to suspend causes the machine to wake on
+release), even before 0c4cae1bc00d31.
 
+That's why I left it off, but I'm happy to revise.
 
