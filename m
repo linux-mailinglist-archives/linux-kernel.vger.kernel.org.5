@@ -1,233 +1,135 @@
-Return-Path: <linux-kernel+bounces-124295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC3589152B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:27:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0619B89153A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7BA1F211F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:27:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1291F1C22381
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6274F48CCD;
-	Fri, 29 Mar 2024 08:27:40 +0000 (UTC)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFA41B94D;
+	Fri, 29 Mar 2024 08:39:53 +0000 (UTC)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9692F4D11D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 08:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7419113AF9
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 08:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711700859; cv=none; b=OsrR+ToRX7FXSa3kr9IiC/iRvLih/A8Xi2GRBuoMDNpjwvG4m1820I3JTSlstRaMRuXprF1fcUt64Ri/1f5OHM3wxjqG5/x368MyNjuN6PDOIcGowIyFgNhajW2HnpP8dmjZBV83x+BkD3yQQbcq8f3J/SssnEwk14s4fgWSqDU=
+	t=1711701593; cv=none; b=XrJIRa9z15BHTztp86X6b6PRyP+D6Co803Z3EHHttI/UbQztbHMOr6LrHcadQr6YDtceT9RVkamWHGmROnE+AY14/PGUUAX6MTw2KFJfWUClMwliHqb8EOMcrGqu/F5LbIRnVjQV8PxNRoVfWc4gZXvEbp+CQNrs1n/bKhqERpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711700859; c=relaxed/simple;
-	bh=IKMizryUl6nqPup2r0ZFVCX5Sgr1Snx4M9evGSCve9o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Pk1gy0j1z3J9MXjY8ZDUhcEVV/jlnCcQHWYwPBikK00hydur4LjIy+fHi7YbL6BGxhe5cNuk+lf6pJ2dtHNH2vudsdwHVDnQIz3dDg4ALAH/Goha6inja7/UJcOz1QKTDRRpU7qMGlAXUWNo2PBd3KKt3/MWQ7y5cLlFqsFwcFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0BCB71C0004;
-	Fri, 29 Mar 2024 08:27:25 +0000 (UTC)
-Message-ID: <8293ea8b-0a41-4bbf-8737-6fa3414af8e9@ghiti.fr>
-Date: Fri, 29 Mar 2024 09:27:25 +0100
+	s=arc-20240116; t=1711701593; c=relaxed/simple;
+	bh=GR3x12krJXOXWvG/BBTxB9091fvn1PewsYR2Rzs/mFo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u4hlFp4Z1VrVHeVcjyap4Z2zWJCLIdyV2EdJruJF6qHEIEElRHcu7EYMBUjY5fP5S5yfQSw0OR8upia4gXqn0cWLryGqZzWIsY8XAu24WJIuNwPah7xbBrD9b3hg0GsfIExLZ7OTJddAB3L5B9ezpQ4cBPd13vl81HyL/PGKHLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60a046c5262so17742457b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:39:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711701589; x=1712306389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8hkLfUozsxdncT8HuF2o4O/3RcsP/sGMaEklDCCLn1M=;
+        b=rp1BmGk/UEEgfT2+neWIP0nAD8BYMKbNZtw0G3EnOYaLtzfziziaGaTPRRZpyPNnAm
+         CMRdmFc17OukRgoSkoNRUEsJSgOU77U81ahMXuLt+vpL6riqwqAd5c4IijS9nWKly6XX
+         7yjnF9ArB/106YUFJnL4/ALoDTq0iYp56qd6L9gIDKynTC05QPLffILMZ8n/glpt2ISq
+         s2+T/4uHsQxMVXSprq8XVfYiA6YQ6xj2T+4pZW0MHlbFBp40/5yImMROUwhA2+u7oJhS
+         FN6OdO3Y4eUYNgTlycOvtFeQLNHxHPeCArDnh2hQFwF39wWjZJHkqwuUTJniKwP3E1pU
+         1gRw==
+X-Forwarded-Encrypted: i=1; AJvYcCVa41dv5g6lB7UeX41bIYURX4gzd+WzBplxdJIIcmGgAV/LjKTgLxCmVQPBmvfj4uST3WXcdbjynaPyvJ4wbMD0xlcneA70Ym5GDdvR
+X-Gm-Message-State: AOJu0Ywn965tKK6Y5AcqNfetBYJbxH8S3IYsiR/g8LscmTUmxn2M84+1
+	GvGEgm7rMfQKF0nktSZkZCQD604YzIqqTqRK5zNLLmksZUvlFdxMqdQs7HXjZ1w=
+X-Google-Smtp-Source: AGHT+IFEXMrklwhh+i+8jsTuUWt2GgstsMUUgLPP/PsE+c05qIJuWNkBoPuYT9GMhsc8zaJ9xWe4qA==
+X-Received: by 2002:a0d:efc3:0:b0:608:d1b3:30ac with SMTP id y186-20020a0defc3000000b00608d1b330acmr1840556ywe.30.1711701589043;
+        Fri, 29 Mar 2024 01:39:49 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id fl4-20020a05690c338400b00611314e881asm17972ywb.25.2024.03.29.01.39.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 01:39:48 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-ddda842c399so351247276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:39:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVqFgwJItviMDaQAlLMMj4QtA0OGB69DqLbJJSG25JGLooWgQifHOVO6lpYt9Njm/qO5GXzAQyky8zl5dZNK0QcIo8dSuiBdrBI+u47
+X-Received: by 2002:a25:83c5:0:b0:dcc:ae3:d8a0 with SMTP id
+ v5-20020a2583c5000000b00dcc0ae3d8a0mr1625934ybm.48.1711701588203; Fri, 29 Mar
+ 2024 01:39:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] riscv: Call secondary mmu notifier when flushing the
- tlb
-Content-Language: en-US
-To: Alexandre Ghiti <alexghiti@rivosinc.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240328073838.8776-1-alexghiti@rivosinc.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20240328073838.8776-1-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+References: <202403291057.uo43Mlue-lkp@intel.com>
+In-Reply-To: <202403291057.uo43Mlue-lkp@intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 29 Mar 2024 09:39:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWPyz+bZ43Nu-iq_K0GnWbtP3oiXCt22cQSyMvMhQ=A2A@mail.gmail.com>
+Message-ID: <CAMuHMdWPyz+bZ43Nu-iq_K0GnWbtP3oiXCt22cQSyMvMhQ=A2A@mail.gmail.com>
+Subject: Re: arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT'
+ undeclared; did you mean 'CONFIG_LOG_BUF_SHIFT'?
+To: kernel test robot <lkp@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, oe-kbuild-all@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Palmer,
-
-On 28/03/2024 08:38, Alexandre Ghiti wrote:
-> This is required to allow the IOMMU driver to correctly flush its own
-> TLB.
+On Fri, Mar 29, 2024 at 3:19=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   8d025e2092e29bfd13e56c78e22af25fac83c8ec
+> commit: 5394f1e9b687bcf26595cabf83483e568676128d arch: define CONFIG_PAGE=
+_SIZE_*KB on all architectures
+> date:   3 weeks ago
+> config: m68k-alldefconfig (https://download.01.org/0day-ci/archive/202403=
+29/202403291057.uo43Mlue-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240329/202403291057.uo43Mlue-lkp@intel.com/reproduce)
 >
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403291057.uo43Mlue-lkp=
+@intel.com/
 >
-> Changes in v2:
-> - Rebase on top of 6.9-rc1
+> All error/warnings (new ones prefixed by >>):
 >
->   arch/riscv/mm/tlbflush.c | 39 +++++++++++++++++++++++----------------
->   1 file changed, 23 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 893566e004b7..854d984deb07 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -4,6 +4,7 @@
->   #include <linux/smp.h>
->   #include <linux/sched.h>
->   #include <linux/hugetlb.h>
-> +#include <linux/mmu_notifier.h>
->   #include <asm/sbi.h>
->   #include <asm/mmu_context.h>
->   
-> @@ -99,11 +100,19 @@ static void __ipi_flush_tlb_range_asid(void *info)
->   	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
->   }
->   
-> -static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
-> +static inline unsigned long get_mm_asid(struct mm_struct *mm)
-> +{
-> +	return (mm && static_branch_unlikely(&use_asid_allocator)) ?
-> +			atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
-> +}
-> +
-> +static void __flush_tlb_range(struct mm_struct *mm,
-> +			      struct cpumask *cmask,
->   			      unsigned long start, unsigned long size,
->   			      unsigned long stride)
->   {
->   	struct flush_tlb_range_data ftd;
-> +	unsigned long asid = get_mm_asid(mm);
->   	bool broadcast;
->   
->   	if (cpumask_empty(cmask))
-> @@ -137,31 +146,26 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
->   
->   	if (cmask != cpu_online_mask)
->   		put_cpu();
-> -}
->   
-> -static inline unsigned long get_mm_asid(struct mm_struct *mm)
-> -{
-> -	return static_branch_unlikely(&use_asid_allocator) ?
-> -			atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
-> +	if (mm)
-> +		mmu_notifier_arch_invalidate_secondary_tlbs(mm, start, start + size);
->   }
->   
->   void flush_tlb_mm(struct mm_struct *mm)
->   {
-> -	__flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
-> -			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
-> +	__flush_tlb_range(mm, mm_cpumask(mm), 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
->   }
->   
->   void flush_tlb_mm_range(struct mm_struct *mm,
->   			unsigned long start, unsigned long end,
->   			unsigned int page_size)
->   {
-> -	__flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
-> -			  start, end - start, page_size);
-> +	__flush_tlb_range(mm, mm_cpumask(mm), start, end - start, page_size);
->   }
->   
->   void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
->   {
-> -	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
-> +	__flush_tlb_range(vma->vm_mm, mm_cpumask(vma->vm_mm),
->   			  addr, PAGE_SIZE, PAGE_SIZE);
->   }
->   
-> @@ -194,13 +198,13 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->   		}
->   	}
->   
-> -	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
-> +	__flush_tlb_range(vma->vm_mm, mm_cpumask(vma->vm_mm),
->   			  start, end - start, stride_size);
->   }
->   
->   void flush_tlb_kernel_range(unsigned long start, unsigned long end)
->   {
-> -	__flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
-> +	__flush_tlb_range(NULL, (struct cpumask *)cpu_online_mask,
->   			  start, end - start, PAGE_SIZE);
->   }
->   
-> @@ -208,7 +212,7 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
->   void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
->   			unsigned long end)
->   {
-> -	__flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
-> +	__flush_tlb_range(vma->vm_mm, mm_cpumask(vma->vm_mm),
->   			  start, end - start, PMD_SIZE);
->   }
->   #endif
-> @@ -222,7 +226,10 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
->   			       struct mm_struct *mm,
->   			       unsigned long uaddr)
->   {
-> +	unsigned long start = uaddr & PAGE_MASK;
-> +
->   	cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
-> +	mmu_notifier_arch_invalidate_secondary_tlbs(mm, start, start + PAGE_SIZE);
->   }
->   
->   void arch_flush_tlb_batched_pending(struct mm_struct *mm)
-> @@ -232,7 +239,7 @@ void arch_flush_tlb_batched_pending(struct mm_struct *mm)
->   
->   void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
->   {
-> -	__flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
-> -			  FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
-> +	__flush_tlb_range(NULL, &batch->cpumask,
-> +			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
->   	cpumask_clear(&batch->cpumask);
->   }
+>    In file included from arch/m68k/include/asm/thread_info.h:6,
+>                     from include/linux/thread_info.h:60,
+>                     from include/asm-generic/preempt.h:5,
+>                     from ./arch/m68k/include/generated/asm/preempt.h:1,
+>                     from include/linux/preempt.h:79,
+>                     from arch/m68k/include/asm/processor.h:11,
+>                     from include/linux/sched.h:13,
+>                     from arch/m68k/kernel/asm-offsets.c:15:
+>    arch/m68k/include/asm/page_mm.h: In function 'virt_to_pfn':
+> >> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undecla=
+red (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
 
+This is the same issue I mentioned to Arnd in IRC before: as no
+platform is enabled, none of the MMU_* options, and thus none of
+the HAVE_PAGE_SIZE_* options, is selected.
 
-This will conflict with Samuel's patch 
-https://lore.kernel.org/all/20240301201837.2826172-1-samuel.holland@sifive.com/ 
-<https://lore.kernel.org/all/20240301201837.2826172-1-samuel.holland@sifive.com/>
+Gr{oetje,eeting}s,
 
-Here is the resolution conflict if you pull this patch as-is, otherwise 
-I'll send a v3:
+                        Geert
 
-diff --cc arch/riscv/mm/tlbflush.c
-index 07d743f87b3f,854d984deb07..000000000000
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@@ -99,7 -100,14 +100,14 @@@ static void __ipi_flush_tlb_range_asid(
-         local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
-   }
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-- static void __flush_tlb_range(const struct cpumask *cmask, unsigned 
-long asid,
-+ static inline unsigned long get_mm_asid(struct mm_struct *mm)
-+ {
-+       return (mm && static_branch_unlikely(&use_asid_allocator)) ?
-+                       atomic_long_read(&mm->context.id) & asid_mask : 
-FLUSH_TLB_NO_ASID;
-+ }
-+
-+ static void __flush_tlb_range(struct mm_struct *mm,
-  -                            struct cpumask *cmask,
-++                            const struct cpumask *cmask,
-                               unsigned long start, unsigned long size,
-                               unsigned long stride)
-   {
-@@@ -200,7 -204,7 +204,7 @@@ void flush_tlb_range(struct vm_area_str
-
-   void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-   {
--       __flush_tlb_range(cpu_online_mask, FLUSH_TLB_NO_ASID,
-  -      __flush_tlb_range(NULL, (struct cpumask *)cpu_online_mask,
-++      __flush_tlb_range(NULL, cpu_online_mask,
-                           start, end - start, PAGE_SIZE);
-   }
-
-Thanks,
-
-Alex
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
