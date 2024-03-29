@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-124527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8669D891960
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:40:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEEA9891962
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A32131C24C10
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:40:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2951F2160B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E7B146D67;
-	Fri, 29 Mar 2024 12:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625DF139578;
+	Fri, 29 Mar 2024 12:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gbjxKWXw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uZl23VhP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E91B146A9D;
-	Fri, 29 Mar 2024 12:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10C7146D74;
+	Fri, 29 Mar 2024 12:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715312; cv=none; b=scBUFX+gmNB685lDfxUaglq3a4immPEq+fKsEH3Rb7Acv3Ks38mfIeh/R/LWPT6fJxm1Sb01RguoC3Q/hH+yba496lP6ok5yHv8x8HmFTXhG/frjj1vMJU5QzR2iynzO5R/S2gALyoiYlt/rglZWWx25Rta6B7MlgmJ44hdXM/k=
+	t=1711715313; cv=none; b=n3UPaiF7fsb9b+i6fnSpp7QjoDjnL/kpwGJPNVLf4piVzKFTssDnaEI84xP9gTJvEWk8W4gQeL+E5usW0rlwxXdRYrR+R3JCxlFH1ictpX4igyhTzYF+WiE4Z6g2tXv+pAeiBzk7utQ0RwFf3WV0gH+W0BlYf2P+6N/ajJfoeLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715312; c=relaxed/simple;
-	bh=6BB67VKYQcGGM39DP5isCx0F37YiOyTglODRH4ADdI8=;
+	s=arc-20240116; t=1711715313; c=relaxed/simple;
+	bh=tPEViQjo1qr7FojiB4E3SuTTfzc9SXQ7WNdOd9cbvoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gcX+QRmd4ykt1MX1D9gE38AnRc8A9qy2ut0XmTi1yzyHOYIe28Kyk2uwLdDBlwQhDEqaj2l0jTds77+D1frRrh9XoSFym7Nx7WYy3x7fMMPyLZH/mIxVuTLO106x3+Y301Q1IMhkW9Zjo3ASthvcxtH8lRXmhRFeGLf3bUEtQIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gbjxKWXw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5FB5C43390;
-	Fri, 29 Mar 2024 12:28:30 +0000 (UTC)
+	 MIME-Version; b=PEJtRoC48SXf+eFMsa2PElKx6iXXRcnA8JbXvqps0gMHJLV9FvHyVY5ScYkG07moAz/5wFvrDBv7zBcn3WbgjnskU9dS1Q+cztiAUJsn3PsngF1CWTTqhwYnZP7kf3r2GpQdJqpqwfkepU6gIZnInVkw/Ciu6pmhckDKEW1dkRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uZl23VhP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73BDFC433C7;
+	Fri, 29 Mar 2024 12:28:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715312;
-	bh=6BB67VKYQcGGM39DP5isCx0F37YiOyTglODRH4ADdI8=;
+	s=k20201202; t=1711715313;
+	bh=tPEViQjo1qr7FojiB4E3SuTTfzc9SXQ7WNdOd9cbvoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gbjxKWXwDyFQzIuRywLQzfEKD+HbCtEQTyb53RKVVqssP0QJqObbiC+kvbk+ZCxDw
-	 rQolJITHa78pp9c8XckWBLgtZIt4L65rpjZrSF6+3dwPaRa8O4UKRMzDs3NKUs5lUP
-	 znNWhNf3T3c/Ysc4JqGIBXS+xMCdZPUeWHGe+5PB3Bd/AOS7WoTolSDL1UHiODetFZ
-	 gMg37rGr+rfkdaWgMWKaj5Rukbohspi7ixvrQ61nv2Db7iUXuYBoYJDdRqVl4tNgPI
-	 aXFKhAy5D6rXl0b1gkyHgIRZnzP9lHEe5ukKCs3OetRkjWeofAa142Hw5Y5EjtJH5s
-	 O4573jP6WdYNA==
+	b=uZl23VhPQEpFnzjuEmHL4PBju5IYlfeIcexHU77ZvHY9Vquz/Emv6mxsMn/tg0TRA
+	 FKtwCejpI46dORWI9s6Zmj3cXW1XXV1mRHd5axIFzUm0aOkj8g0aciadoR+02wLmsl
+	 DCOMGQZeEnUWfgT16RFiYfLO3QcR19SaigWYyiOgJKuVcI4bDzILKxjZEKAGbw61l/
+	 mXxk4OT7nontkkQizLmPRTF+BmeR9lAp/WR4KhQnUdrSbqLrbPQKq/p9yhn3g612Pu
+	 5w/azMzxHeGXwGjfCufbb29xtspJNEUGXMS1ysF7LmVQrPUQf+W547VGljZw5xu4qN
+	 FAdxK4nRuTS3Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Kees Cook <keescook@chromium.org>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	mail@mariushoch.de,
-	mika.westerberg@linux.intel.com,
-	mario.limonciello@amd.com,
-	michal.wilczynski@intel.com,
-	raag.jadav@intel.com,
-	linux-acpi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 46/68] ACPI: x86: Add DELL0501 handling to acpi_quirk_skip_serdev_enumeration()
-Date: Fri, 29 Mar 2024 08:25:42 -0400
-Message-ID: <20240329122652.3082296-46-sashal@kernel.org>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 47/68] pstore/zone: Add a null pointer check to the psz_kmsg_read
+Date: Fri, 29 Mar 2024 08:25:43 -0400
+Message-ID: <20240329122652.3082296-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
 References: <20240329122652.3082296-1-sashal@kernel.org>
@@ -70,72 +64,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 99b572e6136eab69a8c91d72cf8595b256e304b5 ]
+[ Upstream commit 98bc7e26e14fbb26a6abf97603d59532475e97f8 ]
 
-Some recent(ish) Dell AIO devices have a backlight controller board
-connected to an UART.
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-This UART has a DELL0501 HID with CID set to PNP0501 so that the UART is
-still handled by 8250_pnp.c. Unfortunately there is no separate ACPI device
-with an UartSerialBusV2() resource to model the backlight-controller.
-This causes the kernel to create a /dev/ttyS0 char-device for the UART
-instead of creating an in kernel serdev-controller + serdev-device pair
-for a kernel backlight driver.
-
-Use the existing acpi_quirk_skip_serdev_enumeration() mechanism to work
-around this by returning skip=true for tty-ctrl parents with a HID
-of DELL0501.
-
-Like other cases where the UartSerialBusV2() resource is missing or broken
-this will only create the serdev-controller device and the serdev-device
-itself will need to be instantiated by platform code.
-
-Unfortunately in this case there is no device for the platform-code
-instantiating the serdev-device to bind to. So also create
-a platform_device for this.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Link: https://lore.kernel.org/r/20240118100206.213928-1-chentao@kylinos.cn
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/x86/utils.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ fs/pstore/zone.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
-index 8829a907eee02..90c3d2eab9e99 100644
---- a/drivers/acpi/x86/utils.c
-+++ b/drivers/acpi/x86/utils.c
-@@ -484,8 +484,28 @@ static int acpi_dmi_skip_serdev_enumeration(struct device *controller_parent, bo
- 
- int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip)
- {
-+	struct acpi_device *adev = ACPI_COMPANION(controller_parent);
-+
- 	*skip = false;
- 
-+	/*
-+	 * The DELL0501 ACPI HID represents an UART (CID is set to PNP0501) with
-+	 * a backlight-controller attached. There is no separate ACPI device with
-+	 * an UartSerialBusV2() resource to model the backlight-controller.
-+	 * Set skip to true so that the tty core creates a serdev ctrl device.
-+	 * The backlight driver will manually create the serdev client device.
-+	 */
-+	if (acpi_dev_hid_match(adev, "DELL0501")) {
-+		*skip = true;
-+		/*
-+		 * Create a platform dev for dell-uart-backlight to bind to.
-+		 * This is a static device, so no need to store the result.
-+		 */
-+		platform_device_register_simple("dell-uart-backlight", PLATFORM_DEVID_NONE,
-+						NULL, 0);
-+		return 0;
-+	}
-+
- 	return acpi_dmi_skip_serdev_enumeration(controller_parent, skip);
- }
- EXPORT_SYMBOL_GPL(acpi_quirk_skip_serdev_enumeration);
+diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+index 2770746bb7aa1..abca117725c81 100644
+--- a/fs/pstore/zone.c
++++ b/fs/pstore/zone.c
+@@ -973,6 +973,8 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
+ 		char *buf = kasprintf(GFP_KERNEL, "%s: Total %d times\n",
+ 				      kmsg_dump_reason_str(record->reason),
+ 				      record->count);
++		if (!buf)
++			return -ENOMEM;
+ 		hlen = strlen(buf);
+ 		record->buf = krealloc(buf, hlen + size, GFP_KERNEL);
+ 		if (!record->buf) {
 -- 
 2.43.0
 
