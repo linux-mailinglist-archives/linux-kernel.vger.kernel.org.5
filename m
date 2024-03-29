@@ -1,140 +1,115 @@
-Return-Path: <linux-kernel+bounces-125118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA8B4892053
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:23:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80BAA892056
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84DD12824EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:23:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 356111F28FF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6063585623;
-	Fri, 29 Mar 2024 15:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B29A134723;
+	Fri, 29 Mar 2024 15:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mmy0jBkr"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PwobvZGO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24AE779ED;
-	Fri, 29 Mar 2024 15:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06E412F390;
+	Fri, 29 Mar 2024 15:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711725423; cv=none; b=fz6cl97F1U75Pui0ncB0zE1F5Vo2PmS1vgPCN5Jy3eS6yRoI19kNCJ4yzCEIBDJcxSfsE0KDutZd3YRxJdDRbDjcDsJ7OHyTllkSy39Lb69SG68uqKwCpjNpwPf45XU1yJMDj3piMSfLV+prYnvomo5KL6SiQcQdTrb3ZpjnhBE=
+	t=1711725424; cv=none; b=N+rVMaTQVgLBzsiaipz8d/Bd0dxT9I//h7H9iLMCofcpBHjZ3EV+tdO1uyGDTYZaQ0FH6gF9MMnoc1jkIjIjsSaBBh6ET6jtxWdH8AvXmF22nBbjFqPmjBMhWSkmcTFnn1yy6ljsLeVYweSYJH3FUaOdbsTl1C2LbDVZvERfYz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711725423; c=relaxed/simple;
-	bh=cxV2h94CytkTe3yX+PhAfUA/WzzS7dvZRyGc6Wy0fVI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JWw7dBRClM9+gAFMG6Kytkdqt17+KDZNjcVq/a88ImIMfpxgW7a/+MAUC821rUmXp26NEuqyUAtEniSlQaGwtEAjzgelXVy9URmHDm7lNqU/7xMLrtDYV42zASDbOrjbi17ltH2KSbz6LG9Y74DCT8Y82rVWgxtWZdXDAC+OB94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mmy0jBkr; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42TF84lj013445;
-	Fri, 29 Mar 2024 15:16:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=xKqb49aLiqfIagQXhAp4QnthHitt5DumKP+zdA38ioA=;
- b=mmy0jBkrNsti65WwbRVPmGhkXCBUxZE1TaFO0FYPMDa3uFrsSubTBtOj2pcbdzFYXqwS
- oPp1OgmL2TSus6YPk65DJvhtHjMlc1yRst60OndW78vjzRH6gvd1+mpIFyaUF8NpR8lJ
- MdFxItB1H4H5IaIIxgEBAljCzigI55Dr1e33zMg+AwEENsqeqtmiZOjJWKlfgj8CtVsP
- iySN4IJr1PhOrJC78EQA8Kwhmd6C61QD/CiVXAYoDaMgC43d/O+NfO6dRWlAwxfFuf9B
- 51izz7zbQRU+F7Qwp5PsdaYVUATiBBbbKDGC04WBRFuoPaUmi71G/RyQZzQxBfS04RbZ Iw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x600nr0fa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 15:16:33 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42TFGXKd025192;
-	Fri, 29 Mar 2024 15:16:33 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x600nr0ev-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 15:16:33 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42TCAw6H016605;
-	Fri, 29 Mar 2024 15:16:12 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dun1yq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 15:16:12 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42TFG9lT13435594
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Mar 2024 15:16:11 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5213B58067;
-	Fri, 29 Mar 2024 15:16:09 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4E58158056;
-	Fri, 29 Mar 2024 15:16:08 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.126.92])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 29 Mar 2024 15:16:08 +0000 (GMT)
-Message-ID: <e9181ec0bc07a23fc694d47b4ed49635d1039d89.camel@linux.ibm.com>
-Subject: Re: [PATCH 2/2] ima: evm: Rename *_post_path_mknod() to
- *_path_post_mknod()
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, dmitry.kasatkin@gmail.com,
-        eric.snowberg@oracle.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, viro@zeniv.linux.org.uk, pc@manguebit.com,
-        christian@brauner.io, Roberto Sassu <roberto.sassu@huawei.com>,
-        stable@vger.kernel.org
-Date: Fri, 29 Mar 2024 11:16:07 -0400
-In-Reply-To: <20240329105609.1566309-2-roberto.sassu@huaweicloud.com>
-References: <20240329105609.1566309-1-roberto.sassu@huaweicloud.com>
-	 <20240329105609.1566309-2-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5F0O-khqSzUeEqVZ1ma7nq3NsjZ5mjbW
-X-Proofpoint-ORIG-GUID: 9nZZvu_OYfi8h2ylkCJkt-4RNTrNm77r
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1711725424; c=relaxed/simple;
+	bh=cVtF3/B9z9gUvm50YhtU+CWwJdHQzQ0/7FvW6q5QEBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=LUiDVLvTu0tlWTwjQ4eb6qCn8yY0BKKKl4byk2JYI96zIUpAzUjkoWAko7hqS1UXN0ew3pEKnSpOFp0H8RV66CtU5JdUi/hd/kuH+8L4LOnyZZwxQxwaZ3gE1C3GyE4N9w/dyxj87eEr8vNsO5+gZ05PImq0UmgT5gb+k4Y+Hmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PwobvZGO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22DC6C4166B;
+	Fri, 29 Mar 2024 15:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711725424;
+	bh=cVtF3/B9z9gUvm50YhtU+CWwJdHQzQ0/7FvW6q5QEBg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=PwobvZGOPm8cm/XEMTyreGlEdfRIxSpGE1rURLd/keGu9DZDn3Txqno5foFxvDG0X
+	 nXHVQ7MzV1Tbp8C9G+sJeMbZoL24QmbjiwQ/BSTYmEc/3MQ6cnOzBNO+hezyNYxiNC
+	 VgU9ARVAG6YZ4OqNXfmYU7BL2BTxnoFjIJ5Xs4IDteeKYlYhZb84AQ5Me/lZ+WPX+w
+	 /SKDW0VUKfErZ+69me9COFJLklhyo7CQwn54pTHxh/cJEOX458qPYwcsdwaMPqI7ry
+	 wGYTSGIMoaZkr6OJoMz1fIgQJoZSMksaFhB5jdtO0SdQtl9ZtCNzyxv+GccB1q4H2o
+	 HD+Q3nTAvpjpg==
+Date: Fri, 29 Mar 2024 10:17:02 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Edmund Raile <edmund.raile@proton.me>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.6 52/75] PCI: Mark LSI FW643 to avoid bus reset
+Message-ID: <20240329151702.GA1643117@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- adultscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 clxscore=1015 spamscore=0
- mlxlogscore=825 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403290135
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329124330.3089520-52-sashal@kernel.org>
 
-On Fri, 2024-03-29 at 11:56 +0100, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+On Fri, Mar 29, 2024 at 08:42:33AM -0400, Sasha Levin wrote:
+> From: Edmund Raile <edmund.raile@proton.me>
 > 
-> Rename ima_post_path_mknod() and evm_post_path_mknod() respectively to
-> ima_path_post_mknod() and evm_path_post_mknod(), to facilitate finding
-> users of the path_post_mknod LSM hook.
+> [ Upstream commit 29a43dc130ce65d365a8ea9e1cc4bc51005a353e ]
 > 
-> Cc: stable@vger.kernel.org # 6.8.x
+> Apparently the LSI / Agere FW643 can't recover after a Secondary Bus Reset
+> and requires a power-off or suspend/resume and rescan.
+> 
+> VFIO resets a device before assigning it to a VM, and the FW643 doesn't
+> support any other reset methods, so this problem prevented assignment of
+> FW643 to VMs.
+> 
+> Prevent use of Secondary Bus Reset for this device.
+> 
+> With this change, the FW643 can be assigned to VMs with VFIO.  Note that it
+> will not be reset, resulting in leaking state between VMs and host.
+> 
+> Link: https://lore.kernel.org/r/20240227131401.17913-1-edmund.raile@proton.me
+> Signed-off-by: Edmund Raile <edmund.raile@proton.me>
+> [bhelgaas: commit log, comment]
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Since commit cd3cec0a02c7 ("ima: Move to LSM infrastructure") was upstreamed in
-this open window.  This change does not need to be packported and should be
-limited to IMA and EVM full fledge LSMs.
+We're about to revert this upstream, so I wouldn't backport this to
+any stable trees:
 
-> Reported-by: Christian Brauner <christian@brauner.io>
-> Closes: 
-> https://lore.kernel.org/linux-kernel/20240328-raushalten-krass-cb040068bde9@brauner/
-> Fixes: 05d1a717ec04 ("ima: add support for creating files using the mknodat
-> syscall")
+https://lore.kernel.org/r/20240328212302.1582483-1-helgaas@kernel.org
 
-"Fixes: 05d1a717ec04" should be removed.
-
-> Fixes: cd3cec0a02c7 ("ima: Move to LSM infrastructure")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-
+> ---
+>  drivers/pci/quirks.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index b5b96d2a9f4ba..687f9b00b3057 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3758,6 +3758,14 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
+>   */
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
+>  
+> +/*
+> + * Apparently the LSI / Agere FW643 can't recover after a Secondary Bus
+> + * Reset and requires a power-off or suspend/resume and rescan.  Prevent
+> + * use of that reset.
+> + */
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5900, quirk_no_bus_reset);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5901, quirk_no_bus_reset);
+> +
+>  /*
+>   * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
+>   * automatically disables LTSSM when Secondary Bus Reset is received and
+> -- 
+> 2.43.0
+> 
 
