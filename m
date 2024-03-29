@@ -1,55 +1,61 @@
-Return-Path: <linux-kernel+bounces-124558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBDE88919ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:49:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 460E38919F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:50:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B2261F24D34
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:49:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77D041C25036
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E78152181;
-	Fri, 29 Mar 2024 12:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA607152534;
+	Fri, 29 Mar 2024 12:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwlOfhRa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oHeYIuIU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F45150997;
-	Fri, 29 Mar 2024 12:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087C315250D;
+	Fri, 29 Mar 2024 12:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715409; cv=none; b=kzrKEm0BsQ1j2nuuatoiH9hPwXoM+f4Mjd+T1NDYiHTx/ybq4Omf+o9JHV8HsEgjvO7DfpmvwKTfZloIVAIUyRghOFfhsfNHIXm502C7SXVueWF3Qg/i1BHh5ULn1XgQMG/4pUh/4aqXMVaC4PTWl0BqDwCbwYJ5+zyTVm7wuXE=
+	t=1711715411; cv=none; b=C3JsuPaPyIN3UpGIDjvCfICPUr81Ez7M05E8jqxyJ1DWDdpEq8kMA3jV2t9EWP7O3yCfHTHIjCZ+KbJUKS7jN3iHcT3xxOSkIkl1PfiQsXh5An9X413JphfUuLam/CZ3AsMeDrCJg2qDLvOmcRuufQ3Ca7/nMGdCdMyXWjrN6es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715409; c=relaxed/simple;
-	bh=WasJpCSSIFNcR7eK7Br91kvJYRBw+AnpK17WiTx7Ozs=;
+	s=arc-20240116; t=1711715411; c=relaxed/simple;
+	bh=AZ0mB1d3R+H64t4ZWNRanPwr3ab/60b2LiI4buc8VcU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=quDTX8yhj+UJ2J6Snyh/w7ahCkgHtaMWfrULHVdzA53fcDdwGjdaqLDdXGM7F/pgytz2ZHSvVVkQZlscw3iv2ZkgwQdv3eCra4OQqm+WnoPNOCKlltRcs7fgnoW2Ywl58eKbldW4ev/aGyVT7mHe+szMOmmJndDCMFTm7uDijNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VwlOfhRa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 315B3C43394;
-	Fri, 29 Mar 2024 12:30:08 +0000 (UTC)
+	 MIME-Version; b=oW+YU6CbNRwjHcTFjNl1QC6pD+6lZdmMQ92ezxDMJEjFp+VLJuL2nrO+jqdGuSBSR/kPssqPanYps2zV3ED8n/1AJWUsOxU2Cilr6Xgytalg46FqmsGeY24o6JNPFkSMuZ3r+dNXdZkn6ozHabwO+BFmkinfew98I8n9A+nLXJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oHeYIuIU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C104C43330;
+	Fri, 29 Mar 2024 12:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715408;
-	bh=WasJpCSSIFNcR7eK7Br91kvJYRBw+AnpK17WiTx7Ozs=;
+	s=k20201202; t=1711715410;
+	bh=AZ0mB1d3R+H64t4ZWNRanPwr3ab/60b2LiI4buc8VcU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VwlOfhRa2cbU9FfB6d47vbAe6gP0t8eAJrho0LCUo13uRdp3TSNr8KtbB7VBvd9G/
-	 cFqo5nQZlPGsN1rtNwGQmcRpHZDIf65dltS4ZzZEEkOjK84KpzEK4V1y6fCLByxSGZ
-	 a0g7FG+jFyFg2XEZp08f6ZsJlZ4FOoesOC1wJ2mmw06iZoHFZ+J31RkOeaHmEdwhUW
-	 RCeU2WATrBUdqjb83fM8pOmCFl42Iqeafi66JRMtBII4GdcewpFFHstMdQnh5HSvMo
-	 6DuJh7VRaEaUB1AEWbNvqXeETPaxRUbHs5LWBuMecwpKpjj2NFSzlITLvReha0fHs9
-	 HPv1nHGzbuvWQ==
+	b=oHeYIuIUSPASTDlpMf9zJxCASs7o4WrvhOHvnCstd++yXO2Q4f+106kov3Z95FVTK
+	 Z+nkxXbFHatsABTubKrLmfRTEhiZFDbr2ta/+DwoUgZeRwBFh0/T5sWQecFmygP6+d
+	 Md6Z4m6hsRsAGIKTsw4g/8sIRYICyT96x3ytC0ZIlbvRLutcwBDl7bVY2dk2PPn8+h
+	 qZUqD+AM4AtIZTyMPFzTntMLtQYyTxFa8mYxvJjBjy9GwGCrLUEDBNgUmpf93z/KDK
+	 jS/fKtajDd+3YgZCIT9OBAb9gZdR/Dh2Ue8/ucVdw0e5v1Z7TdaNjnnfTsLbsxxg7G
+	 cNDkqN8hblPqQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ping-Ke Shih <pkshih@realtek.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	syzkaller <syzkaller@googlegroups.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 08/52] wifi: rtw89: pci: enlarge RX DMA buffer to consider size of RX descriptor
-Date: Fri, 29 Mar 2024 08:28:38 -0400
-Message-ID: <20240329122956.3083859-8-sashal@kernel.org>
+	bryantan@vmware.com,
+	vdasa@vmware.com,
+	gregkh@linuxfoundation.org
+Subject: [PATCH AUTOSEL 6.6 09/52] VMCI: Fix memcpy() run-time warning in dg_dispatch_as_host()
+Date: Fri, 29 Mar 2024 08:28:39 -0400
+Message-ID: <20240329122956.3083859-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -64,37 +70,78 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Ping-Ke Shih <pkshih@realtek.com>
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
-[ Upstream commit c108b4a50dd7650941d4f4ec5c161655a73711db ]
+[ Upstream commit 19b070fefd0d024af3daa7329cbc0d00de5302ec ]
 
-Hardware puts RX descriptor and packet in RX DMA buffer, so it could be
-over one buffer size if packet size is 11454, and then it will be split
-into two segments. WiFi 7 chips use larger size of RX descriptor, so
-enlarge DMA buffer size according to RX descriptor to have better
-performance and simple flow.
+Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
 
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240121071826.10159-5-pkshih@realtek.com
+memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
+at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
+
+WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
+dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
+
+Some code commentry, based on my understanding:
+
+544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
+/// This is 24 + payload_size
+
+memcpy(&dg_info->msg, dg, dg_size);
+	Destination = dg_info->msg ---> this is a 24 byte
+					structure(struct vmci_datagram)
+	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
+	Size = dg_size = 24 + payload_size
+
+{payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
+
+ 35 struct delayed_datagram_info {
+ 36         struct datagram_entry *entry;
+ 37         struct work_struct work;
+ 38         bool in_dg_host_queue;
+ 39         /* msg and msg_payload must be together. */
+ 40         struct vmci_datagram msg;
+ 41         u8 msg_payload[];
+ 42 };
+
+So those extra bytes of payload are copied into msg_payload[], a run time
+warning is seen while fuzzing with Syzkaller.
+
+One possible way to fix the warning is to split the memcpy() into
+two parts -- one -- direct assignment of msg and second taking care of payload.
+
+Gustavo quoted:
+"Under FORTIFY_SOURCE we should not copy data across multiple members
+in a structure."
+
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
+Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Link: https://lore.kernel.org/r/20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw89/pci.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/vmw_vmci/vmci_datagram.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw89/pci.h b/drivers/net/wireless/realtek/rtw89/pci.h
-index 2f3d1ad3b0f7d..4259b79b138fb 100644
---- a/drivers/net/wireless/realtek/rtw89/pci.h
-+++ b/drivers/net/wireless/realtek/rtw89/pci.h
-@@ -559,7 +559,7 @@
- #define RTW89_PCI_TXWD_NUM_MAX		512
- #define RTW89_PCI_TXWD_PAGE_SIZE	128
- #define RTW89_PCI_ADDRINFO_MAX		4
--#define RTW89_PCI_RX_BUF_SIZE		11460
-+#define RTW89_PCI_RX_BUF_SIZE		(11454 + 40) /* +40 for rtw89_rxdesc_long_v2 */
+diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/vmci_datagram.c
+index f50d22882476f..d1d8224c8800c 100644
+--- a/drivers/misc/vmw_vmci/vmci_datagram.c
++++ b/drivers/misc/vmw_vmci/vmci_datagram.c
+@@ -234,7 +234,8 @@ static int dg_dispatch_as_host(u32 context_id, struct vmci_datagram *dg)
  
- #define RTW89_PCI_POLL_BDRAM_RST_CNT	100
- #define RTW89_PCI_MULTITAG		8
+ 			dg_info->in_dg_host_queue = true;
+ 			dg_info->entry = dst_entry;
+-			memcpy(&dg_info->msg, dg, dg_size);
++			dg_info->msg = *dg;
++			memcpy(&dg_info->msg_payload, dg + 1, dg->payload_size);
+ 
+ 			INIT_WORK(&dg_info->work, dg_delayed_dispatch);
+ 			schedule_work(&dg_info->work);
 -- 
 2.43.0
 
