@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-124244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05FC689144C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:28:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27FF5891449
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:28:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5F3628758C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:28:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72586B24DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:28:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E737446C9;
-	Fri, 29 Mar 2024 07:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42104087D;
+	Fri, 29 Mar 2024 07:25:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KorUyFD7"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NZInWLE4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90F43FBBC;
-	Fri, 29 Mar 2024 07:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF1A4176B;
+	Fri, 29 Mar 2024 07:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697156; cv=none; b=le2zLKfqJF6Xkmbm6Prg1J15hyD/43ECTyFOlYml3IFbP4BDYh8a0OBzhRZxK51Swa/Gu7dg7mcsJ812+EPwrjl0HWX3XPUTfLezM3fJRU7oYm3FySLofQwzw5VNS65gynSe7/RVwkN5c6lqSAFuEBNsYejf+IG4khcfanVOp2E=
+	t=1711697154; cv=none; b=ML2EMNNfPbc89u21nUoL2y2MQxK7LI2YbbEqamDW29uZ9aIl6bODgsRw2sOxVPbiYLeINrP4JsIqEPDvX8G+xPEz+wXFohCaGBXZEzPLqo/dbz134GMAHQlhodhXSqH0gnEZC4eC69o1+DO9/2E7EJ/m3fE6gvqhtPGJ+Wfom6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697156; c=relaxed/simple;
-	bh=KIvMNu9WkvQCofweVAwnulcFxwRN34Ifb8Ui/THsKiA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=H9HoCjbMj+ymaK4/1p3YydB8/sgHknzioO9lkA12Sf/hAUOkheJIg+WtCI/aGnPH9lgaqKbatK5JNeBTiFYiekDtfLKOIpsYNXiRJqyXeEjwkMmLbACkItuCobHPsOxv3pcUSpjJeSUR6XaXNrfzGpQcGoUCFzb+o0Yay9kUugU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KorUyFD7; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42T5Oxx7005595;
-	Fri, 29 Mar 2024 07:25:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=VwtuCx9Ufi24zRIKC72QCsInTwX8ii5rSOdpOxqX2IM=; b=Ko
-	rUyFD7gjzxZO1x3O+Y9QJ+7IYsSlInk+VG+uP1Rj4tslboz9Bnuy1xHjxsaz/Rte
-	o96qQjdWfpYrGiu53P+Ox6eJN1x7M/gBRMtDZwyAm21k/InoFjoie1H8y5NtRbHW
-	9BaB7qVBQOhkZzqd6NbeD0F1xxEfpyyDhHXZtDhdJDVHqd/btGYghzj9vO+vsqXi
-	LFsAt1p9Mw87oYrgn4M8MQLSQ/nkyzIvQJ7ODXICBe0lnGRc//fJABJulXTua8SW
-	+UhSsfXVgNlDhs0RFphHfwd5J36VOFxK/+OdpS17aIupVfh2vfslLWYzhkm0znwX
-	bNLBjAy8+GV1+7QIqNaQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5aquj33f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 07:25:48 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42T7Ploa011843
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 07:25:47 GMT
-Received: from [10.218.29.219] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
- 2024 00:25:43 -0700
-Message-ID: <c03abbbd-faa5-4fdc-b7c3-5554a90c3419@quicinc.com>
-Date: Fri, 29 Mar 2024 12:55:40 +0530
+	s=arc-20240116; t=1711697154; c=relaxed/simple;
+	bh=q/qIYXt+0gsDpQDFJZuqnL/uaIcsR0UZmn8FB/WzRQY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ihz4vb+jH5/qt1AI9qvSVUJBwtjcZ/BkfZ/z9Rc8GD4WbCJGye/CQz6PX3U7Mo86ryOvUBn9UvFdny5h4nW/TO3ogLuKStZvceiBPWapypGSKzxbEFxwIKCb30YoT1POq7udPfcEo+apaWfZzFUmPeK5LdmwDngeVP1AB9/Bdt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NZInWLE4; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711697153; x=1743233153;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=q/qIYXt+0gsDpQDFJZuqnL/uaIcsR0UZmn8FB/WzRQY=;
+  b=NZInWLE4oFMovUkwjVB3eiV7m3mDOX48Q/luXQWwHeAs69sS1fzhnULx
+   PmakBtq6tM5taroawbprq+S5LvByZYxYc/Gu1XCxdKixBqs3P+IK+uw01
+   BFelHp9Pk6HJyz34DyTvGviH3elM2Z558vCBQgk/HZ8xFWwus+d75su21
+   REKzx2obCN184srcY+9S/PwrnwMyZNC1FX+b5GpifwjgI0XHaVkgLxawn
+   8x36GYN0IawpIYi/8tpv9fQ3mWMv7ML7SU5Szl1iUUbvDdy7uAC0K9mgv
+   hOyGI+FpoI1zZsIksuqJwUkRIZHSGeyD1qz6pDZ6afLQ5RU82HAnaWr8E
+   g==;
+X-CSE-ConnectionGUID: up4BqJDSSvWnK9r7qAc69Q==
+X-CSE-MsgGUID: 9GqpmMeTTfG7FvTJG66UXw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6996731"
+X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
+   d="scan'208";a="6996731"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:25:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
+   d="scan'208";a="16942869"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:25:49 -0700
+Message-ID: <71e6fa91-065c-4b28-ac99-fa71dfd499b9@linux.intel.com>
+Date: Fri, 29 Mar 2024 15:25:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,79 +64,145 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-To: Johan Hovold <johan@kernel.org>
-CC: <patchwork-bot+bluetooth@kernel.org>,
-        Johan Hovold
-	<johan+linaro@kernel.org>, <luiz.dentz@gmail.com>,
-        <marcel@holtmann.org>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <quic_mohamull@quicinc.com>, <quic_hbandi@quicinc.com>
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
- <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
- <124a7d54-5a18-4be7-9a76-a12017f6cce5@quicinc.com>
- <ZgWLeo5KSLurLDhK@hovoldconsulting.com>
-Content-Language: en-US
-From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-In-Reply-To: <ZgWLeo5KSLurLDhK@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: "Huang, Kai" <kai.huang@intel.com>, "Zhang, Tina" <tina.zhang@intel.com>,
+ "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+ "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ "Aktas, Erdem" <erdemaktas@google.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+ <a0627c0f-5c2d-4403-807f-fc800b43fd3b@intel.com>
+ <20240327225337.GF2444378@ls.amr.corp.intel.com>
+ <4d925a79-d3cf-4555-9c00-209be445310d@intel.com>
+ <20240328053432.GO2444378@ls.amr.corp.intel.com>
+ <65a1a35e0a3b9a6f0a123e50ec9ddb755f70da52.camel@intel.com>
+ <20240328203902.GP2444378@ls.amr.corp.intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240328203902.GP2444378@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: n7zlYDUH6iL-6q2llIRA2Ne01Ovvu-fw
-X-Proofpoint-GUID: n7zlYDUH6iL-6q2llIRA2Ne01Ovvu-fw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 phishscore=0
- clxscore=1011 adultscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
- bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403210001 definitions=main-2403290062
 
 
 
-On 3/28/2024 8:53 PM, Johan Hovold wrote:
-Hi Johan,
-Thanks for the valuable inputs.
-> [ Please wrap your emails at 72 columns or so. ]
+On 3/29/2024 4:39 AM, Isaku Yamahata wrote:
+
+[...]
+>>>>> How about this?
+>>>>>
+>>>>> /*
+>>>>>    * We need three SEAMCALLs, TDH.MNG.VPFLUSHDONE(), TDH.PHYMEM.CACHE.WB(), and
+>>>>>    * TDH.MNG.KEY.FREEID() to free the HKID.
+>>>>>    * Other threads can remove pages from TD.  When the HKID is assigned, we need
+>>>>>    * to use TDH.MEM.SEPT.REMOVE() or TDH.MEM.PAGE.REMOVE().
+>>>>>    * TDH.PHYMEM.PAGE.RECLAIM() is needed when the HKID is free.  Get lock to not
+>>>>>    * present transient state of HKID.
+>>>>>    */
+>>>> Could you elaborate why it is still possible to have other thread removing
+>>>> pages from TD?
+>>>>
+>>>> I am probably missing something, but the thing I don't understand is why
+>>>> this function is triggered by MMU release?  All the things done in this
+>>>> function don't seem to be related to MMU at all.
+>>> The KVM releases EPT pages on MMU notifier release.  kvm_mmu_zap_all() does. If
+>>> we follow that way, kvm_mmu_zap_all() zaps all the Secure-EPTs by
+>>> TDH.MEM.SEPT.REMOVE() or TDH.MEM.PAGE.REMOVE().  Because
+>>> TDH.MEM.{SEPT, PAGE}.REMOVE() is slow, we can free HKID before kvm_mmu_zap_all()
+>>> to use TDH.PHYMEM.PAGE.RECLAIM().
+>> Can you elaborate why TDH.MEM.{SEPT,PAGE}.REMOVE is slower than
+>> TDH.PHYMEM.PAGE.RECLAIM()?
+>>
+>> And does the difference matter in practice, i.e. did you see using the former
+>> having noticeable performance downgrade?
+> Yes. With HKID alive, we have to assume that vcpu can run still. It means TLB
+> shootdown. The difference is 2 extra SEAMCALL + IPI synchronization for each
+> guest private page.  If the guest has hundreds of GB, the difference can be
+> tens of minutes.
 >
+> With HKID alive, we need to assume vcpu is alive.
+> - TDH.MEM.PAGE.REMOVE()
+> - TDH.PHYMEM.PAGE_WBINVD()
+> - TLB shoot down
+>    - TDH.MEM.TRACK()
+>    - IPI to other vcpus
+>    - wait for other vcpu to exit
 
-Noted.
+Do we have a way to batch the TLB shoot down.
+IIUC, in current implementation, TLB shoot down needs to be done for 
+each page remove, right?
 
-> On Thu, Mar 28, 2024 at 08:25:16PM +0530, Janaki Ramaiah Thota wrote:
->> We made this change to configure the device which supports persistent
->> memory for the BD-Address
-> 
-> Can you say something more about which devices support persistent
-> storage for the address? Is that all or just some of the chip variants?
-> 
 
-Most of the devices support persistent storage, and bd-address storage
-is chosen based on the OEM and Target.
-
->> So to make device functional in both scenarios we are adding a new
->> property in dts file to distinguish persistent and non-persistent
->> support of BD Address and set HCI_QUIRK_USE_BDADDR_PROPERTY bit
->> accordingly
-> 
-> Depending on the answer to my questions above, you may be able to infer
-> this from the compatible string and/or you can read out the address from
-> the device and only set the quirk if it's set to the default address.
-> 
-> You should not need to add a new property for this.
-> 
-> Johan
-
-As per my understanding, altering the compatible string may cause duplicate
-configuration, right ?
-
-Thanks,
-JanakiRam
-
-  
+>
+> After freeing HKID
+> - TDH.PHYMEM.PAGE.RECLAIM()
+>    We already flushed TLBs and memory cache.
+>
+>
+>>>> Freeing vcpus is done in
+>>>> kvm_arch_destroy_vm(), which is _after_ mmu_notifier->release(), in which
+>>>> this tdx_mmu_release_keyid() is called?
+>>> guest memfd complicates things.  The race is between guest memfd release and mmu
+>>> notifier release.  kvm_arch_destroy_vm() is called after closing all kvm fds
+>>> including guest memfd.
+>>>
+>>> Here is the example.  Let's say, we have fds for vhost, guest_memfd, kvm vcpu,
+>>> and kvm vm.  The process is exiting.  Please notice vhost increments the
+>>> reference of the mmu to access guest (shared) memory.
+>>>
+>>> exit_mmap():
+>>>    Usually mmu notifier release is fired. But not yet because of vhost.
+>>>
+>>> exit_files()
+>>>    close vhost fd. vhost starts timer to issue mmput().
+>> Why does it need to start a timer to issue mmput(), but not call mmput()
+>> directly?
+> That's how vhost implements it.  It's out of KVM control.  Other component or
+> user space as other thread can get reference to mmu or FDs.  They can keep/free
+> them as they like.
+>
+>
+>>>    close guest_memfd.  kvm_gmem_release() calls kvm_mmu_unmap_gfn_range().
+>>>      kvm_mmu_unmap_gfn_range() eventually this calls TDH.MEM.SEPT.REMOVE()
+>>>      and TDH.MEM.PAGE.REMOVE().  This takes time because it processes whole
+>>>      guest memory. Call kvm_put_kvm() at last.
+>>>
+>>>    During unmapping on behalf of guest memfd, the timer of vhost fires to call
+>>>    mmput().  It triggers mmu notifier release.
+>>>
+>>>    Close kvm vcpus/vm. they call kvm_put_kvm().  The last one calls
+>>>    kvm_destroy_vm().
+>>>
+>>> It's ideal to free HKID first for efficiency. But KVM doesn't have control on
+>>> the order of fds.
+>> Firstly, what kinda performance efficiency gain are we talking about?
+> 2 extra SEAMCALL + IPI sync for each guest private page.  If the guest memory
+> is hundreds of GB, the difference can be tens of minutes.
+>
+>
+>> We cannot really tell whether it can be justified to use two different methods
+>> to tear down SEPT page because of this.
+>>
+>> Even if it's worth to do, it is an optimization, which can/should be done later
+>> after you have put all building blocks together.
+>>
+>> That being said, you are putting too many logic in this patch, i.e., it just
+>> doesn't make sense to release TDX keyID in the MMU code path in _this_ patch.
+> I agree that this patch is too huge, and that we should break it into smaller
+> patches.
+>
+>
+>>>> But here we are depending vcpus to be freed before tdx_mmu_release_hkid()?
+>>> Not necessarily.
+>> I am wondering when is TDH.VP.FLUSH done?  Supposedly it should be called when
+>> we free vcpus?  But again this means you need to call TDH.MNG.VPFLUSHDONE
+>> _after_ freeing vcpus.  And this  looks conflicting if you make
+>> tdx_mmu_release_keyid() being called from MMU notifier.
+> tdx_mmu_release_keyid() call it explicitly for all vcpus.
 
 
