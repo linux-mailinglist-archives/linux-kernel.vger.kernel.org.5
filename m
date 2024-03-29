@@ -1,100 +1,114 @@
-Return-Path: <linux-kernel+bounces-125177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A73258921B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:37:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE008921BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62383287EE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:37:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3538CB24894
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0114E45001;
-	Fri, 29 Mar 2024 16:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F5F85927;
+	Fri, 29 Mar 2024 16:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bY27PDnV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OrA9Byun"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41DDC85924;
-	Fri, 29 Mar 2024 16:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21981C0DF5
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:37:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711730249; cv=none; b=mWOA/ufXFw4VcSrghw9sAEDqx/RzQqGAUGSld+VlHSe/6XfvGsdf9rfUzaXUfR6ylCMhvTd3TUA+NcBALpUUBgqPvJlS+30Bl3JZoYON2+7WdDxwSrTmovJyTofzCVC0GUFpWsJkvVePmSsxWn2eWr9XPy3jMpZ244EK15EhQgY=
+	t=1711730281; cv=none; b=FX3Dl4IZBwR844wmHKz953PQ/vBWxxcAt9M2e1ojfD3vNG1tqMPlZDvn/mgWWU4fqw6AY/hAaxZfZ7X5ub1xxFnDHnhqmGqhcIdj0j8JmxDXIPY96G7cGFKUKfq7eGrjSzgSGJdAAXSNVa55usci3MPmNGOC0L+NPIwVngwEucc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711730249; c=relaxed/simple;
-	bh=fBciC2ZZHnRH3/kjSHMfkZjS+xXpE+eBjo2+9CEE158=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rx5+y0IyQJXDC1/2MsPAAE0I02hIg2ZL8s1948/gRfO5HE/Kto+l5JLdLETVNd1f6j5lcT++DrsYh1i+MCWlhNsE0m0g41pcPkxMjkWW0IMY2nufMcgW8oymti8KTJh/0x/7+NTOw+YGz0FVYfPJwVlsq5BvkeGIO1V3OV1ihbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bY27PDnV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C00BC433C7;
-	Fri, 29 Mar 2024 16:37:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711730248;
-	bh=fBciC2ZZHnRH3/kjSHMfkZjS+xXpE+eBjo2+9CEE158=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bY27PDnVEvTCzggHxbB/fBn2xTSpQhK3YL+3hhX4dXUIp3z9SSMg9HiQH/QSXwYim
-	 BsdndruYori38l5mmXIU500nf9vylTo0FW74MnKEAGP2y7Vi/d6N12qA8ldEHRWU1q
-	 il2MAF6zTZOD84C49Ty3GvUQzNGiFSHhq+pqB7zUkAuMfDBEuoXI5eKNAqRZPyP7VX
-	 jRuFHDs5VkxmcChP5mrABx58dpp754BNN73+VDZqS/hy6orI/A1bgs7oaNghKD5l7f
-	 m8X6HL1z2bO8ZZIoMP5LB6sXSBGdzS9RXMfCuQQx77vW7o3allJCph6bchJ320X9D8
-	 IznpOrsdN5XOw==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: x86@kernel.org,
-	peterz@infradead.org,
-	mingo@redhat.com,
-	tglx@linutronix.de
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jolsa@kernel.org,
-	song@kernel.org,
-	kernel-team@meta.com,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Sandipan Das <sandipan.das@amd.com>
-Subject: [PATCH v3 2/2] perf/x86/amd: don't reject sampling events with configured LBR
-Date: Fri, 29 Mar 2024 09:37:22 -0700
-Message-ID: <20240329163722.2776730-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329163722.2776730-1-andrii@kernel.org>
-References: <20240329163722.2776730-1-andrii@kernel.org>
+	s=arc-20240116; t=1711730281; c=relaxed/simple;
+	bh=UBlirrXGogE8gGO0RdhSlJdLuIR/MtYM/Uu2iWbjN1Y=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=XqOrPoEa7Dq42vLEDeeSz5X1Ve1Al9/ApAHakD8t3bXu0r1CmofCBu8nGrDUOZqSgMxsB1aCp4FYlopAJBqIL9Y2xVN1+4KhwnuNKsag20aed1emQ+U1qZJoeQak3ydmsGn6hoU/grF3v6ign51Cmr9SqSU/8YzbsjzDFW5RCGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OrA9Byun; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41553b105b8so2612565e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711730278; x=1712335078; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2N2sjDVZQ5s5rWMc1AGGuzwDRxJwDXuM3KrfxZH98mw=;
+        b=OrA9ByunMbXLuqhqN3nVU/kJVldpb4w5i1slXUYXbKcdCC4r6JX/MtGsR6ER4q1XgX
+         vuIFNeKZnQ8k5wkt1RGNjDpQlxVs9vk6o4WI3nWYtEgdpi/jmfjqKSD0QLo+0dboi2DD
+         cyn61s678o5+J4bAPIgJLanOdKmyMloZDl6mzY/F4NzzXRATlvxAnsGMppMtgRYuUzTa
+         A58wh4C5sdaN42ezvYpwcfi+54NUUOb4YQKEeAUHP1gWYrwciJWwheo95mYgiTr2QFU4
+         p7q03L0+AgmyRJEzp94uWYmWeXCLiT8NLULTN1qULbwivSLiBxQvu86Jo2CFi2O17e6w
+         rHpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711730278; x=1712335078;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2N2sjDVZQ5s5rWMc1AGGuzwDRxJwDXuM3KrfxZH98mw=;
+        b=gRjoF7n5nIiLuSOIk3eyiROUJy3s0NSfjCPX6bLzuB7wJP1K4n0JXCZEz4Mq+RCI6J
+         7Zz7rv000sISGXZkrEg7/QZNZH3vuJaKw3LGTGIEuyeYOkuaC7S2OFKk8uteT1STyZyB
+         T1rqQgvOaq51WgXrOtDeMLF9V6NZjZowueJWgnm4NoOrs7eprOu0Vxam4yoY/426dEQK
+         QJrJjpc6zVc11m0dcwI8cDJ787+WWSz+jnDIS1v8N004Z5fEyAwN+z0O8hpHfEJL0Jhp
+         itNaPFQLrhIEl7/nrK8On8XYVzYZJfE7S1ssW7co5Uv7F4c3KfqhNIzj7ayEqVdk8vth
+         FMeg==
+X-Forwarded-Encrypted: i=1; AJvYcCXU/LuP8NIURJL1KtyAinCP6vMobA6xaCbC4ZO4VFpUZhqOBCXQQU9V+ptmXN1bbKsIYLiLZuyZUO8VO+0hXfkHdjWRbhbiyh8wF1Pt
+X-Gm-Message-State: AOJu0YzqFAbQThwFcE+yDBNcl7lX3vjewLU0Am5xqHcQXF++qhUqIEMD
+	emSz89CYB6GebmNemqpdzc1NDKbj31DHUQ5DRXIT0hR6ZFpNW3vIuf5zbU5zWXw=
+X-Google-Smtp-Source: AGHT+IE9lrROr7Xt4WRR3WKh9SAKOAjngnqU+7gTIU7bJRWiC8dVxAT6q6g7+dXPYYDLeV3MgA6fBQ==
+X-Received: by 2002:a05:600c:4e8b:b0:414:f60:5d6a with SMTP id f11-20020a05600c4e8b00b004140f605d6amr2080570wmq.0.1711730278063;
+        Fri, 29 Mar 2024 09:37:58 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id m4-20020a05600c4f4400b004146bcdde06sm5958736wmq.6.2024.03.29.09.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 09:37:57 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
+ dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Christian Hewitt <christianshewitt@gmail.com>
+In-Reply-To: <20240109230704.4120561-1-christianshewitt@gmail.com>
+References: <20240109230704.4120561-1-christianshewitt@gmail.com>
+Subject: Re: [PATCH] drm/meson: vclk: fix calculation of 59.94 fractional
+ rates
+Message-Id: <171173027724.1500306.13941100169169682823.b4-ty@linaro.org>
+Date: Fri, 29 Mar 2024 17:37:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-Now that it's possible to capture LBR on AMD CPU from BPF at arbitrary
-point, there is no reason to artificially limit this feature to sampling
-events. So corresponding check is removed. AFAIU, there is no
-correctness implications of doing this (and it was possible to bypass
-this check by just setting perf_event's sample_period to 1 anyways, so
-it doesn't guard all that much).
+Hi,
 
-Reviewed-by: Sandipan Das <sandipan.das@amd.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- arch/x86/events/amd/lbr.c | 4 ----
- 1 file changed, 4 deletions(-)
+On Tue, 09 Jan 2024 23:07:04 +0000, Christian Hewitt wrote:
+> Playing 4K media with 59.94 fractional rate (typically VP9) causes the screen to lose
+> sync with the following error reported in the system log:
+> 
+> [   89.610280] Fatal Error, invalid HDMI vclk freq 593406
+> 
+> Modetest shows the following:
+> 
+> [...]
 
-diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
-index 0e4de028590d..75920f895d67 100644
---- a/arch/x86/events/amd/lbr.c
-+++ b/arch/x86/events/amd/lbr.c
-@@ -310,10 +310,6 @@ int amd_pmu_lbr_hw_config(struct perf_event *event)
- {
- 	int ret = 0;
- 
--	/* LBR is not recommended in counting mode */
--	if (!is_sampling_event(event))
--		return -EINVAL;
--
- 	ret = amd_pmu_lbr_setup_filter(event);
- 	if (!ret)
- 		event->attach_state |= PERF_ATTACH_SCHED_CB;
+Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-next)
+
+[1/1] drm/meson: vclk: fix calculation of 59.94 fractional rates
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/bfbc68e4d8695497f858a45a142665e22a512ea3
+
 -- 
-2.43.0
+Neil
 
 
