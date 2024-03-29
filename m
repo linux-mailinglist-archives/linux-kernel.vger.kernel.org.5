@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-124887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C75891D75
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:18:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D72891D79
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9033D2840E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:18:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 599AD1F25B89
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6615621EB77;
-	Fri, 29 Mar 2024 12:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DC421EB98;
+	Fri, 29 Mar 2024 12:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jCKpqXMG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oxfXy1++"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFF814AD30;
-	Fri, 29 Mar 2024 12:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7302721EB81;
+	Fri, 29 Mar 2024 12:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716370; cv=none; b=nrxzy0Rl3XQnBTyToHXNDYCADRYVdhcoz8OisgqcfRxJ5hqr7lGdK6RMY+5FNAYZEv39lep1egP0EFEFswwzTVofjiw8mqGqGvtJfP00tAcNRZBxn8VSG8DeruGDCN4BIGx+pB/NlBqdr6fbiBuzKHmdbEbSh7/O5CvKNqv5hS4=
+	t=1711716372; cv=none; b=HTOfn8iHzITUBgti/OedLaMdFDAj7tFRu8WfCky4k64yu3EzzcbEbg6438OFMv3HiP+9BpKXSXr8PJc6jSm5PcOd+nabSUia15i1RplldrUgIU9tHRlNBvlXXeTz9G9SrofF5p7aUcxvIwW0uAlg7VgkgPUyR2jWWIoQgO51im8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716370; c=relaxed/simple;
-	bh=unAcMRuAE1vIWssF2K6cGs00MZFhLexNVVz7+k7K4PY=;
+	s=arc-20240116; t=1711716372; c=relaxed/simple;
+	bh=A75RSHCw4CqssR5CcTQUp5pbGcsNVHagnw3nvde01W0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NSkF894yEggUvoonvLY80bQ5KeuSqj1J/yrV5D8r++6Wlq6Z2JZlMu6h1EC3aewpRbqqPEUyZgfbONoid8WqZVNvgFuEdxI39nf+1JMUP9WyaqOHCVgS9UXx89467hfl1a8K63PyCx7V0r/jbwpPk8up826hFJR3I7jalXs8tpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jCKpqXMG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 105C1C43390;
-	Fri, 29 Mar 2024 12:46:08 +0000 (UTC)
+	 MIME-Version; b=jqone/jBlNw6PAzIFLlm9ZDU2BUVOc97l1go5PM9Olwn55cyCsBkQBSQ65Jhqc7hN6A/0TrOwl9NWgsSNRL88t9mUsP1zz5E1nuYByGC9T220XH3PWalUYME4MmISuRNZPNFnT4u1hrg01hVZWoOK0CokhQV/pDFA0G0HH0qbMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oxfXy1++; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2A64C433F1;
+	Fri, 29 Mar 2024 12:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716370;
-	bh=unAcMRuAE1vIWssF2K6cGs00MZFhLexNVVz7+k7K4PY=;
+	s=k20201202; t=1711716372;
+	bh=A75RSHCw4CqssR5CcTQUp5pbGcsNVHagnw3nvde01W0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jCKpqXMGpu4fPQQKpbINyHs/dv7JK8FKorN6YRbCzWdpcsxEQopWYBhA6zu1TV8ab
-	 fIZuMPbEzjnT15TdRKr+LhqxpY1ORcqKolxJS19Zudbn5L8/Xzl82awiR/BF0IIqos
-	 pTdhhAHoasqGVJvPn6cJBmyJGt8IfFSlYzABNvgqK41E3h0qmhJEV4cW0/5gO6w3h8
-	 GPbARRbt9+oetvLTu8Vyv8CqhEsJVo4dEUFtY9vqBjOnTcuo9cCMyZqlxKSXx0/dfe
-	 B3+vNoffYeFhu6NAJCkZ/qExESXklnvAVPydQOs+6+b/vfQV0k16co0pI1huX81J6t
-	 9O8nR20iQJhTg==
+	b=oxfXy1++5cWWoFbhsIuiz3KEV2d9S2SWyoEq8p2DAFUi8riu7DbofXk7/TTnNj5Cv
+	 WGywUGkch/aVDz32qFDZ5MYUKu2epWFckiRsVl1XlobmOP7Ycs8lARpc7bEpyFGlqH
+	 Gi2E8i6D3WWWyWSf074cd1OGtXN/SpyG/5aAQDi4VVxfa+LqEXlPMcPMdUCmWRQXMe
+	 t6TUfDsERFsvi2wkNDNLWdcKckdi8TvH9Exh7kU1+hCyzlfiGeaY0+vu8IkjKk84Lj
+	 scdTZtB5YpLeJb/on6DUjoWprz5kky7OLrRNIalP9nwU8LSMANvuraxx0wQ5usrpeP
+	 yitRnGynJZuHg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Samuel Dionne-Riel <samuel@dionne-riel.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 03/52] drm: panel-orientation-quirks: Add quirk for GPD Win Mini
-Date: Fri, 29 Mar 2024 08:44:57 -0400
-Message-ID: <20240329124605.3091273-3-sashal@kernel.org>
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 04/52] arm64: dts: qcom: sdm630: add USB QMP PHY support
+Date: Fri, 29 Mar 2024 08:44:58 -0400
+Message-ID: <20240329124605.3091273-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
 References: <20240329124605.3091273-1-sashal@kernel.org>
@@ -69,50 +69,148 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: Samuel Dionne-Riel <samuel@dionne-riel.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit 2f862fdc0fd802e728b6ca96bc78ec3f01bf161e ]
+[ Upstream commit bb5009a24ec3f2f2ec1e2ed7b8a5dcde9a9e28d9 ]
 
-This adds a DMI orientation quirk for the GPD Win Mini panel.
+Define USB3 QMP PHY presend on the SDM630 / SDM660 platforms. Enable it by
+default in the USB3 host, but (for compatibility), force USB 2.0 mode
+for all defined boards. The boards should opt-in to enable USB 3.0
+support.
 
-Signed-off-by: Samuel Dionne-Riel <samuel@dionne-riel.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231222030149.3740815-2-samuel@dionne-riel.com
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20240116-sdm660-usb3-support-v1-3-2fbd683aea77@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../boot/dts/qcom/sda660-inforce-ifc6560.dts  |  6 ++++
+ .../dts/qcom/sdm630-sony-xperia-nile.dtsi     |  6 ++++
+ arch/arm64/boot/dts/qcom/sdm630.dtsi          | 36 ++++++++++++++-----
+ .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  |  6 ++++
+ 4 files changed, 46 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index d5c15292ae937..3fe5e6439c401 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -117,6 +117,12 @@ static const struct drm_dmi_panel_orientation_data lcd1080x1920_leftside_up = {
- 	.orientation = DRM_MODE_PANEL_ORIENTATION_LEFT_UP,
+diff --git a/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts b/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts
+index 28050bc5f0813..f824036871cc1 100644
+--- a/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts
++++ b/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts
+@@ -452,10 +452,16 @@ &usb2_dwc3 {
  };
  
-+static const struct drm_dmi_panel_orientation_data lcd1080x1920_rightside_up = {
-+	.width = 1080,
-+	.height = 1920,
-+	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-+};
+ &usb3 {
++	qcom,select-utmi-as-pipe-clk;
 +
- static const struct drm_dmi_panel_orientation_data lcd1200x1920_rightside_up = {
- 	.width = 1200,
- 	.height = 1920,
-@@ -279,6 +285,12 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1618-03")
- 		},
- 		.driver_data = (void *)&lcd720x1280_rightside_up,
-+	}, {	/* GPD Win Mini */
-+		.matches = {
-+		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "GPD"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1617-01")
-+		},
-+		.driver_data = (void *)&lcd1080x1920_rightside_up,
- 	}, {	/* I.T.Works TW891 */
- 		.matches = {
- 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
+ 	status = "okay";
+ };
+ 
+ &usb3_dwc3 {
++	maximum-speed = "high-speed";
++	phys = <&qusb2phy0>;
++	phy-names = "usb2-phy";
++
+ 	dr_mode = "peripheral";
+ 	extcon = <&extcon_usb>;
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+index 09c07800793a0..dd1d7e738c8da 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+@@ -650,10 +650,16 @@ cam_vdig_default: cam-vdig-default {
+ };
+ 
+ &usb3 {
++	qcom,select-utmi-as-pipe-clk;
++
+ 	status = "okay";
+ };
+ 
+ &usb3_dwc3 {
++	maximum-speed = "high-speed";
++	phys = <&qusb2phy0>;
++	phy-names = "usb2-phy";
++
+ 	dr_mode = "peripheral";
+ 	extcon = <&extcon_usb>;
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+index 2430549265d3f..1d18c85c5c5b0 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+@@ -1233,7 +1233,6 @@ usb3: usb@a8f8800 {
+ 			interrupt-names = "hs_phy_irq", "ss_phy_irq";
+ 
+ 			power-domains = <&gcc USB_30_GDSC>;
+-			qcom,select-utmi-as-pipe-clk;
+ 
+ 			resets = <&gcc GCC_USB_30_BCR>;
+ 
+@@ -1244,17 +1243,38 @@ usb3_dwc3: usb@a800000 {
+ 				snps,dis_u2_susphy_quirk;
+ 				snps,dis_enblslpm_quirk;
+ 
+-				/*
+-				 * SDM630 technically supports USB3 but I
+-				 * haven't seen any devices making use of it.
+-				 */
+-				maximum-speed = "high-speed";
+-				phys = <&qusb2phy0>;
+-				phy-names = "usb2-phy";
++				phys = <&qusb2phy0>, <&usb3_qmpphy>;
++				phy-names = "usb2-phy", "usb3-phy";
+ 				snps,hird-threshold = /bits/ 8 <0>;
+ 			};
+ 		};
+ 
++		usb3_qmpphy: phy@c010000 {
++			compatible = "qcom,sdm660-qmp-usb3-phy";
++			reg = <0x0c010000 0x1000>;
++
++			clocks = <&gcc GCC_USB3_PHY_AUX_CLK>,
++				 <&gcc GCC_USB3_CLKREF_CLK>,
++				 <&gcc GCC_USB_PHY_CFG_AHB2PHY_CLK>,
++				 <&gcc GCC_USB3_PHY_PIPE_CLK>;
++			clock-names = "aux",
++				      "ref",
++				      "cfg_ahb",
++				      "pipe";
++			clock-output-names = "usb3_phy_pipe_clk_src";
++			#clock-cells = <0>;
++			#phy-cells = <0>;
++
++			resets = <&gcc GCC_USB3_PHY_BCR>,
++				 <&gcc GCC_USB3PHY_PHY_BCR>;
++			reset-names = "phy",
++				      "phy_phy";
++
++			qcom,tcsr-reg = <&tcsr_regs_1 0x6b244>;
++
++			status = "disabled";
++		};
++
+ 		qusb2phy0: phy@c012000 {
+ 			compatible = "qcom,sdm660-qusb2-phy";
+ 			reg = <0x0c012000 0x180>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+index a3559f6e34a5e..308f9786a648e 100644
+--- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
++++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
+@@ -411,10 +411,16 @@ &tlmm {
+ };
+ 
+ &usb3 {
++	qcom,select-utmi-as-pipe-clk;
++
+ 	status = "okay";
+ };
+ 
+ &usb3_dwc3 {
++	maximum-speed = "high-speed";
++	phys = <&qusb2phy0>;
++	phy-names = "usb2-phy";
++
+ 	dr_mode = "peripheral";
+ 	extcon = <&extcon_usb>;
+ };
 -- 
 2.43.0
 
