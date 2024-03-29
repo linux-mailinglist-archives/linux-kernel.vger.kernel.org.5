@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-123940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546BD891009
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:07:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E6F89100B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85E7128BF8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:07:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1E21C24334
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9ED1426A;
-	Fri, 29 Mar 2024 01:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD73C1CAA4;
+	Fri, 29 Mar 2024 01:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="yjQMXpWB"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2045.outbound.protection.outlook.com [40.107.101.45])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VGiVzKDa"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B001171D;
-	Fri, 29 Mar 2024 01:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CEA182A1;
+	Fri, 29 Mar 2024 01:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711674450; cv=fail; b=ikSBwNPpDDOSP2ijlMK7r8pn9qUt/DNpLlfEn63XklHuSjrxGf2nqOHKdmeVr6su/WVn7vOBQfWn7Lj+WSauMT5qUia6grtTST0NwtaBaxc3bA2GtZbwlacoCTKSlM/4AXCZJ7FORnMFBrdxT258RNZyqSHkq0ICiRRGFbTua/s=
+	t=1711674459; cv=fail; b=U4YHzMUPX3XtWKxQ1AcVlKBXnN26DezQeI7gg3oeeNrzuuJPhUucoE+MAee0NJZg+6FJGZpqPvVdgLLYWZMLSLMLxa0xUuv+CUUz5bx+Q764zDRKMSG3gggWyqq7LN/svRT8gBVCxu2sEmntMppSaT2LUdAbsfi+0FL2km8XYAY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711674450; c=relaxed/simple;
-	bh=4ON5cTFNWv7ZEKdfrDHRnIrO8qrMdP35eEn7gO1RuOw=;
+	s=arc-20240116; t=1711674459; c=relaxed/simple;
+	bh=mTzTr2yBXRhcgYs2+vrickK9/ktmtYAX86BgarBT6g8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u6OaduoGV2eLtvrqjzbcd26DShDMSxVLDQjaHj0xSGUxD/ub0heYXkuPJ8ybCFWpn5Q2kcb2nkxLTUXzz/1kT5DjzDuqopYm87LT2+bwPM0dVJe4tHio9tdeKMrNmxsCw4DJvugzVRV49gh35nMt/GJe/zbBgIIO25g3jFQa6KE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=yjQMXpWB; arc=fail smtp.client-ip=40.107.101.45
+	 MIME-Version:Content-Type; b=TIgS6jQ8g9gHorThZRFFW35ZYQxvPc6f+UEZpfrHrumM9AdO25/1sWZcWz1zsQLDP7MDlECQUQwm8yLxcARG1IUjCiTqKDxxXKizuJsXHJd5srgNTb3D9d42PrahH6w8dXauJ2lKVFa5yiOiQg20HABw77+InaLUZoWaAnFTAtE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=VGiVzKDa; arc=fail smtp.client-ip=40.107.236.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X+ZN04e2NHTGop/wlRAtSkPtU9mYpQfZ3na6y9MZX+6ZqhvI6PVFte1oTXEVwsIqOCD+9eqQZ7x0f98D7QyFDWQyMuP2mHfMYTwaIjDia6WEXbk7O8nI26/seec2cQEIigbyQUYc2kAp//9xGuPN20AAeAB3WxdDw/s+KVhRKJoHyn0l90F8J+CTdlmVOKHqisayb7b8LqWWIVQpzcjXKs7HUkxiusIxqNJNsdfzYR+dOBPNlO7bgiCkJb904hLD592+a7qMbG3dQFUBx5KjjfPP1RkV4YwrQvJ0cwGKTn8QxrePqUWqJyWlTRXad0e66BiadOaN3sSOyEarJo1FCg==
+ b=hG2h0Hqz/k0YN22Qu97JnKYS5CZ1mEdRw+ipgBPxbqGLI6IH95KuNoIeJQDmTgpOhMNjl/dqsiheixVEV+J0GXeqTFVLzW8nq1bG1VfqpeHHA54OmLBED7xen0vZgnO1eW45ckb7OVVY2hKjasZV4AFVquFmDDTZYeeNaqdep9BTogUX+AIgc47PLOsn/rrOpyFVGAa9GVuDmHUuJMmdySLt5GWGvrdFLoVo46eljHnNeP8bpr/mVksoTKEzF3YaYUvx5px2KPi+o6yJanFCaF8bTLzZCVB40ZOm69Ldhgb81CLou6It2VJ9GYDDl9FVeFZn2c+pGFc4HHBvIyqE4g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wadMJD+pmw/IkeV+n73MjBwEz/qsM4NIngtFC4PBRZM=;
- b=NVg8Q/vkhUotX989cGrCWCqog1KTET7jNkx8WKw4oLfelO1FQ1bwZrRxRzk5vifzxoTNFV7flJmWldJjzOFbuAQsFISWGEmdXB+c9OqeLjzekVLixfmUNmT/mTmRXqRdOS1JshAln47SaSpNlSaqkEJnhN/URPvTAeqHok07KNBEaozvEgpT3NYXSr+cmcEEeEFN2LQu6JnVENaQXPkxETLBJGMw6XWBlNfsiIx4fUETKmHQJp0sbkzFavu8iZ8irzFrOJ7ZTaMpCFYxBWZp4lddUbB5yi+sjvHVT+MZjDYFDB73AQI1PJkV5RATTddjuFrYNS7zj0Mc/NGH5QhGgA==
+ bh=DaENX+lLEp5EGPbThUWz8uwtmmeolMR+QpH9oAlyhz8=;
+ b=cFRxy0EnSyvEm75dsgUn6KikjLUlphntMMFANuthOV0qFsJO+fUw4PgUWrp9hAB8oryYM0P/W85KvPIEeJmohtx14s3OqO8gBMqB+oAn1X2iuYK+ywAPLXczaWWydUdAcT5fDI3YhRgtXyug8SBA/vQrS0T1OJY3F2X3VOn2CBc8n7yrZLY779FG81ibrIdUs8zs+ldhVTjTIL8kvE+quHjsTu8uxSUq+iCGv0wvDiCjFNMa9ySQ5yh0Osx7n2wXX2LEKSr1YUo6XTaz/CUXF2L9o7MiYXqznTO/E1p31mqGGs+3l/MlOJ21QdXNaCBVgudurA4h2Y0MeJ5aP4SUuQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wadMJD+pmw/IkeV+n73MjBwEz/qsM4NIngtFC4PBRZM=;
- b=yjQMXpWBj33naWrPx8/wRQw/mb19wwW70N0i5zfVauK+0QyB1uY+vOSqoIHTanxz5G5fqgzZltXhkEcwd0JU8RJGapeg4TlHHh9IcoQx5rxuMohq5FGOXBrh4lJDL7soJSyg/enj00xsZMQxo7/WfKhu9LamLSe0VNVuZBqL780=
-Received: from PH2PEPF0000385A.namprd17.prod.outlook.com (2603:10b6:518:1::7c)
- by CY5PR12MB6453.namprd12.prod.outlook.com (2603:10b6:930:37::11) with
+ bh=DaENX+lLEp5EGPbThUWz8uwtmmeolMR+QpH9oAlyhz8=;
+ b=VGiVzKDapu/qqX40nvHZ04eertTPRSU1BrXAO6X7mgnm4R4BnRub8tQvqxTxoNtf0Y5Jjhf5+j7q8dXp19S/MPTSbTsJY/vqF29DjYfQRdMLcqiPirs8R2/z0huypoOx/ouvhQODzSVf69Hi0kVqDPsKCOmmmK+bIerNLsIwem0=
+Received: from SA0PR12CA0002.namprd12.prod.outlook.com (2603:10b6:806:6f::7)
+ by DS0PR12MB8561.namprd12.prod.outlook.com (2603:10b6:8:166::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Fri, 29 Mar
- 2024 01:07:25 +0000
-Received: from SN1PEPF0002BA52.namprd03.prod.outlook.com
- (2a01:111:f403:f90c::) by PH2PEPF0000385A.outlook.office365.com
- (2603:1036:903:48::3) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.38 via Frontend
- Transport; Fri, 29 Mar 2024 01:07:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Fri, 29 Mar
+ 2024 01:07:33 +0000
+Received: from SN1PEPF0002BA4C.namprd03.prod.outlook.com
+ (2603:10b6:806:6f:cafe::b6) by SA0PR12CA0002.outlook.office365.com
+ (2603:10b6:806:6f::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40 via Frontend
+ Transport; Fri, 29 Mar 2024 01:07:33 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA52.mail.protection.outlook.com (10.167.242.75) with Microsoft
+ SN1PEPF0002BA4C.mail.protection.outlook.com (10.167.242.69) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 01:07:25 +0000
+ 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 01:07:32 +0000
 Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Mar
- 2024 20:07:23 -0500
+ 2024 20:07:31 -0500
 From: Babu Moger <babu.moger@amd.com>
 To: <corbet@lwn.net>, <fenghua.yu@intel.com>, <reinette.chatre@intel.com>,
 	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
@@ -85,9 +85,9 @@ CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
 	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
 	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<eranian@google.com>, <james.morse@arm.com>
-Subject: [RFC PATCH v3 03/17] x86/resctrl: Detect Assignable Bandwidth Monitoring feature details
-Date: Thu, 28 Mar 2024 20:06:36 -0500
-Message-ID: <63134ddf18208bbd11bcec0ec75c33ef6e5635b2.1711674410.git.babu.moger@amd.com>
+Subject: [RFC PATCH v3 04/17] x86/resctrl: Introduce resctrl_file_fflags_init
+Date: Thu, 28 Mar 2024 20:06:37 -0500
+Message-ID: <363c14eeeac99eb0453ac3429f9e7bd446b2acdb.1711674410.git.babu.moger@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1711674410.git.babu.moger@amd.com>
 References: <cover.1711674410.git.babu.moger@amd.com>
@@ -103,142 +103,124 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA52:EE_|CY5PR12MB6453:EE_
-X-MS-Office365-Filtering-Correlation-Id: a6360095-af0d-43af-63ec-08dc4f8c987d
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4C:EE_|DS0PR12MB8561:EE_
+X-MS-Office365-Filtering-Correlation-Id: fa7b06e1-a749-4893-1623-08dc4f8c9d06
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	CFvLcUpvuTKDMRwrGIKG5GWfkGYSDI20ho8GvxJmOfZX4fXQjSNOxvNIxuaRrFDTMSXwipMNZvDI9rJuLmB0tbCPb6mQLEjkdU+ZNSb763hjYAKNXBXkd0AumoAMhEroV9o+Ke1WZ+iM1ZfTr7MjrvaEiJHhMhm874vFzNPp+6oHQ3KYjlvhPJDdV6fUwAwqbuBQtaFSJAV609YGYKux07oh4YwMk7iZj/UK3jYzUkr7UKT1MvJoOXO3Y6NCdfsqKXJzHKFGAh+FCgWS6I2+tw/6aJI9DFFgSSFmnkYBJrE+NsY42cy/gdKLzZCnrD9lSrvfVIb3/vLH7PlgeHanCotJQ79HTroHjdCrtbVZkDJPNscTRWpAZvHsnlrJVKY8PBp/m8PWeyvrio0okqvioLfcvbQm6BrcOETyRGOgKPTll1rZ9bfhsWIxGcVzYF5Z3Gp910ao6kk7PDP16kub8CtEw3uKmUYhV+a0icIzhbCz+DP4UMKD4zwQ0biNr+majzQ1AYH/EWd5h0UFD5jHtCkkhu0hnUSYiBIFIMvTGBMsfE7/GoTcNPYWQ2t4orKKzytTEDnRD6UUpTleAOmKP912kMedbEwiBNSISEsXft6Qgf7kfwO1TFPrnwdNLTMIERqy6AN3fU2+kYX5K1Hn6UDd2HyBZrONg4E768cr2OZXJI5A2nVJ1W8GzFpxhUEJFylsnwb+zAe64Tm6TM7yJw==
+	7GaxCYLQs9YJK0mMgOFxXlLgsHaiVUt2SdHDM2zDAZ9Z6lulsCBXirky6qI0Xb8wDMxaCjJ4qXFwg4hw0Hu/LUkY/nriIDZQ2Kc/EnRfv1+rV6WRs0Kd4amul5Er2+mAHQkOQNz2iGrbdfkwrEq0SS2Vsc3by8afLMGH97Ce0AKyPuZMhIHVHsQcLlElUJrd1DeNe1POrUFcXfk9iwT3JjVOPdZWCjYV5wlWJaJSVRbfEhhvaCxf7swWzhjHmlWQ/JuQ6C3BSOeWZK7CRLUPAtv84rPLo9YinVDE8n4Mis/oJKrSaazCeE6if8tQnyefDRawHwFKN42YyuJme9NT+lW3FPW0v6i1tCWv/kwuc66pb8JEyEW+/R2pWXV5xF31YNySdkH3qLGhN5aMAk65hPRmxX1Ei5zRZICdCzHjKCeJ3QFNtraO0RQb7GT5+NacO4C4Qd5QkorfprBCPrrjAQQ4Lzy8os1oEjlOx9TK8LXLYA70tFQNlW+zRAnaMLuCfRdAw2HLpH97aMaci2laGpazR24B7SSeQH+NZQCMCjAt4k4pUXN0fFWL0GcZIxOX7MG+MmlpHkDGKYwjcm17j4AonKwrK3hnQoCEed43IuLCBURMzpdpCy27crBgtIJ6sQ9vf6mbtnXmlYlsU1ESlf74LXX/IjtcbiAIdWi10yLgZ2H3L9TK0rJqxJe6eLu6ugUcd5LRqYhhQtqob/xusoKtQ2ppM51jV8OHu3uJHmS5JpszVDnGz6rsopNJITeK
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(82310400014)(36860700004)(376005);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(36860700004)(82310400014)(7416005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 01:07:25.1512
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 01:07:32.7580
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6360095-af0d-43af-63ec-08dc4f8c987d
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa7b06e1-a749-4893-1623-08dc4f8c9d06
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA52.namprd03.prod.outlook.com
+	SN1PEPF0002BA4C.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6453
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8561
 
-ABMC feature details are reported via CPUID Fn8000_0020_EBX_x5.
-Bits Description
-15:0 MAX_ABMC Maximum Supported Assignable Bandwidth
-     Monitoring Counter ID + 1
+Consolidate multiple fflags initialization into one function.
 
-The feature details are documented in APM listed below [1].
-[1] AMD64 Architecture Programmer's Manual Volume 2: System Programming
-Publication # 24593 Revision 3.41 section 19.3.3.3 Assignable Bandwidth
-Monitoring (ABMC).
+Remove thread_throttle_mode_init, mbm_config_rftype_init and
+consolidate them into resctrl_file_fflags_init.
 
 Signed-off-by: Babu Moger <babu.moger@amd.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
 ---
-v3: Removed changes related to mon_features.
-    Moved rdt_cpu_has to core.c and added new function resctrl_arch_has_abmc.
-    Also moved the fields mbm_assign_capable and mbm_assign_cntrs to
-    rdt_resource. (James)
+v3: No changes.
 
-v2: Changed the field name to mbm_assign_capable from abmc_capable.
+v2: New patch. New function to consolidate fflags initialization
 ---
- arch/x86/kernel/cpu/resctrl/core.c     | 17 +++++++++++++++++
- arch/x86/kernel/cpu/resctrl/internal.h |  1 +
- arch/x86/kernel/cpu/resctrl/monitor.c  |  3 +++
- include/linux/resctrl.h                | 12 ++++++++++++
- 4 files changed, 33 insertions(+)
+ arch/x86/kernel/cpu/resctrl/core.c     |  4 +++-
+ arch/x86/kernel/cpu/resctrl/internal.h |  4 ++--
+ arch/x86/kernel/cpu/resctrl/monitor.c  |  6 ++++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 16 +++-------------
+ 4 files changed, 12 insertions(+), 18 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 57a8c6f30dd6..bb82b392cf5d 100644
+index bb82b392cf5d..50e9ec5e547b 100644
 --- a/arch/x86/kernel/cpu/resctrl/core.c
 +++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -740,6 +740,23 @@ bool __init rdt_cpu_has(int flag)
- 	return ret;
- }
+@@ -229,7 +229,9 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
+ 		r->membw.throttle_mode = THREAD_THROTTLE_PER_THREAD;
+ 	else
+ 		r->membw.throttle_mode = THREAD_THROTTLE_MAX;
+-	thread_throttle_mode_init();
++
++	resctrl_file_fflags_init("thread_throttle_mode",
++				 RFTYPE_CTRL_INFO | RFTYPE_RES_MB);
  
-+inline bool __init resctrl_arch_has_abmc(struct rdt_resource *r)
-+{
-+	bool ret = rdt_cpu_has(X86_FEATURE_ABMC);
-+	u32 eax, ebx, ecx, edx;
-+
-+	if (ret) {
-+		/*
-+		 * Query CPUID_Fn80000020_EBX_x05 for number of
-+		 * ABMC counters
-+		 */
-+		cpuid_count(0x80000020, 5, &eax, &ebx, &ecx, &edx);
-+		r->mbm_assign_cntrs = (ebx & 0xFFFF) + 1;
-+	}
-+
-+	return ret;
-+}
-+
- static __init bool get_mem_config(void)
- {
- 	struct rdt_hw_resource *hw_res = &rdt_resources_all[RDT_RESOURCE_MBA];
+ 	r->alloc_capable = true;
+ 
 diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index c99f26ebe7a6..c4ae6f3993aa 100644
+index c4ae6f3993aa..722388621403 100644
 --- a/arch/x86/kernel/cpu/resctrl/internal.h
 +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -584,6 +584,7 @@ void free_rmid(u32 closid, u32 rmid);
- int rdt_get_mon_l3_config(struct rdt_resource *r);
- void __exit rdt_put_mon_l3_config(void);
- bool __init rdt_cpu_has(int flag);
-+bool __init resctrl_arch_has_abmc(struct rdt_resource *r);
- void mon_event_count(void *info);
- int rdtgroup_mondata_show(struct seq_file *m, void *arg);
- void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+@@ -602,8 +602,8 @@ void cqm_handle_limbo(struct work_struct *work);
+ bool has_busy_rmid(struct rdt_domain *d);
+ void __check_limbo(struct rdt_domain *d, bool force_free);
+ void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
+-void __init thread_throttle_mode_init(void);
+-void __init mbm_config_rftype_init(const char *config);
++void __init resctrl_file_fflags_init(const char *config,
++				     unsigned long fflags);
+ void rdt_staged_configs_clear(void);
+ bool closid_allocated(unsigned int closid);
+ int resctrl_find_cleanest_closid(void);
 diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index c34a35ec0f03..e5938bf53d5a 100644
+index e5938bf53d5a..735b449039c1 100644
 --- a/arch/x86/kernel/cpu/resctrl/monitor.c
 +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -1055,6 +1055,9 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 			mbm_local_event.configurable = true;
- 			mbm_config_rftype_init("mbm_local_bytes_config");
+@@ -1049,11 +1049,13 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+ 
+ 		if (rdt_cpu_has(X86_FEATURE_CQM_MBM_TOTAL)) {
+ 			mbm_total_event.configurable = true;
+-			mbm_config_rftype_init("mbm_total_bytes_config");
++			resctrl_file_fflags_init("mbm_total_bytes_config",
++						 RFTYPE_MON_INFO | RFTYPE_RES_CACHE);
  		}
-+
-+		if (resctrl_arch_has_abmc(r))
-+			r->mbm_assign_capable = ABMC_ASSIGN;
- 	}
+ 		if (rdt_cpu_has(X86_FEATURE_CQM_MBM_LOCAL)) {
+ 			mbm_local_event.configurable = true;
+-			mbm_config_rftype_init("mbm_local_bytes_config");
++			resctrl_file_fflags_init("mbm_local_bytes_config",
++						 RFTYPE_MON_INFO | RFTYPE_RES_CACHE);
+ 		}
  
- 	l3_mon_evt_init(r);
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index a365f67131ec..a1ee9afabff3 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -150,6 +150,14 @@ struct resctrl_membw {
- struct rdt_parse_data;
- struct resctrl_schema;
+ 		if (resctrl_arch_has_abmc(r))
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 011e17efb1a6..dda71fb6c10e 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -2022,24 +2022,14 @@ static struct rftype *rdtgroup_get_rftype_by_name(const char *name)
+ 	return NULL;
+ }
  
-+/**
-+ * enum mbm_assign_type - The type of assignable monitoring.
-+ * @ABMC_ASSIGN: Assignable Bandwidth Monitoring Counters.
-+ */
-+enum mbm_assign_type {
-+	ABMC_ASSIGN	= 0x01,
-+};
-+
- /**
-  * struct rdt_resource - attributes of a resctrl resource
-  * @rid:		The index of the resource
-@@ -168,6 +176,8 @@ struct resctrl_schema;
-  * @evt_list:		List of monitoring events
-  * @fflags:		flags to choose base and info files
-  * @cdp_capable:	Is the CDP feature available on this resource
-+ * @mbm_assign_capable:	Does system capable of supporting monitor assignment?
-+ * @mbm_assign_cntrs:	Maximum number of assignable counters
-  */
- struct rdt_resource {
- 	int			rid;
-@@ -188,6 +198,8 @@ struct rdt_resource {
- 	struct list_head	evt_list;
- 	unsigned long		fflags;
- 	bool			cdp_capable;
-+	bool			mbm_assign_capable;
-+	u32                     mbm_assign_cntrs;
- };
+-void __init thread_throttle_mode_init(void)
+-{
+-	struct rftype *rft;
+-
+-	rft = rdtgroup_get_rftype_by_name("thread_throttle_mode");
+-	if (!rft)
+-		return;
+-
+-	rft->fflags = RFTYPE_CTRL_INFO | RFTYPE_RES_MB;
+-}
+-
+-void __init mbm_config_rftype_init(const char *config)
++void __init resctrl_file_fflags_init(const char *config,
++				     unsigned long fflags)
+ {
+ 	struct rftype *rft;
+ 
+ 	rft = rdtgroup_get_rftype_by_name(config);
+ 	if (rft)
+-		rft->fflags = RFTYPE_MON_INFO | RFTYPE_RES_CACHE;
++		rft->fflags = fflags;
+ }
  
  /**
 -- 
