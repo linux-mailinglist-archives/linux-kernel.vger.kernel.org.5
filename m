@@ -1,313 +1,153 @@
-Return-Path: <linux-kernel+bounces-125054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C3D891F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:02:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3C4891F54
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 789491F30476
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:02:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91FAA1F30B3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95BC13F458;
-	Fri, 29 Mar 2024 13:09:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872EA140E23;
+	Fri, 29 Mar 2024 13:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AgTsWPp4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fETlTLVo"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF8C657B5
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF6414037C
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:16:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711717747; cv=none; b=gPbjpihAuAWYymy1O/QzDUC6qSvrd/VuLDnqEW5Oh4Vv/2GR6+T/+T7Yo+YxCLQnBnMvl+ecbDEabPn71mOfuVhniy0r9ws+EM4QyRQ3llEUid/R/hTC9Z7kzeqFwinWDzpiXwPY26rQ+OC4ITlA7vPKYzzb/RwuRwzwAvM11RE=
+	t=1711718168; cv=none; b=qqXag8TixcqN4lk+MdKBl88ZysBkIprYd9G7uW0VfYLY/rlxRJOUc9UuSS93YroYqbSVZyBFXo6DREHPZ+QK5LdAJlHQoEymaoFSw+1MuN2UcZH1kAvfrjZXJT6GHYVGPQhFLA7EPK/dObpzUOd28gjNM8z35giZj7M6/pjBBbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711717747; c=relaxed/simple;
-	bh=dZk5QXdN4DkKk7QJCb+a41IsBWZKo7GvwcSjzMWU4lE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GksVowzOyZXS164x2zsl65AJpckXI7ZGBSXIqg9J46/w3tRwCCV9XfhdUTWZcuROek+jyXePoUOMnu6vF5Fb6q5r8AqNI20MQjshyTVR4VoKiP+lLVibm5ZO0rCUrQTxo6GVRXzVwBcIBO7glHPyZsDYkez7J+TZKNZqG+m09+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AgTsWPp4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711717744;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tgio9eMJR7jDHKrp7CRyahwHu55Vb1EcYMdidB/kUo0=;
-	b=AgTsWPp47aCni6UR6PJj0U5szMnbK9Ly65zGqKqUMHfiMPPcs8e/mJCC+PChWzECzu/bJd
-	yv36KJ5UNrqEIvOZvJ8/KV6REqwYj/GiMlGOESl0wk9aae05mj44XzdCDM2BZdU9CD5bb8
-	WYvfcmU+925/3yQQYssLc4zWLxTiF7Q=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-NqiRGtUEMcaeU5rDTJT4HA-1; Fri, 29 Mar 2024 09:08:58 -0400
-X-MC-Unique: NqiRGtUEMcaeU5rDTJT4HA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DD56289C943;
-	Fri, 29 Mar 2024 13:08:57 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 62CE1492BD0;
-	Fri, 29 Mar 2024 13:08:57 +0000 (UTC)
-Date: Fri, 29 Mar 2024 09:10:55 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
-	tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com,
-	dhowells@redhat.com, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] writeback: support retrieving per group debug
- writeback stats of bdi
-Message-ID: <Zga937dR5UgtSVaz@bfoster>
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <20240327155751.3536-4-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1711718168; c=relaxed/simple;
+	bh=4sVu5vTeZO7IFrY+aF0kRr6PhBP5otxtNfRVRj1bVXs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PO1AJXG3nYslo8t791bMlmuvpv41ABOXw+BUCeVmRc5dNqigN4iCRgltimzVLPvaijUKT6vNskBfc0hnYI+qU3HJ69YoPmd2rNEG+b2gdvvWXRaWTrA0VhOKK00n8ig0R0gokbo+qqIftMJQ1CrbW1/0RYdnYzOT2ExFS3ce4dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fETlTLVo; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56b8e4f38a2so2450080a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 06:16:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711718164; x=1712322964; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=zihHwg2NplHXrT7i55Wajk82Gx7auQcYcps0A+nDgXE=;
+        b=fETlTLVoU5+qKlgUjaxAD/we53/MnHw3N0S+q7Cj2ncOCN20iwOhngzgwlyL0x6ZcB
+         ZVp3P3WqsjYDqTkN6ekNAmDqp0WNtZRSAnUm5e8LJuQ3dstQlKfZnIkUZz0G6XrSjvre
+         Yg/M9gV05lb8HXBWqRgNIKxUp8pLKdIkjhfzKfd6YtqZIcUbbjcP2w81o2GhWJrUuVw1
+         At1xVCn2A6Al7fxOdZiwl1WE6iwEKwg9EPFTj6pDcNaGqxXEUuneF64Y9zFKkBgLGndC
+         UQ7VQDfWrGM3tp3waVjcTEtPXMI8jJnOdEkJAPNDmUdLDLhdNYbh8kYGKvuNrbJWo+i1
+         L24w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711718164; x=1712322964;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zihHwg2NplHXrT7i55Wajk82Gx7auQcYcps0A+nDgXE=;
+        b=aEhjredCfpnAKhAhoiPHMidWQPnI9SROA5DdLe4l2MSYAP8b2f+D1MzhlpIpFh27o2
+         RV3qIhZXnzwNNM3ITEC4XDHpcpXpk3MOJSGvEG9DGzDeY5zn9b76zVxkQM/0heUw5HIV
+         suPhjkV0wYi7IZ9ZVKEut+NoajlpG6bP5DrGbX13FO9mCq/Q4ajGCmp9gm1iYMtvVpch
+         BzUyQOHaqka2aGRNn+zPt62V3avoOoAUWIjeaGaaYwmTzZd2Jkeilr4qV3xT0CeWaFMA
+         YNcUlxyFu05DyrAndESZOWVNuSlrdJSsxKk9Oot5aqrpidyptUD7uYTBNlOeGpoHVau2
+         0Xdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVcFL8HjnOmN5HOcb97j8jekbMcW/oYdSCBb8Slt1LvnTFax0GnR34sYgj3uubiiyY5T0/9FFXjx/rAlQga90iZitIOC+29aRA1o+Ql
+X-Gm-Message-State: AOJu0YyKBbotUq/Wyf/rLBAJFm1O+fm0LOCR19C6u6qNLBCJrpQC8+hP
+	lXh80J0GP65WdKO8ZljlDpukmDm/0OYDHfMUCECHQTcnq7kGhT8KfPF+WulFx8o=
+X-Google-Smtp-Source: AGHT+IHptq2OgYAvI57tZAHlVqS/QUlqfkHRqWlTKeBEMfc8kISRVxCP6cb16qz5VFBSWeRVoT5HEA==
+X-Received: by 2002:a05:6402:50cd:b0:568:9936:b2e with SMTP id h13-20020a05640250cd00b0056899360b2emr1705246edb.24.1711718163797;
+        Fri, 29 Mar 2024 06:16:03 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id n17-20020a05640205d100b0056c55252b1csm1683718edx.41.2024.03.29.06.16.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 06:16:03 -0700 (PDT)
+Message-ID: <42ef5a02-a50e-4a4a-9d07-2f5848857560@linaro.org>
+Date: Fri, 29 Mar 2024 14:16:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327155751.3536-4-shikemeng@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH AUTOSEL 6.1 04/52] arm64: dts: qcom: sdm630: add USB QMP
+ PHY support
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240329124605.3091273-1-sashal@kernel.org>
+ <20240329124605.3091273-4-sashal@kernel.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240329124605.3091273-4-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 11:57:48PM +0800, Kemeng Shi wrote:
-> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
-> of bdi.
+On 29.03.2024 1:44 PM, Sasha Levin wrote:
+> From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > 
-
-Hi Kemeng,
-
-Just a few random thoughts/comments..
-
-> Following domain hierarchy is tested:
->                 global domain (320G)
->                 /                 \
->         cgroup domain1(10G)     cgroup domain2(10G)
->                 |                 |
-> bdi            wb1               wb2
+> [ Upstream commit bb5009a24ec3f2f2ec1e2ed7b8a5dcde9a9e28d9 ]
 > 
-> /* per wb writeback info of bdi is collected */
-> cat /sys/kernel/debug/bdi/252:16/wb_stats
-> WbCgIno:                    1
-> WbWriteback:                0 kB
-> WbReclaimable:              0 kB
-> WbDirtyThresh:              0 kB
-> WbDirtied:                  0 kB
-> WbWritten:                  0 kB
-> WbWriteBandwidth:      102400 kBps
-> b_dirty:                    0
-> b_io:                       0
-> b_more_io:                  0
-> b_dirty_time:               0
-> state:                      1
-
-Maybe some whitespace or something between entries would improve
-readability?
-
-> WbCgIno:                 4094
-> WbWriteback:            54432 kB
-> WbReclaimable:         766080 kB
-> WbDirtyThresh:        3094760 kB
-> WbDirtied:            1656480 kB
-> WbWritten:             837088 kB
-> WbWriteBandwidth:      132772 kBps
-> b_dirty:                    1
-> b_io:                       1
-> b_more_io:                  0
-> b_dirty_time:               0
-> state:                      7
-> WbCgIno:                 4135
-> WbWriteback:            15232 kB
-> WbReclaimable:         786688 kB
-> WbDirtyThresh:        2909984 kB
-> WbDirtied:            1482656 kB
-> WbWritten:             681408 kB
-> WbWriteBandwidth:      124848 kBps
-> b_dirty:                    0
-> b_io:                       1
-> b_more_io:                  0
-> b_dirty_time:               0
-> state:                      7
+> Define USB3 QMP PHY presend on the SDM630 / SDM660 platforms. Enable it by
+> default in the USB3 host, but (for compatibility), force USB 2.0 mode
+> for all defined boards. The boards should opt-in to enable USB 3.0
+> support.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Link: https://lore.kernel.org/r/20240116-sdm660-usb3-support-v1-3-2fbd683aea77@linaro.org
+> Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  include/linux/writeback.h |  1 +
->  mm/backing-dev.c          | 88 +++++++++++++++++++++++++++++++++++++++
->  mm/page-writeback.c       | 19 +++++++++
->  3 files changed, 108 insertions(+)
-> 
-..
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 8daf950e6855..e3953db7d88d 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-> @@ -103,6 +103,91 @@ static void collect_wb_stats(struct wb_stats *stats,
->  }
->  
->  #ifdef CONFIG_CGROUP_WRITEBACK
-..
-> +static int cgwb_debug_stats_show(struct seq_file *m, void *v)
-> +{
-> +	struct backing_dev_info *bdi;
-> +	unsigned long background_thresh;
-> +	unsigned long dirty_thresh;
-> +	struct bdi_writeback *wb;
-> +	struct wb_stats stats;
-> +
-> +	rcu_read_lock();
-> +	bdi = lookup_bdi(m);
-> +	if (!bdi) {
-> +		rcu_read_unlock();
-> +		return -EEXIST;
-> +	}
-> +
-> +	global_dirty_limits(&background_thresh, &dirty_thresh);
-> +
-> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node) {
-> +		memset(&stats, 0, sizeof(stats));
-> +		stats.dirty_thresh = dirty_thresh;
 
-If you did something like the following here, wouldn't that also zero
-the rest of the structure?
+Hi, this depends on other kernel changes and can possibly regress something
+if EPROBE_DEFER isn't handled correctly (because it will never probe)
 
-		struct wb_stats stats = { .dirty_thresh = dirty_thresh };
+Please drop it from all queues
 
-> +		collect_wb_stats(&stats, wb);
-> +
-
-Also, similar question as before on whether you'd want to check
-WB_registered or something here..
-
-> +		if (mem_cgroup_wb_domain(wb) == NULL) {
-> +			wb_stats_show(m, wb, &stats);
-> +			continue;
-> +		}
-
-Can you explain what this logic is about? Is the cgwb_calc_thresh()
-thing not needed in this case? A comment might help for those less
-familiar with the implementation details.
-
-BTW, I'm also wondering if something like the following is correct
-and/or roughly equivalent:
-	
-	list_for_each_*(wb, ...) {
-		struct wb_stats stats = ...;
-
-		if (!wb_tryget(wb))
-			continue;
-
-		collect_wb_stats(&stats, wb);
-
-		/*
-		 * Extra wb_thresh magic. Drop rcu lock because ... . We
-		 * can do so here because we have a ref.
-		 */
-		if (mem_cgroup_wb_domain(wb)) {
-			rcu_read_unlock();
-			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
-			rcu_read_lock();
-		}
-
-		wb_stats_show(m, wb, &stats)
-		wb_put(wb);
-	}
-
-> +
-> +		/*
-> +		 * cgwb_release will destroy wb->memcg_completions which
-> +		 * will be ued in cgwb_calc_thresh. Use wb_tryget to prevent
-> +		 * memcg_completions destruction from cgwb_release.
-> +		 */
-> +		if (!wb_tryget(wb))
-> +			continue;
-> +
-> +		rcu_read_unlock();
-> +		/* cgwb_calc_thresh may sleep in cgroup_rstat_flush */
-> +		stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
-> +		wb_stats_show(m, wb, &stats);
-> +		rcu_read_lock();
-> +		wb_put(wb);
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(cgwb_debug_stats);
-> +
-> +static void cgwb_debug_register(struct backing_dev_info *bdi)
-> +{
-> +	debugfs_create_file("wb_stats", 0444, bdi->debug_dir, bdi,
-> +			    &cgwb_debug_stats_fops);
-> +}
-> +
->  static void bdi_collect_stats(struct backing_dev_info *bdi,
->  			      struct wb_stats *stats)
->  {
-> @@ -117,6 +202,8 @@ static void bdi_collect_stats(struct backing_dev_info *bdi,
->  {
->  	collect_wb_stats(stats, &bdi->wb);
->  }
-> +
-> +static inline void cgwb_debug_register(struct backing_dev_info *bdi) { }
-
-Could we just create the wb_stats file regardless of whether cgwb is
-enabled? Obviously theres only one wb in the !CGWB case and it's
-somewhat duplicative with the bdi stats file, but that seems harmless if
-the same code can be reused..? Maybe there's also a small argument for
-dropping the state info from the bdi stats file and moving it to
-wb_stats.
-
-Brian
-
->  #endif
->  
->  static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> @@ -182,6 +269,7 @@ static void bdi_debug_register(struct backing_dev_info *bdi, const char *name)
->  
->  	debugfs_create_file("stats", 0444, bdi->debug_dir, bdi,
->  			    &bdi_debug_stats_fops);
-> +	cgwb_debug_register(bdi);
->  }
->  
->  static void bdi_debug_unregister(struct backing_dev_info *bdi)
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 0e20467367fe..3724c7525316 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -893,6 +893,25 @@ unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh)
->  	return __wb_calc_thresh(&gdtc, thresh);
->  }
->  
-> +unsigned long cgwb_calc_thresh(struct bdi_writeback *wb)
-> +{
-> +	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
-> +	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
-> +	unsigned long filepages, headroom, writeback;
-> +
-> +	gdtc.avail = global_dirtyable_memory();
-> +	gdtc.dirty = global_node_page_state(NR_FILE_DIRTY) +
-> +		     global_node_page_state(NR_WRITEBACK);
-> +
-> +	mem_cgroup_wb_stats(wb, &filepages, &headroom,
-> +			    &mdtc.dirty, &writeback);
-> +	mdtc.dirty += writeback;
-> +	mdtc_calc_avail(&mdtc, filepages, headroom);
-> +	domain_dirty_limits(&mdtc);
-> +
-> +	return __wb_calc_thresh(&mdtc, mdtc.thresh);
-> +}
-> +
->  /*
->   *                           setpoint - dirty 3
->   *        f(dirty) := 1.0 + (----------------)
-> -- 
-> 2.30.0
-> 
-
+Konrad
 
