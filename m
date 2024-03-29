@@ -1,134 +1,105 @@
-Return-Path: <linux-kernel+bounces-125393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F0C89254C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:33:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCEA189254D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61AD61F23458
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:33:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19C491C217E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A607933CC2;
-	Fri, 29 Mar 2024 20:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B873BBD8;
+	Fri, 29 Mar 2024 20:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aykzkv5m"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cSsDTqZo"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A073E1755B
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5144F3985A
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711744401; cv=none; b=LMfXCVjOARREdPh59SeagJj80xlOw0dTUCM4q20h410Y6v4CmiQz2Me4sL9de4b33Gcn2UBduAp3ZWzu5rIastXXmqiqJV+xj6RG3RZjIeUyEEEuID0+uBzcdCfHEuCZLcYWJ7UrjnUpcj3GGTqKipnf5yxZ1ocI0l8vi0ndyq8=
+	t=1711744422; cv=none; b=CpFgSwi4IE/Zx+p42jc9dkt9REHI1fEv2qdJ7Q5XepQeAJF9zTqpztGGI1eGwKvY+qMOG/ht27SWluvLdyxUz4fFXpq8ku3ShCnCKrGbQ60QeOU2qsR77fAIiQc+6bN7+qe0c+Uslnmsn2t0xJCj+qZdqIBWeJ5ES0oVUAr6t0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711744401; c=relaxed/simple;
-	bh=MmKPUNxZ+susb4kr/ZOyBooFet2Ni9V6EkAgfthmPGg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eM7AR9T7dpbyRK6baVBAbGwCRx5D2EY395moEytKOwQ3qdDU1InM+3PyEOamXUzrf/6Pl+xycJVTi/JlLi4GdQisKwAkDB7Lt1f0ueQZus3CMYc4p8c0UZZSKRt/Q65TGEuVAlK7+5oyb5e/5cG9KbdyCqGElCCa7PbarJk39/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aykzkv5m; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so1393659a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:33:19 -0700 (PDT)
+	s=arc-20240116; t=1711744422; c=relaxed/simple;
+	bh=7fJ4rSAI0GoYiQAMJdDfQgj6t00Kp7TpJETA/wU9wok=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S2by3vQ+VHPl1E56zBN8NDkdXQJU4vaHbWckrT6sux5y9zIABJCKiCRlz7lMh51MSseoL1kYL8NLoxbXcCzoEtcAsSlkYZNpsnIkWb0syr26hCsOs/nPztcuKoQpVjKbT/DsH4gj8mQA2qJNZ5oC9q6fvhKLMVIhVlnj560eg8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cSsDTqZo; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56c2cfdd728so13713a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711744399; x=1712349199; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9y/dxoUHYnuLJXM/FbNFKWazEIf0YDN2gZikUVSS61Y=;
-        b=Aykzkv5mDRd/lxI3VDy59EQ9qPOOG6nKG1MM8biF7qFLX0I11mEhe3oHndMtx9BNnD
-         7fkqg29CCeK+vp+a4vt8yUK2PDSIWmdXHS28EK3ynJc1kCZCu8YIu4SYF7D365KbqL87
-         3sdkvxybrySS9K9v4RoE3s9uTHD/szwnH3odJWFbguw+Jb02zQ1I1nWcwRjCvlOXt2tp
-         r8g4dO9H70P4CaPIU5dD0mu6V+kd2E1Ds9/5j3mGHi/iYBccNhhY6rsJW17AHJdSUM5j
-         CG6FntBF8Vpb2ufYvduBn4EM3OntJUk/r0xR4g91QwMKLVLyLuqDeGHDk2GJ2ipnVnJ3
-         +aWQ==
+        d=google.com; s=20230601; t=1711744420; x=1712349220; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7fJ4rSAI0GoYiQAMJdDfQgj6t00Kp7TpJETA/wU9wok=;
+        b=cSsDTqZo1Ep7rjLmVP9XoFKW24dAUgmMBqMZz3pMEI0IEW+qPuSCJvEIxP6L1zOeuh
+         EMo7uy+lt1caNRVJ97hOF7hcLlMFjhvZ5BUtNHkKhqAlnheWdZ0ZN3UqbYId38N80Kc6
+         +4tbFYOu9A9Z6HL93SR5Z3sUhMF+gwFxfex8Q+l3KCXzNzpXgYWq0SPHzXVQOnsk++XR
+         LYdV1RzCl5NaaxRk+eKXpLoHSldcQu8tEPHpFn6midUyhfMBM+88xnQjw+F1jGBs4ovz
+         zToO298nAAT5OMGm5vt2y8LADs03UOWh4JkLttMrdWmmqYWcGKtx1yuF+fRmv2favE/S
+         pKcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711744399; x=1712349199;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9y/dxoUHYnuLJXM/FbNFKWazEIf0YDN2gZikUVSS61Y=;
-        b=hhMXzo2cPp1qMHmbJf8ndUV9OLFKR3+CPkx1hFGqYJUTeLu/WKqlDymOhWyP6pI7gH
-         f0qAZEcqto4/9plR5FIq4VesU2VsimUifj6U4C/vs70ZoV44HZhjqsu6XJjTpsZQtd4E
-         OBTX/K7yAJvnsCLKNMGMf/pBsDLCshC/2KDvV+0EUMOfUHtsNwlYveBdFt8RRDYlSaRw
-         WNocbOs53AsEursNUdvBJpwT+nuuFgwRFzjvMmhEoU8YN2gyFJp1+aBBBLIA7VYaF00s
-         fl3WV3xtrtJ+f80fE3A4rOfCtWGqN5U7jGzRc2vrPOQTwCpjNSD1byqI8NQShASpOypQ
-         rE7g==
-X-Forwarded-Encrypted: i=1; AJvYcCXRzpcFib2bdOq9gQnhZtMnV3KPXK0MIX4forYdOrEC1l7u0AWAKKTTOt2aoYlLn+f+GJ+Z1d2ogD/MvNyKdfOPgG2oGFmQGvVZ18D0
-X-Gm-Message-State: AOJu0Yw/XhnP12JRZosFEXpriPPGSQCkxpOEbzXaNn+yKDw3OHU0ii6b
-	gMKsNuWBQKPg+G1Zaw5Lzl5Kha20mu+VlCVNioELFcc+WEgPq7Lj
-X-Google-Smtp-Source: AGHT+IENv1wF/FlhJUBdDw7gbHcuc9C7OqOL6VgCxshez/VMiYYzHneKoAE1DtcwhSriDloEUjcrhg==
-X-Received: by 2002:a05:6a20:3d07:b0:1a7:1c5:4746 with SMTP id y7-20020a056a203d0700b001a701c54746mr1717945pzi.1.1711744398901;
-        Fri, 29 Mar 2024 13:33:18 -0700 (PDT)
-Received: from localhost.localdomain ([122.161.51.128])
-        by smtp.gmail.com with ESMTPSA id w26-20020a62c71a000000b006e635740126sm3524177pfg.112.2024.03.29.13.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 13:33:18 -0700 (PDT)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: gregkh@linuxfoundation.org,
-	hverkuil-cisco@xs4all.nl,
-	christophe.jaillet@wanadoo.fr,
-	prathubaronia2011@gmail.com,
-	luca.ceresoli@bootlin.com,
-	robh@kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	frank.li@vivo.com
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	skhan@linuxfoundation.org,
-	Shresth Prasad <shresthprasad7@gmail.com>
-Subject: [PATCH] staging: axis-fifo: align arguments to open parenthesis in axis-fifo.c
-Date: Sat, 30 Mar 2024 02:02:24 +0530
-Message-ID: <20240329203222.12889-3-shresthprasad7@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1711744420; x=1712349220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7fJ4rSAI0GoYiQAMJdDfQgj6t00Kp7TpJETA/wU9wok=;
+        b=baR1fvaT4flKfY3IslyT6R8FCafi/6UCe+LbIHy+euL2ie7FkLJn0vwwwj2tj2lmaQ
+         F8I4pdOozdvYJ94v4mr0oHe+BAZZNgHgpdnz+BT4US/4HdTXdddjgCs/ZMSmNb1nTb5D
+         kFJA2oOBKc8PhW6CriLUR6EqZOGZVVCf3oHgnpFZVWAwVulWtVOwmDhMehltpkKWldSF
+         iUgZ/vVXVDgTJRQ6NvS0uRVJEgOsEy5xqGsTKmSfhV7+9Fk1vAHUlT+MlPJEFi00sze2
+         516rO4yQ1Xfaa9Lt/trCQuRRPVWLoijIHz1noS+A0oLxR1TIaRMHSYQDewNL+kYbun4U
+         ymdg==
+X-Gm-Message-State: AOJu0YyrcUTxFR4dvrhUaudducGwEGl2pXziaQAVJq4xfaz5Ny6xRvBB
+	ROpO6ubHw1AhWdVud/8QVNpoMEz+b7M7SsEbuMiU+6vS/GOkWOw3dxVYWfIgu6MTIEMjXtrrpSI
+	G4v8bqsIxpm8eW9QqLEj/Hoty9fVnQxrCrG3W
+X-Google-Smtp-Source: AGHT+IFMizgS0G5ukFYvjYIGxUljt4fuYwgJVd/7xudG/ccYnF78sLbJwmbgsF7dKolFZvWx8Fq/tlthiyGNWzulF3Q=
+X-Received: by 2002:a05:6402:c94:b0:56c:2d40:7430 with SMTP id
+ cm20-20020a0564020c9400b0056c2d407430mr138817edb.3.1711744419595; Fri, 29 Mar
+ 2024 13:33:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240329174236.2278217-1-edliaw@google.com> <909806c1-a9c4-4f51-a807-46075efb8ab9@collabora.com>
+In-Reply-To: <909806c1-a9c4-4f51-a807-46075efb8ab9@collabora.com>
+From: Edward Liaw <edliaw@google.com>
+Date: Fri, 29 Mar 2024 13:33:12 -0700
+Message-ID: <CAG4es9UYvT5tRPFtsRUqJnz9obLuAz03b0+61aAagmGjGTMnsA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/mm: import strings.h for ffsl
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Peter Xu <peterx@redhat.com>, 
+	David Hildenbrand <david@redhat.com>, "Mike Rapoport (IBM)" <rppt@kernel.org>, 
+	Axel Rasmussen <axelrasmussen@google.com>, linux-kselftest@vger.kernel.org, 
+	kernel-team@android.com, linux-mm@kvack.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Align some function arguments to the opening parenthesis of the
-function as reported by checkpatch:
+On Fri, Mar 29, 2024 at 12:32=E2=80=AFPM Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+>
+> On 3/29/24 10:42 PM, Edward Liaw wrote:
+> > Got a compilation error for ffsl after 91b80cc5b39f ("selftests: mm: fi=
+x
+> > map_hugetlb failure on 64K page size systems") imported vm_util.h.
+> >
+> > Fixes: af605d26a8f2 ("selftests/mm: merge util.h into vm_util.h")
+> Why do you think this Fixes tag is needed? This refers to a patch which i=
+s
+> just moving code. It doesn't seem to have any thing related to strings.h.
+Oops, I guess it should be:
 
-CHECK: Alignment should match open parenthesis
-
-Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
----
- drivers/staging/axis-fifo/axis-fifo.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
-index c51818c56dd2..a70af76be7fb 100644
---- a/drivers/staging/axis-fifo/axis-fifo.c
-+++ b/drivers/staging/axis-fifo/axis-fifo.c
-@@ -376,8 +376,8 @@ static ssize_t axis_fifo_read(struct file *f, char __user *buf,
- 		 */
- 		mutex_lock(&fifo->read_lock);
- 		ret = wait_event_interruptible_timeout(fifo->read_queue,
--			ioread32(fifo->base_addr + XLLF_RDFO_OFFSET),
--			read_timeout);
-+						       ioread32(fifo->base_addr + XLLF_RDFO_OFFSET),
-+						       read_timeout);
- 
- 		if (ret <= 0) {
- 			if (ret == 0) {
-@@ -517,9 +517,9 @@ static ssize_t axis_fifo_write(struct file *f, const char __user *buf,
- 		 */
- 		mutex_lock(&fifo->write_lock);
- 		ret = wait_event_interruptible_timeout(fifo->write_queue,
--			ioread32(fifo->base_addr + XLLF_TDFV_OFFSET)
--				 >= words_to_write,
--			write_timeout);
-+						       ioread32(fifo->base_addr + XLLF_TDFV_OFFSET)
-+						       >= words_to_write,
-+						       write_timeout);
- 
- 		if (ret <= 0) {
- 			if (ret == 0) {
--- 
-2.44.0
-
+Fixes: 6f6a841fb77d ("selftest/vm: add helpers to detect PAGE_SIZE and
+PAGE_SHIFT")
 
