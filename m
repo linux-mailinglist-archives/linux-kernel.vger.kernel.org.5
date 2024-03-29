@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-124955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB59891E33
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:36:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFEF2891E37
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99131F2E750
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:36:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE37287832
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:36:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087C81A9714;
-	Fri, 29 Mar 2024 12:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB771A9CDF;
+	Fri, 29 Mar 2024 12:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4JLQLSd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmUjACsH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443451A972E;
-	Fri, 29 Mar 2024 12:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9049B1A9CC3;
+	Fri, 29 Mar 2024 12:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716504; cv=none; b=qup/0UCcbmdyK4thNarv4CTLMYAm4QIiu+usmkDt6+G75eKQT4EQRaUqKIYE389jFI9LRdqSnuXKUEhTHKuJL0Bv3XYZZt3kP8PPVEE/3RBl4p2wmlFzR7P33mC52wkH408mkhG9cO2UPggzPUGEi8nSNJy+rmmVYhi9vU6QIb8=
+	t=1711716505; cv=none; b=UWOHKWKH7ukXl5/1xnMBPVsSl+YQ+bStaKER9R7ATYWJz66HDqOV3El+cB55LFyuXe/sLsusz6PrZJX5d+FV+9Z0AFgP5gsNixpWUUAdTD0YCC+BcJMs/h8GaC/dJ8P3s8wRCA/nJXI3/rmiua3HlW6uEB5eLepgu100p/apW2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716504; c=relaxed/simple;
-	bh=QxAspnF+Q/762ofMmENnwvPkf4tzEDzjKXMF/otpWVs=;
+	s=arc-20240116; t=1711716505; c=relaxed/simple;
+	bh=Mpq//dk5KR3KFP9QkYIiwXcTBz+YA/K2dwRwxYPoBUU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CBRICLj5ZWqDYMUwwNMw5jkE1Y39ce70BMwkA2Pb+2EqXzU55sQOVt37wzbEwRLCjdIaONIMZzbBxtR5o+vXFlpuTLc0bZLsIV1U4S07DEHWaniyNLP/DRx/yCecWZlG4d9TOcSnAAjD2+46W/H4CcH+6wUcgW4sqs6vNtZXx7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4JLQLSd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F73C433C7;
-	Fri, 29 Mar 2024 12:48:23 +0000 (UTC)
+	 MIME-Version; b=jal7wTKKnDRyiXFBjhukJ05R3l5XmNE8buSsz+FDr7i4ZhMem6qwCE1fz0jjt6Kj3s4rrKeIxt5UmFBSmZlEz9YJQ4yxkGIhJ37OmUlvH06i5J3Wv76w2/2xsKNnHVgtLpmiGi++o4X/92Lmm5Fnmq/WpiH1x18dkNS/5ld1APM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmUjACsH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B74AC43390;
+	Fri, 29 Mar 2024 12:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716504;
-	bh=QxAspnF+Q/762ofMmENnwvPkf4tzEDzjKXMF/otpWVs=;
+	s=k20201202; t=1711716505;
+	bh=Mpq//dk5KR3KFP9QkYIiwXcTBz+YA/K2dwRwxYPoBUU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i4JLQLSdIAQlr+Lyk8qNXyKwcQVQ5GuGFnBwYDJvHqdCT/eGQFqcTLkcFQrM9LlSk
-	 HbIh9tM1PRxZj6UhjpoGm5Hm5rklAQ2opCo8TwAey+4/IHyXqxWR2Wc8/VHa/+Er1H
-	 I2c701Vf2WUxxjY7OoJkW3jyzszYybJJytRtOdqxQHi4ZJRwpnzVTbAaQPxnNXInRg
-	 fpn/4AceeHYfrQRR4zHGtA6f4wJ0PSk2Ad1UxQ5tv2EICC+W6IBum6qRcxWnhmSJ9E
-	 6apKusDXYEIbY0h6SmOdfNU3HBYA7S2qMeo5GwOnXQk5cAgdkb0y3xVmqvaX3G4fm8
-	 RPKp6SlMIq0bQ==
+	b=JmUjACsHjj+7pXHc5J70VThnnzHn3MdIaPDS8QCR5izDOSP7ARW85sh+trAkrAEhj
+	 rvB23FqAds2BUcecjY1GuW6zcBXbA2i8qOZ6KgYyX1GK44tyDLcyhh5/Tu9MicJ79P
+	 bpyFwP+uNB/kEG/MA6BXqAt83SJ1IfYxhVGbRQfqdd3OftJPR4Pcv23TUL3JDk4D4e
+	 AZBo/JR5JW2ZoQDoJ9jUQKM32CSJo08l0rdBRPUKkov/2NJpErd8t7TGTuI8SMRQlP
+	 rFv10NZsnzNz9SJsnVOerYxXMcH8P9tmh0D191q09RRukmGW6jP6wHigM1jrrdoCMQ
+	 2amKWYxILSm5A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dai Ngo <dai.ngo@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
+Cc: Daniel Drake <drake@endlessos.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jian-Hong Pan <jhp@endlessos.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	anna@kernel.org,
-	chuck.lever@oracle.com,
-	linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 19/34] SUNRPC: increase size of rpc_wait_queue.qlen from unsigned short to unsigned int
-Date: Fri, 29 Mar 2024 08:47:20 -0400
-Message-ID: <20240329124750.3092394-19-sashal@kernel.org>
+	linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 20/34] Revert "ACPI: PM: Block ASUS B1400CEAE from suspend to idle by default"
+Date: Fri, 29 Mar 2024 08:47:21 -0400
+Message-ID: <20240329124750.3092394-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
 References: <20240329124750.3092394-1-sashal@kernel.org>
@@ -67,84 +66,55 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Dai Ngo <dai.ngo@oracle.com>
+From: Daniel Drake <drake@endlessos.org>
 
-[ Upstream commit 2c35f43b5a4b9cdfaa6fdd946f5a212615dac8eb ]
+[ Upstream commit cb98555fcd8eee98c30165537c7e394f3a66e809 ]
 
-When the NFS client is under extreme load the rpc_wait_queue.qlen counter
-can be overflowed. Here is an instant of the backlog queue overflow in a
-real world environment shown by drgn helper:
+This reverts commit d52848620de00cde4a3a5df908e231b8c8868250, which was
+originally put in place to work around a s2idle failure on this platform
+where the NVMe device was inaccessible upon resume.
 
-rpc_task_stats(rpc_clnt):
--------------------------
-rpc_clnt: 0xffff92b65d2bae00
-rpc_xprt: 0xffff9275db64f000
-  Queue:  sending[64887] pending[524] backlog[30441] binding[0]
-XMIT task: 0xffff925c6b1d8e98
-     WRITE: 750654
-        __dta_call_status_580: 65463
-        __dta_call_transmit_status_579: 1
-        call_reserveresult: 685189
-        nfs_client_init_is_complete: 1
-    COMMIT: 584
-        call_reserveresult: 573
-        __dta_call_status_580: 11
-    ACCESS: 1
-        __dta_call_status_580: 1
-   GETATTR: 10
-        __dta_call_status_580: 4
-        call_reserveresult: 6
-751249 tasks for server 111.222.333.444
-Total tasks: 751249
+After extended testing, we found that the firmware's implementation of S3
+is buggy and intermittently fails to wake up the system. We need to revert
+to s2idle mode.
 
-count_rpc_wait_queues(xprt):
-----------------------------
-**** rpc_xprt: 0xffff9275db64f000 num_reqs: 65511
-wait_queue: xprt_binding[0] cnt: 0
-wait_queue: xprt_binding[1] cnt: 0
-wait_queue: xprt_binding[2] cnt: 0
-wait_queue: xprt_binding[3] cnt: 0
-rpc_wait_queue[xprt_binding].qlen: 0 maxpriority: 0
-wait_queue: xprt_sending[0] cnt: 0
-wait_queue: xprt_sending[1] cnt: 64887
-wait_queue: xprt_sending[2] cnt: 0
-wait_queue: xprt_sending[3] cnt: 0
-rpc_wait_queue[xprt_sending].qlen: 64887 maxpriority: 3
-wait_queue: xprt_pending[0] cnt: 524
-wait_queue: xprt_pending[1] cnt: 0
-wait_queue: xprt_pending[2] cnt: 0
-wait_queue: xprt_pending[3] cnt: 0
-rpc_wait_queue[xprt_pending].qlen: 524 maxpriority: 0
-wait_queue: xprt_backlog[0] cnt: 0
-wait_queue: xprt_backlog[1] cnt: 685801
-wait_queue: xprt_backlog[2] cnt: 0
-wait_queue: xprt_backlog[3] cnt: 0
-rpc_wait_queue[xprt_backlog].qlen: 30441 maxpriority: 3 [task cnt mismatch]
+The NVMe issue has now been solved more precisely in the commit titled
+"PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge"
 
-There is no effect on operations when this overflow occurs. However
-it causes confusion when trying to diagnose the performance problem.
-
-Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=215742
+Link: https://lore.kernel.org/r/20240228075316.7404-2-drake@endlessos.org
+Signed-off-by: Daniel Drake <drake@endlessos.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Jian-Hong Pan <jhp@endlessos.org>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sunrpc/sched.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/sleep.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/include/linux/sunrpc/sched.h b/include/linux/sunrpc/sched.h
-index ba047a145e092..f5fe330e4f4da 100644
---- a/include/linux/sunrpc/sched.h
-+++ b/include/linux/sunrpc/sched.h
-@@ -199,7 +199,7 @@ struct rpc_wait_queue {
- 	unsigned char		maxpriority;		/* maximum priority (0 if queue is not a priority queue) */
- 	unsigned char		priority;		/* current priority */
- 	unsigned char		nr;			/* # tasks remaining for cookie */
--	unsigned short		qlen;			/* total # tasks waiting in queue */
-+	unsigned int		qlen;			/* total # tasks waiting in queue */
- 	struct rpc_timer	timer_list;
- #if IS_ENABLED(CONFIG_SUNRPC_DEBUG) || IS_ENABLED(CONFIG_TRACEPOINTS)
- 	const char *		name;
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index b277e25b276ce..95deb55fb9a8c 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -382,18 +382,6 @@ static const struct dmi_system_id acpisleep_dmi_table[] __initconst = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "20GGA00L00"),
+ 		},
+ 	},
+-	/*
+-	 * ASUS B1400CEAE hangs on resume from suspend (see
+-	 * https://bugzilla.kernel.org/show_bug.cgi?id=215742).
+-	 */
+-	{
+-	.callback = init_default_s3,
+-	.ident = "ASUS B1400CEAE",
+-	.matches = {
+-		DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-		DMI_MATCH(DMI_PRODUCT_NAME, "ASUS EXPERTBOOK B1400CEAE"),
+-		},
+-	},
+ 	{},
+ };
+ 
 -- 
 2.43.0
 
