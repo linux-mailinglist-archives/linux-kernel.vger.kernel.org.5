@@ -1,636 +1,240 @@
-Return-Path: <linux-kernel+bounces-124087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53821891204
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:29:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9FFA891207
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:31:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779EB1C246A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:29:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DB4C28B850
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4A139AC7;
-	Fri, 29 Mar 2024 03:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FB139ADB;
+	Fri, 29 Mar 2024 03:31:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C7KrOyDy"
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CSm9vbmL"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2129.outbound.protection.outlook.com [40.107.237.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 488893AC08
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711682973; cv=none; b=i21qqcCNpapnh15HMWRRcOjmID6y9nAd8bUvq7JZQxxXNRZwVWsVrI6X2i6shuCqQqnwHvv0li3yhecPgNSi5bVt/X1HYikP5lyGxNZdQOQcq72I9CwJSMSrcyUOGHQNX3tKtxo7wodkruW8Eaq0UtMlNvPBOuZifnc7DPKKpQQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711682973; c=relaxed/simple;
-	bh=38SqsARSldGwn4vMuhU0nndL4xSsxRc4WyifRZivzeM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rEdCyiQqqsF7uP8fmmyg8PBED01OsVGnCe/0DUlXQAqcPsu7xLXH1dhOwCUzxrqEc5doMvEbUIYJFgT9Oi2jPKUuUyuSAynIsYOnIvI7+9mC6yZ+o+bLRmfgJVBqBLOcg6QxwGXkbOuMC/NF5HNhMT8MFtKqgTN7NiY4jDMNo5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C7KrOyDy; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d0486cf91aso71632239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711682969; x=1712287769; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uFRT2ilMn7VkiRLLhnJawFJ1/PDTpXke+vVcnGlj418=;
-        b=C7KrOyDyADqpJdheQbtnAEWuJqsTWYdtB7aBfMVVrRosYYCaWG+zvSBUUvkkOvlkAl
-         y3VRxYhd5VXajLgDEinJp/rbgy1of9zSyj6WaIP0zAe3y6qawUPibE5tvadZRZFpPfHw
-         A0QOCbLSFI2eBn3uJHhpuaTf5JeKitfYbXZYs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711682969; x=1712287769;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uFRT2ilMn7VkiRLLhnJawFJ1/PDTpXke+vVcnGlj418=;
-        b=f02bB2rvYDxmyEjxLheUChOQgAycDBea6WHjYbqgiK8fCPIFhvNaOy3DniAnK0/nce
-         SbHOHVa/BPn++7a3dj2lwuAU2RnW6cwd/okZsvw17/GtsF1tpqjiVEeXEIjMqqnFwLD1
-         C51uNUs3pPewf/DFmsneJYIO7do3uqzkhe4BqEMePkGA5IgrnbDb1gXqRI4JlBbzIbY5
-         u6G64XoNW0d3V1JkdHJG1HFbfWgqinmqJOkNv5n2GNcsFMZoYIMEcRcPGvON8fdTXWIz
-         mRe/VI+6hK4RNZjFx1AIdGD2jvF6qSNoHmHjnvyojbczt98BCbQ6MQh6Ctg60/tM50Qo
-         tvTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXMdXUzqoykps5uC/1vnFSM4oO3MgRhLPJ+DUdd7nvF0vlfLs6xOru+qh+UIBX5H7QDS0M0ucfyIUAyibnv5etYmWk7LA7sgiN6RyHc
-X-Gm-Message-State: AOJu0YyXRnkkspHjS9HTYoKlEMnzIh+VyHhEZYo3f9vam3MrHzxLoslQ
-	GOdOedkioBimsvmu7BEmOufe7ZkdaXMmfbz/Bk8Pc0EBNS/GSR+gpU1+HGkwnw==
-X-Google-Smtp-Source: AGHT+IEeo94C7AQMFJplhBzkjNRt33yqHOxtZ1MeCGIBj2s4gaFkOZ3aa2eOOvvl+k2AMM/C5KzbJQ==
-X-Received: by 2002:a05:6e02:1d9a:b0:366:a611:f7c0 with SMTP id h26-20020a056e021d9a00b00366a611f7c0mr1099425ila.0.1711682969509;
-        Thu, 28 Mar 2024 20:29:29 -0700 (PDT)
-Received: from chromium.org ([75.104.105.200])
-        by smtp.gmail.com with ESMTPSA id l7-20020a056e021aa700b003685b574968sm815717ilv.51.2024.03.28.20.29.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 20:29:29 -0700 (PDT)
-From: Simon Glass <sjg@chromium.org>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	Ahmad Fatoum <a.fatoum@pengutronix.de>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Simon Glass <sjg@chromium.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Terrell <terrelln@fb.com>,
-	Will Deacon <will@kernel.org>,
-	linux-doc@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	workflows@vger.kernel.org
-Subject: [PATCH v12 2/2] arm64: boot: Support Flat Image Tree
-Date: Fri, 29 Mar 2024 16:28:36 +1300
-Message-Id: <20240329032836.141899-3-sjg@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240329032836.141899-1-sjg@chromium.org>
-References: <20240329032836.141899-1-sjg@chromium.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941D237165;
+	Fri, 29 Mar 2024 03:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.129
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711683088; cv=fail; b=OdYkRy8uaZGx4SIdYNxOeX3IbnIslgcAGDOkz+8sA0mkr6CSGjqp3AAUD0znwTyk0OYA8C5suddZaEFXonK9NWwbsxzD0WFHBiavvSuRpi2whJ1vUH4nfXBVbVvOEH/8SA8jhxjpTIx2/ZlqA70bU9a5mdSxmHLGq8wXsYyzitQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711683088; c=relaxed/simple;
+	bh=rnFUIX65BMVyEcv1gZCjFL5uqQ/2+6f/tW7b09/Jzb4=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ZtOngrk5j0RkAOy0JrZ5ce5sJgFoHH7gLPda947hMDO1yB223lDZSG9sUj4wTTWH4rJZutmV+FWft94l4cle8hit+g3vxpCdlvmtunxyHrIg8DWxgzj0eaiXQh/9ZjlGGCY06/jS24g7q9MgDcIM2YcvyYVeL3h5hjd6wNcuguw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CSm9vbmL; arc=fail smtp.client-ip=40.107.237.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BolObwgcral9mB/kH798prJhLRfnSLITYhf/Tu0XTuEOioiXeJsJWWVYTYQr1Wt7LlMcm5iCmOpNt/mihTyuLI6lOa5p3jIa4bhAYp7eKKr4VXgz4R8alF5cyEuqohVtGa9hx8LvQYaCY2Lbqm8LvX7WaprU23AHhZcro5dplVp1UNE62JrHSetGDX0QaV48jT6BC/BB5N+diYC1dJyC4lbUFvQYlmPsRT/B74wT9f1F9AtQz1Fr2kfMmwr6tv/4AJ+itD8zoS1tfHusbnoH3knhq0FsurGsLDpCC06M/ktCn3en49gC/pmyV7oYyL3nO/TNfnBbboAqPZ1z7ZTR/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rnFUIX65BMVyEcv1gZCjFL5uqQ/2+6f/tW7b09/Jzb4=;
+ b=XC6XT9fheWvr6PD65HNumL9Ast+IG3yuD51axgZpFR/siPCVqpcfAO0OY20d90B97pGwsgTl9kbTQw7P4X+bgaUwixlfgAmSfMDljmHOou8nWBprPvohupIEdDdrwxTHllL1j/HrzZ+3ceBiWXA218YRR1+pdz90lt+zKrsN6c2A/4DaSynVELEDiRsCCfaRjy8Wz30/e9NVf6m6d9NLoio82oFhH25I4gg+2yIRhVFALOJmZIM2Aw7FpZknI0PtFew12IxNvjD6WLICmezbEO7fwE1F8/rp16Htw/9yclqZGg1E52ZTXnhgWP8Iijv+FjDeewQUMbkA5Oz8wfCVhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rnFUIX65BMVyEcv1gZCjFL5uqQ/2+6f/tW7b09/Jzb4=;
+ b=CSm9vbmLsPIpvhk7+PusIIL0SN+zppsBIja30c1mGjGKAs8HHSheU/hc7qAAGe2+8OoSehWe8FTOoZlP5DsIGyow8SFJo/KAyrrPXErP1ws9olGOmk8wjB4uyrVS3qaKvjiAsHIUZ93XAPPl8vXNTLQAYfSGGD4LRUxMRPK8j5c=
+Received: from DM4PR12MB5086.namprd12.prod.outlook.com (2603:10b6:5:389::9) by
+ MW4PR12MB6826.namprd12.prod.outlook.com (2603:10b6:303:20c::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.33; Fri, 29 Mar 2024 03:31:23 +0000
+Received: from DM4PR12MB5086.namprd12.prod.outlook.com
+ ([fe80::225b:b65:a5c8:b069]) by DM4PR12MB5086.namprd12.prod.outlook.com
+ ([fe80::225b:b65:a5c8:b069%7]) with mapi id 15.20.7409.039; Fri, 29 Mar 2024
+ 03:31:23 +0000
+From: "V, Narasimhan" <Narasimhan.V@amd.com>
+To: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>
+CC: "Petkov, Borislav" <Borislav.Petkov@amd.com>
+Subject: Soft Lockup on running fsstress with next-20240327
+Thread-Topic: Soft Lockup on running fsstress with next-20240327
+Thread-Index: AQHagYfYCSZyrOHQ6UyDn6OIojPZ8g==
+Date: Fri, 29 Mar 2024 03:31:23 +0000
+Message-ID:
+ <DM4PR12MB508625859AF5FAC947815C02893A2@DM4PR12MB5086.namprd12.prod.outlook.com>
+Accept-Language: en-US, en-IN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=True;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-29T03:31:22.818Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR12MB5086:EE_|MW4PR12MB6826:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ tfIg8lkc86Yj0uI3eDTvVi42NjaNes/bWnm+xM371bg55dxWCZ/ZZmrmqZQegWiFlmWOV4Ge14mtjWVAfRaKGRPYYnukKyEBPoBBbulgaH/pwcxKA1YAyMzZCYCZuVr5sW+mNiXBj0FwnszfqhJ516nNL7gkT6hyvpxl9WlUuMLoqKSJ+AThrr0IZZjAPxAg56shhFls01q8lX87/SDlKUq0ma3zGLbUM+5VzhuxoBTaFhkE++PIGC6m5yVa2Q8HyGEQbZ09c2s8FEalCidGxZA9tZoBU8BCJKD45Sm4cUy6n5sgfZBtF3DD1+gVrUIuxlSUReopUxBjq0tlwok89nXZ8HhdF2ZeEgiaL9f3nW3d3oVVpSr3OjdWl7IIrkbSljEezOw/67FYFyGSNaiHTKmsmNrscCwKB7SDyZkaik6vDueDFw8Ytp+q5k7fSgJ9DnsW8HEZsZ3vMXLjKIKTg9YSFBEyzQqoAMycYC0NZUdKY9Vwn+6pb/cMr5mTy1yZ/YeiNxFdY60YPtHQtXR0JoLPRwIuo80WpHJ7kY6oXaWZIbHo8/7gtdb1K6YOpr1BygFiQ5QI6vKzFbmQt//09Ey4L4zpi9N+M28r4uCtC64=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5086.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?dFFBRnhwMXAvZFUxdlA0QkM2eEwyM3JwVzljNHBWS2p5QU83VVhycEZudjlw?=
+ =?utf-8?B?Z01SS3drMUV0b1l1bFhwYWpXZ2FzOHFJL1l4MFVOSkFQeE9DTmxSRHdWTzI4?=
+ =?utf-8?B?SUp4WVlRSWcyc1NZNFdFbE5saTVVd0JQaTQ0Tmw3eUkybkFEZCt1eGtEQ0hX?=
+ =?utf-8?B?eTRsdWQ3c0x0WWx3U3N1eVRMU3NmTG0xTkJJc1VPUGF4SXVaMlBwR2ROWWgy?=
+ =?utf-8?B?bW50bW1ub2RmWDdzQnBFRFljcjBOZmZTaUhUa0hHOEI1cmNVOXlLZ1BNWHZV?=
+ =?utf-8?B?ZUIxUW41d1V2WDRWRHUzZ3pjZ3NJcHA4eTIvMlVwemZXd2NmL1h4MCt2akc2?=
+ =?utf-8?B?MFk3ZVNPVDlvSnZiSzN5NTNiRldHN0ErOVE2T2VNQ2R2ZlZNL3dvWjNsVi9Z?=
+ =?utf-8?B?a0pMZGQ4M0JDTjZwMjZvQk5jQXN3ellGLzJlQTZpUFo4Y1QybER0SHA0bEJ0?=
+ =?utf-8?B?aHdOdXlRdGhUaHMrMnpDeUtMV0J2UllLcFJwc3FzWW1SNmRVanE5V1VDRStn?=
+ =?utf-8?B?OU5UcHNTNWpYeUUydUlFdmE1QUJXaVlVY2lTaXozUEZHZ0M1MGRtVzdCYytD?=
+ =?utf-8?B?a1c5WktJUHhLZDFiaEQ2ZFVwT0tRTFJrNDJKTVFtRE0yQ01zenNwYmZnLzM1?=
+ =?utf-8?B?dFZNcGtpV09ORTVEM2NIdWpnZm5EaWluWkJVMTJ3MzBrODg5Y1AzdnBLaEhB?=
+ =?utf-8?B?dlp5eUJXRDZYT0ZFMzhaSERwTndtdzNkVWROSFpTVkYrSFREUENVekNnMkdy?=
+ =?utf-8?B?YXkyTXZySVRHN3Rpa0FCb09FMHMzTmt2ZmdrR2lBeVNzcUZjbHYzREJhVGpj?=
+ =?utf-8?B?MVdsbVI5NzlweVoyK1BkWDBCWTlsM0h5bGIwNWxMU3BDWW5nbHFvN3g3a2ZE?=
+ =?utf-8?B?eU4ycTR6N0xoZTN4NURVdndiUlJyVHJqazJMUVJ1V1MzRE1CY1Rhb2tNc1Ux?=
+ =?utf-8?B?OUJ0aHcza0c1RG1zMVBzTFBuKyt5TTNFYU5xaGsxTXVjNUV4WFNXMHdRWVM3?=
+ =?utf-8?B?R2NQYzNjbmNWS0RNT01laytBOEZ2N2pMdkRuYU8wdEpOOHR1clZlaG1VMVBO?=
+ =?utf-8?B?eGM4NHEzN3QzTHk5aWMxTTJpVkpFVVd0cjJkTFI2cjk2empoVzlBbEFPR2ls?=
+ =?utf-8?B?eWhqeXhERjdReTlycGNJRDkydWRCaUFJY2dpUk82ZG16anNuYlM1WXRpNzJo?=
+ =?utf-8?B?YWZ0N1ZIc2Zya2pBbVBWVzd3cm9Ld1NGbXVBd25GMlhRMnhaUUMyNEoyYytF?=
+ =?utf-8?B?U0ErZGQ4dFdUWk83QXB2Zm1EY2tkenFrbm1QSHE5YjhSaW84SVBtTHNHZE5N?=
+ =?utf-8?B?VUZkWTBkSmJBY004VlRBcW5Oc2k5ZjFDSk1SMzY5dVBTeVZGSEFndk1ybURy?=
+ =?utf-8?B?dXJhMExMNnJwWHM5MkROT1Nieis3Y3g1NjZkNFlVajBHOE5JRkwrWld1UURL?=
+ =?utf-8?B?WnY4dU5RQ24wY3V1ZWxPdGFXeFliKzI3L2liTy9IUld3Q1UwUmNXNFd0L1ow?=
+ =?utf-8?B?c3U3UCtwK1hDZVpGWE5WWnF0ZE5VOGRWK0N3d0gzUXd2RUpUL0RMWnhqK2Va?=
+ =?utf-8?B?b2lxS0NSZU5VS2ZObDJkUldUSWtadEtzR0JMRWUybW13VnhPRER4d3RDRG0r?=
+ =?utf-8?B?WkZuTFVMWWpRUlNVUk45ZVZ5bVNsYkRLVkdUYk9WSmN1eXFVS0RORWNycmtN?=
+ =?utf-8?B?QW1uL1NvNlAvT3ZCUHhhQzR1eTR4dFVVZUV0TEJ2SVBraWQza3gyN3A4U2pZ?=
+ =?utf-8?B?aTZwQ3JPNTcwUjdaZVIyZmd1YnA2bXU4U2hseEgwSExPTzlpYTQ2NDVhUlBX?=
+ =?utf-8?B?REwycHdlam1RN3FPek13cE9jU0NYUTcwMHVGMVdUdlFMa3dxOWt2UGpESStq?=
+ =?utf-8?B?Z0RwYUR2ZWJrK1lNSm5SZHlaOHZaSmkwNGFWNUR1RzNmTk1NcHVaOVhZaEk2?=
+ =?utf-8?B?Y0FJSjQ5dWRoMS9SdjZQN1Y2cEFNd2taTzF5bko5TkhHZUZNNndlM3pMVFE2?=
+ =?utf-8?B?MVhwSzRCZzZaU052MU9yWDVkcVBuVlVBMWF6T3BMLy93N2UySlNMRWhRai9X?=
+ =?utf-8?B?empSYTh6dnd3WGQrdlc2OTVMTXh0c1FJenllSHZYS3YxUVdNck5aSjZDMlZP?=
+ =?utf-8?Q?UyvA=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5086.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 129e95f5-12b1-41cb-9545-08dc4fa0b524
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2024 03:31:23.1640
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V4p1dvGuvanXDg+4dN5YKcAcz9dFr5V6baHp41h+Wsb4tVXO/OyPmY6ZA8wYILaidEq4/wu9lJ4ETZ5LT7HLkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6826
 
-Add a script which produces a Flat Image Tree (FIT), a single file
-containing the built kernel and associated devicetree files.
-Compression defaults to gzip which gives a good balance of size and
-performance.
-
-The files compress from about 86MB to 24MB using this approach.
-
-The FIT can be used by bootloaders which support it, such as U-Boot
-and Linuxboot. It permits automatic selection of the correct
-devicetree, matching the compatible string of the running board with
-the closest compatible string in the FIT. There is no need for
-filenames or other workarounds.
-
-Add a 'make image.fit' build target for arm64, as well.
-
-The FIT can be examined using 'dumpimage -l'.
-
-This uses the 'dtbs-list' file but processes only .dtb files, ignoring
-the overlay .dtbo files.
-
-This features requires pylibfdt (use 'pip install libfdt'). It also
-requires compression utilities for the algorithm being used. Supported
-compression options are the same as the Image.xxx files. Use
-FIT_COMPRESSION to select an algorithm other than gzip.
-
-While FIT supports a ramdisk / initrd, no attempt is made to support
-this here, since it must be built separately from the Linux build.
-
-Signed-off-by: Simon Glass <sjg@chromium.org>
----
-
-Changes in v12:
-- Avoid showing FIT message if V=0
-
-Changes in v11:
-- Use dtbslist file in image.fit rule
-- Update cmd_fit rule as per Masahiro
-- Don't mention ignoring files without a .dtb prefix
-- Use argparse fromfile_prefix_chars feature
-- Add a -v option and use it for output (with make V=1)
-- rename srcdir to dtbs
-- Use -o for the output file instead of -f
-
-Changes in v10:
-- Make use of dtbs-list file
-- Mention dtbs-list and FIT_COMPRESSION
-- Update copyright year
-- Update cover letter to take account of an applied patch
-
-Changes in v9:
-- Move the compression control into Makefile.lib
-
-Changes in v8:
-- Drop compatible string in FDT node
-- Correct sorting of MAINTAINERS to before ARM64 PORT
-- Turn compress part of the make_fit.py comment in to a sentence
-- Add two blank lines before parse_args() and setup_fit()
-- Use 'image.fit: dtbs' instead of BUILD_DTBS var
-- Use '$(<D)/dts' instead of '$(dir $<)dts'
-- Add 'mkimage' details Documentation/process/changes.rst
-- Allow changing the compression used
-- Tweak cover letter since there is only one clean-up patch
-
-Changes in v7:
-- Add Image as a dependency of image.fit
-- Drop kbuild tag
-- Add dependency on dtbs
-- Drop unnecessary path separator for dtbs
-- Rebase to -next
-
-Changes in v5:
-- Drop patch previously applied
-- Correct compression rule which was broken in v4
-
-Changes in v4:
-- Use single quotes for UIMAGE_NAME
-
-Changes in v3:
-- Drop temporary file image.itk
-- Drop patch 'Use double quotes for image name'
-- Drop double quotes in use of UIMAGE_NAME
-- Drop unnecessary CONFIG_EFI_ZBOOT condition for help
-- Avoid hard-coding "arm64" for the DT architecture
-
-Changes in v2:
-- Drop patch previously applied
-- Add .gitignore file
-- Move fit rule to Makefile.lib using an intermediate file
-- Drop dependency on CONFIG_EFI_ZBOOT
-- Pick up .dtb files separately from the kernel
-- Correct pylint too-many-args warning for write_kernel()
-- Include the kernel image in the file count
-- Add a pointer to the FIT spec and mention of its wide industry usage
-- Mention the kernel version in the FIT description
-
- Documentation/process/changes.rst |   9 +
- MAINTAINERS                       |   7 +
- arch/arm64/Makefile               |   7 +-
- arch/arm64/boot/.gitignore        |   1 +
- arch/arm64/boot/Makefile          |   6 +-
- scripts/Makefile.lib              |  16 ++
- scripts/make_fit.py               | 290 ++++++++++++++++++++++++++++++
- 7 files changed, 333 insertions(+), 3 deletions(-)
- create mode 100755 scripts/make_fit.py
-
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index 7ef8de58f7f8..3a39395bd9d3 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -62,6 +62,7 @@ Sphinx\ [#f1]_         2.4.4            sphinx-build --version
- cpio                   any              cpio --version
- GNU tar                1.28             tar --version
- gtags (optional)       6.6.5            gtags --version
-+mkimage (optional)     2017.01          mkimage --version
- ====================== ===============  ========================================
- 
- .. [#f1] Sphinx is needed only to build the Kernel documentation
-@@ -189,6 +190,14 @@ The kernel build requires GNU GLOBAL version 6.6.5 or later to generate
- tag files through ``make gtags``.  This is due to its use of the gtags
- ``-C (--directory)`` flag.
- 
-+mkimage
-+-------
-+
-+This tool is used when building a Flat Image Tree (FIT), commonly used on ARM
-+platforms. The tool is available via the ``u-boot-tools`` package or can be
-+built from the U-Boot source code. See the instructions at
-+https://docs.u-boot.org/en/latest/build/tools.html#building-tools-for-linux
-+
- System utilities
- ****************
- 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d36c19c1bf81..d28089145ca8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3079,6 +3079,13 @@ F:	drivers/mmc/host/sdhci-of-arasan.c
- N:	zynq
- N:	xilinx
- 
-+ARM64 FIT SUPPORT
-+M:	Simon Glass <sjg@chromium.org>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	arch/arm64/boot/Makefile
-+F:	scripts/make_fit.py
-+
- ARM64 PORT (AARCH64 ARCHITECTURE)
- M:	Catalin Marinas <catalin.marinas@arm.com>
- M:	Will Deacon <will@kernel.org>
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 1217d97998ac..b8b1d4f4a572 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -154,7 +154,7 @@ libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
- # Default target when executing plain make
- boot		:= arch/arm64/boot
- 
--BOOT_TARGETS	:= Image vmlinuz.efi
-+BOOT_TARGETS	:= Image vmlinuz.efi image.fit
- 
- PHONY += $(BOOT_TARGETS)
- 
-@@ -166,7 +166,9 @@ endif
- 
- all:	$(notdir $(KBUILD_IMAGE))
- 
--vmlinuz.efi: Image
-+image.fit: dtbs
-+
-+vmlinuz.efi image.fit: Image
- $(BOOT_TARGETS): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 
-@@ -219,6 +221,7 @@ virtconfig:
- define archhelp
-   echo  '* Image.gz      - Compressed kernel image (arch/$(ARCH)/boot/Image.gz)'
-   echo  '  Image         - Uncompressed kernel image (arch/$(ARCH)/boot/Image)'
-+  echo  '  image.fit     - Flat Image Tree (arch/$(ARCH)/boot/image.fit)'
-   echo  '  install       - Install uncompressed kernel'
-   echo  '  zinstall      - Install compressed kernel'
-   echo  '                  Install using (your) ~/bin/installkernel or'
-diff --git a/arch/arm64/boot/.gitignore b/arch/arm64/boot/.gitignore
-index af5dc61f8b43..abaae9de1bdd 100644
---- a/arch/arm64/boot/.gitignore
-+++ b/arch/arm64/boot/.gitignore
-@@ -2,3 +2,4 @@
- Image
- Image.gz
- vmlinuz*
-+image.fit
-diff --git a/arch/arm64/boot/Makefile b/arch/arm64/boot/Makefile
-index a5a787371117..607a67a649c4 100644
---- a/arch/arm64/boot/Makefile
-+++ b/arch/arm64/boot/Makefile
-@@ -16,7 +16,8 @@
- 
- OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
- 
--targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo Image.zst
-+targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo \
-+	Image.zst image.fit
- 
- $(obj)/Image: vmlinux FORCE
- 	$(call if_changed,objcopy)
-@@ -39,6 +40,9 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
- $(obj)/Image.zst: $(obj)/Image FORCE
- 	$(call if_changed,zstd)
- 
-+$(obj)/image.fit: $(obj)/Image $(obj)/dts/dtbs-list FORCE
-+	$(call if_changed,fit)
-+
- EFI_ZBOOT_PAYLOAD	:= Image
- EFI_ZBOOT_BFD_TARGET	:= elf64-littleaarch64
- EFI_ZBOOT_MACH_TYPE	:= ARM64
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 743edb09f9c7..1ca2d9982031 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -504,6 +504,22 @@ quiet_cmd_uimage = UIMAGE  $@
- 			-a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
- 			-n '$(UIMAGE_NAME)' -d $< $@
- 
-+# Flat Image Tree (FIT)
-+# This allows for packaging of a kernel and all devicetrees files, using
-+# compression.
-+# ---------------------------------------------------------------------------
-+
-+MAKE_FIT := $(srctree)/scripts/make_fit.py
-+
-+# Use this to override the compression algorithm
-+FIT_COMPRESSION ?= gzip
-+
-+quiet_cmd_fit = FIT     $@
-+      cmd_fit = $(MAKE_FIT) -o $@ --arch $(UIMAGE_ARCH) --os linux \
-+		--name '$(UIMAGE_NAME)' \
-+		$(if $(findstring 1,$(KBUILD_VERBOSE)),-v) \
-+		--compress $(FIT_COMPRESSION) -k $< @$(word 2,$^)
-+
- # XZ
- # ---------------------------------------------------------------------------
- # Use xzkern or xzkern_with_size to compress the kernel image and xzmisc to
-diff --git a/scripts/make_fit.py b/scripts/make_fit.py
-new file mode 100755
-index 000000000000..3de90c5a094b
---- /dev/null
-+++ b/scripts/make_fit.py
-@@ -0,0 +1,290 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Copyright 2024 Google LLC
-+# Written by Simon Glass <sjg@chromium.org>
-+#
-+
-+"""Build a FIT containing a lot of devicetree files
-+
-+Usage:
-+    make_fit.py -A arm64 -n 'Linux-6.6' -O linux
-+        -o arch/arm64/boot/image.fit -k /tmp/kern/arch/arm64/boot/image.itk
-+        @arch/arm64/boot/dts/dtbs-list -E -c gzip
-+
-+Creates a FIT containing the supplied kernel and a set of devicetree files,
-+either specified individually or listed in a file (with an '@' prefix).
-+
-+Use -E to generate an external FIT (where the data is placed after the
-+FIT data structure). This allows parsing of the data without loading
-+the entire FIT.
-+
-+Use -c to compress the data, using bzip2, gzip, lz4, lzma, lzo and
-+zstd algorithms.
-+
-+The resulting FIT can be booted by bootloaders which support FIT, such
-+as U-Boot, Linuxboot, Tianocore, etc.
-+
-+Note that this tool does not yet support adding a ramdisk / initrd.
-+"""
-+
-+import argparse
-+import collections
-+import os
-+import subprocess
-+import sys
-+import tempfile
-+import time
-+
-+import libfdt
-+
-+
-+# Tool extension and the name of the command-line tools
-+CompTool = collections.namedtuple('CompTool', 'ext,tools')
-+
-+COMP_TOOLS = {
-+    'bzip2': CompTool('.bz2', 'bzip2'),
-+    'gzip': CompTool('.gz', 'pigz,gzip'),
-+    'lz4': CompTool('.lz4', 'lz4'),
-+    'lzma': CompTool('.lzma', 'lzma'),
-+    'lzo': CompTool('.lzo', 'lzop'),
-+    'zstd': CompTool('.zstd', 'zstd'),
-+}
-+
-+
-+def parse_args():
-+    """Parse the program ArgumentParser
-+
-+    Returns:
-+        Namespace object containing the arguments
-+    """
-+    epilog = 'Build a FIT from a directory tree containing .dtb files'
-+    parser = argparse.ArgumentParser(epilog=epilog, fromfile_prefix_chars='@')
-+    parser.add_argument('-A', '--arch', type=str, required=True,
-+          help='Specifies the architecture')
-+    parser.add_argument('-c', '--compress', type=str, default='none',
-+          help='Specifies the compression')
-+    parser.add_argument('-E', '--external', action='store_true',
-+          help='Convert the FIT to use external data')
-+    parser.add_argument('-n', '--name', type=str, required=True,
-+          help='Specifies the name')
-+    parser.add_argument('-o', '--output', type=str, required=True,
-+          help='Specifies the output file (.fit)')
-+    parser.add_argument('-O', '--os', type=str, required=True,
-+          help='Specifies the operating system')
-+    parser.add_argument('-k', '--kernel', type=str, required=True,
-+          help='Specifies the (uncompressed) kernel input file (.itk)')
-+    parser.add_argument('-v', '--verbose', action='store_true',
-+                        help='Enable verbose output')
-+    parser.add_argument('dtbs', type=str, nargs='*',
-+          help='Specifies the devicetree files to process')
-+
-+    return parser.parse_args()
-+
-+
-+def setup_fit(fsw, name):
-+    """Make a start on writing the FIT
-+
-+    Outputs the root properties and the 'images' node
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        name (str): Name of kernel image
-+    """
-+    fsw.INC_SIZE = 65536
-+    fsw.finish_reservemap()
-+    fsw.begin_node('')
-+    fsw.property_string('description', f'{name} with devicetree set')
-+    fsw.property_u32('#address-cells', 1)
-+
-+    fsw.property_u32('timestamp', int(time.time()))
-+    fsw.begin_node('images')
-+
-+
-+def write_kernel(fsw, data, args):
-+    """Write out the kernel image
-+
-+    Writes a kernel node along with the required properties
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        data (bytes): Data to write (possibly compressed)
-+        args (Namespace): Contains necessary strings:
-+            arch: FIT architecture, e.g. 'arm64'
-+            fit_os: Operating Systems, e.g. 'linux'
-+            name: Name of OS, e.g. 'Linux-6.6.0-rc7'
-+            compress: Compression algorithm to use, e.g. 'gzip'
-+    """
-+    with fsw.add_node('kernel'):
-+        fsw.property_string('description', args.name)
-+        fsw.property_string('type', 'kernel_noload')
-+        fsw.property_string('arch', args.arch)
-+        fsw.property_string('os', args.os)
-+        fsw.property_string('compression', args.compress)
-+        fsw.property('data', data)
-+        fsw.property_u32('load', 0)
-+        fsw.property_u32('entry', 0)
-+
-+
-+def finish_fit(fsw, entries):
-+    """Finish the FIT ready for use
-+
-+    Writes the /configurations node and subnodes
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        entries (list of tuple): List of configurations:
-+            str: Description of model
-+            str: Compatible stringlist
-+    """
-+    fsw.end_node()
-+    seq = 0
-+    with fsw.add_node('configurations'):
-+        for model, compat in entries:
-+            seq += 1
-+            with fsw.add_node(f'conf-{seq}'):
-+                fsw.property('compatible', bytes(compat))
-+                fsw.property_string('description', model)
-+                fsw.property_string('fdt', f'fdt-{seq}')
-+                fsw.property_string('kernel', 'kernel')
-+    fsw.end_node()
-+
-+
-+def compress_data(inf, compress):
-+    """Compress data using a selected algorithm
-+
-+    Args:
-+        inf (IOBase): Filename containing the data to compress
-+        compress (str): Compression algorithm, e.g. 'gzip'
-+
-+    Return:
-+        bytes: Compressed data
-+    """
-+    if compress == 'none':
-+        return inf.read()
-+
-+    comp = COMP_TOOLS.get(compress)
-+    if not comp:
-+        raise ValueError(f"Unknown compression algorithm '{compress}'")
-+
-+    with tempfile.NamedTemporaryFile() as comp_fname:
-+        with open(comp_fname.name, 'wb') as outf:
-+            done = False
-+            for tool in comp.tools.split(','):
-+                try:
-+                    subprocess.call([tool, '-c'], stdin=inf, stdout=outf)
-+                    done = True
-+                    break
-+                except FileNotFoundError:
-+                    pass
-+            if not done:
-+                raise ValueError(f'Missing tool(s): {comp.tools}\n')
-+            with open(comp_fname.name, 'rb') as compf:
-+                comp_data = compf.read()
-+    return comp_data
-+
-+
-+def output_dtb(fsw, seq, fname, arch, compress):
-+    """Write out a single devicetree to the FIT
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        seq (int): Sequence number (1 for first)
-+        fmame (str): Filename containing the DTB
-+        arch: FIT architecture, e.g. 'arm64'
-+        compress (str): Compressed algorithm, e.g. 'gzip'
-+
-+    Returns:
-+        tuple:
-+            str: Model name
-+            bytes: Compatible stringlist
-+    """
-+    with fsw.add_node(f'fdt-{seq}'):
-+        # Get the compatible / model information
-+        with open(fname, 'rb') as inf:
-+            data = inf.read()
-+        fdt = libfdt.FdtRo(data)
-+        model = fdt.getprop(0, 'model').as_str()
-+        compat = fdt.getprop(0, 'compatible')
-+
-+        fsw.property_string('description', model)
-+        fsw.property_string('type', 'flat_dt')
-+        fsw.property_string('arch', arch)
-+        fsw.property_string('compression', compress)
-+        fsw.property('compatible', bytes(compat))
-+
-+        with open(fname, 'rb') as inf:
-+            compressed = compress_data(inf, compress)
-+        fsw.property('data', compressed)
-+    return model, compat
-+
-+
-+def build_fit(args):
-+    """Build the FIT from the provided files and arguments
-+
-+    Args:
-+        args (Namespace): Program arguments
-+
-+    Returns:
-+        tuple:
-+            bytes: FIT data
-+            int: Number of configurations generated
-+            size: Total uncompressed size of data
-+    """
-+    seq = 0
-+    size = 0
-+    fsw = libfdt.FdtSw()
-+    setup_fit(fsw, args.name)
-+    entries = []
-+
-+    # Handle the kernel
-+    with open(args.kernel, 'rb') as inf:
-+        comp_data = compress_data(inf, args.compress)
-+    size += os.path.getsize(args.kernel)
-+    write_kernel(fsw, comp_data, args)
-+
-+    for fname in args.dtbs:
-+        # Ignore overlay (.dtbo) files
-+        if os.path.splitext(fname)[1] == '.dtb':
-+            seq += 1
-+            size += os.path.getsize(fname)
-+            model, compat = output_dtb(fsw, seq, fname, args.arch, args.compress)
-+            entries.append([model, compat])
-+
-+    finish_fit(fsw, entries)
-+
-+    # Include the kernel itself in the returned file count
-+    return fsw.as_fdt().as_bytearray(), seq + 1, size
-+
-+
-+def run_make_fit():
-+    """Run the tool's main logic"""
-+    args = parse_args()
-+
-+    out_data, count, size = build_fit(args)
-+    with open(args.output, 'wb') as outf:
-+        outf.write(out_data)
-+
-+    ext_fit_size = None
-+    if args.external:
-+        mkimage = os.environ.get('MKIMAGE', 'mkimage')
-+        subprocess.check_call([mkimage, '-E', '-F', args.output],
-+                              stdout=subprocess.DEVNULL)
-+
-+        with open(args.output, 'rb') as inf:
-+            data = inf.read()
-+        ext_fit = libfdt.FdtRo(data)
-+        ext_fit_size = ext_fit.totalsize()
-+
-+    if args.verbose:
-+        comp_size = len(out_data)
-+        print(f'FIT size {comp_size:#x}/{comp_size / 1024 / 1024:.1f} MB',
-+              end='')
-+        if ext_fit_size:
-+            print(f', header {ext_fit_size:#x}/{ext_fit_size / 1024:.1f} KB',
-+                  end='')
-+        print(f', {count} files, uncompressed {size / 1024 / 1024:.1f} MB')
-+
-+
-+if __name__ == "__main__":
-+    sys.exit(run_make_fit())
--- 
-2.34.1
-
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCkhpLA0KDQpXaXRoIG5leHQtMjAy
+NDAzMjcsIHdlIHNlZSBzb2Z0IGxvY2t1cCBvbiBydW5uaW5nIGZzdHJlc3Mgb24gZXh0NCBmaWxl
+c3lzdGVtLg0KSSBoYXZlIGEgbG9vcCBkZXZpY2UgY3JlYXRlZCBhbmQgcnVubmluZyBmc3N0cmVz
+cyBmcm9tIExUUC4NClRoZSBMVFAgZnNzdHJlc3MgcnVucyBvbiB0aGUgbG9vcCBkZXZpY2Ugb24g
+YSBjb21iaW5hdGlvbiBvZiByYWlkIG9yIG5vIHJhaWQsIGx2IGFuZCB3aXRob3V0IGx2LCBleHQ0
+IGZzLg0KDQooMDIvMjApIGF2b2NhZG8tbWlzYy10ZXN0cy9pby9kaXNrL2x0cF9mc3N0cmVzcy5w
+eTpMdHBGcy50ZXN0X2Zzc3RyZXNzX3J1bjtydW4tZnMtZXh0NC1sdi1sdi1yYWlkLW5vX3JhaWQt
+YzJjMDogU1RBUlRFRA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAz
+LjM5OTQ3OV0gQ1BVOiA3MyBQSUQ6IDM0MTI4MyBDb21tOiBrd29ya2VyL3U1MTQ6MiBOb3QgdGFp
+bnRlZCA2LjkuMC1yYzEtbmV4dC0yMDI0MDMyNy0xNzExNTI0NjIwMjYwICMxDQpNYXIgMjcgMTE6
+NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NDgyXSBIYXJkd2FyZSBuYW1lOiBE
+ZWxsIEluYy4gUG93ZXJFZGdlIFI2NTE1LzA3UFhQWSwgQklPUyAyLjEzLjMgMDkvMTIvMjAyMw0K
+TWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTQ4NF0gV29ya3F1
+ZXVlOiBsb29wNiBsb29wX3Jvb3RjZ193b3JrZm4NCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFt
+ZSBrZXJuZWw6IFsxMzgwMy4zOTk0OTFdIFJJUDogMDAxMDpuYXRpdmVfcXVldWVkX3NwaW5fbG9j
+a19zbG93cGF0aCsweDg2LzB4MzAwDQpNYXIgMjcgMTE6NDc6NDIgc3lzdGVtX25hbWUga2VybmVs
+OiBbMTM4MDMuMzk5NDk3XSBDb2RlOiA5MiBjMiA0MSA4YiAwNCAyNCAwZiBiNiBkMiBjMSBlMiAw
+OCAzMCBlNCAwOSBkMCBhOSAwMCAwMSBmZiBmZiAwZiA4NSBmMiAwMSAwMCAwMCA4NSBjMCA3NCAx
+NCA0MSAwZiBiNiAwNCAyNCA4NCBjMCA3NCAwYiBmMyA5MCA8NDE+IDBmIGI2IDA0IDI0IDg0IGMw
+IDc1IGY1IGI4IDAxIDAwIDAwIDAwIDY2IDQxIDg5IDA0IDI0IDViIDQxIDVjDQpNYXIgMjcgMTE6
+NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NDk5XSBSU1A6IDAwMTg6ZmZmZmI1
+ZWIwMzdiZjliOCBFRkxBR1M6IDAwMDAwMjAyDQpNYXIgMjcgMTE6NDc6NDIgc3lzdGVtX25hbWUg
+a2VybmVsOiBbMTM4MDMuMzk5NTAxXSBSQVg6IDAwMDAwMDAwMDAwMDAwMDEgUkJYOiBmZmZmOTBm
+YzEyM2NlMDY4IFJDWDogMDAwMDAwMDAwMDAwMDAwMA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9u
+YW1lIGtlcm5lbDogWzEzODAzLjM5OTUwM10gUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJTSTogMDAw
+MDAwMDAwMDAwMDAwMCBSREk6IGZmZmY5MGZjMTIzY2UwYzANCk1hciAyNyAxMTo0Nzo0MiBzeXN0
+ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk1MDRdIFJCUDogZmZmZmI1ZWIwMzdiZjllMCBSMDg6
+IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiBmZmZmYjVlYWUwNzA0NTAwDQpNYXIgMjcgMTE6NDc6NDIg
+c3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NTA2XSBSMTA6IDAwMDAwMDAwMDAwMDAwMDAg
+UjExOiBmZmZmYjVlYWUwNzA0NTAwIFIxMjogZmZmZjkwZmMxMjNjZTBjMA0KTWFyIDI3IDExOjQ3
+OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTUwN10gUjEzOiBmZmZmOTBmYzE2YTc1
+MTQwIFIxNDogMDAwMDAwMDEwMDMzNjgyYSBSMTU6IGZmZmY5MGZjMTIzY2UwYzANCk1hciAyNyAx
+MTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk1MDldIEZTOiAgMDAwMDAwMDAw
+MDAwMDAwMCgwMDAwKSBHUzpmZmZmOTEwYjVmYTgwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAw
+MDAwMDANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk1MTFd
+IENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCk1hciAy
+NyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk1MTJdIENSMjogMDAwMDdm
+ZDZhZGE2MWVhMCBDUjM6IDAwMDAwMDEwYjQ3MjQwMDMgQ1I0OiAwMDAwMDAwMDAwNzcwZWYwDQpN
+YXIgMjcgMTE6NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NTE0XSBQS1JVOiA1
+NTU1NTU1NA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTUx
+NV0gQ2FsbCBUcmFjZToNCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgw
+My4zOTk1MTddICA8SVJRPg0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEz
+ODAzLjM5OTUyMV0gID8gc2hvd19yZWdzKzB4NmQvMHg4MA0KTWFyIDI3IDExOjQ3OjQyIHN5c3Rl
+bV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTUyNl0gID8gd2F0Y2hkb2dfdGltZXJfZm4rMHgyMGUv
+MHgyOTANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk1MzBd
+ICA/IF9fcGZ4X3dhdGNoZG9nX3RpbWVyX2ZuKzB4MTAvMHgxMA0KTWFyIDI3IDExOjQ3OjQyIHN5
+c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTUzM10gID8gX19ocnRpbWVyX3J1bl9xdWV1ZXMr
+MHgxMTEvMHgyOTANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4z
+OTk1MzZdICA/IHNyc29fYWxpYXNfcmV0dXJuX3RodW5rKzB4NS8weGZiZWY1DQpNYXIgMjcgMTE6
+NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NTQxXSAgPyBocnRpbWVyX2ludGVy
+cnVwdCsweDEwOC8weDI0MA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEz
+ODAzLjM5OTU0Nl0gID8gX19zeXN2ZWNfYXBpY190aW1lcl9pbnRlcnJ1cHQrMHg1ZC8weDE1MA0K
+TWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU0OV0gID8gc3lz
+dmVjX2FwaWNfdGltZXJfaW50ZXJydXB0KzB4ODAvMHhiMA0KTWFyIDI3IDExOjQ3OjQyIHN5c3Rl
+bV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU1NF0gIDwvSVJRPg0KTWFyIDI3IDExOjQ3OjQyIHN5
+c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU1NV0gIDxUQVNLPg0KTWFyIDI3IDExOjQ3OjQy
+IHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU1Nl0gID8gYXNtX3N5c3ZlY19hcGljX3Rp
+bWVyX2ludGVycnVwdCsweDFmLzB4MzANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJu
+ZWw6IFsxMzgwMy4zOTk1NjJdICA/IG5hdGl2ZV9xdWV1ZWRfc3Bpbl9sb2NrX3Nsb3dwYXRoKzB4
+ODYvMHgzMDANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk1
+NjZdICBfcmF3X3NwaW5fbG9jaysweDJkLzB4NDANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFt
+ZSBrZXJuZWw6IFsxMzgwMy4zOTk1NjldICBfX3diX3VwZGF0ZV9iYW5kd2lkdGgrMHgzOC8weDFl
+MA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU3NF0gIGRv
+X3dyaXRlcGFnZXMrMHgyNTYvMHgyODANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJu
+ZWw6IFsxMzgwMy4zOTk1NzldICBmaWxlbWFwX2ZkYXRhd3JpdGVfd2JjKzB4NzkvMHhiMA0KTWFy
+IDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU4M10gID8gaW5vdGlm
+eV9mcmVlX2V2ZW50KzB4MTUvMHgyMA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5l
+bDogWzEzODAzLjM5OTU4Nl0gIF9fZmlsZW1hcF9mZGF0YXdyaXRlX3JhbmdlKzB4NmQvMHg5MA0K
+TWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTU5NV0gIGZpbGVf
+d3JpdGVfYW5kX3dhaXRfcmFuZ2UrMHg1Yy8weGIwDQpNYXIgMjcgMTE6NDc6NDIgc3lzdGVtX25h
+bWUga2VybmVsOiBbMTM4MDMuMzk5NTk4XSAgZXh0NF9zeW5jX2ZpbGUrMHg4Zi8weDQ0MA0KTWFy
+IDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTYwMl0gID8gc3Jzb19h
+bGlhc19yZXR1cm5fdGh1bmsrMHg1LzB4ZmJlZjUNCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFt
+ZSBrZXJuZWw6IFsxMzgwMy4zOTk2MDVdICB2ZnNfZnN5bmMrMHg1Ni8weDkwDQpNYXIgMjcgMTE6
+NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NjA4XSAgPyBibGtfbXFfY29tcGxl
+dGVfcmVxdWVzdCsweDU4LzB4ODANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6
+IFsxMzgwMy4zOTk2MTNdICBsb29wX3Byb2Nlc3Nfd29yaysweDNjNC8weDhhMA0KTWFyIDI3IDEx
+OjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTYxNl0gID8gc3Jzb19hbGlhc19y
+ZXR1cm5fdGh1bmsrMHg1LzB4ZmJlZjUNCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJu
+ZWw6IFsxMzgwMy4zOTk2MjJdICBsb29wX3Jvb3RjZ193b3JrZm4rMHgxZi8weDMwDQpNYXIgMjcg
+MTE6NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5NjI0XSAgcHJvY2Vzc19vbmVf
+d29yaysweDE4OC8weDNkMA0KTWFyIDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEz
+ODAzLjM5OTYyOV0gID8gX19wZnhfd29ya2VyX3RocmVhZCsweDEwLzB4MTANCk1hciAyNyAxMTo0
+Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk2MzFdICB3b3JrZXJfdGhyZWFkKzB4
+MmNlLzB4M2UwDQpNYXIgMjcgMTE6NDc6NDIgc3lzdGVtX25hbWUga2VybmVsOiBbMTM4MDMuMzk5
+NjM0XSAgPyBfX3BmeF93b3JrZXJfdGhyZWFkKzB4MTAvMHgxMA0KTWFyIDI3IDExOjQ3OjQyIHN5
+c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTYzN10gIGt0aHJlYWQrMHhlOC8weDEyMA0KTWFy
+IDI3IDExOjQ3OjQyIHN5c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTYzOV0gID8gX19wZnhf
+a3RocmVhZCsweDEwLzB4MTANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsx
+MzgwMy4zOTk2NDJdICByZXRfZnJvbV9mb3JrKzB4NDAvMHg2MA0KTWFyIDI3IDExOjQ3OjQyIHN5
+c3RlbV9uYW1lIGtlcm5lbDogWzEzODAzLjM5OTY0NV0gID8gX19wZnhfa3RocmVhZCsweDEwLzB4
+MTANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBrZXJuZWw6IFsxMzgwMy4zOTk2NDddICBy
+ZXRfZnJvbV9mb3JrX2FzbSsweDFhLzB4MzANCk1hciAyNyAxMTo0Nzo0MiBzeXN0ZW1fbmFtZSBr
+ZXJuZWw6IFsxMzgwMy4zOTk2NTRdICA8L1RBU0s+DQoNCkhhcHBlbnMgd2l0aCBuZXh0LTIwMjQw
+MzI4IGFzIHdlbGwNCg0KDQpTdGVwcyB0byByZXByb2R1Y2U6DQoxLiBDbG9uZSBhbmQgaW5zdGFs
+bCBodHRwczovL2dpdGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2x0cA0KMi4gR2V0IGEgZGlz
+ayByZWFkeSBvciBjcmVhdGUgbG9vcCBkZXZpY2UgdG8gYmUgdHJlYXRlZCBhcyBkaXNrLg0KMy4g
+UnVuIGZzc3RyZXNzIGZyb20gdGVzdGNhc2VzL2tlcm5lbC9mcy9mc3N0cmVzcyAtIC4vZnNzdHJl
+c3MgLWQgZGlza19uYW1lIC1uIDI1MCAtcCAyNTAgLXIgLWwgMQ0KDQpUaGUgZGlzayBjYW4gYmUg
+cmF3IC8gcmFpZCBjcmVhdGVkIG9uIGl0IC8gbHYgY3JlYXRlZCBvbiBpdCAvIG1vdW50ZWQgYXMg
+ZXh0NCBmcy4NCg0KDQrvu78tLQ0KUmVnYXJkcw0KTmFyYXNpbWhhbiBWDQo=
 
