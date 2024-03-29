@@ -1,125 +1,139 @@
-Return-Path: <linux-kernel+bounces-125235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FE0A892294
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:22:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037EE892295
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F3B6B21CF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:22:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E837B21B67
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE1F13699E;
-	Fri, 29 Mar 2024 17:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC337E108;
+	Fri, 29 Mar 2024 17:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WvXz9p6z"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="PYhVXN1K"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90B485C42;
-	Fri, 29 Mar 2024 17:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090E42033E
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711732936; cv=none; b=of6WqAsYXty+BB+efZyopD+TEpM33vq8Pp0hXWlK6BHKpGkNvn1nfH9tsffjGl/90zP32qG9BvZh9AdnUcABZqY0nRRKM7KWUQnaPGtMziY4mZRAAAP7UKG9frQGM43EhO/1srvqo2SM7A/MAaVyv2BX86KNXMXDJs6IJi8rN+E=
+	t=1711733059; cv=none; b=InXjpwax40zuReg5ix8kBjo2TfRfrldKHk9RMWabKchr+wg5adMUG+uDVR6C229lepct+yWh1+hien59j6rkaIN67YZ5xO0SLdhlkl9BbjuWTPSXzWKrfqM8JRZ9zcG2ZJ7nVNtQ+POhslMKcEyowKTJKjbFyg2c+7epLfsQ6NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711732936; c=relaxed/simple;
-	bh=WCIZA6mX5gjH8RzX9YbqxsbBGwEGAnP1EP/fz8dzdZA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=su22NMDbDfN5PtiM6fLYxhHRNpB/3HY4LmbkybMuVi066Yav5YjkFWJfLokWwyHYA1XzMQ9hySWgCRozP6QIiVVcaNVl6HmkpQbL8RQ61MFRHO/xyO9vCcXiEzVVqGefKmkgMOjhpQjDspv5ODHh3QNaazM++kcTNDTjHbrG7NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WvXz9p6z; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TFrICQ000705;
-	Fri, 29 Mar 2024 17:22:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=eQOOo/+YLRBywV7F/YvrAHC9R4G5lFaFMPiUXR1ZsKY=; b=Wv
-	Xz9p6zzDJY/xv8pazhvO41On3Y2LxnfoXkTIreNHfPH1TBZt8UsP24EeMdemc+CJ
-	iSFEkyI+RCUVrrpCBDO4fVF2m0scMQ75le5Eg3xguikcRd5vC7gw1vLH9xal4DEP
-	vML4qmq5FYEGz12bFqEfW8vYF4slv/s1CN8zTHTU/A0Mf0H1CexRbA0gS4w/jLiT
-	fwJvqF0EOqQDPdJJ/XZs4HVvXwvSsRCrGiV7uVdAbusWmM60aXYGge6e3LpA2B49
-	Vo9QemFTTyIqXA73Jkt0olNbypz3A7xEngyFgVtWhSRNKolhHkkrKZuo9ifjwh8/
-	1bhlplv/oBnB4P5dK2ag==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5dkyk0wb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 17:22:02 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42THM1FZ031602
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 17:22:01 GMT
-Received: from [10.110.124.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
- 2024 10:22:01 -0700
-Message-ID: <f78fa061-3b34-47d2-a40c-bbec744f0f97@quicinc.com>
-Date: Fri, 29 Mar 2024 10:22:00 -0700
+	s=arc-20240116; t=1711733059; c=relaxed/simple;
+	bh=lkfPtEw77lSIZ0oGk/kE9oHshz0JUtvSGdjFFZ+c+io=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mxSsFvA4lCZt6LLEB1fsC3v7eI8qxTak8gIk5GidRT2Cx0MlJHkXLXHtCx0j9wwJC5257JHKOv1Z2pZlTiCaPS6ozJekBxz72N1JUnwR6vJOGPT+X67gxFyoKCR4ifA39Pzoko3DEMhiJDY2FnsXpvWiShezLTEnfrvq+sIqzpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=PYhVXN1K; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7282740E0247;
+	Fri, 29 Mar 2024 17:24:14 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id WfnC5c0qMxFU; Fri, 29 Mar 2024 17:24:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711733047; bh=4nXAnictXeJV5AlqQSznerSrQYtHPHUJWwc4tHERygM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PYhVXN1KOqeiylzpqs9e2StLyjBEDP+H6LD6oALxzJd905hduQp9B35wtAUqWMTEe
+	 qrT8sVMX/1QOgzNvOpN6ME+4K82VxN63TfudDjJR/2jua6hFaGRqMvWtFykckWw1jD
+	 QWr/5c6vBHTJhKs1Z7z3M3Gxijj1CkCZwlN9CQLjaHw02RCwrRkGjZBTpzyANKmzth
+	 9pmSLX+NdHPnGv6ef0NlE1MRTFZRPCNsCa+UY+EMreXth6Y9mCyjSSOPK/KJsYgXIM
+	 +5hUq9bWo7O4SEcnytm7fz7s0FtkvCKvQ6FFN23Cj3tpIu1DyMzDqXmbnSlend2k8r
+	 mwelDysr6QVe7LmVmpTrBrIrQqInvlpmf4QitP/6kd34UiGL7rwRW2nSSRHFUkNf0X
+	 0Z5/PoNpDlpi6jJq6oT1/0AryTAmR3+obNyXTCOBi7y3U2a+eEoGSy1N5MhtMVIzzh
+	 rWLg7Hyxb0IDJW8eUGAyIJlH08RmoNYwNDC+wz3EBO5I6GZRr5U5/288wEdud6Rb+7
+	 jv9uKBhXh1i0klicpMOK+vYm9+BdgHLgXPizl1j6Bk05NzX+DmRslyyiq3qkFmKk0k
+	 2H8JH4hdJhl3VNs9c/2LJ9FZNF235VvdwjreU7PLV3jcJkXXdUQUqnfaaFo5hWCS9z
+	 uHRLFxqJJXpM06gkQb+RdQtw=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5E50140E00B2;
+	Fri, 29 Mar 2024 17:24:04 +0000 (UTC)
+Date: Fri, 29 Mar 2024 18:23:57 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Tony Luck <tony.luck@intel.com>
+Cc: "x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
+ struct cpuinfo_x86
+Message-ID: <20240329172357.GBZgb5LWSP2mPBFs7s@fat_crate.local>
+References: <20240328163746.243023-1-tony.luck@intel.com>
+ <20240328163746.243023-2-tony.luck@intel.com>
+ <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
+ <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
+ <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
+ <SJ1PR11MB6083D8BB65748452B204ED8AFC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240329114007.GAZgaolwSFtjHStiuL@fat_crate.local>
+ <ZgbwYb3D3tBtXZ8y@agluck-desk3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] wifi: ath10k: sdio: simplify module initialization
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Kalle Valo
-	<kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Brian Norris
-	<briannorris@chromium.org>,
-        Ajay Singh <ajay.kathat@microchip.com>,
-        Claudiu
- Beznea <claudiu.beznea@tuxon.dev>,
-        <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: NFnr0VM_OTwUVD74iUN7sN2Gp4I1WXUj
-X-Proofpoint-GUID: NFnr0VM_OTwUVD74iUN7sN2Gp4I1WXUj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=806 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 clxscore=1011 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2403290153
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZgbwYb3D3tBtXZ8y@agluck-desk3>
 
-On 3/29/2024 10:10 AM, Krzysztof Kozlowski wrote:
-> This driver's initialization functions do not perform any custom code,
-> except printing messages.  Printing messages on modules
-> loading/unloading is discouraged because it pollutes the dmesg
-> regardless whether user actually has this device.  Core kernel code
-> already gives tools to investigate whether module was loaded or not.
-> 
-> Drop the printing messages which allows to replace open-coded
-> module_sdio_driver().
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Fri, Mar 29, 2024 at 09:46:25AM -0700, Tony Luck wrote:
+> I think you are talking about a range of models that all belong to
+> the same family (rather than steppings in the same model).
 
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Either. Depending on what you're tracking. If the majority of your
+feature tests want to determine whether you're running on the same set
+of hw features which belong to a model determined by a single or
+multiple model numbers, then you need to track that.
 
-> 
-> ---
-> 
-> FYI:
-> I have ongoing patchset touching few lines above this patch chunk
-> (sdio_driver) which might go via different tree. If that patchset is
-> applied via different tree, it might result in a trivial conflict, but
-> there is no dependency. They can go via separate trees (except that
-> trivial conflict).
+On Intel you have a single model number determining that set of hw
+features.
 
-I'll let Kalle respond if he'll take this through the ath tree vs letting you
-take it through your tree
+On AMD you have s range of model numbers and there can be differences
+too.
+
+Seldom we pay attention to steppings but it is not unheard of. We have
+had an incremented stepping denoting a hw bug fix in the past.
+
+> History of Intel model number allocations apparently looks like
+> we just throw a dart in the general area of a block of unused
+> model numbers :-)
+
+Don't say that. The guy who's assigning the numbers and keeps track of
+what he's given to which team, will be mad at you. :-P
+
+> I'm glad I don't have to keep track of groups of hex numbers like that.
+
+Depends on how you model it. Setting a X86_FEATURE_ZEN<n> for each works
+like a charm.
+
+> My patch doesn't help with this, but doesn't prevent you from doing
+> a switch (c->x86_model).  If that list of model number ranges shows
+> up more than twice you could add a helper that converts that list to
+> a #define AMD_ZEN2 to make the code clearer.
+
+Haven't needed such stunts yet and I hope I won't ever.
+
+> So keep the "V" in the common code. Maybe one of the other x86
+> vendors will want to have #define names for their CPU models
+> some day.
+
+Right.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
