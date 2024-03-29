@@ -1,126 +1,169 @@
-Return-Path: <linux-kernel+bounces-124391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1BA98916DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:29:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD8B28916E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17F311F2418C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:29:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638091F24498
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F8D4F20C;
-	Fri, 29 Mar 2024 10:29:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DCD69D3A;
+	Fri, 29 Mar 2024 10:32:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ZP8lEPHa"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="JNdgM0t4"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949B04AEDF
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:29:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A73F1E52F;
+	Fri, 29 Mar 2024 10:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711708162; cv=none; b=C2JplyRZNH+cbBhbEV0cr+xSAuFrwhUiLSBJRQOPZgBfZg5hC9Av57zA991hl5oV3WKFgpgf6g2LE8P75cNF92WrbrDva/vIAaauFVbudRD3Ei1zKc32dCRTitc7d0u5BRpZH49/EHg7SLfW3NC4T/xNrZFzYAsV7biSnrKErR4=
+	t=1711708341; cv=none; b=HfOw7qAi6w46yPixCLXVlkrQFZ07fGrSV0I3Pddi3Ke6/6ma2myxtg1899NOkOD8IKYoOs8QVwRBM1rcClceWpkfPdJiRcNsx1xO3qNJy///dESTmESXSsKO+WiLfK4YTXFzw2msILkBOcTDnarUGvVF7VBUxKrDruncAADvLv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711708162; c=relaxed/simple;
-	bh=+OfxbxIfen7xneKiEQ9eib/06LItZz8en2rFakQ6oNc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=miwEajZQZ4XDJKGiKPVO20RaQIble0L/hWZYXv/Axty4/26IdKvA4m+rYi9M1SzQcMHrHvQXw9xxh4KgtepDv+Rvedn7XReFiToaEjVKLhIny92I66wpoE2IyPXpJ0dwfpr8Y9PylNzZpa34ztRNdiGo3bcr5in3okmik5palt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ZP8lEPHa; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-515a68d45faso1829394e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711708159; x=1712312959; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K1xMjM+6aRGQ0ojnpGkzeXSIPQCNkcUYgWEAekM4AZs=;
-        b=ZP8lEPHa1Rg5ROEeQLwGIGLBEwe8D3K0JOE03M7//YS6QiWfBM4FBhb09+pvDpOcKB
-         lDrkcHDoId73V6VgQXELeJD4irjtOG3+vfP68yUNmIk1CCVmsAMaCei7g3SBocN6E380
-         gmU/ItjpxLlto0J21GPYUHIN1YfEB6lPWW7C/5jeWtfoIIaX17vk84Z8AjLwAcgymXqq
-         cm2gBJsN1E/cCu1uCZhcHgS0qLmAI0zb2YET2Gua0OSYWojjqS8SOCUJvwF6NNvb10Jv
-         Wf3Hi4pVq8djRTdbt4r7V4iLZ8xm66U2WBqYbES8EeK5/fIJQbpNjf3VuVxP1l4+LQq7
-         SaoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711708159; x=1712312959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K1xMjM+6aRGQ0ojnpGkzeXSIPQCNkcUYgWEAekM4AZs=;
-        b=tZXpbowwol+safIDITbxCP1AXAOu3I7vI17KJ+Z5aaUGcFnBgxkO6sLil96r3G79+K
-         igFexxmAi+edNOEc7kHtEey/iKBBvFxS48EM6tgrKfKMC1TXjJaCB36HV5bPFjFHK2cT
-         4KMLuAKZqFgTayn6kQO4CcLikn6Nr7iusNAh94VlVmIK+NDdW7Mfk85irnvfPWznyLco
-         jBTD7IxhCjbGRzbtLKSCAvuE/17EtVhbI/p8KNjfFocMwQQcQvmpQxRwBEP149fuf2co
-         iR7GW95zvazyJ6SZWNVmXfHbKeMEU1ghGTL5gUXDep7WiCCfqxCVqs4xoIj6m+1dRk/A
-         BV8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXbSej80Tmgyiv8plO2EojgW9SkMg46HBLdt1Y2nfp1QkqaX9+0R1hzGdSUvgjUHO6/EXrUS1Rd4Ros+925VDcimE33I/f4d7ohi7uL
-X-Gm-Message-State: AOJu0Yz1zZGCocS7tG52jZdf9SDP4Ib3pWtSNnJJbfTG+Xu489vZ8b99
-	jo3IMGGRjO3i4vUk8xPEzaS97vxgkrnHqwQm6q3UCZCNCH8uIuDBulNwsqti8QJDtPRCZAzfaNW
-	Km82BvOqHvUddfKssPiKI5AgzzdfgNaeU4lLjJA==
-X-Google-Smtp-Source: AGHT+IFf1CNNBqLUzGwlQt3plBwsiRGnRlRofcvJpqCa5fkmx12mwCxpLy9gpfToW29g1IssLHz467H64sFTESJvcbo=
-X-Received: by 2002:a19:a408:0:b0:515:ad80:566e with SMTP id
- q8-20020a19a408000000b00515ad80566emr1308393lfc.27.1711708158926; Fri, 29 Mar
- 2024 03:29:18 -0700 (PDT)
+	s=arc-20240116; t=1711708341; c=relaxed/simple;
+	bh=iJRVYl2TkqJgkeeArpXXpoPMdu4mwFR/AAzovQ2QJdk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dq1JVeExlFlRHWRu/dMbnCB5xMEhpT59AjXa6cUY1I+nBNLLGXZsYpcbQl2eKbxIS8HpY6m14jO1XuXqKryvO06eZ2YrF0xqn8NCjOZXrhuorRmqLq9gCbwR16wqwPKFk20B75JCS4MKFagR3LcvwUPNq3uzgaDGPlMcN1gEEhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=JNdgM0t4; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1711708339; x=1743244339;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iJRVYl2TkqJgkeeArpXXpoPMdu4mwFR/AAzovQ2QJdk=;
+  b=JNdgM0t4DhfGDJF/S4hODV4utVfr2jQKYX4JhyW0d4VyZ5WgX3JJwxFy
+   G2EuPdg61wJV9buFyiXlZNK0YV20lbRCGimdwUNjqM93UjGml1f16gxC3
+   TfkU8v5317jUkrq/6NN3h3urx5uyMc6YB8UIKs2F84ahPr+Q3URK0a2Dk
+   xmzZPMJut+ENyrBjiOqvkaNSyofpQ+MNxq4g1hHaNHFm3TVP6jBuOC3WM
+   ZV4TMBV9kFOyvH6Z7G4qvM7E4vUzP9/XnS3lA6PgKRWLK3LNvZ17eM1uI
+   fKF8cLr0F+BuZeURQcr8YfAwMox9cNPiD67M45yCtNmFNktO7U79npaNB
+   A==;
+X-CSE-ConnectionGUID: GFew/kMnS6C07Mq7X0KFUQ==
+X-CSE-MsgGUID: tzrsQPFdTKSvpMZ+9j+6Lw==
+X-IronPort-AV: E=Sophos;i="6.07,164,1708412400"; 
+   d="asc'?scan'208";a="185901778"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2024 03:32:17 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 29 Mar 2024 03:32:02 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 29 Mar 2024 03:31:58 -0700
+Date: Fri, 29 Mar 2024 10:31:10 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Max Hsu <max.hsu@sifive.com>
+CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel
+ Machek <pavel@ucw.cz>, Anup Patel <anup@brainfault.org>, Atish Patra
+	<atishp@atishpatra.org>, Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, Palmer Dabbelt <palmer@sifive.com>,
+	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH RFC 02/11] dt-bindings: riscv: Add Sdtrig optional CSRs
+ existence on DT
+Message-ID: <20240329-affidavit-anatomist-1118a12c3e60@wendy>
+References: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
+ <20240329-dev-maxh-lin-452-6-9-v1-2-1534f93b94a7@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-parkway-dodgy-f0fe1fa20892@spud> <20240327-overrate-overuse-1e32abccd001@spud>
-In-Reply-To: <20240327-overrate-overuse-1e32abccd001@spud>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 29 Mar 2024 11:29:08 +0100
-Message-ID: <CAMRc=Mdkxh_Soc6Uy5vYrh5Svdc=hBBRwdAoGbU04V=We=YWZQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/5] dt-bindings: gpio: mpfs: allow gpio-line-names
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor.dooley@microchip.com>, 
-	Daire McNamara <daire.mcnamara@microchip.com>, Jamie Gibbons <jamie.gibbons@microchip.com>, 
-	Valentina Fernandez <valentina.fernandezalanis@microchip.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qvN9g2Kofm3vp+Ez"
+Content-Disposition: inline
+In-Reply-To: <20240329-dev-maxh-lin-452-6-9-v1-2-1534f93b94a7@sifive.com>
+
+--qvN9g2Kofm3vp+Ez
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 1:25=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> From: Jamie Gibbons <jamie.gibbons@microchip.com>
->
-> The BeagleV Fire devicetree will make use of gpio-line-names, allow it
-> in the binding.
->
-> Signed-off-by: Jamie Gibbons <jamie.gibbons@microchip.com>
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+On Fri, Mar 29, 2024 at 05:26:18PM +0800, Max Hsu wrote:
+> The mcontext/hcontext/scontext CSRs are optional in the Sdtrig extension,
+> to prevent RW operations to the missing CSRs, which will cause
+> illegal instructions.
+>=20
+> As a solution, we have proposed the dt format for these CSRs.
+
+As I mentioned in your other patch, I amn't sure what the actual value
+is in being told about "sdtrig" itself if so many of the CSRs are
+optional. I think we should define pseudo extensions that represent
+usable subsets that are allowed by riscv,isa-extensions, such as
+those you describe here: sdtrig + mcontext, sdtrig + scontext and
+sdtrig + hcontext. Probably also for strig + mscontext. What
+additional value does having a debug child node give us that makes
+it worth having over something like the above?
+
+Thanks,
+Conor.
+
+>=20
+> Signed-off-by: Max Hsu <max.hsu@sifive.com>
 > ---
->  Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.y=
-aml b/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
-> index 6884dacb2865..d61569b3f15b 100644
-> --- a/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/microchip,mpfs-gpio.yaml
-> @@ -44,6 +44,7 @@ properties:
->      default: 32
->
->    gpio-controller: true
-> +  gpio-line-names: true
->
->  patternProperties:
->    "^.+-hog(-[0-9]+)?$":
-> --
-> 2.43.0
->
+>  Documentation/devicetree/bindings/riscv/cpus.yaml | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
+ation/devicetree/bindings/riscv/cpus.yaml
+> index d87dd50f1a4b..c713a48c5025 100644
+> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> @@ -137,6 +137,24 @@ properties:
+>        DMIPS/MHz, relative to highest capacity-dmips-mhz
+>        in the system.
+> =20
+> +  debug:
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        const: riscv,debug-v1.0.0
+> +      trigger-module:
+> +        type: object
+> +        description: |
+> +          An indication set of optional CSR existence from
+> +          riscv-debug-spec Sdtrig extension
+> +        properties:
+> +          mcontext-present:
+> +            type: boolean
+> +          hcontext-present:
+> +            type: boolean
+> +          scontext-present:
+> +            type: boolean
+> +
+>  anyOf:
+>    - required:
+>        - riscv,isa
+>=20
+> --=20
+> 2.43.2
+>=20
 
-Applied, thanks!
+--qvN9g2Kofm3vp+Ez
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Bart
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgaYbgAKCRB4tDGHoIJi
+0lR6APsFCJD2xF6mivD5+737cpFwlpgCAnMllMxOmWsck2HUJgD9EN3UFh3/VEM/
+G9adYYLQT0pjKI5lJOtelWT/0qhIsg4=
+=evUa
+-----END PGP SIGNATURE-----
+
+--qvN9g2Kofm3vp+Ez--
 
