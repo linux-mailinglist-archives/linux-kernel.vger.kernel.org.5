@@ -1,98 +1,116 @@
-Return-Path: <linux-kernel+bounces-125218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89156892265
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3ED1892267
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29902B2209A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:06:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AF9BB239B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3BF1353E1;
-	Fri, 29 Mar 2024 17:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9D185924;
+	Fri, 29 Mar 2024 17:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QigFNj+8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NYosX0aM"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D69985654;
-	Fri, 29 Mar 2024 17:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C223585653;
+	Fri, 29 Mar 2024 17:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711731925; cv=none; b=GrPWCEz1w4w9PCiauK/+saDOGMv2vdlqhNK9biNMfAOHRQBPc/obIz/JtPfzqeYXTzdFDU0hZhTQtz+3JTvABzlEKPpsVwxTNg/bEgG9xLVEhl1f+E/5gvXoWbJW/nrbh3TWr2eQaiXnOGxSNssp4UceeYM+e+AEqx6Ze9xdJFE=
+	t=1711731972; cv=none; b=aQFzBTiNhbArOeYD85aRd9eOtsh93pfgSFcizNTIIZik3PfkcFJg5VqnMOBRsYmhJzeZp1sPqb+++0hY8k8MCW47Lnrqce4Hl13qzMZUmJRSsvEbdOokEgofQ1nb7HTSdsuh61LScnv2hW2v6dt4VqSuLX6k4RqQnyjJxN9Y6zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711731925; c=relaxed/simple;
-	bh=ORB8eEw68b3v0cYkRkKE/w3KyARnn+J+bFMPjYmJwW4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jvM9QLTDjjrMeYLgax+4cYwZBuov2ngTuZafGLD9qUQhJYil/utsZxLwrKHi6iKjejXxW34f9lGYparpFMMcrgBaYVXZcFDY+c0TRdsQocITHtWzCrL81RBV7Hy18CC+uP1M2Q0bq7aMJt9c7rtKSaq179mqOELdhHZHwMBr9ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QigFNj+8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3062C433C7;
-	Fri, 29 Mar 2024 17:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711731924;
-	bh=ORB8eEw68b3v0cYkRkKE/w3KyARnn+J+bFMPjYmJwW4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QigFNj+8xwtlSe6OnR3TBpoDTQ7JD1iCNMAws4eWGv5AIzERTgPt2k1GvEB7iLBWs
-	 iTMh+4yAoDaMkFrSMUDWDIrXG9R7nFAd3y67E+h3RjXN7GP1ObPSy6vA95DvPg5rLt
-	 yoQewHoPDIo+qfnaTQwMONM4FCFdx+/S7AHGSWoY=
-Date: Fri, 29 Mar 2024 18:05:20 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
-	Rik van Riel <riel@surriel.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: FAILED: Patch "bounds: support non-power-of-two CONFIG_NR_CPUS"
- failed to apply to 5.4-stable tree
-Message-ID: <2024032959-ladies-circling-3a5e@gregkh>
-References: <20240327122125.2836828-1-sashal@kernel.org>
- <ZgQowqqGf-E7Cpcz@casper.infradead.org>
- <2024032935-antsy-imitation-1453@gregkh>
+	s=arc-20240116; t=1711731972; c=relaxed/simple;
+	bh=emN8HEbkvTibwNLYB6Ii61y7sBtWV3zGH2FxiaLNX+w=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=hFe2ZmJR2t2apaoep9G1wj1uWxuaaw425R+jGfEssnWc2vj4pZUJx0mixL0RW65gyqz4q3ZlHOly5VNyk3D62YI9fu7gIbWTv7y3IFQ8zPDhoz5mZEeUQKsye+MkUpiZzmBFqS0bjbK7MO232OvYIWx0b4GCE8IRn4lh12iL2xU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NYosX0aM; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513d247e3c4so2088392e87.0;
+        Fri, 29 Mar 2024 10:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711731968; x=1712336768; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=luX+DmUYYHFgxqblUqu9C7w+57DrptU0k/Sko1xxFeE=;
+        b=NYosX0aMvLmAITV10ldLoqOFAbVYSJbVWmF4BXPu+NrlGkhnC6w4WRjBnyvZqlh5J/
+         /1L4dcAFa9zHQXeM2KzakeycU1/LCylxaOsHQZRexQyGDuKBM8VGu7PBuljIdjDzMIIT
+         o/ZwI3fPbUdUJI0xK20UX4jSdOXDErC9CD15+mbMT/oqYdpT+Pc8uGm5xVi6YIeO+oi7
+         LG+tsGlu78Ro0z3hXU1659TNl84Ll4hyNNfxEB99Fhx4wNjL8cA1jggvVoqm5awhPe4E
+         ry2o5Zeevfhm4LXlLCNl5UQKBpxI9/uFoW4usdKNSl/EbhDtSHqYR1upzCtD9Yj9k6fe
+         mk9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711731968; x=1712336768;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=luX+DmUYYHFgxqblUqu9C7w+57DrptU0k/Sko1xxFeE=;
+        b=HWp8wxbw5IyY1chtdenDy5mUPAp8ySfg+Yr0DuWGQOECx4hL2cLYvpqdqyJZ27RTtd
+         gzk7G2c9I17KKIFpTcnV7rDh+KYZ8+txEm2Q+4No/+TWxKkY8RJrwP9Een0tkHiZkH4+
+         aqdnJGsOQnxg8vNjXubtBXJEGvRvFd4opptm4sGgFMWDdsZuzvoVx/9vEd6izscGq6b/
+         OaRIXz/M/UeovK8lnWjO5lSZ/Ghs6iAMtdjosn2FPzrLoIhRMkLUL1K0baH57yP8UzN+
+         rQUSjks7ol8+PjQHnt6+/MG+aSxsD6h4yfD5/P3d+KFRt2YqJ8U8RUJu0ohKOd0xsVQp
+         02sw==
+X-Forwarded-Encrypted: i=1; AJvYcCVof4CEkovgOlCyKMSngW6ri297wE5gMLu0E3A63PV9O/mR730EgEvrUfOREfvXn0g7cfciOxqadldiy6rLrEchIRPAaKJxCyA1cQ==
+X-Gm-Message-State: AOJu0YzYU+EdlqLSw5Hnt/Z+perH2owvoXU8BnmHDZqu7Oq5omhx8QFx
+	ez7WxY5QBjKBs3dUO6CknzisCxBu3r6z3S6b1cOQ/mM6kGymYwR0Ad24wCBPL8a2pmqnJPo9RvR
+	XK2UgwPjSJG2SIhnOh9khVvKHn4aXat4j7VM=
+X-Google-Smtp-Source: AGHT+IFfNKPut6sAyzGL6pv19W8IpT0PI/HXYHvK/mSoTl/Yy2bxpum8EzbinPO0/ZNWjdrRMHaaOrF0K10f93fdHkU=
+X-Received: by 2002:a19:8c48:0:b0:515:c17f:725c with SMTP id
+ i8-20020a198c48000000b00515c17f725cmr2087032lfj.2.1711731967585; Fri, 29 Mar
+ 2024 10:06:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024032935-antsy-imitation-1453@gregkh>
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 29 Mar 2024 12:05:55 -0500
+Message-ID: <CAH2r5msjPvJv9-aW016XACLRDQtW2JC9EDnDXbYYMz-wEObWqg@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 29, 2024 at 02:34:43PM +0100, Greg KH wrote:
-> On Wed, Mar 27, 2024 at 02:10:10PM +0000, Matthew Wilcox wrote:
-> > On Wed, Mar 27, 2024 at 08:21:25AM -0400, Sasha Levin wrote:
-> > > The patch below does not apply to the 5.4-stable tree.
-> > > If someone wants it applied there, or to any other stable or longterm
-> > > tree, then please email the backport, including the original git commit
-> > > id to <stable@vger.kernel.org>.
-> > 
-> > Looks like you just need a little more fuzz on the patch.
-> > 
-> > diff --git a/kernel/bounds.c b/kernel/bounds.c
-> > index 9795d75b09b2..a94e3769347e 100644
-> > --- a/kernel/bounds.c
-> > +++ b/kernel/bounds.c
-> > @@ -19,7 +19,7 @@ int main(void)
-> >  	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
-> >  	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
-> >  #ifdef CONFIG_SMP
-> > -	DEFINE(NR_CPUS_BITS, ilog2(CONFIG_NR_CPUS));
-> > +	DEFINE(NR_CPUS_BITS, bits_per(CONFIG_NR_CPUS));
-> >  #endif
-> >  	DEFINE(SPINLOCK_SIZE, sizeof(spinlock_t));
-> >  	/* End of constants */
-> 
-> Now fuzzed, thanks.
+Please pull the following changes since commit
+4cece764965020c22cff7665b18a012006359095:
 
-But it breaks the build on 4.19.y, so I'll go drop it from there.  If
-you want it added there, please provide a working fix.
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-thanks,
+are available in the Git repository at:
 
-greg k-h
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.9-rc1-smb3-client-fixes
+
+for you to fetch changes up to 8876a37277cb832e1861c35f8c661825179f73f5:
+
+  cifs: Fix duplicate fscache cookie warnings (2024-03-27 12:04:06 -0500)
+
+----------------------------------------------------------------
+Two cifs.ko changesets
+- Add missing trace point (noticed when debugging the recent mknod LSM
+regression)
+- fscache fix
+
+The important password change (key rotation) fix is still being worked
+so is not included.
+----------------------------------------------------------------
+David Howells (1):
+      cifs: Fix duplicate fscache cookie warnings
+
+Steve French (1):
+      smb3: add trace event for mknod
+
+ fs/smb/client/dir.c     |  7 +++++++
+ fs/smb/client/fscache.c | 16 +++++++++++++++-
+ fs/smb/client/inode.c   |  2 ++
+ fs/smb/client/trace.h   |  4 +++-
+ 4 files changed, 27 insertions(+), 2 deletions(-)
+
+-- 
+Thanks,
+
+Steve
 
