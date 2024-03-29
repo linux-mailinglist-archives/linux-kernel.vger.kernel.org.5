@@ -1,113 +1,93 @@
-Return-Path: <linux-kernel+bounces-126268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE972893480
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:07:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 766118933CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:48:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2251DB22979
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:07:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C452281AEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE2E15E817;
-	Sun, 31 Mar 2024 16:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A777714533C;
+	Sun, 31 Mar 2024 16:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtFEeVUc"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oSbp8YXl"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E004515E5D2;
-	Sun, 31 Mar 2024 16:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D02F15359D;
+	Sun, 31 Mar 2024 16:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711903420; cv=pass; b=e5yCkg9gzqkfzQsizTs033ldCM9VwLO4KTvlKwhmE5RWWBWNXWhFJObjuF0U/jqaOtNEfu1OWYFONOxxs45TZDIicitjrpjpWbbUvXcxiGfC/p97udEjjgGxKJc+b/yWc+DHvZEqHhA+eeGk9vLdCIhYfaev9uorLtMXmXqLlqI=
+	t=1711903203; cv=pass; b=GdIXlynGrHmogHdq5coD0KGSEVgUqfE4hdmYtz3GuOXliB2Uo0LBiMiBdU+q0VXUA+4cfhKTzy4O1r4UdK41DhRSq/whARthlhJb0K269WiMi1i6lyh2xdYwmUPVvjrEGH1GFF2g8T/kzFmAo57kxFLkUxrSoEr6nZ5I/cJnIbs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711903420; c=relaxed/simple;
-	bh=ZkGv2aECxPpKjlvqInjY5t6BAWJ1JpiWyKfHeeHLgFY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rKd8cjViA6cFxOa9bTUkC6mtUDQqG/kEEOcqTq2Bub/G+kHtJvFncILvppuPNiKOvzlc3RNUzvGg54M7XBxckQXyvzYV5MTkZH3zIgoPOeTXgGeSw3uB9jrS/rMpmpGhPoBcSWsxqdIusCMGrrqDpyNrpWLVIhO4Py9g1BNGZi0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtFEeVUc; arc=none smtp.client-ip=209.85.221.54; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=pass smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711903203; c=relaxed/simple;
+	bh=ZzhPYKeso27bmveGBa0hhOsC2JsybKzAElLAwye66BE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=QO4Gn7n7f5pn6jSRCYHVz2r8A/QEBXqdM/VRASjZVL5OfvpTkae9lZy8S3+eckfwT+CuJkz0479Rqz35a5E68QgdBqalYwnTeVtftK4i4Ql2ubuI0vxDdJfF1lLPHh52Zc6Y1WzLjsdg109yAqxPX2F8TrghtmHQH8RE6EPJfqk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=fail smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oSbp8YXl; arc=none smtp.client-ip=205.220.168.131; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; arc=pass smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=quicinc.com
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 8903120896;
-	Sun, 31 Mar 2024 18:43:37 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id 18B7F20892;
+	Sun, 31 Mar 2024 18:40:00 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id QMelgHIqNctT; Sun, 31 Mar 2024 18:43:36 +0200 (CEST)
+	with ESMTP id MNmwGse4vKLa; Sun, 31 Mar 2024 18:39:59 +0200 (CEST)
 Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id BDD46208C4;
-	Sun, 31 Mar 2024 18:43:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com BDD46208C4
+	by a.mx.secunet.com (Postfix) with ESMTPS id 8340F207C6;
+	Sun, 31 Mar 2024 18:39:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 8340F207C6
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout1.secunet.com (Postfix) with ESMTP id B08FC800060;
-	Sun, 31 Mar 2024 18:43:34 +0200 (CEST)
+	by mailout1.secunet.com (Postfix) with ESMTP id 76A7580004A;
+	Sun, 31 Mar 2024 18:39:59 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:43:34 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:39:59 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
  15.1.2507.17; Sun, 31 Mar 2024 16:36:42 +0000
-X-sender: <linux-kernel+bounces-125454-steffen.klassert=secunet.com@vger.kernel.org>
+X-sender: <linux-kernel+bounces-125460-steffen.klassert=secunet.com@vger.kernel.org>
 X-Receiver: <steffen.klassert@secunet.com> ORCPT=rfc822;steffen.klassert@secunet.com
 X-CreatedBy: MSExchange15
-X-HeloDomain: mbx-dresden-01.secunet.de
-X-ExtendedProps: BQBjAAoAHkimlidQ3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
+X-HeloDomain: mbx-essen-01.secunet.de
+X-ExtendedProps: BQBjAAoALkimlidQ3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
 X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 10.53.40.199
-X-EndOfInjectedXHeaders: 15329
+X-SourceIPAddress: 10.53.40.197
+X-EndOfInjectedXHeaders: 12407
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125454-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 3B5E2200BB
-Authentication-Results: b.mx.secunet.com;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtFEeVUc"
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.80.249; helo=am.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125460-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com DFD8220883
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711749199; cv=none; b=YcUIPWpHs7mLZnVdaPh2sGq8r5F5xF21yFPDxMZ/gm0YeJrT/TWfFs/Gh9WnFRa71L3nMBK9Nnv6q1uk/kZxQqMajeyclU7BgxRjaaMsw/eReYwfsEd5M1f1xxGZ/6c71chWZmsbAHPSHVYj437pvbvRgRDUvYwenfjdDa7AKfY=
+	t=1711749268; cv=none; b=E1kTb3O1ObpF4ofYR3NSK/VNelTwTcHsdeE/v005QGBKCF9vuc2TDlgcjUA4uaFI0q/zx0LzRk+Rx+4yyLGsqv2PyJVcwePgZ9BMOwFjVAfW7OGkhy4+9QRWYvRBwbKH+qI5QI1SfHb97Cv+629u5Prdxs8Vf0b1/dyuWafjnU0=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711749199; c=relaxed/simple;
-	bh=ZkGv2aECxPpKjlvqInjY5t6BAWJ1JpiWyKfHeeHLgFY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N4wUMXak4yyRayehjv1ar0r8EyyPLMwBc3uJ0bwl/C4uF0p7B7G/bWOwvNeZYeq6b3W3Vcfr0NdbT29Ffwzm149FPXaVcG2iO3WP/b1G80f4/vw74ISsQwa8epN/zn528A3NyNmNXX0nycQdjpBblQ7EyQAtFDKts98b9c+Xxik=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtFEeVUc; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711749195; x=1712353995; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oSnIkrXKOxIFx664NuP3H7hYth27RezAKOIyptzRih0=;
-        b=DtFEeVUcXHxQSM1acoLPB3xIZ2HSM6vWTSGbB4Vn2PTFo59S2qm9Wdb/PYmKmlkt7q
-         bweDNoN2FkFdd+biODVbvTAWaLZraY63rTLXLI3Uj2YXC5gXRj51NmN6ndvk0CmDMb0e
-         HIob6o5pR32SYbzkWHSn4Jg4Btu/S+g0UAjgMXPRMh1EcOgJV/whXSYiykrw7f/6s77P
-         /H5ZCsxnDWl4kNYCj9mzXKbfqQBAv6Lnt80sLG1vRk3gD9HqNaAkNP/seJmggh7Vb0eo
-         x3i++yNtv1UR3TkN0hCOiKzOfpwFxG/x3+oaCYHUq4IcorpsSpcrx239+6AZFAOrQdbA
-         WyHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711749195; x=1712353995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oSnIkrXKOxIFx664NuP3H7hYth27RezAKOIyptzRih0=;
-        b=oKWLVHtPvz9J+QXVTc54yStjx+NkapzU4nW5NsuqPQ5h82t98mF43eq2fZPnUSPhaT
-         MGdf9ycXYZkO41VrOpN62JqHNhZQR/quC5iGCtAX8SbX3Zql03mdeT6pd9hdt04AMwNI
-         v7s3h6cmiqq3SNt6pWwVBYRqxOm+JPpZT5yDuDLXj7HFAWYEdMSKpeIILWSrLfRqeGmF
-         0Wu0zy7UE5pH6ZQnPhhEBhM4jmoqIk7Jl9U1SyEn4ioN3y3x18oyrKxSulpIT55d/yc8
-         64AGB3PNnhGmaMJktfTQg6iokvhAcecEo9Sr4wvXZuzD5l1KTyylDAgGYGp2D5OwKZyP
-         iGgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUd4xvQHL/oaQCMtCuugnR3C+1mNP+kYnHMed8zOGO5hdRvAX21HlPyuCzWSAKy8Bt5pMwgz3toD1E3Xn4ARVBMo22+kQWtIVLj26ICYQSx1B5RhgBvSbm3JXQKMiyRL5E4gFZ/VAumoFjE2Vcpg7zLq5/DEIrGAbwW
-X-Gm-Message-State: AOJu0YyKhnyWxAp7UfXLi6lEMSL4950T9e1nKDvTnmG9yMcApYpszSgu
-	6nlrYsSq1udaQLoImKyk+HbI3U4g2GsYOT0pZe1ZoHsOJsdjCd5+EVv1QU8gEWIM6DBowMLNfme
-	dpizDXQEt670AhG7mMjM3Cbt2ZFB5CMSUPpA=
-X-Google-Smtp-Source: AGHT+IESQ34cqmbczYM0CtTFQ4n7hfhahLrps7uGUEuczD5xhOvFv09EChC/YJ/FIRR8VtuzAy4gIzrPZKwGa0EMMVQ=
-X-Received: by 2002:a5d:6d49:0:b0:341:e4f4:4399 with SMTP id
- k9-20020a5d6d49000000b00341e4f44399mr1687491wri.68.1711749195364; Fri, 29 Mar
- 2024 14:53:15 -0700 (PDT)
+	s=arc-20240116; t=1711749268; c=relaxed/simple;
+	bh=ZzhPYKeso27bmveGBa0hhOsC2JsybKzAElLAwye66BE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=IMu1Ln8MCtfnXxGEt7py/U0DhV6xmKS7+eZ8tjPXWUjG2tlQLckiVCDCBrUxeHvzzPH5vLt/iFA/vDGiAbfjx1S327V5kK6gtogdbqT3kGAOkmF/9sq0UjzVyafNu33Wxxt2NFsLbzo7ON4lxzS45GLmMelsWPSivnVgjahUJu0=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oSbp8YXl; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:references:in-reply-to:to
+	:cc; s=qcppdkim1; bh=+bd0p8wZ946dzDtJnkM1g8zAvJ0EnKW+xUBI80TUAm4
+	=; b=oSbp8YXlgxZ7cBUyE9PakifZY0YNGB6iKKitZ5mnPyfuxJ6vEYg3UEMGNjQ
+	8PwG/mPLu2IS6eirsr+fWmFWbBF2n30CI/3UXnJN1H7gxUTMKt31F8EYiSyyfUkc
+	jHrz/fyhmjKPz0BW6UufVwBpCyRhN+84SHNx9EJ7c7cSzpPIySlsSsQPPjv4RBM4
+	jxrbkenoYJmTvXpxhWjBloeN+mK+Mhl7IxUe2wI1gzNaIMLmpVg2c2yI/q1cFSgY
+	c7d+GXYpENhowLb7om6Y2s7rhkGNpzpZi3hul5w1W2Jh5A3K71/wmfQm5GTOA5bA
+	FiagKjBsNblIjQFkuLhOVdNHYWg==
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+Date: Fri, 29 Mar 2024 14:53:41 -0700
+Subject: [PATCH v4 2/5] soc: qcom: llcc: Add regmap for Broadcast_AND
+ region
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -115,171 +95,124 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329094906.18147-1-ubizjak@gmail.com> <20240329094906.18147-3-ubizjak@gmail.com>
-In-Reply-To: <20240329094906.18147-3-ubizjak@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 29 Mar 2024 14:53:03 -0700
-Message-ID: <CAADnVQ+6D++hCXaP=aK+Q5wienMzhHo3h9YCvpA_7sHjMt+q6A@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf 2/2] x86/bpf: Fix IP for relocating call depth accounting
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?Q?Joan_Bruguera_Mic=C3=B3?= <joanbrugueram@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240329-llcc-broadcast-and-v4-2-107c76fd8ceb@quicinc.com>
+References: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
+In-Reply-To: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        Unnathi Chalicheemala
+	<quic_uchalich@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711749240; l=2997;
+ i=quic_uchalich@quicinc.com; s=20240202; h=from:subject:message-id;
+ bh=ZzhPYKeso27bmveGBa0hhOsC2JsybKzAElLAwye66BE=;
+ b=bJ/sdVUC6uTHBFFWKL0jMoOCUbWVpQaRsrVwgBC7rRPkYNvYjudtzMaCUwWQp3aXPhtpFoS+W
+ mRlPQ0jqbMHCPVG6xFlvkRJwBk5pVyv3TXT8ZMRxLnc7YxhNMO8/cGE
+X-Developer-Key: i=quic_uchalich@quicinc.com; a=ed25519;
+ pk=8n+IFmsCDcEIg91sUP/julv9kf7kmyIKT2sR+1yFd4A=
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Bc2BnW1Hs3ISyKMHGMNa6NVFWXmoGuMz
+X-Proofpoint-ORIG-GUID: Bc2BnW1Hs3ISyKMHGMNa6NVFWXmoGuMz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ malwarescore=0 adultscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=943
+ impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403290195
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-On Fri, Mar 29, 2024 at 2:49=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
->
-> From: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
->
-> The recently introduced support for %rip-relative relocations in the
-> call thunk template assumes that the code is being patched in-place,
-> so the destination of the relocation matches the address of the code.
-> This is not true for the call depth accounting emitted by the BPF JIT,
-> so the calculated address is wrong and usually causes a page fault.
+Define new regmap structure for Broadcast_AND region and initialize
+this regmap when HW block version is greater than 4.1, otherwise
+initialize as a NULL pointer for backwards compatibility.
 
-Could you share the link to what this 'rip-relative' relocation is ?
+Switch from broadcast_OR to broadcast_AND region (when defined in DT)
+for checking status bit 1 as Broadcast_OR region checks only for bit 0.
 
-> Pass the destination IP when the BPF JIT emits call depth accounting.
->
-> Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in=
- call thunk template")
+Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+---
+ drivers/soc/qcom/llcc-qcom.c       | 14 +++++++++++++-
+ include/linux/soc/qcom/llcc-qcom.h |  4 +++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-Ohh. It's buried inside that patch.
-Pls make commit log a bit more clear that that commit 17bce3b2ae2d
-broke x86_call_depth_emit_accounting logic.
+diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+index cbef0dea1d5d..727d00c527f1 100644
+--- a/drivers/soc/qcom/llcc-qcom.c
++++ b/drivers/soc/qcom/llcc-qcom.c
+@@ -821,6 +821,7 @@ EXPORT_SYMBOL_GPL(llcc_slice_putd);
+ static int llcc_update_act_ctrl(u32 sid,
+ 				u32 act_ctrl_reg_val, u32 status)
+ {
++	struct regmap *regmap;
+ 	u32 act_ctrl_reg;
+ 	u32 act_clear_reg;
+ 	u32 status_reg;
+@@ -849,7 +850,8 @@ static int llcc_update_act_ctrl(u32 sid,
+ 		return ret;
+ 
+ 	if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
+-		ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
++		regmap = drv_data->bcast_and_regmap ?: drv_data->bcast_regmap;
++		ret = regmap_read_poll_timeout(regmap, status_reg,
+ 				      slice_status, (slice_status & ACT_COMPLETE),
+ 				      0, LLCC_STATUS_READ_DELAY);
+ 		if (ret)
+@@ -1284,6 +1286,16 @@ static int qcom_llcc_probe(struct platform_device *pdev)
+ 
+ 	drv_data->version = version;
+ 
++	/* Applicable only when drv_data->version >= 4.1 */
++	drv_data->bcast_and_regmap = qcom_llcc_init_mmio(pdev, i + 1, "llcc_broadcast_and_base");
++	if (IS_ERR(drv_data->bcast_and_regmap)) {
++		ret = PTR_ERR(drv_data->bcast_and_regmap);
++		if (ret == -EINVAL)
++			drv_data->bcast_and_regmap = NULL;
++		else
++			goto err;
++	}
++
+ 	llcc_cfg = cfg->sct_data;
+ 	sz = cfg->size;
+ 
+diff --git a/include/linux/soc/qcom/llcc-qcom.h b/include/linux/soc/qcom/llcc-qcom.h
+index 1a886666bbb6..9e9f528b1370 100644
+--- a/include/linux/soc/qcom/llcc-qcom.h
++++ b/include/linux/soc/qcom/llcc-qcom.h
+@@ -115,7 +115,8 @@ struct llcc_edac_reg_offset {
+ /**
+  * struct llcc_drv_data - Data associated with the llcc driver
+  * @regmaps: regmaps associated with the llcc device
+- * @bcast_regmap: regmap associated with llcc broadcast offset
++ * @bcast_regmap: regmap associated with llcc broadcast OR offset
++ * @bcast_and_regmap: regmap associated with llcc broadcast AND offset
+  * @cfg: pointer to the data structure for slice configuration
+  * @edac_reg_offset: Offset of the LLCC EDAC registers
+  * @lock: mutex associated with each slice
+@@ -129,6 +130,7 @@ struct llcc_edac_reg_offset {
+ struct llcc_drv_data {
+ 	struct regmap **regmaps;
+ 	struct regmap *bcast_regmap;
++	struct regmap *bcast_and_regmap;
+ 	const struct llcc_slice_config *cfg;
+ 	const struct llcc_edac_reg_offset *edac_reg_offset;
+ 	struct mutex lock;
 
-> Signed-off-by: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
-> Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
-> Acked-by: Ingo Molnar <mingo@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  arch/x86/include/asm/alternative.h |  4 ++--
->  arch/x86/kernel/callthunks.c       |  4 ++--
->  arch/x86/net/bpf_jit_comp.c        | 19 ++++++++-----------
->  3 files changed, 12 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/al=
-ternative.h
-> index fcd20c6dc7f9..67b68d0d17d1 100644
-> --- a/arch/x86/include/asm/alternative.h
-> +++ b/arch/x86/include/asm/alternative.h
-> @@ -117,7 +117,7 @@ extern void callthunks_patch_builtin_calls(void);
->  extern void callthunks_patch_module_calls(struct callthunk_sites *sites,
->                                           struct module *mod);
->  extern void *callthunks_translate_call_dest(void *dest);
-> -extern int x86_call_depth_emit_accounting(u8 **pprog, void *func);
-> +extern int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *=
-ip);
->  #else
->  static __always_inline void callthunks_patch_builtin_calls(void) {}
->  static __always_inline void
-> @@ -128,7 +128,7 @@ static __always_inline void *callthunks_translate_cal=
-l_dest(void *dest)
->         return dest;
->  }
->  static __always_inline int x86_call_depth_emit_accounting(u8 **pprog,
-> -                                                         void *func)
-> +                                                         void *func, voi=
-d *ip)
->  {
->         return 0;
->  }
-> diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-> index 30335182b6b0..e92ff0c11db8 100644
-> --- a/arch/x86/kernel/callthunks.c
-> +++ b/arch/x86/kernel/callthunks.c
-> @@ -314,7 +314,7 @@ static bool is_callthunk(void *addr)
->         return !bcmp(pad, insn_buff, tmpl_size);
->  }
->
-> -int x86_call_depth_emit_accounting(u8 **pprog, void *func)
-> +int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip)
->  {
->         unsigned int tmpl_size =3D SKL_TMPL_SIZE;
->         u8 insn_buff[MAX_PATCH_LEN];
-> @@ -327,7 +327,7 @@ int x86_call_depth_emit_accounting(u8 **pprog, void *=
-func)
->                 return 0;
->
->         memcpy(insn_buff, skl_call_thunk_template, tmpl_size);
-> -       apply_relocation(insn_buff, tmpl_size, *pprog,
-> +       apply_relocation(insn_buff, tmpl_size, ip,
+-- 
+2.25.1
 
-Did the logic inside apply_relocation() change to have
-a new meaning for 'dest' and 'src'?
-Answering to myself... yes. in that commit.
-Better commit log would have made the code review so much easier.
-
->                          skl_call_thunk_template, tmpl_size);
->
->         memcpy(*pprog, insn_buff, tmpl_size);
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 09f7dc9d4d65..f2e8769f5eee 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -481,7 +481,7 @@ static int emit_rsb_call(u8 **pprog, void *func, void=
- *ip)
->  {
->         void *adjusted_ip;
->         OPTIMIZER_HIDE_VAR(func);
-> -       adjusted_ip =3D ip + x86_call_depth_emit_accounting(pprog, func);
-> +       adjusted_ip =3D ip + x86_call_depth_emit_accounting(pprog, func, =
-ip);
-
-Now I see why you added extra var in the previous patch.
-Should have mentioned it in the commit log.
-
->         return emit_patch(pprog, func, adjusted_ip, 0xE8);
->  }
->
-> @@ -1973,20 +1973,17 @@ st:                     if (is_imm8(insn->off))
->
->                         /* call */
->                 case BPF_JMP | BPF_CALL: {
-> -                       int offs;
-> +                       u8 *ip =3D image + addrs[i - 1];
->
->                         func =3D (u8 *) __bpf_call_base + imm32;
->                         if (tail_call_reachable) {
->                                 RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stac=
-k_depth);
-> -                               if (!imm32)
-> -                                       return -EINVAL;
-> -                               offs =3D 7 + x86_call_depth_emit_accounti=
-ng(&prog, func);
-> -                       } else {
-> -                               if (!imm32)
-> -                                       return -EINVAL;
-> -                               offs =3D x86_call_depth_emit_accounting(&=
-prog, func);
-> +                               ip +=3D 7;
->                         }
-> -                       if (emit_call(&prog, func, image + addrs[i - 1] +=
- offs))
-> +                       if (!imm32)
-> +                               return -EINVAL;
-> +                       ip +=3D x86_call_depth_emit_accounting(&prog, fun=
-c, ip);
-> +                       if (emit_call(&prog, func, ip))
->                                 return -EINVAL;
->                         break;
->                 }
-> @@ -2836,7 +2833,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *rw_im
->                  * Direct-call fentry stub, as such it needs accounting f=
-or the
->                  * __fentry__ call.
->                  */
-> -               x86_call_depth_emit_accounting(&prog, NULL);
-> +               x86_call_depth_emit_accounting(&prog, NULL, image);
-
-Overall it all makes sense.
-Pls respin with more precise commit logs.
 
 
