@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-125411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6517489259D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:51:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863F88925A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:51:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4A871F22E8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:51:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41F91F22DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E6A13B5AE;
-	Fri, 29 Mar 2024 20:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867FD13D608;
+	Fri, 29 Mar 2024 20:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I8XyaoAk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WS45LIxt"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4544A13CC5A
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEAD13CC7B
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:50:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711745451; cv=none; b=fbXdqw3dwlm358GZpdIPYqrUXjk3LyFXWSiQH0Bhx50jOJD6oDcaKvLRRXDR4hQ4y1YywLcHJ67/mPeY3hGtnJ3TzdRNs54eqMJLblkA6WULIIlKFOq1mgZp8FSKr9do57FBxDH6CX03U5vImegooxfRVtFy6DKbfAHxQJeGBk8=
+	t=1711745456; cv=none; b=gMi0BghKJPVMW/JkkwfWBIGhQzZ+otEw3LBjeyaCWeKUF3+mJeqp2OL1gah3h7PCe6IboDWoHGPW596X9iaI64kjPTeOVys0mAqIWnFjNGxT/1gVFQfo6ky+klnSPzuTUkPzLVmmrgo0p2VzTNrauiAszxem4dXBg/MSShJoFTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711745451; c=relaxed/simple;
-	bh=Zy+bgvSnjLkgq0s4C6zNdmvBRZh1cOH+2n6Swd6Xvls=;
+	s=arc-20240116; t=1711745456; c=relaxed/simple;
+	bh=BGXknjcLA50bcUKtFtKJCi5N6HFf284Wv0+1aI9g+Qk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mLA0cZhG+QXPXO+Y5awDl/h4ezUJxjtxL0Aswbp3mctrhMXITbn4gdP+8Liz0F2xr71xzVR3uDcoji5egAQ8wsXSfqC6fyXz14h5drLixvu84u4JTe5u+vymL4DWMdW9olZbN+39bWauhQalqvaR7yLMGrAvm4dLbkHQDAat0lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I8XyaoAk; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=EFbyL3QNrR+Coh7weNGrIzyzR1cx1yeGKABNYo74kcDVCWx/hNMpapfC58crdTtwXaoMIW1iYEVuPk9CMreRAGEOn4q22w2SsynnkouMEs1bxYFvQhKTWNnpfhiM9/bfWmOsmOUZslnDUR8ujGvyOyBtkL09Foo6ilzDM5pSOqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WS45LIxt; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711745449;
+	s=mimecast20190719; t=1711745453;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XPnsustGT4GoUrGTcO/hGoT1b1FUZsTVit4gdTDovY0=;
-	b=I8XyaoAkNKrhJVZdVCVfT91hxw8aYnhcf0GTpqewiwO/vnKFg35QSWY6MVwnF3BtGJhkTi
-	/1UjLVZyj8CUlfQ81266wppAdGOMWTgFCkP3cAYVxspbVKzhDY58tNH1AAYadBtEv1DYo2
-	LK3+qTgh7JPeKCrdtbAqxX7QPlYyNqc=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Uf4SOXbG4RAjshjCtScug3Y0ECaz5dSCoqxe3hdLj3E=;
+	b=WS45LIxt+73ka+u0dMHEHh4mkYNp/ea28nhcF3tNO4Gxg2hzAWnVoa9CybQzRILzxTT2nQ
+	CP/Oin2999sViZNSMZOQ5rnVwjc4XaU5fTNWVreWhapmtS//zg9K76FG0RBP/Rggb6z4CN
+	9HLRvqfXf9eI9hRRzCS44LdCA1xHGbw=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-7-orxG8o-0MmytUPj7nIGYeQ-1; Fri, 29 Mar 2024 16:50:47 -0400
-X-MC-Unique: orxG8o-0MmytUPj7nIGYeQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-69173411419so29936406d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:50:47 -0700 (PDT)
+ us-mta-640-W7u7lTE0OAeI856p3qJq4A-1; Fri, 29 Mar 2024 16:50:51 -0400
+X-MC-Unique: W7u7lTE0OAeI856p3qJq4A-1
+Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7e0388aa775so1162785241.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:50:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711745443; x=1712350243;
+        d=1e100.net; s=20230601; t=1711745448; x=1712350248;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XPnsustGT4GoUrGTcO/hGoT1b1FUZsTVit4gdTDovY0=;
-        b=tko4yCURzUUZ1pxyELen6LmRdPBWmTVrcJaMg14OS6rB/NnrOYuKJRyYPRxX8SNrII
-         8eWRPYs128FEpMXfPU7fb9+nqlVFf+4M49YWo7wHado2QIjpollKcd5DH0ZxkkOUtaJL
-         bw/ba7wq4QilBZhrA+1C1zt7wiO8oNtj3IQreP0ACKqPByt/8i7IsPr9TzW5VecMF4Jg
-         8gblCIv7wRESrPelM1f1UxAd2YjgVT7wT8+/Ia58jOgXkurOixlU3Pi2VakSAhOd1qJf
-         P/KHps1NuESQQQynkuLKMm9K6w0xHFrgnoC9nBhm5dKw5qIz42QJrh4ZXnqgR1DTZc4b
-         yvCg==
-X-Forwarded-Encrypted: i=1; AJvYcCX27kBF04vcfgWMbukMhxQ41pHG07ySlH54d4cyyCpMT3U9tlbPwu+H+WUUd/rSXb6U552VMw8JeZXQmua6BJJn0L6VzSFMPB7IXJR1
-X-Gm-Message-State: AOJu0YxQLgOilZu9YY7qew3S7+gNmGpFCG81n3QUTRI2zhETAP5lZlEz
-	8xSbLn3x8YqNG6fM9/oFQxLPFlDPj5158olLu07Nl5i6dSMS/zLRKz8msk2RJq6O97QqCMF/ij4
-	GCa2JG2iIIm1ZQxl63XFtRshLQ/fNOKIG6oG3e+qJFdKQOT3zSKhC7icTbZtLQA==
-X-Received: by 2002:a0c:d646:0:b0:698:f3f0:39dd with SMTP id e6-20020a0cd646000000b00698f3f039ddmr2065505qvj.6.1711745443261;
-        Fri, 29 Mar 2024 13:50:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFBLrn+K4mLNtCh2Rz2Xmh067Hv24Kl9mQ40ZdwbQbhkZQb5T0j5S5g1FGjMUP56UzrNARqQA==
-X-Received: by 2002:a0c:d646:0:b0:698:f3f0:39dd with SMTP id e6-20020a0cd646000000b00698f3f039ddmr2065487qvj.6.1711745442848;
-        Fri, 29 Mar 2024 13:50:42 -0700 (PDT)
+        bh=Uf4SOXbG4RAjshjCtScug3Y0ECaz5dSCoqxe3hdLj3E=;
+        b=Bfmo9bajJ1BvVsaGZI76LJ63wSGMCoQ41QtpmguvhKCnZSuVL112dhcmmy+C41JAWA
+         DX/XpoLvZ7TwSBDgZ8lbW+FO/Aue+Zsxe/T5ufdGyAMUOgJxqIl6b1V/8gVa1kteXt/X
+         YRJs0CrMHlTN3xOrgeJNL5sb71VxebM6VGgFTw5ItzOS9dbpVcBBKbzUNO8aa0+kWbml
+         YaGs2kqNBppIjpvhEM6EvgyTSG3JEKn5SFpbkKZEPiCi9/LA9gBMH7zszZrh9jPe/QCS
+         p7gdFqpn2VBximMdVel/4X6TlMvXOw+8Ngohag2378K9X7+LzSLxrurMQ8CQ6QaBrv12
+         DADg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+KEovhkpiJIyua+VRIcJurgRvad7d8BrUc7Ek+B2RO04HK3puUOG62OE4AeAhsYJIOx9fpQrrz9oQRON9LMq4sCYrbe4l6wwTrIPT
+X-Gm-Message-State: AOJu0YzdXOlskImcDw8LWB0e9z9iGKnBLeeEsGqCJfIa8r1t9pfXej/q
+	oZjAEXlXWmnTfcUbPYws2lW/xrbDNOsz/v0eQ60kJdD8QLKkITjhXJSTbcd7pRFXLcHgJDBzvvV
+	5ZuiBpG4vDnbU/+R43Au0gs2da4LA9Oj2q4WIKP8qiLlrSrFknGEfAtqP1m7bdg==
+X-Received: by 2002:a05:6102:dd3:b0:476:fab9:237d with SMTP id e19-20020a0561020dd300b00476fab9237dmr3651552vst.2.1711745448242;
+        Fri, 29 Mar 2024 13:50:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHbJHgBjF3eN8i3ddN3z1R3cQ/XH02K5EBI2mtVmXktFIkJdXz1ZhnDrVZGUZxKmIZMOtcJjg==
+X-Received: by 2002:a05:6102:dd3:b0:476:fab9:237d with SMTP id e19-20020a0561020dd300b00476fab9237dmr3651537vst.2.1711745447887;
+        Fri, 29 Mar 2024 13:50:47 -0700 (PDT)
 Received: from x1gen2nano.redhat.com ([2600:1700:1ff0:d0e0::33])
-        by smtp.gmail.com with ESMTPSA id jz10-20020a0562140e6a00b00698f27c6460sm794271qvb.110.2024.03.29.13.50.38
+        by smtp.gmail.com with ESMTPSA id jz10-20020a0562140e6a00b00698f27c6460sm794271qvb.110.2024.03.29.13.50.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 13:50:39 -0700 (PDT)
+        Fri, 29 Mar 2024 13:50:44 -0700 (PDT)
 From: Andrew Halaney <ahalaney@redhat.com>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -91,10 +91,10 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	linux-arm-msm@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 10/11] scsi: ufs: core: Remove unnecessary wmb() after
- ringing doorbell
-Date: Fri, 29 Mar 2024 15:46:52 -0500
-Message-ID: <20240329-ufs-reset-ensure-effect-before-delay-v5-10-181252004586@redhat.com>
+Subject: [PATCH v5 11/11] scsi: ufs: core: Remove unnecessary wmb() prior
+ to writing run/stop regs
+Date: Fri, 29 Mar 2024 15:46:53 -0500
+Message-ID: <20240329-ufs-reset-ensure-effect-before-delay-v5-11-181252004586@redhat.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
 References: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
@@ -108,52 +108,50 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.13.0
 Content-Transfer-Encoding: quoted-printable
 
-Currently, the doorbell is written to and a wmb() is used to commit it=0D
-immediately.=0D
+Currently a wmb() is used to ensure that writes to the=0D
+UTP_TASK_REQ_LIST_BASE* regs are completed prior to following writes to=0D
+the run/stop registers.=0D
 =0D
-wmb() ensures that the write completes before following writes occur,=0D
-but completion doesn't mean that it isn't stored in a buffer somewhere.=0D
-The recommendation for ensuring this bit has taken effect on the device=0D
-is to perform a read back to force it to make it all the way to the=0D
-device. This is documented in device-io.rst and a talk by Will Deacon on=0D
-this can be seen over here:=0D
+wmb() ensure that the write completes, but completion doesn't mean that=0D
+it isn't stored in a buffer somewhere. The recommendation for=0D
+ensuring the bits have taken effect on the device is to perform a read=0D
+back to force it to make it all the way to the device. This is=0D
+documented in device-io.rst and a talk by Will Deacon on this can=0D
+be seen over here:=0D
 =0D
     https://youtu.be/i6DayghhA8Q?si=3DMiyxB5cKJXSaoc01&t=3D1678=0D
 =0D
-But, completion and taking effect aren't necessary to guarantee here.=0D
+But, none of that is necessary here. All of the writel()/readl()'s here=0D
+are to the same endpoint, so they will be ordered. There's no subsequent=0D
+delay() etc that requires it to have taken effect already, so no=0D
+readback is necessary here.=0D
 =0D
-There's already other examples of the doorbell being rung that don't do=0D
-this. The writel() of the doorbell guarantees prior writes by this=0D
-thread (to the request being setup for example) complete prior to the=0D
-ringing of the doorbell, and the following=0D
-wait_for_completion_io_timeout() doesn't require any special memory=0D
-barriers either.=0D
+For that reason just drop the wmb() altogether.=0D
 =0D
-With that in mind, just remove the wmb() altogether here.=0D
-=0D
-Fixes: ad1a1b9cd67a ("scsi: ufs: commit descriptors before setting the door=
-bell")=0D
+Fixes: 897efe628d7e ("scsi: ufs: add missing memory barriers")=0D
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>=0D
 ---=0D
- drivers/ufs/core/ufshcd.c | 3 ---=0D
- 1 file changed, 3 deletions(-)=0D
+ drivers/ufs/core/ufshcd.c | 6 ------=0D
+ 1 file changed, 6 deletions(-)=0D
 =0D
 diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c=0D
-index dfa4f827766a..a2f2941450fd 100644=0D
+index a2f2941450fd..cf6a24e550f0 100644=0D
 --- a/drivers/ufs/core/ufshcd.c=0D
 +++ b/drivers/ufs/core/ufshcd.c=0D
-@@ -7090,10 +7090,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba=
-,=0D
+@@ -4769,12 +4769,6 @@ int ufshcd_make_hba_operational(struct ufs_hba *hba)=
+=0D
+ 	ufshcd_writel(hba, upper_32_bits(hba->utmrdl_dma_addr),=0D
+ 			REG_UTP_TASK_REQ_LIST_BASE_H);=0D
  =0D
- 	/* send command to the controller */=0D
- 	__set_bit(task_tag, &hba->outstanding_tasks);=0D
--=0D
- 	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);=0D
--	/* Make sure that doorbell is committed immediately */=0D
+-	/*=0D
+-	 * Make sure base address and interrupt setup are updated before=0D
+-	 * enabling the run/stop registers below.=0D
+-	 */=0D
 -	wmb();=0D
- =0D
- 	spin_unlock_irqrestore(host->host_lock, flags);=0D
- =0D
+-=0D
+ 	/*=0D
+ 	 * UCRDY, UTMRLDY and UTRLRDY bits must be 1=0D
+ 	 */=0D
 =0D
 -- =0D
 2.44.0=0D
