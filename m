@@ -1,55 +1,62 @@
-Return-Path: <linux-kernel+bounces-124272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A53A8914F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:59:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C76489150F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:10:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C14F1C23E09
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:59:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07F0F2861AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F4444C92;
-	Fri, 29 Mar 2024 07:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2604545974;
+	Fri, 29 Mar 2024 08:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norik.com header.i=@norik.com header.b="cvhrZWSP"
-Received: from cpanel.siel.si (cpanel.siel.si [46.19.9.99])
+	dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b="mz+n4RAe"
+Received: from relay-us1.mymailcheap.com (relay-us1.mymailcheap.com [51.81.35.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974EA3B78E;
-	Fri, 29 Mar 2024 07:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.19.9.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F168D40842;
+	Fri, 29 Mar 2024 08:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.35.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711699135; cv=none; b=MkovHR/X4byqRCurghL970pc/5M3e4bu0KzR3ZIxulps34PwYaWY96Cag10mV9Nkd7aqUe+PoBzEi91EecWEEYYFv1jt8jpHYmkxPlhLbrLuq/428y2IAfnUsPhMW9TmGMpcnh3hqkx2z44ROmNbRw++aoYvwdubZrZkh6sg6yI=
+	t=1711699848; cv=none; b=W76l//wUtL3lNKrsC1UxlL/h2DWBW/VM+nUYmYec0dtdUYexU99KxWkRn4PemZ3MpFhLx4Z1j657IbtneAM6KeuytTJKc+DBrhqfp0s+2X19UH44GtaS3xGqRdqSsyP1qeUJIkAxMoMEPsGu0nb/HnlyLgedni/OaoJUHXTfZO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711699135; c=relaxed/simple;
-	bh=yBqdFYWJ7meNuEn1L+kQXqFNRWSolH3SOPxtgfU/HK8=;
+	s=arc-20240116; t=1711699848; c=relaxed/simple;
+	bh=Wjl3zr/BNN56wdS4u3nAMWSo+sSz1TXRs/Ujsp1d1sI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uEeliS1vbSc9qhFXoZFUH47Il+JsyRDEHvBykRLbDPawxgSQMOD9671IRIYnjycZGLsF8P7GwhRSPYZq4MHNk7Oq53/TVoxOL08uI6hHj8k4gFtTEO64aLwyiBs4IORfhZPWdL1GbwP1WwNK5Jdrjip/N5HfZd+inEtFlDrNZsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com; spf=pass smtp.mailfrom=norik.com; dkim=pass (2048-bit key) header.d=norik.com header.i=@norik.com header.b=cvhrZWSP; arc=none smtp.client-ip=46.19.9.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=norik.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=norik.com;
-	s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=VB+uYV6z1osfsY3qvVmgNrhkcULtGFhdn5kc4Qzej/U=; b=cvhrZWSPR+Yv98T3SACOGJoTbj
-	/92sDiJPAIdKFqbQpQFDxMGds6Uuaeq2/bq2G7ogYz0lhvXlUFmMJYmVfB24YK2oxkIoBS7oGwP6H
-	f3SuFIA1xiz8tK2pps/Xz9w3rPTyNkw2YAbbCzeQ8vOaQ7ZX10a5GJmpvcPmkmExS522ncxG91xoJ
-	6ztsz0ABBW+TDQ/u4xJw9f+6TjnMnq8uEmQ87toUtLjaes0+PPk9H0of8LUj1k2xnDYqVQKh41Ojh
-	ykIg9heBPjNsW++47JxBTJmOqRwi/aXWC3zLxoe10Zr/eWzPhKJuxbmCypAq/3ojpIWAypOqgLykp
-	28fVe3nQ==;
-Received: from 89-212-21-243.static.t-2.net ([89.212.21.243]:57518 helo=[192.168.69.116])
-	by cpanel.siel.si with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <primoz.fiser@norik.com>)
-	id 1rq78Q-009wAj-2G;
-	Fri, 29 Mar 2024 08:58:46 +0100
-Message-ID: <d9a233d6-95cd-4901-9c06-d8319f2eb3b4@norik.com>
-Date: Fri, 29 Mar 2024 08:58:42 +0100
+	 In-Reply-To:Content-Type; b=OmTVcMXUBTkPDySmt2oCCdiQ3RqmjoN2n9SR82SmnUBY7Gbstt6ielJaodlDvwe856hkBJ0BkegCKut5JcIobW7/KZZvtdqpTNVH+CExuTtRegmGygnVE4yx3FIsj7Piq7INgd6wWivWLgtNcCYiUQPV71j1iqKtPSbzgJu7xxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com; spf=pass smtp.mailfrom=pavinjoseph.com; dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b=mz+n4RAe; arc=none smtp.client-ip=51.81.35.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pavinjoseph.com
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.248.207])
+	by relay-us1.mymailcheap.com (Postfix) with ESMTPS id BC5A621325;
+	Fri, 29 Mar 2024 08:01:57 +0000 (UTC)
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [149.56.97.132])
+	by relay5.mymailcheap.com (Postfix) with ESMTPS id 20CD4260DF;
+	Fri, 29 Mar 2024 08:01:49 +0000 (UTC)
+Received: from nf1.mymailcheap.com (nf1.mymailcheap.com [51.75.14.91])
+	by relay1.mymailcheap.com (Postfix) with ESMTPS id 1AE483E981;
+	Fri, 29 Mar 2024 08:01:41 +0000 (UTC)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+	by nf1.mymailcheap.com (Postfix) with ESMTPSA id 4F7E04007F;
+	Fri, 29 Mar 2024 08:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pavinjoseph.com;
+	s=default; t=1711699300;
+	bh=Wjl3zr/BNN56wdS4u3nAMWSo+sSz1TXRs/Ujsp1d1sI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mz+n4RAeOc8uqy9kkguomSw9juCsMtDrnaou59z+I05ogwu9A2wQWZjt8A7hMFvyp
+	 cqeFPBHQL9BWQ+ftSOap1PBOmWuje7hfmLA8ZwQIkJnLTVItSZPQ2v5tE2Gnj6678c
+	 Dmo2hWdfUr9Uyx0PY37EQGvR5Sew46/jhNiDqh7E=
+Received: from [10.66.66.8] (unknown [139.59.64.216])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail20.mymailcheap.com (Postfix) with ESMTPSA id 1961F42C88;
+	Fri, 29 Mar 2024 08:01:33 +0000 (UTC)
+Message-ID: <47302624-6466-41a7-85db-f6872d58a4d2@pavinjoseph.com>
+Date: Fri, 29 Mar 2024 13:31:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,187 +64,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Upstream] [PATCH 0/2] i.MX93 ADC calibration settings
+Subject: Re: [PATCH v4] x86/mm/ident_map: On UV systems, use gbpages only
+ where full GB page should be mapped.
+To: Ingo Molnar <mingo@kernel.org>, Steve Wahl <steve.wahl@hpe.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ stable@vger.kernel.org, Eric Hagberg <ehagberg@gmail.com>,
+ Simon Horman <horms@verge.net.au>, Eric Biederman <ebiederm@xmission.com>,
+ Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+ Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>,
+ Hou Wenlong <houwenlong.hwl@antgroup.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>,
+ Yuntao Wang <ytcoode@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>
+References: <20240328160614.1838496-1-steve.wahl@hpe.com>
+ <ZgZqhWoRZoq5tJoU@gmail.com>
 Content-Language: en-US
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc: Andrej Picej <andrej.picej@norik.com>, Jonathan Cameron
- <jic23@kernel.org>, devicetree@vger.kernel.org, conor+dt@kernel.org,
- lars@metafoo.de, krzysztof.kozlowski+dt@linaro.org, imx@lists.linux.dev,
- linux-iio@vger.kernel.org, festevam@gmail.com, s.hauer@pengutronix.de,
- upstream@lists.phytec.de, linux-kernel@vger.kernel.org, haibo.chen@nxp.com,
- kernel@pengutronix.de, shawnguo@kernel.org, robh@kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240320100407.1639082-1-andrej.picej@norik.com>
- <20240324135559.1640551d@jic23-huawei>
- <3423ea96-859d-4c4b-a9a7-e0d9c3c00727@norik.com>
- <44ac8977-cf98-46a5-be15-1bec330c6a2e@norik.com>
- <20240325144555.00002d16@Huawei.com>
-From: Primoz Fiser <primoz.fiser@norik.com>
-Organization: Norik systems d.o.o.
-In-Reply-To: <20240325144555.00002d16@Huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cpanel.siel.si
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - norik.com
-X-Get-Message-Sender-Via: cpanel.siel.si: authenticated_id: primoz.fiser@norik.com
-X-Authenticated-Sender: cpanel.siel.si: primoz.fiser@norik.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+From: Pavin Joseph <me@pavinjoseph.com>
+In-Reply-To: <ZgZqhWoRZoq5tJoU@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.09 / 10.00];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_ONE(0.00)[1];
+	ASN(0.00)[asn:16276, ipnet:51.83.0.0/16, country:FR];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FREEMAIL_CC(0.00)[linux.intel.com,kernel.org,infradead.org,linutronix.de,redhat.com,alien8.de,zytor.com,vger.kernel.org,lists.linux.dev,gmail.com,verge.net.au,xmission.com,dbc.dk,hpe.com,antgroup.com,linux-foundation.org,google.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Server: nf1.mymailcheap.com
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4F7E04007F
 
-Hi Jonathan,
+On 3/29/24 12:45, Ingo Molnar wrote:
+> Does the 'nogbpages' kernel command line option fail on these systems
+> even outside of kexec (ie. regular boot), or only in combination with
+> kexec?
 
-On 25. 03. 24 15:45, Jonathan Cameron wrote:
-> On Mon, 25 Mar 2024 09:55:23 +0100
-> Primoz Fiser <primoz.fiser@norik.com> wrote:
-> 
->> Hi Jonathan,
->>
->> On 25. 03. 24 09:32, Andrej Picej wrote:
->>> Hi Jonathan,
->>>
->>> On 24. 03. 24 14:55, Jonathan Cameron wrote:  
->>>> On Wed, 20 Mar 2024 11:04:04 +0100
->>>> Andrej Picej <andrej.picej@norik.com> wrote:
->>>>  
->>>>> Hi all,
->>>>>
->>>>> we had some problems with failing ADC calibration on the i.MX93 boards.
->>>>> Changing default calibration settings fixed this. The board where this
->>>>> patches are useful is not yet upstream but will be soon (hopefully).  
->>>>
->>>> Tell us more.  My initial instinct is that this shouldn't be board
->>>> specific.
->>>> What's the trade off we are making here?  Time vs precision of
->>>> calibration or
->>>> something else?  If these are set to a level by default that doesn't work
->>>> for our board, maybe we should just change them for all devices?
->>>>  
->>
->> The imx93_adc driver is quite new.
->>
->> If you look at line #162, you will find a comment by the original author:
->>
->>> 	/*
->>> 	 * TODO: we use the default TSAMP/NRSMPL/AVGEN in MCR,
->>> 	 * can add the setting of these bit if need in future.
->>> 	 */  
->>
->> URL:
->> https://github.com/torvalds/linux/blob/master/drivers/iio/adc/imx93_adc.c#L162
->>
->> So, for most use-cases the default setting should work, but why not make
->> them configurable?
->>
->> So this patch-series just implement what was missing from the beginning
->> / was planned for later.
-> Hi Primoz,
-> 
-> I doubt anyone reviewed the comment closely enough to say if what it was
-> suggesting was sensible or not, so the fact it was listed as a todo
-> doesn't directly impact this discussion.
+Original reporter here, using nogbpages allows for normal bootup, but 
+kexec fails with it on my two similar systems.
 
-I agree.
-
-However on the other hand, since we stumbled upon a use-case that
-requires adjusting the driver provided default settings of the i.MX93
-ADC, this TODO to us is and was a clear indication from the original
-author that the driver needs little TLC.
-
-Anyhow, a stance from the author/NXP would be highly welcoming in this
-situation.
-
-BR,
-Primoz
-
-
-> 
->>
->> BR,
->> Primoz
->>
->>
->>>
->>> So we have two different boards with the same SoC. On one, the
->>> calibration works with the default values, on the second one the
->>> calibration fails, which makes the ADC unusable. What the ADC lines
->>> measure differ between the boards though. But the implementation is
->>> nothing out of the ordinary.
->>>
->>> We tried different things but the only thing that helped is to use
->>> different calibration properties. We tried deferring the probe and
->>> calibration until later boot and after boot, but it did not help.
->>>
->>> In the Reference Manual [1] (chapter 72.5.1) it is written:
->>>   
->>>> 4. Configure desired calibration settings (default values kept for
->>>> highest accuracy maximum time).  
->>>
->>> So your assumption is correct, longer calibration time (more averaging
->>> samples) -> higher precision. The default values go for a high accuracy.
->>> And since we use a NRSMPL (Number of Averaging Samples) of 32 instead of
->>> default 512, we reduce the accuracy so the calibration values pass the
->>> internal defined limits.
-> 
-> Ouch.  Let me try to dig into this. Is this effectively relaxing the
-> constraints? I guess because a value that is perhaps always biased one way
-> is considered within bounds if those acceptable bounds are wider because
-> of lower precision?
-> 
-> I was assuming it was the other way around and the device had fixed constraint
-> limits and you needed to take more samples due to higher noise. Seems the
-> opposite is true here and that worries me.
-> 
-> I'll definitely need input from NXP on this as a workaround and their
-> strong support to consider it.
-> 
->>>
->>> I'm not sure that changing default values is the right solution here. We
->>> saw default values work with one of the boards. And since the NXP kept
->>> these values adjustable I think there is a reason behind it.
-> 
-> I'd assume trade off between time and calibration precision, not the
-> sort of use I think you are describing.
-> 
->>>
->>> Note: When I say one of the boards I mean one board form. So same board
->>> version, but different HW.
-> 
-> Superficially I'm struggling to not see this as broken hardware that it
-> is out of expected tolerances in some fashion.  Maybe I misunderstood
-> the issue.
-> 
-> Jonathan
-> 
->>>
->>> Best regards,
->>> Andrej
->>>
->>> [1] i.MX 93 Applications Processor Reference Manual, Rev. 4, 12/2023
->>> _______________________________________________
->>> upstream mailing list
->>> upstream@lists.phytec.de
->>> http://lists.phytec.de/cgi-bin/mailman/listinfo/upstream  
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
--- 
-Primoz Fiser                    | phone: +386-41-390-545
-<tel:+386-41-390-545> |
----------------------------------------------------------|
-Norik systems d.o.o.            | https://www.norik.com
-<https://www.norik.com>  |
-Your embedded software partner  | email: info@norik.com
-<mailto:info@norik.com> |
-Slovenia, EU                    | phone: +386-41-540-545
-<tel:+386-41-540-545> |
-
+Pavin.
 
