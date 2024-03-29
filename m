@@ -1,66 +1,55 @@
-Return-Path: <linux-kernel+bounces-124908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37059891DB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:23:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B0D891E7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:43:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E236B1F2A6E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:23:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEE50B2D3E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCC529D390;
-	Fri, 29 Mar 2024 12:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699AD29D3AA;
+	Fri, 29 Mar 2024 12:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I9zZArx/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJw5rFhb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD2A29D38A;
-	Fri, 29 Mar 2024 12:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26EA29D398;
+	Fri, 29 Mar 2024 12:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716411; cv=none; b=He4W/gqDHx5qz1aBaT7ivr6CwVUhRf2vHoquWzYxCJk5j1CNa8EWQeA02A1WCTRZesa+vKh30pJ+Rz/spl9FWRxI2MAjfi9A9PUTDyqnNvzWi+1PtyEHdmOg5Vs7Yu+tOd4HPJpt0c+BF+ODlEarfZ0K9dlHPqHbPlXWiIwa3vw=
+	t=1711716412; cv=none; b=WaDrt+UN58z0fa3g4Td6k2+MDN1Ko8dydKYqBoo+KHkicMbHI+9O41HCzBRIdNwWONJJiHoXpbaeoBc+z3M1HyVMbBBqJ9wFaPFwI954fFKXNuZdmabvA8NLbIQuus6S3Zm9GmsxljuL3Pse3yIepG4thRC5uX+SEO1vJeEkf5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716411; c=relaxed/simple;
-	bh=aiYW0yw5E+HOidbqciMe7uHQZ7wj+DvE0N4dRycpisI=;
+	s=arc-20240116; t=1711716412; c=relaxed/simple;
+	bh=tPEViQjo1qr7FojiB4E3SuTTfzc9SXQ7WNdOd9cbvoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ac2XtY5jkMoghz3GMURugC//IFBNeq0ZhRaZ59Q8y41JehCcmvSpmE5ULfc3RPYqDGqI8+KCYpDugltr++EgNuMkchwTviHzU4xZEREUc9DIa/6GCd6mJ8afgJxi6Woo7SibcP7cuv0IuQRBL2im1DZ2sYlYttaQHiUmgMtdrYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I9zZArx/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33944C433C7;
-	Fri, 29 Mar 2024 12:46:49 +0000 (UTC)
+	 MIME-Version; b=ejyOarLIoEzi/h0F/bpfqRo4IJjVo1wRpKqzzzpK0SrdIWI5bRbeNUyn5sxZoI1zt0mqcjM92YY3IGnbLlMV63Wzg44pI8dy9kPLSUtqRmgwGD21S21M6XNKIY+UtaqDGCmojcOxa0spmyL0SL3BEmLS5QmGgpngz7V6aSodu38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJw5rFhb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 631A9C433B1;
+	Fri, 29 Mar 2024 12:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716411;
-	bh=aiYW0yw5E+HOidbqciMe7uHQZ7wj+DvE0N4dRycpisI=;
+	s=k20201202; t=1711716412;
+	bh=tPEViQjo1qr7FojiB4E3SuTTfzc9SXQ7WNdOd9cbvoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I9zZArx/ejgGFTEYvrZX8+IKqWa9nCUJyAgQUZcdtw4VpP9MvRAF9w8gniKSOn8zm
-	 edUq/IjHzRj7jumccAos2FlwgRxVgUMyZuG1A8NbVE7rRbK50KWLz2UZEByc3zPb9s
-	 P7A4bMetDLB8Vgjq8/t/QxSBgDtwps7RdoSh/ENmni1jI6UplhQJ1xDqJXaQ3WtjvJ
-	 jRSK6j+DONEvmK6W3JVHoRsrnucA1sX93JVgG+b7muzykwXZu1J2mtKqdxGvf91iVJ
-	 lHnRTCHTtxpnY1ng3wLRdD074dXSHIqaM9l0h3o2OM2l7PXMhrgzM7Zl6v+SF5PD96
-	 uRrfwPuH393BQ==
+	b=GJw5rFhbh9Ucm8SMOvpvnc9dN5ggPWhsodYtPbKtahGDKrqYLgV1hAhGaStPljgwK
+	 20tzKKu7yiCKtrKxtEtPUhG7pfH7RyICt2jXG+Q1jXfsyfiIPZeap9ms56VVnch3wu
+	 /TqhMARIkR8Q0O79tFUc/3b/WpJRSIOue4tJmh6x2RW2voyygV5c5UQNy3Q0tgVpgq
+	 GZ2KdNleIOGd6y6s8d49Sl3Uptaw7+YQrrf0Rlk2OSnZs2J2mq6YWbnMo0q9iMrmCc
+	 ySuBX6BmVw0xKSN4qBwzAZANRgHRn0ZHYlQPlcsPs2T55imD0Q3rSEVPVEmdwNdWvI
+	 E/j1HoHbKPeMQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Aric Cyr <aric.cyr@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Kees Cook <keescook@chromium.org>,
 	Sasha Levin <sashal@kernel.org>,
-	harry.wentland@amd.com,
-	sunpeng.li@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	aurabindo.pillai@amd.com,
-	dillon.varone@amd.com,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 24/52] drm/amd/display: Fix nanosec stat overflow
-Date: Fri, 29 Mar 2024 08:45:18 -0400
-Message-ID: <20240329124605.3091273-24-sashal@kernel.org>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 25/52] pstore/zone: Add a null pointer check to the psz_kmsg_read
+Date: Fri, 29 Mar 2024 08:45:19 -0400
+Message-ID: <20240329124605.3091273-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
 References: <20240329124605.3091273-1-sashal@kernel.org>
@@ -75,43 +64,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: Aric Cyr <aric.cyr@amd.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 14d68acfd04b39f34eea7bea65dda652e6db5bf6 ]
+[ Upstream commit 98bc7e26e14fbb26a6abf97603d59532475e97f8 ]
 
-[Why]
-Nanosec stats can overflow on long running systems potentially causing
-statistic logging issues.
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-[How]
-Use 64bit types for nanosec stats to ensure no overflow.
-
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Aric Cyr <aric.cyr@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Link: https://lore.kernel.org/r/20240118100206.213928-1-chentao@kylinos.cn
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/modules/inc/mod_stats.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/pstore/zone.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h b/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h
-index 4220fd8fdd60c..54cd86060f4d6 100644
---- a/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h
-+++ b/drivers/gpu/drm/amd/display/modules/inc/mod_stats.h
-@@ -57,10 +57,10 @@ void mod_stats_update_event(struct mod_stats *mod_stats,
- 		unsigned int length);
- 
- void mod_stats_update_flip(struct mod_stats *mod_stats,
--		unsigned long timestamp_in_ns);
-+		unsigned long long timestamp_in_ns);
- 
- void mod_stats_update_vupdate(struct mod_stats *mod_stats,
--		unsigned long timestamp_in_ns);
-+		unsigned long long timestamp_in_ns);
- 
- void mod_stats_update_freesync(struct mod_stats *mod_stats,
- 		unsigned int v_total_min,
+diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+index 2770746bb7aa1..abca117725c81 100644
+--- a/fs/pstore/zone.c
++++ b/fs/pstore/zone.c
+@@ -973,6 +973,8 @@ static ssize_t psz_kmsg_read(struct pstore_zone *zone,
+ 		char *buf = kasprintf(GFP_KERNEL, "%s: Total %d times\n",
+ 				      kmsg_dump_reason_str(record->reason),
+ 				      record->count);
++		if (!buf)
++			return -ENOMEM;
+ 		hlen = strlen(buf);
+ 		record->buf = krealloc(buf, hlen + size, GFP_KERNEL);
+ 		if (!record->buf) {
 -- 
 2.43.0
 
