@@ -1,121 +1,110 @@
-Return-Path: <linux-kernel+bounces-125528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B0768927D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:31:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7779A8927DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A255B21C88
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12D821F22225
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6485413E41A;
-	Fri, 29 Mar 2024 23:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A280D13E410;
+	Fri, 29 Mar 2024 23:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="j+mW4tSn"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e7slhIF2"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA74241E7;
-	Fri, 29 Mar 2024 23:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8544F64B
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 23:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711755058; cv=none; b=pxoK3GCHRJFFbaOzOV9fp85bZfH+gNqrlWhQILJTAKUocFhT5FOf5fABGA1IgvUKWeHBH41NjuthFJRb1zDR0RfXwm67VfSw9MKO130RfwBsgUJpz+2MNNNqUNmkR2sA8KSBMbDlrGdiI0a8l8Qfp/453StBeNwigUTy38rj76g=
+	t=1711755390; cv=none; b=B2xBJXyAF+xCt+7PkGMm+3ww9E4DVix9mHcowghTX0V/nXMhpISRxayOFPGVgpnUrpHLbXMlK7k6kdGyGEGV8ulPsOxkFYFRUYb9sXDCqDPQOyRRrEcQvDfCudZghpB/0wU2d0CM0LTGX1jGjMRl7WAq6bZNw1s6hTinT2XkJ/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711755058; c=relaxed/simple;
-	bh=wNEr96hbZAhFfCued7lRV8Yr//BFDNMs0NMQUkiAb9E=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=a569xJwHjGjwUOUGNe0rKikWvSjQHL9uVMbljY/4aDxxq7OsOKjuD66fkyUvM/b52ce6W2+SU6rwuOrxrC9bLPP0d1jGFqeUxJfm+vCWMzHM7OcSuZ0civNgs6LTw8AZrr/CaTClIaiDvQfPcQgW6NpsxqoyHemMyTQJZINNNRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=j+mW4tSn; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TLxODS019270;
-	Fri, 29 Mar 2024 23:30:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=btMEj1aDrdTcd3Zv9FcYOvSp4BckjwM0F4bigfeZiFI
-	=; b=j+mW4tSnzVHkAi1Uz4sNohN0wtKGNQ4a5xKduE11uw5rcseapnVrts4bi7K
-	F9xZOjPr8+dioSOT8uV3I7ZefkuHwT2hWQKvYWVUDYMmAL+IIxTThaN9MgoYc9JT
-	HrA3zaQ+a/rOEi+3o1rUlH2LQiAYv9xg0d8uGeYEWd3q75HfeSedVTL6nRkQGorj
-	6Cy9eoMFD5sFV5gdIaSGKe6t0qr9s/viTqdY2OV7450e6tuKQyDB4MtHWcLYlu3I
-	vGqMjXdYvX7cg3qpShxYLOhUq7ie18Bb1zSa5cxHfHn/PePPv99DmYl7lgYtSiF8
-	3ttnUndd050GYqh1FmmXMMhlr+Q==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5uccstm3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 23:30:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TNUpNQ010878
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 23:30:51 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
- 2024 16:30:50 -0700
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Fri, 29 Mar 2024 16:30:51 -0700
-Subject: [PATCH 2/2] wifi: ath12k: fix hal_rx_buf_return_buf_manager
- documentation
+	s=arc-20240116; t=1711755390; c=relaxed/simple;
+	bh=z3ws0GiqfaPCvaP9VcCCnewH75CZLc5KkLizkP97z2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KJW4Rb3Kbor/4HdKy2y3CqP7fqL3NBUHIiSEb5AQEvNG2+c4duGj1J1doGsmAgsBSZct0OoikS1/9a9ZmjOAy99KmuDwgGEHYl8OXEeG8tmgpYPJE3qRcNSJAMs0Zz9OMGUazuN4yhqLI6sqtvq7EZ+iKMZab1yttjOrLtYPfTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e7slhIF2; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso1992031276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711755387; x=1712360187; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z3ws0GiqfaPCvaP9VcCCnewH75CZLc5KkLizkP97z2M=;
+        b=e7slhIF2Poej7FfS4d6SxKo+L8d3oJBxPdhX/JSz81GDut3kwXj8ACCLiiU1snlDk+
+         mslJZOzdPbvcwkTPviA7hUHB/tPhiQ1Xlf1BP9A7EK8vlm3xa5NBOAUzcUfSr5GFGjcL
+         5jV6jjvh4gWx+3TE0XLgMULCBfbEh4vJjesOqo2L2oN+zAnkKrE3uPynyFYqUBxhUTLr
+         iKYDdgJ7bq39AeO36XKMM7zvRBuHjCgJXrJEkAyXffqAhqwPDi4M/da7tDaLaMjQL0vj
+         kqyd+ABm5eV19N57a6hx5IgymvNtGECZ/kzCfl5iNon11htgh1MwsDVMRDFRiOrJIqJc
+         +7sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711755387; x=1712360187;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z3ws0GiqfaPCvaP9VcCCnewH75CZLc5KkLizkP97z2M=;
+        b=ZJDVVOGY0v6/R+sQ5xazvtAaIdsOGahBXqCEdiv9TKOt3yDmD0tCFsbxi3q7Ox9+Mi
+         MVNVaDL45rdyUftIFjF986SpTNtwewO3aGSWXRyuSCrOBajDyOEqdPeZy3QLOcO5sXE+
+         qIRsN+t9mbYVIbToYDS2oJdUbowWNK/dUsWkKRlTn/I/mROl0lo4OVf/BtbK+OzobArk
+         kUbZxxS//o0ZFAZ0gbI2XqR4odElbSM9+GY1BVYkfdav/4hpayDpPrPKKxqDvt92vgAW
+         Oa3QgL/rE05zAKlhYJ4jYoQzzjK5s5z0rsWNAHErRXJdUFlLwrHc6lRkRdkaJp7GfW5q
+         2kKw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1oRf6X+rz1adxHz/Rx5Aw6VZxnP/06arJ0MykOVicHcPu6cQlr2EM3K2goE2NGfJ4SGo1eu6VqahnnqM3fvfPs0CNdWQbCE/SL5E7
+X-Gm-Message-State: AOJu0YwPZlEPSsE9CXIzpl9b0zwG9B6PIh58vE5bAysjrQAF7lq2FD4L
+	82NEkfW6+1XpfXQFdOgwLIulSaGJClWhP+3YlGnFh+Rqcey4JQBxgdLAIaokvgTNrUWyykDCGTR
+	fnvbUMrwEWRISboXoKrappA0eVbcsWCtBP/h7
+X-Google-Smtp-Source: AGHT+IGJk7NU8MrL8Rai4C8fdDlc24klJyWnbefpAnU4Fv6NNUTsRsocqC1LxHZ94PST37mhkloThVc9PuLt5FEG9B4=
+X-Received: by 2002:a25:f912:0:b0:dc7:494e:ff33 with SMTP id
+ q18-20020a25f912000000b00dc7494eff33mr2512234ybe.7.1711755387188; Fri, 29 Mar
+ 2024 16:36:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240329-hal_rx_buf_return_buf_manager-v1-2-e62ec9dc2af9@quicinc.com>
-References: <20240329-hal_rx_buf_return_buf_manager-v1-0-e62ec9dc2af9@quicinc.com>
-In-Reply-To: <20240329-hal_rx_buf_return_buf_manager-v1-0-e62ec9dc2af9@quicinc.com>
-To: Kalle Valo <kvalo@kernel.org>
-CC: <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ath12k@lists.infradead.org>,
-        Jeff Johnson
-	<quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1TRfxswzYYGmIIvFz4OQbnVPNd35DZRQ
-X-Proofpoint-ORIG-GUID: 1TRfxswzYYGmIIvFz4OQbnVPNd35DZRQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=681 impostorscore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 adultscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403210001 definitions=main-2403290209
+References: <20240327022903.776-1-justinjiang@vivo.com>
+In-Reply-To: <20240327022903.776-1-justinjiang@vivo.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Fri, 29 Mar 2024 16:36:15 -0700
+Message-ID: <CABdmKX1swVO1=6cs+CW_g2g4g7woB5-Ks1gBzCA+iLcvpLmkvQ@mail.gmail.com>
+Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
+To: Zhiguo Jiang <justinjiang@vivo.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
+	opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-kernel-doc flagged the following issue, so fix it:
+On Tue, Mar 26, 2024 at 7:29=E2=80=AFPM Zhiguo Jiang <justinjiang@vivo.com>=
+ wrote:
+>
+> The issue is a UAF issue of dmabuf file fd. Throght debugging, we found
+> that the dmabuf file fd is added to the epoll event listener list, and
+> when it is released, it is not removed from the epoll list, which leads
+> to the UAF(Use-After-Free) issue.
+>
+> The UAF issue can be solved by checking dmabuf file->f_count value and
+> skipping the poll operation for the closed dmabuf file in the
+> dma_buf_poll(). We have tested this solved patch multiple times and
+> have not reproduced the uaf issue.
+>
 
-drivers/net/wireless/ath/ath12k/hal.h:771: warning: missing initial short description on line:
- * enum hal_rx_buf_return_buf_manager
+Hi Zhiguo,
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/net/wireless/ath/ath12k/hal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What is the most recent kernel version you've seen the bug on?
 
-diff --git a/drivers/net/wireless/ath/ath12k/hal.h b/drivers/net/wireless/ath/ath12k/hal.h
-index 107927d64bbb..dbb9205bfa10 100644
---- a/drivers/net/wireless/ath/ath12k/hal.h
-+++ b/drivers/net/wireless/ath/ath12k/hal.h
-@@ -767,7 +767,7 @@ struct hal_srng_config {
- };
- 
- /**
-- * enum hal_rx_buf_return_buf_manager
-+ * enum hal_rx_buf_return_buf_manager - manager for returned rx buffers
-  *
-  * @HAL_RX_BUF_RBM_WBM_IDLE_BUF_LIST: Buffer returned to WBM idle buffer list
-  * @HAL_RX_BUF_RBM_WBM_CHIP0_IDLE_DESC_LIST: Descriptor returned to WBM idle
+You are closing the dmabuf fd from another thread while it is still
+part of the epoll interest list?
 
--- 
-2.42.0
-
+Thanks,
+T.J.
 
