@@ -1,107 +1,105 @@
-Return-Path: <linux-kernel+bounces-125359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 786F789248B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:50:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A20A8892480
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E16821F274D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:50:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AB9A283537
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F1013A3FE;
-	Fri, 29 Mar 2024 19:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C03813AD23;
+	Fri, 29 Mar 2024 19:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqD6DUbT"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="hKyZjr2W"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19EF13B79B;
-	Fri, 29 Mar 2024 19:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F7B320B;
+	Fri, 29 Mar 2024 19:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711741755; cv=none; b=kMU8ITrzK4MP24eBHCTITbFqTysO9Cw8XF4JJF7wIfNF6YWacSM/1cSY4P9bDbs8ygfeMDN9ARkTxaUTGJgTMmjEQvgUthby1apWy3juf7sl6V/H0StOoxUJiGYlHyVU/n2GJ2padnsoLv5o5gMYIuftpb3iYowUbJEmt1GBIek=
+	t=1711741747; cv=none; b=ekqpB93QUxDP+/j8XVLsEtbien47yLsWHy+E8l/nHT8K77nJyoGGZyZk+bskmb+Ysd2jTz1UBoYFbdj02PU2Fby0E3N46E2U5y+kJpRiXJiXw1BQWDe7D4+aZM8XUoUMIOgFY7f7siDT3wipc/lP7BaY/KG2uX7R33S4EZwPdbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711741755; c=relaxed/simple;
-	bh=sJ+UaoCLh7AzLciVOQ3NMwemWc0ufeeQ/hmoF9nh+m8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gA3V0B6YRS1+DwDSBef8YbIS7a8n2k/Y/vmPidkDz/ChepphggY5mPK8vQ13EkzyXKqa6V15h3IMYay/pL5tjEdDgRO6X5fy+QYvg9iPgbtKngMyipGyM6isq2MGprsHMirZIVHZ3ef/Rctxq6XvjHFDUg1GlIwHgHr42B6GmTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EqD6DUbT; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29f69710cbbso1587763a91.1;
-        Fri, 29 Mar 2024 12:49:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711741753; x=1712346553; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sJ+UaoCLh7AzLciVOQ3NMwemWc0ufeeQ/hmoF9nh+m8=;
-        b=EqD6DUbTtry/xdO1OjL6c1VJOwQnyMnoy8kJDEwqaougn7wdtvm775I61Lh4Ue1ScQ
-         rfoJRE/H6tV4rK0wLQy0Dbh8+F+Iky9RCOCGLr8HMhpTAcweB2Oogr7P8UJlJrnzv+Lb
-         APTDMxzvV0d7IsKUo/ekE7kMAqV/HESn7GfTm0jm9ogSvx+4kc/CIHLHA9lK2Wo8KGSY
-         e6r6BEWD2he6G2vOeyxqxPjZ43OZZTZdbIYTxnAQsSJd7Y/Soe6gz7GorfKv59pZo6Zj
-         8kdk04wrP2hRATmaPBHQBPG/6IBTLVQwYl2Yk7o87jIXGPfmzA5pNESHTA0a8IxfeySb
-         p8CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711741753; x=1712346553;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sJ+UaoCLh7AzLciVOQ3NMwemWc0ufeeQ/hmoF9nh+m8=;
-        b=ihFnJCD/chgoXCbJ/yYtg2Ecc03vmX3TcwL5xHGaYR5nMKjftFW4EgeatZKGLcWIrz
-         fy99RhnYstbpKsnN3UxghBDo1KVmlzGZTTPNTm1blagy24IiL4bmFW81zxptkWPWuLDq
-         Mtlic6qQcxfnYMLKe4/UBasQ5F0GUtqe35JSwDVIPorI1zZqJtiHsFmkGc//xdQlX7VA
-         LDuNhiFIj17pJSDO/2VTxOz77Gwal76gsmo+oa6kOWgc5ma/b7jEf/BBrceQ52MdwGiI
-         Rba6YTJMlor0UoQeCWG6uhREqm7KPZMYYh4Kv7puoZGBLlEJpEyzCp8Dns1r+7CH+he9
-         UVgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUWoeF2rDh0x+8VcqvM66ZGK3on+TZ67Bvhi73r2+Bd8pXn+CEh8FPouRcZnn66cOz607q5//XM04IXIHWVEtBry+/1Ipg23j/EsPerae7hvk3iZwQtW/fOz+gth2kHapDsFqgD1dfiKHp8bNARY1NR3duowgEgyRSnQeEe5xlJ2MXdbECEl1+0ZRA=
-X-Gm-Message-State: AOJu0YwU3mBnbMDJWHNMgCmSCIySGLNnJ/5SlsO7WS0kRNLyTyQvhjBF
-	iY3aHNmh4ndsR+3dw71Le19tyc2jZBMUw6CGyD7J6WJ+l1ehJcOe+XVu4TDRxIGs5mN/biNWxDy
-	h2Ha3XT3bRxUlff1Bng2K8fdDcps=
-X-Google-Smtp-Source: AGHT+IHOS/4TcCdBp8AgH2utv2wzrfe7U/6wBTLC8E1hnxWIey6SVgZ3g1TxwoMe1ZNo2sz/IHrk/09TAhBFWFojriE=
-X-Received: by 2002:a17:90a:c391:b0:29d:fb99:7dcc with SMTP id
- h17-20020a17090ac39100b0029dfb997dccmr8838505pjt.18.1711741753063; Fri, 29
- Mar 2024 12:49:13 -0700 (PDT)
+	s=arc-20240116; t=1711741747; c=relaxed/simple;
+	bh=jUOc3STXmxZAYuCEU6pzgbs0cfdWm5uqQzFxzImd+I4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EzoXq48GNw1U6FYC0qYzXy+3db4ciWndneXfx9YgUKzvAEkwOdrXzJAHH2WsG4uM8YMXUXQ/jhziY0jWbbpxyBM5iXG+spfVdksN9DP0cdJMGrwyeUxQYQTCkRmgC/LrlYSwbCAwcelgAs+HpTf581NZSgnLvOyKuK90G/mIEWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=hKyZjr2W; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TE0VOj014325;
+	Fri, 29 Mar 2024 12:49:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=H7/O3IWe
+	4xilIhLlEZ6vLeDVNbQaXzvMHEPQKrsnLLE=; b=hKyZjr2WAO9CAdHka+Ys6A+s
+	mmvDoX+F3SkE0GoeqVazWuu4+KVPOtyOaR694T1ov76iWhffsR5vAjVhw27LYj9t
+	F6fOcwHGHaQr9zFsiWwf1BEA9mUNEhgAlAGPDTbK6CpW3oI/DZGhjW5kRagHX6HA
+	Xt/AXebYAq6iHzDNkzkpBWua7SZ1Oet9CrKCpbyneCTTVWwLHpkIaMq2SqMzF0OD
+	h/voIGoxwY+0BDIYu+AgG8jPg+ViI6erBeWwX0yF6nUQjOnVA/RLohkUEz8Pu7rb
+	wYuTXWkUTvC9bh3bpnlLHf/mD474f7sFcKnVut9b7wb2z1B4v5Ww/uphNCLjDA==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x5gm3krpu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 12:49:01 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Fri, 29 Mar 2024 12:48:59 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Fri, 29 Mar 2024 12:48:59 -0700
+Received: from localhost.localdomain (unknown [10.110.150.170])
+	by maili.marvell.com (Postfix) with ESMTP id 8CFD63F707F;
+	Fri, 29 Mar 2024 12:48:59 -0700 (PDT)
+From: Witold Sadowski <wsadowski@marvell.com>
+To: <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC: <broonie@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <pthombar@cadence.com>, Witold Sadowski <wsadowski@marvell.com>
+Subject: [PATCH 0/5] Support for Cadence xSPI Marvell modifications
+Date: Fri, 29 Mar 2024 12:48:44 -0700
+Message-ID: <20240329194849.25554-1-wsadowski@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217002622.57322-1-ojeda@kernel.org>
-In-Reply-To: <20240217002622.57322-1-ojeda@kernel.org>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 29 Mar 2024 20:48:39 +0100
-Message-ID: <CANiq72nD4dLDRN09YC+TeFKsjF8Kmh9UyP6Za4g6RRLixjN+Kg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rust: use `-Zdebuginfo-compression`
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: b2YHB22n1qoQQ1wcJob260CoXSDPlRxB
+X-Proofpoint-ORIG-GUID: b2YHB22n1qoQQ1wcJob260CoXSDPlRxB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
 
-On Sat, Feb 17, 2024 at 1:26=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> Rust 1.74.0 introduced (unstable) support for the
-> `-Zdebuginfo-compression` flag, thus use it.
->
-> Link: https://github.com/rust-lang/rust/issues/120953
-> Link: https://github.com/rust-lang/rust/pull/115358
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+This patch series is adding support for additional
+Marvell HW overlay build on top of Cadence xSPI IP
+It includes:
+- Clock and PHY configuration
+- ACPI support
+- Additional MRVL HW overlay to support tranfer operations
 
-[ Added note about zstd support in Rust-provided binaries. ]
+Piyush Malgujar (1):
+  driver: spi: cadence: Add ACPI support
 
-Applied to `rust-next` -- please feel free to still send reviews or
-tested-bys for this one!
+Witold Sadowski (4):
+  spi: cadence: Add new bindings documentation for Cadence XSPI
+  spi: cadence: Add Marvell IP modification changes
+  spi: cadence: Force single modebyte
+  cadence-xspi: Add xfer capabilities
 
-Cheers,
-Miguel
+ .../devicetree/bindings/spi/cdns,xspi.yaml    |  84 ++-
+ drivers/spi/spi-cadence-xspi.c                | 675 +++++++++++++++++-
+ 2 files changed, 738 insertions(+), 21 deletions(-)
+
+-- 
+2.17.1
+
 
