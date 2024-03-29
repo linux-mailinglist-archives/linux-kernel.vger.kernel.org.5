@@ -1,102 +1,99 @@
-Return-Path: <linux-kernel+bounces-124285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ECBC891511
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:12:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8111B891514
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3AFCB21B8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:12:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BDF3287B56
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1345147F78;
-	Fri, 29 Mar 2024 08:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BCE48787;
+	Fri, 29 Mar 2024 08:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="EVPV/Z53";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OGtfgx4v"
-Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DEiJ/gTp"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80AD43C48E;
-	Fri, 29 Mar 2024 08:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196963EA62;
+	Fri, 29 Mar 2024 08:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711699947; cv=none; b=bFvmC0xpQsziG16TKU5tXDYe/QO5f4cKXGShXmWTIPNQAwEPxvrTEGdMEDGiIx4H5hR4k8t5NVE4XX2CnuVePGxiOn9GOw3FM+bQDIsRIRBE539vhWn25kAJFEEPqN6WhDyYSumgj3FGaPZfhEGIjHsnvDeVI8DL1cQ0SvBfPiQ=
+	t=1711700144; cv=none; b=f5myAdWB/c74UW7WptiTAQm7PQJ/CgOe6/q4b8KxYP3oAExCzj8XxloM688icdCmc2wv85lv9LCv3UkAGcQkrF6MDDRAyppbFpL6rMLxL4Y8KkL3XAOZaHLAAD4dL/W4vzSTF4WaZkJxSi7EBGcqo8Erjwh9CrkNIIHPmuMrhdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711699947; c=relaxed/simple;
-	bh=AEr6bvfD1unwFN0oTJYOowoZ4RMyeLvP/2PldxJO5qs=;
+	s=arc-20240116; t=1711700144; c=relaxed/simple;
+	bh=6n/QVOvkQ4BcV96xx2uONvGMr6jJ/2/o9PowaWsduw8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MWWho8NlfgwBJN1CO6REuc9TVLvmMXlSQ/gAZD0mx7SDrtr1uS2I00OHLAikbbg2P+5zsxgG6smQv1+VqR3sd/JHsJ1HWta2g151tC/HFwC1aCitlgESsEIWQFZEjrOLzcSw7pzDI146CZDFZrkhYDCdIoBqw4RmunfVtS82chA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=EVPV/Z53; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OGtfgx4v; arc=none smtp.client-ip=64.147.123.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.west.internal (Postfix) with ESMTP id 04C0D1C00096;
-	Fri, 29 Mar 2024 04:12:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 29 Mar 2024 04:12:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1711699943; x=
-	1711786343; bh=mGbMxmuqKfJn9+1lZlv1xn4BUNJLFRwqYHpGktJGTm8=; b=E
-	VPV/Z536MxDpTAti5+98oth5eMCqlrinUYmoD0OdGzeCIqXTY/6GuYTPedMGQ/5R
-	CBYi/MLCBMQG8EdPogPTv24EWVhaS4W5Y9sje9GI6pedd+kSPop3jU8pzM4yHTh+
-	yBce4R6oycxD9VKOsg0/f8OKKyCsygt2qd6u/bMSBR8qqQ1EzvsRvPru03isvKbX
-	7GtUHIFZuMCqEsRfBfP6jRVLorOFoq4DxKTBVfJIXRWHXu0xwO3V2JoUK/n+MswI
-	d0xpwSs/UtvIMLtd6ai8Z2H4Hsc6FHRCFjIEbBThw7xe03JCvDiHzLuErFcGr+pc
-	dRBO3+jNgYZSzp1ShBlBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711699943; x=1711786343; bh=mGbMxmuqKfJn9+1lZlv1xn4BUNJL
-	FRwqYHpGktJGTm8=; b=OGtfgx4vnb3U/h0pe89Dd8vyXHLUhdEj9iRfF4Xa2CNi
-	8rmK8ecLmWZjLZr7kn+r23oR6Yysu3w0vIp9ytL/Vyz2luA0mj8B5HQg1XpFVK0J
-	sXqHi4Bcodnz577N41DNJPZHq6rq/tUrwMgcc1tiNs1fth+qHhFJFZ5pTU/3Q0eo
-	QH8E7LRfXeGhTKbkZsgLcsWRJEPa+DZMlJ7lCcYkIjOXjelhaJsWp2tLN0zUq5SU
-	l1aC+TbE1NZ60t+Ws/rC9NKPdrRVQAQPEAE9IVhYs+CSjnpNpLkKIlcvYY8t6iyI
-	Tvv5iYykbF9yXdoR/zHgYe3rOJDvGmIWOQ+W0P0d1A==
-X-ME-Sender: <xms:5ncGZq1DUULsxdDhEWlcS-0neOxHxeTUe55yBLD4hvOAcSUisVulEA>
-    <xme:5ncGZtFa2fCYYNYQZdAdtjAA6UXN5iPX-bCIJKK9m3XLxpLyWXq-qXHxSJN8YIcYb
-    wci6oUFJttAja_ahKY>
-X-ME-Received: <xmr:5ncGZi7JL8J3xLcV3VPGUBAlJ-xVJC-XTdlFM5kTh7uobClUx7AHV3Vg6NsyL4GJOBwh1qcJEvgCdpIR65poXjNBadK4ue14jA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvtddgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeei
-    ieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:5ncGZr1oYzySfu_4WhI9hmzcV_1hbgnq8g6XCq5p5jk9_0yw7BmwKg>
-    <xmx:5ncGZtEq7bb6fKTmBBifN6as-DtxmqfM8tdU9XYHMsfaJFzsm3zi1A>
-    <xmx:5ncGZk-dBS-7_NTCiEAWymagpFm-NM3Inlic0oaoagf6Jk7HMcNx0w>
-    <xmx:5ncGZimGKgpLnZLdkGMZkAtXVqgnpPp7NjquYyrP30dmWDiw4_iOxw>
-    <xmx:53cGZjZZO05cvod-of-X52Sujh3pBa2sU2WASYE21WgVDbTw0u9myQ5_rUs>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 29 Mar 2024 04:12:21 -0400 (EDT)
-Date: Fri, 29 Mar 2024 17:12:19 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Alex Williamson <alex.williamson@redhat.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
-Message-ID: <20240329081219.GC231329@workstation.local>
-Mail-Followup-To: Lukas Wunner <lukas@wunner.de>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-References: <20240326131858.GA140624@workstation.local>
- <20240327150119.GA1502858@bhelgaas>
- <20240328144201.510f6d5e.alex.williamson@redhat.com>
- <ZgZGbMj0I3_6Rt0f@wunner.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gc5tMJOslEAJlpHg+XTZBdB4e6ldcBm+FTiXwUczEFqmC1GOKLlmkg62gbDDdNeL//HabS3lAiC4t07M4GgE2pmZSkzhFJY0nVXpZWF6WJPhVr0VbSVo3+N0iBi0itnf/NpZSQruiYFlqu8Ht1xSIXa17EgAoV6IXXKy8VN8H/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DEiJ/gTp; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4e0e3ef357so233797266b.2;
+        Fri, 29 Mar 2024 01:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711700141; x=1712304941; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7aSYngHOh0xu8jyBiYodXCsYFEDRn/f5k50FDMhmEvE=;
+        b=DEiJ/gTpxIsUoztm6/1oN0NztqRwGDrsU2YA7GEGVwzN8mzdeKJMAgmP0TXZcGvjBy
+         nZhTtgrmre3Zg/+0uX/w/zgLG0aa2tOD21VxHaaSBygi5ypjx/inTEkQWhKL89rNayDn
+         102T6MD7jDTibIDmY7NMwS0rHaoPxtC1Izp65fLHMauSc2ZXSFnY+w5npo9Z6EWiTiYz
+         rVDeO2zuTZTNqCJmYYZFbiplEgZIpIyzciok7C02dAsN2yrdX37OlNX3ClruM3jQL0vI
+         m+YwdlVK3E+vbi3aF6LukaegnVseY36UF+CleFBQ0gvXY9qDIKdwUtjLaE9SLplZKXjg
+         2KiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711700141; x=1712304941;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7aSYngHOh0xu8jyBiYodXCsYFEDRn/f5k50FDMhmEvE=;
+        b=bWDmIdm7MuR34D6ysjjkjox3cIf/A57LyDs15ddzInMQn1hrrAm68rYD3aTSzfxVJM
+         eGfig+7ZuXqCo8M4FA4eb0b73/IUkUZvYR9oDACncya5/ZjgU88Uk8BasQpwkWnMR8W5
+         2c0ieeguho1DkRII82+pnHuiUJodIZLz5UKbiFD528Px9jLB4kFtPRGPdki+1f/p76b/
+         21E3mvwajOSsn+38O4uI3IAsGxYSea/X6szwCUwUeWxQ976MS82NM//vZyG12G30AsR4
+         6gU4gky9V7iogIqkHPUgPG9YQD7kbX2aAB/ns+dGmuEtxtK0vS9wcBb40kikbwuqj6mU
+         96XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUATIMPqb348lQTAIZjmKJG4DWowk70/+C9scu6XAhp75/NZZXE8U7oExHbeYAcrmmtjpDoNotFXmih1Zy2AkmlJQtsGhoqeTp22+Ai/+8vwbbe+XlIA96Q/+qIJYaoSqlxKZ92
+X-Gm-Message-State: AOJu0YyRzbHPXMBDgssAPEtte5+zG5LX6p6HP8ROmD2biRvlnp+b7sYr
+	Hpd8KstMh+a8Ywqu1j7OORpHgd4tsVCyuI+CbqglAMRYKxvGSF4S
+X-Google-Smtp-Source: AGHT+IEELZMCPR3A1dINqt8iO9RCrhHrkwiQEaavtjQTwB8Qqz2UuU9+b2g9bBKGsznMcY8kdwE8BQ==
+X-Received: by 2002:a17:906:39d1:b0:a46:e0ab:40ff with SMTP id i17-20020a17090639d100b00a46e0ab40ffmr1193488eje.35.1711700140971;
+        Fri, 29 Mar 2024 01:15:40 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id s18-20020a170906501200b00a474d2d87efsm1646696ejj.139.2024.03.29.01.15.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 01:15:40 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 29 Mar 2024 09:15:38 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Pavin Joseph <me@pavinjoseph.com>
+Cc: Steve Wahl <steve.wahl@hpe.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org,
+	Linux regressions mailing list <regressions@lists.linux.dev>,
+	stable@vger.kernel.org, Eric Hagberg <ehagberg@gmail.com>,
+	Simon Horman <horms@verge.net.au>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+	Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>,
+	Hou Wenlong <houwenlong.hwl@antgroup.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Baoquan He <bhe@redhat.com>, Yuntao Wang <ytcoode@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v4] x86/mm/ident_map: On UV systems, use gbpages only
+ where full GB page should be mapped.
+Message-ID: <ZgZ4qlbncvxhboQ0@gmail.com>
+References: <20240328160614.1838496-1-steve.wahl@hpe.com>
+ <ZgZqhWoRZoq5tJoU@gmail.com>
+ <47302624-6466-41a7-85db-f6872d58a4d2@pavinjoseph.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,50 +102,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZgZGbMj0I3_6Rt0f@wunner.de>
-
-Hi Lukas,
-
-On Fri, Mar 29, 2024 at 05:41:16AM +0100, Lukas Wunner wrote:
-> On Thu, Mar 28, 2024 at 02:42:01PM -0600, Alex Williamson wrote:
-> > On Wed, 27 Mar 2024 10:01:19 -0500 Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > The original patch proposed for this gave me the impression that this
-> > was a device used on various old Mac systems, not likely applicable to
-> > a general purpose plug-in card.
-> 
-> I'm still using one of those "old Mac systems" as my daily driver.
-> 
-> Just checked the ACPI tables and there's an FPEN method below the
-> FRWR device which toggles GPIO 48 on the PCH.  Checked the schematics
-> as well and GPIO 48 is marked FW_PWR_EN.  The GPIO controls load
-> switches which cut power to the FW643 chip when nothing is connected.
-> 
-> Also, FW_PWR_EN feeds into an SLG4AP016V chip where it seems to
-> internally gate FW_CLKREQ_L.
-> 
-> I'm guessing the driver may need to call the FPEN ACPI method after
-> issuing a SBR to force the chip on (or perhaps first off, then on)
-> and thereby re-enable Clock Request.
-> 
-> It's a pity the ohci.c driver doesn't seem to support runtime PM.
-> That would allow cutting power to the chip when nothing is connected
-> and thus increase battery life.  The ACPI tables indicate that the
-> platform sends a notification when something is plugged in, so all
-> the necessary ingredients are there but we're not taking advantage
-> of them.
-> 
-> Thanks,
-> 
-> Lukas
-
-Yup. In both PCI drivers and unit drivers belonging to Linux FireWire
-subsystem, any type of runtime PM is not supported. If I integrate 1394
-OHCI driver, I should implement all of the above in any callback of
-runtime PM, or the part of the above is already supported by any driver
-in parent PCI layer?
+In-Reply-To: <47302624-6466-41a7-85db-f6872d58a4d2@pavinjoseph.com>
 
 
-Thanks
+* Pavin Joseph <me@pavinjoseph.com> wrote:
 
-Takashi Sakamoto
+> On 3/29/24 12:45, Ingo Molnar wrote:
+> > Does the 'nogbpages' kernel command line option fail on these systems
+> > even outside of kexec (ie. regular boot), or only in combination with
+> > kexec?
+> 
+> Original reporter here, using nogbpages allows for normal bootup, but 
+> kexec fails with it on my two similar systems.
+
+Just to clarify, we have the following 3 upstream (and soon to be upstream) versions:
+
+ v1: pre-d794734c9bbf kernels
+ v2: d794734c9bbf x86/mm/ident_map: Use gbpages only where full GB page should be mapped.
+ v3: c567f2948f57 Revert "x86/mm/ident_map: Use gbpages only where full GB page should be mapped."
+
+Where v1 and v3 ought to be the same in behavior.
+
+So how does the failure matrix look like on your systems? Is my 
+understanding accurate:
+
+
+           regular boot  | regular kexec | nogbpages boot | nogbpages kexec boot
+ ------------------------|---------------------------------------------------
+ v1:       OK            | OK            | OK             | FAIL
+ v2:       OK            | FAIL          | FAIL           | FAIL
+
+?
+
+Thanks,
+
+	Ingo
 
