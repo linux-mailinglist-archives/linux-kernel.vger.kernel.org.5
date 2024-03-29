@@ -1,171 +1,132 @@
-Return-Path: <linux-kernel+bounces-125342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7988E89245A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B6E389245C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD53284B9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9D10284F0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C5265E20;
-	Fri, 29 Mar 2024 19:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B7613956C;
+	Fri, 29 Mar 2024 19:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UqkdpScG"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IuzZrdPn"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82181E893
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447171E893;
+	Fri, 29 Mar 2024 19:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711741019; cv=none; b=imKJy0YaO5keSvsIIJIQNQK/8nU/aSz3qGbwBf8bZWySpe0rY42l0wBn9A1FSnm6S+V2qgZeX/cereGm/TcxTB4NThtDJm0Zo6Ovm1zgImzg/fbzvvQMhUJxBnATSy+XcItBWXNX4c/S5fI/qbJvgR0a9b9VJIf/93ROLqhW4ls=
+	t=1711741143; cv=none; b=N+twxni0JW1S2WONBV7uxhpK2U67Ka2CpCIi6KztVTZ6zLPsAnMK4CXo6aHIMInT9bGoYxIz0DiFzpvgw2O0Xlm3nszWM3At5iY7hOlC/nOU4lk2N1p0BHUK1JGbhmMpFb2C2uidVOfb0A3MOgD79/Y0S7DSXcXXpb4ShYpg0SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711741019; c=relaxed/simple;
-	bh=XWJ5L+9qn4g25NVZSdkkIFHiRao0Rnwp4nYt7BHiXWs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IhK3gEWM9yHwhhYR6BCilAI0mhKglCOB0l4ufxJGex8xjsBNwj/anThCqzp/+gIu7hT2bgjkwj8uaEGlcUbxocwTeMTvGyS7o4KB54gbDUYG9hbi+kh3DjqmVmyxyXqpsH4h4aOgDNef8azsL/c7BPhOoI8e3FXfYJl7jd5UAWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UqkdpScG; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56bde8ea904so20683a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:36:57 -0700 (PDT)
+	s=arc-20240116; t=1711741143; c=relaxed/simple;
+	bh=wSB7X6CdTUWKKiKpXypnRNMqXkfS9aaSpZFlc2ToL18=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bvu+u1Ih9p2z2d9nAC+5qqRBEtOETCt2vVJTdfFTp4rM49Vq2fUFZg7hjiqWtVGQguBO/czbCv5vgepcOKNsO4g6lgmzqzqSl2uCTgLi3pWYHbGHEu43D2MRuZ6xca/TqWz/wxHtzDEoZEWddAExCO5o/jUmVC6J+6D8h+hKxJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IuzZrdPn; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4154464f150so11362035e9.0;
+        Fri, 29 Mar 2024 12:39:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711741016; x=1712345816; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IG2sdULi0sIh2ro2ngvfwXnPQgm3+COAzlzZGsm+OFA=;
-        b=UqkdpScGl1Y2o1Fq8wMY71p9VBqCgP4XKZi3l9VlrbBW3plyKRkTiBAv5hCbH0ZU/F
-         +3KJh2vCuJevBEhdga3pBjBQOV8RYJgT+EBVQLLO2jIR4OXTdi+BqzePf/SDSHIm/axf
-         Ebp0nfbZ3dMs3x2Zd5yLoMNbFk6wZV/8OvT9iwJjeoaUozj+cHunMNiU+KhL43DkA1BU
-         xQGjYmrEel+wqrhsi0RaC9HT9T4m43P/wnpbXVeX3uNiyuT0uwabihgHyzNkRFor+EzY
-         1ViqQokwTu5yRQkUA4IsZtiy9cBWiXaRqpbyYFpUWFpOTOuoVHe8q5dj8uLxNdzneEB1
-         dN4g==
+        d=gmail.com; s=20230601; t=1711741141; x=1712345941; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3gyvJa28tEZj4J+N9+Nm6NWKKDqYmD65rg3x6weXC2w=;
+        b=IuzZrdPnbVjYrRmHc91+wOmkJBr0rPJPf8ZOEAOzdnRMemAuuGUeo8VYihA0COv6Cq
+         44bwJhideegf8CpXyIOOkGqu9HhlaibZNv/wHJ46vUZIZQQTY65838FkQ41apXuEbTCe
+         JqekXxILK08CKgmUealN+kTZ87vhNqCLXyJgYWQNLmWm9xoQ8Kq0eszAK9Q/C4+2UnSQ
+         Y673x3i2LN/eEfVROfWeUHbRR3yLyAZxyqTfMLorjgRJVhaZ6AMWCjerC7eD9MXOFeRN
+         EmbUK7XSJE4u+WQe5DgF4hJPq+t4zyQfYDKQKsuVgUHNsENa610zUdIKV3raG4+aeLJm
+         rWZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711741016; x=1712345816;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IG2sdULi0sIh2ro2ngvfwXnPQgm3+COAzlzZGsm+OFA=;
-        b=brOuvIgPerOIQ+LBkdX31HDX8Z+zc9W9SwrdPDr/j0LEjpCiFiMINtsOm0FUWYHBEx
-         jiVkxhNJj+OayQzoIgfYRQ1n7v6vyvds2FQqKoD5+dtjj8V756G1S7BQ8KplIZz6PjuR
-         o2tqEi4ontI+pnLpOJegxCO3qOBMnP3CUc7k/Dbmz2+pI/ErCQGkq9FcJwpwRlmUndhr
-         OT5MqmqxFCc9ehc4dx552DhrWNXRfGJx7tmfEME52GbUQRYBsn9ewBsATTFDUnzg2Kmq
-         uq05mYqBqxWtaMGFQcVi60ZLRidL4vkLM1vbFtVejdGtboEOim6KQ8v+32diAfhbDElu
-         0oAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWabIQlgtZEokrznGXLzn5pfzIljvYiKn2uJ31Qu7N3glGA2OdQY7CeHUV3357HA4V15zT2YLN5afunLz52cKs8kusHeJ6Ev4FNGJDe
-X-Gm-Message-State: AOJu0YykE+hJPi4bWLhX6qfkBLpmbEoplkyyW1lu3tQv6ex+C1VvLQDv
-	OKFzBy6wdTVcFIA4HaGq2ntAYQbmlfDaUk6Qo3H3ltCfzO+ar0leNUyyojbp85S/LY8Ivo1XQN4
-	jY1vpZA1PnRoSRP86lAXqf5Zffe94avSPlIM=
-X-Google-Smtp-Source: AGHT+IEkuV+rTJvTCWIOBN1gpiKXWkItHvEm4U6jPpj3+9fzrBARDw9iU9zkIBN8ZmFc4XWd4s5xBYxozS8xZ0sqGeY=
-X-Received: by 2002:aa7:c752:0:b0:56c:522f:6799 with SMTP id
- c18-20020aa7c752000000b0056c522f6799mr133259eds.5.1711741015944; Fri, 29 Mar
- 2024 12:36:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711741141; x=1712345941;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gyvJa28tEZj4J+N9+Nm6NWKKDqYmD65rg3x6weXC2w=;
+        b=tKtMwUPLA1hdKjyqZA30EKfGotSCtVTNUJiWqtADgePdTwEO0vfGLMJopvGCxCNkHB
+         Z0S+V/7jAMKd2CvME/EVEHOpzVzzrknp7GiebUqOna7i5KQTM1gsfg7iGZoU74udY6Q6
+         2w8fs44p4L4jN5lIQLzcxeo4b3gsn0GuHNT9yrUv0VxkdP8LG+PSv4LGitD0bQB75WKq
+         pCOtL8UR9k7vj3l1AZx5SC8u1+OEcZY9KZi1N2cRDTZbstLP7sluTsjL2gt5DHPaYKZp
+         9p5IRPi6Lyz9WngPDboG04GHT3dx1tZnu7+18iJYt+YUJ7os69EyJTr/oYBV99GHfx5U
+         mamA==
+X-Forwarded-Encrypted: i=1; AJvYcCURW7cWs554D0MLPch3EtIczyZC2xOGKZppAsAmtH+EifTwl7omfAqGjAfYZ17WiLPiXm7p+YSxSojJpPJc259UlWvkP4rOJE/Nct/jNVz735cZa5xtmAzMmuXfERWY4EfHEfngohgJxb4wPw==
+X-Gm-Message-State: AOJu0Yw3tmhYpeqKbSBDfM2AYWZKz0uil+eNkNtwSClKLGHtbnOBaS1L
+	Wxg09GaN/qTW1gRR3KVMBbzgp/hpKi00be2j8T4XcMPP2elzWo99
+X-Google-Smtp-Source: AGHT+IG10lQFIOImBLBD41zMRXhhu9cohhiJEff+GDmy229Zo6LdaVmWzU2lUFMswpnlw9rsedNXiw==
+X-Received: by 2002:a05:600c:3ca1:b0:414:96d8:bc48 with SMTP id bg33-20020a05600c3ca100b0041496d8bc48mr2491616wmb.20.1711741140441;
+        Fri, 29 Mar 2024 12:39:00 -0700 (PDT)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id t12-20020a05600c450c00b004154853f778sm5152221wmo.48.2024.03.29.12.38.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 12:38:59 -0700 (PDT)
+Message-ID: <9b1e5ea0-bb32-4c42-b2e9-204bde31b905@gmail.com>
+Date: Fri, 29 Mar 2024 20:38:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328062757.29803-1-mingyang.cui@horizon.ai>
-In-Reply-To: <20240328062757.29803-1-mingyang.cui@horizon.ai>
-From: John Stultz <jstultz@google.com>
-Date: Fri, 29 Mar 2024 12:36:42 -0700
-Message-ID: <CANDhNCqKR30uD1RDmW7V6VHtdwbGnU5uJEvj_AUwHCsXZv3+Nw@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Fix forked task check in vruntime_normalized
-To: "mingyang.cui" <mingyang.cui@horizon.ai>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
-	linux-kernel@vger.kernel.org, kernel-team@android.com, stable@vger.kernel.org, 
-	tkjos@google.com, pjt@google.com, quentin.perret@arm.com, 
-	Patrick.Bellasi@arm.com, Chris.Redpath@arm.com, Morten.Rasmussen@arm.com, 
-	joaodias@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 00/13] firmware: qcom: qseecom: convert to using the TZ
+ allocator
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Elliot Berman <quic_eberman@quicinc.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Guru Das Srinagesh <quic_gurus@quicinc.com>,
+ Andrew Halaney <ahalaney@redhat.com>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@quicinc.com, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240325100359.17001-1-brgl@bgdev.pl>
+ <56e1c63a-4c09-4d92-9ef2-aad5390879cc@gmail.com>
+ <CAMRc=Mf_pvrh2VMfTVE-ZTypyO010p=to-cd8Q745DzSDXLGFw@mail.gmail.com>
+ <CAMRc=MfsVWcoMC-dB-fdxy332h-ucUPTfEUMAnCt5L-q3zJxWg@mail.gmail.com>
+ <82f94b54-82d1-49b9-badf-63d948b347fc@gmail.com>
+ <97e1f121-9e84-4e63-9c9c-57e2de0b29d7@gmail.com>
+ <CAMRc=McLJFGcy-A6PZNmjgDXnvx8z0J4k-Dbak-txvWnycHG2A@mail.gmail.com>
+ <2b1dc031-d645-494c-9103-a2bb422ea60b@gmail.com>
+ <CAMRc=MdoSPuedbGhy4toDEkw0vSzESDz2bXGpyt_=R4hqXW+Uw@mail.gmail.com>
+Content-Language: en-US
+From: Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <CAMRc=MdoSPuedbGhy4toDEkw0vSzESDz2bXGpyt_=R4hqXW+Uw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 28, 2024 at 8:21=E2=80=AFAM mingyang.cui <mingyang.cui@horizon.=
-ai> wrote:
->
-> When rt_mutex_setprio changes a task's scheduling class to RT,
-> sometimes the task's vruntime is not updated correctly upon
-> return to the fair class.
-> Specifically, the following is being observed:
-> - task has just been created and running for a short time
-> - task sleep while still in the fair class
-> - task is boosted to RT via rt_mutex_setprio, which changes
->   the task to RT and calls check_class_changed.
-> - check_class_changed leads to detach_task_cfs_rq, at which point
->   the vruntime_normalized check sees that the task's sum_exec_runtime
->   is zero, which results in skipping the subtraction of the
->   rq's min_vruntime from the task's vruntime
-> - later, when the prio is deboosted and the task is moved back
->   to the fair class, the fair rq's min_vruntime is added to
->   the task's vruntime, even though it wasn't subtracted earlier.
+On 3/29/24 8:26 PM, Bartosz Golaszewski wrote:
+> On Fri, 29 Mar 2024 at 20:22, Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>
+>> On 3/29/24 8:07 PM, Bartosz Golaszewski wrote:
+>>>
+>>> Both with and without SHM bridge?
+>>
+>> With CONFIG_QCOM_TZMEM_MODE_GENERIC=y (and the upcoming fix) everything
+>> works. With CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=y things unfortunately
+>> still get stuck at boot (regardless of the fix). I think that's
+>> happening even before anything efivar related should come up.
+>>
+> 
+> This is on X13s? I will get one in 3 weeks. Can you get the bootlog
+> somehow? Does the laptop have any serial console?
 
-Just to make sure I am following: since sum_exec_runtime is updated in
-update_curr(), if the task goes to sleep, shouldn't it be dequeued and
-thus update_curr() would have been run (and thus sum_exec_runtime
-would be non-zero)?
+Surface Pro X (sc8180x), but it should be similar enough to the X13s in
+that regard. At least from what people with access to the X13s told me,
+the qseecom stuff seems to behave the same.
 
-Maybe in this analysis is the new task being boosted while it is still
-newly running (instead of sleeping)?
+Unfortunately I don't have a direct serial console. Best I have is
+USB-serial, but it's not even getting there. I'll have to try and see if
+I can get some more info on the screen.
 
-> Since the task's vruntime is about double that of other tasks in cfs_rq,
-> the task to be unable to run for a long time when there are continuous
-> runnable tasks in cfs_rq.
->
-> The immediate result is inflation of the task's vruntime, giving
-> it lower priority (starving it if there's enough available work).
-> The longer-term effect is inflation of all vruntimes because the
-> task's vruntime becomes the rq's min_vruntime when the higher
-> priority tasks go idle. That leads to a vicious cycle, where
-> the vruntime inflation repeatedly doubled.
-
-This is an interesting find! I'm curious how you detected the problem,
-as it might make a good correctness test (which I'm selfishly looking
-for more of myself :)
-
-> The root cause of the problem is that the vruntime_normalized made a
-> misjudgment. Since the sum_exec_runtime of some tasks that were just
-> created and run for a short time is zero, the vruntime_normalized
-> mistakenly thinks that they are tasks that have just been forked.
-> Therefore, sum_exec_runtime is not subtracted from the vruntime of the
-> task.
->
-> So, we fix this bug by adding a check condition for newly forked task.
->
-> Signed-off-by: mingyang.cui <mingyang.cui@horizon.ai>
-> ---
->  kernel/sched/fair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 73a89fbd81be..3d0c14f3731f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11112,7 +11112,7 @@ static inline bool vruntime_normalized(struct tas=
-k_struct *p)
->          * - A task which has been woken up by try_to_wake_up() and
->          *   waiting for actually being woken up by sched_ttwu_pending().
->          */
-> -       if (!se->sum_exec_runtime ||
-> +       if (!se->sum_exec_runtime && p->state =3D=3D TASK_NEW ||
->             (p->state =3D=3D TASK_WAKING && p->sched_remote_wakeup))
->                 return true;
-
-This looks like it was applied against an older tree? The p->state
-accesses should be under a READ_ONCE (and likely consolidated before
-the conditional?)
-
-Also, I wonder if alternatively a call to update_curr() if
-(cfs_rq->curr =3D=3D se) in switched_from_fair() would be good (ie:
-normalize it on the boost to close the edge case rather than handle it
-as an expected non-normalized condition)?
-
-thanks
--john
+Best regards,
+Max
 
