@@ -1,62 +1,47 @@
-Return-Path: <linux-kernel+bounces-124196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58CBF8913BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:22:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E368E8913BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6DA1B24163
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:22:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91E911F22F0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610163FE2C;
-	Fri, 29 Mar 2024 06:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAD73F9FA;
+	Fri, 29 Mar 2024 06:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F2lNdD50"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1l/nezy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3DB3F9D2;
-	Fri, 29 Mar 2024 06:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A31220319
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 06:25:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711693340; cv=none; b=VKb9jZPYFnX7GYTQx6MnR9PhITp0r2RgTMQsnz1mK2LgXqv8rwgk4nhpDYKkRJV0TvCQrSpZ0LvxB/yynlw3Pv9D2YMaiz4T5tO0+7zupd5+erivdQHbKuStMJvJfn7SRgAxhRctM+0TX14450tJKZ451L6MfbXMRTWe8PLiUGw=
+	t=1711693522; cv=none; b=jFXTai8YR5fAtn8R7ZrAm+LDicm9klLQegALRUQXRi88wKTQYWsXNzRW1J9sXI/vlW2NS96ut81JQqzC1eYMkehmMKj8LORQuKJhv4DgJZnFV5eHZc7v1wzkZ+lIKB9W0QUEth6sgo16WgCmDLs6i5tDQDdn1BPMqfKQIiH8V8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711693340; c=relaxed/simple;
-	bh=qqijB1DYYP8h60w+Z5syxz5vz3KMKyQUPWPlyBOGC7M=;
+	s=arc-20240116; t=1711693522; c=relaxed/simple;
+	bh=vUpji8lxw+W9+6bxPOhocySoPz9eyx3y0fD1yHTt1v4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qMM4ksJCE+1xp8AoKp+BZ3ykvbDB7y1YlzsMg//BwRUYSYuO+BLrzrmWd7Oma5YOuJn486HWFH+Ru5c6ryeNNzylIB0KvGsGZxF01SXW4fEtC32XzjVLSWyhOqRApxZwF0MQ3P3Z9U7H4TT6ZgJHmPOTuzTlf8BE3LHV/+0K0nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F2lNdD50; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711693339; x=1743229339;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qqijB1DYYP8h60w+Z5syxz5vz3KMKyQUPWPlyBOGC7M=;
-  b=F2lNdD50QwHYi43qCM0C0kbLWJ/13EarTAaouT9qJuHox+Ns+r8y16dR
-   YSPBXzgsUxh/Au9s6cAUDjdv9WEKXRpgmXmYVt2KKNtVG75ayrU+YIvv3
-   dU3+gncj2iPcmc0XDHrvpdkhGUhqndi9rJWmixQf8WsRCus5wt0jN/mA6
-   EYXpTWiSohVOmDMZDqzpfb39o0tAmmTpMNyxxKpBT88GA1IaVoaYSwiJM
-   3VqJulB04ZN46igdcecnR6BP8YwPHGzHDMNrpUdXtqJm6D7m1uGYlTj9A
-   oxaOlxJMbZLaQyH5Vk+2clAyn8hh7AhoRxtc7HRmJ7q+LnVKsG0t1nqmS
-   Q==;
-X-CSE-ConnectionGUID: Rv+gWfS3SB2ns6iTu8rQug==
-X-CSE-MsgGUID: 3dr3UbaaT5efevOpuARAkQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="10663142"
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="10663142"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 23:22:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="54345229"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.225]) ([10.238.10.225])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 23:22:15 -0700
-Message-ID: <f52734ac-704a-49f7-bbee-de5909d53b14@linux.intel.com>
-Date: Fri, 29 Mar 2024 14:22:12 +0800
+	 In-Reply-To:Content-Type; b=dh3lbjzCzc66AdLbX8l15Z/eq7GP6zXxAldccGY082AULA/otylHb+MeGQ4wDT23gASQVJWgB/olbzT2bEj8JyMb3N12WF13A9nB7ESHNoux10ubGieMGGS4/hjmKYe0W+unjDMvaguvJk+uN1Y8w25UhDVwA3/SkkgbjFwhNH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1l/nezy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9815C433F1;
+	Fri, 29 Mar 2024 06:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711693521;
+	bh=vUpji8lxw+W9+6bxPOhocySoPz9eyx3y0fD1yHTt1v4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=S1l/nezyA+C9Xgtn9Texc5PiloCR+CjIGemPR69MRn4mNBh/+0+aT7iNIC0RJCjtT
+	 yoTVbPUYlfy1NDIBbuCVDHfnsfaj9nvz6os5TQyvG8eqWyQzMzxswYuJAvT7gU3QLF
+	 KBVaiuk+K/ebD3MIKxS73xsMgwwusddvMr/eKPxV8S4aFY9qP+XnKGfucfKKEpYqyz
+	 +r4MHg1s/CxLvKTCo2cnt+nMZQmNDMwtdZ+Y9aejGtB7AzJpJxA8ie92KGKWFig13J
+	 eXLF6o+CdM9FdHmbDO6LHV3BJgxn/XU7xmxdfOpV0SVyqhdZwGSptvPRoWW0khSlfI
+	 PtU4ghkPLbSDQ==
+Message-ID: <2afb0fcb-afb6-4cb6-bfa2-e8e186f79d8c@kernel.org>
+Date: Fri, 29 Mar 2024 14:25:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,55 +49,141 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
-To: Isaku Yamahata <isaku.yamahata@intel.com>, Chao Gao <chao.gao@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- Sean Christopherson <sean.j.christopherson@intel.com>,
- isaku.yamahata@linux.intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
- <ZfpwIespKy8qxWWE@chao-email>
- <20240321141709.GK1994522@ls.amr.corp.intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240321141709.GK1994522@ls.amr.corp.intel.com>
+Subject: Re: [f2fs-dev] [PATCH v5] f2fs: prevent writing without fallocate()
+ for pinned files
+To: Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc: Daeho Jeong <daehojeong@google.com>
+References: <20240326203130.85748-1-daeho43@gmail.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240326203130.85748-1-daeho43@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+On 2024/3/27 4:31, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> In a case writing without fallocate(), we can't guarantee it's allocated
+> in the conventional area for zoned stroage. To make it consistent across
+> storage devices, we disallow it regardless of storage device types.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+> v2: covered the direct io case
+> v3: covered the mkwrite case
+> v4: moved pin file check position in prepare_write_begin()
+> v5: removed unnecessary condition in f2fs_map_blocks() and disallowed
+>      pre-written inodes for file pinning
+> ---
+>   fs/f2fs/data.c | 20 ++++++++++++++++----
+>   fs/f2fs/file.c | 18 +++++++++---------
+>   2 files changed, 25 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index c21b92f18463..1b02a9291176 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+>   
+>   	/* use out-place-update for direct IO under LFS mode */
+>   	if (map->m_may_create &&
+> -	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO))) {
+> -		if (unlikely(f2fs_cp_error(sbi))) {
+> +	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO &&
+> +			 !f2fs_is_pinned_file(inode)))) {
+> +		if (unlikely(f2fs_cp_error(sbi)) ||
+> +		    (f2fs_is_pinned_file(inode) &&
+> +		     flag != F2FS_GET_BLOCK_PRE_DIO)) {
+>   			err = -EIO;
+>   			goto sync_out;
+>   		}
+> @@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+>   		f2fs_map_lock(sbi, flag);
+>   		locked = true;
+>   	} else if ((pos & PAGE_MASK) >= i_size_read(inode)) {
+> +		if (f2fs_is_pinned_file(inode))
+> +			return -EIO;
+>   		f2fs_map_lock(sbi, flag);
+>   		locked = true;
+>   	}
+> @@ -3414,8 +3419,15 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+>   
+>   		/* hole case */
+>   		err = f2fs_get_dnode_of_data(&dn, index, LOOKUP_NODE);
+> -		if (!err && dn.data_blkaddr != NULL_ADDR)
+> -			goto out;
+> +		if (!err) {
+> +			if (dn.data_blkaddr != NULL_ADDR) {
+> +				goto out;
+> +			} else if (f2fs_is_pinned_file(inode)) {
+> +				err = -EIO;
+> +				goto out;
+> +			}
+> +		}
+> +
+>   		f2fs_put_dnode(&dn);
+>   		f2fs_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO);
+>   		WARN_ON(flag != F2FS_GET_BLOCK_PRE_AIO);
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 82277e95c88f..7aa53cf553a1 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>   	struct inode *inode = file_inode(vmf->vma->vm_file);
+>   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>   	struct dnode_of_data dn;
+> -	bool need_alloc = true;
+> +	bool need_alloc = !f2fs_is_pinned_file(inode);
+>   	int err = 0;
+>   	vm_fault_t ret;
+>   
+> @@ -114,19 +114,15 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>   		goto out_sem;
+>   	}
+>   
+> +	set_new_dnode(&dn, inode, NULL, NULL, 0);
+>   	if (need_alloc) {
+>   		/* block allocation */
+> -		set_new_dnode(&dn, inode, NULL, NULL, 0);
+>   		err = f2fs_get_block_locked(&dn, page->index);
+> -	}
+> -
+> -#ifdef CONFIG_F2FS_FS_COMPRESSION
+> -	if (!need_alloc) {
+> -		set_new_dnode(&dn, inode, NULL, NULL, 0);
+> +	} else {
+>   		err = f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_NODE);
+>   		f2fs_put_dnode(&dn);
+>   	}
 
+It needs to check dn.data_blkaddr for pinfile? return EIO if it hits a hole?
 
-On 3/21/2024 10:17 PM, Isaku Yamahata wrote:
-> On Wed, Mar 20, 2024 at 01:12:01PM +0800,
-> Chao Gao <chao.gao@intel.com> wrote:
->
->>> config KVM_SW_PROTECTED_VM
->>> 	bool "Enable support for KVM software-protected VMs"
->>> -	depends on EXPERT
+Thanks,
 
-This change is not needed, right?
-Since you intended to use KVM_GENERIC_PRIVATE_MEM, not KVM_SW_PROTECTED_VM.
-
->>> 	depends on KVM && X86_64
->>> 	select KVM_GENERIC_PRIVATE_MEM
->>> 	help
->>> @@ -89,6 +88,8 @@ config KVM_SW_PROTECTED_VM
->>> config KVM_INTEL
->>> 	tristate "KVM for Intel (and compatible) processors support"
->>> 	depends on KVM && IA32_FEAT_CTL
->>> +	select KVM_SW_PROTECTED_VM if INTEL_TDX_HOST
->> why does INTEL_TDX_HOST select KVM_SW_PROTECTED_VM?
-> I wanted KVM_GENERIC_PRIVATE_MEM.  Ah, we should do
->
->          select KKVM_GENERIC_PRIVATE_MEM if INTEL_TDX_HOST
->
->
->>> +	select KVM_GENERIC_MEMORY_ATTRIBUTES if INTEL_TDX_HOST
->>> 	help
->>> 	.vcpu_precreate = vmx_vcpu_precreate,
->>> 	.vcpu_create = vmx_vcpu_create,
->>
-[...]
+> -#endif
+> +
+>   	if (err) {
+>   		unlock_page(page);
+>   		goto out_sem;
+> @@ -3235,7 +3231,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
+>   		goto done;
+>   	}
+>   
+> -	if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
+> +	if (F2FS_HAS_BLOCKS(inode)) {
+>   		ret = -EFBIG;
+>   		goto out;
+>   	}
+> @@ -4611,6 +4607,10 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
+>   			return ret;
+>   	}
+>   
+> +	/* For pinned files, it should be fallocate()-ed in advance. */
+> +	if (f2fs_is_pinned_file(inode))
+> +		return 0;
+> +
+>   	/* Do not preallocate blocks that will be written partially in 4KB. */
+>   	map.m_lblk = F2FS_BLK_ALIGN(pos);
+>   	map.m_len = F2FS_BYTES_TO_BLK(pos + count);
 
