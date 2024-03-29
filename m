@@ -1,56 +1,59 @@
-Return-Path: <linux-kernel+bounces-124706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 417DA891BA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:29:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFF0891BAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D53BC1F25DBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:29:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE8E71F26992
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14561327ED;
-	Fri, 29 Mar 2024 12:36:14 +0000 (UTC)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F825144318;
+	Fri, 29 Mar 2024 12:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="car6bcuB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8785614387F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896DB12DDA5;
+	Fri, 29 Mar 2024 12:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715774; cv=none; b=iKQWGSXleHvKem2IMD4fS2tVEkRewW0DJ7DTFaq7rsMfTcMaDX4k578PVBZIle+6mYf/IXLB6wvDcmwq7i7QLjY/t9OMttw6mNqtuZiS123oHM6qWqPXvtnNo77HCGcMRdD/O9nPQpWKDHki/O+WerZmukWteQcKyhjgrQg0Pcs=
+	t=1711715960; cv=none; b=PSJiasAy0b/Ftt/dpTBkcjfI73gdgWCbhs4FspM4stP2rRGRvJK19dU3CwqPSpo1qlchHEZnQL8vxVCbgJi9mwsw1vY6JMsJK1KRbbam4c6rAgkyc5HF1eagEi0DEuseuzj4P9UpLpJtQ0mhR4PuvTmCnMMAD3CaYkW0AJDnNiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715774; c=relaxed/simple;
-	bh=WqAHVDbRSQlXSs3fhY+o+tngUEP/W8dgzeNBIhNbb1k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=UL8LCkNjDvlNdTL/0FFa4MCC6N6ZW3+s760SByd7vhSPaWRiY2y7W0GdjG3h9He0IaAkHn4CS2p2NRxPN4E3Kn2YiZjfMlYMFHjnfWK5vsmBfiLWmHPn1MAxogPQXT61avCyDkF7jAfPdOl4GQWw5JBe0q9LXH0yISvli5mOpIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by xavier.telenet-ops.be with bizsmtp
-	id 4cc82C0050SSLxL01cc8x9; Fri, 29 Mar 2024 13:36:09 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rqBSR-005D9J-5k;
-	Fri, 29 Mar 2024 13:36:08 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rqBSq-0020YW-5y;
-	Fri, 29 Mar 2024 13:36:08 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Hu Haowen <2023002089@link.tyut.edu.cn>
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] docs/zh: Fix Cc, Co-developed-by, and Signed-off-by tags
-Date: Fri, 29 Mar 2024 13:35:29 +0100
-Message-Id: <22892a8ab5c17d7121ef5b85f7d18d8b1f41e434.1711715655.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711715960; c=relaxed/simple;
+	bh=B+UPqiZhHjHusSKbhDQ5UfjOH+MzF07nuUtbkag2bOY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J36Q6yJGOUczWti+Nrp9zwkw4Yip6hNwXABhHExuj67/qGyw7v2a03cn1rc1qfTqK5AxhBBV9WYthGRegkSo9+rSxpPH00OP8ckkWqdFY+f8zutt69eFLM9DgH36gW3jwSL1UTfE+xMzN2pidBQbuPW/vUqy73Z28lG4OOX8BCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=car6bcuB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A1DCC43390;
+	Fri, 29 Mar 2024 12:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711715960;
+	bh=B+UPqiZhHjHusSKbhDQ5UfjOH+MzF07nuUtbkag2bOY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=car6bcuB6FeQzd5FXirYpsi6jUnfFdsVXKavDUthNvE8K3jfcuS/wwX1ZOSwssZve
+	 d6Ma7IhKc34P4mdMx1k1ylrLQelG0Hd+b7Bzf7sgWQbtN8AmQ15NC3eTGTKRCpgk0G
+	 3sSAkNjYJHdBr9pFmB20meGMBBk3qchmEBrvUWbjcmzGZJhf9kZurU9Fa/7vKecEQ9
+	 8iODmxIy9a3f87+tqHOV5clGLt80eNmfh++Qs9/xbIj0eItfIFvQ0frkE8rUCCYqd+
+	 hUM4MDCWT7C2OqTvAF7MKASn0jSfa2Op5PftFbAfGA/I2aZ7Fiuwj0LV+nZtCYCNfn
+	 Im9yBjNfNcDeQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	maarten.lankhorst@linux.intel.com,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.8 01/98] drm/vc4: don't check if plane->state->fb == state->fb
+Date: Fri, 29 Mar 2024 08:36:32 -0400
+Message-ID: <20240329123919.3087149-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,78 +61,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-The updates from commit ae67ee6c5e1d5b6a ("docs: fix Co-Developed-by
-docs") in v5.0 were never applied to the Chinese translations.
-In addition:
-  - "Cc" used wrong case,
-  - "Co-developed-by" lacked a dash,
-  - "Signed-off-by" was misspelled.
+From: Maíra Canal <mcanal@igalia.com>
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[ Upstream commit 5ee0d47dcf33efd8950b347dcf4d20bab12a3fa9 ]
+
+Currently, when using non-blocking commits, we can see the following
+kernel warning:
+
+[  110.908514] ------------[ cut here ]------------
+[  110.908529] refcount_t: underflow; use-after-free.
+[  110.908620] WARNING: CPU: 0 PID: 1866 at lib/refcount.c:87 refcount_dec_not_one+0xb8/0xc0
+[  110.908664] Modules linked in: rfcomm snd_seq_dummy snd_hrtimer snd_seq snd_seq_device cmac algif_hash aes_arm64 aes_generic algif_skcipher af_alg bnep hid_logitech_hidpp vc4 brcmfmac hci_uart btbcm brcmutil bluetooth snd_soc_hdmi_codec cfg80211 cec drm_display_helper drm_dma_helper drm_kms_helper snd_soc_core snd_compress snd_pcm_dmaengine fb_sys_fops sysimgblt syscopyarea sysfillrect raspberrypi_hwmon ecdh_generic ecc rfkill libaes i2c_bcm2835 binfmt_misc joydev snd_bcm2835(C) bcm2835_codec(C) bcm2835_isp(C) v4l2_mem2mem videobuf2_dma_contig snd_pcm bcm2835_v4l2(C) raspberrypi_gpiomem bcm2835_mmal_vchiq(C) videobuf2_v4l2 snd_timer videobuf2_vmalloc videobuf2_memops videobuf2_common snd videodev vc_sm_cma(C) mc hid_logitech_dj uio_pdrv_genirq uio i2c_dev drm fuse dm_mod drm_panel_orientation_quirks backlight ip_tables x_tables ipv6
+[  110.909086] CPU: 0 PID: 1866 Comm: kodi.bin Tainted: G         C         6.1.66-v8+ #32
+[  110.909104] Hardware name: Raspberry Pi 3 Model B Rev 1.2 (DT)
+[  110.909114] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  110.909132] pc : refcount_dec_not_one+0xb8/0xc0
+[  110.909152] lr : refcount_dec_not_one+0xb4/0xc0
+[  110.909170] sp : ffffffc00913b9c0
+[  110.909177] x29: ffffffc00913b9c0 x28: 000000556969bbb0 x27: 000000556990df60
+[  110.909205] x26: 0000000000000002 x25: 0000000000000004 x24: ffffff8004448480
+[  110.909230] x23: ffffff800570b500 x22: ffffff802e03a7bc x21: ffffffecfca68c78
+[  110.909257] x20: ffffff8002b42000 x19: ffffff802e03a600 x18: 0000000000000000
+[  110.909283] x17: 0000000000000011 x16: ffffffffffffffff x15: 0000000000000004
+[  110.909308] x14: 0000000000000fff x13: ffffffed577e47e0 x12: 0000000000000003
+[  110.909333] x11: 0000000000000000 x10: 0000000000000027 x9 : c912d0d083728c00
+[  110.909359] x8 : c912d0d083728c00 x7 : 65646e75203a745f x6 : 746e756f63666572
+[  110.909384] x5 : ffffffed579f62ee x4 : ffffffed579eb01e x3 : 0000000000000000
+[  110.909409] x2 : 0000000000000000 x1 : ffffffc00913b750 x0 : 0000000000000001
+[  110.909434] Call trace:
+[  110.909441]  refcount_dec_not_one+0xb8/0xc0
+[  110.909461]  vc4_bo_dec_usecnt+0x4c/0x1b0 [vc4]
+[  110.909903]  vc4_cleanup_fb+0x44/0x50 [vc4]
+[  110.910315]  drm_atomic_helper_cleanup_planes+0x88/0xa4 [drm_kms_helper]
+[  110.910669]  vc4_atomic_commit_tail+0x390/0x9dc [vc4]
+[  110.911079]  commit_tail+0xb0/0x164 [drm_kms_helper]
+[  110.911397]  drm_atomic_helper_commit+0x1d0/0x1f0 [drm_kms_helper]
+[  110.911716]  drm_atomic_commit+0xb0/0xdc [drm]
+[  110.912569]  drm_mode_atomic_ioctl+0x348/0x4b8 [drm]
+[  110.913330]  drm_ioctl_kernel+0xec/0x15c [drm]
+[  110.914091]  drm_ioctl+0x24c/0x3b0 [drm]
+[  110.914850]  __arm64_sys_ioctl+0x9c/0xd4
+[  110.914873]  invoke_syscall+0x4c/0x114
+[  110.914897]  el0_svc_common+0xd0/0x118
+[  110.914917]  do_el0_svc+0x38/0xd0
+[  110.914936]  el0_svc+0x30/0x8c
+[  110.914958]  el0t_64_sync_handler+0x84/0xf0
+[  110.914979]  el0t_64_sync+0x18c/0x190
+[  110.914996] ---[ end trace 0000000000000000 ]---
+
+This happens because, although `prepare_fb` and `cleanup_fb` are
+perfectly balanced, we cannot guarantee consistency in the check
+plane->state->fb == state->fb. This means that sometimes we can increase
+the refcount in `prepare_fb` and don't decrease it in `cleanup_fb`. The
+opposite can also be true.
+
+In fact, the struct drm_plane .state shouldn't be accessed directly
+but instead, the `drm_atomic_get_new_plane_state()` helper function should
+be used. So, we could stick to this check, but using
+`drm_atomic_get_new_plane_state()`. But actually, this check is not really
+needed. We can increase and decrease the refcount symmetrically without
+problems.
+
+This is going to make the code more simple and consistent.
+
+Signed-off-by: Maíra Canal <mcanal@igalia.com>
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240105175908.242000-1-mcanal@igalia.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../translations/zh_CN/process/submitting-patches.rst     | 8 ++++----
- .../translations/zh_TW/process/submitting-patches.rst     | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/vc4/vc4_plane.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/Documentation/translations/zh_CN/process/submitting-patches.rst b/Documentation/translations/zh_CN/process/submitting-patches.rst
-index f8978f02057c164c..7864107e60a85c58 100644
---- a/Documentation/translations/zh_CN/process/submitting-patches.rst
-+++ b/Documentation/translations/zh_CN/process/submitting-patches.rst
-@@ -333,10 +333,10 @@ Linus 和其他的内核开发者需要阅读和评论你提交的改动。对
- 未参与其开发。签署链应当反映补丁传播到维护者并最终传播到Linus所经过的 **真实**
- 路径，首个签署指明单个作者的主要作者身份。
+diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+index 00e713faecd5a..5948e34f7f813 100644
+--- a/drivers/gpu/drm/vc4/vc4_plane.c
++++ b/drivers/gpu/drm/vc4/vc4_plane.c
+@@ -1505,9 +1505,6 @@ static int vc4_prepare_fb(struct drm_plane *plane,
  
--何时使用Acked-by:，CC:，和Co-Developed by:
-+何时使用Acked-by:，Cc:，和Co-developed-by:
- ------------------------------------------
+ 	drm_gem_plane_helper_prepare_fb(plane, state);
  
--Singed-off-by: 标签表示签名者参与了补丁的开发，或者他/她在补丁的传递路径中。
-+Signed-off-by: 标签表示签名者参与了补丁的开发，或者他/她在补丁的传递路径中。
+-	if (plane->state->fb == state->fb)
+-		return 0;
+-
+ 	return vc4_bo_inc_usecnt(bo);
+ }
  
- 如果一个人没有直接参与补丁的准备或处理，但希望表示并记录他们对补丁的批准/赞成，
- 那么他们可以要求在补丁的变更日志中添加一个Acked-by:。
-@@ -358,8 +358,8 @@ Acked-by：不一定表示对整个补丁的确认。例如，如果一个补丁
- Co-developed-by: 声明补丁是由多个开发人员共同创建的；当几个人在一个补丁上工
- 作时，它用于给出共同作者（除了From:所给出的作者之外）。因为Co-developed-by:
- 表示作者身份，所以每个Co-developed-by:必须紧跟在相关合作作者的签署之后。标准
--签署程序要求Singed-off-by:标签的顺序应尽可能反映补丁的时间历史，无论作者是通
--过From:还是Co-developed-by:表明。值得注意的是，最后一个Singed-off-by:必须是
-+签署程序要求Signed-off-by:标签的顺序应尽可能反映补丁的时间历史，无论作者是通
-+过From:还是Co-developed-by:表明。值得注意的是，最后一个Signed-off-by:必须是
- 提交补丁的开发人员。
+@@ -1516,7 +1513,7 @@ static void vc4_cleanup_fb(struct drm_plane *plane,
+ {
+ 	struct vc4_bo *bo;
  
- 注意，如果From:作者也是电子邮件标题的From:行中列出的人，则From:标签是可选的。
-diff --git a/Documentation/translations/zh_TW/process/submitting-patches.rst b/Documentation/translations/zh_TW/process/submitting-patches.rst
-index 99fa0f2fe6f414e1..f12f2f193f855cfb 100644
---- a/Documentation/translations/zh_TW/process/submitting-patches.rst
-+++ b/Documentation/translations/zh_TW/process/submitting-patches.rst
-@@ -334,10 +334,10 @@ Linus 和其他的內核開發者需要閱讀和評論你提交的改動。對
- 未參與其開發。簽署鏈應當反映補丁傳播到維護者並最終傳播到Linus所經過的 **真實**
- 路徑，首個簽署指明單個作者的主要作者身份。
+-	if (plane->state->fb == state->fb || !state->fb)
++	if (!state->fb)
+ 		return;
  
--何時使用Acked-by:，CC:，和Co-Developed by:
-+何時使用Acked-by:，Cc:，和Co-developed-by:
- ------------------------------------------
- 
--Singed-off-by: 標籤表示簽名者參與了補丁的開發，或者他/她在補丁的傳遞路徑中。
-+Signed-off-by: 標籤表示簽名者參與了補丁的開發，或者他/她在補丁的傳遞路徑中。
- 
- 如果一個人沒有直接參與補丁的準備或處理，但希望表示並記錄他們對補丁的批准/贊成，
- 那麼他們可以要求在補丁的變更日誌中添加一個Acked-by:。
-@@ -359,8 +359,8 @@ Acked-by：不一定表示對整個補丁的確認。例如，如果一個補丁
- Co-developed-by: 聲明補丁是由多個開發人員共同創建的；當幾個人在一個補丁上工
- 作時，它用於給出共同作者（除了From:所給出的作者之外）。因爲Co-developed-by:
- 表示作者身份，所以每個Co-developed-by:必須緊跟在相關合作作者的簽署之後。標準
--簽署程序要求Singed-off-by:標籤的順序應儘可能反映補丁的時間歷史，無論作者是通
--過From:還是Co-developed-by:表明。值得注意的是，最後一個Singed-off-by:必須是
-+簽署程序要求Signed-off-by:標籤的順序應儘可能反映補丁的時間歷史，無論作者是通
-+過From:還是Co-developed-by:表明。值得注意的是，最後一個Signed-off-by:必須是
- 提交補丁的開發人員。
- 
- 注意，如果From:作者也是電子郵件標題的From:行中列出的人，則From:標籤是可選的。
+ 	bo = to_vc4_bo(&drm_fb_dma_get_gem_obj(state->fb, 0)->base);
 -- 
-2.34.1
+2.43.0
 
 
