@@ -1,160 +1,99 @@
-Return-Path: <linux-kernel+bounces-125196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C51538921FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:56:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0EEF892204
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F811C213A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:56:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 372B6B21224
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D80137765;
-	Fri, 29 Mar 2024 16:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CA812FB3B;
+	Fri, 29 Mar 2024 17:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cJ5kh/eF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ivNquirn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DAC136E01;
-	Fri, 29 Mar 2024 16:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD06818C1C;
+	Fri, 29 Mar 2024 17:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711731369; cv=none; b=qsFs/zd/S9xfVw8F+TV9LgwTxba6E96bWDuZxBaS5Qj1ubplY3PADA5WE+qEqzhvcFkQtRYXh7ShCTea/lfkGkLYnSDs6wQsNBmbWqNVj96kLKla3iraa6hYnxS/UZhFfqbtH2rr0OJzB/L56dZxrQk8MB0DrC3jYsSoPJMw8LE=
+	t=1711731641; cv=none; b=IvYJzeymCUWJSQI6aRznUjXURgX9jMGJLYxsNNh1rZij3vwomkNHquYMlPquiViaSTRX+KkYn9KZfEQgfbEoMPtyvv6D8h/kEOCXmTqzR/XTadUizpNpzPQrWsR4vBOoNssJGns0fsCAkslbTxyyEvLOu6X2pbcR7LXFm/49kaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711731369; c=relaxed/simple;
-	bh=isBCBT3seLZHai1OgzPx3zwWr4nR668ZJ3SMftDDp6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e9JA8JdPw6KqBrpIY9pXMYvbEQs3MUKMrqQskz/eiEXcg0mutRw53ntwlvEemGzCVsjT32CCCr3ecEO7UCrQWREdnLCeJpNdP25y3br4CQk5URtGVRfLEsLKuh0b9KCri0WwLX11FrH8g82zF36jVJak4hszoinLR9V0DA97oeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cJ5kh/eF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6422C433C7;
-	Fri, 29 Mar 2024 16:56:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711731369;
-	bh=isBCBT3seLZHai1OgzPx3zwWr4nR668ZJ3SMftDDp6g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cJ5kh/eFxvCB7x0HP9o7GJ025aeWR+BDUKfpEeIIYigLiXrGXi/gyZYGwm1M0wIw5
-	 RZ7k6YyugQtGNOCHPSI/Q4LFhlBCbcdGgTklkcpMx2V6f1IKOTHs3ZB7QZp5eTIoi3
-	 u69yhID5We6VtYO8ucXLvNOvfoHL49CS+sepNyKzW/J+NZiNXTMRZZ5eCqZ31Td+68
-	 NorqtgqaNH6A+ShOFysLPth9FfYCFQRw+4Ee/lBwRRpg+k7tLDNIGmNb8Tw1HHP4OY
-	 JF+SGtwvPX0HWLRAzSBautwu9NJ3voJxFVUp7Q4aSyekrr0TY8y9HkKV0JlF4BXBmG
-	 VMUerY5p90Fgw==
-Date: Fri, 29 Mar 2024 22:26:05 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	s=arc-20240116; t=1711731641; c=relaxed/simple;
+	bh=abtOGXDVWzqaXLinMfOXQcAoXBRnh0WQhiDxkaX9K5Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AmuCw89zA5PLLLgZoqGLwHLuFqwfx2RSjy/n8CYQx7J8j2pJ3nnlmlqS1AW5V7pkFx7vLkBY9I9Q5IoENaXuCbuFfCJUu6o2DojaPOBK88WXMN0qvMs3NxzOF1nsCANT/PhWgaViQb+43QhPUfeipJf5yx6IbTInNDFdDMeuUO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ivNquirn; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711731640; x=1743267640;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=abtOGXDVWzqaXLinMfOXQcAoXBRnh0WQhiDxkaX9K5Y=;
+  b=ivNquirnYggzHAWynZCEHE9lIMKKaGSUcKsj1DxDtC3YXrunu9Hh5tTF
+   954FGOHoroQ1Mxyp9GpYDKP6EoITy1NGtEFLy8/OSn43a8Aof2kIlJo5F
+   l14yG8OnkhJ2yOb/cXKmJLrzWowA42vjXl+VbQauDUfPGUGHs2SAh+NJe
+   s0D0UnKzhxBad1wiS61C224CSkTOmASD+8629kMgbAhPu9BppPQh/xrs4
+   4elgYV2PSohBwDYkX7gXIcv+1TJlYjO0FHZ9pm6icD1RV3apTO9Vo9Yiy
+   wilhdYH+BgYoaWowG57neWvYABAy0cgvsX8fn1jA+b/hwZLBjuxVO9yeh
+   Q==;
+X-CSE-ConnectionGUID: Vyjb74ZzRuaqs7Zwdx1D6Q==
+X-CSE-MsgGUID: t1TJXLSoQ56XQK15Go4vDA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="18367597"
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="18367597"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 10:00:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="48231963"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa001.fm.intel.com with ESMTP; 29 Mar 2024 10:00:36 -0700
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Dmitry Safonov <0x7f454c46@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFT 3/7] phy: qcom: qmp-combo: introduce QPHY_MODE
-Message-ID: <ZgbypXhhTGep1r8-@matsya>
-References: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-0-07e24a231840@linaro.org>
- <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-3-07e24a231840@linaro.org>
+Subject: [PATCH net-next 0/2] net: fix variable shadowing spam from headers
+Date: Fri, 29 Mar 2024 17:59:58 +0100
+Message-ID: <20240329170000.3241460-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-3-07e24a231840@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-On 29-02-24, 14:07, Neil Armstrong wrote:
-> Introduce an enum for the QMP Combo PHY modes, use it in the
-> QMP commmon phy init function and default to COMBO mode.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 41 +++++++++++++++++++++++++++----
->  1 file changed, 36 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> index 3721bbea9eae..ac5d528fd7a1 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> @@ -61,6 +61,12 @@
->  
->  #define PHY_INIT_COMPLETE_TIMEOUT		10000
->  
-> +enum qphy_mode {
-> +	QPHY_MODE_COMBO = 0,
-> +	QPHY_MODE_DP_ONLY,
-> +	QPHY_MODE_USB_ONLY,
-> +};
-> +
->  /* set of registers with offsets different per-PHY */
->  enum qphy_reg_layout {
->  	/* PCS registers */
-> @@ -1491,6 +1497,7 @@ struct qmp_combo {
->  
->  	struct mutex phy_mutex;
->  	int init_count;
-> +	enum qphy_mode init_mode;
->  
->  	struct phy *usb_phy;
->  	enum phy_mode mode;
-> @@ -2531,12 +2538,33 @@ static int qmp_combo_com_init(struct qmp_combo *qmp, bool force)
->  	if (qmp->orientation == TYPEC_ORIENTATION_REVERSE)
->  		val |= SW_PORTSELECT_VAL;
->  	writel(val, com + QPHY_V3_DP_COM_TYPEC_CTRL);
-> -	writel(USB3_MODE | DP_MODE, com + QPHY_V3_DP_COM_PHY_MODE_CTRL);
->  
-> -	/* bring both QMP USB and QMP DP PHYs PCS block out of reset */
-> -	qphy_clrbits(com, QPHY_V3_DP_COM_RESET_OVRD_CTRL,
-> -			SW_DPPHY_RESET_MUX | SW_DPPHY_RESET |
-> -			SW_USB3PHY_RESET_MUX | SW_USB3PHY_RESET);
-> +	switch (qmp->init_mode) {
-> +		case QPHY_MODE_COMBO:
+W=12 and/or C=1 are useful to test new code, but warnings coming from
+the generic headers are noisy and distract a lot.
+Fix the two most noisy networking header files by using __UNIQUE_ID()
+for the variables declared inside macros. The rest seems to be clean,
+except for the recent Clang's enum-conversion (which's sanity is still
+under discussion).
 
-Case should be at same indent as switch :-) coding style 101
+Alexander Lobakin (2):
+  net/tcp: fix -Wshadow / Sparse shadow warnings in tcp_hash_fail()
+  netdev_queues: fix -Wshadow / Sparse shadow warnings throughout the
+    file
 
-> +			writel(USB3_MODE | DP_MODE, com + QPHY_V3_DP_COM_PHY_MODE_CTRL);
-> +
-> +			/* bring both QMP USB and QMP DP PHYs PCS block out of reset */
-> +			qphy_clrbits(com, QPHY_V3_DP_COM_RESET_OVRD_CTRL,
-> +					SW_DPPHY_RESET_MUX | SW_DPPHY_RESET |
-> +					SW_USB3PHY_RESET_MUX | SW_USB3PHY_RESET);
-> +			break;
-> +
-> +		case QPHY_MODE_DP_ONLY:
-> +			writel(DP_MODE, com + QPHY_V3_DP_COM_PHY_MODE_CTRL);
-> +
-> +			/* bring QMP DP PHY PCS block out of reset */
-> +			qphy_clrbits(com, QPHY_V3_DP_COM_RESET_OVRD_CTRL,
-> +					SW_DPPHY_RESET_MUX | SW_DPPHY_RESET);
-> +			break;
-> +
-> +		case QPHY_MODE_USB_ONLY:
-> +			writel(USB3_MODE, com + QPHY_V3_DP_COM_PHY_MODE_CTRL);
-> +
-> +			/* bring QMP USB PHY PCS block out of reset */
-> +			qphy_clrbits(com, QPHY_V3_DP_COM_RESET_OVRD_CTRL,
-> +					SW_USB3PHY_RESET_MUX | SW_USB3PHY_RESET);
-> +			break;
-> +	}
->  
->  	qphy_clrbits(com, QPHY_V3_DP_COM_SWI_CTRL, 0x03);
->  	qphy_clrbits(com, QPHY_V3_DP_COM_SW_RESET, SW_RESET);
-> @@ -3545,6 +3573,9 @@ static int qmp_combo_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_node_put;
->  
-> +	/* Set PHY_MODE as combo by default */
-> +	qmp->init_mode = QPHY_MODE_COMBO;
-> +
->  	qmp->usb_phy = devm_phy_create(dev, usb_np, &qmp_combo_usb_phy_ops);
->  	if (IS_ERR(qmp->usb_phy)) {
->  		ret = PTR_ERR(qmp->usb_phy);
-> 
-> -- 
-> 2.34.1
+ include/net/netdev_queues.h | 54 +++++++++++++++++++++++++++----------
+ include/net/tcp_ao.h        |  6 ++++-
+ 2 files changed, 45 insertions(+), 15 deletions(-)
 
 -- 
-~Vinod
+2.44.0
+
 
