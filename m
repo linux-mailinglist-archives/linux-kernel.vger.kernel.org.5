@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-124874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6624C891F1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6226B891DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E83B8B2F008
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:15:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AFE5B26524
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180DD200138;
-	Fri, 29 Mar 2024 12:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C6D20124D;
+	Fri, 29 Mar 2024 12:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gYVeFBT0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZtWzrpf/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FDB1D2AB6;
-	Fri, 29 Mar 2024 12:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460FE1D2AA9;
+	Fri, 29 Mar 2024 12:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716327; cv=none; b=gUovM1fNMnXbGJELl5YCp47VRmDaW+Sn9sluWj/vQhek45o209yYx3+FUAsxAargJd2YDbViCsSe7+U++EkV2Fo8SXGDpUO2rwldbQL9I4ceqq2Ew9DSzMMZlW5dCaZFPoJ96a1A3bk5CxzsBcfsGnKyEsEC7QJC+nJYUmdLn7g=
+	t=1711716328; cv=none; b=lAwGpmAuKuFQvMz3l0x2HalI+CIwMrj88sEcEmyw63YMDmHJJqJjfVvgBI6yKkU2v4vz83vdYqQuVXZKe4DLdP4NOfj0Ka7uv8FaHisWM5ESy/J5/KXm5GUIyz3F9g6HQCLr65EeNUcaBFuhNDXaAXKfldoat1IP1jq8QNgsA3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716327; c=relaxed/simple;
-	bh=Xc3uF32qcm2T61fHfLRI1sXsN9HQIKCA58nheKM7b4Q=;
+	s=arc-20240116; t=1711716328; c=relaxed/simple;
+	bh=/ndiS32DRyHE3+x72pJ8Oco9ucwa/H6pivy8mTQ0AI0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BACYtxpujTCjGASL/ye6pMToy8/viSGNVrhq3ECnc5fFfkZdtps1VGz1Rz5uW1uYKfGR5SyX22kV7bBUQY1fFiSHqObEuoueLsQ5owi6up41o1icFstaB8Imq1gLW2RkIegwFfje7qHILCuYwV9JMYlorp4ZwqSmhLdLgO7rrFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gYVeFBT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B914C433C7;
-	Fri, 29 Mar 2024 12:45:26 +0000 (UTC)
+	 MIME-Version; b=BPST0EbXgIhjj42Amdz/WHhSo1A/jQczXTdecVIKSoE/BT+B0Rou0rjRXS1x4BOefaU3REUa5jiwAkgZxm0RBVe3M9lyD1YpVnmyqBavDcae8dpjTJeABp/kYvvfT6lfEnHoTfOEJ7Xin7lUbrKmw+bxlDUmU5egEErW0qv8d50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZtWzrpf/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A278C43394;
+	Fri, 29 Mar 2024 12:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716326;
-	bh=Xc3uF32qcm2T61fHfLRI1sXsN9HQIKCA58nheKM7b4Q=;
+	s=k20201202; t=1711716328;
+	bh=/ndiS32DRyHE3+x72pJ8Oco9ucwa/H6pivy8mTQ0AI0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gYVeFBT0TM3NnEfkjzygjsAvK43Mr3cJ8G07+Sznq1FArSCc5hu3biBzlz1plGGfG
-	 4Dc16pf/pmL/KP/NAXnoGLAEOBtebKJiVLM/Llkw3zgBfJhP15t4Vu1Dq4iSuu5vjI
-	 6vc5hE9vkDJmUdo5o0CTE7tLPoscK/dVIMCtzYXmGxGATxqO19C7wa6k9R+dnxZIs6
-	 J/iyMeVODpreHerXZirtytuxOOQkAhkaI26hR30kh3EBVPdsm8mQl/B+aggE2LSX2R
-	 0aKwosLJyWNaxVeRFCM/RASUiTBF3MwVDpd1v3SJ+rhn4Mgk5bXhyQyo09vFxw+cAG
-	 NQ8zyeF47yMVw==
+	b=ZtWzrpf/WQWmCthV6uMiNIJRHRhGeyIFWGQW0ajCjS9aXgZkWqpkoiB8+61D9/Qf4
+	 bppDL8+ynruduwId72C5MK4gs8b7Sd/KijD+NryBhP5QRMTguL6Hx7NiPazPri8j/u
+	 H8DGm/6+Jl189jqeugQq1v3UnG+PWM3OiDFfAPoojFw/a94LXJZVpZmIXkFafPpQtA
+	 3qg351+tZdUhkmX2Av0SmerBM3krzvJD6RQIsY+3vVsIPG12RPF1aimbOsbGGMyhSU
+	 1bxAY1sx8RICI0NAVU47sKhh3BR01ioMP65SOdGyRVRKxSD6DG49b+WkZ3YjqCsv+6
+	 TPmBpHG4iQEMw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Manjunath Patil <manjunath.b.patil@oracle.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	markzhang@nvidia.com,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 65/75] RDMA/cm: add timeout to cm_destroy_id wait
-Date: Fri, 29 Mar 2024 08:42:46 -0400
-Message-ID: <20240329124330.3089520-65-sashal@kernel.org>
+	linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 66/75] Input: make input_class constant
+Date: Fri, 29 Mar 2024 08:42:47 -0400
+Message-ID: <20240329124330.3089520-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
 References: <20240329124330.3089520-1-sashal@kernel.org>
@@ -65,100 +65,52 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Manjunath Patil <manjunath.b.patil@oracle.com>
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
 
-[ Upstream commit 96d9cbe2f2ff7abde021bac75eafaceabe9a51fa ]
+[ Upstream commit a4735d40a5da96a637af6e5bf9f6ec8b9d996acd ]
 
-Add timeout to cm_destroy_id, so that userspace can trigger any data
-collection that would help in analyzing the cause of delay in destroying
-the cm_id.
+Since commit 43a7206b0963 ("driver core: class: make class_register() take
+a const *"), the driver core allows for struct class to be in read-only
+memory, so move the input_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-New noinline function helps dtrace/ebpf programs to hook on to it.
-Existing functionality isn't changed except triggering a probe-able new
-function at every timeout interval.
-
-We have seen cases where CM messages stuck with MAD layer (either due to
-software bug or faulty HCA), leading to cm_id getting stuck in the
-following call stack. This patch helps in resolving such issues faster.
-
-kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
-..
-	Call Trace:
-	__schedule+0x2bc/0x895
-	schedule+0x36/0x7c
-	schedule_timeout+0x1f6/0x31f
- 	? __slab_free+0x19c/0x2ba
-	wait_for_completion+0x12b/0x18a
-	? wake_up_q+0x80/0x73
-	cm_destroy_id+0x345/0x610 [ib_cm]
-	ib_destroy_cm_id+0x10/0x20 [ib_cm]
-	rdma_destroy_id+0xa8/0x300 [rdma_cm]
-	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
-	ucma_write+0xe0/0x160 [rdma_ucm]
-	__vfs_write+0x3a/0x16d
-	vfs_write+0xb2/0x1a1
-	? syscall_trace_enter+0x1ce/0x2b8
-	SyS_write+0x5c/0xd3
-	do_syscall_64+0x79/0x1b9
-	entry_SYSCALL_64_after_hwframe+0x16d/0x0
-
-Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
-Link: https://lore.kernel.org/r/20240309063323.458102-1-manjunath.b.patil@oracle.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Link: https://lore.kernel.org/r/20240305-class_cleanup-input-v1-1-0c3d950c25db@marliere.net
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ drivers/input/input.c | 2 +-
+ include/linux/input.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index ff58058aeadca..bf0df6ee4f785 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
- MODULE_DESCRIPTION("InfiniBand CM");
- MODULE_LICENSE("Dual BSD/GPL");
- 
-+#define CM_DESTROY_ID_WAIT_TIMEOUT 10000 /* msecs */
- static const char * const ibcm_rej_reason_strs[] = {
- 	[IB_CM_REJ_NO_QP]			= "no QP",
- 	[IB_CM_REJ_NO_EEC]			= "no EEC",
-@@ -1025,10 +1026,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
- 	}
+diff --git a/drivers/input/input.c b/drivers/input/input.c
+index 8c5fdb0f858ab..aa4683567d180 100644
+--- a/drivers/input/input.c
++++ b/drivers/input/input.c
+@@ -1918,7 +1918,7 @@ static char *input_devnode(const struct device *dev, umode_t *mode)
+ 	return kasprintf(GFP_KERNEL, "input/%s", dev_name(dev));
  }
  
-+static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
-+{
-+	struct cm_id_private *cm_id_priv;
-+
-+	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-+	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
-+	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
-+}
-+
- static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- {
- 	struct cm_id_private *cm_id_priv;
- 	struct cm_work *work;
-+	int ret;
+-struct class input_class = {
++const struct class input_class = {
+ 	.name		= "input",
+ 	.devnode	= input_devnode,
+ };
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 49790c1bd2c43..fa656f30081f6 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -514,7 +514,7 @@ void input_enable_softrepeat(struct input_dev *dev, int delay, int period);
  
- 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
- 	spin_lock_irq(&cm_id_priv->lock);
-@@ -1135,7 +1146,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ bool input_device_enabled(struct input_dev *dev);
  
- 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
- 	cm_deref_id(cm_id_priv);
--	wait_for_completion(&cm_id_priv->comp);
-+	do {
-+		ret = wait_for_completion_timeout(&cm_id_priv->comp,
-+						  msecs_to_jiffies(
-+						  CM_DESTROY_ID_WAIT_TIMEOUT));
-+		if (!ret) /* timeout happened */
-+			cm_destroy_id_wait_timeout(cm_id);
-+	} while (!ret);
-+
- 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
- 		cm_free_work(work);
+-extern struct class input_class;
++extern const struct class input_class;
  
+ /**
+  * struct ff_device - force-feedback part of an input device
 -- 
 2.43.0
 
