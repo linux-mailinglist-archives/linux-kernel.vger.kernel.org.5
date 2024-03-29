@@ -1,62 +1,63 @@
-Return-Path: <linux-kernel+bounces-124605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7177F891A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:03:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2336891A81
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1CE1F26164
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:03:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76BC2284FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886CC1598F2;
-	Fri, 29 Mar 2024 12:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A136915991F;
+	Fri, 29 Mar 2024 12:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BSAlITrh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HIKWbyA4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B054413E8AE;
-	Fri, 29 Mar 2024 12:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6597159906;
+	Fri, 29 Mar 2024 12:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715529; cv=none; b=kgvigaFXLhjxSPmxg5TyyiYDxaVjxomraQrA5LtjtZTFcrIOZsYwijzArH4Bip4bzXxqWzVDGgS6941hK5RqZRDikJuBGQzLcjNm+IBi1e3sLlpFRpakK6M3hU0Zi6DggH2ky+qIf7Az3j1wUsKtbW5CDFYGLUqclDwLke/sQAw=
+	t=1711715532; cv=none; b=r0H8uhG6S6klh9KRP0/V6hRIuR86PuB55NH/ZMJYZvFSDt9pRZMJ8A2abPdSkQakPTPh0tXvzxpK810FWHUUN3XVEo3Fdw/Bc3gNbgyGuOqpLhtWqvJhPJ2M5DttffBOf8YtguaEjAHL+JHdrtcUvuJS2Ds7RyDYlCx9fUeQWn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715529; c=relaxed/simple;
-	bh=2gbxgaV9HQxtMgUcwd23/mQmD2JsamEfUpc8nJ/6i+M=;
+	s=arc-20240116; t=1711715532; c=relaxed/simple;
+	bh=lxmW7oVOGPzC1rcU4r1OOci3u1l4XU32SEiJTBfPIKg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fOEs9tqyZ+niA7ORS/3L/2kWtkGkUooDfbZ0AFHWNX2n0O9QjvBwXuLFCxcTbMkFD5NAWxqgwI3uO7J+1VKBoB9Hgvvds8sAE3n0YRclfUjHCzu9Ar/UsXUriGcV9pgSs49A0CzZFusJ7wORJwmrALKnXSLKp4WbFRNCDS05MQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BSAlITrh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFCDC433F1;
-	Fri, 29 Mar 2024 12:32:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qRgfVPBICJdM9oMAaTS2Y/AKzwdIJmYMBWcZcQgYaAODwS3VxL6o3lt10unNZWvrsEfaQps9OV2zdxUk71WhYyhyvNIk0rMvTFLsCr3mctaSGDFWOXEGjVhpaRDlBL3SUroUWK9z8Fa/uNy8dae1hwt/xk3XP4tfN+noq9VQB80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HIKWbyA4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 034CFC433F1;
+	Fri, 29 Mar 2024 12:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715529;
-	bh=2gbxgaV9HQxtMgUcwd23/mQmD2JsamEfUpc8nJ/6i+M=;
+	s=k20201202; t=1711715531;
+	bh=lxmW7oVOGPzC1rcU4r1OOci3u1l4XU32SEiJTBfPIKg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BSAlITrhWZf2HVASp6e9rDIxU++Bo2oxRlhtssDu2SaZoAQvEJY6W8N66xgVhcp29
-	 l7cVZgTVgNj+eDIkEmRDbM4B90tH1LFDgEyxfGM0vslOjYcvEtQiiO9m9+C7AlyRET
-	 KpaRxTeMGxVjjW+OCKVhQx7AuzpP8u37/WBGzKXZ9rRci3UPv5UfUbZeaIsMBS/CA6
-	 y4ilgVTvjmS0n0UVXThUH7WXkeS+gUV1H/tAQtG5dSonJtz2njkBtdgvZdIfs3eehE
-	 HXEieITnHuKKz36IkIST2LSgWFvqO+2Yv23XDPo7cfE03WX2b7DA5ZAEQzUFGOkghb
-	 porpTUrIHN9Iw==
+	b=HIKWbyA46gGDSufoJD0NfUMpjpNom9X4amAic7xCmCh48TKG61uxeAr3c+ORRPcxX
+	 fXW6KQyifOIq3FFStsIkmSKWaBtRUtHiE+77mbn6zKfD6Gw33I1bVbhyn9VOmRz2uJ
+	 TJmyoDI4JyVYXwudGrzk2JC1wlzo4Y25D7AWI9xcR8Ve1QwLz91ruF7+ZPUWYGYlS8
+	 RxPETKpTexACs9xdQqeAC4CkWKamHvPtZVXOEDbWm3bB5H7zrcUtzJ/MP4zLLAWEnP
+	 SUG2pOf4m9epEsj+uRQwOz789NzKxo4726K4IGTdttFd6zcU4OhAz3kk9yvvH9+dt7
+	 UmIwFu/sZgkmw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	Ariel Elior <aelior@marvell.com>,
-	Sudarsana Kalluru <skalluru@marvell.com>,
-	Manish Chopra <manishc@marvell.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Markus Elfring <elfring@users.sourceforge.net>,
+	Sven Eckelmann <sven@narfation.org>,
+	Simon Wunderlich <sw@simonwunderlich.de>,
 	Sasha Levin <sashal@kernel.org>,
+	mareklindner@neomailbox.ch,
+	a@unstable.cc,
 	davem@davemloft.net,
 	edumazet@google.com,
+	kuba@kernel.org,
 	pabeni@redhat.com,
+	b.a.t.m.a.n@lists.open-mesh.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 02/31] bnx2x: Fix firmware version string character counts
-Date: Fri, 29 Mar 2024 08:31:21 -0400
-Message-ID: <20240329123207.3085013-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 03/31] batman-adv: Return directly after a failed batadv_dat_select_candidates() in batadv_dat_forward_data()
+Date: Fri, 29 Mar 2024 08:31:22 -0400
+Message-ID: <20240329123207.3085013-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123207.3085013-1-sashal@kernel.org>
 References: <20240329123207.3085013-1-sashal@kernel.org>
@@ -66,140 +67,55 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Markus Elfring <elfring@users.sourceforge.net>
 
-[ Upstream commit 5642c82b9463c3263c086efb002516244bd4c668 ]
+[ Upstream commit ffc15626c861f811f9778914be004fcf43810a91 ]
 
-A potential string truncation was reported in bnx2x_fill_fw_str(),
-when a long bp->fw_ver and a long phy_fw_ver might coexist, but seems
-unlikely with real-world hardware.
+The kfree() function was called in one case by
+the batadv_dat_forward_data() function during error handling
+even if the passed variable contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-Use scnprintf() to indicate the intent that truncations are tolerated.
+* Thus return directly after a batadv_dat_select_candidates() call failed
+  at the beginning.
 
-While reading this code, I found a collection of various buffer size
-counting issues. None looked like they might lead to a buffer overflow
-with current code (the small buffers are 20 bytes and might only ever
-consume 10 bytes twice with a trailing %NUL). However, early truncation
-(due to a %NUL in the middle of the string) might be happening under
-likely rare conditions. Regardless fix the formatters and related
-functions:
+* Delete the label “out” which became unnecessary with this refactoring.
 
-- Switch from a separate strscpy() to just adding an additional "%s" to
-  the format string that immediately follows it in bnx2x_fill_fw_str().
-- Use sizeof() universally instead of using unbound defines.
-- Fix bnx2x_7101_format_ver() and bnx2x_null_format_ver() to report the
-  number of characters written, not including the trailing %NUL (as
-  already done with the other firmware formatting functions).
-- Require space for at least 1 byte in bnx2x_get_ext_phy_fw_version()
-  for the trailing %NUL.
-- Correct the needed buffer size in bnx2x_3_seq_format_ver().
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401260858.jZN6vD1k-lkp@intel.com/
-Cc: Ariel Elior <aelior@marvell.com>
-Cc: Sudarsana Kalluru <skalluru@marvell.com>
-Cc: Manish Chopra <manishc@marvell.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20240126041044.work.220-kees@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Acked-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c    |  9 +++++----
- .../net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c    |  2 +-
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c   | 14 +++++++-------
- 3 files changed, 13 insertions(+), 12 deletions(-)
+ net/batman-adv/distributed-arp-table.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-index 4950fde82d175..b04c5b51eb598 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-@@ -147,10 +147,11 @@ void bnx2x_fill_fw_str(struct bnx2x *bp, char *buf, size_t buf_len)
+diff --git a/net/batman-adv/distributed-arp-table.c b/net/batman-adv/distributed-arp-table.c
+index a0233252032dc..521d4952eb515 100644
+--- a/net/batman-adv/distributed-arp-table.c
++++ b/net/batman-adv/distributed-arp-table.c
+@@ -684,7 +684,7 @@ static bool batadv_dat_forward_data(struct batadv_priv *bat_priv,
  
- 		phy_fw_ver[0] = '\0';
- 		bnx2x_get_ext_phy_fw_version(&bp->link_params,
--					     phy_fw_ver, PHY_FW_VER_LEN);
--		strscpy(buf, bp->fw_ver, buf_len);
--		snprintf(buf + strlen(bp->fw_ver), 32 - strlen(bp->fw_ver),
--			 "bc %d.%d.%d%s%s",
-+					     phy_fw_ver, sizeof(phy_fw_ver));
-+		/* This may become truncated. */
-+		scnprintf(buf, buf_len,
-+			 "%sbc %d.%d.%d%s%s",
-+			 bp->fw_ver,
- 			 (bp->common.bc_ver & 0xff0000) >> 16,
- 			 (bp->common.bc_ver & 0xff00) >> 8,
- 			 (bp->common.bc_ver & 0xff),
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c
-index bda3ccc28eca6..f920976c36f0c 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c
-@@ -1132,7 +1132,7 @@ static void bnx2x_get_drvinfo(struct net_device *dev,
+ 	cand = batadv_dat_select_candidates(bat_priv, ip, vid);
+ 	if (!cand)
+-		goto out;
++		return ret;
+ 
+ 	batadv_dbg(BATADV_DBG_DAT, bat_priv, "DHT_SEND for %pI4\n", &ip);
+ 
+@@ -728,7 +728,6 @@ static bool batadv_dat_forward_data(struct batadv_priv *bat_priv,
+ 		batadv_orig_node_put(cand[i].orig_node);
  	}
  
- 	memset(version, 0, sizeof(version));
--	bnx2x_fill_fw_str(bp, version, ETHTOOL_FWVERS_LEN);
-+	bnx2x_fill_fw_str(bp, version, sizeof(version));
- 	strlcat(info->fw_version, version, sizeof(info->fw_version));
- 
- 	strscpy(info->bus_info, pci_name(bp->pdev), sizeof(info->bus_info));
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
-index 02808513ffe45..ea310057fe3af 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
-@@ -6163,8 +6163,8 @@ static void bnx2x_link_int_ack(struct link_params *params,
- 
- static int bnx2x_null_format_ver(u32 spirom_ver, u8 *str, u16 *len)
- {
--	str[0] = '\0';
--	(*len)--;
-+	if (*len)
-+		str[0] = '\0';
- 	return 0;
+-out:
+ 	kfree(cand);
+ 	return ret;
  }
- 
-@@ -6173,7 +6173,7 @@ static int bnx2x_format_ver(u32 num, u8 *str, u16 *len)
- 	u16 ret;
- 
- 	if (*len < 10) {
--		/* Need more than 10chars for this format */
-+		/* Need more than 10 chars for this format */
- 		bnx2x_null_format_ver(num, str, len);
- 		return -EINVAL;
- 	}
-@@ -6188,8 +6188,8 @@ static int bnx2x_3_seq_format_ver(u32 num, u8 *str, u16 *len)
- {
- 	u16 ret;
- 
--	if (*len < 10) {
--		/* Need more than 10chars for this format */
-+	if (*len < 9) {
-+		/* Need more than 9 chars for this format */
- 		bnx2x_null_format_ver(num, str, len);
- 		return -EINVAL;
- 	}
-@@ -6208,7 +6208,7 @@ int bnx2x_get_ext_phy_fw_version(struct link_params *params, u8 *version,
- 	int status = 0;
- 	u8 *ver_p = version;
- 	u16 remain_len = len;
--	if (version == NULL || params == NULL)
-+	if (version == NULL || params == NULL || len == 0)
- 		return -EINVAL;
- 	bp = params->bp;
- 
-@@ -11546,7 +11546,7 @@ static int bnx2x_7101_format_ver(u32 spirom_ver, u8 *str, u16 *len)
- 	str[2] = (spirom_ver & 0xFF0000) >> 16;
- 	str[3] = (spirom_ver & 0xFF000000) >> 24;
- 	str[4] = '\0';
--	*len -= 5;
-+	*len -= 4;
- 	return 0;
- }
- 
 -- 
 2.43.0
 
