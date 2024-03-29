@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-124729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572CB891BE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:35:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FE33891BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9FD41F26922
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:35:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8148F1C26DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C1C1384A9;
-	Fri, 29 Mar 2024 12:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE62178232;
+	Fri, 29 Mar 2024 12:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UY7AlprN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X6uxYtTl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91DAB178233;
-	Fri, 29 Mar 2024 12:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA18178300;
+	Fri, 29 Mar 2024 12:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716022; cv=none; b=NIjRjT9w4Cfq9khPdvTxACJp8o82loynqA0s9r8C44PPJazFu3mqJlj22SEi9Xxc7sw0tx1c2z6lE61ZKwYI5Fjf7AtSDIntMp5kvW6CO12vY6na3XEb2puZZ4zLWcrF+jzv7LiQCr/Gdln5FvXGQOFGgIiozg+3pLcWuzp9K94=
+	t=1711716023; cv=none; b=SZGPhB1inBIUQp44rGhKHhm08/RHC7Eak+2XRMDDmnqvyX0E5vz9U0fcIoLxjfIfoGLssnev4KG7HicYFsP7zBrDhsWJfQ8O9MEi0/ztDjfeX4frlg7WFx1QA13ycmyqvuycqJ/c+8IbMBtquIDgPCwkPnhSeJMaa6YjaFQuqIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716022; c=relaxed/simple;
-	bh=Wn5WD+2CFhXCxhgEcc1PzJJjaGHw/EsSXxUvY9AwRzE=;
+	s=arc-20240116; t=1711716023; c=relaxed/simple;
+	bh=qH4wBsJJjj8SlxCCkzXzWl5dgUByJwVQ9Ltc3P2cF8o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=icRFZYEV/rMqKLew4c1hMnp1/frKRFImpvW2RcDUu5OQdhd2F4HGEopepWQaaTQ+H38Jndtqv08C6kHXQIQOIxvp1gsB+01KtBfbzNrfXAy0TVvZR+3+b4lkll5wp+Apjxl6tG4TX2G0QMYg2vzXTCo1R0NaSRy7VZftqIbB8g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UY7AlprN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD771C43399;
-	Fri, 29 Mar 2024 12:40:21 +0000 (UTC)
+	 MIME-Version; b=krV4tRd0aG6j2xO1VPTo4ld2q3WuETOYQusTSstkKzJIjtYiH5KXfRwJbEKA8s4jN0kXczbAbdmY/x38FK9qyl4Q/gJo7gAqyYu0Bdyr4XTIMLlH/XZAieInagsXpdW4mirm55dCY3q/L4uvIZHfFDE51sIxyXL8U3UxDMeC9Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X6uxYtTl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6CD7C433C7;
+	Fri, 29 Mar 2024 12:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716022;
-	bh=Wn5WD+2CFhXCxhgEcc1PzJJjaGHw/EsSXxUvY9AwRzE=;
+	s=k20201202; t=1711716023;
+	bh=qH4wBsJJjj8SlxCCkzXzWl5dgUByJwVQ9Ltc3P2cF8o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UY7AlprNnnws0egM2RLyRlbwJ1zPgkYZ2dnZG/9cF+S1E9MnEUOFSB6v8neKtv1Ou
-	 H3ugrGWa0W23E9WEfurDao17VHhsS4V4GMIfYKovKoHrfNcYwvojWQirq/7JL2Wkq/
-	 Cwd7qFWX3CLM2NbXRQZtj1/rhNj5x70wrYX5My1ACN0ppC6gNBWLiiuonOJgoNv32w
-	 1t0dTokJr0ZsPBXF7SH6VusCW++l7ECRMeC1s+YjbhyUOFgt9lfHtY28ayjX9XVOj7
-	 XGSqP/HDUkrsJSi5anwPIRCCYQrEvT/eAS6aeCrIn/dpQBbzC1G4YkONirDxAqwauz
-	 yEHJAqUVU+tXA==
+	b=X6uxYtTlBGNB6v7JbjTvtcJN80l3nBOUPf/hkg7w2bKl08nAWrSLPlPyqEt16+Eix
+	 djNf/kqpPsDHM0RT2X163X2vtcb2NqOUz3YIxQYZG4cka5njRR7qxifvEyJUHMc+of
+	 AmePS4ynw6OjPAi1LQp2HytNzT5t1o4BCG74jOi5wIE9CnONEumSMM1CujQ6VaWuMi
+	 p/7QtAwVl7W/RBorvdMUxzY+R2NN2IXig2mTneklk2gXzUO5yk+HOISeoSTHRgwQbq
+	 G6ltsdaHlyXUKrw+bSkC+fOWROKif77izea08+YpsT8Vs3/R0F3YSnccVt0A+XDU1z
+	 Cx4amEDEeqaRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: John Ogness <john.ogness@linutronix.de>,
 	Petr Mladek <pmladek@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.8 20/98] printk: Add this_cpu_in_panic()
-Date: Fri, 29 Mar 2024 08:36:51 -0400
-Message-ID: <20240329123919.3087149-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 21/98] printk: Avoid non-panic CPUs writing to ringbuffer
+Date: Fri, 29 Mar 2024 08:36:52 -0400
+Message-ID: <20240329123919.3087149-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -65,97 +65,91 @@ Content-Transfer-Encoding: 8bit
 
 From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 36652d0f3bf34899e82d31a5fa9e2bdd02fd6381 ]
+[ Upstream commit 779dbc2e78d746250f07c463e13ac603b349f6f3 ]
 
-There is already panic_in_progress() and other_cpu_in_panic(),
-but checking if the current CPU is the panic CPU must still be
-open coded.
+Commit 13fb0f74d702 ("printk: Avoid livelock with heavy printk
+during panic") introduced a mechanism to silence non-panic CPUs
+if too many messages are being dropped. Aside from trying to
+workaround the livelock bugs of legacy consoles, it was also
+intended to avoid losing panic messages. However, if non-panic
+CPUs are writing to the ringbuffer, then reacting to dropped
+messages is too late.
 
-Add this_cpu_in_panic() to complete the set.
+Another motivation is that non-finalized messages already might
+be skipped in panic(). In other words, random messages from
+non-panic CPUs might already get lost. It is better to ignore
+all to avoid confusion.
+
+To avoid losing panic CPU messages, silence non-panic CPUs
+immediately on panic.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20240207134103.1357162-8-john.ogness@linutronix.de
+Link: https://lore.kernel.org/r/20240207134103.1357162-13-john.ogness@linutronix.de
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/printk/internal.h |  1 +
- kernel/printk/printk.c   | 43 +++++++++++++++++++++-------------------
- 2 files changed, 24 insertions(+), 20 deletions(-)
+ kernel/printk/printk.c | 26 ++++++--------------------
+ 1 file changed, 6 insertions(+), 20 deletions(-)
 
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 6c2afee5ef620..ac2d9750e5f81 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -130,6 +130,7 @@ struct printk_message {
- };
- 
- bool other_cpu_in_panic(void);
-+bool this_cpu_in_panic(void);
- bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 			     bool is_extended, bool may_supress);
- 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index d9f20d222293b..742fb479b1d60 100644
+index 742fb479b1d60..336c092632f4e 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -347,6 +347,29 @@ static bool panic_in_progress(void)
- 	return unlikely(atomic_read(&panic_cpu) != PANIC_CPU_INVALID);
- }
+@@ -462,12 +462,6 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+ static DEFINE_MUTEX(syslog_lock);
  
-+/* Return true if a panic is in progress on the current CPU. */
-+bool this_cpu_in_panic(void)
-+{
-+	/*
-+	 * We can use raw_smp_processor_id() here because it is impossible for
-+	 * the task to be migrated to the panic_cpu, or away from it. If
-+	 * panic_cpu has already been set, and we're not currently executing on
-+	 * that CPU, then we never will be.
-+	 */
-+	return unlikely(atomic_read(&panic_cpu) == raw_smp_processor_id());
-+}
-+
-+/*
-+ * Return true if a panic is in progress on a remote CPU.
-+ *
-+ * On true, the local CPU should immediately release any printing resources
-+ * that may be needed by the panic CPU.
-+ */
-+bool other_cpu_in_panic(void)
-+{
-+	return (panic_in_progress() && !this_cpu_in_panic());
-+}
-+
- /*
-  * This is used for debugging the mess that is the VT code by
-  * keeping track if we have the console semaphore held. It's
-@@ -2600,26 +2623,6 @@ static int console_cpu_notify(unsigned int cpu)
- 	return 0;
- }
- 
+ #ifdef CONFIG_PRINTK
 -/*
-- * Return true if a panic is in progress on a remote CPU.
-- *
-- * On true, the local CPU should immediately release any printing resources
-- * that may be needed by the panic CPU.
+- * During panic, heavy printk by other CPUs can delay the
+- * panic and risk deadlock on console resources.
 - */
--bool other_cpu_in_panic(void)
--{
--	if (!panic_in_progress())
--		return false;
+-static int __read_mostly suppress_panic_printk;
 -
+ DECLARE_WAIT_QUEUE_HEAD(log_wait);
+ /* All 3 protected by @syslog_lock. */
+ /* the next printk record to read by syslog(READ) or /proc/kmsg */
+@@ -2293,7 +2287,12 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 	if (unlikely(suppress_printk))
+ 		return 0;
+ 
+-	if (unlikely(suppress_panic_printk) && other_cpu_in_panic())
++	/*
++	 * The messages on the panic CPU are the most important. If
++	 * non-panic CPUs are generating any messages, they will be
++	 * silently dropped.
++	 */
++	if (other_cpu_in_panic())
+ 		return 0;
+ 
+ 	if (level == LOGLEVEL_SCHED) {
+@@ -2778,8 +2777,6 @@ void console_prepend_dropped(struct printk_message *pmsg, unsigned long dropped)
+ bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
+ 			     bool is_extended, bool may_suppress)
+ {
+-	static int panic_console_dropped;
+-
+ 	struct printk_buffers *pbufs = pmsg->pbufs;
+ 	const size_t scratchbuf_sz = sizeof(pbufs->scratchbuf);
+ 	const size_t outbuf_sz = sizeof(pbufs->outbuf);
+@@ -2807,17 +2804,6 @@ bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
+ 	pmsg->seq = r.info->seq;
+ 	pmsg->dropped = r.info->seq - seq;
+ 
 -	/*
--	 * We can use raw_smp_processor_id() here because it is impossible for
--	 * the task to be migrated to the panic_cpu, or away from it. If
--	 * panic_cpu has already been set, and we're not currently executing on
--	 * that CPU, then we never will be.
+-	 * Check for dropped messages in panic here so that printk
+-	 * suppression can occur as early as possible if necessary.
 -	 */
--	return atomic_read(&panic_cpu) != raw_smp_processor_id();
--}
+-	if (pmsg->dropped &&
+-	    panic_in_progress() &&
+-	    panic_console_dropped++ > 10) {
+-		suppress_panic_printk = 1;
+-		pr_warn_once("Too many dropped messages. Suppress messages on non-panic CPUs to prevent livelock.\n");
+-	}
 -
- /**
-  * console_lock - block the console subsystem from printing
-  *
+ 	/* Skip record that has level above the console loglevel. */
+ 	if (may_suppress && suppress_message_printing(r.info->level))
+ 		goto out;
 -- 
 2.43.0
 
