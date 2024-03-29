@@ -1,132 +1,107 @@
-Return-Path: <linux-kernel+bounces-124429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F7B89177A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D874589177E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 040BF1C2223D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:15:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163771C2257D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F73F6A00F;
-	Fri, 29 Mar 2024 11:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFE869E1E;
+	Fri, 29 Mar 2024 11:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S5oioUz2"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="NU1GrEP8"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDD94439E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693704439E
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711710918; cv=none; b=Qodcufja/V0YmmSo/9WrLlgBWHgAcQ9KV2D2I/8nI4HYN4DFxsyaEDClea+frMDyACcT6B+7brqgGPBFsV6wAoK0BHwk0KlrbSFG1TxLOXPGoBeaQS6JsiA2OAZVTXKdg6c/EDM+Ehfizb4mpFm2XHibKxsaNiKQ9DHGKEHEH4A=
+	t=1711710964; cv=none; b=AxmJLonk5zozrNYEQ7d3pQ6SQ0O/eryGhulaNWa0tvVfnK0l+zSyh0Wo44y3ZGKDRpmOcRDim+LRYRdC7Lr+ueD0Ef9a7ht4nAu33IZM7fipHhJUrKZ9bCNH897Qhw4ieglU+AFQkvGUe4XZiJ5kE3CpF6ZRnlYpApLdyYwi+3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711710918; c=relaxed/simple;
-	bh=EOA+jVJLIL4PoU6sggptKp83PTQ9H4I6t2TXmnpH+Mo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DJM1+ehttkis/m8ttdBdqR7eG79S3vKtOf0tZYq/8NYdI7jRQ+2HMduHgBPZei8ROporCCsxMTCYY0D9gK08DouSJaGge9Y8ub8RRpFI6PIy7ve0B3ejFAiCQp32ylmFC4UO+4LBh/tU+bFheuL4n7X2e81XYoSd6wKbNtbCWT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S5oioUz2; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so2746478a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:15:16 -0700 (PDT)
+	s=arc-20240116; t=1711710964; c=relaxed/simple;
+	bh=9qFCQ24+WMyGwKG9pNLGqMNb6w125Z61rcL+j5/le40=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=UB1lEeUxCVIzf3MS6KclEwp+VSBXvNT1569e18MXSaMMJQFiK3tyPXtEhEL7GcTg4ATK0ZdlnG1NkDnQ2Lt+IKS5M5/lYQPr4AJmgD6k3N2J1FoNuaX7n1bPvKAav1k1D+ggm5vXFoPIDMCldKu3BdsXq5D1zbFn+s3XGAgzs7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=NU1GrEP8; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ec7e38b84so1312210f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711710915; x=1712315715; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6y2nKwiZaKwgK5YzfxmEPHK3AhO3OAbsE+oqfU69W60=;
-        b=S5oioUz2IVV0L7TvywOhS+ZfOjnU/G+gzN9LxJsqryWvOmrXrMrVt4TcLhbu9oCTvk
-         fqGE/nMpP+BmJKhx2sZVP6xfqZ1xfnLARTcrMZIJkFHXJrTXQISQEea9fTLQ1k3TK6RX
-         BVmpbKvMC6XhYrITnoMPWLdnLiZ+HrH0rWFxs4C1qgY/zAhM4rjjerTZ2hUx0+HdsfSs
-         PKzgxkXRqC0ZdVFmFK5wPxn6YKtnHoBca4tHSHswjT3LaPJy2n9VyNVFG6yatcLKevIS
-         +tXR+8tNHXSYn84eBNX92xin0E6Rgy9Hvw0wf0P4MFJ1LfL5AXGOAiP3O7i83FTKZZp3
-         Lu8w==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711710959; x=1712315759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6cSRTNdeJ0rKAdmni1uoS6PPPrRP+OSa+PK1yc6fqCg=;
+        b=NU1GrEP8G9o0RVY4vkRsy2Kf+p3L+rZCC7Z3fGWdmtKuqXDyUnIjFImMxNchnxKFDf
+         MyOZz8AxT718gxE+AF546dFCq2T2VCooFJUIv7HrCbFABhQXH/lElv7kIQeCX/+0CodF
+         VRuwg023vlrAGeGNkEaHfjy9Mbuys7frQLw1yyJaumncV0hnrHMRXRVJ+RcJ/lwyE4XA
+         pqHJqZM2p9VavQ9WtzitdQjKQYzqvAjcaVvgFm5SuTF6iq9MbryLliu/3JeJuXEtauVr
+         ey9NYZhKOTR9FtIlluW+QyF14qdp/9ZgYmosEa1RSdcR7qd5qy8/zU7L9a5Z5MUqo8kr
+         YumQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711710915; x=1712315715;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6y2nKwiZaKwgK5YzfxmEPHK3AhO3OAbsE+oqfU69W60=;
-        b=Djiu/WRxMj7ZfbDeNsAHwit5tNl2hGoANocdCBoSgeF9pLWk3pOG8MLQ6D68Rro7r0
-         L9XSvqnfevf6KHTfQnNjDsuqNbLfW6UEZBpA6zeZVx0zfDypyDVsHUSLv/XBxWdRP21P
-         c4YMbDC68fDSAtsXv0DtBv4ctppDLZpcs/Pge4gxH/7/CittdVA2AdA7zEgCKUjD/dLW
-         PQjO7ATWCfogC3ch/Rml4xigCfS+EFro4lKtwrlE0LIY8ouilTUs+0s4X5L89AEW9FET
-         qzXks0xbLC2zYUIhYqtZelXgNCqKv2Ev285I+1aZ15qpbtJYcqY9oJqADxzbFHC3wjac
-         F/4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXQ+k8sQfcmBfFUw7agNWEUhyst4ewTVRvbn88llT85xjH0gOF71jsprgnXBbwYPVIBoalkZugQZRi4jdJyv8efwhcJofN64YYiQ5PA
-X-Gm-Message-State: AOJu0YymiLQaaR6RjGeMOKwGdBmhA1gZ3lLOV747xhmVdo3/vEGM3LAM
-	RMGDIVxhoVaEETtoFsVlPyXg6Tn4zfr/NbqcJdc1XBrptqeSvRtq
-X-Google-Smtp-Source: AGHT+IE5klrgPZzCTIgoZMg7FftfA+RvHdIDLm/hKVpxaSnluYHsG8iorvKRB1Q777aNIaYvqscaaw==
-X-Received: by 2002:a50:aad5:0:b0:568:260b:e502 with SMTP id r21-20020a50aad5000000b00568260be502mr1086610edc.13.1711710915192;
-        Fri, 29 Mar 2024 04:15:15 -0700 (PDT)
-Received: from localhost.localdomain (ip-77-25-34-65.web.vodafone.de. [77.25.34.65])
-        by smtp.gmail.com with ESMTPSA id f4-20020a056402194400b0056c4cdc987esm1894625edz.8.2024.03.29.04.15.14
+        d=1e100.net; s=20230601; t=1711710959; x=1712315759;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6cSRTNdeJ0rKAdmni1uoS6PPPrRP+OSa+PK1yc6fqCg=;
+        b=E081GsvGYWQc57OdUNO7NC+mwQLK6F//ejK5SLcwi1hR054LZHCVq52ZVrJufCzu60
+         X8EHUg0sqXCCPuAnJhRpGsiVRxhm97K6RJBJxghxrX9dCrpUtNzom0ccFKa5rk3kNqZI
+         eFRtQ+slDxR8OGh+9/uVyiEKTSsWWge19s9l7rcrN2bpWeQqqyx5J61Z0J8QYTCyX8Vb
+         WVQsaXxC87G6pHvT7Wmk2E2njtwwxIc1j5HBEsFseLLCsTh+2nOwMTbDesmLvQx1+h95
+         fQhzU5A0JFpfx4RNrJF6dEw8VIGfn+R+ca/VJ/eqx5iqvibt7TSlyEF68IBzWV3JYw2S
+         0OTA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwj/YurYXpcdP9LL+Dv2l97ysqmYjPlSTUXLdfPuNsvmMacSA/CQMMzOxd/KloXBWgy/9uINbc9JrCnEitDYaF0QAss09HYPi0/bjh
+X-Gm-Message-State: AOJu0YzoGvCsARu2oeG2JKPb52F1I2OZs7SL2ehh9ivSMcfswKpE3JVC
+	tLGQU/hQtEUQx1F1c6aLuSQ36l3AOIxu0rOAbD4dHytKlmcAf9ZpMDD0Eyafyuc=
+X-Google-Smtp-Source: AGHT+IEQJ3nF483DRIx3ovQYuMQsN/YY2JEmHM4jst0i0/VT097BhrM9JqARNl4Cnfbc36mkEMPz7w==
+X-Received: by 2002:adf:e011:0:b0:33e:7896:a9d7 with SMTP id s17-20020adfe011000000b0033e7896a9d7mr1233872wrh.67.1711710959408;
+        Fri, 29 Mar 2024 04:15:59 -0700 (PDT)
+Received: from toaster.baylibre.com ([2a01:e0a:3c5:5fb1:f8f5:63d4:de5b:e4de])
+        by smtp.googlemail.com with ESMTPSA id l14-20020adfa38e000000b0033e93e00f68sm3985741wrb.61.2024.03.29.04.15.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 04:15:14 -0700 (PDT)
-From: Michael Straube <straube.linux@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: philipp.g.hortmann@gmail.com,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8192e: remove unnecessary wrapper
-Date: Fri, 29 Mar 2024 12:14:58 +0100
-Message-ID: <20240329111458.14961-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        Fri, 29 Mar 2024 04:15:58 -0700 (PDT)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: neil.armstrong@linaro.org, mturquette@baylibre.com, 
+ khilman@baylibre.com, martin.blumenstingl@googlemail.com, sboyd@kernel.org, 
+ Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: kernel@salutedevices.com, rockosov@gmail.com, 
+ linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20240320155512.3544-1-ddrokosov@salutedevices.com>
+References: <20240320155512.3544-1-ddrokosov@salutedevices.com>
+Subject: Re: [PATCH v1 0/4] clk: meson: treewide: define maximum register
+ in regmap config
+Message-Id: <171171095856.1276233.8031713051223267564.b4-ty@baylibre.com>
+Date: Fri, 29 Mar 2024 12:15:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-_rtl92e_dm_ctrl_initgain_byrssi() is just a wrapper around
-_rtl92e_dm_ctrl_initgain_byrssi_driver(). Using a wrapper here adds
-no value, remove it. Keep the name _rtl92e_dm_ctrl_initgain_byrssi().
+Applied to clk-meson (v6.10/drivers), thanks!
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
-Compile-tested only.
+[1/4] clk: meson: a1: peripherals: determine maximum register in regmap config
+      https://github.com/BayLibre/clk-meson/commit/b6e2c6548074
+[2/4] clk: meson: a1: pll: determine maximum register in regmap config
+      https://github.com/BayLibre/clk-meson/commit/acc628adc363
+[3/4] clk: meson: s4: peripherals: determine maximum register in regmap config
+      https://github.com/BayLibre/clk-meson/commit/32fba1c16576
+[4/4] clk: meson: s4: pll: determine maximum register in regmap config
+      https://github.com/BayLibre/clk-meson/commit/5995a2f26f83
 
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-index 4c67bfe0e8ec..aebe67f1a46d 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-@@ -163,7 +163,6 @@ static	void	_rtl92e_dm_check_tx_power_tracking(struct net_device *dev);
- 
- static void _rtl92e_dm_dig_init(struct net_device *dev);
- static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev);
--static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev);
- static void _rtl92e_dm_initial_gain(struct net_device *dev);
- static void _rtl92e_dm_pd_th(struct net_device *dev);
- static void _rtl92e_dm_cs_ratio(struct net_device *dev);
-@@ -929,11 +928,6 @@ static void _rtl92e_dm_dig_init(struct net_device *dev)
- 		dm_digtable.rx_gain_range_min = DM_DIG_MIN;
- }
- 
--static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
--{
--	_rtl92e_dm_ctrl_initgain_byrssi_driver(dev);
--}
--
- /*-----------------------------------------------------------------------------
-  * Function:	dm_CtrlInitGainBeforeConnectByRssiAndFalseAlarm()
-  *
-@@ -952,7 +946,7 @@ static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
-  *
-  ******************************************************************************/
- 
--static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev)
-+static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 	u8 i;
--- 
-2.44.0
+Best regards,
+--
+Jerome
 
 
