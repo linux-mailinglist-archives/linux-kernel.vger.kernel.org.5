@@ -1,59 +1,54 @@
-Return-Path: <linux-kernel+bounces-124727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD5E891BDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:35:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA74A891BDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:35:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF5BDB21368
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:35:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3F11C26CE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC2D17821C;
-	Fri, 29 Mar 2024 12:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5920178236;
+	Fri, 29 Mar 2024 12:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RC1guOuC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RulDcYR4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF43E178205;
-	Fri, 29 Mar 2024 12:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F14178221;
+	Fri, 29 Mar 2024 12:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716020; cv=none; b=KBwc+CI3uQ/jx6L4cCsgFU4JMUTQzRiexAUq9n33h/ET6xOl3ZkH1uMuFbEEW0Y1h9S7yFl6JFg7KMvuhWGGEOBjZcKwQ5tJxZw0RWsGFJbXf1seUapMyCBkyjbopqcz5Vi6iwq5A45fbMtVFyhbvJtAgvjt3G69bxebntQ12Uw=
+	t=1711716021; cv=none; b=k4wOTwI4kRIh8AoayOluuuwwaHN9bSTpOedVjG4tfD5gA4ccD1JfXIx6RgX3i5VbmIkTJ/TQKKRMZSzMaE238X+wvXfC1Q3dtsBcKyf7YgIQ1TZKtHXJjH/PL8dT0gKJj2FdVobLirQd6fSjpoOO3xaXknVc50cAwOQzRStyK0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716020; c=relaxed/simple;
-	bh=24mpTUxu3EPleptzaMEqL9rwWlByY7e/6uMWdLp/ep4=;
+	s=arc-20240116; t=1711716021; c=relaxed/simple;
+	bh=clxWihJjspTTiqyEKqg1yvayyGIOfGSuJL9pp69ouIA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rF4RJpfSnkz9HxrPlli+utfG5VQ9gOCOpnYvMNNj2xImzUbgxLN1KoCAwIEMUe1oEYhvRCrY7SsRXE1wl9KlbEjrQi57TP53b3zsdZ5sqsETKK8qYq8u//02hl0CR8zET8gksCvB++xM2SpvWh/PM8o8oTghpRHJaVRY6jsPgvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RC1guOuC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48036C43390;
-	Fri, 29 Mar 2024 12:40:19 +0000 (UTC)
+	 MIME-Version; b=h3UrH+dHNddJrHYM0AtkvSaBW5ArR8QyjeDs+TVwMfdRA7EKQL2k6ktDpKdAxPdLwmtawXHvoig4TE9g8ZVbcPeH2j0ed5iLvucHS1yw98AOiWX6c//5oNr0NX/1IPOhJKGNlgPhxn0q4ICEVx2AZOvex4R7OE49JKWGgp2qh+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RulDcYR4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE0DBC433F1;
+	Fri, 29 Mar 2024 12:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716020;
-	bh=24mpTUxu3EPleptzaMEqL9rwWlByY7e/6uMWdLp/ep4=;
+	s=k20201202; t=1711716021;
+	bh=clxWihJjspTTiqyEKqg1yvayyGIOfGSuJL9pp69ouIA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RC1guOuCeO2FNHVMCIXPErpU2xuxwrpIm2xBaaPmdsNUczjYQvRY4tL7Nz7P5I0ls
-	 EsWG9JljX5O7Wo/l0ob7HzsfSteHUzbMsZNzqMWuKO3K1oX2YuyM8gLosB/UhyM4ds
-	 1/qYoogQuzCAQCtQI+/jsgOg61aTS6b96fvj0UP+Up1jAbTOHqfeV7IM8Nxs4gMNkt
-	 1AeBKDWK5KGqcX2yD5msnJnaS6hrfzeb5w9DYHdvmK0ZnqMqkDmX+buqj/9FhRGZlS
-	 1lgI3vAPy4XQaHXjFOWQ3I4AmheUyv3bNK1kP9/97ob8Y3/CESCkm2YZRG8MKL0bRq
-	 gD16fKOgK5vRg==
+	b=RulDcYR4PYxvCisoNsTeFWA/dnjd6YjHDBMI23hNP1NiPNnsEeGEZlkn/aejH3qzF
+	 4f7Ohl7WcAmMeKR4KByGePTEuf2rw5Jvs34Z7r7PSlSGNISd3EhGQ/6hKdk9I3y3Dw
+	 Kwcv2tqSuE7cHgbv0aSIKcGUSbhwZfI5auoKILkkq+UtyR6B2RnxepNgKwG2RoXIK0
+	 CEyJKemqEvD1pFgeoLqPjW5Qv43waF/T0gOdsfqme8shiotVJaS9WgoLZHi9SiqL2/
+	 rlUDkeXzerG9JkQR2OpTpo7n+XrRrF1W07CEoWInDT2Ja+WOWumizr7zbtL8Kcss6T
+	 WnXXI2sOjft3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Justin Tee <justin.tee@broadcom.com>,
-	Himanshu Madhani <himanshu.madhani@oracle.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Sasha Levin <sashal@kernel.org>,
-	james.smart@broadcom.com,
-	dick.kennedy@broadcom.com,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 18/98] scsi: lpfc: Fix possible memory leak in lpfc_rcv_padisc()
-Date: Fri, 29 Mar 2024 08:36:49 -0400
-Message-ID: <20240329123919.3087149-18-sashal@kernel.org>
+Cc: John Ogness <john.ogness@linutronix.de>,
+	Petr Mladek <pmladek@suse.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 19/98] printk: For @suppress_panic_printk check for other CPU in panic
+Date: Fri, 29 Mar 2024 08:36:50 -0400
+Message-ID: <20240329123919.3087149-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -68,43 +63,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Justin Tee <justin.tee@broadcom.com>
+From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 2ae917d4bcab80ab304b774d492e2fcd6c52c06b ]
+[ Upstream commit 0ab7cdd00491b532591ef065be706301de7e448f ]
 
-The call to lpfc_sli4_resume_rpi() in lpfc_rcv_padisc() may return an
-unsuccessful status.  In such cases, the elsiocb is not issued, the
-completion is not called, and thus the elsiocb resource is leaked.
+Currently @suppress_panic_printk is checked along with
+non-matching @panic_cpu and current CPU. This works
+because @suppress_panic_printk is only set when
+panic_in_progress() is true.
 
-Check return value after calling lpfc_sli4_resume_rpi() and conditionally
-release the elsiocb resource.
+Rather than relying on the @suppress_panic_printk semantics,
+use the concise helper function other_cpu_in_progress(). The
+helper function exists to avoid open coding such tests.
 
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Link: https://lore.kernel.org/r/20240131185112.149731-3-justintee8345@gmail.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20240207134103.1357162-7-john.ogness@linutronix.de
+Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_nportdisc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/printk/printk.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
-index d9074929fbab8..b147304b01fa1 100644
---- a/drivers/scsi/lpfc/lpfc_nportdisc.c
-+++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
-@@ -748,8 +748,10 @@ lpfc_rcv_padisc(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
- 				/* Save the ELS cmd */
- 				elsiocb->drvrTimeout = cmd;
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index f2444b581e16c..d9f20d222293b 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2270,8 +2270,7 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 	if (unlikely(suppress_printk))
+ 		return 0;
  
--				lpfc_sli4_resume_rpi(ndlp,
--					lpfc_mbx_cmpl_resume_rpi, elsiocb);
-+				if (lpfc_sli4_resume_rpi(ndlp,
-+						lpfc_mbx_cmpl_resume_rpi,
-+						elsiocb))
-+					kfree(elsiocb);
- 				goto out;
- 			}
- 		}
+-	if (unlikely(suppress_panic_printk) &&
+-	    atomic_read(&panic_cpu) != raw_smp_processor_id())
++	if (unlikely(suppress_panic_printk) && other_cpu_in_panic())
+ 		return 0;
+ 
+ 	if (level == LOGLEVEL_SCHED) {
 -- 
 2.43.0
 
