@@ -1,54 +1,63 @@
-Return-Path: <linux-kernel+bounces-124500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3170D8918F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E385F8918F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54F7D1C24778
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 206441C24B61
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A626313F45A;
-	Fri, 29 Mar 2024 12:27:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5866413F43E;
+	Fri, 29 Mar 2024 12:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a1Dms+NB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Exkmj11v"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E387C13F43E;
-	Fri, 29 Mar 2024 12:27:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED4713FD95;
+	Fri, 29 Mar 2024 12:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715245; cv=none; b=mnMk7EpICEVwnOfh0LbBDZ1bewudtZixHugDXUcOJQm6Xms6HyEFXROSxjbRwzZlY4NUUyDKy6HC0X/5xC+j8IPj9IpSrM/Su5AaUiWmcSZBbQ8XnbyQUtASliK4s353YZvuc9j7UUxCMS06zFZfizQxwm6ZQY1iEkkxFWElYS4=
+	t=1711715247; cv=none; b=KpChTREwm7UH8UhG9+BEZmS2b8Tw9Cq4FVhSLubyU3qHo04EkaWuGsvWWXI2C9rvLfyWE1ZobH53OZvuKBYu/iKT59+bumieihp0G9em+mCw9OLLb7VJvXZ1gyPDsTJXrhclsOPE0QRFFJQ0eo7CV9mG3znW4GdLGOfRjV4LxNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715245; c=relaxed/simple;
-	bh=qH4wBsJJjj8SlxCCkzXzWl5dgUByJwVQ9Ltc3P2cF8o=;
+	s=arc-20240116; t=1711715247; c=relaxed/simple;
+	bh=WBxuzQAL7Uk/oH50pW4tkZDR4/xjBoDCxy6UmwLkmH8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aYfdpfcUo7zhl63y4ZHr7j88FIKASaVfmX+tEGWxPSERJgSDXbzFZX3BqzVl1S7uRgK+ghRr4fEzDw2XYnWvvWImIuuq2qAZy/UXPafck/U5yvOaSlkK1dWVnQyBuxbrZqW2TKe/AKvJ2PQXl3yBJKhydwfQbZaFrsB/AmFfVXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a1Dms+NB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFA2CC433C7;
-	Fri, 29 Mar 2024 12:27:23 +0000 (UTC)
+	 MIME-Version; b=n5bHptH2/qSegpLuPo6tOVhUk1Uef0Xw/YhpkEzcVd0xgeHJbO68sORcGoOABylgFClQoZWAuooMi+k2HuSrLafB2gooGd92lxdZ5Zrv8EVB54TvjTb0+MsqbeLlYEpRvCHodVG6FoztmkKzXGEhRbZh1NsreObnzl/g9vD4Bdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Exkmj11v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A922FC43399;
+	Fri, 29 Mar 2024 12:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715244;
-	bh=qH4wBsJJjj8SlxCCkzXzWl5dgUByJwVQ9Ltc3P2cF8o=;
+	s=k20201202; t=1711715247;
+	bh=WBxuzQAL7Uk/oH50pW4tkZDR4/xjBoDCxy6UmwLkmH8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=a1Dms+NBNx1bEWOHhXp6ltUiV6dYRV+0HHYYSp3gSUX+40S8wnG905uFUnqej5dLw
-	 58CIyo5NibgK9mqqt5VTU8lSDVsCYQppOlsWmPNwkJdZjEe9wCZPJ715qFgp+QfLbS
-	 1DtlzUn7oaLFQAZ5IM0cb6Ay6BdKzRr51p0UtrYpPo4O9/UK4fyWdk0w5cynZqc9Bf
-	 wjMCEZ81uRaeOAhK/MLY3eU15uipNrldw2ZrbCG7N6ho34cSJ5W9cg8EP6V+NKtXFJ
-	 MYLXmVhSMQq61ez5je1oiqPW2eTAdFmBJvSDxtr8k+VRklHWw3AanRSYqf4ydlec8+
-	 OlYEZ4IZyYSxg==
+	b=Exkmj11vX/KzrpxhDEF880W1yZjsZkEGrSLLuF9PZF6bTb+eHsBEDwET4ir2uksCv
+	 /JWIRLMluaqKaEISobCN3b/bnrgY2jtpPT/Osyu6bkJga8NwgsCN/IIu0SVgDnryLP
+	 bF686dVa7exI1p/vQZTMhDfT4JWe7pslKuBgmAJzOMUcIRVnhqo2tiX7OTbTlwoI0j
+	 /BP5HhI+AY1oFIwSCqEx4lNH0Q6w518Twk4/Viv+8LU6yAssfr78aUUllkdNVpYs2K
+	 3w9AV9RrNMq8AEwR8YULaHozxHGiAj7fsNLhicgA8yX3POtlNBjzvTG5kCn2XRHxpQ
+	 yn2lQTCUD07TA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: John Ogness <john.ogness@linutronix.de>,
 	Petr Mladek <pmladek@suse.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.8 19/68] printk: Avoid non-panic CPUs writing to ringbuffer
-Date: Fri, 29 Mar 2024 08:25:15 -0400
-Message-ID: <20240329122652.3082296-19-sashal@kernel.org>
+	Sasha Levin <sashal@kernel.org>,
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	jpoimboe@kernel.org,
+	lukas@wunner.de,
+	bhe@redhat.com,
+	arnd@arndb.de,
+	wangkefeng.wang@huawei.com,
+	ubizjak@gmail.com,
+	feng.tang@intel.com
+Subject: [PATCH AUTOSEL 6.8 20/68] panic: Flush kernel log buffer at the end
+Date: Fri, 29 Mar 2024 08:25:16 -0400
+Message-ID: <20240329122652.3082296-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
 References: <20240329122652.3082296-1-sashal@kernel.org>
@@ -65,91 +74,46 @@ Content-Transfer-Encoding: 8bit
 
 From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 779dbc2e78d746250f07c463e13ac603b349f6f3 ]
+[ Upstream commit d988d9a9b9d180bfd5c1d353b3b176cb90d6861b ]
 
-Commit 13fb0f74d702 ("printk: Avoid livelock with heavy printk
-during panic") introduced a mechanism to silence non-panic CPUs
-if too many messages are being dropped. Aside from trying to
-workaround the livelock bugs of legacy consoles, it was also
-intended to avoid losing panic messages. However, if non-panic
-CPUs are writing to the ringbuffer, then reacting to dropped
-messages is too late.
+If the kernel crashes in a context where printk() calls always
+defer printing (such as in NMI or inside a printk_safe section)
+then the final panic messages will be deferred to irq_work. But
+if irq_work is not available, the messages will not get printed
+unless explicitly flushed. The result is that the final
+"end Kernel panic" banner does not get printed.
 
-Another motivation is that non-finalized messages already might
-be skipped in panic(). In other words, random messages from
-non-panic CPUs might already get lost. It is better to ignore
-all to avoid confusion.
-
-To avoid losing panic CPU messages, silence non-panic CPUs
-immediately on panic.
+Add one final flush after the last printk() call to make sure
+the final panic messages make it out as well.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20240207134103.1357162-13-john.ogness@linutronix.de
+Link: https://lore.kernel.org/r/20240207134103.1357162-14-john.ogness@linutronix.de
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/printk/printk.c | 26 ++++++--------------------
- 1 file changed, 6 insertions(+), 20 deletions(-)
+ kernel/panic.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 742fb479b1d60..336c092632f4e 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -462,12 +462,6 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
- static DEFINE_MUTEX(syslog_lock);
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 2807639aab51d..f22d8f33ea147 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -446,6 +446,14 @@ void panic(const char *fmt, ...)
  
- #ifdef CONFIG_PRINTK
--/*
-- * During panic, heavy printk by other CPUs can delay the
-- * panic and risk deadlock on console resources.
-- */
--static int __read_mostly suppress_panic_printk;
--
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
- /* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
-@@ -2293,7 +2287,12 @@ asmlinkage int vprintk_emit(int facility, int level,
- 	if (unlikely(suppress_printk))
- 		return 0;
- 
--	if (unlikely(suppress_panic_printk) && other_cpu_in_panic())
+ 	/* Do not scroll important messages printed above */
+ 	suppress_printk = 1;
++
 +	/*
-+	 * The messages on the panic CPU are the most important. If
-+	 * non-panic CPUs are generating any messages, they will be
-+	 * silently dropped.
++	 * The final messages may not have been printed if in a context that
++	 * defers printing (such as NMI) and irq_work is not available.
++	 * Explicitly flush the kernel log buffer one last time.
 +	 */
-+	if (other_cpu_in_panic())
- 		return 0;
- 
- 	if (level == LOGLEVEL_SCHED) {
-@@ -2778,8 +2777,6 @@ void console_prepend_dropped(struct printk_message *pmsg, unsigned long dropped)
- bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 			     bool is_extended, bool may_suppress)
- {
--	static int panic_console_dropped;
--
- 	struct printk_buffers *pbufs = pmsg->pbufs;
- 	const size_t scratchbuf_sz = sizeof(pbufs->scratchbuf);
- 	const size_t outbuf_sz = sizeof(pbufs->outbuf);
-@@ -2807,17 +2804,6 @@ bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 	pmsg->seq = r.info->seq;
- 	pmsg->dropped = r.info->seq - seq;
- 
--	/*
--	 * Check for dropped messages in panic here so that printk
--	 * suppression can occur as early as possible if necessary.
--	 */
--	if (pmsg->dropped &&
--	    panic_in_progress() &&
--	    panic_console_dropped++ > 10) {
--		suppress_panic_printk = 1;
--		pr_warn_once("Too many dropped messages. Suppress messages on non-panic CPUs to prevent livelock.\n");
--	}
--
- 	/* Skip record that has level above the console loglevel. */
- 	if (may_suppress && suppress_message_printing(r.info->level))
- 		goto out;
++	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
++
+ 	local_irq_enable();
+ 	for (i = 0; ; i += PANIC_TIMER_STEP) {
+ 		touch_softlockup_watchdog();
 -- 
 2.43.0
 
