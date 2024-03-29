@@ -1,329 +1,172 @@
-Return-Path: <linux-kernel+bounces-125254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D21E78922D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:38:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF7548922DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:38:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59B19287AD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:38:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A6D61C242CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6CB12FB27;
-	Fri, 29 Mar 2024 17:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9871369A7;
+	Fri, 29 Mar 2024 17:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="DYxLI+Qj"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A0Vm1RuA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721EB1C0DDB
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2C4482E9;
+	Fri, 29 Mar 2024 17:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711733890; cv=none; b=MMsyk03IeCY8NQhsq1tMsGc+dQTrdgjh+pnnOtz7LPkwi9il0ciJAM41mKrlSyGnIyhwKhkjvQ6vUREaNk7l3MzdJJ7GcZ5fMVZu5EM0LcywdPWyX9nEvzsrMfEotT/rB5y/P993fVUTPkcPW5/29zDnfHfacdWE0GOgnPZ8fGk=
+	t=1711733930; cv=none; b=h2ZHJdUuGdc39B6we9Zw8B7FNi/6cpDCVFeJqqYk52UyBMwG8E1JAzgqrkWB7dtieI97hBbJnEJGYHKrBKSBv2hSlknr//IcY/1kQdPdqkWsMhycWehyr80+IctOaIuu1jpEMGMghhFZ9S3rgLIYi9UNDvXm4Fwfg76gviV+OdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711733890; c=relaxed/simple;
-	bh=A3T3/NtUbmFZtQ0gW7Fr3BDkUtAI87nAJZ0tD7UCWuY=;
+	s=arc-20240116; t=1711733930; c=relaxed/simple;
+	bh=2hBaQawS2DQq+hSZa4nEoohpdH7i4ouzg4+WFmp/jBs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c8XohkmnWsJWZXKjIw3loF+aUbUYKkSxwXDgpHj617BUHQi1KvbjZOJTCMX+yCC7j5pzevZ1kSDCcKuvA/2hxYtiEAPioBu1Tuxv7e3KojkSFdO27mSUoEaAMjJU/Vsn1GopQ/7WrcZ8YaB8mcki+GNpOFv8vahP7wCQyzjOrB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=DYxLI+Qj; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7e0f4106a8bso727683241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711733885; x=1712338685; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WlyK0GsgoCgydTuF54QdUy3m/0gMb+bS62Xjc2zqhtc=;
-        b=DYxLI+QjO50813Yj6pHL92lkWyHdHdQN2DOEAtAjy/5IGaSwrJnj1+JOf9W2ngt2eM
-         H3utuhpTgPaBMVesx4Eg3wjzRNMMEwZPgpo60TSe8NUys0UV/KTMhnrFcFUX/7WJuSdv
-         kHukbFWrEAQiFjwsU/YCznNjSI9rojAzxkD0jnYwqv/cJCKZCQmL41BaC4v3o/SS4UIZ
-         LGMnggTevVz50CEY3R0HsyozkbGH8ruHnsE5IGHx1ZpGKT9nQFOE4VhogKVY0PGF41F5
-         wHCJCKKzeOypbN/ZxxKxSbbMGfOSgugWWfsHq2mZVbrnlVyKQ6wgWKYXwWVB9S2dChXv
-         O5ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711733885; x=1712338685;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WlyK0GsgoCgydTuF54QdUy3m/0gMb+bS62Xjc2zqhtc=;
-        b=K3aE9iiCAhguUfxSirgVxKWoh/S1WkLJNAJXqlMAsWMqaASWjNN1Ztfo1RHVxzs/UN
-         IBpnuSJF7ImRPq4cpGUIsV0ODd/Xr9JUd4xTV4LjxQYODBLNN1I/cPayUHXCNdAxkCr0
-         cg7mB1+lA6OqKnBVuSEFVWz/zWYa6A8DPB0mwHU3qfCRBnTvTeFljclFLamAQL/USkEv
-         dZkfaWPITPrNoT73U3yii6D4PbN3oovXCgzGiIDoNr1ojrKxbjX3lW1UVaVgLm6cEWyn
-         Ihldd/vcYVTQySR9SFI0R1/hYMwjjDDuF9/nHgW7YF+DRX0pSWMfbCnQwbenyyzQn/MG
-         getw==
-X-Forwarded-Encrypted: i=1; AJvYcCWG4wpLqQJYb90n3/K9ItShPgbxuaGO3ABGEyMtH9qVFEL7ZZ4Byz6dztXZ3f54pRvly8VO77KoCrF8ITabXskuMKEr0rMBFFX+Ru17
-X-Gm-Message-State: AOJu0YwzuClQuggNmHdpj29S9kQWhtTY61yTEoGV1W4kyACYpgJ0YQEv
-	RUN62HBvLKzvZo7ipEl21YaQQFBLCa7RMH28hJneyOyp/o7wXVyaeHICNJUUW/k=
-X-Google-Smtp-Source: AGHT+IGzqLzWenW0m8fVk2VN1NboLjmTD5+JYMrdN6AtpN2oBrfl0vU9KSwgdLYKqgnquRBr8cYZWw==
-X-Received: by 2002:a05:6122:3982:b0:4d8:7359:4c25 with SMTP id eq2-20020a056122398200b004d873594c25mr2716577vkb.12.1711733885020;
-        Fri, 29 Mar 2024 10:38:05 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:bb1f])
-        by smtp.gmail.com with ESMTPSA id oj15-20020a056214440f00b00698e65cdfefsm1228931qvb.87.2024.03.29.10.38.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 10:38:04 -0700 (PDT)
-Date: Fri, 29 Mar 2024 13:37:59 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Nhat Pham <nphamcs@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
- pages handling
-Message-ID: <20240329173759.GI7597@cmpxchg.org>
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-7-yosryahmed@google.com>
- <20240328193149.GF7597@cmpxchg.org>
- <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com>
- <20240328210709.GH7597@cmpxchg.org>
- <CAKEwX=OPDLxH-0-3F+xOc2SL5Ouj-R-HEC5QQrW+Q9Fn8pyeRg@mail.gmail.com>
- <CAJD7tkaGBofWm1eGBffEtpuKUDBVB_6RfHbYKQSKOX3fKn2jeg@mail.gmail.com>
- <CAJD7tkbKY0T6jd5v_GhNFyCO0578SNqfMgs1ZrZiCckY05hzZA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CkwuwiYsSixuJYyWP3vguB3gq4R1RqXbbpz4MFoz30U/QskRkG3AMowPniXou23jrfr2k0XOwvpRe8Rzm3xdam8Lyyj/oxH1F77DNBBI3U9SuQ34hM7jR4w88i5gDb7iMC7bIFss8sP5R8f/H84LnQpHyBz4QI31vdBf3hhiyFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A0Vm1RuA; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711733928; x=1743269928;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2hBaQawS2DQq+hSZa4nEoohpdH7i4ouzg4+WFmp/jBs=;
+  b=A0Vm1RuAXVl54LN1ZL8oFxlb/7vpKFUXh4MDWJbH7vfbckXCtqwCrQoO
+   MGeoMPhMGXPhpeN9xYt9IrtkR6zzDRjzLPLMgv0ixtw0WNFvssH5ex0Eu
+   cLMuKhQ/lpRpYuN6AqN2G/x0lvSp0bnXzrNuiGMWG0JXd3x6pJzhGi3QJ
+   CzuC6pnm+/nscvaqJOYZi+5ZtAdOTp5EIbwXmmtwat5ohJQ+utIyTY3JB
+   8c434NwiHhOYVcYthw9Q1qZIMA8DHUcFK1fu5ex5ffHgKsCEPto0cFx6v
+   gDSO76vuVB8uYy83RBZDtg65f7RX+WySYydQ+Q+QXoouXpxvo0alqLseM
+   g==;
+X-CSE-ConnectionGUID: 387IWgCGQoKErZwxn70UxA==
+X-CSE-MsgGUID: OEt/rMpWSTqXsnUrNUUn2w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="29413577"
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="29413577"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 10:38:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="17669687"
+Received: from unknown (HELO intel.com) ([10.247.118.231])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 10:38:17 -0700
+Date: Fri, 29 Mar 2024 18:38:10 +0100
+From: Andi Shyti <andi.shyti@linux.intel.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: Andi Shyti <andi.shyti@linux.intel.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-15?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Evan Quan <evan.quan@amd.com>,
+	Hawking Zhang <Hawking.Zhang@amd.com>,
+	Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
+	Alexander Richards <electrodeyt@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>, Alan Liu <haoping.liu@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
+	Sohaib Nadeem <sohaib.nadeem@amd.com>,
+	Lewis Huang <lewis.huang@amd.com>,
+	Tom Chung <chiahsuan.chung@amd.com>,
+	Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+	Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+	George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
+	Jun Lei <jun.lei@amd.com>,
+	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+	Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+	Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
+	Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Yang Wang <kevinyang.wang@amd.com>,
+	Darren Powell <darren.powell@amd.com>,
+	Yifan Zhang <yifan1.zhang@amd.com>,
+	"open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	"open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS" <intel-gfx@lists.freedesktop.org>,
+	"open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS" <intel-xe@lists.freedesktop.org>,
+	"open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>,
+	"open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+	"open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
+	"open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>
+Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology
+ more inclusive
+Message-ID: <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan>
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+ <20240329170038.3863998-3-eahariha@linux.microsoft.com>
+ <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
+ <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbKY0T6jd5v_GhNFyCO0578SNqfMgs1ZrZiCckY05hzZA@mail.gmail.com>
+In-Reply-To: <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
 
-On Thu, Mar 28, 2024 at 09:27:17PM -0700, Yosry Ahmed wrote:
-> On Thu, Mar 28, 2024 at 7:05 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Thu, Mar 28, 2024 at 4:19 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> > >
-> > > On Thu, Mar 28, 2024 at 2:07 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > On Thu, Mar 28, 2024 at 01:23:42PM -0700, Yosry Ahmed wrote:
-> > > > > On Thu, Mar 28, 2024 at 12:31 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > > > >
-> > > > > > On Mon, Mar 25, 2024 at 11:50:14PM +0000, Yosry Ahmed wrote:
-> > > > > > > The current same-filled pages handling supports pages filled with any
-> > > > > > > repeated word-sized pattern. However, in practice, most of these should
-> > > > > > > be zero pages anyway. Other patterns should be nearly as common.
-> > > > > > >
-> > > > > > > Drop the support for non-zero same-filled pages, but keep the names of
-> > > > > > > knobs exposed to userspace as "same_filled", which isn't entirely
-> > > > > > > inaccurate.
-> > > > > > >
-> > > > > > > This yields some nice code simplification and enables a following patch
-> > > > > > > that eliminates the need to allocate struct zswap_entry for those pages
-> > > > > > > completely.
-> > > > > > >
-> > > > > > > There is also a very small performance improvement observed over 50 runs
-> > > > > > > of kernel build test (kernbench) comparing the mean build time on a
-> > > > > > > skylake machine when building the kernel in a cgroup v1 container with a
-> > > > > > > 3G limit:
-> > > > > > >
-> > > > > > >               base            patched         % diff
-> > > > > > > real          70.167          69.915          -0.359%
-> > > > > > > user          2953.068        2956.147        +0.104%
-> > > > > > > sys           2612.811        2594.718        -0.692%
-> > > > > > >
-> > > > > > > This probably comes from more optimized operations like memchr_inv() and
-> > > > > > > clear_highpage(). Note that the percentage of zero-filled pages during
-> > > > > > > this test was only around 1.5% on average, and was not affected by this
-> > > > > > > patch. Practical workloads could have a larger proportion of such pages
-> > > > > > > (e.g. Johannes observed around 10% [1]), so the performance improvement
-> > > > > > > should be larger.
-> > > > > > >
-> > > > > > > [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmpxchg.org/
-> > > > > > >
-> > > > > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > > > >
-> > > > > > This is an interesting direction to pursue, but I actually thinkg it
-> > > > > > doesn't go far enough. Either way, I think it needs more data.
-> > > > > >
-> > > > > > 1) How frequent are non-zero-same-filled pages? Difficult to
-> > > > > >    generalize, but if you could gather some from your fleet, that
-> > > > > >    would be useful. If you can devise a portable strategy, I'd also be
-> > > > > >    more than happy to gather this on ours (although I think you have
-> > > > > >    more widespread zswap use, whereas we have more disk swap.)
-> > > > >
-> > > > > I am trying to collect the data, but there are.. hurdles. It would
-> > > > > take some time, so I was hoping the data could be collected elsewhere
-> > > > > if possible.
-> > > > >
-> > > > > The idea I had was to hook a BPF program to the entry of
-> > > > > zswap_fill_page() and create a histogram of the "value" argument. We
-> > > > > would get more coverage by hooking it to the return of
-> > > > > zswap_is_page_same_filled() and only updating the histogram if the
-> > > > > return value is true, as it includes pages in zswap that haven't been
-> > > > > swapped in.
-> > > > >
-> > > > > However, with zswap_is_page_same_filled() the BPF program will run in
-> > > > > all zswap stores, whereas for zswap_fill_page() it will only run when
-> > > > > needed. Not sure if this makes a practical difference tbh.
-> > > > >
-> > > > > >
-> > > > > > 2) The fact that we're doing any of this pattern analysis in zswap at
-> > > > > >    all strikes me as a bit misguided. Being efficient about repetitive
-> > > > > >    patterns is squarely in the domain of a compression algorithm. Do
-> > > > > >    we not trust e.g. zstd to handle this properly?
-> > > > >
-> > > > > I thought about this briefly, but I didn't follow through. I could try
-> > > > > to collect some data by swapping out different patterns and observing
-> > > > > how different compression algorithms react. That would be interesting
-> > > > > for sure.
-> > > > >
-> > > > > >
-> > > > > >    I'm guessing this goes back to inefficient packing from something
-> > > > > >    like zbud, which would waste half a page on one repeating byte.
-> > > > > >
-> > > > > >    But zsmalloc can do 32 byte objects. It's also a batching slab
-> > > > > >    allocator, where storing a series of small, same-sized objects is
-> > > > > >    quite fast.
-> > > > > >
-> > > > > >    Add to that the additional branches, the additional kmap, the extra
-> > > > > >    scanning of every single page for patterns - all in the fast path
-> > > > > >    of zswap, when we already know that the vast majority of incoming
-> > > > > >    pages will need to be properly compressed anyway.
-> > > > > >
-> > > > > >    Maybe it's time to get rid of the special handling entirely?
-> > > > >
-> > > > > We would still be wasting some memory (~96 bytes between zswap_entry
-> > > > > and zsmalloc object), and wasting cycling allocating them. This could
-> > > > > be made up for by cycles saved by removing the handling. We will be
-> > > > > saving some branches for sure. I am not worried about kmap as I think
-> > > > > it's a noop in most cases.
-> > > >
-> > > > Yes, true.
-> > > >
-> > > > > I am interested to see how much we could save by removing scanning for
-> > > > > patterns. We may not save much if we abort after reading a few words
-> > > > > in most cases, but I guess we could also be scanning a considerable
-> > > > > amount before aborting. On the other hand, we would be reading the
-> > > > > page contents into cache anyway for compression, so maybe it doesn't
-> > > > > really matter?
-> > > > >
-> > > > > I will try to collect some data about this. I will start by trying to
-> > > > > find out how the compression algorithms handle same-filled pages. If
-> > > > > they can compress it efficiently, then I will try to get more data on
-> > > > > the tradeoff from removing the handling.
-> > > >
-> > > > I do wonder if this could be overthinking it, too.
-> > > >
-> > > > Double checking the numbers on our fleet, a 96 additional bytes for
-> > > > each same-filled entry would result in a
-> > > >
-> > > > 1) p50 waste of 0.008% of total memory, and a
-> > > >
-> > > > 2) p99 waste of 0.06% of total memory.
-> >
-> > Right. Assuming the compressors do not surprise us and store
-> > same-filled pages in an absurd way, it's not worth it in terms of
-> > memory savings.
-> >
-> > > >
-> > > > And this is without us having even thought about trying to make
-> > > > zsmalloc more efficient for this particular usecase - which might be
-> > > > the better point of attack, if we think it's actually worth it.
-> > > >
-> > > > So my take is that unless removing it would be outright horrible from
-> > > > a %sys POV (which seems pretty unlikely), IMO it would be fine to just
-> > > > delete it entirely with a "not worth the maintenance cost" argument.
-> > > >
-> > > > If you turn the argument around, and somebody would submit the code as
-> > > > it is today, with the numbers being what they are above, I'm not sure
-> > > > we would even accept it!
-> > >
-> > > The context guy is here :)
-> > >
-> > > Not arguing for one way or another, but I did find the original patch
-> > > that introduced same filled page handling:
-> > >
-> > > https://github.com/torvalds/linux/commit/a85f878b443f8d2b91ba76f09da21ac0af22e07f
-> > >
-> > > https://lore.kernel.org/all/20171018104832epcms5p1b2232e2236258de3d03d1344dde9fce0@epcms5p1/T/#u
-> >
-> > Thanks for digging this up. I don't know why I didn't start there :)
-> >
-> > Following in your footsteps, and given that zram has the same feature,
-> > I found the patch that added support for non-zero same-filled pages in
-> > zram:
-> > https://lore.kernel.org/all/1483692145-75357-1-git-send-email-zhouxianrong@huawei.com/#t
-> >
-> > Both of them confirm that most same-filled pages are zero pages, but
-> > they show a more significant portion of same-filled pages being
-> > non-zero (17% to 40%). I suspect this will be less in data centers
-> > compared to consumer apps.
-> >
-> > The zswap patch also reports significant performance improvements from
-> > the same-filled handling, but this is with 17-22% same-filled pages.
-> > Johannes mentioned around 10% in your data centers, so the performance
-> > improvement would be less. In the kernel build tests I ran with only
-> > around 1.5% same-filled pages I observed 1.4% improvements just by
-> > optimizing them (only zero-filled, skipping allocations).
-> >
-> > So I think removing the same-filled pages handling completely may be
-> > too aggressive, because it doesn't only affect the memory efficiency,
-> > but also cycles spent when handling those pages. Just avoiding going
-> > through the allocator and compressor has to account for something :)
+Hi,
+
+On Fri, Mar 29, 2024 at 10:28:14AM -0700, Easwar Hariharan wrote:
+> On 3/29/2024 10:16 AM, Andi Shyti wrote:
+> > Hi Easwar,
+> > 
+> > On Fri, Mar 29, 2024 at 05:00:26PM +0000, Easwar Hariharan wrote:
+> >> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+> > 
+> > I don't understand why we forget that i3c is 1.1.1 :-)
 > 
-> Here is another data point. I tried removing the same-filled handling
-> code completely with the diff Johannes sent upthread. I saw 1.3%
-> improvement in the kernel build test, very similar to the improvement
-> from this patch series. _However_, the kernel build test only produces
-> ~1.5% zero-filled pages in my runs. More realistic workloads have
-> significantly higher percentages as demonstrated upthread.
+> That's because it's a copy-paste error from Wolfram's cover letter. :) I'll update
+> next go-around.
+
+not a binding comment, though. Just for completeness, because we
+are giving the version to the i2c and smbus, but not i3c.
+
+> >> with more appropriate terms. Inspired by and following on to Wolfram's
+> >> series to fix drivers/i2c/[1], fix the terminology for users of
+> >> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+> >> in the specification.
+> > 
+> > The specification talks about:
+> > 
+> >  - master -> controller
+> >  - slave -> target (and not client)
+> > 
+> > But both you and Wolfram have used client. I'd like to reach
+> > some more consistency here.
 > 
-> In other words, the kernel build test (at least in my runs) seems to
-> be the worst case scenario for same-filled/zero-filled pages. Since
-> the improvement from removing same-filled handling is quite small in
-> this case, I suspect there will be no improvement, but possibly a
-> regression, on real workloads.
-> 
-> As the zero-filled pages ratio increases:
-> - The performance with this series will improve.
-> - The performance with removing same-filled handling completely will
-> become worse.
+> I had the impression that remote targets (i.e external to the device) were to be called clients,
+> e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
+> I chose the terminology according to that understanding, but now I can't find where I got that
+> information.
 
-Sorry, this thread is still really lacking practical perspective.
+The word "client" does not even appear in the documentation (only
+one instance in the i3c document), so that the change is not
+related to the document as stated in the commit log. Unless, of
+course, I am missing something.
 
-As do the numbers that initially justified the patch. Sure, the stores
-of same-filled pages are faster. What's the cost of prechecking 90% of
-the other pages that need compression?
+I'm OK with choosing a "customized" naming, but we need to reach
+an agreement.
 
-Also, this is the swap path we're talking about. There is vmscan, swap
-slot allocations, page table walks, TLB flushes, zswap tree inserts;
-then a page fault and everything in reverse.
+I raised the same question to Wolfram.
 
-I perf'd zswapping out data that is 10% same-filled and 90% data that
-always needs compression. It does nothing but madvise(MADV_PAGEOUT),
-and the zswap_store() stack is already only ~60% of the cycles.
-
-Using zsmalloc + zstd, this is the diff between vanilla and my patch:
-
-# Baseline  Delta Abs  Shared Object         Symbol
-# ........  .........  ....................  .....................................................
-#
-     4.34%     -3.02%  [kernel.kallsyms]     [k] zswap_store
-    11.07%     +1.41%  [kernel.kallsyms]     [k] ZSTD_compressBlock_doubleFast
-    15.55%     +0.91%  [kernel.kallsyms]     [k] FSE_buildCTable_wksp
-
-As expected, we have to compress a bit more; on the other hand we're
-removing the content scan for same-filled for 90% of the pages that
-don't benefit from it. They almost amortize each other. Let's round it
-up and the remaining difference is ~1%.
-
-It's difficult to make the case that this matters to any real
-workloads with actual think time in between paging.
-
-But let's say you do make the case that zero-filled pages are worth
-optimizing for. Why is this in zswap? Why not do it in vmscan with a
-generic zero-swp_entry_t, and avoid the swap backend altogether? No
-swap slot allocation, no zswap tree, no *IO on disk swap*.
-
-However you slice it, I fail to see how this has a place in
-zswap. It's trying to optimize the slow path of a slow path, at the
-wrong layer of the reclaim stack.
-
+Thanks,
+Andi
 
