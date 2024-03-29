@@ -1,108 +1,98 @@
-Return-Path: <linux-kernel+bounces-125217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D625789225F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:06:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89156892265
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 755AC1F26EBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:06:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29902B2209A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A07B13849A;
-	Fri, 29 Mar 2024 17:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3BF1353E1;
+	Fri, 29 Mar 2024 17:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="HO/CdCWS"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QigFNj+8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8E1137755;
-	Fri, 29 Mar 2024 17:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D69985654;
+	Fri, 29 Mar 2024 17:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711731794; cv=none; b=TLsEA1G5euECImUQfS18zUuWzSP+AHwU8Rhfex3nVIGMoKQxyKp/tAKulSqBb7MSXZXTRoPMtLhiXANPx734xjc4rFmexwOXHQ/Zgow4M3LjI0SRPoF8tuv4wUwrRgUbYt/nm+Uy8rwfhbNJQjAhtnz0XS4/4h17N9dx3MJ6jjA=
+	t=1711731925; cv=none; b=GrPWCEz1w4w9PCiauK/+saDOGMv2vdlqhNK9biNMfAOHRQBPc/obIz/JtPfzqeYXTzdFDU0hZhTQtz+3JTvABzlEKPpsVwxTNg/bEgG9xLVEhl1f+E/5gvXoWbJW/nrbh3TWr2eQaiXnOGxSNssp4UceeYM+e+AEqx6Ze9xdJFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711731794; c=relaxed/simple;
-	bh=IGYOfoXeT9lpckQVuripOepZziq0eiKGJ+C2E/Afpjc=;
+	s=arc-20240116; t=1711731925; c=relaxed/simple;
+	bh=ORB8eEw68b3v0cYkRkKE/w3KyARnn+J+bFMPjYmJwW4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HgBmkXkv/otxDNAhMAA0egsWwV01i5E3H0KIlMoIpjEila/6lLEJsE21GziAMoS3o9w6BbNdOfYoZnbXDbI++m7Qg+QS8dwxSGVbcFTs5T24xFbi40l32RfqXU5jp0ZF6WrLTW0tWIDVSyzaSspy6clHsMKU/la5sB77N/k53ZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=HO/CdCWS; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id E04C21C006B; Fri, 29 Mar 2024 18:03:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1711731782;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I9xmIk2x2+SLIz+QLbV2rmpqsWi0H4slXDhofLFf8pE=;
-	b=HO/CdCWShQaHg1kdJJmBCLEmZ0U5oz3hhUC+6bseb3aVPO0HdicFsbndmmdIP0bos4P5HZ
-	0YrYhMObrz2q9j+hsvzDDkEmophlSJVDq5G+YnyQCLuU1LoZkn4+1J+7pn2H16tbmmeyJc
-	wQUk+B2T0JegU/HS/g1X5gNFZVFNf/4=
-Date: Fri, 29 Mar 2024 18:03:02 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: PM: hibernation: Image allocation is 28906 pages short
-Message-ID: <Zgb0RlS8QipgVZgW@duo.ucw.cz>
-References: <58c89870-f7cd-4116-aaea-2ef53a1ab6c7@molgen.mpg.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jvM9QLTDjjrMeYLgax+4cYwZBuov2ngTuZafGLD9qUQhJYil/utsZxLwrKHi6iKjejXxW34f9lGYparpFMMcrgBaYVXZcFDY+c0TRdsQocITHtWzCrL81RBV7Hy18CC+uP1M2Q0bq7aMJt9c7rtKSaq179mqOELdhHZHwMBr9ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QigFNj+8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3062C433C7;
+	Fri, 29 Mar 2024 17:05:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711731924;
+	bh=ORB8eEw68b3v0cYkRkKE/w3KyARnn+J+bFMPjYmJwW4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QigFNj+8xwtlSe6OnR3TBpoDTQ7JD1iCNMAws4eWGv5AIzERTgPt2k1GvEB7iLBWs
+	 iTMh+4yAoDaMkFrSMUDWDIrXG9R7nFAd3y67E+h3RjXN7GP1ObPSy6vA95DvPg5rLt
+	 yoQewHoPDIo+qfnaTQwMONM4FCFdx+/S7AHGSWoY=
+Date: Fri, 29 Mar 2024 18:05:20 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+	Rik van Riel <riel@surriel.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: FAILED: Patch "bounds: support non-power-of-two CONFIG_NR_CPUS"
+ failed to apply to 5.4-stable tree
+Message-ID: <2024032959-ladies-circling-3a5e@gregkh>
+References: <20240327122125.2836828-1-sashal@kernel.org>
+ <ZgQowqqGf-E7Cpcz@casper.infradead.org>
+ <2024032935-antsy-imitation-1453@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kCNbs4+FE0LL7CPp"
-Content-Disposition: inline
-In-Reply-To: <58c89870-f7cd-4116-aaea-2ef53a1ab6c7@molgen.mpg.de>
-
-
---kCNbs4+FE0LL7CPp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2024032935-antsy-imitation-1453@gregkh>
 
-Hi!
+On Fri, Mar 29, 2024 at 02:34:43PM +0100, Greg KH wrote:
+> On Wed, Mar 27, 2024 at 02:10:10PM +0000, Matthew Wilcox wrote:
+> > On Wed, Mar 27, 2024 at 08:21:25AM -0400, Sasha Levin wrote:
+> > > The patch below does not apply to the 5.4-stable tree.
+> > > If someone wants it applied there, or to any other stable or longterm
+> > > tree, then please email the backport, including the original git commit
+> > > id to <stable@vger.kernel.org>.
+> > 
+> > Looks like you just need a little more fuzz on the patch.
+> > 
+> > diff --git a/kernel/bounds.c b/kernel/bounds.c
+> > index 9795d75b09b2..a94e3769347e 100644
+> > --- a/kernel/bounds.c
+> > +++ b/kernel/bounds.c
+> > @@ -19,7 +19,7 @@ int main(void)
+> >  	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
+> >  	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
+> >  #ifdef CONFIG_SMP
+> > -	DEFINE(NR_CPUS_BITS, ilog2(CONFIG_NR_CPUS));
+> > +	DEFINE(NR_CPUS_BITS, bits_per(CONFIG_NR_CPUS));
+> >  #endif
+> >  	DEFINE(SPINLOCK_SIZE, sizeof(spinlock_t));
+> >  	/* End of constants */
+> 
+> Now fuzzed, thanks.
 
-> On a Dell XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022 with Debian
-> sid/unstable and self-built Linux 6.9-rc1+ with one patch on top [1] and
-> KASAN enabled
->=20
->     $ git log --no-decorate --oneline -2 a2ce022afcbb
->     a2ce022afcbb [PATCH] kbuild: Disable KCSAN for autogenerated *.mod.c
-> intermediaries
->     8d025e2092e2 Merge tag 'erofs-for-6.9-rc2-fixes' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs
->=20
-> the system tried to hibernate, but failed:
+But it breaks the build on 4.19.y, so I'll go drop it from there.  If
+you want it added there, please provide a working fix.
 
-> Where is that image allocated? On the disk? There is still 65 GB of space,
-> so 16 GB of memory should fit? Could the error message be improved, so us=
-ers
-> know more details to fix it?
+thanks,
 
-In swap. See docs.
-
-Best regards,
-									Pavel
-
-
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---kCNbs4+FE0LL7CPp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZgb0RgAKCRAw5/Bqldv6
-8l0GAJwMfCMG3eUf2o4PhL/Gnu8SvCW9ewCgs7hUIh6A2ihTfHIMoAH0kwwXu+Q=
-=K+jz
------END PGP SIGNATURE-----
-
---kCNbs4+FE0LL7CPp--
+greg k-h
 
