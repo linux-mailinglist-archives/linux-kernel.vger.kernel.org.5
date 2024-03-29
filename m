@@ -1,212 +1,151 @@
-Return-Path: <linux-kernel+bounces-125448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07FA989262B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:38:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A60389263A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 741F1B22827
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:38:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BF2F1C214EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D8013C9D1;
-	Fri, 29 Mar 2024 21:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB0813C9B9;
+	Fri, 29 Mar 2024 21:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="fYd9G8pK"
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11024030.outbound.protection.outlook.com [52.101.46.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QvoEtOft"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2761DFC4;
-	Fri, 29 Mar 2024 21:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711748262; cv=fail; b=iZ9ijgBMrEzSwGtKXfCOIIz5l76jgxQxCztwzrsr2v2tWGePAS8B8YbYCP3O23qo8FYz/wSJE3g7clJOMaUxLNYVpCgfRw3Ao25ru5dRg8i4Yy3B8FeH4TvtxLNPRXNsgutNfae3/nHsP9bly8h7xlhbV2C/ix/HRJLkrVVeIS4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711748262; c=relaxed/simple;
-	bh=S6L0aMDSpr9JXtrGomNM3mxeaZv0TjafWVbFhd/0rqQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=gyMEQbOJCv84m0pdHazmbwakaOv8XxjfD2pmSbQoPswacqg9FURsA6qwZWu0Hf+sqEsyw9Y3OaABpf4DKmofitkdFyagF/fpLKUormXXIbj3daiLdi8HdnRZITCLo1H7Q01Qs0yzYIJqbaUpMwmqsLhj0MOOVHTkMR5biqhYU+k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=fYd9G8pK; arc=fail smtp.client-ip=52.101.46.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G+up8M1R6nWQO0DXaYd+wBDKKGB1/bicu40p0/YdAkv5mb6OJWhdTlP17CsBYvU1cTe2Vu1zbbW6YoTYwwd5z7S6kl6IQHUEC0jVb43ZLNW3tj7LDj2raILYWoEZYKLAH9zyXdXnOl7SOSi3sysssQobfkShSKfrG7Ryok6ZfoZRaqFJdOUtSMhassJPjrGCVm+vRhZP1yAdu4Hvy7HqUlMb1DRItidTQpQVxDQySKDKS38WWy7J186NC3WxvAIPzpVARGxDwaEZsEYY22ygnefkgr9AYW2iQBv1uoDT7TkXzNnCi8BQr5901BOXsVzNRVC6Lvxdp964ME/YMDJgTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MfHPjpSdpb3n5TmADUT51NotEHU/T8x/LYgaeWnszD4=;
- b=aUj3LJd3Ycvr0X8wVDCBA+o8mkkhLHtN9ZiOsnIh5olXttKBTwCbXIRoC0lcxj1hw0EqW+pqkqEN+8c1JJzbZZOEE0/7AAhxsiOgWLO+UHcuX9Js1Vlfqv3C6A8O/8l0hWiUg1iDBDAzao1x2NJAJKy/8u8Jsf2Df1QEtBzIafwlUZdCJyLIUO1dpqnbrtFXnwmCyLPFFjbr5OKs3ElFhkEqsMpxkrzN7LpbuZ+by9Wdx5f8yztSBYsoPwiZo0DODN70WlrBNZpJXqkcFghQWiSDWgY0urDSSaq17d/MtOnED8MC8FEVqXr3SQEDi/13645W+q7K/XJ4hxyxUQKEFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MfHPjpSdpb3n5TmADUT51NotEHU/T8x/LYgaeWnszD4=;
- b=fYd9G8pK/2EHHOyku2boMZZTEYjJil93H8Okh3VJ+6wmjgw0AN9tZ4ZdDJdGMumeTHFSqQ0bEwApO+U4Sh1kSdhCXJFwpcrEL090BWAyTVunPzM9/Y9HoAXH0hDO86WeTR0EFfigssLcFOoaZUZSVPNtGOVcFLEhnLmCB5bLOAQ=
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
- by SJ1PR21MB3483.namprd21.prod.outlook.com (2603:10b6:a03:451::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.14; Fri, 29 Mar
- 2024 21:37:36 +0000
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::6528:5de6:5ea4:c1ab]) by BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::6528:5de6:5ea4:c1ab%6]) with mapi id 15.20.7452.015; Fri, 29 Mar 2024
- 21:37:36 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: haiyangz@microsoft.com,
-	decui@microsoft.com,
-	stephen@networkplumber.org,
-	kys@microsoft.com,
-	paulros@microsoft.com,
-	olaf@aepfle.de,
-	vkuznets@redhat.com,
-	davem@davemloft.net,
-	wei.liu@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	ssengar@linux.microsoft.com,
-	linux-rdma@vger.kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	ast@kernel.org,
-	sharmaajay@microsoft.com,
-	hawk@kernel.org,
-	tglx@linutronix.de,
-	shradhagupta@linux.microsoft.com,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH net] net: mana: Fix Rx DMA datasize and skb_over_panic
-Date: Fri, 29 Mar 2024 14:36:53 -0700
-Message-Id: <1711748213-30517-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0210.namprd03.prod.outlook.com
- (2603:10b6:303:b8::35) To BY5PR21MB1443.namprd21.prod.outlook.com
- (2603:10b6:a03:21f::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C81013B2B8;
+	Fri, 29 Mar 2024 21:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711748361; cv=none; b=GiBpO7ZPYjX1sB6Zin88EKbc9eb+bceewo0Mr10YydZtxNBMl+ERH3sp2VR/YpRygZqTYRtSwiOBhmeGI7nnDj+k9M6hZdnjpSTiBeTHDzM2ZSYkmPieJHbhloZI6qQgMu03DvzB19YAphVjqj451xWOPjFuJDYYRH5H1yhYb0o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711748361; c=relaxed/simple;
+	bh=dj3Oype14Ww3F92B/r9tr29fIg6wdMJyfmeULyKUqnw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I/uufbmLDt3gQOPHJiEQvwqZtlaKIGAjhL9bkSxUjPMialQdpkIG3S+H50xlTgIEiHok596k54Cx1sL+Hxe+TwRQkuCHqewEf+wYUt6aNDdZhPwBUD3chxQZs/6c1tkr7OR5AEo5tRllrGwmoWeKCzowu/u1M9DDoUkAqlwHdIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QvoEtOft; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so1992151b3a.1;
+        Fri, 29 Mar 2024 14:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711748359; x=1712353159; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jeYwhYVAnY0ZecOSBeK2vgKjBBlgI8Cj8HOaDALSlB0=;
+        b=QvoEtOftPZZ0x5J29R7smtFQ1XaLDNy8D8DLyM7Q2ngzWkE6boF8bgr8hNkP9IAnrt
+         5odasLAd+YAFvEFgAh+twH86gNGmkOcVatU0naL01rEGRYtYDfOIX4xqLgcm5FB/ny6+
+         W/oP5TYBJxnLpxBwSlqJDTVhElVrqTGwU0S7YTtt5vmbjlf+/OvFzKumhg8QMLNB/gqn
+         N3N0Pl07fS7yq7xS4Ch5eFF1miUkhRl5/+IDmoNRLyRIegDd2K5Lfi1G+R4iq/0APDwr
+         SqvOJsBNMrRC2dqEyqxtTgOq1/bj5iTwyvADTOo2lKzKWxaiurfy/JicV/kAev9HiVjG
+         eKcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711748359; x=1712353159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jeYwhYVAnY0ZecOSBeK2vgKjBBlgI8Cj8HOaDALSlB0=;
+        b=nFgGfFpdImkTVlv8QHZahh0YdphYYQj9fW+6X5hUszdqPolG5zUJS+52QnEOI4pWHW
+         1QIpLuMw1zP4krg9Bg/IA1AB9O9X8xRSvsjS+pReshA2nxr+z1KlPZla81D+/leR5G3c
+         N3gH3e7b5MYEDtmJyonKVttyom9/Hz3G1vnjyObB6kfz9rQwpWLzed/gqfosr+8Q0EE9
+         UnvPjInOwk/UJEwVM8O2AM5Ru+v+vC6KW05OG9P3NLJFn+vjCQZJLsagCmo+P69ZZQB2
+         j5wL4FGuqF38McQT1A6NqBKnCS+6MB5FVo6rTOVLoqN09QfLRVdnnZG8NPz0tOZzpH/R
+         vaKA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcb/CmyLwKHdUnoaAt3Z7NpXcQN59oN8QuSEsQ0zvU5ZPBsC7MVqzOaWEA2ob0cLXFtnQ2PWo0L8flS6/Oke0pYpdkFIxPn50sVPOQb4eJv45KbJSQmyvP03quPjZtWWIDLoOSTR498Mpbasm0+bHVwy6FqA2wzYW3NjsoPfh3PNbLiBcyMTnkpt5Wm/LzA1+8z/QbIJrRKAKljw==
+X-Gm-Message-State: AOJu0Yx9b16NxRhE5jZBnHy3hpVBOCpvWjHu3ZdDVRn4Tfk7EoK8Rf4t
+	womPG7uGvj0qUnMRJTrdHHJSPfzKSwaVE9B1EHKvIu5aVIp/YP1K
+X-Google-Smtp-Source: AGHT+IFstVhpjK2rGXsS9X/HZtXRWDa9Ng+SCHkBs1up8kl0TP5v/Jv+fZ+0YdG2qO5QE6oh6ONs8A==
+X-Received: by 2002:a05:6a20:3946:b0:1a3:32e5:f38a with SMTP id r6-20020a056a20394600b001a332e5f38amr3552913pzg.45.1711748358853;
+        Fri, 29 Mar 2024 14:39:18 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id e18-20020aa79812000000b006ea81423c65sm3553948pfl.148.2024.03.29.14.39.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 14:39:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 29 Mar 2024 11:39:17 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Djalal Harouni <tixxdz@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+Message-ID: <Zgc1BZnYCS9OSSTw@slm.duckdns.org>
+References: <20240327-ccb56fc7a6e80136db80876c@djalal>
+ <20240327225334.58474-1-tixxdz@gmail.com>
+ <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
+ <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+ <ZgWv19ySvoACAll4@slm.duckdns.org>
+ <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
+ <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
+ <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
+ <ZgXallkHApJC-adM@slm.duckdns.org>
+ <bcb084ae-c934-4eba-aadd-95bbec2a63cb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|SJ1PR21MB3483:EE_
-X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
- 2Ku/LBwCcqrbaEx6WajYxO2bJE1wRc1/UmkkB1NQjnCLJv/iKgt9h7GpsW+ghqYk02boFss1T8LHLMKhIRzRY/33/YzLMxLUJw3lOXSlJ9U986LDKYqhjGpDgeg2rTNL6GGV7W59dbgTAyGUmtoOhyWIJR87QK5s2Zy5yCCMnFMNPINGcyybxpNMIGU6rtfhrWUD2VhNKIZWC5uM4Hlq0U5hc2daefmZaN4u9+a0xsfB3W4PPXcKimkfQwNelA3wmi33J+yi74mq/oMcjp79R6GECaUFmxYh0W9k/rV5eNaU71QLByO2nwZROkj6u3AOd9c4q5nUJLI1GTHWbCMY6d5lVHFaU9sF5rcOwP3JLUcWuNckouUW/3ibxfUBslG9+w2aANVnFa9PvG3J8kmqEtKqOf6GAEXH6jCT7F88w0KSHA747RtIsP8KSFWLFC2r/6n0vdOGP7UdGiNUpby/OCQAyDD2yCe77C0fnFLhpEJ+yLaCXv3P7/whpDFta9pzX4QrthuFKRTo5zP3CB4IwUhUess9Wk+EUkcMq/Hww/27g++JIPQkyIhCsthN5ikSoMn9XFqXhhW0M57njmQn3ZMN/Bt4UKvs98l968yZoWZ2XXgeOSypq9OfrwVR9o7QZf+/pOA18a9pBJksxOdHI+lK6gJXL2o55PIGmH18Sgo//MXWhHoAN/8yp+PcRFkfOELKdetoyC2P2RkcgIGFUKIDljA8iVtUEx4HikFzEAw=
-X-Forefront-Antispam-Report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(52116005)(376005)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
- =?us-ascii?Q?RRifRCih3C8HkWBa8isOeD8NZLiEjS6Sx0Ha6ACgXSDSbbudtEc4pY7tMBWP?=
- =?us-ascii?Q?AXPuUNiTlJzCDh3KZ0krvkrrmbVW6ubMf7utbQ5GdifXuPwzaj4hHTATytyY?=
- =?us-ascii?Q?wfUElHzsJgdqBlkYD2l5Z9nBQyUKVtcC9/91I9RtMEOnX/Qf7c8lb+tHd+5i?=
- =?us-ascii?Q?sdtDOAQcHI3nZqEo0/ZBCeSI+eKe4bxYqskPqpNt2EOjmoonoq+pw8Y8i5+A?=
- =?us-ascii?Q?z7gyHg+Up6p+nbetWV8Ztyq2J30/blP7zyzrxcFS624iyKQ5jN5GlKV1sJxQ?=
- =?us-ascii?Q?Yv135/UYBX7n87+EGGW/9hS7O+vOpJV2jkbWk0CPAtNi0g/o7J15TePfYppp?=
- =?us-ascii?Q?VghHsNq6ouqc8Z+Wjsyhph4Rxe5H/PDNZzRKOe+i87Wk9T9XL4UGgLz6KJvf?=
- =?us-ascii?Q?yDP5Jts6TF0jnJl0O8Y7c28SCIxJNBtpthTXQnxuruVBwtbpIWQTJjTONR07?=
- =?us-ascii?Q?Q05b/bVl4TrHIsdURrX56B+vn/t6UU+Mvc3wnH3ywN+uPzRqNu1VHlSGft2C?=
- =?us-ascii?Q?7jjoL+twQfrW6QwFSVSBJJZDqjXQHTssVD+SAJsDgkociG/hrhAz5q1V721m?=
- =?us-ascii?Q?5tIaGkClBT62EOcXnNUSrb1UpDgaA8aVbn9VxivjhiHfMO6pylv2aIK+4yMZ?=
- =?us-ascii?Q?+7LCrKz7IzdC/LtUl/s4HJ73wg0TjFXI/8LdMGaMMSDqPESbMCeHTJqTr7bM?=
- =?us-ascii?Q?0iAkVYn1BwdQvdUi1F4fCRIvDSDf/usQR8L1jGm4L8h/zW2rxmn1WtRWZZTN?=
- =?us-ascii?Q?NL6gZEYDamc+Ogd6G+PpEgBGFJ1NOJhIhNUD0L0/WLTO1iMZxoOV8aJodCgr?=
- =?us-ascii?Q?14jFdr2sIl4tetbQxXN/lnEEYKEz+neUSlyVGlOuvVZ+eE/6oPRNbj0aTCr3?=
- =?us-ascii?Q?hRkJWh/eBah/Ye3UpPgRlHgJ0+2CK/8Hcb0j3W2qMneCDNyc1Duzx30r714r?=
- =?us-ascii?Q?hVnwMM92AvBh4zqJRTd0/Sdpyud9536MHJ7NV6+5Qy6MCS7akyLFfIoW3Tth?=
- =?us-ascii?Q?qeBusz54Oh0Yv2jo2BzHfE+w//n5Ck65WwYFqY75UBO90R+UTsSatlE6Yp+z?=
- =?us-ascii?Q?VLQyccetYjE29NvHb5lODYNJ+MZVKy865+aO4VNkL/y/YMUHtSRT5wBztIZb?=
- =?us-ascii?Q?AAkd3ZIQCDQ70+53B+/GcIjZE/rLn3gJKzfHNZusXsjcSZ6BXrBMMXzV5/Xf?=
- =?us-ascii?Q?6iu/ra1IeHLp98NybXOr8osG9W35BVz1zKYVfCVuzP7+L6fi8ezyWZYXJLee?=
- =?us-ascii?Q?gfU602kWOMB3mqlAcsdpN49m/+CYiGXS79DLXkgs89ZlcxGiFN1u1p/c/QkP?=
- =?us-ascii?Q?1CAoQCb1U/Bb9DIJqmn+xjXyhbONwRwbQ/fx3fAFuzQUve1dt2g5+fs2yVP8?=
- =?us-ascii?Q?7egUEO9oLwNY3qQH+zRxTBse2w4maiFr45+/tc5DuL1tu09A0iwksVFzu7ON?=
- =?us-ascii?Q?4VItwdDsp5ScS7EQbwD8G22yOFUS8h3amjS7SWkm4Iax1LGaexrf1EjrKV90?=
- =?us-ascii?Q?ANSX8G2E3wB+LK8/jNpJbFJ+/pcYobj8762g99YqkbdQsGE5LwebyrV7Zt0E?=
- =?us-ascii?Q?90rCt/vq117uE//06IlTzmUNPqJIqchODzyFb7oG?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb4d1d7b-73b5-462e-bfb8-08dc50387312
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 21:37:36.3715
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /nUR1qXP88MO1DAlmIlbknB4ftO0UuN97J7nsOcGE5t/lRakagsLUVErp3YlCGNIkfx0TlaJKjBWQsFwXnKwMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3483
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bcb084ae-c934-4eba-aadd-95bbec2a63cb@gmail.com>
 
-mana_get_rxbuf_cfg() aligns the RX buffer's DMA datasize to be
-multiple of 64. So a packet slightly bigger than mtu+14, say 1536,
-can be received and cause skb_over_panic.
+Hello,
 
-Sample dmesg:
-[ 5325.237162] skbuff: skb_over_panic: text:ffffffffc043277a len:1536 put:1536 head:ff1100018b517000 data:ff1100018b517100 tail:0x700 end:0x6ea dev:<NULL>
-[ 5325.243689] ------------[ cut here ]------------
-[ 5325.245748] kernel BUG at net/core/skbuff.c:192!
-[ 5325.247838] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-[ 5325.258374] RIP: 0010:skb_panic+0x4f/0x60
-[ 5325.302941] Call Trace:
-[ 5325.304389]  <IRQ>
-[ 5325.315794]  ? skb_panic+0x4f/0x60
-[ 5325.317457]  ? asm_exc_invalid_op+0x1f/0x30
-[ 5325.319490]  ? skb_panic+0x4f/0x60
-[ 5325.321161]  skb_put+0x4e/0x50
-[ 5325.322670]  mana_poll+0x6fa/0xb50 [mana]
-[ 5325.324578]  __napi_poll+0x33/0x1e0
-[ 5325.326328]  net_rx_action+0x12e/0x280
+On Fri, Mar 29, 2024 at 02:22:28PM +0100, Djalal Harouni wrote:
+> It would be easy at least for me if I just start with cgroupv2 and
+> ensure that it has same available filenames as if we go through kernfs.
+> Not a root cgroup node and maybe only freeze and kill for now that are
+> part of cgroup_base_files.
+> 
+> So if I get it right, somehow like what I did but we endup with:
+> 
+> In bpf, cgroup was already acquired.
+> 
+> bpf_cgroup_knob_write(cgroup, "freeze", buf)
+> |_ parse params -> lock cgroup_mutex -> cgroup_freeze() -> unlock
+> 
+> 
+> cgroup_freeze_write(struct kernfs_open_file *of, char *buf,...)
+> |_ parse params -> cgroup_ref++ -> krnfs_active_ref--  ->
+>      -> lock cgroup_mutex -> cgroup_freeze() -> unlock + krnfs++ ...
+> 
+> Please let me know if I missed something.
 
-As discussed internally, this alignment is not necessary. To fix
-this bug, remove it from the code. So oversized packets will be
-marked as CQE_RX_TRUNCATED by NIC, and dropped.
+I've thought about it a bit and I wonder whether a better way to do this is
+implementing this at the kernfs layer. Something like (hopefully with a
+better name):
 
-Cc: stable@vger.kernel.org
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 2 +-
- include/net/mana/mana.h                       | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ s32 bpf_kernfs_knob_write(struct kernfs_node *dir, const char *knob, char *buf);
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 59287c6e6cee..d8af5e7e15b4 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -601,7 +601,7 @@ static void mana_get_rxbuf_cfg(int mtu, u32 *datasize, u32 *alloc_size,
- 
- 	*alloc_size = mtu + MANA_RXBUF_PAD + *headroom;
- 
--	*datasize = ALIGN(mtu + ETH_HLEN, MANA_RX_DATA_ALIGN);
-+	*datasize = mtu + ETH_HLEN;
- }
- 
- static int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu)
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 76147feb0d10..4eeedf14711b 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -39,7 +39,6 @@ enum TRI_STATE {
- #define COMP_ENTRY_SIZE 64
- 
- #define RX_BUFFERS_PER_QUEUE 512
--#define MANA_RX_DATA_ALIGN 64
- 
- #define MAX_SEND_BUFFERS_PER_QUEUE 256
- 
+So, about the same, but takes kernfs_node directory instead of cgroup. This
+would make the interface useful for accessing sysfs knobs too which use
+similar conventions. For cgroup, @dir is just cgrp->kn and for sysfs it'd be
+kobj->sd. This way we can avoid the internal object -> path -> internal
+object ping-poinging while keeping the interface a lot more generic. What do
+you think?
+
+Thanks.
+
 -- 
-2.34.1
-
+tejun
 
