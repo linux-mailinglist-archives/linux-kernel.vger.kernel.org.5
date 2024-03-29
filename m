@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-123990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38648910CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:58:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B7A8910CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:59:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 801BA1F23931
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:58:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79D121F2368B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8526F40873;
-	Fri, 29 Mar 2024 01:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D8241C9D;
+	Fri, 29 Mar 2024 01:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Q3cKsRZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IjaSbV0p"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF433D541
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688E73FB93
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711677265; cv=none; b=Zn/KKGHFxY79XC9rZHtqNK6RixD2yQsDWkh1cxX7WR26r1GYZMTslSaC+XFUosqF8RQag+IPKERjbYBl90/srvdjjROvAqraZfPIrHnAjOXz2VpO4ZyVNVLJPFAfJu+IqkWkZ/wEwrEVOzFG6MX65CBEWUPTeObWfH1688c5UQ0=
+	t=1711677266; cv=none; b=By8YfGiPlzdkiuQ3SiI92ydqXUvVzUuJvyo5KlGPwBQR7xH5V02ky5MSlKyYD+UJ8gst8GMBlVI1FQz5PUOa1WmVsFMQSBKf8WS6k3210jd8aJ/YlAd94iw4YNFHIG9yYjq1DHNms9/JY+XR5E52A9l7yvGDTw4z4M0wSUZQFos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711677265; c=relaxed/simple;
-	bh=fvczagys3eeKlVoeCdtC8aX8ILYO2cwo2aEBbr60QNc=;
+	s=arc-20240116; t=1711677266; c=relaxed/simple;
+	bh=Fkk92+rnt1CGnhyzsoVnRC9lfBnZyOPhYO5QkWWNTvQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ZNfw6TCtt+AOX54+XFtTrKvAGhOL+iM+dyEMx7TnRd4Ll9xpF9duE34+iGFT5P1lux3jSEhC6WRYDRcxLGl3vSGffBzJOmjhlZshRTGedmTa46gQlvgAK3P0HAuUJzwYfdEyetV8PkFEQRAMODWx29w9lEE0LgJaq098rorghqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Q3cKsRZ; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=fJZEtCvpj5Q5+W64mgLWndS/WYOrMVoaOSDvvIqmAVxEaW9f9nFQ95BzLoBp2z7q6Sv9dY7neY3oBV3d1kCLYKvM2gssGj/pTNFOWAsiV/S+MgX4exGVYNXo8Yw+kkqoDfUWD8GXKxCb2yckmtswlidaDMSGSJHoY09yXCc9jks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IjaSbV0p; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609fe93b5cfso24876967b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:22 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60ccc3cfa39so27855717b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711677261; x=1712282061; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711677263; x=1712282063; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RN40RVFAgvwoqdUJunI82ty/5fzSZehhGVy3k+SOK50=;
-        b=4Q3cKsRZW9AkZtU5EdHpgZ4ObNUKH7d0fjZr4czVLSa+vVY4e1BSdqntdLokO+T+J8
-         JA+ZUDp7/qUU3vIXH1IuzUODnp7PFyJtO/0l2tTaiGfQj+OoI6jdal8qNTHlJr4zkspv
-         4reQV6kDN4d9cqy9kBzna0vT5Vn6lZIjCyckVQfUmuOEPdnCp6iG8FTMjDyFRdlPIaTJ
-         GPbJUn0KsetvsfLFKO2v42y45YAQqCq+icSSsVOBh0AmPBSwQXbevSTVGA+rfZggFTHM
-         ZElBdktoNJpCJqauTSiYeaHtR6ATUp9/gziSi9fbUgnWWDoBkOUEyiQnQaHDEo712m5B
-         eLug==
+        bh=MrUtVK6+k7+1QZ3C4cNIecBhDWMks4vBEWUta1bw0HE=;
+        b=IjaSbV0pq+ZhIw2JDU9172KAypV2z/sAra6GyIXNHfPWa6tVO4zVGBqjrbOBbKPFSJ
+         NRW0P9HACSxAwJbXWDFWirAtHpO80z7DRd8i/xYssYH1cINthA84h7Cq2dte/Oh2VTu0
+         5nrki2MngvFok2xGhao6GGN/nmLqvylB/AXRcSBJGYmnD7ofI20RcWR+pgvRMYqvWyGz
+         zj//82gNuLlrf8M5r9rJb9dwXnBH9Vz4TEBTN2UmwWURCcNHKLIc6k2NxHqDKjKGSkiD
+         IYz8CqtACNItAXKUGYH7AKJ71FyKfMCKpXQqmkCW+H2Tlo4FvwtZiOUYasyelJmIHRpB
+         cZog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711677261; x=1712282061;
+        d=1e100.net; s=20230601; t=1711677263; x=1712282063;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RN40RVFAgvwoqdUJunI82ty/5fzSZehhGVy3k+SOK50=;
-        b=k6Fcqxa9ZkphN3YYraUwABmmoV4CNodAwPdavIjW9ioW1CwqNimPb/+LeXW28Ry1aS
-         qRjExaZYDuuR/PcUs7euwA/UWKhucz33rDvDtGVl+Rf7ufdTcu+gMR5H44fiIVTLcnoS
-         sSrRFejEoXBaT6JXJfyIA1BBHAOO35lqft07sm9xPBiyI+B4s7cMVWzai24K4K1pbVBC
-         l2O8zc5WWAzQqi3cJRZgoHwwOKUOmF0y8o+FLjuGIUwvcUNlHB5odfaYWC6yi5Wz2Uw1
-         24/bTwmAT5yRtixcvrrA9k8XiMMwUgn+peKepWP6DmxAfSapzrJBbMD3lS1nTJnQLfKE
-         VjaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWXVRfUzFH14zRxinTr3mYoFUWXGQjJyDwmuHbLWhtWnvpHtNFeVyqpq6RPHPfNJTt3wI2Z8jFPMnX7yYcHRgN+3JpQS//LOvMeRcsu
-X-Gm-Message-State: AOJu0YwNs9phUO5nepZicGJeuk9t7IoIwpxfhijoTbFhKSMQ77ZUIYpY
-	Pu+Oa+ehwOEhFwWqNKEmS3BXxyCDOfCJkcy3kefV4u4uLg19Aj8JXrs8+5OC9bt8h49SKxV8Z/J
-	URw==
-X-Google-Smtp-Source: AGHT+IGuOQt8Snd/P6ofj2gX/JcTFHrD/nXa6QfIFbIPo49OngK3DoVwSGK+2/UzTDKaYsETWaFnfy3xB1Q=
+        bh=MrUtVK6+k7+1QZ3C4cNIecBhDWMks4vBEWUta1bw0HE=;
+        b=OF1EE2iUQvPgmUioXqyeyEJfySBbTvXsrpYX78REtRwRm6NgQ9fd1tNojaRBLPUmIG
+         /SberKvmvrAOVOzK8Oxu36oamUeNlT3YPMdKrnB2qFoXYTNdfhCuYJra2cvsHQnke8lq
+         SRaqyXGv8HpKzLJWGjh/xFwTfx4MkqikcWOJmb96HwINQ+hTPGhWvmsKBKdd5NT3cf7v
+         M9DKd8LMhnMjgLIez4ucwgjkmAeJxVx19j20lIp6R5tDNse4lQE0NSNAVX+Izw/5eERR
+         TELXoSeLOvVUjAH5PosaNIak+Mn5NNobkLHiMcbhhX/Zime04kHqHFzROboHpL4veYK+
+         imkg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3Thpm3JfOhU528rCUjcQMUpAJX1l5mcMPv49INikte3w2FSf5BmVEND8sCGCRVKP5ecZk6jJ1kPMwJ+Fy+c1qiI0yMpGKjyeaoO+C
+X-Gm-Message-State: AOJu0Yzap93sOiy2T9xd4cbA+TxXoZKX3E5nxNnPIrloXs6k2O1xOVKi
+	9QC+hyOOfsrD/ugqUxWibsBoz0c8uTzjYcStUcY3RLnJff1QUdKdMwmARhKFZ0ix9TTqXTU585w
+	ujg==
+X-Google-Smtp-Source: AGHT+IHUlRTQe/24H5Rd3XUF8D0L0jK5ORat1YiNu2Hnuiw60ohY9AVaFKP7PVzv+457HzOJe+gS/LwEsZk=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
- (user=drosen job=sendgmr) by 2002:a0d:efc5:0:b0:614:fa:c912 with SMTP id
- y188-20020a0defc5000000b0061400fac912mr269078ywe.1.1711677261512; Thu, 28 Mar
- 2024 18:54:21 -0700 (PDT)
-Date: Thu, 28 Mar 2024 18:53:25 -0700
+ (user=drosen job=sendgmr) by 2002:a81:f910:0:b0:611:7166:1a4d with SMTP id
+ x16-20020a81f910000000b0061171661a4dmr302696ywm.3.1711677263590; Thu, 28 Mar
+ 2024 18:54:23 -0700 (PDT)
+Date: Thu, 28 Mar 2024 18:53:26 -0700
 In-Reply-To: <20240329015351.624249-1-drosen@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240329015351.624249-1-drosen@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240329015351.624249-11-drosen@google.com>
-Subject: [RFC PATCH v4 10/36] fuse-bpf: Add support for fallocate
+Message-ID: <20240329015351.624249-12-drosen@google.com>
+Subject: [RFC PATCH v4 11/36] fuse-bpf: Support file/dir open/close
 From: Daniel Rosenberg <drosen@google.com>
 To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
 	Alexei Starovoitov <ast@kernel.org>
@@ -90,123 +90,546 @@ Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
 	Daniel Rosenberg <drosen@google.com>, Paul Lawrence <paullawrence@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-This adds backing support for FUSE_FALLOCATE
+This adds backing support for FUSE_OPEN, FUSE_OPENDIR, FUSE_CREATE,
+FUSE_RELEASE, and FUSE_RELEASEDIR
 
 Signed-off-by: Daniel Rosenberg <drosen@google.com>
 Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
- fs/fuse/backing.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/fuse/file.c    |  3 +++
- fs/fuse/fuse_i.h  |  6 +++++
- 3 files changed, 69 insertions(+)
+ fs/fuse/backing.c | 336 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/fuse/dir.c     |   3 +
+ fs/fuse/file.c    |  62 +++++----
+ fs/fuse/fuse_i.h  |  26 ++++
+ 4 files changed, 404 insertions(+), 23 deletions(-)
 
 diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
-index 04cb0c0c10b0..4a22465ecdef 100644
+index 4a22465ecdef..317a3adbbb3e 100644
 --- a/fs/fuse/backing.c
 +++ b/fs/fuse/backing.c
-@@ -340,6 +340,66 @@ ssize_t fuse_backing_mmap(struct file *file, struct vm_area_struct *vma)
- 	return ret;
+@@ -210,6 +210,342 @@ static void fuse_stat_to_attr(struct fuse_conn *fc, struct inode *inode,
+ 	attr->blksize = 1 << blkbits;
  }
  
-+static int fuse_file_fallocate_initialize_in(struct bpf_fuse_args *fa,
-+					     struct fuse_fallocate_in *in,
-+					     struct file *file, int mode, loff_t offset, loff_t length)
++struct fuse_open_args {
++	struct fuse_open_in in;
++	struct fuse_open_out out;
++};
++
++static int fuse_open_initialize_in(struct bpf_fuse_args *fa, struct fuse_open_args *args,
++				   struct inode *inode, struct file *file, bool isdir)
++{
++	args->in = (struct fuse_open_in) {
++		.flags = file->f_flags & ~(O_CREAT | O_EXCL | O_NOCTTY),
++	};
++	*fa = (struct bpf_fuse_args) {
++		.info = (struct bpf_fuse_meta_info) {
++			.nodeid = get_fuse_inode(inode)->nodeid,
++			.opcode = isdir ? FUSE_OPENDIR : FUSE_OPEN,
++		},
++		.in_numargs = 1,
++		.in_args[0] = (struct bpf_fuse_arg) {
++			.size = sizeof(args->in),
++			.value = &args->in,
++		},
++	};
++
++	return 0;
++}
++
++static int fuse_open_initialize_out(struct bpf_fuse_args *fa, struct fuse_open_args *args,
++				    struct inode *inode, struct file *file, bool isdir)
++{
++	args->out = (struct fuse_open_out) { 0 };
++
++	fa->out_numargs = 1;
++	fa->out_args[0] = (struct bpf_fuse_arg) {
++		.size = sizeof(args->out),
++		.value = &args->out,
++	};
++
++	return 0;
++}
++
++static int fuse_open_backing(struct bpf_fuse_args *fa, int *out,
++			     struct inode *inode, struct file *file, bool isdir)
++{
++	struct fuse_mount *fm = get_fuse_mount(inode);
++	const struct fuse_open_in *foi = fa->in_args[0].value;
++	struct fuse_file *ff;
++	int mask;
++	struct fuse_dentry *fd = get_fuse_dentry(file->f_path.dentry);
++	struct file *backing_file;
++
++	ff = fuse_file_alloc(fm);
++	if (!ff)
++		return -ENOMEM;
++	file->private_data = ff;
++
++	switch (foi->flags & O_ACCMODE) {
++	case O_RDONLY:
++		mask = MAY_READ;
++		break;
++
++	case O_WRONLY:
++		mask = MAY_WRITE;
++		break;
++
++	case O_RDWR:
++		mask = MAY_READ | MAY_WRITE;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	*out = inode_permission(&nop_mnt_idmap,
++				get_fuse_inode(inode)->backing_inode, mask);
++	if (*out)
++		return *out;
++
++	backing_file =
++		dentry_open(&fd->backing_path, foi->flags, current_cred());
++
++	if (IS_ERR(backing_file)) {
++		fuse_file_free(ff);
++		file->private_data = NULL;
++		return PTR_ERR(backing_file);
++	}
++	ff->backing_file = backing_file;
++
++	*out = 0;
++	return 0;
++}
++
++static int fuse_open_finalize(struct bpf_fuse_args *fa, int *out,
++			      struct inode *inode, struct file *file, bool isdir)
 +{
 +	struct fuse_file *ff = file->private_data;
++	struct fuse_open_out *foo = fa->out_args[0].value;
 +
-+	*in = (struct fuse_fallocate_in) {
-+		.fh = ff->fh,
-+		.offset = offset,
-+		.length = length,
++	if (ff) {
++		ff->fh = foo->fh;
++		ff->nodeid = get_fuse_inode(inode)->nodeid;
++	}
++	return 0;
++}
++
++int fuse_bpf_open(int *out, struct inode *inode, struct file *file, bool isdir)
++{
++	return bpf_fuse_backing(inode, struct fuse_open_args, out,
++				fuse_open_initialize_in, fuse_open_initialize_out,
++				fuse_open_backing, fuse_open_finalize,
++				inode, file, isdir);
++}
++
++struct fuse_create_open_args {
++	struct fuse_create_in in;
++	struct fuse_buffer name;
++	struct fuse_entry_out entry_out;
++	struct fuse_open_out open_out;
++};
++
++static int fuse_create_open_initialize_in(struct bpf_fuse_args *fa, struct fuse_create_open_args *args,
++					  struct inode *dir, struct dentry *entry,
++					  struct file *file, unsigned int flags, umode_t mode)
++{
++	args->in = (struct fuse_create_in) {
++		.flags = file->f_flags & ~(O_CREAT | O_EXCL | O_NOCTTY),
 +		.mode = mode,
++	};
++
++	args->name = (struct fuse_buffer) {
++		.data = (void *) entry->d_name.name,
++		.size = entry->d_name.len + 1,
++		.flags = BPF_FUSE_IMMUTABLE,
 +	};
 +
 +	*fa = (struct bpf_fuse_args) {
 +		.info = (struct bpf_fuse_meta_info) {
-+			.opcode = FUSE_FALLOCATE,
-+			.nodeid = ff->nodeid,
++			.nodeid = get_node_id(dir),
++			.opcode = FUSE_CREATE,
 +		},
-+		.in_numargs = 1,
-+		.in_args[0].size = sizeof(*in),
-+		.in_args[0].value = in,
++		.in_numargs = 2,
++		.in_args[0] = (struct bpf_fuse_arg) {
++			.size = sizeof(args->in),
++			.value = &args->in,
++		},
++		.in_args[1] = (struct bpf_fuse_arg) {
++			.is_buffer = true,
++			.buffer = &args->name,
++		},
 +	};
 +
 +	return 0;
 +}
 +
-+static int fuse_file_fallocate_initialize_out(struct bpf_fuse_args *fa,
-+					      struct fuse_fallocate_in *in,
-+					      struct file *file, int mode, loff_t offset, loff_t length)
++static int fuse_create_open_initialize_out(struct bpf_fuse_args *fa, struct fuse_create_open_args *args,
++					   struct inode *dir, struct dentry *entry,
++					   struct file *file, unsigned int flags, umode_t mode)
 +{
++	args->entry_out = (struct fuse_entry_out) { 0 };
++	args->open_out = (struct fuse_open_out) { 0 };
++
++	fa->out_numargs = 2;
++	fa->out_args[0] = (struct bpf_fuse_arg) {
++		.size = sizeof(args->entry_out),
++		.value = &args->entry_out,
++	};
++	fa->out_args[1] = (struct bpf_fuse_arg) {
++		.size = sizeof(args->open_out),
++		.value = &args->open_out,
++	};
++
 +	return 0;
 +}
 +
-+static int fuse_file_fallocate_backing(struct bpf_fuse_args *fa, int *out,
-+				       struct file *file, int mode, loff_t offset, loff_t length)
++static int fuse_open_file_backing(struct inode *inode, struct file *file)
 +{
-+	const struct fuse_fallocate_in *ffi = fa->in_args[0].value;
++	struct fuse_mount *fm = get_fuse_mount(inode);
++	struct dentry *entry = file->f_path.dentry;
++	struct fuse_dentry *fuse_dentry = get_fuse_dentry(entry);
++	struct fuse_file *fuse_file;
++	struct file *backing_file;
++
++	fuse_file = fuse_file_alloc(fm);
++	if (!fuse_file)
++		return -ENOMEM;
++	file->private_data = fuse_file;
++
++	backing_file = dentry_open(&fuse_dentry->backing_path, file->f_flags,
++				   current_cred());
++	if (IS_ERR(backing_file)) {
++		fuse_file_free(fuse_file);
++		file->private_data = NULL;
++		return PTR_ERR(backing_file);
++	}
++	fuse_file->backing_file = backing_file;
++
++	return 0;
++}
++
++static int fuse_create_open_backing(struct bpf_fuse_args *fa, int *out,
++				    struct inode *dir, struct dentry *entry,
++				    struct file *file, unsigned int flags, umode_t mode)
++{
++	struct fuse_inode *dir_fuse_inode = get_fuse_inode(dir);
++	struct path backing_path;
++	struct inode *inode = NULL;
++	struct dentry *backing_parent;
++	struct dentry *newent;
++	const struct fuse_create_in *fci = fa->in_args[0].value;
++
++	get_fuse_backing_path(entry, &backing_path);
++	if (!backing_path.dentry)
++		return -EBADF;
++
++	if (IS_ERR(backing_path.dentry))
++		return PTR_ERR(backing_path.dentry);
++
++	if (d_really_is_positive(backing_path.dentry)) {
++		*out = -EIO;
++		goto out;
++	}
++
++	backing_parent = dget_parent(backing_path.dentry);
++	inode_lock_nested(dir_fuse_inode->backing_inode, I_MUTEX_PARENT);
++	*out = vfs_create(&nop_mnt_idmap, d_inode(backing_parent),
++			backing_path.dentry, fci->mode, true);
++	inode_unlock(d_inode(backing_parent));
++	dput(backing_parent);
++	if (*out)
++		goto out;
++
++	inode = fuse_iget_backing(dir->i_sb, 0, backing_path.dentry->d_inode);
++	if (!inode) {
++		*out = -EIO;
++		goto out;
++	}
++
++	newent = d_splice_alias(inode, entry);
++	if (IS_ERR(newent)) {
++		*out = PTR_ERR(newent);
++		goto out;
++	}
++
++	inode = NULL;
++	entry = newent ? newent : entry;
++	*out = finish_open(file, entry, fuse_open_file_backing);
++
++out:
++	iput(inode);
++	path_put(&backing_path);
++	return *out;
++}
++
++static int fuse_create_open_finalize(struct bpf_fuse_args *fa, int *out,
++				     struct inode *dir, struct dentry *entry,
++				     struct file *file, unsigned int flags, umode_t mode)
++{
 +	struct fuse_file *ff = file->private_data;
++	struct fuse_inode *fi = get_fuse_inode(file->f_inode);
++	struct fuse_entry_out *feo = fa->out_args[0].value;
++	struct fuse_open_out *foo = fa->out_args[1].value;
 +
-+	*out = vfs_fallocate(ff->backing_file, ffi->mode, ffi->offset,
-+			     ffi->length);
++	if (fi)
++		fi->nodeid = feo->nodeid;
++	if (ff)
++		ff->fh = foo->fh;
 +	return 0;
 +}
 +
-+static int fuse_file_fallocate_finalize(struct bpf_fuse_args *fa, int *out,
-+					struct file *file, int mode, loff_t offset, loff_t length)
++int fuse_bpf_create_open(int *out, struct inode *dir, struct dentry *entry,
++			 struct file *file, unsigned int flags, umode_t mode)
++{
++	return bpf_fuse_backing(dir, struct fuse_create_open_args, out,
++				fuse_create_open_initialize_in,
++				fuse_create_open_initialize_out,
++				fuse_create_open_backing,
++				fuse_create_open_finalize,
++				dir, entry, file, flags, mode);
++}
++
++static int fuse_release_initialize_in(struct bpf_fuse_args *fa, struct fuse_release_in *fri,
++				      struct inode *inode, struct fuse_file *ff)
++{
++	/* Always put backing file whatever bpf/userspace says */
++	fput(ff->backing_file);
++
++	*fri = (struct fuse_release_in) {
++		.fh = ff->fh,
++	};
++
++	*fa = (struct bpf_fuse_args) {
++		.info = (struct bpf_fuse_meta_info) {
++			.nodeid = get_fuse_inode(inode)->nodeid,
++			.opcode = S_ISDIR(inode->i_mode) ? FUSE_RELEASEDIR
++							 : FUSE_RELEASE,
++		},		.in_numargs = 1,
++		.in_args[0].size = sizeof(*fri),
++		.in_args[0].value = fri,
++	};
++
++	return 0;
++}
++
++static int fuse_release_initialize_out(struct bpf_fuse_args *fa, struct fuse_release_in *fri,
++				       struct inode *inode, struct fuse_file *ff)
 +{
 +	return 0;
 +}
 +
-+int fuse_bpf_file_fallocate(int *out, struct inode *inode, struct file *file, int mode, loff_t offset, loff_t length)
++static int fuse_release_backing(struct bpf_fuse_args *fa, int *out,
++				struct inode *inode, struct fuse_file *ff)
 +{
-+	return bpf_fuse_backing(inode, struct fuse_fallocate_in, out,
-+				fuse_file_fallocate_initialize_in,
-+				fuse_file_fallocate_initialize_out,
-+				fuse_file_fallocate_backing,
-+				fuse_file_fallocate_finalize,
-+				file, mode, offset, length);
++	return 0;
 +}
 +
- /*******************************************************************************
-  * Directory operations after here                                             *
-  ******************************************************************************/
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index b3cae6e677f8..0ab882e1236a 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -3032,6 +3032,9 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
- 		(!(mode & FALLOC_FL_KEEP_SIZE) ||
- 		 (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE)));
++static int fuse_release_finalize(struct bpf_fuse_args *fa, int *out,
++				 struct inode *inode, struct fuse_file *ff)
++{
++	*out = 0;
++	return 0;
++}
++
++int fuse_bpf_release(int *out, struct inode *inode, struct fuse_file *ff)
++{
++	return bpf_fuse_backing(inode, struct fuse_release_in, out,
++				fuse_release_initialize_in, fuse_release_initialize_out,
++				fuse_release_backing, fuse_release_finalize,
++				inode, ff);
++}
++
++int fuse_bpf_releasedir(int *out, struct inode *inode, struct fuse_file *ff)
++{
++	return bpf_fuse_backing(inode, struct fuse_release_in, out,
++				fuse_release_initialize_in, fuse_release_initialize_out,
++				fuse_release_backing, fuse_release_finalize, inode, ff);
++}
++
+ struct fuse_lseek_args {
+ 	struct fuse_lseek_in in;
+ 	struct fuse_lseek_out out;
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index 8db6eb6a0848..09bb4c63fd71 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -736,6 +736,9 @@ static int fuse_create_open(struct inode *dir, struct dentry *entry,
+ 	/* Userspace expects S_IFREG in create mode */
+ 	BUG_ON((mode & S_IFMT) != S_IFREG);
  
-+	if (fuse_bpf_file_fallocate(&err, inode, file, mode, offset, length))
++	if (fuse_bpf_create_open(&err, dir, entry, file, flags, mode))
 +		return err;
 +
- 	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
- 		     FALLOC_FL_ZERO_RANGE))
- 		return -EOPNOTSUPP;
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 24f453d162ae..7a6cebecd00f 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -1439,6 +1439,7 @@ int parse_fuse_bpf_entry(struct fuse_bpf_entry *fbe, int num_entries);
- #ifdef CONFIG_FUSE_BPF
- 
- int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *file, loff_t offset, int whence);
-+int fuse_bpf_file_fallocate(int *out, struct inode *inode, struct file *file, int mode, loff_t offset, loff_t length);
- int fuse_bpf_lookup(struct dentry **out, struct inode *dir, struct dentry *entry, unsigned int flags);
- int fuse_bpf_access(int *out, struct inode *inode, int mask);
- 
-@@ -1449,6 +1450,11 @@ static inline int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *
- 	return 0;
+ 	forget = fuse_alloc_forget();
+ 	err = -ENOMEM;
+ 	if (!forget)
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 0ab882e1236a..c43f2d61c41a 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -106,25 +106,35 @@ static void fuse_release_end(struct fuse_mount *fm, struct fuse_args *args,
+ 	kfree(ra);
  }
  
-+static inline int fuse_bpf_file_fallocate(int *out, struct inode *inode, struct file *file, int mode, loff_t offset, loff_t length)
+-static void fuse_file_put(struct fuse_file *ff, bool sync, bool isdir)
++static void fuse_file_put(struct inode *inode, struct fuse_file *ff,
++			  bool sync, bool isdir)
+ {
+-	if (refcount_dec_and_test(&ff->count)) {
+-		struct fuse_args *args = &ff->release_args->args;
++	struct fuse_args *args = &ff->release_args->args;
++#ifdef CONFIG_FUSE_BPF
++	int err;
++#endif
++	if (!refcount_dec_and_test(&ff->count))
++		return;
+ 
+-		if (isdir ? ff->fm->fc->no_opendir : ff->fm->fc->no_open) {
+-			/* Do nothing when client does not implement 'open' */
+-			fuse_release_end(ff->fm, args, 0);
+-		} else if (sync) {
+-			fuse_simple_request(ff->fm, args);
+-			fuse_release_end(ff->fm, args, 0);
+-		} else {
+-			args->end = fuse_release_end;
+-			if (fuse_simple_background(ff->fm, args,
+-						   GFP_KERNEL | __GFP_NOFAIL))
+-				fuse_release_end(ff->fm, args, -ENOTCONN);
+-		}
+-		kfree(ff);
++#ifdef CONFIG_FUSE_BPF
++	 if (fuse_bpf_releasedir(&err, inode, ff)) {
++		 fuse_release_end(ff->fm, args, 0);
++	 } else
++#endif
++
++	if (isdir ? ff->fm->fc->no_opendir : ff->fm->fc->no_open) {
++		/* Do nothing when client does not implement 'open' */
++		fuse_release_end(ff->fm, args, 0);
++	} else if (sync) {
++		fuse_simple_request(ff->fm, args);
++		fuse_release_end(ff->fm, args, 0);
++	} else {
++		args->end = fuse_release_end;
++		if (fuse_simple_background(ff->fm, args,
++					   GFP_KERNEL | __GFP_NOFAIL))
++			fuse_release_end(ff->fm, args, -ENOTCONN);
+ 	}
++	kfree(ff);
+ }
+ 
+ struct fuse_file *fuse_file_open(struct fuse_mount *fm, u64 nodeid,
+@@ -243,6 +253,9 @@ int fuse_open_common(struct inode *inode, struct file *file, bool isdir)
+ 	if (err)
+ 		return err;
+ 
++	if (fuse_bpf_open(&err, inode, file, isdir))
++		return err;
++
+ 	if (is_wb_truncate || dax_truncate)
+ 		inode_lock(inode);
+ 
+@@ -334,7 +347,7 @@ void fuse_file_release(struct inode *inode, struct fuse_file *ff,
+ 	 * synchronous RELEASE is allowed (and desirable) in this case
+ 	 * because the server can be trusted not to screw up.
+ 	 */
+-	fuse_file_put(ff, ff->fm->fc->destroy, isdir);
++	fuse_file_put(ra->inode, ff, ff->fm->fc->destroy, isdir);
+ }
+ 
+ void fuse_release_common(struct file *file, bool isdir)
+@@ -374,7 +387,7 @@ void fuse_sync_release(struct fuse_inode *fi, struct fuse_file *ff,
+ 	 * iput(NULL) is a no-op and since the refcount is 1 and everything's
+ 	 * synchronous, we are fine with not doing igrab() here"
+ 	 */
+-	fuse_file_put(ff, true, false);
++	fuse_file_put(&fi->inode, ff, true, false);
+ }
+ EXPORT_SYMBOL_GPL(fuse_sync_release);
+ 
+@@ -930,8 +943,11 @@ static void fuse_readpages_end(struct fuse_mount *fm, struct fuse_args *args,
+ 		unlock_page(page);
+ 		put_page(page);
+ 	}
+-	if (ia->ff)
+-		fuse_file_put(ia->ff, false, false);
++	if (ia->ff) {
++		WARN_ON(!mapping);
++		fuse_file_put(mapping ? mapping->host : NULL, ia->ff,
++			      false, false);
++	}
+ 
+ 	fuse_io_free(ia);
+ }
+@@ -1673,7 +1689,7 @@ static void fuse_writepage_free(struct fuse_writepage_args *wpa)
+ 		__free_page(ap->pages[i]);
+ 
+ 	if (wpa->ia.ff)
+-		fuse_file_put(wpa->ia.ff, false, false);
++		fuse_file_put(wpa->inode, wpa->ia.ff, false, false);
+ 
+ 	kfree(ap->pages);
+ 	kfree(wpa);
+@@ -1928,7 +1944,7 @@ int fuse_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 	ff = __fuse_write_file_get(fi);
+ 	err = fuse_flush_times(inode, ff);
+ 	if (ff)
+-		fuse_file_put(ff, false, false);
++		fuse_file_put(inode, ff, false, false);
+ 
+ 	return err;
+ }
+@@ -2326,7 +2342,7 @@ static int fuse_writepages(struct address_space *mapping,
+ 		fuse_writepages_send(&data);
+ 	}
+ 	if (data.ff)
+-		fuse_file_put(data.ff, false, false);
++		fuse_file_put(inode, data.ff, false, false);
+ 
+ 	kfree(data.orig_pages);
+ out:
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 7a6cebecd00f..a133010fde1c 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -1438,6 +1438,11 @@ int parse_fuse_bpf_entry(struct fuse_bpf_entry *fbe, int num_entries);
+ 
+ #ifdef CONFIG_FUSE_BPF
+ 
++int fuse_bpf_open(int *err, struct inode *inode, struct file *file, bool isdir);
++int fuse_bpf_create_open(int *out, struct inode *dir, struct dentry *entry,
++			 struct file *file, unsigned int flags, umode_t mode);
++int fuse_bpf_release(int *out, struct inode *inode, struct fuse_file *ff);
++int fuse_bpf_releasedir(int *out, struct inode *inode, struct fuse_file *ff);
+ int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *file, loff_t offset, int whence);
+ int fuse_bpf_file_fallocate(int *out, struct inode *inode, struct file *file, int mode, loff_t offset, loff_t length);
+ int fuse_bpf_lookup(struct dentry **out, struct inode *dir, struct dentry *entry, unsigned int flags);
+@@ -1445,6 +1450,27 @@ int fuse_bpf_access(int *out, struct inode *inode, int mask);
+ 
+ #else
+ 
++static inline int fuse_bpf_open(int *err, struct inode *inode, struct file *file, bool isdir)
 +{
 +	return 0;
 +}
 +
- static inline int fuse_bpf_lookup(struct dentry **out, struct inode *dir, struct dentry *entry, unsigned int flags)
++static inline int fuse_bpf_create_open(int *out, struct inode *dir, struct dentry *entry,
++				       struct file *file, unsigned int flags, umode_t mode)
++{
++	return 0;
++}
++
++static inline int fuse_bpf_release(int *out, struct inode *inode, struct file *file)
++{
++	return 0;
++}
++
++static inline int fuse_bpf_releasedir(int *out, struct inode *inode, struct file *file)
++{
++	return 0;
++}
++
+ static inline int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *file, loff_t offset, int whence)
  {
  	return 0;
 -- 
