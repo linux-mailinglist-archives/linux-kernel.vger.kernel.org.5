@@ -1,283 +1,161 @@
-Return-Path: <linux-kernel+bounces-124096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E87AA89122F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:54:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1CCA891231
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 965C4289378
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:54:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C50A41C23AE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:55:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067E339FED;
-	Fri, 29 Mar 2024 03:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hdhNm1UL"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F833A1BB;
+	Fri, 29 Mar 2024 03:55:19 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB682E821
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C034D39FEB
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:55:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711684469; cv=none; b=nHZRWx3CpqzEKMR8sqOODln//JUd6yN7G151EJz9F9quuAOvXJ3luJuZd9z1BJggvAl1Qa7nQkcZVUFXzfo8O+SKuYxw2Dp/hMk/Z4t4FWy3TJeoB3z1dIP03lkcIN1JSmlsnEloj+ERVRyCUbTmNb3c9gV5h3wXbFBWRNhWdQM=
+	t=1711684519; cv=none; b=sRIjyC2x8dfO0HkDozZOw66GoUBXUp2X36jaaZFfIbUtT+yper2+Z2RqXphxv/esUsNTlBBD/qLxgplkGBZ1by0Lm32AFZqbmJLZ2hWkduHSp+ddkCyf6fJ+b72qPVb5aHmryYaCmZwFyQhco2l95IJQCeC6lYu8kQ/YeCJJTnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711684469; c=relaxed/simple;
-	bh=uuhBNiEPA5BGYC6HFspVOkMf/5FcVuYvwXDlLIMLIjA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXKKuzkxXHebPNz+aAphPbmnupSs9cbBXSi3tBaGeUiQSE5WkvTSEemWdBuT4OPFiITRTwyTKRV3UxjKe91NuEo0VdzgxwElXyL1/xK5iiPR1zTZ3aexyxxu/KaDeBVJEk8bvDyNWGBeAqaeZEgkbQwcc2cCfQlwtvF9PFr8mrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hdhNm1UL; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c3e67fd552so766837b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711684466; x=1712289266; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3C41foMJwldN7lF7HFYV1LcCmv7iReonWo3nmflCe4k=;
-        b=hdhNm1ULJNFZa3/awq+NvK7GM55brRVbg2WH+ovGpJM7zMK61ffZHD3kxZZ/pnATVe
-         yYgnpP/HlBNlml26ryo8GjPuRP8/2qh5z/UmXGS7L6fZmKZ/Qb+Ymd73OBrinN6d+eZ1
-         QoLf14TksO1NtgWSkrPnWrrU1Xcfnf20AP67Y=
+	s=arc-20240116; t=1711684519; c=relaxed/simple;
+	bh=IPMmmlzrM7ZawDcqp92R57ZioyuqGmOw1ucEO4myUqA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u/33PmmnnmngBdIIg1c8srpGwUUQHsT/9BjoYjDeGw6egzaygF+xN2xj/31yk3x+VVrMSOgOWZwDmY6r29qZQFXxpPyAQcTc+7mxuilqbgLhRpAVsFrIgkh8rApzDsH8a9xbSm5+RKyekWuk0m9qLCtuJjV70CpPutph5jmPMaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36849578ac4so13523405ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:55:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711684466; x=1712289266;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3C41foMJwldN7lF7HFYV1LcCmv7iReonWo3nmflCe4k=;
-        b=Q8VG3lMQkNNMaAZUfwJE87fSo0L2Nz6ZmQ5StzBND1HZ8BA5OJok73jMKlYL2/a2fc
-         016fx81AoYQYk4cTHyvmAVmrWweZLjQwN6qUxY6DqYgxQPYTh2EY0LfnDvY34RjoI4Uk
-         zilqx5OcLIef/KfIFnnN0cHNQIAsIFrxekWZkwYNmmp2m79ga5K8cZej+J6ifMlCD3bc
-         ox3IR/oLkIGrefZ4oWwAE3r6FFY9vCGs/YAHqosSZc3TOKBSoj0e5RSbvs2AirWv0KHd
-         zAFWr1y9wmUzF/e5x4SDJog5apKwNy3tOxAYlimHJgj4jwS90jr0Ni1H7QcZlsGl+b9J
-         0Xbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqnG8V6qHkpnrrDX4rRpPiPiXqP2hGztRxPhe3L680jrkhxykFqzXqCb+1T+PhIdUvVixv6Yt/hR2gK2VKQsAHUu67+z3O/GoDhOAm
-X-Gm-Message-State: AOJu0Yx4maStUkuCe6WQB2s/b65dWHMtV7KZG9cCZrUW4UP0IRViJCws
-	SAQj9doERsBRGkfIUMPKxp5SRy0PuMjMZ+Ww+17jExhCS/vO18xBJ9Sd39u2DA==
-X-Google-Smtp-Source: AGHT+IFV3d5fwIBqU/c65R9zyRZ6WnFPmpDPlKpZ+gaG3pHS3NaZQMCL4vMAzkEhEWb9x4Q42+Papg==
-X-Received: by 2002:a05:6808:1821:b0:3c3:de8e:5411 with SMTP id bh33-20020a056808182100b003c3de8e5411mr1349524oib.38.1711684466464;
-        Thu, 28 Mar 2024 20:54:26 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z9-20020a63e549000000b005cd8044c6fesm2075211pgj.23.2024.03.28.20.54.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 20:54:25 -0700 (PDT)
-Date: Thu, 28 Mar 2024 20:54:25 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>, devel@lists.orangefs.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] orangefs: cleanup uses of strncpy
-Message-ID: <202403282053.78C952AC@keescook>
-References: <20240322-strncpy-fs-orangefs-dcache-c-v1-1-15d12debbf38@google.com>
+        d=1e100.net; s=20230601; t=1711684517; x=1712289317;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZfhCCWVY4HGV1iMz9lC4m+aLEXu+N03bJF+E2pYJJ5Y=;
+        b=dNqysIRnHprGFMchvNe9iPN4tIkL5dTZnD5aTIGiJLTpj1/PLdZqHdWavHRflNbfxz
+         ZXhzxOIPfIJWZCZ2n5Dn6IXMhVZoqCLT4yWvrqMbJIHSEyEzx+jVOaJZ9QhE8vjJiagp
+         21g9VJnOtY41tdVFkj/Bp7wBNOgvwb+He9qOqrBMQFKd76yZaihGEa7MU/BmY+80EUvE
+         cRg5mKoMUfWatY6JE1eBSt/Tchss6hFZkbBSm0QfopAMc8KVBZ8rVbYTiYk8WHHEc/Of
+         fq44MDnYMm96jeypBoieTBtotZ/JPh9L5FwwOE69eVXZGfajdDjpPPNLHnzCLEA4ZBD5
+         QlzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYCIIorTdgLU/LDEjCJ0tEWj/zmNH1sOCjnkzQ+4km8Ca6GMWd1USTnXyTJSTDKA12rEu/5ud7nj0kn/EwkHwyeNYXRc7zzjZzzXS1
+X-Gm-Message-State: AOJu0Yy4dSjwwMqZCAOFXdeHHB8eY4sl2o+KSsCQsKZTiQCleya2iTQC
+	IFY6XhVZdwOKIkAKsJFGYFYy30uMUT45NCyWMHRIQvVPGHXvpfuXtp5uvcZiWMLYB2gE6143M3y
+	WIhUTpVVEiNFyuqDfqms718q5xZLS29pCuu6Jk7BbHRDyvg/FYDRRfuo=
+X-Google-Smtp-Source: AGHT+IHb+N7h//zx+cgD9ghk4W2yHNz+bzLtDQnOLmqUZo+vFh+y80fr12zhebvNrmeVbpeoPHjl3nm1MIbR1vnkp6yRMDonI6EI
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322-strncpy-fs-orangefs-dcache-c-v1-1-15d12debbf38@google.com>
+X-Received: by 2002:a05:6e02:1785:b0:368:c9e2:b372 with SMTP id
+ y5-20020a056e02178500b00368c9e2b372mr65877ilu.0.1711684517044; Thu, 28 Mar
+ 2024 20:55:17 -0700 (PDT)
+Date: Thu, 28 Mar 2024 20:55:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009b38080614c49bdb@google.com>
+Subject: [syzbot] [kvm?] WARNING in mmu_free_root_page
+From: syzbot <syzbot+dc308fcfcd53f987de73@syzkaller.appspotmail.com>
+To: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com, 
+	pbonzini@redhat.com, seanjc@google.com, syzkaller-bugs@googlegroups.com, 
+	tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 22, 2024 at 09:41:18PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> There is some care taken to ensure these destination buffers are
-> NUL-terminated by bounding the strncpy()'s by ORANGEFS_NAME_MAX - 1 or
-> ORANGEFS_MAX_SERVER_ADDR_LEN - 1. Instead, we can use the new 2-argument
-> version of strscpy() to guarantee NUL-termination on the destination
-> buffers while simplifying the code.
-> 
-> Based on usage with printf-likes, we can see these buffers are expected
-> to be NUL-terminated:
-> |	gossip_debug(GOSSIP_NAME_DEBUG,
-> |			"%s: doing lookup on %s under %pU,%d\n",
-> |			__func__,
-> |			new_op->upcall.req.lookup.d_name,
-> |			&new_op->upcall.req.lookup.parent_refn.khandle,
-> |			new_op->upcall.req.lookup.parent_refn.fs_id);
-> ...
-> |	gossip_debug(GOSSIP_SUPER_DEBUG,
-> |			"Attempting ORANGEFS Remount via host %s\n",
-> |			new_op->upcall.req.fs_mount.orangefs_config_server);
-> 
-> NUL-padding isn't required for any of these destination buffers as
-> they've all been zero-allocated with op_alloc() or kzalloc().
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  fs/orangefs/dcache.c |  4 +---
->  fs/orangefs/namei.c  | 26 ++++++++------------------
->  fs/orangefs/super.c  | 17 ++++++-----------
->  3 files changed, 15 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/orangefs/dcache.c b/fs/orangefs/dcache.c
-> index 8bbe9486e3a6..395a00ed8ac7 100644
-> --- a/fs/orangefs/dcache.c
-> +++ b/fs/orangefs/dcache.c
-> @@ -33,9 +33,7 @@ static int orangefs_revalidate_lookup(struct dentry *dentry)
->  
->  	new_op->upcall.req.lookup.sym_follow = ORANGEFS_LOOKUP_LINK_NO_FOLLOW;
->  	new_op->upcall.req.lookup.parent_refn = parent->refn;
-> -	strncpy(new_op->upcall.req.lookup.d_name,
-> -		dentry->d_name.name,
-> -		ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name);
->  
->  	gossip_debug(GOSSIP_DCACHE_DEBUG,
->  		     "%s:%s:%d interrupt flag [%d]\n",
-> diff --git a/fs/orangefs/namei.c b/fs/orangefs/namei.c
-> index c9dfd5c6a097..200558ec72f0 100644
-> --- a/fs/orangefs/namei.c
-> +++ b/fs/orangefs/namei.c
-> @@ -41,8 +41,7 @@ static int orangefs_create(struct mnt_idmap *idmap,
->  	fill_default_sys_attrs(new_op->upcall.req.create.attributes,
->  			       ORANGEFS_TYPE_METAFILE, mode);
->  
-> -	strncpy(new_op->upcall.req.create.d_name,
-> -		dentry->d_name.name, ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.create.d_name, dentry->d_name.name);
->  
->  	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
->  
-> @@ -137,8 +136,7 @@ static struct dentry *orangefs_lookup(struct inode *dir, struct dentry *dentry,
->  		     &parent->refn.khandle);
->  	new_op->upcall.req.lookup.parent_refn = parent->refn;
->  
-> -	strncpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
-> -		ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name);
->  
->  	gossip_debug(GOSSIP_NAME_DEBUG,
->  		     "%s: doing lookup on %s under %pU,%d\n",
-> @@ -192,8 +190,7 @@ static int orangefs_unlink(struct inode *dir, struct dentry *dentry)
->  		return -ENOMEM;
->  
->  	new_op->upcall.req.remove.parent_refn = parent->refn;
-> -	strncpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
-> -		ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.remove.d_name, dentry->d_name.name);
->  
->  	ret = service_operation(new_op, "orangefs_unlink",
->  				get_interruptible_flag(inode));
-> @@ -247,10 +244,8 @@ static int orangefs_symlink(struct mnt_idmap *idmap,
->  			       ORANGEFS_TYPE_SYMLINK,
->  			       mode);
->  
-> -	strncpy(new_op->upcall.req.sym.entry_name,
-> -		dentry->d_name.name,
-> -		ORANGEFS_NAME_MAX - 1);
-> -	strncpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.sym.entry_name, dentry->d_name.name);
-> +	strscpy(new_op->upcall.req.sym.target, symname);
->  
->  	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
->  
-> @@ -324,8 +319,7 @@ static int orangefs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
->  	fill_default_sys_attrs(new_op->upcall.req.mkdir.attributes,
->  			      ORANGEFS_TYPE_DIRECTORY, mode);
->  
-> -	strncpy(new_op->upcall.req.mkdir.d_name,
-> -		dentry->d_name.name, ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.mkdir.d_name, dentry->d_name.name);
->  
->  	ret = service_operation(new_op, __func__, get_interruptible_flag(dir));
->  
-> @@ -405,12 +399,8 @@ static int orangefs_rename(struct mnt_idmap *idmap,
->  	new_op->upcall.req.rename.old_parent_refn = ORANGEFS_I(old_dir)->refn;
->  	new_op->upcall.req.rename.new_parent_refn = ORANGEFS_I(new_dir)->refn;
->  
-> -	strncpy(new_op->upcall.req.rename.d_old_name,
-> -		old_dentry->d_name.name,
-> -		ORANGEFS_NAME_MAX - 1);
-> -	strncpy(new_op->upcall.req.rename.d_new_name,
-> -		new_dentry->d_name.name,
-> -		ORANGEFS_NAME_MAX - 1);
-> +	strscpy(new_op->upcall.req.rename.d_old_name, old_dentry->d_name.name);
-> +	strscpy(new_op->upcall.req.rename.d_new_name, new_dentry->d_name.name);
->  
->  	ret = service_operation(new_op,
->  				"orangefs_rename",
-> diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
-> index 34849b4a3243..fb4d09c2f531 100644
-> --- a/fs/orangefs/super.c
-> +++ b/fs/orangefs/super.c
-> @@ -253,9 +253,8 @@ int orangefs_remount(struct orangefs_sb_info_s *orangefs_sb)
->  	new_op = op_alloc(ORANGEFS_VFS_OP_FS_MOUNT);
->  	if (!new_op)
->  		return -ENOMEM;
-> -	strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
-> -		orangefs_sb->devname,
-> -		ORANGEFS_MAX_SERVER_ADDR_LEN);
-> +	strscpy(new_op->upcall.req.fs_mount.orangefs_config_server,
-> +		orangefs_sb->devname);
+Hello,
 
-This one place doesn't use "ORANGEFS_MAX_SERVER_ADDR_LEN - 1", but this
-appears to be an existing (likely unreachable) bug.
+syzbot found the following issue on:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+HEAD commit:    928a87efa423 Merge tag 'gfs2-v6.8-fix' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=127c0546180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
+dashboard link: https://syzkaller.appspot.com/bug?extid=dc308fcfcd53f987de73
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110481f1180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177049a5180000
 
--Kees
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-928a87ef.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7979568a5a16/vmlinux-928a87ef.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1bc6e1d480e3/bzImage-928a87ef.xz
 
->  
->  	gossip_debug(GOSSIP_SUPER_DEBUG,
->  		     "Attempting ORANGEFS Remount via host %s\n",
-> @@ -400,8 +399,7 @@ static int orangefs_unmount(int id, __s32 fs_id, const char *devname)
->  		return -ENOMEM;
->  	op->upcall.req.fs_umount.id = id;
->  	op->upcall.req.fs_umount.fs_id = fs_id;
-> -	strncpy(op->upcall.req.fs_umount.orangefs_config_server,
-> -	    devname, ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
-> +	strscpy(op->upcall.req.fs_umount.orangefs_config_server, devname);
->  	r = service_operation(op, "orangefs_fs_umount", 0);
->  	/* Not much to do about an error here. */
->  	if (r)
-> @@ -494,9 +492,7 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
->  	if (!new_op)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
-> -		devname,
-> -		ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
-> +	strscpy(new_op->upcall.req.fs_mount.orangefs_config_server, devname);
->  
->  	gossip_debug(GOSSIP_SUPER_DEBUG,
->  		     "Attempting ORANGEFS Mount via host %s\n",
-> @@ -543,9 +539,8 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
->  	 * on successful mount, store the devname and data
->  	 * used
->  	 */
-> -	strncpy(ORANGEFS_SB(sb)->devname,
-> -		devname,
-> -		ORANGEFS_MAX_SERVER_ADDR_LEN - 1);
-> +	strscpy(ORANGEFS_SB(sb)->devname, devname);
-> +
->  
->  	/* mount_pending must be cleared */
->  	ORANGEFS_SB(sb)->mount_pending = 0;
-> 
-> ---
-> base-commit: 241590e5a1d1b6219c8d3045c167f2fbcc076cbb
-> change-id: 20240322-strncpy-fs-orangefs-dcache-c-9a0cf2d22dae
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dc308fcfcd53f987de73@syzkaller.appspotmail.com
 
--- 
-Kees Cook
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5187 at arch/x86/kvm/mmu/mmu.c:3579 mmu_free_root_page+0x36c/0x3f0 arch/x86/kvm/mmu/mmu.c:3579
+Modules linked in:
+CPU: 0 PID: 5187 Comm: syz-executor400 Not tainted 6.9.0-rc1-syzkaller-00005-g928a87efa423 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:mmu_free_root_page+0x36c/0x3f0 arch/x86/kvm/mmu/mmu.c:3579
+Code: 00 49 8d 7d 18 be 01 00 00 00 e8 8f 32 c0 09 31 ff 41 89 c6 89 c6 e8 13 e7 6f 00 45 85 f6 0f 85 5d fe ff ff e8 25 ec 6f 00 90 <0f> 0b 90 e9 4f fe ff ff e8 17 ec 6f 00 90 0f 0b 90 e9 79 fe ff ff
+RSP: 0018:ffffc90002fb7700 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801e0186c8 RCX: ffffffff811d855d
+RDX: ffff888022f9a440 RSI: ffffffff811d856b RDI: 0000000000000005
+RBP: ffff888024c50370 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: ffffffff938d6090 R12: 1ffff920005f6ee1
+R13: ffffc90000fae000 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007fe2bd3e76c0(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055ccab488ee8 CR3: 000000002d4ee000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kvm_mmu_free_roots+0x621/0x710 arch/x86/kvm/mmu/mmu.c:3631
+ kvm_mmu_unload+0x42/0x150 arch/x86/kvm/mmu/mmu.c:5638
+ kvm_mmu_reset_context arch/x86/kvm/mmu/mmu.c:5596 [inline]
+ kvm_mmu_after_set_cpuid+0x14d/0x300 arch/x86/kvm/mmu/mmu.c:5585
+ kvm_vcpu_after_set_cpuid arch/x86/kvm/cpuid.c:386 [inline]
+ kvm_set_cpuid+0x1ff1/0x3570 arch/x86/kvm/cpuid.c:460
+ kvm_vcpu_ioctl_set_cpuid2+0xe7/0x160 arch/x86/kvm/cpuid.c:527
+ kvm_arch_vcpu_ioctl+0x26b7/0x4310 arch/x86/kvm/x86.c:5946
+ kvm_vcpu_ioctl+0xa2c/0x1090 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4620
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:904 [inline]
+ __se_sys_ioctl fs/ioctl.c:890 [inline]
+ __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:890
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fe2bd42e06b
+Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
+RSP: 002b:00007fe2bd3e5710 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fe2bd3e5de0 RCX: 00007fe2bd42e06b
+RDX: 00007fe2bd3e5de0 RSI: 000000004008ae90 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000007 R09: 00000000000000eb
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000080
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000006
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
