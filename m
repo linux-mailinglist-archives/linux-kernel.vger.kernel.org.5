@@ -1,66 +1,60 @@
-Return-Path: <linux-kernel+bounces-124900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB21891D9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:21:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46DB3891D9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59783282013
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:21:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 786261C25F01
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109A32609E4;
-	Fri, 29 Mar 2024 12:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925812609F5;
+	Fri, 29 Mar 2024 12:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t5LwbEbu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xa6M9Fy0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7282609D5;
-	Fri, 29 Mar 2024 12:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B492609CE;
+	Fri, 29 Mar 2024 12:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716396; cv=none; b=MjDVrQOSZFI+UyGE18upgqJgeOpfLp1eKxcdMf+mNkhYfv1/i2dIqXrsUiWEJJqSPE4qzcuL+mo5FpPNGATviLqmvXJRmxIz5rJn0Mh0dK3rOQCwHbLPU29e+fLdZjNdX8EqhLXCk8AamvRgncPcR30n532p5nG3chUF+OMxP/g=
+	t=1711716397; cv=none; b=NzvLP2CgZABDEHnoOtygJQUizSv2jG4dCBwPxj5BbdXJMKrGlLyZTydFJ0w3PyCnO6HfHyLoRYcGSRl+EEAWYLebWFyOzTip82KtHYGbJ4HIKDRsCpWpXH4f2or3DnL8GTUUsOa2fTIIEFKYgdejnEMaXwoZk3Zc+0RXwdhTRao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716396; c=relaxed/simple;
-	bh=2/ZljzUOk4PkU7XUkRXO7j07VgyUBXZnAZ4r8S1aQhE=;
+	s=arc-20240116; t=1711716397; c=relaxed/simple;
+	bh=WPIjX/2qHFPCedFEYL9s01CISXiCP6wWXcAuXar04gU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ss6IZGAD+3e82+n4RJ+VuU60pO3XM8fGKcQaRrLGkftSlBfd/XOVXEB3cKIJUNlAlrCEY7ED1VneFK4C6N1zfaPi+b5oqJHbS0/ejpAorHyDXFAsxjkhTFzpIOTFA2jfqCSCr772lRIplv4+pY4KWV14Qj6DQOQVGPUdUTtxM5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t5LwbEbu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49B2CC433F1;
-	Fri, 29 Mar 2024 12:46:34 +0000 (UTC)
+	 MIME-Version; b=tR2f+ANVOH9Lr23F+APO1Lzibbq7d7/pn31vZ9P8dMOVpPuWzWITDB2qOYdXf8/HY+I4iVi/LCJ2x4s9k5E8EHJEII4YVQ7u3X+Mi1yU09KzKoAazx/xAuJzUsfmF7qv/AmUVruU5M6AqHMV07Nro0zuwJZVZs/o3oZcB9gnej8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xa6M9Fy0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A84CC43399;
+	Fri, 29 Mar 2024 12:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716396;
-	bh=2/ZljzUOk4PkU7XUkRXO7j07VgyUBXZnAZ4r8S1aQhE=;
+	s=k20201202; t=1711716397;
+	bh=WPIjX/2qHFPCedFEYL9s01CISXiCP6wWXcAuXar04gU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=t5LwbEbuvwkhw2ZXUtvTeWDPmuGtbZpNEZLAUAwQw4zRdzFM5shtH9o8NIHqMl5cy
-	 6+yYpWNpBuMfM4DodrA9pqdzk3tEHGZ4Zxt1OhVYZ5nCby86aHJ2h5xPt9YT8DSa5F
-	 HY35OOZMvGc9ZFk65KMehjrw+ZY+p76VRF9GZQkMGf0UIrqWAdB8xWLV8muIFzusy2
-	 uP7+Ym0SAiF5+k9nKe15ENuvkH4QCB27R1ZKqpg5qx1Cdi4vQ3IbWHxbycOdu/QpAf
-	 O+sorZmTYMW4mK4on+Al6rVHI5mcWZoffENaIeENqwFxfmPGKvk5brJsDZTls7lfVP
-	 u4Y3LtTNsuTZg==
+	b=Xa6M9Fy0/W9SWHw7WEcLTfKnkR4PbZHdLvpkMjdFNkIpq3Z0JuM4dE9AZ1KV0snVq
+	 FnQQiGWOWtOj1G1B9h11gGorPIx5Vzbt8LR8G1BB3A/CZ+8dQUk86muSpAyqGuVOTI
+	 XlHOUduZboRobQhTZB6FZsHb5M7cpJ1nyvzWgmqzlwe4W/y92byaOtRAJO6p49FTR6
+	 2Erk52wSakRg4kCICrld7wg/LNgCpiV+vhNpEiyK/S6pxvQQeAe7GxbI7oIO5levbl
+	 JDTyAZUB+XxLIrBT10XHwXq7IQ6UyQd5DJHd5Ol6Xn8wz0Oyv+Mvyw6Ywd9TcEmVly
+	 quIvljZLZgTTw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johan Jonker <jbx6244@gmail.com>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	dsimic@manjaro.org,
-	knaerzche@gmail.com,
-	jay.xu@rock-chips.com,
-	rick.wertenbroek@gmail.com,
-	chris.obbard@collabora.com,
-	s.hauer@pengutronix.de,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 16/52] arm64: dts: rockchip: fix rk3399 hdmi ports node
-Date: Fri, 29 Mar 2024 08:45:10 -0400
-Message-ID: <20240329124605.3091273-16-sashal@kernel.org>
+	frederic@kernel.org,
+	quic_neeraju@quicinc.com,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 17/52] rcu-tasks: Repair RCU Tasks Trace quiescence check
+Date: Fri, 29 Mar 2024 08:45:11 -0400
+Message-ID: <20240329124605.3091273-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
 References: <20240329124605.3091273-1-sashal@kernel.org>
@@ -75,63 +69,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: Johan Jonker <jbx6244@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit f051b6ace7ffcc48d6d1017191f167c0a85799f6 ]
+[ Upstream commit 2eb52fa8900e642b3b5054c4bf9776089d2a935f ]
 
-Fix rk3399 hdmi ports node so that it matches the
-rockchip,dw-hdmi.yaml binding.
+The context-switch-time check for RCU Tasks Trace quiescence expects
+current->trc_reader_special.b.need_qs to be zero, and if so, updates
+it to TRC_NEED_QS_CHECKED.  This is backwards, because if this value
+is zero, there is no RCU Tasks Trace grace period in flight, an thus
+no need for a quiescent state.  Instead, when a grace period starts,
+this field is set to TRC_NEED_QS.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/a6ab6f75-3b80-40b1-bd30-3113e14becdd@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+This commit therefore changes the check from zero to TRC_NEED_QS.
+
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ include/linux/rcupdate.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index a7e6eccb14cc6..8363cc13ec517 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -1906,6 +1906,7 @@ simple-audio-card,codec {
- 	hdmi: hdmi@ff940000 {
- 		compatible = "rockchip,rk3399-dw-hdmi";
- 		reg = <0x0 0xff940000 0x0 0x20000>;
-+		reg-io-width = <4>;
- 		interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH 0>;
- 		clocks = <&cru PCLK_HDMI_CTRL>,
- 			 <&cru SCLK_HDMI_SFR>,
-@@ -1914,13 +1915,16 @@ hdmi: hdmi@ff940000 {
- 			 <&cru PLL_VPLL>;
- 		clock-names = "iahb", "isfr", "cec", "grf", "ref";
- 		power-domains = <&power RK3399_PD_HDCP>;
--		reg-io-width = <4>;
- 		rockchip,grf = <&grf>;
- 		#sound-dai-cells = <0>;
- 		status = "disabled";
- 
- 		ports {
--			hdmi_in: port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hdmi_in: port@0 {
-+				reg = <0>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 
-@@ -1933,6 +1937,10 @@ hdmi_in_vopl: endpoint@1 {
- 					remote-endpoint = <&vopl_out_hdmi>;
- 				};
- 			};
-+
-+			hdmi_out: port@1 {
-+				reg = <1>;
-+			};
- 		};
- 	};
- 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index d2507168b9c7b..e7474d7833424 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -205,9 +205,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
+ 	do {									\
+ 		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
+ 										\
+-		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
++		if (unlikely(READ_ONCE((t)->trc_reader_special.b.need_qs) == TRC_NEED_QS) &&	\
+ 		    likely(!___rttq_nesting)) {					\
+-			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
++			rcu_trc_cmpxchg_need_qs((t), TRC_NEED_QS, TRC_NEED_QS_CHECKED);	\
+ 		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
+ 			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
+ 			rcu_tasks_trace_qs_blkd(t);				\
 -- 
 2.43.0
 
