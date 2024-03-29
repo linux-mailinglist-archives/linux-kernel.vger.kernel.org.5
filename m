@@ -1,71 +1,80 @@
-Return-Path: <linux-kernel+bounces-124265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A05D3891494
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:51:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC8C8891496
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 011531F21A57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:51:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 339ECB22109
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30BA93FBA9;
-	Fri, 29 Mar 2024 07:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC2D43172;
+	Fri, 29 Mar 2024 07:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hi0lZ629";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vH2do/Bw"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SSOItfHl";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0AI4tBql"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE99263BF;
-	Fri, 29 Mar 2024 07:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FF840BF2;
+	Fri, 29 Mar 2024 07:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711698677; cv=none; b=Kr65wmr+ADMPyOww2y+04VjjIJR7Mxc70TdnvGMXqSKmwGXmgeLtHozOc5X6vhFrsYZFzj/zT18iZDIIYeP8tOJPdYpe20iphzhuBXAEmdlKGLCSc4g97LK0QbEuLB8eBDe7g9Fwvki+4jbHmU49U+KQ5vBTKXYD6BAbm+xYMO8=
+	t=1711698680; cv=none; b=PKxmi04elCiDa7GoklTnbaBIqmVTix0UP+5Q4YLwdRmRcZ4oZUmReJkLWE3fY/j+8HVc1WrLlIkbCzMzG3LrrOSQf9iIjzKHXAZBOYzJpSoloUnJHLbvzAv5B3xc4uzrEuceAzDYZaXpsun6Q8F6AUj77X8mUldSVr829iMva08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711698677; c=relaxed/simple;
-	bh=DijPHlZoho/gxOYG+ypa1AJJx0OryDWb8Uwt0tqD2jc=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=txnFBASfOLv8dfEhM+ly5HulBThzQ8Kr6FDJU2Ji8gR/KzUWxp+2DVLxG50rBOTCj+1SqOn/WhitLIyAL2YcD7K1qhqXCb8SR5+gfwsYcdVfow0tAmUgBoRWJCvw3L0h/sBSbGvQYgCxgMxa+Q3jg4KDj6zVg1S9jRIIXSmTuck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hi0lZ629; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vH2do/Bw; arc=none smtp.client-ip=193.142.43.55
+	s=arc-20240116; t=1711698680; c=relaxed/simple;
+	bh=kssLs14+1mmKrGcbJAu/wx7F410h9lOjtBruzYyegfo=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=ONKQldaWpSp9NAO95UoG3Tsd8VQrhpCCEBy6kf2AKgMDWd/k8Oud6dHGyXKHgiPLxCiOHcEFWIeMRe1KhDm/ULgWDUmY7t8tOUW+M5sS8mMr7MV4DEB177rq20RkB8TkMMpddVLr/xrroPA5B+6WNdsvXxmrwi/DY7JFtciHEmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SSOItfHl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0AI4tBql; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 29 Mar 2024 07:51:13 -0000
+Date: Fri, 29 Mar 2024 07:51:15 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711698674;
+	s=2020; t=1711698676;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=7nYp5UyeR9UYMTm/N3FIPoXmWeeLhDWSva9Pa+3tKyc=;
-	b=hi0lZ629jqnSVWKLLpu9pZSsT+3O90wWZzOuy/foKhA/2TArz2lt95QI825/9jK9T8sRdK
-	oPhu9xWgKvK32JIXuzQglACqqRXn8butaB9X4qs+Q3S8LNFba3t/B7AHpTsVAQHw0ZH6TW
-	dDd6AblCDNcCz2RwfMiaey6f2CNgnMbZgS3LLXiH2QveOejzHP2EnqTMa39i7qit7/lj0H
-	g/GY8oZfrgfrXzM+0B+NkzCuiG8LsMniTxdwTC8vGZpe3Ii2DICPG/icUtLPEqO4QZJL7Q
-	XrLj7PZ+g/NpAfy3Ak60WEx9P1GfN2e+nN8/XHuDPKXM50ztPBniqCGJrnnKtw==
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RNckAjxfyn1sROrDnBaGaxAoA+tycTH4dWbz8gqse2A=;
+	b=SSOItfHlKenPNDi7V2gSmI+I7etMdd8KSIo0kgzlBl9duoWB5tuFhnY5J0WB/WtKTD3JlF
+	8y24RqBHeSSz17Jz3iLP+ijKBrs1+VeykCh3eXOfvDw+X6xPOYjrtUBU4T1j3COg+Aro9z
+	Fzw2Y6G2bebK2kB9fkfRtPSbSMvQTEVLNeReC22bryrsaSopNCzeT2KUxhb61cmWXaStaS
+	PxePtWwYmgoAjS8B2zAW+wHZ2G1c/P/WP8SpvjwDfQOSSTfUxH2fEsPdJOD+Bq/JRESAC2
+	uH5pExdDaZ71GMBp5SFGsvpwVG7ICZ+z4E4tpEYNoeCOGeYha1smU9SiArTuGA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711698674;
+	s=2020e; t=1711698676;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=7nYp5UyeR9UYMTm/N3FIPoXmWeeLhDWSva9Pa+3tKyc=;
-	b=vH2do/Bw15M4ZoNNZSCKOhnRYpGq1e3kmfyP6fBG5Apj6cjzxg7CcL+e+6nOauN8EUaB/C
-	GjdPMRiwHUkSU1Cw==
-From: "tip-bot2 for Julian Stecklina" <tip-bot2@linutronix.de>
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RNckAjxfyn1sROrDnBaGaxAoA+tycTH4dWbz8gqse2A=;
+	b=0AI4tBqlvR5V4ezaQYY3jRZG1P8NLWwgNHCj67HHTi7ufj+8xkXB+Mvy/bM45L3J3goJcD
+	Kd3EeaKteqtxjFCg==
+From: "tip-bot2 for Muhammad Usama Anjum" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot: Move kernel cmdline setup earlier in the
- boot process (again)
-Cc: Julian Stecklina <julian.stecklina@cyberus-technology.de>,
- Ingo Molnar <mingo@kernel.org>, Kees Cook <keescook@chromium.org>,
- linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [tip: x86/cpu] x86/selftests: Skip the tests if prerequisites aren't
+ fulfilled
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Ingo Molnar <mingo@kernel.org>, "Chang S. Bae" <chang.seok.bae@intel.com>,
+ Binbin Wu <binbin.wu@linux.intel.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240327111720.3509180-1-usama.anjum@collabora.com>
+References: <20240327111720.3509180-1-usama.anjum@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171169867308.10875.15117897441999380027.tip-bot2@tip-bot2>
+Message-ID: <171169867577.10875.3062034590185547871.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -73,121 +82,114 @@ Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the x86/boot branch of tip:
+The following commit has been merged into the x86/cpu branch of tip:
 
-Commit-ID:     4faa0e5d6d79fc4c6e1943e8b62a65744d8439a0
-Gitweb:        https://git.kernel.org/tip/4faa0e5d6d79fc4c6e1943e8b62a65744d8439a0
-Author:        Julian Stecklina <julian.stecklina@cyberus-technology.de>
-AuthorDate:    Thu, 28 Mar 2024 16:42:12 +01:00
+Commit-ID:     99c84311e35f9399bdce666f6306a048e2a5b404
+Gitweb:        https://git.kernel.org/tip/99c84311e35f9399bdce666f6306a048e2a5b404
+Author:        Muhammad Usama Anjum <usama.anjum@collabora.com>
+AuthorDate:    Wed, 27 Mar 2024 16:17:17 +05:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 29 Mar 2024 08:19:12 +01:00
+CommitterDate: Fri, 29 Mar 2024 08:33:40 +01:00
 
-x86/boot: Move kernel cmdline setup earlier in the boot process (again)
+x86/selftests: Skip the tests if prerequisites aren't fulfilled
 
-When split_lock_detect=off (or similar) is specified in
-CONFIG_CMDLINE, its effect is lost. The flow is currently this:
+Skip instead of failing when prerequisite conditions aren't fulfilled,
+such as invalid xstate values etc.
 
-	setup_arch():
-	  -> early_cpu_init()
-	    -> early_identify_cpu()
-	      -> sld_setup()
-		-> sld_state_setup()
-		  -> Looks for split_lock_detect in boot_command_line
+Make the tests show as 'SKIP' when run:
 
-	  -> e820__memory_setup()
+  make -C tools/testing/selftests/ TARGETS=x86 run_tests
 
-	  -> Assemble final command line:
-	     boot_command_line = builtin_cmdline + boot_cmdline
+  ...
+  # timeout set to 45
+  # selftests: x86: amx_64
+  # # xstate cpuid: invalid tile data size/offset: 0/0
+  ok 42 selftests: x86: amx_64 # SKIP
+  # timeout set to 45
+  # selftests: x86: lam_64
+  # # Unsupported LAM feature!
+  ok 43 selftests: x86: lam_64 # SKIP
+  ...
 
-	  -> parse_early_param()
+In the AMX test, Move away from check_cpuid_xsave() and start using
+arch_prctl() to find out if AMX support is present or not. In the
+kernels where AMX isn't present, arch_prctl() returns -EINVAL, hence it is
+backward compatible.
 
-There were earlier attempts at fixing this in:
-
-  8d48bf8206f7 ("x86/boot: Pull up cmdline preparation and early param parsing")
-
-later reverted in:
-
-  fbe618399854 ("Revert "x86/boot: Pull up cmdline preparation and early param parsing"")
-
-.. because parse_early_param() can't be called before
-e820__memory_setup().
-
-In this patch, we just move the command line concatenation to the
-beginning of early_cpu_init(). This should fix sld_state_setup(), while
-not running in the same issues as the earlier attempt.
-
-The order is now:
-
-	setup_arch():
-	  -> Assemble final command line:
-	     boot_command_line = builtin_cmdline + boot_cmdline
-
-	  -> early_cpu_init()
-	    -> early_identify_cpu()
-	      -> sld_setup()
-		-> sld_state_setup()
-		  -> Looks for split_lock_detect in boot_command_line
-
-	  -> e820__memory_setup()
-
-	  -> parse_early_param()
-
-Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Chang S. Bae <chang.seok.bae@intel.com>
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lore.kernel.org/r/20240327111720.3509180-1-usama.anjum@collabora.com
 ---
- arch/x86/kernel/setup.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ tools/testing/selftests/x86/amx.c | 27 ++++++++++-----------------
+ tools/testing/selftests/x86/lam.c |  2 +-
+ 2 files changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 3e1e96e..4c35f1b 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -753,6 +753,22 @@ void __init setup_arch(char **cmdline_p)
- 	boot_cpu_data.x86_phys_bits = MAX_PHYSMEM_BITS;
- #endif
+diff --git a/tools/testing/selftests/x86/amx.c b/tools/testing/selftests/x86/amx.c
+index d884fd6..95aad6d 100644
+--- a/tools/testing/selftests/x86/amx.c
++++ b/tools/testing/selftests/x86/amx.c
+@@ -103,21 +103,6 @@ static void clearhandler(int sig)
  
-+#ifdef CONFIG_CMDLINE_BOOL
-+#ifdef CONFIG_CMDLINE_OVERRIDE
-+	strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
-+#else
-+	if (builtin_cmdline[0]) {
-+		/* append boot loader cmdline to builtin */
-+		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
-+		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
-+		strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
+ #define CPUID_LEAF1_ECX_XSAVE_MASK	(1 << 26)
+ #define CPUID_LEAF1_ECX_OSXSAVE_MASK	(1 << 27)
+-static inline void check_cpuid_xsave(void)
+-{
+-	uint32_t eax, ebx, ecx, edx;
+-
+-	/*
+-	 * CPUID.1:ECX.XSAVE[bit 26] enumerates general
+-	 * support for the XSAVE feature set, including
+-	 * XGETBV.
+-	 */
+-	__cpuid_count(1, 0, eax, ebx, ecx, edx);
+-	if (!(ecx & CPUID_LEAF1_ECX_XSAVE_MASK))
+-		fatal_error("cpuid: no CPU xsave support");
+-	if (!(ecx & CPUID_LEAF1_ECX_OSXSAVE_MASK))
+-		fatal_error("cpuid: no OS xsave support");
+-}
+ 
+ static uint32_t xbuf_size;
+ 
+@@ -350,6 +335,7 @@ enum expected_result { FAIL_EXPECTED, SUCCESS_EXPECTED };
+ 
+ /* arch_prctl() and sigaltstack() test */
+ 
++#define ARCH_GET_XCOMP_SUPP	0x1021
+ #define ARCH_GET_XCOMP_PERM	0x1022
+ #define ARCH_REQ_XCOMP_PERM	0x1023
+ 
+@@ -928,8 +914,15 @@ static void test_ptrace(void)
+ 
+ int main(void)
+ {
+-	/* Check hardware availability at first */
+-	check_cpuid_xsave();
++	unsigned long features;
++	long rc;
++
++	rc = syscall(SYS_arch_prctl, ARCH_GET_XCOMP_SUPP, &features);
++	if (rc || (features & XFEATURE_MASK_XTILE) != XFEATURE_MASK_XTILE) {
++		ksft_print_msg("no AMX support\n");
++		return KSFT_SKIP;
 +	}
-+#endif
-+#endif
 +
-+	strscpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
-+	*cmdline_p = command_line;
-+
- 	/*
- 	 * If we have OLPC OFW, we might end up relocating the fixmap due to
- 	 * reserve_top(), so do this before touching the ioremap area.
-@@ -832,22 +848,6 @@ void __init setup_arch(char **cmdline_p)
- 	bss_resource.start = __pa_symbol(__bss_start);
- 	bss_resource.end = __pa_symbol(__bss_stop)-1;
+ 	check_cpuid_xtiledata();
  
--#ifdef CONFIG_CMDLINE_BOOL
--#ifdef CONFIG_CMDLINE_OVERRIDE
--	strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--#else
--	if (builtin_cmdline[0]) {
--		/* append boot loader cmdline to builtin */
--		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
--		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
--		strscpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	}
--#endif
--#endif
--
--	strscpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
--	*cmdline_p = command_line;
--
- 	/*
- 	 * x86_configure_nx() is called before parse_early_param() to detect
- 	 * whether hardware doesn't support NX (so that the early EHCI debug
+ 	init_stashed_xsave();
+diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
+index 215b815..c0f016f 100644
+--- a/tools/testing/selftests/x86/lam.c
++++ b/tools/testing/selftests/x86/lam.c
+@@ -1183,7 +1183,7 @@ int main(int argc, char **argv)
+ 
+ 	if (!cpu_has_lam()) {
+ 		ksft_print_msg("Unsupported LAM feature!\n");
+-		return -1;
++		return KSFT_SKIP;
+ 	}
+ 
+ 	while ((c = getopt(argc, argv, "ht:")) != -1) {
 
