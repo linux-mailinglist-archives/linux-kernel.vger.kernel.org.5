@@ -1,101 +1,205 @@
-Return-Path: <linux-kernel+bounces-124604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59A8C891A7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:03:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7177F891A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 876E91C25A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:03:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1CE1F26164
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E381513E890;
-	Fri, 29 Mar 2024 12:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886CC1598F2;
+	Fri, 29 Mar 2024 12:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UW770FVO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BSAlITrh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A13E13E6CD;
-	Fri, 29 Mar 2024 12:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B054413E8AE;
+	Fri, 29 Mar 2024 12:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715528; cv=none; b=ajqKu2IG/wFmw20qRAQv9/YiGKtRaWEP534Rqb6BGEh++J7hRD+eBAnWZwGMqqSzS6iAsxrBWiNoZXRmHOq7+vrqdNV1X+zuOsGcRNQnE+c8NnM23lEmHyGsVpg/KG72+2jzFWP/Z3lTlyZh+/z3YzJhIeFUYHKmCcZ/Oz+2E5Q=
+	t=1711715529; cv=none; b=kgvigaFXLhjxSPmxg5TyyiYDxaVjxomraQrA5LtjtZTFcrIOZsYwijzArH4Bip4bzXxqWzVDGgS6941hK5RqZRDikJuBGQzLcjNm+IBi1e3sLlpFRpakK6M3hU0Zi6DggH2ky+qIf7Az3j1wUsKtbW5CDFYGLUqclDwLke/sQAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715528; c=relaxed/simple;
-	bh=Ra4UXu1BegVD/dxe6uYDNjPmp+4p/Ri+3qwVOVWo+MA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PiiDGv4lADzXEmcl9G5PkYVkSUuwPwa53B6KD+U00RImy6Fczhlppqltcg22vrcUKKrAF8i3X/9IQpWUVQqQjoG03nMhmVrTxiJ1hYAP6UhJF2jEHcJiOhwg3xNC53/+Wnud/r7dJ8cELErtIC+V+oVJHddvdwTC4tcxAY8p7C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UW770FVO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D10BBC433C7;
-	Fri, 29 Mar 2024 12:32:06 +0000 (UTC)
+	s=arc-20240116; t=1711715529; c=relaxed/simple;
+	bh=2gbxgaV9HQxtMgUcwd23/mQmD2JsamEfUpc8nJ/6i+M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fOEs9tqyZ+niA7ORS/3L/2kWtkGkUooDfbZ0AFHWNX2n0O9QjvBwXuLFCxcTbMkFD5NAWxqgwI3uO7J+1VKBoB9Hgvvds8sAE3n0YRclfUjHCzu9Ar/UsXUriGcV9pgSs49A0CzZFusJ7wORJwmrALKnXSLKp4WbFRNCDS05MQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BSAlITrh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFCDC433F1;
+	Fri, 29 Mar 2024 12:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715527;
-	bh=Ra4UXu1BegVD/dxe6uYDNjPmp+4p/Ri+3qwVOVWo+MA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=UW770FVO/AEPO7/ExPCZDbkSdJkZ9qtVrMJYgzm2UHoK6o/+k8Xjbz+e/RV9z9Rvl
-	 SCio/CichN33Yj/4uGrhzJEHBx4mNB2qwZQZVzMhBvYQ+YPwMcLcmvEndXsLM4BlEc
-	 69MoLawZC6s1gpj/NEwhxXeqHi5CnFhKvPyUr88Wjwm5+KnRaIn1DTeEhf9PknjG8M
-	 GRivAFsU7anxDCRRL1G80UhodScWhEgpboVDqcL/u85zzEuS2IdTNrdbjBIf2gMLkU
-	 VCkMUtbVmbKWiid+0DjSkrl9EOOpXN5srF1PXFXeK0klaGwa+Ngq2M9+jv4VkBLZCJ
-	 dyik0HvrTwAzA==
+	s=k20201202; t=1711715529;
+	bh=2gbxgaV9HQxtMgUcwd23/mQmD2JsamEfUpc8nJ/6i+M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BSAlITrhWZf2HVASp6e9rDIxU++Bo2oxRlhtssDu2SaZoAQvEJY6W8N66xgVhcp29
+	 l7cVZgTVgNj+eDIkEmRDbM4B90tH1LFDgEyxfGM0vslOjYcvEtQiiO9m9+C7AlyRET
+	 KpaRxTeMGxVjjW+OCKVhQx7AuzpP8u37/WBGzKXZ9rRci3UPv5UfUbZeaIsMBS/CA6
+	 y4ilgVTvjmS0n0UVXThUH7WXkeS+gUV1H/tAQtG5dSonJtz2njkBtdgvZdIfs3eehE
+	 HXEieITnHuKKz36IkIST2LSgWFvqO+2Yv23XDPo7cfE03WX2b7DA5ZAEQzUFGOkghb
+	 porpTUrIHN9Iw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Antipov <dmantipov@yandex.ru>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: Kees Cook <keescook@chromium.org>,
+	kernel test robot <lkp@intel.com>,
+	Ariel Elior <aelior@marvell.com>,
+	Sudarsana Kalluru <skalluru@marvell.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 01/31] wifi: ath9k: fix LNA selection in ath_ant_try_scan()
-Date: Fri, 29 Mar 2024 08:31:20 -0400
-Message-ID: <20240329123207.3085013-1-sashal@kernel.org>
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 02/31] bnx2x: Fix firmware version string character counts
+Date: Fri, 29 Mar 2024 08:31:21 -0400
+Message-ID: <20240329123207.3085013-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240329123207.3085013-1-sashal@kernel.org>
+References: <20240329123207.3085013-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit d6b27eb997ef9a2aa51633b3111bc4a04748e6d3 ]
+[ Upstream commit 5642c82b9463c3263c086efb002516244bd4c668 ]
 
-In 'ath_ant_try_scan()', (most likely) the 2nd LNA's signal
-strength should be used in comparison against RSSI when
-selecting first LNA as the main one. Compile tested only.
+A potential string truncation was reported in bnx2x_fill_fw_str(),
+when a long bp->fw_ver and a long phy_fw_ver might coexist, but seems
+unlikely with real-world hardware.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Use scnprintf() to indicate the intent that truncations are tolerated.
 
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://msgid.link/20231211172502.25202-1-dmantipov@yandex.ru
+While reading this code, I found a collection of various buffer size
+counting issues. None looked like they might lead to a buffer overflow
+with current code (the small buffers are 20 bytes and might only ever
+consume 10 bytes twice with a trailing %NUL). However, early truncation
+(due to a %NUL in the middle of the string) might be happening under
+likely rare conditions. Regardless fix the formatters and related
+functions:
+
+- Switch from a separate strscpy() to just adding an additional "%s" to
+  the format string that immediately follows it in bnx2x_fill_fw_str().
+- Use sizeof() universally instead of using unbound defines.
+- Fix bnx2x_7101_format_ver() and bnx2x_null_format_ver() to report the
+  number of characters written, not including the trailing %NUL (as
+  already done with the other firmware formatting functions).
+- Require space for at least 1 byte in bnx2x_get_ext_phy_fw_version()
+  for the trailing %NUL.
+- Correct the needed buffer size in bnx2x_3_seq_format_ver().
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401260858.jZN6vD1k-lkp@intel.com/
+Cc: Ariel Elior <aelior@marvell.com>
+Cc: Sudarsana Kalluru <skalluru@marvell.com>
+Cc: Manish Chopra <manishc@marvell.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20240126041044.work.220-kees@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/antenna.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c    |  9 +++++----
+ .../net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c    |  2 +-
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c   | 14 +++++++-------
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/antenna.c b/drivers/net/wireless/ath/ath9k/antenna.c
-index 988222cea9dfe..acc84e6711b0e 100644
---- a/drivers/net/wireless/ath/ath9k/antenna.c
-+++ b/drivers/net/wireless/ath/ath9k/antenna.c
-@@ -643,7 +643,7 @@ static void ath_ant_try_scan(struct ath_ant_comb *antcomb,
- 				conf->main_lna_conf = ATH_ANT_DIV_COMB_LNA1;
- 				conf->alt_lna_conf = ATH_ANT_DIV_COMB_LNA1_PLUS_LNA2;
- 			} else if (antcomb->rssi_sub >
--				   antcomb->rssi_lna1) {
-+				   antcomb->rssi_lna2) {
- 				/* set to A-B */
- 				conf->main_lna_conf = ATH_ANT_DIV_COMB_LNA1;
- 				conf->alt_lna_conf = ATH_ANT_DIV_COMB_LNA1_MINUS_LNA2;
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+index 4950fde82d175..b04c5b51eb598 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+@@ -147,10 +147,11 @@ void bnx2x_fill_fw_str(struct bnx2x *bp, char *buf, size_t buf_len)
+ 
+ 		phy_fw_ver[0] = '\0';
+ 		bnx2x_get_ext_phy_fw_version(&bp->link_params,
+-					     phy_fw_ver, PHY_FW_VER_LEN);
+-		strscpy(buf, bp->fw_ver, buf_len);
+-		snprintf(buf + strlen(bp->fw_ver), 32 - strlen(bp->fw_ver),
+-			 "bc %d.%d.%d%s%s",
++					     phy_fw_ver, sizeof(phy_fw_ver));
++		/* This may become truncated. */
++		scnprintf(buf, buf_len,
++			 "%sbc %d.%d.%d%s%s",
++			 bp->fw_ver,
+ 			 (bp->common.bc_ver & 0xff0000) >> 16,
+ 			 (bp->common.bc_ver & 0xff00) >> 8,
+ 			 (bp->common.bc_ver & 0xff),
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c
+index bda3ccc28eca6..f920976c36f0c 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c
+@@ -1132,7 +1132,7 @@ static void bnx2x_get_drvinfo(struct net_device *dev,
+ 	}
+ 
+ 	memset(version, 0, sizeof(version));
+-	bnx2x_fill_fw_str(bp, version, ETHTOOL_FWVERS_LEN);
++	bnx2x_fill_fw_str(bp, version, sizeof(version));
+ 	strlcat(info->fw_version, version, sizeof(info->fw_version));
+ 
+ 	strscpy(info->bus_info, pci_name(bp->pdev), sizeof(info->bus_info));
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
+index 02808513ffe45..ea310057fe3af 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
+@@ -6163,8 +6163,8 @@ static void bnx2x_link_int_ack(struct link_params *params,
+ 
+ static int bnx2x_null_format_ver(u32 spirom_ver, u8 *str, u16 *len)
+ {
+-	str[0] = '\0';
+-	(*len)--;
++	if (*len)
++		str[0] = '\0';
+ 	return 0;
+ }
+ 
+@@ -6173,7 +6173,7 @@ static int bnx2x_format_ver(u32 num, u8 *str, u16 *len)
+ 	u16 ret;
+ 
+ 	if (*len < 10) {
+-		/* Need more than 10chars for this format */
++		/* Need more than 10 chars for this format */
+ 		bnx2x_null_format_ver(num, str, len);
+ 		return -EINVAL;
+ 	}
+@@ -6188,8 +6188,8 @@ static int bnx2x_3_seq_format_ver(u32 num, u8 *str, u16 *len)
+ {
+ 	u16 ret;
+ 
+-	if (*len < 10) {
+-		/* Need more than 10chars for this format */
++	if (*len < 9) {
++		/* Need more than 9 chars for this format */
+ 		bnx2x_null_format_ver(num, str, len);
+ 		return -EINVAL;
+ 	}
+@@ -6208,7 +6208,7 @@ int bnx2x_get_ext_phy_fw_version(struct link_params *params, u8 *version,
+ 	int status = 0;
+ 	u8 *ver_p = version;
+ 	u16 remain_len = len;
+-	if (version == NULL || params == NULL)
++	if (version == NULL || params == NULL || len == 0)
+ 		return -EINVAL;
+ 	bp = params->bp;
+ 
+@@ -11546,7 +11546,7 @@ static int bnx2x_7101_format_ver(u32 spirom_ver, u8 *str, u16 *len)
+ 	str[2] = (spirom_ver & 0xFF0000) >> 16;
+ 	str[3] = (spirom_ver & 0xFF000000) >> 24;
+ 	str[4] = '\0';
+-	*len -= 5;
++	*len -= 4;
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
