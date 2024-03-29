@@ -1,310 +1,144 @@
-Return-Path: <linux-kernel+bounces-124219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDB018913FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:02:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC7338913FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:02:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BFD61C22F26
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:02:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B7CD1F2339E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AA23D984;
-	Fri, 29 Mar 2024 07:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0416B3D984;
+	Fri, 29 Mar 2024 07:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kGKBH7Ee";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kY5SsfkF"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1WUMfvK"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3750139ACB;
-	Fri, 29 Mar 2024 07:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980523D0BD
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711695714; cv=none; b=GUs1Xuxl4IRDbqNmSDa/mkzsSYEVN7h37MgXj98Blhk9CjpMG2hgNTk6OneVMSO11drj/Puwz//dTp1Z9GhaSk28rL2sWoxVfzi8NCcNDHfFSIsiC0bPfDk0I0N+9wS7774DkyVLfe4OHh80Qq9EeHHG+FkCIrk31lL8XKyAWhk=
+	t=1711695726; cv=none; b=r5GhD6YMJaMRWQ/DooxAqcpHh3IMOA/mDGGwd8IVWE2ANvQ5LhKEsla1l6npsarauHcdThVuUoEOQ5tNEvQV6nsAdUlTuCL0SOZtLcnGTp9lNqcN2P9ZIQJe7z/ZIbKgxPHQcEJzrqdje/UAuJWlLQX6W7IoAEEPmVlk4pgTkEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711695714; c=relaxed/simple;
-	bh=cSwQ/UmuEh947BH3FbWsaC92CDCoHF4DhTlYI8mVHk0=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=SEyOoVLE42ffldE42KvgUrzZvNCFLtcmyqe7Su6bPNZmBf49YO4Sx22aiOSo+vniR+CfKu992DdtnNuBJwxyDWrAtvdKmkrZ+p8zi8hQRdB6Bl3lasprPgibvrRPUR3SwFKIX4QBPRh4/YbHQOrm4EKtWKlW0Z2QRxq9lpnRkPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kGKBH7Ee; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kY5SsfkF; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 29 Mar 2024 07:01:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711695704;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b/tXKTKBAi7eCFtLlcOC+0r/gQ/djQjUO3OI0ubQICE=;
-	b=kGKBH7Ee+W4j2p6qE5cg/NvaCiuElmVHoO/MkLmx/WDt/k4pb4GrsOedd4EWLNYU6NHLsG
-	OrEH3GDZEkgOL2dBNjuccb3pXRJTs0ZZOFiF7D76xj1hECs54feuAZp8wE1xGJj1dbbnH+
-	dmYh42TjnPzXhicVnwnCoPQ1syCkqHMsq14BUN99Pt02WtYpWI5ng7zJK0EM00Lzw0z9gj
-	527ponSbkKZA5F0dYNmU30qu70Dy0aFi0Pt/mb4yLdhqRNNYCb+3C4ElC26nz0rqjA3XMk
-	xzx2EMvagHdEfgxgKRa/tOx8VFBhu6c7KM3x//CKxEHCAaS91dvyUJFQFb0cpg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711695704;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b/tXKTKBAi7eCFtLlcOC+0r/gQ/djQjUO3OI0ubQICE=;
-	b=kY5SsfkFdrDP7DEkD+EVfRXuQTjtb1xvqK5phpRJmMzQAb/OH5BODsakdOPGZHrMRoAsjj
-	+9de6Hh5ZEB7XEDw==
-From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/balancing: Simplify the sg_status bitmask and
- use separate ->overloaded and ->overutilized flags
-Cc: Ingo Molnar <mingo@kernel.org>, Shrikanth Hegde <sshegde@linux.ibm.com>,
- Qais Yousef <qyousef@layalina.io>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <nbsqbP@gmail.com>
-References: <nbsqbP@gmail.com>
+	s=arc-20240116; t=1711695726; c=relaxed/simple;
+	bh=/T85BMWOBGyInSmentYuXLN5Xgh5VjFRGium8m9HyVg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ugTMT3Yda/ZDYcZbSjYWiX2E5CWjluI6/qWBnW3SqXfFJofwDCwmS8AAXzfSro8am9y5kEYzgq0EZC3ItC3q8IWNLyS4Si+ZilyNxEeSsTkPrcMfFHXAVc43ib4nxG1qzk/tcj+WU+5dCAtga7mcfHmKC2g+jwZnXylYT2j1Hso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1WUMfvK; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso2482393a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711695723; x=1712300523; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KpYQ/V/QalATcuCFjtKzuSngXyEFzjLdj1ISHAQ06Dg=;
+        b=E1WUMfvKse1+bzyci6xWQjg4zWx2OxIlMG6p2BueQsGxiLxAHwV2r8ZNO6A8oHA/RB
+         jeZeQ1neBDL84YwC/cqXkVLQdlI0rIbAmteBmPvpKz33qTI3U7jAxzQK3FDdZEjP6Qlh
+         owoXXyNWn7W4AO/38Ui3YibTyW1HeNbliOzVoOeISdLCt5cUXuAztupscNSMRW0uwvdZ
+         cp8fr+wOe4r08sZ9OedQ/JSTmlcpYosUuBRACk1bxrYmTeObQ4h1Q3tLenX0GhmLhzDo
+         bddIKq7wbldHN30hEZITL7WS8roHDJKxFdfRx0Hx2h0W5r9cqs+4gDul1yNJgi1TlJSL
+         tAOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711695723; x=1712300523;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KpYQ/V/QalATcuCFjtKzuSngXyEFzjLdj1ISHAQ06Dg=;
+        b=r051J8Us2N8kEVipFLpby5gHt6Grgr24GwmSiSlflrEx0bkEgfud59fHYSIyY4YPtR
+         l9hihw0hOlcyUiKhvYe3SkRIpYDrbdKl9eM1l5/hUWl3mWvN4f02r5ISuEzQR4X+GA5I
+         s31MqcmIO8CNMqyh8z0co6xFRvNkeSB8f42V2t6F4nU/CGuxguhlEqpBXeP3gLn5onpG
+         Ce9oT/Si6JYWGjh4jAsMOUEm0OCQvsCLnpQu6Phjb0/1lWDGu+b+2aNTktpcgk6jI27G
+         VB4RQxSvqwzmtvxPhP4YGSPYh55cpfGBPL4jeBA0fu2ZWvYGYXS/vAgM/MENUj3MhJEh
+         xSbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXH5CnWr2qsU9tM8e1gyBjVk2XK3XDIcMePjEmKJ0Wz6bzTsAfgphUDJcyUyOegNL8ryvldGoedWAMbCx5UgKVXo1GseVP5HQwOxpZN
+X-Gm-Message-State: AOJu0YwKaDMSymk0t+ZciGn/7sK6vcxOy5ypdd91PzsfCahDW65xL1Nu
+	59nWqBPRRgkw9/137MzNe1Wc/at5vREd5lQCf4I2igybt0ztXHfs
+X-Google-Smtp-Source: AGHT+IEtmwuSDRJQSY9qf6Yff5gbg1yfMCU/zUHVfR7m2l+sj18j4WaUo85gxqVYPn+V5uFhjmxMIg==
+X-Received: by 2002:a17:906:27c4:b0:a4e:2e14:f75e with SMTP id k4-20020a17090627c400b00a4e2e14f75emr689600ejc.77.1711695722438;
+        Fri, 29 Mar 2024 00:02:02 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id z4-20020a170906714400b00a469e55767dsm1590838ejj.214.2024.03.29.00.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 00:02:01 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 29 Mar 2024 08:01:58 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: fenghua.yu@intel.com, bp@alien8.de, james.morse@arm.com,
+	tony.luck@intel.com, peternewman@google.com, babu.moger@amd.com,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, james.greenhalgh@arm.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/resctrl: Fix uninitialized memory read when last CPU
+ of domain goes offline
+Message-ID: <ZgZnZgfDUWlhQQxW@gmail.com>
+References: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171169570331.10875.13890218120360595385.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
 
-The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     4475cd8bfd9bcb898953fcadb2f51b3432eb68a1
-Gitweb:        https://git.kernel.org/tip/4475cd8bfd9bcb898953fcadb2f51b3432eb68a1
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 28 Mar 2024 12:07:48 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 29 Mar 2024 07:53:27 +01:00
+* Reinette Chatre <reinette.chatre@intel.com> wrote:
 
-sched/balancing: Simplify the sg_status bitmask and use separate ->overloaded and ->overutilized flags
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index c99f26ebe7a6..4f9ef35626a7 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -85,6 +85,10 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+>  	if (cpu < nr_cpu_ids && !tick_nohz_full_cpu(cpu))
+>  		return cpu;
+>  
+> +	/* Only continue if tick_nohz_full_mask has been initialized. */
+> +	if (!tick_nohz_full_enabled())
+> +		return cpu;
+> +
 
-SG_OVERLOADED and SG_OVERUTILIZED flags plus the sg_status bitmask are an
-unnecessary complication that only make the code harder to read and slower.
+So we already have this a few lines up:
 
-We only ever set them separately:
+        if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
+                return cpu;
 
- thule:~/tip> git grep SG_OVER kernel/sched/
- kernel/sched/fair.c:            set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
- kernel/sched/fair.c:                    *sg_status |= SG_OVERLOADED;
- kernel/sched/fair.c:                    *sg_status |= SG_OVERUTILIZED;
- kernel/sched/fair.c:                            *sg_status |= SG_OVERLOADED;
- kernel/sched/fair.c:            set_rd_overloaded(env->dst_rq->rd, sg_status & SG_OVERLOADED);
- kernel/sched/fair.c:                                       sg_status & SG_OVERUTILIZED);
- kernel/sched/fair.c:    } else if (sg_status & SG_OVERUTILIZED) {
- kernel/sched/fair.c:            set_rd_overutilized_status(env->dst_rq->rd, SG_OVERUTILIZED);
- kernel/sched/sched.h:#define SG_OVERLOADED              0x1 /* More than one runnable task on a CPU. */
- kernel/sched/sched.h:#define SG_OVERUTILIZED            0x2 /* One or more CPUs are over-utilized. */
- kernel/sched/sched.h:           set_rd_overloaded(rq->rd, SG_OVERLOADED);
+And we can combine the two checks into a single one, with the patch 
+below, right?
 
-And use them separately, which results in suboptimal code:
+Untested.
 
-                /* update overload indicator if we are at root domain */
-                set_rd_overloaded(env->dst_rq->rd, sg_status & SG_OVERLOADED);
+Thanks,
 
-                /* Update over-utilization (tipping point, U >= 0) indicator */
-                set_rd_overutilized_status(env->dst_rq->rd,
+	Ingo
 
-Introduce separate sg_overloaded and sg_overutilized flags in update_sd_lb_stats()
-and its lower level functions, and change all of them to 'bool'.
+==============>
 
-Remove the now unused SG_OVERLOADED and SG_OVERUTILIZED flags.
+ Signed-off-by: Ingo Molnar <mingo@kernel.org>
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-Tested-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: Qais Yousef <qyousef@layalina.io>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/ZgVPhODZ8/nbsqbP@gmail.com
----
- kernel/sched/fair.c  | 36 ++++++++++++++++++------------------
- kernel/sched/sched.h | 17 ++++++-----------
- 2 files changed, 24 insertions(+), 29 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f29efd5..1dd3716 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6688,19 +6688,18 @@ static inline bool cpu_overutilized(int cpu)
- /*
-  * overutilized value make sense only if EAS is enabled
-  */
--static inline int is_rd_overutilized(struct root_domain *rd)
-+static inline bool is_rd_overutilized(struct root_domain *rd)
- {
- 	return !sched_energy_enabled() || READ_ONCE(rd->overutilized);
- }
+ arch/x86/kernel/cpu/resctrl/internal.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index c99f26ebe7a6..1a8687f8073a 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -78,7 +78,8 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+ 	else
+ 		cpu = cpumask_any_but(mask, exclude_cpu);
  
--static inline void set_rd_overutilized(struct root_domain *rd,
--					      unsigned int status)
-+static inline void set_rd_overutilized(struct root_domain *rd, bool flag)
- {
- 	if (!sched_energy_enabled())
- 		return;
+-	if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
++	/* Only continue if tick_nohz_full_mask has been initialized. */
++	if (!tick_nohz_full_enabled())
+ 		return cpu;
  
--	WRITE_ONCE(rd->overutilized, status);
--	trace_sched_overutilized_tp(rd, !!status);
-+	WRITE_ONCE(rd->overutilized, flag);
-+	trace_sched_overutilized_tp(rd, flag);
- }
- 
- static inline void check_update_overutilized_status(struct rq *rq)
-@@ -6711,7 +6710,7 @@ static inline void check_update_overutilized_status(struct rq *rq)
- 	 */
- 
- 	if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
--		set_rd_overutilized(rq->rd, SG_OVERUTILIZED);
-+		set_rd_overutilized(rq->rd, 1);
- }
- #else
- static inline void check_update_overutilized_status(struct rq *rq) { }
-@@ -9934,13 +9933,15 @@ sched_reduced_capacity(struct rq *rq, struct sched_domain *sd)
-  * @sds: Load-balancing data with statistics of the local group.
-  * @group: sched_group whose statistics are to be updated.
-  * @sgs: variable to hold the statistics for this group.
-- * @sg_status: Holds flag indicating the status of the sched_group
-+ * @sg_overloaded: sched_group is overloaded
-+ * @sg_overutilized: sched_group is overutilized
-  */
- static inline void update_sg_lb_stats(struct lb_env *env,
- 				      struct sd_lb_stats *sds,
- 				      struct sched_group *group,
- 				      struct sg_lb_stats *sgs,
--				      int *sg_status)
-+				      bool *sg_overloaded,
-+				      bool *sg_overutilized)
- {
- 	int i, nr_running, local_group;
- 
-@@ -9961,10 +9962,10 @@ static inline void update_sg_lb_stats(struct lb_env *env,
- 		sgs->sum_nr_running += nr_running;
- 
- 		if (nr_running > 1)
--			*sg_status |= SG_OVERLOADED;
-+			*sg_overloaded = 1;
- 
- 		if (cpu_overutilized(i))
--			*sg_status |= SG_OVERUTILIZED;
-+			*sg_overutilized = 1;
- 
- #ifdef CONFIG_NUMA_BALANCING
- 		sgs->nr_numa_running += rq->nr_numa_running;
-@@ -9986,7 +9987,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
- 			/* Check for a misfit task on the cpu */
- 			if (sgs->group_misfit_task_load < rq->misfit_task_load) {
- 				sgs->group_misfit_task_load = rq->misfit_task_load;
--				*sg_status |= SG_OVERLOADED;
-+				*sg_overloaded = 1;
- 			}
- 		} else if (env->idle && sched_reduced_capacity(rq, env->sd)) {
- 			/* Check for a task running on a CPU with reduced capacity */
-@@ -10612,7 +10613,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 	struct sg_lb_stats *local = &sds->local_stat;
- 	struct sg_lb_stats tmp_sgs;
- 	unsigned long sum_util = 0;
--	int sg_status = 0;
-+	bool sg_overloaded = 0, sg_overutilized = 0;
- 
- 	do {
- 		struct sg_lb_stats *sgs = &tmp_sgs;
-@@ -10628,7 +10629,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 				update_group_capacity(env->sd, env->dst_cpu);
- 		}
- 
--		update_sg_lb_stats(env, sds, sg, sgs, &sg_status);
-+		update_sg_lb_stats(env, sds, sg, sgs, &sg_overloaded, &sg_overutilized);
- 
- 		if (!local_group && update_sd_pick_busiest(env, sds, sg, sgs)) {
- 			sds->busiest = sg;
-@@ -10657,13 +10658,12 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 
- 	if (!env->sd->parent) {
- 		/* update overload indicator if we are at root domain */
--		set_rd_overloaded(env->dst_rq->rd, sg_status & SG_OVERLOADED);
-+		set_rd_overloaded(env->dst_rq->rd, sg_overloaded);
- 
- 		/* Update over-utilization (tipping point, U >= 0) indicator */
--		set_rd_overutilized(env->dst_rq->rd,
--					   sg_status & SG_OVERUTILIZED);
--	} else if (sg_status & SG_OVERUTILIZED) {
--		set_rd_overutilized(env->dst_rq->rd, SG_OVERUTILIZED);
-+		set_rd_overutilized(env->dst_rq->rd, sg_overloaded);
-+	} else if (sg_overutilized) {
-+		set_rd_overutilized(env->dst_rq->rd, sg_overutilized);
- 	}
- 
- 	update_idle_cpu_scan(env, sum_util);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 07c6669..7c39dbf 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -713,7 +713,7 @@ struct rt_rq {
- 	} highest_prio;
- #endif
- #ifdef CONFIG_SMP
--	int			overloaded;
-+	bool			overloaded;
- 	struct plist_head	pushable_tasks;
- 
- #endif /* CONFIG_SMP */
-@@ -757,7 +757,7 @@ struct dl_rq {
- 		u64		next;
- 	} earliest_dl;
- 
--	int			overloaded;
-+	bool			overloaded;
- 
- 	/*
- 	 * Tasks on this rq that can be pushed away. They are kept in
-@@ -850,10 +850,6 @@ struct perf_domain {
- 	struct rcu_head rcu;
- };
- 
--/* Scheduling group status flags */
--#define SG_OVERLOADED		0x1 /* More than one runnable task on a CPU. */
--#define SG_OVERUTILIZED		0x2 /* One or more CPUs are over-utilized. */
--
- /*
-  * We add the notion of a root-domain which will be used to define per-domain
-  * variables. Each exclusive cpuset essentially defines an island domain by
-@@ -874,10 +870,10 @@ struct root_domain {
- 	 * - More than one runnable task
- 	 * - Running task is misfit
- 	 */
--	int			overloaded;
-+	bool			overloaded;
- 
- 	/* Indicate one or more cpus over-utilized (tipping point) */
--	int			overutilized;
-+	bool			overutilized;
- 
- 	/*
- 	 * The bit corresponding to a CPU gets set here if such CPU has more
-@@ -2540,9 +2536,8 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
- 	}
- 
- #ifdef CONFIG_SMP
--	if (prev_nr < 2 && rq->nr_running >= 2) {
--		set_rd_overloaded(rq->rd, SG_OVERLOADED);
--	}
-+	if (prev_nr < 2 && rq->nr_running >= 2)
-+		set_rd_overloaded(rq->rd, 1);
- #endif
- 
- 	sched_update_tick_dependency(rq);
+ 	/* If the CPU picked isn't marked nohz_full nothing more needs doing. */
 
