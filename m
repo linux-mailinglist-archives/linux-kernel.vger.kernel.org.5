@@ -1,130 +1,114 @@
-Return-Path: <linux-kernel+bounces-125145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710468920DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:50:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8788920F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:52:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A22851C26D64
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:50:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C9331F27748
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F944F887;
-	Fri, 29 Mar 2024 15:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486576A343;
+	Fri, 29 Mar 2024 15:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUBvihu/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="a+ddMKtd"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3863D966;
-	Fri, 29 Mar 2024 15:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985A458127
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 15:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711727429; cv=none; b=UtJ1F91lPoqON0C0A7ESrdemOw1Fj/+2PYV2EiJYTPl/Z+Nm1YQyvg59ON7lEV+a7XUml5L+SnBQ8Wg/xrOsZ/2SvGVio+89Tig+ovhPOSSjwt0NxzlJNsySSmYOIXHP44GTHbfaWXPLe1Ywdx9k/gYUL0S19gEN6nZXHA3FFFc=
+	t=1711727564; cv=none; b=nqZO9tk81i5XtCYNV0dPcD6+9n+HK94t2hnzhe0/tfmQy7tHHZlJXE9mFizm024SQ3aTSwZonOseKt1CBM85fxegd1E40S7hkB2ZCybiFCxj/n8eGrStQ5zCI2wuioQfYgsMZiMq7AoZaSKSAVHDn4vqx7ws1UCzB+qF7n8TcyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711727429; c=relaxed/simple;
-	bh=1Gb9js9o92vHoW2ztLDWmNequldYaphj6neZme3mpUQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JJ9FMLfn8V3iiQaFwjav3J9CaF9K5JI3O6blgG5PMLPMa7JQtObcv2tNgH8tldgS3Zpd8PGPmLjeu69wqX2zbSUqW4eB/4c6yznAQa+PTkpfxF/Dwfwv2k6fTccxAu2/NRdL3bC/FWntPmT/W7vUmKTQS9ipmklMqalFXrRMpqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUBvihu/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5429CC43390;
-	Fri, 29 Mar 2024 15:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711727429;
-	bh=1Gb9js9o92vHoW2ztLDWmNequldYaphj6neZme3mpUQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=RUBvihu/ul2t4K55eznxMPDb5Iq17zPcOlLL+gU1QLSR8T8uhh0i9PIrawRpRafg1
-	 Szrqtp37PCF4Gkf3RUbqVrm07rlPkmOYYKyGpKF6XReUQNmpiLQ71lJn6THihy3aTh
-	 AV1sKL22lRKO2/aKrLQTdQ3qTM2W3akzqzorkDh0cCZYdJPGtJenOCRS4cU7AqW472
-	 dzblLuwtWvImC2Df7zbH3jVUeYGFmAJGiNub79LaxpL1QsbX7WyYJ+MC06WTL2WYG1
-	 yeAu5Sn4UVl01g116UOeI2MTJ7VzXlNALxZw+cOiioj2YmcPKcZQeEX4LeT5Pl2o9K
-	 vhZQrlvigejrQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 40B34D84BAF;
-	Fri, 29 Mar 2024 15:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711727564; c=relaxed/simple;
+	bh=93fcRAx8zC3XL/YYOz1/itnqEkVWFV9/HC+YNw2rLV4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hTA9ISzbHK6UTj4VjW2uqQS4fgV/bxZ7/dU3pW1cot3y47OYX2/BQP7Ym3lZSWvt4ZU7VCbn/Bw1sKIRzMl9B0cNtxfu3aZ1hD+m+jLuetZtRwHan5vHgge6iJJt7MoscdFyHLJrTc7CTMIV5OCVFlUwHaSKa80s8GxUNVdmzPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=a+ddMKtd; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3433e518c78so180343f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 08:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1711727561; x=1712332361; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DaRSKMpGgSpfDNUtqSIdr/VVtF3x8hhIBInqqXBE7qE=;
+        b=a+ddMKtd+ox2Hv1p/kZINSH9QdrIExGhL1BaCoVO93wGXXUhFyqFidJVBEM8ZiQTIl
+         KY7PSq/HDa9QjQ3eRlyMcEwUJRwsQmCeMc4Od+fZQARASHs5dmHxk2DJWXJ+tQbWheZ0
+         F56Xa0FaOw2+ozwW6shl8tDWOnXVvExZQ7N6P1GcmVRH1cw0KN/jJ6Rm9XWiSTUHza0f
+         Kk/UxR80sC5WHcE4UXWh2CbwoTIx8/Kz2FglZSNzldPeqvigU1vzh+sePQW50bAmT1PG
+         6A7AH19VYwyHthVL09pz53+fMVsEWsKL/F6JHqy3lcqjP7tzY91BJSDWmcLQ3NS7N7VT
+         dDOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711727561; x=1712332361;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DaRSKMpGgSpfDNUtqSIdr/VVtF3x8hhIBInqqXBE7qE=;
+        b=kJk0YgS0fh7dZy6FNYSGvN/T1Joj7EmXYipWhK9tO0HSFm9N1QV3OCnE5orz2mj3o9
+         y4HUfVpiEGFlqKWO7c6Ky7xMdwbddo4PaDatxKUZCFEATLh03WW+t9+YZXdUhRLfKDyl
+         xGnHfNH/9WZP22Gs+sNvTx7haZmttGhrNSf+Ugrdz86HD80gsSFK6EX00iIYNOtOlIZo
+         WfARxN7L4TSbRuyoxB/bPIlJn4+/V8Juty7wBxKfO0PG2sb2f3dc71q1XwQhVroUaFlj
+         O7xe66MJOgIRRhl4mviXpbqnmkvAzwsK1K5yxjPCrb6OnZ4Bj2WrXLhj7xLt09DBCNKi
+         9tvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXRlT7TFrcBoiBW00ZLrEx2Gy0q16BCqj3NCMYpTXFlK7QrfgpErktEw/khmhyReeUl5WrZR4vL3C9wOX8WaamOYpWGGkaZfCsKKt/X
+X-Gm-Message-State: AOJu0YxSsA849Ypq72WCeZe/PhNQgJTRiQ5+d7o7veeWgzgW8vo5+y2t
+	HJ2bHfgry2FNecsBzxAJzvBfNOWFS5vAVOL+5QsLzqEu/FHxajxoTZ5CsmScCJI=
+X-Google-Smtp-Source: AGHT+IGY7HPkzppphxXgM5h0At1hNgR5lKzpQA9yXBKEUqn+LOFbx8z+oJtbHZZ1I/5C6bO8uk34HQ==
+X-Received: by 2002:a5d:64a2:0:b0:33e:cbec:e98 with SMTP id m2-20020a5d64a2000000b0033ecbec0e98mr5944277wrp.13.1711727560893;
+        Fri, 29 Mar 2024 08:52:40 -0700 (PDT)
+Received: from u94a ([2401:e180:8d50:7df:53a:80ac:6d18:d24c])
+        by smtp.gmail.com with ESMTPSA id m3-20020a170902f20300b001e0d6de7198sm3615107plc.283.2024.03.29.08.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 08:52:40 -0700 (PDT)
+Date: Fri, 29 Mar 2024 23:52:31 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Edward Adam Davis <eadavis@qq.com>, John Fastabend <john.fastabend@gmail.com>, 
+	syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com, 42.hyeyoo@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, namhyung@kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	peterz@infradead.org, songliubraving@fb.com, syzkaller-bugs@googlegroups.com, 
+	yhs@fb.com, Xin Liu <liuxin350@huawei.com>
+Subject: Re: [PATCH] bpf, sockmap: fix deadlock in rcu_report_exp_cpu_mult
+Message-ID: <j6tugwevw3vrcnbf4zxa6apdq4twtmqkdvdj3ndjajajnvltnv@n2cvevln6dvx>
+References: <000000000000dc9aca0613ec855c@google.com>
+ <tencent_F436364A347489774B677A3D13367E968E09@qq.com>
+ <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
+ <87y1a6biie.fsf@cloudflare.com>
+ <87plvgbp15.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v1] mlxbf_gige: stop interface during shutdown
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171172742926.17508.15910798895938463118.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Mar 2024 15:50:29 +0000
-References: <20240325210929.25362-1-davthompson@nvidia.com>
-In-Reply-To: <20240325210929.25362-1-davthompson@nvidia.com>
-To: David Thompson <davthompson@nvidia.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, u.kleine-koenig@pengutronix.de, leon@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87plvgbp15.fsf@cloudflare.com>
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 25 Mar 2024 17:09:29 -0400 you wrote:
-> The mlxbf_gige driver intermittantly encounters a NULL pointer
-> exception while the system is shutting down via "reboot" command.
-> The mlxbf_driver will experience an exception right after executing
-> its shutdown() method.  One example of this exception is:
+On Tue, Mar 26, 2024 at 11:15:47PM +0100, Jakub Sitnicki wrote:
+> On Mon, Mar 25, 2024 at 01:23 PM +01, Jakub Sitnicki wrote:
+> > On Sat, Mar 23, 2024 at 12:08 AM -07, Alexei Starovoitov wrote:
+> >> It seems this bug was causing multiple syzbot reports.
+> > Any chance we could disallow mutating sockhash from interrupt context?
 > 
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
-> Mem abort info:
->   ESR = 0x0000000096000004
->   EC = 0x25: DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
->   FSC = 0x04: level 0 translation fault
-> Data abort info:
->   ISV = 0, ISS = 0x00000004
->   CM = 0, WnR = 0
-> user pgtable: 4k pages, 48-bit VAs, pgdp=000000011d373000
-> [0000000000000070] pgd=0000000000000000, p4d=0000000000000000
-> Internal error: Oops: 96000004 [#1] SMP
-> CPU: 0 PID: 13 Comm: ksoftirqd/0 Tainted: G S         OE     5.15.0-bf.6.gef6992a #1
-> Hardware name: https://www.mellanox.com BlueField SoC/BlueField SoC, BIOS 4.0.2.12669 Apr 21 2023
-> pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : mlxbf_gige_handle_tx_complete+0xc8/0x170 [mlxbf_gige]
-> lr : mlxbf_gige_poll+0x54/0x160 [mlxbf_gige]
-> sp : ffff8000080d3c10
-> x29: ffff8000080d3c10 x28: ffffcce72cbb7000 x27: ffff8000080d3d58
-> x26: ffff0000814e7340 x25: ffff331cd1a05000 x24: ffffcce72c4ea008
-> x23: ffff0000814e4b40 x22: ffff0000814e4d10 x21: ffff0000814e4128
-> x20: 0000000000000000 x19: ffff0000814e4a80 x18: ffffffffffffffff
-> x17: 000000000000001c x16: ffffcce72b4553f4 x15: ffff80008805b8a7
-> x14: 0000000000000000 x13: 0000000000000030 x12: 0101010101010101
-> x11: 7f7f7f7f7f7f7f7f x10: c2ac898b17576267 x9 : ffffcce720fa5404
-> x8 : ffff000080812138 x7 : 0000000000002e9a x6 : 0000000000000080
-> x5 : ffff00008de3b000 x4 : 0000000000000000 x3 : 0000000000000001
-> x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
-> Call trace:
->  mlxbf_gige_handle_tx_complete+0xc8/0x170 [mlxbf_gige]
->  mlxbf_gige_poll+0x54/0x160 [mlxbf_gige]
->  __napi_poll+0x40/0x1c8
->  net_rx_action+0x314/0x3a0
->  __do_softirq+0x128/0x334
->  run_ksoftirqd+0x54/0x6c
->  smpboot_thread_fn+0x14c/0x190
->  kthread+0x10c/0x110
->  ret_from_fork+0x10/0x20
-> Code: 8b070000 f9000ea0 f95056c0 f86178a1 (b9407002)
+> I've been playing with the repro from one of the other reports:
 > 
-> [...]
+> https://lore.kernel.org/all/CABOYnLzaRiZ+M1v7dPaeObnj_=S4JYmWbgrXaYsyBbWh=553vQ@mail.gmail.com/
 
-Here is the summary with links:
-  - [net,v1] mlxbf_gige: stop interface during shutdown
-    https://git.kernel.org/netdev/net/c/09ba28e1cd3c
+Possibly also related:
+- "A potential deadlock in sockhash map"[1] report awhile back
+- commit ed17aa92dc56b ("bpf, sockmap: fix deadlocks in the sockhash and
+  sockmap")
+- commit 8c5c2a4898e3d ("bpf, sockmap: Revert buggy deadlock fix in the
+  sockhash and sockmap")
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+1: https://lore.kernel.org/all/CABcoxUayum5oOqFMMqAeWuS8+EzojquSOSyDA3J_2omY=2EeAg@mail.gmail.com/
 
