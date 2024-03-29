@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-124506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653AB891908
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:34:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A736289190B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968AE1C21DD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:34:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46FAA1F21B7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089991422A3;
-	Fri, 29 Mar 2024 12:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85261420CA;
+	Fri, 29 Mar 2024 12:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ukFZA36P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dpCGXMnL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424E51420CA;
-	Fri, 29 Mar 2024 12:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BF01422C3;
+	Fri, 29 Mar 2024 12:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715259; cv=none; b=kQ3NTlONoGtyqs0S6K+kX30psPW6ZCCG5q6B9+OjNHO6ARLpw62bLTkX0g+WIKpF53ZZ2x0Ja2wJwR3/k0xfUW9l3sYTzW9Jy1MgFm8IlbSv/fDNNRx5+SzLjdrG6bjttjcdbSA0W7qV6/zOCNo8P++BOkqvIDv/yNho0SouLdE=
+	t=1711715262; cv=none; b=MPT3jDW+fFaMVYdZ/BfE8bfjYRUsYnk/YUeidfLdvPURAjc/p+JtxqA2yTzPIktTVQPf1/Yk5Z3OODSP+oTHO8y2E8gmggc1jgjAhbSrEqFa9hh3f50kgcPQaWJ1+J/nlfzf59+stSkP0xAUtL3ceqTVHLryyInliSp3UA05jyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715259; c=relaxed/simple;
-	bh=h5vXU9ZnXCMzgReS3qgBCF4yclyS3UuPVOjxSyLz5eQ=;
+	s=arc-20240116; t=1711715262; c=relaxed/simple;
+	bh=yHxgtU2OTtRiz2jnpK76bff4C6A+TYTVw1JRL8ZQwv0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pOKveExlZU+zWsOdKg7dLhb+6XZwwwAzM3u4l85xhyIQnL41YTE6aXf3S9NGqcgvdOC5N02Jpm5uJQCXIGlDz7yYgxQAPJ5EYWKSVZ6g2i0TO89t0xGba5s07hQbD1jZ1QtQFsgoTSiI8MwRAhQXKNhm6SLBdgL+OuMZUDV5A74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ukFZA36P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D52DDC433F1;
-	Fri, 29 Mar 2024 12:27:37 +0000 (UTC)
+	 MIME-Version; b=X0OZ1K+yps02xjU1YxJthGEvuSuuD/fPhkoBsqUVGqH/5dtlNl7rOBAsVGueaIgBTglPbO7g0RAu/KqRtRFVlrPHvhoUH8qDxH02P8llTtiqjzrwup0geYEPUF7E/qyThwx9Be0aCvP3GOVOR6koewFbUlKCIuBBPO5s6AeH+BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dpCGXMnL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2171CC433C7;
+	Fri, 29 Mar 2024 12:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715259;
-	bh=h5vXU9ZnXCMzgReS3qgBCF4yclyS3UuPVOjxSyLz5eQ=;
+	s=k20201202; t=1711715261;
+	bh=yHxgtU2OTtRiz2jnpK76bff4C6A+TYTVw1JRL8ZQwv0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ukFZA36PNfbI4eDC6kFCqWLJuyT/rSvRWcqCDZmjQHJK+hFYwzl6fETL7Vtf+7nCf
-	 Z3OiSDua5O/7+U7WkSOknFauUXTZFVji1t7iUJq9TbK4nwH7Y0AyKbvv/Y2xCY6rRI
-	 qdomrSGk9p0VT0K2xmgq/j/kvTjPBgZhOJuS2LupWejjwKedq++HQsEXWMCeULn7fz
-	 aMT0oxgWrUFXr4GgKNsGE6qgfKHxewTC8IV7A9J0NmQ+SA5OjjWrqChOhojIDx/6ye
-	 FdBDy8JBtynJYBpvYRbut0yp4I8X2tSy40cchqo1pcq1qr+UG65e8WvpDOGTXXJCPb
-	 zRYSw/Z/MBh3w==
+	b=dpCGXMnLRjp099+2Snbv8WY+qFy0T+XBGM5Ms/xcBrUzp1m4RqAt8yDa4c5WBN1YM
+	 HQEYKV5isGTtyPWX1e0U1+7mDbhMn2HOLs5aMgx+UzohZjctdavUdvsoxT7pwFzt88
+	 E37LC5ezbCKUdzOhNPSyq4B18jVfYzKzDdlgf+U4nQdJQ0SaLbqsyaOZvVpxTENX2o
+	 1/0S+QBxymmYWHs/VY3Mw6wYZuJGnApACUWJHldPScPJx3jXXr/O9mT6SIPFqSXHTI
+	 zGLRVsQF8EfEN5LdNrXkGFg5DZRyCUo6QfjShrvGma4erd/3VpWLMbjAu5Fb63EXT1
+	 HlBTZlRMADQ+Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,12 +49,16 @@ Cc: Johan Jonker <jbx6244@gmail.com>,
 	robh@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	conor+dt@kernel.org,
+	dsimic@manjaro.org,
+	shironeko@tesaguri.club,
+	jay.xu@rock-chips.com,
+	jonas@kwiboo.se,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.8 25/68] ARM: dts: rockchip: fix rk322x hdmi ports node
-Date: Fri, 29 Mar 2024 08:25:21 -0400
-Message-ID: <20240329122652.3082296-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 26/68] arm64: dts: rockchip: fix rk3328 hdmi ports node
+Date: Fri, 29 Mar 2024 08:25:22 -0400
+Message-ID: <20240329122652.3082296-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
 References: <20240329122652.3082296-1-sashal@kernel.org>
@@ -71,39 +75,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 15a5ed03000cf61daf87d14628085cb1bc8ae72c ]
+[ Upstream commit 1d00ba4700d1e0f88ae70d028d2e17e39078fa1c ]
 
-Fix rk322x hdmi ports node so that it matches the
+Fix rk3328 hdmi ports node so that it matches the
 rockchip,dw-hdmi.yaml binding.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/9b84adf0-9312-47fd-becc-cadd06941f70@gmail.com
+Link: https://lore.kernel.org/r/e5dea3b7-bf84-4474-9530-cc2da3c41104@gmail.com
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/rockchip/rk322x.dtsi | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/rockchip/rk322x.dtsi b/arch/arm/boot/dts/rockchip/rk322x.dtsi
-index 831561fc18146..96421355c2746 100644
---- a/arch/arm/boot/dts/rockchip/rk322x.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk322x.dtsi
-@@ -736,14 +736,20 @@ hdmi: hdmi@200a0000 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 7b4c15c4a9c31..b6f045069ee2f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -744,11 +744,20 @@ hdmi: hdmi@ff3c0000 {
  		status = "disabled";
  
  		ports {
 -			hdmi_in: port {
--				#address-cells = <1>;
--				#size-cells = <0>;
--				hdmi_in_vop: endpoint@0 {
--					reg = <0>;
 +			#address-cells = <1>;
 +			#size-cells = <0>;
 +
 +			hdmi_in: port@0 {
 +				reg = <0>;
 +
-+				hdmi_in_vop: endpoint {
+ 				hdmi_in_vop: endpoint {
  					remote-endpoint = <&vop_out_hdmi>;
  				};
  			};
