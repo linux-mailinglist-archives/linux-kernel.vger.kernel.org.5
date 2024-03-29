@@ -1,75 +1,77 @@
-Return-Path: <linux-kernel+bounces-125401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72D1389257F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:48:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BA2E892582
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:49:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21A8A284432
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:48:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F11981C212F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8641353E1;
-	Fri, 29 Mar 2024 20:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4D91369BC;
+	Fri, 29 Mar 2024 20:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZV75nOc8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EYI85FcU"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC03745955
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:48:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C666BB22
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711745322; cv=none; b=TNu1mtAV81F0c54qOzCHt80LnWp4HNQpX1PrLedm9W6Kb+uka8HIB1+2bTlADz+XrVrSW2gKNVUXpXQCGFxgqO1xkdT6gJy+RSMB4PjYY/Xftr1z1NjaDFOFRuppzt4gubWTP+fBCoe1rXE1Zn/hPcRZnUI7bNEh5JO26u4Takw=
+	t=1711745333; cv=none; b=ZP5QIa71uFwkD7f8K7+2Unce+nxqRKlnIzc3eg82gKYWF3oucA2MpXG0haqISTEprgGUUPdv5wvtyOY+kLFjimm5hLhmvhzAqGFLtbgOok2LwTSjR7Xg7rByf57e2xUxVvJ4bEtgNPs6Rums/c8xtixeRvH2/ujwGyyvipdOFIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711745322; c=relaxed/simple;
-	bh=lwlpcI5A8BQcar0sMy35uEcYUx4hN1D1zdDSj4FSLeM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HJAfWjNB7sm3pw1JuMQWozE/m9j37nIN9BbOS7KDz4r2dmH0I7cUaoDGWEzjVu55ytaZm/HcSqx7IWnS0FHa3Xi4Ot9tCgloe1hPjYso153tnCOQquTmNN6abYYoIY8VT2QWJsDBpiWMRozE4LIjJq/SfXW3uAFeOzX0GqST0Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZV75nOc8; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1711745333; c=relaxed/simple;
+	bh=BP7pHzMFsulC5h5RfnNlVkbRbr65ixQCUgccOfbpOGc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=n5zOMkaiXaAJiN7YGSm/cfmxzqbQatd9pT0MSq67YKgkjsCC9O6YeKe7envQQPCiw9nVROanjHt+QvgIXvoMvfHkjz4OEkup2mEFGaxQMbqmLhS5BsNokDbALmgwvOotnFAgrfaUrIKo+yhIyRTtJ773TTC6dkN5gQaBwpv82HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EYI85FcU; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711745319;
+	s=mimecast20190719; t=1711745330;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=pMvHo0hhUkUgt9K7fEcKX9ASN8rbTIhxdwYeOP1BBsI=;
-	b=ZV75nOc8E0FhGClsFwTwJNV8X3HklUGUMhcO1RY9FmZegy6cWK9GopMahjn6KVzZg/YPYL
-	CHkzSPw7R0YUG/z10mHPXkHw7HJeCgLOF+IhY2Osi0EnqrTKaftQHCaz/JPt+NERD7TV4m
-	4rPbwuLa4f7OvDGZkmD5qw3M4Mz0Anc=
-Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
- [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4OnoxFSVXPqXgZAXqDum+B43kEJjiL2qzIJ+ix8ScM=;
+	b=EYI85FcUwOAuAORtuLBLPdlywYe5qt60MIrNY8bh6w8TndCQft8HfCCzkQjH6GCM4ag0mA
+	L3HP+AyQEQUNMI6Yvsb2JF3Kiq2vSgplfJMSZfSM0j9uhPmIi1lEMEUXGVeYDh3w8rmxbi
+	gz4KTcOYMlyD+W+tTnrlg91L7sXWUkw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-382-n9MopW2YPD-npa3zPiP_BA-1; Fri, 29 Mar 2024 16:48:38 -0400
-X-MC-Unique: n9MopW2YPD-npa3zPiP_BA-1
-Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-4766bd576fdso956831137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:48:38 -0700 (PDT)
+ us-mta-335-Jaq6ARh1N-2VsGoexVIG-A-1; Fri, 29 Mar 2024 16:48:49 -0400
+X-MC-Unique: Jaq6ARh1N-2VsGoexVIG-A-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-69680b07160so27358316d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:48:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711745318; x=1712350118;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pMvHo0hhUkUgt9K7fEcKX9ASN8rbTIhxdwYeOP1BBsI=;
-        b=uOGyOmf0S4MBjvL5DOIskvc9qQYWYLmnbs8LLQMza2dKGIz/2A8E4dgdc1/oLkH1qM
-         mr/35HaF1SZsmU4+7t2xOqroM1k4pj+CAA7sdAGfztEW2WyF4N2WIvJBVd0Jxd21mDZt
-         nC1218Ll2jfEId+xisEwGNRBXPGVYC0yU/Ni6s8L7/R2xS4G6V1IWWyNf8CMz/Lznq3X
-         fZD/bLRIj8KBusKg1iitiEAVRW+OPKdCLAHG7eUYnkleOFzdCZPMwCt8Q+yLqd77cIDe
-         f0IHyThXXz/DoWLHOVxkyF8Tgz007QlaltKbc8yykenThBxDh+8+rsouFg9lzu7yvtyt
-         ZXXg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKOd1tEAp/3M91ANlEaHOfehgQGzzwzZLrT8U8CTnVGzDfe9rlo0Ow/7e1aeVyWkRUtdBoO8WChDeTxjSfMyAqd1ZmJN2CEwPyDmZ6
-X-Gm-Message-State: AOJu0YzsCUrfTz5MwtPHFWZgYoMh5rV1rqRvTuNjQFo1Gipznh4l4+Tg
-	6AmYGTzyNzmZhRya2mD59TcXiqvHOD+fvmJcOk7KGXKPnWIEUYnKmqDWgfaUTmj3E7+Av6aqIiU
-	MPiu/OBilr4Jo018Z3YF2JFYCfR9dS9PTUaCdB1/LEt98VlmDXqkaFn41RLgIQg==
-X-Received: by 2002:a67:e98d:0:b0:478:248d:c6b8 with SMTP id b13-20020a67e98d000000b00478248dc6b8mr3000607vso.29.1711745317808;
-        Fri, 29 Mar 2024 13:48:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG6McnsPGPp9Wj4K8DINN5NlCqUDVWwV0L72vTeD0Ck/Y4pgw2iS7e2jkCmndL73KM7xdbvNg==
-X-Received: by 2002:a67:e98d:0:b0:478:248d:c6b8 with SMTP id b13-20020a67e98d000000b00478248dc6b8mr3000592vso.29.1711745317442;
-        Fri, 29 Mar 2024 13:48:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711745324; x=1712350124;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c4OnoxFSVXPqXgZAXqDum+B43kEJjiL2qzIJ+ix8ScM=;
+        b=Mrx1+Pub1BTz3bW2tTcBHMuD4tRUrJfSneZ71f/ZKtrBo5gsEb0pO2rPoA5TpJOWk1
+         JEi4E9HKvoLt6jioQuwweM9TJASz6rWtYPx1U5JZhNkz7UKeYrpdMn/TDHV9I1G061YN
+         d9ZYdmJGWSKv5iLe+14uv/NWsjU1f4UIWNGP0lEF5lSmtkBW7yIHMP2ZL3lT+SY2/UAQ
+         sjhlMNfheFSBkp+Ghgni2UgJ5gPClQ3HqTia+olvoJHPUg6n4L46I3sUqNUsgRJZBvqy
+         uD/pzeJekuypzYq7IWDmzL4sHzsvbKWm5amNh06nyo1ZSyEujzhipxGfXr43W0qtz1qc
+         Ll7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWXBn9yQQhK8Qyjp70fbqmnLKgD5F59B4ueqNAu2SFZh2FjWUuax/eKXGvKAo41vd3Mv0yw2b5UdrkUwDcsy8Ph8iVQ1Z06xVGeKrfu
+X-Gm-Message-State: AOJu0YxIA+4fn5CQZLh/w1d7uiU6UiXR8FXAUl+lChxRbIsI2hFawcLf
+	2YyyI6g7s4sGGHdt8TgtA1DsImekBIvi2Ocd6cpB5TGEqF/mNGx+H8g9arkloM5t/TOa6JEmEDa
+	gHnPehuuGMDYxm8d4N/ahURb7mccmnB0r6TaLgmXppYdTcgYWRgn5Y3p0bgCYUw==
+X-Received: by 2002:a0c:9a91:0:b0:698:f39f:841f with SMTP id y17-20020a0c9a91000000b00698f39f841fmr2060278qvd.20.1711745324156;
+        Fri, 29 Mar 2024 13:48:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFJf7oVmqD60ifmlE6hginnH1lrLHud0fYzJl7uMi++kQu2bupDlSX6vEV/iu1GxrCkHuddlQ==
+X-Received: by 2002:a0c:9a91:0:b0:698:f39f:841f with SMTP id y17-20020a0c9a91000000b00698f39f841fmr2060248qvd.20.1711745323770;
+        Fri, 29 Mar 2024 13:48:43 -0700 (PDT)
 Received: from x1gen2nano.redhat.com ([2600:1700:1ff0:d0e0::33])
-        by smtp.gmail.com with ESMTPSA id jz10-20020a0562140e6a00b00698f27c6460sm794271qvb.110.2024.03.29.13.48.36
+        by smtp.gmail.com with ESMTPSA id jz10-20020a0562140e6a00b00698f27c6460sm794271qvb.110.2024.03.29.13.48.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 13:48:37 -0700 (PDT)
+        Fri, 29 Mar 2024 13:48:43 -0700 (PDT)
 From: Andrew Halaney <ahalaney@redhat.com>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -90,10 +92,13 @@ Cc: Andrew Halaney <ahalaney@redhat.com>,
 	linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v5 00/11] scsi: ufs: Remove overzealous memory barriers
-Date: Fri, 29 Mar 2024 15:46:42 -0500
-Message-ID: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
+Subject: [PATCH v5 01/11] scsi: ufs: qcom: Perform read back after writing
+ reset bit
+Date: Fri, 29 Mar 2024 15:46:43 -0500
+Message-ID: <20240329-ufs-reset-ensure-effect-before-delay-v5-1-181252004586@redhat.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
+References: <20240329-ufs-reset-ensure-effect-before-delay-v5-0-181252004586@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,105 +109,69 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.13.0
 Content-Transfer-Encoding: quoted-printable
 
-Please review with care as I'm not all that confident in this subject.=0D
-UFS has a lot of mb() variants used, most with comments saying "ensure this=
+Currently, the reset bit for the UFS provided reset controller (used by=0D
+its phy) is written to, and then a mb() happens to try and ensure that=0D
+hit the device. Immediately afterwards a usleep_range() occurs.=0D
 =0D
-takes effect before continuing". mb()'s aren't really the way to=0D
-guarantee that, a read back is the best method.=0D
+mb() ensure that the write completes, but completion doesn't mean that=0D
+it isn't stored in a buffer somewhere. The recommendation for=0D
+ensuring this bit has taken effect on the device is to perform a read=0D
+back to force it to make it all the way to the device. This is=0D
+documented in device-io.rst and a talk by Will Deacon on this can=0D
+be seen over here:=0D
 =0D
-Some of these though I think could go a step further and remove the mb()=0D
-variant without a read back. As far as I can tell there's no real reason=0D
-to ensure it takes effect in most cases (there's no delay() or anything=0D
-afterwards, and eventually another readl()/writel() happens which is by=0D
-definition ordered). Some of the patches in this series do that if I was=0D
-confident it was safe (or a reviewer pointed out prior that they thought=0D
-it was safe to do so).=0D
+    https://youtu.be/i6DayghhA8Q?si=3DMiyxB5cKJXSaoc01&t=3D1678=0D
 =0D
-Thanks in advance for the help,=0D
-Andrew=0D
+Let's do that to ensure the bit hits the device. By doing so and=0D
+guaranteeing the ordering against the immediately following=0D
+usleep_range(), the mb() can safely be removed.=0D
 =0D
-To: Andy Gross <agross@kernel.org>=0D
-To: Bjorn Andersson <andersson@kernel.org>=0D
-To: Konrad Dybcio <konrad.dybcio@linaro.org>=0D
-To: Manivannan Sadhasivam <mani@kernel.org>=0D
-To: James E.J. Bottomley <jejb@linux.ibm.com>=0D
-To: Martin K. Petersen <martin.petersen@oracle.com>=0D
-To: Hannes Reinecke <hare@suse.de>=0D
-To: Janek Kotas <jank@cadence.com>=0D
-To: Alim Akhtar <alim.akhtar@samsung.com>=0D
-To: Avri Altman <avri.altman@wdc.com>=0D
-To: Bart Van Assche <bvanassche@acm.org>=0D
-To: Can Guo <quic_cang@quicinc.com>=0D
-To: Anjana Hari <quic_ahari@quicinc.com>=0D
-Cc: Will Deacon <will@kernel.org>=0D
-Cc: linux-arm-msm@vger.kernel.org=0D
-Cc: linux-scsi@vger.kernel.org=0D
-Cc: linux-kernel@vger.kernel.org=0D
+Fixes: 81c0fc51b7a7 ("ufs-qcom: add support for Qualcomm Technologies Inc p=
+latforms")=0D
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>=0D
+Reviewed-by: Can Guo <quic_cang@quicinc.com>=0D
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>=0D
-=0D
-Changes in v5:=0D
-- Rebased on top of next-20240327=0D
-- v4 changes need review, so please pay attention to that bit=0D
-  still :)=0D
-- Link to v4: https://lore.kernel.org/r/20240122-ufs-reset-ensure-effect-be=
-fore-delay-v4-0-6c48432151cc@redhat.com=0D
-=0D
-Changes in v4:=0D
-- Collected Reviewed-by tags=0D
-- Changed patches 3, 4, 10, and 11 to drop the read back && mb():=0D
-    - Please note all of those patches got reviewed-by tags by either=0D
-      Can, Mani, or Bart, but one of the three pointed out that they=0D
-      thought it could be dropped altogether (some of Mani's comments=0D
-      are on my foobar'ed v2). After some consideration I=0D
-      agree. Therefore I'd appreciate re-review on those patches by=0D
-      you three to make sure that's appropriate=0D
-- Link to v3: https://lore.kernel.org/r/20231221-ufs-reset-ensure-effect-be=
-fore-delay-v3-0-2195a1b66d2e@redhat.com=0D
-=0D
-Changes in v3:=0D
-- Nothing changed, I just failed to send with b4 (resulting in 2 half=0D
-  sent v2 series on list)=0D
-- Link to v2: https://lore.kernel.org/r/pnwsdz3i2liivjxvtfwq6tijotgh5adyqip=
-jjb5wdvo4jpu7yv@j6fkshm5ipue=0D
-=0D
-Changes in v2:=0D
-- Added review tags for original patch=0D
-- Added new patches to address all other memory barriers used=0D
-=0D
-- Link to v1: https://lore.kernel.org/r/20231208-ufs-reset-ensure-effect-be=
-fore-delay-v1-1-8a0f82d7a09e@redhat.com=0D
-=0D
 ---=0D
-Andrew Halaney (11):=0D
-      scsi: ufs: qcom: Perform read back after writing reset bit=0D
-      scsi: ufs: qcom: Perform read back after writing REG_UFS_SYS1CLK_1US=
+ drivers/ufs/host/ufs-qcom.h | 12 ++++++------=0D
+ 1 file changed, 6 insertions(+), 6 deletions(-)=0D
 =0D
-      scsi: ufs: qcom: Remove unnecessary mb() after writing testbus config=
+diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h=0D
+index 9dd9a391ebb7..b9de170983c9 100644=0D
+--- a/drivers/ufs/host/ufs-qcom.h=0D
++++ b/drivers/ufs/host/ufs-qcom.h=0D
+@@ -151,10 +151,10 @@ static inline void ufs_qcom_assert_reset(struct ufs_h=
+ba *hba)=0D
+ 	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, UFS_PHY_SOFT_RESET, REG_UFS_CFG1);=0D
+ =0D
+ 	/*=0D
+-	 * Make sure assertion of ufs phy reset is written to=0D
+-	 * register before returning=0D
++	 * Dummy read to ensure the write takes effect before doing any sort=0D
++	 * of delay=0D
+ 	 */=0D
+-	mb();=0D
++	ufshcd_readl(hba, REG_UFS_CFG1);=0D
+ }=0D
+ =0D
+ static inline void ufs_qcom_deassert_reset(struct ufs_hba *hba)=0D
+@@ -162,10 +162,10 @@ static inline void ufs_qcom_deassert_reset(struct ufs=
+_hba *hba)=0D
+ 	ufshcd_rmwl(hba, UFS_PHY_SOFT_RESET, 0, REG_UFS_CFG1);=0D
+ =0D
+ 	/*=0D
+-	 * Make sure de-assertion of ufs phy reset is written to=0D
+-	 * register before returning=0D
++	 * Dummy read to ensure the write takes effect before doing any sort=0D
++	 * of delay=0D
+ 	 */=0D
+-	mb();=0D
++	ufshcd_readl(hba, REG_UFS_CFG1);=0D
+ }=0D
+ =0D
+ /* Host controller hardware version: major.minor.step */=0D
 =0D
-      scsi: ufs: qcom: Perform read back after writing unipro mode=0D
-      scsi: ufs: qcom: Perform read back after writing CGC enable=0D
-      scsi: ufs: cdns-pltfrm: Perform read back after writing HCLKDIV=0D
-      scsi: ufs: core: Perform read back after writing UTP_TASK_REQ_LIST_BA=
-SE_H=0D
-      scsi: ufs: core: Perform read back after disabling interrupts=0D
-      scsi: ufs: core: Perform read back after disabling UIC_COMMAND_COMPL=
-=0D
-      scsi: ufs: core: Remove unnecessary wmb() after ringing doorbell=0D
-      scsi: ufs: core: Remove unnecessary wmb() prior to writing run/stop r=
-egs=0D
-=0D
- drivers/ufs/core/ufshcd.c      | 15 +++------------=0D
- drivers/ufs/host/cdns-pltfrm.c |  2 +-=0D
- drivers/ufs/host/ufs-qcom.c    | 12 ++----------=0D
- drivers/ufs/host/ufs-qcom.h    | 12 ++++++------=0D
- 4 files changed, 12 insertions(+), 29 deletions(-)=0D
----=0D
-base-commit: 26074e1be23143b2388cacb36166766c235feb7c=0D
-change-id: 20231208-ufs-reset-ensure-effect-before-delay-6e06899d5419=0D
-=0D
-Best regards,=0D
 -- =0D
-Andrew Halaney <ahalaney@redhat.com>=0D
+2.44.0=0D
 =0D
 
 
