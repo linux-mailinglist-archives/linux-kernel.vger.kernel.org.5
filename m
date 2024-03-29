@@ -1,177 +1,105 @@
-Return-Path: <linux-kernel+bounces-125525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 291568927C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:24:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E3FF8927C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38D67282918
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D8F91C20F35
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E54813E051;
-	Fri, 29 Mar 2024 23:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF9113D240;
+	Fri, 29 Mar 2024 23:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="anfaUUvk"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GW17gx2d"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08CC964B;
-	Fri, 29 Mar 2024 23:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564134B5DA
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 23:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711754670; cv=none; b=IO+5Rt3m9b16ItoeMHHKMLKLNLdssKvw9wFDscopqOpCRGlo0jp93dVk69H945BbmmsI4HseLyPlg7ASLxA1UP2ILfuk0Xzzw7Zp/szhcKEAjqRwl8ZRVIxWjAJC4aD+rQIh4nZBZC2oXbS4j2dM04w2Uh28QBS6dN3V8ETl7RI=
+	t=1711754344; cv=none; b=tHyxyXpXaE4bK2EpJ9udiazpp8th3VjiBIispNEFdsPGqDgWRdtn1YOvOp220Wlq3m6OcodW0vd+9cr96i6KOS6qrCaQ1Vu03+9vjtQbG45vmEZbadafTg4GGvZVuNbf3MOo+6crw2g0qHPrsHZUPX8urEF6CAwdYeOxjzVxF6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711754670; c=relaxed/simple;
-	bh=QSssbFjXz+eZ/ZgUMwkgKn6RmNuNwQ2PoDMrtj4r644=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fm7hBwypm2j1uall27qfA/aPd7m0VFJcqqLnIyJGEHXzG9ze71MEu/c783B9Ur8BPWIvfwFjyIqoHcHy3C+lKnF+Zr0INEZJlA0hzbgw8waIQAhHT0Z9gJKa9RiVLPjk7Vb/TSk1dYZLwNVTyNUkvqR9L9N0mnzoao7BFe7Vvxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=anfaUUvk; arc=none smtp.client-ip=209.85.167.179
+	s=arc-20240116; t=1711754344; c=relaxed/simple;
+	bh=vnGFST8g/D2/54qEF94dGguSEUSHy9NC6zJgvdLnJag=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YIpphg1Z2snGdpl6X9GooneIaKaSOQlV4E4RhZzYo16mMXsApb/mIYTFXkG7Jd3XSveUOh+Bymg8sYK2rNnWoMf52Ym1xPmt8SFFUQoIL3usd7dDmqkW5wxodRQsSeF2mh7/nXwP6sjIp3YGs/lEw23D6VBawnat2iA4wFsr18k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GW17gx2d; arc=none smtp.client-ip=209.85.161.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c36f882372so1436434b6e.2;
-        Fri, 29 Mar 2024 16:24:28 -0700 (PDT)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a47680a806so563791eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711754668; x=1712359468; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711754342; x=1712359142; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nAqT/PkO4I/dSKZYMDvK1XHcQqT1AvW4NQ1vVEVf7/Y=;
-        b=anfaUUvkhzysZ+thkc0mCGm1rxPJBEoSHIEf1Em2gOmsKNu0vGJkiWxwZMi06m76Hb
-         6lHapMX7KhWVob9TUclyO4pYFLejJi6wiRLIyeT5h7buerdyiYS9Oxgj2/mY0X70vn5Y
-         hu1n1ssRm6C+pDQaYeueeOaRrGgDbG8T4X5wYBLtueR8vJz1q6RRqUHTro+L4YumTaRX
-         IElEZZw6Rynv95ePX0dSjTAh0s7c1/vfTP1QC6Npj16vRsOu+d1baQyUf2oBq/SrFm3i
-         ZPM/mzUkPy3nvX76yKCstgbIwr0FqKf3PK/4IiJ65G1DUQC81p4Ed3RnstrRUuTbBLnP
-         Y5FA==
+        bh=vnGFST8g/D2/54qEF94dGguSEUSHy9NC6zJgvdLnJag=;
+        b=GW17gx2d44+c/9GSHNRM0Z+fNJZ3xweh95mTonLAIrZN1PUObIPrwuZtLCDxrTWUFy
+         Te0hq754oOXEmF2wD2bJwlzaoDYPN/3VXbYogeJLP/UeqTL8TTCgeAccGtIceCVfyBHn
+         7R074c3OXUVIhrNFbSX/JFvW56puOi1Wqzum6EgzZ/wnaQQOoXAu4EuxKDgTcLWv58D1
+         97lAYwMa3oYVexf+1sXKBR2tkNJayoxnJuK5MUae22VldT+NtxkoobBFsZbmmnPYkQ/J
+         1GAfyKyF60enIRsM3qwhGkbztUHju89Ix5dyey70sjRZ54OLp8Oyu3LKmdrai1APDe3u
+         nHuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711754668; x=1712359468;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711754342; x=1712359142;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nAqT/PkO4I/dSKZYMDvK1XHcQqT1AvW4NQ1vVEVf7/Y=;
-        b=pjHl5ZVnKNxwTX8g3+M5GDz0BcQXbEnk0crzjVtdgKpMY2Xe0MQchP4AkTikZ3yX9h
-         SD3COMclnRK3pmhymRDMq/3/S9CA3leGuj4QGfN7c0kJ9ZO3Xw9y7WaYsCSQQ0bx1UTe
-         jbl9awxf5oIwManmf7TYnUcVbEDmJJqYDIZ2lzFdTp6SMQSJu66gLEAENulbaEEiTfm/
-         BXCB2BVBWxb/5K/kN/pj2Z9sA0tXqgc1zLXFeuKBXrEYdf/P3bw3+A0AY4THPRFj/VJq
-         T08xnPRYX5LYjGQaE3ykbzy4wfHzm1decSQNtCXjtY2D7AWH9GSjr1iMa/HF8OHSWw6v
-         CpkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+jEncGaVRz8WAx63aeYwOgLhNdQ0RZXfrcRth8OJYNP1RjLHHY/m0ku+4c80mVlEhAY7XKp9LRuPtXR/rTZZxQZtymIGTpJCJDCBM
-X-Gm-Message-State: AOJu0YzOweFi3Ghz9AJPU/sXFPH7GsPcSLFFt0ZzV35/T/+8VPjurein
-	hWAgEM1ov1lbL1Kc2XGLgNdfjDHnwk+Ox4lNUcX2Njprng8n6jX5
-X-Google-Smtp-Source: AGHT+IFdNmK0xPtWYygNA8XuQeAr5sygQ6mRUco/hHSJpmhhK4b8eowehgfXoBh3zEyqRvQPLz0CyA==
-X-Received: by 2002:a05:6808:13c9:b0:3c3:d65e:f6d with SMTP id d9-20020a05680813c900b003c3d65e0f6dmr3760249oiw.57.1711754668015;
-        Fri, 29 Mar 2024 16:24:28 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id 6-20020ad45ba6000000b0069694dab3f8sm2093422qvq.39.2024.03.29.16.24.26
+        bh=vnGFST8g/D2/54qEF94dGguSEUSHy9NC6zJgvdLnJag=;
+        b=Uyu1uc7S9b7Yb/gSfac+O4Jk3Gpe7JPZUVGd1ubvvuoT3UW7lxQzbnP2otBhdq/bJY
+         kNX30m/M0cvK6bTu9++O9FzoTN4itiETeSdz/3DySnNzFhqIJx7Hqeeb2aIYuGCQE2YE
+         KacxaQULsAsk5iK9fJvGuzJ9kmOMN31lwhim978FIVUWz8SHLZpRVXn/UHe2dUk4tpO7
+         WVPAP5/dFWXngnGLvI3rpKyAZY7IZmwNN41iLmwfPVva5tnf2Zr13r2XuyyezYV4t2Bd
+         GCzsJW4e2LzX+QCXRqqyxrIjeJD/oCmU+A7maD3PM2HwEoko2AOatFMk82WClx3P5zI+
+         TtHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWA8KnbJvt+krcN3z+7Jqy36PBvUinHeCCOWSTRoKS4s/8u1eGoqNNLPewAKoCQTRUOV7mxbhTNnw203KTUg7UrHfi5ypUa4Ub4xQc4
+X-Gm-Message-State: AOJu0Yx/A2MbMNZOfT+Yb7F8UV0xg4aShv0EZr5DqtaCijEkdHfmbOcl
+	d06IyZQFqdZVaCS9T1O2NDrFcx7uuj5wJyN3Onerl0RuqOcugHGF
+X-Google-Smtp-Source: AGHT+IE2db2L9WUF+xM4vQcDoAeeD6O2XDyv0ZurcW/IrEcP8yVCzcBmxiAcZhOdkPb1TwQajv5big==
+X-Received: by 2002:a05:6870:9a05:b0:22e:dce:39bc with SMTP id fo5-20020a0568709a0500b0022e0dce39bcmr1557265oab.3.1711754342219;
+        Fri, 29 Mar 2024 16:19:02 -0700 (PDT)
+Received: from SDF-ThinkCentre-M93p.localdomain (c-76-17-255-148.hsd1.mn.comcast.net. [76.17.255.148])
+        by smtp.googlemail.com with ESMTPSA id cm9-20020a05622a250900b004317485a4e9sm2044266qtb.66.2024.03.29.16.19.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 16:24:27 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 650DC1200032;
-	Fri, 29 Mar 2024 19:24:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 29 Mar 2024 19:24:26 -0400
-X-ME-Sender: <xms:qU0HZq_m6l5ETvaRE3DctkpbRfLAsG-wTZc_gxjKTdof6JwqVz3qog>
-    <xme:qU0HZquOjyhNQ_D0AGQ6T8aL7ZulcJzwfe0DhOreHCYYW4zYEDeWjRhW3SCWcj9GY
-    KZhIEYzHnC-wD4Ocg>
-X-ME-Received: <xmr:qU0HZgC5UQY3JphX0Z3yZEZ32b9khPRMB0P6iYnlyuhyRJrMmnswpoZBX4I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvfedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpefgieegkeelgfekheetudeiiedvlefghfeffefffefgudejvefgtdfhhfet
-    hfegjeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:qU0HZicx5e3dMWD-YdgwVwHgM-U3adzoEceJw5X7snvZbpx7GggeMA>
-    <xmx:qU0HZvO79pKZp5UVTah8IROqEFukIipr8ZMcnCBLzA-pjxbeRkxUSw>
-    <xmx:qU0HZsn01L4HydhzTSwVZ2Ywsl2S11VxVT1wwGKoLbTjyIb-20Phwg>
-    <xmx:qU0HZhthgv4R27lSphyc6jLBqSuHc5u36Rz-_A6SgHpNc4gIzE2o9A>
-    <xmx:qk0HZjnexGrV8j9NniSTNboCO4IuGbRjJOA6-KtJs3T6u21neDG9bIUVgbE>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 29 Mar 2024 19:24:25 -0400 (EDT)
-Date: Fri, 29 Mar 2024 16:23:42 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org,
-	Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH v3 00/10] Allocation APIs
-Message-ID: <ZgdNfvLWXhHIpWUf@boqun-archlinux>
-References: <20240328013603.206764-1-wedsonaf@gmail.com>
- <ZgcHfG5Hdhv39SLU@boqun-archlinux>
+        Fri, 29 Mar 2024 16:19:01 -0700 (PDT)
+From: Shimrra Shai <shimmyshai00@gmail.com>
+To: jonathan.cameron@huawei.com
+Cc: heiko@sntech.de,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	max.schwarz@online.de,
+	niyas.sait@huawei.com,
+	shimmyshai00@gmail.com
+Subject: Re: Re: [PATCH 0/0] (proposed?) Add ACPI binding to Rockchip RK3xxx I2C bus
+Date: Fri, 29 Mar 2024 18:25:28 -0500
+Message-Id: <20240329232528.79332-1-shimmyshai00@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240322103521.00001a12@Huawei.com>
+References: <20240322103521.00001a12@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgcHfG5Hdhv39SLU@boqun-archlinux>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 29, 2024 at 11:25:00AM -0700, Boqun Feng wrote:
-> On Wed, Mar 27, 2024 at 10:35:53PM -0300, Wedson Almeida Filho wrote:
-> > From: Wedson Almeida Filho <walmeida@microsoft.com>
-> > 
-> > Revamp how we use the `alloc` crate.
-> > 
-> > We currently have a fork of the crate with changes to `Vec`; other
-> > changes have been upstreamed (to the Rust project). This series removes
-> > the fork and exposes all the functionality as extension traits.
-> > 
-> > Additionally, it also introduces allocation flag parameters to all
-> > functions that may result in allocations (e.g., `Box::new`, `Arc::new`,
-> > `Vec::push`, etc.) without the `try_` prefix -- the names are available
-> > because we build `alloc` with `no_global_oom_handling`.
-> > 
-> > Lastly, the series also removes our reliance on the `allocator_api`
-> > unstable feature.
-> > 
-> > Long term, we still want to make such functionality available in
-> > upstream Rust, but this allows us to make progress now and reduces our
-> > maintainance burden.
-> > 
-> > In summary:
-> > 1. Removes `alloc` fork
-> > 2. Removes use of `allocator_api` unstable feature
-> > 3. Introduces flags (e.g., GFP_KERNEL, GFP_ATOMIC) when allocating
-> > 
-> > ---
-> > 
-> 
-> FWIW, I've put this into rust-dev:
-> 
-> 	https://github.com/Rust-for-Linux/linux rust-dev
-> 
-> a few adjustments are needed to work with other commits that have been
-> queued in rust-dev, so I add an commit on the top for everyone's
-> reference. (Besides this commit, I also removed all updates to our own
-> alloc in Miguel's 1.77.0 compiler version bump patch)
-> 
-> Regards,
-> Boqun
+Hey Jonathan,
 
-As Miguel pointed out offline, the following is also needed:
+I just heard back from the firmware team. Apparently, there is rationale
+behind including the clock bindings as part of the _DSD_ - it is because
+apparently MS Windows can also run on this platform and it expects those
+bindings to be there to configure the clocks on this platform. If they are
+changed, it will break that capability, rendering it kind of moot to use
+the ACPI boot which is intended to be universal across OSes. (I also wonder
+if NetBSD uses the same bindings as well; that OS can boot via ACPI boot
+without much issue on this platform.)
 
-diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
-index a5930f0f2bc5..bf68a0ce9f14 100644
---- a/rust/kernel/file.rs
-+++ b/rust/kernel/file.rs
-@@ -350,7 +350,7 @@ impl DeferredFdCloser {
-     pub fn new() -> Result<Self, AllocError> {
-         Ok(Self {
-             // INVARIANT: The `file` pointer is null, so the type invariant does not apply.
--            inner: Box::new(
-+            inner: <Box<_> as BoxExt<_>>::new(
-                 DeferredFdCloserInner {
-                     twork: mem::MaybeUninit::uninit(),
-                     file: core::ptr::null_mut(),
+Shimrra
+
 
