@@ -1,97 +1,117 @@
-Return-Path: <linux-kernel+bounces-124051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C84CB89118E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:15:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD70891192
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34203294FBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:15:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99E4D2950D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C1237160;
-	Fri, 29 Mar 2024 02:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F8B39AF4;
+	Fri, 29 Mar 2024 02:15:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bC4mL/G8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NorheStb"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EA0364D4;
-	Fri, 29 Mar 2024 02:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BAF39AC1
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:15:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678292; cv=none; b=bWY6NwG1Ck+Iuk4PyaSkU/m59kbfgvPNoHSMufBRltbgImr4zfYgITwdQslcDrgzSal0M9gm7l5VkKq3WDnUEAIorIGa6LZ3pkmXAnBu1FMwP2dKM09kAObg7SdW6ulqWG3SOyXhIqLAjVeCS7VR40WjQOoVD9ckp4M/NDbhvAY=
+	t=1711678505; cv=none; b=qQri3A2RPcZjq+sAiFHHvYlaPJRIVT5B30vKBClywvmjBne5YSJ6FtbtTaH5nHhBIEIrhJZvvLFUn4HPem0OnIycv+lX4C9kAiVJn1FlGTAubrG4bDcDNZlbCQ6Gtyy6D5XjySmfWKq9mRIcFiWs7Da4cDSB09D1M7skLGzJzA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678292; c=relaxed/simple;
-	bh=wiI8l6P+7khO2WSmx7RdBmkoeftWtC5/LdFSc3a+f2g=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZOnn3F49Mh8roiqTce4cSm2PAMEaRSp9y2NvibloM3q88tbTEy6dtg1MTXsMGQaWFnpu1sM3+vU13c7tBim1m8Jz/ywnqTEyqV/xwVQXqPgQPu9X2CjoWoet1GTvIx63Mckr+ItxDElG17QhRK8SwDi9pgaFmVRRVrz6+GS1zTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bC4mL/G8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F371C433C7;
-	Fri, 29 Mar 2024 02:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711678292;
-	bh=wiI8l6P+7khO2WSmx7RdBmkoeftWtC5/LdFSc3a+f2g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bC4mL/G8N8W3xmsPmhYd+hXIg9o6jIChDaoLSVIrIAqpWpMERjBw7zFz2aLi5b+VA
-	 FbGBLdHwNItDrHjWojTW4cKxW2M0rl7rnCDQwX6JK5lczqYU82yTTnLeuBFYUDD82N
-	 1gQFz/6A9+qhvqsPkHut16b3b+/Uom5ZEKifEeX3Jo0M7cMPWz+tp56tlWozVk2NF2
-	 0wtlLsimkRUCZBr/9AVUvQ0YPvTJfN9wwaDvqZRG84BY3gG6Z0qCFE1v80J6DQYFrU
-	 K1EMekTmh+WG5hRKdQE10R+fJ0M4K3dDKrjVx9oOJIEloC1NVuvueqgZtF16iOVQ/O
-	 fDoAj1jfNz5Gw==
-Date: Thu, 28 Mar 2024 19:11:30 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jijie Shao <shaojijie@huawei.com>
-Cc: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
- <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
- <jiri@resnulli.us>, <horms@kernel.org>, <rkannoth@marvell.com>,
- <shenjian15@huawei.com>, <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V6 net-next 3/4] net: hns3: dump more reg info based on
- ras mod
-Message-ID: <20240328191130.47242c8f@kernel.org>
-In-Reply-To: <20240327114330.1826631-4-shaojijie@huawei.com>
-References: <20240327114330.1826631-1-shaojijie@huawei.com>
-	<20240327114330.1826631-4-shaojijie@huawei.com>
+	s=arc-20240116; t=1711678505; c=relaxed/simple;
+	bh=2TJM3k1xxwLHj7rZQzcbRutzHAX/f/s1ZJB+wGTa34s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PaMcgQpkW4mPEBB1ZTCdlggflOHfm/59OIfORhBkF0A4MuzzUeGsFj3S567GZ+wfsD6dPQVUxmnAk/gPuE7qd9c4ChDWKIeVShlzBsiDfAmhiwmeDNM/ocYiqpjFZzD7BtHHLcrziyOZ876X3xGgD61eE6FqvCzsbjh+Y2/B4dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NorheStb; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5101cd91017so1928287e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711678502; x=1712283302; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2TJM3k1xxwLHj7rZQzcbRutzHAX/f/s1ZJB+wGTa34s=;
+        b=NorheStbNAyj9KCRvmGAJxf8gh0RENcdC3+iF+uXWCENBjgkcPlDCk7G4RJIxNXsl1
+         ICTghRxcs4aPdUH1XsDrTqD9vpZjl5RZHLz1AyxtOMwTEi/71TCrGe+yYz3AH5tZxfkH
+         azwSa7GLW1PG+j7FMDHa8hqKjdhqQ3KS5gRCUeWrBMG3bT5EnnW7axN1ji7fHbQMoyhx
+         isdM3RN/rVOYZUFP7k3b5XtqmGQhvi/iUOpVb4T3oc8EuUedckBKGg36RzKRnzs8wrFw
+         G40zavpHWEpOUXgx1fOleWwY37PiPxSAEbyXSxREWAx/qpO3UzObhT9xYSTpfTuWtEMT
+         IzhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711678502; x=1712283302;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2TJM3k1xxwLHj7rZQzcbRutzHAX/f/s1ZJB+wGTa34s=;
+        b=Vc7y50ufRvyAgkUIxyjp5DfjyIbUOu2kkhnfYtrd89SldxxOns5FQp/MZoRcefe3yW
+         45jbHjjB7WyGbgqPpc+TlCgn10BsGkwZJq3qSDNOtjrJ/0QYBnYyNn+cl5IV+KbDkL6j
+         f6S+j6eGi7Yj5UGR736RZcXc8MVcfODplM0qtDe0L74F7ByTsbwjq0SKwe0vZwB1XeVI
+         04GtaNeucGCJL4ZqakJXdcWKWNv4KKDge9V0Q/O9Nzht+cAQ+X2G00FgM2fwQSRH0iOv
+         letfhd9uinyy4RumaVyTuiJK/D9v/2suFV5uNQOncz7S2d1keBPpJzMV+HK/oayoESZS
+         25mg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhwOH05peBTlMnZTjnNGplzY01W2vDCmacMG2nKrsVNnBvlOW8ROyyqREYZ6pyHbTCGwLbN3gyrzUetW+F3U+fjbzqs88HFjI98r3B
+X-Gm-Message-State: AOJu0Yzf31BqdtEgZJiLSGvH2WhRCC1QHBeZtnSbiG2Hb1hCbUbRytwR
+	qqPmBJXUt4TygP/oGgoQCONRQ/oT7mGzL8GQRduE9p1cxE4hczCk0N7S6wtrsTbzlCCje/m0gw8
+	F78iKXKCvgt3S1uWSP0hmusnK7Ojf6n9JUSQV
+X-Google-Smtp-Source: AGHT+IFYfxEWp+QyYGIk6nirCzOHn5X1uxYWPnwfEZhRsfFbRfxGp0cuGuu1gkljjnat4Sd1Au0hxbaFMcNA7zKHm2w=
+X-Received: by 2002:a05:6512:15a6:b0:515:d1bf:2473 with SMTP id
+ bp38-20020a05651215a600b00515d1bf2473mr47876lfb.25.1711678501958; Thu, 28 Mar
+ 2024 19:15:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240325235018.2028408-1-yosryahmed@google.com>
+ <20240325235018.2028408-6-yosryahmed@google.com> <20240328191109.GE7597@cmpxchg.org>
+ <CAJD7tka4iKD0=MOkj7iBCXvG6Jmq6WQgvRNV3mY+YRWPnYWmAg@mail.gmail.com>
+In-Reply-To: <CAJD7tka4iKD0=MOkj7iBCXvG6Jmq6WQgvRNV3mY+YRWPnYWmAg@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 28 Mar 2024 19:14:25 -0700
+Message-ID: <CAJD7tkYo90ynKfBcWyMZLu7r-GJj3egnnJyGiJ5T2SN-Tn3d9A@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/9] mm: zswap: remove zswap_same_filled_pages_enabled
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	"Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 27 Mar 2024 19:43:29 +0800 Jijie Shao wrote:
-> +	}, {
-> +		.reg_name = "MIB_TX/RX_BAD_PKTS",
-> +		.reg_offset_group = {19, 18, 29, 28},
-> +		.group_size = 4
-> +	}, {
-> +		.reg_name = "MIB_TX/RX_GOOD_PKTS",
-> +		.reg_offset_group = {21, 20, 31, 30},
-> +		.group_size = 4
-> +	}, {
-> +		.reg_name = "MIB_TX/RX_TOTAL_PKTS",
-> +		.reg_offset_group = {23, 22, 33, 32},
-> +		.group_size = 4
-> +	}, {
-> +		.reg_name = "MIB_TX/RX_PAUSE_PKTS",
-> +		.reg_offset_group = {25, 24, 35, 34},
-> +		.group_size = 4
-> +	}, {
-> +		.reg_name = "MIB_TX_ERR_ALL_PKTS",
-> +		.reg_offset_group = {27, 26},
-> +		.group_size = 2
-> +	}, {
-> +		.reg_name = "MIB_RX_FCS_ERR_PKTS",
-> +		.reg_offset_group = {37, 36},
-> +		.group_size = 2
+On Thu, Mar 28, 2024 at 1:06=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Thu, Mar 28, 2024 at 12:11=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.=
+org> wrote:
+> >
+> > On Mon, Mar 25, 2024 at 11:50:13PM +0000, Yosry Ahmed wrote:
+> > > There is no logical reason to refuse storing same-filled pages more
+> > > efficiently and opt for compression. Remove the userspace knob.
+> > >
+> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> >
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >
+> > I also think the non_same_filled_pages_enabled option should go
+> > away. Both of these tunables are pretty bizarre.
+>
+> Happy to remove both in the next version :)
 
-These seem to be duplicating standard stats from rtnl_link_stats64,
-ethtool_pause_stats, ethtool_eth_mac_stats, etc.
+I thought non_same_filled_pages_enabled was introduced with the
+initial support for same-filled pages, but it was introduced
+separately (and much more recently):
+https://lore.kernel.org/all/7dbafa963e8bab43608189abbe2067f4b9287831.164124=
+7624.git.maciej.szmigiero@oracle.com/
 
-You can add device specific stats, but please don't duplicate 
-stats for which we have standard APIs.
+I am CCing Maciej to hear more about the use case for this.
+
+>
+> Thanks!
 
