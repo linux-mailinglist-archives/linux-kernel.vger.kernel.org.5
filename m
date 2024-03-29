@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-125306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B47A8923CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:01:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 788E58925A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94771C2237B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:01:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BAB51F22F28
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE3685644;
-	Fri, 29 Mar 2024 19:01:02 +0000 (UTC)
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D285B137774;
+	Fri, 29 Mar 2024 20:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QSFW2LEc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 854C44F8B1
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3F33BB2A;
+	Fri, 29 Mar 2024 20:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711738862; cv=none; b=IYVPBxu5CjbceiVdsJXIESXNUXN+YRFpXN8KkjHeAgzG0kYqApTcJGPsdWFKYpiMOUSqSm9ZlV/Xh5Ea30eEe7mZPUM2By1HbMnPmHZPnFP22yo98tIuMOSP8HUCeYCJ0uhVPgqTuvKAKBXXcKJ6odX/wBypSpnF3icihcmUFTI=
+	t=1711745713; cv=none; b=ueyVO/zKHylSjrHyEkfJT6lzO1eUfbO9B67TAmx8s61iserNNN3CSVn4tgMbvqB6zrI3iEslvuYlG5dwQR9fRGHSqw/I2V4cYJnlQkR0TZcKB4TR1Xj/gA/uCMOjqG1jVv+Qf+6alSYgcBB2Ofy/TAyI8EkoHUyy892gntqdqjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711738862; c=relaxed/simple;
-	bh=GsKkA//w/F6p1DceLlnK3us287Q2nZOD7ADya93kfKs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kcdxYEcqKFBvrs/7v3+Jk2KAFJdFJVIXOCju2wvKOTcggfcD20azHkHP+o6i2oy/8kVts/SXnz842+T+mEhc2pmL5CwJeQFUotDydJNo+yzMbaOL6J/bNaVMjQpj4EWDMQyE2IDBBYC1yrnpY4SUMoWma8MB4/Pb8hbjLk3PSaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
-	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-	id a7c36e9b-edfe-11ee-b3cf-005056bd6ce9;
-	Fri, 29 Mar 2024 21:00:49 +0200 (EET)
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 29 Mar 2024 21:00:48 +0200
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <ZgcP4IkTQGks9ehH@surfacebook.localdomain>
-References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
- <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
+	s=arc-20240116; t=1711745713; c=relaxed/simple;
+	bh=HKGXLL/mwNCR0ODx3vz+BYkjPcnHX2BMF5VH4Qq1tTM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fW7ZEqUfyMFJKbbwbE4/d9xSgV22o6dgYAV/Z2cHctaucjFdZ0LbjyiK+/W3YFFW2DJvxlvSzdjTMDMN/fONe0ya5Siiew8HDSPvE5zQ9pkJP8Cr01j1nTTHo1GXqFGpivIWg0nfnA6QNiHwWFrOQtfedWZQLAvwrda3Mreu8OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QSFW2LEc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FB9C433F1;
+	Fri, 29 Mar 2024 20:55:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711745712;
+	bh=HKGXLL/mwNCR0ODx3vz+BYkjPcnHX2BMF5VH4Qq1tTM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=QSFW2LEc5bfOs10Uto6lO+gYK2r3QFqfbELW8CSNpGb26fmyQkQtf9eIpIY2Liqas
+	 IVBmqF1QDTBYTKHPznPSoJV78SY1s3Uvr2PkdZYchg3Hs4roV3xUiFZ8d4b1Qkbq2M
+	 UEFQx0b3Jz43UOLn1BuWg2zqyeA6tQdhSHkGxHcMs+URfdLSOJSSHbfdcvP+5d+2Fw
+	 xGbt4m7nIzjLNyGAt1cclf4FqxyQCSSV7DIFa9gqdWKR5CVnXvjwxy+TCcHP/dnJTH
+	 KzRIcAkXFQTnj4oSWTdSCg4qEJBo4Z/lqkoVYSEcoqDNLdYsLbrr/tLi0JqAqruVIh
+	 An+deYpGU2dyA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B5A5CCE16F0; Fri, 29 Mar 2024 11:48:37 -0700 (PDT)
+Date: Fri, 29 Mar 2024 11:48:37 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [paulmck-rcu:dev.2024.03.27b 64/69]
+ arch/xtensa/include/asm/cmpxchg.h:77:25: error: implicit declaration of
+ function 'cmpxchg_emu_u8'
+Message-ID: <0303151f-c12e-4350-804a-11e3b734df91@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202403292321.T55etywH-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,368 +60,93 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
+In-Reply-To: <202403292321.T55etywH-lkp@intel.com>
 
-Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) kirjoitti:
-> From: Peng Fan <peng.fan@nxp.com>
+On Fri, Mar 29, 2024 at 11:08:04PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.03.27b
+> head:   786fab3085d764055a78edb54023420920344333
+> commit: b3b1a154281fc97efc4c1d5818a83c29c228dbd5 [64/69] xtensa: Emulate one-byte and two-byte cmpxchg
+> config: xtensa-allnoconfig (https://download.01.org/0day-ci/archive/20240329/202403292321.T55etywH-lkp@intel.com/config)
+> compiler: xtensa-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403292321.T55etywH-lkp@intel.com/reproduce)
 > 
-> Add basic implementation of the SCMI v3.2 pincontrol protocol.
-
-..
-
->  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
->  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
->  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o powercap.o
-
-Actually you want to have := here.
-
-> +scmi-protocols-y += pinctrl.o
-
-
-
->  scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
-
-Side note: The -objs has to be -y
-
-..
-
-> +#include <linux/module.h>
-> +#include <linux/scmi_protocol.h>
-> +#include <linux/slab.h>
-
-This is semi-random list of headers. Please, follow IWYU principle
-(include what you use). There are a lot of inclusions I see missing
-(just in the context of this page I see bits.h, types.h, and
- asm/byteorder.h).
-
-..
-
-> +enum scmi_pinctrl_protocol_cmd {
-> +	PINCTRL_ATTRIBUTES = 0x3,
-> +	PINCTRL_LIST_ASSOCIATIONS = 0x4,
-> +	PINCTRL_SETTINGS_GET = 0x5,
-> +	PINCTRL_SETTINGS_CONFIGURE = 0x6,
-> +	PINCTRL_REQUEST = 0x7,
-> +	PINCTRL_RELEASE = 0x8,
-> +	PINCTRL_NAME_GET = 0x9,
-> +	PINCTRL_SET_PERMISSIONS = 0xa
-
-Leave trailing comma as it's not a termination.
-
-> +};
-
-..
-
-> +static int scmi_pinctrl_attributes_get(const struct scmi_protocol_handle *ph,
-> +				       struct scmi_pinctrl_info *pi)
-> +{
-> +	int ret;
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_pinctrl_protocol_attributes *attr;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, PROTOCOL_ATTRIBUTES, 0, sizeof(*attr),
-> +				      &t);
-
-This looks much better on a single line.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	attr = t->rx.buf;
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret) {
-> +		pi->nr_functions = GET_FUNCTIONS_NR(attr->attributes_high);
-> +		pi->nr_groups = GET_GROUPS_NR(attr->attributes_low);
-> +		pi->nr_pins = GET_PINS_NR(attr->attributes_low);
-> +	}
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +	return ret;
-> +}
-
-..
-
-> +	ret = ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES, sizeof(*tx),
-> +				      sizeof(*rx), &t);
-
-Possible to have on a single line (if you use relaxed 100 limit).
-Or (re)split it more logically:
-
-	ret = ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES,
-				      sizeof(*tx), sizeof(*rx), &t);
-
-> +	if (ret)
-> +		return ret;
-
-..
-
-> +	/*
-> +	 * If supported overwrite short name with the extended one;
-> +	 * on error just carry on and use already provided short name.
-> +	 */
-> +	if (!ret && ext_name_flag)
-
-Please, use standard pattern, i.e.
-
-	if (ret)
-		return ret;
-
-> +		ph->hops->extended_name_get(ph, PINCTRL_NAME_GET, selector,
-> +					    (u32 *)&type, name,
-
-Why is an explicit casting needed?
-
-> +					    SCMI_MAX_STR_SIZE);
-> +	return ret;
-
-..
-
-> +	iter = ph->hops->iter_response_init(ph, &ops, size,
-> +					    PINCTRL_LIST_ASSOCIATIONS,
-> +					    sizeof(struct scmi_msg_pinctrl_list_assoc),
-> +					    &ipriv);
-
-> +
-
-Redundant blank line.
-
-> +	if (IS_ERR(iter))
-> +		return PTR_ERR(iter);
-
-..
-
-> +	if (p->flag == 1)
-> +		attributes |= FIELD_PREP(SKIP_CONFIGS_MASK, desc_index);
-> +	else if (!p->flag)
-
-Be consistent, i.e. if (p->flag == 0)
-
-> +		attributes |= FIELD_PREP(CONFIG_TYPE_MASK, p->config_types[0]);
-
-..
-
-> +		st->num_remaining = le32_get_bits(r->num_configs,
-> +						  GENMASK(31, 24));
-
-One line?
-
-..
-
-> +	if (!p->flag) {
-> +		if (p->config_types[0] !=
-> +		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
-> +			return -EINVAL;
-> +	} else if (p->flag == 1) {
-> +		p->config_types[st->desc_index + st->loop_idx] =
-> +			le32_get_bits(r->configs[st->loop_idx * 2],
-> +				      GENMASK(7, 0));
-
-With a temporary variable for r->configs[st->loop_idx * 2] the above can be
-written in much better way.
-
-> +	} else if (p->flag == 2) {
-> +		return 0;
-> +	}
-
-> +	p->config_values[st->desc_index + st->loop_idx] =
-> +		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
-
-For the sake of consistency with the above suggestion also temporary for next
-config value.
-
-..
-
-> +	iter = ph->hops->iter_response_init(ph, &ops, 1, PINCTRL_SETTINGS_GET,
-> +					    sizeof(struct scmi_msg_settings_get),
-> +					    &ipriv);
-
-> +
-
-Redundant blank line.
-
-> +	if (IS_ERR(iter))
-> +		return PTR_ERR(iter);
-
-..
-
-> +static int scmi_pinctrl_get_group_info(const struct scmi_protocol_handle *ph,
-> +				       u32 selector,
-> +				       struct scmi_group_info *group)
-> +{
-> +	int ret;
-
-> +	if (!group)
-> +		return -EINVAL;
-
-When the above is not a dead code?
-
-> +	ret = scmi_pinctrl_attributes(ph, GROUP_TYPE, selector,
-> +				      group->name,
-> +				      &group->nr_pins);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!group->nr_pins) {
-> +		dev_err(ph->dev, "Group %d has 0 elements", selector);
-> +		return -ENODATA;
-> +	}
-> +
-> +	group->group_pins = kmalloc_array(group->nr_pins,
-> +					  sizeof(*group->group_pins),
-> +					  GFP_KERNEL);
-> +	if (!group->group_pins)
-> +		return -ENOMEM;
-> +
-> +	ret = scmi_pinctrl_list_associations(ph, selector, GROUP_TYPE,
-> +					     group->nr_pins, group->group_pins);
-> +	if (ret) {
-> +		kfree(group->group_pins);
-> +		return ret;
-> +	}
-> +
-> +	group->present = true;
-> +	return 0;
-> +}
-
-..
-
-> +		ret = scmi_pinctrl_get_group_info(ph, selector,
-> +						  &pi->groups[selector]);
-
-One line?
-
-> +		if (ret)
-> +			return ret;
-
-..
-
-> +	ret = scmi_pinctrl_attributes(ph, FUNCTION_TYPE, selector,
-> +				      func->name,
-> +				      &func->nr_groups);
-
-At least last two lines can be joined.
-
-> +	if (ret)
-> +		return ret;
-
-..
-
-> +	ret = scmi_pinctrl_attributes(ph, PIN_TYPE, selector,
-> +				      pin->name, NULL);
-
-It's pleany of room on the previous line.
-
-> +	if (ret)
-> +		return ret;
-
-..
-
-> +		ret = scmi_pinctrl_get_pin_info(ph, selector,
-> +						&pi->pins[selector]);
-
-Ditto.
-
-> +		if (ret)
-> +			return ret;
-
-..
-
-> +static int scmi_pinctrl_protocol_init(const struct scmi_protocol_handle *ph)
-> +{
-> +	int ret;
-> +	u32 version;
-> +	struct scmi_pinctrl_info *pinfo;
-> +
-> +	ret = ph->xops->version_get(ph, &version);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(ph->dev, "Pinctrl Version %d.%d\n",
-> +		PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
-> +
-> +	pinfo = devm_kzalloc(ph->dev, sizeof(*pinfo), GFP_KERNEL);
-
-Huh?!
-
-Please, get yourself familiar with the scope of devm APIs.
-
-> +	if (!pinfo)
-> +		return -ENOMEM;
-> +
-> +	ret = scmi_pinctrl_attributes_get(ph, pinfo);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pinfo->pins = devm_kcalloc(ph->dev, pinfo->nr_pins,
-> +				   sizeof(*pinfo->pins),
-> +				   GFP_KERNEL);
-> +	if (!pinfo->pins)
-> +		return -ENOMEM;
-> +
-> +	pinfo->groups = devm_kcalloc(ph->dev, pinfo->nr_groups,
-> +				     sizeof(*pinfo->groups),
-> +				     GFP_KERNEL);
-> +	if (!pinfo->groups)
-> +		return -ENOMEM;
-> +
-> +	pinfo->functions = devm_kcalloc(ph->dev, pinfo->nr_functions,
-> +					sizeof(*pinfo->functions),
-> +					GFP_KERNEL);
-> +	if (!pinfo->functions)
-> +		return -ENOMEM;
-> +
-> +	pinfo->version = version;
-> +
-> +	return ph->set_priv(ph, pinfo, version);
-> +}
-> +
-> +static int scmi_pinctrl_protocol_deinit(const struct scmi_protocol_handle *ph)
-> +{
-> +	int i;
-> +	struct scmi_pinctrl_info *pi = ph->get_priv(ph);
-> +
-> +	for (i = 0; i < pi->nr_groups; i++) {
-> +		if (pi->groups[i].present) {
-> +			kfree(pi->groups[i].group_pins);
-> +			pi->groups[i].present = false;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < pi->nr_functions; i++) {
-> +		if (pi->functions[i].present) {
-> +			kfree(pi->functions[i].groups);
-
-This is wrong in conjunction with the above.
-
-> +			pi->functions[i].present = false;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-
-..
-
-> +static const struct scmi_protocol scmi_pinctrl = {
-> +	.id = SCMI_PROTOCOL_PINCTRL,
-> +	.owner = THIS_MODULE,
-> +	.instance_init = &scmi_pinctrl_protocol_init,
-> +	.instance_deinit = &scmi_pinctrl_protocol_deinit,
-> +	.ops = &pinctrl_proto_ops,
-> +	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
-> +};
-
-> +
-
-Redundant blank line.
-
-> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(pinctrl, scmi_pinctrl)
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403292321.T55etywH-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from arch/xtensa/include/asm/atomic.h:19,
+>                     from include/linux/atomic.h:7,
+>                     from include/asm-generic/bitops/atomic.h:5,
+>                     from arch/xtensa/include/asm/bitops.h:192,
+>                     from include/linux/bitops.h:68,
+>                     from include/linux/log2.h:12,
+>                     from kernel/bounds.c:13:
+>    arch/xtensa/include/asm/cmpxchg.h: In function '__cmpxchg':
+> >> arch/xtensa/include/asm/cmpxchg.h:77:25: error: implicit declaration of function 'cmpxchg_emu_u8' [-Werror=implicit-function-declaration]
+>       77 |         case 1:  return cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
+>          |                         ^~~~~~~~~~~~~~
+
+Good catch!  Does the diff at the end fix this?
+
+							Thanx, Paul
+
+> >> arch/xtensa/include/asm/cmpxchg.h:78:25: error: implicit declaration of function 'cmpxchg_emu_u16' [-Werror=implicit-function-declaration]
+>       78 |         case 2:  return cmpxchg_emu_u16((volatile u16 *)ptr, old, new);
+>          |                         ^~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
+>    make[3]: *** [scripts/Makefile.build:117: kernel/bounds.s] Error 1
+>    make[3]: Target 'prepare' not remade because of errors.
+>    make[2]: *** [Makefile:1197: prepare0] Error 2
+>    make[2]: Target 'prepare' not remade because of errors.
+>    make[1]: *** [Makefile:240: __sub-make] Error 2
+>    make[1]: Target 'prepare' not remade because of errors.
+>    make: *** [Makefile:240: __sub-make] Error 2
+>    make: Target 'prepare' not remade because of errors.
+> 
+> 
+> vim +/cmpxchg_emu_u8 +77 arch/xtensa/include/asm/cmpxchg.h
+> 
+>     72	
+>     73	static __inline__ unsigned long
+>     74	__cmpxchg(volatile void *ptr, unsigned long old, unsigned long new, int size)
+>     75	{
+>     76		switch (size) {
+>   > 77		case 1:  return cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
+>   > 78		case 2:  return cmpxchg_emu_u16((volatile u16 *)ptr, old, new);
+>     79		case 4:  return __cmpxchg_u32(ptr, old, new);
+>     80		default: __cmpxchg_called_with_bad_pointer();
+>     81			 return old;
+>     82		}
+>     83	}
+>     84	
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+
+commit 663161aaa5c3286dcfc9ba2cd9e12170f9354ea7
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Mar 29 11:47:13 2024 -0700
+
+    squash! xtensa: Emulate one-byte and two-byte cmpxchg
+    
+    [ paulmck: Apply kernel test robot feedback. ]
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/arch/xtensa/include/asm/cmpxchg.h b/arch/xtensa/include/asm/cmpxchg.h
+index bcce915a98e21..a0f9a2070209b 100644
+--- a/arch/xtensa/include/asm/cmpxchg.h
++++ b/arch/xtensa/include/asm/cmpxchg.h
+@@ -15,6 +15,7 @@
+ 
+ #include <linux/bits.h>
+ #include <linux/stringify.h>
++#include <linux/cmpxchg-emu.h>
+ 
+ /*
+  * cmpxchg
 
