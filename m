@@ -1,138 +1,122 @@
-Return-Path: <linux-kernel+bounces-124156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF1889132D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:29:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A96891332
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A0E51C22EA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:29:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D73EF1F22110
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDD23C467;
-	Fri, 29 Mar 2024 05:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A210B3C08E;
+	Fri, 29 Mar 2024 05:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="luWyhTZd"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="e0JUcaSR"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5E18494;
-	Fri, 29 Mar 2024 05:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695B53BBE8;
+	Fri, 29 Mar 2024 05:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711690180; cv=none; b=W01mAHahEKMIpYW+5QcKhBm876bkV/2PhoiSYAh9RXfwLRMWmRtmNt7HFgj5ikoMnB0805Un+BWrdYMGxTZoMcp3q7INP0LcCcQovzGX9MhLNsQ6u9oUbrDMHbYV8acqVXD7Q1Fc3YcEZrjPjt2mRgyDontooltIUOJDNLwHZYk=
+	t=1711690330; cv=none; b=BvoO7qGasAz/n+n40KNWCnfxtcRKlfQ8F9uOVKalahXMbx8LJNFh9kj16asJcZuSQwoqwx6QUwW0WPqanZEjcDBe65f8lZFjW29Syo/ocVQA5/3MLDLkn4jlb/ufHuskOrp6BfdfozmLLFX4ABVcObHFsM1ra7fh+sE/cKAaq5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711690180; c=relaxed/simple;
-	bh=ZOl/Bo99tToaWRhqhSoUQflRSQemaKlEpXFd9o9Gttk=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=PxUuaPOcTIj9QQedzwBnCayX3xC07fzxOegOe7FX8qExgck7x2D/QSA7NjCspJ/V+nQCfLecuFYvU4DVnDdyoqIQBsFvJcu64AB3X3NuoJZausKAKOvp7KaMEeMIQne66ZYlnt7oj3Yh+E0HWOpbG/OIqPSFB7+csQH/ry/g9Wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=luWyhTZd; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so1378328b3a.2;
-        Thu, 28 Mar 2024 22:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711690178; x=1712294978; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k18c6xmm/eyPrEWQ3tkt+ZDWH10CDlh6h0RH3Bi3qC0=;
-        b=luWyhTZdloMMQc1OKGWhj73srxsVfkFGXqkmAaACjAXsLbDZUVN9HhCY1WekUnxdW9
-         /Qv2gNj4UAJpN7XoC7LqT4d/ihwyrjAFIbMvzSzwxMc1kVdXArjygNqg+DPdIl8f+WC5
-         ohxe/as9BS6DnkF4tJFpgqekZpgivQtSej5BMBeqiLoVG58zWUzB25r436Q6K59bG8FL
-         GDWF58cOzf2cgKQ9ZHWj0TAe1yd5AX/BJebjD75X7tPhJOFUZr/G7rOFBdK+2flFuxkN
-         GIoRbqjB4hoNHPs7D9UKWqqtU9nlUOh9xeTk91+/bRqyL4w5gcfuK78KMHogo46TQlnK
-         +7iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711690178; x=1712294978;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=k18c6xmm/eyPrEWQ3tkt+ZDWH10CDlh6h0RH3Bi3qC0=;
-        b=EnQsA1t6rxj67hUKuaAm8kbx8n4lWUSaS9QibY+yh7RROwl4/d7qSfe7dhQeljSS6+
-         /4HxN99aBtJn1Lr1NjFL35h4x8OXYDkW4eBBIn4TXGb2j9mttWYGhpW8kgKt3UcQD3LZ
-         h1BVi1Y340IqnFhEGOUWswOoNIx1vaJg8McFuJxgWx91hkJEWV88UmPveRK/Rwh6u13B
-         zBegLvJnDblwtmh6bH4+ejgLORYRe9bZyRFkhXf7B+9p7W3fO8nGQPtcGmpmG8c8yHdG
-         6nNvWDach/EoRjo+qS40MfCrCjqVUfIaCvPd4FR3PW1pGy+dqp9f8NzMzF2g6nuJPnRT
-         mMkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnTJuWcqDMJYkiVM+muIxrLvxRko/vOKry+Ks0f8I19HefSWkme0O/raAnZZkNKtGZZxC4nZ2qfpv1yRbcjUhLVQRAmu21vy1WR4Na51p/rSu3ewfhMHTkpULNoqDKSnZ7zOU0utwHdA2/d4rRvTfYin+uROztQDYS
-X-Gm-Message-State: AOJu0Yzqisr0qPAlKgE7/4dbQNS5T+6BWgiF1M9lwZiIPSCe4nCpT5en
-	vWCG+w5Vr5aHWQhMLhOTC7YVfnJh3GEzeUzB2dxvcwv2n+i78q/J
-X-Google-Smtp-Source: AGHT+IGF0zcDXBCDqaaqa/Kc9ue+cRHKReQB2M9kPl0XrXRl7s+yKAQU7+YMrGsaWmIr628uT6J05g==
-X-Received: by 2002:a05:6a21:398b:b0:1a3:e168:4deb with SMTP id ad11-20020a056a21398b00b001a3e1684debmr1460271pzc.32.1711690177987;
-        Thu, 28 Mar 2024 22:29:37 -0700 (PDT)
-Received: from localhost ([98.97.36.54])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170902e5ca00b001e042dc5202sm2603318plf.80.2024.03.28.22.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 22:29:37 -0700 (PDT)
-Date: Thu, 28 Mar 2024 22:29:36 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>, 
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
- Edward Adam Davis <eadavis@qq.com>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com, 
- 42.hyeyoo@gmail.com, 
- andrii@kernel.org, 
- ast@kernel.org, 
- bpf@vger.kernel.org, 
- daniel@iogearbox.net, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kafai@fb.com, 
- kpsingh@kernel.org, 
- kuba@kernel.org, 
- linux-kernel@vger.kernel.org, 
- namhyung@kernel.org, 
- netdev@vger.kernel.org, 
- pabeni@redhat.com, 
- peterz@infradead.org, 
- songliubraving@fb.com, 
- syzkaller-bugs@googlegroups.com, 
- yhs@fb.com
-Message-ID: <660651c0707f5_22b5520880@john.notmuch>
-In-Reply-To: <87ttkuber7.fsf@cloudflare.com>
-References: <000000000000dc9aca0613ec855c@google.com>
- <tencent_F436364A347489774B677A3D13367E968E09@qq.com>
- <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
- <87y1a6biie.fsf@cloudflare.com>
- <87ttkuber7.fsf@cloudflare.com>
-Subject: Re: [PATCH] bpf, sockmap: fix deadlock in rcu_report_exp_cpu_mult
+	s=arc-20240116; t=1711690330; c=relaxed/simple;
+	bh=UgAzys+A3Ct9KXhz17x1cUouk22XzMXeBwW0gKTCSVg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PMBtPJSQWck8ajjQCn/Ocp/ArZ1awLlw9FUtXt7HMKQ+mfCR12gf3mC1YvPF56sR4j0/W75P/oWPTWj8dHxBZcSXC8dk2F1kDAD18Z4lxaaAN+3T/IZMNcvs/8kE+QngdJYC/NtTqi/OWR/mAFQxxaeG0ZT+XcGpZQDREOojbxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=e0JUcaSR; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42T5VueI026879;
+	Fri, 29 Mar 2024 00:31:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711690316;
+	bh=5lksTCQRb+IpwWrjwgj+d/p3OjVbx/lb5zxF1JmKpyk=;
+	h=From:To:CC:Subject:Date;
+	b=e0JUcaSR8Cb7F2KhZVnyTpxOFfcq2c932h74cPCliQ/9uDy6xdTIiB+ayNnO6JuCI
+	 JRx5o8uNAEBL2cmbm1RlzVcYq66nYHITeNqYhDvLYRekiAw5gHHHQ4K5UEKpFRCGZu
+	 k2UFcb9XPAIx9WjiYTdLMuBZegFneEsW3h2bLw98=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42T5VuBj082193
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 29 Mar 2024 00:31:56 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 29
+ Mar 2024 00:31:55 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 29 Mar 2024 00:31:55 -0500
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42T5Vsf0028006;
+	Fri, 29 Mar 2024 00:31:55 -0500
+From: Chintan Vankar <c-vankar@ti.com>
+To: Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <s-vadapalli@ti.com>,
+        Chintan Vankar
+	<c-vankar@ti.com>
+Subject: [PATCH v6 0/5] Add CPSW2G and CPSW9G nodes for J784S4
+Date: Fri, 29 Mar 2024 11:01:25 +0530
+Message-ID: <20240329053130.2822129-1-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Jakub Sitnicki wrote:
-> On Mon, Mar 25, 2024 at 01:23 PM +01, Jakub Sitnicki wrote:
-> 
-> [...]
-> 
-> > But we also need to cover sock_map_unref->sock_sock_map_del_link called
-> > from sock_hash_delete_elem. It also grabs a spin lock.
-> 
-> On second look, no need to disable interrupts in
-> sock_map_unref->sock_sock_map_del_link. Call is enclosed in the critical
-> section in sock_hash_delete_elem that has been updated.
-> 
-> I have a question, though, why are we patching sock_hash_free? It
-> doesn't get called unless there are no more existing users of the BPF
-> map. So nothing can mutate it from interrupt context.
-> 
-> [...]
+This series adds device-tree nodes for CPSW2G and CPSW9G instance
+of the CPSW Ethernet Switch on TI's J784S4 SoC. Additionally,
+two device-tree overlays are also added:
+1. QSGMII mode with the CPSW9G instance via the ENET EXPANSION 1
+   connector.
+2. USXGMII mode with MAC Ports 1 and 2 of the CPSW9G instance via
+   ENET EXPANSION 1 and 2 connectors, configured in fixed-link
+   mode of operation at 5Gbps link speed.
 
-Agree sock_hash_free should be only after all refs are dropped.
+Link to v5:
+https://lore.kernel.org/r/20240314072129.1520475-1-c-vankar@ti.com/
 
-Edward, did you want to send a v2 for this? Also if you want fixing the
-sockmap case as well would be useful. Also happy to finish up the patches
-if you would rather not.
+Changes from v5 to v6:
+- Updated order of properties in Device Nodes based on
+  https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
 
-Thanks,
-John
+Chintan Vankar (1):
+  arm64: dts: ti: k3-j784s4-evm: Add alias for MCU CPSW2G
+
+Siddharth Vadapalli (4):
+  arm64: dts: ti: k3-j784s4-main: Add CPSW2G and CPSW9G nodes
+  arm64: dts: ti: k3-j784s4-evm: Enable Main CPSW2G node and add aliases
+    for it
+  arm64: dts: ti: k3-j784s4: Add overlay to enable QSGMII mode with
+    CPSW9G
+  arm64: dts: ti: k3-j784s4: Add overlay for dual port USXGMII mode
+
+ arch/arm64/boot/dts/ti/Makefile               |  11 +-
+ .../ti/k3-j784s4-evm-quad-port-eth-exp1.dtso  | 147 ++++++++++++++
+ .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   |  81 ++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      |  51 +++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 187 ++++++++++++++++++
+ 5 files changed, 476 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
+
+-- 
+2.34.1
+
 
