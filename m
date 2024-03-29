@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-124992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778E0891E93
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:46:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46AC7891E96
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BFBD1F25E94
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:46:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718F21C21D84
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9390C1B11EA;
-	Fri, 29 Mar 2024 12:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C342F1B1986;
+	Fri, 29 Mar 2024 12:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CO1bvjME"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dn1lXu6q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEA81B11D6;
-	Fri, 29 Mar 2024 12:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B16C1B1971;
+	Fri, 29 Mar 2024 12:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716580; cv=none; b=boCQU3v/8E3J66MEUdbt5t6pq59PLTk+ipifpX6eaGDmIhhIa9hg9nMxt48PKccD3zsVtbLe2XiteDqr7gd1h6t+GyFLGVSjMMAnt9nxMHJp3O36imD9JBXI77iCMONeu+K40OlRCt+OtqNbxKgtRsUIIVFhoq60X92i4f6ot1Q=
+	t=1711716584; cv=none; b=nPLQha7kOajHTyrZqeR3q03PJeV0E1E6+v5uznirMVjo5sehVoNP1Aebzz8hkZY4RIdkcslbFr1L+YWjSqGSWQEwzi2sqS5FpC8zdG1KAu9QFLx8K47MRWdIcqgthoZ3T8v5oaUCO80tCdGRBs59lmwBg+WtlAM0lvTkCXV2Ei4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716580; c=relaxed/simple;
-	bh=8THCduGIwQ+m+/W/iGE67JZa5hZtwWMwPxdC8E75i6g=;
+	s=arc-20240116; t=1711716584; c=relaxed/simple;
+	bh=Wbr3WrvcU27mxVlXxKr9LiCbLXTK6CwiODDSojafyfM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lUSDrLuCc7HKKej+i0XsSx0zt3YJZQUOoCtZ99qowjqY4qqY4MAQwQdQtqA2n+idDjDDJZ0Tskfu/N5EtWldkgDfA6CYLpAasIZq2gdVulEP8RsW4B39C+YNO/gkmRA9X/FFA8lnyoKdbtZSzY3a+hkU1ezJEIwfXoko0fJadM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CO1bvjME; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F687C433F1;
-	Fri, 29 Mar 2024 12:49:39 +0000 (UTC)
+	 MIME-Version; b=sKsbC/tj1k/M4UQMv6ZUWFHZdyq+qz59TXtkmvX5eRaqbAZ76/jB/Oqd3gk78I+Dsa/Zg6lOr/X07Rdur0G3xafn6WanfIvjdEwG0VbUfuLYu8v+iiY7D6YcPiRVPeM/Fc62G3mUUjY8hyqhM04kVeweRjg6X/Hr4y46siY3LD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dn1lXu6q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09FFDC433A6;
+	Fri, 29 Mar 2024 12:49:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716580;
-	bh=8THCduGIwQ+m+/W/iGE67JZa5hZtwWMwPxdC8E75i6g=;
+	s=k20201202; t=1711716583;
+	bh=Wbr3WrvcU27mxVlXxKr9LiCbLXTK6CwiODDSojafyfM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CO1bvjMENGLmnTxWEbFEwylffggAseotY3xKqs62KgXgP2PuMWPdTYJ9Ig5uCe+bQ
-	 uAS8XcJFeffPIkczHU5sWvs5Fj49c42xhfI3qg4EHimTUsCYhvejw4x1/S1KK/p74X
-	 V4mv5BCcR9dT+g0g8FM4ztdFWIHY7i+amLaPedYjlZCWIPrjB7saXTxDJcI/lM795R
-	 76M8wQKg91uN3ckczgwVa/PVZlUB3QKFiWJahi7W2pGYb9HHZvNiB4KqOj+yvaqy9w
-	 AEk/BTGh5P5sab9HCGC41xjAHalxxAbCps/O77FVGKxlcsWjWHgjM71OzNOCBbmw4Y
-	 iu3t6L2YoLKgg==
+	b=Dn1lXu6qus+iRJEUNadNe5WiSKkqKvp3lDi9FaFkNOCYOAFPEOf5Oura4NysWeqHp
+	 ImwTDb+y5xdm1Pr3wgJOmnoig11zF/IqauNSOIduXtpG6w5lRxif2R8sA5vRbhWeUo
+	 7LmawgrW/wrZYdkx8Y6+0TGkE8IpsHbBatdUOrx+bjfb0TJWDJyLNYxM677P5yZ8UN
+	 KP9OcWZnJ5GY/joxuarhGdjh/rLEqcZjmEq96EHgoIPxoP1kwJZxlBfYQacBD7k2HZ
+	 cQDI92u0WL9pBSeiYQf3w1WJywa+UiYBxcfd4IX1HL5JPGMB3O2XhtBdPMnVs6f/Aj
+	 8SQ2BUoPDbn9g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edmund Raile <edmund.raile@proton.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
+Cc: David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Anand Jain <anand.jain@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 21/31] PCI: Mark LSI FW643 to avoid bus reset
-Date: Fri, 29 Mar 2024 08:48:38 -0400
-Message-ID: <20240329124903.3093161-21-sashal@kernel.org>
+	clm@fb.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 23/31] btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()
+Date: Fri, 29 Mar 2024 08:48:40 -0400
+Message-ID: <20240329124903.3093161-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124903.3093161-1-sashal@kernel.org>
 References: <20240329124903.3093161-1-sashal@kernel.org>
@@ -64,50 +66,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
-From: Edmund Raile <edmund.raile@proton.me>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 29a43dc130ce65d365a8ea9e1cc4bc51005a353e ]
+[ Upstream commit 7411055db5ce64f836aaffd422396af0075fdc99 ]
 
-Apparently the LSI / Agere FW643 can't recover after a Secondary Bus Reset
-and requires a power-off or suspend/resume and rescan.
+The unhandled case in btrfs_relocate_sys_chunks() loop is a corruption,
+as it could be caused only by two impossible conditions:
 
-VFIO resets a device before assigning it to a VM, and the FW643 doesn't
-support any other reset methods, so this problem prevented assignment of
-FW643 to VMs.
+- at first the search key is set up to look for a chunk tree item, with
+  offset -1, this is an inexact search and the key->offset will contain
+  the correct offset upon a successful search, a valid chunk tree item
+  cannot have an offset -1
 
-Prevent use of Secondary Bus Reset for this device.
+- after first successful search, the found_key corresponds to a chunk
+  item, the offset is decremented by 1 before the next loop, it's
+  impossible to find a chunk item there due to alignment and size
+  constraints
 
-With this change, the FW643 can be assigned to VMs with VFIO.  Note that it
-will not be reset, resulting in leaking state between VMs and host.
-
-Link: https://lore.kernel.org/r/20240227131401.17913-1-edmund.raile@proton.me
-Signed-off-by: Edmund Raile <edmund.raile@proton.me>
-[bhelgaas: commit log, comment]
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/btrfs/volumes.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index b67aea8d8f197..99d33902a6154 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3610,6 +3610,14 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
-  */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index eaf5cd043dace..634b73d734bc6 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3178,7 +3178,17 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
+ 			mutex_unlock(&fs_info->delete_unused_bgs_mutex);
+ 			goto error;
+ 		}
+-		BUG_ON(ret == 0); /* Corruption */
++		if (ret == 0) {
++			/*
++			 * On the first search we would find chunk tree with
++			 * offset -1, which is not possible. On subsequent
++			 * loops this would find an existing item on an invalid
++			 * offset (one less than the previous one, wrong
++			 * alignment and size).
++			 */
++			ret = -EUCLEAN;
++			goto error;
++		}
  
-+/*
-+ * Apparently the LSI / Agere FW643 can't recover after a Secondary Bus
-+ * Reset and requires a power-off or suspend/resume and rescan.  Prevent
-+ * use of that reset.
-+ */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5900, quirk_no_bus_reset);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5901, quirk_no_bus_reset);
-+
- /*
-  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
-  * automatically disables LTSSM when Secondary Bus Reset is received and
+ 		ret = btrfs_previous_item(chunk_root, path, key.objectid,
+ 					  key.type);
 -- 
 2.43.0
 
