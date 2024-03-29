@@ -1,188 +1,123 @@
-Return-Path: <linux-kernel+bounces-124042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D572289117C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:12:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C216891112
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 130571C2A018
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:12:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED2071F23E54
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4619722338;
-	Fri, 29 Mar 2024 02:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C86385950;
+	Fri, 29 Mar 2024 01:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IrgP+aEy"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cGvlUFtl"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7193D57E;
-	Fri, 29 Mar 2024 02:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB22A85635
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678191; cv=none; b=dlJjsBfqGJfENpZFS1XhJ7vVpcD8jTwdSPRcBnOPEqQJyCVOwcf79q73piUJRgc0jvzhMmKc9VJ1Z7WGxC4il155l4+XfNQ7O4XxlK1lSp2jVKMiXqNbDX6EVh1awHwhhnX5eYu+PJpZ+Gkzxzf/s3iSaJbSoPIT1rC/Z6BpxqI=
+	t=1711677304; cv=none; b=XZnSQw6Z+Awkpw64qSho8Xph3da9oMcKOOUTfvg4IGNud07okcvRc9FckG+8Xf+uuzhKINvFjNqGhuxodBr92TcdHWF9YdlQi8sxWz6A56Mz5XjGSI2XtCa+OdAfq2gelwyeAALaDb2Q9IQZojSB/sVMFI1b3bk/dUBSg1Uz700=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678191; c=relaxed/simple;
-	bh=Mx/wXePy7wvV0gXFJRhA1AqtZexWrUrVnUZ2TwoL11I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hGdg7Pv+AYQZ8WlgFhdxhOSz6KCJwkXGowL6BlVTUJM8+o0aBpbBtJFM4UuAMWzLKFEdCHmQlFDvrbgRlw8iOcodsrfhAZmgY2P33ktT1liins8hqupCL18ThGTbRqib9v5GfZ9hLPY1SUPEev501uXEfmNUHE6nFe7zaURIYNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IrgP+aEy; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711678189; x=1743214189;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Mx/wXePy7wvV0gXFJRhA1AqtZexWrUrVnUZ2TwoL11I=;
-  b=IrgP+aEy6HkF3QntYg4givY7wAY0pDn3Bq/5BAe7nVSj3hQa2Qar7weI
-   sYhYG+INhQjXHp+ghOuIp+ErhZbSmQ3oAas2QnTLFyMPYXupTi1NLNOs8
-   S1sHb7GgKP37HhuI4yM2pypE/Rqa/tvNL7e/XVhM9ukaQoJrHnlpc+BEt
-   1id8BoZmfFUGcQTpRQrtWGADpEpcDHINWG9BingKgpSOgWvwRGK7WTnSI
-   +s5ZsOmz0ySW8EjeE5vpzvqWl9sL5bljuSkZAKczSnIKgjlTZRYrErBSO
-   x54Kbo3ZANhqlRr1FfI4T17ECEz59AYpnqRcCBapyfheBvmvuyjOFQPVf
-   w==;
-X-CSE-ConnectionGUID: G/75SySHReGaa3/dS6U7nQ==
-X-CSE-MsgGUID: 8GrvhMg4RDmirn9Oh01puQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6700104"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6700104"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:09:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="17301420"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by orviesa006.jf.intel.com with ESMTP; 28 Mar 2024 19:09:49 -0700
-From: "Chang S. Bae" <chang.seok.bae@intel.com>
-To: linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	dm-devel@redhat.com
-Cc: ebiggers@kernel.org,
-	luto@kernel.org,
-	dave.hansen@linux.intel.com,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	mingo@kernel.org,
-	x86@kernel.org,
-	herbert@gondor.apana.org.au,
-	ardb@kernel.org,
-	elliott@hpe.com,
-	dan.j.williams@intel.com,
-	bernie.keany@intel.com,
-	charishma1.gairuboyina@intel.com,
-	chang.seok.bae@intel.com,
-	Dave Hansen <dave.hansen@intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Subject: [PATCH v9 10/14] x86/cpu/keylocker: Check Gather Data Sampling mitigation
+	s=arc-20240116; t=1711677304; c=relaxed/simple;
+	bh=KCoIZNUHcwv2RV9ZRbHBJii4HaQ9xYYtK2VIovQhTY4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=OiI32WfVeZHzQpcxjF7Wa5kpK/RAsffHUsBWqTIR6Wi5x2rAlb2MvmlB9lyjqEzSc6VfJTJA6a7rSyX5Z1xpu1kaUP1MY0PW4DGi7hYeh7xjVPhNhhg2ZJEM/d8ILt9FJ5RnfWGDCqBLol6WvxI9u+sqHf1SiLbXho8UpQFzemw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cGvlUFtl; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a2386e932so29402037b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711677301; x=1712282101; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/G940zvh+KpSLBvufKEbVa5uESG7TAs31JyWujh5JiA=;
+        b=cGvlUFtlWGRTPkcyYNCMwvSxvP8qlwrZr3JOFvlMOAHhswasUvQzmPZLlH01AY8Kke
+         CDnQgoMEJhPRIKJsyS04oYc8Uuu55Dzdh5jmQyxNhfsUDMZZEkM1xiv1h5HuuzYlN6zl
+         PODUMjxw8QyB8/DxnT+YoKR3DI/rJSNob2BNPMMEmg+Bogh048li815kIsg18b85Utld
+         Iymm98q4jMGrSCjfKBjmefZPnJZpcMtoplmG+B4yi7PxdPAoPOD9gEgZgZCkQSQESDHb
+         zNE7xCcmRxlLfrm4sMPXWZKy3jJxhIq7sq9SCl2/E0a/qS5mSG6DsrzM9EQEaQppU9Hb
+         4vfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711677301; x=1712282101;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/G940zvh+KpSLBvufKEbVa5uESG7TAs31JyWujh5JiA=;
+        b=dYe3NNlzFH504VyqRSdzNtZo1e1R4ePyCakZI5Pldaq69DMNPAGhYUxMUzyeQ+pFZk
+         EV9fJd5CM8/dyBjw2ep5MnrkNfUDUQlBkB9WL+HGpW3v1HHKam/kzoupYADaN6rUNun0
+         /V8Ahbgw3c1c+HXuFw8aWQ+zRBVMHPNUtfCr7nJ7AS2b1zcDO8j0l3ovxKBaqS/hKrKn
+         Z+LPLT9f07Ex/nVVaFhgBIw/Bzks+jwFIdOdvX7BCbKVo+BmOH+/N5CZ6OcRyCFu8tAK
+         5qWCy3t+NGG9KZTgwoazoD3kjwij1d3g0AyoUkMBLXS6ilwZlYgCcJZ5Jm9EWD0AiUqI
+         Bnsw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhGqzG+R7CnwS0KgO5umf8XJlTLjxwZkOtOJbanr5z35rsN+eDNQ765oczoAWRTEvokuxhhiaxdsGIDR6AB+sUf/jTqGENU3IerOh5
+X-Gm-Message-State: AOJu0Yy/C0Lm3RRQaPPRYXicyuJ5VJmL9A9YhKEjuyW4mWFXy7Nc6kB5
+	z05zbVPEbo0saPX9sviEumGx7KyiylZkvw/ctyjYoJpINkvcrfrmackj99X3OaJ+unkX4jC4kX9
+	MSA==
+X-Google-Smtp-Source: AGHT+IGsCzOtwN105f/bltaErVUfpSBRC3F9RkDjk/0Wfd4wmn+phWiKkcXdiSoxa6ZQkSCXtl1Jd331NFw=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
+ (user=drosen job=sendgmr) by 2002:a0d:d8c5:0:b0:614:4c1:c8d with SMTP id
+ a188-20020a0dd8c5000000b0061404c10c8dmr308593ywe.6.1711677300998; Thu, 28 Mar
+ 2024 18:55:00 -0700 (PDT)
 Date: Thu, 28 Mar 2024 18:53:42 -0700
-Message-Id: <20240329015346.635933-11-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240329015346.635933-1-chang.seok.bae@intel.com>
-References: <20230603152227.12335-1-chang.seok.bae@intel.com>
- <20240329015346.635933-1-chang.seok.bae@intel.com>
+In-Reply-To: <20240329015351.624249-1-drosen@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240329015351.624249-1-drosen@google.com>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240329015351.624249-28-drosen@google.com>
+Subject: [RFC PATCH v4 27/36] fuse-bpf: Export Functions
+From: Daniel Rosenberg <drosen@google.com>
+To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
+	Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Gather Data Sampling is a transient execution side channel issue in some
-CPU models. The stale data in registers is not guaranteed as secure when
-this vulnerability is not addressed.
+These functions needed to be exported to build fuse as a module
 
-In the Key Locker usage during AES transformations, the temporary storage
-of the original key in registers poses a risk. The key material can be
-staled in some implementations, leading to susceptibility to leakage of
-the AES key.
-
-To mitigate this vulnerability, a qualified microcode image must be
-applied. Software then verifies the mitigation state using MSRs. Add code
-to ensure that the mitigation is installed and securely locked. Disable
-the feature, otherwise.
-
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
 ---
-Changes from v8:
-* Add as a new patch.
+ kernel/bpf/bpf_struct_ops.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Note that the code follows the guidance from [1]:
-  "Intel recommends that system software does not enable Key Locker (by
-   setting CR4.KL) unless the GDS mitigation is enabled
-   (IA32_MCU_OPT_CTRL[GDS_MITG_DIS] (bit 4) is 0) and locked (IA32_MCU_OPT_CTRL
-   [GDS_MITG_LOCK](bit 5) is 1)."
-
-[1] https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/gather-data-sampling.html
----
- arch/x86/kernel/keylocker.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/arch/x86/kernel/keylocker.c b/arch/x86/kernel/keylocker.c
-index 1b57e11d93ad..d4f3aa65ea8a 100644
---- a/arch/x86/kernel/keylocker.c
-+++ b/arch/x86/kernel/keylocker.c
-@@ -7,6 +7,7 @@
- #include <linux/random.h>
- #include <linux/string.h>
- 
-+#include <asm/cpu.h>
- #include <asm/fpu/api.h>
- #include <asm/keylocker.h>
- #include <asm/msr.h>
-@@ -112,6 +113,37 @@ void restore_keylocker(void)
- 	valid_wrapping_key = false;
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 43356faaa057..ae76b99c07c1 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -1024,6 +1024,7 @@ bool bpf_struct_ops_get(const void *kdata)
+ 	map = __bpf_map_inc_not_zero(&st_map->map, false);
+ 	return !IS_ERR(map);
  }
++EXPORT_SYMBOL_GPL(bpf_struct_ops_get);
  
-+/*
-+ * The mitigation is implemented at a microcode level. Ensure that the
-+ * microcode update is applied and the mitigation is locked.
-+ */
-+static bool __init have_gds_mitigation(void)
-+{
-+	u64 mcu_ctrl;
-+
-+	/* GDS_CTRL is set if new microcode is loaded. */
-+	if (!(x86_read_arch_cap_msr() & ARCH_CAP_GDS_CTRL))
-+		goto vulnerable;
-+
-+	/* If GDS_MITG_LOCKED is set, GDS_MITG_DIS is forced to 0. */
-+	rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
-+	if (mcu_ctrl & GDS_MITG_LOCKED)
-+		return true;
-+
-+vulnerable:
-+	pr_warn("x86/keylocker: Susceptible to the GDS vulnerability.\n");
-+	return false;
-+}
-+
-+/* Check if Key Locker is secure enough to be used. */
-+static bool __init secure_keylocker(void)
-+{
-+	if (boot_cpu_has_bug(X86_BUG_GDS) && !have_gds_mitigation())
-+		return false;
-+
-+	return true;
-+}
-+
- static int __init init_keylocker(void)
+ void bpf_struct_ops_put(const void *kdata)
  {
- 	u32 eax, ebx, ecx, edx;
-@@ -125,6 +157,9 @@ static int __init init_keylocker(void)
- 		goto clear_cap;
- 	}
+@@ -1035,6 +1036,7 @@ void bpf_struct_ops_put(const void *kdata)
  
-+	if (!secure_keylocker())
-+		goto clear_cap;
-+
- 	cr4_set_bits(X86_CR4_KEYLOCKER);
+ 	bpf_map_put(&st_map->map);
+ }
++EXPORT_SYMBOL_GPL(bpf_struct_ops_put);
  
- 	/* AESKLE depends on CR4.KEYLOCKER */
+ static bool bpf_struct_ops_valid_to_reg(struct bpf_map *map)
+ {
 -- 
-2.34.1
+2.44.0.478.gd926399ef9-goog
 
 
