@@ -1,156 +1,140 @@
-Return-Path: <linux-kernel+bounces-125518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3F88927B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:08:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B7938927C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FF331F24FF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:08:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CBD71C210B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B6C13E6B6;
-	Fri, 29 Mar 2024 23:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5529413E3FD;
+	Fri, 29 Mar 2024 23:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MumSkYzI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mTcIVgYm"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FF613E6A7;
-	Fri, 29 Mar 2024 23:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFBC4B5DA;
+	Fri, 29 Mar 2024 23:22:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711753691; cv=none; b=oxOdEwa+gnrpgYLLObtn2z21LNMTQBuys0Ny65PyY4yc2Toq7skdSlXmZbkChM05ZlooMFZeTME9Nk6w4VLmwlekr4wCfcxn4f+m61CiZKQpaKiFL87qKUzE9ecxo3ZDmuk1WIYwMSftsogybn4iGhji4Lzep0YhgPa4fPShkIM=
+	t=1711754574; cv=none; b=T8ZiMItxzllVnhMN7mKBttTO8VbRcQ5pwVgMkXJuNEACK0+e4inNcZ8iN90okGdVpf/4XMLGqFrAlvzID0wRVqp0hiOWB9i6gZyLgefqExMxVOrYhOiW51hqIUCFSHUDVNq7MA8oNkaOynnbYpgCRYf3+yRvcxU4wI24CcCNGdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711753691; c=relaxed/simple;
-	bh=ec2F1zO1pAITVaGxx6NZ6eWrWbWDN/2TSFFAHJU4qx8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fxk1hD7IrEFvjZBRco+0Qcj371tiachoK24OOlfO+HmNASWjCnzrBP97ZYTIno/bZKhX/IvDQDbA6nN/AtNhFG5oiXNEwqJfTWohMFNY6LukDIMjXhxM5BuLdka3nOXxlXY4uSTYTug+rAhKXZHwDTxkoF20gtrcSQ8zxhZXigM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MumSkYzI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B6A4C433C7;
-	Fri, 29 Mar 2024 23:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711753691;
-	bh=ec2F1zO1pAITVaGxx6NZ6eWrWbWDN/2TSFFAHJU4qx8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=MumSkYzIEUc4uqNypRrvdB+KwOeTyHmCJvkXY/a5xogU7N+K4Up/4hzWtKyZA8UgJ
-	 rS4aTYzf+gLu4426YqfYE7YExEOZ3xkxYyUCT1BOW/4RNiXJwwDqRWMwgTwZTQrQo4
-	 qzCxw6CVdRm06Nm1/pWR2qRC1C6tu+zf5idv5sHJXGbngV2wPkMcUe2HBGpN2CduCb
-	 loqXWmtA60F8abfnBzW6vwFkCd8d5kGjfORVKADznCPGLAB/3qLJj4iWFG1X77LqJu
-	 WB9+3k1MjObb3cr3a7RW2yZG3V6++WLUvQpFc1TlEgCvOQxk+jbyEQvK0IT9kKxYo7
-	 6uzdeQwIpenSg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B5D40CE120B; Fri, 29 Mar 2024 16:08:10 -0700 (PDT)
-Date: Fri, 29 Mar 2024 16:08:10 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [paulmck-rcu:dev.2024.03.27b 61/69] lib/cmpxchg-emu.c:24:11:
- warning: no previous prototype for 'cmpxchg_emu_u8'
-Message-ID: <e4b7ecac-719e-40f5-80b5-7a1c63e72b33@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202403300508.Xz7XNp71-lkp@intel.com>
+	s=arc-20240116; t=1711754574; c=relaxed/simple;
+	bh=0Bgz3dygYfsN6NPG3lTjxdOt5S268zJki5K2RHRufYU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VeMYwD+5F7IspitGWxwFCcYDOallyaNt0PUOkIM0AbsFxilqxi/WxMoHMe4PcLRTfSM007ctA6zwN8m1JsxjNwd5SSh2Rp24WTxwRblZx1MLcZHYASy+CnVYxIX6IF4bKR4e5mO9khUMwcVm8dqKFqEhyNbW8adFypnqbwJflIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mTcIVgYm; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TLQSj5013426;
+	Fri, 29 Mar 2024 23:22:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=7UwDx5OuW8FtPG7iPK+HFKmVAJuPi5oZKhU7vXS9aS4=; b=mT
+	cIVgYmE4vn+1WKdCBKVvcGY9JpVQgjzMVAqLZ+1qHySgkRDqdScgPph+XSqVvOgd
+	l6yggGX8sisnfUgUXH3Vj3/QyHyb3K8MOhCeRdayW5pgmekSkoXU4zi1mbJ1Jzxt
+	P+1U3mgoKCWPZaNbEBuzLTNyMLkiig0x1jc88aMmEpmJryuvkz6L8ain01FN2Uvc
+	IgaLKzmraIvOv6LxShxYk3V2qayP/Qv67DdjsjrDazoQjgWkUfadtWc+FVqKYhjo
+	kvLGgLc4o9NJoLlPPLAeAl6yLaZfHNUpl6zcfwh/G7H/jMDaYO1lZ/DjIOMntWa8
+	Lpg6rNlqt9WCbM4SY2tg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5sm6j50r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 23:22:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TNMYfx000427
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 23:22:34 GMT
+Received: from [10.110.124.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
+ 2024 16:22:33 -0700
+Message-ID: <8ba398c9-b71c-4447-a1d0-bd560e41f39f@quicinc.com>
+Date: Fri, 29 Mar 2024 16:22:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403300508.Xz7XNp71-lkp@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/7] wifi: ath10k: sdio: drop driver owner initialization
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Ulf Hansson
+	<ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto
+ von Dentz <luiz.dentz@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+        Kalle
+ Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+        Arend van Spriel
+	<arend.vanspriel@broadcom.com>,
+        Brian Norris <briannorris@chromium.org>,
+        =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+CC: <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-bluetooth@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <brcm80211@lists.linux.dev>,
+        <brcm80211-dev-list.pdl@broadcom.com>
+References: <20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org>
+ <20240329-module-owner-sdio-v1-4-e4010b11ccaa@linaro.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240329-module-owner-sdio-v1-4-e4010b11ccaa@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pj5BXDPNqd-BazKf3WC1xlwtDGjZg8-7
+X-Proofpoint-GUID: pj5BXDPNqd-BazKf3WC1xlwtDGjZg8-7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=928 suspectscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403290208
 
-On Sat, Mar 30, 2024 at 05:26:12AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.03.27b
-> head:   786fab3085d764055a78edb54023420920344333
-> commit: b48ffed4c636b96d2be7a93806870772ce34961f [61/69] csky: Emulate one-byte and two-byte cmpxchg
-> config: csky-allnoconfig (https://download.01.org/0day-ci/archive/20240330/202403300508.Xz7XNp71-lkp@intel.com/config)
-> compiler: csky-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240330/202403300508.Xz7XNp71-lkp@intel.com/reproduce)
+On 3/29/2024 10:24 AM, Krzysztof Kozlowski wrote:
+> Core in sdio_register_driver() already sets the .owner, so driver does
+> not need to.
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403300508.Xz7XNp71-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> lib/cmpxchg-emu.c:24:11: warning: no previous prototype for 'cmpxchg_emu_u8' [-Wmissing-prototypes]
->       24 | uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
->          |           ^~~~~~~~~~~~~~
-> >> lib/cmpxchg-emu.c:51:11: warning: no previous prototype for 'cmpxchg_emu_u16' [-Wmissing-prototypes]
->       51 | uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
->          |           ^~~~~~~~~~~~~~~
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Again, good catch, and thank you for the testing!  Does the patch at the
-end of this email fix things for you?
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-							Thanx, Paul
-
-> vim +/cmpxchg_emu_u8 +24 lib/cmpxchg-emu.c
 > 
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  22  
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  23  /* Emulate one-byte cmpxchg() in terms of 4-byte cmpxchg. */
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17 @24  uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  25  {
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  26  	u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  27  	int i = ((uintptr_t)p) & 0x3;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  28  	union u8_32 old32;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  29  	union u8_32 new32;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  30  	u32 ret;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  31  
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  32  	old32.w = READ_ONCE(*p32);
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  33  	do {
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  34  		if (old32.b[i] != old)
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  35  			return old32.b[i];
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  36  		new32.w = old32.w;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  37  		new32.b[i] = new;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  38  		instrument_atomic_read_write(p, 1);
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  39  		ret = data_race(cmpxchg(p32, old32.w, new32.w));
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  40  	} while (ret != old32.w);
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  41  	return old;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  42  }
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  43  EXPORT_SYMBOL_GPL(cmpxchg_emu_u8);
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  44  
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  45  union u16_32 {
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  46  	u16 h[2];
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  47  	u32 w;
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  48  };
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  49  
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  50  /* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
-> 0bbce967f3ecfc Paul E. McKenney 2024-03-17 @51  uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
+> ---
 > 
-> :::::: The code at line 24 was first introduced by commit
-> :::::: 0bbce967f3ecfc6da1e7e8756b0d398e791b8dee lib: Add one-byte and two-byte cmpxchg() emulation functions
+> Depends on the first patch.
+> ---
+>  drivers/net/wireless/ath/ath10k/sdio.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> :::::: TO: Paul E. McKenney <paulmck@kernel.org>
-> :::::: CC: Paul E. McKenney <paulmck@kernel.org>
+> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+> index 1acb9fba9a8e..cddd9e3010ee 100644
+> --- a/drivers/net/wireless/ath/ath10k/sdio.c
+> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
+> @@ -2667,7 +2667,6 @@ static struct sdio_driver ath10k_sdio_driver = {
+>  	.probe = ath10k_sdio_probe,
+>  	.remove = ath10k_sdio_remove,
+>  	.drv = {
+> -		.owner = THIS_MODULE,
+>  		.pm = ATH10K_SDIO_PM_OPS,
+>  	},
+>  };
 > 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
 
-commit a326496eb88936b291adea830c2e59e74ca1d373
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Mar 29 16:06:45 2024 -0700
-
-    squash! lib: Add one-byte and two-byte cmpxchg() emulation functions
-    
-    [ paulmck: Apply kernel test robot feedback. ]
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
-index abdd451767220..a88c4f3c88430 100644
---- a/lib/cmpxchg-emu.c
-+++ b/lib/cmpxchg-emu.c
-@@ -14,6 +14,7 @@
- #include <linux/panic.h>
- #include <linux/bug.h>
- #include <asm-generic/rwonce.h>
-+#include <linux/cmpxchg-emu.h>
- 
- union u8_32 {
- 	u8 b[4];
 
