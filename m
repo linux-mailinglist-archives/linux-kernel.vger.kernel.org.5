@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-125460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27F4E89266E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:55:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 296D589266B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:55:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BD371C2115D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:55:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE4821F25174
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F25213E416;
-	Fri, 29 Mar 2024 21:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51F713E048;
+	Fri, 29 Mar 2024 21:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oSbp8YXl"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RGh2dCTw"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF22279DF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EF913B2B2;
 	Fri, 29 Mar 2024 21:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711749268; cv=none; b=E1kTb3O1ObpF4ofYR3NSK/VNelTwTcHsdeE/v005QGBKCF9vuc2TDlgcjUA4uaFI0q/zx0LzRk+Rx+4yyLGsqv2PyJVcwePgZ9BMOwFjVAfW7OGkhy4+9QRWYvRBwbKH+qI5QI1SfHb97Cv+629u5Prdxs8Vf0b1/dyuWafjnU0=
+	t=1711749267; cv=none; b=A+wV+ByhnyjOs5oH6t2nZUzhPRL2opCCaNtoYTDJZ/QOcLC50qUz7F0/CRWxrdCdEmvqWlE6AgxQHN3kwQM1S6bVRC39TQ8Qnxvh5utVJ61xVkc4DnQolPHAk5MTTjHbTVqCpLn7m8MKVmrvLnBphvJp2FjiGKSPJho2f0dJZZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711749268; c=relaxed/simple;
-	bh=ZzhPYKeso27bmveGBa0hhOsC2JsybKzAElLAwye66BE=;
+	s=arc-20240116; t=1711749267; c=relaxed/simple;
+	bh=w6N/Yt5hjIFG2jZDsiAgK3w42G+Nng+5NoZGH1HWB0Q=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=IMu1Ln8MCtfnXxGEt7py/U0DhV6xmKS7+eZ8tjPXWUjG2tlQLckiVCDCBrUxeHvzzPH5vLt/iFA/vDGiAbfjx1S327V5kK6gtogdbqT3kGAOkmF/9sq0UjzVyafNu33Wxxt2NFsLbzo7ON4lxzS45GLmMelsWPSivnVgjahUJu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oSbp8YXl; arc=none smtp.client-ip=205.220.168.131
+	 In-Reply-To:To:CC; b=EJs0o4ITG3mVUnlVLtuXr/beyQbckSLC7jatDfp5+nn51nt9Zg9lrWD8V33EyOA93XH+xXcFZbmfhlJ+3HbUQeyIU/fjQDnZ7jP4eJy5MxwHF1rrjdg6GfVClGX61HQlOkbGI+gNZyA95EGnZf3Y9VGcv3qbPxR2KRMCS32bGLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RGh2dCTw; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TLUU68026715;
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TLj10T021877;
 	Fri, 29 Mar 2024 21:54:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:date:subject:mime-version:content-type
 	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=+bd0p8wZ946dzDtJnkM1g8zAvJ0EnKW+xUBI80TUAm4
-	=; b=oSbp8YXlgxZ7cBUyE9PakifZY0YNGB6iKKitZ5mnPyfuxJ6vEYg3UEMGNjQ
-	8PwG/mPLu2IS6eirsr+fWmFWbBF2n30CI/3UXnJN1H7gxUTMKt31F8EYiSyyfUkc
-	jHrz/fyhmjKPz0BW6UufVwBpCyRhN+84SHNx9EJ7c7cSzpPIySlsSsQPPjv4RBM4
-	jxrbkenoYJmTvXpxhWjBloeN+mK+Mhl7IxUe2wI1gzNaIMLmpVg2c2yI/q1cFSgY
-	c7d+GXYpENhowLb7om6Y2s7rhkGNpzpZi3hul5w1W2Jh5A3K71/wmfQm5GTOA5bA
-	FiagKjBsNblIjQFkuLhOVdNHYWg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5w6g18ef-1
+	:cc; s=qcppdkim1; bh=lOWvl2AgS//hWSg8YAISnDnOWFIyXraa4ZZssbcYZqE
+	=; b=RGh2dCTwYZBsCp28bddEn+4GtN9RuAT3SbV+dq2xfKpRayIVxzSeViQ2rmP
+	WwaM0TpUmBqOlbwPeJJrH0Kftp83+RRSDalX8Netr7a9eTy2nbB70eCMtsdTrIQD
+	LHiHCHbMoF6h6POqhyYOInae5nCkngppQlZIRMO7HlvUQbU2Fc+wQ29Mig7QRxfe
+	14PROZfhCzZTC4utMQM6GPxOAlSMxl6lbopWhzsfSSPDIZGY/BWb1+iEE8/Gpah3
+	RK1EIZMluGG9+ct+OYb7gd2an0ZlppKvfZ5p97dVW1ejs8/Af/uVa3Rw46Z7roHI
+	Fr+7KqqrqBH5h8SqDpWOLk7RMrw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5uccsnf8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 29 Mar 2024 21:54:21 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TLs3ln022255
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TLs4nx002079
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 21:54:03 GMT
+	Fri, 29 Mar 2024 21:54:04 GMT
 Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
  (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 29 Mar
- 2024 14:54:00 -0700
+ 2024 14:54:01 -0700
 From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Date: Fri, 29 Mar 2024 14:53:41 -0700
-Subject: [PATCH v4 2/5] soc: qcom: llcc: Add regmap for Broadcast_AND
- region
+Date: Fri, 29 Mar 2024 14:53:42 -0700
+Subject: [PATCH v4 3/5] arm64: dts: qcom: sm8450: Add mapping to llcc
+ Broadcast_AND region
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240329-llcc-broadcast-and-v4-2-107c76fd8ceb@quicinc.com>
+Message-ID: <20240329-llcc-broadcast-and-v4-3-107c76fd8ceb@quicinc.com>
 References: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
 In-Reply-To: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
 To: Bjorn Andersson <andersson@kernel.org>,
@@ -83,102 +83,52 @@ CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Unnathi Chalicheemala
 	<quic_uchalich@quicinc.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711749240; l=2997;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711749240; l=1034;
  i=quic_uchalich@quicinc.com; s=20240202; h=from:subject:message-id;
- bh=ZzhPYKeso27bmveGBa0hhOsC2JsybKzAElLAwye66BE=;
- b=bJ/sdVUC6uTHBFFWKL0jMoOCUbWVpQaRsrVwgBC7rRPkYNvYjudtzMaCUwWQp3aXPhtpFoS+W
- mRlPQ0jqbMHCPVG6xFlvkRJwBk5pVyv3TXT8ZMRxLnc7YxhNMO8/cGE
+ bh=w6N/Yt5hjIFG2jZDsiAgK3w42G+Nng+5NoZGH1HWB0Q=;
+ b=lNIIje4/dUOl2sD1AjMlpnH1dcYfmyhMuZSj/l+mHy1kSw8bzpmz06MHFq03SDoWDq42Q+V7z
+ ump2U+RjWzcASpe8dWZiopdsynqIcLPJ36MYjCTPUZEZkwn41avOPyc
 X-Developer-Key: i=quic_uchalich@quicinc.com; a=ed25519;
  pk=8n+IFmsCDcEIg91sUP/julv9kf7kmyIKT2sR+1yFd4A=
 X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Bc2BnW1Hs3ISyKMHGMNa6NVFWXmoGuMz
-X-Proofpoint-ORIG-GUID: Bc2BnW1Hs3ISyKMHGMNa6NVFWXmoGuMz
+X-Proofpoint-GUID: ix9vk9qqMclOlzOBtNuAzl2QBH4UH1CT
+X-Proofpoint-ORIG-GUID: ix9vk9qqMclOlzOBtNuAzl2QBH4UH1CT
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- malwarescore=0 adultscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=943
- impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2403290195
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=542 impostorscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403210001 definitions=main-2403290195
 
-Define new regmap structure for Broadcast_AND region and initialize
-this regmap when HW block version is greater than 4.1, otherwise
-initialize as a NULL pointer for backwards compatibility.
-
-Switch from broadcast_OR to broadcast_AND region (when defined in DT)
-for checking status bit 1 as Broadcast_OR region checks only for bit 0.
+Mapping Broadcast_AND region for LLCC in SM8450.
 
 Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
 ---
- drivers/soc/qcom/llcc-qcom.c       | 14 +++++++++++++-
- include/linux/soc/qcom/llcc-qcom.h |  4 +++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index cbef0dea1d5d..727d00c527f1 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -821,6 +821,7 @@ EXPORT_SYMBOL_GPL(llcc_slice_putd);
- static int llcc_update_act_ctrl(u32 sid,
- 				u32 act_ctrl_reg_val, u32 status)
- {
-+	struct regmap *regmap;
- 	u32 act_ctrl_reg;
- 	u32 act_clear_reg;
- 	u32 status_reg;
-@@ -849,7 +850,8 @@ static int llcc_update_act_ctrl(u32 sid,
- 		return ret;
+diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+index b86be34a912b..72587b9c7bba 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+@@ -4347,9 +4347,10 @@ system-cache-controller@19200000 {
+ 			compatible = "qcom,sm8450-llcc";
+ 			reg = <0 0x19200000 0 0x80000>, <0 0x19600000 0 0x80000>,
+ 			      <0 0x19300000 0 0x80000>, <0 0x19700000 0 0x80000>,
+-			      <0 0x19a00000 0 0x80000>;
++			      <0 0x19a00000 0 0x80000>, <0 0x19c00000 0 0x80000>;
+ 			reg-names = "llcc0_base", "llcc1_base", "llcc2_base",
+-				    "llcc3_base", "llcc_broadcast_base";
++				    "llcc3_base", "llcc_broadcast_base",
++				    "llcc_broadcast_and_base";
+ 			interrupts = <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
  
- 	if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
--		ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
-+		regmap = drv_data->bcast_and_regmap ?: drv_data->bcast_regmap;
-+		ret = regmap_read_poll_timeout(regmap, status_reg,
- 				      slice_status, (slice_status & ACT_COMPLETE),
- 				      0, LLCC_STATUS_READ_DELAY);
- 		if (ret)
-@@ -1284,6 +1286,16 @@ static int qcom_llcc_probe(struct platform_device *pdev)
- 
- 	drv_data->version = version;
- 
-+	/* Applicable only when drv_data->version >= 4.1 */
-+	drv_data->bcast_and_regmap = qcom_llcc_init_mmio(pdev, i + 1, "llcc_broadcast_and_base");
-+	if (IS_ERR(drv_data->bcast_and_regmap)) {
-+		ret = PTR_ERR(drv_data->bcast_and_regmap);
-+		if (ret == -EINVAL)
-+			drv_data->bcast_and_regmap = NULL;
-+		else
-+			goto err;
-+	}
-+
- 	llcc_cfg = cfg->sct_data;
- 	sz = cfg->size;
- 
-diff --git a/include/linux/soc/qcom/llcc-qcom.h b/include/linux/soc/qcom/llcc-qcom.h
-index 1a886666bbb6..9e9f528b1370 100644
---- a/include/linux/soc/qcom/llcc-qcom.h
-+++ b/include/linux/soc/qcom/llcc-qcom.h
-@@ -115,7 +115,8 @@ struct llcc_edac_reg_offset {
- /**
-  * struct llcc_drv_data - Data associated with the llcc driver
-  * @regmaps: regmaps associated with the llcc device
-- * @bcast_regmap: regmap associated with llcc broadcast offset
-+ * @bcast_regmap: regmap associated with llcc broadcast OR offset
-+ * @bcast_and_regmap: regmap associated with llcc broadcast AND offset
-  * @cfg: pointer to the data structure for slice configuration
-  * @edac_reg_offset: Offset of the LLCC EDAC registers
-  * @lock: mutex associated with each slice
-@@ -129,6 +130,7 @@ struct llcc_edac_reg_offset {
- struct llcc_drv_data {
- 	struct regmap **regmaps;
- 	struct regmap *bcast_regmap;
-+	struct regmap *bcast_and_regmap;
- 	const struct llcc_slice_config *cfg;
- 	const struct llcc_edac_reg_offset *edac_reg_offset;
- 	struct mutex lock;
 
 -- 
 2.25.1
