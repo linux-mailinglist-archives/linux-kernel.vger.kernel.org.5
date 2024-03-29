@@ -1,132 +1,133 @@
-Return-Path: <linux-kernel+bounces-125370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE00D8924B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:56:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E568924B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D4A61F22023
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:56:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6E092850EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F4713A403;
-	Fri, 29 Mar 2024 19:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="CBUkVwZr"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020BB13AA48;
+	Fri, 29 Mar 2024 19:57:50 +0000 (UTC)
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB8912FB12
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3DA13A403;
+	Fri, 29 Mar 2024 19:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711742203; cv=none; b=TYbZvwyO8Wtdd9O45mE2X4LMfUbzgseHG7sWLNk7AjyYzDqqbLZhwFJGS5qnzpKWzJecNDCI/ITl8ftAohdpPhfzEer3WN4Pybum5Hzuyv4U6gXQNmNEh4OqsNje4ePKci74ZKtmk5Ya4mxHW1Du3rcG5/7ahnjBZBWk5PjyO9Q=
+	t=1711742269; cv=none; b=L4+CT4agXuegKc3zTGsyn7bkr3vIwOmbHF7rZZ7OzfZNPRk/wjIMTR2T0rFht7RXY5xH0UJ7+2ial2MXzD2ktC+wb/85CBpVz3REaifPuZ9ulyDbrMWBAeN8CBUgmkRdd1S6v7sdCSwEWFksSPV0XDoKV0j5RSH6LgmyEK41+g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711742203; c=relaxed/simple;
-	bh=kl3r4t6JEKPhRbXJ7T+YhSza5u8zPgVfF6ukpjkWUEs=;
+	s=arc-20240116; t=1711742269; c=relaxed/simple;
+	bh=Eb00Nd/4FbSasWchIqCKO3IHhuDaMWOWUkVBp3B0ox8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aFST2pm7ldI1Y9d6lrn8DJBJWfAdWephKsbJyqb1MdqHEKZFImARIGBqwg8ekK0v76s0swj73F6oqGzaa8cc5ORvDKI+FnxsIUoUqH32QN/VMTUPS4mn66v/dZpIanzYzpJR4z7DP3nxwYw3yDKKUvXJEB+9DfKGSuRiovM/DKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=CBUkVwZr; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a0a1bd04eso25811927b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1711742199; x=1712346999; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F6A9jbG9CdaDPP1v6fWuwcIQF8qoPPnl16dGzz2qlT0=;
-        b=CBUkVwZr6fDdpu1CS2Uchp+UMiOJJcC/5ubPJMrFby2ed8H/XnyFZX6xxLglV1czkg
-         jFjntZNznVWUaqtNtoysFOUSv9fdkCv/c8qbMJE3ZDaHsq6bcs4zoWAkoHy9ueZYC+/U
-         8IOkRJhBh1jpe5TAhnmnY6ROVaMK/0gJI4Q0Hb67GGwE8HUJxdCcQ8HkURjV20ZZ/B62
-         CjDtw0YOQ/2z/R8VUhGf4XJ0REDeKDy11otkkCBXauFEf0MytH0KsL0G+MdbKF1xxh6K
-         vSC5m1bC2bPGo7inX9ggy6BxfA8jsn25P8erH6YKdXs1sO4s/7m2XjuxqEyQ7W/rqj2p
-         xL7A==
+	 To:Cc:Content-Type; b=vFU6XDTl9GkCxi7eNG8pKtFPUgQ1JA4NqX68RglFinj/5ycwtJZNJN5oYZUS7qEa6/ARt7kk6mZPFu/M4Pjg0b005FgZn23ypn8XyUT8mreKNzHnDdYuo+oalqseAhLNfqhoCcyJIeaiyxqPSWHyKaSkT4jOmVMdlmiwzSTe5H4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2a1fdcc3659so1698570a91.2;
+        Fri, 29 Mar 2024 12:57:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711742199; x=1712346999;
+        d=1e100.net; s=20230601; t=1711742267; x=1712347067;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F6A9jbG9CdaDPP1v6fWuwcIQF8qoPPnl16dGzz2qlT0=;
-        b=tYB2fdi4W8rtXdYF3gtvwy5QnXPO65NaiAvXSZOZHAsaDsraX7Ro+Oo/r08MD3jdmz
-         GJ0rnpd7b1bRqQJ391mp1DFhbu1ExxLdUk2y5JB68+07jLUhQSRsitlheOOxb9Ny/X3t
-         0nsdAK7UTCqdYYFfzBWKWxH1yof6Ng9TLZkMHeZcNZOjWvvDU5wJmBIiVPrisStJJ9A/
-         HTI0YsNgi5YxrbqdfDxyzTH4pwrmoeGTbsi6+5MhftaLVeq+lw5Mzz3JjZKb+SGLVtWX
-         OfZhljEzhigaIoQH17Z8HUJKwzaLq+jajtbVu4aF+EF5ECzlgDxOuwMfSsCyvSpJG0rW
-         mI6A==
-X-Forwarded-Encrypted: i=1; AJvYcCW7SY8vDFd9/fxCQqHiq7R8t/xYi0yCQKiznFtjQTH8Ok+KGU+Z1lfGvHubbtNl25jO2taKCEhUB3+ujRQ3Fq2NW0pQ3i3g6rL5TIiR
-X-Gm-Message-State: AOJu0YwKiuvKkKBY+SGwHDNhDXFXP/XSe0hee1bLKvHMPedW82FyMaTw
-	DyMbmuzt+3HJQXLF5vYL63YVgnCKhzLg5WwcehqXNyNN2Gnnrfja2fSQCSO4tlxxjcODQ5KNPbJ
-	QwdbyLoWqP+Apc8SlvKLDMvOTfdYdCvBauKuy
-X-Google-Smtp-Source: AGHT+IFxyLSFxbUR+gusm9UKIGf6amr40sayZYaOUaH9So5UHH1MFJgsFV6241YbxJom5p/x/nu93KVnKL1nyMhNoOY=
-X-Received: by 2002:a81:494b:0:b0:60c:bdb0:cd28 with SMTP id
- w72-20020a81494b000000b0060cbdb0cd28mr3336888ywa.6.1711742199706; Fri, 29 Mar
- 2024 12:56:39 -0700 (PDT)
+        bh=4s8+DG4ef6vbCXZ0BFAbjvZwYptw5QONeO+ShZzGSPg=;
+        b=JeEkGCJOvjMBO9pszmPrO20uVOxiX/XbgYiHN1VSHZFTsjbX2oueMDJp/Xscb4OnvE
+         qSSm7nxFUMDt6VxqQZE/UJwLcnTBK1LvnkdIVs79ZE6LncpiPER1Pll6smFM/cSt3w+3
+         awSHFJ8asK0vTOkjxq9k2oU8AzLd798ZhtndvAgEOfFnwEQoURCdDRs2rLOoAYYEm6Oa
+         mpN2/CTYl37dlETLTJ622F6gXQiHZOUouChptkJ0Po6n4TLiNRlcSh2hUwWJzepug0cu
+         E/WEzADO3jTUE+pwnR5dWNb/20uMeS1TgUyMrVxdU+TCxNI/M3KZYKTCtz9DhCw5Fcke
+         NAMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+/kuIfsj45XlyM2cii8nIbLmFZWE6weWf1SCna7NqZQ7dgG217qjf+IsKdjfL7Cix2US8dwz2Ly9j6XjmlhSLB6XJYZE5FPA05yTFcBSaWmkiDnbV4jP9jzHbwYM+QoTq4zSOh5vshsk1JPn0xw==
+X-Gm-Message-State: AOJu0YwvDDN7WvnkMSMDvSA0HUi0W7oQn+Q4fDxzNmkJQT6cy9jxiPdP
+	i3IrqBCxDlogR7IsMFydQ95qblNffOHwoBaqDNhGVaQJDOi0M3aEQh+VEP5ti2Qe5W9CQ3GxrOm
+	juDY9ZwBpNnP4rSYvHtsgYbvXaZgDVKNt
+X-Google-Smtp-Source: AGHT+IH/pE83jaS/PrbeuhjhlBOBUisEkV4Y5Yp/ZkBehFXfAAt2MGsiU78RoVrQeIoUFGSxiu7bSwGCiOebu0gqUus=
+X-Received: by 2002:a17:90a:7e03:b0:299:5b95:cd7d with SMTP id
+ i3-20020a17090a7e0300b002995b95cd7dmr2762225pjl.45.1711742267378; Fri, 29 Mar
+ 2024 12:57:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329105609.1566309-1-roberto.sassu@huaweicloud.com>
- <20240329105609.1566309-2-roberto.sassu@huaweicloud.com> <e9181ec0bc07a23fc694d47b4ed49635d1039d89.camel@linux.ibm.com>
- <CAHC9VhS49p-rffsP4gW5C-C6kOqFfBWJhLrfB_zunp7adXe2cQ@mail.gmail.com> <1fe6813db395563be658a9b557931cf4db949100.camel@linux.ibm.com>
-In-Reply-To: <1fe6813db395563be658a9b557931cf4db949100.camel@linux.ibm.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 29 Mar 2024 15:56:28 -0400
-Message-ID: <CAHC9VhQaQErZyqe88wKvVwHKHDdgYB1SR11Z9iZC6VisgmiLpw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ima: evm: Rename *_post_path_mknod() to *_path_post_mknod()
-To: Mimi Zohar <zohar@linux.ibm.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, dmitry.kasatkin@gmail.com, 
-	eric.snowberg@oracle.com, jmorris@namei.org, serge@hallyn.com, 
-	linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, viro@zeniv.linux.org.uk, pc@manguebit.com, 
-	christian@brauner.io, Roberto Sassu <roberto.sassu@huawei.com>, stable@vger.kernel.org, 
-	Sasha Levin <sashal@kernel.org>, Greg KH <greg@kroah.com>
+References: <20240328232009.466018-1-namhyung@kernel.org> <CAP-5=fX296_EROp6D+zX4OOABOkwkHrE-2v7F0K=Jo5zSZ_-zw@mail.gmail.com>
+In-Reply-To: <CAP-5=fX296_EROp6D+zX4OOABOkwkHrE-2v7F0K=Jo5zSZ_-zw@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 29 Mar 2024 12:57:35 -0700
+Message-ID: <CAM9d7cgyMFZLvacgV6SKazzy2Vg7Kk=qTtDyPef1W8fVFNy+cQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] perf annotate: Use libcapstone as a disasssembler
+To: Ian Rogers <irogers@google.com>
+Cc: Changbin Du <changbin.du@huawei.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 3:28=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
-> On Fri, 2024-03-29 at 15:12 -0400, Paul Moore wrote:
-> > Another important thing to keep in mind about 'Fixes' tags, unless
-> > you've told the stable kernel folks to only take patches that you've
-> > explicitly marked for stable, they are likely going to attempt to
-> > backport anything with a 'Fixes' tag.
+Hi Ian,
+
+On Fri, Mar 29, 2024 at 9:33=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
+te:
 >
-> How do we go about doing that?  Do we just send an email to stable?
+> On Thu, Mar 28, 2024 at 4:20=E2=80=AFPM Namhyung Kim <namhyung@kernel.org=
+> wrote:
+> >
+> > Hello,
+> >
+> > As we've added libcapstone support, it's natural to use it for perf ann=
+otate
+> > as well.  This change added the capstone support on x86 first.  Other a=
+rchs
+> > can be added later (by someone who can verify it doesn't break things).
+> >
+> > For now it tries to use capstone (if available) before objdump.  But it
+> > doesn't support source file and line number info.  So users should use =
+the
+> > objdump (by passing --objdump=3DPATH option) if they need them.  For ex=
+ample,
+> > this command line will keep the existing behavior (i.e. using objdump).
+> >
+> >   # not to use capstone for disassembly
+> >   $ perf annotate --objdump=3Dobjdump
+> >
+> > The capstone uses LLVM objdump style output which is slightly different=
+ than
+> > the GNU objdump.  But it should not have differences besides that.  I'v=
+e
+> > verified the result of data type profiling and it produced the same out=
+put
+> > but gave me ~3x speedups.
+> >
+> > Thanks,
+> > Namhyung
+>
+> I wanted to see what -fsanitize=3Daddress would think of libcaptstone
+> and no issues,  so:
+>
+> Tested-by: Ian Rogers <irogers@google.com>
 
-When I asked for a change to the stable policy, it was an email
-exchange with Greg where we setup what is essentially a shell glob to
-filter out the files to skip unless explicitly tagged:
+Thanks for checking it!
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tre=
-e/ignore_list
+>
+> Some thoughts:
+>  - it may be worth adding to the commit message in "perf annotate:
+> Split out util/disasm.c" that there's no functional change,
+>  - we lack perf annotate testing,
+>  - it seems capstone should be opt-out rather than opt-in as a library
+> dependency (given the performance delta and the objdump interactions
+> are at best messy),
+>  - if libcapstone could solve our addr2line issues too this would be grea=
+t :-).
 
-> Is it disabled for security?
+I think addr2line should be handled using libdw.  I'll take a look.
 
-I asked for it to be disabled for the LSM layer, SELinux, and audit.
-I sent a note about it last year to the mailing list:
-
-https://lore.kernel.org/linux-security-module/CAHC9VhQgzshziG2tvaQMd9jchAVM=
-u39M4Ym9RCComgbXj+WF0Q@mail.gmail.com
-
-> I thought new functionality won't be backported.
-
-One thing I noticed fairly consistently in the trees I maintained is
-that commits marked with a 'Fixes' tag were generally backported
-regardless of if they were marked for stable.
-
-> Hopefully the changes for making IMA & EVM full fledged LSMs won't be
-> automatically backported to stable.
-
-I haven't seen that happening, and I wouldn't expect it in the future
-as none of those patches were explicitly marked for stable or had a
-'Fixes' tag.
-
---
-paul-moore.com
+Thanks,
+Namhyung
 
