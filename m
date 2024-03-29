@@ -1,213 +1,249 @@
-Return-Path: <linux-kernel+bounces-124003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4307891100
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:03:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3550891176
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E97EF1F23D5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:03:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 593D3290775
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F3469D3D;
-	Fri, 29 Mar 2024 01:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30A03CF51;
+	Fri, 29 Mar 2024 02:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x4mYQJZa"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YLuu5WxX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F81C6A8A4
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AE43B791;
+	Fri, 29 Mar 2024 02:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711677295; cv=none; b=F7dTap6JPjkL03tDfNgVKV+BXAphqZltYa8MdlaTorUEEie67EPoCXDLEDUoPQOiHY0RSIHjRIggPfHSXZtIuwSNHsZXRQaNXqTuGv9JZPjuKWMIJhJQErn7MRzRF9ggaWmGWqJBhRN4mqZNwSgfs/f1c/kN0TXu5cqMyjNTZZ0=
+	t=1711678188; cv=none; b=hsJXvUNcGW5SqkVN7rTZsFUbqp+E07RFGcj751M46SmewURCQeXMhHmpexYyfFBWMRg/7OQh+Sbso0xfxleXgPYemN2wANM384BI/xJAqtWbbMoRt6IKAxsMWjry3GlSM69UztbfV8oRWt6fB1rXlulKYSa5y55tdH1SDc341Sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711677295; c=relaxed/simple;
-	bh=lg0g6uOF3iAO/ssiLRAcrWry2HIbZpoqzls2TxKy5ms=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=kb+x73CoEtoGQTOnetK5ErspRiqAWJEVI2Rz5MtAJPsbwWbdek38w//vu7ebXrRBvpkwLwPqrABzdliJJmZQLi5TyAOuIFTirN2i0FaeXNxfvf5QHoREMQ/+YCKkWeNOOwl403m1cLTGBcxmmZ7HNJQQ4r9Al1AmG84H4qblV98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x4mYQJZa; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso2314924276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711677292; x=1712282092; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=od0eLderVP8wkPdPrI4ENNCsb2rG+V1Fgj/sF5+lSuM=;
-        b=x4mYQJZa5N8yMZBMXbwKAQkbqX4tgVORq6SXljK1YvZG2YQaow9FUihPpsUQy/7sxB
-         87U18Ceo/QJ08muJc84lHbltw6/mtmtbxT5hOsBKyulrS8wbBCX32tj4sdiXPR9Ud9t7
-         +Fr03dmcXrLT2FL2gsKS5bfDPbarhDJeH4fgs0JMx3ws3tYlQaeYbFmfXcxcLerRaIzk
-         Y8VCX13ytsiUWeIGEunk3HaMpjQyIkm1Fo/yqOvUhcGcDd5g2TCe0c5n/nFY/OAxNNTi
-         6gI0gbIdeP+wZVVjwvv4b+vmTpz/MtanosebtA27LStRbdTzra+LyHE4U70meWDng0BN
-         7iIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711677292; x=1712282092;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=od0eLderVP8wkPdPrI4ENNCsb2rG+V1Fgj/sF5+lSuM=;
-        b=vo1XTUe8DWzm5r0e4sWa1VKH4+p95nDDS4PozyxSGyC01cdTXAVwVFcIJm9MkWwnR2
-         MUk1SPEiClRuGCqbQ5tnV9qb1iooy1Va3c4EN33yd7gpk2epa+Ub4OFTSDAhtGpAhY2h
-         Zf8sOfYTUHLr99/JsPOXh4+1cpfL5AJSJ07c758O+ejb2hKNREHu50HfEVOiEeH0O5wo
-         CyJgdUA4co/4ai3hN/ZhhTmMS3fkqOWSLK7TMvZjLDgt2eHl06nbp+rvr/4nZVaha79Q
-         spfgyUrjeflaAjoyJeXFSo9ZXHUlDBwwoJStGftP36wK8TcsLtgu1iKJvy9dTn4xmfxg
-         REsg==
-X-Forwarded-Encrypted: i=1; AJvYcCXYWut5luy6AtRKIteSG6rqrFqZzIwPVUB0bwxHMr5hU/X46xmWuSGtQxn8B+XW/smoUnvW40+oCKHn7e9CCNy/DK9HzQbSUvDF8IlB
-X-Gm-Message-State: AOJu0Yys6CKlgc7psuk7aTh2OGfR3nTALyOMySqNNxwk7eiINjmdxf7h
-	yugnjBLRf8aB8LRovmFLFGikBF9geBTBe+mYTketn73j9yihtfoGqJ2+2qRyW7K1KdyvaugQ3d7
-	cIA==
-X-Google-Smtp-Source: AGHT+IFNeB7P0RtQ53mC8zg19/JpPgaA07h8+WRkHIS3dG7DeGgWdytZdjnC5CdjHQubEzDWWlIhriwU/f0=
-X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
- (user=drosen job=sendgmr) by 2002:a05:6902:2841:b0:dcb:bc80:8333 with SMTP id
- ee1-20020a056902284100b00dcbbc808333mr293843ybb.13.1711677292440; Thu, 28 Mar
- 2024 18:54:52 -0700 (PDT)
-Date: Thu, 28 Mar 2024 18:53:38 -0700
-In-Reply-To: <20240329015351.624249-1-drosen@google.com>
+	s=arc-20240116; t=1711678188; c=relaxed/simple;
+	bh=bKJ53VcpCk0oPkHnmZyx6yPAdxMIyd4w8zm9xu5vvYk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=StfOZaQnvFQsPmxZ+oYEHWlJw2R2cWePxIVqe8zMmu5ZJNftAbPc+efUzfyBVRQcRVpcRFW8FfBu1dASmj02FowPls7AP9tsOLH6MqT1daiO7bbsc1rZ2/x0n+7zrt1dq5irWmDKDgoi3BR32S6YXdzbPDs+vMd5tYkrcelgkj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YLuu5WxX; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711678186; x=1743214186;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bKJ53VcpCk0oPkHnmZyx6yPAdxMIyd4w8zm9xu5vvYk=;
+  b=YLuu5WxXwS9W4ex9AJzo56ozGgCvxqo4DLdpWLpbG3u25cNWh24yjPMS
+   hjreh8ukb/oLH/ItqEU3cOpYSFMrjSMunj6jcMAP6ZTrITY1jj/fNIbfL
+   FKReAdQ4jn3n5LVYZ2aNh3K8VkPP6gmDO5dFlZ4ve1zJMvNBwP3l86TT8
+   cM2Abj/iisMWoEPPSC4pH5Kv39RhTtPx8MwCsghtDHfulLbWTn4aW4QoY
+   Cc9IDFDPK2NV+TRChKo4ttVO9krgIR4A+b7sgnzRBF0LMYhb7Vv3xbWP3
+   H91OgFI66zHus9wn3E43qxFBueD4+sT8Qq121+vgeGrvqt9Z5ZYABoLKT
+   g==;
+X-CSE-ConnectionGUID: pFTEoLtbTqWjseADfWY3ew==
+X-CSE-MsgGUID: DxZVAY0ZQj2jCHmPvMeAWQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6700070"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="6700070"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:09:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="17301407"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by orviesa006.jf.intel.com with ESMTP; 28 Mar 2024 19:09:45 -0700
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
+To: linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	dm-devel@redhat.com
+Cc: ebiggers@kernel.org,
+	luto@kernel.org,
+	dave.hansen@linux.intel.com,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	mingo@kernel.org,
+	x86@kernel.org,
+	herbert@gondor.apana.org.au,
+	ardb@kernel.org,
+	elliott@hpe.com,
+	dan.j.williams@intel.com,
+	bernie.keany@intel.com,
+	charishma1.gairuboyina@intel.com,
+	chang.seok.bae@intel.com,
+	Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH v9 07/14] x86/cpu/keylocker: Load a wrapping key at boot time
+Date: Thu, 28 Mar 2024 18:53:39 -0700
+Message-Id: <20240329015346.635933-8-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240329015346.635933-1-chang.seok.bae@intel.com>
+References: <20230603152227.12335-1-chang.seok.bae@intel.com>
+ <20240329015346.635933-1-chang.seok.bae@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240329015351.624249-1-drosen@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240329015351.624249-24-drosen@google.com>
-Subject: [RFC PATCH v4 23/36] fuse-bpf: allow mounting with no userspace daemon
-From: Daniel Rosenberg <drosen@google.com>
-To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
-	Daniel Rosenberg <drosen@google.com>, Paul Lawrence <paullawrence@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-When using fuse-bpf in pure passthrough mode, we don't explicitly need a
-userspace daemon. This allows simple testing of the backing operations.
+The wrapping key is an entity to encode a clear text key into a key
+handle. This key is a pivot in protecting user keys. So the value has
+to be randomized before being loaded in the software-invisible CPU
+state.
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
-Signed-off-by: Paul Lawrence <paullawrence@google.com>
+The wrapping key needs to be established before the first user. Given
+that the only proposed Linux use case for Key Locker is dm-crypt, the
+feature could be lazily enabled before the first dm-crypt user arrives.
+
+But there is no precedent for late enabling of CPU features and it
+adds maintenance burden without demonstrative benefit outside of
+minimizing the visibility of Key Locker to userspace.
+
+Therefore, generate random bytes and load them at boot time, involving
+clobbering XMM registers. Perform this process under arch_initcall(),
+ensuring that it occurs after FPU initialization. Finally, flush out
+random bytes after loading.
+
+Given that the Linux Key Locker support is only intended for bare
+metal dm-crypt use, and that switching wrapping key per virtual machine
+is impractical, explicitly skip this setup in the X86_FEATURE_HYPERVISOR
+case.
+
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: "Elliott, Robert (Servers)" <elliott@hpe.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
 ---
- fs/fuse/fuse_i.h |  4 ++++
- fs/fuse/inode.c  | 25 +++++++++++++++++++------
- 2 files changed, 23 insertions(+), 6 deletions(-)
+Changes from v8:
+* Invoke the setup code via arch_initcall(). The move was due to the
+  upstream changes. Commit b81fac906a8f ("x86/fpu: Move FPU
+  initialization into arch_cpu_finalize_init()") delays the FPU setup.
+* Tweak code comments and the changelog.
+* Revoke the review tag as the code change is significant.
 
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 81639c006ac5..f1a8f8a97f1f 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -586,6 +586,7 @@ struct fuse_fs_context {
- 	bool no_control:1;
- 	bool no_force_umount:1;
- 	bool legacy_opts_show:1;
-+	bool no_daemon:1;
- 	enum fuse_dax_mode dax_mode;
- 	unsigned int max_read;
- 	unsigned int blksize;
-@@ -873,6 +874,9 @@ struct fuse_conn {
- 	/* Is statx not implemented by fs? */
- 	unsigned int no_statx:1;
+Changes from v6:
+* Switch to use 'static inline' for the empty functions, instead of
+  macro that disallows type checks. (Eric Biggers and Dave Hansen)
+* Use memzero_explicit() to wipe out the key data instead of writing
+  the poison value over there. (Robert Elliott)
+* Massage the changelog for the better readability.
+
+Changes from v5:
+* Call out the disabling when the feature is available on a virtual
+  machine. Then, it will turn off the feature flag
+
+Changes from RFC v2:
+* Make bare metal only.
+* Clean up the code (e.g. dynamically allocate the key cache).
+  (Dan Williams)
+* Massage the changelog.
+* Move out the LOADIWKEY wrapper and the Key Locker CPUID defines.
+---
+ arch/x86/kernel/Makefile    |  1 +
+ arch/x86/kernel/keylocker.c | 77 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 78 insertions(+)
+ create mode 100644 arch/x86/kernel/keylocker.c
+
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 74077694da7d..d105e5785b90 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -137,6 +137,7 @@ obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o
+ obj-$(CONFIG_TRACING)			+= tracepoint.o
+ obj-$(CONFIG_SCHED_MC_PRIO)		+= itmt.o
+ obj-$(CONFIG_X86_UMIP)			+= umip.o
++obj-$(CONFIG_X86_KEYLOCKER)		+= keylocker.o
  
-+	/** BPF Only, no Daemon running */
-+	unsigned int no_daemon:1;
+ obj-$(CONFIG_UNWINDER_ORC)		+= unwind_orc.o
+ obj-$(CONFIG_UNWINDER_FRAME_POINTER)	+= unwind_frame.o
+diff --git a/arch/x86/kernel/keylocker.c b/arch/x86/kernel/keylocker.c
+new file mode 100644
+index 000000000000..0d6b715baf1e
+--- /dev/null
++++ b/arch/x86/kernel/keylocker.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +
- 	/** The number of requests waiting for completion */
- 	atomic_t num_waiting;
- 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index bc504e0d0e80..b4332416e23a 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -829,6 +829,7 @@ enum {
- 	OPT_MAX_READ,
- 	OPT_BLKSIZE,
- 	OPT_ROOT_DIR,
-+	OPT_NO_DAEMON,
- 	OPT_ERR
- };
- 
-@@ -844,6 +845,7 @@ static const struct fs_parameter_spec fuse_fs_parameters[] = {
- 	fsparam_u32	("blksize",		OPT_BLKSIZE),
- 	fsparam_string	("subtype",		OPT_SUBTYPE),
- 	fsparam_u32	("root_dir",		OPT_ROOT_DIR),
-+	fsparam_flag	("no_daemon",		OPT_NO_DAEMON),
- 	{}
- };
- 
-@@ -933,6 +935,11 @@ static int fuse_parse_param(struct fs_context *fsc, struct fs_parameter *param)
- 			return invalfc(fsc, "Unable to open root directory");
- 		break;
- 
-+	case OPT_NO_DAEMON:
-+		ctx->no_daemon = true;
-+		ctx->fd_present = true;
-+		break;
++/*
++ * Setup Key Locker feature and support the wrapping key management.
++ */
 +
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1506,7 +1513,7 @@ void fuse_send_init(struct fuse_mount *fm)
- 	ia->args.nocreds = true;
- 	ia->args.end = process_init_reply;
- 
--	if (fuse_simple_background(fm, &ia->args, GFP_KERNEL) != 0)
-+	if (unlikely(fm->fc->no_daemon) || fuse_simple_background(fm, &ia->args, GFP_KERNEL) != 0)
- 		process_init_reply(fm, &ia->args, -ENOTCONN);
- }
- EXPORT_SYMBOL_GPL(fuse_send_init);
-@@ -1798,6 +1805,7 @@ int fuse_fill_super_common(struct super_block *sb, struct fuse_fs_context *ctx)
- 	fc->destroy = ctx->destroy;
- 	fc->no_control = ctx->no_control;
- 	fc->no_force_umount = ctx->no_force_umount;
-+	fc->no_daemon = ctx->no_daemon;
- 
- 	err = -ENOMEM;
- 	root = fuse_get_root_inode(sb, ctx->rootmode, ctx->root_dir);
-@@ -1844,7 +1852,7 @@ static int fuse_fill_super(struct super_block *sb, struct fs_context *fsc)
- 	struct fuse_fs_context *ctx = fsc->fs_private;
- 	int err;
- 
--	if (!ctx->file || !ctx->rootmode_present ||
-+	if (!!ctx->file == ctx->no_daemon || !ctx->rootmode_present ||
- 	    !ctx->user_id_present || !ctx->group_id_present)
- 		return -EINVAL;
- 
-@@ -1852,10 +1860,12 @@ static int fuse_fill_super(struct super_block *sb, struct fs_context *fsc)
- 	 * Require mount to happen from the same user namespace which
- 	 * opened /dev/fuse to prevent potential attacks.
- 	 */
--	if ((ctx->file->f_op != &fuse_dev_operations) ||
--	    (ctx->file->f_cred->user_ns != sb->s_user_ns))
--		return -EINVAL;
--	ctx->fudptr = &ctx->file->private_data;
-+	if (ctx->file) {
-+		if ((ctx->file->f_op != &fuse_dev_operations) ||
-+		    (ctx->file->f_cred->user_ns != sb->s_user_ns))
-+			return -EINVAL;
-+		ctx->fudptr = &ctx->file->private_data;
++#include <linux/random.h>
++#include <linux/string.h>
++
++#include <asm/fpu/api.h>
++#include <asm/keylocker.h>
++#include <asm/processor.h>
++
++static struct iwkey wrapping_key __initdata;
++
++static void __init generate_keylocker_data(void)
++{
++	get_random_bytes(&wrapping_key.integrity_key, sizeof(wrapping_key.integrity_key));
++	get_random_bytes(&wrapping_key.encryption_key, sizeof(wrapping_key.encryption_key));
++}
++
++static void __init destroy_keylocker_data(void)
++{
++	memzero_explicit(&wrapping_key, sizeof(wrapping_key));
++}
++
++/*
++ * For loading the wrapping key into each CPU, the feature bit is set
++ * in the control register and FPU context management is performed.
++ */
++static void __init load_keylocker(struct work_struct *unused)
++{
++	cr4_set_bits(X86_CR4_KEYLOCKER);
++
++	kernel_fpu_begin();
++	load_xmm_iwkey(&wrapping_key);
++	kernel_fpu_end();
++}
++
++static int __init init_keylocker(void)
++{
++	u32 eax, ebx, ecx, edx;
++
++	if (!cpu_feature_enabled(X86_FEATURE_KEYLOCKER))
++		goto disable;
++
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR)) {
++		pr_debug("x86/keylocker: Not compatible with a hypervisor.\n");
++		goto clear_cap;
 +	}
- 
- 	err = fuse_fill_super_common(sb, ctx);
- 	if (err)
-@@ -1905,6 +1915,9 @@ static int fuse_get_tree(struct fs_context *fsc)
- 
- 	fsc->s_fs_info = fm;
- 
-+	if (ctx->no_daemon)
-+		return get_tree_nodev(fsc, fuse_fill_super);;
 +
- 	if (ctx->fd_present)
- 		ctx->file = fget(ctx->fd);
- 
++	cr4_set_bits(X86_CR4_KEYLOCKER);
++
++	/* AESKLE depends on CR4.KEYLOCKER */
++	cpuid_count(KEYLOCKER_CPUID, 0, &eax, &ebx, &ecx, &edx);
++	if (!(ebx & KEYLOCKER_CPUID_EBX_AESKLE) ||
++	    !(eax & KEYLOCKER_CPUID_EAX_SUPERVISOR)) {
++		pr_debug("x86/keylocker: Not fully supported.\n");
++		goto clear_cap;
++	}
++
++	generate_keylocker_data();
++	schedule_on_each_cpu(load_keylocker);
++	destroy_keylocker_data();
++
++	pr_info_once("x86/keylocker: Enabled.\n");
++	return 0;
++
++clear_cap:
++	setup_clear_cpu_cap(X86_FEATURE_KEYLOCKER);
++	pr_info_once("x86/keylocker: Disabled.\n");
++disable:
++	cr4_clear_bits(X86_CR4_KEYLOCKER);
++	return -ENODEV;
++}
++
++arch_initcall(init_keylocker);
 -- 
-2.44.0.478.gd926399ef9-goog
+2.34.1
 
 
