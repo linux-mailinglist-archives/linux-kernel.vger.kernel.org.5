@@ -1,97 +1,87 @@
-Return-Path: <linux-kernel+bounces-124222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B52589140B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:15:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECCF89140F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EB90B23051
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:15:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C4B0289022
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292E93FE27;
-	Fri, 29 Mar 2024 07:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC3E3FE2C;
+	Fri, 29 Mar 2024 07:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L5cLUHyK"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iksif7ri"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D261B33CCC;
-	Fri, 29 Mar 2024 07:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335D93FB8C;
+	Fri, 29 Mar 2024 07:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711696524; cv=none; b=CQPWGj4gTJY1j6zsURVgSV9q8UOy6vCOe7nwgOPWaZ+knZetcf7umNejlVHJWF42RLOHSz5t8ykhzqM9Z6L+QwZ/GaLETH+22DpLHcGlc6wD3r0TjjUak8/+oFEooUSxoWJIqPEY+G1Mfpnm86i3s/byxA9uSdZo+u8ES4TmeQI=
+	t=1711696592; cv=none; b=r4Bg52aMAcAx6FgWHSKkzr46znvdJrNieDBSoFmtH6u+iGLHFbVQeJavTcpQ7KYQLi2g1QuImCm95w99Tr2C8Y3qxZQGzQ1L3QwrA+6HDWqDpuZ/DLy1Pd/+hIH7ZCzenfpYk8PgD4RV/JpopSdHtJGLQJpBbFpUiS71CE/gadQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711696524; c=relaxed/simple;
-	bh=vcBZF75PvdSN87wejsi7pX6QTEy6uXjLbXwwfZFg3Eg=;
+	s=arc-20240116; t=1711696592; c=relaxed/simple;
+	bh=Ev98fKmh39oX3GTREoTUTFF4eGgbYjmzC28MTusAFPc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k3Hjt6z+YPScPnfhV9akejUaJq1WnXQX1xLSINAn+e4DDyyX4hec32nIjZjhUytJnpJjOCz3Cr80JTT1maILdWY7CuO0fyiICpOYIbXeMGTkK1rO5as034ZzYHPx9QmAOiTybg+m2MzjSbvNZhCyQwxN8b/mBCJ8h/uX7I3nuAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L5cLUHyK; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so4648950a12.1;
-        Fri, 29 Mar 2024 00:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711696521; x=1712301321; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mozfWZbRnnqWKHe9tnc7q0wOVsOmikcudgvgpeew1+E=;
-        b=L5cLUHyKmOCGoBuiVuBONQS6/s6X03KM5eyFMbkZio5EjTMD/irf9oO2tThDtxSjTV
-         +b6+IeCR63Fi3PcQVjVbmL8JxXdUpprIbpriIZnFql/KnzWQF7oQD9mE8dUbY1Tvsgzb
-         CMV/7drs6iQjxFLjWBI9BHe+/fTohY3CfyCvWloFsBGMLAr+Y/NDE00sitj5fPEm4thi
-         5inKjvkgkMPOJVTpeMDN8s+WaLSF4ylsdfzr+sC7jTfWMgCX+xw0XFhbDyu4bR1PFDZu
-         X+6bYak1MkhocVnAbrmara4k96F7iov4C35MfihsEDvxWH/gDuLHcfk4i4KEkdqsGfjM
-         nsQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711696521; x=1712301321;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mozfWZbRnnqWKHe9tnc7q0wOVsOmikcudgvgpeew1+E=;
-        b=eeMRNxO8wfchjfAxFtFpxDrji1/mlNIrN7xhqpuKaZ+i/ZvLZpZ+K2NT+N3EGevDWY
-         kdN5T5GovpQ4izVMWbd4Tx/ZPGf0dTSx5H2eFChAKoz/VNJ36vpFTDpHdkb4qEpN3791
-         SuKvPp/drdCX17BoYRHuGnJf0z0PxM5oYXex/zQ/5IxLnGYonfgOOQ46DgruTsHhGP7f
-         d0ykxCXf3A8ZqlEYWivMUGiGl4Mh48MUsPD+T8+VPHXoGewsc9Tn0vE9Vsf6MgfMjpTG
-         xLvKmJwFIW8dwhydCIDtzMp+zB1i8fPeWJH8CHx+8YpSqv+HX6v2HPRSxraGICrId1j2
-         xaBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+d/p0NmumbJumfbUxE4Ub8pmF2Yr6nhw7sYw95hPjPKywdOVBkWNzkRnRKL7vKyBtdglBlwAqmgff+oo0LtvPRiPtjhOGTfSG0qxa4G2XJ58vluOaDRR5GGqB7zDknN0sLb5n
-X-Gm-Message-State: AOJu0Yxav7rxMbpR3eVb1IN+0by8QyswwkQD5c924v7OusyJ9RJJED1d
-	eHxTDvjLTvR8h1MCtsfZqBPm18hwpNOrBDWnS4jJCP9X3aGea7FmZawTU4RM1bQ=
-X-Google-Smtp-Source: AGHT+IFhRkjxogRTyF/K3aWBTa/zm6XcSZhhLZnndCssQDKYDtq+qxbh6p75jpjUxX89xLoNA/e6vw==
-X-Received: by 2002:a50:8e1b:0:b0:568:b0f4:fe69 with SMTP id 27-20020a508e1b000000b00568b0f4fe69mr4049605edw.12.1711696520810;
-        Fri, 29 Mar 2024 00:15:20 -0700 (PDT)
-Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
-        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b0056a033fa007sm1675741edb.64.2024.03.29.00.15.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:15:20 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 29 Mar 2024 08:15:17 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Steve Wahl <steve.wahl@hpe.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org,
-	Linux regressions mailing list <regressions@lists.linux.dev>,
-	Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
-	Eric Hagberg <ehagberg@gmail.com>,
-	Simon Horman <horms@verge.net.au>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
-	Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>,
-	Hou Wenlong <houwenlong.hwl@antgroup.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Baoquan He <bhe@redhat.com>, Yuntao Wang <ytcoode@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v4] x86/mm/ident_map: On UV systems, use gbpages only
- where full GB page should be mapped.
-Message-ID: <ZgZqhWoRZoq5tJoU@gmail.com>
-References: <20240328160614.1838496-1-steve.wahl@hpe.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=T4D3Lx2ejVa2/KXTbpYoMl8DoevEb1dG9J9fTqy0xzp4kY9cdgiyFToxnqoZ6AW+d9GZ2qdaVFj5M8GNgQ993HewbijHEc0BXE+qSxh/iyUkcU52NXX/Qd3lTP02O2UMkYsextfkz4xKiOZdlWxc/KToXieVsosPZJS8eKx6hcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iksif7ri; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42T73UBi006567;
+	Fri, 29 Mar 2024 07:16:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=2CYgJP3ojhBQiLW0Of7Q2BULE3M0/2ey8CU7au28ncs=;
+ b=iksif7riljXLMSTt8QcJdasM6guPku1YJdaVYKKbPOUvaxQsw6RGo7PWEQUAHvfkV8Lm
+ bQTqlpBz+8CfwRUg6ipKVw8TVP3IE0vw1derFmIRSzjHj4m7dhOL7o/wKkQiBcEtsxTn
+ LYcCZ6Bt/slzMkmDUZPmNVsu5wQxTWVWBeZ+HbAOSdDHYExFvixIxgbiM7XFa1AwZjSJ
+ td/eVl1Fd6Atn+dg5u/01JCchCvqMK03D7o8lXliNXsltB2nUY7QY4zeyQaep6ORJ0og
+ Ftl7p6klw94K7ek/s1ZVhqNyFj+aBAhlcKNHSx5UcWThBjBeZkgyWM+PyWjOTw88qDAF tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rw880t7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:16:19 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42T7GIkB026855;
+	Fri, 29 Mar 2024 07:16:18 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rw880sn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:16:18 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42T5UEi1016605;
+	Fri, 29 Mar 2024 07:16:06 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dujxsn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:16:06 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42T7G2VW49086788
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Mar 2024 07:16:04 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6B13D20040;
+	Fri, 29 Mar 2024 07:16:02 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A4D8320043;
+	Fri, 29 Mar 2024 07:16:00 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.115.153])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 29 Mar 2024 07:16:00 +0000 (GMT)
+Date: Fri, 29 Mar 2024 12:45:58 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jack@suse.cz, ritesh.list@gmail.com
+Subject: Re: [PATCH 4/5] ext4: use correct criteria name instead stale
+ integer number in comment
+Message-ID: <ZgZqrhinpCfwd2ub@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
+ <20240326213823.528302-5-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -100,39 +90,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328160614.1838496-1-steve.wahl@hpe.com>
+In-Reply-To: <20240326213823.528302-5-shikemeng@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Bl-tQONuqMiGmvyE7YhDkAf6TAoBfqFZ
+X-Proofpoint-GUID: -bYbZpkKX7zPc2DSlEq2cuohaYKqDWVT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ clxscore=1015 phishscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
+ definitions=main-2403290061
 
-
-* Steve Wahl <steve.wahl@hpe.com> wrote:
-
-> When ident_pud_init() uses only gbpages to create identity maps, large
-> ranges of addresses not actually requested can be included in the
-> resulting table; a 4K request will map a full GB.  On UV systems, this
-> ends up including regions that will cause hardware to halt the system
-> if accessed (these are marked "reserved" by BIOS).  Even processor
-> speculation into these regions is enough to trigger the system halt.
-> And MTRRs cannot be used to restrict this speculation, there are not
-> enough MTRRs to cover all the reserved regions.
-
-Nor should MTRRs be (ab-)used for this really.
-
-> The fix for that would be to only use gbpages when map creation 
-> requests include the full GB page of space, and falling back to using 
-> smaller 2M pages when only portions of a GB page are included in the 
-> request.
+On Wed, Mar 27, 2024 at 05:38:22AM +0800, Kemeng Shi wrote:
+> Use correct criteria name instead stale integer number in comment
 > 
-> But on some other systems, possibly due to buggy bios, that solution 
-> leaves some areas out of the identity map that are needed for kexec 
-> to succeed.  It is believed that these areas are not marked properly 
-> for map_acpi_tables() in arch/x86/kernel/machine_kexec_64.c to catch 
-> and map them.  The nogbpages kernel command line option also causes 
-> these systems to fail even without these changes.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/ext4.h    | 15 ++++++++++++---
+>  fs/ext4/mballoc.c | 14 ++++++++------
+>  fs/ext4/mballoc.h |  4 ++--
+>  3 files changed, 22 insertions(+), 11 deletions(-)
+> 
 
-Does the 'nogbpages' kernel command line option fail on these systems 
-even outside of kexec (ie. regular boot), or only in combination with 
-kexec?
+Thanks for the cleanup! Feel free to add:
 
-Thanks,
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-	Ingo
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 023571f8dd1b..9b90013c59a3 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -213,11 +213,20 @@ enum criteria {
+>  #define EXT4_MB_USE_RESERVED		0x2000
+>  /* Do strict check for free blocks while retrying block allocation */
+>  #define EXT4_MB_STRICT_CHECK		0x4000
+> -/* Large fragment size list lookup succeeded at least once for cr = 0 */
+> +/*
+> + * Large fragment size list lookup succeeded at least once for cr =
+> + * CR_POWER2_ALIGNED
+> + */
+>  #define EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED		0x8000
+> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
+> +/*
+> + * Avg fragment size rb tree lookup succeeded at least once for cr =
+> + * CR_GOAL_LEN_FAST
+> + */
+>  #define EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED		0x00010000
+> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1.5 */
+> +/*
+> + * Avg fragment size rb tree lookup succeeded at least once for cr =
+> + * CR_BEST_AVAIL_LEN
+> + */
+>  #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
+>  
+>  struct ext4_allocation_request {
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 62d468379722..0f8a34513bf6 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1131,8 +1131,9 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
+>  		ext4_mb_choose_next_group_best_avail(ac, new_cr, group);
+>  	} else {
+>  		/*
+> -		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
+> -		 * bb_free. But until that happens, we should never come here.
+> +		 * TODO: For CR=CR_GOAL_LEN_SLOW, we can arrange groups in an
+> +		 * rb tree sorted by bb_free. But until that happens, we should
+> +		 * never come here.
+>  		 */
+>  		WARN_ON(1);
+>  	}
+> @@ -3444,10 +3445,11 @@ static int ext4_mb_init_backend(struct super_block *sb)
+>  	}
+>  	if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
+>  		sbi->s_mb_prefetch = ext4_get_groups_count(sb);
+> -	/* now many real IOs to prefetch within a single allocation at cr=0
+> -	 * given cr=0 is an CPU-related optimization we shouldn't try to
+> -	 * load too many groups, at some point we should start to use what
+> -	 * we've got in memory.
+> +	/*
+> +	 * now many real IOs to prefetch within a single allocation at
+> +	 * cr=CR_POWER2_ALIGNED. Given cr=CR_POWER2_ALIGNED is an CPU-related
+> +	 * optimization we shouldn't try to load too many groups, at some point
+> +	 * we should start to use what we've got in memory.
+>  	 * with an average random access time 5ms, it'd take a second to get
+>  	 * 200 groups (* N with flex_bg), so let's make this limit 4
+>  	 */
+> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+> index 56938532b4ce..042437d8860f 100644
+> --- a/fs/ext4/mballoc.h
+> +++ b/fs/ext4/mballoc.h
+> @@ -187,8 +187,8 @@ struct ext4_allocation_context {
+>  	struct ext4_free_extent ac_f_ex;
+>  
+>  	/*
+> -	 * goal len can change in CR1.5, so save the original len. This is
+> -	 * used while adjusting the PA window and for accounting.
+> +	 * goal len can change in CR_BEST_AVAIL_LEN, so save the original len.
+> +	 * This is used while adjusting the PA window and for accounting.
+>  	 */
+>  	ext4_grpblk_t	ac_orig_goal_len;
+>  
+> -- 
+> 2.30.0
+> 
 
