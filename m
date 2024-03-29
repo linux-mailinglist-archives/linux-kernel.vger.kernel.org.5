@@ -1,703 +1,225 @@
-Return-Path: <linux-kernel+bounces-123997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9068910E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B677891166
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2A81F23C63
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:01:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E016A1F245C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDD4524D6;
-	Fri, 29 Mar 2024 01:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D042DF7D;
+	Fri, 29 Mar 2024 02:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ccCqjfS/"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kTxu05Wi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89584D9E6
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122B52C68C;
+	Fri, 29 Mar 2024 02:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711677280; cv=none; b=MKB0U6f+taAVAxSgYy84RpzkHB6BWe0pPRKOWYihN+UQg68emcnytDkmrMi+QO8OGg5d34fqLKeHh+gW4yxucptUOSSgbT8F2zpUM7qgoJiW5AjBbsqBbrGCYI+xL12v/Dirsjk24M/xRPiF4tjGzGOJAEBchbYr2Fgd/MpZUgI=
+	t=1711678178; cv=none; b=RDdMbRO3MABg4zzNIVbfMNVvm7fAI24g8AuHZVAMRSNQyI/MiKbjcMTqApLuQoUEd4THM1zDbuhWQGdDYfgLT9ofOKUUQtlnAKi0nJ/tAtXS2uMHl89Le9RjPLaI8fYJKCkaUt9IFGPmuoHBUgZNjhEi5fGscIB8I1+dQ01ueOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711677280; c=relaxed/simple;
-	bh=1hYhQpZqd0XXYm/HQ/QbQPqNdnFO8JyYjGoojTz6Mc4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FKfXayP9folc/ZgI0rC82PnlM/PFFNqpZaxl+6IqvF9Yx1/oJtvx60dbJexCiNLtGpu3jWgaymqrbkicdvI56/lD7MkcWxmH4RnHwB/C99WtBg0+ysinUBHPO/NiJFv3RDyPnywPgsbfAPIEo6VZbm3pH1FxAi/b0lNIrqIvwhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ccCqjfS/; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ad239f8fso26661577b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711677277; x=1712282077; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IkEzYxlv6dr5xmGlGpopV2VX8GvnZFbvgbTbydYSehc=;
-        b=ccCqjfS/bjdQ2N4Gv/Yi+fO22id8bxq5vZ01OLRgusUt1k4HCQjDvvM8MBwIFQjvjt
-         2fVHtGXFACvmj8i5xmTEoaZJDP/4kl+/0EniEN5tZ9MTGIgJf7WneX6fwNx3mI4gdc/l
-         b+kJvNddTdq3ztRiPudLHHQfBLqlWB1GAGlGS8YzCAqbWZZMkepBYkZQfWfYqbevccA/
-         ygbNNOJTS5SP86TiF6VNXUV+tLXse9mo2/LqEHnSw0FT/K2idP1wG3j+pRYeMAWLz88g
-         6gsmAXaN7rJyVByztSYaQa5FPsb6UkFujI3Cs0yl2CJRQdgZGNQkpMScUSbHGoRRGUaD
-         Ws8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711677277; x=1712282077;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IkEzYxlv6dr5xmGlGpopV2VX8GvnZFbvgbTbydYSehc=;
-        b=BPLrIbClInKbUdIKiXzdkLeVSbw1M1rIcFlm0C7vwhV3ZBQcj75vJH7IXD727U7nuM
-         YOY2FfHSCtoWSziTP+s5R23mU1hBwarlraop3AvAFbTS+AEINvbl1fg6OU1p0LZ8aU6r
-         kzgQLHoiz3DTtEGVUwgDaee6sq6D/LyhMGidyJBLsJypih+HYXDSpW10JYl3axeLlBiY
-         362GyDq/Sudf/6iaFmZQ8rvct30baVw+iB7AVOgC0eL/iOMxbT7ARLgOj0681eoztPbt
-         Q9k9LXHuyKa7HtabIy3erRdDLucjbhxsEThZISLBtQ3fFCC1PAxz5d33BGC69wEcW8WQ
-         SJCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcx+zA1CtsW5AezM73gz3s5eQ6BZDp6V7jYkxJhPYXdWcrnAwSCTrqCf/cXOqoA5oGZ1l2sGKIITIvNhy9RNs/zLgEPIh33j+o9Rvs
-X-Gm-Message-State: AOJu0Yyu9oaw5DTnhMW/5fUW9Z8CPl9Q7O6yL84jLIHozsfQIXkAQl8m
-	AwUPFslIz7o5bH7W2QR1YbRrj3xkKGbCnjnhKpURUrFyYZfL8e30+7z1FS8A3X0pnUmH8wVDWiy
-	VsQ==
-X-Google-Smtp-Source: AGHT+IG4o1CxL8Bjxr6xpQB23/9k8WNGx/uQfnx3fQAYtxSCzfzM/VJ9Weo4asX0Z+rhcZDoXimryo87d4s=
-X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
- (user=drosen job=sendgmr) by 2002:a0d:d897:0:b0:611:a624:12ea with SMTP id
- a145-20020a0dd897000000b00611a62412eamr287238ywe.0.1711677277090; Thu, 28 Mar
- 2024 18:54:37 -0700 (PDT)
+	s=arc-20240116; t=1711678178; c=relaxed/simple;
+	bh=FSsoc2bilwBnLscLx6U4GiKDrWPS92uMLAaFdcmDj7k=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=h9V9bqNfxUhPAzPS0IVL+Aw1QSJlxyf6iLOKVsth1H8oTHM8qSwOe+20KYlJ18CjEvCuogxcFg+96pfmvDDI2jliiYVAYl6dHqQPZVIQfqjVWqkXoVwmigNB46vXZITZVywV6jFt24wykjN4Oo+qn+JuTdKqqiGNtLPCn60dvyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kTxu05Wi; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711678176; x=1743214176;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FSsoc2bilwBnLscLx6U4GiKDrWPS92uMLAaFdcmDj7k=;
+  b=kTxu05WihevV2ekoa9ehtieAgJVBXLf9PC3nTfzUQZkywYhRbVkWCFd5
+   m9lLRjz35/eh+fbkYpD5RY/NfL1dDDBRY9lc2DJGEY77z4vhFwTmi/Wfc
+   29G9lzsWoBY4TGFrX7ovtkRihUcoZSCmib43qdUgxv64h4P0s3sDUhyKK
+   3a+Y46pFEwmTV9qSaNDDjETgSU6yZqqFiD1JsFB42ZDghPPZeOVbhxd0d
+   q2M+aaJ2dJWsqPU3lzITFLgTcgOuddeHfdTlxG6bC6NI9gBq00uLbXPJt
+   tYE1eBpgsJdB+JSrJLaGJhRBKcAz3M2e+RDWIJfiThv2bD1AimhaQvOJ5
+   Q==;
+X-CSE-ConnectionGUID: GaWborRxRRqH+K5VqPwN/A==
+X-CSE-MsgGUID: 6ftjLkmGRYWujFrMuMJ0Rg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6700009"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="6700009"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:09:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="17301369"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by orviesa006.jf.intel.com with ESMTP; 28 Mar 2024 19:09:34 -0700
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
+To: linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	dm-devel@redhat.com
+Cc: ebiggers@kernel.org,
+	luto@kernel.org,
+	dave.hansen@linux.intel.com,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	mingo@kernel.org,
+	x86@kernel.org,
+	herbert@gondor.apana.org.au,
+	ardb@kernel.org,
+	elliott@hpe.com,
+	dan.j.williams@intel.com,
+	bernie.keany@intel.com,
+	charishma1.gairuboyina@intel.com,
+	chang.seok.bae@intel.com
+Subject: [PATCH v9 00/14] x86: Support Key Locker
 Date: Thu, 28 Mar 2024 18:53:32 -0700
-In-Reply-To: <20240329015351.624249-1-drosen@google.com>
+Message-Id: <20240329015346.635933-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230603152227.12335-1-chang.seok.bae@intel.com>
+References: <20230603152227.12335-1-chang.seok.bae@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240329015351.624249-1-drosen@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240329015351.624249-18-drosen@google.com>
-Subject: [RFC PATCH v4 17/36] fuse-bpf: Add attr support
-From: Daniel Rosenberg <drosen@google.com>
-To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
-	Daniel Rosenberg <drosen@google.com>, Paul Lawrence <paullawrence@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-This adds backing support for FUSE_GETATTR, FUSE_SETATTR, and FUSE_STATFS
+Hi all,
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
-Signed-off-by: Paul Lawrence <paullawrence@google.com>
----
- fs/fuse/backing.c | 296 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/fuse/dir.c     |  67 ++---------
- fs/fuse/fuse_i.h  | 102 ++++++++++++++++
- fs/fuse/inode.c   |  17 +--
- 4 files changed, 412 insertions(+), 70 deletions(-)
+As posting this version, I wanted to make sure these code changes were
+acknowledgeable at first:
 
-diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
-index 79f14634ae6a..e426268aa4e6 100644
---- a/fs/fuse/backing.c
-+++ b/fs/fuse/backing.c
-@@ -2054,6 +2054,302 @@ int fuse_bpf_unlink(int *out, struct inode *dir, struct dentry *entry)
- 				dir, entry);
- }
- 
-+struct fuse_getattr_args {
-+	struct fuse_getattr_in in;
-+	struct fuse_attr_out out;
-+};
-+
-+static int fuse_getattr_initialize_in(struct bpf_fuse_args *fa, struct fuse_getattr_args *args,
-+				      const struct dentry *entry, struct kstat *stat,
-+				      u32 request_mask, unsigned int flags)
-+{
-+	args->in = (struct fuse_getattr_in) {
-+		.getattr_flags = flags,
-+		.fh = -1, /* TODO is this OK? */
-+	};
-+
-+	*fa = (struct bpf_fuse_args) {
-+		.info = (struct bpf_fuse_meta_info) {
-+			.nodeid = get_node_id(entry->d_inode),
-+			.opcode = FUSE_GETATTR,
-+		},
-+		.in_numargs = 1,
-+		.in_args[0] = (struct bpf_fuse_arg) {
-+			.size = sizeof(args->in),
-+			.value = &args->in,
-+		},
-+	};
-+
-+	return 0;
-+}
-+
-+static int fuse_getattr_initialize_out(struct bpf_fuse_args *fa, struct fuse_getattr_args *args,
-+				       const struct dentry *entry, struct kstat *stat,
-+				       u32 request_mask, unsigned int flags)
-+{
-+	args->out = (struct fuse_attr_out) { 0 };
-+
-+	fa->out_numargs = 1;
-+	fa->out_args[0] = (struct bpf_fuse_arg) {
-+		.size = sizeof(args->out),
-+		.value = &args->out,
-+	};
-+
-+	return 0;
-+}
-+
-+/* TODO: unify with overlayfs */
-+static inline int fuse_do_getattr(const struct path *path, struct kstat *stat,
-+				 u32 request_mask, unsigned int flags)
-+{
-+	if (flags & AT_GETATTR_NOSEC)
-+		return vfs_getattr_nosec(path, stat, request_mask, flags);
-+	return vfs_getattr(path, stat, request_mask, flags);
-+}
-+
-+static int fuse_getattr_backing(struct bpf_fuse_args *fa, int *out,
-+				const struct dentry *entry, struct kstat *stat,
-+				u32 request_mask, unsigned int flags)
-+{
-+	struct path *backing_path = &get_fuse_dentry(entry)->backing_path;
-+	struct inode *backing_inode = backing_path->dentry->d_inode;
-+	struct fuse_attr_out *fao = fa->out_args[0].value;
-+	struct kstat tmp;
-+
-+	if (!stat)
-+		stat = &tmp;
-+
-+	*out = fuse_do_getattr(backing_path, stat, request_mask, flags);
-+
-+	if (!*out)
-+		fuse_stat_to_attr(get_fuse_conn(entry->d_inode), backing_inode,
-+				  stat, &fao->attr);
-+
-+	return 0;
-+}
-+
-+static int finalize_attr(struct inode *inode, struct fuse_attr_out *outarg,
-+				u64 attr_version, struct kstat *stat)
-+{
-+	int err = 0;
-+
-+	if (fuse_invalid_attr(&outarg->attr) ||
-+	    ((inode->i_mode ^ outarg->attr.mode) & S_IFMT)) {
-+		fuse_make_bad(inode);
-+		err = -EIO;
-+	} else {
-+		fuse_change_attributes(inode, &outarg->attr, NULL,
-+				       ATTR_TIMEOUT(outarg), attr_version);
-+		if (stat)
-+			fuse_fillattr(inode, &outarg->attr, stat);
-+	}
-+	return err;
-+}
-+
-+static int fuse_getattr_finalize(struct bpf_fuse_args *fa, int *out,
-+				 const struct dentry *entry, struct kstat *stat,
-+				 u32 request_mask, unsigned int flags)
-+{
-+	struct fuse_attr_out *outarg = fa->out_args[0].value;
-+	struct inode *inode = entry->d_inode;
-+	u64 attr_version = fuse_get_attr_version(get_fuse_mount(inode)->fc);
-+
-+	/* TODO: Ensure this doesn't happen if we had an error getting attrs in
-+	 * backing.
-+	 */
-+	*out = finalize_attr(inode, outarg, attr_version, stat);
-+	return 0;
-+}
-+
-+int fuse_bpf_getattr(int *out, struct inode *inode, const struct dentry *entry, struct kstat *stat,
-+		     u32 request_mask, unsigned int flags)
-+{
-+	return bpf_fuse_backing(inode, struct fuse_getattr_args, out,
-+				fuse_getattr_initialize_in, fuse_getattr_initialize_out,
-+				fuse_getattr_backing, fuse_getattr_finalize,
-+				entry, stat, request_mask, flags);
-+}
-+
-+static void fattr_to_iattr(struct fuse_conn *fc,
-+			   const struct fuse_setattr_in *arg,
-+			   struct iattr *iattr)
-+{
-+	unsigned int fvalid = arg->valid;
-+
-+	if (fvalid & FATTR_MODE)
-+		iattr->ia_valid |= ATTR_MODE, iattr->ia_mode = arg->mode;
-+	if (fvalid & FATTR_UID) {
-+		iattr->ia_valid |= ATTR_UID;
-+		iattr->ia_uid = make_kuid(fc->user_ns, arg->uid);
-+	}
-+	if (fvalid & FATTR_GID) {
-+		iattr->ia_valid |= ATTR_GID;
-+		iattr->ia_gid = make_kgid(fc->user_ns, arg->gid);
-+	}
-+	if (fvalid & FATTR_SIZE)
-+		iattr->ia_valid |= ATTR_SIZE, iattr->ia_size = arg->size;
-+	if (fvalid & FATTR_ATIME) {
-+		iattr->ia_valid |= ATTR_ATIME;
-+		iattr->ia_atime.tv_sec = arg->atime;
-+		iattr->ia_atime.tv_nsec = arg->atimensec;
-+		if (!(fvalid & FATTR_ATIME_NOW))
-+			iattr->ia_valid |= ATTR_ATIME_SET;
-+	}
-+	if (fvalid & FATTR_MTIME) {
-+		iattr->ia_valid |= ATTR_MTIME;
-+		iattr->ia_mtime.tv_sec = arg->mtime;
-+		iattr->ia_mtime.tv_nsec = arg->mtimensec;
-+		if (!(fvalid & FATTR_MTIME_NOW))
-+			iattr->ia_valid |= ATTR_MTIME_SET;
-+	}
-+	if (fvalid & FATTR_CTIME) {
-+		iattr->ia_valid |= ATTR_CTIME;
-+		iattr->ia_ctime.tv_sec = arg->ctime;
-+		iattr->ia_ctime.tv_nsec = arg->ctimensec;
-+	}
-+}
-+
-+struct fuse_setattr_args {
-+	struct fuse_setattr_in in;
-+	struct fuse_attr_out out;
-+};
-+
-+static int fuse_setattr_initialize_in(struct bpf_fuse_args *fa, struct fuse_setattr_args *args,
-+				      struct dentry *dentry, struct iattr *attr, struct file *file)
-+{
-+	struct fuse_conn *fc = get_fuse_conn(dentry->d_inode);
-+
-+	*args = (struct fuse_setattr_args) { 0 };
-+	iattr_to_fattr(fc, attr, &args->in, true);
-+
-+	*fa = (struct bpf_fuse_args) {
-+		.info = (struct bpf_fuse_meta_info) {
-+			.opcode = FUSE_SETATTR,
-+			.nodeid = get_node_id(dentry->d_inode),
-+		},
-+		.in_numargs = 1,
-+		.in_args[0].size = sizeof(args->in),
-+		.in_args[0].value = &args->in,
-+	};
-+
-+	return 0;
-+}
-+
-+static int fuse_setattr_initialize_out(struct bpf_fuse_args *fa, struct fuse_setattr_args *args,
-+				       struct dentry *dentry, struct iattr *attr, struct file *file)
-+{
-+	fa->out_numargs = 1;
-+	fa->out_args[0].size = sizeof(args->out);
-+	fa->out_args[0].value = &args->out;
-+
-+	return 0;
-+}
-+
-+static int fuse_setattr_backing(struct bpf_fuse_args *fa, int *out,
-+				struct dentry *dentry, struct iattr *attr, struct file *file)
-+{
-+	struct fuse_conn *fc = get_fuse_conn(dentry->d_inode);
-+	const struct fuse_setattr_in *fsi = fa->in_args[0].value;
-+	struct iattr new_attr = { 0 };
-+	struct path *backing_path = &get_fuse_dentry(dentry)->backing_path;
-+
-+	fattr_to_iattr(fc, fsi, &new_attr);
-+	/* TODO: Some info doesn't get saved by the attr->fattr->attr transition
-+	 * When we actually allow the bpf to change these, we may have to consider
-+	 * the extra flags more, or pass more info into the bpf. Until then we can
-+	 * keep everything except for ATTR_FILE, since we'd need a file on the
-+	 * lower fs. For what it's worth, neither f2fs nor ext4 make use of that
-+	 * even if it is present.
-+	 */
-+	new_attr.ia_valid = attr->ia_valid & ~ATTR_FILE;
-+	inode_lock(d_inode(backing_path->dentry));
-+	*out = notify_change(&nop_mnt_idmap, backing_path->dentry, &new_attr,
-+			    NULL);
-+	inode_unlock(d_inode(backing_path->dentry));
-+
-+	if (*out == 0 && (new_attr.ia_valid & ATTR_SIZE))
-+		i_size_write(dentry->d_inode, new_attr.ia_size);
-+	return 0;
-+}
-+
-+static int fuse_setattr_finalize(struct bpf_fuse_args *fa, int *out,
-+				 struct dentry *dentry, struct iattr *attr, struct file *file)
-+{
-+	return 0;
-+}
-+
-+int fuse_bpf_setattr(int *out, struct inode *inode, struct dentry *dentry, struct iattr *attr, struct file *file)
-+{
-+	return bpf_fuse_backing(inode, struct fuse_setattr_args, out,
-+				fuse_setattr_initialize_in, fuse_setattr_initialize_out,
-+				fuse_setattr_backing, fuse_setattr_finalize,
-+				dentry, attr, file);
-+}
-+
-+static int fuse_statfs_initialize_in(struct bpf_fuse_args *fa, struct fuse_statfs_out *out,
-+				     struct dentry *dentry, struct kstatfs *buf)
-+{
-+	*fa = (struct bpf_fuse_args) {
-+		.info = (struct bpf_fuse_meta_info) {
-+			.nodeid = get_node_id(d_inode(dentry)),
-+			.opcode = FUSE_STATFS,
-+		},
-+	};
-+
-+	return 0;
-+}
-+
-+static int fuse_statfs_initialize_out(struct bpf_fuse_args *fa, struct fuse_statfs_out *out,
-+				      struct dentry *dentry, struct kstatfs *buf)
-+{
-+	*out = (struct fuse_statfs_out) { 0 };
-+
-+	fa->out_numargs = 1;
-+	fa->out_args[0].size = sizeof(*out);
-+	fa->out_args[0].value = out;
-+
-+	return 0;
-+}
-+
-+static int fuse_statfs_backing(struct bpf_fuse_args *fa, int *out,
-+			       struct dentry *dentry, struct kstatfs *buf)
-+{
-+	struct path backing_path;
-+	struct fuse_statfs_out *fso = fa->out_args[0].value;
-+
-+	*out = 0;
-+	get_fuse_backing_path(dentry, &backing_path);
-+	if (!backing_path.dentry)
-+		return -EBADF;
-+	*out = vfs_statfs(&backing_path, buf);
-+	path_put(&backing_path);
-+	buf->f_type = FUSE_SUPER_MAGIC;
-+
-+	//TODO Provide postfilter opportunity to modify
-+	if (!*out)
-+		convert_statfs_to_fuse(&fso->st, buf);
-+
-+	return 0;
-+}
-+
-+static int fuse_statfs_finalize(struct bpf_fuse_args *fa, int *out,
-+				struct dentry *dentry, struct kstatfs *buf)
-+{
-+	struct fuse_statfs_out *fso = fa->out_args[0].value;
-+
-+	if (!fa->info.error_in)
-+		convert_fuse_statfs(buf, &fso->st);
-+	return 0;
-+}
-+
-+int fuse_bpf_statfs(int *out, struct inode *inode, struct dentry *dentry, struct kstatfs *buf)
-+{
-+	return bpf_fuse_backing(dentry->d_inode, struct fuse_statfs_out, out,
-+				fuse_statfs_initialize_in, fuse_statfs_initialize_out,
-+				fuse_statfs_backing, fuse_statfs_finalize,
-+				dentry, buf);
-+}
-+
- struct fuse_read_args {
- 	struct fuse_read_in in;
- 	struct fuse_read_out out;
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index 0426243d9345..77d231ab1d9c 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -1256,7 +1256,7 @@ static int fuse_link(struct dentry *entry, struct inode *newdir,
- 	return err;
- }
- 
--static void fuse_fillattr(struct inode *inode, struct fuse_attr *attr,
-+void fuse_fillattr(struct inode *inode, struct fuse_attr *attr,
- 			  struct kstat *stat)
- {
- 	unsigned int blkbits;
-@@ -1414,6 +1414,7 @@ static int fuse_do_getattr(struct inode *inode, struct kstat *stat,
- }
- 
- static int fuse_update_get_attr(struct inode *inode, struct file *file,
-+				const struct path *path,
- 				struct kstat *stat, u32 request_mask,
- 				unsigned int flags)
- {
-@@ -1424,6 +1425,8 @@ static int fuse_update_get_attr(struct inode *inode, struct file *file,
- 	u32 inval_mask = READ_ONCE(fi->inval_mask);
- 	u32 cache_mask = fuse_get_cache_mask(inode);
- 
-+	if (fuse_bpf_getattr(&err, inode, path->dentry, stat, request_mask, flags))
-+			return err;
- 
- 	/* FUSE only supports basic stats and possibly btime */
- 	request_mask &= STATX_BASIC_STATS | STATX_BTIME;
-@@ -1469,7 +1472,7 @@ static int fuse_update_get_attr(struct inode *inode, struct file *file,
- 
- int fuse_update_attributes(struct inode *inode, struct file *file, u32 mask)
- {
--	return fuse_update_get_attr(inode, file, NULL, mask, 0);
-+	return fuse_update_get_attr(inode, file, &file->f_path, NULL, mask, 0);
- }
- 
- int fuse_reverse_inval_entry(struct fuse_conn *fc, u64 parent_nodeid,
-@@ -1833,58 +1836,6 @@ static long fuse_dir_compat_ioctl(struct file *file, unsigned int cmd,
- 				 FUSE_IOCTL_COMPAT | FUSE_IOCTL_DIR);
- }
- 
--static inline bool update_mtime(unsigned int ivalid, bool trust_local_mtime)
--{
--	/* Always update if mtime is explicitly set  */
--	if (ivalid & ATTR_MTIME_SET)
--		return true;
--
--	/* Or if kernel i_mtime is the official one */
--	if (trust_local_mtime)
--		return true;
--
--	/* If it's an open(O_TRUNC) or an ftruncate(), don't update */
--	if ((ivalid & ATTR_SIZE) && (ivalid & (ATTR_OPEN | ATTR_FILE)))
--		return false;
--
--	/* In all other cases update */
--	return true;
--}
--
--static void iattr_to_fattr(struct fuse_conn *fc, struct iattr *iattr,
--			   struct fuse_setattr_in *arg, bool trust_local_cmtime)
--{
--	unsigned ivalid = iattr->ia_valid;
--
--	if (ivalid & ATTR_MODE)
--		arg->valid |= FATTR_MODE,   arg->mode = iattr->ia_mode;
--	if (ivalid & ATTR_UID)
--		arg->valid |= FATTR_UID,    arg->uid = from_kuid(fc->user_ns, iattr->ia_uid);
--	if (ivalid & ATTR_GID)
--		arg->valid |= FATTR_GID,    arg->gid = from_kgid(fc->user_ns, iattr->ia_gid);
--	if (ivalid & ATTR_SIZE)
--		arg->valid |= FATTR_SIZE,   arg->size = iattr->ia_size;
--	if (ivalid & ATTR_ATIME) {
--		arg->valid |= FATTR_ATIME;
--		arg->atime = iattr->ia_atime.tv_sec;
--		arg->atimensec = iattr->ia_atime.tv_nsec;
--		if (!(ivalid & ATTR_ATIME_SET))
--			arg->valid |= FATTR_ATIME_NOW;
--	}
--	if ((ivalid & ATTR_MTIME) && update_mtime(ivalid, trust_local_cmtime)) {
--		arg->valid |= FATTR_MTIME;
--		arg->mtime = iattr->ia_mtime.tv_sec;
--		arg->mtimensec = iattr->ia_mtime.tv_nsec;
--		if (!(ivalid & ATTR_MTIME_SET) && !trust_local_cmtime)
--			arg->valid |= FATTR_MTIME_NOW;
--	}
--	if ((ivalid & ATTR_CTIME) && trust_local_cmtime) {
--		arg->valid |= FATTR_CTIME;
--		arg->ctime = iattr->ia_ctime.tv_sec;
--		arg->ctimensec = iattr->ia_ctime.tv_nsec;
--	}
--}
--
- /*
-  * Prevent concurrent writepages on inode
-  *
-@@ -1999,6 +1950,9 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
- 	bool trust_local_cmtime = is_wb;
- 	bool fault_blocked = false;
- 
-+	if (fuse_bpf_setattr(&err, inode, dentry, attr, file))
-+		return err;
-+
- 	if (!fc->default_permissions)
- 		attr->ia_valid |= ATTR_FORCE;
- 
-@@ -2178,7 +2132,8 @@ static int fuse_setattr(struct mnt_idmap *idmap, struct dentry *entry,
- 			 * ia_mode calculation may have used stale i_mode.
- 			 * Refresh and recalculate.
- 			 */
--			ret = fuse_do_getattr(inode, NULL, file);
-+			if (!fuse_bpf_getattr(&ret, inode, entry, NULL, 0, 0))
-+				ret = fuse_do_getattr(inode, NULL, file);
- 			if (ret)
- 				return ret;
- 
-@@ -2235,7 +2190,7 @@ static int fuse_getattr(struct mnt_idmap *idmap,
- 		return -EACCES;
- 	}
- 
--	return fuse_update_get_attr(inode, NULL, stat, request_mask, flags);
-+	return fuse_update_get_attr(inode, NULL, path, stat, request_mask, flags);
- }
- 
- static const struct inode_operations fuse_dir_inode_operations = {
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 8bd78a52a6b5..61a17071ab02 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -1460,6 +1460,10 @@ int fuse_bpf_file_read_iter(ssize_t *out, struct inode *inode, struct kiocb *ioc
- int fuse_bpf_file_write_iter(ssize_t *out, struct inode *inode, struct kiocb *iocb, struct iov_iter *from);
- int fuse_bpf_file_fallocate(int *out, struct inode *inode, struct file *file, int mode, loff_t offset, loff_t length);
- int fuse_bpf_lookup(struct dentry **out, struct inode *dir, struct dentry *entry, unsigned int flags);
-+int fuse_bpf_getattr(int *out, struct inode *inode, const struct dentry *entry, struct kstat *stat,
-+		     u32 request_mask, unsigned int flags);
-+int fuse_bpf_setattr(int *out, struct inode *inode, struct dentry *dentry, struct iattr *attr, struct file *file);
-+int fuse_bpf_statfs(int *out, struct inode *inode, struct dentry *dentry, struct kstatfs *buf);
- int fuse_bpf_readdir(int *out, struct inode *inode, struct file *file, struct dir_context *ctx);
- int fuse_bpf_access(int *out, struct inode *inode, int mask);
- 
-@@ -1559,6 +1563,22 @@ static inline int fuse_bpf_lookup(struct dentry **out, struct inode *dir, struct
- 	return 0;
- }
- 
-+static inline int fuse_bpf_getattr(int *out, struct inode *inode, const struct dentry *entry, struct kstat *stat,
-+				   u32 request_mask, unsigned int flags)
-+{
-+	return 0;
-+}
-+
-+static inline int fuse_bpf_setattr(int *out, struct inode *inode, struct dentry *dentry, struct iattr *attr, struct file *file)
-+{
-+	return 0;
-+}
-+
-+static inline int fuse_bpf_statfs(int *out, struct inode *inode, struct dentry *dentry, struct kstatfs *buf)
-+{
-+	return 0;
-+}
-+
- static inline int fuse_bpf_readdir(int *out, struct inode *inode, struct file *file, struct dir_context *ctx)
- {
- 	return 0;
-@@ -1577,6 +1597,88 @@ int fuse_handle_backing(struct fuse_bpf_entry *fbe, struct path *backing_path);
- 
- int fuse_revalidate_backing(struct dentry *entry, unsigned int flags);
- 
-+static inline bool update_mtime(unsigned int ivalid, bool trust_local_mtime)
-+{
-+	/* Always update if mtime is explicitly set  */
-+	if (ivalid & ATTR_MTIME_SET)
-+		return true;
-+
-+	/* Or if kernel i_mtime is the official one */
-+	if (trust_local_mtime)
-+		return true;
-+
-+	/* If it's an open(O_TRUNC) or an ftruncate(), don't update */
-+	if ((ivalid & ATTR_SIZE) && (ivalid & (ATTR_OPEN | ATTR_FILE)))
-+		return false;
-+
-+	/* In all other cases update */
-+	return true;
-+}
-+
-+void fuse_fillattr(struct inode *inode, struct fuse_attr *attr,
-+			  struct kstat *stat);
-+
-+static inline void iattr_to_fattr(struct fuse_conn *fc, struct iattr *iattr,
-+			   struct fuse_setattr_in *arg, bool trust_local_cmtime)
-+{
-+	unsigned int ivalid = iattr->ia_valid;
-+
-+	if (ivalid & ATTR_MODE)
-+		arg->valid |= FATTR_MODE,   arg->mode = iattr->ia_mode;
-+	if (ivalid & ATTR_UID)
-+		arg->valid |= FATTR_UID,    arg->uid = from_kuid(fc->user_ns, iattr->ia_uid);
-+	if (ivalid & ATTR_GID)
-+		arg->valid |= FATTR_GID,    arg->gid = from_kgid(fc->user_ns, iattr->ia_gid);
-+	if (ivalid & ATTR_SIZE)
-+		arg->valid |= FATTR_SIZE,   arg->size = iattr->ia_size;
-+	if (ivalid & ATTR_ATIME) {
-+		arg->valid |= FATTR_ATIME;
-+		arg->atime = iattr->ia_atime.tv_sec;
-+		arg->atimensec = iattr->ia_atime.tv_nsec;
-+		if (!(ivalid & ATTR_ATIME_SET))
-+			arg->valid |= FATTR_ATIME_NOW;
-+	}
-+	if ((ivalid & ATTR_MTIME) && update_mtime(ivalid, trust_local_cmtime)) {
-+		arg->valid |= FATTR_MTIME;
-+		arg->mtime = iattr->ia_mtime.tv_sec;
-+		arg->mtimensec = iattr->ia_mtime.tv_nsec;
-+		if (!(ivalid & ATTR_MTIME_SET) && !trust_local_cmtime)
-+			arg->valid |= FATTR_MTIME_NOW;
-+	}
-+	if ((ivalid & ATTR_CTIME) && trust_local_cmtime) {
-+		arg->valid |= FATTR_CTIME;
-+		arg->ctime = iattr->ia_ctime.tv_sec;
-+		arg->ctimensec = iattr->ia_ctime.tv_nsec;
-+	}
-+}
-+
-+static inline void convert_statfs_to_fuse(struct fuse_kstatfs *attr, struct kstatfs *stbuf)
-+{
-+	attr->bsize   = stbuf->f_bsize;
-+	attr->frsize  = stbuf->f_frsize;
-+	attr->blocks  = stbuf->f_blocks;
-+	attr->bfree   = stbuf->f_bfree;
-+	attr->bavail  = stbuf->f_bavail;
-+	attr->files   = stbuf->f_files;
-+	attr->ffree   = stbuf->f_ffree;
-+	attr->namelen = stbuf->f_namelen;
-+	/* fsid is left zero */
-+}
-+
-+static inline void convert_fuse_statfs(struct kstatfs *stbuf, struct fuse_kstatfs *attr)
-+{
-+	stbuf->f_type    = FUSE_SUPER_MAGIC;
-+	stbuf->f_bsize   = attr->bsize;
-+	stbuf->f_frsize  = attr->frsize;
-+	stbuf->f_blocks  = attr->blocks;
-+	stbuf->f_bfree   = attr->bfree;
-+	stbuf->f_bavail  = attr->bavail;
-+	stbuf->f_files   = attr->files;
-+	stbuf->f_ffree   = attr->ffree;
-+	stbuf->f_namelen = attr->namelen;
-+	/* fsid is left zero */
-+}
-+
- #ifdef CONFIG_FUSE_BPF
- int __init fuse_bpf_init(void);
- void __exit fuse_bpf_cleanup(void);
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 825b65117126..bc504e0d0e80 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -696,20 +696,6 @@ static void fuse_send_destroy(struct fuse_mount *fm)
- 	}
- }
- 
--static void convert_fuse_statfs(struct kstatfs *stbuf, struct fuse_kstatfs *attr)
--{
--	stbuf->f_type    = FUSE_SUPER_MAGIC;
--	stbuf->f_bsize   = attr->bsize;
--	stbuf->f_frsize  = attr->frsize;
--	stbuf->f_blocks  = attr->blocks;
--	stbuf->f_bfree   = attr->bfree;
--	stbuf->f_bavail  = attr->bavail;
--	stbuf->f_files   = attr->files;
--	stbuf->f_ffree   = attr->ffree;
--	stbuf->f_namelen = attr->namelen;
--	/* fsid is left zero */
--}
--
- static int fuse_statfs(struct dentry *dentry, struct kstatfs *buf)
- {
- 	struct super_block *sb = dentry->d_sb;
-@@ -723,6 +709,9 @@ static int fuse_statfs(struct dentry *dentry, struct kstatfs *buf)
- 		return 0;
- 	}
- 
-+	if (fuse_bpf_statfs(&err, dentry->d_inode, dentry, buf))
-+		return err;
-+
- 	memset(&outarg, 0, sizeof(outarg));
- 	args.in_numargs = 0;
- 	args.opcode = FUSE_STATFS;
+The previous enabling process has been paused to address vulnerabilities
+[1][2] that could compromise Key Locker's ability to protect AES keys.
+Now, with the mainlining of mitigations [3][4], patches (Patch 10-11)
+were added to ensure the application of these mitigations.
+
+During this period, there was a significant change in the mainline commit
+b81fac906a8f ("x86/fpu: Move FPU initialization into
+arch_cpu_finalize_init()"). This affected Key Locker's initialization
+code, which clobbers XMM registers for loading a wrapping key, as it
+depends on FPU initialization.
+
+In this revision, the setup code was adjusted to separate the
+initialization part to be invoked during arch_initcall(). The remaining
+code for copying the wrapping key from the backup resides in the
+identify_cpu() -> setup_keylocker() path. This separation simplifies the
+code and resolves an issue with hotplug.
+
+The remaining changes mainly focus on the AES crypto driver, addressing
+feedback from Eric. Notably, while doing so, it was realized better to
+disallow a module build. Key Locker's AES instructions do not support
+192-bit keys. Supporting a module build would require exporting some
+AES-NI functions, leading to performance-impacting indirect calls. I
+think we can revisit module support later if necessary.
+
+Then, the following is a summary of changes per patch since v8 [6]:
+
+PATCH7-8:
+* Invoke the setup code via arch_initcall() due to upstream changes
+  delaying the FPU setup.
+
+PATCH9-11:
+* Add new patches for security and hotplug support clarification
+
+PATCH12:
+* Drop the "nokeylocker" option. (Borislav Petkov)
+
+PATCH13:
+* Introduce 'union x86_aes_ctx'. (Eric Biggers)
+* Ensure 'inline' for wrapper functions.
+
+PATCH14:
+* Combine the XTS enc/dec assembly code in a macro.  (Eric Biggers)
+* Define setkey() as void instead of returning 'int'.  (Eric Biggers)
+* Rearrange the assembly code to reduce jumps, especially for success
+  cases.  (Eric Biggers)
+* Update the changelog for clarification. (Eric Biggers)
+* Exclude module build.
+
+This series is based on my AES-NI setkey() cleanup [7], which has been
+recently merged into the crypto repository [8], and I thought it was
+better to go first. You can also find this series here:
+    git://github.com/intel-staging/keylocker.git kl-v9
+
+Thanks,
+Chang
+
+[1] Gather Data Sampling (GDS)
+    https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/gather-data-sampling.html
+[2] Register File Data Sampling (RFDS)
+    https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/advisory-guidance/register-file-data-sampling.html
+[3] Mainlining of GDS mitigation
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=64094e7e3118aff4b0be8ff713c242303e139834
+[4] Mainlining of RFDS Mitigation
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0e33cf955f07e3991e45109cb3e29fbc9ca51d06
+[5]  Initialize FPU late
+    https://lore.kernel.org/lkml/168778151512.3634408.11432553576702911909.tglx@vps.praguecc.cz/
+[6] V8: https://lore.kernel.org/lkml/20230603152227.12335-1-chang.seok.bae@intel.com/
+[7] https://lore.kernel.org/lkml/20240322230459.456606-1-chang.seok.bae@intel.com/
+[8] git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
+
+Chang S. Bae (14):
+  Documentation/x86: Document Key Locker
+  x86/cpufeature: Enumerate Key Locker feature
+  x86/insn: Add Key Locker instructions to the opcode map
+  x86/asm: Add a wrapper function for the LOADIWKEY instruction
+  x86/msr-index: Add MSRs for Key Locker wrapping key
+  x86/keylocker: Define Key Locker CPUID leaf
+  x86/cpu/keylocker: Load a wrapping key at boot time
+  x86/PM/keylocker: Restore the wrapping key on the resume from ACPI
+    S3/4
+  x86/hotplug/keylocker: Ensure wrapping key backup capability
+  x86/cpu/keylocker: Check Gather Data Sampling mitigation
+  x86/cpu/keylocker: Check Register File Data Sampling mitigation
+  x86/Kconfig: Add a configuration for Key Locker
+  crypto: x86/aes - Prepare for new AES-XTS implementation
+  crypto: x86/aes-kl - Implement the AES-XTS algorithm
+
+ Documentation/arch/x86/index.rst            |   1 +
+ Documentation/arch/x86/keylocker.rst        |  96 +++++
+ arch/x86/Kconfig                            |   3 +
+ arch/x86/Kconfig.assembler                  |   5 +
+ arch/x86/crypto/Kconfig                     |  17 +
+ arch/x86/crypto/Makefile                    |   3 +
+ arch/x86/crypto/aes-helper_asm.S            |  22 ++
+ arch/x86/crypto/aes-helper_glue.h           | 168 ++++++++
+ arch/x86/crypto/aeskl-intel_asm.S           | 412 ++++++++++++++++++++
+ arch/x86/crypto/aeskl-intel_glue.c          | 187 +++++++++
+ arch/x86/crypto/aeskl-intel_glue.h          |  35 ++
+ arch/x86/crypto/aesni-intel_asm.S           |  47 +--
+ arch/x86/crypto/aesni-intel_glue.c          | 193 ++-------
+ arch/x86/crypto/aesni-intel_glue.h          |  40 ++
+ arch/x86/include/asm/cpufeatures.h          |   1 +
+ arch/x86/include/asm/disabled-features.h    |   8 +-
+ arch/x86/include/asm/keylocker.h            |  42 ++
+ arch/x86/include/asm/msr-index.h            |   6 +
+ arch/x86/include/asm/special_insns.h        |  28 ++
+ arch/x86/include/uapi/asm/processor-flags.h |   2 +
+ arch/x86/kernel/Makefile                    |   1 +
+ arch/x86/kernel/cpu/common.c                |   4 +-
+ arch/x86/kernel/cpu/cpuid-deps.c            |   1 +
+ arch/x86/kernel/keylocker.c                 | 219 +++++++++++
+ arch/x86/lib/x86-opcode-map.txt             |  11 +-
+ arch/x86/power/cpu.c                        |   2 +
+ tools/arch/x86/lib/x86-opcode-map.txt       |  11 +-
+ 27 files changed, 1363 insertions(+), 202 deletions(-)
+ create mode 100644 Documentation/arch/x86/keylocker.rst
+ create mode 100644 arch/x86/crypto/aes-helper_asm.S
+ create mode 100644 arch/x86/crypto/aes-helper_glue.h
+ create mode 100644 arch/x86/crypto/aeskl-intel_asm.S
+ create mode 100644 arch/x86/crypto/aeskl-intel_glue.c
+ create mode 100644 arch/x86/crypto/aeskl-intel_glue.h
+ create mode 100644 arch/x86/crypto/aesni-intel_glue.h
+ create mode 100644 arch/x86/include/asm/keylocker.h
+ create mode 100644 arch/x86/kernel/keylocker.c
+
+
+base-commit: 3a447c31d337bdec7fbc605a7a1e00aff4c492d0
 -- 
-2.44.0.478.gd926399ef9-goog
+2.34.1
 
 
