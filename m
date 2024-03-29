@@ -1,151 +1,146 @@
-Return-Path: <linux-kernel+bounces-125131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7A1892072
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:30:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96BC789207B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B4DA1F2E505
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:30:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ABAE1F2CD82
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C7E1C0DD5;
-	Fri, 29 Mar 2024 15:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772B81DA37;
+	Fri, 29 Mar 2024 15:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Z8Ryn5eB"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KG7nAZHV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34ABF1C0DC6
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 15:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF14FBF3;
+	Fri, 29 Mar 2024 15:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711726198; cv=none; b=glyUTMquu6UIXbHdsM/yF5TgSfaNS+9Sl5UoVm8wvt931hE9fkXwo0bbD57KxRlEOlLy6MQ3RFxaVvaSsXGmF+ErbXnkVJ/NLCULtpFkdit0dE6CpEw7GRXjw6GhCa6ehz+sFHflsLKCRUVqvFDKm9Q3YZ6aGrxL6ubLWoHQ3FA=
+	t=1711726299; cv=none; b=RaPPLXqa/8aw4fUn6Y/QdKGNarCA22JFQGn1mc13WzYl9OyFex7XD2JYPNt3SM1b2thHdfksCU8EXJHMqYLgTPTFMWEIJ+COBb4bxNZHVViO2ehS4P55ghB6LcNCiNiSwk9yAEDaRvsWjHYlsC83NVnRcI+ZAbLpGuEsyuM+TGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711726198; c=relaxed/simple;
-	bh=H/eGfiCoPpDQTvPeEIon83ZcTYLiotzPPecPoDgU+tQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dCbquuOV+46LFlw3Ppiisz13SvrsAXCA/im3+1uolTnR7bsCAZ2xXpYdlRAu52DEXkyljxE4FrHm8Q72JmL3PjLYBbAbH0klBKLKJRSODdQDna6x48qI7gCl0hazj3LlaLtPSy62LzD6efBCq2Zo0PMCRv3rNBCdvsrQN0/c36Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Z8Ryn5eB; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dc8b280155so1280028a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 08:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711726195; x=1712330995; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tzNSZ6G1qWiFUQSQyVJPr7JWiuaZBzmUWG+3hwZo+Pk=;
-        b=Z8Ryn5eBpINZnhhRqMNTW8m7RO9oWGQNSP67gljQ7JlSO9/I1XFtfQAcu5GZMTurAn
-         sGjP7FdWof1blfj1SVJxBbWkIz8NuxAbFkd5VK++NmrGbhIXRsG4rktUfAfxSL/uH0p2
-         aK0rWRvrI5PEslQtp4aAz8C0TH5fDUUvq0p8XobcVaIZhWRtbEaImMWGVEmvcRjws662
-         tuaY2tPj0TwX47aCw/5UCrmvDZqG2wMK7KPqV15zp7hxsccD8YKiOvkCBir4BWxBT4+1
-         IooQmabP8aITSTmOTYNp6N2/5r1vAvX43TP5KjnPTX/D71KBZ1+X4rJfq8mbqh27x3tB
-         BZwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711726195; x=1712330995;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tzNSZ6G1qWiFUQSQyVJPr7JWiuaZBzmUWG+3hwZo+Pk=;
-        b=kvqbg+VxN44EtiIiz+c7XWuNQ8LuWLcEmR9J3RuBUvnzce2ooWmnNMVQo74zg0uzs3
-         GuKkvoK4LgkogPahwrTEhJa3hzETmg+IJ2KeXbWvyX3SLJZTejWoqa1FN2c/2lzR9H1R
-         PHLgXqg/guH2xHjXsmTMgpKA5Jtbc2EIhq2PrQ0N/x+iUBHH76RDi1IRX+p+gkUZfykq
-         YW6h8DculCF95G3BLJiFodxK12QDxIk42LCJ4YMY781j6gV9WQhLy9A71mmHDW7KutzC
-         +OJQzMIX/kBkO2AomX0AEDeDxoEl+spGuTJm4s7gLb/XJtWkG/V+gNwT2uw19q1tvPWq
-         yx7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVHkxu3PQwEGbIQnESCth2Y0shERSG6UbMWHQ0+SywiVAVXpr30Ceg5ZqjgTl8VuQxtEPwfAaFkreWc6SXN/lVrry/dZGbwxhyFFgjG
-X-Gm-Message-State: AOJu0YzAVMTfi2xkaYc+t05qiLmDyj5Bx3MuJAQXhfwfUrkSauPPrPRW
-	wjdNe7S+YJzPHTlccmD0NXVaHMu1nGSB1CfGBBTPOKSc5w2mrfK4lKGmLr4dAzw=
-X-Google-Smtp-Source: AGHT+IFR2fMOFIk1UfXLrPnEC1CztADEvHc1ABiWkLvqjwKnCTR2YYBFRmBwhz7IIBv/kRjlDulqlg==
-X-Received: by 2002:a05:6808:11cf:b0:3c3:84c5:173e with SMTP id p15-20020a05680811cf00b003c384c5173emr2529550oiv.50.1711726195157;
-        Fri, 29 Mar 2024 08:29:55 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id cr4-20020a056808368400b003c1e577140asm602225oib.25.2024.03.29.08.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 08:29:54 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: bpf@vger.kernel.org
-Cc: David Lechner <dlechner@baylibre.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: fix typo in uapi doc comments
-Date: Fri, 29 Mar 2024 10:28:46 -0500
-Message-ID: <20240329152900.398260-2-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1711726299; c=relaxed/simple;
+	bh=o5wvscSbfKEAAlh6310IOTAWfM+GCnb8Nb2D8Svvj1c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WUD+21DqHx0yYNXlJheN3Xy8qJjEMrPYVdsH14isxzDEUO00IDAP5SkYUPVEPuKbVi8ufLhLfccWAUwoHJqH2uaXyvLdsI8hkKjexA7n3OSFZe2Gtl69pqhAQp7jW1SFFkt5mzjcRTpg3bocIY/ZpR6JKKJ4IbpW8Dygpl0HZtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KG7nAZHV; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711726298; x=1743262298;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=o5wvscSbfKEAAlh6310IOTAWfM+GCnb8Nb2D8Svvj1c=;
+  b=KG7nAZHVSFxRPLY8Qs7DvYuzLkil4enE2onSTw4x+yYFXWDXPL8NwnDV
+   21NpDjJGLPgJ9jDEgKpEj/ON03EzQFOTOjVWcpTRw+3BaWNyAWx0E+o2d
+   YW8JFwyI6TxFLK2AnwIgaFBo8XmRHOJXqEJ1CnlscHY7F/QjzYYPFlQUr
+   nis0vzYST340tc8Pe+pkRq1nQWNDR06yxfSMcaZITyQzYVbUyj5VpZU6r
+   3A1SbdD1UZWpS4OnwORyYTPZEjaOidqpNeIX1afFR8y6bxt8Ro3X9M6UW
+   ceE7Ql6SazCgZbTersDKvhe/1m9W/O4fdenGOhbVAKf+teoQY07L4uRhE
+   Q==;
+X-CSE-ConnectionGUID: hT58j8j1ThiYpHD1PlogdQ==
+X-CSE-MsgGUID: eWMqijdAShe7JQTaWfWoHg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="10730117"
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="10730117"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 08:31:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="16972603"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 08:31:37 -0700
+Date: Fri, 29 Mar 2024 08:31:36 -0700
+From: Tony Luck <tony.luck@intel.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: linux-doc@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Peter Newman <peternewman@google.com>,
+	James Morse <james.morse@arm.com>, Babu Moger <babu.moger@amd.com>,
+	Drew Fustini <dfustini@baylibre.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH] Documentation/x86: Document resctrl bandwidth control
+ units are MiB
+Message-ID: <Zgbe2FFwyHMmmsyM@agluck-desk3>
+References: <20240322182016.196544-1-tony.luck@intel.com>
+ <56a93ec2-dc01-49be-b917-5134f5794062@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56a93ec2-dc01-49be-b917-5134f5794062@intel.com>
 
-In a few places in the bpf uapi headers, EOPNOTSUPP is missing a "P" in
-the doc comments. This adds the missing "P".
+On Thu, Mar 28, 2024 at 06:01:33PM -0700, Reinette Chatre wrote:
+> Hi Tony,
+> 
+> On 3/22/2024 11:20 AM, Tony Luck wrote:
+> > The memory bandwidth software controller uses 2^20 units rather than
+> > 10^6. See mbm_bw_count() which computes bandwidth using the "SZ_1M"
+> > Linux define for 0x00100000.
+> > 
+> > Update the documentation to use MiB when describing this feature.
+> > It's too late to fix the mount option "mba_MBps" as that is now an
+> > established user interface.
+> 
+> I see that this is merged already but I do not think this is correct.
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- include/uapi/linux/bpf.h       | 4 ++--
- tools/include/uapi/linux/bpf.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+I was surprised that Ingo merged it without giving folks a chance to
+comment.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 3c42b9f1bada..f83a4de0ac30 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5020,7 +5020,7 @@ union bpf_attr {
-  *		bytes will be copied to *dst*
-  *	Return
-  *		The **hash_algo** is returned on success,
-- *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
-+ *		**-EOPNOTSUPP** if IMA is disabled or **-EINVAL** if
-  *		invalid arguments are passed.
-  *
-  * struct socket *bpf_sock_from_file(struct file *file)
-@@ -5506,7 +5506,7 @@ union bpf_attr {
-  *		bytes will be copied to *dst*
-  *	Return
-  *		The **hash_algo** is returned on success,
-- *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
-+ *		**-EOPNOTSUPP** if the hash calculation failed or **-EINVAL** if
-  *		invalid arguments are passed.
-  *
-  * void *bpf_kptr_xchg(void *map_value, void *ptr)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 3c42b9f1bada..f83a4de0ac30 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5020,7 +5020,7 @@ union bpf_attr {
-  *		bytes will be copied to *dst*
-  *	Return
-  *		The **hash_algo** is returned on success,
-- *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
-+ *		**-EOPNOTSUPP** if IMA is disabled or **-EINVAL** if
-  *		invalid arguments are passed.
-  *
-  * struct socket *bpf_sock_from_file(struct file *file)
-@@ -5506,7 +5506,7 @@ union bpf_attr {
-  *		bytes will be copied to *dst*
-  *	Return
-  *		The **hash_algo** is returned on success,
-- *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
-+ *		**-EOPNOTSUPP** if the hash calculation failed or **-EINVAL** if
-  *		invalid arguments are passed.
-  *
-  * void *bpf_kptr_xchg(void *map_value, void *ptr)
--- 
-2.43.2
+> Shouldn't the implementation be fixed instead? Looking at the implementation
+> the intent appears to be clear that the goal is to have bandwidth be
+> MBps .... that is when looking from documentation to the define
+> (MBA_MAX_MBPS) to the comments of the function you reference above
+> mbm_bw_count(). For example, "...and delta bandwidth in MBps ..."
+> and "...maintain values in MBps..."
 
+Difficult to be sure of intent. But in general when people talk about
+"megabytes" in the context of memory they mean 2^20. Storage capacity
+on computers was originally in 2^20 units until the marketing teams
+at disk drive manufacturers realized they could print numbers 4.8% bigger
+on their products by using SI unit 10^6 Mega prefix (rising to 7.3% with
+Giga and 10% with Tera).
+
+It is clear that the code uses 2^20 as it converts from bytes using
+a right shift by 20.
+
+Fixing the code would change the legacy API. Folks with a schemata
+file that sets a limit of 5000 MB/s would find their applications
+throttled by an addtional 4.8% on upgrading to a kernel with this
+"fix".
+
+> To me this change creates significant confusion since it now contradicts
+> with the source code and comments I reference above. Not to mention the
+> discrepancy with user documentation.
+> 
+> If you believe that this should be MiB then should the
+> source and comments not also be changed to reflect that? Or alternatively,
+> why not just fix mbm_bw_count() to support the documentation and what
+> it appears to be intended to do. If users have been using the interface
+> expecting MBps then this seems more like a needed bugfix than 
+> a needed documentation change.
+
+I agree that the comments need to be fixed. I will spin up a patch.
+
+> Finally, if you make documentation changes, please do build the
+> documentation afterwards. This change introduces a warning:
+> 
+> Memory bandwidth Allocation specified in MiBps
+> ---------------------------------------------
+> .../linux/Documentation/arch/x86/resctrl.rst:583: WARNING: Title underline too short.
+
+My bad. Ingo has already applied a fix to TIP x86/urgent. I assume that
+will be merged to Linus soon.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/urgent&id=91491e5fb09624116950f9f2e1767a42e1da786
+
+-Tony
 
