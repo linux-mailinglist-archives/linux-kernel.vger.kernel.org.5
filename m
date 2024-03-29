@@ -1,155 +1,164 @@
-Return-Path: <linux-kernel+bounces-124463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B549F891866
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:11:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31E52891869
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D2F0284AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:11:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E3EDB22310
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B318563E;
-	Fri, 29 Mar 2024 12:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933CF823CD;
+	Fri, 29 Mar 2024 12:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="r8CbGAaL"
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D9mE3A+F"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E487F4084D;
-	Fri, 29 Mar 2024 12:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28ED1537E8
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711714265; cv=none; b=jtA77TP4qXTsSzAucVHxMXX8G3g2ZciMZjgjRrr8PvB0HoP44zKcA1+lOmI3to3KdXByUZaopHT3EYc8fOoOSPJ4JAAmFpqqExbT1PeFGKWTjT1nO0SjPH3FLOFPLsWfVBKz6JCAq5w210m5lV/5jwCmtggpIrmDlp5dDPvlXK8=
+	t=1711714312; cv=none; b=SUugZWhLFsG8cDK4YfpB29LN174AHN/g72EeDFN3qmRVmFR2LGzHY78FFapldwLAUfvXo+MUiH4UaZiq4nfiZy1LJgFeJzoacm51djtKBkWlCyX9LEgAa4MHVDDXD4Eex3Mj7BIV4Q7bAubXS5emCkl8ZMU/K8Qoy3RxBhW/Uio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711714265; c=relaxed/simple;
-	bh=R0qWopgaQHnime/JYViBEL3nxwtbS7LVyyyHiE1H22s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JvQsx4ImnbrCgvTsVuvtXQaCi0gDnoFZ5zgVPF29YMAXf81KYUNzF7WEIU3+OY9nraJyywtbPJSif3bo7KMK6ESABWWRIhUOaogs5zw76Fdx+3tUyBdgpRIzjiCxZWHppVDgP0lqk9ci4RYT7BcUiC9wGZCSgL2l8DPd/EkcMUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=r8CbGAaL; arc=none smtp.client-ip=212.227.126.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valentinobst.de;
-	s=s1-ionos; t=1711714237; x=1712319037; i=kernel@valentinobst.de;
-	bh=vKMrS23EYhu4oq51QI5Yk7mHTfQmIj1rr6qkWVwEFL8=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=r8CbGAaLfUvAoBEm8E0RvDI8T8z+RDCJF+jRV3eioOKpQvouqsUTibi0Sup0Z7U6
-	 m9ZouPf4Aq1G6QyCQW4ClAwtQIOB23Z3cRTTiPWF6ILLyFzLXmWmOm577xbmGqnmL
-	 +JusJh31eNt4yVsMQYUvHXyZ4UxvnEzUyeMnkU0dV4LxXOE/3LVIdM5ZHPAwTVBJ1
-	 uOaE/BCLis5eKLnMbat4WJrW9hDvg1/WG3MXbM/4xXPrQdGAWshyPU6yeJtxT1qQ1
-	 fJHlpZO+c3rdHV4PzqyLDGgx9VYtgwgxNVjKKHCdg+Z72vDkTd6czieaoyVWdmOEP
-	 QX8a0byqbs/5pq1kLQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from archbook.fritz.box ([217.249.70.154]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M58zc-1rp4bR1j9g-001BR1; Fri, 29 Mar 2024 13:10:37 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-To: wedsonaf@gmail.com
-Cc: a.hindborg@samsung.com,
-	alex.gaynor@gmail.com,
-	aliceryhl@google.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	linux-kernel@vger.kernel.org,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	walmeida@microsoft.com
-Subject: Re: [PATCH v2 0/5] In-place module initialisation
-Date: Fri, 29 Mar 2024 13:10:33 +0100
-Message-ID: <20240329121033.401403-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240328195457.225001-1-wedsonaf@gmail.com>
-References: <20240328195457.225001-1-wedsonaf@gmail.com>
+	s=arc-20240116; t=1711714312; c=relaxed/simple;
+	bh=kjiAXsVkNlFhMTTXqcgqI2CTxaiMzd/cdUiEDAtzlm0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c0rgvUMguV2Jei0LrWkVPQmr8b2q7Z3GBuM+HgHq0NL5RuR+3B7PZjr2tmc8E3ZZlli4phxvtndXthjO6tq12cDw/tTOGwXklKHeZKb1oDfIR9SPedzS8KQ6JXFWtD4/uai+eYIJix+018zmO5msyAOYkKzqCj25JiyVcTunNGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D9mE3A+F; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41552f1fcd9so1530025e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 05:11:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711714309; x=1712319109; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ReEYp5lJLMaSRPsCPugDzUu3cnCJt2quJWHyXPFvz2M=;
+        b=D9mE3A+FzvhPGn3I+YiILm0yQWwhczCWDhZ28wlsh4DJT30u0+TciigYVAuMnTehA9
+         SPCgJjSleGBfl1XFE9Q4sVmFu64Wrh0PbGNtXQhtDcWbPg1k/k946cXV8oqMMACD8H4L
+         0xa4kQ0+DzzDgEBZij0Hv+Wk/pbEqH8MNu0J3XXw4WXafQ54j4SnkVYsUKvBv37qb6iC
+         eMjiAzarsm7MUFDvvoRyY/eVe1x7WbK8gK+XiFnQCRKkVSbn8pKNncPybNQ1cyA241c3
+         HfYEy/R0S14msANRSIQhxKNKfE2Bh0QjpZZdPTJ70+ukefwLkzy+o3AXMNaFihvtmhdk
+         0ifw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711714309; x=1712319109;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ReEYp5lJLMaSRPsCPugDzUu3cnCJt2quJWHyXPFvz2M=;
+        b=cP0GBkLlEXmzATEoshccIMcUnV6pVO5dqfCOTdCiik3p479gprzPxqrXZq/3Q4j/rd
+         XjuRujTR5qclAW6V7c7toLjZfOIM4FcVO3OTAyUrgpdVCgwM67YFzN77/7mlQ7qwUJlW
+         eL/hFMOiwD966uF1KSWJLzy6n8/AhtFvcWJ8N39j57FDJvg8tNtYzhJHQxwd5i8miZAu
+         zKCjdXixSCx8MyK0ShcKIgmDhtQJD3E5szSJH1DvOt1QhD1+0nZrDN/KR6QWX9qNOIIF
+         9Bmsma776k5JWMqqC8xnBmNgnZMNM/7hCRtC39A2GlF6/3ndGFdKzs7z08V2E3NhbPfW
+         osdA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNm4lLWGUZUNYxD85xkEA0zfto8Lp4Z0uQVsXUaGu1db2kDQBear7Wge5dodYyXeilYp6cSGodODtZXhX+6BHYRkDuFhOezLZFv5lP
+X-Gm-Message-State: AOJu0YwV+NRTJ8ikjee389dA7tbg41vuKRj57Jj4wNDEOzEFO9yYro0j
+	rUXbsYbIdORXHSQnsh0lq3+SSpC98T37MlmB/Xb/OykrVTNjK36gmzv2swfl9/U=
+X-Google-Smtp-Source: AGHT+IGFTtBqNZOO7qBvxyPNcN2rE/ev37EDigYcL1r2jxwAU6KmBa3flnz0xULrGU09VxJQXTdkuQ==
+X-Received: by 2002:a05:600c:a4b:b0:414:887f:617a with SMTP id c11-20020a05600c0a4b00b00414887f617amr1642165wmq.38.1711714309572;
+        Fri, 29 Mar 2024 05:11:49 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.50])
+        by smtp.gmail.com with ESMTPSA id n2-20020a056000170200b0034335e47102sm2063760wrc.113.2024.03.29.05.11.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 05:11:49 -0700 (PDT)
+Message-ID: <27ad7293-4a8b-4571-a97a-fb5c894a70de@linaro.org>
+Date: Fri, 29 Mar 2024 13:11:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:+fB/8+MWj6qHO/yj86RJMlrpUN2M7GrecYoWh8yRFvw8MLp57dr
- IAIUcL97Qma81IzDG5TCdjHk6YUomez10IDR5K8faDx/Rc/PdUtCJ+wWwAf5vdEH1+RrCHz
- 72MD9Iu1FOUi7PgOSS5UPsNSzseBqBci3pTauBurVRF+krWFNEjSwz3fDFr5qI2AC7837EE
- qrjKkfC8pbIUIdHDP85XQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GZ3mcmPnGl8=;i9TJrGnPDlTWlikV5zRua8uI+pV
- 9ACvqXgr3w60PfiM9UGAb19wY9f+AN5RwyZpMsIToISicwUbxSRfnxniXjg0nlBMpOmZn5jva
- pO8R8c3/9XBR/LyCOVLR2fnO2BmozrFSEqk11xUbJoORrs9fvtJo4GHjUPjQqHZA9ocFEUpFS
- 8mBF3rITI4Az8uN0vlg4ce23Dya2oCM1YTAeeu27t4FyE72RUS8oajprOfMBMgpjOZWbDbuIw
- K+1IU3hoDjHySccJgNojNd6MfFnpgwsQkRXmALqCGl9yFr/K2qp/8M9Q5+VOPni/3AaylCSPm
- DT3bRODzzZ+H3pc8I9pzrDLHnS4Bz9mrXV6tVmrdUPzC+4celkjJt/2w78Xqp8hGWYlXIsHU0
- 697jYYQ39pNb4nzTEJDQxErNt/JhqFe1hvEEJ47sFyyVzUnSRvy17Y83/2AyVrwD/67CPYZi8
- fgqP0AIQiYPx/boHzozwn/hn4r2AXFEIxPEAWjsyGOvycLr5JOiabDF7mHgyAbLvx360DyQab
- bNEr0yxs+Aw5s1u0DY1jauWW2jIIQHIxAoI554wxL1PRWdLhVJ82JpeD3ojikp1SizAD3PfK0
- ak2e1decZeE1CiOibh3wCKvmDQ7PJnCeqc+4haTEY/0Yumi8g09gNs0H2x5t2/k9xvgaJCMO3
- 3pHaXz9XIionF7cAUxtYZmfRIOQk8dLhOFC/T4UThcLw2emhP6w93Q1gCN0KOhUSuJaYUvYSF
- wu3kFxMwiDiKEZloOHTzYnhiPI+IyCaevvpVlV45ymcYOS9s8EyxzA=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] v2 arm64: dts: qcom: Add support for Samsung Galaxy Z
+ Fold5
+To: serdeliuk@yahoo.com, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-0-9a91e635cacc@yahoo.com>
+ <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-2-9a91e635cacc@yahoo.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-2-9a91e635cacc@yahoo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> Introduce `InPlaceModule`, which allows modules to be initialised
-> inplace, as opposed to the current state where modules must return an
-> instance which is moved to its final memory location.
->
-> This allows us to have modules whose state hold objects that must be
-> initialised inplace like locks. It also allows us to implement
-> registrations (e.g., driver registration) inplace and have them similar
-> to their C counterparts where no new allocations are needed.
->
-> This is built on top of the allocation APIs because the sample module is
-> a modified version of rust_minimal, which would be incompatible with the
-> allocation API series because it uses vectors.
->
-> ---
->
-> Changes in v2:
->
-> - Rebased to latest rust-next
-> - Split off adding `Send` requirement to `Module` into a separate patch
+On 29/03/2024 00:08, Alexandru Marc Serdeliuc via B4 Relay wrote:
+> From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+> 
+> Add support for Samsung Galaxy Z Fold5 (q5q) foldable phone
 
-I think the idea in [1] was to have this patch being included in the
-stable trees. I got little experience with stable trees but wouldn't the
-easiest way be that you add:
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-	Cc: stable@vger.kernel.org # 6.8.x: 715dd8950d4e rust: phy: implement `Send` for `Registration`
-	Cc: stable@vger.kernel.org
-	Fixes: 247b365dc8dc ("rust: add `kernel` crate")
+v2 is for sure wrong prefix. Other parts are also wrong, which above
+command will tell you.
+> 
+> Currently working features:
+> - Framebuffer
+> - UFS
+> - i2c
+> - Buttons
+> 
+> Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
 
-in the sign-off section for this patch? (Or mark the first one for stable
-inclusion as well, [2] has more information on that).
+Please go back and read my response.
 
-	- Best Valentin
+Best regards,
+Krzysztof
 
-[1]: https://lore.kernel.org/rust-for-linux/20240327032337.188938-1-wedsonaf@gmail.com/T/#m4b4daf27038f920a0c6fafff453efb3c8da72067
-[2]: https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html#option-1
-
-> - Prefixed all `core` and `kernel` references with `::` in
->   `module!` macro-generated code.
-> - Calling `__pinned_init` with explicit full path.
-> - Add `Mutex` to `rust_inplace`  sample.
-> - Added `Send` implementation for `Registration` in net/phy.
-> - Link to v1: https://lore.kernel.org/rust-for-linux/20240327032337.188938-1-wedsonaf@gmail.com/T/#t
->
-> ---
-> Wedson Almeida Filho (5):
->   rust: phy: implement `Send` for `Registration`
->   rust: kernel: require `Send` for `Module` implementations
->   rust: module: prefix all module paths with `::`
->   rust: introduce `InPlaceModule`
->   samples: rust: add in-place initialisation sample
->
->  rust/kernel/lib.rs           | 25 +++++++++++++++++++-
->  rust/kernel/net/phy.rs       |  4 ++++
->  rust/macros/module.rs        | 36 ++++++++++++-----------------
->  samples/rust/Kconfig         | 11 +++++++++
->  samples/rust/Makefile        |  1 +
->  samples/rust/rust_inplace.rs | 44 ++++++++++++++++++++++++++++++++++++
->  6 files changed, 99 insertions(+), 22 deletions(-)
->  create mode 100644 samples/rust/rust_inplace.rs
->
->
-> base-commit: 453275c66aa4d87c73c5152140b3573ab2435bb7
-> --
-> 2.34.1
 
