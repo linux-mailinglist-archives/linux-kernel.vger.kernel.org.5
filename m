@@ -1,216 +1,179 @@
-Return-Path: <linux-kernel+bounces-124035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BA7589116E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:11:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE53F8910F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E595B28F2D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:11:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE7D028C856
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACD6B39ACB;
-	Fri, 29 Mar 2024 02:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B9369DFB;
+	Fri, 29 Mar 2024 01:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PWtPAJ0m"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wHJkKVjR"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CED3381BB;
-	Fri, 29 Mar 2024 02:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35C654F96
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678182; cv=none; b=OP0GwPh1iW5hiFGjbku4R/7w5YbZMxgdXUD/F4WdeLU4/Sgdbc+2+TZTtSXMzOIsOE2mE0xjr+/9USFsTRqs2HTEPGtuEbcKpuFgkEMt2yYTue8aLuwtC5eHaXvlOUDz9m90QpEsgQaW++YfXPQWfhz3qknCW/uZr9AUVb9nGcU=
+	t=1711677288; cv=none; b=drDvs+oidX8/jinUfIzVx7Dd+bG+ZQRwNNHQbr4K1j2Md3mmXLYE7WqeQHWgJOmWoRqk3P2F6mqaq8UAHyCXNxjMGahfKhCThVBRu4avx/8HP67DZT47d+5UM1lCmLuOYWzHWBZVUXlF4Q9N3FKz2hmTQObfUw4Ke91//cVJXOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678182; c=relaxed/simple;
-	bh=N6G0WKeysLe36XGor+TH2QHAhPLm6Xleh7fpJIEyD2Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a3y194X/1rJBk8AQQyjVAUxPRKSeSthnBKzwk6UWRVXksx/nHGNba7ZHK4Q7sS48uBQ7WkR8v2t9my65pqUlTr13Er1DOB5kdCjxlUbFOqu6fgrYrRmjsTAhhwtYKsUHbMaMJbqABg6Xga70IE02UtXO6VIN9HiYjc4MGfLoIEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PWtPAJ0m; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711678180; x=1743214180;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=N6G0WKeysLe36XGor+TH2QHAhPLm6Xleh7fpJIEyD2Y=;
-  b=PWtPAJ0mZArmRPOExLeNUWpKcm2uU3SsUOWm/yRQS9f7XRKdA7bwH+xv
-   3QKiGU+iqzduCx/rvNQwIXc6QM9pphqUat75vFoiQpOygJwtw6pwNagcB
-   lx2nixWjWVna1nI6Tq7HJWvY29QjHPtR9y8R2T8Z5MYEEHKO8icVaS8d1
-   t02/TLPAOKFMgZQxsbc1ZYwe0cPf4OoFCAXO11SQvpcpZ8LQTP4UN7PDY
-   czFdtf3an4+i6XUIDjS3YMQXyg6e41HETRWzzFP/HZIMeSGcaPnRp/GaL
-   GC/5ap3E84j1G+XpGxdVMEt4cabAFqd9vgHH43xPlI/spfyePD1XBCYOp
-   w==;
-X-CSE-ConnectionGUID: PWVP/QhtR5W0PGJPUaiKrw==
-X-CSE-MsgGUID: l8eI8ZV3RLKuVAm8QP7rFg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6700039"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6700039"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:09:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="17301382"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by orviesa006.jf.intel.com with ESMTP; 28 Mar 2024 19:09:39 -0700
-From: "Chang S. Bae" <chang.seok.bae@intel.com>
-To: linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	dm-devel@redhat.com
-Cc: ebiggers@kernel.org,
-	luto@kernel.org,
-	dave.hansen@linux.intel.com,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	mingo@kernel.org,
-	x86@kernel.org,
-	herbert@gondor.apana.org.au,
-	ardb@kernel.org,
-	elliott@hpe.com,
-	dan.j.williams@intel.com,
-	bernie.keany@intel.com,
-	charishma1.gairuboyina@intel.com,
-	chang.seok.bae@intel.com
-Subject: [PATCH v9 03/14] x86/insn: Add Key Locker instructions to the opcode map
-Date: Thu, 28 Mar 2024 18:53:35 -0700
-Message-Id: <20240329015346.635933-4-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240329015346.635933-1-chang.seok.bae@intel.com>
-References: <20230603152227.12335-1-chang.seok.bae@intel.com>
- <20240329015346.635933-1-chang.seok.bae@intel.com>
+	s=arc-20240116; t=1711677288; c=relaxed/simple;
+	bh=bBfAJi/bJf2nD+gd3YqaNeaEuDQ3ztMPp8XYXKoJ52g=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A52V1W4d6KmOs4RzlehVHw3rGoIgAxd7ey+2wOEc32XA+Jqi4EUmnEtkhsnvXq95R0Ks+r9SAfVFqKyAVkYvdxvUELnRPidQkZUB+JjHJAJmujadD++jgN0jU7eoMA8QDBNGe7lyZz4VfPrQfutGQ2YPbkhHH/pV+AV5O34rQ70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wHJkKVjR; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc693399655so2763606276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711677286; x=1712282086; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHfrMplbbUkEBek0oxfkmQFW+uLxDMPloBNof976q78=;
+        b=wHJkKVjRMmLu3l+quU/T1dkRy2eN9n0/f3raXxrUmdxkEBl+F5MjZr/xg38d4MvCqS
+         Zs9QTc8jOGKXFRO4lO1MZBy7urTGovN9UqoSDGIj4vkCU6yKuKVfKoMFe23nx7gPicwU
+         qTndnx7gWcpxrRQE3Bd68SISe31PeCm+I1cUHij18e1P5B9gpTPn5zi1CCK0q6EzeBqm
+         Tc6Q/fcJVszPKaxFXH52l8WwjB31mbv0hsR5M7dzl9cGBNJFiLE8X9zQbPjt7yi13eTb
+         +hYrgs/m/hkK3FRhKnopDAs5EHcEA4vG5Ef4vtT6QkBqDzMPAh39LsuLInkr63qWHXkW
+         YRvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711677286; x=1712282086;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHfrMplbbUkEBek0oxfkmQFW+uLxDMPloBNof976q78=;
+        b=VcNXbrR+2J2GbaxJ7YxZBbe9I+KpuWR7qnwoODC34zDlG4gGIiudgqykTRYGC5uxbA
+         flVVO0IQA5ph2Wpo3jiZvpcyIOtUttnoCN5kdb+Ib3Hqqv4VQlJNW/n28g8HI4HyVkzx
+         hCge/v45AmYt6D80HnsuCwt/eCDgqlIajCJ3fj/zKtfIqc+OevbBa9D/ARLB5X0TSqIJ
+         wCAobsIPwvvSSRDrBarmsayHH+yCIunTwEgOIX2LbzIQI3HkNVeb8JWykHNfqZ8vpGm7
+         itsKoBEOm5WyK9dzGprt4jHndLP76gaLp74euenGMtyPynWlD8r5CDJxce4P9J+bhw9+
+         xQjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVhg1iWGQxG2OGCJ57o71d3G3ZkXwVMd5PUynFYdFs/9TATlqfO6qcjRwtl8xmLkvnSHIoa+kcdFrLDPkuLpkXr4rXMI2jVCeYo4JUh
+X-Gm-Message-State: AOJu0YyQ5NeLtHPlLUbBO1DmmB0V/iHAWbuqWVerWQf0I+RI2kUubUHn
+	hC5FOqy50kzYP3yxH/CDAB/d7/5gnbzHdHACZatfRtG+Dey7NvXDSq7htOgR8AYGcS782/UfHtF
+	rWw==
+X-Google-Smtp-Source: AGHT+IFbnUa67u4V59nNCnGnTBVkSthpFf64uvZOHCdvmkQja1eGLLGkihEUhtkYy01teYap9rh/yjJgyyU=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
+ (user=drosen job=sendgmr) by 2002:a05:6902:120a:b0:dda:c59c:3953 with SMTP id
+ s10-20020a056902120a00b00ddac59c3953mr322226ybu.0.1711677285863; Thu, 28 Mar
+ 2024 18:54:45 -0700 (PDT)
+Date: Thu, 28 Mar 2024 18:53:36 -0700
+In-Reply-To: <20240329015351.624249-1-drosen@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240329015351.624249-1-drosen@google.com>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240329015351.624249-22-drosen@google.com>
+Subject: [RFC PATCH v4 21/36] fuse-bpf: Add partial flock support
+From: Daniel Rosenberg <drosen@google.com>
+To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
+	Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The x86 instruction decoder needs to know these new instructions that
-are going to be used in the crypto library as well as the x86 core
-code. Add the following:
+This adds passthrough support for flock on fuse-bpf files. It does not
+give any control via a bpf filter. The flock will act as though it was
+taken on the lower file.
 
-LOADIWKEY:
-	Load a CPU-internal wrapping key.
+see fuse_test -t32 (flock_test)
 
-ENCODEKEY128:
-	Wrap a 128-bit AES key to a key handle.
-
-ENCODEKEY256:
-	Wrap a 256-bit AES key to a key handle.
-
-AESENC128KL:
-	Encrypt a 128-bit block of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESENC256KL:
-	Encrypt a 128-bit block of data using a 256-bit AES key
-	indicated by a key handle.
-
-AESDEC128KL:
-	Decrypt a 128-bit block of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESDEC256KL:
-	Decrypt a 128-bit block of data using a 256-bit AES key
-	indicated by a key handle.
-
-AESENCWIDE128KL:
-	Encrypt 8 128-bit blocks of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESENCWIDE256KL:
-	Encrypt 8 128-bit blocks of data using a 256-bit AES key
-	indicated by a key handle.
-
-AESDECWIDE128KL:
-	Decrypt 8 128-bit blocks of data using a 128-bit AES key
-	indicated by a key handle.
-
-AESDECWIDE256KL:
-	Decrypt 8 128-bit blocks of data using a 256-bit AES key
-	indicated by a key handle.
-
-The detail can be found in Intel Software Developer Manual.
-
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
 ---
-Changes from v6:
-* Massage the changelog -- add the reason a bit.
+ fs/fuse/backing.c | 15 +++++++++++++++
+ fs/fuse/file.c    |  9 +++++++--
+ fs/fuse/fuse_i.h  |  1 +
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
-Changes from RFC v1:
-* Separated out the LOADIWKEY addition in a new patch.
-* Included AES instructions to avoid warning messages when the AES Key
-  Locker module is built.
----
- arch/x86/lib/x86-opcode-map.txt       | 11 +++++++----
- tools/arch/x86/lib/x86-opcode-map.txt | 11 +++++++----
- 2 files changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-index 12af572201a2..c94988d5130d 100644
---- a/arch/x86/lib/x86-opcode-map.txt
-+++ b/arch/x86/lib/x86-opcode-map.txt
-@@ -800,11 +800,12 @@ cb: sha256rnds2 Vdq,Wdq | vrcp28ss/d Vx,Hx,Wx (66),(ev)
- cc: sha256msg1 Vdq,Wdq | vrsqrt28ps/d Vx,Wx (66),(ev)
- cd: sha256msg2 Vdq,Wdq | vrsqrt28ss/d Vx,Hx,Wx (66),(ev)
- cf: vgf2p8mulb Vx,Wx (66)
-+d8: AESENCWIDE128KL Qpi (F3),(000),(00B) | AESENCWIDE256KL Qpi (F3),(000),(10B) | AESDECWIDE128KL Qpi (F3),(000),(01B) | AESDECWIDE256KL Qpi (F3),(000),(11B)
- db: VAESIMC Vdq,Wdq (66),(v1)
--dc: vaesenc Vx,Hx,Wx (66)
--dd: vaesenclast Vx,Hx,Wx (66)
--de: vaesdec Vx,Hx,Wx (66)
--df: vaesdeclast Vx,Hx,Wx (66)
-+dc: vaesenc Vx,Hx,Wx (66) | LOADIWKEY Vx,Hx (F3) | AESENC128KL Vpd,Qpi (F3)
-+dd: vaesenclast Vx,Hx,Wx (66) | AESDEC128KL Vpd,Qpi (F3)
-+de: vaesdec Vx,Hx,Wx (66) | AESENC256KL Vpd,Qpi (F3)
-+df: vaesdeclast Vx,Hx,Wx (66) | AESDEC256KL Vpd,Qpi (F3)
- f0: MOVBE Gy,My | MOVBE Gw,Mw (66) | CRC32 Gd,Eb (F2) | CRC32 Gd,Eb (66&F2)
- f1: MOVBE My,Gy | MOVBE Mw,Gw (66) | CRC32 Gd,Ey (F2) | CRC32 Gd,Ew (66&F2)
- f2: ANDN Gy,By,Ey (v)
-@@ -814,6 +815,8 @@ f6: ADCX Gy,Ey (66) | ADOX Gy,Ey (F3) | MULX By,Gy,rDX,Ey (F2),(v) | WRSSD/Q My,
- f7: BEXTR Gy,Ey,By (v) | SHLX Gy,Ey,By (66),(v) | SARX Gy,Ey,By (F3),(v) | SHRX Gy,Ey,By (F2),(v)
- f8: MOVDIR64B Gv,Mdqq (66) | ENQCMD Gv,Mdqq (F2) | ENQCMDS Gv,Mdqq (F3)
- f9: MOVDIRI My,Gy
-+fa: ENCODEKEY128 Ew,Ew (F3)
-+fb: ENCODEKEY256 Ew,Ew (F3)
- EndTable
+diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
+index f18aee297335..b2df2469c29c 100644
+--- a/fs/fuse/backing.c
++++ b/fs/fuse/backing.c
+@@ -9,6 +9,7 @@
+ #include <linux/bpf_fuse.h>
+ #include <linux/fdtable.h>
+ #include <linux/file.h>
++#include <linux/filelock.h>
+ #include <linux/fs_stack.h>
+ #include <linux/namei.h>
+ #include <linux/splice.h>
+@@ -1586,6 +1587,20 @@ int fuse_bpf_file_write_iter(ssize_t *out, struct inode *inode, struct kiocb *io
+ 				iocb, from);
+ }
  
- Table: 3-byte opcode 2 (0x0f 0x3a)
-diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-index 12af572201a2..c94988d5130d 100644
---- a/tools/arch/x86/lib/x86-opcode-map.txt
-+++ b/tools/arch/x86/lib/x86-opcode-map.txt
-@@ -800,11 +800,12 @@ cb: sha256rnds2 Vdq,Wdq | vrcp28ss/d Vx,Hx,Wx (66),(ev)
- cc: sha256msg1 Vdq,Wdq | vrsqrt28ps/d Vx,Wx (66),(ev)
- cd: sha256msg2 Vdq,Wdq | vrsqrt28ss/d Vx,Hx,Wx (66),(ev)
- cf: vgf2p8mulb Vx,Wx (66)
-+d8: AESENCWIDE128KL Qpi (F3),(000),(00B) | AESENCWIDE256KL Qpi (F3),(000),(10B) | AESDECWIDE128KL Qpi (F3),(000),(01B) | AESDECWIDE256KL Qpi (F3),(000),(11B)
- db: VAESIMC Vdq,Wdq (66),(v1)
--dc: vaesenc Vx,Hx,Wx (66)
--dd: vaesenclast Vx,Hx,Wx (66)
--de: vaesdec Vx,Hx,Wx (66)
--df: vaesdeclast Vx,Hx,Wx (66)
-+dc: vaesenc Vx,Hx,Wx (66) | LOADIWKEY Vx,Hx (F3) | AESENC128KL Vpd,Qpi (F3)
-+dd: vaesenclast Vx,Hx,Wx (66) | AESDEC128KL Vpd,Qpi (F3)
-+de: vaesdec Vx,Hx,Wx (66) | AESENC256KL Vpd,Qpi (F3)
-+df: vaesdeclast Vx,Hx,Wx (66) | AESDEC256KL Vpd,Qpi (F3)
- f0: MOVBE Gy,My | MOVBE Gw,Mw (66) | CRC32 Gd,Eb (F2) | CRC32 Gd,Eb (66&F2)
- f1: MOVBE My,Gy | MOVBE Mw,Gw (66) | CRC32 Gd,Ey (F2) | CRC32 Gd,Ew (66&F2)
- f2: ANDN Gy,By,Ey (v)
-@@ -814,6 +815,8 @@ f6: ADCX Gy,Ey (66) | ADOX Gy,Ey (F3) | MULX By,Gy,rDX,Ey (F2),(v) | WRSSD/Q My,
- f7: BEXTR Gy,Ey,By (v) | SHLX Gy,Ey,By (66),(v) | SARX Gy,Ey,By (F3),(v) | SHRX Gy,Ey,By (F2),(v)
- f8: MOVDIR64B Gv,Mdqq (66) | ENQCMD Gv,Mdqq (F2) | ENQCMDS Gv,Mdqq (F3)
- f9: MOVDIRI My,Gy
-+fa: ENCODEKEY128 Ew,Ew (F3)
-+fb: ENCODEKEY256 Ew,Ew (F3)
- EndTable
++int fuse_file_flock_backing(struct file *file, int cmd, struct file_lock *fl)
++{
++	struct fuse_file *ff = file->private_data;
++	struct file *backing_file = ff->backing_file;
++	int error;
++
++	fl->fl_file = backing_file;
++	if (backing_file->f_op->flock)
++		error = backing_file->f_op->flock(backing_file, cmd, fl);
++	else
++		error = locks_lock_file_wait(backing_file, fl);
++	return error;
++}
++
+ ssize_t fuse_backing_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	int ret;
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 46de67810f03..255eb59d04f8 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -2676,13 +2676,18 @@ static int fuse_file_flock(struct file *file, int cmd, struct file_lock *fl)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	struct fuse_conn *fc = get_fuse_conn(inode);
++	struct fuse_file *ff = file->private_data;
+ 	int err;
  
- Table: 3-byte opcode 2 (0x0f 0x3a)
++#ifdef CONFIG_FUSE_BPF
++	/* TODO - this is simply passthrough, not a proper BPF filter */
++	if (ff->backing_file)
++		return fuse_file_flock_backing(file, cmd, fl);
++#endif
++
+ 	if (fc->no_flock) {
+ 		err = locks_lock_file_wait(file, fl);
+ 	} else {
+-		struct fuse_file *ff = file->private_data;
+-
+ 		/* emulate flock with POSIX locks */
+ 		ff->flock = true;
+ 		err = fuse_setlk(file, fl, 1);
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 8ae6ad967f95..e69f83616909 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -1651,6 +1651,7 @@ static inline int fuse_bpf_access(int *out, struct inode *inode, int mask)
+ 
+ #endif // CONFIG_FUSE_BPF
+ 
++int fuse_file_flock_backing(struct file *file, int cmd, struct file_lock *fl);
+ ssize_t fuse_backing_mmap(struct file *file, struct vm_area_struct *vma);
+ 
+ int fuse_handle_backing(struct fuse_bpf_entry *fbe, struct path *backing_path);
 -- 
-2.34.1
+2.44.0.478.gd926399ef9-goog
 
 
