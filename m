@@ -1,60 +1,68 @@
-Return-Path: <linux-kernel+bounces-124714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6E8891BB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:31:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13B5D891BBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA614B24A41
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:31:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5C111F2137D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6A6145339;
-	Fri, 29 Mar 2024 12:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152B3137753;
+	Fri, 29 Mar 2024 12:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RCUqlDRb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MRYbjh0z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386CE145321;
-	Fri, 29 Mar 2024 12:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532AB145B00;
+	Fri, 29 Mar 2024 12:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715970; cv=none; b=ehJ8Ye1dAQZO6b98CBAXrcUEXOYEruYv5IBNd6JG897DT3XmWPxgPEswBjxUTxfU7PhS1vIFggUZs6oFwoVOywNDhp+SvKh7jSw1i5+NXWrvHrGQYR8jk/Fff+ngYfmHhUjRVt4rNGKzmjQ/fZrG8Up9mp6NDoNMd+E7NAiNDKk=
+	t=1711715973; cv=none; b=Yyeryb0xUW3S67Oavg6Cj281PpzOPmY0nwSCyx2tO7oMt11IfEtHjE2HgR0Er2BaUtgkhC7+Dx++50nQDbYO6fV1WxWMMCXCzsYtMglckVPTqAxqlng+V2NZ11ZGxmSYiKEkLLHZ1mZA5wHSnxIa0uZG/KgMqllZ/fMYMvRpV24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715970; c=relaxed/simple;
-	bh=gNn0eGRs3G+bpg8uuW+xOQSr8p0k5GYdAyTCRrvHaPw=;
+	s=arc-20240116; t=1711715973; c=relaxed/simple;
+	bh=OAWyBA7iMNPfP1ZPwLMADM0LatMIAyAS5d/vWVbn0Fs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fXhoSk+OnCR1HOOgdyKTMf0ldL08M5YYaN11DuqLW9Zw2ZGoibIX2UQJZXHiZvfUwa1+GqPUBrCdISLq1JVVDLma1aaM/BiOFfBa1zuulthb7ycDgQ7EfjiRBnARAywnNnPZE7BAGLGIVsj2D6eS1/ZIrJfka7vSygT22uU4+kM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RCUqlDRb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E14FC433F1;
-	Fri, 29 Mar 2024 12:39:28 +0000 (UTC)
+	 MIME-Version; b=DMW+M3eaijfPpPYTKfbKVuD1dIRiTwAjE979kYKI10aQ3VTU0pgktvkSeNlFO8fGWny5N55AGbP+B7u/a61OZ9Jl7cWHLKx7V4HmsNhKcZ3Zr/csl354X2gibtP7WLm43JYtnoFS6coap3SY1uwNsXPPBqC8D1ZozwmcMveTx6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MRYbjh0z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30EBAC433C7;
+	Fri, 29 Mar 2024 12:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715969;
-	bh=gNn0eGRs3G+bpg8uuW+xOQSr8p0k5GYdAyTCRrvHaPw=;
+	s=k20201202; t=1711715973;
+	bh=OAWyBA7iMNPfP1ZPwLMADM0LatMIAyAS5d/vWVbn0Fs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RCUqlDRbm++MaerrW2uGJIxZrjjsAAJWtUlf6U9TOnaF7dTgYjqpgFr8aCdqirBLU
-	 OY1ZpIKK/hpn0dMht5yPULZRYbXG2T8XuaA/orKYXUdDDXcj2G+bjdLMUZbhUuSAHM
-	 4QobAZpjT+gTYUUc7HnYCM5YnVAoPIdfKXbhtmb1DvWe4uCZnNkrQNvl2Mo0ofKuQs
-	 0KrJSa/Lg37t2f3VGgPAVXmUXInZWUGBmWvJWb7vmYrBcYUu6NjKsEGOFc3alzs7Cf
-	 Vpl1Jz7MsbOA6WGLrusm6E4eIfX2rHRa9u0AHKjeHAbG7lrbN7OHnyq63lLnxXrqwS
-	 CvJzMKr3Rs9LA==
+	b=MRYbjh0zpPDmk0igJMT0RkX3RO34WvycQTyCr5Jy+pNdQ61JhFb54HFAnwssLOZoi
+	 qyLUNPhb7/jsYZcmYVtS3zbY0FjhvOd0ce2rt2+faYwkfY01nif5LlLUCTS09zGo/T
+	 u4W/tX/XhTxe0+1YrFlqvu65KdYJ8dFXiF4xWSB4V2Xkk6qUOHGw6uxBM8+4h7RCGU
+	 8ghNUk4HPPu71K26ZmcHwbafcs7jCbHqqw51ZZzcYaHswBFpBuDu2qa8DlFeIaJjKf
+	 +lv40E5KcUgThODxn6FpXWyj//jJmo30lgt1NYNbGIU6iJBxohD84SF4Skn9irDjHl
+	 4poxTByZ7SKAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Samuel Dionne-Riel <samuel@dionne-riel.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Emil Velikov <emil.velikov@collabora.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.8 05/98] drm: panel-orientation-quirks: Add quirk for GPD Win Mini
-Date: Fri, 29 Mar 2024 08:36:36 -0400
-Message-ID: <20240329123919.3087149-5-sashal@kernel.org>
+	pierre-louis.bossart@linux.intel.com,
+	lgirdwood@gmail.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	daniel.baluta@nxp.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	Vijendar.Mukunda@amd.com,
+	venkataprasad.potturu@amd.com,
+	Mastan.Katragadda@amd.com,
+	sound-open-firmware@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 06/98] ASoC: SOF: amd: Optimize quirk for Valve Galileo
+Date: Fri, 29 Mar 2024 08:36:37 -0400
+Message-ID: <20240329123919.3087149-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -69,50 +77,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Samuel Dionne-Riel <samuel@dionne-riel.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 
-[ Upstream commit 2f862fdc0fd802e728b6ca96bc78ec3f01bf161e ]
+[ Upstream commit a13f0c3c0e8fb3e61fbfd99c6b350cf9be0c4660 ]
 
-This adds a DMI orientation quirk for the GPD Win Mini panel.
+Valve's Steam Deck OLED is uniquely identified by vendor and product
+name (Galileo) DMI fields.
 
-Signed-off-by: Samuel Dionne-Riel <samuel@dionne-riel.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231222030149.3740815-2-samuel@dionne-riel.com
+Simplify the quirk by removing the unnecessary match on product family.
+
+Additionally, fix the related comment as it points to the old product
+variant.
+
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
+Link: https://msgid.link/r/20231219030728.2431640-7-cristian.ciocaltea@collabora.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/sof/amd/acp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index 3d92f66e550c3..aa93129c3397e 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -117,6 +117,12 @@ static const struct drm_dmi_panel_orientation_data lcd1080x1920_leftside_up = {
- 	.orientation = DRM_MODE_PANEL_ORIENTATION_LEFT_UP,
- };
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 07632ae6ccf5e..7bf5a12da1cea 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -28,11 +28,10 @@ MODULE_PARM_DESC(enable_fw_debug, "Enable Firmware debug");
  
-+static const struct drm_dmi_panel_orientation_data lcd1080x1920_rightside_up = {
-+	.width = 1080,
-+	.height = 1920,
-+	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-+};
-+
- static const struct drm_dmi_panel_orientation_data lcd1200x1920_rightside_up = {
- 	.width = 1200,
- 	.height = 1920,
-@@ -279,6 +285,12 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1618-03")
- 		},
- 		.driver_data = (void *)&lcd720x1280_rightside_up,
-+	}, {	/* GPD Win Mini */
-+		.matches = {
-+		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "GPD"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "G1617-01")
-+		},
-+		.driver_data = (void *)&lcd1080x1920_rightside_up,
- 	}, {	/* I.T.Works TW891 */
+ const struct dmi_system_id acp_sof_quirk_table[] = {
+ 	{
+-		/* Valve Jupiter device */
++		/* Steam Deck OLED device */
  		.matches = {
- 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Galileo"),
+-			DMI_MATCH(DMI_PRODUCT_FAMILY, "Sephiroth"),
+ 		},
+ 		.driver_data = (void *)SECURED_FIRMWARE,
+ 	},
 -- 
 2.43.0
 
