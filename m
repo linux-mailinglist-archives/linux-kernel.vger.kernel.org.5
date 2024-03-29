@@ -1,129 +1,163 @@
-Return-Path: <linux-kernel+bounces-124168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FD96891354
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:45:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59446891356
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 487F91C224AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:45:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F07C1F22231
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA213CF4F;
-	Fri, 29 Mar 2024 05:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kp9LJB6O"
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C6A3CF7D;
+	Fri, 29 Mar 2024 05:46:14 +0000 (UTC)
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3233E489;
-	Fri, 29 Mar 2024 05:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0733C3A8F7;
+	Fri, 29 Mar 2024 05:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711691097; cv=none; b=ExDOkeJqmbjk9Hmd+WURU7F6zti3U2ygGL0IY8fXj8LdqARWyqf/nVrZNpu8bvg+4wVAuGKlX2IMXemT+2r9QQGHvIh/NoSjcIx0zHlczdjiGBr5tAMIPAVQQ5FK6bHOLDlsuGLrpadbI3IgrlXAn6uKx6o4IMY+j2Q4Q+4Z5To=
+	t=1711691174; cv=none; b=dGr/mzODk+Nmr1adlITiEy5TwCs+tSRKEAXlikNp9qahEXwDpITVTVJB554tprE0sw7UKFEPlSVhrH4tUoDi5OyBeA3MuzA+282swe/p6b171Ot3D5lAv4NxTdPtTTjm5UYKJ+0+6DJ4iVjL2KywU9l+Tum9B50qHURYDUVD/AU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711691097; c=relaxed/simple;
-	bh=Chsh0Y6imvACPZqM0aZBL2mZYFk82NHt7OzDTWuPeoQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ht9jvZQbb4+FF0eM28WvXv8AISRnvCR8KeamndUllONURgDW67bYm0dq5wh1KhId956D9+tcwZVAK1+W631dl6yswr+u0tigGwV+/iuKgpHsxjpwU1OJOuKmxl45vxTOuuD3rpL2FYWd0KCSF4W47b2sceKvSY1hTbNNxoSJXDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kp9LJB6O; arc=none smtp.client-ip=209.85.167.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711691174; c=relaxed/simple;
+	bh=KGwkGKtTA4rDrrqayQ/alyrWXig3KMsQmbrIPNkMeVw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZXnx+HrYOW5OdmcKRdDeqk5swJr+gvQZQwY3+H5v8D4YBEKiZY2lPLeLS+vgNRNyTDAZaU64o7+TwTJ+3tOk5eZnRH9TgaYPgZ73C9y1OkSs5a+3mDRM9NbmIBxJwUqsfglV8bsbPbtQz05QOOqk4r0a4oWEPpLt5rp4HykGRJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c3ca3c3bbaso1006470b6e.0;
-        Thu, 28 Mar 2024 22:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711691095; x=1712295895; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fwjYyV1xedFSqTP36VO0uSIhJUQea6nzzcBnO8oLakQ=;
-        b=Kp9LJB6ONOeza7po2PGAel2RM+8n6GOuKYvMUnXl5VvRFRd1GE1Nkb0EJtQ+MYsHwo
-         Kgkh3arvkUmpVPyHyolattScXqqDGbske2QK3/7T95KvDBXEVgb5F+17+SonfYR1iNLa
-         wYca7ukIp4xZcYoTRYC+Y5wRCA0JfXq/W3c04XF/Xo0AqkupQr3B58HlY+k0LHm8HoMC
-         rOoHvIbgvr0VtDe6ajDhcrXNpMMxY73KpJOIQgCQCqL8MNtzbsBT4KGSvgeNTf93XCNV
-         x7bdt6orHqVlZ+YyU8Xtu4f/zkxVdo41BmPpCTRexiC9QQIqHFge8ilh/m7dERLvTukf
-         dSew==
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2005943a12.0;
+        Thu, 28 Mar 2024 22:46:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711691095; x=1712295895;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fwjYyV1xedFSqTP36VO0uSIhJUQea6nzzcBnO8oLakQ=;
-        b=YYUiPEosnR+pL1CsfVYNbfEIP4Zxnl3G5QPzilanJhsqGAyebomryiZR4wL+qgPrHm
-         XKam8NcMswFL6x+7xOpW59bKLBDIBtqUO5uVm8Ad5K5AySn/lLfSYh77Un+q4eFrZRlD
-         y4VoI5wV/Y79EnINGW1Fuw3S/zYt2luRQhURM4DtHOQIRN5Haqgx77GqCGGYbeW94JAF
-         6we2/8AaGAujcJMUjXbJXCQLWYyTNS26JpMOlXQ7gxt4HddVDt0v2l+u5fNunh59Yqxt
-         CDjaQC1SyRbpLDiFmRGD7qwIzlrE1JSrYZmB1h+LxZDjpjkzoE0xAkkSQdwWi5Lwdw8a
-         kCLg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwxh0Rwy21EmJc7qC6Cs8ug/71QTOyaEQUTrlY4c64YODmcfgSi9XVgHqevUVTB5vquDyWVy3STsF+IL3a2iLpdDmP/WvIXcqp4ydKVQ/Wzb13oM7IVym7INmEipz+mJ7ldB1Am/Wrl1E=
-X-Gm-Message-State: AOJu0YwHelT+vhUQEJ+pKjGQutwriwB3sf4ohjWkexM6h3KpI9XNQr07
-	tzZMr1ts3YrhvTNBabyuqVXYYMXGyRXMQHmN+sy7UJTPxwG0lyH2
-X-Google-Smtp-Source: AGHT+IFDwMv1sfBpVAUxu6Mc2Bi3QSJQkBrer5BK2llVjxSCi4SL/46S6aRYY65dN4uWzKxG3Vi07A==
-X-Received: by 2002:a05:6808:211f:b0:3c1:c7a8:5ede with SMTP id r31-20020a056808211f00b003c1c7a85edemr1577604oiw.46.1711691095092;
-        Thu, 28 Mar 2024 22:44:55 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:100f:826c:582e:d62c:addc:15b1])
-        by smtp.gmail.com with ESMTPSA id d15-20020aa7814f000000b006e47e57d976sm2315495pfn.166.2024.03.28.22.44.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 22:44:54 -0700 (PDT)
-From: coolrrsh@gmail.com
-To: slongerbeam@gmail.com,
-	p.zabel@pengutronix.de,
-	mchehab@kernel.org,
-	gregkh@linuxfoundation.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: linux-kernel-mentees@lists.linuxfoundation.org,
-	Rajeshwar R Shinde <coolrrsh@gmail.com>
-Subject: [PATCH v4] staging: media: imx: Remove duplicate Kconfig dependency
-Date: Fri, 29 Mar 2024 11:14:46 +0530
-Message-Id: <20240329054446.33523-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1711691172; x=1712295972;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6+2vFU7V6j+41AhIjyIIqYWwenIJmg7wdwdRq1cmkxY=;
+        b=QNYNrzIfoBI7hQN81eQOz3SIdLxjH91jl8NqjRwagkC4kiuu4Ad/R9Eyx11s07wjca
+         ZSAWDmjokDZEFyEJHQBBWU+fUTyGqX+h9eW6fXsDCsKHKWND5T3lE05W9fst5pFuigyN
+         Vu7b9yzMO7j3jGB0DsV5CsehM1uymVHCQjhlE7CKRTren/trGhIsjmLvjXICJto3VM/9
+         zRN2uvOBEeB2OnS4/kD9i9v3rjlEymIvi0SDH/Kri6CPzkf+IZUGNCGgtFapGCFQbs0l
+         JH7pj8zu9ugzIKjgXYcT/VhUOw6tuMv67xHBUsmPjLhOtUyNMDxx4tB7vm9d6YSseKo2
+         oy1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWmWzz+tzDSQvYV2Xm2PUXACMZqrY4SDJcY9Xa8iqmorcWPXWY87FIO2MvadOt3p1dkwUgUVDFkGFcSResOmyKzhOcUFN6voykCP6Je7Yk6NeS3aaTob6qLzG47/2LXnbNVtElZVxKytcHJ7kE0RQ==
+X-Gm-Message-State: AOJu0Yz926NRS4gRBY45eV39DcNgohqrYyXK90EMvVrO6A96SeGkeBRf
+	CnWtfcf45tnDSM8CMSXtzrSn90livGOuGNfUKiWoE8KCIyajOlih928/567xRIDjjiKy6szE2Xb
+	cZMK+t/OuQXTt1zTUvA/Y9cQSFCY=
+X-Google-Smtp-Source: AGHT+IGOWkjpAWMSh8kylWMgdIo5zIaFj4PviWIV/PQJ1w4zEnYGxJLHyo5hOs8EE4FiY3pOLbnZc5CCTxzJF8XlLrs=
+X-Received: by 2002:a17:90a:8284:b0:2a0:4e60:ba46 with SMTP id
+ g4-20020a17090a828400b002a04e60ba46mr2209931pjn.16.1711691172259; Thu, 28 Mar
+ 2024 22:46:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240326202859.960577-1-weilin.wang@intel.com> <20240326202859.960577-2-weilin.wang@intel.com>
+In-Reply-To: <20240326202859.960577-2-weilin.wang@intel.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 28 Mar 2024 22:46:00 -0700
+Message-ID: <CAM9d7cjm6uOhffsiuVKk=2GBEUBZUyhNe-5QM5--tw3-X+UBJw@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 1/6] perf stat: Parse and find tpebs events when
+ parsing metrics to prepare for perf record sampling
+To: weilin.wang@intel.com
+Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Tue, Mar 26, 2024 at 1:29=E2=80=AFPM <weilin.wang@intel.com> wrote:
+>
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> Metrics that use tpebs values would use the :retire_latency keyword in
+> formulas. We put all these events into a list and pass the list to perf
+> record to collect their retire latency value.
+>
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> ---
+[SNIP]
+> @@ -681,8 +685,56 @@ static int metricgroup__build_event_string(struct st=
+rbuf *events,
+>         hashmap__for_each_entry(ctx->ids, cur, bkt) {
+>                 const char *sep, *rsep, *id =3D cur->pkey;
+>                 enum perf_tool_event ev;
+> +               /*
+> +                * Parse and search for event name with retire_latency mo=
+difier.
+> +                * If found, put event name into the tpebs_events list. T=
+his list
+> +                * of events will be passed to perf record for sampling t=
+o get
+> +                * their reitre_latency value.
+> +                * Search for ":R" in event name without "@". Search for =
+the
+> +                * last "@R" in event name with "@".
 
-The kernel configuration VIDEO_DEV is defined twice in Kconfig.
-Thus, the duplicate Kconfig dependency is removed.
+What is the retire_latency modifier exactly?
+Why do you search for :R and @R?  What's the difference?
+Why don't you search for "retire_latency"?
 
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
+Thanks,
+Namhyung
 
----
-v1->v2
-changed the commit message
-v2->v3
-changed the subject
-v3->v4
-changed the commit message and subject 
 
----
- drivers/staging/media/imx/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
-index 21fd79515042..772f49b1fe52 100644
---- a/drivers/staging/media/imx/Kconfig
-+++ b/drivers/staging/media/imx/Kconfig
-@@ -4,7 +4,6 @@ config VIDEO_IMX_MEDIA
- 	depends on ARCH_MXC || COMPILE_TEST
- 	depends on HAS_DMA
- 	depends on VIDEO_DEV
--	depends on VIDEO_DEV
- 	select MEDIA_CONTROLLER
- 	select V4L2_FWNODE
- 	select V4L2_MEM2MEM_DEV
--- 
-2.25.1
-
+> +                */
+> +               char *p =3D strstr(id, ":R");
+> +               char *p1 =3D strstr(id, "@R");
+> +
+> +               if (p =3D=3D NULL && p1) {
+> +                       p =3D strstr(p1+1, "@R");
+> +                       if (p =3D=3D NULL)
+> +                               p =3D p1;
+> +                       p =3D p+1;
+> +               }
+> +
+> +               if (p) {
+> +                       char *name;
+> +                       char *at;
+> +                       struct tpebs_event *new_event =3D malloc(sizeof(s=
+truct tpebs_event));
+>
+> -               pr_debug("found event %s\n", id);
+> +                       if (!new_event)
+> +                               return -ENOMEM;
+> +
+> +                       new_event->tpebs_name =3D strdup(id);
+> +                       *p =3D '\0';
+> +                       name =3D malloc(strlen(id) + 2);
+> +                       if (!name)
+> +                               return -ENOMEM;
+> +
+> +                       at =3D strchr(id, '@');
+> +                       if (at !=3D NULL) {
+> +                               *at =3D '/';
+> +                               at =3D strchr(id, '@');
+> +                               *at =3D '/';
+> +                               strcpy(name, id);
+> +                               strcat(name, "p");
+> +                       } else {
+> +                               strcpy(name, id);
+> +                               strcat(name, ":p");
+> +                       }
+> +                       new_event->name =3D name;
+> +                       *tpebs_event_size +=3D 1;
+> +                       pr_debug("retire_latency required, tpebs_event_si=
+ze=3D%lu, new_event=3D%s\n",
+> +                               *tpebs_event_size, new_event->name);
+> +                       list_add_tail(&new_event->nd, tpebs_events);
+> +                       continue;
+> +               }
+>
+>                 /* Always move tool events outside of the group. */
+>                 ev =3D perf_tool_event__from_str(id);
 
