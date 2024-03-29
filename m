@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-124663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C96891B25
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:19:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 299B7891B2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3332828B31D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:19:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BC6C1C2639D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425EE16F0D0;
-	Fri, 29 Mar 2024 12:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546BE16F0F5;
+	Fri, 29 Mar 2024 12:34:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dn4EqPLv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I39JAF9G"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFCD16E895;
-	Fri, 29 Mar 2024 12:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908F91411FB;
+	Fri, 29 Mar 2024 12:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715656; cv=none; b=ARO/rMsBCCv9rE5rxl8bU/YLzQ8DFcMnvrxD3hf7yawjoHBdMic1cSKnVDAuwEx7FKTthw6QLOs1Nw2PGfyeyPcRTIGFW8fhSCErbkhWZOrKeYoGQBlC+4GocUGPOrfSAprNTrkqukaRxrd5flqJDdvYwG3F7S7268J+KiCr6ZQ=
+	t=1711715659; cv=none; b=rp4rq1aMouNHUR/5hCfAU8FpvmVPrAzQe1HFLvR3A1rd3ayzMnHs2mC9DOJmXLiKUmIdC5mbNbFxTcQ+y/MWoCUy1t02t4ud7q/rxpOlAjnrf9aWuWPJaXJLlMkoZVxZ5/w74GcxFOIaK9bkribyVztPrPhf0bA0kEkXEKz/dpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715656; c=relaxed/simple;
-	bh=jwu9FsJbtbfHk1QsMJaENO9ehk3wZUqqexLs6ekxb6I=;
+	s=arc-20240116; t=1711715659; c=relaxed/simple;
+	bh=mnvBdOWr2dTaO6J2yotkR/heUcAFjGhxaYEUT9or5M4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QG5KoIf7IFF6O0jwJCAAwVPt6u5sJoAaZSflPPXCYt3z1f4/nkcILyt3xds76o62NirXoY47SgxDhXdqnIcEkID+jal97IrCJzbjWUZ4NKHUPfi46NrZaYDyoksEDMkJ95stlib2kTLOMzliJ2JhefzCYV8lpc+O2FufdgOfiWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dn4EqPLv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9C01C433F1;
-	Fri, 29 Mar 2024 12:34:14 +0000 (UTC)
+	 MIME-Version; b=hsyKzlYqFZ7Fku7MweAQQrXhEBGL90mSXrHZPHgINUhvsdCQLcWG9yFGvejCKBGDTLeI9tG1WLK1DZGhSQTL8qsTU3dyDtcZ/K4HLk0BTbFw1EJFSs4PcanCKfb2vdOEmjYt7VFmv9KZ4IQRlJFnlZ3Vd9bB6HBZQSTWCN471Rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I39JAF9G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 803BDC43399;
+	Fri, 29 Mar 2024 12:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715656;
-	bh=jwu9FsJbtbfHk1QsMJaENO9ehk3wZUqqexLs6ekxb6I=;
+	s=k20201202; t=1711715659;
+	bh=mnvBdOWr2dTaO6J2yotkR/heUcAFjGhxaYEUT9or5M4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Dn4EqPLvz6EzccRqrRAOSe7983Ai4iux96beVsXb5tLXgv24nN8G/MKdpgOWFPPho
-	 yfgrKbk7M6EU+mLM8MddVOC4gEqCdxD4tGJA2udTGpVLvZuqzywLipWU5TH1Fw8bRT
-	 y6/c/UvkF3dcB9avPi+MTGwzXRuexOuzGXe1nT2GNdAhPv/jFBNqzcqI5iceMZa/hx
-	 pokF4TgDpvpMVirn/lo/f0n6aMMzVHeqwDpSKagiytE7fv6Lnv2DtJ8MXo87WU+DVe
-	 TIf9scCyRvb1qX185KUJZkJZNSYgNqN5NrpvVq6KtElbivNlwpVvrs6iUe8VUDaWe9
-	 ZVjgtz3/1w6BQ==
+	b=I39JAF9G6ibyD6+BycrgzDFzfO7tkW1FA/wByUo+qkz0iR8HnzeFBsHTmwz5s5Zht
+	 8vi4zpazSC6k1YqyVKphxhREIe8kWQDuUYUpqgwpG5X5aBf+k+QoorvmocWF/aRrRg
+	 wyPdhf77jYd/VMxsj9GGCfWgBJiUfuESZf22/nzHW39gt3EIgfAPRRz3eSYRz6hoH3
+	 9UDM97as58J0XzWCV+asOlQyKjEEYyIksxC0C5EbZm3Exthle2GYALfrYCk8zwbv0b
+	 cSrxqyEfr484QJelNoBRxQfka9EGn5wT6vzZviHIEERLo44u1opB/mgZMoiX8WWSb3
+	 Nz+rLSluMNk/w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,14 +50,19 @@ Cc: Johan Jonker <jbx6244@gmail.com>,
 	krzysztof.kozlowski+dt@linaro.org,
 	conor+dt@kernel.org,
 	dsimic@manjaro.org,
+	quentin.schulz@theobroma-systems.com,
 	jonas@kwiboo.se,
-	shironeko@tesaguri.club,
+	lukasz.luba@arm.com,
+	rick.wertenbroek@gmail.com,
+	s.hauer@pengutronix.de,
+	chris.obbard@collabora.com,
+	knaerzche@gmail.com,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 06/17] arm64: dts: rockchip: fix rk3328 hdmi ports node
-Date: Fri, 29 Mar 2024 08:33:45 -0400
-Message-ID: <20240329123405.3086155-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 07/17] arm64: dts: rockchip: fix rk3399 hdmi ports node
+Date: Fri, 29 Mar 2024 08:33:46 -0400
+Message-ID: <20240329123405.3086155-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123405.3086155-1-sashal@kernel.org>
 References: <20240329123405.3086155-1-sashal@kernel.org>
@@ -74,24 +79,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 1d00ba4700d1e0f88ae70d028d2e17e39078fa1c ]
+[ Upstream commit f051b6ace7ffcc48d6d1017191f167c0a85799f6 ]
 
-Fix rk3328 hdmi ports node so that it matches the
+Fix rk3399 hdmi ports node so that it matches the
 rockchip,dw-hdmi.yaml binding.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/e5dea3b7-bf84-4474-9530-cc2da3c41104@gmail.com
+Link: https://lore.kernel.org/r/a6ab6f75-3b80-40b1-bd30-3113e14becdd@gmail.com
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 72112fe05a5c4..10df6636a6b6c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -732,11 +732,20 @@ hdmi: hdmi@ff3c0000 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 3180f576ed02e..e2515218ff734 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1769,6 +1769,7 @@ simple-audio-card,codec {
+ 	hdmi: hdmi@ff940000 {
+ 		compatible = "rockchip,rk3399-dw-hdmi";
+ 		reg = <0x0 0xff940000 0x0 0x20000>;
++		reg-io-width = <4>;
+ 		interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		clocks = <&cru PCLK_HDMI_CTRL>,
+ 			 <&cru SCLK_HDMI_SFR>,
+@@ -1777,13 +1778,16 @@ hdmi: hdmi@ff940000 {
+ 			 <&cru PLL_VPLL>;
+ 		clock-names = "iahb", "isfr", "cec", "grf", "vpll";
+ 		power-domains = <&power RK3399_PD_HDCP>;
+-		reg-io-width = <4>;
+ 		rockchip,grf = <&grf>;
+ 		#sound-dai-cells = <0>;
  		status = "disabled";
  
  		ports {
@@ -101,9 +120,11 @@ index 72112fe05a5c4..10df6636a6b6c 100644
 +
 +			hdmi_in: port@0 {
 +				reg = <0>;
-+
- 				hdmi_in_vop: endpoint {
- 					remote-endpoint = <&vop_out_hdmi>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 
+@@ -1796,6 +1800,10 @@ hdmi_in_vopl: endpoint@1 {
+ 					remote-endpoint = <&vopl_out_hdmi>;
  				};
  			};
 +
