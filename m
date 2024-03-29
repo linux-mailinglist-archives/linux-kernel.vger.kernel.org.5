@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-124949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EB19891E24
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:34:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCD4891E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68AB287416
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:34:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF591F2E4B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9DF1A8ACB;
-	Fri, 29 Mar 2024 12:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A951A8AF7;
+	Fri, 29 Mar 2024 12:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cKasXNMv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1deteBt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316D416C6A2;
-	Fri, 29 Mar 2024 12:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A766D1A8ADD;
+	Fri, 29 Mar 2024 12:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716494; cv=none; b=su/QPCNBKSvEA/a9FVuQ1ARdUCkEG0IYnDcwRHiV0fwGJCqwWxSmet17CzBtFuw/VylgEPlCZjCEF63Ed1gXvBp5SAZV5cJOcJ48wGbvKXCt08W0mLzD2vUpzun0pKKHh858ys7s9zkKpIi5ZoLf6qbVb8lbC5gBIfTB8wUVWtk=
+	t=1711716495; cv=none; b=F00UlhUpqJRe84FCY2u9Eqipf72whkF8mK8lgIIRFlQVIGR9TySORVpfCeoph1wEZ9+0jR/o+jFlPJYZxt7vsrnl0855lVVrqzv22KMgfNNdgF8F2RHcJzbuBRqsPJecw5RDLNVHAzZmUGdjB5oU8Aa0SuQ6buTqXA5yAXJGvRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716494; c=relaxed/simple;
-	bh=24ZfbhX4pI7+/FQ2TTtmh8cVzbSFP7TYidogpYLdsoI=;
+	s=arc-20240116; t=1711716495; c=relaxed/simple;
+	bh=790L5DcyYpXic9NyR2FrfOdsWnJbrgJGrM1mO+umhWI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UctC8gazH6XTuQL5CcgoL3xN690qZO8URyVscwhvckCD/vV4hEazSlLEzLgMijuVvkuBcEDG2TZvM7l1o6JZQynN5alhqZ9VrWi4waVpq6pnIN8RUsMlzQsEoUgDsng0pcJ+Lbsh3GCijwO3Y6kp7hODD3YjnZzl0c2RxiaXEZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cKasXNMv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F26C8C433F1;
-	Fri, 29 Mar 2024 12:48:12 +0000 (UTC)
+	 MIME-Version; b=BITDzz7PUurxH4zHPl30pngaGcZ2Wd2u1BKhHfa0Vcg9rVmUao0eKC4q77LMCasVApYbmeHSUwtp7ulpFvx4rWzaCHROUXLWl3msL5vysSmoIyYmZGJkP8nsYB/5dyXQ0Xx2fiyDD2LxzOyjamHVgl/zfMczgnkdT4eHPU9Yibs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1deteBt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7654EC43390;
+	Fri, 29 Mar 2024 12:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716494;
-	bh=24ZfbhX4pI7+/FQ2TTtmh8cVzbSFP7TYidogpYLdsoI=;
+	s=k20201202; t=1711716495;
+	bh=790L5DcyYpXic9NyR2FrfOdsWnJbrgJGrM1mO+umhWI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cKasXNMvd2fi9ZFinhLwPB+8oMkPSed3RdqKp3YVn09CFXZnm4CKrKarGTHA/5Cvf
-	 nXEB/Se5K58G4wj7FazzU3OETHBOw4lI57lFApQtcdmx9tW809VwtLQuAfKBALSunX
-	 enYLqbF3F2RmkyWJC5kycvgCPRJpkBwb067VjivVJCcbLbDc1cewYEJiFvpQOT0yXe
-	 yInUn+qcq7cyWUYCoR8z8dDAMl9BiSbGp3G3EbGMpqqK1y84fv5YEh4EakG0tQ6ABt
-	 Fcd8ue8ihX+OslvLb7edYySAjMe+8w5kZ9+qcswRuxCRyrTU5sT3OmrMwXMzioT3kz
-	 +H2/Ij9pEyi5g==
+	b=l1deteBtSoRFwczbP3qQ+xoO09TWM29HbzrKgQf153t8K0HuUYUaprXNPhRGraicq
+	 GCiKQDZVMzu8e/3H/Ib9c++TiRev6byrBgoNe/k9EVRoIl70WQYUI7bAJgNN+hA+GX
+	 Yg2lTBZXjEhapVkRXJJeoWws+/JaDMS54NlXygiMM6ogw0izQN7ZatTtLq6/QT3xWh
+	 15UySqtkmJua9J2yNau+SHqJeV5s8+LatSId8yna5Lw2qnaatbv7LP7kIfoA/lW6Ok
+	 cj8jr7w/CeEDQ7Fdhmk/PCipFmZyL0tIzM+UabZ3ksDPocXj5PKGrWZrIcdPBbszl+
+	 cfh81WBludSXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	clemens@ladisch.de,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/34] ALSA: firewire-lib: handle quirk to calculate payload quadlets as data block counter
-Date: Fri, 29 Mar 2024 08:47:14 -0400
-Message-ID: <20240329124750.3092394-13-sashal@kernel.org>
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 14/34] ext4: add a hint for block bitmap corrupt state in mb_groups
+Date: Fri, 29 Mar 2024 08:47:15 -0400
+Message-ID: <20240329124750.3092394-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
 References: <20240329124750.3092394-1-sashal@kernel.org>
@@ -68,69 +66,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit 4a486439d2ca85752c46711f373b6ddc107bb35d ]
+[ Upstream commit 68ee261fb15457ecb17e3683cb4e6a4792ca5b71 ]
 
-Miglia Harmony Audio (OXFW970) has a quirk to put the number of
-accumulated quadlets in CIP payload into the dbc field of CIP header.
+If one group is marked as block bitmap corrupted, its free blocks cannot
+be used and its free count is also deducted from the global
+sbi->s_freeclusters_counter. User might be confused about the absent
+free space because we can't query the information about corrupted block
+groups except unreliable error messages in syslog. So add a hint to show
+block bitmap corrupted groups in mb_groups.
 
-This commit handles the quirk in the packet processing layer.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20240218074128.95210-4-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20240119061154.1525781-1-yi.zhang@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/amdtp-stream.c | 12 ++++++++----
- sound/firewire/amdtp-stream.h |  4 ++++
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ fs/ext4/mballoc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index f8b644cb9157a..8753125683692 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -771,10 +771,14 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
- 	} else {
- 		unsigned int dbc_interval;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a254c2ba03576..e670b5628ddfa 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2950,7 +2950,10 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
+ 	for (i = 0; i <= 13; i++)
+ 		seq_printf(seq, " %-5u", i <= blocksize_bits + 1 ?
+ 				sg.info.bb_counters[i] : 0);
+-	seq_puts(seq, " ]\n");
++	seq_puts(seq, " ]");
++	if (EXT4_MB_GRP_BBITMAP_CORRUPT(&sg.info))
++		seq_puts(seq, " Block bitmap corrupted!");
++	seq_puts(seq, "\n");
  
--		if (*data_blocks > 0 && s->ctx_data.tx.dbc_interval > 0)
--			dbc_interval = s->ctx_data.tx.dbc_interval;
--		else
--			dbc_interval = *data_blocks;
-+		if (!(s->flags & CIP_DBC_IS_PAYLOAD_QUADLETS)) {
-+			if (*data_blocks > 0 && s->ctx_data.tx.dbc_interval > 0)
-+				dbc_interval = s->ctx_data.tx.dbc_interval;
-+			else
-+				dbc_interval = *data_blocks;
-+		} else {
-+			dbc_interval = payload_length / sizeof(__be32);
-+		}
- 
- 		lost = dbc != ((*data_block_counter + dbc_interval) & 0xff);
- 	}
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 1f957c946c956..cf9ab347277f2 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -37,6 +37,9 @@
-  *	the value of current SYT_INTERVAL; e.g. initial value is not zero.
-  * @CIP_UNAWARE_SYT: For outgoing packet, the value in SYT field of CIP is 0xffff.
-  *	For incoming packet, the value in SYT field of CIP is not handled.
-+ * @CIP_DBC_IS_PAYLOAD_QUADLETS: Available for incoming packet, and only effective with
-+ *	CIP_DBC_IS_END_EVENT flag. The value of dbc field is the number of accumulated quadlets
-+ *	in CIP payload, instead of the number of accumulated data blocks.
-  */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
-@@ -51,6 +54,7 @@ enum cip_flags {
- 	CIP_NO_HEADER		= 0x100,
- 	CIP_UNALIGHED_DBC	= 0x200,
- 	CIP_UNAWARE_SYT		= 0x400,
-+	CIP_DBC_IS_PAYLOAD_QUADLETS = 0x800,
- };
- 
- /**
+ 	return 0;
+ }
 -- 
 2.43.0
 
