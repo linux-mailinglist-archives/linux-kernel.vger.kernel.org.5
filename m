@@ -1,170 +1,100 @@
-Return-Path: <linux-kernel+bounces-123857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BF2890EF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:10:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E369890EF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C47F1B21D6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:10:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 796B9B23245
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7D4A3D;
-	Fri, 29 Mar 2024 00:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TMsAzdKS"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757DD184F;
+	Fri, 29 Mar 2024 00:11:19 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C806196
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C2EA29
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711671039; cv=none; b=O4DZmr9bHBlFRbSUeGIhykFP20qRzIvN5M+Ta0X0nE0eoo7VLzhSobDBVrCl3gAmWTb2m/FXOdJk6m09wWmecHUxXap/fXtEe1tW86ILZMNema3k7BICkuDbfVbH8sg4HO8MzsbhqlJctUUHSCVgJOAM3gEGH18rQ+9Hd98XiZ0=
+	t=1711671079; cv=none; b=Sfc2VkIKykCa70jmDNtwN5AkccpEe5loS1Cp75HmXQGXWbELGd9hFlRGPS6qQXZNYdWSrp3fnYLPVIdyrBYRnibnnKb/JnLdsfSRL2f4U4U+hB9pPemQvnME30RkhhXFXw7ZtytPFqGZgsX9Hh316oHctlri3f1SQK6PsEiOkhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711671039; c=relaxed/simple;
-	bh=EVIdbjbJsRff17pLWIt/KVs78vZXte9uNYVKH2OPIWg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VCNnZPF7vuyN97OVn9TEGvnm7xW0oq3066lSuvaJ+AfT8MUL0TzF5/FxqTlSzHw1IeB0712Lb+F/tRL2xpwy6suzJlf23kG2EE/T4xDInln63ul6ekj72E18cr0kkBUNkfZikNgf8WIg14hD80WdiDOrqdvlv8SzKRfFhKMXBeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TMsAzdKS; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60a15449303so17208187b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711671036; x=1712275836; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=K5lSPZalTka6RxrpE0PVtOAReRQxe7xqocRBLESvr1I=;
-        b=TMsAzdKS9gpswZCkH+QWLZI+Wgs+ybydZtOs8WnsW4dkf/Ieo83SAVYXwZR8oXqU8v
-         fffFK27Cpd5kclhRctx9e0AJygz8Oxk+8ZWyFcxZWaUk11A4rZ0kN+srJculxcgb7Rur
-         UoybyT/iIYQ774lAQDVLFkG4xqJEciobI+Qe7ma57gomxInKlLpNgCEbaM0Dj4zUnhDQ
-         FDLpfmu7+cJLn1zZYufOseG3a8sJIEJp9xCAAkAfwb8iG/qWayO9KorETUme8vlbOwL1
-         mm4lb21uFwu2QIfPZL+x8T820N0xIQWf3/WnLIQFeE3xa7Gn6c61n5O9kX4yK8m6CVK/
-         XwUA==
+	s=arc-20240116; t=1711671079; c=relaxed/simple;
+	bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=J4VEnUKx92rQYaKAzgOAzUc+6vWm+HHlKD5/gJgTOQRKTxK95DR9naZWvZeO0i2HmzvJ+NKjSXPxNbngymHvmFIirdl8tEwlmeZEqiuEKXbNyar3UZgpLFszE752lqT1hnJmF8alsLcB1GbSyoY7k3CmmIAuEOgYs+SgLf2aDLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbef888187so132856039f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:11:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711671036; x=1712275836;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K5lSPZalTka6RxrpE0PVtOAReRQxe7xqocRBLESvr1I=;
-        b=Gzg8h9jmGTrn7mgC52kBircuUd4B4dAL1gtiLnANU8XMER/6AQvt6RlLjRmmhDgoHE
-         rtWdcq1H1hC7Q7CPeEMfpBnJocHoqS0VVbJVbG4H2P66IT4U+ioW6EN9LnHQV9RG1cnZ
-         bDW/7df4KhShANqdFHPbusMgn+y4jDyeaq88RYHcZneSV5hoKw/r2nvpUgxRAULzLhxW
-         0cJ20EdVYhG8brE/zWen7pn9ap0LBXhhlvwnYYwUEFjF3rvfAHwWZuZzRDaQFTNQi5hL
-         SmKwNTI/7bPCoLIgcoxDHy/1g2V9bFVUY/+bTgoP0H9HJUS4jR+tIbA2qVSn3r6iI9yp
-         qK6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVyP63szVSyoqxwbolMQMHV1OQlee9bmN6ZK2pNYTkZAJDQPgUSfKKMxfWYosB2n7yvCPiaqc3nPnkI63jOlBKEFkjWvAuu+8RVdNX3
-X-Gm-Message-State: AOJu0YxVP3D3z0AbDIooOE5bjfbPChHejnx8Ab4Tas687Z+KWAx9vC+H
-	WLtBRmg91uZ2T/JNjNzMfcse4WiqVaIcQ3ylSlaPh0bFpMOlemcEIfh2IM2aI5PCrnG/6oMQO5Y
-	6onVDz44YyTAGfeni1KbMdx42KnEfwC/YlA1xVQ==
-X-Google-Smtp-Source: AGHT+IFNTD2wcHv6N04Ko0vkYz+k2THNRgzN2dkBDjgsSy4EQ2HSZ3QxzAoBtzLez5o4xIavqtXemij+Sg/7cukae7E=
-X-Received: by 2002:a0d:cc01:0:b0:611:bdd:452c with SMTP id
- o1-20020a0dcc01000000b006110bdd452cmr1106283ywd.8.1711671036187; Thu, 28 Mar
- 2024 17:10:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711671077; x=1712275877;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=PHr8eDHuUZYCMLc1lUOvEUcTzQBeC1nf6xkkqaKCjl6EKfAsZnql+2KwFj8ZvDIABt
+         +AFFJCM4ZBlRovM35I2sunC1R4XaXGL5RII6KL801KAbKRZkLHX2V1fQT52rtqWSM+DG
+         utq+SjSwgjrYklYAbigZdzbMmFGCorQ2LmCmb0VKxqkDpxJ0MrEeojT40xU53fYR6kWS
+         f2D8spBewtyqmTcwZRlR/Ucd5tZtLwZMX7k325enDSucLigCAyGr65H7umHhxe95Mh8y
+         dTvN+uO14oPsiaAxAPBG6bvl962gx+ZAaaYqXERmEGQJK9pxyN1PcsSAkLHQNJV6wYiC
+         SP3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWkqtQ56MS+aZQeoqKYOE/BQqpvf31wZ9Gk+mys8GooYyJaK86pn3OMM6B5yB5nLBMMc2zQUpzLB+yVNh3NEj4B2PntcfhYRl2Wb4k2
+X-Gm-Message-State: AOJu0YzJIQ0dl73XhCfdSGcdE3XXA9+YMBbADAtzQkhlEhdUq8vOeQhk
+	N7WbDIR4EIyY1Ac/ESVTWZrVnOxA8nBxytCn+0w1jU48OZNktdQSLaaBkPwXu7u0X2cB/0zqebz
+	IXIrz4CXqIwOBjD9BOfxakAlcdXJNSM+Jl8ZJpEh34+ng572ze45/SEM=
+X-Google-Smtp-Source: AGHT+IFkuzBOXLL0qovYepiBhl4jyh5xiqBtn4XTNWP9BC4uhLKwBQok6OoN5qt/kdcWfaL0mr2Wio+as2oxhYmU6Eq/0T3j6aeR
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
- <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
- <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com> <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
- <23de89e9-3ef3-c52d-7abf-93dc2dbb51a4@quicinc.com> <CAA8EJppEWXnsQzDD1tdNuMb1ijEVtE7LQct9jt1fwVwMd8ch_Q@mail.gmail.com>
- <27cadd17-10a3-3b8c-2b29-6698ccdce531@quicinc.com>
-In-Reply-To: <27cadd17-10a3-3b8c-2b29-6698ccdce531@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 29 Mar 2024 02:10:25 +0200
-Message-ID: <CAA8EJpqYVDG9pBj39m40rPwUNgE7x07HfCt6C3yaMN7eOaWk6Q@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
- dp_hpd_unplug_handle() directly
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Stephen Boyd <swboyd@chromium.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Johan Hovold <johan@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, abel.vesa@linaro.org, 
-	agross@kernel.org, airlied@gmail.com, daniel@ffwll.ch, dianders@chromium.org, 
-	dri-devel@lists.freedesktop.org, robdclark@gmail.com, sean@poorly.run, 
-	vkoul@kernel.org, quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com, 
-	marijn.suijten@somainline.org, freedreno@lists.freedesktop.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6602:2c90:b0:7cc:8980:5ae4 with SMTP id
+ i16-20020a0566022c9000b007cc89805ae4mr21732iow.2.1711671076996; Thu, 28 Mar
+ 2024 17:11:16 -0700 (PDT)
+Date: Thu, 28 Mar 2024 17:11:16 -0700
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008461a90614c17a44@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 29 Mar 2024 at 01:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 3/28/2024 3:50 PM, Dmitry Baryshkov wrote:
-> > On Thu, 28 Mar 2024 at 23:21, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 3/28/2024 1:58 PM, Stephen Boyd wrote:
-> >>> Quoting Abhinav Kumar (2024-03-28 13:24:34)
-> >>>> + Johan and Bjorn for FYI
-> >>>>
-> >>>> On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
-> >>>>> For internal HPD case, hpd_event_thread is created to handle HPD
-> >>>>> interrupts generated by HPD block of DP controller. It converts
-> >>>>> HPD interrupts into events and executed them under hpd_event_thread
-> >>>>> context. For external HPD case, HPD events is delivered by way of
-> >>>>> dp_bridge_hpd_notify() under thread context. Since they are executed
-> >>>>> under thread context already, there is no reason to hand over those
-> >>>>> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
-> >>>>> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
-> >>>>>
-> >>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> >>>>> ---
-> >>>>>     drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
-> >>>>>     1 file changed, 3 insertions(+), 2 deletions(-)
-> >>>>>
-> >>>>
-> >>>> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
-> >>>
-> >>> Is this a bug fix or an optimization? The commit text doesn't tell me.
-> >>>
-> >>
-> >> I would say both.
-> >>
-> >> optimization as it avoids the need to go through the hpd_event thread
-> >> processing.
-> >>
-> >> bug fix because once you go through the hpd event thread processing it
-> >> exposes and often breaks the already fragile hpd handling state machine
-> >> which can be avoided in this case.
-> >
-> > Please add a description for the particular issue that was observed
-> > and how it is fixed by the patch.
-> >
-> > Otherwise consider there to be an implicit NAK for all HPD-related
-> > patches unless it is a series that moves link training to the enable
-> > path and drops the HPD state machine completely.
-> >
-> > I really mean it. We should stop beating a dead horse unless there is
-> > a grave bug that must be fixed.
-> >
->
-> I think the commit message is explaining the issue well enough.
->
-> This was not fixing any issue we saw to explain you the exact scenario
-> of things which happened but this is just from code walkthrough.
->
-> Like kuogee wrote, hpd event thread was there so handle events coming
-> out of the hpd_isr for internal hpd cases. For the hpd_notify coming
-> from pmic_glink or any other extnernal hpd cases, there is no need to
-> put this through the hpd event thread because this will only make things
-> worse of exposing the race conditions of the state machine.
->
-> Moving link training to enable and removal of hpd event thread will be
-> worked on but delaying obvious things we can fix does not make sense.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-From the commit message this feels like an optimisation rather than a
-fix. And granted the fragility of the HPD state machine, I'd prefer to
-stay away from optimisations. As far as I understood from the history
-of the last revert, we'd better make sure that HPD handling goes only
-through the HPD event thread.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
--- 
-With best wishes
-Dmitry
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
