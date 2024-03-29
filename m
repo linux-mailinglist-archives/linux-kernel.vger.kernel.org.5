@@ -1,61 +1,57 @@
-Return-Path: <linux-kernel+bounces-124883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9405C891D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:17:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC8C891F4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:02:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5AE91C26730
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:17:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C5F2B28908
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F1921C170;
-	Fri, 29 Mar 2024 12:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6668021C183;
+	Fri, 29 Mar 2024 12:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YC2ot5H+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bmHSoc6C"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017552101BF;
-	Fri, 29 Mar 2024 12:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9827B21C177;
+	Fri, 29 Mar 2024 12:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716342; cv=none; b=dLowNO1lZFuWyq5by//7d2rL3/4S1ufbCXGS3rlmbimxlgEnscfDGbT5W/75PbwQUQeVvo9wWsw2r6pjR5kSbQ2PW23MoMH2kzyTymFlDj/PRwNcw2W2mzXsm0sQlg22U687otOqfZiZYLTpMLfR7czs81SRtHsOdKwrHRxzCeg=
+	t=1711716343; cv=none; b=oAvFc3gKPN3//xWXjDagKiVMBkUBGZtHunLtPg/BLXloxReu3RZH82f9OUjWdO0NhQUm/5QaQZJiHoq6WnCIOXDjcBE+y5VIrlAgJ4/r3i9gu58BFcoYlXYDtLN9PmHdtWaJPP/Olwm8xKsqsrxPWSGTJG5ZetRsBebp2fx4YAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716342; c=relaxed/simple;
-	bh=9BouK0cvyz4CebDFKqfn+1sFwX7Su+j+j0D8cIZoeFo=;
+	s=arc-20240116; t=1711716343; c=relaxed/simple;
+	bh=S7tMWHWPalm7jOEL4BvFLD+RrDQ085rm20ckplEMUdQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uRik3IdUpDCjqj1Gm8OjV2/SnLEKNCUlWgOOH86zBLPSo7TK0xWS/sT4abjZS/rSwmCYdBn35UNySb4TTEDGncRSUQfM9uxe9dFYFrhnDB8hjOumsBYeGoHziIGwDXfrleGdBVksVNXP+zIEp9JZ7Sacram9lqo0rhiL3Y4tQgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YC2ot5H+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90BDDC433C7;
-	Fri, 29 Mar 2024 12:45:40 +0000 (UTC)
+	 MIME-Version; b=UMoy172OrAnFcHvtJTaG97X+ltjOu7B2Nzij0WkAiay9KN8/3jJ+sWAbsYsPHdgS4Gr0d7GbHfL7lvUBz4xDVl7cTaqDsO04Kbc0VnbD2CHyFdt/HaxJshphwpQjP/zBdFKiCOCmgP6vkNqecsPpZAr7PoYIy0kS8UclEuHtNpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bmHSoc6C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4217DC433F1;
+	Fri, 29 Mar 2024 12:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716341;
-	bh=9BouK0cvyz4CebDFKqfn+1sFwX7Su+j+j0D8cIZoeFo=;
+	s=k20201202; t=1711716343;
+	bh=S7tMWHWPalm7jOEL4BvFLD+RrDQ085rm20ckplEMUdQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YC2ot5H+hQWG5G3AMjqwGFUhfDM3EQ78dK3SPrRemK8ZlusSgIJxS9LCd/ujRKU8H
-	 P/Pnbjc2KJenQDPoX1/KUSHeY/hkw3ICUxSWlt3zJMXsvxZepcESu7J+tGYj+sHKh6
-	 6cb80ZgHDou8K6ltLivM8j3ePlLV8NvtfpmSF/3o8dHrBc6QVtRgy+Fw6SbYU83Knc
-	 FYSI/oX52vAXQS5Yu9+88Bl8aSvSOYb1iryVqWxCONoSBx/u+jSwIxWhm2WwxX2Lad
-	 FW3fIJwvRuqQiDcyr/7SYdcdXI6Hm4rYBqXPRI/9Nd0La28hbYFCHHqHQbdgkCYdpL
-	 /bdr/UF5L/ERg==
+	b=bmHSoc6CSM0/PagqwgDD2HgoOaL9ZYA+s4Sl4njBYGFdbk2EPM6YA93LK7i92k1DE
+	 RB5QZYNH+tvgP2KJ7nDi+c58MN0tOjsIDAuZP3UaZdBd6L5uSO/W+KOLHOyGvsa9tg
+	 h/f9S3fgmiKcbXlVfhwfCaeBGMm+YDpELIJy3NF5/sRHLO/xP44ZOb19fHlDxL8YjV
+	 F/sft7iPRpBQIDHbUkV3AWnid7OdSFwBG4stTfJpdOtH6H5oRtBfD8vCxnJmSyQGl7
+	 bj10fD/NxhWTvGpnxkULxivhuLlYuDaOKyjqdeLdp6qnxcJ+4QKL11MvHXLjBV0d0+
+	 E4jWpTRM8IVGw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Matt Scialabba <matt.git@fastmail.fm>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+Cc: linke li <lilinke99@qq.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Sasha Levin <sashal@kernel.org>,
-	vi@endrift.com,
-	swyterzone@gmail.com,
-	maxwell.nguyen@hp.com,
-	carl.ng@hp.com,
-	appsforartists@google.com,
-	matthias_berndt@gmx.de,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 74/75] Input: xpad - add support for Snakebyte GAMEPADs
-Date: Fri, 29 Mar 2024 08:42:55 -0400
-Message-ID: <20240329124330.3089520-74-sashal@kernel.org>
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 75/75] ring-buffer: use READ_ONCE() to read cpu_buffer->commit_page in concurrent environment
+Date: Fri, 29 Mar 2024 08:42:56 -0400
+Message-ID: <20240329124330.3089520-75-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
 References: <20240329124330.3089520-1-sashal@kernel.org>
@@ -70,42 +66,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Matt Scialabba <matt.git@fastmail.fm>
+From: linke li <lilinke99@qq.com>
 
-[ Upstream commit 81c32343d04f8ca974681d5fb5d939d2e1f58851 ]
+[ Upstream commit f1e30cb6369251c03f63c564006f96a54197dcc4 ]
 
-Add Snakebyte GAMEPAD BASE X and Snakebyte GAMEPAD RGB X to the list
-of supported devices.
+In function ring_buffer_iter_empty(), cpu_buffer->commit_page is read
+while other threads may change it. It may cause the time_stamp that read
+in the next line come from a different page. Use READ_ONCE() to avoid
+having to reason about compiler optimizations now and in future.
 
-Signed-off-by: Matt Scialabba <matt.git@fastmail.fm>
-Link: https://lore.kernel.org/r/efbfb428-06b0-48f9-8701-db291c2a9d65@app.fastmail.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Link: https://lore.kernel.org/linux-trace-kernel/tencent_DFF7D3561A0686B5E8FC079150A02505180A@qq.com
+
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: linke li <lilinke99@qq.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/joystick/xpad.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/trace/ring_buffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index d0bb3edfd0a09..57c052a027f7d 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -361,6 +361,8 @@ static const struct xpad_device {
- 	{ 0x24c6, 0x5d04, "Razer Sabertooth", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0xfafe, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
- 	{ 0x2563, 0x058d, "OneXPlayer Gamepad", 0, XTYPE_XBOX360 },
-+	{ 0x294b, 0x3303, "Snakebyte GAMEPAD BASE X", 0, XTYPE_XBOXONE },
-+	{ 0x294b, 0x3404, "Snakebyte GAMEPAD RGB X", 0, XTYPE_XBOXONE },
- 	{ 0x2dc8, 0x2000, "8BitDo Pro 2 Wired Controller fox Xbox", 0, XTYPE_XBOXONE },
- 	{ 0x2dc8, 0x3106, "8BitDo Pro 2 Wired Controller", 0, XTYPE_XBOX360 },
- 	{ 0x31e3, 0x1100, "Wooting One", 0, XTYPE_XBOX360 },
-@@ -501,6 +503,7 @@ static const struct usb_device_id xpad_table[] = {
- 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA controllers */
- 	XPAD_XBOX360_VENDOR(0x2563),		/* OneXPlayer Gamepad */
- 	XPAD_XBOX360_VENDOR(0x260d),		/* Dareu H101 */
-+       XPAD_XBOXONE_VENDOR(0x294b),            /* Snakebyte */
- 	XPAD_XBOX360_VENDOR(0x2c22),		/* Qanba Controllers */
- 	XPAD_XBOX360_VENDOR(0x2dc8),            /* 8BitDo Pro 2 Wired Controller */
- 	XPAD_XBOXONE_VENDOR(0x2dc8),		/* 8BitDo Pro 2 Wired Controller for Xbox */
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 1ac6637895a44..0d98e847fd6c2 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -4389,7 +4389,7 @@ int ring_buffer_iter_empty(struct ring_buffer_iter *iter)
+ 	cpu_buffer = iter->cpu_buffer;
+ 	reader = cpu_buffer->reader_page;
+ 	head_page = cpu_buffer->head_page;
+-	commit_page = cpu_buffer->commit_page;
++	commit_page = READ_ONCE(cpu_buffer->commit_page);
+ 	commit_ts = commit_page->page->time_stamp;
+ 
+ 	/*
 -- 
 2.43.0
 
