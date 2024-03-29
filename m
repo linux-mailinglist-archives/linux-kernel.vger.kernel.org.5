@@ -1,157 +1,136 @@
-Return-Path: <linux-kernel+bounces-125140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4099D8920A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:41:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 395818920B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBD811F2A465
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:41:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A9BD1C29556
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6BEF1DDFC;
-	Fri, 29 Mar 2024 15:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HPuJTw+U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976B225777;
+	Fri, 29 Mar 2024 15:43:16 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100E21DDEA;
-	Fri, 29 Mar 2024 15:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2851C0DF7;
+	Fri, 29 Mar 2024 15:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711726862; cv=none; b=M1QIVgw4prWTQk4WXsc3K57sYUJ8/tMq/rL0NePo8xAlW6QBUFUVZtma3n0M035jBycazgXPv6oeHJRZ1nR31inZ1WFGaF2s9yTdLqPD+EyUPzSo4nn0rn2WSo4f8aZounGhXCUHVP58pLBeQlz6wMKrJUxV2IcT6QvL6kCOYqE=
+	t=1711726996; cv=none; b=sLwrxY9g1KBg2KGGKOmBUVhN0dRQX9weqTwHxzdf2ruVyPmhbRlm8onPZTBrN6Nud8kffLy8+WCqiSw8nCleox3S0J7BgWlKkjr6Gk9xaKEGTnRYmcWBgOd7NjnFkCXBd7SOkvrw+IOZo1roeFioTQA/tbCcGjHR4RlEmPKsnNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711726862; c=relaxed/simple;
-	bh=bzeVKulJy/hP5GNpCoE2RYDk0i6XfvDfXpyD/AV4Lg4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IQWneDmnPQ/u7ICo2vjUJMcQ1CBZATdtzV2Gqiz9WEQGaUGD3us2yG6C94EgARiks47bVZrE9PlTPFlj6HIqZVbVgFxNDYUhBT+h/iKZchCQKxEgN6xLZYfEC7ipt7PyVA0Un0yiCjhLUuj6CYiUJPKUcDvsYcF5uS26v3aBOcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HPuJTw+U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B77EC433F1;
-	Fri, 29 Mar 2024 15:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711726861;
-	bh=bzeVKulJy/hP5GNpCoE2RYDk0i6XfvDfXpyD/AV4Lg4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HPuJTw+U4Lwdm2PhfqOl7arf9uQWMGDioUT4VPWqocBfmxF5bvrua6lI0nk5bEpF6
-	 S23TW/S8CiFM5Qf3RMQp6KaLR0dTfRYMP/FLCCA7LVkJ6+zws5TeYnIyJSuS9a+FED
-	 WrMiY4ehrh6eoBrpVMO4ehijdQ9ocyo77sA1L93U7RRM9jgtR0pZw18rx8CfF/7q8y
-	 J8aJWUSCZZg5OgGscongYcMrs+CBY3zwtHztIpc42MFTTbCB6JG8fhtiuNJjXjEaGu
-	 +teoxnY9ElCdOZN+j29yFxogg4puEYmznow+hseIeYDj+UW25btqU4GNSA3z5emh9K
-	 v9GWw22lvHLxg==
-Date: Fri, 29 Mar 2024 15:40:57 +0000
-From: Conor Dooley <conor@kernel.org>
-To: keguang.zhang@gmail.com
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org,
-	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] dt-bindings: dma: Add Loongson-1 APB DMA
-Message-ID: <20240329-destruct-giggling-b27e373295ba@spud>
-References: <20240329-loongson1-dma-v7-0-37db58608de5@gmail.com>
- <20240329-loongson1-dma-v7-1-37db58608de5@gmail.com>
+	s=arc-20240116; t=1711726996; c=relaxed/simple;
+	bh=8D3dJ6svTFv3Xw6tQT1vQDH8IAiOheAKB2leJyMX3hQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dfg+xh6oSOL9Kkd395WsFb05PXbCbX4I2bBDCSj5KAgxVKwgHsoVaqyH1GF7tzqrz9XqlxmdPw5KREUAWkstNs2weASRdkKajOY5WflS1NUCtwH8zyeaP2e1rQ9vUVIVFlSoffw/Nx0hUpBlecWAJvGPI/H4DnS5A/PIacs22tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4V5km40SrJz9xqxL;
+	Fri, 29 Mar 2024 23:27:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id D5ED41402CD;
+	Fri, 29 Mar 2024 23:43:08 +0800 (CST)
+Received: from [10.48.128.185] (unknown [10.48.128.185])
+	by APP2 (Coremail) with SMTP id GxC2BwDXECV94QZmAQ8uBQ--.25296S2;
+	Fri, 29 Mar 2024 16:43:07 +0100 (CET)
+Message-ID: <302ad45e-aff9-40e8-97de-121353e73384@huaweicloud.com>
+Date: Fri, 29 Mar 2024 16:42:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="0+H86LmlfZrUlS4b"
-Content-Disposition: inline
-In-Reply-To: <20240329-loongson1-dma-v7-1-37db58608de5@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] security: Handle dentries without inode in
+ security_path_post_mknod()
+To: Mimi Zohar <zohar@linux.ibm.com>, dmitry.kasatkin@gmail.com,
+ eric.snowberg@oracle.com, paul@paul-moore.com, jmorris@namei.org,
+ serge@hallyn.com
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-cifs@vger.kernel.org, viro@zeniv.linux.org.uk, pc@manguebit.com,
+ christian@brauner.io, Roberto Sassu <roberto.sassu@huawei.com>,
+ stable@vger.kernel.org, Steve French <smfrench@gmail.com>
+References: <20240329105609.1566309-1-roberto.sassu@huaweicloud.com>
+ <7b8162281b355b16e8dbdb93297a9a1cfb5bb6da.camel@linux.ibm.com>
+Content-Language: en-US
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <7b8162281b355b16e8dbdb93297a9a1cfb5bb6da.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwDXECV94QZmAQ8uBQ--.25296S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw43Xr4ftF1DKFW3ZryfXrb_yoW8Cr4DpF
+	W8u3WDt3s5Jry8Gr4SyFy7Aa4Ikay8XF45G3Z5JrW3Za43uF1YgrWSvayY9rWDtr42gry2
+	yw42qF9IqayDZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgARBF1jj5fusAAAsv
 
+On 3/29/2024 4:05 PM, Mimi Zohar wrote:
+> On Fri, 2024-03-29 at 11:56 +0100, Roberto Sassu wrote:
+>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>
+>> Commit 08abce60d63fi ("security: Introduce path_post_mknod hook")
+>> introduced security_path_post_mknod(), to replace the IMA-specific call to
+>> ima_post_path_mknod().
+>>
+>> For symmetry with security_path_mknod(), security_path_post_mknod() is
+>> called after a successful mknod operation, for any file type, rather than
+>> only for regular files at the time there was the IMA call.
+>>
+>> However, as reported by VFS maintainers, successful mknod operation does
+>> not mean that the dentry always has an inode attached to it (for example,
+>> not for FIFOs on a SAMBA mount).
+>>
+>> If that condition happens, the kernel crashes when
+>> security_path_post_mknod() attempts to verify if the inode associated to
+>> the dentry is private.
+>>
+>> Add an extra check to first verify if there is an inode attached to the
+>> dentry, before checking if the inode is private. Also add the same check to
+>> the current users of the path_post_mknod hook, ima_post_path_mknod() and
+>> evm_post_path_mknod().
+>>
+>> Finally, use the proper helper, d_backing_inode(), to retrieve the inode
+>> from the dentry in ima_post_path_mknod().
+>>
+>> Cc: stable@vger.kernel.org # 6.8.x
+> 
+> Huh?  It doesn't need to be backported.
 
---0+H86LmlfZrUlS4b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ehm, sorry. To be removed.
 
-On Fri, Mar 29, 2024 at 07:26:57PM +0800, Keguang Zhang via B4 Relay wrote:
-> From: Keguang Zhang <keguang.zhang@gmail.com>
->=20
-> Add devicetree binding document for Loongson-1 APB DMA.
->=20
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> Changes in v7:
-> - Change the comptible to 'loongson,ls1*-apbdma' (suggested by Huacai Che=
-n)
-> - Update the title and description part accordingly
-> - Rename the file to loongson,ls1b-apbdma.yaml
-> - Add a compatible string for LS1A
-> - Delete minItems of 'interrupts'
-> - Change patterns of 'interrupt-names' to const
->=20
-> Changes in v6:
-> - Change the compatible to the fallback
-> - Some minor fixes
->=20
-> Changes in v5:
-> - A newly added patch
-> ---
->  .../bindings/dma/loongson,ls1b-apbdma.yaml         | 65 ++++++++++++++++=
-++++++
->  1 file changed, 65 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/dma/loongson,ls1b-apbdma.y=
-aml b/Documentation/devicetree/bindings/dma/loongson,ls1b-apbdma.yaml
-> new file mode 100644
-> index 000000000000..449da9fc2de1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/loongson,ls1b-apbdma.yaml
-> @@ -0,0 +1,65 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/loongson,ls1b-apbdma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Loongson-1 APB DMA Controller
-> +
-> +maintainers:
-> +  - Keguang Zhang <keguang.zhang@gmail.com>
-> +
-> +description:
-> +  Loongson-1 APB DMA controller provides 3 independent channels for
-> +  peripherals such as NAND, audio playback and capture.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: loongson,ls1b-apbdma
-> +      - items:
-> +          - enum:
-> +              - loongson,ls1a-apbdma
-> +              - loongson,ls1c-apbdma
-> +          - const: loongson,ls1b-apbdma
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: Each channel has a dedicated interrupt line.
+>> Reported-by: Steve French <smfrench@gmail.com>
+>> Closes:
+>> https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
+>> Fixes: 08abce60d63fi ("security: Introduce path_post_mknod hook")
+> 
+> -> 08abce60d63f
 
-If there's a respin, make this an items list. If you do, you can then
-drop the maxItems and description. Ideally with that change made,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Ok.
 
-Thanks,
-Conor.
+Thanks
 
---0+H86LmlfZrUlS4b
-Content-Type: application/pgp-signature; name="signature.asc"
+Roberto
 
------BEGIN PGP SIGNATURE-----
+>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+> 
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgbhCQAKCRB4tDGHoIJi
-0obNAQDHSnU+L7QN0TvySd5Y0LJgYUIxoxrj+cqFE3M6JzCtuwD/elNAaXBx1lsH
-jQzAYajJtRWsOWzHjRne3oSnDKRFmAg=
-=Mb/N
------END PGP SIGNATURE-----
-
---0+H86LmlfZrUlS4b--
 
