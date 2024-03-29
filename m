@@ -1,234 +1,285 @@
-Return-Path: <linux-kernel+bounces-124149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF982891302
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:55:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2230F891313
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6482CB21B9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCC40289060
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAF7381B8;
-	Fri, 29 Mar 2024 04:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311943BB30;
+	Fri, 29 Mar 2024 05:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jNmjYPuG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="D57deTiv";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dx0EnWoZ"
+Received: from flow3-smtp.messagingengine.com (flow3-smtp.messagingengine.com [103.168.172.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675A121100
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711688147; cv=fail; b=tXYcE9wiXYuJ9ZD/2CWiXsgzrFa/nXLLLf5gPNSSFHwwT06vS77D/ILnRz6jVStbknJIeFvfjau5N7HM36N93m4A+ynSp2Tk9CnqYhFi5ZICXm+TW1+StyNK9UcKpUt1ys84qrbvcba1FCmUMOqdI9uQT5notf+HzcYKtnHkGYY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711688147; c=relaxed/simple;
-	bh=Sq7L3HcSl1yXe/nTzkfJ4AgZAwGG1fwXDm3+xPlj4pg=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=fsEfc5EoflKa7xTgE6GCabui9X/1FG2X7bTFcXd0wcI6hlnsRT6hgQEPZzp5BWrPSRBpvjTFTQdfz92e6Qx2eY5SUmjmbJu8jy4eGBc5XFceGl2JTuv4vTZ5j+UK5c4shm2wtq7F93XbSASGpkcIQciS0xc598+FyxQ1JBbtNeE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jNmjYPuG; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711688146; x=1743224146;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Sq7L3HcSl1yXe/nTzkfJ4AgZAwGG1fwXDm3+xPlj4pg=;
-  b=jNmjYPuGdjQmzc9Y3hsEdprBY3cWmk0hiu/p2ickT41wJ37+52kZ2p4K
-   vDQkD2/aEEnnfGQjB6jPi37d4cyGuBy+tH5GlxI59s26CBtvF6iKvvJK0
-   +OmaNucJl+4FxIwvi1WHfG7ZMPADM9Zq2/iIglO1ReodvH9EgVw+rsJ9M
-   pp9YhskyPrGxxA87nBTU7au1+w0L8wzA46q9xLuJO5aj8D5SfgEGvU+q0
-   vgjalSDC8fi03PMD/OjaOpOhl7fFwrAlEkUZrudI+M8Mm8VE+SZHFW2z2
-   Gnq3I2ifoc3DnuU7SYeSgCnfL/Zy1ykFdvCUJQdcpS8QlgGj1huLAODTN
-   w==;
-X-CSE-ConnectionGUID: AAOSwKkeRBubXWrbz/KS/g==
-X-CSE-MsgGUID: Q8zqhHk1Q928QD/Dh4/knw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="7471466"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="7471466"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 21:55:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="16904751"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 21:55:40 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 21:55:39 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 28 Mar 2024 21:55:39 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 21:55:39 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 28 Mar 2024 21:55:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CsLCZjxTFembYzTRCm19mjLVP5QszYZt/Kh2R9vzEz4KGElT8so31rKRFlzrfYcgaW3VFsiQ3WTkPadl2k/zbQehTbyr/jx9t5LUOuL0Jydbe+s5n4dk8f66lQCb2pWp0HbRvWoU8Aqz1HNwQE98HEWA5w6euJ+EGeBWHBU+krIv9MYFetVsvy1CRsJMfhTbX7g4Y7wz8/igVukrxkj00SWH+00Iu4pqWtWMDIjERyh66fZ1UVOXWFnocMp6ZhOG8XCWOgASNz0sCcSbt/+hMuqyPctxM27QD2F8BUaBcIcw4LQ347med6lCxWmqNaLfClVZYrZZyEBGDVGhT5Qgbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MmDFqgHCaF3uLygu4hwJqcPQP4DyrU0GvYRahsOOnBA=;
- b=RWKJYh55f7LexPBHKUMI4OYGLn6PASFkbUOIFOComXu98Nr18k3g7G0kec2AjJ+6LP2KTNXvlNXa0LFvTumA6dm4l2RSk4rGNh8RSpMP4dxzMIXXJU0bUOZ2tcugewb5Kxo2GM1SSY8chDSxO/fFiuQCr1wIn3G/1xTKTjCQ8sa6fZmFyfeb65BtG9Gko+urnqMyJeE0ZaFSXpFmJ/+vZqY8MTyLF/Tn9Q/B2XeJIvF0q5fUZneP5PsHYLKoQAyNvhDlgDXm7kuknhtyPAsc+xM8LKdOfdwxJ081degliTd7plQu+GmOETwENiwzGwoqFncQGWMXLcK/bp3qePVR6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by IA1PR11MB6419.namprd11.prod.outlook.com (2603:10b6:208:3a9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Fri, 29 Mar
- 2024 04:55:24 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7409.031; Fri, 29 Mar 2024
- 04:55:24 +0000
-Message-ID: <91c0b375-55db-434e-aa3a-7ead0d714d40@intel.com>
-Date: Thu, 28 Mar 2024 21:55:21 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/2] x86/resctrl: Pass domain to target CPU
-To: Borislav Petkov <bp@alien8.de>
-CC: Thomas Gleixner <tglx@linutronix.de>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, "Yu, Fenghua" <fenghua.yu@intel.com>, "Ingo
- Molnar" <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>, Babu Moger
-	<Babu.Moger@amd.com>, <shameerali.kolothum.thodi@huawei.com>, "D Scott
- Phillips OS" <scott@os.amperecomputing.com>, <carl@os.amperecomputing.com>,
-	<lcherian@marvell.com>, <bobo.shaobowang@huawei.com>,
-	<tan.shaopeng@fujitsu.com>, <baolin.wang@linux.alibaba.com>, Jamie Iles
-	<quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
-	<peternewman@google.com>, <dfustini@baylibre.com>, <amitsinght@marvell.com>,
-	David Hildenbrand <david@redhat.com>, James Morse <james.morse@arm.com>, Tony
- Luck <tony.luck@intel.com>
-References: <ZdZPht8hY4J9uIOz@agluck-desk3>
- <20240308213846.77075-1-tony.luck@intel.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20240308213846.77075-1-tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0199.namprd03.prod.outlook.com
- (2603:10b6:303:b8::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8033B298;
+	Fri, 29 Mar 2024 05:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.138
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711688996; cv=none; b=b821XIEZL1UrNvy4ZprsEuJVW4yGFr050u1P7Y8C1Yotz+V+f9qHDf5GzhT1Cvc/R72hVakpcTMyIUj3SIKVp5RgkjbSlCRLVWFCzePBPBy0SmrLppTkkaqcYRgOaqY6Zo5AZ0OE+TpWzlEqx8T4SPUr3tJvQE1RyiHasl9x6+E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711688996; c=relaxed/simple;
+	bh=F89jqTE8kynG1Uz9mIsGrS6EtRpxfFfvAHY5kLrYFvE=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=JLrxnU1BpFTXDAyZpAZ0wOzg8GufWTGPdRCvaHAsesTpWgg22v8w5okER5h88y3FpqCOxa6dTM8HTxGVso7z/E6UwEWnmA1oF0ut4iCOjFQiNwDYf+rY/0oHjVhCVTE6FygTggFvVKQjdoDgROA1f8vauPlS3pvaQRpH33lB/Rg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=D57deTiv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dx0EnWoZ; arc=none smtp.client-ip=103.168.172.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 5684E200401;
+	Fri, 29 Mar 2024 01:09:53 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Fri, 29 Mar 2024 01:09:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1711688993; x=1711696193; bh=W43fkf1B1Z
+	n+9lZ0QAk0C2vy62l6S5S5PZF98K77Zsk=; b=D57deTiv3kPkh4S6TPaHl6y8IE
+	aPyCnh9jL6Dgq2l+DIeKhmF6dkO220TK1L/d6RwblDCqSC6mwWHzhmyZuvr7YYSV
+	AzrlX3gJiw/RzCUfZ+5HmZJmJXTocl7CDZGOq4taeeAz/Z8ezaM7BaSpQPB/rZ48
+	QFTAvfSNCu+7M3lb3xiLCreORf5pYJj+INeP3Ve7AyoIPJ00BeScF6bLLEUcAXSv
+	KtnWDWuUAH7OvfCi1Jj8CpYSvgT6oZq3uWPv0jMpYMSFBDAv9ntlr6DNzU5lq1iK
+	VWZCITz09tR3meh2AOo22um/Z1qVALwF0/bp0ebWh8Hwt74NKQPnHls1F75w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711688993; x=1711696193; bh=W43fkf1B1Zn+9lZ0QAk0C2vy62l6
+	S5S5PZF98K77Zsk=; b=dx0EnWoZC4wLY2jxQnf35r4uxwLKes4LQcek6hOEmYBf
+	ha1OzzK3Tu1tXA/tuFrvf8uCM1rUtWOcpPci2igbAvJ49BiJOT5kIoKXWvsf/tSG
+	UMUolriebfkMcpTwBGSaIbgsa5uMry6PTW2RNdrsAza/DoyZOQfCvePurgmwG1fE
+	BCUvx8tC/aZuj7e+SAmE9vOIoEsY+A35lC6csanoPa04s0X94KqDLdLfRUplknTc
+	9y1uFrYzamLL/pjB0hxNjCcD9f/dhJVPVdHflt5/JIUIE7oLXRBc+tTj9fEauBN1
+	jLYMhUEvYa+Sp3SU3fWnR0FO8QNTajWvvt3oPWuJHw==
+X-ME-Sender: <xms:H00GZvO0YQEHBvJTSpazf5AjdnE6rCHVPYYSTX6V_VavUmWZ3FGGJw>
+    <xme:H00GZp95JjHeLd0W3WLA2dNbgObxHFsEvOufPGQebsvPKRi2A6_7tlBDxWVCN8qjI
+    SlVObH8ZKXi5bboVQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvtddgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufht
+    vghfrghnucfqkdftvggrrhdfuceoshhorhgvrghrsehfrghsthhmrghilhdrtghomheqne
+    cuggftrfgrthhtvghrnhepjeeuheegtdeuteeghfehjeejiefghfeifeejheduvdeugedt
+    hfehvefggefgkedtnecuffhomhgrihhnpehinhhfrhgruggvrggurdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhorhgvrghrsehf
+    rghsthhmrghilhdrtghomh
+X-ME-Proxy: <xmx:H00GZuT6mnZg6PZNm3YMxPlOjpOdvnu7_Le2EpJ3RKyiwsRo_DHjHw>
+    <xmx:H00GZjsXeQTiYYW_-PKbOnBivAr4rahFEt_tvGACTKWbQnro6rNklw>
+    <xmx:H00GZneqFYMzWWemdQACIyQaS2sLYkYHsyCjTkFQbcmtpAgco6Pgnw>
+    <xmx:H00GZv0a-x8A36YqfhnFQaeYVQDGiLw3JwoWz0H4ZuXRYt3lFktUMg>
+    <xmx:IU0GZkOKnyyJltYWiMrDBcB4edL6fcBFOSlpNaNAtTGbD5dytBxouKyTC5Q>
+Feedback-ID: i84414492:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 1D6E11700093; Fri, 29 Mar 2024 01:09:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|IA1PR11MB6419:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RKp5pWfB3Ss54dRGVNHqnmTVfJUXGgPQuco44NgPTILitTTtF6aw1KQvOUgxrG+Rb8mOjycltLz6XGCWY0W/nUoy+4H0Hip13uqWrFFCIbvfdKW9YXbOgv9QWo5vwIrv4Qjv5KE+n45X0XUlFFrogXN0LBSMuMiKYpK6jLz+B9rQlunD2Mj03QtUPEPZuXwOEYMFxFVSmZP0ZsGp3s0vFyGQwdntQXgxPl83kPOYbXqrLW1i4+aNqi7ybzShPur5ideAMLdcsnmbFp5VutfiquIsHAPYqg5gMaNX6Zk/9zhsmliaadgMxDnETWbTppTiwJ9YSam1tiKQ2kSq8sOAxRa76y4TkkOSzPeGcL5X0oK/7AvIhHAX1hiU1NPDa3kEEW+zHckPyorXozvK6Ie6RpmaXtX3OfWEHmWV7heMi4FlN6ppQkf13XwhR66X+kKQ8Tjf0Wv9YWAIQkHn+reK/BfgoA9C0+A5Y+R+mmQ4OyRcYv4yGTayFRG8dDXIzdVhaxjF1wWhq3Q4MVf5wl89Hx/w5cqlG1I2CYhzxswgcwVZzBEgAvNOxJlrD7JLvQMkMhjZ0nRiDIL5pBUwNuu2O3C9Endt5+RdDQl7BBKWSTs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(7416005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjRKbTFxaUJjOW1IcFBXYnZiTWt2Y1JrNngxSUgreTVKSCtMNEZRQkRZWUxC?=
- =?utf-8?B?UGFRUVN0QXdVSUI3MDQrdmNXVlVobnVzZy9PSmUreFJZZ1d3S0ZSOFBJNkJ0?=
- =?utf-8?B?NUU5U3ZGM2orczhBaVJLS0ZjSVBMV3FMZkZ2Wnl5b2w3OElFNG9WQTNUeXJU?=
- =?utf-8?B?U20xaGozNVZUckJVL2x1NUM0K3JnNFNhK1dSbHBxRXJvUnpqRnJ4dGMyRVhM?=
- =?utf-8?B?NE53K0ZCWWZQTnoyOGx4SkZTaGdQeFgxbGNFTjN1Y000d1NUY0FoSUJxNVI1?=
- =?utf-8?B?dUtxa1Z4VmY3czFwelg1cHJuYm1Ia0pWNVgrcFVWbS9JeHV3SEdMUlVlRUpx?=
- =?utf-8?B?akk2cjlnWUNnUzRteXBXSUJXT1VRajlpUDM5eFFWRDFVSzdrYUFObitEcXRw?=
- =?utf-8?B?VERXangrOUtaMk9sQWhGYlhlcnoyc21tcFlXQjl6ajk1U0RmS3BBckozUmVP?=
- =?utf-8?B?dGkvR3I4Ykcyc2VGTDZyS3lpdHUrc0p3UGRPeE9zT0xURHR5MW9CQkhsWVlK?=
- =?utf-8?B?R3hvTzVPT0Qyc25FVUwwZ1dhRmVSUGkrZEhWcVhEaGRQMzI1cEF1MjNNQXBM?=
- =?utf-8?B?eGFOYys5UHliVi91Uys3WFVuMGoxbnRuUnFzTU9hU0hDbUhocmtQdmx5aWp1?=
- =?utf-8?B?R1dDd0J0NFM4T0o1YW5oLzg0TDZLUjBTdVBTSUxaQ21WZUZrV2R5YkczZjc1?=
- =?utf-8?B?RUNpV2VobXF6VS9YT1N6c25BR0d4aFFqL1JBS2JPSHFtVW1zVEJadEdpU21T?=
- =?utf-8?B?WWZxOWhqbWJTQUUycHlEbHRHZWkrbFRQZFIya3RVaGhDb2hwREVBWlhwNVRS?=
- =?utf-8?B?aXBHSEp2eU9kaGxwMkpnN3NkZUNoR0NlU05BZEdVQ1gyY3RDb1ZZM0VaVmVt?=
- =?utf-8?B?WmNmZHRQQmwzdkhJZUhzeVJvRlZva2ZnNWMxR0JaWTFaNHRwR3BHT0EzaUJp?=
- =?utf-8?B?NERRREdyQ2MzMWxiMEZNR3ZQYStFamhyVWZ6dVZMVERuVlhTWC9WWnhJZCtC?=
- =?utf-8?B?TURQVDlvY1ZaQkJFZXlsb295U2NjekF0b3d2YWE4U0pPWVR5Rkptc3JMRy9W?=
- =?utf-8?B?RGdsTCtmRnRPTy9DV3VKdG1abGRiSzBRN2NJM1FPejBqQ0pTZmxhRCtJUXcy?=
- =?utf-8?B?Sjk3dnMzYXJhTzNDMlM3MzFXU25paG1PdDJIenNXY0x3L2FpQ0tteHZaUmIv?=
- =?utf-8?B?OU1nS01qbzFiVU5SMmZ3V3Y1czNmMFNjY25LMTBPdE9xWnk4NGVVcWxxcXF4?=
- =?utf-8?B?RGlDTWRUNGF0bjVxNUxKS2hHZlRzZHNPd05WU3ZDRk1hK1VkbFhpNVRYMjB3?=
- =?utf-8?B?NmNoTWlBSHE3ZVUwOVk5am0vbVZnaTM4L1ZWbVkvSDlhSlh6ckdoTXNwTXZ0?=
- =?utf-8?B?MHA5eVFxUlUyVGVEeTNDTWN6Skt3RHl2bFovVCtYV3J3R1FwT01PbGdhaW1F?=
- =?utf-8?B?b1U0RW9YenhyMVNNVUZDdkhtbGlzbXJZcnpIK1F1NmFPWlRadUFwMVVtcWwy?=
- =?utf-8?B?U3FkWEwrWldaUTd3QzNrNTdQVy9hdXhucWpDZlEwaytrS0ZFZzhUd1dFRE1V?=
- =?utf-8?B?cGVieEZDME1tTkZsTlEwZGtYLzVJUFJyZkxOMEhUeFNrUDB2VU9ZSExCTXZy?=
- =?utf-8?B?Sk1YT1FKNDBGOVlvNTR6clZiZ0xnSjUxQnRRUmdERXNTZnh3RytIZGpIQ2hN?=
- =?utf-8?B?NEowWlFKY20wQmZ6SWNIbVptd1YvVkVCWkxreG1vSmlQcFV3THVTSkZwOFEw?=
- =?utf-8?B?TXBKWDIvVEhJVVRQRjhWU0hqS1V0Y1Ntbi9OcEZKUXZ4Z004b3dmRWFSSkV2?=
- =?utf-8?B?ellZVDdJZGlack9Ud0NHMkVtb0xRM2hyU2ZGZXZpYTI5Zm5yWENRNUJuQnhL?=
- =?utf-8?B?QnlrWUwvdTg1eGRVKzJGMlZsTnhUMzAwejhxTzZYTllCbU5QSVJmcVpCOW9F?=
- =?utf-8?B?SFpmTVlxTVdBYWpnUlh6S2w5YkN3ekhnR24ySmlPMHZhbTN4MTJGWjFpMnll?=
- =?utf-8?B?NFlrdEdWd2JyU2RjVXpnb1BVQWlsMGpyYXY4dSsvMkRwSHdTMjBzK05qTE8v?=
- =?utf-8?B?c0RseUFxZFFOcHU3Z1JWN3pOelQ3QkhmODlrYlU2VWE3K1lLRG1kMTZocUZ4?=
- =?utf-8?B?d0lmcndQMXNWMWhvSzZrQWNqSDl5eDl6bSsvckVFbFp4S1FiaU1CcmpVaXVO?=
- =?utf-8?B?L3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 136e0b86-4e59-4e7e-ca39-08dc4fac7205
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 04:55:24.7272
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KUh6Gt8geNTzvtpSlDg6GvrpsL015ZSXKGNvlzRdS5QjF5Y40ELXbgZeZYIgOlm/ntjrncP9dNqW+V+h3uSNWlL3GKJbk+QNwY06TDyEtUo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6419
-X-OriginatorOrg: intel.com
+Message-Id: <e7b0aea6-c03b-4e8b-872a-8f0299ed6467@app.fastmail.com>
+In-Reply-To: <20240329044459.3990638-5-debug@rivosinc.com>
+References: <20240329044459.3990638-1-debug@rivosinc.com>
+ <20240329044459.3990638-5-debug@rivosinc.com>
+Date: Fri, 29 Mar 2024 01:08:12 -0400
+From: "Stefan O'Rear" <sorear@fastmail.com>
+To: debug <debug@rivosinc.com>, "Paul Walmsley" <paul.walmsley@sifive.com>,
+ "Rick P Edgecombe" <rick.p.edgecombe@intel.com>,
+ "Mark Brown" <broonie@kernel.org>, "Szabolcs Nagy" <Szabolcs.Nagy@arm.com>,
+ "kito.cheng@sifive.com" <kito.cheng@sifive.com>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Andrew Jones" <ajones@ventanamicro.com>,
+ "Conor Dooley" <conor.dooley@microchip.com>,
+ =?UTF-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
+ "Atish Patra" <atishp@atishpatra.org>, "Alexandre Ghiti" <alex@ghiti.fr>,
+ =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@rivosinc.com>,
+ "Alexandre Ghiti" <alexghiti@rivosinc.com>,
+ "Samuel Holland" <samuel.holland@sifive.com>, palmer@sifive.com,
+ "Conor Dooley" <conor@kernel.org>, linux-doc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Cc: "Jonathan Corbet" <corbet@lwn.net>, tech-j-ext@lists.risc-v.org,
+ "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Albert Ou" <aou@eecs.berkeley.edu>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+ oleg@redhat.com, "Andrew Morton" <akpm@linux-foundation.org>,
+ "Arnd Bergmann" <arnd@arndb.de>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, lstoakes@gmail.com, shuah@kernel.org,
+ "Christian Brauner" <brauner@kernel.org>,
+ "Andy Chiu" <andy.chiu@sifive.com>, jerry.shih@sifive.com,
+ hankuan.chen@sifive.com, greentime.hu@sifive.com,
+ "Evan Green" <evan@rivosinc.com>, "Xiao Wang" <xiao.w.wang@intel.com>,
+ "Charlie Jenkins" <charlie@rivosinc.com>,
+ "Anup Patel" <apatel@ventanamicro.com>, mchitale@ventanamicro.com,
+ dbarboza@ventanamicro.com, "Samuel Ortiz" <sameo@rivosinc.com>,
+ shikemeng@huaweicloud.com, willy@infradead.org,
+ "Vincent Chen" <vincent.chen@sifive.com>, guoren <guoren@kernel.org>,
+ "Sami Tolvanen" <samitolvanen@google.com>, songshuaishuai@tinylab.org,
+ "Greg Ungerer" <gerg@kernel.org>, "Heiko Stuebner" <heiko@sntech.de>,
+ "Baoquan He" <bhe@redhat.com>,
+ "Sia Jee Heng" <jeeheng.sia@starfivetech.com>,
+ "Yangyu Chen" <cyy@cyyself.name>, maskray@google.com,
+ ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+ "yunhui cui" <cuiyunhui@bytedance.com>, bgray@linux.ibm.com,
+ mpe@ellerman.id.au, baruch@tkos.co.il,
+ "Alejandro Colomar" <alx@kernel.org>,
+ "David Hildenbrand" <david@redhat.com>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, revest@chromium.org,
+ josh@joshtriplett.org, shr@devkernel.io, deller@gmx.de,
+ omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com
+Subject: Re: [PATCH v2 04/27] riscv: zicfiss/zicfilp enumeration
+Content-Type: text/plain
 
-Hi Boris,
-
-Could you please consider this series for inclusion?
-
-Thank you very much.
-
-Reinette
-
-On 3/8/2024 1:38 PM, Tony Luck wrote:
-> reset_all_ctrls() and resctrl_arch_update_domains() use on_each_cpu_mask()
-> to call rdt_ctrl_update() on potentially one CPU from each domain.
-> 
-> But this means rdt_ctrl_update() needs to figure out which domain to
-> apply changes to. Doing so requires a search of all domains in a resource,
-> which can only be done safely if cpus_lock is held. Both callers do hold
-> this lock, but there isn't a way for a function called on another CPU
-> via IPI to verify this.
-> 
-> Commit c0d848fcb09d ("x86/resctrl: Remove lockdep annotation that triggers
-> false positive") removed the incorrect assertions.
-> 
-> Add the target domain to the msr_param structure and
-> call rdt_ctrl_update() for each domain separately using
-> smp_call_function_single(). This means that rdt_ctrl_update() doesn't
-> need to search for the domain and get_domain_from_cpu() can safely assert
-> that the cpus_lock is held since the remaining callers do not use IPI.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> 
+On Fri, Mar 29, 2024, at 12:44 AM, Deepak Gupta wrote:
+> Adds description in dt-bindings (extensions.yaml)
+>
+> This patch adds support for detecting zicfiss and zicfilp. zicfiss and zicfilp
+> stands for unprivleged integer spec extension for shadow stack and branch
+> tracking on indirect branches, respectively.
+>
+> This patch looks for zicfiss and zicfilp in device tree and accordinlgy lights
+> up bit in cpu feature bitmap. Furthermore this patch adds detection utility
+> functions to return whether shadow stack or landing pads are supported by
+> cpu.
+>
+> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
 > ---
-> Changes since V4: Link: https://lore.kernel.org/all/20240228193717.8170-1-tony.luck@intel.com/
+>  .../devicetree/bindings/riscv/extensions.yaml       | 10 ++++++++++
+>  arch/riscv/include/asm/cpufeature.h                 | 13 +++++++++++++
+>  arch/riscv/include/asm/hwcap.h                      |  2 ++
+>  arch/riscv/include/asm/processor.h                  |  1 +
+>  arch/riscv/kernel/cpufeature.c                      |  2 ++
+>  5 files changed, 28 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml 
+> b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> index 63d81dc895e5..f8d78bf7400b 100644
+> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> @@ -317,6 +317,16 @@ properties:
+>              The standard Zicboz extension for cache-block zeroing as 
+> ratified
+>              in commit 3dd606f ("Create cmobase-v1.0.pdf") of 
+> riscv-CMOs.
 > 
-> Reinette: Only assign "cpu" once in resctrl_arch_update_domains() [but
-> see change from James below]
+> +        - const: zicfilp
+> +          description:
+> +            The standard Zicfilp extension for enforcing forward edge 
+> control-flow
+> +            integrity as ratified in commit 0036ff2 of riscv-cfi.
+> +
+> +        - const: zicfiss
+> +          description:
+> +            The standard Zicfiss extension for enforcing backward edge 
+> control-flow
+> +            integrity as ratified in commit 0036ff2 of riscv-cfi.
+> +
+
+Neither of these extensions is currently ratified (the public review
+period started 15 hours ago) and the git hashes are unlikely to be
+correct for the ratified version.
+
+-s
+
+>          - const: zicntr
+>            description:
+>              The standard Zicntr extension for base counters and 
+> timers, as
+> diff --git a/arch/riscv/include/asm/cpufeature.h 
+> b/arch/riscv/include/asm/cpufeature.h
+> index 0bd11862b760..f0fb8d8ae273 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -8,6 +8,7 @@
 > 
-> James: Use smp_call_function_any() instead of cpumask_any() +
-> smp_call_function_single() to avoid unnecessary IPI in both
-> resctrl_arch_update_domains() and reset_all_ctrls(). This
-> eliminates a need for the "cpu" local variable.
+>  #include <linux/bitmap.h>
+>  #include <linux/jump_label.h>
+> +#include <linux/smp.h>
+>  #include <asm/hwcap.h>
+>  #include <asm/alternative-macros.h>
+>  #include <asm/errno.h>
+> @@ -137,4 +138,16 @@ static __always_inline bool 
+> riscv_cpu_has_extension_unlikely(int cpu, const unsi
 > 
-> Tony Luck (2):
->   x86/resctrl: Pass domain to target CPU
->   x86/resctrl: Simplify call convention for MSR update functions
+>  DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
 > 
->  arch/x86/kernel/cpu/resctrl/internal.h    |  5 ++-
->  arch/x86/kernel/cpu/resctrl/core.c        | 55 +++++++++--------------
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 40 ++++-------------
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 12 +----
->  4 files changed, 34 insertions(+), 78 deletions(-)
+> +static inline bool cpu_supports_shadow_stack(void)
+> +{
+> +	return (IS_ENABLED(CONFIG_RISCV_USER_CFI) &&
+> +		    riscv_cpu_has_extension_unlikely(smp_processor_id(), 
+> RISCV_ISA_EXT_ZICFISS));
+> +}
+> +
+> +static inline bool cpu_supports_indirect_br_lp_instr(void)
+> +{
+> +	return (IS_ENABLED(CONFIG_RISCV_USER_CFI) &&
+> +		    riscv_cpu_has_extension_unlikely(smp_processor_id(), 
+> RISCV_ISA_EXT_ZICFILP));
+> +}
+> +
+>  #endif
+> diff --git a/arch/riscv/include/asm/hwcap.h 
+> b/arch/riscv/include/asm/hwcap.h
+> index 1f2d2599c655..74b6c727f545 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -80,6 +80,8 @@
+>  #define RISCV_ISA_EXT_ZFA		71
+>  #define RISCV_ISA_EXT_ZTSO		72
+>  #define RISCV_ISA_EXT_ZACAS		73
+> +#define RISCV_ISA_EXT_ZICFILP	74
+> +#define RISCV_ISA_EXT_ZICFISS	75
 > 
+>  #define RISCV_ISA_EXT_XLINUXENVCFG	127
 > 
-> base-commit: c0d848fcb09d80a5f48b99f85e448185125ef59f
+> diff --git a/arch/riscv/include/asm/processor.h 
+> b/arch/riscv/include/asm/processor.h
+> index a8509cc31ab2..6c5b3d928b12 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -13,6 +13,7 @@
+>  #include <vdso/processor.h>
+> 
+>  #include <asm/ptrace.h>
+> +#include <asm/hwcap.h>
+> 
+>  #ifdef CONFIG_64BIT
+>  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+> diff --git a/arch/riscv/kernel/cpufeature.c 
+> b/arch/riscv/kernel/cpufeature.c
+> index 79a5a35fab96..d052cad5b82f 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -263,6 +263,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+>  	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, 
+> riscv_xlinuxenvcfg_exts),
+>  	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, 
+> riscv_xlinuxenvcfg_exts),
+> +	__RISCV_ISA_EXT_SUPERSET(zicfilp, RISCV_ISA_EXT_ZICFILP, 
+> riscv_xlinuxenvcfg_exts),
+> +	__RISCV_ISA_EXT_SUPERSET(zicfiss, RISCV_ISA_EXT_ZICFISS, 
+> riscv_xlinuxenvcfg_exts),
+>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+> -- 
+> 2.43.2
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
