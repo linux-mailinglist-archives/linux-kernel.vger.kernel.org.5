@@ -1,59 +1,61 @@
-Return-Path: <linux-kernel+bounces-124593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72579891A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:59:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A07C891A5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:59:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DEF0287E0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:59:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10F45B25651
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07EAC15820E;
-	Fri, 29 Mar 2024 12:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD08D1586D7;
+	Fri, 29 Mar 2024 12:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TE4GK1XO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DY1a+4sZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422F013E055;
-	Fri, 29 Mar 2024 12:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE19158219;
+	Fri, 29 Mar 2024 12:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715492; cv=none; b=oIj1ONuDfehcrPP6KoBCDTA9ovLLJKdnK6TREMJqfIf7RFXj0sVzHZON3tM0XKJefLVsw2VmrorqkDTzYm2+UtFJOXnLrvh2W/dgewQnoR5+mCeBe0AUwJO0HRoTSnoC8wwiHMfBx6feGw/agxzQQJyabOZlx9bvFx6JfXiP7Iw=
+	t=1711715494; cv=none; b=uSfpn1eanD8jEgZPxgstFO52m9ROXysQg6F3vDupgc/YYshnWqidnIncaqT6py6oQ8JMPrWF4JTIkUVThSR55oT/m2atlNz2xrnZlt6qZdICEkEZQ12VpQQpxVtz73j6vr9HGuOhbsoisIyUHZugwpG696l55kaqX8XzUbDNLtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715492; c=relaxed/simple;
-	bh=qRlOuSCNYtTc3XubH63Fwcr/eEV5RWXb6IslqkzmIfs=;
+	s=arc-20240116; t=1711715494; c=relaxed/simple;
+	bh=n/uICVJ6Bgvbb8Rpae0SEo3n3fwG85SVdYwilNORbzo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KHC1jnbb5IE8Ft+MJcKtQBWxRyl3B+IEooIq6eGJjwCa+tJziTsMnc6lCiKQ+Ms3i6kMs2VU7qm/iYu4Ub2ND17jdjEbc0HLhXfYl7dvzFi30jLCZLxhhot+hXitup+wT5wPY1T4scnqpn03DeK/LSJZYWCdIxBMZOU9FBXVb+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TE4GK1XO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F7C7C433C7;
-	Fri, 29 Mar 2024 12:31:30 +0000 (UTC)
+	 MIME-Version; b=U6d71/21X8Iqdgd7IWUwIXOT8dzzkVu6ukzqXJ5evrLuMACF3PRkZJqv0TxLTTA58vfAtDLYuuI96ZyC+ufTwgGFV5WxZgy+9lfkTUibytHHc0toPZhv47sBvHVl60+h+RH56VcS1UJoN5ulBYINUTXg7QaWJ2mY+93vwiDsCL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DY1a+4sZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A418C43399;
+	Fri, 29 Mar 2024 12:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715492;
-	bh=qRlOuSCNYtTc3XubH63Fwcr/eEV5RWXb6IslqkzmIfs=;
+	s=k20201202; t=1711715493;
+	bh=n/uICVJ6Bgvbb8Rpae0SEo3n3fwG85SVdYwilNORbzo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TE4GK1XO08m0F29ScKXJYZ/BnVClAcCOTe05aXYfjPibtchje7rnxzH7v2jCKHRqA
-	 gOlubbLSpnwH/bBZ1OHrJFB6pTG7WHT4fxUyMogmAH/FpG943N1W7N/hV31VCho0gz
-	 WJXP54fCRxTPcoR5T7nwNev+8RUajk/MPqNZeuE7zgY7CDylxrAhTN6C9WM+yFlAn2
-	 bAwpvbDXjtO6uRtfNFli+c6mUL3iy9ZbEgusOXFStW8cC2NOkVeg5N48ZoxTkoHYbU
-	 CYwmvXMD2jlTHmXLq5El/BGMyYgOXxEmzY9s9KFivCnw7h1lFuKh6h77vLLAvmnftt
-	 DLsScJR0IlP4g==
+	b=DY1a+4sZjU+aOcfcuKClhVvS0UffwBCT/F8ofoIwrQ2e7rwmXQoKvER4VlWlB0xOZ
+	 DZAfIystlZapzn6fbyjlpyTRbOmXKy2W02e2AI95+zPiyphHdCktbHmhL8goOneyEB
+	 W1VRe2dhPkzz9lVJB0FmoMBz8uye2fM+NMaTWVdhZeJh8I+giWLhaTfoF9Jo6tp85T
+	 33JgBgyrQ51yA9SRLiqBzKcps1xQwPMOcueJPErJ1rpKpAWZ6l9ZZfx2cJdHY0C+So
+	 2E1Ejaci2EMbAzUvblaEYy9w9mNDA/fmyORFdcX5JCSTW8ni4JqtCox89SX5ZnezRA
+	 E8utCKt+ekL6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	syzbot+d050d437fe47d479d210@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	gregory.greenman@intel.com,
-	mukesh.sisodiya@intel.com,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 42/52] wifi: iwlwifi: Add missing MODULE_FIRMWARE() for *.pnvm
-Date: Fri, 29 Mar 2024 08:29:12 -0400
-Message-ID: <20240329122956.3083859-42-sashal@kernel.org>
+	johannes@sipsolutions.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 43/52] wifi: cfg80211: check A-MSDU format more carefully
+Date: Fri, 29 Mar 2024 08:29:13 -0400
+Message-ID: <20240329122956.3083859-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -68,57 +70,89 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 4223675d2b5912060a85e48fd8fee51207e00957 ]
+[ Upstream commit 9ad7974856926129f190ffbe3beea78460b3b7cc ]
 
-A few models require *.pnvm files while we don't declare them via
-MODULE_FIRMWARE().  This resulted in the breakage of WiFi on the
-system that relies on the information from modinfo (e.g. openSUSE
-installer image).
+If it looks like there's another subframe in the A-MSDU
+but the header isn't fully there, we can end up reading
+data out of bounds, only to discard later. Make this a
+bit more careful and check if the subframe header can
+even be present.
 
-This patch adds those missing MODULE_FIRMWARE() entries for *.pnvm
-files.
-
-type=feature
-ticket=none
-
-Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1207553
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://msgid.link/20240228163837.4320-1-tiwai@suse.de
-[move to appropriate files]
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Reported-by: syzbot+d050d437fe47d479d210@syzkaller.appspotmail.com
+Link: https://msgid.link/20240226203405.a731e2c95e38.I82ce7d8c0cc8970ce29d0a39fdc07f1ffc425be4@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/cfg/ax210.c | 6 ++++++
- drivers/net/wireless/intel/iwlwifi/cfg/bz.c    | 2 ++
- 2 files changed, 8 insertions(+)
+ net/wireless/util.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c b/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c
-index 8d5f9dce71d58..dc9667586de9e 100644
---- a/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c
-+++ b/drivers/net/wireless/intel/iwlwifi/cfg/ax210.c
-@@ -299,3 +299,9 @@ MODULE_FIRMWARE(IWL_MA_B_HR_B_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_MA_B_GF_A_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_MA_B_GF4_A_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_MA_B_MR_A_FW_MODULE_FIRMWARE(IWL_AX210_UCODE_API_MAX));
+diff --git a/net/wireless/util.c b/net/wireless/util.c
+index 1783ab9d57a31..9aa7bdce20b26 100644
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -797,15 +797,19 @@ ieee80211_amsdu_subframe_length(void *field, u8 mesh_flags, u8 hdr_type)
+ 
+ bool ieee80211_is_valid_amsdu(struct sk_buff *skb, u8 mesh_hdr)
+ {
+-	int offset = 0, remaining, subframe_len, padding;
++	int offset = 0, subframe_len, padding;
+ 
+ 	for (offset = 0; offset < skb->len; offset += subframe_len + padding) {
++		int remaining = skb->len - offset;
+ 		struct {
+ 		    __be16 len;
+ 		    u8 mesh_flags;
+ 		} hdr;
+ 		u16 len;
+ 
++		if (sizeof(hdr) > remaining)
++			return false;
 +
-+MODULE_FIRMWARE("iwlwifi-so-a0-gf-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-so-a0-gf4-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-ty-a0-gf-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-ma-b0-gf-a0.pnvm");
-+MODULE_FIRMWARE("iwlwifi-ma-b0-gf4-a0.pnvm");
-diff --git a/drivers/net/wireless/intel/iwlwifi/cfg/bz.c b/drivers/net/wireless/intel/iwlwifi/cfg/bz.c
-index 42e765fe3cfe1..cc71b513adf98 100644
---- a/drivers/net/wireless/intel/iwlwifi/cfg/bz.c
-+++ b/drivers/net/wireless/intel/iwlwifi/cfg/bz.c
-@@ -179,3 +179,5 @@ MODULE_FIRMWARE(IWL_BZ_A_FM_C_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_BZ_A_FM4_B_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_GL_B_FM_B_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
- MODULE_FIRMWARE(IWL_GL_C_FM_C_MODULE_FIRMWARE(IWL_BZ_UCODE_API_MAX));
+ 		if (skb_copy_bits(skb, offset + 2 * ETH_ALEN, &hdr, sizeof(hdr)) < 0)
+ 			return false;
+ 
+@@ -813,7 +817,6 @@ bool ieee80211_is_valid_amsdu(struct sk_buff *skb, u8 mesh_hdr)
+ 						      mesh_hdr);
+ 		subframe_len = sizeof(struct ethhdr) + len;
+ 		padding = (4 - subframe_len) & 0x3;
+-		remaining = skb->len - offset;
+ 
+ 		if (subframe_len > remaining)
+ 			return false;
+@@ -831,7 +834,7 @@ void ieee80211_amsdu_to_8023s(struct sk_buff *skb, struct sk_buff_head *list,
+ {
+ 	unsigned int hlen = ALIGN(extra_headroom, 4);
+ 	struct sk_buff *frame = NULL;
+-	int offset = 0, remaining;
++	int offset = 0;
+ 	struct {
+ 		struct ethhdr eth;
+ 		uint8_t flags;
+@@ -845,10 +848,14 @@ void ieee80211_amsdu_to_8023s(struct sk_buff *skb, struct sk_buff_head *list,
+ 		copy_len = sizeof(hdr);
+ 
+ 	while (!last) {
++		int remaining = skb->len - offset;
+ 		unsigned int subframe_len;
+ 		int len, mesh_len = 0;
+ 		u8 padding;
+ 
++		if (copy_len > remaining)
++			goto purge;
 +
-+MODULE_FIRMWARE("iwlwifi-gl-c0-fm-c0.pnvm");
+ 		skb_copy_bits(skb, offset, &hdr, copy_len);
+ 		if (iftype == NL80211_IFTYPE_MESH_POINT)
+ 			mesh_len = __ieee80211_get_mesh_hdrlen(hdr.flags);
+@@ -858,7 +865,6 @@ void ieee80211_amsdu_to_8023s(struct sk_buff *skb, struct sk_buff_head *list,
+ 		padding = (4 - subframe_len) & 0x3;
+ 
+ 		/* the last MSDU has no padding */
+-		remaining = skb->len - offset;
+ 		if (subframe_len > remaining)
+ 			goto purge;
+ 		/* mitigate A-MSDU aggregation injection attacks */
 -- 
 2.43.0
 
