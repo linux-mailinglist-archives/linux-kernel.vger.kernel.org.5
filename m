@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-124765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61177891C43
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:45:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52B5B891C45
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15E131F22EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:45:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82B841C27112
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9098618148F;
-	Fri, 29 Mar 2024 12:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C786D181B8F;
+	Fri, 29 Mar 2024 12:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oo3zD6/A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sHkiLZ6y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD31718146D;
-	Fri, 29 Mar 2024 12:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0070718149A;
+	Fri, 29 Mar 2024 12:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716104; cv=none; b=k6f4IVo79SAl30FJywv2ArHYYxgWqb0GuMcNRqEl47LKubBWuK6pyWk/TK8servEIvPQSKiiOptiBY7b3EPJpodsyoqkWcUVMFUKwwFk5xgGPDn+uma+W2YgQGzMTtbIzBeJXcUe59ktEsRteTOQ7QW4fQSEliMVtLxb3eHvLgo=
+	t=1711716106; cv=none; b=NCZPq8CKLhvt2JYuXsVYu1gXqTT1KLlx1JrId04Qihjosz89PqNChHVoHnLIB+6IKJVQ10gDGzUJChMAPHsPAVUhVgw3nntyYVNuU2KMtYv+U0icAAcek9LJb4HtWIIitUR58i4AY3/mdrnbfAbIVh++KiTyC/1iXWq7MpVRE1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716104; c=relaxed/simple;
-	bh=Kdyszlwq5JIK92eTlec4mtX/vVJlwIS0I5GaYJWP4a0=;
+	s=arc-20240116; t=1711716106; c=relaxed/simple;
+	bh=cVy5o4gqda2LSzo6NAHgmfy/hS5KyU+uEO8/uv6RXm4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a5E3saSDW6vp8oXno4ONohqMeTcRFcbJJnCB0AuGFD96B87k3249jXMQnisiYhBS043UfRXCqgZLVsiEbI7Jg6FiEPOWV5sEJE/a5Xk2J651GEF0QLy43QlQ+TUto+BVE8ENF5RHJMurDFIwgrx0rIwlTxbQGyW4t+LpjCTnsOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oo3zD6/A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D299C43390;
-	Fri, 29 Mar 2024 12:41:43 +0000 (UTC)
+	 MIME-Version; b=B+q1+b6YnTyEqjTEP2AsLV5iMfuUl86ApRfhJeIuLz2PybLKdTXbgeSzKdCf90xlcoHG9NpRMf4ABXM22zDdYq+9ghcPgqUf8n3Gv7PhuJnOk9Rny31WQ0533C2fmLmHoyA/pqi/3mshQh7ZzsjgfmpyNwpKXYtUv2sQMvcsDso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sHkiLZ6y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2897FC43390;
+	Fri, 29 Mar 2024 12:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716104;
-	bh=Kdyszlwq5JIK92eTlec4mtX/vVJlwIS0I5GaYJWP4a0=;
+	s=k20201202; t=1711716105;
+	bh=cVy5o4gqda2LSzo6NAHgmfy/hS5KyU+uEO8/uv6RXm4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Oo3zD6/AEdSYxrlsBHpgRDceozMlGLQtcRC1qM5MG3zupbgsbpTh8pNVP2YexAv3g
-	 uKTUogzk/LI4jtOmthdaSk8Y3EpfkDn6aQEc16TfDDFvcQ0KB50Lw6mfMThgnWvDD6
-	 XqCBYbGs6XoPrGpc86SW504K0wt+432byGoucf0k8Ej+h80dXsIWMvAE4fzPrz3eZ5
-	 CS81X5BaDtPr6EMcF/KKAVUfY4ttQNIYfLzm1RxDKlurpR9SLO9BzEg+euE2apGIP8
-	 mnlKH07jqboFtRwm5IfWYMjmXxBfC+JfismmTCCCNc41RtP9dLDzyiLGcSzUL6O7OA
-	 Vcv/4yx3ghMjQ==
+	b=sHkiLZ6yt5UR0GFe8p4GlKJTquWdjtAnwOSP8IojR44rvIN1IPefs6BqjPLsp128r
+	 Bcy5ndnJhDBmKm8DEZk90sQ6SFCp4v5i3GdVgpY0PCYTim+cCu6ivKxdjNArmG1dYW
+	 jRX2tUqxEMGLOw0E6z1UFI5cb5shhxsUNxwgbMSve1tz5syDxaNC+YTc2vgsNFEJCj
+	 YZ1QCWvPydiRRtYntRuaRWF2bmUtZ7hBlFUc7XRy8GFBJHal3FWjXSRPkCVStwLVFk
+	 SVnjITB924isUtpVZcgamHmthHoraRlS5Y2T4GWqLTVOEBhOrdF1r5Z7igyuIS1lCv
+	 rwQdaLrspR/MQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.8 56/98] tools/power x86_energy_perf_policy: Fix file leak in get_pkg_num()
-Date: Fri, 29 Mar 2024 08:37:27 -0400
-Message-ID: <20240329123919.3087149-56-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 57/98] mfd: intel-lpss: Switch to generalized quirk table
+Date: Fri, 29 Mar 2024 08:37:28 -0400
+Message-ID: <20240329123919.3087149-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -63,33 +64,115 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
 
-[ Upstream commit f85450f134f0b4ca7e042dc3dc89155656a2299d ]
+[ Upstream commit ac9538f6007e1c80f1b8a62db7ecc391b4d78ae5 ]
 
-In function get_pkg_num() if fopen_or_die() succeeds it returns a file
-pointer to be used. But fclose() is never called before returning from
-the function.
+Introduce generic quirk table, and port existing walkaround for select
+Microsoft devices to it. This is a preparation for
+QUIRK_CLOCK_DIVIDER_UNITY.
 
-Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20231221185142.9224-2-alex.vinarskis@gmail.com
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/intel-lpss-pci.c | 23 +++++++++++++++--------
+ drivers/mfd/intel-lpss.c     |  2 +-
+ drivers/mfd/intel-lpss.h     |  9 ++++++++-
+ 3 files changed, 24 insertions(+), 10 deletions(-)
 
-diff --git a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
-index 5fd9e594079cf..ebda9c366b2ba 100644
---- a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
-+++ b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
-@@ -1241,6 +1241,7 @@ unsigned int get_pkg_num(int cpu)
- 	retval = fscanf(fp, "%d\n", &pkg);
- 	if (retval != 1)
- 		errx(1, "%s: failed to parse", pathname);
-+	fclose(fp);
- 	return pkg;
- }
+diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+index 4621d3950b8f9..07713a2f694f3 100644
+--- a/drivers/mfd/intel-lpss-pci.c
++++ b/drivers/mfd/intel-lpss-pci.c
+@@ -23,12 +23,17 @@
  
+ #include "intel-lpss.h"
+ 
+-/* Some DSDTs have an unused GEXP ACPI device conflicting with I2C4 resources */
+-static const struct pci_device_id ignore_resource_conflicts_ids[] = {
+-	/* Microsoft Surface Go (version 1) I2C4 */
+-	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1182), },
+-	/* Microsoft Surface Go 2 I2C4 */
+-	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1237), },
++static const struct pci_device_id quirk_ids[] = {
++	{
++		/* Microsoft Surface Go (version 1) I2C4 */
++		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1182),
++		.driver_data = QUIRK_IGNORE_RESOURCE_CONFLICTS,
++	},
++	{
++		/* Microsoft Surface Go 2 I2C4 */
++		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, 0x9d64, 0x152d, 0x1237),
++		.driver_data = QUIRK_IGNORE_RESOURCE_CONFLICTS,
++	},
+ 	{ }
+ };
+ 
+@@ -36,6 +41,7 @@ static int intel_lpss_pci_probe(struct pci_dev *pdev,
+ 				const struct pci_device_id *id)
+ {
+ 	const struct intel_lpss_platform_info *data = (void *)id->driver_data;
++	const struct pci_device_id *quirk_pci_info;
+ 	struct intel_lpss_platform_info *info;
+ 	int ret;
+ 
+@@ -55,8 +61,9 @@ static int intel_lpss_pci_probe(struct pci_dev *pdev,
+ 	info->mem = pci_resource_n(pdev, 0);
+ 	info->irq = pci_irq_vector(pdev, 0);
+ 
+-	if (pci_match_id(ignore_resource_conflicts_ids, pdev))
+-		info->ignore_resource_conflicts = true;
++	quirk_pci_info = pci_match_id(quirk_ids, pdev);
++	if (quirk_pci_info)
++		info->quirks = quirk_pci_info->driver_data;
+ 
+ 	pdev->d3cold_delay = 0;
+ 
+diff --git a/drivers/mfd/intel-lpss.c b/drivers/mfd/intel-lpss.c
+index eff423f7dd284..aafa0da5f8dbf 100644
+--- a/drivers/mfd/intel-lpss.c
++++ b/drivers/mfd/intel-lpss.c
+@@ -412,7 +412,7 @@ int intel_lpss_probe(struct device *dev,
+ 		return ret;
+ 
+ 	lpss->cell->swnode = info->swnode;
+-	lpss->cell->ignore_resource_conflicts = info->ignore_resource_conflicts;
++	lpss->cell->ignore_resource_conflicts = info->quirks & QUIRK_IGNORE_RESOURCE_CONFLICTS;
+ 
+ 	intel_lpss_init_dev(lpss);
+ 
+diff --git a/drivers/mfd/intel-lpss.h b/drivers/mfd/intel-lpss.h
+index c1d72b117ed5e..2fa9ef9162580 100644
+--- a/drivers/mfd/intel-lpss.h
++++ b/drivers/mfd/intel-lpss.h
+@@ -11,16 +11,23 @@
+ #ifndef __MFD_INTEL_LPSS_H
+ #define __MFD_INTEL_LPSS_H
+ 
++#include <linux/bits.h>
+ #include <linux/pm.h>
+ 
++/*
++ * Some DSDTs have an unused GEXP ACPI device conflicting with I2C4 resources.
++ * Set to ignore resource conflicts with ACPI declared SystemMemory regions.
++ */
++#define QUIRK_IGNORE_RESOURCE_CONFLICTS BIT(0)
++
+ struct device;
+ struct resource;
+ struct software_node;
+ 
+ struct intel_lpss_platform_info {
+ 	struct resource *mem;
+-	bool ignore_resource_conflicts;
+ 	int irq;
++	unsigned int quirks;
+ 	unsigned long clk_rate;
+ 	const char *clk_con_id;
+ 	const struct software_node *swnode;
 -- 
 2.43.0
 
