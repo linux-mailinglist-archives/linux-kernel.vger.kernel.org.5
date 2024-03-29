@@ -1,55 +1,64 @@
-Return-Path: <linux-kernel+bounces-125009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3711891EBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:50:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF90891F4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58F471F27C34
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:50:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E96B9B2871A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FFE11B626A;
-	Fri, 29 Mar 2024 12:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86ED71B629A;
+	Fri, 29 Mar 2024 12:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LMPMTzS9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OymGRkmH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A3713A3F4;
-	Fri, 29 Mar 2024 12:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA01B1B6289;
+	Fri, 29 Mar 2024 12:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716621; cv=none; b=THenFaAZXTePn75Hv0SCrZzy2fp4SV224Pm3raWfvXo4Zwst+66Ao7C+wF1ZAEp2609uMa4uLKAEFrPmpCKHqONNpPSdplUS//2hPCh7RLuRskPiAJ99inDjGmHWpWT/Z0M8zXTA7wcdkUecUhaXv7ZkSP3SlwQzzRdmxW0ltMM=
+	t=1711716623; cv=none; b=epwvA3wrL2G7i53BKIKVSh5JRP0EVbqAK99Qi2PDJN5r3JfVe534DL1Mq+CQJ3aUEB6qYKdWyCcp4QNOwMjvnX9Z7FEjDlGjLdvf74PJw1PnR3MOZtW3mB+qFCLKOL7/snQdD5PhNheDLD1u2on8dWoM96trgN+cArGkfJifMSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716621; c=relaxed/simple;
-	bh=D+ZXDrFMuuWbejT/nbfJPc0TsJqe2vEksn/ftcPCOEM=;
+	s=arc-20240116; t=1711716623; c=relaxed/simple;
+	bh=sHUhxif8Mj7FBTMgP1JlQscVfmV99ViSxkXzdJZaudk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ebNM+326J/ouAOqbJ8oYq/sMKLwjf/4tnSz9TvsOUQrpZphnj68qg4zQKJREWxTxxusj38K4//EjD+RrbtGrxc0fgjbRhBeHy9gJKazEBxJXfSD3497pCJQeb7Cy17ocixjk4Lfw/3VK4PYGluC1BjkrzQlmJD8zrmDjJe8gZLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LMPMTzS9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38259C43390;
-	Fri, 29 Mar 2024 12:50:20 +0000 (UTC)
+	 MIME-Version; b=jUGliUoBmqs3MGCSebKek85Tveu5Jx0LH+9H1uOSCHgjGcA/wGszAUuw91JC0SDXcQUWVLBDrcu03T8Xz4+kM8PnBaSJV4vActbCasbUKrmqnzje/aGU4iikjHwsx3tPxxj5apQB0/yHRoYMJJ0Lf/l//Aln4BTIJqh2PloP368=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OymGRkmH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 195B9C433F1;
+	Fri, 29 Mar 2024 12:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716620;
-	bh=D+ZXDrFMuuWbejT/nbfJPc0TsJqe2vEksn/ftcPCOEM=;
+	s=k20201202; t=1711716623;
+	bh=sHUhxif8Mj7FBTMgP1JlQscVfmV99ViSxkXzdJZaudk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LMPMTzS9r9xJmMVQ++Y7p+etuiwNRX5gi/jjTrXFY3FLPU6+uOYyQOqk4y8IfMeGK
-	 Py7Y2JuT+sxkhO5JIlpUMT0uzNaOxOat0jfXG9YihiXCJBXUmSeCFPrN8+n2+sR1yp
-	 ktCf2FjWkZeQ6YxJduZskH/UPe9Nrj/VzIYeSJ9B8zn+oYdwWTAxIncPzSiLNBBUk3
-	 eqWq5/85Zcc1lma7glXQugCQE/RVc5xYoB3y4zPF6mwMI2G5dS++QHjUn4HtBe/+yi
-	 mNyIv5/x+RW34A6K3R2vQRVI3VgcIH8MsTY8zVbexfiMQr+wtdjiB2dGHzmr0p5qx4
-	 13wiA0DHtmQ1A==
+	b=OymGRkmHpl8WY40655CPX0iaRMUUbkW5bia9kkL9z3Ko63jTLF61nbX9tWh5c6DiX
+	 +oF9QP1xzKGSnPmZdfFXpKq5x/GYtK6516Y9uOSuEMQ1d4lwNmgvsZwwu1Gbh/vDnl
+	 8HD9nHVG36R6V4HDzJ4CuONu6tBWsTtp/Dnv9EdvqXh+0O2O54cn1DXlXT1iwgjiVQ
+	 BbzaStwL2M4ZyLczuBgv7nEff1KScjV5O7r90zkuM9PoftNwEEi080w4Gdj/ObmLOG
+	 J532bd7lYST3wKQWeKsY1ctG9YiJ1Jfl4N9z6I2vXmS1Ph3Gui54w4bEUh2ifhzgRC
+	 HE/BoJnwlM86g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alex Henrie <alexhenrie24@gmail.com>,
-	Jan Kara <jack@suse.cz>,
+Cc: Johan Jonker <jbx6244@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 07/23] isofs: handle CDs with bad root inode but good Joliet root directory
-Date: Fri, 29 Mar 2024 08:49:40 -0400
-Message-ID: <20240329125009.3093845-7-sashal@kernel.org>
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	dsimic@manjaro.org,
+	jonas@kwiboo.se,
+	jay.xu@rock-chips.com,
+	shironeko@tesaguri.club,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 08/23] arm64: dts: rockchip: fix rk3328 hdmi ports node
+Date: Fri, 29 Mar 2024 08:49:41 -0400
+Message-ID: <20240329125009.3093845-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329125009.3093845-1-sashal@kernel.org>
 References: <20240329125009.3093845-1-sashal@kernel.org>
@@ -64,58 +73,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.273
 Content-Transfer-Encoding: 8bit
 
-From: Alex Henrie <alexhenrie24@gmail.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 4243bf80c79211a8ca2795401add9c4a3b1d37ca ]
+[ Upstream commit 1d00ba4700d1e0f88ae70d028d2e17e39078fa1c ]
 
-I have a CD copy of the original Tom Clancy's Ghost Recon game from
-2001. The disc mounts without error on Windows, but on Linux mounting
-fails with the message "isofs_fill_super: get root inode failed". The
-error originates in isofs_read_inode, which returns -EIO because de_len
-is 0. The superblock on this disc appears to be intentionally corrupt as
-a form of copy protection.
+Fix rk3328 hdmi ports node so that it matches the
+rockchip,dw-hdmi.yaml binding.
 
-When the root inode is unusable, instead of giving up immediately, try
-to continue with the Joliet file table. This fixes the Ghost Recon CD
-and probably other copy-protected CDs too.
-
-Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20240208022134.451490-1-alexhenrie24@gmail.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/e5dea3b7-bf84-4474-9530-cc2da3c41104@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/isofs/inode.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-index 74e487d63c62c..95c08f3c4b35e 100644
---- a/fs/isofs/inode.c
-+++ b/fs/isofs/inode.c
-@@ -912,8 +912,22 @@ static int isofs_fill_super(struct super_block *s, void *data, int silent)
- 	 * we then decide whether to use the Joliet descriptor.
- 	 */
- 	inode = isofs_iget(s, sbi->s_firstdatazone, 0);
--	if (IS_ERR(inode))
--		goto out_no_root;
-+
-+	/*
-+	 * Fix for broken CDs with a corrupt root inode but a correct Joliet
-+	 * root directory.
-+	 */
-+	if (IS_ERR(inode)) {
-+		if (joliet_level && sbi->s_firstdatazone != first_data_zone) {
-+			printk(KERN_NOTICE
-+			       "ISOFS: root inode is unusable. "
-+			       "Disabling Rock Ridge and switching to Joliet.");
-+			sbi->s_rock = 0;
-+			inode = NULL;
-+		} else {
-+			goto out_no_root;
-+		}
-+	}
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 6ddb6b8c1fad5..ef45d5607ea1f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -684,11 +684,20 @@ hdmi: hdmi@ff3c0000 {
+ 		status = "disabled";
  
- 	/*
- 	 * Fix for broken CDs with Rock Ridge and empty ISO root directory but
+ 		ports {
+-			hdmi_in: port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			hdmi_in: port@0 {
++				reg = <0>;
++
+ 				hdmi_in_vop: endpoint {
+ 					remote-endpoint = <&vop_out_hdmi>;
+ 				};
+ 			};
++
++			hdmi_out: port@1 {
++				reg = <1>;
++			};
+ 		};
+ 	};
+ 
 -- 
 2.43.0
 
