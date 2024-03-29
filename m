@@ -1,208 +1,418 @@
-Return-Path: <linux-kernel+bounces-124343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D464A891601
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:32:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17B88915C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:27:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04D561C234F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:32:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F33A7B2282D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17FFC85623;
-	Fri, 29 Mar 2024 09:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346193FB86;
+	Fri, 29 Mar 2024 09:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Z8YTS1mX"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="a/1G/BIi"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A4E7F49E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39321B94D;
+	Fri, 29 Mar 2024 09:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711704502; cv=none; b=QqctE067MxVFKdGr6d+UCieCGFY1c0/GkFIg0Ue2W7WdemsgE6bLEXlY8VNrYPVmsoT6vUXKHdYIQAQ5RYp4jjz/u6boruTE7MLy7xK7y7AU+CbEjvjOjCnMAjbeqQZCpNWRXA5p39tFPfHf5jDQeTnCVmbeCinzCqoR7eraxc8=
+	t=1711704455; cv=none; b=f8tRSn0+Z4n92OKZMVE6UaEqdtSdTaQOOUROD9KcjBwcIkMcTug2s5BDZnRWo0Cun5FH1nPnwnXcz5jH+tbxrXu7Ce45PsuUx5oE4HOJvF3oRi+k+fYjqReowprGiwj6vAY7KJ5kJ76cG5bknwLpPrYGy7b9EQpPcA0vsThODUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711704502; c=relaxed/simple;
-	bh=wCFKSKMKTlZBWK3ZXaR4BvVSeSCHMmEnNsjJo8lvTyY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=da7rh150cxPwS73LUuwo13/Scye4bvllkT/5PdEyrEzlm5weIpq81kgR9h59bjl2v59s9vG1P07ylKJHhq3IaT2Qx3rDbHm4YLOIY+2JCHvl+w9hP/Rv95yz6rt48txtQT8BTcC8QnxO7xXKWFy1OXcK7r8ME3iHpT36nL2r95c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Z8YTS1mX; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29de4c33441so1437392a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:28:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711704500; x=1712309300; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PDqUNVfVcL5Rx2dx6lOA54ZEoR9Eohs4e4oftX2EMwM=;
-        b=Z8YTS1mXlorb4QJ+VKgpjh1j737YZEyXRBcxuYkfsv+qaXxJpKTIyvzJfVZ667X5sb
-         Dfv68oz+XWbhqUqPo2xOON/WfvfwXXlyIS6A8bsPD2l3f1ws6/S/JyCTY+Dwl3QMI9L3
-         4X2tfogzJb1Mmw3qWnYQnQBZ3ByTp9K7RHH1HRiqS+0aC5Rkc8HMNtrPox+Uev0HV3be
-         YRag0tagInmGSKgX9Qx+GzmdRBssG2sUn0ce5X1We9K9j9tHrxcX+bRXY8tf87XaVqgM
-         RgPiBH5JHeb/y+cr9IprPEjqF5PIQ2KNg29Qen7oEiKgdDaU69oLlmxoFIPr4fkC7Hj+
-         YtCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711704500; x=1712309300;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PDqUNVfVcL5Rx2dx6lOA54ZEoR9Eohs4e4oftX2EMwM=;
-        b=MV9VZ+4KFUsM6+n3dnYIwvZjGXnHkoKu8CizlNRlLhWg347qDAdX8rqtKM4hWJlMiR
-         /RQf/PkbtuLGXQpBpcb1oYq6uLtYirp8T55vUtGsH8U4B5Zuf4h5vmeG4cg/Jf5QbXA2
-         5l1zbCIbSnBv57XBhoyFpguDcCz/4+IOEUIoeIZJkz+6kGgjniPpfKkeFLw4TqFVt4RC
-         xg+qCwKk/EWI90wEN3thwg6EeLD1ETdCohn1sv1pzeEdb2jvq3KA2XsWgf6P66zpqn4G
-         2TGlCjjOtVdGrZWd+O3HhNk7r7Hw1Yw9x7elZddKy8/GPk8uRlTOONstNazpZzDNxK3e
-         Jprw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvThSIin8ThaxV0WICjowjnzSGefkrWZ8F0viLqF0ku3Wsbh9Y3p+PlwLdSY9EFFD6XINYcG38yMgJfjtIPl/UKBzHjU/qbJ+Ay76M
-X-Gm-Message-State: AOJu0YxijsK/HkYS4jHniuQnruW7YHhbAzA2c1FPUzksFezCVoyj/76k
-	NpDOES+yO59mhgDzY/dqnhO0UnnJZtffwvvXbNmVgk6TqRHw8rD46h7bEgvOjFM=
-X-Google-Smtp-Source: AGHT+IEFn6lnpp94KNj8bwQ5NgWC2ILdPrLL6jG7Xd8BF08mkXal/x6HNlt14p0P0bkYq09hEnt/mA==
-X-Received: by 2002:a17:90a:ea06:b0:2a0:310b:2cac with SMTP id w6-20020a17090aea0600b002a0310b2cacmr1663501pjy.25.1711704499969;
-        Fri, 29 Mar 2024 02:28:19 -0700 (PDT)
-Received: from [127.0.1.1] (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id cv17-20020a17090afd1100b002a02f8d350fsm2628830pjb.53.2024.03.29.02.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 02:28:19 -0700 (PDT)
-From: Max Hsu <max.hsu@sifive.com>
-Date: Fri, 29 Mar 2024 17:26:27 +0800
-Subject: [PATCH RFC 11/11] KVM: riscv: selftests: Add Sdtrig Extension to
- get-reg-list test
+	s=arc-20240116; t=1711704455; c=relaxed/simple;
+	bh=5VAdUYvWlI6HYzl8w4+tc0rVYE5gm5UBsncUm21qfc0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Au95V1M4l0Jmg8goQEsWr84U3q+0Tr0wKyIGNcMlIBpubPgOIxn4AUjKZVcuuwk4wVKwhIf/vHdfmizglqS5cYxqMD5u2LVtu3oQzvvaZbSMnE/D9BcKF6RfWA/sP/Yuom8l3Fym6P5k97AVWLXMvQ4M8LdSTdJH5IJJhmskSoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=a/1G/BIi; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42T6eJBc024476;
+	Fri, 29 Mar 2024 09:27:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=z1EXYvekUx2gnLHJRttoKeTMK7GunHwYtBDuzMhIUxU=; b=a/
+	1G/BIi3s9gRleslaAYZXH0andqA41gqDFbTZjZauAfe0hnAeiWMcnsW8+Qm0mMNO
+	iLdrsxLX847S2gW3oip30ayL1E42rBf3JB9GL+fbTPc0OFgqf+yUB8PTZXtNYzzd
+	M+jR7JgrX04NmW2dtfh6oDihFMA4jTvy2ILrMy5EMJJikDr2cFCTbjsMqYu72u4A
+	JxKbuSq+KQTkgGJaBrFc/4TLYJCubWGz8t9+q5U/4/jjIU1LW5xN9Tn1pFYa86dC
+	MGtVPpLnvMGx2b3Iq6YzkuKiG5jNVbiSHXDlu1lkuZ3fZQJ3kpKDkpAX4uXNzUx7
+	Lgs+tieqe4wtasRhO/0w==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5hskhbce-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 09:27:14 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42T9RDnu008870
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 09:27:13 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
+ 2024 02:27:08 -0700
+Message-ID: <ffce4577-b0f9-4af3-a379-0385a02ddae8@quicinc.com>
+Date: Fri, 29 Mar 2024 17:27:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240329-dev-maxh-lin-452-6-9-v1-11-1534f93b94a7@sifive.com>
-References: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
-In-Reply-To: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
-To: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, 
- Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
- Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc: Palmer Dabbelt <palmer@sifive.com>, linux-riscv@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-pm@vger.kernel.org, kvm@vger.kernel.org, 
- kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org, 
- Max Hsu <max.hsu@sifive.com>, Yong-Xuan Wang <yongxuan.wang@sifive.com>
-X-Mailer: b4 0.13.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] coresight: Add support for multiple output ports on
+ the funnel
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang
+	<quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1711009927-17873-1-git-send-email-quic_taozha@quicinc.com>
+ <1711009927-17873-3-git-send-email-quic_taozha@quicinc.com>
+ <8d381e6e-9328-46ff-83fe-efbe5bb4363e@arm.com>
+Content-Language: en-US
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <8d381e6e-9328-46ff-83fe-efbe5bb4363e@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0uFI91r0PpM41oapriMemf9Ndx5ypbsR
+X-Proofpoint-ORIG-GUID: 0uFI91r0PpM41oapriMemf9Ndx5ypbsR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_08,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ clxscore=1015 bulkscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ impostorscore=0 adultscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403290081
 
-From: Yong-Xuan Wang <yongxuan.wang@sifive.com>
 
-Update the get-reg-list test to test the Sdtrig Extension is available
-for guest OS.
+On 3/22/2024 12:41 AM, Suzuki K Poulose wrote:
+> On 21/03/2024 08:32, Tao Zhang wrote:
+>> Funnel devices are now capable of supporting multiple-inputs and
+>> multiple-outputs configuration with in built hardware filtering
+>> for TPDM devices. Add software support to this function. Output
+>> port is selected according to the source in the trace path.
+>>
+>> The source of the input port on funnels will be marked in the
+>> device tree.
+>> e.g.
+>> tpdm@xxxxxxx {
+>>      ... ... ... ...
+>> };
+>>
+>> funnel_XXX: funnel@xxxxxxx {
+>>      ... ... ... ...
+>>      out-ports {
+>>          ... ... ... ...
+>>          port@x {
+>>              ... ... ... ...
+>>              label = "xxxxxxx.tpdm"; <-- To label the source
+>>          };                           corresponding to the output
+>>      ... ... ... ...                  connection "port@x". And this
+>>      };                               is a hardware static connections.
+>>      ... ... ... ...                  Here needs to refer to hardware
+>> };                                   design.
+>>
+>> Then driver will parse the source label marked in the device tree, and
+>> save it to the coresight path. When the function needs to know the
+>> source label, it could obtain it from coresight path parameter. Finally,
+>> the output port knows which source it corresponds to, and it also knows
+>> which input port it corresponds to.
+>
+> Why do we need labels ? We have connection information for all devices
+> (both in and out), so, why do we need this label to find a device ?
 
-Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
-Co-developed-by: Max Hsu <max.hsu@sifive.com>
-Signed-off-by: Max Hsu <max.hsu@sifive.com>
----
- tools/testing/selftests/kvm/riscv/get-reg-list.c | 27 ++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+Because our funnel's design has multi-output ports, the data stream will not
 
-diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-index b882b7b9b785..f2696e308509 100644
---- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-@@ -41,6 +41,7 @@ bool filter_reg(__u64 reg)
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_I:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_M:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_V:
-+	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_SDTRIG:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_SMSTATEEN:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_SSAIA:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_SSTC:
-@@ -247,6 +248,8 @@ static const char *core_id_to_str(const char *prefix, __u64 id)
- 	"KVM_REG_RISCV_CSR_AIA | KVM_REG_RISCV_CSR_REG(" #csr ")"
- #define RISCV_CSR_SMSTATEEN(csr) \
- 	"KVM_REG_RISCV_CSR_SMSTATEEN | KVM_REG_RISCV_CSR_REG(" #csr ")"
-+#define RISCV_CSR_SDTRIG(csr) \
-+	"KVM_REG_RISCV_CSR_SDTRIG | KVM_REG_RISCV_CSR_REG(" #csr ")"
- 
- static const char *general_csr_id_to_str(__u64 reg_off)
- {
-@@ -314,6 +317,18 @@ static const char *smstateen_csr_id_to_str(__u64 reg_off)
- 	return NULL;
- }
- 
-+static const char *sdtrig_csr_id_to_str(__u64 reg_off)
-+{
-+	/* reg_off is the offset into struct kvm_riscv_smstateen_csr */
-+	switch (reg_off) {
-+	case KVM_REG_RISCV_CSR_SDTRIG_REG(scontext):
-+		return RISCV_CSR_SDTRIG(scontext);
-+	}
-+
-+	TEST_FAIL("Unknown sdtrig csr reg: 0x%llx", reg_off);
-+	return NULL;
-+}
-+
- static const char *csr_id_to_str(const char *prefix, __u64 id)
- {
- 	__u64 reg_off = id & ~(REG_MASK | KVM_REG_RISCV_CSR);
-@@ -330,6 +345,8 @@ static const char *csr_id_to_str(const char *prefix, __u64 id)
- 		return aia_csr_id_to_str(reg_off);
- 	case KVM_REG_RISCV_CSR_SMSTATEEN:
- 		return smstateen_csr_id_to_str(reg_off);
-+	case KVM_REG_RISCV_CSR_SDTRIG:
-+		return sdtrig_csr_id_to_str(reg_off);
- 	}
- 
- 	return strdup_printf("%lld | %lld /* UNKNOWN */", reg_subtype, reg_off);
-@@ -406,6 +423,7 @@ static const char *isa_ext_single_id_to_str(__u64 reg_off)
- 		KVM_ISA_EXT_ARR(I),
- 		KVM_ISA_EXT_ARR(M),
- 		KVM_ISA_EXT_ARR(V),
-+		KVM_ISA_EXT_ARR(SDTRIG),
- 		KVM_ISA_EXT_ARR(SMSTATEEN),
- 		KVM_ISA_EXT_ARR(SSAIA),
- 		KVM_ISA_EXT_ARR(SSTC),
-@@ -764,6 +782,11 @@ static __u64 smstateen_regs[] = {
- 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_SMSTATEEN,
- };
- 
-+static __u64 sdtrig_regs[] = {
-+	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_SDTRIG | KVM_REG_RISCV_CSR_SDTRIG_REG(scontext),
-+	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_SDTRIG,
-+};
-+
- static __u64 fp_f_regs[] = {
- 	KVM_REG_RISCV | KVM_REG_SIZE_U32 | KVM_REG_RISCV_FP_F | KVM_REG_RISCV_FP_F_REG(f[0]),
- 	KVM_REG_RISCV | KVM_REG_SIZE_U32 | KVM_REG_RISCV_FP_F | KVM_REG_RISCV_FP_F_REG(f[1]),
-@@ -853,6 +876,8 @@ static __u64 fp_d_regs[] = {
- 	{"zicboz", .feature = KVM_RISCV_ISA_EXT_ZICBOZ, .regs = zicboz_regs, .regs_n = ARRAY_SIZE(zicboz_regs),}
- #define SUBLIST_AIA \
- 	{"aia", .feature = KVM_RISCV_ISA_EXT_SSAIA, .regs = aia_regs, .regs_n = ARRAY_SIZE(aia_regs),}
-+#define SUBLIST_SDTRIG \
-+	{"sdtrig", .feature = KVM_RISCV_ISA_EXT_SDTRIG, .regs = sdtrig_regs, .regs_n = ARRAY_SIZE(sdtrig_regs),}
- #define SUBLIST_SMSTATEEN \
- 	{"smstateen", .feature = KVM_RISCV_ISA_EXT_SMSTATEEN, .regs = smstateen_regs, .regs_n = ARRAY_SIZE(smstateen_regs),}
- #define SUBLIST_FP_F \
-@@ -930,6 +955,7 @@ KVM_ISA_EXT_SUBLIST_CONFIG(aia, AIA);
- KVM_ISA_EXT_SUBLIST_CONFIG(fp_f, FP_F);
- KVM_ISA_EXT_SUBLIST_CONFIG(fp_d, FP_D);
- KVM_ISA_EXT_SIMPLE_CONFIG(h, H);
-+KVM_ISA_EXT_SUBLIST_CONFIG(sdtrig, SDTRIG);
- KVM_ISA_EXT_SUBLIST_CONFIG(smstateen, SMSTATEEN);
- KVM_ISA_EXT_SIMPLE_CONFIG(sstc, SSTC);
- KVM_ISA_EXT_SIMPLE_CONFIG(svinval, SVINVAL);
-@@ -985,6 +1011,7 @@ struct vcpu_reg_list *vcpu_configs[] = {
- 	&config_fp_f,
- 	&config_fp_d,
- 	&config_h,
-+	&config_sdtrig,
- 	&config_smstateen,
- 	&config_sstc,
- 	&config_svinval,
+know which output port should pass in building the data trace path. This 
+source
 
--- 
-2.43.2
+label can make the data stream find the right output port to go.
 
+>
+> And also, I thought TPDM is a source device, why does a funnel output
+> port link to a source ?
+
+No, this label doesn't mean this funnel output port link to a source, it 
+just let
+
+the output port know its data source.
+
+>
+> Are these funnels programmable ? Or, are they static ? If they are
+> static, do these need to be described in the DT ? If they are simply
+> acting as a "LINK" (or HWFIFO ?)
+
+These funnels are static, and we will add the "label" to the DT to 
+describe the
+
+multi-output ports for these funnels.
+
+"If they are simply acting as a "LINK" (or HWFIFO ?) " I'm not sure 
+what's the meaning
+
+of this. Could you describe it in detail?
+
+
+Best,
+
+Tao
+
+>
+> Suzuki
+>
+>>
+>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-core.c  | 81 ++++++++++++++++---
+>>   .../hwtracing/coresight/coresight-platform.c  |  5 ++
+>>   include/linux/coresight.h                     |  2 +
+>>   3 files changed, 75 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c 
+>> b/drivers/hwtracing/coresight/coresight-core.c
+>> index 5dde597403b3..b1b5e6d9ec7a 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -113,15 +113,63 @@ struct coresight_device 
+>> *coresight_get_percpu_sink(int cpu)
+>>   }
+>>   EXPORT_SYMBOL_GPL(coresight_get_percpu_sink);
+>>   +static struct coresight_device *coresight_get_source(struct 
+>> list_head *path)
+>> +{
+>> +    struct coresight_device *csdev;
+>> +
+>> +    if (!path)
+>> +        return NULL;
+>> +
+>> +    csdev = list_first_entry(path, struct coresight_node, link)->csdev;
+>> +    if (csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
+>> +        return NULL;
+>> +
+>> +    return csdev;
+>> +}
+>> +
+>> +/**
+>> + * coresight_source_filter - checks whether the connection matches 
+>> the source
+>> + * of path if connection is binded to specific source.
+>> + * @path:    The list of devices
+>> + * @conn:    The connection of one outport
+>> + *
+>> + * Return zero if the connection doesn't have a source binded or 
+>> source of the
+>> + * path matches the source binds to connection.
+>> + */
+>> +static int coresight_source_filter(struct list_head *path,
+>> +            struct coresight_connection *conn)
+>> +{
+>> +    int ret = 0;
+>> +    struct coresight_device *source = NULL;
+>> +
+>> +    if (conn->source_label == NULL)
+>> +        return ret;
+>> +
+>> +    source = coresight_get_source(path);
+>> +    if (source == NULL)
+>> +        return ret;
+>> +
+>> +    if (strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
+>> +            conn->source_label))
+>> +        ret = 0;
+>> +    else
+>> +        ret = -1;
+>> +
+>> +    return ret;
+>> +}
+>> +
+>>   static struct coresight_connection *
+>>   coresight_find_out_connection(struct coresight_device *src_dev,
+>> -                  struct coresight_device *dest_dev)
+>> +                  struct coresight_device *dest_dev,
+>> +                  struct list_head *path)
+>>   {
+>>       int i;
+>>       struct coresight_connection *conn;
+>>         for (i = 0; i < src_dev->pdata->nr_outconns; i++) {
+>>           conn = src_dev->pdata->out_conns[i];
+>> +        if (coresight_source_filter(path, conn))
+>> +            continue;
+>>           if (conn->dest_dev == dest_dev)
+>>               return conn;
+>>       }
+>> @@ -312,7 +360,8 @@ static void coresight_disable_sink(struct 
+>> coresight_device *csdev)
+>>     static int coresight_enable_link(struct coresight_device *csdev,
+>>                    struct coresight_device *parent,
+>> -                 struct coresight_device *child)
+>> +                 struct coresight_device *child,
+>> +                 struct list_head *path)
+>>   {
+>>       int ret = 0;
+>>       int link_subtype;
+>> @@ -321,8 +370,8 @@ static int coresight_enable_link(struct 
+>> coresight_device *csdev,
+>>       if (!parent || !child)
+>>           return -EINVAL;
+>>   -    inconn = coresight_find_out_connection(parent, csdev);
+>> -    outconn = coresight_find_out_connection(csdev, child);
+>> +    inconn = coresight_find_out_connection(parent, csdev, path);
+>> +    outconn = coresight_find_out_connection(csdev, child, path);
+>>       link_subtype = csdev->subtype.link_subtype;
+>>         if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_MERG && 
+>> IS_ERR(inconn))
+>> @@ -341,7 +390,8 @@ static int coresight_enable_link(struct 
+>> coresight_device *csdev,
+>>     static void coresight_disable_link(struct coresight_device *csdev,
+>>                      struct coresight_device *parent,
+>> -                   struct coresight_device *child)
+>> +                   struct coresight_device *child,
+>> +                   struct list_head *path)
+>>   {
+>>       int i;
+>>       int link_subtype;
+>> @@ -350,8 +400,8 @@ static void coresight_disable_link(struct 
+>> coresight_device *csdev,
+>>       if (!parent || !child)
+>>           return;
+>>   -    inconn = coresight_find_out_connection(parent, csdev);
+>> -    outconn = coresight_find_out_connection(csdev, child);
+>> +    inconn = coresight_find_out_connection(parent, csdev, path);
+>> +    outconn = coresight_find_out_connection(csdev, child, path);
+>>       link_subtype = csdev->subtype.link_subtype;
+>>         if (link_ops(csdev)->disable) {
+>> @@ -507,7 +557,7 @@ static void coresight_disable_path_from(struct 
+>> list_head *path,
+>>           case CORESIGHT_DEV_TYPE_LINK:
+>>               parent = list_prev_entry(nd, link)->csdev;
+>>               child = list_next_entry(nd, link)->csdev;
+>> -            coresight_disable_link(csdev, parent, child);
+>> +            coresight_disable_link(csdev, parent, child, path);
+>>               break;
+>>           default:
+>>               break;
+>> @@ -588,7 +638,7 @@ int coresight_enable_path(struct list_head *path, 
+>> enum cs_mode mode,
+>>           case CORESIGHT_DEV_TYPE_LINK:
+>>               parent = list_prev_entry(nd, link)->csdev;
+>>               child = list_next_entry(nd, link)->csdev;
+>> -            ret = coresight_enable_link(csdev, parent, child);
+>> +            ret = coresight_enable_link(csdev, parent, child, path);
+>>               if (ret)
+>>                   goto err;
+>>               break;
+>> @@ -802,7 +852,8 @@ static void coresight_drop_device(struct 
+>> coresight_device *csdev)
+>>    */
+>>   static int _coresight_build_path(struct coresight_device *csdev,
+>>                    struct coresight_device *sink,
+>> -                 struct list_head *path)
+>> +                 struct list_head *path,
+>> +                 struct coresight_device *source)
+>>   {
+>>       int i, ret;
+>>       bool found = false;
+>> @@ -814,7 +865,7 @@ static int _coresight_build_path(struct 
+>> coresight_device *csdev,
+>>         if (coresight_is_percpu_source(csdev) && 
+>> coresight_is_percpu_sink(sink) &&
+>>           sink == per_cpu(csdev_sink, 
+>> source_ops(csdev)->cpu_id(csdev))) {
+>> -        if (_coresight_build_path(sink, sink, path) == 0) {
+>> +        if (_coresight_build_path(sink, sink, path, source) == 0) {
+>>               found = true;
+>>               goto out;
+>>           }
+>> @@ -825,8 +876,12 @@ static int _coresight_build_path(struct 
+>> coresight_device *csdev,
+>>           struct coresight_device *child_dev;
+>>             child_dev = csdev->pdata->out_conns[i]->dest_dev;
+>> +        if (csdev->pdata->out_conns[i]->source_label &&
+>> +            !strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
+>> + csdev->pdata->out_conns[i]->source_label))
+>> +            continue;
+>>           if (child_dev &&
+>> -            _coresight_build_path(child_dev, sink, path) == 0) {
+>> +            _coresight_build_path(child_dev, sink, path, source) == 
+>> 0) {
+>>               found = true;
+>>               break;
+>>           }
+>> @@ -871,7 +926,7 @@ struct list_head *coresight_build_path(struct 
+>> coresight_device *source,
+>>         INIT_LIST_HEAD(path);
+>>   -    rc = _coresight_build_path(source, sink, path);
+>> +    rc = _coresight_build_path(source, sink, path, source);
+>>       if (rc) {
+>>           kfree(path);
+>>           return ERR_PTR(rc);
+>> diff --git a/drivers/hwtracing/coresight/coresight-platform.c 
+>> b/drivers/hwtracing/coresight/coresight-platform.c
+>> index 9d550f5697fa..f553fb20966d 100644
+>> --- a/drivers/hwtracing/coresight/coresight-platform.c
+>> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+>> @@ -205,6 +205,7 @@ static int of_coresight_parse_endpoint(struct 
+>> device *dev,
+>>       struct fwnode_handle *rdev_fwnode;
+>>       struct coresight_connection conn = {};
+>>       struct coresight_connection *new_conn;
+>> +    const char *label;
+>>         do {
+>>           /* Parse the local port details */
+>> @@ -243,6 +244,10 @@ static int of_coresight_parse_endpoint(struct 
+>> device *dev,
+>>           conn.dest_fwnode = fwnode_handle_get(rdev_fwnode);
+>>           conn.dest_port = rendpoint.port;
+>>   +        conn.source_label = NULL;
+>> +        if (!of_property_read_string(ep, "label", &label))
+>> +            conn.source_label = label;
+>> +
+>>           new_conn = coresight_add_out_conn(dev, pdata, &conn);
+>>           if (IS_ERR_VALUE(new_conn)) {
+>>               fwnode_handle_put(conn.dest_fwnode);
+>> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+>> index e8b6e388218c..a9c06ef9bbb2 100644
+>> --- a/include/linux/coresight.h
+>> +++ b/include/linux/coresight.h
+>> @@ -167,6 +167,7 @@ struct coresight_desc {
+>>    * struct coresight_connection - representation of a single connection
+>>    * @src_port:    a connection's output port number.
+>>    * @dest_port:    destination's input port number @src_port is 
+>> connected to.
+>> + * @source_label: source component's label.
+>>    * @dest_fwnode: destination component's fwnode handle.
+>>    * @dest_dev:    a @coresight_device representation of the component
+>>           connected to @src_port. NULL until the device is created
+>> @@ -195,6 +196,7 @@ struct coresight_desc {
+>>   struct coresight_connection {
+>>       int src_port;
+>>       int dest_port;
+>> +    const char *source_label;
+>>       struct fwnode_handle *dest_fwnode;
+>>       struct coresight_device *dest_dev;
+>>       struct coresight_sysfs_link *link;
+>
 
