@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-124959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B28C891F7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03BCE891FCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:11:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2492CB3232B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:37:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3176B353E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054731AA310;
-	Fri, 29 Mar 2024 12:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1361AB1F3;
+	Fri, 29 Mar 2024 12:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DovIWKRg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V3sj7tWG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474871AA2FE;
-	Fri, 29 Mar 2024 12:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4FF1AB1D7;
+	Fri, 29 Mar 2024 12:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716511; cv=none; b=TO0S7ofRIpQcyz+T2a+MCeBVD5JzSrJKpd28SLcP/2iYOc9K7i0TgHuTJukywIHclV15PzRNuqYs0Aw2zVdoSXAs2YRFdo433vx6wewTE4bPAAzI2WudmNicHSEfHQ5eZde0qrzpiWxQ2n+yjTZOWq+6LaF9gZj3srYOJAWzl98=
+	t=1711716517; cv=none; b=n3pnJ3OB1Kqh+4BQaQtmR+MSengGY7wn61aYdZu3y66/TiGRR76yyxuwfxcIzm9ULMJyN2bL/kVyYTqvf8KbhD2/by9erZ0bNCrFAXatH7WWl4q4YEJjdnEqqtLqmH0SBJyvnKjdu7deFtRPsdW3x7LAXaUCQQk2fC+W8WfgoCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716511; c=relaxed/simple;
-	bh=wrgoYIwXfWwL0pSAyWQzL3um30X/2cmpWHSwMZMCNUA=;
+	s=arc-20240116; t=1711716517; c=relaxed/simple;
+	bh=XsvXVhLLWUYugHIGnmfSQTbg5lFxG0Xy6hMGJ6e+2NU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aiDpWB/yIK60velM+kJSMfoD0JNl69Vqa1S6gfMF3GjGMDL/fryOMe9yjyRmgGOALawVJolsIAJDEEoqAvLjQge4VxHXBya5xa625W+pZi8EUae+/yGZREkDZqN1XUNKoVtJS+OQ7HC8lF2EYZToh7aBbN/DI6exVVHppdxobPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DovIWKRg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D56C433A6;
-	Fri, 29 Mar 2024 12:48:30 +0000 (UTC)
+	 MIME-Version; b=G0nftlGXM9t2L34PglYlhpHoe6AJ3jvSoygHhjqL+Ld29oQ6G2+9q5gQum6Cj/ZJD1KaCnINCp93c+uNN3vjSreFaivuHqD/cxNz9ACWs+dfLi8TvE7Y7dVI1YdRXvc5Y/wN61iUfphJNuSqODnQAg54rcjc2qG/6F7d5onnFPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V3sj7tWG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A6DBC433F1;
+	Fri, 29 Mar 2024 12:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716511;
-	bh=wrgoYIwXfWwL0pSAyWQzL3um30X/2cmpWHSwMZMCNUA=;
+	s=k20201202; t=1711716517;
+	bh=XsvXVhLLWUYugHIGnmfSQTbg5lFxG0Xy6hMGJ6e+2NU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DovIWKRgbS+Ekf4fC3/30TtK0bd6euRKezFuGQnmhnlL3eliHXMW7qVUDXV2NJZFG
-	 E/emNqjQdatJioKMsNjdihKtLMYFMSiHyip0oWUNK7UsxyMHtpwFMJ7vC//a4IKncD
-	 zy9DOMfkco+DckfWY3L4w1E7WcMlvYh/dPmiPQHFfI8W+mZOKaNZwAMdmDytJKMb1G
-	 iE4ex6FBLKRrsNMwAgrl/dZw8XkEUguAgLrvgXtLaGRxBGOkGMUorJdGrA/+T4Eixs
-	 iaMpiQ26w9tTsoQIHts8KO3zQa+3A4X/clItALyZtsqpMapPwyY4r3QMAG5ksAv/wD
-	 NtVWsvnEWIJOQ==
+	b=V3sj7tWGVGQ3AxnjkHrqrgf4A1gL02Y7RYPlUbTciCHmjcmMPwoaQO5R8J4yABAUu
+	 xV/gUeu3wzKS2VQAk4/T3EhmzhxIAx5GJSeenYP9Fh2v6kSMb3Ne4OdFz2MWYcMF60
+	 rsTKJi8q5EcWDh/ENXiL0Db53U0UJfh3ljiHcpH7oF78ku3e8xM+9ks/mRUjO/kWJL
+	 WzcF06b2BLhu5CjKPehnyXPxXuwyjzVKUGzwwwXGp75SerrYNQuEgNSCgGo4RDpcKa
+	 tFxWAiWaohVilnkBtAa68YXpdbIPA7v4iYhWJdroKe/RPXS7JzA+RNaqp8BVCHEDzR
+	 Tt6elAtaELQsw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edmund Raile <edmund.raile@proton.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
+Cc: David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 23/34] PCI: Mark LSI FW643 to avoid bus reset
-Date: Fri, 29 Mar 2024 08:47:24 -0400
-Message-ID: <20240329124750.3092394-23-sashal@kernel.org>
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 27/34] btrfs: send: handle path ref underflow in header iterate_inode_ref()
+Date: Fri, 29 Mar 2024 08:47:28 -0400
+Message-ID: <20240329124750.3092394-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
 References: <20240329124750.3092394-1-sashal@kernel.org>
@@ -64,50 +65,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Edmund Raile <edmund.raile@proton.me>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 29a43dc130ce65d365a8ea9e1cc4bc51005a353e ]
+[ Upstream commit 3c6ee34c6f9cd12802326da26631232a61743501 ]
 
-Apparently the LSI / Agere FW643 can't recover after a Secondary Bus Reset
-and requires a power-off or suspend/resume and rescan.
+Change BUG_ON to proper error handling if building the path buffer
+fails. The pointers are not printed so we don't accidentally leak kernel
+addresses.
 
-VFIO resets a device before assigning it to a VM, and the FW643 doesn't
-support any other reset methods, so this problem prevented assignment of
-FW643 to VMs.
-
-Prevent use of Secondary Bus Reset for this device.
-
-With this change, the FW643 can be assigned to VMs with VFIO.  Note that it
-will not be reset, resulting in leaking state between VMs and host.
-
-Link: https://lore.kernel.org/r/20240227131401.17913-1-edmund.raile@proton.me
-Signed-off-by: Edmund Raile <edmund.raile@proton.me>
-[bhelgaas: commit log, comment]
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/btrfs/send.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index fcdc17bbcc8ee..1a4ae9aeebfea 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3638,6 +3638,14 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
-  */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
- 
-+/*
-+ * Apparently the LSI / Agere FW643 can't recover after a Secondary Bus
-+ * Reset and requires a power-off or suspend/resume and rescan.  Prevent
-+ * use of that reset.
-+ */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5900, quirk_no_bus_reset);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5901, quirk_no_bus_reset);
-+
- /*
-  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
-  * automatically disables LTSSM when Secondary Bus Reset is received and
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 9900f879fa346..f1ef176a64242 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -976,7 +976,15 @@ static int iterate_inode_ref(struct btrfs_root *root, struct btrfs_path *path,
+ 					ret = PTR_ERR(start);
+ 					goto out;
+ 				}
+-				BUG_ON(start < p->buf);
++				if (unlikely(start < p->buf)) {
++					btrfs_err(root->fs_info,
++			"send: path ref buffer underflow for key (%llu %u %llu)",
++						  found_key->objectid,
++						  found_key->type,
++						  found_key->offset);
++					ret = -EINVAL;
++					goto out;
++				}
+ 			}
+ 			p->start = start;
+ 		} else {
 -- 
 2.43.0
 
