@@ -1,141 +1,141 @@
-Return-Path: <linux-kernel+bounces-125159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796ED892157
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:13:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2E7B892159
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29D982884D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:13:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ADE21F25C8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AA910796;
-	Fri, 29 Mar 2024 16:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEAA85620;
+	Fri, 29 Mar 2024 16:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lAb271IH"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DJYDXYDq"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D9617E;
-	Fri, 29 Mar 2024 16:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55E417E
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711728806; cv=none; b=F2JVECFTrjYqAZqZN8JPXzNOZGZ/lufdUV745RzBS4/eGA8WQS1HscRokP0gd9niJPaBkMbk+jM6+mexJxJWL32vzQcnChpNGkm2iDCeMwSPBpTQWs/UmfTIP84I7bCILjbjHFI043AA0KBEbjTR0648VsgXAWYV5ZW9VjK2kHM=
+	t=1711728828; cv=none; b=JGMQIplzXtzHN7tmJTmPsiTP9owwxseTiq9G5OrHgjZBEm2kmZEvQPGoSCauKB2EtYHpb4K40BcJACNGTF26oCHLD3s+JrCM07WgPqN6tWj0J2z1WTp2eLr3ESqppANkSqH5UpeoZ4CsKQEOeaTlQ7qTDnWPhJNyrL+pfRG9oCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711728806; c=relaxed/simple;
-	bh=I6FaA8lE1xu3cAiFmF8W7/Zh4WtxN7EK1Ev2dqCqEoE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TdzyUoXl+4HQ0UCL3cLzwG+aM4kpgUqJFMZmp3ledCMtyUnn3UbM0ecWe3oVoPMPSABF2BynfdD7/KkFdv3TXgxiDBBC+eQHiJUVhP+nfzMTywk3NLulf7hS7AH6Mc67EyiILHbP3HE6yzgGFn6BD0dvxAz0wegXcr8hnCxwUho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lAb271IH; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34261edaf7eso1434695f8f.1;
-        Fri, 29 Mar 2024 09:13:25 -0700 (PDT)
+	s=arc-20240116; t=1711728828; c=relaxed/simple;
+	bh=6sSD76TNLvgq+okx//hYnG7lHu+6GFWKO41IVzMhE44=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=mgxZFupw7QDuL1G9TauXdoVVqKwitXTXeOijDmETLzi6NTTmReMm2q1BGKkpHDTzaqp9Y8LW+o/xIhH1WHmF2NITtA9JMfYdERCE4mJ6oxVBIS5f9raW8D6GBwJyWfqelcxq5dfOoxF1yMA1VH0p8ZNYdZmfA+rA3n7rljW/vNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DJYDXYDq; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41553b10600so2131995e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711728803; x=1712333603; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=g+ENIHdShqwsDq8iCSWp4zm4/fE/0J9kqrrA/ykJ7CU=;
-        b=lAb271IHKTAfLugLDCj0uSeopS7vUiIP6f+KHAa1s9YE/57qq45AVuivO7ouIGOL+q
-         YcrpI/yVeGTV22LRoH+L5qnbKqu2d5yUrzb2LlVTYR1Vbfn23Vjr97iiqNV490o9q5pv
-         YjeKTyrN2LyUaEngnjt1yM1G6dScpXxwSjEWMSRDASzjOOHs/wZramX/ra5LcsZvcqBU
-         /tv2bHoOnywNuzk89AP+t9fRDVwuTJ9Bi9HVXZQ8r54Cz3JEpIG8rzIb16U5k3JN2JLm
-         0s4LdFTBQAPU/bY2luB9Gybxh3yygEnOk8oqp2oseLUQibnyTDV/dAK3POpLIyWidUcm
-         Pi8w==
+        d=linaro.org; s=google; t=1711728825; x=1712333625; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gh4OPHFge1SpQRgcQeMYXBAOtsZdIF7ML/uhMhowM38=;
+        b=DJYDXYDqntbw/yyQrALJoNsv8JjexVMe7seAeXIpYbWFD1FFW8THXsqe5Jqz8xWP4l
+         uYg+KW5PP21VoEdyG5P84btfzpciLdib0CdYkEtJbu/obSqvpGxVO19Cga6/UW/KLreO
+         z1sjZIB/7j8Vaat0yXdAxpKMkmCWj4WrOOa2gHMvackjZyMl8EVlZ2y782Mims/zsx5y
+         4tdNMGa4WjJcu4ieA3zqfzl/1IiZcGZY2xKMcCay564Ej4hnQHPBwJmKnukQ29n90dJD
+         88mgsno0I/aCrrmG+ygNA4CkqThoBWHGhJTK3iy0sWAXtfhU6ZtQ8TfG4NgscM7Cz8Rs
+         O9Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711728803; x=1712333603;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711728825; x=1712333625;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g+ENIHdShqwsDq8iCSWp4zm4/fE/0J9kqrrA/ykJ7CU=;
-        b=BHUZXj5KK8eWDaI3sUNULxLDNCkDWFquxngBuR93BOQc74WuMY++tt6Srave+RTvOQ
-         iYqde4jl0r9INElYR8ENgHURgXM0szkG1yKA0gmLn9IFLdOW+ab5bc0BKdA+WV1MNfPd
-         08dFadCybdu258APvfyOHq2m/MwdkKqdPrEjZHW6QcJELicDHt/F0/FFh2IThruNZj92
-         NcT4NITcp1nzumcQOivGwahTNZvHzReHRQyhJHtB5QlF5iHinwuVskd+AadEeOAsKW6V
-         VYdv5p8quiZX994rslCrbUbAwzwRUl/ksQMwnuOcePkrcsAp0++xqi5BRDOGdFAk6EV8
-         vZBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXQqgLjUzf92nFDbin0oeaL2WLXMuLo2GCyiRsErp8QwIa+WwyCH5sA3K3HvOOLYFGE1kcw7iu/SVOPAhftL+sXvDmRYlQc9mNzH/wrE4c5myHY1jN0zvvC8lnzSbhPLMWLsyLisI4jGuJD8Ahwy9KWDPvpDY5oVNR
-X-Gm-Message-State: AOJu0YyiVWPnePk90XHoCh8Q/dcEE/f4CjMGaUGn91+lgu2JfT7z5WTG
-	EiDXf1Zb9FeowjDWP6Z7/tp6vvqMz+XoaETmLhSnNt5yFaZ3tDnr
-X-Google-Smtp-Source: AGHT+IFlnSDXyqsWCoK4FhHyzIj1G42ZayTzwCniQd6CJMOPqt0tBI0jfZghP0OMpk25e+c8DeoHdw==
-X-Received: by 2002:adf:f982:0:b0:33e:c69f:2cae with SMTP id f2-20020adff982000000b0033ec69f2caemr1453465wrr.23.1711728803359;
-        Fri, 29 Mar 2024 09:13:23 -0700 (PDT)
-Received: from localhost.localdomain ([82.84.234.137])
-        by smtp.gmail.com with ESMTPSA id u4-20020adff884000000b00341d9e8cc62sm4464208wrp.100.2024.03.29.09.13.21
+        bh=gh4OPHFge1SpQRgcQeMYXBAOtsZdIF7ML/uhMhowM38=;
+        b=Ts4UBqtQxasYkMCslocxSJmuRUuYozlDkoXg6P1M0IiRp5KMUDL5/q+k4GLeb59C/Y
+         IUvXWP2u0+3i++gk7skKcooPASNWOf8FceOahNe8unx6brfQjqs1UCobEyrnc800Q+Wg
+         bvkJyk/cODcPN650IfhbpiI044t7crzzqiIgnH/EPunvCau1azojl8Y8vvz5UMKdV1n7
+         AHhuWTbRcnEKa2XSDFSwgVhvhylnmRDwSjEVg2gowc8GTNrmPHWHAMKtLmEryzcFOvUA
+         t+icuUlS25xScXasF+BMWXRj0kwURSVquXwtH+V8bEszhROJTNKJ840sTLodSuhiTj5v
+         y4Yg==
+X-Gm-Message-State: AOJu0Yzifp2shzYbPce3E5owPxey6yqwIMVHMjYEcHp9ECg8fGyzqaPx
+	nE7qzYtKbwzIiY0XZ4GdVLR7xyIANN8n0D7kfbj5qhWcfsAe4alaHgv4V7fWvAU=
+X-Google-Smtp-Source: AGHT+IG0CoAHJub2fy9DIoWV7x2/rt0aL7ySMWI/Gbhp6LH26UxWI1WkFFZt7hQn9W7mKV0quDz9Hw==
+X-Received: by 2002:a05:600c:3b17:b0:414:1325:e8a8 with SMTP id m23-20020a05600c3b1700b004141325e8a8mr1987737wms.39.1711728825037;
+        Fri, 29 Mar 2024 09:13:45 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b004155568fa99sm214878wmo.36.2024.03.29.09.13.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 09:13:22 -0700 (PDT)
-From: Marco Pinna <marco.pinn95@gmail.com>
-To: stefanha@redhat.com,
-	sgarzare@redhat.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ggarcia@deic.uab.cat,
-	jhansen@vmware.com,
-	kvm@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Marco Pinna <marco.pinn95@gmail.com>,
-	stable@vge.kernel.org
-Subject: [PATCH net v2] vsock/virtio: fix packet delivery to tap device
-Date: Fri, 29 Mar 2024 17:12:59 +0100
-Message-ID: <20240329161259.411751-1-marco.pinn95@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        Fri, 29 Mar 2024 09:13:44 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/3] nvmem: layouts: store owner from modules with
+ nvmem_layout_driver_register()
+Date: Fri, 29 Mar 2024 17:13:34 +0100
+Message-Id: <20240329-module-owner-nvmem-v1-0-d700685f08e1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAK7oBmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyNL3dz8lNKcVN388rzUIt28stzUXF0LM8PEVPNEg7RkIxMloMaCotS
+ 0zAqwodGxtbUAnc+pwmQAAAA=
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Michael Walle <mwalle@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1097;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=6sSD76TNLvgq+okx//hYnG7lHu+6GFWKO41IVzMhE44=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBuixJAyTn7p1VtxvctfpDbGYhS30XhhpWPDER
+ MqyfvGSfPGJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgbosQAKCRDBN2bmhouD
+ 13ghD/wPJfgPhlKZF02Wc3Lm8/apEk2joR6acaoaRlf9Ye1eUj72/KHNtUMmMmihaY6CXSV/Ddg
+ LTLU75QPRTKNKxiSgKN0/S7eLxR1zQfv1Zs6B8OB+7cRJOtwNe2Ko2d5OdiQeCvNCRHeQEx79/9
+ CyLs4eAiAShE1x6WXxqwKSlerDEpWhxHYAqE9o7rrVeNlL0i81E1c94B9+4RQbQaKw+/D+YUQPx
+ b7LAEyAxwP1yEthlJ7Ts4Pmg/ipaTCOTmnyQI6er4BWLh1hfHliBEylLnVmLfo005yZspko0zOS
+ G25q3XH+rWxnCiTBk4Qr5mT0U7Dex2c+UYEz79/B0kV6PBvBnZEU65UTnl42hrqnXlUCiFl2y9J
+ rGRVHzeXSSwSEPVFtmacoks8Wf9910EJqVDAug7Z7R4PaSazdRsBisuJ+zsXJZxT2p9Rrab7gxx
+ FptwxxJwZKXpTCQPSCJTDO4DKncxnMM9r0jvq4XNUdYY3b0suFJ7ybO3f53/R28ylDdsOJ0FXeS
+ 7qn58QaYDUHyIA4T+inkKfUbWrPRvRTu7mmDyh97dr3kdD1hZ+DthJk8KD+qcKoJr/2hnw+6Fzt
+ ODcmzXXdR8v5L8ano3Rh55LPr/Q3rJI0ymYB5DhGQPVu1WgrnR5irjpSWiPIeb+z9vHpiBV+GAH
+ DUXDLJDNTC8p7UA==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
-virtio_transport_deliver_tap_pkt() for handing packets to the
-vsockmon device. However, in virtio_transport_send_pkt_work(),
-the function is called before actually sending the packet (i.e.
-before placing it in the virtqueue with virtqueue_add_sgs() and checking
-whether it returned successfully).
-Queuing the packet in the virtqueue can fail even multiple times.
-However, in virtio_transport_deliver_tap_pkt() we deliver the packet
-to the monitoring tap interface only the first time we call it.
-This certainly avoids seeing the same packet replicated multiple times
-in the monitoring interface, but it can show the packet sent with the
-wrong timestamp or even before we succeed to queue it in the virtqueue.
+Merging
+=======
+All further patches depend on the first patch.
 
-Move virtio_transport_deliver_tap_pkt() after calling virtqueue_add_sgs()
-and making sure it returned successfully.
+Description
+===========
+Modules registering driver with nvmem_layout_driver_register() might
+forget to set .owner field.
 
-Fixes: 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks")
-Cc: stable@vge.kernel.org
-Signed-off-by: Marco Pinna <marco.pinn95@gmail.com>
+Solve the problem by moving this task away from the drivers to the core
+code, just like we did for platform_driver in commit 9447057eaff8
+("platform_device: use a macro instead of platform_driver_register").
+
+Best regards,
+Krzysztof
+
 ---
- net/vmw_vsock/virtio_transport.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Krzysztof Kozlowski (3):
+      nvmem: layouts: store owner from modules with nvmem_layout_driver_register()
+      nvmem: layouts: onie-tlv: drop driver owner initialization
+      nvmem: layouts: sl28vpd: drop driver owner initialization
 
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index 1748268e0694..ee5d306a96d0 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -120,7 +120,6 @@ virtio_transport_send_pkt_work(struct work_struct *work)
- 		if (!skb)
- 			break;
- 
--		virtio_transport_deliver_tap_pkt(skb);
- 		reply = virtio_vsock_skb_reply(skb);
- 		sgs = vsock->out_sgs;
- 		sg_init_one(sgs[out_sg], virtio_vsock_hdr(skb),
-@@ -170,6 +169,8 @@ virtio_transport_send_pkt_work(struct work_struct *work)
- 			break;
- 		}
- 
-+		virtio_transport_deliver_tap_pkt(skb);
-+
- 		if (reply) {
- 			struct virtqueue *rx_vq = vsock->vqs[VSOCK_VQ_RX];
- 			int val;
+ drivers/nvmem/layouts.c          | 6 ++++--
+ drivers/nvmem/layouts/onie-tlv.c | 1 -
+ drivers/nvmem/layouts/sl28vpd.c  | 1 -
+ include/linux/nvmem-provider.h   | 5 ++++-
+ 4 files changed, 8 insertions(+), 5 deletions(-)
+---
+base-commit: 7fdcff3312e16ba8d1419f8a18f465c5cc235ecf
+change-id: 20240329-module-owner-nvmem-861ae7a0fc24
+
+Best regards,
 -- 
-2.44.0
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
