@@ -1,88 +1,84 @@
-Return-Path: <linux-kernel+bounces-124242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 316CB891446
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65991891417
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 552781C22938
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:28:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 966601C21825
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939FF6A01B;
-	Fri, 29 Mar 2024 07:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6228C40863;
+	Fri, 29 Mar 2024 07:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Cu5VI3LT"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Qdb8I3mt"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0A669D2F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1866739FD8;
+	Fri, 29 Mar 2024 07:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697109; cv=none; b=kNcr8yvADCWVoulIcErPsSDoEuoTvF20TOECzVFqGYUNURjx165fMnRFB8sN6DHp0lX1MmZKM5haqg/yM3cFk4/XIkWcm0stkgmUVmy0TL2PzObvk3W09nlUgvJesY28LFqRoHWbADQD8R7nmL7siO/AanMPrHBawkpHHZ6rG3M=
+	t=1711696837; cv=none; b=XOqw0K2OviNyHkNYBtrHWr+MCGYWSIUcyzKQ9NJYfENUz1YS08W2xfA2sAfxP99OhWSd/mqL8vkrmPK3GHFa0wzcgSgAcijF+DeW49gISQxGMlLrTssx6sB4eBvPGT7Q8DWlxqSrMYYrrFk13tSYrjFeEDB+1ddWrQkykR1LsuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697109; c=relaxed/simple;
-	bh=/RMV6EvjfbMDeh8AAAKCcDfR7SkW64DSoezNtrIFGmg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hHoxuzBmNr0LYW3OqKvFLz9quR1Jd8hYWxIRBim7RkzzPgNfJOx2mohDA5GTvavWjG4i4/do9iGDXwb7cUgAwTdpd+hdAT0AslJI4mNiXtSaLAPHd4fbGbRiX0xP7Hu15+llldHwx3hMXUwZW7/UAD0Z3/nHiL8Lnla6e7dXWF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Cu5VI3LT; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29dee60302fso2013248a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711697108; x=1712301908; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wd7UwvCa9oMHOiIEhQpk6/wRs60SiO2oLPgpnvXy/o4=;
-        b=Cu5VI3LTXLsWnzJZr16aULBeoGYvllWpLE7OISDoerEZotowO2K8zzVzVCSz1X4Wpq
-         T+F8nl3Xjy93hK4yLiFZUXiozBkIWuQpaT/DebCnc9lXB32QgB6kyeO2+3vV6rt0oFu1
-         qnHmz/Nc/8rzkkzZSwW1UXWFSUFZ5Jpmd9LmuB0i4iFi6ZJ5vZy54dvqHC9NyASHetnH
-         bu6aZ+RPcR8o6xao06C6eBqnDUJKC3apQBeKP/stGLhAnUUG97Jo7V9wME194m2HUlP/
-         iSSByguZa8P5D1EhFqxPTY6oeEqtiEXZzcsAqYbopcto3ow3olxr33hkDznm/8ratXFp
-         KHTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711697108; x=1712301908;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wd7UwvCa9oMHOiIEhQpk6/wRs60SiO2oLPgpnvXy/o4=;
-        b=JiMLgbylCBEfn3eA3JLema15k5s/ceq63ETIXLrIk3AkAk51uJMCrzP7Sl4wEVk5Wk
-         CB+EOW2ra5zvGAJ/TAWxMCWiy5ljAi/FBrD478Gp5LbOOOphGQ57W7LSqwePvkPp8Siz
-         eRFFHs1Bb4OAYsoQWayk9mk/ndleOx+y260+zcF9VT1VH7pMp8Xtod3A9gyh2Hus6OWd
-         CDwWCuIsQ5ytJVvAeUHWFWsBnn5xaszD4aDiFbhBCrH02BmH7/HlA+QTTEQvx3USFC1y
-         KD36V3/PVvcLaa7b1P63kyRoU0BvCK6KigkiavLuOEjqTvyY1xTPaojksgW7C6GAYZOZ
-         BAAQ==
-X-Gm-Message-State: AOJu0Yz286quTL+ezqAz+myQDDwec9gp9nsVtCNef3Nze3GFx+yk0TZ9
-	HMjPHDyWNuFAClcoP8WWgUTIAl3bg8wO/85Rr6LEv3a5xYA28QCcdp1MrusDgsw=
-X-Google-Smtp-Source: AGHT+IHxypVhChIzRiQ/e47hMPrNYQnLhNujXyM1QCssN6f6ZMhSHIBGzyaKpY86BExy9FwELnwgHw==
-X-Received: by 2002:a17:90b:1c06:b0:29d:f52c:5d40 with SMTP id oc6-20020a17090b1c0600b0029df52c5d40mr2496570pjb.15.1711697107768;
-        Fri, 29 Mar 2024 00:25:07 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b0029ddac03effsm4971798pjb.11.2024.03.29.00.25.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:25:07 -0700 (PDT)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel@lists.infradead.org,
-	x86@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	Christoph Hellwig <hch@lst.de>,
-	loongarch@lists.linux.dev,
-	amd-gfx@lists.freedesktop.org,
-	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v4 15/15] selftests/fpu: Allow building on other architectures
-Date: Fri, 29 Mar 2024 00:18:30 -0700
-Message-ID: <20240329072441.591471-16-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240329072441.591471-1-samuel.holland@sifive.com>
-References: <20240329072441.591471-1-samuel.holland@sifive.com>
+	s=arc-20240116; t=1711696837; c=relaxed/simple;
+	bh=vzmPmJeJUxq5/BxD3bs1AX/uEs3Ldk2UfdR7q7RIaqM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gJ0L6OXSRrHsABe8tvIdE2J4KunnnQ+lWn6FVOCc2HWeVoLmPNb0PuRnfz9kC5AO8Of+X7RiqNRemt9ljy7TkhZ8l5km9FgRNIFjwImOSQJRVs2A92ozkIjgAIVcrGSNzFwi4EsLJ52GiwhF2T+ydCTJWHVj/hsvFxP+Pm20Ua8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Qdb8I3mt; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42T1xp1V019589;
+	Fri, 29 Mar 2024 07:20:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=3rUcGkP
+	kSK5xD+ct0f6cwMGcLbiakbm2DQyntW9fjKI=; b=Qdb8I3mtxP427P+750jSECI
+	SnbnwLwBSBtT8wWxwQK0h0uYVa04TuXEN4cfWqXEwIp+Vj52nH+sc1YVr6TK0Vmq
+	h077NuOTEsb/WLYwKPbMCu1yXcQzCyZTUrhWgUm8LjJxCEz72Wr8feFtRGruTszP
+	WP9PvDiGC3LgR/JTNnKrIc1splGW0O+lFOPbrYmI7lo2yVgd57KjPM/OgSPJkL6V
+	ah36JrrI3LUoyKqjTyDlFH/IelkBPU/yX9a04mk0SLsbrR4Lc6g94rQBnQ3dhZw8
+	8tPbnL1ZpRNwN/TRUb7yLLV5Sf5jM6H07qLEvYsoKlaZUH4Xt6SPN3AZgwMxe8Q=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5fs895pq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:20:04 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42T7K3jK018851
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:20:03 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 29 Mar 2024 00:19:58 -0700
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Conor
+ Dooley" <conor+dt@kernel.org>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, Kyle
+ Tso <kyletso@google.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        "Heikki Krogerus" <heikki.krogerus@linux.intel.com>,
+        <u.kleine-koenig@pengutronix.de>,
+        AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [RFC PATCH 0/2] Add gpio-usb-c-connector compatible
+Date: Fri, 29 Mar 2024 12:49:46 +0530
+Message-ID: <20240329071948.3101882-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,96 +86,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: BtrgVd0-GHri3_cLMixRc9KjVDQY6PPq
+X-Proofpoint-ORIG-GUID: BtrgVd0-GHri3_cLMixRc9KjVDQY6PPq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=408 spamscore=0 suspectscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403290061
 
-Now that ARCH_HAS_KERNEL_FPU_SUPPORT provides a common way to compile
-and run floating-point code, this test is no longer x86-specific.
+QDU1000 IDP [1] has a Type-c connector and supports USB 3.0.
+However it relies on usb-conn-gpio driver to read the vbus and id
+gpio's and provide role switch. However the driver currently has
+only gpio-b-connector compatible present in ID table. Adding that
+in DT would mean that the device supports Type-B connector and not
+Type-c connector. Thanks to Dmitry Baryshkov for pointing it out [2].
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+This series intends to add that compatible in driver and bindings
+so that it can be used in QDU1000 IDP DT.
 
-(no changes since v1)
+[1]: https://lore.kernel.org/all/20240319091020.15137-3-quic_kbajaj@quicinc.com/
+[2]: https://lore.kernel.org/all/CAA8EJprXPvji8TgZu1idH7y4GtHtD4VmQABFBcRt-9BQaCberg@mail.gmail.com/
 
- lib/Kconfig.debug   |  2 +-
- lib/Makefile        | 25 ++-----------------------
- lib/test_fpu_glue.c |  5 ++++-
- 3 files changed, 7 insertions(+), 25 deletions(-)
+Krishna Kurapati (2):
+  dt-bindings: connector: Add gpio-usb-c-connector compatible
+  usb: common: usb-conn-gpio: Update ID table to add usb-c connector
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index c63a5fbf1f1c..f93e778e0405 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2890,7 +2890,7 @@ config TEST_FREE_PAGES
- 
- config TEST_FPU
- 	tristate "Test floating point operations in kernel space"
--	depends on X86 && !KCOV_INSTRUMENT_ALL
-+	depends on ARCH_HAS_KERNEL_FPU_SUPPORT && !KCOV_INSTRUMENT_ALL
- 	help
- 	  Enable this option to add /sys/kernel/debug/selftest_helpers/test_fpu
- 	  which will trigger a sequence of floating point operations. This is used
-diff --git a/lib/Makefile b/lib/Makefile
-index fcb35bf50979..e44ad11f77b5 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -110,31 +110,10 @@ CFLAGS_test_fprobe.o += $(CC_FLAGS_FTRACE)
- obj-$(CONFIG_FPROBE_SANITY_TEST) += test_fprobe.o
- obj-$(CONFIG_TEST_OBJPOOL) += test_objpool.o
- 
--#
--# CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
--# off the generation of FPU/SSE* instructions for kernel proper but FPU_FLAGS
--# get appended last to CFLAGS and thus override those previous compiler options.
--#
--FPU_CFLAGS := -msse -msse2
--ifdef CONFIG_CC_IS_GCC
--# Stack alignment mismatch, proceed with caution.
--# GCC < 7.1 cannot compile code using `double` and -mpreferred-stack-boundary=3
--# (8B stack alignment).
--# See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
--#
--# The "-msse" in the first argument is there so that the
--# -mpreferred-stack-boundary=3 build error:
--#
--#  -mpreferred-stack-boundary=3 is not between 4 and 12
--#
--# can be triggered. Otherwise gcc doesn't complain.
--FPU_CFLAGS += -mhard-float
--FPU_CFLAGS += $(call cc-option,-msse -mpreferred-stack-boundary=3,-mpreferred-stack-boundary=4)
--endif
--
- obj-$(CONFIG_TEST_FPU) += test_fpu.o
- test_fpu-y := test_fpu_glue.o test_fpu_impl.o
--CFLAGS_test_fpu_impl.o += $(FPU_CFLAGS)
-+CFLAGS_test_fpu_impl.o += $(CC_FLAGS_FPU)
-+CFLAGS_REMOVE_test_fpu_impl.o += $(CC_FLAGS_NO_FPU)
- 
- # Some KUnit files (hooks.o) need to be built-in even when KUnit is a module,
- # so we can't just use obj-$(CONFIG_KUNIT).
-diff --git a/lib/test_fpu_glue.c b/lib/test_fpu_glue.c
-index 85963d7be826..eef282a2715f 100644
---- a/lib/test_fpu_glue.c
-+++ b/lib/test_fpu_glue.c
-@@ -17,7 +17,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/debugfs.h>
--#include <asm/fpu/api.h>
-+#include <linux/fpu.h>
- 
- #include "test_fpu.h"
- 
-@@ -38,6 +38,9 @@ static struct dentry *selftest_dir;
- 
- static int __init test_fpu_init(void)
- {
-+	if (!kernel_fpu_available())
-+		return -EINVAL;
-+
- 	selftest_dir = debugfs_create_dir("selftest_helpers", NULL);
- 	if (!selftest_dir)
- 		return -ENOMEM;
+ Documentation/devicetree/bindings/connector/usb-connector.yaml | 3 +++
+ drivers/usb/common/usb-conn-gpio.c                             | 1 +
+ 2 files changed, 4 insertions(+)
+
 -- 
-2.44.0
+2.34.1
 
 
