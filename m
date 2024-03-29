@@ -1,295 +1,459 @@
-Return-Path: <linux-kernel+bounces-125322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E60F48923F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:15:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FFDF8923FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FE281C2242D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:15:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57662281E99
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC771311AC;
-	Fri, 29 Mar 2024 19:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1C0136E18;
+	Fri, 29 Mar 2024 19:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b="NQQc8MK0"
-Received: from weasel.tulip.relay.mailchannels.net (weasel.tulip.relay.mailchannels.net [23.83.218.247])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="oiNfQ6d0"
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2119.outbound.protection.outlook.com [40.107.247.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5775225A8
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.247
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532B0225A8;
+	Fri, 29 Mar 2024 19:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.119
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711739749; cv=pass; b=S7+JaUCzE0ERcUzEmpGvuLQPqA7KNiW+3ZwqbUt2y3sp2fNzZZszapoXiqxl9eENEAaF2SQfxtqwPYBvAQIby/3m7kphqHFinEJRF2z7D8QmiZ7bNQO8dA8yFpGhMhnaPaj8dBecQiXOM8wbOw4+9Zq/hnXar5QztrA89h8WGvs=
+	t=1711739783; cv=fail; b=Hm9Xy2KvbEhVgJRo15Wqu+cTzzKPFiU/SvvZ1cXPYNFsdcTJjxjd1Vgvqx1yhzF7XYHceJ/7N/9bSB94OoHQOTMLeVApMUCOQpiN+iEvE4riA1p2YNBOH0vI3zm2Fyh3NidJqMpV86RvWCHf3wctbn1kYxvUDuTgwcWdNmvYN2g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711739749; c=relaxed/simple;
-	bh=iOaS0dTkfcP+SU/f5iG3clrpiLMk4p12ElyX3Y4YXxI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=soR53J5l/SKNt2y8lrJb2E/G2bWoU35/u0Q2PoJ6Hmcn34EmG6DK6B4tv2hQh8Aef8G68N+rGeYH1QGpRUEN9TnZo1jWxxUD1V2fa7IKLBmfrEVKUK9HqAhs6EQDq3xPM5Kir6smNMAVsE1tHh07lKUcP4lx2IqCDDx+7mTKcCc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com; spf=pass smtp.mailfrom=templeofstupid.com; dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b=NQQc8MK0; arc=pass smtp.client-ip=23.83.218.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 195B6C2E9B
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:15:46 +0000 (UTC)
-Received: from pdx1-sub0-mail-a283.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id B041CC2CE1
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:15:45 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1711739745; a=rsa-sha256;
-	cv=none;
-	b=q/u7m64wupglLOHdkBkI8MpaSRLFsDl7vKQKnfVX8OcqD265OJfTigaPvuxZx7qK+2izxR
-	Km7zbO343IMfXKDOjg6PJiYASk56atLYe0Gz4JjBAlR4mgL8xQ3wZc4uE/AM0sHqt/D0WR
-	4ftJsVHqCJYPzMr4CsuTxtmbhFT/u8LPuJY0Hch4GypCYB46Ez8vBpOMhJB+f2mY5SSH5A
-	UvpS8uyL7HcxYqTXQegBV0NsVXkecdn6DNVBd/vGcfQ7fbFRoQ4J82+mLOKZXpIKR/TEfl
-	oYA5dMeUFA3FHSo5F353W+XkDwl41H8IxS/OjrCGZSpjUhqSRxWzb61ror696A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1711739745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=EnlZ5bLVy+yCG0ojGQujTIq4MzqFgRZKmBSDVDyKsvw=;
-	b=X4waSwCPtNsp5fare4dWfk04kmrBuQY8SE4Vv2cO2gY1FXGuoBSmrCGGZ30VNX0PXAHZ8T
-	1Bn4t2/2pOTWS46ValAqTxpf8+mddVL8PWgnkumIid7r8MFbRAjx+9aH82+7+0abbqpBQh
-	f8lWlffkOniHtUaNz/12ZpfAGpyQHAdeSCvLbF6383FkJbXmzYP+7L6H42Xgd3nmq2/cwG
-	OP/dhPmIQupuGZTiXOFOCiFF7PfJXotPyKjb/fxVaEWk9CrdUOuRPxPqxsj8D7NcfRDiED
-	AmqWE+nVgzQHHVa7RErWSW0KlUWX6OtUp7mz0KRZ61fEIUsxRqkuLyNc+KllTA==
-ARC-Authentication-Results: i=1;
-	rspamd-699949c56f-t4wlw;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Arithmetic-Abiding: 5b964ffa53fe2a3e_1711739745995_3816288518
-X-MC-Loop-Signature: 1711739745995:80590942
-X-MC-Ingress-Time: 1711739745995
-Received: from pdx1-sub0-mail-a283.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.126.216.122 (trex/6.9.2);
-	Fri, 29 Mar 2024 19:15:45 +0000
-Received: from kmjvbox.templeofstupid.com (c-73-222-159-162.hsd1.ca.comcast.net [73.222.159.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kjlx@templeofstupid.com)
-	by pdx1-sub0-mail-a283.dreamhost.com (Postfix) with ESMTPSA id 4V5qr10163z9r
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-	s=dreamhost; t=1711739745;
-	bh=EnlZ5bLVy+yCG0ojGQujTIq4MzqFgRZKmBSDVDyKsvw=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=NQQc8MK0iSg8t46rKs0l7KChbqPJCT3UV27c+dIAnyjDkYes8WOqyLB4LKMcGaSFh
-	 aLtq/6IDeEDZesWoKYY8UXpgBSsA2aFLPemwD6WRqhTR8F5QNE4JIqtCyC9jFMXROA
-	 qe5qZ6DRT7IfQ3keIAbLB4IsRBJ/jsK/Yi4vGPycjtBdRFp48g+/XuPEx/dEC5W03D
-	 0jqqpTEbdgfwqmQANlsb8UK39J6eybUomYdkdTmcEffvQlTLm+MkwdLXslXUjSwzYF
-	 8M2FH/28q6nsnU40rH9ZoIhy2E1Rw0WgBPEhLiLVHCC4ioLmkWd0zz7lhELw8Mty5m
-	 tSCIX+Rx9lzcQ==
-Received: from johansen (uid 1000)
-	(envelope-from kjlx@templeofstupid.com)
-	id e0098
-	by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
-	Fri, 29 Mar 2024 12:15:37 -0700
-Date: Fri, 29 Mar 2024 12:15:37 -0700
-From: Krister Johansen <kjlx@templeofstupid.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>,
-	David Reaver <me@davidreaver.com>,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Limit stage2_apply_range() batch size to
- smallest block
-Message-ID: <20240329191537.GA2051@templeofstupid.com>
-References: <cover.1711649501.git.kjlx@templeofstupid.com>
- <ebf0fac84cb1d19bdc6e73576e3cc40a9cab0635.1711649501.git.kjlx@templeofstupid.com>
- <ZgbGtpj5mStTkAkn@linux.dev>
+	s=arc-20240116; t=1711739783; c=relaxed/simple;
+	bh=nRCoRFro8AdRt6WBfD8XJsJfCTgfwEVggRh979xTtfo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ZXtHSVseSqjIo+hcDFHSNXkmBBu1A3ohRVx/4R/e7kfIH5TY6ZmXoHPyWXIKAdb8/epNB9iHNa0BCM+DuYkIRt2gB1xzx+yxfTgJkJ9DzGyl1mx2ACvpC/NdYJ07pCiwgCUgGnk3vRC9iX69aYKsv/7wgz8y0+lECfIQgbxaJ1E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=oiNfQ6d0; arc=fail smtp.client-ip=40.107.247.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YtKDypFkFICJCHuAiZORDG//MnVNwUl7Mb7OWNdpxovo0QkFeRSJ0mpERdBaOuSwCwppKcX/W2u96EDwgHyhAdkD9r2wBcKuCqPX7Z3Cjg/6faoBTxO5gwJcHekjV1NL4O+x/hf+nMiW4SToPtIrYTHvYjufs3AyEGSFo7wsSm6hAfXxsPn7eroZ8WrID95D3F6yscxQrS+PeSqdEAjdKrWpZiHErYaqsRjHFr21iXCmtdZCA0woB5tBH5AlGLZGVu776sDgek0GJKz9RlOtqlcEcFCDNq9Zu4/j+3HF1bz8AtpS6LdCg1fiiG7LeZGiYr/dpbZ+WYTQA8GqHVGmSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A8AYQ6FZplMeVwqAs4M+y7QWehTbEKcT9XNZyNNZmow=;
+ b=MRipVClNMyjpfQolRPhkXHgGNvEBReIuqUU/fY1WwsSnLnmrqI6SLEZVz3lqw/DwkebHOs8DLvxpvyelEgG/gnnPxgqGTf0YssC5/eo36u5D0T4OMsfCvrV4dBptUSiFM5b7u2wsA6MXOpZTwc3j8uw4iStOe/x4lXWxaPwvUo6c54k2+/qWQWnrmZWiDEgPB54SSaiTB2FFMAbm6I9lUp7+Z9Ji0Cu85mk7px2mmdH21TQLia5QIXsF80weJ5MdRaPMkOnkulwN9ioM1nBYjmOovc4rPUrBrzVp2OSmyylkYTH7cU01cad6nKTaKy1GKLRXQeJrn8wrfXTTMQfTEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A8AYQ6FZplMeVwqAs4M+y7QWehTbEKcT9XNZyNNZmow=;
+ b=oiNfQ6d0D3lkXeO4i+yLib/tIBD5/2EgfLbip400D4SXOZlQFQ2iEGLoGfckwgHMDKGq7UfCIjGO+ENupZXi0Q0FJrwYYovdwhgZhlOpaBWXUCr7qYD0/s+nB2vxnHPNatQa6iMnFdBphUyApBSpE81fLyZNmh8oYkUQhoN+ER0=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8578.eurprd04.prod.outlook.com (2603:10a6:20b:425::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.42; Fri, 29 Mar
+ 2024 19:16:16 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.039; Fri, 29 Mar 2024
+ 19:16:16 +0000
+Date: Fri, 29 Mar 2024 15:16:03 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, Niklas Cassel <cassel@kernel.org>,
+	linux-arm-kernel@axis.com, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v12 7/8] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
+ API directly from all glue drivers
+Message-ID: <ZgcTc9q4I9K9GA4c@lizhi-Precision-Tower-5810>
+References: <20240327-pci-dbi-rework-v12-0-082625472414@linaro.org>
+ <20240327-pci-dbi-rework-v12-7-082625472414@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327-pci-dbi-rework-v12-7-082625472414@linaro.org>
+X-ClientProxiedBy: SJ0PR03CA0147.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::32) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgbGtpj5mStTkAkn@linux.dev>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8578:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	74KJ7diYFNJ7dZE7jQAbFYmWwy30vNLSUk8kjps95bKr9HtxnN4fQ02pyQHd3dBhzTp3gwEoiYoNeFzK2T/1GJbGYotytXyoG6u78JKhp4f/hGrJLi34ANXsHXqf2v7s4EHp/NXI6zcLx2j7D3wOuImAvHuX+wPG3CbfqA6HDoygYxQdGDI28eTTzV9QZyHfAyRVaqCyEVmOC18jJEayzVT6mOd3ZVfRoMCfDBwzovtITlrFD5ogxayapAYD3GgnbXgqCzdkgsi0FCub6Be+SNWkUnZwM7eASOoewbsJV95bLRu4IQiQXfrwzXTZ7lm3BQhC6CzeOooS0oZ1BWaVN59Y6tv3aUVAb05/Nwe70LJO8bBtL08msRoSDHkQXmTKhS4H3/9Iu7cZk3ah7pluaJcKh8jAw/fT9hBhlphYh/IA+BCd1T57rqIGVzEfzTXwnDl4n+1JytgEuWmVpcczJHE0L/w70Hc7Mh/15mfCDfs4ur4Qzg/KnQ3FXrOTDG8GI2UAqYpwA3zW1KLvyAcDuxcRsGW2DYV4ZU04nhqFq06GhVZ7gtyTn5F421KClIU3V08pSWE4g+DcLowwe0e0QzzIIsu3AAolWVrG50dkFLqg4XjbsBPbIFWNXk1HObs39pjJ/07wBxgmhvS45JvW6zqdfK3FGFbbPhQoHKANou9Oq36kjjQiO7U6OE3LBOwrWHAkkh5vJyoaOIoOpuPU8ARSFXz/tSbhYXaoddBXimw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?pZMtGtcmg/RJTeMNebUdoZq1RBQx+5EGyM4jJLU0o/babCZBVP/rE5B1aWvv?=
+ =?us-ascii?Q?QQAgLd0ig5znGEaqqfJjpiHY45JqVEeKPPDm3mCWyRvS2tHr4VdxvMFqgcoo?=
+ =?us-ascii?Q?6dXRO9xpgV/V7SNk7l7RYfyx7zXcVLC9q2yMsPvdPW0p2zs30Riq0FZkh087?=
+ =?us-ascii?Q?RVkHB3bx4icK88ckpoC83I13dvspHu6smvmsQ0wOnOHrBhbNhvcYezpBTgGu?=
+ =?us-ascii?Q?c5Pe1UZDFAdK3oMpWO91QvQI2K6mSDEs/8AppOMhC7PPz7evWGEmiuNyf1ud?=
+ =?us-ascii?Q?inPGZT/48Z493UiLj9DPLeJIzHIJI92nMTGSCKpeBiUkCntICqNevn6ntvKX?=
+ =?us-ascii?Q?tdnpHHXpL0Sag/tKkPhoCFzzG9RA53r7COLeUDdFp7iPLSY0UW8/KnA2ZuWI?=
+ =?us-ascii?Q?M9mJ1/pjMUMCuAUv1sPEysLvMu9pRekcKTLO+VFpzw8SdYF9vIQu2MVCG7+3?=
+ =?us-ascii?Q?V7piLmZHuO0d/he+Xc9NtV6EFA07cvVzBKOFCR5j3axoGjXH0xvaajuQ45ER?=
+ =?us-ascii?Q?iygxgFlUqaztkGsqpMkh4INaS60ZkGKqqNJBvRJHFGJ9mP9GMz/LnnAYbGnO?=
+ =?us-ascii?Q?xJvPOERgWuv2HPAbkfp3ILmh9Gy0lgAoZhNUQL3OKnNFMzp0Gd2LXcSAfYFl?=
+ =?us-ascii?Q?i7yUWb9LIFJPAXImzmWqwIyhMxYJXXoQUZwHqPrdJdLYzJMWhoZw6kssdh6D?=
+ =?us-ascii?Q?gZs7mCxI/fNcTwMjSPmSAnvuy2Bg9XvKBGaYrCCG2a9oNvpnbibqyviQxh6Y?=
+ =?us-ascii?Q?/+9PKYjye1CRoFF95DwEADn6omOFvvSjoMKFxpPNGnMLqMo8NtIuJvXtj3+P?=
+ =?us-ascii?Q?H4zNyHUjiWXVqlhpHIeZ3dkmwZY60QxX1MfINxCcCJxowoImUeUt/W5xNwMy?=
+ =?us-ascii?Q?cRdKDZOtrn+L7GCv3SEZo7d+vOoKUhAzyXiA5BNeySgRUQyn5qez4VBclfPC?=
+ =?us-ascii?Q?q3jpX3+AbbENMZWC+rY8y1GreAiwJna5amOEUnoMKapYGGM4VXfuyAR+sdmc?=
+ =?us-ascii?Q?GzCKi+XwSwWZPJ3ooGkiSE9DilVZh+V4n2cK38Mbf+DycJNdw60NNrQJgpwq?=
+ =?us-ascii?Q?rqkkpQnWoqlsqX/bcKZmBBYKIjQycRmpmNaf5kJzyEjvJb/SB9qPuIC9cu4g?=
+ =?us-ascii?Q?iZNOhAhyd3MiyYFaBh7EHbCSjfLMD1j45BPvNS+OehfGrPxSkyiEdBvwxbTf?=
+ =?us-ascii?Q?KC7WTUarXOpXi6R4f16b90A3XFZrtLyh2GgvUPuAZuMELjeI7meb4JZlFuD3?=
+ =?us-ascii?Q?EIHSTASy+xkhtA4qovCPYVNQhdV8SW+4pRXBOzZuPF/6ZCjFY9IWaTvLiqgE?=
+ =?us-ascii?Q?6HdyZqNfXQGeAh4FMBEH1EweMK7ChrDIXSEaD66dlc8njaQzIeyTeHXHvBj4?=
+ =?us-ascii?Q?UcUniWzkKRSq4Q6tXjYySJ3V39RfxoCq/tI555e0Bjms2zydRjDlkQIw+Bw7?=
+ =?us-ascii?Q?E0R2iv6rD166LigBaTj9ndNOFIk1JGq0XVrKcY3gsasrN3oPv3z5ObeTYKw6?=
+ =?us-ascii?Q?443KemyJ/HAyBIUjVLODkcECxGtalGGCdn/NTcY1hS8c7vvoWP5ihIoInI7m?=
+ =?us-ascii?Q?9lYaLyAdj8/aB0k2jPjV055x1D0fF+cCMJdbhPhU?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ea6d61e-e4dd-4f41-86f3-08dc5024b4db
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 19:16:16.4965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ovFnF/n1lV31r4SNNbvkuiVgp6NKYZ6fT/S1cGcHzbY8X8StkbzuXvTmx3k1Q02OKXOFFCpG7VafoAjSuTSfdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8578
 
-Hi Oliver,
-Thanks for the response.
-
-On Fri, Mar 29, 2024 at 06:48:38AM -0700, Oliver Upton wrote:
-> On Thu, Mar 28, 2024 at 12:05:08PM -0700, Krister Johansen wrote:
-> > stage2_apply_range() for unmap operations can interfere with the
-> > performance of IO if the device's interrupts share the CPU where the
-> > unmap operation is occurring.  commit 5994bc9e05c2 ("KVM: arm64: Limit
-> > stage2_apply_range() batch size to largest block") improved this.  Prior
-> > to that commit, workloads that were unfortunate enough to have their IO
-> > interrupts pinned to the same CPU as the unmap operation would observe a
-> > complete stall.  With the switch to using the largest block size, it is
-> > possible for IO to make progress, albeit at a reduced speed.
+On Wed, Mar 27, 2024 at 02:43:36PM +0530, Manivannan Sadhasivam wrote:
+> Currently, dw_pcie_ep_init_registers() API is directly called by the glue
+> drivers requiring active refclk from host. But for the other drivers, it is
+> getting called implicitly by dw_pcie_ep_init(). This is due to the fact
+> that this API initializes DWC EP specific registers and that requires an
+> active refclk (either from host or generated locally by endpoint itsef).
 > 
-> Can you describe the workload a bit more? I'm having a hard time
-> understanding how you're unmapping that much memory on the fly in
-> your workload. Is guest memory getting swapped? Are VMs being torn
-> down?
-
-Sorry I wasn't clear here.  Yes, it's the VMs getting torn down that's
-causing the problems.  The container VMs don't have long lifetimes, but
-some may be up to 256Gb in size, depending on the user.  The workloads
-running the VMs aren't especially performance sensitive, but their users
-do notice when network connections time-out.  IOW, if the performance is
-bad enough to temporarily prevent new TCP connections from being
-established or requests / responses being recieved in a timely fashion,
-we'll hear about it.  Users deploy their services a lot, so there's a
-lot of container vm churn.  (Really it's automation redeploying the
-services on behalf of the users in response to new commits to their
-repos...)
-
-> Also, it seems a bit odd to steer interrupts *into* the workload you
-> care about...
-
-Ah, that was only intentionally done for the purposes of measuring the
-impact.  That's not done on purpose in production.
-
-Nevertheless, the example we tend to run into is that a box may have 2
-NICs and each NIC has 32 Tx-Rx queues.  This means we've got 64 NIC
-interrupts, each assigned to a different CPU.  Our systems have 64 CPUs.
-What happens in practice is that a VM will get torn down, and that has a
-1-in-64 chance of impacting the performance of the subset of the flows
-that are mapped via RSS to the interrupt that happens to be assigned to
-the CPU where the VM is being torn down.
-
-Of course, the obvious next question is why not just bind the VMs flows
-to the CPUs the VM is running on?  We don't have a 1:1 mapping of
-network device to VM, or VM to CPU right now, which frustrates this
-approach.
-
-> > Further reducing the stage2_apply_range() batch size has substantial
-> > performance improvements for IO that share a CPU performing an unmap
-> > operation.  By switching to a 2mb chunk, IO performance regressions were
-> > no longer observed in this author's tests.  E.g. it was possible to
-> > obtain the advertised device throughput despite an unmap operation
-> > occurring on the CPU where the interrupt was running.  There is a
-> > tradeoff, however.  No changes were observed in per-operation timings
-> > when running the kvm_pagetable_test without an interrupt load.  However,
-> > with a 64gb VM, 1 vcpu, and 4k pages and a IO load, map times increased
-> > by about 15% and unmap times increased by about 58%.  In essence, this
-> > trades slower map/unmap times for improved IO throughput.
+> But, this causes a discrepancy among the glue drivers. So to avoid this
+> confusion, let's call this API directly from all glue drivers irrespective
+> of refclk dependency. Only difference here is that the drivers requiring
+> refclk from host will call this API only after the refclk is received and
+> other drivers without refclk dependency will call this API right after
+> dw_pcie_ep_init().
 > 
-> There are other users of the range-based operations, like
-> write-protection. Live migration is especially sensitive to the latency
-> of page table updates as it can affect the VMM's ability to converge
-> with the guest.
-
-To be clear, the reduction in performance was observed when I
-concurrently executed both the kvm_pagetable_test and a networking
-benchmark where the NIC's interrupts were assigned to the same CPU where
-the pagetable test was executing.  I didn't see a slowdown just running
-the pagetable test.
-
-> > Cc: <stable@vger.kernel.org> # 5.15.x: 3b5c082bbfa2: KVM: arm64: Work out supported block level at compile time
-> > Cc: <stable@vger.kernel.org> # 5.15.x: 5994bc9e05c2: KVM: arm64: Limit stage2_apply_range() batch size to largest block
-> > Cc: <stable@vger.kernel.org> # 5.15.x
+> With this change, the check for 'core_init_notifier' flag can now be
+> dropped from dw_pcie_ep_init() API. This will also allow us to remove the
+> 'core_init_notifier' flag completely in the later commits.
 > 
-> This is a performance improvement, *not* a correctness fix. Please don't
-> cc stable for it.
+> Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Reviewed-by: Niklas Cassel <cassel@kernel.org>
 
-Apologies.  I consulted the Stable Rules[1] before applying these tags and
-the guidance it gave was just that "It must either fix a real bug that
-bothers people."
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
-In our case, the teardown causes TCP throughput to drop from 9.5Gbps to
-about 2Gbps during a teardown, which is something that does bother our
-users.
-
-> > ---
-> >  arch/arm64/include/asm/kvm_pgtable.h | 4 ++++
-> >  arch/arm64/kvm/mmu.c                 | 2 +-
-> >  2 files changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> > index 19278dfe7978..b0c4651a4d9a 100644
-> > --- a/arch/arm64/include/asm/kvm_pgtable.h
-> > +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> > @@ -19,11 +19,15 @@
-> >   *  - 4K (level 1):	1GB
-> >   *  - 16K (level 2):	32MB
-> >   *  - 64K (level 2):	512MB
-> > + *
-> > + *  The max block level is the _smallest_ supported block size for KVM.
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pci-dra7xx.c           |  7 +++++++
+>  drivers/pci/controller/dwc/pci-imx6.c             |  8 ++++++++
+>  drivers/pci/controller/dwc/pci-keystone.c         |  9 +++++++++
+>  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  7 +++++++
+>  drivers/pci/controller/dwc/pcie-artpec6.c         | 13 ++++++++++++-
+>  drivers/pci/controller/dwc/pcie-designware-ep.c   | 22 ----------------------
+>  drivers/pci/controller/dwc/pcie-designware-plat.c |  9 +++++++++
+>  drivers/pci/controller/dwc/pcie-keembay.c         | 16 +++++++++++++++-
+>  drivers/pci/controller/dwc/pcie-rcar-gen4.c       | 12 +++++++++++-
+>  drivers/pci/controller/dwc/pcie-uniphier-ep.c     | 13 ++++++++++++-
+>  10 files changed, 90 insertions(+), 26 deletions(-)
 > 
-> This feels like a non sequitur given the old comment is left in place...
-
-I'll fix if we keep this approach.  Is the objection to the name
-KVM_PGTABLE_MAX_BLOCK_LEVEL or just the comment?
-
-> >   */
-> >  #ifdef CONFIG_ARM64_4K_PAGES
-> >  #define KVM_PGTABLE_MIN_BLOCK_LEVEL	1
-> > +#define KVM_PGTABLE_MAX_BLOCK_LEVEL	2
-> >  #else
-> >  #define KVM_PGTABLE_MIN_BLOCK_LEVEL	2
-> > +#define KVM_PGTABLE_MAX_BLOCK_LEVEL	KVM_PGTABLE_MIN_BLOCK_LEVEL
-> >  #endif
-> >  
-> >  #define kvm_lpa2_is_enabled()		system_supports_lpa2()
-> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> > index dc04bc767865..1e927b306aee 100644
-> > --- a/arch/arm64/kvm/mmu.c
-> > +++ b/arch/arm64/kvm/mmu.c
-> > @@ -41,7 +41,7 @@ static phys_addr_t __stage2_range_addr_end(phys_addr_t addr, phys_addr_t end,
-> >  
-> >  static phys_addr_t stage2_range_addr_end(phys_addr_t addr, phys_addr_t end)
-> >  {
-> > -	phys_addr_t size = kvm_granule_size(KVM_PGTABLE_MIN_BLOCK_LEVEL);
-> > +	phys_addr_t size = kvm_granule_size(KVM_PGTABLE_MAX_BLOCK_LEVEL);
-> >  
-> >  	return __stage2_range_addr_end(addr, end, size);
-> >  }
+> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+> index 0e406677060d..395042b29ffc 100644
+> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+> @@ -467,6 +467,13 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
+>  		return ret;
+>  	}
+>  
+> +	ret = dw_pcie_ep_init_registers(ep);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +		dw_pcie_ep_deinit(ep);
+> +		return ret;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 99a60270b26c..8d28ecc381bc 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -1123,6 +1123,14 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
+>  		dev_err(dev, "failed to initialize endpoint\n");
+>  		return ret;
+>  	}
+> +
+> +	ret = dw_pcie_ep_init_registers(ep);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +		dw_pcie_ep_deinit(ep);
+> +		return ret;
+> +	}
+> +
+>  	/* Start LTSSM. */
+>  	imx6_pcie_ltssm_enable(dev);
+>  
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index 844de4418724..81ebac520650 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -1286,6 +1286,13 @@ static int ks_pcie_probe(struct platform_device *pdev)
+>  		ret = dw_pcie_ep_init(&pci->ep);
+>  		if (ret < 0)
+>  			goto err_get_sync;
+> +
+> +		ret = dw_pcie_ep_init_registers(&pci->ep);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +			goto err_ep_init;
+> +		}
+> +
+>  		break;
+>  	default:
+>  		dev_err(dev, "INVALID device type %d\n", mode);
+> @@ -1295,6 +1302,8 @@ static int ks_pcie_probe(struct platform_device *pdev)
+>  
+>  	return 0;
+>  
+> +err_ep_init:
+> +	dw_pcie_ep_deinit(&pci->ep);
+>  err_get_sync:
+>  	pm_runtime_put(dev);
+>  	pm_runtime_disable(dev);
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> index 1f6ee1460ec2..9eb2233e3d7f 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> @@ -279,6 +279,13 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = dw_pcie_ep_init_registers(&pci->ep);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +		dw_pcie_ep_deinit(&pci->ep);
+> +		return ret;
+> +	}
+> +
+>  	return ls_pcie_ep_interrupt_init(pcie, pdev);
+>  }
+>  
+> diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
+> index 9ed0a9ba7619..a6095561db4a 100644
+> --- a/drivers/pci/controller/dwc/pcie-artpec6.c
+> +++ b/drivers/pci/controller/dwc/pcie-artpec6.c
+> @@ -441,7 +441,18 @@ static int artpec6_pcie_probe(struct platform_device *pdev)
+>  
+>  		pci->ep.ops = &pcie_ep_ops;
+>  
+> -		return dw_pcie_ep_init(&pci->ep);
+> +		ret = dw_pcie_ep_init(&pci->ep);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = dw_pcie_ep_init_registers(&pci->ep);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +			dw_pcie_ep_deinit(&pci->ep);
+> +			return ret;
+> +		}
+> +
+> +		break;
+>  	default:
+>  		dev_err(dev, "INVALID device type %d\n", artpec6_pcie->mode);
+>  	}
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> index 761d3012a073..2063cf2049e5 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> @@ -821,7 +821,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>  	struct device *dev = pci->dev;
+>  	struct platform_device *pdev = to_platform_device(dev);
+>  	struct device_node *np = dev->of_node;
+> -	const struct pci_epc_features *epc_features;
+>  
+>  	INIT_LIST_HEAD(&ep->func_list);
+>  
+> @@ -867,29 +866,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+>  		goto err_exit_epc_mem;
+>  	}
+>  
+> -	if (ep->ops->get_features) {
+> -		epc_features = ep->ops->get_features(ep);
+> -		if (epc_features->core_init_notifier)
+> -			return 0;
+> -	}
+> -
+> -	/*
+> -	 * NOTE:- Avoid accessing the hardware (Ex:- DBI space) before this
+> -	 * step as platforms that implement 'core_init_notifier' feature may
+> -	 * not have the hardware ready (i.e. core initialized) for access
+> -	 * (Ex: tegra194). Any hardware access on such platforms result
+> -	 * in system hang.
+> -	 */
+> -	ret = dw_pcie_ep_init_registers(ep);
+> -	if (ret)
+> -		goto err_free_epc_mem;
+> -
+>  	return 0;
+>  
+> -err_free_epc_mem:
+> -	pci_epc_mem_free_addr(epc, ep->msi_mem_phys, ep->msi_mem,
+> -			      epc->mem->window.page_size);
+> -
+>  err_exit_epc_mem:
+>  	pci_epc_mem_exit(epc);
+>  
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
+> index 778588b4be70..ca9b22e654cd 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-plat.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
+> @@ -145,6 +145,15 @@ static int dw_plat_pcie_probe(struct platform_device *pdev)
+>  
+>  		pci->ep.ops = &pcie_ep_ops;
+>  		ret = dw_pcie_ep_init(&pci->ep);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = dw_pcie_ep_init_registers(&pci->ep);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +			dw_pcie_ep_deinit(&pci->ep);
+> +		}
+> +
+>  		break;
+>  	default:
+>  		dev_err(dev, "INVALID device type %d\n", dw_plat_pcie->mode);
+> diff --git a/drivers/pci/controller/dwc/pcie-keembay.c b/drivers/pci/controller/dwc/pcie-keembay.c
+> index 5e8e54f597dd..b2556dbcffb5 100644
+> --- a/drivers/pci/controller/dwc/pcie-keembay.c
+> +++ b/drivers/pci/controller/dwc/pcie-keembay.c
+> @@ -396,6 +396,7 @@ static int keembay_pcie_probe(struct platform_device *pdev)
+>  	struct keembay_pcie *pcie;
+>  	struct dw_pcie *pci;
+>  	enum dw_pcie_device_mode mode;
+> +	int ret;
+>  
+>  	data = device_get_match_data(dev);
+>  	if (!data)
+> @@ -430,11 +431,24 @@ static int keembay_pcie_probe(struct platform_device *pdev)
+>  			return -ENODEV;
+>  
+>  		pci->ep.ops = &keembay_pcie_ep_ops;
+> -		return dw_pcie_ep_init(&pci->ep);
+> +		ret = dw_pcie_ep_init(&pci->ep);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = dw_pcie_ep_init_registers(&pci->ep);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +			dw_pcie_ep_deinit(&pci->ep);
+> +			return ret;
+> +		}
+> +
+> +		break;
+>  	default:
+>  		dev_err(dev, "Invalid device type %d\n", pcie->mode);
+>  		return -ENODEV;
+>  	}
+> +
+> +	return 0;
+>  }
+>  
+>  static const struct keembay_pcie_of_data keembay_pcie_rc_of_data = {
+> diff --git a/drivers/pci/controller/dwc/pcie-rcar-gen4.c b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
+> index de4bdfaecab3..e155a905fb4f 100644
+> --- a/drivers/pci/controller/dwc/pcie-rcar-gen4.c
+> +++ b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
+> @@ -416,6 +416,7 @@ static const struct dw_pcie_ep_ops pcie_ep_ops = {
+>  static int rcar_gen4_add_dw_pcie_ep(struct rcar_gen4_pcie *rcar)
+>  {
+>  	struct dw_pcie_ep *ep = &rcar->dw.ep;
+> +	struct device *dev = rcar->dw.dev;
+>  	int ret;
+>  
+>  	if (!IS_ENABLED(CONFIG_PCIE_RCAR_GEN4_EP))
+> @@ -424,8 +425,17 @@ static int rcar_gen4_add_dw_pcie_ep(struct rcar_gen4_pcie *rcar)
+>  	ep->ops = &pcie_ep_ops;
+>  
+>  	ret = dw_pcie_ep_init(ep);
+> -	if (ret)
+> +	if (ret) {
+>  		rcar_gen4_pcie_ep_deinit(rcar);
+> +		return ret;
+> +	}
+> +
+> +	ret = dw_pcie_ep_init_registers(ep);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +		dw_pcie_ep_deinit(ep);
+> +		rcar_gen4_pcie_ep_deinit(rcar);
+> +	}
+>  
+>  	return ret;
+>  }
+> diff --git a/drivers/pci/controller/dwc/pcie-uniphier-ep.c b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
+> index 639bc2e12476..0e5e7344de48 100644
+> --- a/drivers/pci/controller/dwc/pcie-uniphier-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
+> @@ -399,7 +399,18 @@ static int uniphier_pcie_ep_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	priv->pci.ep.ops = &uniphier_pcie_ep_ops;
+> -	return dw_pcie_ep_init(&priv->pci.ep);
+> +	ret = dw_pcie_ep_init(&priv->pci.ep);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = dw_pcie_ep_init_registers(&priv->pci.ep);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize DWC endpoint registers\n");
+> +		dw_pcie_ep_deinit(&priv->pci.ep);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static const struct uniphier_pcie_ep_soc_data uniphier_pro5_data = {
 > 
-> This doesn't feel right to me. A property that we had before is that
-> leaf entries are visited at most once, since every mapping size was
-> evenly divisible into KVM_PGTABLE_MIN_BLOCK_LEVEL.
+> -- 
+> 2.25.1
 > 
-> Seems like we could wind up visiting a PUD mapping 512 times, at least
-> for 4K pages.
-
-I have an idea, but it seems to go against the current design of the
-pagtable walkers.  My sense was that they've been written to
-discourage passing mutable state to the function that calls
-kvm_pgtable_walk().  If we were willing to permit this, it seems like we
-could leverage __kvm_pgtable_visit()'s knowledge about the size of the
-mapping it walked to determine whether range_addr_end should be
-incremented by our BLOCK_LEVEL constant, or advanced to the end of the
-mapping that was already successfully walked.  (If I'm reading right,
-anyway)  Does that seem like a reasonable approach?
-
-If we do modify the walk to allow state to be passed back, I have a
-second patch I'd like to send you.  Ali found that there was a
-performance regression on the kvm_pagetable_test on the map creation
-step when a large number of threads operated on a comparatively small
-memory range.  (E.g. 64 cpus and 8g of RAM).  We debugged this a bit and
-found that there's an unmap in the map creation step if the test ends up
-instantiating a readable zero page that needs to be copied and made
-writable.  With the deferred TLBI logic, the tlb invalidation happens at
-the end of the unmap operation whether a PTE is cleared or not.  With so
-many threads, this doesn't always suceeed. The prior approach of just
-doing the invalidation in stage2_unmap_put_pte() outperforms the
-deferred invalidation, because stage2_unmap_put_pte() only calls
-__kvm_tlb_flush_vmid_ipa() if it clears a valid PTE.  If we modify the
-walk to keep state on whether any PTEs are successfully cleared, and
-condition the deferred invalidation on that state, we obtain performance
-that is equivalent to the pre range based deferred invalidation
-approach.
-
-Thanks,
-
--K
 
