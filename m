@@ -1,59 +1,61 @@
-Return-Path: <linux-kernel+bounces-124656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7EAA891B14
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:17:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2ECE891B1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:18:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A231C289370
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:17:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81EB31F26A60
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC49B16D325;
-	Fri, 29 Mar 2024 12:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BD616D9DE;
+	Fri, 29 Mar 2024 12:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sztq18cL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dJcORa8/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E907C6A34B;
-	Fri, 29 Mar 2024 12:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B14316D9C8;
+	Fri, 29 Mar 2024 12:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715646; cv=none; b=UQt0+wAi5qccxk+cHI6N/RGu2f/2z9FMf3aWnwf7Gl2EgZX7YHbZyddvuYild86OQvEabIvg7gcA4jNdXU2hXMBjA5gNAYdzQA4UVu9IZGHe5rNcLuf+steLNsCWZaHlUw95DvJYusRIZm1gvGkEpABiDpVSBduYaZ/nJz6WgI8=
+	t=1711715649; cv=none; b=kYyWKSKUGOOMsTlFtGRLXP8oLkOWDSdMXHaq/qS3tnwcsZEiBiUINKg/VtCXNL+kzcoYBlBrtXfKD7s+ImhbiZiy9mBamK9uPAK4EJ4FAWBWQr908PqSTAvDlWgh7PQg9y6xmkPF0fu9acPuRMRjiaAKvPioTV2WpnnSmrgUn1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715646; c=relaxed/simple;
-	bh=IILtF9tSsWuvGOpEPCx8H2bDnQGM42QHz2TEYyNEtMs=;
+	s=arc-20240116; t=1711715649; c=relaxed/simple;
+	bh=07Im89H4tHbl47gQN4Y6CAqTRo++fE4Q9rVsVsY1nW0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=rRBqS5pLoLMSmUJHMaJhmXBPLe4EvFJUJtHoLCjC5+/zV8g6UQSdFUSSdb6MvIUQfKTYpTrXY+f1tmI6/fMrHTBoWXMAF5L+yrfg+K9RdQfRno/MKRPSovRTE/P8Ul+Qw1mWSnLVozgn72LbxIoMpKyhRSCvCLgFJillES+Qm7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sztq18cL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39541C433F1;
-	Fri, 29 Mar 2024 12:34:02 +0000 (UTC)
+	 MIME-Version:Content-Type; b=fwZK8er058khVV0NKHFef38aQdFeK76s0dGwjnMCktApwsD5a0TJL5qrY79RVcQJMY5OWVssKal0msuFP/VnuTeN3uwcoywcT75AjmI5jX7bnDQ7vQXPM24/ExYZgOsrpmHnxoOcjxig+e1JyaOpBsXaSD0YGkAeTxv06/3T++o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dJcORa8/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C8C9C43399;
+	Fri, 29 Mar 2024 12:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715645;
-	bh=IILtF9tSsWuvGOpEPCx8H2bDnQGM42QHz2TEYyNEtMs=;
+	s=k20201202; t=1711715648;
+	bh=07Im89H4tHbl47gQN4Y6CAqTRo++fE4Q9rVsVsY1nW0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=sztq18cLNMkWSlCr7Tgtuvt2ijOxcVa0KBn9XnbWMmhZbpZpGBO0n2clnMq/+wI/D
-	 VZPpkx4ewaXfNtzWS7y4pzccBJIRQzRTf4zuvhjoWiGKdeserypZ+mGNZxZQAoKhKn
-	 IiIxlHkabRQeZ7AVww86vGUhjj6DEqy4aeo5cVpaD220EOnS5zSDbMUZVjeZwORcQR
-	 b3D6YcVmXmIoxA9jo9bjDWI72LWsbsx0u0ef+DH/xYT3dafi4yi96YhtS6YeJf2dN6
-	 ZAUlAp/n8VRxA7Tmn/yQ4et4SK826fapc6XyBiAeS3DlR791XLRudqZf6u52uBuO06
-	 SCGbjyXJNuOhg==
+	b=dJcORa8/SPhfnx6Lc3PvgaxYPdxcahiymbXYW8+no8GI9tFomloDoADyDaB/3TL8K
+	 K3SK86xefwZBHTqooPYhwX6cYjyBDmJvTp97/6xKAqBtxmf8p9RmOZ8qrEDE44DB7H
+	 MoOCuEqIFmsPQfDzskIC012ryHj6U4JXg6s49go8rWEX4OW16glDYTEO4rMwZH1EsP
+	 xLqHPaV12qWaYiACWEU0z0ZmGNfQXxONScEi5oRmPawLDHAbLjyih22ft5d2iXoeQa
+	 rAlxMfOmAdF3+8Cij5+mp6eS8WUefto0A2Hl1oDaQobq8paRpuAhfx0wjz6h/2uImD
+	 iefApBXfd9V4A==
 From: Mark Brown <broonie@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, 
- devicetree@vger.kernel.org, linux-sound@vger.kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org, 
- robh+dt@kernel.org, conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com, 
- YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, 
- SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com, 
- dardar923@gmail.com
-In-Reply-To: <20240327075755.3410381-1-wtli@nuvoton.com>
-References: <20240327075755.3410381-1-wtli@nuvoton.com>
-Subject: Re: [PATCH v5 0/2] ASoC: nau8325: Modify driver code and dtschema.
-Message-Id: <171171564196.7557.2053181572527484871.b4-ty@kernel.org>
-Date: Fri, 29 Mar 2024 12:34:01 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, 
+ Frank Li <Frank.Li@nxp.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
+In-Reply-To: <20240328-asrc_8qxp-v8-0-801cd6bb5be2@nxp.com>
+References: <20240328-asrc_8qxp-v8-0-801cd6bb5be2@nxp.com>
+Subject: Re: (subset) [PATCH v8 0/5] arm64: dts: imx8qxp add asrc and sai
+Message-Id: <171171564576.7557.13075267418118502846.b4-ty@kernel.org>
+Date: Fri, 29 Mar 2024 12:34:05 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,20 +66,12 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Wed, 27 Mar 2024 15:57:53 +0800, Seven Lee wrote:
-> Revise properties description and use standard units in dtschema.
-> The unit conversion driver based on the attribute must also be
-> changed accordingly.
+On Thu, 28 Mar 2024 10:51:32 -0400, Frank Li wrote:
+> Update binding doc to avoid warning.
+> Change from v1 to v2
+> - Fixed dts DTB_CHECK warning
 > 
-> Change:
-> V1 -> V2:
-> - Revise the driver description part for the C++ comment.
-> - In the nau8325_clkdet_put function, modify the max variable to hard code.
-> - Removed "Clock Detection" switch control.
-> - modify the "ALC Enable" switch name.
-> - Revise the dtschema for "nuvoton,dac-vref".
 > 
-> [...]
 
 Applied to
 
@@ -85,10 +79,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
-      commit: 2e4c003b3672085267a358ebf82129b4e08dd64f
-[2/2] ASoC: nau8325: new driver
-      commit: c0a3873b9938bfaa77bd337cad33266a50a6583f
+[1/5] ASoC: dt-bindings: fsl,imx-asrc/spdif: Add power-domains property
+      commit: 9b21531866fced634bcc7fca33667c7ef258433f
+[2/5] ASoC: dt-bindings: fsl,imx-asrc: update max interrupt numbers
+      commit: 82330327ce03889f20072cef5167499d51cdf260
+[3/5] ASoC: dt-bindings: fsl-sai: allow only one dma-names
+      commit: 7b5f2072657a9041cbaf4ba139f672be11694ca3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
