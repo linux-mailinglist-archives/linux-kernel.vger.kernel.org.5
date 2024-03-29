@@ -1,155 +1,184 @@
-Return-Path: <linux-kernel+bounces-123848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA210890ECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:00:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BA5890ED1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8576B28F880
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:00:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C13A1C237B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21026846D;
-	Fri, 29 Mar 2024 00:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D3F8460;
+	Fri, 29 Mar 2024 00:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Uf0eyr3J"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FY2YYAMi"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD71A946
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D56B23A8;
+	Fri, 29 Mar 2024 00:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711670445; cv=none; b=nn1AbwAyr4P99gru5uTRgdjmQG9RGjx2tS9GFIB8LO9wYacvfoA/dOpIakMaFnBcOFmJWpEu0fa4doF4umxC3FJvhUrfx2J2RPMwvY8CaDdKagiKNAu+o5yB4th0rxm5ujmcbgGTi1eFeZaCyJMHHlCx7O6Bq4prXJ1sqt09ppE=
+	t=1711670649; cv=none; b=uUJgfcNGWsk/QJWkC8FdHDF/c2wavSXtzZIT4maWEvrd/neqXhdVUKHV64+bVA77qV82bwdLt8CMOfWjxTDfHW20GfHSplVaro1JWEXhrS8CELyl0YdywRtg0IRLwxqa22FgRjRJG1LbL4YWoL2IrQa02meaTdjDax45bfhRhDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711670445; c=relaxed/simple;
-	bh=ENZlmKNxpzlLiGBo6kS0UnjmR03CylTphFoCV+u4xmk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FK8Sws5BUaX+hEYUCh6MGndff9pGiaf8yWCjZ19/lwLJF1C1Ywt997u7eYorKUstfgkzaYBCmtgPLQjtqfgHsftegWsMOD0S6vbEe+gEtcoUK2QggXCO6LYZzkhUewMOMbxh1ybaG5tNimAX3Y+la8HNL2kWDXRmbjRAa3EO8VE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Uf0eyr3J; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711670441;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KOh0bGzRFscdK7n0pRRU7ddpBbKZJGLB2WZV3d0SUpI=;
-	b=Uf0eyr3J3huzYiqVX/oxfL4X1MV1mZfP8jIhEn/3xKJqGE5i67dJq4Lvwaey3qu+iu8M7d
-	CLfLVKRgv/kEYofoCdG0o/kqI0jjsx+p/B22Pji4k8NgasSWjnC7TPAN+XlpX9QlAIqL9B
-	UIBpAkD32EqJnLKG/EBbBLBgCpImtGk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-14-OPZRQc8PPO2s2otDIOSCEQ-1; Thu,
- 28 Mar 2024 20:00:35 -0400
-X-MC-Unique: OPZRQc8PPO2s2otDIOSCEQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 086C43801F53;
-	Fri, 29 Mar 2024 00:00:35 +0000 (UTC)
-Received: from redhat.com (unknown [10.2.16.33])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 599E12166B36;
-	Fri, 29 Mar 2024 00:00:32 +0000 (UTC)
-Date: Thu, 28 Mar 2024 19:00:26 -0500
-From: Eric Blake <eblake@redhat.com>
-To: Stefan Hajnoczi <stefanha@redhat.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alasdair Kergon <agk@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
-	David Teigland <teigland@redhat.com>, Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
-	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
-Subject: Re: [RFC 2/9] loop: add llseek(SEEK_HOLE/SEEK_DATA) support
-Message-ID: <wvdjesmnq6xrkanncathyciocbtxa6m3fefvx3za3ikxfs7uqx@wo22n4cvndr3>
-References: <20240328203910.2370087-1-stefanha@redhat.com>
- <20240328203910.2370087-3-stefanha@redhat.com>
+	s=arc-20240116; t=1711670649; c=relaxed/simple;
+	bh=djpBvSxFpgiKVso1vC8eoz/ew1HepMaOFxyaEXBkZ+w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=amLQiXZYtz+J+RFSivFzWN8WM+Bzl3tCSIhF18i+8sC94SoZdemedY3cXsWzpA0bkN7qE/K3yhcFWxfU6RyXjQQ/otATT8G4iKk3YzKBF3jqEtJU/nDu91cZc+1xTcp+cacuAPRetxBMFkywTsIbTO1T2n2uM82fJ0x1kDKLNaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FY2YYAMi; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a0a1bd04eso17247187b3.1;
+        Thu, 28 Mar 2024 17:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711670646; x=1712275446; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PKJflJe9SAvt41XpvEFgU1eczu3XFIziapyQDCRKyyM=;
+        b=FY2YYAMim++bK/92SqLjDuF99hw/a6vjfI/WJTsE64TUb0xMFuMMQ8SzJGtfArN1vI
+         Wu92lwq5nh2HXfXnznxcASUwLG8ha/Vkn4GFcZ+oBQk+kDRUv7O8V1Uam8zuOwtqihZC
+         vDVtIZI6VSGF+TrZIQE6X23IN4asEd4FsKSjLiKjAYrsd4RlkYrAjDc+V9BRLWsfhYfw
+         R6dAYKkWEIZWiFq7jQBjoLor7i1TKwYajsFXvu+6lGnq9UOR/2+/Md3S9rW2kSmBsHT2
+         hLanPFfpdds1XZUVjycLQhqKGmXwb2wT7Re5/qrXaDN2g4bzWgYJayMhzRQmLhOrGXRD
+         kH1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711670646; x=1712275446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PKJflJe9SAvt41XpvEFgU1eczu3XFIziapyQDCRKyyM=;
+        b=G/omOjXmh0BSqhybVFygPq/MBfYbRhtVAaSxHYgMKtZx+rSvLGNdpxXB+u+1Vo4Q8M
+         c5PGIg67du3sQ+rdPtJLrkUjz1MXMS59vpmfBSUwAMLFQ6dSNGaK7zaGv4E1jN/gm/oA
+         IHkblMBDhKI2UxAmid+4KntnRyX+aX8gJg0iMGqzSed76Z6iDv20CzpbnUSdxiUi8i00
+         x/9UPQXdnl7yC144YEVI3xN5loenEd5a22HUecFKU4EQf6AYr8BTB1jeXgJ4ioXBzEI3
+         PsP/RX0bdSeTx3G+ZcuExJpYEhuhkWrP5iPTPyhZzhquegD49J0tf8dB+n7u+ciaexdi
+         KXzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVE9+sLaOZrGTRf6ZbJ8CqQII7ilNmK5QeNrktWK7udzoaU+pb2nW6pmJh2XOi4EcT7xzasmi7cHYVQmghElScEdhE0t1leNKIowZyRQQTfJAoT3uKpKDJ9l0PqvIjh4BYhapSgPDP0aLkrc2QJwQw8ndVsH97xJGBo1s3VGBIagAavfw==
+X-Gm-Message-State: AOJu0YwVMlvzHNbsX09BdQW0VO3eYP0VXg0NuXdtSX/Edbgtg1K4gIGq
+	lbSLTjAcUY+MAFRBQuMHFY+TyJF4yMOYdTa95Dmfm4LnGri/SpDg0vta/9AvwNh6wW6qnRW3kDj
+	OV9/3SUdyoK4eAAEf3YRn7Sx55fw=
+X-Google-Smtp-Source: AGHT+IFlFhEAYhnFnzioGqw5/Gv70sk9qhgM4Wl2R6HpJ1WZROvfK65Qip2q7Mnm20GidITcmlwHMYLp4exODvQYFww=
+X-Received: by 2002:a81:488f:0:b0:607:9102:c1b0 with SMTP id
+ v137-20020a81488f000000b006079102c1b0mr1063365ywa.43.1711670646241; Thu, 28
+ Mar 2024 17:04:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328203910.2370087-3-stefanha@redhat.com>
-User-Agent: NeoMutt/20240201
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+References: <20240327220320.15509-1-l.rubusch@gmail.com> <20240327220320.15509-2-l.rubusch@gmail.com>
+ <20240328133720.7dfd46b0@jic23-huawei>
+In-Reply-To: <20240328133720.7dfd46b0@jic23-huawei>
+From: Lothar Rubusch <l.rubusch@gmail.com>
+Date: Fri, 29 Mar 2024 01:03:29 +0100
+Message-ID: <CAFXKEHaPcbRMVJTWW0Atg37jqb97JBdPoSmm3gAZEO1Q=SZm9w@mail.gmail.com>
+Subject: Re: [PATCH v5 1/7] iio: accel: adxl345: Make data_range obsolete
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eraretuya@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 04:39:03PM -0400, Stefan Hajnoczi wrote:
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> ---
-> Open issues:
-> - The file offset is updated on both the blkdev file and the backing
->   file. Is there a way to avoid updating the backing file offset so the
->   file opened by userspace is not affected?
-> - Should this run in the worker or use the cgroups?
-> ---
->  drivers/block/loop.c | 36 ++++++++++++++++++++++++++++++------
->  1 file changed, 30 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index 28a95fd366fea..6a89375de82e8 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -750,6 +750,29 @@ static void loop_sysfs_exit(struct loop_device *lo)
->  				   &loop_attribute_group);
->  }
->  
-> +static loff_t lo_seek_hole_data(struct block_device *bdev, loff_t offset,
-> +		int whence)
-> +{
-> +	/* TODO need to activate cgroups or use worker? */
-> +	/* TODO locking? */
-> +	struct loop_device *lo = bdev->bd_disk->private_data;
-> +	struct file *file = lo->lo_backing_file;
-> +
-> +	if (lo->lo_offset > 0)
-> +		offset += lo->lo_offset; /* TODO underflow/overflow? */
-> +
-> +	/* TODO backing file offset is modified! */
-> +	offset = vfs_llseek(file, offset, whence);
+On Thu, Mar 28, 2024 at 2:37=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
+>
+> On Wed, 27 Mar 2024 22:03:14 +0000
+> Lothar Rubusch <l.rubusch@gmail.com> wrote:
+>
+> > Replace write() data_format by regmap_update_bits(), because bus specif=
+ic
+> > pre-configuration may have happened before on the same register. For
+> > further updates to the data_format register then bus pre-configuration
+> > needs to be masked out.
+> >
+> > Remove the data_range field from the struct adxl345_data, because it is
+> > not used anymore.
+> >
+> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+> > ---
+> >  drivers/iio/accel/adxl345_core.c | 18 ++++++++++++------
+> >  1 file changed, 12 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl3=
+45_core.c
+> > index 8bd30a23e..35df5e372 100644
+> > --- a/drivers/iio/accel/adxl345_core.c
+> > +++ b/drivers/iio/accel/adxl345_core.c
+> > @@ -37,7 +37,15 @@
+> >  #define ADXL345_POWER_CTL_MEASURE    BIT(3)
+> >  #define ADXL345_POWER_CTL_STANDBY    0x00
+> >
+> > +#define ADXL345_DATA_FORMAT_RANGE    GENMASK(1, 0) /* Set the g range =
+*/
+> > +#define ADXL345_DATA_FORMAT_JUSTIFY  BIT(2) /* Left-justified (MSB) mo=
+de */
+> >  #define ADXL345_DATA_FORMAT_FULL_RES BIT(3) /* Up to 13-bits resolutio=
+n */
+> > +#define ADXL345_DATA_FORMAT_SELF_TEST        BIT(7) /* Enable a self t=
+est */
+> > +#define ADXL345_DATA_FORMAT_MSK              (ADXL345_DATA_FORMAT_RANG=
+E | \
+> > +                                      ADXL345_DATA_FORMAT_JUSTIFY |  \
+> > +                                      ADXL345_DATA_FORMAT_FULL_RES | \
+> > +                                      ADXL345_DATA_FORMAT_SELF_TEST)
+> This needs renaming.  It's not a mask of everything in the register, or
+> even just of everything related to format.
+>
+> Actually I'd just not have this definition.  Use the build up value
+> from all the submasks at the call site.  Then we are just making it clear
+> only a subset of fields are being cleared.
+>
+I understand this solution was not very useful. I'm not sure, I
+understood you correctly. Please have a look into v6 if this matches
+your comment.
+Now, I remove the mask, instead I use a local variable in core's
+probe() for the update mask. I added a comment. Nevertheless, I keep
+the used flags for FORMAT_DATA. Does this go into the direction of
+using the build up value from the submasks at the call site?
 
-Not only did you modify the underlying offset...
-
-> +	if (offset < 0)
-> +		return offset;
-> +
-> +	if (lo->lo_offset > 0)
-> +		offset -= lo->lo_offset; /* TODO underflow/overflow? */
-> +	if (lo->lo_sizelimit > 0 && offset > lo->lo_sizelimit)
-> +		offset = lo->lo_sizelimit;
-
-..but if this code kicks in, you have clamped the return result to
-EOF of the loop device while leaving the underlying offset beyond the
-limit, which may mess up assumptions of other code expecting the loop
-to always have an in-bounds offset for the underlying file (offhand, I
-don't know if there is any such code; but since loop_ctl_fops.llseek =
-noop_lseek, there may be code relying on an even-tighter restriction
-that the offset of the underlying file never changes, not even within
-bounds).
-
-Furthermore, this is inconsistent with all other seek-beyond-end code
-that fails with -ENXIO instead of returning size.
-
-But for an RFC, the idea of being able to seek to HOLEs in a loop
-device is awesome!
-
-> @@ -2140,7 +2164,7 @@ static int loop_control_remove(int idx)
->  		pr_warn_once("deleting an unspecified loop device is not supported.\n");
->  		return -EINVAL;
->  	}
-> -		
-> +
->  	/* Hide this loop device for serialization. */
->  	ret = mutex_lock_killable(&loop_ctl_mutex);
->  	if (ret)
-
-Unrelated whitespace change?
-
--- 
-Eric Blake, Principal Software Engineer
-Red Hat, Inc.
-Virtualization:  qemu.org | libguestfs.org
-
+> Jonathan
+>
+> > +
+> >  #define ADXL345_DATA_FORMAT_2G               0
+> >  #define ADXL345_DATA_FORMAT_4G               1
+> >  #define ADXL345_DATA_FORMAT_8G               2
+> > @@ -48,7 +56,6 @@
+> >  struct adxl345_data {
+> >       const struct adxl345_chip_info *info;
+> >       struct regmap *regmap;
+> > -     u8 data_range;
+> >  };
+> >
+> >  #define ADXL345_CHANNEL(index, axis) {                                =
+       \
+> > @@ -218,15 +225,14 @@ int adxl345_core_probe(struct device *dev, struct=
+ regmap *regmap)
+> >
+> >       data =3D iio_priv(indio_dev);
+> >       data->regmap =3D regmap;
+> > -     /* Enable full-resolution mode */
+> > -     data->data_range =3D ADXL345_DATA_FORMAT_FULL_RES;
+> >       data->info =3D device_get_match_data(dev);
+> >       if (!data->info)
+> >               return -ENODEV;
+> >
+> > -     ret =3D regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
+> > -                        data->data_range);
+> > -     if (ret < 0)
+> > +     /* Enable full-resolution mode */
+> > +     ret =3D regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
+> > +                              ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_FO=
+RMAT_FULL_RES);
+> > +     if (ret)
+> >               return dev_err_probe(dev, ret, "Failed to set data range\=
+n");
+> >
+> >       indio_dev->name =3D data->info->name;
+>
 
