@@ -1,59 +1,54 @@
-Return-Path: <linux-kernel+bounces-124862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C407B891D36
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:12:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3509891D37
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DC46283ED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:12:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 203171C26FEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC561C8FBD;
-	Fri, 29 Mar 2024 12:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE9A1C8FD6;
+	Fri, 29 Mar 2024 12:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cohuvwDC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BsABKrKw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B201C8FA4;
-	Fri, 29 Mar 2024 12:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35BA31C8FC8;
+	Fri, 29 Mar 2024 12:45:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716310; cv=none; b=DHsFGAfH4VVKifSRuDuibvVmFzprPya5gcQE/RmSLEeVxBLbX4Q/TRZv/9b93plPQy2o7fTpm4DZFVho8efjNP7u9U83Pd/g1mBDCpR5NqF4hsOU1P37BUnfjYkBHd4F/4LoEPrQOSCNUsh8QPYnqPpC/yOSyVtUxaYLcZwpOac=
+	t=1711716311; cv=none; b=o3Vg003OikW3ExxqcNSA2zGqvENUvigZYghqU/OAinmqNCJY7UVO8PqXgJe01OvXkOCav61RbOhPSorRajfUZqjX7UXhpAfN6dx43jylM1YFRhLTrxxdygaNYVdLUX2dG3Mys0xYO4IFrYMPcYSnX2e2UmkZkwINQOj2hCeUgiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716310; c=relaxed/simple;
-	bh=nReDHNhW6WLr/jmKSHD2nNWb0shuFQM76WKvSHe1xJ4=;
+	s=arc-20240116; t=1711716311; c=relaxed/simple;
+	bh=2XkywHGTNla9wNUnN56Y6gr1IeKydyjwYr37lT38rYY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XnBfSci4BjrXL7pWi/1SVkWWLyRV0pQKQEZp6FWngrPo+gpcOwTNjxMQSmB5CnY+Bj6lPxZpMFBE7cnuTM2R2iSGL+MtYQLkgTrYPl+HlSFnQSvQ1y1qIpYY3hgb4MA7dFGhxm/B8TPQNGUmBQtksF39u6lt9LVXAz8y1OSPa6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cohuvwDC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F03C433F1;
-	Fri, 29 Mar 2024 12:45:08 +0000 (UTC)
+	 MIME-Version; b=JoJgBMtpt0J4y/khxrMIJarGgV9wpRCQY56VAR8f5Uole0TPuR8MWDWTeRCBJ/cBPnp2TfWmyezeTXSZxxxoyQtm3+KoaC0+w9TEhXFbDkkxr8pgq6J0YMMqgpW6fiPn2cp9Bh7Zpla8NydtUar9zoRI4f3amWUqMVTKz+tJZKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BsABKrKw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A293C43390;
+	Fri, 29 Mar 2024 12:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716309;
-	bh=nReDHNhW6WLr/jmKSHD2nNWb0shuFQM76WKvSHe1xJ4=;
+	s=k20201202; t=1711716310;
+	bh=2XkywHGTNla9wNUnN56Y6gr1IeKydyjwYr37lT38rYY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cohuvwDCjch8G17X/KBCEvPHdokJ7KmZCMErts1pEoXCspwNWlf65Fte5KMU2B0oF
-	 D/DmY33xbXuJlT0yIyNj2R+nnEFWnHPP6oZP43OT+TpHjUksoMl1VFccDrb3dbkfvo
-	 SR1XGnwx4L8TmF/K57CJrkiXtkpqKg80H0iieNmtNlya7HhQFRhDpgFfMX+wMVwnHX
-	 gNDMpZSk9CrDpI/QRJQl69TkyA+lBueRwQoctMcZ/F/j8M8tAoIPd0Z1RvfvO2d0DH
-	 BcyMKMDJYum/7ou1UCsqS2VDDU6KBnc1aEGljr5eKnO/kd9mOdSvjd+f/ASl0iFNwp
-	 F8aHLZUtN2/IA==
+	b=BsABKrKwIL69/48G7dR+/H8tXygP/livDxOAUkBYS1ELEP3KkFxi67QozZyEYmyu7
+	 RJ85gigVq7ag/UF2o0qzzVHr73lCLx9PF8/tLpltm0eGTiw3jqwfgX3Zeeeng9rCm/
+	 n23+CdahUueiZzGY7RzMaaXgp5qT0o81XMBSmezgRnxwbBE6Bae1PmzX90kj5AY3rr
+	 Ea9PQ0DL5sUqjsxvljON15tiM8G7hIzSl/VNvl3PSeGcEJaEA9uhmdWm9FM5l8A1SW
+	 51gTI2OhA0+GCFVK5ywhFdLX/fdRXhXE1I61wXYkyDcIoDKGFa6g/rXmODI1T7Nand
+	 VNIPACSCbTpEQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Viresh Kumar <viresh.kumar@linaro.org>,
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-	Roman Stratiienko <r.stratiienko@gmail.com>,
-	Dhruva Gole <d-gole@ti.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Kees Cook <keescook@chromium.org>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 53/75] cpufreq: Don't unregister cpufreq cooling on CPU hotplug
-Date: Fri, 29 Mar 2024 08:42:34 -0400
-Message-ID: <20240329124330.3089520-53-sashal@kernel.org>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 54/75] overflow: Allow non-type arg to type_max() and type_min()
+Date: Fri, 29 Mar 2024 08:42:35 -0400
+Message-ID: <20240329124330.3089520-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
 References: <20240329124330.3089520-1-sashal@kernel.org>
@@ -68,92 +63,59 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Viresh Kumar <viresh.kumar@linaro.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit c4d61a529db788d2e52654f5b02c8d1de4952c5b ]
+[ Upstream commit bd1ebf2467f9c5d157bec7b025e83f8ffdae1318 ]
 
-Offlining a CPU and bringing it back online is a common operation and it
-happens frequently during system suspend/resume, where the non-boot CPUs
-are hotplugged out during suspend and brought back at resume.
+A common use of type_max() is to find the max for the type of a
+variable. Using the pattern type_max(typeof(var)) is needlessly
+verbose. Instead, since typeof(type) == type we can just explicitly
+call typeof() on the argument to type_max() and type_min(). Add
+wrappers for readability.
 
-The cpufreq core already tries to make this path as fast as possible as
-the changes are only temporary in nature and full cleanup of resources
-isn't required in this case. For example the drivers can implement
-online()/offline() callbacks to avoid a lot of tear down of resources.
+We can do some replacements right away:
 
-On similar lines, there is no need to unregister the cpufreq cooling
-device during suspend / resume, but only while the policy is getting
-removed.
+$ git grep '\btype_\(min\|max\)(typeof' | wc -l
+11
 
-Moreover, unregistering the cpufreq cooling device is resulting in an
-unwanted outcome, where the system suspend is eventually aborted in the
-process.  Currently, during system suspend the cpufreq core unregisters
-the cooling device, which in turn removes a kobject using device_del()
-and that generates a notification to the userspace via uevent broadcast.
-This causes system suspend to abort in some setups.
-
-This was also earlier reported (indirectly) by Roman [1]. Maybe there is
-another way around to fixing that problem properly, but this change
-makes sense anyways.
-
-Move the registering and unregistering of the cooling device to policy
-creation and removal times onlyy.
-
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218521
-Reported-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-Link: https://patchwork.kernel.org/project/linux-pm/patch/20220710164026.541466-1-r.stratiienko@gmail.com/ [1]
-Tested-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Link: https://lore.kernel.org/r/20240301062221.work.840-kees@kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/cpufreq.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ include/linux/overflow.h | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 60ed89000e82d..332b7a88ecfc4 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1571,7 +1571,8 @@ static int cpufreq_online(unsigned int cpu)
- 	if (cpufreq_driver->ready)
- 		cpufreq_driver->ready(policy);
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index f9b60313eaea2..e04f679476473 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -31,8 +31,10 @@
+  * credit to Christian Biere.
+  */
+ #define __type_half_max(type) ((type)1 << (8*sizeof(type) - 1 - is_signed_type(type)))
+-#define type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
+-#define type_min(T) ((T)((T)-type_max(T)-(T)1))
++#define __type_max(T) ((T)((__type_half_max(T) - 1) + __type_half_max(T)))
++#define type_max(t)	__type_max(typeof(t))
++#define __type_min(T) ((T)((T)-type_max(T)-(T)1))
++#define type_min(t)	__type_min(typeof(t))
  
--	if (cpufreq_thermal_control_enabled(cpufreq_driver))
-+	/* Register cpufreq cooling only for a new policy */
-+	if (new_policy && cpufreq_thermal_control_enabled(cpufreq_driver))
- 		policy->cdev = of_cpufreq_cooling_register(policy);
+ /*
+  * Avoids triggering -Wtype-limits compilation warning,
+@@ -130,10 +132,10 @@ static inline bool __must_check __must_check_overflow(bool overflow)
  
- 	pr_debug("initialization complete\n");
-@@ -1655,11 +1656,6 @@ static void __cpufreq_offline(unsigned int cpu, struct cpufreq_policy *policy)
- 	else
- 		policy->last_policy = policy->policy;
+ #define __overflows_type_constexpr(x, T) (			\
+ 	is_unsigned_type(typeof(x)) ?				\
+-		(x) > type_max(typeof(T)) :			\
++		(x) > type_max(T) :				\
+ 	is_unsigned_type(typeof(T)) ?				\
+-		(x) < 0 || (x) > type_max(typeof(T)) :		\
+-	(x) < type_min(typeof(T)) || (x) > type_max(typeof(T)))
++		(x) < 0 || (x) > type_max(T) :			\
++	(x) < type_min(T) || (x) > type_max(T))
  
--	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
--		cpufreq_cooling_unregister(policy->cdev);
--		policy->cdev = NULL;
--	}
--
- 	if (has_target())
- 		cpufreq_exit_governor(policy);
- 
-@@ -1720,6 +1716,15 @@ static void cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif)
- 		return;
- 	}
- 
-+	/*
-+	 * Unregister cpufreq cooling once all the CPUs of the policy are
-+	 * removed.
-+	 */
-+	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
-+		cpufreq_cooling_unregister(policy->cdev);
-+		policy->cdev = NULL;
-+	}
-+
- 	/* We did light-weight exit earlier, do full tear down now */
- 	if (cpufreq_driver->offline)
- 		cpufreq_driver->exit(policy);
+ #define __overflows_type(x, T)		({	\
+ 	typeof(T) v = 0;			\
 -- 
 2.43.0
 
