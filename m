@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-124519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 175A389193E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:38:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9269F891942
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48E2B1C24435
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:38:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08D36B23F0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD9C145350;
-	Fri, 29 Mar 2024 12:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE003145B14;
+	Fri, 29 Mar 2024 12:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="op1eBtoU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rSOfs2CY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1993114533C;
-	Fri, 29 Mar 2024 12:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECECE145355;
+	Fri, 29 Mar 2024 12:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715288; cv=none; b=HCmELVMbml5zFXrB7e3qiwlBf6ftkq3giLN6rmbPNjuBUEi7sEOD7lpzfOtEH3A9rPq5QYof+YB1yeKJ86OAYk6/+PqQuzFhevOcsTf2uXoo5bPv2fwaST/8wKbtJch1QAIa6FgKUufjcKhfcEw04nU9lhpcFDuzyB6MQqRuKsc=
+	t=1711715290; cv=none; b=eEgerIYg8Qmj7mc2ec9ci59N82W37PiieIeBQOsRNuO5eywlP1r9D5Kknf8l2gzFq76auDAmcYXlwyg/6/9SBIbTKSCi1/S6NprBa4R0356Fxq+GHp48KNFVRjeG1e3sW7GV0R3nXtPs+PiiOhf144VLs1xgmPZFraZZWLIg18c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715288; c=relaxed/simple;
-	bh=ky+gsxc5QdHdpGdLpqgXyT53m5u9rjRLRmzsqSEwCPk=;
+	s=arc-20240116; t=1711715290; c=relaxed/simple;
+	bh=02C3NL9QBauJ3N/1o7HGEfBjePGFIDjI3TvXXKYO+cc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iM/cpZJSKH1As0wwixGcgKbi/YOQPCmYV2J6MCNXgEzHNbdKuf3EcuitxIi3/t26licTh+oegmbNBnUi9g16EOugE1orTWy4SffaiOzfZzPKpUQ7tX/83md2iHOVIM0huaOvw35aItaHyckfd7IueajOXQGKSuqC1BKd9CHcuVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=op1eBtoU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8F4CC43390;
-	Fri, 29 Mar 2024 12:28:06 +0000 (UTC)
+	 MIME-Version; b=UCs2jdOMz5j5nd3fxkRmTBiPATCE4cusvgv8F8MX+Lx8/H6ITfPtohOaW6riKP7MBq+6fAooun4J7x7NWrLrNNxN1ocs2jHJ7WdoKY92ClPefy2LsJXwAl5tDghtzDmYkFjrdQAu1zL84bwmErCA5+/l6D5l18krJQrXQqWb9U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rSOfs2CY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C2F1C43394;
+	Fri, 29 Mar 2024 12:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715287;
-	bh=ky+gsxc5QdHdpGdLpqgXyT53m5u9rjRLRmzsqSEwCPk=;
+	s=k20201202; t=1711715289;
+	bh=02C3NL9QBauJ3N/1o7HGEfBjePGFIDjI3TvXXKYO+cc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=op1eBtoUlIbau4KgDl5zSGrdTLG4wEPAMjXdji/GJgtfNaYBuzvl4h0Z7Aac3Limk
-	 lzsYswjSi836J2dj5cOeL02ntiTPjhOx+7M9agyLuTkgcNr2teoFyQB3Yp0bTLHNZY
-	 SQS5HN6C1j6GFZun0q+4S3aAikUYc69ORBr5Ldr7XQY+qX0J+j9OB8bbWCwuyCCgJM
-	 e6McpfgU+ZYGqEb4Z82P80DGjChWd87L2toqerkXufielxdyTUmwWYzk83tWPO11Nb
-	 VGQkba91ZSkMQfHX4QFLDqt8EiPxcSD+N5ntUg+eylCDhRRNM208t1xB6YeyBa7PkO
-	 SxA9dOREXyeCg==
+	b=rSOfs2CYGUyoKNPSSclB+eZBQWhMN3KdY4F1/LibUL1GfLT4Ox1uqkxvT+tgss6IY
+	 KMU0S6atMa+T/xTqBOxnr3tSteIlGGfA/j8NcjUokQxGe9c7KA+hz4xs07o7smiE+Z
+	 4LpNXNleNLxfGrZ5kBXozcvLJQKW8Z9ZwbHQs7eugMDUfVxLXqIxv4v14Wntly5om0
+	 XTr8X+tb9ydF3U11kLDyxAz/1I6/VWn6SGfu7gJQIkGHJiIV3C48Qb7Yrxvu1gKD9B
+	 m7GrjlIL2vsegR78x9pJpFTkaZ+o54EEaaDQNHLJaQwaoaxuXVniiwFQYSKGIHxrNL
+	 5AN49BJ4lgetQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Florian Westphal <fw@strlen.de>,
-	Simon Horman <horms@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	kuba@kernel.org,
-	davem@davemloft.net,
+	opendmb@gmail.com,
+	andrew@lunn.ch,
+	hkallweit1@gmail.com,
 	edumazet@google.com,
-	dhowells@redhat.com,
-	linyunsheng@huawei.com,
-	almasrymina@google.com
-Subject: [PATCH AUTOSEL 6.8 38/68] net: skbuff: add overflow debug check to pull/push helpers
-Date: Fri, 29 Mar 2024 08:25:34 -0400
-Message-ID: <20240329122652.3082296-38-sashal@kernel.org>
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 39/68] net: mdio: mdio-bcm-unimac: Manage clock around I/O accesses
+Date: Fri, 29 Mar 2024 08:25:35 -0400
+Message-ID: <20240329122652.3082296-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
 References: <20240329122652.3082296-1-sashal@kernel.org>
@@ -70,85 +71,277 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Florian Westphal <fw@strlen.de>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
 
-[ Upstream commit 219eee9c0d16f1b754a8b85275854ab17df0850a ]
+[ Upstream commit ee975351cf0c2a11cdf97eae58265c126cb32850 ]
 
-syzbot managed to trigger following splat:
-BUG: KASAN: use-after-free in __skb_flow_dissect+0x4a3b/0x5e50
-Read of size 1 at addr ffff888208a4000e by task a.out/2313
-[..]
-  __skb_flow_dissect+0x4a3b/0x5e50
-  __skb_get_hash+0xb4/0x400
-  ip_tunnel_xmit+0x77e/0x26f0
-  ipip_tunnel_xmit+0x298/0x410
-  ..
+Up until now we have managed not to have the mdio-bcm-unimac manage its
+clock except during probe and suspend/resume. This works most of the
+time, except where it does not.
 
-Analysis shows that the skb has a valid ->head, but bogus ->data
-pointer.
+With a fully modular build, we can get into a situation whereby the
+GENET driver is fully registered, and so is the mdio-bcm-unimac driver,
+however the Ethernet PHY driver is not yet, because it depends on a
+resource that is not yet available (e.g.: GPIO provider). In that state,
+the network device is not usable yet, and so to conserve power, the
+GENET driver will have turned off its "main" clock which feeds its MDIO
+controller.
 
-skb->data gets its bogus value via the neigh layer, which does:
+When the PHY driver finally probes however, we make an access to the PHY
+registers to e.g.: disable interrupts, and this causes a bus error
+within the MDIO controller space because the MDIO controller clock(s)
+are turned off.
 
-1556    __skb_pull(skb, skb_network_offset(skb));
+To remedy that, we manage the clock around all of the I/O accesses to
+the hardware which are done exclusively during read, write and clock
+divider configuration.
 
-.. and the skb was already dodgy at this point:
+This ensures that the register space is accessible, and this also
+ensures that there are not unnecessarily elevated reference counts
+keeping the clocks active when the network device is administratively
+turned off. It would be the case with the previous way of managing the
+clock.
 
-skb_network_offset(skb) returns a negative value due to an
-earlier overflow of skb->network_header (u16).  __skb_pull thus
-"adjusts" skb->data by a huge offset, pointing outside skb->head
-area.
-
-Allow debug builds to splat when we try to pull/push more than
-INT_MAX bytes.
-
-After this, the syzkaller reproducer yields a more precise splat
-before the flow dissector attempts to read off skb->data memory:
-
-WARNING: CPU: 5 PID: 2313 at include/linux/skbuff.h:2653 neigh_connected_output+0x28e/0x400
-  ip_finish_output2+0xb25/0xed0
-  iptunnel_xmit+0x4ff/0x870
-  ipgre_xmit+0x78e/0xbb0
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/r/20240216113700.23013-1-fw@strlen.de
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/mdio/mdio-bcm-unimac.c            | 93 ++++++++++---------
+ include/linux/platform_data/mdio-bcm-unimac.h |  3 +
+ 2 files changed, 53 insertions(+), 43 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 2dde34c29203b..fd9198fcc3c30 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2642,6 +2642,8 @@ static inline void skb_put_u8(struct sk_buff *skb, u8 val)
- void *skb_push(struct sk_buff *skb, unsigned int len);
- static inline void *__skb_push(struct sk_buff *skb, unsigned int len)
- {
-+	DEBUG_NET_WARN_ON_ONCE(len > INT_MAX);
-+
- 	skb->data -= len;
- 	skb->len  += len;
- 	return skb->data;
-@@ -2650,6 +2652,8 @@ static inline void *__skb_push(struct sk_buff *skb, unsigned int len)
- void *skb_pull(struct sk_buff *skb, unsigned int len);
- static inline void *__skb_pull(struct sk_buff *skb, unsigned int len)
- {
-+	DEBUG_NET_WARN_ON_ONCE(len > INT_MAX);
-+
- 	skb->len -= len;
- 	if (unlikely(skb->len < skb->data_len)) {
- #if defined(CONFIG_DEBUG_NET)
-@@ -2674,6 +2678,8 @@ void *__pskb_pull_tail(struct sk_buff *skb, int delta);
- static inline enum skb_drop_reason
- pskb_may_pull_reason(struct sk_buff *skb, unsigned int len)
- {
-+	DEBUG_NET_WARN_ON_ONCE(len > INT_MAX);
-+
- 	if (likely(len <= skb_headlen(skb)))
- 		return SKB_NOT_DROPPED_YET;
+diff --git a/drivers/net/mdio/mdio-bcm-unimac.c b/drivers/net/mdio/mdio-bcm-unimac.c
+index 68f8ee0ec8baa..6fe08427fdd4a 100644
+--- a/drivers/net/mdio/mdio-bcm-unimac.c
++++ b/drivers/net/mdio/mdio-bcm-unimac.c
+@@ -94,6 +94,10 @@ static int unimac_mdio_read(struct mii_bus *bus, int phy_id, int reg)
+ 	int ret;
+ 	u32 cmd;
  
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
++
+ 	/* Prepare the read operation */
+ 	cmd = MDIO_RD | (phy_id << MDIO_PMD_SHIFT) | (reg << MDIO_REG_SHIFT);
+ 	unimac_mdio_writel(priv, cmd, MDIO_CMD);
+@@ -103,7 +107,7 @@ static int unimac_mdio_read(struct mii_bus *bus, int phy_id, int reg)
+ 
+ 	ret = priv->wait_func(priv->wait_func_data);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	cmd = unimac_mdio_readl(priv, MDIO_CMD);
+ 
+@@ -112,10 +116,15 @@ static int unimac_mdio_read(struct mii_bus *bus, int phy_id, int reg)
+ 	 * that condition here and ignore the MDIO controller read failure
+ 	 * indication.
+ 	 */
+-	if (!(bus->phy_ignore_ta_mask & 1 << phy_id) && (cmd & MDIO_READ_FAIL))
+-		return -EIO;
++	if (!(bus->phy_ignore_ta_mask & 1 << phy_id) && (cmd & MDIO_READ_FAIL)) {
++		ret = -EIO;
++		goto out;
++	}
+ 
+-	return cmd & 0xffff;
++	ret = cmd & 0xffff;
++out:
++	clk_disable_unprepare(priv->clk);
++	return ret;
+ }
+ 
+ static int unimac_mdio_write(struct mii_bus *bus, int phy_id,
+@@ -123,6 +132,11 @@ static int unimac_mdio_write(struct mii_bus *bus, int phy_id,
+ {
+ 	struct unimac_mdio_priv *priv = bus->priv;
+ 	u32 cmd;
++	int ret;
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
+ 
+ 	/* Prepare the write operation */
+ 	cmd = MDIO_WR | (phy_id << MDIO_PMD_SHIFT) |
+@@ -131,7 +145,10 @@ static int unimac_mdio_write(struct mii_bus *bus, int phy_id,
+ 
+ 	unimac_mdio_start(priv);
+ 
+-	return priv->wait_func(priv->wait_func_data);
++	ret = priv->wait_func(priv->wait_func_data);
++	clk_disable_unprepare(priv->clk);
++
++	return ret;
+ }
+ 
+ /* Workaround for integrated BCM7xxx Gigabit PHYs which have a problem with
+@@ -178,14 +195,19 @@ static int unimac_mdio_reset(struct mii_bus *bus)
+ 	return 0;
+ }
+ 
+-static void unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
++static int unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
+ {
+ 	unsigned long rate;
+ 	u32 reg, div;
++	int ret;
+ 
+ 	/* Keep the hardware default values */
+ 	if (!priv->clk_freq)
+-		return;
++		return 0;
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
+ 
+ 	if (!priv->clk)
+ 		rate = 250000000;
+@@ -195,7 +217,8 @@ static void unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
+ 	div = (rate / (2 * priv->clk_freq)) - 1;
+ 	if (div & ~MDIO_CLK_DIV_MASK) {
+ 		pr_warn("Incorrect MDIO clock frequency, ignoring\n");
+-		return;
++		ret = 0;
++		goto out;
+ 	}
+ 
+ 	/* The MDIO clock is the reference clock (typically 250Mhz) divided by
+@@ -205,6 +228,9 @@ static void unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
+ 	reg &= ~(MDIO_CLK_DIV_MASK << MDIO_CLK_DIV_SHIFT);
+ 	reg |= div << MDIO_CLK_DIV_SHIFT;
+ 	unimac_mdio_writel(priv, reg, MDIO_CFG);
++out:
++	clk_disable_unprepare(priv->clk);
++	return ret;
+ }
+ 
+ static int unimac_mdio_probe(struct platform_device *pdev)
+@@ -235,24 +261,12 @@ static int unimac_mdio_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
+-	priv->clk = devm_clk_get_optional(&pdev->dev, NULL);
+-	if (IS_ERR(priv->clk))
+-		return PTR_ERR(priv->clk);
+-
+-	ret = clk_prepare_enable(priv->clk);
+-	if (ret)
+-		return ret;
+-
+ 	if (of_property_read_u32(np, "clock-frequency", &priv->clk_freq))
+ 		priv->clk_freq = 0;
+ 
+-	unimac_mdio_clk_set(priv);
+-
+ 	priv->mii_bus = mdiobus_alloc();
+-	if (!priv->mii_bus) {
+-		ret = -ENOMEM;
+-		goto out_clk_disable;
+-	}
++	if (!priv->mii_bus)
++		return -ENOMEM;
+ 
+ 	bus = priv->mii_bus;
+ 	bus->priv = priv;
+@@ -261,17 +275,29 @@ static int unimac_mdio_probe(struct platform_device *pdev)
+ 		priv->wait_func = pdata->wait_func;
+ 		priv->wait_func_data = pdata->wait_func_data;
+ 		bus->phy_mask = ~pdata->phy_mask;
++		priv->clk = pdata->clk;
+ 	} else {
+ 		bus->name = "unimac MII bus";
+ 		priv->wait_func_data = priv;
+ 		priv->wait_func = unimac_mdio_poll;
++		priv->clk = devm_clk_get_optional(&pdev->dev, NULL);
++	}
++
++	if (IS_ERR(priv->clk)) {
++		ret = PTR_ERR(priv->clk);
++		goto out_mdio_free;
+ 	}
++
+ 	bus->parent = &pdev->dev;
+ 	bus->read = unimac_mdio_read;
+ 	bus->write = unimac_mdio_write;
+ 	bus->reset = unimac_mdio_reset;
+ 	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-%d", pdev->name, pdev->id);
+ 
++	ret = unimac_mdio_clk_set(priv);
++	if (ret)
++		goto out_mdio_free;
++
+ 	ret = of_mdiobus_register(bus, np);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "MDIO bus registration failed\n");
+@@ -286,8 +312,6 @@ static int unimac_mdio_probe(struct platform_device *pdev)
+ 
+ out_mdio_free:
+ 	mdiobus_free(bus);
+-out_clk_disable:
+-	clk_disable_unprepare(priv->clk);
+ 	return ret;
+ }
+ 
+@@ -297,34 +321,17 @@ static void unimac_mdio_remove(struct platform_device *pdev)
+ 
+ 	mdiobus_unregister(priv->mii_bus);
+ 	mdiobus_free(priv->mii_bus);
+-	clk_disable_unprepare(priv->clk);
+-}
+-
+-static int __maybe_unused unimac_mdio_suspend(struct device *d)
+-{
+-	struct unimac_mdio_priv *priv = dev_get_drvdata(d);
+-
+-	clk_disable_unprepare(priv->clk);
+-
+-	return 0;
+ }
+ 
+ static int __maybe_unused unimac_mdio_resume(struct device *d)
+ {
+ 	struct unimac_mdio_priv *priv = dev_get_drvdata(d);
+-	int ret;
+ 
+-	ret = clk_prepare_enable(priv->clk);
+-	if (ret)
+-		return ret;
+-
+-	unimac_mdio_clk_set(priv);
+-
+-	return 0;
++	return unimac_mdio_clk_set(priv);
+ }
+ 
+ static SIMPLE_DEV_PM_OPS(unimac_mdio_pm_ops,
+-			 unimac_mdio_suspend, unimac_mdio_resume);
++			 NULL, unimac_mdio_resume);
+ 
+ static const struct of_device_id unimac_mdio_ids[] = {
+ 	{ .compatible = "brcm,asp-v2.1-mdio", },
+diff --git a/include/linux/platform_data/mdio-bcm-unimac.h b/include/linux/platform_data/mdio-bcm-unimac.h
+index 8a5f9f0b2c520..724e1f57b81ff 100644
+--- a/include/linux/platform_data/mdio-bcm-unimac.h
++++ b/include/linux/platform_data/mdio-bcm-unimac.h
+@@ -1,11 +1,14 @@
+ #ifndef __MDIO_BCM_UNIMAC_PDATA_H
+ #define __MDIO_BCM_UNIMAC_PDATA_H
+ 
++struct clk;
++
+ struct unimac_mdio_pdata {
+ 	u32 phy_mask;
+ 	int (*wait_func)(void *data);
+ 	void *wait_func_data;
+ 	const char *bus_name;
++	struct clk *clk;
+ };
+ 
+ #define UNIMAC_MDIO_DRV_NAME	"unimac-mdio"
 -- 
 2.43.0
 
