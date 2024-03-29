@@ -1,207 +1,384 @@
-Return-Path: <linux-kernel+bounces-124054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07B0891196
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:16:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4176F89119A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FDF91F25080
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:16:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B59B828CEED
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357A233070;
-	Fri, 29 Mar 2024 02:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA192F26;
+	Fri, 29 Mar 2024 02:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VrQTtiva"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="POQDwpVH"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69B62E3E4;
-	Fri, 29 Mar 2024 02:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233AE1DA3A
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678581; cv=none; b=FCZfauRGq7Es2n/Fp/4IAr2/3oaRRbz8aOhCU35/Eb1HXxppbiH6MVKYohy69HCmIaNUi0zI6ahqJe6LeOS0s0jK67R/ooFv/NjP8lq/1ftVNMrc3IkCu24dQAvT8qMX6T/fS7wOJJmlolOr3yL0QaWbrs31Amr4LNVuqhLgq/s=
+	t=1711678721; cv=none; b=IWkoVPPyZS4qB7o+nrr313h64l/4svmzbpWLGX+Q2rb4GNWhUNyEyPtn0/wsJKLbOvPcSJHORAKwwPg50iAw3IZHKDLBjypnpfDIQJ7EpTYB6Wbz2m7khdbCwodBSPjgy/628jrOyJUl60YHPWw4+vKtZ7xTAagFnZFL+hrIbs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678581; c=relaxed/simple;
-	bh=oIiV3sumovhm34aa/ZlRe2zBsMc2lhuFs2o8Nbwl9qw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=k5ec+UGrgksaNO4p19AV6hFj7t+qshsxhXOEO39MQdMJxirf6XIV73bTuME6vzjV08avyCYk4p86pGVrfFahnTeUxvigevllBpbBxl3jpOZvh29ysBN5eh1EctgvTrspNzV81+emALHzt0ftvsOoGti0i+KpcJuopACuR/Wgzu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VrQTtiva; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42T026cu008384;
-	Fri, 29 Mar 2024 02:16:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ET2FDhQlls+QQvW0Tm6GR0c7dLAUpaKr/E+O+6xcyU8=; b=Vr
-	QTtivawhlH+DVoY/bS/ecy29xrPWM7YaGrb1pZM5YtcXj/6fH5MKn2KCp2ZXzBco
-	Xw0WHFAvx9QQwc42QYnw6FRPyblDA7BaL4GBJ6TztCkbGuznTUYnI1vSWuDueWZQ
-	D32DAE0V7pGdTwke8t7PMayE7qCWu00dOm1G0VzwTCCMF18W1B1VYxq4+4L5o9WY
-	NtI3SZ/IGXVsLuQGTUf9wJrSEgzO2t4E1OwMn2sj198Kwkyk9vC+wqkraEF2rjnw
-	dgbihsxAkgwjHBMVB7nWed04AKyByLSbxqvK2rzJ2Kbe80k1r6TcdhLaBc9VDKIL
-	eSjTvkhmYkUY+Mdl+rsw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5dkygv9d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 02:16:08 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42T2G7k3004202
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 02:16:07 GMT
-Received: from [10.110.118.161] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
- 2024 19:15:58 -0700
-Message-ID: <efbe5aa8-8bbe-26cd-ca70-1974241a3537@quicinc.com>
-Date: Thu, 28 Mar 2024 19:15:55 -0700
+	s=arc-20240116; t=1711678721; c=relaxed/simple;
+	bh=ixXvF5fzYYfqG23SeBJ8LQFvVCfKVlJKg2/L7fNBr4g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bR7UqMf+BECsVFNI3n/znhg3qFpPWN/w4UCZXfHZxkI/RXqIB3s0ORBQoor0CeuTDhPFWiGFcrV9JydQ7//17jlSzSftTce+JfrkDhAYXV7JTzdMgWj6mKxW66gm4oOwzaNSyJ/kdT64a4hIA6j/Uu6G1Mft1mrgMiDadhpokU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=POQDwpVH; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso1521877276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711678718; x=1712283518; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zz+IFMsejvdgnBBQBI80K+Iq8dC3px8n5nwWBHE6dsg=;
+        b=POQDwpVHEr7iOAkFU1ALKMAzRjqnnFFiNuAL2+t4sENsGxbzvuwZOlOzUguxgE88UJ
+         sWiK8UxihdSNT+/lhxOgFWmiBoFzBioYbUuifPMEQXpP7ixNJGKlURpagmVEPE4ATktx
+         uQWWzP5b7SCBXylBvvmRYpgJZPLFBv7k4TthLxOwOGat2D7UV6MCo372MfLs/wEbASNd
+         sf3qZ4Y2v9b3a5X5tCCDB7xf/ft9k06rMHiyBio8J6tkRPmdDh5w80/I/QLvaPsd4vT3
+         KLD8a+ENsbRNOaKqcz9FNu8OjCpDn/EegkwwrGzaQ02kbCxGIWPcMB16gZ8RFaY7kecW
+         7EWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711678718; x=1712283518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zz+IFMsejvdgnBBQBI80K+Iq8dC3px8n5nwWBHE6dsg=;
+        b=MSz5PIQsQd6muLKwG4MiYwx8qtdMPbhlOQlo9IhxsugtixxMPnE1a3g5XE7KI3REat
+         EogTR6AebEl6gHHCAdvKn51gxW5vMRsQcBasalImkqEGLEaAB73LaNG2JsT/9hSNMQTq
+         MqbZLzcI3dWoCK4skNME737EKPhMQJ9+Z6tlXRG4o3fMiqFC2aXxXVqR6Bna3NYSjOVI
+         jePZTEjr7MkW+eDhVSkm6WTvYNdS2zdB+rwdpGDsTOnCn+LKK5lYLneQawUJRd0XXnao
+         xQOLfGOowvGOUFHtzogg6eSucFuvBwIffAmbmcBEUIFtN/vyLy3DPjehrfil+Tctf/pd
+         BAFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJgK1NiUHiniJ/u/8/rKPFRD0/JAS1ttzdELccFjpf7XYrRweymNyuiIoVIS5OZsNDDFzmu7vF1Wr3EeCMi7mE9EIRfTf8xGmHZfeD
+X-Gm-Message-State: AOJu0YxR7PrFxIqFTZj0GmoPmmivPF7z+iPfkWDszRg4y9JJ/3kaVFXA
+	W7DxmyFYW6jYgGqfQk5yz+7fyVXhn5A06kUN2FHbn8+NRuo4WI2xP74831bNx677WdqWVHEfViw
+	AW4z7CduUjsxwaNc+U78qpKDk1GMS4wkUbpEHAQ==
+X-Google-Smtp-Source: AGHT+IFYd8JxyWXHdbKnZHKq5kFPmf3FoQekqBFXakoWt1h4JqrJKVxHkVVGKjtXmHCUVmo4rQEvndpWqChKb7rs8bk=
+X-Received: by 2002:a25:9249:0:b0:dcf:66d4:1766 with SMTP id
+ e9-20020a259249000000b00dcf66d41766mr1221293ybo.52.1711678717879; Thu, 28 Mar
+ 2024 19:18:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
- dp_hpd_unplug_handle() directly
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
-        <agross@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <dianders@chromium.org>, <dri-devel@lists.freedesktop.org>,
-        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>,
-        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
- <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
- <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com>
- <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
- <23de89e9-3ef3-c52d-7abf-93dc2dbb51a4@quicinc.com>
- <CAA8EJppEWXnsQzDD1tdNuMb1ijEVtE7LQct9jt1fwVwMd8ch_Q@mail.gmail.com>
- <27cadd17-10a3-3b8c-2b29-6698ccdce531@quicinc.com>
- <CAA8EJpqYVDG9pBj39m40rPwUNgE7x07HfCt6C3yaMN7eOaWk6Q@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpqYVDG9pBj39m40rPwUNgE7x07HfCt6C3yaMN7eOaWk6Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _EN-CXVHjO6zKjvtrYlVSsyflCChEGzH
-X-Proofpoint-GUID: _EN-CXVHjO6zKjvtrYlVSsyflCChEGzH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_01,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=970 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2403290017
+References: <20240329004815.195476-1-horenchuang@bytedance.com>
+ <20240329004815.195476-3-horenchuang@bytedance.com> <87a5mhlus5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87a5mhlus5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+Date: Thu, 28 Mar 2024 19:18:27 -0700
+Message-ID: <CAKPbEqp_4DnS_mYypFVNm39ApFd8YGWJonA6zbXayNLV+kqcLw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v8 2/2] memory tier: create CPUless memory
+ tiers after obtaining HMAT info
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>, aneesh.kumar@linux.ibm.com, mhocko@suse.com, 
+	tj@kernel.org, john@jagalactic.com, Eishan Mirakhur <emirakhur@micron.com>, 
+	Vinicius Tavares Petrucci <vtavarespetr@micron.com>, Ravis OpenSrc <Ravis.OpenSrc@micron.com>, 
+	Alistair Popple <apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Andrew Morton <akpm@linux-foundation.org>, nvdimm@lists.linux.dev, 
+	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	"Ho-Ren (Jack) Chuang" <horenc@vt.edu>, "Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>, qemu-devel@nongnu.org, 
+	Hao Xiang <hao.xiang@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 28, 2024 at 5:59=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
+>
+> > The current implementation treats emulated memory devices, such as
+> > CXL1.1 type3 memory, as normal DRAM when they are emulated as normal me=
+mory
+> > (E820_TYPE_RAM). However, these emulated devices have different
+> > characteristics than traditional DRAM, making it important to
+> > distinguish them. Thus, we modify the tiered memory initialization proc=
+ess
+> > to introduce a delay specifically for CPUless NUMA nodes. This delay
+> > ensures that the memory tier initialization for these nodes is deferred
+> > until HMAT information is obtained during the boot process. Finally,
+> > demotion tables are recalculated at the end.
+> >
+> > * late_initcall(memory_tier_late_init);
+> > Some device drivers may have initialized memory tiers between
+> > `memory_tier_init()` and `memory_tier_late_init()`, potentially bringin=
+g
+> > online memory nodes and configuring memory tiers. They should be exclud=
+ed
+> > in the late init.
+> >
+> > * Handle cases where there is no HMAT when creating memory tiers
+> > There is a scenario where a CPUless node does not provide HMAT informat=
+ion.
+> > If no HMAT is specified, it falls back to using the default DRAM tier.
+> >
+> > * Introduce another new lock `default_dram_perf_lock` for adist calcula=
+tion
+> > In the current implementation, iterating through CPUlist nodes requires
+> > holding the `memory_tier_lock`. However, `mt_calc_adistance()` will end=
+ up
+> > trying to acquire the same lock, leading to a potential deadlock.
+> > Therefore, we propose introducing a standalone `default_dram_perf_lock`=
+ to
+> > protect `default_dram_perf_*`. This approach not only avoids deadlock
+> > but also prevents holding a large lock simultaneously.
+> >
+> > * Upgrade `set_node_memory_tier` to support additional cases, including
+> >   default DRAM, late CPUless, and hot-plugged initializations.
+> > To cover hot-plugged memory nodes, `mt_calc_adistance()` and
+> > `mt_find_alloc_memory_type()` are moved into `set_node_memory_tier()` t=
+o
+> > handle cases where memtype is not initialized and where HMAT informatio=
+n is
+> > available.
+> >
+> > * Introduce `default_memory_types` for those memory types that are not
+> >   initialized by device drivers.
+> > Because late initialized memory and default DRAM memory need to be mana=
+ged,
+> > a default memory type is created for storing all memory types that are
+> > not initialized by device drivers and as a fallback.
+> >
+> > Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
+> > Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
+> > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+> > ---
+> >  mm/memory-tiers.c | 94 +++++++++++++++++++++++++++++++++++++++--------
+> >  1 file changed, 78 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+> > index 974af10cfdd8..e24fc3bebae4 100644
+> > --- a/mm/memory-tiers.c
+> > +++ b/mm/memory-tiers.c
+> > @@ -36,6 +36,11 @@ struct node_memory_type_map {
+> >
+> >  static DEFINE_MUTEX(memory_tier_lock);
+> >  static LIST_HEAD(memory_tiers);
+> > +/*
+> > + * The list is used to store all memory types that are not created
+> > + * by a device driver.
+> > + */
+> > +static LIST_HEAD(default_memory_types);
+> >  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
+> >  struct memory_dev_type *default_dram_type;
+> >
+> > @@ -108,6 +113,8 @@ static struct demotion_nodes *node_demotion __read_=
+mostly;
+> >
+> >  static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
+> >
+> > +/* The lock is used to protect `default_dram_perf*` info and nid. */
+> > +static DEFINE_MUTEX(default_dram_perf_lock);
+> >  static bool default_dram_perf_error;
+> >  static struct access_coordinate default_dram_perf;
+> >  static int default_dram_perf_ref_nid =3D NUMA_NO_NODE;
+> > @@ -505,7 +512,8 @@ static inline void __init_node_memory_type(int node=
+, struct memory_dev_type *mem
+> >  static struct memory_tier *set_node_memory_tier(int node)
+> >  {
+> >       struct memory_tier *memtier;
+> > -     struct memory_dev_type *memtype;
+> > +     struct memory_dev_type *mtype =3D default_dram_type;
+> > +     int adist =3D MEMTIER_ADISTANCE_DRAM;
+> >       pg_data_t *pgdat =3D NODE_DATA(node);
+> >
+> >
+> > @@ -514,11 +522,20 @@ static struct memory_tier *set_node_memory_tier(i=
+nt node)
+> >       if (!node_state(node, N_MEMORY))
+> >               return ERR_PTR(-EINVAL);
+> >
+> > -     __init_node_memory_type(node, default_dram_type);
+> > +     mt_calc_adistance(node, &adist);
+> > +     if (node_memory_types[node].memtype =3D=3D NULL) {
+> > +             mtype =3D mt_find_alloc_memory_type(adist, &default_memor=
+y_types);
+> > +             if (IS_ERR(mtype)) {
+> > +                     mtype =3D default_dram_type;
+> > +                     pr_info("Failed to allocate a memory type. Fall b=
+ack.\n");
+> > +             }
+> > +     }
+> > +
+> > +     __init_node_memory_type(node, mtype);
+> >
+> > -     memtype =3D node_memory_types[node].memtype;
+> > -     node_set(node, memtype->nodes);
+> > -     memtier =3D find_create_memory_tier(memtype);
+> > +     mtype =3D node_memory_types[node].memtype;
+> > +     node_set(node, mtype->nodes);
+> > +     memtier =3D find_create_memory_tier(mtype);
+> >       if (!IS_ERR(memtier))
+> >               rcu_assign_pointer(pgdat->memtier, memtier);
+> >       return memtier;
+> > @@ -655,6 +672,34 @@ void mt_put_memory_types(struct list_head *memory_=
+types)
+> >  }
+> >  EXPORT_SYMBOL_GPL(mt_put_memory_types);
+> >
+> > +/*
+> > + * This is invoked via `late_initcall()` to initialize memory tiers fo=
+r
+> > + * CPU-less memory nodes after driver initialization, which is
+> > + * expected to provide `adistance` algorithms.
+> > + */
+> > +static int __init memory_tier_late_init(void)
+> > +{
+> > +     int nid;
+> > +
+> > +     mutex_lock(&memory_tier_lock);
+> > +     for_each_node_state(nid, N_MEMORY)
+> > +             if (!node_state(nid, N_CPU) &&
+>
+> It appears that you didn't notice my comments about this...
+>
+> https://lore.kernel.org/linux-mm/87v857kujp.fsf@yhuang6-desk2.ccr.corp.in=
+tel.com/
+>
+Oops. I misunderstood your meaning.
+I will then replace
+-- if (!node_state(nid, N_CPU) &&
+--                node_memory_types[nid].memtype =3D=3D NULL)
+with
+++ if (node_memory_types[nid].memtype =3D=3D NULL)"
+
+> > +                     node_memory_types[nid].memtype =3D=3D NULL)
+> > +                     /*
+> > +                      * Some device drivers may have initialized memor=
+y tiers
+> > +                      * between `memory_tier_init()` and `memory_tier_=
+late_init()`,
+> > +                      * potentially bringing online memory nodes and
+> > +                      * configuring memory tiers. Exclude them here.
+> > +                      */
+> > +                     set_node_memory_tier(nid);
+> > +
+> > +     establish_demotion_targets();
+> > +     mutex_unlock(&memory_tier_lock);
+> > +
+> > +     return 0;
+> > +}
+> > +late_initcall(memory_tier_late_init);
+> > +
+> >  static void dump_hmem_attrs(struct access_coordinate *coord, const cha=
+r *prefix)
+> >  {
+> >       pr_info(
+> > @@ -668,7 +713,7 @@ int mt_set_default_dram_perf(int nid, struct access=
+_coordinate *perf,
+> >  {
+> >       int rc =3D 0;
+> >
+> > -     mutex_lock(&memory_tier_lock);
+> > +     mutex_lock(&default_dram_perf_lock);
+> >       if (default_dram_perf_error) {
+> >               rc =3D -EIO;
+> >               goto out;
+> > @@ -716,23 +761,30 @@ int mt_set_default_dram_perf(int nid, struct acce=
+ss_coordinate *perf,
+> >       }
+> >
+> >  out:
+> > -     mutex_unlock(&memory_tier_lock);
+> > +     mutex_unlock(&default_dram_perf_lock);
+> >       return rc;
+> >  }
+> >
+> >  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
+> >  {
+> > -     if (default_dram_perf_error)
+> > -             return -EIO;
+> > +     int rc =3D 0;
+> >
+> > -     if (default_dram_perf_ref_nid =3D=3D NUMA_NO_NODE)
+> > -             return -ENOENT;
+> > +     mutex_lock(&default_dram_perf_lock);
+> > +     if (default_dram_perf_error) {
+> > +             rc =3D -EIO;
+> > +             goto out;
+> > +     }
+> >
+> >       if (perf->read_latency + perf->write_latency =3D=3D 0 ||
+> > -         perf->read_bandwidth + perf->write_bandwidth =3D=3D 0)
+> > -             return -EINVAL;
+> > +         perf->read_bandwidth + perf->write_bandwidth =3D=3D 0) {
+> > +             rc =3D -EINVAL;
+> > +             goto out;
+> > +     }
+> >
+> > -     mutex_lock(&memory_tier_lock);
+> > +     if (default_dram_perf_ref_nid =3D=3D NUMA_NO_NODE) {
+> > +             rc =3D -ENOENT;
+> > +             goto out;
+> > +     }
+> >       /*
+> >        * The abstract distance of a memory node is in direct proportion=
+ to
+> >        * its memory latency (read + write) and inversely proportional t=
+o its
+> > @@ -745,8 +797,9 @@ int mt_perf_to_adistance(struct access_coordinate *=
+perf, int *adist)
+> >               (default_dram_perf.read_latency + default_dram_perf.write=
+_latency) *
+> >               (default_dram_perf.read_bandwidth + default_dram_perf.wri=
+te_bandwidth) /
+> >               (perf->read_bandwidth + perf->write_bandwidth);
+> > -     mutex_unlock(&memory_tier_lock);
+> >
+> > +out:
+> > +     mutex_unlock(&default_dram_perf_lock);
+> >       return 0;
+> >  }
+> >  EXPORT_SYMBOL_GPL(mt_perf_to_adistance);
+> > @@ -858,7 +911,8 @@ static int __init memory_tier_init(void)
+> >        * For now we can have 4 faster memory tiers with smaller adistan=
+ce
+> >        * than default DRAM tier.
+> >        */
+> > -     default_dram_type =3D alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
+> > +     default_dram_type =3D mt_find_alloc_memory_type(MEMTIER_ADISTANCE=
+_DRAM,
+> > +                                                                     &=
+default_memory_types);
+> >       if (IS_ERR(default_dram_type))
+> >               panic("%s() failed to allocate default DRAM tier\n", __fu=
+nc__);
+> >
+> > @@ -868,6 +922,14 @@ static int __init memory_tier_init(void)
+> >        * types assigned.
+> >        */
+> >       for_each_node_state(node, N_MEMORY) {
+> > +             if (!node_state(node, N_CPU))
+> > +                     /*
+> > +                      * Defer memory tier initialization on CPUless nu=
+ma nodes.
+> > +                      * These will be initialized after firmware and d=
+evices are
+> > +                      * initialized.
+> > +                      */
+> > +                     continue;
+> > +
+> >               memtier =3D set_node_memory_tier(node);
+> >               if (IS_ERR(memtier))
+> >                       /*
+>
+> --
+> Best Regards,
+> Huang, Ying
 
 
 
-On 3/28/2024 5:10 PM, Dmitry Baryshkov wrote:
-> On Fri, 29 Mar 2024 at 01:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->>
->>
->> On 3/28/2024 3:50 PM, Dmitry Baryshkov wrote:
->>> On Thu, 28 Mar 2024 at 23:21, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>>>
->>>>
->>>>
->>>> On 3/28/2024 1:58 PM, Stephen Boyd wrote:
->>>>> Quoting Abhinav Kumar (2024-03-28 13:24:34)
->>>>>> + Johan and Bjorn for FYI
->>>>>>
->>>>>> On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
->>>>>>> For internal HPD case, hpd_event_thread is created to handle HPD
->>>>>>> interrupts generated by HPD block of DP controller. It converts
->>>>>>> HPD interrupts into events and executed them under hpd_event_thread
->>>>>>> context. For external HPD case, HPD events is delivered by way of
->>>>>>> dp_bridge_hpd_notify() under thread context. Since they are executed
->>>>>>> under thread context already, there is no reason to hand over those
->>>>>>> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
->>>>>>> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
->>>>>>>
->>>>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>>>>>> ---
->>>>>>>      drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
->>>>>>>      1 file changed, 3 insertions(+), 2 deletions(-)
->>>>>>>
->>>>>>
->>>>>> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
->>>>>
->>>>> Is this a bug fix or an optimization? The commit text doesn't tell me.
->>>>>
->>>>
->>>> I would say both.
->>>>
->>>> optimization as it avoids the need to go through the hpd_event thread
->>>> processing.
->>>>
->>>> bug fix because once you go through the hpd event thread processing it
->>>> exposes and often breaks the already fragile hpd handling state machine
->>>> which can be avoided in this case.
->>>
->>> Please add a description for the particular issue that was observed
->>> and how it is fixed by the patch.
->>>
->>> Otherwise consider there to be an implicit NAK for all HPD-related
->>> patches unless it is a series that moves link training to the enable
->>> path and drops the HPD state machine completely.
->>>
->>> I really mean it. We should stop beating a dead horse unless there is
->>> a grave bug that must be fixed.
->>>
->>
->> I think the commit message is explaining the issue well enough.
->>
->> This was not fixing any issue we saw to explain you the exact scenario
->> of things which happened but this is just from code walkthrough.
->>
->> Like kuogee wrote, hpd event thread was there so handle events coming
->> out of the hpd_isr for internal hpd cases. For the hpd_notify coming
->> from pmic_glink or any other extnernal hpd cases, there is no need to
->> put this through the hpd event thread because this will only make things
->> worse of exposing the race conditions of the state machine.
->>
->> Moving link training to enable and removal of hpd event thread will be
->> worked on but delaying obvious things we can fix does not make sense.
-> 
->  From the commit message this feels like an optimisation rather than a
-> fix. And granted the fragility of the HPD state machine, I'd prefer to
-> stay away from optimisations. As far as I understood from the history
-> of the last revert, we'd better make sure that HPD handling goes only
-> through the HPD event thread.
-> 
-
-I think you are mixing the two. We tried to send the events through 
-DRM's hpd_notify which ended up in a bad way and btw, thats still not 
-resolved even though I have seen reports that things are fine with the 
-revert, we are consistently able to see us ending up in a disconnected 
-state with all the reverts and fixes in our x1e80100 DP setup.
-
-I plan to investigate that issue properly in the next week and try to 
-make some sense of it all.
-
-In fact, this patch is removing one more user of the hpd event thread 
-which is the direction in which we all want to head towards.
-
-On whether this is an optimization or a bug fix. I think by avoiding hpd 
-event thread (which should have never been used for hpd_notify updates, 
-hence a bug) we are avoiding the possibility of more race conditions.
-
-So, this has my R-b and it holds. Upto you.
-
+--=20
+Best regards,
+Ho-Ren (Jack) Chuang
+=E8=8E=8A=E8=B3=80=E4=BB=BB
 
