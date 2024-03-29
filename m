@@ -1,79 +1,74 @@
-Return-Path: <linux-kernel+bounces-124443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837D28917D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:32:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53ECC8917EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6231C21872
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:32:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF0E71F22EA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:36:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3147B6A340;
-	Fri, 29 Mar 2024 11:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30F07E56E;
+	Fri, 29 Mar 2024 11:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bcP2rDSC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l1P5UfsW"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B361096F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACDF56A323
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:35:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711711964; cv=none; b=kzKSeEsK1w1noTt0SzuAGHZwESGD6+YwtEGiP1/Ae2Amrf/ccTDiqJ3NDXKFSheIvtgA5g8CLlX8ZuyNeW4Tb+/J0xpCIGiGAiyOz1bj4nzryeaNe/cQQ41UBOE5rJxfjXwRIk6bK6Up+HrCrC0WVrvvDYehGyjQ4lDaY0XDrDY=
+	t=1711712143; cv=none; b=QHHKySrydRCHWoX07V8KEsI5bJh6zeYgw4gdlfmZap4aCgf1r0ZkfOK3f5CEsA4IGsEejTCuyh/mYW848OuRkv6MA6Kp8n5oLneEXSVr8GRkugIkGI6TC/nmDrZFBOcKHOy8Y3vpsUOwbm3p/Txsgv+Q7ZHoQ9W4AgNQToG+US0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711711964; c=relaxed/simple;
-	bh=YiuwKN8qhFuIAOgDB7+gvuNvcRqxhHIJg2+GdaxoSzY=;
+	s=arc-20240116; t=1711712143; c=relaxed/simple;
+	bh=rTBkgbqY6fJlg+R5mG7/nmv3uvnCknOKMRSsuyxn8xk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I8gCLLGtil6xUY+iLerl0IcQAV3SBFjvPtSLIpHN+u3/18FFAQH6hKqLa7LO+wiSQpkDD8Z/UD7AAkUB3lJ2T/TbZABzMAJqlEElFj2BtnoxP197w8ygmVPGhnLUsuNJiR4Yu5/lxkKJZR9cuj0jKCbWAL9iyz1C5tEvvx76v8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bcP2rDSC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711711961;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F4oBdGOgnjp9VHMYVc4RnnPVdgFa9XSj8SazzjSXu5g=;
-	b=bcP2rDSCCZN3unXTl/bFQhKjSRh1ICkbMMDcT0kdhM1axr5y/xqPN1bLBiGriJa0vv1MGN
-	g+1OYfmL6OIConAQJKspButkXf4+Vrf20m1pp57pgOqo+c9NVyKw7ppktSg1X5CTGNu8OY
-	ULM6sqq7272gIVyaFY4t4dYocC/Qvpg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-5FajaeG8MqSzNuwJHyBVug-1; Fri, 29 Mar 2024 07:32:40 -0400
-X-MC-Unique: 5FajaeG8MqSzNuwJHyBVug-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a47416276c7so104983566b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:32:39 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=NBTp9XcZGkdNLCP6adlcOVTxHE+sQX5qRIcKgWdGbN/GRUUOaprjIfRCpIRNa8R8H3Su0R9kpSCzQfEBTxRlObcYPQnfmTYvKr9KCkPE7seGUYHRqBhqYSFcHWsjJpVGmmyhchF3l26iGVcEKaeKOZXNnCRofjC8VmGmeU0rlrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l1P5UfsW; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3416df43cabso1316750f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711712138; x=1712316938; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=SHWnqVWhESCF28jPQj1jqSBG2HWFvDAYH4hNZmw67to=;
+        b=l1P5UfsWMaios8DSGcOK8XZrmJuIEnLGt6X7D2d3UWqXtlTP+XL2xL5C9ZgtMn7rpZ
+         7g2GJbf6pYruEQg0BTU+Mtwih+gnwZXrTGvfQDyIyB1R4WsMBkfiDPKY4e/IKmaXDSKU
+         vdENM/+GlnbXAYIABxSp5NwQ9lthejVc0mBv4eWhSD8CjNk7B9vnyANEx+1oEcWLwuVP
+         W6Gexkx1lA6q1QBbKUoA77sSUEgk4IQRMQqQZGv3z0Vy+IkqALptS6w0twCjT0oFlFKv
+         oPE7SmnrtJHGUtFbTPHMie0paPQeb0YBrQ/R5ZPQNmh9T+aW8Ls/tKhZXHF7/BAK/+6K
+         yyvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711711959; x=1712316759;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4oBdGOgnjp9VHMYVc4RnnPVdgFa9XSj8SazzjSXu5g=;
-        b=b4VZIG4CzkHiHpnGPl13t2ZTYw0QpQw4nMGEn2BVoHO11TTm5KnBsfZQ9d5kW4wr+N
-         6aSm4t7hB6ldWY3N13juSTWOtace1q/QMSpqImJVvf26Hx6cTWo91Wp6/GDPf4cAQRI0
-         /GMbyhmtTCyL3T6mNB/ro83ndbHvByukf+mCQj6jyXLdbl3tH0p67m5ipkBHLHXo7LpV
-         8EPQrhnvEh00ELH7RzugSrmPnM+Dc/VWyoE7TueUGfPzIOwYIlhowyjKwWtI86hYLItf
-         34DTJ5plFEVAPpOqhGhTC+hAXgy2HoaDsUFQrAHvfsMK+6HULx3QBg6JP5640rINN4sS
-         N1uQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTyh0rdDIWNbcrI4+sqwsyDoMXTVgsNlZ9Ff+6eOnX+qCIo7smDjEAfFQW3B2VQQxa0u+dCOY0/l5k6ftm+A8k7di9OtHyEacsNToU
-X-Gm-Message-State: AOJu0YxxMdFUMuMnchs90M7KNz6HmkcGkppJ539YLkc0lM/V3ufbxKq0
-	NOdZnhldISeCCfdiAZW1eyCc2BNyaODwIMgdcUPfGkkEk9djk9tM91SiHtmz+jA3+fifMR3AlJP
-	0bJLKoCUhTP99Ay3IQI9KA2nbjGSd8vssHE7Sd1DAdVCgfLWayLYUwMoOSMj9kQ==
-X-Received: by 2002:a17:906:e0c4:b0:a4e:359e:a03e with SMTP id gl4-20020a170906e0c400b00a4e359ea03emr918554ejb.71.1711711959052;
-        Fri, 29 Mar 2024 04:32:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IER87D3bzG0neKDu29z4yu8LMxlAbCl6f3aOgE1ToOp8JlQHq1fhlVNJsW8s36yFAEfLW/eDA==
-X-Received: by 2002:a17:906:e0c4:b0:a4e:359e:a03e with SMTP id gl4-20020a170906e0c400b00a4e359ea03emr918545ejb.71.1711711958715;
-        Fri, 29 Mar 2024 04:32:38 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id m16-20020a170906581000b00a4a3807929esm1823908ejq.119.2024.03.29.04.32.38
+        d=1e100.net; s=20230601; t=1711712138; x=1712316938;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SHWnqVWhESCF28jPQj1jqSBG2HWFvDAYH4hNZmw67to=;
+        b=bPyoUhZmkwD+werHAiRWoNlbg05QnAdSGWpJROts8q9pf/ILlLrBE0vEoliBbBoKS3
+         aRcDvzbjXe+Ezj/0/q7/eKANHJ2Lys6Im2EEm08gIqB4qhgVpJr5aHHLmHgSej9hRtL+
+         bN11ed89ILhjVDTEhy/yatCKOyZnyKfG6Nr93nAsa0ySBgoLgqgc/qwVsBNWnABXDqKf
+         enR7cGXWqhKKT4KjwzmQUkNHcrgfvFXyXj6XmUEZDedvOQZaMQstXT038kx122av0gIu
+         BqDzasVeath8yr1QGAQMdVm5usV35tLpxCpfisi2g0PP6DeooSm1vW+j2aRDt20qYaNI
+         AIAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVraOGbpg7Wo3Nnwx6Hn7HfIlDLP9u5ds3w7UmPRUROZflkABSlsqXWp0onOXEb53r7atDLFPq/vVelVXEn9HbW4Oi9r01dOF0IM03L
+X-Gm-Message-State: AOJu0YxfuxW+tQyWLKokdIvnGQ/uI/0ZvI3hYGY8XOJxM27y4EhrMnHr
+	wvvH9orOnjHL426O5mLyuZ27zAeAo0jEe5eGrWIh5lkIeTbzIVz1d+JCVnU5f7M=
+X-Google-Smtp-Source: AGHT+IErTnUou0HaGnzrNWoIoQAUN1hmJepx7dgqCCJjDop9Ee4NvMHttnyDMc4spmgneYx5tVGNiw==
+X-Received: by 2002:a5d:63c4:0:b0:341:d912:1fec with SMTP id c4-20020a5d63c4000000b00341d9121fecmr1210632wrw.49.1711712138011;
+        Fri, 29 Mar 2024 04:35:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.50])
+        by smtp.gmail.com with ESMTPSA id bq24-20020a5d5a18000000b0033e45930f35sm4026809wrb.6.2024.03.29.04.35.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 04:32:38 -0700 (PDT)
-Message-ID: <f3d9a568-8953-4fce-9fef-5fe1539fb91a@redhat.com>
-Date: Fri, 29 Mar 2024 12:32:37 +0100
+        Fri, 29 Mar 2024 04:35:37 -0700 (PDT)
+Message-ID: <1303b572-719e-410d-a11a-3f17a5bb3b63@linaro.org>
+Date: Fri, 29 Mar 2024 12:35:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,91 +76,142 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] power: supply: core: simplify charge_behaviour formatting
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
- Sebastian Reichel <sre@kernel.org>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>,
- linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240329-power-supply-simplify-v1-1-416f1002739f@weissschuh.net>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240329-power-supply-simplify-v1-1-416f1002739f@weissschuh.net>
+Subject: Re: [PATCH 09/22] gpio: virtio: drop owner assignment
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
+ Jens Axboe <axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Olivia Mackall <olivia@selenic.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Gonglei <arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen <ericvh@kernel.org>,
+ Latchesar Ionkov <lucho@ionkov.net>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ Ira Weiny <ira.weiny@intel.com>, Pankaj Gupta
+ <pankaj.gupta.linux@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
+ kvm@vger.kernel.org, linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+ <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
+ <CAMRc=McY6PJj7fmLkNv07ogcYq=8fUb2o6w2uA1=D9cbzyoRoA@mail.gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAMRc=McY6PJj7fmLkNv07ogcYq=8fUb2o6w2uA1=D9cbzyoRoA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
-
-On 3/29/24 9:18 AM, Thomas Weißschuh wrote:
-> The function power_supply_show_charge_behaviour() is not needed and can
-> be removed completely.
-> Removing the function also saves a spurious read of the property from
-> the driver on each call.
+On 29/03/2024 11:27, Bartosz Golaszewski wrote:
+> On Wed, Mar 27, 2024 at 1:45 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> virtio core already sets the .owner, so driver does not need to.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>> ---
+>>
+>> Depends on the first patch.
+>> ---
+>>  drivers/gpio/gpio-virtio.c | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+>> index fcc5e8c08973..9fae8e396c58 100644
+>> --- a/drivers/gpio/gpio-virtio.c
+>> +++ b/drivers/gpio/gpio-virtio.c
+>> @@ -653,7 +653,6 @@ static struct virtio_driver virtio_gpio_driver = {
+>>         .remove                 = virtio_gpio_remove,
+>>         .driver                 = {
+>>                 .name           = KBUILD_MODNAME,
+>> -               .owner          = THIS_MODULE,
+>>         },
+>>  };
+>>  module_virtio_driver(virtio_gpio_driver);
+>>
+>> --
+>> 2.34.1
+>>
 > 
-> The convulted logic was a leftover from an earlier patch revision.
-> Some restructuring made this cleanup possible.
-> 
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> Link: https://lore.kernel.org/all/9e035ae4-cb07-4f84-8336-1a0050855bea@redhat.com/
-> Fixes: 4e61f1e9d58f ("power: supply: core: fix charge_behaviour formatting")
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> Applied, thanks!
 
-Thanks, patch looks good to me:
+I expressed dependency in two places: cover letter and this patch.
+Please drop it, because without dependency this won't work. Patch could
+go with the dependency and with your ack or next cycle.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/power/supply/power_supply_sysfs.c | 20 ++------------------
->  1 file changed, 2 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-> index 0d2c3724d0bc..b86e11bdc07e 100644
-> --- a/drivers/power/supply/power_supply_sysfs.c
-> +++ b/drivers/power/supply/power_supply_sysfs.c
-> @@ -271,23 +271,6 @@ static ssize_t power_supply_show_usb_type(struct device *dev,
->  	return count;
->  }
->  
-> -static ssize_t power_supply_show_charge_behaviour(struct device *dev,
-> -						  struct power_supply *psy,
-> -						  union power_supply_propval *value,
-> -						  char *buf)
-> -{
-> -	int ret;
-> -
-> -	ret = power_supply_get_property(psy,
-> -					POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR,
-> -					value);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	return power_supply_charge_behaviour_show(dev, psy->desc->charge_behaviours,
-> -						  value->intval, buf);
-> -}
-> -
->  static ssize_t power_supply_show_property(struct device *dev,
->  					  struct device_attribute *attr,
->  					  char *buf) {
-> @@ -321,7 +304,8 @@ static ssize_t power_supply_show_property(struct device *dev,
->  						&value, buf);
->  		break;
->  	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR:
-> -		ret = power_supply_show_charge_behaviour(dev, psy, &value, buf);
-> +		ret = power_supply_charge_behaviour_show(dev, psy->desc->charge_behaviours,
-> +							 value.intval, buf);
->  		break;
->  	case POWER_SUPPLY_PROP_MODEL_NAME ... POWER_SUPPLY_PROP_SERIAL_NUMBER:
->  		ret = sysfs_emit(buf, "%s\n", value.strval);
-> 
-> ---
-> base-commit: 070c1470ae24317e7b19bd3882b300b6d69922a4
-> change-id: 20240329-power-supply-simplify-5722806eefdd
-> 
-> Best regards,
+Best regards,
+Krzysztof
 
 
