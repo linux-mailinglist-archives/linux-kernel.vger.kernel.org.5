@@ -1,459 +1,331 @@
-Return-Path: <linux-kernel+bounces-124026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3512889115A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:09:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0067389115D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EA431F244F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:09:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8336D1F245E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776F13D0D1;
-	Fri, 29 Mar 2024 02:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C933E46D;
+	Fri, 29 Mar 2024 02:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="m3d2YSVx"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2053.outbound.protection.outlook.com [40.92.41.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ac0fFocJ"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368633C467;
-	Fri, 29 Mar 2024 02:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.41.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711677889; cv=fail; b=uJDn4zFXeJ0oHF9PJcW7khDxjkEBWDDlfYUJKoaDZf4GUhi9tClIkMJFO7eOZx/oiBLnup1nUwM6ULM5qRkfNQtJp0tKzBNwsZF5Y1Qd5ROixcKZWQgYd9ZvPX9yN0TFqlAOjlpZpx+LSGQschCksNKu8jyrXipc7ywE1LTxR1k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711677889; c=relaxed/simple;
-	bh=KJXl47hSTOc7cR5oqxO/ihC9iDNpncvnfeZEDWhqZy4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gmycXL+uncoPKXkHYiFqV9jQLXxlzY4YoTLsrlSJlUfro7txufIwu/OgjnSNN1LVR/Sg1e28gW7VO3JHZMKc6kFU9Ma1JJvxYe0ce3zvhdZtKfwRcJQUUWlmALRjOcV/fdtsD+M+1oyKI+aZiTbdn6jCw2/IZDxzV5aaF5V5EYw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=m3d2YSVx; arc=fail smtp.client-ip=40.92.41.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jWw+tbhl6haJzszC3Yq4OgK6zqFaVSHENo96mkvtL8LzXyjF5BFIRfyh4V7YJh/DacW7EJwPAxVKAt+UUAUoUpTxJOLYFN3ayVgLxfAGSVduMSBphsF+Lg2WaTGPwUUxOdtGxTNXEnCsxuaSjpksUnchmdWhDXya09y/5b0fEtnlzStkN8wr4wjBoJ15pDbIwVUQ/+o+knltvACC3ZGW+FdHG5GuqNOi6KOZA0MdaehFYDIQcWUVP+Ag2pqukfhGZnaWB8w0gzZpxA9zMdPRKGHLORdAGM6UVFT2ohpQsGLF8wx5oSiMMYuo8bOt24SsnOtA2A+O8IzTWiB6barg8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LYPL93Q2yyLjYm6Mfe5wKfxUzkPTz0G+zo6DKWPjJEY=;
- b=fvQPAH44wDuv9HvIHDIJSk7iVHTt5blSEk8hqT6R/tHDC+lwwam1pb/MT6cAzsr+VmFNP57Y9vchvrBAOs7+jq8NwKhK1oG/mINBLx9Q5P8gCs5MWH0RINIBAWwo+ArZknrKQc1Kq6ZUfzzM8IzK67HPy76Qxr4cJp5vqdLShVYS2lMw2milvcqyv9t8my5sVdVkQwvx/2RuS+9Memdq3Uzn206+HxHhpkAxh7Nef/4Z9pwZs9iK3c89JGuQNjQHAAPdH+OErjPnfBXr2QYyQyk3bEtomkAl9jl6pF/bYI1WdMyjtVbB2FMuuJp0Mf1wXO+EI6c6mOQvpYYJOJ1UVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LYPL93Q2yyLjYm6Mfe5wKfxUzkPTz0G+zo6DKWPjJEY=;
- b=m3d2YSVxU95rtC6p0pttgdVcqXz/P/cT/JiXgpNrdBEqmVYu71wb+iuQasi0YEaGKy7+lHNnVbPhdmMmy4rgSwhNFZQoL468iSS9APn4f6lXyKHaL2MfqoVXjT+l3gw14VBpji9B9Gl2kVIt+ssq4ONpiKZ4AYUQrm4ms41/O7ybiQ+Ohfh8v76s06Nxo4/UEQv5peTCErcMYpd69YzX9oXBNI8eiLb6hnNug0GersBY5HzU56LpodCe2t2cyoZQDjtc4Z5rJTjOAYuj+v14ssoIa9NwMTWIF9ZlMeRUxgVLm1lSDyT3dMwVNkJ0ObDN1XjYpLwJjL2et1AtRZoZ1w==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SA1PR20MB5151.namprd20.prod.outlook.com (2603:10b6:806:256::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.39; Fri, 29 Mar
- 2024 02:04:44 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.039; Fri, 29 Mar 2024
- 02:04:44 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	dlan@gentoo.org,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH v6 3/3] dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
-Date: Fri, 29 Mar 2024 10:04:39 +0800
-Message-ID:
- <IA1PR20MB4953AE1184DD09F9203C665CBB3A2@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <IA1PR20MB4953F0FAED4373660C7873A2BB3A2@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953F0FAED4373660C7873A2BB3A2@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [vN8Ey4A2F70K2YWSVmrGUoJqrJujnmeeoOoZSwls9mw=]
-X-ClientProxiedBy: TYAPR01CA0178.jpnprd01.prod.outlook.com
- (2603:1096:404:ba::22) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <20240329020442.373744-3-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F743D0AD
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711677947; cv=none; b=drx9kOarIEtTEZJe/KGYsyxhWOKcuUN5IC/oiOzKZqUdekKPkM4X8J7YAuG/5/3nSOwKugrwONDxe+uxO/ScD3CFQ8N/FWoW5mH7FlFEfqZPwAXobGTtVMetGp+tuZw9URAq1e9fwC7WMTkeauMi4AtTCRTkJ1hVFpDgHBeqrzQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711677947; c=relaxed/simple;
+	bh=Qii1MidTI3dd4lnGBxJ9nfpVK49lRdwDqn39lax5Vrs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d31qXgl0l68+SEDNPSC2ZyTHQXnPCcgu1+LVj55FsKAtOYnkujVGE5wo5XWiepEevuhwrXb/XKzqhyjdq6FC4lGArepdTK22QZbpYAl8ZYME+fxSm2Sit2Z5lgV3/w4fTfSUHMoZLJqHM1IWlCFsWmXzHIn4L5yfwDOHhVWo1eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ac0fFocJ; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d700beb60bso29365651fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711677943; x=1712282743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CWzmC2A1K+GOJx5fn1L/D3rGLcK6o/CgnIHLNsZcoy8=;
+        b=Ac0fFocJFUEWHcNPr8v8K2XCvMffQDEekZyWHQGnSOfh9m4zKJb9RmjvdOSCnDO1Ou
+         NftbC9uiwi7zZLOmzKwa6nFQAJRIuai2C/AfFzkiUtpMzaffSNdJxa6TXkL4yxvJvTFH
+         RFpskBFyBWXKMFyVs6yfivljiVtM/5ukEuHZ2OfzlzgeVg8CJiFvVmfXw1uKwqK9qkxg
+         L8zSt8Esos9/r5TL+HZWhsG/0M8olAHx9AWJnSpryspeF+1jl5j3Nv/Srka6en7uxYLq
+         p0o25oPSyfJ+wOqD3kdR+jr2q/SKTIem/mtvmgZJQVCu+9sKjxwluuaDyzdgsOTaVSil
+         aR0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711677943; x=1712282743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CWzmC2A1K+GOJx5fn1L/D3rGLcK6o/CgnIHLNsZcoy8=;
+        b=ghA+nRDUWNcycNdk9kuUoZlXzvCo5d0+ojrg5Wt3BD8EkShXE6t3JyW9kEDphG9ekQ
+         muwSPDca6A904LfWmgJD5N6O6E7sKDbrrTWZEqI4Io6jGHvOc9Z2/NgDQhAKGXTgDaUO
+         VEV48f+VVAK2NeZgvMg8iE/gKw8XbS52LnL7reboHwKwIYyW/HQLDKiGeIqbsLCNy0j9
+         WjZCl7Nw5DyRIwSJqkCpyAcBK2WoEdd8tlKQ3UhabOz5gS4cVbhS/AIKZ5xMoZJcjpMw
+         0VoXMIFme+1+VMoy7U3K6hCjnPj0QIs+psrZ88fV/cAkdVp93MHZYBAIdXnMEdUEhpU0
+         8vCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUHNGzVcbKsStJt4VFMa6fR//R1rOYmkyALDI7NzM614M/JbaWOsOGER4tK2GmXoVvnvhskzI5dgihbh8mJccLTH3UE1/um2EZVBc0V
+X-Gm-Message-State: AOJu0YzTcZ3tzwMvSMrrJBldiH/7Q+5iE3znLR0BrJ4W8+I1knEXZYd0
+	nxMt2CUeubrYa92w5iHnCPzsPcfNAvC2Cgu7JDmfFxxYLB/RZGSDwX+sHESUHKTr+hHo2q4ddwX
+	9k1WzaH7kxyFsEyEAHEbKV4KTB3kYK8GpuHWqItiqwewwdyKuX0UF
+X-Google-Smtp-Source: AGHT+IHDTcttH8IbbakiTybsSS1ZVJn3oHaZwKKDQLVTfhzexPbVGNlEI8JbSG2UxzyhRDIqXKr/mAUdBdSj4ROe9rI=
+X-Received: by 2002:a2e:9659:0:b0:2d6:e148:2463 with SMTP id
+ z25-20020a2e9659000000b002d6e1482463mr586069ljh.24.1711677942540; Thu, 28 Mar
+ 2024 19:05:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA1PR20MB5151:EE_
-X-MS-Office365-Filtering-Correlation-Id: 686b6348-c143-4a50-0870-08dc4f949a51
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1PyfZl9Ln7By8Ifd94KIUos+Zz7lhI4amKd+jUmoy4i8H30VIB6TCuk+nWc3d5pBemL5HXSh3PnYykn/WasenLTFhLZs75w/GaAg7aVjkToMQbBt8DCSwVGFqWaVglJ9trz5A61lpTw2i0hWcxtEXSimZgkFbbv5OVxYSSHO4zm4lXFON3KcoobMuIeSETZLVLP0AL3s+tkuyCn4DLlEa2HR2WZOKQj/tkPg/WhjsSpHvlEguukIPxcy4tM/K0Gf3qhmxZrIPw5W/n72w8iImYvOqR30rreWA+DswkwugylZ83bhRyV31qubH9uo3M+LkQ7CYjt0NFxHd59siqD+jUnZ79dfBEVhDtkT/rpeWurDiwYyid+YeI2ofJXMfAwROyS5f/TF2xxyeDl9jlR1BKZARD/aTZRr/wSa3MzzPMVFB//qUD4xcUhOC2u+qqG+K9Rul3zfeIfif8XyIXgGfEBC31rttTc45/Ded50Ja8vxYS1Ze4+e6Xk+vP3sX4/SWKRxHj5VJCn9rbc0qU7Vr46lzxGy2ZnuAC/jth8NepFnwIAez1oLsxzDoWPSz1GEJuiPJEIp2GdqLK6gjUwX2XVaP4XyPYCHvT4xTikT4CiC5N1+fn1O5CaZQHNQSe0d
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lLowN0TIMaHHi1Tk39gZ0l6uUdonl7CjJX11EsJxMEhv9rh3dm8l29lB30Pu?=
- =?us-ascii?Q?BKfMLHzk4ZA721uB1pBaq2YQPQqzsHuuyaBiBoeGnqVAGrvMx3P5RuSDaddE?=
- =?us-ascii?Q?L363niyStEpTzbQ6gF+ig0YTSHtho78N2ox1+CHGQcgoV7aDh7Xr4gYLayCj?=
- =?us-ascii?Q?KlVGzO16Pf1xhElKWcY10l6prS8Bzxzqm3KJvDAQdrOqIf8TlKIGYbEaBBgk?=
- =?us-ascii?Q?L49aQeG3DJ6t5BdTVMLTyYcJ1umlBRcJGyZJbgYYxs79PCPbQNfM9EkTRyEt?=
- =?us-ascii?Q?LZJoQD4vwNG0/5Z9DbZLo4j0nvvWMxa7GMAF8hpD8DJ++NxZpyw4RMFS8IKj?=
- =?us-ascii?Q?0R92d3SCJ2shLpb7OGo21Ih9XYgNV7XsmEoMcEOAaUgPTd/nXZd0xFSeCIV2?=
- =?us-ascii?Q?+uxnRtcD18tRgGY610GO9GP4bwFd2g2GWKL0M4qJl/7sXiDyb1ggplCcnDkQ?=
- =?us-ascii?Q?TxrXIKDNVXe3b49q4gc97hWXw2h2tGyEv6WymoXtIp73sTWevbEUgr4UyOoV?=
- =?us-ascii?Q?EfsvHe4ceT50dAWRpeMoJlUm25VIyt84oJfg+yKLTDUoV1XWRJLnW6zz5izD?=
- =?us-ascii?Q?ISnwpqu4O7xkLVnuNDkkbazyBBX6nhY+1STjDDliaCTQ2Uxk0r0tLnif3YFE?=
- =?us-ascii?Q?3farErrRqmt4d/WL9454YDkKdm3izGXdixBe0YjTu3b8cHeZ7acjev1emroH?=
- =?us-ascii?Q?LIdMNAcWC5ZNa5W8A+LcuQNfEEegoaKyyWp6OqCJtAJP4mN8iPi+bZ8cuVFR?=
- =?us-ascii?Q?yPIXTmQvwOapUCMK8CrVhpD2imWFDk/oO7S3dtzlir04/qponf/5q1fV+uHN?=
- =?us-ascii?Q?c1IczkurrIKoZexSU2oSSrWxVwbVPgp0o0lJ8X/IG4wA7jppzq49ii2bXiyg?=
- =?us-ascii?Q?VQFZ3Ej8Lkk5UyJYANLZx2y3yWWLWcBp3GgEnmzzQjejdLUdd7ckKyYhlLal?=
- =?us-ascii?Q?EEDSscyrAMid+kXjr4ncOoEUuYoVSW0jiPcwVNpuHmuOXABZdGrF+cMPwrtL?=
- =?us-ascii?Q?k4UcnycLQM7N+H2bdtsK5qDxNXScpN7R4eQZyFA3f6YqKMHqZr0ZvUV8UbMj?=
- =?us-ascii?Q?yhntpJn/ro2Z2t+AgPchugfv9aoA5mnejBV2EesY8pUPgRllJljIvnlw//hu?=
- =?us-ascii?Q?fgb8H+I/IyxrJsrZXF1QDRMxER2I/hxnLw3rBnbv75IuZu2dZBRGoAEMwqRp?=
- =?us-ascii?Q?4yc4YUsL6HsrubZpAipRbKyZ31MTtO8sfzZhb2/LsUpbC8xAAP40B35OB3GJ?=
- =?us-ascii?Q?nnlxSp0up9kiyKbm0ivE?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 686b6348-c143-4a50-0870-08dc4f949a51
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 02:04:44.5312
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB5151
+References: <20240325235018.2028408-1-yosryahmed@google.com>
+ <20240325235018.2028408-7-yosryahmed@google.com> <20240328193149.GF7597@cmpxchg.org>
+ <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com>
+ <20240328210709.GH7597@cmpxchg.org> <CAKEwX=OPDLxH-0-3F+xOc2SL5Ouj-R-HEC5QQrW+Q9Fn8pyeRg@mail.gmail.com>
+In-Reply-To: <CAKEwX=OPDLxH-0-3F+xOc2SL5Ouj-R-HEC5QQrW+Q9Fn8pyeRg@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 28 Mar 2024 19:05:04 -0700
+Message-ID: <CAJD7tkaGBofWm1eGBffEtpuKUDBVB_6RfHbYKQSKOX3fKn2jeg@mail.gmail.com>
+Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
+ pages handling
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Sophgo CV18XX/SG200X use DW AXI CORE with a multiplexer for remapping
-its request lines. The multiplexer supports at most 8 request lines.
+On Thu, Mar 28, 2024 at 4:19=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> On Thu, Mar 28, 2024 at 2:07=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.o=
+rg> wrote:
+> >
+> > On Thu, Mar 28, 2024 at 01:23:42PM -0700, Yosry Ahmed wrote:
+> > > On Thu, Mar 28, 2024 at 12:31=E2=80=AFPM Johannes Weiner <hannes@cmpx=
+chg.org> wrote:
+> > > >
+> > > > On Mon, Mar 25, 2024 at 11:50:14PM +0000, Yosry Ahmed wrote:
+> > > > > The current same-filled pages handling supports pages filled with=
+ any
+> > > > > repeated word-sized pattern. However, in practice, most of these =
+should
+> > > > > be zero pages anyway. Other patterns should be nearly as common.
+> > > > >
+> > > > > Drop the support for non-zero same-filled pages, but keep the nam=
+es of
+> > > > > knobs exposed to userspace as "same_filled", which isn't entirely
+> > > > > inaccurate.
+> > > > >
+> > > > > This yields some nice code simplification and enables a following=
+ patch
+> > > > > that eliminates the need to allocate struct zswap_entry for those=
+ pages
+> > > > > completely.
+> > > > >
+> > > > > There is also a very small performance improvement observed over =
+50 runs
+> > > > > of kernel build test (kernbench) comparing the mean build time on=
+ a
+> > > > > skylake machine when building the kernel in a cgroup v1 container=
+ with a
+> > > > > 3G limit:
+> > > > >
+> > > > >               base            patched         % diff
+> > > > > real          70.167          69.915          -0.359%
+> > > > > user          2953.068        2956.147        +0.104%
+> > > > > sys           2612.811        2594.718        -0.692%
+> > > > >
+> > > > > This probably comes from more optimized operations like memchr_in=
+v() and
+> > > > > clear_highpage(). Note that the percentage of zero-filled pages d=
+uring
+> > > > > this test was only around 1.5% on average, and was not affected b=
+y this
+> > > > > patch. Practical workloads could have a larger proportion of such=
+ pages
+> > > > > (e.g. Johannes observed around 10% [1]), so the performance impro=
+vement
+> > > > > should be larger.
+> > > > >
+> > > > > [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmpxc=
+hg.org/
+> > > > >
+> > > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > > >
+> > > > This is an interesting direction to pursue, but I actually thinkg i=
+t
+> > > > doesn't go far enough. Either way, I think it needs more data.
+> > > >
+> > > > 1) How frequent are non-zero-same-filled pages? Difficult to
+> > > >    generalize, but if you could gather some from your fleet, that
+> > > >    would be useful. If you can devise a portable strategy, I'd also=
+ be
+> > > >    more than happy to gather this on ours (although I think you hav=
+e
+> > > >    more widespread zswap use, whereas we have more disk swap.)
+> > >
+> > > I am trying to collect the data, but there are.. hurdles. It would
+> > > take some time, so I was hoping the data could be collected elsewhere
+> > > if possible.
+> > >
+> > > The idea I had was to hook a BPF program to the entry of
+> > > zswap_fill_page() and create a histogram of the "value" argument. We
+> > > would get more coverage by hooking it to the return of
+> > > zswap_is_page_same_filled() and only updating the histogram if the
+> > > return value is true, as it includes pages in zswap that haven't been
+> > > swapped in.
+> > >
+> > > However, with zswap_is_page_same_filled() the BPF program will run in
+> > > all zswap stores, whereas for zswap_fill_page() it will only run when
+> > > needed. Not sure if this makes a practical difference tbh.
+> > >
+> > > >
+> > > > 2) The fact that we're doing any of this pattern analysis in zswap =
+at
+> > > >    all strikes me as a bit misguided. Being efficient about repetit=
+ive
+> > > >    patterns is squarely in the domain of a compression algorithm. D=
+o
+> > > >    we not trust e.g. zstd to handle this properly?
+> > >
+> > > I thought about this briefly, but I didn't follow through. I could tr=
+y
+> > > to collect some data by swapping out different patterns and observing
+> > > how different compression algorithms react. That would be interesting
+> > > for sure.
+> > >
+> > > >
+> > > >    I'm guessing this goes back to inefficient packing from somethin=
+g
+> > > >    like zbud, which would waste half a page on one repeating byte.
+> > > >
+> > > >    But zsmalloc can do 32 byte objects. It's also a batching slab
+> > > >    allocator, where storing a series of small, same-sized objects i=
+s
+> > > >    quite fast.
+> > > >
+> > > >    Add to that the additional branches, the additional kmap, the ex=
+tra
+> > > >    scanning of every single page for patterns - all in the fast pat=
+h
+> > > >    of zswap, when we already know that the vast majority of incomin=
+g
+> > > >    pages will need to be properly compressed anyway.
+> > > >
+> > > >    Maybe it's time to get rid of the special handling entirely?
+> > >
+> > > We would still be wasting some memory (~96 bytes between zswap_entry
+> > > and zsmalloc object), and wasting cycling allocating them. This could
+> > > be made up for by cycles saved by removing the handling. We will be
+> > > saving some branches for sure. I am not worried about kmap as I think
+> > > it's a noop in most cases.
+> >
+> > Yes, true.
+> >
+> > > I am interested to see how much we could save by removing scanning fo=
+r
+> > > patterns. We may not save much if we abort after reading a few words
+> > > in most cases, but I guess we could also be scanning a considerable
+> > > amount before aborting. On the other hand, we would be reading the
+> > > page contents into cache anyway for compression, so maybe it doesn't
+> > > really matter?
+> > >
+> > > I will try to collect some data about this. I will start by trying to
+> > > find out how the compression algorithms handle same-filled pages. If
+> > > they can compress it efficiently, then I will try to get more data on
+> > > the tradeoff from removing the handling.
+> >
+> > I do wonder if this could be overthinking it, too.
+> >
+> > Double checking the numbers on our fleet, a 96 additional bytes for
+> > each same-filled entry would result in a
+> >
+> > 1) p50 waste of 0.008% of total memory, and a
+> >
+> > 2) p99 waste of 0.06% of total memory.
 
-Add driver for Sophgo CV18XX/SG200X DMA multiplexer.
+Right. Assuming the compressors do not surprise us and store
+same-filled pages in an absurd way, it's not worth it in terms of
+memory savings.
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
----
- drivers/dma/Kconfig         |   9 ++
- drivers/dma/Makefile        |   1 +
- drivers/dma/cv1800-dmamux.c | 267 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 277 insertions(+)
- create mode 100644 drivers/dma/cv1800-dmamux.c
+> >
+> > And this is without us having even thought about trying to make
+> > zsmalloc more efficient for this particular usecase - which might be
+> > the better point of attack, if we think it's actually worth it.
+> >
+> > So my take is that unless removing it would be outright horrible from
+> > a %sys POV (which seems pretty unlikely), IMO it would be fine to just
+> > delete it entirely with a "not worth the maintenance cost" argument.
+> >
+> > If you turn the argument around, and somebody would submit the code as
+> > it is today, with the numbers being what they are above, I'm not sure
+> > we would even accept it!
+>
+> The context guy is here :)
+>
+> Not arguing for one way or another, but I did find the original patch
+> that introduced same filled page handling:
+>
+> https://github.com/torvalds/linux/commit/a85f878b443f8d2b91ba76f09da21ac0=
+af22e07f
+>
+> https://lore.kernel.org/all/20171018104832epcms5p1b2232e2236258de3d03d134=
+4dde9fce0@epcms5p1/T/#u
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 002a5ec80620..cb31520b9f86 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -546,6 +546,15 @@ config PLX_DMA
- 	  These are exposed via extra functions on the switch's
- 	  upstream port. Each function exposes one DMA channel.
+Thanks for digging this up. I don't know why I didn't start there :)
 
-+config SOPHGO_CV1800_DMAMUX
-+	tristate "Sophgo CV1800/SG2000 series SoC DMA multiplexer support"
-+	depends on MFD_SYSCON
-+	depends on ARCH_SOPHGO
-+	help
-+	  Support for the DMA multiplexer on Sophgo CV1800/SG2000
-+	  series SoCs.
-+	  Say Y here if your board have this soc.
-+
- config STE_DMA40
- 	bool "ST-Ericsson DMA40 support"
- 	depends on ARCH_U8500
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index dfd40d14e408..7465f249ee47 100644
---- a/drivers/dma/Makefile
-+++ b/drivers/dma/Makefile
-@@ -67,6 +67,7 @@ obj-$(CONFIG_PPC_BESTCOMM) += bestcomm/
- obj-$(CONFIG_PXA_DMA) += pxa_dma.o
- obj-$(CONFIG_RENESAS_DMA) += sh/
- obj-$(CONFIG_SF_PDMA) += sf-pdma/
-+obj-$(CONFIG_SOPHGO_CV1800_DMAMUX) += cv1800-dmamux.o
- obj-$(CONFIG_STE_DMA40) += ste_dma40.o ste_dma40_ll.o
- obj-$(CONFIG_STM32_DMA) += stm32-dma.o
- obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
-diff --git a/drivers/dma/cv1800-dmamux.c b/drivers/dma/cv1800-dmamux.c
-new file mode 100644
-index 000000000000..709414898b67
---- /dev/null
-+++ b/drivers/dma/cv1800-dmamux.c
-@@ -0,0 +1,267 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/module.h>
-+#include <linux/of_dma.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/llist.h>
-+#include <linux/regmap.h>
-+#include <linux/spinlock.h>
-+#include <linux/mfd/syscon.h>
-+
-+#include <soc/sophgo/cv1800-sysctl.h>
-+
-+#define DMAMUX_NCELLS			2
-+#define MAX_DMA_MAPPING_ID		42
-+#define MAX_DMA_CPU_ID			2
-+#define MAX_DMA_CH_ID			7
-+
-+#define DMAMUX_INTMUX_REGISTER_LEN	4
-+#define DMAMUX_NR_CH_PER_REGISTER	4
-+#define DMAMUX_BIT_PER_CH		8
-+#define DMAMUX_CH_MASk			GENMASK(5, 0)
-+#define DMAMUX_INT_BIT_PER_CPU		10
-+#define DMAMUX_CH_UPDATE_BIT		BIT(31)
-+
-+#define DMAMUX_CH_REGPOS(chid) \
-+	((chid) / DMAMUX_NR_CH_PER_REGISTER)
-+#define DMAMUX_CH_REGOFF(chid) \
-+	((chid) % DMAMUX_NR_CH_PER_REGISTER)
-+#define DMAMUX_CH_REG(chid) \
-+	((DMAMUX_CH_REGPOS(chid) * sizeof(u32)) + \
-+	 CV1800_SDMA_DMA_CHANNEL_REMAP0)
-+#define DMAMUX_CH_SET(chid, val) \
-+	(((val) << (DMAMUX_CH_REGOFF(chid) * DMAMUX_BIT_PER_CH)) | \
-+	 DMAMUX_CH_UPDATE_BIT)
-+#define DMAMUX_CH_MASK(chid) \
-+	DMAMUX_CH_SET(chid, DMAMUX_CH_MASk)
-+
-+#define DMAMUX_INT_BIT(chid, cpuid) \
-+	BIT((cpuid) * DMAMUX_INT_BIT_PER_CPU + (chid))
-+#define DMAMUX_INTEN_BIT(cpuid) \
-+	DMAMUX_INT_BIT(8, cpuid)
-+#define DMAMUX_INT_CH_BIT(chid, cpuid) \
-+	(DMAMUX_INT_BIT(chid, cpuid) | DMAMUX_INTEN_BIT(cpuid))
-+#define DMAMUX_INT_MASK(chid) \
-+	(DMAMUX_INT_BIT(chid, 0) | \
-+	 DMAMUX_INT_BIT(chid, 1) | \
-+	 DMAMUX_INT_BIT(chid, 2))
-+#define DMAMUX_INT_CH_MASK(chid, cpuid) \
-+	(DMAMUX_INT_MASK(chid) | DMAMUX_INTEN_BIT(cpuid))
-+
-+struct cv1800_dmamux_data {
-+	struct dma_router	dmarouter;
-+	struct regmap		*regmap;
-+	spinlock_t		lock;
-+	struct llist_head	free_maps;
-+	struct llist_head	reserve_maps;
-+	DECLARE_BITMAP(mapped_peripherals, MAX_DMA_MAPPING_ID);
-+};
-+
-+struct cv1800_dmamux_map {
-+	struct llist_node node;
-+	unsigned int channel;
-+	unsigned int peripheral;
-+	unsigned int cpu;
-+};
-+
-+static void cv1800_dmamux_free(struct device *dev, void *route_data)
-+{
-+	struct cv1800_dmamux_data *dmamux = dev_get_drvdata(dev);
-+	struct cv1800_dmamux_map *map = route_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&dmamux->lock, flags);
-+
-+	regmap_update_bits(dmamux->regmap,
-+			   DMAMUX_CH_REG(map->channel),
-+			   DMAMUX_CH_MASK(map->channel),
-+			   DMAMUX_CH_UPDATE_BIT);
-+
-+	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
-+			   DMAMUX_INT_CH_MASK(map->channel, map->cpu),
-+			   DMAMUX_INTEN_BIT(map->cpu));
-+
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+
-+	dev_info(dev, "free channel %u for req %u (cpu %u)\n",
-+		 map->channel, map->peripheral, map->cpu);
-+}
-+
-+static void *cv1800_dmamux_route_allocate(struct of_phandle_args *dma_spec,
-+					  struct of_dma *ofdma)
-+{
-+	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
-+	struct cv1800_dmamux_data *dmamux = platform_get_drvdata(pdev);
-+	struct cv1800_dmamux_map *map;
-+	struct llist_node *node;
-+	unsigned long flags;
-+	unsigned int chid, devid, cpuid;
-+	int ret;
-+
-+	if (dma_spec->args_count != DMAMUX_NCELLS) {
-+		dev_err(&pdev->dev, "invalid number of dma mux args\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	devid = dma_spec->args[0];
-+	cpuid = dma_spec->args[1];
-+	dma_spec->args_count = 1;
-+
-+	if (devid > MAX_DMA_MAPPING_ID) {
-+		dev_err(&pdev->dev, "invalid device id: %u\n", devid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cpuid > MAX_DMA_CPU_ID) {
-+		dev_err(&pdev->dev, "invalid cpu id: %u\n", cpuid);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
-+	if (!dma_spec->np) {
-+		dev_err(&pdev->dev, "can't get dma master\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	spin_lock_irqsave(&dmamux->lock, flags);
-+
-+	if (test_bit(devid, dmamux->mapped_peripherals)) {
-+		llist_for_each_entry(map, dmamux->reserve_maps.first, node) {
-+			if (map->peripheral == devid && map->cpu == cpuid)
-+				goto found;
-+		}
-+
-+		ret = -EINVAL;
-+		goto failed;
-+	} else {
-+		node = llist_del_first(&dmamux->free_maps);
-+		if (!node) {
-+			ret = -ENODEV;
-+			goto failed;
-+		}
-+
-+		map = llist_entry(node, struct cv1800_dmamux_map, node);
-+		llist_add(&map->node, &dmamux->reserve_maps);
-+		set_bit(devid, dmamux->mapped_peripherals);
-+	}
-+
-+found:
-+	chid = map->channel;
-+	map->peripheral = devid;
-+	map->cpu = cpuid;
-+
-+	regmap_set_bits(dmamux->regmap,
-+			DMAMUX_CH_REG(chid),
-+			DMAMUX_CH_SET(chid, devid));
-+
-+	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
-+			   DMAMUX_INT_CH_MASK(chid, cpuid),
-+			   DMAMUX_INT_CH_BIT(chid, cpuid));
-+
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+
-+	dma_spec->args[0] = chid;
-+
-+	dev_info(&pdev->dev, "register channel %u for req %u (cpu %u)\n",
-+		 chid, devid, cpuid);
-+
-+	return map;
-+
-+failed:
-+	spin_unlock_irqrestore(&dmamux->lock, flags);
-+	of_node_put(dma_spec->np);
-+	dev_err(&pdev->dev, "errno %d\n", ret);
-+	return ERR_PTR(ret);
-+
-+}
-+
-+static int cv1800_dmamux_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *mux_node = dev->of_node;
-+	struct cv1800_dmamux_data *data;
-+	struct cv1800_dmamux_map *tmp;
-+	struct device *parent = dev->parent;
-+	struct device_node *dma_master;
-+	struct regmap *regmap = NULL;
-+	unsigned int i;
-+
-+	if (!parent)
-+		return -ENODEV;
-+
-+	regmap = device_node_to_regmap(parent->of_node);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	dma_master = of_parse_phandle(mux_node, "dma-masters", 0);
-+	if (!dma_master) {
-+		dev_err(dev, "invalid dma-requests property\n");
-+		return -ENODEV;
-+	}
-+	of_node_put(dma_master);
-+
-+	data = devm_kmalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&data->lock);
-+	init_llist_head(&data->free_maps);
-+
-+	for (i = 0; i <= MAX_DMA_CH_ID; i++) {
-+		tmp = devm_kmalloc(dev, sizeof(*tmp), GFP_KERNEL);
-+		if (!tmp) {
-+			/* It is OK for not allocating all channel */
-+			dev_warn(dev, "can not allocate channel %u\n", i);
-+			continue;
-+		}
-+
-+		init_llist_node(&tmp->node);
-+		tmp->channel = i;
-+		llist_add(&tmp->node, &data->free_maps);
-+	}
-+
-+	/* if no channel is allocated, the probe must fail */
-+	if (llist_empty(&data->free_maps))
-+		return -ENOMEM;
-+
-+	data->regmap = regmap;
-+	data->dmarouter.dev = dev;
-+	data->dmarouter.route_free = cv1800_dmamux_free;
-+
-+	platform_set_drvdata(pdev, data);
-+
-+	return of_dma_router_register(mux_node,
-+				      cv1800_dmamux_route_allocate,
-+				      &data->dmarouter);
-+}
-+
-+static void cv1800_dmamux_remove(struct platform_device *pdev)
-+{
-+	of_dma_controller_free(pdev->dev.of_node);
-+}
-+
-+static const struct of_device_id cv1800_dmamux_ids[] = {
-+	{ .compatible = "sophgo,cv1800-dmamux", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, cv1800_dmamux_ids);
-+
-+static struct platform_driver cv1800_dmamux_driver = {
-+	.driver = {
-+		.name = "cv1800-dmamux",
-+		.of_match_table = cv1800_dmamux_ids,
-+	},
-+	.probe = cv1800_dmamux_probe,
-+	.remove_new = cv1800_dmamux_remove,
-+};
-+module_platform_driver(cv1800_dmamux_driver);
-+
-+MODULE_AUTHOR("Inochi Amaoto <inochiama@outlook.com>");
-+MODULE_DESCRIPTION("Sophgo CV1800/SG2000 Series Soc DMAMUX driver");
-+MODULE_LICENSE("GPL");
---
-2.44.0
+Following in your footsteps, and given that zram has the same feature,
+I found the patch that added support for non-zero same-filled pages in
+zram:
+https://lore.kernel.org/all/1483692145-75357-1-git-send-email-zhouxianrong@=
+huawei.com/#t
 
+Both of them confirm that most same-filled pages are zero pages, but
+they show a more significant portion of same-filled pages being
+non-zero (17% to 40%). I suspect this will be less in data centers
+compared to consumer apps.
+
+The zswap patch also reports significant performance improvements from
+the same-filled handling, but this is with 17-22% same-filled pages.
+Johannes mentioned around 10% in your data centers, so the performance
+improvement would be less. In the kernel build tests I ran with only
+around 1.5% same-filled pages I observed 1.4% improvements just by
+optimizing them (only zero-filled, skipping allocations).
+
+So I think removing the same-filled pages handling completely may be
+too aggressive, because it doesn't only affect the memory efficiency,
+but also cycles spent when handling those pages. Just avoiding going
+through the allocator and compressor has to account for something :)
+
+>
+> The number looks impressive, and there is some detail about the
+> experiment setup, but I can't seem to find what the allocator +
+> compressor used.
+
+I would assume it was zbud because it was the default then, but as I
+mentioned zram had similar patches and it uses zsmalloc. I suspect
+zsmalloc would have changed since then tho, and compressors as well.
+With zram there, is also the point that metadata is allocated
+statically AFAICT, so there is very little cost to supporting all
+same-filled pages if you already support zero-filled pages.
+
+>
+> Which, as Johannes has pointed out, matters a lot. A good compressor
+> (which should work on arguably the most trivial data pattern there is)
+> + a backend allocator that is capable of handling small objects well
+> could make this case really efficient, without resorting to special
+> handling at the zswap level.
+
+All in all, I think there are three aspects here:
+(1) Cycles saved by avoiding going through the compressor and
+allocator, and potentially allocating zswap_entry as well the metadata
+with this series.
+
+(2) Memory saved by storing same-filled pages in zswap instead of
+compressing them. This will ultimately depend on the compressor and
+allocator as has been established.
+
+(3) Memory saved on metadata in zswap by avoiding the zswap_entry
+allocation. This is probably too small to matter.
+
+I think (1) may be the major factor here, and (2) could be a factor if
+the compressors surprise us (and would always be a factor for zbud and
+z3fold due to bin packing).
+
+Focusing on just (1), supporting zero-filled pages only may be a good
+tradeoff. We get slightly less complicated and potentially faster
+handling in zswap without losing a lot. Did I capture the discussion
+so far correctly?
 
