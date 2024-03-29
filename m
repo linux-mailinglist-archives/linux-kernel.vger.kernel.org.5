@@ -1,222 +1,245 @@
-Return-Path: <linux-kernel+bounces-124030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C28891163
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E42B5891164
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4595C1C29AD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:10:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 102E41C29BB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB321DA52;
-	Fri, 29 Mar 2024 02:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DAB219E8;
+	Fri, 29 Mar 2024 02:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="0IgbUacF"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDIDpJ0O"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15701E504
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AE61E516
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678097; cv=none; b=lcReeTBxlKOnrNqarZZI4+msLFZ3JF4OtPXqGeaSYjJTAHdh614uoJ4qXAABuuQuF7CuZYi3X0hdw8+Bp1ODe29T+NdLl6biZ0Mbz/T4FPwykqswy/G7qJXTAr7PcsrZ/ZW0ydmPLnQYkpWSwS2bhC0W/k4zQNiFD/TEzENTATA=
+	t=1711678100; cv=none; b=KIyxc9srX1kuq6O5JY/W1v0sO/P/DE9uG1y0oQDHwMbzNdn0iWQ2x1AG6RzXWag4/JHUdGEX5ZGJ5lkjBb3ePzYdjvRavlzwfMSsOqL9HjDWZwYLB49Wxug0A+47qyl3kerCAnIgLISt6Kiy0VcBPzslIap87ZWioSbx32B79zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678097; c=relaxed/simple;
-	bh=dbO+Ap6f46J613uD6nop2tsLtl7Tou++IDmiUyD3GGA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EFVMmE7sFkPVNQ9NXN72Xx85x0pNLcjU9TkAP85eoDuJgh4J8r3RnfJ97VtNoFUbxqYASPGcfRHNjHvFzhm5QjmqyE17PpYOhmDgp2tjqGv4i6XRxKe7dd2MJXxiaAxNfzs0E1NxNXIEpI+T6tgFCcDHNuZIaFJvwCFFr3Z+0rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0IgbUacF; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a474c4faf5eso183395766b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:08:15 -0700 (PDT)
+	s=arc-20240116; t=1711678100; c=relaxed/simple;
+	bh=dKZD1mCUX8lAyUbGN2qUjdW4OBAkBdD2j0gBbpJsO/8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lyIy58lzqQXJIeedv98PjmV01t4eB6+k4qe8oPjscQbDL65b07GvlKR3XKX6q2kJNiMcS9Ix6817OOCp4yLSYpbvIvVhgOy2pXhrQfhaBPCRSjy/z99AQx1AP6SgqFTgUkmjyfB6YPFZzPacsW4p0CIqb60do/1wE2/Bdu79NJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDIDpJ0O; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a02c4dffd2so1357794a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:08:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711678094; x=1712282894; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=11c8G8lctTX5FPuHgPoxiYuBMcabHIl74EqlnLaTfGY=;
-        b=0IgbUacFX9803zESS/nJkbywaWMz1I1LbQ8OI25l8ODAZ2ndQ1nFYdR4FDEiNGxJNn
-         mkwexAHi2om74HsprXTOusxRERAldx1uV8rjEvT8YjBVJbFxK0XcWFG2hKFm7kU3wghb
-         y0czcdZXXTI0KmgP2ruyznahtNSt993Kb+qOwXBk2WyTELfwvOUEOKxP/bvln7KDGhPN
-         hQiqgwgP4Z0iF0oW5b7S6IlxIFu6B22ZH8bO2y/h9O28jktNtNvyoJicPUUXkblsPcpy
-         9/a8FT6/eJlVip57rj1ILFI5BEfDL93/u1O9fyUyem0VF+vnkE7UpMkWUudhlu6JP1Af
-         5y0g==
+        d=gmail.com; s=20230601; t=1711678098; x=1712282898; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pX+xlgHnVO0ivx09FP8o5h5//8YYHu0/1HElauId9Hc=;
+        b=aDIDpJ0O4AeTAPY5V4YeZumnf9Ld3Pb/99Hvgb1TiE1bUtpul+6lf3WSQMLaDxc6ph
+         LnfxoKSfAv7BDc46lXbwa6jBu5JvhmRhsEodvI56lEbhA0V4XCczic+kf4jtZffn3DUB
+         ELOhZdJL0etOkD8MyWvFlf55xYuvvhYCm/RRu6/90LtQtXym+lYn2kQxBDeTIIkH9jaF
+         +EIHvIK8HrwGHGMoaJ1v3XxMjYDXHjmYRlhALIlMPNmxSxAN85Yb/0O5D02uXrDu4Jbz
+         DtWUMZGiJ/nlVRVd3nzJqu9w8FrIcVrb1fx2zFyOI9flUFFPtPljzRnSsxkHe8W9sY+E
+         SUMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711678094; x=1712282894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711678098; x=1712282898;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=11c8G8lctTX5FPuHgPoxiYuBMcabHIl74EqlnLaTfGY=;
-        b=DyySZ6gCE3pV3b/chPflxT1T9oGXyUbBB4h/om4N4vvLh/xtUCy8qPbDB1VluRP8Wm
-         09UiBcRPymeihTq/NEF9wNz7NquTXKTFTlWDYAHGQmWNv6r9Ae9OxX6n2c0sZMlt+GHu
-         zJ5BdK9smkROSV8rZhipqlJlnfJsOYmFvFWj1NulxBPFxei/KiokVL6D+MmyH77G+93+
-         eMDYyx3Ph++SokHvCfTqKNpSkGTsIBlWYzRVZmYEq8s1OMamWMyK1YC1CIkpkSg81p8U
-         Gt+kr1VlvrMQsesel8Ba4gFJzoXRtyiilFVUZ/ajxJM5m3NnwHc/NBjg56FaM9RKLN+f
-         uhaw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcdXAbCODTRVcdO4Lq2v0+xY8kpk38q6o1DGAEzIbq/4vsh6jyHrRHMz/nAEfQR/FBSKm0GkAjiBggL63sq01fs9DgvU90LoBXH6oy
-X-Gm-Message-State: AOJu0YzeWwPEfQep93OBSGJvH9FhpvJO0KB1pCj38HlP2YcGpjKlSRhQ
-	UEhJCjtPq9ZNHT96mLNmP6zMcQREnxuLY+bgNX9b2EIoPsfC2n4as+8J6dn+33ix9xWAw3op6nj
-	oH74SUno/+O505EG1e1G3rEWSzogk4yB3ER3dXQw9q6aC1g7mJQ==
-X-Google-Smtp-Source: AGHT+IG0Rm5qu9wJswt12/atXr3sJnHBizAISo0bEl3j1aBkAKeucvrdhtY4eTVd689T82N8PB+fhFFotaWQSZh11+M=
-X-Received: by 2002:a17:906:ca0f:b0:a46:e8c1:11ac with SMTP id
- jt15-20020a170906ca0f00b00a46e8c111acmr578332ejb.18.1711678093875; Thu, 28
- Mar 2024 19:08:13 -0700 (PDT)
+        bh=pX+xlgHnVO0ivx09FP8o5h5//8YYHu0/1HElauId9Hc=;
+        b=D8OGZ0f7R5xFsIqI9/6yUqB0kgYVEKwuS/IVE33SYU/YJ2GAL0vE54gqWHDBiFIYsK
+         l5NTL3ralufpSsEk8jfErL43QiTD8wmF0vpuGRCsdP4P3WQzU1QgCRRzcgL4k8M5rpDb
+         I9t6y8sXSosEbiwWZ8WQDT+3yH9JTFniSddWBjE0xZ7xCEpXqv9eYAmRjx4RQxckJjG6
+         wT1FtCPOn37HiF06PzdCYkNGnVOYHmr97CPNFiWcjbnwmbKxyJI2wYw8VSaKkrGIXqf9
+         wxe8k+AzsAcA67Mz1HoY23nrlSDsZhWigxE8c9OwG+Z2wv8SeLTR10dJoZKUUUUjvqIh
+         5G4w==
+X-Forwarded-Encrypted: i=1; AJvYcCXZO6UcVuKTWNXV0LVlIeqgyO9T+tHFzd2DwogNmSfp3DnbKoAMhl8zxmJ49FibGzq9MeNyKaZDzCZi9cWhx3jWcEehpqlxxYSgdvBf
+X-Gm-Message-State: AOJu0YxIIMzSEAlH3+Lgy0krOm7bLiL0+eIvpSDqM+sONh6Z8qmVbnh5
+	r/4NA5NU1l0aM3oaJlAwDSYr+QFggzLu8cMh55iPf71fLtZK7Erq
+X-Google-Smtp-Source: AGHT+IE7IqJneESPBHa+urV0DUyTJuu7Hvj39VAciEXrUZR4Z+cDeodTKTkbmTfLnIKtMFA+cOXLDQ==
+X-Received: by 2002:a17:90a:1116:b0:2a0:3d59:4632 with SMTP id d22-20020a17090a111600b002a03d594632mr1250548pja.15.1711678098273;
+        Thu, 28 Mar 2024 19:08:18 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id 3-20020a17090a0cc300b002a20c0dcebbsm1317772pjt.31.2024.03.28.19.08.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 19:08:17 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 28 Mar 2024 16:08:16 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Alex Shi <alexs@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Barry Song <song.bao.hua@hisilicon.com>,
+	Waiman Long <longman@redhat.com>
+Subject: Re: for_each_domain()/sched_domain_span() has offline CPUs (was Re:
+ [PATCH 2/2] timers: Fix removed self-IPI on global timer's enqueue in
+ nohz_full)
+Message-ID: <ZgYikMb5kZ7rxPp6@slm.duckdns.org>
+References: <1b5752c8-ef32-4ed4-b539-95d507ec99ce@paulmck-laptop>
+ <ZfsLtMijRrNZfqh6@localhost.localdomain>
+ <6a95b6ac-6681-4492-b155-e30c19bb3341@paulmck-laptop>
+ <ZfwdEROGFFmIbkCM@lothringen>
+ <bf8689c2-0749-47cb-9535-53cf66e34f5e@paulmck-laptop>
+ <Zf1sSv/6mQHJuJ8G@lothringen>
+ <Zf2GDjekyemQKn7I@lothringen>
+ <xhsmhwmppaqls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <87cyrfe7a3.ffs@tglx>
+ <xhsmhle62ay5f.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-7-yosryahmed@google.com> <20240328193149.GF7597@cmpxchg.org>
- <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com> <CAKEwX=MTO40L+wVtUzmy24iGKq5FkGnSgYVj+vrcokTnYBE-tg@mail.gmail.com>
-In-Reply-To: <CAKEwX=MTO40L+wVtUzmy24iGKq5FkGnSgYVj+vrcokTnYBE-tg@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 28 Mar 2024 19:07:37 -0700
-Message-ID: <CAJD7tkbRSiiqe1ZY6_BJBfj=7dM0xHxV3TTTJha9691uCXvWAQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
- pages handling
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhsmhle62ay5f.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On Thu, Mar 28, 2024 at 4:34=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> On Thu, Mar 28, 2024 at 1:24=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Thu, Mar 28, 2024 at 12:31=E2=80=AFPM Johannes Weiner <hannes@cmpxch=
-g.org> wrote:
-> > >
-> > > On Mon, Mar 25, 2024 at 11:50:14PM +0000, Yosry Ahmed wrote:
-> > > > The current same-filled pages handling supports pages filled with a=
-ny
-> > > > repeated word-sized pattern. However, in practice, most of these sh=
-ould
-> > > > be zero pages anyway. Other patterns should be nearly as common.
-> > > >
-> > > > Drop the support for non-zero same-filled pages, but keep the names=
- of
-> > > > knobs exposed to userspace as "same_filled", which isn't entirely
-> > > > inaccurate.
-> > > >
-> > > > This yields some nice code simplification and enables a following p=
-atch
-> > > > that eliminates the need to allocate struct zswap_entry for those p=
-ages
-> > > > completely.
-> > > >
-> > > > There is also a very small performance improvement observed over 50=
- runs
-> > > > of kernel build test (kernbench) comparing the mean build time on a
-> > > > skylake machine when building the kernel in a cgroup v1 container w=
-ith a
-> > > > 3G limit:
-> > > >
-> > > >               base            patched         % diff
-> > > > real          70.167          69.915          -0.359%
-> > > > user          2953.068        2956.147        +0.104%
-> > > > sys           2612.811        2594.718        -0.692%
-> > > >
-> > > > This probably comes from more optimized operations like memchr_inv(=
-) and
-> > > > clear_highpage(). Note that the percentage of zero-filled pages dur=
-ing
-> > > > this test was only around 1.5% on average, and was not affected by =
-this
-> > > > patch. Practical workloads could have a larger proportion of such p=
-ages
-> > > > (e.g. Johannes observed around 10% [1]), so the performance improve=
-ment
-> > > > should be larger.
-> > > >
-> > > > [1]https://lore.kernel.org/linux-mm/20240320210716.GH294822@cmpxchg=
-org/
-> > > >
-> > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > >
-> > > This is an interesting direction to pursue, but I actually thinkg it
-> > > doesn't go far enough. Either way, I think it needs more data.
-> > >
-> > > 1) How frequent are non-zero-same-filled pages? Difficult to
-> > >    generalize, but if you could gather some from your fleet, that
-> > >    would be useful. If you can devise a portable strategy, I'd also b=
-e
-> > >    more than happy to gather this on ours (although I think you have
-> > >    more widespread zswap use, whereas we have more disk swap.)
-> >
-> > I am trying to collect the data, but there are.. hurdles. It would
-> > take some time, so I was hoping the data could be collected elsewhere
-> > if possible.
-> >
-> > The idea I had was to hook a BPF program to the entry of
-> > zswap_fill_page() and create a histogram of the "value" argument. We
-> > would get more coverage by hooking it to the return of
-> > zswap_is_page_same_filled() and only updating the histogram if the
-> > return value is true, as it includes pages in zswap that haven't been
-> > swapped in.
-> >
-> > However, with zswap_is_page_same_filled() the BPF program will run in
-> > all zswap stores, whereas for zswap_fill_page() it will only run when
-> > needed. Not sure if this makes a practical difference tbh.
-> >
-> > >
-> > > 2) The fact that we're doing any of this pattern analysis in zswap at
-> > >    all strikes me as a bit misguided. Being efficient about repetitiv=
-e
-> > >    patterns is squarely in the domain of a compression algorithm. Do
-> > >    we not trust e.g. zstd to handle this properly?
-> >
-> > I thought about this briefly, but I didn't follow through. I could try
-> > to collect some data by swapping out different patterns and observing
-> > how different compression algorithms react. That would be interesting
-> > for sure.
-> >
-> > >
-> > >    I'm guessing this goes back to inefficient packing from something
-> > >    like zbud, which would waste half a page on one repeating byte.
-> > >
-> > >    But zsmalloc can do 32 byte objects. It's also a batching slab
-> > >    allocator, where storing a series of small, same-sized objects is
-> > >    quite fast.
-> > >
-> > >    Add to that the additional branches, the additional kmap, the extr=
-a
-> > >    scanning of every single page for patterns - all in the fast path
-> > >    of zswap, when we already know that the vast majority of incoming
-> > >    pages will need to be properly compressed anyway.
-> > >
-> > >    Maybe it's time to get rid of the special handling entirely?
-> >
-> > We would still be wasting some memory (~96 bytes between zswap_entry
-> > and zsmalloc object), and wasting cycling allocating them. This could
-> > be made up for by cycles saved by removing the handling. We will be
-> > saving some branches for sure. I am not worried about kmap as I think
-> > it's a noop in most cases.
->
-> A secondary effect of the current same-filled page handling is that
-> we're not considering them for reclaim. Which could potentially be
-> beneficial, because we're not saving much memory (essentially just the
-> zswap entry and associated cost of storing them) by writing these
-> pages back - IOW, the cost / benefit ratio for reclaiming these pages
-> is quite atrocious.
+(cc'ing Waiman and quoting whole body)
 
-Yes, but I think this applies even without same-filled pages. Johannes
-mentioned that zsmalloc could store compressed pages down to 32 bytes
-in size. If these are common, it would be absurd to them out too. We
-already have some kind of heuristic in the shrinker to slowdown
-writeback if the compression ratio is high. Perhaps it's worth
-skipping writeback completely for some pages on the LRU, even if this
-means we violate the LRU ordering. We already do this for same-filled
-pages, so it may make sense to generalize it.
+Hello,
 
->
-> Again, all of this is just handwaving without numbers. It'd be nice if
-> we can have more concrete data for this conversation :P
+On Thu, Mar 28, 2024 at 09:39:56PM +0100, Valentin Schneider wrote:
+> On 27/03/24 21:42, Thomas Gleixner wrote:
+> > On Tue, Mar 26 2024 at 17:46, Valentin Schneider wrote:
+> >> On 22/03/24 14:22, Frederic Weisbecker wrote:
+> >>> On Fri, Mar 22, 2024 at 12:32:26PM +0100, Frederic Weisbecker wrote:
+> >> Now, on top of the above, there's one more thing worth noting:
+> >>   cpu_up_down_serialize_trainwrecks()
+> >>
+> >> This just flushes the cpuset work, so after that the sched_domain topology
+> >> should be sane. However I see it's invoked at the tail end of _cpu_down(),
+> >> IOW /after/ takedown_cpu() has run, which sounds too late. The comments
+> >> around this vs. lock ordering aren't very reassuring however, so I need to
+> >> look into this more.
+> >
+> > commit b22afcdf04c96ca58327784e280e10288cfd3303 has more information in
+> > the change log.
+> >
+> > TLDR: The problem is that cpusets have the lock order cpuset_mutex ->
+> > cpu_hotplug_lock in the hotplug path for whatever silly reason. So
+> > trying to flush the work from within the cpu hotplug lock write held
+> > region is guaranteed to dead lock.
+> >
+> > That's why all of this got deferred to a work queue. The flush at the
+> > end of the hotplug code after dropping the hotplug lock is there to
+> > prevent that user space sees the CPU hotplug uevent before the work is
+> > done. But of course between bringing the CPU offline and the flush the
+> > kernel internal state is inconsistent.
+> >
+> 
+> Thanks for the summary!
+> 
+> > There was an attempt to make the CPU hotplug path synchronous in commit
+> > a49e4629b5ed ("cpuset: Make cpuset hotplug synchronous") which got
+> > reverted with commit 2b729fe7f3 for the very wrong reason:
+> >
+> > https://lore.kernel.org/all/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/T/#u
+> >
+> >  (cpu_hotplug_lock){++++}-{0:0}:
+> >   lock_acquire+0xe4/0x25c
+> >   cpus_read_lock+0x50/0x154
+> >   static_key_slow_inc+0x18/0x30
+> >   mem_cgroup_css_alloc+0x824/0x8b0
+> >   cgroup_apply_control_enable+0x1d8/0x56c
+> >   cgroup_apply_control+0x40/0x344
+> >   cgroup_subtree_control_write+0x664/0x69c
+> >   cgroup_file_write+0x130/0x2e8
+> >   kernfs_fop_write+0x228/0x32c
+> >   __vfs_write+0x84/0x1d8
+> >   vfs_write+0x13c/0x1b4
+> >   ksys_write+0xb0/0x120
+> >
+> > Instead of the revert this should have been fixed by doing:
+> >
+> > +  cpus_read_lock();
+> >    mutex_lock();
+> >    mem_cgroup_css_alloc();
+> > -  static_key_slow_inc();
+> > +  static_key_slow_inc_cpuslocked();
+> >
+> 
+> So looking at the state of things now, writing to the
+> cgroup.subtree_control file looks like: 
+> 
+>   cgroup_file_write()
+>   `\
+>     cgroup_subtree_control_write()
+>     `\
+>       cgroup_kn_lock_live()
+>       `\
+>       | cgroup_lock()
+>       | `\
+>       |   mutex_lock(&cgroup_mutex);
+>       |
+>       cgroup_apply_control()
+>       `\
+>         cgroup_apply_control_enable()
+>         `\
+>           css_create()
+>           `\
+>             ss->css_alloc() [mem_cgroup_css_alloc()]
+>             `\
+>               static_branch_inc()        
+> 
+> and same with cgroup_mkdir(). So if we want to fix the ordering that caused
+> the revert, we'd probably want to go for:
+> 
+>   static inline void cgroup_lock(void)
+>   {
+> +       cpus_read_lock();
+> 	mutex_lock(&cgroup_mutex);
+>   }
+> 
+>   static inline void cgroup_unlock(void)
+>   {
+> 	mutex_unlock(&cgroup_mutex);
+> -       cpus_read_unlock();        
+>   }
+> 
+> + a handful of +_cpuslocked() changes.
+> 
+> As for cpuset, it looks like it's following this lock order:
+> 
+> 	cpus_read_lock();
+> 	mutex_lock(&cpuset_mutex);
+> 
+> Which AFAICT is what we want.
+> 
+> > Sorry that I did not notice this back then because I was too focussed on
+> > fixing that uevent nonsense in a halfways sane way.
+> >
+> > After that revert cpuset locking became completely insane.
+> >
+> > cpuset_hotplug_cpus_read_trylock() is the most recent but also the most
+> > advanced part of that insanity. Seriously this commit is just tasteless
+> > and disgusting demonstration of how to paper over a problem which is not
+> > fully understood.
+> >
+> > After staring at it some more (including the history which led up to
+> > these insanities) I really think that the CPU hotplug path can be made
+> > truly synchronous and the memory hotplug path should just get the lock
+> > ordering correct.
+> >
+> > Can we please fix this for real and get all of this insanity out of the
+> > way
+> 
+> Yes please!
+
+Yeah, making that operation synchronous would be nice. Waiman, you're a lot
+more familiar with this part than I am. Can you please take a look and see
+whether we can turn the sched domain updates synchronous?
+
+Thanks.
+
+-- 
+tejun
 
