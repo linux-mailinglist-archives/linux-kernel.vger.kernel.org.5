@@ -1,105 +1,122 @@
-Return-Path: <linux-kernel+bounces-125394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCEA189254D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:33:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF7D6892578
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19C491C217E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:33:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1248B283C1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B873BBD8;
-	Fri, 29 Mar 2024 20:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C856A014;
+	Fri, 29 Mar 2024 20:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cSsDTqZo"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5144F3985A
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="XqiX32Sj"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3ACE3C08F;
+	Fri, 29 Mar 2024 20:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711744422; cv=none; b=CpFgSwi4IE/Zx+p42jc9dkt9REHI1fEv2qdJ7Q5XepQeAJF9zTqpztGGI1eGwKvY+qMOG/ht27SWluvLdyxUz4fFXpq8ku3ShCnCKrGbQ60QeOU2qsR77fAIiQc+6bN7+qe0c+Uslnmsn2t0xJCj+qZdqIBWeJ5ES0oVUAr6t0s=
+	t=1711744952; cv=none; b=XhaK8gSGuO2O9CzBOOOzcEIjn5jY2PnW9ieLhcBwDptjDoNblQaS72BFbwoNBKvcs/9FavA0b13L+bJR7VD0fkdSjW7WzEc90Pj1A1gA8VHpS7znBDHly7mJdvpedUZeH3Y0XfMPOWA2zHOzIzcE/yy91PVE0soZmjQQinAI1jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711744422; c=relaxed/simple;
-	bh=7fJ4rSAI0GoYiQAMJdDfQgj6t00Kp7TpJETA/wU9wok=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S2by3vQ+VHPl1E56zBN8NDkdXQJU4vaHbWckrT6sux5y9zIABJCKiCRlz7lMh51MSseoL1kYL8NLoxbXcCzoEtcAsSlkYZNpsnIkWb0syr26hCsOs/nPztcuKoQpVjKbT/DsH4gj8mQA2qJNZ5oC9q6fvhKLMVIhVlnj560eg8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cSsDTqZo; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56c2cfdd728so13713a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711744420; x=1712349220; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7fJ4rSAI0GoYiQAMJdDfQgj6t00Kp7TpJETA/wU9wok=;
-        b=cSsDTqZo1Ep7rjLmVP9XoFKW24dAUgmMBqMZz3pMEI0IEW+qPuSCJvEIxP6L1zOeuh
-         EMo7uy+lt1caNRVJ97hOF7hcLlMFjhvZ5BUtNHkKhqAlnheWdZ0ZN3UqbYId38N80Kc6
-         +4tbFYOu9A9Z6HL93SR5Z3sUhMF+gwFxfex8Q+l3KCXzNzpXgYWq0SPHzXVQOnsk++XR
-         LYdV1RzCl5NaaxRk+eKXpLoHSldcQu8tEPHpFn6midUyhfMBM+88xnQjw+F1jGBs4ovz
-         zToO298nAAT5OMGm5vt2y8LADs03UOWh4JkLttMrdWmmqYWcGKtx1yuF+fRmv2favE/S
-         pKcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711744420; x=1712349220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7fJ4rSAI0GoYiQAMJdDfQgj6t00Kp7TpJETA/wU9wok=;
-        b=baR1fvaT4flKfY3IslyT6R8FCafi/6UCe+LbIHy+euL2ie7FkLJn0vwwwj2tj2lmaQ
-         F8I4pdOozdvYJ94v4mr0oHe+BAZZNgHgpdnz+BT4US/4HdTXdddjgCs/ZMSmNb1nTb5D
-         kFJA2oOBKc8PhW6CriLUR6EqZOGZVVCf3oHgnpFZVWAwVulWtVOwmDhMehltpkKWldSF
-         iUgZ/vVXVDgTJRQ6NvS0uRVJEgOsEy5xqGsTKmSfhV7+9Fk1vAHUlT+MlPJEFi00sze2
-         516rO4yQ1Xfaa9Lt/trCQuRRPVWLoijIHz1noS+A0oLxR1TIaRMHSYQDewNL+kYbun4U
-         ymdg==
-X-Gm-Message-State: AOJu0YyrcUTxFR4dvrhUaudducGwEGl2pXziaQAVJq4xfaz5Ny6xRvBB
-	ROpO6ubHw1AhWdVud/8QVNpoMEz+b7M7SsEbuMiU+6vS/GOkWOw3dxVYWfIgu6MTIEMjXtrrpSI
-	G4v8bqsIxpm8eW9QqLEj/Hoty9fVnQxrCrG3W
-X-Google-Smtp-Source: AGHT+IFMizgS0G5ukFYvjYIGxUljt4fuYwgJVd/7xudG/ccYnF78sLbJwmbgsF7dKolFZvWx8Fq/tlthiyGNWzulF3Q=
-X-Received: by 2002:a05:6402:c94:b0:56c:2d40:7430 with SMTP id
- cm20-20020a0564020c9400b0056c2d407430mr138817edb.3.1711744419595; Fri, 29 Mar
- 2024 13:33:39 -0700 (PDT)
+	s=arc-20240116; t=1711744952; c=relaxed/simple;
+	bh=hz5RR0GReCD0o+TbGpPzwpXzow8mvQnlmHPDe6BzQNU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cDuFMISyU/0W7NAamxJut++EEeR83zlIzZH/qiyJsJdnezPQCTHk2wjeLq6Db47PjB0SJ2aCKz+TP4vUVoiDi6K2DJQWiWFuGeStNdVbfbI+WCVX4YqhhYGxNszGGGOIZ0a6HxnLuiJ+S7OJ5hg2KSP1zz+KxfUS6k9Dsj5j9Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=XqiX32Sj; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.65.59] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 0787420E6F42;
+	Fri, 29 Mar 2024 13:42:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0787420E6F42
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711744950;
+	bh=T3bq+rfTxoFcrWlHxiM/MsuE/8OiSBnZvhXgUAsFCnQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XqiX32SjGqD3vk/hUo4BhZDOk+DdTVyaYWF0zAdPXk7zAPwBavYyWo7D6sBZ68dFM
+	 L/TJp4duCoEIVCMuOHHW4ZCL+J6aZF4kQn9MMkQ/Rrv/qeFr0jl+jI9CJ8Ck9rFn6n
+	 NPijVBOT4MeX1n6mROxFMxLlPNRa1eBx5dJHF0DM=
+Message-ID: <9336949d-6fa4-457c-8d7e-9aaa5d62cbd7@linux.microsoft.com>
+Date: Fri, 29 Mar 2024 13:42:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329174236.2278217-1-edliaw@google.com> <909806c1-a9c4-4f51-a807-46075efb8ab9@collabora.com>
-In-Reply-To: <909806c1-a9c4-4f51-a807-46075efb8ab9@collabora.com>
-From: Edward Liaw <edliaw@google.com>
-Date: Fri, 29 Mar 2024 13:33:12 -0700
-Message-ID: <CAG4es9UYvT5tRPFtsRUqJnz9obLuAz03b0+61aAagmGjGTMnsA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/mm: import strings.h for ffsl
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Peter Xu <peterx@redhat.com>, 
-	David Hildenbrand <david@redhat.com>, "Mike Rapoport (IBM)" <rppt@kernel.org>, 
-	Axel Rasmussen <axelrasmussen@google.com>, linux-kselftest@vger.kernel.org, 
-	kernel-team@android.com, linux-mm@kvack.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] swiotlb: Do not set total_used to 0 in
+ swiotlb_create_debugfs_files()
+To: Dexuan Cui <decui@microsoft.com>, "hch@lst.de" <hch@lst.de>,
+ "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+ "robin.murphy@arm.com" <robin.murphy@arm.com>,
+ "zhangpeng362@huawei.com" <zhangpeng362@huawei.com>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "mhklinux@outlook.com" <mhklinux@outlook.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20240329192809.17318-1-decui@microsoft.com>
+ <07ed50c1-75a9-494c-8a6a-5edcc2d6f932@linux.microsoft.com>
+ <CY5PR21MB3759BEE344CCD8F20FBB4E4CBF3A2@CY5PR21MB3759.namprd21.prod.outlook.com>
+ <CY5PR21MB3759C7C9F4637F6D157635A1BF3A2@CY5PR21MB3759.namprd21.prod.outlook.com>
+Content-Language: en-CA
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <CY5PR21MB3759C7C9F4637F6D157635A1BF3A2@CY5PR21MB3759.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 29, 2024 at 12:32=E2=80=AFPM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
->
-> On 3/29/24 10:42 PM, Edward Liaw wrote:
-> > Got a compilation error for ffsl after 91b80cc5b39f ("selftests: mm: fi=
-x
-> > map_hugetlb failure on 64K page size systems") imported vm_util.h.
-> >
-> > Fixes: af605d26a8f2 ("selftests/mm: merge util.h into vm_util.h")
-> Why do you think this Fixes tag is needed? This refers to a patch which i=
-s
-> just moving code. It doesn't seem to have any thing related to strings.h.
-Oops, I guess it should be:
+On 3/29/2024 1:30 PM, Dexuan Cui wrote:
+>> From: Dexuan Cui
+>> Sent: Friday, March 29, 2024 1:23 PM
+>> To: Easwar Hariharan <eahariha@linux.microsoft.com>; hch@lst.de;
+>> m.szyprowski@samsung.com; robin.murphy@arm.com;
+>> zhangpeng362@huawei.com; iommu@lists.linux.dev;
+>> mhklinux@outlook.com
+>> Cc: linux-kernel@vger.kernel.org; stable@vger.kernel.org
+>> Subject: RE: [PATCH] swiotlb: Do not set total_used to 0 in
+>> swiotlb_create_debugfs_files()
+>>
+>>> From: Easwar Hariharan <eahariha@linux.microsoft.com>
+>>> Sent: Friday, March 29, 2024 12:47 PM
+>>> [...]
+>>> Sorry, I'm missing a why in this commit message. Can you say what
+>> happens
+>>> if the total_used and used_hiwater IS blindly set to 0? Is the only effect
+>>> the change  in the readout of the swiotlb debugfs files?
+>>>
+>>> Thanks,
+>>> Easwar
+>>
+>> Right, when the system is not doing any I/O, the readout may
+>> return a huge number while it should return 0. This is the only effect.
+>>
+>> Thanks,
+>> Dexuan
+> 
+> Let me share more details.
+> 
+> kernel/dma/swiotlb.c uses inc_used_and_hiwater() and dec_used()
+> to do the accounting.
+> 
+> The issue happens this way:
+> 
+> 1. inc_used_and_hiwater() adds n to total_used.
+> 2. swiotlb_create_debugfs_files() sets total_used to 0.
+> 3. dec_used() decreases total_used by n, i.e. total_used incorrectly 
+> becomes a negative number -n, which is a huge number since
+> mem_used() converts the 'long' to 'unsigned long'.
+> 
+> Thanks,
+> Dexuan
+> 
 
-Fixes: 6f6a841fb77d ("selftest/vm: add helpers to detect PAGE_SIZE and
-PAGE_SHIFT")
+Thanks for the detail. I only ask because the patch is marked for stable, and
+I was wondering if it meets the criteria. But, as you mentioned off list, two Fixes
+tags probably do meet the bar.
+
+Thanks,
+Easwar
 
