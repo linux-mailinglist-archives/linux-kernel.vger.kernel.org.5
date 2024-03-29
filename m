@@ -1,874 +1,218 @@
-Return-Path: <linux-kernel+bounces-124016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3020B891138
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:06:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D9C8910C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7035DB25074
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:06:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0750F1F236CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3893E13CFAA;
-	Fri, 29 Mar 2024 01:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4953D57E;
+	Fri, 29 Mar 2024 01:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zSeGM2Oe"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PyVaOg7L"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D9D13C3D3
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711677324; cv=none; b=LlsVRDrGLEuT1/9MGd1YIeY5LmhrawS6jR7NCs3MB+d5voRfNE6HFnVwsvt05yWYYhxdse5W455cB9UVpgWCr3ybcu+ZhHCLAefbBSVbJGxYA+EZJkqP8yCDpHzTZZxe9IzbnM0sr3dQOg5CxATnRFLnEbp5SimMYV6aW3cMq1Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711677324; c=relaxed/simple;
-	bh=QYiNaoP0wgjmdl7KYo7r8xxfmKhoKe/kT/EhiLUTu0o=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=JahoQEecD3g+vD60v3tef5IlwOBNARPXaffK6iSKrgdvTbZtAs5Rk1Zy3ghv4DuJ19//iI9raJ2vJbiRr/HD/WvJKMa9CKFScsBl6dpab4WDVezpXWLuHzs0Y51DQeqz8xO+GVdC/ezcYej9xtBT63kEZAkMf4N6cplLfmjGD/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zSeGM2Oe; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60cbba6fa0bso29206887b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711677320; x=1712282120; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uUsaTtgkbErn3BD3WrF1FB8TcQrwq3YumJAvXSLdPcQ=;
-        b=zSeGM2OeJgyM4PeXDAJaiPVsLJx+U7ndpvAssuJK0jVaEMzucfi/14YPsyKU+s8Lu2
-         lD8GPe4yfscOaQHuTPssmlaFNEK/RSmq/94ZbsuuRSIfSdsVAJX05f28PVwcgoRKwR9P
-         bs0cGXh1LkW0v9Krn8My53D1BtNRs6Yt7+H+d1/h1zyeXPD6zvFRZwoJTGP0PER5Ow/+
-         VicZy4gPL4+cqrrFH6XijIeUYmqKMTTfOWJszuJI2/cWK7LVLkDfsgvY+4lRshpvvqhp
-         iZnwLFuE0cQotQ5WbOWS3zTzi4uzELLOAoqqdVx09EYCJYQzQRSMqHcltl7LnvpRiF9V
-         9GHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711677320; x=1712282120;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uUsaTtgkbErn3BD3WrF1FB8TcQrwq3YumJAvXSLdPcQ=;
-        b=RdhH4L1OfyNbb/RZW9BXqAyCZjnq0otmmYGFPf183VqgsAVlUs6c8X/X2hwBQ7efkc
-         TvvTNjD7JASA5fRkDpPEY6VTf5IgRi4PWnh/KuxcZzkVPhJtxBRXayoH8KNS5C51JsaO
-         mBiOB5GY2ES5e/UpySlYC3DXTM+Un+wSzCResXoLDH9GvKRUkILifaWq9Fz7WohAMtTQ
-         U8VaL2gwJF+dTJBmwvJZvOq2NzD0j1ezqT5rLLrkZgWlH2/y12En6f2B3k588bSL1fHs
-         NvpM0YGJmBDm5QXiZ+kIX1Z2Lr+7t7DTIbV9KCKi99OVKGe2ZhPVZ8ax5dJu6SAdfMIv
-         EcrA==
-X-Forwarded-Encrypted: i=1; AJvYcCUbUdCPLTWl3hkKCkprE6AqKS4Q3mEUBTVudcHjo6x+LPhvaA1a1wuUxNIFgVXEDmdmj+2SPvXpdFaA5BIor0avSlX5esDcSVaZQKyS
-X-Gm-Message-State: AOJu0YwYI0jsp+bjPcoGjDSlvrJUjEcb8vmlmXTNeHeUY0n/8EYZikDH
-	pPuaTvz7Ax7NGRvOTCVIlOoIhD2iTQTauaDYXCNx+tHA7hR/Ua00SZlBvdmU+TlX+5mj3g7FAcS
-	zgw==
-X-Google-Smtp-Source: AGHT+IHHRmevfoLaT4O3ZiZOOorIZcG6OlW64J4uxzsicKT/QzpKc+1r71hBTI36u3UKAsk58C0KEcDo3Qw=
-X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
- (user=drosen job=sendgmr) by 2002:a0d:ca01:0:b0:60a:16ae:38ee with SMTP id
- m1-20020a0dca01000000b0060a16ae38eemr282231ywd.3.1711677319906; Thu, 28 Mar
- 2024 18:55:19 -0700 (PDT)
-Date: Thu, 28 Mar 2024 18:53:51 -0700
-In-Reply-To: <20240329015351.624249-1-drosen@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C044B1E515;
+	Fri, 29 Mar 2024 01:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711677261; cv=fail; b=C0O/fQv21Za+ZsppSwJehhvpipf5uzCuaUwd/jj+MUwlysNAA03Je+qDFdPLL9U2OsCzkGkYF4oXUHFuEYwXiIWUgpQ77BiWcaC6a86lKB6V4dX/HDEv4C6ZuXNcbm4e5VpXP4TUROAI8bZjaB/mGHb6VogauQ4R8JUAQSJ4Mj8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711677261; c=relaxed/simple;
+	bh=nK3dCJ9Je5oHu6hcgw0gvRABj723iVfvHwrQPykJvi4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=VESf8KK4AweZipjuBlCDZ25sUBllA8zBncWeQbhxQL/JyXbom3GRRbeDDnX0puWKtTQZCoatP/UFgXQnWzW4CvYIPf7Mu0TPoOM/aTCJy7mGFW1SSjNUcpEEdLxxtB81vr0/+LV+9N2wZ29WXzCy4fdfW8kA2Cwpn2UZOCtDNoc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PyVaOg7L; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711677258; x=1743213258;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=nK3dCJ9Je5oHu6hcgw0gvRABj723iVfvHwrQPykJvi4=;
+  b=PyVaOg7Li6nRBeRkJHhal8NT8H16SZh/de1Bb+HDw3uzQO5npsQzV3Tw
+   uBomltQKfQCTdZ7naiPJowNDVo5npbD8sTc4uJMTHdwPxa5qqUxFRWUDe
+   2IujSuJW4YRiXV2e4rRW5jWL7hPEN0/kZUDvCtrpOdUcfKjXVHy+FohMN
+   oM0DaH+YvAD6lklU9vKNabURkEaN33rccFSOU0rRbwEaLweS6GL+e8MNb
+   2cNwxEI7CvfnArjV0njgEf6uCgbamw8l+61EVNDbYMjUzAOaxj23gNR9U
+   0LBNhctkgv9XUSDQrIq+LdEW50UChPlYW8T03S6TpKu/s2mUA4cmL+8hL
+   A==;
+X-CSE-ConnectionGUID: 0tIKzPXwTamGgz/sKpCOBQ==
+X-CSE-MsgGUID: WcRQn2UDThOTZJu2JjqUtg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="18244334"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="18244334"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 18:54:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="21508073"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Mar 2024 18:54:17 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 28 Mar 2024 18:54:17 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 28 Mar 2024 18:54:17 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 28 Mar 2024 18:54:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VmZMoFenRoS/l86vWbY9Jb+HitMYlx4ex4/oO9GNZO9VmvfilGUL/LkJ1WS2qczDd0NMq0kHLkalvRtlC5q5ycEZhRJJcGkBWWVmpiVDGqk4i8uuD3MNkqTAM5aBM5/+9XLwT0kPLUe05mSggrrEOaAj/RZrkMaH64i784aEHKc9Su+J+8Lz1oIfRrG8OM5ciaNIw6+R2+XoIwiLQE5XwfNSuoyqSFAbEZMHqRVReue6j+IRO/JmgYOd78hu7+NN+sgMgmVT7++4Vkv21JO+8qsoK9/VSKRNE6GuF0R5pMSKc5vyEYVb5ZrxLafYYhqgbrKzlMeh9XH6wWi+Ev5hAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EDrvEidbFvTK/9Igk3FeBTB78ieeqvb5fX/O56pJV+s=;
+ b=OvzkH1VXqJdAZqX7v1cyniU/2qhO3Fczfq7T3BKzokThR8v4ivTtCnncgLA+M56TbNIxIewyggg+4zYhBG2dlc7LoMSCNmEevW37pQHnmiFaZJQ9VFtZcFPSEd5LbLopMHZFh8HPQn18jNlMEHyO6XYvniDc97HYDgopdU/lVUQOjgOiCWS5pXEigMUCfNMnjBrGoscJSQ3VFOPAGA9DcmKmEwB9uqIV5WGJxpkrGMjuo7KCyKGbMg9f1/ETfYHFL0xL/qBrSr8IfkSylMIGHmhq1UwD0BxTKIEUqTVhRhWstKEeL76/6wB1kBTZ+SRgJnbZr71ZogtKCc/UFOPLMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by PH7PR11MB5819.namprd11.prod.outlook.com (2603:10b6:510:13b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Fri, 29 Mar
+ 2024 01:54:14 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7409.031; Fri, 29 Mar 2024
+ 01:54:14 +0000
+Date: Fri, 29 Mar 2024 09:54:04 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: <isaku.yamahata@intel.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
+	<sagis@google.com>, Kai Huang <kai.huang@intel.com>, <chen.bo@intel.com>,
+	<hang.yuan@intel.com>, <tina.zhang@intel.com>
+Subject: Re: [PATCH v19 093/130] KVM: TDX: Implements vcpu
+ request_immediate_exit
+Message-ID: <ZgYfPAPToxbgGZLp@chao-email>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <3fd2824a8f77412476b58155776e88dfe84a8c73.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3fd2824a8f77412476b58155776e88dfe84a8c73.1708933498.git.isaku.yamahata@intel.com>
+X-ClientProxiedBy: SI1PR02CA0035.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::8) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240329015351.624249-1-drosen@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240329015351.624249-37-drosen@google.com>
-Subject: [RFC PATCH v4 36/36] fuse: Provide easy way to test fuse struct_op call
-From: Daniel Rosenberg <drosen@google.com>
-To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
-	Daniel Rosenberg <drosen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|PH7PR11MB5819:EE_
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GiJmcHyanj9PDWMV4J+PxHVxAgLkfy+yHs/ErnMIsJgC1pPrLu0bH5RCxJHasdonOXdyqiabzZ9BDvkU2W0339V/rrs0hAqdcpy1QkvI//HUY1AGP7mXWpAIOuL3qrYSAH4X41YvF/w8rLzhdkLT55+/TXBYDe1vZm1UCVLpuR6DW6S6YEoTk0VnPEJO2XoEUoDYgO5q9komDlQ8Com1GNGD/nBsjta1PElPlS34ZLeQKouizWog20bq496jnLKgAdv9xcNvY/u84P11OXuSExTaG3f2FVFWM3KL4rHGkheQyAjs/m9MyjBTfzi1c4vJPhPARYyXrT3mYfnGuLOgOecqZkhDygq1WqBNm/Ucxff3e5hyGZ7h17jvfdRYz/eqY3vHir8M+8rSmnj4CNw++dT389uZ1sasY22Xb8zEsrDBhjlGs/yv9p8+rfHDjNwGdr2DRpWhXAJlRXSEQThs69qHLLnmKS/TcqQy5deLkV2fvaPAxvZJd5N0PQHHRaHJjHpI9dgZokjV8XnmeqildWvMsdFi0zotcqhTpy9E8J45LTWkEgNgU3HwBvWdpsC8OVpIsTj/sH0COyNjHzXRQH913/fjTgv4vkAfTxZBbHaHhYvY8dpPfwuBnpL7yTHCMDK9xa0Bato2g7e3zNsHNw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E/aRR9ObiLfdbadr9iBOuapVz+uCJiacv4DS/3mi0AjL/FLHtQdzSq6sQgjz?=
+ =?us-ascii?Q?qHESUohHEAMTDew8q7OtEvq4JJIOBVbPiM9gvsR2OoEsOzpyAkCGm2scmZTH?=
+ =?us-ascii?Q?rvGOpmimNkwtekKz156MZKYRd29LdQ/ti0cz45vAK09Zr4SXrCagKtLXIpvr?=
+ =?us-ascii?Q?p+XUiMDxi97L3dhrrhdlA73mlvbeLJMRTO9epOtf7pRdNIxTY4SbUD5EsYhY?=
+ =?us-ascii?Q?I7gVSym2miWPD1S8m0S3hSHg+1idOoJtUYFxgZcEdXPtNVRMSPCmxsZcwAYf?=
+ =?us-ascii?Q?UhGiDwXEdBGHLy6ngWG0FYFWqqrKN863C2P8KxfCcOviJEL2DSb1wru1+2Dj?=
+ =?us-ascii?Q?U+gHNu1jyN3FyRFkDh4aDpLfm01nrPaFCXUjIDq6/1jokZFV0QGWw7ueqj8d?=
+ =?us-ascii?Q?FicPnODDjEjyQdDnLbqz4xBk7VXlu5eEPFRLlFfFyR6LbsMyHwo2O4TcPJEq?=
+ =?us-ascii?Q?Z7gt8A4tGO03uXuQeg+CItQNKEi+8/b/+dQLd28LKuc5grKp68LSb+95vZeP?=
+ =?us-ascii?Q?GQyy7Pp6P8OjzWoQPF3Z9IcQdfA2jKLS5ZFAM1JHYSXoBP/X6MuLf90unDKu?=
+ =?us-ascii?Q?EKlcI+rX+dVN5G1/oOMIbVCsF3ouO/OxTATf7RLpjaqTQxIVMdkakFtwvPPq?=
+ =?us-ascii?Q?YZ7acWKn1Bv7FjW3DW8r+gZ5vBoNZhHN5ql0HQCB3olAqS/gv/5vPG13IF1I?=
+ =?us-ascii?Q?lD9PNBXPSdEoAUa0jtVh9bogTFi3maVDDjBGOH9sOrfX90MhvGC/l+YTZlXp?=
+ =?us-ascii?Q?LsOjsrIxJtpJlAoWCYJzSzo6D1ovAI0VFB+7HtfR8dZ7O+jr28dDAXE/DpNX?=
+ =?us-ascii?Q?uC1a9CK9+XoDfsS5VIQAqidbnUm1NbnQX1PryeQtCYAe9di2sNwqUF73Z/w0?=
+ =?us-ascii?Q?ElNK05h7GAakpjVnIJTAx89qaL2j3Vi2jKudHH933cTj8H64dONl3V7hBER8?=
+ =?us-ascii?Q?Sdv09QxLtIwPYgzp/+XBRdwxlx4sJZqlRg8Cozd8d9FN1MzZvgZFZnz2u9fP?=
+ =?us-ascii?Q?/a/lgPa5Gq1sHMO54U5c1GFRCpb9EH+Ui5uZQT7wKcXax94C527FmVE3HEen?=
+ =?us-ascii?Q?qQymqiUXOYDP6NOZiOkGh2w11nz04eyJ+F1y0VBVa/7o0c4KmUZCcWKMQJFM?=
+ =?us-ascii?Q?L6fiP3zZr9ldkqBHQnA4QlC0o6IbjU2IHZm18q3G4N0bHPRxZr00+Ui7xfk5?=
+ =?us-ascii?Q?x9YDW2G7oVs6BImcic/za66rxQq0svPe62kNVFvl18vX+Z8BHSxR8fCAhzt4?=
+ =?us-ascii?Q?TrU3vAsj5YVaDXK2m2vn46YtWns8g4h+Qbnqyo6bvI8XUx7VydIzckaPQKdL?=
+ =?us-ascii?Q?+7qkzJTMMCLSUHhOhbsHsRbvvguhjWguUt7NNsAyGKpJj+dpvpMJOs0xzjVl?=
+ =?us-ascii?Q?I5bPNMliIl9U6WnUCgAz5XbpuKxEZLbBI2ZWSwbBZqELUq0c2/uxTP4TfAXt?=
+ =?us-ascii?Q?FMpDXrKyjqYQ/LYfKx02/oXybv3GOjC6QRztBHzQPYKFQDlu7m6hmBwpjyW/?=
+ =?us-ascii?Q?CoTnduNGo6SvRnwbjYnNN+TG5unSFN5wDhPNc4S1wvz3sm/F+71zu1WsgpVU?=
+ =?us-ascii?Q?U0by+AP2K8Ww4YYqC/xFNVpDvZMZdtMUP+9Zqilh?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82b81dc0-482e-40e3-b0f0-08dc4f932291
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 01:54:13.9805
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 55IyzqrnCEnTU8DbZYVLHCd/CKrjbsoSBLCfFHDAXBXFTIRrHVM6iioNIDat90U/bSPcVelDOVbWEJ6qtZ1Uyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5819
+X-OriginatorOrg: intel.com
 
-This is useful for quickly testing a struct_op program.
-I've been using this set up to test verifier changes.
+On Mon, Feb 26, 2024 at 12:26:35AM -0800, isaku.yamahata@intel.com wrote:
+>From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+>Now we are able to inject interrupts into TDX vcpu, it's ready to block TDX
+>vcpu.  Wire up kvm x86 methods for blocking/unblocking vcpu for TDX.  To
+>unblock on pending events, request immediate exit methods is also needed.
 
-I'll eventually move those sorts of tests to bpf selftests
+TDX doesn't support this immediate exit. It is considered as a potential
+attack to TDs. TDX module deploys 0/1-step mitigations to prevent this.
+Even KVM issues a self-IPI before TD-entry, TD-exit will happen after
+the guest runs a random number of instructions.
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
----
- fs/fuse/inode.c                               |  70 ++
- .../selftests/filesystems/fuse/Makefile       |   1 +
- .../filesystems/fuse/struct_op_test.bpf.c     | 642 ++++++++++++++++++
- 3 files changed, 713 insertions(+)
- create mode 100644 tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
+KVM shouldn't request immediate exits in the first place. Just emit a
+warning if KVM tries to do this.
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 67d70b3c4abb..cf9555e4be1f 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -2184,16 +2184,83 @@ static void fuse_fs_cleanup(void)
- 
- static struct kobject *fuse_kobj;
- 
-+static char struct_op_name[BPF_FUSE_NAME_MAX];
-+static struct fuse_ops *fop = NULL;
-+
-+static ssize_t struct_op_store(struct kobject *kobj,
-+		  struct kobj_attribute *attr,
-+		  const char *buf, size_t count)
-+{
-+	size_t max = count;
-+
-+	if (max > BPF_FUSE_NAME_MAX) max = BPF_FUSE_NAME_MAX;
-+	strncpy(struct_op_name, buf, max);
-+	if (struct_op_name[max-1] == '\n')
-+		struct_op_name[max-1] = 0;
-+	put_fuse_ops(fop);
-+	fop = find_fuse_ops(struct_op_name);
-+	if (!fop)
-+		printk("No struct op named %s found", struct_op_name);
-+
-+	return count;
-+}
-+
-+static ssize_t struct_op_show(struct kobject *kobj,
-+			    struct kobj_attribute *attr, char *buf)
-+{
-+	struct fuse_ops *op;
-+	uint32_t result = 0;
-+	struct bpf_fuse_meta_info meta;
-+	struct fuse_mkdir_in in;
-+	struct fuse_buffer name;
-+	char name_buff[10] = "test";
-+
-+	name.data = &name_buff[0];
-+	name.flags = BPF_FUSE_VARIABLE_SIZE;
-+	name.max_size = 10;
-+	name.size = 5;
-+
-+	op = fop;
-+	if (!op) {
-+		printk("Could not find fuse_op for %s", struct_op_name);
-+		return 0;
-+	}
-+
-+	if (op->mkdir_prefilter)
-+		result = op->mkdir_prefilter(&meta, &in, &name);
-+	else
-+		printk("No func!!");
-+
-+	printk("in->mode:%d, name:%s result:%d", in.mode, (char *)name.data, result);
-+	return sprintf(buf, "%d dyn:%s\n", result, (char *)name.data);
-+}
-+
-+static struct kobj_attribute test_attr = __ATTR_RW(struct_op);
-+
-+static struct attribute *test_attrs[] = {
-+	&test_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group test_attr_group = {
-+	.attrs = test_attrs,
-+};
-+
- static int fuse_sysfs_init(void)
- {
- 	int err;
- 
-+	memset(struct_op_name, 0, BPF_FUSE_NAME_MAX);
- 	fuse_kobj = kobject_create_and_add("fuse", fs_kobj);
- 	if (!fuse_kobj) {
- 		err = -ENOMEM;
- 		goto out_err;
- 	}
- 
-+	err = sysfs_create_group(fuse_kobj, &test_attr_group);
-+	if (err)
-+		goto tmp;
-+
- 	err = sysfs_create_mount_point(fuse_kobj, "connections");
- 	if (err)
- 		goto out_fuse_unregister;
-@@ -2202,6 +2269,8 @@ static int fuse_sysfs_init(void)
- 
-  out_fuse_unregister:
- 	kobject_put(fuse_kobj);
-+tmp:
-+	sysfs_remove_group(fuse_kobj, &test_attr_group);
-  out_err:
- 	return err;
- }
-@@ -2209,6 +2278,7 @@ static int fuse_sysfs_init(void)
- static void fuse_sysfs_cleanup(void)
- {
- 	sysfs_remove_mount_point(fuse_kobj, "connections");
-+	sysfs_remove_group(fuse_kobj, &test_attr_group);
- 	kobject_put(fuse_kobj);
- }
- 
-diff --git a/tools/testing/selftests/filesystems/fuse/Makefile b/tools/testing/selftests/filesystems/fuse/Makefile
-index b2df4dec0651..ff28859f3268 100644
---- a/tools/testing/selftests/filesystems/fuse/Makefile
-+++ b/tools/testing/selftests/filesystems/fuse/Makefile
-@@ -52,6 +52,7 @@ SELFTESTS:=$(TOOLSDIR)/testing/selftests/
- LDLIBS := -lpthread -lelf -lz
- TEST_GEN_PROGS := fuse_test fuse_daemon
- TEST_GEN_FILES := \
-+  struct_op_test.bpf.o \
- 	test.skel.h \
- 	fd.sh \
- 
-diff --git a/tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c b/tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
-new file mode 100644
-index 000000000000..2cb178d2fa0c
---- /dev/null
-+++ b/tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
-@@ -0,0 +1,642 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+// Copyright (c) 2021 Google LLC
-+
-+#include "vmlinux.h"
-+//#include <uapi/linux/bpf.h>
-+#include <linux/errno.h>
-+#include <linux/types.h>
-+//#include <linux/fuse.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_common.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define BPF_STRUCT_OPS(type, name, args...)					\
-+SEC("struct_ops/"#name)								\
-+type BPF_PROG(name, ##args)
-+
-+/*
-+struct test_struct {
-+	uint32_t a;
-+	uint32_t b;
-+};
-+
-+
-+*/
-+//struct fuse_buffer;
-+#define BPF_FUSE_CONTINUE		0
-+/*struct fuse_ops {
-+	uint32_t (*test_func)(void);
-+	uint32_t (*test_func2)(struct test_struct *a);
-+	uint32_t (*test_func3)(struct fuse_name *ptr);
-+	//u32 (*open_prefilter)(struct bpf_fuse_hidden_info meh, struct bpf_fuse_meta_info header, struct fuse_open_in foi);
-+	//u32 (*open_postfilter)(struct bpf_fuse_hidden_info meh, struct bpf_fuse_meta_info header, const struct fuse_open_in foi, struct fuse_open_out foo);
-+	char name[BPF_FUSE_NAME_MAX];
-+};
-+*/
-+extern uint32_t bpf_fuse_return_len(struct fuse_buffer *ptr) __ksym;
-+extern void bpf_fuse_get_rw_dynptr(struct fuse_buffer *buffer, struct bpf_dynptr *dynptr, u64 size, bool copy) __ksym;
-+extern void bpf_fuse_get_ro_dynptr(const struct fuse_buffer *buffer, struct bpf_dynptr *dynptr) __ksym;
-+
-+//extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
-+//extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
-+//extern void bpf_key_put(struct bpf_key *key) __ksym;
-+//extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
-+//				      struct bpf_dynptr *sig_ptr,
-+//				      struct bpf_key *trusted_keyring) __ksym;
-+
-+BPF_STRUCT_OPS(uint32_t, test_func, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_mkdir_in *in, struct fuse_buffer *name)
-+{
-+	int res = 0;
-+	struct bpf_dynptr name_ptr;
-+	char *name_buf;
-+	//char dummy[7] = {};
-+
-+	bpf_fuse_get_ro_dynptr(name, &name_ptr);
-+	name_buf = bpf_dynptr_slice(&name_ptr, 0, NULL, 4);
-+	bpf_printk("Hello test print");
-+	if (!name_buf)
-+		return -ENOMEM;
-+	if (!bpf_strncmp(name_buf, 4, "test"))
-+		return 42;	
-+
-+	//if (bpf_fuse_namecmp(name, "test", 4) == 0)
-+	//	return 42;
-+
-+	return res;
-+}
-+
-+SEC(".struct_ops")
-+struct fuse_ops test_ops = {
-+	.mkdir_prefilter = (void *)test_func,
-+	.name = "test",
-+};
-+
-+BPF_STRUCT_OPS(uint32_t, open_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_open_in *in)
-+{
-+	bpf_printk("open_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, open_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_open_in *in,
-+				struct fuse_open_out *out)
-+{
-+	bpf_printk("open_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, opendir_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_open_in *in)
-+{
-+	bpf_printk("opendir_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, opendir_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_open_in *in,
-+				struct fuse_open_out *out)
-+{
-+	bpf_printk("opendir_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, create_open_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_create_in *in, struct fuse_buffer *name)
-+{
-+	bpf_printk("create_open_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, create_open_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_create_in *in, const struct fuse_buffer *name,
-+				struct fuse_entry_out *entry_out, struct fuse_open_out *out)
-+{
-+	bpf_printk("create_open_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, release_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_release_in *in)
-+{
-+	bpf_printk("release_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, release_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_release_in *in)
-+{
-+	bpf_printk("release_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, releasedir_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_release_in *in)
-+{
-+	bpf_printk("releasedir_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, releasedir_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_release_in *in)
-+{
-+	bpf_printk("releasedir_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, flush_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_flush_in *in)
-+{
-+	bpf_printk("flush_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, flush_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_flush_in *in)
-+{
-+	bpf_printk("flush_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, lseek_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_lseek_in *in)
-+{
-+	bpf_printk("lseek_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, lseek_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_lseek_in *in,
-+				struct fuse_lseek_out *out)
-+{
-+	bpf_printk("lseek_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, copy_file_range_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_copy_file_range_in *in)
-+{
-+	bpf_printk("copy_file_range_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, copy_file_range_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_copy_file_range_in *in,
-+				struct fuse_write_out *out)
-+{
-+	bpf_printk("copy_file_range_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, fsync_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_fsync_in *in)
-+{
-+	bpf_printk("fsync_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, fsync_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_fsync_in *in)
-+{
-+	bpf_printk("fsync_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, dir_fsync_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_fsync_in *in)
-+{
-+	bpf_printk("dir_fsync_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, dir_fsync_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_fsync_in *in)
-+{
-+	bpf_printk("dir_fsync_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, getxattr_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_getxattr_in *in, struct fuse_buffer *name)
-+{
-+	bpf_printk("getxattr_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, getxattr_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_getxattr_in *in, const struct fuse_buffer *name,
-+				struct fuse_buffer *value, struct fuse_getxattr_out *out)
-+{
-+	bpf_printk("getxattr_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, listxattr_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_getxattr_in *in)
-+{
-+	bpf_printk("listxattr_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, listxattr_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_getxattr_in *in,
-+				struct fuse_buffer *value, struct fuse_getxattr_out *out)
-+{
-+	bpf_printk("listxattr_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, setxattr_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_setxattr_in *in, struct fuse_buffer *name,
-+					struct fuse_buffer *value)
-+{
-+	bpf_printk("setxattr_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, setxattr_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_setxattr_in *in, const struct fuse_buffer *name,
-+					const struct fuse_buffer *value)
-+{
-+	bpf_printk("setxattr_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, removexattr_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_buffer *name)
-+{
-+	bpf_printk("removexattr_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, removexattr_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_buffer *name)
-+{
-+	bpf_printk("removexattr_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, read_iter_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_read_in *in)
-+{
-+	bpf_printk("read_iter_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, read_iter_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_read_in *in,
-+				struct fuse_read_iter_out *out)
-+{
-+	bpf_printk("read_iter_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, write_iter_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_write_in *in)
-+{
-+	bpf_printk("write_iter_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, write_iter_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_write_in *in,
-+				struct fuse_write_iter_out *out)
-+{
-+	bpf_printk("write_iter_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, file_fallocate_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_fallocate_in *in)
-+{
-+	bpf_printk("file_fallocate_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, file_fallocate_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_fallocate_in *in)
-+{
-+	bpf_printk("file_fallocate_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, lookup_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_buffer *name)
-+{
-+	bpf_printk("lookup_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, lookup_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_buffer *name,
-+				struct fuse_entry_out *out, struct fuse_buffer *entries)
-+{
-+	bpf_printk("lookup_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, mknod_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_mknod_in *in, struct fuse_buffer *name)
-+{
-+	bpf_printk("mknod_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, mknod_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_mknod_in *in, const struct fuse_buffer *name)
-+{
-+	bpf_printk("mknod_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, mkdir_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_mkdir_in *in, struct fuse_buffer *name)
-+{
-+	bpf_printk("mkdir_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, mkdir_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_mkdir_in *in, const struct fuse_buffer *name)
-+{
-+	bpf_printk("mkdir_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, rmdir_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_buffer *name)
-+{
-+	bpf_printk("rmdir_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, rmdir_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_buffer *name)
-+{
-+	bpf_printk("rmdir_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, rename2_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_rename2_in *in, struct fuse_buffer *old_name,
-+				struct fuse_buffer *new_name)
-+{
-+	bpf_printk("rename2_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, rename2_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_rename2_in *in, const struct fuse_buffer *old_name,
-+				const struct fuse_buffer *new_name)
-+{
-+	bpf_printk("rename2_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, rename_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_rename_in *in, struct fuse_buffer *old_name,
-+				struct fuse_buffer *new_name)
-+{
-+	bpf_printk("rename_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, rename_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_rename_in *in, const struct fuse_buffer *old_name,
-+				const struct fuse_buffer *new_name)
-+{
-+	bpf_printk("rename_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, unlink_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_buffer *name)
-+{
-+	bpf_printk("unlink_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, unlink_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_buffer *name)
-+{
-+	bpf_printk("unlink_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, link_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_link_in *in, struct fuse_buffer *name)
-+{
-+	bpf_printk("link_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, link_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_link_in *in, const struct fuse_buffer *name)
-+{
-+	bpf_printk("link_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, getattr_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_getattr_in *in)
-+{
-+	bpf_printk("getattr_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, getattr_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_getattr_in *in,
-+				struct fuse_attr_out *out)
-+{
-+	bpf_printk("getattr_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, setattr_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_setattr_in *in)
-+{
-+	bpf_printk("setattr_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, setattr_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_setattr_in *in,
-+				struct fuse_attr_out *out)
-+{
-+	bpf_printk("setattr_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, statfs_prefilter, const struct bpf_fuse_meta_info *meta)
-+{
-+	bpf_printk("statfs_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, statfs_postfilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_statfs_out *out)
-+{
-+	bpf_printk("statfs_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, get_link_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_buffer *name)
-+{
-+	bpf_printk("get_link_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, get_link_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_buffer *name)
-+{
-+	bpf_printk("get_link_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, symlink_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_buffer *name, struct fuse_buffer *path)
-+{
-+	bpf_printk("symlink_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, symlink_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_buffer *name, const struct fuse_buffer *path)
-+{
-+	bpf_printk("symlink_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, readdir_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_read_in *in)
-+{
-+	bpf_printk("readdir_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, readdir_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_read_in *in,
-+				struct fuse_read_out *out, struct fuse_buffer *buffer)
-+{
-+	bpf_printk("readdir_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, access_prefilter, const struct bpf_fuse_meta_info *meta,
-+				struct fuse_access_in *in)
-+{
-+	bpf_printk("access_prefilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+BPF_STRUCT_OPS(uint32_t, access_postfilter, const struct bpf_fuse_meta_info *meta,
-+				const struct fuse_access_in *in)
-+{
-+	bpf_printk("access_postfilter");
-+	return BPF_FUSE_CONTINUE;
-+}
-+
-+SEC(".struct_ops")
-+struct fuse_ops trace_ops = {
-+	.open_prefilter = (void *)open_prefilter,
-+	.open_postfilter = (void *)open_postfilter,
-+
-+	.opendir_prefilter = (void *)opendir_prefilter,
-+	.opendir_postfilter = (void *)opendir_postfilter,
-+
-+	.create_open_prefilter = (void *)create_open_prefilter,
-+	.create_open_postfilter = (void *)create_open_postfilter,
-+
-+	.release_prefilter = (void *)release_prefilter,
-+	.release_postfilter = (void *)release_postfilter,
-+
-+	.releasedir_prefilter = (void *)releasedir_prefilter,
-+	.releasedir_postfilter = (void *)releasedir_postfilter,
-+
-+	.flush_prefilter = (void *)flush_prefilter,
-+	.flush_postfilter = (void *)flush_postfilter,
-+
-+	.lseek_prefilter = (void *)lseek_prefilter,
-+	.lseek_postfilter = (void *)lseek_postfilter,
-+
-+	.copy_file_range_prefilter = (void *)copy_file_range_prefilter,
-+	.copy_file_range_postfilter = (void *)copy_file_range_postfilter,
-+
-+	.fsync_prefilter = (void *)fsync_prefilter,
-+	.fsync_postfilter = (void *)fsync_postfilter,
-+
-+	.dir_fsync_prefilter = (void *)dir_fsync_prefilter,
-+	.dir_fsync_postfilter = (void *)dir_fsync_postfilter,
-+
-+	.getxattr_prefilter = (void *)getxattr_prefilter,
-+	.getxattr_postfilter = (void *)getxattr_postfilter,
-+
-+	.listxattr_prefilter = (void *)listxattr_prefilter,
-+	.listxattr_postfilter = (void *)listxattr_postfilter,
-+
-+	.setxattr_prefilter = (void *)setxattr_prefilter,
-+	.setxattr_postfilter = (void *)setxattr_postfilter,
-+
-+	.removexattr_prefilter = (void *)removexattr_prefilter,
-+	.removexattr_postfilter = (void *)removexattr_postfilter,
-+
-+	.read_iter_prefilter = (void *)read_iter_prefilter,
-+	.read_iter_postfilter = (void *)read_iter_postfilter,
-+
-+	.write_iter_prefilter = (void *)write_iter_prefilter,
-+	.write_iter_postfilter = (void *)write_iter_postfilter,
-+
-+	.file_fallocate_prefilter = (void *)file_fallocate_prefilter,
-+	.file_fallocate_postfilter = (void *)file_fallocate_postfilter,
-+
-+	.lookup_prefilter = (void *)lookup_prefilter,
-+	.lookup_postfilter = (void *)lookup_postfilter,
-+
-+	.mknod_prefilter = (void *)mknod_prefilter,
-+	.mknod_postfilter = (void *)mknod_postfilter,
-+
-+	.mkdir_prefilter = (void *)mkdir_prefilter,
-+	.mkdir_postfilter = (void *)mkdir_postfilter,
-+
-+	.rmdir_prefilter = (void *)rmdir_prefilter,
-+	.rmdir_postfilter = (void *)rmdir_postfilter,
-+
-+	.rename2_prefilter = (void *)rename2_prefilter,
-+	.rename2_postfilter = (void *)rename2_postfilter,
-+
-+	.rename_prefilter = (void *)rename_prefilter,
-+	.rename_postfilter = (void *)rename_postfilter,
-+
-+	.unlink_prefilter = (void *)unlink_prefilter,
-+	.unlink_postfilter = (void *)unlink_postfilter,
-+
-+	.link_prefilter = (void *)link_prefilter,
-+	.link_postfilter = (void *)link_postfilter,
-+
-+	.getattr_prefilter = (void *)getattr_prefilter,
-+	.getattr_postfilter = (void *)getattr_postfilter,
-+
-+	.setattr_prefilter = (void *)setattr_prefilter,
-+	.setattr_postfilter = (void *)setattr_postfilter,
-+
-+	.statfs_prefilter = (void *)statfs_prefilter,
-+	.statfs_postfilter = (void *)statfs_postfilter,
-+
-+	.get_link_prefilter = (void *)get_link_prefilter,
-+	.get_link_postfilter = (void *)get_link_postfilter,
-+
-+	.symlink_prefilter = (void *)symlink_prefilter,
-+	.symlink_postfilter = (void *)symlink_postfilter,
-+
-+	.readdir_prefilter = (void *)readdir_prefilter,
-+	.readdir_postfilter = (void *)readdir_postfilter,
-+
-+	.access_prefilter = (void *)access_prefilter,
-+	.access_postfilter = (void *)access_postfilter,
-+
-+	.name = "trace_pre_ops",
-+};
--- 
-2.44.0.478.gd926399ef9-goog
-
+>
+>Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+>---
+> arch/x86/kvm/vmx/main.c | 12 +++++++++++-
+> 1 file changed, 11 insertions(+), 1 deletion(-)
+>
+>diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+>index f2c9d6358f9e..ee6c04959d4c 100644
+>--- a/arch/x86/kvm/vmx/main.c
+>+++ b/arch/x86/kvm/vmx/main.c
+>@@ -372,6 +372,16 @@ static void vt_enable_irq_window(struct kvm_vcpu *vcpu)
+> 	vmx_enable_irq_window(vcpu);
+> }
+> 
+>+static void vt_request_immediate_exit(struct kvm_vcpu *vcpu)
+>+{
+>+	if (is_td_vcpu(vcpu)) {
+>+		__kvm_request_immediate_exit(vcpu);
+>+		return;
+>+	}
+>+
+>+	vmx_request_immediate_exit(vcpu);
+>+}
+>+
+> static u8 vt_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+> {
+> 	if (is_td_vcpu(vcpu))
+>@@ -549,7 +559,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+> 	.check_intercept = vmx_check_intercept,
+> 	.handle_exit_irqoff = vmx_handle_exit_irqoff,
+> 
+>-	.request_immediate_exit = vmx_request_immediate_exit,
+>+	.request_immediate_exit = vt_request_immediate_exit,
+> 
+> 	.sched_in = vt_sched_in,
+> 
+>-- 
+>2.25.1
+>
+>
 
