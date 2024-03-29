@@ -1,169 +1,118 @@
-Return-Path: <linux-kernel+bounces-124392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD8B28916E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D55CF8916E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:34:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638091F24498
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:32:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5691F244D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DCD69D3A;
-	Fri, 29 Mar 2024 10:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="JNdgM0t4"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BC9657C6;
+	Fri, 29 Mar 2024 10:34:15 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A73F1E52F;
-	Fri, 29 Mar 2024 10:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C7227471;
+	Fri, 29 Mar 2024 10:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711708341; cv=none; b=HfOw7qAi6w46yPixCLXVlkrQFZ07fGrSV0I3Pddi3Ke6/6ma2myxtg1899NOkOD8IKYoOs8QVwRBM1rcClceWpkfPdJiRcNsx1xO3qNJy///dESTmESXSsKO+WiLfK4YTXFzw2msILkBOcTDnarUGvVF7VBUxKrDruncAADvLv8=
+	t=1711708455; cv=none; b=nmAFwJ9UlLoobmhNT/p74Jb5I29Qn3dxh4gmGa1/biKyRvZQzJlKFboybhA+ruiY6aobMVJ+YRyTmwChOMc4CqTixwMZQDs/ochGnevTnMpb/6FJ1N0pkbQ/mxRkiAqYYuJkPtUR2N9az/v82FxP/Mg3oU+eWQN95WAexolPwbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711708341; c=relaxed/simple;
-	bh=iJRVYl2TkqJgkeeArpXXpoPMdu4mwFR/AAzovQ2QJdk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dq1JVeExlFlRHWRu/dMbnCB5xMEhpT59AjXa6cUY1I+nBNLLGXZsYpcbQl2eKbxIS8HpY6m14jO1XuXqKryvO06eZ2YrF0xqn8NCjOZXrhuorRmqLq9gCbwR16wqwPKFk20B75JCS4MKFagR3LcvwUPNq3uzgaDGPlMcN1gEEhc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=JNdgM0t4; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1711708339; x=1743244339;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iJRVYl2TkqJgkeeArpXXpoPMdu4mwFR/AAzovQ2QJdk=;
-  b=JNdgM0t4DhfGDJF/S4hODV4utVfr2jQKYX4JhyW0d4VyZ5WgX3JJwxFy
-   G2EuPdg61wJV9buFyiXlZNK0YV20lbRCGimdwUNjqM93UjGml1f16gxC3
-   TfkU8v5317jUkrq/6NN3h3urx5uyMc6YB8UIKs2F84ahPr+Q3URK0a2Dk
-   xmzZPMJut+ENyrBjiOqvkaNSyofpQ+MNxq4g1hHaNHFm3TVP6jBuOC3WM
-   ZV4TMBV9kFOyvH6Z7G4qvM7E4vUzP9/XnS3lA6PgKRWLK3LNvZ17eM1uI
-   fKF8cLr0F+BuZeURQcr8YfAwMox9cNPiD67M45yCtNmFNktO7U79npaNB
-   A==;
-X-CSE-ConnectionGUID: GFew/kMnS6C07Mq7X0KFUQ==
-X-CSE-MsgGUID: tzrsQPFdTKSvpMZ+9j+6Lw==
-X-IronPort-AV: E=Sophos;i="6.07,164,1708412400"; 
-   d="asc'?scan'208";a="185901778"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2024 03:32:17 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 29 Mar 2024 03:32:02 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 29 Mar 2024 03:31:58 -0700
-Date: Fri, 29 Mar 2024 10:31:10 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Max Hsu <max.hsu@sifive.com>
-CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Pavel
- Machek <pavel@ucw.cz>, Anup Patel <anup@brainfault.org>, Atish Patra
-	<atishp@atishpatra.org>, Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, Palmer Dabbelt <palmer@sifive.com>,
-	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RFC 02/11] dt-bindings: riscv: Add Sdtrig optional CSRs
- existence on DT
-Message-ID: <20240329-affidavit-anatomist-1118a12c3e60@wendy>
-References: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
- <20240329-dev-maxh-lin-452-6-9-v1-2-1534f93b94a7@sifive.com>
+	s=arc-20240116; t=1711708455; c=relaxed/simple;
+	bh=KG92pe3DBAHh2WhqPReKxHjjE5aM10J77GB1apHyhss=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=NbWkYSB8A+6h00DlhUxoaVl0BB4oZ1L96qrGuqdW7phonrMSuNC3NF57+uMPYLYB2anhUBYlFu32XAe75V/U1ZfWmPbA15Q5AURC73e9fCGqZCURhLknkmmylLCXAlFmLBIeXILGURCRb8o/BRmL6Phyoz6JweNm3oUUqJA5Wqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4V5cCh4rz0zNmlF;
+	Fri, 29 Mar 2024 18:32:00 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id B3863140259;
+	Fri, 29 Mar 2024 18:34:03 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 29 Mar 2024 18:34:02 +0800
+Message-ID: <d6c779a5-e4b1-4f21-b4f0-6b37b212890f@huawei.com>
+Date: Fri, 29 Mar 2024 18:34:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qvN9g2Kofm3vp+Ez"
-Content-Disposition: inline
-In-Reply-To: <20240329-dev-maxh-lin-452-6-9-v1-2-1534f93b94a7@sifive.com>
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
+	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
+	<pabeni@redhat.com>, <jiri@resnulli.us>, <horms@kernel.org>,
+	<rkannoth@marvell.com>, <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+	<liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V6 net-next 3/4] net: hns3: dump more reg info based on
+ ras mod
+To: Jakub Kicinski <kuba@kernel.org>
+References: <20240327114330.1826631-1-shaojijie@huawei.com>
+ <20240327114330.1826631-4-shaojijie@huawei.com>
+ <20240328191130.47242c8f@kernel.org>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20240328191130.47242c8f@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
---qvN9g2Kofm3vp+Ez
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 05:26:18PM +0800, Max Hsu wrote:
-> The mcontext/hcontext/scontext CSRs are optional in the Sdtrig extension,
-> to prevent RW operations to the missing CSRs, which will cause
-> illegal instructions.
->=20
-> As a solution, we have proposed the dt format for these CSRs.
+on 2024/3/29 10:11, Jakub Kicinski wrote:
+> On Wed, 27 Mar 2024 19:43:29 +0800 Jijie Shao wrote:
+>> +	}, {
+>> +		.reg_name = "MIB_TX/RX_BAD_PKTS",
+>> +		.reg_offset_group = {19, 18, 29, 28},
+>> +		.group_size = 4
+>> +	}, {
+>> +		.reg_name = "MIB_TX/RX_GOOD_PKTS",
+>> +		.reg_offset_group = {21, 20, 31, 30},
+>> +		.group_size = 4
+>> +	}, {
+>> +		.reg_name = "MIB_TX/RX_TOTAL_PKTS",
+>> +		.reg_offset_group = {23, 22, 33, 32},
+>> +		.group_size = 4
+>> +	}, {
+>> +		.reg_name = "MIB_TX/RX_PAUSE_PKTS",
+>> +		.reg_offset_group = {25, 24, 35, 34},
+>> +		.group_size = 4
+>> +	}, {
+>> +		.reg_name = "MIB_TX_ERR_ALL_PKTS",
+>> +		.reg_offset_group = {27, 26},
+>> +		.group_size = 2
+>> +	}, {
+>> +		.reg_name = "MIB_RX_FCS_ERR_PKTS",
+>> +		.reg_offset_group = {37, 36},
+>> +		.group_size = 2
+> These seem to be duplicating standard stats from rtnl_link_stats64,
+> ethtool_pause_stats, ethtool_eth_mac_stats, etc.
+>
+> You can add device specific stats, but please don't duplicate
+> stats for which we have standard APIs.
 
-As I mentioned in your other patch, I amn't sure what the actual value
-is in being told about "sdtrig" itself if so many of the CSRs are
-optional. I think we should define pseudo extensions that represent
-usable subsets that are allowed by riscv,isa-extensions, such as
-those you describe here: sdtrig + mcontext, sdtrig + scontext and
-sdtrig + hcontext. Probably also for strig + mscontext. What
-additional value does having a debug child node give us that makes
-it worth having over something like the above?
+Yeah, but these are not duplicate stats for ethtool or debugfs.
 
-Thanks,
-Conor.
+Generally, driver will reset to restore the normal state.
+After the reset, many registers are cleared. Therefore,
+it is difficult to analyze the reason of RAS.
 
->=20
-> Signed-off-by: Max Hsu <max.hsu@sifive.com>
-> ---
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
-ation/devicetree/bindings/riscv/cpus.yaml
-> index d87dd50f1a4b..c713a48c5025 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -137,6 +137,24 @@ properties:
->        DMIPS/MHz, relative to highest capacity-dmips-mhz
->        in the system.
-> =20
-> +  debug:
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        const: riscv,debug-v1.0.0
-> +      trigger-module:
-> +        type: object
-> +        description: |
-> +          An indication set of optional CSR existence from
-> +          riscv-debug-spec Sdtrig extension
-> +        properties:
-> +          mcontext-present:
-> +            type: boolean
-> +          hcontext-present:
-> +            type: boolean
-> +          scontext-present:
-> +            type: boolean
-> +
->  anyOf:
->    - required:
->        - riscv,isa
->=20
-> --=20
-> 2.43.2
->=20
+We wang to add this information only when RAS is occurring, And
+these information will help to analyze the reason of RAS.
 
---qvN9g2Kofm3vp+Ez
-Content-Type: application/pgp-signature; name="signature.asc"
+these information does not appear in any new API.
 
------BEGIN PGP SIGNATURE-----
+Therefore, we hope that we can add this information to
+reduce the difficulty of analyzing certain issues.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgaYbgAKCRB4tDGHoIJi
-0lR6APsFCJD2xF6mivD5+737cpFwlpgCAnMllMxOmWsck2HUJgD9EN3UFh3/VEM/
-G9adYYLQT0pjKI5lJOtelWT/0qhIsg4=
-=evUa
------END PGP SIGNATURE-----
+Jijie
 
---qvN9g2Kofm3vp+Ez--
 
