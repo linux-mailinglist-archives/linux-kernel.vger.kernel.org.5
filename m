@@ -1,145 +1,109 @@
-Return-Path: <linux-kernel+bounces-124094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3BC89122C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:49:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F9D389122E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CEF828A099
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:49:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 814FD1C234D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A6F39FD7;
-	Fri, 29 Mar 2024 03:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F382B39FFF;
+	Fri, 29 Mar 2024 03:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MDx+ur1e"
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i3iISElt"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5108E2E3E4
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1121DA4D;
+	Fri, 29 Mar 2024 03:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711684140; cv=none; b=Y8ml09k1YzXAtbtQ8ydpUxVTAuVrGL+FTV/XsFLlEkuLTcN4/MW3F84bKbcmma0J/tJwffwINV2uSx/stodIQrIIp6npDUbiWckQuU5Dy7Z7hWMGLR+KtnmSdM5kgiKeSTnx54vFQAxXwIQ8K2/AwCKan4/JDnGevStJltXgPIU=
+	t=1711684167; cv=none; b=dD77QxaGJoZkqtC4Paev9MLF+RbuJIIRGLfCa/gmtf8T/JpJ6dtD4ozxTrMAzMiMVm8VHkbZ5eCMbtTGrnuj6rzs1hF7XT4VoKOa8VnXyIYazQ0o1nyvAUC2NPwhYB92bD4LVO3Ixc3KOznU1Hk8UamWJcP/ZIAy8nXCLvCjm9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711684140; c=relaxed/simple;
-	bh=iYpyGSKz67JfOWGPXQAIeOlsiBo0FH9Kf4YBYEJJw6Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p8Le0x8FxjNL2pTabW+Ka6Bi0bEFOL1Gaezi09OYrNu8piLcoC5cHLp7mp24K0IWCOzivV/IvDMZ1Zd1oKlH9SUo9L7wjFWxW93E+CcEWTC0JtcYtmHLPphZ6J2ZlQSN+klWOR5Ylm8f69BszWd315V6jLYP/TG6xAUyuJLpf4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MDx+ur1e; arc=none smtp.client-ip=209.85.160.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-229a90b7aa9so817143fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 20:48:59 -0700 (PDT)
+	s=arc-20240116; t=1711684167; c=relaxed/simple;
+	bh=rbYNru4FvZk9/qOjGtXreS+71shEPoNntVgIjjLgs3Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uWVEqGR3VVLGolJNLKpoEIOF8cvcCDAAu0dE2XirxMmRH2QqY52zfdkEz5KNmBfrvlAgabIpO7jd8qZywP2rRcv3JT1jvz/PClnxAXw2EeDgWzlC+v4wlE6mZqG5DL67KQ2uBcEyQChNRBfHGpnRszuUN6b3JmfkQFYukVI0qOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i3iISElt; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a522ae3747so721733eaf.1;
+        Thu, 28 Mar 2024 20:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711684138; x=1712288938; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9NF1vh87Z3mwXJDlnEmyzUpBERWIz9npu85xKfyBrrY=;
-        b=MDx+ur1eKD3xF2h3SIYuVNRbtsDEGxYhTiQbkOEOaV2LbF6U643n16NIkJ/gVbxr6E
-         WDbAfrYJXqFdgaJRFOXNYK5KYJObGOOsxtj0VHKuRGqAdqlspkW4iKeab6PfE9nDFD5n
-         Vy6wf58oc00JtCbTGVxOViVEIgFRMQDGJ4fZ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711684138; x=1712288938;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711684165; x=1712288965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9NF1vh87Z3mwXJDlnEmyzUpBERWIz9npu85xKfyBrrY=;
-        b=Owwp6GB6ctASRMp9rTRSk2LTb1YiIxX/COvQOZeUgjsjc7PCEw+o/0vjoCl8rCVr6O
-         ZDsC0crcpzQ5xiak9/xuZOsux0+nkjmSVDrEOS7ThNN+o5S096K1LvSL7Pp6gXJweVTD
-         DnrLnr/SrfYZZ85xRjQVXGbF1acekL7KyCl5BaWIEWhV/l0NN1Nd6DsspQV7mM4SPnEo
-         FlXosGW9yuHBOt9qSY5QdWyiNjxt9r1MCRg6XhprhPDzZvr+q/WMZtOBO0k3h9eDVkNy
-         tsoT2W7UaNDXHYOUf1slKsiUCAdyw8e1j7P7gJL+KD3dxvQLK/PQ7GWemMwMTP97xduq
-         3XHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUDcrLNur0aUYu7BPs02mfH/X2f/VvUi/eLNtiJg9I8aMP7qxztjtTU/p6If64v4ShvblnThEV6XUp5OtBsBfGv0S2/BZb1S5Z+Mn+t
-X-Gm-Message-State: AOJu0YyPqNWjkX2EndWi1dLqADT98N7LYREkeHQUb875gXHPTEClH/8P
-	Ao2mD+b4yCdK/K9QuaAbYHzO9dZFPcL0IPv4o6MQ2RsuJ5TeIPRSMIvqSEeBBg==
-X-Google-Smtp-Source: AGHT+IGQs8fjf0+Vmp4A35QFugKx0uuEDSNICTAyKaS9T2G734eBLS/S51FKX5YTQJDDiK+jnuUQ8Q==
-X-Received: by 2002:a05:6870:42:b0:22a:8443:45bb with SMTP id 2-20020a056870004200b0022a844345bbmr873513oaz.47.1711684138431;
-        Thu, 28 Mar 2024 20:48:58 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y12-20020aa7804c000000b006e6b41511fdsm2221794pfm.94.2024.03.28.20.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 20:48:57 -0700 (PDT)
-Date: Thu, 28 Mar 2024 20:48:57 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Phillip Lougher <phillip@squashfs.org.uk>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] Squashfs: replace deprecated strncpy with strscpy
-Message-ID: <202403282044.30A82BA37@keescook>
-References: <20240328-strncpy-fs-squashfs-namei-c-v1-1-5c7bcbbeb675@google.com>
+        bh=rbYNru4FvZk9/qOjGtXreS+71shEPoNntVgIjjLgs3Q=;
+        b=i3iISElt9bZINTFR/6KkisXu99/RDm5d7LtGz19WERl+zZ5x6lU1OcKKa5rtL2UM6a
+         47SHgd4/nwkPOFyMlb/P/L9Y5YkMpL5CNGL3lvqFjNcE+wyzqWQLyMzBElke2vTHLFWc
+         1rFsyqM4yGyLDMh7bnNJT4+cvUH+ny1sgc2fRt6+1EBnSbTC4isl47vKtRAWZLU1S6S8
+         qgdm7qaDBWvyUmjpt2J6hC0JDtL2UoAeTbatS2XAje+nsSalcLJzYxDaiXauI/NEeQM9
+         AfdbQoif+VZg1q7KcGvUdgHe3dyjUz6CtFC9aoH48voyVIiPazochwjv6LcUTHd0lsst
+         PfYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711684165; x=1712288965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rbYNru4FvZk9/qOjGtXreS+71shEPoNntVgIjjLgs3Q=;
+        b=N6AWNOAB/akqRicEfrRFzly2SMSAR8aEcW124AdUxDJBWwYitwjedZpgc0u200Jn0E
+         k/V+zCQxOoMoQsp/gCqY2aYB0dRZU10WW+uBqaK8rkKQgdp3oFi3jIlJBRRQ5ZklIGfk
+         ux0KHyowqp2DE5k0B6gOOc/vHMmYxTA64ER9EyJrAbW4RvDFxY5gy/IA4SZJ+ZkWuCPu
+         6q6p4OP+PB9tBazejQSJri73arkC2IVvShkoEsJdez7ja9hzbEVOilI4NOX45UONpXPK
+         mSOrWZ6Qyb/z9RFDRiRBdRFogvlWaT6JON++9s+C9mhHJMMNoQFUo30RTvb1e0dWArCM
+         gxPA==
+X-Forwarded-Encrypted: i=1; AJvYcCVm/2/8YVJP27VvdONNbhDPibe4yQBJHu3npL7QgloDXEYGquj2B/9gdb4cga6MGr2boPBH8ALBcqrN8dhHKPXKt2TORCXg1vd8Gx1Jfc6s1M0qTUawt/qwokI0oi/93dvXtddY65hx+A==
+X-Gm-Message-State: AOJu0YwrBbx8NMBSJ77gFUJEA2EvH15GrwgQ6rzjEnFOGUm9iPFBnyM3
+	O1i9RYDxvASlNJtXZJYtaJNF/ZNSy9NOq2RM9saQAeIuooeCMJWFnSjmMoNclwuPinruuKzh7Ds
+	fJaYMqjmjy5e/BVJAgbeYaCjFCKo=
+X-Google-Smtp-Source: AGHT+IGY696uQzEFN9nM4AzEb0MgJ37NkFzNoqo9gX0ZSgGVDWoHvK0+IqwNyDR0VO7NoE+/Zw1U+8f4i1NvVIgNIgQ=
+X-Received: by 2002:a05:6870:972b:b0:229:7f31:6877 with SMTP id
+ n43-20020a056870972b00b002297f316877mr552817oaq.4.1711684164989; Thu, 28 Mar
+ 2024 20:49:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328-strncpy-fs-squashfs-namei-c-v1-1-5c7bcbbeb675@google.com>
+References: <20240328014029.9710-1-animeshagarwal28@gmail.com> <5b917ec7-f8f8-489c-a804-70ea603262dd@linaro.org>
+In-Reply-To: <5b917ec7-f8f8-489c-a804-70ea603262dd@linaro.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Fri, 29 Mar 2024 09:19:13 +0530
+Message-ID: <CAE3Oz80_GuCJLNSPz1AL194-jFKPowxkJ852T90CjGfP+=nYfQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: ti,pcm1681: Convert to dtschema
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 09:52:59PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> The previous code took special care of NUL-terminating the destination
-> buffer via a manual assignment. As such, there is no bug in the current
-> implementation. However, in an effort to rid the kernel of strscpy()
+On Thu, Mar 28, 2024 at 2:27=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> Why not existing driver maintainers? Do you have this device? Or use it,
+> or care in terms of your projects?
 
-typo: rid kernel of strncpy. :)
+I'll change it to the current maintainers of the bindings.
 
-> [2], Let's instead use strscpy() which guarantees this behavior [3]. To
-> ensure we can copy the same number of bytes as before, add 1 to the
-> length argument provided to strscpy().
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90 [2]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html  [3]
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  fs/squashfs/namei.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/squashfs/namei.c b/fs/squashfs/namei.c
-> index 11e4539b9eae..6c4704ba8f42 100644
-> --- a/fs/squashfs/namei.c
-> +++ b/fs/squashfs/namei.c
-> @@ -80,8 +80,7 @@ static int get_dir_index_using_name(struct super_block *sb,
->  	}
->  
->  	str = &index->name[SQUASHFS_NAME_LEN + 1];
-> -	strncpy(str, name, len);
-> -	str[len] = '\0';
-> +	strscpy(str, name, len + 1);
+> Missing dai-cells, $ref to dai-common and unevaluatedProperties: false,
+> just like in other simple DAI devices. Mention briefly in the commit msg
+> adding these ("Make bindings complete by adding #sound-dai-cells").
 
-Otherwise, yeah, looks right.
+Sure, I'll add it.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> Datasheet says it is dac, but we usually call it "audio-codec".
+>
 
--Kees
+Noted.
 
->  
->  	for (i = 0; i < i_count; i++) {
->  		err = squashfs_read_metadata(sb, index, &index_start,
-> 
-> ---
-> base-commit: 928a87efa42302a23bb9554be081a28058495f22
-> change-id: 20240328-strncpy-fs-squashfs-namei-c-9d01b8975e53
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
-
--- 
-Kees Cook
+Thanks and Regards,
+Animesh Agarwal
 
