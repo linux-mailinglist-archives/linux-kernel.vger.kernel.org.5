@@ -1,65 +1,62 @@
-Return-Path: <linux-kernel+bounces-124776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD759891C7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:51:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 936F1891C5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:48:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE4E5B24664
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:48:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64701C241EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A858018522C;
-	Fri, 29 Mar 2024 12:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62749185F0D;
+	Fri, 29 Mar 2024 12:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oHjZ0Kps"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oXteeCvF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC1E185213;
-	Fri, 29 Mar 2024 12:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBF0185237;
+	Fri, 29 Mar 2024 12:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716124; cv=none; b=X9VwY9zxPYXLnL4KX5JdoTAmcCzbVjeU806WICZspYy4Gn7M30SfTC3IRb7IQqw4LT8UND35sbxLhBfXlZReG7VVRB1ocmUEITp4KoZ/gw5oLwtPxpN2w9V9yhmj/aNauL0MWgOBgZW1cadN+CUKwi08gmHn5XBwZJ+le1gnUTI=
+	t=1711716125; cv=none; b=gn9IJUmlk/Mw4Nuzcl/c2nEEBcRBOPwKOop90ShHZe9P9DZFNAHmehROj5PLPFERM2vPxuT6bXBnRyDfgBcyo3ZAjHtmECjmpYpCK/J98sx8zrjhVqGQx3QKiSYhaQ7u1pB36OcyeVnlSefDarKx4uXxTsxg+Jdmu0CtpSRPUEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716124; c=relaxed/simple;
-	bh=Gy/fCpdLTfmFkgTs9RjvmJNa3ujJqwIxDi6ILMKZabo=;
+	s=arc-20240116; t=1711716125; c=relaxed/simple;
+	bh=fbR+5U4rESsw5v4xXsfCY68N3QJWqm7u3XMhqCXZziY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q4PfxWf3JoujvW/TNjQcMExAS7AGQTvjm/tyIU87xQ41oKt363Qn71SLktCdfpVuUAANQvZ8wHHlI7CLF8bm10DZILTbUi+jAElp5ESLVvqgJ+NpZC3r1BFn0RMmpCyoA6N1dADVDU4AqnJMvEcoX5CgFFYJTTBLRHOl5WvI5Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oHjZ0Kps; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2B25C433F1;
-	Fri, 29 Mar 2024 12:42:01 +0000 (UTC)
+	 MIME-Version; b=c+rOrSSCwIEs3oPSwsGgbwzp7LNzIw5MlFDc9YlIzzGTGbByL7kZglS7AcsiHeuoJIe1UB9G6Ebi1bydpeLzh3OzS2rs2+fcjc/TEE5QSgzD1iNy/6Jb/noIeKqQwDfOPtBzQE3wJdpfS18Y/VSybdncfWFo80RrpZ7VRrW7cGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oXteeCvF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5FA6C433C7;
+	Fri, 29 Mar 2024 12:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716123;
-	bh=Gy/fCpdLTfmFkgTs9RjvmJNa3ujJqwIxDi6ILMKZabo=;
+	s=k20201202; t=1711716125;
+	bh=fbR+5U4rESsw5v4xXsfCY68N3QJWqm7u3XMhqCXZziY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oHjZ0Kps3vOgNYxhS+346XgvBVNl6tWev2SgQ/b8CXkk6S+CcOdrOTJJiWPcPzKN7
-	 n+mXFwF3i6vFzpptcRCD1tXnYL+wJoXBc8dCzX0u0hdxgkWG3O/fc4ITLgNjV1yiNU
-	 1penVTT59Q2OMIwIih09pzdndoKXTKNTXRvGLwHn5LDzpIZb34Docwe3tEllU/JBk2
-	 T7KSt9BpLp5rGQfjM8DRRG4dB9iFwR5mgKnwHPhdTNqTBRcoAJTTHeMZ8nMytEZWBI
-	 XsFf0QqhxkeyPAPDNBlpE6hU/vRLOxPg6rqq9mAGShDzNS3pZ2MGn+diyoZ+9JI9Cx
-	 MuIGtukZ2o6uw==
+	b=oXteeCvFmjI8ppeGdtjGpsj/IrW6F9GloqXBtF81nOiUFgKxTZPpnXOuGFMV+r1VE
+	 HIQIlEf11Trph7Hbk6nJ18lntcsylWlzbcMOyhDctBf+KP2B9JuTTNOjuaKDlvh3w/
+	 +UzUjGgLrnbTTB01UYNRebQIQRIMTXnZR30v10kPHyZo2951Bdf0IDDjQS3eBJlCnF
+	 cxKLx+a4i8JnsTNOr51wwcdWUn4gMwIM6hznul8t/KSP1r5gyuMQ5HN+l8GKcwbxXJ
+	 KYwmNfpMFmG+ZGdWfny2dr9vnoEbQ/T6ZM1nAbnBmCCJpYQARrJpuZ+rAV72wSw5ty
+	 4ULIMiPbVHWXA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	Michael Shavit <mshavit@google.com>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Mostafa Saleh <smostafa@google.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Moritz Fischer <moritzf@google.com>,
-	Will Deacon <will@kernel.org>,
+Cc: Daniel Drake <drake@endlessos.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jian-Hong Pan <jhp@endlessos.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	joro@8bytes.org,
-	jgg@ziepe.ca,
-	robin.murphy@arm.com,
-	baolu.lu@linux.intel.com,
-	linux-arm-kernel@lists.infradead.org,
-	iommu@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.8 66/98] iommu/arm-smmu-v3: Hold arm_smmu_asid_lock during all of attach_dev
-Date: Fri, 29 Mar 2024 08:37:37 -0400
-Message-ID: <20240329123919.3087149-66-sashal@kernel.org>
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 67/98] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+Date: Fri, 29 Mar 2024 08:37:38 -0400
+Message-ID: <20240329123919.3087149-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -74,130 +71,97 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Daniel Drake <drake@endlessos.org>
 
-[ Upstream commit 9f7c68911579bc15c57d227d021ccd253da2b635 ]
+[ Upstream commit cdea98bf1faef23166262825ce44648be6ebff42 ]
 
-The BTM support wants to be able to change the ASID of any smmu_domain.
-When it goes to do this it holds the arm_smmu_asid_lock and iterates over
-the target domain's devices list.
+The Asus B1400 with original shipped firmware versions and VMD disabled
+cannot resume from suspend: the NVMe device becomes unresponsive and
+inaccessible.
 
-During attach of a S1 domain we must ensure that the devices list and
-CD are in sync, otherwise we could miss CD updates or a parallel CD update
-could push an out of date CD.
+This appears to be an untested D3cold transition by the vendor; Intel
+socwatch shows that Windows leaves the NVMe device and parent bridge in D0
+during suspend, even though these firmware versions have StorageD3Enable=1.
 
-This is pretty complicated, and almost works today because
-arm_smmu_detach_dev() removes the master from the linked list before
-working on the CD entries, preventing parallel update of the CD.
+The NVMe device and parent PCI bridge both share the same "PXP" ACPI power
+resource, which gets turned off as both devices are put into D3cold during
+suspend. The _OFF() method calls DL23() which sets a L23E bit at offset
+0xe2 into the PCI configuration space for this root port.  This is the
+specific write that the _ON() routine is unable to recover from. This
+register is not documented in the public chipset datasheet.
 
-However, it does have an issue where the CD can remain programed while the
-domain appears to be unattached. arm_smmu_share_asid() will then not clear
-any CD entriess and install its own CD entry with the same ASID
-concurrently. This creates a small race window where the IOMMU can see two
-ASIDs pointing to different translations.
+Disallow D3cold on the PCI bridge to enable successful suspend/resume.
 
-       CPU0                                   CPU1
-arm_smmu_attach_dev()
-   arm_smmu_detach_dev()
-     spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-     list_del(&master->domain_head);
-     spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-
-				      arm_smmu_mmu_notifier_get()
-				       arm_smmu_alloc_shared_cd()
-					arm_smmu_share_asid():
-                                          // Does nothing due to list_del above
-					  arm_smmu_update_ctx_desc_devices()
-					  arm_smmu_tlb_inv_asid()
-				       arm_smmu_write_ctx_desc()
-					 ** Now the ASID is in two CDs
-					    with different translation
-
-     arm_smmu_write_ctx_desc(master, IOMMU_NO_PASID, NULL);
-
-Solve this by wrapping most of the attach flow in the
-arm_smmu_asid_lock. This locks more than strictly needed to prepare for
-the next patch which will reorganize the order of the linked list, STE and
-CD changes.
-
-Move arm_smmu_detach_dev() till after we have initialized the domain so
-the lock can be held for less time.
-
-Reviewed-by: Michael Shavit <mshavit@google.com>
-Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
-Reviewed-by: Mostafa Saleh <smostafa@google.com>
-Tested-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-Tested-by: Moritz Fischer <moritzf@google.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Link: https://lore.kernel.org/r/5-v6-96275f25c39d+2d4-smmuv3_newapi_p1_jgg@nvidia.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=215742
+Link: https://lore.kernel.org/r/20240228075316.7404-1-drake@endlessos.org
+Signed-off-by: Daniel Drake <drake@endlessos.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Jian-Hong Pan <jhp@endlessos.org>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 22 ++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ arch/x86/pci/fixup.c | 48 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 0ffb1cf17e0b2..f3f2e47b6d488 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2398,8 +2398,6 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 		return -EBUSY;
- 	}
+diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
+index f347c20247d30..b33afb240601b 100644
+--- a/arch/x86/pci/fixup.c
++++ b/arch/x86/pci/fixup.c
+@@ -907,6 +907,54 @@ static void chromeos_fixup_apl_pci_l1ss_capability(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_save_apl_pci_l1ss_capability);
+ DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_fixup_apl_pci_l1ss_capability);
  
--	arm_smmu_detach_dev(master);
--
- 	mutex_lock(&smmu_domain->init_mutex);
- 
- 	if (!smmu_domain->smmu) {
-@@ -2414,6 +2412,16 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Prevent arm_smmu_share_asid() from trying to change the ASID
-+	 * of either the old or new domain while we are working on it.
-+	 * This allows the STE and the smmu_domain->devices list to
-+	 * be inconsistent during this routine.
-+	 */
-+	mutex_lock(&arm_smmu_asid_lock);
++/*
++ * Disable D3cold on Asus B1400 PCI-NVMe bridge
++ *
++ * On this platform with VMD off, the NVMe device cannot successfully power
++ * back on from D3cold. This appears to be an untested transition by the
++ * vendor: Windows leaves the NVMe and parent bridge in D0 during suspend.
++ *
++ * We disable D3cold on the parent bridge for simplicity, and the fact that
++ * both parent bridge and NVMe device share the same power resource.
++ *
++ * This is only needed on BIOS versions before 308; the newer versions flip
++ * StorageD3Enable from 1 to 0.
++ */
++static const struct dmi_system_id asus_nvme_broken_d3cold_table[] = {
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.304"),
++		},
++	},
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.305"),
++		},
++	},
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.306"),
++		},
++	},
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.307"),
++		},
++	},
++	{}
++};
 +
-+	arm_smmu_detach_dev(master);
++static void asus_disable_nvme_d3cold(struct pci_dev *pdev)
++{
++	if (dmi_check_system(asus_nvme_broken_d3cold_table) > 0)
++		pci_d3cold_disable(pdev);
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9a09, asus_disable_nvme_d3cold);
 +
- 	master->domain = smmu_domain;
- 
- 	/*
-@@ -2439,13 +2447,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 			}
- 		}
- 
--		/*
--		 * Prevent SVA from concurrently modifying the CD or writing to
--		 * the CD entry
--		 */
--		mutex_lock(&arm_smmu_asid_lock);
- 		ret = arm_smmu_write_ctx_desc(master, IOMMU_NO_PASID, &smmu_domain->cd);
--		mutex_unlock(&arm_smmu_asid_lock);
- 		if (ret) {
- 			master->domain = NULL;
- 			goto out_list_del;
-@@ -2455,13 +2457,15 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	arm_smmu_install_ste_for_dev(master);
- 
- 	arm_smmu_enable_ats(master);
--	return 0;
-+	goto out_unlock;
- 
- out_list_del:
- 	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
- 	list_del(&master->domain_head);
- 	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
- 
-+out_unlock:
-+	mutex_unlock(&arm_smmu_asid_lock);
- 	return ret;
- }
- 
+ #ifdef CONFIG_SUSPEND
+ /*
+  * Root Ports on some AMD SoCs advertise PME_Support for D3hot and D3cold, but
 -- 
 2.43.0
 
