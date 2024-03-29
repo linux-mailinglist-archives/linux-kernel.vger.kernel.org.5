@@ -1,133 +1,168 @@
-Return-Path: <linux-kernel+bounces-124472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3826289188F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:20:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A8B3891898
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:22:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F88285866
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:20:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E8351C23000
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C9C85631;
-	Fri, 29 Mar 2024 12:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0A486126;
+	Fri, 29 Mar 2024 12:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GA83YCFC"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="O7Fi0g/C"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166F969E1E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD5739ADD
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711714796; cv=none; b=Qcm8q+uatTgJ5sSsISJZbMCq/HATC+g4DCDfIe0ejiOFL7mbd5MXsvWDCx2FdelYKoZ/yn+Ab0HMGDQIV1MBeTDmZd5OjRhiLJ5J9LfSKWtFMIT+5tXMUcZvZxnAXQSfH5UX3B1qQ9u/ozj/U5Bjn7b2vJ10MaFFZa2nghxDxoI=
+	t=1711714950; cv=none; b=Qki2P8VSbG2XQJtCyutciCXbq2OKCDA6t7wg0/G9wbydnNlK8/b0vFT6e/ZvfVXmJ9YwPkPB3FypXoXNDM0fqb23gQxEJ0fMClKpO06Go2pPfY/671CbpiD64MlmxZHX8LGs0ey+3HrB+bpdnvQToQN6R2o3KbBhsb04A3x1zQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711714796; c=relaxed/simple;
-	bh=tORNmA0pcr5kmfPGn86vAvHUqiKTcOTMsK8JNl9m2yE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R/uK3Y1aQzS/tXHv6g5SaRT9oJNPokWNObOUEKBOgpQcPZMta15GgX5hhYjMUboeMx/dMeS1C2b0g41lcg6vevClLHT7106jXWYNmrtk5r5RxtFJix7hWPdHpwxdaaXd7rYrgBhn5QOpMZ2RtRdZfTD1mED/q/I0LfDzF0qGXfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GA83YCFC; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=MrTY9njKVMkKTePqZ/9p2zVzye3piYo5llqsJ8WWYhM=; b=GA83YCFCLDvB8oIpV8GkCXMHG7
-	L2DMDsP3NONzY46zE1idx2BzwKua0tdu5BCoLWAI8CSofxTCOB/XF7M4Swb0ZpShQ1Me2r7E4RVjg
-	dR7KL2SPkg5nK/HwwRilvPC7buX4UysUSW2NWQy813gnylO3D8kHtjrLkfLycopf7gU+YrMDCyKV0
-	Ko7Qif287kdeMDm6Q6jvxh7v4TH1fG+/Uu6xSHC2JoVWCMJYTPmthprfUs6RTSYLTJR6btg4W+CsN
-	OxXAWLArSdNAOtzjgpKoxiDi8mJoQ/aR/H8WqEeYIYaaG8Q+duomq/ehv7ubjGK6gIvR4MaaoAzRC
-	qPjwC22g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBCu-000000098jD-3qYS;
-	Fri, 29 Mar 2024 12:19:40 +0000
-Date: Fri, 29 Mar 2024 12:19:40 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-Message-ID: <Zgax3EQUiWx4DpC7@casper.infradead.org>
-References: <ZgDt9mwN-Py5Y-xr@casper.infradead.org>
- <CAGWkznHO27EpVVpFyKnv-SX-JTYCXQxb0MG+EW07gaupocR4RQ@mail.gmail.com>
- <ZgK91II_eSYY6D2F@casper.infradead.org>
- <CAGWkznGLySzLE17+rCe=UoA26vx=iM375o2zkruKM9ssG05QzA@mail.gmail.com>
- <ZgQRtQ60mrvOUKXo@casper.infradead.org>
- <CAGWkznF3GfCs8odhR-Hue5H8MZ=eXb82V20ZoCCjeoSjAPQ9cw@mail.gmail.com>
- <ZgThg-pzQzRl3ckF@casper.infradead.org>
- <CAGWkznEMCXQSe10E-pbdxk2uFgQO038wH6g=iojtSU6-N+GJdg@mail.gmail.com>
- <ZgV65ercduTnVWCA@casper.infradead.org>
- <CAGWkznG7oyh9D-ozN7zQrpJz3s+N_ra1P=Yw3Nd3B0X=thCAxg@mail.gmail.com>
+	s=arc-20240116; t=1711714950; c=relaxed/simple;
+	bh=leo+Yi4AfSnMVg8mcM4Xju1MFqd5FSUEovb4t8XjI+U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FbdqctJPyp6cmM1IS76vK+SW4Rq5N6ifCdOwn3LURT/9Nn5qjtJFOpYJTc4lRCasV+P6gfY3TJ5ibEISnmaCQ2OY16fZPqzvqn5Mjg/epimTPzbyYS6DibZmzCRzEOTE2zIhA89IYuOAcFlmCcL5L7eNGwc+Qg3MaD4pKeeW5qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=O7Fi0g/C; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d4515ec3aaso16324141fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 05:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711714946; x=1712319746; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TdH2/uZDyLmBSFlZ529ZdmMTMc2xJjXR5We9XRvPLc8=;
+        b=O7Fi0g/C5yTqgLj7PJ0zyXIg+iImbY+SKVFGN4a9Zq5xCNky6TjQyYrzlUaERurNpf
+         7LwKDBDW9EciAYhebOlUrfpp7gkwdxw3ffcHgzjAsYvU5YXkkSuF6xm7T7Dgu9iSQ5kl
+         +qqXXyD8PAwdjUTX/VSPOgkEthVy/fYMcmg7/Pdkk27h8K4cpeyzmcdoVIWAeGJYcA4p
+         vgxV5p/AfEY+VZYpyf4uBNc2jICO/cR9owEcZUd+mnQwV27PeBiF08/M0whYSW9XQNrn
+         V/j9jsc5tyhLkFsz1U2crr4Z9BGHhaJ+fjWQ7temGRIJI9xLKbhip75WdFHFUSwGtyRq
+         rj0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711714946; x=1712319746;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TdH2/uZDyLmBSFlZ529ZdmMTMc2xJjXR5We9XRvPLc8=;
+        b=flE4Kd2uOBKYnugG22sl3gALTMSsCZeEA5BXNFH/ty4F+EOI9e0iHqIrrfu+rSKw8J
+         SOdcZhqvhqBPNzJu6pQX4U73k0xosKSSWXqw8lX4tz48Z0kxtiFSnLaZ+FUNz7nSpaG1
+         tV4GzG//PgdV1USyqramxrHdtKHTVeLs/LPlJRntBBGeSbgVpNOhnu7eS76eQ8KYecVG
+         sFIMmboEyGadfgLlOBoEwd4n+Nm69Q5M/RrQf9uYw7bFCEyRkwNlEHlV5kmPFoHXuZiv
+         sriTue+Q1IJPt4ss0g9Zlm0kyOjRbHdSLjji0gJrbcx7PuOFjAxhlS/Zs5z79g5bjC/v
+         N1XA==
+X-Forwarded-Encrypted: i=1; AJvYcCVABnTaZQ7Nc9S98MR6XwM/3JuwT45eoy6OAGWt7XsdKuziv0FC+8WEbaWNMIMD6vxJY4AarXkNH83sySow2x6bG0YbsvjNttqGl1TQ
+X-Gm-Message-State: AOJu0Yx2ELEBGiwNQ823ZS2rBJ/LV7/DgIIr5F5ktdfyfeUeThC8PCwO
+	srCFCv+VfmQMYzzehehrkQjOfePZ8y8GCeswqnO+fUeuVSE5W7BvP75qKz4CgtIVht1bHDgAIJL
+	8Wx6oSN4yaKX8cIozcxf+meLOf+nWbkIg8oKsWg==
+X-Google-Smtp-Source: AGHT+IE+HnSCJL2quawa1K1lMrp38Nm79TgJqcEd/z4x+7H7IfVDrdpUOVuBJN0I2Fw0lOyMRLNfqEQZZUdPpNwT2ZM=
+X-Received: by 2002:a2e:8350:0:b0:2d3:5480:92aa with SMTP id
+ l16-20020a2e8350000000b002d3548092aamr644831ljh.25.1711714946358; Fri, 29 Mar
+ 2024 05:22:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGWkznG7oyh9D-ozN7zQrpJz3s+N_ra1P=Yw3Nd3B0X=thCAxg@mail.gmail.com>
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+ <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
+ <CAMRc=McY6PJj7fmLkNv07ogcYq=8fUb2o6w2uA1=D9cbzyoRoA@mail.gmail.com> <1303b572-719e-410d-a11a-3f17a5bb3b63@linaro.org>
+In-Reply-To: <1303b572-719e-410d-a11a-3f17a5bb3b63@linaro.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 29 Mar 2024 13:22:15 +0100
+Message-ID: <CAMRc=Mfeez9kXkkVxdmUk5dy=L=rbnYkYujO6jSCT5WAyUw2HA@mail.gmail.com>
+Subject: Re: [PATCH 09/22] gpio: virtio: drop owner assignment
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei <arei.gonglei@huawei.com>, 
+	"David S. Miller" <davem@davemloft.net>, Viresh Kumar <vireshk@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, David Airlie <airlied@redhat.com>, 
+	Gerd Hoffmann <kraxel@redhat.com>, Gurchetan Singh <gurchetansingh@chromium.org>, 
+	Chia-I Wu <olvaffe@gmail.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
+	Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+	Pankaj Gupta <pankaj.gupta.linux@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Vivek Goyal <vgoyal@redhat.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Anton Yakovlev <anton.yakovlev@opensynergy.com>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux.dev, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-bluetooth@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, iommu@lists.linux.dev, 
+	netdev@vger.kernel.org, v9fs@lists.linux.dev, kvm@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev, 
+	linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org, 
+	linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 01:49:05PM +0800, Zhaoyang Huang wrote:
-> On Thu, Mar 28, 2024 at 10:12 PM Matthew Wilcox <willy@infradead.org> wrote:
-> key steps in brief:
-> Thread_truncate get folio to its local fbatch by find_get_entry in step 2
-> The refcnt is deducted to 1 which is not as expect as from alloc_pages
-> but from thread_truncate's local fbatch in step 7
-> Thread_reclaim succeed to isolate the folio by the wrong refcnt(not
-> the value but meaning) in step 8
-> Thread_truncate hit the VM_BUG_ON in step 9
-> 
-> all steps:
-> Thread_readahead:
-> 0. folio = filemap_alloc_folio(gfp_mask, 0);
->        (folio has refcount 1)
-> 1. ret = filemap_add_folio(mapping, folio, index + i, gfp_mask);
->        (folio has refcount 2)
-> 2. thread_truncate hold one refcnt and add this folio to fbatch_truncate
->        (folio has refcount 3(alloc, page cache, fbatch_truncate), PG_lru)
-> 3. Then we call read_pages()
->        First we call ->readahead() which for some reason stops early.
-> 4. Then we call readahead_folio() which calls folio_put()
->        (folio has refcount 2)
-> 5. Then we call folio_get()
->        (folio has refcount 3)
-> 6. Then we call filemap_remove_folio()
->        (folio has refcount 2)
-> 7. Then we call folio_unlock()
->        Then we call folio_put()
->        (folio has refcount 1(fbatch_truncate))
-> 8. thread_reclaim call shrink_inactive_list->isolate_lru_folios
->         shrink_inactive_list
->             isolate_lru_folios
->                if (!folio_test_lru(folio))
->                if (!folio_try_get(folio))
->                if (!folio_test_clear_lru(folio))
->                list_move(folio, dst)
->        (folio has refcount 2)
-> 
-> 8.1. thread_reclaim call shrink_folio_list->__remove_mapping
->     shrink_folio_list()
->         __remove_mapping()
->              (refcount = 2)
->             if (!folio_ref_freeze(2)) //true
->          list_add(folio, free_folios);
->        (folio has refcount 0)
-> 
-> 9. thread_truncate will hit the refcnt VM_BUG_ON(refcnt == 0) in
-> folio_put_testzero
+On Fri, Mar 29, 2024 at 12:35=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 29/03/2024 11:27, Bartosz Golaszewski wrote:
+> > On Wed, Mar 27, 2024 at 1:45=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> virtio core already sets the .owner, so driver does not need to.
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >>
+> >> ---
+> >>
+> >> Depends on the first patch.
+> >> ---
+> >>  drivers/gpio/gpio-virtio.c | 1 -
+> >>  1 file changed, 1 deletion(-)
+> >>
+> >> diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+> >> index fcc5e8c08973..9fae8e396c58 100644
+> >> --- a/drivers/gpio/gpio-virtio.c
+> >> +++ b/drivers/gpio/gpio-virtio.c
+> >> @@ -653,7 +653,6 @@ static struct virtio_driver virtio_gpio_driver =3D=
+ {
+> >>         .remove                 =3D virtio_gpio_remove,
+> >>         .driver                 =3D {
+> >>                 .name           =3D KBUILD_MODNAME,
+> >> -               .owner          =3D THIS_MODULE,
+> >>         },
+> >>  };
+> >>  module_virtio_driver(virtio_gpio_driver);
+> >>
+> >> --
+> >> 2.34.1
+> >>
+> >
+> > Applied, thanks!
+>
+> I expressed dependency in two places: cover letter and this patch.
+> Please drop it, because without dependency this won't work. Patch could
+> go with the dependency and with your ack or next cycle.
+>
+> Best regards,
+> Krzysztof
+>
 
-But now you're talking about something _entirely different_ that isn't
-the bug you hit.  isolate_lru_folios is not isolate_lru_folio.
+Dropped, and:
 
-I am disinclined to pick through this example to find out why you're
-wrong again.  I'm also disinclined to continue this correspondance.
-We're not making any progress here.
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
