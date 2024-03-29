@@ -1,242 +1,254 @@
-Return-Path: <linux-kernel+bounces-124033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D990891169
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:11:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9110C8910EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:01:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5D7028E97D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:11:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4590E28C54E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B522232A;
-	Fri, 29 Mar 2024 02:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2A24F887;
+	Fri, 29 Mar 2024 01:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cirGLDIs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xjNF1C5Y"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96972C6B2;
-	Fri, 29 Mar 2024 02:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEFB4F896
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678180; cv=none; b=RfQsP+b4wKHtXR+xl4VaG4gGjKuWvbgEXIWlycAWLcCIhiSvxasDINNUlsNkkk9sDdRYyaTY4+B/rFZIJfl5sK6hfv/bECnDxLB22KDdj5wRN/miXoq6e9/Uh5/+Re3f3zQSG/JD7ldAfC2s2pq46Auw5lUFmyEmbLRbLnuH6Q0=
+	t=1711677281; cv=none; b=itTJ0tEeQ7cYE1LIv7eOMojsXRcZ91mG/rgK1WvmY6w158QUi4zACWadK85hP/THFm8vbsi4rzyl2OKUPpF++Hlqt8XSA3VYfXielGwYjFavEBNS+sGhu3tIlxuTX6kGH8YLzqHN5nWfTbRXK5Y4aetXkU/LQPytRgwKjH2GU1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678180; c=relaxed/simple;
-	bh=SYfo7FsBA6K+tnItKudH2rQ2gHHfa93TWwRVJIqbrE8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RxJrhGMxSfDdS3DSoHE3OydoNQZptQmG8tvagwLWSWYWio7nO1W6lf1n68p43vEc12EfQd0s+yfzw+w9GfYZuDdiQNTxK8o00nR78TFmcPscYJGu//YH5idxjRUzCl2VrkAg6q/VbHtPAL1mxIKs/HBhnV71GAv6izft5ka7UTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cirGLDIs; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711678177; x=1743214177;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SYfo7FsBA6K+tnItKudH2rQ2gHHfa93TWwRVJIqbrE8=;
-  b=cirGLDIs6Rg/JAnFQph/A9hVcUJFOjRSL1IP1DrmoWNUbMkdh1Np6Vzq
-   vTcAvB7ipjqJUHMqVbf0U+lEu/FzCV2TqPRF+JWjn7QR+d03wWA9UciwH
-   R7kKUtYDxeCqgB8qtG/SLxRWnY1LimBRgoodelirBtYYpxPuW6ZvCapZy
-   wJOcJmMXEWW8/NhjF3Oy3eJW9JbDcoocQDRUArZxSMG9xH8vWRyqiEHWS
-   JqL6LkXKFIGea5e+soPcKuWTMx15qOBqQ2O71QdpDCxr4ves4lo+era29
-   dAfYOBOMVGwwnhF4mpPJuDtkWFYG2vKLW4uUf5ZUt82yC9LRv0B5IRtZX
-   w==;
-X-CSE-ConnectionGUID: KSH3KfosR9G7sXyEwY6Orw==
-X-CSE-MsgGUID: CwRmN5NfRw+vExxzPyggVA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="6700018"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="6700018"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 19:09:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="17301372"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by orviesa006.jf.intel.com with ESMTP; 28 Mar 2024 19:09:36 -0700
-From: "Chang S. Bae" <chang.seok.bae@intel.com>
-To: linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	dm-devel@redhat.com
-Cc: ebiggers@kernel.org,
-	luto@kernel.org,
-	dave.hansen@linux.intel.com,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	mingo@kernel.org,
-	x86@kernel.org,
-	herbert@gondor.apana.org.au,
-	ardb@kernel.org,
-	elliott@hpe.com,
-	dan.j.williams@intel.com,
-	bernie.keany@intel.com,
-	charishma1.gairuboyina@intel.com,
-	chang.seok.bae@intel.com,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v9 01/14] Documentation/x86: Document Key Locker
+	s=arc-20240116; t=1711677281; c=relaxed/simple;
+	bh=VDSeOrmRZ4SYUgVp5dmLfIcaprrVde6t7qHG+s7E0hM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=OzNqwlgxQZPavdlgh9bRTFr1m6kKvAKa6f6StvO22qgv6GklVb3SQ1Wj0aqDxOGCJuCSxWQY37UyHpB8DnOf6lXCAQVbMDUlH2LAX/0Nc9Xd2pR+dUDn2V6vArO9fTIoWF3zS1kSQY1Oo+ncpIF6qAsOLNwurQ6ZRgumrn7Z+eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xjNF1C5Y; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so2835665276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711677279; x=1712282079; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MD93gZe61lT3bi7JodQUSrve0t6PielHvOmvulo6VTY=;
+        b=xjNF1C5YPXePjkco0M80fBcxpb+MmIATViMfO03Q2/jEL8D8O3Ju61ojnbD8Jfr1pk
+         /LquOyMrFOhHEg18gs6Al6S4a2ejuGaNnU5mQxKsMJzU6MVp4tJ67ILdanewwzlhhsoW
+         EKh1hm4/ZTbt8cS8r0Od4xMG3Blkz5LmD+24ErHVbHVp/iqaP8JFSsjSxzAJ+4e9ABwB
+         dAzeUcDsS3xvgQHr2lQuW7lYqDHnSJ6K0ViojESwwR+W1wSGsxlwjeh1V+HDz92oTHsG
+         1YIOHPmlXzZSiQL+P5XaG/XOxAVBUoRGUy7KI+SmW/k70Rcb6232G0ixdQiyNB2lY5aG
+         2VQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711677279; x=1712282079;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MD93gZe61lT3bi7JodQUSrve0t6PielHvOmvulo6VTY=;
+        b=RfmQGxyqqcBcC7BI1Ygijz0IY3vhhaKHUKbZG327Y2HcbCStMoFpdkWuR+XlGkOmb+
+         AQ46yBt+MwoRHOte+fBTP3O/rOwsxEPT/BwUnbTK65SZr11mV7LExq/uLN2j2iDLpQuC
+         kiwMLyU056/DGN+yhtaV+vqo59LK7o6lNWIlQ0dx45voq3rIpZa6OOTDJ1CanEKz08q/
+         5PsOfE2Hkmjh7NWY4XbIT3V+5yavMs1V773Nmla3alyQ0U7vZw52bUIL59a6zRzzT0Ft
+         +COs8C9ra0cSALl5f9MNTfcdCJBVF58VSWlsNZHYI8Ak+G0fmrsVq9dHcJGzuktlfZOC
+         wwUw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfNxGhfb3hwcRW1BuvWUxHspyccBxwm9U+jKLj16DJZjGd/xkan8kp041n8UrAR6f/RS3h1GeoRUMXKFvBFJgHHrXBYeRkLRxlCfMa
+X-Gm-Message-State: AOJu0YwjUXujJ8b3L/mSo2REhsOSfwctBZCfH4ea6TN/LJrmzEwHNJXV
+	6TaWicSC7fEvf4s8kA3fdAJCbVtp74EJ2tq7KPJoCz16D8nE+f4QIRNrhgT3ouQIWwsQtmhxmon
+	G1g==
+X-Google-Smtp-Source: AGHT+IGhQUHEXr/GrzTbtSCdL1hqHgZVQAU0Jz8rAd+h7Sr956bHJaSbQ8HK4gIpji8SRFQsstttWqHj/A8=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
+ (user=drosen job=sendgmr) by 2002:a05:6902:1884:b0:dc6:cafd:dce5 with SMTP id
+ cj4-20020a056902188400b00dc6cafddce5mr296080ybb.12.1711677279199; Thu, 28 Mar
+ 2024 18:54:39 -0700 (PDT)
 Date: Thu, 28 Mar 2024 18:53:33 -0700
-Message-Id: <20240329015346.635933-2-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240329015346.635933-1-chang.seok.bae@intel.com>
-References: <20230603152227.12335-1-chang.seok.bae@intel.com>
- <20240329015346.635933-1-chang.seok.bae@intel.com>
+In-Reply-To: <20240329015351.624249-1-drosen@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240329015351.624249-1-drosen@google.com>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240329015351.624249-19-drosen@google.com>
+Subject: [RFC PATCH v4 18/36] fuse-bpf: Add support for FUSE_COPY_FILE_RANGE
+From: Daniel Rosenberg <drosen@google.com>
+To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
+	Daniel Rosenberg <drosen@google.com>, Paul Lawrence <paullawrence@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Document the overview of the feature along with relevant consideration
-when provisioning dm-crypt volumes with AES-KL instead of AES-NI.
+This adds backing support for FUSE_COPY_FILE_RANGE
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
-Changes from v8:
-* Change wording of documentation slightly. (Randy Dunlap and Bagas
-  Sanjaya)
+ fs/fuse/backing.c | 87 +++++++++++++++++++++++++++++++++++++++++++++++
+ fs/fuse/file.c    |  4 +++
+ fs/fuse/fuse_i.h  | 10 ++++++
+ 3 files changed, 101 insertions(+)
 
-Changes from v6:
-* Rebase on the upstream -- commit ff61f0791ce9 ("docs: move x86
-  documentation into Documentation/arch/"). (Nathan Huckleberry)
-* Remove a duplicated sentence -- 'But there is no AES-KL instruction
-  to process a 192-bit key.'
-* Update the text for clarity and readability:
-  - Clarify the error code and exemplify the backup failure
-  - Use 'wrapping key' instead of less readable 'IWKey'
-
-Changes from v5:
-* Fix a typo: 'feature feature' -> 'feature'
-
-Changes from RFC v2:
-* Add as a new patch.
-
-The preview is available here:
-  https://htmlpreview.github.io/?https://github.com/intel-staging/keylocker/kdoc/arch/x86/keylocker.html
----
- Documentation/arch/x86/index.rst     |  1 +
- Documentation/arch/x86/keylocker.rst | 96 ++++++++++++++++++++++++++++
- 2 files changed, 97 insertions(+)
- create mode 100644 Documentation/arch/x86/keylocker.rst
-
-diff --git a/Documentation/arch/x86/index.rst b/Documentation/arch/x86/index.rst
-index 8ac64d7de4dc..669c239c009f 100644
---- a/Documentation/arch/x86/index.rst
-+++ b/Documentation/arch/x86/index.rst
-@@ -43,3 +43,4 @@ x86-specific Documentation
-    features
-    elf_auxvec
-    xstate
-+   keylocker
-diff --git a/Documentation/arch/x86/keylocker.rst b/Documentation/arch/x86/keylocker.rst
-new file mode 100644
-index 000000000000..b28addb8eaf4
---- /dev/null
-+++ b/Documentation/arch/x86/keylocker.rst
-@@ -0,0 +1,96 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
+index e426268aa4e6..2363f392e915 100644
+--- a/fs/fuse/backing.c
++++ b/fs/fuse/backing.c
+@@ -11,6 +11,7 @@
+ #include <linux/file.h>
+ #include <linux/fs_stack.h>
+ #include <linux/namei.h>
++#include <linux/splice.h>
+ #include <linux/uio.h>
+ 
+ /*
+@@ -778,6 +779,92 @@ int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *file, loff_t o
+ 				file, offset, whence);
+ }
+ 
++struct fuse_copy_file_range_args {
++	struct fuse_copy_file_range_in in;
++	struct fuse_write_out out;
++};
 +
-+==============
-+x86 Key Locker
-+==============
++static int fuse_copy_file_range_initialize_in(struct bpf_fuse_args *fa,
++					      struct fuse_copy_file_range_args *args,
++					      struct file *file_in, loff_t pos_in, struct file *file_out,
++					      loff_t pos_out, size_t len, unsigned int flags)
++{
++	struct fuse_file *fuse_file_in = file_in->private_data;
++	struct fuse_file *fuse_file_out = file_out->private_data;
 +
-+Introduction
-+============
++	args->in = (struct fuse_copy_file_range_in) {
++		.fh_in = fuse_file_in->fh,
++		.off_in = pos_in,
++		.nodeid_out = fuse_file_out->nodeid,
++		.fh_out = fuse_file_out->fh,
++		.off_out = pos_out,
++		.len = len,
++		.flags = flags,
++	};
 +
-+Key Locker is a CPU feature to reduce key exfiltration opportunities
-+while maintaining a programming interface similar to AES-NI. It
-+converts the AES key into an encoded form, called the 'key handle'.
-+The key handle is a wrapped version of the clear-text key where the
-+wrapping key has limited exposure. Once converted, all subsequent data
-+encryption using new AES instructions (AES-KL) uses this key handle,
-+reducing the exposure of private key material in memory.
++	*fa = (struct bpf_fuse_args) {
++		.info = (struct bpf_fuse_meta_info) {
++			.nodeid = get_node_id(file_in->f_inode),
++			.opcode = FUSE_COPY_FILE_RANGE,
++		},
++		.in_numargs = 1,
++		.in_args[0].size = sizeof(args->in),
++		.in_args[0].value = &args->in,
++	};
 +
-+CPU-internal Wrapping Key
-+=========================
++	return 0;
++}
 +
-+The CPU-internal wrapping key is an entity in a software-invisible CPU
-+state. On every system boot, a new key is loaded. So the key handle that
-+was encoded by the old wrapping key is no longer usable on system shutdown
-+or reboot.
++static int fuse_copy_file_range_initialize_out(struct bpf_fuse_args *fa,
++					       struct fuse_copy_file_range_args *args,
++					       struct file *file_in, loff_t pos_in, struct file *file_out,
++					       loff_t pos_out, size_t len, unsigned int flags)
++{
++	fa->out_numargs = 1;
++	fa->out_args[0].size = sizeof(args->out);
++	fa->out_args[0].value = &args->out;
 +
-+And the key may be lost on the following exceptional situation upon wakeup:
++	return 0;
++}
 +
-+Wrapping Key Restore Failure
-+----------------------------
++static int fuse_copy_file_range_backing(struct bpf_fuse_args *fa, ssize_t *out, struct file *file_in,
++					loff_t pos_in, struct file *file_out, loff_t pos_out, size_t len,
++					unsigned int flags)
++{
++	const struct fuse_copy_file_range_in *fci = fa->in_args[0].value;
++	struct fuse_file *fuse_file_in = file_in->private_data;
++	struct file *backing_file_in = fuse_file_in->backing_file;
++	struct fuse_file *fuse_file_out = file_out->private_data;
++	struct file *backing_file_out = fuse_file_out->backing_file;
 +
-+The CPU state is volatile with the ACPI S3/4 sleep states. When the system
-+supports those states, the key has to be backed up so that it is restored
-+on wake up. The kernel saves the key in non-volatile media.
++	/* TODO: Handle changing of in/out files */
++	if (backing_file_out)
++		*out = vfs_copy_file_range(backing_file_in, fci->off_in, backing_file_out,
++					   fci->off_out, fci->len, fci->flags);
++	else
++		*out = splice_copy_file_range(file_in, pos_in, file_out, pos_out, len);
++	return 0;
++}
 +
-+Upon the event of a wrapping key restore failure upon resume from suspend,
-+all established key handles become invalid. In flight dm-crypt operations
-+receive error results from pending operations. In the likely scenario that
-+dm-crypt is hosting the root filesystem the recovery is identical to if a
-+storage controller failed to resume from suspend or reboot. If the volume
-+impacted by a wrapping key restore failure is a data volume then it is
-+possible that I/O errors on that volume do not bring down the rest of the
-+system. However, a reboot is still required because the kernel will have
-+soft-disabled Key Locker. Upon the failure, the crypto library code will
-+return -ENODEV on every AES-KL function call. The Key Locker implementation
-+only loads a new wrapping key at initial boot, not any time after like
-+resume from suspend.
++static int fuse_copy_file_range_finalize(struct bpf_fuse_args *fa, ssize_t *out, struct file *file_in,
++					 loff_t pos_in, struct file *file_out, loff_t pos_out, size_t len,
++					 unsigned int flags)
++{
++	return 0;
++}
 +
-+Use Case and Non-use Cases
-+==========================
++int fuse_bpf_copy_file_range(ssize_t *out, struct inode *inode, struct file *file_in,
++			     loff_t pos_in, struct file *file_out, loff_t pos_out, size_t len,
++			     unsigned int flags)
++{
++	return bpf_fuse_backing(inode, struct fuse_copy_file_range_args, out,
++				fuse_copy_file_range_initialize_in,
++				fuse_copy_file_range_initialize_out,
++				fuse_copy_file_range_backing,
++				fuse_copy_file_range_finalize,
++				file_in, pos_in, file_out, pos_out, len, flags);
++}
 +
-+Bare metal disk encryption is the only intended use case.
+ static int fuse_fsync_initialize_in(struct bpf_fuse_args *fa, struct fuse_fsync_in *in,
+ 				    struct file *file, loff_t start, loff_t end, int datasync)
+ {
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 5983faf59c1f..46de67810f03 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -3168,6 +3168,10 @@ static ssize_t __fuse_copy_file_range(struct file *file_in, loff_t pos_in,
+ 	bool is_unstable = (!fc->writeback_cache) &&
+ 			   ((pos_out + len) > inode_out->i_size);
+ 
++	if (fuse_bpf_copy_file_range(&err, file_inode(file_in), file_in, pos_in,
++				     file_out, pos_out, len, flags))
++		return err;
 +
-+Userspace usage is not supported because there is no ABI provided to
-+communicate and coordinate wrapping-key restore failure to userspace. For
-+now, key restore failures are only coordinated with kernel users. But the
-+kernel can not prevent userspace from using the feature's AES instructions
-+('AES-KL') when the feature has been enabled. So, the lack of userspace
-+support is only documented, not actively enforced.
+ 	if (fc->no_copy_file_range)
+ 		return -EOPNOTSUPP;
+ 
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 61a17071ab02..a95d543c79ae 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -1454,6 +1454,9 @@ int fuse_bpf_release(int *out, struct inode *inode, struct fuse_file *ff);
+ int fuse_bpf_releasedir(int *out, struct inode *inode, struct fuse_file *ff);
+ int fuse_bpf_flush(int *out, struct inode *inode, struct file *file, fl_owner_t id);
+ int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *file, loff_t offset, int whence);
++int fuse_bpf_copy_file_range(ssize_t *out, struct inode *inode, struct file *file_in, loff_t pos_in,
++			     struct file *file_out, loff_t pos_out,
++			     size_t len, unsigned int flags);
+ int fuse_bpf_fsync(int *out, struct inode *inode, struct file *file, loff_t start, loff_t end, int datasync);
+ int fuse_bpf_dir_fsync(int *out, struct inode *inode, struct file *file, loff_t start, loff_t end, int datasync);
+ int fuse_bpf_file_read_iter(ssize_t *out, struct inode *inode, struct kiocb *iocb, struct iov_iter *to);
+@@ -1533,6 +1536,13 @@ static inline int fuse_bpf_lseek(loff_t *out, struct inode *inode, struct file *
+ 	return 0;
+ }
+ 
++static inline int fuse_bpf_copy_file_range(ssize_t *out, struct inode *inode, struct file *file_in, loff_t pos_in,
++					   struct file *file_out, loff_t pos_out,
++					   size_t len, unsigned int flags)
++{
++	return 0;
++}
 +
-+Key Locker is not expected to be advertised to guest VMs and the kernel
-+implementation ignores it even if the VMM enumerates the capability. The
-+expectation is that a guest VM wants private wrapping key state, but the
-+architecture does not provide that. An emulation of that capability, by
-+caching per-VM wrapping keys in memory, defeats the purpose of Key Locker.
-+The backup / restore facility is also not performant enough to be suitable
-+for guest VM context switches.
-+
-+AES Instruction Set
-+===================
-+
-+The feature accompanies a new AES instruction set. This instruction set is
-+analogous to AES-NI. A set of AES-NI instructions can be mapped to an
-+AES-KL instruction. For example, AESENC128KL is responsible for ten rounds
-+of transformation, which is equivalent to nine times AESENC and one
-+AESENCLAST in AES-NI.
-+
-+But they have some notable differences:
-+
-+* AES-KL provides a secure data transformation using an encrypted key.
-+
-+* If an invalid key handle is provided, e.g. a corrupted one or a handle
-+  restriction failure, the instruction fails with setting RFLAGS.ZF. The
-+  crypto library implementation includes the flag check to return -EINVAL.
-+  Note that this flag is also set if the wrapping key is changed, e.g.,
-+  because of the backup error.
-+
-+* AES-KL implements support for 128-bit and 256-bit keys, but there is no
-+  AES-KL instruction to process an 192-bit key. The AES-KL cipher
-+  implementation logs a warning message with a 192-bit key and then falls
-+  back to AES-NI. So, this 192-bit key-size limitation is only documented,
-+  not enforced. It means the key will remain in clear-text in memory. This
-+  is to meet Linux crypto-cipher expectation that each implementation must
-+  support all the AES-compliant key sizes.
-+
-+* Some AES-KL hardware implementation may have noticeable performance
-+  overhead when compared with AES-NI instructions.
+ static inline int fuse_bpf_fsync(int *out, struct inode *inode, struct file *file, loff_t start, loff_t end, int datasync)
+ {
+ 	return 0;
 -- 
-2.34.1
+2.44.0.478.gd926399ef9-goog
 
 
