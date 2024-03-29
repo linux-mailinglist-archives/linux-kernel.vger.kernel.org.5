@@ -1,193 +1,218 @@
-Return-Path: <linux-kernel+bounces-125526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDCA58927CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:29:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D84E8927D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:29:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F13C61C211EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:29:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEB371F2260E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB1013E416;
-	Fri, 29 Mar 2024 23:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B16B13E6A7;
+	Fri, 29 Mar 2024 23:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fm8qb98v"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fJM2RB/W"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAE5347B6;
-	Fri, 29 Mar 2024 23:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A3D13D627;
+	Fri, 29 Mar 2024 23:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711754928; cv=none; b=BiF0sOPYXhrbjY9cOS6Nmj4VXF++Yx8MtZjBDxanMefli+BulHO4QXKn7qwpW3i+7uN65u5cLGhThPJZ2akcLjIgY9UcOJfH9j6D484gs+N5O8HXdnQzg8eZ93GRBeBoDesuvP5WyVY1RlteRQZLbYRhS27z9mKgIzxIt2bJ+Zo=
+	t=1711754963; cv=none; b=mznyCDOY6fdg0ivDbI7EMyqvUsoI5qKF41XLWttz4zx1oiL+K0NnXLfObhQjf835aT3pu2ESkwT3iYeUM3tGG5u2cExrG5/Kr2SPbC9F4G2KDuXU9rp95tsl9Y2CyOQzeeSZDxSpl9nmqCjxOEtSbOpUUj3K3y19/aSMrSqGYwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711754928; c=relaxed/simple;
-	bh=M+CkTC/9QOPKjcAq26pJFK75aD0g4y2+LXJsB0P1JY0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lu4xUrtWjk3J0kbVbPD5XAlV9JEyhRuyqvveB8mIxkffhtOM1Y7m4+o5XzftYMKn592GD5CBw41tS2CCKYzMtaJurKzqjxkWsFCCe3ELmR9AEyVvEBDa4PpVwvE2aS0et1z2P9rOIk0ldc7OMYPnDpWEu3jfzLxb8Y4CGi6sJbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fm8qb98v; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d3907ff128so1860607a12.3;
-        Fri, 29 Mar 2024 16:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711754926; x=1712359726; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rvV1tZGanDBSafK6edOdycvbQYDEdHbTCxngJvsvk3c=;
-        b=Fm8qb98vO+2rZQDr4ACVbzWOOBhMbNP973of56VDx+7dzKarS23b4VDs0QCZjE/zey
-         IJ/g2gwkTlDZp557gqFy6HVirUKvvI/RhzQOrPjsYmqnt0OS+LXZWxBGcD9ooJmS1u1N
-         Wdq60dFcb/ee3JYL5bUFYzr07cJmwvvmIZoI/b1KQpo+K6ftMzexzXAN8iXh1nJo1QdC
-         4CFMaxfeoUIzc6fyg2ScGW/5rPdZFOXPIXIjGrA7V7Ij1KqAkHvKfDNzy1QS7jMz6z0E
-         /W8l0QAzZuWpon/+MGFe6iPNG81xSsUfka4lIyvOK31ZY63E/sqixJRnh7RpDV18WsJY
-         CtMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711754926; x=1712359726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rvV1tZGanDBSafK6edOdycvbQYDEdHbTCxngJvsvk3c=;
-        b=RU6CYGdij3I8SMDFuLcEkXFxxuMDLhpfo6RmyHf+rD3z+RBxrsmoJ1YligUcYT3VoL
-         YtUHguMvFF7xT9YjyGrK4ujkEA13NT+X1hwUNhKsWaXhpLBG2Wyh4eNaw4zkHN28eYkq
-         dj4reqkSxtXQvjpns3NtubA0ld6+woHqICxMQVR26maDt91aYEPooASIjOoCRnxMnIpI
-         KqBMby8F8aarmJfc6c16rp9hDJK1Cr34usuvnIOrnJ2bdp2qTCOMpl6ARzTAtPA9p7n7
-         9p9R345kssoRHOmDzo2WcF/0oG4wRjb+owNVpsCTExoqfee0d+FSjcyFxitgRQvMQzcC
-         9Pqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVlnHyNUDZ0fbOQSV0NEVvOtJTaOmaxwPgZy047hqztaIz7SMsnLeomStI1EizImJzlky/xJNYIS4RJsXEX2rbQoVyo7MFG2+RfwxWnjGonfBHU0k5JSlRGPFtF8Te8neu3qxCi25AWVXDje1k1qkzJLjDnQ+s4R4WJmDmbw/KdNN4l/EBnMx0Wq+GOvmC+DkjFlyebAZoKGfgwdw8BgI1xISF1T+wxXijKToVLbwSSua486L4tXm8nE4lXExEMG+QxE02AxDYDKshvWmyLqPiNewg+cXpbihxLyg==
-X-Gm-Message-State: AOJu0YwCezoL4rml44Ulwt5kaSYk47W3cr0evd5PMAYC8La4m9gnILHN
-	FRelRR6zMz1Bz2qJo3eFKeNyq28N5Yo0kJIQ72rv0EkZFGKfSnjbac0fnT9zQAwbNl/tFnTmfuG
-	Y3REKAMgIbWmVvmHWWGOk0v3R69U=
-X-Google-Smtp-Source: AGHT+IFNbTnA2C1UowyvpIWfWMecar3RYOVPJRlOoVy5NMmPOOKB6ZhvqfzCxbpKkf/w3Z3THbX/GA+A1iwjf07EvPY=
-X-Received: by 2002:a17:90a:be04:b0:2a2:1415:723d with SMTP id
- a4-20020a17090abe0400b002a21415723dmr3177860pjs.42.1711754926271; Fri, 29 Mar
- 2024 16:28:46 -0700 (PDT)
+	s=arc-20240116; t=1711754963; c=relaxed/simple;
+	bh=FljFVK0LWL0DBJZBpjYAK+fE0M46Xdu18dgr3xy1rEo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dYAQLLPR9yo5Bq+IMd0Ytl4vq08KZFY+AMwXNyrp4S8ibws10sKXLftPR4ySrASianfxXiFWx91hOmDuxDlbDgu5gSpBD35DbOqat2tvgCJY0tFY6zml31O+UO5N1bQjI6lkG9eeP9d86Y3FhO23VYgYo4srgBInANJiqgdx/Wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fJM2RB/W; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TNMHWS018441;
+	Fri, 29 Mar 2024 23:28:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bI0G/uiG1h+1qLw6ZNxCnhLtyJ0F1AJmbQvh02bXtl4=; b=fJ
+	M2RB/WcQeiFYW5p/LrMXn0AtrzeYVmHZAdhFbZBrKs56Zl935Ns2CAOTiQ19konP
+	ZHksVSvI/AU5VlhxumAJtyHtBonJQBemKB1Mc5HOk2c/WtDKxo700ifs7uCo47Yn
+	DVdTRNsB2L70s6ymNLOdlurLYszmmat6RmUkCuuHqiEESsnuuqD0QQFHk+1xOG1k
+	fsZZsDTzhfGUV7VbCe+QfpP95dCs/LuMV5fZB25zKFYRhqz+KZZY5wIVCPzrRGfv
+	HAkgK4b6x7oiFxDHDZoD6n9l7iAeT3KPDVRCoopxXMIntKj0dXbxqcW9JqkuDAmx
+	uZq85+Z6/RvSTKTs2Xvg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x60wd8w6q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 23:28:57 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42TNSuWx013284
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 23:28:56 GMT
+Received: from [10.110.26.53] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 29 Mar
+ 2024 16:28:55 -0700
+Message-ID: <4ee6a5e4-0cad-ae44-2b42-d1b03c64f467@quicinc.com>
+Date: Fri, 29 Mar 2024 16:28:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
- <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
- <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
- <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
- <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
- <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
- <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
- <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
- <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com> <20240328111330.194dcbe5@gandalf.local.home>
-In-Reply-To: <20240328111330.194dcbe5@gandalf.local.home>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 29 Mar 2024 16:28:33 -0700
-Message-ID: <CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
- to record and check the accessed args
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v18 00/41] Introduce QC USB SND audio offloading support
+To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+References: <20240228013619.29758-1-quic_wcheng@quicinc.com>
+Content-Language: en-US
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <20240228013619.29758-1-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pMgXXbMWyru5-yP8KYxdhCnYAu_wDKrv
+X-Proofpoint-ORIG-GUID: pMgXXbMWyru5-yP8KYxdhCnYAu_wDKrv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ phishscore=0 clxscore=1011 bulkscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403290208
 
-On Thu, Mar 28, 2024 at 8:10=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Thu, 28 Mar 2024 22:43:46 +0800
-> =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
->
-> > I have done a simple benchmark on creating 1000
-> > trampolines. It is slow, quite slow, which consume up to
-> > 60s. We can't do it this way.
-> >
-> > Now, I have a bad idea. How about we introduce
-> > a "dynamic trampoline"? The basic logic of it can be:
-> >
-> > """
-> > save regs
-> > bpfs =3D trampoline_lookup_ip(ip)
-> > fentry =3D bpfs->fentries
-> > while fentry:
-> >   fentry(ctx)
-> >   fentry =3D fentry->next
-> >
-> > call origin
-> > save return value
-> >
-> > fexit =3D bpfs->fexits
-> > while fexit:
-> >   fexit(ctx)
-> >   fexit =3D fexit->next
-> >
-> > xxxxxx
-> > """
-> >
-> > And we lookup the "bpfs" by the function ip in a hash map
-> > in trampoline_lookup_ip. The type of "bpfs" is:
-> >
-> > struct bpf_array {
-> >   struct bpf_prog *fentries;
-> >  struct bpf_prog *fexits;
-> >   struct bpf_prog *modify_returns;
-> > }
-> >
-> > When we need to attach the bpf progA to function A/B/C,
-> > we only need to create the bpf_arrayA, bpf_arrayB, bpf_arrayC
-> > and add the progA to them, and insert them to the hash map
-> > "direct_call_bpfs", and attach the "dynamic trampoline" to
-> > A/B/C. If bpf_arrayA exist, just add progA to the tail of
-> > bpf_arrayA->fentries. When we need to attach progB to
-> > B/C, just add progB to bpf_arrayB->fentries and
-> > bpf_arrayB->fentries.
-> >
-> > Compared to the trampoline, extra overhead is introduced
-> > by the hash lookuping.
-> >
-> > I have not begun to code yet, and I am not sure the overhead is
-> > acceptable. Considering that we also need to do hash lookup
-> > by the function in kprobe_multi, maybe the overhead is
-> > acceptable?
->
-> Sounds like you are just recreating the function management that ftrace
-> has. It also can add thousands of trampolines very quickly, because it do=
-es
-> it in batches. It takes special synchronization steps to attach to fentry=
-.
-> ftrace (and I believe multi-kprobes) updates all the attachments for each
-> step, so the synchronization needed is only done once.
->
-> If you really want to have thousands of functions, why not just register =
-it
-> with ftrace itself. It will give you the arguments via the ftrace_regs
-> structure. Can't you just register a program as the callback?
->
-> It will probably make your accounting much easier, and just let ftrace
-> handle the fentry logic. That's what it was made to do.
->
+Hi,
 
-I thought I'll just ask instead of digging through code, sorry for
-being lazy :) Is there any way to pass pt_regs/ftrace_regs captured
-before function execution to a return probe (fexit/kretprobe)? I.e.,
-how hard is it to pass input function arguments to a kretprobe? That's
-the biggest advantage of fexit over kretprobe, and if we can make
-these original pt_regs/ftrace_regs available to kretprobe, then
-multi-kretprobe will effectively be this multi-fexit.
+On 2/27/2024 5:35 PM, Wesley Cheng wrote:
+> Several Qualcomm based chipsets can support USB audio offloading to a
+> dedicated audio DSP, which can take over issuing transfers to the USB
+> host controller.  The intention is to reduce the load on the main
+> processors in the SoC, and allow them to be placed into lower power modes.
+> There are several parts to this design:
+>    1. Adding ASoC binding layer
+>    2. Create a USB backend for Q6DSP
+>    3. Introduce XHCI interrupter support
+>    4. Create vendor ops for the USB SND driver
+> 
+>        USB                          |            ASoC
+> --------------------------------------------------------------------
+>                                     |  _________________________
+>                                     | |sm8250 platform card     |
+>                                     | |_________________________|
+>                                     |         |           |
+>                                     |      ___V____   ____V____
+>                                     |     |Q6USB   | |Q6AFE    |
+>                                     |     |"codec" | |"cpu"    |
+>                                     |     |________| |_________|
+>                                     |         ^  ^        ^
+>                                     |         |  |________|
+>                                     |      ___V____    |
+>                                     |     |SOC-USB |   |
+>     ________       ________               |        |   |
+>    |USB SND |<--->|QC offld|<------------>|________|   |
+>    |(card.c)|     |        |<----------                |
+>    |________|     |________|___     | |                |
+>        ^               ^       |    | |    ____________V_________
+>        |               |       |    | |   |APR/GLINK             |
+>     __ V_______________V_____  |    | |   |______________________|
+>    |USB SND (endpoint.c)     | |    | |              ^
+>    |_________________________| |    | |              |
+>                ^               |    | |   ___________V___________
+>                |               |    | |->|audio DSP              |
+>     ___________V_____________  |    |    |_______________________|
+>    |XHCI HCD                 |<-    |
+>    |_________________________|      |
+> 
+> 
+> Adding ASoC binding layer:
+> soc-usb: Intention is to treat a USB port similar to a headphone jack.
+> The port is always present on the device, but cable/pin status can be
+> enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
+> communicate with USB SND.
+> 
+> Create a USB backend for Q6DSP:
+> q6usb: Basic backend driver that will be responsible for maintaining the
+> resources needed to initiate a playback stream using the Q6DSP.  Will
+> be the entity that checks to make sure the connected USB audio device
+> supports the requested PCM format.  If it does not, the PCM open call will
+> fail, and userpsace ALSA can take action accordingly.
+> 
+> Introduce XHCI interrupter support:
+> XHCI HCD supports multiple interrupters, which allows for events to be routed
+> to different event rings.  This is determined by "Interrupter Target" field
+> specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
+> 
+> Events in the offloading case will be routed to an event ring that is assigned
+> to the audio DSP.
+> 
+> Create vendor ops for the USB SND driver:
+> qc_audio_offload: This particular driver has several components associated
+> with it:
+> - QMI stream request handler
+> - XHCI interrupter and resource management
+> - audio DSP memory management
+> 
+> When the audio DSP wants to enable a playback stream, the request is first
+> received by the ASoC platform sound card.  Depending on the selected route,
+> ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
+> will send an AFE port start command (with enabling the USB playback path), and
+> the audio DSP will handle the request accordingly.
+> 
+> Part of the AFE USB port start handling will have an exchange of control
+> messages using the QMI protocol.  The qc_audio_offload driver will populate the
+> buffer information:
+> - Event ring base address
+> - EP transfer ring base address
+> 
+> and pass it along to the audio DSP.  All endpoint management will now be handed
+> over to the DSP, and the main processor is not involved in transfers.
+> 
+> Overall, implementing this feature will still expose separate sound card and PCM
+> devices for both the platorm card and USB audio device:
+>   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
+>                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
+>   1 [Audio          ]: USB-Audio - USB Audio
+>                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
+> 
+> This is to ensure that userspace ALSA entities can decide which route to take
+> when executing the audio playback.  In the above, if card#1 is selected, then
+> USB audio data will take the legacy path over the USB PCM drivers, etc...
+> 
+> This feature was validated using:
+> - tinymix: set/enable the multimedia path to route to USB backend
+> - tinyplay: issue playback on platform card
+> 
+> Changelog
+> --------------------------------------------
+> Changes in v18:
+> - Rebased to usb-next, which merged in part of the series.  Removed these patches.
+> - Reworked Kconfigs for the ASoC USB related components from QCOM Q6DSP drivers
+>    to keep dependencies in place for SoC USB and USB SND.
+> - Removed the repurposing of the stop ep sync API into existing XHCI operations.
+>    This will be solely used by the XHCI sideband for now.
+> 
 
-> -- Steve
+Wanted to give a friendly ping to see if there were any more 
+concerns/feedback about this series before I submit a new revision that 
+rebases to the latest kernel codebase?
+
+Thanks
+Wesley Cheng
 
