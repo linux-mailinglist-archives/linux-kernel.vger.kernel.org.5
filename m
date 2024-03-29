@@ -1,65 +1,60 @@
-Return-Path: <linux-kernel+bounces-124572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C4F891A18
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:53:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BF2E891A1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:53:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17CCEB224DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:53:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF6DFB221BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7746712FF8C;
-	Fri, 29 Mar 2024 12:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F19E154435;
+	Fri, 29 Mar 2024 12:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4Ing9a2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lKFvYkyI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B031553BE;
-	Fri, 29 Mar 2024 12:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1D815574D;
+	Fri, 29 Mar 2024 12:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715436; cv=none; b=ngDHZBO1qegpDtLTehCd9pNyX0M2ezQkJfAruxR+quIidakzxNKtNz0XIyvY/6uSSG4DgCEYhvqz2ADGhSJjDfEkmvfjH1blMgWduMqHmsy+VSgU+gH72PuyNML1hDvj+UQ8cAFvzAw2iBk4IuJDpnKfgMj44/AnMNlhgcuXfxA=
+	t=1711715438; cv=none; b=JDbp7H+4FeIrY/PPWToIx7Th0Lk4t9NaR5tmKP+EdHy53alLtTPq6BNg6Kq8W0Ri+g3bStj7KOuFvyJNgaXDgql7L2rXUV9VdJgmgdOKlu/seewJYo0oOH5qG/mbtnhX+IwQGviwHBztIMJ+o0NGJkQUSAkGsYPvo37WTeKuiFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715436; c=relaxed/simple;
-	bh=IcBZv3SzKonQC6Je+MdRBI/FShiONCtFBUzie7WvtW8=;
+	s=arc-20240116; t=1711715438; c=relaxed/simple;
+	bh=3N9khgHtFIEgjgZuj7xDwjlZxq4GJFMytHxppSbxm08=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X1rjM9xVh94yxrjp+8RpqDSjGAKgcUmdbHdOoDVLCP5WYaadjlmj0I6ztkL4/r7c1s6lgAdAn95GbKtXJfNagkgYC7vlAjSNYJzgKACQTzzCmiVkKLaeyXlcbSXaPZaN7ocjutYNLrLqUImdPS8zREiDtN65oQTKf+e4Juy5M2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4Ing9a2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C79E0C433F1;
-	Fri, 29 Mar 2024 12:30:34 +0000 (UTC)
+	 MIME-Version; b=cfkC6Vyfa9eX3B0I9NjAdHCuX9Otnvaq0BGAhDpAFyp0mQLnwOiFnsE6IK4GbRjPPdtpGxaYz8PFEd6uyEXp/LOhsaGIxP92IO6IcKasVnWX6qIwyGUBI3ex5toMkb9a2/rCtfVE+BUxm1TB4jAFCyUlNNXriXNNrH7252OKPhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lKFvYkyI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B87C43390;
+	Fri, 29 Mar 2024 12:30:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715436;
-	bh=IcBZv3SzKonQC6Je+MdRBI/FShiONCtFBUzie7WvtW8=;
+	s=k20201202; t=1711715438;
+	bh=3N9khgHtFIEgjgZuj7xDwjlZxq4GJFMytHxppSbxm08=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D4Ing9a252IQLn4CWSZcqNdlJsLoZ+EyOQSyKZ79GExvDmFQ80KsXZdciRf9m98th
-	 Xxwe2+EhIezgTwUaW2W2NofZG8ZZvBB7uTaToA7bsG+TGXGd98k5YuEew5yLOHPpjm
-	 I6D3PuIctqjnCyb2BgsZ60xKM1DFpBYpsSuTT0xQ6yzqd1iRiHCNF/Rj9jJ8veLagn
-	 bPy/yg/vwi9RYI8EQzbMHWYWgkpOt+fWE7dNvSVBFs56krsfHb9P/LIskSyE82BreB
-	 tkWuF4X20wqcBVtdMG05GY9eWWI0owclIq6v4FaHvKToO8cIJCcSqaIYTqnpH2Wx7R
-	 4GkcDhBVTZLDQ==
+	b=lKFvYkyIBAvfMM1r8dlRdHjJG7x30AgUWsD6Oc3zIjROlaqRpd5PM3LBw/g6u+CV3
+	 cYF0zoKenQTJ+m8zID+jxV2j62oXKskrdLlWMxtV+8XYJLKPfSFp9Ehw3AoI5PbOP2
+	 x3nHCwxbHKsrXLuwbjeeRKKs7KHq5L/uXqbeOaMC5loUo4tgz9Yxi1ooJ/vNdbop/S
+	 pJim2eShypk5sJSjtyVxmL94ZBnbsE4qRN4koJ3qHTVtrswUMIhsCtFJOiV6UEouPB
+	 6URwfbqc3Qj2o1+f2O4mf8akCXSfQ4oEuTu9nSMrNL23WPg4s/mT0jy6MH817nVg58
+	 DNYirPyy94OqA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Adam Ford <aford173@gmail.com>,
-	Jacky Bai <ping.bai@nxp.com>,
-	Sandor Yu <Sandor.yu@nxp.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	shawnguo@kernel.org,
-	peng.fan@nxp.com,
-	geert+renesas@glider.be,
-	festevam@gmail.com,
-	marex@denx.de,
-	u.kleine-koenig@pengutronix.de,
-	linux-pm@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 21/52] pmdomain: imx8mp-blk-ctrl: imx8mp_blk: Add fdcc clock to hdmimix domain
-Date: Fri, 29 Mar 2024 08:28:51 -0400
-Message-ID: <20240329122956.3083859-21-sashal@kernel.org>
+	konrad.dybcio@linaro.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 22/52] arm64: dts: sc8280xp: correct DMIC2 and DMIC3 pin config node names
+Date: Fri, 29 Mar 2024 08:28:52 -0400
+Message-ID: <20240329122956.3083859-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -74,66 +69,58 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Adam Ford <aford173@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 697624ee8ad557ab5417f985d2c804241a7ad30d ]
+[ Upstream commit 61474b18e762671a69b2df9665f3cec5c87a38af ]
 
-According to i.MX8MP RM and HDMI ADD, the fdcc clock is part of
-hdmi rx verification IP that should not enable for HDMI TX.
-But actually if the clock is disabled before HDMI/LCDIF probe,
-LCDIF will not get pixel clock from HDMI PHY and print the error
-logs:
+Correct the TLMM pin configuration and muxing node names used for DMIC2
+and DMIC3 (dmic01 -> dmic23).  This has no functional impact, but
+improves code readability and avoids any confusion when reading the DTS.
 
-[CRTC:39:crtc-2] vblank wait timed out
-WARNING: CPU: 2 PID: 9 at drivers/gpu/drm/drm_atomic_helper.c:1634 drm_atomic_helper_wait_for_vblanks.part.0+0x23c/0x260
-
-Add fdcc clock to LCDIF and HDMI TX power domains to fix the issue.
-
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Reviewed-by: Jacky Bai <ping.bai@nxp.com>
-Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
-Link: https://lore.kernel.org/r/20240203165307.7806-5-aford173@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://lore.kernel.org/r/20240212172335.124845-1-krzysztof.kozlowski@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pmdomain/imx/imx8mp-blk-ctrl.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 2 +-
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi                     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
-index c6ac32c1a8c17..31693add7d633 100644
---- a/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
-+++ b/drivers/pmdomain/imx/imx8mp-blk-ctrl.c
-@@ -55,7 +55,7 @@ struct imx8mp_blk_ctrl_domain_data {
- 	const char *gpc_name;
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+index f2055899ae7ae..4669af3fdb75e 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
++++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+@@ -1201,7 +1201,7 @@ &usb_1_role_switch {
  };
  
--#define DOMAIN_MAX_CLKS 2
-+#define DOMAIN_MAX_CLKS 3
- #define DOMAIN_MAX_PATHS 3
+ &vamacro {
+-	pinctrl-0 = <&dmic01_default>, <&dmic02_default>;
++	pinctrl-0 = <&dmic01_default>, <&dmic23_default>;
+ 	pinctrl-names = "default";
  
- struct imx8mp_blk_ctrl_domain {
-@@ -457,8 +457,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx8mp_hdmi_domain_data[] = {
- 	},
- 	[IMX8MP_HDMIBLK_PD_LCDIF] = {
- 		.name = "hdmiblk-lcdif",
--		.clk_names = (const char *[]){ "axi", "apb" },
--		.num_clks = 2,
-+		.clk_names = (const char *[]){ "axi", "apb", "fdcc" },
-+		.num_clks = 3,
- 		.gpc_name = "lcdif",
- 		.path_names = (const char *[]){"lcdif-hdmi"},
- 		.num_paths = 1,
-@@ -483,8 +483,8 @@ static const struct imx8mp_blk_ctrl_domain_data imx8mp_hdmi_domain_data[] = {
- 	},
- 	[IMX8MP_HDMIBLK_PD_HDMI_TX] = {
- 		.name = "hdmiblk-hdmi-tx",
--		.clk_names = (const char *[]){ "apb", "ref_266m" },
--		.num_clks = 2,
-+		.clk_names = (const char *[]){ "apb", "ref_266m", "fdcc" },
-+		.num_clks = 3,
- 		.gpc_name = "hdmi-tx",
- 	},
- 	[IMX8MP_HDMIBLK_PD_HDMI_TX_PHY] = {
+ 	vdd-micb-supply = <&vreg_s10b>;
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+index b8081513176ac..f4dbb69b4ff37 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+@@ -2977,7 +2977,7 @@ data-pins {
+ 				};
+ 			};
+ 
+-			dmic02_default: dmic02-default-state {
++			dmic23_default: dmic23-default-state {
+ 				clk-pins {
+ 					pins = "gpio8";
+ 					function = "dmic2_clk";
+@@ -2993,7 +2993,7 @@ data-pins {
+ 				};
+ 			};
+ 
+-			dmic02_sleep: dmic02-sleep-state {
++			dmic23_sleep: dmic23-sleep-state {
+ 				clk-pins {
+ 					pins = "gpio8";
+ 					function = "dmic2_clk";
 -- 
 2.43.0
 
