@@ -1,95 +1,141 @@
-Return-Path: <linux-kernel+bounces-125158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1258A892154
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:12:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796ED892157
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D416B1C24E7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:12:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29D982884D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AC08565D;
-	Fri, 29 Mar 2024 16:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AA910796;
+	Fri, 29 Mar 2024 16:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hrneEMLR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lAb271IH"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1CBF1C0DD0;
-	Fri, 29 Mar 2024 16:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D9617E;
+	Fri, 29 Mar 2024 16:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711728731; cv=none; b=SnWTCZnTnUeJmmBm4bj7o4vADAVFBUZ1IN9briBLCcL1RYB4pC1mpnMUZspdAGKOYe8ZfM9dGL59DDYwYWn3UlRZrYvGVx4vNarxuWfFn/cYgMTK6N6DFryxADLB/8cB47OusXlaql80Y4hN3CGccbVXEHleDmRcbG0Pq9c/DC0=
+	t=1711728806; cv=none; b=F2JVECFTrjYqAZqZN8JPXzNOZGZ/lufdUV745RzBS4/eGA8WQS1HscRokP0gd9niJPaBkMbk+jM6+mexJxJWL32vzQcnChpNGkm2iDCeMwSPBpTQWs/UmfTIP84I7bCILjbjHFI043AA0KBEbjTR0648VsgXAWYV5ZW9VjK2kHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711728731; c=relaxed/simple;
-	bh=w4yBZavzUXkQn94G7vCY2jveYKh91htV8qdZ+sg+9Tg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZAol3SAitxshkRqYOkLFbQpXS5Q5Sv/45/i2Xd8E5OUj4VkIOrEY4774PHsxDvM+88cxlvrv08wuqqlsY2CHTpPhvpGdHRcTmxNr0kxAKRG0l2nMV5cCtKlIIDU7i9LTfWm5vke0U8X7CiqjVHOQBVWGMZQtNMX/qhvhaje2kpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hrneEMLR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95735C433F1;
-	Fri, 29 Mar 2024 16:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711728731;
-	bh=w4yBZavzUXkQn94G7vCY2jveYKh91htV8qdZ+sg+9Tg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hrneEMLRANp4gzufIXuN8LJGsQPzRxYhBkmnMjF+lLjkOssMi1IXGSLpP3+PiMgIr
-	 FWUX46/y17ENCQCm5KNS/+Bcl3WAf13ITaFOn+ZoSVajTYpTh+pe55IS/H9eW5J43a
-	 cVfwnChoPAYtMt+jTP8aMzbUfKwXbnUzG/QUffEZWr80ptzbY09JwgH/J8tI12ITBZ
-	 +FIQCT65sYYSwGuSVvKTZCK5LODgfeeUrI/56roymZajZ4+jv4k6C4ADGibirEi6M3
-	 6BkV8Ct+JeeBcOkweRyPIymOiHqmCw6nfeKoCOCTZ7GAE3dMS+OHKL3ta4x44lWJwK
-	 axIcISCkvnS9A==
-Date: Fri, 29 Mar 2024 09:12:08 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Jean Delvare <jdelvare@suse.de>
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-kbuild@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Greg Kroah-Hartman <gregkh@suse.de>,
-	Nicolas Schier <nicolas@fjasle.eu>, Arnd Bergmann <arnd@arndb.de>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH 05/12] firmware: dmi-id: add a release callback function
-Message-ID: <20240329161208.GA279061@dev-arch.thelio-3990X>
-References: <20240326144741.3094687-1-arnd@kernel.org>
- <20240326145140.3257163-4-arnd@kernel.org>
- <20240329134917.579c3557@endymion.delvare>
+	s=arc-20240116; t=1711728806; c=relaxed/simple;
+	bh=I6FaA8lE1xu3cAiFmF8W7/Zh4WtxN7EK1Ev2dqCqEoE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TdzyUoXl+4HQ0UCL3cLzwG+aM4kpgUqJFMZmp3ledCMtyUnn3UbM0ecWe3oVoPMPSABF2BynfdD7/KkFdv3TXgxiDBBC+eQHiJUVhP+nfzMTywk3NLulf7hS7AH6Mc67EyiILHbP3HE6yzgGFn6BD0dvxAz0wegXcr8hnCxwUho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lAb271IH; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34261edaf7eso1434695f8f.1;
+        Fri, 29 Mar 2024 09:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711728803; x=1712333603; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g+ENIHdShqwsDq8iCSWp4zm4/fE/0J9kqrrA/ykJ7CU=;
+        b=lAb271IHKTAfLugLDCj0uSeopS7vUiIP6f+KHAa1s9YE/57qq45AVuivO7ouIGOL+q
+         YcrpI/yVeGTV22LRoH+L5qnbKqu2d5yUrzb2LlVTYR1Vbfn23Vjr97iiqNV490o9q5pv
+         YjeKTyrN2LyUaEngnjt1yM1G6dScpXxwSjEWMSRDASzjOOHs/wZramX/ra5LcsZvcqBU
+         /tv2bHoOnywNuzk89AP+t9fRDVwuTJ9Bi9HVXZQ8r54Cz3JEpIG8rzIb16U5k3JN2JLm
+         0s4LdFTBQAPU/bY2luB9Gybxh3yygEnOk8oqp2oseLUQibnyTDV/dAK3POpLIyWidUcm
+         Pi8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711728803; x=1712333603;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g+ENIHdShqwsDq8iCSWp4zm4/fE/0J9kqrrA/ykJ7CU=;
+        b=BHUZXj5KK8eWDaI3sUNULxLDNCkDWFquxngBuR93BOQc74WuMY++tt6Srave+RTvOQ
+         iYqde4jl0r9INElYR8ENgHURgXM0szkG1yKA0gmLn9IFLdOW+ab5bc0BKdA+WV1MNfPd
+         08dFadCybdu258APvfyOHq2m/MwdkKqdPrEjZHW6QcJELicDHt/F0/FFh2IThruNZj92
+         NcT4NITcp1nzumcQOivGwahTNZvHzReHRQyhJHtB5QlF5iHinwuVskd+AadEeOAsKW6V
+         VYdv5p8quiZX994rslCrbUbAwzwRUl/ksQMwnuOcePkrcsAp0++xqi5BRDOGdFAk6EV8
+         vZBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUXQqgLjUzf92nFDbin0oeaL2WLXMuLo2GCyiRsErp8QwIa+WwyCH5sA3K3HvOOLYFGE1kcw7iu/SVOPAhftL+sXvDmRYlQc9mNzH/wrE4c5myHY1jN0zvvC8lnzSbhPLMWLsyLisI4jGuJD8Ahwy9KWDPvpDY5oVNR
+X-Gm-Message-State: AOJu0YyiVWPnePk90XHoCh8Q/dcEE/f4CjMGaUGn91+lgu2JfT7z5WTG
+	EiDXf1Zb9FeowjDWP6Z7/tp6vvqMz+XoaETmLhSnNt5yFaZ3tDnr
+X-Google-Smtp-Source: AGHT+IFlnSDXyqsWCoK4FhHyzIj1G42ZayTzwCniQd6CJMOPqt0tBI0jfZghP0OMpk25e+c8DeoHdw==
+X-Received: by 2002:adf:f982:0:b0:33e:c69f:2cae with SMTP id f2-20020adff982000000b0033ec69f2caemr1453465wrr.23.1711728803359;
+        Fri, 29 Mar 2024 09:13:23 -0700 (PDT)
+Received: from localhost.localdomain ([82.84.234.137])
+        by smtp.gmail.com with ESMTPSA id u4-20020adff884000000b00341d9e8cc62sm4464208wrp.100.2024.03.29.09.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 09:13:22 -0700 (PDT)
+From: Marco Pinna <marco.pinn95@gmail.com>
+To: stefanha@redhat.com,
+	sgarzare@redhat.com
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ggarcia@deic.uab.cat,
+	jhansen@vmware.com,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Marco Pinna <marco.pinn95@gmail.com>,
+	stable@vge.kernel.org
+Subject: [PATCH net v2] vsock/virtio: fix packet delivery to tap device
+Date: Fri, 29 Mar 2024 17:12:59 +0100
+Message-ID: <20240329161259.411751-1-marco.pinn95@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329134917.579c3557@endymion.delvare>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 29, 2024 at 01:49:17PM +0100, Jean Delvare wrote:
-> Hi Arnd,
-> 
-> On Tue, 26 Mar 2024 15:51:30 +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > dmi_class uses kfree() as the .release function, but that now causes
-> > a warning with clang-16 as it violates control flow integrity (KCFI)
-> > rules:
-> > 
-> > drivers/firmware/dmi-id.c:174:17: error: cast from 'void (*)(const void *)' to 'void (*)(struct device *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-> >   174 |         .dev_release = (void(*)(struct device *)) kfree,
-> > 
-> > Add an explicit function to call kfree() instead.
-> > 
-> > Fixes: 4f5c791a850e ("DMI-based module autoloading")
-> 
-> Not sure if this fixes tag is really warranted. As I understand it,
-> your change only removes a warning but there was no actual bug, right?
+Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
+virtio_transport_deliver_tap_pkt() for handing packets to the
+vsockmon device. However, in virtio_transport_send_pkt_work(),
+the function is called before actually sending the packet (i.e.
+before placing it in the virtqueue with virtqueue_add_sgs() and checking
+whether it returned successfully).
+Queuing the packet in the virtqueue can fail even multiple times.
+However, in virtio_transport_deliver_tap_pkt() we deliver the packet
+to the monitoring tap interface only the first time we call it.
+This certainly avoids seeing the same packet replicated multiple times
+in the monitoring interface, but it can show the packet sent with the
+wrong timestamp or even before we succeed to queue it in the virtqueue.
 
-Sort of, the warning is really pointing out that calling this callback
-will result in a crash at runtime when the kernel is built with kCFI
-enabled, which I would consider a bug.
+Move virtio_transport_deliver_tap_pkt() after calling virtqueue_add_sgs()
+and making sure it returned successfully.
 
-Cheers,
-Nathan
+Fixes: 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks")
+Cc: stable@vge.kernel.org
+Signed-off-by: Marco Pinna <marco.pinn95@gmail.com>
+---
+ net/vmw_vsock/virtio_transport.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+index 1748268e0694..ee5d306a96d0 100644
+--- a/net/vmw_vsock/virtio_transport.c
++++ b/net/vmw_vsock/virtio_transport.c
+@@ -120,7 +120,6 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+ 		if (!skb)
+ 			break;
+ 
+-		virtio_transport_deliver_tap_pkt(skb);
+ 		reply = virtio_vsock_skb_reply(skb);
+ 		sgs = vsock->out_sgs;
+ 		sg_init_one(sgs[out_sg], virtio_vsock_hdr(skb),
+@@ -170,6 +169,8 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+ 			break;
+ 		}
+ 
++		virtio_transport_deliver_tap_pkt(skb);
++
+ 		if (reply) {
+ 			struct virtqueue *rx_vq = vsock->vqs[VSOCK_VQ_RX];
+ 			int val;
+-- 
+2.44.0
+
 
