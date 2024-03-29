@@ -1,49 +1,106 @@
-Return-Path: <linux-kernel+bounces-125374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3E98924C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D3D8924C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 114CB1F21CED
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:01:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 987B21F222DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E986C13B5AE;
-	Fri, 29 Mar 2024 20:00:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66FE13AA54;
+	Fri, 29 Mar 2024 20:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ibdChtO/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WNKyaeJq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1920A131E59;
-	Fri, 29 Mar 2024 20:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD241DDEA
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711742437; cv=none; b=U+/SbMjZXFFV5DmCRmBAAN7gMYg3DReVOIIFVGEM1/cPwThxnzy9A03wNDMZOl2vR/DoXWfFAdUBgB23VhlT62a39SDnxtql4Y26Z8m+28xFqzSUgkFDLruM3/R0yMGgzHhPoE2hvwd96fiOjGyCXt+1v9kNkndBXOn8oEd2nZ4=
+	t=1711742710; cv=none; b=ZuEbSFR5I5RlJe/hV+0+Hb2WmnpUsA5UYmBUCMZK4Ep95k3gEEgONmxrEjclALbnGTzOPzJIlEP3MK5r74MEEW9Ivc6NxO/AkSLi3MnT4PLIKbAZiBzLojYuL7qjdkQeB8uG0lcPM5wZNzBNUss6GowdUdWc/wgvQLeWQfCydn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711742437; c=relaxed/simple;
-	bh=O10HO98LXxHRjwwegetD1LC2QarBz8wOkuidkGTxkic=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=PnBmFAmNiNutZAk0OAiRfOfj4Z2HD6NoW97nrh2+lO5n6JMkXzTn3Ihn7SnnGPbDb9SMGZsG4adEqxuLnV30VfuxMDc4fgkYIMiyQCOsPWJT8o7iIwlxXVMZY4IqORrEwr2MotYud95+XXa7IkqNz6Nheiojtzqm8ru8lXqtTjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ibdChtO/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 88958C43399;
-	Fri, 29 Mar 2024 20:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711742436;
-	bh=O10HO98LXxHRjwwegetD1LC2QarBz8wOkuidkGTxkic=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ibdChtO/bXootBctSxklNeA7bYCBts1UgwUFhft4x2sjMGXGiyQ6xGf96V2e0eOA1
-	 ODq9Ia/6579epCaP4lnUDfDLkut5fsOWeaFbJF7me6TstZSBLf3BMrkYDf55Adi731
-	 zHrMkkINKMdPiMUb6gLSoTWBG++DiMupsV5KEmKMPytdOQEZ4kBSph0dMZLkdeLFkK
-	 EbluA1me7aURKnJpRkImBfuddbCDZ41vUC7YUj2cCjTbvsHIIgprJTvRvr6boPp1Ff
-	 UJoxCMbUZIsBcLic6mF8suqylfUb00h7TTGot8oyp8sxfTR9PMGMw0bRiDFpkQ8O6Y
-	 waG7vYyhosOoA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7B142D84BAF;
-	Fri, 29 Mar 2024 20:00:36 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711742710; c=relaxed/simple;
+	bh=cIbe2NRCQP7djfpbM+11L+WlZLa/v/ScA4ZubIQlJek=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IH/bfwocBNr/EWFjYA4rQ+zq6qjRLAu1EWzLNx/nYms25eaJ+HVRn6xOkPIi4bAUx6rFbtx499kaCqoN9RXsTTvs96Tt2koSuYaGBgjKuqA8DLkyd1x+1DJ1pg7fA4TCP7Qh/by3UJSxB//9dY12XtplAq/1xB7EXfXKEescjUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WNKyaeJq; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711742707;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SnHjQH48YnJt749mCO2kgMTpPbKk2F0bzExQRDPnK30=;
+	b=WNKyaeJqRyi2lqcR7sTPNbSobvGMHN8VaOMFTEQqYCryC+uqEgT2hxWQEUHoOQZQPK6JIT
+	w1/WLX4JgP+P52YnUyAtiIv9NxmWhsTfbcIpg5oUkc3dGuKsmQsS2T00cz6mAqeVFlHuJW
+	G2253EgETwG3I9ue0Mueoq+mcJj8Or0=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-26-xBaRD8gjNtaNR0CT0P6bPw-1; Fri, 29 Mar 2024 16:05:05 -0400
+X-MC-Unique: xBaRD8gjNtaNR0CT0P6bPw-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6ea81ca3883so1578167b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 13:05:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711742705; x=1712347505;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SnHjQH48YnJt749mCO2kgMTpPbKk2F0bzExQRDPnK30=;
+        b=eK1pnwZVG/uIdcgdmcZJeqbEv7DYNH+JWKhOFnLsTbUJFvaPmQYV5Hn8LjK2HbUJvd
+         On192iAEQjDk+PAw8e6QZpIdDXy9tQpQxuOmZ4pit5uA5nhwoNAABAj8usqW1i87NJDr
+         ZgIyZZD8yQcmt2hxl9np3vPb7R22CDrPyOrpZLwlkWUoHtoy0u8jYB3LzXqNPaUk22LA
+         rJxsH/F8FeeqcxdlhDksnVjJluUs0nzhX8/UZMM87/IKMB4SR6k/KCG/cH2GWiFygIyD
+         Ew5Y/0mF7AGl+Jw2kzYhOxqbP9CKM7Cm+1EXE0ksJ95SnhKKBxSEYyfoaS3CmbcExm9T
+         HCKw==
+X-Forwarded-Encrypted: i=1; AJvYcCWE9NkfHC6bU4yOhsx4MKKZjWFoaw5CG1JEZ557IHEI4X8w4SSvyQOFgP4fjcYqWNaeqY66yTSBfQT6ln++YZGBqNXlxoxBXrziJzjV
+X-Gm-Message-State: AOJu0Yxkk1sMShRtVnyMp8O3/zjfIg/emiOrrYWtjaznvRWWQQjvHVJm
+	PIkA202OSceHn5HcG8tjEPLBQ50RG7dScoz3NpUK7sgLnvR/ce7SsddEmGaG6eydAvY/NFjdsPG
+	HiUcnus8G1R0QSK5P1JJ23K460Rl8YCxoRauq0T8J3G0VN6CRJJzImMbkQxzv2w==
+X-Received: by 2002:a05:6a21:193:b0:1a3:c8d5:707a with SMTP id le19-20020a056a21019300b001a3c8d5707amr3325554pzb.7.1711742704859;
+        Fri, 29 Mar 2024 13:05:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzus5TYmyBQIJzw2X4oGKdRnzm+fHezhgpcMAHRkbhzjBiVvj5MPNNZHf4gEN4NnQQtcePCw==
+X-Received: by 2002:a05:6a21:193:b0:1a3:c8d5:707a with SMTP id le19-20020a056a21019300b001a3c8d5707amr3325536pzb.7.1711742704523;
+        Fri, 29 Mar 2024 13:05:04 -0700 (PDT)
+Received: from localhost.localdomain ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id e4-20020a17090301c400b001dd6ebd88b0sm3830017plh.198.2024.03.29.13.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 13:05:04 -0700 (PDT)
+From: wefu@redhat.com
+To: jszhang@kernel.org,
+	guoren@kernel.org,
+	conor@kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	andriy.shevchenko@linux.intel.com,
+	nuno.sa@analog.com,
+	marcelo.schmitt@analog.com,
+	bigunclemax@gmail.com,
+	marius.cristea@microchip.com,
+	fr0st61te@gmail.com,
+	okan.sahin@analog.com,
+	marcus.folkesson@gmail.com,
+	schnelle@linux.ibm.com,
+	lee@kernel.org,
+	mike.looijmans@topic.nl
+Cc: linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	Wei Fu <wefu@redhat.com>
+Subject: [PATCH 0/3] iio: adc: add ADC driver for XuanTie TH1520 SoC
+Date: Sat, 30 Mar 2024 04:01:23 +0800
+Message-ID: <20240329200241.4122000-1-wefu@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,58 +108,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/9] address remaining
- -Wtautological-constant-out-of-range-compare
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171174243650.4906.1760676317968487901.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Mar 2024 20:00:36 +0000
-References: <20240328143051.1069575-1-arnd@kernel.org>
-In-Reply-To: <20240328143051.1069575-1-arnd@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, arnd@arndb.de, idryomov@gmail.com,
- dongsheng.yang@easystack.cn, axboe@kernel.dk, jgg@ziepe.ca, leon@kernel.org,
- agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
- dm-devel@lists.linux.dev, saeedm@nvidia.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, xiubli@redhat.com,
- jlayton@kernel.org, konishi.ryusuke@gmail.com, dvyukov@google.com,
- andreyknvl@gmail.com, dsahern@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, nicolas@fjasle.eu, ndesaulniers@google.com,
- morbo@google.com, justinstitt@google.com, keescook@chromium.org,
- gustavoars@kernel.org, tariqt@nvidia.com, ceph-devel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, linux-nilfs@vger.kernel.org,
- kasan-dev@googlegroups.com, linux-kbuild@vger.kernel.org,
- llvm@lists.linux.dev
 
-Hello:
+From: Wei Fu <wefu@redhat.com>
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+This patchset adds initial support for XuanTie TH1520 ADC driver.
+This is modified from XuanTie TH1520 Linux_SDK_V1.4.2(linux v5.10.113)
+The original author is Fugang Duan <duanfugang.dfg@linux.alibaba.com>
 
-On Thu, 28 Mar 2024 15:30:38 +0100 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The warning option was introduced a few years ago but left disabled
-> by default. All of the actual bugs that this has found have been
-> fixed in the meantime, and this series should address the remaining
-> false-positives, as tested on arm/arm64/x86 randconfigs as well as
-> allmodconfig builds for all architectures supported by clang.
-> 
-> [...]
+Wei Fu (3):
+  drivers/iio/adc: Add XuanTie TH1520 ADC driver
+  riscv: dts: thead: Add XuanTie TH1520 ADC device node
+  dt-bindings: adc: Document XuanTie TH1520 ADC
 
-Here is the summary with links:
-  - [2/9] libceph: avoid clang out-of-range warning
-    (no matching commit)
-  - [5/9] ipv4: tcp_output: avoid warning about NET_ADD_STATS
-    (no matching commit)
-  - [8/9] mlx5: stop warning for 64KB pages
-    https://git.kernel.org/netdev/net-next/c/a5535e533694
+ .../bindings/iio/adc/thead,th1520.yaml        |  52 ++
+ arch/riscv/boot/dts/thead/th1520.dtsi         |  10 +
+ drivers/iio/adc/Kconfig                       |  13 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/xuantie-th1520-adc.c          | 572 ++++++++++++++++++
+ drivers/iio/adc/xuantie-th1520-adc.h          | 193 ++++++
+ 6 files changed, 841 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/thead,th1520.yaml
+ create mode 100644 drivers/iio/adc/xuantie-th1520-adc.c
+ create mode 100644 drivers/iio/adc/xuantie-th1520-adc.h
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.44.0
 
 
