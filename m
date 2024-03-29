@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-124803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BCE891CE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:01:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9CD891CB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B91D5B25793
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:55:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A120286FA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50588190686;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01E819069D;
 	Fri, 29 Mar 2024 12:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idYjUPli"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jrEVfMEl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7D2190672;
-	Fri, 29 Mar 2024 12:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAC2190681;
+	Fri, 29 Mar 2024 12:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716162; cv=none; b=eu5qPv/ElbyUz++IXUHTW2NnuDmY61YpxGODSWKhFmMQ48uVn9twob+Yx4U0pTf4md4j2Q1KHL7xuDi/Hci3YWTXG3mHfKLBt9lNk51NrdL5nwUUH6JndIxdxRyxuc7052HBa04tBv9MQKMrpJ67MN1maXylM8G+gHW6dTFsJBc=
+	t=1711716163; cv=none; b=Yw3SQ/McSnT1iIoL+SPgpW0+bT27nCkNtCdx3A82/Ju56MPhON1LSZLQ/z6BSrxcTw28RetdvzvYP2Yxstk8TrN/ScK2HAki9w3siJppevx0+gqd7NxhdMb2BlNAl8yqqg4Ac/BGhBs7jxphBasoXO68Vi8N4vrGUkQSQ6Vf2Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716162; c=relaxed/simple;
-	bh=zBlT7bR9VLPwwSZRmRbDyaaaSQltXRwQNSVd2zkZ1BA=;
+	s=arc-20240116; t=1711716163; c=relaxed/simple;
+	bh=2xC5XMYS0wCtsfNCx5VDLX0oiPi8F81qE/iLV7BLswc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YELxcWx4z6pSnf8kPiVNZyVNxANp9Cp3CMvImlLTYVoXoBXWnXwT56W0AXXhRQQTwbH5rav678Kz441uvSlBssN9hXg750vUf52MhMVRfQdsDLfaCFYj4tz6Z+zFF58PUyl5UAgem9JlLVyZcHrdx8b3bEecwyT9pWOmE0GSANY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idYjUPli; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 658ECC43390;
-	Fri, 29 Mar 2024 12:42:40 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YcoKPCxaN+yJ6fCL1rThlnBCEKKLyK3d6DLN0shVg/jT61jWBc5usoswsHzBZU9R6VMl7zN6/wH0Az+gLysroP2wlH0GIR59LHcU3gKQh6wYFf1E1Yl/dvwrbJTfpwxLjbFYGc7XcYXiqfD2RVsYqFzvbbLmKxa1VH4P9c05NEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrEVfMEl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A76FBC43394;
+	Fri, 29 Mar 2024 12:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716161;
-	bh=zBlT7bR9VLPwwSZRmRbDyaaaSQltXRwQNSVd2zkZ1BA=;
+	s=k20201202; t=1711716162;
+	bh=2xC5XMYS0wCtsfNCx5VDLX0oiPi8F81qE/iLV7BLswc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=idYjUPli3CSegQdnT+q0w+doPxgBtV/wSZFOIfdbE8/2qObbsvJTj/ABefdsP0Sgt
-	 AqdycdA9F8N9sR4dZmVv9uOKbJ4LzIc4bhlIn1wWhM0b7jLPdxU2wdypAw9WZWjCcJ
-	 crRu5Vwdyu+nH+q3xF8gQ9I8T7QqyscmPW9wjUrx/Vbl2GILRpSppcIf7lC3gy3i2R
-	 ocAEvAUuXgDYnYZ6Mk3Rz/Lj/Fw6fmjPZD8ey1/Kq4/f0zB8N+/L+3OQbjjxulN6Ah
-	 sIKCrYyZtqwK6dE8bT/o8zHpUTZtApb8BtAlDmdPYqRYxllMI7CIHC0/wCf01oog23
-	 6AMdStHCax7YA==
+	b=jrEVfMEljhexTio74B6pjEP67gH2S2WJDSapadCnK7oNulO0cn4WMNFaZusmzG/tF
+	 WMQ7cckerAUq0+ErkscTOFPrdb8nk2jXrPcCXaIQRuUlCd2qPxZpsslW7iONIBEH+e
+	 Il9pEqa9Y+X+cO6OCG+BZUCnAhsESECcSbyREMIAzkxeiHXkMH/gRPubZRxm7IZ7Fa
+	 r2KCDFMGuhHJ3RDLIOJdI8JlEd4PYK9XYHS6eDI0xLLiOoihayfCtcrVtfPlIi/OcH
+	 LAAsFJ53gqFFkBdRNrGvW/d3XCIdA5jCVbhe543I3UxLVUmZJ6/BYgOVMnRl899F6b
+	 nMafSvJ5MUN4g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: SungHwan Jung <onenowy@gmail.com>,
+Cc: =?UTF-8?q?Alban=20Boy=C3=A9?= <alban.boye@protonmail.com>,
 	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	jlee@suse.com,
 	hdegoede@redhat.com,
+	linux-input@vger.kernel.org,
 	platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 92/98] platform/x86: acer-wmi: Add predator_v4 module parameter
-Date: Fri, 29 Mar 2024 08:38:03 -0400
-Message-ID: <20240329123919.3087149-92-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 93/98] platform/x86: touchscreen_dmi: Add an extra entry for a variant of the Chuwi Vi8 tablet
+Date: Fri, 29 Mar 2024 08:38:04 -0400
+Message-ID: <20240329123919.3087149-93-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -67,63 +67,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: SungHwan Jung <onenowy@gmail.com>
+From: Alban Boyé <alban.boye@protonmail.com>
 
-[ Upstream commit f9124f2a454a6f1edb4eae9f0646b1a61fd74dba ]
+[ Upstream commit 1266e2efb7512dbf20eac820ca2ed34de6b1c3e7 ]
 
-This parameter allows predator laptop users to test and use features
-(mode button, platform profile, fan speed monitoring) without
-adding model names to acer_quirks and compiling kernel.
-
-Signed-off-by: SungHwan Jung <onenowy@gmail.com>
-Link: https://lore.kernel.org/r/20240220080416.6395-1-onenowy@gmail.com
+Signed-off-by: Alban Boyé <alban.boye@protonmail.com>
+Link: https://lore.kernel.org/r/20240227223919.11587-1-alban.boye@protonmail.com
 Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/acer-wmi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/platform/x86/touchscreen_dmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 771b0ce34c8f9..ee2e164f86b9c 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -276,6 +276,7 @@ static bool has_type_aa;
- static u16 commun_func_bitmap;
- static u8 commun_fn_key_number;
- static bool cycle_gaming_thermal_profile = true;
-+static bool predator_v4;
- 
- module_param(mailled, int, 0444);
- module_param(brightness, int, 0444);
-@@ -284,6 +285,7 @@ module_param(force_series, int, 0444);
- module_param(force_caps, int, 0444);
- module_param(ec_raw_mode, bool, 0444);
- module_param(cycle_gaming_thermal_profile, bool, 0644);
-+module_param(predator_v4, bool, 0444);
- MODULE_PARM_DESC(mailled, "Set initial state of Mail LED");
- MODULE_PARM_DESC(brightness, "Set initial LCD backlight brightness");
- MODULE_PARM_DESC(threeg, "Set initial state of 3G hardware");
-@@ -292,6 +294,8 @@ MODULE_PARM_DESC(force_caps, "Force the capability bitmask to this value");
- MODULE_PARM_DESC(ec_raw_mode, "Enable EC raw mode");
- MODULE_PARM_DESC(cycle_gaming_thermal_profile,
- 	"Set thermal mode key in cycle mode. Disabling it sets the mode key in turbo toggle mode");
-+MODULE_PARM_DESC(predator_v4,
-+	"Enable features for predator laptops that use predator sense v4");
- 
- struct acer_data {
- 	int mailled;
-@@ -734,7 +738,9 @@ enum acer_predator_v4_thermal_profile_wmi {
- /* Find which quirks are needed for a particular vendor/ model pair */
- static void __init find_quirks(void)
- {
--	if (!force_series) {
-+	if (predator_v4) {
-+		quirks = &quirk_acer_predator_v4;
-+	} else if (!force_series) {
- 		dmi_check_system(acer_quirks);
- 		dmi_check_system(non_acer_quirks);
- 	} else if (force_series == 2490) {
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index 975cf24ae359a..c6a10ec2c83f6 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -1217,6 +1217,15 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI.D86JLBNR"),
+ 		},
+ 	},
++	{
++		/* Chuwi Vi8 dual-boot (CWI506) */
++		.driver_data = (void *)&chuwi_vi8_data,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "i86"),
++			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI2.D86JHBNR02"),
++		},
++	},
+ 	{
+ 		/* Chuwi Vi8 Plus (CWI519) */
+ 		.driver_data = (void *)&chuwi_vi8_plus_data,
 -- 
 2.43.0
 
