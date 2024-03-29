@@ -1,59 +1,62 @@
-Return-Path: <linux-kernel+bounces-124942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E2C891E13
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1BDA891E16
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80FA1286DAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:32:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E98A286C2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D3D1A6D1D;
-	Fri, 29 Mar 2024 12:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5A31A76FA;
+	Fri, 29 Mar 2024 12:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3UlcC79"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFENI1rH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527261A6D01;
-	Fri, 29 Mar 2024 12:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B191A76E7;
+	Fri, 29 Mar 2024 12:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716479; cv=none; b=EYfCLs7W0GpNnnPAxn0qQItS4jJUymkU1Dyo6TB5v9e3UI9mLIiCcyz4GYGQm9a2Es9IS/BMVGR09/JbBeAKIAJozMwnsv4cZsFnZJT+dJRTHNLJa4/gubh8v39ti5VlWal1LQOxYSl20xacWLKAWVC87wST8mSdVuppJ97uA2Q=
+	t=1711716481; cv=none; b=BgyUa4Ws1Vohv1iTi6j4kG9zEWC7MnMJ0rPBXt3LnI09adXw0g5g6CHIsbEKhvyF+njqZMq83xcGjXZNxs9LNbX6Ks7XVN02EptRvj22f61unqeKBtU+quWJwyZTkoXD+6yCsvV2hnwyMGptYyfs8VwEuK3gqn5f69ni/bNppv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716479; c=relaxed/simple;
-	bh=0wAhSurDvrkS7sS7HCp4satg5frJrKfG7SxBG1rPTms=;
+	s=arc-20240116; t=1711716481; c=relaxed/simple;
+	bh=wu6kP4xIU5k3jmxEFqSl2CpRjVXZdjtE5UFK3jobj6I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bnqMoCIDoGI2hSy7vvfF8gaMlcrxwKZqspQD/pCBKkRih/zyG2lOE4b/90kyfbQdQI08baHpJBj3ENsH8oKCzOMLYrdpoby0+6nvkONWODrGpi60AcYhFJknMoo6pzhsnvuvlm1+OcbagMTjX7PJu1FE/aT+55WiJf9hUyZ9GrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3UlcC79; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25FE4C433C7;
-	Fri, 29 Mar 2024 12:47:58 +0000 (UTC)
+	 MIME-Version; b=LHkuQl3UCuRrjH2K+XP9kXTE65RmWblqN0+2Sb81BeMPy6oJOFYDRbesRrcgHmMDx4dHkcRs2kV8Vjf/s8qfGIZwta4Fk9vM2oMPoXTjF6wD5aDvsGci++4s0UWXDPlLyy2OIgpTQTL+n+iJisw9pCnbX2O0gd7qOK8CguvO1OY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RFENI1rH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE17C433C7;
+	Fri, 29 Mar 2024 12:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716479;
-	bh=0wAhSurDvrkS7sS7HCp4satg5frJrKfG7SxBG1rPTms=;
+	s=k20201202; t=1711716481;
+	bh=wu6kP4xIU5k3jmxEFqSl2CpRjVXZdjtE5UFK3jobj6I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K3UlcC796yMPJsUhLfqs6PvSsZAZsDHRK2+3hUzedGXqmSrNwctkflTr1qENKQf5d
-	 EzTZp8yekrM7Wydg4rd15GNPwoFwKGtQNG69iR3PShNzlWmFCFARcdwFHuCr7DZK1s
-	 ccpTCQKNi1wz4ycXUy07LlVmuJ3/n3zMqLv/trQeg4ytifzZK8zCOvXHQTAU8sLpTO
-	 FiLZ0ryHwl+6cLv+HlMyNrRXvH8j8luLSbegSYtuV0Fv7o9cSe7ofzGk8cggIEZ24z
-	 73OJU4E92ExW1v4hkyrL7XfZr/Nbqyk11dwawR5YL/vBWficisX/RZ+d05sVb1eytH
-	 cTaGTJRnwNdKg==
+	b=RFENI1rHQfO8JfT9BlcHL0Sq4AjycbqJUF9w0oVRWmMbok2qtld87l26Uz//yhU4y
+	 GudIQLRJjdpWtpe3bJsPdJ2P9qGi1Bkc6CKS4PZvipNYMvxjzAfEb3CT4VaiTtDFfy
+	 rHHz/u5ExGtYfZV0fzulIfhebdgS1QgC7z3Lwm3ScU3l9FZq9nIsDgBVUZoH3EaqJG
+	 niepv3KWPvg7yx6jD/VZyfdL6vQGnJGWsIQ785ez3F5knQKxxYU2r201xLcYNSJDUq
+	 czPsbOPzauFu9K1Iq8Os0+sKN2Bl+552kCErh/5HMDqkNcNACRN5PYNL1rZ1mAWjYG
+	 L1BOzqcg2qbdw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Justin Tee <justin.tee@broadcom.com>,
-	Himanshu Madhani <himanshu.madhani@oracle.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: John Ogness <john.ogness@linutronix.de>,
+	Petr Mladek <pmladek@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
-	james.smart@broadcom.com,
-	dick.kennedy@broadcom.com,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 06/34] scsi: lpfc: Fix possible memory leak in lpfc_rcv_padisc()
-Date: Fri, 29 Mar 2024 08:47:07 -0400
-Message-ID: <20240329124750.3092394-6-sashal@kernel.org>
+	akpm@linux-foundation.org,
+	peterz@infradead.org,
+	jpoimboe@kernel.org,
+	bhe@redhat.com,
+	feng.tang@intel.com,
+	arnd@arndb.de,
+	ubizjak@gmail.com,
+	wangkefeng.wang@huawei.com
+Subject: [PATCH AUTOSEL 5.15 07/34] panic: Flush kernel log buffer at the end
+Date: Fri, 29 Mar 2024 08:47:08 -0400
+Message-ID: <20240329124750.3092394-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
 References: <20240329124750.3092394-1-sashal@kernel.org>
@@ -68,43 +71,48 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Justin Tee <justin.tee@broadcom.com>
+From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 2ae917d4bcab80ab304b774d492e2fcd6c52c06b ]
+[ Upstream commit d988d9a9b9d180bfd5c1d353b3b176cb90d6861b ]
 
-The call to lpfc_sli4_resume_rpi() in lpfc_rcv_padisc() may return an
-unsuccessful status.  In such cases, the elsiocb is not issued, the
-completion is not called, and thus the elsiocb resource is leaked.
+If the kernel crashes in a context where printk() calls always
+defer printing (such as in NMI or inside a printk_safe section)
+then the final panic messages will be deferred to irq_work. But
+if irq_work is not available, the messages will not get printed
+unless explicitly flushed. The result is that the final
+"end Kernel panic" banner does not get printed.
 
-Check return value after calling lpfc_sli4_resume_rpi() and conditionally
-release the elsiocb resource.
+Add one final flush after the last printk() call to make sure
+the final panic messages make it out as well.
 
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Link: https://lore.kernel.org/r/20240131185112.149731-3-justintee8345@gmail.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20240207134103.1357162-14-john.ogness@linutronix.de
+Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_nportdisc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/panic.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_nportdisc.c b/drivers/scsi/lpfc/lpfc_nportdisc.c
-index 2bd35a7424c25..9b862f1254a42 100644
---- a/drivers/scsi/lpfc/lpfc_nportdisc.c
-+++ b/drivers/scsi/lpfc/lpfc_nportdisc.c
-@@ -724,8 +724,10 @@ lpfc_rcv_padisc(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
- 				/* Save the ELS cmd */
- 				elsiocb->drvrTimeout = cmd;
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 47933d4c769b6..3b14c6d123ddc 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -425,6 +425,14 @@ void panic(const char *fmt, ...)
  
--				lpfc_sli4_resume_rpi(ndlp,
--					lpfc_mbx_cmpl_resume_rpi, elsiocb);
-+				if (lpfc_sli4_resume_rpi(ndlp,
-+						lpfc_mbx_cmpl_resume_rpi,
-+						elsiocb))
-+					kfree(elsiocb);
- 				goto out;
- 			}
- 		}
+ 	/* Do not scroll important messages printed above */
+ 	suppress_printk = 1;
++
++	/*
++	 * The final messages may not have been printed if in a context that
++	 * defers printing (such as NMI) and irq_work is not available.
++	 * Explicitly flush the kernel log buffer one last time.
++	 */
++	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
++
+ 	local_irq_enable();
+ 	for (i = 0; ; i += PANIC_TIMER_STEP) {
+ 		touch_softlockup_watchdog();
 -- 
 2.43.0
 
