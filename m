@@ -1,143 +1,141 @@
-Return-Path: <linux-kernel+bounces-124246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C866A891454
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:29:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21E00891458
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68D7A1F2308D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:29:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52BDF1C23449
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FCA40BF9;
-	Fri, 29 Mar 2024 07:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CC142064;
+	Fri, 29 Mar 2024 07:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mIaO5oMs"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="yZ2NEKlu"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEBB40863;
-	Fri, 29 Mar 2024 07:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0C441233;
+	Fri, 29 Mar 2024 07:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697265; cv=none; b=mhgmxgElQWfVwfwGcq1e7x1VrYRyc/PCOPKfu95dpZO9kdGB/8jT66j6QtPjmkwsN3oM5+RHvD+hC/mtB9l6raMsS9PeTWovg5Mo3rVJCDWYEW1L5kGrb8gV5XSPG+MXw/QoWqAny5HHsXQJ9vXsapIyWGTi7jeV5fflAk+cME4=
+	t=1711697348; cv=none; b=e4Jj11/YqQYFQ/L6YBQdOge29fpDoE3ig9qDGavTkThBkaPtLcCUHiT3LENirpJ1oIESzF3trKvE0hmOn3nQmsrGtIy88FK+fDAABNcgPYgygDC3jYB06ProhJrwFQVV2b14PHmwbCdPh+jN3R2FNeSqf9xDSk6cEQoWHzfZxx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697265; c=relaxed/simple;
-	bh=gA68YKZWnmU308KH7pbZZOpx5P0ZYUuWUuzDeWNs53Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pc6jPxgf60Jamf+txga1AdEtwHb7QIaTIvPiq0Boy+G9SCOKptOdeO/CRrpa4FRIVtiVZrgU49h2437+Qg/WVuo9ReqIq3OV8mXNXUq2mYQIw1f1qCShWpBrqOZubUB/IqsoHheKwbocASK7MHT4Zm8kBCPadXETToZMu0N3eZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mIaO5oMs; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1711697348; c=relaxed/simple;
+	bh=1cmDBy8dYrXEta4fjcrphoU72ogCv98mdd+8+tvN7TU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IqWcDbk84PCxf9aqzHuIHbW8tNeuEaRP7F1tJby5RxDxG9+3RApq6HwfO8cReav3BLugB+Qxwb2ys0LmwiVDHb/uVJWMMo33tg/qtdecUVdRRZQI9AaQOErI2+fq5QDxDdUB5ULKGWweij2/fG7tSEB13CM6z/TFiFZ6MIR9wD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=yZ2NEKlu; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711697263; x=1743233263;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1711697346; x=1743233346;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=gA68YKZWnmU308KH7pbZZOpx5P0ZYUuWUuzDeWNs53Y=;
-  b=mIaO5oMsKHSi7IguAcUXQDKVLeDTr+GPcdtmD7/i2qhex1H0x8Cjq5Xt
-   G8PIsAGEXYFvk+XkLsP3xdInfAgZoAxTFBccCZCoF+W31Th9Aqf9/TjVX
-   5jU/52hiAtjzyQJ2zxYO0fQzPUZ+XXJl7WK/C4fe3G5kjRPpe6PZFNtoT
-   Qdee9jP64tEqoWPh6kPkQmFJ1mch7zJ79CgXn1CM9pEf5ejsvwpRbgAaZ
-   06waAYhTgk1vK7leUYsMM3fE3jxBwA2urWM3rqt8M4KINp5JpCzckxqxc
-   W6r+t36gLAZvXjhexImklBCM6FSTIHF3wNkf3yfpkjIN3uwOQT/PCAFj2
+  bh=1cmDBy8dYrXEta4fjcrphoU72ogCv98mdd+8+tvN7TU=;
+  b=yZ2NEKlu7UJfrtHOePY42sQoTVZ9srk/ol8WSAjGE+TCHxRIjp0Faamv
+   KI1y7EYkFTIwa7PWLr65G0ZaDO1W1ghM9aYCxcr3meFUOQ1SD9BwHZX0B
+   AkFCpU8etOPF2AoWTKeeE6JahbLwRTqlxVKxSZlSmuA154MVqVMcXkc8G
+   pomqP3xuITEtL9o45ZsBSU3qX6R+rW8a8EdmOJfiye9TcgtqSC1XVk9ub
+   uSch6BBbEYyEY1q3NFZKNLK4mQegmWT3UKOmb7c55VBwMjLzjuy7pLrC6
+   rHI4yXl6oOzZv1zqLXxu/cJmLABUM0Ndouzke8W6fd3MAk3e+ghjop7Uy
    A==;
-X-CSE-ConnectionGUID: G12mf7JfRXOM7NtiHSsXjw==
-X-CSE-MsgGUID: c40ehaqYQA+moPWuDZVvGQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="17604806"
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="17604806"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:27:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="40053301"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 29 Mar 2024 00:27:40 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rq6eH-0002x0-0z;
-	Fri, 29 Mar 2024 07:27:37 +0000
-Date: Fri, 29 Mar 2024 15:26:57 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, jack@suse.cz, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH 2/5] ext4: add test_mb_mark_used_cost to estimate cost of
- mb_mark_used
-Message-ID: <202403291544.lxme27eF-lkp@intel.com>
-References: <20240326213823.528302-3-shikemeng@huaweicloud.com>
+X-CSE-ConnectionGUID: dIC902tiRuyKClhJh9dfVQ==
+X-CSE-MsgGUID: GdK04AE1QKylRlLI485iMw==
+X-IronPort-AV: E=Sophos;i="6.07,164,1708412400"; 
+   d="asc'?scan'208";a="185882733"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Mar 2024 00:29:05 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 29 Mar 2024 00:28:47 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 29 Mar 2024 00:28:45 -0700
+Date: Fri, 29 Mar 2024 07:27:57 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+CC: Conor Dooley <conor@kernel.org>, =?iso-8859-1?Q?Bj=F6rn_T=F6pel?=
+	<bjorn@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Emil Renner Berthing
+	<kernel@esmil.dk>, Samuel Holland <samuel.holland@sifive.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	<linux-riscv@lists.infradead.org>, Andy Chiu <andy.chiu@sifive.com>, Jakub
+ Kicinski <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+Subject: Re: RISC-V for-next/fixes (cont'd from PW sync)
+Message-ID: <20240329-fanning-woven-7dbb6cfdde9b@wendy>
+References: <87ttkro3b5.fsf@all.your.base.are.belong.to.us>
+ <20240327-irrigate-unread-d9de28174437@spud>
+ <CAHVXubgMTe83sYaNO+SG=90=k5scaQrpApveTCO163MhUc1tdA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Y/2CbQmcronQVXbs"
 Content-Disposition: inline
-In-Reply-To: <20240326213823.528302-3-shikemeng@huaweicloud.com>
+In-Reply-To: <CAHVXubgMTe83sYaNO+SG=90=k5scaQrpApveTCO163MhUc1tdA@mail.gmail.com>
 
-Hi Kemeng,
+--Y/2CbQmcronQVXbs
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+On Fri, Mar 29, 2024 at 07:46:38AM +0100, Alexandre Ghiti wrote:
+> On Wed, Mar 27, 2024 at 9:32=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
+rote:
+> >
+> > On Wed, Mar 27, 2024 at 08:57:50PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+> > > Hi,
+> > >
+> > > I figured I'd put some words on the "how to update the RISC-V
+> > > for-next/fixes branches [1]" that came up on the patchwork call today.
+> > >
+> > > In RISC-V land, the for-next branch is used for features, and typical=
+ly
+> > > sent as a couple of PRs to Linus when the merge window is open. The
+> > > fixes branch is sent as PR(s) between the RCs of a release.
+> > >
+> > > Today, the baseline for for-next/fixes is the CURRENT_RELEASE-rc1, and
+> > > features/fixes are based on that.
+> > >
+> > > This has IMO a couple of issues:
+> > >
+> > > 1. fixes is missing the non-RISC-V fixes from releases later than
+> > >    -rc1, which makes it harder for contributors.
+>=20
+> The syzbot report [1] requires fixes in mm [2], if we don't update
+> fixes on top of the latest -rcX, we'll keep hitting this bug, so
+> rebasing -fixes on top of the latest -rcX is necessary to me.
 
-[auto build test ERROR on tytso-ext4/dev]
-[also build test ERROR on linus/master v6.9-rc1 next-20240328]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+No non-ff rebasing of branches unless its 101% required, please. This
+seems like a justifiable reason to merge the rc it appears in into the
+riscv branches though.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kemeng-Shi/ext4-keep-prefetch_grp-and-nr-consistent/20240326-214754
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-patch link:    https://lore.kernel.org/r/20240326213823.528302-3-shikemeng%40huaweicloud.com
-patch subject: [PATCH 2/5] ext4: add test_mb_mark_used_cost to estimate cost of mb_mark_used
-config: x86_64-randconfig-072-20240329 (https://download.01.org/0day-ci/archive/20240329/202403291544.lxme27eF-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403291544.lxme27eF-lkp@intel.com/reproduce)
+> [1] https://lore.kernel.org/linux-riscv/00000000000070a2660614b83885@goog=
+le.com/T/#t
+> [2] https://lore.kernel.org/all/20240326063036.6242-1-osalvador@suse.de/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403291544.lxme27eF-lkp@intel.com/
+--Y/2CbQmcronQVXbs
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All errors (new ones prefixed by >>):
+-----BEGIN PGP SIGNATURE-----
 
-   In file included from include/kunit/static_stub.h:18:0,
-                    from fs/ext4/mballoc.c:21:
->> fs/ext4/mballoc-test.c:959:10: error: initializer element is not constant
-             slow_attr),
-             ^
-   include/kunit/test.h:218:13: note: in definition of macro 'KUNIT_CASE_PARAM_ATTR'
-        .attr = attributes, .module_name = KBUILD_MODNAME}
-                ^~~~~~~~~~
-   fs/ext4/mballoc-test.c:959:10: note: (near initialization for 'mbt_test_cases[6].attr')
-             slow_attr),
-             ^
-   include/kunit/test.h:218:13: note: in definition of macro 'KUNIT_CASE_PARAM_ATTR'
-        .attr = attributes, .module_name = KBUILD_MODNAME}
-                ^~~~~~~~~~
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgZtfQAKCRB4tDGHoIJi
+0tiOAP4xrV2ls9KTOiepY1R3DQ4qiVounWXxYFc7g1IeQp60DQEA4pgF02ZVfCYK
+LekKEkPD/qHka7u0tB7awW+UGsTp0gs=
+=wq1B
+-----END PGP SIGNATURE-----
 
-
-vim +959 fs/ext4/mballoc-test.c
-
-   950	
-   951	static struct kunit_case mbt_test_cases[] = {
-   952		KUNIT_CASE_PARAM(test_new_blocks_simple, mbt_layouts_gen_params),
-   953		KUNIT_CASE_PARAM(test_free_blocks_simple, mbt_layouts_gen_params),
-   954		KUNIT_CASE_PARAM(test_mb_generate_buddy, mbt_layouts_gen_params),
-   955		KUNIT_CASE_PARAM(test_mb_mark_used, mbt_layouts_gen_params),
-   956		KUNIT_CASE_PARAM(test_mb_free_blocks, mbt_layouts_gen_params),
-   957		KUNIT_CASE_PARAM(test_mark_diskspace_used, mbt_layouts_gen_params),
-   958		KUNIT_CASE_PARAM_ATTR(test_mb_mark_used_cost, mbt_layouts_gen_params,
- > 959				      slow_attr),
-   960		{}
-   961	};
-   962	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--Y/2CbQmcronQVXbs--
 
