@@ -1,58 +1,67 @@
-Return-Path: <linux-kernel+bounces-124522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23CE7891948
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:39:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30BE389194B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C0761C24910
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:39:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F9F91C24AB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B6414600A;
-	Fri, 29 Mar 2024 12:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66961146593;
+	Fri, 29 Mar 2024 12:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lrvnGDH/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OTjrGJ/d"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABF3145FEF;
-	Fri, 29 Mar 2024 12:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9339385627;
+	Fri, 29 Mar 2024 12:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715295; cv=none; b=Bs3ozsSpCN5OhfL30I7fHFMK5bmnLeBwc++mChsVYm5e9at6S4hS+Xcxf2Bd+O1Ijs/H3IlgfWGwWBcy+HDhGbr1NjCETylThIf1zhYf3dVu9vhsc5/SZG8YaF9MgqSVnXwyk5gdFulg5kOel2omd2Naz4wRdFbYl3kI5iBMm+8=
+	t=1711715299; cv=none; b=h9FJZDowccyZr9SFK0rzXUg9ZEPwRtdDqcqSlpmrDfWOQgTjr2c9RHYOAD10TTvaNRocLDDA2tW/LsBEotPr2kzjsRBIpAz+Z+RmBHY1GDXWo+/fwwGqWMWPCQNcKcGy2u0fCyS1hJkowS2jUEXoszBzuRfxyo0vNq1FYJwTlqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715295; c=relaxed/simple;
-	bh=9KaPcBd2w3GO4IWPKE/D0ZVEMbN7tvs/SHcXt8jm7UQ=;
+	s=arc-20240116; t=1711715299; c=relaxed/simple;
+	bh=fldpuLXo2p6gttLzplunPpMyuUgrKzCch/ucIDryDqo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UtqN+Occ006IY3CgkjHVRY5KocR1xwshheZOGNMQ9mumrtF7d7wtj01KgSWAv3/ezMT8xCPGoheMoEpxi7RSb4cY4n/v3b7tIzrkwopUOXUoG/8dP7m5DJX5EC85cZyJl71TLO3uE3URVErVFFC7J2uGGQmFNUpo8tdVrnJprLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lrvnGDH/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A47C8C433F1;
-	Fri, 29 Mar 2024 12:28:13 +0000 (UTC)
+	 MIME-Version; b=oebAQ7ooNscDGSbygO4Lk9MGxK35UNRRtCMBVruytaNbIfSP2LSLlLvEngEIGb+3DH+LaQwZTmgtj/yykTm7xOw4PVrMv6BJ0uDIFYs7WnNvnUKLYYx6PeOHlo+spp/7SmJoCGAcFFLHMQXzArcb1DRrmQPPKCsoSeI1HFKrlJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OTjrGJ/d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F707C43390;
+	Fri, 29 Mar 2024 12:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715294;
-	bh=9KaPcBd2w3GO4IWPKE/D0ZVEMbN7tvs/SHcXt8jm7UQ=;
+	s=k20201202; t=1711715299;
+	bh=fldpuLXo2p6gttLzplunPpMyuUgrKzCch/ucIDryDqo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lrvnGDH/eUS3ZhGujIgt1y8i9wM4mbxHoSfFJFILp6W/LqB2g9gz60bdrYzH9LUIF
-	 iHZXExgTh6usIokMOy2YrxTrbPXZf+/y1FL3YdPyJHSqdrM218rNCG3t0si7V6nVSm
-	 7ZlWoe5Uz9jD3EmwCgcqvIEpmajrcORcVMAb00foCnIoB3CKZPiPPDZE1HlKumh4md
-	 xOXqBFWRKoqSTbBC6eSwK1YViWxiZW7s4Z5fBxuXY4B4dH6rEL6r2eVAqU62fyB6Xt
-	 yrZiWVyfMfYEL9mHCswGBDaY+J9af9LcC9IV5Dz12VFC839R4XScaK+pjAd3Z1vcCP
-	 5o8+AgFYpA0Dg==
+	b=OTjrGJ/dcu3D0iSh92g0sYMOw2N6DzYovI6TYp3kV6eTatI9mtwHawTghUrlBCN7p
+	 dEKhhKCNGuOV5qragIHi0jzsZT2wMCduw6NIB+4PU/YV5XIyL7j0feJNe+b0tzhqW+
+	 5BGr5aANMa297RKeoR4SR9qRFuKrhpmyjRE3Hhpqcy2f7DRXcm8tPZ0S7qdofNL+VB
+	 KcQ7Etm44P4Koiz+KmX7YviAzKoPWb+OTY9nZuUtTeg5zw6VNglfhy5UmbxAQnIV4p
+	 rqpeB+hC2+qTr4ZOk2cqFSkK9cwDWJq2g0HbRfc/f2QoHEDIL3dgm7yIB+kXvB6Zd7
+	 BnYyLsh5CxfJQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Shayne Chen <shayne.chen@mediatek.com>,
+	Peter Chiu <chui-hao.chiu@mediatek.com>,
+	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>,
+	lorenzo@kernel.org,
+	ryder.lee@mediatek.com,
+	kvalo@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	sujuan.chen@mediatek.com,
+	leitao@debian.org,
+	lynxis@fe80.eu,
+	meichia.chiu@mediatek.com,
 	linux-wireless@vger.kernel.org,
-	brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com
-Subject: [PATCH AUTOSEL 6.8 41/68] wifi: brcmfmac: Add DMI nvram filename quirk for ACEPC W5 Pro
-Date: Fri, 29 Mar 2024 08:25:37 -0400
-Message-ID: <20240329122652.3082296-41-sashal@kernel.org>
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.8 42/68] wifi: mt76: mt7915: add locking for accessing mapped registers
+Date: Fri, 29 Mar 2024 08:25:38 -0400
+Message-ID: <20240329122652.3082296-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122652.3082296-1-sashal@kernel.org>
 References: <20240329122652.3082296-1-sashal@kernel.org>
@@ -67,48 +76,125 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Shayne Chen <shayne.chen@mediatek.com>
 
-[ Upstream commit 32167707aa5e7ae4b160c18be79d85a7b4fdfcfb ]
+[ Upstream commit 0937f95ab07af6e663ae932d592f630d9eb591da ]
 
-The ACEPC W5 Pro HDMI stick contains quite generic names in the sys_vendor
-and product_name DMI strings, without this patch brcmfmac will try to load:
-"brcmfmac43455-sdio.$(DEFAULT_STRING)-$(DEFAULT_STRING).txt" as nvram file
-which is both too generic and messy with the $ symbols in the name.
+Sicne the mapping is global, mapped register access needs to be protected
+against concurrent access, otherwise a race condition might cause the reads
+or writes to go towards the wrong register
 
-The ACEPC W5 Pro uses the same Ampak AP6255 module as the ACEPC T8
-and the nvram for the T8 is already in linux-firmware, so point the new
-DMI nvram filename quirk to the T8 nvram file.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240216213649.251718-1-hdegoede@redhat.com
+Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
+Signed-off-by: Peter Chiu <chui-hao.chiu@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ .../net/wireless/mediatek/mt76/mt7915/mmio.c  | 45 ++++++++++++++++---
+ .../wireless/mediatek/mt76/mt7915/mt7915.h    |  1 +
+ 2 files changed, 41 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-index 86ff174936a9a..c3a602197662b 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-@@ -82,6 +82,15 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		},
- 		.driver_data = (void *)&acepc_t8_data,
- 	},
-+	{
-+		/* ACEPC W5 Pro Cherry Trail Z8350 HDMI stick, same wifi as the T8 */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "T3 MRD"),
-+			DMI_MATCH(DMI_CHASSIS_TYPE, "3"),
-+			DMI_MATCH(DMI_BIOS_VENDOR, "American Megatrends Inc."),
-+		},
-+		.driver_data = (void *)&acepc_t8_data,
-+	},
- 	{
- 		/* Chuwi Hi8 Pro with D2D3_Hi8Pro.233 BIOS */
- 		.matches = {
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mmio.c b/drivers/net/wireless/mediatek/mt76/mt7915/mmio.c
+index 3039f53e22454..dceb505987b19 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mmio.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mmio.c
+@@ -490,6 +490,11 @@ static u32 __mt7915_reg_addr(struct mt7915_dev *dev, u32 addr)
+ 		return dev->reg.map[i].maps + ofs;
+ 	}
+ 
++	return 0;
++}
++
++static u32 __mt7915_reg_remap_addr(struct mt7915_dev *dev, u32 addr)
++{
+ 	if ((addr >= MT_INFRA_BASE && addr < MT_WFSYS0_PHY_START) ||
+ 	    (addr >= MT_WFSYS0_PHY_START && addr < MT_WFSYS1_PHY_START) ||
+ 	    (addr >= MT_WFSYS1_PHY_START && addr <= MT_WFSYS1_PHY_END))
+@@ -514,15 +519,30 @@ void mt7915_memcpy_fromio(struct mt7915_dev *dev, void *buf, u32 offset,
+ {
+ 	u32 addr = __mt7915_reg_addr(dev, offset);
+ 
+-	memcpy_fromio(buf, dev->mt76.mmio.regs + addr, len);
++	if (addr) {
++		memcpy_fromio(buf, dev->mt76.mmio.regs + addr, len);
++		return;
++	}
++
++	spin_lock_bh(&dev->reg_lock);
++	memcpy_fromio(buf, dev->mt76.mmio.regs +
++			   __mt7915_reg_remap_addr(dev, offset), len);
++	spin_unlock_bh(&dev->reg_lock);
+ }
+ 
+ static u32 mt7915_rr(struct mt76_dev *mdev, u32 offset)
+ {
+ 	struct mt7915_dev *dev = container_of(mdev, struct mt7915_dev, mt76);
+-	u32 addr = __mt7915_reg_addr(dev, offset);
++	u32 addr = __mt7915_reg_addr(dev, offset), val;
+ 
+-	return dev->bus_ops->rr(mdev, addr);
++	if (addr)
++		return dev->bus_ops->rr(mdev, addr);
++
++	spin_lock_bh(&dev->reg_lock);
++	val = dev->bus_ops->rr(mdev, __mt7915_reg_remap_addr(dev, offset));
++	spin_unlock_bh(&dev->reg_lock);
++
++	return val;
+ }
+ 
+ static void mt7915_wr(struct mt76_dev *mdev, u32 offset, u32 val)
+@@ -530,7 +550,14 @@ static void mt7915_wr(struct mt76_dev *mdev, u32 offset, u32 val)
+ 	struct mt7915_dev *dev = container_of(mdev, struct mt7915_dev, mt76);
+ 	u32 addr = __mt7915_reg_addr(dev, offset);
+ 
+-	dev->bus_ops->wr(mdev, addr, val);
++	if (addr) {
++		dev->bus_ops->wr(mdev, addr, val);
++		return;
++	}
++
++	spin_lock_bh(&dev->reg_lock);
++	dev->bus_ops->wr(mdev, __mt7915_reg_remap_addr(dev, offset), val);
++	spin_unlock_bh(&dev->reg_lock);
+ }
+ 
+ static u32 mt7915_rmw(struct mt76_dev *mdev, u32 offset, u32 mask, u32 val)
+@@ -538,7 +565,14 @@ static u32 mt7915_rmw(struct mt76_dev *mdev, u32 offset, u32 mask, u32 val)
+ 	struct mt7915_dev *dev = container_of(mdev, struct mt7915_dev, mt76);
+ 	u32 addr = __mt7915_reg_addr(dev, offset);
+ 
+-	return dev->bus_ops->rmw(mdev, addr, mask, val);
++	if (addr)
++		return dev->bus_ops->rmw(mdev, addr, mask, val);
++
++	spin_lock_bh(&dev->reg_lock);
++	val = dev->bus_ops->rmw(mdev, __mt7915_reg_remap_addr(dev, offset), mask, val);
++	spin_unlock_bh(&dev->reg_lock);
++
++	return val;
+ }
+ 
+ #ifdef CONFIG_NET_MEDIATEK_SOC_WED
+@@ -707,6 +741,7 @@ static int mt7915_mmio_init(struct mt76_dev *mdev,
+ 
+ 	dev = container_of(mdev, struct mt7915_dev, mt76);
+ 	mt76_mmio_init(&dev->mt76, mem_base);
++	spin_lock_init(&dev->reg_lock);
+ 
+ 	switch (device_id) {
+ 	case 0x7915:
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mt7915.h b/drivers/net/wireless/mediatek/mt76/mt7915/mt7915.h
+index 4727d9c7b11de..6e79bc65f5a51 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mt7915.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mt7915.h
+@@ -287,6 +287,7 @@ struct mt7915_dev {
+ 
+ 	struct list_head sta_rc_list;
+ 	struct list_head twt_list;
++	spinlock_t reg_lock;
+ 
+ 	u32 hw_pattern;
+ 
 -- 
 2.43.0
 
