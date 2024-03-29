@@ -1,122 +1,175 @@
-Return-Path: <linux-kernel+bounces-125142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD64E8920C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:45:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7450A8920CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A9E91C29861
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:45:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F922286C49
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94133A260;
-	Fri, 29 Mar 2024 15:45:48 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDCF3D966;
+	Fri, 29 Mar 2024 15:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOUaZZNd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B821C0DD0;
-	Fri, 29 Mar 2024 15:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6DF23A8;
+	Fri, 29 Mar 2024 15:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711727148; cv=none; b=PKyxCYDUI/eRKEmbGDZ70ASq7qEvxdAP1D5HGvf5vJKcW2YHnPXTWkTCFBETK+6S+GUT6guWCZL7TZlhujH0yf2f7HhEYsdCEut6IQsTjaEX/l0faB67LwmcLfIwxTwaKmq6vhdtSfuW0uGBCjaRm7xwTH+FuWX/SGzpyEA5vwo=
+	t=1711727226; cv=none; b=PDr8msmx4wWh3KviFJi62+MZ6Z3PWDcBAtxbD12Wl8ZL8RbNSvr9t1n7jeNCucnw+jH4C/BpQrPJ/kxANpjYMUtvnkvClh4qb1j5cbvIt4GEA94TBM/19YcVwfcYtRrmwUCXaSTdEo43f19fl9sjwqA+PFxskmDT1agicrqMl9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711727148; c=relaxed/simple;
-	bh=LqWjA+/6Exik0OsXA9dAI7OvBuQWFxpxADnnIBMeYmg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lHNzmPWUKhIFM0fNyZ9n3/u191qmtgBs4GsC3x9hEDtELGrj+Ps+6jEFNsqKsoQbtpu8TcLq+EeRqNbvfuk6rADGaCP4AKBsxqS5ZT994w4YeCDMtsGnoP7+D7QAVkLQMGU6x7wEqSopCR7WoHCCG7YiaWjx4FExENoCW0F7rPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4V5kk16DXzz9v7JY;
-	Fri, 29 Mar 2024 23:25:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 445091402A5;
-	Fri, 29 Mar 2024 23:45:28 +0800 (CST)
-Received: from [10.48.128.185] (unknown [10.48.128.185])
-	by APP2 (Coremail) with SMTP id GxC2BwAH8yYM4gZmgxYuBQ--.12307S2;
-	Fri, 29 Mar 2024 16:45:27 +0100 (CET)
-Message-ID: <0cce46c1-3a78-435c-b60e-04c1d790529b@huaweicloud.com>
-Date: Fri, 29 Mar 2024 16:45:15 +0100
+	s=arc-20240116; t=1711727226; c=relaxed/simple;
+	bh=mGMCbTudpO//dsMmAJuxrfDrUsM2TLQi58qOzKNQl9k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hStMZGmU6Vzss5Gz9xmdPYXs6/hcoQZTvtUJq811XWRz79TK4240lTBDXmxIJcVKntqbVG9icvhOJfDWEdSoKiB2wV9JzX6OW1KaRxtzSq5hnpy7OlQ4WZqi/BDe/34Gg0GS1iz1mNWhXKIK9PxiQcqmPyhJ1MQcFuZOJ9aZ2v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOUaZZNd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65400C433F1;
+	Fri, 29 Mar 2024 15:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711727225;
+	bh=mGMCbTudpO//dsMmAJuxrfDrUsM2TLQi58qOzKNQl9k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jOUaZZNdtIIh47EJVI810yivxPhgr04bdCv5G8syQ9pIqc96Lk1QfVhs1Zg2F3MZ+
+	 8ycCTwvcR7dRIz5PyImHowSY7nGzeP1Fa1weOpI4PXdyLUvxXVh2YM77J4ZnnPZcDJ
+	 eme6BIklM4Cr/HfOfALdVa6oRCZCmeBZtrBoRBVZbsLPBXivn+VE/geDCnH5fo9Zke
+	 OVY0GzrZctB+LLGPa0koCkG1wtWO4ZbrbHmwwCiqDN2QTp9OtB5D5a66J9WoH2fQFT
+	 yLAjAKn/xV6lVUfPEsNTYspoy5GK+5rfK+JLddPBFkJwE2U4/eMbfV7x4pwxuS5A2z
+	 x59T2XaUWyIDA==
+Date: Fri, 29 Mar 2024 15:46:59 +0000
+From: Conor Dooley <conor@kernel.org>
+To: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	"Simek, Michal" <michal.simek@amd.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
+Message-ID: <20240329-overture-tank-d20888f2cb6e@spud>
+References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
+ <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
+ <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
+ <MW4PR12MB7165889CE7F27A3F0B29DC7EE6312@MW4PR12MB7165.namprd12.prod.outlook.com>
+ <c0d70ba9-34ef-4121-834d-4d107f03d7f0@linaro.org>
+ <MW4PR12MB716570A3676218F0C6375E37E63A2@MW4PR12MB7165.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ima: evm: Rename *_post_path_mknod() to
- *_path_post_mknod()
-Content-Language: en-US
-To: Mimi Zohar <zohar@linux.ibm.com>, dmitry.kasatkin@gmail.com,
- eric.snowberg@oracle.com, paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-cifs@vger.kernel.org, viro@zeniv.linux.org.uk, pc@manguebit.com,
- christian@brauner.io, Roberto Sassu <roberto.sassu@huawei.com>,
- stable@vger.kernel.org
-References: <20240329105609.1566309-1-roberto.sassu@huaweicloud.com>
- <20240329105609.1566309-2-roberto.sassu@huaweicloud.com>
- <e9181ec0bc07a23fc694d47b4ed49635d1039d89.camel@linux.ibm.com>
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <e9181ec0bc07a23fc694d47b4ed49635d1039d89.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:GxC2BwAH8yYM4gZmgxYuBQ--.12307S2
-X-Coremail-Antispam: 1UD129KBjvJXoWruF45GF4kCFyDtw1rKFWrGrg_yoW8JrW7pF
-	W8t3Z8Crn5tr1xAFnavFW3AFW8AayUXF4YqFn5try5Z34aganY9rWI9a4FgasxKr429a4a
-	yF1SqrnIv3yUArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUo0eHDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQARBF1jj5vwDwABsA
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Aig4naILjr3w2J70"
+Content-Disposition: inline
+In-Reply-To: <MW4PR12MB716570A3676218F0C6375E37E63A2@MW4PR12MB7165.namprd12.prod.outlook.com>
 
-On 3/29/2024 4:16 PM, Mimi Zohar wrote:
-> On Fri, 2024-03-29 at 11:56 +0100, Roberto Sassu wrote:
->> From: Roberto Sassu <roberto.sassu@huawei.com>
->>
->> Rename ima_post_path_mknod() and evm_post_path_mknod() respectively to
->> ima_path_post_mknod() and evm_path_post_mknod(), to facilitate finding
->> users of the path_post_mknod LSM hook.
->>
->> Cc: stable@vger.kernel.org # 6.8.x
-> 
-> Since commit cd3cec0a02c7 ("ima: Move to LSM infrastructure") was upstreamed in
-> this open window.  This change does not need to be packported and should be
-> limited to IMA and EVM full fledge LSMs.
 
-Yes, got it wrong.
+--Aig4naILjr3w2J70
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> Reported-by: Christian Brauner <christian@brauner.io>
->> Closes:
->> https://lore.kernel.org/linux-kernel/20240328-raushalten-krass-cb040068bde9@brauner/
->> Fixes: 05d1a717ec04 ("ima: add support for creating files using the mknodat
->> syscall")
-> 
-> "Fixes: 05d1a717ec04" should be removed.
+On Fri, Mar 29, 2024 at 12:38:33AM +0000, Klymenko, Anatoliy wrote:
+> Thank you for the feedback.
+> > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
+> > On 22/03/2024 20:12, Klymenko, Anatoliy wrote:
+> > >> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > >> On 21/03/2024 21:43, Anatoliy Klymenko wrote:
+> > >>> diff --git a/include/dt-bindings/media/media-bus-format.h
+> > >>> b/include/dt-
+> > >> bindings/media/media-bus-format.h
+> > >>> new file mode 100644
+> > >>> index 000000000000..60fc6e11dabc
+> > >>> --- /dev/null
+> > >>> +++ b/include/dt-bindings/media/media-bus-format.h
+> > >>> @@ -0,0 +1,177 @@
+> > >>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+> > >>> +/*
+> > >>> + * Media Bus API header
+> > >>> + *
+> > >>> + * Copyright (C) 2009, Guennadi Liakhovetski
+> > >>> +<g.liakhovetski@gmx.de>
+> > >>> + *
+> > >>> + * This program is free software; you can redistribute it and/or
+> > >>> +modify
+> > >>> + * it under the terms of the GNU General Public License version 2
+> > >>> +as
+> > >>> + * published by the Free Software Foundation.
+> > >>
+> > >> That's not true. Your SPDX tells something entirely different.
+> > >>
+> > >
+> > > Thank you - I'll see how to fix it.
+> > >
+> > >> Anyway, you did not explain why you need to copy anything anywhere.
+> > >>
+> > >> Specifically, random hex values *are not bindings*.
+> > >>
+> > >
+> > > The same media bus format values are being used by the reference
+> > > driver in patch #9. And, as far as I know, we cannot use headers from
+> > > Linux API headers directly (at least I
+> >=20
+> > I don't understand what does it mean. You can use in your driver whatev=
+er
+> > headers you wish, I don't care about them.
+> >=20
+> >=20
+> > noticed the same pattern in ../dt-bindings/sdtv-standarts.h for instanc=
+e).
+> > What would be the best approach to reusing the same defines on DT and
+> > driver sides from your point of view? Symlink maybe?
+> > >
+> >=20
+> > Wrap your messages to match mailing list discussion style. There are no
+> > defines used in DT. If there are, show me them in *THIS* or other
+> > *upstreamed* (being upstreamed) patchset.
+> >=20
+>=20
+> Sorry, I didn't explain properly what I'm trying to achieve. I need to
+> create a DT node property that represents video signal format, one of
+> MEDIA_BUS_FMT_* from include/uapi/linux/media-bus-format.h. It would be
+> nice to reuse the same symbolic values in the device tree. What is the
+> best approach here? Should I create a separate header in
+> include/dt-bindings with the same or similar (to avoid multiple
+> definition errors) defines, or is it better to create a symlink to
+> media-bus-format.h like include/dt-bindings/linux-event-codes.h?
 
-Ok, I agree that it is not a necessary fix for stable kernels. We can 
-reconsider it if there is a bug fix depending on it.
+Isn't there already a property for this, described in
+Documentation/devicetree/bindings/media/xilinx/video.txt
+?
 
-Thanks
+--Aig4naILjr3w2J70
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Roberto
+-----BEGIN PGP SIGNATURE-----
 
->> Fixes: cd3cec0a02c7 ("ima: Move to LSM infrastructure")
->> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgbicwAKCRB4tDGHoIJi
+0vIxAQDTGIb39pZ2GgViTifY62vMB8y8nobcQ16j//LjfSv8+AD/di6X30rcf2qm
+aucSKfOlVRUnjE+ZOb0HLGjnjVZzFQ4=
+=0Xod
+-----END PGP SIGNATURE-----
 
+--Aig4naILjr3w2J70--
 
