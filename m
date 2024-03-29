@@ -1,75 +1,90 @@
-Return-Path: <linux-kernel+bounces-124364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796F0891641
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:46:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB55989163E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48AF1F22837
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:46:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5FC1C23D64
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5884D107;
-	Fri, 29 Mar 2024 09:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029EF4CE05;
+	Fri, 29 Mar 2024 09:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="HtaLcmDX";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="lM7CM1rP"
-Received: from mailrelay1-1.pub.mailoutpod3-cph3.one.com (mailrelay1-1.pub.mailoutpod3-cph3.one.com [46.30.211.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gQaUX9M9"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F175141740
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2912A41740
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711705572; cv=none; b=baEVmQapMMeTr7Ezj6c7/vkhlX3YoN8Jxt2Vy2jv9dEDqllOklAMUqI/UJJcbGxTRPi2E+a3M4DCkx1r+4L9fxorR7iYZTxCleqO9FBZ63VyG/Wr2O6nyWqwbdy4NQoeLi9g5SQnewN2DU9TXubYb5D2fVhkA+2+xC+U+yc8mdU=
+	t=1711705530; cv=none; b=DrEw8hFoDmR6IRiPmiwco1siDiuYhdMBWsH8N89OqgaQzUtI1wtNr7qc6ZnfjRuw8Ope1lLNNZQdTuk+QBWt2bLFIIdnJcidufTehG7lJCmBKN3wIxmLeLUGm9innXkrT/6dmvUQiVyaAYF6C1kCJJFBXtHdr+F3Fh73zhkUW40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711705572; c=relaxed/simple;
-	bh=5eh1LRXd5nmvFvjVFyc2eA97A0oxvEmwBBzfWaixRGg=;
+	s=arc-20240116; t=1711705530; c=relaxed/simple;
+	bh=8ZqBDLqkzJhOIDLl8Y/8H56UOEL0dMMW+7eTzILboGs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uaSDjQ0ZiGkHaryYORzKj51bzZMavyw523RTnyKvR+rax1CVw5hu+As4oK5lBIKBvJ3mPq+1fdnL3DRqjzjDWJ2Ch72pt6vl6WrjkAOO6bPjMoOpQhhxlDdaTiaQj7f98QZbzosenhsYqq9vxjxIOJoSsa9SZS6LEQSGvTMmfZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=HtaLcmDX; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=lM7CM1rP; arc=none smtp.client-ip=46.30.211.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=QiiefrnYg3GLGeuNgkpcg4PaHMzi5ujT/SKIk22zgATV3eyvWKtY+nkrKeC8H6TINcv+nUTDTNbJodfoIfuSvZEpGwQTz0NgEszR3C6n277eUw0WK07LrFoHctE3c0F2JxcokTtmE2C/ct6Ad11PgLvirA0BB+97lSW66eRrW5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gQaUX9M9; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4715991c32so232031366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=3posw3aF/pMHBf0L+fS4u0dsD0hBXMZlR0kURZ1EsvQ=;
-	b=HtaLcmDXG+yhe1LyCwzuJFbMn3QlNTVDlVjkaRK99DCZTOyiU0PKy/fA1te74et227FYnzVqjYkSK
-	 rZ28SuUQVbEWbv/qhCKVRiKcZsScXrKDlh5lIkJ+57RrTw5/dgleu3BLqLpaI7+EcrWL5L8buCBAMk
-	 5+BTnpMP0VlVbN7i1eHN2BOa0LWxduI1ujdt3cpU90bYYiL90ispbfXtN+y/DJvDETfrhSJZZxlJGO
-	 GJ7i54PtHetSnjWc2udQH8ZiEMVVp3kUB5PzBdLn+jnYTdOcq+/Hn2Y0CevMpjGTnvJ7HVXioIMWCn
-	 08l2CqUOvLk+8f1noRqZQgzBR4P8y2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=3posw3aF/pMHBf0L+fS4u0dsD0hBXMZlR0kURZ1EsvQ=;
-	b=lM7CM1rPfy3FSKRPpuaHF9mCkbIzHw2H1+iu5lnnog/EZuyaiWySNFxogVCKHRTQW5kpSG+/9J4VJ
-	 vxvN/2tDg==
-X-HalOne-ID: 0058c688-edb1-11ee-b65f-1ff1563c5748
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay1.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
-	id 0058c688-edb1-11ee-b65f-1ff1563c5748;
-	Fri, 29 Mar 2024 09:44:57 +0000 (UTC)
-Date: Fri, 29 Mar 2024 10:44:56 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Nick Bowler <nbowler@draconx.ca>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org,
-	Andreas Larsson <andreas@gaisler.com>,
-	Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: PROBLEM: Only one CPU active on Ultra 60 since ~4.8 (regression)
-Message-ID: <20240329094456.GA44268@ravnborg.org>
-References: <CADyTPEwt=ZNams+1bpMB1F9w_vUdPsGCt92DBQxxq_VtaLoTdw@mail.gmail.com>
- <CADyTPEyAidGgBT3f1VJLHb3ouO-r1UyvFp1PcwXxy0NRG94sbw@mail.gmail.com>
- <1df92fec-7f57-5080-94ed-b149ed384280@leemhuis.info>
- <14dcd743-144a-9f7b-849c-0843d50e4c04@draconx.ca>
- <4dce7447-678d-4e60-b76e-b01988bd6515@leemhuis.info>
- <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
- <943c6d11-e214-43c8-8813-8e1aba6be15c@draconx.ca>
+        d=gmail.com; s=20230601; t=1711705526; x=1712310326; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VVGBLTjuVkklUYAT72ev6atT+zlvs6+r6Kq12ydIqsA=;
+        b=gQaUX9M9iNvpr+EE4I6iLdg2Z118UTDi513Thuiq/RUJUHGEK0Ji6I10aiJuvkRUt6
+         JHFULl7iHcZcay6N+tw/rn5l15OLI1tYJk4kGyksptlAqn5RvyRxu1/JdAdaN4QON8Q+
+         f8U54ZjJeqMQ+7/gwfreKIGaD1Y8lTmJ+ljRBSx97neZDiGj3gSKRb8VnNwYBrgV1KJo
+         6VWPktVoII3ED+WJsS04H4psfhRt0J5o57V7O5GqxIyIu+w5d48r6ZFbZBf65NhQzLoM
+         iy/FUawWNGHKAD8b1/BA0GcdbaYU113HxGWHrfhUun7/ZEn8oSVPeNYhgy9PR4NonpEo
+         A5aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711705526; x=1712310326;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VVGBLTjuVkklUYAT72ev6atT+zlvs6+r6Kq12ydIqsA=;
+        b=Yk+6nu1nhUS1zsv/OUkVzrIYzFn+0mNRuub24rREbrNZrccyUFIZrZNmt/UKRMwuvD
+         JLrKgaU6+TTILPrpKfLoRhcLb/Bic58Qbm3aqECT9lZB8ovn5QDV+wTXmN1FUf1V6Di5
+         ScqbYGwRMkK1YFkEJhwahWC21MXl4pW7rlSxyvMPQXC7Q6ra5whk/wi4f1nOcZz8aevt
+         HweDBecictHNXPCKUU9jE0+lCoG7Y4st5Xxd6DJfXv3xbdrXLKPfvNoLPwLAEEqLc1p8
+         hS299g3NAPorfgkAclqP0RbJfREhOMhCjjU8bVj1rRofuH1r8GLb1ylQAZNPedV9nyHw
+         ykng==
+X-Gm-Message-State: AOJu0YzeAKvyBocDzW1F1rPNEx5MH7Qe63yx8wDSivfPy/A8v0eSqlwC
+	lECOTtDUoJVi2eIDIh3A3wmL03NPorTwhqFkmfab3WGJsFVv3CyR
+X-Google-Smtp-Source: AGHT+IG76f6RVe0idvqL/fOsu74E8xg/KxDQ58Q2nT5EqDFfeejdmTO8rQax5OGbVbf7p2X1T+KvJA==
+X-Received: by 2002:a17:906:6092:b0:a4e:15f9:f167 with SMTP id t18-20020a170906609200b00a4e15f9f167mr1021703ejj.11.1711705526050;
+        Fri, 29 Mar 2024 02:45:26 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id b22-20020a170906d11600b00a46f95f5849sm1733003ejz.106.2024.03.29.02.45.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 02:45:25 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 29 Mar 2024 10:45:23 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dave Hansen <dave@sr71.net>, Peter Zijlstra <peterz@infradead.org>,
+	Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uros Bizjak <ubizjak@gmail.com>
+Subject: [PATCH 3/1] x86/fpu: Remove init_task FPU state dependencies, add
+ debugging warning
+Message-ID: <ZgaNs1lC2Y+AnRG4@gmail.com>
+References: <20240320131908.2708438-1-mingo@kernel.org>
+ <20240320131908.2708438-2-mingo@kernel.org>
+ <20240326174903.GA4539@redhat.com>
+ <ZgMeH9p0BTnMfmOM@gmail.com>
+ <20240326215435.GB4539@redhat.com>
+ <ZgaFfyHMOdLHEKm+@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,158 +93,208 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <943c6d11-e214-43c8-8813-8e1aba6be15c@draconx.ca>
+In-Reply-To: <ZgaFfyHMOdLHEKm+@gmail.com>
 
-Hi Nick,
 
-On Thu, Mar 28, 2024 at 05:08:50PM -0400, Nick Bowler wrote:
-> On 2024-03-28 16:09, Linus Torvalds wrote:
-> > On Thu, 28 Mar 2024 at 12:36, Linux regression tracking (Thorsten
-> > Leemhuis) <regressions@leemhuis.info> wrote:
-> >>
-> >> [CCing Linus, in case I say something to his disliking]
-> >>
-> >> On 22.03.24 05:57, Nick Bowler wrote:
-> >>>
-> >>> Just a friendly reminder that this issue still happens on Linux 6.8 and
-> >>> reverting commit 9b2f753ec237 as indicated below is still sufficient to
-> >>> resolve the problem.
-> >>
-> >> FWIW, that commit 9b2f753ec23710 ("sparc64: Fix cpu_possible_mask if
-> >> nr_cpus is set") is from v4.8. Reverting it after all that time might
-> >> easily lead to even bigger trouble.
+* Ingo Molnar <mingo@kernel.org> wrote:
+
+> >    	- exit_thread() - trivial
 > > 
-> > I'm definitely not reverting a patch from almost a decade ago as a regression.
+> > 	- arch_dup_task_struct() clears thread.fpu, but I guess this is unnecessary
 > > 
-> > If it took that long to find, it can't be that critical of a regression.
+> > 	- fpu_clone() initializes dst->thread.fpu, no longer needed
+> > 
+> > 	- finally, fpu__init_system_early_generic() which initializes the
+> > 	  init_task.thread.fpu pointer.
+> > 
+> > 	  But this doesn't look difficult? Although I don't understand the magic in
+> > 	  arch/x86/kernel/vmlinux.lds.S ...
 > 
-> FWIW I'm not the first person to notice this problem.  Searching the sparclinux
-> archive for "ultra 60" which turns up this very similar report[1] from two years
-> prior to mine which also went nowhere (sadly, this reporter did not perform a
-> bisection to find the problematic commit -- perhaps because nobody asked).
+> Yeah.
 > 
-> [1] https://lore.kernel.org/sparclinux/20201009161924.c8f031c079dd852941307870@gmx.de/
+> Something like the patch below, on top of my previous patch.
+> 
+> The main/only fishy bit left is:
+> 
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -172,6 +172,10 @@ SECTIONS
+>                 /* init_task */
+>                 INIT_TASK_DATA(THREAD_SIZE)
+>  
+> +               __x86_init_fpu_begin = .;
+> +               . = __x86_init_fpu_begin + 128*PAGE_SIZE;
+> +               __x86_init_fpu_end = .;
+> 
+> ... as we don't know the FPU context switch size in advance, and modern 
+> vector CPUs can be huge. Plus CPU vendors like to push more crap into 
+> the FPU context area (XSAVE area), because the rather opaque 
+> enumeration and variable-size format makes OS support easier for them. 
+> :-/
+> 
+> And in principle init_task should never use its task-fpu context switch 
+> area for real, but I couldn't convince myself (yet) whether that's true 
+> under all circumstances - and getting this wrong would be a memory 
+> corruptor ...
+> 
+> kernel_fpu_begin_mask() has this:
+> 
+>         this_cpu_write(in_kernel_fpu, true);
+> 
+>         if (!(current->flags & (PF_KTHREAD | PF_USER_WORKER)) &&
+>             !test_thread_flag(TIF_NEED_FPU_LOAD)) {
+>                 set_thread_flag(TIF_NEED_FPU_LOAD);
+>                 save_fpregs_to_fpstate(x86_task_fpu(current));
+>         }
+>         __cpu_invalidate_fpregs_state();
+> 
+> and the save_fpregs_to_fpstate() inside the branch should never execute 
+> for init_task.
 
-I took a look at this and may have a fix. Could you try the following
-patch. It builds - but I have not tested it.
+So there were a few places, the patch below should cure all warnings 
+that I was able to trigger.
 
-	Sam
+ - x86_64 boots to user-space in KVM/qemu
+ - i386 math-emu boots to init (not sure if it works though)
+
+Note that we weren't actually using src_fpu for anything useful in 
+fpu_clone() anymore.
+
+So this now looks like something that looks useful and clean, but the 
+changes are quite a bit more scary than I wanted them to be ...
+
+Thanks,
+
+	Ingo
 
 
-From a0fb7c6e6817849550d07b4c5a354ccc58382bc1 Mon Sep 17 00:00:00 2001
-From: Sam Ravnborg <sam@ravnborg.org>
-Date: Fri, 29 Mar 2024 10:34:07 +0100
-Subject: [PATCH] sparc64: Fix number of online CPUs
+======================>
+From: Ingo Molnar <mingo@kernel.org>
+Date: Fri, 29 Mar 2024 10:33:27 +0100
+Subject: [PATCH] x86/fpu: Remove init_task FPU state dependencies, add debugging warning
 
-Nick Bowler reported:
-    When using newer kernels on my Ultra 60 with dual 450MHz UltraSPARC-II
-    CPUs, I noticed that only CPU 0 comes up, while older kernels (including
-    4.7) are working fine with both CPUs.
-
-      I bisected the failure to this commit:
-
-      9b2f753ec23710aa32c0d837d2499db92fe9115b is the first bad commit
-      commit 9b2f753ec23710aa32c0d837d2499db92fe9115b
-      Author: Atish Patra <atish.patra@oracle.com>
-      Date:   Thu Sep 15 14:54:40 2016 -0600
-
-      sparc64: Fix cpu_possible_mask if nr_cpus is set
-
-    This is a small change that reverts very easily on top of 5.18: there is
-    just one trivial conflict.  Once reverted, both CPUs work again.
-
-    Maybe this is related to the fact that the CPUs on this system are
-    numbered CPU0 and CPU2 (there is no CPU1)?
-
-The current code that adjust cpu_possible based on nr_cpu_ids do not
-take into account that CPU's may not come one after each other.
-Move the check to the function that setup the cpu_possible mask
-so there is no need to adjust it later.
-
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Reported-by: Nick Bowler <nbowler@draconx.ca>
-Cc: Andreas Larsson <andreas@gaisler.com>
-Cc: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- arch/sparc/include/asm/smp_64.h |  2 --
- arch/sparc/kernel/prom_64.c     |  4 +++-
- arch/sparc/kernel/setup_64.c    |  1 -
- arch/sparc/kernel/smp_64.c      | 14 --------------
- 4 files changed, 3 insertions(+), 18 deletions(-)
+ arch/x86/include/asm/processor.h |  6 +++++-
+ arch/x86/kernel/fpu/core.c       | 12 +++++++++---
+ arch/x86/kernel/fpu/init.c       |  5 ++---
+ arch/x86/kernel/fpu/xstate.c     |  3 ---
+ arch/x86/kernel/vmlinux.lds.S    |  4 ----
+ 5 files changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/arch/sparc/include/asm/smp_64.h b/arch/sparc/include/asm/smp_64.h
-index 505b6700805d..0964fede0b2c 100644
---- a/arch/sparc/include/asm/smp_64.h
-+++ b/arch/sparc/include/asm/smp_64.h
-@@ -47,7 +47,6 @@ void arch_send_call_function_ipi_mask(const struct cpumask *mask);
- int hard_smp_processor_id(void);
- #define raw_smp_processor_id() (current_thread_info()->cpu)
- 
--void smp_fill_in_cpu_possible_map(void);
- void smp_fill_in_sib_core_maps(void);
- void __noreturn cpu_play_dead(void);
- 
-@@ -77,7 +76,6 @@ void __cpu_die(unsigned int cpu);
- #define smp_fill_in_sib_core_maps() do { } while (0)
- #define smp_fetch_global_regs() do { } while (0)
- #define smp_fetch_global_pmu() do { } while (0)
--#define smp_fill_in_cpu_possible_map() do { } while (0)
- #define smp_init_cpu_poke() do { } while (0)
- #define scheduler_poke() do { } while (0)
- 
-diff --git a/arch/sparc/kernel/prom_64.c b/arch/sparc/kernel/prom_64.c
-index 998aa693d491..ba82884cb92a 100644
---- a/arch/sparc/kernel/prom_64.c
-+++ b/arch/sparc/kernel/prom_64.c
-@@ -483,7 +483,9 @@ static void *record_one_cpu(struct device_node *dp, int cpuid, int arg)
- 	ncpus_probed++;
- #ifdef CONFIG_SMP
- 	set_cpu_present(cpuid, true);
--	set_cpu_possible(cpuid, true);
-+
-+	if (num_possible_cpus() < nr_cpu_ids)
-+		set_cpu_possible(cpuid, true);
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index fb78720774ea..d90c31e87b96 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -491,7 +491,11 @@ struct thread_struct {
  #endif
- 	return NULL;
- }
-diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
-index 6a4797dec34b..6bbe8e394ad3 100644
---- a/arch/sparc/kernel/setup_64.c
-+++ b/arch/sparc/kernel/setup_64.c
-@@ -671,7 +671,6 @@ void __init setup_arch(char **cmdline_p)
+ };
  
- 	paging_init();
- 	init_sparc64_elf_hwcap();
--	smp_fill_in_cpu_possible_map();
+-#define x86_task_fpu(task) ((struct fpu *)((void *)task + sizeof(*task)))
++#ifdef CONFIG_X86_DEBUG_FPU
++extern struct fpu *x86_task_fpu(struct task_struct *task);
++#else
++# define x86_task_fpu(task) ((struct fpu *)((void *)task + sizeof(*task)))
++#endif
+ 
+ /*
+  * X86 doesn't need any embedded-FPU-struct quirks:
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index 0ccabcd3bf62..fdc3b227800d 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -51,6 +51,15 @@ static DEFINE_PER_CPU(bool, in_kernel_fpu);
+  */
+ DEFINE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
+ 
++#ifdef CONFIG_X86_DEBUG_FPU
++struct fpu *x86_task_fpu(struct task_struct *task)
++{
++	WARN_ON_ONCE(task == &init_task);
++
++	return (void *)task + sizeof(*task);
++}
++#endif
++
+ /*
+  * Can we use the FPU in kernel mode with the
+  * whole "kernel_fpu_begin/end()" sequence?
+@@ -591,10 +600,8 @@ int fpu_clone(struct task_struct *dst, unsigned long clone_flags, bool minimal,
+ 	 * This is safe because task_struct size is a multiple of cacheline size.
+ 	 */
+ 	struct fpu *dst_fpu = (void *)dst + sizeof(*dst);
+-	struct fpu *src_fpu = x86_task_fpu(current);
+ 
+ 	BUILD_BUG_ON(sizeof(*dst) % SMP_CACHE_BYTES != 0);
+-	BUG_ON(!src_fpu);
+ 
+ 	/* The new task's FPU state cannot be valid in the hardware. */
+ 	dst_fpu->last_cpu = -1;
+@@ -657,7 +664,6 @@ int fpu_clone(struct task_struct *dst, unsigned long clone_flags, bool minimal,
+ 	if (update_fpu_shstk(dst, ssp))
+ 		return 1;
+ 
+-	trace_x86_fpu_copy_src(src_fpu);
+ 	trace_x86_fpu_copy_dst(dst_fpu);
+ 
+ 	return 0;
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 11aa31410df2..53580e59e5db 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -38,7 +38,7 @@ static void fpu__init_cpu_generic(void)
+ 	/* Flush out any pending x87 state: */
+ #ifdef CONFIG_MATH_EMULATION
+ 	if (!boot_cpu_has(X86_FEATURE_FPU))
+-		fpstate_init_soft(&x86_task_fpu(current)->fpstate->regs.soft);
++		;
+ 	else
+ #endif
+ 		asm volatile ("fninit");
+@@ -164,7 +164,7 @@ static void __init fpu__init_task_struct_size(void)
+ 	 * Subtract off the static size of the register state.
+ 	 * It potentially has a bunch of padding.
+ 	 */
+-	task_size -= sizeof(x86_task_fpu(current)->__fpstate.regs);
++	task_size -= sizeof(union fpregs_state);
+ 
  	/*
- 	 * Once the OF device tree and MDESC have been setup and nr_cpus has
- 	 * been parsed, we know the list of possible cpus.  Therefore we can
-diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
-index f3969a3600db..e50c38eba2b8 100644
---- a/arch/sparc/kernel/smp_64.c
-+++ b/arch/sparc/kernel/smp_64.c
-@@ -1220,20 +1220,6 @@ void __init smp_setup_processor_id(void)
- 		xcall_deliver_impl = hypervisor_xcall_deliver;
+ 	 * Add back the dynamically-calculated register state
+@@ -209,7 +209,6 @@ static void __init fpu__init_system_xstate_size_legacy(void)
+ 	fpu_kernel_cfg.default_size = size;
+ 	fpu_user_cfg.max_size = size;
+ 	fpu_user_cfg.default_size = size;
+-	fpstate_reset(x86_task_fpu(current));
  }
  
--void __init smp_fill_in_cpu_possible_map(void)
--{
--	int possible_cpus = num_possible_cpus();
--	int i;
+ /*
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index dade16d92484..75196e4d40bd 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -844,9 +844,6 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+ 	if (err)
+ 		goto out_disable;
+ 
+-	/* Reset the state for the current task */
+-	fpstate_reset(x86_task_fpu(current));
 -
--	if (possible_cpus > nr_cpu_ids)
--		possible_cpus = nr_cpu_ids;
+ 	/*
+ 	 * Update info used for ptrace frames; use standard-format size and no
+ 	 * supervisor xstates:
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index d21331187b20..56451fd2099e 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -172,10 +172,6 @@ SECTIONS
+ 		/* init_task */
+ 		INIT_TASK_DATA(THREAD_SIZE)
+ 
+-		__x86_init_fpu_begin = .;
+-		. = __x86_init_fpu_begin + 128*PAGE_SIZE;
+-		__x86_init_fpu_end = .;
 -
--	for (i = 0; i < possible_cpus; i++)
--		set_cpu_possible(i, true);
--	for (; i < NR_CPUS; i++)
--		set_cpu_possible(i, false);
--}
--
- void smp_fill_in_sib_core_maps(void)
- {
- 	unsigned int i;
--- 
-2.34.1
-
+ #ifdef CONFIG_X86_32
+ 		/* 32 bit has nosave before _edata */
+ 		NOSAVE_DATA
 
