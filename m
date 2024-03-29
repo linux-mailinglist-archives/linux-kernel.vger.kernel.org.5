@@ -1,180 +1,148 @@
-Return-Path: <linux-kernel+bounces-124067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839898911C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:47:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63EB28911C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74D661C22F83
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:47:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04C281F22979
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA0436AE7;
-	Fri, 29 Mar 2024 02:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gH8uu2E+"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8936737153;
+	Fri, 29 Mar 2024 02:53:41 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041AE2261F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DD8629;
+	Fri, 29 Mar 2024 02:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711680420; cv=none; b=gEZxsZXN/eH3Okc5GGy/BwBfSzcAFAZmT5HIUCinDKCDVfrlj/6oVquGrXvXjLX0rNDaBp+KSgi/B69dzN3jh98mavFC//QouWk+TvFw5PA2pZZkHh3poynIIN9bSto4vS0xs6qbfPMpkvgF6wUJjSaX3x6O/oRDPcLVDWwi3VQ=
+	t=1711680821; cv=none; b=ix89yKOaSGhPEBppx73VW7rABjCWKdgaZZrX/PssqGKfD89PmlepDWcwcKluKUS3JZ0AzRVlKYVcIm605JkgdmrMnsfDZgmT84D4w2OdNUFY8xG+U+6FPdZuOPa9XmOSjAml8tz7nbQJVptRaCmMn4EsdmqgqseStTnaHi0sNGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711680420; c=relaxed/simple;
-	bh=eWfj+aGYOh7tjs+jt01tO7AIQL8yDYNEfz5E//jamXM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TXUrPI8MolPzapKqb1sNEcR/ITeVkhxLhYFC4VdV3jhQYT8fgt7gV066YcfJzt1cOccp2H6gzRV2lmFeE0guAx6HD3aD/xkNApChNxIPm+Cp7EocwYaZFfJmcZ/09rdkNY1FK3k8JAr7sVjxAhzdasay/K/XH3svkGHPHqChcEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gH8uu2E+; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6963c0c507eso16475916d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 19:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711680417; x=1712285217; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=srQfKT/BzMmZwEI+1YQrBRXDf12Tn35MF+VDUldciyU=;
-        b=gH8uu2E+GKyyfIdZIjO9loj6nR0PmoPTt9O3ESBSvYWSYAacy2N48ApLV1zlytahOz
-         b++sr17FGUBbBJpU5CAn3KIcPX6OJEH+DkejZzyYZO9fN6/uulSuYOMjdVTeWL32mdPk
-         JSjoC5QKk2FR/WAwjeIZceoelpgN72SkR45ZI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711680417; x=1712285217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=srQfKT/BzMmZwEI+1YQrBRXDf12Tn35MF+VDUldciyU=;
-        b=tFhFZW0QlEdxDCOnVXlVkCsU7SSmXS+HDMeel6giW+AN2wa1TK5ztCD4pLr97dx5mI
-         pBL/Qj0W1lZEhUQ2M9+OBN1EJcpex+iPbiYoUhactarR90mkDY7pMBOQ4+sFGXElsQnZ
-         01uSWi/Tx1aegHrSBPOC5BwVysnlS8RQwIRvKCEQSDpT0revQqSMBss5UrZS+eE0vBwP
-         zkymMiN/pkAj1r5GEik1AUEY3pkV1aj2Bi2NG6hw8qSmSHHyameZ3IXRsOFIvvMPTcAR
-         6/ArHFKEsO4G0u2rdy+0dgDwvd01PTyqGN6TIK7xIv6BzH3ngbCtbM6EVQT3DRpAy/Px
-         qbHA==
-X-Forwarded-Encrypted: i=1; AJvYcCX6PmxXvAoQE4xCvGQc2Pacem66fIvmsDZzwYXyqIvnKSjcxs7mvPt+r7yP7Dw3p21TWEe+bSt3FwrV+iZfQLHR2cSHmJ/romI9Wldq
-X-Gm-Message-State: AOJu0YycIMldhxbqzQlmYl2vQi9COMgufZ1ugUozQyctTfCQtykWpk+k
-	WMDjW5qLBLiXkWgQtY0So1ba4eozZCNAl3SrkBeJvh8PYpoE9aiUOr8laEKf0OpsAFCBVdab4e/
-	ni3LFNBU526mD1F1oT0iK/ibEwBwYAr3jVnku
-X-Google-Smtp-Source: AGHT+IFcNRIG4qyeHuU4viTDFJna3KUQm3AU7knSPFXXgF8+aPNLM3eXpw9YAj4qjYN4jlsYINmdFPQJFzf8SaGRmzE=
-X-Received: by 2002:a0c:e948:0:b0:696:a309:1095 with SMTP id
- n8-20020a0ce948000000b00696a3091095mr6508219qvo.17.1711680416994; Thu, 28 Mar
- 2024 19:46:56 -0700 (PDT)
+	s=arc-20240116; t=1711680821; c=relaxed/simple;
+	bh=cLVUA/Dq+r+L9fmpbcFS4ppyU7J6eSvTew0CqZL202k=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=h+FDxC4rkBQtEAJ8Hr8UxeNQfKHYdl/rQPrSrUPH9rKbcRQ2L0YziZyI6wGoahntR0ulQ9/d54FrTmDPyeP/K6h7wi5ZlKKYreCGhv2jXbGbmrApyDua9BdtahycQk9cQsvnjaLXEYcZQrBkzbUk90M+5nTkpsgyhW8vXmYxlvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V5Q0P05PQz1xtM9;
+	Fri, 29 Mar 2024 10:51:33 +0800 (CST)
+Received: from kwepemd200010.china.huawei.com (unknown [7.221.188.124])
+	by mail.maildlp.com (Postfix) with ESMTPS id 45B1F18001A;
+	Fri, 29 Mar 2024 10:53:35 +0800 (CST)
+Received: from kwepemd100011.china.huawei.com (7.221.188.204) by
+ kwepemd200010.china.huawei.com (7.221.188.124) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 29 Mar 2024 10:53:34 +0800
+Received: from kwepemd100011.china.huawei.com ([7.221.188.204]) by
+ kwepemd100011.china.huawei.com ([7.221.188.204]) with mapi id 15.02.1258.028;
+ Fri, 29 Mar 2024 10:53:34 +0800
+From: duchangbin <changbin.du@huawei.com>
+To: Namhyung Kim <namhyung@kernel.org>, Arnaldo Carvalho de Melo
+	<acme@kernel.org>, Ian Rogers <irogers@google.com>, Kan Liang
+	<kan.liang@linux.intel.com>
+CC: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, "linux-perf-users@vger.kernel.org"
+	<linux-perf-users@vger.kernel.org>
+Subject: Re: [PATCH 4/4] perf annotate: Use libcapstone to disassemble
+Thread-Topic: [PATCH 4/4] perf annotate: Use libcapstone to disassemble
+Thread-Index: AdqBhEXN5g0vMGErl0mxS52m6D0zyA==
+Date: Fri, 29 Mar 2024 02:53:34 +0000
+Message-ID: <9492dc44260c40598d1b282975eb9a4a@huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314042659.232142-1-sjg@chromium.org> <20240314042659.232142-3-sjg@chromium.org>
- <CAK7LNASWKyTXuPwj0_xaD=8_WfbXhejCe_Z+2Os2MD+mU_D5Fg@mail.gmail.com>
-In-Reply-To: <CAK7LNASWKyTXuPwj0_xaD=8_WfbXhejCe_Z+2Os2MD+mU_D5Fg@mail.gmail.com>
-From: Simon Glass <sjg@chromium.org>
-Date: Fri, 29 Mar 2024 15:46:45 +1300
-Message-ID: <CAFLszTjpuMb7UGgGYZ9ybg7_ZBP_8GJwq=eA8=qc=2fTHKWOUw@mail.gmail.com>
-Subject: Re: [PATCH v11 2/2] arm64: boot: Support Flat Image Tree
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, 
-	Ahmad Fatoum <a.fatoum@pengutronix.de>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>, 
-	linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Masahiro,
+Hi, Namhyung,
+On Thu, Mar 28, 2024 at 04:20:09PM -0700, Namhyung Kim wrote:
+> Now it can use the capstone library to disassemble the instructions.
+> Let's use that (if available) for perf annotate to speed up.  Currently
+> it only supports x86 architecture.  With this change I can see ~3x speed
+> up in data type profiling.
+>
+> But note that capstone cannot give the source file and line number info.
+> For now, users should use the external objdump for that by specifying
+> the --objdump option explicitly.
+>
+> Cc: Changbin Du <changbin.du@huawei.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/disasm.c | 153 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 153 insertions(+)
+>
+> diff --git a/tools/perf/util/disasm.c b/tools/perf/util/disasm.c
+> index 59ac37723990..c58ea6d822ed 100644
+> --- a/tools/perf/util/disasm.c
+> +++ b/tools/perf/util/disasm.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  #include <ctype.h>
+>  #include <errno.h>
+> +#include <fcntl.h>
+>  #include <inttypes.h>
+>  #include <libgen.h>
+>  #include <regex.h>
+> @@ -18,6 +19,7 @@
+>  #include "evsel.h"
+>  #include "map.h"
+>  #include "maps.h"
+> +#include "namespaces.h"
+>  #include "srcline.h"
+>  #include "symbol.h"
+>
+> @@ -1341,6 +1343,151 @@ symbol__disassemble_bpf_image(struct symbol *sym,
+>       return 0;
+>  }
+>
+> +#ifdef HAVE_LIBCAPSTONE_SUPPORT
+> +#include <capstone/capstone.h>
+> +
+> +static int open_capstone_handle(struct annotate_args *args, bool is_64bi=
+t,
+> +                             csh *handle)
+> +{
+> +     struct annotation_options *opt =3D args->options;
+> +     cs_mode mode =3D is_64bit ? CS_MODE_64 : CS_MODE_32;
+> +
+> +     /* TODO: support more architectures */
+> +     if (!arch__is(args->arch, "x86"))
+> +             return -1;
+> +
+> +     if (cs_open(CS_ARCH_X86, mode, handle) !=3D CS_ERR_OK)
+> +             return -1;
+> +
+> +     if (!opt->disassembler_style ||
+> +         !strcmp(opt->disassembler_style, "att"))
+> +             cs_option(*handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+> +
+> +     /*
+> +      * Resolving address operands to symbols is implemented
+> +      * on x86 by investigating instruction details.
+> +      */
+> +     cs_option(*handle, CS_OPT_DETAIL, CS_OPT_ON);
+Enabling CS_OPT_DETAIL is to symbolize branch target address. You can refer=
+ to
+print_insn_x86() in print_insn.c.
 
-On Wed, 27 Mar 2024 at 03:39, Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Thu, Mar 14, 2024 at 1:28=E2=80=AFPM Simon Glass <sjg@chromium.org> wr=
-ote:
-> >
-> > Add a script which produces a Flat Image Tree (FIT), a single file
-> > containing the built kernel and associated devicetree files.
-> > Compression defaults to gzip which gives a good balance of size and
-> > performance.
-> >
-> > The files compress from about 86MB to 24MB using this approach.
-> >
-> > The FIT can be used by bootloaders which support it, such as U-Boot
-> > and Linuxboot. It permits automatic selection of the correct
-> > devicetree, matching the compatible string of the running board with
-> > the closest compatible string in the FIT. There is no need for
-> > filenames or other workarounds.
-> >
-> > Add a 'make image.fit' build target for arm64, as well.
-> >
-> > The FIT can be examined using 'dumpimage -l'.
-> >
-> > This uses the 'dtbs-list' file but processes only .dtb files, ignoring
-> > the overlay .dtbo files.
-> >
-> > This features requires pylibfdt (use 'pip install libfdt'). It also
-> > requires compression utilities for the algorithm being used. Supported
-> > compression options are the same as the Image.xxx files. Use
-> > FIT_COMPRESSION to select an algorithm other than gzip.
-> >
-> > While FIT supports a ramdisk / initrd, no attempt is made to support
-> > this here, since it must be built separately from the Linux build.
-> >
-> > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > ---
-> >
-> > Changes in v11:
-> > - Use dtbslist file in image.fit rule
-> > - Update cmd_fit rule as per Masahiro
-> > - Don't mention ignoring files without a .dtb prefix
-> > - Use argparse fromfile_prefix_chars feature
-> > - Add a -v option and use it for output (with make V=3D1)
-> > - rename srcdir to dtbs
-> > - Use -o for the output file instead of -f
-> >
->
->
->
->
-> > --- a/scripts/Makefile.lib
-> > +++ b/scripts/Makefile.lib
-> > @@ -504,6 +504,21 @@ quiet_cmd_uimage =3D UIMAGE  $@
-> >                         -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
-> >                         -n '$(UIMAGE_NAME)' -d $< $@
-> >
-> > +# Flat Image Tree (FIT)
-> > +# This allows for packaging of a kernel and all devicetrees files, usi=
-ng
-> > +# compression.
-> > +# --------------------------------------------------------------------=
--------
-> > +
-> > +MAKE_FIT :=3D $(srctree)/scripts/make_fit.py
-> > +
-> > +# Use this to override the compression algorithm
-> > +FIT_COMPRESSION ?=3D gzip
-> > +
-> > +quiet_cmd_fit =3D FIT     $@
-> > +      cmd_fit =3D $(MAKE_FIT) -o $@ --arch $(UIMAGE_ARCH) --os linux \
-> > +               --name '$(UIMAGE_NAME)' $(if $(V),-v) \
-> > +               --compress $(FIT_COMPRESSION) -k $< @$(word 2,$^)
-> > +
->
->
->
->
-> A nit in your new code.
->
->
-> $(if $(V),-v) does not work for KBUILD_VERBOSE env variable.
->
->
-> It should be
->
->     $(if $(findstring 1,$(KBUILD_VERBOSE)),-v)
+> +
+> +     return 0;
+> +}
+> +
 
-OK, thank you. I was assuming that V=3D0 would not be passed, but this
-is better. I will send v12.
-
-Regards,
-Simon
+--
+Cheers,
+Changbin Du
 
