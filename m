@@ -1,593 +1,149 @@
-Return-Path: <linux-kernel+bounces-124270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6E189149F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:56:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3202F8914AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:57:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7040288407
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:56:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D32EB234CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F394176F;
-	Fri, 29 Mar 2024 07:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="dZj/HFMM"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E59446C9;
+	Fri, 29 Mar 2024 07:57:20 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B38644C7C;
-	Fri, 29 Mar 2024 07:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD24433D6
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711698948; cv=none; b=q/4li0QL3RlKO72aHyLri/4cKGLEh+AzY1VyJZV2+EEWZjTNsiMT9qdIZNQUkMBeSvr4vUlda/Vv9P75jEnuDM35XQuZkOiOz86onaLrRmO5sjKZfcVrjFhiFl7RlI0O9zBGMpTXgeJvaRtsmLGJ4s9RZUptEGtf3bPaCCLwfnM=
+	t=1711699040; cv=none; b=jvvf6ex0xRcD5iioXOHdZxCw2JWtJhTW7vRwsVSAno/x0uCPvUshNe0AOODkxjsfx6SaYn5gz52zrYptnL+HctmLLmkyutEjPo7qVpWzZJMM4aDekWcbWlLd5H//rdQC5+yQhFfFaBkBITfe2SZW5mbGlRTEmd2EbNVbtPQ+0Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711698948; c=relaxed/simple;
-	bh=Nvs3LqwT7Tt/aqSIseHv/jZYUNHx1QTG7c388cyS4LU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mGriJ9ZTD7MqnS6Jagkmu2KlKDGmoQXPEXQDDFw+NhoXu9CkMCdqaJkBHCiMR8DKvLj27Y7nY21dNNS+tF31FJNjMXyX434Rp7ErSZ+6c+OnlwQiuy3QVqj4AcGE6fLqi+Gze96cmaCuxxZ6pdsPNpkvIJveVCZ8LRWIbq6mNZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=dZj/HFMM; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42SMAU2X014374;
-	Fri, 29 Mar 2024 00:55:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pfpt0220; bh=MpBmwyQGGcytys+zsU4Bn7
-	zMHACEI2zxSek0uS9jmhg=; b=dZj/HFMMG3A7ra3chztHegECBPKP7SKDFR9S+P
-	S9LtaNfbMWEkQNzewfYAqS20VTHEWbL7aimT8vbhkfcyG1eEmpeXnN2SbVbq/iTD
-	KuY/kWOuD2SnvwGoy4W2+zANVdUAxe5r5K4rWz4GeccOEnLxVbInoK6SNuBhIlUl
-	GjspUmAvr58fnpgbmO4rOzdYrQ/IPcdJd8Wa5H2OkWzXlrqsGqWKFyVdtMa6hcDN
-	fmFnrsmIi4xovV95CiQpgdLQYs4IGXOwh/T8bl5wG2MvFXlEoD8d4zAgLv9IKn66
-	vQnqrc73X5ORiaAlBwcQ+CF2JenMwZzq2z+4Pm7UFGqYxynA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x5gm3hmp6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 00:55:26 -0700 (PDT)
-Received: from m0045851.ppops.net (m0045851.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.24/8.17.1.24) with ESMTP id 42T7tQ4e023174;
-	Fri, 29 Mar 2024 00:55:26 -0700
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x5gm3hmp4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 00:55:26 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Fri, 29 Mar 2024 00:55:25 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Fri, 29 Mar 2024 00:55:24 -0700
-Received: from IPBU-BLR-SERVER1 (IPBU-BLR-SERVER1.marvell.com [10.28.8.41])
-	by maili.marvell.com (Postfix) with SMTP id D45C83F707A;
-	Fri, 29 Mar 2024 00:55:19 -0700 (PDT)
-Date: Fri, 29 Mar 2024 13:25:18 +0530
-From: Gowthami Thiagarajan <gthiagarajan@marvell.com>
-To: Alexey Klimov <alexey.klimov@linaro.org>
-CC: <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
-        <sehi.kim@samsung.com>, <linux-samsung-soc@vger.kernel.org>,
-        <peter.griffin@linaro.org>, <krzysztof.kozlowski@linaro.org>,
-        <alim.akhtar@samsung.com>, <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@android.com>, <andre.draszik@linaro.org>,
-        <willmcvicker@google.com>, <saravanak@google.com>, <elder@linaro.org>,
-        <tudor.ambarus@linaro.org>, <klimov.linux@gmail.com>
-Subject: Re: [PATCH REVIEW] hwrng: add exynos Secure World RNG device driver
-Message-ID: <20240329075518.GA1861799@IPBU-BLR-SERVER1>
-References: <20240328125056.1054878-1-alexey.klimov@linaro.org>
+	s=arc-20240116; t=1711699040; c=relaxed/simple;
+	bh=yJ9Q36JEeTiONFx+V5+CpW2y6vrWk0suk3Y3qj5fCGI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=NpMJ4PF3U5bfdA39mmxREWKzkD5LA4tND02H87jJcY3urcCl/ZGe/uIVhLrzQClOEr5S7IGhd3bSJ2Bv2U6pWzw9ricvFwaRRWHgY/Es/9FRM/ZRg8nUYs5l6XTepmylUma8xE4AF1Vl9232IGzVuq8yhgc6qmwf21R1aRs7t6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso201785639f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:57:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711699038; x=1712303838;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bcc+dTHZlCpOWcs3ADhgDTmpiFe6wMX6YbcA68N9nxQ=;
+        b=mBtFYTk9VLkXFMCa+SKMz8n5iAUCfttzXCIaEI0E57J1hG/78cPQPqaS9irFqT4Tqc
+         k76MNGnWD8XoBtxTay06zoS1T3rEA8v/+56ci5x/6b9PORmZgECB5ck50yZu34EZkVG5
+         Q6y+4YLfNTj+a37D9vThz2KW6EMu7hV6y5xH4rXWJzlDkXTJSpc/9GfLczzzSdcUhWd+
+         jfc99Zh40bM7AYeZSly2P1yB52OtpYrF4/IejQqrHl8AuVDyd53pNgLhK/RC2vc8ipYv
+         M4w6XajvjoqVy+Dr0S96HI8M10uhLAMgUXtrMf6b3fR2/f1xkE7VQA0wD4rQuXK9Q8tu
+         Y3JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWoxvvYL9NmtQRY359mH/nKSl1QTmV0vGrwbIZ9gHWPyjCL6TsCpxCNSrMwiJk+WOVxWnXNpjH3gA3i7E5487Q3kMdLW66PFRep01kX
+X-Gm-Message-State: AOJu0YzgZ7eD1bVXHPphofEye1m9l4sZMB19f2c4+XOBb4zA7gyRxDzo
+	3zwZPkVhsQrnCXb3mCJTaT7jm5wzI/SAul2MgLqxcZRRUyrc2QI1h34xYA+OHkDJGHVBFkYQbgl
+	100Xj1JkID0eckXStMVd0nI4CM3PHv43mxrlBfqL30IsxCUh6RS3ggAE=
+X-Google-Smtp-Source: AGHT+IGw385SZZ3tCXwYKqG3ZigUT2bvZPDG2amKZHP7NO3/5xIdJFORFxby6Nz6CBwma0Oha7OnvhJsZlT5o064D5VK4o8reozj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240328125056.1054878-1-alexey.klimov@linaro.org>
-X-Proofpoint-GUID: 2mAw42rsnzH4vMec9Fq6V8MxIL-GFnWz
-X-Proofpoint-ORIG-GUID: nkPiBVKg3Laa6wkG8HDIk6Bmew-B--i5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
+X-Received: by 2002:a05:6602:2c90:b0:7cc:8980:5ae4 with SMTP id
+ i16-20020a0566022c9000b007cc89805ae4mr53406iow.2.1711699038231; Fri, 29 Mar
+ 2024 00:57:18 -0700 (PDT)
+Date: Fri, 29 Mar 2024 00:57:18 -0700
+In-Reply-To: <000000000000a12738061144f9d1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022ef250614c7fd94@google.com>
+Subject: Re: [syzbot] [jfs?] kernel BUG in txEnd (2)
+From: syzbot <syzbot+776b5fc6c99745aa7860@syzkaller.appspotmail.com>
+To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-03-28 at 18:20:56, Alexey Klimov (alexey.klimov@linaro.org) wrote:
-> The Exynos TRNG device is controlled by firmware and shared between
-> non-secure world and secure world. Access to it is exposed via SMC
-> interface which is implemented here. The firmware code does
-> additional security checks, start-up test and some checks on resume.
-> 
-> This device is found, for instance, in Google Tensor GS101-family
-> of devices.
-> 
-> Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
-> ---
-Hi Alexey Klimov,
+syzbot has found a reproducer for the following issue on:
 
-Please find few comments inline.
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=157a3321180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1a07d5da4eb21586
+dashboard link: https://syzkaller.appspot.com/bug?extid=776b5fc6c99745aa7860
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1623f5b1180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=110d1129180000
 
->  drivers/char/hw_random/Kconfig           |  12 +
->  drivers/char/hw_random/Makefile          |   1 +
->  drivers/char/hw_random/exynos-swd-trng.c | 423 +++++++++++++++++++++++
->  3 files changed, 436 insertions(+)
->  create mode 100644 drivers/char/hw_random/exynos-swd-trng.c
-> 
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 442c40efb200..bff7c3ec129a 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -479,6 +479,18 @@ config HW_RANDOM_EXYNOS
->  
->  	  If unsure, say Y.
->  
-> +config HW_RANDOM_EXYNOS_SWD
-> +	tristate "Exynos SWD HW random number generator support"
-> +	default n
-> +	help
-> +	  This driver provides kernel-side support for accessing Samsung
-> +	  TRNG hardware located in secure world using smc calls.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called exynos-swd-trng.
-> +
-> +	  If unsure, say N.
-> +
->  config HW_RANDOM_OPTEE
->  	tristate "OP-TEE based Random Number Generator support"
->  	depends on OPTEE
-> diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-> index 32549a1186dc..ce64929d461a 100644
-> --- a/drivers/char/hw_random/Makefile
-> +++ b/drivers/char/hw_random/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
->  n2-rng-y := n2-drv.o n2-asm.o
->  obj-$(CONFIG_HW_RANDOM_VIA) += via-rng.o
->  obj-$(CONFIG_HW_RANDOM_EXYNOS) += exynos-trng.o
-> +obj-$(CONFIG_HW_RANDOM_EXYNOS_SWD) += exynos-swd-trng.o
->  obj-$(CONFIG_HW_RANDOM_IXP4XX) += ixp4xx-rng.o
->  obj-$(CONFIG_HW_RANDOM_OMAP) += omap-rng.o
->  obj-$(CONFIG_HW_RANDOM_OMAP3_ROM) += omap3-rom-rng.o
-> diff --git a/drivers/char/hw_random/exynos-swd-trng.c b/drivers/char/hw_random/exynos-swd-trng.c
-> new file mode 100644
-> index 000000000000..29def8e6d0b7
-> --- /dev/null
-> +++ b/drivers/char/hw_random/exynos-swd-trng.c
-> @@ -0,0 +1,423 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * exynos-swd-trng.c - Random Number Generator driver for the exynos TRNG
-> + * located in secure world
-> + * Copyright (C) Linaro Ltd 2024 Alexey Klimov <alexey.klimov@linaro.org>
-> + *
-> + * Based on downstream driver:
-> + * Copyright (C) 2018 Samsung Electronics
-> + * Sehee Kim <sehi.kim@samsung.com>
-> + */
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/delay.h>
-> +#include <linux/hw_random.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +
-> +/* DTRNG smc */
-> +#define SMC_CMD_RANDOM			(0x82001012)
-> +
-> +/* DTRNG smc commands */
-> +#define HWRNG_INIT			(0x0)
-> +#define HWRNG_EXIT			(0x1)
-> +#define HWRNG_GET_DATA			(0x2)
-> +#define HWRNG_RESUME			(0x3)
-> +
-> +#define HWRNG_RET_OK			0
-> +#define HWRNG_RET_INVALID_ERROR		1
-> +#define HWRNG_RET_RETRY_ERROR		2
-> +#define HWRNG_RET_INVALID_FLAG_ERROR	3
-> +#define HWRNG_RET_TEST_ERROR		4
-> +#define HWRNG_RET_START_UP_TEST_DONE	5
-> +#define HWRNG_RET_TEST_KAT_ERROR	0xC
-> +
-> +#define EXYRNG_START_UP_SIZE		(4096 + 1)
-> +#define EXYRNG_RETRY_MAX_COUNT		1000000
-> +#define EXYRNG_START_UP_TEST_MAX_RETRY	2
-> +
-> +#define DRVNAME	"exynos_swd_trng"
-> +
-> +enum state {
-> +	INACTIVE = 0,
-> +	ACTIVE,
-> +};
-> +
-> +struct exyswd_rng {
-> +	struct hwrng rng;
-> +	enum state state;
-> +	struct device *dev;
-> +	/* to track and protect state of the device */
-> +	struct mutex lock;
-> +};
-> +
-> +static int __exynos_cm_smc(u64 *arg0, u64 *arg1,
-> +			   u64 *arg2, u64 *arg3)
-> +{
-> +	struct arm_smccc_res res;
-> +
-> +	arm_smccc_smc(*arg0, *arg1, *arg2, *arg3, 0, 0, 0, 0, &res);
-> +
-> +	*arg0 = res.a0;
-> +	*arg1 = res.a1;
-> +	*arg2 = res.a2;
-> +	*arg3 = res.a3;
-> +
-> +	return *arg0;
-> +}
-> +
-> +static int exynos_cm_cmd(int cmd)
-> +{
-> +	u64 reg0, reg1, reg2, reg3;
-> +
-> +	reg0 = SMC_CMD_RANDOM;
-> +	reg1 = cmd;
-> +	reg3 = reg2 = 0;
-> +
-> +	return __exynos_cm_smc(&reg0, &reg1, &reg2, &reg3);
-> +}
-> +
-> +static int exynos_cm_get_data(u64 *arg0, u64 *arg1,
-> +			      u64 *arg2, u64 *arg3)
-> +{
-> +	*arg0 = SMC_CMD_RANDOM;
-> +	*arg1 = HWRNG_GET_DATA;
-> +	*arg3 = 0;
-> +
-> +	return __exynos_cm_smc(arg0, arg1, arg2, arg3);
-> +}
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b42ab0fd4947/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b8a6e7231930/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4fbf3e4ce6f8/bzImage-fe46a7dd.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8dce556379ee/mount_0.gz
 
-Can you avoid implementing specific SMC calls in this driver?
-Instead, is it possible to use arm_smccc_1_1_invoke passing
-corresponding arguements?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+776b5fc6c99745aa7860@syzkaller.appspotmail.com
 
-> +
-> +static int exynos_swd_get_data(u64 *arg0, u64 *arg1, u64 *arg2, u64 *arg3,
-> +			       struct exyswd_rng *exyswd_rng)
-> +{
-> +	u32 retry_cnt = 0;
-> +	int ret;
-> +
-> +	while (retry_cnt++ < EXYRNG_RETRY_MAX_COUNT) {
-> +		ret = exynos_cm_get_data(arg0, arg1, arg2, arg3);
-> +
-> +		if (ret == HWRNG_RET_OK)
-> +			return 0;
-> +
-> +		if (ret == HWRNG_RET_RETRY_ERROR) {
-> +			usleep_range(50, 100);
-> +			continue;
-> +		}
-> +
-> +		if (ret == HWRNG_RET_TEST_ERROR) {
-> +			dev_dbg(exyswd_rng->dev, "error while testing\n");
-> +			return -EAGAIN;
-> +		}
-> +
-> +		return -EFAULT;
-> +	}
-> +
-> +	ret = -EFAULT;
-> +	dev_warn(exyswd_rng->dev, "retry counter is reached\n");
-> +	return ret;
-> +}
-> +
-> +static int exynos_swd_init(void)
-> +{
-> +	u32 retry_cnt = 0;
-> +	int ret;
-> +
-> +	do {
-> +		ret = exynos_cm_cmd(HWRNG_INIT);
-> +		if (ret == HWRNG_RET_RETRY_ERROR) {
-> +			if (retry_cnt++ > EXYRNG_RETRY_MAX_COUNT)
-> +				break;
-> +
-> +			usleep_range(50, 100);
-> +		}
-> +	} while (ret == HWRNG_RET_RETRY_ERROR);
-> +
-> +	return ret;
-> +}
-> +
-> +static void exynos_swd_exit(void)
-> +{
-> +	u32 retry_cnt = 0;
-> +
-> +	while (retry_cnt++ < EXYRNG_RETRY_MAX_COUNT) {
-> +		if (!exynos_cm_cmd(HWRNG_EXIT))
-> +			break;
-> +		usleep_range(50, 100);
-> +	}
-> +}
-> +
-> +static int exynos_swd_startup_test(struct exyswd_rng *exyswd_rng)
-> +{
-> +	u64 reg0, reg1, reg2, reg3;
-> +	int start_up_size = EXYRNG_START_UP_SIZE;
-> +	u32 retry_cnt = 0;
-> +	int ret;
-> +
-> +	ret = exynos_swd_init();
-> +	if (ret != HWRNG_RET_OK) {
-> +		if (ret == HWRNG_RET_TEST_ERROR) {
-> +			ret = -EAGAIN;
-> +			goto out;
-> +		} else
-> +			return -EFAULT;
-> +	}
-> +
-> +	while (start_up_size > 0) {
-> +		/* For start-up test the 3-rd argument has to be set to 1 */
-> +		reg2 = 1;
+jfs_dirty_inode called on read-only volume
+Is remount racy?
+BUG at fs/jfs/jfs_txnmgr.c:528 assert(tblk->next == 0)
+------------[ cut here ]------------
+kernel BUG at fs/jfs/jfs_txnmgr.c:528!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 5253 Comm: syz-executor989 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:txEnd+0x583/0x5a0 fs/jfs/jfs_txnmgr.c:528
+Code: e9 59 fb ff ff e8 bd 24 84 fe 48 c7 c1 40 a4 4a 8b ba 10 02 00 00 48 c7 c6 c0 9e 4a 8b 48 c7 c7 00 9f 4a 8b e8 5e f5 64 fe 90 <0f> 0b 48 89 ef e8 03 07 df fe e9 40 fd ff ff e8 c9 06 df fe e9 2e
+RSP: 0018:ffffc90008cc7ab8 EFLAGS: 00010282
+RAX: 0000000000000036 RBX: ffffc900025d1110 RCX: ffffffff816f2339
+RDX: 0000000000000000 RSI: ffffffff816fab26 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000001 R14: ffffffff8dd43da0 R15: ffffc900025d1112
+FS:  00007fc48c2826c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc484d0b000 CR3: 000000001511e000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ add_missing_indices fs/jfs/jfs_dtree.c:2663 [inline]
+ jfs_readdir+0x2952/0x4310 fs/jfs/jfs_dtree.c:3009
+ wrap_directory_iterator+0xa8/0xe0 fs/readdir.c:67
+ iterate_dir+0x295/0x9e0 fs/readdir.c:110
+ __do_sys_getdents fs/readdir.c:326 [inline]
+ __se_sys_getdents fs/readdir.c:311 [inline]
+ __x64_sys_getdents+0x14f/0x2d0 fs/readdir.c:311
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fc48c2f6c39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 1d 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc48c282168 EFLAGS: 00000246 ORIG_RAX: 000000000000004e
+RAX: ffffffffffffffda RBX: 00007fc48c37e6d8 RCX: 00007fc48c2f6c39
+RDX: 0000000000001000 RSI: 0000000020006600 RDI: 0000000000000005
+RBP: 00007fc48c37e6d0 R08: 00007fc48c2826c0 R09: 0000000000000000
+R10: 00007fc48c2826c0 R11: 0000000000000246 R12: 00007fc48c37e6dc
+R13: 000000000000006e R14: 00007ffdf1f02700 R15: 00007ffdf1f027e8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:txEnd+0x583/0x5a0 fs/jfs/jfs_txnmgr.c:528
+Code: e9 59 fb ff ff e8 bd 24 84 fe 48 c7 c1 40 a4 4a 8b ba 10 02 00 00 48 c7 c6 c0 9e 4a 8b 48 c7 c7 00 9f 4a 8b e8 5e f5 64 fe 90 <0f> 0b 48 89 ef e8 03 07 df fe e9 40 fd ff ff e8 c9 06 df fe e9 2e
+RSP: 0018:ffffc90008cc7ab8 EFLAGS: 00010282
+RAX: 0000000000000036 RBX: ffffc900025d1110 RCX: ffffffff816f2339
+RDX: 0000000000000000 RSI: ffffffff816fab26 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000001 R14: ffffffff8dd43da0 R15: ffffc900025d1112
+FS:  00007fc48c2826c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc484d0b000 CR3: 000000001511e000 CR4: 0000000000350ef0
 
-Can this be changed to a #define constant for better clarity?
 
-> +		ret = exynos_cm_get_data(&reg0, &reg1, &reg2, &reg3);
-> +		if (ret == HWRNG_RET_RETRY_ERROR) {
-> +			if (retry_cnt++ > EXYRNG_RETRY_MAX_COUNT) {
-> +				dev_warn(exyswd_rng->dev,
-> +					 "exceeded retry in start-up test\n");
-> +				break;
-> +			}
-> +			usleep_range(50, 100);
-> +			continue;
-> +		}
-> +
-> +		if (ret == HWRNG_RET_TEST_ERROR ||
-> +		    ret == HWRNG_RET_TEST_KAT_ERROR) {
-> +			dev_err(exyswd_rng->dev,
-> +				"malfunction of TRNG(HW) is detected\n");
-> +			return -EFAULT;
-> +		}
-> +
-> +		if (ret == HWRNG_RET_START_UP_TEST_DONE) {
-> +			dev_dbg(exyswd_rng->dev,
-> +				"start-up test is already done\n");
-> +			ret = 0;
-> +			break;
-> +		}
-> +
-> +		if (ret != HWRNG_RET_OK) {
-> +			dev_dbg(exyswd_rng->dev, "failed to get random data\n");
-> +			return -EFAULT;
-> +		}
-> +
-> +		start_up_size -= 32;
-Similar to the above, please change this. And why 32 bytes?
-
-> +		retry_cnt = 0;
-> +	}
-> +
-> +out:
-> +	exynos_swd_exit();
-> +	return ret;
-> +}
-> +
-> +static int exynos_swd_read(struct hwrng *rng, void *data, size_t max, bool wait)
-> +{
-> +	struct exyswd_rng *exyswd_rng =
-> +				container_of(rng, struct exyswd_rng, rng);
-> +	u64 reg0, reg1, reg2, reg3;
-> +	u32 *read_buf = data;
-> +	u32 read_size = max;
-> +	u32 retry_cnt;
-> +	int ret = HWRNG_RET_OK;
-> +
-> +	mutex_lock(&exyswd_rng->lock);
-> +	ret = exynos_swd_init();
-> +	if (ret != HWRNG_RET_OK) {
-> +		if (ret == HWRNG_RET_TEST_ERROR) {
-> +			ret = -EAGAIN;
-> +			goto out_locked;
-> +		} else {
-> +			mutex_unlock(&exyswd_rng->lock);
-> +			return -EFAULT;
-> +		}
-> +	}
-> +
-> +	exyswd_rng->state = ACTIVE;
-> +	mutex_unlock(&exyswd_rng->lock);
-> +
-> +	retry_cnt = 0;
-> +	while (read_size >= 8) {
-> +		reg2 = 0;
-> +		ret = exynos_swd_get_data(&reg0, &reg1, &reg2, &reg3, exyswd_rng);
-> +		if (ret)
-> +			goto out;
-> +
-> +		*(u32 *)(read_buf++) = (u32)reg2;
-> +		*(u32 *)(read_buf++) = (u32)reg3;
-> +
-> +		read_size -= 8;
-> +		retry_cnt = 0;
-> +	}
-> +
-> +	/*
-> +	 * rng_buf_size is 32 bytes or cache line usually, it is unlikely
-> +	 * we will have remaining bytes to read here.
-> +	 */
-> +	if (unlikely(read_size > 0)) {
-> +		reg2 = 0;
-> +		ret = exynos_swd_get_data(&reg0, &reg1, &reg2, &reg3, exyswd_rng);
-> +		if (ret)
-> +			goto out;
-> +		if (read_size >= 4) {
-> +			*(u32 *)(read_buf++) = (u32)reg2;
-> +			read_size -= 4;
-> +		}
-> +
-> +		if (read_size) {
-> +			memcpy(read_buf, &reg3, read_size);
-> +			read_size = 0;
-> +		}
-> +	}
-> +
-> +	ret = max;
-> +out:
-> +	mutex_lock(&exyswd_rng->lock);
-> +out_locked:
-> +	exynos_swd_exit();
-> +	exyswd_rng->state = INACTIVE;
-> +	mutex_unlock(&exyswd_rng->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int exyswd_rng_probe(struct platform_device *pdev)
-> +{
-> +	struct exyswd_rng *exyswd_rng;
-> +	int ret;
-> +
-> +	exyswd_rng = devm_kzalloc(&pdev->dev, sizeof(*exyswd_rng), GFP_KERNEL);
-> +	if (!exyswd_rng)
-> +		return -ENOMEM;
-> +
-> +	exyswd_rng->rng.name = DRVNAME;
-> +	exyswd_rng->rng.read = exynos_swd_read;
-> +	exyswd_rng->rng.quality = 500;
-> +	exyswd_rng->dev = &pdev->dev;
-> +	exyswd_rng->state = INACTIVE;
-> +	mutex_init(&exyswd_rng->lock);
-> +
-> +	/*
-> +	 * Do the startup test first. If it works we've got the device
-> +	 * and can finish probe().
-> +	 */
-> +	ret = exynos_swd_startup_test(exyswd_rng);
-> +	if (ret) {
-> +		dev_dbg(&pdev->dev, "start-up test failed\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = devm_hwrng_register(&pdev->dev, &exyswd_rng->rng);
-> +	if (ret)
-> +		return dev_err_probe(&pdev->dev, ret,
-> +				     "failed to register hwrng\n");
-> +
-> +	platform_set_drvdata(pdev, exyswd_rng);
-> +	dev_set_drvdata(&pdev->dev, exyswd_rng);
-> +
-> +	dev_info(&pdev->dev, "hwrng registered\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static int exyswd_rng_remove(struct platform_device *pdev)
-> +{
-> +	struct exyswd_rng *exyswd_rng = platform_get_drvdata(pdev);
-> +
-> +	devm_hwrng_unregister(&pdev->dev, &exyswd_rng->rng);
-> +
-> +	mutex_lock(&exyswd_rng->lock);
-> +	if (exyswd_rng->state == ACTIVE) {
-> +		exynos_swd_exit();
-> +		exyswd_rng->state = INACTIVE;
-> +	}
-> +	mutex_unlock(&exyswd_rng->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +#if defined(CONFIG_PM_SLEEP) || defined(CONFIG_PM_RUNTIME)
-> +static int exyswd_rng_suspend(struct device *dev)
-> +{
-> +	struct exyswd_rng *exyswd_rng = dev_get_drvdata(dev);
-> +	int ret = 0;
-> +
-> +	mutex_lock(&exyswd_rng->lock);
-> +	if (exyswd_rng->state) {
-> +		ret = exynos_cm_cmd(HWRNG_EXIT);
-> +		if (ret != HWRNG_RET_OK)
-> +			dev_warn(dev,
-> +				 "failed to enter suspend, error %d\n", ret);
-> +	}
-> +	mutex_unlock(&exyswd_rng->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int exyswd_rng_resume(struct device *dev)
-> +{
-> +	struct exyswd_rng *exyswd_rng = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	mutex_lock(&exyswd_rng->lock);
-> +	ret = exynos_cm_cmd(HWRNG_RESUME);
-> +	if (ret != HWRNG_RET_OK)
-> +		dev_warn(dev, "failed to resume, error %d\n", ret);
-> +	if (exyswd_rng->state) {
-> +		ret = exynos_cm_cmd(HWRNG_INIT);
-> +		if (ret != HWRNG_RET_OK)
-> +			dev_warn(dev,
-> +				 "failed to init hwrng on resume, error %d\n",
-> +				 ret);
-> +	}
-> +	mutex_unlock(&exyswd_rng->lock);
-> +
-> +	return ret;
-> +}
-> +#endif
-> +
-> +static UNIVERSAL_DEV_PM_OPS(exyswd_rng_pm_ops, exyswd_rng_suspend,
-> +			    exyswd_rng_resume, NULL);
-> +
-> +static struct platform_driver exyswd_rng_driver = {
-> +	.probe		= exyswd_rng_probe,
-> +	.remove		= exyswd_rng_remove,
-> +	.driver		= {
-> +		.name	= DRVNAME,
-> +		.owner	= THIS_MODULE,
-> +		.pm     = &exyswd_rng_pm_ops,
-> +	},
-> +};
-> +
-> +static struct platform_device *exyswd_rng_pdev;
-> +
-> +static int __init exyswd_rng_init(void)
-> +{
-> +	int ret;
-> +
-> +	exyswd_rng_pdev = platform_device_register_simple(DRVNAME, -1, NULL, 0);
-> +	if (IS_ERR(exyswd_rng_pdev))
-> +		pr_err(DRVNAME ": could not register device: %ld\n",
-> +		       PTR_ERR(exyswd_rng_pdev));
-> +
-> +	ret = platform_driver_register(&exyswd_rng_driver);
-> +	if (ret) {
-> +		platform_device_unregister(exyswd_rng_pdev);
-> +		return ret;
-> +	}
-> +
-> +	pr_info("ExyRNG driver, (c) 2014 Samsung Electronics\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static void __exit exyswd_rng_exit(void)
-> +{
-> +	platform_driver_unregister(&exyswd_rng_driver);
-> +	platform_device_unregister(exyswd_rng_pdev);
-> +}
-> +
-> +module_init(exyswd_rng_init);
-> +module_exit(exyswd_rng_exit);
-> +
-> +MODULE_DESCRIPTION("Exynos SWD H/W Random Number Generator driver");
-> +MODULE_AUTHOR("Alexey Klimov <alexey.klimov@linaro.org>");
-> +MODULE_AUTHOR("Sehee Kim <sehi.kim@samsung.com>");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.43.0
-> 
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
