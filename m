@@ -1,144 +1,171 @@
-Return-Path: <linux-kernel+bounces-125123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555D189205A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:25:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEAA6892063
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1008E289809
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:25:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1FCF1C2976F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DA051C52;
-	Fri, 29 Mar 2024 15:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A086552F61;
+	Fri, 29 Mar 2024 15:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZJKtspY0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NkzReF09"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E602562E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 15:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F0612F360;
+	Fri, 29 Mar 2024 15:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711725703; cv=none; b=oyA6Il1qbPsFv7uCrk4/Pr6TnyL2kl2+0j2wLweMqkYCCW3VZNoig5F1V78Hxl0k96TZg3COlN3UeHz7M05QcAkRAg2RXlAOsofLZxaBzH0v+xlf82TV5FH6UgnoSlUqO3cv3k6XndZ8HWZAfcX+9d5YdsM9F7f3LUgY0NUO9Ic=
+	t=1711725741; cv=none; b=R2LivTPoBaKm2lIY2cCvboqHKk5BfSFTW9flTHBwu3tilQ0vzNMbpSCRD6wz7fz0bCFTz8b88YkIsqSrM2MgssZ8UMjBRc9U7AX+kK8cH3yW6s323127uVuPhnT+pZ5K01x/sozGG/ZnrHBNtX1hEVBHkVIi+gwHsbVdh7A53iU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711725703; c=relaxed/simple;
-	bh=xIhz1fc0gd8bUoWk1Yba/XGwSpCgbpumuPmPXecDCog=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vAl3DJidDHkQB+U4yKFlg60kafpCihyOBtOgFrZVtYEaLnuwKqYGXaccWJ9QIRRkG5QDP2ZQFtgEGqeDP/cW81xUJJUkJKBWPjCrh+/nudnqENBDfDKUyrMDyqA4s3CwJanx8EtzugUUOuRVFFAQNZfGdsaSaeATJE9eJkZ5UhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZJKtspY0; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711725702; x=1743261702;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xIhz1fc0gd8bUoWk1Yba/XGwSpCgbpumuPmPXecDCog=;
-  b=ZJKtspY0jsFuTnIcc6aqcoRMvX4hnpNMkAHa5QnXVSPxFrU2xUe//mUN
-   hPzYbvxgu2NUyV4XP5JArSs4yuSM0ERKdwcEyprikmgz0swbmV9wz4mS+
-   XIjqWkYXyC9zekGb4Vd1YEgKQRg20DtwbovEfwHUBn+v2GEC2+APKRcdi
-   G5M7AzgQr0tZoa6ty6lgxXeE5mDCm/JM8m/n8aMFIJs/yU74dOpgJcjjr
-   AJJj7vsVCKNbSuyQhu0ytbdvf1eYFV4Yc7C+W3lCCwTsdvtcWVFwus49l
-   LzBsCvWV9PHcLziiOrO2G4JjCJv157ckdYjL9RIwcycHttjXxZiQoWhm9
-   Q==;
-X-CSE-ConnectionGUID: zXcaCzcLQSaw+aqEoGUcUg==
-X-CSE-MsgGUID: a84RurfVTjOLC2+EqkxsTg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="17472611"
-X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
-   d="scan'208";a="17472611"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 08:21:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
-   d="scan'208";a="17636665"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 08:21:36 -0700
-Message-ID: <b94c81ef-50f2-4e66-9533-461791777d10@intel.com>
-Date: Fri, 29 Mar 2024 23:21:32 +0800
+	s=arc-20240116; t=1711725741; c=relaxed/simple;
+	bh=p4SC+yLHywyykUuYxg28bcI+hsgPIYZoGLrhHMYDnbE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=R6teVEPlei7GUZ+P+gAM73gdZm9HeAPUOcYm2+oSlQNULHmfJRd8Y7HbBgizwIwkR0esBz8lCAjgddhjyw1Da0zQLfIaLPfBlZ67nEyhLSqtZoPyjy88tbK+5kxTFl58YLs4yMUCXIEFzQ+t864ZVL4p/hdSFJiFW2NWqq7oNo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NkzReF09; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42TEMgn3026490;
+	Fri, 29 Mar 2024 15:22:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=qxGHDRjFIxkj
+	5jK4q+FlrKCaEaBm6xCwTmJoQeSAiek=; b=NkzReF09GR9GMKgYyhQMf+Y86we5
+	/y9x38w+PWz6QDaCEL1Q3hD+ortotpNCCA3Vry/F7LG3zwBXw5KqyFRMkln3WMY+
+	ssA+BMflpmzEIO1JaNCX/MGzCkevpAuz6kV5y+SVu9V8IZc1Rud5B4hMmWuwAoWx
+	7tjut/ckePQPbK9YWCcDQ8Vv9rJEgmo8Y/qxdpaCiLbDy9zlLKvyET4Q8hVcA6uT
+	DXNtm3BYPZLcRLF8c3b6dnlbVUGxgFxUKOtXdMf3DZ4QOzdVZb3/6Sao5EOJf3jz
+	B5vXsKG1cB/6FPh8NrDo2BYWR6cOFZYEn7ZK2qMvb3Kg6iEbAyI/FuK9cg==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5ybmr429-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 15:22:06 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 42TFM2l5008871;
+	Fri, 29 Mar 2024 15:22:02 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3x1r5mk6gx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 29 Mar 2024 15:22:02 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42TFM2LR008857;
+	Fri, 29 Mar 2024 15:22:02 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 42TFM2xH008852;
+	Fri, 29 Mar 2024 15:22:02 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+	id 22DDC3C2F; Fri, 29 Mar 2024 20:52:01 +0530 (+0530)
+From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        manivannan.sadhasivam@linaro.org
+Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_schintav@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v10 0/3] arm64: qcom: sa8775p: add support for EP PCIe 
+Date: Fri, 29 Mar 2024 20:51:54 +0530
+Message-Id: <1711725718-6362-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tc3UI3T2t_Ume-cBLrsJNHnF_XkmOLRD
+X-Proofpoint-GUID: tc3UI3T2t_Ume-cBLrsJNHnF_XkmOLRD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403290135
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv9 05/17] x86/kexec: Keep CR4.MCE set during kexec for TDX
- guest
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Elena Reshetova <elena.reshetova@intel.com>,
- Jun Nakajima <jun.nakajima@intel.com>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish"
- <ashish.kalra@amd.com>, Sean Christopherson <seanjc@google.com>,
- "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
- kexec@lists.infradead.org, linux-coco@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
- <20240325103911.2651793-6-kirill.shutemov@linux.intel.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240325103911.2651793-6-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 3/25/2024 6:38 PM, Kirill A. Shutemov wrote:
-> TDX guests are not allowed to clear CR4.MCE. Attempt to clear it leads
-> to #VE.
+This series adds the relavent DT bindings, new compatible string,
+and add EP PCIe node in dtsi file for ep pcie0 controller.
 
-Will we consider making it more safe and compatible for future to guard 
-against X86_FEATURE_MCE as well?
+v9 -> v10:
+- rebased on top of 6.9-rc1
+- dropped MHI EPF driver patches as those are applied
+- v9 link: https://lore.kernel.org/all/1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com/
 
-If in the future, MCE becomes configurable for TD guest, then CR4.MCE 
-might not be fixed1.
+v8 -> v9:
+- update author in "Add pci_epf_mhi_ prefix to the function" patch.
+- add ack by and reviewed by tag in commit message.
 
-> Use alternatives to keep the flag during kexec for TDX guests.
-> 
-> The change doesn't affect non-TDX-guest environments.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
-> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   arch/x86/kernel/relocate_kernel_64.S | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
-> index 56cab1bb25f5..e144bcf60cbe 100644
-> --- a/arch/x86/kernel/relocate_kernel_64.S
-> +++ b/arch/x86/kernel/relocate_kernel_64.S
-> @@ -5,6 +5,8 @@
->    */
->   
->   #include <linux/linkage.h>
-> +#include <linux/stringify.h>
-> +#include <asm/alternative.h>
->   #include <asm/page_types.h>
->   #include <asm/kexec.h>
->   #include <asm/processor-flags.h>
-> @@ -145,12 +147,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
->   	 * Set cr4 to a known state:
->   	 *  - physical address extension enabled
->   	 *  - 5-level paging, if it was enabled before
-> +	 *  - Machine check exception on TDX guest. Clearing MCE is not allowed
-> +	 *    in TDX guests.
->   	 */
->   	movl	$X86_CR4_PAE, %eax
->   	testq	$X86_CR4_LA57, %r13
->   	jz	1f
->   	orl	$X86_CR4_LA57, %eax
->   1:
-> +	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
->   	movq	%rax, %cr4
->   
->   	jmp 1f
+v7 -> v8:
+- Add new patch PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function
+  names
+- Update PCI: epf-mhi: Add support for SA8775P patch on top of the new
+  patch and update commit message.
+
+v6 -> v7:
+- add reviewed by tag in commit message in all patches.
+- update commit message in patch 2 as per comment.
+- update reason for reusing PID in commit message.
+
+v5 -> v6:
+- update cover letter
+
+v4 -> v5:
+- add maxItems to the respective field to constrain io space and
+  interrupt in all variants.
+
+v3 -> v4:
+- add maxItems field in dt bindings
+- update comment in patch2
+- dropped PHY driver patch as it is already applied [1]
+- update comment in EPF driver patch
+- update commect in dtsi and add iommus instead of iommu-map
+
+[1] https://lore.kernel.org/all/169804254205.383714.18423881810869732517.b4-ty@kernel.org/
+
+v2 -> v3:
+- removed if/then schemas, added minItems for reg,
+  reg-bnames, interrupt and interrupt-names instead.
+- adding qcom,sa8775p-pcie-ep compitable for sa8775p
+  as we have some specific change to add.
+- reusing sm8450's pcs_misc num table as it is same as sa8775p.
+  used appropriate namespace for pcs.
+- remove const from sa8775p_header as kernel test robot
+  throwing some warnings due to this.
+- remove fallback compatiable as we are adding compatiable for sa8775p.
+
+v1 -> v2:
+- update description for dma
+- Reusing qcom,sdx55-pcie-ep compatibe so remove compaitable
+  for sa8775p
+- sort the defines in phy header file and remove extra defines
+- add const in return type pci_epf_header and remove MHI_EPF_USE_DMA
+  flag as hdma patch is not ready
+- add fallback compatiable as qcom,sdx55-pcie-ep, add iommu property
+
+Mrinmay Sarkar (3):
+  dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+  PCI: qcom-ep: Add support for SA8775P SOC
+  arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
+
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 46 ++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c          |  1 +
+ 3 files changed, 109 insertions(+), 2 deletions(-)
+
+-- 
+2.7.4
 
 
