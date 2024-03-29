@@ -1,132 +1,156 @@
-Return-Path: <linux-kernel+bounces-125519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94158927B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:08:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA3F88927B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91DD62839A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:08:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FF331F24FF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513BF13E881;
-	Fri, 29 Mar 2024 23:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B6C13E6B6;
+	Fri, 29 Mar 2024 23:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LCUtJric"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MumSkYzI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FED713F447;
-	Fri, 29 Mar 2024 23:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FF613E6A7;
+	Fri, 29 Mar 2024 23:08:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711753695; cv=none; b=qeYhJkMFIDl5k9ixFMfPDE2MINPURgsNot/rccX2DpPqZNDzHzPXJfMKjodx2tLYb2k+7NQ/qM3dzN9SoP+lBWu62jBBBryAsExXwKNK+9DPYUxn04p4oiWiE/a0++L2Q8fPXVQjEkYoyMkuEY5GigXe4mSUThs+rLes4d1qvcQ=
+	t=1711753691; cv=none; b=oxOdEwa+gnrpgYLLObtn2z21LNMTQBuys0Ny65PyY4yc2Toq7skdSlXmZbkChM05ZlooMFZeTME9Nk6w4VLmwlekr4wCfcxn4f+m61CiZKQpaKiFL87qKUzE9ecxo3ZDmuk1WIYwMSftsogybn4iGhji4Lzep0YhgPa4fPShkIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711753695; c=relaxed/simple;
-	bh=YDvBnJDT+P+FfR2r2Xqdl1/sni05Zype/Cn8wCryMVk=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=GnT7vifvc8v+dwKPTDJFQB97tgk8Lrz8AQ/sQqQwxVerCllHtB57ZWCsCW5e7zv9bhWUsttIWx1H2F18x+Xf5vzol1Jj5aIHdL8Jf3i8V2g1z6UBGt0NnWolZ99spp1lYwGyJN5Mi5tsloFC7d3naHnXql+XXLAxsK5ms5NApYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LCUtJric; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-430a65e973bso15098421cf.3;
-        Fri, 29 Mar 2024 16:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711753693; x=1712358493; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MImVHWtFYfRRx31LLQmyf0lh9NeToatxJG5zQIijxdg=;
-        b=LCUtJricYIhT8rHbkMKsD9eQGqKJgjnKhBW6NhiK9woaOGxQxJCPJQHU/Mgd+dqrI1
-         khGcSTSfEAZCX8Ufa8bq2Swa3jHC+6yM169ajjwL1ZLKQCV5bXfR66CLH/xpF66N+ZQk
-         ytTABHCzz3prNbQ8Ow/D1Gv4JDRIiXmcTY6IeqBiCu74sTZ8NyqLU0rjGc41YJX/0eVM
-         8q4NpvcGIjtpSdPmCOIwPlVWOvadozOou0yf5J0JT5eu++/SjfQ3eSsTJb09nGTBQWN+
-         jq0gGzKd5QLwBEHJnZt/BFKMjY/ENu/P8FU7YT2IoL8mhvcuPXPxQmka5vzKArqpKQlG
-         ZvIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711753693; x=1712358493;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MImVHWtFYfRRx31LLQmyf0lh9NeToatxJG5zQIijxdg=;
-        b=lQg4m5GEfXWFDDmeVikvOK+dTQ/mzTSXrv0O/HY3Rh+t8jEsOunl8JeqEOwnioh9jX
-         R8lloRN7ENdK0mQeRjUg9ojuznmSWGGgibwme2CKQU2YNcXJ9dh51vDB9oCJvQbCVgG0
-         F816QXoufIUJ8jnoCCo/KVK+enK2+GBP92nA0KT9oUMz3wtID/w6UTFUhvAoASGNlWo+
-         bRF1P6paFUw/UfH3KfFqIn84VkdJBInNCgoOULAO71cdWYQ9DGR1P4K463KeTNeN911K
-         Mo+JriTB4LAMcudNWt59k9KbxvVDu2i6FcjziWNWBxjhUbPvHzCzyooN5DXYZpiDsv0/
-         HLJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvxrFK7ROU9gMrHUvZg++NZnBTZ8mKqciPmSwpYTayPheJaEoyixyzUg5Qf2HAqzN9IR0JnRQl5jEWMKUDxgv78WNPoNmJbz0mHW9Sj9UiZooV0QpbhHxhKBtc93gUyy6HgpJh
-X-Gm-Message-State: AOJu0YwTnwWS8Nh1OYPpVvC7p3MzLtaIfdPsKbd3gq2nrejsrc5+BJQZ
-	ANRL0wIl/bucDVhjIg63O9fZnIBnUarEMHwIjWe2Ciz52m/Ih4/k7nmW3SYE6eyiJZUO/nxLxge
-	VNGz8R8GDamru+U++BxBeyks7k1Y=
-X-Google-Smtp-Source: AGHT+IGtVP3a1ZWHImv3JvX7fzhAVtdFRCfPVGnDc7XL/LZK6jZh80RoqP3Av+VNlaKB5Ww8QGCGT4WVRbJ0j51ujW0=
-X-Received: by 2002:a05:622a:306:b0:432:b741:73b4 with SMTP id
- q6-20020a05622a030600b00432b74173b4mr3422703qtw.9.1711753692979; Fri, 29 Mar
- 2024 16:08:12 -0700 (PDT)
+	s=arc-20240116; t=1711753691; c=relaxed/simple;
+	bh=ec2F1zO1pAITVaGxx6NZ6eWrWbWDN/2TSFFAHJU4qx8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fxk1hD7IrEFvjZBRco+0Qcj371tiachoK24OOlfO+HmNASWjCnzrBP97ZYTIno/bZKhX/IvDQDbA6nN/AtNhFG5oiXNEwqJfTWohMFNY6LukDIMjXhxM5BuLdka3nOXxlXY4uSTYTug+rAhKXZHwDTxkoF20gtrcSQ8zxhZXigM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MumSkYzI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B6A4C433C7;
+	Fri, 29 Mar 2024 23:08:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711753691;
+	bh=ec2F1zO1pAITVaGxx6NZ6eWrWbWDN/2TSFFAHJU4qx8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=MumSkYzIEUc4uqNypRrvdB+KwOeTyHmCJvkXY/a5xogU7N+K4Up/4hzWtKyZA8UgJ
+	 rS4aTYzf+gLu4426YqfYE7YExEOZ3xkxYyUCT1BOW/4RNiXJwwDqRWMwgTwZTQrQo4
+	 qzCxw6CVdRm06Nm1/pWR2qRC1C6tu+zf5idv5sHJXGbngV2wPkMcUe2HBGpN2CduCb
+	 loqXWmtA60F8abfnBzW6vwFkCd8d5kGjfORVKADznCPGLAB/3qLJj4iWFG1X77LqJu
+	 WB9+3k1MjObb3cr3a7RW2yZG3V6++WLUvQpFc1TlEgCvOQxk+jbyEQvK0IT9kKxYo7
+	 6uzdeQwIpenSg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B5D40CE120B; Fri, 29 Mar 2024 16:08:10 -0700 (PDT)
+Date: Fri, 29 Mar 2024 16:08:10 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [paulmck-rcu:dev.2024.03.27b 61/69] lib/cmpxchg-emu.c:24:11:
+ warning: no previous prototype for 'cmpxchg_emu_u8'
+Message-ID: <e4b7ecac-719e-40f5-80b5-7a1c63e72b33@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202403300508.Xz7XNp71-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Charlemagne Lasse <charlemagnelasse@gmail.com>
-Date: Sat, 30 Mar 2024 00:08:02 +0100
-Message-ID: <CAFGhKbz70E3vihRkG4Hi20Tw8i7mGp=Z6j+NnELDTJd9cj9+Aw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] scripts: checkpatch: check unused parameters for
- function-like macro
-To: Barry Song <21cnbao@gmail.com>, Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org, 
-	linux-doc@vger.kernel.org, Andy Whitcroft <apw@canonical.com>, 
-	Joe Perches <joe@perches.com>, Dwaipayan Ray <dwaipayanray1@gmail.com>, lukas.bulwahn@gmail.com
-Cc: LKML <linux-kernel@vger.kernel.org>, Xining Xu <ma.xxn@outlook.com>, 
-	Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202403300508.Xz7XNp71-lkp@intel.com>
 
-Hi,
+On Sat, Mar 30, 2024 at 05:26:12AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.03.27b
+> head:   786fab3085d764055a78edb54023420920344333
+> commit: b48ffed4c636b96d2be7a93806870772ce34961f [61/69] csky: Emulate one-byte and two-byte cmpxchg
+> config: csky-allnoconfig (https://download.01.org/0day-ci/archive/20240330/202403300508.Xz7XNp71-lkp@intel.com/config)
+> compiler: csky-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240330/202403300508.Xz7XNp71-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403300508.Xz7XNp71-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> lib/cmpxchg-emu.c:24:11: warning: no previous prototype for 'cmpxchg_emu_u8' [-Wmissing-prototypes]
+>       24 | uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
+>          |           ^~~~~~~~~~~~~~
+> >> lib/cmpxchg-emu.c:51:11: warning: no previous prototype for 'cmpxchg_emu_u16' [-Wmissing-prototypes]
+>       51 | uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
+>          |           ^~~~~~~~~~~~~~~
 
-Can this patch please be dropped from Linux-next (currently via
-git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm#mm-everything)?
-It is obviously wrong when dealing with named variadic macro
-parameters:
+Again, good catch, and thank you for the testing!  Does the patch at the
+end of this email fix things for you?
 
- ./scripts/checkpatch.pl -f include/linux/rculist.h
-ERROR: Parameter 'dummy' is not used in function-like macro, please
-use static inline instead
-#51: FILE: include/linux/rculist.h:51:
-+#define __list_check_rcu(dummy, cond, extra...)
-         \
-+       ({                                                              \
-+       check_arg_count_one(extra);                                     \
-+       RCU_LOCKDEP_WARN(!(cond) && !rcu_read_lock_any_held(),          \
-+                        "RCU-list traversed in non-reader section!");  \
-+       })
+							Thanx, Paul
 
-ERROR: Parameter 'extra...' is not used in function-like macro, please
-use static inline instead
-#51: FILE: include/linux/rculist.h:51:
-+#define __list_check_rcu(dummy, cond, extra...)
-         \
-+       ({                                                              \
-+       check_arg_count_one(extra);                                     \
-+       RCU_LOCKDEP_WARN(!(cond) && !rcu_read_lock_any_held(),          \
-+                        "RCU-list traversed in non-reader section!");  \
-+       })
+> vim +/cmpxchg_emu_u8 +24 lib/cmpxchg-emu.c
+> 
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  22  
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  23  /* Emulate one-byte cmpxchg() in terms of 4-byte cmpxchg. */
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17 @24  uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  25  {
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  26  	u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  27  	int i = ((uintptr_t)p) & 0x3;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  28  	union u8_32 old32;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  29  	union u8_32 new32;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  30  	u32 ret;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  31  
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  32  	old32.w = READ_ONCE(*p32);
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  33  	do {
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  34  		if (old32.b[i] != old)
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  35  			return old32.b[i];
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  36  		new32.w = old32.w;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  37  		new32.b[i] = new;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  38  		instrument_atomic_read_write(p, 1);
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  39  		ret = data_race(cmpxchg(p32, old32.w, new32.w));
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  40  	} while (ret != old32.w);
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  41  	return old;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  42  }
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  43  EXPORT_SYMBOL_GPL(cmpxchg_emu_u8);
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  44  
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  45  union u16_32 {
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  46  	u16 h[2];
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  47  	u32 w;
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  48  };
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  49  
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17  50  /* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
+> 0bbce967f3ecfc Paul E. McKenney 2024-03-17 @51  uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
+> 
+> :::::: The code at line 24 was first introduced by commit
+> :::::: 0bbce967f3ecfc6da1e7e8756b0d398e791b8dee lib: Add one-byte and two-byte cmpxchg() emulation functions
+> 
+> :::::: TO: Paul E. McKenney <paulmck@kernel.org>
+> :::::: CC: Paul E. McKenney <paulmck@kernel.org>
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
-ERROR: Parameter 'dummy' is not used in function-like macro, please
-use static inline instead
-#64: FILE: include/linux/rculist.h:64:
-+#define __list_check_rcu(dummy, cond, extra...)
-         \
-+       ({ check_arg_count_one(extra); })
+commit a326496eb88936b291adea830c2e59e74ca1d373
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Mar 29 16:06:45 2024 -0700
 
-ERROR: Parameter 'cond' is not used in function-like macro, please use
-static inline instead
-#64: FILE: include/linux/rculist.h:64:
-+#define __list_check_rcu(dummy, cond, extra...)
-         \
-+       ({ check_arg_count_one(extra); })
+    squash! lib: Add one-byte and two-byte cmpxchg() emulation functions
+    
+    [ paulmck: Apply kernel test robot feedback. ]
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-ERROR: Parameter 'extra...' is not used in function-like macro, please
-use static inline instead
-#64: FILE: include/linux/rculist.h:64:
-+#define __list_check_rcu(dummy, cond, extra...)
-         \
-+       ({ check_arg_count_one(extra); })
+diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
+index abdd451767220..a88c4f3c88430 100644
+--- a/lib/cmpxchg-emu.c
++++ b/lib/cmpxchg-emu.c
+@@ -14,6 +14,7 @@
+ #include <linux/panic.h>
+ #include <linux/bug.h>
+ #include <asm-generic/rwonce.h>
++#include <linux/cmpxchg-emu.h>
+ 
+ union u8_32 {
+ 	u8 b[4];
 
