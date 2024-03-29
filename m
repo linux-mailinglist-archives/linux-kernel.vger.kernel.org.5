@@ -1,216 +1,135 @@
-Return-Path: <linux-kernel+bounces-123927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27C67890FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:52:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FA64890FE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AA851C25A02
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:52:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45A7B1C252B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC17A920;
-	Fri, 29 Mar 2024 00:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C88D1173F;
+	Fri, 29 Mar 2024 00:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g3VHvE81"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gnSq8QSf"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BB5FC1F
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A710A920;
+	Fri, 29 Mar 2024 00:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711673534; cv=none; b=MJc7CLwDQSw+ZtCOyN8P0zAFE3GaNo7c9lNwPq8pKLXPcziArfFlUBQmc8Y9DkHNe+6j6Dhgprs18oqzBX9k8OQK6lrdMgLDX4L6H8IDVV8AGSaL1gy/cNGsL5SVmaZ9RmbF3dBapN+2a1/WfRKsgIeknPoH6fPOQ6Z+hz5JYJ4=
+	t=1711673649; cv=none; b=q2yk6zhXtQpcPqfR/iQSl+JWo9imDhH3NrKgqbnGJKYgEkWQXRZH7OKrZ31U7cMzo17/A3ojJX1kZ5gb339x+ZPlxDZF4riPydAIibDKA/0oR2wL4EUNsBBOtq/AHsCNMmhTD1IA0z4RnXxHz9z24sqRe8ZqktnVvOe7K+9qEU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711673534; c=relaxed/simple;
-	bh=27aZ2S742GNSBlNOae1k6F/LljR7D6xbIdvdSXbZJ6E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DUbQ1Z+4yrZdlCH0+gMacUSMcLYeIuf4u4OdMTJ+vXK+MIdFvdBHgPpSxC6Zx+8ztImMwPGQpEPrIWPP01WbyNUn21H64WUpZKzCmL0faS9BTVglcLhXDH+XzHdt7ohbcXB4YxI8s8Nmd8PkTWhM38BELoy6sX5nWAzC4ceWF90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g3VHvE81; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46ba938de0so212039066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 17:52:11 -0700 (PDT)
+	s=arc-20240116; t=1711673649; c=relaxed/simple;
+	bh=ha+IHRghmbAVHSvcjd0HLzolZG/4JiB44D53GUrh8og=;
+	h=Date:Message-Id:To:Cc:Subject:From:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=aVSV3x9hnHAYWlij8xcserM4OzAFoFlj8VKkncciKPEfaxfLw3XJYCBP/P80EKq+r6dtsRFigRVond39YktZmpV8uf921fTT7Ryb0h9LLpbd+TYU3YfEX7jPO8KMVZPKCI3BMYz0U8WtH4Wrmfvrn8zIr3cZln/Me7sR26d6jlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gnSq8QSf; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1def81ee762so3425165ad.0;
+        Thu, 28 Mar 2024 17:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711673530; x=1712278330; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=odkXG5UmuQtNgheOiTVLTUF5waPTq7lcQlYOQN78IpQ=;
-        b=g3VHvE81yaqWe3HRe91W5i42nR695SdZlH3mvpaD+QLDFxZ0OjrmaP96xcY6T4sq7X
-         XslZxiq0Eb1LAxxd2JIJNp81DB32apRrLENIqOF+O7usGbIjMWSu4Q8zeSzsjFP5OymX
-         FdLzw84OMZ9REAeqKgm6nckFjKHFC9N6kwIkQNbq/wIZoGYOyMSNLftwODbtZpbKaX+o
-         /ubmy4UXQogkGCEfz+zSJbXMS5JnbBRzaAsgae+7mMGR+eDX7jbkb7usTevtJhmqfqaa
-         p9Ocx60bnEyyN4CsG7Uq1JjXmdloWzLI+KSLBqiavFuky3aX9Og2zGo7rF0RbBFdqhcY
-         6x8g==
+        d=gmail.com; s=20230601; t=1711673648; x=1712278448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to:from
+         :subject:cc:to:message-id:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V6Z90te2upQq9sDfDoIBzJzmTKxSiCcWRlQTQbXGLBM=;
+        b=gnSq8QSfjiMpBCnqbSPOrfeAMqz7+rZ2mX/1Au2KQ1JTknULFzZfzALHD/XZ54hWaa
+         7QCAtwT04eNOuX9azcb9Zqls5uPcKhbbLs3UV5Iwr1W4U2SClA/7EgseEFFgooekMx3K
+         596ynBefB+pHISCkNYanv/d9Jy7xaYgpQHphUnym4P3DTpnbhsZv0nsGmrfBu0apC1Dk
+         Dqu32bhspC+uBvUAN3vjbM/RjStg/RisEHBr9sPR5F4SgppIx1kJpPlxk+Zx2tnPa0b1
+         ZgsFOocYNYRdWLpbCK7O7Og+yD1+URN4TTdGasFI2vWSwZct0pT8n+gOV/IOm3Ol8FXV
+         dvZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711673530; x=1712278330;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=odkXG5UmuQtNgheOiTVLTUF5waPTq7lcQlYOQN78IpQ=;
-        b=j7omdXWA8hkXndFJOtrZNsRGQLNToYgqEKL3AufFmRoCXCjavdk5/lWnn+mWHI9acY
-         qEbFH3KSWcpn7TIGIBP6C3tno5Tk3L3tuWQK+XMRelMQuMW02ZGJqYOSz4/P5e1mPf8q
-         NX6vZR7UnqN5GZRq5xrH4Bw/wrtlTi9Ssa7aR7obcrkL+Jds9XSUMf85h8FGNUWKW9EG
-         izacbEwHzcVWmu/SGo8qfgAGrXpZ/vYoS7vEs5fLNcG6lZdX/S7Sd5egOf6yLZvDAy6H
-         /5CIF6nm19PBxzSD0tJwNmOb6P3sZhPdfNH/0lJaVbrKVZkXCWQOGUVYPYug0OGB/afG
-         LLGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYXkCBPr2XeK6XKAlsHcgR7l/S8tz6fK87nYMl+GFoHG7t69DUmpFaEzu0lNsFvNvjlnBqb2xS2snhclvjSq9HUwBaz0VIz9nOOaF1
-X-Gm-Message-State: AOJu0YwrzungIYSAzi/qyQCrPNNwj6Cy5jpg8DeMsOnkPP0+uCNnniB4
-	2fjNBS5N+293Y1JKS7kbR5V0px3g5i/sb0eU1sXGfoanAzX6VDLF1jIltyTaCY0=
-X-Google-Smtp-Source: AGHT+IHnj4Nlv4eeyrNBkDOlQWG8EVF9Kh3wXl02RSVfH7VpLYdXSfgW7V5uo0kdCttb94qY/EI8EA==
-X-Received: by 2002:a17:906:5653:b0:a4e:183d:8893 with SMTP id v19-20020a170906565300b00a4e183d8893mr475463ejr.60.1711673529980;
-        Thu, 28 Mar 2024 17:52:09 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id ag12-20020a1709069a8c00b00a4e222225ebsm1270983ejc.15.2024.03.28.17.52.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Mar 2024 17:52:09 -0700 (PDT)
-Message-ID: <1cdbd387-e937-4d5c-bedb-b4275fdf84cc@linaro.org>
-Date: Fri, 29 Mar 2024 01:52:07 +0100
+        d=1e100.net; s=20230601; t=1711673648; x=1712278448;
+        h=content-transfer-encoding:mime-version:references:in-reply-to:from
+         :subject:cc:to:message-id:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V6Z90te2upQq9sDfDoIBzJzmTKxSiCcWRlQTQbXGLBM=;
+        b=oLZfVSMvA2XAolVM5MAgaOd18T4ZnQQ1VTk3E3hcqvlflj1OiRdJTUZBEJ2GpWLvQr
+         Y2THDFV3SWUEKGCvfb4Jw6NbCf6E3jLsSVYyRPJyZAPXm4K2bE+HFIRoLtO2LtafAdgH
+         /tWC4MtZwdYLAyt/YzD3LZHY6tcvDY/LzEZ5EWNAQGPvDciqDp5AftZ8VmxucPYNB4qr
+         90AZTlg4tKhmxzCwme9pP70jOG5mF3kCfBO9aXpEUK/togw4Bv3J5EtjAtMUB+yVmsNB
+         0aVYR4g8AQGCNYNIF5M9QvMh43GAaeCU3SF7Z3OEwQJPSul9xVZI+xT5H+Zqflhd8E47
+         CJZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXMAgy58JyOAbDjxScAT4hhqNZqLD8glEQHBh4jfEibVLSfG2pJcf1VxbeFi6FNTGCgO/9aEotbsZ9YVEKVG1Y6F0NoXl/3/9UVvQJrcAljDo24+zir7nGJYeALi6jIRWVCxWFB
+X-Gm-Message-State: AOJu0Yxbz8qxeIWcTEQWlS5AaLc4OHMD0GgDtiaTLz2LAMYehD45gTBi
+	dpDyWB6+aRZ/GezKRzUKY1MqUvs+3LinCGMQZHDckdNG6OPd1n0J
+X-Google-Smtp-Source: AGHT+IEAOaM11FjDkEs4q9ICaVo9MrNcaHs709SammXWmp+vHQYZAxADnYGWldFyt+DhtKffjciASQ==
+X-Received: by 2002:a17:903:503:b0:1db:ce31:96b1 with SMTP id jn3-20020a170903050300b001dbce3196b1mr1071512plb.6.1711673647644;
+        Thu, 28 Mar 2024 17:54:07 -0700 (PDT)
+Received: from localhost (p4309189-ipxg22801hodogaya.kanagawa.ocn.ne.jp. [153.172.233.189])
+        by smtp.gmail.com with ESMTPSA id w4-20020a1709029a8400b001d8f111804asm2266659plp.113.2024.03.28.17.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 17:54:07 -0700 (PDT)
+Date: Fri, 29 Mar 2024 00:53:52 +0000 (UTC)
+Message-Id: <20240329.005352.498033770146111357.fujita.tomonori@gmail.com>
+To: wedsonaf@gmail.com
+Cc: rust-for-linux@vger.kernel.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+ bjorn3_gh@protonmail.com, benno.lossin@proton.me, a.hindborg@samsung.com,
+ aliceryhl@google.com, linux-kernel@vger.kernel.org,
+ walmeida@microsoft.com, fujita.tomonori@gmail.com, tmgross@umich.edu,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] rust: phy: implement `Send` for `Registration`
+From: FUJITA Tomonori <fujita.tomonori@gmail.com>
+In-Reply-To: <20240328195457.225001-2-wedsonaf@gmail.com>
+References: <20240328195457.225001-1-wedsonaf@gmail.com>
+	<20240328195457.225001-2-wedsonaf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] V2 arm64: dts: qcom: Add support for Samsung Galaxy Z
- Fold5
-To: serdeliuk@yahoo.com, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-0-9a91e635cacc@yahoo.com>
- <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-1-9a91e635cacc@yahoo.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240329-v2-dts-add-support-for-samsung-galaxy-zfold5-v1-1-9a91e635cacc@yahoo.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-On 29.03.2024 12:08 AM, Alexandru Marc Serdeliuc via B4 Relay wrote:
-> From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+Hi,
+
+On Thu, 28 Mar 2024 16:54:53 -0300
+Wedson Almeida Filho <wedsonaf@gmail.com> wrote:
+
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
 > 
-> Add support for Samsung Galaxy Z Fold5 (q5q) foldable phone
+> In preparation for requiring `Send` for `Module` implementations in the
+> next patch.
 > 
-> Currently working features:
-> - Framebuffer
-> - UFS
-> - i2c
-> - Buttons
-> 
-> Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+> Cc: FUJITA Tomonori <fujita.tomonori@gmail.com>
+> Cc: Trevor Gross <tmgross@umich.edu>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 > ---
-
-Your commit title now includes "V2". Move it inside the square braces the
-next time around, so it's like [PATCH v3 1/2]. With b4, this should be done
-automagically, though..
-
-[...]
-
-> +/ {
-> +	model = "Samsung Galaxy Z Fold5";
-> +	compatible = "samsung,q5q", "qcom,sm8550";
-> +	#address-cells = <0x02>;
-> +	#size-cells = <0x02>;
-
-These two can go
-
-[...]
-
-> +	reserved-memory {
-> +		/*
-> +		 * The bootloader will only keep display hardware enabled
-> +		 * if this memory region is named exactly 'splash_region'
-> +		 */
-
-Ouch.
-
-[...]
-
-> +		vreg_l15b_1p8: ldo15 {
-> +			regulator-name = "vreg_l15b_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-allow-set-load;
-> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-> +						   RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-always-on;
-
-Any particular reason as to why?
-
-[...]
-
-> +&remoteproc_adsp {
-> +	firmware-name = "qcom/sm8550/adsp.mbn",
-> +			"qcom/sm8550/adsp_dtb.mbn";
-> +	status = "okay";
-> +};
+>  rust/kernel/net/phy.rs | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
+> index 96e09c6e8530..265d0e1c1371 100644
+> --- a/rust/kernel/net/phy.rs
+> +++ b/rust/kernel/net/phy.rs
+> @@ -640,6 +640,10 @@ pub struct Registration {
+>      drivers: Pin<&'static mut [DriverVTable]>,
+>  }
+>  
+> +// SAFETY: The only action allowed in a `Registration` instance is dropping it, which is safe to do
+> +// from any thread because `phy_drivers_unregister` can be called from any thread context.
+> +unsafe impl Send for Registration {}
 > +
-> +&remoteproc_cdsp {
-> +	firmware-name = "qcom/sm8550/cdsp.mbn",
-> +			"qcom/sm8550/cdsp_dtb.mbn";
-> +	status = "okay";
-> +};
-> +
-> +&remoteproc_mpss {
-> +	firmware-name = "qcom/sm8550/modem.mbn",
-> +			"qcom/sm8550/modem_dtb.mbn";
-> +	status = "okay";
+>  impl Registration {
+>      /// Registers a PHY driver.
+>      pub fn register(
 
-Unless you stole one from the factory, these firmwares will not
-load on your phone..
+After the following discussion, I dropped Send for Registration:
 
-> +};
-> +
-> +&sleep_clk {
-> +	clock-frequency = <32000>;
-> +};
-> +
-> +&tlmm {
-> +	gpio-reserved-ranges = <36 4>, <50 2>;
+https://lore.kernel.org/netdev/8f476b7c-4647-457b-ab45-d6a979da4e78@lunn.ch/T/
 
-Would you have an idea what these GPIOs are used for?
+If you guys think that Send can be added here, it's fine by me.
 
-Konrad
+
+Once this In-place module series are merged, I'll revisit the phy
+module initialization to remove `static mut DRIVERS`.
 
