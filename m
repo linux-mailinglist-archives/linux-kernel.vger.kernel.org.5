@@ -1,49 +1,79 @@
-Return-Path: <linux-kernel+bounces-124404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4773B891713
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:50:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1606891718
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA97F1F2354B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:50:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDB421C21DF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0636A025;
-	Fri, 29 Mar 2024 10:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D06669E0D;
+	Fri, 29 Mar 2024 10:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYWjPCpF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Lm3ZpTnp"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC2B657CD;
-	Fri, 29 Mar 2024 10:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9D9364BA
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711709429; cv=none; b=Xf9ll7QTLV5rfDEdwfPhhLLn14+ZMc/UqQuDLA5q/eQQ5M9QPjTuYwr414MZOQfz4Q8OoJvDllfC2Dpw3u4eG/DXR4PhFAyYlbHApB2o5lKwUpDbvkzEWTk6fVPTO60Z/ixtXrjiwDIWxchEGgmKpSi3JjIVtJ+O7PB2xDbLt08=
+	t=1711709701; cv=none; b=A/o9mMNpYVlhp/4cSyouSGdC8jSTDjmWqGPSmLesbGz2DQcOqOGrUhyrD/PIBDZmRFNPouLCA91lAApC2NNLtYEowibKCzsxhEwaCN6orifWKEPbaES3gNWMw1SibFnPcyXfXO546+ju068NpncdGsdTYO2xxDiLLFV/RkDW4cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711709429; c=relaxed/simple;
-	bh=cZb9yUcynYs3EY1tC0nL7B6G+FJShK1jMRJ0DcQTewA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=UzIpcP94J+UHys5fO+7vWBq9yV251BadHelGdFKT9bBqX05QDwKOj4CWqrpMiJpuYaJSQFBaOvvYHTlscyPn5oxq7AWZdzp/SupogcxHCTQRIwa5EuJcCDx0nQFsmPvDBEWnCpTltJTbapdXYb3xEL35EZ3GfVk5ZkCInna+rmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYWjPCpF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8A13CC433C7;
-	Fri, 29 Mar 2024 10:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711709428;
-	bh=cZb9yUcynYs3EY1tC0nL7B6G+FJShK1jMRJ0DcQTewA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bYWjPCpFjiUqESOadfBHRupATXSlQHLWFX5V9/BvMSK6LHApUi/qHvax6Ot+r/IKZ
-	 lKS4di1gqEH5TUwfe2sBvqfkCUZayUjk1HsUQ/bpNd2nawG8HZcJEjihuJUCcKo5Ba
-	 05yc+LZ3qo56qUddYmUAmg4dG1dt88P4dWJnjkCBZpJ1oXwo1oOlsEjCiEax6nWNC9
-	 UWGbwW1QwLYO70jIS8x6xRes5D8bGUOUAV8Xvochbi/ujqfZ2MRi68tboaRFjC7nt0
-	 rdLk9gTBe65fU33ELlEhEEq3UD0re5c6rPmprfNuTgW5VbyHVXMwOUlaZMQTJ73d+U
-	 mnEg23E6zzZCA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 72CE7D84BBA;
-	Fri, 29 Mar 2024 10:50:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711709701; c=relaxed/simple;
+	bh=Q9r/QYKYkFSUWIUl5fJpCahxMhoS1QM1LBiP4WtEX3s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mluXNAW3iDN7vU6kA1eCVpRab2KKgKFUNgcTy6IzsPbRcHCoTVps3lnAY1b6B5d7S6c8jF2YZrK1Q+5a7M2HH1m5MHKEEhGp/q5f8KtB0KIIvb+toxhTXm1f8Y93zt70R3N8e+wOKbELw57/kTyuxZXA8mK70WTViAgQttuyqYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=Lm3ZpTnp; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4154471fb81so10542735e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 03:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711709698; x=1712314498; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sruWy2oh2z7iKrIvNGKgSUcYbi/EOvDXHK5Fj/W9mBM=;
+        b=Lm3ZpTnpvkjis8cpsso/EYsLV6VsXfCJt7Nf6a2fOTRlCCImwqolctcj0tCvivFbjR
+         ySjF7QeCuy45N810z3lqUaGI3QC2QtsIkq2qjsTIqU8ZzsqDBM3eKRPqatxhON5poH68
+         BnqxiHIZeuvDnvM9p2wPnkhM6zoDeuHoNFSqvNuhT+5Ne4aiXUtKEZaS6xYy4+xqJ2j4
+         v9+EG4mze6aPMKBlk3+Q+z1w7VDwa43ENAjT1XIrwP6tEoQryMLGTKoquAY685ygvv+d
+         KlYIoEk2ni9eMAuhnJeBPXzuI9rT7iVnz1pxZTFyLm9rjJ6Ehj2zbcvOhaEYhxZTgQNC
+         W9wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711709698; x=1712314498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sruWy2oh2z7iKrIvNGKgSUcYbi/EOvDXHK5Fj/W9mBM=;
+        b=rI+yyzdc6d/ocUuP9BFkX8SawVoRg03VAyY6FqFh0GrOQruszQVS8T14DzCm6XkEPa
+         xYsNar9HGlvytquAagTxLdYuH41bCeUpGvBjcdNXBBClmxhpdsCDRhWJ9/8uTpUUKUPc
+         AVNxFHsZ76ApiPqlnAAq5Nat8SXi6dM+pdUrQfOUewfYoS87TfOdtMmyBUDBul6HLsrf
+         UCVuoA8yrDI9Kr9GRts41TTqhlATUtYbc52Iq6fRIfIFRmP55dwQszeJybSkQdOfBjYM
+         lfOVPNQzQmuo75jEcAMT85JrXxJpbDJwzZf92bAeSJQ0LQBKUpzeLhS+vZG+YOldpqR0
+         ZkIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUp2vDlaOAGDJOP3PGpKhMnwrWi5sTejx5GiltIdrXr3vfZsT0nuJ+0qfzTj7PGyLpbrs3DwRWIaa3bDknx5sja1f5wYvc9/WheozIh
+X-Gm-Message-State: AOJu0YyeM001q5DA+pKDG3SI9WR1tJwAc0G3U4WLMsBZnnQAe8Fgiahp
+	Mf2QlBEjrhQ/ZV6eBwKZ5inebCqo2PWE0U+bo52eWr+lsSKHcnvUF1gwosxVKa0=
+X-Google-Smtp-Source: AGHT+IGLPp2TDl85HRVQNaBPkb884O82uNf3pnr1I/GAtkbyLx0cWGBCgh1bCcYGz2BBiO0N36batA==
+X-Received: by 2002:a05:600c:3b92:b0:414:87f7:a77 with SMTP id n18-20020a05600c3b9200b0041487f70a77mr1811257wms.8.1711709697990;
+        Fri, 29 Mar 2024 03:54:57 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:12a3:1a21:d8f:fef1])
+        by smtp.gmail.com with ESMTPSA id l14-20020a05600c1d0e00b0041477f95cf6sm5054656wms.13.2024.03.29.03.54.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 03:54:57 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [GIT PULL] gpio: fixes for v6.9-rc2
+Date: Fri, 29 Mar 2024 11:54:52 +0100
+Message-Id: <20240329105452.17036-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,45 +81,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 RESEND] net: hsr: Use full string description when opening
- HSR network device
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171170942846.27059.6312977801783703742.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Mar 2024 10:50:28 +0000
-References: <20240326085649.3259424-1-lukma@denx.de>
-In-Reply-To: <20240326085649.3259424-1-lukma@denx.de>
-To: Lukasz Majewski <lukma@denx.de>
-Cc: netdev@vger.kernel.org, andrew@lunn.ch, edumazet@google.com,
- olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
- o.rempel@pengutronix.de, Tristram.Ha@microchip.com, bigeasy@linutronix.de,
- pabeni@redhat.com, r-gunasekaran@ti.com, horms@kernel.org,
- n.zhandarovich@fintech.ru, m-karicheri2@ti.com, ricardo@marliere.net,
- linux-kernel@vger.kernel.org
 
-Hello:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+Linus,
 
-On Tue, 26 Mar 2024 09:56:49 +0100 you wrote:
-> Up till now only single character ('A' or 'B') was used to provide
-> information of HSR slave network device status.
-> 
-> As it is also possible and valid, that Interlink network device may
-> be supported as well, the description must be more verbose. As a result
-> the full string description is now used.
-> 
-> [...]
+Please pull the following set of fixes for the next RC.
 
-Here is the summary with links:
-  - [v2,RESEND] net: hsr: Use full string description when opening HSR network device
-    https://git.kernel.org/netdev/net/c/10e52ad5ced2
+Thanks,
+Bartosz
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.9-rc2
+
+for you to fetch changes up to 5c887b65bbd1a3fc28e2e20399acede0baa83edb:
+
+  gpiolib: Fix debug messaging in gpiod_find_and_request() (2024-03-26 12:50:50 +0100)
+
+----------------------------------------------------------------
+gpio fixes for v6.9-rc2
+
+- fix a procfs failure when requesting an interrupt with a label containing
+  the '/' character
+- add missing stubs for GPIO lookup functions for !GPIOLIB
+- fix debug messages that would print "(null)" for NULL strings
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      gpiolib: Fix debug messaging in gpiod_find_and_request()
+
+Bartosz Golaszewski (1):
+      gpio: cdev: sanitize the label before requesting the interrupt
+
+Mark Brown (1):
+      gpiolib: Add stubs for GPIO lookup functions
+
+ drivers/gpio/gpiolib-cdev.c | 38 ++++++++++++++++++++++++++++++++------
+ drivers/gpio/gpiolib.c      | 32 ++++++++++++++++++--------------
+ include/linux/gpio/driver.h | 17 +++++++++++++++--
+ 3 files changed, 65 insertions(+), 22 deletions(-)
 
