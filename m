@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-124232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B0DB89142F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:26:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 549C3891430
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:26:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9464286657
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:26:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 856F61C2245C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1B24AEED;
-	Fri, 29 Mar 2024 07:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186F44D110;
+	Fri, 29 Mar 2024 07:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="GcNjmIIh"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="AxAST/U4"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A27446B3
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B567747F48
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697092; cv=none; b=hPbyL301P1Nbhm3GjWOMLp+eyd/u1gdP90xzMChm1y+K0BSRe5ETTOUxTnXu59BE92772W19kDWAhpQa8+DbuZg0P1N1QHHT4Lc9tLIrwJBznGoSJltiKdNz0+LvNg90CWY8JLQM6Nr1eyDwWRVmyw8i25JFkbLfA+tUFnparY4=
+	t=1711697093; cv=none; b=FrJQZqSg+Qu2rUNG33/ZMvqIXW9bSeK2nZvdtLOzIHdVat1q0RjQiH8xbXnA109lpujQxiLMZnPTbR1TrNe0bBySPm7NCQVU1xtsnMq70Z8IQ/1rsoIIL1SuukLh7ZDiVkzFMMIeB6StYvQXmBrKM2c7IoQTDmhLQIFM7XDW3yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697092; c=relaxed/simple;
-	bh=f1Ved49IBgBs8V4O2Ps9VgHa0Mf2aY/RBhmEBJyNCVw=;
+	s=arc-20240116; t=1711697093; c=relaxed/simple;
+	bh=gxAW0DTrkLtRtKQJA86gMhjr+tKNdgSukt4KSi/OgcI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JN/CgMoQWV6r0KAs0ZwLFBAAdb8R622Qf28CKufbvRGe69hxiax5NNZ+2jYjA4V3tT+QaOLvf0PiBw1aj8B1eenYr5nGpz8quTmwmsWPvOOfR1vI+qdGcqcjYIrRxc7lb2h/4U2DkmXclYtGyOO66BpfckwveTAbzUW1hC4cOHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=GcNjmIIh; arc=none smtp.client-ip=209.85.215.177
+	 MIME-Version; b=Lh1RimsZNoe99o56ac9M4+uT1EXAALHQUomQvq0p2ItakErnFDdRBpzUyFoFaBHw9Cf0u7jnRgCPduIIRCIi1alPKz9uOioHE2UTgJIN1/I4l82mIIFvZUxtNDHmFvUsZjaBdiu1i5wcPcXVhIA0cFJPQvPXEmXCk8mZ/tVegik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=AxAST/U4; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1028242a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:24:50 -0700 (PDT)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2043431a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711697090; x=1712301890; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1711697091; x=1712301891; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RPRyZsExaX9jqH4yhl7xuz7hAOg3yG/uDoq2R6sqbZQ=;
-        b=GcNjmIIhXlUXubcqQUtueXwpfOzIOsEh8R0gW7vxRLj+CM03LhSVVhOplsM/SEqYc8
-         q+dNEbibyHEgIS6b53vjgoaTVLIWvT2awK1VKgWUi0HulBvsb2zXoPYsH2L6stpdvK0B
-         f7vuHE+oqmUWvPMC2fvXyUHGBYkl0nJGvTy0qknF1vajC53w9Y1xnMA4G9LkWPt841an
-         511pIyRJl8T2rGPtIH0l9iXJBzpqgz8cFlbZcbVO6i3w0LL6gmuIY4/GedVSwfZLmDW+
-         e9u9riSWm5W0cTxyoGeRoSDBr+Ox7TnpNzq7nF/j5RxoNGM7bilJKsYRMag0+TPUYbdt
-         aJlw==
+        bh=XqbtCYy6rKAgoCWJo/IDkaQi4Zmy7pvo/Tw1FadjoIk=;
+        b=AxAST/U497xjGykVJDQvhnMeDzd0dLvtTxtiRbO83g4AIHBhVhLkurVPr1EHb+fmvT
+         xFRSY2emLL2CM3qn4XuI5crOsXFAXGKGwW4BSgKyqSIWF6z7DAAGFa9nGXs6H4YkfiBQ
+         ZuH3ueFn+tk/Mnm2IuecSuiAWFuWOqtIeXqUrNtlQAtcq9kB0eJU+JV/Ah8vuFaePHcL
+         WED0U/ZuPHxEK6q155ciLDDsjVd7gpSRsG3TrzmnuP97d2B1rO6obc6YpME1k8/f5cfz
+         2VZ4aguZtrj1qm6mjK7GxCbJYoMRpX+l9oJ15/1o8N4vbJzSBFEHF16zSJVclHXHai8e
+         K80w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711697090; x=1712301890;
+        d=1e100.net; s=20230601; t=1711697091; x=1712301891;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RPRyZsExaX9jqH4yhl7xuz7hAOg3yG/uDoq2R6sqbZQ=;
-        b=omPK/mKMGiXOPmq3/iGUMrWy7LgEsGoR3UH1tXBX3iHpxdR54WFDxS2ZxH2MXAPz2X
-         CSSaZsITctG9CXbMFMzN5Egxz42NuOvoZY+fT3aeVvommyPdvOvvVImuc0FZSdxiNM26
-         l3/Z0nzWaxfq5vL8rxaYXxyh9V4wDNbywsylJ8Vu671Yt1WjMMzu2E98JR7wydKfRo0Z
-         n9HR5J7DEIlV8X7+ebQpiEYP45/b05lqmGylBOne73SWPJuukSyZciXUagOpSwv1Ed1g
-         z/bTlmIOEx2LdLH4gqOeDzSrc8rrq88TX/TsARXUkUEe0ZbLcuddy9syGRsFcNl1eQsA
-         7f3w==
-X-Gm-Message-State: AOJu0Yxl55CgCqFBp0RicbGapvoDIF47PkFByMp5b7LEFvtUS4f2C0wF
-	gBUvz/okvcOZ6rx1gqf8o9I7lnAfV1poqvSk5wwSuk0z+Ys/sdZuHt28xZHu9v4=
-X-Google-Smtp-Source: AGHT+IGTP4+TuVjePLHUufBWyrdagoR69ieuL91+Fm218jTRMOa2nDQVrtkL7zzrGfUrh4aL4xmRCg==
-X-Received: by 2002:a05:6a20:2db:b0:1a3:71f7:df3d with SMTP id 27-20020a056a2002db00b001a371f7df3dmr1114388pzb.30.1711697089806;
-        Fri, 29 Mar 2024 00:24:49 -0700 (PDT)
+        bh=XqbtCYy6rKAgoCWJo/IDkaQi4Zmy7pvo/Tw1FadjoIk=;
+        b=mahZJItP02K0dieHoHzQiT0jNsr5IwFt4ViuBmZtk2R5+YGXW1sHkRQap2Ys5bHnbd
+         oKweLQVGDoGI/FIRIjA0rLR3M50a8efvVTwAuHXsBIV1E50NHiXj5IvQpicpv8RMeRaj
+         kk2oIr6I0V2aC0wp//LJPAEIkuXtK0b85nTAOaLR4PQCV/Wa3/Ij48u1rjyNl4VKqCOi
+         jEMfU0Jgz458uUu4+C3+3YZC9ox7JWF8Gk6p+CH0adHUBIcIYJkgX0oxswbL/t9HbM9Q
+         ds74E1iTx3hM9ip7rLYnRvhF4CjA7fmgZ7794xGr30v7E8B9MAXgHdkHLiiYJpqSmxdj
+         gpoA==
+X-Gm-Message-State: AOJu0YwaWOou+RnpHNcFSVWUygC1Y9pXaiUTZXKJoY3VHx4cMvbZuuEk
+	7da2AeEC7JKCQAgEYad77umJHnnLT9KZ2SZxDAflaqplVPSEycFtzdYmXLEM42g=
+X-Google-Smtp-Source: AGHT+IFpgVY+di4cvDttsjDdGENlsS7ZbuG0wU7DGKwYbCO2yCZHbkcZgR0Ijs83aSucHtPBLyzxXQ==
+X-Received: by 2002:a17:90a:d588:b0:2a0:3b1d:7c5 with SMTP id v8-20020a17090ad58800b002a03b1d07c5mr6633406pju.3.1711697091135;
+        Fri, 29 Mar 2024 00:24:51 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b0029ddac03effsm4971798pjb.11.2024.03.29.00.24.48
+        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b0029ddac03effsm4971798pjb.11.2024.03.29.00.24.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:24:49 -0700 (PDT)
+        Fri, 29 Mar 2024 00:24:50 -0700 (PDT)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-arm-kernel@lists.infradead.org,
@@ -78,10 +78,11 @@ Cc: linux-kernel@vger.kernel.org,
 	amd-gfx@lists.freedesktop.org,
 	Samuel Holland <samuel.holland@sifive.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
 	Will Deacon <will@kernel.org>
-Subject: [PATCH v4 05/15] arm64: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
-Date: Fri, 29 Mar 2024 00:18:20 -0700
-Message-ID: <20240329072441.591471-6-samuel.holland@sifive.com>
+Subject: [PATCH v4 06/15] lib/raid6: Use CC_FLAGS_FPU for NEON CFLAGS
+Date: Fri, 29 Mar 2024 00:18:21 -0700
+Message-ID: <20240329072441.591471-7-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240329072441.591471-1-samuel.holland@sifive.com>
 References: <20240329072441.591471-1-samuel.holland@sifive.com>
@@ -100,31 +101,64 @@ Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
-(no changes since v2)
+Changes in v4:
+ - Add missed CFLAGS changes for recov_neon_inner.c
+   (fixes arm build failures)
 
-Changes in v2:
- - New patch for v2
+ lib/raid6/Makefile | 33 ++++++++++-----------------------
+ 1 file changed, 10 insertions(+), 23 deletions(-)
 
- arch/arm64/lib/Makefile | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
-index 29490be2546b..13e6a2829116 100644
---- a/arch/arm64/lib/Makefile
-+++ b/arch/arm64/lib/Makefile
-@@ -7,10 +7,8 @@ lib-y		:= clear_user.o delay.o copy_from_user.o		\
- 
- ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
- obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
--CFLAGS_REMOVE_xor-neon.o	+= -mgeneral-regs-only
--CFLAGS_xor-neon.o		+= -ffreestanding
--# Enable <arm_neon.h>
--CFLAGS_xor-neon.o		+= -isystem $(shell $(CC) -print-file-name=include)
-+CFLAGS_xor-neon.o		+= $(CC_FLAGS_FPU)
-+CFLAGS_REMOVE_xor-neon.o	+= $(CC_FLAGS_NO_FPU)
+diff --git a/lib/raid6/Makefile b/lib/raid6/Makefile
+index 385a94aa0b99..0e88bfe6445b 100644
+--- a/lib/raid6/Makefile
++++ b/lib/raid6/Makefile
+@@ -33,25 +33,6 @@ CFLAGS_REMOVE_vpermxor8.o += -msoft-float
+ endif
  endif
  
- lib-$(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) += uaccess_flushcache.o
+-# The GCC option -ffreestanding is required in order to compile code containing
+-# ARM/NEON intrinsics in a non C99-compliant environment (such as the kernel)
+-ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
+-NEON_FLAGS := -ffreestanding
+-# Enable <arm_neon.h>
+-NEON_FLAGS += -isystem $(shell $(CC) -print-file-name=include)
+-ifeq ($(ARCH),arm)
+-NEON_FLAGS += -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+-endif
+-CFLAGS_recov_neon_inner.o += $(NEON_FLAGS)
+-ifeq ($(ARCH),arm64)
+-CFLAGS_REMOVE_recov_neon_inner.o += -mgeneral-regs-only
+-CFLAGS_REMOVE_neon1.o += -mgeneral-regs-only
+-CFLAGS_REMOVE_neon2.o += -mgeneral-regs-only
+-CFLAGS_REMOVE_neon4.o += -mgeneral-regs-only
+-CFLAGS_REMOVE_neon8.o += -mgeneral-regs-only
+-endif
+-endif
+-
+ quiet_cmd_unroll = UNROLL  $@
+       cmd_unroll = $(AWK) -v N=$* -f $(srctree)/$(src)/unroll.awk < $< > $@
+ 
+@@ -75,10 +56,16 @@ targets += vpermxor1.c vpermxor2.c vpermxor4.c vpermxor8.c
+ $(obj)/vpermxor%.c: $(src)/vpermxor.uc $(src)/unroll.awk FORCE
+ 	$(call if_changed,unroll)
+ 
+-CFLAGS_neon1.o += $(NEON_FLAGS)
+-CFLAGS_neon2.o += $(NEON_FLAGS)
+-CFLAGS_neon4.o += $(NEON_FLAGS)
+-CFLAGS_neon8.o += $(NEON_FLAGS)
++CFLAGS_neon1.o += $(CC_FLAGS_FPU)
++CFLAGS_neon2.o += $(CC_FLAGS_FPU)
++CFLAGS_neon4.o += $(CC_FLAGS_FPU)
++CFLAGS_neon8.o += $(CC_FLAGS_FPU)
++CFLAGS_recov_neon_inner.o += $(CC_FLAGS_FPU)
++CFLAGS_REMOVE_neon1.o += $(CC_FLAGS_NO_FPU)
++CFLAGS_REMOVE_neon2.o += $(CC_FLAGS_NO_FPU)
++CFLAGS_REMOVE_neon4.o += $(CC_FLAGS_NO_FPU)
++CFLAGS_REMOVE_neon8.o += $(CC_FLAGS_NO_FPU)
++CFLAGS_REMOVE_recov_neon_inner.o += $(CC_FLAGS_NO_FPU)
+ targets += neon1.c neon2.c neon4.c neon8.c
+ $(obj)/neon%.c: $(src)/neon.uc $(src)/unroll.awk FORCE
+ 	$(call if_changed,unroll)
 -- 
 2.44.0
 
