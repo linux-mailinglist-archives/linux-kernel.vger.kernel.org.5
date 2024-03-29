@@ -1,56 +1,53 @@
-Return-Path: <linux-kernel+bounces-124666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7292891B2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:19:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08BF0891B30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A36D428BCC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:19:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B92FA28C32B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B140D16F271;
-	Fri, 29 Mar 2024 12:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0856016F820;
+	Fri, 29 Mar 2024 12:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uoXgVs5/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IXCtlyo+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EF916F0FF;
-	Fri, 29 Mar 2024 12:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C7816F279;
+	Fri, 29 Mar 2024 12:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715661; cv=none; b=H+JtD5Y3Rire78tN1RLMF9Si94hToKzsFqf+gbtn2KE7qQ+oT66OsEOezuQinQMPm7WreRLbbGtmco1Gmscoe/Piuk4SwWO1zC1uGyXTKaaZBLNrRGEOcI9N5OJdXGT7jnv6SZWm4G+ZW1uPU3dcy/GizoHNhJezTcX+LyPGhVs=
+	t=1711715662; cv=none; b=Z5DJ/p62/nXOq4S2wKEASO5wJh1zTqGYfL24TDXoFZKE2MZfQJRyjfrri+5iMwc3NdGc/WoircjLBCK2errtRhto1J9tH4AWIxrBJ5n03TEE27DUOlRhmZwx9FV6Xt5FURrAJYmt+H5Rr60q2yidkbIadQUGrnKIeHHwoB6ElzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715661; c=relaxed/simple;
-	bh=MZQ3qOHSd8N8zCilE9VhLvAhy0edj/JTTJ8t/X1AVKA=;
+	s=arc-20240116; t=1711715662; c=relaxed/simple;
+	bh=UkSbtjJEgl6LMa5fIG+nvr7Zd2VPGIy7T5ATeqgQtZc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=rFs3xMcBLIaFhaEXk8n0KLQL49gT7th7XP13E++cjHL8tXPPYs1NIQMIqyGG+OHT6XJROvSi7CjWAMlAYMTYbKFJp8u1jFQMhM8mF7dpH9iu7y+rMFmNXuaKtoKKgB/sNpxkmnRKf07re3NPIfMAK09IFFmuiEhe/QxlfDSRLNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uoXgVs5/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5798EC433A6;
-	Fri, 29 Mar 2024 12:34:19 +0000 (UTC)
+	 MIME-Version:Content-Type; b=OM769R6x+JUSBhm2uhXhEa8XtC3edtCPygDkFqEMViOjdyS0O6ED5VEWYl6y/+ZXdUVLn0qGWjahH7EB23b+xSwj2OrGjyQx515yUxsZXEodQak85Ax/moniW5EucyaTn0HNTW1tZC5wLcSPmC4iaGkpniQhr6sVwElHLlaDdUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IXCtlyo+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D6D6C43390;
+	Fri, 29 Mar 2024 12:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715660;
-	bh=MZQ3qOHSd8N8zCilE9VhLvAhy0edj/JTTJ8t/X1AVKA=;
+	s=k20201202; t=1711715662;
+	bh=UkSbtjJEgl6LMa5fIG+nvr7Zd2VPGIy7T5ATeqgQtZc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uoXgVs5/fyVnsoBtpZ6mRPaYJ0eyGNnLSvl9PTmKfbOQmAR84Kw02esHna1nBd4Rd
-	 ekCg7dgtEY45JWjj/EvZOcu0YeCL9X+fvbukaN0sTTOdC+SkXfLWQ1YW2BrXTMPw54
-	 5vTIJqRDsFixPxKIEL51rH9Btxu8mhkHaLBfit7dqhP/lH7T5cmN5TRvoKHHg/OxBb
-	 1xYX9+v8xiHp7HYxpovz2zMZ15QOWyGBtlr/tCBrDh10/KL7HpSPdaPfq532d6wx9N
-	 dZmtkS8Fch5cg8+0SNwrvnm1yRbyF3Zvitfj6UMh45QrMF0+zLwE49/8gJjtSws6nk
-	 cmFzja8x1alxg==
+	b=IXCtlyo+WMkk/8TsFGvQ9+JheaY0DzeEwlol+q2U7O9lDy0ieEbs9pTIbyqxlWp6T
+	 8VPZFI+FEXf+XyRPnX18hIWkzemebOKqkKOB1W2zMxCOno+MxVoKTdvC7E1d6dswXE
+	 pHtwmqk5Okx0w5t6e8QJvvaX1X/FqBS0+phEODboV6O6b+xwDcOmqxXd99yZJ+Og4I
+	 lfzCB1l5SJrdIbNigIRuuLV2gvVNvSTnQRJhSiVih/znGGjBBOssjY5CptExBqqMkj
+	 skOweqDmLyevd9GV7Ri6SbMU76mra2RWIYhC+K71UtWVyvMJ0/pvRijjlSXMbop7+z
+	 oKTa38SzkKifw==
 From: Mark Brown <broonie@kernel.org>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- thomas.petazzoni@bootlin.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
- yen-mei.goh@keysight.com, koon-kee.lie@keysight.com, 
- jeremie.dautheribes@bootlin.com
-In-Reply-To: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
-References: <20240327-spi-omap2-mcspi-multi-mode-v3-0-c4ac329dd5a2@bootlin.com>
-Subject: Re: [PATCH v3 0/3] Add multi mode support for omap-mcspi
-Message-Id: <171171565909.8069.14365505303739525487.b4-ty@kernel.org>
-Date: Fri, 29 Mar 2024 12:34:19 +0000
+To: David Lechner <dlechner@baylibre.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240328-spi-more-tx-rx-buf-cleanup-v1-0-9ec1ceedf08c@baylibre.com>
+References: <20240328-spi-more-tx-rx-buf-cleanup-v1-0-9ec1ceedf08c@baylibre.com>
+Subject: Re: [PATCH 0/2] spi: more tx_buf/rx_buf removal
+Message-Id: <171171566104.8069.8819220461142954269.b4-ty@kernel.org>
+Date: Fri, 29 Mar 2024 12:34:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,14 +58,13 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Wed, 27 Mar 2024 09:43:35 +0100, Louis Chauvet wrote:
-> This series adds the support for the omap-mcspi multi mode which allows
-> sending SPI messages with a shorter delay between CS and the message.
+On Thu, 28 Mar 2024 15:51:44 -0500, David Lechner wrote:
+> I found a couple more controller drivers that were checking if the
+> tx_buf and rx_buf fields in the spi_transfer structure were set by a
+> peripheral driver that I missed in [1]. These checks can be removed
+> as well.
 > 
-> One drawback of the multi-mode is that the CS is raised between each word,
-> so it can only be used with messages containing 1 word transfers and
-> asking for cs_change. Few devices, like FPGAs, may easily workaround this
-> limitation.
+> [1]: https://lore.kernel.org/linux-spi/20240325-spi-remove-is_dma_mapped-v2-1-d08d62b61f1c@baylibre.com/
 > 
 > [...]
 
@@ -78,12 +74,10 @@ Applied to
 
 Thanks!
 
-[1/3] spi: spi-omap2-mcspi.c: revert "Toggle CS after each word"
-      commit: 67bb37c05a6b56e0e1f804706145a52f655af3f1
-[2/3] spi: omap2-mcspi: Add support for MULTI-mode
-      commit: d153ff4056cb346fd6182a8a1bea6e12b714b64f
-[3/3] spi: omap2-mcpsi: Enable MULTI-mode in more situations
-      commit: e64d3b6fc9a388d7dc516668651cf4404bffec9b
+[1/2] spi: au1550: t->{tx,rx}_dma checks
+      commit: c2064672f13344586234183e276cc4e0f2cfb70a
+[2/2] spi: fsl: remove is_dma_mapped checks
+      commit: 64fe73d10323e399b2e8eb5407390bcb302a046c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
