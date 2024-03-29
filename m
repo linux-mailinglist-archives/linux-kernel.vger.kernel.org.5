@@ -1,117 +1,103 @@
-Return-Path: <linux-kernel+bounces-123962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFBB891064
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 474E6891055
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8041C2543F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:31:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0107C1C24CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A05182A1;
-	Fri, 29 Mar 2024 01:31:16 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C31F17984;
+	Fri, 29 Mar 2024 01:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3W4jUL7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468AF17576;
-	Fri, 29 Mar 2024 01:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF907CA7A;
+	Fri, 29 Mar 2024 01:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711675876; cv=none; b=Zv8Xzcx5Q0JKzYdIDu2IgXuCuZedHExrwLe/NdWV+IvKZmL42gQMtWsrKKkuDFL5Mh76iwbYuBJtwURE/BzSmc9V5pq/64ghxY6ONnWhGClMk1c+b4cOOJxBW54W8m8iJ80HuPoBumqr8+hKLq6izfW08B718icuP6UGVgfgbzk=
+	t=1711675741; cv=none; b=LbNaAVXZoyi8eTyEFMciAJzPb5aGdLJRjj/9LElawsWF/19k8tZWzc7HzwzEMCQXMTStxJENF2QnEeSplFLz3ESdqcIABRhMeqi1QE8bSw7/02yk2Ox+NZTRu0lIwtjDzj6Ejra6RoMSdOgoAXFZ2iyzTaXA2EFNpIqbUmc3x9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711675876; c=relaxed/simple;
-	bh=dUzneKDmKI2/ZqHcy7SUm51OUjy4WueE8rOc8uA+kn8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aHaVQTtPabRh65fR59s0SZPfX/v6ersH6g9bx6G4FTE4RG39MKXXBPJblSOdVYGSeRFrs6YGQJFmE6YrVDH2EvQATizC5JbE6mNWFw9UsuHhOBSOMtLoBsetv0PeVTq/Z7w1YRXKopsipoDJbrrzGCIRumGsk+gpDnLz4biKfGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V5NCX2pmWz4f3kKj;
-	Fri, 29 Mar 2024 09:31:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 7459B1A0232;
-	Fri, 29 Mar 2024 09:31:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+RHSGQZm1waRIQ--.26612S4;
-	Fri, 29 Mar 2024 09:31:00 +0800 (CST)
-From: linan666@huaweicloud.com
-To: axboe@kernel.dk
-Cc: hch@lst.de,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] block: fix overflow in blk_ioctl_discard()
-Date: Fri, 29 Mar 2024 09:23:19 +0800
-Message-Id: <20240329012319.2034550-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1711675741; c=relaxed/simple;
+	bh=7t0PTh6b0EevDtSDEGqSKuK6+zZPZ8N6STed1+/KM08=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=e5kWXmSBAiZ0cB2nT96kfeaKvjeGqNjY7whsYQ2vKUNLZOI+i4xsYwqog3enmGSfBqDo4LHSQlQWLqib5r/LWt1JoEx6Gco2BSzqrP2WN4ti7ofDYIznC8qYRo/7Sv8xQe84zj6N8zi5HCOTzjn9U/d+U2/4/NXIyFPfBU7y6nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3W4jUL7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D49C433C7;
+	Fri, 29 Mar 2024 01:28:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711675741;
+	bh=7t0PTh6b0EevDtSDEGqSKuK6+zZPZ8N6STed1+/KM08=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=f3W4jUL7arEsqVSbPJ+FcX5/0YwYo7t3mecM+/fKurUi8EKyaGIKWez7Z+oLgeoWA
+	 QjNrvCgda0lQluF4t4Qodc/Mt4tZUzRhkzqDfwPnfvGD2oy8F2Rm7GdTqJtcD/cvZt
+	 6kkO7c9fwBiJk7x5Ad5Urp6hhlRWgdiRogZjNWTo0C//tOmLPAH3hAxjivlZ6uxVSK
+	 a64YxxECcTFJWqE1fbD7W5OmE4+fKk/XrVDCBdg9WAEWOQt9mQjMQe/hZVQyK6/snM
+	 j+4VnZzCRM7PLJFsa+LtQJhSJC42YP1w/5F6F7Mo83hRcZBOmjT54vULKYJABa/Cjg
+	 9IQ8YarbZHtIQ==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ Aleksandr Mishin <amishin@t-argos.ru>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ lvc-project@linuxtesting.org
+In-Reply-To: <20240328173337.21406-1-amishin@t-argos.ru>
+References: <20240328173337.21406-1-amishin@t-argos.ru>
+Subject: Re: [PATCH] ASoC: kirkwood: Fix potential NULL dereference
+Message-Id: <171167573947.187137.5081956001742920616.b4-ty@kernel.org>
+Date: Fri, 29 Mar 2024 01:28:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+RHSGQZm1waRIQ--.26612S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw18WryUXF4xtr15ZFWxXrb_yoWkJFX_Wr
-	yFvrykKrWrAF93Crs0kF15XrnY9rs7Cr1Ikr1rGry2qF47JF1rAryxXFnrZr4DXFW8uay3
-	ZFsxXF4vvr1S9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbsAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-	0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-	1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-	rcIFxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-	14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-	x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-	UI43ZEXa7VUbSApUUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-From: Li Nan <linan122@huawei.com>
+On Thu, 28 Mar 2024 20:33:37 +0300, Aleksandr Mishin wrote:
+> In kirkwood_dma_hw_params() mv_mbus_dram_info() returns NULL if
+> CONFIG_PLAT_ORION macro is not defined.
+> Fix this bug by adding NULL check.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> 
+> [...]
 
-There is no check for overflow of 'start + len' in blk_ioctl_discard().
-Hung task occurs if submit an discard ioctl with the following param:
-  start = 0x80000000000ff000, len = 0x8000000000fff000;
-Add the overflow validation now.
+Applied to
 
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- block/ioctl.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index 0c76137adcaa..a9028a2c2db5 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -96,7 +96,7 @@ static int blk_ioctl_discard(struct block_device *bdev, blk_mode_t mode,
- 		unsigned long arg)
- {
- 	uint64_t range[2];
--	uint64_t start, len;
-+	uint64_t start, len, end;
- 	struct inode *inode = bdev->bd_inode;
- 	int err;
- 
-@@ -117,7 +117,8 @@ static int blk_ioctl_discard(struct block_device *bdev, blk_mode_t mode,
- 	if (len & 511)
- 		return -EINVAL;
- 
--	if (start + len > bdev_nr_bytes(bdev))
-+	if (check_add_overflow(start, len, &end) ||
-+	    end > bdev_nr_bytes(bdev))
- 		return -EINVAL;
- 
- 	filemap_invalidate_lock(inode->i_mapping);
--- 
-2.39.2
+Thanks!
+
+[1/1] ASoC: kirkwood: Fix potential NULL dereference
+      commit: ea60ab95723f5738e7737b56dda95e6feefa5b50
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
