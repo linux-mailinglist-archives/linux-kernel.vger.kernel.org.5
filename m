@@ -1,61 +1,67 @@
-Return-Path: <linux-kernel+bounces-124697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D669891B86
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:27:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D991891B89
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:27:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA393B26012
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:27:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCCB629248C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96268174EFF;
-	Fri, 29 Mar 2024 12:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8262D142E9D;
+	Fri, 29 Mar 2024 12:35:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPOVTpSi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LI07LB8C"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB09142E94;
-	Fri, 29 Mar 2024 12:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5334175554;
+	Fri, 29 Mar 2024 12:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715726; cv=none; b=bFRqAAIyyMHpBZzc/mVGJSA7g2YbGOTULFiWvmemVaiXYtaeDuVpKEx1nCMT7EPyz2yerpiFvWEuDKYjP3RPa09FjUf9uMRAln6sFp4BMvMhf/CL2A4iC+cNomEdbcIxyd5mDcwmoR9uAbi395Y0NzkylF+a01Q8DyeiaFxB4pM=
+	t=1711715729; cv=none; b=Gq5CkqsJsa4iiZbx0uFAFT7t7rtVZVBmjcZHaS53UoqYM5cUa63McfZhM84b7ncykZeQ/7gtHuEAfaHbwPwa9vtaZ+dALAyKWIygwZt/knkBGvofvXoWqgQiRzmqwQu6r6OuRnMiKvBO7v3JKp+Mp59nwZlXti73/yJRqo3MTdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715726; c=relaxed/simple;
-	bh=eDX8oDgda9OYKH8SbjNNZLEdT2O+EKxz+JxtXv63BIk=;
+	s=arc-20240116; t=1711715729; c=relaxed/simple;
+	bh=deZd//LGlzfXbOoyIuC9pT3KxFatDQLnTJxA7SS8whk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AvM8zJoajxHXR1sVL+2mW4MeWFaOxuOcOlq6zUhEBYONAa8ZfyHw2F7md/CWiJPNoteaHVa6sMarehVJ/yrhtmhIkzVMcG30zuRoJqRGOJ8n2EmKAv2r2V1jgw5FPzQJdNiekJxVbyI28nO219ahTZ4O1ahrq7oG95W5q40kZFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPOVTpSi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3610BC433F1;
-	Fri, 29 Mar 2024 12:35:25 +0000 (UTC)
+	 MIME-Version; b=tMWE+S5jgfdawn/HA1fTJUIYcFq1stfxOHZO2jLqzvyR1tlmnodHG56a65I0nixMF/xXtoKOZOzvU8daZspjW/89SEW4x53ZBNN9bKq5uXx9xMQNSDDGaJn6YnAhvHWr5Uz/ddq8zkZgL48DeOIna5xlCTfbnPusJtmo5fFRMLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LI07LB8C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C90A9C43390;
+	Fri, 29 Mar 2024 12:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715726;
-	bh=eDX8oDgda9OYKH8SbjNNZLEdT2O+EKxz+JxtXv63BIk=;
+	s=k20201202; t=1711715729;
+	bh=deZd//LGlzfXbOoyIuC9pT3KxFatDQLnTJxA7SS8whk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iPOVTpSik2o5EjG75JMs9F3ulVQq1Hl4TCwcAqNMm7r4yy4wgl/HGrtyS/Dfu/399
-	 Ao0uM7qrzBv87JldqUzxU72Fy+PQkYNSZoVMy+4K7cq6QkxBw6Wfue5zgfLse+8kSe
-	 U7sL6nKAIVtfAoNP5c0nX7/2LBlbZwqYmE+PDm0x0YYv44w57YyEY1ef0mzdfaepep
-	 JTF4TjlFnJviZD1YtbrWVzVcQGPNgBtJv//VALasmTldNnRfnuiXxIeLxjuU0jTevg
-	 OMkznUqFrHlUY6r9Va3s6xENJBkCXFxyUVi67Y3vfp8Opkfxb1Zi8QYBKkm5F/nzJw
-	 wXqoCl5gHH/aw==
+	b=LI07LB8CAQjywQAPSud8B0z9trx80U4Ex73HaAbYg2jCHez/Ic+d6FHbgNDdnDN3s
+	 ZI3dQcpI+tEDrKNy+J4WlqxKUWNEcRGzIoNCQdTVlZKGcnq6Q+Dh89UD7IW/9fde+y
+	 imZ7HhU3hkml154a6JycF5NRArc0htOI1WWg9iuLZRkOPTpleoU7UghmURoIR81jqk
+	 xI8mAsmiWTB0C9No3CpzmmEzpkiGPymERLwZeKoCb4DdBz/XErDBP1B0IKMd+K8B+k
+	 cEeQ0XlCT95wfx3n2D6gIQDHIgXiJE4ArdmrkwpLAvp0GAzv9GZX41EOCIiafzMAcm
+	 P/232lwNdi5xQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	syzkaller <syzkaller@googlegroups.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
+Cc: Johan Jonker <jbx6244@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>,
-	bryantan@vmware.com,
-	vdasa@vmware.com,
-	gregkh@linuxfoundation.org
-Subject: [PATCH AUTOSEL 4.19 03/11] VMCI: Fix memcpy() run-time warning in dg_dispatch_as_host()
-Date: Fri, 29 Mar 2024 08:35:09 -0400
-Message-ID: <20240329123522.3086878-3-sashal@kernel.org>
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	dsimic@manjaro.org,
+	kmcopper@danwin1210.me,
+	lukasz.luba@arm.com,
+	rick.wertenbroek@gmail.com,
+	chris.obbard@collabora.com,
+	s.hauer@pengutronix.de,
+	knaerzche@gmail.com,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 04/11] arm64: dts: rockchip: fix rk3399 hdmi ports node
+Date: Fri, 29 Mar 2024 08:35:10 -0400
+Message-ID: <20240329123522.3086878-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123522.3086878-1-sashal@kernel.org>
 References: <20240329123522.3086878-1-sashal@kernel.org>
@@ -70,78 +76,63 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.311
 Content-Transfer-Encoding: 8bit
 
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 19b070fefd0d024af3daa7329cbc0d00de5302ec ]
+[ Upstream commit f051b6ace7ffcc48d6d1017191f167c0a85799f6 ]
 
-Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
+Fix rk3399 hdmi ports node so that it matches the
+rockchip,dw-hdmi.yaml binding.
 
-memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
-at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
-
-WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
-dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
-
-Some code commentry, based on my understanding:
-
-544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
-/// This is 24 + payload_size
-
-memcpy(&dg_info->msg, dg, dg_size);
-	Destination = dg_info->msg ---> this is a 24 byte
-					structure(struct vmci_datagram)
-	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
-	Size = dg_size = 24 + payload_size
-
-{payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
-
- 35 struct delayed_datagram_info {
- 36         struct datagram_entry *entry;
- 37         struct work_struct work;
- 38         bool in_dg_host_queue;
- 39         /* msg and msg_payload must be together. */
- 40         struct vmci_datagram msg;
- 41         u8 msg_payload[];
- 42 };
-
-So those extra bytes of payload are copied into msg_payload[], a run time
-warning is seen while fuzzing with Syzkaller.
-
-One possible way to fix the warning is to split the memcpy() into
-two parts -- one -- direct assignment of msg and second taking care of payload.
-
-Gustavo quoted:
-"Under FORTIFY_SOURCE we should not copy data across multiple members
-in a structure."
-
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
-Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://lore.kernel.org/r/20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/a6ab6f75-3b80-40b1-bd30-3113e14becdd@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/vmw_vmci/vmci_datagram.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/vmci_datagram.c
-index 8a4b6bbe1beed..275542e8b2ad9 100644
---- a/drivers/misc/vmw_vmci/vmci_datagram.c
-+++ b/drivers/misc/vmw_vmci/vmci_datagram.c
-@@ -242,7 +242,8 @@ static int dg_dispatch_as_host(u32 context_id, struct vmci_datagram *dg)
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 5a60faa8e9998..f19d43021a4e7 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1683,6 +1683,7 @@ simple-audio-card,codec {
+ 	hdmi: hdmi@ff940000 {
+ 		compatible = "rockchip,rk3399-dw-hdmi";
+ 		reg = <0x0 0xff940000 0x0 0x20000>;
++		reg-io-width = <4>;
+ 		interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		clocks = <&cru PCLK_HDMI_CTRL>,
+ 			 <&cru SCLK_HDMI_SFR>,
+@@ -1691,13 +1692,16 @@ hdmi: hdmi@ff940000 {
+ 			 <&cru PLL_VPLL>;
+ 		clock-names = "iahb", "isfr", "cec", "grf", "vpll";
+ 		power-domains = <&power RK3399_PD_HDCP>;
+-		reg-io-width = <4>;
+ 		rockchip,grf = <&grf>;
+ 		#sound-dai-cells = <0>;
+ 		status = "disabled";
  
- 			dg_info->in_dg_host_queue = true;
- 			dg_info->entry = dst_entry;
--			memcpy(&dg_info->msg, dg, dg_size);
-+			dg_info->msg = *dg;
-+			memcpy(&dg_info->msg_payload, dg + 1, dg->payload_size);
+ 		ports {
+-			hdmi_in: port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			hdmi_in: port@0 {
++				reg = <0>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
  
- 			INIT_WORK(&dg_info->work, dg_delayed_dispatch);
- 			schedule_work(&dg_info->work);
+@@ -1710,6 +1714,10 @@ hdmi_in_vopl: endpoint@1 {
+ 					remote-endpoint = <&vopl_out_hdmi>;
+ 				};
+ 			};
++
++			hdmi_out: port@1 {
++				reg = <1>;
++			};
+ 		};
+ 	};
+ 
 -- 
 2.43.0
 
