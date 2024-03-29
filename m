@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-124993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C30891FF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:14:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E28D892038
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36892B2A1AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:46:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52A18B36EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D10A1B1968;
-	Fri, 29 Mar 2024 12:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1158916DD04;
+	Fri, 29 Mar 2024 12:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="brTWtpQ6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pTfSYPVr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89F015217E;
-	Fri, 29 Mar 2024 12:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1451B1996;
+	Fri, 29 Mar 2024 12:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716582; cv=none; b=T3abqEJjoGmkONQDgLE9emWb3f1ZfL1m6dy1bKQOabDRJct8H/lzr8bqi0jb/vyOssstFfdvUIC10V6wFcvsZoUYgTPpiEuO+4cblBDGrO9m60YiYGyQg1KHpgjvRp/XtkdW43dRyOn0AK1MY5UYsU95O2xXzzFosTMTjd0fB2U=
+	t=1711716585; cv=none; b=CyPaNUNEoHOB2TI8BwnaCrqziZBgyX0lLHMjDJTridoAeQy76vlKFWMRJVS8kXjTji9bnfQkTp9hPXQ1rr696CGB98qwInqjt3HHzlboh8uqt2nqR2fbiU0xdzVCqd0MIxI4gQmFYGxZYbNS66AXhQkGV2cIsIY1N2a14ZBBQe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716582; c=relaxed/simple;
-	bh=ORrkXhOEFKtoASG7lh/cLzIJoH6liO4TrWq0yY57hWU=;
+	s=arc-20240116; t=1711716585; c=relaxed/simple;
+	bh=5Qjb/MVqlMzeA2IER1lNJqRtiGaHZ9qaPFlpU5csCZk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WSeb6Ollq2I5XBj/3z2x64yH6tsKosFdYHCqhGHJAUYhrFvJMXwIZVNXjZ/nuIEhp77OejdTKZNCkA9a6WBax7f02Nt2nhIi7Gxkgex0quC9E3ZRBy6JcqGJdVXcER1Imz9kjhTbjNHxWdkHgacb+mKG3UOwdeVT0vH4dvx6GKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=brTWtpQ6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F046C43399;
-	Fri, 29 Mar 2024 12:49:41 +0000 (UTC)
+	 MIME-Version; b=qkv3/FWs8xxln0kLQyc0XcaJuZg0SHZ4AALqJnJULdDsIvBnt8zrb8oF/HbaMd6rPQVJdnG1grIj3M7RJd498JD3/jztsrVh209XABg+gSvGPw6pmlOkkHRcqPEf7lEfHf0YC8aCkcxJeDnWTsr0fv+T/Jpb/PEBM27nnbobfsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pTfSYPVr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FD52C433F1;
+	Fri, 29 Mar 2024 12:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716582;
-	bh=ORrkXhOEFKtoASG7lh/cLzIJoH6liO4TrWq0yY57hWU=;
+	s=k20201202; t=1711716585;
+	bh=5Qjb/MVqlMzeA2IER1lNJqRtiGaHZ9qaPFlpU5csCZk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=brTWtpQ6FwnccTAwgOSairdaB/yXBHG5QfvusuGjjBXGtLVKnD1ym9csrbS6cjxR9
-	 4Klpr8lVeQ/Pl0jASMG3/TjJKlWKtEQjhhgwWdPMx0J5UJkvKiaqUMPQqLdOOyt9lm
-	 tg7w+qSGiugweDWNvTgo7PE5TUtoSnOUUyKSEc3W+U/QFn6TWATfmHJit9WPEzCQen
-	 d70eJo07LrrG5hbEQM2BsnLJaYuk7OJCEGhsBsL3ins86JqfDzjx6yXaDXevIR2Y+Q
-	 NwQnKV0rY/QYm/wJ+m3zqu7UjFrgAEC/AO62akI5M1kWkcShRPcyhaA1Ku1O8bvGiT
-	 zGs4N9dlK/Fdg==
+	b=pTfSYPVrc3UUP/dirWu2afqHt3j4uKgUzm3ZItttVp4N5AF8xI5JbD6HuOHYvLCTv
+	 8vmtW1Hf1UPjjzzfD1n0J2FLYfV37YgFwYsG5XOhg4p8eXoRXBbEypA0DWhqNOMcbZ
+	 BxiNYMSpFlFWXnOft7IixZazcFY5n28MfDrFtslLunrLx5ltPmwFEhDpUFnUU1H9RT
+	 CSVQCPMIV8pTXewWHJZSEQn5TLnVABjmOVjXrLXZNC6YU8+/JTHQQB28xJK8/tdjN9
+	 CogMfieBAxdaZieFAT4RIoawpYG3VLB4guuETKDR//gJnzdxwI75/+xyzd3Y80GiBi
+	 GkemLSLR6v1Bg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	kernel test robot <lkp@intel.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <n.schier@avm.de>,
-	linux-sh@vger.kernel.org,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 22/31] sh: Fix build with CONFIG_UBSAN=y
-Date: Fri, 29 Mar 2024 08:48:39 -0400
-Message-ID: <20240329124903.3093161-22-sashal@kernel.org>
+Cc: David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Anand Jain <anand.jain@oracle.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 24/31] btrfs: export: handle invalid inode or root reference in btrfs_get_parent()
+Date: Fri, 29 Mar 2024 08:48:41 -0400
+Message-ID: <20240329124903.3093161-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124903.3093161-1-sashal@kernel.org>
 References: <20240329124903.3093161-1-sashal@kernel.org>
@@ -69,43 +66,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit e36b70fb8c707a0688960184380bc151390d671b ]
+[ Upstream commit 26b66d1d366a375745755ca7365f67110bbf6bd5 ]
 
-The early boot stub for sh had UBSan instrumentation present where it is
-not supported. Disable it for this part of the build.
+The get_parent handler looks up a parent of a given dentry, this can be
+either a subvolume or a directory. The search is set up with offset -1
+but it's never expected to find such item, as it would break allowed
+range of inode number or a root id. This means it's a corruption (ext4
+also returns this error code).
 
-  sh4-linux-ld: arch/sh/boot/compressed/misc.o: in function `zlib_inflate_table':
-  misc.c:(.text+0x670): undefined reference to `__ubsan_handle_shift_out_of_bounds'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401310416.s8HLiLnC-lkp@intel.com/
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nicolas Schier <n.schier@avm.de>
-Cc:  <linux-sh@vger.kernel.org>
-Link: https://lore.kernel.org/r/20240130232717.work.088-kees@kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/boot/compressed/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/export.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/sh/boot/compressed/Makefile b/arch/sh/boot/compressed/Makefile
-index 589d2d8a573db..edc9dc36115dc 100644
---- a/arch/sh/boot/compressed/Makefile
-+++ b/arch/sh/boot/compressed/Makefile
-@@ -13,6 +13,7 @@ targets		:= vmlinux vmlinux.bin vmlinux.bin.gz \
- OBJECTS = $(obj)/head_32.o $(obj)/misc.o $(obj)/cache.o
+diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
+index bfa2bf44529c2..d908afa1f313c 100644
+--- a/fs/btrfs/export.c
++++ b/fs/btrfs/export.c
+@@ -161,8 +161,15 @@ struct dentry *btrfs_get_parent(struct dentry *child)
+ 	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+ 	if (ret < 0)
+ 		goto fail;
++	if (ret == 0) {
++		/*
++		 * Key with offset of -1 found, there would have to exist an
++		 * inode with such number or a root with such id.
++		 */
++		ret = -EUCLEAN;
++		goto fail;
++	}
  
- GCOV_PROFILE := n
-+UBSAN_SANITIZE := n
- 
- #
- # IMAGE_OFFSET is the load offset of the compression loader
+-	BUG_ON(ret == 0); /* Key with offset of -1 found */
+ 	if (path->slots[0] == 0) {
+ 		ret = -ENOENT;
+ 		goto fail;
 -- 
 2.43.0
 
