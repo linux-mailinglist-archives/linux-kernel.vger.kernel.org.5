@@ -1,287 +1,161 @@
-Return-Path: <linux-kernel+bounces-125416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D528925A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 21:55:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A720D8923D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B772875FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:55:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F64BB218E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E715139CE7;
-	Fri, 29 Mar 2024 20:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392501327E8;
+	Fri, 29 Mar 2024 19:06:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bFyOPmkv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="XMtqpnJl"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3B329D03;
-	Fri, 29 Mar 2024 20:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6793AC08
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711745713; cv=none; b=RJV5uogqWXLaR0baE3Kdp9u7Al+GnFQMjkLHEf05uTwzeNe+dzEvt6UaBEFxPONb1pdICmwhSm/9vt73EsgI1stPHjH8OGXWzsBs6TDURrsGEogqNhBXJtg5yrNktCsWEy/qH3pBJJ/T+DE6jbifk9L113BSOuSEshzaF1lpCSA=
+	t=1711739176; cv=none; b=bYtUFAMu3FKGw/sddb29UG3d9w4NNrL/7MLt0zkBf6og8/nl6VVBosaV1aVHhMZJJak58DRmFa+ghgKQhpetTyrn+VqBatYLmzxJqpvwUnJoA7DWBC6GAF1IToODmK4s6hmQ6MzHNScsocQf7GsuVr20pfeqIskgOQe9kJqjacE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711745713; c=relaxed/simple;
-	bh=DMQucBcjCgpuomzn8VOqq6DIbR4Bhpkhb9Iw38JttEc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NV/up6myIR5LVN86GJ7cWAWD8r2UwzJors3YLr1yJwV1YDcHaavlrijpU3gp1Ozgz1buYelRwl9qLtmRLpKCRKZ0x8KbIr2ZHiIllCMBxUOmcBOXd325ivM1L83mJVyuGLzFc351v/Q5h5tIgKMX2kxy19ll9In4H1F+TieRTZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bFyOPmkv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA5CDC43390;
-	Fri, 29 Mar 2024 20:55:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711745712;
-	bh=DMQucBcjCgpuomzn8VOqq6DIbR4Bhpkhb9Iw38JttEc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=bFyOPmkvrnhYh6H3oY9xqCtwqPgHzZ/jBgbrV28n0Aw5JE9VfucizCAHrBRNBRSsa
-	 VS+lTyaFJm4Ti/0ad87OnhXPcqBZ5TYnUuOgXDSPOXNURwY4jZIIOSZoRqvYP5/mp/
-	 G46nLej5dv1Iv70rHprxsQRDxurKDAg3w4Nsy05UK6ufEDr2iakoVIiDGHW2AyLDsw
-	 lxM+9MI2SiI+Kxq4QWRo02eX79JgLBdxhYSR7UWgKYBG+L/eYakzAh1vcU8xc0VCAq
-	 fkiaHLqkYE+U+pDlI+B+/ik4+vNZgAL0390X4P+Q6qppVM+H6RyscMnBkFQyLZ3Mqn
-	 0nWaTzmZXjrZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 04B56CE1ACC; Fri, 29 Mar 2024 11:52:17 -0700 (PDT)
-Date: Fri, 29 Mar 2024 11:52:16 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [paulmck-rcu:dev.2024.03.27b 66/69]
- include/linux/atomic/atomic-arch-fallback.h:2026:9: error: call to
- undeclared function 'cmpxchg_emu_u8'; ISO C99 and later do not support
- implicit function declarations
-Message-ID: <45452057-6655-4bab-a27d-38f2dff018e8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202403292322.bwguovKc-lkp@intel.com>
+	s=arc-20240116; t=1711739176; c=relaxed/simple;
+	bh=J1DnffiH7q17Ljk4EoJuar60KYgEYIZ86jt5q9jFPTs=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=XvMGYd1N2XmH/8yXkW+wPExQAIALyX3mtcR+qEXv4URQI8f8LOSYZfJ/0SASftTIXBZdr4pHM41uLCIMWU/uwd3JijW0lum7BkizwnUBBqpc21oEJFl/THyb68n7QKJhsIXoDPmY4/NflmFNZ1laH1fmbT9bAhdWUqjIUCxiSEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=XMtqpnJl; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e6d0bf038fso1084669a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1711739173; x=1712343973; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ngxCoYcD8CKtcpra4a5XtcaeUNLXz+q15qFr+qZs8O0=;
+        b=XMtqpnJlbdM0j+X3obvgo072sm1YNcTIsbgSVToZhIOhXnlDF/qvD9WqnY+fTe/RIA
+         NyyXaoK2kmfPZ2pnxHS0VgDqfTAbfG+lO6VbJzHHBbgPkTRAlsR8TTt1AntK/7v8WKzg
+         dijuzz/oXEKbKBM3FbH8el9QHIxYPUkEkKTbQc9MPPIirJKIEKo8Dq1Z/bqtpdetpzz4
+         FDeO560jDoaulV4l9OjVo2/EFTNhtN/vhnaeKSRE9jDUJMJaQkxT3CT8Ll7lI+BI+yEi
+         yYahCAGFqUFtRrkERAuj2sdpbv56kEU7OV0iRQhqeNgswHXk+UapTtKWp9+2Mp6ElTeI
+         5MnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711739173; x=1712343973;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ngxCoYcD8CKtcpra4a5XtcaeUNLXz+q15qFr+qZs8O0=;
+        b=uaIoFmLxRBUxLl8DEeEphiK5jdUSvnzzZ1NlTqzV5HeQP3oeUNQxOVctM2VeyqGcEW
+         zw/OjdzqtVnz5VeLJmWQuBjJap44gc+KRss2bOtnblfLx5kRSpD1or48+sx2sjdvXRXE
+         ph+MJyTSo3A/O/mVK3BkNL3HBH0E6Faiv6PSKe1C/x0ALmcKMSZM8fHQCFR9XaDmq4ie
+         SgAaqzStIERuPtz76s+i2WutuddM5TPExOIhGuGiD96f9IEZ00ZSCazK+Zlgw3/rt5G4
+         OIts0/5T5inrtcwtkOvNyWcyuFdGfNyDtSlv5/cuuGwlNXMmFs4ZqbbebSnR3RhFxngQ
+         kv3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUyvoIIIZ7pZugL2r8Wt/JxbY9eDG/9t1SpQWR3/1sonZ/rTwhBFN0mj1lW2GJ1x5ptr9coG1EphmGGRcUvDzeIXJvltclo7UYAP9PN
+X-Gm-Message-State: AOJu0Yy0yyBR+5iGQwfO+1NS4cHxlZOCNHQ7HpplZlDB/cv3jqNF5LQQ
+	cFmNUbLdJVuhg4KzlcklmqbEL7tmEgLBJwJym5zGW5dn9kUMDlGWHI+6vBvRFg==
+X-Google-Smtp-Source: AGHT+IG+UKRYPfBfwkIx2mRuJVrKfyVM3kzyBoi4KCb9PZ1DSrfPB2oveVG4Zp7kWZLQY+SYaX983Q==
+X-Received: by 2002:a05:6808:1156:b0:3c3:c2b1:173d with SMTP id u22-20020a056808115600b003c3c2b1173dmr2965700oiu.58.1711739172886;
+        Fri, 29 Mar 2024 12:06:12 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id 6-20020ad45ba6000000b00696857c49afsm1880416qvq.67.2024.03.29.12.06.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 12:06:12 -0700 (PDT)
+Date: Fri, 29 Mar 2024 15:06:12 -0400
+Message-ID: <5ef810071fbdc40451e2b2ea1920da09@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403292322.bwguovKc-lkp@intel.com>
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
+Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, jmorris@namei.org, serge@hallyn.com
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org, viro@zeniv.linux.org.uk, pc@manguebit.com, christian@brauner.io, Roberto Sassu <roberto.sassu@huawei.com>, stable@vger.kernel.org, Steve French <smfrench@gmail.com>
+Subject: Re: [PATCH 1/2] security: Handle dentries without inode in  security_path_post_mknod()
+References: <20240329105609.1566309-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240329105609.1566309-1-roberto.sassu@huaweicloud.com>
 
-On Fri, Mar 29, 2024 at 11:08:05PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.03.27b
-> head:   786fab3085d764055a78edb54023420920344333
-> commit: 032d9f7e1213171131a3f45c5c532ea5d11b4b9a [66/69] riscv: Emulate one-byte and two-byte cmpxchg
-> config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240329/202403292322.bwguovKc-lkp@intel.com/config)
-> compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 79ba323bdd0843275019e16b6e9b35133677c514)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403292322.bwguovKc-lkp@intel.com/reproduce)
+On Mar 29, 2024 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403292322.bwguovKc-lkp@intel.com/
+> Commit 08abce60d63fi ("security: Introduce path_post_mknod hook")
+> introduced security_path_post_mknod(), to replace the IMA-specific call to
+> ima_post_path_mknod().
 > 
-> All errors (new ones prefixed by >>):
+> For symmetry with security_path_mknod(), security_path_post_mknod() is
+> called after a successful mknod operation, for any file type, rather than
+> only for regular files at the time there was the IMA call.
 > 
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
-> >> include/linux/atomic/atomic-arch-fallback.h:2026:9: error: call to undeclared function 'cmpxchg_emu_u8'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->     2026 |         return raw_cmpxchg(&v->counter, old, new);
->          |                ^
->    include/linux/atomic/atomic-arch-fallback.h:55:21: note: expanded from macro 'raw_cmpxchg'
->       55 | #define raw_cmpxchg arch_cmpxchg
->          |                     ^
->    arch/riscv/include/asm/cmpxchg.h:367:23: note: expanded from macro 'arch_cmpxchg'
->      367 |         (__typeof__(*(ptr))) __cmpxchg((ptr),                           \
->          |                              ^
->    arch/riscv/include/asm/cmpxchg.h:328:11: note: expanded from macro '__cmpxchg'
->      328 |                 __ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
->          |                         ^
+> However, as reported by VFS maintainers, successful mknod operation does
+> not mean that the dentry always has an inode attached to it (for example,
+> not for FIFOs on a SAMBA mount).
+> 
+> If that condition happens, the kernel crashes when
+> security_path_post_mknod() attempts to verify if the inode associated to
+> the dentry is private.
+> 
+> Add an extra check to first verify if there is an inode attached to the
+> dentry, before checking if the inode is private. Also add the same check to
+> the current users of the path_post_mknod hook, ima_post_path_mknod() and
+> evm_post_path_mknod().
+> 
+> Finally, use the proper helper, d_backing_inode(), to retrieve the inode
+> from the dentry in ima_post_path_mknod().
+> 
+> Cc: stable@vger.kernel.org # 6.8.x
+> Reported-by: Steve French <smfrench@gmail.com>
+> Closes: https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
+> Fixes: 08abce60d63fi ("security: Introduce path_post_mknod hook")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+> ---
+>  security/integrity/evm/evm_main.c | 6 ++++--
+>  security/integrity/ima/ima_main.c | 5 +++--
+>  security/security.c               | 4 +++-
+>  3 files changed, 10 insertions(+), 5 deletions(-)
 
-Again, good catch!  And again, does the diff at the end of this email
-fix things for you?
+In addition to the stable marking that Mimi already pointed out, I've
+got one small comment below, but otherwise this looks fine to me.
+Also, just to confirm, you're going to send patch 1/2 up to Linus during
+the v6.9-rc1 phase and hold patch 2/2 for the next merge window, right?
 
-							Thanx, Paul
+Acked-by: Paul Moore <paul@paul-moore.com>
 
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
-> >> include/linux/atomic/atomic-arch-fallback.h:2026:9: error: call to undeclared function 'cmpxchg_emu_u16'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->    include/linux/atomic/atomic-arch-fallback.h:55:21: note: expanded from macro 'raw_cmpxchg'
->       55 | #define raw_cmpxchg arch_cmpxchg
->          |                     ^
->    arch/riscv/include/asm/cmpxchg.h:367:23: note: expanded from macro 'arch_cmpxchg'
->      367 |         (__typeof__(*(ptr))) __cmpxchg((ptr),                           \
->          |                              ^
->    arch/riscv/include/asm/cmpxchg.h:332:11: note: expanded from macro '__cmpxchg'
->      332 |                 __ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
->          |                         ^
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
->    include/linux/atomic/atomic-arch-fallback.h:2055:9: error: call to undeclared function 'cmpxchg_emu_u8'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->     2055 |         return raw_cmpxchg_acquire(&v->counter, old, new);
->          |                ^
->    include/linux/atomic/atomic-arch-fallback.h:65:29: note: expanded from macro 'raw_cmpxchg_acquire'
->       65 | #define raw_cmpxchg_acquire arch_cmpxchg_acquire
->          |                             ^
->    arch/riscv/include/asm/cmpxchg.h:263:23: note: expanded from macro 'arch_cmpxchg_acquire'
->      263 |         (__typeof__(*(ptr))) __cmpxchg_acquire((ptr),                   \
->          |                              ^
->    arch/riscv/include/asm/cmpxchg.h:224:11: note: expanded from macro '__cmpxchg_acquire'
->      224 |                 __ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
->          |                         ^
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
->    include/linux/atomic/atomic-arch-fallback.h:2055:9: error: call to undeclared function 'cmpxchg_emu_u16'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->    include/linux/atomic/atomic-arch-fallback.h:65:29: note: expanded from macro 'raw_cmpxchg_acquire'
->       65 | #define raw_cmpxchg_acquire arch_cmpxchg_acquire
->          |                             ^
->    arch/riscv/include/asm/cmpxchg.h:263:23: note: expanded from macro 'arch_cmpxchg_acquire'
->      263 |         (__typeof__(*(ptr))) __cmpxchg_acquire((ptr),                   \
->          |                              ^
->    arch/riscv/include/asm/cmpxchg.h:228:11: note: expanded from macro '__cmpxchg_acquire'
->      228 |                 __ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
->          |                         ^
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
->    include/linux/atomic/atomic-arch-fallback.h:2083:9: error: call to undeclared function 'cmpxchg_emu_u8'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->     2083 |         return raw_cmpxchg_release(&v->counter, old, new);
->          |                ^
->    include/linux/atomic/atomic-arch-fallback.h:77:29: note: expanded from macro 'raw_cmpxchg_release'
->       77 | #define raw_cmpxchg_release arch_cmpxchg_release
->          |                             ^
->    arch/riscv/include/asm/cmpxchg.h:315:23: note: expanded from macro 'arch_cmpxchg_release'
->      315 |         (__typeof__(*(ptr))) __cmpxchg_release((ptr),                   \
->          |                              ^
->    arch/riscv/include/asm/cmpxchg.h:276:11: note: expanded from macro '__cmpxchg_release'
->      276 |                 __ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
->          |                         ^
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
->    include/linux/atomic/atomic-arch-fallback.h:2083:9: error: call to undeclared function 'cmpxchg_emu_u16'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->    include/linux/atomic/atomic-arch-fallback.h:77:29: note: expanded from macro 'raw_cmpxchg_release'
->       77 | #define raw_cmpxchg_release arch_cmpxchg_release
->          |                             ^
->    arch/riscv/include/asm/cmpxchg.h:315:23: note: expanded from macro 'arch_cmpxchg_release'
->      315 |         (__typeof__(*(ptr))) __cmpxchg_release((ptr),                   \
->          |                              ^
->    arch/riscv/include/asm/cmpxchg.h:280:11: note: expanded from macro '__cmpxchg_release'
->      280 |                 __ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
->          |                         ^
->    In file included from arch/riscv/kernel/asm-offsets.c:10:
->    In file included from include/linux/mm.h:7:
->    In file included from include/linux/gfp.h:7:
->    In file included from include/linux/mmzone.h:8:
->    In file included from include/linux/spinlock.h:63:
->    In file included from include/linux/lockdep.h:14:
->    In file included from include/linux/smp.h:13:
->    In file included from include/linux/cpumask.h:14:
->    In file included from include/linux/atomic.h:80:
->    include/linux/atomic/atomic-arch-fallback.h:2108:9: error: call to undeclared function 'cmpxchg_emu_u8'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->     2108 |         return raw_cmpxchg_relaxed(&v->counter, old, new);
-> 
-> 
-> vim +/cmpxchg_emu_u8 +2026 include/linux/atomic/atomic-arch-fallback.h
-> 
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2000  
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2001  /**
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2002   * raw_atomic_cmpxchg() - atomic compare and exchange with full ordering
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2003   * @v: pointer to atomic_t
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2004   * @old: int value to compare with
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2005   * @new: int value to assign
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2006   *
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2007   * If (@v == @old), atomically updates @v to @new with full ordering.
-> 6dfee110c6cc7a include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2024-02-09  2008   * Otherwise, @v is not modified and relaxed ordering is provided.
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2009   *
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2010   * Safe to use in noinstr code; prefer atomic_cmpxchg() elsewhere.
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2011   *
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2012   * Return: The original value of @v.
-> ad8110706f3811 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2013   */
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2014  static __always_inline int
-> 9257959a6e5b4f include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2015  raw_atomic_cmpxchg(atomic_t *v, int old, int new)
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2016  {
-> 1d78814d41701c include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2017  #if defined(arch_atomic_cmpxchg)
-> 1d78814d41701c include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2018  	return arch_atomic_cmpxchg(v, old, new);
-> 1d78814d41701c include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2019  #elif defined(arch_atomic_cmpxchg_relaxed)
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2020  	int ret;
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2021  	__atomic_pre_full_fence();
-> 9257959a6e5b4f include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2022  	ret = arch_atomic_cmpxchg_relaxed(v, old, new);
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2023  	__atomic_post_full_fence();
-> 37f8173dd84936 include/linux/atomic-arch-fallback.h        Peter Zijlstra 2020-01-24  2024  	return ret;
-> 9257959a6e5b4f include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2025  #else
-> 9257959a6e5b4f include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05 @2026  	return raw_cmpxchg(&v->counter, old, new);
-> d12157efc8e083 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2027  #endif
-> 1d78814d41701c include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2028  }
-> d12157efc8e083 include/linux/atomic/atomic-arch-fallback.h Mark Rutland   2023-06-05  2029  
-> 
-> :::::: The code at line 2026 was first introduced by commit
-> :::::: 9257959a6e5b4fca6fc8e985790bff62c2046f20 locking/atomic: scripts: restructure fallback ifdeffery
-> 
-> :::::: TO: Mark Rutland <mark.rutland@arm.com>
-> :::::: CC: Peter Zijlstra <peterz@infradead.org>
-> 
+> diff --git a/security/security.c b/security/security.c
+> index 7e118858b545..455f0749e1b0 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1801,7 +1801,9 @@ EXPORT_SYMBOL(security_path_mknod);
+>   */
+>  void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+>  {
+> -	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> +	/* Not all dentries have an inode attached after mknod. */
+> +	if (d_backing_inode(dentry) &&
+> +	    unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return;
+
+I don't know how much impact this would have on the compiled code, but
+you could save yourself a call into d_backing_inode() by saving it to
+a local variable:
+
+  struct inode *inode = d_backing_inode(dentry);
+  if (inode && unlikely(IS_PRIVATE(inode)))
+    return;
+
+>  	call_void_hook(path_post_mknod, idmap, dentry);
+>  }
 > -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+> 2.34.1
 
-commit da6c6c7a30e5a5015a2995b2119053ca3d12b7a2
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Mar 29 11:50:32 2024 -0700
-
-    squash! riscv: Emulate one-byte and two-byte cmpxchg
-    
-    [ paulmck: Apply kernel test robot feedback. ]
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index b4cbea69ad2c8..a5b377481785c 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -9,6 +9,7 @@
- #include <linux/bug.h>
- 
- #include <asm/fence.h>
-+#include <linux/cmpxchg-emu.h>
- 
- #define __xchg_relaxed(ptr, new, size)					\
- ({									\
-
+--
+paul-moore.com
 
