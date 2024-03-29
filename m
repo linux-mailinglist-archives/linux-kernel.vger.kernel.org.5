@@ -1,208 +1,137 @@
-Return-Path: <linux-kernel+bounces-124248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 325DA89145C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:32:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1877891468
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E56F12878D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:32:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E8B21F22F2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8634086D;
-	Fri, 29 Mar 2024 07:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAC74086C;
+	Fri, 29 Mar 2024 07:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NZlFXF9r"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e7yiiUGi"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963833C6BA;
-	Fri, 29 Mar 2024 07:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5E73C6BA;
+	Fri, 29 Mar 2024 07:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697530; cv=none; b=UE6UD6a/ZjA9Wc6Vb9QA4Endw3OeuE5Xei5vq08UOwaoJCsvNJeqMlaJt25gVOUgyG5TuiUajpZMfGfDALt21KwfXjeqhH7hvtfBtZdApwplkLR9tVQ6Q8wCxjmdydCK1EUbimrW76K110vMdamw9jXpOSWXlK23Lz6obD+3i2k=
+	t=1711697776; cv=none; b=VZ96QsUMsAzDt9e9IsVlUNj+k9lRAsZiWNeO9mmBllHLAYeAcrvQq56eJloJZrSEelXsFZklMX4jVGmOmYylHiOR0uh0+qCII0+Pkiyx+xyq+W33fOCDlePQKRe+9wcfhX8Bci0WZ3mC3um8RH4yneQRfz6/C401LVHNUWulLtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697530; c=relaxed/simple;
-	bh=3M6OWiyX2jCszgbg+gKZllism2OVuQShgvdmfShoSr8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZXAuZSEjWc2ZRMpwrn8uRxRfS5fA3tIcv8lSspDie3wOpGAPA3ubEdcZ9JNikmPay0h/giiISDaDITshPyL1I/ItuwO/c7S9jW3l9PYayXBeSECcMuuyKKBhBLixK5M70/4To6n8afRHJxyziEgvQQAxWyPirc5UAUo31eOZItk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NZlFXF9r; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711697529; x=1743233529;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3M6OWiyX2jCszgbg+gKZllism2OVuQShgvdmfShoSr8=;
-  b=NZlFXF9rHVWYWPPKRop1GhOBIIEM+a71uzw6TYQYj93oiPyocNg7r5GZ
-   0uHKuFJjrvuxqOKEth+yYdDpKbwHGsbMPlodY6Hx35vHL8AJAWAgxENaQ
-   Mz1lpOk3rvryKi8wkAAATZaF2bIFGUFFem0AJsXCSn7rW6AcBdNxv686F
-   Vsnbfy9zz0DGYNon3bLdCmRRZXHmgfcmYDBqs3Z9O42AjgPk0RPEF4IjY
-   LcdXxNr9o6bZgCmIMA2+wnxuAJN58s4YMzf8TdbiFTOoDWl4h5b1BctjP
-   UsYvnzYT/+Jr8MPvuAxcBWvtx2mnJz/RCOVa+wNTHfiw6XJ8FcZFIaox6
-   Q==;
-X-CSE-ConnectionGUID: zq+nTeguTAG32jgwWLQCrw==
-X-CSE-MsgGUID: SGBPKhkXTsCltO/FUCHoHg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="17605218"
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="17605218"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:32:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="16785904"
-Received: from zengguan-mobl1.ccr.corp.intel.com (HELO [10.238.3.174]) ([10.238.3.174])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:32:03 -0700
-Message-ID: <a4f169fa-663d-4a94-878b-d783f67d48c9@intel.com>
-Date: Fri, 29 Mar 2024 15:32:00 +0800
+	s=arc-20240116; t=1711697776; c=relaxed/simple;
+	bh=o0M0IyJcUookuFin+xzyNuPuMIMMXKwrYyJEBdm6SJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QFMEzbQzTZZymUi2Kzw1It4lBCGrpoQQn1738oYlziyas8I5tibQeBPG27o33C/XXN7cbx9X3JI2tZ3z+O1ZL0bBgnI01LpQtClAosI/AvM+nS/CobH1WR0U4cZmfnq3tm0F+t2VVWqGEjzecNEbyn4lX/wKQ1QymaSUJ0agBOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e7yiiUGi; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a44ad785a44so197581666b.3;
+        Fri, 29 Mar 2024 00:36:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711697773; x=1712302573; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=02I2vw7o3fgaPYQWfuiF5lp5H//jn5NlPZdLwJYApkY=;
+        b=e7yiiUGi8fNB7VES8CzjifBgq1WubODph8HpFMbzWe6Bb0iEXl1V+G48Q+kC0LGwAU
+         5TkqcJdt8S5Xs6ARdXOiF9qj2ydHJx8ZXWnZ9jPqEeMMUqBBN0+F4s8lcS9OtTvq/ruh
+         5sbv76LoqzCxgVP9oV1R8czGLhAnGEmTyZavJrpNVT3mghQu0VDqxcU2XiZ9EepCikHO
+         4vzGwuf1s8ubKFumqlJ2fS3LF2cl9SrIKeXeKNNE8b01XLG6SbuP/y1j59EXiPFDBQsI
+         OcgxxvOFXNMDMdWAUpyktvAxVCLylzyxV1G0R0rG8FWXGgcThc4tPOX2WuxIf0x0x6cr
+         tR5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711697773; x=1712302573;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=02I2vw7o3fgaPYQWfuiF5lp5H//jn5NlPZdLwJYApkY=;
+        b=k2Ax1m18yJLjiFNsrz750BQ8H1JxN2gx/tu0/fGYUxZ3vhU1ImcU7r9AcPaKRbRbgs
+         aAJKsqPTTd0kCWovBS0zALMswxUGvEQvobzD8O+DOeTvOnPzibd12dRJn8/CwEr5jW5f
+         eyh4tp/8r/hKlrZL/KTiniUQPhc+5abFAlzFJWNhnRrdf77sQ6MHyByr55MJY6HpEX+N
+         2nJVXIhhn/D4xRNAx50Oc9xtOYtnp4TRsuv3V/uwc6+hSDr6K7Y2290dcK5DaipDhF1P
+         XOqdnHP0CjVXApuAS2pH7PAzBcEk2aSe7LcczkG0oY9VD8hstMJEHEnMRs01CsJCuDsV
+         BQ+g==
+X-Forwarded-Encrypted: i=1; AJvYcCWTWzfjZSbxcDFYzH7V8VaO4fVsooRC0Oe2q9SpOlsR6R29RoyUEFxbabaDFaxRzXidKRBOa2U70mKGqkNQibZpMUO7ZJsuBKCwKfML5w2xe3IGMZwna6OSTYSybSPWedQGvrHM2TdJxwlG/foL
+X-Gm-Message-State: AOJu0Yw6Ynap/ENj+X+PSHAkdpkjaRUzkro31uGYRmcF4/I73RfCwvQF
+	c3Y/QDZ+81p3msifFMYAM332AU2x3atIcK2eHnPodEMpzfXm8oSzWzGPJz3d+Ic=
+X-Google-Smtp-Source: AGHT+IHXLBlv/nEicaqmAk+ih73rZR/7gfPb4gK99oBc5EpKbjwFNQ5lncW1Jkn34lUCoEQx7EZrHw==
+X-Received: by 2002:a17:906:3554:b0:a4e:1d55:c21 with SMTP id s20-20020a170906355400b00a4e1d550c21mr896950eja.67.1711697772462;
+        Fri, 29 Mar 2024 00:36:12 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id f4-20020a17090660c400b00a457a55b814sm1629825ejk.73.2024.03.29.00.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 00:36:11 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 29 Mar 2024 08:36:09 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"Chang S. Bae" <chang.seok.bae@intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Binbin Wu <binbin.wu@linux.intel.com>,
+	angquan yu <angquan21@gmail.com>, kernel@collabora.com,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] selftests: x86: skip the tests if prerequisites
+ aren't fulfilled
+Message-ID: <ZgZvaUbZIr0qpxK5@gmail.com>
+References: <20240327111720.3509180-1-usama.anjum@collabora.com>
+ <1d6418a3-67eb-4a39-891a-7d653a26f1fc@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/15] x86/irq: Install posted MSI notification handler
-Content-Language: en-US
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>,
- LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "Hansen, Dave" <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>,
- "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
- Ingo Molnar <mingo@redhat.com>
-Cc: "Luse, Paul E" <paul.e.luse@intel.com>,
- "Williams, Dan J" <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>,
- "Raj, Ashok" <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- "maz@kernel.org" <maz@kernel.org>, "seanjc@google.com" <seanjc@google.com>,
- Robin Murphy <robin.murphy@arm.com>
-References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
- <20240126234237.547278-10-jacob.jun.pan@linux.intel.com>
-From: Zeng Guang <guang.zeng@intel.com>
-In-Reply-To: <20240126234237.547278-10-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d6418a3-67eb-4a39-891a-7d653a26f1fc@linuxfoundation.org>
 
 
-On 1/27/2024 7:42 AM, Jacob Pan wrote:
-> @@ -353,6 +360,111 @@ void intel_posted_msi_init(void)
->   	pid->nv = POSTED_MSI_NOTIFICATION_VECTOR;
->   	pid->ndst = this_cpu_read(x86_cpu_to_apicid);
->   }
-> +
-> +/*
-> + * De-multiplexing posted interrupts is on the performance path, the code
-> + * below is written to optimize the cache performance based on the following
-> + * considerations:
-> + * 1.Posted interrupt descriptor (PID) fits in a cache line that is frequently
-> + *   accessed by both CPU and IOMMU.
-> + * 2.During posted MSI processing, the CPU needs to do 64-bit read and xchg
-> + *   for checking and clearing posted interrupt request (PIR), a 256 bit field
-> + *   within the PID.
-> + * 3.On the other side, the IOMMU does atomic swaps of the entire PID cache
-> + *   line when posting interrupts and setting control bits.
-> + * 4.The CPU can access the cache line a magnitude faster than the IOMMU.
-> + * 5.Each time the IOMMU does interrupt posting to the PIR will evict the PID
-> + *   cache line. The cache line states after each operation are as follows:
-> + *   CPU		IOMMU			PID Cache line state
-> + *   ---------------------------------------------------------------
-> + *...read64					exclusive
-> + *...lock xchg64				modified
-> + *...			post/atomic swap	invalid
-> + *...-------------------------------------------------------------
-> + *
-> + * To reduce L1 data cache miss, it is important to avoid contention with
-> + * IOMMU's interrupt posting/atomic swap. Therefore, a copy of PIR is used
-> + * to dispatch interrupt handlers.
-> + *
-> + * In addition, the code is trying to keep the cache line state consistent
-> + * as much as possible. e.g. when making a copy and clearing the PIR
-> + * (assuming non-zero PIR bits are present in the entire PIR), it does:
-> + *		read, read, read, read, xchg, xchg, xchg, xchg
-> + * instead of:
-> + *		read, xchg, read, xchg, read, xchg, read, xchg
-> + */
-> +static __always_inline inline bool handle_pending_pir(u64 *pir, struct pt_regs *regs)
-> +{
-> +	int i, vec = FIRST_EXTERNAL_VECTOR;
-> +	unsigned long pir_copy[4];
-> +	bool handled = false;
-> +
-> +	for (i = 0; i < 4; i++)
-> +		pir_copy[i] = pir[i];
-> +
-> +	for (i = 0; i < 4; i++) {
-> +		if (!pir_copy[i])
-> +			continue;
-> +
-> +		pir_copy[i] = arch_xchg(pir, 0);
+* Shuah Khan <skhan@linuxfoundation.org> wrote:
 
-Here is a problem that pir_copy[i] will always be written as pir[0]. 
-This leads to handle spurious posted MSIs later.
+> On 3/27/24 05:17, Muhammad Usama Anjum wrote:
+> > Skip instead of failing when prerequisite conditions aren't fulfilled,
+> > such as invalid xstate values etc. This patch would make the tests show
+> > as skip when run by:
+> >    make -C tools/testing/selftests/ TARGETS=x86 run_tests
+> > 
+> >    ...
+> >    # timeout set to 45
+> >    # selftests: x86: amx_64
+> >    # # xstate cpuid: invalid tile data size/offset: 0/0
+> >    ok 42 selftests: x86: amx_64 # SKIP
+> >    # timeout set to 45
+> >    # selftests: x86: lam_64
+> >    # # Unsupported LAM feature!
+> >    ok 43 selftests: x86: lam_64 # SKIP
+> >    ...
+> > 
+> > In amx test, Move away from check_cpuid_xsave() and start using
+> > arch_prctl() to find out if amx support is present or not. In the
+> > kernels where amx isn't present, arch_prctl returns -EINVAL. Hence it is
+> > backward compatible.
+> > 
+> > Reviewed-by: Chang S. Bae <chang.seok.bae@intel.com>
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+> > Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> > ---
+> > Changes since v2:
+> > - Update the changelog
+> > 
+> 
+> Thank you - applied to linux-kselftest next for 6.10-rc1
 
-> +		handled = true;
-> +	}
-> +
-> +	if (handled) {
-> +		for_each_set_bit_from(vec, pir_copy, FIRST_SYSTEM_VECTOR)
-> +			call_irq_handler(vec, regs);
-> +	}
-> +
-> +	return handled;
-> +}
-> +
-> +/*
-> + * Performance data shows that 3 is good enough to harvest 90+% of the benefit
-> + * on high IRQ rate workload.
-> + */
-> +#define MAX_POSTED_MSI_COALESCING_LOOP 3
-> +
-> +/*
-> + * For MSIs that are delivered as posted interrupts, the CPU notifications
-> + * can be coalesced if the MSIs arrive in high frequency bursts.
-> + */
-> +DEFINE_IDTENTRY_SYSVEC(sysvec_posted_msi_notification)
-> +{
-> +	struct pt_regs *old_regs = set_irq_regs(regs);
-> +	struct pi_desc *pid;
-> +	int i = 0;
-> +
-> +	pid = this_cpu_ptr(&posted_interrupt_desc);
-> +
-> +	inc_irq_stat(posted_msi_notification_count);
-> +	irq_enter();
-> +
-> +	/*
-> +	 * Max coalescing count includes the extra round of handle_pending_pir
-> +	 * after clearing the outstanding notification bit. Hence, at most
-> +	 * MAX_POSTED_MSI_COALESCING_LOOP - 1 loops are executed here.
-> +	 */
-> +	while (++i < MAX_POSTED_MSI_COALESCING_LOOP) {
-> +		if (!handle_pending_pir(pid->pir64, regs))
-> +			break;
-> +	}
-> +
-> +	/*
-> +	 * Clear outstanding notification bit to allow new IRQ notifications,
-> +	 * do this last to maximize the window of interrupt coalescing.
-> +	 */
-> +	pi_clear_on(pid);
-> +
-> +	/*
-> +	 * There could be a race of PI notification and the clearing of ON bit,
-> +	 * process PIR bits one last time such that handling the new interrupts
-> +	 * are not delayed until the next IRQ.
-> +	 */
-> +	handle_pending_pir(pid->pir64, regs);
-> +
-> +	apic_eoi();
-> +	irq_exit();
-> +	set_irq_regs(old_regs);
->   }
->   #endif /* X86_POSTED_MSI */
->   
+Please don't, I've applied the patch to tip:x86/cpu with a tidied up 
+changelog.
+
+Thanks,
+
+	Ingo
 
