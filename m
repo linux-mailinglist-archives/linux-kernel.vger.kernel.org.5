@@ -1,112 +1,112 @@
-Return-Path: <linux-kernel+bounces-125304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C2028923C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C56D8923C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E54371F228C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:58:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1212D1F228C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0678B12A144;
-	Fri, 29 Mar 2024 18:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nsmaeifo"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645A66BB22;
+	Fri, 29 Mar 2024 18:59:40 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E615F3B293
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123063B293;
+	Fri, 29 Mar 2024 18:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711738709; cv=none; b=E/muLAtPnGMjpucB89GAlkrzZtxX1OyS7XWBIcAZrV76yORem4AtljbMoEzF7P7dda3qCneLzQ2G1GCkuL/B1ymfZcAPBubpbn4rP4h0AjcGZvw6RcZS09gAiTcXvumEVqBUTFxsWXXrehPHKeKV9HkQjNIO/eAWDPP6RK7dPRU=
+	t=1711738780; cv=none; b=neRCNbiLBzU49WnZZfT3CE4W5WFC7wZCJjGb4BMHw8H06QOHF4DxvVu++LQb3asIRsSsAsiN+jnVS3WYT+O6NSG6KZgU23WVKDQZOoIniCupwUgxq9qh3G4CsbbJ2723RadwI65xjCXZ4mIK+HeFF0t0cIedb9ju2oY/5X7XYpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711738709; c=relaxed/simple;
-	bh=TZwuVTutyuYWS/hRX6g2t+0lQdgDJNCLshkGhJvNRDI=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ctmavl+C3MV82tFEwUzr+c4Jo3D5QzD0Ki70Mxj11xUlC96Ydhk7CxbC8KeuMqTP99VoymPoG94ylwnWkSliTOZWddDP38Dy8UphgNhpM29W7W77Uoi9SkeR6bRbe4mWlm41Nyncx8AhvckQZTrqraPwdWeNUNRjPXon3HGLk6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nsmaeifo; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a2386e932so41761347b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711738707; x=1712343507; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W6jpWkrIAWPntOGVPlX+CoN3n1daGIwh5z3zUFqEtOY=;
-        b=NsmaeifomgPWqx7c6f/v9AKpV8Efgzjdw3uITCnCAt7NLceqiXQcRL21fR8tSEVP4K
-         Ec7VXhW5Ch98jQXFpQTihhKzro5yl29ruXk3s+lBSbb/bPQhyl4DoEFtRO0glqHUgkKs
-         3TPWFr0LkDdkG3LqzygbY+gWmqtP2XrXIOCqVVG0P+22KWEgRvcz7VBWHPatK1rOI12H
-         nKI3wicAWp5lPmXQaAMaYoIncyNbHTotfDn0pmz0Dr+ooeDoOYQjf1x6WzZUo4BgZiza
-         HKSByKitxmyMOkFwt80b/E5uyEuaPd14to9BPVAhWCYn8vELyPORRTLjuVAUXRU49lRc
-         79Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711738707; x=1712343507;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W6jpWkrIAWPntOGVPlX+CoN3n1daGIwh5z3zUFqEtOY=;
-        b=EvVrcLlQ5YZPr7nCwMgYxbg9UTUXBDymbYqW27aFT1GzyVMYi0vyD32WtxsLx0DFuC
-         m+/PPAkbzdGv8cP8dUq+2JyNVMNw1Nj/uphnoEHr/B3FWblxv9KH2nUmLNVI+os4xFBC
-         Dtp1HJ5lyn2/xX1keiAARFLwc2Zm9trFaKPNhCKfDmuJAGgI7+bx6wtj4PCvfgVerIVB
-         gTV8CW+VvBqOq4xPmWr3pKFSQ0w22MD/Fpv+sNmbe1nmME1pB+vqDMXyS81Wz0G0IU1M
-         W1WV3pWgpm4hOvkhAO7Gzu9Pzqs0PWvSAJPnjL9YkpiK4QxhZoS0aIEYIFa2jsbyX1Nh
-         pgmg==
-X-Gm-Message-State: AOJu0YxskfUo4eiAzVcMAIUubdpy/TgvCNpIUbcZOBhrFXl6SmjR8qQ/
-	63F/S7nkXdTXvaPF7ajWfvAfroWhkYso9w/bN46D+INllgwgHml71j/IM3KVpA5T1/gz5TKS/fF
-	/Js8wqxb6F+xHgXWH7SHLzQXJWOZYYMERI0nkrX+830rBSrh3rF9kGRK0yZtoypjVcAIkW3Xzwt
-	BjwcleVorbH5FsB4dFp8i9ADqPvEczYVA0fXmswEaS
-X-Google-Smtp-Source: AGHT+IFFFQ81uVFMy2JFSqiJ92NRr3e2zklngl/rFoikve1UjEUR1bAtgZavAMWyXRRu2Nmkm6XBrFE1SoM=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a0d:e28e:0:b0:611:9f44:3d40 with SMTP id
- l136-20020a0de28e000000b006119f443d40mr811961ywe.1.1711738706411; Fri, 29 Mar
- 2024 11:58:26 -0700 (PDT)
-Date: Fri, 29 Mar 2024 18:58:10 +0000
+	s=arc-20240116; t=1711738780; c=relaxed/simple;
+	bh=LRMKwu/ap0QLihMA7EqVXj8HuqIldcCnL+d0oAI08Mc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d0VDmcJ89fjW47D/+tD40drelYcKeB3MOJ+1EvqrDIDa/mXoqT/FmuEbiAC3NcEhjCICNdzF4SHRytF+9+N+vCMvLAGeXMpS4jQJAokgDKi4jJlEdD6SBFWD4mFF9pP0D6KfjLxkjmUF4xTHH2F3ePueJp8kVm/RI8qE9huHTII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.2] (ip5f5af39e.dynamic.kabel-deutschland.de [95.90.243.158])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 12CCC61E5FE07;
+	Fri, 29 Mar 2024 19:59:15 +0100 (CET)
+Message-ID: <31aa7758-f854-4f96-8041-26b7197982df@molgen.mpg.de>
+Date: Fri, 29 Mar 2024 19:59:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240329185814.16304-1-edliaw@google.com>
-Subject: [PATCH v2] selftests/mm: include strings.h for ffsl
-From: Edward Liaw <edliaw@google.com>
-To: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>, 
-	David Hildenbrand <david@redhat.com>, "Mike Rapoport (IBM)" <rppt@kernel.org>, 
-	Axel Rasmussen <axelrasmussen@google.com>
-Cc: linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	Edward Liaw <edliaw@google.com>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: PM: hibernation: Image allocation is 28906 pages short
+To: Pavel Machek <pavel@ucw.cz>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <58c89870-f7cd-4116-aaea-2ef53a1ab6c7@molgen.mpg.de>
+ <Zgb0RlS8QipgVZgW@duo.ucw.cz>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <Zgb0RlS8QipgVZgW@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Got a compilation error on Android for ffsl after 91b80cc5b39f
-("selftests: mm: fix map_hugetlb failure on 64K page size systems")
-included vm_util.h.
+Dear Pavel,
 
-Fixes: af605d26a8f2 ("selftests/mm: merge util.h into vm_util.h")
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
-v2: s/import/include and clarified that compilation error was on Android
 
- tools/testing/selftests/mm/vm_util.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you very much.
 
-diff --git a/tools/testing/selftests/mm/vm_util.h b/tools/testing/selftests/mm/vm_util.h
-index c02990bbd56f..9007c420d52c 100644
---- a/tools/testing/selftests/mm/vm_util.h
-+++ b/tools/testing/selftests/mm/vm_util.h
-@@ -3,7 +3,7 @@
- #include <stdbool.h>
- #include <sys/mman.h>
- #include <err.h>
--#include <string.h> /* ffsl() */
-+#include <strings.h> /* ffsl() */
- #include <unistd.h> /* _SC_PAGESIZE */
 
- #define BIT_ULL(nr)                   (1ULL << (nr))
---
-2.44.0.478.gd926399ef9-goog
+Am 29.03.24 um 18:03 schrieb Pavel Machek:
 
+>> On a Dell XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022 with Debian
+>> sid/unstable and self-built Linux 6.9-rc1+ with one patch on top [1] and
+>> KASAN enabled
+>>
+>>      $ git log --no-decorate --oneline -2 a2ce022afcbb
+>>      a2ce022afcbb [PATCH] kbuild: Disable KCSAN for autogenerated *.mod.c intermediaries
+>>      8d025e2092e2 Merge tag 'erofs-for-6.9-rc2-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs
+>>
+>> the system tried to hibernate, but failed:
+> 
+>> Where is that image allocated? On the disk? There is still 65 GB of space,
+>> so 16 GB of memory should fit? Could the error message be improved, so users
+>> know more details to fix it?
+> 
+> In swap. See docs.
+
+Thank you. Unfortunately, I am not seeing my case described in 
+`Documentation/power/`. Only:
+
+> Q:
+>   If my application(s) causes lots of memory & swap space to be used
+>   (over half of the total system RAM), is it correct that it is likely
+>   to be useless to try to suspend to disk while that app is running?
+> 
+> A:
+>   No, it should work okay, as long as your app does not mlock()
+>   it. Just prepare big enough swap partition.
+
+I have 16 GB RAM and 8 GB swap partition.
+
+     $ LANG= free
+                    total        used        free      shared 
+buff/cache   available
+     Mem:        13828768     9760192     3115932     5383256 
+6681400     4068576
+     Swap:        8387904     1531820     6856084
+
+Shouldn’t user space (systemd or GNOME?) then know beforehand if 
+hibernate is possible? Is there a script for users to check, if 
+hibernation would be possible?
+
+
+Kind regards,
+
+Paul
 
