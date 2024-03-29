@@ -1,127 +1,124 @@
-Return-Path: <linux-kernel+bounces-125071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85954891F91
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:07:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E19C891F9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6BAB1C21F84
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:07:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2A84288F82
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F281448E4;
-	Fri, 29 Mar 2024 13:37:12 +0000 (UTC)
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B20145324;
+	Fri, 29 Mar 2024 13:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jFuK7F1n";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="28uhuuIP"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4913941C7C;
-	Fri, 29 Mar 2024 13:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 592A3137C4A;
+	Fri, 29 Mar 2024 13:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711719431; cv=none; b=TS4hvEjycXWlFh857GuzGXaackrgJB0Bl0xNmmUgghqZFTPFoCDeITTrYtpH/3ApeFXRQJ4WZB05oDo4rNJasCef/U1ZBc9hoHiX317mP3p1Eqw8emBhQcXBSSBFGXKodierHxBncnFlkVVobkXQ4hCZFNTysotTlYb6cwMqPbY=
+	t=1711719685; cv=none; b=E454xHhH0F/ekQ8zzUW95nhEUyyfOY+BFjXLXwV/f/OUK38RMbFctu2Gi711FhWhhs32uUpKxGDK9bwOeteDOuYcsmv1V1X1DLbbZuxda/ydJe4Vy0KaShKrP1I4dS7kGbn8VeLlo1R/DQF/WaY5OqOBGusnG2u61YGL3MJdEss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711719431; c=relaxed/simple;
-	bh=DtoTAQjupKMSfIUCutH4u+VOc8cctrujprJ6Hy4mG/A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o0JY9w19GqWtu39Z+TGJ3aF2dcouyaexECQ4LoeRnSDFEi+gLXU89Yqi08zN5v5X8gvSU1U4DJ9PstUWUFu1LQY8HraH2dKW7vy1rb0HQcSvy/Kr3uFUe4VFvVJCaSrwF8VeBfB9AA/jo1TT8uhet1GAG431W5i1voiHt/efhMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout3.hostsharing.net (Postfix) with ESMTPS id BBBA7100DCEF9;
-	Fri, 29 Mar 2024 14:37:05 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 932C126E89; Fri, 29 Mar 2024 14:37:05 +0100 (CET)
-Date: Fri, 29 Mar 2024 14:37:05 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Alex Williamson <alex.williamson@redhat.com>,
-	Bjorn Helgaas <helgaas@kernel.org>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
-Message-ID: <ZgbEAa91hYmmhj7h@wunner.de>
-References: <20240326131858.GA140624@workstation.local>
- <20240327150119.GA1502858@bhelgaas>
- <20240328144201.510f6d5e.alex.williamson@redhat.com>
- <ZgZGbMj0I3_6Rt0f@wunner.de>
- <20240329081219.GC231329@workstation.local>
+	s=arc-20240116; t=1711719685; c=relaxed/simple;
+	bh=heN+WKKSeAHoAwskdQRgyZ0tL1FGjT4BvcNf+5bb8Ac=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=Efo2i3PCHeznlfC+MIV6L8AhVG1N3bgJT8Zo5JmhoK6hfyD+bdFy6MU5tBWJ8UB+fMLx2TawMcnoMGmtBXwqC+KQTSbQU7Dbfq3X3iM9Xg3k7+W7re7Ub40gXbGpxIQHAEVO24PUor1qidbXeI+9sJ1ApZISTljx3tBiW6177iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jFuK7F1n; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=28uhuuIP; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 29 Mar 2024 13:41:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711719682;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IB2HtUxxAUBEkmBV5gBiXdcQh/3BcG4ClBeUM2e237U=;
+	b=jFuK7F1nt1HSgF62Se4GmYWvsIGzAAhJpwp2XhTkEs8WrH9LAZPg5sjxuq3AVObsY1mr+r
+	mESs/PKe1tfQxAmy3eXxFhZ2q1B885VAcaNglgVgL9fXgRJvZ6JoPobvFZoIbMiyKQPOTL
+	MTLSBTY1qp44Pu9lMx7k5M+JKr7CPC1R+IYabWllMqHdZ2mVByJmMwcy1cGXTyGhK1QqID
+	smFwTZY3GVzfzOVqXYG73A/ZQgwEx9NDCKMcxUGt81DK83GSrB5AUyUIX4GK9/DSzEtb6Z
+	Mndo/2/vtYj5focdC3v1sU29bs241B3LvAHn+yLz907MFqKcGgyZIhPWg22kvQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711719682;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IB2HtUxxAUBEkmBV5gBiXdcQh/3BcG4ClBeUM2e237U=;
+	b=28uhuuIPeFgx0qfWw1a00XmpO22u1mz1AwQe3saCrlbs6E3Cj9l4uiYBAZwsqnJWWZl7Kf
+	zzGdN3ywVszqEaCw==
+From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fpu] x86/vm86: Make sure the free_vm86(task) definition
+ uses its parameter even in the !CONFIG_VM86 case
+Cc:
+ Ingo Molnar <mingo@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <ZgaFfyHMOdLHEKm+@gmail.com>
+References: <ZgaFfyHMOdLHEKm+@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329081219.GC231329@workstation.local>
+Message-ID: <171171968134.10875.11841808669108375691.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 05:12:19PM +0900, Takashi Sakamoto wrote:
-> On Fri, Mar 29, 2024 at 05:41:16AM +0100, Lukas Wunner wrote:
-> > Just checked the ACPI tables and there's an FPEN method below the
-> > FRWR device which toggles GPIO 48 on the PCH.  Checked the schematics
-> > as well and GPIO 48 is marked FW_PWR_EN.  The GPIO controls load
-> > switches which cut power to the FW643 chip when nothing is connected.
-> > 
-> > Also, FW_PWR_EN feeds into an SLG4AP016V chip where it seems to
-> > internally gate FW_CLKREQ_L.
-> > 
-> > I'm guessing the driver may need to call the FPEN ACPI method after
-> > issuing a SBR to force the chip on (or perhaps first off, then on)
-> > and thereby re-enable Clock Request.
-> > 
-> > It's a pity the ohci.c driver doesn't seem to support runtime PM.
-> > That would allow cutting power to the chip when nothing is connected
-> > and thus increase battery life.  The ACPI tables indicate that the
-> > platform sends a notification when something is plugged in, so all
-> > the necessary ingredients are there but we're not taking advantage
-> > of them.
-> 
-> Yup. In both PCI drivers and unit drivers belonging to Linux FireWire
-> subsystem, any type of runtime PM is not supported. If I integrate 1394
-> OHCI driver, I should implement all of the above in any callback of
-> runtime PM, or the part of the above is already supported by any driver
-> in parent PCI layer?
+The following commit has been merged into the x86/fpu branch of tip:
 
-The power management method Apple uses to cut power to the FireWire
-controller, Thunderbolt controller and discrete GPU is nonstandard.
-It's *implemented* in ACPI, but doesn't *conform* to ACPI:  There are
-no Power Resources described in the ACPI tables, just custom methods.
+Commit-ID:     5ca28d24aecd0809d93da2ea73a4f6e4b2ccfa78
+Gitweb:        https://git.kernel.org/tip/5ca28d24aecd0809d93da2ea73a4f6e4b2c=
+cfa78
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Fri, 29 Mar 2024 14:20:40 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 29 Mar 2024 14:24:50 +01:00
 
-This can be made to work on Linux by assigning a dev_pm_domain to the
-Root Port above the FireWire controller.  The dev_pm_domain callbacks
-cut power to the FireWire controller on ->runtime_suspend() and
-reinstate it on ->runtime_resume().  The reason this needs to be done
-at the Root Port level is that the PCI core assumes the FireWire
-controller is powered on when it calls pci_pm_runtime_resume() for it.
-Normally that function would reinstate power through ACPI via
-pci_power_up(), but that doesn't work due to the nonstandard nature
-of Apple's ACPI tables.
+x86/vm86: Make sure the free_vm86(task) definition uses its parameter even in=
+ the !CONFIG_VM86 case
 
-I've implemented this 8 years ago for Thunderbolt but unfortunately
-got sidetracked and thus haven't been able to finish upstreaming it yet:
+I ran into a case in new code where free_vm86(task) was the only
+consumer of the 'task' variable:
 
-https://github.com/l1k/linux/commit/a53d44439d42
+  arch/x86/kernel/process.c: In function =E2=80=98exit_thread=E2=80=99:
+  arch/x86/kernel/process.c:118:31: error: unused variable =E2=80=98t=E2=80=
+=99 [-Werror=3Dunused-variable]
 
-I'm not as familiar with ohci.c as I am (or was) with thunderbolt.ko.
-If you could amend ohci.c to call pm_runtime_get() when something is
-attached and call pm_runtime_put() when something is detached, I could
-look into bringing up the ACPI stuff.  You could acquire one runtime PM
-ref for each attached device or just acquire a single ref if *anything*
-is connected at all.  Doesn't matter.  But acquiring one ref per attached
-device might be simpler.
+Robustify the definition in the !CONFIG_VM86 case.
 
-I would also need a function to perform a bus scan upon runtime resume
-which looks for new devices and acquires refs as necessary.  Once that
-infrastructure exists, adding the Apple-specific ACPI stuff wouldn't
-be too hard for me to do as I could just adapt what I did for Thunderbolt.
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/ZgaFfyHMOdLHEKm+@gmail.com
+---
+ arch/x86/include/asm/vm86.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-
-Lukas
+diff --git a/arch/x86/include/asm/vm86.h b/arch/x86/include/asm/vm86.h
+index 9e8ac50..62ee199 100644
+--- a/arch/x86/include/asm/vm86.h
++++ b/arch/x86/include/asm/vm86.h
+@@ -84,7 +84,7 @@ static inline int handle_vm86_trap(struct kernel_vm86_regs =
+*a, long b, int c)
+=20
+ static inline void save_v86_state(struct kernel_vm86_regs *a, int b) { }
+=20
+-#define free_vm86(t) do { } while(0)
++#define free_vm86(task) do { (void)(task); } while(0)
+=20
+ #endif /* CONFIG_VM86 */
+=20
 
