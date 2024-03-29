@@ -1,108 +1,207 @@
-Return-Path: <linux-kernel+bounces-124052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 671CE891191
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:15:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A07B0891196
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 03:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 987421C2A5EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FDF91F25080
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74681DA3A;
-	Fri, 29 Mar 2024 02:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357A233070;
+	Fri, 29 Mar 2024 02:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LWvtN2Nc"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VrQTtiva"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC67A1DA4E;
-	Fri, 29 Mar 2024 02:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69B62E3E4;
+	Fri, 29 Mar 2024 02:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711678494; cv=none; b=sr3k9zXa9k6xeWXq64eFC0D0rXXZYYIeqY2OXqBlVW+tVUFfakdVVoPJMtldFib9rOmX3FmTfSv7g33QXYMPCeUxdpkXM1bvWcomjYezm4fJtEnDjJp+G2JPNgxn9MtCOXUQg0Axh6lyeSYUQe+HU5S55WhmtwmxD5xh0oX0kRc=
+	t=1711678581; cv=none; b=FCZfauRGq7Es2n/Fp/4IAr2/3oaRRbz8aOhCU35/Eb1HXxppbiH6MVKYohy69HCmIaNUi0zI6ahqJe6LeOS0s0jK67R/ooFv/NjP8lq/1ftVNMrc3IkCu24dQAvT8qMX6T/fS7wOJJmlolOr3yL0QaWbrs31Amr4LNVuqhLgq/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711678494; c=relaxed/simple;
-	bh=DhZdQ2iI7Zs+BqDVOGl/HOsjIT1jvsMP+tqZq0VoEFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TC6Fb2P/+Qm2dt5CGRrtaMBwc5Q4xiRx6lKR0TPahHrAqhPR1Lgm4efb4ZTQdAyXZL8lZJ6EoGHLaYuWj06Nm0y2XscFRlbPxvpZomh+JMu8Ggu5hs3+bJKeIxXaikIdSOZ0atSEU/wmgC2aZO5mH39BlG2zi3wKz78OwBMtAf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LWvtN2Nc; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1def2a1aafaso12171355ad.3;
-        Thu, 28 Mar 2024 19:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711678492; x=1712283292; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eHKg/7V7Pl/oLudfM0ileqdKuhPljGzHIMYbgvPiGiA=;
-        b=LWvtN2NcWKtQpPb59VF/GBak8NrRXRB8C2vS40r0fcXG4ktaM6BvoEfA8/DbI8kUVh
-         2BPFAW7hFDf/ZrpR5aTKkrvN9j0WjKis4wM+kF8YJjD+RLdg47OlTeHa++SqOIT6f3z9
-         5Cwum59JJmbxuV80yNR597Kdp6CH8sg2uKWqLCZc+2dfRd7S7mDM1e4T+rVd9DdCM3D1
-         +pCJyKrRQk4Csj7im4SnVHQqxS2RhkOnpUQ0tBu7pW155sB3LqSkbgWbDGxh8JPYgxv/
-         vpS6zqdo1FJc+Y9Wesi+OXNtTPAyRRu3zmj7L1Qa+k3Uce8PuGMwj9vW5wWAtLSbiZ6y
-         AA3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711678492; x=1712283292;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eHKg/7V7Pl/oLudfM0ileqdKuhPljGzHIMYbgvPiGiA=;
-        b=CLNvWdgVfs/Tak/m2IdgfAWRIkvQVQ6mWdxpW38/82dYyq8Qdenc/yV86OPtvr6sRR
-         GMMFmuk4T13AamneyhGQjH5fdWOUT7KN9MGw8tbxreQuQnGuDFIlXseP8+8yawIwAcJk
-         NEMQe92xq8K92oAOnHwhWnYyMr8r17FLfp82lxWyTeCBl2TXz4wb48PWfsRtd8MABzGd
-         jCfBQ5O48KlRyRYmK+I9CPqljlmKP08r4u6uy9h2PpyfMr0LgxM3TiDYjz+XAgHDiNMk
-         eRhT9ZEyzxOFeVxh3lJBBD5aSvdEnO1Y5xIWrP6RIKZfF0yRV5eHYPtzKYgZUYnSl3fR
-         xcWA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHHYpVyZ1lMcBzspN16x96gDDNqNcVYvCq9+rCwTUS5BZnUO2gOgW7Hngz1Yaz0OTozleJfxMxVGGvQLg7GxG0M/yK9pu+pq+BVKBsF7eDxfR8PY/86AJROenky+IsxHjjqk3zV8+t1NnmOFJLMVhWVhlG
-X-Gm-Message-State: AOJu0YwI0R2rYHntmZR1uRVp7vwF3Q5AdB4vW+FwoSevIhGAeTMEXwCT
-	EGpbqSLsD09K9Q5/eWnfn68OcKa/1nSa+s8Iy5gwZ++jTr6IkB0R/pfpfccObpo=
-X-Google-Smtp-Source: AGHT+IFvOpFFrQkbmzDEFb/cGsaj4nEqoC3f0kHNWirc2xKMaRHRNGExfwgCVpA/5A/dRRUx2hFrMw==
-X-Received: by 2002:a17:903:1210:b0:1e0:27c8:5c7e with SMTP id l16-20020a170903121000b001e027c85c7emr1375866plh.25.1711678491960;
-        Thu, 28 Mar 2024 19:14:51 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([2401:4900:4e59:88b8:f462:3eea:57c6:a15a])
-        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001e0b5fd3c95sm2342659plg.259.2024.03.28.19.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 19:14:51 -0700 (PDT)
-Date: Fri, 29 Mar 2024 07:44:42 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: alison.schofield@intel.com, paul@paul-moore.com, mic@digikod.net,
-	fabio.maria.de.francesco@linux.intel.com,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	gregkh@linuxfoundation.org, outreachy@lists.linux.dev,
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] LANDLOCK: use kmem_cache for landlock_object
-Message-ID: <ZgYkEghv7lFK4K4+@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-References: <ZgSrBVidW1U6yP+h@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
- <dfa6ddcb-9a2d-49ac-90b7-bb30b23e32c4@moroto.mountain>
+	s=arc-20240116; t=1711678581; c=relaxed/simple;
+	bh=oIiV3sumovhm34aa/ZlRe2zBsMc2lhuFs2o8Nbwl9qw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k5ec+UGrgksaNO4p19AV6hFj7t+qshsxhXOEO39MQdMJxirf6XIV73bTuME6vzjV08avyCYk4p86pGVrfFahnTeUxvigevllBpbBxl3jpOZvh29ysBN5eh1EctgvTrspNzV81+emALHzt0ftvsOoGti0i+KpcJuopACuR/Wgzu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VrQTtiva; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42T026cu008384;
+	Fri, 29 Mar 2024 02:16:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ET2FDhQlls+QQvW0Tm6GR0c7dLAUpaKr/E+O+6xcyU8=; b=Vr
+	QTtivawhlH+DVoY/bS/ecy29xrPWM7YaGrb1pZM5YtcXj/6fH5MKn2KCp2ZXzBco
+	Xw0WHFAvx9QQwc42QYnw6FRPyblDA7BaL4GBJ6TztCkbGuznTUYnI1vSWuDueWZQ
+	D32DAE0V7pGdTwke8t7PMayE7qCWu00dOm1G0VzwTCCMF18W1B1VYxq4+4L5o9WY
+	NtI3SZ/IGXVsLuQGTUf9wJrSEgzO2t4E1OwMn2sj198Kwkyk9vC+wqkraEF2rjnw
+	dgbihsxAkgwjHBMVB7nWed04AKyByLSbxqvK2rzJ2Kbe80k1r6TcdhLaBc9VDKIL
+	eSjTvkhmYkUY+Mdl+rsw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5dkygv9d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 02:16:08 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42T2G7k3004202
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 02:16:07 GMT
+Received: from [10.110.118.161] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
+ 2024 19:15:58 -0700
+Message-ID: <efbe5aa8-8bbe-26cd-ca70-1974241a3537@quicinc.com>
+Date: Thu, 28 Mar 2024 19:15:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dfa6ddcb-9a2d-49ac-90b7-bb30b23e32c4@moroto.mountain>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1] drm/msm/dp: use dp_hpd_plug_handle() and
+ dp_hpd_unplug_handle() directly
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Kuogee Hsieh
+	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
+        <agross@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <dianders@chromium.org>, <dri-devel@lists.freedesktop.org>,
+        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1711656246-3483-1-git-send-email-quic_khsieh@quicinc.com>
+ <1711656246-3483-2-git-send-email-quic_khsieh@quicinc.com>
+ <55debb0a-c7af-ef71-c49a-414c7ab4f59d@quicinc.com>
+ <CAE-0n503FwcwreZ14MMKgdzu8QybWYtMdLOKasiCwmE8pCJOSw@mail.gmail.com>
+ <23de89e9-3ef3-c52d-7abf-93dc2dbb51a4@quicinc.com>
+ <CAA8EJppEWXnsQzDD1tdNuMb1ijEVtE7LQct9jt1fwVwMd8ch_Q@mail.gmail.com>
+ <27cadd17-10a3-3b8c-2b29-6698ccdce531@quicinc.com>
+ <CAA8EJpqYVDG9pBj39m40rPwUNgE7x07HfCt6C3yaMN7eOaWk6Q@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpqYVDG9pBj39m40rPwUNgE7x07HfCt6C3yaMN7eOaWk6Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _EN-CXVHjO6zKjvtrYlVSsyflCChEGzH
+X-Proofpoint-GUID: _EN-CXVHjO6zKjvtrYlVSsyflCChEGzH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_01,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=970 mlxscore=0
+ phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403290017
 
-On Thu, Mar 28, 2024 at 09:39:14AM +0300, Dan Carpenter wrote:
-> On Thu, Mar 28, 2024 at 04:55:57AM +0530, Ayush Tiwari wrote:
-> > Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
-> > struct landlock_object and update the related dependencies.
-> > 
-> > Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+
+
+On 3/28/2024 5:10 PM, Dmitry Baryshkov wrote:
+> On Fri, 29 Mar 2024 at 01:42, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 3/28/2024 3:50 PM, Dmitry Baryshkov wrote:
+>>> On Thu, 28 Mar 2024 at 23:21, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 3/28/2024 1:58 PM, Stephen Boyd wrote:
+>>>>> Quoting Abhinav Kumar (2024-03-28 13:24:34)
+>>>>>> + Johan and Bjorn for FYI
+>>>>>>
+>>>>>> On 3/28/2024 1:04 PM, Kuogee Hsieh wrote:
+>>>>>>> For internal HPD case, hpd_event_thread is created to handle HPD
+>>>>>>> interrupts generated by HPD block of DP controller. It converts
+>>>>>>> HPD interrupts into events and executed them under hpd_event_thread
+>>>>>>> context. For external HPD case, HPD events is delivered by way of
+>>>>>>> dp_bridge_hpd_notify() under thread context. Since they are executed
+>>>>>>> under thread context already, there is no reason to hand over those
+>>>>>>> events to hpd_event_thread. Hence dp_hpd_plug_handle() and
+>>>>>>> dp_hpd_unplug_hanlde() are called directly at dp_bridge_hpd_notify().
+>>>>>>>
+>>>>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>>>>>> ---
+>>>>>>>      drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
+>>>>>>>      1 file changed, 3 insertions(+), 2 deletions(-)
+>>>>>>>
+>>>>>>
+>>>>>> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
+>>>>>
+>>>>> Is this a bug fix or an optimization? The commit text doesn't tell me.
+>>>>>
+>>>>
+>>>> I would say both.
+>>>>
+>>>> optimization as it avoids the need to go through the hpd_event thread
+>>>> processing.
+>>>>
+>>>> bug fix because once you go through the hpd event thread processing it
+>>>> exposes and often breaks the already fragile hpd handling state machine
+>>>> which can be avoided in this case.
+>>>
+>>> Please add a description for the particular issue that was observed
+>>> and how it is fixed by the patch.
+>>>
+>>> Otherwise consider there to be an implicit NAK for all HPD-related
+>>> patches unless it is a series that moves link training to the enable
+>>> path and drops the HPD state machine completely.
+>>>
+>>> I really mean it. We should stop beating a dead horse unless there is
+>>> a grave bug that must be fixed.
+>>>
+>>
+>> I think the commit message is explaining the issue well enough.
+>>
+>> This was not fixing any issue we saw to explain you the exact scenario
+>> of things which happened but this is just from code walkthrough.
+>>
+>> Like kuogee wrote, hpd event thread was there so handle events coming
+>> out of the hpd_isr for internal hpd cases. For the hpd_notify coming
+>> from pmic_glink or any other extnernal hpd cases, there is no need to
+>> put this through the hpd event thread because this will only make things
+>> worse of exposing the race conditions of the state machine.
+>>
+>> Moving link training to enable and removal of hpd event thread will be
+>> worked on but delaying obvious things we can fix does not make sense.
 > 
-> Is there some advantage to doing this?  You need to re-write the commit
-> message to give us some clue why you are doing this.
-> 
-> regards,
-> dan carpenter
+>  From the commit message this feels like an optimisation rather than a
+> fix. And granted the fragility of the HPD state machine, I'd prefer to
+> stay away from optimisations. As far as I understood from the history
+> of the last revert, we'd better make sure that HPD handling goes only
+> through the HPD event thread.
 > 
 
-Hello
-Apologies for the errors. I am working on a newer version, instilling
-all the corrections. Thanks for the feedback.
+I think you are mixing the two. We tried to send the events through 
+DRM's hpd_notify which ended up in a bad way and btw, thats still not 
+resolved even though I have seen reports that things are fine with the 
+revert, we are consistently able to see us ending up in a disconnected 
+state with all the reverts and fixes in our x1e80100 DP setup.
+
+I plan to investigate that issue properly in the next week and try to 
+make some sense of it all.
+
+In fact, this patch is removing one more user of the hpd event thread 
+which is the direction in which we all want to head towards.
+
+On whether this is an optimization or a bug fix. I think by avoiding hpd 
+event thread (which should have never been used for hpd_notify updates, 
+hence a bug) we are avoiding the possibility of more race conditions.
+
+So, this has my R-b and it holds. Upto you.
 
 
