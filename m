@@ -1,54 +1,61 @@
-Return-Path: <linux-kernel+bounces-124645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06152891AF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:14:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6A75891AF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:14:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A37B1F29EF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:14:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60D332884C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FBAF161920;
-	Fri, 29 Mar 2024 12:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F06516193E;
+	Fri, 29 Mar 2024 12:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KyreAyEV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bcy7+9Gl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448FE16190E;
-	Fri, 29 Mar 2024 12:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605E51411E7;
+	Fri, 29 Mar 2024 12:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715619; cv=none; b=ewvxCIuuHIr63hOyG18NLRzmL/D58GiDQ/NMi6dS24ZGtP4NR7gftHdaYJKezeZDbhdYTW2nmt+okZYfWCoGwrbUbqEwtG4DmqgmtTh2Hmi3GMwrvT+lHurh448j0wPgSuryIWIToE/43JgfZ4wAyTVwYF6bBFm0ZAwzvu2/6+U=
+	t=1711715621; cv=none; b=ZMQ5gnv7FuC3tkCOXidjT6vkxQRrbPfeHf0hDOXoUuLI3rWDiD2LI0R1ce8gmWvL8dsOgieMXysryzeEF/4RRGztAjR/q/g3hw4X42LDaRqxNJsmw6Ep8WZRjC7/34UINSsMJjViw5CJOUS26nm1LuSP8ijoxtsM5m/tLkzfwIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715619; c=relaxed/simple;
-	bh=Kdyszlwq5JIK92eTlec4mtX/vVJlwIS0I5GaYJWP4a0=;
+	s=arc-20240116; t=1711715621; c=relaxed/simple;
+	bh=MCkMVDf5Ip4inIH4vZxBsnZ8Qqj5ZERiqhWz/wnMpDU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T7Ihg5NOWYeBHbRnAiITuMa6wvqXwdVvUwsqmWUy0vXfRwZeKiZOhvyQXgxMmQa1zbAa5KfF91wjb0PKMKNC/EXA286ZOzq65t0/ZDZuad87C6m2UKQA1Czez6ItgQQVeyfYtm936SLHAHTA74R3WocoVrzhOOIJPGQJzmVfiCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KyreAyEV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85556C43390;
-	Fri, 29 Mar 2024 12:33:38 +0000 (UTC)
+	 MIME-Version; b=kzTSQaeeWze/XmtGS2QGckwUGgA+kK8A0hFy3W+NG0bPSO8x5UULXK4Pj6ZPWOg37C4Yr3NJ7Y1iwt+h2yb+yDqI0RWfiZf6gcwqjuopdHBfCYgKhZwzhz8rsgEx38kMF9Zphi6UOvNaAb+shIGg83zzotPirZb8DTHECMLCkRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bcy7+9Gl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A695C433F1;
+	Fri, 29 Mar 2024 12:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715619;
-	bh=Kdyszlwq5JIK92eTlec4mtX/vVJlwIS0I5GaYJWP4a0=;
+	s=k20201202; t=1711715620;
+	bh=MCkMVDf5Ip4inIH4vZxBsnZ8Qqj5ZERiqhWz/wnMpDU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KyreAyEVJmGYD/x/vr52Ukq6ycN3knr8JzCKysnLDpEVTyO97c7w/NSDsKVcPXtc+
-	 duE7utfrqppfnw4768qqNQ3fVLsNfPTjyieLO+KaTsWAJ4374oBVBTVLx0PtoARj00
-	 PmGR9R/yAly3X+KIoV7DsCG7Gg9pUxRO0NoVMXOscf9/APZA6mXVo2ktDiW8/8TtTQ
-	 SktyTn2JIYc6ley6PtIYnIk+VQ/pGfTHQUisW+i2Dudsgit2/4Spj9EzqwZBR6H1Vn
-	 20zYjf6ZXeQtKo9kpvc+XQAJjKr3GD9upPGoNSfdpmZx23jOPSRquznbgfntjccy/u
-	 WvWRZ3eaWZuhg==
+	b=bcy7+9GlVQOaHJNr9aS6qrZLAPbBAKb/aNYg0aaKLSNFy+e6RohPO6Sc2NgpWTida
+	 yiVjWzaP3ibqsocxC3u5k4V+adMvEkMxY9kNPipYjWMYAr39qoHmiipQMVuS3Y3WfR
+	 CJRYMn5o9UXnGPUaAIdSZI0As/eYRAAT80m4FlG3Ad6/rv5qxn9qtql56Xca3azoPY
+	 J+jcWfCoP3KyRCiGD9gz5VaWFrOIXV6uHyFmxXpFETk1ezgpSRSF3Qx/U3k28qDEqD
+	 J5Hguh3WQmrG84Q5f54ygRqOzAJB1DeXmul+VZmy0J6B8tUYSxZCC9Vbg1NtY0hOYH
+	 7aZaHdg720XBg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.15 11/20] tools/power x86_energy_perf_policy: Fix file leak in get_pkg_num()
-Date: Fri, 29 Mar 2024 08:32:59 -0400
-Message-ID: <20240329123316.3085691-11-sashal@kernel.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Sasha Levin <sashal@kernel.org>,
+	Jose.Abreu@synopsys.com,
+	hkallweit1@gmail.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 12/20] net: pcs: xpcs: Return EINVAL in the internal methods
+Date: Fri, 29 Mar 2024 08:33:00 -0400
+Message-ID: <20240329123316.3085691-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123316.3085691-1-sashal@kernel.org>
 References: <20240329123316.3085691-1-sashal@kernel.org>
@@ -63,33 +70,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+From: Serge Semin <fancer.lancer@gmail.com>
 
-[ Upstream commit f85450f134f0b4ca7e042dc3dc89155656a2299d ]
+[ Upstream commit f5151005d379d9ce42e327fd3b2d2aaef61cda81 ]
 
-In function get_pkg_num() if fopen_or_die() succeeds it returns a file
-pointer to be used. But fclose() is never called before returning from
-the function.
+In particular the xpcs_soft_reset() and xpcs_do_config() functions
+currently return -1 if invalid auto-negotiation mode is specified. That
+value might be then passed to the generic kernel subsystems which require
+a standard kernel errno value. Even though the erroneous conditions are
+very specific (memory corruption or buggy driver implementation) using a
+hard-coded -1 literal doesn't seem correct anyway especially when it comes
+to passing it higher to the network subsystem or printing to the system
+log.  Convert the hard-coded error values to -EINVAL then.
 
-Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Tested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/pcs/pcs-xpcs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
-index 5fd9e594079cf..ebda9c366b2ba 100644
---- a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
-+++ b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
-@@ -1241,6 +1241,7 @@ unsigned int get_pkg_num(int cpu)
- 	retval = fscanf(fp, "%d\n", &pkg);
- 	if (retval != 1)
- 		errx(1, "%s: failed to parse", pathname);
-+	fclose(fp);
- 	return pkg;
- }
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index 556ca98843565..ab382496c3a83 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -242,7 +242,7 @@ static int xpcs_soft_reset(struct dw_xpcs *xpcs,
+ 		dev = MDIO_MMD_VEND2;
+ 		break;
+ 	default:
+-		return -1;
++		return -EINVAL;
+ 	}
  
+ 	ret = xpcs_write(xpcs, dev, MDIO_CTRL1, MDIO_CTRL1_RESET);
+@@ -808,7 +808,7 @@ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+ 			return ret;
+ 		break;
+ 	default:
+-		return -1;
++		return -EINVAL;
+ 	}
+ 
+ 	if (compat->pma_config) {
 -- 
 2.43.0
 
