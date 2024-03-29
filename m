@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-124920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829AC891FAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:09:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A67ED891F7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:05:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F6B4B32CE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:26:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BADE4B2F291
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0F214C598;
-	Fri, 29 Mar 2024 12:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF091A2B8C;
+	Fri, 29 Mar 2024 12:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dl8Kg3jq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gp32yP2E"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9038D36ACCA;
-	Fri, 29 Mar 2024 12:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CCB21A2B72;
+	Fri, 29 Mar 2024 12:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716432; cv=none; b=I5UC/EG77yjyKLJ2n9Mccbti6caPQ0qSo0a4RCuyhwMpSI6ZWbsI0pzbyLaBmvYmiP25UJp1Wf6KWK/OzpPnFFw2gPpvYXjIGFkJSCEekM6r9kQiTOWmZUTdgQEwp8zhDIXiwy+InbjTVJNufGbHKHt5juBPcgf46l0NwXZogjU=
+	t=1711716437; cv=none; b=R7opnKyYflDU66w8BIVgFqZf76s+v9TKZV+/TYI9P6Iea9U7S/GPzpX9lrxY+NyftwLfoEaY9TkYK6WN3utuGAjDx+OZNXZJ++4KpKr2z/6pgLcL+7moyHflMMlnrzvutPkduYP1bBt9DmFxWvEiMfrsBHKnk2x4c8H4q8d3ssI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716432; c=relaxed/simple;
-	bh=iYeY20XcboZyv15kHL+2YC404iUv3HZCguH9uan6L2w=;
+	s=arc-20240116; t=1711716437; c=relaxed/simple;
+	bh=KWF5woA40Y3P0zjBP6wmfQIo/JmwcFCBoVMPAt+k7cU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kmMPNWX1KMkqIbKDVABvKwPVWD88P6CWph048b1mq/RIsj/HCgA7e4UxzW5434eIGBd1bq9hjg0fusbPG/c7Bi//EYm+KU1sRySZQ/xiy0hUDaBiPVapYbT/vZ/hlRCFD7LNaGMMVKsKOzOjhEVdUspp/e7lrc/dBUbjb0YE0bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dl8Kg3jq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65877C43609;
-	Fri, 29 Mar 2024 12:47:11 +0000 (UTC)
+	 MIME-Version; b=oqeBXsFzDVPGOc0/JrO7azhN8ZyLP8U2+mPZhIDh8nJu2cIF/IAYMxGoUiQjvQFhQnX27fx9jGkUlhXlUN/dYpZH8smfC66Ej0ITZqDmtNiFJ6vXfnxJVYKgQ0cLHKSg6YDEYAbcXdXAdq1h32+71L57x27sydQ3ImgtfYoQvOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gp32yP2E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72AA7C433B1;
+	Fri, 29 Mar 2024 12:47:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716432;
-	bh=iYeY20XcboZyv15kHL+2YC404iUv3HZCguH9uan6L2w=;
+	s=k20201202; t=1711716437;
+	bh=KWF5woA40Y3P0zjBP6wmfQIo/JmwcFCBoVMPAt+k7cU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Dl8Kg3jqpKDiQg+ffB01F+mvNGSjGXn42TbPWP86hUZMADAeXqSa7ixDLM1ldcXFe
-	 DTZ48YjsPX1Lm8Gy86Ypuq0Ktxu42/FLiXHIhZ4EgUjGBzdP8L0NYv81V4WcPUG/la
-	 f5wTjFxY1O+MPS5MNJSvy921/RWxf95yfvzEqX/0zV64ULlP676C55VOrQvXU+m6FA
-	 jAgY6QW/xck1FEKJry/fq2OiSu3UkWpmvy8KEsrQ+dXxeBbnja1lK0jSL654PFfAlx
-	 NzO1RrwGXArpnrSWnDCqnWf7YpczUB73vJzzMfN+a2yPnFkMedizEAzFH0LPhbuMiP
-	 A7wPzEBxxDMDw==
+	b=Gp32yP2ECJOWsiDxxf69xsDyKhaSl/UgFeZ1VXOci2+CEsq93oNrWldrMfFuzV6hk
+	 LB9mIiVBYZCQN3LDh5IDNxXrkMm7JW5fmyeIwST8BI6lson47K1pJ2sJDssF6XC2L4
+	 Xt3F3w1tXZi4Ho+yat6SuW1/biMD+DaDU9NHilPCDnAZVS/SqbieEBmvEJldF3CLWO
+	 TGK65VXWvKSY/j9OCs2WlgPlrFE5G6jmkXng5+MtumrvWzIMcVt4jc1wJYQM4KrNfj
+	 v0KSExnhwD5WklO9UKWGB1WdhjsREs44JEg8+eKmL4CesqD17hlIqOs+iV4+L5VbIs
+	 ivCg1yPRv5O9g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Markuss Broks <markuss.broks@gmail.com>,
-	Karel Balej <balejk@matfyz.cz>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+Cc: David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Anand Jain <anand.jain@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 36/52] input/touchscreen: imagis: Correct the maximum touch area value
-Date: Fri, 29 Mar 2024 08:45:30 -0400
-Message-ID: <20240329124605.3091273-36-sashal@kernel.org>
+	clm@fb.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 40/52] btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()
+Date: Fri, 29 Mar 2024 08:45:34 -0400
+Message-ID: <20240329124605.3091273-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
 References: <20240329124605.3091273-1-sashal@kernel.org>
@@ -65,35 +66,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: Markuss Broks <markuss.broks@gmail.com>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 54a62ed17a705ef1ac80ebca2b62136b19243e19 ]
+[ Upstream commit 7411055db5ce64f836aaffd422396af0075fdc99 ]
 
-As specified in downstream IST3038B driver and proved by testing,
-the correct maximum reported value of touch area is 16.
+The unhandled case in btrfs_relocate_sys_chunks() loop is a corruption,
+as it could be caused only by two impossible conditions:
 
-Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
-Signed-off-by: Karel Balej <balejk@matfyz.cz>
-Link: https://lore.kernel.org/r/20240301164659.13240-2-karelb@gimli.ms.mff.cuni.cz
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+- at first the search key is set up to look for a chunk tree item, with
+  offset -1, this is an inexact search and the key->offset will contain
+  the correct offset upon a successful search, a valid chunk tree item
+  cannot have an offset -1
+
+- after first successful search, the found_key corresponds to a chunk
+  item, the offset is decremented by 1 before the next loop, it's
+  impossible to find a chunk item there due to alignment and size
+  constraints
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/imagis.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/volumes.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscreen/imagis.c
-index e2697e6c6d2a0..b667914a44f1d 100644
---- a/drivers/input/touchscreen/imagis.c
-+++ b/drivers/input/touchscreen/imagis.c
-@@ -210,7 +210,7 @@ static int imagis_init_input_dev(struct imagis_ts *ts)
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 6fc2d99270c18..06db09c20df2d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3381,7 +3381,17 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
+ 			mutex_unlock(&fs_info->reclaim_bgs_lock);
+ 			goto error;
+ 		}
+-		BUG_ON(ret == 0); /* Corruption */
++		if (ret == 0) {
++			/*
++			 * On the first search we would find chunk tree with
++			 * offset -1, which is not possible. On subsequent
++			 * loops this would find an existing item on an invalid
++			 * offset (one less than the previous one, wrong
++			 * alignment and size).
++			 */
++			ret = -EUCLEAN;
++			goto error;
++		}
  
- 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_X);
- 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_Y);
--	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 16, 0, 0);
- 
- 	touchscreen_parse_properties(input_dev, true, &ts->prop);
- 	if (!ts->prop.max_x || !ts->prop.max_y) {
+ 		ret = btrfs_previous_item(chunk_root, path, key.objectid,
+ 					  key.type);
 -- 
 2.43.0
 
