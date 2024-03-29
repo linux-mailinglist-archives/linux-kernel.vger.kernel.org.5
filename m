@@ -1,135 +1,117 @@
-Return-Path: <linux-kernel+bounces-124356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA3DD89162B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:39:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E88989162F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07A0E1C231EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:39:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2014D2858B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96594D107;
-	Fri, 29 Mar 2024 09:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E507745971;
+	Fri, 29 Mar 2024 09:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O8N89VFC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gHj38MRq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B6839AE7
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E16922093;
+	Fri, 29 Mar 2024 09:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711705132; cv=none; b=L5mmJnk3T5W9KNKZo4H7bK/WE9tF8GXWIWTXD+AA/nQwZ8Mo5VLAlipxe2SH2GnIafPG1+TMKYIeZVqzszV6ehkiKPt+O3SGsjt5bzDGnLUPNm0PDrkAodY7j5r3GnYrtwNAf0fZU6SReXI5N1vt710Fr1/wzSwbRRaI4d+NcRU=
+	t=1711705170; cv=none; b=CrybszGNuGB8nbSMBDVQ5RCMj0SDBRWiiXe89AnPYuvMY2ife+jSpkjcMFT9J5Xo09Lw0x6MrM2ByoBs1qWrey6Fb2HyvFt0lqy4HtKbY3SAMF7uMESl7iL78w+3EPNnNa+PpO/KBfr3OAtzvAFiZcn20Aa58jxqo4WcvdT1KYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711705132; c=relaxed/simple;
-	bh=hlgRWAsqEYqPaeCmYoojJySYxpwBfhEhiWetVJsND38=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=FMmiRklaI35DCsu1jr+3E1oIlFD3mwczZAxshkvu9X4AP3vefCfYx0kAo0cRXM9NfHNFcUBU0MaZkWuQcqzYN3TJ5IWzyZbnGfEK4xpIRmML31zF3ZjYezFXqgaMs56NngU9btcGDjROtiVwo88fL3nQqBuZUmf9B4R3dw0nMr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O8N89VFC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711705129;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=9TfOEZSUpizBDk/7ZlbtcyuX+Zuz/XZGsV/0/N9TVsY=;
-	b=O8N89VFCnRmh2SH3ARo7U5V7v8l3aaDb5StQxXAeRkh4PT1w2uDMFh0XiXYvkUuBfiUssf
-	EaRpYe1s7tBOeHq+OHGbRJf0/O+00RmC8ZZGpfJOFSs7NPGpy3b2HHjD25iXmiFKIJgp8l
-	msj5mKLXzHVjFAn5Cx54oq+NB5bkuyw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-455-jz36XEyxNSOsNelDtdEUBA-1; Fri, 29 Mar 2024 05:38:45 -0400
-X-MC-Unique: jz36XEyxNSOsNelDtdEUBA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 718DD811E81;
-	Fri, 29 Mar 2024 09:38:45 +0000 (UTC)
-Received: from server.redhat.com (unknown [10.72.112.204])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6484D202451F;
-	Fri, 29 Mar 2024 09:38:42 +0000 (UTC)
-From: Cindy Lu <lulu@redhat.com>
-To: lulu@redhat.com,
-	mst@redhat.com,
-	jasowang@redhat.com,
-	virtualization@lists.linux-foundation.org,
+	s=arc-20240116; t=1711705170; c=relaxed/simple;
+	bh=Mm4Dxsw/XnK0vryR0/b2qb6rSQjEXbXIgtBX3y9Pv8w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FmQAW5QYmXT3DG9vBFytNXlqrr04muUr2W930oGuk9cKVKxQ/VMYAQHtthAYI8VT8efK6NZJN4rN0HJ7uDKF7vp0HXuquP2iCE4qJtyHNwseDMnBMioJeN/TUG5xHuWfnIpjCFPcU6g4LerL0aUWFpPEhiy60ppQDSdUy3xA1gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gHj38MRq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37E6CC433F1;
+	Fri, 29 Mar 2024 09:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711705169;
+	bh=Mm4Dxsw/XnK0vryR0/b2qb6rSQjEXbXIgtBX3y9Pv8w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gHj38MRqOFrlrs/UQEVC1HqBIFcQZRYGOVE+Pn8dnmkAHeNzuUIN05iVFRqaxqsEs
+	 l9gKszHqzlim1EGWBE8MQM5PIEOK4Fc7ha12O5Iz3ltYTbWAE6gc/8DB2j+1oRGE+Z
+	 k//RKUPiaAix+xzEN7+mN1+4Z6j9xK4sWhXLYg8I=
+Date: Fri, 29 Mar 2024 10:39:21 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Gong Ruiqi <gongruiqi1@huawei.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Jon Ringle <jringle@gridpoint.com>, linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v2] Documentation: Add reconnect process for VDUSE
-Date: Fri, 29 Mar 2024 17:38:25 +0800
-Message-ID: <20240329093832.140690-1-lulu@redhat.com>
+	Wang Weiyang <wangweiyang2@huawei.com>, stable@vger.kernel.org
+Subject: Re: [PATCH stable 5.10] serial: sc16is7xx: convert from _raw_ to
+ _noinc_ regmap functions for FIFO
+Message-ID: <2024032926-wielder-recreate-be4a@gregkh>
+References: <20240318025259.1412353-1-gongruiqi1@huawei.com>
+ <07a3c30d-5a81-4b99-8090-38753b650432@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07a3c30d-5a81-4b99-8090-38753b650432@huawei.com>
 
-Add a document explaining the reconnect process, including what the
-Userspace App needs to do and how it works with the kernel.
+On Mon, Mar 18, 2024 at 11:14:13AM +0800, Gong Ruiqi wrote:
+> Oops. + Cc stable@vger.kernel.org
+> 
+> On 2024/03/18 10:52, GONG, Ruiqi wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > commit dbf4ab821804df071c8b566d9813083125e6d97b upstream.
+> > 
+> > The SC16IS7XX IC supports a burst mode to access the FIFOs where the
+> > initial register address is sent ($00), followed by all the FIFO data
+> > without having to resend the register address each time. In this mode, the
+> > IC doesn't increment the register address for each R/W byte.
+> > 
+> > The regmap_raw_read() and regmap_raw_write() are functions which can
+> > perform IO over multiple registers. They are currently used to read/write
+> > from/to the FIFO, and although they operate correctly in this burst mode on
+> > the SPI bus, they would corrupt the regmap cache if it was not disabled
+> > manually. The reason is that when the R/W size is more than 1 byte, these
+> > functions assume that the register address is incremented and handle the
+> > cache accordingly.
+> > 
+> > Convert FIFO R/W functions to use the regmap _noinc_ versions in order to
+> > remove the manual cache control which was a workaround when using the
+> > _raw_ versions. FIFO registers are properly declared as volatile so
+> > cache will not be used/updated for FIFO accesses.
+> > 
+> > Fixes: dfeae619d781 ("serial: sc16is7xx")
+> > Cc:  <stable@vger.kernel.org>
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > Link: https://lore.kernel.org/r/20231211171353.2901416-6-hugo@hugovil.com
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+> > ---
+> > 
+> > The mainline commit dbf4ab821804 ("serial: sc16is7xx: convert from _raw_
+> > to _noinc_ regmap functions for FIFO") by Hugo has been assigned to be
+> > CVE-2023-52488, but for stable branches lower than 6.1 there's no
+> > official backport.
+> > 
+> > I made up this backport patch for 5.10, and its correctness has been
+> > confirmed in previous communication with Hugo. Let's publicize it and
+> > merge it into upstream.
 
-Signed-off-by: Cindy Lu <lulu@redhat.com>
----
- Documentation/userspace-api/vduse.rst | 41 +++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+I can not take this only in 5.10, it needs to also go into 5.15.y first,
+right?
 
-diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
-index bdb880e01132..f903aed714d1 100644
---- a/Documentation/userspace-api/vduse.rst
-+++ b/Documentation/userspace-api/vduse.rst
-@@ -231,3 +231,44 @@ able to start the dataplane processing as follows:
-    after the used ring is filled.
- 
- For more details on the uAPI, please see include/uapi/linux/vduse.h.
-+
-+HOW VDUSE devices reconnectoin works
-+------------------------------------
-+1. What is reconnection?
-+
-+   When the userspace application loads, it should establish a connection
-+   to the vduse kernel device. Sometimes,the userspace application exists,
-+   and we want to support its restart and connect to the kernel device again
-+
-+2. How can I support reconnection in a userspace application?
-+
-+2.1 During initialization, the userspace application should first verify the
-+    existence of the device "/dev/vduse/vduse_name".
-+    If it doesn't exist, it means this is the first-time for connection. goto step 2.2
-+    If it exists, it means this is a reconnection, and we should goto step 2.3
-+
-+2.2 Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-+    /dev/vduse/control.
-+    When ioctl(VDUSE_CREATE_DEV) is called, kernel allocates memory for
-+    the reconnect information. The total memory size is PAGE_SIZE*vq_mumber.
-+
-+2.3 Check if the information is suitable for reconnect
-+    If this is reconnection :
-+    Before attempting to reconnect, The userspace application needs to use the
-+    ioctl(VDUSE_DEV_GET_CONFIG, VDUSE_DEV_GET_STATUS, VDUSE_DEV_GET_FEATURES...)
-+    to get the information from kernel.
-+    Please review the information and confirm if it is suitable to reconnect.
-+
-+2.4 Userspace application needs to mmap the memory to userspace
-+    The userspace application requires mapping one page for every vq. These pages
-+    should be used to save vq-related information during system running. Additionally,
-+    the application must define its own structure to store information for reconnection.
-+
-+2.5 Completed the initialization and running the application.
-+    While the application is running, it is important to store relevant information
-+    about reconnections in mapped pages. When calling the ioctl VDUSE_VQ_GET_INFO to
-+    get vq information, it's necessary to check whether it's a reconnection. If it is
-+    a reconnection, the vq-related information must be get from the mapped pages.
-+
-+2.6 When the Userspace application exits, it is necessary to unmap all the
-+    pages for reconnection
--- 
-2.43.0
+Please resend a 5.15.y and this 5.10.y version when you have both of
+them (the 5.10.y version wasn't sent to stable@k.o so it's hard to track
+down), and we will be glad to take them both.
 
+thanks,
+
+greg k-h
 
