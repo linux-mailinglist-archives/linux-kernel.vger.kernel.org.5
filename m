@@ -1,84 +1,87 @@
-Return-Path: <linux-kernel+bounces-124220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC7338913FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:02:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB5A891408
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:14:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B7CD1F2339E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:02:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF303288F02
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0416B3D984;
-	Fri, 29 Mar 2024 07:02:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3D73FE2C;
+	Fri, 29 Mar 2024 07:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1WUMfvK"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="asHzqvwe"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980523D0BD
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB693FB97;
+	Fri, 29 Mar 2024 07:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711695726; cv=none; b=r5GhD6YMJaMRWQ/DooxAqcpHh3IMOA/mDGGwd8IVWE2ANvQ5LhKEsla1l6npsarauHcdThVuUoEOQ5tNEvQV6nsAdUlTuCL0SOZtLcnGTp9lNqcN2P9ZIQJe7z/ZIbKgxPHQcEJzrqdje/UAuJWlLQX6W7IoAEEPmVlk4pgTkEY=
+	t=1711696468; cv=none; b=clXGAbRHRBAWt/lEwaFxNtGNs4S3Dj3htsEcDbUvFIlk7FI+inbrc86VVHGNOfj23ndM3UwaRREIiH0iOcscwGMtKJRfqYVOg1gWR4xt+bEcippFj/sBtvZiSAmuGjqWgIxmgKkfgQd/Y5RDmmUgKW0ER3jaiubAOJGqH7zJSUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711695726; c=relaxed/simple;
-	bh=/T85BMWOBGyInSmentYuXLN5Xgh5VjFRGium8m9HyVg=;
+	s=arc-20240116; t=1711696468; c=relaxed/simple;
+	bh=XwpcPuEhfNnZeIlXZpZM8WFDw8TjiTSemeZAA/NgeZk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ugTMT3Yda/ZDYcZbSjYWiX2E5CWjluI6/qWBnW3SqXfFJofwDCwmS8AAXzfSro8am9y5kEYzgq0EZC3ItC3q8IWNLyS4Si+ZilyNxEeSsTkPrcMfFHXAVc43ib4nxG1qzk/tcj+WU+5dCAtga7mcfHmKC2g+jwZnXylYT2j1Hso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1WUMfvK; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso2482393a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711695723; x=1712300523; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KpYQ/V/QalATcuCFjtKzuSngXyEFzjLdj1ISHAQ06Dg=;
-        b=E1WUMfvKse1+bzyci6xWQjg4zWx2OxIlMG6p2BueQsGxiLxAHwV2r8ZNO6A8oHA/RB
-         jeZeQ1neBDL84YwC/cqXkVLQdlI0rIbAmteBmPvpKz33qTI3U7jAxzQK3FDdZEjP6Qlh
-         owoXXyNWn7W4AO/38Ui3YibTyW1HeNbliOzVoOeISdLCt5cUXuAztupscNSMRW0uwvdZ
-         cp8fr+wOe4r08sZ9OedQ/JSTmlcpYosUuBRACk1bxrYmTeObQ4h1Q3tLenX0GhmLhzDo
-         bddIKq7wbldHN30hEZITL7WS8roHDJKxFdfRx0Hx2h0W5r9cqs+4gDul1yNJgi1TlJSL
-         tAOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711695723; x=1712300523;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KpYQ/V/QalATcuCFjtKzuSngXyEFzjLdj1ISHAQ06Dg=;
-        b=r051J8Us2N8kEVipFLpby5gHt6Grgr24GwmSiSlflrEx0bkEgfud59fHYSIyY4YPtR
-         l9hihw0hOlcyUiKhvYe3SkRIpYDrbdKl9eM1l5/hUWl3mWvN4f02r5ISuEzQR4X+GA5I
-         s31MqcmIO8CNMqyh8z0co6xFRvNkeSB8f42V2t6F4nU/CGuxguhlEqpBXeP3gLn5onpG
-         Ce9oT/Si6JYWGjh4jAsMOUEm0OCQvsCLnpQu6Phjb0/1lWDGu+b+2aNTktpcgk6jI27G
-         VB4RQxSvqwzmtvxPhP4YGSPYh55cpfGBPL4jeBA0fu2ZWvYGYXS/vAgM/MENUj3MhJEh
-         xSbg==
-X-Forwarded-Encrypted: i=1; AJvYcCXH5CnWr2qsU9tM8e1gyBjVk2XK3XDIcMePjEmKJ0Wz6bzTsAfgphUDJcyUyOegNL8ryvldGoedWAMbCx5UgKVXo1GseVP5HQwOxpZN
-X-Gm-Message-State: AOJu0YwKaDMSymk0t+ZciGn/7sK6vcxOy5ypdd91PzsfCahDW65xL1Nu
-	59nWqBPRRgkw9/137MzNe1Wc/at5vREd5lQCf4I2igybt0ztXHfs
-X-Google-Smtp-Source: AGHT+IEtmwuSDRJQSY9qf6Yff5gbg1yfMCU/zUHVfR7m2l+sj18j4WaUo85gxqVYPn+V5uFhjmxMIg==
-X-Received: by 2002:a17:906:27c4:b0:a4e:2e14:f75e with SMTP id k4-20020a17090627c400b00a4e2e14f75emr689600ejc.77.1711695722438;
-        Fri, 29 Mar 2024 00:02:02 -0700 (PDT)
-Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
-        by smtp.gmail.com with ESMTPSA id z4-20020a170906714400b00a469e55767dsm1590838ejj.214.2024.03.29.00.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:02:01 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 29 Mar 2024 08:01:58 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: fenghua.yu@intel.com, bp@alien8.de, james.morse@arm.com,
-	tony.luck@intel.com, peternewman@google.com, babu.moger@amd.com,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, james.greenhalgh@arm.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/resctrl: Fix uninitialized memory read when last CPU
- of domain goes offline
-Message-ID: <ZgZnZgfDUWlhQQxW@gmail.com>
-References: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dwtyD7h+Wmd4k56oaqV/rE6SZxVMmjmUM3sKWMBTGsY9DhHNWJPARQlNDCuHnZIpGV8i/XXq+idwfnbQgi4af8xguKDlZMgXubxTJVzTTIPz4xAH43tbmcx9Iad2W5vhgmJucryRWru1QclSZGQ1EO8YQDISCRND/ZP2dmNJf20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=asHzqvwe; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42T6qls9025950;
+	Fri, 29 Mar 2024 07:14:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=g/O51oeJGtQl1vH1UnX1c2dlOHF4t0y6H623R0jRn4c=;
+ b=asHzqvwex1ok7qCXNJ/MzzD70HxZWsEOGOMAuYxttzkwaI8A9i4ik8bpFYxQLNHFW26z
+ q3G0cLIU8tNMNbP6y/YEAYcHP7vH8Pz9bHzDIjat8fEVetED0cPQAXvTos3aKmB8lWN3
+ oSjJ+R/bCD0UcLBmbNJ/e6zO5NDN7lbQj0Tw+UbePOz4Szxl0ZarHYfib3z/sRIu0YmB
+ e13rSQtTGAs0EkAYXeb41QZoDN0GlgG/dIonYmuutLftXwQC7E/QZriUVZl/Os2ZEJ4I
+ AnnR3vvfrE1uuqh3CGXitRws+RuY3GnSNq/6/WBKLV2et+zEg6p3R6qCkonKYTBh1ZB2 Jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rrng18x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:14:14 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42T7EDt5031473;
+	Fri, 29 Mar 2024 07:14:13 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rrng18v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:14:13 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42T65k56012975;
+	Fri, 29 Mar 2024 07:14:13 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x29t12sh0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:14:12 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42T7E8sv45809920
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Mar 2024 07:14:11 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DA6392004B;
+	Fri, 29 Mar 2024 07:14:08 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 376912004D;
+	Fri, 29 Mar 2024 07:14:07 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.115.153])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 29 Mar 2024 07:14:07 +0000 (GMT)
+Date: Fri, 29 Mar 2024 12:44:04 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jack@suse.cz, ritesh.list@gmail.com
+Subject: Re: [PATCH 5/5] ext4: expand next_linear_group to remove repeat
+ check for linear scan.
+Message-ID: <ZgZqPJbEBG09dzSh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
+ <20240326213823.528302-6-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,58 +90,140 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
+In-Reply-To: <20240326213823.528302-6-shikemeng@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eyKq2AJ_nUi955UZeqJaSicD4fLNOCZu
+X-Proofpoint-ORIG-GUID: ezamj0hqSWa2mObJbOyAsOLXMamtGcx4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403290060
 
-
-* Reinette Chatre <reinette.chatre@intel.com> wrote:
-
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index c99f26ebe7a6..4f9ef35626a7 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -85,6 +85,10 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
->  	if (cpu < nr_cpu_ids && !tick_nohz_full_cpu(cpu))
->  		return cpu;
+On Wed, Mar 27, 2024 at 05:38:23AM +0800, Kemeng Shi wrote:
+> Expand next_linear_group to remove repat check for linear scan.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 37 ++++++-------------------------------
+>  1 file changed, 6 insertions(+), 31 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 0f8a34513bf6..561780a274cd 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1075,31 +1075,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
+>   return 1;
+>  }
 >  
-> +	/* Only continue if tick_nohz_full_mask has been initialized. */
-> +	if (!tick_nohz_full_enabled())
-> +		return cpu;
-> +
+> -/*
+> - * Return next linear group for allocation. If linear traversal should not be
+> - * performed, this function just returns the same group
+> - */
+> -static ext4_group_t
+> -next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
+> -     ext4_group_t ngroups)
+> -{
+> - if (!should_optimize_scan(ac))
+> -   goto inc_and_return;
+> -
+> - if (ac->ac_groups_linear_remaining) {
+> -   ac->ac_groups_linear_remaining--;
+> -   goto inc_and_return;
+> - }
+> -
+> - return group;
+> -inc_and_return:
+> - /*
+> -  * Artificially restricted ngroups for non-extent
+> -  * files makes group > ngroups possible on first loop.
+> -  */
+> - return group + 1 >= ngroups ? 0 : group + 1;
+> -}
+> -
+>  /*
+>   * ext4_mb_choose_next_group: choose next group for allocation.
+>   *
+> @@ -1118,12 +1093,12 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
+>  {
+>   *new_cr = ac->ac_criteria;
+>  
+> - if (!should_optimize_scan(ac) || ac->ac_groups_linear_remaining) {
+> -   *group = next_linear_group(ac, *group, ngroups);
+> -   return;
+> - }
+> -
+> - if (*new_cr == CR_POWER2_ALIGNED) {
+> + if (!should_optimize_scan(ac))
+> +   *group = *group + 1 >= ngroups ? 0 : *group + 1;
+> + else if (ac->ac_groups_linear_remaining) {
+> +   ac->ac_groups_linear_remaining--;
+> +   *group = *group + 1 >= ngroups ? 0 : *group + 1;
+> + } else if (*new_cr == CR_POWER2_ALIGNED) {
 
-So we already have this a few lines up:
 
-        if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
-                return cpu;
+Hi Kemeng, thanks for the cleanups
 
-And we can combine the two checks into a single one, with the patch 
-below, right?
+I feel that open coding this logic and having a single if for linear scan and
+non linear scan cases is making the code a bit more harder to follow and we are
+losing some comments as well.
 
-Untested.
+Since our main aim is to avoid the double checking, maybe we can keep
+next_linear_group() strictly for getting the next linear group correctly and
+rest of the checks outside. So something like:
 
-Thanks,
+static ext4_group_t
+next_linear_group(ext4_group_t group, ext4_group_t ngroups)
+{
 
-	Ingo
+  /*
+   * Artificially restricted ngroups for non-extent
+   * files makes group > ngroups possible on first loop.
+   */
+  return group + 1 >= ngroups ? 0 : group + 1;
+}
 
-==============>
+static void ext4_mb_choose_next_group(...)
+{
+  ...
 
- Signed-off-by: Ingo Molnar <mingo@kernel.org>
+  /*
+   * Fallback to linear scan when optimized scanning is disabled
+   */
+  if (!should_optimize_scan(ac)) {
+    *group = next_linear_group(*group, ngroups);
+    return;
+  }
+
+  /*
+   * Optimized scanning can return non adjacent groups which can cause
+   * seek overhead for rotational disks. So try few linear groups before 
+   * trying optimized scan.
+   */
+  if (ac->ac_groups_linear_remaining) {
+    *group = next_linear_group(*group, ngroups);
+    ac->ac_groups_linear_remaining--;
+    return;
+  }
+  
+  ...
+}
+
+Let me know your thought. 
+
+Regards,
+ojaswin
+
+>     ext4_mb_choose_next_group_p2_aligned(ac, new_cr, group);
+>   } else if (*new_cr == CR_GOAL_LEN_FAST) {
+>     ext4_mb_choose_next_group_goal_fast(ac, new_cr, group);
+> -- 
+> 2.30.0
+> 
 
 
- arch/x86/kernel/cpu/resctrl/internal.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index c99f26ebe7a6..1a8687f8073a 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -78,7 +78,8 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
- 	else
- 		cpu = cpumask_any_but(mask, exclude_cpu);
- 
--	if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
-+	/* Only continue if tick_nohz_full_mask has been initialized. */
-+	if (!tick_nohz_full_enabled())
- 		return cpu;
- 
- 	/* If the CPU picked isn't marked nohz_full nothing more needs doing. */
 
