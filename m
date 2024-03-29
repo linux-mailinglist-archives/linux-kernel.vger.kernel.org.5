@@ -1,110 +1,291 @@
-Return-Path: <linux-kernel+bounces-125531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7779A8927DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:36:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B04C38927E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12D821F22225
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:36:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D29491C20C02
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A280D13E410;
-	Fri, 29 Mar 2024 23:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5CDC13E403;
+	Fri, 29 Mar 2024 23:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e7slhIF2"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AhiK0DU8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8544F64B
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 23:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DD61D699;
+	Fri, 29 Mar 2024 23:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711755390; cv=none; b=B2xBJXyAF+xCt+7PkGMm+3ww9E4DVix9mHcowghTX0V/nXMhpISRxayOFPGVgpnUrpHLbXMlK7k6kdGyGEGV8ulPsOxkFYFRUYb9sXDCqDPQOyRRrEcQvDfCudZghpB/0wU2d0CM0LTGX1jGjMRl7WAq6bZNw1s6hTinT2XkJ/4=
+	t=1711756132; cv=none; b=SF4m3CYNO1OZD12jmQXNicFoc7BeoROnLm7qAFNHpo35LKqi80WPG6FB00lpmPeP4fztY53O56q5oCScnhf9sYF08QWP6MWIPkceWSN5dtzms9KtBrwZWfTrh6kVU1cFHzpq9OVwDr+LcuJdUNaaajBHC/ZbeWsVgvj7B9xbStk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711755390; c=relaxed/simple;
-	bh=z3ws0GiqfaPCvaP9VcCCnewH75CZLc5KkLizkP97z2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KJW4Rb3Kbor/4HdKy2y3CqP7fqL3NBUHIiSEb5AQEvNG2+c4duGj1J1doGsmAgsBSZct0OoikS1/9a9ZmjOAy99KmuDwgGEHYl8OXEeG8tmgpYPJE3qRcNSJAMs0Zz9OMGUazuN4yhqLI6sqtvq7EZ+iKMZab1yttjOrLtYPfTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e7slhIF2; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso1992031276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711755387; x=1712360187; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z3ws0GiqfaPCvaP9VcCCnewH75CZLc5KkLizkP97z2M=;
-        b=e7slhIF2Poej7FfS4d6SxKo+L8d3oJBxPdhX/JSz81GDut3kwXj8ACCLiiU1snlDk+
-         mslJZOzdPbvcwkTPviA7hUHB/tPhiQ1Xlf1BP9A7EK8vlm3xa5NBOAUzcUfSr5GFGjcL
-         5jV6jjvh4gWx+3TE0XLgMULCBfbEh4vJjesOqo2L2oN+zAnkKrE3uPynyFYqUBxhUTLr
-         iKYDdgJ7bq39AeO36XKMM7zvRBuHjCgJXrJEkAyXffqAhqwPDi4M/da7tDaLaMjQL0vj
-         kqyd+ABm5eV19N57a6hx5IgymvNtGECZ/kzCfl5iNon11htgh1MwsDVMRDFRiOrJIqJc
-         +7sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711755387; x=1712360187;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z3ws0GiqfaPCvaP9VcCCnewH75CZLc5KkLizkP97z2M=;
-        b=ZJDVVOGY0v6/R+sQ5xazvtAaIdsOGahBXqCEdiv9TKOt3yDmD0tCFsbxi3q7Ox9+Mi
-         MVNVaDL45rdyUftIFjF986SpTNtwewO3aGSWXRyuSCrOBajDyOEqdPeZy3QLOcO5sXE+
-         qIRsN+t9mbYVIbToYDS2oJdUbowWNK/dUsWkKRlTn/I/mROl0lo4OVf/BtbK+OzobArk
-         kUbZxxS//o0ZFAZ0gbI2XqR4odElbSM9+GY1BVYkfdav/4hpayDpPrPKKxqDvt92vgAW
-         Oa3QgL/rE05zAKlhYJ4jYoQzzjK5s5z0rsWNAHErRXJdUFlLwrHc6lRkRdkaJp7GfW5q
-         2kKw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1oRf6X+rz1adxHz/Rx5Aw6VZxnP/06arJ0MykOVicHcPu6cQlr2EM3K2goE2NGfJ4SGo1eu6VqahnnqM3fvfPs0CNdWQbCE/SL5E7
-X-Gm-Message-State: AOJu0YwPZlEPSsE9CXIzpl9b0zwG9B6PIh58vE5bAysjrQAF7lq2FD4L
-	82NEkfW6+1XpfXQFdOgwLIulSaGJClWhP+3YlGnFh+Rqcey4JQBxgdLAIaokvgTNrUWyykDCGTR
-	fnvbUMrwEWRISboXoKrappA0eVbcsWCtBP/h7
-X-Google-Smtp-Source: AGHT+IGJk7NU8MrL8Rai4C8fdDlc24klJyWnbefpAnU4Fv6NNUTsRsocqC1LxHZ94PST37mhkloThVc9PuLt5FEG9B4=
-X-Received: by 2002:a25:f912:0:b0:dc7:494e:ff33 with SMTP id
- q18-20020a25f912000000b00dc7494eff33mr2512234ybe.7.1711755387188; Fri, 29 Mar
- 2024 16:36:27 -0700 (PDT)
+	s=arc-20240116; t=1711756132; c=relaxed/simple;
+	bh=rRbRBbINrELqiLSrluBakz7n766c7cLHG1AUcbdMyjQ=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Wqn7MLGS9dFSujvURbjcqRWd4D5jsVc3OPUKvbCG9oXQldciHWEJJcuoQD2TLzDYwk5O8zcVdIIW1k9hhH82qlJrX6ZRPPlYQOHRSbfp91annZ7lWkbbEIwIHJXqumAWbBGV0AlWESIqaCtS9X0/0p0zXhV9e0QPhLeoEDS30ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AhiK0DU8; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711756130; x=1743292130;
+  h=subject:from:to:cc:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=rRbRBbINrELqiLSrluBakz7n766c7cLHG1AUcbdMyjQ=;
+  b=AhiK0DU8hEjeAQ3qQPDbI61KOdAEaYIklXLoxGog/s66YANpJ0yKatIa
+   7JAQIveX8Ib0eF6PUQ/vosHplJ5lWLSQ9ge69gPhtJJ6yXKxRt21hq6ow
+   gGYcgesEPAKC5G5jcSj65AE6zphuHciIpRZ2mSKOOiMSkpjvx2jH93YbX
+   Crgp6mGzL15uIHd8/aqU9ZjdmO0bEfjCkG4KHZG1Nc5WmBAhiHa9L8fy0
+   ELqrPPIsjdmCli2W5MrkAKibJK/K3sG4etyj84qTGKywalvYmuErPXGRd
+   lfjY+5HzBuq2fPGJfjsgWhk1Sx30UpqxmA/B8WG6nO2YdL4S5OPIWYY7R
+   Q==;
+X-CSE-ConnectionGUID: Gv/oeJWdSha8r+tUKCXzHQ==
+X-CSE-MsgGUID: dZmZO9beQreQyD1eRO1ctw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="9906945"
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="9906945"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 16:48:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="17000663"
+Received: from mduggina-mobl1.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.209.100.140])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 16:48:48 -0700
+Subject: [PATCH v3] cleanup: Add usage and style documentation
+From: Dan Williams <dan.j.williams@intel.com>
+To: peterz@infradead.org, torvalds@linux-foundation.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Ilpo =?utf-8?b?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+ Lukas Wunner <lukas@wunner.de>, Jonathan Corbet <corbet@lwn.net>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Date: Fri, 29 Mar 2024 16:48:48 -0700
+Message-ID: <171175585714.2192972.12661675876300167762.stgit@dwillia2-xfh.jf.intel.com>
+In-Reply-To: <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
+References: <171140738438.1574931.15717256954707430472.stgit@dwillia2-xfh.jf.intel.com>
+User-Agent: StGit/0.18-3-g996c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327022903.776-1-justinjiang@vivo.com>
-In-Reply-To: <20240327022903.776-1-justinjiang@vivo.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 29 Mar 2024 16:36:15 -0700
-Message-ID: <CABdmKX1swVO1=6cs+CW_g2g4g7woB5-Ks1gBzCA+iLcvpLmkvQ@mail.gmail.com>
-Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
-To: Zhiguo Jiang <justinjiang@vivo.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
-	opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 7:29=E2=80=AFPM Zhiguo Jiang <justinjiang@vivo.com>=
- wrote:
->
-> The issue is a UAF issue of dmabuf file fd. Throght debugging, we found
-> that the dmabuf file fd is added to the epoll event listener list, and
-> when it is released, it is not removed from the epoll list, which leads
-> to the UAF(Use-After-Free) issue.
->
-> The UAF issue can be solved by checking dmabuf file->f_count value and
-> skipping the poll operation for the closed dmabuf file in the
-> dma_buf_poll(). We have tested this solved patch multiple times and
-> have not reproduced the uaf issue.
->
+When proposing that PCI grow some new cleanup helpers for pci_dev_put()
+and pci_dev_{lock,unlock} [1], Bjorn had some fundamental questions
+about expectations and best practices. Upon reviewing an updated
+changelog with those details he recommended adding them to documentation
+in the header file itself.
 
-Hi Zhiguo,
+Add that documentation and link it into the rendering for
+Documentation/core-api/.
 
-What is the most recent kernel version you've seen the bug on?
+Link: http://lore.kernel.org/r/20240104183218.GA1820872@bhelgaas [1]
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Cc: Lukas Wunner <lukas@wunner.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+Changes since v2:
+* remove the unnecessary newlines around code examples further reducing
+  the visual interruption of RST metadata (Jon)
+* Fix a missing FILO=>LIFO conversion
+* Fix a bug in the example
+* Collect Jonathan's reviewed-by
 
-You are closing the dmabuf fd from another thread while it is still
-part of the epoll interest list?
+Review has been quiet on this thread for a few days so I think is the
+final rev. Let me know if anything else to fix up.
 
-Thanks,
-T.J.
+ Documentation/core-api/cleanup.rst |    8 ++
+ Documentation/core-api/index.rst   |    1 
+ include/linux/cleanup.h            |  136 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 145 insertions(+)
+ create mode 100644 Documentation/core-api/cleanup.rst
+
+diff --git a/Documentation/core-api/cleanup.rst b/Documentation/core-api/cleanup.rst
+new file mode 100644
+index 000000000000..527eb2f8ec6e
+--- /dev/null
++++ b/Documentation/core-api/cleanup.rst
+@@ -0,0 +1,8 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===========================
++Scope-based Cleanup Helpers
++===========================
++
++.. kernel-doc:: include/linux/cleanup.h
++   :doc: scope-based cleanup helpers
+diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+index 7a3a08d81f11..2d2b3719567e 100644
+--- a/Documentation/core-api/index.rst
++++ b/Documentation/core-api/index.rst
+@@ -35,6 +35,7 @@ Library functionality that is used throughout the kernel.
+ 
+    kobject
+    kref
++   cleanup
+    assoc_array
+    xarray
+    maple_tree
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index c2d09bc4f976..5ffb2127e3ac 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -4,6 +4,142 @@
+ 
+ #include <linux/compiler.h>
+ 
++/**
++ * DOC: scope-based cleanup helpers
++ *
++ * The "goto error" pattern is notorious for introducing subtle resource
++ * leaks. It is tedious and error prone to add new resource acquisition
++ * constraints into code paths that already have several unwind
++ * conditions. The "cleanup" helpers enable the compiler to help with
++ * this tedium and can aid in maintaining LIFO (last in first out)
++ * unwind ordering to avoid unintentional leaks.
++ *
++ * As drivers make up the majority of the kernel code base, here is an
++ * example of using these helpers to clean up PCI drivers. The target of
++ * the cleanups are occasions where a goto is used to unwind a device
++ * reference (pci_dev_put()), or unlock the device (pci_dev_unlock())
++ * before returning.
++ *
++ * The DEFINE_FREE() macro can arrange for PCI device references to be
++ * dropped when the associated variable goes out of scope::
++ *
++ *	DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
++ *	...
++ *	struct pci_dev *dev __free(pci_dev_put) =
++ *		pci_get_slot(parent, PCI_DEVFN(0, 0));
++ *
++ * The above will automatically call pci_dev_put() if @dev is non-NULL
++ * when @dev goes out of scope (automatic variable scope). If a function
++ * wants to invoke pci_dev_put() on error, but return @dev (i.e. without
++ * freeing it) on success, it can do::
++ *
++ *	return no_free_ptr(dev);
++ *
++ * ...or::
++ *
++ *	return_ptr(dev);
++ *
++ * The DEFINE_GUARD() macro can arrange for the PCI device lock to be
++ * dropped when the scope where guard() is invoked ends::
++ *
++ *	DEFINE_GUARD(pci_dev, struct pci_dev *, pci_dev_lock(_T), pci_dev_unlock(_T))
++ *	...
++ *	guard(pci_dev)(dev);
++ *
++ * The lifetime of the lock obtained by the guard() helper follows the
++ * scope of automatic variable declaration. Take the following example::
++ *
++ *	func(...)
++ *	{
++ *		if (...) {
++ *			...
++ *			guard(pci_dev)(dev); // pci_dev_lock() invoked here
++ *			...
++ *		} // <- implied pci_dev_unlock() triggered here
++ *	}
++ *
++ * Observe the lock is held for the remainder of the "if ()" block not
++ * the remainder of "func()".
++ *
++ * Now, when a function uses both __free() and guard(), or multiple
++ * instances of __free(), the LIFO order of variable definition order
++ * matters. GCC documentation says:
++ *
++ * "When multiple variables in the same scope have cleanup attributes,
++ * at exit from the scope their associated cleanup functions are run in
++ * reverse order of definition (last defined, first cleanup)."
++ *
++ * When the unwind order matters it requires that variables be defined
++ * mid-function scope rather than at the top of the file.  Take the
++ * following example and notice the bug highlighted by "!!"::
++ *
++ *	LIST_HEAD(list);
++ *	DEFINE_MUTEX(lock);
++ *
++ *	struct object {
++ *	        struct list_head node;
++ *	};
++ *
++ *	static struct object *alloc_add(void)
++ *	{
++ *	        struct object *obj;
++ *
++ *	        lockdep_assert_held(&lock);
++ *	        obj = kzalloc(sizeof(*obj), GFP_KERNEL);
++ *	        if (obj) {
++ *	                LIST_HEAD_INIT(&obj->node);
++ *	                list_add(obj->node, &list):
++ *	        }
++ *	        return obj;
++ *	}
++ *
++ *	static void remove_free(struct object *obj)
++ *	{
++ *	        lockdep_assert_held(&lock);
++ *	        list_del(&obj->node);
++ *	        kfree(obj);
++ *	}
++ *
++ *	DEFINE_FREE(remove_free, struct object *, if (_T) remove_free(_T))
++ *	static int init(void)
++ *	{
++ *	        struct object *obj __free(remove_free) = NULL;
++ *	        int err;
++ *
++ *	        guard(mutex)(&lock);
++ *	        obj = alloc_add();
++ *
++ *	        if (!obj)
++ *	                return -ENOMEM;
++ *
++ *	        err = other_init(obj);
++ *	        if (err)
++ *	                return err; // remove_free() called without the lock!!
++ *
++ *	        no_free_ptr(obj);
++ *	        return 0;
++ *	}
++ *
++ * That bug is fixed by changing init() to call guard() and define +
++ * initialize @obj in this order::
++ *
++ *	guard(mutex)(&lock);
++ *	struct object *obj __free(remove_free) = alloc_add();
++ *
++ * Given that the "__free(...) = NULL" pattern for variables defined at
++ * the top of the function poses this potential interdependency problem
++ * the recommendation is to always define and assign variables in one
++ * statement and not group variable definitions at the top of the
++ * function when __free() is used.
++ *
++ * Lastly, given that the benefit of cleanup helpers is removal of
++ * "goto", and that the "goto" statement can jump between scopes, the
++ * expectation is that usage of "goto" and cleanup helpers is never
++ * mixed in the same function. I.e. for a given routine, convert all
++ * resources that need a "goto" cleanup to scope-based cleanup, or
++ * convert none of them.
++ */
++
+ /*
+  * DEFINE_FREE(name, type, free):
+  *	simple helper macro that defines the required wrapper for a __free()
+
 
