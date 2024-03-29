@@ -1,119 +1,127 @@
-Return-Path: <linux-kernel+bounces-123866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46C6F890F0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:15:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34255890F0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:16:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72CAC1C26506
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:15:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B92D5B216CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B493F18C19;
-	Fri, 29 Mar 2024 00:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE2324B33;
+	Fri, 29 Mar 2024 00:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cDpGxoRY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QypkNz3K"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB02182CC;
-	Fri, 29 Mar 2024 00:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3294222F0A;
+	Fri, 29 Mar 2024 00:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711671251; cv=none; b=cCOw/xhfhj8M8mUF9iEBXNf4IGZ4tyvTDtbifeIvIVfCttHagkAKUtlMxd03KVy/Y0t49StbPmbvRBgsv73xUkV7cpKx0CoKarDfYp0FTovUwEDDUGVMxZ8neKhCVUQNwQmiJnd4d73HKjsS3s6x6bDrV3o6hW8HYdaqzNvHiLs=
+	t=1711671379; cv=none; b=qCVpt/ss5xyk/ol0TCgx0sWCaATTiBZZQxMcOUS3EgDYsN1tERMGqvAaKFH302iUq2MuSd4qL7ywN99b4K4sId2DINARKraN8taaQHmdJvQUzNsRAlpprVWoQctFh0niKTsaOZIFa3kMsKC0Ul/abQs+Z22yNjLLDpEXCfLvVVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711671251; c=relaxed/simple;
-	bh=uwufjRPZpufB4WAKz4BvxO1YI+sO9dPrjMMi385iZbk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=cLQxU21nQ++e7XLPoiyXVkxQyFaXloi2Y4Akn+7Hs0tRQ8AIIwqdPwto4bf/HjXKwdi/YBVzKAUQIcuNt6API1rJLQNO84JLM6B7PGNBAc4vi+7IVdz4cCyTz4wQO6uR5wW3Ddfre30GpVsuMYpUgRp/hbyqTS5LWid8aF77+HQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cDpGxoRY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00DAEC433C7;
-	Fri, 29 Mar 2024 00:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711671250;
-	bh=uwufjRPZpufB4WAKz4BvxO1YI+sO9dPrjMMi385iZbk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=cDpGxoRYxLjokSzdjyr/XpeJME93UBt6tnftJZ4T9xOVKuDufBc1JIllQnvVnYmCq
-	 rx/lZqfrEU0z1yyRPMbiLf3iggfMot6kYdtd1sW6H4c/9Rvvc0R8JsV6hKHSo0H5uR
-	 ybcPFdq+49uL7I7a5fSGuun4iOvzrI+Xf7f0Y3+Kj4EAEayQAD6NjQ4fMdW1r4/Bbr
-	 jDpLucIYlLtlp0NSYXnDT+vRy3+eyJypFk7diu1AkXTOSAQWvuPNh7dKwMVFYaudJ+
-	 GDtKv9kJUrKjhJDjzg7vBbr4HJK9wBUHffXc3W0Xfu8/S84LBrzhQE2EwJqfwjRk6S
-	 VCmPu+AkdbDyA==
-From: Mark Brown <broonie@kernel.org>
-Date: Fri, 29 Mar 2024 00:13:46 +0000
-Subject: [PATCH v6 5/5] KVM: arm64: selftests: Teach get-reg-list about
- FPMR
+	s=arc-20240116; t=1711671379; c=relaxed/simple;
+	bh=8/4VlWP8EU8J4WP6IAOfUM/N7VC8BLu0hjzTJ6eRtKE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jb1DZrUBCorqEuzehPLw3v9dWT3/aLK9b4N9rXpj9lkEu0RQfJHZwwLN1MHVPI7UEtRRygM+dM1g9ZG4KpHc2DnkDcTDCFrtOyxKsQjpFqWc9f9i/zJh3GFf1jYtyHihnqQoF+Uyi1fCiyhUM+aWGtPYx+NfxqgX3N7MRw300fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QypkNz3K; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711671378; x=1743207378;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8/4VlWP8EU8J4WP6IAOfUM/N7VC8BLu0hjzTJ6eRtKE=;
+  b=QypkNz3KhWsXdtq10v8KhjN0RCq0S3+wIx3dXPMxbXHmItEt5VGeX9ab
+   fOVkmJYJ0jRq+Jj+Xy3dw9Ry9Aooq/t2XCVdV+2rkD/n0UZwsG7qA7T/M
+   aVuleeW62YuICCCZ+v3Zi1xdkNOSYYuqS/qp3xV0t7Zqwkk8a9epX2jd3
+   OMFf/VHWlgz9b4oinPS4OpQUuGmHz8fedkeaW7CDt5XEdu6QyyFsQPN/v
+   zFtRWq/p8rjsjTjl/t3+PTjJmHw+/Bvf5xpLlQbR7xXjsy/LI2o/oZwkR
+   xVbsKDI9fwIwzk8KAakksLwDgxe2sL6wYn22TILi4VdgQmm1jj6Xq+HQv
+   A==;
+X-CSE-ConnectionGUID: rA5AXqzJSeORxQN26yqbYA==
+X-CSE-MsgGUID: eTcNOIPFT2CdjdWlWFvGJQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="7050389"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="7050389"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 17:16:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="17451476"
+Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 17:16:02 -0700
+From: Peter Colberg <peter.colberg@intel.com>
+To: Wu Hao <hao.wu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Alan Tull <atull@kernel.org>,
+	Shiva Rao <shiva.rao@intel.com>,
+	Kang Luwei <luwei.kang@intel.com>,
+	Enno Luebbers <enno.luebbers@intel.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Russ Weight <russ.weight@linux.dev>,
+	Marco Pagani <marpagan@redhat.com>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+	kernel test robot <lkp@intel.com>,
+	Peter Colberg <peter.colberg@intel.com>
+Subject: [PATCH] fpga: dfl: fme: fix kernel-doc comments for some functions
+Date: Thu, 28 Mar 2024 20:15:42 -0400
+Message-ID: <20240329001542.8099-1-peter.colberg@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240329-arm64-2023-dpisa-v6-5-ba42db6c27f3@kernel.org>
-References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
-In-Reply-To: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>, 
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
- Suzuki K Poulose <suzuki.poulose@arm.com>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Dave Martin <Dave.Martin@arm.com>, kvmarm@lists.linux.dev, 
- linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1321; i=broonie@kernel.org;
- h=from:subject:message-id; bh=uwufjRPZpufB4WAKz4BvxO1YI+sO9dPrjMMi385iZbk=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBmBge+eqk74AMtUMIBPiwGI+pi1wDTEcHLlC4p4q7p
- myPQfbeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZgYHvgAKCRAk1otyXVSH0NW5B/
- 0TcU6VavkFfCBJ8vGg2RX9vZ4t77ShVUFmfqiEzDq+KrtNcMcCRhCD6mQXTT/JcxC1Fa6P/PPFjApS
- fFaHMzOG+YHH0ngniUKKS/oLfDAK0z++QRPzBKHLZPzeb3t0Amcim7X703CJdZLdN+bivsNFzkgcqD
- zVgJPTVIrRdEE68SOE/l2KZgFuNqa8YT4v2wEHHG942seRV3ovb6Nt3UmWz1P6w1YRgpxWq+xflPVb
- 1m4RMvSuUwHBEIOLmV4qA0QWlRPEE0gUF+hJIduSa8qLmxJEdxHN/0JRRR86TDzL82F3AJvX308o8V
- /lE+aiJZcM3rN2ebnTtAOrIAl8XjMQ
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
 
-FEAT_FPMR defines a new register FMPR which is available at all ELs and is
-discovered via ID_AA64PFR2_EL1.FPMR, add this to the set of registers that
-get-reg-list knows to check for with the required identification register
-depdendency.
+From: Xu Yilun <yilun.xu@intel.com>
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
+lkp reported 2 build warnings:
+
+   drivers/fpga/dfl/dfl-fme-pr.c:175: warning: Function parameter or member 'feature' not described in 'dfl_fme_create_mgr'
+
+>> drivers/fpga/dfl/dfl-fme-pr.c:280: warning: expecting prototype for
+>> dfl_fme_destroy_bridge(). Prototype was for dfl_fme_destroy_bridges()
+>> instead
+
+Fixes: 29de76240e86 ("fpga: dfl: fme: add partial reconfiguration sub feature support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Peter Colberg <peter.colberg@intel.com>
 ---
- tools/testing/selftests/kvm/aarch64/get-reg-list.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/fpga/dfl-fme-pr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/aarch64/get-reg-list.c b/tools/testing/selftests/kvm/aarch64/get-reg-list.c
-index 71ea6ecec7ce..1e43511d1440 100644
---- a/tools/testing/selftests/kvm/aarch64/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/aarch64/get-reg-list.c
-@@ -40,6 +40,12 @@ static struct feature_id_reg feat_id_regs[] = {
- 		ARM64_SYS_REG(3, 0, 0, 7, 3),	/* ID_AA64MMFR3_EL1 */
- 		4,
- 		1
-+	},
-+	{
-+		ARM64_SYS_REG(3, 3, 4, 4, 2),	/* FPMR */
-+		ARM64_SYS_REG(3, 0, 0, 4, 2),	/* ID_AA64PFR2_EL1 */
-+		32,
-+		1
- 	}
- };
+diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
+index cdcf6dea4cc9..96cb24787ab1 100644
+--- a/drivers/fpga/dfl-fme-pr.c
++++ b/drivers/fpga/dfl-fme-pr.c
+@@ -166,6 +166,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
+  * dfl_fme_create_mgr - create fpga mgr platform device as child device
+  * @feature: sub feature info
+  * @pdata: fme platform_device's pdata
++ * @feature: the dfl fme PR sub feature
+  *
+  * Return: mgr platform device if successful, and error code otherwise.
+  */
+@@ -273,7 +274,7 @@ static void dfl_fme_destroy_bridge(struct dfl_fme_bridge *fme_br)
+ }
  
-@@ -481,6 +487,7 @@ static __u64 base_regs[] = {
- 	ARM64_SYS_REG(3, 3, 14, 2, 1),	/* CNTP_CTL_EL0 */
- 	ARM64_SYS_REG(3, 3, 14, 2, 2),	/* CNTP_CVAL_EL0 */
- 	ARM64_SYS_REG(3, 4, 3, 0, 0),	/* DACR32_EL2 */
-+	ARM64_SYS_REG(3, 3, 4, 4, 2),	/* FPMR */
- 	ARM64_SYS_REG(3, 4, 5, 0, 1),	/* IFSR32_EL2 */
- 	ARM64_SYS_REG(3, 4, 5, 3, 0),	/* FPEXC32_EL2 */
- };
-
+ /**
+- * dfl_fme_destroy_bridges - destroy all fpga bridge platform device
++ * dfl_fme_destroy_bridges - destroy all fpga bridge platform devices
+  * @pdata: fme platform device's pdata
+  */
+ static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
 -- 
-2.30.2
+2.44.0
 
 
