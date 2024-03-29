@@ -1,60 +1,58 @@
-Return-Path: <linux-kernel+bounces-124578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1A6891A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:55:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E797F891A30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F053B1F29475
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:55:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2757284C96
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22CF156669;
-	Fri, 29 Mar 2024 12:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08730156898;
+	Fri, 29 Mar 2024 12:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nxkZoCuM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HRKU2zyV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66A8156866;
-	Fri, 29 Mar 2024 12:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECCA15687F;
+	Fri, 29 Mar 2024 12:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715449; cv=none; b=HAprWK4o28OzhyF38jO9H0VqQLIQ+o9rbW3/lIs75/wmohjlzmHLKlHsKyxRKQ2jVSzQfRLqzRufaVe0+oyHNUmCucG8MGRwscEtVDbFt+hN74QxUeXiAbp1k+E2AspkPj+IipVIsArrify4E75ywdhx+pfP+TRsNnr8ZJUWzaw=
+	t=1711715452; cv=none; b=HDcq5NVYbTYgLN0DbTIcusjXG75FjifgDYxUn5i5R31EU/3siZhyTOfrHH7yJUyJMU5KjfknLCOeJYwt1EZa2Dktnq6dT71Ada2tvLXeWYX1jcRlhIN+gN4LukChuUYH8KSz2R9GDTovIk5x7wbQpgKdtzv90CTxQs/3dHCxjb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715449; c=relaxed/simple;
-	bh=kent2fKmh+9LgMnVo54GnXHT5e+jtbHgMLcFobcA1Y4=;
+	s=arc-20240116; t=1711715452; c=relaxed/simple;
+	bh=9KaPcBd2w3GO4IWPKE/D0ZVEMbN7tvs/SHcXt8jm7UQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tj187LLnexqLEJvGXtQNPGPVRSEfh294+ZmIIIKIFauCWNb1E+Td3Ym+dAaDpsqe0G5tpy3koVVQdfRxbXpcApWnyeH68eJYFnRBmQDCRnbbv7T1mPlaxbMRHh6jbXW2biHh+eUBgkK0pc0nQe0P72hi8zkVpwkhOim20xLLjok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nxkZoCuM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C8AC433C7;
-	Fri, 29 Mar 2024 12:30:48 +0000 (UTC)
+	 MIME-Version; b=uLQXBdXsCqXjps3CUShSy3f66qAEle+GWi5ddIh3A6Vu29vhysPoajcXoO5qMQj1xiPcPxWZzjPouDX667BCAQMjL1d7pVNPIoxDXhJQowYq+YYwBz8ND7l1Pvr5RhemcsXAmxywkPKD8DCC9J/HciTAlKyTVoCAMsYkenazmD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HRKU2zyV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27203C433F1;
+	Fri, 29 Mar 2024 12:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715449;
-	bh=kent2fKmh+9LgMnVo54GnXHT5e+jtbHgMLcFobcA1Y4=;
+	s=k20201202; t=1711715452;
+	bh=9KaPcBd2w3GO4IWPKE/D0ZVEMbN7tvs/SHcXt8jm7UQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nxkZoCuMbxpTOoivEz42fszf54QA65QyOF8nw6LGn4VmB80uHS1GN2P7fQC1aKfuW
-	 9V6g+Mjet2o9yYWKOdwuHEOVbVitaVEmvjYiSb5Z+QpXo1lQ/loTLdts/txQUOd/C5
-	 Wbt7zJH1gVc5pPtlOMqFEhsNdLaoZXf4lblKGrJshcX0LabLQR7OeuJ9rlWagz7O/0
-	 g+0Vgto9GcGK3fxMapYaUo5w3UpQMcI/zuOIUfCtd7qQ668syxyOOxabB/s7jDjgRd
-	 FBF9x0fbZOBIZAk6A+xu76162Es2HhhI3yVesQSiH+r8Tal6pXM6Ppy6ycbx1ad9l6
-	 8/6KaTnboEF2g==
+	b=HRKU2zyVWTq/TlpWv3KXZcgTt3Jh6HaGrJimzhTVI53XIC/z2xaeew7Z33iZI1YCQ
+	 HmNxcwmPVdr25PIUKj2T9/y5LVx4LcApEbfG4aP7ycm41HupFnziEKrZhtrIZujxYj
+	 VHdIQRTRmVZLlmUH5sbgTKTlVE9IHScNESwHi219DdWrnqZ8OmmbcFNQUCLbSbJHQX
+	 P+IP6Hc1r7/66IBX1faDuhGqiGQ2i8rHZmVyEXbynbo2RteM2CgjIE6Nz3EhqlyrGC
+	 MYYztjaJ7HNwOTTPC8NVZst+u7Xh5jV8fFPGU08auR+H4DSwo/xmLtzgbosaC2dl2S
+	 /ckNurzR/zYRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Markus Elfring <elfring@users.sourceforge.net>,
-	Thierry Reding <treding@nvidia.com>,
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Arend van Spriel <arend.vanspriel@broadcom.com>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	thierry.reding@gmail.com,
-	jonathanh@nvidia.com,
-	keescook@chromium.org,
-	justinstitt@google.com,
-	mperttunen@nvidia.com,
-	linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 27/52] firmware: tegra: bpmp: Return directly after a failed kzalloc() in get_filename()
-Date: Fri, 29 Mar 2024 08:28:57 -0400
-Message-ID: <20240329122956.3083859-27-sashal@kernel.org>
+	linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com
+Subject: [PATCH AUTOSEL 6.6 28/52] wifi: brcmfmac: Add DMI nvram filename quirk for ACEPC W5 Pro
+Date: Fri, 29 Mar 2024 08:28:58 -0400
+Message-ID: <20240329122956.3083859-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -64,44 +62,53 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 1315848f1f8a0100cb6f8a7187bc320c5d98947f ]
+[ Upstream commit 32167707aa5e7ae4b160c18be79d85a7b4fdfcfb ]
 
-The kfree() function was called in one case by
-the get_filename() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
+The ACEPC W5 Pro HDMI stick contains quite generic names in the sys_vendor
+and product_name DMI strings, without this patch brcmfmac will try to load:
+"brcmfmac43455-sdio.$(DEFAULT_STRING)-$(DEFAULT_STRING).txt" as nvram file
+which is both too generic and messy with the $ symbols in the name.
 
-Thus return directly after a call of the function “kzalloc” failed
-at the beginning.
+The ACEPC W5 Pro uses the same Ampak AP6255 module as the ACEPC T8
+and the nvram for the T8 is already in linux-firmware, so point the new
+DMI nvram filename quirk to the T8 nvram file.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20240216213649.251718-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/tegra/bpmp-debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
-index 6dfe3d34109ee..b20d04950d99b 100644
---- a/drivers/firmware/tegra/bpmp-debugfs.c
-+++ b/drivers/firmware/tegra/bpmp-debugfs.c
-@@ -77,7 +77,7 @@ static const char *get_filename(struct tegra_bpmp *bpmp,
- 
- 	root_path_buf = kzalloc(root_path_buf_len, GFP_KERNEL);
- 	if (!root_path_buf)
--		goto out;
-+		return NULL;
- 
- 	root_path = dentry_path(bpmp->debugfs_mirror, root_path_buf,
- 				root_path_buf_len);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
+index 86ff174936a9a..c3a602197662b 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
+@@ -82,6 +82,15 @@ static const struct dmi_system_id dmi_platform_data[] = {
+ 		},
+ 		.driver_data = (void *)&acepc_t8_data,
+ 	},
++	{
++		/* ACEPC W5 Pro Cherry Trail Z8350 HDMI stick, same wifi as the T8 */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "T3 MRD"),
++			DMI_MATCH(DMI_CHASSIS_TYPE, "3"),
++			DMI_MATCH(DMI_BIOS_VENDOR, "American Megatrends Inc."),
++		},
++		.driver_data = (void *)&acepc_t8_data,
++	},
+ 	{
+ 		/* Chuwi Hi8 Pro with D2D3_Hi8Pro.233 BIOS */
+ 		.matches = {
 -- 
 2.43.0
 
