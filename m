@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-124236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98DFA891439
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:26:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4D489143B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0F51B2395C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:26:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E861C21375
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C0053392;
-	Fri, 29 Mar 2024 07:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D8854662;
+	Fri, 29 Mar 2024 07:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="EG0ST0Mz"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="kRKoUdUb"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB4D40877
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4CA52F61
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697102; cv=none; b=hJWC5wJ5Du6x19T43kvTYVWqXq9R5RV15q1tuIpYnmd2XwN4eq+FxCoabfxOCt0CmvUAiCHdhfC3FVvlWlhS4M//jDo/1T93/rtaFbISClvuAi7HHMiRDfsfXrTQQ/QyzP6sOyLeEqxqB2Tks9+W1S2MW8MtNzr9qLumTBL4f0M=
+	t=1711697103; cv=none; b=GW1d7yhbaAI4ILiLuVK3o4i0PGfUnfHm3hhX57eD90ADxPQrbvQqBIUPvgjj3DtDPUJANnAQG6KyK7QdsD3I1ts2r44MsPMCq9wwC+04KunXslKngsNQOMlz0Zf4Rr9pNCjaJSTrZ7UoQLWBq5lANdRHnzTvkTmPx3i6C3yDAUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697102; c=relaxed/simple;
-	bh=dD+iV8uD7G5MpjHgE1LVjx/5PSgKP1NpMjf5jkr/+qc=;
+	s=arc-20240116; t=1711697103; c=relaxed/simple;
+	bh=3Jxdlw0MxGrCtqcQU2OdpgNfa0UAfuPKsYPLtYGhH+c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V9w02LF/DEoe4misaSe/yGd/VlkQcABtMsjSn9wqCSpwJ7QJJVlEKKPc2yecLKULk4IemEpmQPGjOC1GfgBcVrOHT+NxSDBIxmghsyBhizdb+yyiAlt+4MSSn5rbQ7oPFj0XxfuPCWyzjNDDFxUMVhzCW9tFkDRtz+X2wIp06G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=EG0ST0Mz; arc=none smtp.client-ip=209.85.216.50
+	 MIME-Version; b=d2AbGy3HdPb/TQdg/NqyZcqt/7RIVMKWKJYB7FOEotx1YNDDGgO1Yh884fn/kFc8GDQ4mxH2nx97HJ1S5n4FbaysjYe1MV3h2f1kSAhQ3nX7yXeRUB2YlDNN2hPz3vgGy7mcS+PLW1Xz8HZ2HjY+caYLOeoaTh5LFITekZPKvOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=kRKoUdUb; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29dfad24f36so1351644a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:25:00 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29c75e348afso1379347a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711697100; x=1712301900; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1711697101; x=1712301901; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dzRar7ztYXEnRyKAelp48saozJM51jVm9Dh1Zr4pH8s=;
-        b=EG0ST0MzUSqGXWbSEr4O8g/gowltE2/hVPIPCASKrGA0l0afnWGkRfC5kViba1VwzJ
-         wpezGDlK+KuklUaNYQzNW7jt24ytT9h6/JaCR8MIGsXmRQUI20TQdGyWlH7/KkTvIkBM
-         UqG2UbH2M0Jv/00Zq4eN1/30ooHPhi8yPZGYP4sPP8DisyhjmIuoOsZK/cnxdJPg+yoH
-         O9QHa8OnlyzlAURSspe8ltqxGcjD9xJ7EMsSgiuHGoEv8BYjGSIB5xI/DtAnOEICZcOJ
-         jmZuUJMuABz6oyMni4RR30iGGYhwx89LylETSTx/4oRaoMdvqW4uqV0UG1Aj6vWSaVRz
-         DjnQ==
+        bh=1ZUya0v8Oh5iLzX7Kw5hO2ocqVWj9tNi/iu8yR8eYow=;
+        b=kRKoUdUb5DKxUUPJAvbU2/4hQ+E/oXSY0LBXlgydG8sxeauznurMwd1pglgfOv2qLt
+         5yf/dkmCvaDbG7KD8WCrOlK36TSxx1gxWAwPo/+Dg5GYKvagT03vY0zYsbf+Qe2/fUQR
+         a7YtQ/wjEizRohXrTGipik8PM2A845dP//p4whryxZtt/QjlMZbBuX36uSwDIRRVQvzz
+         +e4e4kVFuQVbdBFMnWE8zKwIWFvepXDxwsB0fq8Y+YYlXpquH2LevRpeOVLL1nEhPG/W
+         sI8AToK7DW+eUIkRQXLxgCDLBwEj/2lQkEqHtU/oV8qxFhtO5e1NXyEE06o8kcx7Ws8V
+         JzNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711697100; x=1712301900;
+        d=1e100.net; s=20230601; t=1711697101; x=1712301901;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dzRar7ztYXEnRyKAelp48saozJM51jVm9Dh1Zr4pH8s=;
-        b=prCniioDsNXS5zrksurdhHvHDBxv3ryVgdwH/WMUNhd/PHP2U9VFHALe1WvGP+G5E4
-         wkHhEAZgW5zo+dyuXSnVktvZ5lwT0S6PypUlDx/7jLQjOJJKa+cuOhJdKc/lQbi7AAjT
-         Vfelay55W8qi4vxvEBfb2OgfUXnqrLE56awlWw1jQrx47pQ/6gM1mxUR8Pt1k5Q51XO3
-         MlRBvrsN2TlJVIhcvfFq2+gQ1o+1vpFTreicaMS072fJZjDMPSh69KlIfk4CeLnDbZ7a
-         fjexBzO11LUF9odC1/kVb0ISGSGs7mMinAOuJM6OVDlEskzlD12OfxIBSKm1x9HQXWWp
-         jVRg==
-X-Gm-Message-State: AOJu0YzOcAVO/cmkyGDwJbhz/5ocQFQBiJHAik+OVoKm3fc3tXqTJ3Yh
-	LAc/4ALMj6GWEX7OfoFfuCBewP1AqccXoM1/T5XFQwL6TWLfFxd08Z2/oUBDhgk=
-X-Google-Smtp-Source: AGHT+IEs8kBZu3dBChnRywCF22OnC9/Ej+znSx9gblpEFd+wsOZOeprciOlW3fwk28PpRrFgoWrM2Q==
-X-Received: by 2002:a17:90a:d3c3:b0:29e:975:3500 with SMTP id d3-20020a17090ad3c300b0029e09753500mr1446912pjw.28.1711697100232;
-        Fri, 29 Mar 2024 00:25:00 -0700 (PDT)
+        bh=1ZUya0v8Oh5iLzX7Kw5hO2ocqVWj9tNi/iu8yR8eYow=;
+        b=KTWSWoQti67a7tdGYe/TRhnjDEUiADU4TMmoWC6Kj0be37qUlpbrWdbJG3Kz1sOW+c
+         8Hzkdm6LrOqEfPNnrGTL7tPRI4byrztV5sftvsfiik38dvo0LS1KNGVOTb4xJ0pYMSsR
+         Fqis14qcOj1SlnSXhlaxFZUt79h0mk1oEOgYwkcSueagsiWMARs637Um/VlXGnkhfTmE
+         YiYLDIPhibjqQ8cIaZP2DLBDna7kZXHgofmpNSWXq2Z1wchDIL0pSywgTRNw9GLKdBmQ
+         tju6LBbG5s6pbtZAqCfEh8lESkMtZiufXTVruH/Wx2JE2N0gbAr0gG0cwCfJfK3aElIq
+         hPKA==
+X-Gm-Message-State: AOJu0YwulNyti/aDy3Hojlkp7cG6etcWoMYvzFOdztw14LRjbpHdt2HI
+	Fd6JndTGY/17loVzjHnETDVyEY2QdbEixG3lwE7AG/9VsjXns5lhsdBu2ER2d+Y=
+X-Google-Smtp-Source: AGHT+IERKMtTUUrMNrNdpmOZyYX6MKtFB7fSH53v9LodH/8MB2comF4l1LxXs3fRZJNBleQgeI68Nw==
+X-Received: by 2002:a17:90a:b008:b0:2a0:5339:7751 with SMTP id x8-20020a17090ab00800b002a053397751mr1529473pjq.37.1711697101571;
+        Fri, 29 Mar 2024 00:25:01 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b0029ddac03effsm4971798pjb.11.2024.03.29.00.24.59
+        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b0029ddac03effsm4971798pjb.11.2024.03.29.00.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:24:59 -0700 (PDT)
+        Fri, 29 Mar 2024 00:25:01 -0700 (PDT)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-arm-kernel@lists.infradead.org,
@@ -81,9 +81,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	Ingo Molnar <mingo@redhat.com>,
 	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v4 09/15] x86/fpu: Fix asm/fpu/types.h include guard
-Date: Fri, 29 Mar 2024 00:18:24 -0700
-Message-ID: <20240329072441.591471-10-samuel.holland@sifive.com>
+Subject: [PATCH v4 10/15] x86: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+Date: Fri, 29 Mar 2024 00:18:25 -0700
+Message-ID: <20240329072441.591471-11-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240329072441.591471-1-samuel.holland@sifive.com>
 References: <20240329072441.591471-1-samuel.holland@sifive.com>
@@ -95,39 +95,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The include guard should match the filename, or it will conflict with
-the newly-added asm/fpu.h.
+x86 already provides kernel_fpu_begin() and kernel_fpu_end(), but in a
+different header. Add a wrapper header, and export the CFLAGS
+adjustments as found in lib/Makefile.
 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
-Changes in v4:
- - New patch for v4
+(no changes since v1)
 
- arch/x86/include/asm/fpu/types.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/Kconfig           |  1 +
+ arch/x86/Makefile          | 20 ++++++++++++++++++++
+ arch/x86/include/asm/fpu.h | 13 +++++++++++++
+ 3 files changed, 34 insertions(+)
+ create mode 100644 arch/x86/include/asm/fpu.h
 
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index ace9aa3b78a3..eb17f31b06d2 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -2,8 +2,8 @@
- /*
-  * FPU data structures:
-  */
--#ifndef _ASM_X86_FPU_H
--#define _ASM_X86_FPU_H
-+#ifndef _ASM_X86_FPU_TYPES_H
-+#define _ASM_X86_FPU_TYPES_H
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 39886bab943a..7c9d032ee675 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -83,6 +83,7 @@ config X86
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_KCOV			if X86_64
++	select ARCH_HAS_KERNEL_FPU_SUPPORT
+ 	select ARCH_HAS_MEM_ENCRYPT
+ 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+ 	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 662d9d4033e6..5a5f5999c505 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -74,6 +74,26 @@ KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
+ KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
+ KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
  
- #include <asm/page_types.h>
- 
-@@ -596,4 +596,4 @@ struct fpu_state_config {
- /* FPU state configuration information */
- extern struct fpu_state_config fpu_kernel_cfg, fpu_user_cfg;
- 
--#endif /* _ASM_X86_FPU_H */
-+#endif /* _ASM_X86_FPU_TYPES_H */
++#
++# CFLAGS for compiling floating point code inside the kernel.
++#
++CC_FLAGS_FPU := -msse -msse2
++ifdef CONFIG_CC_IS_GCC
++# Stack alignment mismatch, proceed with caution.
++# GCC < 7.1 cannot compile code using `double` and -mpreferred-stack-boundary=3
++# (8B stack alignment).
++# See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
++#
++# The "-msse" in the first argument is there so that the
++# -mpreferred-stack-boundary=3 build error:
++#
++#  -mpreferred-stack-boundary=3 is not between 4 and 12
++#
++# can be triggered. Otherwise gcc doesn't complain.
++CC_FLAGS_FPU += -mhard-float
++CC_FLAGS_FPU += $(call cc-option,-msse -mpreferred-stack-boundary=3,-mpreferred-stack-boundary=4)
++endif
++
+ ifeq ($(CONFIG_X86_KERNEL_IBT),y)
+ #
+ # Kernel IBT has S_CET.NOTRACK_EN=0, as such the compilers must not generate
+diff --git a/arch/x86/include/asm/fpu.h b/arch/x86/include/asm/fpu.h
+new file mode 100644
+index 000000000000..b2743fe19339
+--- /dev/null
++++ b/arch/x86/include/asm/fpu.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2023 SiFive
++ */
++
++#ifndef _ASM_X86_FPU_H
++#define _ASM_X86_FPU_H
++
++#include <asm/fpu/api.h>
++
++#define kernel_fpu_available()	true
++
++#endif /* ! _ASM_X86_FPU_H */
 -- 
 2.44.0
 
