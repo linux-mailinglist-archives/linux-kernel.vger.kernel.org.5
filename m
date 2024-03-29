@@ -1,121 +1,144 @@
-Return-Path: <linux-kernel+bounces-124284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C76489150F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:10:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E778914F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07F0F2861AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:10:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65AEF1F22060
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2604545974;
-	Fri, 29 Mar 2024 08:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b="mz+n4RAe"
-Received: from relay-us1.mymailcheap.com (relay-us1.mymailcheap.com [51.81.35.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEA844C69;
+	Fri, 29 Mar 2024 08:02:25 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F168D40842;
-	Fri, 29 Mar 2024 08:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.35.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABA645BEA
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 08:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711699848; cv=none; b=W76l//wUtL3lNKrsC1UxlL/h2DWBW/VM+nUYmYec0dtdUYexU99KxWkRn4PemZ3MpFhLx4Z1j657IbtneAM6KeuytTJKc+DBrhqfp0s+2X19UH44GtaS3xGqRdqSsyP1qeUJIkAxMoMEPsGu0nb/HnlyLgedni/OaoJUHXTfZO8=
+	t=1711699344; cv=none; b=sYKjwrA/Hit4V2kofA5qHszIMIyLKEFdeVcE2WI46OR61dB1KSRpbDUdqLoBbmBF/MgdwQXZ1oD0j6e4wCBbda3hYF9kge2sUsA+CljonjCtTW5o+8rRHQStSwpZFi4YNPoVWqAqc6GIwwIsUvqtx0xhtVN+iOKj2JJ3KBbRlbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711699848; c=relaxed/simple;
-	bh=Wjl3zr/BNN56wdS4u3nAMWSo+sSz1TXRs/Ujsp1d1sI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OmTVcMXUBTkPDySmt2oCCdiQ3RqmjoN2n9SR82SmnUBY7Gbstt6ielJaodlDvwe856hkBJ0BkegCKut5JcIobW7/KZZvtdqpTNVH+CExuTtRegmGygnVE4yx3FIsj7Piq7INgd6wWivWLgtNcCYiUQPV71j1iqKtPSbzgJu7xxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com; spf=pass smtp.mailfrom=pavinjoseph.com; dkim=pass (1024-bit key) header.d=pavinjoseph.com header.i=@pavinjoseph.com header.b=mz+n4RAe; arc=none smtp.client-ip=51.81.35.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pavinjoseph.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pavinjoseph.com
-Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.248.207])
-	by relay-us1.mymailcheap.com (Postfix) with ESMTPS id BC5A621325;
-	Fri, 29 Mar 2024 08:01:57 +0000 (UTC)
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [149.56.97.132])
-	by relay5.mymailcheap.com (Postfix) with ESMTPS id 20CD4260DF;
-	Fri, 29 Mar 2024 08:01:49 +0000 (UTC)
-Received: from nf1.mymailcheap.com (nf1.mymailcheap.com [51.75.14.91])
-	by relay1.mymailcheap.com (Postfix) with ESMTPS id 1AE483E981;
-	Fri, 29 Mar 2024 08:01:41 +0000 (UTC)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-	by nf1.mymailcheap.com (Postfix) with ESMTPSA id 4F7E04007F;
-	Fri, 29 Mar 2024 08:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pavinjoseph.com;
-	s=default; t=1711699300;
-	bh=Wjl3zr/BNN56wdS4u3nAMWSo+sSz1TXRs/Ujsp1d1sI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mz+n4RAeOc8uqy9kkguomSw9juCsMtDrnaou59z+I05ogwu9A2wQWZjt8A7hMFvyp
-	 cqeFPBHQL9BWQ+ftSOap1PBOmWuje7hfmLA8ZwQIkJnLTVItSZPQ2v5tE2Gnj6678c
-	 Dmo2hWdfUr9Uyx0PY37EQGvR5Sew46/jhNiDqh7E=
-Received: from [10.66.66.8] (unknown [139.59.64.216])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail20.mymailcheap.com (Postfix) with ESMTPSA id 1961F42C88;
-	Fri, 29 Mar 2024 08:01:33 +0000 (UTC)
-Message-ID: <47302624-6466-41a7-85db-f6872d58a4d2@pavinjoseph.com>
-Date: Fri, 29 Mar 2024 13:31:30 +0530
+	s=arc-20240116; t=1711699344; c=relaxed/simple;
+	bh=l6+5c+ADTS89MXMV2bdFTOT5+OH+d8SoaktMkRZq+r4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Y0RyV+RjudwvOOhT17spjBrnZ9hCMZSMz/Uju5AfkONbmBGvAcOE5IHBXk4sHZ5bEJcKAomZ4S9KR9Y8FsBiY/R2BYkxh4XMbHMEWzoZqyXHRYHOR/oDJ/6vrX65ATAr4bhNpNF/fZqhUCoDZ/0pge7Lz07o7njGk+HNk4RV2f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc74ea8606so182716139f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:02:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711699342; x=1712304142;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MnePw+Iu4UT8Cim0LGo0H/yVtv3O4p0fZOyd3SdKm1M=;
+        b=Nisxj5DJvWFEosypzF+bo+agi36sHotYzz4/PEhr6JoXqFAlemWHeRgxOMmKW0Pf7u
+         Dz2Xki11Tk+9YGxE2GOvkQWp45ZSRPd7SZMgT1cqYo/Bi3JRy9uOKzCUM54ZGxUSSwqC
+         yL0kxE6mKLdvsrmzOWANBi1ktpbiEjvyOOcqcXjprlR9+9E1azXVWX8y/cDL6O95s73Q
+         Sp3lZR++dBPLgzNPLZjJcHKZns8GGrTUjzlkqy0tcDY8hFOabYoNDvmbaqxv+y3/vDMv
+         SCr227yH3PzneD3fduUrRoMTqliqjNb6Y/b4t1rnn8BYdLDz7uvwmH/eopdFsz4+7Nf6
+         unsg==
+X-Forwarded-Encrypted: i=1; AJvYcCV02TF/grqIYWi68HGsWAusrol13TFK4pkZh5UtR5Qf9XHuvIb1AUGx51E+Y7eMt8tlvmyHQn3/tcheYonN6Z3xdz8qCWRYwmUxujgg
+X-Gm-Message-State: AOJu0YxDN8JnAE1PlBNuzQSM+WoQXgOu3F344kXsUU+2tgPrnemkOJHf
+	0ZvxfMjfUhUGAtgrJlpJdDOG5V1af5V4+EXYMI2X1vjGmEZALiM2z8Z7zTHK+r3ImFWaU1VH2xw
+	Q1/vCVmEICwnl/6RsW4m2m+s+wsPynjJ/TKaDE5V/wA0QVppMd8KX+44=
+X-Google-Smtp-Source: AGHT+IFyuKG80G6WX3fY2i0icB9vjrfJPmTP+AtBeZjcqurwzNhHBAzVe9lR59GfzFiAd5wBqMYCmVMksqbz4SdS+I/sRr9xFCsk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] x86/mm/ident_map: On UV systems, use gbpages only
- where full GB page should be mapped.
-To: Ingo Molnar <mingo@kernel.org>, Steve Wahl <steve.wahl@hpe.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
- Linux regressions mailing list <regressions@lists.linux.dev>,
- stable@vger.kernel.org, Eric Hagberg <ehagberg@gmail.com>,
- Simon Horman <horms@verge.net.au>, Eric Biederman <ebiederm@xmission.com>,
- Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
- Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>,
- Hou Wenlong <houwenlong.hwl@antgroup.com>,
- Andrew Morton <akpm@linux-foundation.org>, Baoquan He <bhe@redhat.com>,
- Yuntao Wang <ytcoode@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>
-References: <20240328160614.1838496-1-steve.wahl@hpe.com>
- <ZgZqhWoRZoq5tJoU@gmail.com>
-Content-Language: en-US
-From: Pavin Joseph <me@pavinjoseph.com>
-In-Reply-To: <ZgZqhWoRZoq5tJoU@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.09 / 10.00];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_COUNT_ONE(0.00)[1];
-	ASN(0.00)[asn:16276, ipnet:51.83.0.0/16, country:FR];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[25];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FREEMAIL_CC(0.00)[linux.intel.com,kernel.org,infradead.org,linutronix.de,redhat.com,alien8.de,zytor.com,vger.kernel.org,lists.linux.dev,gmail.com,verge.net.au,xmission.com,dbc.dk,hpe.com,antgroup.com,linux-foundation.org,google.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Server: nf1.mymailcheap.com
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4F7E04007F
+X-Received: by 2002:a05:6638:3488:b0:47c:1788:e23 with SMTP id
+ t8-20020a056638348800b0047c17880e23mr47052jal.4.1711699342534; Fri, 29 Mar
+ 2024 01:02:22 -0700 (PDT)
+Date: Fri, 29 Mar 2024 01:02:22 -0700
+In-Reply-To: <0000000000001c59010612fd7c60@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004676d00614c80fab@google.com>
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_strcasecmp
+From: syzbot <syzbot+e126b819d8187b282d44@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/29/24 12:45, Ingo Molnar wrote:
-> Does the 'nogbpages' kernel command line option fail on these systems
-> even outside of kexec (ie. regular boot), or only in combination with
-> kexec?
+syzbot has found a reproducer for the following issue on:
 
-Original reporter here, using nogbpages allows for normal bootup, but 
-kexec fails with it on my two similar systems.
+HEAD commit:    8d025e2092e2 Merge tag 'erofs-for-6.9-rc2-fixes' of git://..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14fa8019180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2599baf258ef795
+dashboard link: https://syzkaller.appspot.com/bug?extid=e126b819d8187b282d44
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105065c6180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1034025e180000
 
-Pavin.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5ccde1a19e22/disk-8d025e20.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/45420817e7d9/vmlinux-8d025e20.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/354bdafd8c8f/bzImage-8d025e20.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/417a5560bbaa/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e126b819d8187b282d44@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 1024
+=====================================================
+BUG: KMSAN: uninit-value in case_fold fs/hfsplus/unicode.c:23 [inline]
+BUG: KMSAN: uninit-value in hfsplus_strcasecmp+0x1ca/0x770 fs/hfsplus/unicode.c:47
+ case_fold fs/hfsplus/unicode.c:23 [inline]
+ hfsplus_strcasecmp+0x1ca/0x770 fs/hfsplus/unicode.c:47
+ hfsplus_cat_case_cmp_key+0xde/0x190 fs/hfsplus/catalog.c:26
+ hfs_find_rec_by_key+0xb1/0x240 fs/hfsplus/bfind.c:100
+ __hfsplus_brec_find+0x26f/0x7b0 fs/hfsplus/bfind.c:135
+ hfsplus_brec_find+0x445/0x970 fs/hfsplus/bfind.c:195
+ hfsplus_brec_read+0x46/0x1a0 fs/hfsplus/bfind.c:222
+ hfsplus_fill_super+0x199e/0x2700 fs/hfsplus/super.c:531
+ mount_bdev+0x397/0x520 fs/super.c:1676
+ hfsplus_mount+0x4d/0x60 fs/hfsplus/super.c:647
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1797
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3804 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ __do_kmalloc_node mm/slub.c:3965 [inline]
+ __kmalloc+0x6e4/0x1000 mm/slub.c:3979
+ kmalloc include/linux/slab.h:632 [inline]
+ hfsplus_find_init+0x91/0x250 fs/hfsplus/bfind.c:21
+ hfsplus_fill_super+0x1688/0x2700 fs/hfsplus/super.c:525
+ mount_bdev+0x397/0x520 fs/super.c:1676
+ hfsplus_mount+0x4d/0x60 fs/hfsplus/super.c:647
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1797
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+CPU: 1 PID: 5017 Comm: syz-executor416 Not tainted 6.9.0-rc1-syzkaller-00061-g8d025e2092e2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
