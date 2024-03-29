@@ -1,124 +1,83 @@
-Return-Path: <linux-kernel+bounces-124316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3A989159D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:17:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4797189159F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:18:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94421B22846
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:17:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBEDD1F22D26
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7423FB2A;
-	Fri, 29 Mar 2024 09:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2A84F881;
+	Fri, 29 Mar 2024 09:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZpEFsqy"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xmqZppOj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA854EAD7;
-	Fri, 29 Mar 2024 09:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56E34F606;
+	Fri, 29 Mar 2024 09:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711703855; cv=none; b=u/rJTdb0usTrFV+/AxTYhMOBElPevJaHJoTRCJNPDwQzeUoUILsoX5QArO0Z0BuyJSIOEupsNAufK0+YOgdgBT4hxp5nM5oEU47VRIcQO3+I8bq2GO4c7wT7EeD4Tpw2ehQA3/9llFEPtQQK+CeFN5X7fb33xEUQ60lce3+od+M=
+	t=1711703860; cv=none; b=s24OdVwbr2ihmMBO5kpAH/QFHmEudcPk7r8qnYctVwKE9Ey0R4fqcbUH0HDMWRvnXyaSTm58gapsHqNxMi2/lZ20K0lcgmcJwRiWMVw8B5POy6fx+W3D0eNmXDC91Yb7fGX1XDTEdYirfxrdxSBqSYgb+mTFVLfug1p2c43vUSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711703855; c=relaxed/simple;
-	bh=stRn40k3Wznn/gwcVteftCGGh9Q8iyBgC3XO/vR9ah4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jQNFGENlGp11cW7OSKutofGPsfrVwViTW7Xbe/lENwMamhM6gOKY5IIiwXmk3cc2dafhWzoPplp0b5dkK7FxzIj8SM+sTdxgwoiwZKv3aa2esZjlbkn5cX0F1hNuFpuBlfbjG6VyJ0gEpgrxIL+cxfKaB4pBGIfwTtUh6tv7+34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZpEFsqy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 64F85C433B1;
-	Fri, 29 Mar 2024 09:17:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711703855;
-	bh=stRn40k3Wznn/gwcVteftCGGh9Q8iyBgC3XO/vR9ah4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=AZpEFsqyYwMBCtFoX62cC5ri85w8HDkTs8aNFFzgLxCRTyYZip4k9Psofp2kT1e9r
-	 XR5azjAXVmHcBXg5HW16Y27uSEHC/xTAdq1+ufUPQwnj9P26o73e03WvD1VWHv5O7u
-	 /BKch4lSUmsawiqXvVYS8nAOaV86bLtOGUt2GS9CZHMileOrw6Ijl9bfP406mPx/8p
-	 cUR0zcfHDKkMUXJaxhNAc9M2vSq3J4Qyxh1lkVNcZ+GyZME/a6CgzKDosvqQTeY6S0
-	 SsSvmQ/lWgv2gZSMDK+NX/EZbR7mrbs4D5trnUo/zSlAA7QpcT5AdH+zTRBDR3PG2P
-	 HgA7WRGfWnF0Q==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59311CD128E;
-	Fri, 29 Mar 2024 09:17:35 +0000 (UTC)
-From: Kelvin Zhang via B4 Relay <devnull+kelvin.zhang.amlogic.com@kernel.org>
-Date: Fri, 29 Mar 2024 17:17:15 +0800
-Subject: [PATCH 3/3] arm64: dts: amlogic: add reset controller for Amlogic
- T7 SoC
+	s=arc-20240116; t=1711703860; c=relaxed/simple;
+	bh=ukG19+e5dQUl/rTjw8Kta4Qq+7PmCZE3qbRajYNkPjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ijN3BrBwWk5ve65OOsgxwdkhNTXcJRJRpxVwn/Kd2rAAFdHuPnEgxGIyfGGwOFinvoqyisLTW5UD7gu4FzbdlDmtbaLFw4eseouyKyBHvatmrnYApru8CFqswp+JCXMuMO9khkH/ZlLUzbvg3p30E3gUdi91I8o0SB34g6iZytw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xmqZppOj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B14A4C433F1;
+	Fri, 29 Mar 2024 09:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711703860;
+	bh=ukG19+e5dQUl/rTjw8Kta4Qq+7PmCZE3qbRajYNkPjk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=xmqZppOjBLT9G22vs9QWJt++yXpoSTWnjU/zdxjci9kfazyhQDOWQqE8odjoLezwc
+	 bG1jWMU5xJT+V52cD9LO/iuIyoMWGBJaRr8UL+nXQvEpGwRUDR9q+3HLJBeVLZd9hg
+	 Bs5XZhHEeQAt3YPqJcUxTB7xZTVLm+898pbmBnLg=
+Date: Fri, 29 Mar 2024 10:17:36 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+	stable@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: FAILED: Patch "x86/efistub: Call mixed mode boot services on the
+ firmware's stack" failed to apply to 6.8-stable tree
+Message-ID: <2024032902-moonlit-abridge-743e@gregkh>
+References: <20240327120643.2824712-1-sashal@kernel.org>
+ <CAMj1kXH8n4-8VHSVygUyEc4Zne-4gE0uijAkDe-Ufu6hUnFU+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240329-t7-reset-v1-3-4c6e2e68359e@amlogic.com>
-References: <20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com>
-In-Reply-To: <20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com>
-To: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Zelong Dong <zelong.dong@amlogic.com>, 
- Kelvin Zhang <kelvin.zhang@amlogic.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711703853; l=1108;
- i=kelvin.zhang@amlogic.com; s=20240329; h=from:subject:message-id;
- bh=nQ6i4onLrotYFoJPFCF0uK2+BCj3hGBC1C42Lz/v9h4=;
- b=Jaw99hNZQkkHxQBjC35M3u7xduE2mi1d6p+mbAr75eUopJQwluSwKkTVhFrdm2MgKnxJglndn
- fc86fr2K0poCv4GnbrE3ablxTtxcKSl1DfbTwZmXw38Wpr62LNNX5tb
-X-Developer-Key: i=kelvin.zhang@amlogic.com; a=ed25519;
- pk=pgnle7HTNvnNTcOoGejvtTC7BJT30HUNXfMHRRXSylI=
-X-Endpoint-Received: by B4 Relay for kelvin.zhang@amlogic.com/20240329 with
- auth_id=148
-X-Original-From: Kelvin Zhang <kelvin.zhang@amlogic.com>
-Reply-To: kelvin.zhang@amlogic.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXH8n4-8VHSVygUyEc4Zne-4gE0uijAkDe-Ufu6hUnFU+g@mail.gmail.com>
 
-From: Zelong Dong <zelong.dong@amlogic.com>
+On Wed, Mar 27, 2024 at 03:46:53PM +0200, Ard Biesheuvel wrote:
+> On Wed, 27 Mar 2024 at 14:06, Sasha Levin <sashal@kernel.org> wrote:
+> >
+> > The patch below does not apply to the 6.8-stable tree.
+> > If someone wants it applied there, or to any other stable or longterm
+> > tree, then please email the backport, including the original git commit
+> > id to <stable@vger.kernel.org>.
+> >
+> 
+> This applies fine on top of 6.8.2, 6.7.11 and 6.6.23.
+> 
+> On 6.1.83, it gave me a warning
+> 
+>   Auto-merging arch/x86/boot/compressed/efi_mixed.S
+> 
+> but the change still applied without problems.
+> 
+> Not sure what is going on here .....
 
-Add the reset controller device of Amlogic T7 SoC family
+Odd, it worked here forme, now queued up everywhere, sorry for the
+noise.
 
-Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
-Signed-off-by: Kelvin Zhang <kelvin.zhang@amlogic.com>
----
- arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-index 5248bdf824ea..e94bb85b5292 100644
---- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/power/amlogic,t7-pwrc.h>
-+#include <dt-bindings/reset/amlogic,t7-reset.h>
- 
- / {
- 	interrupt-parent = <&gic>;
-@@ -149,6 +150,12 @@ apb4: bus@fe000000 {
- 			#size-cells = <2>;
- 			ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
- 
-+			reset: reset-controller@2000 {
-+				compatible = "amlogic,t7-reset";
-+				reg = <0x0 0x2000 0x0 0x98>;
-+				#reset-cells = <1>;
-+			};
-+
- 			watchdog@2100 {
- 				compatible = "amlogic,t7-wdt";
- 				reg = <0x0 0x2100 0x0 0x10>;
-
--- 
-2.37.1
-
-
+greg k-h
 
