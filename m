@@ -1,131 +1,210 @@
-Return-Path: <linux-kernel+bounces-124446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A77878917F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:40:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48385891806
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:42:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4664A1F22D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:40:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4477B22721
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2246A8A3;
-	Fri, 29 Mar 2024 11:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5AF07E0EE;
+	Fri, 29 Mar 2024 11:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="b7knOlp2"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XLABrnXR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DA848CC6
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED526A357
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 11:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711712432; cv=none; b=nnxV5LK4+Nc7H0mNS1DgO6+qQ77Uq1vEnNDF2/MWm2GAidIqk8CntRTeAGyHWbUzzq63UutB+jUwM5Qh5AFDXItQbU97bpfn4VMToa10WhX92Jlv7LUfLwBN/LV+n4Qy0RnagQAF32a515ibAVSSroUtNnzScpxWsRccy3KktPo=
+	t=1711712542; cv=none; b=UN4+3czYPaQjMIZOe/SvieSwRLs4iyBahX7TRo+fx3iW79HQBE1irRig18OoToRV1xzXnAC33GQ7u2y9iMuEmCyWqOsKcb3kZY4Hs3ggcZxpiFVGg/tY/mwIk8y8iEQSiWaC6vZ12UlbY+h24ECE90pG2lQWjNIlZGtMzWNkQXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711712432; c=relaxed/simple;
-	bh=2q9bon1N7z/YcMTzpMZQcL/2FStifz9bwDhhUDmX6Yg=;
+	s=arc-20240116; t=1711712542; c=relaxed/simple;
+	bh=CnPyW/y5UQrILS7vE5ScOzPk56jpnW7Bki+iQBNgkGU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rOP1icH683yV3woEFQwvaPTFnNCgS3hOzsRl72haE6xVDc7L/hkEZqGm4tjGrUR+9tmo8XIVcXRBTn6nGgMVSnOI1Z9UZqhKKCtf9E2FQJj/osWWegHAIeenJDJe/qFXINkpVNonwBV1QHW7NmypZpw++IFsbM5ht1xCVWVGY+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=b7knOlp2; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B50CE40E0247;
-	Fri, 29 Mar 2024 11:40:20 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Kf6oI_slP4Vq; Fri, 29 Mar 2024 11:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711712417; bh=qheMQpL7pKOjznFuXvmy0Ba+G6vxwN2lpdMdpi2wNKQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b7knOlp2beVUrI/zPH5WYYycV3Tk88DjTJedtwI/59jIsRDcLFmVNREf0uXxUdK7Q
-	 MR8lWDCWjzt+ZD2oCYZPbczSQZLybGsJPKMmrYJWKVZQ7ODOgnbfcHYeMSWYCuVWRN
-	 cGCLFobW+WJqm3rkaECt/8XTfic9J1q8nIQtonctLKK4aBP5CAihc9V4QQdOR+4aiy
-	 1XBbYvseWw1bgeQIdlghMNEcGJaj+aHfe31ROEAVVKZhBqpfQAlxiyjG3DTmxOm/MX
-	 IXKUrXmUUNM0hSk51b/4FZ1cQiGeCs3W2LZ4yuqZL4qsVs9zova7NpoNsrNNEqhCgv
-	 Ggaju8wKpUissF9vg3Tn+EPtpBCYAfuT9dKWnqY7l3p5UiaHgi+O9jredJS8l+vicP
-	 bHMNXRansdQihxgvXvh2OqKcTfppkELZmt97TAV5V78a+nwgOM+96p9WzrQ0/ZgZZE
-	 vcNyYAkPLxVg5lBnCdNIi1MQRsGERI2QTCu7bUkLTcUopTYZnCvTCh1wvS/e6ISmgr
-	 NGDeLQyF0XagKXzjdpPecnUKvtRwiua2z7OM7rwYeF3wXPnpAOiyUYYm4de1U94Zx5
-	 03fxryJfrfJ70YSIYtw5Upv6j5ZHxZMIi8x2Hcet6Y9mxOpwsTKt6ntFKjIl4mzjGe
-	 aaBlesBajaswMWrW3HXgaoU0=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE60040E024C;
-	Fri, 29 Mar 2024 11:40:13 +0000 (UTC)
-Date: Fri, 29 Mar 2024 12:40:07 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
- struct cpuinfo_x86
-Message-ID: <20240329114007.GAZgaolwSFtjHStiuL@fat_crate.local>
-References: <20240328163746.243023-1-tony.luck@intel.com>
- <20240328163746.243023-2-tony.luck@intel.com>
- <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
- <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
- <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
- <SJ1PR11MB6083D8BB65748452B204ED8AFC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=F4X7cCbnaI9Si4W3CLsDT1AIGLhYI2a8UV4squkBIrkQsZy/Rdso7KSBn3z1RAPj0rqkkssGs6I9UP4DdlmJ3xl1Q6KBfh95shVtxu2dETBQ2gGEGbWuYRTSf4ON7QLVaiQiYAN3x4kGhTe0WUmtztw5Ar5dc31KtzipVzflfPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XLABrnXR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711712538;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+BsDTTyNU5pgUTxWeniUBybyV1pHa+zj3gLQFOaKcJw=;
+	b=XLABrnXRSolT0vceLyGVBE+H8tmnoJucjQkXgGm5dGhzmbe0PHjzXWegDjl/dH3F52wgXz
+	s8P7CvQ2OgvHo91ewidlrjPVmcPOzvQX8CAx6c5AXRIR1IZRRX9HJLW8VmgjV/yoNiVKKq
+	kc7vZTvsGb8cj5DOiQE3wPulhCNzZLw=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-350-ScYltWMOM5yh6rRr9TrAxQ-1; Fri, 29 Mar 2024 07:42:16 -0400
+X-MC-Unique: ScYltWMOM5yh6rRr9TrAxQ-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d6d3815f9bso18645991fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:42:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711712535; x=1712317335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+BsDTTyNU5pgUTxWeniUBybyV1pHa+zj3gLQFOaKcJw=;
+        b=jsLAkZ7u+kUjSRBYBSk5o6uz7QfD7j8GQ2tcDsZBWPtFupWA8EZmlbauO9SLG90gJF
+         eNvWJhiXeQs01F4sWJpTOMyyf2sM5xj9RAx0S4VF+R0EzMA0jGKDkcyufyEkanOgNaaB
+         Bs/dIbsX1L2nDR9O36/se5RF8O/KdKbreRBNBSxqIMPS3AVtHKoIifUUSHAN2eIA/Ucq
+         6lY/WmOJMLqMQs86t/6CHHgHsrkVSCSck8DBE9fT/ArJ5lQKV4NL+2IarjXpSGgf4Yv+
+         k6p7gPaX52F2aMMNCF9yxGSmDDBszIe+QnXSbb/Mk/oOXOryXa6355qZiZkJ/sXahsW1
+         i2JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVa87xJgfpL4KDnPkx9s73DkfcDFrkntBB707SxW01sVnncKEGcceRqjz6p4bkfOk+OwBhXVPkVQnuxKuFebp6c0esZAzgzh4F6aB0+
+X-Gm-Message-State: AOJu0YzPrvgxXJfVacpJzhBlgaG4bS1uF9PBVd4fckyupzbwBzpmRoCZ
+	MsMfInHPxvDXNVavSAGw3J5CBlBzHJJYyU/GudiYxU7q/fgyecr7YdJXXWwVK+rBmwbr8ltLu/x
+	CoTF7BEZzfhHK88GCgGIGDf+HAvXADwt7lKPEdQuXfrpAuoMXWxC9lJ0OQv//ZA==
+X-Received: by 2002:a2e:9659:0:b0:2d6:e148:2463 with SMTP id z25-20020a2e9659000000b002d6e1482463mr1428705ljh.24.1711712535133;
+        Fri, 29 Mar 2024 04:42:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEACBjwkvqDUtHOsu+pH/smraarLJWyQq+BtaLZf+sEYEs2CGiOj/cy+sTyYbp3cXHSv/vHng==
+X-Received: by 2002:a2e:9659:0:b0:2d6:e148:2463 with SMTP id z25-20020a2e9659000000b002d6e1482463mr1428676ljh.24.1711712534737;
+        Fri, 29 Mar 2024 04:42:14 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-12-25-33.business.telecomitalia.it. [87.12.25.33])
+        by smtp.gmail.com with ESMTPSA id s7-20020a1709062ec700b00a46abaeeb1csm1837128eji.104.2024.03.29.04.42.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 04:42:14 -0700 (PDT)
+Date: Fri, 29 Mar 2024 12:42:08 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei <arei.gonglei@huawei.com>, 
+	"David S. Miller" <davem@davemloft.net>, Viresh Kumar <vireshk@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen <ericvh@kernel.org>, 
+	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Kalle Valo <kvalo@kernel.org>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+	Pankaj Gupta <pankaj.gupta.linux@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Anton Yakovlev <anton.yakovlev@opensynergy.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	virtualization@lists.linux.dev, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, iommu@lists.linux.dev, netdev@vger.kernel.org, 
+	v9fs@lists.linux.dev, kvm@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 01/22] virtio: store owner from modules with
+ register_virtio_driver()
+Message-ID: <oaoiehcpkjs3wrhc22pwx676pompxml2z5dcq32a6fvsyntonw@hnohrbbp6wpm>
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+ <20240327-module-owner-virtio-v1-1-0feffab77d99@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB6083D8BB65748452B204ED8AFC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+In-Reply-To: <20240327-module-owner-virtio-v1-1-0feffab77d99@linaro.org>
 
-On Thu, Mar 28, 2024 at 06:32:35PM +0000, Luck, Tony wrote:
-> I don't think the format is really that big an issue. Including stepping in the
-> format adds complexity to a thousand places these checks are made while
-> only being useful in a few dozen.
+On Wed, Mar 27, 2024 at 01:40:54PM +0100, Krzysztof Kozlowski wrote:
+>Modules registering driver with register_virtio_driver() might forget to
+>set .owner field.  i2c-virtio.c for example has it missing.  The field
+>is used by some of other kernel parts for reference counting
+>(try_module_get()), so it is expected that drivers will set it.
+>
+>Solve the problem by moving this task away from the drivers to the core
+>amba bus code, just like we did for platform_driver in
+>commit 9447057eaff8 ("platform_device: use a macro instead of
+>platform_driver_register").
+>
+>Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>---
+> Documentation/driver-api/virtio/writing_virtio_drivers.rst | 1 -
+> drivers/virtio/virtio.c                                    | 6 ++++--
+> include/linux/virtio.h                                     | 7 +++++--
+> 3 files changed, 9 insertions(+), 5 deletions(-)
+>
+>diff --git a/Documentation/driver-api/virtio/writing_virtio_drivers.rst b/Documentation/driver-api/virtio/writing_virtio_drivers.rst
+>index e14c58796d25..e5de6f5d061a 100644
+>--- a/Documentation/driver-api/virtio/writing_virtio_drivers.rst
+>+++ b/Documentation/driver-api/virtio/writing_virtio_drivers.rst
+>@@ -97,7 +97,6 @@ like this::
+>
+> 	static struct virtio_driver virtio_dummy_driver = {
+> 		.driver.name =  KBUILD_MODNAME,
+>-		.driver.owner = THIS_MODULE,
+> 		.id_table =     id_table,
+> 		.probe =        virtio_dummy_probe,
+> 		.remove =       virtio_dummy_remove,
+>diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>index f173587893cb..9510c551dce8 100644
+>--- a/drivers/virtio/virtio.c
+>+++ b/drivers/virtio/virtio.c
+>@@ -362,14 +362,16 @@ static const struct bus_type virtio_bus = {
+> 	.remove = virtio_dev_remove,
+> };
+>
+>-int register_virtio_driver(struct virtio_driver *driver)
+>+int __register_virtio_driver(struct virtio_driver *driver, struct module *owner)
+> {
+> 	/* Catch this early. */
+> 	BUG_ON(driver->feature_table_size && !driver->feature_table);
+> 	driver->driver.bus = &virtio_bus;
+>+	driver->driver.owner = owner;
+>+
 
-I've figured out what the problem is with steppings - ranges. If you
-have a range of steppings which all belong to the same model, then you
-have to complicate the checks by either masking out the stepping or use
-the X86_STEPPING_ANY thing which forces you to use x86_match_cpu()
-instead of a simple integer comparison.
+`.driver.name =  KBUILD_MODNAME` also seems very common, should we put
+that in the macro as well?
 
-And you should talk to your folks what their plan is for the new
-families because if they do a range of model numbers which all belong to
-the same CPU model like AMD does, then your simple comparison scheme
-goes out the window because it can't really deal with ranges.
+> 	return driver_register(&driver->driver);
+> }
+>-EXPORT_SYMBOL_GPL(register_virtio_driver);
+>+EXPORT_SYMBOL_GPL(__register_virtio_driver);
+>
+> void unregister_virtio_driver(struct virtio_driver *driver)
+> {
+>diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+>index b0201747a263..26c4325aa373 100644
+>--- a/include/linux/virtio.h
+>+++ b/include/linux/virtio.h
+>@@ -170,7 +170,7 @@ size_t virtio_max_dma_size(const struct virtio_device *vdev);
+>
+> /**
+>  * struct virtio_driver - operations for a virtio I/O driver
+>- * @driver: underlying device driver (populate name and owner).
+>+ * @driver: underlying device driver (populate name).
+>  * @id_table: the ids serviced by this driver.
+>  * @feature_table: an array of feature numbers supported by this driver.
+>  * @feature_table_size: number of entries in the feature table array.
+>@@ -208,7 +208,10 @@ static inline struct virtio_driver *drv_to_virtio(struct device_driver *drv)
+> 	return container_of(drv, struct virtio_driver, driver);
+> }
+>
+>-int register_virtio_driver(struct virtio_driver *drv);
+>+/* use a macro to avoid include chaining to get THIS_MODULE */
+>+#define register_virtio_driver(drv) \
+>+	__register_virtio_driver(drv, THIS_MODULE)
+>+int __register_virtio_driver(struct virtio_driver *drv, struct module *owner);
+> void unregister_virtio_driver(struct virtio_driver *drv);
+>
+> /* module_virtio_driver() - Helper macro for drivers that don't do
+>
+>-- 
+>2.34.1
+>
 
-Because from looking at your set, I don't see a slick way to check
-whether a concrete f/m/s tuple belongs to a range without involved
-checking.
-
-For example, models:
-
-                case 0x30 ... 0x4f:
-                case 0x60 ... 0x7f:
-                case 0x90 ... 0x91:
-                case 0xa0 ... 0xaf:
-
-are all Zen2. I could do a X86_MATCH_VF_MODEL_RANGE and we even had
-a patch like that at some point but it didn't go in. But even if I did
-that, I'd still need to do x86_match_cpu() instead of the current
-X86_FEATURE_ZEN* checks we're doing.
-
-So I don't think I can switch AMD to use that. It looks like the 'V' in
-"VFM" could just as well turn into "I".
-
-:-)
-
-I'd say.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
