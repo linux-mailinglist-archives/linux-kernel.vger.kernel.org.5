@@ -1,111 +1,214 @@
-Return-Path: <linux-kernel+bounces-125165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1422892184
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:20:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F3C2892186
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02F771C2427F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:20:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED341F270F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3769B85C52;
-	Fri, 29 Mar 2024 16:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221B58594D;
+	Fri, 29 Mar 2024 16:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nyunFQHw"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UZDwbE7I"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DAF85942
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E5B2576F
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 16:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711729244; cv=none; b=qiN/JzRiPftSefZRkXvfdgrmtgI3orYdpcPNi6N8aRodYuB1kocGrdvXMpibs4pbNqGCWxnmNeJLraV+meUNwXNMewsmsm4t69qHPH/XKZncjBEhCleg74Qb57dLWgXnqJRoiwWpH7mFptE6W2hviKfDlTLOGLn9shpjKQXCvLU=
+	t=1711729274; cv=none; b=WyW/0LP0D3E3ERquHxaFBcijiR/MXrgTTHCquPPlsUbmln/vneG9LAPQYPhAcQpSlkYiMHRtGga1Xrgb+nDRHmdbvh6nKUSEvtFyzBykwARtO3MA+VM2C8P7RQyvqbYOB5MvelJeQ6naJiwLQ7BdPj6DBzetVhN2N7KYmrhxTEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711729244; c=relaxed/simple;
-	bh=aNV9rU7rNrtAHY4j9cGg2iNrlDQzSv+NWW6nridB+o4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UBhGVmkoq785tkoaknOjCHYI8o2bSbvXj8BOdpfEdLcTxDASBE2GCQhnOHBT94X3Oujuhk5NRxNYnKP/iK18+0ly3PGwpX7Yy9kReAZkjAs1F0+DrAt0GLXqiIknNh19YOYXXerM7IQVlJlHvpo8L7YJyKWpo4pP1dsBPBr1A30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nyunFQHw; arc=none smtp.client-ip=209.85.208.169
+	s=arc-20240116; t=1711729274; c=relaxed/simple;
+	bh=dcSFld6UCTdTL/5vjYeiOxLyFOuvbsJONzbcmxgsYaI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EyZkvayJim9ZTplnFnuWUu60C7elRUlteYc1xYmdOh8IaLHAIuZL+8lC/euCstLdw9pYsYSY86y7MQOOKVR4tFQ39eycnS54e/cuqg5QM5kCUThYRQ/aZF2fzTz4dnFxOyhRv5gIxcZTf7paSCgMdBX/JjaekA6XFkAQVGLaWjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UZDwbE7I; arc=none smtp.client-ip=209.85.167.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d6fd3cfaa6so29761341fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:20:42 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5157af37806so2420448e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711729241; x=1712334041; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Nv3nKG3kt1KExo6n8MktRZ2ubBO2o5feKCsd61d5ipk=;
-        b=nyunFQHwBy0+TCKUoThhWMuGSOkvKrgYWjmJKo70EsExNouwEVj0aGjD8CfFDPt7Qv
-         /dE3ql2uUNCVAQWmJhGiasfTx2i9t5sgaEUhehcQzEOE0sMuig40bp4XaHxDbRTMQksQ
-         p4aRcNq5b6xXLpG5foe2Td7Vh4Opey44p0IKHT5sxFBnfeGPUFosJRaHm2w0l41/BHa2
-         LEWBTw5OYmsL9JzpSRL5ZEF/e4o8rDlTNNoaFH4DArKzWv0rvqKw8v0fgB4HRcpLWf3I
-         N395qSRmpKa9QYVzrtgl5eewTxVS056hZqTMcQrm3c5SbZfKGh1mn5sdQic5eiAbX65E
-         mL+A==
+        d=linaro.org; s=google; t=1711729270; x=1712334070; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9TdQntOQdC+RwwerKG1DtWz7PRsJo1psWkBJYy0GaAE=;
+        b=UZDwbE7IKUwpGHw3U6rPNsQqmHtlWTUNVhqRUcwhfvaiDlwGT0wny7injIO+/yG7ik
+         6uWUm5hv3giwQ1E4ivlYo+kYGF98vAuYLSVEi9J6jmlTz1FNnWpgm4fig3yu9NAQIYJU
+         U6b3mXrrRqkGF1jaF68YNpmi21j5PdwDAkoTabD4r0mYIXH3WH6ICJvJ0MqYp+riq3OV
+         PoNLx2ZeK8Z0zOKmO737xFQMPzoaY9eptTVo02YaiXQBwQXN0D8MxVSZAEctSt6R/qnk
+         pBSYHy/wmyxBi7X3iZveMkVL9l8NhMQ4CbqQFoHDDJcOs9ERux48pIhbwXGJG2IUEtIh
+         opTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711729241; x=1712334041;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nv3nKG3kt1KExo6n8MktRZ2ubBO2o5feKCsd61d5ipk=;
-        b=CkLAPM0V4so6u3InpTWM3DhwCInW8t3DlkSZyv84m02yMopIPbS8BkNiypeCjTNPcR
-         UiWgHXBhK5ZGYTomjUO8kvuWgT6j/kd6Z4ibcixHrFmkLZuwl0kC6BiqUzIFoA42AuHd
-         vHPbYam/jBDifvW5+Vo50ga6Dm3nMbu49IYFkbvbJi31QSB095eAv/Rxlc57IH11Y2XJ
-         a3jaGD1TqnvAz6Gpj5dhH5Gc5pFcXW/Q0PjT1cobsFIrR3NUcZdnlvomnmGNrihoogIL
-         g1wQL7oPwjKsRqVEl2GRq9VMZVkAWbNa0+KoMm0QJ9BYTb6hD11DMBTordB0+zTD+e5U
-         iOjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUK1qESmk9CpSfo8mMWVMGBb60rBZSUXCbjBzaWWcjU4w3zO5VfLH1/gUyTxHeVKux7S82iIYBYHoY2zU4rhHxMJEdovL2bb4wVY8OC
-X-Gm-Message-State: AOJu0YxJusSCmFs1iKaoIPsu/08nlV3+T4yel1hkK782z+qbp6UTq/Xu
-	qqQX1efRoZH/wtqM02mXKtvOYR0HfmSfBQOvELRwdqNVdKwrMc9uJt7im+umkp4=
-X-Google-Smtp-Source: AGHT+IFkqPrhomWaxduOdYh034fYe2OmWOQleSdfiah9gsEO+++4wFQjI0nbDJP5t3PvIV15vROuyQ==
-X-Received: by 2002:a2e:3c12:0:b0:2d7:1731:191d with SMTP id j18-20020a2e3c12000000b002d71731191dmr1357519lja.3.1711729240746;
-        Fri, 29 Mar 2024 09:20:40 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id n18-20020a05600c4f9200b004148c3685ffsm5964877wmq.3.2024.03.29.09.20.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 09:20:40 -0700 (PDT)
-Message-ID: <16999076-4ec6-4193-8a90-40a3f530a0b5@linaro.org>
-Date: Fri, 29 Mar 2024 17:20:39 +0100
+        d=1e100.net; s=20230601; t=1711729270; x=1712334070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9TdQntOQdC+RwwerKG1DtWz7PRsJo1psWkBJYy0GaAE=;
+        b=Je1lbiFCqTLeuea5jIVjELXle9v2jzOFzdxMUSPSaUa0P1fHE9ZGLZKp9SGx3XRTZ7
+         mQ5YOO/7G4mLPXr8iF5XXJWM6Q2sNtR0nYFVRmJ82xTo17d6fmWLoTc19i9cR9Oo8khD
+         f1agxldL1072LV7MYo5EB2waIGib0fTpWuaNSRxw3N2uXxCCskSHMPnJhbCTFgnaTPUD
+         lTKStlr3UkEu7EHeKS92MfSxFXMbqO/hLqHEGnOe4/Rb7nuj9RJuKiH+AwbiEeBU8qN1
+         6C5Zq8JKKyFF3ZDWTd8PxeRcLbEUjt6iipr+EjIE7TTPCJOjalv9u2FjR7Xkm1dkjQRv
+         P4QA==
+X-Gm-Message-State: AOJu0YzW9JqLwkpEhoq7CSlf+Ii00KLYuFVOODvsSWbm2+jQtv9sOwGD
+	DgzaaRh/Z8aCwGReEE4IsxcwLHC3PthU6xqhvSH1XI7mwstFLG/lFvVDWfPomDM=
+X-Google-Smtp-Source: AGHT+IGYcvpSz7jI5yxeagCBVOiO2Xfh0dOk6NVOG3vgeY7eKDGqNcF+bUdJzGLSflCAfgeQkL2bjw==
+X-Received: by 2002:a19:2d4c:0:b0:513:ed0f:36c9 with SMTP id t12-20020a192d4c000000b00513ed0f36c9mr2085718lft.45.1711729270454;
+        Fri, 29 Mar 2024 09:21:10 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id z10-20020ac25dea000000b00515d4457ff9sm87172lfq.89.2024.03.29.09.21.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 09:21:10 -0700 (PDT)
+Date: Fri, 29 Mar 2024 18:21:08 +0200
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: "Christian A. Ehrhardt" <lk@c--e.de>
+Cc: linux-kernel@vger.kernel.org,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Prashant Malani <pmalani@chromium.org>,
+	Jameson Thies <jthies@google.com>,
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>,
+	linux-usb@vger.kernel.org, Kenneth Crudup <kenny@panix.com>
+Subject: Re: [PATCH 2/5] usb: typec: ucsi: Check for notifications after init
+Message-ID: <ZgbqdBd1OiWgDN-_@eriador.lumag.spb.ru>
+References: <20240320073927.1641788-1-lk@c--e.de>
+ <20240320073927.1641788-3-lk@c--e.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] thermal/drivers/tsens: Add suspend to RAM support for
- tsens
-Content-Language: en-US
-To: Priyansh Jain <quic_priyjain@quicinc.com>,
- Amit Kucheria <amitk@kernel.org>, Thara Gopinath <thara.gopinath@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: quic_manafm@quicinc.com
-References: <20240328050230.31770-1-quic_priyjain@quicinc.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240328050230.31770-1-quic_priyjain@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320073927.1641788-3-lk@c--e.de>
 
-On 28/03/2024 06:02, Priyansh Jain wrote:
-> As part of suspend to RAM, tsens hardware will be turned off.
-> While resume callback, re-initialize tsens hardware.
+On Wed, Mar 20, 2024 at 08:39:23AM +0100, Christian A. Ehrhardt wrote:
+> The completion notification for the final SET_NOTIFICATION_ENABLE
+> command during initialization can include a connector change
+> notification.  However, at the time this completion notification is
+> processed, the ucsi struct is not ready to handle this notification.
+> As a result the notification is ignored and the controller
+> never sends an interrupt again.
 > 
-> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
+> Re-check CCI for a pending connector state change after
+> initialization is complete. Adjust the corresponding debug
+> message accordingly.
+> 
+> Fixes: 71a1fa0df2a3 ("usb: typec: ucsi: Store the notification mask")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
 > ---
+>  drivers/usb/typec/ucsi/ucsi.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+> index 8a6645ffd938..dceeed207569 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.c
+> +++ b/drivers/usb/typec/ucsi/ucsi.c
+> @@ -1237,7 +1237,7 @@ void ucsi_connector_change(struct ucsi *ucsi, u8 num)
+>  	struct ucsi_connector *con = &ucsi->connector[num - 1];
+>  
+>  	if (!(ucsi->ntfy & UCSI_ENABLE_NTFY_CONNECTOR_CHANGE)) {
+> -		dev_dbg(ucsi->dev, "Bogus connector change event\n");
+> +		dev_dbg(ucsi->dev, "Early connector change event\n");
+>  		return;
+>  	}
+>  
+> @@ -1636,6 +1636,7 @@ static int ucsi_init(struct ucsi *ucsi)
+>  {
+>  	struct ucsi_connector *con, *connector;
+>  	u64 command, ntfy;
+> +	u32 cci;
+>  	int ret;
+>  	int i;
+>  
+> @@ -1688,6 +1689,13 @@ static int ucsi_init(struct ucsi *ucsi)
+>  
+>  	ucsi->connector = connector;
+>  	ucsi->ntfy = ntfy;
+> +
+> +	ret = ucsi->ops->read(ucsi, UCSI_CCI, &cci, sizeof(cci));
+> +	if (ret)
+> +		return ret;
+> +	if (UCSI_CCI_CONNECTOR(READ_ONCE(cci)))
+> +		ucsi_connector_change(ucsi, cci);
+> +
 
-Applied, thanks
+I think this leaves place for the race. With this patchset + "Ack
+connector change early" in place Neil triggered the following backtrace
+on sm8550 HDK while testing my UCSI-qcom-fixes patchset:
+What happens:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+[   10.421640] write: 00000000: 05 00 e7 db 00 00 00 00
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+SET_NOTIFICATION_ENABLE
 
+[   10.432359] read: 00000000: 10 01 00 00 00 00 00 80 00 00 00 00 00 00 00 00
+[   10.469553] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
+[   10.476783] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   10.489552] notify: 00000000: 00 00 00 80
+
+COMMAND_COMPLETE
+
+[   10.494194] read: 00000000: 10 01 00 00 00 00 00 80 00 00 00 00 00 00 00 00
+[   10.501370] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
+[   10.508578] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   10.515757] write: 00000000: 04 00 02 00 00 00 00 00
+
+ACK_CC_CI(command completed)
+
+[   10.521100] read: 00000000: 10 01 00 00 00 00 00 20 00 00 00 00 00 00 00 00
+[   10.528363] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
+[   10.535603] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[   10.549549] notify: 00000000: 00 00 00 20
+
+ACK_COMPLETE
+
+[Here ucsi->connector and ucsi->ntfy are being set by ucsi_init()
+
+[   10.566654] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
+[   10.593553] notify: 00000000: 02 00 00 20
+
+Event with CONNECTION_CHANGE. It also schedules connector_change work,
+because ucsi->ntfy is already set
+
+[   10.595796] read: 00000000: 10 01 00 00 02 00 00 20 00 00 00 00 00 00 00 00
+[   10.595798] read: 00000010: 04 58 29 20 00 00 00 00 00 00 00 00 00 03 30 01
+[   10.595799] read: 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+The CCI read coming from ucsi_init()
+
+[   10.595807] ------------[ cut here ]------------
+[   10.595808] WARNING: CPU: 6 PID: 101 at kernel/workqueue.c:2384 __queue_work+0x374/0x474
+
+[skipped the register dump]
+
+[   10.595953]  __queue_work+0x374/0x474
+[   10.595956]  queue_work_on+0x68/0x84
+[   10.595959]  ucsi_connector_change+0x54/0x88 [typec_ucsi]
+[   10.595963]  ucsi_init_work+0x834/0x85c [typec_ucsi]
+[   10.595968]  process_one_work+0x148/0x29c
+[   10.595971]  worker_thread+0x2fc/0x40c
+[   10.595974]  kthread+0x110/0x114
+[   10.595978]  ret_from_fork+0x10/0x20
+[   10.595985] ---[ end trace 0000000000000000 ]---
+
+Warning, because the work is already scheduled.
+
+
+>  	return 0;
+>  
+>  err_unregister:
+> -- 
+> 2.40.1
+> 
 
