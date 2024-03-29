@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-124269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE43F89149C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:55:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 678F289148E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:48:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED33B215C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:55:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22FCB28766C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E8B43156;
-	Fri, 29 Mar 2024 07:55:37 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2753840BE4;
+	Fri, 29 Mar 2024 07:48:38 +0000 (UTC)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420923B78E;
-	Fri, 29 Mar 2024 07:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207DC3D569;
+	Fri, 29 Mar 2024 07:48:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711698937; cv=none; b=bFEZj62o1llCS+omJpQD2zyWSuxSdHNb2V06ilhLscdtnxTlsAbES3AlyWpakOYiwJbHUjt0sHx9kGRZTEQ6CKFBv9GfpBrU6Vz0GBtZAqI5BgAdu4eGc7E5bDJ9o2qQRaLZWztlTfzpIrif2lMOyHyWaDC9jiuByhUeGy4xOI8=
+	t=1711698517; cv=none; b=TeMgcgnLnD6Jb3GBkHHcV1MxrrtvH814/UnfUcJNrLPmiPoRBA4x/cT82FG8ct5WUV0vhV057g+UqcgqaRPiRMsmz0SzOrNkXkap/hXAZW27VFGCBN7wZiKscAyZCkdqkK6sAUj1R29615L4H5lgPqVWfP4T+77jOfuMqZeS2a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711698937; c=relaxed/simple;
-	bh=nVPYjKYXArkRwaKZg4uThAz/JxGxrkKNpdNxBtYbP4Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=rBZKlqCggZKfmgKDrEy3Adty2KzU0OAOI4xxRVCBrY2Gk0W1Xe+6jM6YRBH5lwQjXi0qTNM69XG1E5xkCMwoc9Sz2cX95J3uijK5OKxZgg3LPxgk9K0FUk7KCrtJ2VFBo+p9e98liYjfk5yQH6R4YxXSLy87Kgj0hmfht4DxOa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
+	s=arc-20240116; t=1711698517; c=relaxed/simple;
+	bh=ALaE+zcSQMtY5KqTM7PnPkfpveagz52jI+cnc103xNU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=s6k2eoAOcZ5uh4LgMRLdyd58cOznloo3oYdUG+Sl1uAfMKamv9NGVQFA4WIANi9Z1PsxTu9usvCKKC8EN6ulqVHDZ7asHvaE2lnh+hNXVSnU08Jox/OCiIiq5cfCB/mu56asOfTSgbFCisjslDwd5BfqeEKtv8B02d973g8m65c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6C9241A145E;
-	Fri, 29 Mar 2024 08:48:33 +0100 (CET)
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 675AF2008BA;
+	Fri, 29 Mar 2024 08:48:34 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DA4DC1A1458;
-	Fri, 29 Mar 2024 08:48:32 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C3E52008D9;
+	Fri, 29 Mar 2024 08:48:34 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0394D180222F;
-	Fri, 29 Mar 2024 15:48:30 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 325D0183ACAC;
+	Fri, 29 Mar 2024 15:48:32 +0800 (+08)
 From: Richard Zhu <hongxing.zhu@nxp.com>
 To: vkoul@kernel.org,
 	kishon@kernel.org,
@@ -50,9 +50,9 @@ Cc: hongxing.zhu@nxp.com,
 	linux-kernel@vger.kernel.org,
 	kernel@pengutronix.de,
 	linux-imx@nxp.com
-Subject: [RFC 1/3] dt-bindings: phy: Add i.MX8Q HSIO SerDes PHY binding
-Date: Fri, 29 Mar 2024 15:31:31 +0800
-Message-Id: <1711697493-16151-2-git-send-email-hongxing.zhu@nxp.com>
+Subject: [RFC 2/3] dt-bindings: phy: phy-imx8-pcie: Add binding for i.MX8Q HSIO SerDes PHY
+Date: Fri, 29 Mar 2024 15:31:32 +0800
+Message-Id: <1711697493-16151-3-git-send-email-hongxing.zhu@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1711697493-16151-1-git-send-email-hongxing.zhu@nxp.com>
 References: <1711697493-16151-1-git-send-email-hongxing.zhu@nxp.com>
@@ -63,167 +63,49 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Add i.MX8QM and i.MX8QXP HSIO SerDes PHY binding.
-- Use the controller ID to specify which controller is binded to the
-PHY.
-- Introduce one HSIO configuration, mandatory required to set
-"PCIE_AB_SELECT" and "PHY_X1_EPCS_SEL" during the initialization.
+Add binding for controller ID and HSIO configuration setting of the
+i.MX8Q HSIO SerDes PHY.
 
 Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 ---
- .../bindings/phy/fsl,imx8q-hsio.yaml          | 143 ++++++++++++++++++
- 1 file changed, 143 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml
+ include/dt-bindings/phy/phy-imx8-pcie.h | 26 +++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml b/Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml
-new file mode 100644
-index 000000000000..506551d4d94a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml
-@@ -0,0 +1,143 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/fsl,imx8q-hsio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/include/dt-bindings/phy/phy-imx8-pcie.h b/include/dt-bindings/phy/phy-imx8-pcie.h
+index 8bbe2d6538d8..5cd5580879fa 100644
+--- a/include/dt-bindings/phy/phy-imx8-pcie.h
++++ b/include/dt-bindings/phy/phy-imx8-pcie.h
+@@ -11,4 +11,30 @@
+ #define IMX8_PCIE_REFCLK_PAD_INPUT	1
+ #define IMX8_PCIE_REFCLK_PAD_OUTPUT	2
+ 
++/*
++ * i.MX8QM HSIO subsystem has three lane PHYs and three controllers:
++ * PCIEA(2 lanes capapble PCIe controller), PCIEB (only support one
++ * lane) and SATA.
++ * In the different use cases. PCIEA can be binded to PHY lane0, lane1
++ * or Lane0 and lane1. PCIEB can be binded to lane1 or lane2 PHY. SATA
++ * can only be binded to last lane2 PHY.
++ * Define i.MX8Q HSIO controller ID here to specify the controller
++ * binded to the PHY.
++ * Meanwhile, i.MX8QXP HSIO subsystem has one lane PHY and PCIEB(only
++ * support one lane) controller.
++ */
++#define IMX8Q_HSIO_PCIEA_ID	0
++#define IMX8Q_HSIO_PCIEB_ID	1
++#define IMX8Q_HSIO_SATA_ID	2
 +
-+title: Freescale i.MX8Q SoC series HSIO SERDES PHY
++/*
++ * On i.MX8QM, PCIEA is mandatory required if the HSIO is enabled.
++ * Define configurations beside PCIEA is enabled.
++ * On i.MX8QXP, HSIO module only has PCIEB and one lane PHY.
++ * The "IMX8Q_HSIO_CFG_PCIEB" can be used on i.MX8QXP platforms.
++ */
++#define IMX8Q_HSIO_CFG_SATA		1
++#define IMX8Q_HSIO_CFG_PCIEB		2
++#define IMX8Q_HSIO_CFG_PCIEBSATA	3
 +
-+maintainers:
-+  - Richard Zhu <hongxing.zhu@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx8qxp-serdes
-+      - fsl,imx8qm-serdes
-+  reg:
-+    minItems: 4
-+    maxItems: 4
-+
-+  "#phy-cells":
-+    const: 3
-+    description: |
-+      The first number defines the ID of the PHY contained in the HSIO macro.
-+      The second defines controller ID binded to the PHY. The third defines the
-+      HSIO configuratons refer to the different use cases. They are defined in
-+      dt-bindings/phy/phy-imx8-pcie.h
-+
-+  reg-names:
-+    items:
-+      - const: reg
-+      - const: phy
-+      - const: ctrl
-+      - const: misc
-+
-+  clocks:
-+    minItems: 5
-+    maxItems: 14
-+
-+  clock-names:
-+    minItems: 5
-+    maxItems: 14
-+
-+  fsl,refclk-pad-mode:
-+    description: |
-+      Specifies the mode of the refclk pad used. It can be UNUSED(PHY
-+      refclock is derived from SoC internal source), INPUT(PHY refclock
-+      is provided externally via the refclk pad) or OUTPUT(PHY refclock
-+      is derived from SoC internal source and provided on the refclk pad).
-+      Refer include/dt-bindings/phy/phy-imx8-pcie.h for the constants
-+      to be used.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 0, 1, 2 ]
-+
-+  power-domains:
-+    description: |
-+      i.MX8Q HSIO SerDes power domains. i.MX8QXP has one SerDes power domains.
-+      And i.MX8QM has two.
-+    minItems: 1
-+    maxItems: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#phy-cells"
-+  - clocks
-+  - clock-names
-+  - fsl,refclk-pad-mode
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx8qxp-serdes
-+    then:
-+      properties:
-+        clock-names:
-+          items:
-+            - const: apb_pclk0
-+            - const: pclk0
-+            - const: phy0_crr
-+            - const: ctl0_crr
-+            - const: misc_crr
-+        power-domains:
-+          minItems: 1
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx8qm-serdes
-+    then:
-+      properties:
-+        clock-names:
-+          items:
-+            - const: pclk0
-+            - const: pclk1
-+            - const: apb_pclk0
-+            - const: apb_pclk1
-+            - const: pclk2
-+            - const: epcs_tx
-+            - const: epcs_rx
-+            - const: apb_pclk2
-+            - const: phy0_crr
-+            - const: phy1_crr
-+            - const: ctl0_crr
-+            - const: ctl1_crr
-+            - const: ctl2_crr
-+            - const: misc_crr
-+        power-domains:
-+          minItems: 2
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx8-clock.h>
-+    #include <dt-bindings/clock/imx8-lpcg.h>
-+    #include <dt-bindings/firmware/imx/rsrc.h>
-+    #include <dt-bindings/phy/phy-imx8-pcie.h>
-+
-+    serdes: phy@5f1a0000 {
-+            compatible = "fsl,imx8qxp-serdes";
-+            reg = <0x5f1a0000 0x10000>,
-+                  <0x5f120000 0x10000>,
-+                  <0x5f140000 0x10000>,
-+                  <0x5f160000 0x10000>;
-+            reg-names = "reg", "phy", "ctrl", "misc";
-+            clocks = <&phyx1_lpcg IMX_LPCG_CLK_0>,
-+                     <&phyx1_lpcg IMX_LPCG_CLK_4>,
-+                     <&phyx1_crr1_lpcg IMX_LPCG_CLK_4>,
-+                     <&pcieb_crr3_lpcg IMX_LPCG_CLK_4>,
-+                     <&misc_crr5_lpcg IMX_LPCG_CLK_4>;
-+            clock-names = "apb_pclk0", "pclk0", "phy0_crr", "ctl0_crr",
-+                          "misc_crr";
-+            power-domains = <&pd IMX_SC_R_SERDES_1>;
-+            #phy-cells = <3>;
-+            status = "disabled";
-+    };
-+...
+ #endif /* _DT_BINDINGS_IMX8_PCIE_H */
 -- 
 2.37.1
 
