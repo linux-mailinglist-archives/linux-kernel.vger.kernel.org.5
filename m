@@ -1,184 +1,195 @@
-Return-Path: <linux-kernel+bounces-123849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95BA5890ED1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:04:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31140890ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:04:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C13A1C237B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:04:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB32E28655F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 00:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D3F8460;
-	Fri, 29 Mar 2024 00:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76225EEAA;
+	Fri, 29 Mar 2024 00:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FY2YYAMi"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NR8XmN/L"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D56B23A8;
-	Fri, 29 Mar 2024 00:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABD233C8;
+	Fri, 29 Mar 2024 00:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711670649; cv=none; b=uUJgfcNGWsk/QJWkC8FdHDF/c2wavSXtzZIT4maWEvrd/neqXhdVUKHV64+bVA77qV82bwdLt8CMOfWjxTDfHW20GfHSplVaro1JWEXhrS8CELyl0YdywRtg0IRLwxqa22FgRjRJG1LbL4YWoL2IrQa02meaTdjDax45bfhRhDc=
+	t=1711670674; cv=none; b=V/Zfkd25XhlACb2rKzp+jPcQYLuaHWuJdGZ4n3LC+aLuEkBllxmVxYgutVxIZwMoNRpALKL0cPXbqFrZt8XGfxdm6hOLknxOU5Xa+Ly0wzwqhhwAD3LctG8peLC30bFP3O6QgmYk/h4hwKW8WKdbWxEAUZ3apbcaX+65tzpwGRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711670649; c=relaxed/simple;
-	bh=djpBvSxFpgiKVso1vC8eoz/ew1HepMaOFxyaEXBkZ+w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=amLQiXZYtz+J+RFSivFzWN8WM+Bzl3tCSIhF18i+8sC94SoZdemedY3cXsWzpA0bkN7qE/K3yhcFWxfU6RyXjQQ/otATT8G4iKk3YzKBF3jqEtJU/nDu91cZc+1xTcp+cacuAPRetxBMFkywTsIbTO1T2n2uM82fJ0x1kDKLNaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FY2YYAMi; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60a0a1bd04eso17247187b3.1;
-        Thu, 28 Mar 2024 17:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711670646; x=1712275446; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PKJflJe9SAvt41XpvEFgU1eczu3XFIziapyQDCRKyyM=;
-        b=FY2YYAMim++bK/92SqLjDuF99hw/a6vjfI/WJTsE64TUb0xMFuMMQ8SzJGtfArN1vI
-         Wu92lwq5nh2HXfXnznxcASUwLG8ha/Vkn4GFcZ+oBQk+kDRUv7O8V1Uam8zuOwtqihZC
-         vDVtIZI6VSGF+TrZIQE6X23IN4asEd4FsKSjLiKjAYrsd4RlkYrAjDc+V9BRLWsfhYfw
-         R6dAYKkWEIZWiFq7jQBjoLor7i1TKwYajsFXvu+6lGnq9UOR/2+/Md3S9rW2kSmBsHT2
-         hLanPFfpdds1XZUVjycLQhqKGmXwb2wT7Re5/qrXaDN2g4bzWgYJayMhzRQmLhOrGXRD
-         kH1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711670646; x=1712275446;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PKJflJe9SAvt41XpvEFgU1eczu3XFIziapyQDCRKyyM=;
-        b=G/omOjXmh0BSqhybVFygPq/MBfYbRhtVAaSxHYgMKtZx+rSvLGNdpxXB+u+1Vo4Q8M
-         c5PGIg67du3sQ+rdPtJLrkUjz1MXMS59vpmfBSUwAMLFQ6dSNGaK7zaGv4E1jN/gm/oA
-         IHkblMBDhKI2UxAmid+4KntnRyX+aX8gJg0iMGqzSed76Z6iDv20CzpbnUSdxiUi8i00
-         x/9UPQXdnl7yC144YEVI3xN5loenEd5a22HUecFKU4EQf6AYr8BTB1jeXgJ4ioXBzEI3
-         PsP/RX0bdSeTx3G+ZcuExJpYEhuhkWrP5iPTPyhZzhquegD49J0tf8dB+n7u+ciaexdi
-         KXzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVE9+sLaOZrGTRf6ZbJ8CqQII7ilNmK5QeNrktWK7udzoaU+pb2nW6pmJh2XOi4EcT7xzasmi7cHYVQmghElScEdhE0t1leNKIowZyRQQTfJAoT3uKpKDJ9l0PqvIjh4BYhapSgPDP0aLkrc2QJwQw8ndVsH97xJGBo1s3VGBIagAavfw==
-X-Gm-Message-State: AOJu0YwVMlvzHNbsX09BdQW0VO3eYP0VXg0NuXdtSX/Edbgtg1K4gIGq
-	lbSLTjAcUY+MAFRBQuMHFY+TyJF4yMOYdTa95Dmfm4LnGri/SpDg0vta/9AvwNh6wW6qnRW3kDj
-	OV9/3SUdyoK4eAAEf3YRn7Sx55fw=
-X-Google-Smtp-Source: AGHT+IFlFhEAYhnFnzioGqw5/Gv70sk9qhgM4Wl2R6HpJ1WZROvfK65Qip2q7Mnm20GidITcmlwHMYLp4exODvQYFww=
-X-Received: by 2002:a81:488f:0:b0:607:9102:c1b0 with SMTP id
- v137-20020a81488f000000b006079102c1b0mr1063365ywa.43.1711670646241; Thu, 28
- Mar 2024 17:04:06 -0700 (PDT)
+	s=arc-20240116; t=1711670674; c=relaxed/simple;
+	bh=Dg9fl2DYKd1S6Bc+b39oiuE3E+1/h1EYnX105Dk0gTo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a5w01XkdnruQtJXxA+NS4laRFpF+7rsBOL0Li0jco0rEUb6LZm5f6PEG//ZX8TVt0xR6pOPpTjgOnrCmASmWYBaAwttuzwd8f87RcWnpOrjc64Wf1nmqk0x+UAxS1+aKNFBys3PvM1lbjgIIkEFiSi3MFnjFRl862ZStsue2Bq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NR8XmN/L; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711670673; x=1743206673;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Dg9fl2DYKd1S6Bc+b39oiuE3E+1/h1EYnX105Dk0gTo=;
+  b=NR8XmN/LDanRfeeUItwb5wnr0NCLPsAgx8XWGemZiAxq5AIFFQ/dZMpF
+   FJvljvPM1JZM5ud50jreliY9dLxe81LKtSwuftth96c1+qOlOQmaVOb+g
+   HjA083HpRcAkaTA2uon6X/CRNKhCE2n6+SOsc/rGdzrgmmo9bmTbwrSG8
+   r3lYJs6Ndxv45GFuWEZi4zdA0Brb/5ceTZ8dkZBEFnwq6cGFOKsg7wd2W
+   uaMtaSn+aV/4sgjei5zJdV/k3od7MShy84dgXtUrS+WN/hDMAWAPfSg1Y
+   xlun2lFHs87qo/lsQEwX7ihPs2J5pLgtInJx13E+lXqGe1yvf9ND2MMWP
+   A==;
+X-CSE-ConnectionGUID: 7aj3kUWGTna2x8EAtX5Zfg==
+X-CSE-MsgGUID: kbwlP1uERQ20/jtOqHXhhQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="32258456"
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="32258456"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 17:04:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
+   d="scan'208";a="47783336"
+Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 17:04:31 -0700
+From: Peter Colberg <peter.colberg@intel.com>
+To: Wu Hao <hao.wu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Xu Yilun <yilun.xu@intel.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Russ Weight <russ.weight@linux.dev>,
+	Marco Pagani <marpagan@redhat.com>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+	Peter Colberg <peter.colberg@intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH RESEND] fpga: dfl: omit unneeded casts of u64 values for dev_dbg()
+Date: Thu, 28 Mar 2024 20:04:29 -0400
+Message-ID: <20240329000429.7493-1-peter.colberg@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327220320.15509-1-l.rubusch@gmail.com> <20240327220320.15509-2-l.rubusch@gmail.com>
- <20240328133720.7dfd46b0@jic23-huawei>
-In-Reply-To: <20240328133720.7dfd46b0@jic23-huawei>
-From: Lothar Rubusch <l.rubusch@gmail.com>
-Date: Fri, 29 Mar 2024 01:03:29 +0100
-Message-ID: <CAFXKEHaPcbRMVJTWW0Atg37jqb97JBdPoSmm3gAZEO1Q=SZm9w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/7] iio: accel: adxl345: Make data_range obsolete
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 28, 2024 at 2:37=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
- wrote:
->
-> On Wed, 27 Mar 2024 22:03:14 +0000
-> Lothar Rubusch <l.rubusch@gmail.com> wrote:
->
-> > Replace write() data_format by regmap_update_bits(), because bus specif=
-ic
-> > pre-configuration may have happened before on the same register. For
-> > further updates to the data_format register then bus pre-configuration
-> > needs to be masked out.
-> >
-> > Remove the data_range field from the struct adxl345_data, because it is
-> > not used anymore.
-> >
-> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> > ---
-> >  drivers/iio/accel/adxl345_core.c | 18 ++++++++++++------
-> >  1 file changed, 12 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl3=
-45_core.c
-> > index 8bd30a23e..35df5e372 100644
-> > --- a/drivers/iio/accel/adxl345_core.c
-> > +++ b/drivers/iio/accel/adxl345_core.c
-> > @@ -37,7 +37,15 @@
-> >  #define ADXL345_POWER_CTL_MEASURE    BIT(3)
-> >  #define ADXL345_POWER_CTL_STANDBY    0x00
-> >
-> > +#define ADXL345_DATA_FORMAT_RANGE    GENMASK(1, 0) /* Set the g range =
-*/
-> > +#define ADXL345_DATA_FORMAT_JUSTIFY  BIT(2) /* Left-justified (MSB) mo=
-de */
-> >  #define ADXL345_DATA_FORMAT_FULL_RES BIT(3) /* Up to 13-bits resolutio=
-n */
-> > +#define ADXL345_DATA_FORMAT_SELF_TEST        BIT(7) /* Enable a self t=
-est */
-> > +#define ADXL345_DATA_FORMAT_MSK              (ADXL345_DATA_FORMAT_RANG=
-E | \
-> > +                                      ADXL345_DATA_FORMAT_JUSTIFY |  \
-> > +                                      ADXL345_DATA_FORMAT_FULL_RES | \
-> > +                                      ADXL345_DATA_FORMAT_SELF_TEST)
-> This needs renaming.  It's not a mask of everything in the register, or
-> even just of everything related to format.
->
-> Actually I'd just not have this definition.  Use the build up value
-> from all the submasks at the call site.  Then we are just making it clear
-> only a subset of fields are being cleared.
->
-I understand this solution was not very useful. I'm not sure, I
-understood you correctly. Please have a look into v6 if this matches
-your comment.
-Now, I remove the mask, instead I use a local variable in core's
-probe() for the update mask. I added a comment. Nevertheless, I keep
-the used flags for FORMAT_DATA. Does this go into the direction of
-using the build up value from the submasks at the call site?
+Omit unneeded casts of u64 values to unsigned long long for use with
+printk() format specifier %llx. Unlike user space, the kernel defines
+u64 as unsigned long long for all architectures; see commit 2a7930bd77fe
+("Documentation/printk-formats.txt: No casts needed for u64/s64").
 
-> Jonathan
->
-> > +
-> >  #define ADXL345_DATA_FORMAT_2G               0
-> >  #define ADXL345_DATA_FORMAT_4G               1
-> >  #define ADXL345_DATA_FORMAT_8G               2
-> > @@ -48,7 +56,6 @@
-> >  struct adxl345_data {
-> >       const struct adxl345_chip_info *info;
-> >       struct regmap *regmap;
-> > -     u8 data_range;
-> >  };
-> >
-> >  #define ADXL345_CHANNEL(index, axis) {                                =
-       \
-> > @@ -218,15 +225,14 @@ int adxl345_core_probe(struct device *dev, struct=
- regmap *regmap)
-> >
-> >       data =3D iio_priv(indio_dev);
-> >       data->regmap =3D regmap;
-> > -     /* Enable full-resolution mode */
-> > -     data->data_range =3D ADXL345_DATA_FORMAT_FULL_RES;
-> >       data->info =3D device_get_match_data(dev);
-> >       if (!data->info)
-> >               return -ENODEV;
-> >
-> > -     ret =3D regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
-> > -                        data->data_range);
-> > -     if (ret < 0)
-> > +     /* Enable full-resolution mode */
-> > +     ret =3D regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
-> > +                              ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_FO=
-RMAT_FULL_RES);
-> > +     if (ret)
-> >               return dev_err_probe(dev, ret, "Failed to set data range\=
-n");
-> >
-> >       indio_dev->name =3D data->info->name;
->
+These changes are cosmetic only; no functional changes.
+
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Peter Colberg <peter.colberg@intel.com>
+---
+This is an unmodified resend of the second patch only from the series
+"fpga: dfl: clean up string formatting for sysfs_emit() and dev_dbg()".
+
+Link: https://patchwork.kernel.org/project/linux-fpga/patch/0cffb04a207a98148c61f512aa4dc90880e51251.1687301688.git.peter.colberg@intel.com/
+---
+ drivers/fpga/dfl-afu-dma-region.c | 14 ++++++--------
+ drivers/fpga/dfl-afu-main.c       |  4 +---
+ drivers/fpga/dfl-fme-mgr.c        |  5 ++---
+ 3 files changed, 9 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-region.c
+index 02b60fde0430..71ed9d394d07 100644
+--- a/drivers/fpga/dfl-afu-dma-region.c
++++ b/drivers/fpga/dfl-afu-dma-region.c
+@@ -146,8 +146,7 @@ static int afu_dma_region_add(struct dfl_feature_platform_data *pdata,
+ 	struct dfl_afu *afu = dfl_fpga_pdata_get_private(pdata);
+ 	struct rb_node **new, *parent = NULL;
+ 
+-	dev_dbg(&pdata->dev->dev, "add region (iova = %llx)\n",
+-		(unsigned long long)region->iova);
++	dev_dbg(&pdata->dev->dev, "add region (iova = %llx)\n", region->iova);
+ 
+ 	new = &afu->dma_regions.rb_node;
+ 
+@@ -187,8 +186,7 @@ static void afu_dma_region_remove(struct dfl_feature_platform_data *pdata,
+ {
+ 	struct dfl_afu *afu;
+ 
+-	dev_dbg(&pdata->dev->dev, "del region (iova = %llx)\n",
+-		(unsigned long long)region->iova);
++	dev_dbg(&pdata->dev->dev, "del region (iova = %llx)\n", region->iova);
+ 
+ 	afu = dfl_fpga_pdata_get_private(pdata);
+ 	rb_erase(&region->node, &afu->dma_regions);
+@@ -210,7 +208,7 @@ void afu_dma_region_destroy(struct dfl_feature_platform_data *pdata)
+ 		region = container_of(node, struct dfl_afu_dma_region, node);
+ 
+ 		dev_dbg(&pdata->dev->dev, "del region (iova = %llx)\n",
+-			(unsigned long long)region->iova);
++			region->iova);
+ 
+ 		rb_erase(node, &afu->dma_regions);
+ 
+@@ -255,7 +253,7 @@ afu_dma_region_find(struct dfl_feature_platform_data *pdata, u64 iova, u64 size)
+ 
+ 		if (dma_region_check_iova(region, iova, size)) {
+ 			dev_dbg(dev, "find region (iova = %llx)\n",
+-				(unsigned long long)region->iova);
++				region->iova);
+ 			return region;
+ 		}
+ 
+@@ -268,8 +266,8 @@ afu_dma_region_find(struct dfl_feature_platform_data *pdata, u64 iova, u64 size)
+ 			break;
+ 	}
+ 
+-	dev_dbg(dev, "region with iova %llx and size %llx is not found\n",
+-		(unsigned long long)iova, (unsigned long long)size);
++	dev_dbg(dev, "region with iova %llx and size %llx is not found\n", iova,
++		size);
+ 
+ 	return NULL;
+ }
+diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+index c0a75ca360d6..4342d40a2106 100644
+--- a/drivers/fpga/dfl-afu-main.c
++++ b/drivers/fpga/dfl-afu-main.c
+@@ -730,9 +730,7 @@ afu_ioctl_dma_map(struct dfl_feature_platform_data *pdata, void __user *arg)
+ 	}
+ 
+ 	dev_dbg(&pdata->dev->dev, "dma map: ua=%llx, len=%llx, iova=%llx\n",
+-		(unsigned long long)map.user_addr,
+-		(unsigned long long)map.length,
+-		(unsigned long long)map.iova);
++		map.user_addr, map.length, map.iova);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
+index ab228d8837a0..da3cb9c35de5 100644
+--- a/drivers/fpga/dfl-fme-mgr.c
++++ b/drivers/fpga/dfl-fme-mgr.c
+@@ -150,7 +150,7 @@ static int fme_mgr_write_init(struct fpga_manager *mgr,
+ 	priv->pr_error = fme_mgr_pr_error_handle(fme_pr);
+ 	if (priv->pr_error)
+ 		dev_dbg(dev, "previous PR error detected %llx\n",
+-			(unsigned long long)priv->pr_error);
++			priv->pr_error);
+ 
+ 	dev_dbg(dev, "set PR port ID\n");
+ 
+@@ -242,8 +242,7 @@ static int fme_mgr_write_complete(struct fpga_manager *mgr,
+ 	dev_dbg(dev, "PR operation complete, checking status\n");
+ 	priv->pr_error = fme_mgr_pr_error_handle(fme_pr);
+ 	if (priv->pr_error) {
+-		dev_dbg(dev, "PR error detected %llx\n",
+-			(unsigned long long)priv->pr_error);
++		dev_dbg(dev, "PR error detected %llx\n", priv->pr_error);
+ 		return -EIO;
+ 	}
+ 
+-- 
+2.44.0
+
 
