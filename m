@@ -1,557 +1,267 @@
-Return-Path: <linux-kernel+bounces-123978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-123979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9900B891098
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:52:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F1689109E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 02:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B737E1C26394
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:52:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 214C9B21521
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 01:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19B8210FE;
-	Fri, 29 Mar 2024 01:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822371E519;
+	Fri, 29 Mar 2024 01:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GJK6N/2p"
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aB/f3A+0"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DC31DA58;
-	Fri, 29 Mar 2024 01:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C2EBA42
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 01:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711677121; cv=none; b=EA96Ln+YdurDlVZtohwIIh/n1Gnyw3hPPDNUrfZLvRDNkxB0nJt5tKPaSpdtoPNhKvBnuMrG+uDfhXjvWlLU20ElJ4ki1HflPc7jw+0pHr5ZPBqbVR6xdZ2txqPLFriIpqR/wKldxPUliIQ1iKVI1ZmorjNXiVSyJWfkfmItTbM=
+	t=1711677243; cv=none; b=YBJ2A+hcGEtc0Kyi3p7yiI1EITDheib+Elrsi9omhH1+D+GQpBl3mPZV5QooGz0rwS82pdnuroAjEn36DQWTvUC36NC2bkPE0Pf92sogBd8kEr8UglYCzGmeBifqbJFYA15ECidMRbg2keJrbEayAl3fxQ3IkTX5Z7w/nb+OpJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711677121; c=relaxed/simple;
-	bh=MgScTxBS4OwgOX9KC/ZrQbfYbQG6zdAMJW8k665Vtlw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FGrLJr2Ddr4aD2okYTQVsfnastxMjeXaSwEZ4X55N2y4sUwgVvRetOrBlwJYUrHuF+JrVb7kOw5bVdwGF9eE7MHxI4hqqod/XjNLIOIIAmw4PkkMeSdB3S2ndTVqXNPodkQzDqV2DVPZcwcmdoy/ESfjoOmt568bA6puIksFYNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GJK6N/2p; arc=none smtp.client-ip=209.85.167.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c3e2e18db7so1030208b6e.0;
-        Thu, 28 Mar 2024 18:51:59 -0700 (PDT)
+	s=arc-20240116; t=1711677243; c=relaxed/simple;
+	bh=lZQQuABwJOZmsUVIT61uWFDnm9sPaB2yuqUrKtsNR+Y=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=g7zrQbzMgfQpL/mRDEGU3uXTkMB8ekH9WRyInROYm4q/Ho15x4EzL0kUHymBKUeYJ4hwKWlFelXn2rJqMLyF13WMKx1lBa36teBCarXoBKSk9A81hVyBwfC6Wn2usBprd9+xFfP+gPpsJEJOcywd/Pyul0Qy8NO5LTxGyvzBMiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aB/f3A+0; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--drosen.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607838c0800so27477497b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 18:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711677119; x=1712281919; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uW6IQqcb0brDLT6d5YZl9e/V3z40xPRCD5eQLoQEWuQ=;
-        b=GJK6N/2pYJA/0nTQ+5X+0+bhLvxmIy46re5hj7DtbXADwIF6hCCYjjNEWmdRM0fCQ2
-         7+tnISX/7snhICIJqpgIUWRHGQ82hDgjJqklEcpa4NqZueXVBj7vTRY1o4ybMjwEA3zH
-         471BrA4ikBzTV0asRyl6h9y5oSMS3KDzRGHC2kbhNnVjyU9I7Jf0R1jgqVbzmclqfPsK
-         pYl0UY1/ggLdAmH8DAtGIjykSl8anYGcybn8Um64DOFFOvSyoZZSfcv0yx1bY7IsG0Hc
-         qNCIAS3DnDype3MzMXewyL/gxo9KL2JRUc2jSpGZAskkQiiMyn8DGQCigIc/zMLiEwnW
-         14Ng==
+        d=google.com; s=20230601; t=1711677240; x=1712282040; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z0NIzBAv+SjWsssKXwGXD1rG7WqoBIi+ZSW1OwLkK/0=;
+        b=aB/f3A+0y2zE3//JflrfPOK/EMqYs4pKgx5lsOtZOxmrr4t9pxHB/UVniPQL776sOh
+         HoNA8wORbOBoSfSG6QBQhyXndgV/Z7FxKPsEW/CL8vdpEFDLmS3Mvki8FxMEZzzOLtMn
+         niv8in4Et03d21JGWbsJFrymPXOAO7AblFKOnoFTyut96PLXHRUHKvrQQ4nKJPmsy0Ne
+         4yRLNtNVayYO7HYP3H1LIk1CQ7J9XtAIT+d5txKgNfRglCk7ObzRPlBsK2T1NEHzPuRJ
+         no/YqmVe4gYDEraWAVjCjit3EQ/OsHhZEVw0bLXYAvbtX7Uosvz29P6oykAT//vCwmwc
+         KeAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711677119; x=1712281919;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uW6IQqcb0brDLT6d5YZl9e/V3z40xPRCD5eQLoQEWuQ=;
-        b=HuaQMa09RsBlACSSzC6dcNwiOzycWwyOTr3CaYFMh6l/ilnc9utssGYOWD4KgzLhPA
-         DJOR1o+iAgmzu/2YNkJE4Ik8cQ6x1+YCEkPcp/Va/vFY+qZHz8IhIWEDHiyLy+TbekK7
-         Q+NOmM9GegvH5p0xvQIGwsy7852jtYZr9ORY09AvXmXNSqJXB5yXezIkF6OjkixN79Ux
-         PMalSkse6q0JytRDvh8A9wja1BNbXJcv5YiG1e4DinMPx5Nxhg8L1uIwShq1NjcXP/fX
-         VmY5qCz5K43lxdLmjKCm1oxh4KDKf6vJx75b8IV+1kMpneVJPSL5t6klFwHUcBs1eIUP
-         mAOA==
-X-Forwarded-Encrypted: i=1; AJvYcCVK0eTDzMD3rg+A4T57GOp5PuYAPF+7A5HGrAZO3cYr7s0C8YJLoTFFuxO7fwwfLi4H9UTrKkDjYRzif02Q68y2ihCaL1tkWsVAxiFfSKHJFwYf8+o5uedER2UohaGCqO3OtEt/NkUVb9a8y2LgJtVIn2S0hXKAzMLtS6OLH7wq6vycPQ==
-X-Gm-Message-State: AOJu0YzYYMv+9wmHTBZ2uVQ2d3KOv1FfV0wnGSpXzd8tFEVJkML4xTOv
-	MrTvpCGafctiZFbdGjdisCCf4PmyKFNexBq4+7efe5wWwXCjxXsN
-X-Google-Smtp-Source: AGHT+IG/1khldAoQpRVZvsmAMhIBcpUJ2DkQKH/gz7Vy6IFxKMW/zFN95KMpK9LPaIoDC946BYvI4w==
-X-Received: by 2002:a05:6808:191a:b0:3c3:9cd9:c2b5 with SMTP id bf26-20020a056808191a00b003c39cd9c2b5mr1253324oib.10.1711677118592;
-        Thu, 28 Mar 2024 18:51:58 -0700 (PDT)
-Received: from gmail.com ([2a09:bac5:6249:183c::26a:10])
-        by smtp.gmail.com with ESMTPSA id q13-20020a62e10d000000b006eaab548a0esm2044554pfh.152.2024.03.28.18.51.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 18:51:58 -0700 (PDT)
-From: Qingfang Deng <dqfext@gmail.com>
-To: Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Qingfang Deng <qingfang.deng@siflower.com.cn>
-Subject: [RFC PATCH 2/2] spi: add Siflower Quad SPI controller
-Date: Fri, 29 Mar 2024 09:51:47 +0800
-Message-Id: <20240329015147.1481349-2-dqfext@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240329015147.1481349-1-dqfext@gmail.com>
-References: <20240329015147.1481349-1-dqfext@gmail.com>
+        d=1e100.net; s=20230601; t=1711677240; x=1712282040;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z0NIzBAv+SjWsssKXwGXD1rG7WqoBIi+ZSW1OwLkK/0=;
+        b=jmjvYueD59jgkOdL/LHTS3xsZ1WBHTqa2tTnPfIMVTPP2EMxtp0sIqw2G8kQ6AjkEJ
+         bRuevmBVKQlzK0EtjqjAEL+Tc6WmtxUlspgHiMrbV0fPiHVMitu/lfiva1vG7DoorOLo
+         7UH/2STV/v5J/RMq+PTK8hV53A+brzGut/Wsm/8n0bVqdicm5NVPAk2bmZhCB5jzXBB8
+         D4ah+qpZjFPKCI87XSUwPt9xT3zZ4rBSJQp3xKI18HGS3zGUq0Ma4G4QNiir8wWxvmnN
+         x3eXDOk7y8VpQ00jE18iJCwdhcF6Px01XeQyuVZnG2yERkPUREWxjzpE6bJ3K8FZCoZe
+         Jn9w==
+X-Forwarded-Encrypted: i=1; AJvYcCW54+ALkwHfoLlnCB5xvqcGxudelROjmZblYvi0MyXUxF3gwPIucrVRrPSyGWxz3dV3IHVNpthpQ6rKo6U8QzB0fMN5C30O+kaKOAaY
+X-Gm-Message-State: AOJu0YxYH5Ok7wMQRkNoMEEG6Gm9r4/tAPxt5Qh6s59vY6lg7XMR9LVx
+	O1RofTBxHlKurK9FtxTCwV5uC/MFcU2UNzBzClq09wuIr0ts//w4D6HiffccB+0WHSIwxZ7Qspl
+	I6Q==
+X-Google-Smtp-Source: AGHT+IHyDXdhzOnaRkdixUL2++rweJn9lx+Erbim0MGnWcbc9hWfYz0a9yunyZZkRCL+mZoYrYs+P/ft4MQ=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:fcce:d6ab:804c:b94b])
+ (user=drosen job=sendgmr) by 2002:a25:c753:0:b0:dd3:f55f:ff02 with SMTP id
+ w80-20020a25c753000000b00dd3f55fff02mr840384ybe.1.1711677239983; Thu, 28 Mar
+ 2024 18:53:59 -0700 (PDT)
+Date: Thu, 28 Mar 2024 18:53:15 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240329015351.624249-1-drosen@google.com>
+Subject: [RFC PATCH v4 00/36] Fuse-BPF and plans on merging with Fuse Passthrough
+From: Daniel Rosenberg <drosen@google.com>
+To: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
+	Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Qingfang Deng <qingfang.deng@siflower.com.cn>
+I've recently gotten some time to re-focus on fuse-bpf efforts, and
+had some questions on how to best integrate with recent changes that
+have landed in the last year. I've included a rebased version (ontop
+of bpf-next e63985ecd226 ("bpf, riscv64/cfi: Support kCFI + BPF on
+riscv64") of the old patchset for reference here.
 
-Add Quad SPI controller driver for Siflower SoCs. It is based on ARM
-PL022, with custom modifications to support Dual/Quad SPI modes.
+On the bpf end, I'm struggling a little bit with the interface for
+selecting programs. I'd like to be able to pass the map id to fuse,
+since that's a value userspace already knows the program by. Would it
+be reasonable to either pass that ID down to the registration
+function, or otherwise provide a path for a separate module to
+translate from a map id to a struct_op program?
 
-Signed-off-by: Qingfang Deng <qingfang.deng@siflower.com.cn>
----
- drivers/spi/Kconfig             |   6 +
- drivers/spi/Makefile            |   1 +
- drivers/spi/spi-siflower-qspi.c | 414 ++++++++++++++++++++++++++++++++
- 3 files changed, 421 insertions(+)
- create mode 100644 drivers/spi/spi-siflower-qspi.c
+On the fuse end, I'm wondering how the interface will extend to
+directories. At LSFMMBPF last year, some people brought up concerns
+with the interface we had, specifically that it required opens to get
+fds, which we'd then use to respond to lookup requests, adding a lot
+of extra overhead. I had been planning to switch to a path that the
+response would supply instead, likely limited by RESOLVE_BENEATH. That
+seems pretty different from Fuse Passthrough's approach. Are there any
+current plans on how that interface will extend for a directory
+passthrough?
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index bc7021da2fe9..5e3a6b431a12 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -952,6 +952,12 @@ config SPI_SIFIVE
- 	help
- 	  This exposes the SPI controller IP from SiFive.
- 
-+config SPI_SIFLOWER_QSPI
-+	tristate "Siflower Quad SPI Controller"
-+	depends on OF && SPI_MEM
-+	help
-+	  Quad SPI driver for Siflower SoCs.
-+
- config SPI_SLAVE_MT27XX
- 	tristate "MediaTek SPI slave device"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 4ff8d725ba5e..226aebe80a3d 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -126,6 +126,7 @@ obj-$(CONFIG_SPI_SH_HSPI)		+= spi-sh-hspi.o
- obj-$(CONFIG_SPI_SH_MSIOF)		+= spi-sh-msiof.o
- obj-$(CONFIG_SPI_SH_SCI)		+= spi-sh-sci.o
- obj-$(CONFIG_SPI_SIFIVE)		+= spi-sifive.o
-+obj-$(CONFIG_SPI_SIFLOWER_QSPI)		+= spi-siflower-qspi.o
- obj-$(CONFIG_SPI_SLAVE_MT27XX)          += spi-slave-mt27xx.o
- obj-$(CONFIG_SPI_SN_F_OSPI)		+= spi-sn-f-ospi.o
- obj-$(CONFIG_SPI_SPRD)			+= spi-sprd.o
-diff --git a/drivers/spi/spi-siflower-qspi.c b/drivers/spi/spi-siflower-qspi.c
-new file mode 100644
-index 000000000000..fd814de4bc4e
---- /dev/null
-+++ b/drivers/spi/spi-siflower-qspi.c
-@@ -0,0 +1,414 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/sh_clk.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/jiffies.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/sizes.h>
-+
-+#include <linux/spi/spi-mem.h>
-+#include <linux/spi/spi.h>
-+
-+/*
-+ * siflower SSP fifo level
-+ * */
-+#define SF_SSP_FIFO_LEVEL		0x100
-+/*
-+ * siflower SSP register
-+ * */
-+#define SSP_CR0				0x000
-+#define SSP_CR1				0x004
-+#define SSP_DR				0x008
-+#define SSP_SR				0x00C
-+#define SSP_CPSR			0x010
-+#define SSP_IMSC			0x014
-+#define SSP_RIS				0x018
-+#define SSP_MIS				0x01C
-+#define SSP_ICR				0x020
-+#define SSP_DMACR			0x024
-+#define SSP_FIFO_LEVEL		0x028
-+#define SSP_EXSPI_CMD0		0x02C
-+#define SSP_EXSPI_CMD1		0x030
-+#define SSP_EXSPI_CMD2		0x034
-+/* SSP Control Register 0  - SSP_CR0 */
-+#define SSP_CR0_EXSPI_FRAME (0x3 << 4)
-+#define SSP_CR0_SPO			(0x1 << 6)
-+#define SSP_CR0_SPH			(0x1 << 7)
-+#define SSP_CR0_BIT_MODE(x) ((x)-1)
-+#define SSP_SCR_MIN			(0x00)
-+#define SSP_SCR_MAX			(0xFF)
-+#define SSP_SCR_SHFT		8
-+#define DFLT_CLKRATE		2
-+/* SSP Control Register 1  - SSP_CR1 */
-+#define SSP_CR1_MASK_SSE	(0x1 << 1)
-+#define SSP_CPSR_MIN		(0x02)
-+#define SSP_CPSR_MAX		(0xFE)
-+#define DFLT_PRESCALE		(0x40)
-+/* SSP Status Register - SSP_SR */
-+#define SSP_SR_MASK_TFE		(0x1 << 0) /* Transmit FIFO empty */
-+#define SSP_SR_MASK_TNF		(0x1 << 1) /* Transmit FIFO not full */
-+#define SSP_SR_MASK_RNE		(0x1 << 2) /* Receive FIFO not empty */
-+#define SSP_SR_MASK_RFF		(0x1 << 3) /* Receive FIFO full */
-+#define SSP_SR_MASK_BSY		(0x1 << 4) /* Busy Flag */
-+
-+/* SSP FIFO Threshold Register - SSP_FIFO_LEVEL */
-+#define SSP_FIFO_LEVEL_RX	GENMASK(14, 8) /* Receive FIFO watermark */
-+#define SSP_FIFO_LEVEL_TX	GENMASK(6, 0) /* Transmit FIFO watermark */
-+#define DFLT_THRESH_RX		32
-+#define DFLT_THRESH_TX		32
-+
-+/* SSP Raw Interrupt Status Register - SSP_RIS */
-+#define SSP_RIS_MASK_RORRIS	(0x1 << 0) /* Receive Overrun */
-+#define SSP_RIS_MASK_RTRIS	(0x1 << 1) /* Receive Timeout */
-+#define SSP_RIS_MASK_RXRIS	(0x1 << 2) /* Receive FIFO Raw Interrupt status */
-+#define SSP_RIS_MASK_TXRIS	(0x1 << 3) /* Transmit FIFO Raw Interrupt status */
-+
-+/* EXSPI command register 0 SSP_EXSPI_CMD0 */
-+#define EXSPI_CMD0_CMD_COUNT	BIT(0)		/* cmd byte, must be set at last */
-+#define EXSPI_CMD0_ADDR_COUNT	GENMASK(2, 1)	/* addr bytes */
-+#define EXSPI_CMD0_EHC_COUNT	BIT(3)		/* Set 1 for 4-byte address mode */
-+#define EXSPI_CMD0_TX_COUNT	GENMASK(14, 4)	/* TX data bytes */
-+#define EXSPI_CMD0_VALID	BIT(15)		/* Set 1 to make the cmd to be run */
-+
-+/* EXSPI command register 1 SSP_EXSPI_CMD1 */
-+#define EXSPI_CMD1_DUMMY_COUNT	GENMASK(3, 0)	/* dummy bytes */
-+#define EXSPI_CMD1_RX_COUNT	GENMASK(14, 4)	/* RX data bytes */
-+
-+/* EXSPI command register 2 SSP_EXSPI_CMD2 */
-+/* Set 1 for 1-wire, 2 for 2-wire, 3 for 4-wire */
-+#define EXSPI_CMD2_CMD_IO_MODE	GENMASK(1, 0)	/* cmd IO mode */
-+#define EXSPI_CMD2_ADDR_IO_MODE	GENMASK(3, 2)	/* addr IO mode */
-+#define EXSPI_CMD2_DATA_IO_MODE	GENMASK(5, 4)	/* data IO mode */
-+
-+#define SF_READ_TIMEOUT		(10 * HZ)
-+#define MAX_S_BUF			100
-+
-+struct sf_qspi {
-+	void __iomem *base;
-+	struct clk *clk;
-+	struct device *dev;
-+	u32 freq;
-+	int mode_bit;
-+};
-+
-+static void sf_qspi_flush_rxfifo(struct sf_qspi *s) {
-+	while (readw(s->base + SSP_SR) & SSP_SR_MASK_RNE)
-+		readw(s->base + SSP_DR);
-+}
-+
-+static int sf_qspi_wait_not_busy(struct sf_qspi *s) {
-+	unsigned long timeout = jiffies + SF_READ_TIMEOUT;
-+
-+	do {
-+		if (!(readw(s->base + SSP_SR) & SSP_SR_MASK_BSY))
-+			return 0;
-+
-+		cond_resched();
-+	} while (time_after(timeout, jiffies));
-+
-+	dev_err(s->dev, "I/O timed out\n");
-+	return -ETIMEDOUT;
-+}
-+
-+static int sf_qspi_wait_rx_not_empty(struct sf_qspi *s) {
-+	unsigned long timeout = jiffies + SF_READ_TIMEOUT;
-+
-+	do {
-+		if (readw(s->base + SSP_SR) & SSP_SR_MASK_RNE)
-+			return 0;
-+
-+		cond_resched();
-+	} while (time_after(timeout, jiffies));
-+
-+	dev_err(s->dev, "read timed out\n");
-+	return -ETIMEDOUT;
-+}
-+
-+static int sf_qspi_wait_rxfifo(struct sf_qspi *s) {
-+	unsigned long timeout = jiffies + SF_READ_TIMEOUT;
-+
-+	do {
-+		if (readw(s->base + SSP_RIS) & SSP_RIS_MASK_RXRIS)
-+			return 0;
-+
-+		cond_resched();
-+	} while (time_after(timeout, jiffies));
-+
-+	dev_err(s->dev, "read timed out\n");
-+	return -ETIMEDOUT;
-+}
-+
-+static void sf_qspi_enable(struct sf_qspi *s) {
-+	/* Enable the SPI hardware */
-+	writew(SSP_CR1_MASK_SSE, s->base + SSP_CR1);
-+}
-+
-+static void sf_qspi_disable(struct sf_qspi *s) {
-+	/* Disable the SPI hardware */
-+	writew(0, s->base + SSP_CR1);
-+}
-+
-+static void sf_qspi_xmit(struct sf_qspi *s, unsigned int nbytes, const u8 *out)
-+{
-+	while (nbytes--)
-+		writew(*out++, s->base + SSP_DR);
-+}
-+
-+static int sf_qspi_rcv(struct sf_qspi *s, unsigned int nbytes, u8 *in)
-+{
-+	int ret, i;
-+
-+	while (nbytes >= DFLT_THRESH_RX) {
-+		/* wait for RX FIFO to reach the threshold */
-+		ret = sf_qspi_wait_rxfifo(s);
-+		if (ret)
-+			return ret;
-+
-+		for (i = 0; i < DFLT_THRESH_RX; i++)
-+			*in++ = readw(s->base + SSP_DR);
-+
-+		nbytes -= DFLT_THRESH_RX;
-+	}
-+
-+	/* read the remaining data */
-+	while (nbytes) {
-+		ret = sf_qspi_wait_rx_not_empty(s);
-+		if (ret)
-+			return ret;
-+
-+		*in++ = readw(s->base + SSP_DR);
-+		nbytes--;
-+	}
-+
-+	return 0;
-+}
-+
-+static inline u32 spi_rate(u32 rate, u16 csdvsr, u16 scr) {
-+	return rate / (csdvsr * (1 + scr));
-+}
-+
-+static void sf_qspi_set_param(struct sf_qspi *s, const struct spi_mem_op *op) {
-+	unsigned int tx_count = 0, rx_count = 0;
-+	u8 cmd_io, addr_io, data_io;
-+	u8 cmd_count, addr_count, ehc_count;
-+
-+	cmd_io = op->cmd.buswidth == 4 ? 3 : op->cmd.buswidth;
-+	addr_io = op->addr.buswidth == 4 ? 3 : op->addr.buswidth;
-+	data_io = op->data.buswidth == 4 ? 3 : op->data.buswidth;
-+
-+	if (op->data.nbytes) {
-+		if (op->data.dir == SPI_MEM_DATA_IN) {
-+			rx_count = op->data.nbytes;
-+		} else {
-+			tx_count = op->data.nbytes;
-+		}
-+	}
-+	if (op->addr.nbytes > 3) {
-+		addr_count = 3;
-+		ehc_count = 1;
-+	} else {
-+		addr_count = op->addr.nbytes;
-+		ehc_count = 0;
-+	}
-+	cmd_count = op->cmd.nbytes;
-+
-+	writew(FIELD_PREP(EXSPI_CMD2_CMD_IO_MODE, cmd_io) |
-+	       FIELD_PREP(EXSPI_CMD2_ADDR_IO_MODE, addr_io) |
-+	       FIELD_PREP(EXSPI_CMD2_DATA_IO_MODE, data_io),
-+	       s->base + SSP_EXSPI_CMD2);
-+	writew(FIELD_PREP(EXSPI_CMD1_DUMMY_COUNT, op->dummy.nbytes) |
-+	       FIELD_PREP(EXSPI_CMD1_RX_COUNT, rx_count),
-+	       s->base + SSP_EXSPI_CMD1);
-+	writew(EXSPI_CMD0_VALID |
-+	       FIELD_PREP(EXSPI_CMD0_CMD_COUNT, op->cmd.nbytes) |
-+	       FIELD_PREP(EXSPI_CMD0_ADDR_COUNT, addr_count) |
-+	       FIELD_PREP(EXSPI_CMD0_EHC_COUNT, ehc_count) |
-+	       FIELD_PREP(EXSPI_CMD0_TX_COUNT, tx_count),
-+	       s->base + SSP_EXSPI_CMD0);
-+}
-+
-+static int sf_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
-+{
-+	struct sf_qspi *s = spi_controller_get_devdata(mem->spi->master);
-+	unsigned int pops = 0;
-+	int ret, i, op_len;
-+	const u8 *tx_buf = NULL;
-+	u8 *rx_buf = NULL, op_buf[MAX_S_BUF];
-+
-+	if (op->data.nbytes) {
-+		if (op->data.dir == SPI_MEM_DATA_IN) {
-+			rx_buf = op->data.buf.in;
-+		} else {
-+			tx_buf = op->data.buf.out;
-+		}
-+	}
-+	op_len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-+	sf_qspi_set_param(s, op);
-+	/*
-+	 * Avoid using malloc() here so that we can use this code in SPL where
-+	 * simple malloc may be used. That implementation does not allow free()
-+	 * so repeated calls to this code can exhaust the space.
-+	 *
-+	 * The value of op_len is small, since it does not include the actual
-+	 * data being sent, only the op-code and address. In fact, it should be
-+	 * popssible to just use a small fixed value here instead of op_len.
-+	 */
-+	op_buf[pops++] = op->cmd.opcode;
-+	if (op->addr.nbytes) {
-+		for (i = 0; i < op->addr.nbytes; i++)
-+			op_buf[pops + i] = op->addr.val >>
-+							  (8 * (op->addr.nbytes - i - 1));
-+		pops += op->addr.nbytes;
-+	}
-+
-+	sf_qspi_flush_rxfifo(s);
-+	memset(op_buf + pops, 0xff, op->dummy.nbytes);
-+	sf_qspi_xmit(s, op_len, op_buf);
-+	if (tx_buf) {
-+		sf_qspi_xmit(s, op->data.nbytes, tx_buf);
-+	}
-+	sf_qspi_enable(s);
-+	if (rx_buf) {
-+		ret = sf_qspi_rcv(s, op->data.nbytes, rx_buf);
-+	} else {
-+		ret = sf_qspi_wait_not_busy(s);
-+	}
-+	sf_qspi_disable(s);
-+	return ret;
-+}
-+
-+static int sf_qspi_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-+{
-+	u32 nbytes;
-+
-+	nbytes = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-+	if (nbytes >= SF_SSP_FIFO_LEVEL)
-+		return -ENOTSUPP;
-+
-+	if (op->data.dir == SPI_MEM_DATA_IN)
-+		op->data.nbytes = min_t(unsigned int, op->data.nbytes,
-+					SF_SSP_FIFO_LEVEL);
-+	else
-+		op->data.nbytes = min_t(unsigned int, op->data.nbytes,
-+					SF_SSP_FIFO_LEVEL - nbytes);
-+
-+	return 0;
-+}
-+
-+static int sf_qspi_default_setup(struct sf_qspi *s) {
-+	u16 scr = SSP_SCR_MIN, cr0 = 0, cpsr = SSP_CPSR_MIN, best_scr = scr, best_cpsr = cpsr;
-+	u32 min, max, best_freq = 0, tmp;
-+	u32 rate = clk_get_rate(s->clk), speed = s->freq;
-+	bool found = false;
-+
-+	writew(DFLT_PRESCALE, s->base + SSP_CPSR);
-+
-+	max = spi_rate(rate, SSP_CPSR_MIN, SSP_SCR_MIN);
-+	min = spi_rate(rate, SSP_CPSR_MAX, SSP_SCR_MAX);
-+
-+	if (speed > max || speed < min) {
-+		dev_err(s->dev, "Tried to set speed to %dHz but min=%d and max=%d\n", speed, min, max);
-+		return -EINVAL;
-+	}
-+	while (cpsr <= SSP_CPSR_MAX && !found) {
-+		while (scr <= SSP_SCR_MAX) {
-+			tmp = spi_rate(rate, cpsr, scr);
-+			if (abs(speed - tmp) < abs(speed - best_freq)) {
-+				best_freq = tmp;
-+				best_cpsr = cpsr;
-+				best_scr = scr;
-+				if (tmp == speed) {
-+					found = true;
-+					break;
-+				}
-+			}
-+			scr++;
-+		}
-+		cpsr += 2;
-+		scr = SSP_SCR_MIN;
-+	}
-+	writew(best_cpsr, s->base + SSP_CPSR);
-+	cr0 = SSP_CR0_BIT_MODE(8);
-+	cr0 |= best_scr << 8;
-+	/*set module*/
-+	cr0 &= ~(SSP_CR0_SPH | SSP_CR0_SPO);
-+	if(s->mode_bit & SPI_CPHA)
-+		cr0 |= SSP_CR0_SPH;
-+	if(s->mode_bit & SPI_CPOL)
-+		cr0 |= SSP_CR0_SPO;
-+	cr0 |= SSP_CR0_EXSPI_FRAME;
-+	writew(cr0, s->base + SSP_CR0);
-+	/*clear and enable interrupt*/
-+	writew(FIELD_PREP(SSP_FIFO_LEVEL_RX, DFLT_THRESH_RX) |
-+	       FIELD_PREP(SSP_FIFO_LEVEL_TX, DFLT_THRESH_TX),
-+	       s->base + SSP_FIFO_LEVEL);
-+
-+	return 0;
-+}
-+
-+static const struct spi_controller_mem_ops sf_qspi_mem_ops = {
-+	.adjust_op_size = sf_qspi_adjust_op_size,
-+	.exec_op = sf_qspi_exec_op,
-+};
-+
-+static int sf_qspi_probe(struct platform_device *pdev) {
-+	struct spi_controller *master;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node, *nc;
-+	struct sf_qspi *s;
-+
-+	master = devm_spi_alloc_host(&pdev->dev, sizeof(*s));
-+	if (!master)
-+		return -ENOMEM;
-+	master->mode_bits = SPI_RX_DUAL | SPI_RX_QUAD | SPI_TX_DUAL |
-+			    SPI_TX_QUAD;
-+	s = spi_controller_get_devdata(master);
-+	s->dev = dev;
-+	s->mode_bit = 0;
-+	platform_set_drvdata(pdev, s);
-+	s->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(s->base))
-+		return PTR_ERR(s->base);
-+
-+	s->clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(s->clk))
-+		return PTR_ERR(s->clk);
-+
-+	for_each_available_child_of_node(dev->of_node, nc) {
-+		of_property_read_u32(nc, "spi-max-frequency", &s->freq);
-+	}
-+
-+	master->bus_num = pdev->id;
-+	master->num_chipselect = 1;
-+
-+	master->mem_ops = &sf_qspi_mem_ops;
-+	sf_qspi_default_setup(s);
-+	master->dev.of_node = np;
-+	return devm_spi_register_controller(dev, master);
-+}
-+
-+static const struct of_device_id sf_qspi_ids[] = {
-+	{ .compatible = "siflower,qspi" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, sf_qspi_ids);
-+
-+static struct platform_driver sf_qspi_driver = {
-+	.driver = {
-+		.name = "siflower_qspi",
-+		.of_match_table = sf_qspi_ids,
-+	},
-+	.probe		= sf_qspi_probe,
-+};
-+module_platform_driver(sf_qspi_driver);
-+
-+MODULE_LICENSE("GPL");
+Could someone clarify why passthrough has an extra layer to register
+for use as a backing file? Does the ioctl provide some additional
+tracking purpose? I recall there being some security issue around
+directly responding with the fd. In fuse-bpf, we were handling this by
+responding to the fuse request via an ioctl in those cases.
+
+Passthrough also maintains a separate cred instance for each backing
+file. I had been planning to have a single one for the userspace
+daemon, likely grabbed during the init response. I'm unsure how the
+current Passthrough method there should scale to directories.
+
+Now on to my plans. Struct ops programs have more dynamic support now
+[1]. I'm hoping to be able to move most of the Fuse BPF related code
+to live closer to Fuse, and to have it more neatly encapsulated when
+building as a module. I'm not sure if everything that's needed for
+that exists, but I need to play with it a bit more to understand what
+I'm missing. I'll probably show up at bpf office hours at some point.
+
+Struct ops have proper multi page support now [2], which removes
+another patch. I'm still slightly over the struct ops limit, but that
+may change with other changes I'm considering.
+
+I'm very excited to see the new generic stacking filesystem support
+with backing-file [3]. I imagine in time we'll extend that to have a
+backing-inode as well, for the various inode_operations. That will
+definitely involve a lot of refactoring of the way fuse-bpf is
+currently structured, but it's clearly the right way forward.
+
+I'm glad to see fuse passthrough, which provides a subset of the
+fuse-bpf functionality, has landed[4]. I'm planning to rework the
+patch set to integrate better with that. First off, I've been
+considering splitting up the bpf progam into a dentry, inode, and file
+set. That has the added bonus of pushing us back down below the
+current struct_op function list limits. I would want to establish some
+linkage between the sets, so that you could still just set the bpf
+program at a folder level, and have all objects underneath inherit the
+correct program. That's not an issue for a version with just file
+support, but I'll want to ensure the interface extends naturally. With
+the increased module support, I plan to redo all of the bpf program
+linking anyways. The existing code was a temporary placeholder while
+the method of registering struct ops programs was still in flux.
+
+My plan for the next patch set is to prune down to just the file
+operations. That removes a lot of the tricky questions for the moment,
+and should shrink down the patch set massively. Along with that, I'll
+clean up the struct_op implementation to take more advantage of the
+recent bpf additions.
+
+[1] https://lore.kernel.org/r/20240119225005.668602-12-thinker.li@gmail.com
+[2] https://lore.kernel.org/all/20240224223418.526631-3-thinker.li@gmail.com/
+[3] https://lore.kernel.org/all/20240105-vfs-rw-9b5809292b57@brauner/
+[4] https://lore.kernel.org/all/CAJfpegsZoLMfcpBXBPr7wdAnuXfAYUZYyinru3jrOWWEz7DJPQ@mail.gmail.com/
+
+
+Daniel Rosenberg (36):
+  fuse-bpf: Update fuse side uapi
+  fuse-bpf: Add data structures for fuse-bpf
+  fuse-bpf: Prepare for fuse-bpf patch
+  fuse: Add fuse-bpf, a stacked fs extension for FUSE
+  fuse-bpf: Add ioctl interface for /dev/fuse
+  fuse-bpf: Don't support export_operations
+  fuse-bpf: Add support for access
+  fuse-bpf: Partially add mapping support
+  fuse-bpf: Add lseek support
+  fuse-bpf: Add support for fallocate
+  fuse-bpf: Support file/dir open/close
+  fuse-bpf: Support mknod/unlink/mkdir/rmdir
+  fuse-bpf: Add support for read/write iter
+  fuse-bpf: support readdir
+  fuse-bpf: Add support for sync operations
+  fuse-bpf: Add Rename support
+  fuse-bpf: Add attr support
+  fuse-bpf: Add support for FUSE_COPY_FILE_RANGE
+  fuse-bpf: Add xattr support
+  fuse-bpf: Add symlink/link support
+  fuse-bpf: Add partial flock support
+  fuse-bpf: Add partial ioctl support
+  fuse-bpf: allow mounting with no userspace daemon
+  fuse-bpf: Add fuse-bpf constants
+  bpf: Increase struct_op max members
+  WIP: bpf: Add fuse_ops struct_op programs
+  fuse-bpf: Export Functions
+  fuse: Provide registration functions for fuse-bpf
+  fuse-bpf: Set fuse_ops at mount or lookup time
+  fuse-bpf: Call bpf for pre/post filters
+  fuse-bpf: Add userspace pre/post filters
+  WIP: fuse-bpf: add error_out
+  fuse-bpf: Add default filter op
+  tools: Add FUSE, update bpf includes
+  fuse-bpf: Add selftests
+  fuse: Provide easy way to test fuse struct_op call
+
+ fs/fuse/Kconfig                               |    8 +
+ fs/fuse/Makefile                              |    1 +
+ fs/fuse/backing.c                             | 4287 +++++++++++++++++
+ fs/fuse/bpf_register.c                        |  207 +
+ fs/fuse/control.c                             |    2 +-
+ fs/fuse/dev.c                                 |   85 +-
+ fs/fuse/dir.c                                 |  318 +-
+ fs/fuse/file.c                                |  126 +-
+ fs/fuse/fuse_i.h                              |  472 +-
+ fs/fuse/inode.c                               |  377 +-
+ fs/fuse/ioctl.c                               |   11 +-
+ fs/fuse/readdir.c                             |    5 +
+ fs/fuse/xattr.c                               |   18 +
+ include/linux/bpf.h                           |    2 +-
+ include/linux/bpf_fuse.h                      |  285 ++
+ include/uapi/linux/bpf.h                      |   13 +
+ include/uapi/linux/fuse.h                     |   41 +
+ kernel/bpf/Makefile                           |    4 +
+ kernel/bpf/bpf_fuse.c                         |  716 +++
+ kernel/bpf/bpf_struct_ops.c                   |    2 +
+ kernel/bpf/btf.c                              |    1 +
+ kernel/bpf/verifier.c                         |   10 +-
+ tools/include/uapi/linux/bpf.h                |   13 +
+ tools/include/uapi/linux/fuse.h               | 1197 +++++
+ .../selftests/filesystems/fuse/.gitignore     |    2 +
+ .../selftests/filesystems/fuse/Makefile       |  189 +
+ .../testing/selftests/filesystems/fuse/OWNERS |    2 +
+ .../selftests/filesystems/fuse/bpf_common.h   |   51 +
+ .../selftests/filesystems/fuse/bpf_loader.c   |  597 +++
+ .../testing/selftests/filesystems/fuse/fd.txt |   21 +
+ .../selftests/filesystems/fuse/fd_bpf.bpf.c   |  397 ++
+ .../selftests/filesystems/fuse/fuse_daemon.c  |  300 ++
+ .../selftests/filesystems/fuse/fuse_test.c    | 2476 ++++++++++
+ .../filesystems/fuse/struct_op_test.bpf.c     |  642 +++
+ .../selftests/filesystems/fuse/test.bpf.c     | 1045 ++++
+ .../filesystems/fuse/test_framework.h         |  172 +
+ .../selftests/filesystems/fuse/test_fuse.h    |  494 ++
+ 37 files changed, 14385 insertions(+), 204 deletions(-)
+ create mode 100644 fs/fuse/backing.c
+ create mode 100644 fs/fuse/bpf_register.c
+ create mode 100644 include/linux/bpf_fuse.h
+ create mode 100644 kernel/bpf/bpf_fuse.c
+ create mode 100644 tools/include/uapi/linux/fuse.h
+ create mode 100644 tools/testing/selftests/filesystems/fuse/.gitignore
+ create mode 100644 tools/testing/selftests/filesystems/fuse/Makefile
+ create mode 100644 tools/testing/selftests/filesystems/fuse/OWNERS
+ create mode 100644 tools/testing/selftests/filesystems/fuse/bpf_common.h
+ create mode 100644 tools/testing/selftests/filesystems/fuse/bpf_loader.c
+ create mode 100644 tools/testing/selftests/filesystems/fuse/fd.txt
+ create mode 100644 tools/testing/selftests/filesystems/fuse/fd_bpf.bpf.c
+ create mode 100644 tools/testing/selftests/filesystems/fuse/fuse_daemon.c
+ create mode 100644 tools/testing/selftests/filesystems/fuse/fuse_test.c
+ create mode 100644 tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
+ create mode 100644 tools/testing/selftests/filesystems/fuse/test.bpf.c
+ create mode 100644 tools/testing/selftests/filesystems/fuse/test_framework.h
+ create mode 100644 tools/testing/selftests/filesystems/fuse/test_fuse.h
+
+
+base-commit: e63985ecd22681c7f5975f2e8637187a326b6791
 -- 
-2.34.1
+2.44.0.478.gd926399ef9-goog
 
 
