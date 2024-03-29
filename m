@@ -1,237 +1,458 @@
-Return-Path: <linux-kernel+bounces-125478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 430378926BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 166558926E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED9FD283FEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:29:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1522284250
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4F013D288;
-	Fri, 29 Mar 2024 22:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AEA13CFA8;
+	Fri, 29 Mar 2024 22:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="MaTCu3L7"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QMl5bUwl"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2095.outbound.protection.outlook.com [40.107.237.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05E728DC1
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 22:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711751389; cv=none; b=Ba3PoqbbC2dc64mLc6ohtJVGjGIyUibcO9qGlZEQ9AXGrn4mFRvwGvX90ZqgXegidqOeuet22wUIBnVp4a8aKrKgQITh4Maxattfzz3C3y4a8WAm45KS8rC0qhuksxPm7Wy/iXHilrppoRJla292aYDqSi5y+jwUYF/gBo+AJfw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711751389; c=relaxed/simple;
-	bh=ZhS15EJWoC9d+whMPENxa4c8jVobeAR8ixYkWHdE4jM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LRKRlkjgl9X6xiqV+Qx+9dN7cNoDkZ0lQTZZ1A6RClbT7YTupe7tmy9OrrIXIP3pDekY6R9E3pCs++45MwO62mxpflfFJd80gHfEcbxiIpJFrG79FhKJ1veF0SBpPEMTsOwIZ2j7MfKn28ZU7n7mFseDM6jMUQqyuRvf+BuXjJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MaTCu3L7; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46a7208eedso312472966b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 15:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711751386; x=1712356186; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7HucFjZo+IYW7DIZaEciZZcS/GCvuWFK/7eA6qgdTI=;
-        b=MaTCu3L7Au/QBT0aGlP+eobgxnAmnd1exUyHqcZM0E5o63xFoJWsIN2EvjnDoa2R3o
-         xhjA9Gcc+RaX2FB1WnwOKRXoDYW/Mx6N2iKFPsdIpuDRdsVRdwmPvLhNNFr0wTGtMOst
-         OzUJrUScfKS+uHUnQr1HyAivoSfwW8ZFPL5u3AC+f8Z+kHQTDofEV8eyk+a8SuKaAv//
-         F++eb64Wn4nUwN3ktIqxNGjdQbYLs6pplfMr6CcTZ4jEEWuv7q7Bk93gWpCGBnLOOVaR
-         4N0EutgH3x743dAx0DLgUTE++lRs10pbNoRTmG403fLvdJeHIZSLfAiFCijn2WQhzcXM
-         hrEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711751386; x=1712356186;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7HucFjZo+IYW7DIZaEciZZcS/GCvuWFK/7eA6qgdTI=;
-        b=GzJUp3cjY+ziNyYbWPaAbkpgnekwO345+IUkatG/4BlZit0RAmph41wxxTV4LLtXVe
-         X/T2Ucn4W/nbGzkFjmVYa3DiZ2Puy/dQJmiGUih6t54X5o4Rxz8OQBnfri6Qfk3apcRM
-         JTUv8JaBwGx3PVrfXPvdvbaYHnqCrxiZ/h+usSeMC0MMlsIa2fPaw4PbW/fgCSkrOx6q
-         xFR2NgfUuSU4zM/5mcUylyWXI20DD5aC2Dj2zhAlenxFBDP2tc7q/oSEV+/QzEJvuzHj
-         p0Eoj9yGsLdeINcLVvbG1JuyeoplIllZm2ZgOdPIkTOrzfVsZv5VREadDgWG8ImVDrrk
-         MYKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIna+uZfqjsOCBKe8o+eaB8KD7X0MYEOnQZxTqrEwEFX3WcJXfpLrwwfkTqY921GL1U5srbbmOBbICb6pUwHpK8aHXjrNLCe9pXXBT
-X-Gm-Message-State: AOJu0YwBOtOmEd3kCvTZAUC4U9DJiUrsyf2D8rXrXgpS+/zLKq2PMMBM
-	kLoGEDP9zdEi4DkoQmg9B7W3rE05U0GXQxvF4rsRZrrAeZ2OUb7NyEObsh8gg2TW7R+edHyFSHi
-	iPm6bctIaJ72pWsc/jBZ/SM2zWw5SpbM3x9Tv
-X-Google-Smtp-Source: AGHT+IG4teUTwPktp+DR/5ayqNkHcdTq36vc3n8+aVyWq9S2DzWoZpaL12inphGYAcc7sq15bW+08Sn6mRyVTrx26qU=
-X-Received: by 2002:a17:906:4f92:b0:a47:61cd:2b51 with SMTP id
- o18-20020a1709064f9200b00a4761cd2b51mr2283347eju.2.1711751385930; Fri, 29 Mar
- 2024 15:29:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157B128DCA;
+	Fri, 29 Mar 2024 22:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.95
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711752070; cv=fail; b=iT73yaJATXPF6TexZMUEAV2/sxEWzNiLK5TUnvPX0Cy2E14qbaNwPyBNeqaglJ//Jx+6uFKjnxeQq+z+nMgdQg7F1U37PDX1ZUB+DIlOCzOGWxC06t1YWT90Ew/eW+Rh3ApI8I72qztLjrFodKVarmzb+wwckGDk0XXy7Qh/CJs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711752070; c=relaxed/simple;
+	bh=+qwRVQtAUFwc+mzfaMAXarOygq0dR3IZtuet68K/Fyc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=G29ZIU+yv38ZuTtXNi+N8C9Zhwjmp44eIvzsKJgCft7KwIkeThqwQKY9NS8L4PwEr46ODNkpxKhj/5OKv8BT1YCNoJfs/awO/a9KJkRV+vJZaAlNqOJlgGXBdjfLBdz3f3I2QS98P/ZBr6R+qHJydYb7baxyGFy6LT11pI9R0o0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QMl5bUwl; arc=fail smtp.client-ip=40.107.237.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BkkM76oyZTz2Q2LpBR6pBvhemX3+VK0fBLimXRngfvWCLdPfuoYo/vDDc9RbYD4UJCpFX6s1jEACDTyMlHtRFRtONzRJPjfA5pmccOwplO8CEa6s0ovxM9Hl35Er48H48WBDOpZd1uPtQB3DDta7kBsPc3EIceVFUm/Gm1wTOx55QotP37QBX1KD8mX4WMa0LZynfQjnkStLhLnWXcdQwsSPer6kiUjqteQovSGXfh7YMRVKbeMRw21NQro0Qy+gQ/LA6DPgby5/cQICN4eDyYN95UrX4YKucYI2oBsPICG3c8q8kvw9fCtKbZwnr1grISQQtUC1KNVzYdiMagOGFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lm2yVCaf9RoiDruxpEx206c6phucY5FX3RMdmFeXZ9k=;
+ b=RDOAGF7+Ik4xDCrKfFjYUaCEgFCp8rPLEoyGEJGfpLOXNIa7YWeEWzZ1VotCI/ZUgTSOVN6QiqcPcDBe5GBx9DmXLKN4YMa19/hFyoPmXJz6oq65UWNMaTUYLl0AXj/clPXTRfxyopcl4hYjwIcO71g4dftgFJvWksN77W1OGtqxvf8pbLNnC0Zgx3QmEOw2m5F4R8LYVLl/bBFar8vjgNGERX4KUT1jJPql2hneEZv8TzpArkgEtYh2C0+YAbEHtbkVjmyx76VGDNFvy3BkIlL1Pl871ZsykDD0NONy0TJd+zaD5o2zx4yCgWb8Y8juLnwrKvehR4dlgdslxCuzqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lm2yVCaf9RoiDruxpEx206c6phucY5FX3RMdmFeXZ9k=;
+ b=QMl5bUwlMCq6WdH4tCDHxZVKXNBku4/gXeVQ0tOLa0L6+pc48BPHNHT7qZrod8KvPGtXue3FRb7oTQXlMpourqiZouj8qHTvXYQHCn2cmmywW2ROkv52VRi3CV/u471+HApu4l8pEYs1PhJ1Ycjjvse/PRcpKPKO/VLPR5Dq27w=
+Received: from DS7PR12MB6263.namprd12.prod.outlook.com (2603:10b6:8:95::17) by
+ SJ1PR12MB6217.namprd12.prod.outlook.com (2603:10b6:a03:458::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.33; Fri, 29 Mar 2024 22:41:02 +0000
+Received: from DS7PR12MB6263.namprd12.prod.outlook.com
+ ([fe80::b286:7d11:bee0:2d37]) by DS7PR12MB6263.namprd12.prod.outlook.com
+ ([fe80::b286:7d11:bee0:2d37%4]) with mapi id 15.20.7409.039; Fri, 29 Mar 2024
+ 22:41:02 +0000
+Message-ID: <8d543a15-af62-4403-b2e0-3b395edfe9e4@amd.com>
+Date: Fri, 29 Mar 2024 17:38:52 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 04/15] x86: Secure Launch Resource Table header file
+To: Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
+ linux-efi@vger.kernel.org
+Cc: dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com, ardb@kernel.org,
+ mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
+ peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
+ nivedita@alum.mit.edu, herbert@gondor.apana.org.au, davem@davemloft.net,
+ kanth.ghatraju@oracle.com, trenchboot-devel@googlegroups.com
+References: <20240214221847.2066632-1-ross.philipson@oracle.com>
+ <20240214221847.2066632-5-ross.philipson@oracle.com>
+Content-Language: en-US
+From: Kim Phillips <kim.phillips@amd.com>
+Organization: AMD
+In-Reply-To: <20240214221847.2066632-5-ross.philipson@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN1PR12CA0079.namprd12.prod.outlook.com
+ (2603:10b6:802:21::14) To DS7PR12MB6263.namprd12.prod.outlook.com
+ (2603:10b6:8:95::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-7-yosryahmed@google.com> <20240328193149.GF7597@cmpxchg.org>
- <CAJD7tkaFmbnt4YNWvgGZHo=-JRu-AsUWvCYCRXVZxOPvcSJRDw@mail.gmail.com>
- <20240328210709.GH7597@cmpxchg.org> <CAKEwX=OPDLxH-0-3F+xOc2SL5Ouj-R-HEC5QQrW+Q9Fn8pyeRg@mail.gmail.com>
- <CAJD7tkaGBofWm1eGBffEtpuKUDBVB_6RfHbYKQSKOX3fKn2jeg@mail.gmail.com>
- <CAJD7tkbKY0T6jd5v_GhNFyCO0578SNqfMgs1ZrZiCckY05hzZA@mail.gmail.com>
- <20240329173759.GI7597@cmpxchg.org> <CAJD7tkaySFP2hBQw4pnZHJJwe3bMdjJ1t9VC2VJd=khn1_TXvA@mail.gmail.com>
- <20240329211723.GA882964@cmpxchg.org>
-In-Reply-To: <20240329211723.GA882964@cmpxchg.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 29 Mar 2024 15:29:07 -0700
-Message-ID: <CAJD7tkZeYi65nYZ8c-3ZdNRWuSsgHjerXAPbZcMH5kKF3Kjdow@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/9] mm: zswap: drop support for non-zero same-filled
- pages handling
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Nhat Pham <nphamcs@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Srividya Desireddy <srividya.desireddy@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6263:EE_|SJ1PR12MB6217:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Hkl8K+NUU2xWpYzCX8iWlZCRIWfimJSM5pZ+gyjCjEOSL9P3Rn9yyjmZPpvXl3BxjwRv/Cuh5ARzlvVKIDJQNknQ+d9K98CwpJ6AG1WgKw8W/W1P4HYReUgaauK+aeb3mU2y61lAnHTQ3UutFp9RR5La01iCOkdNx7tX7tHj64Xn2m0lZdu4aahAw7jDi8kiVarGCtHi1SYN93JWcJeGfur9hrKFPBXEq5qyZe2qrUjzW1RBkE0EU1dA20+IEQacqFdX2s9hq/KatEZz5elGbJ2HvS67b239PYcUDEuXxQD7QK3UMILH8ejMlh2k2rRZmnLykNRbEuw7fCSlAT1OwinM80debtnCjVK+99ISveNjFJ0rqFqcc7Z1SKr49EbuiI/pSO2qOrPXjIoMi0LOM38OU4IDG+QzFFHpfVfu85RQg4dvDdMW2HpVnpQzwlwK5OAJhZ/ox3f/OhAizj7rmhbmSY527shjIkG3d6wbLA7LKaUdzB/8JZPGalCjvDkLwH1OmNE8fsgsIy/RSZpf127efi7ROacRLZCh6SJPGWdyuT4UkObzNajAtVe7PDGRWLhPpXCpCYFawvQEJIX0VT3//a/59t0c7N7YZghjEOrjaxif3qE6/rjtvCOKfdwGKU9p5gNTL1MSzSYO/V1ZmMdyRHtgaN+HY7oYjlH9QKA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6263.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WHlDbnV5TnB2SlVNYjVRbUlLRUh0eEVBZkkxMlg5dmMvRDJLRGZ6cXV3Qngr?=
+ =?utf-8?B?aWhIdTNkVHUwQThydWlDU081WGd5TUF5U2ZoamVIcWx4UHJxTVJzLzNXd0xw?=
+ =?utf-8?B?MmdVUkx4OFJRNW9TUllwOXY1WlZIcDdubEwzWmY5WlZ6WUpOK0RlRE9ocjhD?=
+ =?utf-8?B?K0RhWll1eHlLOE0vMVhHNU5pVTlDUkZCK04xemlheFZGbDVONlVodmZvVjg4?=
+ =?utf-8?B?UEZRS09TYkUzN0hIL0hidVBjdjV6RWYwZE1oT1VPVGJmd2Q2bGZmaHMzdUlx?=
+ =?utf-8?B?V1d2UUxYNzRlTkliMTVqd3B1VldjOGJVTDZxZG5KNC9yUk5KSXFYSGlXSUNH?=
+ =?utf-8?B?anFvN21Xam5zYjZqeEZlc2NaQkJZV0hWOTVzT1ZMaUppejdNYlErNWlyM00y?=
+ =?utf-8?B?dE9BU0x6dUpycWUxUERQTTA0cEF4bzEwczIyYzFaT05GV3NHS1d3SHo4aExQ?=
+ =?utf-8?B?TG5CSkNJTS9URC94YlAxbHRkRW5oSXRpZENrQnJ6V0RrbTBBU0RDSmY4N2dm?=
+ =?utf-8?B?RkQwN3dtK3M4V3JYdlFVM2RSdFJja3NEVFQ4ZTMvTFZvMm9KcisxZk83QVJU?=
+ =?utf-8?B?b1NQOG5naURkeWNjeFlwaWtObytydytpT0xpMDlZd2V4cnpVNHR0OVlETmtn?=
+ =?utf-8?B?TDhETUxicVJSTW1OdUpiQ1BCZ2FMUVczUFhDSW1UeXNZbnR6ZDVBS0NtM0JH?=
+ =?utf-8?B?MzFUeGt5SUM2YnRwOXp2WDI2WW93TEdoMytIS1RyN2N1QXk0RitHaWtIZXZw?=
+ =?utf-8?B?QTRLcVZzUlFtRG1JSE56VFhjY2dFZEhuUDUvK0pOeC9vYVpVaUN0YTh5Nm9E?=
+ =?utf-8?B?RUs5TDQyWTc2RmlDM0NkTks2ZTZIU1ZWMFNER05XOGh0amxYbTRZUjhlWlcy?=
+ =?utf-8?B?aWh4eDZlMGNETTRSVFF4dU5BMDJZMW9hdk9NZzhVdDNtck9ncWdGYWNyaDJl?=
+ =?utf-8?B?ZXlIY0V0V05ibHBBTnAwOTVNQmFrai9KNDFyUlA5bzhPQ1ptT2UyL3dIUk4w?=
+ =?utf-8?B?WWhxa01Mb21pTk5iQ3NvMmxvSHBqald4dng2WXdkTUZEenptUTNVenV6VFVa?=
+ =?utf-8?B?M3NkM2RTRS9tTEFEZFVxdHpQMVc5RlpncnhZRnB0SXJNUmlLRTFZQlA3Z1BQ?=
+ =?utf-8?B?ZnF3UDN0Um1NR0h2cVZGdWIwUTEvdjkyVEUrSCswL01PdTZWSEhpeG1EKzBt?=
+ =?utf-8?B?UGtBY1lhckVQaWhRK0dZSVpuMXlnMmtxSHAyZ0p0bzdyakJHQzlWNjVyalY4?=
+ =?utf-8?B?Nk1rUzc2Z0cydFl4elJnOEJreEhKY1dYd2h2R1R1djJzc0FEUVU2U05UYzhM?=
+ =?utf-8?B?UG1pKzRiK2RLNHIzbFA1aGJGaDlRanVZZlFIVkViVzZlMWFpcFUvZ0t5UVlO?=
+ =?utf-8?B?ZnBwcW1qQ0RRK0tHcTdFQjM2d2t6MWxYajJtYkNjSlQwODFHSWhTcUhwOENP?=
+ =?utf-8?B?Q1VGc2VvNWd0cjYwd0p5VXl4bmFsRFBrOTYrellCOG4yWkNrTi9YdkNlVUpp?=
+ =?utf-8?B?ZS9Dekp2KzB4ak4rQktURzNpT0FkaC82bFlxK1F1VjV4QTdyajh4Qlp3UGd0?=
+ =?utf-8?B?MWIvUEtydWhzS0VBMExSY1AvZDkvYzNyOGVudUNITExPcHI4RERSUHh0RHBT?=
+ =?utf-8?B?Y2MvSjBBclFXNnNDZ0g5QjhSRTJTb1gvOUxkRFczRWpMc29iQWF3QzN0Rzcv?=
+ =?utf-8?B?OXdFa2N2OEFaOU84eXZMZ1pOTUljM0tpbDJKOWxsR1h1OE1pRWpTeTMxVU42?=
+ =?utf-8?B?RmRwRnhydzVCTEl6a2ZIWmxkTzBSUjBnbDRtbXZVSTVKT0crK1huN1dLMTFu?=
+ =?utf-8?B?ZEo4UzlaRmErOFRDUVNTWVQybUhGelhhNjdwZTM0c0NGeDF0ZVdBZmgrWDd5?=
+ =?utf-8?B?ZnRKNXpsSTR0NkdZZkxPTWRRTmFJRGRyc0oxT1hOVWJpR3hRM0FzSS8vS0Fi?=
+ =?utf-8?B?RzJiZ2xCUTM4dmcrWWJ5NG1xZCtTOXRKNVFXWm1GREZGdlJYbkh4M3c2ckk5?=
+ =?utf-8?B?MGxIQnJuYXJpbmQ5THFCTjZqUzkyTEtpbjF0K3hvdk5teWVNMXJJbHNoLzdN?=
+ =?utf-8?B?ZnFvU0t0YVlnUnJuUzBDVUVWZ3JKWFZGQVFUQVF3NFAyeVlyaEFNRTdxcll4?=
+ =?utf-8?Q?zvdhYQzh59VITtzKjJgRMSRq2?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fcf4d61-e37a-4595-254c-08dc50414fbf
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6263.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 22:41:02.2410
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ilGgkrAbN/QGxCRDsFAVzxGCrnuii09s15bGN/0TY5T4fJ/decyRW+CsMzueQ3DxrQoL7F9fC4wqSyBOwuyPuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6217
 
-On Fri, Mar 29, 2024 at 2:17=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Fri, Mar 29, 2024 at 11:56:46AM -0700, Yosry Ahmed wrote:
-> > > I perf'd zswapping out data that is 10% same-filled and 90% data that
-> > > always needs compression. It does nothing but madvise(MADV_PAGEOUT),
-> > > and the zswap_store() stack is already only ~60% of the cycles.
-> > >
-> > > Using zsmalloc + zstd, this is the diff between vanilla and my patch:
-> > >
-> > > # Baseline  Delta Abs  Shared Object         Symbol
-> > > # ........  .........  ....................  ........................=
-............................
-> > > #
-> > >      4.34%     -3.02%  [kernel.kallsyms]     [k] zswap_store
-> > >     11.07%     +1.41%  [kernel.kallsyms]     [k] ZSTD_compressBlock_d=
-oubleFast
-> > >     15.55%     +0.91%  [kernel.kallsyms]     [k] FSE_buildCTable_wksp
-> > >
-> > > As expected, we have to compress a bit more; on the other hand we're
-> > > removing the content scan for same-filled for 90% of the pages that
-> > > don't benefit from it. They almost amortize each other. Let's round i=
-t
-> > > up and the remaining difference is ~1%.
-> >
-> > Thanks for the data, this is very useful.
-> >
-> > There is also the load path. The original patch that introduced
-> > same-filled pages reports more gains on the load side, which also
-> > happens to be more latency-sensitive. Of course, the data could be
-> > outdated -- but it's a different type of workload than what will be
-> > running in a data center fleet AFAICT.
-> >
-> > Is there also no noticeable difference on the load side in your data?
->
->      9.40%     +2.51%  [kernel.kallsyms]  [k] ZSTD_safecopy
->      0.76%     -0.48%  [kernel.kallsyms]  [k] zswap_load
->
-> About 2% net.
->
-> Checking other compression algorithms, lzo eats 27.58%, and lz4
-> 13.82%. The variance between these alone makes our "try to be smarter
-> than an actual compression algorithm" code look even sillier.
->
-> > Also, how much increase did you observe in the size of compressed data
-> > with your patch? Just curious about how zstd ended up handling those
-> > pages.
->
-> Checking zsmalloc stats, it did pack the same-filled ones down into 32
-> byte objects. So 0.7% of their original size. That's negligible, even
-> for workloads that have an unusually high share of them.
+Hi Ross,
 
-Glad to see that this was handled appropriately.
+On 2/14/24 4:18 PM, Ross Philipson wrote:
+> Introduce the Secure Launch Resource Table which forms the formal
+> interface between the pre and post launch code.
+> 
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> ---
+>   include/linux/slr_table.h | 270 ++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 270 insertions(+)
+>   create mode 100644 include/linux/slr_table.h
 
->
-> > > It's difficult to make the case that this matters to any real
-> > > workloads with actual think time in between paging.
-> >
-> > If the difference in performance is 1%, I surely agree.
-> >
-> > The patch reported 19-32% improvement in store time for same-filled
-> > pages depending on the workload and platform. For 10% same-filled
-> > pages, this should roughly correspond to 2-3% overall improvement,
-> > which is not too far from the 1% you observed.
->
-> Right.
->
-> > The patch reported much larger improvement for load times (which
-> > matters more), 49-85% for same-filled pages. If this corresponds to
-> > 5-8% overall improvement in zswap load time for a workload with 10%
-> > same-filled pages, that would be very significant. I don't expect to
-> > see such improvements tbh, but we should check.
->
-> No, I'm seeing around 2% net.
+> diff --git a/include/linux/slr_table.h b/include/linux/slr_table.h
+> new file mode 100644
+> index 000000000000..42020988233a
+> --- /dev/null
+> +++ b/include/linux/slr_table.h
+> @@ -0,0 +1,270 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Secure Launch Resource Table
+> + *
+> + * Copyright (c) 2023, Oracle and/or its affiliates.
+> + */
+> +
+> +#ifndef _LINUX_SLR_TABLE_H
+> +#define _LINUX_SLR_TABLE_H
+> +
+> +/* Put this in efi.h if it becomes a standard */
+> +#define SLR_TABLE_GUID				EFI_GUID(0x877a9b2a, 0x0385, 0x45d1, 0xa0, 0x34, 0x9d, 0xac, 0x9c, 0x9e, 0x56, 0x5f)
+> +
+> +/* SLR table header values */
+> +#define SLR_TABLE_MAGIC		0x4452544d
+> +#define SLR_TABLE_REVISION	1
+> +
+> +/* Current revisions for the policy and UEFI config */
+> +#define SLR_POLICY_REVISION		1
+> +#define SLR_UEFI_CONFIG_REVISION	1
+> +
+> +/* SLR defined architectures */
+> +#define SLR_INTEL_TXT		1
+> +#define SLR_AMD_SKINIT		2
+> +
+> +/* SLR defined bootloaders */
+> +#define SLR_BOOTLOADER_INVALID	0
+> +#define SLR_BOOTLOADER_GRUB	1
+> +
+> +/* Log formats */
+> +#define SLR_DRTM_TPM12_LOG	1
+> +#define SLR_DRTM_TPM20_LOG	2
+> +
+> +/* DRTM Policy Entry Flags */
+> +#define SLR_POLICY_FLAG_MEASURED	0x1
+> +#define SLR_POLICY_IMPLICIT_SIZE	0x2
+> +
+> +/* Array Lengths */
+> +#define TPM_EVENT_INFO_LENGTH		32
+> +#define TXT_VARIABLE_MTRRS_LENGTH	32
+> +
+> +/* Tags */
+> +#define SLR_ENTRY_INVALID	0x0000
+> +#define SLR_ENTRY_DL_INFO	0x0001
+> +#define SLR_ENTRY_LOG_INFO	0x0002
+> +#define SLR_ENTRY_ENTRY_POLICY	0x0003
+> +#define SLR_ENTRY_INTEL_INFO	0x0004
+> +#define SLR_ENTRY_AMD_INFO	0x0005
+> +#define SLR_ENTRY_ARM_INFO	0x0006
+> +#define SLR_ENTRY_UEFI_INFO	0x0007
+> +#define SLR_ENTRY_UEFI_CONFIG	0x0008
+> +#define SLR_ENTRY_END		0xffff
+> +
+> +/* Entity Types */
+> +#define SLR_ET_UNSPECIFIED	0x0000
+> +#define SLR_ET_SLRT		0x0001
+> +#define SLR_ET_BOOT_PARAMS	0x0002
+> +#define SLR_ET_SETUP_DATA	0x0003
+> +#define SLR_ET_CMDLINE		0x0004
+> +#define SLR_ET_UEFI_MEMMAP	0x0005
+> +#define SLR_ET_RAMDISK		0x0006
+> +#define SLR_ET_TXT_OS2MLE	0x0010
+> +#define SLR_ET_UNUSED		0xffff
+> +
+> +#ifndef __ASSEMBLY__
+> +
+> +/*
+> + * Primary SLR Table Header
+> + */
+> +struct slr_table {
+> +	u32 magic;
+> +	u16 revision;
+> +	u16 architecture;
+> +	u32 size;
+> +	u32 max_size;
 
-You mentioned that other compressors eat more cycles in this case, so
-perhaps the data in the original patch comes from one of those
-compressors.
+Do these need to have their endianness specified with, e.g., __le32?
 
->
-> > > But let's say you do make the case that zero-filled pages are worth
-> > > optimizing for.
-> >
-> > I am not saying they are for sure, but removing the same-filled
-> > checking didn't seem to improve performance much in my testing, so the
-> > cost seems to be mostly in maintenance. This makes it seem to me that
-> > it *could* be a good tradeoff to only handle zero-filled pages. We can
-> > make them slightly faster and we can trim the complexity -- as shown
-> > by this patch.
->
-> In the original numbers, there was a certain percentage of non-zero
-> same-filled pages. You still first have to find that number for real
-> production loads to determine what the tradeoff actually is.
->
-> And I disagree that the code is less complex. There are fewer lines to
-> the memchr_inv() than to the open-coded word-scan, but that scan is
-> dead simple, self-contained and out of the way.
->
-> So call that a wash in terms of maintenance burden, but for a
-> reduction in functionality and a regression risk (however small).
->
-> The next patch to store them as special xarray entries is also a wash
-> at best. It trades the entry having an implicit subtype for no type at
-> all. zswap_load_zero_filled() looks like it's the fast path, and
-> decompression the fallback; the entry destructor is now called
-> "zswap_tree_free_element" and takes a void pointer. It also re-adds
-> most of the lines deleted by the zero-only patch.
->
-> I think this is actually a bit worse than the status quo.
->
-> But my point is, this all seems like a lot of opportunity cost in
-> terms of engineering time, review bandwidth, regression risk, and
-> readability, hackability, reliability, predictability of the code -
-> for gains that are still not shown to actually matter in practice.
+> +	/* entries[] */
 
-Yeah in terms of code cleanliness it did not turn out as I thought it
-would. Actually even using different subtypes will have either
-similarly abstract (yet less clear) helpers, or completely separate
-paths with code duplication -- both of which are not ideal. So perhaps
-it's better to leave it alone (and perhaps clean it up slightly) or
-remove it completely.
+Instead of the above line, a legit 'entries' can be enabled using:
 
-I wanted to see what others thought, and I was aware it's
-controversial (hence RFC) :)
+DECLARE_FLEX_ARRAY(struct slr_entry_hdr, entries);
 
-Anyway, I will send a separate series with only cleanups and removing
-knobs. We can discuss completely removing same-filled handling
-separately. I suspect 2% regression in the load path (and potentially
-larger with other compressors) may not be okay.
+> +} __packed;
 
-If handling for zero-filled pages is added directly in reclaim as you
-suggested though, then the justification for handling other patterns
-in zswap becomes much less :) Handling it in reclaim also means we
-avoid IO for zero pages completely, which would be even more
-beneficial than just avoiding compression/decompression in zswap.
+You'd have to move this above struct slr_table which would need it:
 
->
-> https://lore.kernel.org/all/20240328122352.a001a56aed97b01ac5931998@linux=
--foundation.org/
->
-> This needs numbers to show not just that your patches are fine, but
-> that any version of this optimization actually matters for real
-> workloads. Without that, my vote would be NAK.
+> +/*
+> + * Common SLRT Table Header
+> + */
+> +struct slr_entry_hdr {
+> +	u16 tag;
+> +	u16 size;
+> +} __packed;
+> +
+> +/*
+> + * Boot loader context
+> + */
+> +struct slr_bl_context {
+> +	u16 bootloader;
+> +	u16 reserved;
+> +	u64 context;
+> +} __packed;
+> +
+> +/*
+> + * DRTM Dynamic Launch Configuration
+> + */
+> +struct slr_entry_dl_info {
+> +	struct slr_entry_hdr hdr;
+> +	struct slr_bl_context bl_context;
+> +	u64 dl_handler;
+> +	u64 dce_base;
+> +	u32 dce_size;
+> +	u64 dlme_entry;
+> +} __packed;
+> +
+> +/*
+> + * TPM Log Information
+> + */
+> +struct slr_entry_log_info {
+> +	struct slr_entry_hdr hdr;
+> +	u16 format;
+> +	u16 reserved;
+> +	u64 addr;
+> +	u32 size;
+> +} __packed;
+> +
+> +/*
+> + * DRTM Measurement Policy
+> + */
+> +struct slr_entry_policy {
+> +	struct slr_entry_hdr hdr;
+> +	u16 revision;
+> +	u16 nr_entries;
+> +	/* policy_entries[] */
+> +} __packed;
+> +
+> +/*
+> + * DRTM Measurement Entry
+> + */
+> +struct slr_policy_entry {
+> +	u16 pcr;
+> +	u16 entity_type;
+> +	u16 flags;
+> +	u16 reserved;
+> +	u64 entity;
+> +	u64 size;
+> +	char evt_info[TPM_EVENT_INFO_LENGTH];
+> +} __packed;
+> +
+> +/*
+> + * Secure Launch defined MTRR saving structures
+> + */
+> +struct slr_txt_mtrr_pair {
+> +	u64 mtrr_physbase;
+> +	u64 mtrr_physmask;
+> +} __packed;
+> +
+> +struct slr_txt_mtrr_state {
+> +	u64 default_mem_type;
+> +	u64 mtrr_vcnt;
+> +	struct slr_txt_mtrr_pair mtrr_pair[TXT_VARIABLE_MTRRS_LENGTH];
+> +} __packed;
+> +
+> +/*
+> + * Intel TXT Info table
+> + */
+> +struct slr_entry_intel_info {
+> +	struct slr_entry_hdr hdr;
+> +	u64 saved_misc_enable_msr;
+> +	struct slr_txt_mtrr_state saved_bsp_mtrrs;
+> +} __packed;
+> +
+> +/*
+> + * AMD SKINIT Info table
+> + */
+> +struct slr_entry_amd_info {
+> +	struct slr_entry_hdr hdr;
+> +} __packed;
+> +
+> +/*
+> + * ARM DRTM Info table
+> + */
+> +struct slr_entry_arm_info {
+> +	struct slr_entry_hdr hdr;
+> +} __packed;
+
+Shouldn't these three structs be added as part of their
+separate per-vendor enablement patches?
+
+> +struct slr_entry_uefi_config {
+> +	struct slr_entry_hdr hdr;
+> +	u16 revision;
+> +	u16 nr_entries;
+> +	/* uefi_cfg_entries[] */
+> +} __packed;
+> +
+> +struct slr_uefi_cfg_entry {
+> +	u16 pcr;
+> +	u16 reserved;
+> +	u64 cfg; /* address or value */
+> +	u32 size;
+> +	char evt_info[TPM_EVENT_INFO_LENGTH];
+> +} __packed;
+> +
+> +static inline void *slr_end_of_entrys(struct slr_table *table)
+> +{
+> +	return (((void *)table) + table->size);
+> +}
+> +
+> +static inline struct slr_entry_hdr *
+> +slr_next_entry(struct slr_table *table,
+> +	       struct slr_entry_hdr *curr)
+> +{
+> +	struct slr_entry_hdr *next = (struct slr_entry_hdr *)
+> +				((u8 *)curr + curr->size);
+> +
+> +	if ((void *)next >= slr_end_of_entrys(table))
+> +		return NULL;
+> +	if (next->tag == SLR_ENTRY_END)
+> +		return NULL;
+> +
+> +	return next;
+> +}
+> +
+> +static inline struct slr_entry_hdr *
+> +slr_next_entry_by_tag(struct slr_table *table,
+> +		      struct slr_entry_hdr *entry,
+> +		      u16 tag)
+> +{
+> +	if (!entry) /* Start from the beginning */
+> +		entry = (struct slr_entry_hdr *)(((u8 *)table) + sizeof(*table));
+
+Back to the 'entries', the above line can now be made more readable:
+
+entry = table->entries;
+
+That's just one example, this flex array simplification can be made
+in other structs in this series, too.
+
+Cheers,
+
+Kim
+
+> +
+> +	for ( ; ; ) {
+> +		if (entry->tag == tag)
+> +			return entry;
+> +
+> +		entry = slr_next_entry(table, entry);
+> +		if (!entry)
+> +			return NULL;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static inline int
+> +slr_add_entry(struct slr_table *table,
+> +	      struct slr_entry_hdr *entry)
+> +{
+> +	struct slr_entry_hdr *end;
+> +
+> +	if ((table->size + entry->size) > table->max_size)
+> +		return -1;
+> +
+> +	memcpy((u8 *)table + table->size - sizeof(*end), entry, entry->size);
+> +	table->size += entry->size;
+> +
+> +	end  = (struct slr_entry_hdr *)((u8 *)table + table->size - sizeof(*end));
+> +	end->tag = SLR_ENTRY_END;
+> +	end->size = sizeof(*end);
+> +
+> +	return 0;
+> +}
+> +
+> +static inline void
+> +slr_init_table(struct slr_table *slrt, u16 architecture, u32 max_size)
+> +{
+> +	struct slr_entry_hdr *end;
+> +
+> +	slrt->magic = SLR_TABLE_MAGIC;
+> +	slrt->revision = SLR_TABLE_REVISION;
+> +	slrt->architecture = architecture;
+> +	slrt->size = sizeof(*slrt) + sizeof(*end);
+> +	slrt->max_size = max_size;
+> +	end = (struct slr_entry_hdr *)((u8 *)slrt + sizeof(*slrt));
+> +	end->tag = SLR_ENTRY_END;
+> +	end->size = sizeof(*end);
+> +}
+> +
+> +#endif /* !__ASSEMBLY */
+> +
+> +#endif /* _LINUX_SLR_TABLE_H */
 
