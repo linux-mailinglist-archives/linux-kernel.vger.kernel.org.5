@@ -1,62 +1,63 @@
-Return-Path: <linux-kernel+bounces-124898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78192891DAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:23:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8169F891D99
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49DF0B227AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:21:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FDEC1C2799A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D23238182;
-	Fri, 29 Mar 2024 12:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B67114B098;
+	Fri, 29 Mar 2024 12:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sLLRPfom"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H5xzePVx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A182B14B08A;
-	Fri, 29 Mar 2024 12:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B88238193;
+	Fri, 29 Mar 2024 12:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716390; cv=none; b=I2a/Ux+42jRTmpsascIZ820KvcUUlVASmV5EgLfh1I5kkCqtjBKNhFG9pRJdL3Ev7se6orELViOIWCbpVyULOd1sNTdsIf8fWf5NPkyCqdKyjN8k4fLTjLlH0QLw2F5a6n0F9syBlIsxy9VJoq9UpupgMUBCwjT7mlzWGVPLMyU=
+	t=1711716393; cv=none; b=BwElqX3fyBLMGy9OeOtvvPhfHMg+we0JOKL42JFONvLFdhwb+lYjMhAl8kvMCYKYEVLecXb1P00O9sdh+8C2Drq7hOiakW88xZBJXmxkLwYYJUbVJtbVqGNgFTEt5KndJTKzdE4O3sXP36iYQ0W27dNcAoAEGo331t5JFKmY4zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716390; c=relaxed/simple;
-	bh=Kx+1H+QtnuCB8ciX29fyhB79zT4Lxwy5pONlNfKxAiY=;
+	s=arc-20240116; t=1711716393; c=relaxed/simple;
+	bh=XHHcbiSrNTwKbYxM5W9y+dP0VAGaaEp7rtcy3Rj1pQg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W1hkYimQFEmIAEpk9MdX0X4+JK1V/jOvljmcJBu1E02FrxFBikOs35dIKzuVhFqvSnGmaqt4uBvVjOx9ighAVd/z5qqrQDXrRQukHmnlnayqCyfGwVU3UZLylVSC3Rn4Y4FVJvqLqLvAyJLbyajDWs/KBa91DhQwjzhwX1PUFsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sLLRPfom; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2963EC433C7;
-	Fri, 29 Mar 2024 12:46:29 +0000 (UTC)
+	 MIME-Version; b=ZJOdjlaZoebD54zAattGdVHxJWpKP22K0gTyf2x0BrzzUN+RUR1k0F64g9vnWFJildUGKnveJYynUK5Ho7i8DLzPeigqdCsdkbZ/9LeFioXtJyY+5NweJh82tId5EcmwpGI2Nk9RGPyfZEBS75O3GaGnmygBfDd2XZxZFutglek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H5xzePVx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5898C433F1;
+	Fri, 29 Mar 2024 12:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716390;
-	bh=Kx+1H+QtnuCB8ciX29fyhB79zT4Lxwy5pONlNfKxAiY=;
+	s=k20201202; t=1711716393;
+	bh=XHHcbiSrNTwKbYxM5W9y+dP0VAGaaEp7rtcy3Rj1pQg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sLLRPfomblxWnL5E8qu46AJV+9GDc72gVoeF7+a7nr8txIB2Yx7pQEKiudlo/IIen
-	 03jmk9Ws8E5CEsMqpaJtIe2nAEYYJFk4BOCisHENYNHQsx3NlMQ3DEVYnzd2fd6G1R
-	 HEjkOjB9wK20w0iHUmB4Bg0nPJ4DnUVY0LZM9wMkaJFzH8392K0XypK51K7ErWCB0m
-	 syFs8kn5l7PZ3ZTp+Z0EhgnDJmwPgr+qyfFC504zNnF3+SOH8IXDvvBjDC0pRlXjDZ
-	 820BrgWqvVk0KXaNkZBRyHyG5JnoP91toMOttPmHhNOpuDLv/4KpfJ8GqEyqC8GGa5
-	 ffKdNLBFx+J3g==
+	b=H5xzePVxME4Ug0uo/crHjc7GVnLy89sH+cttu3O1wYaRnF5Wp2Wmk8JB6Qf4xiVhd
+	 JCpnuBdmP2laCrcgZanHv8lG3sMAcnT1dS7iYxlsNXejDmcfUlo25g/L+iAtn75UJ9
+	 P8SV87fZXPutMyO9xh4oBP36Uujk9eXvvgPr+kNc9sE96UCKRROEeknLQiCVtfZ+CU
+	 ohmgSORVEechVn7m/T1tpnEiOmTdi/XUbOQrSGw4PWReanF6d055PJ/SDhoo3OY0q0
+	 H4+65xUZpYX2KKaAumdgkY/ZH48Vxqw67z87Oc+ZLAHXOH4eZ6Sn9qWWESkIDSRh/2
+	 QflrWEOIRztQA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: C Cheng <C.Cheng@mediatek.com>,
-	Bo Ye <bo.ye@mediatek.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Johan Jonker <jbx6244@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	daniel.lezcano@linaro.org,
-	matthias.bgg@gmail.com,
-	linux-pm@vger.kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	dsimic@manjaro.org,
+	jonas@kwiboo.se,
+	shironeko@tesaguri.club,
+	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 14/52] cpuidle: Avoid potential overflow in integer multiplication
-Date: Fri, 29 Mar 2024 08:45:08 -0400
-Message-ID: <20240329124605.3091273-14-sashal@kernel.org>
+	linux-rockchip@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 15/52] arm64: dts: rockchip: fix rk3328 hdmi ports node
+Date: Fri, 29 Mar 2024 08:45:09 -0400
+Message-ID: <20240329124605.3091273-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
 References: <20240329124605.3091273-1-sashal@kernel.org>
@@ -71,55 +72,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
-From: C Cheng <C.Cheng@mediatek.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit 88390dd788db485912ee7f9a8d3d56fc5265d52f ]
+[ Upstream commit 1d00ba4700d1e0f88ae70d028d2e17e39078fa1c ]
 
-In detail:
+Fix rk3328 hdmi ports node so that it matches the
+rockchip,dw-hdmi.yaml binding.
 
-In C language, when you perform a multiplication operation, if
-both operands are of int type, the multiplication operation is
-performed on the int type, and then the result is converted to
-the target type. This means that if the product of int type
-multiplication exceeds the range that int type can represent,
-an overflow will occur even if you store the result in a
-variable of int64_t type.
-
-For a multiplication of two int values, it is better to use
-mul_u32_u32() rather than s->exit_latency_ns = s->exit_latency *
-NSEC_PER_USEC to avoid potential overflow happenning.
-
-Signed-off-by: C Cheng <C.Cheng@mediatek.com>
-Signed-off-by: Bo Ye <bo.ye@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-[ rjw: New subject ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/e5dea3b7-bf84-4474-9530-cc2da3c41104@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpuidle/driver.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpuidle/driver.c b/drivers/cpuidle/driver.c
-index f70aa17e2a8e0..c594e28adddf3 100644
---- a/drivers/cpuidle/driver.c
-+++ b/drivers/cpuidle/driver.c
-@@ -16,6 +16,7 @@
- #include <linux/cpumask.h>
- #include <linux/tick.h>
- #include <linux/cpu.h>
-+#include <linux/math64.h>
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 905a50aa5dc38..d42846efff2fe 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -741,11 +741,20 @@ hdmi: hdmi@ff3c0000 {
+ 		status = "disabled";
  
- #include "cpuidle.h"
+ 		ports {
+-			hdmi_in: port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			hdmi_in: port@0 {
++				reg = <0>;
++
+ 				hdmi_in_vop: endpoint {
+ 					remote-endpoint = <&vop_out_hdmi>;
+ 				};
+ 			};
++
++			hdmi_out: port@1 {
++				reg = <1>;
++			};
+ 		};
+ 	};
  
-@@ -185,7 +186,7 @@ static void __cpuidle_driver_init(struct cpuidle_driver *drv)
- 			s->target_residency_ns = 0;
- 
- 		if (s->exit_latency > 0)
--			s->exit_latency_ns = s->exit_latency * NSEC_PER_USEC;
-+			s->exit_latency_ns = mul_u32_u32(s->exit_latency, NSEC_PER_USEC);
- 		else if (s->exit_latency_ns < 0)
- 			s->exit_latency_ns =  0;
- 	}
 -- 
 2.43.0
 
