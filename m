@@ -1,56 +1,61 @@
-Return-Path: <linux-kernel+bounces-124723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E03891BD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:34:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE076891BD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31D191C26A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:34:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED0CB2550D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6CE1779A1;
-	Fri, 29 Mar 2024 12:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D87177A84;
+	Fri, 29 Mar 2024 12:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BS4Yh9tZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NX70r12R"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DAD177990;
-	Fri, 29 Mar 2024 12:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A811779AB;
+	Fri, 29 Mar 2024 12:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716014; cv=none; b=jr0IB+lJL/T/XFLYavnxDJ78hN27apMmWyd6VZK3O8GlKsrrgyGwrxzwL85jrF5UtEBdX9/C3uZV4wBF0Kk9d3Ads/EiwX4F6MboVuwnjtTwEdZtcqyeMwwbT5OUi2QYV3WQzbxZ/IxpNwISilaxYZnrRrlT1CBuB85Lk3XwSuI=
+	t=1711716015; cv=none; b=pFajzt+HgVy9w/W7OU9mXhz+zQn84jsiKvKjFVLKNJuCayYNQT3tpl1pPz0+gD6+ErEa0AmpKwXQ8plqAFbcwjYVL4y5Kg1wBVnW6QFx3EeWQ+4qVIcTwmv+EElDgeixCO/Fl5lEkyz7Ii4EyW4fAI9Bd1CDvUWHk7LjW+/7FEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716014; c=relaxed/simple;
-	bh=/7Nyd0ElNKtUa/fFvXgp1vH0TNWpn4B6Fz4DJsTV25g=;
+	s=arc-20240116; t=1711716015; c=relaxed/simple;
+	bh=AZ0mB1d3R+H64t4ZWNRanPwr3ab/60b2LiI4buc8VcU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BDrB56u+XUZgb0yDUpxqoU7jN5vdXfmmsgECIaihEvItjIgvQ6MQAufvzwZkNp0V0jMP2nHqCtO7hEg4GX17TjIbqltuSKLRQhTErae15loTh68yqWDeIizAPOjGh0n+BOy6shTIbLP6bIqnbagOeY9Rlc1GKcMaRbaic4ozfAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BS4Yh9tZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4058C433C7;
-	Fri, 29 Mar 2024 12:40:12 +0000 (UTC)
+	 MIME-Version; b=OnG7NGKIujRzTIkGPU9OTMiuAqRgJsY3/sxBl01ub87UF1aUz8z0tiYyqBzusMCz6rw1JLMjW2Z/ryA2nVVhoCRL1ZG7/8bl7IgggWL8acXG1sBBiy50vEDfrYatwjg8LiOHcuOlVCPkDj5K89P3firn6rMK+ly7DxVIpCMHexI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NX70r12R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D52AEC433F1;
+	Fri, 29 Mar 2024 12:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716013;
-	bh=/7Nyd0ElNKtUa/fFvXgp1vH0TNWpn4B6Fz4DJsTV25g=;
+	s=k20201202; t=1711716015;
+	bh=AZ0mB1d3R+H64t4ZWNRanPwr3ab/60b2LiI4buc8VcU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BS4Yh9tZFMZUkYmRUqYXd8ZBc4LdwR+/blN5/imqFeUTTaKUMH51LfHTpevb1Y/EU
-	 rW80c4pW9C3AfDVvOh8vtB1j/zEa+Yp9RK/nj2JepuqVSHclEg9dW/PzDB+fL+OFGH
-	 /etDCkQXDwcU8TbfnNoaPQgB8tifH628rCah0AI6XjRlxeG0xEPp4PGTgZM2OIqduA
-	 /kYIct8ujbed1An7zAifKt9/nyXpuRM9jyZm97a8sITr+uKV0KsET3juW4pTvZFUaK
-	 A253B9cfcmf8dqlgbZZfDLZ8GdaGLIUB0P5zF9h8yPcb1Wt1Hsl0/hZ6HKV01dVNIA
-	 dha2CtlA4Z4Hw==
+	b=NX70r12RKfXZxRKXmxPxtZadIyVoWGNNxaQxsLuzSCIcrVkl42T0URSY8Gb/OCErP
+	 /bchY8FdX+JR9k4Itm1Y019UPHkDbbaUFacz2CCJMxFt9m7y5/TPT2jZoeSrsB/JtL
+	 x2IQ0aHQZhbzKX70grgz6lkYrFAjvPvs6P8WKanankL7J8TO376lMOUHeWbIyl+S0F
+	 P6LMl1dn7UpV7R6Vtp57G7O8kNX+VRoFdcQmhG9fT1D8TgyzrP7uDyD3WYnJGJDOoD
+	 wT59TD7kz5WEvw3/fZG6kIrWw4mheygA15kXTQGhcnCNvRiqztuRpT7Io/ZRGw1bAh
+	 FdAyDLOGcx6BA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	syzkaller <syzkaller@googlegroups.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linus.walleij@linaro.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 14/98] pinctrl: renesas: checker: Limit cfg reg enum checks to provided IDs
-Date: Fri, 29 Mar 2024 08:36:45 -0400
-Message-ID: <20240329123919.3087149-14-sashal@kernel.org>
+	bryantan@vmware.com,
+	vdasa@vmware.com,
+	gregkh@linuxfoundation.org
+Subject: [PATCH AUTOSEL 6.8 15/98] VMCI: Fix memcpy() run-time warning in dg_dispatch_as_host()
+Date: Fri, 29 Mar 2024 08:36:46 -0400
+Message-ID: <20240329123919.3087149-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -65,47 +70,78 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 
-[ Upstream commit 3803584a4e9b65bb5b013f862f55c5055aa86c25 ]
+[ Upstream commit 19b070fefd0d024af3daa7329cbc0d00de5302ec ]
 
-If the number of provided enum IDs in a variable width config register
-description does not match the expected number, the checker uses the
-expected number for validating the individual enum IDs.
+Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
 
-However, this may cause out-of-bounds accesses on the array holding the
-enum IDs, leading to bogus enum_id conflict warnings.  Worse, if the bug
-is an incorrect bit field description (e.g. accidentally using "12"
-instead of "-12" for a reserved field), thousands of warnings may be
-printed, overflowing the kernel log buffer.
+memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
+at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
 
-Fix this by limiting the enum ID check to the number of provided enum
-IDs.
+WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
+dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/c7385f44f2faebb8856bcbb4e908d846fc1531fb.1705930809.git.geert+renesas@glider.be
+Some code commentry, based on my understanding:
+
+544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
+/// This is 24 + payload_size
+
+memcpy(&dg_info->msg, dg, dg_size);
+	Destination = dg_info->msg ---> this is a 24 byte
+					structure(struct vmci_datagram)
+	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
+	Size = dg_size = 24 + payload_size
+
+{payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
+
+ 35 struct delayed_datagram_info {
+ 36         struct datagram_entry *entry;
+ 37         struct work_struct work;
+ 38         bool in_dg_host_queue;
+ 39         /* msg and msg_payload must be together. */
+ 40         struct vmci_datagram msg;
+ 41         u8 msg_payload[];
+ 42 };
+
+So those extra bytes of payload are copied into msg_payload[], a run time
+warning is seen while fuzzing with Syzkaller.
+
+One possible way to fix the warning is to split the memcpy() into
+two parts -- one -- direct assignment of msg and second taking care of payload.
+
+Gustavo quoted:
+"Under FORTIFY_SOURCE we should not copy data across multiple members
+in a structure."
+
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
+Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Link: https://lore.kernel.org/r/20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/renesas/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/misc/vmw_vmci/vmci_datagram.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/renesas/core.c b/drivers/pinctrl/renesas/core.c
-index 93e51abbf519a..8f6d7cc25b599 100644
---- a/drivers/pinctrl/renesas/core.c
-+++ b/drivers/pinctrl/renesas/core.c
-@@ -907,9 +907,11 @@ static void __init sh_pfc_check_cfg_reg(const char *drvname,
- 		sh_pfc_err("reg 0x%x: var_field_width declares %u instead of %u bits\n",
- 			   cfg_reg->reg, rw, cfg_reg->reg_width);
+diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/vmci_datagram.c
+index f50d22882476f..d1d8224c8800c 100644
+--- a/drivers/misc/vmw_vmci/vmci_datagram.c
++++ b/drivers/misc/vmw_vmci/vmci_datagram.c
+@@ -234,7 +234,8 @@ static int dg_dispatch_as_host(u32 context_id, struct vmci_datagram *dg)
  
--	if (n != cfg_reg->nr_enum_ids)
-+	if (n != cfg_reg->nr_enum_ids) {
- 		sh_pfc_err("reg 0x%x: enum_ids[] has %u instead of %u values\n",
- 			   cfg_reg->reg, cfg_reg->nr_enum_ids, n);
-+		n = cfg_reg->nr_enum_ids;
-+	}
+ 			dg_info->in_dg_host_queue = true;
+ 			dg_info->entry = dst_entry;
+-			memcpy(&dg_info->msg, dg, dg_size);
++			dg_info->msg = *dg;
++			memcpy(&dg_info->msg_payload, dg + 1, dg->payload_size);
  
- check_enum_ids:
- 	sh_pfc_check_reg_enums(drvname, cfg_reg->reg, cfg_reg->enum_ids, n);
+ 			INIT_WORK(&dg_info->work, dg_delayed_dispatch);
+ 			schedule_work(&dg_info->work);
 -- 
 2.43.0
 
