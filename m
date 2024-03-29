@@ -1,141 +1,200 @@
-Return-Path: <linux-kernel+bounces-125045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6796891F2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:59:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57461891F31
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14A9A1C287D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:59:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63401F2EABB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959C013C3CC;
-	Fri, 29 Mar 2024 12:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A01153813;
+	Fri, 29 Mar 2024 12:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xx1Qa20K"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D/jVvJI1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA441EEFD
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78D612FF96
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716835; cv=none; b=VKALDcOhnyd41pMBtdE0dtXL0Zs9D2J0spfWP3xXY/qfK7GBtaC4ZCGsZ97D13G5okSimkBrMW3iL2scsclRffNkZhkbrT0lTrXQvHcnySlLzDOEHAnjD61I2jDTmy4DeJskIn7zr8c9cIXpCEr2YYpU1KW0dtZTdskJLITUcMA=
+	t=1711716875; cv=none; b=pyPAR5gJ36igdfs+SvAqoC0vlv5dDtEtn4SVC1nzLnJdtDVy9Y4W0pELSzBGSb9o/YJ/h/5YM1QY1tg7tUt3GsSi3x5XeGrc7dEd1Xp3MxlLpUd3pwN3U9BlQq3OJTwRO5Ei/nS8L25R62QskPaKNXrW6hOetbI1oHdKUbx7hDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716835; c=relaxed/simple;
-	bh=UsSlr2DfmOF/BtL79NIGofPlpt4lDrgJKpftKL7JDDI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Juh+mGyYA6PsLIZzOUHwAb17GzGkKzM3yeZZrOg1wsSqlsdZmoKJ2te1x4MjQtUQxEcPscflUzR7ijyGAkaXNnPRIINOPxlYZEU3DSZm7tSfdPx4DNReNVd72z5Qw8ebiZY2UDrjZcpO7dJL9GTuwTd/hx3jyWwpxRhvQFjYvo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xx1Qa20K; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso1803423276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 05:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711716833; x=1712321633; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NyDnNSvCJUp05VCQqo3677K6CevG5jtaaiUaNI9UR+M=;
-        b=xx1Qa20KQGb1Gf4AovVMHQnR/0+zE2BThA1nMVYx8ld5frjNSyOUOUdZYNgUY4l8Lf
-         fyJjdsv8v6I6RtyCgPjifp/mEj4JgxZJ4YK9PQoXwQn/0WT9Zj9LPpMjw1i9DThLauH5
-         j1V97wHgknPR9it6h7c+kY3KDCTeTaiRIb4uNOrxi2adamp+TKGIlpC3P+fSX7WeEtWx
-         SDqwumj+SZqC0pI2uuiFeuJOJ3PRvaDh06qHdRAxqFUuHz9/SVvkfxPqT7gLjdKk3GCu
-         FQF9bDH91TAfVsJ1tz15GFAWWaSa781e9GgYq6xu2U/cjXaVwFC9Jg4CtjTvrwuvb59Z
-         NURg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711716833; x=1712321633;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NyDnNSvCJUp05VCQqo3677K6CevG5jtaaiUaNI9UR+M=;
-        b=LyqtILPo4ZLTpMDrOTw9uV5NO4oo8xv/tPROmWKjKuaHuiamEJ+EcRsG+6mSvJUWDY
-         NuHBUoOoRobMEYbxWIu5j7qGr6/LDiW6Gcy7MT3htKKhhN3iWVmLlt/opEwsJs6YMtea
-         hXlJKe5LKY3U/rZpxOO27eImXW+z5J4NDGIeIqXGuDMtIy03tvIaV46Y4yf3P1AKITQ/
-         eQwcfwHhClLJMuiX1rr3eKSRNiVYbZLJPq9soUlyWawmWhjbXpnS3jcVVvOP6/HDQdBl
-         VhGMflbyPB9vL1BSOOOdgFuaOA8l6sO9ykGIXmIebzvVpyXta+M5yQH6Z93ZzUT9C/VV
-         qWBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2h2h6ibc6D6x/YnnhJA41Vru2db+OfIC9qkimBTJGdqr/04612/qPZGw1VwtOrEB/opZU9pI6EGIhXel9zErICDxZO/PRN4OEK856
-X-Gm-Message-State: AOJu0YyBVprVa1gCwlIJhN3vHKM7P63rQgupcKGzCXqX8H/7M2B4Fyj7
-	Hqzj1kgV0FB7dwmRiDJALoCpnEO49+MSt7f+lLZ6YgvoB3wj/ADXkz3qgIv9mb21czPDJaGycpg
-	aJyz1c/wZKRITpUArMjFdltnU/fH1Vj+miN12SQ==
-X-Google-Smtp-Source: AGHT+IFunI+UQDVGnWmv0F7IWNGm07qzq1TQ+0vfx7aJ3z/R1MeKDke21gd7kwJEbmHQGGRWljZRqkClNo4ONptPYGw=
-X-Received: by 2002:a25:6c8a:0:b0:dc6:c2b2:c039 with SMTP id
- h132-20020a256c8a000000b00dc6c2b2c039mr2259417ybc.41.1711716833190; Fri, 29
- Mar 2024 05:53:53 -0700 (PDT)
+	s=arc-20240116; t=1711716875; c=relaxed/simple;
+	bh=q4ISZa1bjkpgcxTzPsAa/bfGXgqOjWEakuRnIBOiMzs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2OLh7aTY4KnQ+pvyuTJEeRtHaWAeVYYqQkPifuw509+Ki1gdguyzN5+m/nzzmLHag0m3O6Oe7DPgIsjqpYAABikNRtvAbUnOROW6M+ILgA4yGoEjsSErQWxBMwBVdNwh4Kt+GAibaEHgEAcPRmo1EF617iwvMVGrDPM91lL2Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D/jVvJI1; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711716872;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WXr5ge2Ro0Gfnb1mE6GR/iBdI4y0shJZvyEqCg4t9i8=;
+	b=D/jVvJI19Y0VWdNtVpNpuEEf9YyjBPkeLvN8ZX9Nq9GmW1IRp1YKy6MoMeK9gLbEvGr5Uc
+	WX3jP5oWurKyzMts9RyCsVK76p2uQS47Gzn+FdUhO0W2Pm+o1kCYyHBNrpzYjBQB8B2V9c
+	5x8a9j6bZYoMdwAzgpYqnG+opWbuNv4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-620-cGgNYPFEM-ml5sNMqfrsYw-1; Fri, 29 Mar 2024 08:54:28 -0400
+X-MC-Unique: cGgNYPFEM-ml5sNMqfrsYw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C11C0800267;
+	Fri, 29 Mar 2024 12:54:27 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.163])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0F72F40C6CB1;
+	Fri, 29 Mar 2024 12:54:26 +0000 (UTC)
+Date: Fri, 29 Mar 2024 08:54:05 -0400
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: Eric Blake <eblake@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
+	David Teigland <teigland@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
+Subject: Re: [RFC 2/9] loop: add llseek(SEEK_HOLE/SEEK_DATA) support
+Message-ID: <20240329125405.GA2382288@fedora>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
+ <20240328203910.2370087-3-stefanha@redhat.com>
+ <wvdjesmnq6xrkanncathyciocbtxa6m3fefvx3za3ikxfs7uqx@wo22n4cvndr3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329071948.3101882-1-quic_kriskura@quicinc.com>
-In-Reply-To: <20240329071948.3101882-1-quic_kriskura@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 29 Mar 2024 14:53:42 +0200
-Message-ID: <CAA8EJpqx+VFW8z6oG=+pnhPN97Q3R6z+ygf85Uspve-9syQsUw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Add gpio-usb-c-connector compatible
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Guenter Roeck <linux@roeck-us.net>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Kyle Tso <kyletso@google.com>, 
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, u.kleine-koenig@pengutronix.de, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, devicetree@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-
-On Fri, 29 Mar 2024 at 09:20, Krishna Kurapati
-<quic_kriskura@quicinc.com> wrote:
->
-> QDU1000 IDP [1] has a Type-c connector and supports USB 3.0.
-> However it relies on usb-conn-gpio driver to read the vbus and id
-> gpio's and provide role switch. However the driver currently has
-> only gpio-b-connector compatible present in ID table. Adding that
-> in DT would mean that the device supports Type-B connector and not
-> Type-c connector. Thanks to Dmitry Baryshkov for pointing it out [2].
-
-USB-B connector is pretty simple, it really has just an ID pin and
-VBUS input, which translates to two GPIOs being routed from the
-_connector_ itself.
-
-USB-C is much more complicated, it has two CC pins and a VBus power
-pin. It is not enough just to measure CC pin levels. Moreover,
-properly handling USB 3.0 inside a USB-C connector requires a separate
-'orientation' signal to tell the host which two lanes must be used for
-the USB SS signals. Thus it is no longer possible to route just two
-pins from the connector to the SoC.
-
-Having all that in mind, I suspect that you are not describing your
-hardware properly. I suppose that you have a Type-C port controller /
-redriver / switch, which handles CC lines communication and then
-provides ID / VBUS signals to the host. In such a case, please
-describe this TCPC in the DT file and use its compatible string
-instead of "gpio-c-connector".
-
->
-> This series intends to add that compatible in driver and bindings
-> so that it can be used in QDU1000 IDP DT.
->
-> [1]: https://lore.kernel.org/all/20240319091020.15137-3-quic_kbajaj@quicinc.com/
-> [2]: https://lore.kernel.org/all/CAA8EJprXPvji8TgZu1idH7y4GtHtD4VmQABFBcRt-9BQaCberg@mail.gmail.com/
->
-> Krishna Kurapati (2):
->   dt-bindings: connector: Add gpio-usb-c-connector compatible
->   usb: common: usb-conn-gpio: Update ID table to add usb-c connector
->
->  Documentation/devicetree/bindings/connector/usb-connector.yaml | 3 +++
->  drivers/usb/common/usb-conn-gpio.c                             | 1 +
->  2 files changed, 4 insertions(+)
->
-> --
-> 2.34.1
->
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="O0O0CfUZc75I8i/Q"
+Content-Disposition: inline
+In-Reply-To: <wvdjesmnq6xrkanncathyciocbtxa6m3fefvx3za3ikxfs7uqx@wo22n4cvndr3>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
 
---
-With best wishes
-Dmitry
+--O0O0CfUZc75I8i/Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 28, 2024 at 07:00:26PM -0500, Eric Blake wrote:
+> On Thu, Mar 28, 2024 at 04:39:03PM -0400, Stefan Hajnoczi wrote:
+> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> > ---
+> > Open issues:
+> > - The file offset is updated on both the blkdev file and the backing
+> >   file. Is there a way to avoid updating the backing file offset so the
+> >   file opened by userspace is not affected?
+> > - Should this run in the worker or use the cgroups?
+> > ---
+> >  drivers/block/loop.c | 36 ++++++++++++++++++++++++++++++------
+> >  1 file changed, 30 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> > index 28a95fd366fea..6a89375de82e8 100644
+> > --- a/drivers/block/loop.c
+> > +++ b/drivers/block/loop.c
+> > @@ -750,6 +750,29 @@ static void loop_sysfs_exit(struct loop_device *lo)
+> >  				   &loop_attribute_group);
+> >  }
+> > =20
+> > +static loff_t lo_seek_hole_data(struct block_device *bdev, loff_t offs=
+et,
+> > +		int whence)
+> > +{
+> > +	/* TODO need to activate cgroups or use worker? */
+> > +	/* TODO locking? */
+> > +	struct loop_device *lo =3D bdev->bd_disk->private_data;
+> > +	struct file *file =3D lo->lo_backing_file;
+> > +
+> > +	if (lo->lo_offset > 0)
+> > +		offset +=3D lo->lo_offset; /* TODO underflow/overflow? */
+> > +
+> > +	/* TODO backing file offset is modified! */
+> > +	offset =3D vfs_llseek(file, offset, whence);
+>=20
+> Not only did you modify the underlying offset...
+>=20
+> > +	if (offset < 0)
+> > +		return offset;
+> > +
+> > +	if (lo->lo_offset > 0)
+> > +		offset -=3D lo->lo_offset; /* TODO underflow/overflow? */
+> > +	if (lo->lo_sizelimit > 0 && offset > lo->lo_sizelimit)
+> > +		offset =3D lo->lo_sizelimit;
+>=20
+> ...but if this code kicks in, you have clamped the return result to
+> EOF of the loop device while leaving the underlying offset beyond the
+> limit, which may mess up assumptions of other code expecting the loop
+> to always have an in-bounds offset for the underlying file (offhand, I
+> don't know if there is any such code; but since loop_ctl_fops.llseek =3D
+> noop_lseek, there may be code relying on an even-tighter restriction
+> that the offset of the underlying file never changes, not even within
+> bounds).
+
+I don't think anything relies on the file offset. Requests coming from
+the block device contain their own offset (which may have been based on
+the block device file's offset, but not the backing file's offset).
+
+> Furthermore, this is inconsistent with all other seek-beyond-end code
+> that fails with -ENXIO instead of returning size.
+
+You're right, in the SEEK_DATA case the return value should be -ENXIO.
+The SEEK_HOLE case is correct with lo_sizelimit. There is also an
+off-by-one error in the comparison.
+
+It should be:
+
+  if (lo->lo_sizelimit > 0 && offset >=3D lo->lo_sizelimit) {
+  	if (whence =3D=3D SEEK_DATA)
+  		offset =3D -ENXIO;
+  	else
+  		offset =3D lo->lo_sizelimit;
+  }
+
+> But for an RFC, the idea of being able to seek to HOLEs in a loop
+> device is awesome!
+>=20
+> > @@ -2140,7 +2164,7 @@ static int loop_control_remove(int idx)
+> >  		pr_warn_once("deleting an unspecified loop device is not supported.\=
+n");
+> >  		return -EINVAL;
+> >  	}
+> > -	=09
+> > +
+> >  	/* Hide this loop device for serialization. */
+> >  	ret =3D mutex_lock_killable(&loop_ctl_mutex);
+> >  	if (ret)
+>=20
+> Unrelated whitespace change?
+
+Yes, I'll drop it.
+
+Stefan
+
+--O0O0CfUZc75I8i/Q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYGue0ACgkQnKSrs4Gr
+c8jpDggAtKqqz4GIKlteqyYksQXgYleVmkngDOnQAQp9bkmubJmmml9ZX6CMhB7X
+HnmKX80aoDVIcy5KTFh1bcRLGJgzidr5vjuO3UT5MP3P+fEMiZzp2EfBRGqUsnY9
+Sooj/8pCs7vLKcfXxKLRH15ME4+1tj1LhG8LVZRhKLYtuHXPE9MP3N4x4lwPOWy5
+vypvEnduzoCor/mPGM7OUMroQd7BZtuZteACWSoI77koQ3pB/296Z5WJv3+Sg/SJ
+jdJX963d2ylggR3CMeetgftzGfpP5Cb/ev26LwbTpAyLe3Uv2hBobhQaB2pKZ9ry
+17rpr2bJwObaeAqsXmVDPAlUOqAHTg==
+=iCZg
+-----END PGP SIGNATURE-----
+
+--O0O0CfUZc75I8i/Q--
+
 
