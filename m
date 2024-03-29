@@ -1,36 +1,36 @@
-Return-Path: <linux-kernel+bounces-124418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A87891742
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:59:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC0D891743
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C978DB23CBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:59:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FAB4B24FED
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92E66A32B;
-	Fri, 29 Mar 2024 10:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194416A346;
+	Fri, 29 Mar 2024 10:57:51 +0000 (UTC)
 Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9205D69E0D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0153869E0F
 	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711709870; cv=none; b=DUr6fcvhqt2qDwIkgM4HFiJmi2xPfv96hcg6qRO6XWAH+94oytXM86T5AYBu756cZb4YygNx3dE56v9qDYG2k88Bhj1R/uOWSbPqTxWP0ni5qYG+DBCb5nABkjC6PO+hJ4mOLVvtmDykFyzG+BThuGesfWWhQqMFB+vVlzVGtPI=
+	t=1711709870; cv=none; b=AjNnknpte/zR0SSuQBJGfCaYTNA8zGvH5lXYYaP+EhuVVor+zp18JiM5qMOuzw+pIWMtmLxaTQjgE9GPkusqEcIbydF5fDO5kOvKgVa4mz8LfPBBd3jiu452JL/60OgMQH0upErZllHL7wcWyF5nYC+XbeIo5DLMGLTVw0aP2oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711709870; c=relaxed/simple;
-	bh=4haKc0BWmXZv48XAJVDKU0krU0tVfIaoXXWWf/W8YnQ=;
+	bh=nSF/R8gYLxY6alFA60B5rOXw4QyV2pEDvssncoOLngY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T/XXIHKXmPHphBkZ3PreHulCy5SVVprKBQ2VyJ8WrqArS7oIiOiW2zAj1fmYfYMhKEvYhwCzIDZ6rQ7SXFPB69uE6Ag2svzrNvIy/P3M60r0PZF+ZGgdO/aMqayvbu7I1rFephm3tigm2wR4lYeRi0qjXATkXtigjlm4Al9z1PA=
+	 MIME-Version; b=gmMspT7KmfHPezgIKSXvcRfoE5ynAez8J0QcBZTrth1JcXgGJeIiPLAPiTmJ1qZys3SVhK/6plilOVivT2LoZHqL19P0Xl8ULL2nyUUc9nT+6MKG5qKZyHUOP7fiT25XfvQhDmD6BBu/kukASP+rOurSXG6Nr7c9SM9q9+HQxOE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
 Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
 	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-	id 04261c89-edbb-11ee-b3cf-005056bd6ce9;
+	id 04a93f69-edbb-11ee-b3cf-005056bd6ce9;
 	Fri, 29 Mar 2024 12:56:38 +0200 (EET)
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>,
@@ -38,9 +38,9 @@ To: Linus Walleij <linus.walleij@linaro.org>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
 	linux-gpio@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/11] pinctrl: aw9523: Destroy mutex on ->remove()
-Date: Fri, 29 Mar 2024 12:55:15 +0200
-Message-ID: <20240329105634.712457-2-andy.shevchenko@gmail.com>
+Subject: [PATCH v2 02/11] pinctrl: aw9523: Use correct error code for not supported functionality
+Date: Fri, 29 Mar 2024 12:55:16 +0200
+Message-ID: <20240329105634.712457-3-andy.shevchenko@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240329105634.712457-1-andy.shevchenko@gmail.com>
 References: <20240329105634.712457-1-andy.shevchenko@gmail.com>
@@ -52,42 +52,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If aw9523_hw_init() fails on ->remove() the mutex left alive.
-Destroy it in that case as well. While at it, remove never
-true check at the beginning of the function.
+The pin control subsystem internally uses ENOTSUPP for the not supported
+functionality. The checkpatch is false positive about this error code.
 
 Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/pinctrl/pinctrl-aw9523.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/pinctrl/pinctrl-aw9523.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/pinctrl/pinctrl-aw9523.c b/drivers/pinctrl/pinctrl-aw9523.c
-index 4edd371c469fb..66629af0b88b4 100644
+index 66629af0b88b4..65d523697b731 100644
 --- a/drivers/pinctrl/pinctrl-aw9523.c
 +++ b/drivers/pinctrl/pinctrl-aw9523.c
-@@ -1067,10 +1067,6 @@ static int aw9523_probe(struct i2c_client *client)
- static void aw9523_remove(struct i2c_client *client)
- {
- 	struct aw9523 *awi = i2c_get_clientdata(client);
--	int ret;
--
--	if (!awi)
--		return;
+@@ -6,6 +6,7 @@
+  */
  
- 	/*
- 	 * If the chip VIO is connected to a regulator that we can turn
-@@ -1082,10 +1078,8 @@ static void aw9523_remove(struct i2c_client *client)
- 		regulator_disable(awi->vio_vreg);
- 	} else {
- 		mutex_lock(&awi->i2c_lock);
--		ret = aw9523_hw_init(awi);
-+		aw9523_hw_init(awi);
- 		mutex_unlock(&awi->i2c_lock);
--		if (ret)
--			return;
+ #include <linux/bitfield.h>
++#include <linux/errno.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/i2c.h>
+@@ -239,7 +240,7 @@ static int aw9523_pcfg_param_to_reg(enum pin_config_param pcp, int pin, u8 *r)
+ 		reg = AW9523_REG_OUT_STATE(pin);
+ 		break;
+ 	default:
+-		return -EOPNOTSUPP;
++		return -ENOTSUPP;
  	}
+ 	*r = reg;
  
- 	mutex_destroy(&awi->i2c_lock);
+@@ -290,7 +291,7 @@ static int aw9523_pconf_get(struct pinctrl_dev *pctldev, unsigned int pin,
+ 			val = FIELD_GET(AW9523_GCR_GPOMD_MASK, val);
+ 		break;
+ 	default:
+-		return -EOPNOTSUPP;
++		return -ENOTSUPP;
+ 	}
+ 	if (val < 1)
+ 		return -EINVAL;
+@@ -344,7 +345,7 @@ static int aw9523_pconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 		case PIN_CONFIG_DRIVE_OPEN_DRAIN:
+ 			/* Open-Drain is supported only on port 0 */
+ 			if (pin >= AW9523_PINS_PER_PORT) {
+-				rc = -EOPNOTSUPP;
++				rc = -ENOTSUPP;
+ 				goto end;
+ 			}
+ 			mask = AW9523_GCR_GPOMD_MASK;
+@@ -361,7 +362,7 @@ static int aw9523_pconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+ 			val = AW9523_GCR_GPOMD_MASK;
+ 			break;
+ 		default:
+-			rc = -EOPNOTSUPP;
++			rc = -ENOTSUPP;
+ 			goto end;
+ 		}
+ 
 -- 
 2.44.0
 
