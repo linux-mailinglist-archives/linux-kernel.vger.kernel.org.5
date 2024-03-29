@@ -1,208 +1,200 @@
-Return-Path: <linux-kernel+bounces-124102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A2AA891241
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:02:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD457891243
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA9FB1F2247F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:02:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D938F1C234CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 04:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4ACD3A1A1;
-	Fri, 29 Mar 2024 04:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42C7E3A1C7;
+	Fri, 29 Mar 2024 04:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Gps1M8sH"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HXwlVJ53"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DAF71DDD6;
-	Fri, 29 Mar 2024 04:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D545381A1
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 04:03:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711684960; cv=none; b=udScVDy7RQ76wesSGGXn7YLcKJMX/aPsQmbXdK7Tx43+2MHRD+5qbI/4pVxTTJSUFxftOW6Jln/DvAjBl8JoGSW714Or87IA5UpqGraoHID4Q73gACGSyVfsCONbGTYQeL68uQFU7PnC9XFL8eyEz4V3VvKMHxBQOmBI0/Oihpg=
+	t=1711685008; cv=none; b=pWWXg9KThr8v6+e9Neosr3Z1O1e9PEbwb0dZOfjKdMipG/EWWWIDAMuhUKUsg/QqxcJc+loPhM+kGjeDZnoyysjkyXXlYWRz7ZoYsI5ptTg6vOLgT6cWBIIS31H344HN6rQgv0Tz1a2jI0yw5MlBfxe+mT7B0/X0d92k3iWARv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711684960; c=relaxed/simple;
-	bh=wbNqEmNlTzUXmm+RxBhi8ZJm5Lkoter+ZIJFqBxiTaY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=VoFsUqVw+xQNFnbRJdTV/lcqZfJRSo/AxW818Rxrx2dnOoiGG1OHok6qEzPJZtOQCxzphUkbZ6w/hlzvosBnXJTU8Xp/TEMeak0AN071sWDnJY1QV796TZArGlfLnLMb1fPUTdT4znu/ur91PqMfaQ41zc466YVmopJD3h4vz6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Gps1M8sH; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42T2O2CB008907;
-	Fri, 29 Mar 2024 04:02:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=8y4
-	h5xG32UjvngQoyYotUs53xOpH4Tr/lq4bw57G7Qg=; b=Gps1M8sHWOyIkxuDUDC
-	OzDCcGWn66DB1FSulZ/ktbRJtBFFN3ZqwIX9KdhTSuBzZc2MqVuYgT0110TiYSbm
-	G1vicWTAFh3TrPt1wUeArfh/PJQcmEqmfU/pHGc/n9Zzkwa2IyM7VqitN1dPmvy/
-	FWyBKm/3uuXrX2lY57gEYNJJbmErXXzemptR7O8N5Z2PRE970cWns9isESDlMIlS
-	oD8Mna7ZBBE2/GPzeIQdBAk4H0z/VALc5A+DFPVnzbPw4RS8exupAwfCyqC1uJkD
-	8E9h02I2+m6/m/d9aPte5jL5FTeW/q/F6n3xsX2PyUbkZrVvOhf9VPhkn0OT/zmd
-	m9w==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x5dkyh35r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 04:02:18 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42T42H1q018649
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 04:02:17 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 28 Mar
- 2024 21:02:17 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-Date: Thu, 28 Mar 2024 21:02:14 -0700
-Subject: [PATCH] drm/msm/dp: Remove now unused connector_type from desc
+	s=arc-20240116; t=1711685008; c=relaxed/simple;
+	bh=ZhXVjNEvBrgbNRdwLYIFSvFQti2uWpnpeF3sRR/SqRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JVwuCM/Qh4qFUvFu///XGlt3M5MbEsBPan1UbwjXFraslExtuVb4iJJXAKpmrpVCucrh7B8Ffj+/2mGiJPO8F/A8KjjXWZWmPvSYu+njBEKY4bGtXt+n/oOc8XY5RUBcZW+RRqiwFDQYTXPc73Ay6JZKmCNtZPF976QJ9LPMEBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HXwlVJ53; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e6888358dfso801934a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 21:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711685004; x=1712289804; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZyIL4ZyXQu4gCc0zxFPA1WjlBqcdHOravdVHYGFWCwU=;
+        b=HXwlVJ53T9MTB66zKYaDvHBLtBBkaxhnUaSdJ0POIo5wPiL0YFwED3yDO4QRbC0bQR
+         sn5II1Rmsa1Pte5musCfW0aJgKc/8hYaU/7mP/agyw9mNoLiyDMYqHJ/l1WHGRsDLaaj
+         QNCuXyKflXjmmkRh97KbiEbgVbz2f3v9LbNdk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711685004; x=1712289804;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZyIL4ZyXQu4gCc0zxFPA1WjlBqcdHOravdVHYGFWCwU=;
+        b=Kf0sxuE/81PMEPw+JrYTYMWkSiaAhKFbI1NE992Rgl8LZKmwEhiN4B+0/NgmL+4gSn
+         vri4OW5eQXwjMaJtRsXDwv5gHMwMdEC1HlMCuexJYzuqJJRhdhYO3N8+/0mBaqKkIqzq
+         sSnaRMEn3QE7egQjUzKYPQ+A3vnK/GCdzIKd8lTEuqltAwNPNoTPWZJBiA/SqM7hZDdR
+         uNBITgUJtYJ8qhmLAEhaelzzyklzxYCxFDHpgoiaktBkhr8f+DiIUFT0lWZmrtXloy9i
+         67FJ0BQYLgJtA/F8c29Nzg8c4NtFytlvGdRKD6Yo+o2ZcFzz3djXHxQ2V0iLsAlS4Lgb
+         imsw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpp6uoiajHVlyMwtjXIrFuOg615m2zRHcg0xMnEnsv+HmD/hx04uIJHavosJv/KLSnAvTWEWn0YAcG3h4VmKYt/jgdbX3sIc0iQP0j
+X-Gm-Message-State: AOJu0YzLjsHaDXusbctP3T9zUkvF23CBAODaXwLqHGAgaR4OvQ9t2dpi
+	oL/gr6B0BSPg/ZMoPKlZ/XjUMErV6iIzgzFI2I+AXoKFLpcc0ySTxV8Nk879gQ==
+X-Google-Smtp-Source: AGHT+IHvluku9U7jr6mQlg+iTXEmMv+9Y2Nee8Oul+9ay/ks9RgGFoU1n/SfTSlXuaMelIbrLW8M8w==
+X-Received: by 2002:a05:6871:7999:b0:222:619f:9510 with SMTP id pb25-20020a056871799900b00222619f9510mr1247237oac.27.1711685004736;
+        Thu, 28 Mar 2024 21:03:24 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k7-20020aa792c7000000b006eab9ef5d4esm2174614pfa.50.2024.03.28.21.03.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 21:03:24 -0700 (PDT)
+Date: Thu, 28 Mar 2024 21:03:23 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] hfsplus: refactor copy_name to not use strncpy
+Message-ID: <202403282059.37BA0B8E20@keescook>
+References: <20240321-strncpy-fs-hfsplus-xattr-c-v1-1-0c6385a10251@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240328-dp-connector-type-cleanup-v1-1-9bf84c5a6082@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAEU9BmYC/x3MQQqDMBBG4avIrDsQE1tLr1JcxPjbDsgkJFoq4
- t0buvwW7x1UkAWFHs1BGR8pErWivTQU3l5fYJmqyRrbGWfvPCUOURVhjZnXPYHDAq9bYj/frqa
- F67vRUe1Txizf//s5nOcPkMY+omsAAAA=
-To: Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar
-	<quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Abel Vesa
-	<abel.vesa@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        "Bjorn
- Andersson" <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711684937; l=5625;
- i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
- bh=wbNqEmNlTzUXmm+RxBhi8ZJm5Lkoter+ZIJFqBxiTaY=;
- b=rNUe4tpNyrtNcmMz9b6AgKTPdqalb6Svm9zM/2oRh6GAZD1TWS7w9iSsVz+XJ81sc+rVeJW2E
- jj+iio+5grTC55EA2OlbWKaYb2m3+PE0ip3erQu898AW/+mGMgy/b2I
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
- pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9BpHwmKtWjYRae01u1kHMexOzfZFhmde
-X-Proofpoint-GUID: 9BpHwmKtWjYRae01u1kHMexOzfZFhmde
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_02,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2403290031
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321-strncpy-fs-hfsplus-xattr-c-v1-1-0c6385a10251@google.com>
 
-Now that the connector_type is dynamically determined, the
-connector_type of the struct msm_dp_desc is unused. Clean it up.
+On Thu, Mar 21, 2024 at 11:46:27PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated with NUL-terminated destination strings [1].
+> 
+> The copy_name() method does a lot of manual buffer manipulation to
+> eventually arrive with its desired string. If we don't know the
+> namespace this attr has or belongs to we want to prepend "osx." to our
+> final string. Following this, we're copying xattr_name and doing a
+> bizarre manual NUL-byte assignment with a memset where n=1.
+> 
+> Really, we can use some more obvious string APIs to acomplish this,
+> improving readability and security. Following the same control flow as
+> before: if we don't know the namespace let's use scnprintf() to form our
+> prefix + xattr_name pairing (while NUL-terminating too!). Otherwise, use
+> strscpy() to return the number of bytes copied into our buffer.
+> 
+> Note that strscpy() _can_ return -E2BIG but this is already handled by
+> all callsites:
+> 
+> In both hfsplus_listxattr_finder_info() and hfsplus_listxattr(), ret is
+> already type ssize_t so we can change the return type of copy_name() to
+> match (understanding that scnprintf()'s return type is different yet
+> fully representable by ssize_t). Furthermore, listxattr() in fs/xattr.c
+> is well-equipped to handle a potential -E2BIG return result from
+> vfs_listxattr():
+> |	ssize_t error;
+> ...
+> |	error = vfs_listxattr(d, klist, size);
+> |	if (error > 0) {
+> |		if (size && copy_to_user(list, klist, error))
+> |			error = -EFAULT;
+> |	} else if (error == -ERANGE && size >= XATTR_LIST_MAX) {
+> |		/* The file system tried to returned a list bigger
+> |			than XATTR_LIST_MAX bytes. Not possible. */
+> |		error = -E2BIG;
+> |	}
+> ... our error can potentially already be -E2BIG, skipping this else-if
+> and ending up at the same state as other errors.
+> 
+> This whole copy_name() function could really be a one-line with some
+> ternary statements embedded into a scnprintf() arg-list but I've opted
+> to maintain some semblance of readability.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> ---
+>  fs/hfsplus/xattr.c | 19 +++++--------------
+>  1 file changed, 5 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
+> index 9c9ff6b8c6f7..00351f566e9f 100644
+> --- a/fs/hfsplus/xattr.c
+> +++ b/fs/hfsplus/xattr.c
+> @@ -400,22 +400,13 @@ static int name_len(const char *xattr_name, int xattr_name_len)
+>  	return len;
+>  }
+>  
+> -static int copy_name(char *buffer, const char *xattr_name, int name_len)
+> +static ssize_t copy_name(char *buffer, const char *xattr_name, int name_len)
+>  {
+> -	int len = name_len;
+> -	int offset = 0;
+> -
+> -	if (!is_known_namespace(xattr_name)) {
+> -		memcpy(buffer, XATTR_MAC_OSX_PREFIX, XATTR_MAC_OSX_PREFIX_LEN);
+> -		offset += XATTR_MAC_OSX_PREFIX_LEN;
+> -		len += XATTR_MAC_OSX_PREFIX_LEN;
+> -	}
+> -
+> -	strncpy(buffer + offset, xattr_name, name_len);
+> -	memset(buffer + offset + name_len, 0, 1);
+> -	len += 1;
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
-This cleans up after, and hence depends on,
-https://lore.kernel.org/all/20240324-x1e80100-display-refactor-connector-v4-1-e0ebaea66a78@linaro.org/
----
- drivers/gpu/drm/msm/dp/dp_display.c | 41 ++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 21 deletions(-)
+The old code appears to include the NUL in the count of bytes written.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 521cba76d2a0..a18fb8b32c16 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -119,55 +119,54 @@ struct dp_display_private {
- struct msm_dp_desc {
- 	phys_addr_t io_start;
- 	unsigned int id;
--	unsigned int connector_type;
- 	bool wide_bus_supported;
- };
- 
- static const struct msm_dp_desc sc7180_dp_descs[] = {
--	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
-+	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0 },
- 	{}
- };
- 
- static const struct msm_dp_desc sc7280_dp_descs[] = {
--	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_1, .connector_type = DRM_MODE_CONNECTOR_eDP, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .wide_bus_supported = true },
-+	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_1, .wide_bus_supported = true },
- 	{}
- };
- 
- static const struct msm_dp_desc sc8180x_dp_descs[] = {
--	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
--	{ .io_start = 0x0ae98000, .id = MSM_DP_CONTROLLER_1, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
--	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .connector_type = DRM_MODE_CONNECTOR_eDP },
-+	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0 },
-+	{ .io_start = 0x0ae98000, .id = MSM_DP_CONTROLLER_1 },
-+	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2 },
- 	{}
- };
- 
- static const struct msm_dp_desc sc8280xp_dp_descs[] = {
--	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x0ae98000, .id = MSM_DP_CONTROLLER_1, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_3, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x22090000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x22098000, .id = MSM_DP_CONTROLLER_1, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x2209a000, .id = MSM_DP_CONTROLLER_2, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
--	{ .io_start = 0x220a0000, .id = MSM_DP_CONTROLLER_3, .connector_type = DRM_MODE_CONNECTOR_DisplayPort, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae98000, .id = MSM_DP_CONTROLLER_1, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .wide_bus_supported = true },
-+	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_3, .wide_bus_supported = true },
-+	{ .io_start = 0x22090000, .id = MSM_DP_CONTROLLER_0, .wide_bus_supported = true },
-+	{ .io_start = 0x22098000, .id = MSM_DP_CONTROLLER_1, .wide_bus_supported = true },
-+	{ .io_start = 0x2209a000, .id = MSM_DP_CONTROLLER_2, .wide_bus_supported = true },
-+	{ .io_start = 0x220a0000, .id = MSM_DP_CONTROLLER_3, .wide_bus_supported = true },
- 	{}
- };
- 
- static const struct msm_dp_desc sc8280xp_edp_descs[] = {
--	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .connector_type = DRM_MODE_CONNECTOR_eDP, .wide_bus_supported = true },
--	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_3, .connector_type = DRM_MODE_CONNECTOR_eDP, .wide_bus_supported = true },
--	{ .io_start = 0x2209a000, .id = MSM_DP_CONTROLLER_2, .connector_type = DRM_MODE_CONNECTOR_eDP, .wide_bus_supported = true },
--	{ .io_start = 0x220a0000, .id = MSM_DP_CONTROLLER_3, .connector_type = DRM_MODE_CONNECTOR_eDP, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .wide_bus_supported = true },
-+	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_3, .wide_bus_supported = true },
-+	{ .io_start = 0x2209a000, .id = MSM_DP_CONTROLLER_2, .wide_bus_supported = true },
-+	{ .io_start = 0x220a0000, .id = MSM_DP_CONTROLLER_3, .wide_bus_supported = true },
- 	{}
- };
- 
- static const struct msm_dp_desc sm8350_dp_descs[] = {
--	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
-+	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0 },
- 	{}
- };
- 
- static const struct msm_dp_desc sm8650_dp_descs[] = {
--	{ .io_start = 0x0af54000, .id = MSM_DP_CONTROLLER_0, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
-+	{ .io_start = 0x0af54000, .id = MSM_DP_CONTROLLER_0 },
- 	{}
- };
- 
+> +	if (!is_known_namespace(xattr_name))
+> +		return scnprintf(buffer, name_len + XATTR_MAC_OSX_PREFIX_LEN,
+> +				 "%s%s", XATTR_MAC_OSX_PREFIX, xattr_name);
+>  
+> -	return len;
+> +	return strscpy(buffer, xattr_name, name_len + 1);
 
----
-base-commit: 8780048e8c13990129e67c097ef580c3ae456650
-change-id: 20240328-dp-connector-type-cleanup-af6501e374b3
+Neither scnprintf nor strscpy include the NUL in their return value, so
+I think special handling is needed here. Perhaps:
 
-Best regards,
+	ssize_t len;
+	...
+	if (!is_known_namespace(xattr_name))
+		len = scnprintf(buffer, name_len + XATTR_MAC_OSX_PREFIX_LEN,
+				 "%s%s", XATTR_MAC_OSX_PREFIX, xattr_name);
+	else
+		len = strscpy(buffer, xattr_name, name_len + 1);
+
+	if (len >= 0)
+		len++;
+	return len;
+
+-Kees
+
+>  }
+>  
+>  int hfsplus_setxattr(struct inode *inode, const char *name,
+> 
+> ---
+> base-commit: 241590e5a1d1b6219c8d3045c167f2fbcc076cbb
+> change-id: 20240321-strncpy-fs-hfsplus-xattr-c-4ebfe67f4c6d
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+
 -- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
-
+Kees Cook
 
