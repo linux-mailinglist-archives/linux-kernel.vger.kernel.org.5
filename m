@@ -1,190 +1,130 @@
-Return-Path: <linux-kernel+bounces-124380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B579E89169B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:19:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20BB989169D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 11:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D084B21EE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7D131F2292C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9699D535AE;
-	Fri, 29 Mar 2024 10:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2997A535D3;
+	Fri, 29 Mar 2024 10:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Z8R+Vk9A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b="QWUo2zVz"
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF8A524DE;
-	Fri, 29 Mar 2024 10:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A09535A2
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711707563; cv=none; b=anC7bDZEAyOTRsEqWtY3AKYuHgjK6mK3wC64t8jeCLWMJOxR2ACSgACr1eloQIAki/8DqfjMftiuwRKLHkZbzin/EvMXys/j8EkmzgjqVxXQgZFPnb+cy2z68ndCXbPhvsGQCXgIh12EHknn4Bgrpa6qZRldGm/9kJdbYjzTeWY=
+	t=1711707614; cv=none; b=iU7JEz7p7IqfcYQVX4LYE8xun5HvicGxZ+/pkGFvknYJjPpHkTJkhTFcuCcctbw5qWETh07i5jsvB6wRkMOqj5LMWWQ7erVoZFo9qnJ16jlDqcTvDaqfyHvPi7rKcJb1QWhI6hjO7iqY/xzrrSOeLcw+E3CYmkOgGc6eyiiJYz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711707563; c=relaxed/simple;
-	bh=YKi4gOrn9DGeJgVs3gZWjPTkOjRhWQkQ0AhfqNFExlg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cHleFajYUVRZhDhLtbxF6Y50WhOKm+0SEfbDEhJ65IplIWssjwZHEHhARajAR/BBJ8/reY+RQvmYict+v5yAwqmm9rkfrpjT4rQxiLrOH+A+t06v04L8DaTQJOolM6/xN0/m5kWtuB+KH/cBUcqRomvVjXQy6wvY93tSJwAj9Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Z8R+Vk9A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA8B3C433C7;
-	Fri, 29 Mar 2024 10:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711707563;
-	bh=YKi4gOrn9DGeJgVs3gZWjPTkOjRhWQkQ0AhfqNFExlg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z8R+Vk9AaVETwWhRaEMlScRY8lYNj5Vjj5HXh5+UfgzyDFzsNyncqajG1/O+QJ4+q
-	 UiqGM7PveSSoOuk4zROteC9zZMoQ49sxqIGCp9U1CD7P/eNV24eFABJm2R3108fX0r
-	 rkdpJuStXtuOyvOmJ0FwjFlEDS3fwfgoq6hRGTmE=
-Date: Fri, 29 Mar 2024 11:19:15 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Andrew Paniakin <apanyaki@amazon.com>
-Cc: stable@vger.kernel.org, Benjamin Herrenschmidt <benh@amazon.com>,
-	Maximilian Heyne <mheyne@amazon.de>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Sasha Levin <sashal@kernel.org>, Julien Grall <jgrall@amazon.com>,
-	xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.4] xen/events: close evtchn after mapping cleanup
-Message-ID: <2024032905-divisibly-unarmored-f080@gregkh>
-References: <20240303044539.2673085-1-apanyaki@amazon.com>
+	s=arc-20240116; t=1711707614; c=relaxed/simple;
+	bh=fuZByx8fzLgKEPKGZasvkuC5RywOXYCpi/Dnn5CXt2M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pBg1mQtY+WWisd8ftxnczImvUCF2akkMBfmR7x2MqlH0+d5nKf0blI1UeVKQUAN2dUGLxQ8fkfTU+06uaoLS/bzm0sXUnF3f7OwMKgmA2PQ+QllsVHFceiJjFJRceTQhee/lqmJz8PigRsYX4Ny+w/UszTFLW3bfA1UFLBXduZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com; spf=pass smtp.mailfrom=linumiz.com; dkim=pass (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b=QWUo2zVz; arc=none smtp.client-ip=44.202.169.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linumiz.com
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+	by cmsmtp with ESMTPS
+	id pgl8rXEyPs4yTq9LGrTzMH; Fri, 29 Mar 2024 10:20:10 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+	by cmsmtp with ESMTPS
+	id q9LDrXL2gybtzq9LEr16u6; Fri, 29 Mar 2024 10:20:09 +0000
+X-Authority-Analysis: v=2.4 cv=RsAOLzmK c=1 sm=1 tr=0 ts=660695d9
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=kofhyyBXuK/oEhdxNjf66Q==:17
+ a=K6JAEmCyrfEA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8 a=fbhHIwXGltMNw4B7xfYA:9
+ a=kn2rRUdfO8ZCmn3LMDoc:22 a=rsP06fVo5MYu2ilr0aT5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+	; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+	:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=UBMulemZbzLE4JR+qzWiUaTzOCoEImChdUYi/0nrLrA=; b=QWUo2zVzH8RFssCyT7ReqUEgxQ
+	Bm1KEbEqkVhPypR7j2sbbgBaQSx9GWYbGENFRB+lPPSaxmpTPpAvV5DlH2d99bZVewKgaaEZyqCuG
+	kZn/Yib/ex1ZY4WA9JrGG22vC65YVlYyGzVxJL9jEQ187vAr6AJy56WKkYu7n3aQCN/sjuEIqblTa
+	41sUb2GNrZUG9osmiIrLHVfabpTjUuNPnFSowgzGuv8VHksQqe6+BFNc3YYnafAs9LEmYRVsuNIpl
+	6x+Dc5vQJmFiQ/vO1iUZuQcc5P7j/7ePhQU4ZscosVzdsKpQProrAOMD+RkJ35eKFC9HR6SJzdUDL
+	8dIkwQaQ==;
+Received: from [122.165.245.213] (port=37812 helo=localhost.localdomain)
+	by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <karthikeyan@linumiz.com>)
+	id 1rq9LC-000Rqk-2q;
+	Fri, 29 Mar 2024 15:50:07 +0530
+From: Karthikeyan Krishnasamy <karthikeyan@linumiz.com>
+To: alexandre.belloni@bootlin.com
+Cc: linux-rtc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	parthiban@linumiz.com,
+	saravanan@linumiz.com,
+	Karthikeyan Krishnasamy <karthikeyan@linumiz.com>
+Subject: [PATCH] drivers: rtc: rv3028: check and update PORF flag during probe
+Date: Fri, 29 Mar 2024 15:49:40 +0530
+Message-Id: <20240329101940.1424643-1-karthikeyan@linumiz.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240303044539.2673085-1-apanyaki@amazon.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 122.165.245.213
+X-Source-L: No
+X-Exim-ID: 1rq9LC-000Rqk-2q
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (localhost.localdomain) [122.165.245.213]:37812
+X-Source-Auth: karthikeyan@linumiz.com
+X-Email-Count: 1
+X-Org: HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOVNyxYL5HyytG7WXuqdZ04lA9DfDvMXjemnjkreTU4+jofvfnsayTI5hAopUAVX3ZFWcBys5635luUehCVvPo8B0NykFbmHKLhrpkCr9pKSbiO1+UVa
+ 3OJqGl8TPLP0BGBZHJrjEVh9+6Z8szsgVbpMnsY9SDPr8bJb8BvvpZWw9a785Lm31PJf4EkBbsozM3tnfPWUMLyxpjohfUct5t2RTqsKx7dobNPogVE+7Gui
 
-On Sat, Mar 02, 2024 at 08:45:39PM -0800, Andrew Paniakin wrote:
-> From: Andrew Panyakin <apanyaki@amazon.com>
-> 
-> From: Maximilian Heyne <mheyne@amazon.de>
-> 
-> Commit fa765c4b4aed2d64266b694520ecb025c862c5a9 upstream
-> 
-> shutdown_pirq and startup_pirq are not taking the
-> irq_mapping_update_lock because they can't due to lock inversion. Both
-> are called with the irq_desc->lock being taking. The lock order,
-> however, is first irq_mapping_update_lock and then irq_desc->lock.
-> 
-> This opens multiple races:
-> - shutdown_pirq can be interrupted by a function that allocates an event
->   channel:
-> 
->   CPU0                        CPU1
->   shutdown_pirq {
->     xen_evtchn_close(e)
->                               __startup_pirq {
->                                 EVTCHNOP_bind_pirq
->                                   -> returns just freed evtchn e
->                                 set_evtchn_to_irq(e, irq)
->                               }
->     xen_irq_info_cleanup() {
->       set_evtchn_to_irq(e, -1)
->     }
->   }
-> 
->   Assume here event channel e refers here to the same event channel
->   number.
->   After this race the evtchn_to_irq mapping for e is invalid (-1).
-> 
-> - __startup_pirq races with __unbind_from_irq in a similar way. Because
->   __startup_pirq doesn't take irq_mapping_update_lock it can grab the
->   evtchn that __unbind_from_irq is currently freeing and cleaning up. In
->   this case even though the event channel is allocated, its mapping can
->   be unset in evtchn_to_irq.
-> 
-> The fix is to first cleanup the mappings and then close the event
-> channel. In this way, when an event channel gets allocated it's
-> potential previous evtchn_to_irq mappings are guaranteed to be unset already.
-> This is also the reverse order of the allocation where first the event
-> channel is allocated and then the mappings are setup.
-> 
-> On a 5.10 kernel prior to commit 3fcdaf3d7634 ("xen/events: modify internal
-> [un]bind interfaces"), we hit a BUG like the following during probing of NVMe
-> devices. The issue is that during nvme_setup_io_queues, pci_free_irq
-> is called for every device which results in a call to shutdown_pirq.
-> With many nvme devices it's therefore likely to hit this race during
-> boot because there will be multiple calls to shutdown_pirq and
-> startup_pirq are running potentially in parallel.
-> 
->   ------------[ cut here ]------------
->   blkfront: xvda: barrier or flush: disabled; persistent grants: enabled; indirect descriptors: enabled; bounce buffer: enabled
->   kernel BUG at drivers/xen/events/events_base.c:499!
->   invalid opcode: 0000 [#1] SMP PTI
->   CPU: 44 PID: 375 Comm: kworker/u257:23 Not tainted 5.10.201-191.748.amzn2.x86_64 #1
->   Hardware name: Xen HVM domU, BIOS 4.11.amazon 08/24/2006
->   Workqueue: nvme-reset-wq nvme_reset_work
->   RIP: 0010:bind_evtchn_to_cpu+0xdf/0xf0
->   Code: 5d 41 5e c3 cc cc cc cc 44 89 f7 e8 2b 55 ad ff 49 89 c5 48 85 c0 0f 84 64 ff ff ff 4c 8b 68 30 41 83 fe ff 0f 85 60 ff ff ff <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00
->   RSP: 0000:ffffc9000d533b08 EFLAGS: 00010046
->   RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
->   RDX: 0000000000000028 RSI: 00000000ffffffff RDI: 00000000ffffffff
->   RBP: ffff888107419680 R08: 0000000000000000 R09: ffffffff82d72b00
->   R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000001ed
->   R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000002
->   FS:  0000000000000000(0000) GS:ffff88bc8b500000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000000000000000 CR3: 0000000002610001 CR4: 00000000001706e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    ? show_trace_log_lvl+0x1c1/0x2d9
->    ? show_trace_log_lvl+0x1c1/0x2d9
->    ? set_affinity_irq+0xdc/0x1c0
->    ? __die_body.cold+0x8/0xd
->    ? die+0x2b/0x50
->    ? do_trap+0x90/0x110
->    ? bind_evtchn_to_cpu+0xdf/0xf0
->    ? do_error_trap+0x65/0x80
->    ? bind_evtchn_to_cpu+0xdf/0xf0
->    ? exc_invalid_op+0x4e/0x70
->    ? bind_evtchn_to_cpu+0xdf/0xf0
->    ? asm_exc_invalid_op+0x12/0x20
->    ? bind_evtchn_to_cpu+0xdf/0xf0
->    ? bind_evtchn_to_cpu+0xc5/0xf0
->    set_affinity_irq+0xdc/0x1c0
->    irq_do_set_affinity+0x1d7/0x1f0
->    irq_setup_affinity+0xd6/0x1a0
->    irq_startup+0x8a/0xf0
->    __setup_irq+0x639/0x6d0
->    ? nvme_suspend+0x150/0x150
->    request_threaded_irq+0x10c/0x180
->    ? nvme_suspend+0x150/0x150
->    pci_request_irq+0xa8/0xf0
->    ? __blk_mq_free_request+0x74/0xa0
->    queue_request_irq+0x6f/0x80
->    nvme_create_queue+0x1af/0x200
->    nvme_create_io_queues+0xbd/0xf0
->    nvme_setup_io_queues+0x246/0x320
->    ? nvme_irq_check+0x30/0x30
->    nvme_reset_work+0x1c8/0x400
->    process_one_work+0x1b0/0x350
->    worker_thread+0x49/0x310
->    ? process_one_work+0x350/0x350
->    kthread+0x11b/0x140
->    ? __kthread_bind_mask+0x60/0x60
->    ret_from_fork+0x22/0x30
->   Modules linked in:
->   ---[ end trace a11715de1eee1873 ]---
-> 
-> Fixes: d46a78b05c0e ("xen: implement pirq type event channels")
-> Co-debugged-by: Andrew Panyakin <apanyaki@amazon.com>
-> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-> [apanyaki: backport to v5.4-stable]
-> Signed-off-by: Andrew Paniakin <apanyaki@amazon.com>
-> ---
-> Compare to upstream patch this one does not have close_evtchn flag
-> because there is no need to handle static event channels.
-> This feature was added only in 58f6259b7a08f ("xen/evtchn: Introduce new
-> IOCTL to bind static evtchn")
+PORF flag is set during power reset and voltage drop below Vpor
+data in rtc device is no longer valid if PORF flag is set
+and software must reset to 0, in order to perform sanity
+check on rtc data
 
-All now qeued up, thanks.
+Signed-off-by: Karthikeyan Krishnasamy <karthikeyan@linumiz.com>
+---
+ drivers/rtc/rtc-rv3028.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-greg k-h
+diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
+index 2f001c59c61d..e9699ff0c4e8 100644
+--- a/drivers/rtc/rtc-rv3028.c
++++ b/drivers/rtc/rtc-rv3028.c
+@@ -951,6 +951,13 @@ static int rv3028_probe(struct i2c_client *client)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	if (status & RV3028_STATUS_PORF) {
++		ret = regmap_update_bits(rv3028->regmap, RV3028_STATUS,
++					 RV3028_STATUS_PORF, 0);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	if (status & RV3028_STATUS_AF)
+ 		dev_warn(&client->dev, "An alarm may have been missed.\n");
+ 
+-- 
+2.34.1
+
 
