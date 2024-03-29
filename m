@@ -1,109 +1,102 @@
-Return-Path: <linux-kernel+bounces-124539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E1489198A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:43:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CF668919CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DD711C22912
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:43:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26313286FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 12:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8D61494D8;
-	Fri, 29 Mar 2024 12:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0010013B5AF;
+	Fri, 29 Mar 2024 12:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="A6JWQORY"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD2113A3E7;
-	Fri, 29 Mar 2024 12:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BFKojrdj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2CC13B599;
+	Fri, 29 Mar 2024 12:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715340; cv=none; b=FFbzmp+pPyTOKEF7mR4tpNuuDO8Ax1GmbgJnBXsZ/SfIbH4UkrgvocWMXEdYRueZdit+jUsy6FEZiJg2SUYeRkTSRkKWazJ329vihhRV4kRVzqcdGa0p8YxJiG2JqzLVg4F9r+Rz5gHVNlehmZ8NBmtDnX2K0bdaVV7LqEJ7D6g=
+	t=1711715397; cv=none; b=oDJNF3I/Z2CFtYzFS4wqmQ/orLWVD9zvAYOmLIUKFDvYER3WfRTRa2fEhnGES4qqnJgYHpeTYu3zLOi98eVXE7hE8y+Cu1r7s1qMHC8ocXVTZ4zGHX0qcsSju+TnaJmy0H0bi8511lwjGBv39fr39VyXiRyXk3HMYcMjqBnymfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715340; c=relaxed/simple;
-	bh=764c3pjO6u5CEwXzE5Ddk/WTGKPMneIjFGs1pBnqEVI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FtB3g/JDmYtx0ksyjTRa4UKgIew5DKeUAzKbFAwh6OPs8Aj84Juc7FlXtWCt5YwmIJpAUiQRQZ4xnH/wU1T4O9wbAVnNb/SUFNx9G9UMcsCRwzi3z6lH8ajLeFFlJVJLj23W42oy8hYFs8SD6hXrwNkoo4qvp51WlaNNoUzybgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=A6JWQORY; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=LGyBgMV35yeeHHBEgeXzXGS0G5EIZCLqefBgjneqAWo=;
-	b=A6JWQORY4YFGFIHy0WRDX4l8vTe1JOogRDHRkDWgOCnDR8y6QWGLvIadIP+i3q
-	ptuJRgXdOB2KqYThCcXIWl1EosjQdxZMvXaOSoTb9I9mDT/D37TtQJwhBlLvIsLT
-	M8ijXCsi2q5OlXuZoyjWQYMpGYDOno9avUW7n+z3e6lmA=
-Received: from dragon (unknown [183.213.196.225])
-	by smtp2 (Coremail) with SMTP id C1UQrADnTxnOswZmO0ZqAg--.19469S3;
-	Fri, 29 Mar 2024 20:27:59 +0800 (CST)
-Date: Fri, 29 Mar 2024 20:27:58 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] arm64: dts: imx8dxl: update cm40 irq number
- informaiton
-Message-ID: <ZgazzrWidHHn6eg4@dragon>
-References: <20240305-m4_lpuart-v3-0-592463ef1d22@nxp.com>
- <20240305-m4_lpuart-v3-3-592463ef1d22@nxp.com>
+	s=arc-20240116; t=1711715397; c=relaxed/simple;
+	bh=Ra4UXu1BegVD/dxe6uYDNjPmp+4p/Ri+3qwVOVWo+MA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BObuwzj7DsgI8xHuhRcwxd5dOviLoQlboghyY0xVUoJamz/zNdvF/8lU/Ms3eiGNdmuNUv6IBpDcscSyne3OtglcBVNHxJKBc/pMS9yPrx/wR3kO/GCXZU3hwJwXHs+feC6ZYGZKFWokOGia2RJEcWJGuimOSV2LQMOdeosVNzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BFKojrdj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A923C43394;
+	Fri, 29 Mar 2024 12:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711715397;
+	bh=Ra4UXu1BegVD/dxe6uYDNjPmp+4p/Ri+3qwVOVWo+MA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BFKojrdjGbJCoTpGbw+mgQBNsnXJWd5ajkaFL8O0DV6WAcUmAM+N0pkNQVQkKdibC
+	 AZp9AKdxRRWbW09dwQp7/GAN+DeE1VBznVfQMVGkfXvhGQPT9xXi1pHmqpKboV7GDS
+	 j4FPwx0X62FncIauJgX2oT7yFgMyJrovxlN6ro4iIstJOdGKwfcFVEtXB/PGgwCv2h
+	 yvmlFci+iQTAEmQCHqBNsHyRSw2FzZh2wZfPZbeG2XWdeSo0B7tTXcSmITHuUoNs9c
+	 hVDVldT5eGF10PWa1B2Z8qHVQTM91OxG/vn3DIefqJfoQ0URazeiOFQqtDd35QjYi6
+	 HpZkaDHLyGTGA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Dmitry Antipov <dmantipov@yandex.ru>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
+	Sasha Levin <sashal@kernel.org>,
+	kvalo@kernel.org,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 01/52] wifi: ath9k: fix LNA selection in ath_ant_try_scan()
+Date: Fri, 29 Mar 2024 08:28:31 -0400
+Message-ID: <20240329122956.3083859-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305-m4_lpuart-v3-3-592463ef1d22@nxp.com>
-X-CM-TRANSID:C1UQrADnTxnOswZmO0ZqAg--.19469S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF43Aw4xCr47GF1rCFy5XFb_yoWkXFgEy3
-	WxWw15Ja4rAFZYyas5Krs5XryUK3yxGr95Xw1kWF4DWa4vvF909Fs7Jan5Jay3WFWjkryD
-	Ca1rXr48A34agjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0I38UUUUUU==
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiBRGwZVsVCawBUQAAs6
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.23
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 10:54:57AM -0500, Frank Li wrote:
-> Update cm40 irq number for imx8dxl chip.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-s/informaiton/information in subject.
+[ Upstream commit d6b27eb997ef9a2aa51633b3111bc4a04748e6d3 ]
 
-Shawn
+In 'ath_ant_try_scan()', (most likely) the 2nd LNA's signal
+strength should be used in comparison against RSSI when
+selecting first LNA as the main one. Compile tested only.
 
-> ---
->  arch/arm64/boot/dts/freescale/imx8dxl.dtsi | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi b/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
-> index 9d49c75a26222..b9d137d69f5a7 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
-> @@ -243,3 +243,14 @@ xtal24m: clock-xtal24m {
->  #include "imx8dxl-ss-conn.dtsi"
->  #include "imx8dxl-ss-lsio.dtsi"
->  #include "imx8dxl-ss-ddr.dtsi"
-> +
-> +&cm40_intmux {
-> +	interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-> +};
-> 
-> -- 
-> 2.34.1
-> 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://msgid.link/20231211172502.25202-1-dmantipov@yandex.ru
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath9k/antenna.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath9k/antenna.c b/drivers/net/wireless/ath/ath9k/antenna.c
+index 988222cea9dfe..acc84e6711b0e 100644
+--- a/drivers/net/wireless/ath/ath9k/antenna.c
++++ b/drivers/net/wireless/ath/ath9k/antenna.c
+@@ -643,7 +643,7 @@ static void ath_ant_try_scan(struct ath_ant_comb *antcomb,
+ 				conf->main_lna_conf = ATH_ANT_DIV_COMB_LNA1;
+ 				conf->alt_lna_conf = ATH_ANT_DIV_COMB_LNA1_PLUS_LNA2;
+ 			} else if (antcomb->rssi_sub >
+-				   antcomb->rssi_lna1) {
++				   antcomb->rssi_lna2) {
+ 				/* set to A-B */
+ 				conf->main_lna_conf = ATH_ANT_DIV_COMB_LNA1;
+ 				conf->alt_lna_conf = ATH_ANT_DIV_COMB_LNA1_MINUS_LNA2;
+-- 
+2.43.0
 
 
