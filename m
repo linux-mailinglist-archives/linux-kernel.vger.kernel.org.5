@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-124599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31B63891A6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:01:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99603891A6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:01:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC74828357B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:01:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB73E1C244BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B43158D77;
-	Fri, 29 Mar 2024 12:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25997158DAD;
+	Fri, 29 Mar 2024 12:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sBOk8ZGy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OnlG+yde"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C79C158D81;
-	Fri, 29 Mar 2024 12:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5077785950;
+	Fri, 29 Mar 2024 12:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715502; cv=none; b=QFRTTFQZEyNX6LB9DEFU1WE4oKhLho10vHGXtpD/qG49vC8DKNmsA9rZeV+UW6Xvt2v/NM91Az/hL8Hp1ScisLmw05ZbAlA8erWxZLwYIpMDAbq6bTnq99QoSbCq9pPXH9+ohpFvJt6ja/XquKvOO9U8cPh3iCr4KvYHOhxQOyI=
+	t=1711715503; cv=none; b=TdjkRFfmAAhj7ZxmNpyTaonnh+zwzRr0G9GDXcKOeaOROs/Yq7FWR6+8ryEAqVr4zbpozKQVM9Z9O5kw4g1xAPOoSBIK0p0KfvKGKTH6h2OHkpYxi9Z/4pvynvXwUe7iZaCBCmG3lZfUwIHNM9HJfBury8h9jnXMh1glEkd2HFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715502; c=relaxed/simple;
-	bh=xuO52jC+rzKh9ZGu2ZBZBSIiT9ch8p/qMshlFTcaWgM=;
+	s=arc-20240116; t=1711715503; c=relaxed/simple;
+	bh=j8U475whEhGW3JJ7l7qtS1Liv/9lLh+Dt6gwp1HXrjM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BrKhe7hhuaBAp8BR80XzrScyBzuGR1k/WfJrMvvxUhJgcTKJgtDprN45MegjZxpJAqhcGxEM8/3jVB9U8zm06/Sa88ydGg5Mf4EU7ooHbCkJTbcLG1OkBWA2JsLZ24Ks5nZGebl3+JZXwSW+f9yGtskouiHoVg6HWBm4a1Oqa14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sBOk8ZGy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85962C433F1;
-	Fri, 29 Mar 2024 12:31:39 +0000 (UTC)
+	 MIME-Version; b=ZU56n576Il8e6FQUsBS7LjrmtrS0FytOUZ+xG5SkpUij1a+TYfHX8TFB1eIs7SfllLeLYKSX/JtnK/853Cla/Uds3gUvG+jqodpaIPqV/8GEMPFgbTf49VPVCb7IcZzgSRPPavYQM6VUW1jHHh46diiJPwEjJmgwdfz/UdNlSHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OnlG+yde; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 707D1C43399;
+	Fri, 29 Mar 2024 12:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715501;
-	bh=xuO52jC+rzKh9ZGu2ZBZBSIiT9ch8p/qMshlFTcaWgM=;
+	s=k20201202; t=1711715502;
+	bh=j8U475whEhGW3JJ7l7qtS1Liv/9lLh+Dt6gwp1HXrjM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sBOk8ZGyS+lUM7qFNutKyzMkOhugABcTW3JiURgpbVt+eVOT+fmaqXVcfmxuMBMwI
-	 CDHG3wyjoth4UrCAZVUDaVk9d+QiSh0yx/j9e66Ry5qtyDiG/DC+qyADlmkSdCCzh1
-	 UddEqtteAyX17BWMO11nbYq7Q1ajH58gb7roTzZeUjUYgJ5m6F8dV+I/amBF/BDGE9
-	 gPpk7Fd/awO4k0U7QX8WkfC+7F7WQIYU1Ife7gaxo4SGzvzTQndwdZJ9sAsMCSlDPs
-	 CW2RLh9SSvtFdTo+sLBL9vH0rsbW8ugWpLKH8/F5/qHA2mhzCvcsCHaQ+Bk+NdplUZ
-	 z17AMdWHOnW5Q==
+	b=OnlG+ydedKYFTtbbonaXvxdPyjO8XxFc+X9oB2ej6S7geocIUN3RoGCYCWgyM8y5N
+	 3X8PMuwg4tGbiEkQyEd7fFSZATtNq2E0UhQyrvu8P59ZyIhqR3CyCUtuTY54/uhvAm
+	 1Q3wxUNmzcs5Kzy0AYq/XeIBwqXWBcLnpZOS06wZY1iRrUZu9E2N83MhZsSEZv5pKK
+	 WnzV+U7lXGM0E93+PQGzTYKXBIbZOn0BQ602SEkwAyr/jJT3PiZN2bY1BMkn0SpQxS
+	 UUhmKpP8WiyJEskc6elKeS0PV5ejD33GuSSidh5OUaThCEB/MetW7KfTV0KdmzAJms
+	 5gb5PFYDeVdmQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jacob Keller <jacob.e.keller@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Rafal Romanowski <rafal.romanowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
-	jesse.brandeburg@intel.com,
 	davem@davemloft.net,
-	edumazet@google.com,
 	kuba@kernel.org,
-	pabeni@redhat.com,
-	intel-wired-lan@lists.osuosl.org,
+	linux-s390@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 48/52] ice: use relative VSI index for VFs instead of PF VSI number
-Date: Fri, 29 Mar 2024 08:29:18 -0400
-Message-ID: <20240329122956.3083859-48-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 49/52] net/smc: reduce rtnl pressure in smc_pnet_create_pnetids_list()
+Date: Fri, 29 Mar 2024 08:29:19 -0400
+Message-ID: <20240329122956.3083859-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329122956.3083859-1-sashal@kernel.org>
 References: <20240329122956.3083859-1-sashal@kernel.org>
@@ -72,102 +72,94 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 11fbb1bfb5bc8c98b2d7db9da332b5e568f4aaab ]
+[ Upstream commit 00af2aa93b76b1bade471ad0d0525d4d29ca5cc0 ]
 
-When initializing over virtchnl, the PF is required to pass a VSI ID to the
-VF as part of its capabilities exchange. The VF driver reports this value
-back to the PF in a variety of commands. The PF driver validates that this
-value matches the value it sent to the VF.
+Many syzbot reports show extreme rtnl pressure, and many of them hint
+that smc acquires rtnl in netns creation for no good reason [1]
 
-Some hardware families such as the E700 series could use this value when
-reading RSS registers or communicating directly with firmware over the
-Admin Queue.
+This patch returns early from smc_pnet_net_init()
+if there is no netdevice yet.
 
-However, E800 series hardware does not support any of these interfaces and
-the VF's only use for this value is to report it back to the PF. Thus,
-there is no requirement that this value be an actual VSI ID value of any
-kind.
+I am not even sure why smc_pnet_create_pnetids_list() even exists,
+because smc_pnet_netdev_event() is also calling
+smc_pnet_add_base_pnetid() when handling NETDEV_UP event.
 
-The PF driver already does not trust that the VF sends it a real VSI ID.
-The VSI structure is always looked up from the VF structure. The PF does
-validate that the VSI ID provided matches a VSI associated with the VF, but
-otherwise does not use the VSI ID for any purpose.
+[1] extract of typical syzbot reports
 
-Instead of reporting the VSI number relative to the PF space, report a
-fixed value of 1. When communicating with the VF over virtchnl, validate
-that the VSI number is returned appropriately.
+2 locks held by syz-executor.3/12252:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.4/12253:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.1/12257:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.2/12261:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.0/12265:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.3/12268:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.4/12271:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.1/12274:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
+2 locks held by syz-executor.2/12280:
+  #0: ffffffff8f369610 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x4c7/0x7b0 net/core/net_namespace.c:491
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_create_pnetids_list net/smc/smc_pnet.c:809 [inline]
+  #1: ffffffff8f375b88 (rtnl_mutex){+.+.}-{3:3}, at: smc_pnet_net_init+0x10a/0x1e0 net/smc/smc_pnet.c:878
 
-This avoids leaking information about the firmware of the PF state.
-Currently the ice driver only supplies a VF with a single VSI. However, it
-appears that virtchnl has some support for allowing multiple VSIs. I did
-not attempt to implement this. However, space is left open to allow further
-relative indexes if additional VSIs are provided in future feature
-development. For this reason, keep the ice_vc_isvalid_vsi_id function in
-place to allow extending it for multiple VSIs in the future.
-
-This change will also simplify handling of live migration in a future
-series. Since we no longer will provide a real VSI number to the VF, there
-will be no need to keep track of this number when migrating to a new host.
-
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Tested-by: Rafal Romanowski <rafal.romanowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: Jan Karcher <jaka@linux.ibm.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: Tony Lu <tonylu@linux.alibaba.com>
+Cc: Wen Gu <guwen@linux.alibaba.com>
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Link: https://lore.kernel.org/r/20240302100744.3868021-1-edumazet@google.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_virtchnl.c | 9 ++-------
- drivers/net/ethernet/intel/ice/ice_virtchnl.h | 9 +++++++++
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ net/smc/smc_pnet.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl.c b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-index e7ab78bb0f861..668afc018a3fc 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-@@ -503,7 +503,7 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
- 	vfres->rss_lut_size = ICE_LUT_VSI_SIZE;
- 	vfres->max_mtu = ice_vc_get_max_frame_size(vf);
+diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
+index 11775401df689..306b536fa89e9 100644
+--- a/net/smc/smc_pnet.c
++++ b/net/smc/smc_pnet.c
+@@ -806,6 +806,16 @@ static void smc_pnet_create_pnetids_list(struct net *net)
+ 	u8 ndev_pnetid[SMC_MAX_PNETID_LEN];
+ 	struct net_device *dev;
  
--	vfres->vsi_res[0].vsi_id = vf->lan_vsi_num;
-+	vfres->vsi_res[0].vsi_id = ICE_VF_VSI_ID;
- 	vfres->vsi_res[0].vsi_type = VIRTCHNL_VSI_SRIOV;
- 	vfres->vsi_res[0].num_queue_pairs = vsi->num_txq;
- 	ether_addr_copy(vfres->vsi_res[0].default_mac_addr,
-@@ -549,12 +549,7 @@ static void ice_vc_reset_vf_msg(struct ice_vf *vf)
-  */
- bool ice_vc_isvalid_vsi_id(struct ice_vf *vf, u16 vsi_id)
- {
--	struct ice_pf *pf = vf->pf;
--	struct ice_vsi *vsi;
--
--	vsi = ice_find_vsi(pf, vsi_id);
--
--	return (vsi && (vsi->vf == vf));
-+	return vsi_id == ICE_VF_VSI_ID;
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl.h b/drivers/net/ethernet/intel/ice/ice_virtchnl.h
-index cd747718de738..a0d03f350dfc7 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl.h
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl.h
-@@ -19,6 +19,15 @@
- #define ICE_MAX_MACADDR_PER_VF		18
- #define ICE_FLEX_DESC_RXDID_MAX_NUM	64
- 
-+/* VFs only get a single VSI. For ice hardware, the VF does not need to know
-+ * its VSI index. However, the virtchnl interface requires a VSI number,
-+ * mainly due to legacy hardware.
-+ *
-+ * Since the VF doesn't need this information, report a static value to the VF
-+ * instead of leaking any information about the PF or hardware setup.
-+ */
-+#define ICE_VF_VSI_ID	1
++	/* Newly created netns do not have devices.
++	 * Do not even acquire rtnl.
++	 */
++	if (list_empty(&net->dev_base_head))
++		return;
 +
- struct ice_virtchnl_ops {
- 	int (*get_ver_msg)(struct ice_vf *vf, u8 *msg);
- 	int (*get_vf_res_msg)(struct ice_vf *vf, u8 *msg);
++	/* Note: This might not be needed, because smc_pnet_netdev_event()
++	 * is also calling smc_pnet_add_base_pnetid() when handling
++	 * NETDEV_UP event.
++	 */
+ 	rtnl_lock();
+ 	for_each_netdev(net, dev)
+ 		smc_pnet_add_base_pnetid(net, dev, ndev_pnetid);
 -- 
 2.43.0
 
