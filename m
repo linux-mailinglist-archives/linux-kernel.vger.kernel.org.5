@@ -1,62 +1,54 @@
-Return-Path: <linux-kernel+bounces-124731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C335C891BE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:36:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5234891BE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B16DB22101
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:36:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D26371C21DD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1AF1782EA;
-	Fri, 29 Mar 2024 12:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9EC1788B3;
+	Fri, 29 Mar 2024 12:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AwmLFsjS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AcibOs5L"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B826178890;
-	Fri, 29 Mar 2024 12:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9F5178300;
+	Fri, 29 Mar 2024 12:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716026; cv=none; b=qjiMNCnmAJSmFzbsG12ar+NfqeLe64xVN4LECk271p65QYdw3W3YgfuQonGv7VoZ6NPV8lcwI2mWzf3bE6pJAcj7XVE2b5Gd2x4RLvgOjWBP0o+30MS7LAts7N0IoFT+kffSA7Lvjl/d9XjAMspSn2p/REDhdB7EhcXJE2cPHNU=
+	t=1711716027; cv=none; b=kf88OwcLcs65pwvbpMFoELPmW9ozFZvJCbPfJ8JvycxgvsSpQEpjW1ls8lv6ZHTfZ4vgQFZTx37TdMshdKyQqCfNRqVOWC6WjTs4PL7RcnOpxUlVeoQT/opLMj2/4u2OYrkywy9JiPkkLegCBi87OHx++dfw40EKBRooVPfpp/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716026; c=relaxed/simple;
-	bh=WBxuzQAL7Uk/oH50pW4tkZDR4/xjBoDCxy6UmwLkmH8=;
+	s=arc-20240116; t=1711716027; c=relaxed/simple;
+	bh=OAeN0QcaQFWpAB8YgvTAPxvKI+ywGWLbU1SWwuh4gww=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CAxYIyQ1oEhKeNnG8+vEMrYGwocaoHG8XB7aTEd2K1gn/GoeyvRqfHAzLlr2Q35IplENw1cytl8snbwYy7cqjguwZL5n/4RQbiTgD7QgggOl86exCDztgonU6X1kO8g2ytS2dnCc/qAs5Wq9ijteU24UTevmY9qc0AtAGUI1+SQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AwmLFsjS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA3A7C43390;
-	Fri, 29 Mar 2024 12:40:24 +0000 (UTC)
+	 MIME-Version; b=Crp2+m5JBRXL2iB+11S5zNHYxwOr4i187VvkJogXV8JgSQQOEM+tdwuzYCS0+l3wMRveKO3iuRokz3elOk3rgQONZCMfrLCeNNcppGiAMV86zwQV1zCTLkle21fVbhf4IGt5AnMa6gKBadQRp3EdgrswKKH3DWvQptNYRbq9A1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AcibOs5L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BDB1C43394;
+	Fri, 29 Mar 2024 12:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716026;
-	bh=WBxuzQAL7Uk/oH50pW4tkZDR4/xjBoDCxy6UmwLkmH8=;
+	s=k20201202; t=1711716027;
+	bh=OAeN0QcaQFWpAB8YgvTAPxvKI+ywGWLbU1SWwuh4gww=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AwmLFsjSEurH2/xTUh39aRikZ4o/+Xl2mQfTUYFMUNRqd1gPOIovzvSTlzAFJ92Dw
-	 SO5KwGos8PmdSwd0bgMXY10NoM+Oh/uAm507aeLBhcUsw9mk4UoNO8yBHHtzWmjS+w
-	 u3E46R3vKttIVMCkAHE9We+i5lXFLXXDOuTU7B46efMdWAeOQ7AnzAh/d3+ILIpZT7
-	 JH/UIGa+x5/HTMJpPhWv4rLRzdkQdk287JfbOk6fp7uG02tnWgAgKW5E4O5C96jXIw
-	 pSSwufKvLfD6VRTI+JxFU/SKlPmf6bQ3b/Jrvm6LBQ+OULoNwRx2Mrirw5iARCAZ/A
-	 gemv8SuiYrV4Q==
+	b=AcibOs5LaoS3DkObWt+KhAVoPQd3+ZfHjAwJqWvxknkK0QwnpGR+iygWgmv6BTiOT
+	 LdUmTe7jHf4PSqJH2yESQEBmev+H0V2EwauceBTbCx79/p5ovmij4ZB687v3dAuaya
+	 07RA6dDgxRMW8j1SeBz/oZ47Cs+tAdleiVEXJHmwTXXD4wFi2/2VjVZiaFLrSJbi/7
+	 JvIXqKJ7+itGfsaen+JIuOiygIe1SPmreJ4uNIzerlPh7XkxmltAoe49nAEgsX/Gs8
+	 rK3fDzBcHbAV8svfCUfPPW7xHEUJkwlSjb8YChNFOhu12FKbs3VO0mEDKLT/9XCRva
+	 J50FDueiOQQ0A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: John Ogness <john.ogness@linutronix.de>,
 	Petr Mladek <pmladek@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	akpm@linux-foundation.org,
-	peterz@infradead.org,
-	jpoimboe@kernel.org,
-	wangkefeng.wang@huawei.com,
-	ubizjak@gmail.com,
-	feng.tang@intel.com,
-	bhe@redhat.com,
-	arnd@arndb.de
-Subject: [PATCH AUTOSEL 6.8 22/98] panic: Flush kernel log buffer at the end
-Date: Fri, 29 Mar 2024 08:36:53 -0400
-Message-ID: <20240329123919.3087149-22-sashal@kernel.org>
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 23/98] dump_stack: Do not get cpu_sync for panic CPU
+Date: Fri, 29 Mar 2024 08:36:54 -0400
+Message-ID: <20240329123919.3087149-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -73,46 +65,89 @@ Content-Transfer-Encoding: 8bit
 
 From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit d988d9a9b9d180bfd5c1d353b3b176cb90d6861b ]
+[ Upstream commit 7412dc6d55eed6b76180e40ac3601412ebde29bd ]
 
-If the kernel crashes in a context where printk() calls always
-defer printing (such as in NMI or inside a printk_safe section)
-then the final panic messages will be deferred to irq_work. But
-if irq_work is not available, the messages will not get printed
-unless explicitly flushed. The result is that the final
-"end Kernel panic" banner does not get printed.
+dump_stack() is called in panic(). If for some reason another CPU
+is holding the printk_cpu_sync and is unable to release it, the
+panic CPU will be unable to continue and print the stacktrace.
 
-Add one final flush after the last printk() call to make sure
-the final panic messages make it out as well.
+Since non-panic CPUs are not allowed to store new printk messages
+anyway, there is no need to synchronize the stacktrace output in
+a panic situation.
 
+For the panic CPU, do not get the printk_cpu_sync because it is
+not needed and avoids a potential deadlock scenario in panic().
+
+Link: https://lore.kernel.org/lkml/ZcIGKU8sxti38Kok@alley
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20240207134103.1357162-14-john.ogness@linutronix.de
+Link: https://lore.kernel.org/r/20240207134103.1357162-15-john.ogness@linutronix.de
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/panic.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/printk.h   |  2 ++
+ kernel/printk/internal.h |  1 -
+ lib/dump_stack.c         | 16 +++++++++++++---
+ 3 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 2807639aab51d..f22d8f33ea147 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -446,6 +446,14 @@ void panic(const char *fmt, ...)
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 8ef499ab3c1ed..955e31860095e 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -273,6 +273,8 @@ static inline void printk_trigger_flush(void)
+ }
+ #endif
  
- 	/* Do not scroll important messages printed above */
- 	suppress_printk = 1;
++bool this_cpu_in_panic(void);
 +
-+	/*
-+	 * The final messages may not have been printed if in a context that
-+	 * defers printing (such as NMI) and irq_work is not available.
-+	 * Explicitly flush the kernel log buffer one last time.
-+	 */
-+	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
+ #ifdef CONFIG_SMP
+ extern int __printk_cpu_sync_try_get(void);
+ extern void __printk_cpu_sync_wait(void);
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index ac2d9750e5f81..6c2afee5ef620 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -130,7 +130,6 @@ struct printk_message {
+ };
+ 
+ bool other_cpu_in_panic(void);
+-bool this_cpu_in_panic(void);
+ bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
+ 			     bool is_extended, bool may_supress);
+ 
+diff --git a/lib/dump_stack.c b/lib/dump_stack.c
+index 83471e81501a7..222c6d6c8281a 100644
+--- a/lib/dump_stack.c
++++ b/lib/dump_stack.c
+@@ -96,15 +96,25 @@ static void __dump_stack(const char *log_lvl)
+  */
+ asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
+ {
++	bool in_panic = this_cpu_in_panic();
+ 	unsigned long flags;
+ 
+ 	/*
+ 	 * Permit this cpu to perform nested stack dumps while serialising
+-	 * against other CPUs
++	 * against other CPUs, unless this CPU is in panic.
++	 *
++	 * When in panic, non-panic CPUs are not permitted to store new
++	 * printk messages so there is no need to synchronize the output.
++	 * This avoids potential deadlock in panic() if another CPU is
++	 * holding and unable to release the printk_cpu_sync.
+ 	 */
+-	printk_cpu_sync_get_irqsave(flags);
++	if (!in_panic)
++		printk_cpu_sync_get_irqsave(flags);
 +
- 	local_irq_enable();
- 	for (i = 0; ; i += PANIC_TIMER_STEP) {
- 		touch_softlockup_watchdog();
+ 	__dump_stack(log_lvl);
+-	printk_cpu_sync_put_irqrestore(flags);
++
++	if (!in_panic)
++		printk_cpu_sync_put_irqrestore(flags);
+ }
+ EXPORT_SYMBOL(dump_stack_lvl);
+ 
 -- 
 2.43.0
 
