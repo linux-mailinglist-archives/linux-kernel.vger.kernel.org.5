@@ -1,148 +1,232 @@
-Return-Path: <linux-kernel+bounces-124208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E40A8913E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:47:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DFB98913E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:47:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2201C2264C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:47:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 709421C21EF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6583CF7D;
-	Fri, 29 Mar 2024 06:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="oR7PvsaC"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291223C482;
+	Fri, 29 Mar 2024 06:47:43 +0000 (UTC)
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEBB290E
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 06:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2954D3BB20;
+	Fri, 29 Mar 2024 06:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711694812; cv=none; b=XtxQpQYO4tSvXippR1TykOGA7vz/iRo+QI6VCJnXMJckKsVA9h1EjwT6ob12Tm6z4NeqNg0yN7rhvIY8nh9C4hZ2Jf53lQfl+qrfqSA7GG2DgsB06DmGJA06KwWk5jHuIxtsfFsrwyabkKMO/hrgeaIw2h4w0KRA68ASOEihvhc=
+	t=1711694862; cv=none; b=kCgRRfEYkeO5Jcz4bQFmG6coSJ+T3dvsOruQx2C61Nb1HWhBk6KKnOueuAGwJPInPpr//qj/QkOadIzwSj5qbPwOQSP3g77HW+qgGbBlYgXhGlqfOhmEeo9nyWUKOgMWDW9xpONe0FANc7U8o4MejdAM2yNNGWLvkR3yCB2pA3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711694812; c=relaxed/simple;
-	bh=gQLO6nbk5X7C1rjNiPoaIryOSL7V9S6SPG1JJ1CAIbY=;
+	s=arc-20240116; t=1711694862; c=relaxed/simple;
+	bh=izFK5XYkRZKa9ZCzV4opit9b3Ca7NJrbNYZctJIiawE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XBjGYX7ZP/Kj8SkNGwDFPHPQywAuMhbGAlThDsiBXjqa6h+mgyuqYcoN1ZoiFpuWZuw1LCVyhB+o4+rG6/13e0C/XWHcaX6ljg5gvuDHN+04yvbrF2etUUW1Nh5OFLKHXF8Q7sTdi78gaCdt9DEKQzfigSv5o87t6UCLNB1RaTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=oR7PvsaC; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso1959200a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 23:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711694809; x=1712299609; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sbaidfr8O89WQpFMQeYf+bI/yRRdxomnrj/0LkaKxhg=;
-        b=oR7PvsaC3XKueUnPW8JQ4inhyh67yhMw/UArlvqgMyZoiSKBZiK2B+p5BVaGKvgTgi
-         KASanjnPVXwVkB49p6SeR8TdnVRQvCNeKC+UVZ0afoZFOrWF2EeHlZtG6qvYMYi3DZgu
-         zXW+nUwdnlJqjMGfMP0TLB6q8QyMAMPUxeI9goVCIwBmnLzoItatuG9J2XVcZPcPwOST
-         HtQd6CSBFa1CFsTaWR23/RL8gu3TGzirCUYdBtuEx4c6XwPlcuatcoxXWWgXuHS8fXSP
-         7OBt5Q+VkuTlr2gk3x0f6CnvCseWod8txxuvVqWk6XyHlM2dxATH5yzk1XRo1tXfo4DP
-         eegg==
+	 To:Cc:Content-Type; b=L/V5qsvmBHO714hayP3bpRRQO+jJ/WKd0Oe0ioIryxMpHILRkwFQ8nUap1fSd9rUIpy4s+QoZ8DHtK9vXbT+0gmOT0NML/BkZB1kPxwUNMTy/gCd66ViP3Po9vySnxzWfUK4N24t1HjHYwPqWaMOutshTowBooHPmR8TBVW8hKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e6fb9a494aso1506054b3a.0;
+        Thu, 28 Mar 2024 23:47:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711694809; x=1712299609;
+        d=1e100.net; s=20230601; t=1711694860; x=1712299660;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sbaidfr8O89WQpFMQeYf+bI/yRRdxomnrj/0LkaKxhg=;
-        b=mLaoJHjJb3zBOQowzTgTkkPBrZyqZj48aqy5yrzB/eGNkMXUtWmCevzsk665RFSj9S
-         7Qdt8R46XIVdPFLwLSbDmDS40N1rEPHqT7+gADimkiBwADOnnRZ7zApuisMHA1lBWCS5
-         1FZ6rvVlsX1Yj5w1gE41ILzcdjL2jnTZ59H+6Z7chcGGUFrXFE45XB4S/fQN3OdJ09aB
-         aXUjPBn3GI+6it/lwz9hIhkdp50FRYSwWXyvxT+hYnGUEt6ibCITHMEbtqmxOXdAKSg5
-         2scEGY3AJTd1ZVACIU1jijblcQ0zrWk91AYYlG2ajLFAaF8c6DzxA74l66zI6WrGE6rd
-         7IAg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKismJKkPbRCuC3UwDV7eLq4/LQSbB25kGPNHtHKjRj/XeeAvtLSVJ1+2+QYLKzqfLeIqDzyZJ0LPHeEJLEVy/HXnZPJ2pWBi9dQnS
-X-Gm-Message-State: AOJu0YznLQgGzBAh3jm/8sgJEw67UdbGtAJZHj2Sn39QZRuSc3HYVtS+
-	1yqkgyxJ5f6iD0VS4WTdtVJQr1Hcqw6C9sAxquUWhNKKbDgedTz9vLs+HP7KBdbvxVGW59jLppw
-	pEMNfFqomlqK8kgMc7a0CZUes6GmVrgHhK2lpzOkaw6JNYGoZBRc=
-X-Google-Smtp-Source: AGHT+IGIM5oN8E1SXUfbdQUXvLRfq6l9HxvWmiPlknc/i1EvF2LPXuH3k7UYzgJ38hkGGxzmtOG3mTT4NQ325KA7Q/k=
-X-Received: by 2002:a05:6402:40c2:b0:56b:ff72:e6bb with SMTP id
- z2-20020a05640240c200b0056bff72e6bbmr764831edb.40.1711694809292; Thu, 28 Mar
- 2024 23:46:49 -0700 (PDT)
+        bh=hKxkF5DycsiIenidpZ8HuGYDWfU4JArm5xr/R0Y9MYk=;
+        b=nYeXxpeOq1Z3V52j3IuiKwntoEUicTrr+gE2eNuXzrKxf1y57z5kIQlep2jMJtcpwz
+         bQd9JtcH80EoAGI4Y+hjAZcVook27uKudE0Pr18u5tvUemyNdG4FkHTvtouafnj2OFtr
+         XRJR2KCZG7Vco4rNfdrT3LLrvkjKpsQ6P/MJGvgJ1mUHWcJTKClrbdGa6l/6uASxlnoS
+         quo3x749yQ79NXe/TYvNq74DxwOOX9jmkAs7cAOwR9CktX0h9YSvFAYtTMR5xUFCyNDD
+         TorPSuaepzZvTiIzsoB8vJDorW/Buuk3lxQ5MXBPTtvL+RgNcwg7bsuk6yMVcyULKalI
+         UU9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUxUITKU8BcwPM8kjxcyaebYEqqAUpPRwlFUxXj0hkAflT3PtuR/QiEnrI7hQHFd5ClgWBTKyGgLQOubMkgNGEV20ndxHwgpEvgzn7qrIFBskVA4AWd1qpmL9u/XbJSjMPc7yX7oC4onpIHT76eRQ==
+X-Gm-Message-State: AOJu0YyQdl56a8wSBCwrveRzXlX4YTPLUNUs/EmdMHWlUVQg+6WpZ51C
+	8EAfJOq9Yk6G58wxc2L73+5ijr5oXytShrSdPZt4pbeFEVLrSIf4Ox1GHFE7SnZTO9KIeeZikq0
+	N50BLxdymt0K25FAY0AvGSdLk4C4=
+X-Google-Smtp-Source: AGHT+IHZaGRnnY0XKbgAeEwQcJ3AaCj8XeaBjDyAWKQdjLyiVehZyULIBtH5qDjBaRWskxVexGjTyrZ5YMlRRGK2jYM=
+X-Received: by 2002:a05:6a20:958b:b0:1a1:776d:15c with SMTP id
+ iu11-20020a056a20958b00b001a1776d015cmr1470917pzb.21.1711694860427; Thu, 28
+ Mar 2024 23:47:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <87ttkro3b5.fsf@all.your.base.are.belong.to.us> <20240327-irrigate-unread-d9de28174437@spud>
-In-Reply-To: <20240327-irrigate-unread-d9de28174437@spud>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Fri, 29 Mar 2024 07:46:38 +0100
-Message-ID: <CAHVXubgMTe83sYaNO+SG=90=k5scaQrpApveTCO163MhUc1tdA@mail.gmail.com>
-Subject: Re: RISC-V for-next/fixes (cont'd from PW sync)
-To: Conor Dooley <conor@kernel.org>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Emil Renner Berthing <kernel@esmil.dk>, 
-	Samuel Holland <samuel.holland@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	linux-riscv@lists.infradead.org, Andy Chiu <andy.chiu@sifive.com>, 
-	Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20240326202859.960577-1-weilin.wang@intel.com> <20240326202859.960577-5-weilin.wang@intel.com>
+In-Reply-To: <20240326202859.960577-5-weilin.wang@intel.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 28 Mar 2024 23:47:29 -0700
+Message-ID: <CAM9d7chrawiERtqDbmT4RJ81oYmQijSAMbCGOrVZ_sdpgD5AGg@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 4/6] perf stat: Create another thread for sample
+ data processing
+To: weilin.wang@intel.com
+Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 9:32=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
+On Tue, Mar 26, 2024 at 1:29=E2=80=AFPM <weilin.wang@intel.com> wrote:
 >
-> On Wed, Mar 27, 2024 at 08:57:50PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> > Hi,
-> >
-> > I figured I'd put some words on the "how to update the RISC-V
-> > for-next/fixes branches [1]" that came up on the patchwork call today.
-> >
-> > In RISC-V land, the for-next branch is used for features, and typically
-> > sent as a couple of PRs to Linus when the merge window is open. The
-> > fixes branch is sent as PR(s) between the RCs of a release.
-> >
-> > Today, the baseline for for-next/fixes is the CURRENT_RELEASE-rc1, and
-> > features/fixes are based on that.
-> >
-> > This has IMO a couple of issues:
-> >
-> > 1. fixes is missing the non-RISC-V fixes from releases later than
-> >    -rc1, which makes it harder for contributors.
-
-The syzbot report [1] requires fixes in mm [2], if we don't update
-fixes on top of the latest -rcX, we'll keep hitting this bug, so
-rebasing -fixes on top of the latest -rcX is necessary to me.
-
-[1] https://lore.kernel.org/linux-riscv/00000000000070a2660614b83885@google=
-com/T/#t
-[2] https://lore.kernel.org/all/20240326063036.6242-1-osalvador@suse.de/
-
-> > 2. for-next does not have the fixes from RISC-V/rest of the kernel,
-> >    and it's hard for contributors to test the work on for-next (buggy,
-> >    no fixes, and sometime missing deps).
-> >
-> > I used to spend a whole lot of mine time in the netdev tree of the
-> > kernel, and this is how they manage it (Thanks Kuba!):
-> >
-> > Netdev (here exchanged to RISC-V trees), fast-forward fixes, and then
-> > cross-merge fixes into for-next -- for every -rc.
-> >
-> > E.g., say fixes is submitted for -rc2 to Linus, once he pulls, do:
-> >
-> >   git push --delete origin $SOMETAG
-> >   git tag -d $SOMETAG
-> >   git pull --ff-only --tags git://git.kernel.org/pub/scm/linux/kernel/g=
-it/torvalds/linux.git
-> >   build / test / push out.
-> >
-> > Then pull fixes into for-next:
-> >
-> >   git pull --tags git://git.kernel.org/pub/scm/linux/kernel/git/riscv/l=
-inux.git fixes
-> >
-> >
-> > Personally (obviously biased), I think this would be easier for
-> > contributors. Any downsides from a RISC-V perspective?
+> From: Weilin Wang <weilin.wang@intel.com>
 >
-> After you left, Palmer said he'd go for merging his fixes tag into
-> for-next after they got merged by Linus. At least I think it was that,
-> rather than Linus' -rcs...
+> Another thread is required to synchronize between perf stat and perf reco=
+rd
+> when we pass data through pipe.
+
+It seems better if you can squash this commit to the patch 2/6.
+
+Thanks,
+Namhyung
+
+>
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/builtin-stat.c     | 51 +++++++++++++++++++++--------------
+>  tools/perf/util/stat-shadow.c |  4 +--
+>  2 files changed, 33 insertions(+), 22 deletions(-)
+>
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index fc887d9aaa66..14488cb0cfc8 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -802,9 +802,9 @@ static int process_feature_event(struct perf_session =
+*session,
+>         return 0;
+>  }
+>
+> -static int __cmd_script(struct child_process *cmd __maybe_unused)
+> +static void *__cmd_script(void *arg __maybe_unused)
+>  {
+> -       int err =3D 0;
+> +       struct child_process *cmd =3D arg;
+>         struct perf_session *session;
+>         struct perf_data data =3D {
+>                 .mode =3D PERF_DATA_MODE_READ,
+> @@ -819,29 +819,15 @@ static int __cmd_script(struct child_process *cmd _=
+_maybe_unused)
+>                 .attr            =3D perf_event__process_attr,
+>                 },
+>         };
+> -       struct tpebs_event *e;
+> -
+> -       list_for_each_entry(e, &stat_config.tpebs_events, nd) {
+> -               struct tpebs_retire_lat *new =3D malloc(sizeof(struct tpe=
+bs_retire_lat));
+>
+> -               if (!new)
+> -                       return -1;
+> -               new->event.name =3D strdup(e->name);
+> -               new->event.tpebs_name =3D strdup(e->tpebs_name);
+> -               new->count =3D 0;
+> -               new->sum =3D 0;
+> -               list_add_tail(&new->event.nd, &stat_config.tpebs_results)=
+;
+> -       }
+> -
+> -       kill(cmd->pid, SIGTERM);
+>         session =3D perf_session__new(&data, &script.tool);
+>         if (IS_ERR(session))
+> -               return PTR_ERR(session);
+> +               return NULL;
+>         script.session =3D session;
+> -       err =3D perf_session__process_events(session);
+> +       perf_session__process_events(session);
+>         perf_session__delete(session);
+>
+> -       return err;
+> +       return NULL;
+>  }
+>
+>  static int __run_perf_stat(int argc, const char **argv, int run_idx)
+> @@ -861,16 +847,37 @@ static int __run_perf_stat(int argc, const char **a=
+rgv, int run_idx)
+>         int err;
+>         bool second_pass =3D false;
+>         struct child_process cmd;
+> +       pthread_t thread_script;
+>
+>         /* Prepare perf record for sampling event retire_latency before f=
+ork and
+>          * prepare workload */
+>         if (stat_config.tpebs_event_size > 0) {
+>                 int ret;
+> +               struct tpebs_event *e;
+>
+>                 pr_debug("perf stat pid =3D %d\n", getpid());
+> +               list_for_each_entry(e, &stat_config.tpebs_events, nd) {
+> +                       struct tpebs_retire_lat *new =3D malloc(sizeof(st=
+ruct tpebs_retire_lat));
+> +
+> +                       if (!new)
+> +                               return -1;
+> +                       new->event.name =3D strdup(e->name);
+> +                       new->event.tpebs_name =3D strdup(e->tpebs_name);
+> +                       new->count =3D 0;
+> +                       new->sum =3D 0;
+> +                       list_add_tail(&new->event.nd, &stat_config.tpebs_=
+results);
+> +               }
+>                 ret =3D prepare_perf_record(&cmd);
+>                 if (ret)
+>                         return ret;
+> +               if (pthread_create(&thread_script, NULL, __cmd_script, &c=
+md)) {
+> +                       kill(cmd.pid, SIGTERM);
+> +                       close(cmd.out);
+> +                       pr_err("Could not create thread to process sample=
+ data.\n");
+> +                       return -1;
+> +               }
+> +               /* Wait for perf record initialization a little bit.*/
+> +               sleep(2);
+>         }
+>
+>         if (forks) {
+> @@ -1081,8 +1088,12 @@ static int __run_perf_stat(int argc, const char **=
+argv, int run_idx)
+>         if (stat_config.tpebs_event_size > 0) {
+>                 int ret;
+>
+> -               ret =3D __cmd_script(&cmd);
+> +               kill(cmd.pid, SIGTERM);
+> +               pthread_join(thread_script, NULL);
+>                 close(cmd.out);
+> +               ret =3D finish_command(&cmd);
+> +               if (ret !=3D -ERR_RUN_COMMAND_WAITPID_SIGNAL)
+> +                       return ret;
+>         }
+>
+>         if (stat_config.walltime_run_table)
+> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.=
+c
+> index 8fc3415de106..bc77e9e02892 100644
+> --- a/tools/perf/util/stat-shadow.c
+> +++ b/tools/perf/util/stat-shadow.c
+> @@ -361,8 +361,8 @@ static int prepare_retire_lat(struct expr_parse_ctx *=
+pctx,
+>         int ret =3D 0;
+>         struct tpebs_retire_lat *t;
+>
+> -       list_for_each_entry(t, retire_lats, nd) {
+> -               ret =3D expr__add_id_val(pctx, strdup(t->tpebs_name), t->=
+val);
+> +       list_for_each_entry(t, retire_lats, event.nd) {
+> +               ret =3D expr__add_id_val(pctx, strdup(t->event.tpebs_name=
+), t->val);
+>                 if (ret < 0)
+>                         return ret;
+>         }
+> --
+> 2.43.0
+>
 
