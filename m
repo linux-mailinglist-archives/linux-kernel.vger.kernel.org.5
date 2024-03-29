@@ -1,199 +1,220 @@
-Return-Path: <linux-kernel+bounces-124223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECCF89140F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:16:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB3F2891424
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:24:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C4B0289022
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:16:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF4771C22243
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC3E3FE2C;
-	Fri, 29 Mar 2024 07:16:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F8B4086F;
+	Fri, 29 Mar 2024 07:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iksif7ri"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="YLcJkY4U"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335D93FB8C;
-	Fri, 29 Mar 2024 07:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48F63FBBC
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711696592; cv=none; b=r4Bg52aMAcAx6FgWHSKkzr46znvdJrNieDBSoFmtH6u+iGLHFbVQeJavTcpQ7KYQLi2g1QuImCm95w99Tr2C8Y3qxZQGzQ1L3QwrA+6HDWqDpuZ/DLy1Pd/+hIH7ZCzenfpYk8PgD4RV/JpopSdHtJGLQJpBbFpUiS71CE/gadQ=
+	t=1711697086; cv=none; b=fKZZelqT5NXmbmE97+VBMdXzbXq+7yR6MS1rzqnRshOCZLZhwDfhCT3TkxDrdtcMhc3Z0+2ZC9k+NtKDqRaEc1iAqoZUwkv+lNLO5js19vcZQRl6MsWXE0neMwfMKCsFHnWbCGvsNYgblYJ6ut0wKBa33dQk+QKSFXGw0ioSiOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711696592; c=relaxed/simple;
-	bh=Ev98fKmh39oX3GTREoTUTFF4eGgbYjmzC28MTusAFPc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T4D3Lx2ejVa2/KXTbpYoMl8DoevEb1dG9J9fTqy0xzp4kY9cdgiyFToxnqoZ6AW+d9GZ2qdaVFj5M8GNgQ993HewbijHEc0BXE+qSxh/iyUkcU52NXX/Qd3lTP02O2UMkYsextfkz4xKiOZdlWxc/KToXieVsosPZJS8eKx6hcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iksif7ri; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42T73UBi006567;
-	Fri, 29 Mar 2024 07:16:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=2CYgJP3ojhBQiLW0Of7Q2BULE3M0/2ey8CU7au28ncs=;
- b=iksif7riljXLMSTt8QcJdasM6guPku1YJdaVYKKbPOUvaxQsw6RGo7PWEQUAHvfkV8Lm
- bQTqlpBz+8CfwRUg6ipKVw8TVP3IE0vw1derFmIRSzjHj4m7dhOL7o/wKkQiBcEtsxTn
- LYcCZ6Bt/slzMkmDUZPmNVsu5wQxTWVWBeZ+HbAOSdDHYExFvixIxgbiM7XFa1AwZjSJ
- td/eVl1Fd6Atn+dg5u/01JCchCvqMK03D7o8lXliNXsltB2nUY7QY4zeyQaep6ORJ0og
- Ftl7p6klw94K7ek/s1ZVhqNyFj+aBAhlcKNHSx5UcWThBjBeZkgyWM+PyWjOTw88qDAF tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rw880t7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 07:16:19 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42T7GIkB026855;
-	Fri, 29 Mar 2024 07:16:18 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rw880sn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 07:16:18 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42T5UEi1016605;
-	Fri, 29 Mar 2024 07:16:06 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dujxsn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Mar 2024 07:16:06 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42T7G2VW49086788
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Mar 2024 07:16:04 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6B13D20040;
-	Fri, 29 Mar 2024 07:16:02 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A4D8320043;
-	Fri, 29 Mar 2024 07:16:00 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.115.153])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 29 Mar 2024 07:16:00 +0000 (GMT)
-Date: Fri, 29 Mar 2024 12:45:58 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jack@suse.cz, ritesh.list@gmail.com
-Subject: Re: [PATCH 4/5] ext4: use correct criteria name instead stale
- integer number in comment
-Message-ID: <ZgZqrhinpCfwd2ub@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
- <20240326213823.528302-5-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1711697086; c=relaxed/simple;
+	bh=cDdC7qSNGUzpG6UlyjsDWPh/KILcYk93sgCXZ4m0Ofk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GOzGAIzyahrkrk74fsJwvekAcTsF+9V0zDaMzYtS/YzV2WaHEtqm6y2DRz+mjtrV4/0jVId07BgbX1Z+wSgocdFNgS+ndnGbYbnW3lZHE1AdgQ8oBaCwA0dp2qf6t2e7Ki5qx6q/yIMUkFfSjeGHvTZ6I05EPh/ihYFX63xRDw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=YLcJkY4U; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d8b519e438so1258827a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1711697083; x=1712301883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+9VxbCTgzZ80UmziOWsKJFOvNNy0Qw1c5wWNUXcCD38=;
+        b=YLcJkY4UcCZP2Sv7cyrOxbTbDPiTmg3zQVnqI9tkG4F+uEK1D/dYZcqHhcgX3Hg2Cc
+         +YfiLQflU/vKxMN+a33TY9/5/G6wGUbip/bp/1SjWWIS0CfIIuqfRMZF4lhYgwPwKYiH
+         6bwEfF2E6Pt3JyUXXAztgl0UkZf2kfE2etbYfMJBjE5Xr/N/7zHjyvJQzEFQ19s6VP+7
+         hdLI5JHjBMCr6FluhOwvhfXhlqs6cUSgbyFaceBYrPg7vndZIVpMhi2+q9Bhj7x2H1MB
+         La2W+rN/qL9Boc2DQOU6HXWjz9H/pCdRmOzGq3/HV3x8pqqbkO9263ySIy8AOvMn0Nz3
+         0SxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711697083; x=1712301883;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+9VxbCTgzZ80UmziOWsKJFOvNNy0Qw1c5wWNUXcCD38=;
+        b=YnSRDnBFwgXZg+xSoo+818Ltay+bsNWbsrTIc6m8kjn9m+rCD4+3pQMRpbnKNVZa7n
+         7+oHPKPDBg5csoSPZHMEtT7/jzGEbpPg9QHb7Dyq3Q+N6XC+cuCXP6a5BSlUUm8FQ6aR
+         Lf8BY48OY35d//0doBwYJ86t6wyOxvFJ+A9qdjjvk6s6GyFOWSXi45CXYwqm536ei24x
+         EPeHEVXpPLVuuUJoZ5/Wx4xlzacXr/X1FEhPvKwVEcboJWyGDmGvXxzg5jRLAb2z1Qiu
+         JHRXl0XokLlC9lt9NC6HJM/WNGp9bPFLpaOZxymr0JY976VvhQz+Pemqe0rgILz6asG/
+         MzCw==
+X-Gm-Message-State: AOJu0Ywdqd30w52Iy5cZ4BBMXDFSFbwVJm1BMZxg7H9xwKbZic6kpRA5
+	o5AWpRFInkCqwQGheicKQZmpReVIx6jpoD3QHNpY3QxQwn85JXTzMCGppEkxJlQ=
+X-Google-Smtp-Source: AGHT+IEb5QR4f0wxokXnCFueIg3e5DUC8zxXcfXICifgdBJpQrnHEBOFNWDHzDiuuKhBOVbgthprFw==
+X-Received: by 2002:a05:6a20:ce4d:b0:1a3:c460:1a4f with SMTP id id13-20020a056a20ce4d00b001a3c4601a4fmr1590367pzb.59.1711697083202;
+        Fri, 29 Mar 2024 00:24:43 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b0029ddac03effsm4971798pjb.11.2024.03.29.00.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 00:24:42 -0700 (PDT)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-arm-kernel@lists.infradead.org,
+	x86@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	Christoph Hellwig <hch@lst.de>,
+	loongarch@lists.linux.dev,
+	amd-gfx@lists.freedesktop.org,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	linux-doc@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH v4 00/15] Unified cross-architecture kernel-mode FPU API
+Date: Fri, 29 Mar 2024 00:18:15 -0700
+Message-ID: <20240329072441.591471-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326213823.528302-5-shikemeng@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Bl-tQONuqMiGmvyE7YhDkAf6TAoBfqFZ
-X-Proofpoint-GUID: -bYbZpkKX7zPc2DSlEq2cuohaYKqDWVT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- clxscore=1015 phishscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
- definitions=main-2403290061
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 27, 2024 at 05:38:22AM +0800, Kemeng Shi wrote:
-> Use correct criteria name instead stale integer number in comment
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/ext4.h    | 15 ++++++++++++---
->  fs/ext4/mballoc.c | 14 ++++++++------
->  fs/ext4/mballoc.h |  4 ++--
->  3 files changed, 22 insertions(+), 11 deletions(-)
-> 
+This series unifies the kernel-mode FPU API across several architectures
+by wrapping the existing functions (where needed) in consistently-named
+functions placed in a consistent header location, with mostly the same
+semantics: they can be called from preemptible or non-preemptible task
+context, and are not assumed to be reentrant. Architectures are also
+expected to provide CFLAGS adjustments for compiling FPU-dependent code.
+For the moment, SIMD/vector units are out of scope for this common API.
 
-Thanks for the cleanup! Feel free to add:
+This allows us to remove the ifdeffery and duplicated Makefile logic at
+each FPU user. It then implements the common API on RISC-V, and converts
+a couple of users to the new API: the AMDGPU DRM driver, and the FPU
+self test.
 
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+The underlying goal of this series is to allow using newer AMD GPUs
+(e.g. Navi) on RISC-V boards such as SiFive's HiFive Unmatched. Those
+GPUs need CONFIG_DRM_AMD_DC_FP to initialize, which requires kernel-mode
+FPU support.
 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 023571f8dd1b..9b90013c59a3 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -213,11 +213,20 @@ enum criteria {
->  #define EXT4_MB_USE_RESERVED		0x2000
->  /* Do strict check for free blocks while retrying block allocation */
->  #define EXT4_MB_STRICT_CHECK		0x4000
-> -/* Large fragment size list lookup succeeded at least once for cr = 0 */
-> +/*
-> + * Large fragment size list lookup succeeded at least once for cr =
-> + * CR_POWER2_ALIGNED
-> + */
->  #define EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED		0x8000
-> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
-> +/*
-> + * Avg fragment size rb tree lookup succeeded at least once for cr =
-> + * CR_GOAL_LEN_FAST
-> + */
->  #define EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED		0x00010000
-> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1.5 */
-> +/*
-> + * Avg fragment size rb tree lookup succeeded at least once for cr =
-> + * CR_BEST_AVAIL_LEN
-> + */
->  #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
->  
->  struct ext4_allocation_request {
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 62d468379722..0f8a34513bf6 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1131,8 +1131,9 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
->  		ext4_mb_choose_next_group_best_avail(ac, new_cr, group);
->  	} else {
->  		/*
-> -		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
-> -		 * bb_free. But until that happens, we should never come here.
-> +		 * TODO: For CR=CR_GOAL_LEN_SLOW, we can arrange groups in an
-> +		 * rb tree sorted by bb_free. But until that happens, we should
-> +		 * never come here.
->  		 */
->  		WARN_ON(1);
->  	}
-> @@ -3444,10 +3445,11 @@ static int ext4_mb_init_backend(struct super_block *sb)
->  	}
->  	if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
->  		sbi->s_mb_prefetch = ext4_get_groups_count(sb);
-> -	/* now many real IOs to prefetch within a single allocation at cr=0
-> -	 * given cr=0 is an CPU-related optimization we shouldn't try to
-> -	 * load too many groups, at some point we should start to use what
-> -	 * we've got in memory.
-> +	/*
-> +	 * now many real IOs to prefetch within a single allocation at
-> +	 * cr=CR_POWER2_ALIGNED. Given cr=CR_POWER2_ALIGNED is an CPU-related
-> +	 * optimization we shouldn't try to load too many groups, at some point
-> +	 * we should start to use what we've got in memory.
->  	 * with an average random access time 5ms, it'd take a second to get
->  	 * 200 groups (* N with flex_bg), so let's make this limit 4
->  	 */
-> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-> index 56938532b4ce..042437d8860f 100644
-> --- a/fs/ext4/mballoc.h
-> +++ b/fs/ext4/mballoc.h
-> @@ -187,8 +187,8 @@ struct ext4_allocation_context {
->  	struct ext4_free_extent ac_f_ex;
->  
->  	/*
-> -	 * goal len can change in CR1.5, so save the original len. This is
-> -	 * used while adjusting the PA window and for accounting.
-> +	 * goal len can change in CR_BEST_AVAIL_LEN, so save the original len.
-> +	 * This is used while adjusting the PA window and for accounting.
->  	 */
->  	ext4_grpblk_t	ac_orig_goal_len;
->  
-> -- 
-> 2.30.0
-> 
+Previous versions:
+v3: https://lore.kernel.org/linux-kernel/20240327200157.1097089-1-samuel.holland@sifive.com/
+v2: https://lore.kernel.org/linux-kernel/20231228014220.3562640-1-samuel.holland@sifive.com/
+v1: https://lore.kernel.org/linux-kernel/20231208055501.2916202-1-samuel.holland@sifive.com/
+v0: https://lore.kernel.org/linux-kernel/20231122030621.3759313-1-samuel.holland@sifive.com/
+
+Changes in v4:
+ - Add missed CFLAGS changes for recov_neon_inner.c
+   (fixes arm build failures)
+ - Fix x86 include guard issue (fixes x86 build failures)
+
+Changes in v3:
+ - Rebase on v6.9-rc1
+ - Limit riscv ARCH_HAS_KERNEL_FPU_SUPPORT to 64BIT
+
+Changes in v2:
+ - Add documentation explaining the built-time and runtime APIs
+ - Add a linux/fpu.h header for generic isolation enforcement
+ - Remove file name from header comment
+ - Clean up arch/arm64/lib/Makefile, like for arch/arm
+ - Remove RISC-V architecture-specific preprocessor check
+ - Split altivec removal to a separate patch
+ - Use linux/fpu.h instead of asm/fpu.h in consumers
+ - Declare test_fpu() in a header
+
+Michael Ellerman (1):
+  drm/amd/display: Only use hard-float, not altivec on powerpc
+
+Samuel Holland (14):
+  arch: Add ARCH_HAS_KERNEL_FPU_SUPPORT
+  ARM: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  ARM: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
+  arm64: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  arm64: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
+  lib/raid6: Use CC_FLAGS_FPU for NEON CFLAGS
+  LoongArch: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  powerpc: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  x86/fpu: Fix asm/fpu/types.h include guard
+  x86: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+  riscv: Add support for kernel-mode FPU
+  drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
+  selftests/fpu: Move FP code to a separate translation unit
+  selftests/fpu: Allow building on other architectures
+
+ Documentation/core-api/floating-point.rst     | 78 +++++++++++++++++++
+ Documentation/core-api/index.rst              |  1 +
+ Makefile                                      |  5 ++
+ arch/Kconfig                                  |  6 ++
+ arch/arm/Kconfig                              |  1 +
+ arch/arm/Makefile                             |  7 ++
+ arch/arm/include/asm/fpu.h                    | 15 ++++
+ arch/arm/lib/Makefile                         |  3 +-
+ arch/arm64/Kconfig                            |  1 +
+ arch/arm64/Makefile                           |  9 ++-
+ arch/arm64/include/asm/fpu.h                  | 15 ++++
+ arch/arm64/lib/Makefile                       |  6 +-
+ arch/loongarch/Kconfig                        |  1 +
+ arch/loongarch/Makefile                       |  5 +-
+ arch/loongarch/include/asm/fpu.h              |  1 +
+ arch/powerpc/Kconfig                          |  1 +
+ arch/powerpc/Makefile                         |  5 +-
+ arch/powerpc/include/asm/fpu.h                | 28 +++++++
+ arch/riscv/Kconfig                            |  1 +
+ arch/riscv/Makefile                           |  3 +
+ arch/riscv/include/asm/fpu.h                  | 16 ++++
+ arch/riscv/kernel/Makefile                    |  1 +
+ arch/riscv/kernel/kernel_mode_fpu.c           | 28 +++++++
+ arch/x86/Kconfig                              |  1 +
+ arch/x86/Makefile                             | 20 +++++
+ arch/x86/include/asm/fpu.h                    | 13 ++++
+ arch/x86/include/asm/fpu/types.h              |  6 +-
+ drivers/gpu/drm/amd/display/Kconfig           |  2 +-
+ .../gpu/drm/amd/display/amdgpu_dm/dc_fpu.c    | 35 +--------
+ drivers/gpu/drm/amd/display/dc/dml/Makefile   | 36 +--------
+ drivers/gpu/drm/amd/display/dc/dml2/Makefile  | 36 +--------
+ include/linux/fpu.h                           | 12 +++
+ lib/Kconfig.debug                             |  2 +-
+ lib/Makefile                                  | 26 +------
+ lib/raid6/Makefile                            | 33 +++-----
+ lib/test_fpu.h                                |  8 ++
+ lib/{test_fpu.c => test_fpu_glue.c}           | 37 ++-------
+ lib/test_fpu_impl.c                           | 37 +++++++++
+ 38 files changed, 348 insertions(+), 193 deletions(-)
+ create mode 100644 Documentation/core-api/floating-point.rst
+ create mode 100644 arch/arm/include/asm/fpu.h
+ create mode 100644 arch/arm64/include/asm/fpu.h
+ create mode 100644 arch/powerpc/include/asm/fpu.h
+ create mode 100644 arch/riscv/include/asm/fpu.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_fpu.c
+ create mode 100644 arch/x86/include/asm/fpu.h
+ create mode 100644 include/linux/fpu.h
+ create mode 100644 lib/test_fpu.h
+ rename lib/{test_fpu.c => test_fpu_glue.c} (71%)
+ create mode 100644 lib/test_fpu_impl.c
+
+-- 
+2.44.0
+
 
