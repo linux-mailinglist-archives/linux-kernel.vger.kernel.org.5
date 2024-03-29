@@ -1,134 +1,96 @@
-Return-Path: <linux-kernel+bounces-125480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CDE58926EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:49:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A1168926F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 23:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EE5B1F22D09
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:49:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DA7284515
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 22:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBD413CF91;
-	Fri, 29 Mar 2024 22:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204B313E413;
+	Fri, 29 Mar 2024 22:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IpcGOe+G"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QriMG5bP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA136849C;
-	Fri, 29 Mar 2024 22:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D1613D62A;
+	Fri, 29 Mar 2024 22:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711752574; cv=none; b=lsfeT/09HbSBU7HHeb/VfZm10SqeljgP3Zdfwumy/tsTIkoCn79hnVn/h3MY+QQx4ifs703OWbvS4Y4BFLjTNENZfpjl1RY5qfK48XRqpK1XlurcOFIgw7Ua1CP1jnPBh6uYzfCEJR03FgZupcqPXLJJaZ+BgLljzdWsBFd3cUk=
+	t=1711752631; cv=none; b=eLispVzL4Rucdj5yrzfRgnSRePLp+Y1FD2BRZyUX76ykzaZw7VHi9YXASU31baAxoYFmxYlpOQR4UYS8gEjEpjt1zGwq62prz06qhAHc+483Hh1xmTXYFXP7I4YViQd6l9vns1N932S+E0brudJT0ir0I9KRIrHiq60XZoaVoX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711752574; c=relaxed/simple;
-	bh=NUfPh5D3dQMIcCtz1EhdkcsFvsIQ6wVm83hQ6WfxnOE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GUQ9SK26n4OQ2Kt5cTp+sE0PZzVwEgz5keINWrxuybjfFWjkYxjw402Jj+fPE4VTHfzW0pM6/31wuMXbYWjOIXxwbElg0898TMcrkTsScF0wunMLiAdK2Dr/T7keIG5dOjb3IVsKRP+EIgcXjY80cKDmtrdfsrjwh+oHzFUbX5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IpcGOe+G; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711752564;
-	bh=y7/nbXFQZJjv1BJM3ikZ+A5q8QAGzIbRDpWbIYDsgHQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=IpcGOe+GKsUbsctsTABGZXj/TkRvnlkwMfabjWCTE+oMxrYOc1CzrHlBgK/CNM65+
-	 wLB76ZWrRTCpcKHKDXef5XQTfYXlu4dZwkZU+QjiN2buY7TNbxGGQc3+pCHsNZx82F
-	 BGnsu3KOBh2FhylnAMqiKghTzFvuGBx+YBTVON+zzRWIzov3zXobuxBBJts8w2lyT4
-	 spF8geDua8Vxt0My4r3TMvLV0ML6ee8gjCR8gqFpweFP+KE7skh3bIHzmlABtGGzah
-	 Il9MDLY1SpF2zwe9RuS6KfJZ4hqeNrdKrkCy4NiaTYio7pMczJnc9qVav5yoJqTQXh
-	 +w7lOE3MLJ+BA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V5wZW0VRVz4wcn;
-	Sat, 30 Mar 2024 09:49:22 +1100 (AEDT)
-Date: Sat, 30 Mar 2024 09:49:19 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Linux Doc Mailing List
- <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew
- Morton <akpm@linux-foundation.org>, Kent Overstreet
- <kent.overstreet@linux.dev>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the mm tree
-Message-ID: <20240330094919.61e7c7b8@canb.auug.org.au>
-In-Reply-To: <CAJuCfpHZGkL9urkZaVmO_o0ujpr-moDGYiBES1iRy2dh8g-t8w@mail.gmail.com>
-References: <20240325123603.1bdd6588@canb.auug.org.au>
-	<CAJuCfpH4Ee00hM9+B7=mi5Dwjrhov8vUK-KwPuoO3wsD7iJSAQ@mail.gmail.com>
-	<5e1321ca-0d46-4e9d-a6e5-0560d99f65ff@infradead.org>
-	<CAJuCfpFTOz8cNiJFiCU5tMM1u5L=wXRsXqxUhN9g-R0u77CyZw@mail.gmail.com>
-	<20240328153947.3871cfdf@canb.auug.org.au>
-	<20240328154427.3e926d21@canb.auug.org.au>
-	<CAJuCfpHZGkL9urkZaVmO_o0ujpr-moDGYiBES1iRy2dh8g-t8w@mail.gmail.com>
+	s=arc-20240116; t=1711752631; c=relaxed/simple;
+	bh=1rWdaEawfYR3LfAF31PiRtpuMF8rLJZ44iKkxh0MscI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Xg3OsV9Hn217vm8daSQu1usYD3ksPWTEpVZ2YL8e46SgPg+BrESFujNuqbVuhFeJowZ00pl26chFLpmFOjszBnk+xcfKA2Lv8VGoUK8QewV5y96v44UHH8h1j3HJYz3vCS+bWN/aej6pX4824HBLNpa31QWPvcxKcQWmCuSFNkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QriMG5bP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8AA7FC43609;
+	Fri, 29 Mar 2024 22:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711752630;
+	bh=1rWdaEawfYR3LfAF31PiRtpuMF8rLJZ44iKkxh0MscI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=QriMG5bPxFDJal3+iK1Pb0iH9WyOvvWgwweQ2/D86v3oy/13nMNRcnZgIMYLJopSY
+	 7KLJczmMCVMHyE0HUKo16Zlrh+oM1jIPi5sy2qLvR1xNCT85FR5iD28bsq3bhCic2E
+	 9agT52MvYHoRihMvi5B1sSF3/Py9XPrQj9IBRigclTJz6rtPhf6vSl/5FSEsRqKbd5
+	 AG+Y/Btm/xHAuRSBzBp5kwOLojbL6e2YNlyWE+0YcxgNg53lc484ELHLR7HwPJHh3Q
+	 zxW5r1DkUTeEdz0tQrKVSD3O2p8NxXZGc3WAWBi8z8L8dwVHWkG0HVZicER5qqp8k6
+	 laI6AElXluGGw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 816E5D2D0EB;
+	Fri, 29 Mar 2024 22:50:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FA9pyRN8FXVoQi2ztbbKi3I";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6 0/1] Add property in dwmac-stm32 documentation
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171175263052.1693.263504657362042828.git-patchwork-notify@kernel.org>
+Date: Fri, 29 Mar 2024 22:50:30 +0000
+References: <20240328185337.332703-1-christophe.roullier@foss.st.com>
+In-Reply-To: <20240328185337.332703-1-christophe.roullier@foss.st.com>
+To: Christophe Roullier <christophe.roullier@foss.st.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+ richardcochran@gmail.com, joabreu@synopsys.com, lgirdwood@gmail.com,
+ broonie@kernel.org, marex@denx.de, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 
---Sig_/FA9pyRN8FXVoQi2ztbbKi3I
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi Suren,
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, 27 Mar 2024 22:35:56 -0700 Suren Baghdasaryan <surenb@google.com> w=
-rote:
->
-> https://lore.kernel.org/all/20240327044649.9199-1-rdunlap@infradead.org/
-> which seems to not yet been pulled into mm-unstable should fix the
-> following warnings:
->=20
-> include/linux/slab.h:730: warning: Function parameter or struct member
-> '_n' not described in 'kcalloc'
-> include/linux/slab.h:730: warning: Function parameter or struct member
-> '_size' not described in 'kcalloc'
-> include/linux/slab.h:730: warning: Function parameter or struct member
-> '_flags' not described in 'kcalloc'
-> include/linux/slab.h:730: warning: Excess function parameter 'n'
-> description in 'kcalloc'
-> include/linux/slab.h:730: warning: Excess function parameter 'size'
-> description in 'kcalloc'
-> include/linux/slab.h:730: warning: Excess function parameter 'flags'
-> description in 'kcalloc'
->=20
-> And https://lore.kernel.org/all/20240326054149.2121-1-rdunlap@infradead.o=
-rg/
-> should handle the _noprof warnings. I can see this patch in
-> mm-unstable and running "make htmldocs" in mm-unstable does not show
-> the _noprof warnings anymore. Please let me know if I should try some
-> other command to reproduce these.
+On Thu, 28 Mar 2024 19:53:36 +0100 you wrote:
+> Introduce property in dwmac-stm32 documentation
+> 
+>  - st,ext-phyclk: is present since 2020 in driver so need to explain
+>    it and avoid dtbs check issue : views/kernel/upstream/net-next/arch/arm/boot/dts/st/stm32mp157c-dk2.dtb:
+> ethernet@5800a000: Unevaluated properties are not allowed
+> ('st,ext-phyclk' was unexpected)
+>    Furthermore this property will be use in upstream of MP13 dwmac glue. (next step)
+> 
+> [...]
 
-Those patches entered the mm tree after I had merge it on Thursday.  It
-should all be good on Tuesday.
+Here is the summary with links:
+  - [v6,1/1] dt-bindings: net: dwmac: Document STM32 property st,ext-phyclk
+    https://git.kernel.org/netdev/net-next/c/929107d3d2a3
 
---=20
-Cheers,
-Stephen Rothwell
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---Sig_/FA9pyRN8FXVoQi2ztbbKi3I
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYHRW8ACgkQAVBC80lX
-0Gxgvwf/cbqAEXHY0h2qgDEQcCMgXVslA1NPf257L3zgOuCHyXMcmL3hwwPEURq1
-K1XwRlmeeSAkz98+F4yZ8Jmorf1B6XDmYGOW/4LibXX4lN3wMsAiECWJurB1nyZs
-AgvztLSdVJTrW+nkydmT8ekFlIyK2xUQkwHNtr5iJ97DH6nPaLUeIqyWVaVkOGpt
-atD9CE3J3dC1UYzSvH7ipdEOoxeSc4FQFDGRGvdSJ8witGnAq6HDrMYcZEmMkotp
-r504oKZTeFwD0XI9nzSBSHnfzml23a/gUSwHDzxIi9TK88tPBpmS+v7ioH13luyL
-n2VZEAicwEyUWC1ASZewuk3BY0fEhA==
-=2moH
------END PGP SIGNATURE-----
-
---Sig_/FA9pyRN8FXVoQi2ztbbKi3I--
 
