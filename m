@@ -1,148 +1,135 @@
-Return-Path: <linux-kernel+bounces-125211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77D15892246
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:04:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26987892218
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8947B1C25EBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:04:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91DE21F262FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C935813BC05;
-	Fri, 29 Mar 2024 17:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279861327F5;
+	Fri, 29 Mar 2024 17:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="MamCsWkS"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A762E132813;
-	Fri, 29 Mar 2024 17:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+HDWVJu"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAAB933CC4
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:01:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711731747; cv=none; b=FMsp/lq2du5UQj0PC9fPSoox77opGFpzh34HdI+jFQcE1NgXUk0P9qt+eV3eVDZsNfGVKYvrwJUcZItP2AohGy7f9oCCodkDpzRjzD5D8LevDexNtH3psjeHCucL7x3GiUE+SFhLHUFgSbyBDwUEgQ/t7YMRepuX6DewHFbLkmw=
+	t=1711731691; cv=none; b=HoxAkUlZz+F1IlTsMbi29N4mqhJfW+jjpvNwQzAIcCTS8ZpJFpnSgWOsAA1wL+8PUovt1b6LyIIBX8pjZs6c23qi99gwBZXprg5gzLU2NjmUwq4x2COdH+Xuf4g8uvEhTdm1ML+0jBGzlIermCvQX5H65HSvEGpz6saN9OYpyqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711731747; c=relaxed/simple;
-	bh=79SP0jhttzR/Vp6eOcMGPSjOPX3Y4AriMKSLx2VJ2hY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mmfTOOisriUvTdDsRYGwaostRutrW8gYs+qRuGiXe/5O/YQwsfqiN9MV89Pdr7n9IJhMj6nCJB6I+zCaCOhHqUNPPGfb68uiaxo3jw0z/KQyWGLknBQnDwl12WGFS4oiUY+rJCqOsl/UOKGBsIFdOSHG1lZTBRk7rED/Bg/uUWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=MamCsWkS; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.147.137])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3927120E6F4C;
-	Fri, 29 Mar 2024 10:02:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3927120E6F4C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711731745;
-	bh=Qwmeem4B9Er90dGhL6Lz2R55/4URZeEt+O0fc3RlyyM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MamCsWkSG1A8wjsPWLRC6O+cRsXcTXtSmo33DRenRj2SdRGUCn2XjFQAoKhRfxK1U
-	 iLrIpepTKnR67z5VbnSZwrZDp8t6ZrW9tERhbZzQqL7j9/VaOxMLl9WUeK3zcCRdAb
-	 Rw/T2kNc4a0kXs69OY24H4edkMV2Vnk5WlEXOO1k=
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Easwar Hariharan <eahariha@linux.microsoft.com>,
-	linux-media@vger.kernel.org (open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-	dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-	linux-kernel@vger.kernel.org (open list),
-	intel-gfx@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
-	intel-xe@lists.freedesktop.org (open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS),
-	nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS),
-	linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM HOST DRIVERS),
-	linux-media@vger.kernel.org (open list:BTTV VIDEO4LINUX DRIVER),
-	linux-fbdev@vger.kernel.org (open list:FRAMEBUFFER LAYER)
-Subject: [PATCH v0 09/14] media: cx23885: Make I2C terminology more inclusive
-Date: Fri, 29 Mar 2024 17:00:33 +0000
-Message-Id: <20240329170038.3863998-10-eahariha@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+	s=arc-20240116; t=1711731691; c=relaxed/simple;
+	bh=LP0SVM4zANcE16ZCf3lnVQEx3fF0+VnawnvnS4QpQYs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H610967t9404HaqfYqenGjkXiVh0pfk6QRG9ZmwtAyc2iPpIUBX75KDQOkmLFHMm3sVvj4HKGY322XWQXD6q46GNFbZwJuEOuind2tyyGSK0+jJo1Mnl9kXpcwj+KmEWqXxO0RhZ3DVy40QvoYxLP7l9nQPwv5OO7dMSnKarrg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+HDWVJu; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513e8bf8228so648731e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711731688; x=1712336488; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YgKPKTTDQgEgY8lj4hlaReR5NBDNtvQ5L48mb+0x4WA=;
+        b=S+HDWVJuFMqCN7gLUQDnOh0DKtiCTWTM+u2Nlfu6z+dno7hflzzhCrEOH3Yu8WjID8
+         hccsdSXrTOHfwjIlHeDQ1JrDkcAZwlCm7yoK+6GiqyZKZJNOHDERm638FnqD2KkjAETx
+         VRSCyI2PAlnyWL+YNbDlNUQ1RtOFMEgbNiRL3EiDHsJE45LbhRMzxsnIWT8U2XPALx6i
+         CH9TMiOvO4OCLmRLuv8o8B3tOoulCjS5y2Lms/yIs5kHkM+ONJALnj5Dw/CCt/5bIcpb
+         JGO3UImWgbDtFwH8powQlnqJ9mso8bCrWVT1qP7RqBMLmK0BylXKjxYY/hPLRRsjJIBY
+         m80g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711731688; x=1712336488;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YgKPKTTDQgEgY8lj4hlaReR5NBDNtvQ5L48mb+0x4WA=;
+        b=ZQC3qKJmZJss1fnikYUS9lPjXlaRahCWg17chWcd3jhewHPQdjIvjr97H+9hlAHKpg
+         zjz9cu3wm81z2p0kus2UU4k/fvsqvRYZV7jE9FFGhe1Q0G3OX/Pkd+SdqpJ6ZJ+wLoY8
+         YZrDxRLPOZ+vdnVaXvaGP3ECHzH4xknTZuFBW7CS0rtDPv6rpMCNNBA824pJhpKRSZed
+         Ie5CVRcP1cv56wzSCpdG9cBjaj+5fGZTpmQYFUWW5+bu+jbqMVvyPC7z9HKs0L8qrGdC
+         4Sk7xM0PDVcZNrALTgRK9OiX5lOq99/3/7KpsVXnJpUJ5Hv/50qsWBxHaSC66x6bj+HA
+         M0cA==
+X-Forwarded-Encrypted: i=1; AJvYcCWAZMH6b8ufXjdwWPmbu5ZNIQ16K9OLN/wVstRM70jEqZhB+DTvngWaUMzddTJpTCKCokcOVdTqxHLPpXRlfwqHM7MmakuBgKLBFpNg
+X-Gm-Message-State: AOJu0YyiplYAVnylA0hdU38noQchOLw8tbHOYamFqkCVs3GH6n2LsVsD
+	GNVUepZURGIOE2P1kJpV5F5aGjrm+KPPobmxGidQRjYvX0mMIYqw
+X-Google-Smtp-Source: AGHT+IGbzUlYjpg2H6wy5rwHetA0LZ3y7qQGSobT7HctFnWI9n67GlsHS93OVi9HU1Kh08LuNnXHOw==
+X-Received: by 2002:ac2:5b08:0:b0:513:ec32:aa87 with SMTP id v8-20020ac25b08000000b00513ec32aa87mr1763697lfn.6.1711731687515;
+        Fri, 29 Mar 2024 10:01:27 -0700 (PDT)
+Received: from [192.168.0.103] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id z25-20020a170906075900b00a4e4108a86bsm333688ejb.23.2024.03.29.10.01.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 10:01:27 -0700 (PDT)
+Message-ID: <e1c87cd1-8542-4170-820f-0deeabc22e83@gmail.com>
+Date: Fri, 29 Mar 2024 18:01:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] staging: rtl8192e: remove unnecessary wrapper
+To: Michael Straube <straube.linux@gmail.com>, gregkh@linuxfoundation.org
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240329111458.14961-1-straube.linux@gmail.com>
+Content-Language: en-US
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240329111458.14961-1-straube.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
-with more appropriate terms. Inspired by and following on to Wolfram's
-series to fix drivers/i2c/[1], fix the terminology for users of
-I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
-in the specification.
+On 3/29/24 12:14, Michael Straube wrote:
+> _rtl92e_dm_ctrl_initgain_byrssi() is just a wrapper around
+> _rtl92e_dm_ctrl_initgain_byrssi_driver(). Using a wrapper here adds
+> no value, remove it. Keep the name _rtl92e_dm_ctrl_initgain_byrssi().
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+> Compile-tested only.
+> 
+>   drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+> index 4c67bfe0e8ec..aebe67f1a46d 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+> @@ -163,7 +163,6 @@ static	void	_rtl92e_dm_check_tx_power_tracking(struct net_device *dev);
+>   
+>   static void _rtl92e_dm_dig_init(struct net_device *dev);
+>   static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev);
+> -static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev);
+>   static void _rtl92e_dm_initial_gain(struct net_device *dev);
+>   static void _rtl92e_dm_pd_th(struct net_device *dev);
+>   static void _rtl92e_dm_cs_ratio(struct net_device *dev);
+> @@ -929,11 +928,6 @@ static void _rtl92e_dm_dig_init(struct net_device *dev)
+>   		dm_digtable.rx_gain_range_min = DM_DIG_MIN;
+>   }
+>   
+> -static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
+> -{
+> -	_rtl92e_dm_ctrl_initgain_byrssi_driver(dev);
+> -}
+> -
+>   /*-----------------------------------------------------------------------------
+>    * Function:	dm_CtrlInitGainBeforeConnectByRssiAndFalseAlarm()
+>    *
+> @@ -952,7 +946,7 @@ static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
+>    *
+>    ******************************************************************************/
+>   
+> -static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev)
+> +static void _rtl92e_dm_ctrl_initgain_byrssi(struct net_device *dev)
+>   {
+>   	struct r8192_priv *priv = rtllib_priv(dev);
+>   	u8 i;
 
-Compile tested, no functionality changes intended
-
-[1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
-
-Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
----
- drivers/media/pci/cx23885/cx23885-f300.c | 8 ++++----
- drivers/media/pci/cx23885/cx23885-i2c.c  | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/media/pci/cx23885/cx23885-f300.c b/drivers/media/pci/cx23885/cx23885-f300.c
-index ac1c434e8e24..5f937c281793 100644
---- a/drivers/media/pci/cx23885/cx23885-f300.c
-+++ b/drivers/media/pci/cx23885/cx23885-f300.c
-@@ -92,7 +92,7 @@ static u8 f300_xfer(struct dvb_frontend *fe, u8 *buf)
- 	f300_set_line(dev, F300_RESET, 0);/* begin to send data */
- 	msleep(1);
- 
--	f300_send_byte(dev, 0xe0);/* the slave address is 0xe0, write */
-+	f300_send_byte(dev, 0xe0);/* the client address is 0xe0, write */
- 	msleep(1);
- 
- 	temp = buf[0];
-@@ -112,10 +112,10 @@ static u8 f300_xfer(struct dvb_frontend *fe, u8 *buf)
- 	}
- 
- 	if (i > 7) {
--		pr_err("%s: timeout, the slave no response\n",
-+		pr_err("%s: timeout, the client no response\n",
- 								__func__);
--		ret = 1; /* timeout, the slave no response */
--	} else { /* the slave not busy, prepare for getting data */
-+		ret = 1; /* timeout, the client no response */
-+	} else { /* the client not busy, prepare for getting data */
- 		f300_set_line(dev, F300_RESET, 0);/*ready...*/
- 		msleep(1);
- 		f300_send_byte(dev, 0xe1);/* 0xe1 is Read */
-diff --git a/drivers/media/pci/cx23885/cx23885-i2c.c b/drivers/media/pci/cx23885/cx23885-i2c.c
-index f51fad33dc04..385af2a893b4 100644
---- a/drivers/media/pci/cx23885/cx23885-i2c.c
-+++ b/drivers/media/pci/cx23885/cx23885-i2c.c
-@@ -34,7 +34,7 @@ MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
- #define I2C_EXTEND  (1 << 3)
- #define I2C_NOSTOP  (1 << 4)
- 
--static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
-+static inline int i2c_client_did_ack(struct i2c_adapter *i2c_adap)
- {
- 	struct cx23885_i2c *bus = i2c_adap->algo_data;
- 	struct cx23885_dev *dev = bus->dev;
-@@ -84,7 +84,7 @@ static int i2c_sendbytes(struct i2c_adapter *i2c_adap,
- 		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2));
- 		if (!i2c_wait_done(i2c_adap))
- 			return -EIO;
--		if (!i2c_slave_did_ack(i2c_adap))
-+		if (!i2c_client_did_ack(i2c_adap))
- 			return -ENXIO;
- 
- 		dprintk(1, "%s() returns 0\n", __func__);
-@@ -163,7 +163,7 @@ static int i2c_readbytes(struct i2c_adapter *i2c_adap,
- 		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2) | 1);
- 		if (!i2c_wait_done(i2c_adap))
- 			return -EIO;
--		if (!i2c_slave_did_ack(i2c_adap))
-+		if (!i2c_client_did_ack(i2c_adap))
- 			return -ENXIO;
- 
- 
--- 
-2.34.1
-
+Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 
