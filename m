@@ -1,81 +1,79 @@
-Return-Path: <linux-kernel+bounces-125312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AAE8923E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:12:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8444C8923E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:12:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3193A1C214EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:12:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39F381F24267
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9DC86130;
-	Fri, 29 Mar 2024 19:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DA31327ED;
+	Fri, 29 Mar 2024 19:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="cysaH0ZA"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DiPfjqN1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2842B58127
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74393134BC;
+	Fri, 29 Mar 2024 19:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711739548; cv=none; b=rplYgVbPYFqF3H45JAc1R84hsiH9er7aDUbhxWsKVrm+07LnsSYWzucQDZAo4ENo79ofnoyhwyMtJ5kiQEqeLKXSaTIl/Y1TgQ8wSFX5x0zgCNJDH/Z8rufjWhRXs58gZYFQFq4jBO27xcFmkBu5arim+3SEx5mEoiU85UBKG2w=
+	t=1711739569; cv=none; b=esk6k1VQRoQhZ26OTxF7Cs8VdzFwhk4zrcZDCSMS3sCGDv7wrjwzxpEj9Ma1bEClvV8cmWMlik6GfGHBtdwlI0S5R3vFctwl8AfpHnrGqfrouxAh3PSaaaa8oCn5cY+z3SXD2MJvY9e4RitE0dYNrEPV2UgUsrc+FN+C6i7CUBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711739548; c=relaxed/simple;
-	bh=AKvtFqmJH4ZOM6+yzO+8vG0/T8jZKT9K8FySji2Vvss=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kuiP+qFBhTWs+SYZm0adUDJkUXipX2mFkUmDEixLIz8cjY7Woq46matPiT0hnm6Znl5YgmMFGGbUKM8yPMw5YYo0/5MEtfsFYtEM0iW+4845EClGJwkuUcbSLTPhck11VHHaVCvXMhfxL4ufUUWdjX5l6gBLkxG0lT1xIUZ10aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=cysaH0ZA; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e8f765146fso1910533b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:12:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1711739545; x=1712344345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=scdxeJwXUHBDaV04a23nwEkYWMwKWnbfowekmqNHaec=;
-        b=cysaH0ZARUctsKax8vvExBJt9dL7FAd26PNloL/5i6HhjLV+ORuRYAmUDfK7XhkkLF
-         E5FTN7MnpGfMYBXvemz8lLnag3NIWniKzTotShfiSRB6OLXvrDrJNDu8HT/78cTg2UI4
-         pDlOLnegmedYvwIDJzSxC6D9YrthXn9UbnBzk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711739545; x=1712344345;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=scdxeJwXUHBDaV04a23nwEkYWMwKWnbfowekmqNHaec=;
-        b=CHTGv4WNH0tqjbd6UIemcRmihxBwt5uEeAgcFc5n0Wa6MztgP6PAaQRkRFFCvXT1AA
-         jnb4rd5Un6MTla5QTez2KZTKKTCxPOk2b9x2SC34y89jUhoJfB93Sde/5vgsUi0mPoPr
-         4yyAE1tjNQC2kKMriEpzL0Q0GAa690qEAOVpcAPKpyQo9oriqsUFxsJh4HfMwe/j+e38
-         d3b4Ls2X2M/2DcUNNNJfduORU0dr45FFgpOK3oGt+NZJ0iAL++VexRBzNjG3d/gMPnZU
-         RsU7uG0NIJssPF0132r8uE/O1bbmRDq8JYq1+A2J6zCNdFylPtY5AmRJn383lfGFQLrj
-         /NxA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyt5mWCKOY79QfphXKkikHGV0qY1W1l5cYXhiV3cnBtbDsXZ433ZDJfpsCFT7fZGL2uRI6wi6UvvvCxv4N+QbrTUiRWnKo12H2qRlj
-X-Gm-Message-State: AOJu0YwjP6593HiZe80+6294Ta943xvFpGZn0ByUp25JBlE19OYnIYg2
-	geZlauDQqkHXcPudHOp1oUUD8WdAqNHyZZ93YMcdXQkn8+6oqZ3kXIUQL7yHqA==
-X-Google-Smtp-Source: AGHT+IEwjpEQv+LpV3KuKQ0fkXK/nEXbm5c2Qxf1IlRblY8ca0unVY5+k2YpXHSooflCb+JQub2eIA==
-X-Received: by 2002:a05:6a21:318b:b0:1a6:ff14:a6a3 with SMTP id za11-20020a056a21318b00b001a6ff14a6a3mr1547146pzb.25.1711739545219;
-        Fri, 29 Mar 2024 12:12:25 -0700 (PDT)
-Received: from ubuntu-vm.eng.vmware.com ([128.177.82.146])
-        by smtp.gmail.com with ESMTPSA id a17-20020a62e211000000b006e6c3753786sm1317471pfi.41.2024.03.29.12.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 12:12:24 -0700 (PDT)
-From: Kuntal Nayak <kuntal.nayak@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: jslaby@suse.com,
+	s=arc-20240116; t=1711739569; c=relaxed/simple;
+	bh=PhJsaVSIH+3Xn404O+UuU0ng9/qhbjK6g4uHW3AZtUc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PJfa18EkrNobGmjoMxy98DPS9EYc0su0vbiwd2urxhBTzMBAKTVhdf4RJsSZNyoJ95kGf0nIEzXZy/aqqbKG0qHKIjSeRuDVuMBWf+HJ1BDvqk+QWZw87aX2ShRHSHlPBX9rQmMhCFag58SsqwTdDN6aMznqd2+gWZjNDDX45Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DiPfjqN1; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711739567; x=1743275567;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PhJsaVSIH+3Xn404O+UuU0ng9/qhbjK6g4uHW3AZtUc=;
+  b=DiPfjqN1pmZy4/ha8/O+jtZ+sHHbT+0+KrlHwP3977rjuVg2fayY7tiZ
+   Pg7h6rpnXk19A5loyb5zl9Wk0VM8gGqYqyo6BZZZl02Cxqggl54pIaMgu
+   AuT6ShceG6gRXmXdiaEglX8DLf/M0APL4IMSZtFqhazKzQwXw5ZvX4gYa
+   sOzhCV6bxMoXk0kaYUXmlDXeYALVO8Tm4MBc49sZb9d/zX5V4vRqXptiJ
+   cGk7F2gZdoh7omomZaupbWnahBO6OP2xKu5NXJuE1G/O6y1O9490WQ9am
+   FpZRtcP7Qo+aMjTRYPoXUm4YJp93i3CTLFrSxGuICo8KLDRDOuHs28sc2
+   A==;
+X-CSE-ConnectionGUID: i98yuQrjTCSWMCYw/DrTCA==
+X-CSE-MsgGUID: AKTKWhvPTTWg7Db1pcNdsg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="7531713"
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="7531713"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 12:12:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="54506849"
+Received: from fl31ca102ks0602.deacluster.intel.com (HELO gnr-bkc.deacluster.intel.com) ([10.75.133.163])
+  by orviesa001.jf.intel.com with ESMTP; 29 Mar 2024 12:12:46 -0700
+From: weilin.wang@intel.com
+To: weilin.wang@intel.com,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vasavi.sirnapalli@broadcom.com,
-	Yangxi Xiang <xyangxi5@gmail.com>,
-	stable <stable@kernel.org>,
-	Kuntal Nayak <kuntal.nayak@broadcom.com>
-Subject: [PATCH v4.19-v5.4] vt: fix memory overlapping when deleting chars in the buffer
-Date: Fri, 29 Mar 2024 12:12:08 -0700
-Message-Id: <20240329191208.88821-1-kuntal.nayak@broadcom.com>
-X-Mailer: git-send-email 2.25.1
+	Perry Taylor <perry.taylor@intel.com>,
+	Samantha Alt <samantha.alt@intel.com>,
+	Caleb Biggers <caleb.biggers@intel.com>
+Subject: [RFC PATCH v6 0/5] TPEBS counting mode support
+Date: Fri, 29 Mar 2024 15:12:19 -0400
+Message-ID: <20240329191224.1046866-1-weilin.wang@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,45 +82,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Yangxi Xiang <xyangxi5@gmail.com>
+From: Weilin Wang <weilin.wang@intel.com>
 
-[ upstream commit 39cdb68c64d8 ]
+Changes in v5:
+- Update code and add comments for better code quality [Namhyung]
+- Remove the added fd var and directly pass the opened fd to data.file.fd [Namhyung]
+- Add kill() to stop perf record when perf stat exists early [Namhyung]
+- Add command opt check to ensure only start perf record when -a/-C given [Namhyung]
+- Squash commits [Namhyung]
 
-A memory overlapping copy occurs when deleting a long line. This memory
-overlapping copy can cause data corruption when scr_memcpyw is optimized
-to memcpy because memcpy does not ensure its behavior if the destination
-buffer overlaps with the source buffer. The line buffer is not always
-broken, because the memcpy utilizes the hardware acceleration, whose
-result is not deterministic.
+v5: https://lore.kernel.org/lkml/CO6PR11MB56353F87C19F5D1DD913F94FEE3A2@CO6PR11MB5635.namprd11.prod.outlook.com/
 
-Fix this problem by using replacing the scr_memcpyw with scr_memmovew.
+Weilin Wang (5):
+  perf stat: Parse and find tpebs events when parsing metrics to prepare
+    for perf record sampling
+  perf stat: Fork and launch perf record when perf stat needs to get
+    retire latency value for a metric.
+  perf stat: Add retire latency values into the expr_parse_ctx to
+    prepare for final metric calculation
+  perf stat: Add retire latency print functions to print out at the very
+    end of print out
+  perf vendor events intel: Add MTL metric json files
 
-Fixes: 81732c3b2fed ("tty vt: Fix line garbage in virtual console on command line edition")
-Cc: stable <stable@kernel.org>
-Signed-off-by: Yangxi Xiang <xyangxi5@gmail.com>
-Link: https://lore.kernel.org/r/20220628093322.5688-1-xyangxi5@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[ KN: vc_state is not a separate structure in LTS v4.19, v5.4. Adjusted the patch
-  accordingly by using vc_x instead of state.x for backport. ]
-Signed-off-by: Kuntal Nayak <kuntal.nayak@broadcom.com>
----
- drivers/tty/vt/vt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-stat.c                     |  225 +-
+ .../arch/x86/meteorlake/metricgroups.json     |  127 +
+ .../arch/x86/meteorlake/mtl-metrics.json      | 2551 +++++++++++++++++
+ tools/perf/util/data.c                        |    6 +-
+ tools/perf/util/metricgroup.c                 |   88 +-
+ tools/perf/util/metricgroup.h                 |   22 +-
+ tools/perf/util/stat-display.c                |   65 +
+ tools/perf/util/stat-shadow.c                 |   19 +
+ tools/perf/util/stat.h                        |    4 +
+ 9 files changed, 3087 insertions(+), 20 deletions(-)
+ create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/metricgroups.json
+ create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/mtl-metrics.json
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index c9083d853..a351e264d 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -855,7 +855,7 @@ static void delete_char(struct vc_data *vc, unsigned int nr)
- 	unsigned short *p = (unsigned short *) vc->vc_pos;
- 
- 	vc_uniscr_delete(vc, nr);
--	scr_memcpyw(p, p + nr, (vc->vc_cols - vc->vc_x - nr) * 2);
-+	scr_memmovew(p, p + nr, (vc->vc_cols - vc->vc_x - nr) * 2);
- 	scr_memsetw(p + vc->vc_cols - vc->vc_x - nr, vc->vc_video_erase_char,
- 			nr * 2);
- 	vc->vc_need_wrap = 0;
--- 
-2.39.0
+--
+2.43.0
 
 
