@@ -1,117 +1,98 @@
-Return-Path: <linux-kernel+bounces-125102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F49D892023
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:18:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44CF8892027
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E6ED1C20EE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:17:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED13F1F286E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831441327F3;
-	Fri, 29 Mar 2024 14:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D94914A82;
+	Fri, 29 Mar 2024 14:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hsLKCdEz"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eWbYRLHL"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4051811182;
-	Fri, 29 Mar 2024 14:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4091C0DC1;
+	Fri, 29 Mar 2024 14:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711724223; cv=none; b=gXp3zlRMUqkH/2PDGYjWA938/qYdLIw1+2IxhQxNlt2HWYJLO/jU665OsnQyAHvBhqiWk7a+iL0+nLIDYdaVz1cfjC3d1R0O4axdSAfglTd6YDBnq1Qsgboh27EbBDP+v+F8SKYDJiwirUAu/BPQijywNth+M8JD0zWzlegrsI4=
+	t=1711724387; cv=none; b=Oe66fWlg57b+OlF0rv7oWdMy5kFA2ySOVmQO5xtpJQ2jp+BEW3btzK+nwpouxxVJK3RpN1bgVxB866AMX0b9+n1utDLyLejmVhwQ2jk4B74IKQ2sVi7puieTZ1/IeDC6zmhuPnLqFZmQclpOzef3/D/F/b9LU5HYuF/jrselv8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711724223; c=relaxed/simple;
-	bh=yj+WaMPcDC4PmfXN0UoEz2VQHz+OShndoiecKuggxIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WZZwbJypHJ90HcynK/LyTNRtNNwAOtfc0qP98AP1/f5Aokqcgf2LK6ysTeFSGET2z5LR+riWYwiJXnpc07dQtwFA37NHlXn8Db0/x+VL/TQhmk7XZ9f84Wn71e8hZpGZRh8Z8wkkD75uxWfj5Sw3ZQRrWGESzX/Ba9s0kO0uH1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hsLKCdEz; arc=none smtp.client-ip=217.70.183.199
+	s=arc-20240116; t=1711724387; c=relaxed/simple;
+	bh=/cnZPytqdSf2fPiiQIi+nxR0VnEYwIU/ZwaQvIe58a8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aoBxEEnnisFt420+Nc+nlFuyZ6/W6lLWLqW9XCMmBSxmS5G8pkGtPw00IIa5Y8/08afqwE7RDbA+HtX39uRr8yT0RusOzx0qssv/LM2f7euCJqU6DYU8/+TYEY2EyP+CYeVV3yeMCZnQvzQIUD/vCp954evof18+f3AiBjsLo0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eWbYRLHL; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 677A5FF807;
-	Fri, 29 Mar 2024 14:56:58 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B42721C0008;
+	Fri, 29 Mar 2024 14:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711724219;
+	t=1711724383;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mTj4FeukY1YJcV4SBWzPdB8d+BFYvBZVOFx5d16Wyso=;
-	b=hsLKCdEzurQ82WXwjX3trgShtaiIxve5JRIeTgufUAUg96HSmVjf3GLNFOw2wJ8GvgvaSd
-	b0mU4AoOQLevyKJnFqcOsGkDwk08wrNu63+mVz99bKlMk8VS5EZie5FX+ZDSnZ0arG9dwB
-	phQl/UrHgMwqjuSCgEittZC/OxKtBOzfRthhfl62A+kobnJUR5DBEVOg5Zq1ZDoIh/zdar
-	R1lmEA7QFAOTC/gCtAhhUnSAokZ/Hohztelg5K57xIXzWrFQqEQZfOefK5pqKjZpEq0W0g
-	Xv8KYUT/ikok1azhPDUxITboub1F2nE/5s1kZ4HMFqmQHrp2n9vwPDf9XO+FRw==
-Date: Fri, 29 Mar 2024 15:56:57 +0100
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 17/17] net: pse-pd: Add TI TPS23881 PSE
- controller driver
-Message-ID: <20240329155657.7939ac4b@kmaincent-XPS-13-7390>
-In-Reply-To: <6bbc6b86-3947-4679-ac0b-fde50129d0f6@lunn.ch>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
-	<20240326-feature_poe-v6-17-c1011b6ea1cb@bootlin.com>
-	<6bbc6b86-3947-4679-ac0b-fde50129d0f6@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	bh=xRLX1mOYv+/ZWVopFYct6o5hS3M6WhMcK4LW4QwDZPU=;
+	b=eWbYRLHLuPtxt5wGda0VtJW/5ksJQrWTjaz/yqhEfo0SnG3JOIPBzSyfv2ntDm6jtUfYql
+	kYLoa829e52ULwFroeqxH28LTT4qqi/OIIYPgPoFIschBy1kT8zoT+iBt5gMNTNgAS71zX
+	pogyY5lbWxaSlgxw0jLmZ5Zy2kZF2bmPZDCADaJgQQ11XfMhkbRU51KYiA8UXV86MZCobW
+	KTvey2LaSoK+hIMb2MDksTCsm/ZDmByh1vTdFt8FMfU9Ka93PuhYaYz6l1YlOb9XHQ9Esf
+	PZfgwGDIaJqR1pPyac4fbFJNUjC08ukPWwet7HxI3RVnOt+r/FQvv9HbuDBv6g==
+Date: Fri, 29 Mar 2024 15:59:42 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 0/4] dt-bindings: rtc: convert multiple devices to
+ dtschema
+Message-ID: <171172436464.1832232.15920674758394192653.b4-ty@bootlin.com>
+References: <20240326-rtc-yaml-v3-0-caa430ecace7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326-rtc-yaml-v3-0-caa430ecace7@gmail.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Thu, 28 Mar 2024 17:24:17 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+On Tue, 26 Mar 2024 14:03:22 +0100, Javier Carrasco wrote:
+> This series converts the following existing bindings to dtschema:
+> 
+> - armada-380-rtc
+> - alphascale,asm9260-rtc
+> - digicolor-rtc (moved to trivial-rtc)
+> - nxp,lpc1788-rtc
+> 
+> [...]
 
-> > +static int tps23881_flash_fw_part(struct i2c_client *client,
-> > +				  const char *fw_name,
-> > +				  const struct tps23881_fw_conf *fw_conf) =20
->=20
-> Does the device actually have flash? Or is this just downloading to
-> SRAM?
+Applied, thanks!
 
-It is downloading to SRAM.
+[1/4] dt-bindings: rtc: armada-380-rtc: convert to dtschema
+      https://git.kernel.org/abelloni/c/c3c50e7df39b
+[2/4] dt-bindings: rtc: alphascale,asm9260-rtc: convert to dtschema
+      https://git.kernel.org/abelloni/c/432008d2f766
+[3/4] dt-bindings: rtc: digicolor-rtc: move to trivial-rtc
+      https://git.kernel.org/abelloni/c/971e7303f472
+[4/4] dt-bindings: rtc: nxp,lpc1788-rtc: convert to dtschema
+      https://git.kernel.org/abelloni/c/7918a220d210
 
->=20
-> > +{
-> > +	const struct firmware *fw =3D NULL;
-> > +	int i, ret;
-> > +
-> > +	ret =3D request_firmware(&fw, fw_name, &client->dev);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	dev_info(&client->dev, "Flashing %s\n", fw_name); =20
->=20
-> If this is a one-time thing whenever there is a new firmware version
-> dropped into /lib/firmware, this would be O.K. However, if this
-> happens every boot, i would use dev_dbg().
+Best regards,
 
-Ok I will change to dev_dbg then.
-Thanks!
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
 https://bootlin.com
 
