@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-124964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A126E891F28
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:59:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2567E891E58
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:39:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DA2DB354FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:38:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5181BB3561D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493991AB876;
-	Fri, 29 Mar 2024 12:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B3512FB12;
+	Fri, 29 Mar 2024 12:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ue8VvAXd"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bKlDxSkC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A45D1AB1FE;
-	Fri, 29 Mar 2024 12:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E481AB88C;
+	Fri, 29 Mar 2024 12:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716518; cv=none; b=tZZSvimbJ3TvAlp3C1sNt/TCIEBbWuPaf9/Y4Xii5PhJ0VBzjFKtvkI8B/5MPJuMA25SMktHQPAzjuxgjKzdD0BkWfplC3ugrh9B2GjL0+SrAHW1LLYXez7q3SDLe01yfxpIthrjYcllDBPsQKr4qw2yPdiUaAcQXwSYqz1J4qs=
+	t=1711716520; cv=none; b=ZHdA9jO3ccNyYsXdUsRt3ljblGQxuPqGTVA3Eg/tAfptwY3KEs4GhkONbPmZg6zYfFUVrJwlZ8L6G3ivZ9wYI7ZOWc5coRF/Vxp7UZcsgV4651cFtER4lvEUVaEBtq5Nc8TnhRxrs2xLsrxAGGjAsgI3TUNqCL47Gl4S/zJmPWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716518; c=relaxed/simple;
-	bh=8wYWk+lnFSA1f2NjZ4HWprJzO1phQiGDLipkeklGi8o=;
+	s=arc-20240116; t=1711716520; c=relaxed/simple;
+	bh=Lx6Cr1rhOGH6CxQ/pMseZyzBxFMncaDCPKyH+MfPHPo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qGHm/fbey4poW9VZhBiKoJ9vU8yVhmdLpnETr6BH9ANYh6761Rn4cvvYI3/IAovlMByp4jwEASFb8Nw4PL3dv55TnCzvehnQqIFS+v1fr8XLt19ZP4b+ptd3qc28fSd77LfzbcXJcg9WvTxJn2+9ielPPNcLQgzjAhiTOA9vdh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ue8VvAXd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ED07C43399;
-	Fri, 29 Mar 2024 12:48:37 +0000 (UTC)
+	 MIME-Version; b=d7iChqXo7k2ocQ1vVRF3sGloNPL8ypLzIKoGoDbC2VJqL/bhHwQSVhPogCJVnm+jaDvHTIVyaNuQxHZjHgiQPVYVHAqvMUYPiSGh6rrKh3kiJB6eHX8Xl/nOrtCrjBzMAeGBD/puuNisUpvoC0mY2RxCSZpSIpWoF/7LNhrvy7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bKlDxSkC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B884AC43390;
+	Fri, 29 Mar 2024 12:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716518;
-	bh=8wYWk+lnFSA1f2NjZ4HWprJzO1phQiGDLipkeklGi8o=;
+	s=k20201202; t=1711716520;
+	bh=Lx6Cr1rhOGH6CxQ/pMseZyzBxFMncaDCPKyH+MfPHPo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ue8VvAXdGUYKEp0byyc+LljIHECrgwyow6ELNCSQ1CU0dz4nTiQaOsSemfZjNYIqH
-	 lGBuO/H820CkK/zPzU+0gzCPtKiIuJGGPcH6Z4DChZf4bdGD1pogWa3RunWP5dzylu
-	 N3UtF+DVLOmXckMzEcTIaIDXr97MEdYGGpjybsorFvxYYUDs+FT4POOWgowuCVKA5s
-	 eHFXyPaDQaenaJg/rns/5SztsxHSeUjvhYXZmInxFOcQnpbEC72m/sihthNmWUc8Ef
-	 TETDC5diguG+8B4PMhDdbrFKkj4ZW28M16ePZUs/XDhWU0wvAdqMusOCabJ1C+nLiv
-	 V3mn6uqBoE/1Q==
+	b=bKlDxSkCoy093JIVnF9jdXprVA8cJsUVfDU+m9qkmO7DnFzTRZDFrPkqBMxH4L4iy
+	 6BFjibMDiLp02RaMw23RV2DNY/1wSIWImvdtON/Ri+vqLQTshSp1wnW1kpPm7785Y2
+	 B96Mtaq8aBnHREoA6fim2IvfJYXyTGOzoVInI/gcHw9j5al1B/kAlweyyq3LZnMc1E
+	 n/TaPZa5PWFEjZFy31NO2nn+a+SVwL9k3uON888kR/t8u3MszUV8y5s8INLuFGV+sV
+	 JUV7nG2A8dXSxOVXLL5n6Wa2rfbSAhIGRmi9FZlIk2qGSwu/cwCyl/PKvXA/VdEYHm
+	 pL4rjK23P5y3Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Roman Smirnov <r.smirnov@omp.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Manjunath Patil <manjunath.b.patil@oracle.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 28/34] block: prevent division by zero in blk_rq_stat_sum()
-Date: Fri, 29 Mar 2024 08:47:29 -0400
-Message-ID: <20240329124750.3092394-28-sashal@kernel.org>
+	markzhang@nvidia.com,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 29/34] RDMA/cm: add timeout to cm_destroy_id wait
+Date: Fri, 29 Mar 2024 08:47:30 -0400
+Message-ID: <20240329124750.3092394-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
 References: <20240329124750.3092394-1-sashal@kernel.org>
@@ -65,38 +65,100 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Roman Smirnov <r.smirnov@omp.ru>
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
 
-[ Upstream commit 93f52fbeaf4b676b21acfe42a5152620e6770d02 ]
+[ Upstream commit 96d9cbe2f2ff7abde021bac75eafaceabe9a51fa ]
 
-The expression dst->nr_samples + src->nr_samples may
-have zero value on overflow. It is necessary to add
-a check to avoid division by zero.
+Add timeout to cm_destroy_id, so that userspace can trigger any data
+collection that would help in analyzing the cause of delay in destroying
+the cm_id.
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+New noinline function helps dtrace/ebpf programs to hook on to it.
+Existing functionality isn't changed except triggering a probe-able new
+function at every timeout interval.
 
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/20240305134509.23108-1-r.smirnov@omp.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+We have seen cases where CM messages stuck with MAD layer (either due to
+software bug or faulty HCA), leading to cm_id getting stuck in the
+following call stack. This patch helps in resolving such issues faster.
+
+kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
+..
+	Call Trace:
+	__schedule+0x2bc/0x895
+	schedule+0x36/0x7c
+	schedule_timeout+0x1f6/0x31f
+ 	? __slab_free+0x19c/0x2ba
+	wait_for_completion+0x12b/0x18a
+	? wake_up_q+0x80/0x73
+	cm_destroy_id+0x345/0x610 [ib_cm]
+	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+	ucma_write+0xe0/0x160 [rdma_ucm]
+	__vfs_write+0x3a/0x16d
+	vfs_write+0xb2/0x1a1
+	? syscall_trace_enter+0x1ce/0x2b8
+	SyS_write+0x5c/0xd3
+	do_syscall_64+0x79/0x1b9
+	entry_SYSCALL_64_after_hwframe+0x16d/0x0
+
+Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+Link: https://lore.kernel.org/r/20240309063323.458102-1-manjunath.b.patil@oracle.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-stat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-stat.c b/block/blk-stat.c
-index ae3dd1fb8e61d..6e602f9b966e4 100644
---- a/block/blk-stat.c
-+++ b/block/blk-stat.c
-@@ -28,7 +28,7 @@ void blk_rq_stat_init(struct blk_rq_stat *stat)
- /* src is a per-cpu stat, mean isn't initialized */
- void blk_rq_stat_sum(struct blk_rq_stat *dst, struct blk_rq_stat *src)
- {
--	if (!src->nr_samples)
-+	if (dst->nr_samples + src->nr_samples <= dst->nr_samples)
- 		return;
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 680c3ac8cd4c0..504e1adf1997a 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("InfiniBand CM");
+ MODULE_LICENSE("Dual BSD/GPL");
  
- 	dst->min = min(dst->min, src->min);
++#define CM_DESTROY_ID_WAIT_TIMEOUT 10000 /* msecs */
+ static const char * const ibcm_rej_reason_strs[] = {
+ 	[IB_CM_REJ_NO_QP]			= "no QP",
+ 	[IB_CM_REJ_NO_EEC]			= "no EEC",
+@@ -1032,10 +1033,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
+ 	}
+ }
+ 
++static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
++{
++	struct cm_id_private *cm_id_priv;
++
++	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
++	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
++	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
++}
++
+ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ {
+ 	struct cm_id_private *cm_id_priv;
+ 	struct cm_work *work;
++	int ret;
+ 
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	spin_lock_irq(&cm_id_priv->lock);
+@@ -1142,7 +1153,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 
+ 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
+ 	cm_deref_id(cm_id_priv);
+-	wait_for_completion(&cm_id_priv->comp);
++	do {
++		ret = wait_for_completion_timeout(&cm_id_priv->comp,
++						  msecs_to_jiffies(
++						  CM_DESTROY_ID_WAIT_TIMEOUT));
++		if (!ret) /* timeout happened */
++			cm_destroy_id_wait_timeout(cm_id);
++	} while (!ret);
++
+ 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
+ 		cm_free_work(work);
+ 
 -- 
 2.43.0
 
