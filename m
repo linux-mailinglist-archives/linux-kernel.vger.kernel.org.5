@@ -1,213 +1,166 @@
-Return-Path: <linux-kernel+bounces-124346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71E22891608
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:32:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 959728915B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:25:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 628101C23345
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:32:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B40228718B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B12585C6C;
-	Fri, 29 Mar 2024 09:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07AB041215;
+	Fri, 29 Mar 2024 09:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCjH87/1"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JjrDTE0N"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5351085631;
-	Fri, 29 Mar 2024 09:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5916B3A8F7
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711704505; cv=none; b=LDdLl+OoHnF87SJRTJ5G6k9HXjuUABY6M4qbARgqssG9kxg3pYTTtkoXGRWouG8+lhjO9k+IdAS1Tk781CS49GNnlju7UGTi6rpmXVO3T9jnXDQ4285QvKz+60JfIldcjz07pTYZsu9XzDm9gc4FXNfdUe6BXeAe8f7BGDyTyDg=
+	t=1711704336; cv=none; b=i6ykkuMWmNDKs34hFP1EDbx9FwZb8QHnzVsx7d8qZ+bDF8Fv/ujOra/TRIiodKe7/2OnyhYRkhCqRJqFF1L/VWDJ4JbulCh0SAGQfSgNb2WhpI9c6dtlQkqZVCI4T3rpnDgDIolp6dpLU14lQe6WtspbkbjuXf63QZIzLuTOfdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711704505; c=relaxed/simple;
-	bh=tbF9b/muDGMfCoxH1ZCVTgSmbzivSlDGSFld2qO4EMc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZYWwchvKjl8AI3zykykz0X3j43INCAS+Ve31/XrCa8gG9l0rcyEVSIrqJJxIjuPcXn1H3S+BO+B8iv8b0zoVuaioNrFiBfWaQSquaDxTVIdLB6qfOQhUgJ4R/VLf/krzDJ4Q7F3lqOd6IWQLyRRwlJvfkPVkDk0V6w5334zOlIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCjH87/1; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46d0a8399aso481706566b.1;
-        Fri, 29 Mar 2024 02:28:23 -0700 (PDT)
+	s=arc-20240116; t=1711704336; c=relaxed/simple;
+	bh=dZMd+hjwWBu0w3Nr26MjlG54+9irZNQQ5J2LGMlr7cM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=EhYT1Q196Obqsj6nujSJ0ByO34LgVMtubQgT4jg707p46+mawR64UPVnMI0jSr1B/trGXcWeud5QHVWq1+i670LAbefjAmDhX1fGwJPaDeQbNQvT+X+ZANSkaj9L3o0DB+5V0ydVl9EcjMwiGbRBcj1+Y2oLZmOLQAkf1Rp7zuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JjrDTE0N; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513e134f73aso2206978e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:25:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711704501; x=1712309301; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sqUCkOqvIUH04vsFrScv57KnpQglh0Vcjq++kQXTzsQ=;
-        b=iCjH87/1YNIjc1dgPXp2VVSp8291kgTWWQ9iirimV6gsFaVEGhlMiZ4tCWkMaB3ddz
-         5yKxMUWaBOJMUNOnHq1GUVeXECTiSbCfSHhSTqQjRZG5pnQsu5ov6T7Px96zZyvoyRex
-         IaX0p7gI6b0NcBBQafroNLqkg3z2k7TVYp0N6Krog2PM9aeFoW/5qKx6xK7DLkOFg0gB
-         psm7mZtZwlI2YIDXIPNjGRQsuKj0Tgixrosyj0EiEjMDh+LCdLSWaA3I/kcZyAXrKTga
-         24Wr1j5RTiT6e7FlFmanRYpSR1uuz+GNkNoHv85NuErnxIR4mgHLI3RjyuECMIm6fu/w
-         JIfw==
+        d=linaro.org; s=google; t=1711704332; x=1712309132; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GEQURDN2hc0rSK6rdl4NmLGBAAhTVwyKdlzTTBj2f1Y=;
+        b=JjrDTE0NR2AhgcNG3TQ6PcVgWPCquREOHB0sH9kPmfxyJczSediFIVorSdpBjOEa8C
+         O76lYMV03vrZP8zIiiyqriUhaBnUY04ls6ibtIutqpbDscb2z1XXajyVa80aSXkSVlZ8
+         HnRLjkLP25B7IIkg7DP8wG9YfKEnycDOcm8qarhjor/o/fnavXpcgZyEb5frLUlMgV+h
+         6kzKPLPrRxvVDI/dPGbp/xgZ8JGceGO7TFQqCnfbDHuVF6sCisoVA2LIWrK0oPGU4nUa
+         MHXrHOez8yWIxtxgCW15USwj/2fP1yCkBdkQJsOqqz1NrEJeJnFcDY3Lu/b37c34pRYn
+         zjvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711704501; x=1712309301;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sqUCkOqvIUH04vsFrScv57KnpQglh0Vcjq++kQXTzsQ=;
-        b=s5MsRfuNkbIg0RdHGPcVhmL9//8W/7yjNxvZvlN9BVp0J5Q0T1IQE/YTLe3t6p8zHU
-         zlzFvsBhXxRzJ5SUoKhx2P9le5wlWX45X3Lxz2VZ23j6d5rK3g7+7mXCtp5MjQWScFZb
-         hgr99jSbe6YLNiJ9tAo+VE2bs5qCzeScW1AO8ACimlTVZoTbj8WURkh7KuS3hNKZ1mCA
-         YYT4fuNwmWcnWPyLKlhcLwBoPNA0ZlDC2hxVZwN4GgyM12YHEuvrOv5IYqfa9xeYVR7N
-         +4r3JnPgllOLDxdctxrLWW5OVbZD0e0tT5WMwEACIcJs7AV7sCtyexmoRY2p52KEZtNZ
-         sfpA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2RMxlTn1JIeunuVi/UJAWVtMZDOnOzf0jswfHUaQAVnzQXnd9tljyfAuaEDZAXoBAe0N5Op5u+Y5nKoqxTVHJ+JpEv8x0bBoZS+Pi
-X-Gm-Message-State: AOJu0YwUDmW11kpUJjpsLtb0orwarLglyqa06S8u3NhHBwhPuTbiRxRg
-	aPcfEFYJqQv8lfO50MybKn1nFtPAQ+hdERNxFcXW6Vhenku55epO72sc5UVsf28=
-X-Google-Smtp-Source: AGHT+IGqX6NpRbhpIPJ94ewuSJX9nh4Lk2+yZut80IbJeClJaGAZ2XRaDQJZedQpR2BZgVRjhVKG9g==
-X-Received: by 2002:a17:906:2813:b0:a46:a3d1:679a with SMTP id r19-20020a170906281300b00a46a3d1679amr1632349ejc.14.1711704500804;
-        Fri, 29 Mar 2024 02:28:20 -0700 (PDT)
-Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id jx24-20020a170906ca5800b00a47152e6d10sm1700975ejb.134.2024.03.29.02.28.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 02:28:19 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: bpf@vger.kernel.org,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Joan=20Bruguera=20Mic=C3=B3?= <joanbrugueram@gmail.com>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf 2/2] x86/bpf: Fix IP for relocating call depth accounting
-Date: Fri, 29 Mar 2024 10:25:08 +0100
-Message-ID: <20240329092723.17435-3-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240329092723.17435-1-ubizjak@gmail.com>
-References: <20240329092723.17435-1-ubizjak@gmail.com>
+        d=1e100.net; s=20230601; t=1711704332; x=1712309132;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GEQURDN2hc0rSK6rdl4NmLGBAAhTVwyKdlzTTBj2f1Y=;
+        b=CCVIeW2KH5kf/Ovj7BWc5ZkPmBjXBpTpBeetbqicAZWz0xF7CbYGDhJ7cy+u+NZBxQ
+         HDSyt6Kf8S9c52UtbTR5lg4LCcX+O9cd9yklzqC7RTcIWYxdovLXDNh6g1wxTptJ5ci3
+         QUM/lhrOQP0PBK1RDyE7ZxyPCqauN8Rw5xLYPXsxzhQs14uSWME6D/GBzjo+mxQJ1Gi3
+         EyOaybQdHMYS0bw6UYbPiDJ9t5hrzU9osqzWsAIILjh8HbWz5+0oYDBKd7Jh5fn3wlwJ
+         Hbf1tonPRewBHMNKz5ANKuLTx8i+26US7aLz1NQiLSWILsXeVsV9TBMaOTeY1GIf9y9n
+         SuuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNaoJAjRhRAqGbslo/6LcTodMYc6KtcE608MdISkKhJWohwRviYf9eINuGOZV1uIyNih3bPfr43dolE5TrSBUgv3yU10ybx/DxpMFV
+X-Gm-Message-State: AOJu0Yw1w8jQxTBmnQ5S14enXVkBGYzMdpmMdti4Fle2sxfHUL2yedju
+	7NqiUktsMk2DN1+4H37Mo5F2vZRYhhYBL4fJ0Qlu84rBgo3CNqUDJc5pDHA0hw8=
+X-Google-Smtp-Source: AGHT+IHj6Ku1SlLeycX3BBrqFVuNDojRtoSuuN3VaZC2NvqJlEZFkyTdAgLhvZ+kMwOUKwvGrTDGLA==
+X-Received: by 2002:a19:f802:0:b0:513:e27c:78f0 with SMTP id a2-20020a19f802000000b00513e27c78f0mr1463695lff.46.1711704332376;
+        Fri, 29 Mar 2024 02:25:32 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:3cd8:c97b:1468:c232? ([2a01:e0a:982:cbb0:3cd8:c97b:1468:c232])
+        by smtp.gmail.com with ESMTPSA id n3-20020a5d67c3000000b00341ddb65b07sm3742703wrw.63.2024.03.29.02.25.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 02:25:31 -0700 (PDT)
+Message-ID: <c79bd6a3-fd5a-4b88-9e98-880248d77c44@linaro.org>
+Date: Fri, 29 Mar 2024 10:25:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 2/3] reset: reset-meson: add support for Amlogic T7 SoC
+ Reset Controller
+To: kelvin.zhang@amlogic.com, Philipp Zabel <p.zabel@pengutronix.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Zelong Dong <zelong.dong@amlogic.com>
+References: <20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com>
+ <20240329-t7-reset-v1-2-4c6e2e68359e@amlogic.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240329-t7-reset-v1-2-4c6e2e68359e@amlogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Joan Bruguera Micó <joanbrugueram@gmail.com>
+On 29/03/2024 10:17, Kelvin Zhang via B4 Relay wrote:
+> From: Zelong Dong <zelong.dong@amlogic.com>
+> 
+> There are 7 sets of Reset Source in Amlogic T7 SoC Reset Controller,
+> and the offset between base and level registers is 0x40.
+> Add a new compatible string and struct meson_reset_param to support
+> the reset controller on T7 SoC.
+> 
+> Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
+> Signed-off-by: Kelvin Zhang <kelvin.zhang@amlogic.com>
+> ---
+>   drivers/reset/reset-meson.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
+> index f78be97898bc..1e9fca3e30e8 100644
+> --- a/drivers/reset/reset-meson.c
+> +++ b/drivers/reset/reset-meson.c
+> @@ -102,6 +102,11 @@ static const struct meson_reset_param meson_s4_param = {
+>   	.level_offset	= 0x40,
+>   };
+>   
+> +static const struct meson_reset_param t7_param = {
+> +	.reg_count      = 7,
+> +	.level_offset   = 0x40,
+> +};
+> +
+>   static const struct of_device_id meson_reset_dt_ids[] = {
+>   	 { .compatible = "amlogic,meson8b-reset",    .data = &meson8b_param},
+>   	 { .compatible = "amlogic,meson-gxbb-reset", .data = &meson8b_param},
+> @@ -109,6 +114,7 @@ static const struct of_device_id meson_reset_dt_ids[] = {
+>   	 { .compatible = "amlogic,meson-a1-reset",   .data = &meson_a1_param},
+>   	 { .compatible = "amlogic,meson-s4-reset",   .data = &meson_s4_param},
+>   	 { .compatible = "amlogic,c3-reset",   .data = &meson_s4_param},
+> +	 { .compatible = "amlogic,t7-reset",   .data = &t7_param},
+>   	 { /* sentinel */ },
+>   };
+>   MODULE_DEVICE_TABLE(of, meson_reset_dt_ids);
+> 
 
-From: Joan Bruguera Micó <joanbrugueram@gmail.com>
-
-The recently introduced support for %rip-relative relocations in the
-call thunk template assumes that the code is being patched in-place,
-so the destination of the relocation matches the address of the code.
-This is not true for the call depth accounting emitted by the BPF JIT,
-so the calculated address is wrong and usually causes a page fault.
-
-Pass the destination IP when the BPF JIT emits call depth accounting.
-
-Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in call thunk template")
-Signed-off-by: Joan Bruguera Micó <joanbrugueram@gmail.com>
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
-Acked-by: Ingo Molnar <mingo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
----
- arch/x86/include/asm/alternative.h |  4 ++--
- arch/x86/kernel/callthunks.c       |  4 ++--
- arch/x86/net/bpf_jit_comp.c        | 19 ++++++++-----------
- 3 files changed, 12 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index fcd20c6dc7f9..67b68d0d17d1 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -117,7 +117,7 @@ extern void callthunks_patch_builtin_calls(void);
- extern void callthunks_patch_module_calls(struct callthunk_sites *sites,
- 					  struct module *mod);
- extern void *callthunks_translate_call_dest(void *dest);
--extern int x86_call_depth_emit_accounting(u8 **pprog, void *func);
-+extern int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip);
- #else
- static __always_inline void callthunks_patch_builtin_calls(void) {}
- static __always_inline void
-@@ -128,7 +128,7 @@ static __always_inline void *callthunks_translate_call_dest(void *dest)
- 	return dest;
- }
- static __always_inline int x86_call_depth_emit_accounting(u8 **pprog,
--							  void *func)
-+							  void *func, void *ip)
- {
- 	return 0;
- }
-diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-index 30335182b6b0..e92ff0c11db8 100644
---- a/arch/x86/kernel/callthunks.c
-+++ b/arch/x86/kernel/callthunks.c
-@@ -314,7 +314,7 @@ static bool is_callthunk(void *addr)
- 	return !bcmp(pad, insn_buff, tmpl_size);
- }
- 
--int x86_call_depth_emit_accounting(u8 **pprog, void *func)
-+int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip)
- {
- 	unsigned int tmpl_size = SKL_TMPL_SIZE;
- 	u8 insn_buff[MAX_PATCH_LEN];
-@@ -327,7 +327,7 @@ int x86_call_depth_emit_accounting(u8 **pprog, void *func)
- 		return 0;
- 
- 	memcpy(insn_buff, skl_call_thunk_template, tmpl_size);
--	apply_relocation(insn_buff, tmpl_size, *pprog,
-+	apply_relocation(insn_buff, tmpl_size, ip,
- 			 skl_call_thunk_template, tmpl_size);
- 
- 	memcpy(*pprog, insn_buff, tmpl_size);
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 09f7dc9d4d65..f2e8769f5eee 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -481,7 +481,7 @@ static int emit_rsb_call(u8 **pprog, void *func, void *ip)
- {
- 	void *adjusted_ip;
- 	OPTIMIZER_HIDE_VAR(func);
--	adjusted_ip = ip + x86_call_depth_emit_accounting(pprog, func);
-+	adjusted_ip = ip + x86_call_depth_emit_accounting(pprog, func, ip);
- 	return emit_patch(pprog, func, adjusted_ip, 0xE8);
- }
- 
-@@ -1973,20 +1973,17 @@ st:			if (is_imm8(insn->off))
- 
- 			/* call */
- 		case BPF_JMP | BPF_CALL: {
--			int offs;
-+			u8 *ip = image + addrs[i - 1];
- 
- 			func = (u8 *) __bpf_call_base + imm32;
- 			if (tail_call_reachable) {
- 				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
--				if (!imm32)
--					return -EINVAL;
--				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
--			} else {
--				if (!imm32)
--					return -EINVAL;
--				offs = x86_call_depth_emit_accounting(&prog, func);
-+				ip += 7;
- 			}
--			if (emit_call(&prog, func, image + addrs[i - 1] + offs))
-+			if (!imm32)
-+				return -EINVAL;
-+			ip += x86_call_depth_emit_accounting(&prog, func, ip);
-+			if (emit_call(&prog, func, ip))
- 				return -EINVAL;
- 			break;
- 		}
-@@ -2836,7 +2833,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 		 * Direct-call fentry stub, as such it needs accounting for the
- 		 * __fentry__ call.
- 		 */
--		x86_call_depth_emit_accounting(&prog, NULL);
-+		x86_call_depth_emit_accounting(&prog, NULL, image);
- 	}
- 	EMIT1(0x55);		 /* push rbp */
- 	EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
--- 
-2.44.0
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
