@@ -1,151 +1,96 @@
-Return-Path: <linux-kernel+bounces-125345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EC18892461
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:39:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0647C892465
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 20:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 802251C21300
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:39:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67193B2212D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 19:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A2F139CE7;
-	Fri, 29 Mar 2024 19:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB3E13A890;
+	Fri, 29 Mar 2024 19:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AQ1lLi+3"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qURCjjJ8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E26139578
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574FE65E20;
+	Fri, 29 Mar 2024 19:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711741180; cv=none; b=a9LtA4fBQMq4W3AN/hddioi8A/A5Ql3tkW1AE1O+9V4YskAWDgsYjO7Dp399YsrZgMX81wGl/AaehPry8baWStn0z2k8V5k6udjrCrh6yLcCwiRYwjTi6c5Sq/UamdBhWzi4faj+UcT+PzPklyw4CTB3Lksg/eaCSEZorWr+LFw=
+	t=1711741230; cv=none; b=G/ENYjdnicG5X1P0YmJ013zLLDXdOo9juM0lkbAdOTrlq75upV8BMqusa+whACObgzllU1/ypEQPR2HNDx2LWOWEEMmehKv5Y6cXCXnxzhsg2lcR/vreUsG8CVxHzTcGxaIHLpLdxtWaCCLWwbqLUkiRCAWRbvbhuD6oyfpSHdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711741180; c=relaxed/simple;
-	bh=XRwGuMCMDAiT/kGV1gveWR6DiWQyYt8NU9kqKbtVHek=;
-	h=Content-Type:Message-ID:Date:MIME-Version:From:Subject:To:Cc; b=Op/gibBWU7ByYdvHROV08rNnoHf7zspAadc+LSrbkAXtcUalNuq+8W4BKVSMJUBL5VulwmXjQJa2V8eoId4L7PLy0iqyILTQGA3EslMjN4NybA5DBfBCVRyg/c3Z84EsTf83v+J6IdEHqVsoJKep5polxSXATGWTSgzY+nilB1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=AQ1lLi+3; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso44923339f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 12:39:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1711741178; x=1712345978; darn=vger.kernel.org;
-        h=cc:to:subject:from:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wGRUcWXsBInBmMfpGS0QfGv2r7xwIpgvwzLKcdpnYq0=;
-        b=AQ1lLi+3B5VDyLGpJQ55qvCo3mDxb9zPqFA48ElRMuzRv3otKVyJgcX8DuSkER6Onw
-         tL/NuzQKb+EgEkiW+BjV11V1EUt1rhQamVgoYCGNOWKDej/wj/Q7K/G/Fr+72slrwkOP
-         miKgv66J6YQGr2z3CSiP+B3WJdCF5hGgcrWdE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711741178; x=1712345978;
-        h=cc:to:subject:from:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wGRUcWXsBInBmMfpGS0QfGv2r7xwIpgvwzLKcdpnYq0=;
-        b=RSgt/WoHx8tZ1oh23JLf7yYN8euH6BnGJGChAnMRfGSmbXS+EI1087o4fedrhwBst3
-         peTMglgxfJcAQrqNcKWmLOFLYIXUO49vglaVOhi/kx7CY3NFDNLaPYDIw25L9R69MGQE
-         SfDHjUWXrzUjx7lWWPCkyXp5jGmJ3QulhnkYUWC7SbbWOCg/rwrIJXldLGVpAX2xl682
-         DRIFBGJpdW611Wor0JYK9PFOMr3d9hO1rKAgYkCHe0AEzJT0z99smOUOObOSSHQvMgfn
-         sv8Wv+uaJFDhn+MPLrKSwcLo1pUT/cfyJ7BNQL/GWwhiHqB2e06m084mysGGl/3Fn3dL
-         MDEA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ+F7oEJv16Dic/CvLyqLLwGOkdkPA6HZiKlAUCCWqc1WaS1vtB0DnUzS2CUSBhHz/Dnw5Qnqh9KuANBktN4oXijKBOmkURLuhYCUb
-X-Gm-Message-State: AOJu0Yxv7j68fBKsXj6NvBAWj7q/3F8stnAvkokHDP6HWvghw4US9f+2
-	vIwCQ7QjxUOCSPoqKedcU7hPqxakDG/pW5uzjnCCsId13qHqNGYsiIVhZ0DliOM=
-X-Google-Smtp-Source: AGHT+IEF0hNNkf3bwSM19CEdUd7pYB9hRExVR1pNOhJaI0ULQvnYGKc0SJVoNnYjG75PRMc770knmg==
-X-Received: by 2002:a92:c002:0:b0:368:efa4:be11 with SMTP id q2-20020a92c002000000b00368efa4be11mr1564250ild.2.1711741177641;
-        Fri, 29 Mar 2024 12:39:37 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id n18-20020a92dd12000000b003687fe513f2sm1252463ilm.2.2024.03.29.12.39.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 12:39:37 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------Vr1acWcKHWqaHYvzGvXWoWNj"
-Message-ID: <0dea1005-3cd4-410e-aa3e-272712cca7b5@linuxfoundation.org>
-Date: Fri, 29 Mar 2024 13:39:36 -0600
+	s=arc-20240116; t=1711741230; c=relaxed/simple;
+	bh=kVie0lIYq87b4K2yStjHn2aHzRqOEQgLJws4/Qm9roo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=tDIJG/XN0DsFHpIwJqnFBdLmC5AwtQS19XUlvpovUC2N+6xvFZwZHp0QSL3eJi3kZ0hiJXG0AISZTIkq3IjN96TomYKdD4n0jqBMcMk7SO9eIOEx7qYuKqQTFlZzKYEnKeiCF9DrCSpRcjBkhwY3tGtw1ZXF+EBYpmD/xtdtkWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qURCjjJ8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DEE8BC433F1;
+	Fri, 29 Mar 2024 19:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711741230;
+	bh=kVie0lIYq87b4K2yStjHn2aHzRqOEQgLJws4/Qm9roo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=qURCjjJ8CyoClRIHgW1xlrilNI9+EtbfuJnkn3yDcfXqwXkfrj1L2nTFOiwbABj2C
+	 Jdg4Pe+Key3N7s4lQkKW8j9CUQegZ0QrHyUTj+azqJpk6YnUKQD/Jfjqca5Zt0MhoL
+	 aSZhZsKVi4UxtchPo5TFzqoua38eeiqOyNCb/6KgGnATKl0ETmSpdfpqiY8rKpqTF4
+	 o7+5n010YAl3f3cZSHM7j7kl92SN1/zefX/iN9IcNDpKLmKuMzGDpSStDu5I3UBMdo
+	 UIHa12gaoxl8MEpWRm9uVi0l+hfGN109MfTQcwP/Wg/q1i7kg6bEAkt43DMrjj3cpR
+	 DsyQEwrZjVfuA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C9FB3D84BAF;
+	Fri, 29 Mar 2024 19:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] KUnit fixes update for Linux 6.9-rc2
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>, shuah <shuah@kernel.org>,
- David Gow <davidgow@google.com>, Brendan Higgins
- <brendanhiggins@google.com>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, "kuba@kernel.org" <kuba@kernel.org>,
- Mark Brown <broonie@kernel.org>, Johannes Berg <johannes@sipsolutions.net>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] octeontx2-pf: check negative error code in otx2_open()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171174122982.26003.5767221799361986450.git-patchwork-notify@kernel.org>
+Date: Fri, 29 Mar 2024 19:40:29 +0000
+References: <20240328020620.4054692-1-suhui@nfschina.com>
+In-Reply-To: <20240328020620.4054692-1-suhui@nfschina.com>
+To: Su Hui <suhui@nfschina.com>
+Cc: sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+ hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, dan.carpenter@linaro.org,
+ saikrishnag@marvell.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ horms@kernel.org, kalesh-anakkur.purayil@broadcom.com
 
-This is a multi-part message in MIME format.
---------------Vr1acWcKHWqaHYvzGvXWoWNj
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello:
 
-Hi Linus,
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Please pull the following kunit fixes update for Linux 6.9rc2.
+On Thu, 28 Mar 2024 10:06:21 +0800 you wrote:
+> otx2_rxtx_enable() return negative error code such as -EIO,
+> check -EIO rather than EIO to fix this problem.
+> 
+> Fixes: c926252205c4 ("octeontx2-pf: Disable packet I/O for graceful exit")
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> 
+> [...]
 
-This kunit update for Linux 6.9-rc2 consists of one urgent fix for
---alltests build failure related to renaming of CONFIG_DAMON_DBGFS
-to DAMON_DBGFS_DEPRECATED to the missing config option.
+Here is the summary with links:
+  - [net,v3] octeontx2-pf: check negative error code in otx2_open()
+    https://git.kernel.org/netdev/net/c/e709acbd84fb
 
-This is one of the two fixes to --alltests breakage. The other
-one is in the following PR from net:
-  
-https://lore.kernel.org/netdev/20240328143117.26574-1-pabeni@redhat.com
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff is attached.
 
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
-
-   Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-kunit-fixes-6.9-rc2
-
-for you to fetch changes up to cfedfb24c9ddee2bf1641545f6e9b6a02b924aee:
-
-   kunit: configs: Enable CONFIG_DAMON_DBGFS_DEPRECATED for --alltests (2024-03-28 11:47:30 -0600)
-
-----------------------------------------------------------------
-linux_kselftest-kunit-fixes-6.9-rc2
-
-This kunit update for Linux 6.9-rc2 consists of one urgent fix for
---alltests build failure related to renaming of CONFIG_DAMON_DBGFS
-to DAMON_DBGFS_DEPRECATED to the missing config option.
-
-----------------------------------------------------------------
-David Gow (1):
-       kunit: configs: Enable CONFIG_DAMON_DBGFS_DEPRECATED for --alltests
-
-  tools/testing/kunit/configs/all_tests.config | 1 +
-  1 file changed, 1 insertion(+)
-----------------------------------------------------------------
---------------Vr1acWcKHWqaHYvzGvXWoWNj
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux_kselftest-kunit-fixes-6.9-rc2.diff"
-Content-Disposition: attachment;
- filename="linux_kselftest-kunit-fixes-6.9-rc2.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcva3VuaXQvY29uZmlncy9hbGxfdGVzdHMuY29u
-ZmlnIGIvdG9vbHMvdGVzdGluZy9rdW5pdC9jb25maWdzL2FsbF90ZXN0cy5jb25maWcKaW5k
-ZXggYWE1ZWMxNDlmOTZjLi5mMzg4NzQyY2YyNjYgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rp
-bmcva3VuaXQvY29uZmlncy9hbGxfdGVzdHMuY29uZmlnCisrKyBiL3Rvb2xzL3Rlc3Rpbmcv
-a3VuaXQvY29uZmlncy9hbGxfdGVzdHMuY29uZmlnCkBAIC0zOCw2ICszOCw3IEBAIENPTkZJ
-R19EQU1PTl9WQUREUj15CiBDT05GSUdfREFNT05fUEFERFI9eQogQ09ORklHX0RFQlVHX0ZT
-PXkKIENPTkZJR19EQU1PTl9EQkdGUz15CitDT05GSUdfREFNT05fREJHRlNfREVQUkVDQVRF
-RD15CiAKIENPTkZJR19SRUdNQVBfQlVJTEQ9eQogCg==
-
---------------Vr1acWcKHWqaHYvzGvXWoWNj--
 
