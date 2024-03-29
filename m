@@ -1,232 +1,146 @@
-Return-Path: <linux-kernel+bounces-125169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEFA892194
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:24:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6516A89219D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D4771F2665A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:24:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D6B1C25790
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D77585942;
-	Fri, 29 Mar 2024 16:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E22B86269;
+	Fri, 29 Mar 2024 16:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VqjEwkC4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uGZJBVVy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6989785298;
-	Fri, 29 Mar 2024 16:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2DB65E20;
+	Fri, 29 Mar 2024 16:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711729431; cv=none; b=OJcgGNGKWIgIoLdr2fkB+jw9uZN+t/VXLPeK51DWJetKcKL1kgCxw8gUQiUiOdWE/CjVV5bUNaG7kbHmmvuqh+1FcEla9W63khlnOEAeBVlkG8eU3i4OCKEb9G5CHAy5uQH5fcMXs2lzEtmMMuaSwKMSQSccHzRWH6FkXSBTu0o=
+	t=1711729606; cv=none; b=t3PgCALxcqOdbQnEHjCk1aJrwgHDnuLRaC+gC4r5k1jV19XpSzh4MeByKICH2gsT+A/ZxXRC79NPggqlP0y/f98YvCxF0icURUprZOE8nfeUivf81hQIVQ9brZ28ycdJzFV0YGGS77I6ECkLS2Fo/y4nzP72WNqUf2ezCbbSl3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711729431; c=relaxed/simple;
-	bh=xAIheBzeDFe9gAy7K03pZGAgl2K/WDJn0EzGeK10nsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JQQeVFogo9kBlOF3ZeZGxbGSiQ0L1z56tmdtu+o4xUVqK6MrWWzswS9I2sbTv74XFg8jDCGBV3+lC9cE4fBjIX1Hw3InV18AOfuo1hujGmuKrftzgrFaTK7IyXuGhnh74tUlCCwrmcHfuRinR+jne33xxzL3gReUMRpC2JqFyJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VqjEwkC4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6C4EC433F1;
-	Fri, 29 Mar 2024 16:23:50 +0000 (UTC)
+	s=arc-20240116; t=1711729606; c=relaxed/simple;
+	bh=QOrM8kFtO8tJJp57UV2H0I4R7+PFvYwNJQA3ikefxuA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=JPxjjBvMnvFeT2JoiCmJsEKRRoQUnAhjnBBJimUvo1j0qfvWGn47md7PEZLRIihCFMdtgzcEgkbxIZppC4w3iUpvi8ZOujtfrCUA5CySPDRYS8a2dIO8UQ2cmXmBS2y+0XpAzzw+DGMLxPC2TG1rb9xcRhbwpotZNnqxxSPqsEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uGZJBVVy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 93AD0C433C7;
+	Fri, 29 Mar 2024 16:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711729431;
-	bh=xAIheBzeDFe9gAy7K03pZGAgl2K/WDJn0EzGeK10nsU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VqjEwkC4s+9WKiWWBrbzPJwZvUjPGr1GsJssTW2nTPBB3UJHunb82vNyDdMrSnZDx
-	 mVoAOuStXGPM9OMW57nu9ZkN8BS6nlBVoXr7ERJh4sA+KF5d7Gq0b8jkAzxveCIsSH
-	 7Le0wZvz6aKeYK3oqEAZFrmrYl1DEIRdOCQB/RGtcjB6qeWSsz5o5Ifod8dRN34rrX
-	 gzpU0La+Tj5I3RlQOdpsNBrHtfl9RsWyACCvr0UC2WAveSaNR3T+Biacmij3GE19/S
-	 SSn/mIKegVbQeQqMbrPJTdlJDDmEJj6KXygFvmkmx4X3ychBnMPt9KhePJLQMGJ1ag
-	 vQEGNuyN8hnQQ==
-Received: by mercury (Postfix, from userid 1000)
-	id 5A97510608D9; Fri, 29 Mar 2024 17:23:48 +0100 (CET)
-Date: Fri, 29 Mar 2024 17:23:48 +0100
-From: Sebastian Reichel <sre@kernel.org>
-To: Kate Hsuan <hpa@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
-	linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-	Hans de Goede <hdegoede@redhat.com>, Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, 
-	=?utf-8?B?QW5kcsOp?= Apitzsch <git@apitzsch.eu>, linux-kernel@vger.kernel.org, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v5 RESEND 5/6] power: supply: power-supply-leds: Add
- charging_red_full_green trigger for RGB LED
-Message-ID: <nakbogrilul6skiab5opfsqhhqfotfgmb47wyd3xbgbpf6hurc@6xshfz3obj7m>
-References: <20240324150107.976025-1-hpa@redhat.com>
- <20240324150107.976025-6-hpa@redhat.com>
+	s=k20201202; t=1711729605;
+	bh=QOrM8kFtO8tJJp57UV2H0I4R7+PFvYwNJQA3ikefxuA=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=uGZJBVVyMNnruOLAEvLgFi6Wbey8dT5XXSEB9oj+TttR+ue+xzBaV4uni1l/IdnlJ
+	 dLAFNTsSnIYCUT1fRPOONO4h0inDto0JMiDYxkCE1EIFvXDhpy8fCd69NbQCWHB75O
+	 3y9H6reS10rDWNtL8NFYzils3XyJ/mO8aTZIsduXmA020uedSjTovw/HlZKKpf74sj
+	 jLCl3C1muIK5K2NL+wIeJ0H29OKbjwWQs3MWqirAseL/SL2QlZ9kfmg9CVgW1f9YwR
+	 Ki77TulayzTcZb1FvKObhY+nTObPoCANqQmTgduPIRf39rwiFH0j8z6D28IwtFECRU
+	 02rFtMlgXE6Ew==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 856FDCD1283;
+	Fri, 29 Mar 2024 16:26:45 +0000 (UTC)
+From: =?utf-8?q?Jonathan_Neusch=C3=A4fer_via_B4_Relay?= <devnull+j.neuschaefer.gmx.net@kernel.org>
+Date: Fri, 29 Mar 2024 17:26:27 +0100
+Subject: [PATCH] rhashtable: Improve grammar
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bnl5eqiu4mggmjza"
-Content-Disposition: inline
-In-Reply-To: <20240324150107.976025-6-hpa@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240329-misc-rhashtable-v1-1-5862383ff798@gmx.net>
+X-B4-Tracking: v=1; b=H4sIALLrBmYC/x3MTQqAIBBA4avErBPMEqurRAvTMQf6w4kIorsnL
+ b/Few8wJkKGvngg4UVM+5ZRlQW4aLcZBflsUFI1sladWImdSNFyPO20oPBGmxbboNBryNWRMND
+ 9H4fxfT9eQrX2YQAAAA==
+To: Thomas Graf <tgraf@suug.ch>, Herbert Xu <herbert@gondor.apana.org.au>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711729602; l=2864;
+ i=j.neuschaefer@gmx.net; s=20240329; h=from:subject:message-id;
+ bh=ll377MzgwIQchZuz5guGR9RosFjEvQ8Y2LJidGKOZAc=;
+ b=AKOA/sMoOEeDv3OZC6kh4SdqPyBCnKK/fx9cHhz8d/3X5L9//4ew+HbZUu8eK/ktTA2IFyyDA
+ e9q1mpM3YX0A+c3gyOeENJ0NEGnPe00oAjnnQ0ysO6FLUW3oE3b0/AX
+X-Developer-Key: i=j.neuschaefer@gmx.net; a=ed25519;
+ pk=NIe0bK42wNaX/C4bi6ezm7NJK0IQE+8MKBm7igFMIS4=
+X-Endpoint-Received: by B4 Relay for j.neuschaefer@gmx.net/20240329 with
+ auth_id=149
+X-Original-From: =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Reply-To: j.neuschaefer@gmx.net
+
+From: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+
+Change "a" to "an" according to the usual rules, fix an "if" that was
+mistyped as "in", improve grammar in "considerable slow" ->
+"considerably slower".
+
+Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+---
+ include/linux/rhashtable.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
+index 5b5357c0bd8c4..8463a128e2f48 100644
+--- a/include/linux/rhashtable.h
++++ b/include/linux/rhashtable.h
+@@ -633,7 +633,7 @@ static inline struct rhash_head *__rhashtable_lookup(
+  * @params:	hash table parameters
+  *
+  * Computes the hash value for the key and traverses the bucket chain looking
+- * for a entry with an identical key. The first matching entry is returned.
++ * for an entry with an identical key. The first matching entry is returned.
+  *
+  * This must only be called under the RCU read lock.
+  *
+@@ -655,7 +655,7 @@ static inline void *rhashtable_lookup(
+  * @params:	hash table parameters
+  *
+  * Computes the hash value for the key and traverses the bucket chain looking
+- * for a entry with an identical key. The first matching entry is returned.
++ * for an entry with an identical key. The first matching entry is returned.
+  *
+  * Only use this function when you have other mechanisms guaranteeing
+  * that the object won't go away after the RCU read lock is released.
+@@ -682,7 +682,7 @@ static inline void *rhashtable_lookup_fast(
+  * @params:	hash table parameters
+  *
+  * Computes the hash value for the key and traverses the bucket chain looking
+- * for a entry with an identical key.  All matching entries are returned
++ * for an entry with an identical key.  All matching entries are returned
+  * in a list.
+  *
+  * This must only be called under the RCU read lock.
+@@ -699,7 +699,7 @@ static inline struct rhlist_head *rhltable_lookup(
+ }
+ 
+ /* Internal function, please use rhashtable_insert_fast() instead. This
+- * function returns the existing element already in hashes in there is a clash,
++ * function returns the existing element already in hashes if there is a clash,
+  * otherwise it returns an error via ERR_PTR().
+  */
+ static inline void *__rhashtable_insert_fast(
+@@ -1130,7 +1130,7 @@ static inline int rhashtable_remove_fast(
+  *
+  * Since the hash chain is single linked, the removal operation needs to
+  * walk the bucket chain upon removal. The removal operation is thus
+- * considerable slow if the hash table is not correctly sized.
++ * considerably slower if the hash table is not correctly sized.
+  *
+  * Will automatically shrink the table if permitted when residency drops
+  * below 30%
+
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240329-misc-rhashtable-d7578e8f2ed5
+
+Best regards,
+-- 
+Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
 
---bnl5eqiu4mggmjza
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Kate,
-
-On Sun, Mar 24, 2024 at 11:01:06PM +0800, Kate Hsuan wrote:
-> Add a charging_red_full_green LED trigger and the trigger is based on
-> led_mc_trigger_event() which can set an RGB LED when the trigger is
-> triggered. The LED will show red when the battery status is charging.
-> The LED will show green when the battery status is full.
->=20
-> Link: https://lore.kernel.org/linux-leds/f40a0b1a-ceac-e269-c2dd-0158c5b4=
-a1ad@gmail.com/T/#t
-> Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> ---
-
-Have you considered using orange instead of red? Using orange as
-charging indicator seems to be more common nowadays and allows
-
-green  =3D battery full
-orange =3D battery charging
-red    =3D battery empty / battery dead / error
-
-Greetings,
-
--- Sebastian
-
->  drivers/power/supply/power_supply_leds.c | 25 ++++++++++++++++++++++++
->  include/linux/power_supply.h             |  2 ++
->  2 files changed, 27 insertions(+)
->=20
-> diff --git a/drivers/power/supply/power_supply_leds.c b/drivers/power/sup=
-ply/power_supply_leds.c
-> index c7db29d5fcb8..bd9c8fec5870 100644
-> --- a/drivers/power/supply/power_supply_leds.c
-> +++ b/drivers/power/supply/power_supply_leds.c
-> @@ -22,6 +22,8 @@
->  static void power_supply_update_bat_leds(struct power_supply *psy)
->  {
->  	union power_supply_propval status;
-> +	unsigned int intensity_green[3] =3D {255, 0, 0};
-> +	unsigned int intensity_red[3] =3D {0, 0, 255};
-> =20
->  	if (power_supply_get_property(psy, POWER_SUPPLY_PROP_STATUS, &status))
->  		return;
-> @@ -36,12 +38,20 @@ static void power_supply_update_bat_leds(struct power=
-_supply *psy)
->  		/* Going from blink to LED on requires a LED_OFF event to stop blink */
->  		led_trigger_event(psy->charging_blink_full_solid_trig, LED_OFF);
->  		led_trigger_event(psy->charging_blink_full_solid_trig, LED_FULL);
-> +		led_mc_trigger_event(psy->charging_red_full_green_trig,
-> +				     intensity_green,
-> +				     3,
-> +				     LED_FULL);
->  		break;
->  	case POWER_SUPPLY_STATUS_CHARGING:
->  		led_trigger_event(psy->charging_full_trig, LED_FULL);
->  		led_trigger_event(psy->charging_trig, LED_FULL);
->  		led_trigger_event(psy->full_trig, LED_OFF);
->  		led_trigger_blink(psy->charging_blink_full_solid_trig, 0, 0);
-> +		led_mc_trigger_event(psy->charging_red_full_green_trig,
-> +				     intensity_red,
-> +				     3,
-> +				     LED_FULL);
->  		break;
->  	default:
->  		led_trigger_event(psy->charging_full_trig, LED_OFF);
-> @@ -49,6 +59,10 @@ static void power_supply_update_bat_leds(struct power_=
-supply *psy)
->  		led_trigger_event(psy->full_trig, LED_OFF);
->  		led_trigger_event(psy->charging_blink_full_solid_trig,
->  			LED_OFF);
-> +		led_mc_trigger_event(psy->charging_red_full_green_trig,
-> +				     intensity_red,
-> +				     3,
-> +				     LED_OFF);
->  		break;
->  	}
->  }
-> @@ -74,6 +88,11 @@ static int power_supply_create_bat_triggers(struct pow=
-er_supply *psy)
->  	if (!psy->charging_blink_full_solid_trig_name)
->  		goto charging_blink_full_solid_failed;
-> =20
-> +	psy->charging_red_full_green_trig_name =3D kasprintf(GFP_KERNEL,
-> +		"%s-charging-red-full-green", psy->desc->name);
-> +	if (!psy->charging_red_full_green_trig_name)
-> +		goto charging_red_full_green_failed;
-> +
->  	led_trigger_register_simple(psy->charging_full_trig_name,
->  				    &psy->charging_full_trig);
->  	led_trigger_register_simple(psy->charging_trig_name,
-> @@ -82,9 +101,13 @@ static int power_supply_create_bat_triggers(struct po=
-wer_supply *psy)
->  				    &psy->full_trig);
->  	led_trigger_register_simple(psy->charging_blink_full_solid_trig_name,
->  				    &psy->charging_blink_full_solid_trig);
-> +	led_trigger_register_simple(psy->charging_red_full_green_trig_name,
-> +				    &psy->charging_red_full_green_trig);
-> =20
->  	return 0;
-> =20
-> +charging_red_full_green_failed:
-> +	kfree(psy->charging_blink_full_solid_trig_name);
->  charging_blink_full_solid_failed:
->  	kfree(psy->full_trig_name);
->  full_failed:
-> @@ -101,10 +124,12 @@ static void power_supply_remove_bat_triggers(struct=
- power_supply *psy)
->  	led_trigger_unregister_simple(psy->charging_trig);
->  	led_trigger_unregister_simple(psy->full_trig);
->  	led_trigger_unregister_simple(psy->charging_blink_full_solid_trig);
-> +	led_trigger_unregister_simple(psy->charging_red_full_green_trig);
->  	kfree(psy->charging_blink_full_solid_trig_name);
->  	kfree(psy->full_trig_name);
->  	kfree(psy->charging_trig_name);
->  	kfree(psy->charging_full_trig_name);
-> +	kfree(psy->charging_red_full_green_trig_name);
->  }
-> =20
->  /* Generated power specific LEDs triggers. */
-> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-> index c0992a77feea..1d7c0b43070f 100644
-> --- a/include/linux/power_supply.h
-> +++ b/include/linux/power_supply.h
-> @@ -318,6 +318,8 @@ struct power_supply {
->  	char *online_trig_name;
->  	struct led_trigger *charging_blink_full_solid_trig;
->  	char *charging_blink_full_solid_trig_name;
-> +	struct led_trigger *charging_red_full_green_trig;
-> +	char *charging_red_full_green_trig_name;
->  #endif
->  };
-> =20
-> --=20
-> 2.44.0
->=20
->=20
-
---bnl5eqiu4mggmjza
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYG6woACgkQ2O7X88g7
-+pphVQ/6A1+OXzjPuauzgsq0RMlPlWxqIS4j3Cg7r3vvo1ZxFjb2sMFGGzgBPAwP
-n+zwP462szCeWuqdZCL62h9JSQvB4eUx0HdNqiLb6Z3GCJmCjdLjtUwnsgVPT3ny
-6OPra4jyw1y+1UcwVePwhz23jphH+8CDk5VF7uZu4PUgNryyS2owID7CAKQgNdPp
-56Mz/FRgJXPRb6iAEOqKFe0eveYeRDYWbve/GBZ9XkBObeJAQ+qb8ko8oL99BrlD
-bubkvSRGXtaldkk7oUfhhMutZYowK86Gmc4zUkFFjMLIXVACUE1aR8zq0lPVIxfL
-9FFP6kNwa47+hTU9/GyNRmF5bhukcaSQIdhucW2/vUFeu651V/Gou/z3NAe48PM+
-40owjIPXLfMuvX08e/OKAOzvrwuVee7sg9K51L0s8r3xQ6xUzwRKXuLVuxa6nV61
-OnLG6Rfblg3qaerClMk1v2vFdAsHZGhnN0oxoJDAndT8rJZ+ywGWiyehX0P91JwC
-7PkBvOUXdf+QJn7S4Wy5yT5uwTMJm9x1GRYhzSUVVqq8UUVFXnFHioaqI+nLXewa
-uqy59GzObqGnZuDAD6NNyRb+N8NVHMtqWG88PxxhGNq3Ep4+Vc92+M6cN55icG3X
-TfZRlxBzsilyuq7Rte8YW0URiZIRY5zDfg/ib8UmPdyFHkMW4Bg=
-=F8cp
------END PGP SIGNATURE-----
-
---bnl5eqiu4mggmjza--
 
