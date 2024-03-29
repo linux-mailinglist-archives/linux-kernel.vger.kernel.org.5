@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-124721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70046891BCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:33:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E633C891BD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 864841C26B01
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:33:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85DB91F25123
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2791316F83F;
-	Fri, 29 Mar 2024 12:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862CE17798C;
+	Fri, 29 Mar 2024 12:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y7peRLZG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VpmibIrG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59BC7146A76;
-	Fri, 29 Mar 2024 12:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DE8176FD5;
+	Fri, 29 Mar 2024 12:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716010; cv=none; b=SzrdFdlc9j+esdD9hGXToHyEvU+bQfMH3G9ogkKxfK9f+BCK0Nhh5B6J+GQlIhLjbwQuFy2xf9n6IBZR398Y5FCYuqwrj4/QUAOOpuHTpBnfyvvi85vjAfN3k8QuHWOht9LNW31WyqZJziZHkGOUht5X/oEgxS1TIZBgpV74oa8=
+	t=1711716012; cv=none; b=ifgCIWpAhbsZ2wXKmE6jUYRT2CEI5+HaSCby1bAsfzXUFNsBzjPptQLbg8KMQmo8hVS5uNcpOojRV+8wJ8Yv9S7+8uPVhX971nYVAyd4WBLQur9WTwQccfeBGvXTcaFZj8kf4OHyFp3gWb27nI5ZNmkAOr+Hs8ax9SqDeutDp+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716010; c=relaxed/simple;
-	bh=8Xk6KwQXUDokZ4yzdMMwyzN4nfhkCHsts3dsOIhFRG8=;
+	s=arc-20240116; t=1711716012; c=relaxed/simple;
+	bh=yYW3e9AMlBSHzJkJoAc0wxNP8CWlh2H0TvfQaDrp55A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tQlivrLna7tYuqvwItXkf4f7LOJk/3uDUOZ7heWYJ47YUes2Yba/bWdi/Jw52FmmzZsJr3rH3wK+dZXdj1PRNTPagCjpt49y3YsAwMf4nd4TAIqPh8r1GhMx0RThlv6U4RyaSPPJGAYP8dqgTMooA9fpNPQklkJocVkETqkcqeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y7peRLZG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8C08C433F1;
-	Fri, 29 Mar 2024 12:40:08 +0000 (UTC)
+	 MIME-Version; b=FDwcF7fEpYPgZYUqXvCRpqx21FnHoJQnVxsRXKS6ORvalTwrMfunsli9KQz1gHwr233YtRXEugBqouIDuxjf/UUf3DgyAJ7cRf1KbI0f2ayAs9jP1NDlfI7nSD/+2cs11mDlhsxermC+kb/hkpu9x6QYXcKZp+SNTAkuLXRZNos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VpmibIrG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0187CC433F1;
+	Fri, 29 Mar 2024 12:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716009;
-	bh=8Xk6KwQXUDokZ4yzdMMwyzN4nfhkCHsts3dsOIhFRG8=;
+	s=k20201202; t=1711716012;
+	bh=yYW3e9AMlBSHzJkJoAc0wxNP8CWlh2H0TvfQaDrp55A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y7peRLZGbxJZeIP/hszKu5I6btwGLXdL9C3hnHU17aeZ5fC9gokR4867LBfWYNXVX
-	 KD0BxJzWB+pJePOAYnacLwrCjUG9l7RKr/qfRKA2rWb3S2I30AhwFSS/5Yne5s2nww
-	 mvOr6HkohHUnZ/6S7sVarNHNzmd872H8+v6+Wfwax8GnMSookaXlA4ZvQW9j7zCbdw
-	 glyJW3SJRFR9PHYvLadpdJU2rdJxVLB6MBWIqe82B2Tcn3RS/pAG0liu4mLXwVFXGX
-	 H3yjXW0YzSNIePEUCZiz9KH+dwOLKb5Z1/OcxP7C7NDIEoFbzFoUtIy/otBA1gShZ4
-	 zmPW6VBRGRmwA==
+	b=VpmibIrGaOUJlSEp00zkhIGa+lNBIPLNwweQb9uxW12QKVIykGrg/NKlvYO05p4Wc
+	 IBgCaaIii7h91Yy7W4zomSpUy3Ca7jwwBBtc4ji0vs2MBJ9rUzJWT4J5u3RCK8Fg7a
+	 DIVDutVqYDM5DS290P9zHTffWHOQi0vDIEYbHOz4WjmMyEcWqBSzL/+MmpgwnFXniM
+	 JnK6MhNcx7rSXX55EQ0BH8OHWJWlNONAXhBt0VPURfdw1r0cwh25Abxe3rkOY7aqlp
+	 tJkvUBCL1WP+q3/dz1A3/TrBuJN2JORmTlrlG7ACzibv17ykEt/I+RVCEDTP2l1O6m
+	 8VCmA1m2/34tg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+Cc: Joe Mason <buddyjojo06@outlook.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	David Wronek <davidwronek@gmail.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	konrad.dybcio@linaro.org,
 	robh@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	conor+dt@kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 12/98] arm64: dts: qcom: sda660-ifc6560: enable USB 3.0 PHY
-Date: Fri, 29 Mar 2024 08:36:43 -0400
-Message-ID: <20240329123919.3087149-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 13/98] arm64: dts: qcom: Add support for Xiaomi Redmi Note 9S
+Date: Fri, 29 Mar 2024 08:36:44 -0400
+Message-ID: <20240329123919.3087149-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -69,46 +70,58 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Joe Mason <buddyjojo06@outlook.com>
 
-[ Upstream commit 319a12e7c399df4316f54f6cc83cd6cdffb4ec4a ]
+[ Upstream commit 6016fb7c91f72f4afbb4017e13cd91954d0f1a9b ]
 
-The Inforce IFC6560 board actually has USB SS lines routed to the USB-C
-connector. Enable USB 3.0 PHY and SS mode for the USB3 host.
+Add a device tree for the Xiaomi Redmi Note 9S (curtana) phone, based on
+sm7125-xiaomi-common.dtsi.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20240116-sdm660-usb3-support-v1-4-2fbd683aea77@linaro.org
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
+Signed-off-by: David Wronek <davidwronek@gmail.com>
+Link: https://lore.kernel.org/r/20240121-sm7125-upstream-v4-8-f7d1212c8ebb@gmail.com
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/qcom/Makefile                |  1 +
+ .../boot/dts/qcom/sm7125-xiaomi-curtana.dts      | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
 
-diff --git a/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts b/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts
-index 21fae799c816a..702ab49bbc594 100644
---- a/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts
-+++ b/arch/arm64/boot/dts/qcom/sda660-inforce-ifc6560.dts
-@@ -454,16 +454,15 @@ &usb2_dwc3 {
- };
- 
- &usb3 {
--	qcom,select-utmi-as-pipe-clk;
--
- 	status = "okay";
- };
- 
- &usb3_dwc3 {
--	maximum-speed = "high-speed";
--	phys = <&qusb2phy0>;
--	phy-names = "usb2-phy";
--
- 	dr_mode = "peripheral";
- 	extcon = <&extcon_usb>;
- };
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index 39889d5f8e123..2e6984bbbb836 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -210,6 +210,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-xiaomi-laurel-sprout.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm6350-sony-xperia-lena-pdx213.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm6375-sony-xperia-murray-pdx225.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-curtana.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-joyeuse.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm7225-fairphone-fp4.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
+diff --git a/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
+new file mode 100644
+index 0000000000000..12f517a8492c3
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2023, Joe Mason <buddyjojo06@outlook.com>
++ */
 +
-+&usb3_qmpphy {
-+	vdda-phy-supply = <&vreg_l1b_0p925>;
-+	status = "okay";
++/dts-v1/;
++
++#include "sm7125-xiaomi-common.dtsi"
++
++/ {
++	model = "Xiaomi Redmi Note 9S";
++	compatible = "xiaomi,curtana", "qcom,sm7125";
++
++	/* required for bootloader to select correct board */
++	qcom,board-id = <0x20022 1>;
 +};
 -- 
 2.43.0
