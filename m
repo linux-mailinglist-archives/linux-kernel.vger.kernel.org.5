@@ -1,163 +1,167 @@
-Return-Path: <linux-kernel+bounces-124169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59446891356
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:46:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7A32891359
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F07C1F22231
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:46:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E832288EDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C6A3CF7D;
-	Fri, 29 Mar 2024 05:46:14 +0000 (UTC)
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94263D0AF;
+	Fri, 29 Mar 2024 05:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSR/FECW"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0733C3A8F7;
-	Fri, 29 Mar 2024 05:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A753C482;
+	Fri, 29 Mar 2024 05:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711691174; cv=none; b=dGr/mzODk+Nmr1adlITiEy5TwCs+tSRKEAXlikNp9qahEXwDpITVTVJB554tprE0sw7UKFEPlSVhrH4tUoDi5OyBeA3MuzA+282swe/p6b171Ot3D5lAv4NxTdPtTTjm5UYKJ+0+6DJ4iVjL2KywU9l+Tum9B50qHURYDUVD/AU=
+	t=1711691227; cv=none; b=ozvVxQgKik1qqPIuKbo+QRZRAsAe/tdlo5t2galcP70tE5u6Ynn31JC7pDueCJooPLbzNnoFw6DipdzJ1OVSMIyCNKYoIzeTRV0A4mVJqWvepn03h/jiJquSpYVzp+UeRDp22EMyRTdxu6atEjgF1WboLv4DIkkKvyOXIOx9S2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711691174; c=relaxed/simple;
-	bh=KGwkGKtTA4rDrrqayQ/alyrWXig3KMsQmbrIPNkMeVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZXnx+HrYOW5OdmcKRdDeqk5swJr+gvQZQwY3+H5v8D4YBEKiZY2lPLeLS+vgNRNyTDAZaU64o7+TwTJ+3tOk5eZnRH9TgaYPgZ73C9y1OkSs5a+3mDRM9NbmIBxJwUqsfglV8bsbPbtQz05QOOqk4r0a4oWEPpLt5rp4HykGRJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1711691227; c=relaxed/simple;
+	bh=wBp+ceh/Gi5LnHoDZJeLCQWxE+UPBatPPcYDpPIISaQ=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=odnzvtNLVmqSL93wrojoz8KOdOWTH6bCwsX4dp460wkjLSeW9yAoSeQ11xslxHvWmo3dNiMWx2swLBHaS2DBGGMaN59DySs/qed2JxbY3lJQYJEosbXJkzUq9qCPM8V3hgUQWAMOSkZAqbrO9udUg0DBJerWHYteD3Rk1B5aru8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSR/FECW; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2005943a12.0;
-        Thu, 28 Mar 2024 22:46:12 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e2266655b1so6404465ad.2;
+        Thu, 28 Mar 2024 22:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711691224; x=1712296024; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A2mjGX0SMVp3aAe3JX3OUIFGC3HtwxrC9WrcrOvDfNY=;
+        b=iSR/FECWCTwtuTixMIv1Ec8OQO4/+bXHGQx4QRida+IgRKwD+LSVkWGqmJMl0eJV7Q
+         5NK590WyMnyji0n3UMiPLBSH8Xcs/vqGGrKDW0KR56ID+lHpn5IFoa4QPEh7qU6WLlIi
+         yRNKQtCAuZKZ8IcsbfM8c4erewTcUuKqVzLRpBkSK5tHBH6BoV5ezngxoCCJX9FJ43tG
+         BuviFVgqlNHg9PZfw+x/SGwaZhhgRrbmsqjNws+qjoRmodOEQVFcgD+9a3k+P1K+wPqX
+         t48d3eXiQoZnuaZdupj23hAGU2gQG6H060SnC4sXuy7wsHGVNhvfmWsnuQH1Djj+Feud
+         twiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711691172; x=1712295972;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711691224; x=1712296024;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6+2vFU7V6j+41AhIjyIIqYWwenIJmg7wdwdRq1cmkxY=;
-        b=QNYNrzIfoBI7hQN81eQOz3SIdLxjH91jl8NqjRwagkC4kiuu4Ad/R9Eyx11s07wjca
-         ZSAWDmjokDZEFyEJHQBBWU+fUTyGqX+h9eW6fXsDCsKHKWND5T3lE05W9fst5pFuigyN
-         Vu7b9yzMO7j3jGB0DsV5CsehM1uymVHCQjhlE7CKRTren/trGhIsjmLvjXICJto3VM/9
-         zRN2uvOBEeB2OnS4/kD9i9v3rjlEymIvi0SDH/Kri6CPzkf+IZUGNCGgtFapGCFQbs0l
-         JH7pj8zu9ugzIKjgXYcT/VhUOw6tuMv67xHBUsmPjLhOtUyNMDxx4tB7vm9d6YSseKo2
-         oy1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWmWzz+tzDSQvYV2Xm2PUXACMZqrY4SDJcY9Xa8iqmorcWPXWY87FIO2MvadOt3p1dkwUgUVDFkGFcSResOmyKzhOcUFN6voykCP6Je7Yk6NeS3aaTob6qLzG47/2LXnbNVtElZVxKytcHJ7kE0RQ==
-X-Gm-Message-State: AOJu0Yz926NRS4gRBY45eV39DcNgohqrYyXK90EMvVrO6A96SeGkeBRf
-	CnWtfcf45tnDSM8CMSXtzrSn90livGOuGNfUKiWoE8KCIyajOlih928/567xRIDjjiKy6szE2Xb
-	cZMK+t/OuQXTt1zTUvA/Y9cQSFCY=
-X-Google-Smtp-Source: AGHT+IGOWkjpAWMSh8kylWMgdIo5zIaFj4PviWIV/PQJ1w4zEnYGxJLHyo5hOs8EE4FiY3pOLbnZc5CCTxzJF8XlLrs=
-X-Received: by 2002:a17:90a:8284:b0:2a0:4e60:ba46 with SMTP id
- g4-20020a17090a828400b002a04e60ba46mr2209931pjn.16.1711691172259; Thu, 28 Mar
- 2024 22:46:12 -0700 (PDT)
+        bh=A2mjGX0SMVp3aAe3JX3OUIFGC3HtwxrC9WrcrOvDfNY=;
+        b=xJAseVLtAXF4ueAlCdvhxlThnzcd5J0GNbWq2XuL0TKSQktIEZWEf+bJYL5O+k+/Ij
+         YM0aEBhT3PlbEGIVCX9hKhK/2dSVWKex8KHsVKf33mOJjdvg2KIYE0ofGW+zLLsCUwQb
+         ZK/PUjhiQCdSUuMIrSHlwhPbb/AnnDZC3E1YHUf66UzEOoH64Al+UfPd3Ar963Pebbwe
+         NXLL3UbX84Q4w2knuKp8nsw7KaA0vV9pzXVtUErkLRAIhe3dvPvW4SvsX4/8Z11XZAR7
+         PHbVY6tbJLn01Qi+NTWXYENsWtWNuelQ48SEwHu6dsNWkMqB2nad1+dDc350lOaO/gtG
+         xNow==
+X-Forwarded-Encrypted: i=1; AJvYcCVaNjgGYoiDPqX0m54PKMa6RWtncPFUV24TeD6g7r2tOdz5oSDXgw743D54D0NwhhSHSHnCowyBDyw0PA1/yHaXEeYtxq57qYmTJqXx/5ol1G7UfHp+fl/uwLouq8PLq69lW/YB7NifJtLsIGYmKXHR2hoTFoQBpt0vUcHije2cyaPs0g==
+X-Gm-Message-State: AOJu0YwFJ1qZadaaDSOF2YD7dVewr2W33DsQ6isZxFoyshmGVcrvDXie
+	yQoWHVP/lzRZjkVX2xhZcwDOnUYB18nWgJrf/bX7iwx2PWz+fmTE
+X-Google-Smtp-Source: AGHT+IH/JkdGkpoouYO3YvvMDfxjKrOGwB1PvpruKzfCExMM9LyDsN4kDmn0bP6vCuJx5y3lpFCn/Q==
+X-Received: by 2002:a17:903:2ca:b0:1e1:a54:1fe8 with SMTP id s10-20020a17090302ca00b001e10a541fe8mr1907625plk.53.1711691224520;
+        Thu, 28 Mar 2024 22:47:04 -0700 (PDT)
+Received: from gmail.com ([2a09:bac5:6249:183c::26a:10])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b001e0b3b0e03dsm2679363pln.208.2024.03.28.22.47.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 22:47:04 -0700 (PDT)
+From: Qingfang Deng <dqfext@gmail.com>
+To: Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Qingfang Deng <qingfang.deng@siflower.com.cn>,
+	linux-spi@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 1/2] spi: dt-bindings: add Siflower Quad SPI controller
+Date: Fri, 29 Mar 2024 13:46:56 +0800
+Message-Id: <20240329054657.1602450-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240329015147.1481349-1-dqfext@gmail.com>
+References: <20240329015147.1481349-1-dqfext@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326202859.960577-1-weilin.wang@intel.com> <20240326202859.960577-2-weilin.wang@intel.com>
-In-Reply-To: <20240326202859.960577-2-weilin.wang@intel.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 28 Mar 2024 22:46:00 -0700
-Message-ID: <CAM9d7cjm6uOhffsiuVKk=2GBEUBZUyhNe-5QM5--tw3-X+UBJw@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 1/6] perf stat: Parse and find tpebs events when
- parsing metrics to prepare for perf record sampling
-To: weilin.wang@intel.com
-Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 1:29=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> Metrics that use tpebs values would use the :retire_latency keyword in
-> formulas. We put all these events into a list and pass the list to perf
-> record to collect their retire latency value.
->
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> ---
-[SNIP]
-> @@ -681,8 +685,56 @@ static int metricgroup__build_event_string(struct st=
-rbuf *events,
->         hashmap__for_each_entry(ctx->ids, cur, bkt) {
->                 const char *sep, *rsep, *id =3D cur->pkey;
->                 enum perf_tool_event ev;
-> +               /*
-> +                * Parse and search for event name with retire_latency mo=
-difier.
-> +                * If found, put event name into the tpebs_events list. T=
-his list
-> +                * of events will be passed to perf record for sampling t=
-o get
-> +                * their reitre_latency value.
-> +                * Search for ":R" in event name without "@". Search for =
-the
-> +                * last "@R" in event name with "@".
+From: Qingfang Deng <qingfang.deng@siflower.com.cn>
 
-What is the retire_latency modifier exactly?
-Why do you search for :R and @R?  What's the difference?
-Why don't you search for "retire_latency"?
+Add YAML devicetree bindings for Siflower Quad SPI controller.
 
-Thanks,
-Namhyung
+Signed-off-by: Qingfang Deng <qingfang.deng@siflower.com.cn>
+---
+v2: fix dt_binding_check reported errors
 
+ .../bindings/spi/siflower,qspi.yaml           | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/siflower,qspi.yaml
 
-> +                */
-> +               char *p =3D strstr(id, ":R");
-> +               char *p1 =3D strstr(id, "@R");
-> +
-> +               if (p =3D=3D NULL && p1) {
-> +                       p =3D strstr(p1+1, "@R");
-> +                       if (p =3D=3D NULL)
-> +                               p =3D p1;
-> +                       p =3D p+1;
-> +               }
-> +
-> +               if (p) {
-> +                       char *name;
-> +                       char *at;
-> +                       struct tpebs_event *new_event =3D malloc(sizeof(s=
-truct tpebs_event));
->
-> -               pr_debug("found event %s\n", id);
-> +                       if (!new_event)
-> +                               return -ENOMEM;
-> +
-> +                       new_event->tpebs_name =3D strdup(id);
-> +                       *p =3D '\0';
-> +                       name =3D malloc(strlen(id) + 2);
-> +                       if (!name)
-> +                               return -ENOMEM;
-> +
-> +                       at =3D strchr(id, '@');
-> +                       if (at !=3D NULL) {
-> +                               *at =3D '/';
-> +                               at =3D strchr(id, '@');
-> +                               *at =3D '/';
-> +                               strcpy(name, id);
-> +                               strcat(name, "p");
-> +                       } else {
-> +                               strcpy(name, id);
-> +                               strcat(name, ":p");
-> +                       }
-> +                       new_event->name =3D name;
-> +                       *tpebs_event_size +=3D 1;
-> +                       pr_debug("retire_latency required, tpebs_event_si=
-ze=3D%lu, new_event=3D%s\n",
-> +                               *tpebs_event_size, new_event->name);
-> +                       list_add_tail(&new_event->nd, tpebs_events);
-> +                       continue;
-> +               }
->
->                 /* Always move tool events outside of the group. */
->                 ev =3D perf_tool_event__from_str(id);
+diff --git a/Documentation/devicetree/bindings/spi/siflower,qspi.yaml b/Documentation/devicetree/bindings/spi/siflower,qspi.yaml
+new file mode 100644
+index 000000000000..15ce25a2176a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/siflower,qspi.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/siflower,qspi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Siflower Quad Serial Peripheral Interface (QSPI)
++
++maintainers:
++  - Qingfang Deng <qingfang.deng@siflower.com.cn>
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    const: siflower,qspi
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#address-cells'
++  - '#size-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi@c200000 {
++      compatible = "siflower,qspi";
++      reg = <0xc200000 0x1000>;
++      clocks = <&apb_clk>;
++      interrupts = <39>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&spi0_pins>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++    };
+-- 
+2.34.1
+
 
