@@ -1,61 +1,58 @@
-Return-Path: <linux-kernel+bounces-125012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F4189208A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:35:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C8189206F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:28:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF84BB2BD8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:51:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72B7FB2DC52
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD0F1B76B3;
-	Fri, 29 Mar 2024 12:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C69DE1BEDF3;
+	Fri, 29 Mar 2024 12:51:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XhWi3sCu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RbNdHYo4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F154B1B769A;
-	Fri, 29 Mar 2024 12:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DBB1BEDE5;
+	Fri, 29 Mar 2024 12:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716629; cv=none; b=l55/9b8WwO5xLxdKXVVTm/qpYgkVQa9+iyqfyNwnUsfwMNkMAMgn+Knd0S5UbWOf04iqii4jkK2cmYOBzqSsKGJoB7diOmkwQyg4IrNVFJ5X2iEHw9Cj2qxB5Ch5bvfWTrpzzvLV2gHEz4HkzaqRJJA7HbvcQsOOBjsCm5pKZPY=
+	t=1711716684; cv=none; b=IM4L87IZgWq1hsNPFOhww4nE8YV7TXVTYwHzHegTUWOdZiusTRHC6bCgKQbz5xXljOmOajz3KZxFnhkbss2GqLptfn7VPRBsBEHMc1XZQiCMJtVtXa07wIIklyxeZwv3PypUAFS8R06WduZJP8badTMR7b1cPy2KeyrpUmn55jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716629; c=relaxed/simple;
-	bh=IPN8OiMd9T5FgRETASxaV9m1JSM5nlYJ4IY53EPMpls=;
+	s=arc-20240116; t=1711716684; c=relaxed/simple;
+	bh=X1my/7+7X5B9OA9NnI7yjwSBlsp4CFdaaHUnPmmMCqw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l3SG9dnCcC/uXTZi0LVJT30mN1NBAfnxbtZthJXfgF2AUyVIAyw24/KHqGyc/arHt0f4aMbPQ+UCITkvm8SgWu3avDxygOl4ucF6g+yQvSNU6OGLE4bI8/vBtpkw61P7vxiFb8HAiP1OJnTLf53PNhcuoPckG1P1O3iZoWUTMI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XhWi3sCu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC97C433C7;
-	Fri, 29 Mar 2024 12:50:27 +0000 (UTC)
+	 MIME-Version; b=V9gJbgVwCCCreuP+3+pWq5YhFjYJ4t4hoqLcRcwQn4sfuXf//Qe3U+V7QQAPQFrBjL0y9NLucYlZXP2L4jlbInxJyoFjpiXflS5pPB/Q02TkxHOXgLof50dzDsXM32Q2h/B21AzPQ9dFHsGgAEO4Pkb4Uwol1FDyhOOUOrbos+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RbNdHYo4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9867C433C7;
+	Fri, 29 Mar 2024 12:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716628;
-	bh=IPN8OiMd9T5FgRETASxaV9m1JSM5nlYJ4IY53EPMpls=;
+	s=k20201202; t=1711716683;
+	bh=X1my/7+7X5B9OA9NnI7yjwSBlsp4CFdaaHUnPmmMCqw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XhWi3sCurbezbBagj9afZ0VVXoEVeqyAPtq2JSq74JKg9XkJ+TSNvZZVUpg2rArQs
-	 +RpWQi6VrL6Gz9XtP9EAXdkKCPeX7S1onLbsBNcZiC83r0BFT8g+dU8zhxfYso1fVp
-	 UMchXXNUBqcEcjEjkOcTmhB8xn7eXzaGatC1s84SUN5oiXll61VmKuXHYCZAcQp+HF
-	 oS7VINVfPq0GLxrFaz/gYWPihZpKLsS/eGQ6ffCPKoVIbwL8jjOodgcdzqgZjGNNrQ
-	 kmx0oEnNGQPpqlGM6bRHFs+PZ/ZUcWQflP/jrzST/lDhSM8IApwC41br6to3KtmKW3
-	 Rn/M8jIFilL9w==
+	b=RbNdHYo4ik+x1TSj0Q5Nc79EdaKDYE7Xm8+/JmT2B3jiTWT1bl+CafOCkCh6d0cwc
+	 FU0Ia6aH099Bb/WG0OM75SVZ8Fyce1EEJY5/XhUzrxCILNgEoZRWqyqXH/0YI55qwN
+	 95qAOj9xYkkGZLigoYJ855zRUzDz+707KKnDzjiwCBulUe5gz6yEUU6K8ZPAtdHGxK
+	 8HAV2dP8XfyMoS3Ke30fh27J6rIMeiXMe4T76HuhM+Q9mo1d/az8aN5QiVNSA82vwQ
+	 8kH5UAWFREfi1ESbdgxHoy6V4LJkivirquRcwlqYQELq4LL6SbZDyJmsjhKCsYVM3j
+	 6w1tufFfDHlaQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Edmund Raile <edmund.raile@proton.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
 	Sasha Levin <sashal@kernel.org>,
-	mchehab@kernel.org,
-	nathan@kernel.org,
-	linux-media@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.4 10/23] media: sta2x11: fix irq handler cast
-Date: Fri, 29 Mar 2024 08:49:43 -0400
-Message-ID: <20240329125009.3093845-10-sashal@kernel.org>
+	linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 12/19] PCI: Mark LSI FW643 to avoid bus reset
+Date: Fri, 29 Mar 2024 08:50:44 -0400
+Message-ID: <20240329125100.3094358-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329125009.3093845-1-sashal@kernel.org>
-References: <20240329125009.3093845-1-sashal@kernel.org>
+In-Reply-To: <20240329125100.3094358-1-sashal@kernel.org>
+References: <20240329125100.3094358-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,63 +61,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.273
+X-stable-base: Linux 4.19.311
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Edmund Raile <edmund.raile@proton.me>
 
-[ Upstream commit 3de49ae81c3a0f83a554ecbce4c08e019f30168e ]
+[ Upstream commit 29a43dc130ce65d365a8ea9e1cc4bc51005a353e ]
 
-clang-16 warns about casting incompatible function pointers:
+Apparently the LSI / Agere FW643 can't recover after a Secondary Bus Reset
+and requires a power-off or suspend/resume and rescan.
 
-drivers/media/pci/sta2x11/sta2x11_vip.c:1057:6: error: cast from 'irqreturn_t (*)(int, struct sta2x11_vip *)' (aka 'enum irqreturn (*)(int, struct sta2x11_vip *)') to 'irq_handler_t' (aka 'enum irqreturn (*)(int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+VFIO resets a device before assigning it to a VM, and the FW643 doesn't
+support any other reset methods, so this problem prevented assignment of
+FW643 to VMs.
 
-Change the prototype of the irq handler to the regular version with a
-local variable to adjust the argument type.
+Prevent use of Secondary Bus Reset for this device.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-[hverkuil: update argument documentation]
+With this change, the FW643 can be assigned to VMs with VFIO.  Note that it
+will not be reset, resulting in leaking state between VMs and host.
+
+Link: https://lore.kernel.org/r/20240227131401.17913-1-edmund.raile@proton.me
+Signed-off-by: Edmund Raile <edmund.raile@proton.me>
+[bhelgaas: commit log, comment]
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/sta2x11/sta2x11_vip.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/pci/quirks.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/media/pci/sta2x11/sta2x11_vip.c b/drivers/media/pci/sta2x11/sta2x11_vip.c
-index fd3de3bb0c89b..80b7862a8e02f 100644
---- a/drivers/media/pci/sta2x11/sta2x11_vip.c
-+++ b/drivers/media/pci/sta2x11/sta2x11_vip.c
-@@ -760,7 +760,7 @@ static const struct video_device video_dev_template = {
- /**
-  * vip_irq - interrupt routine
-  * @irq: Number of interrupt ( not used, correct number is assumed )
-- * @vip: local data structure containing all information
-+ * @data: local data structure containing all information
-  *
-  * check for both frame interrupts set ( top and bottom ).
-  * check FIFO overflow, but limit number of log messages after open.
-@@ -770,8 +770,9 @@ static const struct video_device video_dev_template = {
-  *
-  * IRQ_HANDLED, interrupt done.
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 99a8a24ea79dc..132b7cd6805c8 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3504,6 +3504,14 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
   */
--static irqreturn_t vip_irq(int irq, struct sta2x11_vip *vip)
-+static irqreturn_t vip_irq(int irq, void *data)
- {
-+	struct sta2x11_vip *vip = data;
- 	unsigned int status;
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
  
- 	status = reg_read(vip, DVP_ITS);
-@@ -1053,9 +1054,7 @@ static int sta2x11_vip_init_one(struct pci_dev *pdev,
- 
- 	spin_lock_init(&vip->slock);
- 
--	ret = request_irq(pdev->irq,
--			  (irq_handler_t) vip_irq,
--			  IRQF_SHARED, KBUILD_MODNAME, vip);
-+	ret = request_irq(pdev->irq, vip_irq, IRQF_SHARED, KBUILD_MODNAME, vip);
- 	if (ret) {
- 		dev_err(&pdev->dev, "request_irq failed\n");
- 		ret = -ENODEV;
++/*
++ * Apparently the LSI / Agere FW643 can't recover after a Secondary Bus
++ * Reset and requires a power-off or suspend/resume and rescan.  Prevent
++ * use of that reset.
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5900, quirk_no_bus_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5901, quirk_no_bus_reset);
++
+ /*
+  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
+  * automatically disables LTSSM when Secondary Bus Reset is received and
 -- 
 2.43.0
 
