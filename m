@@ -1,285 +1,199 @@
-Return-Path: <linux-kernel+bounces-124151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2230F891313
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D46189130E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCC40289060
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:10:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DF462883C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311943BB30;
-	Fri, 29 Mar 2024 05:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F573B290;
+	Fri, 29 Mar 2024 05:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="D57deTiv";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dx0EnWoZ"
-Received: from flow3-smtp.messagingengine.com (flow3-smtp.messagingengine.com [103.168.172.138])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="fYCQx0m7"
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8033B298;
-	Fri, 29 Mar 2024 05:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929EE28EF
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 05:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711688996; cv=none; b=b821XIEZL1UrNvy4ZprsEuJVW4yGFr050u1P7Y8C1Yotz+V+f9qHDf5GzhT1Cvc/R72hVakpcTMyIUj3SIKVp5RgkjbSlCRLVWFCzePBPBy0SmrLppTkkaqcYRgOaqY6Zo5AZ0OE+TpWzlEqx8T4SPUr3tJvQE1RyiHasl9x6+E=
+	t=1711688982; cv=none; b=jlt6co9LCUNW3M+CPNPZo4gi/fMzQJAUFc+R8PJ5cofiPni3fpol4mEckY2r66EFNz6rQWErUmuAQoB3h9UYZze7MpJBTimUqvktYXXa2miIXbJ/cwDYhSstP8KVbhKgU/XWtPeLLC4Cnna1pcUm5SVzLsr5i5t8JQf3DY7DAx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711688996; c=relaxed/simple;
-	bh=F89jqTE8kynG1Uz9mIsGrS6EtRpxfFfvAHY5kLrYFvE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=JLrxnU1BpFTXDAyZpAZ0wOzg8GufWTGPdRCvaHAsesTpWgg22v8w5okER5h88y3FpqCOxa6dTM8HTxGVso7z/E6UwEWnmA1oF0ut4iCOjFQiNwDYf+rY/0oHjVhCVTE6FygTggFvVKQjdoDgROA1f8vauPlS3pvaQRpH33lB/Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=D57deTiv; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dx0EnWoZ; arc=none smtp.client-ip=103.168.172.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailflow.nyi.internal (Postfix) with ESMTP id 5684E200401;
-	Fri, 29 Mar 2024 01:09:53 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Fri, 29 Mar 2024 01:09:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1711688993; x=1711696193; bh=W43fkf1B1Z
-	n+9lZ0QAk0C2vy62l6S5S5PZF98K77Zsk=; b=D57deTiv3kPkh4S6TPaHl6y8IE
-	aPyCnh9jL6Dgq2l+DIeKhmF6dkO220TK1L/d6RwblDCqSC6mwWHzhmyZuvr7YYSV
-	AzrlX3gJiw/RzCUfZ+5HmZJmJXTocl7CDZGOq4taeeAz/Z8ezaM7BaSpQPB/rZ48
-	QFTAvfSNCu+7M3lb3xiLCreORf5pYJj+INeP3Ve7AyoIPJ00BeScF6bLLEUcAXSv
-	KtnWDWuUAH7OvfCi1Jj8CpYSvgT6oZq3uWPv0jMpYMSFBDAv9ntlr6DNzU5lq1iK
-	VWZCITz09tR3meh2AOo22um/Z1qVALwF0/bp0ebWh8Hwt74NKQPnHls1F75w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711688993; x=1711696193; bh=W43fkf1B1Zn+9lZ0QAk0C2vy62l6
-	S5S5PZF98K77Zsk=; b=dx0EnWoZC4wLY2jxQnf35r4uxwLKes4LQcek6hOEmYBf
-	ha1OzzK3Tu1tXA/tuFrvf8uCM1rUtWOcpPci2igbAvJ49BiJOT5kIoKXWvsf/tSG
-	UMUolriebfkMcpTwBGSaIbgsa5uMry6PTW2RNdrsAza/DoyZOQfCvePurgmwG1fE
-	BCUvx8tC/aZuj7e+SAmE9vOIoEsY+A35lC6csanoPa04s0X94KqDLdLfRUplknTc
-	9y1uFrYzamLL/pjB0hxNjCcD9f/dhJVPVdHflt5/JIUIE7oLXRBc+tTj9fEauBN1
-	jLYMhUEvYa+Sp3SU3fWnR0FO8QNTajWvvt3oPWuJHw==
-X-ME-Sender: <xms:H00GZvO0YQEHBvJTSpazf5AjdnE6rCHVPYYSTX6V_VavUmWZ3FGGJw>
-    <xme:H00GZp95JjHeLd0W3WLA2dNbgObxHFsEvOufPGQebsvPKRi2A6_7tlBDxWVCN8qjI
-    SlVObH8ZKXi5bboVQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvtddgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufht
-    vghfrghnucfqkdftvggrrhdfuceoshhorhgvrghrsehfrghsthhmrghilhdrtghomheqne
-    cuggftrfgrthhtvghrnhepjeeuheegtdeuteeghfehjeejiefghfeifeejheduvdeugedt
-    hfehvefggefgkedtnecuffhomhgrihhnpehinhhfrhgruggvrggurdhorhhgnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhorhgvrghrsehf
-    rghsthhmrghilhdrtghomh
-X-ME-Proxy: <xmx:H00GZuT6mnZg6PZNm3YMxPlOjpOdvnu7_Le2EpJ3RKyiwsRo_DHjHw>
-    <xmx:H00GZjsXeQTiYYW_-PKbOnBivAr4rahFEt_tvGACTKWbQnro6rNklw>
-    <xmx:H00GZneqFYMzWWemdQACIyQaS2sLYkYHsyCjTkFQbcmtpAgco6Pgnw>
-    <xmx:H00GZv0a-x8A36YqfhnFQaeYVQDGiLw3JwoWz0H4ZuXRYt3lFktUMg>
-    <xmx:IU0GZkOKnyyJltYWiMrDBcB4edL6fcBFOSlpNaNAtTGbD5dytBxouKyTC5Q>
-Feedback-ID: i84414492:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 1D6E11700093; Fri, 29 Mar 2024 01:09:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1711688982; c=relaxed/simple;
+	bh=DppCwssZ4xsiZHArTL5mMdedI3W5aqxLYayWzYibPmg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rv/7bhXs+1Sjk+VvgzXQpkkBCfCJJ0mmMJ+af8VkqoS9s8eMAKXBWjfISAQrOPI+rPIO6/qbvbVc/QNczXruuOe0GpVNZ+Z1f0WlJAUZ0KzZ0Lhwo7BnREA4PIFGAI4JWtSclydnsLDtk0TXXyr+BflAgK7ujo/LogpaPTVfOws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=fYCQx0m7; arc=none smtp.client-ip=35.74.137.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=fYCQx0m7;
+	dkim-atps=neutral
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id 5BA7F99F
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 14:09:33 +0900 (JST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5d8bdadc79cso1352867a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1711688972; x=1712293772; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9U5x4MU5MsogFGv+KFAc9+mPRl8v6vrTZs+bcwccjek=;
+        b=fYCQx0m7GzvmdnxUQsv0bjfcoR98NamQAHdRWCmfWSN4IjkAqXSUqfywsgwJh/uhgk
+         FCeMVKdppy0+L1jRqtKfcICEdANEIzkDEaeaCsgZJ13NDLUP8fOou+ZieLFt0ixk+EV/
+         vZ1DD2UDSQ89qBwBU7caMjLlTlaV+y/eQ5+kLye2y50LsrGn6dT1iIUUyK84DJOAbq2U
+         v3bV2rzsSwuA8vtj9kFA5sFx+ezmQUUt7M0zJVGUE9AVEihS5voSWaBpgZ+cG7R+Nonl
+         nm2Cnev0alYouTPGxSbARP2THFXxpoDdV5jq2pPoSoAsGJOXWo1+eK1lkYAAOeyHa/ii
+         LaPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711688972; x=1712293772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9U5x4MU5MsogFGv+KFAc9+mPRl8v6vrTZs+bcwccjek=;
+        b=Scoq5vFKMp3hCrFDVljA0BnxZ4noGA+Z0a+BOFFlCbP0yLo7oj2hkkW1q3ME8nH8fV
+         WVUWuNfmoH5pI09uZO5ueMf3NyHLSGHAY64emxcU7tq8Dx3DebGBY7VvzwDiKDDm6BaR
+         elt8+cWlgBrPUUCJgbbOPCNoPm5Td7i4XeGxMhFIYjaH0LkyXrhRNy+wtVRQZ6gH7PLL
+         pyBhV45MSoZNrmFvuAk/V/9sq3iCt4pPR4MhFXT+gx/+WVQzleEx9s5x5uMYVJa3iwa0
+         zQ8U06NP/VrGJ37d6Xog4PLghRlcgVkIEHpTUJuxMrUYY8hR2WNn++nwcP4grOlh/84j
+         0Low==
+X-Forwarded-Encrypted: i=1; AJvYcCVffBsOjrfkkJf1B3KAeoxB2DQD3+KqfCfmaw/fiWT+Nl1v3lD9UtajmBaMrjUEasXsMiOpas1AnImCNaBvWbW/slGAuBHe/kjgsehs
+X-Gm-Message-State: AOJu0Yxh3b2iH+y3R6g/Sb4xCSzhLGVn8aZRNwb7W4f/KgThnGuUyzGA
+	+fTs1ikn4hzO076QV+hhnhg4RSBxH2swwp/ehVQONlAuVpIGijAZhSpoVsQyBy/6vRBpM3+UwvS
+	DpHiyWUxAf75QzNuYvpSALZlBoipXYHy69W0Dh60bwWoTKUYq+o89VXBLnQnYbLs=
+X-Received: by 2002:a17:90a:b791:b0:29d:e004:f8ce with SMTP id m17-20020a17090ab79100b0029de004f8cemr1518759pjr.6.1711688972268;
+        Thu, 28 Mar 2024 22:09:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExYO+5uHJg+n48X3gcmpJ1EncBTwV76hj18e0OyLzjNe4emEQ/I+2H3cr8B2bBt0bB2pVpiA==
+X-Received: by 2002:a17:90a:b791:b0:29d:e004:f8ce with SMTP id m17-20020a17090ab79100b0029de004f8cemr1518742pjr.6.1711688971844;
+        Thu, 28 Mar 2024 22:09:31 -0700 (PDT)
+Received: from pc-0182.atmarktech (35.112.198.104.bc.googleusercontent.com. [104.198.112.35])
+        by smtp.gmail.com with ESMTPSA id v11-20020a17090a0c8b00b002a203bd94bfsm2354390pja.51.2024.03.28.22.09.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Mar 2024 22:09:31 -0700 (PDT)
+Received: from martinet by pc-0182.atmarktech with local (Exim 4.96)
+	(envelope-from <martinet@pc-zest>)
+	id 1rq4Uc-009wii-0U;
+	Fri, 29 Mar 2024 14:09:30 +0900
+Date: Fri, 29 Mar 2024 14:09:20 +0900
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: mhklinux@outlook.com
+Cc: hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+	konrad.wilk@oracle.com, bumyong.lee@samsung.com,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	will@kernel.org, petr@tesarici.cz, roberto.sassu@huaweicloud.com,
+	lukas@mntmn.com
+Subject: Re: [PATCH 1/1] swiotlb: Fix swiotlb_bounce() to do partial sync's
+ correctly
+Message-ID: <ZgZNAM337-UEY1DH@atmark-techno.com>
+References: <20240327034548.1959-1-mhklinux@outlook.com>
+ <ZgO3HlYWo6qXaGs8@atmark-techno.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e7b0aea6-c03b-4e8b-872a-8f0299ed6467@app.fastmail.com>
-In-Reply-To: <20240329044459.3990638-5-debug@rivosinc.com>
-References: <20240329044459.3990638-1-debug@rivosinc.com>
- <20240329044459.3990638-5-debug@rivosinc.com>
-Date: Fri, 29 Mar 2024 01:08:12 -0400
-From: "Stefan O'Rear" <sorear@fastmail.com>
-To: debug <debug@rivosinc.com>, "Paul Walmsley" <paul.walmsley@sifive.com>,
- "Rick P Edgecombe" <rick.p.edgecombe@intel.com>,
- "Mark Brown" <broonie@kernel.org>, "Szabolcs Nagy" <Szabolcs.Nagy@arm.com>,
- "kito.cheng@sifive.com" <kito.cheng@sifive.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Andrew Jones" <ajones@ventanamicro.com>,
- "Conor Dooley" <conor.dooley@microchip.com>,
- =?UTF-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
- "Atish Patra" <atishp@atishpatra.org>, "Alexandre Ghiti" <alex@ghiti.fr>,
- =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@rivosinc.com>,
- "Alexandre Ghiti" <alexghiti@rivosinc.com>,
- "Samuel Holland" <samuel.holland@sifive.com>, palmer@sifive.com,
- "Conor Dooley" <conor@kernel.org>, linux-doc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Cc: "Jonathan Corbet" <corbet@lwn.net>, tech-j-ext@lists.risc-v.org,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Albert Ou" <aou@eecs.berkeley.edu>, "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- oleg@redhat.com, "Andrew Morton" <akpm@linux-foundation.org>,
- "Arnd Bergmann" <arnd@arndb.de>,
- "Eric W. Biederman" <ebiederm@xmission.com>, Liam.Howlett@oracle.com,
- vbabka@suse.cz, lstoakes@gmail.com, shuah@kernel.org,
- "Christian Brauner" <brauner@kernel.org>,
- "Andy Chiu" <andy.chiu@sifive.com>, jerry.shih@sifive.com,
- hankuan.chen@sifive.com, greentime.hu@sifive.com,
- "Evan Green" <evan@rivosinc.com>, "Xiao Wang" <xiao.w.wang@intel.com>,
- "Charlie Jenkins" <charlie@rivosinc.com>,
- "Anup Patel" <apatel@ventanamicro.com>, mchitale@ventanamicro.com,
- dbarboza@ventanamicro.com, "Samuel Ortiz" <sameo@rivosinc.com>,
- shikemeng@huaweicloud.com, willy@infradead.org,
- "Vincent Chen" <vincent.chen@sifive.com>, guoren <guoren@kernel.org>,
- "Sami Tolvanen" <samitolvanen@google.com>, songshuaishuai@tinylab.org,
- "Greg Ungerer" <gerg@kernel.org>, "Heiko Stuebner" <heiko@sntech.de>,
- "Baoquan He" <bhe@redhat.com>,
- "Sia Jee Heng" <jeeheng.sia@starfivetech.com>,
- "Yangyu Chen" <cyy@cyyself.name>, maskray@google.com,
- ancientmodern4@gmail.com, mathis.salmen@matsal.de,
- "yunhui cui" <cuiyunhui@bytedance.com>, bgray@linux.ibm.com,
- mpe@ellerman.id.au, baruch@tkos.co.il,
- "Alejandro Colomar" <alx@kernel.org>,
- "David Hildenbrand" <david@redhat.com>,
- "Catalin Marinas" <catalin.marinas@arm.com>, revest@chromium.org,
- josh@joshtriplett.org, shr@devkernel.io, deller@gmx.de,
- omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com
-Subject: Re: [PATCH v2 04/27] riscv: zicfiss/zicfilp enumeration
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZgO3HlYWo6qXaGs8@atmark-techno.com>
 
-On Fri, Mar 29, 2024, at 12:44 AM, Deepak Gupta wrote:
-> Adds description in dt-bindings (extensions.yaml)
->
-> This patch adds support for detecting zicfiss and zicfilp. zicfiss and zicfilp
-> stands for unprivleged integer spec extension for shadow stack and branch
-> tracking on indirect branches, respectively.
->
-> This patch looks for zicfiss and zicfilp in device tree and accordinlgy lights
-> up bit in cpu feature bitmap. Furthermore this patch adds detection utility
-> functions to return whether shadow stack or landing pads are supported by
-> cpu.
->
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->  .../devicetree/bindings/riscv/extensions.yaml       | 10 ++++++++++
->  arch/riscv/include/asm/cpufeature.h                 | 13 +++++++++++++
->  arch/riscv/include/asm/hwcap.h                      |  2 ++
->  arch/riscv/include/asm/processor.h                  |  1 +
->  arch/riscv/kernel/cpufeature.c                      |  2 ++
->  5 files changed, 28 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml 
-> b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> index 63d81dc895e5..f8d78bf7400b 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -317,6 +317,16 @@ properties:
->              The standard Zicboz extension for cache-block zeroing as 
-> ratified
->              in commit 3dd606f ("Create cmobase-v1.0.pdf") of 
-> riscv-CMOs.
-> 
-> +        - const: zicfilp
-> +          description:
-> +            The standard Zicfilp extension for enforcing forward edge 
-> control-flow
-> +            integrity as ratified in commit 0036ff2 of riscv-cfi.
-> +
-> +        - const: zicfiss
-> +          description:
-> +            The standard Zicfiss extension for enforcing backward edge 
-> control-flow
-> +            integrity as ratified in commit 0036ff2 of riscv-cfi.
-> +
+Dominique Martinet wrote on Wed, Mar 27, 2024 at 03:05:18PM +0900:
+> Unfortunately that was ages ago so I don't really remember exactly on
+> which device that was reproduced.. Given the Cc I'm sure Lukas had hit
+> it on the MNT reform (i.MX8MQ), but I did say I tested it so I probably
+> could reproduce on my i.MX8MP?
+> I'll try to give a try at reproducing the old bug, and if I do test your
+> fix over next week.
 
-Neither of these extensions is currently ratified (the public review
-period started 15 hours ago) and the git hashes are unlikely to be
-correct for the ratified version.
+grmbl, sorry I cannot reproduce the problem on devices I have readily
+accessible, and don't have time to dig out my reform to test there in
+the forseeable future, so cannot confirm if that also fixes the problem
+we reported two years ago.
+However I had misunderstood your patch, I thought you were also
+reverting commit 5f89468e2f06 ("swiotlb: manipulate orig_addr when
+tlb_addr has offset") but you're keeping it and just making it signed --
+this should cause no problem for the use case I was concerned about as
+it fell within the bounds I had defined, so this is basically a no-op
+patch for my usecase and I don't expect this particular failure to pop
+back up here.
 
--s
 
->          - const: zicntr
->            description:
->              The standard Zicntr extension for base counters and 
-> timers, as
-> diff --git a/arch/riscv/include/asm/cpufeature.h 
-> b/arch/riscv/include/asm/cpufeature.h
-> index 0bd11862b760..f0fb8d8ae273 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -8,6 +8,7 @@
-> 
->  #include <linux/bitmap.h>
->  #include <linux/jump_label.h>
-> +#include <linux/smp.h>
->  #include <asm/hwcap.h>
->  #include <asm/alternative-macros.h>
->  #include <asm/errno.h>
-> @@ -137,4 +138,16 @@ static __always_inline bool 
-> riscv_cpu_has_extension_unlikely(int cpu, const unsi
-> 
->  DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> 
-> +static inline bool cpu_supports_shadow_stack(void)
-> +{
-> +	return (IS_ENABLED(CONFIG_RISCV_USER_CFI) &&
-> +		    riscv_cpu_has_extension_unlikely(smp_processor_id(), 
-> RISCV_ISA_EXT_ZICFISS));
-> +}
-> +
-> +static inline bool cpu_supports_indirect_br_lp_instr(void)
-> +{
-> +	return (IS_ENABLED(CONFIG_RISCV_USER_CFI) &&
-> +		    riscv_cpu_has_extension_unlikely(smp_processor_id(), 
-> RISCV_ISA_EXT_ZICFILP));
-> +}
-> +
->  #endif
-> diff --git a/arch/riscv/include/asm/hwcap.h 
-> b/arch/riscv/include/asm/hwcap.h
-> index 1f2d2599c655..74b6c727f545 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -80,6 +80,8 @@
->  #define RISCV_ISA_EXT_ZFA		71
->  #define RISCV_ISA_EXT_ZTSO		72
->  #define RISCV_ISA_EXT_ZACAS		73
-> +#define RISCV_ISA_EXT_ZICFILP	74
-> +#define RISCV_ISA_EXT_ZICFISS	75
-> 
->  #define RISCV_ISA_EXT_XLINUXENVCFG	127
-> 
-> diff --git a/arch/riscv/include/asm/processor.h 
-> b/arch/riscv/include/asm/processor.h
-> index a8509cc31ab2..6c5b3d928b12 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -13,6 +13,7 @@
->  #include <vdso/processor.h>
-> 
->  #include <asm/ptrace.h>
-> +#include <asm/hwcap.h>
-> 
->  #ifdef CONFIG_64BIT
->  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> diff --git a/arch/riscv/kernel/cpufeature.c 
-> b/arch/riscv/kernel/cpufeature.c
-> index 79a5a35fab96..d052cad5b82f 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -263,6 +263,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
->  	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, 
-> riscv_xlinuxenvcfg_exts),
->  	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, 
-> riscv_xlinuxenvcfg_exts),
-> +	__RISCV_ISA_EXT_SUPERSET(zicfilp, RISCV_ISA_EXT_ZICFILP, 
-> riscv_xlinuxenvcfg_exts),
-> +	__RISCV_ISA_EXT_SUPERSET(zicfiss, RISCV_ISA_EXT_ZICFISS, 
-> riscv_xlinuxenvcfg_exts),
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
-> -- 
-> 2.43.2
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Code-wise, I agree the checks I added in commit 868c9ddc182b ("swiotlb:
+add overflow checks to swiotlb_bounce") are too strict - I failed to
+consider the device minimum alignment part of swiotlb_align_offset, and
+thinking this through this can get weird.
+.. And now I'm looking again even with a big minimum alignment it's
+also too strict, so, right, let's work through an example.
+
+
+From my understanding of how orig_addr is computed, in the multi-block
+case we have something like this:
+
+(+ represent device's minimum alignment, bigger blocks with | are
+IO_TLB_SIZE blocks)
+
+         10        20        30        40        50        60
+01234567890123456789012345678901234567890123456789012345678901234...
+|---+---+---+-block1+---+---+---|---+---+---+-block2+---+---+---|...
+       ^                               ^                          
+       mem->slots[n].orig_addr         mem->slots[n+1].orig_addr
+       (=7)                            (=32+7=39)
+
+(memo of the code with your patch:
+  index = (tlb_addr - mem->start) >> IO_TLB_SHIFT;
+  orig_addr = mem->slots[index].orig_addr;
+  swiotlb_align_offset(dev, orig_addr) = orig_addr & dev min align mask & (IO_TLB_SIZE-1)
+  tlb_offset = (tlb_addr & (IO_TLB_SIZE - 1)) - swiotlb_align_offset(dev, orig_addr);
+  orig_addr += tlb_offset;
+  alloc_size -= tlb_offset;
+  vaddr = mem->vaddr + tlb_addr - mem->start
+)
+
+So for this example we have IO_TLB_SIZE=32, dev min alignment=4,
+orig_addr's align value would be 7%4=3.
+Given say tlb_addr at 33, we'd find slot n, and compute
+tlb_offset = 1 - 3 = -2
+
+.. And then I just don't follow anymore?
+
+Computing the rest mechanically, for the example's sake let's say n=0
+so mem->start=7, index=0, and also set size to 4 bytes, vaddr to 0x1000.
+
+vaddr = 0x1000 + 33 - 7 = 0x1000 + 26
+orig_addr = 7 + -2 = 5
+size = 4 - -2 = 6
+
+then we'd proceed to memcpy either (vaddr, p2v(orig_addr), size) or the
+other way around, but this cannot be right:
+ - size is bigger than what was requested, I fail to see how that can be
+allowed. I'd understand a smaller size assuming swiotlb_bounce gets
+called for each interval, but not a bigger size.
+ - orig_addr is nowhere near 33.
+
+
+I thought this didn't make sense because of the minimum device
+alignment, but even with device alignment >= io tlb's with the very same
+example we would get 
+tld_offset = 1 - 7 = -6
+now that one could make sense if we had used the following slot e.g.
+orig_addr being slot[1].orig_addr and we'd get back to 31, but that's
+not the case, and the size calculation is still off.
+
+
+So, long story short it took me half a day to get back into this code
+and the only thing I understand about it is that I don't understand it.
+
+I'm sure it works most of the case because everything is nicely aligned
+(since nobody complained about my checks before, and if there's no
+warning with these the code works), but I'd require some convincing to
+give a reviewed-by tag to this patch.
+
+Thanks for working on this though, I'll be happy to be pointed out at
+flaws in my logic or to look at another attempt...!!
+-- 
+Dominique
 
