@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-125227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE7E892275
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:11:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CB27892276
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 18:11:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9C741F265A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:11:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D1661C27EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 17:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 242C313AD14;
-	Fri, 29 Mar 2024 17:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7419113B2B8;
+	Fri, 29 Mar 2024 17:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W/2r5L+5"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pYdkybMP"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75A713958D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191436AFAE
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711732237; cv=none; b=nhB5V1sW5QimDc3ezLdlvein+tl2YRGXXQigdzt0nnjoXgYcfiVR4g2eoDhxJ3ZWBb+KkVzl+vyFlARQoEz2mXE08ExXhF1bVuH0Ur/EXrkWUtNQiU/W0wjHyUK/yqlbgX2jYd2ZMeRDakdF81sejVIeYoDwoK1B67LBNmoOLm4=
+	t=1711732238; cv=none; b=p7kGMAFKVGIZfGFNVlonFdFWtjpITFbJMDrtKeBMoJbxqedXFOwqSorsM1u4jQQncRGFqLzj6XJnOibVMe4v5AsLHBFa2trya1oAZIJmqbvrQAuQ5TacY0Td/xKjx/+juYi6+Yyf8I0muJ2zS8ttQqqvvNVRVeLDKy/al/R+5N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711732237; c=relaxed/simple;
-	bh=8V77xah4yhNVMN2cCcfaNNY+lDG7A6fibNbEMab70Q0=;
+	s=arc-20240116; t=1711732238; c=relaxed/simple;
+	bh=TtoLYL6/37TatoGV95OdUAgrxwm+qIAgopro4pJ3dOg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NoxtcYjokpHb4pXZ2SQUuk2cVvNI6ar9f3vuho08SYBc83d7FPTT3Xq5iJgEhi/WfpNWw3s+3sfKthnJoIZHIZxriFhEZwbAyQiNfB8/C5nHy3YNR6jMiYQrbZ4z6UneuXwMEwTP4jz9RfTFbm4Yyx+l3f+vqJMswzWBj3uAIls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W/2r5L+5; arc=none smtp.client-ip=209.85.128.41
+	 MIME-Version; b=pt2RO/F358GE01304RvMa3R2TwLEqv6ZtL1kZnrUuEjNYSkAobpTWhPb2+B/GhCNTyw8pZjmxkRI6VJix/4zDEqRPAi0e2DuSA/508JpjKcsEAlfWl1zbVtJpjEaZ1GYexXE2jX74/RM15LD3lEv9ZdvsXABRJi+v6kox9X/ETg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pYdkybMP; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-41552f1fcd9so3509025e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:10:35 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33ddd1624beso1335506f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 10:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711732234; x=1712337034; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711732235; x=1712337035; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LDPoBwJ5bVbQZyn7Kt2KFjIml91twnnq9PMjrREMHA0=;
-        b=W/2r5L+5TloDmWztMjhTRmzXMgjPXFXs/uBOBjfKg0K/e8NN4DAD8GAUgprpmoqzqu
-         YO1sB/WAfhGshDO7IxXyvqQxWpUm0r5ftNvLLHV60wr5GSRZ9TRchHPGh9zVa19ywC2O
-         Mb4KaqsEAAjPeOb0gxJQ/squyxvUabzWn814NWPSIHyMkarFhPVtEKLM7WpXmp2x0vcw
-         Aqj8Ch+yPsKkTFmyHtgJtGEP2pUlYe1EYy7mSL74MDzzSZo69RF2Ujw3oIRgpIp9M7s6
-         FCuRYninOD8lsT/eMRLCXGpk5Jv9b/6QJZiPA/Gm2i2VpkFVFd0omR2WP8V9ILIZfcTZ
-         im5w==
+        bh=EySlbPc6lhk6b3mrukjMCPGSpH2zeiX1mm/v3sWT7Wk=;
+        b=pYdkybMP/oxDS75jztBh8pcoWsmTGNySgSqINdQP1oknjqoRlVvHX1zudh4csugXan
+         nLp4bYyy6IxM/lpoWritifzvYUjv8ZT9QJ8PoV6cML0wfzWIFOOKWBXf8/eQF8RC6NeA
+         s+Tua+XD6G5LH2aujkPrEEudk7NsI1t+Ppd+yI0aFzPseBHk/d61TAJwupj7Nyb/nSHI
+         snA43tbpq1Ri0hFzofiiYHGCAArUeNj62Et3NzesglAN0ELsXMdFa61UTme/RlTWtaBv
+         N4OBfgAbcX+6HWWSSt2VkhptZpdOjuVv60J6rrJX3xnB4PGgY6tS/JmNVXB/yBk7QfNk
+         +ZKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711732234; x=1712337034;
+        d=1e100.net; s=20230601; t=1711732235; x=1712337035;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LDPoBwJ5bVbQZyn7Kt2KFjIml91twnnq9PMjrREMHA0=;
-        b=uS1PFebQZQUnpm7+fJzMWWw6aLl2gLlLA+0lOwOb22/UJVcNnazVKJGD8FzCu1R8gl
-         WvtTooFuLAB3/KmRaSdUoNSY3O0NTJ8EamrbKDk23zEH/zyHzX3p9zBaTqePYpAaCJ+i
-         U3CDaIVqRsV0avzW8EfSV259OQzpqGc0BGkkMtLyzTgkUouNpcMUsWOfdDMatzZc3cPv
-         Ps7E/xPQUla/61QlwEaUqpHEzRHcj9iy4lc2iv8wHQodjeGINrySJof9xB51ynIF5dEC
-         jPOPczfHlTzkFYnIrdkQYOXy/DNXrG/6/MIBMeS34pyT1t+/yY86F7+gLqLDeTwHnU0E
-         5R+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVopSrzAfw1jakyQh8Q2XYHH/s5s5cLDPdKvx46dKGJIF+7OGDwWQinb1MxFVJQyoU3stoupdU0BHnDw77KA+NTCJrQ4DpFoZ3ljJbM
-X-Gm-Message-State: AOJu0YzvDlhsE1F9Tni5ggN3L9CbN5gDdXfj/jVcn8dVOopzmE5n1uYQ
-	mLIfxCiVsk/UFpQ7yJiJ7QHhe69cu9n24XF5trqJBOV2CZHxTp1vuYw2qW5dB64=
-X-Google-Smtp-Source: AGHT+IGHKEJmqmT8lE9uFbvmdQZUSZGau59d/kr0LCpA6rDvXpAZdTZRaCDa1JV/UgtVfEhdvK61uQ==
-X-Received: by 2002:a05:6000:1d82:b0:33d:a70d:a9b2 with SMTP id bk2-20020a0560001d8200b0033da70da9b2mr2096293wrb.5.1711732234082;
-        Fri, 29 Mar 2024 10:10:34 -0700 (PDT)
+        bh=EySlbPc6lhk6b3mrukjMCPGSpH2zeiX1mm/v3sWT7Wk=;
+        b=TeGVMki+EqrLeo2j63LgXj/vFhdmk1N+wkREZSjGjrud0PO6StiN7vZKS+0pf4d9jX
+         dMgZmV7y9mb0+IecaW9RoWV3PaqygK9pwH5RltrjSC7n/PSa+potXGlBLUAoxHdXFdiV
+         efqjX8218A+sS1gKsM//4laPYDvHJdFriHH5mgCq59T9kj45mJ90RsI/DSpnWgWHhoRG
+         Kf1TbLkwISmloKzgLcfL+JsfMl8o441VLcG+1+Ero3hbVIgwqkXGrWApzQKQsrsusI22
+         c2t1+PmGoWOQgVhZLP2Qlyr2E8Irm9VH1t+RVB8p2k+MFCvU1d6CIpCJRjfzoEnl8ZSs
+         QP/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXEN3Alw09HwWqqZOI0Mhavm3iVzuqpSFq/FaNQ15clk9r3f/aGrGDyNLTPrf2wqpdXNUdgaGK9Jy39AlOZerZGcTU5Cj35tE1P9DG8
+X-Gm-Message-State: AOJu0YygqB6gTwjAmqiEZ7E9cSJ2Y7YLGxjaxq7icO3rasm3rID+GeUs
+	Rf3siGzldNT7C3Vo6RKPretV05lqq0z4mvOImnrw+sCKakG3emLcRFMMDcHXwY0=
+X-Google-Smtp-Source: AGHT+IEqNLgv3fhZtbvScXxguICCF550H3MDTyxKI1RnEPjR6ISgVMuNMpqBGyf1gUhiVrwdueDb6Q==
+X-Received: by 2002:adf:f108:0:b0:33e:c68d:d536 with SMTP id r8-20020adff108000000b0033ec68dd536mr2617553wro.15.1711732235465;
+        Fri, 29 Mar 2024 10:10:35 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id o17-20020a5d6851000000b0033ec9936909sm4577665wrw.39.2024.03.29.10.10.32
+        by smtp.gmail.com with ESMTPSA id o17-20020a5d6851000000b0033ec9936909sm4577665wrw.39.2024.03.29.10.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 10:10:33 -0700 (PDT)
+        Fri, 29 Mar 2024 10:10:35 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Kalle Valo <kvalo@kernel.org>,
 	Jeff Johnson <jjohnson@kernel.org>,
@@ -76,9 +76,9 @@ To: Kalle Valo <kvalo@kernel.org>,
 	ath10k@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 5/6] wifi: microchip: wilc1000: replace open-coded module_sdio_driver()
-Date: Fri, 29 Mar 2024 18:10:18 +0100
-Message-Id: <20240329171019.63836-5-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 6/6] wifi: marvell: mwifiex: replace open-coded module_sdio_driver()
+Date: Fri, 29 Mar 2024 18:10:19 +0100
+Message-Id: <20240329171019.63836-6-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
 References: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
@@ -95,24 +95,22 @@ difference.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/net/wireless/microchip/wilc1000/sdio.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/sdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/microchip/wilc1000/sdio.c b/drivers/net/wireless/microchip/wilc1000/sdio.c
-index d6d394693090..52a770c5e76f 100644
---- a/drivers/net/wireless/microchip/wilc1000/sdio.c
-+++ b/drivers/net/wireless/microchip/wilc1000/sdio.c
-@@ -981,8 +981,7 @@ static struct sdio_driver wilc_sdio_driver = {
- 		.of_match_table = wilc_of_match,
- 	}
+diff --git a/drivers/net/wireless/marvell/mwifiex/sdio.c b/drivers/net/wireless/marvell/mwifiex/sdio.c
+index 75f53c2f1e1f..e1b58ca1b3ba 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sdio.c
++++ b/drivers/net/wireless/marvell/mwifiex/sdio.c
+@@ -3183,7 +3183,7 @@ static struct mwifiex_if_ops sdio_ops = {
+ 	.up_dev = mwifiex_sdio_up_dev,
  };
--module_driver(wilc_sdio_driver,
--	      sdio_register_driver,
--	      sdio_unregister_driver);
-+module_sdio_driver(wilc_sdio_driver);
-+
- MODULE_DESCRIPTION("Atmel WILC1000 SDIO wireless driver");
- MODULE_LICENSE("GPL");
+ 
+-module_driver(mwifiex_sdio, sdio_register_driver, sdio_unregister_driver);
++module_sdio_driver(mwifiex_sdio);
+ 
+ MODULE_AUTHOR("Marvell International Ltd.");
+ MODULE_DESCRIPTION("Marvell WiFi-Ex SDIO Driver version " SDIO_VERSION);
 -- 
 2.34.1
 
