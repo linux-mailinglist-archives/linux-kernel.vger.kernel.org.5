@@ -1,102 +1,90 @@
-Return-Path: <linux-kernel+bounces-124165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C749891342
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:34:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E36BA891346
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 06:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11E391F22447
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:34:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00CC1C230B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 05:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CFF3E46D;
-	Fri, 29 Mar 2024 05:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784B73C47C;
+	Fri, 29 Mar 2024 05:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Quuohvzn"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dIp/Ioth"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2087.outbound.protection.outlook.com [40.107.93.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F170F3C6A6
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 05:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711690445; cv=none; b=ZvySclwk+rJaIvOnX9IrIQpFr3+r7o0aFaaAruhMOJjuWIqsUvo45YbAhbCw70ew6mX6NixqHngj+iuWPxS7jMQi3noJgLzm+vXaPzk0WxJn9LhPTQIA1sQM6VJmCWw918R13bXJIWnSa6sfA8SmfJXI27lYNyKiZUP0QlR1f8w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711690445; c=relaxed/simple;
-	bh=PaZ2AF3JeHPXJZBphflXd5DZx1k2kc8EgFP2kYGmJq0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oIYF772M7WllKeHRe+ghgR7MBFCipkTeDvUBPUz0OCJ7iNGGnBMRFqrHVu3LzTtCmuk6nDAau70HrmdLZZo+FKflT+aLnyTG23oJIMqAebW9WEycvOD+Q1dZ7yf1XbUAL4N+6exvkaedHWG/PsvrnljhRinOLT9jk+DIeBdAebU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Quuohvzn; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-432bfaf533eso2714981cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Mar 2024 22:34:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711690443; x=1712295243; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7gywZcWj8Uy1UfLQdLtf6937dGqAomoCBcBBPX1Jltg=;
-        b=QuuohvznFwRoWdk62/GkZ6/WdN7+IQfhXFmEc71VzxK39sr60qHAAG6d+b/95S/Jgq
-         YnmRUUOfm/qZvywwCbDGixgB3f+00iEceCJYDGvkHH/UwuhxgV5MXDDb1PznHVvaFqP1
-         6HzrymG12F6LhM/g6TWMNciK+6k9s21NlSr3dK8tVA6AZABlE55NW/ydZAqgekne2lxh
-         T1DTxpJARwmyObnJgKM4LSyiQh/O3E2ZF3fDK7Y9cReZxXyqc9lnbcfIYUFm3y/A9/6f
-         XNUfUefwu7faMUZ1LICWZNgXT5+lfHSWoQVaVBXAqc6eG0oe7NenqwWw4R7Po3sjRFZi
-         5juw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711690443; x=1712295243;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7gywZcWj8Uy1UfLQdLtf6937dGqAomoCBcBBPX1Jltg=;
-        b=Syh/vhJ7esraPOe8BmAaQ+g/jkeOOjUH2SaJoEIX4fuLk+TLFYcf5Xv2a2i8H+Qyj0
-         iBDwuFGImKuwLSZ/luxJs8vXQoIJx66mz8KBnLsP2ZPimg5UjA3JyGjM1TS5eo3SR+2+
-         QV00rE8itoD0oXkSPyBzG6HXQwBx8mORSTUOaDS539irliIPS06/VP5eAQ9dh//sX/LF
-         bgbf7+FGqLHGVT811BRQWj5LR+87xt13QZzv6McYKkEt4fyucRcPqOgLs+gy+DJla+sh
-         +3UUjUOwcB4gGfHd3f/pfhpH+bKd3V1SRmYORD2RieHAybLWPOrY/h7UMz3+Hqa29opZ
-         vZ4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUBW/ZGaJB88BTmGkOR6k/KZIUU/21KyTAMvUp9AezGsVi6aFT9dW9bjwMsQRmLs37TyHsmz9tqdGZxs4Hf89BcUUdcjDPw5OCycztE
-X-Gm-Message-State: AOJu0Yzr/AjL7HLdwSa1fFs6F7bB8gDHeLlK/gucwk8z11ycjL+i5Rwh
-	CrG7M5EdSv+W0zfvapwUIpr2dFjqbybOwm3S+k543/R9egwbNhDIqgsNurPclFw=
-X-Google-Smtp-Source: AGHT+IHMKi8jQpAaT6v24K2SIK8/4KC+bbaOA6pAb143bozl04FLNTZDjzodC6fB+ReD22deVOL3iA==
-X-Received: by 2002:a05:622a:5e89:b0:432:c1b3:7985 with SMTP id er9-20020a05622a5e8900b00432c1b37985mr849659qtb.55.1711690442938;
-        Thu, 28 Mar 2024 22:34:02 -0700 (PDT)
-Received: from n231-228-171.byted.org ([147.160.184.85])
-        by smtp.gmail.com with ESMTPSA id jd25-20020a05622a719900b00430bf59ebccsm1293700qtb.11.2024.03.28.22.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 22:34:02 -0700 (PDT)
-From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-To: "Huang, Ying" <ying.huang@intel.com>,
-	"Gregory Price" <gourry.memverge@gmail.com>,
-	aneesh.kumar@linux.ibm.com,
-	mhocko@suse.com,
-	tj@kernel.org,
-	john@jagalactic.com,
-	"Eishan Mirakhur" <emirakhur@micron.com>,
-	"Vinicius Tavares Petrucci" <vtavarespetr@micron.com>,
-	"Ravis OpenSrc" <Ravis.OpenSrc@micron.com>,
-	"Alistair Popple" <apopple@nvidia.com>,
-	"Srinivasulu Thanneeru" <sthanneeru@micron.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	nvdimm@lists.linux.dev,
-	linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,
-	"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>,
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
-	qemu-devel@nongnu.org,
-	Hao Xiang <hao.xiang@bytedance.com>
-Subject: [PATCH v9 2/2] memory tier: create CPUless memory tiers after obtaining HMAT info
-Date: Fri, 29 Mar 2024 05:33:53 +0000
-Message-Id: <20240329053353.309557-3-horenchuang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240329053353.309557-1-horenchuang@bytedance.com>
-References: <20240329053353.309557-1-horenchuang@bytedance.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203513C064;
+	Fri, 29 Mar 2024 05:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711690710; cv=fail; b=XTMOLU9mQ8HrHDbiLOpqkEfSSC/7dLkPIGgzCRd+IwcDj/Y2V9lqxnnVRXq3lzk/TRaUjxWm6B4iIdE92QdZl++xAxvFdFJVCdeXLEewcDjpZm4aJsh5LyljSGK88+QkeHpqELB8yKWop6aq5+h7VVrB2En4Tu57eJv7FEAUYTE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711690710; c=relaxed/simple;
+	bh=mQMuZ0Qo5AG4pxa9fPZlfbcX9gRbL3RMroV69V5Yppg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LsgkfRormcOoyfeuNBdNHPTqgjGgA7JFEgStEz1sUb2ffvDJZBsjRRC6eKsLXuhMPjJJZjyV6WiGHGztzx+STm5Q9oUSjmgQykGl3OnfxmXuzsO2YmlTYi2Z6ayCKv67kUzL/PRcU0icXCrTnmp41sc1dkEsuAugGdCWX7VQHx4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dIp/Ioth; arc=fail smtp.client-ip=40.107.93.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kE5rNKUdJS2IVJJSOOBPsJPwcbprKgfm9pwEALlWS2ckVKAv3J1QpQsrMlODSj1qlgIDPEDyfChrm6jmzyuEa5B+rUYLLaG8XxgdXokpQsmvcFYD0hoWfqoxF/uUFTTwQJ6NnbfM/QC7l7OeQHKSm0GZCh8vfh8PGKfHyiRIbi/ST84t1UfKqcBCRpzRUWz9daHeKcGMKyx4UWgwlEsVbXmA/y/YlP/9ozCbROb6mV89K1egfEaB/o5/3FmiPv83UnAsTVll/Gyw1DrGPwrRzGFtg2FbrdoKiCMN1tstgnXFLjZmNSw/ZEnqjCQVuENdUh+OMBcd4V2auJNIhiGvWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2mLrx29e1YrvXhNPqPTYaWzs3am18IJPXmS3Lljm6RA=;
+ b=dGRgQW4xnI7ZFDg4TR5Y/rJXpEA1bh4cUlrQy5NypCWCil3ytFqnYewt0LXEAYRaXVG1XqTxlFTx2rh44ozpcCDlNA/d3dC+m6MpZ9lMChBdrQrVQqZE8+aZVt/Hx2j6l+z3qAs6TqDvzACiC4YmFrm4QBAd+WDmYp6su53p/LTUJrqhu0OCbhnVaK0BLaJTd+nDh/RP/JgtueiKcoJL2TQtfzg1v3ntctoi8GtpCDKq3uXKujOYn1NrONOGuKeSu4/47DRYI8eiZrKuI1j4FVqcZ6J4LufcZomn5hbhvPYhe3Pymn4z56Z7zNVAaI4dWsZry8nFKZ66asQyglRMcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2mLrx29e1YrvXhNPqPTYaWzs3am18IJPXmS3Lljm6RA=;
+ b=dIp/IothyK+3KYsNfKgsRXYQUvXec/1/lZvgm0+wP3TFoSOPPfk6pya3tIDejDticoHNxDpcA8F9jBDFPGkjt6jd/Iwz6X0obVqUUx3u0loaoKI38UShyoMxFmAG7zkgdX2x0mSYBTqyRV2WDPkZUC/Jb7oyfENTPEvvL6bNOFU=
+Received: from SJ0PR03CA0042.namprd03.prod.outlook.com (2603:10b6:a03:33e::17)
+ by DS0PR12MB8320.namprd12.prod.outlook.com (2603:10b6:8:f8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40; Fri, 29 Mar
+ 2024 05:38:27 +0000
+Received: from SJ5PEPF000001C8.namprd05.prod.outlook.com
+ (2603:10b6:a03:33e:cafe::18) by SJ0PR03CA0042.outlook.office365.com
+ (2603:10b6:a03:33e::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Fri, 29 Mar 2024 05:38:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ SJ5PEPF000001C8.mail.protection.outlook.com (10.167.242.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 05:38:26 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 29 Mar
+ 2024 00:38:24 -0500
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35
+ via Frontend Transport; Fri, 29 Mar 2024 00:38:21 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <Sunil-kumar.Dommati@amd.com>,
+	<Basavaraj.Hiregoudar@amd.com>, <venkataprasad.potturu@amd.com>, "Vijendar
+ Mukunda" <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Syed Saba
+ Kareem" <Syed.SabaKareem@amd.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>, "open list:SOUND - SOC LAYER /
+ DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH V2] ASoC: amd: acp: fix for acp_init function error handling
+Date: Fri, 29 Mar 2024 11:08:12 +0530
+Message-ID: <20240329053815.2373979-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,234 +92,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (SATLEXMB03.amd.com: Vijendar.Mukunda@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001C8:EE_|DS0PR12MB8320:EE_
+X-MS-Office365-Filtering-Correlation-Id: cfdbf79f-d577-467b-59f4-08dc4fb27506
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	cdC76e/zMrOLIIqHXCfYO74/4rc/DeXKiUZHZM16gtc4INtp1wBl39LIVWE1stdcGQIkX6eC8J9qita4OKH0gJ24T9Vq64JH1Om/AcDL41Z4j9ygA79sUCZNopnwr0HCHS07TrGa9ed9u1AUYBlbvaxygS4SOokr27D8RrW4VA4jV/1tzJ/wstkcoCI+kgTpVArFX99FyXpK1sfkxBZpGSnIKjvYJKpITziD8bQpxHzO61tfZbZBqmsXTe8+tyWTocJlgr6X+l6WWzO3/ie9Rn3XdMGdJNiRn9c0vGFkM5hT6ZmOOext1oR+YkT0z49DWScsXKYgArzCzwvzFHhy37K53BIL4KDzX+I0xfYvO2cG1uOxqoLx6Vo/sxqurfBZ4ZZm2TY6R2F/UhfS943jTQSeSKlpou1lL95/1PoT6xkzCLueF2GL5H+Gqzxs7cqa+PtQZkGCWSlROEYUsAfpUiUqLtUHRHTlgKgkEjq31LJWrA3ISt5wXI3H1LVHLjDXtg87MrNqRz0hW8hLWCXcpCHBPfJMVqPefXo9J/UScvd7cJr/LxqMnJpANqztuA1KUBRiv3TCUgX/rVRucm5HFKJKjRn60S/0fIcoego5b3ZG/xE+lKOJF1RESPiNpWSzAz+bpNAfitKncS1TYKGPAWn2jESM6vTut7J2RT59kx/kM+o4toz4Ox+pKpV6ijsF6UPGiPpV81m1blDadZcu6SHuCO1y+G1A2fjM7OmTqQ5wRhUSiAT7zJ8ZxMaV8uLi
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 05:38:26.4172
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfdbf79f-d577-467b-59f4-08dc4fb27506
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001C8.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8320
 
-The current implementation treats emulated memory devices, such as
-CXL1.1 type3 memory, as normal DRAM when they are emulated as normal memory
-(E820_TYPE_RAM). However, these emulated devices have different
-characteristics than traditional DRAM, making it important to
-distinguish them. Thus, we modify the tiered memory initialization process
-to introduce a delay specifically for CPUless NUMA nodes. This delay
-ensures that the memory tier initialization for these nodes is deferred
-until HMAT information is obtained during the boot process. Finally,
-demotion tables are recalculated at the end.
+If acp_init() fails, acp pci driver probe should return error.
+Add acp_init() function return value check logic.
 
-* late_initcall(memory_tier_late_init);
-Some device drivers may have initialized memory tiers between
-`memory_tier_init()` and `memory_tier_late_init()`, potentially bringing
-online memory nodes and configuring memory tiers. They should be excluded
-in the late init.
-
-* Handle cases where there is no HMAT when creating memory tiers
-There is a scenario where a CPUless node does not provide HMAT information.
-If no HMAT is specified, it falls back to using the default DRAM tier.
-
-* Introduce another new lock `default_dram_perf_lock` for adist calculation
-In the current implementation, iterating through CPUlist nodes requires
-holding the `memory_tier_lock`. However, `mt_calc_adistance()` will end up
-trying to acquire the same lock, leading to a potential deadlock.
-Therefore, we propose introducing a standalone `default_dram_perf_lock` to
-protect `default_dram_perf_*`. This approach not only avoids deadlock
-but also prevents holding a large lock simultaneously.
-
-* Upgrade `set_node_memory_tier` to support additional cases, including
-  default DRAM, late CPUless, and hot-plugged initializations.
-To cover hot-plugged memory nodes, `mt_calc_adistance()` and
-`mt_find_alloc_memory_type()` are moved into `set_node_memory_tier()` to
-handle cases where memtype is not initialized and where HMAT information is
-available.
-
-* Introduce `default_memory_types` for those memory types that are not
-  initialized by device drivers.
-Because late initialized memory and default DRAM memory need to be managed,
-a default memory type is created for storing all memory types that are
-not initialized by device drivers and as a fallback.
-
-Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Fixes: e61b415515d3 ("ASoC: amd: acp: refactor the acp init and de-init sequence")
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- mm/memory-tiers.c | 93 +++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 77 insertions(+), 16 deletions(-)
 
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index 974af10cfdd8..9f8ae99e8e6e 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -36,6 +36,11 @@ struct node_memory_type_map {
- 
- static DEFINE_MUTEX(memory_tier_lock);
- static LIST_HEAD(memory_tiers);
-+/*
-+ * The list is used to store all memory types that are not created
-+ * by a device driver.
-+ */
-+static LIST_HEAD(default_memory_types);
- static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
- struct memory_dev_type *default_dram_type;
- 
-@@ -108,6 +113,8 @@ static struct demotion_nodes *node_demotion __read_mostly;
- 
- static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
- 
-+/* The lock is used to protect `default_dram_perf*` info and nid. */
-+static DEFINE_MUTEX(default_dram_perf_lock);
- static bool default_dram_perf_error;
- static struct access_coordinate default_dram_perf;
- static int default_dram_perf_ref_nid = NUMA_NO_NODE;
-@@ -505,7 +512,8 @@ static inline void __init_node_memory_type(int node, struct memory_dev_type *mem
- static struct memory_tier *set_node_memory_tier(int node)
- {
- 	struct memory_tier *memtier;
--	struct memory_dev_type *memtype;
-+	struct memory_dev_type *mtype = default_dram_type;
-+	int adist = MEMTIER_ADISTANCE_DRAM;
- 	pg_data_t *pgdat = NODE_DATA(node);
- 
- 
-@@ -514,11 +522,20 @@ static struct memory_tier *set_node_memory_tier(int node)
- 	if (!node_state(node, N_MEMORY))
- 		return ERR_PTR(-EINVAL);
- 
--	__init_node_memory_type(node, default_dram_type);
-+	mt_calc_adistance(node, &adist);
-+	if (node_memory_types[node].memtype == NULL) {
-+		mtype = mt_find_alloc_memory_type(adist, &default_memory_types);
-+		if (IS_ERR(mtype)) {
-+			mtype = default_dram_type;
-+			pr_info("Failed to allocate a memory type. Fall back.\n");
-+		}
-+	}
-+
-+	__init_node_memory_type(node, mtype);
- 
--	memtype = node_memory_types[node].memtype;
--	node_set(node, memtype->nodes);
--	memtier = find_create_memory_tier(memtype);
-+	mtype = node_memory_types[node].memtype;
-+	node_set(node, mtype->nodes);
-+	memtier = find_create_memory_tier(mtype);
- 	if (!IS_ERR(memtier))
- 		rcu_assign_pointer(pgdat->memtier, memtier);
- 	return memtier;
-@@ -655,6 +672,33 @@ void mt_put_memory_types(struct list_head *memory_types)
- }
- EXPORT_SYMBOL_GPL(mt_put_memory_types);
- 
-+/*
-+ * This is invoked via `late_initcall()` to initialize memory tiers for
-+ * CPU-less memory nodes after driver initialization, which is
-+ * expected to provide `adistance` algorithms.
-+ */
-+static int __init memory_tier_late_init(void)
-+{
-+	int nid;
-+
-+	mutex_lock(&memory_tier_lock);
-+	for_each_node_state(nid, N_MEMORY)
-+		if (node_memory_types[nid].memtype == NULL)
-+			/*
-+			 * Some device drivers may have initialized memory tiers
-+			 * between `memory_tier_init()` and `memory_tier_late_init()`,
-+			 * potentially bringing online memory nodes and
-+			 * configuring memory tiers. Exclude them here.
-+			 */
-+			set_node_memory_tier(nid);
-+
-+	establish_demotion_targets();
-+	mutex_unlock(&memory_tier_lock);
-+
-+	return 0;
-+}
-+late_initcall(memory_tier_late_init);
-+
- static void dump_hmem_attrs(struct access_coordinate *coord, const char *prefix)
- {
- 	pr_info(
-@@ -668,7 +712,7 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
- {
- 	int rc = 0;
- 
--	mutex_lock(&memory_tier_lock);
-+	mutex_lock(&default_dram_perf_lock);
- 	if (default_dram_perf_error) {
- 		rc = -EIO;
- 		goto out;
-@@ -716,23 +760,30 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
+changes from v1->v2:
+	- handle clean up sequence instead of returning error directly
+
+ sound/soc/amd/acp/acp-pci.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
+index 440b91d4f261..5f35b90eab8d 100644
+--- a/sound/soc/amd/acp/acp-pci.c
++++ b/sound/soc/amd/acp/acp-pci.c
+@@ -115,7 +115,10 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
+ 		goto unregister_dmic_dev;
  	}
  
- out:
--	mutex_unlock(&memory_tier_lock);
-+	mutex_unlock(&default_dram_perf_lock);
- 	return rc;
- }
- 
- int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
- {
--	if (default_dram_perf_error)
--		return -EIO;
-+	int rc = 0;
- 
--	if (default_dram_perf_ref_nid == NUMA_NO_NODE)
--		return -ENOENT;
-+	mutex_lock(&default_dram_perf_lock);
-+	if (default_dram_perf_error) {
-+		rc = -EIO;
-+		goto out;
-+	}
- 
- 	if (perf->read_latency + perf->write_latency == 0 ||
--	    perf->read_bandwidth + perf->write_bandwidth == 0)
--		return -EINVAL;
-+	    perf->read_bandwidth + perf->write_bandwidth == 0) {
-+		rc = -EINVAL;
-+		goto out;
-+	}
- 
--	mutex_lock(&memory_tier_lock);
-+	if (default_dram_perf_ref_nid == NUMA_NO_NODE) {
-+		rc = -ENOENT;
-+		goto out;
-+	}
- 	/*
- 	 * The abstract distance of a memory node is in direct proportion to
- 	 * its memory latency (read + write) and inversely proportional to its
-@@ -745,8 +796,9 @@ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
- 		(default_dram_perf.read_latency + default_dram_perf.write_latency) *
- 		(default_dram_perf.read_bandwidth + default_dram_perf.write_bandwidth) /
- 		(perf->read_bandwidth + perf->write_bandwidth);
--	mutex_unlock(&memory_tier_lock);
- 
-+out:
-+	mutex_unlock(&default_dram_perf_lock);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mt_perf_to_adistance);
-@@ -858,7 +910,8 @@ static int __init memory_tier_init(void)
- 	 * For now we can have 4 faster memory tiers with smaller adistance
- 	 * than default DRAM tier.
- 	 */
--	default_dram_type = alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
-+	default_dram_type = mt_find_alloc_memory_type(MEMTIER_ADISTANCE_DRAM,
-+									&default_memory_types);
- 	if (IS_ERR(default_dram_type))
- 		panic("%s() failed to allocate default DRAM tier\n", __func__);
- 
-@@ -868,6 +921,14 @@ static int __init memory_tier_init(void)
- 	 * types assigned.
- 	 */
- 	for_each_node_state(node, N_MEMORY) {
-+		if (!node_state(node, N_CPU))
-+			/*
-+			 * Defer memory tier initialization on CPUless numa nodes.
-+			 * These will be initialized after firmware and devices are
-+			 * initialized.
-+			 */
-+			continue;
+-	acp_init(chip);
++	ret = acp_init(chip);
++	if (ret)
++		goto unregister_dmic_dev;
 +
- 		memtier = set_node_memory_tier(node);
- 		if (IS_ERR(memtier))
- 			/*
+ 	res = devm_kcalloc(&pci->dev, num_res, sizeof(struct resource), GFP_KERNEL);
+ 	if (!res) {
+ 		ret = -ENOMEM;
 -- 
-Ho-Ren (Jack) Chuang
+2.34.1
 
 
