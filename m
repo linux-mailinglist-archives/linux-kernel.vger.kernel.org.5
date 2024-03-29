@@ -1,111 +1,128 @@
-Return-Path: <linux-kernel+bounces-125094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 243FF891FFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:15:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70049892002
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 16:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8FE628ABA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:15:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD3D1F3200F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:15:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAC0149E09;
-	Fri, 29 Mar 2024 14:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B8C14A606;
+	Fri, 29 Mar 2024 14:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="MJDecyS0"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GFyceD+d"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475E7130E5D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 14:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A1814A4F7;
+	Fri, 29 Mar 2024 14:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711723426; cv=none; b=OJzCQyNOvg9gB255dMtnMTRSpXCAOxtLMDQ//iZmAfaRrGdqHpIofWMs2ahgdYGPLc3fo9CHXxKTcMPHJj051KOTeked772NwrY3PVfO29ngpsORg0XAa9IAeUjNBqFuqHwWUZkN6YM4SZydfVbG+ZRElLCuuyBKeT1tcMjJgqQ=
+	t=1711723620; cv=none; b=Qf9VgavmVsJQH2fAuzOIbxYAk48GHeU5k9QkHwBQoog+zmresAzfbbCOFNWV7YLtfKelwYVN0s6+j1DNnXFN5sM2mePJ0Azm1s9pn2a05c0M0Flc1qpFmWynE2oTu7JLBGXiyVYtqecJi5nxtK2xPoVxKQlsOi2NAf2LxNXulKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711723426; c=relaxed/simple;
-	bh=HWn+ubBw+z7uWmy+kR+A6/4Pj3cMxxSNFvxf72ie888=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ABRdo7h81o602bRhOrb1V37pyypYeQqJ3ppoM6qHJOarTbjbTYgnlrR2keb5FU7N5EdPrUkB5dbqFCPmcKzR/PmIcoqB/8Nc6hQH68zSRiZ4yeZWxoJ7z1fNepeMxq1ZTK9xyxCjf7k/gBrIHVvm68Knyp6lQpbsnqP5MBZf3n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=MJDecyS0; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e6a1d24770so1144478a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:43:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711723421; x=1712328221; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8VW51Lxzr9d+EH5PFrrI1HHmktk5YypVM0IZEzVB3Xc=;
-        b=MJDecyS0be5LMcFaU6sbe2riez+grgF+Cb6Rd8YrVbWVUkhnduQiFSiMJe8eW0HKDi
-         cZJBTT4DIzQjdUOmIuTt7rk+Sq81irAuXaSQhy7pVeplRGFDF5Ofe7wkoWp2a3r0CMco
-         BqIP3lhjwyVuc8NgwJP1Y6ydFUUHQkgB+Xm3Xl7nTriCBf2mhWKFePDL7K761f/8Tl7O
-         y/47K0CtpCapGbFWNPbAQPo5pdBl+R0bZngS7YzZWZBvqjobuaSQi+wGJKshoyr0sv8w
-         x/L2IFUum+X1cdYkSSwLyJZUNnnBfhIxTYaIJ3SFO9W7XcXKzuSbLWgVYokbbHWcSFM0
-         xq8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711723421; x=1712328221;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8VW51Lxzr9d+EH5PFrrI1HHmktk5YypVM0IZEzVB3Xc=;
-        b=rMKsbyGv6GGSrK4lHygGy5sQxirHvjkBVjvr6z5PMuPQB7E+4rRuWebwiJfgsqL7Mm
-         X4SUYTMvglyVOYz+CiFKWNnE/xf8NQK7S98mvUC8dvlPe12R10efnyq0b9bXPGiKAbcj
-         3PyRuDgnfulB5c0UXGgi2yihp9kkaupRSH/ODNz1t0lUnhrPtXpu/0OUyQcLpl7rptha
-         UJfwQ8LARluZWTIr22kQ0Sl9AYgk9MRgcXXtzxetBZgIHgbr45IwFDRKQjQkxlv622QP
-         5GcfHK+1+p0TAQfmJ3KupNVF7JOCaNxkoY0YvFHGsTIFonrX2l1BgtzgbBZoD817iBrS
-         Rghw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPSgJI409EgIwgRI+AA0dm4G5P665JibNckS+t61Kim2SxfEGv/HDUBhscwdPIAl8f1Hro4jEnyfO1GnJyvi2+W25VTs7Sd+eaMscn
-X-Gm-Message-State: AOJu0YxQf0s9zONAmq7tPgIO5Iz1D5qY/ChTkct2ROEfkMslYDcclKq8
-	d7wIJA0yGLaddHTAwEq2MFzlZKA8+ZK3wkK7yvHJTTu1B2eCJL65/evvrw4vFY5DxDe/oHNWtUR
-	8
-X-Google-Smtp-Source: AGHT+IEjgbOCLxJSazq7Ph5qiPfP/D7Ytvy6s1ZfqZgKWOcT5fLpOo9CuYAo+RfvsUzjixtQixMAow==
-X-Received: by 2002:a05:6830:1301:b0:6e6:d359:23e9 with SMTP id p1-20020a056830130100b006e6d35923e9mr2460279otq.36.1711723421455;
-        Fri, 29 Mar 2024 07:43:41 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id r2-20020a056830120200b006e6f836aac1sm661687otp.9.2024.03.29.07.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 07:43:40 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Kent Gibson <warthog618@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-gpio@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Documentation: gpio: fix typo
-Date: Fri, 29 Mar 2024 09:43:16 -0500
-Message-ID: <20240329144318.376939-1-dlechner@baylibre.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1711723620; c=relaxed/simple;
+	bh=LGMJXyDZTVCuXPUZLYQj+Fw5Q8AJgz3+78O0ba93CKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U4++TXEMUBYt9Y73LkkHmdPpKRVI2xwzCarHaNBUUMjPozrBFUN+tMzRqEfAEbRsE+TCGSucOqUZQWMzAAs+WpW1fDfRrVXwqUJNQ5l+6zmFinRi31/YEIWq+UVFIWCC73AI3l3t/HawOyjyR6omIL/xVTWihlrX07f1fnEpX1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GFyceD+d; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711723618; x=1743259618;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LGMJXyDZTVCuXPUZLYQj+Fw5Q8AJgz3+78O0ba93CKE=;
+  b=GFyceD+deTNXirmfkO8hgTy8hjAyxstAovt/QEBTw7zTqV4FafIT1i6o
+   Mn080mVcvEIXnxG1BLEan2bUbj8XAXetOAmqfF1gDLkPIhdzlZpUbGPI0
+   xHhjpDDbNowwF75wrqz0tDHaJuVja9msdoi7pM7oQ2uabEe6rogPhTLgm
+   fuBd+5sCIHlSqLUfulz3WsUmJB5gomS37BXU2HScGU8spG7gZFjIJ1jQw
+   j16Gz/1Qp4ung590nosZpeDSwJr3Rb7eK5f6E2pnqIX7yMz0+OqlhdEJS
+   TSh82U81nmsggu6CdPkbhFKGimpmR3l6BZpwxr2gMmObT2PrnkDpkFvQf
+   g==;
+X-CSE-ConnectionGUID: IdxaVO6RTwaSTeoZY+xXgg==
+X-CSE-MsgGUID: 29rkbP8LTTCxDsFY4piyIg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="32315449"
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="32315449"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 07:46:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,165,1708416000"; 
+   d="scan'208";a="21729837"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 29 Mar 2024 07:46:53 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqDVK-0003HC-1t;
+	Fri, 29 Mar 2024 14:46:50 +0000
+Date: Fri, 29 Mar 2024 22:46:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org, x86@kernel.org,
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 10/10] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
+Message-ID: <202403292233.1m5tWJY5-lkp@intel.com>
+References: <20240328075318.83039-11-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328075318.83039-11-jiangshanlai@gmail.com>
 
-EOPNOTSUPP has two 'P's.
+Hi Lai,
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst b/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst
-index 56b975801b6a..6615d6ced755 100644
---- a/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst
-+++ b/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst
-@@ -81,7 +81,7 @@ Only one event clock flag, ``GPIO_V2_LINE_FLAG_EVENT_CLOCK_xxx``, may be set.
- If none are set then the event clock defaults to ``CLOCK_MONOTONIC``.
- The ``GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE`` flag requires supporting hardware
- and a kernel with ``CONFIG_HTE`` set.  Requesting HTE from a device that
--doesn't support it is an error (**EOPNOTSUP**).
-+doesn't support it is an error (**EOPNOTSUPP**).
- 
- The :c:type:`debounce_period_us<gpio_v2_line_attribute>` attribute may only
- be applied to lines with ``GPIO_V2_LINE_FLAG_INPUT`` set. When set, debounce
+[auto build test ERROR on paulmck-rcu/dev]
+[also build test ERROR on tip/locking/core tip/sched/core tip/x86/asm tip/master linus/master v6.9-rc1 next-20240328]
+[cannot apply to tip/x86/core tip/auto-latest]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Lai-Jiangshan/lib-Use-rcu_preempt_depth-to-replace-current-rcu_read_lock_nesting/20240328-155513
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+patch link:    https://lore.kernel.org/r/20240328075318.83039-11-jiangshanlai%40gmail.com
+patch subject: [PATCH 10/10] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
+config: i386-alldefconfig (https://download.01.org/0day-ci/archive/20240329/202403292233.1m5tWJY5-lkp@intel.com/config)
+compiler: gcc-12 (Ubuntu 12.3.0-9ubuntu2) 12.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403292233.1m5tWJY5-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403292233.1m5tWJY5-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: init/main.o: in function `rest_init':
+>> main.c:(.ref.text+0x96): undefined reference to `rcu_read_unlock_special_thunk'
+>> ld: main.c:(.ref.text+0x9d): undefined reference to `rcu_read_unlock_special_thunk'
+   ld: arch/x86/events/intel/ds.o: in function `intel_pmu_drain_bts_buffer':
+>> ds.c:(.text+0x2cd9): undefined reference to `rcu_read_unlock_special_thunk'
+   ld: arch/x86/kernel/nmi.o: in function `nmi_handle':
+>> nmi.c:(.text+0x2e9): undefined reference to `rcu_read_unlock_special_thunk'
+   ld: arch/x86/kernel/alternative.o: in function `__text_poke':
+>> alternative.c:(.text+0x531): undefined reference to `rcu_read_unlock_special_thunk'
+   ld: arch/x86/mm/init.o:init.c:(.init.text+0xf1): more undefined references to `rcu_read_unlock_special_thunk' follow
+
 -- 
-2.43.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
