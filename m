@@ -1,148 +1,91 @@
-Return-Path: <linux-kernel+bounces-124322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E307F8915A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D8D8915A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 10:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 840C91F22BF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:20:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABF8B1F22C51
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 09:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779081C691;
-	Fri, 29 Mar 2024 09:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6CD40840;
+	Fri, 29 Mar 2024 09:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z5By1wcu"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QsxNbjAV"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F431EEFD
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:20:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0864E3DB89
+	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 09:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711704020; cv=none; b=bdWGDCjK2bt6cBGmpMbL1CZbLrlJmy+QR6SNO5Bq/v9Qi8HvSDOyz1FXE9k1875sh/FBZytUx4Xwu8uAAlb+0s7idHlKGDudwT/X7uqqfkkw6J1AptXI9kKSbcu1YfJt2/75yec8yGdMVy6AM6Ybr52CwsOPOzmcpkSSB86MOl0=
+	t=1711704029; cv=none; b=HTGWA3PuXP6jHDISqMojrLx/r2oFId2p5WF/iz+dauBCmd6riWfJxvSLDdbnsoQ0+bFvhBvd2phiQlUULXvH+0HmJ0mhs6dLSSrGVlVJH35YOLqcJQkXLYmbEFUpoOvqFQLGrdSoqmgex3x+ISvzcoHZxuJzA/kMZp3YlQmRLrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711704020; c=relaxed/simple;
-	bh=hm+AHHYWzLy+AlbU0wNJxAg9v3kNIE4Nl/55GME9dD4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AHPpfrasLPfweUBNimEU/MzDCRaKMzO+v74qll/AZhqQhPk/00EJh6qBRvbey2cPVyRmqsAhISIN11Cl1Bepx1zj9DFC0lCuTay4aFrpaNtxclwdgFHRf2FGyrIGzf61nSLb3qfSXK/Wcs7jjpF49R0SvwwCdwgb1cx/ehG/n+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z5By1wcu; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2a21330d093so394719a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:20:19 -0700 (PDT)
+	s=arc-20240116; t=1711704029; c=relaxed/simple;
+	bh=lsKygOzvWLl0FFhuYPC1IU4/YVdmC9lNJ/3CEGGRJMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hmc7XTFf1CgVXUvHXnLiG6YWSpM0lDx5ZL+zgurywv3+lnNGfeXUmLBnDeuezAYsWTAuEsxzC3zKO9wikAVzfI+W0aKLGSMR0xw/EPdkMI5h9L206h04kEbRZbb1OWwamgqt42RnGISoJPcvYG8vWSIrLsRiMvAod7mJALXRpZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QsxNbjAV; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29dfad24f36so1399651a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 02:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711704019; x=1712308819; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FzAzNpzkXXUAA+hRodaPXYuruuuBsEIO0xmoY7kmtxE=;
-        b=Z5By1wcu/gAr4KcT+GuQJg9ra1ker3GNUGu6tsWeeXOEFumzZZNdrt1DMMBxdnkmef
-         rzTVGu0zQT5sPg3X1wL6mqsXEiS9ab1+lftBv8A0OE1/Z/LD/efvgeYBZ5aGks2kqiJ1
-         Qhi/+zpsK1x53M1RuBkkxFu38ibM+A3hAlcAn3EFnGSK6Fh8Vyy1h0TzmuGz2n7MAQpp
-         W9oiZ490RTUGzioAJVZn5+hJGlbAFJdlEF184nTRWzRePQRaKkFnEjWkuLufldjrHHPg
-         dcVl0+s6vxBXsg9bhOH6mPpIsMTH76o5NW07pJTPd83CnIO4XHL8BNTGC6dZK5x+kKxg
-         72Gw==
+        d=chromium.org; s=google; t=1711704027; x=1712308827; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lsKygOzvWLl0FFhuYPC1IU4/YVdmC9lNJ/3CEGGRJMg=;
+        b=QsxNbjAVOmX5tDI30F3e8EeyIYbnPG3B3njZ2pfgTd1zMOl8/twy8KAydUo7ulHWKo
+         IdHLxf3j/M/jOEyHRwVm+xXfWyRNj+fn4LG6bEN1ZKvZWejuIWshhA5+LVID71sbZPvG
+         aHHT7kBam3SgUfzOVjm+VVkvJg+s5nuNY0Vd8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711704019; x=1712308819;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FzAzNpzkXXUAA+hRodaPXYuruuuBsEIO0xmoY7kmtxE=;
-        b=v+1wseo4Us4BM8HxGhNG5t7j3qEbL9D6PGh2YTo3MXPZMSfkzV1OvFPBi2n1XqMJIw
-         BslOK+BivOrwbIkcpFEcyOYDo1rZe7j/LxgLTWpcY4dVre8dbk64w0UIeOvr46zwOGNe
-         geXFrGsJHh65mE1fXhjABN0rzlMFI+3Ah/Eg39I9trT6cpKyVK1xM7ENEjkkr99b0jyg
-         D74OfwQ1VHPWVcjpyLwkBSDiDdcL7JmKS3eZz+GXpwEhRlefTAeIpoN3a7/L/mdUr2n1
-         D9YtQkPglMMhLwgWEwZQxucoBrd6QvqG0J3z0UQUSsVsp30tlDjNn1qVb3Xf5kb8kwTV
-         /lXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXYCg7Ac2ZHuUajGXq+ojd2tlqKjFSjFRb8AjqGNr4Qwz0qaok7DK6MSjNttIgXl0xLEARa4/DTleo1629xZye295fVgubZjhAMMNFc
-X-Gm-Message-State: AOJu0YzbMm4p9I5Z6kQ+PkpfTkRS2VAcLBZtQjN5ANVnedoH9IHsAjJJ
-	op+x8M/ZMAD2bMQgqNgR4FnRiMCNGEjp//oKoHaJIJkIwcmEz+Jc
-X-Google-Smtp-Source: AGHT+IHpJqlbMNXPksDuY1MKu0WkYvo9ZpkHaDF3AK8xuBta1U0uxuEq7LDL/fezWumKJT+RiXPYTA==
-X-Received: by 2002:a17:90b:3c50:b0:2a2:19f:dbc7 with SMTP id pm16-20020a17090b3c5000b002a2019fdbc7mr2203477pjb.0.1711704018727;
-        Fri, 29 Mar 2024 02:20:18 -0700 (PDT)
-Received: from PC-YLX4GJ2P.company.local (014136220210.static.ctinets.com. [14.136.220.210])
-        by smtp.gmail.com with ESMTPSA id n16-20020a17090ac69000b002a06260ac96sm2639704pjt.16.2024.03.29.02.20.14
+        d=1e100.net; s=20230601; t=1711704027; x=1712308827;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lsKygOzvWLl0FFhuYPC1IU4/YVdmC9lNJ/3CEGGRJMg=;
+        b=Jgp+tlVJRuyNhvbiBwHhxBOqnDTT6dOZ9PEB4NfILfDQ9t0d8xAagMK+Ysten37HiA
+         jgFm4UkrsAFXktkv6Exnt4mNsnPqOKi+BhTxMFwAnmJm1p5cQ8q+ReLOVjn+J+wM6BVI
+         0cK+EoVG+AO+CAX22xnKOLd3lPdNqQmfS6ep0tg5PtNiEvdC5iG7XGSbY63W6TpYKxNn
+         TWmqkB2y4KS+lDZUssH/0z1NecAOFhIi49mR16Fp8jsUUz9PrFDj3GhfOZIbIaW00IaN
+         +ph0O9MGyl+1rwf0Xk4UOCbn/nQunORQ8EAFgECVn8+joW0Vyc6CS29zz929sugI7jo/
+         nYoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWqiVLOk8dGIrd0ZsbIhQ8duXa3Xb4rpO8SrNRc/0HXiu/nyLAVbAFKwwpodAnST6AnTkX4DvSrgk0PnhZZZWWyESbByR7cJtiLgmAM
+X-Gm-Message-State: AOJu0YwWZN46as0o03CYeMzPIEKVAVechPBFXX8sVBRE1X9ijMF57my7
+	HHy0ROyP/GXIviiFNU1RWJJvH43mZeZLJ5+TPMhpCNPG4H93MAAWXmIJmdQd6w==
+X-Google-Smtp-Source: AGHT+IHQqAtT/9cATJMKv9jBfWQX8IflMXS4FDJOKDbHHGfHQMqg53v5n/NfmlEfqYyL7Ohe0pD7Bw==
+X-Received: by 2002:a17:90a:b10c:b0:2a2:151c:6246 with SMTP id z12-20020a17090ab10c00b002a2151c6246mr989149pjq.34.1711704027406;
+        Fri, 29 Mar 2024 02:20:27 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:91ca:ac62:b18d:2b7])
+        by smtp.gmail.com with ESMTPSA id gv15-20020a17090b11cf00b002a055d4d2fesm2605024pjb.56.2024.03.29.02.20.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 02:20:18 -0700 (PDT)
-From: Chunxin Zang <spring.cxz@gmail.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org
-Cc: dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com,
-	linux-kernel@vger.kernel.org,
-	yangchen11@lixiang.com,
-	zhouchunhua@lixiang.com,
-	zangchunxin@lixiang.com,
-	Chunxin Zang <spring.cxz@gmail.com>
-Subject: [PATCH] sched/fair: Reset vlag in dequeue when PLAGE_LAG is disabled
-Date: Fri, 29 Mar 2024 17:19:33 +0800
-Message-Id: <20240329091933.340739-1-spring.cxz@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 29 Mar 2024 02:20:27 -0700 (PDT)
+Date: Fri, 29 Mar 2024 18:20:22 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Minchan Kim <minchan@kernel.org>, Brian Geffon <bgeffon@google.com>,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH] zram: add limit to recompression
+Message-ID: <20240329092022.GE1041856@google.com>
+References: <20240329090700.2799449-1-senozhatsky@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329090700.2799449-1-senozhatsky@chromium.org>
 
-The vlag is calculated in dequeue when PLAGE_LAG is disabled. If we
-enable the PLACE_LAG at some point, the old vlag of process will
-affect itself and other process. These are not in line with our
-original intention, where we expect the vlag of all processes to be
-calculated from 0 after the enable PLAGE_LAG.
+On (24/03/29 18:06), Sergey Senozhatsky wrote:
+> Introduce "max_pages" param to recompression device attribute
+> which sets the upper limit on the number of entries (pages) zram
+> attempts to recompress.
 
-Reviewed-by: Chen Yang <yangchen11@lixiang.com>
-Signed-off-by: Chunxin Zang <spring.cxz@gmail.com>
----
- kernel/sched/fair.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 03be0d1330a6..bc103a1ee78a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3798,16 +3798,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 	}
- 	dequeue_load_avg(cfs_rq, se);
- 
--	if (!se->on_rq) {
-+	if (sched_feat(PLACE_LAG) && !se->on_rq) {
- 		/*
- 		 * Because we keep se->vlag = V - v_i, while: lag_i = w_i*(V - v_i),
- 		 * we need to scale se->vlag when w_i changes.
- 		 */
- 		se->vlag = div_s64(se->vlag * se->load.weight, weight);
--	} else {
--		reweight_eevdf(cfs_rq, se, weight);
- 	}
- 
-+	if (se->on_rq)
-+		reweight_eevdf(cfs_rq, se, weight);
-+
- 	update_load_set(&se->load, weight);
- 
- #ifdef CONFIG_SMP
-@@ -5382,7 +5383,11 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 
- 	clear_buddies(cfs_rq, se);
- 
--	update_entity_lag(cfs_rq, se);
-+	if (sched_feat(PLACE_LAG))
-+		update_entity_lag(cfs_rq, se);
-+	else
-+		se->vlag = 0;
-+
- 	if (se != cfs_rq->curr)
- 		__dequeue_entity(cfs_rq, se);
- 	se->on_rq = 0;
--- 
-2.34.1
-
+Scratch this one. I think I want recompression limit to
+respect size thresholds, algo priority ranges, etc.
 
