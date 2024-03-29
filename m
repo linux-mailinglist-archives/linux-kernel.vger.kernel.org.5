@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-125041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8352A891F1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:58:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DD7891F26
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 15:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ADB328799D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:58:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85FE41F2DD97
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CAE1C0147;
-	Fri, 29 Mar 2024 12:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B261C08B9;
+	Fri, 29 Mar 2024 12:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTijMNFJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c7h5Kl4q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23271C012B;
-	Fri, 29 Mar 2024 12:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627161C089A;
+	Fri, 29 Mar 2024 12:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716689; cv=none; b=GNB8XGw//DrCR+uGgv7Sbu6OMgC728LHLSEQOVM3wXIK5nkxpW7I9Yai2AQRiOamCTF63qLDSBwH1KnQHtXF6twpmLSmqmZvslT4NPQ8iMoYMMveGbXY2WIBhb/OOfXiJ3UIjBSmYKrhPbMmjoKXfiuaEU+enQit59lGbc711BE=
+	t=1711716693; cv=none; b=p/t2YvnvgRMS1x1AIso2yYKiezrXWrLgIeSCCt48yvW2oJhdepGMiRAJQgggUyRk7Qx5WStGF51RK8NVXATmlhAXE9rDBk/VhqlpxvWCpbLCNGlknE4kbeAjtttzDQx3hoTPKO0Mtd0YK3XP2zoIXqeh9ErcdPuIjg7q3L/tOhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716689; c=relaxed/simple;
-	bh=GCCcXe3ICsPyaH8GbioAnxtzD+uP1Z9fAotkEf9lyHg=;
+	s=arc-20240116; t=1711716693; c=relaxed/simple;
+	bh=fwh2m7sCn29cG90OCu3PIuTxTxnWk5RXZjAseQsIl/Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r8JmNvCR5YRBayAqZI62dSLHl/6L8CMnfIYZ49BzFKo07lUOn207A5Mi3cqB3w7SjXFg0gguWtdjRM8nc7eUvgFo1n2pT9GgYhtm/sBOIJh5X75x67OfFXRd1a+hj28dMehHBpePdW6OyU4AUj1LTmhiE4VjsSvBfq0EkCLTOVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTijMNFJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E68E8C43330;
-	Fri, 29 Mar 2024 12:51:28 +0000 (UTC)
+	 MIME-Version; b=AoEIwo/+rMmXhQfJ/8tePJHea7jfYRzQwIZ+fWEKF4Gq1uhvShEUNlDvm0BX+h1Bxittj5TZDpVNVUqLsrwIzhbf1jz2ihhuA8ZIDXUCY1kDRJbeWa320Pg1z6AeGWTS3z0IBa754sUGIoXcRqGctG8rSfENgE4BQ3ZLxYa2R3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c7h5Kl4q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F54C433A6;
+	Fri, 29 Mar 2024 12:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716689;
-	bh=GCCcXe3ICsPyaH8GbioAnxtzD+uP1Z9fAotkEf9lyHg=;
+	s=k20201202; t=1711716691;
+	bh=fwh2m7sCn29cG90OCu3PIuTxTxnWk5RXZjAseQsIl/Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fTijMNFJzYyhMf+UylBj0DstNeuTEoPMO/+0stOsNckn3nv4SrBGxGj7S//aaEqEF
-	 Mue6//o7ZD9/xmbRoKfGkQlG8+XJ7rYejLB4sWrt6OyUUTo2130AkA7t0HjfZAQ5qj
-	 9il7KVksMyQNnhujBJxRol6HkzjOlZwFXw5aTxIuE7XEquxAxZySCrv3evM+BOwS8a
-	 PpEI2rjKuGN2hAZVnTtRD6KjhwLdjtaYbfJr9mneiEEZdx7HQZk11ap+l45Z19Xwj8
-	 KZbgXVgz9dpmbSJ/+Rz/KYUHGnN5clCiFsrLx8FOyaAj8bdLpV3Rn88JltcNSYuTjG
-	 snkBXiv3kSA3A==
+	b=c7h5Kl4qBrNDYVTaB0Ibj+/j+0dQ4P1n4IwVG0qmlAMSct0tmtwpzTRfGf+tzZvVD
+	 lykhtgRvL50OypiFYH6l4P40uHIIXXUT8M4AxiFLnKn6r7xWjYp46wFNFpfMS+s4q6
+	 G2AvtxDP/uvFtB/QJbTBVUtWqC4C44Hw2AUca0c7vIwN+BgT6XVjruLeXJIzzaAUKx
+	 ZSlLoz2XF61Zz5NaIrM+K+ovNk4USkk9FSM1QZSUa4l7csYSMdyI039egry0IN0Mza
+	 Zu5/hcVaVkq9Hx+gqe6bKNr9VOZRMsMqkbbAKvcHOQYdbp79NjWI2wbuF7gw5q8eIZ
+	 Sdap+MnmqCMvQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>,
+Cc: Roman Smirnov <r.smirnov@omp.ru>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 16/19] btrfs: send: handle path ref underflow in header iterate_inode_ref()
-Date: Fri, 29 Mar 2024 08:50:48 -0400
-Message-ID: <20240329125100.3094358-16-sashal@kernel.org>
+	linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 17/19] block: prevent division by zero in blk_rq_stat_sum()
+Date: Fri, 29 Mar 2024 08:50:49 -0400
+Message-ID: <20240329125100.3094358-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329125100.3094358-1-sashal@kernel.org>
 References: <20240329125100.3094358-1-sashal@kernel.org>
@@ -65,41 +65,38 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.311
 Content-Transfer-Encoding: 8bit
 
-From: David Sterba <dsterba@suse.com>
+From: Roman Smirnov <r.smirnov@omp.ru>
 
-[ Upstream commit 3c6ee34c6f9cd12802326da26631232a61743501 ]
+[ Upstream commit 93f52fbeaf4b676b21acfe42a5152620e6770d02 ]
 
-Change BUG_ON to proper error handling if building the path buffer
-fails. The pointers are not printed so we don't accidentally leak kernel
-addresses.
+The expression dst->nr_samples + src->nr_samples may
+have zero value on overflow. It is necessary to add
+a check to avoid division by zero.
 
-Signed-off-by: David Sterba <dsterba@suse.com>
+Found by Linux Verification Center (linuxtesting.org) with Svace.
+
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/20240305134509.23108-1-r.smirnov@omp.ru
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/send.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ block/blk-stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 0c86409a316e8..e3b6ca9176afe 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -958,7 +958,15 @@ static int iterate_inode_ref(struct btrfs_root *root, struct btrfs_path *path,
- 					ret = PTR_ERR(start);
- 					goto out;
- 				}
--				BUG_ON(start < p->buf);
-+				if (unlikely(start < p->buf)) {
-+					btrfs_err(root->fs_info,
-+			"send: path ref buffer underflow for key (%llu %u %llu)",
-+						  found_key->objectid,
-+						  found_key->type,
-+						  found_key->offset);
-+					ret = -EINVAL;
-+					goto out;
-+				}
- 			}
- 			p->start = start;
- 		} else {
+diff --git a/block/blk-stat.c b/block/blk-stat.c
+index 7587b1c3caaf5..507ac714423bd 100644
+--- a/block/blk-stat.c
++++ b/block/blk-stat.c
+@@ -27,7 +27,7 @@ void blk_rq_stat_init(struct blk_rq_stat *stat)
+ /* src is a per-cpu stat, mean isn't initialized */
+ void blk_rq_stat_sum(struct blk_rq_stat *dst, struct blk_rq_stat *src)
+ {
+-	if (!src->nr_samples)
++	if (dst->nr_samples + src->nr_samples <= dst->nr_samples)
+ 		return;
+ 
+ 	dst->min = min(dst->min, src->min);
 -- 
 2.43.0
 
