@@ -1,221 +1,152 @@
-Return-Path: <linux-kernel+bounces-124260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5A8891482
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:46:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ADB2891488
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 08:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0BC41C22FC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:46:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9016FB2119A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 07:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2E745BEA;
-	Fri, 29 Mar 2024 07:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F6A4AEED;
+	Fri, 29 Mar 2024 07:46:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="I91P/lLq"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXR7g0yQ"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3153F4122D
-	for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 07:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C43247F72;
+	Fri, 29 Mar 2024 07:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711698362; cv=none; b=LT5fwiWbrM0KPfQgHb5IXTVNlYcDATa17fjEXEZVhCsn1KfbpxmwTcQz3Vpmhod4V01vIJ0mj/4Qg7jTqD5UX7Lhd6vcs5DOMcRvW7P0g+l76AQ7wh+mRUX/sNbyALijSMG+pSNeNnSWrnjqqvJg38Z80gGZW1vLnVQu3BIDNP8=
+	t=1711698365; cv=none; b=VGKfbSrxdWjoG7/EL2pKgg0M67BNOqwCR/6Imv3tNvWoJI3GYsZ/BbaacbLANmpN5ptowoo2uPsGZWIO1C7sxek3tUA3QfvjJfZy/gHnNSMTGRa6AkY319WxpSLBtkRwbhrNPYCQVHSPf222c9VHg0PdAPU4UnKCXaNqCFkBcEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711698362; c=relaxed/simple;
-	bh=n21rq1fCcOmI3LogGCsxivAQaiA2nOT681cDr3he6c0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pvj7ogTV+aQsRZ0CS7boUsSQmX5sJUb1QH4ZFX5xhWmVbX1FnDh5cs8WYPQG7CPQ4OobF9DQ6ID3oFx/YpmSffATdwF/hs6fYKOA2pw0Iv8Cn4QyAnl9aF93cBocF8fOsFuSsunGne9B8dB+sjtHgcpf9E4aIGuDGs4T0y9VB4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=I91P/lLq; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4751063318so219745266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 00:46:00 -0700 (PDT)
+	s=arc-20240116; t=1711698365; c=relaxed/simple;
+	bh=cIQGV4no67TZGCVXh3aHtkM6DpSuoHxi9Ne/BxaufHA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ChyAuf5rZQPTkpyuZ1LtPGS8o8voAXKk4krHGZpRP5II5K0wQzKSb9Mf0g3XHdtgjrvl/iL/gZ21W4+ZhzH7p9HrGSY7aCgyI8hqgyujtWbRprTmnGoRsDX26wgRHAq8u07BIvzB/xdg3ntlvWDAPF4SdAbtBJ8FfHBsHtr83K0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QXR7g0yQ; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so2494063a12.2;
+        Fri, 29 Mar 2024 00:46:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1711698359; x=1712303159; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lcotkK4GO99SFGIIH8jXD+5kvmn1tNTmHBz7CWYrF30=;
-        b=I91P/lLqOM6tmjHySPQ/xXKvsC/CtoEgiawiWFAqkVcGgKc1XShfsWkIfl4aM+ydiX
-         Pzvpv40Wgzpaqg0KFE9kxutXawBhH6IDIpnJgCL+H2hQLnNJvhyQxcSj8ui46ami9sw8
-         5DL4DBIWkZvyhVbAOm/n40ZR19BOLjkaoc316yQ+92mXYzNFHZAZCJzmXQm4tKNqpt5Q
-         iwdxHI7wvbsrg6kcfRXgv4kZPT8+n9zsrVEVJrusSkA93/gTPxPV8zMir6cCh6zxrEyj
-         9k6cWSHVoI1grlOjafzlVVtlfaX9G+lTgfWjK2NIFYRS2vgxUzQFZZUUThk8UTcazDLp
-         EOMw==
+        d=gmail.com; s=20230601; t=1711698362; x=1712303162; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XXT7CUSk8l4wjXwLdeSj0Hr6QLguW0zMSkZ3sxTxHBg=;
+        b=QXR7g0yQI5w11AjGnmJhKguJLGuxonzloSHmHPMLTAqZR4G/gOjjIuAQbZOM8Zg8zI
+         of0/crN8tEtRL/YSF9abObHgqcQq1v4fU/RzcNumkk18+sADHSGz43+lWzmrphropXY1
+         AR1Nm0ibJuCiFIuuGFJsaGyMYnM/OT8yhHPhRM+jKBtPuFdaUlj7u79ec3TX/Xb6i0xb
+         EdE6yB8JyAzaEBS0F5xJZNrNgqroFvVdayDDb5eCNw1Vm9b88W3Jv8xD4OyCwOnyJ2Bs
+         C5xgqXE0ybkgrzKJ3Eg5GfSoH9y+IshuQ9U1SvUj4FBfsL3+RrzossKEppCcHKGnBdax
+         XSFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711698359; x=1712303159;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lcotkK4GO99SFGIIH8jXD+5kvmn1tNTmHBz7CWYrF30=;
-        b=A4p2c/1r65LWMn85HeIHX+xuA1bCFd6ekKyPXJ9M8ri/UGUf1rG9RHCE0KnkXr63uy
-         aQGWel8Ql2HEHwy+7oymmLn+DPXNeJ1v1EyNZd6a9sY7VygBy2FvH8qp7MVhhj7EUcyB
-         L4eQ6aain6eUJx3rwwp+Na6ZxJup84w4nuNPaiBx5mkV/RFp7lkMQL019X7QPe7dTnP6
-         SZFWerk4/LHiSdPkmM3OK52aouQo8gBTYZwefwQyXtNMWCWGjJZo6Rr/szyNWh2mXeBN
-         sxU2c4LlwTtzMmm5Z0tl5dkVTs6+HBe7GvVBzv9l3GIRdG/z4KU3LltcolWQnkaxavjV
-         Y2cw==
-X-Forwarded-Encrypted: i=1; AJvYcCWvJ5DXIBfn0Lh+pplWIh5Ko2JeuaLZih9XFoTl5tMymvMu+2jDAAhie4tsxidbSnEXT9K2haizHgDw6XURbJkXdTGr/v8Q4wN2hOJQ
-X-Gm-Message-State: AOJu0YwVD2qMl63A+en2UBMSGmAnbo6hZe+Bu8W/6oV73CgkM5Qac0yl
-	y6AeLKNq2yZyzpHmOCQid3Gh1SKHPyfi9Zxa99xn9RcaZuW5NAOSjQxqvnFnI6k=
-X-Google-Smtp-Source: AGHT+IE24627ppy3W0EYA3xkVYAvPY4pdoTFgJaCVO/S+vc52RfohmJ4tnXqThQoPHfY+9NaDMJ7Ng==
-X-Received: by 2002:a17:906:a88a:b0:a47:5265:9aac with SMTP id ha10-20020a170906a88a00b00a4752659aacmr859536ejb.55.1711698359536;
-        Fri, 29 Mar 2024 00:45:59 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id l9-20020a1709060cc900b00a4e24d259edsm1382737ejh.167.2024.03.29.00.45.58
+        d=1e100.net; s=20230601; t=1711698362; x=1712303162;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XXT7CUSk8l4wjXwLdeSj0Hr6QLguW0zMSkZ3sxTxHBg=;
+        b=XvO0ocSlEyZmJIFFpqSrxy4AekNkmHsjebBR+gw+LBEn7c3h0PgUBdjxkgo5yYWmPP
+         czTxGn0cLEnjBciBtg5H/WKYM3+2ZOSCi3IaDcoJi1JlZPe2YvumCpCbSZh24U49MFWX
+         NvvNj52rA2WeINYG53KO5eVq8L/Xiw4NTC7Vx9YE9YhZ0A3+IPqebGViFw3JFefkDXFf
+         MKub50EjjCKg7SDDtjShpDIWQyOdPzXyUi4chjcnKCZCFT7Ut9mVbOi00vF5t3mwpHbf
+         u0BE2LqvCzaquCgrHCfmRzliFGIm4ygyi+sV3zuwvTC/Ur9Mk0B7D4VZMLzTWJuhZ8Wl
+         H3FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXWA++hRmRKCDJv7DekQHDwm7kRqDyGM1y0l0Z0xV0HGdaI9UsE1ey00RF8sech+tHQtvuohgY1B5QbKVGIAn4UrVY0lVAlk7uLpf5zTrFos1iFtoXU/IKfTvkmnObEkc3s
+X-Gm-Message-State: AOJu0YxbAEoiae0yA8IEBhRPEeici6VxvXvZyu3EUd3wMgmTHBd1QbLP
+	ZSUsoekLL9yvpSv59S5oQ8KCM6ChQV88leMTRtoXAwFB+gNhlectPdb1/ogp3bA=
+X-Google-Smtp-Source: AGHT+IGc+j+itDWRUb1Gj7sF2MGo3T4hhdqDL8UhvGGTMBZd6P4wffkz0YnkrJ1thAoKjjKbv39H1Q==
+X-Received: by 2002:a50:9344:0:b0:56b:fd17:3522 with SMTP id n4-20020a509344000000b0056bfd173522mr915869eda.14.1711698362153;
+        Fri, 29 Mar 2024 00:46:02 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id fd6-20020a056402388600b0056c53ea5affsm1492882edb.77.2024.03.29.00.46.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 00:45:58 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 29 Mar 2024 08:45:56 +0100
-Subject: [PATCH v2 3/3] arm64: dts: qcom: sm6350: Add DisplayPort
- controller
+        Fri, 29 Mar 2024 00:46:01 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 29 Mar 2024 08:45:59 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	peterz@infradead.org, mingo@redhat.com,
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, song@kernel.org
+Subject: Re: [PATCH bpf-next] perf, amd: support capturing LBR from software
+ events
+Message-ID: <ZgZxt9ypus++f5me@gmail.com>
+References: <20240319224206.1612000-1-andrii@kernel.org>
+ <ZgVSxPJ4Yi/UPgjb@gmail.com>
+ <CAEf4BzZkn2atLmN35tviXBu1EggRRg3Yqh2pHAnd6xe7V5xkUA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240329-sm6350-dp-v2-3-e46dceb32ef5@fairphone.com>
-References: <20240329-sm6350-dp-v2-0-e46dceb32ef5@fairphone.com>
-In-Reply-To: <20240329-sm6350-dp-v2-0-e46dceb32ef5@fairphone.com>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
- Krishna Manikandan <quic_mkrishn@quicinc.com>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZkn2atLmN35tviXBu1EggRRg3Yqh2pHAnd6xe7V5xkUA@mail.gmail.com>
 
-Add the node for the DisplayPort controller found on the SM6350 SoC.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 88 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+* Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 24bcec3366ef..d7cf4b5ceea6 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -2033,6 +2033,14 @@ dpu_intf1_out: endpoint {
- 							remote-endpoint = <&mdss_dsi0_in>;
- 						};
- 					};
-+
-+					port@2 {
-+						reg = <2>;
-+
-+						dpu_intf0_out: endpoint {
-+							remote-endpoint = <&mdss_dp_in>;
-+						};
-+					};
- 				};
- 
- 				mdp_opp_table: opp-table {
-@@ -2070,6 +2078,86 @@ opp-560000000 {
- 				};
- 			};
- 
-+			mdss_dp: displayport-controller@ae90000 {
-+				compatible = "qcom,sm6350-dp", "qcom,sm8350-dp";
-+				reg = <0 0xae90000 0 0x200>,
-+				      <0 0xae90200 0 0x200>,
-+				      <0 0xae90400 0 0x600>,
-+				      <0 0xae91000 0 0x400>,
-+				      <0 0xae91400 0 0x400>;
-+				interrupt-parent = <&mdss>;
-+				interrupts = <12>;
-+				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-+					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-+				clock-names = "core_iface",
-+					      "core_aux",
-+					      "ctrl_link",
-+					      "ctrl_link_iface",
-+					      "stream_pixel";
-+
-+				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
-+						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
-+				assigned-clock-parents = <&usb_1_qmpphy QMP_USB43DP_DP_LINK_CLK>,
-+							 <&usb_1_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>;
-+
-+				phys = <&usb_1_qmpphy QMP_USB43DP_DP_PHY>;
-+				phy-names = "dp";
-+
-+				#sound-dai-cells = <0>;
-+
-+				operating-points-v2 = <&dp_opp_table>;
-+				power-domains = <&rpmhpd SM6350_CX>;
-+
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						mdss_dp_in: endpoint {
-+							remote-endpoint = <&dpu_intf0_out>;
-+						};
-+					};
-+
-+					port@1 {
-+						reg = <1>;
-+
-+						mdss_dp_out: endpoint {
-+						};
-+					};
-+				};
-+
-+				dp_opp_table: opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-160000000 {
-+						opp-hz = /bits/ 64 <160000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-270000000 {
-+						opp-hz = /bits/ 64 <270000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-540000000 {
-+						opp-hz = /bits/ 64 <540000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+
-+					opp-810000000 {
-+						opp-hz = /bits/ 64 <810000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+			};
-+
- 			mdss_dsi0: dsi@ae94000 {
- 				compatible = "qcom,sm6350-dsi-ctrl", "qcom,mdss-dsi-ctrl";
- 				reg = <0 0x0ae94000 0 0x400>;
+> On Thu, Mar 28, 2024 at 4:21 AM Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> >
+> > * Andrii Nakryiko <andrii@kernel.org> wrote:
+> >
+> > > [0] added ability to capture LBR (Last Branch Records) on Intel CPUs
+> > > from inside BPF program at pretty much any arbitrary point. This is
+> > > extremely useful capability that allows to figure out otherwise
+> > > hard-to-debug problems, because LBR is now available based on some
+> > > application-defined conditions, not just hardware-supported events.
+> > >
+> > > retsnoop ([1]) is one such tool that takes a huge advantage of this
+> > > functionality and has proved to be an extremely useful tool in
+> > > practice.
+> > >
+> > > Now, AMD Zen4 CPUs got support for similar LBR functionality, but
+> > > necessary wiring inside the kernel is not yet setup. This patch seeks to
+> > > rectify this and follows a similar approach to the original patch [0]
+> > > for Intel CPUs.
+> > >
+> > > Given LBR can be set up to capture any indirect jumps, it's critical to
+> > > minimize indirect jumps on the way to requesting LBR from BPF program,
+> > > so we split amd_pmu_lbr_disable_all() into a wrapper with some generic
+> > > conditions vs always-inlined __amd_pmu_lbr_disable() called directly
+> > > from BPF subsystem (through perf_snapshot_branch_stack static call).
+> > >
+> > > Now that it's possible to capture LBR on AMD CPU from BPF at arbitrary
+> > > point, there is no reason to artificially limit this feature to sampling
+> > > events. So corresponding check is removed. AFAIU, there is no
+> > > correctness implications of doing this (and it was possible to bypass
+> > > this check by just setting perf_event's sample_period to 1 anyways, so
+> > > it doesn't guard all that much).
+> > >
+> > > This was tested on AMD Bergamo CPU and worked well when utilized from
+> > > the aforementioned retsnoop tool.
+> > >
+> > >   [0] https://lore.kernel.org/bpf/20210910183352.3151445-2-songliubraving@fb.com/
+> > >   [1] https://github.com/anakryiko/retsnoop
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  arch/x86/events/amd/core.c   | 29 ++++++++++++++++++++++++++++-
+> > >  arch/x86/events/amd/lbr.c    | 11 +----------
+> > >  arch/x86/events/perf_event.h | 11 +++++++++++
+> > >  3 files changed, 40 insertions(+), 11 deletions(-)
+> >
+> > Please do not queue these up in the BPF tree, all similar changes to
+> > perf code should go through the perf tree.
+> >
+> 
+> Absolutely, I rebased on top of tip's perf/core branch and sent it as
+> v2. Thanks!
 
--- 
-2.44.0
+Thanks, much appreciated!
 
+	Ingo
 
