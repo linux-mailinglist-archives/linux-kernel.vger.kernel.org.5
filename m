@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-124788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-124789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519E4891C84
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:51:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A6F891C87
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 14:51:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ABAC28531E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:51:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 122B71F229A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Mar 2024 13:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFE3189253;
-	Fri, 29 Mar 2024 12:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C0C189A35;
+	Fri, 29 Mar 2024 12:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FG6USFjQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WW1fqsRU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792B418923F;
-	Fri, 29 Mar 2024 12:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6C418925D;
+	Fri, 29 Mar 2024 12:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716142; cv=none; b=mtkKD87kNzQuwKDE/bdOJD+DGWeCTodB1zp/UFS4I518t8SZZiW68aUH4vIwoucdzt9CYqQ6h0PktW6R+SK8tBqbzFkZAdKz9m5bmxGZRsOFiDO1oKp7MF33auAPKrpF7khM1fi283yV6l+cCTBJQ3wOLeIt52sOEa7epEP0ZzE=
+	t=1711716144; cv=none; b=pJOHjGPS17IFGfAVVSoBS0vcns10ST3i167H8PtlL6OLKFdOEOyNkxgdcIXy+1iYpVQey4tuH8au4O/NZ7QWd+13E29rVgArmfDp077KYoU3Pu/yP2kcK//soS4Xd4U9zHJX89L54QhG1amjWALFVHLghQNzhdntaM91y/6+RYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716142; c=relaxed/simple;
-	bh=yuX9XVGrAT1kcHDp/0Thq9ukxuSdmRxes7/j7tsWnhI=;
+	s=arc-20240116; t=1711716144; c=relaxed/simple;
+	bh=D5Ui/gp8sF9f1UzEJQ3vaUwkLLb4ponSFyCgCJx7zIA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OWj+bkb1+mR0p0rvnlgXgGWHJvA6WhxKobUGkO3tFk+iamq1bh0Qiys3MaMIqwuYNurhnutfybZ3P3syhrR8CaJkV5205JMgPuxoYWV3magL5NnXhgpwDwsjEjpoq6MmNzaJz1AwBPrAsmsqZCjS3h+30lXDTNSRcvdVEjyk5y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FG6USFjQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA94C43390;
-	Fri, 29 Mar 2024 12:42:21 +0000 (UTC)
+	 MIME-Version; b=pZeuWLakFvdodeTMx9xVb/tIsvLErLIH9rQWvpAHaxkDdzkka4N/E6HaGoJDt8rGoiq6ofiXvh2OYThTNfDTS7U7fYPVgn/vy8+KGNawVb+Wp8J4oksPecaEkz11mtqowgVIlhDzAY8zTjFRfWIndfttgrUeERAAKuiv/KJ8By4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WW1fqsRU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83220C433F1;
+	Fri, 29 Mar 2024 12:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716142;
-	bh=yuX9XVGrAT1kcHDp/0Thq9ukxuSdmRxes7/j7tsWnhI=;
+	s=k20201202; t=1711716143;
+	bh=D5Ui/gp8sF9f1UzEJQ3vaUwkLLb4ponSFyCgCJx7zIA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FG6USFjQwib2yBJ/6g5fcEOWPkDdfwjBcXi+laz+3w2pjqKf6/V8//pu76OsqyYg0
-	 QNgpoZHD7YpWaDtYoXEJMs+VXTmdOiWspGL7JxTNicLbltUlyq+eTlXln8SBSVAUVf
-	 EPT1flVWiRSY5ZVHp+Nl4+zjJGmTLodU9XOjtNoTCb+ajrKFEVOKSHHgiVtmHsgXnA
-	 glde2mQlI9Nk7Eijb3plxQOtxpHLpMd3f1GQ/HbascSE0nEkBs0F2Tb3fhc1eBRjB6
-	 ITr5CeraFt+nhyOYgIflGrc0VdiRgWQ8IrKPS6VAFzHFnJl8kzSsPhwx+NEUkQG4aB
-	 tZUg/sLSqsYgA==
+	b=WW1fqsRUhs5+0bZvOwFSPNgUjgUdh02C5tk9h7nJGGXTrtE0d1VOX0dMASRxQYBBj
+	 u4NJL7GtIsW45nE7cfjKrZ/XEosFgpATl5r1M7qgIw1j9VIMwqlNxBmmxwZ2M7OrHU
+	 Yd95jOm220dwoLWF4P/Wnpr78iRHFbd0xlSIv+OvIh9+JQjTwAGuN3qqPE+t5KYLTB
+	 UF/dk0xms+R56zWpvQ0i8VaZqhnvj0tTS6FeFxALQW+D4pB3lTCP8qu44zdHLEw9i5
+	 USTNGuLmDhlAf8lsDOjd3rgnNCDz8EXNtYX98uq0TrXTEhubFvRi+QHA5/2VECnU6/
+	 KTvahVRGfA+IQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Karel Balej <balejk@matfyz.cz>,
-	Markuss Broks <markuss.broks@gmail.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+Cc: Junhao He <hejunhao3@huawei.com>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Will Deacon <will@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 78/98] input/touchscreen: imagis: add support for IST3032C
-Date: Fri, 29 Mar 2024 08:37:49 -0400
-Message-ID: <20240329123919.3087149-78-sashal@kernel.org>
+	jonathan.cameron@huawei.com,
+	mark.rutland@arm.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.8 79/98] drivers/perf: hisi: Enable HiSilicon Erratum 162700402 quirk for HIP09
+Date: Fri, 29 Mar 2024 08:37:50 -0400
+Message-ID: <20240329123919.3087149-79-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -65,58 +67,86 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.2
 Content-Transfer-Encoding: 8bit
 
-From: Karel Balej <balejk@matfyz.cz>
+From: Junhao He <hejunhao3@huawei.com>
 
-[ Upstream commit 90cb57a6c5717b83a110c0da720a03ee32ed255e ]
+[ Upstream commit e10b6976f6b9afdf3564f88c851e42d139bb19c0 ]
 
-IST3032C is a touchscreen chip used for instance in the
-samsung,coreprimevelte smartphone, with which this was tested. Add the
-chip specific information to the driver.
+HiSilicon UC PMU v2 suffers the erratum 162700402 that the PMU counter
+cannot be set due to the lack of clock under power saving mode. This will
+lead to error or inaccurate counts. The clock can be enabled by the PMU
+global enabling control.
 
-Reviewed-by: Markuss Broks <markuss.broks@gmail.com>
-Signed-off-by: Karel Balej <balejk@matfyz.cz>
-Link: https://lore.kernel.org/r/20240301164659.13240-6-karelb@gimli.ms.mff.cuni.cz
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+This patch tries to fix this by set the UC PMU enable before set event
+period to turn on the clock, and then restore the UC PMU configuration.
+The counter register can hold its value without a clock.
+
+Signed-off-by: Junhao He <hejunhao3@huawei.com>
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+Link: https://lore.kernel.org/r/20240227125231.53127-1-hejunhao3@huawei.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/imagis.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/perf/hisilicon/hisi_uncore_uc_pmu.c | 42 ++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscreen/imagis.c
-index 9af8a6332ae67..e1fafa561ee38 100644
---- a/drivers/input/touchscreen/imagis.c
-+++ b/drivers/input/touchscreen/imagis.c
-@@ -11,6 +11,8 @@
- #include <linux/property.h>
- #include <linux/regulator/consumer.h>
+diff --git a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+index 636fb79647c8c..481dcc9e8fbf8 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+@@ -287,12 +287,52 @@ static u64 hisi_uc_pmu_read_counter(struct hisi_pmu *uc_pmu,
+ 	return readq(uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
+ }
  
-+#define IST3032C_WHOAMI			0x32c
+-static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
++static bool hisi_uc_pmu_get_glb_en_state(struct hisi_pmu *uc_pmu)
++{
++	u32 val;
 +
- #define IST3038B_REG_STATUS		0x20
- #define IST3038B_REG_CHIPID		0x30
- #define IST3038B_WHOAMI			0x30380b
-@@ -363,6 +365,13 @@ static int imagis_resume(struct device *dev)
- 
- static DEFINE_SIMPLE_DEV_PM_OPS(imagis_pm_ops, imagis_suspend, imagis_resume);
- 
-+static const struct imagis_properties imagis_3032c_data = {
-+	.interrupt_msg_cmd = IST3038C_REG_INTR_MESSAGE,
-+	.touch_coord_cmd = IST3038C_REG_TOUCH_COORD,
-+	.whoami_cmd = IST3038C_REG_CHIPID,
-+	.whoami_val = IST3032C_WHOAMI,
-+};
++	val = readl(uc_pmu->base + HISI_UC_EVENT_CTRL_REG);
++	return !!FIELD_GET(HISI_UC_EVENT_GLB_EN, val);
++}
 +
- static const struct imagis_properties imagis_3038b_data = {
- 	.interrupt_msg_cmd = IST3038B_REG_STATUS,
- 	.touch_coord_cmd = IST3038B_REG_STATUS,
-@@ -380,6 +389,7 @@ static const struct imagis_properties imagis_3038c_data = {
++static void hisi_uc_pmu_write_counter_normal(struct hisi_pmu *uc_pmu,
+ 				      struct hw_perf_event *hwc, u64 val)
+ {
+ 	writeq(val, uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
+ }
  
- #ifdef CONFIG_OF
- static const struct of_device_id imagis_of_match[] = {
-+	{ .compatible = "imagis,ist3032c", .data = &imagis_3032c_data },
- 	{ .compatible = "imagis,ist3038b", .data = &imagis_3038b_data },
- 	{ .compatible = "imagis,ist3038c", .data = &imagis_3038c_data },
- 	{ },
++static void hisi_uc_pmu_write_counter_quirk_v2(struct hisi_pmu *uc_pmu,
++				      struct hw_perf_event *hwc, u64 val)
++{
++	hisi_uc_pmu_start_counters(uc_pmu);
++	hisi_uc_pmu_write_counter_normal(uc_pmu, hwc, val);
++	hisi_uc_pmu_stop_counters(uc_pmu);
++}
++
++static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
++				      struct hw_perf_event *hwc, u64 val)
++{
++	bool enable = hisi_uc_pmu_get_glb_en_state(uc_pmu);
++	bool erratum = uc_pmu->identifier == HISI_PMU_V2;
++
++	/*
++	 * HiSilicon UC PMU v2 suffers the erratum 162700402 that the
++	 * PMU counter cannot be set due to the lack of clock under power
++	 * saving mode. This will lead to error or inaccurate counts.
++	 * The clock can be enabled by the PMU global enabling control.
++	 * The irq handler and pmu_start() will call the function to set
++	 * period. If the function under irq context, the PMU has been
++	 * enabled therefore we set counter directly. Other situations
++	 * the PMU is disabled, we need to enable it to turn on the
++	 * counter clock to set period, and then restore PMU enable
++	 * status, the counter can hold its value without a clock.
++	 */
++	if (enable || !erratum)
++		hisi_uc_pmu_write_counter_normal(uc_pmu, hwc, val);
++	else
++		hisi_uc_pmu_write_counter_quirk_v2(uc_pmu, hwc, val);
++}
++
+ static void hisi_uc_pmu_enable_counter_int(struct hisi_pmu *uc_pmu,
+ 					   struct hw_perf_event *hwc)
+ {
 -- 
 2.43.0
 
