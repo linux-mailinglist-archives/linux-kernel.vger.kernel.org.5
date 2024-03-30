@@ -1,229 +1,224 @@
-Return-Path: <linux-kernel+bounces-125583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC03892903
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:27:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4CB9892909
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0781F223CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:27:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1879F2833F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A72079E0;
-	Sat, 30 Mar 2024 03:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC01C881F;
+	Sat, 30 Mar 2024 03:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="efLoHZ+j"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="KuELMr/f"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612C479C0
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 03:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7D56FB9
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 03:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711769241; cv=none; b=a4TKpodgQaO5YpinZb4GTGP5Z+wIo8oJiIMawpCxQm3QFXKO8TdBckzXtuCGkygWW9Oyw3fc7UWq72HKhIKjpNTw24sY/A6staeVjJgNCr1Fq9k6kPdY4zTH/Nmswy75WlWmobuyEVdKVZW4n5JtM57fa7CZ3a2ggYa/U/GX9Vs=
+	t=1711769718; cv=none; b=ayPxamHwD1+HsdeLToejREDfykph13Fno+Mma1mPxqPLp6kLUUiO01E+H4W7pbIJBWMEaCrZA7mzlILBE+7PE5yu/lUXTzQvAxDZux0W94lPm19hoV0o/TxCrzYyIsCmJSsltmOSyAV0K2kLXyoPz9O2Rtg3B5DZFpYKGNsH38s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711769241; c=relaxed/simple;
-	bh=WE49C/hIKLIsjdhqKHX/n/iqJQy2K7hKsZU9IsD5PCg=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Ij1H77V9QCEhTOYPDn7L0ehvh9PZdSGh8sxqTmkDBq05yQai7zVtyKrBd3HdDodKWb3kfYoxPJjVZP1M60iKPT5OLUQUy2rO7/SlJE6I7IsWegRFsmocab0VcwkY7eV6AgvP22MXBpa3BcQqtMGV6BUKMSTHop7vRhIMobYX9qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=efLoHZ+j; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711769240; x=1743305240;
-  h=date:from:to:cc:subject:message-id;
-  bh=WE49C/hIKLIsjdhqKHX/n/iqJQy2K7hKsZU9IsD5PCg=;
-  b=efLoHZ+jThha1M6esDAp/nkHljXibtUdFWkh6Fy/fEZH9eiKRvtgJof7
-   IfNgAF83R00kN9z1JuESnWjHZs5IBQfdl62ScXDJUQL+YQYLPaI83oU67
-   vp1sEZOtcITykZV7VrvGaGqogcynUBgbEOnz/oxO3UQviahJbHfNOK4/8
-   nBsFCpEWzpE9XhiHD9oGMfNQ0xC3nnpS850VTynaueU1FPdnHfCub0sPs
-   +JEnpTKw60mdJPLrMHgd7kHvPhsuq385i2kD6h/WJtiGtOPSPlwLiG/+g
-   JZG/mC+20YFlLv5K1rZj/DOqbIhJBhjyPf1SZCLGnVs+6X4A86eptuvzk
-   Q==;
-X-CSE-ConnectionGUID: l4B9GA75QnyLzCYzIngrEw==
-X-CSE-MsgGUID: xjnNj+IqSRWhPFFIF28ciA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="17588103"
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="17588103"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 20:27:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="48111997"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 29 Mar 2024 20:27:18 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rqPND-0003uM-0c;
-	Sat, 30 Mar 2024 03:27:15 +0000
-Date: Sat, 30 Mar 2024 11:27:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- 99c84311e35f9399bdce666f6306a048e2a5b404
-Message-ID: <202403301109.V0UwebeS-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1711769718; c=relaxed/simple;
+	bh=VpC0J23Jn0yxmT2wv6lawJLz4zGJD1QUQuuuKn67A+c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oUD2cIvvZEt+1lu8OPyf8CsUNYkh5PAq8FoSMCuT1Y9WJO7xPi2adsi4JMABeTX4dlLeWoHR/PbjxoZim3eKMRwtMDPmMnj8+LN5bmslFn4miQa4f0eGz7o6UoVJd3b76qQIDU36ePYO7dymIiJ0iK3BqTPkkfJM4uVjX2dTU4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=KuELMr/f; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29c7512e3b8so1998479a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:35:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711769716; x=1712374516; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nQY9GynfzjdgI1A44B4TVgDxB7Pe9LKkrSIu40Cboqk=;
+        b=KuELMr/fHUb3LuvaL1wmjrIgOwqE1VjwZmGWVIb/R4EP3rfDlpG9rREXcuMK40a7Zc
+         AGRk8zjmzqoSMSqGWWwRERmKZgpxbGVcxU8j5fZZH3SPYt58Dlz5MdUCRSLk2q8IR+sa
+         WzNm6wsAEdtmK3ukV19cG5+97BWl74qB/bct5O60IeFY9Re7csPxBasiMGBmPwLa06U8
+         TyuafFyvk0kZfhscsfXB0Kqortrcof2oQnv3Z01KhxyCLqfUnRVIJeB5VrfEA2a4l/Bh
+         0tUmbaUO4ddBxnh1VQQhO+7SPXee7HiSfR/s+/iFY79l1dBk3xGeFPzWxPkgl/b1fgjg
+         dgdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711769716; x=1712374516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nQY9GynfzjdgI1A44B4TVgDxB7Pe9LKkrSIu40Cboqk=;
+        b=MvK3UHtceunTM7J13OsvHr0Y7nra21oyrhoCc7U/RGm+vtErd83KkUtYmwpQIFLKLl
+         Z6x71mYZEvASAik9BXKfm2NQR7HSA48KXC1wUbFr0XPkxWhtxmse3+nQ/abPK/qvihLd
+         3+mL9JgCAEUZfnMw/FWKCt90LEOzySwhtWYXM1ZFon5NZkegpXOU2euwAa3tzUi+BZir
+         Yu23FCui7XrfSnCQzsF59biQZbGlTLpHIbti9KP52zfxizBO6MTBscLreNGX6qUT5TFV
+         toOxaiiuwoH5dubS1lNKo7TvA216d0F5fF0r4KWhcq/uFa9ekl4G5+sBg6aohV64XBzU
+         AnQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUMsCByLLoVHEJ3Q1izpmr8qkX6dvKEn0odCqyDpSWbNHzCt1QHqqEPZMyeT0PNd8VLkVgHxLsmJBA+0l+4XboaCB9vc2VCsXA6A9Ee
+X-Gm-Message-State: AOJu0YxDA9iRDp2+Qf+VeWO8zZ4xFsLYrBuMyPxFlLFNmZXjXp7b4x5C
+	UztQ1Ov5CIyJi3xgMNXVKlU03jTe9Y7HqRarEB9/pqcd/heXPETOfa3LILXybbKoFtUd68u4TEw
+	ibqlJPhv24u+GsLCrpUOTnf2F7GJlWDBXqWQ3gg==
+X-Google-Smtp-Source: AGHT+IFQotfennixOm6ZOmiuiGgpegIwFVTzo5108kmA5lzvm5WNhtg5jy9iBOk0AMJbaUTPpapkU4prCLDmk6G3k3I=
+X-Received: by 2002:a17:90a:474f:b0:29d:fe1c:79e7 with SMTP id
+ y15-20020a17090a474f00b0029dfe1c79e7mr3306403pjg.45.1711769716617; Fri, 29
+ Mar 2024 20:35:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+ <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+ <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+ <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+ <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+ <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
+ <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com>
+ <20240328111330.194dcbe5@gandalf.local.home> <CAADnVQKsuV2OhT4rc+k=WDmVMQxbjDiC4+zNbre2Kpj1hod5xw@mail.gmail.com>
+In-Reply-To: <CAADnVQKsuV2OhT4rc+k=WDmVMQxbjDiC4+zNbre2Kpj1hod5xw@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Sat, 30 Mar 2024 11:36:38 +0800
+Message-ID: <CALz3k9j3aMpnuy3-6dPB9UiQ82LEE-bPapwJfotxX8DyAOc=iw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
-branch HEAD: 99c84311e35f9399bdce666f6306a048e2a5b404  x86/selftests: Skip the tests if prerequisites aren't fulfilled
+On Fri, Mar 29, 2024 at 7:17=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 28, 2024 at 8:10=E2=80=AFAM Steven Rostedt <rostedt@goodmis.o=
+rg> wrote:
+> >
+> > On Thu, 28 Mar 2024 22:43:46 +0800
+> > =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
+> >
+> > > I have done a simple benchmark on creating 1000
+> > > trampolines. It is slow, quite slow, which consume up to
+> > > 60s. We can't do it this way.
+> > >
+> > > Now, I have a bad idea. How about we introduce
+> > > a "dynamic trampoline"? The basic logic of it can be:
+> > >
+> > > """
+> > > save regs
+> > > bpfs =3D trampoline_lookup_ip(ip)
+> > > fentry =3D bpfs->fentries
+> > > while fentry:
+> > >   fentry(ctx)
+> > >   fentry =3D fentry->next
+> > >
+> > > call origin
+> > > save return value
+> > >
+> > > fexit =3D bpfs->fexits
+> > > while fexit:
+> > >   fexit(ctx)
+> > >   fexit =3D fexit->next
+> > >
+> > > xxxxxx
+> > > """
+> > >
+> > > And we lookup the "bpfs" by the function ip in a hash map
+> > > in trampoline_lookup_ip. The type of "bpfs" is:
+> > >
+> > > struct bpf_array {
+> > >   struct bpf_prog *fentries;
+> > >  struct bpf_prog *fexits;
+> > >   struct bpf_prog *modify_returns;
+> > > }
+> > >
+> > > When we need to attach the bpf progA to function A/B/C,
+> > > we only need to create the bpf_arrayA, bpf_arrayB, bpf_arrayC
+> > > and add the progA to them, and insert them to the hash map
+> > > "direct_call_bpfs", and attach the "dynamic trampoline" to
+> > > A/B/C. If bpf_arrayA exist, just add progA to the tail of
+> > > bpf_arrayA->fentries. When we need to attach progB to
+> > > B/C, just add progB to bpf_arrayB->fentries and
+> > > bpf_arrayB->fentries.
+> > >
+> > > Compared to the trampoline, extra overhead is introduced
+> > > by the hash lookuping.
+> > >
+> > > I have not begun to code yet, and I am not sure the overhead is
+> > > acceptable. Considering that we also need to do hash lookup
+> > > by the function in kprobe_multi, maybe the overhead is
+> > > acceptable?
+> >
+> > Sounds like you are just recreating the function management that ftrace
+> > has. It also can add thousands of trampolines very quickly, because it =
+does
+> > it in batches. It takes special synchronization steps to attach to fent=
+ry.
+> > ftrace (and I believe multi-kprobes) updates all the attachments for ea=
+ch
+> > step, so the synchronization needed is only done once.
+> >
+> > If you really want to have thousands of functions, why not just registe=
+r it
+> > with ftrace itself. It will give you the arguments via the ftrace_regs
+> > structure. Can't you just register a program as the callback?
+> >
+> > It will probably make your accounting much easier, and just let ftrace
+> > handle the fentry logic. That's what it was made to do.
+>
+> Absolutely agree.
+> There is no point re-inventing this logic.
+>
+> Menlong,
+> before you hook up into ftrace check whether
+> it's going to be any different from kprobe-multi,
+> since it's the same ftrace underneath.
+> I suspect it will look exactly the same.
 
-elapsed time: 1168m
+Yeah, I dig it a little. I think it is different. For multi-kprobe,
+it registers a ftrace_ops to ftrace_ops_list for every bpf
+program. This means that we can register 2 or more
+multi-kprobe in the same function. The bpf is called in
+the following step:
 
-configs tested: 139
-configs skipped: 3
+ftrace_regs_caller
+|
+__ftrace_ops_list_func -> fprobe_handler -> kprobe_multi_link_handler -> ru=
+n BPF
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+And for trampoline, it needs to be called directly,
+so it can't be registered as a callback to ftrace_ops_list.
+It need to be called in the following step:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240330   gcc  
-arc                   randconfig-002-20240330   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240330   clang
-arm                   randconfig-002-20240330   clang
-arm                   randconfig-003-20240330   gcc  
-arm                   randconfig-004-20240330   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240330   clang
-arm64                 randconfig-002-20240330   clang
-arm64                 randconfig-003-20240330   clang
-arm64                 randconfig-004-20240330   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240330   gcc  
-csky                  randconfig-002-20240330   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240330   clang
-hexagon               randconfig-002-20240330   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240330   clang
-i386         buildonly-randconfig-002-20240330   clang
-i386         buildonly-randconfig-003-20240330   clang
-i386         buildonly-randconfig-004-20240330   clang
-i386         buildonly-randconfig-005-20240330   clang
-i386         buildonly-randconfig-006-20240330   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240330   clang
-i386                  randconfig-002-20240330   clang
-i386                  randconfig-003-20240330   clang
-i386                  randconfig-004-20240330   clang
-i386                  randconfig-005-20240330   clang
-i386                  randconfig-006-20240330   gcc  
-i386                  randconfig-011-20240330   clang
-i386                  randconfig-012-20240330   gcc  
-i386                  randconfig-013-20240330   gcc  
-i386                  randconfig-014-20240330   clang
-i386                  randconfig-015-20240330   gcc  
-i386                  randconfig-016-20240330   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240330   gcc  
-loongarch             randconfig-002-20240330   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240330   gcc  
-nios2                 randconfig-002-20240330   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240330   gcc  
-parisc                randconfig-002-20240330   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240330   gcc  
-powerpc               randconfig-002-20240330   clang
-powerpc               randconfig-003-20240330   clang
-powerpc64             randconfig-001-20240330   gcc  
-powerpc64             randconfig-002-20240330   gcc  
-powerpc64             randconfig-003-20240330   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240330   gcc  
-riscv                 randconfig-002-20240330   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240330   clang
-s390                  randconfig-002-20240330   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240330   gcc  
-sh                    randconfig-002-20240330   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240330   gcc  
-sparc64               randconfig-002-20240330   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240330   clang
-um                    randconfig-002-20240330   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240330   gcc  
-xtensa                randconfig-002-20240330   gcc  
+ftrace_regs_caller
+|
+__ftrace_ops_list_func -> call_direct_funcs -> save trampoline to
+pt_regs->origin_ax
+|
+call pt_regs->origin_ax if not NULL
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> So it sounds like multi-fentry idea will be shelved once again.
+
+Enn...this is the best solution that I can think of. If it
+doesn't work, I suspect it will be shelved again.
+
+Thanks!
+Menglong Dong
 
