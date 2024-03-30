@@ -1,102 +1,113 @@
-Return-Path: <linux-kernel+bounces-125615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 999D58929B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:25:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDEBF8929B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4290A1F22055
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 08:25:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69EE8B22449
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 08:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79BA08F56;
-	Sat, 30 Mar 2024 08:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F5CBA26;
+	Sat, 30 Mar 2024 08:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="pmf/Wuuh"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="j1aCOlEw"
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286AF79D8;
-	Sat, 30 Mar 2024 08:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CED881F;
+	Sat, 30 Mar 2024 08:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711787131; cv=none; b=o1cgqdyb4xKzZ2zBgY+h4XHuowBt3PvSEBMWc3l5K3wm9m2MqI9CMobgoRrFz8m4cKkIYtlVjbDbVDAt8wBXRQewWJUr1AEgZZxB4hvGhi6lS65r48z/WZlGq8QkyUtrUjGTf1nvxo8rJPfxgLm+8rTYteZy9McuMNg9IA8sy+I=
+	t=1711787619; cv=none; b=uHKInowc5QXZTdrGWSIcO1HyNtkmN/yXJf6teQACgNnAOrVX0WD4ZHeqR1u24I5RS2YXjouYaPoh9lWdEa/mB8bHZv47RxEJNI6jJwR/S8eXJzxNXXZQn3TKAGGaR891zFa0B354Pf/FTpkY+VOleJ8f6zZ5kCjJl+iUo58nkuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711787131; c=relaxed/simple;
-	bh=ajK3qZPjABu64x0qWUWrYS5lGxEpXNu8G6mGAqricqU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lAeRmJ1KzGZvJpDnftXrlEspwOWVB/BoM9+pCrP1u3BjlurYvNIiGb6zQqsB3yOYK+IG7gpBGFNxooZYHmfOzcRwLKuRaOf2PkjQj/Zd4WwqF1JrUrmgOliIbiWLRHCIdhbc5WO3dKBcJCSjp1j4K3ZptXkhMV3VHCpeLDpTM40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=pmf/Wuuh; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id B7D811B7FA4;
-	Sat, 30 Mar 2024 09:25:19 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1711787119; bh=ajK3qZPjABu64x0qWUWrYS5lGxEpXNu8G6mGAqricqU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pmf/WuuhsXc8LnJnE6qLaLZ4Pue7JbRDKnma60f7ae9f7g2632uGjtV+HrKvmMeZ0
-	 SJrt113HgiT3XR0YwBuvaT9pBXCWcEnOhW41HxDO/ngPWkfxkOVzFB/vfb+QVZElNA
-	 mmr6N3ijXNOQ3oCROrv6/01y6j8Sxt4xjqZCveQ/Qy5TqJFYCb5kMvJNntTRu7r5xc
-	 tAyYshOGa1Fd0Qzz5gkLA7LM0fduIdL68j9nVsD3rPfMg0NqJzmhdtANpjrWNH7MmN
-	 +oEpWyeM0sKSA1yTB6Fx8N0fUcpijZQbyisP8JAINOI7BpoVJsdDv9gKtCq80lhmsf
-	 VvorcihuMULdw==
-Date: Sat, 30 Mar 2024 09:25:18 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Dexuan Cui <decui@microsoft.com>
-Cc: hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
- zhangpeng362@huawei.com, iommu@lists.linux.dev, mhklinux@outlook.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] swiotlb: Do not set total_used to 0 in
- swiotlb_create_debugfs_files()
-Message-ID: <20240330092518.71b5f0c0@meshulam.tesarici.cz>
-In-Reply-To: <20240329192809.17318-1-decui@microsoft.com>
-References: <20240329192809.17318-1-decui@microsoft.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1711787619; c=relaxed/simple;
+	bh=NnGqycWyMgrqtn4VdYQ5lLrY/jrFOUXth/lMty4JYP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jc5Wq0X6t9/HKjHv7+OsBYJHgS5uC5wJbhTuMvLle6eMIUemfPDnMn2/KPObue5FVnZuUj0kzsJ+V6r6+kUkz4vB6y3xwKd5WWBs0DGyG3SFtd9lAsQVfgBqnTTQ0BigN0qAPz/AvU2GXTGFiQ4GeXgZqYjAPc71T3QTMLp/C4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=j1aCOlEw; arc=none smtp.client-ip=80.12.242.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id qU8Rrc5yvp4zMqU8SrdPqN; Sat, 30 Mar 2024 09:32:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1711787541;
+	bh=W45diehFRu0ilTy3yuLbniJUjWNxtFJBsavO8BYE9DU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=j1aCOlEwaqP6X3Kc2oB+BS0/FjHi9NYqu72fOLHMt60i9oCMlvfd28cTRXXjCmMna
+	 IrzUx3b0TbYkGaVXr10a4dzj4/aAVz0EqKP42YqmiSaQXDrEE9cgeqgVwM1tZuIL1/
+	 7zdmEKZylV928aOgF5ltoCVKQ4pg4SkMOrPBVIFesZ6Rj0KMHVeXSg+Lf/neZDty3/
+	 +gb4O+iQmJ/lxHcctOKlw0OKsglVHwJ6Oesq/qrmZAA+N4xSyKZKLJ7G6ZkalID+hD
+	 KkQ9af6ngzwIjF7L5BVZOa1ApDJXX8IFZ599QOycC5h/uy30lk4gMxPGX8j9ZjE2t0
+	 7JqztYzCMuEUQ==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 30 Mar 2024 09:32:21 +0100
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: rkannoth@marvell.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	netdev@vger.kernel.org
+Subject: [PATCH net-next v2] caif: Use UTILITY_NAME_LENGTH instead of hard-coding 16
+Date: Sat, 30 Mar 2024 09:32:12 +0100
+Message-ID: <8c1160501f69b64bb2d45ce9f26f746eec80ac77.1711787352.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-V Fri, 29 Mar 2024 12:28:09 -0700
-Dexuan Cui <decui@microsoft.com> naps=C3=A1no:
+UTILITY_NAME_LENGTH is 16. So better use the former when defining the
+'utility_name' array. This makes the intent clearer when it is used around
+line 260.
 
-> Sometimes the readout of /sys/kernel/debug/swiotlb/io_tlb_used and
-> io_tlb_used_hiwater can be a huge number (e.g. 18446744073709551615),
-> which is actually a negative number if we use "%ld" to print the number.
->=20
-> When swiotlb_create_default_debugfs() is running from late_initcall,
-> mem->total_used may already be non-zero, because the storage driver
-> may have already started to perform I/O operations: if the storage
-> driver is built-in, its probe() callback is called before late_initcall.
->=20
-> swiotlb_create_debugfs_files() should not blindly set mem->total_used
-> and mem->used_hiwater to 0; actually it doesn't have to initialize the
-> fields at all, because the fields, as part of the global struct
-> io_tlb_default_mem, have been implicitly initialized to zero.
->=20
-> Also don't explicitly set mem->transient_nslabs to 0.
->=20
-> Fixes: 8b0977ecc8b3 ("swiotlb: track and report io_tlb_used high water ma=
-rks in debugfs")
-> Fixes: 02e765697038 ("swiotlb: add debugfs to track swiotlb transient poo=
-l usage")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+While at it, declare variable in reverse xmas tree style.
 
-FWIW I confirm that the transient_nslabs counter does not have to be
-initialized either.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Changes in v2:
+  - Declare variable in reverse xmas tree style [Ratheesh Kannoth]
 
-Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+v1: https://lore.kernel.org/all/af10f5a3236d47fd183487c9dcba3b3b3c66b595.1710584144.git.christophe.jaillet@wanadoo.fr/
+---
+ net/caif/cfctrl.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Petr T
+diff --git a/net/caif/cfctrl.c b/net/caif/cfctrl.c
+index 8480684f2762..20139fa1be1f 100644
+--- a/net/caif/cfctrl.c
++++ b/net/caif/cfctrl.c
+@@ -201,14 +201,14 @@ int cfctrl_linkup_request(struct cflayer *layer,
+ 			  struct cflayer *user_layer)
+ {
+ 	struct cfctrl *cfctrl = container_obj(layer);
++	struct cflayer *dn = cfctrl->serv.layer.dn;
++	char utility_name[UTILITY_NAME_LENGTH];
++	struct cfctrl_request_info *req;
++	struct cfpkt *pkt;
+ 	u32 tmp32;
+ 	u16 tmp16;
+ 	u8 tmp8;
+-	struct cfctrl_request_info *req;
+ 	int ret;
+-	char utility_name[16];
+-	struct cfpkt *pkt;
+-	struct cflayer *dn = cfctrl->serv.layer.dn;
+ 
+ 	if (!dn) {
+ 		pr_debug("not able to send linkup request\n");
+-- 
+2.44.0
+
 
