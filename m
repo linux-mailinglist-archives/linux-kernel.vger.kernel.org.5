@@ -1,154 +1,259 @@
-Return-Path: <linux-kernel+bounces-125565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FAA58928C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:29:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E378928D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2069283868
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:29:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A6F91C21214
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6407D187F;
-	Sat, 30 Mar 2024 01:29:25 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B9E1FA5;
+	Sat, 30 Mar 2024 02:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="y4jl9Crp"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2118.outbound.protection.outlook.com [40.107.223.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F1D1860
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 01:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711762164; cv=none; b=I8B6o/r35ChAIQUKPezpIz0mZhXzqupns1Y1WAow3dI5Zm2yz9sCJ6NXHSk3ZvXLsfVVpA6d2ObsWWCuxiIvO3cvAIWm6KpRtlIp0S627bRYYjaYtYdv+fVvcwm/j9gFK+lgAliJ9W3z37ezzJfdQV5b3Md6I+8IWhTICVFFBHQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711762164; c=relaxed/simple;
-	bh=IjSBM+uXjKiBCu+yKAxKLyGwFCLDz0lWY2d7H0Amq9E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bv+Y9sqS2FUH58nO7G7Vssr1rTD/HfIXzZhd2ZIzVx3LvkYT0i1GvjxNprtaD74Tp3oN3Z52RW7E2WDRlwIptGgcYbIuiX0gGT2iRWEu0cuVWpNM+uga/KL16l33mW28fh3s8CznK+am85aVK2MMxLPmA6A/kNRUPL6Gd1sHiog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbfd9f04e3so184435439f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 18:29:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711762162; x=1712366962;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8kQrU1bQ/LODeQo16FbQE2Dz4aGmc8+6AVxyILQVj8U=;
-        b=t5d7zDAGT/9xJQUX8ju31mRj7q85zByG1UEeKQlQb4wS1WrnAOb9rP8CDYlN+HMAAj
-         I6nQvGaPurMMCuG1LMpZ821JQmzCh9UPZxTwUU/PlUjqxT10FTQGFi6duey/MO+RbS4c
-         QVwgshHU83cnDzhYCNiYXa4BydNZNLW5xROs2tkueYWZ9J5pXvYf//sIMIhg6s4jFz6P
-         2BPpIIA5ynKxGWlVtjtBHhxjB/XcHsjibw+Bwn7H2WjeMWnuYYebexrTN4MUgySNSoxX
-         YvnRgbVfnl0uqJa3olxjvCg7lbaE3ChwxsjlYUqbUQYpNScI0XCDCvy9bNQwscxaJGCd
-         C3OA==
-X-Forwarded-Encrypted: i=1; AJvYcCVSXc4ZTJSP+JfDJlXhkOOt1t4nFo8sMP+sHWEyt614IYlCZ0ZaOVI52BDFGOlLPCgUfn5amDJLxQwCedLonlo+5mIVVlEcN62o0/id
-X-Gm-Message-State: AOJu0Yyg3PJ/Q3zmZFde3VIjmXzoVPUZREbHEvsE6obhtMif5GChmM/G
-	vtycGjGzyfMRMa1o5Kjp8vWcH9IA5JBjq0Kb5MWdr7lz0tDyMTGRHG4RiC0GgwlncFPaKKHubHx
-	iu0jaN06c0QNabap33JWXBTvbI7tSBUr74iXAKKmHbFdHEEgw2beRfkY=
-X-Google-Smtp-Source: AGHT+IHheq7bSHBl8EU3v9cUQC4IwLMvT9cdG1ogxYZgOCFOvrBMO/7QNa/8SVrDfxLA9RhUfz6ApvxofAtpUyRRQTckyCG/ymxU
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B073D15C9;
+	Sat, 30 Mar 2024 02:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.118
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711764148; cv=fail; b=vBNZdPSA0IpdExxiZiG3MGkmYvgBUVy1XCnEZ+PrCmAL1RrHLsWX/V8LAk4Z/P1/uoqtTOCL3Wmqm6IJj6494JaX+9WsqDGvj4jhzK/NEmu3OaQYkn5SGbAl7jblf5yTd7+YIELZf3eeLfT8sKNn2wTHrILZR4NYlS6LRqT9JZU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711764148; c=relaxed/simple;
+	bh=aFrdI/+a9fd20Ujis877H7/rItG9XCCE15Dl4ufR0HI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=QXIuJdK6ibp3aLcOc8ugD7dioNEn91fzXVLts67QTicIVBBWWH/64bSfbC2AR1EjdJbSroBsmANx+LYc/Ai+sgVrhOZzlSwVJeJu2uMaQz0SV/zL7jNfA5J5v/PcdtdZpuXs53AozBs33NTYsFtiku9GoIWziPamWsfwhyX2AM8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=y4jl9Crp; arc=fail smtp.client-ip=40.107.223.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RizkHLvXtw5YCNpeH7yQf7jWVJEiGC8XKi0cniipfpFgvjgQNfL1EHPBdhcofeH5SmAuArmBGSWHsIvwbxTOzagqadLH4G4dQppL4CkBs/PRPfI4bZ1kKAFzuYcIApwtOm8PArl/v2UTjnxNXdnhiNQEC/vemv+Q0y47cCvUlQAVkPOd6STRCQKXE/2dvZpV59cxddCiZp0oYBUgNPwX9d9JGw2iwUCco+GyP0aa/eNEQpJQLvxIgpsKXZPAvkqiPMJmmwtjPioA99p/EdzqBbk9Ck6gQ0Q2odEGqsbnL5qG/DtYXjSSk3QgLFhgTipt6gkBC3UgAXWaFvuJRNv2GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aFrdI/+a9fd20Ujis877H7/rItG9XCCE15Dl4ufR0HI=;
+ b=g6xF34NdptKLVEeBGO2X+AgWEmCePc5cmlSFbpPKHAA53KwOV0aV9PZ2fGvU2VcEYRe60h2F2Z9rZJnmGteLivW4T5h/mDw3keAA/UBVUhGgYUIu6mlufNGun/P8watKzHXKSnewnUQDgxXVNym7BMDPHUmbIBwieikK3NAyTQWKBrYdEoRlirAzWW/cXUAydpm1+dBAYo5JFFBg9RQL23qjg6uy9tV9OTvkfyoXAvIWPRpWR4G9Ba31213jTSH3LA3DgbCG72SWaL6XYlktv5fV9jdnFnByQWSBGwDqLVjSgNb5SRYM9Pcni5hMAxBaH60k21CHVphX8455Pybx1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aFrdI/+a9fd20Ujis877H7/rItG9XCCE15Dl4ufR0HI=;
+ b=y4jl9CrpkmKqXvEdDhEp4yJk3YTav1DPvvGfLVlAbw5Fdr9wqp71hJwF6pm/ZitEA8CfZ6pcO5HfPAqSb/O3C50HAYHat91/oRt74u0YVjS/UiRMqLw74h9PUsEl+UF+BKLcAXEvD8J+wjQ3lz6saJ8holAZrLrdLGl1b5/Hjq8=
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com (2603:10b6:303:21b::14)
+ by BY5PR12MB4068.namprd12.prod.outlook.com (2603:10b6:a03:203::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.41; Sat, 30 Mar
+ 2024 02:02:15 +0000
+Received: from MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::e039:187d:47be:afb7]) by MW4PR12MB7165.namprd12.prod.outlook.com
+ ([fe80::e039:187d:47be:afb7%4]) with mapi id 15.20.7409.031; Sat, 30 Mar 2024
+ 02:02:15 +0000
+From: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>
+To: Conor Dooley <conor@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Laurent Pinchart
+	<laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, "Simek, Michal" <michal.simek@amd.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong
+	<neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas Karlman
+	<jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>
+Subject: RE: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
+Thread-Topic: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
+Thread-Index:
+ AQHae9CWOJYT8G1vaUajPKAdUatgu7FDRIUAgADPWeCAAQwKAIAIv8BAgAEJYoCAAKRcwA==
+Date: Sat, 30 Mar 2024 02:02:15 +0000
+Message-ID:
+ <MW4PR12MB7165E47719C72CD5CEB68218E6392@MW4PR12MB7165.namprd12.prod.outlook.com>
+References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
+ <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
+ <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
+ <MW4PR12MB7165889CE7F27A3F0B29DC7EE6312@MW4PR12MB7165.namprd12.prod.outlook.com>
+ <c0d70ba9-34ef-4121-834d-4d107f03d7f0@linaro.org>
+ <MW4PR12MB716570A3676218F0C6375E37E63A2@MW4PR12MB7165.namprd12.prod.outlook.com>
+ <20240329-overture-tank-d20888f2cb6e@spud>
+In-Reply-To: <20240329-overture-tank-d20888f2cb6e@spud>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR12MB7165:EE_|BY5PR12MB4068:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ RJibeOS7pyKaKGmMCJaeZJiGIOXWEOtXM2YcsSDzbo48N2oDBzvSaQ2HYbPaA4Ed8WKfArwiR6AltgxqEC8ihNeDAA4qI1XfyLTd3rbvI8P3yajPGXGuGIC/Z1x0LzUu6wve3qZWrEdzWCAoW8V6he8d3Zr2obxBlpa13C99xPDnaffesXEhag7UgufOPr2yteZX/inG5SnZun6SgLdLa2aDpo094JuQzVhJpXptuA+YiS5r9pKRDoPIR/LQw30AkFl6+gtSAGY4dWkqRMgm9d0vfcgcqLSwwFzk2PUGg7lvLpIuSt50OPCE9n2TZc+JjCK3eD41cd7rWHT+5fxXI5o/u5fQ3AGDybPfpH6cGYMpCHv5Xe0Hut7647oTfY0kaYsTGO9fqu05XUfkcnSxPqPzQW2m4YSsmZRzrBPJPyR1OuJyJM3/HC8XS9YAqL6nB2cC4jlRUg2jLTQqNxA5f3+39xeb+s0OkA1eYbFfK0UgRTybbq+FMBv2C6Nq0feaFhYMg9ucLOjJhxzlcCJlHNtTImzxk8yJcfeJYcVJmXlpD7F0PGPw9Y89155u3swh/I4HLbH8A850Ie+YTZopGLSqjLxDnmkP/i2EDxrfz03A7eBxj0yF55UTUKJv+McnB7qRYMxLmOKId4tQ/M67wWyzkDUicp3Q93DQ1ig1v88=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?PCdvyZBcoJwxbz6H/JuA1UcBsBO5CCm4pg57WINkuMNoERhDiT9n5QOeGp7u?=
+ =?us-ascii?Q?7u0V39JfFncoQAo7j+G8Zs+jpsBW/LA0WqCz2ekBpvJMCPWjqcP6bnGsuvji?=
+ =?us-ascii?Q?RMhVutwYuH2ak7d6UyZYQ+Rj7qoIGtSdlu79XYYcd7YSn8dtRQrN2Ycj0ncN?=
+ =?us-ascii?Q?2c1tdgSuulVzkZK0mbQVLT/PE+2ZtBGEABtIVnJcuc+HYFHMBwhy6K2gPKh9?=
+ =?us-ascii?Q?GBFGKdF5LqSCs1Cpc3FZifFBub8LpwRd3Nvcf8qHrRx2p5npRy5LFGcia6sf?=
+ =?us-ascii?Q?kbssyj7KbYqoQh36ZphS7a8u5g0JR5S2sBrZWPGVvlG7IU6MNcigZg1pFbF/?=
+ =?us-ascii?Q?u+OjC3vkoOe7NpJX8irCgGWFSUQZZhXKuh4Wpj7N2t8ccdwSplcUWn+j4G5Y?=
+ =?us-ascii?Q?x/VlnhOFf9eiFq2KZGfqob1dKgaYGzF970cN2DvTQFOgJXT+b652qrDrDkcA?=
+ =?us-ascii?Q?JRgjgJQX74wARSCt+0Dw3dkxuHMb7Q4NBy8GHQclQJBIMdPq8rZ7o6/qyIo2?=
+ =?us-ascii?Q?tTAb5MjDUhbotsADAzyf+i8Iw0NCRRi1BWmhLXbQ2ZTKUEX+hJ2x44N+1jIn?=
+ =?us-ascii?Q?0YuC9BwISnCuoJitVgpvM6DFUnJ+VBKCnOPTQN+yBntHnSdslviMEwPVjXrT?=
+ =?us-ascii?Q?ijzekrzfjOeYn/LaEaHovUP1L85fG+Ix+Uf+k2/wkzRJAKKOjToLG81Vvrea?=
+ =?us-ascii?Q?Rg38CQYO77oZzaR3vQqqWM8F/pb5YtAY6s5IH007naEuEogpDCHcF0PgJlBI?=
+ =?us-ascii?Q?w4zIAZXfXD6GDdyDpJDGDNS8L8pXIh1MdM9b1QCr0TyAsAaij9as4EIqThel?=
+ =?us-ascii?Q?2OZyLWQvOFEmsZBg87gZaONTr8JMk7Ej3x2IX0TvtronQLPXzmaaqJsyjiRo?=
+ =?us-ascii?Q?/KBxsX0/Xkl9vuIssT0SZaVz1wOpcYExUrJyzHiax5a/+QFZs0n94B/wsOhK?=
+ =?us-ascii?Q?B/k18KL88jxpLsxK+sDnz3VSRSHHXjjTZiG+mW6CvefVpG7OvMnFC0szH7Xg?=
+ =?us-ascii?Q?8Jc924BlkYzuumnGek/L3nHX2AVKCFz+3WQvKw6XEBjvJLuzT9xRW9tOBD1M?=
+ =?us-ascii?Q?ryiJMeMrHZLqnpXbPz88HHLgEfIO/o2LIJtyUU+LnqkCte2jrFXtrfnUPbXC?=
+ =?us-ascii?Q?S1QvjvcsXpLXGlAw/GPV7MOe3n+xmRoaFo8JnCZeOrw8FC3+z1PdnTnAQB3w?=
+ =?us-ascii?Q?GWctnBJCWIULIqTKf6z2jEHsDq4/b8FaIQcqxo+dxaO/W/N7f6bON0XpatAR?=
+ =?us-ascii?Q?ivT6MLGJwdvTQw96t+d1ukIgBMenppNFZT0b4BtVo4QwaFhbjxQVLZxi+2UE?=
+ =?us-ascii?Q?rOhHRI85YeV/Nqg92hrXlzM4qGgQiQ9eEfvjzGrWKjCJoeThAB2o+CQb0HA1?=
+ =?us-ascii?Q?/sxkFJ7y57hcEMHOZaSWrb0SnW01aG/ME32gaoayTmpZVZbMaMjJ1lM8URnt?=
+ =?us-ascii?Q?DyU/Qy2oTHqYht9EoQ2wJEOYVhbn1wJHgAbxn8L6o7ndXe2pt2Y44FTWnyt1?=
+ =?us-ascii?Q?82aQ4YXhuG6iZJ26325aXCy/zT7D7ia7A+Zs0umGmh4KekFxotkdQ4PaY905?=
+ =?us-ascii?Q?GFsVyas4yBEPC45YMqQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:410d:b0:47c:1840:ad8 with SMTP id
- ay13-20020a056638410d00b0047c18400ad8mr237459jab.1.1711762162159; Fri, 29 Mar
- 2024 18:29:22 -0700 (PDT)
-Date: Fri, 29 Mar 2024 18:29:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009da21f0614d6af2e@google.com>
-Subject: [syzbot] [kernel?] WARNING in switch_mm_irqs_off (2)
-From: syzbot <syzbot+6096471e27db19305af0@syzkaller.appspotmail.com>
-To: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
-	linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com, 
-	peterz@infradead.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    4535e1a4174c x86/bugs: Fix the SRSO mitigation on Zen3/4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=103340c5180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=6096471e27db19305af0
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-4535e1a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/af9b780d5ab6/vmlinux-4535e1a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ca7710536ebc/bzImage-4535e1a4.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6096471e27db19305af0@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 4685 at arch/x86/mm/tlb.c:515 switch_mm_irqs_off+0x890/0xbc0 arch/x86/mm/tlb.c:515
-Modules linked in:
-CPU: 0 PID: 4685 Comm: udevd Not tainted 6.9.0-rc1-syzkaller-00206-g4535e1a4174c #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:switch_mm_irqs_off+0x890/0xbc0 arch/x86/mm/tlb.c:515
-Code: ff 44 8d 6b 02 48 63 d3 49 8d 8e 18 06 00 00 4d 63 ed 49 c1 e5 04 4d 8d 8d 80 d8 03 00 49 81 c5 88 d8 03 00 e9 75 fd ff ff 90 <0f> 0b 90 e9 e3 f7 ff ff 90 0f 0b 90 e8 df f5 ff ff e9 20 f8 ff ff
-RSP: 0018:ffffc90006f27918 EFLAGS: 00010202
-RAX: 0000000000000282 RBX: ffff88802a820000 RCX: ffff88802ce84280
-RDX: 1ffff110059d092a RSI: ffffffff8b8f4760 RDI: ffffffff8b8f47a0
-RBP: ffff888026402f80 R08: 0000000000000000 R09: ffffed10059d0869
-R10: ffff88802ce8434b R11: 0000000000000002 R12: ffff88806b03f500
-R13: ffff88804841a440 R14: ffff88802ce84280 R15: ffff88806b03ea40
-FS:  00007f7782acf280(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdc60856070 CR3: 000000002a050000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5393 [inline]
- __schedule+0xd2b/0x5d00 kernel/sched/core.c:6746
- __schedule_loop kernel/sched/core.c:6823 [inline]
- schedule+0xe7/0x350 kernel/sched/core.c:6838
- schedule_hrtimeout_range_clock+0x20f/0x430 kernel/time/hrtimer.c:2312
- ep_poll fs/eventpoll.c:2026 [inline]
- do_epoll_wait+0x13d4/0x1ae0 fs/eventpoll.c:2428
- __do_sys_epoll_wait fs/eventpoll.c:2440 [inline]
- __se_sys_epoll_wait fs/eventpoll.c:2435 [inline]
- __x64_sys_epoll_wait+0x194/0x290 fs/eventpoll.c:2435
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-RIP: 0033:0x7f7782723457
-Code: 73 01 c3 48 8b 0d d1 d9 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 20 b8 e8 00 00 00 0f 05 <48> 3d 00 f0 ff ff 76 76 48 8b 15 a2 d9 0c 00 f7 d8 64 89 02 48 83
-RSP: 002b:00007ffc9442f898 EFLAGS: 00000246 ORIG_RAX: 00000000000000e8
-RAX: ffffffffffffffda RBX: 00007ffc9442f998 RCX: 00007f7782723457
-RDX: 0000000000000008 RSI: 00007ffc9442f998 RDI: 000000000000000b
-RBP: 000000000000000b R08: 00000000ffffffff R09: 0000000000000000
-R10: 0000000000000bb8 R11: 0000000000000246 R12: 0000000000000bb8
-R13: 0000000200000001 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7165.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c45a82d-3a99-4d84-ffbe-08dc505d6bf0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2024 02:02:15.2277
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: a22Zv405TSk+Pa75bdaXjgDdNP6dLL+RGijPGg+UM3Ak/haHbxBFGxSka1bxWInOzAHrUwB6WrFgcpMWcb3ALw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4068
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> -----Original Message-----
+> From: Conor Dooley <conor@kernel.org>
+> Sent: Friday, March 29, 2024 8:47 AM
+> To: Klymenko, Anatoliy <Anatoliy.Klymenko@amd.com>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Laurent Pinchar=
+t
+> <laurent.pinchart@ideasonboard.com>; Maarten Lankhorst
+> <maarten.lankhorst@linux.intel.com>; Maxime Ripard
+> <mripard@kernel.org>; Thomas Zimmermann <tzimmermann@suse.de>;
+> David Airlie <airlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Simek,
+> Michal <michal.simek@amd.com>; Andrzej Hajda
+> <andrzej.hajda@intel.com>; Neil Armstrong <neil.armstrong@linaro.org>;
+> Robert Foss <rfoss@kernel.org>; Jonas Karlman <jonas@kwiboo.se>; Jernej
+> Skrabec <jernej.skrabec@gmail.com>; Rob Herring <robh+dt@kernel.org>;
+> Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> <conor+dt@kernel.org>; Mauro Carvalho Chehab <mchehab@kernel.org>;
+> Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>; dri-
+> devel@lists.freedesktop.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> media@vger.kernel.org
+> Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
+>=20
+> On Fri, Mar 29, 2024 at 12:38:33AM +0000, Klymenko, Anatoliy wrote:
+> > Thank you for the feedback.
+> > > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindin=
+gs
+> > > On 22/03/2024 20:12, Klymenko, Anatoliy wrote:
+> > > >> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > >> On 21/03/2024 21:43, Anatoliy Klymenko wrote:
+> > > >>> diff --git a/include/dt-bindings/media/media-bus-format.h
+> > > >>> b/include/dt-
+> > > >> bindings/media/media-bus-format.h
+> > > >>> new file mode 100644
+> > > >>> index 000000000000..60fc6e11dabc
+> > > >>> --- /dev/null
+> > > >>> +++ b/include/dt-bindings/media/media-bus-format.h
+> > > >>> @@ -0,0 +1,177 @@
+> > > >>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+> > > >>> +/*
+> > > >>> + * Media Bus API header
+> > > >>> + *
+> > > >>> + * Copyright (C) 2009, Guennadi Liakhovetski
+> > > >>> +<g.liakhovetski@gmx.de>
+> > > >>> + *
+> > > >>> + * This program is free software; you can redistribute it and/or
+> > > >>> +modify
+> > > >>> + * it under the terms of the GNU General Public License version =
+2
+> > > >>> +as
+> > > >>> + * published by the Free Software Foundation.
+> > > >>
+> > > >> That's not true. Your SPDX tells something entirely different.
+> > > >>
+> > > >
+> > > > Thank you - I'll see how to fix it.
+> > > >
+> > > >> Anyway, you did not explain why you need to copy anything anywhere=
+.
+> > > >>
+> > > >> Specifically, random hex values *are not bindings*.
+> > > >>
+> > > >
+> > > > The same media bus format values are being used by the reference
+> > > > driver in patch #9. And, as far as I know, we cannot use headers fr=
+om
+> > > > Linux API headers directly (at least I
+> > >
+> > > I don't understand what does it mean. You can use in your driver
+> whatever
+> > > headers you wish, I don't care about them.
+> > >
+> > >
+> > > noticed the same pattern in ../dt-bindings/sdtv-standarts.h for insta=
+nce).
+> > > What would be the best approach to reusing the same defines on DT and
+> > > driver sides from your point of view? Symlink maybe?
+> > > >
+> > >
+> > > Wrap your messages to match mailing list discussion style. There are =
+no
+> > > defines used in DT. If there are, show me them in *THIS* or other
+> > > *upstreamed* (being upstreamed) patchset.
+> > >
+> >
+> > Sorry, I didn't explain properly what I'm trying to achieve. I need to
+> > create a DT node property that represents video signal format, one of
+> > MEDIA_BUS_FMT_* from include/uapi/linux/media-bus-format.h. It would
+> be
+> > nice to reuse the same symbolic values in the device tree. What is the
+> > best approach here? Should I create a separate header in
+> > include/dt-bindings with the same or similar (to avoid multiple
+> > definition errors) defines, or is it better to create a symlink to
+> > media-bus-format.h like include/dt-bindings/linux-event-codes.h?
+>=20
+> Isn't there already a property for this, described in
+> Documentation/devicetree/bindings/media/xilinx/video.txt
+> ?
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Those properties are very similar, indeed but not exactly the same. The
+one you noticed maps Xilinx video data format on AXI4-Stream transport
+that covers color space and chroma subsampling only. The rest of the
+signal attributes are either conventional or left out. MEDIA_BUS_FMT_*
+collection is more specific and embeds additional information about
+video signals, like bits per component and component ordering.
 
