@@ -1,110 +1,83 @@
-Return-Path: <linux-kernel+bounces-125572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CAA8928E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:36:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D6A8928EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3403FB222D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:36:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 213AF1F21D98
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7381FA5;
-	Sat, 30 Mar 2024 02:35:58 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC471C3D;
+	Sat, 30 Mar 2024 02:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="zf7iLigK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B7E17CD;
-	Sat, 30 Mar 2024 02:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0A117CD
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711766158; cv=none; b=OFalO2thJQuPlVYlGf+pYC6ntr9FDJOzrrsqG1q9Zx1tew5xfV1ea+Bl3v8fU5vissgyStq6PALfgeEw8Q9RBdsbHZb0OV5zecCpBZkOrZKVe/m301JF8XxLNNsi4a2A1p1fQrPcSynDl6LPIBhPF5wzAx9u5WC/p8qzPNtqRgA=
+	t=1711766765; cv=none; b=Hzv1491AvBIamls9a44/8XfQiq7lNCP3Hxe01flXGCaSDzDA9kU0Xx/sjCfJMMaPP5tTisBUfgEDaWVG2okMwG/b30hJoYOndRCz7+HmMUcPgkQpOX+RF24JPuR9bo5KKViNxurqc2bxT2Wk++8P6tKP17B/ff7Ufv0mQwV3LZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711766158; c=relaxed/simple;
-	bh=Z8aquzYwrhiTPT1lynRcdUTIL4sI4DuQGZPhxVeaKGg=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UnbFOcMoqLrzUoRW1fZsG6hxaeAjRFunznG/p/o8bnP9yKUl+JiXH65e3OSiir0ixmdEEOqh+HLniHcqIuQyrhZm7Ln/+82lsbQnVEe2gRgseZuJJek8HChugf9fu7w93Izx2cZRuM+qU/su8tJB62YOOLn5Wiu6XjVKcgajcDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V61Xl57Vzz29dPH;
-	Sat, 30 Mar 2024 10:33:11 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 919B61400D3;
-	Sat, 30 Mar 2024 10:35:53 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 30 Mar 2024 10:35:52 +0800
-Message-ID: <b679e900-22e3-47c6-b9bb-7aba56efcf31@huawei.com>
-Date: Sat, 30 Mar 2024 10:35:51 +0800
+	s=arc-20240116; t=1711766765; c=relaxed/simple;
+	bh=lPHesGQ9ntzE76wd4G9UYsmxSrbSZgPjy+CBUxsph34=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=K+3YKYp2TRjMhkiNri/5Wt1CEksR7Pv9nvV2iFhcHPllL/Fi/TXY9GiceEJrN3yCVw2qNdpNTB/CMTn3FulUb1YuuLLjULozuY6GyDMMNvUKt+aCvsbEV6F3xR8675ldwUFG3/KrGorYwERVhnHvGSVmuVZSvs7rHQ+HlQERLa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=zf7iLigK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C5D0C433F1;
+	Sat, 30 Mar 2024 02:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1711766764;
+	bh=lPHesGQ9ntzE76wd4G9UYsmxSrbSZgPjy+CBUxsph34=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=zf7iLigKYS7qLOxRZfVxsSIYIs31bu3QCArnvVmpkgU99N4mj8Rd9GP9yMYMNbl/b
+	 +9LwMuecnNK8rFH5GUxiE+nAOakusuaM7yM38FZs5zfQGpMRajY5Am2/+PmKxCvFBN
+	 fevs0A3M6VW6+9GiFdcSjwpy36DU6cNy8BnXDVn4=
+Date: Fri, 29 Mar 2024 19:46:03 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Nathan Royce <nroycea+kernel@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Allmodconfig - logic_outb - Boot Panic
+Message-Id: <20240329194603.ed67a334f75ba3c933cc8876@linux-foundation.org>
+In-Reply-To: <CALaQ_hrVM0dMaFqLshW5NTkkomGSvGnpyLOPx8E0QpniewyxUA@mail.gmail.com>
+References: <CALaQ_hrVM0dMaFqLshW5NTkkomGSvGnpyLOPx8E0QpniewyxUA@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
-	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
-	<pabeni@redhat.com>, <jiri@resnulli.us>, <horms@kernel.org>,
-	<rkannoth@marvell.com>, <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V6 net-next 3/4] net: hns3: dump more reg info based on
- ras mod
-To: Jakub Kicinski <kuba@kernel.org>
-References: <20240327114330.1826631-1-shaojijie@huawei.com>
- <20240327114330.1826631-4-shaojijie@huawei.com>
- <20240328191130.47242c8f@kernel.org>
- <d6c779a5-e4b1-4f21-b4f0-6b37b212890f@huawei.com>
- <20240329081501.4460ad4d@kernel.org>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <20240329081501.4460ad4d@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600007.china.huawei.com (7.193.23.208)
 
+On Fri, 29 Mar 2024 13:38:08 -0500 Nathan Royce <nroycea+kernel@gmail.com> wrote:
 
-on 2024/3/29 23:15, Jakub Kicinski wrote:
-> On Fri, 29 Mar 2024 18:34:02 +0800 Jijie Shao wrote:
->>> These seem to be duplicating standard stats from rtnl_link_stats64,
->>> ethtool_pause_stats, ethtool_eth_mac_stats, etc.
->>>
->>> You can add device specific stats, but please don't duplicate
->>> stats for which we have standard APIs.
->> Yeah, but these are not duplicate stats for ethtool or debugfs.
-> Can you say more? I mean there are APIs to expose MIB counters.
-> Perhaps your driver doesn't implement those APIs today.
-> But (1) it should, and (2) once it does it will be a duplicate.
+> [  119.456901][    T1] Call trace:
+> [  119.457377][    T1]  logic_outb+0x6c/0x140
+> [  119.458155][    T1]  isapnp_wait+0x34/0x80
+> [  119.458849][    T1]  isapnp_isolate_rdp_select+0x38/0x240
+> [  119.459818][    T1]  isapnp_isolate+0x58/0x340
+> [  119.460567][    T1]  isapnp_init+0x1ec/0x480
+> [  119.461263][    T1]  do_one_initcall+0x1e0/0x900
+> [  119.462061][    T1]  do_initcall_level+0x118/0x204
+> [  119.462974][    T1]  do_initcalls+0xb4/0x180
+> [  119.463632][    T1]  do_basic_setup+0xa0/0xc0
+> [  119.464421][    T1]  kernel_init_freeable+0x2b0/0x500
+> [  119.465282][    T1]  kernel_init+0x3c/0x37c
+> [  119.466081][    T1]  ret_from_fork+0x10/0x40
+> [  119.466777][    T1] Code: d50332bf f2df7fe8 f2ffffe8 8b080268 (39000114)
+> [  119.467808][    T1] ---[ end trace 0000000000000000 ]---
+> [  119.468585][    T1] Kernel panic - not syncing: Oops: Fatal exception
+> [  119.469539][    T1] SMP: stopping secondary CPUs
+> [  119.470327][    T1] Kernel Offset: disabled
+> [  119.470991][    T1] CPU features: 0x0,c0000000,7002814a,2101720b
+> [  119.471862][    T1] Memory Limit: none
+> [  119.472529][    T1] ---[ end Kernel panic - not syncing: Oops: Fatal
 
-Sorry for the wrong reply before, these stats are already included
-in the ethtool -S stats.
-
-According to the suggestions provided by the chip, the statistics help
-analyze the cause of the MAC-related abnormal interrupt.
-
->> Generally, driver will reset to restore the normal state.
->> After the reset, many registers are cleared. Therefore,
->> it is difficult to analyze the reason of RAS.
-> Perhaps I'm missing the significance of the reset when it comes
-> to counters reported via standard APIs. Are rtnl_link_stats64
-> going to behave differently across a reset than these debug entries?
->
-1. These statistics are the same as rtnl_link_stats64. However, these are not updated in real time.
-    They are updated only when users query them or driver updates them every 5 minutes.
-    However, these are cleared after the reset, which makes debugging difficult.
-2. Currently, only a few MIB statistics are required, not all.
-3. Are you suggesting that we use rtnl_link_stats64 to provide MIB statistics?
-
->> We wang to add this information only when RAS is occurring, And
->> these information will help to analyze the reason of RAS.
->>
->> these information does not appear in any new API.
->>
->> Therefore, we hope that we can add this information to
->> reduce the difficulty of analyzing certain issues.
+Could be that the logic_pio driver is crashing when the hardware isn't there.
 
