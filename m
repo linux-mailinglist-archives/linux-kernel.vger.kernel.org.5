@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-125645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D6B2892A03
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:27:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1864892A09
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CB9D1F22251
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:27:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A72D62832CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDCBF9D8;
-	Sat, 30 Mar 2024 09:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79172F9E5;
+	Sat, 30 Mar 2024 09:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DUpkQDOW"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AP0CWIlR"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D912CA5
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B6B64F
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711790830; cv=none; b=aQE7a2u68v9gGRqmU6ebnmjIsBXz8iHZkDyJe47fOE/C7r4lsnhqOq8W7j+BUSwWYsrCh+2sACm1xXLMAEkM4mlI16fwG9TonMukHKkjKVPw6caTZj2CcPtmjzV5gGySOATp6C4P1huHLqIf+WjmJ/m6TfOtni7dxNl+pAB3D9M=
+	t=1711791010; cv=none; b=JqezjTWhhZHLQEwmc4BZorN7t4656FdJ6dEIx2iCDSkNYTAo7jsJtgH80UJ3mN6bTCXpJBsAXkwFvI0vx1195yovvOsIif9IlREmycd3Oppv7er5PrwE5dK4lXjTjZnbPA4pCl3i9gzUE0SC80uW9Ud5E7VHKAYT6c64vkpp0SI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711790830; c=relaxed/simple;
-	bh=timTxilapKsONbEjau72+Ou1q/7xtxFnJ1b7itFduSs=;
+	s=arc-20240116; t=1711791010; c=relaxed/simple;
+	bh=jH74SmsUJAEsV0nlVFruv378UYB/Cp922OOCePGSRZg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d0xTgYWAvngQ6LFX7CUgmSmIGyeS3IAKhCjODTyZt1imVrQfSJpPU6HvKU6IW5jQTtXsQVkdNB5uTrqsX8vBbLPzEevPEJJN+h1iZbrLmeXc5qnjFUVT42EKDZN6eoZJD0jQxv5+5jHolvGHdHNfP7KzUlgyOp4LNXQyIJsGVZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DUpkQDOW; arc=none smtp.client-ip=209.85.221.44
+	 In-Reply-To:Content-Type; b=mUEtOZ67VTKxjAeKcd0TYg3gygVogswxbBhuxeDczWDKfG5G2qlIW/h59iTgMx1uw+5R/7alP+yMXxRx+VFFRbeTC9N6GcZ6py4f4sfhF10x2xTFOJfubFUShcb1/f9WJafYj09Ql4N9e+oij63EMFYnROyJaCSUalf9QViLCVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AP0CWIlR; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so1745994f8f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:27:08 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-415446af364so12455625e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:30:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711790827; x=1712395627; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711791007; x=1712395807; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=timTxilapKsONbEjau72+Ou1q/7xtxFnJ1b7itFduSs=;
-        b=DUpkQDOW9H3lEOMGI4TvKUvEj9q/Tsu4KLAZPL78Wvz+u5s9vrDOFXapzOX/uNamBz
-         kN5Jsa1IvJg0gfHYa5UQqymVQEOK2m54etqZytPTz2zsfdB/F9BQqhL17jXYYtNnvMQA
-         xjoiO8eH5ySycLvSpLh6C9qKm7IVysEJxtncXZARzIrwijYoG5yCwSdPcx/RCUNMfZ6d
-         +M110GjCRar5faHZqxBgFSNutAyYIXgifz8lyCX6+8Hcwr4/1Ko2G56bIuZzxZQ2jzsp
-         j1oMaR9p9Efs0WZxd38evZpUxIEiKiMyNCoGtvI2+t5eyvoUjP1O/V3BfRp7+qt+iov2
-         yzKw==
+        bh=HRRPoA46ZiR7XyOWSlHygBjsRtwJEnGQX5rm2JJHl+E=;
+        b=AP0CWIlR3IUOUHTROBB+9owtAqL9Uk5mq+iyguJRsPqtLp2ckhw600KA7BVSRuFhYP
+         FEHfbhV4wwIDL9pYzT4GFq1jBglYq5AX4gCRyU5wwANuO8tT/kG6TdzEciCnmlkKieci
+         PMdpf3iW1SwNaMYsiB6P2MOVRS6I4tPiy7wS7QUSofh+a32OJ+oUHHSxhwb3RWZRqyJj
+         2xwgARw3eLyLJMle7GGysvViatdN/2eSjbvT4zF2XpzsDy+/j2x4VeXKBfZSfvF3N9Uo
+         kp3i2KV6XIznpfl5QMCp7Hfj7G2n/qSqJ+xUFwguydnnwDdx8LgLPoOYoIElcGgkPpyh
+         wmwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711790827; x=1712395627;
+        d=1e100.net; s=20230601; t=1711791007; x=1712395807;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=timTxilapKsONbEjau72+Ou1q/7xtxFnJ1b7itFduSs=;
-        b=DaMCeKtaLdUCNIlP8OAGq1E/Mm7Ct13x40mEoAyOT9nhYANBvIH91wmlFMOPoTmp5v
-         SE9IiB1aCz81uqOZ5NZi0vuLj92Gv+zuz2HPMeC43GBg736wy1P8tCpPmJfc8zjqMwA+
-         EJUN0X9lNL3J1Iem9lV7P/fc9xecWM+f+S8z9XPzmp1L25z0vlm7l83XtWymx1PEZQQV
-         T7W28o1Z2+T9SbeNZ3fnbwonsFG3YHGoa9E+JIgI79zre44Rv/5hFYtylgtH0yWcqoI4
-         ZDM+ryLvvtOX21geTvvx+Ldoeo4vQOenZy7NoWFgV6dyH3aqu68ft2ibLO/QvniRhmIm
-         53BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0bjsHb3b1TsIT+qSoR+Nb73Y+n4FYG+iAwEYjOpN6jvYGe0g9J7bNMwGBlaXvP3NjWXGw3u9KK4+T7iyyao8MKkGT2nl/bRIY3YkL
-X-Gm-Message-State: AOJu0Yxci6Njyv3vl2OQ281ZsNUlqYIi74p78mGvMbw5L729ZdpgUO2h
-	HS27u6L1QybRhIP2hTveFWP5zjngQTBVY+gB9X8iSqFB9wswkWuxk0LFYr0iIhk=
-X-Google-Smtp-Source: AGHT+IFHJcCwawyg2Si7LdksytC4gyLn+R/HZviukLaXttZxJvajzvyd8WuNDqYG6brpIYxX1Mpqeg==
-X-Received: by 2002:a5d:4491:0:b0:341:8388:31b1 with SMTP id j17-20020a5d4491000000b00341838831b1mr3662835wrq.67.1711790826705;
-        Sat, 30 Mar 2024 02:27:06 -0700 (PDT)
+        bh=HRRPoA46ZiR7XyOWSlHygBjsRtwJEnGQX5rm2JJHl+E=;
+        b=TCwlw5/iN+IhP6vUAB03/jTP5Aa1Ona9DAqomg1RTwPCbJ6Tr0KRwyiHLQ10NwnhId
+         x1Z7q+GCUmGdeCmrl5Aqjxhf/aHZ+Nh5mJSsYdeVXUF4gZ3mvzMAu6yS++x77BEUaU8R
+         UkHHH8uWhzIi4cAPmeP4RoxQHs3MXCJU7kJ+R1rL2explGynt/H5Y0W0mt7KL0ra16Wq
+         MBi8LZllZ0+TDNPj/TUYirkmrCb3GM+pxw/IBsCXw5+o7Gzl2b8O1JJGA0WiaXxS4RuN
+         y+lxN7Fo5P7Z7X9LTo7vxADFM9iH7Yrsrt4R2wlzcClWx5AWjhDxovaUOcOVME+mcsUB
+         O+cA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVB7YOPXVu2eXgZmOnba+w0Qt7vkeT9lII11yOljGmWjTSop+IfmAxjX83LfJ1TLlBgdmvukzbpe/xhOE920Ho1LaZv/KAMi7F2DzW
+X-Gm-Message-State: AOJu0YyK33JWlsv4hKNuaWmVr2/ku4jZwGmJpKXj0ft06dAGyoWkR+Zb
+	L7F5Lu9OztOAZIjuKfaxWwo508wMMLes8y/04/oTVUd4TZV4afUXkthFdZMENtk=
+X-Google-Smtp-Source: AGHT+IHah+u5LCx3ZcD5Y1/dZi9WB0vCE4py5e+wbLVYY5CxwNe1SifSkHNOIXHvYMQJ0iRzTli54w==
+X-Received: by 2002:a5d:654c:0:b0:341:b5cc:f805 with SMTP id z12-20020a5d654c000000b00341b5ccf805mr5715381wrv.5.1711791007261;
+        Sat, 30 Mar 2024 02:30:07 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id bt30-20020a056000081e00b00341b9e11b11sm6141674wrb.24.2024.03.30.02.27.04
+        by smtp.gmail.com with ESMTPSA id r10-20020a05600c35ca00b004147ec48845sm10997057wmq.26.2024.03.30.02.30.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 02:27:05 -0700 (PDT)
-Message-ID: <57f29a15-1076-44de-8b85-83983f5e20f3@linaro.org>
-Date: Sat, 30 Mar 2024 10:27:03 +0100
+        Sat, 30 Mar 2024 02:30:06 -0700 (PDT)
+Message-ID: <0b53cf44-b5ca-4ccc-9912-777b85f1bcbd@linaro.org>
+Date: Sat, 30 Mar 2024 10:30:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,36 +76,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
-To: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>,
- Conor Dooley <conor@kernel.org>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- "Simek, Michal" <michal.simek@amd.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
+Subject: Re: [PATCH 2/4] dt-bindings: mfd: x-powers,axp152: add boost
+ regulator
+To: Andre Przywara <andre.przywara@arm.com>, Chen-Yu Tsai <wens@csie.org>,
+ Lee Jones <lee@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
- <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
- <MW4PR12MB7165889CE7F27A3F0B29DC7EE6312@MW4PR12MB7165.namprd12.prod.outlook.com>
- <c0d70ba9-34ef-4121-834d-4d107f03d7f0@linaro.org>
- <MW4PR12MB716570A3676218F0C6375E37E63A2@MW4PR12MB7165.namprd12.prod.outlook.com>
- <20240329-overture-tank-d20888f2cb6e@spud>
- <MW4PR12MB7165E47719C72CD5CEB68218E6392@MW4PR12MB7165.namprd12.prod.outlook.com>
+ Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Ryan Walklin <ryan@testtoast.com>,
+ Chris Morgan <macroalpha82@gmail.com>
+References: <20240329235033.25309-1-andre.przywara@arm.com>
+ <20240329235033.25309-3-andre.przywara@arm.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -152,42 +135,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <MW4PR12MB7165E47719C72CD5CEB68218E6392@MW4PR12MB7165.namprd12.prod.outlook.com>
+In-Reply-To: <20240329235033.25309-3-andre.przywara@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 30/03/2024 03:02, Klymenko, Anatoliy wrote:
->>>>
->>>
->>> Sorry, I didn't explain properly what I'm trying to achieve. I need to
->>> create a DT node property that represents video signal format, one of
->>> MEDIA_BUS_FMT_* from include/uapi/linux/media-bus-format.h. It would
->> be
->>> nice to reuse the same symbolic values in the device tree. What is the
->>> best approach here? Should I create a separate header in
+On 30/03/2024 00:50, Andre Przywara wrote:
+> The X-Powers AXP717 contains a boost regulator, that it meant to provide
+> the 5V USB VBUS voltage when the devices operates on battery.
+> 
+> Add the name "boost" to the regexp describing the allowed node names,
+> to allow the regulator to be described in the devicetree.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml b/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
+> index b8e8db0d58e9c..14ab367fc8871 100644
+> --- a/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
+> @@ -274,7 +274,7 @@ properties:
+>            Defines the work frequency of DC-DC in kHz.
+>  
+>      patternProperties:
+> -      "^(([a-f])?ldo[0-9]|dcdc[0-7a-e]|ldo(_|-)io(0|1)|(dc1)?sw|rtc(_|-)ldo|cpusldo|drivevbus|dc5ldo)$":
+> +      "^(([a-f])?ldo[0-9]|dcdc[0-7a-e]|ldo(_|-)io(0|1)|(dc1)?sw|rtc(_|-)ldo|cpusldo|drivevbus|dc5ldo|boost)$":
 
-There is no user of this new header, so I don't agree. Please send
-either full work or link your other upstreamed patchset. Anything sent
-as "DO NOT MERGE" does not count because it is not an user.
+That's not an easy to read regex...
 
-Without the DTS user I claim that you do not bind here anything...
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
->>> include/dt-bindings with the same or similar (to avoid multiple
->>> definition errors) defines, or is it better to create a symlink to
->>> media-bus-format.h like include/dt-bindings/linux-event-codes.h?
+If driver does not depend on _, please consider dropping (_|-).
 
-Copying or symlinking entire header into bindings does not help us to
-understand what is exactly a binding here.
-
-For example, maybe you encode runtime information into DT (don't do
-this) and that's why you need these defines... Or maybe your block has
-some capabilities. Dunno, patch was not tested, is defined as do not
-merge and is not explaining any of these.
-
-Therefore, please provide complete set of users ready to be merged, test
-your patches, provide rationale why this is supposed to be a binding and
-why do you think it represents hardware configuration, not OS policy or
-runtime configuration.
 
 Best regards,
 Krzysztof
