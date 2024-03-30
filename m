@@ -1,219 +1,152 @@
-Return-Path: <linux-kernel+bounces-125578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98DBC8928F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:56:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665898928F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:55:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68B0E1C21261
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:56:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CDE01C20F72
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F04B46B8;
-	Sat, 30 Mar 2024 02:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5611C3E;
+	Sat, 30 Mar 2024 02:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jHWkLFv8"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="TbqJ7lQU"
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D6D68F5C;
-	Sat, 30 Mar 2024 02:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4D917F6
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711767385; cv=none; b=srSi5DaXDzC/5B4/0GJA1Ks62t656nSc5Da4NIMwguI95/AXNEkrWRncTgnjHY9/lRrpO+GbpSNc9MCwo8uV7gWpwmoywssXQDk7qN3ROAuaDPmNh1cahZnIrrVByiMqbe8O11vLAoyaGWjeUzbQxfwXiP6zMePXOUr4qH3HjJI=
+	t=1711767349; cv=none; b=AWJ0DDn0Prm+lT7stfpiEFkEBaenHaDMEC08Pzsqf8NuFjo535VcrlrrAr6peXfnvScAQfWUiT6sKTcbvOsVbZxflNLeDE3xYXzCekESyIsXjt2dm3uvcACeThpNqWP9u5eyds1B3AgPmBj4xER2eeK+94z64YKGfQbaxMdM1lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711767385; c=relaxed/simple;
-	bh=ok6Xi4r2K06RgcDE9nmIMbn+6DIbBOa43maW16T1yVI=;
+	s=arc-20240116; t=1711767349; c=relaxed/simple;
+	bh=0VnDNUx5No0InUGDHz18xd4XvgnzvL/GPmTikaNRNSk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rs3Gj2yq+hNpGXrtg1EpwbiNgUpdbH2qFQ957pAIukZkY9Gpjxej25C7IKDYDClz9cnsUxf1A00AJeO11PqSeWcHYo+ZYnG+3462RV/vc9Wvhln2VP+JCwTphezuiqvMrTR3nGsoWgx0ph9QKGr/SHJ+3y4uPZBXEf4jzmcAfts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jHWkLFv8; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711767382; x=1743303382;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ok6Xi4r2K06RgcDE9nmIMbn+6DIbBOa43maW16T1yVI=;
-  b=jHWkLFv8tyGsu+dC9xzv5tEjOdhkFr3QO7XxQlcj19Xf8C4hhiWLoVm8
-   Q49XU+5go5eeNlJO0Om1xoOxINI3bePYx74F75PjBet1Nj26HlbcTGoLe
-   ugZFa8z/LPt7VeRcnzTGj/kqR5RRYbFi43PbSE+KJ3u08LXKe8mCb890J
-   RW16iICAcldH3zxM6Ssy2Kkhf38cGI2m68dp61Xw2v32e3/KTzbogdrl9
-   BkGcZLYIBR0/XK8O2HYwhPX3j/oHJqpU3rZTPbbDR1xywhWZi3k7ha6Ic
-   Ujm3C3zgY9sL7bS11c9VMiHmy91obrGlw+Ioansz9vh/9am+ufvUxIDEM
-   w==;
-X-CSE-ConnectionGUID: PqcPxvQdQ2qeSbuftC1T5w==
-X-CSE-MsgGUID: yHdOxQqLROSP2JDu/+FuXg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="7088278"
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="7088278"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 19:56:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="16971233"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 29 Mar 2024 19:56:17 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rqOtC-0003tW-1e;
-	Sat, 30 Mar 2024 02:56:14 +0000
-Date: Sat, 30 Mar 2024 10:55:15 +0800
-From: kernel test robot <lkp@intel.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com,
-	David Ahern <dsahern@kernel.org>, Simon Horman <horms@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	=?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: [PATCH net-next v1 5/9] net: dsa: microchip: add support for
- different DCB app configurations
-Message-ID: <202403301034.rVoygO9P-lkp@intel.com>
-References: <20240328160518.2396238-6-o.rempel@pengutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PbZ+/Lb6hxrzCsrTJBil6C5ORWaZJRMKj9iuJl/w/mJeB+fRAlbXg1WxKWv/7yUptkx6KPhMTP492sA2MErsbLFp5IcpbIoXIsOTspRK9oEGPqfiTD3v8liaDN50FN77sWSQ8aRjUj/cMfC/kebdRzQlvXlVhco9rUPEmsowuWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=TbqJ7lQU; arc=none smtp.client-ip=35.74.137.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=TbqJ7lQU;
+	dkim-atps=neutral
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id 49DB9B94
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:55:47 +0900 (JST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c65e666609so2029050a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1711767346; x=1712372146; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8glfhFm/X2eIF0Nkd61jE+/iOe2enj8BzdC/2dzRn+4=;
+        b=TbqJ7lQURAYRiLzRWgOxl19cKv8YG6mlF30+JYFIFCmiCjn6zVCp776wMgkBaxKqTV
+         QHhbUsuXBNN8r+8hYaIzLWijBbOWg9IyY2Ff9qhYdQ3h/vq3v1qatxOWZ1GihIrSmdhn
+         z4hq/1jGXQHVynXuqjZ5Kp7qmlYpfIAg3IYpn5Vp1vkSnme5koPhlQbjMAbebtsO5vd8
+         mfBgyP3T5yghtsyuOq2ReAQe2cdYDgrEp1jmJPLVjYl5rJpaTfIdVOylLwCgnclOyAcl
+         W6JwyN2Aq6lBk4EZuNowB1SKe2aU5Uu4xLRA+jZDdjxhB/dBL0DcANB8MnkCWw8T6d8P
+         5uAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711767346; x=1712372146;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8glfhFm/X2eIF0Nkd61jE+/iOe2enj8BzdC/2dzRn+4=;
+        b=Vnz7/VgWSQAdiX6bt33rAJ71XUAlALqV8nNBLOTUO4UGfS39gOLfTE4epOHRbOAKZf
+         iAq9mIlHQtHcaUkHrukgQOEZivvHaJG+wpVwF4A4DYv7fks6/Jv5mF9BsIMMNWu6PWMc
+         V7luYwDDLpLlMAAX0a7L2Iz8CB63WcqT+Okp6s/NoQHyuFSsYu1wV7iF+yOahA/wnEFR
+         Plwv0aNJFuLwC0+m7nuK87mxBgnYkYfjhzgX4a4DBvM5/EQdA+hiZemBlyJyLvg09YfE
+         3xgDusc4oZ946Ba5535wOd9W97U4gjV8dUFQZXaTT3LYmUIF2docz7USMvx0OfLawKul
+         7rFA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOQaIgJ6/N20bsf4ttzrair8WBc6CI1L3AdYIFgkrSsetEjsrnITT58Tk3SzQM0ntO9y2BupgjhrPjfkJkIwTgz96WNYmNMsT9M6A6
+X-Gm-Message-State: AOJu0YwJeRvaowN8+l3aIIQ+apXs1G+JJM+VEr5lNe410CqDrUhV3m+N
+	qyDcjgenjiiuvPJCVeFl8lh3I6kCsELVxWHRBn8Wx9TvWU7aMQzVkItlVoCaWB43+dEqAp+ZEcZ
+	E+szNOItPu7LCSH9mykYXwjgLNmWrFxmUIvJEd6GOYCZVuy9x2m3VEkK1GyK/1TM=
+X-Received: by 2002:a05:6a20:a128:b0:1a3:dc59:764a with SMTP id q40-20020a056a20a12800b001a3dc59764amr4414535pzk.37.1711767346189;
+        Fri, 29 Mar 2024 19:55:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH4xb6OliXnzmmC+a2AvHpBjl34nevNeqiwBBaQDRKuRe8GNrieLJEfK4fFkOXc+0OJ1x4pUQ==
+X-Received: by 2002:a05:6a20:a128:b0:1a3:dc59:764a with SMTP id q40-20020a056a20a12800b001a3dc59764amr4414518pzk.37.1711767345737;
+        Fri, 29 Mar 2024 19:55:45 -0700 (PDT)
+Received: from pc-0182.atmarktech (162.198.187.35.bc.googleusercontent.com. [35.187.198.162])
+        by smtp.gmail.com with ESMTPSA id x7-20020a170902a38700b001e0a08bbe49sm4225745pla.140.2024.03.29.19.55.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 29 Mar 2024 19:55:45 -0700 (PDT)
+Received: from martinet by pc-0182.atmarktech with local (Exim 4.96)
+	(envelope-from <martinet@pc-zest>)
+	id 1rqOsh-00B5mf-2u;
+	Sat, 30 Mar 2024 11:55:43 +0900
+Date: Sat, 30 Mar 2024 11:55:33 +0900
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "hch@lst.de" <hch@lst.de>,
+	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+	"robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+	"bumyong.lee@samsung.com" <bumyong.lee@samsung.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"will@kernel.org" <will@kernel.org>,
+	"petr@tesarici.cz" <petr@tesarici.cz>,
+	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>,
+	"lukas@mntmn.com" <lukas@mntmn.com>
+Subject: Re: [PATCH 1/1] swiotlb: Fix swiotlb_bounce() to do partial sync's
+ correctly
+Message-ID: <Zgd_JaCHzOOLqWUM@atmark-techno.com>
+References: <20240327034548.1959-1-mhklinux@outlook.com>
+ <ZgO3HlYWo6qXaGs8@atmark-techno.com>
+ <ZgZNAM337-UEY1DH@atmark-techno.com>
+ <SN6PR02MB41574B5BC91B70AE74E51FE6D43A2@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240328160518.2396238-6-o.rempel@pengutronix.de>
+In-Reply-To: <SN6PR02MB41574B5BC91B70AE74E51FE6D43A2@SN6PR02MB4157.namprd02.prod.outlook.com>
 
-Hi Oleksij,
+Michael Kelley wrote on Fri, Mar 29, 2024 at 03:18:16PM +0000:
+> * tlb_offset = 1 - 3 = -2, as you describe above
+> * orig_addr = 39 + -2 = 37.  The computation uses 39 from
+> slot[1], not the 7 from slot[0].  This computed 37 is the
+> correct orig_addr to use for the memcpy().
 
-kernel test robot noticed the following build errors:
+There are two things I don't understand here:
+1/ Why orig_addr would come from slot[1] ?
 
-[auto build test ERROR on net-next/main]
+We have index = (tlb_addr - mem->start) >> IO_TLB_SHIFT,
+so index = (33 - 7) >> 5 = 26 >> 5 = 0
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oleksij-Rempel/net-dsa-add-support-for-DCB-get-set-apptrust-configuration/20240329-000847
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240328160518.2396238-6-o.rempel%40pengutronix.de
-patch subject: [PATCH net-next v1 5/9] net: dsa: microchip: add support for different DCB app configurations
-config: i386-randconfig-012-20240330 (https://download.01.org/0day-ci/archive/20240330/202403301034.rVoygO9P-lkp@intel.com/config)
-compiler: gcc-12 (Ubuntu 12.3.0-9ubuntu2) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240330/202403301034.rVoygO9P-lkp@intel.com/reproduce)
+As such, orig_addr = mem->slots[0].orig_addr and we'd need the offset to
+be 30, not -2 ?
+Well, either work - if we fix index to point to the next slot in the
+negative case that's also acceptable if we're sure it's valid, but I'm
+worried it might not be in cases there was only one slot e.g. mapping
+[7; 34] and calling with 33 size 2 would try to access slot 1 with a
+negative offset in your example, but slot[0] is the last valid slot.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403301034.rVoygO9P-lkp@intel.com/
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+2/ Why is orig_addr 37 the correct address to use for memcpy, and not
+33? I'd think it's off by a "minimum alignment page", for me this
+computation only works if the dma_get_min_align size is bigger than io
+tlb size.
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/rcu/rcuscale.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/rcu/refscale.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/time/time_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/trace/preemptirq_delay_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/torture.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in mm/dmapool_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp737.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp860.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp862.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp866.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp936.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp949.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_cp950.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-2.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-5.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-7.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-13.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-cyrillic.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-gaelic.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-roman.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_ucs2_utils.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/bcachefs/mean_and_variance_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/binfmt_misc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/minix/minix.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/efs/efs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/qnx4/qnx4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/qnx6/qnx6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in security/keys/trusted-keys/trusted.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/algif_hash.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in block/t10-pi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/kunit/kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/kunit/kunit-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/kunit/kunit-example-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/crypto/libarc4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpio/gpio-gw-pld.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/backlight/rt4831-backlight.o
-WARNING: modpost: drivers/acpi/apei/einj: section mismatch in reference: einj_driver+0x8 (section: .data) -> einj_remove (section: .exit.text)
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/clk/clk-gate_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/virtio/virtio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/virtio/virtio_ring.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/regulator/max20411-regulator.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/tty/n_hdlc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/lp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/nvram.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/ppdev.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_kunit_helpers.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_buddy_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_cmdline_parser_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_connector_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_damage_helper_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_dp_mst_helper_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_exec_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_format_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_framebuffer_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_gem_shmem_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_managed_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_mm_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_modes_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_plane_helper_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_probe_helper_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tests/drm_rect_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/sil-sii8620.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tiny/gm12u320.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-ram.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-raw-ram.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/misc/open-dice.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/scsi/scsi_common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/scsi/aha1740.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/auxdisplay/charlcd.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/auxdisplay/hd44780_common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/host/xhci-pci-renesas.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/mon/usbmon.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/usb_debug.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/mxuport.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/usb-serial-simple.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/symbolserial.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/tests/input_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/tuners/tda9887.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/v4l2-core/v4l2-async.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/v4l2-core/v4l2-fwnode.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/twl4030_wdt.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_simple.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_sd8787.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_emmc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/sdio_uart.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/gsmi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/of/of_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_simpleondemand.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mbochs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kobject-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kset-example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kprobes/kprobe_example.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kprobes/kretprobe_example.o
->> ERROR: modpost: "ietf_dscp_to_ieee8021q_tt" [drivers/net/dsa/microchip/ksz_switch.ko] undefined!
->> ERROR: modpost: "ieee8021q_tt_to_tc" [drivers/net/dsa/microchip/ksz_switch.ko] undefined!
 
+> * size is still 4.  There's no computation in swiotlb_bounce()
+> that changes "size".
+> * alloc_size is pulled from slot[1], and is adjusted by tlb_offset.
+> This adjusted alloc_size isn't used for anything except as a sanity
+> check against "size".
+
+Right, sorry - so size is ok (assuming slot[1] is used, I conflated the
+two sizes.
+
+
+I'm probably still missing something here, thanks for bearing with me.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dominique
 
