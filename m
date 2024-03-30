@@ -1,134 +1,130 @@
-Return-Path: <linux-kernel+bounces-125715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75BE4892B02
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:56:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D55C892B09
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:58:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A5601F22479
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:56:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC3B5282E4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5089436B01;
-	Sat, 30 Mar 2024 11:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE72239AF4;
+	Sat, 30 Mar 2024 11:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bendiksen.me header.i=@bendiksen.me header.b="Es/zRBOv"
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m3qiuv6J"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F832C698;
-	Sat, 30 Mar 2024 11:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A363C38DDC;
+	Sat, 30 Mar 2024 11:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711799790; cv=none; b=e/3nBj4gUmFqiNGDcMSQqwBAJUQRpwxC+hNqU2qpotGRLWog0596IfwzD8tC7lhAXwcm8kIWmoRwoTTxFEBKB8Q6NGIvjIno71beU8c0QAFLzKYzXabkjy7LSfRUWgB7f3/NLaV897iafWCT8Ucu1VFktQaQyG+u9hd/CRURc4c=
+	t=1711799919; cv=none; b=MLH3+5tGpqnHUr9pZub2NJvHfJPPNyWrnB39ku+18bawxiqPX0UViCRZke2+PR785UCRQDZIwQ1oWDNxEPcjd443MoE/dnHx9dK7wT0ImxlPA5WaozX37KNdSSEDuM4NIwrqyvZ/ceHScbZYO4gSFtrsUrGQymB7Wo7YcecTdEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711799790; c=relaxed/simple;
-	bh=DxYnVnYZrsYQtt9xYwNqAJiZ5sywWI9iheNc4C4klQ4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qsJc88d9dQEwXff48UlJa6o7iSstiPMvV9hiWM6CxGfRa0n72MDdb6ibVWZEtZjsQSFOOd1uVm44gm5kodphonuDJH8gCa648VnYB6GV2JOvXiTdYyiSD/iwN00wBQZsEQXbCxZ5pPoSQv7uBXbz+PSfiuvRB7ZlqDbkSV5//7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bendiksen.me; spf=pass smtp.mailfrom=bendiksen.me; dkim=pass (2048-bit key) header.d=bendiksen.me header.i=@bendiksen.me header.b=Es/zRBOv; arc=none smtp.client-ip=185.70.40.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bendiksen.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bendiksen.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bendiksen.me;
-	s=protonmail; t=1711799777; x=1712058977;
-	bh=VFZVe2OuWeMsGVWtzIXudU5I+IjHuYH6TozJ6x2gAO8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Es/zRBOvagohReC5ltdeIDR57lPGD96npjg4HAEipPM3di2lMNtpy5fwFkiSEG41i
-	 U0cFCLZhr2wO5QPZckWuO8JDGsMLUCjtPGI5qxOB6SqFMmPJKkNiAB7Y+GYjX7Mel0
-	 2n3KBhH9oVuZaRpV9P1oDiz7PyGfyxWGQP9Sf83EjfQdhfICAIoVmp+ca0OwCwWC69
-	 5n1ZFDIiltt+6k0ueHToA2YcPJBkjC35RfUpz/VTvXmkmBpGmK0rGqaz0BRGl/h9Oo
-	 Rtzixb6yZuP9WNUayOutTVFiyUiGK83ONXm8cupvcHHrZhqPhH2C4lxEBdvsBM1LoV
-	 m6jGoS0KUq17w==
-Date: Sat, 30 Mar 2024 11:56:09 +0000
-To: james.schulman@cirrus.com, david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com, sbinding@opensource.cirrus.com, kailang@realtek.com, luke@ljones.dev, shenghao-ding@ti.com, foss@athaariq.my.id, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Christian@bendiksen.me
-Cc: Christian Bendiksen <christian@bendiksen.me>
-Subject: [PATCH v2] Add sound quirks for Lenovo Legion slim 7 16ARHA7 models.
-Message-ID: <20240330115554.27895-1-christian@bendiksen.me>
-In-Reply-To: <87r0fsnmky.wl-tiwai@suse.de>
-References: <20240329185406.9802-1-christian@bendiksen.me> <87r0fsnmky.wl-tiwai@suse.de>
-Feedback-ID: 100541561:user:proton
+	s=arc-20240116; t=1711799919; c=relaxed/simple;
+	bh=ynfTQ/GVycFwNXOPFSe6F0brkpnNBWsKnsVlyJvCxJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U28qVO+cpz0uk3BduDvy6kk62IDbn+WXCPW5TbM5D9+6d/0+fQ44Xfay9+hrS2Y7Mj5QYrqG97rao3F8D3Y7sU5FvplCSGca/z+6FWoGW9np6PPRkgqp/6cgC0X0+d/GKpAu0Yqxp2kDVix/m8tNMZydN6Pa9zjGiGFzPTkrh4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m3qiuv6J; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711799916; x=1743335916;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ynfTQ/GVycFwNXOPFSe6F0brkpnNBWsKnsVlyJvCxJE=;
+  b=m3qiuv6JhVTcRCBoUSmri3xcu54TsZ8Z4sZ31keiDoP1Jif+i/tL/oMR
+   a02vwR1z8SlmHXQdOLd49CcKt+l3xwYVapoN1dN/5D7orWtFdqev2W8pH
+   H6mJYEdQwD4gISnfRxpSbkzueNTRIfgXuo0Qd3SNG0bbUdUH1tFfnRBSI
+   Mmlbe+SWNqZ7BI9qxIts2BXmtWhjmmhry+XRtgLjqvtLJkcRi/krfUX/B
+   HZ8TGI3Cdl5YvT9EPbxkgxPAqyHmqMt99UaLUNVtNtwrcbcJkIAP+RwRj
+   4hX+oj+/EAimr7WoTUi6aGs3m+GKrOxUv68CW8S/Whz8ejYi5L0Wf5ZC2
+   Q==;
+X-CSE-ConnectionGUID: IRqAldnrRdmu1RXH9IfrZA==
+X-CSE-MsgGUID: 4jUVBjVFQkOvFZJlAP3zvg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="18120529"
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="18120529"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2024 04:58:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="17292158"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 30 Mar 2024 04:58:30 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqXLv-0004EM-2E;
+	Sat, 30 Mar 2024 11:58:27 +0000
+Date: Sat, 30 Mar 2024 19:58:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: wefu@redhat.com, jszhang@kernel.org, guoren@kernel.org,
+	conor@kernel.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, jic23@kernel.org,
+	lars@metafoo.de, andriy.shevchenko@linux.intel.com,
+	nuno.sa@analog.com, marcelo.schmitt@analog.com,
+	bigunclemax@gmail.com, marius.cristea@microchip.com,
+	fr0st61te@gmail.com, okan.sahin@analog.com,
+	marcus.folkesson@gmail.com, schnelle@linux.ibm.com, lee@kernel.org,
+	mike.looijmans@topic.nl
+Cc: oe-kbuild-all@lists.linux.dev, linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-iio@vger.kernel.org, Wei Fu <wefu@redhat.com>
+Subject: Re: [PATCH 3/3] dt-bindings: adc: Document XuanTie TH1520 ADC
+Message-ID: <202403301900.9wSnTE6y-lkp@intel.com>
+References: <20240329200241.4122000-4-wefu@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329200241.4122000-4-wefu@redhat.com>
 
-From: Christian Bendiksen <christian@bendiksen.me>
+Hi,
 
-This fixes the sound not working from internal speakers on
-Lenovo Legion Slim 7 16ARHA7 models. The correct subsystem ID
-have been added to cs35l41_hda_property.c and patch_realtek.c.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Christian Bendiksen <christian@bendiksen.me>
----
- sound/pci/hda/cs35l41_hda_property.c | 4 ++++
- sound/pci/hda/patch_realtek.c        | 2 ++
- 2 files changed, 6 insertions(+)
+[auto build test WARNING on jic23-iio/togreg]
+[also build test WARNING on robh/for-next linus/master v6.9-rc1 next-20240328]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_h=
-da_property.c
-index 72ec872afb8d..d6ea3ab72f75 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -109,6 +109,8 @@ static const struct cs35l41_config cs35l41_config_table=
-[] =3D {
- =09{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1=
-, 0, 0, 0, 0 },
- =09{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2,=
- 0, 0, 0, 0 },
- =09{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1=
-, -1, 0, 0, 0 },
-+=09{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
-+=09{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
- =09{ "17AA38A9", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2,=
- -1, 0, 0, 0 },
- =09{ "17AA38AB", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2,=
- -1, 0, 0, 0 },
- =09{ "17AA38B4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
-@@ -497,6 +499,8 @@ static const struct cs35l41_prop_model cs35l41_prop_mod=
-el_table[] =3D {
- =09{ "CSC3551", "10431F1F", generic_dsd_config },
- =09{ "CSC3551", "10431F62", generic_dsd_config },
- =09{ "CSC3551", "17AA386F", generic_dsd_config },
-+=09{ "CSC3551", "17AA3877", generic_dsd_config },
-+=09{ "CSC3551", "17AA3878", generic_dsd_config },
- =09{ "CSC3551", "17AA38A9", generic_dsd_config },
- =09{ "CSC3551", "17AA38AB", generic_dsd_config },
- =09{ "CSC3551", "17AA38B4", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a17c36a36aa5..0fb2d23b3d35 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10333,6 +10333,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
-] =3D {
- =09SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9=
-_14IAP7_BASS_SPK_PIN),
- =09SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_=
-I2C_2),
- =09SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA=
-7_14ARB7_I2C),
-+=09SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FI=
-XUP_CS35L41_I2C_2"),
-+=09SND_PCI_QUIRK(0x17aa, 0x3878, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FI=
-XUP_CS35L41_I2C_2"),
- =09SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP=
-_TAS2781_I2C),
- =09SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_=
-TAS2781_I2C),
- =09SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_T=
-AS2781_I2C),
---=20
-2.44.0
+url:    https://github.com/intel-lab-lkp/linux/commits/wefu-redhat-com/drivers-iio-adc-Add-XuanTie-TH1520-ADC-driver/20240330-041029
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/20240329200241.4122000-4-wefu%40redhat.com
+patch subject: [PATCH 3/3] dt-bindings: adc: Document XuanTie TH1520 ADC
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240330/202403301900.9wSnTE6y-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403301900.9wSnTE6y-lkp@intel.com/
 
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/iio/adc/thead,th1520.yaml:45:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+--
+>> Documentation/devicetree/bindings/iio/adc/thead,th1520.yaml:45:1: found a tab character where an indentation space is expected
+--
+>> Documentation/devicetree/bindings/iio/adc/thead,th1520.yaml: ignoring, error parsing file
+
+vim +45 Documentation/devicetree/bindings/iio/adc/thead,th1520.yaml
+
+    41	
+    42	examples:
+    43	  - |
+    44	    adc: adc@0xfffff51000 {
+  > 45		compatible = "thead,th1520-adc";
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
