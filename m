@@ -1,363 +1,155 @@
-Return-Path: <linux-kernel+bounces-125554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 023EE892879
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:44:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 346E789287C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD628282FB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:44:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CFF31C21060
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3941851;
-	Sat, 30 Mar 2024 00:44:30 +0000 (UTC)
-Received: from mail78-36.sinamail.sina.com.cn (mail78-36.sinamail.sina.com.cn [219.142.78.36])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC4B15A5;
+	Sat, 30 Mar 2024 00:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="haU03qxE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0893315A5
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 00:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060EE7E2;
+	Sat, 30 Mar 2024 00:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711759470; cv=none; b=FZH7khzmBmrimNIVdvleGlUVQrZNlwy9EwDj7ShQDnihNcBLxHlZgBRr2Pld2zvj2Fg/Ri3oz1asVvwfob7RVN483h4OrL/Vzc/xMLOIGqNGNirHnarjv23FkS9iu+CXvfyQSGH30gBc2O/AqPMoM8nZLivLJccTNQJDgrzlEVo=
+	t=1711759879; cv=none; b=rPLTkdSkkXYbTSIShxKWdMNnyvp7KyrgQxfNcPNGv6KM1F/gY5vvg0zzzIR3QamP/WHrKiL3A7Tppt81O0U9z3/eh0oVXg7F4TN0uNruyxUbo7UiGwUa9HMcGsk+NwLtjdrJ1UeKXLZmlwYaWTTiMzFpyUTv6sRWdCTUqqrFH2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711759470; c=relaxed/simple;
-	bh=nN4mtHY5Dy2NrqXQ/PjAl5CPlhspfTpJcesdAeifHqw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KPMXDTbs0gbNUbzCB84usQ+dTmyesBjjGKqgTmpA159QEBAwyw+rTYUUk/dC0g+BSBYd6RzswVwT2cG6a0MZ1lpFzDGXUKgvBLJpFM6RcBygEaFS9YyPRlGl3QDhUnwnzq2tA9u2Q1jfHdK80Qb/U9fNza4ipcad13dcHF1MGbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.66.4])
-	by sina.com (172.16.235.25) with ESMTP
-	id 6607605D000042EB; Sat, 30 Mar 2024 08:44:15 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 96055534210352
-X-SMAIL-UIID: A69F55032F164062B1F8A96B62820DFD-20240330-084415-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [audit?] [bpf?] INFO: rcu detected stall in kauditd_thread (4)
-Date: Sat, 30 Mar 2024 08:44:05 +0800
-Message-Id: <20240330004405.3091-1-hdanton@sina.com>
-In-Reply-To: <000000000000d929dd0614a8ba8c@google.com>
-References: 
+	s=arc-20240116; t=1711759879; c=relaxed/simple;
+	bh=ODnfLfkBj5ljw1xXMK6fJA76YDJnmnHivymq9LFP4Do=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=obLzZrNXTXy3/0YJaRQl4spVflMxVlBp0mn74NIkvVnlpOwtF1R+pJ3YJ34oRuPBi+1l1mEzWBgW9SE25LUDMOkjxlkFUEgxeDFe5aITaFbXRrA7R6CPd35xeLS0C/8XBKg5cRqLMVK6q5bDmy572HEfccE+QC48QYaomFxZnAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=haU03qxE; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711759878; x=1743295878;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ODnfLfkBj5ljw1xXMK6fJA76YDJnmnHivymq9LFP4Do=;
+  b=haU03qxE+o1z+PhWJnhJVzm99N6zw/sPmZyTcBr4rfZaEO+IQdnQStx1
+   P43e9UDvx93mM1Y0CCeWY8rJMd6+igrUMGODlEXYQ1BhJVYb8FbdTToPn
+   bo1PuB6r8K44XiWJ19BGVz45qcGeZpL0GUiiVnA1qg0LCcgWqL+3HvIVa
+   Dj56YLzLgt3OoXIl6Dch1X0rhPXZuJRSGaTEuFRjZJHpCRb92fFkuGjlN
+   umNwIS/Z+qDpaaIoGHgO4zomPbYnujGHaUuwDwqq6W9KPlNvFdN+LaQXR
+   //o8dSV7BgIdQebiVMg/UuuIAQpyNidm+KwNDG90nMt99KZPcx84n86Vh
+   A==;
+X-CSE-ConnectionGUID: M+Ui7euPR7ayiazuMSgrfg==
+X-CSE-MsgGUID: lZYH3KpHRHyRTFJIfEdXfg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="6893849"
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="6893849"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 17:51:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="16950694"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 29 Mar 2024 17:51:14 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqMwB-0003ny-14;
+	Sat, 30 Mar 2024 00:51:11 +0000
+Date: Sat, 30 Mar 2024 08:51:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Richard Zhu <hongxing.zhu@nxp.com>, vkoul@kernel.org, kishon@kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, frank.li@nxp.com
+Cc: oe-kbuild-all@lists.linux.dev, hongxing.zhu@nxp.com,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de, linux-imx@nxp.com
+Subject: Re: [PATCH v1 3/3] phy: freescale: imx8q-hsio: Add i.MX8Q HSIO PHY
+ driver support
+Message-ID: <202403300825.mjcHpoRu-lkp@intel.com>
+References: <1711699790-16494-4-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1711699790-16494-4-git-send-email-hongxing.zhu@nxp.com>
 
-On Wed, 27 Mar 2024 11:39:42 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112840ee180000
+Hi Richard,
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+kernel test robot noticed the following build errors:
 
---- x/net/sched/sch_taprio.c
-+++ y/net/sched/sch_taprio.c
-@@ -980,7 +980,7 @@ first_run:
- 	rcu_assign_pointer(q->current_entry, next);
- 	spin_unlock(&q->current_entry_lock);
- 
--	hrtimer_set_expires(&q->advance_timer, end_time);
-+	hrtimer_forward_now(&q->advance_timer, ns_to_ktime(NSEC_PER_USEC *200));
- 
- 	rcu_read_lock();
- 	__netif_schedule(sch);
---- x/mm/page_owner.c
-+++ y/mm/page_owner.c
-@@ -196,7 +196,8 @@ static void add_stack_record_to_list(str
- 	spin_unlock_irqrestore(&stack_list_lock, flags);
- }
- 
--static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask)
-+static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask,
-+				   int nr_base_pages)
- {
- 	struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
- 
-@@ -217,20 +218,74 @@ static void inc_stack_record_count(depot
- 			/* Add the new stack_record to our list */
- 			add_stack_record_to_list(stack_record, gfp_mask);
- 	}
--	refcount_inc(&stack_record->count);
-+	refcount_add(nr_base_pages, &stack_record->count);
- }
- 
--static void dec_stack_record_count(depot_stack_handle_t handle)
-+static void dec_stack_record_count(depot_stack_handle_t handle,
-+				   int nr_base_pages)
- {
- 	struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
- 
--	if (stack_record)
--		refcount_dec(&stack_record->count);
-+	if (!stack_record)
-+		return;
-+
-+	if (refcount_sub_and_test(nr_base_pages, &stack_record->count))
-+		pr_warn("%s: refcount went to 0 for %u handle\n", __func__,
-+			handle);
- }
- 
--void __reset_page_owner(struct page *page, unsigned short order)
-+static inline void __update_page_owner_handle(struct page_ext *page_ext,
-+					      depot_stack_handle_t handle,
-+					      unsigned short order,
-+					      gfp_t gfp_mask,
-+					      short last_migrate_reason, u64 ts_nsec,
-+					      pid_t pid, pid_t tgid, char *comm)
- {
- 	int i;
-+	struct page_owner *page_owner;
-+
-+	for (i = 0; i < (1 << order); i++) {
-+		page_owner = get_page_owner(page_ext);
-+		page_owner->handle = handle;
-+		page_owner->order = order;
-+		page_owner->gfp_mask = gfp_mask;
-+		page_owner->last_migrate_reason = last_migrate_reason;
-+		page_owner->pid = pid;
-+		page_owner->tgid = tgid;
-+		page_owner->ts_nsec = ts_nsec;
-+		strscpy(page_owner->comm, comm,
-+			sizeof(page_owner->comm));
-+		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
-+		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
-+		page_ext = page_ext_next(page_ext);
-+	}
-+}
-+
-+static inline void __update_page_owner_free_handle(struct page_ext *page_ext,
-+						   depot_stack_handle_t handle,
-+						   unsigned short order,
-+						   pid_t pid, pid_t tgid,
-+						   u64 free_ts_nsec)
-+{
-+	int i;
-+	struct page_owner *page_owner;
-+
-+	for (i = 0; i < (1 << order); i++) {
-+		page_owner = get_page_owner(page_ext);
-+		/* Only __reset_page_owner() wants to clear the bit */
-+		if (handle) {
-+			__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
-+			page_owner->free_handle = handle;
-+		}
-+		page_owner->free_ts_nsec = free_ts_nsec;
-+		page_owner->free_pid = current->pid;
-+		page_owner->free_tgid = current->tgid;
-+		page_ext = page_ext_next(page_ext);
-+	}
-+}
-+
-+void __reset_page_owner(struct page *page, unsigned short order)
-+{
- 	struct page_ext *page_ext;
- 	depot_stack_handle_t handle;
- 	depot_stack_handle_t alloc_handle;
-@@ -245,16 +300,10 @@ void __reset_page_owner(struct page *pag
- 	alloc_handle = page_owner->handle;
- 
- 	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
--	for (i = 0; i < (1 << order); i++) {
--		__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
--		page_owner->free_handle = handle;
--		page_owner->free_ts_nsec = free_ts_nsec;
--		page_owner->free_pid = current->pid;
--		page_owner->free_tgid = current->tgid;
--		page_ext = page_ext_next(page_ext);
--		page_owner = get_page_owner(page_ext);
--	}
-+	__update_page_owner_free_handle(page_ext, handle, order, current->pid,
-+					current->tgid, free_ts_nsec);
- 	page_ext_put(page_ext);
-+
- 	if (alloc_handle != early_handle)
- 		/*
- 		 * early_handle is being set as a handle for all those
-@@ -263,39 +312,14 @@ void __reset_page_owner(struct page *pag
- 		 * the machinery is not ready yet, we cannot decrement
- 		 * their refcount either.
- 		 */
--		dec_stack_record_count(alloc_handle);
--}
--
--static inline void __set_page_owner_handle(struct page_ext *page_ext,
--					depot_stack_handle_t handle,
--					unsigned short order, gfp_t gfp_mask)
--{
--	struct page_owner *page_owner;
--	int i;
--	u64 ts_nsec = local_clock();
--
--	for (i = 0; i < (1 << order); i++) {
--		page_owner = get_page_owner(page_ext);
--		page_owner->handle = handle;
--		page_owner->order = order;
--		page_owner->gfp_mask = gfp_mask;
--		page_owner->last_migrate_reason = -1;
--		page_owner->pid = current->pid;
--		page_owner->tgid = current->tgid;
--		page_owner->ts_nsec = ts_nsec;
--		strscpy(page_owner->comm, current->comm,
--			sizeof(page_owner->comm));
--		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
--		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
--
--		page_ext = page_ext_next(page_ext);
--	}
-+		dec_stack_record_count(alloc_handle, 1 << order);
- }
- 
- noinline void __set_page_owner(struct page *page, unsigned short order,
- 					gfp_t gfp_mask)
- {
- 	struct page_ext *page_ext;
-+	u64 ts_nsec = local_clock();
- 	depot_stack_handle_t handle;
- 
- 	handle = save_stack(gfp_mask);
-@@ -303,9 +327,11 @@ noinline void __set_page_owner(struct pa
- 	page_ext = page_ext_get(page);
- 	if (unlikely(!page_ext))
- 		return;
--	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
-+	__update_page_owner_handle(page_ext, handle, order, gfp_mask, -1,
-+				   current->pid, current->tgid, ts_nsec,
-+				   current->comm);
- 	page_ext_put(page_ext);
--	inc_stack_record_count(handle, gfp_mask);
-+	inc_stack_record_count(handle, gfp_mask, 1 << order);
- }
- 
- void __set_page_owner_migrate_reason(struct page *page, int reason)
-@@ -342,7 +368,7 @@ void __folio_copy_owner(struct folio *ne
- {
- 	struct page_ext *old_ext;
- 	struct page_ext *new_ext;
--	struct page_owner *old_page_owner, *new_page_owner;
-+	struct page_owner *old_page_owner;
- 
- 	old_ext = page_ext_get(&old->page);
- 	if (unlikely(!old_ext))
-@@ -355,31 +381,21 @@ void __folio_copy_owner(struct folio *ne
- 	}
- 
- 	old_page_owner = get_page_owner(old_ext);
--	new_page_owner = get_page_owner(new_ext);
--	new_page_owner->order = old_page_owner->order;
--	new_page_owner->gfp_mask = old_page_owner->gfp_mask;
--	new_page_owner->last_migrate_reason =
--		old_page_owner->last_migrate_reason;
--	new_page_owner->handle = old_page_owner->handle;
--	new_page_owner->pid = old_page_owner->pid;
--	new_page_owner->tgid = old_page_owner->tgid;
--	new_page_owner->free_pid = old_page_owner->free_pid;
--	new_page_owner->free_tgid = old_page_owner->free_tgid;
--	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
--	new_page_owner->free_ts_nsec = old_page_owner->ts_nsec;
--	strcpy(new_page_owner->comm, old_page_owner->comm);
--
-+	__update_page_owner_handle(new_ext, old_page_owner->handle,
-+				   old_page_owner->order, old_page_owner->gfp_mask,
-+				   old_page_owner->last_migrate_reason,
-+				   old_page_owner->ts_nsec, old_page_owner->pid,
-+				   old_page_owner->tgid, old_page_owner->comm);
- 	/*
--	 * We don't clear the bit on the old folio as it's going to be freed
--	 * after migration. Until then, the info can be useful in case of
--	 * a bug, and the overall stats will be off a bit only temporarily.
--	 * Also, migrate_misplaced_transhuge_page() can still fail the
--	 * migration and then we want the old folio to retain the info. But
--	 * in that case we also don't need to explicitly clear the info from
--	 * the new page, which will be freed.
-+	 * Do not proactively clear PAGE_EXT_OWNER{_ALLOCATED} bits as the folio
-+	 * will be freed after migration. Keep them until then as they may be
-+	 * useful.
- 	 */
--	__set_bit(PAGE_EXT_OWNER, &new_ext->flags);
--	__set_bit(PAGE_EXT_OWNER_ALLOCATED, &new_ext->flags);
-+	__update_page_owner_free_handle(new_ext, 0, old_page_owner->order,
-+					old_page_owner->free_pid,
-+					old_page_owner->free_tgid,
-+					old_page_owner->free_ts_nsec);
-+
- 	page_ext_put(new_ext);
- 	page_ext_put(old_ext);
- }
-@@ -787,8 +803,9 @@ static void init_pages_in_zone(pg_data_t
- 				goto ext_put_continue;
- 
- 			/* Found early allocated page */
--			__set_page_owner_handle(page_ext, early_handle,
--						0, 0);
-+			__update_page_owner_handle(page_ext, early_handle, 0, 0,
-+						   -1, local_clock(), current->pid,
-+						   current->tgid, current->comm);
- 			count++;
- ext_put_continue:
- 			page_ext_put(page_ext);
-@@ -861,11 +878,11 @@ static void *stack_next(struct seq_file
- 	return stack;
- }
- 
--static unsigned long page_owner_stack_threshold;
-+static unsigned long page_owner_pages_threshold;
- 
- static int stack_print(struct seq_file *m, void *v)
- {
--	int i, stack_count;
-+	int i, nr_base_pages;
- 	struct stack *stack = v;
- 	unsigned long *entries;
- 	unsigned long nr_entries;
-@@ -876,14 +893,14 @@ static int stack_print(struct seq_file *
- 
- 	nr_entries = stack_record->size;
- 	entries = stack_record->entries;
--	stack_count = refcount_read(&stack_record->count) - 1;
-+	nr_base_pages = refcount_read(&stack_record->count) - 1;
- 
--	if (stack_count < 1 || stack_count < page_owner_stack_threshold)
-+	if (nr_base_pages < 1 || nr_base_pages < page_owner_pages_threshold)
- 		return 0;
- 
- 	for (i = 0; i < nr_entries; i++)
- 		seq_printf(m, " %pS\n", (void *)entries[i]);
--	seq_printf(m, "stack_count: %d\n\n", stack_count);
-+	seq_printf(m, "nr_base_pages: %d\n\n", nr_base_pages);
- 
- 	return 0;
- }
-@@ -913,13 +930,13 @@ static const struct file_operations page
- 
- static int page_owner_threshold_get(void *data, u64 *val)
- {
--	*val = READ_ONCE(page_owner_stack_threshold);
-+	*val = READ_ONCE(page_owner_pages_threshold);
- 	return 0;
- }
- 
- static int page_owner_threshold_set(void *data, u64 val)
- {
--	WRITE_ONCE(page_owner_stack_threshold, val);
-+	WRITE_ONCE(page_owner_pages_threshold, val);
- 	return 0;
- }
- 
---
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on linus/master v6.9-rc1 next-20240328]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Zhu/dt-bindings-phy-Add-i-MX8Q-HSIO-SerDes-PHY-binding/20240329-162937
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/1711699790-16494-4-git-send-email-hongxing.zhu%40nxp.com
+patch subject: [PATCH v1 3/3] phy: freescale: imx8q-hsio: Add i.MX8Q HSIO PHY driver support
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240330/202403300825.mjcHpoRu-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240330/202403300825.mjcHpoRu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403300825.mjcHpoRu-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/phy/freescale/phy-fsl-imx8q-hsio.c: In function 'imx8q_hsio_set_mode':
+>> drivers/phy/freescale/phy-fsl-imx8q-hsio.c:367:15: error: implicit declaration of function 'FIELD_PREP' [-Werror=implicit-function-declaration]
+     367 |         val = FIELD_PREP(MODE_MASK, val);
+         |               ^~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/FIELD_PREP +367 drivers/phy/freescale/phy-fsl-imx8q-hsio.c
+
+   355	
+   356	static int imx8q_hsio_set_mode(struct phy *phy, enum phy_mode mode,
+   357					   int submode)
+   358	{
+   359		u32 val;
+   360		struct imx8q_hsio_lane *lane = phy_get_drvdata(phy);
+   361		struct imx8q_hsio_priv *priv = lane->priv;
+   362	
+   363		if (lane->lane_mode != mode)
+   364			return -EINVAL;
+   365	
+   366		val = (mode == PHY_MODE_PCIE) ? MODE_PCIE : MODE_SATA;
+ > 367		val = FIELD_PREP(MODE_MASK, val);
+   368		regmap_update_bits(priv->phy, lane->phy_off + CTRL0, MODE_MASK, val);
+   369	
+   370		switch (submode) {
+   371		case PHY_MODE_PCIE_RC:
+   372			val = FIELD_PREP(DEVICE_TYPE_MASK, PCI_EXP_TYPE_ROOT_PORT);
+   373			break;
+   374		case PHY_MODE_PCIE_EP:
+   375			val = FIELD_PREP(DEVICE_TYPE_MASK, PCI_EXP_TYPE_ENDPOINT);
+   376			break;
+   377		default: /* Support only PCIe EP and RC now. */
+   378			return 0;
+   379		}
+   380		if (submode)
+   381			regmap_update_bits(priv->ctrl, lane->ctrl_off + CTRL0,
+   382					   DEVICE_TYPE_MASK, val);
+   383	
+   384		return 0;
+   385	}
+   386	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
