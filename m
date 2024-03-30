@@ -1,197 +1,109 @@
-Return-Path: <linux-kernel+bounces-125643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CEBF8929FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:19:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD36D892A00
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:20:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A6C41C213D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:19:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DCE41F22392
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E503C154;
-	Sat, 30 Mar 2024 09:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81366C154;
+	Sat, 30 Mar 2024 09:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="leTYvJLk"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VwNLVC3p"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84180BE6E
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0BEBE6B;
+	Sat, 30 Mar 2024 09:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711790347; cv=none; b=Vj1TqZA54qfXIuBsMcwvJDavzlgcmP8TPbmq4zST9shLrnIiz5AGIqJg/YjMTqanW/mHxLF2+XNxpcvxeN9F9Eajgk74H7dPLS8kqAgkoZV2nc7OZwwK7Zj5Zn2C6DSPQNOuDIfleUV4f/NfI+iblCs8ZbKGCfhWMeJ5qD6AqTI=
+	t=1711790400; cv=none; b=I025abyA03m/L66vJVWBuuMaBnirdY7F+Hlr2io2A7js3dtDxOhJ0faQmHxXbk0kl/5Odco+33xIV+rI/X0ycQXTxKIwi77AnI3ib0318qid4Xrh3SSqvEv7wf/S6oWAzjW9rY39EjrhROuJm9E6wYGCaxrHcgrnD0HC30OX004=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711790347; c=relaxed/simple;
-	bh=0suOraaECYMo15P8nmZkCgdQpYtmA7vb1nvVoPqV31I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FzUdBEiTwbQoP5Q86tQFdBHKbCK7aqjHLk77mXd6O14ni8sXIezhMZjh80eVCU9nzzI9JTfl3LShe8I3HxrMsadkigbnr/7raeAuWrVwF9UYMTBR0vAG/cKRc9g/kLkoG+xMu2mU2MbFDcG9b/UJst6LjorUak85pxyuA29BMDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=leTYvJLk; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-415584360c0so2061885e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711790344; x=1712395144; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=w1mk8zBRQYHVvICPsS2N4XIcQtvQjqHklPuab2TK6cg=;
-        b=leTYvJLk4BTuf1OnA1gmkenO7UefmrXyR7vpBFKtcchvjE0BKWtYXy/F6udNlv4NmC
-         mzq2/Urc4My3Cm5MZXbrA5aBDdzXSclBjJPuQB7Vxu7co7IQo5xNdJle+tS1ql7rcLU3
-         XhrtS2g5o1/v0qzmj86IsBS8K5gJKgdze29YpfEHOpyrX4ccxkv5YTU9lFyvqXZXnqdE
-         D8acZbB+fnrZfxLXjwUlRFezCUE9d5LVwNXcGU9eW+hvSi4Y5reioFw+2ErBO1XF9EG7
-         AcHlB5ffDg2SDlv9zxeEQ1iZ35fej/lTEskQmYYWBSK9tT2Vb2BfTXEWzSfL65QJUcN/
-         4Rkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711790344; x=1712395144;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w1mk8zBRQYHVvICPsS2N4XIcQtvQjqHklPuab2TK6cg=;
-        b=rN6m4ypu6AU6CAnhphrERjMt3AtrTiJSXMN47uWfu7pFLr4QtLp3GaPjUw61oZoGa5
-         HWtDsdrjOfIgYil0kbcwOPyOoRrTewJejXumxNu/u/zDyzcY7hz02n/aSNizfv49/upq
-         MgmtcyiPek5mHL7zo+FEIsaKhox27q1CMXZPtRxlYUSIqO4P0XvojIRwu+hulrh7Y4aJ
-         ebPnN+esFzjwKSjkM9JvP3zAmh43ntGArJAnm0cAxMvTdaH8xloWpDWSTpp41wcYW3UL
-         g6Ihl7twT/JZwZH49EWmTMkgEO3sasmnU+UodqCRzpKSpF97TSpPRVxXcAcRExBNXJ6U
-         xJBg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVteLdj5S3AiLTenLQLr34r2jgDO+NvfvWGB3eHi8CEG+GqStaV1emVAtw4Fa/rzmQL41YlzVLhqdVcqcjeLIlIdatpXxW+g8o4Ab8
-X-Gm-Message-State: AOJu0YxLxXlPacVx0ViMeLl8nv/6qRMmwv4rIcZZk0xXxhtLU3j2rFSZ
-	8+Jt0ETClt9v077+07xJpaebeA1QxHP0ML/u+36I/rbapVl+Fic66qZsNMxIMPI=
-X-Google-Smtp-Source: AGHT+IGGh6i7z5ymu7YxZxlPO5JyJtK4NDilT7dbif1JUNG5Nd+SS9lsd02nT+psaFpiT2qAGBvO2g==
-X-Received: by 2002:a05:600c:2216:b0:414:8889:5a39 with SMTP id z22-20020a05600c221600b0041488895a39mr3050994wml.17.1711790343822;
-        Sat, 30 Mar 2024 02:19:03 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id g16-20020a05600c311000b004148670f9ecsm7985933wmo.23.2024.03.30.02.19.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 02:19:03 -0700 (PDT)
-Message-ID: <196f906e-2af5-48ed-85c7-8589becd480a@linaro.org>
-Date: Sat, 30 Mar 2024 10:19:01 +0100
+	s=arc-20240116; t=1711790400; c=relaxed/simple;
+	bh=1ljIGYteHhKPVcUI0iKycGN4KMTT+Uc02PVKqlt0zZs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PgGxtoeLcRvXLYIDnMyOFmrYQUadFk/e2Iy8UiaSAiEKT9q2/79QLfgfrI5yaem24PcbRfQiO6RZOf36qlvwnLqAaxR/0253oeJiO6PmKtoVINuWfr1jeTGYauW4mpGixpX2RY0VjMEZH2TQJBCUzOyo/dLSXYJmp9pA09vduH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VwNLVC3p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 868BFC433F1;
+	Sat, 30 Mar 2024 09:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711790400;
+	bh=1ljIGYteHhKPVcUI0iKycGN4KMTT+Uc02PVKqlt0zZs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VwNLVC3pNLlyk/7Z4sfem/DccnunranQoMwt3mC6siAnuCh+aqBPqBVdDsjYkhM3V
+	 e/JrQ2Rgn7SM4lBwgcU52USXVzwfspga5fpUn74tUC73XUBQnL/tScYCheqbUkO9sJ
+	 OMIFRpJooVhs9NLRhzwmxyYol8hwhen8oNgUxflo=
+Date: Sat, 30 Mar 2024 10:19:56 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de
+Subject: Re: [PATCH 4.19 00/41] 4.19.310-rc1 review
+Message-ID: <2024033031-imperfect-jukebox-ea4f@gregkh>
+References: <20240313170435.616724-1-sashal@kernel.org>
+ <305ed269-b7f0-4ba2-9f63-ea15480fefc0@roeck-us.net>
+ <ccf81903-b991-459a-9a3a-8d46efd909b8@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: panel: Add LG SW43408 MIPI-DSI panel
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- Caleb Connolly <caleb.connolly@linaro.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, Caleb Connolly <caleb@connolly.tech>
-References: <20240330-lg-sw43408-panel-v1-0-f5580fc9f2da@linaro.org>
- <20240330-lg-sw43408-panel-v1-1-f5580fc9f2da@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240330-lg-sw43408-panel-v1-1-f5580fc9f2da@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ccf81903-b991-459a-9a3a-8d46efd909b8@roeck-us.net>
 
-On 30/03/2024 04:59, Dmitry Baryshkov wrote:
-> From: Sumit Semwal <sumit.semwal@linaro.org>
+On Tue, Mar 19, 2024 at 07:24:37AM -0700, Guenter Roeck wrote:
+> On 3/16/24 13:57, Guenter Roeck wrote:
+> > On 3/13/24 10:03, Sasha Levin wrote:
+> > > 
+> > > This is the start of the stable review cycle for the 4.19.310 release.
+> > > There are 41 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Fri Mar 15 05:04:34 PM UTC 2024.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > >          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.309
+> > > or in the git tree and branch at:
+> > >          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > > and the diffstat can be found below.
+> > > 
+> > > Thanks,
+> > > Sasha
+> > > 
+> > > -------------
+> > > Pseudo-Shortlog of commits:
+> > > 
+> > > Arnd Bergmann (1):
+> > >    y2038: rusage: use __kernel_old_timeval
+> > > 
+> > 
+> > Guess this wasn't build tested on alpha, making it unbuildable on v4.19.y.
+> > 
+> > Building alpha:defconfig ... failed
+> > --------------
+> > Error log:
+> > arch/alpha/kernel/osf_sys.c: In function '__do_sys_old_adjtimex':
+> > arch/alpha/kernel/osf_sys.c:1274:43: error: passing argument 2 of 'put_tv_to_tv32' from incompatible pointer type
+> > 
 > 
-> LG SW43408 is 1080x2160, 4-lane MIPI-DSI panel present on Google Pixel 3
-> phones.
+> Following up on this, I now dropped build and boot testing of 'alpha'
+> targets for v4.19.y.
 
-.. Few nits, which could be ignored, and one thing which is blocking -
-missing example.
+Ok, let me go unwind this and try to fix this up in the next set of 4.19
+stable -rc updates...
 
-> +
-> +maintainers:
-> +  - Caleb Connolly <caleb.connolly@linaro.org>
-> +
-> +description: |
+thanks,
 
-Do not need '|' unless you need to preserve formatting.
-
-> +  This panel is used on the Pixel 3, it is a 60hz OLED panel which
-> +  required DSC (Display Stream Compression) and has rounded corners.
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: lg,sw43408
-> +
-> +  reg: true
-> +  port: true
-> +  vddi-supply: true
-> +  vpnl-supply: true
-> +  reset-gpios: true
-> +
-> +additionalProperties: false
-
-This goes after required:
-
-> +
-> +required:
-> +  - compatible
-> +  - vddi-supply
-> +  - vpnl-supply
-> +  - reset-gpios
-
-
-Please add example DTS.
-
-Best regards,
-Krzysztof
-
+greg k-h
 
