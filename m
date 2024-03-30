@@ -1,230 +1,114 @@
-Return-Path: <linux-kernel+bounces-125597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B7A892937
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 05:15:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADC1B892962
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 05:35:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C011F22322
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:15:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48A46B2286A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2A8B657;
-	Sat, 30 Mar 2024 04:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCC779FE;
+	Sat, 30 Mar 2024 04:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lotuHB3Y"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="pn+I6jol"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F2279E0
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B691628F8
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711772137; cv=none; b=ciOXiTqtFkQRaE/29gM6pMcwlirTT4NJF7hqPW8S4aIHGnx1rWkpKPauI8+d6GK5ioDxPpdnEES9HSGIFbFD1TJ7ZslsK5k7ScE6z8p2WI4v3b/Z5nHz+g7RI4w94+Rtfsz6SFjRZM3sjMOlEIsC/rW755xP+tqmI945UbX3S0c=
+	t=1711773308; cv=none; b=CCSe0oHWmv/bIY76BdqVl3OvZNDzMz6gNteeT8Zok6Ig/WUnK3ah3Pzcs39ltASfbeBoklvz+MjedW5uf9iqhtH/P6Ph5OUz6S/BQZf6j9w5/v8GT4TeYSzsPV6x/cCHQ7Lv1gTIHkwwO0gvhe7aYKXKazxgxqByKIh/qXo9lq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711772137; c=relaxed/simple;
-	bh=qgobxYsoW4+2TT3KspAAgbFZjvWwlDQJ1EahoxZ6SUc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ekMHrMAR2x/oVMtGV/zTMtk+3rkihZNIOhVGKhsgpBc0CYCZ47tVMlG98ByD9aXVMQt2MNsAZlb/Dxk0Q4+cj5fY/XqdMt6vKp6/8U325i9V1aOTEgRbjUFyLYP5QaxLdy+pk/lpNM1ls7/3nwpGP0D4XeAE6xZLuo4pCcoo8H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lotuHB3Y; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6b729669bso2153346b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 21:15:32 -0700 (PDT)
+	s=arc-20240116; t=1711773308; c=relaxed/simple;
+	bh=KESsGVL3oQ1Tct2/upTcGdKcslstjs6sa4QhcS3OUb8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OwRiFY0AI8LUeb6Smqf4KVfXfGAbjaCZnbM+3tLKCwpsWDX+abSiQiyJ7kH96ego740kNmqmmQyimsmYJ/cBudYJkO0hiCbmhW5YNEs8ktfHhevBnNpN3k8VDjwihX3XHaR3mmnAKbYe6a/3wuO+nENQrcibyvayAY9WCtLb0hY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net; spf=none smtp.mailfrom=landley.net; dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b=pn+I6jol; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3666affcb59so10052875ab.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 21:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711772130; x=1712376930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ofE4DiMnvHuiRZX1XlrIQJQuThx3U4684j2Vrwr4bOc=;
-        b=lotuHB3YqxI5vNiMNQShMPcZpMVUJ465SPLPfA2ZffKWYhtiIpcCAVyZSTq4l0PlVm
-         cPPfJ5K6RIbzdDn0T2br/TIueszyxszgWUTJ380vTjs5mQUui38KoyOVDnG1aNFg3ojX
-         qT7UlrcsXggaNQXe9AuPEuT0Sb7F0MLi7Nw6l+TH1U0d7yiQ+7KnPDVXHegP8jKCK6Em
-         Uow1+d0qBdtY/BbdJh5NtxxGHAY5F7ea4QmX/AcK49wR4lbjbtMz9p1a1106CIP7G/p2
-         F5jxnpW89ievSd3eMy5KK8/Cy/eyEh2UtRV9jEB1VoadAT58X+0FxQfYCzwBApOxWs6q
-         CZyA==
+        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1711773305; x=1712378105; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L+ftDv20t3wS0Lsp+7lIK+iX7cApQwfKmXsWpq65Q1o=;
+        b=pn+I6jol3VZursntEQ0kfg6PNtqDv6fzj+HujyJXw4SONL9CJ8gmjf5w8hS3CnClhT
+         DuzeWzSIsxxMGWdfMUdz6l5JsiZFoQEqJ1PlVCzm93VS0RqG7VrfwI4ers5ivM1b9BXp
+         Xf5tGj7ewRfsCXl1Gx1bVFopbSDiMp8e0PApo3fFvZVe4OjiG1h7TqMt4uE0D9lZmEAt
+         rhWvaKA/zeflu4PDRRLvLdpCdyD6xr8ZsppcsbivxCGvdqc8oTdHrsTUcI3zjYfrrAz3
+         r2xzoN7xDymOxGcIEb9pMGf8GMNc2jlKA8huKEvvTgJN1spctAwIoFq7ypTMbJKcRCnq
+         CjGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711772130; x=1712376930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ofE4DiMnvHuiRZX1XlrIQJQuThx3U4684j2Vrwr4bOc=;
-        b=A/fbPEeU6JGKCOsgFyhGJttWX+wrLs+o5magw1LqBZlTiRHYZfyDHYL8R5BPPlIL1d
-         WQcS/TWStTnwpc5p/trzlBbHU9YVoUBvQQB3+7xszjm1m0fSwtsdM+zBkFzM1ptkv9G6
-         aGonNkdmWKznhUoQ2xAdBwV9/ZG1W/aLcsSLw6bErfZLlwPFMSEiWVSRD/pHSUP+DycW
-         lRVgotuJ18IIZ5DE7BnY+A5zUWgC7PBvDFpHX2R12jRo0RCmI0jYKrTNo1EUkQge1/0I
-         Y4F+dSUDXEWB9/mXv53CoCAOSC7hp5+ow77PeyM1OQ4cXmIxQR3lK8/1AJzaRNeBLklq
-         dCMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUTmJfYFIVkqXNGPQlK/ZgitbSGDHJpZF0eT7DXFDvBWZrDSp5CD8QuEoDKVuYvYYcBnMpLEA2uDX3KMyHzkVeVKW1Qs26HLheNgs+u
-X-Gm-Message-State: AOJu0YxwKogNii/RWZXdhhGEiextn8WfxzyTjTSNx7z9PQJKO+N5KyGd
-	xwIwi2WQFKtXWL6gVuG0u+WRDs261vSRUOKgRWgGgmPESWOIkD+Zw3FegoGEVnoFceROmffeebB
-	L2YCN7bSlWJYu+3/TDyUHDVWA9Bla4JiLuQMoqA==
-X-Google-Smtp-Source: AGHT+IGgndwZ3xqfDhf4CyJqUlqHUpBRYWacoRvVkoWzKCTwU3GtudllRjOr+s4vd+S8mdhVeoofK0l9Hh+AwBW0mGw=
-X-Received: by 2002:a05:6a20:17a2:b0:1a3:67fd:46b1 with SMTP id
- bl34-20020a056a2017a200b001a367fd46b1mr3653617pzb.36.1711772130610; Fri, 29
- Mar 2024 21:15:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711773305; x=1712378105;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L+ftDv20t3wS0Lsp+7lIK+iX7cApQwfKmXsWpq65Q1o=;
+        b=im8hQJPcI3e4mgm7pcsQfliFz5wPoqj4A8uIEGMViU73AMZVpea6h+Dy++8XI+8t+d
+         1RxoKe7jKcXBeUYHfh3UmKszs+p90tnEye1boohUIhxCPDjbTv2oyHlhy81DeLZBlLjN
+         ENDmuQGPNWPs6SPI11/JgaSlEYcS6DMAa/ofM9TEmCE00EPbgs58dDF2PXZwyQ7KiZcN
+         QsZWDX51wimOc+fwF+JzM0Qi8xn9YMGZh7VGID2LFy4Bfz1pFfRgi6uR3PpmzYzvG91s
+         21jY3/FbeDUca9Z04ZbFHvDXTlYuP4ml3VJxOVr5Oc/EsIzhYmKD6ClCPUj8EYA2cHft
+         oOIg==
+X-Forwarded-Encrypted: i=1; AJvYcCUG0Vy1ww6jsdxJAefn+HumTBj9O8eWuIzFhKlckgeKkH3o/E0ZKKBLW2oDsxakGXUuIBwenhsy9HOtYD+gMDD98lkPK0xnZTvx8PCh
+X-Gm-Message-State: AOJu0Yw58BD6eOm5G9WE9/RFxJlHpKlGTZ5Py7+6FjzL7zLkmiIZ1Zlq
+	PwphHM7+pW0v91JWlFCLg3yZpELlPL11ky0yjUQY3Lu1fIAA14197dAgNeKWwpg=
+X-Google-Smtp-Source: AGHT+IGVLCNwHHytCGoayaTDND3tvqRbKIuPONixjN7UAmpNoIbU9H30r7YohRTWJyBUdfew/qU6jQ==
+X-Received: by 2002:a05:6e02:268a:b0:365:cd40:c1e7 with SMTP id bz10-20020a056e02268a00b00365cd40c1e7mr4188375ilb.11.1711773304829;
+        Fri, 29 Mar 2024 21:35:04 -0700 (PDT)
+Received: from [172.16.32.83] ([198.232.126.202])
+        by smtp.gmail.com with ESMTPSA id x4-20020a920604000000b003684edeba7esm1442888ilg.88.2024.03.29.21.35.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 21:35:04 -0700 (PDT)
+Message-ID: <7b28fe62-a1e9-1359-72aa-1dc75409d118@landley.net>
+Date: Fri, 29 Mar 2024 23:44:01 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
- <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
- <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
- <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
- <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
- <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
- <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
- <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
- <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com>
- <20240328111330.194dcbe5@gandalf.local.home> <CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Sat, 30 Mar 2024 12:16:52 +0800
-Message-ID: <CALz3k9hm6U90K8+d7SprXiKvscRjFno83idqYneHEVwgs4pCiw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
- to record and check the accessed args
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] sh: j2: drop incorrect SPI controller max frequency
+ property
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ devicetree@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Kousik Sanagavarapu <five231003@gmail.com>
+References: <20240322064221.25776-1-krzysztof.kozlowski@linaro.org>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <20240322064221.25776-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 30, 2024 at 7:28=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Mar 28, 2024 at 8:10=E2=80=AFAM Steven Rostedt <rostedt@goodmis.o=
-rg> wrote:
-> >
-> > On Thu, 28 Mar 2024 22:43:46 +0800
-> > =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
-> >
-> > > I have done a simple benchmark on creating 1000
-> > > trampolines. It is slow, quite slow, which consume up to
-> > > 60s. We can't do it this way.
-> > >
-> > > Now, I have a bad idea. How about we introduce
-> > > a "dynamic trampoline"? The basic logic of it can be:
-> > >
-> > > """
-> > > save regs
-> > > bpfs =3D trampoline_lookup_ip(ip)
-> > > fentry =3D bpfs->fentries
-> > > while fentry:
-> > >   fentry(ctx)
-> > >   fentry =3D fentry->next
-> > >
-> > > call origin
-> > > save return value
-> > >
-> > > fexit =3D bpfs->fexits
-> > > while fexit:
-> > >   fexit(ctx)
-> > >   fexit =3D fexit->next
-> > >
-> > > xxxxxx
-> > > """
-> > >
-> > > And we lookup the "bpfs" by the function ip in a hash map
-> > > in trampoline_lookup_ip. The type of "bpfs" is:
-> > >
-> > > struct bpf_array {
-> > >   struct bpf_prog *fentries;
-> > >  struct bpf_prog *fexits;
-> > >   struct bpf_prog *modify_returns;
-> > > }
-> > >
-> > > When we need to attach the bpf progA to function A/B/C,
-> > > we only need to create the bpf_arrayA, bpf_arrayB, bpf_arrayC
-> > > and add the progA to them, and insert them to the hash map
-> > > "direct_call_bpfs", and attach the "dynamic trampoline" to
-> > > A/B/C. If bpf_arrayA exist, just add progA to the tail of
-> > > bpf_arrayA->fentries. When we need to attach progB to
-> > > B/C, just add progB to bpf_arrayB->fentries and
-> > > bpf_arrayB->fentries.
-> > >
-> > > Compared to the trampoline, extra overhead is introduced
-> > > by the hash lookuping.
-> > >
-> > > I have not begun to code yet, and I am not sure the overhead is
-> > > acceptable. Considering that we also need to do hash lookup
-> > > by the function in kprobe_multi, maybe the overhead is
-> > > acceptable?
-> >
-> > Sounds like you are just recreating the function management that ftrace
-> > has. It also can add thousands of trampolines very quickly, because it =
-does
-> > it in batches. It takes special synchronization steps to attach to fent=
-ry.
-> > ftrace (and I believe multi-kprobes) updates all the attachments for ea=
-ch
-> > step, so the synchronization needed is only done once.
-> >
-> > If you really want to have thousands of functions, why not just registe=
-r it
-> > with ftrace itself. It will give you the arguments via the ftrace_regs
-> > structure. Can't you just register a program as the callback?
-> >
-> > It will probably make your accounting much easier, and just let ftrace
-> > handle the fentry logic. That's what it was made to do.
-> >
->
-> I thought I'll just ask instead of digging through code, sorry for
-> being lazy :) Is there any way to pass pt_regs/ftrace_regs captured
-> before function execution to a return probe (fexit/kretprobe)? I.e.,
-> how hard is it to pass input function arguments to a kretprobe? That's
-> the biggest advantage of fexit over kretprobe, and if we can make
-> these original pt_regs/ftrace_regs available to kretprobe, then
-> multi-kretprobe will effectively be this multi-fexit.
+On 3/22/24 01:42, Krzysztof Kozlowski wrote:
+> The J2 SPI controller bindings never allowed spi-max-frequency property
+> in the controller node.  Neither old spi-bus.txt bindings, nor new DT
+> schema allows it.  Linux driver does not parse that property from
+> controller node, thus drop it from DTS as incorrect hardware
+> description.  The SPI child device has already the same property with
+> the same value, so functionality should not be affected.
+> 
+> Cc: Kousik Sanagavarapu <five231003@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Yes, we can use multi-kretprobe instead of multi-fexit
-if we can obtain the function args in kretprobe.
+Tested-by: Rob Landley <rob@landley.net>
 
-I think it's hard. The reason that we can obtain the
-function args is that we have a trampoline, and it
-call the origin function for FEXIT. If we do the same
-for multi-kretprobe, we need to modify ftrace_regs_caller
-to:
+(By which I mean a 6.8 kernel with this patch applied booted to a shell prompt
+on my J2 turtle board.)
 
-ftrace_regs_caller
-|
-__ftrace_ops_list_func
-|
-call all multi-kprobe callbacks
-|
-call orgin
-|
-call all multi-kretprobe callbacks
-|
-call bpf trampoline(for TRACING)
-
-However, this logic conflicts with bpf trampoline,
-as it can also call the origin function. What's more,
-the FENTRY should be called before the "call origin"
-above.
-
-I'm sure if I understand correctly, as I have not
-figured out how multi-kretprobe works in fprobe.
-
-Thanks!
-Menglong Dong
-
->
-> > -- Steve
+Rob
 
