@@ -1,86 +1,127 @@
-Return-Path: <linux-kernel+bounces-125774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4291A892BF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:11:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC4E892BF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFA49282F45
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:11:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F61A1F21E39
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9924E3B19C;
-	Sat, 30 Mar 2024 16:11:04 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 615853B79F;
+	Sat, 30 Mar 2024 16:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="m5yyjZZx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77858467
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 16:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632128467;
+	Sat, 30 Mar 2024 16:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711815064; cv=none; b=iQOHu1gSW9RarA4PXLMyJiYn8oNBqc8H6SVO/n7IGVFpr5UCvf0x+rOTAzd31xHiGOA6zB5FHngYxIHfrSWDmYg8WNYApALznjcsMu9Capk9+DYgze1rDA4gN0effBUPkqVta03Cf9elkwYF12J1Mp7D7q9kaS4HKN5UKdpPLyk=
+	t=1711815142; cv=none; b=Gtg6dPScUZXoP6ABT/VPJ9ZMj+42YNSdiWJpRD65Lv0Uv4af+0zziNhZKUVxqmi+H+I9j3JeLiITN/LUbaGIiKafYB2qs786NUD7Cjmma/MLItz7rGFTYVl3FDQZ88TybXpXy+WaFU060PAJn8yMmiuNDPNN/k1ypirzkbbSjhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711815064; c=relaxed/simple;
-	bh=rE2LBeiZADv3SPsON3g22a6O6pbML0OUkSm0NmmX6BI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=p2RL3NwWkoy0BEM9OQk7nlPYg14o4w35aFp+LvLqjZjuCDU/e1q1dxH9sDGnxXUSIhMh+0TRVsSdk9jjPW5weZbSGMh6gknUK8YvBBeOFuIBPssbKgWzflyJSDPtTg8dTcdheQOEXxTkX5gRmRY7SgD14lwJOD5wqy8QF6Nh0qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so310489339f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:11:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711815062; x=1712419862;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SN2ssS1+q+7kuSgUtH84Kti919a6osQ0S5/hE8tq+PA=;
-        b=TqYbEd+UoXs3s9m/zFYgdlFbjdGXjvBhkJK05Jxcm8Msw06hPWttYfighXMf9fvwJ9
-         k1EHvPcr7Nsov2sR/obdvQtDr28IEKtL8lYC37t/Wv8XQvSyehhAPcMJQgxDaPE+hXHc
-         WtCYo/V6idXZDbGSGESC9yE55uECNaPuOEj+wR3hE68MQhYYCHUSynDttYP/ZHi94EEs
-         dDvIEqmTKNtSWiNLq1mmU0cUquEpcutqQL+Hwxg/vI3vc4McwJJiMQuKMifd4hTjUSkK
-         iEcfr76YmsCKi8+H10FgIiN338HI8/LwmO8MCqAtsovfQitIYMH0ek6NxQc+oyr6zrOA
-         R7Yg==
-X-Forwarded-Encrypted: i=1; AJvYcCVa6n73nd006t1KG1i4oABRPSqrg7GD+HSt1Pdjw1c3sM5Q22Dcd2WKwRUx09H8KGbA43iV70cDp6G8nw2Yrv/nHw3v2htV8qV1zjfb
-X-Gm-Message-State: AOJu0YztZN4BKRQpWyVSiU+SoPl7n42Biq78JUgczVkIEZB53x+AZW4r
-	9uqh/cLdK9O+WSAQ5PCaRj7JNzLYtCCshynq3ETNMLohvRt6xxvQOzovceFzY39KddNaTv4rkSS
-	ajadH5tkmjICz85WBieBwZMSJOQm1TmGFGi2GMsfMvtycxpyZHDG9LrI=
-X-Google-Smtp-Source: AGHT+IHJP+qkQU+ci0caUHT/HSO/xAGTU1HUHf/RmxEVfnxn1UdeI6snMx5GmwjRSJQH+H7pIQpVhTjSgxAxpUjh3CEbtDeWZbRE
+	s=arc-20240116; t=1711815142; c=relaxed/simple;
+	bh=7DJY80SqsN2zeO08mKaZocYC36hJgIIyI/nQTHv2yrU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eZ8dIDYk+3RGNmKnN0spStMzc4+ILXegENLk63pSOJOLI9TgKj3lX2yCGC6qiMw+1j4tS0CpkF2GaKFyt5lg1Z0QUbsdgNbGRVdqQhaU++4iWBBBVd5PWWigLaJAqB5CRAxPSukA/kHibpWvt2VNq1DcAA8PlYLRvKHuRT8bUIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=m5yyjZZx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76F7DC433F1;
+	Sat, 30 Mar 2024 16:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711815142;
+	bh=7DJY80SqsN2zeO08mKaZocYC36hJgIIyI/nQTHv2yrU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m5yyjZZxH/klvWCBqIoRuOHkVpGXYh6HA/sHEABnoAgryF8I8SAM+MGoRMAK/g3wa
+	 VWWANrzP0+SrtPxZLoSYHQv8bDh4Vrjh+L2kYzartfBynhg7AtgOr+N9D32OoW54PM
+	 875jr+Sl46wU5PJ7IIT3IogAgVhpDkaHF968PPPo=
+Date: Sat, 30 Mar 2024 17:12:18 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: alison.schofield@intel.com, paul@paul-moore.com, mic@digikod.net,
+	fabio.maria.de.francesco@linux.intel.com,
+	linux-kernel@vger.kernel.org, outreachy@lists.linux.dev,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2] landlock: Use kmem for landlock_object
+Message-ID: <2024033030-tutu-dynamite-47c9@gregkh>
+References: <ZggZi/EFICvb4xTU@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20c5:b0:367:d6da:8dbd with SMTP id
- 5-20020a056e0220c500b00367d6da8dbdmr305231ilq.4.1711815062040; Sat, 30 Mar
- 2024 09:11:02 -0700 (PDT)
-Date: Sat, 30 Mar 2024 09:11:02 -0700
-In-Reply-To: <tencent_BC992D4F930DA4A5930D8E92215DF05D8A07@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1c50c0614e300c2@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
-From: syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZggZi/EFICvb4xTU@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 
-Hello,
+On Sat, Mar 30, 2024 at 07:24:19PM +0530, Ayush Tiwari wrote:
+> Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
+> struct landlock_object and update the related dependencies to improve
+> memory allocation and deallocation performance.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+So it's faster?  Great, what are the measurements?
 
-Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+> This patch does not
+> change kfree() and kfree_rcu() calls because according to kernel commit
+> ae65a5211d90("mm/slab: document kfree() as allowed for
+> kmem_cache_alloc() objects"), starting from kernel 6.4 with
+> CONFIG_SLOB, kfree() is safe to use for such objects.
 
-Tested on:
+There is no CONFIG_SLOB anymore so why mention it?
 
-commit:         443574b0 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12df8ffd180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=af9492708df9797198d6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16742f45180000
 
-Note: testing is done by a robot and is best-effort only.
+
+
+> 
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> ---
+> 
+> Changes in v2: Used clang-format and corrected the removal of kfree_rcu.
+> Tried to use KMEM macro but due to lack of cache pointer in that macro,
+> had to explicitly define landlock_object_cache, as done in security.c.
+> 
+>  security/landlock/object.c | 12 +++++++++++-
+>  security/landlock/object.h |  2 ++
+>  security/landlock/setup.c  |  1 +
+>  3 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/security/landlock/object.c b/security/landlock/object.c
+> index 1f50612f0185..cfc367725624 100644
+> --- a/security/landlock/object.c
+> +++ b/security/landlock/object.c
+> @@ -17,6 +17,15 @@
+>  
+>  #include "object.h"
+>  
+> +static struct kmem_cache *landlock_object_cache;
+> +
+> +void __init landlock_object_cache_init(void)
+> +{
+> +	landlock_object_cache = kmem_cache_create(
+> +		"landlock_object_cache", sizeof(struct landlock_object), 0,
+> +		SLAB_PANIC, NULL);
+
+You really want SLAB_PANIC?  Why?
+
+> +}
+> +
+>  struct landlock_object *
+>  landlock_create_object(const struct landlock_object_underops *const underops,
+>  		       void *const underobj)
+> @@ -25,7 +34,8 @@ landlock_create_object(const struct landlock_object_underops *const underops,
+>  
+>  	if (WARN_ON_ONCE(!underops || !underobj))
+>  		return ERR_PTR(-ENOENT);
+> -	new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
+> +	new_object =
+> +		kmem_cache_zalloc(landlock_object_cache, GFP_KERNEL_ACCOUNT);
+
+Odd indentation, why?
+
+thanks,
+
+greg k-h
 
