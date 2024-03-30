@@ -1,95 +1,111 @@
-Return-Path: <linux-kernel+bounces-126263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829AF89346D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:06:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E978934C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:13:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A59991C237C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:06:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDED91C2467B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77B715E1F5;
-	Sun, 31 Mar 2024 16:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5537B14AD25;
+	Sun, 31 Mar 2024 16:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ojjni/Q/"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998D21482EA;
-	Sun, 31 Mar 2024 16:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2674614A63F;
+	Sun, 31 Mar 2024 16:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711903395; cv=fail; b=Qq6j2lXQ5F1IKqMz4HImf1GXPhCylQBcCCUp3LtZgbiHg/qdnQ5EUOA+O6tqqJqKNKjsib5oC6vVkM4693tiPC7cH0EgXLYeG/TDbhYyEeklEfJVqHm0Pq5PduA2n83dyu/yqc/oUPagyrPtkRjJupEv1VofOgjjDv2or/4Jx1A=
+	t=1711903489; cv=fail; b=rAmUKD0nBRjerwqZKUIEM5Ahj6AFoAe0yLM5rED+fiZmibUzzCRRK7RB/UP67Ch8BBe8hWeU1KO0v+U2mowbaATqeG7GfMaPAmF8NKytiaMVCFEDj7OBP1l5gLfq+8JRsc8M6B4tqd3kM+mzixbikueIZjMxnPh8NzKAqvZQlc4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711903395; c=relaxed/simple;
-	bh=cJPDlDKrfU9zAHTWXn9k0ShpUt9gSzGdeGLqHSMf5+U=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=KLuXVJKwaSnC2mz0DWDlCycti62Ylq6gGOR65/oE81yrccfsoAdPECLjJ+N4PJ0YJxcV/4tCOrphslNCTeNPmWScMMvXJeYVdd68xf/HiGtexACJyhE69+JqYW1C/X3aqu43yVE+yWPxExbDM9kE6Fsxc7MAH38KNx0gh23xixk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=fail smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=fail smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1711903489; c=relaxed/simple;
+	bh=rbWiV6LCoMIz4RT2OXgjrkziWWWOn2fBooEuycqpBRs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OF3z9dhVyn8qie7N/rc/QfOsn2r9Ydfk1DREDFgYbdahFjv5VNpc3aNNTsCBeM8lQk4F3CkpBIbYZRIwWsnW8xkHNurE500Ey0M3Uz6UlXBOCpdp4rflwEj0PMcQgLFkeyQlkDV61Y2dhphytKgSjPTkhh7BO+XiLZdr5DgpyOw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=fail smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ojjni/Q/; arc=none smtp.client-ip=209.85.221.47; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; arc=fail smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linaro.org
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 45992208C4;
-	Sun, 31 Mar 2024 18:43:10 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id D7DE82083B;
+	Sun, 31 Mar 2024 18:44:45 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id nn2VdXehGXXE; Sun, 31 Mar 2024 18:43:09 +0200 (CEST)
+	with ESMTP id ZdCwzgH8UZB3; Sun, 31 Mar 2024 18:44:45 +0200 (CEST)
 Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 503DA20851;
-	Sun, 31 Mar 2024 18:43:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 503DA20851
+	by a.mx.secunet.com (Postfix) with ESMTPS id D6993208C7;
+	Sun, 31 Mar 2024 18:44:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com D6993208C7
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout2.secunet.com (Postfix) with ESMTP id 42973800060;
-	Sun, 31 Mar 2024 18:43:09 +0200 (CEST)
+	by mailout2.secunet.com (Postfix) with ESMTP id C878C800062;
+	Sun, 31 Mar 2024 18:44:44 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:43:09 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:44:44 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
  15.1.2507.17; Sun, 31 Mar 2024 16:37:04 +0000
-X-sender: <netdev+bounces-83502-steffen.klassert=secunet.com@vger.kernel.org>
+X-sender: <linux-kernel+bounces-125721-steffen.klassert=secunet.com@vger.kernel.org>
 X-Receiver: <steffen.klassert@secunet.com> ORCPT=rfc822;steffen.klassert@secunet.com
 X-CreatedBy: MSExchange15
-X-HeloDomain: mbx-dresden-01.secunet.de
-X-ExtendedProps: BQBjAAoAFYymlidQ3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
+X-HeloDomain: mbx-essen-01.secunet.de
+X-ExtendedProps: BQBjAAoAg4ymlidQ3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
 X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 10.53.40.199
-X-EndOfInjectedXHeaders: 8108
+X-SourceIPAddress: 10.53.40.197
+X-EndOfInjectedXHeaders: 14867
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.80.249; helo=am.mirrors.kernel.org; envelope-from=netdev+bounces-83502-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 6AA3120322
-X-Original-To: netdev@vger.kernel.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125721-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 9045220870
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711800081; cv=none; b=WJbbV270t/ooVwRu27l3kpbpO/LNp3fBVfRjqDSUiCBL1/yhmqeX05AdQ5vC9vo421dyQlYdRNrAG/3dLmqvHvHH3IOXbqbnkcRGS5ljWtW9WpuJVFyUYBq7iefT2u8Y2EsHJMJjqK0UHGQnJZOlWMwRiKLeHwXjs5A0t2k/zBc=
+	t=1711801116; cv=none; b=cOTQGAxkiNtb/dpLjYY+xoyi06dKEWrY50+8XeA6hglCMJuPigxX6U+Q2JtxuJXyy4wMyQGLmeFBhYThFuI9VMkjk7u6PbgWrgMAw63yrrvIuDHnM1E0V4zPcUunMVwbhB36YWMpYWbkN1HWlhciu5h5C6wY7FVw52sGR+bB6bE=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711800081; c=relaxed/simple;
-	bh=fT3FnLwhlqo35Pj+pAK551GXQXi8alEtZAKvfSYeaHU=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Gysezl9oW2wx2m1NIwuS5aCuwl7HEGn2RtF3oLAyvdICdI9EdoKb99h/KeqXZzq3y49d/36QaSMvGlijVKast3vaki1kT/opXa8XfqWWufE7zSFpHwMOXGVeeMdlmccqp9Eb+dtVlMhV0NpG4fjzqbWHbE5Lf0g0516IE1P/Sc0=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Subject: Re: [PATCH RFC 01/10] mm: Move the page fragment allocator from
- page_alloc into its own file
-To: Christophe Leroy <christophe.leroy@csgroup.eu>, "davem@davemloft.net"
-	<davem@davemloft.net>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Howells
-	<dhowells@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <20240328133839.13620-1-linyunsheng@huawei.com>
- <20240328133839.13620-2-linyunsheng@huawei.com>
- <b5fe4c81-a7e6-4620-b0b6-a56ce7a2c304@csgroup.eu>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <9e03b278-aaeb-d11c-d2e0-d45ca5e97346@huawei.com>
-Date: Sat, 30 Mar 2024 20:01:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1711801116; c=relaxed/simple;
+	bh=rbWiV6LCoMIz4RT2OXgjrkziWWWOn2fBooEuycqpBRs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z12z0IztQNJM0RXTp/tDMnCLkHHW9DOovfPqTZX+Mq1d7PvDEDTb7x3+VuEQLJrgkPgKF3lQW9nyqsRWYDMAUaIQIGwG1njod3oRu0m5XLnbPn99Ams40F9qevdNaxzkTnLYdf4AFhrBB9GzjfWh8nIWeeMHjmqRvEKTBV7CpAI=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ojjni/Q/; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711801113; x=1712405913; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=bH0VKkyLThWY6MNf2JTOJyg2yMbF29kM0ZaMHkLqmAQ=;
+        b=ojjni/Q/9R/6bhVvsgJxLjTKCi8WFD0JlJwhQOIBckIXzdlhbO7wL4EZgBYqsUvaZT
+         p1ZLA95dQuMKn9OOgkb6+7978yyZjvV9elHb/pkYELtPiIn6wE2NYbYPbhgc3RDWKqt+
+         alfhQ3vN1HVIU+X6GVyrOkwLoGywxlt8rXZC9MUmshj1o1wJyB/ycLUDhGdOzz+YprU4
+         qwAUo8JutiBjqTvPgJ8Sl+8dsVuy+3aPzsYACFdtmFww9z4hslKpO5NQGQRyEBuvjohg
+         xWAxz5/cmoCUZE2rBuQ96riN+F/6XgHVAOczdgecIrv+SI3L3eYzEiE4UyJ74FxvTeEt
+         atCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711801113; x=1712405913;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bH0VKkyLThWY6MNf2JTOJyg2yMbF29kM0ZaMHkLqmAQ=;
+        b=ddKCv2a7UrAD5rKZfH7yH4rg8Lq8WSWurMU4HJk69c02cojjmbo//DChINx0+a0H2y
+         Kjf34Y9tlFELzTRI3RxXnMb+SRzM06AKVx8yyR1UPqBGW4KwAUXVR3+aK85CTzShAdQC
+         GqLcuqtSEOcB+1ZAgQcPnrzggGDticLoH3+pqITeiINHw/tjpywxYhLh53hF6YDq/DSy
+         c31b3imX4IkPnBqWNb+Ytow8T9j7mJCn3QA3kCKPOUEBUsHtkmpTQd2LUJdaRdSw2M/6
+         iO1s4L96X6Mcqp6V6k/ivuhVOOBSCpXdL8Y5xyzVo+E1prCvcZmnQ62fBwzpIspe8DiZ
+         FhEA==
+X-Gm-Message-State: AOJu0Yzw0/39z6ADtJSwg9do91zvdBiVulgxgC7xlNHopWz9MnFEtWsw
+	7KZ5pYSKr/J7219yg06ibPfX19diVqlhbLG4oyZ+FA02128IZ7JwPyk+AXynJS8=
+X-Google-Smtp-Source: AGHT+IFXTj6Oopp+TgXdXNYNRNf/PPJajmoyEILRHRDR4VAErFFTxd6mVFOMxvFL+RdoGqW9r8ISHg==
+X-Received: by 2002:adf:ecce:0:b0:33e:9292:b194 with SMTP id s14-20020adfecce000000b0033e9292b194mr3243693wro.14.1711801112726;
+        Sat, 30 Mar 2024 05:18:32 -0700 (PDT)
+Message-ID: <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
+Date: Sat, 30 Mar 2024 13:18:30 +0100
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -97,215 +113,138 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b5fe4c81-a7e6-4620-b0b6-a56ce7a2c304@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+To: Russell King <linux@armlinux.org.uk>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>
+Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-input@vger.kernel.org, kvm@vger.kernel.org
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-On 2024/3/30 1:19, Christophe Leroy wrote:
->=20
->=20
-> Le 28/03/2024 =C3=A0 14:38, Yunsheng Lin a =C3=A9crit :
->> Inspired by [1], but use free_unref_page() to replace free_the_page()
->> instead of __free_pages(), use VM_BUG_ON() to catch that we can use
->> free_unref_page() directly, also add its own header file.
->>
->> As the API is only used by the networking, it may make sense to
->> move it to the networking directory like the page_pool does in the
->> future if we can make the free_unref_page() callable outside of the
->> mm subsystem. And we can utilize that to decouple the 'struct page'
->> in the networking subsystem in the future.
->=20
-> I'm wondering if this page fragment allocator could replace the page=20
-> fragment allocator used in powerpc to allocate fragment of pages for=20
-> page tables.
+On 26/03/2024 21:23, Krzysztof Kozlowski wrote:
+> Merging
+> =======
+> All further patches depend on the first amba patch, therefore please ack
+> and this should go via one tree.
+> 
+> Description
+> ===========
+> Modules registering driver with amba_driver_register() often forget to
+> set .owner field.
+> 
+> Solve the problem by moving this task away from the drivers to the core
+> amba bus code, just like we did for platform_driver in commit
+> 9447057eaff8 ("platform_device: use a macro instead of
+> platform_driver_register").
+> 
+> Best regards,
 
-From a quick glance, it seems possible. If there are potential users
-other than the networking for this API, we can keep it in mm subsystem
-for now as this patch does and see how thing will evolve.
+I tried to submit this series to Russell patch tracker and failed. This
+is ridiculous. It's 2024 and instead of normal process, like every other
+maintainer, so b4 or Patchwork, we have some unusable system rejecting
+standard patches.
 
->=20
-> See arch/powerpc/mm/pgtable-frag.c
->=20
-> Christophe
->=20
+First, it depends some weird, duplicated signed-off-by's. Second it
+submitting patch-by-patch, all with clicking on some web (!!!) interface.
 
-X-sender: <linux-kernel+bounces-125719-steffen.klassert=3Dsecunet.com@vger.=
-kernel.org>
-X-Receiver: <steffen.klassert@secunet.com> ORCPT=3Drfc822;steffen.klassert@=
-secunet.com
-X-CreatedBy: MSExchange15
-X-HeloDomain: mbx-dresden-01.secunet.de
-X-ExtendedProps: BQBjAAoAF4ymlidQ3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbm=
-dlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAA=
-AAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1h=
-aWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
-X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 10.53.40.199
-X-EndOfInjectedXHeaders: 8107
-Received: from mbx-dresden-01.secunet.de (10.53.40.199) by
- mbx-essen-02.secunet.de (10.53.40.198) with Microsoft SMTP Server
- (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Sat, 30 Mar 2024 13:01:41 +0100
-Received: from a.mx.secunet.com (62.96.220.36) by cas-essen-01.secunet.de
- (10.53.40.201) with Microsoft SMTP Server (version=3DTLS1_2,
- cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Fronte=
-nd
- Transport; Sat, 30 Mar 2024 13:01:40 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id DED912053D
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 13:01:40 +0100 (CET)
-X-Virus-Scanned: by secunet
-X-Spam-Flag: NO
-X-Spam-Score: -6.184
-X-Spam-Level:
-X-Spam-Status: No, score=3D-6.184 tagged_above=3D-999 required=3D2.1
-	tests=3D[BAYES_00=3D-1.9, HEADER_FROM_DIFFERENT_DOMAINS=3D0.249,
-	MAILING_LIST_MULTI=3D-1, NICE_REPLY_A=3D-3.533,
-	RCVD_IN_DNSWL_NONE=3D-0.0001, SPF_HELO_NONE=3D0.001, SPF_PASS=3D-0.001]
-	autolearn=3Dham autolearn_force=3Dno
-Received: from a.mx.secunet.com ([127.0.0.1])
-	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ccdTO5_3iJlc for <steffen.klassert@secunet.com>;
-	Sat, 30 Mar 2024 13:01:38 +0100 (CET)
-Received-SPF: Pass (sender SPF authorized) identity=3Dmailfrom; client-ip=
-=3D147.75.80.249; helo=3Dam.mirrors.kernel.org; envelope-from=3Dlinux-kerne=
-l+bounces-125719-steffen.klassert=3Dsecunet.com@vger.kernel.org; receiver=
-=3Dsteffen.klassert@secunet.com=20
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 9BA4A20518
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249]=
-)
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 9BA4A20518
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 13:01:38 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.2=
-5.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FAA01F22422
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 12:01:38 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD0F38FA5;
-	Sat, 30 Mar 2024 12:01:23 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190=
-])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29FB1E896;
-	Sat, 30 Mar 2024 12:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=3Dnone smtp.client-ip=
-=3D45.249.212.190
-ARC-Seal: i=3D1; a=3Drsa-sha256; d=3Dsubspace.kernel.org; s=3Darc-20240116;
-	t=3D1711800081; cv=3Dnone; b=3DWJbbV270t/ooVwRu27l3kpbpO/LNp3fBVfRjqDSUiCB=
-L1/yhmqeX05AdQ5vC9vo421dyQlYdRNrAG/3dLmqvHvHH3IOXbqbnkcRGS5ljWtW9WpuJVFyUYB=
-q7iefT2u8Y2EsHJMJjqK0UHGQnJZOlWMwRiKLeHwXjs5A0t2k/zBc=3D
-ARC-Message-Signature: i=3D1; a=3Drsa-sha256; d=3Dsubspace.kernel.org;
-	s=3Darc-20240116; t=3D1711800081; c=3Drelaxed/simple;
-	bh=3DfT3FnLwhlqo35Pj+pAK551GXQXi8alEtZAKvfSYeaHU=3D;
-	h=3DSubject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=3DGysezl9oW2wx2m1NIwuS5aCuwl7HEGn2RtF3oLAyvdI=
-CdI9EdoKb99h/KeqXZzq3y49d/36QaSMvGlijVKast3vaki1kT/opXa8XfqWWufE7zSFpHwMOXG=
-VeeMdlmccqp9Eb+dtVlMhV0NpG4fjzqbWHbE5Lf0g0516IE1P/Sc0=3D
-ARC-Authentication-Results: i=3D1; smtp.subspace.kernel.org; dmarc=3Dpass (=
-p=3Dquarantine dis=3Dnone) header.from=3Dhuawei.com; spf=3Dpass smtp.mailfr=
-om=3Dhuawei.com; arc=3Dnone smtp.client-ip=3D45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=3Dpass (p=3Dquarant=
-ine dis=3Dnone) header.from=3Dhuawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=3Dpass smtp.mailfrom=
-=3Dhuawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V6G542s8Wz29lQT;
-	Sat, 30 Mar 2024 19:58:32 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id A15F21A0172;
-	Sat, 30 Mar 2024 20:01:14 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.=
-com
- (7.185.36.74) with Microsoft SMTP Server (version=3DTLS1_2,
- cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sat, 30 M=
-ar
- 2024 20:01:14 +0800
-Subject: Re: [PATCH RFC 01/10] mm: Move the page fragment allocator from
- page_alloc into its own file
-To: Christophe Leroy <christophe.leroy@csgroup.eu>, "davem@davemloft.net"
-	<davem@davemloft.net>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Howel=
-ls
-	<dhowells@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <20240328133839.13620-1-linyunsheng@huawei.com>
- <20240328133839.13620-2-linyunsheng@huawei.com>
- <b5fe4c81-a7e6-4620-b0b6-a56ce7a2c304@csgroup.eu>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <9e03b278-aaeb-d11c-d2e0-d45ca5e97346@huawei.com>
-Date: Sat, 30 Mar 2024 20:01:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <b5fe4c81-a7e6-4620-b0b6-a56ce7a2c304@csgroup.eu>
-Content-Type: text/plain; charset=3D"utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-Return-Path: linux-kernel+bounces-125719-steffen.klassert=3Dsecunet.com@vge=
-r.kernel.org
-X-MS-Exchange-Organization-OriginalArrivalTime: 30 Mar 2024 12:01:40.9382
- (UTC)
-X-MS-Exchange-Organization-Network-Message-Id: 6ede3bfb-a1cd-47dd-a20c-08dc=
-50b12923
-X-MS-Exchange-Organization-OriginalClientIPAddress: 62.96.220.36
-X-MS-Exchange-Organization-OriginalServerIPAddress: 10.53.40.201
-X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: cas-essen-01.s=
-ecunet.de
-X-MS-Exchange-Organization-OrderedPrecisionLatencyInProgress: LSRV=3Dcas-es=
-sen-01.secunet.de:TOTAL-FE=3D0.009|SMR=3D0.010(SMRPI=3D0.007(SMRPI-Frontend=
-ProxyAgent=3D0.007));2024-03-30T12:01:40.948Z
-X-MS-Exchange-Forest-ArrivalHubServer: mbx-essen-02.secunet.de
-X-MS-Exchange-Organization-AuthSource: cas-essen-01.secunet.de
-X-MS-Exchange-Organization-AuthAs: Anonymous
-X-MS-Exchange-Organization-OriginalSize: 7561
-X-MS-Exchange-Organization-Transport-Properties: DeliveryPriority=3DLow
-X-MS-Exchange-Organization-Prioritization: 2:ShadowRedundancy
-X-MS-Exchange-Organization-IncludeInSla: False:ShadowRedundancy
+I did it, clicked 19 times and system was happy... but then on email
+said the patches were rejected. Couldn't tell it after submitting first
+patch via the web?
 
-On 2024/3/30 1:19, Christophe Leroy wrote:
->=20
->=20
-> Le 28/03/2024 =C3=A0 14:38, Yunsheng Lin a =C3=A9crit :
->> Inspired by [1], but use free_unref_page() to replace free_the_page()
->> instead of __free_pages(), use VM_BUG_ON() to catch that we can use
->> free_unref_page() directly, also add its own header file.
->>
->> As the API is only used by the networking, it may make sense to
->> move it to the networking directory like the page_pool does in the
->> future if we can make the free_unref_page() callable outside of the
->> mm subsystem. And we can utilize that to decouple the 'struct page'
->> in the networking subsystem in the future.
->=20
-> I'm wondering if this page fragment allocator could replace the page=20
-> fragment allocator used in powerpc to allocate fragment of pages for=20
-> page tables.
+That's the response:
+-------------
+Your patch has not been logged because:
 
-From a quick glance, it seems possible. If there are potential users
-other than the networking for this API, we can keep it in mm subsystem
-for now as this patch does and see how thing will evolve.
+Error:   Please supply a summary subject line briefly describing
+         your patch.
 
->=20
-> See arch/powerpc/mm/pgtable-frag.c
->=20
-> Christophe
->=20
+
+Error:   Please supply a "KernelVersion: " tag after "PATCH FOLLOWS" or
+"---".
+
+Error:   the patch you are submitting has one or more missing or incorrect
+         Signed-off-by lines:
+
+         - author signoff <krzkreg@gmail.com> is missing.
+
+         Please see the file Documentation/SubmittingPatches, section 11
+         for details on signing off patches.
+
+
+Please see https://www.armlinux.org.uk/developer/patches/info.shtml
+for more information.
+-------------
+
+This is unbelievable waste of time. I am not going to use this tracker.
+It's huge obstacle and huge waste of submitters time.
+
+Best regards,
+Krzysztof
+
 
 
