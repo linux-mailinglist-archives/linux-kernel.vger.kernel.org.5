@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-125803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82AEF892C48
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 19:00:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA77892C53
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 19:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B43742829BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 18:00:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B521EB21FC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 18:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4098B3FB2C;
-	Sat, 30 Mar 2024 18:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71B03D54C;
+	Sat, 30 Mar 2024 18:11:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MiLzFbm6"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UwWLEZ7e"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1AB63C068
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 18:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED463BBDB
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 18:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711821633; cv=none; b=fPK5Vrd8MhVenBnkfyELe1W4kElHGsTKJBxnBRcbkj/c5FER+yOeWDuMLf91UPDV/HJpGHPzJcJwlI3epyoZgDz/U2CPDZqueiZDEyWms8ldoNcNNa4PYgSlYBPPKMhqhEBqx9JU5gLfGoznPo7+tbPlcdoaXKHcqgwwOrv2zu4=
+	t=1711822260; cv=none; b=YCMDiSlgggPnpCee4FypMwff92Gbz60M0TaB3XV7Ks1KLbIpr5Oa82dSnUpsPFAmFws5MpPNkaKBh81tJkL8giOi3GwguE/YAB39P8ZT/UZ+ZWLH5tw0Us43PBhzWsq72ra7XmwtkF9qMdAwYsg3OZRZiu2NGLxS7sl5p/VhkWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711821633; c=relaxed/simple;
-	bh=G3Q3ZYjxB9PZFnNxkThRR/H8PzG0UVJOFPo8sxKc9aA=;
+	s=arc-20240116; t=1711822260; c=relaxed/simple;
+	bh=gGWtJStY0jzHlXUNZ/qFEKVUAZbJEmuy2Rf+iVSRPpo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bZslmHQV9O2x5sYrBRSDkwE7VadMCziMO5uUaNS0p0dba0opjJbHh/W84bnVssHirpKvplWGEo1g3qYPdQku9/pqjcN7eE2Yud1v3tRtTo8VG7qsEWw+xm+1sOhYdsfe0MgkHtGBUo8yGp1IxHKPZTD4nlkoHlOtPnAUK0JkfKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MiLzFbm6; arc=none smtp.client-ip=209.85.128.44
+	 In-Reply-To:Content-Type; b=WubRvpGnzLAGXEhJnkCkVtpl4DPm1/kvSu9F/nBTkkGkPs/0SffZeEaUJrBOJAuWsaT3AGuUl7Vu4oNIlRCbUG2NvXx8AhBr3Mzl+4RCOcRFkVh6AvrS/YNwxcMKKgwL386IH3c5Im9XFpV7EyAujtKNuoJulSv54Zp+D2VP4ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UwWLEZ7e; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4154471fb59so17264985e9.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:00:31 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-341b9f6fb2eso2023062f8f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711821630; x=1712426430; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711822258; x=1712427058; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=r39j2D5BMTjv9agvH23NugKjyW42TUeZqGeGsZaMYf0=;
-        b=MiLzFbm6jTg9OMg81tqtPcO3ZZxAXYfhE1a0FxjkkVfSTmQvCYvlEz85sFLgSMgDYG
-         QYOsUjww1qV8s1/gpxRSotb0ZreFBgKuXg0aUKOZFat3OjJ7Fltx+K3xOz1SGIcQMsdc
-         sP9xhjDu++1LtUNCNCLQMszIAM+sjzEYnDiw2rj4uwO/C6x7X1BDnfJM4ZBtk4LeshRO
-         KJ2bJ5E+zjuOImLyGUJWwIeEjBD6MndqQi+z7BD8kyELzWGZwpX4z4/XBEUwAwJXoKYI
-         qiX8jE/Y3Ligv7+dFOBlkEcGl9opekAOysIKJVnKS+gbVF5awLBTht1CgSWR36XF0GPD
-         p2nA==
+        bh=87ffxS2Z4k6pRWwiORZe6AOO57FJg09xK1iXk/x6q88=;
+        b=UwWLEZ7eVXbJTXRBz0PJCBT0pAN1ONKhOIoi5iZ0KywaZiMzwYFF/QTeg+5wA+vpr8
+         DejMWA79w6qxypNy01R9GuaS5nM1dHy54m13IeROW3SA6hbmIk+jCLSSaZMaNJkExPTP
+         A9lxEDe1Ur62DLzNi0NaAPGpou1ggx4ecwqzl4MEc4ftaLef4f4jYkigexWa19PbspR8
+         AH3S8cnMhrYo9S6n3ZJsUq3Jdf0UqTN0bLWffzXNSHfcZrKuouNtFmuaS6n6SMcKVzqQ
+         jcB4Q+Fk6HwjIpLRB+ladmM7dqhPbyN7bURebl2TgBykwYe9J5r8nmKmmKkdHGMD4ABM
+         YQFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711821630; x=1712426430;
+        d=1e100.net; s=20230601; t=1711822258; x=1712427058;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r39j2D5BMTjv9agvH23NugKjyW42TUeZqGeGsZaMYf0=;
-        b=BuFXyJIK4BPjWyddKQ1CUW7hWqV5eGVicuCV+sFOpGapMDoC5K1TpIGuUX3VdPnTYy
-         vLyli9NzFSrtKmAThWgXjD4IzafY8THV5ZDnoxRHFrSbPzYn58xldsmZxnFgEmzpVXQY
-         sXv3I4/71vVF9vMCoKNTig8JBks1GUvvyTVnJh0PCi/yP6VQq8/MkCWhdjA6MU+d9WOR
-         gHi6yZh9oEsrlemMeIDxNvPoHEShIo3XUgwgLIaqKunAAVF5+sneHy7/+AXlgnCNvu4v
-         j40pIayThRsFc34igLuZuSAUfE+5A0XN6i8ODMnEfuSROSHm4UkLyVyCPED4w42KPE1m
-         Vkhw==
-X-Gm-Message-State: AOJu0Ywd1pVApKGXKZh6N1IRpyb4RhDuBeo5Ph8wh8bA5kSKuy2X03I3
-	qH49P+m+T2mMgZ4m1d4mGhLd+TBwgVE3ia2wsBZLAXIPFlOTABZ34ZPMsyyX58w=
-X-Google-Smtp-Source: AGHT+IF08e2/g7vun76NTerfx5th/Hnqzkh4SuYGxOXmBfdp04gFPw4kDsBu5Sb4XueCWxhfPG5L7g==
-X-Received: by 2002:a05:600c:450a:b0:413:2852:2835 with SMTP id t10-20020a05600c450a00b0041328522835mr3636994wmo.17.1711821630033;
-        Sat, 30 Mar 2024 11:00:30 -0700 (PDT)
+        bh=87ffxS2Z4k6pRWwiORZe6AOO57FJg09xK1iXk/x6q88=;
+        b=R4yBTluJ+XDzqTIu3hyaA9bPfzgAiWczeijUDWM/IupWvKpNtMMJ99+L9QRMeUFYam
+         bFBNTz5GoZtR9yx8rpjpE28MrY+69LX3HQzBX10/RyOnlbVD5zyVtLOmRr5zvuzqMIne
+         EKTE3yj6uOzeTJmBROcGMdV4ZKLWmybkVaBINxXD1tPJvfB0ohh7LHRtWxhXNNvy06Qf
+         yPST8nqffGqyzOPyvfTmQAMj2DiP5qStXMOyDb//d36b61sRCpQxX16bwd8I20u3LH5a
+         89XuTjwCcgW86trhcrS0NJTwulvbelVV/kos5ci6uRVyLtvpmZ40uvGuO/q643pRPyrw
+         Glsw==
+X-Forwarded-Encrypted: i=1; AJvYcCXdzb9Zr4m5bACUTN/S+anYwieGVKAaCEBma+dqFmm1G2SgIoAjNFFLOT0MdThR+8XMNqfAlaDocYYNLVzM7B5lSH+LQJwRVMyFBuqH
+X-Gm-Message-State: AOJu0YyV1hDcgharxE3Lmjc9Uz0Agttmg1fkAupM8vMqHiwZbEKmxofi
+	gxANDG8HMNj/4xqnUvwH1BTERaIM1+QeTr6Yir3zrCxtqRctvD4nSUvJ4wzK2l4=
+X-Google-Smtp-Source: AGHT+IHSf24MHXCFM2oQnqc68fb0JfkbU/gQmTyhVXOzuBlSPPZgAtBdkIdsxpek5LvHWlT7coitEw==
+X-Received: by 2002:a5d:4a41:0:b0:341:cf18:70b3 with SMTP id v1-20020a5d4a41000000b00341cf1870b3mr4563234wrs.27.1711822257669;
+        Sat, 30 Mar 2024 11:10:57 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id n2-20020a056000170200b0034335e47102sm4988194wrc.113.2024.03.30.11.00.28
+        by smtp.gmail.com with ESMTPSA id ce8-20020a5d5e08000000b003433e4c6d43sm3312954wrb.32.2024.03.30.11.10.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 11:00:29 -0700 (PDT)
-Message-ID: <cfa5aa01-44ef-4eb1-9ca6-541ed5908db4@linaro.org>
-Date: Sat, 30 Mar 2024 19:00:27 +0100
+        Sat, 30 Mar 2024 11:10:56 -0700 (PDT)
+Message-ID: <e1a013e3-52df-441c-b0b0-06b6a877f151@linaro.org>
+Date: Sat, 30 Mar 2024 19:10:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,28 +76,23 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/19] amba: store owner from modules with
- amba_driver_register()
-To: Russell King <linux@armlinux.org.uk>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
- <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>,
- Alex Williamson <alex.williamson@redhat.com>
-Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
- linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-input@vger.kernel.org, kvm@vger.kernel.org
-References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
- <171182151736.34189.6433134738765363803.b4-ty@linaro.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: panel: Add LG SW43408 MIPI-DSI panel
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Caleb Connolly <caleb.connolly@linaro.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Caleb Connolly <caleb@connolly.tech>
+References: <20240330-lg-sw43408-panel-v2-0-293a58717b38@linaro.org>
+ <20240330-lg-sw43408-panel-v2-1-293a58717b38@linaro.org>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -143,32 +139,24 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <171182151736.34189.6433134738765363803.b4-ty@linaro.org>
+In-Reply-To: <20240330-lg-sw43408-panel-v2-1-293a58717b38@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 30/03/2024 18:58, Krzysztof Kozlowski wrote:
+On 30/03/2024 16:00, Dmitry Baryshkov wrote:
+> From: Sumit Semwal <sumit.semwal@linaro.org>
 > 
-> On Tue, 26 Mar 2024 21:23:30 +0100, Krzysztof Kozlowski wrote:
->> Merging
->> =======
->> All further patches depend on the first amba patch, therefore please ack
->> and this should go via one tree.
->>
->> Description
->> ===========
->> Modules registering driver with amba_driver_register() often forget to
->> set .owner field.
->>
->> [...]
+> LG SW43408 is 1080x2160, 4-lane MIPI-DSI panel present on Google Pixel 3
+> phones.
 > 
-> Applied, thanks!
-> 
-> [01/19] amba: store owner from modules with amba_driver_register()
->         (no commit info)
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> [caleb: convert to yaml]
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
 
-Patchset applied here:
-https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-dt.git/log/?h=for-v6.10/module-owner-amba
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
