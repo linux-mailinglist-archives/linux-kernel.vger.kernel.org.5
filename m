@@ -1,178 +1,199 @@
-Return-Path: <linux-kernel+bounces-125770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B207E892BE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:46:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0020B892BE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0A791C2143E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:46:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB879282E88
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6620B39AD5;
-	Sat, 30 Mar 2024 15:46:10 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B9C3A1A8;
+	Sat, 30 Mar 2024 15:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ZlQ2CqeE"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04olkn2028.outbound.protection.outlook.com [40.92.73.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D68A2D047
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 15:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711813569; cv=none; b=cGs66yAKS1LlChaZw+9leKkSWYsU5sl7KA1BswcnLqkdS7HeelNpjrc/D8wPinLpVLWADSottRp4dAABfNc8w9AuGLxPbMasz4uSzDKwboSHDW+qzQKWLu6I+fQ/B9DgC6gHvAI0GBqY0nn2G3lIJ5StdnIgUIJWfWmHLBqegK0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711813569; c=relaxed/simple;
-	bh=HmJkstWOXvWdanm91KU5WDxCl1wWeACjjlKw9rIN/ko=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=B3TSTW0F21RGaV0oqCZt4KPwk3of2jNY+PDbebMr4WIl7Yqk253Mjxt/jyWeGzXtixxxRNUMYk+wJWOaufwd4e1zOZiRtUxWYZYFHfVpWCSzcFym1PmV+4sH2WGUggVIymlqOVlNy0CExkx/ETwVgKm5M9kia3Dleny2QRi8t+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso312272439f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 08:46:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711813567; x=1712418367;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lU3CbaABGw0fyo0ShZzcN2Pensn8INYJozEbFOv7EgQ=;
-        b=LPcBj4kM927qGhch/QfIvn04p0C6qEpIqRUEiqAe0WceE5cOxQEwAfcI9fUwxWfAD8
-         zbRyKN37E5N7Y5y6HaH5NDxmdpKvC+78lfB6G75MRPExf/Cp8KaSYJglv12C7xKCnwgB
-         N+aB1ERLbZh/u9PTvd0IXyKx35PCb4DSkte+myaciSy4krFoKPoR1D2evq+EGjwX4cl5
-         7i8lbLP3ZiPCCN7XVHwpzJ+yBI8rGP5Ap1azHyV1roIAWDrfTWr39x8RL+xvUdLdJgKg
-         48ADI29g3gZUZHEbEPaKUZrHOnNwhs4X/Ne7DI8yWiKolsU4BwQDDGulDigoTQc0CLsn
-         VmPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXx/WREgrIKqzsz02dJATLXEKkZ7DQC6Vjun4t4SVFnjJgR3D6d2TRM9Rmrj7qNmMot08jFAO9lCMyCpOM8Odw7UxJuTruey1/X8f+d
-X-Gm-Message-State: AOJu0YykCUJyTQpUe6JAGmabjAuiNNamliggPMQ+04jmUgBvCVpLc/vO
-	gl4Ji6J183le1wudiqSq8akmGyq1pz7MGbLOVHA8Qug5qlyL6PEUDPMO7iS2b5J80FyMTpg8n1R
-	daC/S2H5wQFgm0y1SCDOdCnNRiZ/zomN5wmLepEK95MJLgB8Jqsc0s+c=
-X-Google-Smtp-Source: AGHT+IG3cmUJUXtwzDHM65ve2Yyc13OxunG420VT5tZc3cSrhPhBHk1R5rku2J9wDp8zwiW7SYTwLdb9d1X1hxieYv8rezObYS9Q
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0A7A936;
+	Sat, 30 Mar 2024 15:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.73.28
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711813651; cv=fail; b=N3etLIBgtSyTnlR+kDgFXMQodfi9LUeMPB3LmMS3EBrgtOWa86WAH1jk61KUV+I/OLdvOVEnGmXZARhp3CHrjSjng+t7/LhKkj1rfXY6mkKsH2/+1YlAu+GTF3V7KfMIcM72BkgeLWs3ahbK7BFvZgWGnLeX1BKu0391TsSMXT8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711813651; c=relaxed/simple;
+	bh=hQhK8DDo8vFlcw8efC5bKuqUHVusA+U3SuimOgY6w9E=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=d7TD85NCGqtCBifSZkm6r2Gx3aPNVkJeR/rk6iFLENGRWWT2jfpJZF/vRNSLkooEyNsT4DJBoI1igI7AJWtqLxWW5xmRffj5tAwQA2NpC6SArLlGpgaDGjtG7wDZJywp7Y4NUGSa2i2bgCKpwI8iB4DdTqt5sqCjEL9cQ5PgK54=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ZlQ2CqeE; arc=fail smtp.client-ip=40.92.73.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q1InGmtIYzLG9pdP78KQxTG4Q9jTI4kw94imKFNxFeLfkUc0FveHAI/mESd2LNYXLAI6IZMlUfGDKkfxoR17hK5qyZgh7s/FZqJtmNJfmDZJF3A4/abOFewieGdV04pmgjOrNged3Cb7z4uh5+ZHsHf+F1XPw2UEa780FJ/3qrUZi6+cLXgJovoDwmSm6dC4VWz7qFTVgoeqOuXp1DO8Ev1kGaxGCP7HZdpf0WMF/umfy4+rsdWG4ZL8Wj//bx9PeDs4Ofa3iAZlp/TBU+zYfI7KVYgZG07am/Yv6Esbl29byZr+TtYMg0qOeSoCVYANpwi04gS6NId7CTQeOp0ajQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=If+RXqyc7IV9zU0aYa448IBk1hQNid6O8k8iL/z6Pe0=;
+ b=nn+tE86y2ApMkJbnQMXubyred0rbgcXDYqOhm+BtaJeVIEn4OHEffI+BR235oBvBf3dYuHSvzVNc/3hMpuN884njHf5aNMQmVdi/mK46NO/lVYLRhqjgl9btRdAG8jmwZW2XqfBE7UKWU1p5CAUCL7k6MvKSZuIcYYJT6d1pta7fZ01i9+Rnqj2WuHUGHgjbsAIAn5HKEfqIK1Z0JU1z0oGBPDl/CH5+DV8FqS/Ta3Zj9fq/bKzz1DHugALBqTAtQ24D1uzAtEeo2BlgisjTzVwYOOuEN41XEUUKEN021ofzr+ToXiXp7/eESLzt0PliFshTMwNWe7y8rkkF5dBlWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=If+RXqyc7IV9zU0aYa448IBk1hQNid6O8k8iL/z6Pe0=;
+ b=ZlQ2CqeE30HLhKuCO+4/LXjZYr72CRQyVyh7vgP9ML8rv7PPT5klkMkvRyZaXxf0I5bqrbP7RhNuJVaPpNWvZVgN9OJZc8QG0vUBMkHMs7LDNAJZVyE2x/LGMKxG/jnX5ygCIH6Q4UeHmRW0hJ97RGwZsq8lIlEcOVGQFhSKajHJttW/XxAgDHgkuJTizaIdz38nQxstKQi1IERBGgXGMLqHmJrYFFTk/aQoHdvwlTyiije6/eBVdq2ipEqezmP/cG2wA83BLyVd6WAcRBi8WV6KdcXrIojCRp/AZHNTNUuGb37oNiZUF7hVR2zKA1zj0NGs2kny2T9c7GxyzRRMCg==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by AM9PR02MB7057.eurprd02.prod.outlook.com (2603:10a6:20b:270::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.43; Sat, 30 Mar
+ 2024 15:47:26 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
+ 15:47:25 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	x86@kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] perf/x86/amd/uncore: Use kcalloc*() instead of kzalloc*()
+Date: Sat, 30 Mar 2024 16:46:59 +0100
+Message-ID:
+ <AS8PR02MB7237A07D73D6D15EBF72FD8D8B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [Gvr/LX26XvhxwM96zv0N+kIbncYlcblx]
+X-ClientProxiedBy: MA2P292CA0020.ESPP292.PROD.OUTLOOK.COM (2603:10a6:250::10)
+ To AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID:
+ <20240330154659.7736-1-erick.archer@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2601:b0:47b:f666:f7e5 with SMTP id
- m1-20020a056638260100b0047bf666f7e5mr283253jat.6.1711813566362; Sat, 30 Mar
- 2024 08:46:06 -0700 (PDT)
-Date: Sat, 30 Mar 2024 08:46:06 -0700
-In-Reply-To: <20240330004405.3091-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008b834b0614e2a7d6@google.com>
-Subject: Re: [syzbot] [audit?] [bpf?] INFO: rcu detected stall in
- kauditd_thread (4)
-From: syzbot <syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|AM9PR02MB7057:EE_
+X-MS-Office365-Filtering-Correlation-Id: 60dceaae-31b0-462f-03b3-08dc50d0b26b
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	0ngjkSwGqpw6HMAr8o0k+F0JojbUKG+s1ppJDNlhm+rDmThCNLqLoayr/h0ml/k6Kh3IC9zGPuZdBf/AnS8YRCK6PtdrMnsYi1qCg4is6wzfn1zNL4OHRP2KH+tXD2D6tAsT7nRqwFOtWg3rmhJFqZ/zr2pwqtBkOSz2zcSCfFvLFQk96psZyUQUF/3DLB+6F1UaGZcCVw2xCXQpkLIscYpKkDEzKJf+6nb+wNQPATP2s75XRCy+TNgFYbzxjcFzrCoLPFJRcjQ7tZrRkYrOCL1a+P3LrB7EiR1zIPsfw2h0TMHVTjVRZUPujaLpm46Ac0giRMGHRHYlVI71/4RIG82ZIL2r7O4WVlirOCo3bf8pn/+hOHP5LfDShmbqKZ5q1oyiBlCkmnfwpBmgYT32jSvfrcXz57RlNIga3TvuAPT5dqdWq+BeKW0AKOuQJ2bfSspLdSKJwOIH2r8hxbjefZ1t36Zf3cSESSmEV5XD4wNR4M59X3wFsHDOo9mQu5PraHHWZG6QmoBQ4rOQ+O/paWM3pbFPnZM+XqTE/rHYWf1EWFC0z7SvGYWaMEbV25g9y8cS8zNsHqHSruCOTYNQ4RLhwwU+zKduLMwvSeILmC+kZ2FOIJU3x9qKoIg/S2th+SVLMXJuDgZXbD172Uf0sSWzGnQBDMmq5fwag6DbeJ5fL71b5X8Jac0vI0+ku1Aeuw6sTzydpgZ4Fg41qUpCvg==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?V2gC23BDlcfXnYmDo9/DVFo4LxZV1cvnT88kwVn26sCUuFszPjAJ2tmp9O3v?=
+ =?us-ascii?Q?O8e8Uux3O0SoFXAYaRAJC/2+TRfSActglq16vUxmU4EHKefi7T8kpx8totiW?=
+ =?us-ascii?Q?FPDPT/SaH23MWzRNoq/za9RPOjlO0C0tK44SVImm6VLS0DYOD5V1RT/Mzvoe?=
+ =?us-ascii?Q?esJPDwG+rWbLa8t513YU84reIa5KMSPigG48vT9ppbs3LsAjFStJcOEMn30w?=
+ =?us-ascii?Q?tQp/nlpQas5/cyzlsqEsYBEDVe4DPr/JmKn+hzVroc2CgX1JF5nM2V2eCBUy?=
+ =?us-ascii?Q?fSP+rM27sVphhTkCAr5sNuzsBDd4KUJiNBLgvXR6N8DUTevEEQ3DQbDUqBy+?=
+ =?us-ascii?Q?lQmIroZ3dYKyv3oM90he+OkUA8rQoHZuVCUIfsJEnM4r/1Wa56Hx7oooiszz?=
+ =?us-ascii?Q?MGQQ4jLeJstJkzvKAmu+wl8vkVbV6A39WAwL9zslRrM+xWJoot6drZWLAM4l?=
+ =?us-ascii?Q?PR2Psc24Qf1bYFpsR0IDEjeeLpNd7dlajJxlW618NAb5+s6VtbdFXpFYkSF7?=
+ =?us-ascii?Q?CRxaEFh4zL44RZwZ6GChBhG9unqQwAKZkCfJRqANodTLpQWolDTZHN4UinR1?=
+ =?us-ascii?Q?G5W7RqEP0mCiNGqce1zvF5rDkEBGhauhMWNtcz21umPv0Qs0OcAaTxJtKhJb?=
+ =?us-ascii?Q?289Hmdker5xSfRL8NyHcdwpYuU9LbR22cDFftk1qoyvb78xyyTwL8RoCd3gK?=
+ =?us-ascii?Q?EewKDrpF7V2289aGRSESuf/pO86DlyUBbJRdNSBeU6BO1z1bQ476GkfbDQ9t?=
+ =?us-ascii?Q?ugW7C1cNuqyoZCsjF4PUBFxko6luU/EnHFjSq0+JR22Dv2k7IK2obvVZPpmE?=
+ =?us-ascii?Q?yxQvG2VLImL9JQy4N6Q9mVV4iYT26Bx8gy3BCceTgvwOAlNFTsiRKS2xnYOz?=
+ =?us-ascii?Q?Q1B4Clr2DBJzYuqPYyG5auDMlycNZGZ3bQ83QNDeIHWyzTNQN9nUgk8LUe3P?=
+ =?us-ascii?Q?CpB3cpjkQWMqq/qAZEJSo9rQ9QZiEvE3SHn0xm+Tl+FVD2RP18Sym1Ntjyew?=
+ =?us-ascii?Q?FdffFVq6rOR2Qh9wDiQxJrfRfu3lp1tzk3tjl1MPAy08aoH08q5ERDVSg6AC?=
+ =?us-ascii?Q?ao+AhSZ6LRTX4wp/nE8REnL1lbfbt302GtCMQdSbqvGEKhV03XiDcHGdFwJF?=
+ =?us-ascii?Q?hxvCc8kdK4L8maqBoUNrzJNOD/8dh2+zM4PmFpHtng3ccXwEjyi3jDr8JqzP?=
+ =?us-ascii?Q?b33/aBka8t0MTDUfyv2xFCUmlV7tuwU7ogLO8tZBlHeI2XJQahyjzLnws7oM?=
+ =?us-ascii?Q?IjXq82Og15UWJ7TqI3wx?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60dceaae-31b0-462f-03b3-08dc50d0b26b
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 15:47:25.8536
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB7057
 
-Hello,
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in hrtimer_forward
+So, use the purpose specific kcalloc*() function instead of the argument
+size * count in the kzalloc*() function.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5464 at kernel/time/hrtimer.c:1053 hrtimer_forward+0x1d3/0x260 kernel/time/hrtimer.c:1053
-Modules linked in:
-CPU: 1 PID: 5464 Comm: udevd Not tainted 6.9.0-rc1-syzkaller-00274-g486291a0e624-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:hrtimer_forward+0x1d3/0x260 kernel/time/hrtimer.c:1053
-Code: 5c 41 5d 41 5e 41 5f c3 cc cc cc cc 49 bc ff ff ff ff ff ff ff 7f eb 85 49 bc ff ff ff ff ff ff ff 7f eb c3 e8 9e d5 12 00 90 <0f> 0b 90 48 c7 04 24 00 00 00 00 eb b9 e8 8b d5 12 00 4c 89 e0 4c
-RSP: 0018:ffffc90000a08d30 EFLAGS: 00010046
-RAX: 0000000080010001 RBX: ffff88807bc91340 RCX: ffffffff817a9ad4
-RDX: ffff888029330000 RSI: ffffffff817a9c12 RDI: 0000000000000001
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 00000000000035cd
-R13: 58f2e2407277c48d R14: 58f2e24072778ec0 R15: 0000000000030d40
-FS:  00007f983e6dac80(0000) GS:ffff8880b9300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa573182b10 CR3: 000000001e630000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- hrtimer_forward_now include/linux/hrtimer.h:355 [inline]
- advance_sched+0x670/0xc50 net/sched/sch_taprio.c:983
- __run_hrtimer kernel/time/hrtimer.c:1692 [inline]
- __hrtimer_run_queues+0x20c/0xcc0 kernel/time/hrtimer.c:1756
- hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1818
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1032 [inline]
- __sysvec_apic_timer_interrupt+0x10f/0x450 arch/x86/kernel/apic/apic.c:1049
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
- sysvec_apic_timer_interrupt+0x90/0xb0 arch/x86/kernel/apic/apic.c:1043
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:on_stack arch/x86/include/asm/stacktrace.h:59 [inline]
-RIP: 0010:stack_access_ok+0x1cd/0x270 arch/x86/kernel/unwind_orc.c:393
-Code: 8b 44 24 08 48 01 c5 49 39 ec 0f 83 3e ff ff ff e8 a8 ab 50 00 48 39 eb 41 0f 93 c6 e9 30 ff ff ff e8 97 ab 50 00 4c 8b 3c 24 <4c> 39 fd 0f 83 d3 fe ff ff e8 85 ab 50 00 48 8b 44 24 08 48 01 e8
-RSP: 0018:ffffc90003b57870 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: ffffc90003b57990 RCX: ffffffff813cc4e6
-RDX: ffff888029330000 RSI: ffffffff813cc619 RDI: 0000000000000005
-RBP: ffffc90003b57980 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90003b57998
-R13: ffffc90003b579a0 R14: ffffc90003b50000 R15: ffffc90003b58000
- deref_stack_reg arch/x86/kernel/unwind_orc.c:403 [inline]
- unwind_next_frame+0xd9b/0x23a0 arch/x86/kernel/unwind_orc.c:585
- __unwind_start+0x5aa/0x880 arch/x86/kernel/unwind_orc.c:760
- unwind_start arch/x86/include/asm/unwind.h:64 [inline]
- arch_stack_walk+0xb2/0x170 arch/x86/kernel/stacktrace.c:24
- stack_trace_save+0x95/0xd0 kernel/stacktrace.c:122
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- kasan_save_free_info+0x3b/0x60 mm/kasan/generic.c:579
- poison_slab_object mm/kasan/common.c:240 [inline]
- __kasan_slab_free+0x11d/0x1a0 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2106 [inline]
- slab_free mm/slub.c:4280 [inline]
- kmem_cache_free+0x12e/0x380 mm/slub.c:4344
- putname+0x12e/0x170 fs/namei.c:273
- do_sys_openat2+0x160/0x1e0 fs/open.c:1414
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1432
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-RIP: 0033:0x7f983e3169a4
-Code: 24 20 48 8d 44 24 30 48 89 44 24 28 64 8b 04 25 18 00 00 00 85 c0 75 2c 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 76 60 48 8b 15 55 a4 0d 00 f7 d8 64 89 02 48 83
-RSP: 002b:00007fff4c215900 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f983e3169a4
-RDX: 0000000000080241 RSI: 00007fff4c215e48 RDI: 00000000ffffff9c
-RBP: 00007fff4c215e48 R08: 0000000000000004 R09: 0000000000000001
-R10: 00000000000001b6 R11: 0000000000000246 R12: 0000000000080241
-R13: 000055d9597f572e R14: 0000000000000001 R15: 000055d959810160
- </TASK>
-----------------
-Code disassembly (best guess):
-   0:	8b 44 24 08          	mov    0x8(%rsp),%eax
-   4:	48 01 c5             	add    %rax,%rbp
-   7:	49 39 ec             	cmp    %rbp,%r12
-   a:	0f 83 3e ff ff ff    	jae    0xffffff4e
-  10:	e8 a8 ab 50 00       	call   0x50abbd
-  15:	48 39 eb             	cmp    %rbp,%rbx
-  18:	41 0f 93 c6          	setae  %r14b
-  1c:	e9 30 ff ff ff       	jmp    0xffffff51
-  21:	e8 97 ab 50 00       	call   0x50abbd
-  26:	4c 8b 3c 24          	mov    (%rsp),%r15
-* 2a:	4c 39 fd             	cmp    %r15,%rbp <-- trapping instruction
-  2d:	0f 83 d3 fe ff ff    	jae    0xffffff06
-  33:	e8 85 ab 50 00       	call   0x50abbd
-  38:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-  3d:	48 01 e8             	add    %rbp,%rax
+[1] https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
 
+Link: https://github.com/KSPP/linux/issues/162
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
+---
+Changes in v2:
+- Add the "Reviewed-by:" tag.
+- Rebase against linux-next.
 
-Tested on:
+Previous versions:
+v1 -> https://lore.kernel.org/linux-hardening/20240116125813.3754-1-erick.archer@gmx.com/
 
-commit:         486291a0 Merge tag 'drm-fixes-2024-03-30' of https://g..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=129ac3c6180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=81f5ca46b043d4a1b789
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15be4109180000
+Hi everyone,
+
+This patch seems to be lost. Gustavo reviewed it on January 16, 2024
+but the patch has not been applied since.
+
+Thanks,
+Erick
+---
+ arch/x86/events/amd/uncore.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+index 4ccb8fa483e6..61c0a2114183 100644
+--- a/arch/x86/events/amd/uncore.c
++++ b/arch/x86/events/amd/uncore.c
+@@ -479,8 +479,8 @@ static int amd_uncore_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+ 				goto fail;
+ 
+ 			curr->cpu = cpu;
+-			curr->events = kzalloc_node(sizeof(*curr->events) *
+-						    pmu->num_counters,
++			curr->events = kcalloc_node(pmu->num_counters,
++						    sizeof(*curr->events),
+ 						    GFP_KERNEL, node);
+ 			if (!curr->events) {
+ 				kfree(curr);
+@@ -928,7 +928,7 @@ int amd_uncore_umc_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+ 		uncore->num_pmus += group_num_pmus[gid];
+ 	}
+ 
+-	uncore->pmus = kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
++	uncore->pmus = kcalloc(uncore->num_pmus, sizeof(*uncore->pmus),
+ 			       GFP_KERNEL);
+ 	if (!uncore->pmus) {
+ 		uncore->num_pmus = 0;
+-- 
+2.25.1
 
 
