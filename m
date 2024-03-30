@@ -1,134 +1,86 @@
-Return-Path: <linux-kernel+bounces-125570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8F28928E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C400A8928E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64431C212E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:17:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4591C210CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D279D4C99;
-	Sat, 30 Mar 2024 02:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jsygBTUA"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D013D72;
+	Sat, 30 Mar 2024 02:30:30 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B5A1860;
-	Sat, 30 Mar 2024 02:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833BAA23;
+	Sat, 30 Mar 2024 02:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711765021; cv=none; b=AFQvtw7IlqCLxQELiPkeGpRIJyYuro+33jpWyLUALL4TP0pItvma//1Q7av9mFzAcMve1JQMRx9g/k1xUIPNvw7twkxySPUMIUGof+1if5UO/gu7lONd0DBH4V1Z0fqUM3Sy4Asw4Ql3VEfoXsIgM0jGdZ8URz40AwKnlJxuCNc=
+	t=1711765830; cv=none; b=AdmiDJNaC62JiQIcpudeV+q1EldsV5wM56FNl2Z/wX4eL8Czph1EVCslK+misTHJkNgIwF0ahlBOoCB+1q6aIj4nlV7ubC1ihdUul1eHX8n0gROJUgQKIVxsdvMKP41VRYiMTAPM8v9SV2LJNj52bqIx+R2fCv5/qvWrFD8rqdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711765021; c=relaxed/simple;
-	bh=fQWCvuCOvyxi0v02XJRPfc+KD/6czuElXo5sHXKVIkk=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=IV2X1xmrMjP79++o5sZsWZ4wFkK7DPwgiWrnnHPWpbIYrDl1XR3rrcA7qSe12I66sAFUjy/RqtaOWoEfvicdgj0MZCaRMyq2/SxabYmeoiUBws8tfPcvTQpzApBEHbrH+DYFXEv50JdrSelTdGmdeXcznnSqLkE9n3uhkyrQvps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jsygBTUA; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5e152c757a5so1504871a12.2;
-        Fri, 29 Mar 2024 19:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711765019; x=1712369819; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Nwo1ZLrAwSsaE5E6meyaZk2gLpGnAbw98pCerINhLsQ=;
-        b=jsygBTUAQo7b9UH15xITe6o4aPqXMO6AMLgrLhZuvjkjnLaI1IrS7ogseQrST7aGuR
-         gpQF7PCBI7P38oDkNZ1StISii661CZUojkq9lix/Aul7n945B6R+iD5k/dB19LM/ciP0
-         DnFc+HvbKHF5vb0A0LF4fjE79obi+OiR5xri/TDDv/GxmwOgZU4QVkfctDy2jlF1uVdD
-         87V15M7jLQjeu9gSgLXbyr4bXAULNeC11hnHD4NldMP7RdGvp6WDd2ZMT8ZytnO+mAoL
-         dCmYh9mmS2kVDajnFizNvjo3lUiD7Yr3Lx3VTNS/NMIZeTmANaWxLTJLdZ6/9f6vk8xq
-         iWQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711765019; x=1712369819;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Nwo1ZLrAwSsaE5E6meyaZk2gLpGnAbw98pCerINhLsQ=;
-        b=N8KvnUNEuqUpG7cu/Qg2SCf3XLabR828V43YMGAlybeOWKeQ7XeAbFKBWO5jAaknlk
-         8+MKfQBbSVqlxrHtU+ITZsV1s2G50FuqnH8N0Lnd3oOMeiTwqq4sfWZBBhqgEFZWKeTt
-         9rGnQ4LkC/Y9i8ynFeXQ8CRLZcZQHZgDV+0QaIWo9VdUQoNyiLT+aCz6HB6gh6JFkDsP
-         sWVgDE06Zw+RjpPpX1Tr9oN5iV58mMqKyIbZnA+Bq8jmRQFU2d8hIscUqZ7jIh2bcZAp
-         gRiAcy60v6sEYOX9XCjIVd3xYiKuX5fcvzX0kK7x5B8q1T/iI+iPCQ52tDI9kiwWIlw5
-         NgFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2KDRPF2kRL6RIFxP/tzXI/2hrDGUH02ej0uwtKclH0Ha0yL3Ku5ibOWPSaP1PBeCuj9lBovrIVF/wvV4wX8J2Hqu/gz/2bhSj0bqsi9mbBc28qO93HJCNOgZjI74StV4jrNcvbKUZmA==
-X-Gm-Message-State: AOJu0Yy1niDRzYprsaIJ5rWcVsCLBWLemTF7LZiTl/SpsS1DDwPmNRo5
-	Lk8svlrEa4gvusmPtYzcJoLsa8W/gxN+4GE8K+fm1x+SJ711Mt/9
-X-Google-Smtp-Source: AGHT+IGw/ItCtbnbMUHQ3NCtwQVacxQKM82yWYLj8ecyLWf0N5RhlUtr68YgHLH3g/LvAtKTCp/fcw==
-X-Received: by 2002:a05:6a20:d904:b0:1a6:fe58:ee8e with SMTP id jd4-20020a056a20d90400b001a6fe58ee8emr2841116pzb.51.1711765018795;
-        Fri, 29 Mar 2024 19:16:58 -0700 (PDT)
-Received: from dw-tp ([171.76.85.110])
-        by smtp.gmail.com with ESMTPSA id u9-20020a170903124900b001e0f55082ebsm4141634plh.56.2024.03.29.19.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 19:16:58 -0700 (PDT)
-Date: Sat, 30 Mar 2024 07:46:45 +0530
-Message-Id: <87h6goqx9u.fsf@gmail.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Mikhail Ukhin <mish.uxin2012@yandex.ru>, Theodore Ts'o <tytso@mit.edu>
-Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>, Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, Michail Ivanov <iwanov-23@bk.ru>, Pavel Koshutin <koshutin.pavel@yandex.ru>, Artem Sadovnikov <ancowi69@gmail.com>
-Subject: Re: [PATCH] ext4: fix semaphore unlocking order
-In-Reply-To: <20240328143301.6432-1-mish.uxin2012@yandex.ru>
+	s=arc-20240116; t=1711765830; c=relaxed/simple;
+	bh=FzYM06Gn4eXcMiYv8TDsNHGK5q7z2Q2fcZcDEpqm1vQ=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=A+SpIEHd+Q1nUvxNhuX9m0asdAAI8vN4Hny3ilHVWsW5ICHBjkDMIuav3N3MlLkXJi2O58JLIXkw312ghmF7lSdYmYIsXjvF5WZMOLYrF4Xa0ieYIxC7gvc9ngmvETtIZQoyF9ec7h2p1dk0xzmrOKyJst7dIUmUb5I55F7KkqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V61QH5V2nz29dPk;
+	Sat, 30 Mar 2024 10:27:35 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id A44D8140113;
+	Sat, 30 Mar 2024 10:30:17 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 30 Mar 2024 10:30:16 +0800
+Message-ID: <dc74b6fc-1edd-4532-b08a-a55a49c56fd8@huawei.com>
+Date: Sat, 30 Mar 2024 10:30:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
+	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
+	<pabeni@redhat.com>, <jiri@resnulli.us>, <horms@kernel.org>,
+	<rkannoth@marvell.com>, <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+	<liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V6 net-next 4/4] net: hns3: add support to query scc
+ version by devlink info
+To: Jakub Kicinski <kuba@kernel.org>
+References: <20240327114330.1826631-1-shaojijie@huawei.com>
+ <20240327114330.1826631-5-shaojijie@huawei.com>
+ <20240328190714.16e3f86a@kernel.org>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <20240328190714.16e3f86a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-Mikhail Ukhin <mish.uxin2012@yandex.ru> writes:
 
-> Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
->
-> The problem occurs in ext4_ind_migrate due to an incorrect order of
-> unlocking of the journal and write semaphores - the order of unlocking
-> must be the reverse of the order of locking.
->
+on 2024/3/29 10:07, Jakub Kicinski wrote:
+> On Wed, 27 Mar 2024 19:43:30 +0800 Jijie Shao wrote:
+>> From: Hao Chen <chenhao418@huawei.com>
+>>
+>> Add support to query scc version by devlink info for device V3.
+> What's SCC? Does none of the generic versions fit the bill?
+> https://docs.kernel.org/next/networking/devlink/devlink-info.html#generic-versions
 
-Maybe we should update the subject msg to:
-      "ext4: "fix i_data_sem unlock order in ext4_ind_migrate()"
+SCC means "soft congestion control", which is similar to fw.roce, but not exactly the same.
+It is a firmware dedicated to providing congestion control for roce,
 
-and also should add:
-    CC: stable@vger.kernel.org
+> If not you still have to document the meaning of this component
+> in Documentation/networking/devlink/hns3.rst
 
+OK, I will describe this inDocumentation/networking/devlink/hns3.rst
 
-I think this should have been fixed in patch [1], but looks like it
-forgot to fix the unlock order.
-
-[1]: https://lore.kernel.org/all/1364801462-13120-1-git-send-email-dmonakhov@openvz.org/
-
-
-> Found by Linux Verification Center (linuxtesting.org) with syzkaller.
-
-I am not sure if there is an easy reproducer. If yes, we should consider
-adding it in fstests.
-
->
-> Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
-
-Thanks for fixing it. With above changes to subject and CC tag, this
-looks good to me. Feel free to add - 
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-> ---
->  fs/ext4/migrate.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index d98ac2af8199..a5e1492bbaaa 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -663,8 +663,8 @@ int ext4_ind_migrate(struct inode *inode)
->  	if (unlikely(ret2 && !ret))
->  		ret = ret2;
->  errout:
-> -	ext4_journal_stop(handle);
->  	up_write(&EXT4_I(inode)->i_data_sem);
-> +	ext4_journal_stop(handle);
->  out_unlock:
->  	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
->  	return ret;
-> -- 
-> 2.25.1
 
