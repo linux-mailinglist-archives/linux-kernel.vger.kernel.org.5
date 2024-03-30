@@ -1,73 +1,177 @@
-Return-Path: <linux-kernel+bounces-125757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8328F892BBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:09:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445DD892BC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D0041F219C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:09:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB61C282F2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A51383A5;
-	Sat, 30 Mar 2024 15:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340DD38FA5;
+	Sat, 30 Mar 2024 15:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="b0G1rSQ/"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8010A1EA8F;
-	Sat, 30 Mar 2024 15:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jrmX2loK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6170C381B1;
+	Sat, 30 Mar 2024 15:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711811337; cv=none; b=TctqFxusdrjbLgarEJ91EfhnaciNUbXYPinfKs2yIqCHdXEB+XW+3PtkbVNfebqOlPudTORTNcfvPetyuo51tgPC3C7Efn+jhEYq8Ot1tp4XPZnEX1/xv//SOSsTFQr7iHoK29Bbs1HP9yHiyQw1GE23PzVmwTW1+JjqjrCE8ak=
+	t=1711811912; cv=none; b=TVgt+GPdBnHR0xK60bBg2Hc+FSkOIZ/xDdxNvMwbYhGAgBhzNCcmYSa0beepjdPdGoS3idmnNGeepBSYZTpjI6f06MdH3eC2xD4x+etq4+zfbsa7cjPfGf3ltC8gRwPziPMN18uCygJyWajIyfAiUQZS9hGgRF6kC7rIeVfzTso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711811337; c=relaxed/simple;
-	bh=8K9T5cXijh5PAemB3gyEgmtxsfFrCAsbRFNmApRPeT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ISkDowOAsTeI+WLliST9sGVZpVKW91amklCIKDhG9ssR8JDOvqFPKFkxWI/cc6HOvUeMZWtTc0l3oM1ii81x7xAq70UEBHtugCcfg+VkqPnE8pJ5dKRs5Jyzw31nKpdNAtrHFI90dHbO361fJ36KYciXZ5Gr6YSZDsBHSp/PuPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=b0G1rSQ/; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=7GmgPeUNLgbxwHZkwFXlYbsDYtn0gAkQOUe01m+BEAc=;
-	b=b0G1rSQ/24Tk/8kakI25k8fADlq5vHqS8v6qmUeXZ9qaq9h8WutPLbprpO9G7i
-	a4huoR0hDnIly9lRQICQu9HD64oA4BoaeRn1GtOg08xCCptNiF1+aDILxN8qUbqv
-	GTG+lorL266ib712/7Ct0uRtTPCnu8g0L6XnVm6iQj41Y=
-Received: from dragon (unknown [183.213.196.225])
-	by smtp1 (Coremail) with SMTP id ClUQrAD3_0XIKghmcGh0AQ--.22525S3;
-	Sat, 30 Mar 2024 23:07:53 +0800 (CST)
-Date: Sat, 30 Mar 2024 23:07:52 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: dts: fsl-lx2162a-som: add description for rtc
-Message-ID: <ZggqyDuUAESc24Q6@dragon>
-References: <20240312-lx2162-rtc-v1-0-1f4cd431b1cf@solid-run.com>
+	s=arc-20240116; t=1711811912; c=relaxed/simple;
+	bh=xeYmStBqD5EyQ428GGaiyigQwLaLHFrZUspwncdiUjo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sMCWW58fTI3/gflEeOA6tenujFn7b2ptGEDIPGc1Wt6PuRnrRFUgfvrXpu1glOelaMIQMeWE8Zsecy2jc/mViVi/rjxz+VIG5uiqQh56dgXYWO3PoziNnIcgkMginhDX6eaR/k/dahflPSDMiBwRz/yv164U81sVBYOOwRhbXCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrmX2loK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87709C433F1;
+	Sat, 30 Mar 2024 15:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711811911;
+	bh=xeYmStBqD5EyQ428GGaiyigQwLaLHFrZUspwncdiUjo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jrmX2loKIXLlb+YHC/rU0NWrqfAhBGvDvJqcY311c+9szJJfd9jFNGRQEz+x40OYL
+	 gAgO6zmeGBTHIjm1sxp0XIrmlBzmbpOSM1PFQVMtF5OC7et+d9UffSl0DqP+KMSKFe
+	 YJL8hwGAPgzW9uG5sW11yDt0OPKqHzLOfHmanhKyjTwkhx8d2s6fb9qN59JsUlAc+V
+	 oML9ZWsqRQJPIf5LXvv/RwJq/GDGiW+P8OysYXtzbSN0m/nJ+BA4DrqP2dNEOtqnZP
+	 Cmirp/FcaG5UNAblC79OdQzcLBpGEolp8oFjZPNSnprrDY88o93uV+hKj+wIgz00fW
+	 JOgfM97jkJcyg==
+Date: Sat, 30 Mar 2024 15:18:17 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Lothar Rubusch <l.rubusch@gmail.com>
+Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, eraretuya@gmail.com
+Subject: Re: [PATCH v5 1/7] iio: accel: adxl345: Make data_range obsolete
+Message-ID: <20240330151817.25c11a5f@jic23-huawei>
+In-Reply-To: <CAFXKEHaPcbRMVJTWW0Atg37jqb97JBdPoSmm3gAZEO1Q=SZm9w@mail.gmail.com>
+References: <20240327220320.15509-1-l.rubusch@gmail.com>
+	<20240327220320.15509-2-l.rubusch@gmail.com>
+	<20240328133720.7dfd46b0@jic23-huawei>
+	<CAFXKEHaPcbRMVJTWW0Atg37jqb97JBdPoSmm3gAZEO1Q=SZm9w@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312-lx2162-rtc-v1-0-1f4cd431b1cf@solid-run.com>
-X-CM-TRANSID:ClUQrAD3_0XIKghmcGh0AQ--.22525S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUx66zUUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDgmxZVszYc2-OwAAsT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 12, 2024 at 08:56:53PM +0100, Josua Mayer wrote:
-> Josua Mayer (2):
->       arm64: dts: fsl-lx2162a-som: add description for rtc
->       arm64: dts: fsl-lx2162a-clearfog: add alias for i2c bus iic6
+On Fri, 29 Mar 2024 01:03:29 +0100
+Lothar Rubusch <l.rubusch@gmail.com> wrote:
 
-Applied both, thanks!
+> On Thu, Mar 28, 2024 at 2:37=E2=80=AFPM Jonathan Cameron <jic23@kernel.or=
+g> wrote:
+> >
+> > On Wed, 27 Mar 2024 22:03:14 +0000
+> > Lothar Rubusch <l.rubusch@gmail.com> wrote:
+> > =20
+> > > Replace write() data_format by regmap_update_bits(), because bus spec=
+ific
+> > > pre-configuration may have happened before on the same register. For
+> > > further updates to the data_format register then bus pre-configuration
+> > > needs to be masked out.
+> > >
+> > > Remove the data_range field from the struct adxl345_data, because it =
+is
+> > > not used anymore.
+> > >
+> > > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+> > > ---
+> > >  drivers/iio/accel/adxl345_core.c | 18 ++++++++++++------
+> > >  1 file changed, 12 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adx=
+l345_core.c
+> > > index 8bd30a23e..35df5e372 100644
+> > > --- a/drivers/iio/accel/adxl345_core.c
+> > > +++ b/drivers/iio/accel/adxl345_core.c
+> > > @@ -37,7 +37,15 @@
+> > >  #define ADXL345_POWER_CTL_MEASURE    BIT(3)
+> > >  #define ADXL345_POWER_CTL_STANDBY    0x00
+> > >
+> > > +#define ADXL345_DATA_FORMAT_RANGE    GENMASK(1, 0) /* Set the g rang=
+e */
+> > > +#define ADXL345_DATA_FORMAT_JUSTIFY  BIT(2) /* Left-justified (MSB) =
+mode */
+> > >  #define ADXL345_DATA_FORMAT_FULL_RES BIT(3) /* Up to 13-bits resolut=
+ion */
+> > > +#define ADXL345_DATA_FORMAT_SELF_TEST        BIT(7) /* Enable a self=
+ test */
+> > > +#define ADXL345_DATA_FORMAT_MSK              (ADXL345_DATA_FORMAT_RA=
+NGE | \
+> > > +                                      ADXL345_DATA_FORMAT_JUSTIFY | =
+ \
+> > > +                                      ADXL345_DATA_FORMAT_FULL_RES |=
+ \
+> > > +                                      ADXL345_DATA_FORMAT_SELF_TEST)=
+ =20
+> > This needs renaming.  It's not a mask of everything in the register, or
+> > even just of everything related to format.
+> >
+> > Actually I'd just not have this definition.  Use the build up value
+> > from all the submasks at the call site.  Then we are just making it cle=
+ar
+> > only a subset of fields are being cleared.
+> > =20
+> I understand this solution was not very useful. I'm not sure, I
+> understood you correctly. Please have a look into v6 if this matches
+> your comment.
+> Now, I remove the mask, instead I use a local variable in core's
+> probe() for the update mask. I added a comment. Nevertheless, I keep
+> the used flags for FORMAT_DATA. Does this go into the direction of
+> using the build up value from the submasks at the call site?
+>=20
+The new code looks good to me.  A local variable doesn't carry the
+same implication of global applicability as the define did.
+Thanks,
+
+J
+> > Jonathan
+> > =20
+> > > +
+> > >  #define ADXL345_DATA_FORMAT_2G               0
+> > >  #define ADXL345_DATA_FORMAT_4G               1
+> > >  #define ADXL345_DATA_FORMAT_8G               2
+> > > @@ -48,7 +56,6 @@
+> > >  struct adxl345_data {
+> > >       const struct adxl345_chip_info *info;
+> > >       struct regmap *regmap;
+> > > -     u8 data_range;
+> > >  };
+> > >
+> > >  #define ADXL345_CHANNEL(index, axis) {                              =
+         \
+> > > @@ -218,15 +225,14 @@ int adxl345_core_probe(struct device *dev, stru=
+ct regmap *regmap)
+> > >
+> > >       data =3D iio_priv(indio_dev);
+> > >       data->regmap =3D regmap;
+> > > -     /* Enable full-resolution mode */
+> > > -     data->data_range =3D ADXL345_DATA_FORMAT_FULL_RES;
+> > >       data->info =3D device_get_match_data(dev);
+> > >       if (!data->info)
+> > >               return -ENODEV;
+> > >
+> > > -     ret =3D regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
+> > > -                        data->data_range);
+> > > -     if (ret < 0)
+> > > +     /* Enable full-resolution mode */
+> > > +     ret =3D regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
+> > > +                              ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_=
+FORMAT_FULL_RES);
+> > > +     if (ret)
+> > >               return dev_err_probe(dev, ret, "Failed to set data rang=
+e\n");
+> > >
+> > >       indio_dev->name =3D data->info->name; =20
+> > =20
 
 
