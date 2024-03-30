@@ -1,98 +1,140 @@
-Return-Path: <linux-kernel+bounces-125719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 367EA892B0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:01:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08842892B0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67FC71C20E07
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:01:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A3C4B21D4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:03:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D46381AA;
-	Sat, 30 Mar 2024 12:01:22 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC06D3770D;
+	Sat, 30 Mar 2024 12:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="f+F9bupj"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29FB1E896;
-	Sat, 30 Mar 2024 12:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C89D1FBA;
+	Sat, 30 Mar 2024 12:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711800081; cv=none; b=WJbbV270t/ooVwRu27l3kpbpO/LNp3fBVfRjqDSUiCBL1/yhmqeX05AdQ5vC9vo421dyQlYdRNrAG/3dLmqvHvHH3IOXbqbnkcRGS5ljWtW9WpuJVFyUYBq7iefT2u8Y2EsHJMJjqK0UHGQnJZOlWMwRiKLeHwXjs5A0t2k/zBc=
+	t=1711800220; cv=none; b=qYPjOiC9jbpFV2r3VWtBmS5vjM+flGE3JulDMmceLkHLOZS6P9PCSx3Xabcxg5Qt1PpR6dnv780d6kxpfNP+coeyubtsk6VI9agvUIlpjdyFMEC8hu20J6I9AmBwp5hZAXLHkXLbJwPeg0un2uRgTiiFpTLCZ2HfTr6pZBhuyoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711800081; c=relaxed/simple;
-	bh=fT3FnLwhlqo35Pj+pAK551GXQXi8alEtZAKvfSYeaHU=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Gysezl9oW2wx2m1NIwuS5aCuwl7HEGn2RtF3oLAyvdICdI9EdoKb99h/KeqXZzq3y49d/36QaSMvGlijVKast3vaki1kT/opXa8XfqWWufE7zSFpHwMOXGVeeMdlmccqp9Eb+dtVlMhV0NpG4fjzqbWHbE5Lf0g0516IE1P/Sc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V6G542s8Wz29lQT;
-	Sat, 30 Mar 2024 19:58:32 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id A15F21A0172;
-	Sat, 30 Mar 2024 20:01:14 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sat, 30 Mar
- 2024 20:01:14 +0800
-Subject: Re: [PATCH RFC 01/10] mm: Move the page fragment allocator from
- page_alloc into its own file
-To: Christophe Leroy <christophe.leroy@csgroup.eu>, "davem@davemloft.net"
-	<davem@davemloft.net>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Howells
-	<dhowells@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <20240328133839.13620-1-linyunsheng@huawei.com>
- <20240328133839.13620-2-linyunsheng@huawei.com>
- <b5fe4c81-a7e6-4620-b0b6-a56ce7a2c304@csgroup.eu>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <9e03b278-aaeb-d11c-d2e0-d45ca5e97346@huawei.com>
-Date: Sat, 30 Mar 2024 20:01:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1711800220; c=relaxed/simple;
+	bh=+Nha7AhXlZIaPPsVuUPnRGZTRCFgib3EZhIf2wQU+fA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mOYXFqbhLjTjgf148SjtiF7DEEE8UtUdYBSPrby7+hVnShb2CZTqcFAPLGx+Em7FmLtOfks0HpYvbx9o2Ecwy8GyJZIChWgAL5uIRMlIhOvc+Jo2SD7HbAhlWjBRnrqFbvJIDFWMf1wJ0onDump7B98Z5lhX5XwA8EpTHMBP1rQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=f+F9bupj; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711800216; x=1712059416;
+	bh=3whj0k58pL0GaO5Dv0/Jw6FeGqHzzIhwiZFFSAfmeos=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=f+F9bupjAOinB4jRtXK5mnJLbyT1QFx1iwXvWC5hn1ubqcy0sYFh6tQ+RpcYwo+/W
+	 EFQyREP8o86fEprsNdEdxSZmyBQR+zgfN7jD/Ih8tOxnBBUUbnZyVpV1K2MpSFluHy
+	 6mJk4Nss7yYMWvUbI8NdvUpxuRJwqhQ5l42Z/N9WykoqUUW+LmA//JMcY8dB1oq8hf
+	 9qaG/tVNJsclmVs/3303RIcI71d0UO3EM+LbWQIoPH/c8+0/Rf2DkMh3QrAxSfcHm8
+	 wIKPu95RMA0oX6/PCx+MNKhseEj4cW41Wpv+0df6/J96Fdduit96Rrv81ofGInKC3I
+	 aHhvl5w0OBxGg==
+Date: Sat, 30 Mar 2024 12:03:31 +0000
+To: Laine Taffin Altman <alexanderaltman@me.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, stable@vger.kernel.org, rust-for-linux@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rust: init: remove impl Zeroable for Infallible
+Message-ID: <2dd2c052-0d1f-4a77-9fff-1d6db80310e1@proton.me>
+In-Reply-To: <F1F3C985-9CAE-4286-B236-4AF6C0918DB5@me.com>
+References: <20240313230713.987124-1-benno.lossin@proton.me> <Zfh5DYkxNAm-mY_9@boqun-archlinux> <93FD9491-7E2D-4324-8443-0884B7CFC6EF@me.com> <ZfkW8rwpdRc_hJBU@Boquns-Mac-mini.home> <3FBC841A-968E-4AC5-83F0-E906C7EE85C3@me.com> <6857bb37-c4ee-4817-9b6a-e40e549b6402@proton.me> <F1F3C985-9CAE-4286-B236-4AF6C0918DB5@me.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b5fe4c81-a7e6-4620-b0b6-a56ce7a2c304@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/3/30 1:19, Christophe Leroy wrote:
-> 
-> 
-> Le 28/03/2024 à 14:38, Yunsheng Lin a écrit :
->> Inspired by [1], but use free_unref_page() to replace free_the_page()
->> instead of __free_pages(), use VM_BUG_ON() to catch that we can use
->> free_unref_page() directly, also add its own header file.
+On 21.03.24 05:53, Laine Taffin Altman wrote:
+> On Mar 19, 2024, at 3:34=E2=80=AFAM, Benno Lossin <benno.lossin@proton.me=
+> wrote:
+>> On 3/19/24 06:28, Laine Taffin Altman wrote:
+>>> On Mar 18, 2024, at 9:39=E2=80=AFPM, Boqun Feng <boqun.feng@gmail.com> =
+wrote:
+>>>> On Mon, Mar 18, 2024 at 08:17:07PM -0700, Laine Taffin Altman wrote:
+>>>>> On Mar 18, 2024, at 10:25=E2=80=AFAM, Boqun Feng <boqun.feng@gmail.co=
+m> wrote:
+>>>>>> On Wed, Mar 13, 2024 at 11:09:37PM +0000, Benno Lossin wrote:
+>>>>>>> From: Laine Taffin Altman <alexanderaltman@me.com>
+>>>>>>>
+>>>>>>> It is not enough for a type to be a ZST to guarantee that zeroed me=
+mory
+>>>>>>> is a valid value for it; it must also be inhabited. Creating a valu=
+e of
+>>>>>>> an uninhabited type, ZST or no, is immediate UB.
+>>>>>>> Thus remove the implementation of `Zeroable` for `Infallible`, sinc=
+e
+>>>>>>> that type is not inhabited.
+>>>>>>>
+>>>>>>> Cc: stable@vger.kernel.org
+>>>>>>> Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and `init::z=
+eroed` function")
+>>>>>>> Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
+>>>>>>> Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
+>>>>>>> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+>>>>>>
+>>>>>> I think either in the commit log or in the code comment, there bette=
+r be
+>>>>>> a link or explanation on "(un)inhabited type". The rest looks good t=
+o
+>>>>>> me.
+>>>>>
+>>>>> Would the following be okay for that purpose?
+>>>>>
+>>>>> A type is inhabited if at least one valid value of that type exists; =
+a
+>>>>> type is uninhabited if no valid values of that type exist.  The terms
+>>>>> "inhabited" and "uninhabited" in this sense originate in type theory,
+>>>>> a branch of mathematics.
+>>>>>
+>>>>> In Rust, producing an invalid value of any type is immediate undefine=
+d
+>>>>> behavior (UB); this includes via zeroing memory.  Therefore, since an
+>>>>> uninhabited type has no valid values, producing any values at all for
+>>>>> it is UB.
+>>>>>
+>>>>> The Rust standard library type `core::convert::Infallible` is
+>>>>> uninhabited, by virtue of having been declared as an enum with no
+>>>>> cases, which always produces uninhabited types in Rust.  Thus, remove
+>>>>> the implementation of `Zeroable` for `Infallible`, thereby avoiding
+>>>>> the UB.
+>>>>>
+>>>>
+>>>> Yeah, this works for me. Thanks!
+>>>
+>>> Great!  Should it be re-sent or can the new wording be incorporated upo=
+n merge?
 >>
->> As the API is only used by the networking, it may make sense to
->> move it to the networking directory like the page_pool does in the
->> future if we can make the free_unref_page() callable outside of the
->> mm subsystem. And we can utilize that to decouple the 'struct page'
->> in the networking subsystem in the future.
-> 
-> I'm wondering if this page fragment allocator could replace the page 
-> fragment allocator used in powerpc to allocate fragment of pages for 
-> page tables.
+>> I can re-send it for you again, or do you want to send it yourself?
+>> I think it is also a good idea to add a link to [1] in the code, since
+>> the above explanation is rather long and fits better in the commit
+>> message.
+>>
+>=20
+> I=E2=80=99ll try and do it myself; thank you for sending the first round =
+for me and illustrating procedures!  What Reviewed-By=E2=80=99s/Signed-Off-=
+By's should I retain?
 
-From a quick glance, it seems possible. If there are potential users
-other than the networking for this API, we can keep it in mm subsystem
-for now as this patch does and see how thing will evolve.
+Do you still want to send it yourself? If you don't have the time, no
+problem, I can send it again.
 
-> 
-> See arch/powerpc/mm/pgtable-frag.c
-> 
-> Christophe
-> 
+--=20
+Cheers,
+Benno
+
 
