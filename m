@@ -1,183 +1,229 @@
-Return-Path: <linux-kernel+bounces-125582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880A2892902
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:25:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC03892903
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17F161F22447
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:25:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0781F223CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B805660;
-	Sat, 30 Mar 2024 03:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A72079E0;
+	Sat, 30 Mar 2024 03:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+G7HytG"
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="efLoHZ+j"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683E64685;
-	Sat, 30 Mar 2024 03:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612C479C0
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 03:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711769111; cv=none; b=txur1GAZjblEbKcUItrDYj1M9Hxo5WrELeRqjfUe6oMrUPef/iYa6SwKo1Ul2MKuWWKvnB8lh0lUGgrcm0sUbc7JfTeOKy+XubDwLbK7ouFBrt1AVcQr34fIP/uO2jt/7NKeUWdzNSHOzIZih6qm3LthUagrVkriOnGpGMD+EEY=
+	t=1711769241; cv=none; b=a4TKpodgQaO5YpinZb4GTGP5Z+wIo8oJiIMawpCxQm3QFXKO8TdBckzXtuCGkygWW9Oyw3fc7UWq72HKhIKjpNTw24sY/A6staeVjJgNCr1Fq9k6kPdY4zTH/Nmswy75WlWmobuyEVdKVZW4n5JtM57fa7CZ3a2ggYa/U/GX9Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711769111; c=relaxed/simple;
-	bh=cCn/Kys0eN1/9g5a2Lnh0Lipbghpno/cSwxko+kcqsQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Oo1yQe+wb+9CkUcICUKfUa8YmisxrGLoXW0m6GRUkErB+TMBpy+HsFyaGoVYMwcUKL4WpfKWLlgXUX1eYxbzHPtzVzYNDPsAQnHKgTNQQRqgfOhXMfXDnzlgEthpj41yAKU5Xhsik68GDkCmA2p67vxmgcprABBzWYJyKGBwbgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+G7HytG; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4766e56ccccso987087137.0;
-        Fri, 29 Mar 2024 20:25:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711769108; x=1712373908; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qpPdvL8Aspg+XruusSIaaeZVrAk0JEByJ+vMpaFBMuo=;
-        b=Q+G7HytGkH7EXVFnV8FGRe6wEPjgnZOgPAajgNgrLAZ4SCVQRWmWJxXWkJ5RzKrUuY
-         tdGOVTZsqaGvjZtXJkUehA/4DIl+v9ctVxmJsLq4Ditem1S8mf9r+/7bN24TRRzw31l1
-         gOH9rjZel25ytme7l9b6wmEXZP0BP7DotLf+AEwv8u8jPvaCJHLI0KDdrWBdNCylJpzu
-         XaUltHfgL1gMVzImBS5Ce+iZbJV3z9F+rP+UJ1a6WjUFQ8g1vG2t4meL1c9xeBGFDslH
-         Jc+3iD902wY5CBCz9eUzMoO+lG/tDZFm7UdZAbrv+xxFD+EOZ1PKpG/aE9uymfq30YYe
-         JJTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711769108; x=1712373908;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qpPdvL8Aspg+XruusSIaaeZVrAk0JEByJ+vMpaFBMuo=;
-        b=pMbT5Jr6iKLnI5CN6xcgVsWplnci8vVvPtO+GhqA8dpcJxIWDqPcFeIev5udlHjHvx
-         rdm6Zwj+GMGuukTrfiou/5Yl/BK2sL7oXm6b8vuIKAr83uykz83PZnRQxIqfE2XmiVIx
-         onecLyWFmAbfMc6aNk4HqWZ2RtRwEz8vK+5qMhD8E5EO821QGClXR6I/hUJq6eIHYFFg
-         /4Ww134xxdWhm9qTJ2Yv52QBE8m+ELloYYsfP5VSmPUd3qFe77DFaL5PNwa0y0Eluiqm
-         cn8GCAtXMoAw5+5HmQqm1axIt78Oa9JFQDflnw/O6kkSP5i7WQxVtzGTgBgeXvz01zdi
-         951g==
-X-Forwarded-Encrypted: i=1; AJvYcCW3CT6zWM6+Ry4DEq1jm+5Ji/QltmWbnYSJSBnfZTme5bNn8lj1GZFNF+RqvEDtAiYinLdG1MnW0IANa8RidCA9CmZ0tu5kIMGLsRU6BbgC4AkPThyH1JqXyvfKlnw6j0wK
-X-Gm-Message-State: AOJu0Yy9XseNxebPv2e4uClzcvSwuBKvQS+B3L0QbTNzJ1Ymi8WBmpN/
-	q27ifR/Gn6PBNEQasIT6tSM/7uVeTEOboHKaGy87w726L/ee6zVD8qcwUzTzYF1tSwrvXePR1do
-	MwOA2eB652vd/qCjZ85dosKipi3Y=
-X-Google-Smtp-Source: AGHT+IH8+Y/+CrcGLMIY7wx22ahhMw/8tvRJQe+Ia+0YaTAklmIoq+r6BxPE0/GxoEdXjUk8j8e/mqHbaAgdpXjNApo=
-X-Received: by 2002:a05:6122:a0b:b0:4d8:9541:41a0 with SMTP id
- 11-20020a0561220a0b00b004d8954141a0mr3786757vkn.12.1711769108190; Fri, 29 Mar
- 2024 20:25:08 -0700 (PDT)
+	s=arc-20240116; t=1711769241; c=relaxed/simple;
+	bh=WE49C/hIKLIsjdhqKHX/n/iqJQy2K7hKsZU9IsD5PCg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Ij1H77V9QCEhTOYPDn7L0ehvh9PZdSGh8sxqTmkDBq05yQai7zVtyKrBd3HdDodKWb3kfYoxPJjVZP1M60iKPT5OLUQUy2rO7/SlJE6I7IsWegRFsmocab0VcwkY7eV6AgvP22MXBpa3BcQqtMGV6BUKMSTHop7vRhIMobYX9qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=efLoHZ+j; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711769240; x=1743305240;
+  h=date:from:to:cc:subject:message-id;
+  bh=WE49C/hIKLIsjdhqKHX/n/iqJQy2K7hKsZU9IsD5PCg=;
+  b=efLoHZ+jThha1M6esDAp/nkHljXibtUdFWkh6Fy/fEZH9eiKRvtgJof7
+   IfNgAF83R00kN9z1JuESnWjHZs5IBQfdl62ScXDJUQL+YQYLPaI83oU67
+   vp1sEZOtcITykZV7VrvGaGqogcynUBgbEOnz/oxO3UQviahJbHfNOK4/8
+   nBsFCpEWzpE9XhiHD9oGMfNQ0xC3nnpS850VTynaueU1FPdnHfCub0sPs
+   +JEnpTKw60mdJPLrMHgd7kHvPhsuq385i2kD6h/WJtiGtOPSPlwLiG/+g
+   JZG/mC+20YFlLv5K1rZj/DOqbIhJBhjyPf1SZCLGnVs+6X4A86eptuvzk
+   Q==;
+X-CSE-ConnectionGUID: l4B9GA75QnyLzCYzIngrEw==
+X-CSE-MsgGUID: xjnNj+IqSRWhPFFIF28ciA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="17588103"
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="17588103"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 20:27:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="48111997"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 29 Mar 2024 20:27:18 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqPND-0003uM-0c;
+	Sat, 30 Mar 2024 03:27:15 +0000
+Date: Sat, 30 Mar 2024 11:27:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 99c84311e35f9399bdce666f6306a048e2a5b404
+Message-ID: <202403301109.V0UwebeS-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240329030119.29995-1-harishankar.vishwanathan@gmail.com> <f2e1c5dc6f6ea2c7f046e8673dd364dd14056781.camel@gmail.com>
-In-Reply-To: <f2e1c5dc6f6ea2c7f046e8673dd364dd14056781.camel@gmail.com>
-From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-Date: Fri, 29 Mar 2024 23:24:57 -0400
-Message-ID: <CAM=Ch04JAJDS84xYHFUfjrShwqSSc8gQ5a_sLCoRNAsf6tyjYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] Fix latent unsoundness in and/or/xor value tracking
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: ast@kernel.org, harishankar.vishwanathan@rutgers.edu, sn624@cs.rutgers.edu, 
-	sn349@cs.rutgers.edu, m.shachnai@rutgers.edu, paul@isovalent.com, 
-	Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
-	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 6:27=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2024-03-28 at 23:01 -0400, Harishankar Vishwanathan wrote:
->
-> [...]
->
-> > @@ -13387,18 +13389,19 @@ static void scalar32_min_max_or(struct bpf_re=
-g_state *dst_reg,
-> >        */
-> >       dst_reg->u32_min_value =3D max(dst_reg->u32_min_value, umin_val);
-> >       dst_reg->u32_max_value =3D var32_off.value | var32_off.mask;
-> > -     if (dst_reg->s32_min_value < 0 || smin_val < 0) {
-> > +     if (dst_reg->s32_min_value > 0 && smin_val > 0 &&
->
-> Hello,
->
-> Could you please elaborate a bit, why do you use "> 0" not ">=3D 0" here?
-> It seems that having one of the min values as 0 shouldn't be an issue,
-> but maybe I miss something.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: 99c84311e35f9399bdce666f6306a048e2a5b404  x86/selftests: Skip the tests if prerequisites aren't fulfilled
 
-You are right, this is a mistake, I sent the wrong version of the patch. Th=
-anks
-for catching it. I will send a new patch.
+elapsed time: 1168m
 
-Note that in the correct version i'll be sending, instead of the following
-if condition,
+configs tested: 139
+configs skipped: 3
 
-if (dst_reg->s32_min_value >=3D 0 && smin_val >=3D 0 &&
-(s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_value)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-it will use this if condition:
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240330   gcc  
+arc                   randconfig-002-20240330   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240330   clang
+arm                   randconfig-002-20240330   clang
+arm                   randconfig-003-20240330   gcc  
+arm                   randconfig-004-20240330   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240330   clang
+arm64                 randconfig-002-20240330   clang
+arm64                 randconfig-003-20240330   clang
+arm64                 randconfig-004-20240330   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240330   gcc  
+csky                  randconfig-002-20240330   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240330   clang
+hexagon               randconfig-002-20240330   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240330   clang
+i386         buildonly-randconfig-002-20240330   clang
+i386         buildonly-randconfig-003-20240330   clang
+i386         buildonly-randconfig-004-20240330   clang
+i386         buildonly-randconfig-005-20240330   clang
+i386         buildonly-randconfig-006-20240330   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240330   clang
+i386                  randconfig-002-20240330   clang
+i386                  randconfig-003-20240330   clang
+i386                  randconfig-004-20240330   clang
+i386                  randconfig-005-20240330   clang
+i386                  randconfig-006-20240330   gcc  
+i386                  randconfig-011-20240330   clang
+i386                  randconfig-012-20240330   gcc  
+i386                  randconfig-013-20240330   gcc  
+i386                  randconfig-014-20240330   clang
+i386                  randconfig-015-20240330   gcc  
+i386                  randconfig-016-20240330   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240330   gcc  
+loongarch             randconfig-002-20240330   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240330   gcc  
+nios2                 randconfig-002-20240330   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240330   gcc  
+parisc                randconfig-002-20240330   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240330   gcc  
+powerpc               randconfig-002-20240330   clang
+powerpc               randconfig-003-20240330   clang
+powerpc64             randconfig-001-20240330   gcc  
+powerpc64             randconfig-002-20240330   gcc  
+powerpc64             randconfig-003-20240330   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240330   gcc  
+riscv                 randconfig-002-20240330   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240330   clang
+s390                  randconfig-002-20240330   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240330   gcc  
+sh                    randconfig-002-20240330   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240330   gcc  
+sparc64               randconfig-002-20240330   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240330   clang
+um                    randconfig-002-20240330   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240330   gcc  
+xtensa                randconfig-002-20240330   gcc  
 
-if ((s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_value)
-
-Inside the if, the output signed bounds are updated using the unsigned
-bounds; the only case in which this is unsafe is when the unsigned
-bounds cross the sign boundary.  The shortened if condition is enough to
-prevent this. The shortened has the added benefit of being more
-precise. We will make a note of this in the new commit message.
-
-This applies to all scalar(32)_min_max_and/or/xor.
-
-> > +             (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_va=
-lue) {
-> > +             /* ORing two positives gives a positive, so safe to cast
-> > +              * u32 result into s32 when u32 doesn't cross sign bounda=
-ry.
-> > +              */
-> > +             dst_reg->s32_min_value =3D dst_reg->u32_min_value;
-> > +             dst_reg->s32_max_value =3D dst_reg->u32_max_value;
-> > +     } else {
-> >               /* Lose signed bounds when ORing negative numbers,
-> >                * ain't nobody got time for that.
-> >                */
-> >               dst_reg->s32_min_value =3D S32_MIN;
-> >               dst_reg->s32_max_value =3D S32_MAX;
-> > -     } else {
-> > -             /* ORing two positives gives a positive, so safe to
-> > -              * cast result into s64.
-> > -              */
-> > -             dst_reg->s32_min_value =3D dst_reg->u32_min_value;
-> > -             dst_reg->s32_max_value =3D dst_reg->u32_max_value;
-> >       }
-> >  }
->
-> [...]
->
-> > @@ -13453,10 +13457,10 @@ static void scalar32_min_max_xor(struct bpf_r=
-eg_state *dst_reg,
-> >       /* We get both minimum and maximum from the var32_off. */
-> >       dst_reg->u32_min_value =3D var32_off.value;
-> >       dst_reg->u32_max_value =3D var32_off.value | var32_off.mask;
-> > -
-> > -     if (dst_reg->s32_min_value >=3D 0 && smin_val >=3D 0) {
-> > -             /* XORing two positive sign numbers gives a positive,
-> > -              * so safe to cast u32 result into s32.
-> > +     if (dst_reg->s32_min_value > 0 && smin_val > 0 &&
->
-> Same question here.
->
-> > +             (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_va=
-lue) {
-> > +             /* XORing two positives gives a positive, so safe to cast
-> > +              * u32 result into s32 when u32 doesn't cross sign bounda=
-ry.
-> >                */
-> >               dst_reg->s32_min_value =3D dst_reg->u32_min_value;
-> >               dst_reg->s32_max_value =3D dst_reg->u32_max_value;
->
-> [...]
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
