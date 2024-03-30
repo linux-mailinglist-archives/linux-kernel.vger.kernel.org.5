@@ -1,170 +1,96 @@
-Return-Path: <linux-kernel+bounces-125724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A803892B31
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:26:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F98892B37
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:28:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A263B2147B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:26:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25EA11F224AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C95383A5;
-	Sat, 30 Mar 2024 12:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZlR1Q+yO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FEC39846;
+	Sat, 30 Mar 2024 12:28:02 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AD93717B;
-	Sat, 30 Mar 2024 12:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECF6EBB;
+	Sat, 30 Mar 2024 12:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711801556; cv=none; b=POt1aFf+IfZbu8zcdQgpoAGI7rhKf81N0M07DnDVLhUyB154egc7AkiXGymo3rTAQKUc8Dpoc8ZoNn/Zu/A5QQk5pBUiKnKajQWYzs4YpzAuhBc/KkZ/CG1KG+gUA1dBjkJCyn3a+dOu0vk5tS3pLE29cpfRyW4QX0Zki7WDGAE=
+	t=1711801681; cv=none; b=XMC/96MZSbgwj61e0gdowqy0FCkjyu42MF09+oZiehSzpXvXiQVif54H/QB7/7yjK1rzsj7HeoPAFMnOzD6V2AwAjUVxit3L3JxPr5vYhgR/ECEEBgtTqUEKtIfSHrSC4sSOLYRLy9SOuq8HJq5lL8u6QAzrzO2majlhjCWz12w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711801556; c=relaxed/simple;
-	bh=0XRUml01rr7gdHFQJBRFu9sqyJtGjnt+AjcaOvI9Ow8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=C6I8YTMQnisk+3LeAnpMitXysplAT0izwqyV0uAiZwy19sFscdI9ghhAG+EtbfguT97VG40Iuq718Mb3sFkCP0r+c+eO15uvN9Nulwl8arbkrTA4Z+C1aQPawlsfA01Vnf3sJ3dBOvLao+f5l/xivTy26mKE/qnN/2M814NjETM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZlR1Q+yO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495B6C433C7;
-	Sat, 30 Mar 2024 12:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711801555;
-	bh=0XRUml01rr7gdHFQJBRFu9sqyJtGjnt+AjcaOvI9Ow8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ZlR1Q+yOMTjd7fPLYM4LhKvc/1peFbyPEG55fMuO2wroER6jqsmWkPa5ePWvFoRsM
-	 PQDs1u/qi/DRhKfK7AwRBDRvp7tU3O47koQrQ3nAmg7gQ4MOImuxDb/qEBSSro9Unw
-	 1YhEywWTlFygFAg1nzkIcmEfHU5FZw7ANjbpv/DU=
-Date: Sat, 30 Mar 2024 13:25:52 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB driver fixes for 6.9-rc2
-Message-ID: <ZggE0HwcSJTQzE0D@kroah.com>
+	s=arc-20240116; t=1711801681; c=relaxed/simple;
+	bh=+XibKb/dVHl63f9D33WQCt1jS1SK+C5P2v4d73y4tCE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hUlyYf7p366bQRa3JZqk4Cp6bt37v50Ad3tUe7DYPNyanyqj99e1dCTiSTgXuvgwT+fSzrSs80v6G5q+b6u+2UarYDQe0HTRHd0TzZRnzRuGeTC0ForTLXT+Bg6hepPoE3PO+qDKaEuJdXYoZLRM0KjuONFa5sumGwDZErecWTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0898C433F1;
+	Sat, 30 Mar 2024 12:27:56 +0000 (UTC)
+Date: Sat, 30 Mar 2024 08:27:55 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>, Alexei
+ Starovoitov <alexei.starovoitov@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, "David S.
+ Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, Dave
+ Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet
+ <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>, LKML
+ <linux-kernel@vger.kernel.org>, linux-riscv
+ <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>,
+ linux-trace-kernel@vger.kernel.org, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add
+ support to record and check the accessed args
+Message-ID: <20240330082755.1cbeb8c6@rorschach.local.home>
+In-Reply-To: <CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+	<20240311093526.1010158-2-dongmenglong.8@bytedance.com>
+	<CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+	<CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+	<CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+	<CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+	<CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+	<CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+	<CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+	<CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
+	<CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com>
+	<20240328111330.194dcbe5@gandalf.local.home>
+	<CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+On Fri, 29 Mar 2024 16:28:33 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+> I thought I'll just ask instead of digging through code, sorry for
+> being lazy :) Is there any way to pass pt_regs/ftrace_regs captured
+> before function execution to a return probe (fexit/kretprobe)? I.e.,
+> how hard is it to pass input function arguments to a kretprobe? That's
+> the biggest advantage of fexit over kretprobe, and if we can make
+> these original pt_regs/ftrace_regs available to kretprobe, then
+> multi-kretprobe will effectively be this multi-fexit.
 
-are available in the Git repository at:
+This should be possible with the updates that Masami is doing with the
+fgraph code.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.9-rc2
-
-for you to fetch changes up to f4d1960764d8a70318b02f15203a1be2b2554ca1:
-
-  USB: core: Fix deadlock in port "disable" sysfs attribute (2024-03-26 15:02:28 +0100)
-
-----------------------------------------------------------------
-USB Fixes for 6.9-rc2
-
-Here are a bunch of small USB fixes for reported problems and
-regressions for 6.9-rc2.  Included in here are:
-  - deadlock fixes for long-suffering issues
-  - USB phy driver revert for reported problem
-  - typec fixes for reported problems
-  - duplicate id in dwc3 dropped
-  - dwc2 driver fixes
-  - udc driver warning fix
-  - cdc-wdm race bugfix
-  - other tiny USB bugfixes
-
-All of these have been in linux-next this past week with no reported
-issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Alan Stern (3):
-      USB: core: Fix deadlock in usb_deauthorize_interface()
-      USB: core: Add hub_get() and hub_put() routines
-      USB: core: Fix deadlock in port "disable" sysfs attribute
-
-Alexander Stein (1):
-      Revert "usb: phy: generic: Get the vbus supply"
-
-Christian A. Ehrhardt (5):
-      usb: typec: ucsi: Clear EVENT_PENDING under PPM lock
-      usb: typec: ucsi: Check for notifications after init
-      usb: typec: ucsi: Ack unsupported commands
-      usb: typec: ucsi_acpi: Refactor and fix DELL quirk
-      usb: typec: ucsi: Clear UCSI_CCI_RESET_COMPLETE before reset
-
-Heikki Krogerus (1):
-      usb: dwc3: pci: Drop duplicate ID
-
-Jameson Thies (1):
-      usb: typec: ucsi: Check capabilities before cable and identity discovery
-
-Krishna Kurapati (1):
-      usb: typec: ucsi: Fix race between typec_switch and role_switch
-
-Kyle Tso (3):
-      usb: typec: tcpm: Correct port source pdo array in pd_set callback
-      usb: typec: tcpm: Update PD of Type-C port upon pd_set
-      usb: typec: Return size of buffer if pd_set operation succeeds
-
-Minas Harutyunyan (5):
-      usb: dwc2: host: Fix hibernation flow
-      usb: dwc2: host: Fix remote wakeup from hibernation
-      usb: dwc2: host: Fix ISOC flow in DDMA mode
-      usb: dwc2: gadget: Fix exiting from clock gating
-      usb: dwc2: gadget: LPM flow fix
-
-Oliver Neukum (1):
-      usb: cdc-wdm: close race between read and workqueue
-
-Thinh Nguyen (1):
-      usb: dwc3: Properly set system wakeup
-
-Weitao Wang (1):
-      USB: UAS: return ENODEV when submit urbs fail with device not attached
-
-Xu Yang (1):
-      usb: typec: tcpm: fix double-free issue in tcpm_port_unregister_pd()
-
-Yongzhi Liu (1):
-      usb: misc: ljca: Fix double free in error handling path
-
-yuan linyu (1):
-      usb: udc: remove warning when queue disabled ep
-
- drivers/usb/class/cdc-wdm.c         |  6 ++-
- drivers/usb/core/hub.c              | 23 +++++++---
- drivers/usb/core/hub.h              |  2 +
- drivers/usb/core/port.c             | 38 ++++++++++++++--
- drivers/usb/core/sysfs.c            | 16 +++++--
- drivers/usb/dwc2/core.h             | 14 ++++++
- drivers/usb/dwc2/core_intr.c        | 72 +++++++++++++++++++----------
- drivers/usb/dwc2/gadget.c           | 10 +++++
- drivers/usb/dwc2/hcd.c              | 49 ++++++++++++++++----
- drivers/usb/dwc2/hcd_ddma.c         | 17 ++++---
- drivers/usb/dwc2/hw.h               |  2 +-
- drivers/usb/dwc2/platform.c         |  2 +-
- drivers/usb/dwc3/core.c             |  2 +
- drivers/usb/dwc3/core.h             |  2 +
- drivers/usb/dwc3/dwc3-pci.c         |  2 -
- drivers/usb/dwc3/gadget.c           | 10 +++++
- drivers/usb/dwc3/host.c             | 11 +++++
- drivers/usb/gadget/udc/core.c       |  4 +-
- drivers/usb/misc/usb-ljca.c         | 22 ++++-----
- drivers/usb/phy/phy-generic.c       |  7 ---
- drivers/usb/storage/uas.c           | 28 ++++++------
- drivers/usb/typec/class.c           |  7 ++-
- drivers/usb/typec/tcpm/tcpm.c       |  6 +--
- drivers/usb/typec/ucsi/ucsi.c       | 90 +++++++++++++++++++++++++++++--------
- drivers/usb/typec/ucsi/ucsi.h       |  5 ++-
- drivers/usb/typec/ucsi/ucsi_acpi.c  | 71 +++++++++++++----------------
- drivers/usb/typec/ucsi/ucsi_glink.c | 14 ++++++
- 27 files changed, 374 insertions(+), 158 deletions(-)
+-- Steve
 
