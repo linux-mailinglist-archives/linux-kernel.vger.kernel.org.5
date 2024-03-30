@@ -1,105 +1,243 @@
-Return-Path: <linux-kernel+bounces-125901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DBC892DA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 23:32:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A78892DA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 23:33:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73B8E1C20DE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:32:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 458D61C20CF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A049381DF;
-	Sat, 30 Mar 2024 22:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD37381CC;
+	Sat, 30 Mar 2024 22:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ft0qMpZG"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bxcemWO2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF99322069
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 22:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF50C28F8;
+	Sat, 30 Mar 2024 22:33:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711837947; cv=none; b=l77b8FAmwJ8Y8V69wffkCvCFVgIbXNyD9D+KiXjKsaajQzhtMiSZh018iDhqaIb9s8MJeW44fHVNxLZLN2WcMjRahR5Ly/fg6UvtYYZGLJj4Rf5QX4zSmgKr0fmjfbfUsDmzib4zdYpvdQ4mgJNLvK1RTa7cDu6tdZPcfO+JDeg=
+	t=1711837989; cv=none; b=WSn1iK9Ec9mmuxtAYMjNuo01o9xo3uU9jSGU2dzwaCB4OP3A7ZklY+Si9jkGS8mryS17qGqmz6fVSGJay5Ajvs8xZK3/bKWJduQ7TSYo3X1m/kHZI+Tti2GKNOcbA3Xz9Rh1lUGJbFc1xKW684fSgWUeP2XTiOcSfXR/0pHgSyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711837947; c=relaxed/simple;
-	bh=U43Wuq55vMxCLBzqGRdkR/mMGx+zO2GmUgWVZu6Gawg=;
+	s=arc-20240116; t=1711837989; c=relaxed/simple;
+	bh=wWXFZPTscxJeW0asxEFwp355Ey119yMRyA/FK3awRE4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MC2kKYr7hZxlvL4KY6eIEyVXE7a7fBRrGhPrDC0/4KsNGWlhsMhIj4cXEGurZOT0YSKrAxzHJWIz9Vk7XbeQZguP+jmFM20dS23QbMdlZHlCeFtpqxpfuheSfe6YkBVGB1lsv0z3cmlb1gvf8abB75czUYTMAg6dXTIlGZM4UfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Ft0qMpZG; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-515d55aaf5aso767217e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 15:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1711837944; x=1712442744; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qh7m7AzKE9zxgcmaZLpWEMMQFO2AQlI5WB3LlhW1I44=;
-        b=Ft0qMpZGU9No1lDtNY6m+QEK9VUB3iCBlXDau5eoyGUjPfc6s69wYnViDKOvrtDhts
-         4cteyZ0It7eEa6xzoND8JiNqN5EYI1zb+xyCXMFw7oyiXZJ0e159qI4flnyp2Dpvbz+y
-         8Jle660pX/0lAxvng8Eu5kDc0+bfz5sKol1pg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711837944; x=1712442744;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qh7m7AzKE9zxgcmaZLpWEMMQFO2AQlI5WB3LlhW1I44=;
-        b=lfEMUAM+dMfzcY41f91KYBX547+RMogvPRR0PjQthWIlWhVSHWzIbwu7sEvxNquojo
-         LB9IdfqF7Sm8FICm+WmB0pCA4jmHGzgIViUkkm15cPbsACrO/Rzo5Ja4vMs5oNhVcgk4
-         MkJO/+y/904AjaDmotytwZxTZYGjgskf/j7JctLiERKKeT6mWpapV9SWD0H5wQZZb3k7
-         HOoUrseuSrH/0v6ScKt5HBJWm+BiD7Ck1JaRNkxYirwQYQrQLNGH8/h0UNxHsCFv5eGP
-         IS/GcKEr7g5izm/yG0edogzyieh653U0f9kVQKXlzLaTIVqtVBE4TCOvy6jxqr1H/eMH
-         ev9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWgHYXXaMb6fNrOJJkuIza8qYpc1wrqXuou0RBLd9Do6Wm6uoSeDMn5CZg335KAstRhbrKrj9lW9iFwGMP6S3Kt/FUIil/G0L/oEC+Z
-X-Gm-Message-State: AOJu0YzLZA9EfTj3MVzMmppFC5ocFfs2cesfB3JMWxpoPSgYJbsMrUBq
-	Ui28Vf1vt9y7O8yuAVV004t7K0Hb13QJkre3vxhFl5oFMRgoG9iI/yjP/HVDzEP9wcoG+G8rh+u
-	O7B0=
-X-Google-Smtp-Source: AGHT+IHoEYY8SM7e1gU0DYFywT6hL16F+O6qLec/790twgFmLR5wjHT0zheJNExGWw5wy0xsQ6bvtA==
-X-Received: by 2002:a05:6512:2389:b0:515:be10:e288 with SMTP id c9-20020a056512238900b00515be10e288mr5056125lfv.21.1711837943767;
-        Sat, 30 Mar 2024 15:32:23 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id h20-20020a0565123c9400b005132bdbcbc5sm1002577lfv.135.2024.03.30.15.32.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 15:32:22 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so34088391fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 15:32:22 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXpZgzHfgiD06oGxEh+SAIJtRDeaSVAgKt6Q0rmso6FMfCAg/o+v5pJRZERHqSsk56AxUVqxa6akcQBhVuIML+7SL24kKzphr39Qi2L
-X-Received: by 2002:a19:5517:0:b0:515:90e5:4555 with SMTP id
- n23-20020a195517000000b0051590e54555mr3507469lfe.16.1711837942133; Sat, 30
- Mar 2024 15:32:22 -0700 (PDT)
+	 To:Cc:Content-Type; b=T9BOU8/JE6UcLwLWYfzIP7Zig9kJRZ6/pTtECcIB/h+IG/9qyLa0bx4mCa70gqzJ9/0cJFLqfoX3YzlsunJpiuDBAFAXbcj5Fm9kmi2RvrVymjrOXaTjGJEnjrYw5onqTazuqQd6x1WKn+rZEUfohMU/2O4vWH/J2//yeuQoH4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bxcemWO2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68744C43390;
+	Sat, 30 Mar 2024 22:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711837988;
+	bh=wWXFZPTscxJeW0asxEFwp355Ey119yMRyA/FK3awRE4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=bxcemWO2n3VWmOhq4TGNRhMfRNuq41/0lfGpbqmaTpM/ocC1vfviUnTDXFYtKA6hS
+	 Vcy/sfQW52fl1zl8d20Dy1cWFq1pAjgAeQjLZz7n7FyCvsFFwbUimR+f3L/5ryss0D
+	 kkm54xN3lOOY7/KbwnBOKGmZqvvTEMljed/uQ34gkGS22HY5788r7P/XfWni9LhUvR
+	 GXDbH57uZY7GFsDanOWQPknELZsrC0vY4UVJbb5ejJxj7krOBYFaleL4jDNXd/LvCW
+	 eBGrSUSnwfPa2voRZmgGpOkikjyUXONhfy8ZQ6t3DRhftOq7+hOr4Ex5dEWZxJsGZ/
+	 yrwR9PLxhiU1Q==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-515ac73c516so3177173e87.0;
+        Sat, 30 Mar 2024 15:33:08 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXCCERucJ1U44sXj5ev0CbhRNGY3JN3EhDMYNzumMFq+sUSPksYr/N7GaJKASFSr/ml/AJe+QZt4C6pmp1CFpyxs01neVoaUbM8BvhmnhqHvjCm3q120wdoni/WeXntXmLbXVu4uO16l84H
+X-Gm-Message-State: AOJu0Yz4dLh5r6ZaS3VJ+2SdMolbKc2lwRIJT7jvWuW22ecM28/G8K+9
+	WWMZnhXmUN8Tmul6MgWzsTC7d9kBaZi1RFoP43cgwgGAXHso6drDoCm9QRWlmiMLWsxI05XF9dz
+	bYE1mYBG0dHMkt+iMZ4thMTqd6es=
+X-Google-Smtp-Source: AGHT+IHj19ICIjtMy7Y2otussg3H9JmfkUaaU3jvErU/ys+kmGiEc3/E577ugk5n0aETDNOz4Bw6JzL57ksbFjeN0ms=
+X-Received: by 2002:ac2:5a4b:0:b0:513:d234:e8c1 with SMTP id
+ r11-20020ac25a4b000000b00513d234e8c1mr2020997lfn.28.1711837987085; Sat, 30
+ Mar 2024 15:33:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326143838.15076-1-jarkko@kernel.org>
-In-Reply-To: <20240326143838.15076-1-jarkko@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 30 Mar 2024 15:32:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgNpPQFJyLe5dwEVH66ubviuiwM1_tjbyzQv4BytPw7dQ@mail.gmail.com>
-Message-ID: <CAHk-=wgNpPQFJyLe5dwEVH66ubviuiwM1_tjbyzQv4BytPw7dQ@mail.gmail.com>
-Subject: Re: [GIT PULL] tpmdd changes for v6.9-rc2
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>, David Howells <dhowells@redhat.com>, 
-	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	keyrings@vger.kernel.org
+References: <0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de>
+ <47e032a0-c9a0-4639-867b-cb3d67076eaf@suse.com> <20240326155247.GJZgLvT_AZi3XPPpBM@fat_crate.local>
+ <80582244-8c1c-4eb4-8881-db68a1428817@suse.com> <20240326191211.GKZgMeC21uxi7H16o_@fat_crate.local>
+ <CANpmjNOcKzEvLHoGGeL-boWDHJobwfwyVxUqMq2kWeka3N4tXA@mail.gmail.com> <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
+In-Reply-To: <20240326202548.GLZgMvTGpPfQcs2cQ_@fat_crate.local>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 31 Mar 2024 07:32:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASkpxRQHn2HqRbc01CCFK=U0DV607Bbr9QA9xDYhjcwyA@mail.gmail.com>
+Message-ID: <CAK7LNASkpxRQHn2HqRbc01CCFK=U0DV607Bbr9QA9xDYhjcwyA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Disable KCSAN for autogenerated *.mod.c intermediaries
+To: Borislav Petkov <bp@alien8.de>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	Marco Elver <elver@google.com>, Nikolay Borisov <nik.borisov@suse.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com, 
+	David Kaplan <David.Kaplan@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 26 Mar 2024 at 07:38, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+On Wed, Mar 27, 2024 at 5:26=E2=80=AFAM Borislav Petkov <bp@alien8.de> wrot=
+e:
 >
->   git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.9-rc2
+> On Tue, Mar 26, 2024 at 08:33:31PM +0100, Marco Elver wrote:
+> > I think just removing instrumentation from the mod.c files is very reas=
+onable.
+>
+> Thanks!
+>
+> @Masahiro: pls send this to Linus now as the commit which adds the
+> warning is in 6.9 so we should make sure we release it with all issues
+> fixed.
+>
+> Thx.
+>
+> ---
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+> Date: Tue, 26 Mar 2024 21:11:01 +0100
+>
+> When KCSAN and CONSTRUCTORS are enabled, one can trigger the
+>
+>   "Unpatched return thunk in use. This should not happen!"
+>
+> catch-all warning.
+>
+> Usually, when objtool runs on the .o objects, it does generate a section
+> .return_sites which contains all offsets in the objects to the return
+> thunks of the functions present there. Those return thunks then get
+> patched at runtime by the alternatives.
+>
+> KCSAN and CONSTRUCTORS add this to the the object file's .text.startup
+> section:
+>
+>   -------------------
+>   Disassembly of section .text.startup:
+>
+>   ...
+>
+>   0000000000000010 <_sub_I_00099_0>:
+>     10:   f3 0f 1e fa             endbr64
+>     14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+>                           15: R_X86_64_PLT32      __tsan_init-0x4
+>     19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cr=
+yptd_alloc_aead349+0x6>
+>                           1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+>   -------------------
+>
+> which, if it is built as a module goes through the intermediary stage of
+> creating a <module>.mod.c file which, when translated, receives a second
+> constructor:
+>
+>   -------------------
+>   Disassembly of section .text.startup:
+>
+>   0000000000000010 <_sub_I_00099_0>:
+>     10:   f3 0f 1e fa             endbr64
+>     14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+>                           15: R_X86_64_PLT32      __tsan_init-0x4
+>     19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
+>                           1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+>
+>   ...
+>
+>   0000000000000030 <_sub_I_00099_0>:
+>     30:   f3 0f 1e fa             endbr64
+>     34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
+>                           35: R_X86_64_PLT32      __tsan_init-0x4
+>     39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash=
++0x2>
+>                           3a: R_X86_64_PLT32      __x86_return_thunk-0x4
+>   -------------------
+>
+> in the .ko file.
+>
+> Objtool has run already so that second constructor's return thunk cannot
+> be added to the .return_sites section and thus the return thunk remains
+> unpatched and the warning rightfully fires.
+>
+> Drop KCSAN flags from the mod.c generation stage as those constructors
+> do not contain data races one would be interested about.
+>
+> Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
+> Borisov <nik.borisov@suse.com>.
+>
+> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Link: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molg=
+en.mpg.de
+> ---
+>  scripts/Makefile.modfinal | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 8568d256d6fb..79fcf2731686 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -23,7 +23,7 @@ modname =3D $(notdir $(@:.mod.o=3D))
+>  part-of-module =3D y
+>
+>  quiet_cmd_cc_o_c =3D CC [M]  $@
+> -      cmd_cc_o_c =3D $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), =
+$(c_flags)) -c -o $@ $<
+> +      cmd_cc_o_c =3D $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $=
+(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
+>
+>  %.mod.o: %.mod.c FORCE
+>         $(call if_changed_dep,cc_o_c)
+> --
+> 2.43.0
+>
+>
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-So I haven't pulled this, because the subject line (and tag name)
-talks about tpmdd, but this is clearly about key handling.
 
-Also, the actual contents seem to be very much an "update", not fixes.
-And it doesn't seem to be an actual improvement, in how it now does
-things from interrupts. That seems to be going backward rather than
-forward.
 
-            Linus
+I applied.
+
+I fixed the typo "the the" and replaced Link: with Closes:
+to address the following checkpatch warnings:
+
+
+
+
+
+WARNING: Possible repeated word: 'the'
+#18:
+KCSAN and CONSTRUCTORS add this to the the object file's .text.startup
+
+
+
+WARNING: Reported-by: should be immediately followed by Closes: with a
+URL to the report
+#70:
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+
+
+
+
+
+
+Instead of filter-out, you could add
+KCSAN_SANITIZE :=3D n
+to scripts/Makefile.modfinal because
+it is the reason why KCSAN_SANITIZE exists.
+
+But, that is not a big deal.
+GCOV flag is also filtered away instead of
+GCOV_PROFILE :=3D n
+
+
+I will probably use a different approach later.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
