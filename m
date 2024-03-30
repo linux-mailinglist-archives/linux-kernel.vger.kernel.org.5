@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-125693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05C1892AC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:24:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8385D892AC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D48701C2125D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:24:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DF91C20FAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E203374C2;
-	Sat, 30 Mar 2024 11:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8167B38DE1;
+	Sat, 30 Mar 2024 11:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EwdMxriv"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ru3QkUkt"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846D125777;
-	Sat, 30 Mar 2024 11:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AF32CCC2;
+	Sat, 30 Mar 2024 11:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711797879; cv=none; b=Lrx2uX1fvi7f+Dkc6nAcT4b4NZEV5qC2W8UUuta9m8tEKbrUyeE/SMB//w4IoKdogoHC3QyNEmF4kUwKFl+7CSBd033cDoOyYIEK6lA4iuXTbdrPnmnxEY0q6HRzq0ihcGJqB7uwWlcdKk8y3ZiUAbtdRRaAJ8hX++VgnSNWP3c=
+	t=1711797880; cv=none; b=ZIXGcYhCXLMVWHJo3W2W2yb1Rxp9+tJgQBNkeJCkBipOpuverpier3uHKWtL6mwV8kLHwJcgKrlY6ILy6fy4eLzYLoCBaX68UYPXXpFWlJ4xxEYqMyo8NvYoHCrIZZKCjtpw66IinREO/dcliUUxmgBHQW7TtMT0Qe4uVnXTYmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711797879; c=relaxed/simple;
-	bh=9FBDzSTfbzAZUKuKSIYgYHJj6RJPDf5zA+UAze032IE=;
+	s=arc-20240116; t=1711797880; c=relaxed/simple;
+	bh=jaZYbjys81pMsn0Wpbu1r14QuC0gHXmfLKIH1QJCNaM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kKrSaT28tVJHiwBMsU4wCMUBUlEwJ+nsd0NSpIaDwEk13KjJBXaSFKPScHbJToWLEbHCTVxpRLq9jeLQ3HRz9Zr9aBBuEKKrumZHdQehPoRorI9vAhtRpuZ+ffoC1pYjcrpigTEPRzd99bL/1VSwt+AfzCQjblP4fgS4yNkXyhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EwdMxriv; arc=none smtp.client-ip=209.85.167.41
+	 MIME-Version; b=d697TUB1TwKnQ9ixMma64QWb+lag67Vsv1F3HVvr3yA8RGMQCJSYttya8m59KnFZn8NlbK3CKEwkrTnJ9YMbC15X/Kyr/MIp26HbKG8hwN7YpDZEbyTjiIgCfglVndggN0ERsDvVlSn6co2aTSqeWrukOJFM+WekG57kL7mb+7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ru3QkUkt; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513e89d0816so3043542e87.0;
-        Sat, 30 Mar 2024 04:24:37 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4155271cb59so7342795e9.2;
+        Sat, 30 Mar 2024 04:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711797876; x=1712402676; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711797877; x=1712402677; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=swsfFKDKA94pEfEcaHOpAjs9gEbFOmP0I3ngtZ3Cfoo=;
-        b=EwdMxrivsvCGpo9smr0m9i0AJ91JhHSnKqrrpMAKvbPK/3aev3TuWuqnvTdch9RwG4
-         IbL+q4bgfqq6bRG9HGzfDI7KKxysPCcasBT/ZcmbvY2RS375FUR9yui3+jJqqa8/7+A1
-         PR3fQvcthCMBri2e3TdTGulrfNbgiXHEg9jdlKKEd/OFVETqi2/JskWytF1ow6ftPiVQ
-         k+Ictfs+exi0Be3Y6dSCm0isMW/5SiFUtgI2w63vigOGRRSaM+PfokxIxx5AW3ZIwola
-         LamCI8kiSn6k1qhonyaZvlrQiBDaK1kWrWToWiLDGajfANJphnP7IJaJK+wWtK3DL5c0
-         KzZw==
+        bh=FQXwuJoLJSBrzkd58wtTek0mHwm7fvJx/Uhfmo/YVjY=;
+        b=Ru3QkUktTmx7gXoXCXf76xXePRTYZWhqg+IePz7xDvkhv9ITm0W9Eekox1J/LOeuUf
+         hLjm5uCaJgdHN2YLqNQIdJPrgZzYUiRv5T+2EYlVjHBxuYDnfWchjnGN280YW13Ibam6
+         wqSVwzuTydliK6Kb2v2AZuH/LyFhZ+L5Nm8AWqITORbyZPa/m84Oes1Z7slBFw5LKPNn
+         aoVFg6QgIhHcb/EVufI8LtV3MAJUkVOwnScll51LIsatniyde/ZmEgtPEVC7O+uixBgG
+         GslgpBU78vNNHpXO3Jb/hDu8nqDRXy42wcR0AS70N54STccTIHbQpat36Hc2AohClBvL
+         3irA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711797876; x=1712402676;
+        d=1e100.net; s=20230601; t=1711797877; x=1712402677;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=swsfFKDKA94pEfEcaHOpAjs9gEbFOmP0I3ngtZ3Cfoo=;
-        b=qPI5IeraLInBKTMbs7GlqEGzzWbsn7W7ddRhUUQUD9qQxJF6NimxSWqaqUgrpeN4pR
-         Mkg5bVGyZRMcCheYfqtktNaqS/Wpp2POyc+zpdv2jHvZ34LMM5gsDqCmpc1qYBPRNXnA
-         lWE7tnIsh4CIr4UQAMLxJyKYRSnj/sVEmCDhUGAKwSookkEgs2ByljAVliSC1W1FwEs2
-         S6l+ZPLG3gj55nJ9aKiurAXsFS10jJQryHk2+MRs7CSoU32pH3jJpg3lPmoUPT6eRfAt
-         u/lrKDmdbd8u+M+qL6d8C8+lIkwnc74q+nAzICle1uXZg5vze/aa6dbzWsp0oSXfymAi
-         d75A==
-X-Forwarded-Encrypted: i=1; AJvYcCWgsW7OJmwaVhaGK6TQ/GPIcKSrB/ytDqxcLW2wI4HueEiG62czE/TSKasOAiwNx8vIDMgcNwcJvOYorxadeEOgFBBWQLYeH8q4lvkUshLHqv+YyeAWP4WoZspXUccoNGp8Drc3FNevvIIyZmFok0JR7j0E3PzCNrlNySOF03fXhnCm9C0wVPqIhAKXgLzm
-X-Gm-Message-State: AOJu0YyOijRSt++oWt0U/L3Z01a7cgV+T99Qg11JRg5o/214TQFEGekV
-	jiGA2veB02UFh1YsdP73Hsixr4IzZBmsfygcr03MyEmQHd6PqZTD
-X-Google-Smtp-Source: AGHT+IFZAw4i4aJvglRTSFnZPKcG8IcQegPe/ANMTMVE1OH8JUh4l2gI77gg12x4MeJPObgCGi8UbA==
-X-Received: by 2002:ac2:5f1a:0:b0:513:a05d:7e9a with SMTP id 26-20020ac25f1a000000b00513a05d7e9amr2794768lfq.45.1711797875418;
-        Sat, 30 Mar 2024 04:24:35 -0700 (PDT)
+        bh=FQXwuJoLJSBrzkd58wtTek0mHwm7fvJx/Uhfmo/YVjY=;
+        b=e6EVPioYZuvUoCX9jL99XFLtdPYghIl4/wcCUlPiA1pHzN7BOQAOv2phMDt4lg+hic
+         3q/nFHrtori28NF/EiteViz//yu+v6f4zcq6zYHuzlWN1jX4UApOduf6Yy0psPON5suA
+         IT0T/x7eMecroBRyaRaOWU16Un+iYW4BaHqfg7RQDUyvfMFYhNlb/XZ3efs3u4Sklw9l
+         8HnFu12xoUekxHBPbde27/PiAvFw9ap6rcGKTDgSqo1cJlSSk5jnQ5rnvjrn2UCSa4zd
+         RA5Yas6WF2N/j6wrhGh6JLR4jAHfnd+g9z4Rv+TZu/V+svabyPc95pOptCgrpAZnBawy
+         iRSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNNUtvLBKPFewzC3wiHTBFLxNbowTykB9/ozh5fj6qji8zcSWfx8S3xh487Ge/BjPpv4LVggVpAR5F5dPRdw+HH2Xp0TTpEADkBy1CFh3MRsguFuZk0Vsz2w7ypFc8zqckEnK/57lRLoTGkcoM0QV3yi3W7ENLwkbUGr0aiex3F9HIv5f2bifgXsu3b29p
+X-Gm-Message-State: AOJu0YzgN2qO2nHtOhhwS2AZXIeBLCDrbBqsDK9mFbxyPaiP8vJelYPS
+	EZb/BCXkGkokla7R2LL/+yK5QfOwaJB86vBVI3MI4xo+v2MLFn06FKkpt3fW
+X-Google-Smtp-Source: AGHT+IEwYiu779mvlq62aGrWVMA5xFbAJKfIzkmTk7OyUTyJmbNJZ4C8TVIbIsBD5UHFy8EVBL039A==
+X-Received: by 2002:a7b:c843:0:b0:413:e81a:55c0 with SMTP id c3-20020a7bc843000000b00413e81a55c0mr3943297wml.41.1711797876908;
+        Sat, 30 Mar 2024 04:24:36 -0700 (PDT)
 Received: from xws.fritz.box ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id m31-20020a05600c3b1f00b004146750314csm11441775wms.3.2024.03.30.04.24.34
+        by smtp.gmail.com with ESMTPSA id m31-20020a05600c3b1f00b004146750314csm11441775wms.3.2024.03.30.04.24.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 04:24:34 -0700 (PDT)
+        Sat, 30 Mar 2024 04:24:36 -0700 (PDT)
 From: Maximilian Luz <luzmaximilian@gmail.com>
 To: Jean Delvare <jdelvare@suse.com>,
 	Guenter Roeck <linux@roeck-us.net>,
@@ -76,9 +76,9 @@ Cc: Ivor Wanders <ivor@iwanders.net>,
 	platform-driver-x86@vger.kernel.org,
 	linux-hwmon@vger.kernel.org,
 	Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH 1/3] hwmon: Add thermal sensor driver for Surface Aggregator Module
-Date: Sat, 30 Mar 2024 12:24:00 +0100
-Message-ID: <20240330112409.3402943-2-luzmaximilian@gmail.com>
+Subject: [PATCH 2/3] hwmon: surface_temp: Add support for sensor names
+Date: Sat, 30 Mar 2024 12:24:01 +0100
+Message-ID: <20240330112409.3402943-3-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240330112409.3402943-1-luzmaximilian@gmail.com>
 References: <20240330112409.3402943-1-luzmaximilian@gmail.com>
@@ -88,245 +88,195 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Some of the newer Microsoft Surface devices (such as the Surface Book
-3 and Pro 9) have thermal sensors connected via the Surface Aggregator
-Module (the embedded controller on those devices). Add a basic driver
-to read out the temperature values of those sensors.
+From: Ivor Wanders <ivor@iwanders.net>
 
-Link: https://github.com/linux-surface/surface-aggregator-module/issues/59
+The thermal subsystem of the Surface Aggregator Module allows us to
+query the names of the respective thermal sensors. Forward those to
+userspace.
+
+Signed-off-by: Ivor Wanders <ivor@iwanders.net>
+Co-developed-by: Maximilian Luz <luzmaximilian@gmail.com>
 Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- MAINTAINERS                  |   6 ++
- drivers/hwmon/Kconfig        |  10 +++
- drivers/hwmon/Makefile       |   1 +
- drivers/hwmon/surface_temp.c | 165 +++++++++++++++++++++++++++++++++++
- 4 files changed, 182 insertions(+)
- create mode 100644 drivers/hwmon/surface_temp.c
+ drivers/hwmon/surface_temp.c | 112 +++++++++++++++++++++++++++++------
+ 1 file changed, 95 insertions(+), 17 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d36c19c1bf811..bc5bc418ed479 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14738,6 +14738,12 @@ S:	Maintained
- F:	Documentation/hwmon/surface_fan.rst
- F:	drivers/hwmon/surface_fan.c
- 
-+MICROSOFT SURFACE SENSOR THERMAL DRIVER
-+M:	Maximilian Luz <luzmaximilian@gmail.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	drivers/hwmon/surface_temp.c
-+
- MICROSOFT SURFACE GPE LID SUPPORT DRIVER
- M:	Maximilian Luz <luzmaximilian@gmail.com>
- L:	platform-driver-x86@vger.kernel.org
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 83945397b6eb1..338ef73c96a3a 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -2070,6 +2070,16 @@ config SENSORS_SURFACE_FAN
- 
- 	  Select M or Y here, if you want to be able to read the fan's speed.
- 
-+config SENSORS_SURFACE_TEMP
-+	tristate "Microsoft Surface Thermal Sensor Driver"
-+	depends on SURFACE_AGGREGATOR
-+	help
-+	  Driver for monitoring thermal sensors connected via the Surface
-+	  Aggregator Module (embedded controller) on Microsoft Surface devices.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called surface_temp.
-+
- config SENSORS_ADC128D818
- 	tristate "Texas Instruments ADC128D818"
- 	depends on I2C
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index 5c31808f6378d..de8bc99719e63 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -208,6 +208,7 @@ obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
- obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
- obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
- obj-$(CONFIG_SENSORS_SURFACE_FAN)+= surface_fan.o
-+obj-$(CONFIG_SENSORS_SURFACE_TEMP)+= surface_temp.o
- obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
- obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
- obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
 diff --git a/drivers/hwmon/surface_temp.c b/drivers/hwmon/surface_temp.c
-new file mode 100644
-index 0000000000000..48c3e826713f6
---- /dev/null
+index 48c3e826713f6..7a2e1f638336c 100644
+--- a/drivers/hwmon/surface_temp.c
 +++ b/drivers/hwmon/surface_temp.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: GPL-2.0+
+@@ -17,6 +17,27 @@
+ 
+ /* -- SAM interface. -------------------------------------------------------- */
+ 
 +/*
-+ * Thermal sensor subsystem driver for Surface System Aggregator Module (SSAM).
-+ *
-+ * Copyright (C) 2022-2023 Maximilian Luz <luzmaximilian@gmail.com>
++ * Available sensors are indicated by a 16-bit bitfield, where a 1 marks the
++ * presence of a sensor. So we have at most 16 possible sensors/channels.
 + */
++#define SSAM_TMP_SENSOR_MAX_COUNT 16
 +
-+#include <linux/bitops.h>
-+#include <linux/hwmon.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
++/*
++ * All names observed so far are 6 characters long, but there's only
++ * zeros after the name, so perhaps they can be longer. This number reflects
++ * the maximum zero-padded space observed in the returned buffer.
++ */
++#define SSAM_TMP_SENSOR_NAME_LENGTH 18
 +
-+#include <linux/surface_aggregator/controller.h>
-+#include <linux/surface_aggregator/device.h>
++struct ssam_tmp_get_name_rsp {
++	__le16 unknown1;
++	char unknown2;
++	char name[SSAM_TMP_SENSOR_NAME_LENGTH];
++} __packed;
 +
++static_assert(sizeof(struct ssam_tmp_get_name_rsp) == 21);
 +
-+/* -- SAM interface. -------------------------------------------------------- */
-+
-+SSAM_DEFINE_SYNC_REQUEST_CL_R(__ssam_tmp_get_available_sensors, __le16, {
+ SSAM_DEFINE_SYNC_REQUEST_CL_R(__ssam_tmp_get_available_sensors, __le16, {
+ 	.target_category = SSAM_SSH_TC_TMP,
+ 	.command_id      = 0x04,
+@@ -27,6 +48,11 @@ SSAM_DEFINE_SYNC_REQUEST_MD_R(__ssam_tmp_get_temperature, __le16, {
+ 	.command_id      = 0x01,
+ });
+ 
++SSAM_DEFINE_SYNC_REQUEST_MD_R(__ssam_tmp_get_name, struct ssam_tmp_get_name_rsp, {
 +	.target_category = SSAM_SSH_TC_TMP,
-+	.command_id      = 0x04,
++	.command_id      = 0x0e,
 +});
 +
-+SSAM_DEFINE_SYNC_REQUEST_MD_R(__ssam_tmp_get_temperature, __le16, {
-+	.target_category = SSAM_SSH_TC_TMP,
-+	.command_id      = 0x01,
-+});
-+
-+static int ssam_tmp_get_available_sensors(struct ssam_device *sdev, s16 *sensors)
+ static int ssam_tmp_get_available_sensors(struct ssam_device *sdev, s16 *sensors)
+ {
+ 	__le16 sensors_le;
+@@ -54,12 +80,37 @@ static int ssam_tmp_get_temperature(struct ssam_device *sdev, u8 iid, long *temp
+ 	return 0;
+ }
+ 
++static int ssam_tmp_get_name(struct ssam_device *sdev, u8 iid, char *buf, size_t buf_len)
 +{
-+	__le16 sensors_le;
++	struct ssam_tmp_get_name_rsp name_rsp;
 +	int status;
 +
-+	status = __ssam_tmp_get_available_sensors(sdev, &sensors_le);
++	status =  __ssam_tmp_get_name(sdev->ctrl, sdev->uid.target, iid, &name_rsp);
 +	if (status)
 +		return status;
 +
-+	*sensors = le16_to_cpu(sensors_le);
-+	return 0;
++	/*
++	 * This should not fail unless the name in the returned struct is not
++	 * null-terminated or someone changed something in the struct
++	 * definitions above, since our buffer and struct have the same
++	 * capacity by design. So if this fails blow this up with a warning.
++	 * Since the more likely cause is that the returned string isn't
++	 * null-terminated, we might have received garbage (as opposed to just
++	 * an incomplete string), so also fail the function.
++	 */
++	status = strscpy(buf, name_rsp.name, buf_len);
++	WARN_ON(status < 0);
++
++	return status < 0 ? status : 0;
 +}
 +
-+static int ssam_tmp_get_temperature(struct ssam_device *sdev, u8 iid, long *temperature)
-+{
-+	__le16 temp_le;
-+	int status;
-+
-+	status = __ssam_tmp_get_temperature(sdev->ctrl, sdev->uid.target, iid, &temp_le);
-+	if (status)
-+		return status;
-+
-+	/* Convert 1/10 °K to 1/1000 °C */
-+	*temperature = (le16_to_cpu(temp_le) - 2731) * 100L;
-+	return 0;
-+}
-+
-+
-+/* -- Driver.---------------------------------------------------------------- */
-+
-+struct ssam_temp {
-+	struct ssam_device *sdev;
-+	s16 sensors;
-+};
-+
-+static umode_t ssam_temp_hwmon_is_visible(const void *data,
-+					  enum hwmon_sensor_types type,
-+					  u32 attr, int channel)
-+{
-+	const struct ssam_temp *ssam_temp = data;
-+
-+	if (!(ssam_temp->sensors & BIT(channel)))
-+		return 0;
-+
-+	return 0444;
-+}
-+
-+static int ssam_temp_hwmon_read(struct device *dev,
-+				enum hwmon_sensor_types type,
-+				u32 attr, int channel, long *value)
+ 
+ /* -- Driver.---------------------------------------------------------------- */
+ 
+ struct ssam_temp {
+ 	struct ssam_device *sdev;
+ 	s16 sensors;
++	char names[SSAM_TMP_SENSOR_MAX_COUNT][SSAM_TMP_SENSOR_NAME_LENGTH];
+ };
+ 
+ static umode_t ssam_temp_hwmon_is_visible(const void *data,
+@@ -83,33 +134,47 @@ static int ssam_temp_hwmon_read(struct device *dev,
+ 	return ssam_tmp_get_temperature(ssam_temp->sdev, channel + 1, value);
+ }
+ 
++static int ssam_temp_hwmon_read_string(struct device *dev,
++				       enum hwmon_sensor_types type,
++				       u32 attr, int channel, const char **str)
 +{
 +	const struct ssam_temp *ssam_temp = dev_get_drvdata(dev);
 +
-+	return ssam_tmp_get_temperature(ssam_temp->sdev, channel + 1, value);
-+}
-+
-+static const struct hwmon_channel_info * const ssam_temp_hwmon_info[] = {
-+	HWMON_CHANNEL_INFO(chip,
-+			   HWMON_C_REGISTER_TZ),
-+	/* We have at most 16 thermal sensor channels. */
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_ops ssam_temp_hwmon_ops = {
-+	.is_visible = ssam_temp_hwmon_is_visible,
-+	.read = ssam_temp_hwmon_read,
-+};
-+
-+static const struct hwmon_chip_info ssam_temp_hwmon_chip_info = {
-+	.ops = &ssam_temp_hwmon_ops,
-+	.info = ssam_temp_hwmon_info,
-+};
-+
-+static int ssam_temp_probe(struct ssam_device *sdev)
-+{
-+	struct ssam_temp *ssam_temp;
-+	struct device *hwmon_dev;
-+	s16 sensors;
-+	int status;
-+
-+	status = ssam_tmp_get_available_sensors(sdev, &sensors);
-+	if (status)
-+		return status;
-+
-+	ssam_temp = devm_kzalloc(&sdev->dev, sizeof(*ssam_temp), GFP_KERNEL);
-+	if (!ssam_temp)
-+		return -ENOMEM;
-+
-+	ssam_temp->sdev = sdev;
-+	ssam_temp->sensors = sensors;
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(&sdev->dev,
-+			"surface_thermal", ssam_temp, &ssam_temp_hwmon_chip_info,
-+			NULL);
-+	if (IS_ERR(hwmon_dev))
-+		return PTR_ERR(hwmon_dev);
-+
++	*str = ssam_temp->names[channel];
 +	return 0;
 +}
 +
-+static const struct ssam_device_id ssam_temp_match[] = {
-+	{ SSAM_SDEV(TMP, SAM, 0x00, 0x02) },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(ssam, ssam_temp_match);
+ static const struct hwmon_channel_info * const ssam_temp_hwmon_info[] = {
+ 	HWMON_CHANNEL_INFO(chip,
+ 			   HWMON_C_REGISTER_TZ),
+-	/* We have at most 16 thermal sensor channels. */
++	/*
++	 * We have at most SSAM_TMP_SENSOR_MAX_COUNT = 16 thermal sensor
++	 * channels.
++	 */
+ 	HWMON_CHANNEL_INFO(temp,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT,
+-			   HWMON_T_INPUT),
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL,
++			   HWMON_T_INPUT | HWMON_T_LABEL),
+ 	NULL
+ };
+ 
+ static const struct hwmon_ops ssam_temp_hwmon_ops = {
+ 	.is_visible = ssam_temp_hwmon_is_visible,
+ 	.read = ssam_temp_hwmon_read,
++	.read_string = ssam_temp_hwmon_read_string,
+ };
+ 
+ static const struct hwmon_chip_info ssam_temp_hwmon_chip_info = {
+@@ -122,6 +187,7 @@ static int ssam_temp_probe(struct ssam_device *sdev)
+ 	struct ssam_temp *ssam_temp;
+ 	struct device *hwmon_dev;
+ 	s16 sensors;
++	int channel;
+ 	int status;
+ 
+ 	status = ssam_tmp_get_available_sensors(sdev, &sensors);
+@@ -135,6 +201,18 @@ static int ssam_temp_probe(struct ssam_device *sdev)
+ 	ssam_temp->sdev = sdev;
+ 	ssam_temp->sensors = sensors;
+ 
++	/* Retrieve the name for each available sensor. */
++	for (channel = 0; channel < SSAM_TMP_SENSOR_MAX_COUNT; channel++) {
++		if (!(sensors & BIT(channel)))
++			continue;
 +
-+static struct ssam_device_driver ssam_temp = {
-+	.probe = ssam_temp_probe,
-+	.match_table = ssam_temp_match,
-+	.driver = {
-+		.name = "surface_temp",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+	},
-+};
-+module_ssam_device_driver(ssam_temp);
++		status = ssam_tmp_get_name(sdev, channel + 1,
++					   ssam_temp->names[channel],
++					   SSAM_TMP_SENSOR_NAME_LENGTH);
++		if (status)
++			return status;
++	}
 +
-+MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
-+MODULE_DESCRIPTION("Thermal sensor subsystem driver for Surface System Aggregator Module");
-+MODULE_LICENSE("GPL");
+ 	hwmon_dev = devm_hwmon_device_register_with_info(&sdev->dev,
+ 			"surface_thermal", ssam_temp, &ssam_temp_hwmon_chip_info,
+ 			NULL);
 -- 
 2.44.0
 
