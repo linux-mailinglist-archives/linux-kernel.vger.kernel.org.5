@@ -1,127 +1,140 @@
-Return-Path: <linux-kernel+bounces-125733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537D1892B4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:30:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BF7C892B64
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECB261F21DFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:30:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7C21F21E07
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329862554B;
-	Sat, 30 Mar 2024 13:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60062554B;
+	Sat, 30 Mar 2024 13:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="MGxxuQcr"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nviT3tE0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CB0125DB
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39CB2125DB
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711805427; cv=none; b=c8dpjMgCBeqJQkwTmXAQUnzZOE2yFH71jSeUWBp4vWuXjqX1PKXvGNEtXAZ/5Us8rxmVF4D6ONTc7RMCbHC6Hb15l6ye1EX+i9knXOs8PkgXeR4Cf14Q9aDtZ17X3LdpfOVArupE9md86AXvkPdbvwvdTDh8t6gLq499EG70WSg=
+	t=1711805571; cv=none; b=e9D+qVuGURy+Zvcyik0EAFaHNW8ZSiq8P/ptqyDSnwYmT8fCk3YHO8hUE92xM9cDb4oaaJAPKuFDKzDNaHvziaM/61wMZA/I37cIuLXVweGavtcwa+EQru9o3FhjPA2JFf4TYszOPuz39hB/N43qK9VHmAp6Via2U22/b03q4Rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711805427; c=relaxed/simple;
-	bh=GLLwLtiEelDru1aU0jJLyGv2vCHKaxAMXL3mAm4EGIc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I6JuroylYZcs/MrEjN6DbxiS09VnrkAiqoVZxe1MWAN+4iG8WGopZFpUezSRrUt5Ers8xaS0uS06wtsBQI3uJr9E7uGcrq8+R4DTOx/yAvWoVpClOwfrCXTjnQVL/BWjiz7MKqyb7ZYnr8L8YT6k5vx9qN0eLMdgvseQmf3jLMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=MGxxuQcr; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1711805423; x=1712064623;
-	bh=+HEtdPx7OqmXqU11OfG7F3JXZQBoM0zTuzWJZUMp+2c=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=MGxxuQcr8IDcwNs75Wb20ZUSh4dEwScMcwvr4+oBW1H1aF5OYZpns20LEjjMbfUUo
-	 /IT0ZWxhu9Nv1SUShOWgh+grbfEGPGbvwKvHOmLL71f62SaLJ/5mysAiuIV+2BvmOX
-	 AzeIjxotNW4ObdrOKteOPCuFNjbY56gKSk+L5V8xArLG5eSiuXEjtRbKna5cM4X39N
-	 inXZ7IBj99QAHRpqMFis5Tb7m+Zu6mjbzRuqO+tQkYYYufj5ueytc1AxZ15WdJnxCG
-	 CF77vZ4UCUnvY0n9fSQfx8hiU8IDKszenaXJybL4ypGaToUSirluVSTqWADeUTqSss
-	 MCXgjZvF426EA==
-Date: Sat, 30 Mar 2024 13:30:17 +0000
-To: Wedson Almeida Filho <wedsonaf@gmail.com>, rust-for-linux@vger.kernel.org
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH v3 07/10] rust: alloc: update `VecExt` to take allocation flags
-Message-ID: <59c5bda5-6116-42f1-bf8e-47eba02e2ecb@proton.me>
-In-Reply-To: <20240328013603.206764-8-wedsonaf@gmail.com>
-References: <20240328013603.206764-1-wedsonaf@gmail.com> <20240328013603.206764-8-wedsonaf@gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711805571; c=relaxed/simple;
+	bh=6nRZ28teIZoK/CsuLAsj8nxOgJ/+ZRmeJPPyiIo4peU=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=SvDTkdnbONPPiHqwj7rvwUH9meCx+lapa/ZpuKY/CC46l7qtjU3NszsY7EJPKs6UcuvDr22k76iLl2fe5MkJGCbBrJ4S+1Bf09pxq7IzqcF9xkwM3kXk+V5tt9UgG/nnwMby0mk6+3RJWFubEUJR7ANoJ9OJ0lJQqqSCMZ1Rv9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nviT3tE0; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711805570; x=1743341570;
+  h=date:from:to:cc:subject:message-id;
+  bh=6nRZ28teIZoK/CsuLAsj8nxOgJ/+ZRmeJPPyiIo4peU=;
+  b=nviT3tE0HfsQIhXgbWSk9PBsGYSKS0LhKICL4c1NLjX7sXRJxGhVPNlF
+   woVpnKAyT1a55zTtrgyQ9euXGDKMBH2dIPR/PaYZJGnjz4u3N410iFISw
+   KuDuGNAobiMz2lhVA3p2WTwvoAh0eS94w3vPWEeRp2NkYHZ2CdSSbLhwR
+   PU8py2/TGuk4COEm67Tkt8eXltXybQMISuvvRkG1hgMSmT2L8og31h8kC
+   KNLH3NOYoPc1Lx9EpvVtElFHHYV8sv2hv5bObYfkYrf2a6szT8xjVNUun
+   1OaxQUX2CWPLxYRfq2Juu8MnimnUofYOLUBpBjTQ5vm1ARVm/XLHY7DTb
+   w==;
+X-CSE-ConnectionGUID: KuaQveIRTWCUr5lV+uMsuQ==
+X-CSE-MsgGUID: agjio9LBSTS8y/2GWoVHOA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="17699615"
+X-IronPort-AV: E=Sophos;i="6.07,168,1708416000"; 
+   d="scan'208";a="17699615"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2024 06:32:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,168,1708416000"; 
+   d="scan'208";a="48425133"
+Received: from lkp-server01.sh.intel.com (HELO 3d808bfd2502) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 30 Mar 2024 06:32:48 -0700
+Received: from kbuild by 3d808bfd2502 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqYpC-00003k-0I;
+	Sat, 30 Mar 2024 13:32:46 +0000
+Date: Sat, 30 Mar 2024 21:32:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/fpu] BUILD SUCCESS
+ 5ca28d24aecd0809d93da2ea73a4f6e4b2ccfa78
+Message-ID: <202403302106.p1Oe7u9Z-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On 28.03.24 02:36, Wedson Almeida Filho wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
->=20
-> We also rename the methods by removing the `try_` prefix since the names
-> are available due to our usage of the `no_global_oom_handling` config
-> when building the `alloc` crate.
->=20
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-> ---
->   rust/kernel/alloc/vec_ext.rs | 158 +++++++++++++++++++++++++++++++----
->   rust/kernel/error.rs         |  11 +--
->   rust/kernel/lib.rs           |   1 -
->   rust/kernel/str.rs           |   6 +-
->   rust/kernel/types.rs         |   4 +-
->   samples/rust/rust_minimal.rs |   6 +-
->   6 files changed, 152 insertions(+), 34 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fpu
+branch HEAD: 5ca28d24aecd0809d93da2ea73a4f6e4b2ccfa78  x86/vm86: Make sure the free_vm86(task) definition uses its parameter even in the !CONFIG_VM86 case
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+elapsed time: 1434m
 
-[...]
+configs tested: 50
+configs skipped: 134
 
->   impl<T> VecExt<T> for Vec<T> {
-> -    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveErro=
-r> {
-> +    fn with_capacity(capacity: usize, flags: Flags) -> Result<Self, Allo=
-cError> {
->           let mut v =3D Vec::new();
-> -        v.try_reserve(capacity)?;
-> +        <Self as VecExt<_>>::reserve(&mut v, capacity, flags)?;
->           Ok(v)
->       }
->=20
-> -    fn try_push(&mut self, v: T) -> Result<(), TryReserveError> {
-> -        if let Err(retry) =3D self.push_within_capacity(v) {
-> -            self.try_reserve(1)?;
-> -            let _ =3D self.push_within_capacity(retry);
-> -        }
-> +    fn push(&mut self, v: T, flags: Flags) -> Result<(), AllocError> {
-> +        <Self as VecExt<_>>::reserve(self, 1, flags)?;
-> +        let s =3D self.spare_capacity_mut();
-> +        s[0].write(v);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I haven't checked the codegen, but this could result in an additional
-bound check. We don't need to care about this now, but at some point we
-should do a performance test. There are probably other things that I
-have missed.
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240330   clang
+i386         buildonly-randconfig-002-20240330   clang
+i386         buildonly-randconfig-003-20240330   clang
+i386         buildonly-randconfig-004-20240330   clang
+i386         buildonly-randconfig-005-20240330   clang
+i386         buildonly-randconfig-006-20240330   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240330   clang
+i386                  randconfig-002-20240330   clang
+i386                  randconfig-003-20240330   clang
+i386                  randconfig-004-20240330   clang
+i386                  randconfig-005-20240330   clang
+i386                  randconfig-006-20240330   gcc  
+i386                  randconfig-011-20240330   clang
+i386                  randconfig-012-20240330   gcc  
+i386                  randconfig-013-20240330   gcc  
+i386                  randconfig-014-20240330   clang
+i386                  randconfig-015-20240330   gcc  
+i386                  randconfig-016-20240330   gcc  
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240330   gcc  
+x86_64       buildonly-randconfig-002-20240330   gcc  
+x86_64       buildonly-randconfig-003-20240330   clang
+x86_64       buildonly-randconfig-004-20240330   clang
+x86_64       buildonly-randconfig-005-20240330   gcc  
+x86_64       buildonly-randconfig-006-20240330   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240330   gcc  
+x86_64                randconfig-002-20240330   clang
+x86_64                randconfig-003-20240330   clang
+x86_64                randconfig-004-20240330   gcc  
+x86_64                randconfig-005-20240330   gcc  
+x86_64                randconfig-006-20240330   gcc  
+x86_64                randconfig-011-20240330   clang
+x86_64                randconfig-012-20240330   clang
+x86_64                randconfig-013-20240330   clang
+x86_64                randconfig-014-20240330   gcc  
+x86_64                randconfig-015-20240330   gcc  
+x86_64                randconfig-016-20240330   gcc  
+x86_64                randconfig-071-20240330   clang
+x86_64                randconfig-072-20240330   clang
+x86_64                randconfig-073-20240330   gcc  
+x86_64                randconfig-074-20240330   clang
+x86_64                randconfig-075-20240330   clang
+x86_64                randconfig-076-20240330   gcc  
+x86_64                          rhel-8.3-rust   clang
 
---=20
-Cheers,
-Benno
-
-> +
-> +        // SAFETY: We just initialised the first spare entry, so it is s=
-afe to increase the length
-> +        // by 1. We also know that the new length is <=3D capacity becau=
-se of the previous call to
-> +        // `reserve` above.
-> +        unsafe { self.set_len(self.len() + 1) };
->           Ok(())
->       }
-
-[...]
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
