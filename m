@@ -1,147 +1,110 @@
-Return-Path: <linux-kernel+bounces-125567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 482BB8928D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:04:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BBE68928D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04BF0282F53
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:04:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D4A21C2124C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAC81877;
-	Sat, 30 Mar 2024 02:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831B15C9;
+	Sat, 30 Mar 2024 02:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TwEfoq0W"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iRVpnaMQ"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EB31860;
-	Sat, 30 Mar 2024 02:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184F915C3
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711764271; cv=none; b=XsWg95HIlN7EJgJV5mWYzhYmplKucbNfVo7/iNcwHmkh5Rrok03kk/d+V1lgJ9SbqyqFDfNWMindDW+uL3jP4vyMi+D/wdUIJgX9y91rYKvpm+T/qRS1cIoVWIyJHPuDZU0Qx4lfAV24yuu7pjKLoWdxlgS/Hh5WRGISVxAk/JM=
+	t=1711764344; cv=none; b=T8RZ2R7qkBKsNGLjPMvyxMfasZwt7EEBw6/n8heDSErFm+fMjlx8szJ24BsGhQ3kCj2rCYqjuSwtRmxmAJKizLMpritP7f/Weq9BpcIvjifoC5jvZNCrEZLSM8pJLr0pxch9d2USX7jeZYPSfLZfrznjvKVGmN/F7apTG0geOz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711764271; c=relaxed/simple;
-	bh=Wk28etsJV9OLppkXGrvdl2+DqrkI79w+XXntZj2FBbU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DpJVyPoE4hLYgDMYehFqNsy530rdjQePfJwcA8It7oX+iAY/CspLQ6zcm02tosx6KnOvBK5IApFxZpQXUGKPWL3v65MjAhi0ZrUwpmHaAFQpEjrUZXO3uTV/4NgZur8dtcX/Seu0wVUW13Ta/UjVbW/cHZaPM0Q8wX7B7iBmur8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TwEfoq0W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29834C43394;
-	Sat, 30 Mar 2024 02:04:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711764271;
-	bh=Wk28etsJV9OLppkXGrvdl2+DqrkI79w+XXntZj2FBbU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TwEfoq0WQ6BpJv7ip3oXNkO4gICUL7k8jsZTM5wR6Hbkpj+uf3yMrkjSITf8lg2oJ
-	 LSPBR7yGJJstQw2/ymzK1ScvD1UWNVkkPx1J+UKlIiEPNVNuzb3FgCbXIzK8QgsD+Q
-	 qXeoYWg+eso3HWrnPYQSJDHx25ite5Kr3qokAOlsUpfNvFzXX95rG5CkgYYPC+M7jg
-	 BS0g+xYWYyXJqqHKdhp9Kd2Me9dM43JzyhW7rPRdUB6RrVq5UZaCG2k/8mBjxo71RN
-	 Ea5ihAAyocKEcPn8iDAccLRzt3CVmyavPyWz1yU+Jii5W7M7x/T8qRE2Q4Tw2vmA9G
-	 k0+DqH8MTzVYQ==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56c1922096cso3187880a12.0;
-        Fri, 29 Mar 2024 19:04:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUteDGZWoA6sK+H7DbS2bdDxnzA7X/zx/t/wniT+u3y0rrt2i6dgSQm/YtYYLIgGtCV2tbgXOoKmUaMOZJ1ESCFZQbcFdau1wwWJHu7yabGDApRpxszHhfR0SwSQGTCp8PDHMQrwncXaXgOKC7hKh1QRCuLv/x3ybOJLvXaFjGZ2LUXRQ==
-X-Gm-Message-State: AOJu0YxIWtexKfeZLPn+Ma9FdWM1LjUnkomRp+Vtv0ML0rpk4N87dr0x
-	EfIDbnrjIEuNyLc/hjv3vox/Dn46cpdYL02jPq2Ir8ShJMN58NSyKVuSmtCo0TwzSI0VeKLH5jC
-	qNPp+oZeFQ4kDMj3Fps64PYNcNDY=
-X-Google-Smtp-Source: AGHT+IEAADUQy1Sg8zrh0aqV8FJVSevq0sivP9tiRStv3WrBnwPhBx8S+J/NFVmwsTVNfNzXHqaKOtMTVuCQ2ahr0dM=
-X-Received: by 2002:a50:a44a:0:b0:56b:a155:4b39 with SMTP id
- v10-20020a50a44a000000b0056ba1554b39mr2573169edb.28.1711764269734; Fri, 29
- Mar 2024 19:04:29 -0700 (PDT)
+	s=arc-20240116; t=1711764344; c=relaxed/simple;
+	bh=E/jX4KlSIaa/Q8QtoYy4eUqMqZjvH5LqwLaZpzp/ucc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rhhp5XW80hS4Iy28rcelMM0A+wox+uHtBbrUuCRjFeKD6RDC9S5k7S0yfyFiQVCZxFxII5o1fsDhlMYPnVtGhunBEMyqKoxan3CTnWqoXSK17iCUSZhVVB8FKVk/xXKXRKc+C3MQiUU8j6Wwl4V+XLquhhMa4gSFtWlWNlaXf5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iRVpnaMQ; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a4f608432bso1584701eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 19:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711764340; x=1712369140; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F4b5SWRCYZt8i7P0MBjW3Wz+qnk6OUO4+JznjTM8IgU=;
+        b=iRVpnaMQGyOifKDMKfV4HDQhfKO2I3PqjSeGvk1BCJL2XQEgqxw6gG5AIc67e8Ex48
+         MgrsqNrt6KRr8GNhnVCpn7oa/2iZGkQI62KN+vNLkBCTEfeMhw3apZHPPwq79axC8JP7
+         XIcvafJRVutcxNUFOUoU1vTP7a4o3bh1xpkvY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711764340; x=1712369140;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F4b5SWRCYZt8i7P0MBjW3Wz+qnk6OUO4+JznjTM8IgU=;
+        b=VlsG1OAhzQvFBatL6LQIZN7mlcUq6mQni4A5sZEsI8m0RYiV3moVmmKANddiz2PTHy
+         uqQBCEOxdyzRdK4lLbl3WMg/muQfxNj/Bv0Iag9eXYJof/mlyG8RwRZH4rIg5mVMdPLl
+         TbCqpobJhND3axVqWTyQQlEpmeqd6suEdsJlLl1BkVRnWXM1SvVCZx3dZpIsbWu3VolN
+         DdoUUxoF5CAgJXFEfwEQwmO5y+CtRLRhs2gO2FoIVhmtdScriUsuArJnFgMyzlaI1mmg
+         M8hI6Orzr21rb5bt7o59cFgONaHvS6HS5reydxVNY8QfBW1S8zkGJ2M/l6NEQmwc6IGB
+         YFdw==
+X-Gm-Message-State: AOJu0YwlrzEQtevGG4L2J3RDWPr5H/gfHqeyhZPp1Bdiz26VxkYnuuMD
+	fvGVybl2ggvxESltKyhe9yBk0iQUQRZE+8ajwEpnHtwIIE7yH+2NTF9jjlq5QA==
+X-Google-Smtp-Source: AGHT+IGZUureMcBcAiDHCXDSBEA1ISgTNfHGRDI1385rMqG8mvlZa9e/AHhEQI+LXUMGNEiBGPFkDA==
+X-Received: by 2002:a05:6359:5a81:b0:183:861a:a6ff with SMTP id mx1-20020a0563595a8100b00183861aa6ffmr1969988rwb.1.1711764340110;
+        Fri, 29 Mar 2024 19:05:40 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m14-20020a17090ab78e00b0029c68206e2bsm3521375pjr.0.2024.03.29.19.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 19:05:38 -0700 (PDT)
+Date: Fri, 29 Mar 2024 19:05:37 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Sam Ravnborg <sam@ravnborg.org>, davem@davemloft.net,
+	andreas@gaisler.com, masahiroy@kernel.org, nicolas@fjasle.eu,
+	guoren@kernel.org, rmk+kernel@armlinux.org.uk,
+	sparclinux@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.8 69/98] sparc: vdso: Disable UBSAN
+ instrumentation
+Message-ID: <202403291904.05D45FDD2@keescook>
+References: <20240329123919.3087149-1-sashal@kernel.org>
+ <20240329123919.3087149-69-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com> <tencent_9B2484D4343EF1ED092E6A1F3A66E206C40A@qq.com>
-In-Reply-To: <tencent_9B2484D4343EF1ED092E6A1F3A66E206C40A@qq.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Sat, 30 Mar 2024 10:04:17 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTR8cb842GWa9Lpxz4y62ZtMumECOps8ojnZQx0TJMRxnQ@mail.gmail.com>
-Message-ID: <CAJF2gTR8cb842GWa9Lpxz4y62ZtMumECOps8ojnZQx0TJMRxnQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/5] soc: canaan: Deprecate SOC_CANAAN and use
- SOC_CANAAN_K210 for K210
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, linux-gpio@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329123919.3087149-69-sashal@kernel.org>
 
-On Fri, Mar 29, 2024 at 6:00=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> wrot=
-e:
->
-> Since SOC_FOO should be deprecated from patch [1], and cleanup for other
-> SoCs is already in the mailing list [2,3,4], we remove the use of
-> SOC_CANAAN and use ARCH_CANAAN for SoCs vendored by Canaan instead from n=
-ow
-> on. Thus, we should also change the Makefile here to use ARCH_CANAAN.
->
-> Then, since we have introduced SOC_CANAAN_K210 for K210-specific drivers,
-> we should replace its drivers depends on SOC_CANAAN_K210 and default sele=
-ct
-> when it has the symbol SOC_CANAAN_K210.
->
-> [1] https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@ker=
-nel.org/
-> [2] https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7ed0=
-a@spud/
-> [3] https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c46b=
-b29@spud/
-> [4] https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb8655=
-a4d@spud/
->
-> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-> ---
->  drivers/soc/Makefile       | 2 +-
->  drivers/soc/canaan/Kconfig | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index ba8f5b5460e1..fb2bd31387d0 100644
-> --- a/drivers/soc/Makefile
-> +++ b/drivers/soc/Makefile
-> @@ -7,7 +7,7 @@ obj-y                           +=3D apple/
->  obj-y                          +=3D aspeed/
->  obj-$(CONFIG_ARCH_AT91)                +=3D atmel/
->  obj-y                          +=3D bcm/
-> -obj-$(CONFIG_SOC_CANAAN)       +=3D canaan/
-> +obj-$(CONFIG_ARCH_CANAAN)      +=3D canaan/
->  obj-$(CONFIG_ARCH_DOVE)                +=3D dove/
->  obj-$(CONFIG_MACH_DOVE)                +=3D dove/
->  obj-y                          +=3D fsl/
-> diff --git a/drivers/soc/canaan/Kconfig b/drivers/soc/canaan/Kconfig
-> index 43ced2bf8444..3121d351fea6 100644
-> --- a/drivers/soc/canaan/Kconfig
-> +++ b/drivers/soc/canaan/Kconfig
-> @@ -2,9 +2,9 @@
->
->  config SOC_K210_SYSCTL
->         bool "Canaan Kendryte K210 SoC system controller"
-> -       depends on RISCV && SOC_CANAAN && OF
-> +       depends on RISCV && SOC_CANAAN_K210 && OF
->         depends on COMMON_CLK_K210
-> -       default SOC_CANAAN
-> +       default SOC_CANAAN_K210
->         select PM
->         select MFD_SYSCON
->         help
-> --
-> 2.43.0
->
-For coming k230:
+On Fri, Mar 29, 2024 at 08:37:40AM -0400, Sasha Levin wrote:
+> From: Kees Cook <keescook@chromium.org>
+> 
+> [ Upstream commit d4be85d068b4418c341f79b654399f7f0891069a ]
+> 
+> The UBSAN instrumentation cannot work in the vDSO since it is executing
+> in userspace, so disable it in the Makefile. Fixes the build failures
+> such as:
+> 
+> arch/sparc/vdso/vclock_gettime.c:217: undefined reference to `__ubsan_handle_shift_out_of_bounds'
+> 
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> Link: https://lore.kernel.org/all/20240224073617.GA2959352@ravnborg.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Acked-by: Guo Ren <guoren@kernel.org>
+This is harmless to backport, but doesn't do anything. (The UBSAN
+changes needing this are only in Linus's tree.)
 
+-Kees
 
---
-Best Regards
- Guo Ren
+-- 
+Kees Cook
 
