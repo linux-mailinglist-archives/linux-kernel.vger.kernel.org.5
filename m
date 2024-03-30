@@ -1,171 +1,163 @@
-Return-Path: <linux-kernel+bounces-125647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 502C8892A10
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:30:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2108892A13
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:34:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABE79283312
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:30:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43B7B1F222A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1681DF9FF;
-	Sat, 30 Mar 2024 09:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26BFF9D1;
+	Sat, 30 Mar 2024 09:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k+gimahY"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="K93VgGGb"
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7009EADF;
-	Sat, 30 Mar 2024 09:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F64E1C0DDD;
+	Sat, 30 Mar 2024 09:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711791043; cv=none; b=Xk1D5/Kz3G29JBjVrvjgy0mtwRkdO4z8gjd7gFg4J0ly+xWxncuzmG0UQbOlVSQ61EFeS8eJ2n5oy4pZ+znvmw6uLsr09NulpVPPPo97UV/8qU6OZxdpreKjMBDwhgv+kyYLL3RPM4DCE2t/IbwVTYwb5xMbQRva20XTL+wevH4=
+	t=1711791271; cv=none; b=fC4QQiana65tSuBRu9LVdQxj6FZE6ff5mOfMXWEMyuUyrL/N8U7RK4M871aXxSYEPncemGKQUJqvN/Tm+w/W5f1F/nZyveS7NYT6tS96EAPQ8RTiHYYiR4cLFeQgh30U2SiP8I0/ogh3Uynwc8rrAnT1UuWl3fz3JxKEn3Anl6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711791043; c=relaxed/simple;
-	bh=O31tmMlYNDhIfcohA+3IDTmFUeZNs3Ca+9iLfjyJ85k=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cGvbP1PmWOpvJZULGO9m+z6ijjKq3aOGr097bfH4W/honWRCbaya2ZKXt6qn/8+bNB7sObM6KcMp6/C8AttWqY+ASpmYpd2vN8xWPBCyTh95VP/ssft58lca1a6phO7b9YN4zzCPXzEQItnHeGhUm2/fZC19nve9Ubl7s2FgiXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=k+gimahY; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42U8mGiO024176;
-	Sat, 30 Mar 2024 09:30:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=BqN2enxxA0AlYVe5KnB8a
-	zdCJIlxTCplM68XTDaCFuY=; b=k+gimahYOblSKVY7s0EYR27OPf6KvbJUGFBB6
-	2CWILwFB/Y4oujnIO3WsqY0lShUOqKWDJ41JoneZ+WYiHxQT2u3LWl09brp2kvzS
-	t+YL+RB1j2St3Ris/8htcPLbYRpKoOEuDr9ASaJWV2mJZ88vVv71p8j7q0rQj1Ox
-	kUhIi/Nx4s8ZGflc5VEgdv8ZJFzp9k21Pw7key4divm+oA4xehHNOv5BqBQu4pWE
-	O03mIm8xfQ9LOqu8f0UPVLWWVfl5uQCKfVk0BJYSCkDhdcdhwgtmOYr+L3w3Wx0H
-	xmKrSDz7FTcbRXPCOkqox5W0PWZpcowIVF4WMQkUGOquBZ2Mg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x69pvrpx9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 30 Mar 2024 09:30:37 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42U9UZSZ030761
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 30 Mar 2024 09:30:35 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sat, 30 Mar 2024 02:30:31 -0700
-Date: Sat, 30 Mar 2024 15:00:27 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Stephen Boyd <sboyd@kernel.org>, <andersson@kernel.org>,
-        <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <djakov@kernel.org>, <dmitry.baryshkov@linaro.org>,
-        <konrad.dybcio@linaro.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <mturquette@baylibre.com>, <quic_anusha@quicinc.com>,
-        <robh@kernel.org>
-Subject: Re: [PATCH v5 4/5] clk: qcom: ipq9574: Use icc-clk for enabling NoC
- related clocks
-Message-ID: <Zgfbs5SFN2cA0gSK@hu-varada-blr.qualcomm.com>
-References: <20240328075936.223461-1-quic_varada@quicinc.com>
- <20240328075936.223461-5-quic_varada@quicinc.com>
- <95f4e99a60cc97770fc3cee850b62faf.sboyd@kernel.org>
- <ZgaeGZL7QXh75aSA@hu-varada-blr.qualcomm.com>
- <031d0a35-b192-4161-beef-97b89d5d1da6@linaro.org>
+	s=arc-20240116; t=1711791271; c=relaxed/simple;
+	bh=2D3W7Aq8rRi3gmv+4PXRtGv6s9okVKCpNPzM2GIJhqA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
+	 References:In-Reply-To; b=oZ2mnoqV3I/A+ghJoH6qP0Irn46wHvNbvSS/KhvRI+DZKC2LRtBP86bbofhhHGX0OS9gAOflkKKP9w2X8lRkmtEnDk1SJ/rZpCGn47IWmwkFiPGdffd9dSPROsO1/4XXRM1P7A7FqtSLdZm5rzj34rpxayo4iIHX5v7bhBgDPlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=K93VgGGb; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
+	s=submission; t=1711791235; x=1713091235;
+	bh=YkJ6HA2Rzwgap8CzRAVIV0XAgD0cG3+xkx0g8vSdt0Y=;
+	h=Mime-Version:From;
+	b=K93VgGGb/2nFZnEjPEWjtOFZjLkdRjNqs+qj0cvIh8ACa5XfYLnplq+BW+yBybZ+e
+	 2gsvkxx0tZ+A8/2gYL0VpfgSPwQsE7fj2m8nxSjSXvvLkqczB/iiR/YRpbLG3isntZ
+	 NqqtZjJt+rH4guTWG5Ma4VNQXFiJY+7aWakxQYS7/DuyRUw1Zg98hjFMTBnhWcbP9z
+	 g/Ckj/p0F0w2SVAEfBTKxsX607AF2qYCxXQTwOlVUd+eW6M6tloL0NdruYfdpMd7Cj
+	 /+WHJNMQN2qGkzrIwfwpmDnePqlBAf9zyp0Q4vqGNczUhUJSkocVDkgbHPX0iWytuS
+	 MpZFthd63l3gg==
+Received: from localhost (internet5.mraknet.com [185.200.108.250])
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42U9XrDM052600
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Sat, 30 Mar 2024 10:33:55 +0100 (CET)
+	(envelope-from balejk@matfyz.cz)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <031d0a35-b192-4161-beef-97b89d5d1da6@linaro.org>
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MCE8G2q1LBiie2LNQErgRJhK3oRwQD5V
-X-Proofpoint-GUID: MCE8G2q1LBiie2LNQErgRJhK3oRwQD5V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-30_05,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=750 clxscore=1015 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403300077
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 30 Mar 2024 10:33:53 +0100
+Message-Id: <D06ZCKKYTQM5.3OJ6HCLHW3DZ9@matfyz.cz>
+Cc: "Markuss Broks" <markuss.broks@gmail.com>,
+        "Dmitry Torokhov"
+ <dmitry.torokhov@gmail.com>,
+        <linux-input@vger.kernel.org>, <duje.mihanovic@skole.hr>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH AUTOSEL 6.8 78/98] input/touchscreen: imagis: add
+ support for IST3032C
+To: "Sasha Levin" <sashal@kernel.org>
+From: "Karel Balej" <balejk@matfyz.cz>
+References: <20240329123919.3087149-1-sashal@kernel.org>
+ <20240329123919.3087149-78-sashal@kernel.org>
+In-Reply-To: <20240329123919.3087149-78-sashal@kernel.org>
 
-On Fri, Mar 29, 2024 at 01:10:03PM +0100, Krzysztof Kozlowski wrote:
-> On 29/03/2024 11:55, Varadarajan Narayanan wrote:
-> >>> +
-> >>> +enum {
-> >>> +       ICC_ANOC_PCIE0,
-> >>> +       ICC_SNOC_PCIE0,
-> >>> +       ICC_ANOC_PCIE1,
-> >>> +       ICC_SNOC_PCIE1,
-> >>> +       ICC_ANOC_PCIE2,
-> >>> +       ICC_SNOC_PCIE2,
-> >>> +       ICC_ANOC_PCIE3,
-> >>> +       ICC_SNOC_PCIE3,
-> >>> +       ICC_SNOC_USB,
-> >>> +       ICC_ANOC_USB_AXI,
-> >>> +       ICC_NSSNOC_NSSCC,
-> >>> +       ICC_NSSNOC_SNOC_0,
-> >>> +       ICC_NSSNOC_SNOC_1,
-> >>> +       ICC_NSSNOC_PCNOC_1,
-> >>> +       ICC_NSSNOC_QOSGEN_REF,
-> >>> +       ICC_NSSNOC_TIMEOUT_REF,
-> >>> +       ICC_NSSNOC_XO_DCD,
-> >>> +       ICC_NSSNOC_ATB,
-> >>> +       ICC_MEM_NOC_NSSNOC,
-> >>> +       ICC_NSSNOC_MEMNOC,
-> >>> +       ICC_NSSNOC_MEM_NOC_1,
-> >>> +};
-> >>
-> >> Are these supposed to be in a dt-binding header?
-> >
-> > Since these don't directly relate to the ids in the dt-bindings
-> > not sure if they will be permitted there. Will move and post a
-> > new version and get feedback.
+Sasha,
+
+Sasha Levin, 2024-03-29T08:37:49-04:00:
+> From: Karel Balej <balejk@matfyz.cz>
 >
-> You can answer this by yourself by looking at your DTS. Do you use them
-> as well in the DTS?
+> [ Upstream commit 90cb57a6c5717b83a110c0da720a03ee32ed255e ]
+>
+> IST3032C is a touchscreen chip used for instance in the
+> samsung,coreprimevelte smartphone, with which this was tested. Add the
+> chip specific information to the driver.
+>
+> Reviewed-by: Markuss Broks <markuss.broks@gmail.com>
+> Signed-off-by: Karel Balej <balejk@matfyz.cz>
+> Link: https://lore.kernel.org/r/20240301164659.13240-6-karelb@gimli.ms.mf=
+f.cuni.cz
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/input/touchscreen/imagis.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscre=
+en/imagis.c
+> index 9af8a6332ae67..e1fafa561ee38 100644
+> --- a/drivers/input/touchscreen/imagis.c
+> +++ b/drivers/input/touchscreen/imagis.c
+> @@ -11,6 +11,8 @@
+>  #include <linux/property.h>
+>  #include <linux/regulator/consumer.h>
+> =20
+> +#define IST3032C_WHOAMI			0x32c
+> +
+>  #define IST3038B_REG_STATUS		0x20
+>  #define IST3038B_REG_CHIPID		0x30
+>  #define IST3038B_WHOAMI			0x30380b
+> @@ -363,6 +365,13 @@ static int imagis_resume(struct device *dev)
+> =20
+>  static DEFINE_SIMPLE_DEV_PM_OPS(imagis_pm_ops, imagis_suspend, imagis_re=
+sume);
+> =20
+> +static const struct imagis_properties imagis_3032c_data =3D {
+> +	.interrupt_msg_cmd =3D IST3038C_REG_INTR_MESSAGE,
+> +	.touch_coord_cmd =3D IST3038C_REG_TOUCH_COORD,
+> +	.whoami_cmd =3D IST3038C_REG_CHIPID,
+> +	.whoami_val =3D IST3032C_WHOAMI,
+> +};
+> +
+>  static const struct imagis_properties imagis_3038b_data =3D {
+>  	.interrupt_msg_cmd =3D IST3038B_REG_STATUS,
+>  	.touch_coord_cmd =3D IST3038B_REG_STATUS,
+> @@ -380,6 +389,7 @@ static const struct imagis_properties imagis_3038c_da=
+ta =3D {
+> =20
+>  #ifdef CONFIG_OF
+>  static const struct of_device_id imagis_of_match[] =3D {
+> +	{ .compatible =3D "imagis,ist3032c", .data =3D &imagis_3032c_data },
+>  	{ .compatible =3D "imagis,ist3038b", .data =3D &imagis_3038b_data },
+>  	{ .compatible =3D "imagis,ist3038c", .data =3D &imagis_3038c_data },
+>  	{ },
+> --=20
+> 2.43.0
 
-I can use them in the DTS. The icc-clk framework automatically
-creates master and slave nodes as 'n' and 'n+1'. Hence I can have
-something like this in the dt-bindings include file
+sorry if I'm missing something, but I don't see why this should be
+backported: it doesn't fix anything, it's just adding support for new
+hardware.
 
-	#define ICC_ANOC_PCIE0		0
-	#define ICC_SNOC_PCIE0		1
-		.
-		.
-		.
-	#define ICC_NSSNOC_MEM_NOC_1	20
+I can see that adding a device ID is permitted for -stable [1], but I
+thought it still has to bear some signs of a fix, such as maybe here
+[2].
 
-	#define MASTER(x)	((ICC_ ## x) * 2)
-	#define SLAVE(x)	(MASTER(x) + 1)
+Furthermore, you are also proposing to backport Duje's touch keys
+support [3] which I think is unarguably a new feature and not a fix at
+all. Of all the Imagis patches, only the touch area correction [4] seems
+to make sense for backporting.
 
-> It's a pity we see here only parts of DTS, instead of full interconnect
-> usage.
+Could you please explain?
 
-Unfortunately cannot include the pcie dts changes with this
-patch, but you can refer to them at https://lore.kernel.org/linux-arm-msm/20230519090219.15925-5-quic_devipriy@quicinc.com/
+[1] https://docs.kernel.org/next/process/stable-kernel-rules.html
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git/commit/?=
+id=3Dd40e9edcf3eb925c259df9f9dd7319a4fcbc675b
+[3] https://lore.kernel.org/stable/20240329123919.3087149-88-sashal@kernel.=
+org/
+[4] https://lore.kernel.org/stable/20240329123919.3087149-76-sashal@kernel.=
+org/
 
-The above macros will be used in the pcie node as follows
-
-pcie0: pci@28000000 {
-	compatible = "qcom,pcie-ipq9574";
-	. . .
-	interconnects = <&gcc MASTER(ANOC_PCIE0) &gcc SLAVE(ANOC_PCIE0)>,
-			<&gcc MASTER(SNOC_PCIE0) &gcc SLAVE(SNOC_PCIE0)>;
-	interconnect-names = "pcie-mem", "cpu-pcie";
-	. . .
-};
-
-Hope this is acceptable.
-
-Thanks
-Varada
+Thank you, best regards,
+K. B.
 
