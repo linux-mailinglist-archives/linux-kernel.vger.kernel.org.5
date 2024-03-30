@@ -1,215 +1,230 @@
-Return-Path: <linux-kernel+bounces-125598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19144892938
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 05:16:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B7A892937
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 05:15:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AA4F1C211FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:16:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C011F22322
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2578BFA;
-	Sat, 30 Mar 2024 04:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2A8B657;
+	Sat, 30 Mar 2024 04:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="MrNL1UwF"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2092.outbound.protection.outlook.com [40.92.40.92])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lotuHB3Y"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1024F8F40
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.40.92
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711772205; cv=fail; b=kbF3zKSctLMqm/zOt35j3vTDV2TrtPtZY/kGBfUB1k6bqHvX616DK8c6S0a6JULgd81zSeU1RhbyY1/wxIlVoezJphQ4uyebF5IFoKXzxZ8GxBw9ENcyjtbRPUdRpI+A2aSrWMUYZWuj6gTl8PWgfBRApoDnrAIs8BjUo4rH0Fo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711772205; c=relaxed/simple;
-	bh=ux33UozO1JSMltgUHd+kwTVHrlS98DpN1FJRmsOr8M4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Hjla7yBSdEikWhXQKfjtpX7O1h4fUqVRx1G3GqRSDguwaw4alu+MWItNZfZEt0Ilf9F3K57kSdtdPyoo//jTjJ7MNCULRETiXW5fxJH7YJFwY07OtyBJ6n6jw8htp5dTycD3TGZ4bGEhPdrkge5xn0BUtUEdaZtbm5n6NBlAv0A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=MrNL1UwF; arc=fail smtp.client-ip=40.92.40.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gnSBZj2XEZutcCGZDqWKcc2ABbntwjF+vFe90r2cMLfbzJ6tf5RxNkUi25hr8bk9oKvrBg2Hm4qAgEAtBNzQzWIZWFQGjxWrEGrGg1Pnwh3aIxhXjSars5QxDWaT4CyQe2kfUpNswBPWLATXG5Ot75zeDPH4o35uwG4QByZ90DP0QZvvTW8D/oOOlT0asDM9XUk4nG4DwLouwMsWzJnkleacj+fj11s9lQLl7ogEZGPXBn3L91BLvpwNxM2J3KH3TCJMUD9I1Rh8WUO8IWCSSEtbICl4rTD79vexbcN/jl/GZRXruACGwbNHm9+lmBoWdcC5OQIss7soYgkGwsEm/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ux33UozO1JSMltgUHd+kwTVHrlS98DpN1FJRmsOr8M4=;
- b=UZh2F3oeA+gljJufcpqX0yTJVY2PrWg+50HRtHO9fIwXRPJFIpYatJ3DO9jQGptS2GruH+E3Um5q35FrfF0w/pzv4/98NmGMsO3tzMwt2HYd4W5FrG5tgbtROEmS/yvQRUcvjriJDBXUaqotsYPzggbgiMztNSKgCX9APVGbjneHKAaqJHlmAuO/RWvpVYy4ZPNym1SWl7lecvnB+R+w4isYlVulxtNdxMVgcpQrCmND2d4jvMIUWtRkfSWnh453AzM4cbanHAKbPaTqcKe0UK25FTnFz4yRP2viY7k1ayg/lFLxok0e4jCaTqwhE852tbYXJbNYuOioNdXjBu3OSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ux33UozO1JSMltgUHd+kwTVHrlS98DpN1FJRmsOr8M4=;
- b=MrNL1UwFoGj5xsVubmit5lI5R4+pmE9mRLJpky8gMDoJA3Ss75Z1zTk2Y/FcqGCayp0o3z8apOPIsf4JYxPu3+4ttMCyBID0xjYQX9FksFUk+x+rwcWTvImri0DbMfzp7G1AMcKruShLxSj8TVx/p4Haq7tqLsDAcEkAj+g0HyfRjHJxuEzwZlod4TTUOw00Yk/PNC7BCxShvWWfHTU6yAY+ySCMBTzPs7JJIoisWmyqqzsWowSVx3o0TRiFM4k0KraGLBe0IRnX4O/sprnqgsrN7MssuXkPi20fQkQDkwP0NDfYbHX5udPSwtQ37p8Slq23uIR98kOemRI8BACPgg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CO6PR02MB8722.namprd02.prod.outlook.com (2603:10b6:303:135::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.41; Sat, 30 Mar
- 2024 04:16:33 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7409.039; Sat, 30 Mar 2024
- 04:16:32 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Dominique Martinet <dominique.martinet@atmark-techno.com>
-CC: "hch@lst.de" <hch@lst.de>, "m.szyprowski@samsung.com"
-	<m.szyprowski@samsung.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>, "bumyong.lee@samsung.com"
-	<bumyong.lee@samsung.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"will@kernel.org" <will@kernel.org>, "petr@tesarici.cz" <petr@tesarici.cz>,
-	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>,
-	"lukas@mntmn.com" <lukas@mntmn.com>
-Subject: RE: [PATCH 1/1] swiotlb: Fix swiotlb_bounce() to do partial sync's
- correctly
-Thread-Topic: [PATCH 1/1] swiotlb: Fix swiotlb_bounce() to do partial sync's
- correctly
-Thread-Index: AQHaf/lWraZcrrhkY0Gb6WUeMEQR3bFLGYkAgAMVBwCAAJj9YIAA0/eAgAAPnPA=
-Date: Sat, 30 Mar 2024 04:16:30 +0000
-Message-ID:
- <SN6PR02MB41578CEA46D8DD626829294ED4392@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240327034548.1959-1-mhklinux@outlook.com>
- <ZgO3HlYWo6qXaGs8@atmark-techno.com> <ZgZNAM337-UEY1DH@atmark-techno.com>
- <SN6PR02MB41574B5BC91B70AE74E51FE6D43A2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <Zgd_JaCHzOOLqWUM@atmark-techno.com>
-In-Reply-To: <Zgd_JaCHzOOLqWUM@atmark-techno.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [pCflmJqLYlkVm0duc7xcgVnFAqXEZVoj]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CO6PR02MB8722:EE_
-x-ms-office365-filtering-correlation-id: bd5f6790-c1d1-4126-4154-08dc50702d37
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- OmTv1yFbD1VfJOKiQtuvQmrI9BWVOtgqSal50379uzAQcY0+9X1PR5DTBdPluZXmR33OdOPQL79biTOLB/ZOWKk+HOr2XawvblQI3IqlN+JV9/XIgVXLJcRld1FaxW5OkduoHh/blSwnS/MfqrCVHBZziqzjbziOWT852bvtX0XSjreI0tycyFAzeOpTPtkilmDGbUZeJ+BITAbEgav5xNzigi6L+B1a+kW90xgGci4xIT4lkhznrTpCwMtGzGwO8ITx3j8IkPJxPIB2WH64wjfcQ6i57r37T2uFHozCWMCxEdBvviUSVg76xSkwxVRdtrw0QHSCtiHjsr2QTrjkaUaDyZkEhlLPhstpKe+lB0OmYGc6XNSmWa9ydqcLydej1ojRBPYq6DcP+pVZ0Ym/nDrgh3VeY+Fzxi8Nlg6jgdeyRh7XfNxcSAtNzja5BXG9AzMw62HqHLOjO40GWLwmjd1Ed7tVGpLfNOj81GdD5ukiwdU/nBr7Ks9R+viYlNRRQH1J7s14rjnoeR1GOyFPbuy0KVX4D7rigAD61PZndrcnzA3cyr0PtkK8Pd6edHz7
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?VEhxazNVNmN0SlFUYWVxSW10UWlobU1EcW5aWDBRcSs0M29CQUhlMFp1OHEx?=
- =?utf-8?B?Zk1QZ0xoWWpSZTczdVhBeUNxclZnL1pkUXVnbVNVUEFweDNxc3pOWVdXYjZC?=
- =?utf-8?B?Rkg2NXQraGhxOGkwU3EyaXlSRFFWeUpnVkZJUnR0YXE2TExzeGxZYXE1VHlp?=
- =?utf-8?B?a2VGYVdPbkhvbm50WmcwUzgrSDhVeDlpL2ExTFFLUVdQWkVDRWVESHQ4RHdC?=
- =?utf-8?B?UHFYZnoramxGcHZSMi9ROHFqUWxWejJ5RGltVmE5WXhYMmJTSjY0aWVqQi95?=
- =?utf-8?B?YzZCYktSUkpzdnFsQmN6OEZqRWRlRXAzWEdpa21uRmo4aHNVbVNVMTBhd0w1?=
- =?utf-8?B?VlRFa1Q5YTRQR2pDQ2pUQ0MyVnRtY2lXZzNpMnJXQUpVODl5UVo0dE01THJv?=
- =?utf-8?B?djd3SDR2VlhuVG4vWGxZbGROY3VvZng5SURaeUtLK1YvZ0g4VHNKR3ZkYkQ5?=
- =?utf-8?B?bG4vWFhwQ3NDRC9ISGhpYm5wa0pPbkRrUisxZ09qbHJsSG4vdnpWcGo5dC8r?=
- =?utf-8?B?VURtKzc0NU1wOVM3NHQyM3hrdC9Fd21FQmR2V1dFZE5WVVErNUgweVdSQ0dU?=
- =?utf-8?B?RkFPbmZMYXhzNzZaNjBGeVhySTMyaWdyQjhWUWFzbFVnSDNCdFVFL3loekdv?=
- =?utf-8?B?WFJwVVNCVU9Gek50MDZCdEJueWp5QmphalhlME9NZGgvRzc2WW1ENU1DWFFh?=
- =?utf-8?B?aGZtM3dWOTVJQU8zcERTSFFvcUx0Tmh1OUlzN3UvME9BdzVKc3lXcktmR2Zz?=
- =?utf-8?B?WFZvMEduc25HUkw2S29UUE5FY25TcTdBMmFneFFaaWVYQ3Jpd0NkN2pobGp0?=
- =?utf-8?B?VktrUUhIeGZLVVZORWthWUFYVTcxY2RiZ2dzcERZU2M2MXpRNlRFOGJEWjU2?=
- =?utf-8?B?aFc0dkowNCtLOEJWUVYwU0xKdWZiNEhmN1BidUZhaTJyemVUenY5V2dtREJz?=
- =?utf-8?B?YnFZdXJ0cDVpOUU5TFNLdHlNdFZBSjZQdWRmUGl3RDdjaDg1UlBoaG9mK0t5?=
- =?utf-8?B?T2FFWHJzNTlyYnhIQlNuVTFxUlBVRHNCV0dEVzJSM0JMSjRUOUM4ZlRMYUdl?=
- =?utf-8?B?YlZIbXM4RFhzVlRwUzVwUkFNK0RtYWlsSElPbTU0em55cXgxekpmNm90bDh0?=
- =?utf-8?B?blNYMGdCRVZRK3NiZzRveEVxYVlhREpLaUJxelFEKzlTQUx4Wml2VEVQTXlI?=
- =?utf-8?B?TmJWR1J3U05kendJODZlKzhsbnJ4RWJjUlJLVEhMZHY5Y2ltRE5aRXR4a0dy?=
- =?utf-8?B?M0UxZ2FRSFpNWHB2QkxHSldGZUFHTjN3UThNTkJWOEFHWnhsenhjenBXb3FH?=
- =?utf-8?B?aVg2RGZXMUMrckJMNC90UC9zUW8wTk0xOVNaUm9pRlJSVnJobGJVUHpGcVU5?=
- =?utf-8?B?ZkFIV3gzd0ZYVDM1clIxT2xJckFPVkg3cWhmTm5JSHlHa2I3amNXZ3c5SmFH?=
- =?utf-8?B?L3JDVHljZkZmWDFtR3ZxV0tYWUY1R0dHdEpuNUtBV0lrNE5Md3BZMmIxWXFT?=
- =?utf-8?B?RVpSVnZxeGJQbGFTWkVVeFAvSUU2MkhUMk5GL0pCNmlWaS80TUErQUluV3BJ?=
- =?utf-8?B?U2dMMkViUnNOa1QxMzRqb3F6ZUxYK3ZMZURxOUxFR1pWQnNZS3ZDM1IwNElp?=
- =?utf-8?B?ZE5HNzVCVHd5TVRJUXQvMy9MdEI1T0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F2279E0
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711772137; cv=none; b=ciOXiTqtFkQRaE/29gM6pMcwlirTT4NJF7hqPW8S4aIHGnx1rWkpKPauI8+d6GK5ioDxPpdnEES9HSGIFbFD1TJ7ZslsK5k7ScE6z8p2WI4v3b/Z5nHz+g7RI4w94+Rtfsz6SFjRZM3sjMOlEIsC/rW755xP+tqmI945UbX3S0c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711772137; c=relaxed/simple;
+	bh=qgobxYsoW4+2TT3KspAAgbFZjvWwlDQJ1EahoxZ6SUc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ekMHrMAR2x/oVMtGV/zTMtk+3rkihZNIOhVGKhsgpBc0CYCZ47tVMlG98ByD9aXVMQt2MNsAZlb/Dxk0Q4+cj5fY/XqdMt6vKp6/8U325i9V1aOTEgRbjUFyLYP5QaxLdy+pk/lpNM1ls7/3nwpGP0D4XeAE6xZLuo4pCcoo8H0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lotuHB3Y; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6b729669bso2153346b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 21:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711772130; x=1712376930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ofE4DiMnvHuiRZX1XlrIQJQuThx3U4684j2Vrwr4bOc=;
+        b=lotuHB3YqxI5vNiMNQShMPcZpMVUJ465SPLPfA2ZffKWYhtiIpcCAVyZSTq4l0PlVm
+         cPPfJ5K6RIbzdDn0T2br/TIueszyxszgWUTJ380vTjs5mQUui38KoyOVDnG1aNFg3ojX
+         qT7UlrcsXggaNQXe9AuPEuT0Sb7F0MLi7Nw6l+TH1U0d7yiQ+7KnPDVXHegP8jKCK6Em
+         Uow1+d0qBdtY/BbdJh5NtxxGHAY5F7ea4QmX/AcK49wR4lbjbtMz9p1a1106CIP7G/p2
+         F5jxnpW89ievSd3eMy5KK8/Cy/eyEh2UtRV9jEB1VoadAT58X+0FxQfYCzwBApOxWs6q
+         CZyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711772130; x=1712376930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ofE4DiMnvHuiRZX1XlrIQJQuThx3U4684j2Vrwr4bOc=;
+        b=A/fbPEeU6JGKCOsgFyhGJttWX+wrLs+o5magw1LqBZlTiRHYZfyDHYL8R5BPPlIL1d
+         WQcS/TWStTnwpc5p/trzlBbHU9YVoUBvQQB3+7xszjm1m0fSwtsdM+zBkFzM1ptkv9G6
+         aGonNkdmWKznhUoQ2xAdBwV9/ZG1W/aLcsSLw6bErfZLlwPFMSEiWVSRD/pHSUP+DycW
+         lRVgotuJ18IIZ5DE7BnY+A5zUWgC7PBvDFpHX2R12jRo0RCmI0jYKrTNo1EUkQge1/0I
+         Y4F+dSUDXEWB9/mXv53CoCAOSC7hp5+ow77PeyM1OQ4cXmIxQR3lK8/1AJzaRNeBLklq
+         dCMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUTmJfYFIVkqXNGPQlK/ZgitbSGDHJpZF0eT7DXFDvBWZrDSp5CD8QuEoDKVuYvYYcBnMpLEA2uDX3KMyHzkVeVKW1Qs26HLheNgs+u
+X-Gm-Message-State: AOJu0YxwKogNii/RWZXdhhGEiextn8WfxzyTjTSNx7z9PQJKO+N5KyGd
+	xwIwi2WQFKtXWL6gVuG0u+WRDs261vSRUOKgRWgGgmPESWOIkD+Zw3FegoGEVnoFceROmffeebB
+	L2YCN7bSlWJYu+3/TDyUHDVWA9Bla4JiLuQMoqA==
+X-Google-Smtp-Source: AGHT+IGgndwZ3xqfDhf4CyJqUlqHUpBRYWacoRvVkoWzKCTwU3GtudllRjOr+s4vd+S8mdhVeoofK0l9Hh+AwBW0mGw=
+X-Received: by 2002:a05:6a20:17a2:b0:1a3:67fd:46b1 with SMTP id
+ bl34-20020a056a2017a200b001a367fd46b1mr3653617pzb.36.1711772130610; Fri, 29
+ Mar 2024 21:15:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd5f6790-c1d1-4126-4154-08dc50702d37
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2024 04:16:30.4554
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB8722
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+ <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+ <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+ <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+ <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+ <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
+ <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com>
+ <20240328111330.194dcbe5@gandalf.local.home> <CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYgzOti+Hfdn3SUCjuofGedXRSGApVDD+K2TdG6oNE-pw@mail.gmail.com>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Sat, 30 Mar 2024 12:16:52 +0800
+Message-ID: <CALz3k9hm6U90K8+d7SprXiKvscRjFno83idqYneHEVwgs4pCiw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-RnJvbTogRG9taW5pcXVlIE1hcnRpbmV0IDxkb21pbmlxdWUubWFydGluZXRAYXRtYXJrLXRlY2hu
-by5jb20+IFNlbnQ6IEZyaWRheSwgTWFyY2ggMjksIDIwMjQgNzo1NiBQTQ0KPiANCj4gTWljaGFl
-bCBLZWxsZXkgd3JvdGUgb24gRnJpLCBNYXIgMjksIDIwMjQgYXQgMDM6MTg6MTZQTSArMDAwMDoN
-Cj4gPiAqIHRsYl9vZmZzZXQgPSAxIC0gMyA9IC0yLCBhcyB5b3UgZGVzY3JpYmUgYWJvdmUNCj4g
-PiAqIG9yaWdfYWRkciA9IDM5ICsgLTIgPSAzNy4gIFRoZSBjb21wdXRhdGlvbiB1c2VzIDM5IGZy
-b20NCj4gPiBzbG90WzFdLCBub3QgdGhlIDcgZnJvbSBzbG90WzBdLiAgVGhpcyBjb21wdXRlZCAz
-NyBpcyB0aGUNCj4gPiBjb3JyZWN0IG9yaWdfYWRkciB0byB1c2UgZm9yIHRoZSBtZW1jcHkoKS4N
-Cj4gDQo+IFRoZXJlIGFyZSB0d28gdGhpbmdzIEkgZG9uJ3QgdW5kZXJzdGFuZCBoZXJlOg0KPiAx
-LyBXaHkgb3JpZ19hZGRyIHdvdWxkIGNvbWUgZnJvbSBzbG90WzFdID8NCj4gDQo+IFdlIGhhdmUg
-aW5kZXggPSAodGxiX2FkZHIgLSBtZW0tPnN0YXJ0KSA+PiBJT19UTEJfU0hJRlQsDQo+IHNvIGlu
-ZGV4ID0gKDMzIC0gNykgPj4gNSA9IDI2ID4+IDUgPSAwDQo+IA0KPiBBcyBzdWNoLCBvcmlnX2Fk
-ZHIgPSBtZW0tPnNsb3RzWzBdLm9yaWdfYWRkciBhbmQgd2UnZCBuZWVkIHRoZSBvZmZzZXQgdG8N
-Cj4gYmUgMzAsIG5vdCAtMiA/DQoNCm1lbS0+c3RhcnQgaXMgdGhlIHBoeXNpY2FsIGFkZHJlc3Mg
-b2YgdGhlIGdsb2JhbCBwb29sIG9mDQptZW1vcnkgYWxsb2NhdGVkIGZvciBzd2lvdGxiIGJ1ZmZl
-cnMuICBUaGF0IGdsb2JhbCBwb29sIGRlZmF1bHRzDQp0byA2NCBNYnl0ZXMgaW4gc2l6ZSwgYW5k
-IGlzIGFsbG9jYXRlZCBzdGFydGluZyBvbiBhIHBhZ2UgYm91bmRhcnkNCih3aGljaCBpcyBpbXBv
-cnRhbnQpLiAgSXQgaXMgZGl2aWRlZCBpbnRvICJzbG90cyIsIHdoaWNoIGluIGEgcmVhbA0Ka2Vy
-bmVsIGFyZSAyIEtieXRlcyBlYWNoIChJT19UTEJfU0hJRlQgaXMgMTEpLiAgV2hlbiBhIG1hcHBp
-bmcNCmlzIGNyZWF0ZWQsIHN3aW90bGJfdGJsX21hcF9zaW5nbGUoKSByZXR1cm5zIGEgdGxiX2Fk
-ZHIgYmV0d2Vlbg0KbWVtLT5zdGFydCBhbmQgbWVtLT5zdGFydCArIDY0IE1ieXRlcyAtIDEuICBU
-aGUgc2xvdCBpbmRleA0KZm9yIGFueSB0bGJfYWRkciBjYW4gYmUgb2J0YWluZWQgYnkgZG9pbmcN
-Cg0KCWluZGV4ID0gKHRsYl9hZGRyIC0gbWVtLT5zdGFydCkgPj4gSU9fVExCX1NISUZUOw0KDQph
-c3N1bWluZyB0aGF0IG1lbS0+c3RhcnQgaXMgb24gYSBib3VuZGFyeSB0aGF0IGlzIGF0IGxlYXN0
-DQphcyBiaWcgYXMgSU9fVExCX1NISUZULiAgU28geW91ciBleGFtcGxlIG9mIG1lbS0+c3RhcnQg
-YmVpbmcNCjcgaXNuJ3QgdmFsaWQuICBJZiB3ZSdyZSB1c2luZyBhbiBleGFtcGxlIHdoZXJlIHRs
-Yl9hZGRyICIzIiBpcw0KcmV0dXJuZWQgZnJvbSBzd2lvdGxiX3RibF9tYXBfc2luZ2xlKCksIGFu
-ZCB0bGJfYWRkciAzMw0KaXMgcGFzc2VkIGFzIHRoZSBhcmd1bWVudCB0byBzd2lvdGxiX2JvdW5j
-ZSgpLCB0aGVuDQptZW0tPnN0YXJ0IHdvdWxkIG5lZWQgdG8gYmUgemVybyBmb3IgdGhpbmdzIHRv
-IHdvcmsuICBJZg0KbWVtLT5zdGFydCBpcyB6ZXJvLCB0aGVuIHRsYl9hZGRyJ3MgMCB0aHJ1IDMx
-IGFyZSBpbiBzbG90IDAsDQphbmQgdGxiX2FkZHIncyAzMiB0aHJ1IDYzIGFyZSBpbiBzbG90IDEs
-IGV0Yy4NCg0KPiBXZWxsLCBlaXRoZXIgd29yayAtIGlmIHdlIGZpeCBpbmRleCB0byBwb2ludCB0
-byB0aGUgbmV4dCBzbG90IGluIHRoZQ0KPiBuZWdhdGl2ZSBjYXNlIHRoYXQncyBhbHNvIGFjY2Vw
-dGFibGUgaWYgd2UncmUgc3VyZSBpdCdzIHZhbGlkLCBidXQgSSdtDQo+IHdvcnJpZWQgaXQgbWln
-aHQgbm90IGJlIGluIGNhc2VzIHRoZXJlIHdhcyBvbmx5IG9uZSBzbG90IGUuZy4gbWFwcGluZw0K
-PiBbNzsgMzRdIGFuZCBjYWxsaW5nIHdpdGggMzMgc2l6ZSAyIHdvdWxkIHRyeSB0byBhY2Nlc3Mg
-c2xvdCAxIHdpdGggYQ0KPiBuZWdhdGl2ZSBvZmZzZXQgaW4geW91ciBleGFtcGxlLCBidXQgc2xv
-dFswXSBpcyB0aGUgbGFzdCB2YWxpZCBzbG90Lg0KDQpSaWdodCwgYnV0IHRoZXJlIHdvdWxkbid0
-IGJlIG9uZSBzbG90IG1hcHBpbmcgWzc7IDM0XSBpZiB0aGUNCmFsaWdubWVudCBydWxlcyBhcmUg
-Zm9sbG93ZWQgd2hlbiB0aGUgZ2xvYmFsIHN3aW90bGIgbWVtb3J5DQpwb29sIGlzIG9yaWdpbmFs
-bHkgY3JlYXRlZC4gIFRoZSBsb3cgb3JkZXIgSU9fVExCX1NISUZUIGJpdHMNCm9mIHNsb3QgcGh5
-c2ljYWwgYWRkcmVzc2VzIG11c3QgYmUgemVybyBmb3IgdGhlIGFyaXRobWV0aWMNCnVzaW5nIHNo
-aWZ0cyB0byB3b3JrLCBzbyBbNzsgMzRdIHdpbGwgY3Jvc3MgYSBzbG90IGJvdW5kYXJ5IGFuZA0K
-dHdvIHNsb3RzIGFyZSBuZWVkZWQuDQoNCj4gDQo+IA0KPiAyLyBXaHkgaXMgb3JpZ19hZGRyIDM3
-IHRoZSBjb3JyZWN0IGFkZHJlc3MgdG8gdXNlIGZvciBtZW1jcHksIGFuZCBub3QNCj4gMzM/IEkn
-ZCB0aGluayBpdCdzIG9mZiBieSBhICJtaW5pbXVtIGFsaWdubWVudCBwYWdlIiwgZm9yIG1lIHRo
-aXMNCj4gY29tcHV0YXRpb24gb25seSB3b3JrcyBpZiB0aGUgZG1hX2dldF9taW5fYWxpZ24gc2l6
-ZSBpcyBiaWdnZXIgdGhhbiBpbw0KPiB0bGIgc2l6ZS4NCg0KVGhlIHN3aW90bGIgbWFwcGluZyBv
-cGVyYXRpb24gZXN0YWJsaXNoZXMgYSBwYWlyLXdpc2UgbWFwcGluZyBiZXR3ZWVuDQphbiBvcmln
-X2FkZHIgYW5kIHRsYl9hZGRyLCB3aXRoIHRoZSBtYXBwaW5nIGV4dGVuZGluZyBmb3IgYSBzcGVj
-aWZpZWQNCm51bWJlciBvZiBieXRlcy4gICBZb3VyIGV4YW1wbGUgc3RhcnRlZCB3aXRoIG9yaWdf
-YWRkciA9IDcsIGFuZCBJDQpwb3NpdGVkIHRoYXQgdGhlIG1hcHBpbmcgZXh0ZW5kcyBmb3IgNDAg
-Ynl0ZXMuICAgSSBmdXJ0aGVyIHBvc2l0ZWQNCnRoYXQgdGhlIHRsYl9hZGRyIHJldHVybmVkIGJ5
-IHN3aW90bGJfdGJsX21hcF9zaW5nbGUoKSB3b3VsZA0KYmUgMyB0byBtZWV0IHRoZSBtaW4gYWxp
-Z25tZW50IHJlcXVpcmVtZW50ICh3aGljaCBhZ2Fpbg0Kb25seSB3b3JrcyBpZiBtZW0tPnN0YXJ0
-IGlzIDApLiAgU28gdGhlIHBhaXItd2lzZSBtYXBwaW5nIGlzICg3LCAzKS4NCk5vdyB3aGVuIHN3
-aW90bGJfYm91bmNlKCkgaXMgY2FsbGVkIHdpdGggYSB0bGJfYWRkciBvZiAzMyBhbmQNCmEgc2l6
-ZSBvZiA0LCB3ZSBrbm93Og0KDQoqIHRsYl9hZGRyIDMzIGlzIGluIHNsb3QgMQ0KKiB0bGJfYWRk
-ciAzMyBpcyAzMCBieXRlcyAoMzMgLSAzKSBmcm9tIHRoZSBiZWdpbm5pbmcgb2YgdGhlIA0Kc3dp
-b3RsYiBhcmVhIGFsbG9jYXRlZCBmb3IgdGhlIG1hcHBpbmcgYnkgc3dpb3RsYl90YmxfbWFwX3Np
-bmdsZSgpDQoqIFNvIHdlIHdhbnQgdG8gYWRkIDMwIGJ5dGVzIHRvIHRoZSBvcmlnX2FkZHIgdG8g
-Z2V0IHRoZSBhZGRyZXNzDQp3aGVyZSB3ZSB3YW50IHRvIGRvIHRoZSBtZW1jcHkuICBUaGF0IGlz
-IDcgKyAzMCA9IDM3Lg0KKiBUaGUgc3dpb3RsYiBhcmVhIGFsbG9jYXRlZCBmb3IgdGhlIG1hcHBp
-bmcgZ29lcyBmcm9tDQp0bGJfYWRkciAzIHRocm91Z2ggdGxiX2FkZHIgNDMgc2luY2UgdGhlIHNp
-emUgb2YgdGhlIG1hcHBpbmcNCmlzIDQwIGJ5dGVzLiAgSWYgd2UgZG8gYSBwYXJ0aWFsIHN5bmMg
-b2YgNCBieXRlcyBzdGFydGluZyBhdA0KdGxiX2FkZHIgMzcsIHRoZW4gdGhhdCdzIHZhbGlkIGJl
-Y2F1c2UgYWxsIDQgYnl0ZXMgZml0IHdpdGhpbg0KdGhlIG9yaWdpbmFsbHkgbWFwcGVkIDQwIGJ5
-dGVzLg0KDQpNaWNoYWVsDQoNCj4gDQo+IA0KPiA+ICogc2l6ZSBpcyBzdGlsbCA0LiAgVGhlcmUn
-cyBubyBjb21wdXRhdGlvbiBpbiBzd2lvdGxiX2JvdW5jZSgpDQo+ID4gdGhhdCBjaGFuZ2VzICJz
-aXplIi4NCj4gPiAqIGFsbG9jX3NpemUgaXMgcHVsbGVkIGZyb20gc2xvdFsxXSwgYW5kIGlzIGFk
-anVzdGVkIGJ5IHRsYl9vZmZzZXQuDQo+ID4gVGhpcyBhZGp1c3RlZCBhbGxvY19zaXplIGlzbid0
-IHVzZWQgZm9yIGFueXRoaW5nIGV4Y2VwdCBhcyBhIHNhbml0eQ0KPiA+IGNoZWNrIGFnYWluc3Qg
-InNpemUiLg0KPiANCj4gUmlnaHQsIHNvcnJ5IC0gc28gc2l6ZSBpcyBvayAoYXNzdW1pbmcgc2xv
-dFsxXSBpcyB1c2VkLCBJIGNvbmZsYXRlZCB0aGUNCj4gdHdvIHNpemVzLg0KPiANCj4gDQo+IEkn
-bSBwcm9iYWJseSBzdGlsbCBtaXNzaW5nIHNvbWV0aGluZyBoZXJlLCB0aGFua3MgZm9yIGJlYXJp
-bmcgd2l0aCBtZS4NCj4gLS0NCj4gRG9taW5pcXVlDQo=
+On Sat, Mar 30, 2024 at 7:28=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Mar 28, 2024 at 8:10=E2=80=AFAM Steven Rostedt <rostedt@goodmis.o=
+rg> wrote:
+> >
+> > On Thu, 28 Mar 2024 22:43:46 +0800
+> > =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
+> >
+> > > I have done a simple benchmark on creating 1000
+> > > trampolines. It is slow, quite slow, which consume up to
+> > > 60s. We can't do it this way.
+> > >
+> > > Now, I have a bad idea. How about we introduce
+> > > a "dynamic trampoline"? The basic logic of it can be:
+> > >
+> > > """
+> > > save regs
+> > > bpfs =3D trampoline_lookup_ip(ip)
+> > > fentry =3D bpfs->fentries
+> > > while fentry:
+> > >   fentry(ctx)
+> > >   fentry =3D fentry->next
+> > >
+> > > call origin
+> > > save return value
+> > >
+> > > fexit =3D bpfs->fexits
+> > > while fexit:
+> > >   fexit(ctx)
+> > >   fexit =3D fexit->next
+> > >
+> > > xxxxxx
+> > > """
+> > >
+> > > And we lookup the "bpfs" by the function ip in a hash map
+> > > in trampoline_lookup_ip. The type of "bpfs" is:
+> > >
+> > > struct bpf_array {
+> > >   struct bpf_prog *fentries;
+> > >  struct bpf_prog *fexits;
+> > >   struct bpf_prog *modify_returns;
+> > > }
+> > >
+> > > When we need to attach the bpf progA to function A/B/C,
+> > > we only need to create the bpf_arrayA, bpf_arrayB, bpf_arrayC
+> > > and add the progA to them, and insert them to the hash map
+> > > "direct_call_bpfs", and attach the "dynamic trampoline" to
+> > > A/B/C. If bpf_arrayA exist, just add progA to the tail of
+> > > bpf_arrayA->fentries. When we need to attach progB to
+> > > B/C, just add progB to bpf_arrayB->fentries and
+> > > bpf_arrayB->fentries.
+> > >
+> > > Compared to the trampoline, extra overhead is introduced
+> > > by the hash lookuping.
+> > >
+> > > I have not begun to code yet, and I am not sure the overhead is
+> > > acceptable. Considering that we also need to do hash lookup
+> > > by the function in kprobe_multi, maybe the overhead is
+> > > acceptable?
+> >
+> > Sounds like you are just recreating the function management that ftrace
+> > has. It also can add thousands of trampolines very quickly, because it =
+does
+> > it in batches. It takes special synchronization steps to attach to fent=
+ry.
+> > ftrace (and I believe multi-kprobes) updates all the attachments for ea=
+ch
+> > step, so the synchronization needed is only done once.
+> >
+> > If you really want to have thousands of functions, why not just registe=
+r it
+> > with ftrace itself. It will give you the arguments via the ftrace_regs
+> > structure. Can't you just register a program as the callback?
+> >
+> > It will probably make your accounting much easier, and just let ftrace
+> > handle the fentry logic. That's what it was made to do.
+> >
+>
+> I thought I'll just ask instead of digging through code, sorry for
+> being lazy :) Is there any way to pass pt_regs/ftrace_regs captured
+> before function execution to a return probe (fexit/kretprobe)? I.e.,
+> how hard is it to pass input function arguments to a kretprobe? That's
+> the biggest advantage of fexit over kretprobe, and if we can make
+> these original pt_regs/ftrace_regs available to kretprobe, then
+> multi-kretprobe will effectively be this multi-fexit.
+
+Yes, we can use multi-kretprobe instead of multi-fexit
+if we can obtain the function args in kretprobe.
+
+I think it's hard. The reason that we can obtain the
+function args is that we have a trampoline, and it
+call the origin function for FEXIT. If we do the same
+for multi-kretprobe, we need to modify ftrace_regs_caller
+to:
+
+ftrace_regs_caller
+|
+__ftrace_ops_list_func
+|
+call all multi-kprobe callbacks
+|
+call orgin
+|
+call all multi-kretprobe callbacks
+|
+call bpf trampoline(for TRACING)
+
+However, this logic conflicts with bpf trampoline,
+as it can also call the origin function. What's more,
+the FENTRY should be called before the "call origin"
+above.
+
+I'm sure if I understand correctly, as I have not
+figured out how multi-kretprobe works in fprobe.
+
+Thanks!
+Menglong Dong
+
+>
+> > -- Steve
 
