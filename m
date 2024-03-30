@@ -1,346 +1,198 @@
-Return-Path: <linux-kernel+bounces-125602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E49E89297D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 06:26:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D816189297F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 06:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4FD283653
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 05:26:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCFA01F227AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 05:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B7E8F45;
-	Sat, 30 Mar 2024 05:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239258F45;
+	Sat, 30 Mar 2024 05:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GN4+msc8"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VsQ6MkHy"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 383B53D72;
-	Sat, 30 Mar 2024 05:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C339C881F;
+	Sat, 30 Mar 2024 05:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711776381; cv=none; b=lGKNB8goLkr0inwPEFslt2Djv0Zr2KkSsWcD0meivrA/35jClBVwayGi8hS+ErW1reoPGW7X9Os8Zn+ogmy3vmznOZLPy6qPifOPxEyb/01DQt7op7so+8V1pY3WHkzzA77Q5DatowU36XH83eQfOT4G0mzH/UEqO0BwrxiXix4=
+	t=1711776538; cv=none; b=ZlULKB+hSZTnsEdwTtFc58KZ2mcF9ZHxEoCr0j43SULFOpNL73AOvaeavUOPulyvxEgZur2mXK/CSGgcE1X3asr0PUKmj4qaWtDfx8RJQeG/R9QaXhCHhLRfzkthEYrvX9W6RELxVj/H/1msgZivrWzzwJvyJy9qpVO6F3sjtKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711776381; c=relaxed/simple;
-	bh=R4uEnCRlj88KzPLr6vgP7yZCgXZb47BMcR7LTW/2v1w=;
+	s=arc-20240116; t=1711776538; c=relaxed/simple;
+	bh=EUcUQklyNbH8/SNk483PELZG1vakzV9Wr9CnM70ULio=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j0dHt2TDuLUXN1notK1USiVC63Sh7Z2JjhDgDWFOp7Lh2zEwFByM+/Ngn9EQ6+gmG63IpUWf87xoi8JF4j8EZQRBhdWcdpDblAXXK1KL2sGUgKjiANctfO07YbClm3bWv8B/YTiRAmvcal+2BMafbrcyApC+QCUBejiL+MnGbh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GN4+msc8; arc=none smtp.client-ip=209.85.215.182
+	 To:Cc:Content-Type; b=W/2HkhYnWh/MXJeBWuxa99I/vLb4mzb/L8ltsD1b2Is/d8fU3yrv19FjTR1UsVLt3Cz0Fj5qBNnwoebNTiNG4U7nYuI2w/zBKi3f2IPShJiRbDRcbR8zEVpEwVTXciWc1K/BFzSouuAwasS7WNnzWPqt4CM40+IVU4zaaSz15NE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VsQ6MkHy; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so1877684a12.0;
-        Fri, 29 Mar 2024 22:26:19 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so1799905a12.1;
+        Fri, 29 Mar 2024 22:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711776379; x=1712381179; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711776536; x=1712381336; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Yk/FPG0n7iLAV5RAWcv5+G81BG/7yzbReiD+PtHL5ic=;
-        b=GN4+msc8x9NsrzZ0EePBPpPVaaMnHmO/eT9xaf5SMkvzl2EHYJACcI9A15zRdObN02
-         +JvqlvFceux79ewNSK/oTibcw3uC1MbWe+qLMDdKufM5vzNd7BLsia6cWPAVdl4yHULB
-         ebSBmu4VI5WH39ddqQ8FI5aY4oaGSlCZEPGT2MTONbx10v2riKCYRLJqxpYy39MgmPDf
-         YP1FHI43WynAn9l7NIp+NfRe93tbaFW/dhkrV1q+jmJMcy7PI6ntYU+vBZrAs2bprkXB
-         cdfoJSPdz74mRH/8tTCY3X37TcxTSR3askWIywgO22l0QHUbm135lgybnLmdxWe/q1BF
-         FesA==
+        bh=HzHyUcYN9rBRgPi5AsHIJZShKuTLwgsqehdZBFMpuRw=;
+        b=VsQ6MkHyvVdqeiFVmzVlhzKOw6JRtj+QvUwAY8SvSxvePwH+sZUYByZb1JeCUAQwHG
+         BA4LB6O61zDE5U9WxBAlnZfBHicnhVJp3Sj4uXf4oEml9b3bTfYWvqbofRrF0xhAn5WC
+         3mNlXgxfn/5fM/H6Rupr22TT0RAaYItPUozWMNpiBODV4b5NG1tl6lW6fWqyvZDMtQzI
+         fNnPhUbqX59yeHSFYLQGw2OvHVoyABsZUB5eUgcaUhfoFVeCSsv/imoE4h9DOnZ/+5uL
+         75Z8U6nci78KGtagRgeK4ZYDhRpA333gMYmMddraJn7XxwATDn6MwB2tgtqk19aZAt+h
+         I8+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711776379; x=1712381179;
+        d=1e100.net; s=20230601; t=1711776536; x=1712381336;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Yk/FPG0n7iLAV5RAWcv5+G81BG/7yzbReiD+PtHL5ic=;
-        b=nLKihq8WZvhbeEopJkNQDnEa6yTdQaMtMhWeGoX+0KUMztzaLhYguRVZ2nMxcMJqwc
-         zMlRWcxCCpS4SYVymSJ1b7hp6vH0gs7ZFRA3FzrD/l4aC6DOwEgL3surMG0JRf2VCXOZ
-         qvwFgmx1kGzenjLExK3ukAGuxp+03ra80COflsDiXcB1rQRZ1chsePcQJwg5NU6/7VK4
-         ln3jxj0EfIu7y9Pw+aqn2tk2MjtW+MTMqTaVQoAjeNfDxLBzBC/uXWi9PoVxAIBRwLJU
-         R89a1fFSC3buPc5QgWaD15svMLvzn4dpCwxQrPTPoowiQB8CYmJJcTn38zZuUjt9nK++
-         /c0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXw22613bTAqf+i4WKVeMfZyCMa0a2e1u3SpB+p1ORTm6NLxbcubpsNeKucAq2KVbytw9LE2DBFoQjIADajjQSmDoSRTFOTdBXjS5Z/ID1RESS2wK5gSq7M6hRO7HCzdJPZcHFIfXzR0QT33uajZb9tXl9osVq/Gbulyz3bsDp+DYsZYUayR7M63e75373VoUaSNUG31JG02MdBqukNj0z/Ft8aGQHfYg==
-X-Gm-Message-State: AOJu0Ywzr2Z6OtyyH4tY2R4Iis9xgRXOuBJSwzq3+gckYn2PgolB2OeH
-	CrPMhz7YMFjVO07nRUCGrqU3SOgM3VhLeDtACweBtB1PiUjVOzsE9SGhl61w49sRZ3qZbxzhzet
-	LI+0vQnPYFdt4EzXavgwStSaddtA=
-X-Google-Smtp-Source: AGHT+IH9CE6X+fmi88GhWTi6znpBejJSJOZ4Qj2oMCA3jj73V2Nhoa/54pooFgNkpqrrjo3i6x7xyO8JUlG+lyAX3LA=
-X-Received: by 2002:a05:6a21:6d89:b0:1a3:6051:987b with SMTP id
- wl9-20020a056a216d8900b001a36051987bmr4228895pzb.43.1711776379347; Fri, 29
- Mar 2024 22:26:19 -0700 (PDT)
+        bh=HzHyUcYN9rBRgPi5AsHIJZShKuTLwgsqehdZBFMpuRw=;
+        b=Xl3nDi5Z/KSywfmLTG6gei40BJ195czVu4SnU0SAYqHO51SoqCN/Fd5OSCITJD6e2I
+         7nQVIT4miWfaZbpf/HTY6JM4zOWx4xwyytRk1+a4YoyLWcPe2Da/vmfDV3o1Tys/khVL
+         snOwTSMCM70d+dikgwvzXFBWHVXSyQvcsmPIIAHT7bo586tnUfml0XxM2et+ANM+D/aZ
+         qKdJOqgjupwHE1wuHB2Glb/F30NxgBdLOdNlu6OaqNpViVHAEx0LqQGaPwIB8tG7N6yD
+         tFsVMcz/+ir//EuUCwhkborG0fmkvVZeDzk3TldPMychd/3yrVZ2MPvFzrEBvJjczzIE
+         j4UA==
+X-Forwarded-Encrypted: i=1; AJvYcCWmG7kHfmLwGkU4VlTdzqbmDyd8b5uow1tDs5et6M99JOCSbAm2Mg+gTl9nl7lsfUmB/LZx6xnWL86iy+QcORYf9tFLnuFbfvxudqpjBdIOBio5+QH9SJ1Lyc/tNYxeAik2
+X-Gm-Message-State: AOJu0Yx2MgyPJzkT1Q8EeVrltkb0T0mCBMGgchfNW+rVQ/PA1qQ/bnM1
+	UjJApPRgScm17UKw7M2Oe1gBTLJHmzTJztR2Ss7GO/Vf7AUk0nmo4S+Wb3YDmdaYzEYmy/4rMcO
+	tedPz4mHuPLo+l1v4boNz7D5GgHY=
+X-Google-Smtp-Source: AGHT+IE0MVT9pzRAM4noGtnm12NIysa9FA5dVdlH91BgPyrOq2n6tRTkiYTvswlcdbgXxDAO+ZA4y/uo7gKe30cZaSo=
+X-Received: by 2002:a05:6a21:3384:b0:1a5:6fde:8303 with SMTP id
+ yy4-20020a056a21338400b001a56fde8303mr4307453pzb.38.1711776535998; Fri, 29
+ Mar 2024 22:28:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
- <20240325120323.ec3248d330b2755e73a6571e@kernel.org> <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
- <20240327084245.a890ae12e579f0be1902ae4a@kernel.org> <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
- <20240328091841.ce9cc613db375536de843cfb@kernel.org> <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
- <CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com> <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
-In-Reply-To: <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
+References: <20240329030119.29995-1-harishankar.vishwanathan@gmail.com>
+ <f2e1c5dc6f6ea2c7f046e8673dd364dd14056781.camel@gmail.com> <CAM=Ch04JAJDS84xYHFUfjrShwqSSc8gQ5a_sLCoRNAsf6tyjYQ@mail.gmail.com>
+In-Reply-To: <CAM=Ch04JAJDS84xYHFUfjrShwqSSc8gQ5a_sLCoRNAsf6tyjYQ@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 29 Mar 2024 22:26:07 -0700
-Message-ID: <CAEf4BzZtu_f39OF35M7-cY+Ua2CaRGtATgnzWO9_r3csStK=TQ@mail.gmail.com>
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jonthan Haslam <jonathan.haslam@gmail.com>, linux-trace-kernel@vger.kernel.org, 
-	andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Fri, 29 Mar 2024 22:28:43 -0700
+Message-ID: <CAEf4BzZp69diFeyjUAa8-jbZatDouwSaexwuakJdXHTdHwsBLQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Fix latent unsoundness in and/or/xor value tracking
+To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org, harishankar.vishwanathan@rutgers.edu, 
+	sn624@cs.rutgers.edu, sn349@cs.rutgers.edu, m.shachnai@rutgers.edu, 
+	paul@isovalent.com, Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
+	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 5:36=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
+On Fri, Mar 29, 2024 at 8:25=E2=80=AFPM Harishankar Vishwanathan
+<harishankar.vishwanathan@gmail.com> wrote:
 >
-> On Fri, 29 Mar 2024 10:33:57 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Wed, Mar 27, 2024 at 5:45=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Mar 27, 2024 at 5:18=E2=80=AFPM Masami Hiramatsu <mhiramat@ke=
-rnel.org> wrote:
-> > > >
-> > > > On Wed, 27 Mar 2024 17:06:01 +0000
-> > > > Jonthan Haslam <jonathan.haslam@gmail.com> wrote:
-> > > >
-> > > > > > > Masami,
-> > > > > > >
-> > > > > > > Given the discussion around per-cpu rw semaphore and need for
-> > > > > > > (internal) batched attachment API for uprobes, do you think y=
-ou can
-> > > > > > > apply this patch as is for now? We can then gain initial impr=
-ovements
-> > > > > > > in scalability that are also easy to backport, and Jonathan w=
-ill work
-> > > > > > > on a more complete solution based on per-cpu RW semaphore, as
-> > > > > > > suggested by Ingo.
-> > > > > >
-> > > > > > Yeah, it is interesting to use per-cpu rw semaphore on uprobe.
-> > > > > > I would like to wait for the next version.
-> > > > >
-> > > > > My initial tests show a nice improvement on the over RW spinlocks=
- but
-> > > > > significant regression in acquiring a write lock. I've got a few =
-days
-> > > > > vacation over Easter but I'll aim to get some more formalised res=
-ults out
-> > > > > to the thread toward the end of next week.
-> > > >
-> > > > As far as the write lock is only on the cold path, I think you can =
-choose
-> > > > per-cpu RW semaphore. Since it does not do busy wait, the total sys=
-tem
-> > > > performance impact will be small.
-> > >
-> > > No, Masami, unfortunately it's not as simple. In BPF we have BPF
-> > > multi-uprobe, which can be used to attach to thousands of user
-> > > functions. It currently creates one uprobe at a time, as we don't
-> > > really have a batched API. If each such uprobe registration will now
-> > > take a (relatively) long time, when multiplied by number of attach-to
-> > > user functions, it will be a horrible regression in terms of
-> > > attachment/detachment performance.
->
-> Ah, got it. So attachment/detachment performance should be counted.
->
-> > >
-> > > So when we switch to per-CPU rw semaphore, we'll need to provide an
-> > > internal batch uprobe attach/detach API to make sure that attaching t=
-o
-> > > multiple uprobes is still fast.
->
-> Yeah, we need such interface like register_uprobes(...).
->
-> > >
-> > > Which is why I was asking to land this patch as is, as it relieves th=
-e
-> > > scalability pains in production and is easy to backport to old
-> > > kernels. And then we can work on batched APIs and switch to per-CPU r=
-w
-> > > semaphore.
->
-> OK, then I'll push this to for-next at this moment.
-
-Great, thanks a lot!
-
-> Please share if you have a good idea for the batch interface which can be
-> backported. I guess it should involve updating userspace changes too.
->
-
-Yep, we'll investigate a best way to provide batch interface for
-uprobes and will send patches.
-
-> Thank you!
->
-> > >
-> > > So I hope you can reconsider and accept improvements in this patch,
-> > > while Jonathan will keep working on even better final solution.
-> > > Thanks!
-> > >
-> > > > I look forward to your formalized results :)
-> > > >
+> On Fri, Mar 29, 2024 at 6:27=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
 > >
-> > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
-> > and USDTs, reporting attach/detach timings:
-> > $ sudo ./test_progs -v -t uprobe_multi_test/bench
-> > bpf_testmod.ko is already unloaded.
-> > Loading bpf_testmod.ko...
-> > Successfully loaded bpf_testmod.ko.
-> > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
-> > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
-> > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
-> > test_bench_attach_uprobe: attached in   0.120s
-> > test_bench_attach_uprobe: detached in   0.092s
-> > #400/5   uprobe_multi_test/bench_uprobe:OK
-> > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
-> > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
-> > test_bench_attach_usdt:PASS:usdt_count 0 nsec
-> > test_bench_attach_usdt: attached in   0.124s
-> > test_bench_attach_usdt: detached in   0.064s
-> > #400/6   uprobe_multi_test/bench_usdt:OK
-> > #400     uprobe_multi_test:OK
-> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > Successfully unloaded bpf_testmod.ko.
+> > On Thu, 2024-03-28 at 23:01 -0400, Harishankar Vishwanathan wrote:
 > >
-> > So it should be easy for Jonathan to validate his changes with this.
+> > [...]
 > >
-> > > > Thank you,
-> > > >
-> > > > >
-> > > > > Jon.
-> > > > >
-> > > > > >
-> > > > > > Thank you,
-> > > > > >
-> > > > > > >
-> > > > > > > >
-> > > > > > > > BTW, how did you measure the overhead? I think spinlock ove=
-rhead
-> > > > > > > > will depend on how much lock contention happens.
-> > > > > > > >
-> > > > > > > > Thank you,
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com=
+> > > @@ -13387,18 +13389,19 @@ static void scalar32_min_max_or(struct bpf_=
+reg_state *dst_reg,
+> > >        */
+> > >       dst_reg->u32_min_value =3D max(dst_reg->u32_min_value, umin_val=
+);
+> > >       dst_reg->u32_max_value =3D var32_off.value | var32_off.mask;
+> > > -     if (dst_reg->s32_min_value < 0 || smin_val < 0) {
+> > > +     if (dst_reg->s32_min_value > 0 && smin_val > 0 &&
+> >
+> > Hello,
+> >
+> > Could you please elaborate a bit, why do you use "> 0" not ">=3D 0" her=
+e?
+> > It seems that having one of the min values as 0 shouldn't be an issue,
+> > but maybe I miss something.
 >
-> > > > > > > > > ---
-> > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/upro=
-bes.c
-> > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > > > > --- a/kernel/events/uprobes.c
-> > > > > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree =3D =
-RB_ROOT;
-> > > > > > > > >   */
-> > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree=
-)
-> > > > > > > > >
-> > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serializ=
-e rbtree access */
-> > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serializ=
-e rbtree access */
-> > > > > > > > >
-> > > > > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > > > > >  /* serialize uprobe->pending_list */
-> > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(str=
-uct inode *inode, loff_t offset)
-> > > > > > > > >  {
-> > > > > > > > >       struct uprobe *uprobe;
-> > > > > > > > >
-> > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > >       uprobe =3D __find_uprobe(inode, offset);
-> > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > >
-> > > > > > > > >       return uprobe;
-> > > > > > > > >  }
-> > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(s=
-truct uprobe *uprobe)
-> > > > > > > > >  {
-> > > > > > > > >       struct uprobe *u;
-> > > > > > > > >
-> > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > >       u =3D __insert_uprobe(uprobe);
-> > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > >
-> > > > > > > > >       return u;
-> > > > > > > > >  }
-> > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct upro=
-be *uprobe)
-> > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > > > > >               return;
-> > > > > > > > >
-> > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_a=
-ctive() */
-> > > > > > > > >       put_uprobe(uprobe);
-> > > > > > > > >  }
-> > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct=
- inode *inode,
-> > > > > > > > >       min =3D vaddr_to_offset(vma, start);
-> > > > > > > > >       max =3D min + (end - start) - 1;
-> > > > > > > > >
-> > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > >       n =3D find_node_in_range(inode, min, max);
-> > > > > > > > >       if (n) {
-> > > > > > > > >               for (t =3D n; t; t =3D rb_prev(t)) {
-> > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct=
- inode *inode,
-> > > > > > > > >                       get_uprobe(u);
-> > > > > > > > >               }
-> > > > > > > > >       }
-> > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > >  }
-> > > > > > > > >
-> > > > > > > > >  /* @vma contains reference counter, not the probed instr=
-uction. */
-> > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_stru=
-ct *vma, unsigned long start, unsigned long e
-> > > > > > > > >       min =3D vaddr_to_offset(vma, start);
-> > > > > > > > >       max =3D min + (end - start) - 1;
-> > > > > > > > >
-> > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > >       n =3D find_node_in_range(inode, min, max);
-> > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > >
-> > > > > > > > >       return !!n;
-> > > > > > > > >  }
-> > > > > > > > > --
-> > > > > > > > > 2.43.0
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > >
-> > > >
-> > > > --
-> > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> You are right, this is a mistake, I sent the wrong version of the patch. =
+Thanks
+> for catching it. I will send a new patch.
 >
+> Note that in the correct version i'll be sending, instead of the followin=
+g
+> if condition,
 >
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> if (dst_reg->s32_min_value >=3D 0 && smin_val >=3D 0 &&
+> (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_value)
+>
+> it will use this if condition:
+>
+> if ((s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_value)
+>
+> Inside the if, the output signed bounds are updated using the unsigned
+> bounds; the only case in which this is unsafe is when the unsigned
+> bounds cross the sign boundary.  The shortened if condition is enough to
+> prevent this. The shortened has the added benefit of being more
+> precise. We will make a note of this in the new commit message.
+
+And that's exactly what reg_bounds_sync() checks as well, which is why
+my question/suggestion to not duplicate this logic, rather reset s32
+bounds to unknown (S32_MIN/S32_MAX), and let generic reg_bounds_sync()
+handle the re-derivation of whatever can be derived.
+
+>
+> This applies to all scalar(32)_min_max_and/or/xor.
+>
+> > > +             (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_=
+value) {
+> > > +             /* ORing two positives gives a positive, so safe to cas=
+t
+> > > +              * u32 result into s32 when u32 doesn't cross sign boun=
+dary.
+> > > +              */
+> > > +             dst_reg->s32_min_value =3D dst_reg->u32_min_value;
+> > > +             dst_reg->s32_max_value =3D dst_reg->u32_max_value;
+> > > +     } else {
+> > >               /* Lose signed bounds when ORing negative numbers,
+> > >                * ain't nobody got time for that.
+> > >                */
+> > >               dst_reg->s32_min_value =3D S32_MIN;
+> > >               dst_reg->s32_max_value =3D S32_MAX;
+> > > -     } else {
+> > > -             /* ORing two positives gives a positive, so safe to
+> > > -              * cast result into s64.
+> > > -              */
+> > > -             dst_reg->s32_min_value =3D dst_reg->u32_min_value;
+> > > -             dst_reg->s32_max_value =3D dst_reg->u32_max_value;
+> > >       }
+> > >  }
+> >
+> > [...]
+> >
+> > > @@ -13453,10 +13457,10 @@ static void scalar32_min_max_xor(struct bpf=
+_reg_state *dst_reg,
+> > >       /* We get both minimum and maximum from the var32_off. */
+> > >       dst_reg->u32_min_value =3D var32_off.value;
+> > >       dst_reg->u32_max_value =3D var32_off.value | var32_off.mask;
+> > > -
+> > > -     if (dst_reg->s32_min_value >=3D 0 && smin_val >=3D 0) {
+> > > -             /* XORing two positive sign numbers gives a positive,
+> > > -              * so safe to cast u32 result into s32.
+> > > +     if (dst_reg->s32_min_value > 0 && smin_val > 0 &&
+> >
+> > Same question here.
+> >
+> > > +             (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_=
+value) {
+> > > +             /* XORing two positives gives a positive, so safe to ca=
+st
+> > > +              * u32 result into s32 when u32 doesn't cross sign boun=
+dary.
+> > >                */
+> > >               dst_reg->s32_min_value =3D dst_reg->u32_min_value;
+> > >               dst_reg->s32_max_value =3D dst_reg->u32_max_value;
+> >
+> > [...]
 
