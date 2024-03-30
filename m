@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-125893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C21892D7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:32:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94EA9892D82
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:35:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 772892828AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:32:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 219691F21AC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D964C62E;
-	Sat, 30 Mar 2024 21:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429734D5BF;
+	Sat, 30 Mar 2024 21:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hu+tg7qO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PwZ9MZ1i"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111914AEEB
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A388345948
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711834316; cv=none; b=G3p9CFPbVp0VXEUyZo5IiFi5SvOwdcKSSeI0rtbFQNkoB+H4Lu3KvEkRdXm9U30awfGzsTln2UtOiaS40ZDVpyEXthZtvIDMB+1gw/P5sETJQCN6G9gVT2Nt7JOv7869fDeFJemWtQr8L1Pf3q6kBOWt9icCpBDng32iJK5XDWQ=
+	t=1711834530; cv=none; b=fO/lEHbAvPLPvD4Czk3OqRCafqKiRL8iA0CO8q3eZQUN1kteZWed50dTZAyxTZuCdaX9qS/XnXuBeW5qVjX9QR8/wTnWHHzz2AMuaZjzC3tb1Dr6TyQ2SmNypR8s7rZVDdK6ARJUpxAZud/DR7rrr/s5fFn/Kmo2G7UC5c5imR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711834316; c=relaxed/simple;
-	bh=t1KY6wPgvCWcWD2NOTNvE0vD4k8SIvXspJg1UZfO6R0=;
+	s=arc-20240116; t=1711834530; c=relaxed/simple;
+	bh=g0toAGCQtFi0G3GbWa0Q4HZPWv8jGtxInPF/JxlP71A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I8MgwMWfkZ70ClUhNdirX7OjjzUN+ChPioz9Xi7p5D0HT7V6vponoVF5u+ai0TsCGc+jh9J7pv/eToum7iPl7wNC7kSnP8BdlYiJ3PzsJkFGzsAYrWr/WNP98b7m5XYqJPQQ7Vx87BfJvxgM52HdXU5HOpJSztf1vF3IgNRn2PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hu+tg7qO; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=VDk1AdWfivfUlDYWWV0aeHeinK3zHP6Dwj3CQ2qewUTiR3JkY389d6bV/9E9OKg2J0ACGBw1DWYUPuF6lGvUnq274kQdBU+HYQaf3VVKagAkxwJnR9csNwkpG3T1KCpCWClj7sLvSTcqgcR3yTTn3MVnPc35I5YZ5/XMmBDm6Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PwZ9MZ1i; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711834314;
+	s=mimecast20190719; t=1711834527;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=2Lxl+j+xR8FWVtx6+a/UxVWMhMmDhnJi8YYlIddCdSo=;
-	b=hu+tg7qOLER5yPfsR3AgmPc7bLp6V8ATXtv1Zy2kOfDYvOmyO1uFeEbMW3nLwdw3msibIz
-	KDQnkqa58ANIRIPvcR2CTinXE+vKPKB56c4HmkWVeECAjOo7FNhi20GuLgIRIz69HCPU98
-	a0RFkh9bWf++ervOXti9R6M2WshEI7o=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=EwmuW/k3ZL7znVA8wS56lDlLW9BhS4TEVksrt7Me+Z8=;
+	b=PwZ9MZ1iyCAVzBUash6/9hnMVBP48I4GsfrdulDjf7X0dySw+dhCyQuoNF9cRn97oZnC0V
+	cTOQYa0rlarrHCAeQS/Hszk96ip36xl7O644Vw+ylUW0h4uRIhxuKMLJ1NrVHXnq/yslBs
+	rhet5l0+ntjKgvhS1bHVq1nOKnn3br4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-204-NA3hJCigMBWwPeo_eVOzUA-1; Sat, 30 Mar 2024 17:31:52 -0400
-X-MC-Unique: NA3hJCigMBWwPeo_eVOzUA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a4d8e5d6722so203217466b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:31:52 -0700 (PDT)
+ us-mta-112-tSJu9a0cMgmQB3On25fBYg-1; Sat, 30 Mar 2024 17:35:23 -0400
+X-MC-Unique: tSJu9a0cMgmQB3On25fBYg-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5689f41cf4dso2408093a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:35:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711834311; x=1712439111;
+        d=1e100.net; s=20230601; t=1711834522; x=1712439322;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2Lxl+j+xR8FWVtx6+a/UxVWMhMmDhnJi8YYlIddCdSo=;
-        b=tHRjme0u2zj3uWrus62Z6fRXMGH2qcZQPiMn9WKvqlO1NiYDdogCuP24Vy99Necd/C
-         g7gBmGq2QAVJDMAwSqoHCU3gLGe7ErZXpCUQPgAv3eL0aXOIlO/dxiPyRO3YLo4HeYEP
-         H1FY58vY5LggCO8xmfdOPCr3w+PRtbtRMn3CAjn20MpCIeSfydKl4Mflurgia7FuypgF
-         Gtdz/0d8opx72ytMR22gQ/voi/nNIkdU3yFGduLXO6yOJ0xnPTAbVb41ylRhHEepbRQo
-         PFBIiUvdXD/WcfVUOX7h/qq6CVSru+0Pk15A06/14uQ0K59YJ2UbnVRoYhpBIY9QeK+1
-         SiLw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQFM5SCn27EibMN2Wrv/PPQb6bxkdMKDXxlUF7NWOJWiCq0MZoYAMtUVnw0diUUXiZ8zAfRL0OSkb6jhELvBT+1cEMJfSwcveqkGCh
-X-Gm-Message-State: AOJu0YxbkEJnkO5uWcml1P7bc0JhQpH4d+lReMqe6814CJGKbWpYXoKT
-	E2rrzFYk7S3qY5ZpWLM2NKASLks2oF5TQfAZw5HMgQraxMeeRbqVYr0meWBvF+2OP4qsYyW7AK4
-	n4LSkeN6RE4jNgiwOvZU6Qd27cSBsWIWNR7MH4p7GDTSZ0HBv2Djy1HJIxnWSxA==
-X-Received: by 2002:a17:907:9693:b0:a4e:17c5:9944 with SMTP id hd19-20020a170907969300b00a4e17c59944mr4619535ejc.61.1711834311163;
-        Sat, 30 Mar 2024 14:31:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH4ZTkjUa1qAw9ZLrLn5Cmk/KIYm4xouooLm1o+DG2vC/bIdk1gQWLiRdSLYKS8JVSoO2kgWw==
-X-Received: by 2002:a17:907:9693:b0:a4e:17c5:9944 with SMTP id hd19-20020a170907969300b00a4e17c59944mr4619522ejc.61.1711834310761;
-        Sat, 30 Mar 2024 14:31:50 -0700 (PDT)
+        bh=EwmuW/k3ZL7znVA8wS56lDlLW9BhS4TEVksrt7Me+Z8=;
+        b=jTT2FBgSYMoeJE5ccOi5DsUyE0juZB4gBpRsaeSs9kH9ALQmj2ilHm8toqrL4cyyRv
+         Ofppy6SnyGFp2zfcHgVCc/EKCvuOaQZK6JLnQl8X2ElNIadsNZPGYktkgwtSlkzXYkvz
+         CLb+Mcn2pOShlO2CvLTXusmuKk3Y/Zt5FdLpngbspaovc+VJ1pXRCKMkKMylEO5vmetk
+         Hny51o7yTwHFWOegSUEFqtPM2imlks1J7mBZ0WuWiM7shRLBCiY9cNmWZLphMb+nEs9a
+         ipG4IOi+Wmp8zeHIcqDBWl6+wdAwUQO1tV70NDjBvGynKbt8FATmGTDxCv+bQ1fv2rIQ
+         GuZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4Pp+/19Mb2juuK84MNGHHMO5BHtlVbuQw6u4ZjA70d901hLiKrIUob09YFXAiG9zaWUumWi5S5A3ycfm7kpmU1INlD4mcb72VKS3k
+X-Gm-Message-State: AOJu0YzQvpxLO0QoT38CtX9+7v5jgy51U7OMzC5vh+PxRqnKlxdZhHH8
+	6ZlZLqCDd5Th1F5x22MqKJ+q7SSedAzc4vh61ECYbvvQsECUlrHUi24/Y+QP5l0Lt05efWXFOnw
+	NWMVbeMVoNNqFiKg+nNGL//njdocX9xu1QzBM7wXulm42lMtfWzkkBnz5rJgmgA==
+X-Received: by 2002:a50:bb44:0:b0:567:23a2:5b1e with SMTP id y62-20020a50bb44000000b0056723a25b1emr4176662ede.23.1711834522688;
+        Sat, 30 Mar 2024 14:35:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH4Y1Y1ai02PAHKv5gHHk8E9vouw7+IeXJOAyuQtq3+b2c4PJy15b2ZKcJKFYMqFhtFpYJu6A==
+X-Received: by 2002:a50:bb44:0:b0:567:23a2:5b1e with SMTP id y62-20020a50bb44000000b0056723a25b1emr4176630ede.23.1711834522369;
+        Sat, 30 Mar 2024 14:35:22 -0700 (PDT)
 Received: from [192.168.10.4] ([151.95.49.219])
-        by smtp.googlemail.com with ESMTPSA id h19-20020a1709060f5300b00a4e30ff4cbcsm2438004ejj.194.2024.03.30.14.31.48
+        by smtp.googlemail.com with ESMTPSA id cy14-20020a0564021c8e00b0056bf31fa2a3sm3688481edb.80.2024.03.30.14.35.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 14:31:50 -0700 (PDT)
-Message-ID: <f1e5aef5-989c-4f07-82af-9ed54cc192be@redhat.com>
-Date: Sat, 30 Mar 2024 22:31:47 +0100
+        Sat, 30 Mar 2024 14:35:21 -0700 (PDT)
+Message-ID: <4e89479a-e170-403a-b2eb-ce7b895e55a3@redhat.com>
+Date: Sat, 30 Mar 2024 22:35:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 22/29] KVM: SEV: Implement gmem hook for invalidating
- private pages
+Subject: Re: [PATCH v12 23/29] KVM: x86: Implement gmem hook for determining
+ max NPT mapping level
 To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
 Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
  linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
@@ -98,7 +98,7 @@ Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
  alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
  nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com
 References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-23-michael.roth@amd.com>
+ <20240329225835.400662-24-michael.roth@amd.com>
 From: Paolo Bonzini <pbonzini@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=pbonzini@redhat.com; keydata=
@@ -136,32 +136,119 @@ Autocrypt: addr=pbonzini@redhat.com; keydata=
  JBrdmNZSQDz0iKmSrx8xkoXYfA3bgtFN8WJH2xgFL28XnqY4M6dLhJwV3z08tPSRqYFm4NMP
  dRsn0/7oymhneL8RthIvjDDQ5ktUjMe8LtHr70OZE/TT88qvEdhiIVUogHdo4qBrk41+gGQh
  b906Dudw5YhTJFU3nC6bbF2nrLlB4C/XSiH76ZvqzV0Z/cAMBo5NF/w=
-In-Reply-To: <20240329225835.400662-23-michael.roth@amd.com>
+In-Reply-To: <20240329225835.400662-24-michael.roth@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 3/29/24 23:58, Michael Roth wrote:
-> +		/*
-> +		 * If an unaligned PFN corresponds to a 2M region assigned as a
-> +		 * large page in he RMP table, PSMASH the region into individual
-> +		 * 4K RMP entries before attempting to convert a 4K sub-page.
-> +		 */
-> +		if (!use_2m_update && rmp_level > PG_LEVEL_4K) {
-> +			rc = snp_rmptable_psmash(pfn);
-> +			if (rc)
-> +				pr_err_ratelimited("SEV: Failed to PSMASH RMP entry for PFN 0x%llx error %d\n",
-> +						   pfn, rc);
-> +		}
+> In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
+> 2MB mapping in the guest's nested page table depends on whether or not
+> any subpages within the range have already been initialized as private
+> in the RMP table. The existing mixed-attribute tracking in KVM is
+> insufficient here, for instance:
+> 
+>    - gmem allocates 2MB page
+>    - guest issues PVALIDATE on 2MB page
+>    - guest later converts a subpage to shared
+>    - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
+>    - KVM MMU splits NPT mapping to 4K
+>    - guest later converts that shared page back to private
+> 
+> At this point there are no mixed attributes, and KVM would normally
+> allow for 2MB NPT mappings again, but this is actually not allowed
+> because the RMP table mappings are 4K and cannot be promoted on the
+> hypervisor side, so the NPT mappings must still be limited to 4K to
+> match this.
+> 
+> Implement a kvm_x86_ops.gmem_validate_fault() hook for SEV that checks
+> for this condition and adjusts the mapping level accordingly.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
 
-Ignoring the PSMASH failure is pretty scary...  At this point 
-free_folio cannot fail, should the psmash part of this patch be done in 
-kvm_gmem_invalidate_begin() before kvm_mmu_unmap_gfn_range()?
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Also, can you get PSMASH_FAIL_INUSE and if so what's the best way to 
-address it?  Should fallocate() return -EBUSY?
-
-Thanks,
-
-Paolo
+> ---
+>   arch/x86/kvm/svm/sev.c | 32 ++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/svm/svm.c |  1 +
+>   arch/x86/kvm/svm/svm.h |  7 +++++++
+>   3 files changed, 40 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 87d621d013a4..31f6f4786503 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -4443,3 +4443,35 @@ void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end)
+>   		pfn += use_2m_update ? PTRS_PER_PMD : 1;
+>   	}
+>   }
+> +
+> +/*
+> + * Re-check whether an #NPF for a private/gmem page can still be serviced, and
+> + * adjust maximum mapping level if needed.
+> + */
+> +int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
+> +			    u8 *max_level)
+> +{
+> +	int level, rc;
+> +	bool assigned;
+> +
+> +	if (!sev_snp_guest(kvm))
+> +		return 0;
+> +
+> +	rc = snp_lookup_rmpentry(pfn, &assigned, &level);
+> +	if (rc) {
+> +		pr_err_ratelimited("SEV: RMP entry not found: GFN %llx PFN %llx level %d error %d\n",
+> +				   gfn, pfn, level, rc);
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (!assigned) {
+> +		pr_err_ratelimited("SEV: RMP entry is not assigned: GFN %llx PFN %llx level %d\n",
+> +				   gfn, pfn, level);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (level < *max_level)
+> +		*max_level = level;
+> +
+> +	return 0;
+> +}
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index b456906f2670..298b4ce77a5f 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -5081,6 +5081,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>   
+>   	.gmem_prepare = sev_gmem_prepare,
+>   	.gmem_invalidate = sev_gmem_invalidate,
+> +	.gmem_validate_fault = sev_gmem_validate_fault,
+>   };
+>   
+>   /*
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 3f1f6d3d3ade..746f819a6de4 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -732,6 +732,8 @@ void sev_vcpu_unblocking(struct kvm_vcpu *vcpu);
+>   void sev_snp_init_protected_guest_state(struct kvm_vcpu *vcpu);
+>   int sev_gmem_prepare(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
+>   void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end);
+> +int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
+> +			    u8 *max_level);
+>   #else
+>   static inline struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu) {
+>   	return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> @@ -753,6 +755,11 @@ static inline int sev_gmem_prepare(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, in
+>   	return 0;
+>   }
+>   static inline void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end) {}
+> +static inline int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn,
+> +					  bool is_private, u8 *max_level)
+> +{
+> +	return 0;
+> +}
+>   
+>   #endif
+>   
 
 
