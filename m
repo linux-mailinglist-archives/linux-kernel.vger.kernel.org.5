@@ -1,101 +1,138 @@
-Return-Path: <linux-kernel+bounces-125684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5CA0892AAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 967CF892AAB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46615B21A08
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:11:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EC29B21BC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2D22D052;
-	Sat, 30 Mar 2024 11:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8B52BAEF;
+	Sat, 30 Mar 2024 11:12:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVyEp2OC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ME3SBlvP"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFAFBE6F;
-	Sat, 30 Mar 2024 11:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B20BE6F
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:12:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711797093; cv=none; b=pthwGYGVfkKbo79i4r3JfW+J203srEv4BC6L5S4Y3mQ2kd4OYvYtMhaXKPexDmEipY4fIfYU55BS7w/rlrTa8AXWce6NKmQAAkphwv4b4rVqkxv4z+JT6XEZCcVsYS165T4HoL+pSJi6F4ST+gFyWuUe+LrpxL0GWxBdDFIT6Y8=
+	t=1711797132; cv=none; b=Hr561AvK01G1YKpzwBzPFPC/jVM87ZJ9ysEmitzc5ahZc0DSDOCHdcmRsTdEtGcea3Hfpd45/gu++K18/lELdXCaUcFploWQgRMuYJ+9VuMvCz1pf14cXSrtGR4XC/2IEslPH2fMbiYPSNL8DLPOtM+BuUKZX9kum6wH4pXL6NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711797093; c=relaxed/simple;
-	bh=iXcSCv1Lm8qoVXmrgVuG9IH8TGJqsJHpTZ9ruAqsmUI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=mneaipFTH8fgHzlTlxHH/boSUgl+zn6i8Dxa5S9wy4cnacpxWYlhZtnVRyobCCFaf/cfp5ja1XzOyMV8XkkFMoV32ZN3x2I54TuTLApffum0FFRV2gHAzm1BmMOpE0b8qYT9y67Y6aNVhYD85N9qu/MsSl+QyonWMhUngoyfY8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVyEp2OC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 061ADC433C7;
-	Sat, 30 Mar 2024 11:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711797091;
-	bh=iXcSCv1Lm8qoVXmrgVuG9IH8TGJqsJHpTZ9ruAqsmUI=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=qVyEp2OCL7jBvHHpwLy5SoX/uOuYnC1rcPn+CPe8wTYEuho90fPuIdCDew6wweXpi
-	 vr2rRp7C/tCMbPkVmBjvy0d2xn6W7Vkq71NAS+exqVOYf9jSy5wwSyB4rBFcof/1Vr
-	 dtKAFPNiSks+nyA/O9D41wwFoloIqWTxq9TGLOkhwBWa57+P6iPY2DxcR6RL1oMeml
-	 U5/g9Yh/kIQo8XvnWmdPc6JRYsVI0rbuX/07su2hZhO9zv1dd7X5ExFmEn+nYdFvuJ
-	 jd8KJFKJkfmbb65/UaOIex+Hn/flU5IlCzJjpbswd6ds72r9f3uIOp8vV91t+ASrBX
-	 Z0Fp2O26xlMEQ==
+	s=arc-20240116; t=1711797132; c=relaxed/simple;
+	bh=/+93Og3Mv0PankfJrCm8noo2m99RdjfXeaL8llY6Zkc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O7sVU50pVAnPTgXVKymvyM3+/l/CoA5lzkpdmpVbsjBw2EMkTc0HW1R4XRZFuNU8+vTtcK/yHd+YFewtk2ulP2tVFjquuGpSJFi9LVFtC3cYOtlYa5kvY/2Flb4RlW2YRoKGJm4sHta71ZWRSa2QiRGl2mdPlwQd8b+QIqs9LIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ME3SBlvP; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4a387ff7acso328501066b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:12:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711797129; x=1712401929; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eDwKko1DTKW3c4OwHGe1slw6WwqSa57Xtn6YOo7f86Q=;
+        b=ME3SBlvPZUtBk+GUZMkGi0dlhoyfpqKKMvig6cRPlyDVoy1wfpYpZ060jBje+16BSY
+         dwD7AFGn5ECBB92EZh89oUJu1hKUeHfQ8IMaPjGXUM6dt4K+tPUEZb5RQ1xX8oOq3CIJ
+         /trDsw/cpTgtv8u02XwuJxrRHlJh8e1YfSMWJUgl0VDu8hloqroy7YJiZ9QMb5MsEdtN
+         Z0k/6HFFujYtUSrNwQ1dvrIsOY3mSs4LDVU/UStBcxJefT6QbRp2tyX1wcgK0dTexL7y
+         a9nqXDlHa+njuzdKcRehh/FEaFXIk3fGAYIsPStwXXFZ1Ao1n+J8xXE5OgYVlThVsBUh
+         wZwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711797129; x=1712401929;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eDwKko1DTKW3c4OwHGe1slw6WwqSa57Xtn6YOo7f86Q=;
+        b=gasHfgm43COalWLbrkNS3RVJFUF6D6bhcDtejg4oHhkSDZWWgKVbDNHuL0A7iaroSA
+         Z5qPB2p2pTWAgLe+ROesE2URDQxcpZG6cpasmvoyqaqDT+S0V7OcD861QFd9XLy7ufQQ
+         HZ6BS+6rS4r7RXu8HQRWq+uY2gfoZ5P8wpgeRTt+UmenMAoD1tlh4HrNX770t3yCMtXj
+         0rm4f9KQvJxGRx9AkgIFBf5dD6PyVt9+r40qshCB3ec4Ax+SjP9AemdqgRuj3Um+oUL0
+         fh0e3vvbGH27v5749eys3UkSdYr97GR3mwmCHie6j6/MX/vvrMku4kEuZjsnL7ZfX1/M
+         WC4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUiLFSBCg8R+RxbeRfLjxPC+4MEcClth0lgOVMf2tH4mDItJPXvRnI5yN7mAegqlEmsHy2RwLB8JhE3TOXekJ5gQkxNaL1jCcBlC+ad
+X-Gm-Message-State: AOJu0YwRXbY+RhSLdbiLOwydAhqpGz59O1TCmqF10+9pLFGt125x67ln
+	z/6S2tzHb+GhroI/RvBRQNFV1SLX/2IteuCuJSKrUoTgAbb+Yoqg
+X-Google-Smtp-Source: AGHT+IE1ap2jUF03nDb1Ck5AiS6cak/UhsjfI9niuRfMCLjHuY008ZE5Cy+eAGnSmF6W5KvKcDw7iQ==
+X-Received: by 2002:a17:906:f284:b0:a4e:2123:e3c8 with SMTP id gu4-20020a170906f28400b00a4e2123e3c8mr2775516ejb.56.1711797128733;
+        Sat, 30 Mar 2024 04:12:08 -0700 (PDT)
+Received: from gmail.com (84-236-113-97.pool.digikabel.hu. [84.236.113.97])
+        by smtp.gmail.com with ESMTPSA id h9-20020a1709060f4900b00a472c4b9486sm2995392ejj.84.2024.03.30.04.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Mar 2024 04:12:08 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Sat, 30 Mar 2024 12:12:06 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: fenghua.yu@intel.com, bp@alien8.de, james.morse@arm.com,
+	tony.luck@intel.com, peternewman@google.com, babu.moger@amd.com,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, james.greenhalgh@arm.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/resctrl: Fix uninitialized memory read when last CPU
+ of domain goes offline
+Message-ID: <ZgfzhjPP+kAQX7em@gmail.com>
+References: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
+ <ZgZnZgfDUWlhQQxW@gmail.com>
+ <cc629f91-b4b5-4c9d-b47c-c40eddb03a07@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 30 Mar 2024 13:11:25 +0200
-Message-Id: <D071F8P9F4W2.OJB84BIYSIR6@kernel.org>
-To: "Randy Dunlap" <rdunlap@infradead.org>, "Fan Wu"
- <wufan@linux.microsoft.com>, <corbet@lwn.net>, <zohar@linux.ibm.com>,
- <jmorris@namei.org>, <serge@hallyn.com>, <tytso@mit.edu>,
- <ebiggers@kernel.org>, <axboe@kernel.dk>, <agk@redhat.com>,
- <snitzer@kernel.org>, <eparis@redhat.com>, <paul@paul-moore.com>
-Cc: <linux-doc@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-security-module@vger.kernel.org>, <fsverity@lists.linux.dev>,
- <linux-block@vger.kernel.org>, <dm-devel@lists.linux.dev>,
- <audit@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Deven Bowers"
- <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH v16 01/20] security: add ipe lsm
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
- <1711657047-10526-2-git-send-email-wufan@linux.microsoft.com>
- <D05ODONHFJ9O.3VG0HLFPA1OB0@kernel.org>
- <cde3dc6e-ca77-445e-a4b7-fc21a934999a@infradead.org>
-In-Reply-To: <cde3dc6e-ca77-445e-a4b7-fc21a934999a@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc629f91-b4b5-4c9d-b47c-c40eddb03a07@intel.com>
 
-On Fri Mar 29, 2024 at 12:11 AM EET, Randy Dunlap wrote:
->
->
-> On 3/28/24 13:45, Jarkko Sakkinen wrote:
-> >> +/**
-> >> + * ipe_init - Entry point of IPE.
-> >> + *
-> >> + * This is called at LSM init, which happens occurs early during kern=
-el
-> >> + * start up. During this phase, IPE registers its hooks and loads the
-> >> + * builtin boot policy.
-> >> + * Return:
-> >> + * * 0		- OK
-> >> + * * -ENOMEM	- Out of memory
-> > Just a suggestion:
-> >=20
-> > * 0:		OK
-> > * -ENOMEM:	Out of memory (OOM)
-> >=20
-> > Rationale being more readable (less convoluted).
-> >=20
-> > And also sort of symmetrical how parameters are formatted in kdoc.
->
-> It needs the " * *" to make a formatted list in the generated output.
-> Otherwise the use of '- or ':' as a separator doesn't matter AFAIK.
 
-Thanks for the remark! Yeah I don't mind the two stars.
+* Reinette Chatre <reinette.chatre@intel.com> wrote:
 
-BR, Jarkko
+> Hi Ingo,
+> 
+> On 3/29/2024 12:01 AM, Ingo Molnar wrote:
+> > 
+> > * Reinette Chatre <reinette.chatre@intel.com> wrote:
+> > 
+> >> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> >> index c99f26ebe7a6..4f9ef35626a7 100644
+> >> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> >> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> >> @@ -85,6 +85,10 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+> >>  	if (cpu < nr_cpu_ids && !tick_nohz_full_cpu(cpu))
+> >>  		return cpu;
+> >>  
+> >> +	/* Only continue if tick_nohz_full_mask has been initialized. */
+> >> +	if (!tick_nohz_full_enabled())
+> >> +		return cpu;
+> >> +
+> > 
+> > So we already have this a few lines up:
+> > 
+> >         if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
+> >                 return cpu;
+> > 
+> > And we can combine the two checks into a single one, with the patch 
+> > below, right?
+> 
+> Right. Indeed. Doing so is most appropriate. Thank you very much.
+> 
+> > 
+> > Untested.
+> 
+> Tested-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+
+Please just pick up my optimization to your fix and submit a v2 - you 
+did all the hard work.
+
+Thanks,
+
+	Ingo
 
