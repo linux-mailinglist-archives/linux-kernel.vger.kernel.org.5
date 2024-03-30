@@ -1,167 +1,102 @@
-Return-Path: <linux-kernel+bounces-125616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB718929B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 999D58929B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E88EE1F21C19
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 08:32:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4290A1F22055
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 08:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9729C1C0DD5;
-	Sat, 30 Mar 2024 08:31:54 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79BA08F56;
+	Sat, 30 Mar 2024 08:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="pmf/Wuuh"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F544179
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 08:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286AF79D8;
+	Sat, 30 Mar 2024 08:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711787514; cv=none; b=VCLkLZS2TDlNMZog2JNeOW0jD24Y327qkl9HA3fel8ueppj3tZdilMF16yDmiBn0NnZaWXAH+RZAKmaQ1q9bwqGxvlLrrhHpdUOUaEPqNKb0hR2DM/FbA7huuxQ11A9d6B6gIm5jct3HuUKsAojyIi/L0zTW70ws6tIxwMwyF9I=
+	t=1711787131; cv=none; b=o1cgqdyb4xKzZ2zBgY+h4XHuowBt3PvSEBMWc3l5K3wm9m2MqI9CMobgoRrFz8m4cKkIYtlVjbDbVDAt8wBXRQewWJUr1AEgZZxB4hvGhi6lS65r48z/WZlGq8QkyUtrUjGTf1nvxo8rJPfxgLm+8rTYteZy9McuMNg9IA8sy+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711787514; c=relaxed/simple;
-	bh=NL+dsLVqbh4Q40NGTmOOcM/fOeLV7YkY7jwLXQtfS8s=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OtF5iCoUiSF1TvsnLNsar+qWOwckmM+c8zRbCzratPIty4sHiWzaXbfPCHZA8Sm9g65TS4LDd9tFF7In5QwezClSCo3Pl9ELKP8oWsVPgeZC32QHLTa83i4Q47HWf/wgKePj/QClwUzfqKoLli/l/ajESdC1gen910NjYAW38BI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V69Tt0fSqz1GDdV;
-	Sat, 30 Mar 2024 16:31:14 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (unknown [7.185.36.236])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1F38E1A0188;
-	Sat, 30 Mar 2024 16:31:48 +0800 (CST)
-Received: from mdc.huawei.com (10.175.112.208) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 30 Mar 2024 16:31:47 +0800
-From: Chen Jun <chenjun102@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, <cl@linux.com>,
-	<penberg@kernel.org>, <rientjes@google.com>, <iamjoonsoo.kim@lge.com>,
-	<akpm@linux-foundation.org>, <vbabka@suse.cz>, <roman.gushchin@linux.dev>,
-	<42.hyeyoo@gmail.com>
-CC: <xuqiang36@huawei.com>, <chenjun102@huawei.com>,
-	<wangkefeng.wang@huawei.com>
-Subject: [PATCH v2] mm/slub: Reduce memory consumption in extreme scenarios
-Date: Sat, 30 Mar 2024 16:23:35 +0800
-Message-ID: <20240330082335.29710-1-chenjun102@huawei.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1711787131; c=relaxed/simple;
+	bh=ajK3qZPjABu64x0qWUWrYS5lGxEpXNu8G6mGAqricqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lAeRmJ1KzGZvJpDnftXrlEspwOWVB/BoM9+pCrP1u3BjlurYvNIiGb6zQqsB3yOYK+IG7gpBGFNxooZYHmfOzcRwLKuRaOf2PkjQj/Zd4WwqF1JrUrmgOliIbiWLRHCIdhbc5WO3dKBcJCSjp1j4K3ZptXkhMV3VHCpeLDpTM40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=pmf/Wuuh; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id B7D811B7FA4;
+	Sat, 30 Mar 2024 09:25:19 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1711787119; bh=ajK3qZPjABu64x0qWUWrYS5lGxEpXNu8G6mGAqricqU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pmf/WuuhsXc8LnJnE6qLaLZ4Pue7JbRDKnma60f7ae9f7g2632uGjtV+HrKvmMeZ0
+	 SJrt113HgiT3XR0YwBuvaT9pBXCWcEnOhW41HxDO/ngPWkfxkOVzFB/vfb+QVZElNA
+	 mmr6N3ijXNOQ3oCROrv6/01y6j8Sxt4xjqZCveQ/Qy5TqJFYCb5kMvJNntTRu7r5xc
+	 tAyYshOGa1Fd0Qzz5gkLA7LM0fduIdL68j9nVsD3rPfMg0NqJzmhdtANpjrWNH7MmN
+	 +oEpWyeM0sKSA1yTB6Fx8N0fUcpijZQbyisP8JAINOI7BpoVJsdDv9gKtCq80lhmsf
+	 VvorcihuMULdw==
+Date: Sat, 30 Mar 2024 09:25:18 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Dexuan Cui <decui@microsoft.com>
+Cc: hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+ zhangpeng362@huawei.com, iommu@lists.linux.dev, mhklinux@outlook.com,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] swiotlb: Do not set total_used to 0 in
+ swiotlb_create_debugfs_files()
+Message-ID: <20240330092518.71b5f0c0@meshulam.tesarici.cz>
+In-Reply-To: <20240329192809.17318-1-decui@microsoft.com>
+References: <20240329192809.17318-1-decui@microsoft.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-When kmalloc_node() is called without __GFP_THISNODE and the target node
-lacks sufficient memory, SLUB allocates a folio from a different node
-other than the requested node, instead of taking a partial slab from it.
+V Fri, 29 Mar 2024 12:28:09 -0700
+Dexuan Cui <decui@microsoft.com> naps=C3=A1no:
 
-However, since the allocated folio does not belong to the requested
-node, it is deactivated and added to the partial slab list of the node
-it belongs to.
+> Sometimes the readout of /sys/kernel/debug/swiotlb/io_tlb_used and
+> io_tlb_used_hiwater can be a huge number (e.g. 18446744073709551615),
+> which is actually a negative number if we use "%ld" to print the number.
+>=20
+> When swiotlb_create_default_debugfs() is running from late_initcall,
+> mem->total_used may already be non-zero, because the storage driver
+> may have already started to perform I/O operations: if the storage
+> driver is built-in, its probe() callback is called before late_initcall.
+>=20
+> swiotlb_create_debugfs_files() should not blindly set mem->total_used
+> and mem->used_hiwater to 0; actually it doesn't have to initialize the
+> fields at all, because the fields, as part of the global struct
+> io_tlb_default_mem, have been implicitly initialized to zero.
+>=20
+> Also don't explicitly set mem->transient_nslabs to 0.
+>=20
+> Fixes: 8b0977ecc8b3 ("swiotlb: track and report io_tlb_used high water ma=
+rks in debugfs")
+> Fixes: 02e765697038 ("swiotlb: add debugfs to track swiotlb transient poo=
+l usage")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
-This behavior can result in excessive memory usage when the requested
-node has insufficient memory, as SLUB will repeatedly allocate folios
-from other nodes without reusing the previously allocated ones.
+FWIW I confirm that the transient_nslabs counter does not have to be
+initialized either.
 
-To prevent memory wastage,
-when (node != NUMA_NO_NODE) && !(gfpflags & __GFP_THISNODE) is,
-1) try to get a partial slab from target node with GFP_NOWAIT |
-   __GFP_THISNODE opportunistically.
-2) if 1) failed, try to allocate a new slab from target node with
-   GFP_NOWAIT | __GFP_THISNODE opportunistically too.
-3) if 2) failed, retry 1) and 2) with orignal gfpflags.
+Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-when node != NUMA_NO_NODE || (gfpflags & __GFP_THISNODE), the behavior
-remains unchanged.
-
-On qemu with 4 numa nodes and each numa has 1G memory. Write a test ko
-to call kmalloc_node(196, GFP_KERNEL, 3) for (4 * 1024 + 4) * 1024 times.
-
-cat /proc/slabinfo shows:
-kmalloc-256       4200530 13519712    256   32    2 : tunables..
-
-after this patch,
-cat /proc/slabinfo shows:
-kmalloc-256       4200558 4200768    256   32    2 : tunables..
-
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v2: 
-- try to alloc partial slab or new slab with GFP_NOWAIT(it includes
-  __GFP_NOWARN) opportunistically, then fallback to orignal gfpflag,
-  suggested by Vlastimil Babka,
-- update changelog
-
-v1: https://lore.kernel.org/linux-mm/20230314123403.100158-1-chenjun102@huawei.com/
-
- mm/slub.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 1bb2a93cf7b6..c1c51595a59f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2699,7 +2699,7 @@ static struct slab *get_partial(struct kmem_cache *s, int node,
- 		searchnode = numa_mem_id();
- 
- 	slab = get_partial_node(s, get_node(s, searchnode), pc);
--	if (slab || node != NUMA_NO_NODE)
-+	if (slab || (node != NUMA_NO_NODE && (pc->flags & __GFP_THISNODE)))
- 		return slab;
- 
- 	return get_any_partial(s, pc);
-@@ -3375,6 +3375,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	struct slab *slab;
- 	unsigned long flags;
- 	struct partial_context pc;
-+	bool try_thisnode = true;
- 
- 	stat(s, ALLOC_SLOWPATH);
- 
-@@ -3501,6 +3502,17 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- new_objects:
- 
- 	pc.flags = gfpflags;
-+	/*
-+	 * when (node != NUMA_NO_NODE) && !(gfpflags & __GFP_THISNODE)
-+	 * 1) try to get a partial slab from target node with GPF_NOWAIT |
-+	 *    __GFP_THISNODE opportunistically.
-+	 * 2) if 1) failed, try to allocate a new slab from target node with
-+	 *    GPF_NOWAIT | __GFP_THISNODE opportunistically too.
-+	 * 3) if 2) failed, retry 1) and 2) with original gfpflags.
-+	 */
-+	if (node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE) && try_thisnode)
-+		pc.flags = GFP_NOWAIT | __GFP_THISNODE;
-+
- 	pc.orig_size = orig_size;
- 	slab = get_partial(s, node, &pc);
- 	if (slab) {
-@@ -3522,10 +3534,15 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	}
- 
- 	slub_put_cpu_ptr(s->cpu_slab);
--	slab = new_slab(s, gfpflags, node);
-+	slab = new_slab(s, pc.flags, node);
- 	c = slub_get_cpu_ptr(s->cpu_slab);
- 
- 	if (unlikely(!slab)) {
-+		if (node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE) &&
-+		    try_thisnode) {
-+			try_thisnode = false;
-+			goto new_objects;
-+		}
- 		slab_out_of_memory(s, gfpflags, node);
- 		return NULL;
- 	}
--- 
-2.27.0
-
+Petr T
 
