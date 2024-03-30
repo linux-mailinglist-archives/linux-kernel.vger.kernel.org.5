@@ -1,208 +1,266 @@
-Return-Path: <linux-kernel+bounces-125783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CBB2892C0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:35:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9B7892C0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9E941F22BF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:35:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DC791F22B71
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D3031A66;
-	Sat, 30 Mar 2024 16:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BDA39870;
+	Sat, 30 Mar 2024 16:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="SqpdaoP5"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2057.outbound.protection.outlook.com [40.92.74.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ar0ukOlZ"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A851E878;
-	Sat, 30 Mar 2024 16:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.74.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711816516; cv=fail; b=b69rv26DMaRcVjbYw4bdlNeMc6PzdIrZA89/7H0RBL4721U1dTcgCP4DtVbOTsrx4RRIFrTXnd0QPxbuMVZRNT1aGU2MO7FIJC268lGydRCKF25aTqLieTpP4lT0eGdnK9IY4eOByGj7HLGdXn0tUxdXfvlPdJTvtEIIzJxBBnA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711816516; c=relaxed/simple;
-	bh=VdzvQmAICSZ29WbYZ9+rlSYW2KmpJLTwUX2K9EE+Kn4=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=sj3Qvokqt7cVXb5PdNHlS9TpBQTRe4o3bFn6uPg4UNjW/rGukZIAuFfTZq/91lXxB2LkJ1CC0+da0kk5xwFvDmrHDTkbz64va/5SKHqfze5ph5avjiwmkxbii6ceK8jubqkd7dHNaY1IxsDv1JHQbGdV8ZOszvcE0Yhww8WF+fA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=SqpdaoP5; arc=fail smtp.client-ip=40.92.74.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gX8wtlpmnw23sMdsJ8WOWYW3ScJXbWmAQLvGIu2/6X9Urn/pUcuWXYuXgisEk3GHGuuA/pG591Kw3j4rdUKmZ65okK4xuDTGNSCjeKcC3yBJiddFexQ6m00v0H4lMDzWPa4eG0qjGHeDJ9yHac1xqdK6rmlYMExru3scWrDBmRBusmHkJsPvjtHZ+d8omEL+ugdBqx+4C2T935xqkOjlmqSa30DO444PIvHxA8r+KXNeKYQ1M9FxdB7xhslQNnVie3oBn0pzVyOOYuNonKoRMbdkR3gSR+xCVMs+iY7exSu8cQ0QrXBXwKIHfgJWJxtwJExg53Ib0dPnGX6ZWEClgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZN8tft0hq98f6J07/bNT5fdSxXERJq8lr2qv7F8FdbE=;
- b=BACbACj5DJPJZwQrmPK/XXXqlCHOaKbAHf5pfUQFlTyt2OYqNe98FLzoTYqD7cO6gf9t0VQhg5ZSL/WpAU49hW27QpPAZV2+tyOfGI1eCy1HARiVOcU99DcWdVLrAZGZsH3xhVYv9LnO8SFDRiWTaKTcsD9gUa2VjNYKO95XPZvJ/73Ih/YsSNuSzdmaTfSX1wwDL4pb2QwUARYRCqdFzpYgh06X1yk64hD1xSy6bg1WX7DP5IVXLEBSmWMvCiLP6jbjm2J4M3yPph2aVPICXGyVoR/0rmPqIykV+uylBuY9/ejN/4UA6nVi6r1WQkddMpOZOPQ4VP4gIIKOFc5G6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZN8tft0hq98f6J07/bNT5fdSxXERJq8lr2qv7F8FdbE=;
- b=SqpdaoP5B3U1LCKl30OjUbTUCP3a3wpK5xmzYIu2e8NLX01keOsv+apIxcMt1pLguXtjKb5RNqRR278YxE4pzI/pT9yozzoZ/+GU/DKtGebyJqp6WBpuEpRIutcFfNVflaEh6Lvxzp06asL40fXAtS70RzjYSfmxknYmWyeDU7EQlMmdYLXBDoDbgrt+d58nGR/QaxMs5sKk6me2eN/uhLgXXF5Di9TZVlGbxVKG3Yvqt5tmerxU8jvm+WnmNf76MDG2uT1XcjrLMKxRqqdXncbk2+BUiGnxRd3o8y4xdFCjSJk9+foK2V0TiWjlb5T6UDh+ZtzaG2HMAqNZL9FROQ==
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
- by AM9PR02MB6804.eurprd02.prod.outlook.com (2603:10a6:20b:2c1::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.42; Sat, 30 Mar
- 2024 16:35:12 +0000
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
- 16:35:12 +0000
-From: Erick Archer <erick.archer@outlook.com>
-To: Alex Deucher <alexander.deucher@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Kees Cook <keescook@chromium.org>
-Cc: Erick Archer <erick.archer@outlook.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2] drm/radeon/radeon_display: Decrease the size of allocated memory
-Date: Sat, 30 Mar 2024 17:34:47 +0100
-Message-ID:
- <AS8PR02MB723799AFF24E7524364F66708B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [udE1yCGk+kyixDinNhbF5wr7HQOChlOW]
-X-ClientProxiedBy: MA4P292CA0006.ESPP292.PROD.OUTLOOK.COM
- (2603:10a6:250:2d::16) To AS8PR02MB7237.eurprd02.prod.outlook.com
- (2603:10a6:20b:3f1::10)
-X-Microsoft-Original-Message-ID:
- <20240330163447.10688-1-erick.archer@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5955F1E878;
+	Sat, 30 Mar 2024 16:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711816555; cv=none; b=Nhy888gUrNMeyAN7TH7XMjtrXyE38ZDYPHEmyhljxEquno78Zazhot659bBSlSkIJySJ/KNenN1xMM9fcgUV+3KYdoNsO0G/37ilxKMpeHURxjuCufnZxW05invfOBCVe20+JLlq76jGpbD/M6n9rbClcOuf3qZN4+5UsIR7S1g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711816555; c=relaxed/simple;
+	bh=5ldWFZbSM7vabBwJhQdxODU2Y312T0sVkCLMiewgGlk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rqoDHmfg7gZ5kiXZUZ/CksuAdOoeyBhx/Gwmirwsmu4N8X5qAEVdZw9f7CCguL++kRNyU9koT9EJwv6mYRxhI+4LZ6Ar7JEidZeMHdVF4PdSEuMO6i5a3eVBmtIKvUKgZu0WOUVhSsrrptZrxdIMVEFRU5k9LnCx9MVxfMjRPx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ar0ukOlZ; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7e05d6871ddso837113241.1;
+        Sat, 30 Mar 2024 09:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711816552; x=1712421352; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a0JAHX8SU+y7wtuE0MkN/0QwHwILo/i2aa8SsjYLE2I=;
+        b=Ar0ukOlZc0ivvvo7GsEYJnXkN3PhXycuaAOOWsmM2SK+jdzG8X7QTxuNx6gzJGvxMs
+         UIh11tk7DStrJXr+rxvag1n1tOm3tuOM5R/D6V7MgjPqumn20MymBHdc+Ql9R0sjJHFG
+         I/t2jMqfW8d43UIy6/ra9I8W8tltKuCIBMqrs9StOR1ZC44Yy1EdBwGJSM5NGdO5lCar
+         kz4oPkuhYbZjdVL0bkeQqa6t91/BNsk/T64G7i8jZybWyksbqxfQl+xMm0wNxJgGfYIl
+         1Uw4YLVxCn//zsFwiS65N0zjn3XoWCBc4e4Ja65XI26YaZWULu6OJw6egErqleqlLwdQ
+         wV2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711816552; x=1712421352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a0JAHX8SU+y7wtuE0MkN/0QwHwILo/i2aa8SsjYLE2I=;
+        b=KOi49JHV9+TFCFI1BON/Xyd8s1tXpZnHdF27tfmjZ1j4++cBUM7I3y1i7i5Lw5jGlF
+         f2CL+WOIZD82MA2u+Z/U+ZCXqSQCTMwzLItHpzFZLnBtR0cA+o1yCBrHJjIckyqcTYZY
+         h08MQR2upV6K6rhQvjctHlgsRQDke2gqmUGdT9TkrcUm2KLRqUR93o0jYS071p27kU2Q
+         xsL55yIje+hJN8K7jYQ85zhYs0yoXrGp2FEmd5tIoAqIjYhIJrL9iZhpVrfLs7STFfIG
+         Hlxn5gdkZRak9FlW/1lqwTvFCnXR/rgvlMJ3opW74Vg6KpwUN6x6rlF/1hHicUPdRpP2
+         9HsA==
+X-Forwarded-Encrypted: i=1; AJvYcCVAM00es+zxN/Fiu0qhmOWcPUEJIsBL5vNQ7U6/FPgDn5k/NpcpESw6WBkh3kzOIXRZ4bvW6r3NdhN3Rd+metuxvaNfLP9MAMaEGX5FtcHXrkDzp7pTroJ8p/d5+56l+VM1
+X-Gm-Message-State: AOJu0YzZ0ySBOezKBjJ5znzYxuRE912O3suuqksxYJJ4NTQpj3B9Wvb+
+	wsAE5d9DzpDPkpREiv5zZ0lKzJggcFIDMmewhOB6MjSFwTl8iaMHfUch/MBwGSdWCJfkKKBGbUV
+	//07kh5kwDSy7XzLatbAdPSuMp7w=
+X-Google-Smtp-Source: AGHT+IHAYwWi4m8FadNvry/L3459XL7PiHVIHF7zw3Dl+IEIiETywgHyYGAyugHdXRs/QocDtCwQ5dy8D533gJz5iqs=
+X-Received: by 2002:a05:6102:c4b:b0:476:d23b:de3c with SMTP id
+ y11-20020a0561020c4b00b00476d23bde3cmr5229374vss.0.1711816552117; Sat, 30 Mar
+ 2024 09:35:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|AM9PR02MB6804:EE_
-X-MS-Office365-Filtering-Correlation-Id: 238f528d-c2d5-4729-3f14-08dc50d75f20
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	QSuRjmnIH9Uj0ilCV5GOZAJpwovuoemVyOCK08SE9LlbKzBsI2uhyV8Wdzxb7RuzNzH2/DLIvXhgpk6Dz5GgHdX8QlLyUg4T29iMwUlsdJV4ThMAxfX4Ao0Z+R5VvcanYy2ruCMfccx5/c8Iw39ttOeLmYy0h17yRXUMqURGF6kaym0TASwFBhiTfFLrcimWUONz2CvYF+0UWOY8lMJ4ManGxoriYETLrlmKE19WXHuCTAIfpYgXGvlxEYXEjL/3TR/zymTgu1bZaLRg5x/CT4IYN4iknb/084WGXCL/b/65I2ut3JLeyvtJe/zPmvEdKNRyRzP16wJAi8wnIjvvh4APu+eVm9MZp13qAfhNgxCqX4nFzNlqZXtPlF0UCoevVb8ARHHGGIoX+9q8SouVZYrD9rN3b/4dlSEdCf+7J39yG2XqclupYBLM05dzlXey9Dlawqf7Xu/PguDM1mx6SQkj7PDaGW6aA8Wi9o5gwRAJv2eKrnkV/94ni7W1D7mygQ1Y6q1JR1Cv5G6dbdvQ/qh+t5bbpbMWo5lJQEKWMZ2pIFKYxuYN7BDhTVll/LUCOycj6GdCZFPhOV9/B3veOtCDaGDfCbqPLTiDYft+TbTQntAFrY+mUCNtaKNMJmoudI9Z+PGcX3X8Ihw4sGTI2p3zoo0LBpNwNm8+p65b/u0pxQ8nh9h5/BoXZCU44LLjIuZEEIHAKMauEhaHAq9qdQ==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?4NJclBQVdsKx0sCFFCebi1WuCsj8ESu1O1q+hwUCQmYfk3742ZFAm3BOSfT4?=
- =?us-ascii?Q?1QW7CgUKGaRVcQPJq8MJpMs6L2MFtY55rc2tJrgTffJ3T2EHR4bXlQE6rXWi?=
- =?us-ascii?Q?nj4zL+RztS5cKrCCAEMhoDXFNRL0Te6ish3DqH3pzXIz+3ABOPLMfUp3t5CN?=
- =?us-ascii?Q?V7vLx3Abus/HAqDpEn/xzVV1KEst5JIJdJr0Gs4umTLnC7rESIE9hQxdrF/j?=
- =?us-ascii?Q?BbDi34SdF7B3/YmvYqdPTTuEljTM1TJ2aa09NP6+TKLBt69ckAUwNq5IL3Fm?=
- =?us-ascii?Q?6DsLoOwybOuaICzsAkTQhzK6eI/MxbkTiARJQk0WJNRRbp+/ZEPacNFTmlkT?=
- =?us-ascii?Q?L9WSDnpIL0IU47QN5c66xw971FQiXg73NG5yG5FVSgWo4K+EeV0GcDlbcisx?=
- =?us-ascii?Q?E5b7FDWw7OKLHOvRC3Fzm2jf/clllcfRwV5AiHczCvkwuwmLVn18V4xSMIXD?=
- =?us-ascii?Q?45bxjT4X+TPtUXdNUd8w7IpmvdNhHBYFddJpl73YpQUfe0lHHuc6IDoTxK4a?=
- =?us-ascii?Q?LyJPF534TmK9OVNivUZnXIcSrknYS/LjkkIUM3kpBdOaLEy92lVZW4iZNGyP?=
- =?us-ascii?Q?CJYqNc+YnAbs+xR5qG0809FZaYBIqOjRkNqSfk4p8hqFk+5VPiJWzB2oMpbH?=
- =?us-ascii?Q?D3YWgDRFBtddtzHxiequRc2Ga8zhGHRPuzo/IhUrXj+/KyK2bx/s0Zupltc/?=
- =?us-ascii?Q?O/lSb6YxJ1apZgz+cmMavd49oL5feZTfZVoKFyD+TTRqyDawJfFIJVfqJcnJ?=
- =?us-ascii?Q?kTiSMaKg5MiJZnEbmo/iV8s/Q5msYUtWfg3wg5DuxW5qt33vGjqSNw6pLptu?=
- =?us-ascii?Q?4SpL8yjIT2w5vXGdic9+ABpEwRuawKppq/sJ4eZrayUcH5qbv/E9gbtGKU3A?=
- =?us-ascii?Q?VQN5pFHgyij/zYe7u78oc5+iieV3mKh46vdEzuAqcsdSs/SjacXGpVfnGpi8?=
- =?us-ascii?Q?Mneb6IJiTQddoJjxaBY2qz7bqe5NwkAJ2bfFtDKDIyCbGugO4tuHTmczJ+o0?=
- =?us-ascii?Q?2Kza+noQeOMnCDtyK8OXOwr7qP0jTzSrusvipCcsf2qAGMu9b6qyO7Wo11wn?=
- =?us-ascii?Q?HZKnpFehJJZs1jVKTQ7iee5OxZgt+uP+jBRAZljgc1iMV3Rc6eVJZTFl2B1r?=
- =?us-ascii?Q?H7uSZSUfrL4XJkyy7jAHcE3/jBWQoevePBWA8TujaEv4QnV6folpADXbHKE+?=
- =?us-ascii?Q?B6rHLZqPAfI56pfC1QTwijd2Fni+0cYbxEfsphlYbneIGeljo3PZK3TFRMBr?=
- =?us-ascii?Q?ezNGy7vPeSVumK1sgCmp?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 238f528d-c2d5-4729-3f14-08dc50d75f20
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 16:35:12.5244
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB6804
+References: <20240329030119.29995-1-harishankar.vishwanathan@gmail.com>
+ <f2e1c5dc6f6ea2c7f046e8673dd364dd14056781.camel@gmail.com>
+ <CAM=Ch04JAJDS84xYHFUfjrShwqSSc8gQ5a_sLCoRNAsf6tyjYQ@mail.gmail.com> <CAEf4BzZp69diFeyjUAa8-jbZatDouwSaexwuakJdXHTdHwsBLQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZp69diFeyjUAa8-jbZatDouwSaexwuakJdXHTdHwsBLQ@mail.gmail.com>
+From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Date: Sat, 30 Mar 2024 12:35:41 -0400
+Message-ID: <CAM=Ch04BBaucesmw0MY5U2bsrtqPAjurLdLkMdxMRMB0OuOtcw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Fix latent unsoundness in and/or/xor value tracking
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org, harishankar.vishwanathan@rutgers.edu, 
+	sn624@cs.rutgers.edu, sn349@cs.rutgers.edu, m.shachnai@rutgers.edu, 
+	paul@isovalent.com, Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
+	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is an effort to get rid of all multiplications from allocation
-functions in order to prevent integer overflows [1] [2].
+On Sat, Mar 30, 2024 at 1:28=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Mar 29, 2024 at 8:25=E2=80=AFPM Harishankar Vishwanathan
+> <harishankar.vishwanathan@gmail.com> wrote:
+> >
+> > On Fri, Mar 29, 2024 at 6:27=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
+com> wrote:
+> > >
+> > > On Thu, 2024-03-28 at 23:01 -0400, Harishankar Vishwanathan wrote:
+> > >
+> > > [...]
+> > >
+> > > > @@ -13387,18 +13389,19 @@ static void scalar32_min_max_or(struct bp=
+f_reg_state *dst_reg,
+> > > >        */
+> > > >       dst_reg->u32_min_value =3D max(dst_reg->u32_min_value, umin_v=
+al);
+> > > >       dst_reg->u32_max_value =3D var32_off.value | var32_off.mask;
+> > > > -     if (dst_reg->s32_min_value < 0 || smin_val < 0) {
+> > > > +     if (dst_reg->s32_min_value > 0 && smin_val > 0 &&
+> > >
+> > > Hello,
+> > >
+> > > Could you please elaborate a bit, why do you use "> 0" not ">=3D 0" h=
+ere?
+> > > It seems that having one of the min values as 0 shouldn't be an issue=
+,
+> > > but maybe I miss something.
+> >
+> > You are right, this is a mistake, I sent the wrong version of the patch=
+ Thanks
+> > for catching it. I will send a new patch.
+> >
+> > Note that in the correct version i'll be sending, instead of the follow=
+ing
+> > if condition,
+> >
+> > if (dst_reg->s32_min_value >=3D 0 && smin_val >=3D 0 &&
+> > (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_value)
+> >
+> > it will use this if condition:
+> >
+> > if ((s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_max_value)
+> >
+> > Inside the if, the output signed bounds are updated using the unsigned
+> > bounds; the only case in which this is unsafe is when the unsigned
+> > bounds cross the sign boundary.  The shortened if condition is enough t=
+o
+> > prevent this. The shortened has the added benefit of being more
+> > precise. We will make a note of this in the new commit message.
+>
+> And that's exactly what reg_bounds_sync() checks as well, which is why
+> my question/suggestion to not duplicate this logic, rather reset s32
+> bounds to unknown (S32_MIN/S32_MAX), and let generic reg_bounds_sync()
+> handle the re-derivation of whatever can be derived.
 
-In this case, the memory allocated to store RADEONFB_CONN_LIMIT pointers
-to "drm_connector" structures can be avoided. This is because this
-memory area is never accessed.
+We tried your suggestion (setting the bounds to be completely unbounded).
+This would indeed make the abstract operator scalar(32)_min_max_and
+sound. However, we found (through Agni and SMT verification) that our patch=
+ is
+more precise than just unconditionally setting the signed bounds to unbound=
+ed
+[S32_MIN/S32_MAX], [S64_MIN,S64_MAX].
 
-Also, in the kzalloc function, it is preferred to use sizeof(*pointer)
-instead of sizeof(type) due to the type of the variable can change and
-one needs not change the former (unlike the latter).
+For example, consider these inputs to BPF_AND:
 
-At the same time take advantage to remove the "#if 0" block, the code
-where the removed memory area was accessed, and the RADEONFB_CONN_LIMIT
-constant due to now is never used.
+dst_reg
+-----------------------------------------
+var_off.value: 8608032320201083347
+var_off.mask: 615339716653692460
+smin_value: 8070450532247928832
+smax_value: 8070450532247928832
+umin_value: 13206380674380886586
+umax_value: 13206380674380886586
+s32_min_value: -2110561598
+s32_max_value: -133438816
+u32_min_value: 4135055354
+u32_max_value: 4135055354
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-Link: https://github.com/KSPP/linux/issues/160 [2]
-Signed-off-by: Erick Archer <erick.archer@outlook.com>
----
-Changes in v2:
-- Rebase against linux-next.
+src_reg
+-----------------------------------------
+var_off.value: 8584102546103074815
+var_off.mask: 9862641527606476800
+smin_value: 2920655011908158522
+smax_value: 7495731535348625717
+umin_value: 7001104867969363969
+umax_value: 8584102543730304042
+s32_min_value: -2097116671
+s32_max_value: 71704632
+u32_min_value: 1047457619
+u32_max_value: 4268683090
 
-Previous versions:
-v1 -> https://lore.kernel.org/linux-hardening/20240222180431.7451-1-erick.archer@gmx.com/
+After going through
+tnum_and() -> scalar32_min_max_and() -> scalar_min_max_and() ->
+reg_bounds_sync()
 
-Hi everyone,
+Our patch produces the following bounds for s32:
+s32_min_value: -1263875629
+s32_max_value: -159911942
 
-Any comments would be greatly appreciated. The first version was
-not commented.
+Whereas, setting the signed bounds to unbounded in
+scalar(32)_min_max_and produces:
+s32_min_value: -1263875629
+s32_max_value: -1
 
-Thanks,
-Erick
----
- drivers/gpu/drm/radeon/radeon.h         | 1 -
- drivers/gpu/drm/radeon/radeon_display.c | 8 +-------
- 2 files changed, 1 insertion(+), 8 deletions(-)
+Our patch produces a tighter bound as you can see. We also confirmed
+using SMT that
+our patch always produces signed bounds that are equal to or more
+precise than setting
+the signed bounds to unbounded in scalar(32)_min_max_and.
 
-diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-index 3e5ff17e3caf..0999c8eaae94 100644
---- a/drivers/gpu/drm/radeon/radeon.h
-+++ b/drivers/gpu/drm/radeon/radeon.h
-@@ -132,7 +132,6 @@ extern int radeon_cik_support;
- /* RADEON_IB_POOL_SIZE must be a power of 2 */
- #define RADEON_IB_POOL_SIZE			16
- #define RADEON_DEBUGFS_MAX_COMPONENTS		32
--#define RADEONFB_CONN_LIMIT			4
- #define RADEON_BIOS_NUM_SCRATCH			8
- 
- /* internal ring indices */
-diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-index efd18c8d84c8..5f1d24d3120c 100644
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -683,7 +683,7 @@ static void radeon_crtc_init(struct drm_device *dev, int index)
- 	struct radeon_device *rdev = dev->dev_private;
- 	struct radeon_crtc *radeon_crtc;
- 
--	radeon_crtc = kzalloc(sizeof(struct radeon_crtc) + (RADEONFB_CONN_LIMIT * sizeof(struct drm_connector *)), GFP_KERNEL);
-+	radeon_crtc = kzalloc(sizeof(*radeon_crtc), GFP_KERNEL);
- 	if (radeon_crtc == NULL)
- 		return;
- 
-@@ -709,12 +709,6 @@ static void radeon_crtc_init(struct drm_device *dev, int index)
- 	dev->mode_config.cursor_width = radeon_crtc->max_cursor_width;
- 	dev->mode_config.cursor_height = radeon_crtc->max_cursor_height;
- 
--#if 0
--	radeon_crtc->mode_set.crtc = &radeon_crtc->base;
--	radeon_crtc->mode_set.connectors = (struct drm_connector **)(radeon_crtc + 1);
--	radeon_crtc->mode_set.num_connectors = 0;
--#endif
--
- 	if (rdev->is_atom_bios && (ASIC_IS_AVIVO(rdev) || radeon_r4xx_atom))
- 		radeon_atombios_init_crtc(dev, radeon_crtc);
- 	else
--- 
-2.25.1
+Admittedly, this is a contrived example. It is likely the case that
+such precision
+gains are never realized in an actual BPF program.
 
+Overall, both the fixes are sound. We're happy to send a patch for
+either of them.
+
+> >
+> > This applies to all scalar(32)_min_max_and/or/xor.
+> >
+> > > > +             (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_ma=
+x_value) {
+> > > > +             /* ORing two positives gives a positive, so safe to c=
+ast
+> > > > +              * u32 result into s32 when u32 doesn't cross sign bo=
+undary.
+> > > > +              */
+> > > > +             dst_reg->s32_min_value =3D dst_reg->u32_min_value;
+> > > > +             dst_reg->s32_max_value =3D dst_reg->u32_max_value;
+> > > > +     } else {
+> > > >               /* Lose signed bounds when ORing negative numbers,
+> > > >                * ain't nobody got time for that.
+> > > >                */
+> > > >               dst_reg->s32_min_value =3D S32_MIN;
+> > > >               dst_reg->s32_max_value =3D S32_MAX;
+> > > > -     } else {
+> > > > -             /* ORing two positives gives a positive, so safe to
+> > > > -              * cast result into s64.
+> > > > -              */
+> > > > -             dst_reg->s32_min_value =3D dst_reg->u32_min_value;
+> > > > -             dst_reg->s32_max_value =3D dst_reg->u32_max_value;
+> > > >       }
+> > > >  }
+> > >
+> > > [...]
+> > >
+> > > > @@ -13453,10 +13457,10 @@ static void scalar32_min_max_xor(struct b=
+pf_reg_state *dst_reg,
+> > > >       /* We get both minimum and maximum from the var32_off. */
+> > > >       dst_reg->u32_min_value =3D var32_off.value;
+> > > >       dst_reg->u32_max_value =3D var32_off.value | var32_off.mask;
+> > > > -
+> > > > -     if (dst_reg->s32_min_value >=3D 0 && smin_val >=3D 0) {
+> > > > -             /* XORing two positive sign numbers gives a positive,
+> > > > -              * so safe to cast u32 result into s32.
+> > > > +     if (dst_reg->s32_min_value > 0 && smin_val > 0 &&
+> > >
+> > > Same question here.
+> > >
+> > > > +             (s32)dst_reg->u32_min_value <=3D (s32)dst_reg->u32_ma=
+x_value) {
+> > > > +             /* XORing two positives gives a positive, so safe to =
+cast
+> > > > +              * u32 result into s32 when u32 doesn't cross sign bo=
+undary.
+> > > >                */
+> > > >               dst_reg->s32_min_value =3D dst_reg->u32_min_value;
+> > > >               dst_reg->s32_max_value =3D dst_reg->u32_max_value;
+> > >
+> > > [...]
 
