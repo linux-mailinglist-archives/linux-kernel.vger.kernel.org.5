@@ -1,344 +1,202 @@
-Return-Path: <linux-kernel+bounces-125899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A2DF892D8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:44:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBD9892D9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 23:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 800C0B21933
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:44:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21F241C21456
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E2C4D9EF;
-	Sat, 30 Mar 2024 21:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BDF4F1F9;
+	Sat, 30 Mar 2024 22:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RQ3bReTm"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S7jYKe8m"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0196741AAB
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CB14AEFE
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 22:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711835061; cv=none; b=lbgVQwY2hwuNsOlMDigRvxkA1+zvqQCgc0jmBa7F5GwlmoF+5ZfqtTM7UZPubhO30WzKs+w5YwHnoajZoHtislPX59kqvDW9OXUxEuLMp4DPz1foUbt/fYygmOmqyEr2rFpQtPBdfH5sVrWVwQW6Z6Soh8xejKYWqRKlAajX8Ng=
+	t=1711837280; cv=none; b=XKrIEzcBkBL/hOcL+PegxyE/vNWdtHdDuwO1xpeEiAC6t4vXH2B0UDw/C3b8f0+NEAgaJlQK5NXB6ryHa+1pQbPePD7rFvyDPFh5CQ1Ppc7cZKOYcoOucML5+ZWoBRZOs4yWFiVG+wg2IF6INfMBNjCHeRkOCCMyDi6yvQOp+h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711835061; c=relaxed/simple;
-	bh=RMUAwxfBL6v+GOWep6RijyAhN1Eu1x5xeC0TGBvfsN8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yholoel+uw1wdi51cPhvnLHBY/ACRRuj+C4lbhxLrtZXAtTMk52MG11exdBOiU7lME64P02oZiOUdLSMw9z/KBx5gtSAkxs3epprUaBauFA9+yaokpHO/sm9TDeoGo8d+Vj+yRZntwzAaF+rnHPxY5I6J9F9Bdr+QH+epuoAVd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RQ3bReTm; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711835058;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=izlk5zYEPtQtitZfD1Xa4239xlrb4zQaz31TSnSFbO8=;
-	b=RQ3bReTmFnqbkB5/ETXTvDsuBtJOCnnd5KHXs2iqSd5GZHYQWGfhQ1ELnoqKUOWFmd0BL2
-	4M2+nCELxfLcjsAwgxZkxTF071/mXkkjBy3Z+/DOX0F/D4JljG4iwOLOVjGMKo7hZWSsOv
-	uc7AyXoJje4HqGzRY3dzm3G1Iqf+9u0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-216-w_wd_SvkMyiWGlMvldmNcg-1; Sat, 30 Mar 2024 17:44:15 -0400
-X-MC-Unique: w_wd_SvkMyiWGlMvldmNcg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a4e4cebd1c0so52249966b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:44:15 -0700 (PDT)
+	s=arc-20240116; t=1711837280; c=relaxed/simple;
+	bh=Oc9kcICFBM05I/E/I4AVoBzP2f/9gloPVHobW/2H4Sc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YQTKIydBv76w12PvQhQQjI3DwHzqSpM+qMI2Z3QxqmwQdMF3YTDwNH67P4SjyWtoplJqTmpRLxFipCb1aKTSu2Tit/R+ldwYxjHREmtGRyPG1Bu7js/BfhkXMeNEZU+WP2gHR/1YxGBxjv+lG978wlt8TkLWc7IxAoDpLRU/dko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S7jYKe8m; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-515b43b39fdso2560628e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 15:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711837277; x=1712442077; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0XPGOUCDwaV1EzZ064paZOD8RnQFs1ddJgtwbPEEUz4=;
+        b=S7jYKe8msBG0Hsn9CYMRKdMJJSwT1C1KDhNhWuJJHVT+tL8mNXWKFyF+N0xZnPGV7w
+         Bk395XN7yob2caKMRGEHJe6VxJAokee7Kuj72ZuuItUajPwWtTCX/PtXOjRFqsIhxjts
+         WKUR6aB21G3DVDKrpcp8XrK9Cxw26zWJvuIGkjkr16KV03F3awH9lwtKlw4fenCUcdO3
+         LU3p253gOI4kwjlGq6OetGqNdKqLFLukYdPM/lNlK7YfHvzfBF8Z5O570IQA8o7szYfn
+         WLR+DJOlOy6aCjAf/IRfozcLCEQurAHZMiYsp9nOqaxvRboDSJywiCRgfsnf4iyxjfLJ
+         UmHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711835054; x=1712439854;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711837277; x=1712442077;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=izlk5zYEPtQtitZfD1Xa4239xlrb4zQaz31TSnSFbO8=;
-        b=tw1oTF+ijs3x0tAH6oNJMsuK5LaE3SO7iMnmI8LG6bfO0Is8iTT7hVGTmSSB16ZT0s
-         tS/L/TZULM4aJT/XZ+gDOVmsGZ2+6Gp2bb0xWgGSqgMdvnUxhgwPSclhECTvzqDOdLjE
-         c6eUcKzxWurPVHfutxwA8mu/HCAZPZy0Pod0XdsG5FWeMdU/6Piru0YpoP/JJDCgUJR6
-         WJneuzSAXHX4Gy3QxqT1LEvjGbK3kq9glK295zTD2XuEhakzSUK6hmHLn7hgRq52FCb5
-         0MhshZ4SoVZZwxcTQJ1Nv5rAIS79npCZloEvIe04D5+4THBF1fkrgcsj0LN1tYvFsaR8
-         4hMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfdH3f7hEI7zy7tcmoDtJ01IIIpJxJHSqdbxTo6UKchjEVG2jDrJHBRIpci1IVsLNBnkR+puf16upPnm1AfqPF+iLVzyw902NX9ET3
-X-Gm-Message-State: AOJu0YxPhMMMc/64kjBtL0m+pWPK3ugap47XIAvg1EZ9Y3YtAFa9FbZY
-	7TcWmSW5WDbPDWziX3kSlRrb4MJczwhsPvnw5V4vtTu8/uB+s70XhFl3EHtva6lWrsKRJ8HVXbT
-	E58k1E6P0zdxoLvTFA2PjmG/kWC5JXK+BSbGgrayHE4hK6KMHsqprIn/+JiWaIA==
-X-Received: by 2002:a17:906:24d7:b0:a4e:1aef:2d03 with SMTP id f23-20020a17090624d700b00a4e1aef2d03mr3493118ejb.69.1711835054361;
-        Sat, 30 Mar 2024 14:44:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEB4hhnolDV2VDW9ProjEjPrZSmimTTGsoO1Kt1nnLoSJpgttSbznq+JYF5W8Ur6uv2Wrybrg==
-X-Received: by 2002:a17:906:24d7:b0:a4e:1aef:2d03 with SMTP id f23-20020a17090624d700b00a4e1aef2d03mr3493096ejb.69.1711835053917;
-        Sat, 30 Mar 2024 14:44:13 -0700 (PDT)
-Received: from [192.168.10.4] ([151.95.49.219])
-        by smtp.googlemail.com with ESMTPSA id d6-20020a1709063ec600b00a474c3c2f9dsm3458900ejj.38.2024.03.30.14.44.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 14:44:13 -0700 (PDT)
-Message-ID: <8153674b-1b66-4416-a3b8-b6b7867e77f4@redhat.com>
-Date: Sat, 30 Mar 2024 22:44:10 +0100
+        bh=0XPGOUCDwaV1EzZ064paZOD8RnQFs1ddJgtwbPEEUz4=;
+        b=xOoYGllKePqUWaEBrRT6/3vclrcBPNz0xLPua3A1z/NguIMM49lSPS3HJ027Quy0MM
+         +r3UsVk94vQ3FBH2XPHpauwRvZwq0wQ6u8uItwHEgu9kclNYDkraRHhzxKWjW/qTTS+Y
+         o634mb1Aig8HS7fy67clvSnFxw8BAz7iNimpw6Ag2FxWTWgAiM+hzApRtRrMWdRpkeIV
+         bWRRRyuiITxiHBVKsF5Aruhuz1YXQIDzNbtEK3Dc8Pesz8Nya5ZTT6TxwMjfeEH7Y1ga
+         UXzqFlwq5OMDBhDT20B/wCmbsj2P8K9e+5uqcuTsaYtxNRGwsqwyc74z51AszgXjh/Vj
+         N3IA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7ya2Zl7cM1YAYRL/4YZRdDSjjSlP4fA8VoE4naRClKtBdM80VOqG8H8JY5gs0uIefefYiFTD3rPwNsGyOgAkHYrdabBIERoDtpR8b
+X-Gm-Message-State: AOJu0YwjeEq9ll8717JTBIAGV56NKsvyka31BH5MCNmxe+l2M/d490bL
+	4O/2boJ7myuJCoVeC293QfGBuDPNY2VtkTZuqtProgqc9L+/Y/G+7eQUnpJV1c0=
+X-Google-Smtp-Source: AGHT+IF+x3Qdox2g6SjvSt6ZfLOJ3gFe7c5YL+555P/qahnN8Eg7hcDHoGbL+RaMts29GpUddkiBTg==
+X-Received: by 2002:a05:6512:3d1b:b0:516:9f65:fcf with SMTP id d27-20020a0565123d1b00b005169f650fcfmr965650lfv.26.1711837276931;
+        Sat, 30 Mar 2024 15:21:16 -0700 (PDT)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id j18-20020a056512399200b00514b6e2fd49sm993992lfu.169.2024.03.30.15.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Mar 2024 15:21:16 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sun, 31 Mar 2024 00:21:15 +0200
+Subject: [PATCH v2] dt-bindings: usb: qcom,pmic-typec: update example to
+ follow connector schema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 00/29] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
- thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com,
- vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
- dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
- peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
- rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
- vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
- tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
- alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com
-References: <20240329225835.400662-1-michael.roth@amd.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20240329225835.400662-1-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240331-typec-fix-example-v2-1-f56fffe4f37c@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAFqQCGYC/32NSQ6DMBAEv4LmnIm8kIWc8o+Ig7EnMBKxLRshE
+ OLvcXhAjtWtrt4gU2LK8Kg2SDRz5uALqFMFdjC+J2RXGJRQtdBK4bRGsvjmBWkxnzgSatd0kqy
+ 5X7SDsouJSn04X23hgfMU0npczPKX/rPNEgVeOyGtrm+1bOg5sjcpnEPqod33/QuTXSVvswAAA
+ A==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Luca Weiss <luca.weiss@fairphone.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3401;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=Oc9kcICFBM05I/E/I4AVoBzP2f/9gloPVHobW/2H4Sc=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmCJBcricaIiHddrBejVu6XApq90lPrz+UyzOaL
+ MmslELd922JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZgiQXAAKCRCLPIo+Aiko
+ 1SnyCACjI3jZcyF8lv/PfbC7h7LpkxjJVFoEqIGjQQ0uJNVnplc27e2UQGG1fpyLbbDQgQEUwP3
+ rmurUTUJveKBLHSQJ1fs80Qe9/ZNBZ2YLRBE/vEA5u/RXkKoGSiSgOlSbLk4i2IfXTXWPKHsAyz
+ 84sJQUpm5yIxaBu8NrAeYw0NnaoMBJEVcJsgrDuGpKUUUhB7FW8fApu+0yroEiMyrtN63xcUV2v
+ O2bGuho1A5A6REMw/Xtdr15nkzJC6mbjYg6PxDPL+qy61fuiLlzvN0XxZ/N60JZf39D5ne95O7k
+ euRzdwIcCJFYFyYsOMyDhOhTuzIBm0hasGa5sU32VgH8Umna
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-On 3/29/24 23:58, Michael Roth wrote:
-> This patchset is also available at:
-> 
->    https://github.com/amdese/linux/commits/snp-host-v12
-> 
-> and is based on top of the following series:
-> 
->    [PATCH gmem 0/6] gmem fix-ups and interfaces for populating gmem pages
->    https://lore.kernel.org/kvm/20240329212444.395559-1-michael.roth@amd.com/
-> 
-> which in turn is based on:
-> 
->    https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=kvm-coco-queue
-> 
-> 
-> Patch Layout
-> ------------
-> 
-> 01-04: These patches are minor dependencies for this series and will
->         eventually make their way upstream through other trees. They are
->         included here only temporarily.
-> 
-> 05-09: These patches add some basic infrastructure and introduces a new
->         KVM_X86_SNP_VM vm_type to handle differences verses the existing
->         KVM_X86_SEV_VM and KVM_X86_SEV_ES_VM types.
-> 
-> 10-12: These implement the KVM API to handle the creation of a
->         cryptographic launch context, encrypt/measure the initial image
->         into guest memory, and finalize it before launching it.
-> 
-> 13-20: These implement handling for various guest-generated events such
->         as page state changes, onlining of additional vCPUs, etc.
-> 
-> 21-24: These implement the gmem hooks needed to prepare gmem-allocated
->         pages before mapping them into guest private memory ranges as
->         well as cleaning them up prior to returning them to the host for
->         use as normal memory. Because this supplants certain activities
->         like issued WBINVDs during KVM MMU invalidations, there's also
->         a patch to avoid duplicating that work to avoid unecessary
->         overhead.
-> 
-> 25:    With all the core support in place, the patch adds a kvm_amd module
->         parameter to enable SNP support.
-> 
-> 26-29: These patches all deal with the servicing of guest requests to handle
->         things like attestation, as well as some related host-management
->         interfaces.
-> 
-> 
-> Testing
-> -------
-> 
-> For testing this via QEMU, use the following tree:
-> 
->    https://github.com/amdese/qemu/commits/snp-v4-wip2
-> 
-> A patched OVMF is also needed due to upstream KVM no longer supporting MMIO
-> ranges that are mapped as private. It is recommended you build the AmdSevX64
-> variant as it provides the kernel-hashing support present in this series:
-> 
->    https://github.com/amdese/ovmf/commits/apic-mmio-fix1c
-> 
-> A basic command-line invocation for SNP would be:
-> 
->   qemu-system-x86_64 -smp 32,maxcpus=255 -cpu EPYC-Milan-v2
->    -machine q35,confidential-guest-support=sev0,memory-backend=ram1
->    -object memory-backend-memfd,id=ram1,size=4G,share=true,reserve=false
->    -object sev-snp-guest,id=sev0,cbitpos=51,reduced-phys-bits=1,id-auth=
->    -bios /home/mroth/ovmf/OVMF_CODE-upstream-20240228-apicfix-1c-AmdSevX64.fd
-> 
-> With kernel-hashing and certificate data supplied:
-> 
->   qemu-system-x86_64 -smp 32,maxcpus=255 -cpu EPYC-Milan-v2
->    -machine q35,confidential-guest-support=sev0,memory-backend=ram1
->    -object memory-backend-memfd,id=ram1,size=4G,share=true,reserve=false
->    -object sev-snp-guest,id=sev0,cbitpos=51,reduced-phys-bits=1,id-auth=,certs-path=/home/mroth/cert.blob,kernel-hashes=on
->    -bios /home/mroth/ovmf/OVMF_CODE-upstream-20240228-apicfix-1c-AmdSevX64.fd
->    -kernel /boot/vmlinuz-6.8.0-snp-host-v12-wip40+
->    -initrd /boot/initrd.img-6.8.0-snp-host-v12-wip40+
->    -append "root=UUID=d72a6d1c-06cf-4b79-af43-f1bac4f620f9 ro console=ttyS0,115200n8"
-> 
-> 
-> Known issues / TODOs
-> --------------------
-> 
->   * Base tree in some cases reports "Unpatched return thunk in use. This should
->     not happen!" the first time it runs an SVM/SEV/SNP guests. This a recent
->     regression upstream and unrelated to this series:
-> 
->       https://lore.kernel.org/linux-kernel/CANpmjNOcKzEvLHoGGeL-boWDHJobwfwyVxUqMq2kWeka3N4tXA@mail.gmail.com/T/
-> 
->   * 2MB hugepage support has been dropped pending discussion on how we plan
->     to re-enable it in gmem.
-> 
->   * Host kexec should work, but there is a known issue with handling host
->     kdump while SNP guests are running which will be addressed as a follow-up.
-> 
->   * SNP kselftests are currently a WIP and will be included as part of SNP
->     upstreaming efforts in the near-term.
-> 
-> 
-> SEV-SNP Overview
-> ----------------
-> 
-> This part of the Secure Encrypted Paging (SEV-SNP) series focuses on the
-> changes required to add KVM support for SEV-SNP. This series builds upon
-> SEV-SNP guest support, which is now in mainline, and and SEV-SNP host
-> initialization support, which is now in linux-next.
-> 
-> While series provides the basic building blocks to support booting the
-> SEV-SNP VMs, it does not cover all the security enhancement introduced by
-> the SEV-SNP such as interrupt protection, which will added in the future.
-> 
-> With SNP, when pages are marked as guest-owned in the RMP table, they are
-> assigned to a specific guest/ASID, as well as a specific GFN with in the
-> guest. Any attempts to map it in the RMP table to a different guest/ASID,
-> or a different GFN within a guest/ASID, will result in an RMP nested page
-> fault.
-> 
-> Prior to accessing a guest-owned page, the guest must validate it with a
-> special PVALIDATE instruction which will set a special bit in the RMP table
-> for the guest. This is the only way to set the validated bit outside of the
-> initial pre-encrypted guest payload/image; any attempts outside the guest to
-> modify the RMP entry from that point forward will result in the validated
-> bit being cleared, at which point the guest will trigger an exception if it
-> attempts to access that page so it can be made aware of possible tampering.
-> 
-> One exception to this is the initial guest payload, which is pre-validated
-> by the firmware prior to launching. The guest can use Guest Message requests
-> to fetch an attestation report which will include the measurement of the
-> initial image so that the guest can verify it was booted with the expected
-> image/environment.
-> 
-> After boot, guests can use Page State Change requests to switch pages
-> between shared/hypervisor-owned and private/guest-owned to share data for
-> things like DMA, virtio buffers, and other GHCB requests.
-> 
-> In this implementation of SEV-SNP, private guest memory is managed by a new
-> kernel framework called guest_memfd (gmem). With gmem, a new
-> KVM_SET_MEMORY_ATTRIBUTES KVM ioctl has been added to tell the KVM
-> MMU whether a particular GFN should be backed by shared (normal) memory or
-> private (gmem-allocated) memory. To tie into this, Page State Change
-> requests are forward to userspace via KVM_EXIT_VMGEXIT exits, which will
-> then issue the corresponding KVM_SET_MEMORY_ATTRIBUTES call to set the
-> private/shared state in the KVM MMU.
-> 
-> The gmem / KVM MMU hooks implemented in this series will then update the RMP
-> table entries for the backing PFNs to set them to guest-owned/private when
-> mapping private pages into the guest via KVM MMU, or use the normal KVM MMU
-> handling in the case of shared pages where the corresponding RMP table
-> entries are left in the default shared/hypervisor-owned state.
-> 
-> Feedback/review is very much appreciated!
-> 
-> -Mike
-> 
-> Changes since v11:
-> 
->   * Rebase series on kvm-coco-queue and re-work to leverage more
->     infrastructure between SNP/TDX series.
->   * Drop KVM_SNP_INIT in favor of the new KVM_SEV_INIT2 interface introduced
->     here (Paolo):
->       https://lore.kernel.org/lkml/20240318233352.2728327-1-pbonzini@redhat.com/
->   * Drop exposure API fields related to things like VMPL levels, migration
->     agents, etc., until they are actually supported/used (Sean)
->   * Rework KVM_SEV_SNP_LAUNCH_UPDATE handling to use a new
->     kvm_gmem_populate() interface instead of copying data directly into
->     gmem-allocated pages (Sean)
->   * Add support for SNP_LOAD_VLEK, rework the SNP_SET_CONFIG_{START,END} to
->     have simpler semantics that are applicable to management of SNP_LOAD_VLEK
->     updates as well, rename interfaces to the now more appropriate
->     SNP_{PAUSE,RESUME}_ATTESTATION
->   * Fix up documentation wording and do print warnings for
->     userspace-triggerable failures (Peter, Sean)
->   * Fix a race with AP_CREATION wake-up events (Jacob, Sean)
->   * Fix a memory leak with VMSA pages (Sean)
->   * Tighten up handling of RMP page faults to better distinguish between real
->     and spurious cases (Tom)
->   * Various patch/documentation rewording, cleanups, etc.
+Update Qualcomm PMIC Type-C examples to follow the USB-C connector
+schema. The USB-C connector should have three ports (USB HS @0,
+SSTX/RX @1 and SBU @2 lanes). Reorder ports accordingly and add SBU port
+connected to the SBU mux (e.g. FSA4480).
 
-I skipped a few patches that deal mostly with AMD ABIs.  Here are the 
-ones that have nontrivial remarks, that are probably be worth a reply 
-before sending v13:
+Fixes: 00bb478b829e ("dt-bindings: usb: Add Qualcomm PMIC Type-C")
+Reported-by: Luca Weiss <luca.weiss@fairphone.com>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+Update examples to follow usb-c-connector schema wrt. ports definitions.
+---
+Changes in v2:
+- Dropped patch removing the role-switching port. We do not use it, but
+  it can become useful by other designs.
+- Link to v1: https://lore.kernel.org/r/20240322-typec-fix-example-v1-0-6b01c347419e@linaro.org
+---
+ .../devicetree/bindings/usb/qcom,pmic-typec.yaml   | 34 +++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-- patch 10: some extra checks on input parameters, and possibly 
-forbidding SEV/SEV-ES ioctls for SEV-SNP guests?
+diff --git a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+index d9694570c419..fe757619e535 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+@@ -192,15 +192,22 @@ examples:
+ 
+                     port@0 {
+                         reg = <0>;
+-                        pmic_typec_mux_out: endpoint {
+-                            remote-endpoint = <&usb_phy_typec_mux_in>;
++                        pmic_typec_hs_in: endpoint {
++                            remote-endpoint = <&usb_hs_out>;
+                         };
+                     };
+ 
+                     port@1 {
+                         reg = <1>;
+-                        pmic_typec_role_switch_out: endpoint {
+-                            remote-endpoint = <&usb_role_switch_in>;
++                        pmic_typec_ss_in: endpoint {
++                            remote-endpoint = <&usb_phy_typec_ss_out>;
++                        };
++                    };
++
++                    port@2 {
++                        reg = <2>;
++                        pmic_typec_sbu: endpoint {
++                            remote-endpoint = <&usb_mux_sbu>;
+                         };
+                     };
+                 };
+@@ -212,8 +219,8 @@ examples:
+         dr_mode = "otg";
+         usb-role-switch;
+         port {
+-            usb_role_switch_in: endpoint {
+-                remote-endpoint = <&pmic_typec_role_switch_out>;
++            usb_hs_out: endpoint {
++                remote-endpoint = <&pmic_typec_hs_in>;
+             };
+         };
+     };
+@@ -221,8 +228,19 @@ examples:
+     usb-phy {
+         orientation-switch;
+         port {
+-            usb_phy_typec_mux_in: endpoint {
+-                remote-endpoint = <&pmic_typec_mux_out>;
++            usb_phy_typec_ss_out: endpoint {
++                remote-endpoint = <&pmic_typec_ss_in>;
++            };
++        };
++    };
++
++    usb-mux {
++        orientation-switch;
++        mode-switch;
++
++        port {
++            usb_mux_sbu: endpoint {
++                remote-endpoint = <&pmic_typec_sbu>;
+             };
+         };
+     };
 
-- patch 12: a (hopefully) simple question on boot_vcpu_handled
+---
+base-commit: 13ee4a7161b6fd938aef6688ff43b163f6d83e37
+change-id: 20240322-typec-fix-example-3d9b1eca853d
 
-- patch 18: see Sean's objections at 
-https://lore.kernel.org/lkml/ZeCqnq7dLcJI41O9@google.com/
-
-- patch 22: question on ignoring PSMASH failures and possibly adding a 
-kvm_arch_gmem_invalidate_begin() API.
-
-With respect to the six preparatory patches, I'll merge them in 
-kvm-coco-queue early next week.  However I'll explode the arguments to 
-kvm_gmem_populate(), while also removing "memslot" and merging "src" 
-with "do_memcpy".  I'll post my version very early.
-
-Paolo
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
