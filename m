@@ -1,155 +1,196 @@
-Return-Path: <linux-kernel+bounces-125555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 346E789287C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:51:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FB389287E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CFF31C21060
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:51:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C401B21BB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC4B15A5;
-	Sat, 30 Mar 2024 00:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF88415C9;
+	Sat, 30 Mar 2024 00:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="haU03qxE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I+e6WVvc"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060EE7E2;
-	Sat, 30 Mar 2024 00:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5DD7E2;
+	Sat, 30 Mar 2024 00:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711759879; cv=none; b=rPLTkdSkkXYbTSIShxKWdMNnyvp7KyrgQxfNcPNGv6KM1F/gY5vvg0zzzIR3QamP/WHrKiL3A7Tppt81O0U9z3/eh0oVXg7F4TN0uNruyxUbo7UiGwUa9HMcGsk+NwLtjdrJ1UeKXLZmlwYaWTTiMzFpyUTv6sRWdCTUqqrFH2c=
+	t=1711760079; cv=none; b=iOkU7UJ41ARrNXsQai3va0nApK1HurRwBYUkj+iLMZpV9p7yhgoBE3sYzuqiD6M6Kihz6rUlWEy8Agf2xFpXlBdgX78hKVsiawJCq+3l0V3AEGr+v4C4F/jrUAzcoL7dAwmC3FXxE7RCSJ/xUYpxciVaBqyXHNaMA+plSmCoyg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711759879; c=relaxed/simple;
-	bh=ODnfLfkBj5ljw1xXMK6fJA76YDJnmnHivymq9LFP4Do=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obLzZrNXTXy3/0YJaRQl4spVflMxVlBp0mn74NIkvVnlpOwtF1R+pJ3YJ34oRuPBi+1l1mEzWBgW9SE25LUDMOkjxlkFUEgxeDFe5aITaFbXRrA7R6CPd35xeLS0C/8XBKg5cRqLMVK6q5bDmy572HEfccE+QC48QYaomFxZnAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=haU03qxE; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711759878; x=1743295878;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ODnfLfkBj5ljw1xXMK6fJA76YDJnmnHivymq9LFP4Do=;
-  b=haU03qxE+o1z+PhWJnhJVzm99N6zw/sPmZyTcBr4rfZaEO+IQdnQStx1
-   P43e9UDvx93mM1Y0CCeWY8rJMd6+igrUMGODlEXYQ1BhJVYb8FbdTToPn
-   bo1PuB6r8K44XiWJ19BGVz45qcGeZpL0GUiiVnA1qg0LCcgWqL+3HvIVa
-   Dj56YLzLgt3OoXIl6Dch1X0rhPXZuJRSGaTEuFRjZJHpCRb92fFkuGjlN
-   umNwIS/Z+qDpaaIoGHgO4zomPbYnujGHaUuwDwqq6W9KPlNvFdN+LaQXR
-   //o8dSV7BgIdQebiVMg/UuuIAQpyNidm+KwNDG90nMt99KZPcx84n86Vh
-   A==;
-X-CSE-ConnectionGUID: M+Ui7euPR7ayiazuMSgrfg==
-X-CSE-MsgGUID: lZYH3KpHRHyRTFJIfEdXfg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="6893849"
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="6893849"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 17:51:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="16950694"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 29 Mar 2024 17:51:14 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rqMwB-0003ny-14;
-	Sat, 30 Mar 2024 00:51:11 +0000
-Date: Sat, 30 Mar 2024 08:51:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Richard Zhu <hongxing.zhu@nxp.com>, vkoul@kernel.org, kishon@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, frank.li@nxp.com
-Cc: oe-kbuild-all@lists.linux.dev, hongxing.zhu@nxp.com,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de, linux-imx@nxp.com
-Subject: Re: [PATCH v1 3/3] phy: freescale: imx8q-hsio: Add i.MX8Q HSIO PHY
- driver support
-Message-ID: <202403300825.mjcHpoRu-lkp@intel.com>
-References: <1711699790-16494-4-git-send-email-hongxing.zhu@nxp.com>
+	s=arc-20240116; t=1711760079; c=relaxed/simple;
+	bh=C7/u4ofQJXfQiXRxaEs7DfHEEY+bmTf+pwi2I/YeAVk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=O9G6cfJfGlnY+boNn1FDx73QNu1w559sqjXEdxcjenzm5IJSWoDw7bIyvXNh/J5gdbvT5/tKNYKDVQGb+cAA+/QXaEv/a3r4xo32Kf/srXX7QvP2njFlQpvu9iCpqoNvVV2ZEJwyqTrii9CYsQkYeX6PYVA/r1wrSPmzGlGbsl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I+e6WVvc; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6143266c9ddso15551077b3.1;
+        Fri, 29 Mar 2024 17:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711760076; x=1712364876; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gdgZrncINFHgsExeQ/SIQLUhYhlJJhEbFypAYrqVZow=;
+        b=I+e6WVvcMP+6pCo8SBU9ZfGzJq0qTZuIKFW7W/VSlNPrDuX+cFL2Hzpw/ttT0RxxbI
+         h0rs33NtHAPcsuDUJqJyOKqXzkk518pn04OkcHbTlhGeHLRjMoSrwKBRCM3zk5afTMzC
+         qvZTzqmJSUbDU7bAGfOh2JcwRj/K3xz8ce56peGaQW9y3nvF7g8SBTV++0zPXXxco+Jo
+         rM17YfEU/In/e1x6Fb3eV8eGgWavIpK35ch0awIsDKVz3Aln/nfsLtLO3WcR26ZHclQQ
+         tD22RhoCo96myM6T47STFxNfr+OW1TEjV3dMiXiDXMaidTweQDR/REgfAETYHyKrUfsW
+         cqug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711760076; x=1712364876;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gdgZrncINFHgsExeQ/SIQLUhYhlJJhEbFypAYrqVZow=;
+        b=d56etrXZL1Jp2wjpH8gdi7NFG7PcquAQkcU6fP6JyKrdtG2/L0yKmtAESLf1kTgPgD
+         k8xvaS1bSSG7tFqkFZE2Tf92bEcktpVRXCvlyBubTdM7veHMw2LP7szjQeQRYxzc/6fo
+         RVtQ90+51eAeJYJob4COrASPDBTK36rUjZmsIy3mcyq50uKqj89RkvDR42TSPH3ey/LA
+         cijTSkicoyQr9LWQFJFmCwf96KGHgsExx3ZoKgT0sR4pwKFXDJ+6gpL8PyfmxnyFNjM6
+         Ldx4arPADoRjC1r1Hm5PPNRt6lmeqMKLZ9pubfTIa4/ZqiZnJmdxbTbMvEbGI4fg9zXF
+         n3xg==
+X-Forwarded-Encrypted: i=1; AJvYcCXkb70x0/Y3UmGlse4qZaMkcz2qpurRqRDIkBPU7Ba5PLmBGdC8PebgyHJNrTPiwe1b6BYVUp+xM6DTHtSgIF2T5ttANsEBcbjRMBbE
+X-Gm-Message-State: AOJu0YzmgAH05pD/CKpgivRhGwWm9aHybAudO42KrFnynPqqVPZ/sUBw
+	W6TZi6e24hE6k9VOqGuXy/3kd5G4kBUzg8vOVHRZSDOBVOmjHAlnLEE4UBw5WGomfw/28Ov4qgm
+	j9U2ND/rXDmys68Iaya/roXsODAQ=
+X-Google-Smtp-Source: AGHT+IGxAiNt8vHo+s+xMXCgQos4a3gfZPa+WWqz85Gw3W9MCkCfORVDUr+dwUmuFHzOURmSM3n4HlAtJn8guQzzg9o=
+X-Received: by 2002:a0d:db52:0:b0:60a:a73:9516 with SMTP id
+ d79-20020a0ddb52000000b0060a0a739516mr4119883ywe.47.1711760076562; Fri, 29
+ Mar 2024 17:54:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1711699790-16494-4-git-send-email-hongxing.zhu@nxp.com>
+References: <20240328013603.206764-1-wedsonaf@gmail.com> <ZgcHfG5Hdhv39SLU@boqun-archlinux>
+In-Reply-To: <ZgcHfG5Hdhv39SLU@boqun-archlinux>
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+Date: Fri, 29 Mar 2024 21:54:25 -0300
+Message-ID: <CANeycqoSe5mTuxUh+M3LbLeXTVOU0zzJhxwqFeww0xHXBJg_Sg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] Allocation APIs
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, 
+	Wedson Almeida Filho <walmeida@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Richard,
+On Fri, 29 Mar 2024 at 15:25, Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> On Wed, Mar 27, 2024 at 10:35:53PM -0300, Wedson Almeida Filho wrote:
+> > From: Wedson Almeida Filho <walmeida@microsoft.com>
+> >
+> > Revamp how we use the `alloc` crate.
+> >
+> > We currently have a fork of the crate with changes to `Vec`; other
+> > changes have been upstreamed (to the Rust project). This series removes
+> > the fork and exposes all the functionality as extension traits.
+> >
+> > Additionally, it also introduces allocation flag parameters to all
+> > functions that may result in allocations (e.g., `Box::new`, `Arc::new`,
+> > `Vec::push`, etc.) without the `try_` prefix -- the names are available
+> > because we build `alloc` with `no_global_oom_handling`.
+> >
+> > Lastly, the series also removes our reliance on the `allocator_api`
+> > unstable feature.
+> >
+> > Long term, we still want to make such functionality available in
+> > upstream Rust, but this allows us to make progress now and reduces our
+> > maintainance burden.
+> >
+> > In summary:
+> > 1. Removes `alloc` fork
+> > 2. Removes use of `allocator_api` unstable feature
+> > 3. Introduces flags (e.g., GFP_KERNEL, GFP_ATOMIC) when allocating
+> >
+> > ---
+> >
+>
+> FWIW, I've put this into rust-dev:
+>
+>         https://github.com/Rust-for-Linux/linux rust-dev
+>
+> a few adjustments are needed to work with other commits that have been
+> queued in rust-dev, so I add an commit on the top for everyone's
+> reference. (Besides this commit, I also removed all updates to our own
+> alloc in Miguel's 1.77.0 compiler version bump patch)
+>
+> Regards,
+> Boqun
+>
+> ---------------------------------------------------->8
+> diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
+> index 8902f490ccc8..a5930f0f2bc5 100644
+> --- a/rust/kernel/file.rs
+> +++ b/rust/kernel/file.rs
+> @@ -6,13 +6,15 @@
+>  //! [`include/linux/file.h`](srctree/include/linux/file.h)
+>
+>  use crate::{
+> +    alloc::AllocError,
 
-kernel test robot noticed the following build errors:
+I would do `alloc::{flags::*, AlocError},` here and add not add
+`prelude::*` below.
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on linus/master v6.9-rc1 next-20240328]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Zhu/dt-bindings-phy-Add-i-MX8Q-HSIO-SerDes-PHY-binding/20240329-162937
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/1711699790-16494-4-git-send-email-hongxing.zhu%40nxp.com
-patch subject: [PATCH v1 3/3] phy: freescale: imx8q-hsio: Add i.MX8Q HSIO PHY driver support
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240330/202403300825.mjcHpoRu-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240330/202403300825.mjcHpoRu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403300825.mjcHpoRu-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/phy/freescale/phy-fsl-imx8q-hsio.c: In function 'imx8q_hsio_set_mode':
->> drivers/phy/freescale/phy-fsl-imx8q-hsio.c:367:15: error: implicit declaration of function 'FIELD_PREP' [-Werror=implicit-function-declaration]
-     367 |         val = FIELD_PREP(MODE_MASK, val);
-         |               ^~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/FIELD_PREP +367 drivers/phy/freescale/phy-fsl-imx8q-hsio.c
-
-   355	
-   356	static int imx8q_hsio_set_mode(struct phy *phy, enum phy_mode mode,
-   357					   int submode)
-   358	{
-   359		u32 val;
-   360		struct imx8q_hsio_lane *lane = phy_get_drvdata(phy);
-   361		struct imx8q_hsio_priv *priv = lane->priv;
-   362	
-   363		if (lane->lane_mode != mode)
-   364			return -EINVAL;
-   365	
-   366		val = (mode == PHY_MODE_PCIE) ? MODE_PCIE : MODE_SATA;
- > 367		val = FIELD_PREP(MODE_MASK, val);
-   368		regmap_update_bits(priv->phy, lane->phy_off + CTRL0, MODE_MASK, val);
-   369	
-   370		switch (submode) {
-   371		case PHY_MODE_PCIE_RC:
-   372			val = FIELD_PREP(DEVICE_TYPE_MASK, PCI_EXP_TYPE_ROOT_PORT);
-   373			break;
-   374		case PHY_MODE_PCIE_EP:
-   375			val = FIELD_PREP(DEVICE_TYPE_MASK, PCI_EXP_TYPE_ENDPOINT);
-   376			break;
-   377		default: /* Support only PCIe EP and RC now. */
-   378			return 0;
-   379		}
-   380		if (submode)
-   381			regmap_update_bits(priv->ctrl, lane->ctrl_off + CTRL0,
-   382					   DEVICE_TYPE_MASK, val);
-   383	
-   384		return 0;
-   385	}
-   386	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>      bindings,
+>      cred::Credential,
+>      error::{code::*, Error, Result},
+> +    prelude::*,
+>      types::{ARef, AlwaysRefCounted, NotThreadSafe, Opaque},
+>  };
+>  use alloc::boxed::Box;
+> -use core::{alloc::AllocError, mem, ptr};
+> +use core::{mem, ptr};
+>
+>  /// Flags associated with a [`File`].
+>  pub mod flags {
+> @@ -348,10 +350,13 @@ impl DeferredFdCloser {
+>      pub fn new() -> Result<Self, AllocError> {
+>          Ok(Self {
+>              // INVARIANT: The `file` pointer is null, so the type invariant does not apply.
+> -            inner: Box::try_new(DeferredFdCloserInner {
+> -                twork: mem::MaybeUninit::uninit(),
+> -                file: core::ptr::null_mut(),
+> -            })?,
+> +            inner: Box::new(
+> +                DeferredFdCloserInner {
+> +                    twork: mem::MaybeUninit::uninit(),
+> +                    file: core::ptr::null_mut(),
+> +                },
+> +                GFP_KERNEL,
+> +            )?,
+>          })
+>      }
+>
+> diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+> index c4a5e175b574..13a2166c4f41 100644
+> --- a/rust/kernel/sync/arc.rs
+> +++ b/rust/kernel/sync/arc.rs
+> @@ -302,7 +302,7 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
+>      /// ```
+>      /// use kernel::sync::{Arc, UniqueArc};
+>      ///
+> -    /// let arc = Arc::try_new(42)?;
+> +    /// let arc = Arc::new(42, GFP_KERNEL)?;
+>      /// let unique_arc = arc.into_unique_or_drop();
+>      ///
+>      /// // The above conversion should succeed since refcount of `arc` is 1.
+> @@ -316,7 +316,7 @@ pub fn ptr_eq(this: &Self, other: &Self) -> bool {
+>      /// ```
+>      /// use kernel::sync::{Arc, UniqueArc};
+>      ///
+> -    /// let arc = Arc::try_new(42)?;
+> +    /// let arc = Arc::new(42, GFP_KERNEL)?;
+>      /// let another = arc.clone();
+>      ///
+>      /// let unique_arc = arc.into_unique_or_drop();
 
