@@ -1,232 +1,211 @@
-Return-Path: <linux-kernel+bounces-125768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7230F892BDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:34:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19EED892BE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91F721C211E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:34:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5497A283420
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F3139870;
-	Sat, 30 Mar 2024 15:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45693A1C2;
+	Sat, 30 Mar 2024 15:37:22 +0000 (UTC)
 Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94AF92C6B2
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 15:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1991E489
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 15:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711812846; cv=none; b=CGVr2vuiOVL+Yv31vBwINW0ShcKIWourl8JvVO0laTho6RQYT8Vbm6cQs9kNy1sBukVH2VMWH33QUFKI58hgpQb8GAAN7XfrVmVrvbuFnCg7eS4aPeVQ/fou7IaMQ3QVEeTQ4rei9iAKdA9it4/f/m+HG0tzpop5oFWsjzh8O7E=
+	t=1711813042; cv=none; b=fT4d1q911Lrk0LVomIKsDznkMZKwEHTEHZpVOPs8/vYdem2k8ZY0mWc6Xk3cN0gTpX9Fap155RNTR4yH6Hx2LmwlHGlxchDQuBR9rRkLlsVUEiLC6tPSymHWWBdmslzIOyxonrbVzgsLNnexBhZeizRr3SgiFkR8h7mHSMNfQGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711812846; c=relaxed/simple;
-	bh=Nfk80mxwph6lAhn1WqVReWLfmVTeNRzfx0OMuO+k+a8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=JYrmXMfHdCyXwmBd4eaKmsMBDuEu6wrpa0Nb4nG/A2FGjGw2DVequXNqGGFrXHteXkU/RxlxCGCith6SifAGqk15Z4fXGEa/CGF00/kjLSy39cTObENrEe4TCgf3OukO1aWRMs/1C3rWcAkO/Nm2D0ZkpIPqfvmFM73jcG6hiTY=
+	s=arc-20240116; t=1711813042; c=relaxed/simple;
+	bh=vgtFhFwFbOea+3AmtFfRNh2xC265q1Zl/KH7546DBKQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PE0pCMN79vEadibxY+T8Ax6pHK1UVaS0tFxboi/dFtvSe+c1fZEbxxsduEkI8pHGQHk5ghGu9530rMQU2vi7+6aJR+GbIozLsUTW7LHQIqyjT+1y5sp5SjOyqGBVsDGgfzNhg8DMVD4jnIMsJHAs7Rj08H3E+EoxF0GI6K7dqbY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8a960bd9eso234741739f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 08:34:04 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d0330ce3d4so310840239f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 08:37:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711812844; x=1712417644;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b+o6ktVIfOBbf8PsbKWFdH7PErP2lell0dY1hjaSUyE=;
-        b=eSJcFdRe/ZLHaTLtMil/dfTZTaCgJ6le4kZ4WQazKBX2liaT3iuFCIXv1vvTgEUTEH
-         wYg2FI5pSsML3VdGKJs9dy13QeKEj2yGYUhF2l7Y+ct3//SUe6ER1gxXqNLfpAtx1bMT
-         5Y7n6+isjVzQ0gopQN/2va0wESNc2yub0Q7ECmZXNsyTghKXC50TUGb5pe/0pboAr5xe
-         lCl/cyv5jhoApGVFLV0mV53gYypbo1TkDwgAGArel16GNDzO/OD/MXueVo4lCIlH4wHU
-         UJIRvfogTDeY5g17NWOUz8FCNgV2gNpt3kqNpbnkQbty8NL7j33sckd7rbvamJWoY+VM
-         zCug==
-X-Forwarded-Encrypted: i=1; AJvYcCX63NaS4R2VgI4NNL+pGn2Y91Aud8FUYmmS/msIKfA65R8nImTKjph2mGnlUZfiuEJbZ3zF6RTLq7WRA19RpdHb5/J/Ua3B+FHL00br
-X-Gm-Message-State: AOJu0YxbDx3aIuxgzLo9UPiKNLOnFV86iln0bbCCR3A/ybtOmfqCRS2B
-	D9268ACzew+JQRkTrn/CL+P8SIasVuDmNjz98a1W+Oe9ORKk+gBMGNkqs9iiFZzsInOwxMREpRi
-	YXAzGSV8sq6uF/cfzCIKyw/5zQhrlvNjC8LRSM9VFeo4hNTXY681Xksk=
-X-Google-Smtp-Source: AGHT+IEGmKiKpTnzmzMZxX4laGhtV9rDujpR+dupn7zXqvtWT9BgsxSWikh4Y4NQuoG7TlVejeOON1FLih/Rs0vj6pPfjPDp7d6U
+        d=1e100.net; s=20230601; t=1711813040; x=1712417840;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RqzAfSKVxdBEri+4K9r9QsCGLgVhiUDc48m3eJVBWdk=;
+        b=CUL5IVN7p1Ch6Ku8/OriDakTamsvh64YeATRTj/OZPKjkgDI3Tc+N6VlnEBGtwUvOM
+         J7t+Rx1hEKiJvcdlmOYGDbRkO8wZ2B8WsEFIIXwn7ITCnDu983fvIEsnX+/FixI+VJzm
+         cBeOSUhg/lxp73iSMQF0sykSpdG3ZvHbTxmN28Jxd6MRItomekrIOIDAcZZuEmoItAQC
+         F/H/DIAdGs4o0M48v5YpveIhb7/K2klkWAeOZKYoyr3LnOhI7PiBAV3GB1opp+1omvNL
+         AWvH73WfF7rd/3cTjNZKpj10sCihRTietFHsgHGXl+90vzzt+zRzyYLyVsnOvrtLlYYJ
+         A8gQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUiifuzQGBdM80azaa0N/xUO+/tcBoXMLrZjN3jbTTki6h7eCvHusPJ6M6ISq7yaiYp1rqUBFXdlQHLwRpNZPiO8Z7XwtkgAgcbW0FG
+X-Gm-Message-State: AOJu0Yz2uXgvufeCoZEKBXEtBuIBUlqp3w7AcMZ5BB0FikjriVlXIAfQ
+	3am9TL9bq7lZcz99pxnKPz1v47m/f5rWwZRnhDc2ynD/QToD48Q18u6scbzRtI9AyrgdJEeHePG
+	DpKVjOTOP1duGOFumxPf4u1fyBee9ZEhnWyy+o3D31Ht5S152o2qAClk=
+X-Google-Smtp-Source: AGHT+IGJt2ZtnpPlSnY6kTHAcJvYfKhuXsl7IMKuTjxVGv0V/5G3tG+XCqMq/WpNLtbB2zVrqwyJmHaWMXK/99j0YHJqttimcZeD
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4122:b0:47e:ec40:1430 with SMTP id
- ay34-20020a056638412200b0047eec401430mr60474jab.2.1711812843810; Sat, 30 Mar
- 2024 08:34:03 -0700 (PDT)
-Date: Sat, 30 Mar 2024 08:34:03 -0700
-In-Reply-To: <20240330002732.3029-1-hdanton@sina.com>
+X-Received: by 2002:a05:6602:2d8c:b0:7d0:3aa9:94ee with SMTP id
+ k12-20020a0566022d8c00b007d03aa994eemr102563iow.3.1711813039936; Sat, 30 Mar
+ 2024 08:37:19 -0700 (PDT)
+Date: Sat, 30 Mar 2024 08:37:19 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a44120614e27cb7@google.com>
-Subject: Re: [syzbot] [bpf?] possible deadlock in kvfree_call_rcu
-From: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000002aea130614e28812@google.com>
+Subject: [syzbot] [virtualization?] bpf boot error: WARNING: refcount bug in __free_pages_ok
+From: syzbot <syzbot+689655a7402cc18ace0a@syzkaller.appspotmail.com>
+To: ast@kernel.org, daniel@iogearbox.net, jasowang@redhat.com, 
+	linux-kernel@vger.kernel.org, mst@redhat.com, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev, 
+	xuanzhuo@linux.alibaba.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-possible deadlock in kvfree_call_rcu
+syzbot found the following issue on:
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-syzkaller-08951-gfe46a7dd189e-dirty #0 Not tainted
-------------------------------------------------------
-syz-executor.0/5491 is trying to acquire lock:
-ffff8880b9529470 (#2){..-.}-{2:2}, at: krc_this_cpu_lock kernel/rcu/tree.c:2960 [inline]
-ffff8880b9529470 (#2){..-.}-{2:2}, at: add_ptr_to_bulk_krc_lock kernel/rcu/tree.c:3359 [inline]
-ffff8880b9529470 (#2){..-.}-{2:2}, at: kvfree_call_rcu+0x18a/0x790 kernel/rcu/tree.c:3444
+HEAD commit:    6dae957c8eef bpf: fix possible file descriptor leaks in ve..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=14ec025e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7b667bc37450fdcd
+dashboard link: https://syzkaller.appspot.com/bug?extid=689655a7402cc18ace0a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-but task is already holding lock:
-ffff88806aa8d9f8 (&trie->lock){....}-{2:2}, at: trie_update_elem+0xcb/0xc10 kernel/bpf/lpm_trie.c:324
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/94b03853b65f/disk-6dae957c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7375c1b6b108/vmlinux-6dae957c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/126013ac11e1/bzImage-6dae957c.xz
 
-which lock already depends on the new lock.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+689655a7402cc18ace0a@syzkaller.appspotmail.com
 
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (&trie->lock){....}-{2:2}:
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-       trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:451
-       bpf_prog_2c29ac5cdc6b1842+0x42/0x46
-       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-       __bpf_prog_run include/linux/filter.h:657 [inline]
-       bpf_prog_run include/linux/filter.h:664 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-       bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
-       trace_hrtimer_start include/trace/events/timer.h:222 [inline]
-       debug_activate kernel/time/hrtimer.c:479 [inline]
-       enqueue_hrtimer+0x335/0x3a0 kernel/time/hrtimer.c:1090
-       __hrtimer_start_range_ns kernel/time/hrtimer.c:1265 [inline]
-       hrtimer_start_range_ns+0xaa0/0xc60 kernel/time/hrtimer.c:1305
-       futex_wait_queue+0xb0/0x1d0 kernel/futex/waitwake.c:357
-       __futex_wait+0x17f/0x320 kernel/futex/waitwake.c:669
-       futex_wait+0x101/0x360 kernel/futex/waitwake.c:697
-       do_futex+0x33b/0x560 kernel/futex/syscalls.c:102
-       __do_sys_futex kernel/futex/syscalls.c:179 [inline]
-       __se_sys_futex+0x3f9/0x480 kernel/futex/syscalls.c:160
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
--> #1 (hrtimer_bases.lock){-.-.}-{2:2}:
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-       lock_hrtimer_base kernel/time/hrtimer.c:175 [inline]
-       hrtimer_start_range_ns+0xdf/0xc60 kernel/time/hrtimer.c:1303
-       hrtimer_start include/linux/hrtimer.h:275 [inline]
-       run_page_cache_worker kernel/rcu/tree.c:3341 [inline]
-       kvfree_call_rcu+0x5e6/0x790 kernel/rcu/tree.c:3446
-       net_assign_generic net/core/net_namespace.c:115 [inline]
-       ops_init+0x2c6/0x610 net/core/net_namespace.c:130
-       __register_pernet_operations net/core/net_namespace.c:1243 [inline]
-       register_pernet_operations+0x2cb/0x660 net/core/net_namespace.c:1312
-       register_pernet_device+0x33/0x80 net/core/net_namespace.c:1399
-       init_mac80211_hwsim+0x12f/0xa90 drivers/net/wireless/virtual/mac80211_hwsim.c:6705
-       do_one_initcall+0x238/0x830 init/main.c:1241
-       do_initcall_level+0x157/0x210 init/main.c:1303
-       do_initcalls+0x3f/0x80 init/main.c:1319
-       kernel_init_freeable+0x435/0x5d0 init/main.c:1550
-       kernel_init+0x1d/0x2a0 init/main.c:1439
-       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
--> #0 (#2){..-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-       krc_this_cpu_lock kernel/rcu/tree.c:2960 [inline]
-       add_ptr_to_bulk_krc_lock kernel/rcu/tree.c:3359 [inline]
-       kvfree_call_rcu+0x18a/0x790 kernel/rcu/tree.c:3444
-       trie_update_elem+0x819/0xc10 kernel/bpf/lpm_trie.c:385
-       bpf_map_update_value+0x4d3/0x540 kernel/bpf/syscall.c:203
-       generic_map_update_batch+0x60d/0x900 kernel/bpf/syscall.c:1876
-       bpf_map_do_batch+0x3e0/0x690 kernel/bpf/syscall.c:5145
-       __sys_bpf+0x377/0x810
-       __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
-       __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
-       __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-other info that might help us debug this:
-
-Chain exists of:
-  #2 --> hrtimer_bases.lock --> &trie->lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&trie->lock);
-                               lock(hrtimer_bases.lock);
-                               lock(&trie->lock);
-  lock(#2);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.0/5491:
- #0: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #0: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #0: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: bpf_map_update_value+0x3c4/0x540 kernel/bpf/syscall.c:202
- #1: ffff88806aa8d9f8 (&trie->lock){....}-{2:2}, at: trie_update_elem+0xcb/0xc10 kernel/bpf/lpm_trie.c:324
-
-stack backtrace:
-CPU: 1 PID: 5491 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e-dirty #0
+Key type pkcs7_test registered
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 239)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+io scheduler bfq registered
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+ACPI: button: Power Button [PWRF]
+input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+ACPI: button: Sleep Button [SLPF]
+ioatdma: Intel(R) QuickData Technology Driver 5.00
+ACPI: \_SB_.LNKC: Enabled at IRQ 11
+virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKD: Enabled at IRQ 10
+virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKB: Enabled at IRQ 10
+virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+N_HDLC line discipline registered with maxframe=4096
+Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+Non-volatile memory driver v1.3
+Linux agpgart interface v0.103
+ACPI: bus type drm_connector registered
+[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+Console: switching to colour frame buffer device 128x48
+platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+usbcore: registered new interface driver udl
+brd: module loaded
+loop: module loaded
+zram: Added device: zram0
+null_blk: disk nullb0 created
+null_blk: module loaded
+Guest personality initialized and is inactive
+VMCI host device registered (name=vmci, major=10, minor=118)
+Initialized host personality
+usbcore: registered new interface driver rtsx_usb
+usbcore: registered new interface driver viperboard
+usbcore: registered new interface driver dln2
+usbcore: registered new interface driver pn533_usb
+nfcsim 0.2 initialized
+usbcore: registered new interface driver port100
+usbcore: registered new interface driver nfcmrvl
+Loading iSCSI transport class v2.0-870.
+virtio_scsi virtio0: 1/0/0 default/read/poll queues
+------------[ cut here ]------------
+refcount_t: decrement hit 0; leaking memory.
+WARNING: CPU: 1 PID: 1 at lib/refcount.c:31 refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+Modules linked in:
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc1-syzkaller-00160-g6dae957c8eef #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+Code: b2 00 00 00 e8 97 cf e9 fc 5b 5d c3 cc cc cc cc e8 8b cf e9 fc c6 05 8e 73 e8 0a 01 90 48 c7 c7 e0 33 1f 8c e8 c7 6b ac fc 90 <0f> 0b 90 90 eb d9 e8 6b cf e9 fc c6 05 6b 73 e8 0a 01 90 48 c7 c7
+RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
+RAX: eee901a1fb7e2300 RBX: ffff888146687e7c RCX: ffff8880166d0000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000004 R08: ffffffff815800c2 R09: fffffbfff1c396e0
+R10: dffffc0000000000 R11: fffffbfff1c396e0 R12: ffffea000502edc0
+R13: ffffea000502edc8 R14: 1ffffd4000a05db9 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000e132000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- krc_this_cpu_lock kernel/rcu/tree.c:2960 [inline]
- add_ptr_to_bulk_krc_lock kernel/rcu/tree.c:3359 [inline]
- kvfree_call_rcu+0x18a/0x790 kernel/rcu/tree.c:3444
- trie_update_elem+0x819/0xc10 kernel/bpf/lpm_trie.c:385
- bpf_map_update_value+0x4d3/0x540 kernel/bpf/syscall.c:203
- generic_map_update_batch+0x60d/0x900 kernel/bpf/syscall.c:1876
- bpf_map_do_batch+0x3e0/0x690 kernel/bpf/syscall.c:5145
- __sys_bpf+0x377/0x810
- __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f4922e7dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4923b110c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f4922fabf80 RCX: 00007f4922e7dda9
-RDX: 0000000000000038 RSI: 0000000020000000 RDI: 000000000000001a
-RBP: 00007f4922eca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f4922fabf80 R15: 00007ffdff5b6398
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1141 [inline]
+ __free_pages_ok+0xc60/0xd90 mm/page_alloc.c:1270
+ make_alloc_exact+0xa3/0xf0 mm/page_alloc.c:4829
+ vring_alloc_queue drivers/virtio/virtio_ring.c:319 [inline]
+ vring_alloc_queue_split+0x20a/0x600 drivers/virtio/virtio_ring.c:1108
+ vring_create_virtqueue_split+0xc6/0x310 drivers/virtio/virtio_ring.c:1158
+ vring_create_virtqueue+0xca/0x110 drivers/virtio/virtio_ring.c:2683
+ setup_vq+0xe9/0x2d0 drivers/virtio/virtio_pci_legacy.c:131
+ vp_setup_vq+0xbf/0x330 drivers/virtio/virtio_pci_common.c:189
+ vp_find_vqs_msix+0x8b2/0xc80 drivers/virtio/virtio_pci_common.c:331
+ vp_find_vqs+0x4c/0x4e0 drivers/virtio/virtio_pci_common.c:408
+ virtio_find_vqs include/linux/virtio_config.h:233 [inline]
+ virtscsi_init+0x8db/0xd00 drivers/scsi/virtio_scsi.c:887
+ virtscsi_probe+0x3ea/0xf60 drivers/scsi/virtio_scsi.c:945
+ virtio_dev_probe+0x991/0xaf0 drivers/virtio/virtio.c:311
+ really_probe+0x2b8/0xad0 drivers/base/dd.c:656
+ __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:798
+ driver_probe_device+0x50/0x430 drivers/base/dd.c:828
+ __driver_attach+0x45f/0x710 drivers/base/dd.c:1214
+ bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:368
+ bus_add_driver+0x347/0x620 drivers/base/bus.c:673
+ driver_register+0x23a/0x320 drivers/base/driver.c:246
+ virtio_scsi_init+0x65/0xe0 drivers/scsi/virtio_scsi.c:1083
+ do_one_initcall+0x248/0x880 init/main.c:1238
+ do_initcall_level+0x157/0x210 init/main.c:1300
+ do_initcalls+0x3f/0x80 init/main.c:1316
+ kernel_init_freeable+0x435/0x5d0 init/main.c:1548
+ kernel_init+0x1d/0x2b0 init/main.c:1437
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
  </TASK>
 
 
-Tested on:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=106b0795180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
-dashboard link: https://syzkaller.appspot.com/bug?extid=1fa663a2100308ab6eab
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15a8bd41180000
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
