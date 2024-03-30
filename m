@@ -1,115 +1,203 @@
-Return-Path: <linux-kernel+bounces-125819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D45892C9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 19:41:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15D6892C99
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 19:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 907A41C21768
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 18:41:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 285001F21607
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 18:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91C43BBE4;
-	Sat, 30 Mar 2024 18:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9C73D0C4;
+	Sat, 30 Mar 2024 18:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="W1nqs/H5";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="f4Dkfc8k"
-Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [46.30.211.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ovRKAunK"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4455A1FB2
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 18:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942AA1852
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 18:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711824052; cv=none; b=oJxJYf694GOjFeoLvAVQlyL9hKQDY6tr/6NhQKkgWYzXKvLz/OdfUfhin+cILjkKrSulvZ72f6WbII7Un6nN0tH/fQazYlaH1NARSuuEtzO/4fnvd3/r11pe3NQ+VaJKrcAguJh9nK6j7/suKkQJSzQkFy/kPbQXmTP3htvkXCQ=
+	t=1711824026; cv=none; b=fX89q+rhK4Mr6LqYWNuLrme5pEFUWiQxbdBCrIgsshsmucCZt2cgD734/Px58LbxoFNEKoNii+p88ppRH7zHorkITOk4kNtewu/EgZbgKZgPCJnJ79UFQ9Urg14YzXJzc4+4zj9y+pT3xxFnXkogld4QJNV4HgrnI50tnl1aVrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711824052; c=relaxed/simple;
-	bh=+fKm55pvJInq7E1oiY4SA54W6AbzUuuzHvH9tWxJRYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hk/j8kqgVlB0B8B6PLwx0jUKtTLo5s0jazK0JQbpm1Oi7UmlXv5O2XfMKaPhrUgs0zn4zrjv94iZ+7GE8moBWHVLB1GKjp9YXfQhp/W+IzfK87pwNv4Y0pcLFq2kWIFNfCdchBZUISF/nsEwCcaxe3fIG4Y06meEdQUIlPOaPqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=W1nqs/H5; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=f4Dkfc8k; arc=none smtp.client-ip=46.30.211.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+	s=arc-20240116; t=1711824026; c=relaxed/simple;
+	bh=N2ieWKwF/s/SRgPfVie63l9DGnTbBJVt+ugqWhTyPp4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qOisqyxuQSQvuFzubzobIP23h1E71tFuwSNE3DVfqJnfg4sjIApuy9qlw+XZ9lr4TanVxqbCmecN0CuNvylDeVEeL9lJNLgXHmE4fKMYb2lozgTEdjdjjXWGygg0x3NstSOHmNS/F1mIlG0kM4E3HdQxyEny2JUupR4si/FP+14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ovRKAunK; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d68651e253so41805371fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=Xeeh2dg6zdnZbEZ/lUmV7A/JWt00HE94jarkf2OAKXw=;
-	b=W1nqs/H5MmWtsVize4yOqv5zdPv5BOIEbvoB7e+mMiiTmOTMjUevbBzHBATpsEk5ypP+S0gb07Ea7
-	 lYIwTt7rTRjGJK04mnHWquqc4RfbS/2FdyNOapO2cDBM8jHPt0DFb5p9FXWM2pgCHkwS1hJhLmm1hb
-	 UfgPQjbXjjvGpXKSXisIHKdtWrR57wFf6vKW1JCLfjzl6UQqwNwFZx6uG3hiQYtNnURydBl82WqyL8
-	 8Khl7QCX0SIKmVe8XhdZ4fT1A0rPLgPU1jE0jyE9ebkJeZQHjRcHGsAk6sfww+GqU5zrpR+v0Qv8fJ
-	 gDl3Zsjg/AQUE4+cLwF1EYXMacoW2Pg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=Xeeh2dg6zdnZbEZ/lUmV7A/JWt00HE94jarkf2OAKXw=;
-	b=f4Dkfc8kcLussvHSfDwqYMUW8E8Ke7ibwfhSRoadQwiTSPL1XpNhGZ4TBp+VxxwEsa4367kFop+2M
-	 kmnjvaFCg==
-X-HalOne-ID: dba5c148-eec4-11ee-9dce-516168859393
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay1.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id dba5c148-eec4-11ee-9dce-516168859393;
-	Sat, 30 Mar 2024 18:39:39 +0000 (UTC)
-Date: Sat, 30 Mar 2024 19:39:37 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Andreas Larsson <andreas@gaisler.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	sparclinux@vger.kernel.org, Nick Bowler <nbowler@draconx.ca>,
-	linux-kernel@vger.kernel.org, Atish Patra <atish.patra@oracle.com>,
-	stable@vger.kernel.org, Bob Picco <bob.picco@oracle.com>,
-	Vijay Kumar <vijay.ac.kumar@oracle.com>
-Subject: Re: [PATCH 00/10] sparc64: Fix CPU online bug and warning fixes
-Message-ID: <20240330183937.GA191882@ravnborg.org>
-References: <20240330-sparc64-warnings-v1-0-37201023ee2f@ravnborg.org>
- <4e57929b-1539-4a25-ab05-a2a9e04ecc1d@app.fastmail.com>
+        d=linaro.org; s=google; t=1711824023; x=1712428823; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=A3VqCu8McawT5v2srPzwVC1CxiNRKF4OzinQo91YGYM=;
+        b=ovRKAunKXv25YFrKvZpRWuJUxrXDA/xU4eb93PBEajSnCdebqVbothQ70PnbJoE/pm
+         CuF6lk/2MB73hZ/5mOg32dQI5uv4fNq81nepDYnXT7z/D/wSCVYG4mr+LjN4m0GfGvwC
+         0laCy1VOmzMnau9XOiOoXCgsG6+/81eUTHS+akK9Pe49LFteT/PQuX4N2h5WDiiRHjg7
+         28ZGUlFGBipO14R2GJ+KOsCJu9URaYxjvhzkDlrrq5sQLfGM40+xgfK3+nG+oBcK7Ax2
+         fm/GP0ust/L3tuoxkoIdSif33yfCdoc0ssH3QzetP+47WiWPPAqz4AadjP2qSMZeGSpa
+         BJdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711824023; x=1712428823;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A3VqCu8McawT5v2srPzwVC1CxiNRKF4OzinQo91YGYM=;
+        b=khRqZ8ySr5WZhaCFILGy0UbZl/J9OLYNxvKXC8DGSpD+hhB+hyXdwRtCd/JEeQeczI
+         r7oz1tqiHf4tVsMPSZSUsLsETx8g6N7PRBfVaNHfB6Be7IG2oDFZmhHa49qGC1H2IFpN
+         neqapHe7Zo6k2izzcueEcYXbyxsIG0MOj8zjQj469EH1k2Dp2LGrNhDChzb51gZUgYzF
+         1Ha4ok0+yRdRyPTaneb+covpbIOiFqVM9Yds5pnB9E6J/51j56f1L0NcV/I4jqBkh5C+
+         1yK1V4cFraZusyydhv6Gj7hY6btzxIhcbFvNJN9s0DVy2dJELaKLrbyV3QYpFIL4VuR3
+         xRmg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkRBYvsRewM+Q2Yggz9RoStMI1hMaY2El89NDSpbfm4GDKS0664dadgfVdPcrvGcqwMkMoNj3TxsBQ6q+noag304ZQILyHBgNCqdLT
+X-Gm-Message-State: AOJu0YwfjXvOZ/NfH0FVdGG0puenzTy6T45XCGY558Y8Io3VXbm347yW
+	bwGD/WE6AinH7GbMhM1BKvAp7w41ptH5wEm64SIqVr7Ly9p3uEiqB4TU0utacFk=
+X-Google-Smtp-Source: AGHT+IFAV3o4UY/hu5H0Wy2QF9GFBHA3ATanZSUry4YleUZP9Co40bCkswGTtms9hcvOo/OKxYMGzg==
+X-Received: by 2002:a05:651c:1401:b0:2d7:16f6:f678 with SMTP id u1-20020a05651c140100b002d716f6f678mr2611136lje.15.1711824022831;
+        Sat, 30 Mar 2024 11:40:22 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id h11-20020a05600c314b00b0041490467febsm12416252wmo.38.2024.03.30.11.40.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Mar 2024 11:40:22 -0700 (PDT)
+Message-ID: <46b065d1-82d7-4a15-9de2-1e0bdd2a9085@linaro.org>
+Date: Sat, 30 Mar 2024 19:40:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e57929b-1539-4a25-ab05-a2a9e04ecc1d@app.fastmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/1] dt-bindings: net: dwmac: Document STM32 property
+ st,ext-phyclk
+To: Christophe Roullier <christophe.roullier@foss.st.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Richard Cochran <richardcochran@gmail.com>, Jose Abreu
+ <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Marek Vasut <marex@denx.de>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240328140803.324141-1-christophe.roullier@foss.st.com>
+ <20240328140803.324141-2-christophe.roullier@foss.st.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240328140803.324141-2-christophe.roullier@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Arnd,
+On 28/03/2024 15:08, Christophe Roullier wrote:
+> The Linux kernel dwmac-stm32 driver currently supports three DT
+> properties used to configure whether PHY clock are generated by
+> the MAC or supplied to the MAC from the PHY.
+> 
+> Originally there were two properties, st,eth-clk-sel and
+> st,eth-ref-clk-sel, each used to configure MAC clocking in
+> different bus mode and for different MAC clock frequency.
+> Since it is possible to determine the MAC 'eth-ck' clock
+> frequency from the clock subsystem and PHY bus mode from
+> the 'phy-mode' property, two disparate DT properties are
+> no longer required to configure MAC clocking.
+> 
+> Linux kernel commit 1bb694e20839 ("net: ethernet: stmmac: simplify phy modes management for stm32")
+> introduced a third, unified, property st,ext-phyclk. This property
+> covers both use cases of st,eth-clk-sel and st,eth-ref-clk-sel DT
+> properties, as well as a new use case for 25 MHz clock generated
+> by the MAC.
+> 
+> The third property st,ext-phyclk is so far undocumented,
+> document it.
+> 
+> Below table summarizes the clock requirement and clock sources for
+> supported PHY interface modes.
+>  __________________________________________________________________________
+> |PHY_MODE | Normal | PHY wo crystal|   PHY wo crystal   |No 125Mhz from PHY|
+> |         |        |      25MHz    |        50MHz       |                  |
+> 
+> ---------------------------------------------------------------------------
+> |  MII    |    -   |     eth-ck    |        n/a         |       n/a        |
+> |         |        | st,ext-phyclk |                    |                  |
+> 
+> ---------------------------------------------------------------------------
+> |  GMII   |    -   |     eth-ck    |        n/a         |       n/a        |
+> |         |        | st,ext-phyclk |                    |                  |
+> 
+> ---------------------------------------------------------------------------
+> | RGMII   |    -   |     eth-ck    |        n/a         |      eth-ck      |
+> |         |        | st,ext-phyclk |                    | st,eth-clk-sel or|
+> |         |        |               |                    | st,ext-phyclk    |
+> 
+> ---------------------------------------------------------------------------
+> | RMII    |    -   |     eth-ck    |      eth-ck        |       n/a        |
+> |         |        | st,ext-phyclk | st,eth-ref-clk-sel |                  |
+> |         |        |               | or st,ext-phyclk   |                  |
+> 
+> ---------------------------------------------------------------------------
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
 
-On Sat, Mar 30, 2024 at 11:19:37AM +0100, Arnd Bergmann wrote:
-> On Sat, Mar 30, 2024, at 10:57, Sam Ravnborg via B4 Relay wrote:
-> > Nick Bowler reported that sparc64 failed to bring all his CPU's online,
-> > and that turned out to be an easy fix.
-> >
-> > The sparc64 build was rather noisy with a lot of warnings which had
-> > irritated me enough to go ahead and fix them.
-> > With this set of patches my arch/sparc/ is almost warning free for
-> > all{no,yes,mod}config + defconfig builds.
-> 
-> Patches 1-9 look good to me,
-> 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-Thanks!
+Can you please start testing patches *before* sending them?
 
-> 
-> > There is one warning about "clone3 not implemented", which I have ignored.
-> >
-> > The warning fixes hides the fact that sparc64 is not yet y2038 prepared,
-> > and it would be preferable if someone knowledgeable would fix this
-> > poperly.
-> 
-> The clone3 bug has been around for ages, it's probably not even that
-> hard to fix and just needs a little bit of testing.
-I looked briefly and it involves a better understanding of the window
-register manipulation than what I have today.
+Best regards,
+Krzysztof
 
-> 
-> If anyone wants to work on the time64 support for the vdso, I can
-> explain the details for how it's done.
-I am happy to type the patches but need to rely on others for testing.
-Anything to help me get started would be super.
-
-	Sam
 
