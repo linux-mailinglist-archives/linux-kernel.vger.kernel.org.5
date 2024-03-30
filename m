@@ -1,117 +1,164 @@
-Return-Path: <linux-kernel+bounces-125862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61B1892D2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:39:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D1F7892D30
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B26F1F21E10
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 20:39:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60ABD1C20AC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 20:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5A2524B8;
-	Sat, 30 Mar 2024 20:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DD0482E1;
+	Sat, 30 Mar 2024 20:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xOe2xGtP"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JD3SON1l"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5664D112
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 20:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DEB36AE4
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 20:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711831123; cv=none; b=NZ2QnEz3EkfAibndLqvgXxFpiuEJf98UkXOLVfsJia664Y/C8mcSOqjoEp60YSjvDMxqU9rWy1H+AcEHiBA1oa7B42Ughh/nRr9yatd3sshDJhB0Y+c7IolOCT0qhFI/xluxGCmBbNuJrdGbPksIIGKYjMCGYFW6xPNkx6T3R0Y=
+	t=1711831301; cv=none; b=cqSMR0qYEL+i096w1c7K6M79W148pfMV50Xp3a+7dNo5jnTptvmRUnmyFpevUKZhZK1NCKJSzzQgKuKMDTx3vwW/dhEy4ga6BW4PYlIyLuzNnP5JO3cklh8wxj0rvSch/qUeK61Gqk1ZjQ8KFYJGJVav39zWNthUIa7YkfxV36Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711831123; c=relaxed/simple;
-	bh=kTohzOWfZPW7e6Wx0FPtwfBg4M8IKANnPDJ1RfW6a2E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lGU5GwAkN2ZyHwatbrRc06XkXg1xtfjJ8zbzdcAZ8jdFzgQNxSR2UIZcHrPNqzAhh/9sM2zCBNgnQJN/7Wclv4+vLgZmz7k9wOiAtk30D49IGeBvdStbO6cStbMJSrT1irLDptHfNb3cjeIJ7bDXTJ6I0OCbAGCiYjwdC/kFUbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xOe2xGtP; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-415482308f8so15915115e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711831120; x=1712435920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Un1QbmvT45lYJwe0aH3oZN8c8VesXAq+GuCUOlRaJG0=;
-        b=xOe2xGtPw+lB5iyv7SwhvDmKaRFdFLdfWhIlDR4NcOvPgceGQsh1xvxfKYM0QWciRR
-         ZUCvA9MX4w4x5ubSW3nLDfW48tvAcPSn0dferXJx7AR4ZbZVhf/1Mu1e0+VkhclCcgzE
-         dgGeZEdCv88s2siQevvx/Z7txSJj5FHjDReQMQqofyug7jN0fN0EI6Z5FkalRkQocarU
-         Y0m9HFbdIovnACnov9AeTtCEl+hE3t9BU0/WsF6kjD6uCHreshUoZTgDpgnQFy3ZfpRv
-         6S9OiwdgrCxwt6uJ/enfMMPmKLdaUkGa/6lGfGtEvUO4OqiaNcf6e0egCJ8s9mWYbcEH
-         dIDg==
+	s=arc-20240116; t=1711831301; c=relaxed/simple;
+	bh=7dTdkj6dbfeGOX49aszp3xV2V9j0UCoyFUvP/lOs9+I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jgdIMbY4OpBJ41PzSbhSSi2hfjzdbHwHzuRtyd7OPvdStUUGYVkwcinsRXvImvTeIuT3K0lH2RwW42IsuKDIVs8cFZskoGQ0dFXxv17BEQkI318tLtsUTyS9PgRvE3DfGU1ncZmwY9XUZbmCYLksc+dN0OJv3hWplcWySxOXyLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JD3SON1l; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711831298;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CPc6/ijvCVVJ1Ov2sZYMdJlGOmW3NElQ82lFIMviPGU=;
+	b=JD3SON1lhuRkHQiA9B+eVQM2DBb8ZBezP/oZ+vJDUMy3ylSaHPB/56IP/myuZxf1+jU+qM
+	CjuxE1lqnrsfNCBgKlsYhGVmsCqDENOm9BLH6c/N36DaOl+rquyA7D5SQ4kI2oY1Kmmr84
+	oUCGMF1ksfVWGOBNqkG80xzC5VFnKCU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-160-I-tlrp8xNDKogGqE_KA3EA-1; Sat, 30 Mar 2024 16:41:35 -0400
+X-MC-Unique: I-tlrp8xNDKogGqE_KA3EA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4e05cee8faso107614566b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:41:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711831120; x=1712435920;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Un1QbmvT45lYJwe0aH3oZN8c8VesXAq+GuCUOlRaJG0=;
-        b=BLFrcid5G2oj/Aqo8ZE/M6H/gTT7Y+D1Zg2LwKr7jBOJHcClj92PRnHUIMnVIOy1hD
-         B+WRx1QDn+t89LyhyhN7e4ViQqpmaUXJcdxP+rZ3nYJMl6NSYY4iAVRGjM4H6FTJHdwl
-         W2373QK60FZbotkDV/cPT9BK1FRZjL3znVI6DPWb6a1JFTFouV0ajUnwjHF4tUzA1a8V
-         M1YBinF0oMujpr9qkfQqK9JqLoMlJ+2i7KM3tYSkoxL8mV3Rscf609Y5l8jDYNvoy69g
-         /o8HclDwBwRWWUxcyT3C5/6tXwedjVrv8Xq2mnxIXB57iM5cDDMhZe0tD7/TOqBjCmxq
-         Da/w==
-X-Forwarded-Encrypted: i=1; AJvYcCX/iuLo2tCMsCrO3VWxLzQ+cimjIgKKCqsOFBIgGC3sTOB0i4c+0A15YuQFYNNTv7BlBOI1dP/TmMywIXDdwXwUKfJRN0UM9+vCqBoG
-X-Gm-Message-State: AOJu0YwglTtD7n0RPfxLac9/sfIshchHeGxxwoGuV5QWpqfo+7eWLajV
-	U0Rge+lXVDm8vR/5CBB+zjzaFz6MW48E4mO0l1h0k65/0D7h+De6zg/L0rxS0I8=
-X-Google-Smtp-Source: AGHT+IHMmXGFp1Yul8sOgeCFpqScFZ3w8slz8zMmapCjOq3ViqdjJda4cjOX6fibuuQQ86AHXntaRw==
-X-Received: by 2002:a05:600c:4f0d:b0:414:392:3abc with SMTP id l13-20020a05600c4f0d00b0041403923abcmr3395249wmq.11.1711831119771;
-        Sat, 30 Mar 2024 13:38:39 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id n14-20020a05600c4f8e00b0041493e21844sm12663154wmq.27.2024.03.30.13.38.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 13:38:39 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Alain Volmat <alain.volmat@foss.st.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] drm/sti: vtg: drop driver owner assignment
-Date: Sat, 30 Mar 2024 21:38:31 +0100
-Message-Id: <20240330203831.87003-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240330203831.87003-1-krzysztof.kozlowski@linaro.org>
-References: <20240330203831.87003-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1711831294; x=1712436094;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CPc6/ijvCVVJ1Ov2sZYMdJlGOmW3NElQ82lFIMviPGU=;
+        b=rpLnr9oKLWM/66pnGG0Gg8TvEbI3jV5eo3t8NP41fcjX7qG8iMnrZ+OBtZL0Fd9gc2
+         KtlILWydU7kXZFlqTMhI3EPumwfkMenvuwo3d7qzHsIDyuX4tnFafgUimOiMSlwAfTUI
+         mjg6kNciowF4/poGz6NkyKeef9AsIrZ3JRHbcqMMD9mKTcTXOw3NpGk44HmB4otGTekN
+         Ewok/iTRfYBJGK3Hbe/CasZ9ikMIbQAPxB5bq6YHPZRvXA/966OwicW7NlzjR3VXNbhn
+         H+I0UBXyihdRfjzDEWIS/ghPK5+pJTFhUz7MIoL155g3gc2SVR3Zp55Lh//J3aQrkTKA
+         wkUA==
+X-Forwarded-Encrypted: i=1; AJvYcCWAyKiRDY0lknNzDZ/RrdKJT6gZkH7zGJvo3JCBLSgIMN90CDDMuTMG6RNcqXzr1kXAnl8jCCdUD0ah0MqeePt1fGHGIDcjmAaQBmrD
+X-Gm-Message-State: AOJu0YwMmGC5/cxa+EbqSlWsDPo/nwY7UkA6+7E55lHFW/haARHIdVvF
+	KsJVYRiJnmLIIM7rctr+Zkb2J6HsoDbrypkbFANTxJDSCbugnG1s5sdXxYJ+8nh7JO4diwMn12f
+	TJcqRd/7o/MSsHKYq4fGUi4bkATdX0c7s5TROHR+kZpVVw5MH9VydE3J4Jb4zlw==
+X-Received: by 2002:a05:6402:2745:b0:56c:2ef7:f3e6 with SMTP id z5-20020a056402274500b0056c2ef7f3e6mr4376441edd.0.1711831294678;
+        Sat, 30 Mar 2024 13:41:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF9Gbkjn/ZWKYbzmUfYSMj2NejhWxYSZ/mEpFdvV+HFgC3/+irSlMKFkDAQ95tTo6ihx/AnRw==
+X-Received: by 2002:a05:6402:2745:b0:56c:2ef7:f3e6 with SMTP id z5-20020a056402274500b0056c2ef7f3e6mr4376399edd.0.1711831294379;
+        Sat, 30 Mar 2024 13:41:34 -0700 (PDT)
+Received: from [192.168.10.4] ([151.95.49.219])
+        by smtp.googlemail.com with ESMTPSA id fg4-20020a056402548400b0056c41068d8dsm3549732edb.17.2024.03.30.13.41.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Mar 2024 13:41:33 -0700 (PDT)
+Message-ID: <40382494-7253-442b-91a8-e80c38fb4f2c@redhat.com>
+Date: Sat, 30 Mar 2024 21:41:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 12/29] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_FINISH command
+To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+ thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com,
+ vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+ dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+ peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+ rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
+ vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+ tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+ alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+ nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
+ Brijesh Singh <brijesh.singh@amd.com>, Harald Hoyer <harald@profian.com>
+References: <20240329225835.400662-1-michael.roth@amd.com>
+ <20240329225835.400662-13-michael.roth@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20240329225835.400662-13-michael.roth@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Core in platform_driver_register() already sets the .owner, so driver
-does not need to.  Whatever is set here will be anyway overwritten by
-main driver calling platform_driver_register().
+On 3/29/24 23:58, Michael Roth wrote:
+> 
+> +		/* Handle boot vCPU first to ensure consistent measurement of initial state. */
+> +		if (!boot_vcpu_handled && vcpu->vcpu_id != 0)
+> +			continue;
+> +
+> +		if (boot_vcpu_handled && vcpu->vcpu_id == 0)
+> +			continue;
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/gpu/drm/sti/sti_vtg.c | 1 -
- 1 file changed, 1 deletion(-)
+Why was this not necessary for KVM_SEV_LAUNCH_UPDATE_VMSA?  Do we need 
+it now?
 
-diff --git a/drivers/gpu/drm/sti/sti_vtg.c b/drivers/gpu/drm/sti/sti_vtg.c
-index 5e5f82b6a5d9..5ba469b711b5 100644
---- a/drivers/gpu/drm/sti/sti_vtg.c
-+++ b/drivers/gpu/drm/sti/sti_vtg.c
-@@ -431,7 +431,6 @@ MODULE_DEVICE_TABLE(of, vtg_of_match);
- struct platform_driver sti_vtg_driver = {
- 	.driver = {
- 		.name = "sti-vtg",
--		.owner = THIS_MODULE,
- 		.of_match_table = vtg_of_match,
- 	},
- 	.probe	= vtg_probe,
--- 
-2.34.1
+> +See SEV-SNP specification [snp-fw-abi]_ for SNP_LAUNCH_FINISH further details
+> +on launch finish input parameters.
+
+See SNP_LAUNCH_FINISH in the SEV-SNP specification [snp-fw-abi]_ for 
+further details on the input parameters in ``struct 
+kvm_sev_snp_launch_finish``.
+
+Paolo
 
 
