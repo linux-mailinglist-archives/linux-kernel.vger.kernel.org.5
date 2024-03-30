@@ -1,94 +1,107 @@
-Return-Path: <linux-kernel+bounces-126099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C80F289322B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:01:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C467C89322D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:02:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4972DB2164C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:01:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7930A2828BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BC2145355;
-	Sun, 31 Mar 2024 16:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5189145349;
+	Sun, 31 Mar 2024 16:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QriMG5bP"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iJIgd8nj"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DB6145340;
-	Sun, 31 Mar 2024 16:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD3314532F;
+	Sun, 31 Mar 2024 16:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711900898; cv=pass; b=pD8Uvo+Fu735KWGeahlOeDbqpwxlVdLO6dGvzSUZk2+u2smMy7K2mCyNOvAOQkmx0MxTZ6g6oLI1/hrO88/i6bVqlHhXl/PbMTSwm88jLLWIx4A8IyBdztWASEcmAeg0snvLOMFpPCoBw0WEJmTT2wEcoos6zKVPzYL+y59E91s=
+	t=1711900911; cv=pass; b=GM4WKG1yQv4O+jk8KiB4YsolFeG4AALWAZe1nu4OIR6YPfs/pL88GzTbTEgXwmxTZg+6pbCzFSXWv6bQcuCpXHyTQlCFWML2oagQgLFbphRZVc4eETiXJTipOb7iCaCKQO1CifA4FXskGJkB0YcgdP9VD2vLdd3n9Sg1EH6WFDA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711900898; c=relaxed/simple;
-	bh=1rWdaEawfYR3LfAF31PiRtpuMF8rLJZ44iKkxh0MscI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-ID:Date:References:
-	 In-Reply-To:To:Cc; b=BXnUfc8M215Lp4CF3t2NUkEtfQYj3TdrFFkYNuTfPV0P/zuYpHtRLKTHYaA6bf9StZ1cnS8qkyb8faA8CDmIkLIvqUdgheqDXz3FjJZ69XlZcTw6T+VKX6deYVU2Gh2RF1BGKtJSV7aZZPYqa3p+2jVxjE++igaAKLyjmg7YYnI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QriMG5bP; arc=none smtp.client-ip=10.30.226.201; arc=pass smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1711900911; c=relaxed/simple;
+	bh=JvItBV8S7Y31HMTBenjNqg15k1PnGv+HzKdN7fwkC+Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FWNB5D+5FD/ee8T0cb6dOBJV0NMKPZQ7pgREetan+IXO6yI/6FCNotbpam/h895+Qfx9oTJQF1bJVKyV3nOT+wWQl+3L+LCbzMxHz5mmicOpgW9ISBaCPMNr1dy1qWJ79zgu4HlA0Z44rgfWQXP3dx2DS1Rc5XIMkU41mPYKbiE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=fail smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iJIgd8nj; arc=none smtp.client-ip=13.77.154.182; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; arc=pass smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.microsoft.com
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id DE28A20799;
-	Sun, 31 Mar 2024 18:01:33 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id 4F3BF2067F;
+	Sun, 31 Mar 2024 18:01:48 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id MONWvnqNRudz; Sun, 31 Mar 2024 18:01:32 +0200 (CEST)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+	with ESMTP id PgEYT208xhjF; Sun, 31 Mar 2024 18:01:47 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 942FE207D8;
-	Sun, 31 Mar 2024 18:01:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 942FE207D8
+	by a.mx.secunet.com (Postfix) with ESMTPS id B5ACB20612;
+	Sun, 31 Mar 2024 18:01:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com B5ACB20612
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout2.secunet.com (Postfix) with ESMTP id 8663A80004A;
-	Sun, 31 Mar 2024 18:01:32 +0200 (CEST)
+	by mailout1.secunet.com (Postfix) with ESMTP id A89F280004A;
+	Sun, 31 Mar 2024 18:01:47 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:01:32 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:01:47 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
- 15.1.2507.17; Sun, 31 Mar 2024 15:52:41 +0000
-X-sender: <netdev+bounces-83482-steffen.klassert=secunet.com@vger.kernel.org>
+ 15.1.2507.17; Sun, 31 Mar 2024 15:52:44 +0000
+X-sender: <linux-kernel+bounces-125624-steffen.klassert=secunet.com@vger.kernel.org>
 X-Receiver: <steffen.klassert@secunet.com>
  ORCPT=rfc822;steffen.klassert@secunet.com NOTIFY=NEVER;
  X-ExtendedProps=BQAVABYAAgAAAAUAFAARAPDFCS25BAlDktII2g02frgPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4YwUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5nZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAHQAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAAwAAgAABQBsAAIAAAUAWAAXAEoAAADwxQktuQQJQ5LSCNoNNn64Q049S2xhc3NlcnQgU3RlZmZlbixPVT1Vc2VycyxPVT1NaWdyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9ye
 	TogRmFsc2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
 X-CreatedBy: MSExchange15
 X-HeloDomain: b.mx.secunet.com
-X-ExtendedProps: BQBjAAoA+Q1rGbMv3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAYgAKAHcAAADMigAABQBkAA8AAwAAAEh1Yg==
+X-ExtendedProps: BQBjAAoA+C5rGbMv3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAYgAKAD8BAADWigAABQBkAA8AAwAAAEh1Yg==
 X-Source: SMTP:Default MBX-ESSEN-01
 X-SourceIPAddress: 62.96.220.37
-X-EndOfInjectedXHeaders: 12207
+X-EndOfInjectedXHeaders: 14840
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=netdev+bounces-83482-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com E4B95200BB
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=139.178.88.99; helo=sv.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125624-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 93FFD20315
 Authentication-Results: b.mx.secunet.com;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QriMG5bP"
-X-Original-To: netdev@vger.kernel.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iJIgd8nj"
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711752631; cv=none; b=eLispVzL4Rucdj5yrzfRgnSRePLp+Y1FD2BRZyUX76ykzaZw7VHi9YXASU31baAxoYFmxYlpOQR4UYS8gEjEpjt1zGwq62prz06qhAHc+483Hh1xmTXYFXP7I4YViQd6l9vns1N932S+E0brudJT0ir0I9KRIrHiq60XZoaVoX0=
+	t=1711788731; cv=none; b=OIsy2/5zncrPDDDv1SmbSfoJZbQrxMXwLvs279O35EZFVQCH7ye/9Swsc0vGkEk/zjSCRdZvVBFzJSnUMY0qckVwdUyjmvFKJCcJ6m2OOj0W00sjnQQ4bi/gTpL2mQZGSH9+Z/STTqtjRTwTxQHrVGCKnlizHx6SWebU/NkjkIs=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711752631; c=relaxed/simple;
-	bh=1rWdaEawfYR3LfAF31PiRtpuMF8rLJZ44iKkxh0MscI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Xg3OsV9Hn217vm8daSQu1usYD3ksPWTEpVZ2YL8e46SgPg+BrESFujNuqbVuhFeJowZ00pl26chFLpmFOjszBnk+xcfKA2Lv8VGoUK8QewV5y96v44UHH8h1j3HJYz3vCS+bWN/aej6pX4824HBLNpa31QWPvcxKcQWmCuSFNkM=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QriMG5bP; arc=none smtp.client-ip=10.30.226.201
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711752630;
-	bh=1rWdaEawfYR3LfAF31PiRtpuMF8rLJZ44iKkxh0MscI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QriMG5bPxFDJal3+iK1Pb0iH9WyOvvWgwweQ2/D86v3oy/13nMNRcnZgIMYLJopSY
-	 7KLJczmMCVMHyE0HUKo16Zlrh+oM1jIPi5sy2qLvR1xNCT85FR5iD28bsq3bhCic2E
-	 9agT52MvYHoRihMvi5B1sSF3/Py9XPrQj9IBRigclTJz6rtPhf6vSl/5FSEsRqKbd5
-	 AG+Y/Btm/xHAuRSBzBp5kwOLojbL6e2YNlyWE+0YcxgNg53lc484ELHLR7HwPJHh3Q
-	 zxW5r1DkUTeEdz0tQrKVSD3O2p8NxXZGc3WAWBi8z8L8dwVHWkG0HVZicER5qqp8k6
-	 laI6AElXluGGw==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711788731; c=relaxed/simple;
+	bh=JvItBV8S7Y31HMTBenjNqg15k1PnGv+HzKdN7fwkC+Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=TBa0ltExKXXF1Ou2+D77LPWx7mwpku8pLAIMt5e2dh4rsvorH1htnZfl1Uuag6OpFrRHYTBRXf24QnhNLXf+xpmsUd7jcDnI9khZ/NQwSaOU7E9EH28W1z8+F/QcHI6p7ivB+kCT8FNN6fVUFNIwg/qEOTTOwfdiTj6bsmUjOAA=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iJIgd8nj; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 40B5520E7039
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711788728;
+	bh=BtKE7O5OWVM7SyPdRoHlAAnjh2otvkVJidlO3O/WDfU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iJIgd8njauEFfrqab1aHlcM8q6HjkukZ6SmfRUHRtttswzVuFTjGIJAFAlHb9vzeB
+	 pz9jaClMEtTXns1dXkYp3ODhFJufdDI47sAKnRvsSbiEX1W2EGW2dY0fYlNVTQ/4vz
+	 X/9mWe/yPSL2QgYHC7cSJkvTw+6UH74KqYsLVRiA=
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Cc: longli@microsoft.com,
+	ssengar@microsoft.com
+Subject: [PATCH v3 1/7] Drivers: hv: vmbus: Add utility function for querying ring size
+Date: Sat, 30 Mar 2024 01:51:57 -0700
+Message-ID: <1711788723-8593-2-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1711788723-8593-1-git-send-email-ssengar@linux.microsoft.com>
+References: <1711788723-8593-1-git-send-email-ssengar@linux.microsoft.com>
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -96,48 +109,94 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 0/1] Add property in dwmac-stm32 documentation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-ID: <171175263052.1693.263504657362042828.git-patchwork-notify@kernel.org>
-Date: Fri, 29 Mar 2024 22:50:30 +0000
-References: <20240328185337.332703-1-christophe.roullier@foss.st.com>
-In-Reply-To: <20240328185337.332703-1-christophe.roullier@foss.st.com>
-To: Christophe Roullier <christophe.roullier@foss.st.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
- richardcochran@gmail.com, joabreu@synopsys.com, lgirdwood@gmail.com,
- broonie@kernel.org, marex@denx.de, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-Hello:
+Add a function to query for the preferred ring buffer size of VMBus
+device. This will allow the drivers (eg. UIO) to allocate the most
+optimized ring buffer size for devices.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Reviewed-by: Long Li <longli@microsoft.com>
+---
+[V2]
+- Added more details in commit message.
+- Added comments for preferred ring sizes and there values.
+- Added reviewed-by from Long Li.
 
-On Thu, 28 Mar 2024 19:53:36 +0100 you wrote:
-> Introduce property in dwmac-stm32 documentation
-> 
->  - st,ext-phyclk: is present since 2020 in driver so need to explain
->    it and avoid dtbs check issue : views/kernel/upstream/net-next/arch/arm/boot/dts/st/stm32mp157c-dk2.dtb:
-> ethernet@5800a000: Unevaluated properties are not allowed
-> ('st,ext-phyclk' was unexpected)
->    Furthermore this property will be use in upstream of MP13 dwmac glue. (next step)
-> 
-> [...]
+ drivers/hv/channel_mgmt.c | 15 ++++++++++++---
+ drivers/hv/hyperv_vmbus.h |  5 +++++
+ include/linux/hyperv.h    |  2 ++
+ 3 files changed, 19 insertions(+), 3 deletions(-)
 
-Here is the summary with links:
-  - [v6,1/1] dt-bindings: net: dwmac: Document STM32 property st,ext-phyclk
-    https://git.kernel.org/netdev/net-next/c/929107d3d2a3
-
-You are awesome, thank you!
+diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+index 2f4d09ce027a..3c6011a48dab 100644
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -120,7 +120,9 @@ const struct vmbus_device vmbus_devs[] = {
+ 	},
+ 
+ 	/* File copy */
+-	{ .dev_type = HV_FCOPY,
++	/* fcopy always uses 16KB ring buffer size and is working well for last many years */
++	{ .pref_ring_size = 0x4000,
++	  .dev_type = HV_FCOPY,
+ 	  HV_FCOPY_GUID,
+ 	  .perf_device = false,
+ 	  .allowed_in_isolated = false,
+@@ -140,12 +142,19 @@ const struct vmbus_device vmbus_devs[] = {
+ 	  .allowed_in_isolated = false,
+ 	},
+ 
+-	/* Unknown GUID */
+-	{ .dev_type = HV_UNKNOWN,
++	/*
++	 * Unknown GUID
++	 * 64 KB ring buffer + 4 KB header should be sufficient size for any Hyper-V device apart
++	 * from HV_NIC and HV_SCSI. This case avoid the fallback for unknown devices to allocate
++	 * much bigger (2 MB) of ring size.
++	 */
++	{ .pref_ring_size = 0x11000,
++	  .dev_type = HV_UNKNOWN,
+ 	  .perf_device = false,
+ 	  .allowed_in_isolated = false,
+ 	},
+ };
++EXPORT_SYMBOL_GPL(vmbus_devs);
+ 
+ static const struct {
+ 	guid_t guid;
+diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
+index f6b1e710f805..76ac5185a01a 100644
+--- a/drivers/hv/hyperv_vmbus.h
++++ b/drivers/hv/hyperv_vmbus.h
+@@ -417,6 +417,11 @@ static inline bool hv_is_perf_channel(struct vmbus_channel *channel)
+ 	return vmbus_devs[channel->device_id].perf_device;
+ }
+ 
++static inline size_t hv_dev_ring_size(struct vmbus_channel *channel)
++{
++	return vmbus_devs[channel->device_id].pref_ring_size;
++}
++
+ static inline bool hv_is_allocated_cpu(unsigned int cpu)
+ {
+ 	struct vmbus_channel *channel, *sc;
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index 6ef0557b4bff..7de9f90d3f95 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -820,6 +820,8 @@ struct vmbus_requestor {
+ #define VMBUS_RQST_RESET (U64_MAX - 3)
+ 
+ struct vmbus_device {
++	/* preferred ring buffer size in KB, 0 means no preferred size for this device */
++	size_t pref_ring_size;
+ 	u16  dev_type;
+ 	guid_t guid;
+ 	bool perf_device;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
 
