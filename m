@@ -1,119 +1,143 @@
-Return-Path: <linux-kernel+bounces-125807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B39892C6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 19:29:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CD9892C71
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 19:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EEFE1F22202
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 18:29:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F6F81C21730
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 18:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFEF41C71;
-	Sat, 30 Mar 2024 18:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611A74084A;
+	Sat, 30 Mar 2024 18:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="BAnkdZ4A"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U7/YWh2G"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE733BB3D;
-	Sat, 30 Mar 2024 18:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C6F1E865;
+	Sat, 30 Mar 2024 18:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711823330; cv=none; b=pkt9/JQFKD5yT/eWedL3QZ9c+uqVAZqGYuNCcBB49ddKQkGuWK3hnkqepaDMW57ccoh1yCEzSWmnMnJS4nho1515dWI8hFZ2qie8bfPXjGazjG+j0ldb94e738hQVfIlT6znKKQOzJUC6eshf8680VePV4B4tu1cYk93V9G3Kwc=
+	t=1711823352; cv=none; b=XkAik0H85trtEHD4q7VIp+W/IXIlWTDkl76TLxjdHMnXD6UZaW9E91jKuaoIsVz2fKhHgLGGfIbUkq72hOqnxz9moQPqBo6arRcnTRHQqmb7xDjGWVKsBbEXVRcY87n5JG3bxoDHikuf7Gzv7iF/BMSVdvSMiYWXhI/QlpYB8iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711823330; c=relaxed/simple;
-	bh=O/UyUM9ICeUerTlWR6Rtm1KUdN7PcCQaxk9upPhEBE8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L2g0unnO5O3FkBmdV8tpVpxy5OtrjWnb9UBbMKAon8l9GDs3xMlUBWShfaCQhW7aC2hcM6DOkA5VgkRadHobKSxcrgI8ggcB8YbMFcdmAin9pJPfbI/7xjAUIgmwyOgxx/fp8LrGIlVP0l5WXZB8wUqZC3uV2DeMEp2FqXUfWMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=BAnkdZ4A; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=eOnCxHAyWMBBmrA31QsaFBeo10V11qo0IeZKOpN/ZkM=; b=BAnkdZ4AFLsdBYGg9hDj/OEdIB
-	HObTuni4MRaU0PoKGPwlAtjY0tYlpgMLsFmzRL9YBoCKEH4/UCV1r6pmG2mzAY1aIiAV9Q+foy27C
-	boy059PfyozEJxNJqHg3sgu4C5/93MuWxmhCB1fjhjGh1VNCjAMBOant8uIDY71Hko6LEOMcxLo2P
-	KbP1AdeFuiUfyH+2LBbzXz8ISCUCipZd1annA3RPugiN3Ip/gLoLS9PLceY2K/4+VJUekek/WeVM4
-	UyW2Z62ifqdIt0MXXFnB86WFCTZCnunl8WR9zrxOb2rvUqRdZauSKtpT8SswQTMG0Q+DAMvpzZWq3
-	7iet8kkA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40144)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rqdR9-00036h-00;
-	Sat, 30 Mar 2024 18:28:15 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rqdR4-0003rW-Hn; Sat, 30 Mar 2024 18:28:10 +0000
-Date: Sat, 30 Mar 2024 18:28:10 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Naveen Mamindlapalli <naveenm@marvell.com>
-Cc: Julien Panis <jpanis@baylibre.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Ratheesh Kannoth <rkannoth@marvell.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH net-next v5 1/3] net: ethernet: ti: Add accessors for
- struct k3_cppi_desc_pool members
-Message-ID: <ZghZur10+3WvZnDu@shell.armlinux.org.uk>
-References: <20240223-am65-cpsw-xdp-basic-v5-0-bc1739170bc6@baylibre.com>
- <20240223-am65-cpsw-xdp-basic-v5-1-bc1739170bc6@baylibre.com>
- <SJ2PR18MB5635B9F20BB6CE1CC945F3B2A23B2@SJ2PR18MB5635.namprd18.prod.outlook.com>
+	s=arc-20240116; t=1711823352; c=relaxed/simple;
+	bh=55SM2jVlFCAKPFCdIrCTkGIUnKcgNx9f9IxmCRUYcwU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ca/eKyLKqWhVefJ1f/qpDwIOVn5FjHrlQPm6TV/Wr6HSo7dzexbECEW+ItmuOSQiGeHFCAcOcky1EFNZdt3n4K5Msn5O3Mn55WMaN/TOh3KxU8a4cwcdpVQC5a2JKUDHeaO/rNSn6qdPP/uM3/nB0ylreYQnVxvkDy1DwcjtuKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=U7/YWh2G; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42UIOVJm020255;
+	Sat, 30 Mar 2024 18:28:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=8kqEt6M
+	coEx8S9EIW8TI/UwkYJDDeKEAhw4F7hRBZ1M=; b=U7/YWh2G7B7GjG+ziWwTv8W
+	HihHwx22HAu1IDuOpUJV4KiVCfiJB/pkqTnigfEjbOSvfWgOwAhsmrMVpS20xltY
+	X1heaWufIaeIaPyjLIFujan8tKslR3V6wRsRl1pgFuvxPa1eeNSApDRBCCmEb9of
+	gDjwvS8nf+++7aSydg63LUaZEK8QxqReqNFmVKly/n+dPZpVcF8qgH0fzblzmh+C
+	trQH1DvgJwlVYiQMui0bKuldMxroXbjlLSTpwL4toHc5ov7U/SqbMFb8J9gOd19G
+	KithUAKVypkgs/9zgw/O2UghpHXNywINpf4W0UK+1huIo1xpmo7AoWFXGsqkrZw=
+	=
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x6atwh7qh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 30 Mar 2024 18:28:54 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42UISrub029278
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 30 Mar 2024 18:28:53 GMT
+Received: from hu-ajipan-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 30 Mar 2024 11:28:48 -0700
+From: Ajit Pandey <quic_ajipan@quicinc.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Vladimir Zapolskiy
+	<vladimir.zapolskiy@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+        "Jagadeesh Kona" <quic_jkona@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        "Satya Priya Kakitapalli"
+	<quic_skakitap@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>
+Subject: [PATCH 0/7] clk: qcom: Add support for DISPCC, CAMCC and GPUCC on SM4450
+Date: Sat, 30 Mar 2024 23:58:10 +0530
+Message-ID: <20240330182817.3272224-1-quic_ajipan@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ2PR18MB5635B9F20BB6CE1CC945F3B2A23B2@SJ2PR18MB5635.namprd18.prod.outlook.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sRYa_RqwOHLtIE8ntR76mUi-gpP2u1pv
+X-Proofpoint-ORIG-GUID: sRYa_RqwOHLtIE8ntR76mUi-gpP2u1pv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-30_13,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ adultscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 mlxlogscore=945
+ impostorscore=0 spamscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403300151
 
-On Thu, Mar 28, 2024 at 12:06:56PM +0000, Naveen Mamindlapalli wrote:
-> > diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c b/drivers/net/ethernet/ti/k3-
-> > cppi-desc-pool.c
-> > index 05cc7aab1ec8..fe8203c05731 100644
-> > --- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
-> > +++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
-> > @@ -132,5 +132,17 @@ size_t k3_cppi_desc_pool_avail(struct
-> > k3_cppi_desc_pool *pool)  }  EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_avail);
-> > 
-> > +size_t k3_cppi_desc_pool_desc_size(struct k3_cppi_desc_pool *pool) {
-> > +	return pool->desc_size;
-> 
-> Don't you need to add NULL check on pool ptr since this function is exported?
+This patch series add dt-bindings and driver support for DISPCC, CAMCC and GPUCC
+on QCOM SM4450 platform and also includes a fix related to LUCID EVO PLL config
+issue in clk-alpha-pll driver.
 
-What bearing does exporting a function have on whether it should check
-for NULL?
+Ajit Pandey (7):
+  clk: qcom: clk-alpha-pll: Fix CAL_L_VAL override for LUCID EVO PLL
+  dt-bindings: clock: qcom: Add DISPCC clocks for SM4450
+  clk: qcom: Add DISPCC driver support for SM4450
+  dt-bindings: clock: qcom: Add CAMCC clocks for SM4450
+  clk: qcom: Add CAMCC driver support for SM4450
+  dt-bindings: clock: qcom: Add GPUCC clocks for SM4450
+  clk: qcom: Add GPUCC driver support for SM4450
 
-Given that this function returns size_t, it can't return an error
-number. So what value would it return if "pool" were NULL? It can
-only return a positive integer or zero.
-
-Also, the argument should be const as the function doesn't modify the
-contents of "pool".
+ .../bindings/clock/qcom,sm4450-camcc.yaml     |   63 +
+ .../bindings/clock/qcom,sm4450-dispcc.yaml    |   71 +
+ .../bindings/clock/qcom,sm8450-gpucc.yaml     |    2 +
+ drivers/clk/qcom/Kconfig                      |   27 +
+ drivers/clk/qcom/Makefile                     |    3 +
+ drivers/clk/qcom/camcc-sm4450.c               | 1688 +++++++++++++++++
+ drivers/clk/qcom/clk-alpha-pll.c              |    2 +-
+ drivers/clk/qcom/dispcc-sm4450.c              |  781 ++++++++
+ drivers/clk/qcom/gpucc-sm4450.c               |  806 ++++++++
+ include/dt-bindings/clock/qcom,sm4450-camcc.h |  106 ++
+ .../dt-bindings/clock/qcom,sm4450-dispcc.h    |   51 +
+ include/dt-bindings/clock/qcom,sm4450-gpucc.h |   62 +
+ 12 files changed, 3661 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm4450-camcc.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm4450-dispcc.yaml
+ create mode 100644 drivers/clk/qcom/camcc-sm4450.c
+ create mode 100644 drivers/clk/qcom/dispcc-sm4450.c
+ create mode 100644 drivers/clk/qcom/gpucc-sm4450.c
+ create mode 100644 include/dt-bindings/clock/qcom,sm4450-camcc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm4450-dispcc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm4450-gpucc.h
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.25.1
+
 
