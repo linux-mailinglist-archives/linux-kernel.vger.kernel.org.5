@@ -1,69 +1,55 @@
-Return-Path: <linux-kernel+bounces-125772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4922892BED
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:03:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAE1A892BEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2E01C2139D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:03:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FCA9282B7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DAE39AF9;
-	Sat, 30 Mar 2024 16:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817173A8C0;
+	Sat, 30 Mar 2024 16:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tJSGLSLA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="du9Y9JyP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C471C0DEF;
-	Sat, 30 Mar 2024 16:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961063BB35;
+	Sat, 30 Mar 2024 16:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711814583; cv=none; b=rMZoabn8Pvy3/WtUdRbXOs+8zhGhQA/RSXa5wUkSA3iw1DvTYO9EY+NNqa1Wx0J3HqWF5YckGDm4wgss6j+NFPSS+h2w7/3MwxRaHtPm46fwYWoA2M9vcjv7RiYywjOJeA2PPwtFU3Jjo6+UcMWmpI2/vKlM6JAhG42vlE2l1E8=
+	t=1711814847; cv=none; b=aq4tuCFfXNyPicJNhGpqVNM6PVMqAfdeUlQPRQrNDWYB7kQhyoPUerT72X4WU9R3FlpwsZVMx6Oay1cR9EQXS3TWWwW0NqzIPRdFNtT1zV17KpSG0rR3mNDhPkl+damsD4q5DIKxl/e/jIh73JZtzHA/6y0Prshv0XGxbs7qavU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711814583; c=relaxed/simple;
-	bh=UluV6B2CNyYDGwjho9wujbbGinHQfPzIlXhBRj5/jwM=;
+	s=arc-20240116; t=1711814847; c=relaxed/simple;
+	bh=l2mFFOVYDzVrP6zBdCCMZnoabUzTFe04bmPraTq3D0Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oSjZgNoXUwlQZ3YIF8tDweDnZY/Z/rNXWQJ5FcFyikeipYs3JsisERVBm3/F9Va4IIvMVanmNwvhVfWch71gxoE4t+7TK0zWmfxIjYOGzg3UiQd/71sx7Rrl7ayJ5u9VNjIzwYzVLzPa3BaF3TlyatDDkSUvddPYtRwYewVszGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tJSGLSLA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8FA4C43390;
-	Sat, 30 Mar 2024 16:02:56 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Z1Gq+UMbok9KiiLk1WA3KJp7l+Z+4cQQGbBwOG0ZEVpDKO+Z/4GBnI70U+XelYYiHxR2snAuXEVZryAAK1y/0dcImpsU/N4mRcLA0FpT4pXrJp6dyAfZ/DvwdcN2ySeGtN02+64npAWty4uJNB5G1opNKh/XLiaEyOmE6llk2jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=du9Y9JyP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30190C433F1;
+	Sat, 30 Mar 2024 16:07:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711814583;
-	bh=UluV6B2CNyYDGwjho9wujbbGinHQfPzIlXhBRj5/jwM=;
+	s=k20201202; t=1711814847;
+	bh=l2mFFOVYDzVrP6zBdCCMZnoabUzTFe04bmPraTq3D0Y=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tJSGLSLAib4ZkmpSDD8pBKfDUosNtVmyEkJK8+xeWQ2RVi+l2/uiyFl+ZHsK26w2U
-	 sg/JDS8+wJ4obfWX5+RA0jLYrKoWy/69TMOHt8NNbHMZtVMkHNn1Z2pUxdRFSzdJkK
-	 vVA8ONMxBpcbAY/3IuiPJx1zA6f8BCOpWj8nrAz3O+sVZhjJ1CMT8KqZOmnp24ZXko
-	 Ujh4f2a5wNvRBBuguv9c7t/Xs5Fiut1pLT5B13kgANH6zi0BgtXTQNJ97kcxjmQnJ2
-	 QkbJ2xinb1NCih5rlauTuDtUaTWelA9jhVrKB8k9/dY3YxvINFjmR3JcJTHfGgX5Kh
-	 MtPcc26yM2Pmw==
-Date: Sat, 30 Mar 2024 16:02:46 +0000
+	b=du9Y9JyPcB2pxbPlwyRNjk6Rr62M0YIhb6zuNDlFz6+ZfceUYTidwVFOUL65CCNXU
+	 nt2CSs+JIqu9Fr+ag5GTrlo6lUi8h+jd4TIWClUkWp5/IU2tvXLzg6fvg9z5kieFYw
+	 dOwuncIX0VnbS0wo/5d02U1EjFOslwGMn1hZQIuFc1EEpQ40O1VFApuCZMEUItk9kW
+	 VaYIr3j/WkUKkonLj/9RkpLgcDs3j+TMtvqVfo1rfIo7QWFsA97J3NvbiStpGFQMM1
+	 xN9cXgCBllf3xDLS7mGTuBm1yQuODW8jRnpGVgq5GunJpLfIdIDpz/+JyP5U1zES09
+	 4n8n4JRaZWMQw==
+Date: Sat, 30 Mar 2024 16:07:13 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, David Lechner
- <dlechner@baylibre.com>, Jonathan Corbet <corbet@lwn.net>, Liam Girdwood
- <lgirdwood@gmail.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck
- <linux@roeck-us.net>, Support Opensource <support.opensource@diasemi.com>,
- Cosmin Tanislav <cosmin.tanislav@analog.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>,
- Antoniu Miclaus <antoniu.miclaus@analog.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
- linux-input@vger.kernel.org
-Subject: Re: [PATCH RFC 1/7] regulator: devres: add APIs for reference
- supplies
-Message-ID: <20240330160246.6b74bd3b@jic23-huawei>
-In-Reply-To: <8d98fab7-d73b-45c5-a46a-ace57907d25b@sirena.org.uk>
-References: <20240327-regulator-get-enable-get-votlage-v1-0-5f4517faa059@baylibre.com>
-	<20240327-regulator-get-enable-get-votlage-v1-1-5f4517faa059@baylibre.com>
-	<ZgWw66OpLnLPdCn-@google.com>
-	<043b347b-2652-4ffb-a8e0-954a89899ade@sirena.org.uk>
-	<ZgXQcGlMiewRzki5@google.com>
-	<8d98fab7-d73b-45c5-a46a-ace57907d25b@sirena.org.uk>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Michael Hennerich <Michael.Hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: ad7944: use spi_optimize_message()
+Message-ID: <20240330160713.7b31c201@jic23-huawei>
+In-Reply-To: <20240328-ad7944-spi-optimize-message-v2-1-a142b2576379@baylibre.com>
+References: <20240328-ad7944-spi-optimize-message-v2-1-a142b2576379@baylibre.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,30 +60,265 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 28 Mar 2024 20:25:31 +0000
-Mark Brown <broonie@kernel.org> wrote:
+On Thu, 28 Mar 2024 16:16:59 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-> On Thu, Mar 28, 2024 at 01:17:52PM -0700, Dmitry Torokhov wrote:
-> > On Thu, Mar 28, 2024 at 06:18:32PM +0000, Mark Brown wrote:  
+> This modifies the ad7944 driver to use spi_optimize_message() to reduce
+> CPU usage and increase the max sample rate by avoiding repeating
+> validation of the spi message on each transfer.
 > 
-> > > I don't follow what you're saying here?  What normal APIs are not
-> > > available?  AFAICT this has nothing to do with a devm enable, it's a
-> > > combined operation which reports the voltage for the regulator if one is
-> > > available which would still be being added even if it used a devm
-> > > enable.  
-> 
-> > You can not do devm_regulator_get_enable() and then call
-> > regulator_get_voltage(), you need a new combined API.  
-> 
-> I think the theory here is that there are so many instances of this
-> reference voltage pattern that it's useful to have a helper for that
-> reason alone.
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-Exactly that - this is just adding a convenience function to
-remove boilerplate.  -20ish lines of cut and paste code per
-driver. 
+Applied to the togreg branch of iio.git and pushed out as testing.
+
+Thanks,
 
 Jonathan
 
+> ---
+> Changes in v2:
+> - Fix wrong array index in ad7944_3wire_cs_mode_init_msg()
+> - Fixed wrong number of xfers in ad7944_4wire_mode_init_msg()
+> - Link to v1: https://lore.kernel.org/r/20240325-ad7944-spi-optimize-message-v1-1-cded69b9e27f@baylibre.com
+> ---
+>  drivers/iio/adc/ad7944.c | 177 +++++++++++++++++++++++++++--------------------
+>  1 file changed, 103 insertions(+), 74 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
+> index 261a3f645fd8..e09ab0c842d3 100644
+> --- a/drivers/iio/adc/ad7944.c
+> +++ b/drivers/iio/adc/ad7944.c
+> @@ -51,6 +51,8 @@ static const char * const ad7944_spi_modes[] = {
+>  struct ad7944_adc {
+>  	struct spi_device *spi;
+>  	enum ad7944_spi_mode spi_mode;
+> +	struct spi_transfer xfers[3];
+> +	struct spi_message msg;
+>  	/* Chip-specific timing specifications. */
+>  	const struct ad7944_timing_spec *timing_spec;
+>  	/* GPIO connected to CNV pin. */
+> @@ -130,6 +132,88 @@ AD7944_DEFINE_CHIP_INFO(ad7985, ad7944, 16, 0);
+>  /* fully differential */
+>  AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
+>  
+> +static void ad7944_unoptimize_msg(void *msg)
+> +{
+> +	spi_unoptimize_message(msg);
+> +}
+> +
+> +static int ad7944_3wire_cs_mode_init_msg(struct device *dev, struct ad7944_adc *adc,
+> +					 const struct iio_chan_spec *chan)
+> +{
+> +	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
+> +						   : adc->timing_spec->conv_ns;
+> +	struct spi_transfer *xfers = adc->xfers;
+> +	int ret;
+> +
+> +	/*
+> +	 * NB: can get better performance from some SPI controllers if we use
+> +	 * the same bits_per_word in every transfer.
+> +	 */
+> +	xfers[0].bits_per_word = chan->scan_type.realbits;
+> +	/*
+> +	 * CS is tied to CNV and we need a low to high transition to start the
+> +	 * conversion, so place CNV low for t_QUIET to prepare for this.
+> +	 */
+> +	xfers[0].delay.value = T_QUIET_NS;
+> +	xfers[0].delay.unit = SPI_DELAY_UNIT_NSECS;
+> +
+> +	/*
+> +	 * CS has to be high for full conversion time to avoid triggering the
+> +	 * busy indication.
+> +	 */
+> +	xfers[1].cs_off = 1;
+> +	xfers[1].delay.value = t_conv_ns;
+> +	xfers[1].delay.unit = SPI_DELAY_UNIT_NSECS;
+> +	xfers[1].bits_per_word = chan->scan_type.realbits;
+> +
+> +	/* Then we can read the data during the acquisition phase */
+> +	xfers[2].rx_buf = &adc->sample.raw;
+> +	xfers[2].len = BITS_TO_BYTES(chan->scan_type.storagebits);
+> +	xfers[2].bits_per_word = chan->scan_type.realbits;
+> +
+> +	spi_message_init_with_transfers(&adc->msg, xfers, 3);
+> +
+> +	ret = spi_optimize_message(adc->spi, &adc->msg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev, ad7944_unoptimize_msg, &adc->msg);
+> +}
+> +
+> +static int ad7944_4wire_mode_init_msg(struct device *dev, struct ad7944_adc *adc,
+> +				      const struct iio_chan_spec *chan)
+> +{
+> +	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
+> +						   : adc->timing_spec->conv_ns;
+> +	struct spi_transfer *xfers = adc->xfers;
+> +	int ret;
+> +
+> +	/*
+> +	 * NB: can get better performance from some SPI controllers if we use
+> +	 * the same bits_per_word in every transfer.
+> +	 */
+> +	xfers[0].bits_per_word = chan->scan_type.realbits;
+> +	/*
+> +	 * CS has to be high for full conversion time to avoid triggering the
+> +	 * busy indication.
+> +	 */
+> +	xfers[0].cs_off = 1;
+> +	xfers[0].delay.value = t_conv_ns;
+> +	xfers[0].delay.unit = SPI_DELAY_UNIT_NSECS;
+> +
+> +	xfers[1].rx_buf = &adc->sample.raw;
+> +	xfers[1].len = BITS_TO_BYTES(chan->scan_type.storagebits);
+> +	xfers[1].bits_per_word = chan->scan_type.realbits;
+> +
+> +	spi_message_init_with_transfers(&adc->msg, xfers, 2);
+> +
+> +	ret = spi_optimize_message(adc->spi, &adc->msg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(dev, ad7944_unoptimize_msg, &adc->msg);
+> +}
+> +
+>  /*
+>   * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conversion and
+>   *                                   acquisition
+> @@ -145,48 +229,7 @@ AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
+>  static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
+>  					   const struct iio_chan_spec *chan)
+>  {
+> -	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
+> -						   : adc->timing_spec->conv_ns;
+> -	struct spi_transfer xfers[] = {
+> -		{
+> -			/*
+> -			 * NB: can get better performance from some SPI
+> -			 * controllers if we use the same bits_per_word
+> -			 * in every transfer.
+> -			 */
+> -			.bits_per_word = chan->scan_type.realbits,
+> -			/*
+> -			 * CS is tied to CNV and we need a low to high
+> -			 * transition to start the conversion, so place CNV
+> -			 * low for t_QUIET to prepare for this.
+> -			 */
+> -			.delay = {
+> -				.value = T_QUIET_NS,
+> -				.unit = SPI_DELAY_UNIT_NSECS,
+> -			},
+> -
+> -		},
+> -		{
+> -			.bits_per_word = chan->scan_type.realbits,
+> -			/*
+> -			 * CS has to be high for full conversion time to avoid
+> -			 * triggering the busy indication.
+> -			 */
+> -			.cs_off = 1,
+> -			.delay = {
+> -				.value = t_conv_ns,
+> -				.unit = SPI_DELAY_UNIT_NSECS,
+> -			},
+> -		},
+> -		{
+> -			/* Then we can read the data during the acquisition phase */
+> -			.rx_buf = &adc->sample.raw,
+> -			.len = BITS_TO_BYTES(chan->scan_type.storagebits),
+> -			.bits_per_word = chan->scan_type.realbits,
+> -		},
+> -	};
+> -
+> -	return spi_sync_transfer(adc->spi, xfers, ARRAY_SIZE(xfers));
+> +	return spi_sync(adc->spi, &adc->msg);
+>  }
+>  
+>  /*
+> @@ -200,33 +243,6 @@ static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
+>  static int ad7944_4wire_mode_conversion(struct ad7944_adc *adc,
+>  					const struct iio_chan_spec *chan)
+>  {
+> -	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
+> -						   : adc->timing_spec->conv_ns;
+> -	struct spi_transfer xfers[] = {
+> -		{
+> -			/*
+> -			 * NB: can get better performance from some SPI
+> -			 * controllers if we use the same bits_per_word
+> -			 * in every transfer.
+> -			 */
+> -			.bits_per_word = chan->scan_type.realbits,
+> -			/*
+> -			 * CS has to be high for full conversion time to avoid
+> -			 * triggering the busy indication.
+> -			 */
+> -			.cs_off = 1,
+> -			.delay = {
+> -				.value = t_conv_ns,
+> -				.unit = SPI_DELAY_UNIT_NSECS,
+> -			},
+> -
+> -		},
+> -		{
+> -			.rx_buf = &adc->sample.raw,
+> -			.len = BITS_TO_BYTES(chan->scan_type.storagebits),
+> -			.bits_per_word = chan->scan_type.realbits,
+> -		},
+> -	};
+>  	int ret;
+>  
+>  	/*
+> @@ -234,7 +250,7 @@ static int ad7944_4wire_mode_conversion(struct ad7944_adc *adc,
+>  	 * and acquisition process.
+>  	 */
+>  	gpiod_set_value_cansleep(adc->cnv, 1);
+> -	ret = spi_sync_transfer(adc->spi, xfers, ARRAY_SIZE(xfers));
+> +	ret = spi_sync(adc->spi, &adc->msg);
+>  	gpiod_set_value_cansleep(adc->cnv, 0);
+>  
+>  	return ret;
+> @@ -395,10 +411,6 @@ static int ad7944_probe(struct spi_device *spi)
+>  		adc->spi_mode = ret;
+>  	}
+>  
+> -	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
+> -		return dev_err_probe(dev, -EINVAL,
+> -				     "chain mode is not implemented\n");
+> -
+>  	/*
+>  	 * Some chips use unusual word sizes, so check now instead of waiting
+>  	 * for the first xfer.
+> @@ -491,6 +503,23 @@ static int ad7944_probe(struct spi_device *spi)
+>  		return dev_err_probe(dev, -EINVAL,
+>  			"cannot have both chain mode and always turbo\n");
+>  
+> +	switch (adc->spi_mode) {
+> +	case AD7944_SPI_MODE_DEFAULT:
+> +		ret = ad7944_4wire_mode_init_msg(dev, adc, &chip_info->channels[0]);
+> +		if (ret)
+> +			return ret;
+> +
+> +		break;
+> +	case AD7944_SPI_MODE_SINGLE:
+> +		ret = ad7944_3wire_cs_mode_init_msg(dev, adc, &chip_info->channels[0]);
+> +		if (ret)
+> +			return ret;
+> +
+> +		break;
+> +	case AD7944_SPI_MODE_CHAIN:
+> +		return dev_err_probe(dev, -EINVAL, "chain mode is not implemented\n");
+> +	}
+> +
+>  	indio_dev->name = chip_info->name;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &ad7944_iio_info;
+> 
+> ---
+> base-commit: 526f7f17b651c78ead26fea7cea20948c00e47a5
+> change-id: 20240325-ad7944-spi-optimize-message-82debaa2a5a7
+> 
+> Best regards,
 
 
