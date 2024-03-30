@@ -1,296 +1,167 @@
-Return-Path: <linux-kernel+bounces-125727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83231892B3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:55:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F09892B3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AFEFB22250
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:55:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28D48B222AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4861EA74;
-	Sat, 30 Mar 2024 12:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B312219F0;
+	Sat, 30 Mar 2024 12:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R7Nwg4/V"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XpB/f+C2"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F64A1C0DE0
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 12:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B70B8BFC;
+	Sat, 30 Mar 2024 12:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711803336; cv=none; b=elZIta0E0jgw1th5FeN7l9mG0e1CkbUkuMzHb5iAjVuI6rJJZa1fIiYmttPgLzV+TuWrwvNSoHKZE5KK1o0H+DzIjhrTUmNFMaK05xtIYkJaeNe+yWmsUDKHNrnordjDIxrENFbVyCWexMlN6URV76R+supcrfF9IzBCOSB11GI=
+	t=1711803541; cv=none; b=k4mr8rwyoWiwHqM5e7Iw+tj0V1FHDvYqekiKeIU7FStQ4Ami0y2t4MrFbva261fVC1dSLcFfpdvcDk3d1PFYGCQIdcHiOnigvhVShe/Sx/fI3rzSHqEQl4yY8y8Z8Kc6d+1dtf/Xv2k2kShX37IHu8wQ2vkSL2LcoH+LK5X42+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711803336; c=relaxed/simple;
-	bh=aiF/VX3qlCKtwHY7oEY5LhxYA4GvGZv/XClb3Er5KkI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bVVtswlsZluZfTFBfg5RPVXpIEQC8s4hhTKcXJMnSQoi2CDbpMaLHDpS6vY52bZqEtsBCwlvKdv633phtrdvmqYPcAznc7yoNBmp8fMRJx3V3NnB8jm2ZAt1RUGOf3ZAqrKuBr1fZZWZBbqQOU4Vi/ZXoVQAXDm06jydeBvlo8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R7Nwg4/V; arc=none smtp.client-ip=209.85.208.171
+	s=arc-20240116; t=1711803541; c=relaxed/simple;
+	bh=Car9GN2tQNeTTS1TNLTIQj5FQX9M9R0UjeM03caoV6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C8rrncozQZjsL12DBqK9PNYXAnIaZnF9E8gajFgCkFn4PbVNBv8EFQMX7zSSOmwEt2jiM6kXuEKT1gbsjZolsJ/+VK2zW5no4VNu2Uft8SBuwz+4oDIM3zN0ZjPxl4aonY4zyqAGxHgfAJsck7r/eilPRcfZQ89eirwGi4ukqUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XpB/f+C2; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d6c220a377so31978231fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 05:55:33 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4155bc085dfso1406505e9.1;
+        Sat, 30 Mar 2024 05:58:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711803332; x=1712408132; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1m9ovnxUmO4jM14h7Q0jSZVXsOuJTF/qtN6BxjeYGvU=;
-        b=R7Nwg4/V6na2fLngz2S5rB97oYaaz8xKxHJO+wKXn3kmyP5A9EqQEjoaCaPRsO2/dY
-         b2E4I9AM6q9w65w8Jq1EhqpavJsJvICr/Xn3G/x7oCNgyoJzlRFsPicQb1lAWcWujpON
-         Npfv2Nf41tJnHb2a9EWG/hICHxlun0Xck/fBQeXDtkZlQLfLh+GVi5CU2QpUCQdcSMzI
-         l3lXGQnCZt1Wr7V6vdCjMhUSwsiezCo7cJM76G+tmal9LQf9FwUt7tM5WOiXW08qfhZB
-         zCfU/CNr1bKpgIdSxiTWhXC4qHZbBintPULVI3eOROoWgn3cl1+8znnGEyA3VraK7teX
-         Egqg==
+        d=gmail.com; s=20230601; t=1711803537; x=1712408337; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9JaMGVJLZuF28CmdzYEI45s8CkO4naifu4l9FLwAvec=;
+        b=XpB/f+C2jg3uxvcaqp73OYSSjUjLeD3tHJMXnJ8zRglMKzXBnQVmmxQEIvrZJKowLn
+         525Mr7hn/mdc7daD+cZksp233jJNxw79rjiWUlHVCL07MwN8OgzCrgYBS0gDRvIs+2C8
+         YsPtzUlAiWmasbF3P49aMy79G1QkE7FSqa31piYRlwRduOqPuZCddkOfYMwzZu/a4m0r
+         Q3rsDXcNVQSn+cFGZNE9BS6pHie4jK3DppZliyFYqaGgT9deqoGbHBB//zysAO2C7nbc
+         GJcYxCDbivNkpeFIkCT3NEGcD4FiBoVAuwPUyLqDPOaSRRYLFfiOPmPXwBjUAmFgqEw6
+         uUkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711803332; x=1712408132;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1m9ovnxUmO4jM14h7Q0jSZVXsOuJTF/qtN6BxjeYGvU=;
-        b=t1IHWVYlJSod24HWP8K1OLk5X+mvhXB3hd48uRKQF8EqGFJ7CQ4kDwOYzVPmusyCj+
-         PeJgDO2ieBUr7UIkWgg0Q4PCByr66RcgRNnT96FxNzEOrlmS1TinRpY3TKH+A4BEKmzT
-         ear7Yna+RFDuD4BKGxdbBjOSK+vmDz0FvfmfFBzJty7+xHVgMYhs6Vj6ew3lSdj1hJ1r
-         rfnVeRfi8mk7e4uiVYNw11sEKfsEmKdrnqjI+uyYrKkmB1+1nenrFdOygM9oiqRgsxIk
-         iNPup+qSZV4ipFeAnKqaDFvmJ/tkfVeMlUM5pEDPENYZIkf2Q0kXqGcJ+WUq+c+/G6Wk
-         jlng==
-X-Forwarded-Encrypted: i=1; AJvYcCVY2do8bAVkrC1JNAUln1Vl8z/ceZvKYMqX97CsWZqcm6T8DXrzrQ5GRbkOHzgB455jRleEO9sWCcJRUNMRFMIR7pR0UWBnYeZe2LIy
-X-Gm-Message-State: AOJu0YzwFCPdIGx2vJcrN9dLavu5iA8A5rjaeCvfRNsWOvFMukxejA7j
-	J+eUUrFpb2kICStY3S9P9sqpADstbksf9l1anhsN+k7lZS05jHQA
-X-Google-Smtp-Source: AGHT+IElPPMcrF0eTA1Tziki8z1EtpiGvO6Hr2cCipUkj2rBlXzYWXvrEVMBrleMs8fkd3kc/SfWnA==
-X-Received: by 2002:a2e:a176:0:b0:2d4:78ba:fa45 with SMTP id u22-20020a2ea176000000b002d478bafa45mr3423019ljl.2.1711803331820;
-        Sat, 30 Mar 2024 05:55:31 -0700 (PDT)
-Received: from pc636 (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id x20-20020a2ea994000000b002d435cdf2adsm879682ljq.111.2024.03.30.05.55.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 05:55:31 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Sat, 30 Mar 2024 13:55:29 +0100
-To: Baoquan He <bhe@redhat.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dave Chinner <david@fromorbit.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Jens Axboe <axboe@kernel.dk>, Omar Sandoval <osandov@fb.com>
-Subject: Re: [PATCH 1/1] mm: vmalloc: Fix lockdep warning
-Message-ID: <ZggLwbnaeK0AsRwQ@pc636>
-References: <20240328140330.4747-1-urezki@gmail.com>
- <ZgZxaOg6/qZAfUUA@MiWiFi-R3L-srv>
+        d=1e100.net; s=20230601; t=1711803537; x=1712408337;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JaMGVJLZuF28CmdzYEI45s8CkO4naifu4l9FLwAvec=;
+        b=r6BdbLQ2fJbSGIcMF6seIW8nt093weiNc5wLxVpkYAKNAVZ3E3Fri5VCgdwZoe5c9l
+         pM/fn+n3zfCqB9D6JHeCCPnyBw4HSw6fWTEKaAQtTGCv1PE8RB0JbBz07fAyCYxfv0Dj
+         TeNlGv7Xj+a9lAKE4yBZpYi0osBDykZVT3OR4ntxF0XzDP7Gz9uiQmgD1+gPxnVGygmD
+         QRudv1bOeMN5Tr2qlf7VTnr+4ezsoncBrmTlL8ZUzJDfRO6ijF0299ZbfBhM/uhmrPY/
+         viR0tL4yEroceNZzhyH8Q2KCPHhHlehdXzB4VkDxJ0wQrS7uly6MLsaqtKekJLdSB3tN
+         i5aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTToItFdW8nfLk4xVonvh0SU+yqT2CIBvNawxyzAcLcHjHY2rLzbs/Bw8Ub9lkM0fjwzoDsCZdDAo3VdFNvpcfAuZwT7/3w/uJl4FjP1OJa63ewk/5i7eOysvDpgzKAvwL3WlrHxo7gTTtG6VFP/aQeCMdDy7D/36RpnniAy0aXEqviAiUCtfCjQia0cu7
+X-Gm-Message-State: AOJu0Ywf+/5YcMvVRSJtjG4MVZUAjeY9d5MwHioCNQesODnfQFzn3sz4
+	9pK9o+IgpQLMseRjheO6E8AipJZ8vdDchONb0wK1wB3GLYgbnEq6
+X-Google-Smtp-Source: AGHT+IEa0WdkS11BCB1d7NoUqJwCtyKOfTMUYVoDqiClzq+5hTM/tfUqq9qFJHWlzyPAyvES/KxpuA==
+X-Received: by 2002:a05:600c:1913:b0:414:6172:8366 with SMTP id j19-20020a05600c191300b0041461728366mr4006133wmq.15.1711803537355;
+        Sat, 30 Mar 2024 05:58:57 -0700 (PDT)
+Received: from [172.18.121.29] (ip-185-104-138-51.ptr.icomera.net. [185.104.138.51])
+        by smtp.gmail.com with ESMTPSA id bi8-20020a05600c3d8800b00415461b9ab2sm7735216wmb.5.2024.03.30.05.58.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Mar 2024 05:58:56 -0700 (PDT)
+Message-ID: <e8ccce25-86d5-492a-8fb4-3f39036fa91a@gmail.com>
+Date: Sat, 30 Mar 2024 13:58:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgZxaOg6/qZAfUUA@MiWiFi-R3L-srv>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] hwmon: Add thermal sensor driver for Surface
+ Aggregator Module
+To: Guenter Roeck <linux@roeck-us.net>, Jean Delvare <jdelvare@suse.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>
+Cc: Ivor Wanders <ivor@iwanders.net>, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org
+References: <20240330112409.3402943-1-luzmaximilian@gmail.com>
+ <20240330112409.3402943-2-luzmaximilian@gmail.com>
+ <d49ea735-3113-4c1f-a8dc-c6d8e821c4f1@roeck-us.net>
+Content-Language: en-US
+From: Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <d49ea735-3113-4c1f-a8dc-c6d8e821c4f1@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 29, 2024 at 03:44:40PM +0800, Baoquan He wrote:
-> On 03/28/24 at 03:03pm, Uladzislau Rezki (Sony) wrote:
-> > A lockdep reports a possible deadlock in the find_vmap_area_exceed_addr_lock()
-> > function:
-> > 
-> > ============================================
-> > WARNING: possible recursive locking detected
-> > 6.9.0-rc1-00060-ged3ccc57b108-dirty #6140 Not tainted
-> > --------------------------------------------
-> > drgn/455 is trying to acquire lock:
-> > ffff0000c00131d0 (&vn->busy.lock/1){+.+.}-{2:2}, at: find_vmap_area_exceed_addr_lock+0x64/0x124
-> > 
-> > but task is already holding lock:
-> > ffff0000c0011878 (&vn->busy.lock/1){+.+.}-{2:2}, at: find_vmap_area_exceed_addr_lock+0x64/0x124
-> > 
-> > other info that might help us debug this:
-> >  Possible unsafe locking scenario:
-> > 
-> >        CPU0
-> >        ----
-> >   lock(&vn->busy.lock/1);
-> >   lock(&vn->busy.lock/1);
-> > 
-> >  *** DEADLOCK ***
-> > 
-> > indeed it can happen if the find_vmap_area_exceed_addr_lock()
-> > gets called concurrently because it tries to acquire two nodes
-> > locks. It was done to prevent removing a lowest VA found on a
-> > previous step.
-> > 
-> > To address this a lowest VA is found first without holding a
-> > node lock where it resides. As a last step we check if a VA
-> > still there because it can go away, if removed, proceed with
-> > next lowest.
-> > 
-> > Fixes: 53becf32aec1 ("mm: vmalloc: support multiple nodes in vread_iter")
-> > Tested-by: Jens Axboe <axboe@kernel.dk>
-> > Tested-by: Omar Sandoval <osandov@fb.com>
-> > Reported-by: Jens Axboe <axboe@kernel.dk>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  mm/vmalloc.c | 74 +++++++++++++++++++++++++++++++---------------------
-> >  1 file changed, 44 insertions(+), 30 deletions(-)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index e94ce4562805..a5a5dfc3843e 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -989,6 +989,27 @@ unsigned long vmalloc_nr_pages(void)
-> >  	return atomic_long_read(&nr_vmalloc_pages);
-> >  }
-> >  
-> > +static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
-> > +{
-> > +	struct rb_node *n = root->rb_node;
-> > +
-> > +	addr = (unsigned long)kasan_reset_tag((void *)addr);
-> > +
-> > +	while (n) {
-> > +		struct vmap_area *va;
-> > +
-> > +		va = rb_entry(n, struct vmap_area, rb_node);
-> > +		if (addr < va->va_start)
-> > +			n = n->rb_left;
-> > +		else if (addr >= va->va_end)
-> > +			n = n->rb_right;
-> > +		else
-> > +			return va;
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> >  /* Look up the first VA which satisfies addr < va_end, NULL if none. */
-> >  static struct vmap_area *
-> >  __find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
-> > @@ -1025,47 +1046,40 @@ __find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
-> >  static struct vmap_node *
-> >  find_vmap_area_exceed_addr_lock(unsigned long addr, struct vmap_area **va)
-> >  {
-> > -	struct vmap_node *vn, *va_node = NULL;
-> > -	struct vmap_area *va_lowest;
-> > +	unsigned long va_start_lowest;
-> > +	struct vmap_node *vn;
-> >  	int i;
-> >  
-> > -	for (i = 0; i < nr_vmap_nodes; i++) {
-> > +repeat:
-> > +	for (i = 0, va_start_lowest = 0; i < nr_vmap_nodes; i++) {
-> >  		vn = &vmap_nodes[i];
-> >  
-> >  		spin_lock(&vn->busy.lock);
-> > -		va_lowest = __find_vmap_area_exceed_addr(addr, &vn->busy.root);
-> > -		if (va_lowest) {
-> > -			if (!va_node || va_lowest->va_start < (*va)->va_start) {
-> > -				if (va_node)
-> > -					spin_unlock(&va_node->busy.lock);
-> > -
-> > -				*va = va_lowest;
-> > -				va_node = vn;
-> > -				continue;
-> > -			}
-> > -		}
-> > +		*va = __find_vmap_area_exceed_addr(addr, &vn->busy.root);
-> > +
-> > +		if (*va)
-> > +			if (!va_start_lowest || (*va)->va_start < va_start_lowest)
-> > +				va_start_lowest = (*va)->va_start;
+On 3/30/24 12:58, Guenter Roeck wrote:
+> On 3/30/24 04:24, Maximilian Luz wrote:
+>> Some of the newer Microsoft Surface devices (such as the Surface Book
+>> 3 and Pro 9) have thermal sensors connected via the Surface Aggregator
+>> Module (the embedded controller on those devices). Add a basic driver
+>> to read out the temperature values of those sensors.
+>>
+>> Link: https://github.com/linux-surface/surface-aggregator-module/issues/59
+>> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 > 
-> How about below change about va_start_lowest? Personal preference, not
-> strong opinion.
+> I very much dislike the idea of having multiple drivers for hardware
+> monitoring on the same system. Please explain in detail why this and
+> the fan driver for the same system need separate drivers.
 > 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 9b1a41e12d70..bd6a66c54ad2 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1046,19 +1046,19 @@ __find_vmap_area_exceed_addr(unsigned long addr, struct rb_root *root)
->  static struct vmap_node *
->  find_vmap_area_exceed_addr_lock(unsigned long addr, struct vmap_area **va)
->  {
-> -	unsigned long va_start_lowest;
-> +	unsigned long va_start_lowest = ULONG_MAX;
->  	struct vmap_node *vn;
->  	int i;
->  
->  repeat:
-> -	for (i = 0, va_start_lowest = 0; i < nr_vmap_nodes; i++) {
-> +	for (i = 0; i < nr_vmap_nodes; i++) {
->  		vn = &vmap_nodes[i];
->  
->  		spin_lock(&vn->busy.lock);
->  		*va = __find_vmap_area_exceed_addr(addr, &vn->busy.root);
->  
->  		if (*va)
-> -			if (!va_start_lowest || (*va)->va_start < va_start_lowest)
-> +			if ((*va)->va_start < va_start_lowest)
->  				va_start_lowest = (*va)->va_start;
->  		spin_unlock(&vn->busy.lock);
->  	}
-> @@ -1069,7 +1069,7 @@ find_vmap_area_exceed_addr_lock(unsigned long addr, struct vmap_area **va)
->  	 * been removed concurrently thus we need to proceed
->  	 * with next one what is a rare case.
->  	 */
-> -	if (va_start_lowest) {
-> +	if (va_start_lowest != ULONG_MAX) {
->  		vn = addr_to_node(va_start_lowest);
->  
->  		spin_lock(&vn->busy.lock);
-> 
-> 
-To me it looks as incomplete. The "va_start_lowest" should be initialized
-when repeat. Otherwise we can end up with an infinite repeating because
-va_start_lowest != ULONG_MAX.
+> I'll also very much want to know if we will see submissions for separate
+> voltage, current, power, energy, humidity, and/or other hardware monitoring
+> entities for the same system later on.
 
-> >  	}
-> >  
-> > -	return va_node;
-> > -}
-> > -
-> > -static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
-> > -{
-> > -	struct rb_node *n = root->rb_node;
-> > +	/*
-> > +	 * Check if found VA exists, it might it is gone away.
->                                         ~~~~ grammer mistake?
-> > +	 * In this case we repeat the search because a VA has
-> > +	 * been removed concurrently thus we need to proceed
-> > +	 * with next one what is a rare case.
->                          ~~~~ typo, which?
-> > +	 */
-> > +	if (va_start_lowest) {
-> > +		vn = addr_to_node(va_start_lowest);
-> >  
-> > -	addr = (unsigned long)kasan_reset_tag((void *)addr);
-> > +		spin_lock(&vn->busy.lock);
-> > +		*va = __find_vmap_area(va_start_lowest, &vn->busy.root);
-> >  
-> > -	while (n) {
-> > -		struct vmap_area *va;
-> > +		if (*va)
-> > +			return vn;
-> >  
-> > -		va = rb_entry(n, struct vmap_area, rb_node);
-> > -		if (addr < va->va_start)
-> > -			n = n->rb_left;
-> > -		else if (addr >= va->va_end)
-> > -			n = n->rb_right;
-> > -		else
-> > -			return va;
-> > +		spin_unlock(&vn->busy.lock);
-> > +		goto repeat;
-> >  	}
-> 
-> Other than above nickpick concerns, this looks good to me.
-> 
-> Reviewed-by: Baoquan He <bhe@redhat.com>
-> 
-Thank you!
+The Surface Aggregator EC is not really a single device, but rather a
+collection of subsystems. For example, there's one for the battery, one
+for thermal sensors, and a separate one for the fan. Not all subsystems
+are present on all devices with that EC, so we have modeled them as
+separate subdevices of the parent EC controller. This makes it quite a
+bit easier to maintain. Especially, since I haven't found any reliable
+way to auto-detect the active/supported subsystems.
 
---
-Uladzislau Rezki
+For example: The Surface Book 3 has thermal sensors that can be accessed
+via this driver as well as a fan. As far as I know, however, the fan
+subsystem has been introduced later and the Surface Book 3 doesn't
+support that yet. So there's (as far as I know) no fan-monitoring
+support. Trying to access that will fail with a timeout. For that reason
+(but not specifically for that device), we have introduced the split
+into subystem devices, which are maunally registered in
+surface_aggregator_registry.c based on what we know the device actually
+supports.
+
+Further, the devices created for these subsystems also act as a binding
+mechanism to the subsystem, speficying the subsystem ID/category used
+for making requests to it. For example, this driver probes for
+
+     SSAM_SDEV(TMP, SAM, 0x00, 0x02)
+
+meaning it looks for a device of the TMP subsystem on the SAM target ID
+(which can be seen as a bus number) with instance 0 and function 2. This
+(in particular subsystem ID and target ID) are directly used when making
+requests to the EC. So if we find out down the line that temperature
+sensors can be accessed on target ID KIP in addition to SAM, it's as easy
+as adding a new device match to the driver.
+
+I believe that this would be more difficult if the driver is merged
+together: Doing so would require us to figure out what's present and
+what we can or should access inside of the driver (instead of via the
+already established registry). So it would either require us to do a
+certain amount of hardcoding and if/else branches or we would have to
+introduce a bunch of device properties and a meta-device just to bundle
+all monitoring-related subsystems together, and again use a bunch of
+if/else branches... And in both cases, the direct subsystem binding
+originally intended in the device structure of the Surface Aggregator
+bus goes out of the window.
+
+So, in my opinion at least, having separate smaller but specific drivers
+and leaving that "logic" to the registry driver makes this much more
+maintainable.
+
+Regarding other monitoring entities: In short, I don't know. I am not
+aware of any other (current/power/...) monitoring capabilities of the EC
+right now, but I can't guarantee that MS won't introduce a new subsystem
+for those down the line (or that there already is one and we just don't
+know about it). At which point, it will quite likely only be supported
+on some (probably newer) devices again.
+
+Best regards,
+Max
 
