@@ -1,163 +1,148 @@
-Return-Path: <linux-kernel+bounces-125845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06101892CFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:31:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ACB6892D02
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B07672828F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 20:31:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6FFAB21FB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 20:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D3F4655F;
-	Sat, 30 Mar 2024 20:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9623446AE;
+	Sat, 30 Mar 2024 20:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NGRXK6eR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J0vCs3bZ"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2C9433BD
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 20:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580A423758
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 20:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711830709; cv=none; b=tp3NE2arEg415WkJIYP16kQDGuGMIK6Bhsifd++IoMAqK8h/URpk9T3hL3of/3jtPLC2tykxvXTt+x4bs2fPkFCoZiVpRk3W4Cr00t4mMA4UFMNtSOHXOvC1t4vZsA+RNzjBUR+wgKcc35coNM1gokg5Zz/77GTm+e6hQd/XR+U=
+	t=1711830803; cv=none; b=VTg2CEgcqnX3fmLlhNxc/OB9O0zSO5nq4LNzVzXtmElg5nxHvE/NaJ8GzNMq8tT72sT9kNQx4DGHo6ViZeya2FeJSUUbUcbg3Sxb+pWTKKfD0/sXh42fBTKZlB88mnTw1/dTSLg2fsVoNJVyEupiVBzEs+nrQFTIJYDzxc81lhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711830709; c=relaxed/simple;
-	bh=6ctr9IjTD/fi10pl5bm0p03fWwzEss7WctNWnahmYJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mxKzDJRPf3vxgRaUy2Bg8HbgyH7xYy6r4cgd4lvIgzrvVM35qRtLMkU3cJ84ELl+TfjxIpaPkcqtTjPYw7WtP8znHouuhfgcUdK4/AjhAvn9Q23YL3PfIAgF6rh6avcAI2RdZUafor//uIN0Qzpf9zCXxsIzjNIyOQY/LQNOa28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NGRXK6eR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711830706;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=5D9RsBB4kciPmaMVEYgR85qIqWcP45dPbiaFBD383j8=;
-	b=NGRXK6eRbDKMeBI6wqSaVeW6bfxT32AK137mJVIJzUTneNyqco+mCcZ/Jxxt5TaJlZIjXj
-	Uwfuq5SFbQMMuR/7jOPrpX5QK+hYMJ6SnZgunyPkm8kYOlX8Ybnx3YcBYVaA4EdofbYFE2
-	v+csROiqL/wkosZeKiqvj0aUS2wb+Ks=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-30-BquwhG0tOJGkaGa478H1pQ-1; Sat, 30 Mar 2024 16:31:45 -0400
-X-MC-Unique: BquwhG0tOJGkaGa478H1pQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a466c7b0587so204067666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:31:44 -0700 (PDT)
+	s=arc-20240116; t=1711830803; c=relaxed/simple;
+	bh=ikAn+U2VxbkfcXOAocqiqsMAFIUnrQGNULyY7tvmZjM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=JTAd78KbTYm8n/Lf7mmhd20KTy8X08ttzsyFaoClsP58+oL3zRmj2UcyyVHuFov9uHt9HGPg/q+m5KF5vaPO3UZuTYK1bmUag21FSx8dT9wmSfEKd8/fPc7QnUC/wBOgxyY3z5vxlmU2jM5PbMLchGscA1Up8GRL5BZO6IhK8K0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J0vCs3bZ; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3433e518c78so579284f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:33:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711830800; x=1712435600; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GFAjJDDVv2Mq/JzFmcsO7YxhKCuR+cnUm88ySh3fdCY=;
+        b=J0vCs3bZj868wkv2dxCA16usdLTxHmx+JepOHhgNLGhrtirvnyRwGOK7QU8kuAGxkI
+         XAwimqKE0ToQZRhZD2eGjLCsReLZgXnm5vuNxSlCPMlf3dalnHePEaHvZ54DxRzsb0a+
+         9elkNdrVfMD0433x0LhQBzFqNu6bJZ3dIT0RnvVXjeQUwXR/Dle4HKh24gEmEZcU+I6E
+         i587xtWsu6wcJR6o9dEISLZ0x3fnP8wT6e04edOK5Re/KbOOH3X3Df52EX5M5vmOSP/8
+         PTbzSeZj7uKmttBPdBXpUUQwHCDYJm9dVvCMyXuRzNXG+Cs+9w04YkBJmL0+ozCgjDz7
+         +7DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711830704; x=1712435504;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711830800; x=1712435600;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5D9RsBB4kciPmaMVEYgR85qIqWcP45dPbiaFBD383j8=;
-        b=P+IA2+nS7bZP7FSrUJTVONh+qahZLiL/SfRixysf9MHMvS+MRww35H0360MrxqrwWK
-         9po5RLULZQTYiKgNvL1YDmpVPR6tQA0V5AVsoSkYoroPvmDAka4vQOmnfg04enrFl2SY
-         YiU9niyA9TzbygAkMxaUNtOLP4i2ZGliuVv+RMpDpWYP2ESglY601xR+BtmiUk2o6jy2
-         suOiWOcATNq7PdB1PYZSVZmtNzPsflBJ0MBkq+5tZqHKOQE4zLzrD9eI4gkqaDJYcbOc
-         X3YragQhlW2csTHt2kua32yuWCR1PQngpdSSNdAlXqI8ssz6Ez3sNS02x3dFbV0iFr7g
-         akmA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwhMmtgVvKGBaVyId/PmHckGsvkaGxzq5kDd2QHSYOxafCHodh18qpHzfSK5wPvu4M7SAAkAhqzpoHNZRe+3rzky5/n+8lCKlQiVEn
-X-Gm-Message-State: AOJu0YxYpCkjg7a9mXixPKlIZ5yc7epYcuWbOguRRARLra8QMGeasL4i
-	RD40T4mE3cq3CcNuRYJpLigUa5Z5c5GvTXNojE5GJgydNZohcldnktfswYla/4koOB32NQkWoH/
-	NCc1lcI0RLVAW84wUpQNbgqiIiwS4+OlTUffJ/PnI5Sgxgtnueyqo9UGYixu3Sw==
-X-Received: by 2002:a17:907:9445:b0:a4e:5540:7c0c with SMTP id dl5-20020a170907944500b00a4e55407c0cmr1073501ejc.70.1711830703987;
-        Sat, 30 Mar 2024 13:31:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFLGTizDL+ipqWK8vAakREtH5rqSNheH+umOQZwMHVXU0gaVZFxsEwVnS2XB/8MH8LYIGhcfQ==
-X-Received: by 2002:a17:907:9445:b0:a4e:5540:7c0c with SMTP id dl5-20020a170907944500b00a4e55407c0cmr1073479ejc.70.1711830703673;
-        Sat, 30 Mar 2024 13:31:43 -0700 (PDT)
-Received: from [192.168.10.4] ([151.95.49.219])
-        by smtp.googlemail.com with ESMTPSA id p17-20020a170906785100b00a4e08e81e7esm3389899ejm.27.2024.03.30.13.31.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 13:31:43 -0700 (PDT)
-Message-ID: <8c3685a6-833c-4b3c-83f4-c0bd78bba36e@redhat.com>
-Date: Sat, 30 Mar 2024 21:31:40 +0100
+        bh=GFAjJDDVv2Mq/JzFmcsO7YxhKCuR+cnUm88ySh3fdCY=;
+        b=TmC+8MnnZIhZvYVUlk5aV8Xyicmgx1r824t02dqJiMK2pmAo/xGQ48J60QNjNe8hpu
+         +T3E1nBDIfEsCHSdmHqtyKUHCBlNFUU1dczxEL14x4ERPN3G9Upv9jZy7kvdR4oQzF2T
+         7ZRf/O9k/6u41PMrXMfZPinZTPyIqi4jCfPbLkzIln9ABOG/Y1zlmTM6dRKYbYgDIdw8
+         F/G9lxWCl+qm8AMlcB63jwHlmP9mx8HbanOWgY+qhjTuhU16/SLojrcX0BYWF8Akk4Ej
+         Rhzsr1UT821naF61eDNXnUR8SdlfLc9tzfODJH0OZ2Mp1qy3RmuRIc6FWMqj5MrbFmoe
+         ZO/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVamrzsTvCSaVocaoOVVlEDlIMO2N6Vip0MtsibeMN4JEvT2rGf6cO8beZH1N637WnGU+mm6I2AM0Q3vrq+n2BTaJNQWN6IZA+q1ERt
+X-Gm-Message-State: AOJu0YyW51YeimqyZq9t4V0EBJHFYpILms/srtbnq75OP/8XuXSfSRZM
+	/C65SifQQfNehv+WyCUcfnIhkJ/4jPPZwP8m8hXBQr+Tmr030QnotYk0kyx3ySo=
+X-Google-Smtp-Source: AGHT+IGOX9rzHnZKqEi/0u/JwllhPjDL5WI+9xrT75BifyUqTbwy5wixNEYn4orV6XKjH7yINyhNTQ==
+X-Received: by 2002:a05:6000:402a:b0:341:c9bc:6340 with SMTP id cp42-20020a056000402a00b00341c9bc6340mr5662696wrb.12.1711830799729;
+        Sat, 30 Mar 2024 13:33:19 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id f14-20020adfc98e000000b0033b48190e5esm7209315wrh.67.2024.03.30.13.33.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Mar 2024 13:33:19 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 00/11] drm/exynos: drop driver owner initialization
+Date: Sat, 30 Mar 2024 21:33:04 +0100
+Message-Id: <20240330-b4-module-owner-drm-exynos-v1-0-3fa30e2c7e5a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 11/29] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
-To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
- thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com,
- vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
- dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
- peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
- rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
- vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
- tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
- alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
- Brijesh Singh <brijesh.singh@amd.com>
-References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-12-michael.roth@amd.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- xsEhBFRCcBIBDqDGsz4K0zZun3jh+U6Z9wNGLKQ0kSFyjN38gMqU1SfP+TUNQepFHb/Gc0E2
- CxXPkIBTvYY+ZPkoTh5xF9oS1jqI8iRLzouzF8yXs3QjQIZ2SfuCxSVwlV65jotcjD2FTN04
- hVopm9llFijNZpVIOGUTqzM4U55sdsCcZUluWM6x4HSOdw5F5Utxfp1wOjD/v92Lrax0hjiX
- DResHSt48q+8FrZzY+AUbkUS+Jm34qjswdrgsC5uxeVcLkBgWLmov2kMaMROT0YmFY6A3m1S
- P/kXmHDXxhe23gKb3dgwxUTpENDBGcfEzrzilWueOeUWiOcWuFOed/C3SyijBx3Av/lbCsHU
- Vx6pMycNTdzU1BuAroB+Y3mNEuW56Yd44jlInzG2UOwt9XjjdKkJZ1g0P9dwptwLEgTEd3Fo
- UdhAQyRXGYO8oROiuh+RZ1lXp6AQ4ZjoyH8WLfTLf5g1EKCTc4C1sy1vQSdzIRu3rBIjAvnC
- tGZADei1IExLqB3uzXKzZ1BZ+Z8hnt2og9hb7H0y8diYfEk2w3R7wEr+Ehk5NQsT2MPI2QBd
- wEv1/Aj1DgUHZAHzG1QN9S8wNWQ6K9DqHZTBnI1hUlkp22zCSHK/6FwUCuYp1zcAEQEAAc0j
- UGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT7CwU0EEwECACMFAlRCcBICGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRB+FRAMzTZpsbceDp9IIN6BIA0Ol7MoB15E
- 11kRz/ewzryFY54tQlMnd4xxfH8MTQ/mm9I482YoSwPMdcWFAKnUX6Yo30tbLiNB8hzaHeRj
- jx12K+ptqYbg+cevgOtbLAlL9kNgLLcsGqC2829jBCUTVeMSZDrzS97ole/YEez2qFpPnTV0
- VrRWClWVfYh+JfzpXmgyhbkuwUxNFk421s4Ajp3d8nPPFUGgBG5HOxzkAm7xb1cjAuJ+oi/K
- CHfkuN+fLZl/u3E/fw7vvOESApLU5o0icVXeakfSz0LsygEnekDbxPnE5af/9FEkXJD5EoYG
- SEahaEtgNrR4qsyxyAGYgZlS70vkSSYJ+iT2rrwEiDlo31MzRo6Ba2FfHBSJ7lcYdPT7bbk9
- AO3hlNMhNdUhoQv7M5HsnqZ6unvSHOKmReNaS9egAGdRN0/GPDWr9wroyJ65ZNQsHl9nXBqE
- AukZNr5oJO5vxrYiAuuTSd6UI/xFkjtkzltG3mw5ao2bBpk/V/YuePrJsnPFHG7NhizrxttB
- nTuOSCMo45pfHQ+XYd5K1+Cv/NzZFNWscm5htJ0HznY+oOsZvHTyGz3v91pn51dkRYN0otqr
- bQ4tlFFuVjArBZcapSIe6NV8C4cEiSTOwE0EVEJx7gEIAMeHcVzuv2bp9HlWDp6+RkZe+vtl
- KwAHplb/WH59j2wyG8V6i33+6MlSSJMOFnYUCCL77bucx9uImI5nX24PIlqT+zasVEEVGSRF
- m8dgkcJDB7Tps0IkNrUi4yof3B3shR+vMY3i3Ip0e41zKx0CvlAhMOo6otaHmcxr35sWq1Jk
- tLkbn3wG+fPQCVudJJECvVQ//UAthSSEklA50QtD2sBkmQ14ZryEyTHQ+E42K3j2IUmOLriF
- dNr9NvE1QGmGyIcbw2NIVEBOK/GWxkS5+dmxM2iD4Jdaf2nSn3jlHjEXoPwpMs0KZsgdU0pP
- JQzMUMwmB1wM8JxovFlPYrhNT9MAEQEAAcLBMwQYAQIACQUCVEJx7gIbDAAKCRB+FRAMzTZp
- sadRDqCctLmYICZu4GSnie4lKXl+HqlLanpVMOoFNnWs9oRP47MbE2wv8OaYh5pNR9VVgyhD
- OG0AU7oidG36OeUlrFDTfnPYYSF/mPCxHttosyt8O5kabxnIPv2URuAxDByz+iVbL+RjKaGM
- GDph56ZTswlx75nZVtIukqzLAQ5fa8OALSGum0cFi4ptZUOhDNz1onz61klD6z3MODi0sBZN
- Aj6guB2L/+2ZwElZEeRBERRd/uommlYuToAXfNRdUwrwl9gRMiA0WSyTb190zneRRDfpSK5d
- usXnM/O+kr3Dm+Ui+UioPf6wgbn3T0o6I5BhVhs4h4hWmIW7iNhPjX1iybXfmb1gAFfjtHfL
- xRUr64svXpyfJMScIQtBAm0ihWPltXkyITA92ngCmPdHa6M1hMh4RDX+Jf1fiWubzp1voAg0
- JBrdmNZSQDz0iKmSrx8xkoXYfA3bgtFN8WJH2xgFL28XnqY4M6dLhJwV3z08tPSRqYFm4NMP
- dRsn0/7oymhneL8RthIvjDDQ5ktUjMe8LtHr70OZE/TT88qvEdhiIVUogHdo4qBrk41+gGQh
- b906Dudw5YhTJFU3nC6bbF2nrLlB4C/XSiH76ZvqzV0Z/cAMBo5NF/w=
-In-Reply-To: <20240329225835.400662-12-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAB3CGYC/x3MQQqEMAwAwK9IzgZq24P4FdmDblINaCsp6yri3
+ y0e5zIXZFbhDF11gfIuWVIsaOoKvvMQJ0ahYrDGeuOcwdHjmui3MKZ/ZEXSFfk4Y8pINjSjJd8
+ OwUEJNuUgx5v3n/t+AL01KntsAAAA
+To: Inki Dae <inki.dae@samsung.com>, Seung-Woo Kim <sw0312.kim@samsung.com>, 
+ Kyungmin Park <kyungmin.park@samsung.com>, David Airlie <airlied@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Alim Akhtar <alim.akhtar@samsung.com>
+Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1590;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=ikAn+U2VxbkfcXOAocqiqsMAFIUnrQGNULyY7tvmZjM=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmCHcD5nGngLbev9+ND1Nt7ZqZYQsRksp1eacLP
+ WkIvzjxXZuJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgh3AwAKCRDBN2bmhouD
+ 1xbxEACSQfAZBiA6d/aLNg7qF26Uj0wPR1fgjNyfRIfnunql1d/6F6f4IStx4vjq0toKC17p3bR
+ PdE6D2sQxPj6wsScga2SpIYE53Q0dXFIBtvqB0F5GqY2+MLAExBETmkgeKTrnv+dikQaqO5Kw3P
+ pkPLep6s4eUpf4QSCaKQggBRFNs0MgUCW7mvQu35OOsw7t+rBrmvxUkBWQgwzH+elQw0sA5VgcK
+ ljBU/gecnRyddZ/EbhGIuU5qJbFN+UZejzLHwrewFRmWetZQNsG+NDDlSOQuZ4qle8fRP+sIBZC
+ Pw7FKA2PIQdtOuNCXipkThniRxQqJSBUflAzKaUZdNHtxHIOmvcokX3S1k4Sx87HIG+ERLN4QwO
+ /62OnW4TW2LIewfHg+3H0fsYNghHw/uW7ifEEVqOfgeibGGsgQoOcp6eKUNDG9MIeO5lTt9IQRx
+ EeN1Mpis0Fh6cM4l8xTC1D1NcqQS0IoNsudpnX4hbPGgH3R212SOHT8wk1BwatrZdJ6R2Q8x5g0
+ EyI24A4UewQQMbyWJL+o7SJnVTaQzlaJzZclJoJV76UpgyHVF8IzgpqWxTWNiHfu3Y2Lh3vdPAW
+ u9FjNjO3ZxUf63LnC0ATHBPdyDAHBTgB/xspsVfe8bwnMUNJBTIMSY8Sq2rjLPjEd8nNb6hXDtX
+ Cb+Pm6aXb5PFKFA==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-On 3/29/24 23:58, Michael Roth wrote:
-> +	memslot = gfn_to_memslot(kvm, params.gfn_start);
-> +	if (!kvm_slot_can_be_private(memslot)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
+Simplify the code by dropping unnecessary .owner initialization in the
+driver.
 
-This can be moved to kvm_gmem_populate.
+Best regards,
+Krzysztof
 
-> +	populate_args.src = u64_to_user_ptr(params.uaddr);
+---
+Krzysztof Kozlowski (11):
+      drm/exynos: fimc: drop driver owner initialization
+      drm/exynos: fimd: drop driver owner initialization
+      drm/exynos: dsi: drop driver owner initialization
+      drm/exynos: g2d: drop driver owner initialization
+      drm/exynos: gsc: drop driver owner initialization
+      drm/exynos: mic: drop driver owner initialization
+      drm/exynos: rotator: drop driver owner initialization
+      drm/exynos: scaler: drop driver owner initialization
+      drm/exynos: vidi: drop driver owner initialization
+      drm/exynos: hdmi: drop driver owner initialization
+      drm/exynos: mixer: drop driver owner initialization
 
-This is not used if !do_memcpy, and in fact src is redundant with 
-do_memcpy.  Overall the arguments can be "kvm, gfn, src, npages, 
-post_populate, opaque" which are relatively few and do not need the struct.
+ drivers/gpu/drm/exynos/exynos_drm_dsi.c     | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_fimc.c    | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_fimd.c    | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c     | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_gsc.c     | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_mic.c     | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_rotator.c | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_scaler.c  | 1 -
+ drivers/gpu/drm/exynos/exynos_drm_vidi.c    | 1 -
+ drivers/gpu/drm/exynos/exynos_hdmi.c        | 1 -
+ drivers/gpu/drm/exynos/exynos_mixer.c       | 1 -
+ 11 files changed, 11 deletions(-)
+---
+base-commit: 7fdcff3312e16ba8d1419f8a18f465c5cc235ecf
+change-id: 20240330-b4-module-owner-drm-exynos-d2f1b2d48af3
 
-I'll do that when posting the next version of the patches in kvm-coco-queue.
-
-Paolo
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
