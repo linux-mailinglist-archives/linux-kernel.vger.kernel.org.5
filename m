@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-125704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3662892ADD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:36:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70B5A892AE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:37:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8678A283063
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:36:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9D831F21262
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0729D2E63C;
-	Sat, 30 Mar 2024 11:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1912E63C;
+	Sat, 30 Mar 2024 11:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MCFC22ex"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IslaWJbb"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8824426AD5
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0932C683
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711798592; cv=none; b=RrxaVQlEHffQlnzPENY2gfk+d1Q5hW+k5+DMnCNtiqBzwlo4AouCyy/J5V0xd8WHTNsUyQqVI1ObRANKKKlLEVOnoQsitnJVba+3TpD6jkDoXiERtEjLY3kkeHEP5s4lp5yxhi0+HTEgPSE3W2swbBtphi0r5oQ3Qzoyz6wR4UE=
+	t=1711798637; cv=none; b=fzrU/pHRPZySZOEP1crewqQF7ZEwm0GM+Z1MVjt2i6RPQ308cutO87PFZrbfJgtFzuxdvCaCpvecy3p/NE+3Y3WoYzbIVc/TX+4tAU+7vBP+wz7vkMl7Yv/aqicZT2ZSLZ/Qb8elgScd1yg26Otr/Hmjv4tJpMCUULe/6Ft0WXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711798592; c=relaxed/simple;
-	bh=LNx37uHQwjk4CXCpeMldzKdo6/MfLSJgg9p4MIj3Q+Q=;
+	s=arc-20240116; t=1711798637; c=relaxed/simple;
+	bh=hy2qgMgAHhQOeKPDPHmM9vIwdjhxLTzWi28efjHX5YA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oRI+mw3SGIRwUS2Cx9oR3wm0bHDSk3gmsEmlb2X74wZtDCb8IIuRSbQOIalX3yWL0Fjv2wpUXJXP9DC3vBw8mJMMFt2rw8dNQhD+Vu0DogKx+m+bStAo9ZMi4Fi/BWQIzmDpiAOd2AKEBzEK6qJSHlBltPJpuvaSuxhY9wibDxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MCFC22ex; arc=none smtp.client-ip=209.85.128.54
+	 In-Reply-To:Content-Type; b=M8r4ZDwBB/61VJBSb/qKtlcGOsFEwSGF8Trm5fIJt00v868L/WOZSULEByAtaxeaH2QemxAtxC15aItCG80lWSkuWnzgAUu8w1lDDBwbXvaLQuYB36rkqYRo84+EVo8dFkNBG8zm6UM4ZyFagCcPgdnmnj3ac0yqoKdGCl6kPdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IslaWJbb; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-415573263bfso3552255e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:36:30 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso1368572f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:37:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711798589; x=1712403389; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711798634; x=1712403434; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ofiMaV1qQl+WdOcuiQTraRnMr9+nFnl9Caq6scwirk8=;
-        b=MCFC22ex9xK5nX69/9pSxlA7YHs2iVP6pAPE77AJfk2u8TkdSlfner4oPn3RD/vMIq
-         I5KRLhszyNNjzpWNhc9p6iltNJMOzhJmxkjAb1hwaUrbBGQOkg2MIRWE9dE/gVvwbs6/
-         e6oCwNnVIDGXFtugxrJe0p/gBfpnD2sW3oQa3OVtP08fxIA3ODgji/bqhSnxFz9b+WMp
-         1/aV4qKZ06B41BemCrhf3C7XkrSODoKNQEoFCt6lq5paqxAnaScgzKc+7XeChqi+WGZ9
-         bnq35B3XExuabQJeftjFFSJZUVtiN1lhcvLTnU5yg5VnqOtiKDckUT3aVAfi62uiEUg/
-         82oA==
+        bh=hy2qgMgAHhQOeKPDPHmM9vIwdjhxLTzWi28efjHX5YA=;
+        b=IslaWJbb4nBm2VIfLk2Q/PNNfMc3hQJ4cI7QaWtZUrskrbRuvwx/TopX8Kp9/EgqRC
+         hloj7hietSyL+un5w4xFOWS3l5M/GqFEpFxzII2ofUPG8awfRp6b+g3LeGT3IcLE3EWn
+         CwiMZcPZy8YRx8M92p3QrftKFf/w3ml+cpfZc+uASdbwfaxWwaN47aoUXS6hhCNmOn6D
+         KrHiHfiHiE1pG0phcqdh1tUef2ex/wBl2YYeSH70gd4GXiN6CuV8Q9qya05oYnsOnTMw
+         B/marfPQBvZaDswvT2vcgJwu09MPb9aEVOQyrp9KYbw2gWQw7EKUaZWORkLia/IpkMAQ
+         YsIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711798589; x=1712403389;
+        d=1e100.net; s=20230601; t=1711798634; x=1712403434;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ofiMaV1qQl+WdOcuiQTraRnMr9+nFnl9Caq6scwirk8=;
-        b=MaKauMXUpNFW0ZJbUvmtnLIlW9wUGjnNDTbJU0ePzLuoCAAdxYSOUVtlvgFdBPXKu1
-         m4F+zstpPETx/pfUk1VfB6JdfYk3cHObFmfhue/juMcDabBl0M5MMMwnTObTEhS60w1O
-         Uvw2TolQPrEgVhxeA5f4Mrwnsp+7JOneS7XGeGbUUkJ00dEJhw0zts7N7TtKv+Bt1q4k
-         9rg9/Tad+RcW7UiFpui/CR2rv/eQlLmYTWHzw5RRQ7CnEhqdt7AlVUwv6SF9Owm5ojfG
-         ZtME1l5dsktGKuFZdALQt0u/99azpYJglYmWFrvy7nKXbAYde6VQ6b4BzYg+wuXnI9VE
-         7oqg==
-X-Forwarded-Encrypted: i=1; AJvYcCXBiUfbj6p8gz0yd6gXlqVLxiEjOsZLQe9e7iwltyyCEfOUj4DODiZCz5ruuZjw/IUBH2ags1RYu9hERTbxT4YIAToBNi1fUjsTP9xZ
-X-Gm-Message-State: AOJu0YxaR5TcKqEc3txbEzCJEjP6FEbnF8jSoQocBd+40IcDN3XKqJA0
-	ClkxvYACmfWz1+t56vEujCZuzVagh7feNWQXuZZilBZpfukjlJ9jgdIC6dgki1M=
-X-Google-Smtp-Source: AGHT+IEC/vVAtWZ3Fjn4ZZwnP/8WXo5SvYfoUjgMrzoX1GnrOfy3xaNdPfytoMSDSHyrXCvBJ7VUsA==
-X-Received: by 2002:a05:600c:4f0c:b0:414:85f:1f72 with SMTP id l12-20020a05600c4f0c00b00414085f1f72mr2899896wmq.6.1711798588857;
-        Sat, 30 Mar 2024 04:36:28 -0700 (PDT)
+        bh=hy2qgMgAHhQOeKPDPHmM9vIwdjhxLTzWi28efjHX5YA=;
+        b=ilPc2DhWjKbmfgNbbwNafkOEbMbgTKFvnbfgNCAgIXT2pSZiDzBaIIZYDNxMcPbwe1
+         yG9S8d/AyogUUP/fjq2oCFRgnRDJMqxj/6tdGPVQ0WG6BvgvKbzGNk1QqvG7psn2XxO8
+         9yDNHsEQGt2uamGsEifI3geworkG+d0hg57xUkCsSfbZPguA5q9tpyb4/YWaYeRLnQQE
+         w+V40sOHdeY2jEITj0j10wslcr2Osf6BvbOk1M5oQ+/PKkk/KzkCq/pXRXtkjdIrv/Xp
+         JBDAPeLGhnIb8+D+pJTmm+Wd4MeXsXzODWmhXY4ksli40w22lFoXm6XWvpn7zZQXxWld
+         t1Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCU1oP4sWWgfXdX0ANET8kGQpLGOs+gBHxfXEn+TzVA3uGvqfI+U0xgTpicKYAGWCIk/btwn4DTaGJfoQEnXojXpi+rozT1ZbFpnkeYQ
+X-Gm-Message-State: AOJu0YyiWOMq08pC9lmtJVGqGlzRgn8Qs7M/yKmqGcPabiSHNWRxrtoO
+	KOag7uOMwX/H+08kHKgVedNcQ6cUoV1JMoF2SZ31CUzK+48GB/ybwr/D9EkI4kc=
+X-Google-Smtp-Source: AGHT+IEfJolMS2yHw+nio3/Pr69CVOXA6Q+0qaqf8jKtTSo/3LWaawa/wYZAbdwCk/TOmzQzQFQmYA==
+X-Received: by 2002:a05:6000:ca:b0:341:7295:4b8b with SMTP id q10-20020a05600000ca00b0034172954b8bmr6530668wrx.1.1711798634220;
+        Sat, 30 Mar 2024 04:37:14 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id g4-20020a5d4884000000b0033e7603987dsm6271860wrq.12.2024.03.30.04.36.27
+        by smtp.gmail.com with ESMTPSA id o12-20020a5d4a8c000000b0033e7b05edf3sm6249509wrq.44.2024.03.30.04.37.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 04:36:28 -0700 (PDT)
-Message-ID: <df98ce20-23ce-420a-9807-1329deb01d4b@linaro.org>
-Date: Sat, 30 Mar 2024 12:36:27 +0100
+        Sat, 30 Mar 2024 04:37:13 -0700 (PDT)
+Message-ID: <718b64e8-a4c6-4789-ba9c-be6877e3f154@linaro.org>
+Date: Sat, 30 Mar 2024 12:37:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,14 +76,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] driver: spi: cadence: Add ACPI support
+Subject: Re: [PATCH 5/5] cadence-xspi: Add xfer capabilities
 To: Witold Sadowski <wsadowski@marvell.com>, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org, devicetree@vger.kernel.org
 Cc: broonie@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, pthombar@cadence.com,
- Piyush Malgujar <pmalgujar@marvell.com>
+ conor+dt@kernel.org, pthombar@cadence.com
 References: <20240329194849.25554-1-wsadowski@marvell.com>
- <20240329194849.25554-5-wsadowski@marvell.com>
+ <20240329194849.25554-6-wsadowski@marvell.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -130,39 +129,27 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240329194849.25554-5-wsadowski@marvell.com>
+In-Reply-To: <20240329194849.25554-6-wsadowski@marvell.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 29/03/2024 20:48, Witold Sadowski wrote:
-> From: Piyush Malgujar <pmalgujar@marvell.com>
-> 
-> These changes enables to read the configs from ACPI tables as
-> required for successful probing in ACPI uefi environment.
-> In case of ACPI disabled/dts based environment, it will continue to
-> read configs from dts as before.
-> 
+> Add support for iMRVL xfer hw_overlay of Cadence xSPI
+> block.
+> MRVL Xfer overlay extend xSPI capabilities, to support
+> non-memory SPI operations.
+> With generic xSPI command it allows to create any
+> required SPI transaction
 
-Random subjects... Please use subject prefixes matching the subsystem.
-You can get them for example with `git log --oneline --
-DIRECTORY_OR_FILE` on the directory your patch is touching.
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
->  }
->  
-> +static const struct acpi_device_id cdns_xspi_acpi_match[] = {
-> +	{"cdns,xspi-nor", 0},
-> +	{"mrvl,xspi-nor", 0},
+Please wrap commit message according to Linux coding style / submission
+process (neither too early nor over the limit):
+https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
 
-How is this ACPI?
-
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(acpi, cdns_xspi_acpi_match);
-> +#ifdef CONFIG_OF
-
-This was never compiled. I could understand not testing bindings,
-because it is something relatively new - like 5 or 6 years. But not
-compiling code is less understandable.
+.. and build your code because this does not compile. :(
 
 Best regards,
 Krzysztof
