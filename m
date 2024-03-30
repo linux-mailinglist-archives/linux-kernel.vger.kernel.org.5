@@ -1,133 +1,165 @@
-Return-Path: <linux-kernel+bounces-125639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CCD08929ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:13:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 477928929F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E73A3282F2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:13:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F469282EC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7013CF9C1;
-	Sat, 30 Mar 2024 09:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592E6BE6E;
+	Sat, 30 Mar 2024 09:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KGQA+6rJ"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JlfM16zE"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDC2BE49
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAC5BE5B;
+	Sat, 30 Mar 2024 09:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711790002; cv=none; b=cS4wlgxzcLOzlm6lSkzZXWgTH5CtEQmhaW0dISrOjNBdf28z/gYr3+1keo5OScYxVYxe3c8K6N7dgP2YR2IBt0QHq/hPnb2azdF6mHJ+lZEM58tGNDG7cd5Cgw3/S4cwM8p7K05y/kSTe+TpBGm970lVrM/nYWbQdvCvAWOiFoE=
+	t=1711790023; cv=none; b=sSfZ0vMZkUpB9Fv6YwZpcx3oiI7ZvPdoA5+QMFynKMH+NTESPqEzMlapB0K9iMXsHCAw65EImJLVxRdV7P6dxiMSoKs2ik9r1xg0f1NUrglI7KgjyX9RoQyE+DLn1h76hnxn60YgCsDdj1RAcz80lF9sNKWLBsEglUprk23I6zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711790002; c=relaxed/simple;
-	bh=hfcuUfuH4Utmln3ZF/NDaG/F8P52KEMNKxEh5L8xc4I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c7DzbTHsC/1XCPbCbZ4LdcxsOY1/qyYtgfr8auQJYSa07IHBtPE7R42Cr1N2Syn7Uz08276I9AtGaEMosoc4CLW9hUCUTXEM4fofHYhklww9iw6aa04UIP3ZRlhihC79PxKAF6We5mx/VO2c84RAztEQrHsRrTBtu+pBFJ+CH8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KGQA+6rJ; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-515c198e835so2908180e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:13:20 -0700 (PDT)
+	s=arc-20240116; t=1711790023; c=relaxed/simple;
+	bh=hIGkWcRgPIXfZX1MS8KL8rPU2YJQXR4pomTjCTD1Y+o=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ULbm08ZR/8XH7g9S5flMRxS2mRRJo5AX5FvBPXZx0N2LwC5TaxPCv9m9EXGAnKN6R4Cc+XCmATJT3agzgQ8mu3lq4esKuVoYEGHVX2Wjy46axjMdyhd7jMsBpi9TZDaCkyKFd/3COd4N9ewm1xsuJUd4zq96fFKrmvtJPK09IQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JlfM16zE; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41553b105b8so5924485e9.3;
+        Sat, 30 Mar 2024 02:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711789999; x=1712394799; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LQNM3EOhi4PJ5pFJ3LXwT3lu91N/5dhMq5qmt2uZFSo=;
-        b=KGQA+6rJWA6ilhOR0RcthhWO//jqxh05v/SNDXnVmckNHklKu0k0rULQExjuK+wrVl
-         tuGIcbxqvAo3tArAUVL4NuouqE3PN4LP0icVzaCQ/OLO21smW/0vO2h+ubnaX4EoLXW+
-         e6Fcr3bZTXsEQcM6FFkHf+dRjxnuHchv/V7neIycJMnK31lyrO4wyRe7KKtVtayJTw7y
-         t69V2RIa1mT6bLJyael6PaxSez8dJyaX7n5mCt12kvNEKpHrNyvScNx+7ZzjpuAnQXHi
-         I13eBtlT6UUN+PPR6jL9afxD4AjTEEtysJRSiPaqUqdgiqym9SywC3A8Unwq4Nw76tsi
-         lCTA==
+        d=gmail.com; s=20230601; t=1711790020; x=1712394820; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rWGcxGDGq3xifasgBFf2SllwrhRtj5a20lnw94qc54Q=;
+        b=JlfM16zE1RQ8l+xG/AtH6DCCf/mWKgQAddFtV2noKP1nIvD0sERZ8l/bZxKJkDoEaT
+         K3715GVW7px79pD6pMzYLmVpE4xb1z1skFpXTv5sC5YkIZ89im/2UJTggAYvrNBozcn2
+         rJlKbbgVXr7bqjlpWlVRerfckE6R4aG3LSb5+mIOAB6EJA42E695WDQiC/Hudr4xlg2K
+         CR7mxHr3Esw+BcZ7j1e1B/8jpBBWx8/bUgmYJhR9UXd3rWnZiSJJUpklrRQfSz1r59eN
+         aZ0HOh8+Vp+2Ijb0KXsfk2JPjsOavWqdPutodKE1JoffK++PmIuJJUr6diLwhuuWgdYR
+         Ustw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711789999; x=1712394799;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LQNM3EOhi4PJ5pFJ3LXwT3lu91N/5dhMq5qmt2uZFSo=;
-        b=ee/kBfgBgdWHP8u2UlokxJlJfzQxs97cLSHnkUACLxm0QgeX+PQNZwda0Cakhj3x9d
-         2I3Ih4xUmJBgEegeAaBG87/+Yazw//E3Uue2ZSg3FttvVMrd4aR5OYhI1kjnra8L69bj
-         5/ahN3Pwo6CMxSZYp1y7YIwHjnYmSUCIHP2R5bteoiYhtEW8jjWA1UlmQeOqaElEGypO
-         Qm2XnKTD1P82znxsYTjUCqs0/i9xuASoOJDpIrwFICzosb3TszcGUd/kN60ObA4jPDs6
-         B4Aw6y8decPdurnYZwnuD8kUceqMgo3rnJwlyZjRjUyKOZtoncjAMXSNSeMWyh682Xop
-         2F8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUCqTrDi/sDyC6F+8tRLYJa6WBtzbLzwKputNysD1rUnWic4WUICfhvvkpGPaRmuIgHo8cZgnljgOXbYy5cOhbmz+bG0WEzNkpM1msJ
-X-Gm-Message-State: AOJu0YzXZUsDZ+lZphG+1fdFdygvrXdrxuiHLy0xs9G2W2P+FbQz0huK
-	sAqykDyqD06aR2VQZysBiWmGfMYDqF79g9xuefgIqXDbzESrTCW56Lg0dQYnFQY=
-X-Google-Smtp-Source: AGHT+IEjSpbByfHvSiQJRPu7UNykzpnq8VEXolWuCujs+keoQ6eFxgRPNnyenkikyhKNWhJjtoY3og==
-X-Received: by 2002:ac2:4dad:0:b0:516:a148:2f5 with SMTP id h13-20020ac24dad000000b00516a14802f5mr181151lfe.40.1711789998936;
-        Sat, 30 Mar 2024 02:13:18 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id az15-20020adfe18f000000b0034335f13570sm3984261wrb.116.2024.03.30.02.13.17
+        d=1e100.net; s=20230601; t=1711790020; x=1712394820;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWGcxGDGq3xifasgBFf2SllwrhRtj5a20lnw94qc54Q=;
+        b=A8iK4SI88fWdvSs5++s/PzUdDsW6ofximrEExT9fw8CgekItAboLeMcnXUcL31UlKf
+         NRQcFOkOCsw5qTG44BOGHPNfuWhX3wUwpKUCrlDhM082ZIygQBP6Gj9Yp9RgjKD3W4Jb
+         cmS/KZNcZs5SEHvoK8UwpOiZEBqhAidVnh4NYrRulHSIpAL+uy8MeFu0VYMQH6NYgYDi
+         e0zXV3CdOsOuQlVsvLzOLdIqkRBhwJ5Oun0WDPpIRfzrCEFS9KjFCSlEZWGuSqB3eTnx
+         pAs+FsmVDzU531Ja2TZU8QsC4jVFn2Exo4L/xvpjiaOr+GUHAdtqpP2hSwBxEsNlPPwS
+         CE4g==
+X-Forwarded-Encrypted: i=1; AJvYcCW6BtvXPKZPSx+ZtJWumaokTsoExxCDRlQEySDt5D8C8fkTdkqwRfBReR+PSfcqL/KU+gaitzxzmQyUgBst1sIBO5deI3XMNXu/bVPGg6PfFK4wfhhAxd7ggIsZLea4JORRR/7f
+X-Gm-Message-State: AOJu0YwyfE0JJsYzA20xBoaXoCE2omXRIXNusnJWZsdn/gfm0ExGX03o
+	B00Ddsf/8moF7PPYadsXse70GRckdwHGAHUtX73oWaOKg/WcXCOr
+X-Google-Smtp-Source: AGHT+IEFg1PCtfc0ais3QcJd/zwznPWHY+i4QrwBtyXVy6XGZcTwh0pDVlKiHAYbNtSIUepg0CfukQ==
+X-Received: by 2002:adf:f091:0:b0:343:34af:2954 with SMTP id n17-20020adff091000000b0034334af2954mr2009357wro.28.1711790019576;
+        Sat, 30 Mar 2024 02:13:39 -0700 (PDT)
+Received: from Ansuel-XPS. (host-87-1-165-123.retail.telecomitalia.it. [87.1.165.123])
+        by smtp.gmail.com with ESMTPSA id v17-20020adfe291000000b0034174566ec4sm6010243wri.16.2024.03.30.02.13.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 02:13:18 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sat, 30 Mar 2024 02:13:39 -0700 (PDT)
+Message-ID: <6607d7c3.df0a0220.498b4.86f3@mx.google.com>
+X-Google-Original-Message-ID: <ZgfXv53uqXH-gnUI@Ansuel-XPS.>
+Date: Sat, 30 Mar 2024 10:13:35 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Danila Tikhonov <danila@jiaxyga.com>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: pm6150: correct USB VBUS regulator compatible
-Date: Sat, 30 Mar 2024 10:13:11 +0100
-Message-Id: <20240330091311.6224-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240330091311.6224-1-krzysztof.kozlowski@linaro.org>
-References: <20240330091311.6224-1-krzysztof.kozlowski@linaro.org>
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+References: <20240322040951.16680-1-ansuelsmth@gmail.com>
+ <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
+ <66057c71.050a0220.e4ba.97dc@mx.google.com>
+ <a4632f1ba701f6b333c50a5366723cf4@milecki.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a4632f1ba701f6b333c50a5366723cf4@milecki.pl>
 
-The first part of the compatible of USB VBUS node misses ending quote,
-thus we have one long compatible consisting of two compatible strings
-leading to dtbs_check warnings:
+On Thu, Mar 28, 2024 at 03:44:15PM +0100, Rafał Miłecki wrote:
+> On 2024-03-28 15:19, Christian Marangi wrote:
+> > On Wed, Mar 27, 2024 at 11:15:02PM +0100, Rafał Miłecki wrote:
+> > > On 22.03.2024 05:09, Christian Marangi wrote:
+> > > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > > > index 5887feb347a4..0de87bc63840 100644
+> > > > --- a/drivers/mtd/mtdcore.c
+> > > > +++ b/drivers/mtd/mtdcore.c
+> > > > @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+> > > >   	config.name = compatible;
+> > > >   	config.id = NVMEM_DEVID_AUTO;
+> > > >   	config.owner = THIS_MODULE;
+> > > > -	config.add_legacy_fixed_of_cells = true;
+> > > > +	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
+> > > >   	config.type = NVMEM_TYPE_OTP;
+> > > >   	config.root_only = true;
+> > > >   	config.ignore_wp = true;
+> > > 
+> > > I think there may be even more unwanted behaviour here. If
+> > > mtd_otp_nvmem_register() fails to find node with "user-otp" /
+> > > "factory-otp" compatible then it sets "config.of_node" to NULL but
+> > > that
+> > > means NVMEM core still looks for NVMEM cells in device's "of_node".
+> > > 
+> > > I believe we should not look for OTP NVMEM cells out of the
+> > > "user-otp" /
+> > > "factory-otp" compatible nodes.
+> > > 
+> > > So maybe what we need in the first place is just:
+> > > config.add_legacy_fixed_of_cells = !!np;
+> > > ?
+> > > 
+> > > Any extra limitation of .add_legacy_fixed_of_cells should probably be
+> > > used only if we want to prevent new users of the legacy syntax. The
+> > > problem is that mtd.yaml binding allowed "user-otp" and "factory-otp"
+> > > with old syntax cells. It means every MTD device was allowed to have
+> > > them.
+> > > 
+> > > No in-kernel DTS even used "user-otp" or "factory-otp" with NVMEM
+> > > legacy
+> > > cells but I'm not sure about downstream DTS files. Ideally we would do
+> > > config.add_legacy_fixed_of_cells = false;
+> > > but that could break compatibility with some downstream DTS files.
+> > 
+> > Yes the main problem is prevent regression in downstream. I feel for the
+> > nand usage, this is 100% of the times broken. For SPI and other corner
+> > case MTD devices it's not?
+> > 
+> > Anyway did you by chance have a suggestion for a better fixes tag?
+> 
+> My personal idea for that would be to put two Fixes with two commits and
+> describe in commit body that one just exposed existing bug.
+> 
+> You may check my OpenWrt quick patch for an idea how I'd handle that:
+> https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/generic/pending-6.6/440-mtd-don-t-look-for-OTP-legacy-NVMEM-cells-if-proper-.patch;h=d9d15a4048c144d8565c8ea38e15a79f7f4a5fe1;hb=dd78a59cd7b029560b33cb3ac0e1aa8b747bd807
+>
 
-  sc7180-idp.dtb: usb-vbus-regulator@1100: compatible:0: 'qcom,pm6150-vbus-reg,\n qcom,pm8150b-vbus-reg' does not match '^[a-zA-Z0-9][a-zA-Z0-9,+\\-._/]+$'
-  sc7180-idp.dtb: /soc@0/spmi@c440000/pmic@0/usb-vbus-regulator@1100: failed to match any schema with compatible: ['qcom,pm6150-vbus-reg,\n          qcom,pm8150b-vbus-reg']
+My concern is that using !!np might pose some regression problem. Also I
+feel adding the macronix commit in fixes tag might be confusing?
 
-Reported-by: Rob Herring <robh@kernel.org>
-Fixes: f81c2f01cad6 ("arm64: dts: qcom: pm6150: define USB-C related blocks")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Think I will just use the nand check just to be extra safe and add a
+kernel dependency for when the add_legacy_fixed_of_cells was introduced
+since before that a different patch is needed. What do you think?
 
----
-
-Changes in v2:
-1. New patch, pointed out by: Gabor Juhos
----
- arch/arm64/boot/dts/qcom/pm6150.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-index b20a639cddf3..6de6ed562d97 100644
---- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-@@ -64,8 +64,8 @@ pm6150_resin: resin {
- 		};
- 
- 		pm6150_vbus: usb-vbus-regulator@1100 {
--			compatible = "qcom,pm6150-vbus-reg,
--				      qcom,pm8150b-vbus-reg";
-+			compatible = "qcom,pm6150-vbus-reg",
-+				     "qcom,pm8150b-vbus-reg";
- 			reg = <0x1100>;
- 			status = "disabled";
- 		};
 -- 
-2.34.1
-
+	Ansuel
 
