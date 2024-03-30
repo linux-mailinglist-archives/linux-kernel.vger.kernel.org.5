@@ -1,246 +1,269 @@
-Return-Path: <linux-kernel+bounces-125738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1442B892B75
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:47:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00813892B79
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:50:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92A0F1F21E73
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:47:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87CC3B21CF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 13:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E1A2D03B;
-	Sat, 30 Mar 2024 13:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 701932E84F;
+	Sat, 30 Mar 2024 13:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ERrgVHsw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d8GiuCMZ"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A67338DF1;
-	Sat, 30 Mar 2024 13:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A0F21105
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711806418; cv=none; b=juZik5Bo3fm9m1jKvwLH1o87B/SX7eozsFjUp0JZE1ct5QaanZkYhoAliIQztI5d2yYWHRh9DMiCtBAkj9lTD8eu9HwB5SydP1YPR9gjMO1kzPYc7gktTRsbYRphjrR4irA/Wg/hJhCdsLITXWh++Mhy6tfODLg5FsCiELT4baw=
+	t=1711806641; cv=none; b=ECqmk1XTiNBxiJFgQuLPDqkjPEWP44IGpyyRnz/F++GnvJs1+pQwMYlOL14mbNPwWV3SwX5IL/BLO1oCxKxprOfD2ggctM0WxyNkiiHqzk19J4ptxuTqE8XmnDipeYOfk5MkX01D+G2Z+hi7EL5DYFzGb4FMcfHOoVH8JOvAX7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711806418; c=relaxed/simple;
-	bh=12eUH24Evzx0eCQ4eL4gtrmRZMuYkNV0sF0qoZdQEXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=hjc01Kta3aksZuNQRlXrFqWUNFkg9lsEwwt3z14zQ1P4+pG3e7+6zdeu5Eu68YwhN2z5mZsrR/5V0YeqfNY7TfaRYiklS3QuE1G76LjxEQ4pvTbOoPZzaQDmEcy0S/Ia3nbrMqQz59pMudidLdZuvlrIzNEPuKLWVOSwwfXOgvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ERrgVHsw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E5A2C433C7;
-	Sat, 30 Mar 2024 13:46:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711806417;
-	bh=12eUH24Evzx0eCQ4eL4gtrmRZMuYkNV0sF0qoZdQEXc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ERrgVHswUV6pqvGhHbMTzn4oCU+YAzaOxhif//9nUH7DGEgBQ8S255iMyvqxOW6x2
-	 qlfMTCsIZox9vHvTReZaO+v2V/geKSAkEFwNuf/klLDOheaXs1KI3XAO8jUg3SxZHQ
-	 kQOLxbeuOmG8AEgYhsiD2WGkWV1O8UJZVQkkrvatQwPwuMk7CNzPSjbbvfmsZYwcS7
-	 Y65mtAtbWO39qXzNxbJUgEcdYCZmsjdtDImlwq75/b61B4FcH7ZIyIeWx8RN46eAN+
-	 AXEaDR8QCHHNguF1vgatcDgNOdiUzJJWfIhBICz0L0/q7nUh9ct2k/mb5LtG1xnlbj
-	 moJt+V4xAPhyg==
-Date: Sat, 30 Mar 2024 08:46:55 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Linux NVMe <linux-nvme@lists.infradead.org>,
-	linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-	gloriouseggroll@gmail.com, Keith Busch <kbusch@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Hannes Reinecke <hare@suse.de>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: Fwd: Regression: Kernel 6.4 rc1 and higher causes Steam Deck to
- fail to wake from suspend (bisected)
-Message-ID: <20240330134655.GA1659153@bhelgaas>
+	s=arc-20240116; t=1711806641; c=relaxed/simple;
+	bh=stMJSQMY3d7nXK++h59ucLYyDkPgF5M8gy6IuKuMK44=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=knlqahZUtrIeaR6NZ5+TIcnNzY4YZhV6dWg4ng0iDI0/8TLUg1hyHuRTd1AjajT8r+rFcsOXuM30loGfRdTFwIjcDtiyVi6p43kjt0QQ2+VBh4ypup/Y6TDaa4A9V4QFmK96vq8LRJSrR7cw2E/jj9xcfQzxkR8Tnn71T9uTBIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d8GiuCMZ; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a550ce1a41so1684850eaf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 06:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711806639; x=1712411439; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tx5mgCy/BFcGGKkVKhF/kQ+PLzQmx0bQp7pia88a2BE=;
+        b=d8GiuCMZsT1GAZsuq7CTCnGY07Zv+qnC/kxSlZtvDk3TeY64sQ1jgeKzLStDG+sbWN
+         re7LV3UmUNIk+gD3w3sSCEJODfxQBj6aMvnkWihdHHjGI2BMQm8VxpT2R3a2qKTpnII3
+         klp/cKqKzke3eFlFuYNfubRM075Zai/bzlUOMFwX+kL4VLuh0/PT2GbSs9UHaT/+Bt0g
+         wpXrUzuaks2gd1RxnNHzHCO+ZCU5mFLmLrqb2IfnBDuXnqpRxG0EA/W4YUBtCWvyDKHx
+         sIMUxN0aseYKUrvPXlibJCfg8n+IMk6+jscria0QfXnFMR6S4WqQGJ8QUD27sH2/nZ9P
+         hsRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711806639; x=1712411439;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tx5mgCy/BFcGGKkVKhF/kQ+PLzQmx0bQp7pia88a2BE=;
+        b=EBx8aYmZY3R+EEBOVgSvbCUQ6cAJE+NdvvsONw8baLfigO5lg4oI7WhPnN5KbjFKso
+         vEXMFau673AT+WFLGuNKWtrMB62wbeoaSA+YhKBisUVccLCUYyBOwEk6yuVPWTGujXJg
+         LSWghyrYzu9Gwhon4GaalTrKhTm1n5rhYcKj1rHMH62YSR52IZihOvD8JnXqxKCBqyCc
+         Rp7M96Rau/3J90T159eesQJoBUqYwohxBmIxnNyVTdqt2jot7Z8m0qF0mSM22nWZjc2u
+         2UAsRYB/oJ2e+7YR8SOktCgrZTQDvAes0MESbSd/OHkfrr9l2ViIiXkyAAS06xh2g6NP
+         PgMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUn/cmSvs6rq31YtgHM92yCs/hoO13A3POqO9M0znLVqKsF/dtEfZ2Xss8ZgexUjOgm5MayZD5GwWCRKuWN09zmZeAxGtZpS6eSKRSu
+X-Gm-Message-State: AOJu0YxNt5pn4fTX8RmfAow19FToHfUgW8WEhqGP8j1binDqWVTEa3b3
+	u6jcQYV0mUA/8axcE00NR7Yp6ccTihELVD2nxlGDOjVs0x9aGys0j8rAd+0wQYZffMS6Een+i//
+	eDFNeYIPf0TBE2ZpemuHvVYvnbIN4bPrZZcUhKw==
+X-Google-Smtp-Source: AGHT+IGbv8qLs0IWoyt7kJsOeorcao1nd+Pa3Lxd4VWzuSJ4BRurBHYW1VtnDH7rPpQ7PafyQHPdT7wirE+LXvlT+qw=
+X-Received: by 2002:a05:6358:8a9:b0:181:65ae:874c with SMTP id
+ m41-20020a05635808a900b0018165ae874cmr5293715rwj.8.1711806638748; Sat, 30 Mar
+ 2024 06:50:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101114541.GA43502@bhelgaas>
+References: <20240329071948.3101882-1-quic_kriskura@quicinc.com>
+ <CAA8EJpqx+VFW8z6oG=+pnhPN97Q3R6z+ygf85Uspve-9syQsUw@mail.gmail.com>
+ <6f2df222-36d4-468e-99a7-9c48fae85aa9@quicinc.com> <CAA8EJppa4hVBSenLgxc5MYxTfzPPf4exHvh8RWTP=p8mgB_RCw@mail.gmail.com>
+ <44bc6ea4-eba9-4b80-bb07-3b744eb7cce6@quicinc.com>
+In-Reply-To: <44bc6ea4-eba9-4b80-bb07-3b744eb7cce6@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 30 Mar 2024 15:50:28 +0200
+Message-ID: <CAA8EJppBHEMQH-ge8ukjQrARc-70ZOJCDB0TF6D-qMqfmo08zA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Add gpio-usb-c-connector compatible
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Guenter Roeck <linux@roeck-us.net>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Kyle Tso <kyletso@google.com>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, u.kleine-koenig@pengutronix.de, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, devicetree@vger.kernel.org, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-[+cc Keith, Sagi, Hannes, Kai-Heng, +bcc silverspring from bugzilla]
+On Sat, 30 Mar 2024 at 15:46, Krishna Kurapati PSSNV
+<quic_kriskura@quicinc.com> wrote:
+>
+>
+>
+> On 3/30/2024 7:09 PM, Dmitry Baryshkov wrote:
+> > On Sat, 30 Mar 2024 at 11:13, Krishna Kurapati PSSNV
+> > <quic_kriskura@quicinc.com> wrote:
+> >> On 3/29/2024 6:23 PM, Dmitry Baryshkov wrote:
+> >>> On Fri, 29 Mar 2024 at 09:20, Krishna Kurapati
+> >>> <quic_kriskura@quicinc.com> wrote:
+> >>>>
+> >>>> QDU1000 IDP [1] has a Type-c connector and supports USB 3.0.
+> >>>> However it relies on usb-conn-gpio driver to read the vbus and id
+> >>>> gpio's and provide role switch. However the driver currently has
+> >>>> only gpio-b-connector compatible present in ID table. Adding that
+> >>>> in DT would mean that the device supports Type-B connector and not
+> >>>> Type-c connector. Thanks to Dmitry Baryshkov for pointing it out [2].
+> >>>
+> >>> USB-B connector is pretty simple, it really has just an ID pin and
+> >>> VBUS input, which translates to two GPIOs being routed from the
+> >>> _connector_ itself.
+> >>>
+> >>> USB-C is much more complicated, it has two CC pins and a VBus power
+> >>> pin. It is not enough just to measure CC pin levels. Moreover,
+> >>> properly handling USB 3.0 inside a USB-C connector requires a separate
+> >>> 'orientation' signal to tell the host which two lanes must be used for
+> >>> the USB SS signals. Thus it is no longer possible to route just two
+> >>> pins from the connector to the SoC.
+> >>>
+> >>> Having all that in mind, I suspect that you are not describing your
+> >>> hardware properly. I suppose that you have a Type-C port controller /
+> >>> redriver / switch, which handles CC lines communication and then
+> >>> provides ID / VBUS signals to the host. In such a case, please
+> >>> describe this TCPC in the DT file and use its compatible string
+> >>> instead of "gpio-c-connector".
+> >>>
+> >>
+> >> Hi Dmitry,
+> >>
+> >>    My bad. I must have provided more details of the HW.
+> >>
+> >>    I presume you are referring to addition of a connector node, type-c
+> >> switch, pmic-glink and other remote endpoints like in other SoC's like
+> >> SM8450/ SM8550/ SM8650.
+> >>
+> >>    This HW is slightly different. It has a Uni Phy for Super speed and
+> >> hence no DP.
+> >
+> > This is fine and it's irrelevant for the USB-C.
+> >
+> >>    For orientation switching, on mobile SoC's, there is a provision for
+> >> orientation gpio given in pmic-glink node and is handled in ucsi_glink
+> >> driver. But on this version of HW, there is a USB-C Switch with its own
+> >> firmware taking care of orientation switching. It takes 8 SS Lines and 2
+> >> CC lines coming from connector as input and gives out 4 SS Lines (SS
+> >> TX1/TX2 RX1/RX2) as output which go to the SoC. So orientation switch is
+> >> done by the USB-C-switch in between and it automatically routes
+> >> appropriate active SS Lane from connector to the SoC.
+> >
+> > This is also fine. As I wrote, you _have_ the Type-C port controller.
+> > So your DT file should be describing your hardware.
+> >
+> >>    As usual like in other targets, the DP and DM lines from type-c
+> >> connector go to the SoC directly.
+> >>
+> >>    To handle role switch, the VBUS and ID Pin connections are given to
+> >> SoC as well. There is a vbus controller regulator present to provide
+> >> vbus to connected peripherals in host mode.
+> >>
+> >>    There is no PPM entity (ADSP in mobile SoC's) and no UCSI involved
+> >> here. Hence we rely on usb-conn-gpio to read the vbus/id and switch
+> >> roles accordingly.
+> >
+> > This is also fine.
+> >
+> > You confirmed my suspicions. You have an external Type-C switch which
+> > handles orientation (and most likely PD or non-PD power negotiation)
+> > for you. It has GPIO outputs, etc.
+> >
+> > But it is not a part of the connector. Instead of adding the
+> > "gpio-usb-c-connector", add proper compatible string (see, how this is
+> > handled e.g. by the spidev - it is a generic driver, but it requires
+> > hardware-specific compatibles).
+> > Your hardware description should look like:
+> >
+> > typec {
+> >      compatible = "your,switch";
+> >      id-gpios = <&gpio 1>;
+> >      vbus-gpios = <&gpio 2>;
+> >      vbus-supplies = <&reg-vbus>;
+> >
+> >      ports {
+> >         #address-cells = <1>;
+> >         #size-cells = <1>;
+> >         port@0 {
+> >            endpoint {
+> >                remote-endpoint = <&usb_dwc3_hs_out>;
+> >            };
+> >         };
+> >         port@1 {
+> >            endpoint {
+> >                remote-endpoint = <&usb_uni_phy_out>;
+> >            };
+> >        };
+> >        /* No SBU port */
+> >     };
+> > };
+> >  > Note, I haven't said anything regarding the driver. You can continue
+> > using the usb-conn-gpio driver. Just add a compatible string for you
+> > switch.
+> >
+>
+>
+> Got it. So the "usb_conn_gpio: usb-conn-gpio" in [1]  to be replaced
+> with something like a "typec- " naming convention and add a new
+> compatible to gpio-conn (something specific to qcom-qdu) and use it in
+> the new DT node.
 
-On Wed, Nov 01, 2023 at 06:45:41AM -0500, Bjorn Helgaas wrote:
-> On Tue, Oct 31, 2023 at 03:21:20PM +0700, Bagas Sanjaya wrote:
-> > I notice a regression report on Bugzilla [1]. Quoting from it:
-> > 
-> > > On Kernel 6.4 rc1 and higher if you put the Steam Deck into
-> > > suspend then press the power button again it will not wake up. 
-> > > 
-> > > I don't have a clue as to -why- this commit breaks wake from
-> > > suspend on steam deck, but it does. Bisected to:
-> > > 
-> > > ```
-> > > 1ad11eafc63ac16e667853bee4273879226d2d1b is the first bad commit
-> > > commit 1ad11eafc63ac16e667853bee4273879226d2d1b
-> > > Author: Bjorn Helgaas <bhelgaas@google.com>
-> > > Date:   Tue Mar 7 14:32:43 2023 -0600
-> > > 
-> > >     nvme-pci: drop redundant pci_enable_pcie_error_reporting()
-> > >     
-> > >     pci_enable_pcie_error_reporting() enables the device to send ERR_*
-> > >     Messages.  Since f26e58bf6f54 ("PCI/AER: Enable error reporting when AER is
-> > >     native"), the PCI core does this for all devices during enumeration, so the
-> > >     driver doesn't need to do it itself.
-> > >     
-> > >     Remove the redundant pci_enable_pcie_error_reporting() call from the
-> > >     driver.  Also remove the corresponding pci_disable_pcie_error_reporting()
-> > >     from the driver .remove() path.
-> > >     
-> > >     Note that this only controls ERR_* Messages from the device.  An ERR_*
-> > >     Message may cause the Root Port to generate an interrupt, depending on the
-> > >     AER Root Error Command register managed by the AER service driver.
-> > >     
-> > >     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > >     Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-> > >     Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > 
-> > >  drivers/nvme/host/pci.c | 6 +-----
-> > >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > > ```
+It should be the actual name of the switch chip.
 
-> > > Reverting that commit by itself on top of 6.5.9 (stable) allows
-> > > it to wake from suspend properly.
+>
+> Thanks for the suggestion. Is it fine if it put the whole of the above
+> text in v2 and push it for getting a new compatible added to connector
+> binding and usb-conn driver and then send v3 of DT changes or mix this
+> series with the DT series ?
 
-> > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218090
-> 
-> Thanks, I requested some dmesg logs and lspci output to help debug
-> this.
+I think USB subsystem maintainers prefer separate series.
 
-silverspring attached lspci output and a dmesg log from v6.8 to the
-bugzilla and also noted that "pci=noaer" works around the problem.
-
-The problem commit is 1ad11eafc63a ("nvme-pci: drop redundant
-pci_enable_pcie_error_reporting()")
-(https://git.kernel.org/linus/1ad11eafc63a)
-
-1ad11eafc63a removed pci_disable_pcie_error_reporting() from the
-nvme_suspend() path, so we now leave the PCIe Device Control error
-enables set when we didn't before.  My theory is that the PCIe link
-goes down during suspend, which causes an error interrupt, and the
-interrupt causes a problem on Steam Deck.  Maybe there's some BIOS
-connection.
-
-"pci=noaer" would work around this because those error enables would
-never be set in the first place.
-
-I asked reporters to test the debug patches below to disable those
-error interrupts during suspend.
-
-I don't think this would be the *right* fix; if we need to do this, I
-think it should be done by the PCI core, not by individual drivers.
-Kai-Heng has been suggesting this for a while for a different
-scenario.
-
-Bjorn
+>
+> [1]:
+> https://lore.kernel.org/all/20240319091020.15137-3-quic_kbajaj@quicinc.com/
+>
+> Thanks,
+> Krishna,
+>
+> >>
+> >>    Hope this answers the query as to why we wanted to use usb-conn-gpio
+> >> and why we were trying to add a new compatible.
+> >>
+> >> Regards,
+> >> Krishna,
+> >>
+> >>>>
+> >>>> This series intends to add that compatible in driver and bindings
+> >>>> so that it can be used in QDU1000 IDP DT.
+> >>>>
+> >>>> [1]: https://lore.kernel.org/all/20240319091020.15137-3-quic_kbajaj@quicinc.com/
+> >>>> [2]: https://lore.kernel.org/all/CAA8EJprXPvji8TgZu1idH7y4GtHtD4VmQABFBcRt-9BQaCberg@mail.gmail.com/
+> >>>>
+> >>>> Krishna Kurapati (2):
+> >>>>     dt-bindings: connector: Add gpio-usb-c-connector compatible
+> >>>>     usb: common: usb-conn-gpio: Update ID table to add usb-c connector
+> >>>>
+> >>>>    Documentation/devicetree/bindings/connector/usb-connector.yaml | 3 +++
+> >>>>    drivers/usb/common/usb-conn-gpio.c                             | 1 +
+> >>>>    2 files changed, 4 insertions(+)
+> >>>>
+> >>>> --
+> >>>> 2.34.1
+> >>>>
+> >>>
+> >>>
+> >>> --
+> >>> With best wishes
+> >>> Dmitry
+> >
+> >
+> >
 
 
-commit 60c07557d0cc ("Revert "PCI/AER: Drop unused pci_disable_pcie_error_reporting()"")
-Author: Bjorn Helgaas <bhelgaas@google.com>
-Date:   Fri Mar 29 17:54:30 2024 -0500
 
-    Revert "PCI/AER: Drop unused pci_disable_pcie_error_reporting()"
-    
-    This reverts commit 69b264df8a412820e98867dbab871c6526c5e5aa.
-
-
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index ac6293c24976..273f9c6f93dd 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -243,6 +243,18 @@ static int pci_enable_pcie_error_reporting(struct pci_dev *dev)
- 	return pcibios_err_to_errno(rc);
- }
- 
-+int pci_disable_pcie_error_reporting(struct pci_dev *dev)
-+{
-+	int rc;
-+
-+	if (!pcie_aer_is_native(dev))
-+		return -EIO;
-+
-+	rc = pcie_capability_clear_word(dev, PCI_EXP_DEVCTL, PCI_EXP_AER_FLAGS);
-+	return pcibios_err_to_errno(rc);
-+}
-+EXPORT_SYMBOL_GPL(pci_disable_pcie_error_reporting);
-+
- int pci_aer_clear_nonfatal_status(struct pci_dev *dev)
- {
- 	int aer = dev->aer_cap;
-diff --git a/include/linux/aer.h b/include/linux/aer.h
-index 4b97f38f3fcf..425e5e430e65 100644
---- a/include/linux/aer.h
-+++ b/include/linux/aer.h
-@@ -40,9 +40,14 @@ struct aer_capability_regs {
- int pcie_read_tlp_log(struct pci_dev *dev, int where, struct pcie_tlp_log *log);
- 
- #if defined(CONFIG_PCIEAER)
-+int pci_disable_pcie_error_reporting(struct pci_dev *dev);
- int pci_aer_clear_nonfatal_status(struct pci_dev *dev);
- int pcie_aer_is_native(struct pci_dev *dev);
- #else
-+static inline int pci_disable_pcie_error_reporting(struct pci_dev *dev)
-+{
-+	return -EINVAL;
-+}
- static inline int pci_aer_clear_nonfatal_status(struct pci_dev *dev)
- {
- 	return -EINVAL;
-commit 8efb88cf23d4 ("nvme-pci: disable error reporting in nvme_dev_disable()")
-Author: Bjorn Helgaas <bhelgaas@google.com>
-Date:   Fri Mar 29 17:52:39 2024 -0500
-
-    nvme-pci: disable error reporting in nvme_dev_disable()
-    
-    Debug patch.
-    
-    The PCI core enables error reporting in pci_aer_init() for all devices that
-    advertise AER support.
-    
-    During suspend, nvme_suspend() calls nvme_dev_disable() in several cases.
-    Prior to 1ad11eafc63a, nvme_dev_disable() disabled error reporting.
-    
-    After 1ad11eafc63a, error reporting will remain enabled during suspend.
-    Maybe having error reporting enabled during suspend causes a problem on
-    Steam Deck.
-    
-    "pci=noaer" prevents pci_aer_init() from enabling error reporting, so as
-    long as the BIOS doesn't enable it, error reporting should always be
-    disabled.
-    
-      nvme_suspend
-        nvme_disable_prepare_reset
-          nvme_dev_disable
-
-
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 8e0bb9692685..2be838b5d1f6 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/aer.h>
- #include <linux/async.h>
- #include <linux/blkdev.h>
- #include <linux/blk-mq.h>
-@@ -2603,8 +2604,10 @@ static void nvme_dev_disable(struct nvme_dev *dev, bool shutdown)
- 	nvme_suspend_io_queues(dev);
- 	nvme_suspend_queue(dev, 0);
- 	pci_free_irq_vectors(pdev);
--	if (pci_is_enabled(pdev))
-+	if (pci_is_enabled(pdev)) {
-+		pci_disable_pcie_error_reporting(pdev);
- 		pci_disable_device(pdev);
-+	}
- 	nvme_reap_pending_cqes(dev);
- 
- 	nvme_cancel_tagset(&dev->ctrl);
+-- 
+With best wishes
+Dmitry
 
