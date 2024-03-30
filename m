@@ -1,243 +1,77 @@
-Return-Path: <linux-kernel+bounces-125558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1F1892899
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:00:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 901A98928A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 02:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15451F221EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:59:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49EB02832E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35DA469D;
-	Sat, 30 Mar 2024 00:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B13AD4C;
+	Sat, 30 Mar 2024 01:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4I1SvwBV"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qek4aQUi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5501860
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 00:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A1EAD22
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 01:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711760387; cv=none; b=SpXNodpkUzJPmJsuaK/fe3y0ojIXyCm167SrX9ry7sZKI+E1TFRjwTwHA/TOQODwRzHZlmF8e13NZQrfiVHCcgGIQal+8DXIqq0kzE+GNiU7/xafKxjxAxTaf2l8nB3Szu6j4O/xEGhdmImdOaqKy5g1q5xWxGPQ9wUdHI6ZMyM=
+	t=1711760454; cv=none; b=gLlfDOWhsQC2AlN0Vjv7Ds6XwudkYA/VV8CpYOIJ9YP97eMGILj83SOS0cDl50RNYByilCwaUw+fyc7/RLBZWSPvPPZ65RY/eLAzcfi63Q/7ytj8Z+2kWLBeTP56UshlZkwWfkSLU2KneB4D+q8FNLdfvi/TmYnsZ/7tWTcQK0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711760387; c=relaxed/simple;
-	bh=uNZdNcX9/iroWo3FyJaRCAOgU46ZuzE0lebtkWKYFL4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NwGTeJC+P+559q2yMUPa2El1FtFmZqNjzGutBnJIKSYsH32Yfe0BoAE7nmMJWiRDD7gMu2OeAVwqSyYWCJidF/sLG0QdHE/+IzJy5L1S6SXXXiuEeyvYrBOk3wEeBIP16wZwUblvhmTHWd4seyvF3i8Fj7qmZ8zsgx49PYwtozY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4I1SvwBV; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-341730bfc46so1699751f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711760384; x=1712365184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uNZdNcX9/iroWo3FyJaRCAOgU46ZuzE0lebtkWKYFL4=;
-        b=4I1SvwBVGoq4hHVZqk9OHvp4M2fm0MN/NDUGXzD6iffrAQuukF9cVD0VgX2oX75ImR
-         8M58QKON58QoPCaut8GNZe9zkDZ6tzD2WFb4aJkJCLoYWUBEFk50hY7Gxs6u8MtRdY8f
-         /Fw53PwrAqxW2FDdW9kibmLDdCv1PmzK/uut/UPc/Ox/cUxqF9JNizDBpXkKE6kg4ycV
-         u2Zhpx19Aj6s3RfefsYR3npWeZJSw2n/i6JXe1HMRAB2YGrUgxqiqK6b3cUNkwrFkrkV
-         tsicKP84YjaojsUO9/XrxBAbXkheNFY4tpXq03P3Dx5+/pm15K1jL+ZhspCubzGBG3EW
-         PM8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711760384; x=1712365184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uNZdNcX9/iroWo3FyJaRCAOgU46ZuzE0lebtkWKYFL4=;
-        b=CXhS+6dOfmsEODjEwesbV1VteT5lfDdmrM8HbZQ7dI9y/MfEtPpqs3/Bwsqu6mcFyE
-         ZSYPNcBI84VeCHHlsXwJ7swV8MbpV/olNghDAniy9XcWHgM1o0zDmAJc8uXo9RYO/0wQ
-         qRgyBMGgXBXZp6XU2pEwt3u+bDW7Ljqn8Xe/4RMfYPbGjRTrR2H5OJ5olMbmgJ+1clX2
-         bpKGaOiOlAPDtzMS5ZpNS8qIOgZKNyOt9XAiJRLFFOHG8pB65bGdNbFi0sE55SMwKUD8
-         nO52Na6kRuCEdztUW4WnJAn6C02yC6A4QE00FQ5EIYzf4YDHPg3SgWi9nQBaZZfr7RU5
-         gytw==
-X-Forwarded-Encrypted: i=1; AJvYcCVvcnBukXMXzKZJPgy+bYnxd7FZv+MzNZKZ4ScNLI2qHFzNTh5e14ecyoB6V0KMJn/JmmbJzhH7wpYhtm2aZkXCmcVFsR8YzHBb4xk7
-X-Gm-Message-State: AOJu0YwremSursEjJ45GlxW3farpDNOQ7+KNeyLo+l5/Ml2b1+eCtZ8f
-	+vC45z3P6VwPy8Zi2vVf946j6B72gZVIVqc9fLRb1802+bZP+XfVHY8zOZNXWfLMPQJqSGigknz
-	CoCsV4qKxrj0oxKoPYGV+IYFwJ7DdVsJgXHCV
-X-Google-Smtp-Source: AGHT+IGIPqolQwpHSX+ihYnJ0wVakUMRORlII1tHrJ8qiOdMXwNJEAEjlpAvn3m2jWN7AU3Y15/7gDmsWFTWJwPsyyM=
-X-Received: by 2002:adf:f18e:0:b0:33d:64c7:5619 with SMTP id
- h14-20020adff18e000000b0033d64c75619mr2622657wro.70.1711760383544; Fri, 29
- Mar 2024 17:59:43 -0700 (PDT)
+	s=arc-20240116; t=1711760454; c=relaxed/simple;
+	bh=SB7j8kvTH9NRoI/QoVhyjgvW8q8QZckfgiEKfKSpBwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UVsroWwqtDNloe2Q3eivWkhObBkAyyr4S/VXAEYUtQSNBlBJMSyb/JsWG7FChRoVMldu7rSkcsCNDFXrnm8wLFrGiQXO8klrIehUMDUpNFhVms7A5wq9JH6aphB+wY3xtTX5zfZkBM/e/xLfH4n5FqrpLZ+sU+NK816aGfR8HlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qek4aQUi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5898FC433F1;
+	Sat, 30 Mar 2024 01:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711760454;
+	bh=SB7j8kvTH9NRoI/QoVhyjgvW8q8QZckfgiEKfKSpBwc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qek4aQUiuNWz+CCuXQ3/bYg0/2hUw22G8C7TwIb6S96ayMSqTVi3HaLD8vu0OFzP7
+	 Xr+Oj+T8pKoaCrVPXgH8cEVi000Ze6y3eLgL+j2bgLrKMMTog7cT9nTNczqeZtlWHa
+	 +bePIIs+y/N8+tp8itixo1qLus5Lr1uit3cm5mywWsqLVZwcaM2E1ndZm3s6rkBlXV
+	 X+fSlKeAmyisxhph0PiC92R2jzQm301Rs0PEpH2X04uVKFAk4uxuA3NXRF2KShPZT0
+	 PWo+CrYE2f6b79vq2J/yCaVmqnpwedFtjHSDlwtaCNzixyBCJdlzdLToWqOnYwwxBI
+	 E/Njp4TXfNV1g==
+Message-ID: <5d4ca5e7-c516-4f0d-9794-f3cef8826f78@kernel.org>
+Date: Fri, 29 Mar 2024 18:00:53 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329015351.624249-1-drosen@google.com> <CAOQ4uxhLPw9AKBWmUcom3RUrsov0q39tiNhh2Mw7qJbwKr1yRQ@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhLPw9AKBWmUcom3RUrsov0q39tiNhh2Mw7qJbwKr1yRQ@mail.gmail.com>
-From: Daniel Rosenberg <drosen@google.com>
-Date: Fri, 29 Mar 2024 17:59:30 -0700
-Message-ID: <CA+PiJmQR17nwkHaZXUhw=YRM06TfF14bhozc=nM9cw51aiiB6g@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 00/36] Fuse-BPF and plans on merging with Fuse Passthrough
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Christian Brauner <brauner@kernel.org>, kernel-team@android.com, 
-	Bernd Schubert <bschubert@ddn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ARC: Fix typos
+To: Bjorn Helgaas <helgaas@kernel.org>, Vineet Gupta <vgupta@kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-snps-arc@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <e5bacec0-28ca-4cd9-9ffe-92feaf5fbfef@kernel.org>
+ <20240329221432.1658516-1-helgaas@kernel.org>
+Content-Language: en-US
+From: Vineet Gupta <vgupta@kernel.org>
+In-Reply-To: <20240329221432.1658516-1-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 28, 2024 at 11:45=E2=80=AFPM Amir Goldstein <amir73il@gmail.com=
-> wrote:
+On 3/29/24 15:14, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 >
-> My plan was to start from passthrough ioctl with O_PATH fd on lookup
-> and deal with performance improvements later when there are actual
-> workloads that report a problem and that depends where the overhead is.
+> Fix typos, most reported by "codespell arch/arc".  Only touches comments,
+> no code changes.
 >
-> Is it with the opening of O_PATH fds?
-> Is it with the passthtough ioctls?
-> If latter, then when fuse uring is merged, I think we could get loose
-> the ioctls anyway.
->
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-I'm not terribly sure. Ideally I would have cc'ed them on this email,
-but I didn't take down contact info with my notes. I was under the
-impression that it was triggering all of the opens before an actual
-open was needed, for example, during ls -l, but I don't know if that
-was with O_PATH fds. I was a bit concerned that a performance fix
-there might end up needing a different interface, and managing
-multiple of those could get pretty cluttered. But I agree that it
-doesn't make sense to do anything there without a concrete use-case
-and issue.
+Added to ARC for-curr.
 
->
-> The original reason was to mitigate an attack vector of fooling a
-> privileged process into writing the fd (number) to /dev/fuse to
-> gain access to a backing file this way.
->
-> The fuse-bpf way of doing all responds with ioctls seems fine for
-> this purpose, but note that the explicit setup also provides feedback
-> to the server in case the passthrough cannot be accomplished
-> for a specific inode (e.g. because of stacking depths overflow)
-> and that is a big benefit IMO.
->
 
-That certainly informs the daemon of the error earlier. So long as we
-can still run the complete passthrough mode serverless that's fine by
-me. I've found that mode helpful for running filesystem tests on pure
-backing mode, plus I imagine some simple Fuse filesystems could get
-away with only the bpf programs.
-
->
-> Using a global cred should be fine, just as overlayfs does.
-> The specific inode passthrough setup could mention if the global
-> cred should be used.
->
-> However, note that overlayfs needs to handle some special cases
-> when using mounter creds (e.g.: ovl_create_or_link() and dropping
-> of CAP_SYS_RESOURCE).
->
-> If you are going to mimic all this, better have that in the stacking fs
-> common code.
->
-
-Sure. The less duplicate code the better :)
-
->
-> That sounds like a good plan, but also, please remember Miklos' request -
-> please split the patch sets for review to:
-> 1. FUSE-passthrough-all-mode
-> 2. Attach BPF program
->
-> We FUSE developers must be able to review the FUSE/passthough changes
-> without any BPF code at all (which we have little understanding thereof)
->
-> As a merge strategy, I think we need to aim for merging all the FUSE
-> passthrough infrastructure needed for passthrough of inode operations
-> strictly before merging any FUSE-BPF specific code.
->
-> In parallel you may get BPF infrastructure merged, but integrating FUSE+B=
-PF,
-> should be done only after all infrastructure is already merged IMO.
->
-
-Ok. I'll probably mess around with the module stuff at least, in order
-to work out if everything I need is present on the bpf side. Do you
-know if anyone is actively working on extending the file-backing work
-to something like inode-backing? I don't want to duplicate work there,
-but I'd be happy to start looking at it. Otherwise I'd focus on the
-bpf end for now. I expect we'll want to be able to optionally set the
-bpf program at the same place where we set the backing file/inode.
-Hence the spit into a file and inode program set. I'm still thinking
-over what the best way to address the programs is...
-
->
-> So I don't think there is any point in anyone actually reviewing the
-> v4 patch set that you just posted?
->
-
-Correct. The only reason I included it was as a reference for the sort
-of stuff fuse-bpf is currently doing.
-
->
-> Please explain what you mean by that.
-> How are fuse-bpf file operations expected to be used and specifically,
-> How are they expected to extend the current FUSE passthrough functionalit=
-y?
->
-> Do you mean that an passthrough setup will include a reference to a bpf
-> program that will be used to decide per read/write/splice operation
-> whether it should be passed through to backing file or sent to server
-> direct_io style?
->
-
-So in the current fuse-bpf setup, the bpf program does two things. It
-can edit certain parameters, and it can indicate what the next action
-should be. That action could be queuing up the post filter after the
-backing operation, deferring to a userspace pre/post filter, or going
-back to normal fuse operations.
-The latter one isn't currently very well fleshed out. Unless you do
-some specific tracking, under existing fuse-bpf you'd have a node id
-of 0, and userspace can't make much out of that. With that aside,
-there's all sorts of caching nightmares to deal with there.
-
-We're only using the parameter changing currently in our use cases. I
-wouldn't be opposed to leaving the falling back to fuse for specific
-operations out of v1 of the bpf enhancements, especially if we have
-the userspace pre/post filters available.
-So you'd optionally specify a bpf program to use with the backing
-file. That would allow you to manipulate some data in the files like
-you might in Fuse itself. For instance, data redaction. You could null
-out location metadata in images, provided a map or something with the
-offsets that should be nulled. You could also prepend some data at the
-beginning of a file by adjusting offsets and attrs and whatnot. I
-could imagine having multiple backing files, and the bpf program
-splitting a read into multiple parts to handle parts of it using
-different backing files, although that's not in the current design.
-
->
-> I just wanted to make sure that you are aware of the fact that direct io
-> to server is the only mode of io that is allowed on an inode with an atta=
-ched
-> backing file.
->
-> Thanks,
-> Amir.
->
-
-Can you not read/write without interacting with the server? Or do you
-mean FOPEN_DIRECT_IO sends some file ops to the server even in
-passthrough mode? At the moment I'm tempted to follow the same
-mechanics passthrough is using. The only exception would be possibly
-tossing back to the server, which I mentioned above. That'd only
-happen for, say, read, if we're not under FOPEN_DIRECT_IO. I've not
-looked too closely at FOPEN_DIRECT_IO. In Fuse bpf we currently have
-bpf mode taking priority. Are there any email threads I should look at
-for more background there?
-
--Daniel
+Thx,
+-Vineet
 
