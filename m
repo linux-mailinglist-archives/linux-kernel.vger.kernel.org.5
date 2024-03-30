@@ -1,157 +1,217 @@
-Return-Path: <linux-kernel+bounces-125743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6BAF892B8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:12:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F100892B8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4466E1F21DE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:12:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54B46B21262
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC9E2E84F;
-	Sat, 30 Mar 2024 14:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCC9374C3;
+	Sat, 30 Mar 2024 14:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kO9j1Rt6"
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cYPdi3aZ"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2103.outbound.protection.outlook.com [40.92.58.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5162F1DDF8
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711807928; cv=none; b=f5PH35t3+wDKzf41F3bzuQ2SGeldiUmjOgLklSjlyIg0hwmCiLgVAfCfhvUWJ/9K4ewznMMD5XMSWEpbcEQn6NzsdpttIAQPsR9xdG9kLJPhCfBhXrHnHvKNclz6SFMN9j8SeE/MvCUfUywLou7foqXaSgDR4W4DaZh4XAf/3NE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711807928; c=relaxed/simple;
-	bh=72NlypCU3m1Ai+nlWdQqXQ/FhzgDGtzVMmXe9FDsnK0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oQptehjxX5asY9ojeLX3Se1Fth3vWGQmD07/Etv2bRymvzkyq0AzgN3t/cnAvq+AXlqGcvQBxoRVO5y7VHBd/OtaRFwihLt795j/3LEsYy6dDn42DTXz5bHdDKl6Sm2hb4P2TjkOcE+YhnaGJPw5kTlaM4snutSvgBFAcTVmK7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kO9j1Rt6; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a5508007fcso1476115eaf.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 07:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711807926; x=1712412726; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5R0+AkTWI8QZwkAahS3FDyHG9j7KXHmvm4QW/s+hHfA=;
-        b=kO9j1Rt6JU6GRsyHJFWfGh0Ervom6Srh6hwFvU4JfhBQClsJBOrd8tO8ue6zwWQ/pF
-         3rVqaX29VpwarDNSFYkWF6UdlE3x7zMgxq4/TDeC3b7ZJV1hotttADvXMgIfOxPrYsNG
-         WU9xjZrf/rn6pR4bErxbf5kWBl/Tjhy8gK4L4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711807926; x=1712412726;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5R0+AkTWI8QZwkAahS3FDyHG9j7KXHmvm4QW/s+hHfA=;
-        b=swWyos7mWE7EPVKW1/Qa/VXUF8jKTcsjnFKw/QZDNe6t92IRskoEN9QEF1ujQHt+uy
-         WH50eywKsq+FhTS8ChB+o+i/kgCXjOjg/0YsuWEyrFpcHowMOQSEonQQcMKUVIbu5Fmt
-         GqxRffF48YkwOsnSp1dN2EykkWp61i5cK7lV6CLx3FOCC1wUlrwCeVdAfNJRQVPeKBst
-         mt30u+D8Ltq4Et0Kvk+qNvPVcCdekX+Lq4KnK0PZKLAH7PNsFF4ACqbCYfWKd/KiAnxS
-         1ZjBY4iVBCkqiN1rieZjTli+AeIsp3zWWjNYKtf5mviI9qEBdfhVBOmpfPg6PvdhZ4dK
-         bWxw==
-X-Forwarded-Encrypted: i=1; AJvYcCXqFYb5dAwiZ3wJebwrUpCFEVf9DB+FxrmKqkhv3KOnweCw78Dc7FNMtTjFPrn/s3E7/Lw8HbOYObCm9/FF0ymVC2i4dgyebOPZ7jvQ
-X-Gm-Message-State: AOJu0YzN7CkmCaVO3X5XtQVzC6z70nk2I0Z5IsggzxL61D95T2Xfg8Xv
-	FsE85eMDYhkwiUgYy2ScEe3JfY/co3/LUh47ioBfR64UfIiDT85P1D+GPjKqkw==
-X-Google-Smtp-Source: AGHT+IEJtzUzuRZgSZPHVHwVuvYRyBRpL8kDmcK5MecWGpcsJm7ruAhRPpLIlgMAXixtWQGCSKy74g==
-X-Received: by 2002:a05:6359:4121:b0:178:6c79:6ccf with SMTP id kh33-20020a056359412100b001786c796ccfmr5950622rwc.17.1711807926336;
-        Sat, 30 Mar 2024 07:12:06 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w22-20020a63fb56000000b005dc4b562f6csm4607931pgj.3.2024.03.30.07.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 07:12:05 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Karol Herbst <kherbst@redhat.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Dave Airlie <airlied@redhat.com>,
-	Ben Skeggs <bskeggs@redhat.com>,
-	Timur Tabi <ttabi@nvidia.com>,
-	dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897151C0DEF;
+	Sat, 30 Mar 2024 14:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.58.103
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711809208; cv=fail; b=ARXSU4YSV0dZl5HapNJLDDH6LrrzUvUSb8y42l0go+kyMZVck0WyY3XHTev5evh0QYm+jr+x8FLYxphCEpWqZSeRdOfT9cmlBH33DdXi87BTRRIR8548SziF7pLA1eyuanmbiBgE3bOmpZhaxJsfSq9pfsGXvqT+Du5q3nTPDyM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711809208; c=relaxed/simple;
+	bh=fjOi/7po1cFLdl1IihzcE8L3KZ82wBK9C17Jcdr4Llk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=gCpuxniJ+J7UsOoWDFw01NsvwzZmFSzDpzdWR1K88QLz7hwUC1WrjCUMHQIBEEiQQRK/kzTU6Pkc7kGocIq9SLpiO3M7Gte8FZQ+VE+MDChMazAFjj+2QLIAImDWSvhbEBouJOKP2S5liqhl1wErUuSQ7/bBi6qGVhGcIa1kl9U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cYPdi3aZ; arc=fail smtp.client-ip=40.92.58.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FmBcO4zOgUwk26xSxYyiwEO3DTCEc/CkrFlzxOauoQNMHF2WQTZuMxOXWhnA2DsGoR3UMe225xvoH4BCFoze0tubnmpRTreY5mvfUfTfwVhfRx1/LRKzIv8GaqS/EHoXLC3Kr63Si3aAPXtnZU+WzXdqkQy6UR3csmbvfl70BhGOCEMJvxzon+trLnFvHXsQBsbF8H5iUKhnVc2Bg1AN7NGJTmH2sK8/3MSGgXOD28DE7ZyusCaKdvzfJC3TC8+TxglOy7O5N5z+qDfZo5pH34UVms58nTo4lIhf8C/FpndFRp5IRPSq/ZITphCXTOACAwBJ/59OLfd70l2BhpR8Gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LPJP9L+RwteepLTzebuTaISFted97yUiS1BgO9GNq3s=;
+ b=nF0wMJmWgNjxd23JQ2A96uvmsMS5dO0ZAYWbNXQsDmCBw3mNJnnqiGZtTbdOHosf7WN4g7QkEpNqxPQrVNetaHwPG7OWdR08BX+xevkou+1sOUIGL8OMknaIFh/1yrLBHV9aqiXs2z7TQxZLsZGQU+lSQ3H331sv1ww3/qOkvU8uCoI8WrkFvdorQ9xjCqf9dCaSiqDLvFIs72WF0bR6MNGECfmzZJe6Yfk2UqGquw9T0f/CsTvxC8CXjFr0PoV51fS2CQyBF8dN5I2LLtak52bYZtFMusycemw+VvfILXHR8wixct5Fnd3WNn6oA0lJKHiSKRJ11mceIQ0s7o8eNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LPJP9L+RwteepLTzebuTaISFted97yUiS1BgO9GNq3s=;
+ b=cYPdi3aZr4c0B/I+pTWNM9Jd1moxAc2dTb9M2yjgrffjuP8G+EAlVAg1ZnHnyeXnUURh/7lzt/a2PNcggS0R+y8BepAorRA0nz+/hGzsLA3D4wuRgz+hLOl0lp7EEoIbqUNXFT/exlCPOTRwwlXclMikYNi6bsU0GQsCjrA2F9jE78ltw/7Hbjujk4j8V7Y+G+a3Mb9UuwIYcH+KigYF0s1aN6WqN6n7QNMKVFlOXZzB0VFGbmMSJSox5BLD5ZEpXWwhREYsu92LqI8v0GZRVTEYfFVPQaMcXziD92wbuSpqcV/XiSnw9Z+CZkHSrr0MJr+PJE+7hgidkGjf5zdGJg==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by AM0PR02MB5827.eurprd02.prod.outlook.com (2603:10a6:208:180::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.43; Sat, 30 Mar
+ 2024 14:33:24 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
+ 14:33:24 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	x86@kernel.org,
+	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH] nouveau/gsp: Avoid addressing beyond end of rpc->entries
-Date: Sat, 30 Mar 2024 07:12:03 -0700
-Message-Id: <20240330141159.work.063-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+Subject: [PATCH] perf/x86/intel/uncore: Prefer struct_size over open coded arithmetic
+Date: Sat, 30 Mar 2024 15:32:59 +0100
+Message-ID:
+ <AS8PR02MB7237F4D39BF6AA0FF40E91638B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [k5TbKRqU4xqgQhk/E3+eYvk3kMxYD88N]
+X-ClientProxiedBy: MA2P292CA0023.ESPP292.PROD.OUTLOOK.COM (2603:10a6:250::18)
+ To AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID:
+ <20240330143259.5822-1-erick.archer@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2226; i=keescook@chromium.org;
- h=from:subject:message-id; bh=72NlypCU3m1Ai+nlWdQqXQ/FhzgDGtzVMmXe9FDsnK0=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmCB2zFC4lHA+jf2TBWjM1ztczWQiNIUhah6PlJ
- NpV613q9s6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZggdswAKCRCJcvTf3G3A
- Ju46D/41X6YPEmbiOsUB+J4DpwOnPKKcWsCj004G4gCAGXDcM6V+h7frx+gzNYT4Rf8x4XsR+Jr
- rQie9X4uNZp2UqZjv6FoMoJ/4Fns8PwbjLF+l0gB/Fb9vnxXhMacWym6B8w+PswdMS16W9pSaen
- F5Zs8+sTbvHAaRXn3iZCPYx6ui3LhmHpqy/e7+pHVKnrj4FCMPmAuZYvV4anVze9FSq+nPmoFVe
- 4z1zpNbj5Nty9xbyRYWwhQNfAB8YuZpgDUGoG1p2AdiphqV77NP//zHYPcHsfgP+y0JIz/5BUxR
- Lp65/01z/jPpJyAivKhVM2pvS3aEM7N8bTOuAaM+rtB1V3deWraWkypkkJSwRAtdxUTiXrnbr3Q
- zK1KtBGo7BRK6DVc03milid8NDHuHnIwNJM3w+/h3ePn0NlvlmBD9bJLoAajAl/hlrYTzTAak2Z
- VHzHA0SQ2Vhn9Etuq2ipHNQhNVT3u8txxcSJCBr6Q6RBWkaeHS+IXH4DIwvKkwbcmc2SZ7BehHC
- gecHXXvfcvmvsbcNQnJHTKr0dZmjQsZkf7YPzVfhrYvzU33RIoADtfHAmcVTQXZsVqXFZq5PRjO
- 3LC4+FeijavF4l/RRJPr3Btg3mW8DmycJkmfTy3BiYHrt1lxWF488MN0zrq3NdSq2+JfZ8KkBrh
- pVR23AZ tcRpXu8A==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|AM0PR02MB5827:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e7713d4-d927-4284-dff4-08dc50c65ada
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NCzC4hUwZMhoMS/qbpYs282m4bKV+R5pHdnGfM+uJQc3uOT3rWQZgog4H0bx7g2B84F+69ZvKdqgjRSiHpmluJNX56mDeKWKCeEHio5fiY/f+UHLqwaUjoVY1WQZ4d8ACdEchBWchgcZJLu5DtVYMfD2H40BSowYYsxqHv/cQn1FXAowwgZ7ILZy2D/3deuLIwx8pFnWXVTT/8SamEF3wXvH7m2idaUcknOxzvCJ55vPpVtl9nWXOcnnkWdJW99tyFUKaAkxG0ALcASF3FAUvrl1JIuRgx1YufTMvZWWI+rnyv7kHJLdIUOypHKpUgDM3Tm4jKH1Tw1GzPMK7oh85iiu5GMi5cGHlQyHg3IpTXOK+kY08FtdlQGVCX2cbr4TekGjzyM2l5rrDV0kzrjrE6VzGJLIn6uYTuhYaY/oa4BOSxh22DBLQJkP1FwMdgmMNjgJZdBvEMB2QC/NZvVBGHdjMiKMNuMyAFTCfP6LS0gpSSTO1HWYh/Q16kP3dzu78UNPbAkPhH532lMtL6a6RqfVfnVnkrSHcHPeT6MNq/NlMf/5mg6cu/hYEf0jcbC5nI0X8xmucEUabU2CtCFEzuMdMtwGgYGxA3U3CCCauPX2X7qrJowCuTphfmaBojFgDrOLHJg5/7N/PS5DMupqWfe/cNYshc7E74a7PHBZRTFQQRo6ls9zh6POwnzazd5d
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?UK3dsu9VTwjLPGsf7OGMySfHq+16NuV3exIt89dc+BaRNjED7qdRFO+BOBBe?=
+ =?us-ascii?Q?0wLKXPUFj7TMYneQMi6U1MEOsLjoUhupBLMcoJU4M5e3J+Mo0UU0WWfytQjN?=
+ =?us-ascii?Q?hHCgUoFBI2CRz5JiNzMxYMQ8WqJSaQslQgx2CAnJV/8LrMfbw2jidJJOGGI+?=
+ =?us-ascii?Q?EmBMUcbpCnbdxqgi3AMLowmLqeiJZXd3i2ZpmoshsJn92cUuyWvsaOwieuz/?=
+ =?us-ascii?Q?EOFCedZkQYKiGfrxOWJGH6Iy1gF7O9Soy65hlNTTfhBGlPo2AfC9fKmKaR2x?=
+ =?us-ascii?Q?Zi4p86PesFz+slMab8SCnpfCv65dM4r3EIyjEfHxVL0RcuzjmDHMjSSGeVF4?=
+ =?us-ascii?Q?NZMjSaMUhiIhBRgejz1JjRprwRr3XeRAlNHF2ll+RXusD4pZ8FVGhN7RcHgD?=
+ =?us-ascii?Q?Ia2CST/n7mjQ9po46NG/GXe91YwkgpaQtlKYR14dbSwjvANJvmMjp7cU2eGk?=
+ =?us-ascii?Q?s9YUxr1LjUl6YAVTezQOgpTeClyfqtrosmVB5K6dlf5ljv0Huw/GFSytXmH+?=
+ =?us-ascii?Q?TfH5dqtRfiZAEQ47dN8TPjxM2DOPQnWdlc4wP0qyrW5IcKWmLU5hXrdVpsRv?=
+ =?us-ascii?Q?IeZmaN5zqu+ORL7gyeROmzSuu5BN1tPpAs3kWYGbXCb+Oi4Rj5/5yLR8CvaP?=
+ =?us-ascii?Q?TkwjQSJWtmFuuJGug4GGHKHj2YaY8p6RWe5Tf72ctWel/ugfkZil72nv4Ww0?=
+ =?us-ascii?Q?z/LaZ91v0gTR1qCCb/4DaontS56sWif+mSSwZF6GuqK+anHP5GNwsTimTt9/?=
+ =?us-ascii?Q?vfiiHg3oxszjFNc6NzAaEF0MF135I5Z5v9ZZ48AtcCI6QI6MA3Mu37UXJhZ6?=
+ =?us-ascii?Q?yjcKzHJ0YujzrlRADJU9Ahv/6tQIIW1pFZihDBst1WfsipROmL9A+PX53CNH?=
+ =?us-ascii?Q?HIlw0jkXoFjqIhwYiz2LXY4EHR0oFO9wOtkUtMOj9njm+Y4JoHK3T/r1Vg+W?=
+ =?us-ascii?Q?k30PjxHapBiOaRutbbs9Bc8YgXXJ3abKCosnYPuybkGHWXCL3gMFa8Hd9pgT?=
+ =?us-ascii?Q?IP00U4H/tzNpXnrCMNK9l7OTRad0mC/rHlEsyEftV5XbnhGVkoqgV2szMVhC?=
+ =?us-ascii?Q?EtDEifvKRnV7++YfSCXZrjQSCYiofc9X6qxgmMNL39bSmoY4NNIkN40qnaDZ?=
+ =?us-ascii?Q?pk40y5lBoFD8lS5qxy5NbRnc9hLIYqJDZuGkUOMk/gKUjVKAaRUCdfX0PPXq?=
+ =?us-ascii?Q?4OBeG5ZultiRozBmU7jKQK0X+ejJ93fzFnV8W0LOC6mQTLaZNlZFAGtE4YJS?=
+ =?us-ascii?Q?lKM6gWRlk4rlG80HSzAF?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e7713d4-d927-4284-dff4-08dc50c65ada
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 14:33:23.9457
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR02MB5827
 
-Using the end of rpc->entries[] for addressing runs into both compile-time
-and run-time detection of accessing beyond the end of the array. Use the
-base pointer instead, since was allocated with the additional bytes for
-storing the strings. Avoids the following warning in future GCC releases
-with support for __counted_by:
+This is an effort to get rid of all multiplications from allocation
+functions in order to prevent integer overflows [1][2].
 
-In function 'fortify_memcpy_chk',
-    inlined from 'r535_gsp_rpc_set_registry' at ../drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c:1123:3:
-./include/linux/fortify-string.h:553:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-  553 |                         __write_overflow_field(p_size_field, size);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As the "box" variable is a pointer to "struct intel_uncore_box" and
+this structure ends in a flexible array:
 
-for this code:
+struct intel_uncore_box {
+	[...]
+	struct intel_uncore_extra_reg shared_regs[];
+};
 
-	strings = (char *)&rpc->entries[NV_GSP_REG_NUM_ENTRIES];
-	...
-                memcpy(strings, r535_registry_entries[i].name, name_len);
+the preferred way in the kernel is to use the struct_size() helper to
+do the arithmetic instead of the calculation "size + count * size" in
+the kzalloc_node() function.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+This way, the code is more readable and safer.
+
+This code was detected with the help of Coccinelle, and audited and
+modified manually.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+Link: https://github.com/KSPP/linux/issues/160 [2]
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
 ---
-Cc: Karol Herbst <kherbst@redhat.com>
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: Danilo Krummrich <dakr@redhat.com>
-Cc: David Airlie <airlied@gmail.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: Timur Tabi <ttabi@nvidia.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: nouveau@lists.freedesktop.org
----
- drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-index 9994cbd6f1c4..9858c1438aa7 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-@@ -1112,7 +1112,7 @@ r535_gsp_rpc_set_registry(struct nvkm_gsp *gsp)
- 	rpc->numEntries = NV_GSP_REG_NUM_ENTRIES;
+The Coccinelle script used to detect this code pattern is the following:
+
+virtual report
+
+@rule1@
+type t1;
+type t2;
+identifier i0;
+identifier i1;
+identifier i2;
+identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
+position p1;
+@@
+
+i0 = sizeof(t1) + sizeof(t2) * i1;
+..
+i2 = ALLOC@p1(..., i0, ...);
+
+@script:python depends on report@
+p1 << rule1.p1;
+@@
+
+msg = "WARNING: verify allocation on line %s" % (p1[0].line)
+coccilib.report.print_report(p1[0],msg)
+
+Regards,
+Erick
+---
+ arch/x86/events/intel/uncore.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 258e2cdf28fa..ce756d24c370 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -350,12 +350,11 @@ static void uncore_pmu_init_hrtimer(struct intel_uncore_box *box)
+ static struct intel_uncore_box *uncore_alloc_box(struct intel_uncore_type *type,
+ 						 int node)
+ {
+-	int i, size, numshared = type->num_shared_regs ;
++	int i, numshared = type->num_shared_regs;
+ 	struct intel_uncore_box *box;
  
- 	str_offset = offsetof(typeof(*rpc), entries[NV_GSP_REG_NUM_ENTRIES]);
--	strings = (char *)&rpc->entries[NV_GSP_REG_NUM_ENTRIES];
-+	strings = (char *)rpc + str_offset;
- 	for (i = 0; i < NV_GSP_REG_NUM_ENTRIES; i++) {
- 		int name_len = strlen(r535_registry_entries[i].name) + 1;
+-	size = sizeof(*box) + numshared * sizeof(struct intel_uncore_extra_reg);
+-
+-	box = kzalloc_node(size, GFP_KERNEL, node);
++	box = kzalloc_node(struct_size(box, shared_regs, numshared), GFP_KERNEL,
++			   node);
+ 	if (!box)
+ 		return NULL;
  
 -- 
-2.34.1
+2.25.1
 
 
