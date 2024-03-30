@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-125703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0D7892ADA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:34:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3662892ADD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECD9EB217B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:34:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8678A283063
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E877E2E41A;
-	Sat, 30 Mar 2024 11:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0729D2E63C;
+	Sat, 30 Mar 2024 11:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nCKU7T9U"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MCFC22ex"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1FE2C683
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8824426AD5
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711798439; cv=none; b=smmrmyKKY/Loze4eT4Y2bEBv6cLMIInDL/bzfGONPXRMz/tiumQ8AF4Ynrr/eiaZxkvz3tZIQ7YSz6eBDGc4mJxQilleKFQxgocfOp4RjXpDBCLvghG02PhxFpUEqKZWZwC8tQWd90P+LdhR7iGGJ1kPkfl0FqMqgORvIIlt3C8=
+	t=1711798592; cv=none; b=RrxaVQlEHffQlnzPENY2gfk+d1Q5hW+k5+DMnCNtiqBzwlo4AouCyy/J5V0xd8WHTNsUyQqVI1ObRANKKKlLEVOnoQsitnJVba+3TpD6jkDoXiERtEjLY3kkeHEP5s4lp5yxhi0+HTEgPSE3W2swbBtphi0r5oQ3Qzoyz6wR4UE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711798439; c=relaxed/simple;
-	bh=l5xIvAlUlvTR322cG9gHCXBT6iC/tG6s0rNkqv/fbrg=;
+	s=arc-20240116; t=1711798592; c=relaxed/simple;
+	bh=LNx37uHQwjk4CXCpeMldzKdo6/MfLSJgg9p4MIj3Q+Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z1Ei38l6u0ddcwmdaR8aASN9QWwB24tW2FrzsGHg97U33USux+E6fqh3fZNnOkjdLHdstgt8kIZG5PvneRvhDEcwY7zmMOb0knU4pbgtn110nkSl0e63D4d6HJl982woAmJAVuIVEVtdl5oODazU/gl+JcNkiIFPoroMpwi6AD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nCKU7T9U; arc=none smtp.client-ip=209.85.208.171
+	 In-Reply-To:Content-Type; b=oRI+mw3SGIRwUS2Cx9oR3wm0bHDSk3gmsEmlb2X74wZtDCb8IIuRSbQOIalX3yWL0Fjv2wpUXJXP9DC3vBw8mJMMFt2rw8dNQhD+Vu0DogKx+m+bStAo9ZMi4Fi/BWQIzmDpiAOd2AKEBzEK6qJSHlBltPJpuvaSuxhY9wibDxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MCFC22ex; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so30545161fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:33:56 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-415573263bfso3552255e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711798435; x=1712403235; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711798589; x=1712403389; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKuP23ycho2oA2KCvhT0ZMyIBbVELVhTwKe1JYrHv94=;
-        b=nCKU7T9UOfdglfm1lmyi2I2dr2sgrUuCpWrkZWDyLi4TzjBJtK+XdiTss2BZp4WHW3
-         TaxxdHBh6ANUqrsgg49uSN8R7odty966RgF5lE4AykLed3q67STwtqGXw8zY4OSW5EQT
-         B16OkczVYdMIxpe6sPul+Bhve2BjpR4qa+4vB9YW3V8NfmBfXjNltLqdAqjiw9tUywd1
-         4sD6xi1jILtdPZxYwQdRlrOrseaxrZq4fbkAob/Je90Q2ZJCbYLcL88YIk9PIxWTG2xR
-         ggYGa27mWZFz09Qjs9n/3aap7IWhga/E6XRduAV0jR7WwPEzkYADhlFl61xcPNZUzsy6
-         +Tfg==
+        bh=ofiMaV1qQl+WdOcuiQTraRnMr9+nFnl9Caq6scwirk8=;
+        b=MCFC22ex9xK5nX69/9pSxlA7YHs2iVP6pAPE77AJfk2u8TkdSlfner4oPn3RD/vMIq
+         I5KRLhszyNNjzpWNhc9p6iltNJMOzhJmxkjAb1hwaUrbBGQOkg2MIRWE9dE/gVvwbs6/
+         e6oCwNnVIDGXFtugxrJe0p/gBfpnD2sW3oQa3OVtP08fxIA3ODgji/bqhSnxFz9b+WMp
+         1/aV4qKZ06B41BemCrhf3C7XkrSODoKNQEoFCt6lq5paqxAnaScgzKc+7XeChqi+WGZ9
+         bnq35B3XExuabQJeftjFFSJZUVtiN1lhcvLTnU5yg5VnqOtiKDckUT3aVAfi62uiEUg/
+         82oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711798435; x=1712403235;
+        d=1e100.net; s=20230601; t=1711798589; x=1712403389;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZKuP23ycho2oA2KCvhT0ZMyIBbVELVhTwKe1JYrHv94=;
-        b=Unp/PkDCjrattvMIvbKLQgdcN5hN8CcH7dCUP5CAZn2sEVmtrtuXCik2YYn4QteS4x
-         EESwsFo03Uprmms93hXGzmUrb9zno/IyAMywrGa4Splds8xeiOq/dorn8LsYbQ6lYSUq
-         S5XLNT0WusWRDo9LXi7wiAs2BvzWj1Vcixz28rWjInSi3jnLn4hgEA+bwnEll5ixq0KX
-         udbW79NAdzv7LQU7m0u+TVEv6LqxLsWGDVGQT3gvF4bMy8oWYn+xi1rn4cK5EV/Zz0dJ
-         k3Q6HqVeJKI2Em0azjELEhLqrmne/P9EhgoEUDhpFwgYXtWiWCcukN9SaxeX+ms5mDmv
-         GDTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVYrzsw1bF6sE8UMyaRI4al3h516i8IzRdCtuMUMHnXWaZZy9XQ7pxC5r2q85t+MaAB2vCzXoU78MHtn1KswnEvG8K8BGbVin73fzwM
-X-Gm-Message-State: AOJu0YyUHYyw4uJRCVNZnQabpzf62IMeDEkonm0X9KNXmBNdVgbKMs5+
-	XpOni8NvYelk8ZyHftvXM1R38dPYEDNCCvV/9xhaXfEK3XWioixFRnBQ7Lh/se8=
-X-Google-Smtp-Source: AGHT+IHFn0qQ/U7hs4+G1h1XSH2b8K/o2HHnoLDjyqL36pwa8qo5uKiLnqQ+10AAaVarFdluT+rTIw==
-X-Received: by 2002:a05:651c:198e:b0:2d6:c001:d8b with SMTP id bx14-20020a05651c198e00b002d6c0010d8bmr3602180ljb.5.1711798435010;
-        Sat, 30 Mar 2024 04:33:55 -0700 (PDT)
+        bh=ofiMaV1qQl+WdOcuiQTraRnMr9+nFnl9Caq6scwirk8=;
+        b=MaKauMXUpNFW0ZJbUvmtnLIlW9wUGjnNDTbJU0ePzLuoCAAdxYSOUVtlvgFdBPXKu1
+         m4F+zstpPETx/pfUk1VfB6JdfYk3cHObFmfhue/juMcDabBl0M5MMMwnTObTEhS60w1O
+         Uvw2TolQPrEgVhxeA5f4Mrwnsp+7JOneS7XGeGbUUkJ00dEJhw0zts7N7TtKv+Bt1q4k
+         9rg9/Tad+RcW7UiFpui/CR2rv/eQlLmYTWHzw5RRQ7CnEhqdt7AlVUwv6SF9Owm5ojfG
+         ZtME1l5dsktGKuFZdALQt0u/99azpYJglYmWFrvy7nKXbAYde6VQ6b4BzYg+wuXnI9VE
+         7oqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXBiUfbj6p8gz0yd6gXlqVLxiEjOsZLQe9e7iwltyyCEfOUj4DODiZCz5ruuZjw/IUBH2ags1RYu9hERTbxT4YIAToBNi1fUjsTP9xZ
+X-Gm-Message-State: AOJu0YxaR5TcKqEc3txbEzCJEjP6FEbnF8jSoQocBd+40IcDN3XKqJA0
+	ClkxvYACmfWz1+t56vEujCZuzVagh7feNWQXuZZilBZpfukjlJ9jgdIC6dgki1M=
+X-Google-Smtp-Source: AGHT+IEC/vVAtWZ3Fjn4ZZwnP/8WXo5SvYfoUjgMrzoX1GnrOfy3xaNdPfytoMSDSHyrXCvBJ7VUsA==
+X-Received: by 2002:a05:600c:4f0c:b0:414:85f:1f72 with SMTP id l12-20020a05600c4f0c00b00414085f1f72mr2899896wmq.6.1711798588857;
+        Sat, 30 Mar 2024 04:36:28 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id h11-20020a05600c314b00b0041490467febsm11368698wmo.38.2024.03.30.04.33.53
+        by smtp.gmail.com with ESMTPSA id g4-20020a5d4884000000b0033e7603987dsm6271860wrq.12.2024.03.30.04.36.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 04:33:54 -0700 (PDT)
-Message-ID: <7bd584b0-46e1-4dcb-a402-80784f7d11b7@linaro.org>
-Date: Sat, 30 Mar 2024 12:33:53 +0100
+        Sat, 30 Mar 2024 04:36:28 -0700 (PDT)
+Message-ID: <df98ce20-23ce-420a-9807-1329deb01d4b@linaro.org>
+Date: Sat, 30 Mar 2024 12:36:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,13 +76,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] spi: cadence: Add Marvell IP modification changes
+Subject: Re: [PATCH 4/5] driver: spi: cadence: Add ACPI support
 To: Witold Sadowski <wsadowski@marvell.com>, linux-kernel@vger.kernel.org,
  linux-spi@vger.kernel.org, devicetree@vger.kernel.org
 Cc: broonie@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, pthombar@cadence.com
+ conor+dt@kernel.org, pthombar@cadence.com,
+ Piyush Malgujar <pmalgujar@marvell.com>
 References: <20240329194849.25554-1-wsadowski@marvell.com>
- <20240329194849.25554-3-wsadowski@marvell.com>
+ <20240329194849.25554-5-wsadowski@marvell.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -129,60 +130,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240329194849.25554-3-wsadowski@marvell.com>
+In-Reply-To: <20240329194849.25554-5-wsadowski@marvell.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 29/03/2024 20:48, Witold Sadowski wrote:
-> Add support for Marvell IP modification - clock divider,
-> and PHY config, and IRQ clearing.
-> Clock divider block is build into Cadence XSPI controller
-> and is connected directly to 800MHz clock.
-> As PHY config is not set directly in IP block, driver can
-> load custom PHY configuration values.
-> To correctly clear interrupt in Marvell implementation
-> MSI-X must be cleared too.
-
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
-
+> From: Piyush Malgujar <pmalgujar@marvell.com>
 > 
-> Signed-off-by: Witold Sadowski <wsadowski@marvell.com>
-> ---
+> These changes enables to read the configs from ACPI tables as
+> required for successful probing in ACPI uefi environment.
+> In case of ACPI disabled/dts based environment, it will continue to
+> read configs from dts as before.
+> 
 
+Random subjects... Please use subject prefixes matching the subsystem.
+You can get them for example with `git log --oneline --
+DIRECTORY_OR_FILE` on the directory your patch is touching.
 
-> +
-> +static bool cdns_xspi_get_hw_overlay(struct platform_device *pdev)
-> +{
-> +	int err;
-> +
-> +	err = device_property_match_string(&pdev->dev,
-> +					   "compatible", "mrvl,xspi-nor");
-
-No, do not add matching in some random parts of the code, but use driver
-match/data from ID table.
-
-...
-
+>  }
 >  
-> +	cdns_xspi_print_phy_config(cdns_xspi);
->  	ret = cdns_xspi_controller_init(cdns_xspi);
->  	if (ret) {
->  		dev_err(dev, "Failed to initialize controller\n");
-> @@ -613,6 +911,9 @@ static const struct of_device_id cdns_xspi_of_match[] = {
->  	{
->  		.compatible = "cdns,xspi-nor",
->  	},
-> +	{
-> +		.compatible = "mrvl,xspi-nor",
+> +static const struct acpi_device_id cdns_xspi_acpi_match[] = {
+> +	{"cdns,xspi-nor", 0},
+> +	{"mrvl,xspi-nor", 0},
 
-This falsely suggest they are compatible :/
+How is this ACPI?
 
-> +	},
->  	{ /* end of table */}
->  };
->  MODULE_DEVICE_TABLE(of, cdns_xspi_of_match);
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, cdns_xspi_acpi_match);
+> +#ifdef CONFIG_OF
+
+This was never compiled. I could understand not testing bindings,
+because it is something relatively new - like 5 or 6 years. But not
+compiling code is less understandable.
 
 Best regards,
 Krzysztof
