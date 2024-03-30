@@ -1,123 +1,100 @@
-Return-Path: <linux-kernel+bounces-125748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7919E892B9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:51:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85D2F892B9F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:53:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6B19B21388
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:51:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE361B21338
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABE137714;
-	Sat, 30 Mar 2024 14:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4FB1383BF;
+	Sat, 30 Mar 2024 14:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rRvNFnu7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="AgKIFxWL"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8831C0DEF;
-	Sat, 30 Mar 2024 14:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8311C0DEF;
+	Sat, 30 Mar 2024 14:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711810258; cv=none; b=p0K0ttGcUaDR+lwFuLMps6IJo3ry/M/CJOLM3obJh0UOoIX7Eg097GZxGHPpAy/iRObOIekErBJABHs9F6qFKhyK5HNBeVrrzoxl0L2RhPWYUMGiPCp7iEmxPhkN0ALrulkJntYqWyadVAiukqPyjquqclVkClPq5AWSGSD+B+4=
+	t=1711810403; cv=none; b=VrO6J8Hi+SBymX6+G5k3Ud8x7blzHf4q7Un8U6HDTfCcAzT4feZ1IAepX0YzqrNRbWaj6sVRlwcJW0hQh2XaqpefkR4Sl2gkocyv4v1p3KRon1liM9mPgLHk8XrtVDkI9/lTyxhV5mKiovFXgO/D2P2uamXtEBKUKCzDezwG5NM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711810258; c=relaxed/simple;
-	bh=MeEZw/Ldm2s+576nBu6ncN7GhPDT9rZgYMIfiLGH3U0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Hc5e3yXFahyfYaJjvnhJqY5YFvz5Av2ij3scJ7xfvFW8lILXBWW0QgRktpggVFuUh0nve2Cjo7rfRQ/I9q8QPcwFFgJ/g5h/ZMDn+anIYtiDqwPZIPS3whbYgBaBH8X54qMTcaRn20KMfbl1d/UmFfxmhx+n9ppB+DGl4aNIR6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rRvNFnu7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A6ACC433C7;
-	Sat, 30 Mar 2024 14:50:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711810257;
-	bh=MeEZw/Ldm2s+576nBu6ncN7GhPDT9rZgYMIfiLGH3U0=;
-	h=Date:From:To:Cc:Subject:From;
-	b=rRvNFnu79TmXxWpFkKIGFhIqK3SF0gtN7EErylwezS6EzQYEOUBf9FkXWW44GH3bF
-	 TkafGWPO7z4pRGgfySzpBaZBpHwiJLM/9anu1Z99wJMS1w+lIm488nczspuk0EGPL1
-	 3kvMKb1tt8IP6vupfZyLIuUOVJ+IBbH7yQAql+e4kDM6cGi8YC6PiIhnjeUab02hjU
-	 FNbfULPANQSjoPgu5I4FICILiDV6C6vWjDAxUmLO1dBHWwOe+R2UqHH91AjiG/Z1A2
-	 IML/MgdeK0lC8wS4TkJ22oDLvKb5FEzZ7fO59pLuA1iYjE1xPW15S6FSzHTNe5Uu2o
-	 R5qSbfAM0AQzA==
-Date: Sat, 30 Mar 2024 15:50:54 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andi Shyti <andi.shyti@kernel.org>
-Subject: [PULL REQUEST] i2c-for-6.9-rc2
-Message-ID: <ZggmzvmHwewWq14U@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andi Shyti <andi.shyti@kernel.org>
+	s=arc-20240116; t=1711810403; c=relaxed/simple;
+	bh=gJx0oB7ZzuoCNKkwsr1UzGLJ3CRfFELmHureG9uOYGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oDelDfSdHTx21mIJ0hem715uqMg/JEbBvu+QI/n4j2Dk5mc8GbK+VtSdOJISO50a39BBZcXcTZecoAszKR55fvrHsgPXRjIkkmjNpNVTs/51Np0JtRcq77T52D8q+mY13M2OFNo9qBat6UJf/PFGufjBrguPYjOpPuK3LA1Ni/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=AgKIFxWL; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=caGVOX2RZ69c4hjscPFCuCKDrFK7z35V6qvgjgO6mvs=; b=AgKIFxWLgU4PMlGPkeuWts4Sdx
+	C1uk2GClcr5WI35QPJ/c+zppgblTWKdov5NwQ4Y/rlf4kRO+pXEefeYiuH/9vvqcMMhtsW5bKoOSc
+	ptiP23T99yvkYQ4yFYT1LkW6GjFn1aaNnXMQ/2LbdTSWKkldN1777vtFbSTbTQ5A4V60=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rqa4f-00Bj1W-9i; Sat, 30 Mar 2024 15:52:49 +0100
+Date: Sat, 30 Mar 2024 15:52:49 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 17/17] net: pse-pd: Add TI TPS23881 PSE
+ controller driver
+Message-ID: <8186fea6-c1f4-403b-b717-83c1dd3ad826@lunn.ch>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+ <20240326-feature_poe-v6-17-c1011b6ea1cb@bootlin.com>
+ <6bbc6b86-3947-4679-ac0b-fde50129d0f6@lunn.ch>
+ <20240329155657.7939ac4b@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7aJqlnfEG0i9RKQt"
-Content-Disposition: inline
-
-
---7aJqlnfEG0i9RKQt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240329155657.7939ac4b@kmaincent-XPS-13-7390>
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+On Fri, Mar 29, 2024 at 03:56:57PM +0100, Kory Maincent wrote:
+> On Thu, 28 Mar 2024 17:24:17 +0100
+> Andrew Lunn <andrew@lunn.ch> wrote:
+> 
+> > > +static int tps23881_flash_fw_part(struct i2c_client *client,
+> > > +				  const char *fw_name,
+> > > +				  const struct tps23881_fw_conf *fw_conf)  
+> > 
+> > Does the device actually have flash? Or is this just downloading to
+> > SRAM?
+> 
+> It is downloading to SRAM.
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+So maybe rename these functions.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.9-rc2
-
-for you to fetch changes up to 2953eb02875b42c96e5ecb2d1061d0a2c1f9972b:
-
-  Merge tag 'i2c-host-fixes-6.9-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux into i2c/for-current (2024-03-30 15:37:54 +0100)
-
-----------------------------------------------------------------
-Passing through a fix from Andi for I2C host drivers
-
-----------------------------------------------------------------
-Maxim Levitsky (1):
-      i2c: i801: Fix a refactoring that broke a touchpad on Lenovo P1
-
-Wolfram Sang (1):
-      Merge tag 'i2c-host-fixes-6.9-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux into i2c/for-current
-
-
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Heiner Kallweit (1):
-      (Rev.) i2c: i801: Fix a refactoring that broke a touchpad on Lenovo P1
-
- drivers/i2c/busses/i2c-i801.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
---7aJqlnfEG0i9RKQt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYIJs0ACgkQFA3kzBSg
-KbZqVg//T+7bSD0l5m1Tf8hoBjJE2N945FslRD+KjmYaqXDcwOl4y/5rhaOzZno0
-1Flt3DQXx5qaEA1oSL7ZQGNzTNT3yIZe+UP0pWdtCL4idtWeTE/NUbbaNr0hxmS0
-gChia+urmT5POU8obXpK3JDIS8zTS5wMttxYBNIX7I8W/TBAZD/4a22dsl+fKB2n
-vmaD2AetC86+zXKnhdwmo6iu61XN5lpfgw8Vwp42XiDNvURAzm0N/BtZWu13lkkJ
-/RejdWJ94DQXhobHCRTV8Wjt3zBf/DQUff/OeFZqitbNta26OWF4qh79PLuvKCwc
-ovI4dDZotvFLu5bpeGwMREpFMOJWdYIkW1HJ0c8ptJsVVYSQo67NeYsJfbRaacH4
-bveqJG6G4Nk6wD734V3oBhtyTEA/rpcMpPPlesmJ8pksSWNahM5BmMVXmTn/ht1g
-IVkpj/pvVlDHmSv9Uep5EdZNowhAxDq+J6+Fkjvg1cEmyij+r8y3/yQZqz814far
-4fIovVdOvVJNFMAbvyB33+Uwix2UUMhFMEcMmA94yrMr/ua4rcj46jd+C/dlYDNH
-j8uf+Ql9UBok2u5RJ/daaKosHkVjkYyO4Dgrm3ptxhKzSHG/fViI6vLxvkml8zgD
-NpPFhtMavmgSNbEK3eC6uQhSXHXxj1XETjPe/zjNgYQRAI+yj38=
-=C3g8
------END PGP SIGNATURE-----
-
---7aJqlnfEG0i9RKQt--
+	Andrew
 
