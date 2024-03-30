@@ -1,109 +1,83 @@
-Return-Path: <linux-kernel+bounces-125589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE6B6892913
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:44:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD2EE892919
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F03DB22E60
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:44:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A7CE1C21098
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C6E7470;
-	Sat, 30 Mar 2024 03:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9468827;
+	Sat, 30 Mar 2024 03:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPdy7BQj"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="p0zHST5m"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5841BB642;
-	Sat, 30 Mar 2024 03:44:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF7763CB;
+	Sat, 30 Mar 2024 03:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711770249; cv=none; b=EM1xdZMwYu0HNKszHI+hqoalmf6vuFnjBEBS0z4FKI1M2TZ/etgyRzJ4quidmGvYj1FL1L58gCfCaT0Ifb8EjNl1h95ICpFjecnSuMEo87HZnHWWW2G0yU/3bn3MRowq4UGAbjMhMVomuUo+X2aMrwNbCAtqOlVnVmos7o5DueI=
+	t=1711770753; cv=none; b=FL2iS3+1EAWXdEqMQi22NmS1zTT48fy3wJ1d4fYYtJDznSRjf6/ATi5zZj1s/VwUDHfJAw1ws/5grEYCZofa/AFTjU6gRgxlLcjK7JFbV3IWUGznkvr3yHsdx0R2gjnn4Xp+/waPtDO4dlX8EX0lmV18oZ7CC7H6LoEl1mBVzcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711770249; c=relaxed/simple;
-	bh=QdFTG23hbXU6axx+snIQYEAfo0yAVMQ85LzrTKrvjTI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hHUZGKhcVhVMp6EvyeaYHudQTcWtMGp+X5ZG5/7rb8P059Av/Fi4h2UHaXYEyecWC1GAmR24D0o18EPTEoWdwd4Is1myspESeTjfhXuvjQmiRV0Lmnbp+KdERACEUYpkJVoYz2sl53c6Lfa0g7YMak8CSLL3BhMEyTtBC3kQ+Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jPdy7BQj; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d8b519e438so1805645a12.1;
-        Fri, 29 Mar 2024 20:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711770247; x=1712375047; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mZVCYA6fIZw7UVkEo5rDiYQNpX8Kx+zZ6SIOO647FO0=;
-        b=jPdy7BQjhHBEpRkgW0LOZESMJAErH7KB3U6+ZdZLUS6TWzfvgyLG+dp0xBgoBEHJV9
-         +kqttJg/Lo4Af2PsLp9XAI75RDvTFT562uc+g+2EmT1mPp3p7F4B+W2x/e3BPuQdIYVn
-         335jO7taqq32+SrGtPTiPpWXVnz0Y3IJdB5bSZHRFnkSdqXRMnV5iWM/5dkUx+phxIPQ
-         ljuSvJObT23erV3iHfRW1UAokbk7eXfau1XN2Ar+zlk3BSudP49Z8mFmlbMobzLEXtQ0
-         wTElQWFQcr5Ek10n5A9n9UHEz6BroD97vDMSAqwCeq1OfW3EFcD+dmGnXNRbqXrmE7BV
-         qJAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711770247; x=1712375047;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mZVCYA6fIZw7UVkEo5rDiYQNpX8Kx+zZ6SIOO647FO0=;
-        b=NLXRxamr+4WUtUio4gsQcnUojjszFExZVb0wT4v2aVODIZBZedgw2GVdAyCj9EdWO8
-         LmXJOoG/x+P7sWHYNf1xFfmhQMiVeg+thAMCnalXMYl7xx38CGXww4fJlrXtB3H6y0sC
-         r7AG72uwTViVjua0nBaEKG97jl85ZnfOFQgSk12Yu2N4uAOAS3CI6F7qJTTtjcQ6TB8+
-         Z4XD6KEo6/k9zalYBYwnYRJ9+jit8j4xfXHrK/rhOiEtQMj0gbDJAzR/4AWFqmVIFsdy
-         FeKSsi9Wkl9zRyRaJ0l3YViE1GRe4HjGIpw2ns95jPWdZPr4iGjWf5I1zC3ps09yZc0G
-         Vplg==
-X-Forwarded-Encrypted: i=1; AJvYcCVc+mx6C1oi5qavvwq/GoMH34GeJd5idzJfS8zXurlHJK8idpt+9i5HNWrOpCPY0P7Z43DyWt/CHNCyUqaPUQOx00VpjHfAZK4NrbzMz0WLXCyE2pjBYkCTsG4TpzYkXoCmgu/x83Nh
-X-Gm-Message-State: AOJu0YyIa4VqlJtUscV1knCeGN7xtroQJSun+1dFWTV06IN55txsi53w
-	F3BtKQgcQBZMR6kznYfI8PjQ9Nk/dXmm9MJhZdczuGLN2WjH1pbI
-X-Google-Smtp-Source: AGHT+IEmoSr88aI1tp+TOCDmnOMuadV/HCPsleSFk0SPWG5ugOkpDNxfajnHjrmIfHw/RxPRVD3dKw==
-X-Received: by 2002:a17:903:555:b0:1e2:577:f694 with SMTP id jo21-20020a170903055500b001e20577f694mr3836272plb.61.1711770247560;
-        Fri, 29 Mar 2024 20:44:07 -0700 (PDT)
-Received: from ?IPV6:2600:8802:b00:ba1:cc2b:c45f:1699:a1c3? ([2600:8802:b00:ba1:cc2b:c45f:1699:a1c3])
-        by smtp.gmail.com with ESMTPSA id w20-20020a1709027b9400b001dca3a65200sm4228337pll.228.2024.03.29.20.44.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 20:44:06 -0700 (PDT)
-Message-ID: <5e5c81af-a7c8-44b8-b5df-3153256fb928@gmail.com>
-Date: Fri, 29 Mar 2024 20:44:05 -0700
+	s=arc-20240116; t=1711770753; c=relaxed/simple;
+	bh=pLFOE/nP5lpMYNG+2LK9dk+rrFBf+9iWpFWOlugIBMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Bpuyr0RAyOPlVV2arxe7MsZ/pQnqJCjzSoM0Ik38UzUIyyQEGvN5wQ79UgJfL3gh8rZvD2HH2iKZv+toWho4afnQkQPHIm/19nfW8R3PQcfOV/+wEUNQUgDEQ89gD/mjyasTIcNZ2kbkn01lOGlcwEd4l6d3oblupfVI8xvlEiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=p0zHST5m; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4V63J85CkqzDqLd;
+	Sat, 30 Mar 2024 03:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1711770745; bh=pLFOE/nP5lpMYNG+2LK9dk+rrFBf+9iWpFWOlugIBMc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=p0zHST5mQjd11XNnhXY2VjNAX95Lo8K1cIjO+pqd49hYfjviptmaakSIZErj9eHyZ
+	 nT/E+4X8l08PHWEz/rR1zj5NZJyhV9bKr2bRPQFsinhKumatshE94PR69su0YG0OM2
+	 IyC2uYORVuFNHvU8T3FARBCdgAFSzb6Vzz4LekNU=
+X-Riseup-User-ID: 1BA547B91BE34F02CC25BDFC23FFDB9B0F257A791B2954B3F508845C9EC61ECE
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4V63Hr5rJSzJrxj;
+	Sat, 30 Mar 2024 03:52:08 +0000 (UTC)
+From: Dang Huynh <danct12@riseup.net>
+To: linux-media@vger.kernel.org, git@luigi311.com
+Cc: dave.stevenson@raspberrypi.com, jacopo.mondi@ideasonboard.com,
+ mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, sakari.ailus@linux.intel.com,
+ devicetree@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Luigi311 <git@luigi311.com>
+Subject: Re: [PATCH 00/23] v2: imx258 improvement series
+Date: Sat, 30 Mar 2024 03:51:55 +0000
+Message-ID: <4599295.LvFx2qVVIh@melttower>
+In-Reply-To: <20240327231710.53188-1-git@luigi311.com>
+References: <20240327231710.53188-1-git@luigi311.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v2 5/5] clk: scmi: Add support for get/set duty_cycle
- operations
-To: Cristian Marussi <cristian.marussi@arm.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-clk@vger.kernel.org
-Cc: sudeep.holla@arm.com, james.quinlan@broadcom.com,
- vincent.guittot@linaro.org, peng.fan@oss.nxp.com, michal.simek@amd.com,
- quic_sibis@quicinc.com, quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
- mturquette@baylibre.com, sboyd@kernel.org
-References: <20240325210025.1448717-1-cristian.marussi@arm.com>
- <20240325210025.1448717-6-cristian.marussi@arm.com>
-Content-Language: en-US
-In-Reply-To: <20240325210025.1448717-6-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+
+On Wednesday, March 27, 2024 11:16:46=E2=80=AFPM UTC git@luigi311.com wrote:
+> From: Luigi311 <git@luigi311.com>
+
+The Linux kernel does not allow anonymous (or pseudonymous) contributions. =
+You=20
+should use your real first and last name.
+
+See section 1.5 in "A guide to the Kernel Development Process":
+https://www.kernel.org/doc/html/v6.8/process/1.Intro.html#licensing
 
 
-
-On 25/03/2024 14:00, Cristian Marussi wrote:
-> Provide the CLK framework callbacks related to get/set clock duty cycle if
-> the related SCMI clock supports OEM extended configurations.
-> 
-> CC: Michael Turquette <mturquette@baylibre.com>
-> CC: Stephen Boyd <sboyd@kernel.org>
-> CC: linux-clk@vger.kernel.org
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
 
