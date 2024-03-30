@@ -1,107 +1,86 @@
-Return-Path: <linux-kernel+bounces-125780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5102892C05
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:23:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3738892C06
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 331C2B22A99
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EC4F283B87
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A8D3BBD8;
-	Sat, 30 Mar 2024 16:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FSD7a9sF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8410F3BB4F;
+	Sat, 30 Mar 2024 16:24:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9B6EAC6;
-	Sat, 30 Mar 2024 16:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C8B381C9
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 16:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711815809; cv=none; b=C9gAiyZ4SVMZ6sQvuim/8Cqs6cvjbnROuM8VO83z9lq8lfttuh49YX/hZ6WgKQ8GarOz6OsuaqLT9hA2Jbl3zaqg8KFgARPvi83X8o71wbEHq2JH0Ylbn6ySoTFMk/NkuxgOeTtpYeZnY78ibMzPBPX5fuhw2R66a7bQZfh4trA=
+	t=1711815846; cv=none; b=YeXLrYwLf1m13ff3q3wxf+sVUOsFVfq7qJDS8NalR71c8vmtlJ1KYDv1pZ2QumWaAMaizGFeMbulMgpfizgv7Ee38ZvPGqSHx/Y4S+CccqxEssFY9SpJmCmT0ALEgSCwsXgDORiVAL+GJMirZTlnwQdLpB96YXYvnygDQ3ETnIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711815809; c=relaxed/simple;
-	bh=93WNuwk3VTBSvncEyTnCrtuYdQBLXJkUB4WCK8FF828=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NS70nVeQT/+xfn2EAsm1XCxzwGsfa25cYVDbzqfXNB6MiD/1f0bJIU0GXUtrVtYpZcpCxGuPyr4i8HKJsdc3125DzhQPVK9lLidKnvquJqBaaF0ZQfN5ncTrHKmomgOUniqQiWDPVaGJI1qmvghND20CnrCKa4r7zKs+54yLbgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FSD7a9sF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DCEEC433C7;
-	Sat, 30 Mar 2024 16:23:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711815809;
-	bh=93WNuwk3VTBSvncEyTnCrtuYdQBLXJkUB4WCK8FF828=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FSD7a9sFgat2J0L6llbULnXvE/xkOzoZqwX8thp9cFGRcrfse7mnPND4++lR6KzZx
-	 Udiy7sQGsJpNegIJbS87pheVpgT7QHwjxFBgmeMTNK6ddzjSaT2maVG1nqmadwPaZd
-	 YVfmGPERWzzqnl9u3CvkLSykpUNyhskG2ZYsEDs0=
-Date: Sat, 30 Mar 2024 17:23:25 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: Re: Bluetooth broken for some people with 6.8.2 [Was: [PATCH 6.8
- 308/715] Bluetooth: hci_core: Cancel request on command timeout]
-Message-ID: <2024033018-speller-supremacy-5436@gregkh>
-References: <20240324223455.1342824-1-sashal@kernel.org>
- <20240324223455.1342824-309-sashal@kernel.org>
- <bf267566-c18c-4ad9-9263-8642ecfdef1f@leemhuis.info>
+	s=arc-20240116; t=1711815846; c=relaxed/simple;
+	bh=DEMfWEi7OXoQ2QxgjC0iNCTTdGD2Y+s9bw48Q6F3hTo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=L3QpwFRPdhOoQSqyXe3fDOK/AWMhkLoSZyapR1LKKQIdSNfgs05mRvPSK9TlueRVSC+yFp8UHgYrD/4THtPlNuaBpqylqyyjpruamCze6wMBTeSuF52KaTTeYBWY5mJpJRrkXUJhaWP+CbwB72shGhzC50F8qhzostqtmwybbPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cbf3ec6a96so317691439f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:24:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711815844; x=1712420644;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F71zCftWioDEIwzAbPQ5dMWTP68H1egx1n1W9WE05ic=;
+        b=uj/M/jO0Iuv8y7TNtr6aCTSmLi+3w/8tUBYM2iWYaxxoK5RnqKXjzXwZ+J5vvjlUoQ
+         zKSMZiXzG9zhJZ4LoQggGzrpsp1FIDO0jJTDzC2woYs2JoQlHytjpywUrZyjsBzNyV39
+         DuPVydM5q99ZYuFiHQhfCGShTAuS8tbQN70E7dAJRib6NA2lEaBG4clBEBsKEncBsixQ
+         keUcMHzuZ1WRtOSi4smv1XsXcEodvu1kDYLm6ZTYfEkFthMS7fJYdmkK/sZgkK/7c11Y
+         IEOpoFuTgqhGCdasaFoBHjRq/yaF59acd368Jw5+X2oVdqScqkdgd+5/+L+LqyV0jaFI
+         lWcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX7JcnHg6eks9EAPRm6f76hw9qExJenZJKNtsGkg1e1TdS+FAGqlwZdESVRLQzJ0CwXHN7n/ZtJrTG7k1J3FiEgSPQFDs3RvUNxBIQS
+X-Gm-Message-State: AOJu0YyNWS8ig6/xAUrXHQGveSMCEVF/RNtCP/uK6y4hk0sxyzbEKvWk
+	Gp0x/cdNHIrBgn6Hu+W61hmOHBVwE8lr3BQ+t6JWONFd09YgskiR0DFm44FQwCDxdLMxO9BW1nC
+	aDmHiaPIXf/q42k4gUlM4M5k99j9A+dpFECsWXafm4+m/Bu/T0HxDQUQ=
+X-Google-Smtp-Source: AGHT+IHU6F9kuRk/eamairGzFSmnuIS6aRiMkeV8dfOSvT8XgwoPIAuNwDs4HQmXLzzvqHa1xnJn7oIL6i/O93Ff7jQp2lc3ghDl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf267566-c18c-4ad9-9263-8642ecfdef1f@leemhuis.info>
+X-Received: by 2002:a05:6638:12cd:b0:47c:171f:23ad with SMTP id
+ v13-20020a05663812cd00b0047c171f23admr337495jas.2.1711815843964; Sat, 30 Mar
+ 2024 09:24:03 -0700 (PDT)
+Date: Sat, 30 Mar 2024 09:24:03 -0700
+In-Reply-To: <tencent_F5284B3A74AB762167143CC936FE968C3609@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004d141f0614e32faf@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in tick_setup_sched_timer
+From: syzbot <syzbot+e4374f6c021d422de3d1@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Mar 30, 2024 at 03:59:22PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 24.03.24 23:28, Sasha Levin wrote:
-> > From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> > 
-> > [ Upstream commit 63298d6e752fc0ec7f5093860af8bc9f047b30c8 ]
-> > 
-> > If command has timed out call __hci_cmd_sync_cancel to notify the
-> > hci_req since it will inevitably cause a timeout.
-> > 
-> > This also rework the code around __hci_cmd_sync_cancel since it was
-> > wrongly assuming it needs to cancel timer as well, but sometimes the
-> > timers have not been started or in fact they already had timed out in
-> > which case they don't need to be cancel yet again.
-> > 
-> > Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> > Stable-dep-of: 2615fd9a7c25 ("Bluetooth: hci_sync: Fix overwriting request callback")
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
-> Hey stable team, I wonder if it might be wise to pick up 1c3366abdbe884
-> ("Bluetooth: hci_sync: Fix not checking error on
-> hci_cmd_sync_cancel_sync") from next
-> (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=1c3366abdbe884)
-> for the next releases of all series that a few days ago received
-> 63298d6e752fc0 ("Bluetooth: hci_core: Cancel request on command timeout").
-> 
-> The latter patch sadly on quite a few systems causes a Oops due to a
-> NULL pointer dereference and breaks Bluetooth. This was reported for
-> mainline here (yes, coincidentally it was reported by yours truly):
-> https://lore.kernel.org/all/08275279-7462-4f4a-a0ee-8aa015f829bc@leemhuis.info/
-> 
-> Now that the patch landed in 6.8.2 it seems to happen there as well
-> (guess in 6.7 and others, too), as can be seen from this bug report
-> where multiple people already joined:
-> https://bugzilla.kernel.org/show_bug.cgi?id=218651
-> 
-> The fix mentioned above is on the way to Linus, but due to unlucky
-> timing missed this weeks network pull, hence will likely only reach
-> mainline next Thursday. But the fix afaics has a stable commit id, so
-> might be worth picking up soon for the stable releases to fix the
-> regression quickly.
+Hello,
 
-Now queued up, thanks for letting us know.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-greg k-h
+Reported-and-tested-by: syzbot+e4374f6c021d422de3d1@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12176341180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
+dashboard link: https://syzkaller.appspot.com/bug?extid=e4374f6c021d422de3d1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10e213b1180000
+
+Note: testing is done by a robot and is best-effort only.
 
