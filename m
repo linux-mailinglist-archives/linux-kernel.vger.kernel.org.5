@@ -1,164 +1,363 @@
-Return-Path: <linux-kernel+bounces-125553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C5A2892848
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:37:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 023EE892879
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 01:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07F2F1F21AE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:37:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD628282FB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 00:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F405FA933;
-	Sat, 30 Mar 2024 00:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UgMP4wp+"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3941851;
+	Sat, 30 Mar 2024 00:44:30 +0000 (UTC)
+Received: from mail78-36.sinamail.sina.com.cn (mail78-36.sinamail.sina.com.cn [219.142.78.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A76E8F47
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 00:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0893315A5
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 00:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711759069; cv=none; b=A964PZK1vEXYjh27E5xh/ky8MNg3Mn962xICU8S6JfP9wyfC/yHOpAFKTuAdhFYp/O4YmGacvhcsbROKo4WOnYH/gWiELw3LHU9R4dp4wG+4ciWLq8qvyzQU/XNtyp1mRnujmV1/CYCum3y2qWNexL4xM8TPtM6+NdgsJ5Nw1/0=
+	t=1711759470; cv=none; b=FZH7khzmBmrimNIVdvleGlUVQrZNlwy9EwDj7ShQDnihNcBLxHlZgBRr2Pld2zvj2Fg/Ri3oz1asVvwfob7RVN483h4OrL/Vzc/xMLOIGqNGNirHnarjv23FkS9iu+CXvfyQSGH30gBc2O/AqPMoM8nZLivLJccTNQJDgrzlEVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711759069; c=relaxed/simple;
-	bh=yE5+DggEX5qa/NHxKfZq/7KSyZSSGnH3wPKjVIy61mg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YbuxrW/l8G7DyrRXL0CEAzcyVL7QccvRuUGcxLOjaVr3iXrJIa21ad7c6q0/ipf95bHymLtzHVimga+bv+ecGau0eV/mktleJ16/Ekfdqrjz91TbJv0PQqA4HJnjiamOpESqy4OSZ0cSckos1fQojj+vluCrPOrM3SqbpMKH24M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UgMP4wp+; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so1382226a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 17:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711759066; x=1712363866; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6vAN6pcNUU/LtGsyeSO7wkayB5UqUGKzphZgd3xlQSM=;
-        b=UgMP4wp+9qFxKU2DsiwVfBQw5f5jd5sPAvmT0ZhGVgQSO3t29+bkONNQTL+74dUZow
-         SlA+XPvva9/9DjrqQKpdL6bYiKZQuigvTv+/KRDzxZ6ORlcXiiCIpVDJlhgDtxaQGEQ8
-         rFViUfCBQGCHEhoVy4n+qZUpe47R5Txr19dMM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711759066; x=1712363866;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6vAN6pcNUU/LtGsyeSO7wkayB5UqUGKzphZgd3xlQSM=;
-        b=IsOlR7fie7iimBUKkr/ID6HGVIdg6dX74VvyB9JOZnGVU/wAZ1mvQIXawosqPW3utb
-         a7lhjJ2mxH0OQjQcaJAijSv/zfIDGN3ZdSvfzSva4anyyz+5oq/ODMgSCjZE7UBZ2Mf3
-         dBHo/VwOF+Ur8CbJQa644azOeEmMcqY8B72WR/jSSZlFOO8H8uo91tzDW+rZcfmffVON
-         ZwC8JyhpBOFphNl4vdXRcuqVncd9TeSfXZWZr92H3jRjLLPFwx63XxfHwrkABCnaZZYF
-         wjFtGGgnx68KDeAZIvVxmLHRwpkJpxcNbsxrsys5HtVcMxa0Hl08RM9isBgbOc8rdGdk
-         DEyA==
-X-Forwarded-Encrypted: i=1; AJvYcCUHVtJr3n7Rk/yUG60miuABG/GpMeGr01sKNA5AyAPbxBI+2jBqOixtx69LfChrbftGcr5HW3oYPnoAewMF4ZQvzCf2FGo7xdYWCj/9
-X-Gm-Message-State: AOJu0Yypgp6meqiXjCR4QDCyP2VDuvBNHlmdOmXpwsR9F8RCy9LGBCCT
-	qQBiIkrpCKDV2XqSyGD5nMZJdEUrhO4MhPz3ZyWYhnLX62gAkmx6313Iykxl2sdWRWBxSdAnc7Q
-	=
-X-Google-Smtp-Source: AGHT+IGuOzdrmPTki81zqW88HgYHwCuK2N58bZOYowyg6RvgIK3ZV7dGzfahBKHfyK6jHvxaubpDAg==
-X-Received: by 2002:a17:903:264c:b0:1e0:378d:f2d1 with SMTP id je12-20020a170903264c00b001e0378df2d1mr2828344plb.60.1711759066494;
-        Fri, 29 Mar 2024 17:37:46 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x15-20020a170902ec8f00b001dc9422891esm4016487plg.30.2024.03.29.17.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 17:37:45 -0700 (PDT)
-Date: Fri, 29 Mar 2024 17:37:45 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Lasse Collin <lasse.collin@tukaani.org>, Jia Tan <jiat0218@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/11] xz: Updates to license, filters, and compression
- options
-Message-ID: <202403291736.B7E9C61@keescook>
-References: <20240320183846.19475-1-lasse.collin@tukaani.org>
- <202403291221.124220E0F4@keescook>
- <87h6go3go2.fsf@meer.lwn.net>
+	s=arc-20240116; t=1711759470; c=relaxed/simple;
+	bh=nN4mtHY5Dy2NrqXQ/PjAl5CPlhspfTpJcesdAeifHqw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=KPMXDTbs0gbNUbzCB84usQ+dTmyesBjjGKqgTmpA159QEBAwyw+rTYUUk/dC0g+BSBYd6RzswVwT2cG6a0MZ1lpFzDGXUKgvBLJpFM6RcBygEaFS9YyPRlGl3QDhUnwnzq2tA9u2Q1jfHdK80Qb/U9fNza4ipcad13dcHF1MGbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.66.4])
+	by sina.com (172.16.235.25) with ESMTP
+	id 6607605D000042EB; Sat, 30 Mar 2024 08:44:15 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 96055534210352
+X-SMAIL-UIID: A69F55032F164062B1F8A96B62820DFD-20240330-084415-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [audit?] [bpf?] INFO: rcu detected stall in kauditd_thread (4)
+Date: Sat, 30 Mar 2024 08:44:05 +0800
+Message-Id: <20240330004405.3091-1-hdanton@sina.com>
+In-Reply-To: <000000000000d929dd0614a8ba8c@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h6go3go2.fsf@meer.lwn.net>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 29, 2024 at 02:51:41PM -0600, Jonathan Corbet wrote:
-> "Kees Cook" <keescook@chromium.org> writes:
+On Wed, 27 Mar 2024 11:39:42 -0700
+> syzbot found the following issue on:
 > 
-> > On Wed, Mar 20, 2024 at 08:38:33PM +0200, Lasse Collin wrote:
-> >> XZ Embedded, the upstream project, switched from public domain to the
-> >> BSD Zero Clause License (0BSD). Now matching SPDX license identifiers
-> >> can be added.
-> >> 
-> >> The new ARM64 and RISC-V filters can be used by Squashfs.
-> >> 
-> >> Account for the default threading change made in the xz command line
-> >> tool version 5.6.0. Tweak kernel compression options for archs that
-> >> support XZ compressed kernel.
-> >> 
-> >> Documentation was revised. There are minor cleanups too.
-> >> 
-> >> Lasse Collin (11):
-> >>   MAINTAINERS: Add XZ Embedded maintainers
-> >>   LICENSES: Add 0BSD license text
-> >>   xz: Switch from public domain to BSD Zero Clause License (0BSD)
-> >>   xz: Documentation/staging/xz.rst: Revise thoroughly
-> >>   xz: Fix comments and coding style
-> >>   xz: Cleanup CRC32 edits from 2018
-> >>   xz: Optimize for-loop conditions in the BCJ decoders
-> >>   xz: Add ARM64 BCJ filter
-> >>   xz: Add RISC-V BCJ filter
-> >>   xz: Use 128 MiB dictionary and force single-threaded mode
-> >>   xz: Adjust arch-specific options for better kernel compression
-> >> 
-> >>  Documentation/staging/xz.rst    | 130 ++++++++---------------
-> >>  LICENSES/deprecated/0BSD        |  23 ++++
-> >>  MAINTAINERS                     |  14 +++
-> >>  include/linux/decompress/unxz.h |   5 +-
-> >>  include/linux/xz.h              |   5 +-
-> >>  init/Kconfig                    |   5 +-
-> >>  lib/decompress_unxz.c           |  39 ++++---
-> >>  lib/xz/Kconfig                  |  13 ++-
-> >>  lib/xz/xz_crc32.c               |   7 +-
-> >>  lib/xz/xz_dec_bcj.c             | 183 ++++++++++++++++++++++++++++++--
-> >>  lib/xz/xz_dec_lzma2.c           |   5 +-
-> >>  lib/xz/xz_dec_stream.c          |   5 +-
-> >>  lib/xz/xz_dec_syms.c            |  16 +--
-> >>  lib/xz/xz_dec_test.c            |  12 +--
-> >>  lib/xz/xz_lzma2.h               |   5 +-
-> >>  lib/xz/xz_private.h             |  20 ++--
-> >>  lib/xz/xz_stream.h              |   7 +-
-> >>  scripts/Makefile.lib            |  13 ++-
-> >>  scripts/xz_wrap.sh              | 157 +++++++++++++++++++++++++--
-> >>  19 files changed, 487 insertions(+), 177 deletions(-)
-> >>  create mode 100644 LICENSES/deprecated/0BSD
-> >
-> > Andrew (and anyone else), please do not take this code right now.
-> >
-> > Until the backdooring of upstream xz[1] is fully understood, we should not
-> > accept any code from Jia Tan, Lasse Collin, or any other folks associated
-> > with tukaani.org. It appears the domain, or at least credentials
-> > associated with Jia Tan, have been used to create an obfuscated ssh
-> > server backdoor via the xz upstream releases since at least 5.6.0.
-> > Without extensive analysis, we should not take any associated code.
-> > It may be worth doing some retrospective analysis of past contributions
-> > as well...
-> >
-> > Lasse, are you able to comment about what is going on here?
-> 
-> FWIW, it looks like this series has been in linux-next for a few days.
-> Maybe it needs to come out, for now at least?
+> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112840ee180000
 
-Yes, for sure. Andrew, just so it's explicitly clear: please remove this
-series from -mm for now, until the situation is better understood.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-Thanks!
-
--Kees
-
--- 
-Kees Cook
+--- x/net/sched/sch_taprio.c
++++ y/net/sched/sch_taprio.c
+@@ -980,7 +980,7 @@ first_run:
+ 	rcu_assign_pointer(q->current_entry, next);
+ 	spin_unlock(&q->current_entry_lock);
+ 
+-	hrtimer_set_expires(&q->advance_timer, end_time);
++	hrtimer_forward_now(&q->advance_timer, ns_to_ktime(NSEC_PER_USEC *200));
+ 
+ 	rcu_read_lock();
+ 	__netif_schedule(sch);
+--- x/mm/page_owner.c
++++ y/mm/page_owner.c
+@@ -196,7 +196,8 @@ static void add_stack_record_to_list(str
+ 	spin_unlock_irqrestore(&stack_list_lock, flags);
+ }
+ 
+-static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask)
++static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask,
++				   int nr_base_pages)
+ {
+ 	struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
+ 
+@@ -217,20 +218,74 @@ static void inc_stack_record_count(depot
+ 			/* Add the new stack_record to our list */
+ 			add_stack_record_to_list(stack_record, gfp_mask);
+ 	}
+-	refcount_inc(&stack_record->count);
++	refcount_add(nr_base_pages, &stack_record->count);
+ }
+ 
+-static void dec_stack_record_count(depot_stack_handle_t handle)
++static void dec_stack_record_count(depot_stack_handle_t handle,
++				   int nr_base_pages)
+ {
+ 	struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
+ 
+-	if (stack_record)
+-		refcount_dec(&stack_record->count);
++	if (!stack_record)
++		return;
++
++	if (refcount_sub_and_test(nr_base_pages, &stack_record->count))
++		pr_warn("%s: refcount went to 0 for %u handle\n", __func__,
++			handle);
+ }
+ 
+-void __reset_page_owner(struct page *page, unsigned short order)
++static inline void __update_page_owner_handle(struct page_ext *page_ext,
++					      depot_stack_handle_t handle,
++					      unsigned short order,
++					      gfp_t gfp_mask,
++					      short last_migrate_reason, u64 ts_nsec,
++					      pid_t pid, pid_t tgid, char *comm)
+ {
+ 	int i;
++	struct page_owner *page_owner;
++
++	for (i = 0; i < (1 << order); i++) {
++		page_owner = get_page_owner(page_ext);
++		page_owner->handle = handle;
++		page_owner->order = order;
++		page_owner->gfp_mask = gfp_mask;
++		page_owner->last_migrate_reason = last_migrate_reason;
++		page_owner->pid = pid;
++		page_owner->tgid = tgid;
++		page_owner->ts_nsec = ts_nsec;
++		strscpy(page_owner->comm, comm,
++			sizeof(page_owner->comm));
++		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
++		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
++		page_ext = page_ext_next(page_ext);
++	}
++}
++
++static inline void __update_page_owner_free_handle(struct page_ext *page_ext,
++						   depot_stack_handle_t handle,
++						   unsigned short order,
++						   pid_t pid, pid_t tgid,
++						   u64 free_ts_nsec)
++{
++	int i;
++	struct page_owner *page_owner;
++
++	for (i = 0; i < (1 << order); i++) {
++		page_owner = get_page_owner(page_ext);
++		/* Only __reset_page_owner() wants to clear the bit */
++		if (handle) {
++			__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
++			page_owner->free_handle = handle;
++		}
++		page_owner->free_ts_nsec = free_ts_nsec;
++		page_owner->free_pid = current->pid;
++		page_owner->free_tgid = current->tgid;
++		page_ext = page_ext_next(page_ext);
++	}
++}
++
++void __reset_page_owner(struct page *page, unsigned short order)
++{
+ 	struct page_ext *page_ext;
+ 	depot_stack_handle_t handle;
+ 	depot_stack_handle_t alloc_handle;
+@@ -245,16 +300,10 @@ void __reset_page_owner(struct page *pag
+ 	alloc_handle = page_owner->handle;
+ 
+ 	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
+-	for (i = 0; i < (1 << order); i++) {
+-		__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+-		page_owner->free_handle = handle;
+-		page_owner->free_ts_nsec = free_ts_nsec;
+-		page_owner->free_pid = current->pid;
+-		page_owner->free_tgid = current->tgid;
+-		page_ext = page_ext_next(page_ext);
+-		page_owner = get_page_owner(page_ext);
+-	}
++	__update_page_owner_free_handle(page_ext, handle, order, current->pid,
++					current->tgid, free_ts_nsec);
+ 	page_ext_put(page_ext);
++
+ 	if (alloc_handle != early_handle)
+ 		/*
+ 		 * early_handle is being set as a handle for all those
+@@ -263,39 +312,14 @@ void __reset_page_owner(struct page *pag
+ 		 * the machinery is not ready yet, we cannot decrement
+ 		 * their refcount either.
+ 		 */
+-		dec_stack_record_count(alloc_handle);
+-}
+-
+-static inline void __set_page_owner_handle(struct page_ext *page_ext,
+-					depot_stack_handle_t handle,
+-					unsigned short order, gfp_t gfp_mask)
+-{
+-	struct page_owner *page_owner;
+-	int i;
+-	u64 ts_nsec = local_clock();
+-
+-	for (i = 0; i < (1 << order); i++) {
+-		page_owner = get_page_owner(page_ext);
+-		page_owner->handle = handle;
+-		page_owner->order = order;
+-		page_owner->gfp_mask = gfp_mask;
+-		page_owner->last_migrate_reason = -1;
+-		page_owner->pid = current->pid;
+-		page_owner->tgid = current->tgid;
+-		page_owner->ts_nsec = ts_nsec;
+-		strscpy(page_owner->comm, current->comm,
+-			sizeof(page_owner->comm));
+-		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
+-		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+-
+-		page_ext = page_ext_next(page_ext);
+-	}
++		dec_stack_record_count(alloc_handle, 1 << order);
+ }
+ 
+ noinline void __set_page_owner(struct page *page, unsigned short order,
+ 					gfp_t gfp_mask)
+ {
+ 	struct page_ext *page_ext;
++	u64 ts_nsec = local_clock();
+ 	depot_stack_handle_t handle;
+ 
+ 	handle = save_stack(gfp_mask);
+@@ -303,9 +327,11 @@ noinline void __set_page_owner(struct pa
+ 	page_ext = page_ext_get(page);
+ 	if (unlikely(!page_ext))
+ 		return;
+-	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
++	__update_page_owner_handle(page_ext, handle, order, gfp_mask, -1,
++				   current->pid, current->tgid, ts_nsec,
++				   current->comm);
+ 	page_ext_put(page_ext);
+-	inc_stack_record_count(handle, gfp_mask);
++	inc_stack_record_count(handle, gfp_mask, 1 << order);
+ }
+ 
+ void __set_page_owner_migrate_reason(struct page *page, int reason)
+@@ -342,7 +368,7 @@ void __folio_copy_owner(struct folio *ne
+ {
+ 	struct page_ext *old_ext;
+ 	struct page_ext *new_ext;
+-	struct page_owner *old_page_owner, *new_page_owner;
++	struct page_owner *old_page_owner;
+ 
+ 	old_ext = page_ext_get(&old->page);
+ 	if (unlikely(!old_ext))
+@@ -355,31 +381,21 @@ void __folio_copy_owner(struct folio *ne
+ 	}
+ 
+ 	old_page_owner = get_page_owner(old_ext);
+-	new_page_owner = get_page_owner(new_ext);
+-	new_page_owner->order = old_page_owner->order;
+-	new_page_owner->gfp_mask = old_page_owner->gfp_mask;
+-	new_page_owner->last_migrate_reason =
+-		old_page_owner->last_migrate_reason;
+-	new_page_owner->handle = old_page_owner->handle;
+-	new_page_owner->pid = old_page_owner->pid;
+-	new_page_owner->tgid = old_page_owner->tgid;
+-	new_page_owner->free_pid = old_page_owner->free_pid;
+-	new_page_owner->free_tgid = old_page_owner->free_tgid;
+-	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
+-	new_page_owner->free_ts_nsec = old_page_owner->ts_nsec;
+-	strcpy(new_page_owner->comm, old_page_owner->comm);
+-
++	__update_page_owner_handle(new_ext, old_page_owner->handle,
++				   old_page_owner->order, old_page_owner->gfp_mask,
++				   old_page_owner->last_migrate_reason,
++				   old_page_owner->ts_nsec, old_page_owner->pid,
++				   old_page_owner->tgid, old_page_owner->comm);
+ 	/*
+-	 * We don't clear the bit on the old folio as it's going to be freed
+-	 * after migration. Until then, the info can be useful in case of
+-	 * a bug, and the overall stats will be off a bit only temporarily.
+-	 * Also, migrate_misplaced_transhuge_page() can still fail the
+-	 * migration and then we want the old folio to retain the info. But
+-	 * in that case we also don't need to explicitly clear the info from
+-	 * the new page, which will be freed.
++	 * Do not proactively clear PAGE_EXT_OWNER{_ALLOCATED} bits as the folio
++	 * will be freed after migration. Keep them until then as they may be
++	 * useful.
+ 	 */
+-	__set_bit(PAGE_EXT_OWNER, &new_ext->flags);
+-	__set_bit(PAGE_EXT_OWNER_ALLOCATED, &new_ext->flags);
++	__update_page_owner_free_handle(new_ext, 0, old_page_owner->order,
++					old_page_owner->free_pid,
++					old_page_owner->free_tgid,
++					old_page_owner->free_ts_nsec);
++
+ 	page_ext_put(new_ext);
+ 	page_ext_put(old_ext);
+ }
+@@ -787,8 +803,9 @@ static void init_pages_in_zone(pg_data_t
+ 				goto ext_put_continue;
+ 
+ 			/* Found early allocated page */
+-			__set_page_owner_handle(page_ext, early_handle,
+-						0, 0);
++			__update_page_owner_handle(page_ext, early_handle, 0, 0,
++						   -1, local_clock(), current->pid,
++						   current->tgid, current->comm);
+ 			count++;
+ ext_put_continue:
+ 			page_ext_put(page_ext);
+@@ -861,11 +878,11 @@ static void *stack_next(struct seq_file
+ 	return stack;
+ }
+ 
+-static unsigned long page_owner_stack_threshold;
++static unsigned long page_owner_pages_threshold;
+ 
+ static int stack_print(struct seq_file *m, void *v)
+ {
+-	int i, stack_count;
++	int i, nr_base_pages;
+ 	struct stack *stack = v;
+ 	unsigned long *entries;
+ 	unsigned long nr_entries;
+@@ -876,14 +893,14 @@ static int stack_print(struct seq_file *
+ 
+ 	nr_entries = stack_record->size;
+ 	entries = stack_record->entries;
+-	stack_count = refcount_read(&stack_record->count) - 1;
++	nr_base_pages = refcount_read(&stack_record->count) - 1;
+ 
+-	if (stack_count < 1 || stack_count < page_owner_stack_threshold)
++	if (nr_base_pages < 1 || nr_base_pages < page_owner_pages_threshold)
+ 		return 0;
+ 
+ 	for (i = 0; i < nr_entries; i++)
+ 		seq_printf(m, " %pS\n", (void *)entries[i]);
+-	seq_printf(m, "stack_count: %d\n\n", stack_count);
++	seq_printf(m, "nr_base_pages: %d\n\n", nr_base_pages);
+ 
+ 	return 0;
+ }
+@@ -913,13 +930,13 @@ static const struct file_operations page
+ 
+ static int page_owner_threshold_get(void *data, u64 *val)
+ {
+-	*val = READ_ONCE(page_owner_stack_threshold);
++	*val = READ_ONCE(page_owner_pages_threshold);
+ 	return 0;
+ }
+ 
+ static int page_owner_threshold_set(void *data, u64 val)
+ {
+-	WRITE_ONCE(page_owner_stack_threshold, val);
++	WRITE_ONCE(page_owner_pages_threshold, val);
+ 	return 0;
+ }
+ 
+--
 
