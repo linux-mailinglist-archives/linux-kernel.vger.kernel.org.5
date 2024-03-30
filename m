@@ -1,271 +1,127 @@
-Return-Path: <linux-kernel+bounces-125632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8C438929D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:01:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D3F58929DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37C54B21B89
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86DC1F21FE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820EBBE7D;
-	Sat, 30 Mar 2024 09:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785ECBE4E;
+	Sat, 30 Mar 2024 09:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nle+vzJj"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OODYTfOj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2F7847E;
-	Sat, 30 Mar 2024 09:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B7FBA28
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711789276; cv=none; b=LJliKGtxdDA5DncUU3WQ86IqJfxxDdmZL62lReMe091FMMVzSAkVNUab0eixlHeqVTjIQ9EEtdUySkdcLp6rFtixRUTTmQdeeFsygIBsVZzOYDo25RMQNI1crLiHrVMDdGnqz68Wu6CyxrARRiiLwfKV6AS/7WwNSvW09W60zck=
+	t=1711789348; cv=none; b=vCCbSigayZguhQ4MSWSQvknHYtxOY8g2zErCHoXkT/Qev/jRC0g86NkrbNhclwdPZIc9qmyH3sK+SmR6dYI07KAIHMsJhaFY8rGBFxbGKXXXpX2qQH0RvCM5sylEyD8vA4JBFmNO/xXjkgAwkNmmhj8AV1ppM8ASM65C21oAPr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711789276; c=relaxed/simple;
-	bh=CFUfaZfb7X/JJv0DB5cn0CBJrMrECWzMZrlMK1UCZYA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o3BMwVDUvqhNVOZ/cIBlL/eEF8qwRIumKR1fMWrSA7H4zcSOpuQv/ioQzXQqrodsIUyARBuvkzwtgX1F3ahG1oBV9JsqyrWjN58qqzsylGWNrONt419EuA+HV2Hnb6GN/l1yLYA/QgPCW6C6kp/GDTzIPXK00zlXkPjIpLmtnu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nle+vzJj; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d6ee6c9945so20258311fa.3;
-        Sat, 30 Mar 2024 02:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711789272; x=1712394072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cbl/CLMq3nWKqNjaubWInMz1kaQBbZVVwZ4B6Yhcsik=;
-        b=Nle+vzJjShWs0Ti3+DNi47la3wp5ECIHDAW+EvbhX+Ton8pxr5GAT+OKLN9tkpsdWp
-         7pmY92Vv0JN9muB7m6ZKKOed2eTaDIbVC7yQe3iYoQYmuzNt6FG/2CRXCn5axo5T0Er+
-         mIawl+AjZ9LcJ+2LwfqLqtGS9Swzi333W06D5Rkope/9r9oRpQjGT7vy46uzFz6Xcl6b
-         S77spLQ2G+CQpl+4BKwdDBzhD3S36TpnXk6mrY+NzXkbO3VsCQIQvMCBSh38nAhwLdwg
-         DDcnS4Gu8cVLbgH/tpVDy41vXbLuY8G8wYbQmHDkXrHBBWVRq9R4WCn8orBArD2q7glw
-         BXGA==
+	s=arc-20240116; t=1711789348; c=relaxed/simple;
+	bh=cG5S+JlQSNwbyc3gVBwNnpu42UAF6/3bXloXVCJ5xto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RkjkDs5jqUxbLh7gS7sd2KENb2c695zQTSy+V8qfDMZQDjnAXwEg1BilU223+V60iFeBeMh0UBJRaGUK0PfaDW1BmcrGmFvF0vq4EFuxw/g0FBsunj5RE4hqzrPmXNJ7kVdROmkQ3AQNcREO1whu/ebGNPJh0JVFRfCEw4jg05k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OODYTfOj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711789345;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ox4bLWBHssSahIs5vyxVp5VuZqHQaMHkELMh6pm/WAU=;
+	b=OODYTfOjUhDEiBX1e1iSNGdpsguXCTikCg64gTXgrZH2+noW7EYq+MCzXKyavqf7uIUjjX
+	CFmGK58I1SVtT8UE1ReV9Us7EGTFFE/PcAMLsvi8FXsZGP17ni/LHZ+FpsIEl59CxFdO1A
+	tSbfzsUvtZ2FvS7JV7d5HjOPEgfaIvM=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-164-lkq_b7snNXi8Q1uT4vSprg-1; Sat, 30 Mar 2024 05:02:21 -0400
+X-MC-Unique: lkq_b7snNXi8Q1uT4vSprg-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5dc1548ac56so1816822a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 02:02:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711789272; x=1712394072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cbl/CLMq3nWKqNjaubWInMz1kaQBbZVVwZ4B6Yhcsik=;
-        b=SissUbPdoWrUM0u1xqTsea9iktJot0W8ikz/21w6oDLw29oHo1E/zyykrKQer/3OWO
-         qPdKEegxJqdMg3v5GqOnOKWhyGLwFbh6p2b85j1Ts+6BbLFl9oFkAqze+79DH3UTgvpX
-         8eHg+dcra2W81v3T0kNwO/Rz19x/a4qUnJoY4xXfsGku0ULlQwIKn/HG4uSfeFFaQsvQ
-         uTzuZm8A/9h9KcYqL8SvAcdlpvE/AK5/d243lGtC7Es8bpk5HpBF6YLgEqB9CQU7scmf
-         XLKGETg+gvfwQ/3vIK2nDBH9GUewEyTA+wZonkJx4DDqfRJaO4cU3mQBB6idP5IB1mep
-         Hw+g==
-X-Forwarded-Encrypted: i=1; AJvYcCXMPjsPXXatSVDH641eiZD9Tylx5ujw2zvU8pLsO9HYR1XJhfBDwIOO8cDOnkZQvsFw51iNGrNYsj+ZOC9s/nmtelqQeBg/s4CmUPCyx03PDGJu4fX5flrhGr2i0fu9s/8eCySMSfdAa696W6WVC4RItEDieQnLUtLc
-X-Gm-Message-State: AOJu0YxogawIyIXt1FmwtLXKYPIfA7/NqcoJp2+CkbXskVq401KWqBS9
-	dv/uHIbm1VAuF/Vdv+59bCR/JaF94WfnbXteVNB+T1wBqWVEkaHONlAM1xQ2s4fdMV8thx39cxA
-	tPcarlYh9vw0yYnOBdeRY+OsGAlI=
-X-Google-Smtp-Source: AGHT+IGeaymGC7cAQwieQg4TakZq0ARBnpQFix3PExtV6ez87eomevGZHhs6eDxl1CtxiB/HrZm8Uq2a8idogtbdJIc=
-X-Received: by 2002:a2e:8612:0:b0:2d6:a5ce:b261 with SMTP id
- a18-20020a2e8612000000b002d6a5ceb261mr2175202lji.25.1711789271815; Sat, 30
- Mar 2024 02:01:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711789340; x=1712394140;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ox4bLWBHssSahIs5vyxVp5VuZqHQaMHkELMh6pm/WAU=;
+        b=i5/kcCAyLFwvQEKPHoq3U3zV58cXlbJm9Ppu0yd3ohXAeaCbc75QdoElzg4vCw+I/u
+         XVIXi5Xn0Bn1SsD6GCm8lQaJFpWPoW78/TqvKSa53xWNLxY3CEP3/wM5ac2AIBhYBGM5
+         zbEM+fc5ljdBDQ6vGmHbM5uSQCH6/ELx3nwdxSdJRXmB8LNQVlZFnDSC3JaasdSQx66Y
+         ZnT97MHUJlnPgVgDPEXPaj9gkclgntMx0uyGF8Zk9yPbHrzlNBMyBfg9009ofPamNZas
+         Az+dDkfZUMtQjRd0WvBQkzlc1Fp5VNYDKtFW0otUzMpY453H2PtTANEfrgR0/gkFjS7E
+         oDyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOgpJfXihjcRuhD8q51BVbYZ9eaHvh9Lb+YwP2p/zw0kw6X3dWL+1spxC9ME8ehS7V3UjmYrmfICLxe6ulzVhC3KP2gcqbAn8+BeJh
+X-Gm-Message-State: AOJu0YyFqrvIxXAxt+BNGsKYf1PT8huIeD1oUKFiuPHFHAzbhmlwEwoT
+	1fLvT0pdKHFfT8WweTmck0JVStGw6XqBdgzk4Ogz5NN21KrOPyVvMKQemldS2Z14jQeWG5ORD/b
+	Kkpe4Gg7oqgSR8rSC6uu9ERA9q4Vd/UoUFzYRlsBDHzmrUroJ/ukT13gqWZMT5Q==
+X-Received: by 2002:a05:6a20:12c3:b0:1a3:c4f8:e9ab with SMTP id v3-20020a056a2012c300b001a3c4f8e9abmr4041440pzg.46.1711789340011;
+        Sat, 30 Mar 2024 02:02:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+p/3De9y5/QlaUrTE+vbSXYudi66PREZzXboJoWujecgs+DaAf6ZzPy7h/4IF/TlSveFIgQ==
+X-Received: by 2002:a05:6a20:12c3:b0:1a3:c4f8:e9ab with SMTP id v3-20020a056a2012c300b001a3c4f8e9abmr4041405pzg.46.1711789339663;
+        Sat, 30 Mar 2024 02:02:19 -0700 (PDT)
+Received: from [192.168.68.51] ([43.252.115.31])
+        by smtp.gmail.com with ESMTPSA id br8-20020a17090b0f0800b002a1f77bde90sm5220353pjb.46.2024.03.30.02.02.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Mar 2024 02:02:18 -0700 (PDT)
+Message-ID: <8faa07aa-d330-4e3f-95b7-26437d448beb@redhat.com>
+Date: Sat, 30 Mar 2024 19:02:11 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329094906.18147-1-ubizjak@gmail.com> <20240329094906.18147-3-ubizjak@gmail.com>
- <CAADnVQ+6D++hCXaP=aK+Q5wienMzhHo3h9YCvpA_7sHjMt+q6A@mail.gmail.com>
-In-Reply-To: <CAADnVQ+6D++hCXaP=aK+Q5wienMzhHo3h9YCvpA_7sHjMt+q6A@mail.gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Sat, 30 Mar 2024 10:01:04 +0100
-Message-ID: <CAFULd4b6juiw3wC3Z61V9=-UnA+NGyUt4231vC14UnGAATk6tA@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf 2/2] x86/bpf: Fix IP for relocating call depth accounting
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?Q?Joan_Bruguera_Mic=C3=B3?= <joanbrugueram@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] vhost: Improve vhost_get_avail_idx() with
+ smp_rmb()
+Content-Language: en-US
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ jasowang@redhat.com, will@kernel.org, davem@davemloft.net,
+ stefanha@redhat.com, sgarzare@redhat.com, keirf@google.com,
+ yihyu@redhat.com, shan.gavin@gmail.com
+References: <20240328002149.1141302-1-gshan@redhat.com>
+ <20240328002149.1141302-4-gshan@redhat.com>
+ <20240328052814-mutt-send-email-mst@kernel.org>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240328052814-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 29, 2024 at 10:53=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Mar 29, 2024 at 2:49=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> w=
-rote:
-> >
-> > From: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
-> >
-> > The recently introduced support for %rip-relative relocations in the
-> > call thunk template assumes that the code is being patched in-place,
-> > so the destination of the relocation matches the address of the code.
-> > This is not true for the call depth accounting emitted by the BPF JIT,
-> > so the calculated address is wrong and usually causes a page fault.
->
-> Could you share the link to what this 'rip-relative' relocation is ?
+On 3/28/24 19:31, Michael S. Tsirkin wrote:
+> On Thu, Mar 28, 2024 at 10:21:49AM +1000, Gavin Shan wrote:
+>> All the callers of vhost_get_avail_idx() are concerned to the memory
+>> barrier, imposed by smp_rmb() to ensure the order of the available
+>> ring entry read and avail_idx read.
+>>
+>> Improve vhost_get_avail_idx() so that smp_rmb() is executed when
+>> the avail_idx is advanced. With it, the callers needn't to worry
+>> about the memory barrier.
+>>
+>> Suggested-by: Michael S. Tsirkin <mst@redhat.com>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> 
+> Previous patches are ok. This one I feel needs more work -
+> first more code such as sanity checking should go into
+> this function, second there's actually a difference
+> between comparing to last_avail_idx and just comparing
+> to the previous value of avail_idx.
+> I will pick patches 1-2 and post a cleanup on top so you can
+> take a look, ok?
+> 
 
-Please see the "RIP relative addressing" section in [1].
+Thanks, Michael. It's fine to me.
 
-[1] https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp17/cse506/ref/as=
-sembly.html
+Thanks,
+Gavin
 
-In our case:
-
-The callthunks patching creates a call thunk template in the .rodata
-section (please see arch/x86/kernel/callthunks.c)  that is later
-copied to the .text section at the correct place. The template uses
-X86_call_depth in the pcpu_hot structure. Previously, the template
-used absolute location for X86_call_depth and the linker resolved the
-address in the template to this absolute location. There is no issue
-when this template is copied to the various places in the .text
-section.
-
-When we want to use PC relative relocations (to reduce the code size),
-then the linker calculates the address of the variable in the template
-according to the PC in the .rodata section. If we want to copy the
-template to its final location, then the address of X86_call_depth,
-relative to the PC, has to be adjusted, as explained in
-arch/x86/kernel/alternative.c, in the comment above apply_reloc_n
-macro.
-
-Uros.
-
-> > Pass the destination IP when the BPF JIT emits call depth accounting.
-> >
-> > Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations =
-in call thunk template")
->
-> Ohh. It's buried inside that patch.
-> Pls make commit log a bit more clear that that commit 17bce3b2ae2d
-> broke x86_call_depth_emit_accounting logic.
->
-> > Signed-off-by: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
-> > Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
-> > Acked-by: Ingo Molnar <mingo@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > ---
-> >  arch/x86/include/asm/alternative.h |  4 ++--
-> >  arch/x86/kernel/callthunks.c       |  4 ++--
-> >  arch/x86/net/bpf_jit_comp.c        | 19 ++++++++-----------
-> >  3 files changed, 12 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/=
-alternative.h
-> > index fcd20c6dc7f9..67b68d0d17d1 100644
-> > --- a/arch/x86/include/asm/alternative.h
-> > +++ b/arch/x86/include/asm/alternative.h
-> > @@ -117,7 +117,7 @@ extern void callthunks_patch_builtin_calls(void);
-> >  extern void callthunks_patch_module_calls(struct callthunk_sites *site=
-s,
-> >                                           struct module *mod);
-> >  extern void *callthunks_translate_call_dest(void *dest);
-> > -extern int x86_call_depth_emit_accounting(u8 **pprog, void *func);
-> > +extern int x86_call_depth_emit_accounting(u8 **pprog, void *func, void=
- *ip);
-> >  #else
-> >  static __always_inline void callthunks_patch_builtin_calls(void) {}
-> >  static __always_inline void
-> > @@ -128,7 +128,7 @@ static __always_inline void *callthunks_translate_c=
-all_dest(void *dest)
-> >         return dest;
-> >  }
-> >  static __always_inline int x86_call_depth_emit_accounting(u8 **pprog,
-> > -                                                         void *func)
-> > +                                                         void *func, v=
-oid *ip)
-> >  {
-> >         return 0;
-> >  }
-> > diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.=
-c
-> > index 30335182b6b0..e92ff0c11db8 100644
-> > --- a/arch/x86/kernel/callthunks.c
-> > +++ b/arch/x86/kernel/callthunks.c
-> > @@ -314,7 +314,7 @@ static bool is_callthunk(void *addr)
-> >         return !bcmp(pad, insn_buff, tmpl_size);
-> >  }
-> >
-> > -int x86_call_depth_emit_accounting(u8 **pprog, void *func)
-> > +int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip)
-> >  {
-> >         unsigned int tmpl_size =3D SKL_TMPL_SIZE;
-> >         u8 insn_buff[MAX_PATCH_LEN];
-> > @@ -327,7 +327,7 @@ int x86_call_depth_emit_accounting(u8 **pprog, void=
- *func)
-> >                 return 0;
-> >
-> >         memcpy(insn_buff, skl_call_thunk_template, tmpl_size);
-> > -       apply_relocation(insn_buff, tmpl_size, *pprog,
-> > +       apply_relocation(insn_buff, tmpl_size, ip,
->
-> Did the logic inside apply_relocation() change to have
-> a new meaning for 'dest' and 'src'?
-> Answering to myself... yes. in that commit.
-> Better commit log would have made the code review so much easier.
->
-> >                          skl_call_thunk_template, tmpl_size);
-> >
-> >         memcpy(*pprog, insn_buff, tmpl_size);
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index 09f7dc9d4d65..f2e8769f5eee 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -481,7 +481,7 @@ static int emit_rsb_call(u8 **pprog, void *func, vo=
-id *ip)
-> >  {
-> >         void *adjusted_ip;
-> >         OPTIMIZER_HIDE_VAR(func);
-> > -       adjusted_ip =3D ip + x86_call_depth_emit_accounting(pprog, func=
-);
-> > +       adjusted_ip =3D ip + x86_call_depth_emit_accounting(pprog, func=
-, ip);
->
-> Now I see why you added extra var in the previous patch.
-> Should have mentioned it in the commit log.
->
-> >         return emit_patch(pprog, func, adjusted_ip, 0xE8);
-> >  }
-> >
-> > @@ -1973,20 +1973,17 @@ st:                     if (is_imm8(insn->off))
-> >
-> >                         /* call */
-> >                 case BPF_JMP | BPF_CALL: {
-> > -                       int offs;
-> > +                       u8 *ip =3D image + addrs[i - 1];
-> >
-> >                         func =3D (u8 *) __bpf_call_base + imm32;
-> >                         if (tail_call_reachable) {
-> >                                 RESTORE_TAIL_CALL_CNT(bpf_prog->aux->st=
-ack_depth);
-> > -                               if (!imm32)
-> > -                                       return -EINVAL;
-> > -                               offs =3D 7 + x86_call_depth_emit_accoun=
-ting(&prog, func);
-> > -                       } else {
-> > -                               if (!imm32)
-> > -                                       return -EINVAL;
-> > -                               offs =3D x86_call_depth_emit_accounting=
-(&prog, func);
-> > +                               ip +=3D 7;
-> >                         }
-> > -                       if (emit_call(&prog, func, image + addrs[i - 1]=
- + offs))
-> > +                       if (!imm32)
-> > +                               return -EINVAL;
-> > +                       ip +=3D x86_call_depth_emit_accounting(&prog, f=
-unc, ip);
-> > +                       if (emit_call(&prog, func, ip))
-> >                                 return -EINVAL;
-> >                         break;
-> >                 }
-> > @@ -2836,7 +2833,7 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im, void *rw_im
-> >                  * Direct-call fentry stub, as such it needs accounting=
- for the
-> >                  * __fentry__ call.
-> >                  */
-> > -               x86_call_depth_emit_accounting(&prog, NULL);
-> > +               x86_call_depth_emit_accounting(&prog, NULL, image);
->
-> Overall it all makes sense.
-> Pls respin with more precise commit logs.
 
