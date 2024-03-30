@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-125895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94EA9892D82
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:35:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1000892D83
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 219691F21AC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:35:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64FA5283A58
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429734D5BF;
-	Sat, 30 Mar 2024 21:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA804C62E;
+	Sat, 30 Mar 2024 21:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PwZ9MZ1i"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JSkQ4rEh"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A388345948
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047A91DFC6
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711834530; cv=none; b=fO/lEHbAvPLPvD4Czk3OqRCafqKiRL8iA0CO8q3eZQUN1kteZWed50dTZAyxTZuCdaX9qS/XnXuBeW5qVjX9QR8/wTnWHHzz2AMuaZjzC3tb1Dr6TyQ2SmNypR8s7rZVDdK6ARJUpxAZud/DR7rrr/s5fFn/Kmo2G7UC5c5imR4=
+	t=1711834543; cv=none; b=ccog+mZGdcIjlotH1ju2gIP+H8Ihe03fxFUhE4rASqbEAUuXyGOV6OARBR2a/ue+ukMJZEXif0R/51/PisvRQr7KCPTmLGbVNim/5k+zbSTPVubege281Lcw+fLzTw94RUeNV05FDMdKG9gJ1STLM78HBWz+k2BA+oTgfxL+gr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711834530; c=relaxed/simple;
-	bh=g0toAGCQtFi0G3GbWa0Q4HZPWv8jGtxInPF/JxlP71A=;
+	s=arc-20240116; t=1711834543; c=relaxed/simple;
+	bh=A/4nTvH3zcKKDjwq9z7ISuECCM1K8A3A6bBgBipegtg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VDk1AdWfivfUlDYWWV0aeHeinK3zHP6Dwj3CQ2qewUTiR3JkY389d6bV/9E9OKg2J0ACGBw1DWYUPuF6lGvUnq274kQdBU+HYQaf3VVKagAkxwJnR9csNwkpG3T1KCpCWClj7sLvSTcqgcR3yTTn3MVnPc35I5YZ5/XMmBDm6Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PwZ9MZ1i; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=lhwggt1Q7u+PTm50rqr0jpiDnPgBOKmFdevuB0Q9wuPRK6pZlQjVmloy5qWWkfRebugKpr0MjH47ARrNBeWtvHItAi3pRPhVqijUjO808hQs7BY8FUd10N3j46QWLytQN4PXyGDaKzEluE33+JFzMmHh5S+lX3RvXHgXm81iPL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JSkQ4rEh; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711834527;
+	s=mimecast20190719; t=1711834541;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=EwmuW/k3ZL7znVA8wS56lDlLW9BhS4TEVksrt7Me+Z8=;
-	b=PwZ9MZ1iyCAVzBUash6/9hnMVBP48I4GsfrdulDjf7X0dySw+dhCyQuoNF9cRn97oZnC0V
-	cTOQYa0rlarrHCAeQS/Hszk96ip36xl7O644Vw+ylUW0h4uRIhxuKMLJ1NrVHXnq/yslBs
-	rhet5l0+ntjKgvhS1bHVq1nOKnn3br4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=k6nhJ/n2fVMLTJ5orSzZrSN05UZkFdn1WgbErq3l2Pk=;
+	b=JSkQ4rEhAmsVeZHuSYL5XgrgNAt13SHnq30WYpbBo6nFSIhiqf0vtKADsEKaBU6OpGVLpQ
+	QDX2PzilH9CaTqvHEj9l8ryQdEGf/Tgw6oCc+JpP/bBlFa90eiL40fMPrYKiSpY28VeuVr
+	I/R0WttkS5b3uVoyvz/AgBrsOKNpSuI=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-tSJu9a0cMgmQB3On25fBYg-1; Sat, 30 Mar 2024 17:35:23 -0400
-X-MC-Unique: tSJu9a0cMgmQB3On25fBYg-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5689f41cf4dso2408093a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:35:23 -0700 (PDT)
+ us-mta-464-TulHzr_5OgWLCaLKMpfrXA-1; Sat, 30 Mar 2024 17:35:39 -0400
+X-MC-Unique: TulHzr_5OgWLCaLKMpfrXA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-515bbb9a73aso2292533e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:35:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711834522; x=1712439322;
+        d=1e100.net; s=20230601; t=1711834538; x=1712439338;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=EwmuW/k3ZL7znVA8wS56lDlLW9BhS4TEVksrt7Me+Z8=;
-        b=jTT2FBgSYMoeJE5ccOi5DsUyE0juZB4gBpRsaeSs9kH9ALQmj2ilHm8toqrL4cyyRv
-         Ofppy6SnyGFp2zfcHgVCc/EKCvuOaQZK6JLnQl8X2ElNIadsNZPGYktkgwtSlkzXYkvz
-         CLb+Mcn2pOShlO2CvLTXusmuKk3Y/Zt5FdLpngbspaovc+VJ1pXRCKMkKMylEO5vmetk
-         Hny51o7yTwHFWOegSUEFqtPM2imlks1J7mBZ0WuWiM7shRLBCiY9cNmWZLphMb+nEs9a
-         ipG4IOi+Wmp8zeHIcqDBWl6+wdAwUQO1tV70NDjBvGynKbt8FATmGTDxCv+bQ1fv2rIQ
-         GuZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4Pp+/19Mb2juuK84MNGHHMO5BHtlVbuQw6u4ZjA70d901hLiKrIUob09YFXAiG9zaWUumWi5S5A3ycfm7kpmU1INlD4mcb72VKS3k
-X-Gm-Message-State: AOJu0YzQvpxLO0QoT38CtX9+7v5jgy51U7OMzC5vh+PxRqnKlxdZhHH8
-	6ZlZLqCDd5Th1F5x22MqKJ+q7SSedAzc4vh61ECYbvvQsECUlrHUi24/Y+QP5l0Lt05efWXFOnw
-	NWMVbeMVoNNqFiKg+nNGL//njdocX9xu1QzBM7wXulm42lMtfWzkkBnz5rJgmgA==
-X-Received: by 2002:a50:bb44:0:b0:567:23a2:5b1e with SMTP id y62-20020a50bb44000000b0056723a25b1emr4176662ede.23.1711834522688;
-        Sat, 30 Mar 2024 14:35:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH4Y1Y1ai02PAHKv5gHHk8E9vouw7+IeXJOAyuQtq3+b2c4PJy15b2ZKcJKFYMqFhtFpYJu6A==
-X-Received: by 2002:a50:bb44:0:b0:567:23a2:5b1e with SMTP id y62-20020a50bb44000000b0056723a25b1emr4176630ede.23.1711834522369;
-        Sat, 30 Mar 2024 14:35:22 -0700 (PDT)
+        bh=k6nhJ/n2fVMLTJ5orSzZrSN05UZkFdn1WgbErq3l2Pk=;
+        b=GcPMMfkXq56SYLgMLVaoTFznA0YsHR7ZwCQhB1WbbcUB8I4+plNHYpzcbLzX8120s/
+         juvL1k7m7nQJsH3N/8VmXi7m7PYGgyfc7VTDz0kAaDSInp0iELAxaUVR96e6XRBLgecz
+         PwSqKfWTvSHaqUtv7ucJs88ESWF1/DuqfQxIg+fIL67zkZApg16yV0i5Bu6qgN8DxGGN
+         A/vQUDCGbEwhedqbftl8w96+N7+oWk//sl9MuPUj++jQDFPdx92ae71gLPleWQUdD1Gd
+         als/rv8D7OO/yZqscoZrJkTHSKzw7OgNuSyGHXdeTlU5gKeZGGGWThlyeOC/Jv+eyIN9
+         gbOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGbr2aAbIhSFLUwf7Rao2KTehNv26xGMI4cS8oD+mFauDsHLHhTXa5YQVcm2Iro4N8olHuxY5IjrBYPnYK5PjVTEu3Ed109f+BWbod
+X-Gm-Message-State: AOJu0YzBxnxGLehy+JxKH/2lQLAaIRi40ZZbcTQkkw9JFwSEQKZ1yB02
+	c8jJDyMRPwzPX7S78f/cVwIp8r/+JtXelF3Rh/kIaauyKpCWs0P7lslRUKn0LfPRhXNwYbYOvkr
+	nmLxuXFk8otl8o8GKde2ds3nwKplUHqDWqrOW4TJArdl7Xy7mNp46ieTitGfjpg==
+X-Received: by 2002:a19:2d18:0:b0:513:b062:98c4 with SMTP id k24-20020a192d18000000b00513b06298c4mr3643244lfj.11.1711834538172;
+        Sat, 30 Mar 2024 14:35:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5PGmEGHf24nUfF7B7vuwJRBVN0rKW1MZiU9RQdC6MVZb3TnEUgyIIaZghldmm9GaQfOSwZw==
+X-Received: by 2002:a19:2d18:0:b0:513:b062:98c4 with SMTP id k24-20020a192d18000000b00513b06298c4mr3643226lfj.11.1711834537752;
+        Sat, 30 Mar 2024 14:35:37 -0700 (PDT)
 Received: from [192.168.10.4] ([151.95.49.219])
-        by smtp.googlemail.com with ESMTPSA id cy14-20020a0564021c8e00b0056bf31fa2a3sm3688481edb.80.2024.03.30.14.35.18
+        by smtp.googlemail.com with ESMTPSA id w4-20020a1709062f8400b00a4e07f8b6bfsm3445434eji.59.2024.03.30.14.35.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 14:35:21 -0700 (PDT)
-Message-ID: <4e89479a-e170-403a-b2eb-ce7b895e55a3@redhat.com>
-Date: Sat, 30 Mar 2024 22:35:17 +0100
+        Sat, 30 Mar 2024 14:35:37 -0700 (PDT)
+Message-ID: <00800f4b-5403-4416-b984-12b207362a19@redhat.com>
+Date: Sat, 30 Mar 2024 22:35:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 23/29] KVM: x86: Implement gmem hook for determining
- max NPT mapping level
+Subject: Re: [PATCH v12 24/29] KVM: SEV: Avoid WBINVD for HVA-based MMU
+ notifications for SNP
 To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
 Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
  linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
@@ -98,7 +98,7 @@ Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
  alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
  nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com
 References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-24-michael.roth@amd.com>
+ <20240329225835.400662-25-michael.roth@amd.com>
 From: Paolo Bonzini <pbonzini@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=pbonzini@redhat.com; keydata=
@@ -136,119 +136,48 @@ Autocrypt: addr=pbonzini@redhat.com; keydata=
  JBrdmNZSQDz0iKmSrx8xkoXYfA3bgtFN8WJH2xgFL28XnqY4M6dLhJwV3z08tPSRqYFm4NMP
  dRsn0/7oymhneL8RthIvjDDQ5ktUjMe8LtHr70OZE/TT88qvEdhiIVUogHdo4qBrk41+gGQh
  b906Dudw5YhTJFU3nC6bbF2nrLlB4C/XSiH76ZvqzV0Z/cAMBo5NF/w=
-In-Reply-To: <20240329225835.400662-24-michael.roth@amd.com>
+In-Reply-To: <20240329225835.400662-25-michael.roth@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 3/29/24 23:58, Michael Roth wrote:
-> In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
-> 2MB mapping in the guest's nested page table depends on whether or not
-> any subpages within the range have already been initialized as private
-> in the RMP table. The existing mixed-attribute tracking in KVM is
-> insufficient here, for instance:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
->    - gmem allocates 2MB page
->    - guest issues PVALIDATE on 2MB page
->    - guest later converts a subpage to shared
->    - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
->    - KVM MMU splits NPT mapping to 4K
->    - guest later converts that shared page back to private
+> With SNP/guest_memfd, private/encrypted memory should not be mappable,
+> and MMU notifications for HVA-mapped memory will only be relevant to
+> unencrypted guest memory. Therefore, the rationale behind issuing a
+> wbinvd_on_all_cpus() in sev_guest_memory_reclaimed() should not apply
+> for SNP guests and can be ignored.
 > 
-> At this point there are no mixed attributes, and KVM would normally
-> allow for 2MB NPT mappings again, but this is actually not allowed
-> because the RMP table mappings are 4K and cannot be promoted on the
-> hypervisor side, so the NPT mappings must still be limited to 4K to
-> match this.
-> 
-> Implement a kvm_x86_ops.gmem_validate_fault() hook for SEV that checks
-> for this condition and adjusts the mapping level accordingly.
-> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> [mdr: Add some clarifications in commit]
 > Signed-off-by: Michael Roth <michael.roth@amd.com>
 
 Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
 > ---
->   arch/x86/kvm/svm/sev.c | 32 ++++++++++++++++++++++++++++++++
->   arch/x86/kvm/svm/svm.c |  1 +
->   arch/x86/kvm/svm/svm.h |  7 +++++++
->   3 files changed, 40 insertions(+)
+>   arch/x86/kvm/svm/sev.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
 > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 87d621d013a4..31f6f4786503 100644
+> index 31f6f4786503..3e8de7cb3c89 100644
 > --- a/arch/x86/kvm/svm/sev.c
 > +++ b/arch/x86/kvm/svm/sev.c
-> @@ -4443,3 +4443,35 @@ void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end)
->   		pfn += use_2m_update ? PTRS_PER_PMD : 1;
->   	}
->   }
-> +
-> +/*
-> + * Re-check whether an #NPF for a private/gmem page can still be serviced, and
-> + * adjust maximum mapping level if needed.
-> + */
-> +int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
-> +			    u8 *max_level)
-> +{
-> +	int level, rc;
-> +	bool assigned;
-> +
-> +	if (!sev_snp_guest(kvm))
-> +		return 0;
-> +
-> +	rc = snp_lookup_rmpentry(pfn, &assigned, &level);
-> +	if (rc) {
-> +		pr_err_ratelimited("SEV: RMP entry not found: GFN %llx PFN %llx level %d error %d\n",
-> +				   gfn, pfn, level, rc);
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (!assigned) {
-> +		pr_err_ratelimited("SEV: RMP entry is not assigned: GFN %llx PFN %llx level %d\n",
-> +				   gfn, pfn, level);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (level < *max_level)
-> +		*max_level = level;
-> +
-> +	return 0;
-> +}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index b456906f2670..298b4ce77a5f 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -5081,6 +5081,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+> @@ -2975,7 +2975,14 @@ static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
 >   
->   	.gmem_prepare = sev_gmem_prepare,
->   	.gmem_invalidate = sev_gmem_invalidate,
-> +	.gmem_validate_fault = sev_gmem_validate_fault,
->   };
+>   void sev_guest_memory_reclaimed(struct kvm *kvm)
+>   {
+> -	if (!sev_guest(kvm))
+> +	/*
+> +	 * With SNP+gmem, private/encrypted memory should be
+> +	 * unreachable via the hva-based mmu notifiers. Additionally,
+> +	 * for shared->private translations, H/W coherency will ensure
+> +	 * first guest access to the page would clear out any existing
+> +	 * dirty copies of that cacheline.
+> +	 */
+> +	if (!sev_guest(kvm) || sev_snp_guest(kvm))
+>   		return;
 >   
->   /*
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 3f1f6d3d3ade..746f819a6de4 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -732,6 +732,8 @@ void sev_vcpu_unblocking(struct kvm_vcpu *vcpu);
->   void sev_snp_init_protected_guest_state(struct kvm_vcpu *vcpu);
->   int sev_gmem_prepare(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
->   void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end);
-> +int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
-> +			    u8 *max_level);
->   #else
->   static inline struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu) {
->   	return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> @@ -753,6 +755,11 @@ static inline int sev_gmem_prepare(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, in
->   	return 0;
->   }
->   static inline void sev_gmem_invalidate(kvm_pfn_t start, kvm_pfn_t end) {}
-> +static inline int sev_gmem_validate_fault(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn,
-> +					  bool is_private, u8 *max_level)
-> +{
-> +	return 0;
-> +}
->   
->   #endif
->   
+>   	wbinvd_on_all_cpus();
 
 
