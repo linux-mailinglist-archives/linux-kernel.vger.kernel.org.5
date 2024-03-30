@@ -1,146 +1,101 @@
-Return-Path: <linux-kernel+bounces-125683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF96892AA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:09:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5CA0892AAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D45711C20EB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:09:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46615B21A08
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE152BAF6;
-	Sat, 30 Mar 2024 11:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2D22D052;
+	Sat, 30 Mar 2024 11:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="euXEljFp"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVyEp2OC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02421200D3;
-	Sat, 30 Mar 2024 11:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFAFBE6F;
+	Sat, 30 Mar 2024 11:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711796938; cv=none; b=FEcveKNQgbXWYiT92+YVjwy5sFMhCvs25TnN1P7N2C0/KWpMy63Qnss/Q2f+u5QGdIfPio/razF5ucCzF6j2kNnNqO0CvUFbyYDSdpvIwmBJY9husK5c3GiYkhOk7GTMVI1sEt4WT17bT6H9aB8p3rK/yFOCXO1U5bwIS9tq4QM=
+	t=1711797093; cv=none; b=pthwGYGVfkKbo79i4r3JfW+J203srEv4BC6L5S4Y3mQ2kd4OYvYtMhaXKPexDmEipY4fIfYU55BS7w/rlrTa8AXWce6NKmQAAkphwv4b4rVqkxv4z+JT6XEZCcVsYS165T4HoL+pSJi6F4ST+gFyWuUe+LrpxL0GWxBdDFIT6Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711796938; c=relaxed/simple;
-	bh=8VXre+juWgMI4bw+ps7LXjkOXBPEsjsy51WIROR95I0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BtBcw1dlulPS3PcE0DMSeOSsNd9d6KBIFsLe9kO00YnyrRjCm61TCRiHo/ZC3zXXtg9ptPGdxwM7iFBGrTPpgsGijbXTCrPM0Kq/pY7oc6R7bCKpgJYNS27MMDXDEE6I47MoxG2St6fNiuswPZbKBm424qOTPeFRwJKB/TI3xKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=euXEljFp; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso3312844a12.2;
-        Sat, 30 Mar 2024 04:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711796935; x=1712401735; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8xYKCmanOx7E4s4iOABsWWeyfHS9OU5GO/KxHmhFWWw=;
-        b=euXEljFp5sf9iS9jhbkJK0ijQfzJnDhcaKlobjsud2pVom6c/8JjHK54Zj4gvIYnov
-         k619iC0b+SLz+P2jAccs0pcVPW6vtKMWmpTQybKPIVgGEZeeLeGT+gemlhNGZ7T1gvqO
-         IBR+g7/pApyh9v+KDkf9zfOMahDLClQJB68Rr0VY2lG4KeWwmMK8rQw20WKksf2v2k+Z
-         kvixD3HeSxEefXBO45QDemIC9j1mX89yi8e2U7AyCYJh33hJEe98ay8jbSE2A1LrHhHF
-         IqpjUSfVZxmMfdunnL5lFzt1OgjlskfZpVVtjFjJStn0TnFKN+kgIILRGIZIQtSu7ZAw
-         eoaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711796935; x=1712401735;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8xYKCmanOx7E4s4iOABsWWeyfHS9OU5GO/KxHmhFWWw=;
-        b=D2/2V2lQQbEiPxIkvxMnOnI4mWNIeGzB1ZJjfaOpFDv0oFlyxBqUndiKAAQlZPRwwM
-         asTATPgNnDAd9FItvFYdgFOqhbhjuzYrI+gZW68MZuUKwkRERCVPimCdugbV2eUQnEj9
-         M1fGEnHOYUA0mLh7QpV8+bSB1+ZQakg8tFKI47qab4JQlZ3guJ4GT3A0w04F7FapWTY6
-         qqMvmgqthJhpdyqAwCr6Z0vlOMif7xqQZpgtxIFw9r0s3DUwJ2tYgCizuND5qdG7axsg
-         jUsFr9StZPDCUUnA8914rtFEl2pCoIgPCFiWYecTJF4/U+YJin+xlcJ6sT9TmZnJEgvx
-         sTAg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0+p6AYxWrjJCObZ4ttmzJml8S7x2nDkT6WEzkmT//+JHNoC3mpJyRNbf+wbxFGkalxJ+tEF4GGhGgEuYyJLp752bUCKaUcVEtEv2ydBW9Nx357MvkFMw+m+/i4E9TEYM1Rww8g8pZI6k+28tf
-X-Gm-Message-State: AOJu0YyW8zk61KB9fnFZTWx55WgMs3i9SMRR5tArNhEg5PvbzUF6jZxg
-	cb3VDCLWAEuTuwdyuIqSNwCOXdZj7wAwTrEnSM8BE3JJmZ66l9qpXTSOPoOvfZ0=
-X-Google-Smtp-Source: AGHT+IEx02O5HNbOVc8Kj6OvzFHtJiN0t5Ty9Tyfmsay24/ivTTLlzNoZ3LNQ7WgyNi98QjGVEWWjQ==
-X-Received: by 2002:a17:907:972a:b0:a46:575c:a9a2 with SMTP id jg42-20020a170907972a00b00a46575ca9a2mr3731178ejc.45.1711796934772;
-        Sat, 30 Mar 2024 04:08:54 -0700 (PDT)
-Received: from gmail.com (84-236-113-97.pool.digikabel.hu. [84.236.113.97])
-        by smtp.gmail.com with ESMTPSA id d19-20020a170906041300b00a4750131edasm2954792eja.206.2024.03.30.04.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 04:08:54 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sat, 30 Mar 2024 12:08:52 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Shuah Khan <shuah@kernel.org>,
-	"Chang S. Bae" <chang.seok.bae@intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	angquan yu <angquan21@gmail.com>, kernel@collabora.com,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] selftests: x86: skip the tests if prerequisites
- aren't fulfilled
-Message-ID: <ZgfyxD15dg9tLzyT@gmail.com>
-References: <20240327111720.3509180-1-usama.anjum@collabora.com>
- <1d6418a3-67eb-4a39-891a-7d653a26f1fc@linuxfoundation.org>
- <ZgZvaUbZIr0qpxK5@gmail.com>
- <70698a24-3794-4621-ac74-7aaeae01a750@linuxfoundation.org>
+	s=arc-20240116; t=1711797093; c=relaxed/simple;
+	bh=iXcSCv1Lm8qoVXmrgVuG9IH8TGJqsJHpTZ9ruAqsmUI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=mneaipFTH8fgHzlTlxHH/boSUgl+zn6i8Dxa5S9wy4cnacpxWYlhZtnVRyobCCFaf/cfp5ja1XzOyMV8XkkFMoV32ZN3x2I54TuTLApffum0FFRV2gHAzm1BmMOpE0b8qYT9y67Y6aNVhYD85N9qu/MsSl+QyonWMhUngoyfY8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVyEp2OC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 061ADC433C7;
+	Sat, 30 Mar 2024 11:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711797091;
+	bh=iXcSCv1Lm8qoVXmrgVuG9IH8TGJqsJHpTZ9ruAqsmUI=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=qVyEp2OCL7jBvHHpwLy5SoX/uOuYnC1rcPn+CPe8wTYEuho90fPuIdCDew6wweXpi
+	 vr2rRp7C/tCMbPkVmBjvy0d2xn6W7Vkq71NAS+exqVOYf9jSy5wwSyB4rBFcof/1Vr
+	 dtKAFPNiSks+nyA/O9D41wwFoloIqWTxq9TGLOkhwBWa57+P6iPY2DxcR6RL1oMeml
+	 U5/g9Yh/kIQo8XvnWmdPc6JRYsVI0rbuX/07su2hZhO9zv1dd7X5ExFmEn+nYdFvuJ
+	 jd8KJFKJkfmbb65/UaOIex+Hn/flU5IlCzJjpbswd6ds72r9f3uIOp8vV91t+ASrBX
+	 Z0Fp2O26xlMEQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70698a24-3794-4621-ac74-7aaeae01a750@linuxfoundation.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 30 Mar 2024 13:11:25 +0200
+Message-Id: <D071F8P9F4W2.OJB84BIYSIR6@kernel.org>
+To: "Randy Dunlap" <rdunlap@infradead.org>, "Fan Wu"
+ <wufan@linux.microsoft.com>, <corbet@lwn.net>, <zohar@linux.ibm.com>,
+ <jmorris@namei.org>, <serge@hallyn.com>, <tytso@mit.edu>,
+ <ebiggers@kernel.org>, <axboe@kernel.dk>, <agk@redhat.com>,
+ <snitzer@kernel.org>, <eparis@redhat.com>, <paul@paul-moore.com>
+Cc: <linux-doc@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+ <linux-security-module@vger.kernel.org>, <fsverity@lists.linux.dev>,
+ <linux-block@vger.kernel.org>, <dm-devel@lists.linux.dev>,
+ <audit@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Deven Bowers"
+ <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v16 01/20] security: add ipe lsm
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
+ <1711657047-10526-2-git-send-email-wufan@linux.microsoft.com>
+ <D05ODONHFJ9O.3VG0HLFPA1OB0@kernel.org>
+ <cde3dc6e-ca77-445e-a4b7-fc21a934999a@infradead.org>
+In-Reply-To: <cde3dc6e-ca77-445e-a4b7-fc21a934999a@infradead.org>
 
+On Fri Mar 29, 2024 at 12:11 AM EET, Randy Dunlap wrote:
+>
+>
+> On 3/28/24 13:45, Jarkko Sakkinen wrote:
+> >> +/**
+> >> + * ipe_init - Entry point of IPE.
+> >> + *
+> >> + * This is called at LSM init, which happens occurs early during kern=
+el
+> >> + * start up. During this phase, IPE registers its hooks and loads the
+> >> + * builtin boot policy.
+> >> + * Return:
+> >> + * * 0		- OK
+> >> + * * -ENOMEM	- Out of memory
+> > Just a suggestion:
+> >=20
+> > * 0:		OK
+> > * -ENOMEM:	Out of memory (OOM)
+> >=20
+> > Rationale being more readable (less convoluted).
+> >=20
+> > And also sort of symmetrical how parameters are formatted in kdoc.
+>
+> It needs the " * *" to make a formatted list in the generated output.
+> Otherwise the use of '- or ':' as a separator doesn't matter AFAIK.
 
-* Shuah Khan <skhan@linuxfoundation.org> wrote:
+Thanks for the remark! Yeah I don't mind the two stars.
 
-> On 3/29/24 01:36, Ingo Molnar wrote:
-> > 
-> > * Shuah Khan <skhan@linuxfoundation.org> wrote:
-> > 
-> > > On 3/27/24 05:17, Muhammad Usama Anjum wrote:
-> > > > Skip instead of failing when prerequisite conditions aren't fulfilled,
-> > > > such as invalid xstate values etc. This patch would make the tests show
-> > > > as skip when run by:
-> > > >     make -C tools/testing/selftests/ TARGETS=x86 run_tests
-> > > > 
-> > > >     ...
-> > > >     # timeout set to 45
-> > > >     # selftests: x86: amx_64
-> > > >     # # xstate cpuid: invalid tile data size/offset: 0/0
-> > > >     ok 42 selftests: x86: amx_64 # SKIP
-> > > >     # timeout set to 45
-> > > >     # selftests: x86: lam_64
-> > > >     # # Unsupported LAM feature!
-> > > >     ok 43 selftests: x86: lam_64 # SKIP
-> > > >     ...
-> > > > 
-> > > > In amx test, Move away from check_cpuid_xsave() and start using
-> > > > arch_prctl() to find out if amx support is present or not. In the
-> > > > kernels where amx isn't present, arch_prctl returns -EINVAL. Hence it is
-> > > > backward compatible.
-> > > > 
-> > > > Reviewed-by: Chang S. Bae <chang.seok.bae@intel.com>
-> > > > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > > Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-> > > > Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> > > > ---
-> > > > Changes since v2:
-> > > > - Update the changelog
-> > > > 
-> > > 
-> > > Thank you - applied to linux-kselftest next for 6.10-rc1
-> > 
-> > Please don't, I've applied the patch to tip:x86/cpu with a tidied up
-> > changelog.
-> > 
-> 
-> Thanks. I will drop it.
-
-Thank you!
-
-	Ingo
+BR, Jarkko
 
