@@ -1,265 +1,208 @@
-Return-Path: <linux-kernel+bounces-125782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1036F892C09
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:27:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CBB2892C0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 17:35:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3446A1C21912
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:27:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9E941F22BF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 16:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A513A3BBDF;
-	Sat, 30 Mar 2024 16:27:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D3031A66;
+	Sat, 30 Mar 2024 16:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="amzb8U3n";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="dCM+FAPT"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="SqpdaoP5"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2057.outbound.protection.outlook.com [40.92.74.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9D425740;
-	Sat, 30 Mar 2024 16:27:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A851E878;
+	Sat, 30 Mar 2024 16:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.74.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711816043; cv=fail; b=NxcaHUPeBGERxDAS1Wr3XFeXRUUVs8/HbMSBbP6TuaiuFxucw9Y2onS2IeI3rLDuzsd0wvOB8F9R12LG1eWN/2PvZsk2W4yMwkmKF35jr/k0aeXCQHQMNpOOQNnGcGE9nRkYdcRV4circyHWg+tVliAZaglB5R6p1MTtTNEiIeA=
+	t=1711816516; cv=fail; b=b69rv26DMaRcVjbYw4bdlNeMc6PzdIrZA89/7H0RBL4721U1dTcgCP4DtVbOTsrx4RRIFrTXnd0QPxbuMVZRNT1aGU2MO7FIJC268lGydRCKF25aTqLieTpP4lT0eGdnK9IY4eOByGj7HLGdXn0tUxdXfvlPdJTvtEIIzJxBBnA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711816043; c=relaxed/simple;
-	bh=1jJAFpsCFs0EhXQ0ovlezz1pt0je6Jd1kcv3nF28ViU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=LJRSQGDoDcTgUKZbNNJC01fh2/F5/jYiMH9xrnb6cY9pDRTPtReqx5IAWciemz0EAkhkDb0Grq2S6BhXivJ3HeGtpDZgwv/ACBv8JdHAmNsN8cUMp4QofK6iByaCRiVu5XcaM7WRoXExNEuPOkTY27+rQ8pWURYqed3xE6j7RAs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=amzb8U3n; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=dCM+FAPT; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42UFTGjC026814;
-	Sat, 30 Mar 2024 16:26:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=YixjwsG2WRHBrSQAUB2D8DIGD/zIwW70xMtLrMtpukk=;
- b=amzb8U3nIwnYCiW6k8ZMhx0DnPzhf++kwPu1e98ADrk6+wNHGexfNCJzkI4MYPjc6pS7
- plPxaSXRLDZcDq6z/3zRpeT7CiPU9WITNCN8mEtTk4AVXV3gd4iBvwRzDzu1Nxy3L6f7
- ZSYHV1kr3Z3phAwMa7ZHWWlG36LgEsGdloZoJ54EbVHKxdWwrxXqSThU9MkqGuwu7Gwl
- 9bXgLg4YfXBMJ38/VVL8DOWkCPrs7rR2CoZlwM1FeEYQVR8X90J+/B7WbRyetY4T07tA
- U/dMoQo5Zh8V3hiCEZcuw9McCx4LDrgKUnCjrlzZy1/DqACgQL/MXJe12nImpQKLR+up uA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x6abu8exq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 30 Mar 2024 16:26:56 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42UF5oQH040392;
-	Sat, 30 Mar 2024 16:26:55 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x6963xtk3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 30 Mar 2024 16:26:55 +0000
+	s=arc-20240116; t=1711816516; c=relaxed/simple;
+	bh=VdzvQmAICSZ29WbYZ9+rlSYW2KmpJLTwUX2K9EE+Kn4=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=sj3Qvokqt7cVXb5PdNHlS9TpBQTRe4o3bFn6uPg4UNjW/rGukZIAuFfTZq/91lXxB2LkJ1CC0+da0kk5xwFvDmrHDTkbz64va/5SKHqfze5ph5avjiwmkxbii6ceK8jubqkd7dHNaY1IxsDv1JHQbGdV8ZOszvcE0Yhww8WF+fA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=SqpdaoP5; arc=fail smtp.client-ip=40.92.74.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CNpOJjP09UesNRWLrYSv8/tdjhhWW1umo4Tq+F9AZ2qWV/WlUBtL471iqhmRNHwaUhDDqWOJpR1keewANVhC0q/EOtB2X7vvluPuxexWzqrdNDtIF3kvPWb7FLS7vAGvbP4pB394MG+q2ZRUgOfKPg2oHaZvifJbe92y+cVh021ge9chuG3CbYqKuIBomvo1gAnfxJ13JelZlne96yb/BLcCN50AuW5u/kIDgDIwYa4wey7aydiKAgx2VSf5BR4dciVPHaZjwsELCSDWuoVgRhRVlxxWPxLPv83328OU/Kld7qu6X5N1yBfUB/OO/GkmBrsyhyCIoKrIOsA0gr5vxQ==
+ b=gX8wtlpmnw23sMdsJ8WOWYW3ScJXbWmAQLvGIu2/6X9Urn/pUcuWXYuXgisEk3GHGuuA/pG591Kw3j4rdUKmZ65okK4xuDTGNSCjeKcC3yBJiddFexQ6m00v0H4lMDzWPa4eG0qjGHeDJ9yHac1xqdK6rmlYMExru3scWrDBmRBusmHkJsPvjtHZ+d8omEL+ugdBqx+4C2T935xqkOjlmqSa30DO444PIvHxA8r+KXNeKYQ1M9FxdB7xhslQNnVie3oBn0pzVyOOYuNonKoRMbdkR3gSR+xCVMs+iY7exSu8cQ0QrXBXwKIHfgJWJxtwJExg53Ib0dPnGX6ZWEClgQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YixjwsG2WRHBrSQAUB2D8DIGD/zIwW70xMtLrMtpukk=;
- b=NWrOvbqFDpLO9kNJ83zeQqOmmot9QIImMheb24ocyol4zaUnbPnZz4cfE2qvUXD6E62/YA1yuZ3S9o669LEaCzwEo2+jKnXQFFR82UQBT/H1bE41ZDKKC7A8+pf5K4lEYAsy5V98aaqH5mREh3VRLFOU4Pxs+exhSazr04+LB/49PTfWcAiIPxpivImg+OIZnHt0fySlnlQ9JR2Ckfx5eHTqlmyIf+67Qjmt8jvttwodtXSiK9sIwbcR+sXymntOW627qQILbMyevLylY+kwvdcGParbgcuYd29fjsPdrv9LrVsuAjFjRZMnKUOnDa/eG7YfPRr+O45vV/6LFAmQmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ bh=ZN8tft0hq98f6J07/bNT5fdSxXERJq8lr2qv7F8FdbE=;
+ b=BACbACj5DJPJZwQrmPK/XXXqlCHOaKbAHf5pfUQFlTyt2OYqNe98FLzoTYqD7cO6gf9t0VQhg5ZSL/WpAU49hW27QpPAZV2+tyOfGI1eCy1HARiVOcU99DcWdVLrAZGZsH3xhVYv9LnO8SFDRiWTaKTcsD9gUa2VjNYKO95XPZvJ/73Ih/YsSNuSzdmaTfSX1wwDL4pb2QwUARYRCqdFzpYgh06X1yk64hD1xSy6bg1WX7DP5IVXLEBSmWMvCiLP6jbjm2J4M3yPph2aVPICXGyVoR/0rmPqIykV+uylBuY9/ejN/4UA6nVi6r1WQkddMpOZOPQ4VP4gIIKOFc5G6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YixjwsG2WRHBrSQAUB2D8DIGD/zIwW70xMtLrMtpukk=;
- b=dCM+FAPT709Tz3S3ZfRznrSDNunj8sHKWQ/cYYwzJvx5stmTewHXIhEQOiCquDzZV8k+zOB9IbADQ8+/6+Ld0OXbMSs4f9NJTV1Tr8QGdgtvBZX3KHTH6+P1ZG0xN63uVY8OuwX1B+8rOPDwVCuQT8+wQh1C0wNXKwqRxfImCwk=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by BY5PR10MB4164.namprd10.prod.outlook.com (2603:10b6:a03:210::15) with
+ bh=ZN8tft0hq98f6J07/bNT5fdSxXERJq8lr2qv7F8FdbE=;
+ b=SqpdaoP5B3U1LCKl30OjUbTUCP3a3wpK5xmzYIu2e8NLX01keOsv+apIxcMt1pLguXtjKb5RNqRR278YxE4pzI/pT9yozzoZ/+GU/DKtGebyJqp6WBpuEpRIutcFfNVflaEh6Lvxzp06asL40fXAtS70RzjYSfmxknYmWyeDU7EQlMmdYLXBDoDbgrt+d58nGR/QaxMs5sKk6me2eN/uhLgXXF5Di9TZVlGbxVKG3Yvqt5tmerxU8jvm+WnmNf76MDG2uT1XcjrLMKxRqqdXncbk2+BUiGnxRd3o8y4xdFCjSJk9+foK2V0TiWjlb5T6UDh+ZtzaG2HMAqNZL9FROQ==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by AM9PR02MB6804.eurprd02.prod.outlook.com (2603:10a6:20b:2c1::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.43; Sat, 30 Mar
- 2024 16:26:38 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
- 16:26:38 +0000
-Date: Sat, 30 Mar 2024 12:26:35 -0400
-From: Chuck Lever <chuck.lever@oracle.com>
-To: Jan Schunk <scpcom@gmx.de>
-Cc: Benjamin Coddington <bcodding@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>,
-        Tom Talpey <tom@talpey.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Re: [External] : nfsd: memory leak when client does many file
- operations
-Message-ID: <Zgg9OzeFZUTc4hck@tissot.1015granger.net>
-References: <567BBF54-D104-432C-99C0-1A7EE7939090@oracle.com>
- <trinity-66047013-4d84-4eef-b5d3-d710fe6be805-1711316386382@msvc-mesg-gmx005>
- <6F16BCCE-3000-4BCB-A3B4-95B4767E3577@oracle.com>
- <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
- <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
- <trinity-77720d9d-4d5b-48c6-8b1f-0b7205ea3c2b-1711398394712@msvc-mesg-gmx021>
- <51CAACAB-B6CC-4139-A350-25CF067364D3@oracle.com>
- <trinity-db344068-bb4b-4d0b-9772-ff701a2c70dd-1711663407957@msvc-mesg-gmx026>
- <C14AC427-BD99-4A87-A311-F6FB87FFC134@oracle.com>
- <trinity-157de7e0-d394-47fa-bb44-2621045a5b6e-1711812369391@msvc-mesg-gmx004>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <trinity-157de7e0-d394-47fa-bb44-2621045a5b6e-1711812369391@msvc-mesg-gmx004>
-X-ClientProxiedBy: CH0PR08CA0025.namprd08.prod.outlook.com
- (2603:10b6:610:33::30) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.42; Sat, 30 Mar
+ 2024 16:35:12 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
+ 16:35:12 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] drm/radeon/radeon_display: Decrease the size of allocated memory
+Date: Sat, 30 Mar 2024 17:34:47 +0100
+Message-ID:
+ <AS8PR02MB723799AFF24E7524364F66708B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [udE1yCGk+kyixDinNhbF5wr7HQOChlOW]
+X-ClientProxiedBy: MA4P292CA0006.ESPP292.PROD.OUTLOOK.COM
+ (2603:10a6:250:2d::16) To AS8PR02MB7237.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID:
+ <20240330163447.10688-1-erick.archer@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|BY5PR10MB4164:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|AM9PR02MB6804:EE_
+X-MS-Office365-Filtering-Correlation-Id: 238f528d-c2d5-4729-3f14-08dc50d75f20
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	rWy4lCfUQvapfGgqewaNrmZkPFXhYR+mW3Q6PZMqML02HcNdUc6h0TWLlCt6kp8KSRuc+CIK/Wtv7I8w9nSTjz5XGsuohUlpnQEjfOoyBcMYl4+s9/edjmVc8fEEqRvJs1B7X+Y0roiHQhZc2AtqLn66k8pIZx2OxvNUeGTrwKHOGRcSCjWU8mgBfEWqDJr6uzop5YRhW7HR3+F9yl4kWNJBb1F6C/J1cBuvjzHtHAYzt1kYzq70CH0cv/a8TLp+UnnxPcxvT/0T1t23LCA8181c2Blq85FNw1Vj4T5ypH2rPDL7AeJJuLK/FlOawEkWHMBoL4WVe1CMtTBap4J/lr9dCcHkdjvECS6KIu05FNEm9s6DmMxE/LVpN7+G+JMjPTJ8qcCFGX3E9cqybniD8ro/ShUvHNyJBbnWbZD7tdORk87aKF5djM0ptn+zB0SO9KS8om9TYQkmsj6EdXvqHd5yEZ44c7kawwwomfoFxj3s+JX+WcIWkPkzsn3aQjPm1EDCdD9aWdbE3Gik2qjxP8Ii9ytKgxpElDo8P/oM71caijTFhmTipTEyxrsy1TSsiEbTK9KpMpN+5qWYmoR2jddkh8RiCJzjZV/0gF94IvAprvcFxtmR0111sgupJ42XUO0UBHeZczZxJl5hFrCYddWDTgOUkDxN/8eurs2wOJo=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info:
+	QSuRjmnIH9Uj0ilCV5GOZAJpwovuoemVyOCK08SE9LlbKzBsI2uhyV8Wdzxb7RuzNzH2/DLIvXhgpk6Dz5GgHdX8QlLyUg4T29iMwUlsdJV4ThMAxfX4Ao0Z+R5VvcanYy2ruCMfccx5/c8Iw39ttOeLmYy0h17yRXUMqURGF6kaym0TASwFBhiTfFLrcimWUONz2CvYF+0UWOY8lMJ4ManGxoriYETLrlmKE19WXHuCTAIfpYgXGvlxEYXEjL/3TR/zymTgu1bZaLRg5x/CT4IYN4iknb/084WGXCL/b/65I2ut3JLeyvtJe/zPmvEdKNRyRzP16wJAi8wnIjvvh4APu+eVm9MZp13qAfhNgxCqX4nFzNlqZXtPlF0UCoevVb8ARHHGGIoX+9q8SouVZYrD9rN3b/4dlSEdCf+7J39yG2XqclupYBLM05dzlXey9Dlawqf7Xu/PguDM1mx6SQkj7PDaGW6aA8Wi9o5gwRAJv2eKrnkV/94ni7W1D7mygQ1Y6q1JR1Cv5G6dbdvQ/qh+t5bbpbMWo5lJQEKWMZ2pIFKYxuYN7BDhTVll/LUCOycj6GdCZFPhOV9/B3veOtCDaGDfCbqPLTiDYft+TbTQntAFrY+mUCNtaKNMJmoudI9Z+PGcX3X8Ihw4sGTI2p3zoo0LBpNwNm8+p65b/u0pxQ8nh9h5/BoXZCU44LLjIuZEEIHAKMauEhaHAq9qdQ==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?06upQWKLBnDuQbOc9bgoeFn3ZtOSUP8Og9pCbaEWyvUqibPaRJQJJ5NLd8I6?=
- =?us-ascii?Q?Ekk+Mf0EDUBWk9VU+f1lJ7if/iYAg6zXmhYWKY8b6eO+oSuy6paCk4Cbogz2?=
- =?us-ascii?Q?8iPvDlSlnHlC1E48I5iKjs2SlgShl2dovU/oOOCU4nrPJY5I9ROPdidTF1Px?=
- =?us-ascii?Q?7aPJJ+o46+tu07z71jGTM3IF6uyE08h/s8ASbL88G0N7jOIhmWWA438hahIx?=
- =?us-ascii?Q?FjL5rX3pJlEpOPKVaJHu+og3z1Acl9hbENzEL88HMP4fSszdxKZC32TtJK2T?=
- =?us-ascii?Q?RbAh1bLQD38YRtMM7NBo657Ln6e6QrcG6cgE9S/qqinBUXJvLFXHRxRgC3+1?=
- =?us-ascii?Q?WpQwuhP3r+RpLhOTbDqG9fEfwgnZ10xfl4ghG4qNIby9imjN5JN2FNxAyASB?=
- =?us-ascii?Q?S8TAD9uuIVCMAaVOqa3SvTDLKp3C+CNXq1orODcVXao2XMWjg/+Ly1XlkuqM?=
- =?us-ascii?Q?7WKL4nt4XLeExgrJ8r/FXd5Rl1IjIwoiWigUPKiNgclyCb/Fgl58VjQHPi9b?=
- =?us-ascii?Q?zDGqjJaQLTMjO5XoNaNKUmu3QqEhFGR/Jrw1zyzmii/EQoaaOcjRyEwWmrSM?=
- =?us-ascii?Q?Y96Bg7opoYhi9oaap7gPJlqQs9FlHrEhpegYWzylSWyTesUoADLQ6rBjmIm8?=
- =?us-ascii?Q?dZZZX5JVFZLuV7XxezQLpKA8/n6o1h6H09DKA/Mls+5YzdSei2f0Gu3tgxox?=
- =?us-ascii?Q?jE9fCPQ3ynwfam2ElbFI6P/NRLo4zHyqLe0KCx7Mxh26g5EcFvuaszYZGqfR?=
- =?us-ascii?Q?z6MuBidu7cmO+2Xj5uRkVhixmi5ALtCW7UHL/fzVo3eP+t00tin5bPZBwD1j?=
- =?us-ascii?Q?/ya4g/L523I6kaENOkZ5zL6X2Uatl7Wr+anxl2pdvl/8jnbQLN9ws83PKRNU?=
- =?us-ascii?Q?TlLGDsYZ339HkmrKIGzZAErANxtjrFBD7Jsz3pcuZME64WztR6mAwkDPahpc?=
- =?us-ascii?Q?xBULRm9eJyAVVEyWNRLMTrUPKD/1F4CbMtImCXcOa3Z+xAyI8bTE+ZUAPnot?=
- =?us-ascii?Q?HblPYXmYvz+hlTRh+ohDc1NC4PGcxmFA6+1dXoOPfvfNVLdiCz7BOQWkTVdP?=
- =?us-ascii?Q?uN2S83d4TUvBgb7VU49vT7VH6pDA/adI9MI4GC/b+87Fy14fDnJk+v5WZreJ?=
- =?us-ascii?Q?sqorzMLAI5J5HSqwZTso5WmOWtA1E8ZyivKADJf2DrN+iQ2TpjnzrRfaVR4k?=
- =?us-ascii?Q?rU1n1YFm/Cfps3iAVxe6W8dDoqDgO+bkgx1630uAOj9jBAKNneNqV3b2kVE9?=
- =?us-ascii?Q?JWalarPcun03AqnNwd4tBhsIjk2P9BDChFvSxqk+oc/Hz6trMiv7wnnHuD5F?=
- =?us-ascii?Q?YmUxfDb75mDXU8bRqUjnxf2BC/yfpozYE26TK4CoyXoeFElujREBcvM9mpqs?=
- =?us-ascii?Q?ZHo6Dlk/dsVzrVbscIAkKEJ/RORlpKq6rFwnbsaGXm3DrBqsJ++otBbIu3qO?=
- =?us-ascii?Q?SFv47PaQt7YXeOmIZvCsNcJ1QzhY/fFKx+9YoiOLlZeRAqRMLlFhb+9D+4Bf?=
- =?us-ascii?Q?8LYG1XWtpl0DftyWQZMUx9j4+mxzMz3g0pPFASYs6Vq112emmeEcPhbEMfc/?=
- =?us-ascii?Q?+45mm55VIY9xAluizg4oCux1uBaA3GVGmwYazrvSOaDk1ddSLFjW7EaUxOmT?=
- =?us-ascii?Q?Lg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	7r6QwW7/bTS+SiFWaosWErb2xIYuMe1XTxRgHzppiAOzlz73dEafzCnzAg3HinKN/N9QeOzvvv34rhDfsK/HPvun2EWV2e5RkKsqKzY/39et9IrclCO8o2Ar2TBEnkkBdusAemkBJU9VOaoGg33F0QKCtN3BsutpPn4Sl2ngLxBR0PM4/AcAKlTVfGFCBDqSKfUJ/uDfam7IEuINATczZ2ivmgVhkZ2cppCtvWpIst4PiFNp9g/0BDY5shTJdZ65OZGhWJY2t2WxGK0Ieq4NzDX3q95FbCIv36dYwG197IMUeShj6n4yW94mXCCY51jkjzvfKYGw/XCemUBem1Q15NuSvQt43aTlnJ+fUgacsI+Zog8XzuvYWc48pGMMZEyjrnfyLU+R+X5O10J1upVxTDkNn108QypOrC8ldP5pjbKy0CkkRec0eI4G0T8tub+3j3BADDsorjaHtQZ9hAMunsLEjRunJZaqbKXxywL+YQsy2cL2h3b6MrJnRSo9K6llT30S2AHuFCbWIOgOi+GZDfD5+FPMeKOwn4/gBfGAOs5LGziUxbS15Km3ObfKy/pDrAoNsj0ivF0oiNS4WWELTEMZrQskhPPPfGmnby44X+g=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ef65959-5167-457d-34e8-08dc50d62cc3
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?4NJclBQVdsKx0sCFFCebi1WuCsj8ESu1O1q+hwUCQmYfk3742ZFAm3BOSfT4?=
+ =?us-ascii?Q?1QW7CgUKGaRVcQPJq8MJpMs6L2MFtY55rc2tJrgTffJ3T2EHR4bXlQE6rXWi?=
+ =?us-ascii?Q?nj4zL+RztS5cKrCCAEMhoDXFNRL0Te6ish3DqH3pzXIz+3ABOPLMfUp3t5CN?=
+ =?us-ascii?Q?V7vLx3Abus/HAqDpEn/xzVV1KEst5JIJdJr0Gs4umTLnC7rESIE9hQxdrF/j?=
+ =?us-ascii?Q?BbDi34SdF7B3/YmvYqdPTTuEljTM1TJ2aa09NP6+TKLBt69ckAUwNq5IL3Fm?=
+ =?us-ascii?Q?6DsLoOwybOuaICzsAkTQhzK6eI/MxbkTiARJQk0WJNRRbp+/ZEPacNFTmlkT?=
+ =?us-ascii?Q?L9WSDnpIL0IU47QN5c66xw971FQiXg73NG5yG5FVSgWo4K+EeV0GcDlbcisx?=
+ =?us-ascii?Q?E5b7FDWw7OKLHOvRC3Fzm2jf/clllcfRwV5AiHczCvkwuwmLVn18V4xSMIXD?=
+ =?us-ascii?Q?45bxjT4X+TPtUXdNUd8w7IpmvdNhHBYFddJpl73YpQUfe0lHHuc6IDoTxK4a?=
+ =?us-ascii?Q?LyJPF534TmK9OVNivUZnXIcSrknYS/LjkkIUM3kpBdOaLEy92lVZW4iZNGyP?=
+ =?us-ascii?Q?CJYqNc+YnAbs+xR5qG0809FZaYBIqOjRkNqSfk4p8hqFk+5VPiJWzB2oMpbH?=
+ =?us-ascii?Q?D3YWgDRFBtddtzHxiequRc2Ga8zhGHRPuzo/IhUrXj+/KyK2bx/s0Zupltc/?=
+ =?us-ascii?Q?O/lSb6YxJ1apZgz+cmMavd49oL5feZTfZVoKFyD+TTRqyDawJfFIJVfqJcnJ?=
+ =?us-ascii?Q?kTiSMaKg5MiJZnEbmo/iV8s/Q5msYUtWfg3wg5DuxW5qt33vGjqSNw6pLptu?=
+ =?us-ascii?Q?4SpL8yjIT2w5vXGdic9+ABpEwRuawKppq/sJ4eZrayUcH5qbv/E9gbtGKU3A?=
+ =?us-ascii?Q?VQN5pFHgyij/zYe7u78oc5+iieV3mKh46vdEzuAqcsdSs/SjacXGpVfnGpi8?=
+ =?us-ascii?Q?Mneb6IJiTQddoJjxaBY2qz7bqe5NwkAJ2bfFtDKDIyCbGugO4tuHTmczJ+o0?=
+ =?us-ascii?Q?2Kza+noQeOMnCDtyK8OXOwr7qP0jTzSrusvipCcsf2qAGMu9b6qyO7Wo11wn?=
+ =?us-ascii?Q?HZKnpFehJJZs1jVKTQ7iee5OxZgt+uP+jBRAZljgc1iMV3Rc6eVJZTFl2B1r?=
+ =?us-ascii?Q?H7uSZSUfrL4XJkyy7jAHcE3/jBWQoevePBWA8TujaEv4QnV6folpADXbHKE+?=
+ =?us-ascii?Q?B6rHLZqPAfI56pfC1QTwijd2Fni+0cYbxEfsphlYbneIGeljo3PZK3TFRMBr?=
+ =?us-ascii?Q?ezNGy7vPeSVumK1sgCmp?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 238f528d-c2d5-4729-3f14-08dc50d75f20
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 16:26:38.6246
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 16:35:12.5244
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: udFpAWtnjNc23OQN9DnRyK+dR/OdL/bYGo2cblkrNBautecixsCl2oO4srZDp3as4fHl/TkVzDPADQPZuY+ICw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4164
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-30_11,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403300134
-X-Proofpoint-ORIG-GUID: nk0UnUne2m7iGUfGtIu1WZM9-bdUeBhX
-X-Proofpoint-GUID: nk0UnUne2m7iGUfGtIu1WZM9-bdUeBhX
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB6804
 
-On Sat, Mar 30, 2024 at 04:26:09PM +0100, Jan Schunk wrote:
-> Full test result:
-> 
-> $ git bisect start v6.6 v6.5
-> Bisecting: 7882 revisions left to test after this (roughly 13 steps)
-> [a1c19328a160c80251868dbd80066dce23d07995] Merge tag 'soc-arm-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-> --
-> $ git bisect good
-> Bisecting: 3935 revisions left to test after this (roughly 12 steps)
-> [e4f1b8202fb59c56a3de7642d50326923670513f] Merge tag 'for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost
-> --
-> $ git bisect bad
-> Bisecting: 2014 revisions left to test after this (roughly 11 steps)
-> [e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9] Merge tag 'riscv-for-linus-6.6-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux
-> --
-> $ git bisect bad
-> Bisecting: 975 revisions left to test after this (roughly 10 steps)
-> [4a3b1007eeb26b2bb7ae4d734cc8577463325165] Merge tag 'pinctrl-v6.6-1' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
-> --
-> $ git bisect good
-> Bisecting: 476 revisions left to test after this (roughly 9 steps)
-> [4debf77169ee459c46ec70e13dc503bc25efd7d2] Merge tag 'for-linus-iommufd' of git://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd
-> --
-> $ git bisect good
-> Bisecting: 237 revisions left to test after this (roughly 8 steps)
-> [e7e9423db459423d3dcb367217553ad9ededadc9] Merge tag 'v6.6-vfs.super.fixes.2' of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs
-> --
-> $ git bisect good
-> Bisecting: 141 revisions left to test after this (roughly 7 steps)
-> [8ae5d298ef2005da5454fc1680f983e85d3e1622] Merge tag '6.6-rc-ksmbd-fixes-part1' of git://git.samba.org/ksmbd
-> --
-> $ git bisect good
-> Bisecting: 61 revisions left to test after this (roughly 6 steps)
-> [99d99825fc075fd24b60cc9cf0fb1e20b9c16b0f] Merge tag 'nfs-for-6.6-1' of git://git.linux-nfs.org/projects/anna/linux-nfs
-> --
-> $ git bisect bad
-> Bisecting: 39 revisions left to test after this (roughly 5 steps)
-> [7b719e2bf342a59e88b2b6215b98ca4cf824bc58] SUNRPC: change svc_recv() to return void.
-> --
-> $ git bisect bad
-> Bisecting: 19 revisions left to test after this (roughly 4 steps)
-> [e7421ce71437ec8e4d69cc6bdf35b6853adc5050] NFSD: Rename struct svc_cacherep
-> --
-> $ git bisect good
-> Bisecting: 9 revisions left to test after this (roughly 3 steps)
-> [baabf59c24145612e4a975f459a5024389f13f5d] SUNRPC: Convert svc_udp_sendto() to use the per-socket bio_vec array
-> --
-> $ git bisect bad
-> Bisecting: 4 revisions left to test after this (roughly 2 steps)
-> [be2be5f7f4436442d8f6bffbb97a6f438df2896b] lockd: nlm_blocked list race fixes
-> --
-> $ git bisect good
-> Bisecting: 2 revisions left to test after this (roughly 1 step)
-> [d424797032c6e24b44037e6c7a2d32fd958300f0] nfsd: inherit required unset default acls from effective set
-> --
-> $ git bisect good
-> Bisecting: 0 revisions left to test after this (roughly 1 step)
-> [e18e157bb5c8c1cd8a9ba25acfdcf4f3035836f4] SUNRPC: Send RPC message on TCP with a single sock_sendmsg() call
-> --
-> $ git bisect bad
-> Bisecting: 0 revisions left to test after this (roughly 0 steps)
-> [2eb2b93581813b74c7174961126f6ec38eadb5a7] SUNRPC: Convert svc_tcp_sendmsg to use bio_vecs directly
-> --
-> $ git bisect good
-> e18e157bb5c8c1cd8a9ba25acfdcf4f3035836f4 is the first bad commit
-> commit e18e157bb5c8c1cd8a9ba25acfdcf4f3035836f4
+This is an effort to get rid of all multiplications from allocation
+functions in order to prevent integer overflows [1] [2].
 
-This is a plausible bisect result for this behavior, so nice work.
+In this case, the memory allocated to store RADEONFB_CONN_LIMIT pointers
+to "drm_connector" structures can be avoided. This is because this
+memory area is never accessed.
 
-David (cc'd), can you have a brief look at this? What did we miss?
-I'm guessing it's a page reference count issue that might occur
-only when the XDR head and tail buffers are in the same page. Or
-it might occur if two entries in the XDR page array point to the
-same page...?
+Also, in the kzalloc function, it is preferred to use sizeof(*pointer)
+instead of sizeof(type) due to the type of the variable can change and
+one needs not change the former (unlike the latter).
 
-/me stabs in the darkness
+At the same time take advantage to remove the "#if 0" block, the code
+where the removed memory area was accessed, and the RADEONFB_CONN_LIMIT
+constant due to now is never used.
 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+Link: https://github.com/KSPP/linux/issues/160 [2]
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
+---
+Changes in v2:
+- Rebase against linux-next.
 
-> I found the memory loss inside /proc/meminfo only on MemAvailable
->  MemTotal:         346948 kB
-> On a bad test run in looks like this:
-> -MemAvailable:     210820 kB
-> +MemAvailable:      26608 kB
-> On a good test run it looks like this:
-> -MemAvailable:     215872 kB
-> +MemAvailable:     221128 kB
+Previous versions:
+v1 -> https://lore.kernel.org/linux-hardening/20240222180431.7451-1-erick.archer@gmx.com/
+
+Hi everyone,
+
+Any comments would be greatly appreciated. The first version was
+not commented.
+
+Thanks,
+Erick
+---
+ drivers/gpu/drm/radeon/radeon.h         | 1 -
+ drivers/gpu/drm/radeon/radeon_display.c | 8 +-------
+ 2 files changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
+index 3e5ff17e3caf..0999c8eaae94 100644
+--- a/drivers/gpu/drm/radeon/radeon.h
++++ b/drivers/gpu/drm/radeon/radeon.h
+@@ -132,7 +132,6 @@ extern int radeon_cik_support;
+ /* RADEON_IB_POOL_SIZE must be a power of 2 */
+ #define RADEON_IB_POOL_SIZE			16
+ #define RADEON_DEBUGFS_MAX_COMPONENTS		32
+-#define RADEONFB_CONN_LIMIT			4
+ #define RADEON_BIOS_NUM_SCRATCH			8
+ 
+ /* internal ring indices */
+diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
+index efd18c8d84c8..5f1d24d3120c 100644
+--- a/drivers/gpu/drm/radeon/radeon_display.c
++++ b/drivers/gpu/drm/radeon/radeon_display.c
+@@ -683,7 +683,7 @@ static void radeon_crtc_init(struct drm_device *dev, int index)
+ 	struct radeon_device *rdev = dev->dev_private;
+ 	struct radeon_crtc *radeon_crtc;
+ 
+-	radeon_crtc = kzalloc(sizeof(struct radeon_crtc) + (RADEONFB_CONN_LIMIT * sizeof(struct drm_connector *)), GFP_KERNEL);
++	radeon_crtc = kzalloc(sizeof(*radeon_crtc), GFP_KERNEL);
+ 	if (radeon_crtc == NULL)
+ 		return;
+ 
+@@ -709,12 +709,6 @@ static void radeon_crtc_init(struct drm_device *dev, int index)
+ 	dev->mode_config.cursor_width = radeon_crtc->max_cursor_width;
+ 	dev->mode_config.cursor_height = radeon_crtc->max_cursor_height;
+ 
+-#if 0
+-	radeon_crtc->mode_set.crtc = &radeon_crtc->base;
+-	radeon_crtc->mode_set.connectors = (struct drm_connector **)(radeon_crtc + 1);
+-	radeon_crtc->mode_set.num_connectors = 0;
+-#endif
+-
+ 	if (rdev->is_atom_bios && (ASIC_IS_AVIVO(rdev) || radeon_r4xx_atom))
+ 		radeon_atombios_init_crtc(dev, radeon_crtc);
+ 	else
+-- 
+2.25.1
+
 
