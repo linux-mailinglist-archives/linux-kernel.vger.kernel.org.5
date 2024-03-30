@@ -1,119 +1,116 @@
-Return-Path: <linux-kernel+bounces-125750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38D8A892BA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:56:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A016892BA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 15:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1EE2282C30
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:56:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EC9D282CA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 14:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D60383A1;
-	Sat, 30 Mar 2024 14:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D0238389;
+	Sat, 30 Mar 2024 14:59:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ZjG4kDdv"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="iAh+n0oQ"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC981C0DD5;
-	Sat, 30 Mar 2024 14:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C745137714;
+	Sat, 30 Mar 2024 14:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711810552; cv=none; b=kBPAq2GmPn5VEpxqE9LWkBpupDoU2I5UbhWf26TMrFoPNwwH2uvlpasFxVR8CCXDeQOALxh6gLAzC7jhC1Uq0amh9w/lqOcg4h2HIheOu8bzIkLlxoJqy34idxouaG5KLXiUCy5W2EFvpa12F6fMcch0y3I3arBy5e3d5KAROxU=
+	t=1711810768; cv=none; b=hr6ZVuT1mPRz6gQKoxXHnZdRsMtQmTEkYIKYrAVpNFqp+vEDiW/84rYmUOPk+McH82MGs6gJYBSrCPnr3nQ4UxuczHPGMYp6y1AczUB8rljxzTp+D5KITbBgGm4hS9KD7AHtJQnO0MDKdw5shfvSnbjooilxQ4e5dEDN0T20KAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711810552; c=relaxed/simple;
-	bh=Bu98VYPJpdmrwrEz8b1VMmazgKsb+agiRZbtiMnaTQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ghCMwNSPOR3s2BmSONAE7n6buJC66KW+qWnzV7AuoEtLT5+16GWHm886qJ+MMtLKs6NMcBNx8AtLL8/HqA1bAy7TGrAQbQlRPKa1T5Kkr9i0vAMtyANfWfIuaFSYT+du2kiDGggJjSqjfMYZu56GiPdc1YwQOPHjVJmUlBg2CeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=ZjG4kDdv; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=i/6JfkfliaNMfwhDGWlvIXAGN6NTlYUrDkhzdTnQte4=; b=ZjG4kDdvIpKXA5GJPbn7sy969m
-	ocfEnE7p6HBX6JZF80QePZXJGeRsYeDtNQ6eHpTkDmtfX8QkZ7B2K5AD071vJS/pZGiwyl9p47OU2
-	Imq1mLdmDAs4/36hiFZXMWJbUpikGpAgMdZzi15kUkF3iBb8jcWDqA/Gnz7dOA5q0GqQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rqa7S-00Bj3E-0y; Sat, 30 Mar 2024 15:55:42 +0100
-Date: Sat, 30 Mar 2024 15:55:42 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Naveen Mamindlapalli <naveenm@marvell.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-	David Ahern <dsahern@kernel.org>, Simon Horman <horms@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	=?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: [PATCH net-next v1 5/9] net: dsa: microchip: add support for
- different DCB app configurations
-Message-ID: <4380faf1-9911-4188-9982-a7060e143394@lunn.ch>
-References: <20240328160518.2396238-1-o.rempel@pengutronix.de>
- <20240328160518.2396238-6-o.rempel@pengutronix.de>
- <SJ2PR18MB56358EDD37EA961C7004CB27A23A2@SJ2PR18MB5635.namprd18.prod.outlook.com>
+	s=arc-20240116; t=1711810768; c=relaxed/simple;
+	bh=rZ8tdPh1C+hRTf8PLer5uxXElPXls2N8CqlXiFribAc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i/yOWNo99Y8phvLoG13KqSPAG1kIz5nPGvS6aOzc50w0FgDqqWc90y5LhF1k6pCfur87YDZW3P9LshAU0F3jhY03nIar9b+NWPwyG9d8MF2ghQqrtyybHs8z6gOx/VPUteOMqpsRIVlbjfF7AcATDGCWPBm68q59mSHmIGTswfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=iAh+n0oQ; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=ZkD5ajmB6EjozrfKJAzN2VG60x9g0fXxfM+nKI7AEdo=;
+	t=1711810765; x=1712242765; b=iAh+n0oQcXBg7bwAUUS/CsjAaMIrT3XpLCgS+D1Pxiqsk9W
+	8brHSJjjf7ETVnAPwqxb1daxFaAY1R6fmJZtcxFwILzFuSFKv+sY6qR7X36zitq2ZuO23auRWDpCk
+	RnmtR9Iyl/G6PZvm37+M1bwxZRp7t191z52k+eoXm74Tr9gGwmM6oM7mY5HuHRqFsjoxft6HIwXll
+	ryng6/qv26fua9Ad3ryI4dGNEwmznYQE/TYHDwQQ44AM7Qnje6NCkI5OogQGJwGrkGSpL/s7GrrBN
+	+XUi+A4xXmkHDOu25m6QVa0nwku24MzIra49BUGppBkqDpz2bIQ+aLrkjpS/Nmtw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rqaB0-0001NX-O7; Sat, 30 Mar 2024 15:59:22 +0100
+Message-ID: <bf267566-c18c-4ad9-9263-8642ecfdef1f@leemhuis.info>
+Date: Sat, 30 Mar 2024 15:59:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ2PR18MB56358EDD37EA961C7004CB27A23A2@SJ2PR18MB5635.namprd18.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Bluetooth broken for some people with 6.8.2 [Was: [PATCH 6.8 308/715]
+ Bluetooth: hci_core: Cancel request on command timeout]
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20240324223455.1342824-1-sashal@kernel.org>
+ <20240324223455.1342824-309-sashal@kernel.org>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <20240324223455.1342824-309-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711810765;f882f0bc;
+X-HE-SMSGID: 1rqaB0-0001NX-O7
 
-On Fri, Mar 29, 2024 at 09:29:32AM +0000, Naveen Mamindlapalli wrote:
+On 24.03.24 23:28, Sasha Levin wrote:
+> From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 > 
-> > +int ksz_init_global_dscp_map(struct ksz_device *dev) {
-> > +	int reg, per_reg, ret, dscp;
-> > +	u8 data = 0;
-> > +	u8 mask;
-> > +
-> > +	/* On KSZ9xxx variants, DSCP remapping is disabled by default.
-> > +	 * Enable to have, predictable and reproducible behavior across
-> > +	 * different devices.
-> > +	 */
-> > +	if (!is_ksz8(dev)) {
-> > +		ret = ksz_rmw8(dev, KSZ9477_REG_SW_MAC_TOS_CTRL,
-> > +			       KSZ9477_SW_TOS_DSCP_REMAP,
-> > +			       KSZ9477_SW_TOS_DSCP_REMAP);
-> > +		if (ret)
-> > +			return ret;
-> > +	}
-> > +
-> > +	ksz_get_dscp_prio_reg(dev, &reg, &per_reg, &mask);
-> > +
-> > +	for (dscp = 0; dscp < DSCP_MAX; dscp++) {
-> > +		int ipv, shift;
-> > +
-> > +		/* Map DSCP to Traffic Type, which is corresponding to the
-> > +		 * Internal Priority Value (IPV) in the switch.
-> > +		 */
-> > +		if (!is_ksz8(dev)) {
-> > +			ipv = ietf_dscp_to_ieee8021q_tt(dscp);
-> > +		} else {
-> > +			ipv =
-> > ieee8021q_tt_to_tc(ietf_dscp_to_ieee8021q_tt(dscp),
-> > +						 dev->info->num_tx_queues);
-> > +		}
+> [ Upstream commit 63298d6e752fc0ec7f5093860af8bc9f047b30c8 ]
 > 
-> No need for braces for single statement.
+> If command has timed out call __hci_cmd_sync_cancel to notify the
+> hci_req since it will inevitably cause a timeout.
+> 
+> This also rework the code around __hci_cmd_sync_cancel since it was
+> wrongly assuming it needs to cancel timer as well, but sometimes the
+> timers have not been started or in fact they already had timed out in
+> which case they don't need to be cancel yet again.
+> 
+> Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+> Stable-dep-of: 2615fd9a7c25 ("Bluetooth: hci_sync: Fix overwriting request callback")
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Please trim the email when replying. It is very easy to miss comments
-when it is 99% quoted text with a couple of one-liners mixed in.
+Hey stable team, I wonder if it might be wise to pick up 1c3366abdbe884
+("Bluetooth: hci_sync: Fix not checking error on
+hci_cmd_sync_cancel_sync") from next
+(https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=1c3366abdbe884)
+for the next releases of all series that a few days ago received
+63298d6e752fc0 ("Bluetooth: hci_core: Cancel request on command timeout").
 
-     Andrew
+The latter patch sadly on quite a few systems causes a Oops due to a
+NULL pointer dereference and breaks Bluetooth. This was reported for
+mainline here (yes, coincidentally it was reported by yours truly):
+https://lore.kernel.org/all/08275279-7462-4f4a-a0ee-8aa015f829bc@leemhuis.info/
+
+Now that the patch landed in 6.8.2 it seems to happen there as well
+(guess in 6.7 and others, too), as can be seen from this bug report
+where multiple people already joined:
+https://bugzilla.kernel.org/show_bug.cgi?id=218651
+
+The fix mentioned above is on the way to Linus, but due to unlucky
+timing missed this weeks network pull, hence will likely only reach
+mainline next Thursday. But the fix afaics has a stable commit id, so
+might be worth picking up soon for the stable releases to fix the
+regression quickly.
+
+Ciao, Thorsten
 
