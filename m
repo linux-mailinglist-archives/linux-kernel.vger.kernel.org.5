@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-125709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C55C892AE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:44:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 956C1892AEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:46:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57A211C213CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:44:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02E2DB219FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52DF93613C;
-	Sat, 30 Mar 2024 11:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD98364AA;
+	Sat, 30 Mar 2024 11:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s0LvtH9+"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n5h/uOFr"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9ED02C859
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42592C859
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711799054; cv=none; b=WGYtaM8HkFCNzBYuYTKrPckg0icaBbBRjypD4O+4ndrcfJ5DB1hbA11TWSwvkXJU/ofQZ3jOG38NNlxmULGzAllX5C09zYspI5e5XtnVbA/v9D2MetAxEIDJqy5AI/v0fL4x4xBTl3wpQCppUuzyFB4A85p6Y9pfE1rKeSOzMUQ=
+	t=1711799191; cv=none; b=S3XJO9rdW5AqdCGuW9Ke/mD7CAWM/cn4+6y5UBiPGsla/aBNAG5kDXq983zSlVPm9q7aChOdXPc8ceLU9Roc74Jku3NM7wyXLab+fv1ccoCIxluPkCxkn5IOamd9WXAIuNk5EYAFU5+dwMziA3Yvxy3+0m6lMpvhqa+iJkl0Sho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711799054; c=relaxed/simple;
-	bh=8A+pauLLdu9ortoCdhLHNwVXet+cX4XYFdSvIsGFBNE=;
+	s=arc-20240116; t=1711799191; c=relaxed/simple;
+	bh=nDnJp8XF/zw1aA5vl1kh4mTSuUfliiJCeQP1o73zw88=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s5YyCDqaQqL/8t3Un6FrPIcYMNop+WkOxKIfjDk/9TyX0b+ZVfjwXBQrbp7FVMDlkdXRh4iPsoGfmcBzHwkFNd8PHQQ1D2fQ5r2IHOH/5VrJyFDFxorUR7vlA5aYDmAD0p5qVvfQVGVItp2ySB4f08ZQvK24ERC/Izm4xdgMvTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s0LvtH9+; arc=none smtp.client-ip=209.85.221.43
+	 In-Reply-To:Content-Type; b=H4IDpiPijCp3w/En/jamKU/nzwKoksxrlvhHfVzMOjh4wlhFza4R0rd2ut3GuAwjpMqAXlGzyoWrSftW45mKQURkWcGEzOBNlSC8P1YlKJqRC3hjKGA/zt34pcrnJOkFhiGeMs7Sz5gNxC26C74c+3xVYwCEQ4Z35/nS6CeQ17Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n5h/uOFr; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ff53528ceso1892895f8f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:44:12 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-341730bfc46so1926793f8f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711799051; x=1712403851; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711799188; x=1712403988; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUQSDUjX5Qbjbkbx4wWFpeT38z3Mys9umny2lue/UN8=;
-        b=s0LvtH9+4DRMjrkODVRWuBd9+nG0D+E14lFQKRv7i58IiT2xrfnIHT7IWgnYhRc+Mu
-         cXJGnzoMuUo8IN9Hn5rnkidP2naQ2NN8Ony199ImEvRw9GMObJ0vPMAzkPeu13Gg36bB
-         4tntTd3VBBJDVQb4h4ot75AlfOY+CByvqzaTt19qLHZAZA6sL43CxSxESlUFMlT2h8Sy
-         4iozNOprXgTju5K/d4KXNleQZi1gAus9S1fM7rWiIrLSjrn2a73cNUMSrtiAhI/hlz20
-         R6421fmSnQgJB0isMBB4aKqfrIPmuNeCihSRxVYVZGd3o2PGHJ3qy9dYYu2gjLwhdgBs
-         r3nA==
+        bh=flb2sceZGeMo+7mqoXsVVwFaBDIsSMNyF6H27QzTvtk=;
+        b=n5h/uOFrAq/kmUY4tR1ww11BeSZFHRsHihogxJZJkq8cofGPZFx+laxM165ihBKhfW
+         ZlfhTYrI+KKiQIQxdx18hvpEh3HGo8BMhpFSoiSVHCFqgSVWafiBGsPLIiw1GwJ28q4V
+         coATt/lGg5Y6leCvDfFRe0ruTXauTH81ZJr+5Xwv5AUrEgGCmn6EdKCQBtsifq0DMLPT
+         I3cIxEofjAYnWEIBizjA3O5lfHNFg+/nJaqiPqeIwiQEd3SiiA3cWjkEi1Z6DdF0Bxud
+         xkv6CKneRbaaLn6ytb7kSb738Wo7MkS7tfv+gMdgpXrBOQ3RrGXuVh5H7VQJBMtgxvHP
+         FSlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711799051; x=1712403851;
+        d=1e100.net; s=20230601; t=1711799188; x=1712403988;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lUQSDUjX5Qbjbkbx4wWFpeT38z3Mys9umny2lue/UN8=;
-        b=X5q63sBni1PdIZn4Y59WcE42VZauqfr2T306Uto/2ekVYhGvBSyL/9RMZPwxbi2SKU
-         GExL4bk/CrbHq1Hw7sorE58H+zoxOXMQVOhOitwHt8wJRslSN9oJ+GkyOKQ1yvwSp9hR
-         xgYPRxG+QRvCpIgabcNNYAZP8MbRFSQUiNnyaSd7WDgubdiO7HWIlSYh5ejZjN2eqEwg
-         0gB4g5yHYyh1MvIslgIS8IykFDIXl2bKT9VPzOHE86pYFG53Rth4w9Qtf33zgyy87y8U
-         837ZFiRjTkYMnyF5YzD2bnZsSZOAztOEt2IWboSw04eZdrnTQRV4D2rk2VdUKMnZ2lxN
-         E3cA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTkxADebOaP3dL1BSVAg6qLnY9fT9fXeH3W2O9qdnbYgC0FjkF1GCpbj6nB4GR+69INHuLpa/KzR8HW/2MNiA3WKngB2/7u8WGAl9b
-X-Gm-Message-State: AOJu0YxwW+3mz1fFg1MkYvv/tOLl1QFSpypL9X/HbJdFse6nCWfiHtDR
-	0IkrsJ63cLj0Xu3RXgJ0+gg/Sa7y5fiocH4YyvVFll+uujOwUBjM+OrZL7a26Xk=
-X-Google-Smtp-Source: AGHT+IGXR9keHiKX5jO4/kubxAnND6h/MxycvZi1P6MlNLbtgbrultnIUOj+1wR7Dt/x+h8lpoXVbg==
-X-Received: by 2002:adf:f704:0:b0:33e:75e4:d410 with SMTP id r4-20020adff704000000b0033e75e4d410mr2836971wrp.22.1711799051057;
-        Sat, 30 Mar 2024 04:44:11 -0700 (PDT)
+        bh=flb2sceZGeMo+7mqoXsVVwFaBDIsSMNyF6H27QzTvtk=;
+        b=nQ1luyl4d0NXNBmXBA5OEGqQh+9yeUkwZEDhK4S0PmYpo8inZk/yPahxZVPbY37c7v
+         nkwRq36wa2WmTG7KIPpDQoe2jgd+gRu5OniUg0KuMFVbrhDOwpssiekxl5KdRFEuA4DJ
+         ZNaxRdaFQd/mkrulABDRqVDWBYSl6Dm0HJ8vYCs2YUxuoaIdpJYMDjpNxSCDVntqlDTG
+         1+2psyQiGsksixdsCjUwChcTS/SOouj1QGg4ccl0H+6ZkbDiklk3mINdWClnQFCT9YF5
+         a4wVN0bPe/wOPNjMzz8zonIiZSGBBMsuAshHjoPK5Asowp5DYprJ4oPzyOJ1hBQsYF6/
+         rTvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVxxZJzYITfLA8NCdXNRGUqwQxmwp/uTKZ+Y48Q69A3iklcAhYWxCBqkQIjUDnm2W4qfGWzz55p5XXTT4drFTh2cfiMSsRwZbr6+KUv
+X-Gm-Message-State: AOJu0YxZpFEw1QYxshSAxP6qbGtf7/ZXaOE8uv26AOwUOn+6MXQ6h3No
+	zHvqlTRAq1jmoaHiDjWn2eeDn6hnwORCeFObIMOu4+fi81hSj0tAg+SBVPzsM/Y=
+X-Google-Smtp-Source: AGHT+IE1gEdHicUgGPo2BqNk4UwXpeuxHhKW55jxUbvv1GvwuzjIBRq3/NYcBvcrjImp6KgUE/fodQ==
+X-Received: by 2002:a05:6000:1743:b0:33e:4969:f05a with SMTP id m3-20020a056000174300b0033e4969f05amr2683763wrf.37.1711799188247;
+        Sat, 30 Mar 2024 04:46:28 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id y13-20020adfe6cd000000b00341cfa5f16fsm6285631wrm.30.2024.03.30.04.44.09
+        by smtp.gmail.com with ESMTPSA id d8-20020adfef88000000b0033ed7181fd1sm6267909wro.62.2024.03.30.04.46.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 04:44:10 -0700 (PDT)
-Message-ID: <2108f044-0336-4b80-91c7-52714c82f887@linaro.org>
-Date: Sat, 30 Mar 2024 12:44:09 +0100
+        Sat, 30 Mar 2024 04:46:27 -0700 (PDT)
+Message-ID: <d6b0f9d2-a489-4c0e-9c77-0e3eab49d3cb@linaro.org>
+Date: Sat, 30 Mar 2024 12:46:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,8 +76,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] dt-bindings: arm: msm: Add llcc Broadcast_AND
- register
+Subject: Re: [PATCH v4 2/5] soc: qcom: llcc: Add regmap for Broadcast_AND
+ region
 To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
  Bjorn Andersson <andersson@kernel.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
@@ -86,7 +86,7 @@ To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
 Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, kernel@quicinc.com
 References: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
- <20240329-llcc-broadcast-and-v4-1-107c76fd8ceb@quicinc.com>
+ <20240329-llcc-broadcast-and-v4-2-107c76fd8ceb@quicinc.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -133,40 +133,40 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240329-llcc-broadcast-and-v4-1-107c76fd8ceb@quicinc.com>
+In-Reply-To: <20240329-llcc-broadcast-and-v4-2-107c76fd8ceb@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 29/03/2024 22:53, Unnathi Chalicheemala wrote:
-> The LLCC block in SM8450, SM8550 and SM8650 have a new register
-> space for Broadcast_AND region. This is used to check that all
-> channels have bit set to "1", mainly in SCID activation/deactivation.
+> Define new regmap structure for Broadcast_AND region and initialize
+> this regmap when HW block version is greater than 4.1, otherwise
+> initialize as a NULL pointer for backwards compatibility.
 > 
-> Previously we were mapping only the Broadcast_OR region assuming
-> there was only one broadcast register region. Now we also map
-> Broadcast_AND region.
-> 
-> Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
 
+> +	struct regmap *regmap;
+>  	u32 act_ctrl_reg;
+>  	u32 act_clear_reg;
+>  	u32 status_reg;
+> @@ -849,7 +850,8 @@ static int llcc_update_act_ctrl(u32 sid,
+>  		return ret;
+>  
+>  	if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
+> -		ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
+> +		regmap = drv_data->bcast_and_regmap ?: drv_data->bcast_regmap;
+> +		ret = regmap_read_poll_timeout(regmap, status_reg,
+>  				      slice_status, (slice_status & ACT_COMPLETE),
+>  				      0, LLCC_STATUS_READ_DELAY);
+>  		if (ret)
+> @@ -1284,6 +1286,16 @@ static int qcom_llcc_probe(struct platform_device *pdev)
+>  
+>  	drv_data->version = version;
+>  
+> +	/* Applicable only when drv_data->version >= 4.1 */
+> +	drv_data->bcast_and_regmap = qcom_llcc_init_mmio(pdev, i + 1, "llcc_broadcast_and_base");
+> +	if (IS_ERR(drv_data->bcast_and_regmap)) {
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+I am pretty sure this breaks all users. Can you please explain how do
+you maintain ABI and that IS_ERR() is applied only for version >= 4.1?
 
 Best regards,
 Krzysztof
