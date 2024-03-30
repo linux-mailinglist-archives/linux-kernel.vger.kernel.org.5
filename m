@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-125896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1000892D83
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:35:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F6B892D86
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 22:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64FA5283A58
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:35:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F08B1B212B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA804C62E;
-	Sat, 30 Mar 2024 21:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61CE44F88A;
+	Sat, 30 Mar 2024 21:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JSkQ4rEh"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FE2gpGrp"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047A91DFC6
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02684E1D5
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711834543; cv=none; b=ccog+mZGdcIjlotH1ju2gIP+H8Ihe03fxFUhE4rASqbEAUuXyGOV6OARBR2a/ue+ukMJZEXif0R/51/PisvRQr7KCPTmLGbVNim/5k+zbSTPVubege281Lcw+fLzTw94RUeNV05FDMdKG9gJ1STLM78HBWz+k2BA+oTgfxL+gr4=
+	t=1711834554; cv=none; b=b7FLHTh4s5KJyGT/U4EW3C8rUKvo/8XbW15xZoW/Ldj2ZB8F8CXR9RWx0TCo/a98NqmsgnvLyRO7h1Q+ND/K5AkfFYKtNN8lnH9S/HOGTR8dIJ+Y19DfORrgncGvyXDsbD1yRzrgW6lNzkQZGIYg3Wge86P7hO76kHvxfnPeNF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711834543; c=relaxed/simple;
-	bh=A/4nTvH3zcKKDjwq9z7ISuECCM1K8A3A6bBgBipegtg=;
+	s=arc-20240116; t=1711834554; c=relaxed/simple;
+	bh=XGP/bsxmN4UA90jlZmkSiIF6HI+T7qPBdxxu9QCdFjI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lhwggt1Q7u+PTm50rqr0jpiDnPgBOKmFdevuB0Q9wuPRK6pZlQjVmloy5qWWkfRebugKpr0MjH47ARrNBeWtvHItAi3pRPhVqijUjO808hQs7BY8FUd10N3j46QWLytQN4PXyGDaKzEluE33+JFzMmHh5S+lX3RvXHgXm81iPL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JSkQ4rEh; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=uZvh3XkJIn35qzaxDGIlHNhGzRYSCjqfwQz9k78Cz5x4mG0aLHBAolrCiB7Ze9uRoohtZPKvgup+SgEcbrEsrmbsyZ80+rn4kDeCRHbiIvapx4UliYLo6PwJvOaTOtzrbKuROkk6/cjzopwOfYjQBGYlOabniJ2QgL1qeXhasBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FE2gpGrp; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711834541;
+	s=mimecast20190719; t=1711834551;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k6nhJ/n2fVMLTJ5orSzZrSN05UZkFdn1WgbErq3l2Pk=;
-	b=JSkQ4rEhAmsVeZHuSYL5XgrgNAt13SHnq30WYpbBo6nFSIhiqf0vtKADsEKaBU6OpGVLpQ
-	QDX2PzilH9CaTqvHEj9l8ryQdEGf/Tgw6oCc+JpP/bBlFa90eiL40fMPrYKiSpY28VeuVr
-	I/R0WttkS5b3uVoyvz/AgBrsOKNpSuI=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=R/YdumI8jd8jDImfb7MEXm8pAf+7owyDUrM2XftNAOY=;
+	b=FE2gpGrpWlnRIpXbWfocTT4UIYFVk24/FqG5zZimf7CIdtAnU/kIbb074rzBV4VNQquOeb
+	eTN3MbKMOVPS2ppvxfoagxAufdAKFn0UfYxkHQz7N30hayElSK0pLcXCFJKreU8cT+hWW4
+	70pBRDiWqHLwO0MhAJS60JlSC8hhBTE=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-TulHzr_5OgWLCaLKMpfrXA-1; Sat, 30 Mar 2024 17:35:39 -0400
-X-MC-Unique: TulHzr_5OgWLCaLKMpfrXA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-515bbb9a73aso2292533e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:35:39 -0700 (PDT)
+ us-mta-66-mkNfF_eMO-6IX7-uTbmq-g-1; Sat, 30 Mar 2024 17:35:50 -0400
+X-MC-Unique: mkNfF_eMO-6IX7-uTbmq-g-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-515c1948e73so2306242e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:35:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711834538; x=1712439338;
+        d=1e100.net; s=20230601; t=1711834548; x=1712439348;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k6nhJ/n2fVMLTJ5orSzZrSN05UZkFdn1WgbErq3l2Pk=;
-        b=GcPMMfkXq56SYLgMLVaoTFznA0YsHR7ZwCQhB1WbbcUB8I4+plNHYpzcbLzX8120s/
-         juvL1k7m7nQJsH3N/8VmXi7m7PYGgyfc7VTDz0kAaDSInp0iELAxaUVR96e6XRBLgecz
-         PwSqKfWTvSHaqUtv7ucJs88ESWF1/DuqfQxIg+fIL67zkZApg16yV0i5Bu6qgN8DxGGN
-         A/vQUDCGbEwhedqbftl8w96+N7+oWk//sl9MuPUj++jQDFPdx92ae71gLPleWQUdD1Gd
-         als/rv8D7OO/yZqscoZrJkTHSKzw7OgNuSyGHXdeTlU5gKeZGGGWThlyeOC/Jv+eyIN9
-         gbOw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGbr2aAbIhSFLUwf7Rao2KTehNv26xGMI4cS8oD+mFauDsHLHhTXa5YQVcm2Iro4N8olHuxY5IjrBYPnYK5PjVTEu3Ed109f+BWbod
-X-Gm-Message-State: AOJu0YzBxnxGLehy+JxKH/2lQLAaIRi40ZZbcTQkkw9JFwSEQKZ1yB02
-	c8jJDyMRPwzPX7S78f/cVwIp8r/+JtXelF3Rh/kIaauyKpCWs0P7lslRUKn0LfPRhXNwYbYOvkr
-	nmLxuXFk8otl8o8GKde2ds3nwKplUHqDWqrOW4TJArdl7Xy7mNp46ieTitGfjpg==
-X-Received: by 2002:a19:2d18:0:b0:513:b062:98c4 with SMTP id k24-20020a192d18000000b00513b06298c4mr3643244lfj.11.1711834538172;
-        Sat, 30 Mar 2024 14:35:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH5PGmEGHf24nUfF7B7vuwJRBVN0rKW1MZiU9RQdC6MVZb3TnEUgyIIaZghldmm9GaQfOSwZw==
-X-Received: by 2002:a19:2d18:0:b0:513:b062:98c4 with SMTP id k24-20020a192d18000000b00513b06298c4mr3643226lfj.11.1711834537752;
-        Sat, 30 Mar 2024 14:35:37 -0700 (PDT)
+        bh=R/YdumI8jd8jDImfb7MEXm8pAf+7owyDUrM2XftNAOY=;
+        b=XibPL1YT7C7WAHy76R2BNffFmAKXq7tS4GkdU7jlYD5NyTyafk9PfACl7Hn3jFgRov
+         Eu/Gt2HDNLI1zhBxauFdOJw7qdJ+IhtQgAHjQCWEP4FfItR4A0ph6qTBh0bsFO8nQCLh
+         boJk/wP5IrediBxEvZ0p1MP7BPe6STjykG10jomz1zS84ULjUkvmbBB9W8ArJOkYm2dS
+         wepwoevgsr34g16XRpAOviKeYv1JLIMYPU9o4eCgg4n5L/jaI4to02XXlNF4HT1OGQ05
+         HNsIgkbEuVI+EyqHiRqeWEmmIy86zclP6cdw6skT9jNOEGwogsGgay2cb6hTap+qh0aO
+         Lkug==
+X-Forwarded-Encrypted: i=1; AJvYcCUpZGruGvtSL/GRzzb/T9l9NEdlyPXCEPSxQp58gfVW2yTXYs3Fm0An24hPuTNlnIRLdQSrQRaCzpAWGinXnitsZhYQjW/v+HJXwwK6
+X-Gm-Message-State: AOJu0YxhKpBvOwa3o7UuzohVTOgan1vevOaRV+MzsvuUCnNUnrNpe/uC
+	D+q4iEuOd+EUyRD/EL7daw1o5qU2e2uGqU0A8JAf1JdH8jH52FlXFRnaLRT8uxrZd+Ksr2BjQaX
+	NmIKeRvlwGdfC2KaqNeLkTxAV6qmMXN9Ht8GHDfyLF4uXW/q6WkeV5IFucCL/qA==
+X-Received: by 2002:ac2:4256:0:b0:515:a5b1:1dd0 with SMTP id m22-20020ac24256000000b00515a5b11dd0mr3175194lfl.55.1711834548712;
+        Sat, 30 Mar 2024 14:35:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGtpVK74hYMJQRsbSNAOxNo0vPDNEDLKCnR39FTY23/i2sK1bKLUmtvrUTSb2GUD2WssCJO3g==
+X-Received: by 2002:ac2:4256:0:b0:515:a5b1:1dd0 with SMTP id m22-20020ac24256000000b00515a5b11dd0mr3175156lfl.55.1711834548253;
+        Sat, 30 Mar 2024 14:35:48 -0700 (PDT)
 Received: from [192.168.10.4] ([151.95.49.219])
-        by smtp.googlemail.com with ESMTPSA id w4-20020a1709062f8400b00a4e07f8b6bfsm3445434eji.59.2024.03.30.14.35.34
+        by smtp.googlemail.com with ESMTPSA id os26-20020a170906af7a00b00a465b72a1f3sm3494452ejb.85.2024.03.30.14.35.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 14:35:37 -0700 (PDT)
-Message-ID: <00800f4b-5403-4416-b984-12b207362a19@redhat.com>
-Date: Sat, 30 Mar 2024 22:35:33 +0100
+        Sat, 30 Mar 2024 14:35:47 -0700 (PDT)
+Message-ID: <abbe9937-7e0f-4fbd-be0b-488de07dd56c@redhat.com>
+Date: Sat, 30 Mar 2024 22:35:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 24/29] KVM: SEV: Avoid WBINVD for HVA-based MMU
- notifications for SNP
+Subject: Re: [PATCH v12 25/29] KVM: SVM: Add module parameter to enable the
+ SEV-SNP
 To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
 Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
  linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
@@ -96,9 +96,10 @@ Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
  vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
  tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
  alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com
+ nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
+ Brijesh Singh <brijesh.singh@amd.com>
 References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-25-michael.roth@amd.com>
+ <20240329225835.400662-26-michael.roth@amd.com>
 From: Paolo Bonzini <pbonzini@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=pbonzini@redhat.com; keydata=
@@ -136,48 +137,39 @@ Autocrypt: addr=pbonzini@redhat.com; keydata=
  JBrdmNZSQDz0iKmSrx8xkoXYfA3bgtFN8WJH2xgFL28XnqY4M6dLhJwV3z08tPSRqYFm4NMP
  dRsn0/7oymhneL8RthIvjDDQ5ktUjMe8LtHr70OZE/TT88qvEdhiIVUogHdo4qBrk41+gGQh
  b906Dudw5YhTJFU3nC6bbF2nrLlB4C/XSiH76ZvqzV0Z/cAMBo5NF/w=
-In-Reply-To: <20240329225835.400662-25-michael.roth@amd.com>
+In-Reply-To: <20240329225835.400662-26-michael.roth@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 3/29/24 23:58, Michael Roth wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> With SNP/guest_memfd, private/encrypted memory should not be mappable,
-> and MMU notifications for HVA-mapped memory will only be relevant to
-> unencrypted guest memory. Therefore, the rationale behind issuing a
-> wbinvd_on_all_cpus() in sev_guest_memory_reclaimed() should not apply
-> for SNP guests and can be ignored.
+> Add a module parameter than can be used to enable or disable the SEV-SNP
+> feature. Now that KVM contains the support for the SNP set the GHCB
+> hypervisor feature flag to indicate that SNP is supported.
 > 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> [mdr: Add some clarifications in commit]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
 
 Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
 > ---
->   arch/x86/kvm/svm/sev.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
+>   arch/x86/kvm/svm/sev.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
 > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 31f6f4786503..3e8de7cb3c89 100644
+> index 3e8de7cb3c89..658116537f3f 100644
 > --- a/arch/x86/kvm/svm/sev.c
 > +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2975,7 +2975,14 @@ static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
+> @@ -48,7 +48,8 @@ static bool sev_es_enabled = true;
+>   module_param_named(sev_es, sev_es_enabled, bool, 0444);
 >   
->   void sev_guest_memory_reclaimed(struct kvm *kvm)
->   {
-> -	if (!sev_guest(kvm))
-> +	/*
-> +	 * With SNP+gmem, private/encrypted memory should be
-> +	 * unreachable via the hva-based mmu notifiers. Additionally,
-> +	 * for shared->private translations, H/W coherency will ensure
-> +	 * first guest access to the page would clear out any existing
-> +	 * dirty copies of that cacheline.
-> +	 */
-> +	if (!sev_guest(kvm) || sev_snp_guest(kvm))
->   		return;
+>   /* enable/disable SEV-SNP support */
+> -static bool sev_snp_enabled;
+> +static bool sev_snp_enabled = true;
+> +module_param_named(sev_snp, sev_snp_enabled, bool, 0444);
 >   
->   	wbinvd_on_all_cpus();
+>   /* enable/disable SEV-ES DebugSwap support */
+>   static bool sev_es_debug_swap_enabled = true;
 
 
