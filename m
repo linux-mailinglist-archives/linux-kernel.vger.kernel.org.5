@@ -1,224 +1,119 @@
-Return-Path: <linux-kernel+bounces-125584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4CB9892909
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:35:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 923ED89290B
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1879F2833F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:35:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E3D8B22226
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC01C881F;
-	Sat, 30 Mar 2024 03:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764F87482;
+	Sat, 30 Mar 2024 03:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="KuELMr/f"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ikJq0UNv"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7D56FB9
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 03:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD15E6FCA;
+	Sat, 30 Mar 2024 03:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711769718; cv=none; b=ayPxamHwD1+HsdeLToejREDfykph13Fno+Mma1mPxqPLp6kLUUiO01E+H4W7pbIJBWMEaCrZA7mzlILBE+7PE5yu/lUXTzQvAxDZux0W94lPm19hoV0o/TxCrzYyIsCmJSsltmOSyAV0K2kLXyoPz9O2Rtg3B5DZFpYKGNsH38s=
+	t=1711770174; cv=none; b=GibU7U8kOG2IWmstob7vwNAVZKdLhylsKUoCb/eF+uiFizjx7f7VE+OThy9rowmhjmRzrvvV8jOp3pzf3JCbJyMmLjOUjF2WwQHoo3ZmdTPU8QR0XFSVhy9aef1fk7RudU3KCRql4Z35e4DYjHUsL8REgs22k2kreh8qX3o4744=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711769718; c=relaxed/simple;
-	bh=VpC0J23Jn0yxmT2wv6lawJLz4zGJD1QUQuuuKn67A+c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oUD2cIvvZEt+1lu8OPyf8CsUNYkh5PAq8FoSMCuT1Y9WJO7xPi2adsi4JMABeTX4dlLeWoHR/PbjxoZim3eKMRwtMDPmMnj8+LN5bmslFn4miQa4f0eGz7o6UoVJd3b76qQIDU36ePYO7dymIiJ0iK3BqTPkkfJM4uVjX2dTU4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=KuELMr/f; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29c7512e3b8so1998479a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:35:17 -0700 (PDT)
+	s=arc-20240116; t=1711770174; c=relaxed/simple;
+	bh=6LZDg9AGzn+18w9JxnNUfCqimi2ku7OLKcBAfPtPVho=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=LWcUKcw9UWbrbxX7aEspgoVwbX2fDE4hliEIKEHuEdppDaU8uMRvu6Acun1dMhmvuvN1msEluY/ZNdl/7rN+R+QYntMysan5S3NzE09LSk1TUVKBqlEps6gCUl4/7AHZ7dIxFK6Vg9TLOakWY6XI5ny+wWFMhR+6y/SIPzDelj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ikJq0UNv; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso1946660a12.0;
+        Fri, 29 Mar 2024 20:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711769716; x=1712374516; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nQY9GynfzjdgI1A44B4TVgDxB7Pe9LKkrSIu40Cboqk=;
-        b=KuELMr/fHUb3LuvaL1wmjrIgOwqE1VjwZmGWVIb/R4EP3rfDlpG9rREXcuMK40a7Zc
-         AGRk8zjmzqoSMSqGWWwRERmKZgpxbGVcxU8j5fZZH3SPYt58Dlz5MdUCRSLk2q8IR+sa
-         WzNm6wsAEdtmK3ukV19cG5+97BWl74qB/bct5O60IeFY9Re7csPxBasiMGBmPwLa06U8
-         TyuafFyvk0kZfhscsfXB0Kqortrcof2oQnv3Z01KhxyCLqfUnRVIJeB5VrfEA2a4l/Bh
-         0tUmbaUO4ddBxnh1VQQhO+7SPXee7HiSfR/s+/iFY79l1dBk3xGeFPzWxPkgl/b1fgjg
-         dgdQ==
+        d=gmail.com; s=20230601; t=1711770172; x=1712374972; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7eK8Zgv2EhfHCDXrRMiPvvB5f0GCwGnM8ahhB988ODM=;
+        b=ikJq0UNvcUAgHmg5WxZ+Wu8FOb7HXSYOJngH8HgPgoogEPwEytRxeb7mUtHBeJfVcV
+         yRfhe2SWnLJ7+EER6510nOLLWcYSDfSTz8GJb++qxZqr0DfdxRU9t6V5C7Apfw7m85xq
+         jw/3bGtTv/k+s5nDqv8oszQSgRYI6V/D6HKIHaDW+nI6Z3T6RKoA8nePB7GOYlAqC+gt
+         Fz6OimQ4208JnZP+WK/GRe0FAtho4kQTaxXle+cWKbKvQhzub7qVLXe97VNZTnmZHwmj
+         cHCM12pOHrESGgKVlUrg3U/UmL5g77c5YKkCoJf7v5ieedeTLfOa2CMUH6/RDDFqNROB
+         NFmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711769716; x=1712374516;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nQY9GynfzjdgI1A44B4TVgDxB7Pe9LKkrSIu40Cboqk=;
-        b=MvK3UHtceunTM7J13OsvHr0Y7nra21oyrhoCc7U/RGm+vtErd83KkUtYmwpQIFLKLl
-         Z6x71mYZEvASAik9BXKfm2NQR7HSA48KXC1wUbFr0XPkxWhtxmse3+nQ/abPK/qvihLd
-         3+mL9JgCAEUZfnMw/FWKCt90LEOzySwhtWYXM1ZFon5NZkegpXOU2euwAa3tzUi+BZir
-         Yu23FCui7XrfSnCQzsF59biQZbGlTLpHIbti9KP52zfxizBO6MTBscLreNGX6qUT5TFV
-         toOxaiiuwoH5dubS1lNKo7TvA216d0F5fF0r4KWhcq/uFa9ekl4G5+sBg6aohV64XBzU
-         AnQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMsCByLLoVHEJ3Q1izpmr8qkX6dvKEn0odCqyDpSWbNHzCt1QHqqEPZMyeT0PNd8VLkVgHxLsmJBA+0l+4XboaCB9vc2VCsXA6A9Ee
-X-Gm-Message-State: AOJu0YxDA9iRDp2+Qf+VeWO8zZ4xFsLYrBuMyPxFlLFNmZXjXp7b4x5C
-	UztQ1Ov5CIyJi3xgMNXVKlU03jTe9Y7HqRarEB9/pqcd/heXPETOfa3LILXybbKoFtUd68u4TEw
-	ibqlJPhv24u+GsLCrpUOTnf2F7GJlWDBXqWQ3gg==
-X-Google-Smtp-Source: AGHT+IFQotfennixOm6ZOmiuiGgpegIwFVTzo5108kmA5lzvm5WNhtg5jy9iBOk0AMJbaUTPpapkU4prCLDmk6G3k3I=
-X-Received: by 2002:a17:90a:474f:b0:29d:fe1c:79e7 with SMTP id
- y15-20020a17090a474f00b0029dfe1c79e7mr3306403pjg.45.1711769716617; Fri, 29
- Mar 2024 20:35:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711770172; x=1712374972;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eK8Zgv2EhfHCDXrRMiPvvB5f0GCwGnM8ahhB988ODM=;
+        b=Dnbgl4Ch0xc4LYFl083vIxXm23mE2uFojBs68UuMRPPiExdmGv4SyNHIYWY+WQW9ur
+         Gx4v8cpajKjNDdAyFDbR8wy2kCDh0ZkF5cs/BSRz4UotWgqQErHGKPiiZUkLnwPYyWaM
+         xwOG3G5+J4LAcF+Hrc20XXm3dhyYmevyhtJLQUDTzMHkMddeiE5+wPzUuPUO+hT9Wlo2
+         q91ZvrAnNTS986fMAvPEyy1sLA3HsHsRBDf93X5IeDZk5KbPgx4BwEwQpxAVEh7JfL5b
+         U36M0IFBUcqPueLf1/dj57W+FK34FPonzwukIa4fwC5DtIVUkY2Z3TqmSKZwdZhuGR6f
+         IVnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ4iMpuWcFi+b9B2O5MW1IvSNOUwUZZkoz9B7oSJYZ8Zt+1HhmHmLAdUDxR5eCNpWnk2lelIoWsx93lXErtHUJv/w/TMeUbfqXysu9aVAo4NXq8Ly7DwtDVsLyVbzj6Yd2AAVa/pVm
+X-Gm-Message-State: AOJu0YzmQkc4+Bee7iZZWc1RSiuX/6juA5OuI0ZSl09bD2bHZT6dtDur
+	DAbV5c9IM4b+bvLKszAV3iFZ+waQCvZ8hRZOSqyKfA0/xO9fA7pS
+X-Google-Smtp-Source: AGHT+IHAXoLb+nPFUDEvaW5M8v4dfY8CJEkYn86kGpRDeawOoSSXbCym4HLbLuSb9Du35p3GP0Fb7A==
+X-Received: by 2002:a05:6a20:549f:b0:1a6:f8cf:1e23 with SMTP id i31-20020a056a20549f00b001a6f8cf1e23mr3351963pzk.41.1711770172099;
+        Fri, 29 Mar 2024 20:42:52 -0700 (PDT)
+Received: from ?IPV6:2600:8802:b00:ba1:cc2b:c45f:1699:a1c3? ([2600:8802:b00:ba1:cc2b:c45f:1699:a1c3])
+        by smtp.gmail.com with ESMTPSA id ev9-20020a17090aeac900b002a03d13fef5sm5849162pjb.7.2024.03.29.20.42.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 20:42:51 -0700 (PDT)
+Message-ID: <4e014c33-44d7-483c-a9be-b24bb82cd1aa@gmail.com>
+Date: Fri, 29 Mar 2024 20:42:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
- <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
- <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
- <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
- <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
- <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
- <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
- <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
- <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com>
- <20240328111330.194dcbe5@gandalf.local.home> <CAADnVQKsuV2OhT4rc+k=WDmVMQxbjDiC4+zNbre2Kpj1hod5xw@mail.gmail.com>
-In-Reply-To: <CAADnVQKsuV2OhT4rc+k=WDmVMQxbjDiC4+zNbre2Kpj1hod5xw@mail.gmail.com>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Sat, 30 Mar 2024 11:36:38 +0800
-Message-ID: <CALz3k9j3aMpnuy3-6dPB9UiQ82LEE-bPapwJfotxX8DyAOc=iw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
- to record and check the accessed args
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v2 1/5] clk: scmi: Allocate CLK operations dynamically
+To: Cristian Marussi <cristian.marussi@arm.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-clk@vger.kernel.org
+Cc: sudeep.holla@arm.com, james.quinlan@broadcom.com,
+ vincent.guittot@linaro.org, peng.fan@oss.nxp.com, michal.simek@amd.com,
+ quic_sibis@quicinc.com, quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
+ mturquette@baylibre.com, sboyd@kernel.org
+References: <20240325210025.1448717-1-cristian.marussi@arm.com>
+ <20240325210025.1448717-2-cristian.marussi@arm.com>
+Content-Language: en-US
+In-Reply-To: <20240325210025.1448717-2-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 29, 2024 at 7:17=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Mar 28, 2024 at 8:10=E2=80=AFAM Steven Rostedt <rostedt@goodmis.o=
-rg> wrote:
-> >
-> > On Thu, 28 Mar 2024 22:43:46 +0800
-> > =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
-> >
-> > > I have done a simple benchmark on creating 1000
-> > > trampolines. It is slow, quite slow, which consume up to
-> > > 60s. We can't do it this way.
-> > >
-> > > Now, I have a bad idea. How about we introduce
-> > > a "dynamic trampoline"? The basic logic of it can be:
-> > >
-> > > """
-> > > save regs
-> > > bpfs =3D trampoline_lookup_ip(ip)
-> > > fentry =3D bpfs->fentries
-> > > while fentry:
-> > >   fentry(ctx)
-> > >   fentry =3D fentry->next
-> > >
-> > > call origin
-> > > save return value
-> > >
-> > > fexit =3D bpfs->fexits
-> > > while fexit:
-> > >   fexit(ctx)
-> > >   fexit =3D fexit->next
-> > >
-> > > xxxxxx
-> > > """
-> > >
-> > > And we lookup the "bpfs" by the function ip in a hash map
-> > > in trampoline_lookup_ip. The type of "bpfs" is:
-> > >
-> > > struct bpf_array {
-> > >   struct bpf_prog *fentries;
-> > >  struct bpf_prog *fexits;
-> > >   struct bpf_prog *modify_returns;
-> > > }
-> > >
-> > > When we need to attach the bpf progA to function A/B/C,
-> > > we only need to create the bpf_arrayA, bpf_arrayB, bpf_arrayC
-> > > and add the progA to them, and insert them to the hash map
-> > > "direct_call_bpfs", and attach the "dynamic trampoline" to
-> > > A/B/C. If bpf_arrayA exist, just add progA to the tail of
-> > > bpf_arrayA->fentries. When we need to attach progB to
-> > > B/C, just add progB to bpf_arrayB->fentries and
-> > > bpf_arrayB->fentries.
-> > >
-> > > Compared to the trampoline, extra overhead is introduced
-> > > by the hash lookuping.
-> > >
-> > > I have not begun to code yet, and I am not sure the overhead is
-> > > acceptable. Considering that we also need to do hash lookup
-> > > by the function in kprobe_multi, maybe the overhead is
-> > > acceptable?
-> >
-> > Sounds like you are just recreating the function management that ftrace
-> > has. It also can add thousands of trampolines very quickly, because it =
-does
-> > it in batches. It takes special synchronization steps to attach to fent=
-ry.
-> > ftrace (and I believe multi-kprobes) updates all the attachments for ea=
-ch
-> > step, so the synchronization needed is only done once.
-> >
-> > If you really want to have thousands of functions, why not just registe=
-r it
-> > with ftrace itself. It will give you the arguments via the ftrace_regs
-> > structure. Can't you just register a program as the callback?
-> >
-> > It will probably make your accounting much easier, and just let ftrace
-> > handle the fentry logic. That's what it was made to do.
->
-> Absolutely agree.
-> There is no point re-inventing this logic.
->
-> Menlong,
-> before you hook up into ftrace check whether
-> it's going to be any different from kprobe-multi,
-> since it's the same ftrace underneath.
-> I suspect it will look exactly the same.
 
-Yeah, I dig it a little. I think it is different. For multi-kprobe,
-it registers a ftrace_ops to ftrace_ops_list for every bpf
-program. This means that we can register 2 or more
-multi-kprobe in the same function. The bpf is called in
-the following step:
 
-ftrace_regs_caller
-|
-__ftrace_ops_list_func -> fprobe_handler -> kprobe_multi_link_handler -> ru=
-n BPF
+On 25/03/2024 14:00, Cristian Marussi wrote:
+> SCMI Clocks descriptors expose an increasing number of properties, thing
+> which, in turn, leads to a varying set of supported CLK operations to be
+> associated with each clock.
+> 
+> Providing statically pre-defined CLK operations structs for all the
+> possible combinations of allowed clock features is becoming cumbersome and
+> error-prone.
+> 
+> Allocate the per-clock operations descriptors dynamically and populate it
+> with the strictly needed set of operations depending on the advertised
+> clock properties: one descriptor is created for each distinct combination
+> of clock operations, so minimizing the number of clk_ops structures to the
+> strictly minimum needed.
+> 
+> CC: Michael Turquette <mturquette@baylibre.com>
+> CC: Stephen Boyd <sboyd@kernel.org>
+> CC: linux-clk@vger.kernel.org
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 
-And for trampoline, it needs to be called directly,
-so it can't be registered as a callback to ftrace_ops_list.
-It need to be called in the following step:
-
-ftrace_regs_caller
-|
-__ftrace_ops_list_func -> call_direct_funcs -> save trampoline to
-pt_regs->origin_ax
-|
-call pt_regs->origin_ax if not NULL
-
-> So it sounds like multi-fentry idea will be shelved once again.
-
-Enn...this is the best solution that I can think of. If it
-doesn't work, I suspect it will be shelved again.
-
-Thanks!
-Menglong Dong
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
