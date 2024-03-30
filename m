@@ -1,129 +1,124 @@
-Return-Path: <linux-kernel+bounces-126238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8525289341E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:57:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA66E8932F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE52AB22C8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:57:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AB911C220A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA70158A0B;
-	Sun, 31 Mar 2024 16:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2097514AD29;
+	Sun, 31 Mar 2024 16:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lmT1BZSV"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EuK11uYg"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D3C158D62;
-	Sun, 31 Mar 2024 16:40:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=62.96.220.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2335E14A63E;
+	Sun, 31 Mar 2024 16:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711903261; cv=fail; b=LMaTMWrhV42mFAZtlBRDT8KBNwPS/BjDPIJqRUm91Rr9JGScAHmka8f5iYiqJeFsdR1wZuNtxKH8RF56QMPyzRGjIFb7QHtzE3238QJKIty+TkL5HDY7fLktzNvr4No7Z6c8epxilBUPWl8To5BFA9uWeeAv2RBb9mragKwgkNE=
+	t=1711902414; cv=pass; b=ksgeo40CZZoHjOGt8MKYqda3khumTsJ5Ndtklrqvhq63ohE/oRMRa+QBA60u1DlOUwQ1z3OIt6JePCAbX6JGsqTBX4YBSNZ/7iJulzeVE/sM/Xq0qp4DPKVy+agv+dwaenI1+fgC55h+wWoLI0rLE3bxWhiJTQFsXcodaLO7I58=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711903261; c=relaxed/simple;
-	bh=r/zJyrWXRNbsPJOoEMM9go2wb1kQMYvLI1npaqCdy0o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tSireG4+MMz0ysRChVAD+c4gQMSlgGWFTY1V9QpBxAjAil33Gyne4gxN9LwkZnFCdISoEkla/4+vqr+7T8p6vVo7I5CrT7033nZzPw2hyEYpUFErnTJSKDj26qOPHzSsh605uxHR42ZyyXYoHe5cYKRaldsiVuGQ43GrHlVrpIU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org; spf=fail smtp.mailfrom=linaro.org; dkim=fail (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lmT1BZSV reason="signature verification failed"; arc=none smtp.client-ip=209.85.221.44; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; arc=fail smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	s=arc-20240116; t=1711902414; c=relaxed/simple;
+	bh=/4yQxoR3DV9yvkLWH5V8H39qrAkzGcPAl4uH956qFcQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=sudOgHIpgPPNJk/dMDoKJa+B28J9xh4YPiHc1E3CRAM84iS8E+X14c6u6VceJRJIEqrmKwjJ1QqHo6hQfsXKREO/ghyy3MalE4T5dr8LzwhFG/FIeoeUDwt/vyRFSA2Q3rsdUpiNkwW2xT2O5dRlWY8J7yyD0xR8Tp6ljsxjGxg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=fail smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EuK11uYg; arc=none smtp.client-ip=209.85.128.46; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; arc=pass smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linaro.org
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id CB6C6201E5;
-	Sun, 31 Mar 2024 18:40:56 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id E8E1020851;
+	Sun, 31 Mar 2024 18:26:50 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ip2aUE9Y6LHX; Sun, 31 Mar 2024 18:40:55 +0200 (CEST)
+	with ESMTP id 0qOul6Xc8Cf7; Sun, 31 Mar 2024 18:26:50 +0200 (CEST)
 Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 52892208CB;
-	Sun, 31 Mar 2024 18:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 52892208CB
+	by a.mx.secunet.com (Postfix) with ESMTPS id 701DD208A2;
+	Sun, 31 Mar 2024 18:26:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 701DD208A2
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout2.secunet.com (Postfix) with ESMTP id 4570380005E;
-	Sun, 31 Mar 2024 18:40:55 +0200 (CEST)
+	by mailout2.secunet.com (Postfix) with ESMTP id 6346F800051;
+	Sun, 31 Mar 2024 18:26:50 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:40:55 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:26:50 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
- 15.1.2507.17; Sun, 31 Mar 2024 16:37:05 +0000
-X-sender: <netdev+bounces-83533-peter.schumann=secunet.com@vger.kernel.org>
-X-Receiver: <peter.schumann@secunet.com> ORCPT=rfc822;peter.schumann@secunet.com
+ 15.1.2507.17; Sun, 31 Mar 2024 16:24:21 +0000
+X-sender: <linux-kernel+bounces-125888-steffen.klassert=secunet.com@vger.kernel.org>
+X-Receiver: <steffen.klassert@secunet.com>
+ ORCPT=rfc822;steffen.klassert@secunet.com NOTIFY=NEVER;
+ X-ExtendedProps=DwA1AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLklzUmVzb3VyY2UCAAAFABUAFgACAAAABQAUABEA8MUJLbkECUOS0gjaDTZ+uAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4YwUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5nZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAHQAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAGwAAgAABQBYABcASgAAAPDFCS25BAlDktII2g02frhDTj1LbGFzc2VydCBTdGVmZmVuLE9VPVVzZXJzLE9VPU1pZ3JhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAMAAIAAAUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9ye
+	TogRmFsc2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
 X-CreatedBy: MSExchange15
-X-HeloDomain: mbx-dresden-01.secunet.de
-X-ExtendedProps: BQBjAAoAWGQFfe5Q3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
-X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 10.53.40.199
-X-EndOfInjectedXHeaders: 9849
+X-HeloDomain: b.mx.secunet.com
+X-ExtendedProps: BQBjAAoAQKNAQuxQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAGIACgAhAAAAo4oAAAUABAAUIAEAAAAcAAAAc3RlZmZlbi5rbGFzc2VydEBzZWN1bmV0LmNvbQUABgACAAEPACoAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LlJlc3VibWl0Q291bnQHAAIAAAAPAAkAAABDSUF1ZGl0ZWQCAAEFAAIABwABAAAABQADAAcAAAAAAAUABQACAAEFAGQADwADAAAASHViBQApAAIAAQ8APwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRGlyZWN0b3J5RGF0YS5NYWlsRGVsaXZlcnlQcmlvcml0eQ8AAwAAAExvdw==
+X-Source: SMTP:Default MBX-DRESDEN-01
+X-SourceIPAddress: 62.96.220.37
+X-EndOfInjectedXHeaders: 13716
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.48.161; helo=sy.mirrors.kernel.org; envelope-from=netdev+bounces-83533-peter.schumann=secunet.com@vger.kernel.org; receiver=peter.schumann@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 4679320520
-X-Original-To: netdev@vger.kernel.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=139.178.88.99; helo=sv.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125888-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com ED60D2025D
+Authentication-Results: b.mx.secunet.com;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EuK11uYg"
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711833031; cv=none; b=WrQhQxRo6DfULhTj6TsCGB6LofQfoBuxDCt2D/TtQew1L1J8171bWygFIKyOoQr7jolBlWGKRWWQL6Mm1ZSXEpIyNFS9d8CikM9Ato82v4bA52dusuXprGdxVA3QyM9KyQrsK9krR8oRQ18Etl+x9HAcK2/rNyWlmgujRB9Pkcw=
+	t=1711833042; cv=none; b=eWzUgg8AsrOmii/PnsDx5QTK9phkSNbznWaLlXUL9148Rbu+JUEMhgY353KpmV8hwbgYmApakDCSLwKgWPZPLuwuYmsNReJFGqwaKirVisiIyo5s2uFi+HSggrO3M50bsupT2LXVIcBJVGZXqtXlRaGZ+WdQNji9Sx1zVgGMKnI=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711833031; c=relaxed/simple;
-	bh=lpW/z88igPmtu+dPk6Bg5/M6be2ELRWCA4fiw4xQTvk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HS1sar1YmDqu1EiUhLsWX/F2qG+ZSKSVVh+BSA+y2eCEt8wgmoH6EJ9zOexB4dWkyFhGQqTnvcW2fbygrJDhDG875bRm2eppfhSCtuoKGGjO06HGP0lMNqNrLmjauiG/vzXcvf4flhuFdNGGG2951cca1G1K2F1rrX2aoNYOPro=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lmT1BZSV; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1711833042; c=relaxed/simple;
+	bh=/4yQxoR3DV9yvkLWH5V8H39qrAkzGcPAl4uH956qFcQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NaOAmtAu3ncdR9vZrxQkQhjyS2IsAXFUaJeob4num+FnfSS/TkWvYsKtYraDpv/O6N5KK75BCyxdrDviFCvT4v8dWbKcq6KgRqcMYxutFb4/qXYGDQX9E+UCTpp9xkrfiT/RyVR8JTIoPEd2wkyAi+IO8Z21gkVZb9DtQwZZ4pE=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EuK11uYg; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711833028; x=1712437828; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z97AIqHn2/5k70KD5v0TW9sEzFkZvtBMo+aOjA2W+M0=;
-        b=lmT1BZSVVSPKWGgHfiytoJ+Ofrl4SkHaGZqmtLrRr9Xtp6NWN1fSkkfDwoAbSdPKGU
-         7iICPbSYSWkoUys1nOax8ZNlxpQfq4PQJQ4TymEVCw3PkJzQTsCq7v7Undarn/f2KJj9
-         ZG4QV60NcMb/lSCxXyT6TtbE/T3KI3GB/GjHWCbpmLOwf1Xb6WgjMLkLJ88lBAMR3Vur
-         CTO1dryBej7ge6pn6C0Ijq3VRNqgK7SDTIyRth+3AeL0ZiRSUM93anFDVLadFESufJPL
-         bPQQDMAzZMQiOF9PaZz+2bEIT1afJiAv9xX20LWUpM+NNBMnbp5GWBAf9our8hpGlmtU
-         k/IQ==
+        d=linaro.org; s=google; t=1711833039; x=1712437839; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=61v4scjVgIk2ToFnkXS2oeqx/czO/u3CzUzarujt/iQ=;
+        b=EuK11uYg2xMVqXhNGntIbfC9q8LcHUe1FkvyowcuCkBRpYY9fizfrZBPmOHpwpq6JT
+         youB6G1Azf4HbWTz6qs/jCr2ERT0dGTfcjq80tgPXt4ZTuRLE0HSLZcYvxkw4pFbpH+F
+         iNYEKUhOJIwT5kT4W35vWMn3mSoU2i2su++VHxpjWsyAI2XnbTpvHq0pmtqDMhPQULRE
+         IJ725Iok2kpIZ0uRzAs9McDhgnpdO2Aez7eUpsjzdt0KJMVtqhg+7ja47tc9DMd5SmWb
+         EtMoEXRCOIUN3KIxGwiokW3Tpyr7yEngB0k/ebCRXAhHzZm7KE8Rh7lD4GAZcEnsHuh8
+         PDKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711833028; x=1712437828;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z97AIqHn2/5k70KD5v0TW9sEzFkZvtBMo+aOjA2W+M0=;
-        b=Z3V/da6Xz3DRp1xb2kWJvS4XMbNXnBs3jNIiApzfHCED05rvbFlBzMG46PmYth9sgO
-         +SvEIZGIjOMJ4yHJTqFIvf9K4xFIfssfD8Fq5Ib8PzmyN8ahKgBdVbDKrM8Gzi9Ujp8H
-         Yj55CnL6Uc/WHdSnI2bDfW28ZKFHjMFpJH+aanyiUtxtzf9OkFvm9Sm6GbQNlJccCz9+
-         Pe7IczzArNBu+gADF538Ynxg9IWJQIvizj/AsaOSVma2Hgr+nB4CKFQXS25GD9flxh/U
-         xN474rnGNVBCjAfhQoLXjz5PHQrmKoLdmYYD0OrxhiGUPy3FVvYv4fz/go1DY9HuJsaF
-         DBAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUOTrI+i6c4KpEmf2l6yQ2FBhPUFcqZKLVGzCKLZrjWBIbfBuFG2Pn9O2Q1s4+aZAxdvd0qmTRY2CJwUU9hbjJtoC4QlhNe
-X-Gm-Message-State: AOJu0YyipnUvvoL4YBTQ3jANCs6RsHGG8mK0cx4Ss72Fj2Lhl6zkk2OV
-	zQQain5LobUn1FL24TAHzy3J+rz3cROArg3/5CIXmctNs/UQ1R4czd/2Q27h+3o=
-X-Google-Smtp-Source: AGHT+IG/PwnuOG9GW/J71lWsyeYoc0pzt0O0RZTv5vm8EGRV8pODCFgM8sdpdU3qeNoyycuNuSNCcw==
-X-Received: by 2002:a05:6000:4009:b0:33d:6fd8:90d3 with SMTP id cp9-20020a056000400900b0033d6fd890d3mr5016445wrb.4.1711833028607;
-        Sat, 30 Mar 2024 14:10:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711833039; x=1712437839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=61v4scjVgIk2ToFnkXS2oeqx/czO/u3CzUzarujt/iQ=;
+        b=bA0s8o8fI8ASohhiuOMWSSBOXUkqtWzP0uS89oJok2Un7qhX0P/F0iwWFYKSzrN3J2
+         Ie5yny0vAJIoAMV4tWTR1FPTLo7fQ3d72NvdNHbX1kDnnbrWYoMlUAQBCPaLdmHwo+rF
+         z1wu3IBMLV68+oFUC4ByereB3szDb2xDV9701P7m8cnHY14EOIlnZ7/rmvyHWHRi11MS
+         lbbmyAS2BPS59RGbeET8S2/+vLMFafRLAIplLdd7WgoGt3jMOEm620MzBNm6IZeldgDK
+         phKt9/eUGoGd+pKq2g3hjbZ9lmoriPpSqJ6yvDWbpWpEeRYNggPzhXyDZVwbpwv10oPY
+         +7+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVpoBHzsTzGsnrxiMtAl7ATZQzT7Ei2J3lzDbuYnmY6QWSpXygOk+qeWTcg6M2BhSWlbYCvynOmm4uSw510ezNW61RU4j8DhoYvtD5w
+X-Gm-Message-State: AOJu0YxC9hltUka7//zGVChSA/bPVe82QPAR/76GZo13XdJP2MbzkUIo
+	XLl6zWIC/dbpHM1Mkx6XfqwooGz/mh7OW6jrmojn20huwbgHCEEr8pkNtV2wzGI=
+X-Google-Smtp-Source: AGHT+IGvC5puYahyLfoRxaBZa5kEc2+uWb+/xISXFXurHNo+cizr9pJb/P/tTe/zgahZkVnF1kYg5g==
+X-Received: by 2002:a05:600c:4e8b:b0:414:f60:5d6a with SMTP id f11-20020a05600c4e8b00b004140f605d6amr4142782wmq.0.1711833039552;
+        Sat, 30 Mar 2024 14:10:39 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Woojung Huh <woojung.huh@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+To: Ulf Hansson <ulf.hansson@linaro.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [net-next PATCH 2/2] net: dsa: sja1105: drop driver owner assignment
-Date: Sat, 30 Mar 2024 22:10:23 +0100
-Message-Id: <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] pmdomain: mediatek: scpsys: drop driver owner assignment
+Date: Sat, 30 Mar 2024 22:10:36 +0100
+Message-Id: <20240330211036.100956-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
-References: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -135,367 +130,26 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-Core in spi_register_driver() already sets the .owner, so driver
+Core in platform_driver_register() already sets the .owner, so driver
 does not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c | 1 -
+ drivers/pmdomain/mediatek/mtk-scpsys.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 6646f7fb0f90..fc262348a134 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -3456,7 +3456,6 @@ MODULE_DEVICE_TABLE(spi, sja1105_spi_ids);
- static struct spi_driver sja1105_driver = {
+diff --git a/drivers/pmdomain/mediatek/mtk-scpsys.c b/drivers/pmdomain/mediatek/mtk-scpsys.c
+index 59a7a8c261ed..1a80c1537a43 100644
+--- a/drivers/pmdomain/mediatek/mtk-scpsys.c
++++ b/drivers/pmdomain/mediatek/mtk-scpsys.c
+@@ -1138,7 +1138,6 @@ static struct platform_driver scpsys_drv = {
  	.driver = {
- 		.name  = "sja1105",
+ 		.name = "mtk-scpsys",
+ 		.suppress_bind_attrs = true,
 -		.owner = THIS_MODULE,
- 		.of_match_table = of_match_ptr(sja1105_dt_ids),
+ 		.of_match_table = of_scpsys_match_tbl,
  	},
- 	.id_table = sja1105_spi_ids,
--- 
-2.34.1
-
-
-X-sender: <netdev+bounces-83533-steffen.klassert=secunet.com@vger.kernel.org>
-X-Receiver: <steffen.klassert@secunet.com> ORCPT=rfc822;steffen.klassert@secunet.com
-X-CreatedBy: MSExchange15
-X-HeloDomain: mbx-dresden-01.secunet.de
-X-ExtendedProps: BQBjAAoAWWQFfe5Q3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
-X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 10.53.40.199
-X-EndOfInjectedXHeaders: 9867
-Received: from mbx-dresden-01.secunet.de (10.53.40.199) by
- mbx-essen-02.secunet.de (10.53.40.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Sat, 30 Mar 2024 22:10:50 +0100
-Received: from a.mx.secunet.com (62.96.220.36) by cas-essen-01.secunet.de
- (10.53.40.201) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.37 via Frontend
- Transport; Sat, 30 Mar 2024 22:10:50 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 664D320883
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 22:10:50 +0100 (CET)
-X-Virus-Scanned: by secunet
-X-Spam-Flag: NO
-X-Spam-Score: -5.051
-X-Spam-Level:
-X-Spam-Status: No, score=-5.051 tagged_above=-999 required=2.1
-	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-	DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.249,
-	MAILING_LIST_MULTI=-1, RCVD_IN_DNSWL_MED=-2.3, SPF_HELO_NONE=0.001,
-	SPF_PASS=-0.001] autolearn=unavailable autolearn_force=no
-Authentication-Results: a.mx.secunet.com (amavisd-new);
-	dkim=pass (2048-bit key) header.d=linaro.org
-Received: from a.mx.secunet.com ([127.0.0.1])
-	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id nmavyplIyy-Z for <steffen.klassert@secunet.com>;
-	Sat, 30 Mar 2024 22:10:50 +0100 (CET)
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=139.178.88.99; helo=sv.mirrors.kernel.org; envelope-from=netdev+bounces-83533-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com A1F9520520
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id A1F9520520
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 22:10:49 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14E83283300
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 21:10:48 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F164E1D5;
-	Sat, 30 Mar 2024 21:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lmT1BZSV"
-X-Original-To: netdev@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EA82AF13
-	for <netdev@vger.kernel.org>; Sat, 30 Mar 2024 21:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
-ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711833031; cv=none; b=WrQhQxRo6DfULhTj6TsCGB6LofQfoBuxDCt2D/TtQew1L1J8171bWygFIKyOoQr7jolBlWGKRWWQL6Mm1ZSXEpIyNFS9d8CikM9Ato82v4bA52dusuXprGdxVA3QyM9KyQrsK9krR8oRQ18Etl+x9HAcK2/rNyWlmgujRB9Pkcw=
-ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711833031; c=relaxed/simple;
-	bh=lpW/z88igPmtu+dPk6Bg5/M6be2ELRWCA4fiw4xQTvk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HS1sar1YmDqu1EiUhLsWX/F2qG+ZSKSVVh+BSA+y2eCEt8wgmoH6EJ9zOexB4dWkyFhGQqTnvcW2fbygrJDhDG875bRm2eppfhSCtuoKGGjO06HGP0lMNqNrLmjauiG/vzXcvf4flhuFdNGGG2951cca1G1K2F1rrX2aoNYOPro=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lmT1BZSV; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33edbc5932bso2153952f8f.3
-        for <netdev@vger.kernel.org>; Sat, 30 Mar 2024 14:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711833028; x=1712437828; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z97AIqHn2/5k70KD5v0TW9sEzFkZvtBMo+aOjA2W+M0=;
-        b=lmT1BZSVVSPKWGgHfiytoJ+Ofrl4SkHaGZqmtLrRr9Xtp6NWN1fSkkfDwoAbSdPKGU
-         7iICPbSYSWkoUys1nOax8ZNlxpQfq4PQJQ4TymEVCw3PkJzQTsCq7v7Undarn/f2KJj9
-         ZG4QV60NcMb/lSCxXyT6TtbE/T3KI3GB/GjHWCbpmLOwf1Xb6WgjMLkLJ88lBAMR3Vur
-         CTO1dryBej7ge6pn6C0Ijq3VRNqgK7SDTIyRth+3AeL0ZiRSUM93anFDVLadFESufJPL
-         bPQQDMAzZMQiOF9PaZz+2bEIT1afJiAv9xX20LWUpM+NNBMnbp5GWBAf9our8hpGlmtU
-         k/IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711833028; x=1712437828;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z97AIqHn2/5k70KD5v0TW9sEzFkZvtBMo+aOjA2W+M0=;
-        b=Z3V/da6Xz3DRp1xb2kWJvS4XMbNXnBs3jNIiApzfHCED05rvbFlBzMG46PmYth9sgO
-         +SvEIZGIjOMJ4yHJTqFIvf9K4xFIfssfD8Fq5Ib8PzmyN8ahKgBdVbDKrM8Gzi9Ujp8H
-         Yj55CnL6Uc/WHdSnI2bDfW28ZKFHjMFpJH+aanyiUtxtzf9OkFvm9Sm6GbQNlJccCz9+
-         Pe7IczzArNBu+gADF538Ynxg9IWJQIvizj/AsaOSVma2Hgr+nB4CKFQXS25GD9flxh/U
-         xN474rnGNVBCjAfhQoLXjz5PHQrmKoLdmYYD0OrxhiGUPy3FVvYv4fz/go1DY9HuJsaF
-         DBAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUOTrI+i6c4KpEmf2l6yQ2FBhPUFcqZKLVGzCKLZrjWBIbfBuFG2Pn9O2Q1s4+aZAxdvd0qmTRY2CJwUU9hbjJtoC4QlhNe
-X-Gm-Message-State: AOJu0YyipnUvvoL4YBTQ3jANCs6RsHGG8mK0cx4Ss72Fj2Lhl6zkk2OV
-	zQQain5LobUn1FL24TAHzy3J+rz3cROArg3/5CIXmctNs/UQ1R4czd/2Q27h+3o=
-X-Google-Smtp-Source: AGHT+IG/PwnuOG9GW/J71lWsyeYoc0pzt0O0RZTv5vm8EGRV8pODCFgM8sdpdU3qeNoyycuNuSNCcw==
-X-Received: by 2002:a05:6000:4009:b0:33d:6fd8:90d3 with SMTP id cp9-20020a056000400900b0033d6fd890d3mr5016445wrb.4.1711833028607;
-        Sat, 30 Mar 2024 14:10:28 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id f12-20020a056000036c00b00341ce80ea66sm7288097wrf.82.2024.03.30.14.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 14:10:28 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Woojung Huh <woojung.huh@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [net-next PATCH 2/2] net: dsa: sja1105: drop driver owner assignment
-Date: Sat, 30 Mar 2024 22:10:23 +0100
-Message-Id: <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
-References: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
-Precedence: bulk
-X-Mailing-List: netdev@vger.kernel.org
-List-Id: <netdev.vger.kernel.org>
-List-Subscribe: <mailto:netdev+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:netdev+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-Path: netdev+bounces-83533-steffen.klassert=secunet.com@vger.kernel.org
-X-MS-Exchange-Organization-OriginalArrivalTime: 30 Mar 2024 21:10:50.4834
- (UTC)
-X-MS-Exchange-Organization-Network-Message-Id: db0e16b5-1689-4885-1590-08dc50fde099
-X-MS-Exchange-Organization-OriginalClientIPAddress: 62.96.220.36
-X-MS-Exchange-Organization-OriginalServerIPAddress: 10.53.40.201
-X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: cas-essen-01.secunet.de
-X-MS-Exchange-Organization-OrderedPrecisionLatencyInProgress: LSRV=cas-essen-01.secunet.de:TOTAL-FE=0.024|SMR=0.024(SMRPI=0.022(SMRPI-FrontendProxyAgent=0.022));2024-03-30T21:10:50.507Z
-Content-Type: text/plain
-X-MS-Exchange-Forest-ArrivalHubServer: mbx-essen-02.secunet.de
-X-MS-Exchange-Organization-AuthSource: cas-essen-01.secunet.de
-X-MS-Exchange-Organization-AuthAs: Anonymous
-X-MS-Exchange-Organization-OriginalSize: 9293
-X-MS-Exchange-Organization-Transport-Properties: DeliveryPriority=Low
-X-MS-Exchange-Organization-Prioritization: 2:ShadowRedundancy
-X-MS-Exchange-Organization-IncludeInSla: False:ShadowRedundancy
-
-Core in spi_register_driver() already sets the .owner, so driver
-does not need to.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/net/dsa/sja1105/sja1105_main.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 6646f7fb0f90..fc262348a134 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -3456,7 +3456,6 @@ MODULE_DEVICE_TABLE(spi, sja1105_spi_ids);
- static struct spi_driver sja1105_driver = {
- 	.driver = {
- 		.name  = "sja1105",
--		.owner = THIS_MODULE,
- 		.of_match_table = of_match_ptr(sja1105_dt_ids),
- 	},
- 	.id_table = sja1105_spi_ids,
--- 
-2.34.1
-
-
-X-sender: <linux-kernel+bounces-125887-steffen.klassert=secunet.com@vger.kernel.org>
-X-Receiver: <steffen.klassert@secunet.com> ORCPT=rfc822;steffen.klassert@secunet.com
-X-CreatedBy: MSExchange15
-X-HeloDomain: mbx-dresden-01.secunet.de
-X-ExtendedProps: BQBjAAoAXGQFfe5Q3AgFADcAAgAADwA8AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50Lk9yZ2FuaXphdGlvblNjb3BlEQAAAAAAAAAAAAAAAAAAAAAADwA/AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5EaXJlY3RvcnlEYXRhLk1haWxEZWxpdmVyeVByaW9yaXR5DwADAAAATG93
-X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 10.53.40.199
-X-EndOfInjectedXHeaders: 9886
-Received: from mbx-dresden-01.secunet.de (10.53.40.199) by
- mbx-essen-02.secunet.de (10.53.40.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Sat, 30 Mar 2024 22:11:04 +0100
-Received: from a.mx.secunet.com (62.96.220.36) by cas-essen-02.secunet.de
- (10.53.40.202) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.37 via Frontend
- Transport; Sat, 30 Mar 2024 22:11:04 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 15EDD20883
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 22:11:04 +0100 (CET)
-X-Virus-Scanned: by secunet
-X-Spam-Flag: NO
-X-Spam-Score: -5.051
-X-Spam-Level:
-X-Spam-Status: No, score=-5.051 tagged_above=-999 required=2.1
-	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-	DKIM_VALID_AU=-0.1, HEADER_FROM_DIFFERENT_DOMAINS=0.249,
-	MAILING_LIST_MULTI=-1, RCVD_IN_DNSWL_MED=-2.3, SPF_HELO_NONE=0.001,
-	SPF_PASS=-0.001] autolearn=unavailable autolearn_force=no
-Authentication-Results: a.mx.secunet.com (amavisd-new);
-	dkim=pass (2048-bit key) header.d=linaro.org
-Received: from a.mx.secunet.com ([127.0.0.1])
-	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id LQlJW_h2trGg for <steffen.klassert@secunet.com>;
-	Sat, 30 Mar 2024 22:11:03 +0100 (CET)
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=139.178.88.99; helo=sv.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125887-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 53C5820520
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 53C5820520
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 22:11:03 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97BCA2832BC
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 21:11:01 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3C353379;
-	Sat, 30 Mar 2024 21:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lmT1BZSV"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A1C1DFC6
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 21:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
-ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711833031; cv=none; b=B54a9I9KLm7YZF44WhNh/VUVKOFwt5wPPd4l6u6tmbGIqRbelrSguCLOhuu6SUJOJ5u6ne4hh7GYtNl9laZhpupbJrHNnNDdtDjFCkS0hsVM46JCZbAfv5YdzjMjVm39aNWlDgET1vCKJyH7lf9M8rgg6eWPSKmAb38oD4K9TP4=
-ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711833031; c=relaxed/simple;
-	bh=lpW/z88igPmtu+dPk6Bg5/M6be2ELRWCA4fiw4xQTvk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HS1sar1YmDqu1EiUhLsWX/F2qG+ZSKSVVh+BSA+y2eCEt8wgmoH6EJ9zOexB4dWkyFhGQqTnvcW2fbygrJDhDG875bRm2eppfhSCtuoKGGjO06HGP0lMNqNrLmjauiG/vzXcvf4flhuFdNGGG2951cca1G1K2F1rrX2aoNYOPro=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lmT1BZSV; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-341e3682c78so1744688f8f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 14:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711833028; x=1712437828; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z97AIqHn2/5k70KD5v0TW9sEzFkZvtBMo+aOjA2W+M0=;
-        b=lmT1BZSVVSPKWGgHfiytoJ+Ofrl4SkHaGZqmtLrRr9Xtp6NWN1fSkkfDwoAbSdPKGU
-         7iICPbSYSWkoUys1nOax8ZNlxpQfq4PQJQ4TymEVCw3PkJzQTsCq7v7Undarn/f2KJj9
-         ZG4QV60NcMb/lSCxXyT6TtbE/T3KI3GB/GjHWCbpmLOwf1Xb6WgjMLkLJ88lBAMR3Vur
-         CTO1dryBej7ge6pn6C0Ijq3VRNqgK7SDTIyRth+3AeL0ZiRSUM93anFDVLadFESufJPL
-         bPQQDMAzZMQiOF9PaZz+2bEIT1afJiAv9xX20LWUpM+NNBMnbp5GWBAf9our8hpGlmtU
-         k/IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711833028; x=1712437828;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z97AIqHn2/5k70KD5v0TW9sEzFkZvtBMo+aOjA2W+M0=;
-        b=LN6EukO7x/miFXgVzeYBWPBHF5MKaL0/k2usNgFo64rZ+FRZIQg4gENQFEslrLZU3B
-         ZslJ2cup96D8c8UluDpZPJzJV64/fKhb9YpCEaDC3X0ZH74RD+lXJ/OTlqxbvDyz6cLc
-         eVCqMvicLLr6WTcAxQQGsEBmAoX5nLlQHRzC0GluGPRf+qoCr4GUhpoh+39dGWc6vYQ8
-         eRyNe5ifDeY4F/om3TpVDUuUWNYJc47Ttyb8oPqbePV5uPMtx59Mu8AIUHvGuv6J6SCL
-         gl9SaszuWA1emQeHafmY4MZdh4AIx4mlRFljqScFOYNODFEtkrS8a+qtq4xcY0O97Hez
-         2iUw==
-X-Forwarded-Encrypted: i=1; AJvYcCXeykk8WUuo+zuaSq0RZqJlkKLk1Y8uoPTtm5QI278pmyQIKEBoiY2SRzd908hejYalPQRYHj33KLaZKdmOYUlKk9t1FFnsTockcry/
-X-Gm-Message-State: AOJu0Yy9THjSYK62Bav46nhST3lX5lfWLL8OIAJIbAf6W6cj047LIyzC
-	MLYQYXly+7uMuSNBatu187U8OsQvhNyalLY3RdW8EvhJr88VU2JCCHKEH2BSKfQ=
-X-Google-Smtp-Source: AGHT+IG/PwnuOG9GW/J71lWsyeYoc0pzt0O0RZTv5vm8EGRV8pODCFgM8sdpdU3qeNoyycuNuSNCcw==
-X-Received: by 2002:a05:6000:4009:b0:33d:6fd8:90d3 with SMTP id cp9-20020a056000400900b0033d6fd890d3mr5016445wrb.4.1711833028607;
-        Sat, 30 Mar 2024 14:10:28 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id f12-20020a056000036c00b00341ce80ea66sm7288097wrf.82.2024.03.30.14.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 14:10:28 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Woojung Huh <woojung.huh@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [net-next PATCH 2/2] net: dsa: sja1105: drop driver owner assignment
-Date: Sat, 30 Mar 2024 22:10:23 +0100
-Message-Id: <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
-References: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
-Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-Path: linux-kernel+bounces-125887-steffen.klassert=secunet.com@vger.kernel.org
-X-MS-Exchange-Organization-OriginalArrivalTime: 30 Mar 2024 21:11:04.1354
- (UTC)
-X-MS-Exchange-Organization-Network-Message-Id: 91acc90a-aaf7-41d3-3699-08dc50fde8bc
-X-MS-Exchange-Organization-OriginalClientIPAddress: 62.96.220.36
-X-MS-Exchange-Organization-OriginalServerIPAddress: 10.53.40.202
-X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: cas-essen-02.secunet.de
-X-MS-Exchange-Organization-OrderedPrecisionLatencyInProgress: LSRV=cas-essen-02.secunet.de:TOTAL-FE=0.006|SMR=0.006(SMRPI=0.005(SMRPI-FrontendProxyAgent=0.005));2024-03-30T21:11:04.142Z
-Content-Type: text/plain
-X-MS-Exchange-Forest-ArrivalHubServer: mbx-essen-02.secunet.de
-X-MS-Exchange-Organization-AuthSource: cas-essen-02.secunet.de
-X-MS-Exchange-Organization-AuthAs: Anonymous
-X-MS-Exchange-Organization-OriginalSize: 9314
-X-MS-Exchange-Organization-Transport-Properties: DeliveryPriority=Low
-X-MS-Exchange-Organization-Prioritization: 2:ShadowRedundancy
-X-MS-Exchange-Organization-IncludeInSla: False:ShadowRedundancy
-
-Core in spi_register_driver() already sets the .owner, so driver
-does not need to.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/net/dsa/sja1105/sja1105_main.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 6646f7fb0f90..fc262348a134 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -3456,7 +3456,6 @@ MODULE_DEVICE_TABLE(spi, sja1105_spi_ids);
- static struct spi_driver sja1105_driver = {
- 	.driver = {
- 		.name  = "sja1105",
--		.owner = THIS_MODULE,
- 		.of_match_table = of_match_ptr(sja1105_dt_ids),
- 	},
- 	.id_table = sja1105_spi_ids,
+ };
 -- 
 2.34.1
 
