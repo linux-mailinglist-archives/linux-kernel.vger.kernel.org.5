@@ -1,164 +1,149 @@
-Return-Path: <linux-kernel+bounces-125863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1F7892D30
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F542892D38
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 21:43:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60ABD1C20AC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 20:41:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83B1F1C20D93
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 20:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DD0482E1;
-	Sat, 30 Mar 2024 20:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A635542A93;
+	Sat, 30 Mar 2024 20:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JD3SON1l"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jCXk3kiM"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DEB36AE4
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 20:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15FCE8F40
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 20:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711831301; cv=none; b=cqSMR0qYEL+i096w1c7K6M79W148pfMV50Xp3a+7dNo5jnTptvmRUnmyFpevUKZhZK1NCKJSzzQgKuKMDTx3vwW/dhEy4ga6BW4PYlIyLuzNnP5JO3cklh8wxj0rvSch/qUeK61Gqk1ZjQ8KFYJGJVav39zWNthUIa7YkfxV36Q=
+	t=1711831411; cv=none; b=gvtONBArJTSb/206aPzkJzc87NjasJzZp5HkdGqDPK0cQKLyP0nyNPnah5k0abRA3QWWxvWk7MOWsB9mLbmXFmWooeRRg2SGa+rNKJ4g5EuAB440qNxFcrFxF3qRMmgDRCoOHIl9g6ov8KhN7vwBcHIK5mJa73fUBWhLGUQeums=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711831301; c=relaxed/simple;
-	bh=7dTdkj6dbfeGOX49aszp3xV2V9j0UCoyFUvP/lOs9+I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jgdIMbY4OpBJ41PzSbhSSi2hfjzdbHwHzuRtyd7OPvdStUUGYVkwcinsRXvImvTeIuT3K0lH2RwW42IsuKDIVs8cFZskoGQ0dFXxv17BEQkI318tLtsUTyS9PgRvE3DfGU1ncZmwY9XUZbmCYLksc+dN0OJv3hWplcWySxOXyLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JD3SON1l; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711831298;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CPc6/ijvCVVJ1Ov2sZYMdJlGOmW3NElQ82lFIMviPGU=;
-	b=JD3SON1lhuRkHQiA9B+eVQM2DBb8ZBezP/oZ+vJDUMy3ylSaHPB/56IP/myuZxf1+jU+qM
-	CjuxE1lqnrsfNCBgKlsYhGVmsCqDENOm9BLH6c/N36DaOl+rquyA7D5SQ4kI2oY1Kmmr84
-	oUCGMF1ksfVWGOBNqkG80xzC5VFnKCU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-I-tlrp8xNDKogGqE_KA3EA-1; Sat, 30 Mar 2024 16:41:35 -0400
-X-MC-Unique: I-tlrp8xNDKogGqE_KA3EA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4e05cee8faso107614566b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:41:35 -0700 (PDT)
+	s=arc-20240116; t=1711831411; c=relaxed/simple;
+	bh=5hjA386zwMlffmMn4NRghhyylnCA9pQb83mqNAD1Gws=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=o8ymPFJ91PJwrBTiV/eNBRV9pvARGt7umZlU/jeJMoe6qnrTG5vauFJ3YNHLf7H97vGmIGfonKTr4iebC5cpcwacrf5oU0+6p4rrsD4hqMoAbHkeWtB+m3sYywGDRP/iuUKn9DOU+BnMj+vuVGmMfjpQH7y5DFrst7FqR8808Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jCXk3kiM; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ddd1624beso1813908f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711831408; x=1712436208; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=K7N0D7Kjfk0JATRsxflDv0tI3CZgim2NBK8j/8+EBeA=;
+        b=jCXk3kiMjB4k9mCAnqXCTPs0StJUkz3sk/F1pP8ZrY70PhxicgMJJVSOwQDBtAGvEe
+         fgcoD9uTPqSPyp177bU2xAit4YbP22qvNzqBt5rkJp/RRUjeAElRCQx6Wz0NvM8J4xN1
+         JSj8zbzEVA+JIj+qONUyVfOq74RTCpCr+6dn7m6R9tJGo4pvmXs+GLCtp69w3PRdYNxC
+         5HizSq+NOPEt3HXU+5Sqgv9dJLQPAxqkj5Bzv06qBPlrKplNcguEJw57Eftspj/MfyQL
+         jYjwjY2JyfN8s3OE0VUIdacOwmSvVoJy1G1OVw6PGho0dUV3XMzEPXDi5h2x2YKBpmeY
+         tJ8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711831294; x=1712436094;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711831408; x=1712436208;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CPc6/ijvCVVJ1Ov2sZYMdJlGOmW3NElQ82lFIMviPGU=;
-        b=rpLnr9oKLWM/66pnGG0Gg8TvEbI3jV5eo3t8NP41fcjX7qG8iMnrZ+OBtZL0Fd9gc2
-         KtlILWydU7kXZFlqTMhI3EPumwfkMenvuwo3d7qzHsIDyuX4tnFafgUimOiMSlwAfTUI
-         mjg6kNciowF4/poGz6NkyKeef9AsIrZ3JRHbcqMMD9mKTcTXOw3NpGk44HmB4otGTekN
-         Ewok/iTRfYBJGK3Hbe/CasZ9ikMIbQAPxB5bq6YHPZRvXA/966OwicW7NlzjR3VXNbhn
-         H+I0UBXyihdRfjzDEWIS/ghPK5+pJTFhUz7MIoL155g3gc2SVR3Zp55Lh//J3aQrkTKA
-         wkUA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAyKiRDY0lknNzDZ/RrdKJT6gZkH7zGJvo3JCBLSgIMN90CDDMuTMG6RNcqXzr1kXAnl8jCCdUD0ah0MqeePt1fGHGIDcjmAaQBmrD
-X-Gm-Message-State: AOJu0YwMmGC5/cxa+EbqSlWsDPo/nwY7UkA6+7E55lHFW/haARHIdVvF
-	KsJVYRiJnmLIIM7rctr+Zkb2J6HsoDbrypkbFANTxJDSCbugnG1s5sdXxYJ+8nh7JO4diwMn12f
-	TJcqRd/7o/MSsHKYq4fGUi4bkATdX0c7s5TROHR+kZpVVw5MH9VydE3J4Jb4zlw==
-X-Received: by 2002:a05:6402:2745:b0:56c:2ef7:f3e6 with SMTP id z5-20020a056402274500b0056c2ef7f3e6mr4376441edd.0.1711831294678;
-        Sat, 30 Mar 2024 13:41:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9Gbkjn/ZWKYbzmUfYSMj2NejhWxYSZ/mEpFdvV+HFgC3/+irSlMKFkDAQ95tTo6ihx/AnRw==
-X-Received: by 2002:a05:6402:2745:b0:56c:2ef7:f3e6 with SMTP id z5-20020a056402274500b0056c2ef7f3e6mr4376399edd.0.1711831294379;
-        Sat, 30 Mar 2024 13:41:34 -0700 (PDT)
-Received: from [192.168.10.4] ([151.95.49.219])
-        by smtp.googlemail.com with ESMTPSA id fg4-20020a056402548400b0056c41068d8dsm3549732edb.17.2024.03.30.13.41.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Mar 2024 13:41:33 -0700 (PDT)
-Message-ID: <40382494-7253-442b-91a8-e80c38fb4f2c@redhat.com>
-Date: Sat, 30 Mar 2024 21:41:30 +0100
+        bh=K7N0D7Kjfk0JATRsxflDv0tI3CZgim2NBK8j/8+EBeA=;
+        b=waOJdZ0C11h1ghDzf58mtSvLuZtSTGPnzAaJFWiy3DjPihMnKV9IgW74Rg717bBiZs
+         GCpxuc2X3yylsIbBt7HpHiBv29qoCZ8lfJvILwXEfVog1c8U2nj2UM6fC66ukLTrfaNY
+         0T5Rex2e/a/zTuPPu0GdzCZCeNRNzu1C1Ou4E5ltofjcpHqYp8iFaHmo0GbL4UcvcyYI
+         9wtOCQICh/Ed36Q16K7VRySHmGJ05WCg2QBNokgYaXi5ki6JWwm2XmnYT3FO60kWQ5S0
+         x2K3tzVEJ6gLqeXpX/lq87+NR61+YuTqoNfUqn7kQzxqGjjU6+QevBAm8DWRzjq/rj6u
+         DIjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUjNJ5ZZGmFQjMT++yTDec0/p5FUI/oQ9c818gyOoMiyNmiBMiZKSkW25iUnmxmssa56HDJDytAHgiuq6eCqc/eGEVB9ft4RCIS0CmU
+X-Gm-Message-State: AOJu0Yzvg1mpYt1I+hx6roNQpL4XJ/iGYWJyVbKWs+Iweo8FM2sdXcUC
+	tSnvsnkJmyA7z7ifhc5/RnYOKT6/upLX7Ebr8uu4hOBybYqaaZjvLnLF1YfmfQ1qhmZ19WhFl3V
+	i
+X-Google-Smtp-Source: AGHT+IGovvSTbspKm9/uX3uiFBF3Rzq6mLU/EqERkjT+y/Op/qBmj/dbGtOoq0wlVWRETE6RaWnnJA==
+X-Received: by 2002:a5d:6043:0:b0:33d:8c9d:419 with SMTP id j3-20020a5d6043000000b0033d8c9d0419mr5302058wrt.24.1711831407999;
+        Sat, 30 Mar 2024 13:43:27 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id o12-20020a5d4a8c000000b0033e7b05edf3sm7231299wrq.44.2024.03.30.13.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Mar 2024 13:43:27 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 00/11] drm/mediatek: drop driver owner initialization
+Date: Sat, 30 Mar 2024 21:43:11 +0100
+Message-Id: <20240330-b4-module-owner-drm-mediatek-v1-0-fd5c4b8d633e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 12/29] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_FINISH command
-To: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
- linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
- thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com,
- vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
- dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
- peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
- rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
- vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
- tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
- alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com, liam.merwick@oracle.com,
- Brijesh Singh <brijesh.singh@amd.com>, Harald Hoyer <harald@profian.com>
-References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-13-michael.roth@amd.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20240329225835.400662-13-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAF95CGYC/x3MQQqDMBBG4avIrB2IUSl4FXERm992aJPIRG1Bv
+ HtDlx883kkZKsg0VCcpDsmSYkFTV3R/uvgAiy8ma2xn2tbw3HFIfn+D0ydC2WvgAC9uw4ud620
+ /38xSUiqLVbHI978fp+v6AXV4FlBuAAAA
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1673;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=5hjA386zwMlffmMn4NRghhyylnCA9pQb83mqNAD1Gws=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmCHlky5Ab07wRdqkTCAV1panAirUB2C1L0ur5U
+ OVvafL4tMqJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgh5ZAAKCRDBN2bmhouD
+ 10EZD/4w3np5oImOf6K7LQ7H1fmbPZuL+mTQh94jIgP6B7mi7lCuetbrxbmX9ijN8D3RvaGfH6S
+ V1+KbFL+cj9L7V76xfnKzZIvbLSKwXqZdxpg6cQqhiFko8NA7d2OrH7Vi4ObyUEGYSuYoZ6s3qK
+ U0ZwJlDue5FA1BWh3GmIjkn/tEiDRb5ALIHn2asHTZlqsBn3YN+N0CtSlB6dIFkWmvNa9e9Ewdz
+ k0U4Fw7hGPH8aQMRbV64K5ykBTKhpyamK5M88gmp/yDN5JVvr7r+sZJi68lpORSr5bpHGXLU1+Y
+ dCYrWy7fPjLbURMCm4IQcTh3bKafPXM3E2gNH+PMz4Bn+iZcgqrBhj750Psn7QTplIwawfFQTQf
+ b7jk8TRAVjRiA0FaVx368uEBGtBJKWX2lllipHiiTYkhvPOYvyVPvdc8FDxebngkxuAxDcBaZok
+ +soCitosPhDTF7SPeqHqBuuS2OADZzJEVINvuXllxkAZ2EewnUrgj281B0BYhmto1ZX6nqb8tZa
+ esoGpfD6kOCoK5BIQUZMPd7CNV6KTXyXzDpaqq1nvwnt4W4KZMn2dEuEmCmZ+g47R4MP6adIfxg
+ bJam4PP2V/8geJx70BJY7XJoWix1UrUwTVAtpENs5W1iKjFSggoGibqIHJe6cEQa8/LPMH9s0Xq
+ gDCpgluIJFYRuBw==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-On 3/29/24 23:58, Michael Roth wrote:
-> 
-> +		/* Handle boot vCPU first to ensure consistent measurement of initial state. */
-> +		if (!boot_vcpu_handled && vcpu->vcpu_id != 0)
-> +			continue;
-> +
-> +		if (boot_vcpu_handled && vcpu->vcpu_id == 0)
-> +			continue;
+Simplify the code by dropping unnecessary .owner initialization in the
+driver.
 
-Why was this not necessary for KVM_SEV_LAUNCH_UPDATE_VMSA?  Do we need 
-it now?
+Best regards,
+Krzysztof
 
-> +See SEV-SNP specification [snp-fw-abi]_ for SNP_LAUNCH_FINISH further details
-> +on launch finish input parameters.
+---
+Krzysztof Kozlowski (11):
+      drm/mediatek: aal: drop driver owner initialization
+      drm/mediatek: ccorr: drop driver owner initialization
+      drm/mediatek: color: drop driver owner initialization
+      drm/mediatek: gamma: drop driver owner initialization
+      drm/mediatek: merge: drop driver owner initialization
+      drm/mediatek: ovl: drop driver owner initialization
+      drm/mediatek: ovl_adaptor: drop driver owner initialization
+      drm/mediatek: rdma: drop driver owner initialization
+      drm/mediatek: ethdr: drop driver owner initialization
+      drm/mediatek: mdp_rdma: drop driver owner initialization
+      drm/mediatek: padding: drop driver owner initialization
 
-See SNP_LAUNCH_FINISH in the SEV-SNP specification [snp-fw-abi]_ for 
-further details on the input parameters in ``struct 
-kvm_sev_snp_launch_finish``.
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c         | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_ccorr.c       | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_color.c       | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c       | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c       | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c         | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c | 1 -
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c        | 1 -
+ drivers/gpu/drm/mediatek/mtk_ethdr.c            | 1 -
+ drivers/gpu/drm/mediatek/mtk_mdp_rdma.c         | 1 -
+ drivers/gpu/drm/mediatek/mtk_padding.c          | 1 -
+ 11 files changed, 11 deletions(-)
+---
+base-commit: 7fdcff3312e16ba8d1419f8a18f465c5cc235ecf
+change-id: 20240330-b4-module-owner-drm-mediatek-aa525b70f033
 
-Paolo
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
