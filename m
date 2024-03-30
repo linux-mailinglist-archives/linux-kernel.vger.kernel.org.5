@@ -1,138 +1,127 @@
-Return-Path: <linux-kernel+bounces-125685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967CF892AAB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:12:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF4A892AAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 12:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EC29B21BC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:12:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00244B21B81
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8B52BAEF;
-	Sat, 30 Mar 2024 11:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069C32BAF6;
+	Sat, 30 Mar 2024 11:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ME3SBlvP"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eHC+QdJd"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B20BE6F
-	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F50C17745
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 11:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711797132; cv=none; b=Hr561AvK01G1YKpzwBzPFPC/jVM87ZJ9ysEmitzc5ahZc0DSDOCHdcmRsTdEtGcea3Hfpd45/gu++K18/lELdXCaUcFploWQgRMuYJ+9VuMvCz1pf14cXSrtGR4XC/2IEslPH2fMbiYPSNL8DLPOtM+BuUKZX9kum6wH4pXL6NE=
+	t=1711797210; cv=none; b=bYvvjkwdPX4SQ5Wu70fGGTfejSNRuGwEh5kVS2rKQ5vdL3Ev8cazhOJFOKvDeDIVzM66QcRrJ5G+bpnIx2ovUwPt6QfApMrOeJss+86MTXja4k5rEaSKBEMmbtQt8TtRsDkGvx9e86lw9mop65a0LvflGt01nkV90oCKitCU/v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711797132; c=relaxed/simple;
-	bh=/+93Og3Mv0PankfJrCm8noo2m99RdjfXeaL8llY6Zkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O7sVU50pVAnPTgXVKymvyM3+/l/CoA5lzkpdmpVbsjBw2EMkTc0HW1R4XRZFuNU8+vTtcK/yHd+YFewtk2ulP2tVFjquuGpSJFi9LVFtC3cYOtlYa5kvY/2Flb4RlW2YRoKGJm4sHta71ZWRSa2QiRGl2mdPlwQd8b+QIqs9LIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ME3SBlvP; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1711797210; c=relaxed/simple;
+	bh=ueQEYRowh1BG76XkysAtD6hzJ57Be1g4QyrGkEtHUFA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kIxJaylN6GvV45iVxq0HQN77JU+viJTaCy6vH9ZI5o0rwC0TA43gR7sMYaZGSjG24nYNZ38Kcl1zF1iKOiZYB3YbfbjoHKXFywNJ6r221218BR0+QdRlUkxPDe3k8hzyIYzyrcdOHPoKBwV0i7ZQjSBI43biOijSelBaEhzCKG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eHC+QdJd; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4a387ff7acso328501066b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:12:10 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4155bdc0bc5so722335e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 04:13:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711797129; x=1712401929; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eDwKko1DTKW3c4OwHGe1slw6WwqSa57Xtn6YOo7f86Q=;
-        b=ME3SBlvPZUtBk+GUZMkGi0dlhoyfpqKKMvig6cRPlyDVoy1wfpYpZ060jBje+16BSY
-         dwD7AFGn5ECBB92EZh89oUJu1hKUeHfQ8IMaPjGXUM6dt4K+tPUEZb5RQ1xX8oOq3CIJ
-         /trDsw/cpTgtv8u02XwuJxrRHlJh8e1YfSMWJUgl0VDu8hloqroy7YJiZ9QMb5MsEdtN
-         Z0k/6HFFujYtUSrNwQ1dvrIsOY3mSs4LDVU/UStBcxJefT6QbRp2tyX1wcgK0dTexL7y
-         a9nqXDlHa+njuzdKcRehh/FEaFXIk3fGAYIsPStwXXFZ1Ao1n+J8xXE5OgYVlThVsBUh
-         wZwA==
+        d=gmail.com; s=20230601; t=1711797206; x=1712402006; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qGpbD78cy/B/Wyutkg4e7jIuut8zfsGFclJfJk2FLE0=;
+        b=eHC+QdJdAWhT9JBj+jZ2RYhdaAgwBuSWa4VTE/fuLfHnBR/IrNf1qpNIn44ThHJ1SP
+         LlPJdpkvtEQ/Agy8F6x1LI9d1BP/1WDgrE2AUuDveoaMmfzRpaOqNY5jQ5T3lg2H77ZY
+         lQPRYdj9e+f41ggucXqCXLwM3icY5UmGH04bn3354wwUeV/ezCvEF2+aj6sE4cRWf0wv
+         zOc/rfLC6Nr1HPhJxg373Eim1LAEhSsnOM08yi1aXkiZj2CBwon+Mu6xgfjyCH2fXfMt
+         +pM2gjlojFrs2D5LD79/WTA22JTZLlWlmzod6pKEno0CJXC8HzUka6ToxHYmzpS6c/Pa
+         Bzsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711797129; x=1712401929;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eDwKko1DTKW3c4OwHGe1slw6WwqSa57Xtn6YOo7f86Q=;
-        b=gasHfgm43COalWLbrkNS3RVJFUF6D6bhcDtejg4oHhkSDZWWgKVbDNHuL0A7iaroSA
-         Z5qPB2p2pTWAgLe+ROesE2URDQxcpZG6cpasmvoyqaqDT+S0V7OcD861QFd9XLy7ufQQ
-         HZ6BS+6rS4r7RXu8HQRWq+uY2gfoZ5P8wpgeRTt+UmenMAoD1tlh4HrNX770t3yCMtXj
-         0rm4f9KQvJxGRx9AkgIFBf5dD6PyVt9+r40qshCB3ec4Ax+SjP9AemdqgRuj3Um+oUL0
-         fh0e3vvbGH27v5749eys3UkSdYr97GR3mwmCHie6j6/MX/vvrMku4kEuZjsnL7ZfX1/M
-         WC4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUiLFSBCg8R+RxbeRfLjxPC+4MEcClth0lgOVMf2tH4mDItJPXvRnI5yN7mAegqlEmsHy2RwLB8JhE3TOXekJ5gQkxNaL1jCcBlC+ad
-X-Gm-Message-State: AOJu0YwRXbY+RhSLdbiLOwydAhqpGz59O1TCmqF10+9pLFGt125x67ln
-	z/6S2tzHb+GhroI/RvBRQNFV1SLX/2IteuCuJSKrUoTgAbb+Yoqg
-X-Google-Smtp-Source: AGHT+IE1ap2jUF03nDb1Ck5AiS6cak/UhsjfI9niuRfMCLjHuY008ZE5Cy+eAGnSmF6W5KvKcDw7iQ==
-X-Received: by 2002:a17:906:f284:b0:a4e:2123:e3c8 with SMTP id gu4-20020a170906f28400b00a4e2123e3c8mr2775516ejb.56.1711797128733;
-        Sat, 30 Mar 2024 04:12:08 -0700 (PDT)
-Received: from gmail.com (84-236-113-97.pool.digikabel.hu. [84.236.113.97])
-        by smtp.gmail.com with ESMTPSA id h9-20020a1709060f4900b00a472c4b9486sm2995392ejj.84.2024.03.30.04.12.07
+        d=1e100.net; s=20230601; t=1711797206; x=1712402006;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qGpbD78cy/B/Wyutkg4e7jIuut8zfsGFclJfJk2FLE0=;
+        b=qpkdJunDBNqKeCuexdYIBlF43HaD4asx/VBt0lS3CvQkUBw2bZvBPngEVF9qOTFLp6
+         ff7Fk5KH3+BsDNt2kvYSHTBWzL4fnaoUrayfd7vCwT1GoVxl7Pam9yA5ROE4KfwFg8Fc
+         3iiqKxFLoTIEKNK61dcnKj0mxgXkwKLyVqG4/+yW3L4otJbAUJt9DcKV91uimcgsxa+7
+         XM7qyqCaV10s9iuvGEUyYL4kA5Zqn54Hd21rJzRmzwXArDrpqRdey8euN2KgNo4JLHj5
+         M7+23lWTj0V1LBimCPCQr4ixCKkJQf4aFHIqdIC0xzgqfZCWbeewP4CSrd8jG3D5jYZz
+         rmYw==
+X-Gm-Message-State: AOJu0YyTLV8auJs5he26wgniQZ12I5vFuf2JtdZ1EO0d5sari1CjUgIg
+	0ToWDX/5YLJsXdI17A0/SH44X65djb3sEQhYE/CZzbaOTwoeBYzL9EW4MHa8h/w=
+X-Google-Smtp-Source: AGHT+IGmDWnORx0RBtHiMxbOf2bpkh7ue7o9cHmK67DxnOZd8Su14ZYemdeLPqvUgOXN0iVund05vg==
+X-Received: by 2002:a05:600c:b55:b0:414:73c7:a8d8 with SMTP id k21-20020a05600c0b5500b0041473c7a8d8mr3340049wmr.24.1711797205724;
+        Sat, 30 Mar 2024 04:13:25 -0700 (PDT)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id k33-20020a05600c1ca100b0041409cabb39sm11280288wms.18.2024.03.30.04.13.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Mar 2024 04:12:08 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sat, 30 Mar 2024 12:12:06 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: fenghua.yu@intel.com, bp@alien8.de, james.morse@arm.com,
-	tony.luck@intel.com, peternewman@google.com, babu.moger@amd.com,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, james.greenhalgh@arm.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/resctrl: Fix uninitialized memory read when last CPU
- of domain goes offline
-Message-ID: <ZgfzhjPP+kAQX7em@gmail.com>
-References: <979cfd9522021aa6001f8995cd36fb56e1c9cd39.1711659804.git.reinette.chatre@intel.com>
- <ZgZnZgfDUWlhQQxW@gmail.com>
- <cc629f91-b4b5-4c9d-b47c-c40eddb03a07@intel.com>
+        Sat, 30 Mar 2024 04:13:24 -0700 (PDT)
+From: Stafford Horne <shorne@gmail.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Stafford Horne <shorne@gmail.com>,
+	Guo Ren <guoren@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v2] riscv: Remove unused asm/signal.h file
+Date: Sat, 30 Mar 2024 11:13:05 +0000
+Message-ID: <20240330111308.2053965-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc629f91-b4b5-4c9d-b47c-c40eddb03a07@intel.com>
+Content-Transfer-Encoding: 8bit
 
+When riscv moved to common entry the definition and usage of
+do_work_pending was removed.  This unused header file remains.
 
-* Reinette Chatre <reinette.chatre@intel.com> wrote:
+Remove the header file as it is not used.
 
-> Hi Ingo,
-> 
-> On 3/29/2024 12:01 AM, Ingo Molnar wrote:
-> > 
-> > * Reinette Chatre <reinette.chatre@intel.com> wrote:
-> > 
-> >> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> >> index c99f26ebe7a6..4f9ef35626a7 100644
-> >> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> >> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> >> @@ -85,6 +85,10 @@ cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
-> >>  	if (cpu < nr_cpu_ids && !tick_nohz_full_cpu(cpu))
-> >>  		return cpu;
-> >>  
-> >> +	/* Only continue if tick_nohz_full_mask has been initialized. */
-> >> +	if (!tick_nohz_full_enabled())
-> >> +		return cpu;
-> >> +
-> > 
-> > So we already have this a few lines up:
-> > 
-> >         if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
-> >                 return cpu;
-> > 
-> > And we can combine the two checks into a single one, with the patch 
-> > below, right?
-> 
-> Right. Indeed. Doing so is most appropriate. Thank you very much.
-> 
-> > 
-> > Untested.
-> 
-> Tested-by: Reinette Chatre <reinette.chatre@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+I have tested compiling the kernel with this patch applied and saw no
+issues.  Noticed when auditing how different ports handle signals
+related to saving FPU state.
 
-Please just pick up my optimization to your fix and submit a v2 - you 
-did all the hard work.
+Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+Reviewed-by: Guo Ren <guoren@kernel.org>
+---
+Resending with reviewed-by.
 
-Thanks,
+ arch/riscv/include/asm/signal.h | 12 ------------
+ 1 file changed, 12 deletions(-)
+ delete mode 100644 arch/riscv/include/asm/signal.h
 
-	Ingo
+diff --git a/arch/riscv/include/asm/signal.h b/arch/riscv/include/asm/signal.h
+deleted file mode 100644
+index 956ae0a01bad..000000000000
+--- a/arch/riscv/include/asm/signal.h
++++ /dev/null
+@@ -1,12 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-
+-#ifndef __ASM_SIGNAL_H
+-#define __ASM_SIGNAL_H
+-
+-#include <uapi/asm/signal.h>
+-#include <uapi/asm/ptrace.h>
+-
+-asmlinkage __visible
+-void do_work_pending(struct pt_regs *regs, unsigned long thread_info_flags);
+-
+-#endif
+-- 
+2.44.0
+
 
