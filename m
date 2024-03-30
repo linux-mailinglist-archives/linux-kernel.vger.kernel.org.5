@@ -1,161 +1,139 @@
-Return-Path: <linux-kernel+bounces-125591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87AD892920
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:58:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46CE6892927
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 04:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E725283587
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:58:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78F1B1C21265
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 03:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76A7847B;
-	Sat, 30 Mar 2024 03:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8259455;
+	Sat, 30 Mar 2024 03:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Emfy5Sqo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QNXtpUBL"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363A81FA5;
-	Sat, 30 Mar 2024 03:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5547579C8
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 03:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711771105; cv=none; b=D2PdiZ/09NEE8cGVeYaLKwoto5aEQcqaLiH0K3zG9aSRDicNdfTR9Y4Wu1p0DSI/Yuf7M6W6cdSHce09pCvQyV7Q4opTnfnjM5EsSHx/9mn5D5JuEG/ROD6TNmjR5XuNqODX8xBvFUJscGY79+kQ8M6sGWpX3ls/bfkTlxBdJfw=
+	t=1711771174; cv=none; b=sLZRJD1iHGJBXmJ2esbFPN3RTxQT4jn2ahn6RtiJzdiIjac5eefgGMBqPDnKOs/mN+oDJsEki/Encg2WBxA6gl84rKWjTdEnmJ0gGvp6kUfe5CIHf3aRNS9JJHWBQT6jiMBtZLEsORDp9jjCiqAtimAvaMFKpNq/WvdwcQDHHP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711771105; c=relaxed/simple;
-	bh=+1r0KuPuLBo2r548nWnxoAcgxrG2gmAGvuQwZou/czA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kwq2obNbkGGvNfdoVg1gaKR/vHN/hmaq8/zNIMcqUBK//IzeYDU/HyROUFlRC60YBvnMlbV4jVc8NNN2h28eKMusY3smJ9MXnAItUF9WE+b+vS689CwTVwwLIT+f9o46ZVbkPokRsQWvYtvsrmK9T9gNj8OsPcrzO/An8T/t1+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Emfy5Sqo; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711771102; x=1743307102;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+1r0KuPuLBo2r548nWnxoAcgxrG2gmAGvuQwZou/czA=;
-  b=Emfy5SqoQSrjQrk8Qkp3SjXVExlOrmi0YaPbnXG8tzKV8EcgbLU0teLY
-   /SozqdZqJnYcRHTKyiNzx3nOx6sfk3o7z1jH3fHPpoPBHXsbGppbm8GKh
-   CULIaFUkybhVvzNDJ0sXWjfZqrW+bCBUlxsD/ednK1r0yKN3sGpt6oQak
-   GxUSsEBsR8i/10y4Ps8qNpjuIwbjimDPqyV3vYjngO1jLgiUty0xeyUHT
-   2IYIHfmcLLF/OvpEkUPFQ/hRMGJumKP9z8jzyC36eeJo/jk3v7ixV1S46
-   ojXxNXa4gCoAEuhPXStfv88qXq5/uqt+lowp/TN8nwQjiUilKtOkCoSGE
-   Q==;
-X-CSE-ConnectionGUID: WFS1oBizQ4ugaK52YWbJCQ==
-X-CSE-MsgGUID: h3+y6xDfRDOMG1vTJ2hBRg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="32370308"
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="32370308"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 20:58:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
-   d="scan'208";a="17213261"
-Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 29 Mar 2024 20:58:18 -0700
-Received: from kbuild by be39aa325d23 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rqPrD-0003vk-37;
-	Sat, 30 Mar 2024 03:58:15 +0000
-Date: Sat, 30 Mar 2024 11:57:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Richard Zhu <hongxing.zhu@nxp.com>, vkoul@kernel.org, kishon@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, frank.li@nxp.com
-Cc: oe-kbuild-all@lists.linux.dev, hongxing.zhu@nxp.com,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de, linux-imx@nxp.com
-Subject: Re: [PATCH v1 3/3] phy: freescale: imx8q-hsio: Add i.MX8Q HSIO PHY
- driver support
-Message-ID: <202403301157.mPlhQUdz-lkp@intel.com>
-References: <1711699790-16494-4-git-send-email-hongxing.zhu@nxp.com>
+	s=arc-20240116; t=1711771174; c=relaxed/simple;
+	bh=HVQQ/1Sqaeom6RrFBW54Crl9fEDAeeQFXdkKvNlg5mU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qLb58tWTbpTV5nAVHMPFAre1AmaS7Ijtltr4kUWQm3tGiIRbe0TaAqL2kbi76bCmsgHSgLKnlyWOBvf+Jbn3kqMMK+BxmV5sU55sPwpqX2MHAWAQZnarD5fdGZfaapjNvj3vl1py09aVUiJabl6nc5JpZJ23zAG0IiKZTuw3adA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QNXtpUBL; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-515b69e8f38so2616621e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Mar 2024 20:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711771170; x=1712375970; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V/KyYTez7Ham6RArqjYsAGdRx6I3CfaIBG2n577n7v0=;
+        b=QNXtpUBLHZugTJXF79Q12RS1j/sw9g89w9NaxBbzlJXt4lL4qprmSGzD4bMqIpG6FR
+         4XaGOlmjw+HMF153uu6Fl2M8R4J/IQGkLUleFaKykIThHHVcB2yC99mq0C0m9iyMtsvU
+         3fmFLmpD22myrTBf7xe08XCyGP3Vm/vJsPkTHCFVktR1DAP3DD8Ll5kgDh+TirQHwBFt
+         itugFTRVpVHr4kUgxIs9n7j+d6DiWn4ChJYUK4cum2ozfqSsjLmfP3BGnOoqkUAUGYMk
+         ct2u1+pwIK3BbRCeSiB0kC1AJ3gTPsOlZYcqHyLkhLOJ5tNmJwWJ8wOVAqK6wnTKtoUj
+         9daA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711771170; x=1712375970;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V/KyYTez7Ham6RArqjYsAGdRx6I3CfaIBG2n577n7v0=;
+        b=HIF90423vQEdu0QFKvz0ZXFUTqY6o1UHmSGmyhsbMIej0/3e/1XyT0CiaFYLp3MsJ0
+         CApUPEUMbcr0PTsDgl+kDy6QFRQoFaHcPnpZizkTturwLDR+fELfxr++O5qa0dDVzd1q
+         cb/EbNbFrWj18Ey7HrKV4uD1t0i1MUl6UNt6ellBwcZaROgZywx7oMK8qHz8n0K9eBoV
+         LMbMy3CCA15WlUnQRoQqilZlgqMPyim7MAhAWbh8Kq3Ybo7u6mI+cjBwm+K1gNnW2FVP
+         8L1fvIBJzU1I7y9gacgvGL0/QoYaxUg2+cuWWPwEh48L/JPEz/08qpWkXETSoedtCxLq
+         U/EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOm8hWtQrb4xbkBvodua8nQZ3uVVfaer4K2vT+MlXr8vm7zmF1rCStvIqC/gWkUip8CxegPqlAoHUOFk+fn1zr+swvsefcB0Jswk0O
+X-Gm-Message-State: AOJu0YwU7zFvLXjvkrsukcRtSluoCqy+3fb7ACUco44DCeYLuoseCV4z
+	6OB3jEH/fIVuey7WPaj8p8ouvgAZRSMgNK1Y+MKjYC27QpJSR0w0FvbWmxBTZRU=
+X-Google-Smtp-Source: AGHT+IGQmXGXUknN+Wj2FG7n6iWPBgprhcqnpU4Z7Jb+uCSYuzieUgOOjoMlqaa84Q2JHfEIdl2+hw==
+X-Received: by 2002:a05:6512:1307:b0:513:4f60:82c4 with SMTP id x7-20020a056512130700b005134f6082c4mr2915403lfu.3.1711771170376;
+        Fri, 29 Mar 2024 20:59:30 -0700 (PDT)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id br2-20020a056512400200b00515d1393f3csm423957lfb.104.2024.03.29.20.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 20:59:30 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH 0/3] drm/panel: add support for LG SW43408 panel
+Date: Sat, 30 Mar 2024 05:59:27 +0200
+Message-Id: <20240330-lg-sw43408-panel-v1-0-f5580fc9f2da@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1711699790-16494-4-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAB+OB2YC/x3MTQqAIBBA4avIrBvwF6KrRAurqQbERKEC6e5Jy
+ 2/xXoVCmanAICpkurjwGRtUJ2A5fNwJeW0GLbWVxkgMO5bbGit7TD5SwNk5vVmlFmcIWpYybfz
+ 8y3F63w9k14blYgAAAA==
+To: Sumit Semwal <sumit.semwal@linaro.org>, 
+ Caleb Connolly <caleb.connolly@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ Vinod Koul <vkoul@kernel.org>, Caleb Connolly <caleb@connolly.tech>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1250;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=HVQQ/1Sqaeom6RrFBW54Crl9fEDAeeQFXdkKvNlg5mU=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmB44hgrh2oy+/fGY8pSaDoMtDIh0OTOsGKIq/J
+ gzwpsBOeeqJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZgeOIQAKCRCLPIo+Aiko
+ 1dxCB/4unCfNUOHubbbTywYo1qg6QGSV/hNj4aNbERch4zIqmSeAdnCJ+jhqqI8JVTf9p/K8eGy
+ Imft1WGaRzBE4/Mz6X7eYHg0bAnxSKiTcJ/fWjgXUelBwcBhujJdnV/QwD1/31TJwKPTZ8ndtas
+ xFvdOUxYLfRSiLCVBha6RHugPSV6jGnORHIa/75nDD0QeieoGUG1hNHNLI27t967xu+PabyHw1N
+ dF0xhIyiw7lH3v+3kRnAOUfXusPAFWH6I7KiaUnVfUiI2FV1mAIBVQe3sIepOOqkLjfQUNqQIKz
+ Q45lS/fx23lgfYel7BCBih5vpKbUipfx78y05cbBmelONARu
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-Hi Richard,
+The LG SW43408 panel is used on Google Pixel3 devices. For a long time
+we could not submit the driver, as the panel was not coming up from the
+reset. The panel seems to be picky about some of the delays during init
+and it also uses non-standard payload for MIPI_DSI_COMPRESSION_MODE.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+Dmitry Baryshkov (1):
+      drm/mipi-dsi: add mipi_dsi_compression_mode_raw()
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on linus/master v6.9-rc1 next-20240328]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Sumit Semwal (2):
+      dt-bindings: panel: Add LG SW43408 MIPI-DSI panel
+      drm: panel: Add LG sw43408 panel driver
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Zhu/dt-bindings-phy-Add-i-MX8Q-HSIO-SerDes-PHY-binding/20240329-162937
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/1711699790-16494-4-git-send-email-hongxing.zhu%40nxp.com
-patch subject: [PATCH v1 3/3] phy: freescale: imx8q-hsio: Add i.MX8Q HSIO PHY driver support
-config: powerpc64-randconfig-r062-20240330 (https://download.01.org/0day-ci/archive/20240330/202403301157.mPlhQUdz-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 79ba323bdd0843275019e16b6e9b35133677c514)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240330/202403301157.mPlhQUdz-lkp@intel.com/reproduce)
+ .../bindings/display/panel/lg,sw43408.yaml         |  37 +++
+ MAINTAINERS                                        |   8 +
+ drivers/gpu/drm/drm_mipi_dsi.c                     |  34 ++-
+ drivers/gpu/drm/panel/Kconfig                      |  11 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ drivers/gpu/drm/panel/panel-lg-sw43408.c           | 322 +++++++++++++++++++++
+ include/drm/drm_mipi_dsi.h                         |   1 +
+ 7 files changed, 406 insertions(+), 8 deletions(-)
+---
+base-commit: 13ee4a7161b6fd938aef6688ff43b163f6d83e37
+change-id: 20240330-lg-sw43408-panel-b552f411c53e
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403301157.mPlhQUdz-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/phy/freescale/phy-fsl-imx8q-hsio.c:8:
-   In file included from include/linux/io.h:13:
-   In file included from arch/powerpc/include/asm/io.h:24:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> drivers/phy/freescale/phy-fsl-imx8q-hsio.c:367:8: error: call to undeclared function 'FIELD_PREP'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     367 |         val = FIELD_PREP(MODE_MASK, val);
-         |               ^
-   1 warning and 1 error generated.
-
-
-vim +/FIELD_PREP +367 drivers/phy/freescale/phy-fsl-imx8q-hsio.c
-
-   355	
-   356	static int imx8q_hsio_set_mode(struct phy *phy, enum phy_mode mode,
-   357					   int submode)
-   358	{
-   359		u32 val;
-   360		struct imx8q_hsio_lane *lane = phy_get_drvdata(phy);
-   361		struct imx8q_hsio_priv *priv = lane->priv;
-   362	
-   363		if (lane->lane_mode != mode)
-   364			return -EINVAL;
-   365	
-   366		val = (mode == PHY_MODE_PCIE) ? MODE_PCIE : MODE_SATA;
- > 367		val = FIELD_PREP(MODE_MASK, val);
-   368		regmap_update_bits(priv->phy, lane->phy_off + CTRL0, MODE_MASK, val);
-   369	
-   370		switch (submode) {
-   371		case PHY_MODE_PCIE_RC:
-   372			val = FIELD_PREP(DEVICE_TYPE_MASK, PCI_EXP_TYPE_ROOT_PORT);
-   373			break;
-   374		case PHY_MODE_PCIE_EP:
-   375			val = FIELD_PREP(DEVICE_TYPE_MASK, PCI_EXP_TYPE_ENDPOINT);
-   376			break;
-   377		default: /* Support only PCIe EP and RC now. */
-   378			return 0;
-   379		}
-   380		if (submode)
-   381			regmap_update_bits(priv->ctrl, lane->ctrl_off + CTRL0,
-   382					   DEVICE_TYPE_MASK, val);
-   383	
-   384		return 0;
-   385	}
-   386	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
