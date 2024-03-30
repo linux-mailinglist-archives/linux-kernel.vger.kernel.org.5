@@ -1,183 +1,132 @@
-Return-Path: <linux-kernel+bounces-125668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38FA7892A5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:17:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874EA892A60
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 11:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C3B3B228BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:17:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16EE8B21BE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508EC28385;
-	Sat, 30 Mar 2024 10:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02BB29424;
+	Sat, 30 Mar 2024 10:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Df7YjMiU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="W/H5UHy8";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p0ClvWXu"
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8CA11712;
-	Sat, 30 Mar 2024 10:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1AD61C0DD5;
+	Sat, 30 Mar 2024 10:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711793866; cv=none; b=sxNflN3s/lK7VHgK5zvHCMJfsJl4sDNku8oSAFUmu/GypiBY8EEE34QudShihyY7FGtGjkVcqKBoFuTTvUEEQZe/Xt8MLZau1zoW2nhiT94ZFzubngng2wQFA2vqPWm1VdPIyFhQgplYXkmnYyFuodKa4eZE2Eh3U+QBLK5EqUs=
+	t=1711794000; cv=none; b=tgiUxWqnZI0E5fqgpa4bkTMUN1k376e3NOWiUAeknQBFSF4TBlKPiTkIBCYaFctc+U/QJQXsJ2E0NUeXyqi19o19qJ7Pn+KSlXYJ6CuEPqb0PHUzhRSRPrMaxiVF45OmumQugtkeHFeCHE7zhsDKo/Ga1Fh8ySAe1e//GK4uecw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711793866; c=relaxed/simple;
-	bh=A2FNrSJmLuvRr6yesI1TqFlfAMOp6Etj3K6TPkNlrQg=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YScjXM5WLUOC7Nu2Y6YJzovpI44YMydVRhkubbT6ScglFmWQz1Yw6NcBhG2vH/vNMGpguD6tiPsz8KHXTwLSHjpEPC1NzcG34Y2hI9zVnZcQ7wJkFtR10dQ3n42QLB+Yeg4uNoqt5dvL4xzlorONwC3ry2vn8bNEFrFZUsHFfR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Df7YjMiU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC1AC433F1;
-	Sat, 30 Mar 2024 10:17:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711793866;
-	bh=A2FNrSJmLuvRr6yesI1TqFlfAMOp6Etj3K6TPkNlrQg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Df7YjMiUlon7HlgBHBV7e8i6E3yV6uJRUNJG2Pqt1EPY8jNv7iEHC8ZSE8Ghx4Sfp
-	 Q4D+VXWX8aPyxbkWjw23gLGLRPsrKX31dCwdy7ibEk6//yqCZa719tZLFl4ddRyHuG
-	 3JcjZUxGXdKuUkl5XbkAP5yJ7dRksuZ5SM+8xP3aeJiSDu3xZEIqLppee5ig7guhBq
-	 M1EZDrfSrdJrT7QQ/BGirY0nXC5ZAFFDqX9a3ls2I8ExeDqrKFBo3CupgwJ/mLePUk
-	 JrCq8Zp6jCeRpH4Uo4Leb5Fp7PQu2DHGXhLwfK2P4Ws9L2rK8T9CQF1rUo7tqHK+GA
-	 mpheABbJ85TyQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rqVmR-00HRXz-MY;
-	Sat, 30 Mar 2024 10:17:43 +0000
-Date: Sat, 30 Mar 2024 10:17:43 +0000
-Message-ID: <87r0fsrpko.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Krister Johansen <kjlx@templeofstupid.com>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Ali Saidi <alisaidi@amazon.com>,
-	David Reaver <me@davidreaver.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Limit stage2_apply_range() batch size to smallest block
-In-Reply-To: <20240329191537.GA2051@templeofstupid.com>
-References: <cover.1711649501.git.kjlx@templeofstupid.com>
-	<ebf0fac84cb1d19bdc6e73576e3cc40a9cab0635.1711649501.git.kjlx@templeofstupid.com>
-	<ZgbGtpj5mStTkAkn@linux.dev>
-	<20240329191537.GA2051@templeofstupid.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1711794000; c=relaxed/simple;
+	bh=MhKZZ8Mjj6u+jepgsjCGC+XkNcSBwTwz5oCrL8z0nic=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=RzSSW+Sl+hY6n/sNseJ39V6rzkCg50aKZxX/FUfgCmGckUXnD9+yELmAh6/bQvkD+/9bUqs6INEhLL67+wBDDzpMmNnaXaL7tOAtxu6mKiuFlWLt7pbflyDj9A3TgyREK5/Kda7IrtgTAnbzLfA7UnUQhPRy+2j90owSPFIYA/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=W/H5UHy8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=p0ClvWXu; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id F2F5D13800A1;
+	Sat, 30 Mar 2024 06:19:57 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sat, 30 Mar 2024 06:19:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1711793997; x=1711880397; bh=gYQUywggWk
+	t3lojA/q48Eke62WZWW42/D/zhK3t7AWw=; b=W/H5UHy85C1c8XawRzQvt85Lm/
+	8h+VMnftbgWUO+MfezKNPAp/pdPG4DehGuvcqax/DhFeRns08LKcMa4QVSkDpmhp
+	+9N9UC8+0r12z08Fxqizls1IgRj1NpVmJ5ycMPMHKaKFXrn+tZt0g2et25c61v3l
+	tUFlxnn1K74PhE1AnqZwGOWnDzMAMg+E8vRP6oNArmS7Mmk0adSITqnnAF6lu3uh
+	w9KP4yhTEjzubH0GLuhDCCGMMK4xz+gGVyT52f2tiD9B1OF9UOS2xDon/l1IOY8Q
+	/bSAvJOuDb+bQzwj3bqBew39vZEd0l3AfJq0w7UZVTi/WMfd4s40x0XA99Sw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711793997; x=1711880397; bh=gYQUywggWkt3lojA/q48Eke62WZW
+	W42/D/zhK3t7AWw=; b=p0ClvWXuOzrCt700Nosc8cBW8iYRjph2wMSHS+DHp+W9
+	c8xlEfLYXMXjqfyx/h2ZhnbVdx/7zBujVzcVnvFPlZooMiccI8joNbOedFy2qJ0J
+	qhXXJ/elB5Qt8kPMiLZxtBz3U//XjOQTTFClkNm7f4pC1Fc3i2KKQjOax6wTuf4j
+	dSkTEfb606PDaWb1OlGcLnOMx56yjsHqfU5g/ugpdJf3UfHYWcS5+XRymT9aampo
+	Is8jqqj6XetL4cCnANRgZEMHH+zeDzWDwDDvvSvvKSreZP0YTUK02M0JVkDAp+lT
+	ytxQ/JyVdNfTWcGrg5LbkLFmHZ2AZ2bMmY7cSz7W6w==
+X-ME-Sender: <xms:TecHZoDjf4TNNKEtu6Ai-Q-O7dUMWufKcaqXNum15joB87Ivq6fJ2g>
+    <xme:TecHZqj5zlKtThTOD8QSqRU8nUoboGrvflLobQV5K3nmyFltxWD2ugXyrrFKToZX0
+    Z2xfurxQzsi6mGjRVU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvgedgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:TecHZrmUrQS_FaqJzpRHfaNiFce7GSt5lPOh-6ESS4wwPKzxKd3BrQ>
+    <xmx:TecHZuz09b75CwNZfFqRl2qmechWqKb0_jRj425tBlUHEOoeuOW6jg>
+    <xmx:TecHZtQUmfb0_k3vS9XN7udXCARxjjah20UNTVqAM5tKAsHZalnMKg>
+    <xmx:TecHZpbyOhQt5GcIpp3TQo4TA5b5W0KIF1mLzd2Y92apAq6aHCluoQ>
+    <xmx:TecHZiKEfk8lbjgeqTt6qCbVaNMxXwecbcdZK4y0_BuiSP0LdR3LvA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id AF635B6008D; Sat, 30 Mar 2024 06:19:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: kjlx@templeofstupid.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, alisaidi@amazon.com, me@davidreaver.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Message-Id: <4e57929b-1539-4a25-ab05-a2a9e04ecc1d@app.fastmail.com>
+In-Reply-To: <20240330-sparc64-warnings-v1-0-37201023ee2f@ravnborg.org>
+References: <20240330-sparc64-warnings-v1-0-37201023ee2f@ravnborg.org>
+Date: Sat, 30 Mar 2024 11:19:37 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sam Ravnborg" <sam@ravnborg.org>,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "David S . Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Cc: "Nick Bowler" <nbowler@draconx.ca>, linux-kernel@vger.kernel.org,
+ "Atish Patra" <atish.patra@oracle.com>, stable@vger.kernel.org,
+ "Bob Picco" <bob.picco@oracle.com>, "Vijay Kumar" <vijay.ac.kumar@oracle.com>
+Subject: Re: [PATCH 00/10] sparc64: Fix CPU online bug and warning fixes
+Content-Type: text/plain
 
-On Fri, 29 Mar 2024 19:15:37 +0000,
-Krister Johansen <kjlx@templeofstupid.com> wrote:
-> 
-> Hi Oliver,
-> Thanks for the response.
-> 
-> On Fri, Mar 29, 2024 at 06:48:38AM -0700, Oliver Upton wrote:
-> > On Thu, Mar 28, 2024 at 12:05:08PM -0700, Krister Johansen wrote:
-> > > stage2_apply_range() for unmap operations can interfere with the
-> > > performance of IO if the device's interrupts share the CPU where the
-> > > unmap operation is occurring.  commit 5994bc9e05c2 ("KVM: arm64: Limit
-> > > stage2_apply_range() batch size to largest block") improved this.  Prior
-> > > to that commit, workloads that were unfortunate enough to have their IO
-> > > interrupts pinned to the same CPU as the unmap operation would observe a
-> > > complete stall.  With the switch to using the largest block size, it is
-> > > possible for IO to make progress, albeit at a reduced speed.
-> > 
-> > Can you describe the workload a bit more? I'm having a hard time
-> > understanding how you're unmapping that much memory on the fly in
-> > your workload. Is guest memory getting swapped? Are VMs being torn
-> > down?
-> 
-> Sorry I wasn't clear here.  Yes, it's the VMs getting torn down that's
-> causing the problems.  The container VMs don't have long lifetimes, but
-> some may be up to 256Gb in size, depending on the user.  The workloads
-> running the VMs aren't especially performance sensitive, but their users
-> do notice when network connections time-out.  IOW, if the performance is
-> bad enough to temporarily prevent new TCP connections from being
-> established or requests / responses being recieved in a timely fashion,
-> we'll hear about it.  Users deploy their services a lot, so there's a
-> lot of container vm churn.  (Really it's automation redeploying the
-> services on behalf of the users in response to new commits to their
-> repos...)
+On Sat, Mar 30, 2024, at 10:57, Sam Ravnborg via B4 Relay wrote:
+> Nick Bowler reported that sparc64 failed to bring all his CPU's online,
+> and that turned out to be an easy fix.
+>
+> The sparc64 build was rather noisy with a lot of warnings which had
+> irritated me enough to go ahead and fix them.
+> With this set of patches my arch/sparc/ is almost warning free for
+> all{no,yes,mod}config + defconfig builds.
 
-I think this advocates for a teardown-specific code path rather than
-just relying on the usual S2 unmapping which is really designed for
-eviction. There are two things to consider here:
+Patches 1-9 look good to me,
 
-- TLB invalidation: this should only take a single VMALLS12E1, rather
-  than iterating over the PTs
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-- Cache maintenance: this could be elided with FWB, or *optionally*
-  elided if userspace buys in a "I don't need to see the memory of the
-  guest after teardown" type of behaviour
+> There is one warning about "clone3 not implemented", which I have ignored.
+>
+> The warning fixes hides the fact that sparc64 is not yet y2038 prepared,
+> and it would be preferable if someone knowledgeable would fix this
+> poperly.
 
-> > Also, it seems a bit odd to steer interrupts *into* the workload you
-> > care about...
-> 
-> Ah, that was only intentionally done for the purposes of measuring the
-> impact.  That's not done on purpose in production.
-> 
-> Nevertheless, the example we tend to run into is that a box may have 2
-> NICs and each NIC has 32 Tx-Rx queues.  This means we've got 64 NIC
-> interrupts, each assigned to a different CPU.  Our systems have 64 CPUs.
-> What happens in practice is that a VM will get torn down, and that has a
-> 1-in-64 chance of impacting the performance of the subset of the flows
-> that are mapped via RSS to the interrupt that happens to be assigned to
-> the CPU where the VM is being torn down.
-> 
-> Of course, the obvious next question is why not just bind the VMs flows
-> to the CPUs the VM is running on?  We don't have a 1:1 mapping of
-> network device to VM, or VM to CPU right now, which frustrates this
-> approach.
-> 
-> > > Further reducing the stage2_apply_range() batch size has substantial
-> > > performance improvements for IO that share a CPU performing an unmap
-> > > operation.  By switching to a 2mb chunk, IO performance regressions were
-> > > no longer observed in this author's tests.  E.g. it was possible to
-> > > obtain the advertised device throughput despite an unmap operation
-> > > occurring on the CPU where the interrupt was running.  There is a
-> > > tradeoff, however.  No changes were observed in per-operation timings
-> > > when running the kvm_pagetable_test without an interrupt load.  However,
-> > > with a 64gb VM, 1 vcpu, and 4k pages and a IO load, map times increased
-> > > by about 15% and unmap times increased by about 58%.  In essence, this
-> > > trades slower map/unmap times for improved IO throughput.
-> > 
-> > There are other users of the range-based operations, like
-> > write-protection. Live migration is especially sensitive to the latency
-> > of page table updates as it can affect the VMM's ability to converge
-> > with the guest.
-> 
-> To be clear, the reduction in performance was observed when I
-> concurrently executed both the kvm_pagetable_test and a networking
-> benchmark where the NIC's interrupts were assigned to the same CPU where
-> the pagetable test was executing.  I didn't see a slowdown just running
-> the pagetable test.
+The clone3 bug has been around for ages, it's probably not even that
+hard to fix and just needs a little bit of testing.
 
-Any chance you could share more details about your HW configuration
-(what CPU is that?)  and the type of traffic? This is the sort of
-things I'd like to be able to reproduce in order to experiment various
-strategies.
+If anyone wants to work on the time64 support for the vdso, I can
+explain the details for how it's done.
 
-Thanks,
+Both of these are real bugs that should be addressed, unlike
+the other warning fixes that are mostly cosmetic aside from
+allowing the build with CONFIG_WERROR=y.
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+     Arnd
 
