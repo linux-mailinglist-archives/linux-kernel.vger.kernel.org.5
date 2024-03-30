@@ -1,163 +1,215 @@
-Return-Path: <linux-kernel+bounces-125648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2108892A13
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:34:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F0D3892A15
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 10:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43B7B1F222A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:34:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92CA3B226AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Mar 2024 09:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26BFF9D1;
-	Sat, 30 Mar 2024 09:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56DF125BF;
+	Sat, 30 Mar 2024 09:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="K93VgGGb"
-Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="njYLFCP7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F64E1C0DDD;
-	Sat, 30 Mar 2024 09:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484B464F
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 09:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711791271; cv=none; b=fC4QQiana65tSuBRu9LVdQxj6FZE6ff5mOfMXWEMyuUyrL/N8U7RK4M871aXxSYEPncemGKQUJqvN/Tm+w/W5f1F/nZyveS7NYT6tS96EAPQ8RTiHYYiR4cLFeQgh30U2SiP8I0/ogh3Uynwc8rrAnT1UuWl3fz3JxKEn3Anl6s=
+	t=1711791930; cv=none; b=J/ZDBKxSgdKRJHZnkyPHGg0VsFfgVQHzNs4NJYc7Afm/cQoJjGcNZZHeKi4xSMexo0O6lFGYQpmkmprkSZc0G3c3ajr3Mr6rXF8YzhqtUbqrSuiP4QN1P7n9cr5Bmhu1Zz42AX37pLtvLzFvLUXG2YnWgUBxkTe7EAgZA3q/YsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711791271; c=relaxed/simple;
-	bh=2D3W7Aq8rRi3gmv+4PXRtGv6s9okVKCpNPzM2GIJhqA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
-	 References:In-Reply-To; b=oZ2mnoqV3I/A+ghJoH6qP0Irn46wHvNbvSS/KhvRI+DZKC2LRtBP86bbofhhHGX0OS9gAOflkKKP9w2X8lRkmtEnDk1SJ/rZpCGn47IWmwkFiPGdffd9dSPROsO1/4XXRM1P7A7FqtSLdZm5rzj34rpxayo4iIHX5v7bhBgDPlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=K93VgGGb; arc=none smtp.client-ip=195.113.20.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
-X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
-	serial F5FD910E8FE2121B897F7E55B84E351D
-	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
-	auth type TLS.CUNI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
-	s=submission; t=1711791235; x=1713091235;
-	bh=YkJ6HA2Rzwgap8CzRAVIV0XAgD0cG3+xkx0g8vSdt0Y=;
-	h=Mime-Version:From;
-	b=K93VgGGb/2nFZnEjPEWjtOFZjLkdRjNqs+qj0cvIh8ACa5XfYLnplq+BW+yBybZ+e
-	 2gsvkxx0tZ+A8/2gYL0VpfgSPwQsE7fj2m8nxSjSXvvLkqczB/iiR/YRpbLG3isntZ
-	 NqqtZjJt+rH4guTWG5Ma4VNQXFiJY+7aWakxQYS7/DuyRUw1Zg98hjFMTBnhWcbP9z
-	 g/Ckj/p0F0w2SVAEfBTKxsX607AF2qYCxXQTwOlVUd+eW6M6tloL0NdruYfdpMd7Cj
-	 /+WHJNMQN2qGkzrIwfwpmDnePqlBAf9zyp0Q4vqGNczUhUJSkocVDkgbHPX0iWytuS
-	 MpZFthd63l3gg==
-Received: from localhost (internet5.mraknet.com [185.200.108.250])
-	(authenticated)
-	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42U9XrDM052600
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Sat, 30 Mar 2024 10:33:55 +0100 (CET)
-	(envelope-from balejk@matfyz.cz)
+	s=arc-20240116; t=1711791930; c=relaxed/simple;
+	bh=y3HgmTtMzb77xWdNMKTc/Uv8mXbFBxZV9qZKWMHhcg8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=dcFMYxmvxLu5cL6Xmj6YQn4KhTfbriXVGqMyCkd8x+7GCmS0wmBw38PaywrICvVA4tQnHGC1llMX5v+02HnHlrENK+JvCQAODYlLyuwVkHfApoi9EvNxpPHl5JvC32Vaa5JYTZtwKVdvoBZwYQ+rHnUq0PRyW+R9aHREilGRK1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=njYLFCP7; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711791928; x=1743327928;
+  h=date:from:to:cc:subject:message-id;
+  bh=y3HgmTtMzb77xWdNMKTc/Uv8mXbFBxZV9qZKWMHhcg8=;
+  b=njYLFCP7uA8c4smsj0mnpqrV/eRVI0o8AlcJV+/Zc5/xKnwceRXzZq7t
+   ksP2njyMTnPDtMVfw2FtAp6GpjnSSe9yilbbPPpv401K+51sfpy24xQ+K
+   eE+PleNMo9fW5Pugi6d2jR/uAkFBKTPAuJKo0me4ccGAt+sb3hYfyv6zS
+   Hg60fd2eKf59Qi/XValcKKFDzMRZkRjo3NgpDJ5aVdg2MLRMdhJSaQuQ1
+   EIm51DStilp4lwnSq9w/NnTAQpd80WzxzkVOD+1vrFh7BcAuFQu2eKoky
+   nMJROr2OI4E/6ITmdILyJF0UJz2UcLlAVbLFZ1ft8q6OsPvN4ho4yGH5m
+   A==;
+X-CSE-ConnectionGUID: /E4x4Z31QjeZM5oBKPFF8g==
+X-CSE-MsgGUID: l+CJ20S+RwCDwE30gCF3Jg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11028"; a="7158960"
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="7158960"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2024 02:45:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,166,1708416000"; 
+   d="scan'208";a="21864343"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 30 Mar 2024 02:45:27 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqVHA-000484-0f;
+	Sat, 30 Mar 2024 09:45:24 +0000
+Date: Sat, 30 Mar 2024 17:44:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 10756f13250261e4c88173a48cb26b7795e12be4
+Message-ID: <202403301743.VJ9a8RvO-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 30 Mar 2024 10:33:53 +0100
-Message-Id: <D06ZCKKYTQM5.3OJ6HCLHW3DZ9@matfyz.cz>
-Cc: "Markuss Broks" <markuss.broks@gmail.com>,
-        "Dmitry Torokhov"
- <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>, <duje.mihanovic@skole.hr>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 6.8 78/98] input/touchscreen: imagis: add
- support for IST3032C
-To: "Sasha Levin" <sashal@kernel.org>
-From: "Karel Balej" <balejk@matfyz.cz>
-References: <20240329123919.3087149-1-sashal@kernel.org>
- <20240329123919.3087149-78-sashal@kernel.org>
-In-Reply-To: <20240329123919.3087149-78-sashal@kernel.org>
 
-Sasha,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 10756f13250261e4c88173a48cb26b7795e12be4  Merge branch into tip/master: 'x86/shstk'
 
-Sasha Levin, 2024-03-29T08:37:49-04:00:
-> From: Karel Balej <balejk@matfyz.cz>
->
-> [ Upstream commit 90cb57a6c5717b83a110c0da720a03ee32ed255e ]
->
-> IST3032C is a touchscreen chip used for instance in the
-> samsung,coreprimevelte smartphone, with which this was tested. Add the
-> chip specific information to the driver.
->
-> Reviewed-by: Markuss Broks <markuss.broks@gmail.com>
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> Link: https://lore.kernel.org/r/20240301164659.13240-6-karelb@gimli.ms.mf=
-f.cuni.cz
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/input/touchscreen/imagis.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscre=
-en/imagis.c
-> index 9af8a6332ae67..e1fafa561ee38 100644
-> --- a/drivers/input/touchscreen/imagis.c
-> +++ b/drivers/input/touchscreen/imagis.c
-> @@ -11,6 +11,8 @@
->  #include <linux/property.h>
->  #include <linux/regulator/consumer.h>
-> =20
-> +#define IST3032C_WHOAMI			0x32c
-> +
->  #define IST3038B_REG_STATUS		0x20
->  #define IST3038B_REG_CHIPID		0x30
->  #define IST3038B_WHOAMI			0x30380b
-> @@ -363,6 +365,13 @@ static int imagis_resume(struct device *dev)
-> =20
->  static DEFINE_SIMPLE_DEV_PM_OPS(imagis_pm_ops, imagis_suspend, imagis_re=
-sume);
-> =20
-> +static const struct imagis_properties imagis_3032c_data =3D {
-> +	.interrupt_msg_cmd =3D IST3038C_REG_INTR_MESSAGE,
-> +	.touch_coord_cmd =3D IST3038C_REG_TOUCH_COORD,
-> +	.whoami_cmd =3D IST3038C_REG_CHIPID,
-> +	.whoami_val =3D IST3032C_WHOAMI,
-> +};
-> +
->  static const struct imagis_properties imagis_3038b_data =3D {
->  	.interrupt_msg_cmd =3D IST3038B_REG_STATUS,
->  	.touch_coord_cmd =3D IST3038B_REG_STATUS,
-> @@ -380,6 +389,7 @@ static const struct imagis_properties imagis_3038c_da=
-ta =3D {
-> =20
->  #ifdef CONFIG_OF
->  static const struct of_device_id imagis_of_match[] =3D {
-> +	{ .compatible =3D "imagis,ist3032c", .data =3D &imagis_3032c_data },
->  	{ .compatible =3D "imagis,ist3038b", .data =3D &imagis_3038b_data },
->  	{ .compatible =3D "imagis,ist3038c", .data =3D &imagis_3038c_data },
->  	{ },
-> --=20
-> 2.43.0
+elapsed time: 1206m
 
-sorry if I'm missing something, but I don't see why this should be
-backported: it doesn't fix anything, it's just adding support for new
-hardware.
+configs tested: 125
+configs skipped: 3
 
-I can see that adding a device ID is permitted for -stable [1], but I
-thought it still has to bear some signs of a fix, such as maybe here
-[2].
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Furthermore, you are also proposing to backport Duje's touch keys
-support [3] which I think is unarguably a new feature and not a fix at
-all. Of all the Imagis patches, only the touch area correction [4] seems
-to make sense for backporting.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240330   gcc  
+arc                   randconfig-002-20240330   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240330   clang
+arm                   randconfig-002-20240330   clang
+arm                   randconfig-003-20240330   gcc  
+arm                   randconfig-004-20240330   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240330   clang
+arm64                 randconfig-002-20240330   clang
+arm64                 randconfig-003-20240330   clang
+arm64                 randconfig-004-20240330   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240330   gcc  
+csky                  randconfig-002-20240330   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240330   clang
+hexagon               randconfig-002-20240330   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240330   clang
+i386         buildonly-randconfig-002-20240330   clang
+i386         buildonly-randconfig-003-20240330   clang
+i386         buildonly-randconfig-004-20240330   clang
+i386                                defconfig   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240330   gcc  
+loongarch             randconfig-002-20240330   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240330   gcc  
+nios2                 randconfig-002-20240330   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240330   gcc  
+parisc                randconfig-002-20240330   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240330   gcc  
+powerpc               randconfig-002-20240330   clang
+powerpc               randconfig-003-20240330   clang
+powerpc64             randconfig-001-20240330   gcc  
+powerpc64             randconfig-002-20240330   gcc  
+powerpc64             randconfig-003-20240330   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240330   gcc  
+riscv                 randconfig-002-20240330   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240330   clang
+s390                  randconfig-002-20240330   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240330   gcc  
+sh                    randconfig-002-20240330   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240330   gcc  
+sparc64               randconfig-002-20240330   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240330   clang
+um                    randconfig-002-20240330   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240330   gcc  
+xtensa                randconfig-002-20240330   gcc  
 
-Could you please explain?
-
-[1] https://docs.kernel.org/next/process/stable-kernel-rules.html
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git/commit/?=
-id=3Dd40e9edcf3eb925c259df9f9dd7319a4fcbc675b
-[3] https://lore.kernel.org/stable/20240329123919.3087149-88-sashal@kernel.=
-org/
-[4] https://lore.kernel.org/stable/20240329123919.3087149-76-sashal@kernel.=
-org/
-
-Thank you, best regards,
-K. B.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
