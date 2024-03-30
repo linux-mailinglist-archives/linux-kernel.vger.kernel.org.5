@@ -1,118 +1,95 @@
-Return-Path: <linux-kernel+bounces-126208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC2018933BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:47:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 666808932B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:26:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AEB81C229A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:47:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D03BC1F21668
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0408A152519;
-	Sun, 31 Mar 2024 16:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CAB146A65;
+	Sun, 31 Mar 2024 16:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ZiOo3rkW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VugHsG2Y"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC5F1482E7;
-	Sun, 31 Mar 2024 16:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C1314534A;
+	Sun, 31 Mar 2024 16:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711903193; cv=pass; b=RBl+/LpRjKgs7eiNA990CH02ebqbHJWg7nmvhb50ijePbjMGanV8QyDW8FyabqGw5rpFbxEBAfw2jhGUujlUMYt1IB3nmyYPLzj2IwMzjdqLslv1ZF7RBNlegJRcheDUkqRQ4HVQJjDUIAwkpuhqWtyfUtqnCKrX/3SBF/UwgQc=
+	t=1711902322; cv=pass; b=ESdQDCe4Ur1EHI8szOgK4uCfd+43a+vxS2otFNz8N6eWytOoeY1oVB3okLmRQcl/x/YAN/VK6fwfv9hQOThAAQTb2inQI12m+69CLwNejPJbi7u/wchUcbrHBmh8lh1VMnUYuzkRLtGeqRH2vZYPCgelSz10VfRsFUmiI1Z6cyI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711903193; c=relaxed/simple;
-	bh=37wcXfc5orUvfIH8yRuaE/gUmWlSqhdIeAF2bNJwUqI=;
-	h=From:To:CC:Date:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=t0CoGGGnVtT8i0uXvVEy/hObNlKOOIdSltJ6Eb0gRtb6TpYNhMh+XiIrPRJp2T4n8OK6zWj635Ksyq1pSd2w/bm42CEWEKgAa9uRPHWFJfV2YotTRs07s8Zpxxom3F5Tqe0M/q0BHwbuxO5f2slInrDJY1X7XH5PBuaMTjgajVY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ZiOo3rkW; arc=none smtp.client-ip=209.85.218.48; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; arc=pass smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+	s=arc-20240116; t=1711902322; c=relaxed/simple;
+	bh=0Tab6a8G72hAdQQTifWJdxmg84+y/tA9VvkWPFI9VQA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lto9dX420WP6VrzvfITVbUGZ2ZhsgIkbmDB4cVbM8ydvq9I4bYXWibPZvzqX8FQ2ECYSslRkmydFpOFohLhrdJffjbq54Qu7bXg8EUk7mmF+xMdmS2rFbFj6j6R4SnvkEghhB14xILQn6lFEx4/iFgoRg1FldpJ2erx59S7/NtE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VugHsG2Y; arc=none smtp.client-ip=91.218.175.173; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=pass smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 77C7A2083B;
-	Sun, 31 Mar 2024 18:39:50 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id 371B7207D1;
+	Sun, 31 Mar 2024 18:25:17 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id lOLlRCcj_w-e; Sun, 31 Mar 2024 18:39:49 +0200 (CEST)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+	with ESMTP id WUSdENQcNLv9; Sun, 31 Mar 2024 18:25:15 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id A704E20842;
-	Sun, 31 Mar 2024 18:39:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com A704E20842
+	by a.mx.secunet.com (Postfix) with ESMTPS id EF8B7207E4;
+	Sun, 31 Mar 2024 18:25:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com EF8B7207E4
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout2.secunet.com (Postfix) with ESMTP id 99124800050;
-	Sun, 31 Mar 2024 18:39:49 +0200 (CEST)
+	by mailout1.secunet.com (Postfix) with ESMTP id DE83D800053;
+	Sun, 31 Mar 2024 18:25:14 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:39:49 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:25:14 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
- 15.1.2507.17; Sun, 31 Mar 2024 16:36:19 +0000
-X-sender: <linux-kernel+bounces-125538-steffen.klassert=secunet.com@vger.kernel.org>
+ 15.1.2507.17; Sun, 31 Mar 2024 16:23:39 +0000
+X-sender: <netdev+bounces-83486-steffen.klassert=secunet.com@vger.kernel.org>
 X-Receiver: <steffen.klassert@secunet.com>
  ORCPT=rfc822;steffen.klassert@secunet.com NOTIFY=NEVER;
  X-ExtendedProps=BQAVABYAAgAAAAUAFAARAPDFCS25BAlDktII2g02frgPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4YwUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5nZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAHQAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAAwAAgAABQBsAAIAAAUAWAAXAEoAAADwxQktuQQJQ5LSCNoNNn64Q049S2xhc3NlcnQgU3RlZmZlbixPVT1Vc2VycyxPVT1NaWdyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9ye
 	TogRmFsc2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
 X-CreatedBy: MSExchange15
 X-HeloDomain: a.mx.secunet.com
-X-ExtendedProps: BQBjAAoAC0umlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAYgAKALcAAADOigAABQBkAA8AAwAAAEh1Yg==
-X-Source: SMTP:Default MBX-ESSEN-02
+X-ExtendedProps: BQBjAAoA+Zbp8x1Q3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAGIACgAfAAAAj4oAAAUABAAUIAEAAAAcAAAAc3RlZmZlbi5rbGFzc2VydEBzZWN1bmV0LmNvbQUABgACAAEFACkAAgABDwAJAAAAQ0lBdWRpdGVkAgABBQACAAcAAQAAAAUAAwAHAAAAAAAFAAUAAgABBQBkAA8AAwAAAEh1Yg==
+X-Source: SMTP:Default MBX-DRESDEN-01
 X-SourceIPAddress: 62.96.220.36
-X-EndOfInjectedXHeaders: 21535
+X-EndOfInjectedXHeaders: 27491
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125538-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 1174B208A6
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=netdev+bounces-83486-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 29E82201E5
+X-Original-To: netdev@vger.kernel.org
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711756371; cv=none; b=Lp8rQJv5Uo7eNQUklkIH5SGpgdllyHO5fJUiqYxedPBS4Xu8pM0aYtwGeBJ3DwVlkdjU54AIxDTqF3ZZEbZrQnz9SUMT2lJvLbzmm+F6nnPLbNT3SrKOF7WrOg1PKUIla0/g6+lvObyj1UjTw30VKYQ2nmX6W5pRJJIIGRpia+0=
+	t=1711760782; cv=none; b=dASfLrrkRxmD6WmYvcvyTFgLXAgqW4qcP8FwVw/FT8ajSayU1k2jNzB6oEhlAk4YxWiFWUStYosH2VKaROBs5wKHQh4Rsxe59gs4L4KuJN+VlHKDa1iIm9ShtgGS6jAthHnsiMpAE+me1GueQZILnQSEjyu5ZoBpE9mg1Ojzukk=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711756371; c=relaxed/simple;
-	bh=37wcXfc5orUvfIH8yRuaE/gUmWlSqhdIeAF2bNJwUqI=;
-	h=From:To:CC:Date:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=rSwD1Fny38ciI6YYb8O60d5xofXBb8R3s1rdoA/PpN/mGX+7QEWVKhNZeEf6/Y5QnnPRp52EPkKnNVTLah7aRuoOFLBOA+Mag5xuqeqaRwkDPbMyQGq7wTLpPAlngUgLGorSez++Pl4mYP4pBgXftStSMzHKlkqfovdv8OGKt4k=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ZiOo3rkW; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1711756368; x=1712361168; darn=vger.kernel.org;
-        h=mime-version:subject:user-agent:references:in-reply-to:message-id
-         :date:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSoCZghoKr/5/0/ji2xkzkyfBZpmTYwt/cR4yDSElGY=;
-        b=ZiOo3rkWNp/R+HdGR2H0qobBDgosgSs8KztjKGZGGEyU7H+bc0kMNpHvA+vtyUi9Cx
-         kkLHTnoP53q4T/Gbb1psZBU3fcoS9MQO5Iq/kGiHuoZKxkohb6rQr25lj4v+Thkq3RAb
-         AU1jxLT2evI7hgNODWb0ePs7cS+4T7T2C6TT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711756368; x=1712361168;
-        h=mime-version:subject:user-agent:references:in-reply-to:message-id
-         :date:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hSoCZghoKr/5/0/ji2xkzkyfBZpmTYwt/cR4yDSElGY=;
-        b=VhRcXiciKXb/k01I9xyh61yC0PWkiXrQxtQqTxD3hN08U9H+tLeOcvAotm6NSwwPF+
-         u6h0Yb3f7qXPxmFMyvSu8UHB7L5cWMsYToA3zYMmVyQxaupWbws5/LessFUqmRNf6Sh5
-         RCj1q8h6Gdz07Ebn/oIhz02TiEGutAyCEOFVsUlIQowCYvFa2HvmYNVB/9aWRjg+F/8s
-         JI9vO7ISNb1UtF53FBbrE2HeIRPwX6pNfHDG/tFJ9gCncjWmlMEg1ZBWJ9iImPy16pK4
-         uWVLNITAZUFGOknQ91htjQz7axxRNU/6z1euHiCR0puC6S0ZFRwsNVTg1//yQzF/wBtL
-         A8ig==
-X-Forwarded-Encrypted: i=1; AJvYcCVFKhPZ+tvwWBX97idrmMrDlc5aAZv6nrFIHt1WRKc3ASZLJItWL04gccbXiPFTngDwTkAHEMQ1VtI/p3np5ufOF0xAr/XWoyxkzNhs
-X-Gm-Message-State: AOJu0Ywo7W1cWq8Saci3KUUztux0azGmhPelnrxVMVxbMJynGc7Es2Qm
-	QIsAgEJXf4z2xYr8WFuHBE/ArXjKgBQNnJUJSk/IO2fsT2yWM5eOmqdNp8vmGQ==
-X-Google-Smtp-Source: AGHT+IFlVP4t6RIxSv9LCeKxetcZ0i37Xax/rZfBrQX524SbaGIPRH/aDdJRAvbPea2yviZoN6JCaA==
-X-Received: by 2002:a17:906:595a:b0:a4e:1966:1874 with SMTP id g26-20020a170906595a00b00a4e19661874mr2344347ejr.37.1711756368046;
-        Fri, 29 Mar 2024 16:52:48 -0700 (PDT)
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>, Brian Norris <briannorris@chromium.org>, =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-CC: <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>, <linux-wireless@vger.kernel.org>, <ath10k@lists.infradead.org>, <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>
-Date: Sat, 30 Mar 2024 00:52:45 +0100
-Message-ID: <18e8ca14cc8.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-In-Reply-To: <20240329-module-owner-sdio-v1-5-e4010b11ccaa@linaro.org>
-References: <20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org>
- <20240329-module-owner-sdio-v1-5-e4010b11ccaa@linaro.org>
-User-Agent: AquaMail/1.50.0 (build: 105000429)
-Subject: Re: [PATCH 5/7] wifi: brcm80211: drop driver owner initialization
+	s=arc-20240116; t=1711760782; c=relaxed/simple;
+	bh=0Tab6a8G72hAdQQTifWJdxmg84+y/tA9VvkWPFI9VQA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J9cTiVFLYlA2DR+fBNIsoiV/11LbFxExG+qAmCsON2fksIZjZEAFWqHQx2zJk8Dqn3t/Quqw4LH8Yjb2qqlthM0L82RcciykTG9EQ9SPWlqiRoPPhuerZSz/amNX1IgyImsufFdXk4+oiQpzCA0LsWzVgTdTI9x4oenmDhjahZI=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VugHsG2Y; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <08dd01e3-c45e-47d9-bcde-55f7d1edc480@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711760777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BFgFwDTUylEnErMgQV0Ufr9/Ufnl/0omKSnqywixpVg=;
+	b=VugHsG2Y5vYBP20CvcOMmGaEI/5A/PvLnTsQTtTA0ZebTuac4nORyH8iRZe/CwFs5RLRhJ
+	4Ih/prbwbd8/OSA0Wv9Z9Z9JdeLOJUf8/vLW1xeGCG/2qNeI4CXYcIw3EixotT7o6oviEg
+	ZM4gfY/Y4bUjm5TsY8pyZBWQLZ0Jv74=
+Date: Fri, 29 Mar 2024 18:06:09 -0700
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -120,130 +97,196 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature";
-	micalg=sha-256; boundary="000000000000488e7b0614d5563d"
+Subject: Re: [PATCH 19/26] netfs: New writeback implementation
+Content-Language: en-US
+To: Naveen Mamindlapalli <naveenm@marvell.com>,
+ David Howells <dhowells@redhat.com>, Christian Brauner
+ <christian@brauner.io>, Jeff Layton <jlayton@kernel.org>,
+ Gao Xiang <hsiangkao@linux.alibaba.com>,
+ Dominique Martinet <asmadeus@codewreck.org>
+Cc: Matthew Wilcox <willy@infradead.org>, Steve French <smfrench@gmail.com>,
+ Marc Dionne <marc.dionne@auristor.com>, Paulo Alcantara <pc@manguebit.com>,
+ Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+ Eric Van Hensbergen <ericvh@kernel.org>, Ilya Dryomov <idryomov@gmail.com>,
+ "netfs@lists.linux.dev" <netfs@lists.linux.dev>,
+ "linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
+ "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+ "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+ "v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
+ "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Latchesar Ionkov <lucho@ionkov.net>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>
+References: <20240328163424.2781320-1-dhowells@redhat.com>
+ <20240328163424.2781320-20-dhowells@redhat.com>
+ <SJ2PR18MB5635A86C024316BC5E57B79EA23A2@SJ2PR18MB5635.namprd18.prod.outlook.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <SJ2PR18MB5635A86C024316BC5E57B79EA23A2@SJ2PR18MB5635.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
---000000000000488e7b0614d5563d
-Content-Type: text/plain; format=flowed; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+On 29/03/2024 10:34, Naveen Mamindlapalli wrote:
+>> -----Original Message-----
+>> From: David Howells <dhowells@redhat.com>
+>> Sent: Thursday, March 28, 2024 10:04 PM
+>> To: Christian Brauner <christian@brauner.io>; Jeff Layton <jlayton@kernel.org>;
+>> Gao Xiang <hsiangkao@linux.alibaba.com>; Dominique Martinet
+>> <asmadeus@codewreck.org>
+>> Cc: David Howells <dhowells@redhat.com>; Matthew Wilcox
+>> <willy@infradead.org>; Steve French <smfrench@gmail.com>; Marc Dionne
+>> <marc.dionne@auristor.com>; Paulo Alcantara <pc@manguebit.com>; Shyam
+>> Prasad N <sprasad@microsoft.com>; Tom Talpey <tom@talpey.com>; Eric Van
+>> Hensbergen <ericvh@kernel.org>; Ilya Dryomov <idryomov@gmail.com>;
+>> netfs@lists.linux.dev; linux-cachefs@redhat.com; linux-afs@lists.infradead.org;
+>> linux-cifs@vger.kernel.org; linux-nfs@vger.kernel.org; ceph-
+>> devel@vger.kernel.org; v9fs@lists.linux.dev; linux-erofs@lists.ozlabs.org; linux-
+>> fsdevel@vger.kernel.org; linux-mm@kvack.org; netdev@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; Latchesar Ionkov <lucho@ionkov.net>; Christian
+>> Schoenebeck <linux_oss@crudebyte.com>
+>> Subject: [PATCH 19/26] netfs: New writeback implementation
+>>
+>> The current netfslib writeback implementation creates writeback requests of
+>> contiguous folio data and then separately tiles subrequests over the space
+>> twice, once for the server and once for the cache.  This creates a few
+>> issues:
+>>
+>>   (1) Every time there's a discontiguity or a change between writing to only
+>>       one destination or writing to both, it must create a new request.
+>>       This makes it harder to do vectored writes.
+>>
+>>   (2) The folios don't have the writeback mark removed until the end of the
+>>       request - and a request could be hundreds of megabytes.
+>>
+>>   (3) In future, I want to support a larger cache granularity, which will
+>>       require aggregation of some folios that contain unmodified data (which
+>>       only need to go to the cache) and some which contain modifications
+>>       (which need to be uploaded and stored to the cache) - but, currently,
+>>       these are treated as discontiguous.
+>>
+>> There's also a move to get everyone to use writeback_iter() to extract
+>> writable folios from the pagecache.  That said, currently writeback_iter()
+>> has some issues that make it less than ideal:
+>>
+>>   (1) there's no way to cancel the iteration, even if you find a "temporary"
+>>       error that means the current folio and all subsequent folios are going
+>>       to fail;
+>>
+>>   (2) there's no way to filter the folios being written back - something
+>>       that will impact Ceph with it's ordered snap system;
+>>
+>>   (3) and if you get a folio you can't immediately deal with (say you need
+>>       to flush the preceding writes), you are left with a folio hanging in
+>>       the locked state for the duration, when really we should unlock it and
+>>       relock it later.
+>>
+>> In this new implementation, I use writeback_iter() to pump folios,
+>> progressively creating two parallel, but separate streams and cleaning up
+>> the finished folios as the subrequests complete.  Either or both streams
+>> can contain gaps, and the subrequests in each stream can be of variable
+>> size, don't need to align with each other and don't need to align with the
+>> folios.
+>>
+>> Indeed, subrequests can cross folio boundaries, may cover several folios or
+>> a folio may be spanned by multiple folios, e.g.:
+>>
+>>           +---+---+-----+-----+---+----------+
+>> Folios:  |   |   |     |     |   |          |
+>>           +---+---+-----+-----+---+----------+
+>>
+>>             +------+------+     +----+----+
+>> Upload:    |      |      |.....|    |    |
+>>             +------+------+     +----+----+
+>>
+>>           +------+------+------+------+------+
+>> Cache:   |      |      |      |      |      |
+>>           +------+------+------+------+------+
+>>
+>> The progressive subrequest construction permits the algorithm to be
+>> preparing both the next upload to the server and the next write to the
+>> cache whilst the previous ones are already in progress.  Throttling can be
+>> applied to control the rate of production of subrequests - and, in any
+>> case, we probably want to write them to the server in ascending order,
+>> particularly if the file will be extended.
+>>
+>> Content crypto can also be prepared at the same time as the subrequests and
+>> run asynchronously, with the prepped requests being stalled until the
+>> crypto catches up with them.  This might also be useful for transport
+>> crypto, but that happens at a lower layer, so probably would be harder to
+>> pull off.
+>>
+>> The algorithm is split into three parts:
+>>
+>>   (1) The issuer.  This walks through the data, packaging it up, encrypting
+>>       it and creating subrequests.  The part of this that generates
+>>       subrequests only deals with file positions and spans and so is usable
+>>       for DIO/unbuffered writes as well as buffered writes.
+>>
+>>   (2) The collector. This asynchronously collects completed subrequests,
+>>       unlocks folios, frees crypto buffers and performs any retries.  This
+>>       runs in a work queue so that the issuer can return to the caller for
+>>       writeback (so that the VM can have its kswapd thread back) or async
+>>       writes.
+>>
+>>   (3) The retryer.  This pauses the issuer, waits for all outstanding
+>>       subrequests to complete and then goes through the failed subrequests
+>>       to reissue them.  This may involve reprepping them (with cifs, the
+>>       credits must be renegotiated, and a subrequest may need splitting),
+>>       and doing RMW for content crypto if there's a conflicting change on
+>>       the server.
+>>
+>> [!] Note that some of the functions are prefixed with "new_" to avoid
+>> clashes with existing functions.  These will be renamed in a later patch
+>> that cuts over to the new algorithm.
+>>
+>> Signed-off-by: David Howells <dhowells@redhat.com>
+>> cc: Jeff Layton <jlayton@kernel.org>
+>> cc: Eric Van Hensbergen <ericvh@kernel.org>
+>> cc: Latchesar Ionkov <lucho@ionkov.net>
+>> cc: Dominique Martinet <asmadeus@codewreck.org>
+>> cc: Christian Schoenebeck <linux_oss@crudebyte.com>
+>> cc: Marc Dionne <marc.dionne@auristor.com>
+>> cc: v9fs@lists.linux.dev
+>> cc: linux-afs@lists.infradead.org
+>> cc: netfs@lists.linux.dev
+>> cc: linux-fsdevel@vger.kernel.org
 
-On March 29, 2024 6:24:57 PM Krzysztof Kozlowski 
-<krzysztof.kozlowski@linaro.org> wrote:
+[..snip..]
 
-> Core in sdio_register_driver() already sets the .owner, so driver does
-> not need to.
+>> +/*
+>> + * Begin a write operation for writing through the pagecache.
+>> + */
+>> +struct netfs_io_request *new_netfs_begin_writethrough(struct kiocb *iocb, size_t
+>> len)
+>> +{
+>> +	struct netfs_io_request *wreq = NULL;
+>> +	struct netfs_inode *ictx = netfs_inode(file_inode(iocb->ki_filp));
+>> +
+>> +	mutex_lock(&ictx->wb_lock);
+>> +
+>> +	wreq = netfs_create_write_req(iocb->ki_filp->f_mapping, iocb->ki_filp,
+>> +				      iocb->ki_pos, NETFS_WRITETHROUGH);
+>> +	if (IS_ERR(wreq))
+>> +		mutex_unlock(&ictx->wb_lock);
+>> +
+>> +	wreq->io_streams[0].avail = true;
+>> +	trace_netfs_write(wreq, netfs_write_trace_writethrough);
+> 
+> Missing mutex_unlock() before return.
+> 
 
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> Depends on the first patch.
-> ---
-> drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c | 1 -
-> 1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c 
-> b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-> index 00679a990e3d..13391c2d82aa 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-> @@ -1238,7 +1238,6 @@ static struct sdio_driver brcmf_sdmmc_driver = {
->  .name = KBUILD_MODNAME,
->  .id_table = brcmf_sdmmc_ids,
->  .drv = {
-> - .owner = THIS_MODULE,
->  .pm = pm_sleep_ptr(&brcmf_sdio_pm_ops),
->  .coredump = brcmf_dev_coredump,
->  },
->
-> --
-> 2.34.1
+mutex_unlock() happens in new_netfs_end_writethrough()
+
+> Thanks,
+> Naveen
+> 
 
 
-
-
---000000000000488e7b0614d5563d
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-2Gzj3QNJRLsZu1TLyOyBBIr/BE7UiY3RabgRzknBGAPmzhS+fmyM8OtM5BYBsFBrSUFtZZO2p/tf
-Nbc24J2zf2peoZ8MK+7WQqummYlOnz+FyDkA9EybeNMcS5C+xi/PAgMBAAGjggHdMIIB2TAOBgNV
-HQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYI
-KwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24y
-Y2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqG
-OGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3Js
-MCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYB
-BQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFIikAXd8CEtv
-ZbDflDRnf3tuStPuMA0GCSqGSIb3DQEBCwUAA4IBAQCdS5XCYx6k2GGZui9DlFsFm75khkqAU7rT
-zBX04sJU1+B1wtgmWTVIzW7ugdtDZ4gzaV0S9xRhpDErjJaltxPbCylb1DEsLj+AIvBR34caW6ZG
-sQk444t0HPb29HnWYj+OllIGMbdJWr0/P95ZrKk2bP24ub3ZP/8SyzrohfIba9WZKMq6g2nTLZE3
-BtkeSGJx/8dy0h8YmRn+adOrxKXHxhSL8BNn8wsmIZyYWe6fRcBtO3Ks2DOLyHCdkoFlN8x9VUQF
-N2ulEgqCbRKkx+qNirW86eF138lr1gRxzclu/38ko//MmkAYR/+hP3WnBll7zbpIt0jc9wyFkSqH
-p8a1MYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1z
-YTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMTv1t
-bpIzNUky46LXMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCCchQGzAPp/0Jw9tQc
-c52U5t93n+qW3Ktzl4pCvUij5TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yNDAzMjkyMzUyNDhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFl
-AwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzAL
-BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEA3AXEIKWOWGEPOcLU/gjQsHR6ARbjM77GLg1T
-nfndpzPeFAawDdJGBX2tV0H3BJxgGfbV2GuOMheYutw+l8IpubpQDsvOsxgaExufohW2gcolae29
-JFqEDjLUnhdbJqJBmleRSTMy6ErXZQGHKYsgXAq9uoD/hYcQBrhvT93d/prM2IhsqYCG5fGE1SJ+
-7pt4m6FWERjYzcI2zzJtWnv7nBSVz8ce2sCy8ZEILGrecer3YzIiymoP9mzgoSQ3+7KF9tERH48H
-DjT/qagylnNDhCSyqNmkgnEpwx2KGJdrzmnJZ65YjNHTSI8x4k9r5m6hy6xKf6bd02iPlhXwDB/E
-xQ==
---000000000000488e7b0614d5563d--
 
