@@ -1,97 +1,114 @@
-Return-Path: <linux-kernel+bounces-126287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32078934CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:13:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B4FB893485
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12D4C1C23D4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:13:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BC431F245A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B9A14C596;
-	Sun, 31 Mar 2024 16:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C902715ECEB;
+	Sun, 31 Mar 2024 16:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZlR1Q+yO"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bzi2tAuT"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616D814BF8D;
-	Sun, 31 Mar 2024 16:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139FF15E1E9;
+	Sun, 31 Mar 2024 16:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711903530; cv=fail; b=KmKlS7aMHLZiV/rlaaCQnmRv1ovrTLnn25VwObGzqTBPckQJ7vOmkrBSJJWJyfM2bAWiYEx7NtUAJP5z0RWTcOqCA+Y9dJmsDZ+/72b6ojO2lsHN+2f4j1pbjK8+PmFQqgC10d8RpFpveMmhp7Wkrrn5D7SdgRa5fZYZID/jqpU=
+	t=1711903421; cv=fail; b=i1K5WI5V5aTx5KRRkuRqiaWHLvBsW//nkx8AWscYON832Z6HRCwhgX67AILa9YKmk+bIn9+Bf9djToKn88AIMbc43rc+BI+q7b1QE74KiOSP2Iq/xTRW2xfdeEDrsS6kXHZ9ygIDmr3lQcD06W+xvXw2i4PH21Ty3NYgeqmO0kc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711903530; c=relaxed/simple;
-	bh=SR9RnRxZpZkcRNpjLOS97nM/fnu5D0kujDzwfDoSv1g=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ZJBwG1AoP2kpFeesHJUzsKj7jHwsWmpf/TJSnYrCC4AZctG1dRnKILg1sUmZAUpvt2uF0Ua7WVB864hkyf3GljfDgDcLOvCmVNsE5Hn4JgYXCSM1tMp08tPa1frlf8Fv+PGYoFk22vxEeXzP7FiumfpFuVJWCVsN3CrTKLZHZ3U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org; spf=fail smtp.mailfrom=linuxfoundation.org; dkim=fail (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZlR1Q+yO reason="signature verification failed"; arc=none smtp.client-ip=10.30.226.201; arc=fail smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1711903421; c=relaxed/simple;
+	bh=14J6KqKrxEjZL77/xx1syMEjUoPHET0eLOsNVF8OHBg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aHNiRWjIzrAVNIHytlxZsFtCGVE+nn9wUhUPknPuePlPUuAU7poxVzO4vKTndjFnDe2BljFRAJN88vyDg/mbLfyqRrupLurR/uzX3l0JIe1qZUhoR+r0k7lKsF1W6COxVZ9tyqC5YnpCLZyiwr5ZrMYFEQ0zv+m7o76WTMllQjc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org; spf=fail smtp.mailfrom=linaro.org; dkim=fail (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bzi2tAuT reason="signature verification failed"; arc=none smtp.client-ip=209.85.219.177; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; arc=fail smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linaro.org
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id EB4D2208E0;
-	Sun, 31 Mar 2024 18:45:25 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id E1C99208C3;
+	Sun, 31 Mar 2024 18:43:36 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id uY3M6BbvGeJ0; Sun, 31 Mar 2024 18:45:24 +0200 (CEST)
-Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+	with ESMTP id bDDJ0n_bYWTv; Sun, 31 Mar 2024 18:43:35 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 886B520851;
-	Sun, 31 Mar 2024 18:45:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 886B520851
+	by a.mx.secunet.com (Postfix) with ESMTPS id 9B865208BE;
+	Sun, 31 Mar 2024 18:43:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 9B865208BE
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout1.secunet.com (Postfix) with ESMTP id 79E2D800061;
-	Sun, 31 Mar 2024 18:45:24 +0200 (CEST)
+	by mailout2.secunet.com (Postfix) with ESMTP id 8DD32800060;
+	Sun, 31 Mar 2024 18:43:34 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:45:24 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:43:34 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
- 15.1.2507.17; Sun, 31 Mar 2024 16:36:22 +0000
-X-sender: <linux-usb+bounces-8667-peter.schumann=secunet.com@vger.kernel.org>
+ 15.1.2507.17; Sun, 31 Mar 2024 16:36:23 +0000
+X-sender: <linux-usb+bounces-8668-peter.schumann=secunet.com@vger.kernel.org>
 X-Receiver: <peter.schumann@secunet.com>
  ORCPT=rfc822;peter.schumann@secunet.com NOTIFY=NEVER;
  X-ExtendedProps=BQAVABYAAgAAAAUAFAARAJ05ab4WgQhHsqdZ7WUjHykPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGAAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249UGV0ZXIgU2NodW1hbm41ZTcFAAsAFwC+AAAAQ5IZ35DtBUiRVnd98bETxENOPURCNCxDTj1EYXRhYmFzZXMsQ049RXhjaGFuZ2UgQWRtaW5pc3RyYXRpdmUgR3JvdXAgKEZZRElCT0hGMjNTUERMVCksQ049QWRtaW5pc3RyYXRpdmUgR3JvdXBzLENOPXNlY3VuZXQsQ049TWljcm9zb2Z0IEV4Y2hhbmdlLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUADgARAC7JU/le071Fhs0mWv1VtVsFAB0ADwAMAAAAbWJ4LWVzc2VuLTAxBQA8AAIAAA8ANgAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5EaXNwbGF5TmFtZQ8ADwAAAFNjaHVtYW5uLCBQZXRlcgUADAACAAAFAGwAAgAABQBYABcASAAAAJ05ab4WgQhHsqdZ7WUjHylDTj1TY2h1bWFubiBQZXRlcixPVT1Vc2VycyxPVT1NaWdyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9yeTogRmFsc
 	2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
 X-CreatedBy: MSExchange15
-X-HeloDomain: b.mx.secunet.com
-X-ExtendedProps: BQBjAAoAtYymlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAGgAAAHBldGVyLnNjaHVtYW5uQHNlY3VuZXQuY29tBQAGAAIAAQUAKQACAAEPAAkAAABDSUF1ZGl0ZWQCAAEFAAIABwABAAAABQADAAcAAAAAAAUABQACAAEFAGIACgBEAAAA24oAAAUAZAAPAAMAAABIdWI=
+X-HeloDomain: a.mx.secunet.com
+X-ExtendedProps: BQBjAAoAMo6mlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAGgAAAHBldGVyLnNjaHVtYW5uQHNlY3VuZXQuY29tBQAGAAIAAQUAKQACAAEPAAkAAABDSUF1ZGl0ZWQCAAEFAAIABwABAAAABQADAAcAAAAAAAUABQACAAEFAGIACgBkAAAA3IoAAAUAZAAPAAMAAABIdWI=
 X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 62.96.220.37
-X-EndOfInjectedXHeaders: 16083
+X-SourceIPAddress: 62.96.220.36
+X-EndOfInjectedXHeaders: 21886
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.80.249; helo=am.mirrors.kernel.org; envelope-from=linux-usb+bounces-8667-peter.schumann=secunet.com@vger.kernel.org; receiver=peter.schumann@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com C58B22025D
-Authentication-Results: b.mx.secunet.com;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZlR1Q+yO"
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.199.223; helo=ny.mirrors.kernel.org; envelope-from=linux-usb+bounces-8668-peter.schumann=secunet.com@vger.kernel.org; receiver=peter.schumann@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 423DA20882
 X-Original-To: linux-usb@vger.kernel.org
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711801556; cv=none; b=POt1aFf+IfZbu8zcdQgpoAGI7rhKf81N0M07DnDVLhUyB154egc7AkiXGymo3rTAQKUc8Dpoc8ZoNn/Zu/A5QQk5pBUiKnKajQWYzs4YpzAuhBc/KkZ/CG1KG+gUA1dBjkJCyn3a+dOu0vk5tS3pLE29cpfRyW4QX0Zki7WDGAE=
+	t=1711805963; cv=none; b=G8a+yhsnXg1b3YOmx9h0ECP/rS9E13sv2dRmUY6tVQp2eIzpEwG3dtdk5iTRos1bDmwLn8AyOIRGdvzwRojhK8FcPsai/+TM//CDgTvjqQbGXufGNXThfDsSdB4IVNW6bkmmNefCm1TQVoVcxCjdIjLkPSmm+fhmEudv7WqEhzo=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711801556; c=relaxed/simple;
-	bh=0XRUml01rr7gdHFQJBRFu9sqyJtGjnt+AjcaOvI9Ow8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=C6I8YTMQnisk+3LeAnpMitXysplAT0izwqyV0uAiZwy19sFscdI9ghhAG+EtbfguT97VG40Iuq718Mb3sFkCP0r+c+eO15uvN9Nulwl8arbkrTA4Z+C1aQPawlsfA01Vnf3sJ3dBOvLao+f5l/xivTy26mKE/qnN/2M814NjETM=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZlR1Q+yO; arc=none smtp.client-ip=10.30.226.201
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711801555;
-	bh=0XRUml01rr7gdHFQJBRFu9sqyJtGjnt+AjcaOvI9Ow8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ZlR1Q+yOMTjd7fPLYM4LhKvc/1peFbyPEG55fMuO2wroER6jqsmWkPa5ePWvFoRsM
-	 PQDs1u/qi/DRhKfK7AwRBDRvp7tU3O47koQrQ3nAmg7gQ4MOImuxDb/qEBSSro9Unw
-	 1YhEywWTlFygFAg1nzkIcmEfHU5FZw7ANjbpv/DU=
-Date: Sat, 30 Mar 2024 13:25:52 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB driver fixes for 6.9-rc2
-Message-ID: <ZggE0HwcSJTQzE0D@kroah.com>
+	s=arc-20240116; t=1711805963; c=relaxed/simple;
+	bh=xnc2DMxKZjv9rXvPh1SmsY2JW7l8+Agut1TKYkzA/CE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RFOn4efTA6YwJfpc7Vaun/pLzmOM3T+bC/6vQdS1FtvVuzJjc9u3I2b6DgcI00KkdU1T613qxnUlPTNiNvXRsOaGy31mrNogkl/VELrHOC6Q6O4RqDC9zXVQEYnOlsNKtJJqgk6OhTmltIha3eNrLHGjYUzgO51F3Q6r6FnszbI=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bzi2tAuT; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711805960; x=1712410760; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G1eYTzSDwNGOt2CpoFbnU3JixxEFJqYUgc9AODKFrFA=;
+        b=Bzi2tAuTalPk00O876OBb7VRCQj3ZSqJfDjEmilUDZD3OcAk3NTlgnPHLHM05I+dyf
+         arbKMrf+jEpGq1YaxtS3mPGvPdfH8vcSBsjHkWYC+mfCGluo/BixhpDI+2Veha2nLsOQ
+         uPYZDS7NnanNrQsn1zhMlSbWz9GzWMLXE2hEYM3xZmKoraFVzlFLY2ErrNqAuYtKkiGm
+         BK9ekM1o/fL9QuKUfjeosslIuUpBYRWNLbDTd1lREDOq+hG8EunKJ+qkdDtIF74gMDOb
+         ThNgVeMJynCZyosQPjjroFqc11bBYYSwQSdQfTconbC+kQRhRhYHumkWG5881Cf/ZGe0
+         GiWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711805960; x=1712410760;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G1eYTzSDwNGOt2CpoFbnU3JixxEFJqYUgc9AODKFrFA=;
+        b=VJgNxz69d2TP8QSY9MRVuH2JE0F93U003lc4gezLlOwFsLLbFEHfR5c6mocPFaBYys
+         hMlcQOib9Umg9gzpjtdZLL0IjaO4R8ExFJQi89dlPQlPpWifnLAgo4RMPDTmrnMB6g+L
+         wFHv8U2KnrSR/AiS05QFkqj8H9nbwzknGRS6twapa5eRz1H9QigDvgKB8jTEBeNnAU3E
+         yEA2UnAmAaoKbLEw1y5bMBIT/CmWNRVs41gx+v45lIcP4hhq7MGFi/duTbih7bedcdel
+         vPctGlt/HyJ6VHfpYVuKBh4uYgmS6qTZfRUZF01XwK3fvQKz7XPTnlqN638BaUAi0mX1
+         LTuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVv/RWIYrvRpDS0qNW1xjLB45b31lNQAETbvSFcdWU1L7oq7OyZU+Ge5wuuMbRgR0Y3F2L5WBUjutc4OZX08UnHf+nisSH6/k5O
+X-Gm-Message-State: AOJu0Yyi4F1eVVdKGGcyBYw++dFyN6UCT5hI8q8UPV/CcTEzRRoIS0u3
+	SAiVYjIgz4IP15zA+4QVBY8eqZJNH3nbz8n2kadgvl+opcfhnJvnwwbqy6bMZgsG5ziBlm9mfmH
+	wAkZ9Q78fkR+P7/YUpsyM5ZcFuuNrZ9Xla4OSOw==
+X-Google-Smtp-Source: AGHT+IF6ThxitzS4Qqvqh1XJrgmv5PX715nooF+qv5g6MJ7bKFjS6CcMSXAR1eSDDfmsKQ9hqTYmjkYYyHmZ10tfRK4=
+X-Received: by 2002:a25:baca:0:b0:dd1:2f58:6a2e with SMTP id
+ a10-20020a25baca000000b00dd12f586a2emr3920278ybk.9.1711805960439; Sat, 30 Mar
+ 2024 06:39:20 -0700 (PDT)
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -99,133 +116,176 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+References: <20240329071948.3101882-1-quic_kriskura@quicinc.com>
+ <CAA8EJpqx+VFW8z6oG=+pnhPN97Q3R6z+ygf85Uspve-9syQsUw@mail.gmail.com> <6f2df222-36d4-468e-99a7-9c48fae85aa9@quicinc.com>
+In-Reply-To: <6f2df222-36d4-468e-99a7-9c48fae85aa9@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 30 Mar 2024 15:39:08 +0200
+Message-ID: <CAA8EJppa4hVBSenLgxc5MYxTfzPPf4exHvh8RWTP=p8mgB_RCw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Add gpio-usb-c-connector compatible
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Guenter Roeck <linux@roeck-us.net>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Kyle Tso <kyletso@google.com>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, u.kleine-koenig@pengutronix.de, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, devicetree@vger.kernel.org, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095=
-:
+On Sat, 30 Mar 2024 at 11:13, Krishna Kurapati PSSNV
+<quic_kriskura@quicinc.com> wrote:
+> On 3/29/2024 6:23 PM, Dmitry Baryshkov wrote:
+> > On Fri, 29 Mar 2024 at 09:20, Krishna Kurapati
+> > <quic_kriskura@quicinc.com> wrote:
+> >>
+> >> QDU1000 IDP [1] has a Type-c connector and supports USB 3.0.
+> >> However it relies on usb-conn-gpio driver to read the vbus and id
+> >> gpio's and provide role switch. However the driver currently has
+> >> only gpio-b-connector compatible present in ID table. Adding that
+> >> in DT would mean that the device supports Type-B connector and not
+> >> Type-c connector. Thanks to Dmitry Baryshkov for pointing it out [2].
+> >
+> > USB-B connector is pretty simple, it really has just an ID pin and
+> > VBUS input, which translates to two GPIOs being routed from the
+> > _connector_ itself.
+> >
+> > USB-C is much more complicated, it has two CC pins and a VBus power
+> > pin. It is not enough just to measure CC pin levels. Moreover,
+> > properly handling USB 3.0 inside a USB-C connector requires a separate
+> > 'orientation' signal to tell the host which two lanes must be used for
+> > the USB SS signals. Thus it is no longer possible to route just two
+> > pins from the connector to the SoC.
+> >
+> > Having all that in mind, I suspect that you are not describing your
+> > hardware properly. I suppose that you have a Type-C port controller /
+> > redriver / switch, which handles CC lines communication and then
+> > provides ID / VBUS signals to the host. In such a case, please
+> > describe this TCPC in the DT file and use its compatible string
+> > instead of "gpio-c-connector".
+> >
+>
+> Hi Dmitry,
+>
+>   My bad. I must have provided more details of the HW.
+>
+>   I presume you are referring to addition of a connector node, type-c
+> switch, pmic-glink and other remote endpoints like in other SoC's like
+> SM8450/ SM8550/ SM8650.
+>
+>   This HW is slightly different. It has a Uni Phy for Super speed and
+> hence no DP.
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+This is fine and it's irrelevant for the USB-C.
 
-are available in the Git repository at:
+>   For orientation switching, on mobile SoC's, there is a provision for
+> orientation gpio given in pmic-glink node and is handled in ucsi_glink
+> driver. But on this version of HW, there is a USB-C Switch with its own
+> firmware taking care of orientation switching. It takes 8 SS Lines and 2
+> CC lines coming from connector as input and gives out 4 SS Lines (SS
+> TX1/TX2 RX1/RX2) as output which go to the SoC. So orientation switch is
+> done by the USB-C-switch in between and it automatically routes
+> appropriate active SS Lane from connector to the SoC.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.9=
--rc2
+This is also fine. As I wrote, you _have_ the Type-C port controller.
+So your DT file should be describing your hardware.
 
-for you to fetch changes up to f4d1960764d8a70318b02f15203a1be2b2554ca1:
+>   As usual like in other targets, the DP and DM lines from type-c
+> connector go to the SoC directly.
+>
+>   To handle role switch, the VBUS and ID Pin connections are given to
+> SoC as well. There is a vbus controller regulator present to provide
+> vbus to connected peripherals in host mode.
+>
+>   There is no PPM entity (ADSP in mobile SoC's) and no UCSI involved
+> here. Hence we rely on usb-conn-gpio to read the vbus/id and switch
+> roles accordingly.
 
-  USB: core: Fix deadlock in port "disable" sysfs attribute (2024-03-26 15:=
-02:28 +0100)
+This is also fine.
 
-----------------------------------------------------------------
-USB Fixes for 6.9-rc2
+You confirmed my suspicions. You have an external Type-C switch which
+handles orientation (and most likely PD or non-PD power negotiation)
+for you. It has GPIO outputs, etc.
 
-Here are a bunch of small USB fixes for reported problems and
-regressions for 6.9-rc2.  Included in here are:
-  - deadlock fixes for long-suffering issues
-  - USB phy driver revert for reported problem
-  - typec fixes for reported problems
-  - duplicate id in dwc3 dropped
-  - dwc2 driver fixes
-  - udc driver warning fix
-  - cdc-wdm race bugfix
-  - other tiny USB bugfixes
+But it is not a part of the connector. Instead of adding the
+"gpio-usb-c-connector", add proper compatible string (see, how this is
+handled e.g. by the spidev - it is a generic driver, but it requires
+hardware-specific compatibles).
+Your hardware description should look like:
 
-All of these have been in linux-next this past week with no reported
-issues.
+typec {
+    compatible =3D "your,switch";
+    id-gpios =3D <&gpio 1>;
+    vbus-gpios =3D <&gpio 2>;
+    vbus-supplies =3D <&reg-vbus>;
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    ports {
+       #address-cells =3D <1>;
+       #size-cells =3D <1>;
+       port@0 {
+          endpoint {
+              remote-endpoint =3D <&usb_dwc3_hs_out>;
+          };
+       };
+       port@1 {
+          endpoint {
+              remote-endpoint =3D <&usb_uni_phy_out>;
+          };
+      };
+      /* No SBU port */
+   };
+};
 
-----------------------------------------------------------------
-Alan Stern (3):
-      USB: core: Fix deadlock in usb_deauthorize_interface()
-      USB: core: Add hub_get() and hub_put() routines
-      USB: core: Fix deadlock in port "disable" sysfs attribute
+Note, I haven't said anything regarding the driver. You can continue
+using the usb-conn-gpio driver. Just add a compatible string for you
+switch.
 
-Alexander Stein (1):
-      Revert "usb: phy: generic: Get the vbus supply"
+>
+>   Hope this answers the query as to why we wanted to use usb-conn-gpio
+> and why we were trying to add a new compatible.
+>
+> Regards,
+> Krishna,
+>
+> >>
+> >> This series intends to add that compatible in driver and bindings
+> >> so that it can be used in QDU1000 IDP DT.
+> >>
+> >> [1]: https://lore.kernel.org/all/20240319091020.15137-3-quic_kbajaj@qu=
+icinc.com/
+> >> [2]: https://lore.kernel.org/all/CAA8EJprXPvji8TgZu1idH7y4GtHtD4VmQABF=
+BcRt-9BQaCberg@mail.gmail.com/
+> >>
+> >> Krishna Kurapati (2):
+> >>    dt-bindings: connector: Add gpio-usb-c-connector compatible
+> >>    usb: common: usb-conn-gpio: Update ID table to add usb-c connector
+> >>
+> >>   Documentation/devicetree/bindings/connector/usb-connector.yaml | 3 +=
+++
+> >>   drivers/usb/common/usb-conn-gpio.c                             | 1 +
+> >>   2 files changed, 4 insertions(+)
+> >>
+> >> --
+> >> 2.34.1
+> >>
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-Christian A. Ehrhardt (5):
-      usb: typec: ucsi: Clear EVENT_PENDING under PPM lock
-      usb: typec: ucsi: Check for notifications after init
-      usb: typec: ucsi: Ack unsupported commands
-      usb: typec: ucsi_acpi: Refactor and fix DELL quirk
-      usb: typec: ucsi: Clear UCSI_CCI_RESET_COMPLETE before reset
 
-Heikki Krogerus (1):
-      usb: dwc3: pci: Drop duplicate ID
 
-Jameson Thies (1):
-      usb: typec: ucsi: Check capabilities before cable and identity discov=
-ery
+--=20
+With best wishes
+Dmitry
 
-Krishna Kurapati (1):
-      usb: typec: ucsi: Fix race between typec_switch and role_switch
-
-Kyle Tso (3):
-      usb: typec: tcpm: Correct port source pdo array in pd_set callback
-      usb: typec: tcpm: Update PD of Type-C port upon pd_set
-      usb: typec: Return size of buffer if pd_set operation succeeds
-
-Minas Harutyunyan (5):
-      usb: dwc2: host: Fix hibernation flow
-      usb: dwc2: host: Fix remote wakeup from hibernation
-      usb: dwc2: host: Fix ISOC flow in DDMA mode
-      usb: dwc2: gadget: Fix exiting from clock gating
-      usb: dwc2: gadget: LPM flow fix
-
-Oliver Neukum (1):
-      usb: cdc-wdm: close race between read and workqueue
-
-Thinh Nguyen (1):
-      usb: dwc3: Properly set system wakeup
-
-Weitao Wang (1):
-      USB: UAS: return ENODEV when submit urbs fail with device not attache=
-d
-
-Xu Yang (1):
-      usb: typec: tcpm: fix double-free issue in tcpm_port_unregister_pd()
-
-Yongzhi Liu (1):
-      usb: misc: ljca: Fix double free in error handling path
-
-yuan linyu (1):
-      usb: udc: remove warning when queue disabled ep
-
- drivers/usb/class/cdc-wdm.c         |  6 ++-
- drivers/usb/core/hub.c              | 23 +++++++---
- drivers/usb/core/hub.h              |  2 +
- drivers/usb/core/port.c             | 38 ++++++++++++++--
- drivers/usb/core/sysfs.c            | 16 +++++--
- drivers/usb/dwc2/core.h             | 14 ++++++
- drivers/usb/dwc2/core_intr.c        | 72 +++++++++++++++++++----------
- drivers/usb/dwc2/gadget.c           | 10 +++++
- drivers/usb/dwc2/hcd.c              | 49 ++++++++++++++++----
- drivers/usb/dwc2/hcd_ddma.c         | 17 ++++---
- drivers/usb/dwc2/hw.h               |  2 +-
- drivers/usb/dwc2/platform.c         |  2 +-
- drivers/usb/dwc3/core.c             |  2 +
- drivers/usb/dwc3/core.h             |  2 +
- drivers/usb/dwc3/dwc3-pci.c         |  2 -
- drivers/usb/dwc3/gadget.c           | 10 +++++
- drivers/usb/dwc3/host.c             | 11 +++++
- drivers/usb/gadget/udc/core.c       |  4 +-
- drivers/usb/misc/usb-ljca.c         | 22 ++++-----
- drivers/usb/phy/phy-generic.c       |  7 ---
- drivers/usb/storage/uas.c           | 28 ++++++------
- drivers/usb/typec/class.c           |  7 ++-
- drivers/usb/typec/tcpm/tcpm.c       |  6 +--
- drivers/usb/typec/ucsi/ucsi.c       | 90 +++++++++++++++++++++++++++++----=
-----
- drivers/usb/typec/ucsi/ucsi.h       |  5 ++-
- drivers/usb/typec/ucsi/ucsi_acpi.c  | 71 +++++++++++++----------------
- drivers/usb/typec/ucsi/ucsi_glink.c | 14 ++++++
- 27 files changed, 374 insertions(+), 158 deletions(-)
-
-X-sender: <linux-kernel+bounces-125724-steffen.klassert=3Dsecunet.com@vger.=
+X-sender: <linux-kernel+bounces-125736-steffen.klassert=3Dsecunet.com@vger.=
 kernel.org>
 X-Receiver: <steffen.klassert@secunet.com> ORCPT=3Drfc822;steffen.klassert@=
 secunet.com NOTIFY=3DNEVER; X-ExtendedProps=3DBQAVABYAAgAAAAUAFAARAPDFCS25B=
@@ -245,140 +305,205 @@ XV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9yeTogRmFsc2UNCg8ALwAAAE1p=
 Y3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmV=
 yc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ=3D=3D
 X-CreatedBy: MSExchange15
-X-HeloDomain: a.mx.secunet.com
-X-ExtendedProps: BQBjAAoAtYymlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc2=
+X-HeloDomain: b.mx.secunet.com
+X-ExtendedProps: BQBjAAoAMo6mlidQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc2=
 9mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAA=
 AAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2Vj=
 dW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwA=
-AAAAABQAFAAIAAQUAYgAKAEUAAADbigAABQBkAA8AAwAAAEh1Yg=3D=3D
+AAAAABQAFAAIAAQUAYgAKAGYAAADcigAABQBkAA8AAwAAAEh1Yg=3D=3D
 X-Source: SMTP:Default MBX-ESSEN-02
-X-SourceIPAddress: 62.96.220.36
-X-EndOfInjectedXHeaders: 15930
+X-SourceIPAddress: 62.96.220.37
+X-EndOfInjectedXHeaders: 22022
 Received: from cas-essen-02.secunet.de (10.53.40.202) by
  mbx-essen-02.secunet.de (10.53.40.198) with Microsoft SMTP Server
  (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Sat, 30 Mar 2024 13:26:13 +0100
-Received: from a.mx.secunet.com (62.96.220.36) by cas-essen-02.secunet.de
+ 15.1.2507.37; Sat, 30 Mar 2024 14:39:43 +0100
+Received: from b.mx.secunet.com (62.96.220.37) by cas-essen-02.secunet.de
  (10.53.40.202) with Microsoft SMTP Server (version=3DTLS1_2,
  cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Fronte=
 nd
- Transport; Sat, 30 Mar 2024 13:26:13 +0100
+ Transport; Sat, 30 Mar 2024 14:39:43 +0100
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id A9B9120892
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 13:26:13 +0100 (CET)
+	by b.mx.secunet.com (Postfix) with ESMTP id A2BCD20322
+	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 14:39:43 +0100 (CET)
 X-Virus-Scanned: by secunet
 X-Spam-Flag: NO
-X-Spam-Score: -2.851
+X-Spam-Score: -2.751
 X-Spam-Level:
-X-Spam-Status: No, score=3D-2.851 tagged_above=3D-999 required=3D2.1
-	tests=3D[BAYES_00=3D-1.9, DKIMWL_WL_HIGH=3D-0.1, DKIM_SIGNED=3D0.1,
-	DKIM_VALID=3D-0.1, DKIM_VALID_AU=3D-0.1,
-	HEADER_FROM_DIFFERENT_DOMAINS=3D0.249, MAILING_LIST_MULTI=3D-1,
-	RCVD_IN_DNSWL_NONE=3D-0.0001, SPF_HELO_NONE=3D0.001, SPF_PASS=3D-0.001]
-	autolearn=3Dham autolearn_force=3Dno
+X-Spam-Status: No, score=3D-2.751 tagged_above=3D-999 required=3D2.1
+	tests=3D[BAYES_00=3D-1.9, DKIM_SIGNED=3D0.1, DKIM_VALID=3D-0.1,
+	DKIM_VALID_AU=3D-0.1, HEADER_FROM_DIFFERENT_DOMAINS=3D0.249,
+	MAILING_LIST_MULTI=3D-1, RCVD_IN_DNSWL_NONE=3D-0.0001,
+	SPF_HELO_NONE=3D0.001, SPF_PASS=3D-0.001] autolearn=3Dham autolearn_force=
+=3Dno
 Authentication-Results: a.mx.secunet.com (amavisd-new);
-	dkim=3Dpass (1024-bit key) header.d=3Dlinuxfoundation.org
-Received: from a.mx.secunet.com ([127.0.0.1])
+	dkim=3Dpass (2048-bit key) header.d=3Dlinaro.org
+Received: from b.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 9tGtadLm7S-D for <steffen.klassert@secunet.com>;
-	Sat, 30 Mar 2024 13:26:13 +0100 (CET)
+	with ESMTP id hHKZz900jZRx for <steffen.klassert@secunet.com>;
+	Sat, 30 Mar 2024 14:39:42 +0100 (CET)
 Received-SPF: Pass (sender SPF authorized) identity=3Dmailfrom; client-ip=
-=3D147.75.199.223; helo=3Dny.mirrors.kernel.org; envelope-from=3Dlinux-kern=
-el+bounces-125724-steffen.klassert=3Dsecunet.com@vger.kernel.org; receiver=
+=3D147.75.80.249; helo=3Dam.mirrors.kernel.org; envelope-from=3Dlinux-kerne=
+l+bounces-125736-steffen.klassert=3Dsecunet.com@vger.kernel.org; receiver=
 =3Dsteffen.klassert@secunet.com=20
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com D31EB20870
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223=
-])
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 793A02025D
+Authentication-Results: b.mx.secunet.com;
+	dkim=3Dpass (2048-bit key) header.d=3Dlinaro.org header.i=3D@linaro.org he=
+ader.b=3D"Bzi2tAuT"
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249]=
+)
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id D31EB20870
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 13:26:12 +0100 (CET)
+	by b.mx.secunet.com (Postfix) with ESMTPS id 793A02025D
+	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 14:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.2=
 5.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60E481C20ECA
-	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 12:26:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8AFF1F21EA6
+	for <steffen.klassert@secunet.com>; Sat, 30 Mar 2024 13:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1426B39FD5;
-	Sat, 30 Mar 2024 12:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDA6347C2;
+	Sat, 30 Mar 2024 13:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=3Dpass (1024-bit key) header.d=3Dlinuxfoundation.org header.i=3D@linu=
-xfoundation.org header.b=3D"ZlR1Q+yO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.or=
-g [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=3Dpass (2048-bit key) header.d=3Dlinaro.org header.i=3D@linaro.org he=
+ader.b=3D"Bzi2tAuT"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.2=
+19.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AD93717B;
-	Sat, 30 Mar 2024 12:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838851C0DE0
+	for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 13:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=3Dnone smtp.client-ip=
-=3D10.30.226.201
+=3D209.85.219.169
 ARC-Seal: i=3D1; a=3Drsa-sha256; d=3Dsubspace.kernel.org; s=3Darc-20240116;
-	t=3D1711801556; cv=3Dnone; b=3DPOt1aFf+IfZbu8zcdQgpoAGI7rhKf81N0M07DnDVLhU=
-yB154egc7AkiXGymo3rTAQKUc8Dpoc8ZoNn/Zu/A5QQk5pBUiKnKajQWYzs4YpzAuhBc/KkZ/CG=
-1KG+gUA1dBjkJCyn3a+dOu0vk5tS3pLE29cpfRyW4QX0Zki7WDGAE=3D
+	t=3D1711805963; cv=3Dnone; b=3DVsmY03LRBGPvYGJ3htwSPM19/jwCNnkstizr1255TKj=
+Lip2cydFC/jsIMBmfHWTA4woI4+Fu6E/sJSNee0ugqnu03xVzoLNhRALAU1yIQFLVXhEhX/6Nyl=
+W07qpXAjuUsx5xCc6zhcuoKcTB/JcevM6nH3OCznfIOy+a7tPoooQ=3D
 ARC-Message-Signature: i=3D1; a=3Drsa-sha256; d=3Dsubspace.kernel.org;
-	s=3Darc-20240116; t=3D1711801556; c=3Drelaxed/simple;
-	bh=3D0XRUml01rr7gdHFQJBRFu9sqyJtGjnt+AjcaOvI9Ow8=3D;
-	h=3DDate:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=3DC6I8YTMQnisk+3LeAnpMitXysplAT0izwqyV0uAiZwy19sFs=
-cdI9ghhAG+EtbfguT97VG40Iuq718Mb3sFkCP0r+c+eO15uvN9Nulwl8arbkrTA4Z+C1aQPawls=
-fA01Vnf3sJ3dBOvLao+f5l/xivTy26mKE/qnN/2M814NjETM=3D
-ARC-Authentication-Results: i=3D1; smtp.subspace.kernel.org; dkim=3Dpass (1=
-024-bit key) header.d=3Dlinuxfoundation.org header.i=3D@linuxfoundation.org=
- header.b=3DZlR1Q+yO; arc=3Dnone smtp.client-ip=3D10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495B6C433C7;
-	Sat, 30 Mar 2024 12:25:55 +0000 (UTC)
-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/simple; d=3Dlinuxfoundat=
-ion.org;
-	s=3Dkorg; t=3D1711801555;
-	bh=3D0XRUml01rr7gdHFQJBRFu9sqyJtGjnt+AjcaOvI9Ow8=3D;
-	h=3DDate:From:To:Cc:Subject:From;
-	b=3DZlR1Q+yOMTjd7fPLYM4LhKvc/1peFbyPEG55fMuO2wroER6jqsmWkPa5ePWvFoRsM
-	 PQDs1u/qi/DRhKfK7AwRBDRvp7tU3O47koQrQ3nAmg7gQ4MOImuxDb/qEBSSro9Unw
-	 1YhEywWTlFygFAg1nzkIcmEfHU5FZw7ANjbpv/DU=3D
-Date: Sat, 30 Mar 2024 13:25:52 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org=
-,
-	linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB driver fixes for 6.9-rc2
-Message-ID: <ZggE0HwcSJTQzE0D@kroah.com>
+	s=3Darc-20240116; t=3D1711805963; c=3Drelaxed/simple;
+	bh=3Dxnc2DMxKZjv9rXvPh1SmsY2JW7l8+Agut1TKYkzA/CE=3D;
+	h=3DMIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=3DRFOn4efTA6YwJfpc7Vaun/pLzmOM3T+bC/6vQdS1FtvVuzJjc=
+9u3I2b6DgcI00KkdU1T613qxnUlPTNiNvXRsOaGy31mrNogkl/VELrHOC6Q6O4RqDC9zXVQEYnO=
+lsNKtJJqgk6OhTmltIha3eNrLHGjYUzgO51F3Q6r6FnszbI=3D
+ARC-Authentication-Results: i=3D1; smtp.subspace.kernel.org; dmarc=3Dpass (=
+p=3Dnone dis=3Dnone) header.from=3Dlinaro.org; spf=3Dpass smtp.mailfrom=3Dl=
+inaro.org; dkim=3Dpass (2048-bit key) header.d=3Dlinaro.org header.i=3D@lin=
+aro.org header.b=3DBzi2tAuT; arc=3Dnone smtp.client-ip=3D209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=3Dpass (p=3Dnone di=
+s=3Dnone) header.from=3Dlinaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=3Dpass smtp.mailfrom=
+=3Dlinaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6d8bd612d=
+so2845435276.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 06:39:21 -0700=
+ (PDT)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Dlinaro.org; s=3Dgoogle; t=3D1711805960; x=3D1712410760; darn=3D=
+vger.kernel.org;
+        h=3Dcc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3DG1eYTzSDwNGOt2CpoFbnU3JixxEFJqYUgc9AODKFrFA=3D;
+        b=3DBzi2tAuTalPk00O876OBb7VRCQj3ZSqJfDjEmilUDZD3OcAk3NTlgnPHLHM05I+=
+dyf
+         arbKMrf+jEpGq1YaxtS3mPGvPdfH8vcSBsjHkWYC+mfCGluo/BixhpDI+2Veha2nLs=
+OQ
+         uPYZDS7NnanNrQsn1zhMlSbWz9GzWMLXE2hEYM3xZmKoraFVzlFLY2ErrNqAuYtKki=
+Gm
+         BK9ekM1o/fL9QuKUfjeosslIuUpBYRWNLbDTd1lREDOq+hG8EunKJ+qkdDtIF74gMD=
+Ob
+         ThNgVeMJynCZyosQPjjroFqc11bBYYSwQSdQfTconbC+kQRhRhYHumkWG5881Cf/ZG=
+e0
+         GiWA=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20230601; t=3D1711805960; x=3D1712410760;
+        h=3Dcc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-i=
+d
+         :reply-to;
+        bh=3DG1eYTzSDwNGOt2CpoFbnU3JixxEFJqYUgc9AODKFrFA=3D;
+        b=3DwrAyIEE4fpgYRXIakYPKWxGZ458enzebr/apBNjGwny3xnHcdkq4kJ9UN3ZbkVN=
+for
+         KQSgXQRvlNSy1nCKmUUyZHxRHI7v+dN1YoWrjSLP3pS6Rfx6O2NH3TS5XGDQmYSriD=
+l3
+         2VjIsnfEyhLCogXehZ1779TqjLw/umOdhhj1dmmSyD3QM/errL/NAAuTxUFKyUtw67=
+vh
+         zOmDvjgjPVyGjWQY5k0WacN4CIJeBsMbsQERadGjDKtl0T/4w3YBhch3bwdVNfpIVo=
+ph
+         kBqUHgg8em7xjmsaGyYq9tysX+eCvFH8UzhwPzWSegmZOHCWNQ9UQ+/M+f6l5hIw10=
+DY
+         23yw=3D=3D
+X-Forwarded-Encrypted: i=3D1; AJvYcCVI7s5+8a4VQgS5qj2UxlRT2x3w/dvwtx1peqiUQ=
+zp+JMxyWOi4dCwa5XaOdsg919leo+ugA3lGT2wZbi9JekucIwhrB+tUgz+tKBPO
+X-Gm-Message-State: AOJu0YyAPHvrI3oTLhfTCvNCLlS0XxG1/4UzLXAF/Y19H1Irx2NlazQ=
+i
+	wc+LXov5s9Y7pL7yl6oh8XjnMfj5V83P3SBDz6yRAG77d4XrfQKrAeAM4BSRPVfNOSdDfWeg5r=
+j
+	DDs8I2MHAn0ys/fkuoUl7QbXy9EGghQIBokuTYw=3D=3D
+X-Google-Smtp-Source: AGHT+IF6ThxitzS4Qqvqh1XJrgmv5PX715nooF+qv5g6MJ7bKFjS6=
+CcMSXAR1eSDDfmsKQ9hqTYmjkYYyHmZ10tfRK4=3D
+X-Received: by 2002:a25:baca:0:b0:dd1:2f58:6a2e with SMTP id
+ a10-20020a25baca000000b00dd12f586a2emr3920278ybk.9.1711805960439; Sat, 30 =
+Mar
+ 2024 06:39:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=3D"us-ascii"
-Content-Disposition: inline
-Return-Path: linux-kernel+bounces-125724-steffen.klassert=3Dsecunet.com@vge=
+References: <20240329071948.3101882-1-quic_kriskura@quicinc.com>
+ <CAA8EJpqx+VFW8z6oG=3D+pnhPN97Q3R6z+ygf85Uspve-9syQsUw@mail.gmail.com> <6f=
+2df222-36d4-468e-99a7-9c48fae85aa9@quicinc.com>
+In-Reply-To: <6f2df222-36d4-468e-99a7-9c48fae85aa9@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 30 Mar 2024 15:39:08 +0200
+Message-ID: <CAA8EJppa4hVBSenLgxc5MYxTfzPPf4exHvh8RWTP=3Dp8mgB_RCw@mail.gma=
+il.com>
+Subject: Re: [RFC PATCH 0/2] Add gpio-usb-c-connector compatible
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Rob Herring <robh@kernel.org>,=20
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,=20
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Conor Dooley <conor+dt@ke=
+rnel.org>,=20
+	Miquel Raynal <miquel.raynal@bootlin.com>, Guenter Roeck <linux@roeck-us.n=
+et>,=20
+	Bjorn Helgaas <bhelgaas@google.com>, Kyle Tso <kyletso@google.com>,=20
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,=20
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, u.kleine-koenig@pengutr=
+onix.de,=20
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, devi=
+cetree@vger.kernel.org,=20
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,=20
+	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset=3D"UTF-8"
+Return-Path: linux-kernel+bounces-125736-steffen.klassert=3Dsecunet.com@vge=
 r.kernel.org
-X-MS-Exchange-Organization-OriginalArrivalTime: 30 Mar 2024 12:26:13.7264
+X-MS-Exchange-Organization-OriginalArrivalTime: 30 Mar 2024 13:39:43.6991
  (UTC)
-X-MS-Exchange-Organization-Network-Message-Id: 6e10dd70-7823-4eba-20a7-08dc=
-50b496fd
-X-MS-Exchange-Organization-OriginalClientIPAddress: 62.96.220.36
+X-MS-Exchange-Organization-Network-Message-Id: 79151791-a669-4059-b4b7-08dc=
+50bedb89
+X-MS-Exchange-Organization-OriginalClientIPAddress: 62.96.220.37
 X-MS-Exchange-Organization-OriginalServerIPAddress: 10.53.40.202
 X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: cas-essen-02.s=
 ecunet.de
 X-MS-Exchange-Organization-OrderedPrecisionLatencyInProgress: LSRV=3Dmbx-es=
-sen-02.secunet.de:TOTAL-HUB=3D0.399|SMR=3D0.340(SMRDE=3D0.005|SMRC=3D0.334(=
-SMRCL=3D0.102|X-SMRCR=3D0.333))|CAT=3D0.057(CATOS=3D0.001
- (CATSM=3D0.001)|CATRESL=3D0.026(CATRESLP2R=3D0.003)|CATORES=3D0.028(CATRS=
-=3D0.028(CATRS-Transport
+sen-02.secunet.de:TOTAL-HUB=3D0.401|SMR=3D0.324(SMRDE=3D0.004|SMRC=3D0.319(=
+SMRCL=3D0.102|X-SMRCR=3D0.317))|CAT=3D0.076(CATOS=3D0.001
+ |CATRESL=3D0.024(CATRESLP2R=3D0.018)|CATORES=3D0.048(CATRS=3D0.048(CATRS-T=
+ransport
  Rule Agent=3D0.001 (X-ETREX=3D0.001)|CATRS-Index Routing
- Agent=3D0.025)));2024-03-30T12:26:14.136Z
+ Agent=3D0.046)));2024-03-30T13:39:44.128Z
 X-MS-Exchange-Forest-ArrivalHubServer: mbx-essen-02.secunet.de
 X-MS-Exchange-Organization-AuthSource: cas-essen-02.secunet.de
 X-MS-Exchange-Organization-AuthAs: Anonymous
 X-MS-Exchange-Organization-FromEntityHeader: Internet
-X-MS-Exchange-Organization-OriginalSize: 10172
+X-MS-Exchange-Organization-OriginalSize: 14115
 X-MS-Exchange-Organization-HygienePolicy: Standard
 X-MS-Exchange-Organization-MessageLatency: SRV=3Dcas-essen-02.secunet.de:TO=
-TAL-FE=3D0.009|SMR=3D0.008(SMRPI=3D0.006(SMRPI-FrontendProxyAgent=3D0.006))=
-|SMS=3D0.002
+TAL-FE=3D0.026|SMR=3D0.025(SMRPI=3D0.022(SMRPI-FrontendProxyAgent=3D0.022))=
+|SMS=3D0.001
 X-MS-Exchange-Organization-Recipient-Limit-Verified: True
 X-MS-Exchange-Organization-TotalRecipientCount: 1
 X-MS-Exchange-Organization-Rules-Execution-History: 0b0cf904-14ac-4724-8bdf=
@@ -387,205 +512,269 @@ X-MS-Exchange-Organization-Rules-Execution-History: 0b0cf904-14ac-4724-8bdf=
 6-8c5d-b3d6ddbb3d55%%%16355082-c50b-4214-9c7d-d39575f9f79b
 X-MS-Exchange-Forest-RulesExecuted: mbx-essen-02
 X-MS-Exchange-Organization-RulesExecuted: mbx-essen-02
-X-MS-Exchange-Forest-IndexAgent-0: AQ0CZW4AAe0JAAAPAAADH4sIAAAAAAAEAK1YW3Pb=
-xhVeiFeRou0kM8
- 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
- ffwx/ux3CCuVKvNOl4YazAitusVmHVEiuXWWWXtUpGuUDrBVYqGqwG
- X1baYoUto1BlrGpslxgrsZpWhHWSLNZYfYttFwz2AwP1IpjS6/DVlr
- OLYPYVK8F6CVRoBezAK8BAR6wAMNA7maqybVgp4i64Lm+z+tOorrS7
- glFchFApshL8MNgWrGsviQxZriKAUp3tZFTKC4+gWKuSU435BStByG
- UQJswQjo4IZCqsQeGkZl9ocrQd2IUnCJdYXStCpAWiq6IJwd0dUNdo
- q+RCoy0iDxhpCUNOXtMvrFcRUr1ssAaB2SJrJXxFxmD9O1Z5yV4V2E
- +0XjEYMxDGCr2A5M+sCDxss2/SrQW8ld9VNPVUahoQdeqijDFCOBB+
- kmUKs76N2StUjVqKpIRpQvYWsKsJ58jDchdWGuwFcbJcLxBsjQpXDL
- ZN8KoZpyXWyNoBmW+J5xKJUV7wmYVElpFhyiNBylCXmtphDVJP2AAG
- QHIzNA2DjLCdRTsAjDoSUsOkG6U1FRDWNaNxUqmzMrXbMlgylZQZ7o
- KRraQwEuHEYJkaAcQS+YWpbaxwLLy60cjGnhKrqU5XygtT9UWdpNFp
- +/QjUaECKOpAaAi8yK5TqaO1slFNXS/KrKQrX+sSTuyvrGSaYoJUQ1
- RGeWmHqNNQ9VN/Fw27Q4yVN9NUxqRUNGDN6rekSPOtim2byVSWlqRJ
- CVVRh5wpGI0npYIaRw8BPa+SOWAkWahWlhTB4ldbjG2xV6uLX5NkOV
- 2Er2G8Isk/pYtg3DBe0mIjT3JnuZg0DmzVaesv6RYgN4wXtFjPA/bd
- chGg0w/D2FlzCuQYxjeEuZIuAg+LkCur8L7Ki25jEd2VMryVn8ecCT
- xZTDqRol6DsRHLS72lh2GdCnuhleRLPxd+v07zq7OQlUwH+5qFzHqN
- jOz9Ifll7krZ3KW7taQSiribhEMHrrGtT72a8VL/2P4PwY6oA3MZAA
- ABCvMBPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTE2
- Ij8+DQo8RW1haWxTZXQ+DQogIDxWZXJzaW9uPjE1LjAuMC4wPC9WZX
- JzaW9uPg0KICA8RW1haWxzPg0KICAgIDxFbWFpbCBTdGFydEluZGV4
- PSIxMDEzIiBQb3NpdGlvbj0iT3RoZXIiPg0KICAgICAgPEVtYWlsU3
- RyaW5nPmdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPC9FbWFpbFN0
- cmluZz4NCiAgICA8L0VtYWlsPg0KICA8L0VtYWlscz4NCjwvRW1haW
- xTZXQ+AQ7OAVJldHJpZXZlck9wZXJhdG9yLDEwLDE7UmV0cmlldmVy
- T3BlcmF0b3IsMTEsMjtQb3N0RG9jUGFyc2VyT3BlcmF0b3IsMTAsMT
- tQb3N0RG9jUGFyc2VyT3BlcmF0b3IsMTEsMDtQb3N0V29yZEJyZWFr
- ZXJEaWFnbm9zdGljT3BlcmF0b3IsMTAsMztQb3N0V29yZEJyZWFrZX
- JEaWFnbm9zdGljT3BlcmF0b3IsMTEsMDtUcmFuc3BvcnRXcml0ZXJQ cm9kdWNlciwyMCw4
-X-MS-Exchange-Forest-IndexAgent: 1 3009
-X-MS-Exchange-Forest-EmailMessageHash: 1593CEE6
+X-MS-Exchange-Forest-IndexAgent-0: AQ0CZW4AAW0NAAAPAAADH4sIAAAAAAAEAKVYbVMj=
+xxFeISEJge58ji
+ tx8iVT56oc+NArnH1HHMoHxAY72PgEvnNcLmpZDdIe0q68s0IhsX9h
+ /lSe7p5ZrYCyXRVOB6vZnp7up59+2f3vxteR6vnpptpqq2M/Ud12d1
+ v5qep0djpbm+rLJDTDyFdfThN/4qehOun1vvq2Xvvkx2kYnF/h7hXu
+ fErfwihoBvF4V82SONU79dqugu6tVvdFi5V+tNPdUifHm+pgHKbJjd
+ rzkxszvIqvcxt4y2dJuKm6LxbMab/Y6bbvmiN7fpsxu7vyW31zcNZp
+ t9vq6OBEfd/5QQ19o3x1ejPRjUAFcRTpII0T5Ud9ZaaTSZykRp319t
+ RWs920Kg7jmb7WiQpTlehRqI2KIzU1Fw3a3hhMwlj1k5Ak0hgSfl+l
+ Q62uL6aG1YZ9q4ckn8jaJImvw75WSTzSyszCNBg2s3Not1UYTJNER+
+ nohuy2auIIX0lXQywQB+A/YXQBfZNEG2xSYQSvVepjrale9vthNIBu
+ P7V6cPvgVM3i6aivxtqP+J4crq/DQM/xYLT2bqEVxU7RbTCb6nToR1
+ eG4LgT/ktsn8RhlJI1QDSepur77g+CtUQY8C+cFhpyKU1vlAnHk5He
+ lEj4I4FFvZ2aFCaRsxM4BeNEz7d7Zz14OZmC8LNhGAxVmviRGfmpZt
+ vSWaw+Pzn62qgLTdYksEX31WUSjwkGUXKe2XGOY40eXd42dZ8MHE+h
+ fhwnmgMxCgMc0mdDyUI6aX+frJPw+7AN7Jgg4Ikowq2mOkpJFYBVOo
+ qng6F4BksRHjOFbtGhRqDJyDTVMc6LQZNNqyOJJzphUKL+iDyyRAYI
+ htjmW3vn0CYa+QO64JbREz+B1aLrSZyE4BAYFUdPgPsg8keMmR6NmC
+ PDGKZZVOHdyI80oYDFC43kIBxj6xuJkyW9nlVkiCHwP7T+qlEcDTTx
+ whhmMOURBcMCMIszkEwWnpwXZBcWevF+PjaH/jVh4LPBPqfDOIwQlC
+ Mw20ywVdZv4qnyAS7h3tcmSMIL2odla//QT/ozknAAN1kFksPouYqh
+ f61dZUGYkDhkYYoMH8G1lqhKtE3sls16x0wOGRBEhBE5XIBG42lEPE
+ IEmDRwMcoCTdXDEONbQnMLrIOCogMrI5gJ5b4KfIO0Qe7gr+iwnpID
+ iMHp/sk+AUR7URQuQwSBzkQgifX56mLSBPCIEsQjpXoXX6rHXJGCeU
+ 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
+ NrdXJhQHF1aWNpbmMuY29tPC9FbWFpbFN0cmluZz4NCiAgICA8L0Vt
+ YWlsPg0KICA8L0VtYWlscz4NCjwvRW1haWxTZXQ+AQyOBTw/eG1sIH
+ ZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi0xNiI/Pg0KPENvbnRh
+ Y3RTZXQ+DQogIDxWZXJzaW9uPjE1LjAuMC4wPC9WZXJzaW9uPg0KIC
+ A8Q29udGFjdHM+DQogICAgPENvbnRhY3QgU3RhcnRJbmRleD0iMTE0
+ IiBQb3NpdGlvbj0iU2lnbmF0dXJlIj4NCiAgICAgIDxQZXJzb24gU3
+ RhcnRJbmRleD0iMTE0IiBQb3NpdGlvbj0iU2lnbmF0dXJlIj4NCiAg
+ ICAgICAgPFBlcnNvblN0cmluZz5EbWl0cnkgQmFyeXNoa292PC9QZX
+ Jzb25TdHJpbmc+DQogICAgICA8L1BlcnNvbj4NCiAgICAgIDxFbWFp
+ bHM+DQogICAgICAgIDxFbWFpbCBTdGFydEluZGV4PSIxOTYiIFBvc2
+ l0aW9uPSJTaWduYXR1cmUiPg0KICAgICAgICAgIDxFbWFpbFN0cmlu
+ Zz5xdWljX2tyaXNrdXJhQHF1aWNpbmMuY29tPC9FbWFpbFN0cmluZz
+ 4NCiAgICAgICAgPC9FbWFpbD4NCiAgICAgIDwvRW1haWxzPg0KICAg
+ ICAgPENvbnRhY3RTdHJpbmc+RG1pdHJ5IEJhcnlzaGtvdiB3cm90ZT
+ oNCiZndDsgJmd0OyBPbiBGcmksIDI5IE1hciAyMDI0IGF0IDA5OjIw
+ LCBLcmlzaG5hIEt1cmFwYXRpDQomZ3Q7ICZndDsgJmx0O3F1aWNfa3
+ Jpc2t1cmFAcXVpY2luYy5jb208L0NvbnRhY3RTdHJpbmc+DQogICAg
+ PC9Db250YWN0Pg0KICA8L0NvbnRhY3RzPg0KPC9Db250YWN0U2V0Pg
+ EOzwFSZXRyaWV2ZXJPcGVyYXRvciwxMCwxO1JldHJpZXZlck9wZXJh
+ dG9yLDExLDM7UG9zdERvY1BhcnNlck9wZXJhdG9yLDEwLDE7UG9zdE
+ RvY1BhcnNlck9wZXJhdG9yLDExLDA7UG9zdFdvcmRCcmVha2VyRGlh
+ Z25vc3RpY09wZXJhdG9yLDEwLDM7UG9zdFdvcmRCcmVha2VyRGlhZ2
+ 5vc3RpY09wZXJhdG9yLDExLDA7VHJhbnNwb3J0V3JpdGVyUHJvZHVj ZXIsMjAsMjQ=3D
+X-MS-Exchange-Forest-IndexAgent: 1 4544
+X-MS-Exchange-Forest-EmailMessageHash: 1F8AF30C
 X-MS-Exchange-Forest-Language: en
 X-MS-Exchange-Organization-Processed-By-Journaling: Journal Agent
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095=
-:
+On Sat, 30 Mar 2024 at 11:13, Krishna Kurapati PSSNV
+<quic_kriskura@quicinc.com> wrote:
+> On 3/29/2024 6:23 PM, Dmitry Baryshkov wrote:
+> > On Fri, 29 Mar 2024 at 09:20, Krishna Kurapati
+> > <quic_kriskura@quicinc.com> wrote:
+> >>
+> >> QDU1000 IDP [1] has a Type-c connector and supports USB 3.0.
+> >> However it relies on usb-conn-gpio driver to read the vbus and id
+> >> gpio's and provide role switch. However the driver currently has
+> >> only gpio-b-connector compatible present in ID table. Adding that
+> >> in DT would mean that the device supports Type-B connector and not
+> >> Type-c connector. Thanks to Dmitry Baryshkov for pointing it out [2].
+> >
+> > USB-B connector is pretty simple, it really has just an ID pin and
+> > VBUS input, which translates to two GPIOs being routed from the
+> > _connector_ itself.
+> >
+> > USB-C is much more complicated, it has two CC pins and a VBus power
+> > pin. It is not enough just to measure CC pin levels. Moreover,
+> > properly handling USB 3.0 inside a USB-C connector requires a separate
+> > 'orientation' signal to tell the host which two lanes must be used for
+> > the USB SS signals. Thus it is no longer possible to route just two
+> > pins from the connector to the SoC.
+> >
+> > Having all that in mind, I suspect that you are not describing your
+> > hardware properly. I suppose that you have a Type-C port controller /
+> > redriver / switch, which handles CC lines communication and then
+> > provides ID / VBUS signals to the host. In such a case, please
+> > describe this TCPC in the DT file and use its compatible string
+> > instead of "gpio-c-connector".
+> >
+>
+> Hi Dmitry,
+>
+>   My bad. I must have provided more details of the HW.
+>
+>   I presume you are referring to addition of a connector node, type-c
+> switch, pmic-glink and other remote endpoints like in other SoC's like
+> SM8450/ SM8550/ SM8650.
+>
+>   This HW is slightly different. It has a Uni Phy for Super speed and
+> hence no DP.
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+This is fine and it's irrelevant for the USB-C.
 
-are available in the Git repository at:
+>   For orientation switching, on mobile SoC's, there is a provision for
+> orientation gpio given in pmic-glink node and is handled in ucsi_glink
+> driver. But on this version of HW, there is a USB-C Switch with its own
+> firmware taking care of orientation switching. It takes 8 SS Lines and 2
+> CC lines coming from connector as input and gives out 4 SS Lines (SS
+> TX1/TX2 RX1/RX2) as output which go to the SoC. So orientation switch is
+> done by the USB-C-switch in between and it automatically routes
+> appropriate active SS Lane from connector to the SoC.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.9=
--rc2
+This is also fine. As I wrote, you _have_ the Type-C port controller.
+So your DT file should be describing your hardware.
 
-for you to fetch changes up to f4d1960764d8a70318b02f15203a1be2b2554ca1:
+>   As usual like in other targets, the DP and DM lines from type-c
+> connector go to the SoC directly.
+>
+>   To handle role switch, the VBUS and ID Pin connections are given to
+> SoC as well. There is a vbus controller regulator present to provide
+> vbus to connected peripherals in host mode.
+>
+>   There is no PPM entity (ADSP in mobile SoC's) and no UCSI involved
+> here. Hence we rely on usb-conn-gpio to read the vbus/id and switch
+> roles accordingly.
 
-  USB: core: Fix deadlock in port "disable" sysfs attribute (2024-03-26 15:=
-02:28 +0100)
+This is also fine.
 
-----------------------------------------------------------------
-USB Fixes for 6.9-rc2
+You confirmed my suspicions. You have an external Type-C switch which
+handles orientation (and most likely PD or non-PD power negotiation)
+for you. It has GPIO outputs, etc.
 
-Here are a bunch of small USB fixes for reported problems and
-regressions for 6.9-rc2.  Included in here are:
-  - deadlock fixes for long-suffering issues
-  - USB phy driver revert for reported problem
-  - typec fixes for reported problems
-  - duplicate id in dwc3 dropped
-  - dwc2 driver fixes
-  - udc driver warning fix
-  - cdc-wdm race bugfix
-  - other tiny USB bugfixes
+But it is not a part of the connector. Instead of adding the
+"gpio-usb-c-connector", add proper compatible string (see, how this is
+handled e.g. by the spidev - it is a generic driver, but it requires
+hardware-specific compatibles).
+Your hardware description should look like:
 
-All of these have been in linux-next this past week with no reported
-issues.
+typec {
+    compatible =3D "your,switch";
+    id-gpios =3D <&gpio 1>;
+    vbus-gpios =3D <&gpio 2>;
+    vbus-supplies =3D <&reg-vbus>;
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    ports {
+       #address-cells =3D <1>;
+       #size-cells =3D <1>;
+       port@0 {
+          endpoint {
+              remote-endpoint =3D <&usb_dwc3_hs_out>;
+          };
+       };
+       port@1 {
+          endpoint {
+              remote-endpoint =3D <&usb_uni_phy_out>;
+          };
+      };
+      /* No SBU port */
+   };
+};
 
-----------------------------------------------------------------
-Alan Stern (3):
-      USB: core: Fix deadlock in usb_deauthorize_interface()
-      USB: core: Add hub_get() and hub_put() routines
-      USB: core: Fix deadlock in port "disable" sysfs attribute
+Note, I haven't said anything regarding the driver. You can continue
+using the usb-conn-gpio driver. Just add a compatible string for you
+switch.
 
-Alexander Stein (1):
-      Revert "usb: phy: generic: Get the vbus supply"
+>
+>   Hope this answers the query as to why we wanted to use usb-conn-gpio
+> and why we were trying to add a new compatible.
+>
+> Regards,
+> Krishna,
+>
+> >>
+> >> This series intends to add that compatible in driver and bindings
+> >> so that it can be used in QDU1000 IDP DT.
+> >>
+> >> [1]: https://lore.kernel.org/all/20240319091020.15137-3-quic_kbajaj@qu=
+icinc.com/
+> >> [2]: https://lore.kernel.org/all/CAA8EJprXPvji8TgZu1idH7y4GtHtD4VmQABF=
+BcRt-9BQaCberg@mail.gmail.com/
+> >>
+> >> Krishna Kurapati (2):
+> >>    dt-bindings: connector: Add gpio-usb-c-connector compatible
+> >>    usb: common: usb-conn-gpio: Update ID table to add usb-c connector
+> >>
+> >>   Documentation/devicetree/bindings/connector/usb-connector.yaml | 3 +=
+++
+> >>   drivers/usb/common/usb-conn-gpio.c                             | 1 +
+> >>   2 files changed, 4 insertions(+)
+> >>
+> >> --
+> >> 2.34.1
+> >>
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-Christian A. Ehrhardt (5):
-      usb: typec: ucsi: Clear EVENT_PENDING under PPM lock
-      usb: typec: ucsi: Check for notifications after init
-      usb: typec: ucsi: Ack unsupported commands
-      usb: typec: ucsi_acpi: Refactor and fix DELL quirk
-      usb: typec: ucsi: Clear UCSI_CCI_RESET_COMPLETE before reset
 
-Heikki Krogerus (1):
-      usb: dwc3: pci: Drop duplicate ID
 
-Jameson Thies (1):
-      usb: typec: ucsi: Check capabilities before cable and identity discov=
-ery
-
-Krishna Kurapati (1):
-      usb: typec: ucsi: Fix race between typec_switch and role_switch
-
-Kyle Tso (3):
-      usb: typec: tcpm: Correct port source pdo array in pd_set callback
-      usb: typec: tcpm: Update PD of Type-C port upon pd_set
-      usb: typec: Return size of buffer if pd_set operation succeeds
-
-Minas Harutyunyan (5):
-      usb: dwc2: host: Fix hibernation flow
-      usb: dwc2: host: Fix remote wakeup from hibernation
-      usb: dwc2: host: Fix ISOC flow in DDMA mode
-      usb: dwc2: gadget: Fix exiting from clock gating
-      usb: dwc2: gadget: LPM flow fix
-
-Oliver Neukum (1):
-      usb: cdc-wdm: close race between read and workqueue
-
-Thinh Nguyen (1):
-      usb: dwc3: Properly set system wakeup
-
-Weitao Wang (1):
-      USB: UAS: return ENODEV when submit urbs fail with device not attache=
-d
-
-Xu Yang (1):
-      usb: typec: tcpm: fix double-free issue in tcpm_port_unregister_pd()
-
-Yongzhi Liu (1):
-      usb: misc: ljca: Fix double free in error handling path
-
-yuan linyu (1):
-      usb: udc: remove warning when queue disabled ep
-
- drivers/usb/class/cdc-wdm.c         |  6 ++-
- drivers/usb/core/hub.c              | 23 +++++++---
- drivers/usb/core/hub.h              |  2 +
- drivers/usb/core/port.c             | 38 ++++++++++++++--
- drivers/usb/core/sysfs.c            | 16 +++++--
- drivers/usb/dwc2/core.h             | 14 ++++++
- drivers/usb/dwc2/core_intr.c        | 72 +++++++++++++++++++----------
- drivers/usb/dwc2/gadget.c           | 10 +++++
- drivers/usb/dwc2/hcd.c              | 49 ++++++++++++++++----
- drivers/usb/dwc2/hcd_ddma.c         | 17 ++++---
- drivers/usb/dwc2/hw.h               |  2 +-
- drivers/usb/dwc2/platform.c         |  2 +-
- drivers/usb/dwc3/core.c             |  2 +
- drivers/usb/dwc3/core.h             |  2 +
- drivers/usb/dwc3/dwc3-pci.c         |  2 -
- drivers/usb/dwc3/gadget.c           | 10 +++++
- drivers/usb/dwc3/host.c             | 11 +++++
- drivers/usb/gadget/udc/core.c       |  4 +-
- drivers/usb/misc/usb-ljca.c         | 22 ++++-----
- drivers/usb/phy/phy-generic.c       |  7 ---
- drivers/usb/storage/uas.c           | 28 ++++++------
- drivers/usb/typec/class.c           |  7 ++-
- drivers/usb/typec/tcpm/tcpm.c       |  6 +--
- drivers/usb/typec/ucsi/ucsi.c       | 90 +++++++++++++++++++++++++++++----=
-----
- drivers/usb/typec/ucsi/ucsi.h       |  5 ++-
- drivers/usb/typec/ucsi/ucsi_acpi.c  | 71 +++++++++++++----------------
- drivers/usb/typec/ucsi/ucsi_glink.c | 14 ++++++
- 27 files changed, 374 insertions(+), 158 deletions(-)
+--=20
+With best wishes
+Dmitry
 
 
