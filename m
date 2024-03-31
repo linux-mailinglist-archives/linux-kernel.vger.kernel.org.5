@@ -1,97 +1,117 @@
-Return-Path: <linux-kernel+bounces-126117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BCA1893262
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:06:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 675CC8934C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:13:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596011C2161C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:06:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AA461C24265
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1746149C4D;
-	Sun, 31 Mar 2024 16:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FB914BF81;
+	Sun, 31 Mar 2024 16:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="w1vDLVkx"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D2C14901B
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 16:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=62.96.220.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC45014AD3E
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 16:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711900960; cv=fail; b=XW2Jm2ICSkaTsK1VbqquE3EAhrcn6bbEV6g6dSG1mZqH9LURpP/IOZ+Za5ceewQBSHXAoXg6lFJrNkDlD/ZmKm2Hp9/Db5HoneLqtEI4tzpk5uA8/jNkSbV06We+HhCbpXeumhJI2l5ztSWTlIY6g/smgXeJkJxIZ35vfO6DiC8=
+	t=1711903525; cv=pass; b=tTeA8vzR22oB9wkoNMag374tyj1SkwHWpn36Oax65YN0/X6PEKwQ0GunJo0CgkoQ040KJceg5yMqTQZ7X2COCtZt0ckXpmb4Oi70JfddQxLVezxuA8ZSjSEsSaBcS+dV+O/T+FeBww4jtNASb2sdUUTAZmK2bXlwbiOnDx5VzJs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711900960; c=relaxed/simple;
-	bh=LkcPu3aiN8+Pp7SgssHAmiDSJJkhOmSWWOszD6D8tLE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h3W/jhLxOTm4bKs9/2JBj5IrbLcIE7pSow4YrXprUw6dJ3d9jL96b36pe/QBIXfgSW2L6/yKKEKF8qrL1RYVOpKg0sR2lzZr9TpWE7cgVTIp9jYfoxxr9EPu3lgfrSupTdl1WwfQKF8a6bdGHmxPjqZCiCXnw+8AitS0gVry1sI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=fail smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.240; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=fail smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sina.com
+	s=arc-20240116; t=1711903525; c=relaxed/simple;
+	bh=9eBbvZxCuf2y6AL53hiH3nHsymnKizW4Jkjv7RF8q0M=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WcF3JXKLf4EnVyXSGQDOdn4HSAzicjHnqZOs95DofSeMxrCDynJMyQikVoC4/qPMfGrSvrtmecU46BxZ/PKIgt/hEikzguAoBfkmbS4lZeg2NqWAS7Ay9ewHUTjPEz1x1HXE4gg0kJFm/F9C7+Ba69Hq2ct5iCzAcaW6zOkvIIQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=fail smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=w1vDLVkx; arc=none smtp.client-ip=203.205.221.242; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; arc=pass smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=qq.com
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id 66D872082B;
-	Sun, 31 Mar 2024 18:02:31 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id 86E4F2084A;
+	Sun, 31 Mar 2024 18:45:21 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 1bdceBOp1M4D; Sun, 31 Mar 2024 18:02:27 +0200 (CEST)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+	with ESMTP id UmNMqG1TKdYe; Sun, 31 Mar 2024 18:45:20 +0200 (CEST)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id CAA7120826;
-	Sun, 31 Mar 2024 18:02:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com CAA7120826
+	by a.mx.secunet.com (Postfix) with ESMTPS id A5003208DE;
+	Sun, 31 Mar 2024 18:45:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com A5003208DE
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout2.secunet.com (Postfix) with ESMTP id BDA29800057;
-	Sun, 31 Mar 2024 18:02:27 +0200 (CEST)
+	by mailout1.secunet.com (Postfix) with ESMTP id 98082800061;
+	Sun, 31 Mar 2024 18:45:19 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:02:27 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:45:19 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
- 15.1.2507.17; Sun, 31 Mar 2024 15:52:46 +0000
-X-sender: <linux-kernel+bounces-125908-steffen.klassert=secunet.com@vger.kernel.org>
+ 15.1.2507.17; Sun, 31 Mar 2024 16:36:26 +0000
+X-sender: <linux-kernel+bounces-125911-steffen.klassert=secunet.com@vger.kernel.org>
 X-Receiver: <steffen.klassert@secunet.com>
  ORCPT=rfc822;steffen.klassert@secunet.com NOTIFY=NEVER;
  X-ExtendedProps=BQAVABYAAgAAAAUAFAARAPDFCS25BAlDktII2g02frgPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4YwUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5nZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAHQAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAAwAAgAABQBsAAIAAAUAWAAXAEoAAADwxQktuQQJQ5LSCNoNNn64Q049S2xhc3NlcnQgU3RlZmZlbixPVT1Vc2VycyxPVT1NaWdyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9ye
 	TogRmFsc2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
 X-CreatedBy: MSExchange15
-X-HeloDomain: a.mx.secunet.com
-X-ExtendedProps: BQBjAAoALl9rGbMv3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAYgAKAK0AAADligAABQBkAA8AAwAAAEh1Yg==
-X-Source: SMTP:Default MBX-ESSEN-01
-X-SourceIPAddress: 62.96.220.36
-X-EndOfInjectedXHeaders: 9856
+X-HeloDomain: b.mx.secunet.com
+X-ExtendedProps: BQBjAAoA1mcFfe5Q3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAYgAKACwAAADnigAABQBkAA8AAwAAAEh1Yg==
+X-Source: SMTP:Default MBX-ESSEN-02
+X-SourceIPAddress: 62.96.220.37
+X-EndOfInjectedXHeaders: 17123
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.48.161; helo=sy.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125908-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 4F25B20764
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.240
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=139.178.88.99; helo=sv.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125911-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 23E512025D
+Authentication-Results: b.mx.secunet.com;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="w1vDLVkx"
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.242
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711842165; cv=none; b=a0aFpyuINsvc2+3sz8d3pSzaGca9anXaM9CaAhr5uWcQMfCTQcbX85T7iM/9TxSDijsSnFOOyVP3nSKMaEGT52bZeG+aH2j9S3tCjjr5nR+1O1kqne51anYdhCyJ0SOeczluC/hxG94i0SJzJ7qe9O4UyjZF7/0GVHNM+hnAEgI=
+	t=1711843732; cv=none; b=fOnAryDRPPSEbcENGIxJzAZcZIazwem/S4mnuG3PEq49b0AopgSR3g65LaM+I/vd2sDDFRRsPipCz84KqTFGVIBypB0nODGZGcVtLQr1jefbmof3TUKwHP6c6VXqQ0EaKopsmy2jbeUBkorUtx02nx1FG48radsF78tE3nwJ+54=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711842165; c=relaxed/simple;
-	bh=LkcPu3aiN8+Pp7SgssHAmiDSJJkhOmSWWOszD6D8tLE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jNcn5ynCPPk3y55UtdcRBz2O5cKLTox/Sr4c3yZbZYIH0+0ckbnDKQh06IB6pfm3nf7HfrYLPHgTIg4HDy93nxW1U/6fsO0ro9AqUTZsBkoIowjKuKys8cKDUgMxKdNt/su+rJYqFUYBIhLdmgyVhIGgZcaXSco2Kq6TB9Ev98c=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 14092045089264
-X-SMAIL-UIID: 77F8267D54D24F6CBA4FD1B63BC82AA7-20240331-074230-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>
-CC: <linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] [bpf?] possible deadlock in kvfree_call_rcu
-Date: Sun, 31 Mar 2024 07:42:17 +0800
-Message-ID: <20240330234217.3169-1-hdanton@sina.com>
-In-Reply-To: <000000000000716bb60614acbf37@google.com>
-References:
+	s=arc-20240116; t=1711843732; c=relaxed/simple;
+	bh=9eBbvZxCuf2y6AL53hiH3nHsymnKizW4Jkjv7RF8q0M=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=dmnMCf6Oes15d0QZK5sXenSja9LCp5siF4rENCcWQgiOaxgf3+A1R1FUJ8T3lkgngbNpv8VhD01o38eSpxh8csq151h8cDxASTwRLrb/Xgj1QmRIx3LeJ9o4vhndioFj8yTJN/Fo5z38xNvztR0sNxXPWjAH10rFfNT1WyoA25o=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=w1vDLVkx; arc=none smtp.client-ip=203.205.221.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1711843727; bh=XvFjpZ5QUg1ownH8/RT/owX81trRjmiD8nBR8MTc9Aw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=w1vDLVkxoqBmgnvxg77WX9SoqAoBdk27X1mabovdrhnuSjBT3sJaxW2XuK984KSy1
+	 /EbrNgFvFYjsNtYjXQqZUOyKcT2YH37JPVK13hGZtBnpK81Ju1QnnoS34mnTF9UBAk
+	 /p1aIoZRVwiK6fZj28+WOSDDg8B7TdrJdxkY4VKo=
+X-QQ-mid: xmsmtpt1711843725tx0pik7ok
+Message-ID: <tencent_CD333C9E9E1B544B651B4D250FBAE5BB1208@qq.com>
+X-QQ-XMAILINFO: M7n9VusxZAlPxmkls+7Z+QwpxKdQ6+UsCc7U7260TQiLV+CJLmfSX8u/R8a7Nt
+	 GGuOuhNwT2vb6MqWP8rXrzEPUNGvR71ZfkUgn6/qjzHTtLINkfwTCG3bMe9OsXAQ9uP/q7ZiZG3P
+	 PqVilKDDqqIiFb+wxNnruW525JKS03Saw5Qwr4QOe0uWDUnlRKXw3q9VbDcUUMxUIv3flYe1dOrr
+	 5rtFqjq5ZvAQ948oXE204VpyqNZXewYViN+Z3SYmh4RpRQnlQiU3uLlPjnXtP0vjSJYu4HFBoBQa
+	 93RLZuAJrso1cDVNrLLF0rFdwgjFVFxJ0nhK4k+k3cKQ64J0WvMxIVPfOtuSL80eh/2I0TKu5K+j
+	 ojdfBiBkbQ11TrSJZHycdv6KONIooIKfHj2N3ePbuFRBSGoSxBoHU/Lc1GG+4SKOzNComzEkSQA+
+	 uiYPYUYZLws6CmGuZtTnSmQqLpwqK2QS4QvfJ9w035CA3dNXCdRY5y9p/Gv/RxnzNHAU+HKkWdIr
+	 sWEB/DwwRhIm2x1WRcrEcqEkr9BDMqkYR1m07JUL6N3xSbypkPJLNrNHkhqzEXxZIG/6ODeygGah
+	 JScTdQaq1mND2xvk1goV4nxkKVaN1Mn/sh4VG22K3LUnEEGjWNHb2PS1fUzlvqoMMtPobkPSht5J
+	 TIfjdb/RuqaVKgi4YfTQQR9V23vQeGqV0wWVJ/M05DNclCnFkbmbT9y25TyfUbENf4l8KSBg765n
+	 5hD9ehLND5Lhe4tCwunr+1NtChY+aQmYjycF6Buma9HDSuLAkoGGU0oWBr17Gat+s4JAiw+FP+/J
+	 KLphmg+aAdEFDq8sMuMTxlPo8s8/l7JnDsbJ3KRok7ahGmPQPxpv5E6WuuUjzUBb6mcP3XbQDWEZ
+	 Plxpns4TCgoU4+1b2SMy9g3SYRwX2vu4ddeezkPRFZS1RjJTRoRnaecFIpubFbua5S62FJE7xJRQ
+	 mqxuIiE3TkKU1ypya7i5WNGqDZ6yuN
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c824290332add8067111@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [jfs?] INFO: task hung in lmLogClose (3)
+Date: Sun, 31 Mar 2024 08:08:46 +0800
+X-OQ-MSGID: <20240331000845.633596-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000041ac86061400b95d@google.com>
+References: <00000000000041ac86061400b95d@google.com>
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -103,27 +123,148 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-On Wed, 27 Mar 2024 16:27:19 -0700
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-> git tree:       bpf
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ca53c9180000
+please test hung in lmLogClose
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  fe46a7dd189e
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
---- x/kernel/rcu/tree.c
-+++ y/kernel/rcu/tree.c
-@@ -2957,7 +2957,8 @@ krc_this_cpu_lock(unsigned long *flags)
+diff --git a/fs/jfs/jfs_incore.h b/fs/jfs/jfs_incore.h
+index 10934f9a11be..56d336a49985 100644
+--- a/fs/jfs/jfs_incore.h
++++ b/fs/jfs/jfs_incore.h
+@@ -197,6 +197,7 @@ struct jfs_sb_info {
+ 	kgid_t		gid;		/* gid to override on-disk gid */
+ 	uint		umask;		/* umask to override on-disk umask */
+ 	uint		minblks_trim;	/* minimum blocks, for online trim */
++	struct mutex    simutex;
+ };
  
- 	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
- 	krcp = this_cpu_ptr(&krc);
--	raw_spin_lock(&krcp->lock);
-+	while (!raw_spin_trylock(&krcp->lock))
-+		;
+ /* jfs_sb_info commit_state */
+diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+index 73389c68e251..b5609a7618e5 100644
+--- a/fs/jfs/jfs_logmgr.c
++++ b/fs/jfs/jfs_logmgr.c
+@@ -155,7 +155,6 @@ do {						\
+  */
+ static LIST_HEAD(jfs_external_logs);
+ static struct jfs_log *dummy_log;
+-static DEFINE_MUTEX(jfs_log_mutex);
  
- 	return krcp;
+ /*
+  * forward references
+@@ -1068,19 +1067,19 @@ int lmLogOpen(struct super_block *sb)
+ 	if (sbi->mntflag & JFS_INLINELOG)
+ 		return open_inline_log(sb);
+ 
+-	mutex_lock(&jfs_log_mutex);
++	mutex_lock(&sbi->simutex);
+ 	list_for_each_entry(log, &jfs_external_logs, journal_list) {
+ 		if (file_bdev(log->bdev_file)->bd_dev == sbi->logdev) {
+ 			if (!uuid_equal(&log->uuid, &sbi->loguuid)) {
+ 				jfs_warn("wrong uuid on JFS journal");
+-				mutex_unlock(&jfs_log_mutex);
++				mutex_unlock(&sbi->simutex);
+ 				return -EINVAL;
+ 			}
+ 			/*
+ 			 * add file system to log active file system list
+ 			 */
+ 			if ((rc = lmLogFileSystem(log, sbi, 1))) {
+-				mutex_unlock(&jfs_log_mutex);
++				mutex_unlock(&sbi->simutex);
+ 				return rc;
+ 			}
+ 			goto journal_found;
+@@ -1088,7 +1087,7 @@ int lmLogOpen(struct super_block *sb)
+ 	}
+ 
+ 	if (!(log = kzalloc(sizeof(struct jfs_log), GFP_KERNEL))) {
+-		mutex_unlock(&jfs_log_mutex);
++		mutex_unlock(&sbi->simutex);
+ 		return -ENOMEM;
+ 	}
+ 	INIT_LIST_HEAD(&log->sb_list);
+@@ -1130,7 +1129,7 @@ int lmLogOpen(struct super_block *sb)
+ 	sbi->log = log;
+ 	LOG_UNLOCK(log);
+ 
+-	mutex_unlock(&jfs_log_mutex);
++	mutex_unlock(&sbi->simutex);
+ 	return 0;
+ 
+ 	/*
+@@ -1144,7 +1143,7 @@ int lmLogOpen(struct super_block *sb)
+ 	fput(bdev_file);
+ 
+       free:		/* free log descriptor */
+-	mutex_unlock(&jfs_log_mutex);
++	mutex_unlock(&sbi->simutex);
+ 	kfree(log);
+ 
+ 	jfs_warn("lmLogOpen: exit(%d)", rc);
+@@ -1187,12 +1186,13 @@ static int open_inline_log(struct super_block *sb)
+ static int open_dummy_log(struct super_block *sb)
+ {
+ 	int rc;
++	struct jfs_sb_info *sbi = JFS_SBI(sb);
+ 
+-	mutex_lock(&jfs_log_mutex);
++	mutex_lock(&sbi->simutex);
+ 	if (!dummy_log) {
+ 		dummy_log = kzalloc(sizeof(struct jfs_log), GFP_KERNEL);
+ 		if (!dummy_log) {
+-			mutex_unlock(&jfs_log_mutex);
++			mutex_unlock(&sbi->simutex);
+ 			return -ENOMEM;
+ 		}
+ 		INIT_LIST_HEAD(&dummy_log->sb_list);
+@@ -1205,7 +1205,7 @@ static int open_dummy_log(struct super_block *sb)
+ 		if (rc) {
+ 			kfree(dummy_log);
+ 			dummy_log = NULL;
+-			mutex_unlock(&jfs_log_mutex);
++			mutex_unlock(&sbi->simutex);
+ 			return rc;
+ 		}
+ 	}
+@@ -1214,7 +1214,7 @@ static int open_dummy_log(struct super_block *sb)
+ 	list_add(&JFS_SBI(sb)->log_list, &dummy_log->sb_list);
+ 	JFS_SBI(sb)->log = dummy_log;
+ 	LOG_UNLOCK(dummy_log);
+-	mutex_unlock(&jfs_log_mutex);
++	mutex_unlock(&sbi->simutex);
+ 
+ 	return 0;
  }
---
+@@ -1441,7 +1441,7 @@ int lmLogClose(struct super_block *sb)
+ 
+ 	jfs_info("lmLogClose: log:0x%p", log);
+ 
+-	mutex_lock(&jfs_log_mutex);
++	mutex_lock(&sbi->simutex);
+ 	LOG_LOCK(log);
+ 	list_del(&sbi->log_list);
+ 	LOG_UNLOCK(log);
+@@ -1490,7 +1490,7 @@ int lmLogClose(struct super_block *sb)
+ 	kfree(log);
+ 
+       out:
+-	mutex_unlock(&jfs_log_mutex);
++	mutex_unlock(&sbi->simutex);
+ 	jfs_info("lmLogClose: exit(%d)", rc);
+ 	return rc;
+ }
+diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+index e1be21ca5d6e..23628ca3990c 100644
+--- a/fs/jfs/super.c
++++ b/fs/jfs/super.c
+@@ -504,6 +504,7 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sbi->uid = INVALID_UID;
+ 	sbi->gid = INVALID_GID;
+ 	sbi->umask = -1;
++	mutex_init(&sbi->simutex);
+ 
+ 	/* initialize the mount flag and determine the default error handler */
+ 	flag = JFS_ERR_REMOUNT_RO;
+
 
 
