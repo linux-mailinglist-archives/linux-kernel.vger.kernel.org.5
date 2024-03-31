@@ -1,295 +1,351 @@
-Return-Path: <linux-kernel+bounces-126062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D0D893196
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 14:47:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06A4D8931A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:18:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CAFC2822D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:47:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6975AB2131C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA8B1448EA;
-	Sun, 31 Mar 2024 12:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BD9144D04;
+	Sun, 31 Mar 2024 13:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="seHIEUu0"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2097.outbound.protection.outlook.com [40.107.6.97])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="b9cadDmm"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763541C0DF1;
-	Sun, 31 Mar 2024 12:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.97
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711889233; cv=fail; b=cP42rVIzFxA7tYV1DadZhXifhdBmOu2R/zqr3kdrrqgjvokMYMHTBetsTkpRxSaSz+2cJfBYNu4Fvj8oULv7JArGo9UljjO+9uoY5thWCO2y5MT6G/eVQAzbbbPrgmhNVspKcZ240S5uxfn86+4e0f5wCHj/G92/JxepYu7n3RI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711889233; c=relaxed/simple;
-	bh=51WNL5hovF5lNn12ghNulTG893hEDw1AOKrC58wHWQs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ABN5KyQmTh03/s7T9iroy2Bg3+PnxKav6hR5lQJ5v5ZUbKstT7c2ALl8NQETeHdYS7ZB3ywAVuBdp3g6HPkO/bS0HO2DxNn4kR4/I60ecyGVT+MTxh7oPiS+Q6FswX8QzXGt0CX9JbzocnQ6E7USX6xzYS2vxivsEwsg1T1hP3U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=seHIEUu0; arc=fail smtp.client-ip=40.107.6.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lZCYLr64BJXTlrYf0RjClnT2qXvpiKcSbaaVbdgCZ/j6EKa+dsq3LZ4FRAAFwcloGsFzVNYe6SNJaMyrcc+EFfIVyH8nTtipHwsjXj4idFJVpQguvXF6KRcjgHvM2dt87Psx2r2MaZ5+o3Yuj5f+8nO/wqXyNqd5fV7upsT7/CkMYHNTVVfrvJf9NU8hsktTH3+hNM1D2Ka7h2auPOsq40VN9sob5vqUpSgSipORp6qaGUpEy7IAfLceoqYJ9WWdDuWouNIFiUPxKOcEQe40KyeE9MEIuTWLswr2vow5bk+HwTL51VYuuximh7lC2NLKbNwG3SoA0l50oG521wGsng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eMPPTj8+ku+xFg3h1OA9sKhlB+vQ3TzdCiuFXhVe76M=;
- b=I/wRO04erWTpyXWPPT71+zmMZANVfC0ilV5hv+RwxTyVifXo4tObnuBE14lDjU+VgkHPzsOmIbAYo9rjXkwdPbXHSehupYCno22hciY3xXNCD1lUEsC44HbUbPXVkiAWYcthxK19GBTW8u4HCSfVzzkVzfUIJmZCFvSTaD0cLhRC1OrzvS10NhpuThWLSO790VHHqps5QA+ANs9SiFf29HXhKKlb0kAGt/uoZ6YcteT8hZV0CQuRFgTeYbUgUq3DhOnETNCcHyrOn/innSaWbT5gVuJhKaHQCItmLUWgIjGYfmyl7ljcwty2miDo4dafb7DGO1Wptq5+S2XBoXZGhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eMPPTj8+ku+xFg3h1OA9sKhlB+vQ3TzdCiuFXhVe76M=;
- b=seHIEUu0P2Wumt5/r5jXrkK1YzN3mackmQKPf/umtMWAF5PZchj4owy7oLQLsF3dvW9lPa6FmQMXzkWr06FSw3HM9+lIAsFusrQ84HuNNRgQLLmA9wz6DPy6w3E6kzfuCP/yw9xphJX9qUDnQMksNUPfp6sXnEdosI61mnKcRLY=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by VI1PR04MB7022.eurprd04.prod.outlook.com (2603:10a6:800:126::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.45; Sun, 31 Mar
- 2024 12:47:08 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.037; Sun, 31 Mar 2024
- 12:47:07 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>
-CC: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi
-	<cristian.marussi@arm.com>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
-	<linux-gpio@vger.kernel.org>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: RE: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Thread-Topic: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Thread-Index: AQHafRqyofu9Mu9OLUiaociI+9q/i7FLbcGAgAZqduA=
-Date: Sun, 31 Mar 2024 12:47:07 +0000
-Message-ID:
- <DU0PR04MB94170E50A016CA5AAB971D4488382@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
- <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
- <4879ad5d-165c-4118-81f7-8f6348a5a5d4@moroto.mountain>
-In-Reply-To: <4879ad5d-165c-4118-81f7-8f6348a5a5d4@moroto.mountain>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|VI1PR04MB7022:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Ub/i1u4m9bEAv0xP8yRFIHpd5IrGNR5SswEuQ7OuxzUqStBlcuPHkybi6pcT3+3B741CN3IAq0c6o1rNwzAfDQ7xPaceL2eOIfAVDhHuZ34hJ8ad0L6t1fjnFf8kLDYiSGAGwSFvZ1Na+VkcfpMfDLodbmxI9widCj0oNkWW/hmlt+piFbvNtFqDuS4PHTojJ1QJVhVHBnd3o0P+rG9WhR/eIqPjQKA7v7n5JpfmSSb+gJAd8KJzJT0yrfWQsvw3+nhDOZ3ijwqXxBWo/rAID62p8AlWhdFAXXvAQEhHfjPilxox0r8HfmzG+eGzIbHpNXHztA446R+cZX68432p5psA8FWJI3sHeEim/47Gt8S8XTRfSIWOg8wOHA9I/359daY/WvocEwPBV/KiusfaHOCTwUb2L6aL9PL94Qvn8aslh41dhJqjSoKnpKLRRrKw0p2Rddz4VwG2kOAJ0EzLR/aggWGwtalRP+XaMPDJOunCF+6cfo5vJGPWYu6P7McvXvA9GeV1GLlagBveV811CRzoOu36bQ/rspMipaE8XVOYuV5LGmbvtFk7uJAzAPJdUVaTynNxyQML5vacuanqR7Bauh6AcvYpr4P6mFw3jibRznoyxQRXHC9pDf6dZ+8keWJLoYk59zgIE6/3aJIYtkDIGoXicnhTjDrIunX7U08=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?C3fK37y0jjJm8xFudvuad+swbeR2izsJFXYLp/bFKst+zdEdk5Ughco7YeYq?=
- =?us-ascii?Q?oZUXG1Mf5Bmy6Y+5BCdnOoAGU/fR6e/cr9H3BKv70X/eVakkBqzZVQO04At0?=
- =?us-ascii?Q?RmpJ3lvPxJ4OybPbx2bcrst76l6ecAdlnUzT+diKCVQMasZ8FPoVTBIHMNig?=
- =?us-ascii?Q?tRzx37DsVNVJ/wp/laYYBjRApR3TJ8BZx2VkbVBxzl3+n56q+Zt3myO1TN9r?=
- =?us-ascii?Q?uhAZL7jhkMLLp7q/fahXT9pzq8X30SMHPlko8rYkB8emZHFbKaTqexNXobxR?=
- =?us-ascii?Q?syXEmvqRwKxLnc8dRXPqZiLKKMLhH7mnQFVuL9anLHlEFcbFNyXLHSE2fMOj?=
- =?us-ascii?Q?b9A+74eyAGp5gEFg9XoIq2EDXxiIVPwpAfh8FAvrWTyJxygYfts/GoM9wQCV?=
- =?us-ascii?Q?NQIMbbQ+hfQkHxidYKO7bb1cLYK8ctM2gI2U6lWXsUZOK0/OvbCae2Q6rEes?=
- =?us-ascii?Q?hWdG0XqkOnrjOSzlWcZtFUs9gqMJT7oimA5pzCtzxKnQ/99SUkyHT/r7/E3a?=
- =?us-ascii?Q?K2wLaths2Phr9EWHwr/yarNrjWS04f/In2gJuhZZ+JGiQqqk+F8vEmKEMG4t?=
- =?us-ascii?Q?BANStxt2V+pXHt7DG/WaO1GMtZdWexkT66JBCF4z+3aiffQiAKhWEAzAO0pQ?=
- =?us-ascii?Q?F9a5kzGRQHkrhE71hI9Cb1p2mJumjB6lFYhs4rQDAJ+c6VAtAiXtRIzUSrYa?=
- =?us-ascii?Q?IPFzt3iHhBQwzUjGeENdpYIqa4VQ18Q/uh7Ow1o6ZmMA9cE6wIpPuAp96XZn?=
- =?us-ascii?Q?evNmoshkRy6zHBHeyUtClF0GvW53hcA7+jYdZ+xr6XVEh8YNd0GsC48sNWod?=
- =?us-ascii?Q?4L/HZ14epthdUDAc5lM1npDX1Bww8CuZ61MYKc8QPqaq6WqUBYNOscy8Z/6T?=
- =?us-ascii?Q?/Z2jOLLk95WwSUa8NWhoidE2g0nAoXBv1NYmHzLdfh78Vj375R1oMR6XStOi?=
- =?us-ascii?Q?XixQ9C6oCzIFooDFn5jpgy6AvQJiSJcgcXbpOLXalVdQco0l8WiGRx07D4HX?=
- =?us-ascii?Q?i5X51iYWysdsDPRJ9Eyn9usXvR+u3bBGisRThB7clJ6x9xS0ipb+wcTIRkIP?=
- =?us-ascii?Q?0OtIodKh3ywfoPp14/F3z83hUU35hEKZZZi/8+3FaCjZQN4dlvDYTCeZYFly?=
- =?us-ascii?Q?EzVsRI0aJig1wxqtketALOeXOGhMYyTZIZY9VUx0MRU5PTlEIeA7zq6wpu+s?=
- =?us-ascii?Q?hBIzclXiJr0N//kYrvk4W7TRh6bRNFazkGLFu1qy7niG6+ouKYVNSTmYH3af?=
- =?us-ascii?Q?pyqV+/gr7YFwQRztmkkD8QFmnrE5rqd2G31xgoEyM3ClYXnGO9J6h1MnNI0z?=
- =?us-ascii?Q?jMNGxydkS9T5ZJ4is+xk+rVFZObdU7aL5Uyq0CPLL3IReYB71Kckc7VpHzE6?=
- =?us-ascii?Q?Hk9/BCARue2st1ii9uZ7cGqIH7++J1VU8CeoEi8wQ4n5cXHnpyFDNZYHF4Kb?=
- =?us-ascii?Q?XuXYvx56FFQZ8zB6p5fVKn+j9lsfOANDSNRt8GbiNmwivQBHsI68IRCsc0BW?=
- =?us-ascii?Q?e+2SmBvnF9Blya35FwqBEkVpefZ0avxQJsu9GXJeqt+7G3QmkoLnMoPQku8Y?=
- =?us-ascii?Q?JfIZID1zw6YeWUmDmNY=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33338762DF;
+	Sun, 31 Mar 2024 13:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711891079; cv=none; b=ADuzUhTjVNvAFFpOay9U0DuVk1mLEoX6Q2J7cqZfV3rzIf0euFMlafh6MRL6oTaB0ofTKXEcWzzA0NY8OGXEZaGTw+mJChZN6Mw1fsmv2NoD5MNzQK6F9HQY9B/6ZVXJ/WDaFvKlJ9xpjuXIZsQcIGLz0Gyr4nD+teMk3nLLXlc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711891079; c=relaxed/simple;
+	bh=HQ2LXoIEVmp8/qP0MN2mwzqsAKAVtORpWqbh4y7LyM4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cflu+/hVyD5aBj2PSY1zpFDRTmjmX0fNPYIrlk4grWDkoYsSXsIo06Z7DN1zauhVRRG/PoWyHfs6rzJnjklqHEFMhMTmHo5jrsxyPln255dQ2v/yHbZxz+n1HRMNZzxqFogQek26JCE5/GQpyAXrah4gTpEIkZKJLvudAk5KweQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=b9cadDmm; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42VBmDs9009610;
+	Sun, 31 Mar 2024 05:48:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=5DTBjzcq
+	xh4wTG4VBBYScUn4HvM5rt+lsvC8uKlOytU=; b=b9cadDmmvtIsodHUtrQdoEp7
+	Y91qa8rbzEBdRV6P9NYrekXQfeWCpS3uy4l2B8+b4AWcLl+B1sxt5aJ6BS6kAazv
+	IRSaHBA2DRpRgRQseoryEkGGYuLr9G+qgd4CNxgQ7qBUv7XgdYNIcGmYO+x+lBZj
+	3yCW+COgaGMGpxUYdsCsCktCntJZlYuX8jzS255jXlcDicFaVMUUWs7iZERudkIh
+	YvVHkU7/Cc3Lcep79haY4EipETllZt3GxYjETwOIRAkEK/gLg6MKGJKK51xqwJss
+	Lufm/cy+SMUMQ3yTT5KhdiXT/9FBnPGb6r+zEg6eO0zn4Vg7+7DBCLuAS6wkRA==
+Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x6g3kadqv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 31 Mar 2024 05:48:33 -0700 (PDT)
+Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
+ DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Sun, 31 Mar 2024 05:48:32 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
+ (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Sun, 31 Mar 2024 05:48:32 -0700
+Received: from hyd1425.marvell.com (unknown [10.29.37.83])
+	by maili.marvell.com (Postfix) with ESMTP id 9CE335C68E3;
+	Sun, 31 Mar 2024 05:48:28 -0700 (PDT)
+From: Sai Krishna <saikrishnag@marvell.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <hkelam@marvell.com>, <sbhatta@marvell.com>
+CC: Sai Krishna <saikrishnag@marvell.com>
+Subject: [net-next PATCH v4] octeontx2-pf: Reset MAC stats during probe
+Date: Sun, 31 Mar 2024 18:18:19 +0530
+Message-ID: <20240331124819.425930-1-saikrishnag@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5272c5d8-3a0f-47fe-e81a-08dc5180acf4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2024 12:47:07.8723
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: W8l9Sy9cb2boJAptqa39bWARx9ZdcpkQwxMfwuNlIv4SEZF//TVdmmx6QW4zY6SuLB2a9glc5P0X55K8ZC1mFw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7022
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: XCDHxE5j0hxD45BxxlrouD4RVTop-N0P
+X-Proofpoint-ORIG-GUID: XCDHxE5j0hxD45BxxlrouD4RVTop-N0P
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-31_09,2024-03-28_01,2023-05-22_02
 
-Hi Dan,
+Reset CGX/RPM MAC HW statistics at the time of driver probe()
 
-> Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
-> protocol basic support
->=20
-> Looks really nice.  Just a few small comments below.
->=20
-> On Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) wrote:
-> > +
-> > +struct scmi_msg_func_set {
-> > +	__le32 identifier;
-> > +	__le32 function_id;
-> > +	__le32 flags;
-> > +};
->=20
-> This scmi_msg_func_set struct is unused.  Delete.
->=20
-> > +static void
-> > +iter_pinctrl_settings_get_prepare_message(void *message, u32 desc_inde=
-x,
-> > +					  const void *priv)
-> > +{
-> > +	struct scmi_msg_settings_get *msg =3D message;
-> > +	const struct scmi_settings_get_ipriv *p =3D priv;
-> > +	u32 attributes;
-> > +
-> > +	attributes =3D FIELD_PREP(CONFIG_FLAG_MASK, p->flag) |
-> > +		     FIELD_PREP(SELECTOR_MASK, p->type);
-> > +
-> > +	if (p->flag =3D=3D 1)
-> > +		attributes |=3D FIELD_PREP(SKIP_CONFIGS_MASK, desc_index);
-> > +	else if (!p->flag)
->=20
-> This is a nit-pick but could you change these !p->flag conditions to
-> p->flag =3D=3D 0?  It's a number zero, not a bool.
->=20
-> > +		attributes |=3D FIELD_PREP(CONFIG_TYPE_MASK, p-
-> >config_types[0]);
-> > +
-> > +	msg->attributes =3D cpu_to_le32(attributes);
-> > +	msg->identifier =3D cpu_to_le32(p->selector); }
-> > +
-> > +static int
-> > +iter_pinctrl_settings_get_update_state(struct scmi_iterator_state *st,
-> > +				       const void *response, void *priv) {
-> > +	const struct scmi_resp_settings_get *r =3D response;
-> > +	struct scmi_settings_get_ipriv *p =3D priv;
-> > +
-> > +	if (p->flag =3D=3D 1) {
-> > +		st->num_returned =3D le32_get_bits(r->num_configs,
-> GENMASK(7, 0));
-> > +		st->num_remaining =3D le32_get_bits(r->num_configs,
-> > +						  GENMASK(31, 24));
-> > +	} else {
-> > +		st->num_returned =3D 1;
-> > +		st->num_remaining =3D 0;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int
-> > +iter_pinctrl_settings_get_process_response(const struct
-> scmi_protocol_handle *ph,
-> > +				       const void *response,
-> > +				       struct scmi_iterator_state *st,
-> > +				       void *priv)
-> > +{
-> > +	const struct scmi_resp_settings_get *r =3D response;
-> > +	struct scmi_settings_get_ipriv *p =3D priv;
-> > +
-> > +	if (!p->flag) {
->=20
->=20
-> if (p->flag =3D=3D 0) {
->=20
-> > +		if (p->config_types[0] !=3D
-> > +		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
-> > +			return -EINVAL;
-> > +	} else if (p->flag =3D=3D 1) {
-> > +		p->config_types[st->desc_index + st->loop_idx] =3D
-> > +			le32_get_bits(r->configs[st->loop_idx * 2],
-> > +				      GENMASK(7, 0));
-> > +	} else if (p->flag =3D=3D 2) {
-> > +		return 0;
-> > +	}
-> > +
-> > +	p->config_values[st->desc_index + st->loop_idx] =3D
-> > +		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int
-> > +scmi_pinctrl_settings_get(const struct scmi_protocol_handle *ph, u32
-> selector,
-> > +			  enum scmi_pinctrl_selector_type type,
-> > +			  enum scmi_pinctrl_conf_type config_type,
-> > +			  u32 *config_value)
-> > +{
-> > +	int ret;
-> > +	void *iter;
-> > +	struct scmi_iterator_ops ops =3D {
-> > +		.prepare_message =3D
-> iter_pinctrl_settings_get_prepare_message,
-> > +		.update_state =3D iter_pinctrl_settings_get_update_state,
-> > +		.process_response =3D
-> iter_pinctrl_settings_get_process_response,
-> > +	};
-> > +	struct scmi_settings_get_ipriv ipriv =3D {
-> > +		.selector =3D selector,
-> > +		.type =3D type,
-> > +		.flag =3D 0,
->=20
-> ->flag should be 0-2.
->=20
-> > +		.config_types =3D &config_type,
-> > +		.config_values =3D config_value,
-> > +	};
-> > +
-> > +	if (!config_value || type =3D=3D FUNCTION_TYPE)
->              ^^^^^^^^^^^^
-> config_value should be optional for flag =3D=3D 2.
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
+---
+v4:
+    - Addresses review comments given by Jakub Kicinski
+        1. Moved MAC stats reset before netdev/devlink register.
+v3:
+    - Addressed review comments given by Jakub Kicinski
+        1. Removed un-necessary EXPORT_SYMBOL 
+v2:
+    - Addressed review comments given by Jakub Kicinski
+	1. Removed devlink option to reset MAC stats, 
+           will implement stats reset with debugfs in later patches.
 
-As Cristian replied, I would keep it as is until we have a case in
-linux that need flag =3D=3D 2.
+ .../net/ethernet/marvell/octeontx2/af/cgx.c   | 27 +++++++++++++++++
+ .../net/ethernet/marvell/octeontx2/af/cgx.h   |  1 +
+ .../marvell/octeontx2/af/lmac_common.h        |  1 +
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  1 +
+ .../net/ethernet/marvell/octeontx2/af/rpm.c   | 17 +++++++++++
+ .../net/ethernet/marvell/octeontx2/af/rpm.h   |  3 ++
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 29 +++++++++++++++++++
+ .../marvell/octeontx2/nic/otx2_common.h       |  1 +
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 20 +++++++++++++
+ 9 files changed, 100 insertions(+)
 
-Thanks,
-Peng
-
->=20
-> regards,
-> dan carpenter
->=20
-> > +		return -EINVAL;
-> > +
-> > +	ret =3D scmi_pinctrl_validate_id(ph, selector, type);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	iter =3D ph->hops->iter_response_init(ph, &ops, 1,
-> PINCTRL_SETTINGS_GET,
-> > +					    sizeof(struct
-> scmi_msg_settings_get),
-> > +					    &ipriv);
-> > +
-> > +	if (IS_ERR(iter))
-> > +		return PTR_ERR(iter);
-> > +
-> > +	return ph->hops->iter_response_run(iter);
-> > +}
-> > +
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+index b86f3224f0b7..27935c54b91b 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+@@ -24,6 +24,8 @@
+ #define DRV_NAME	"Marvell-CGX/RPM"
+ #define DRV_STRING      "Marvell CGX/RPM Driver"
+ 
++#define CGX_RX_STAT_GLOBAL_INDEX	9
++
+ static LIST_HEAD(cgx_list);
+ 
+ /* Convert firmware speed encoding to user format(Mbps) */
+@@ -701,6 +703,30 @@ u64 cgx_features_get(void *cgxd)
+ 	return ((struct cgx *)cgxd)->hw_features;
+ }
+ 
++int cgx_stats_reset(void *cgxd, int lmac_id)
++{
++	struct cgx *cgx = cgxd;
++	int stat_id;
++
++	if (!is_lmac_valid(cgx, lmac_id))
++		return -ENODEV;
++
++	for (stat_id = 0 ; stat_id < CGX_RX_STATS_COUNT; stat_id++) {
++		if (stat_id >= CGX_RX_STAT_GLOBAL_INDEX)
++		/* pass lmac as 0 for CGX_CMR_RX_STAT9-12 */
++			cgx_write(cgx, 0,
++				  (CGXX_CMRX_RX_STAT0 + (stat_id * 8)), 0);
++		else
++			cgx_write(cgx, lmac_id,
++				  (CGXX_CMRX_RX_STAT0 + (stat_id * 8)), 0);
++	}
++
++	for (stat_id = 0 ; stat_id < CGX_TX_STATS_COUNT; stat_id++)
++		cgx_write(cgx, lmac_id, CGXX_CMRX_TX_STAT0 + (stat_id * 8), 0);
++
++	return 0;
++}
++
+ static int cgx_set_fec_stats_count(struct cgx_link_user_info *linfo)
+ {
+ 	if (!linfo->fec)
+@@ -1788,6 +1814,7 @@ static struct mac_ops	cgx_mac_ops    = {
+ 	.pfc_config =                   cgx_lmac_pfc_config,
+ 	.mac_get_pfc_frm_cfg   =        cgx_lmac_get_pfc_frm_cfg,
+ 	.mac_reset   =			cgx_lmac_reset,
++	.mac_stats_reset       =	cgx_stats_reset,
+ };
+ 
+ static int cgx_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
+index 6f7d1dee5830..dc9ace30554a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
+@@ -141,6 +141,7 @@ int cgx_lmac_evh_register(struct cgx_event_cb *cb, void *cgxd, int lmac_id);
+ int cgx_lmac_evh_unregister(void *cgxd, int lmac_id);
+ int cgx_get_tx_stats(void *cgxd, int lmac_id, int idx, u64 *tx_stat);
+ int cgx_get_rx_stats(void *cgxd, int lmac_id, int idx, u64 *rx_stat);
++int cgx_stats_reset(void *cgxd, int lmac_id);
+ int cgx_lmac_rx_tx_enable(void *cgxd, int lmac_id, bool enable);
+ int cgx_lmac_tx_enable(void *cgxd, int lmac_id, bool enable);
+ int cgx_lmac_addr_set(u8 cgx_id, u8 lmac_id, u8 *mac_addr);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+index 0b4cba03f2e8..9ffc6790c513 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+@@ -132,6 +132,7 @@ struct mac_ops {
+ 	/* FEC stats */
+ 	int			(*get_fec_stats)(void *cgxd, int lmac_id,
+ 						 struct cgx_fec_stats_rsp *rsp);
++	int			(*mac_stats_reset)(void *cgxd, int lmac_id);
+ };
+ 
+ struct cgx {
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 3d801a1a4f70..4a77f6fe2622 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -174,6 +174,7 @@ M(CGX_FEC_STATS,	0x217, cgx_fec_stats, msg_req, cgx_fec_stats_rsp) \
+ M(CGX_SET_LINK_MODE,	0x218, cgx_set_link_mode, cgx_set_link_mode_req,\
+ 			       cgx_set_link_mode_rsp)	\
+ M(CGX_GET_PHY_FEC_STATS, 0x219, cgx_get_phy_fec_stats, msg_req, msg_rsp) \
++M(CGX_STATS_RST,	0x21A, cgx_stats_rst, msg_req, msg_rsp)		\
+ M(CGX_FEATURES_GET,	0x21B, cgx_features_get, msg_req,		\
+ 			       cgx_features_info_msg)			\
+ M(RPM_STATS,		0x21C, rpm_stats, msg_req, rpm_stats_rsp)	\
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+index 76218f1cb459..1b34cf9c9703 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+@@ -38,6 +38,7 @@ static struct mac_ops		rpm_mac_ops   = {
+ 	.pfc_config =                   rpm_lmac_pfc_config,
+ 	.mac_get_pfc_frm_cfg   =        rpm_lmac_get_pfc_frm_cfg,
+ 	.mac_reset   =			rpm_lmac_reset,
++	.mac_stats_reset		 =	  rpm_stats_reset,
+ };
+ 
+ static struct mac_ops		rpm2_mac_ops   = {
+@@ -70,6 +71,7 @@ static struct mac_ops		rpm2_mac_ops   = {
+ 	.pfc_config =                   rpm_lmac_pfc_config,
+ 	.mac_get_pfc_frm_cfg   =        rpm_lmac_get_pfc_frm_cfg,
+ 	.mac_reset   =			rpm_lmac_reset,
++	.mac_stats_reset	    =	rpm_stats_reset,
+ };
+ 
+ bool is_dev_rpm2(void *rpmd)
+@@ -443,6 +445,21 @@ int rpm_get_tx_stats(void *rpmd, int lmac_id, int idx, u64 *tx_stat)
+ 	return 0;
+ }
+ 
++int rpm_stats_reset(void *rpmd, int lmac_id)
++{
++	rpm_t *rpm = rpmd;
++	u64 cfg;
++
++	if (!is_lmac_valid(rpm, lmac_id))
++		return -ENODEV;
++
++	cfg = rpm_read(rpm, 0, RPMX_MTI_STAT_STATN_CONTROL);
++	cfg |= RPMX_CMD_CLEAR_TX | RPMX_CMD_CLEAR_RX | BIT_ULL(lmac_id);
++	rpm_write(rpm, 0, RPMX_MTI_STAT_STATN_CONTROL, cfg);
++
++	return 0;
++}
++
+ u8 rpm_get_lmac_type(void *rpmd, int lmac_id)
+ {
+ 	rpm_t *rpm = rpmd;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
+index b79cfbc6f877..34b11deb0f3c 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
+@@ -85,6 +85,8 @@
+ #define RPMX_MTI_STAT_STATN_CONTROL			0x10018
+ #define RPMX_MTI_STAT_DATA_HI_CDC			0x10038
+ #define RPMX_RSFEC_RX_CAPTURE				BIT_ULL(27)
++#define RPMX_CMD_CLEAR_RX				BIT_ULL(30)
++#define RPMX_CMD_CLEAR_TX				BIT_ULL(31)
+ #define RPMX_MTI_RSFEC_STAT_COUNTER_CAPTURE_2		0x40050
+ #define RPMX_MTI_RSFEC_STAT_COUNTER_CAPTURE_3		0x40058
+ #define RPMX_MTI_FCFECX_VL0_CCW_LO			0x38618
+@@ -134,4 +136,5 @@ int rpm2_get_nr_lmacs(void *rpmd);
+ bool is_dev_rpm2(void *rpmd);
+ int rpm_get_fec_stats(void *cgxd, int lmac_id, struct cgx_fec_stats_rsp *rsp);
+ int rpm_lmac_reset(void *rpmd, int lmac_id, u8 pf_req_flr);
++int rpm_stats_reset(void *rpmd, int lmac_id);
+ #endif /* RPM_H */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index 72e060cf6b61..9d2836077d9f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -602,6 +602,35 @@ int rvu_mbox_handler_rpm_stats(struct rvu *rvu, struct msg_req *req,
+ 	return rvu_lmac_get_stats(rvu, req, (void *)rsp);
+ }
+ 
++int rvu_mbox_handler_cgx_stats_rst(struct rvu *rvu, struct msg_req *req,
++				   struct msg_rsp *rsp)
++{
++	int pf = rvu_get_pf(req->hdr.pcifunc);
++	struct rvu_pfvf	*parent_pf;
++	struct mac_ops *mac_ops;
++	u8 cgx_idx, lmac;
++	void *cgxd;
++
++	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
++		return LMAC_AF_ERR_PERM_DENIED;
++
++	parent_pf = &rvu->pf[pf];
++	/* To ensure reset cgx stats won't affect VF stats,
++	 *  check if it used by only PF interface.
++	 *  If not, return
++	 */
++	if (parent_pf->cgx_users > 1) {
++		dev_info(rvu->dev, "CGX busy, could not reset statistics\n");
++		return 0;
++	}
++
++	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_idx, &lmac);
++	cgxd = rvu_cgx_pdata(cgx_idx, rvu);
++	mac_ops = get_mac_ops(cgxd);
++
++	return mac_ops->mac_stats_reset(cgxd, lmac);
++}
++
+ int rvu_mbox_handler_cgx_fec_stats(struct rvu *rvu,
+ 				   struct msg_req *req,
+ 				   struct cgx_fec_stats_rsp *rsp)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 7e16a341ec58..c5de3ba33e2f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -961,6 +961,7 @@ void otx2_get_mac_from_af(struct net_device *netdev);
+ void otx2_config_irq_coalescing(struct otx2_nic *pfvf, int qidx);
+ int otx2_config_pause_frm(struct otx2_nic *pfvf);
+ void otx2_setup_segmentation(struct otx2_nic *pfvf);
++int otx2_reset_mac_stats(struct otx2_nic *pfvf);
+ 
+ /* RVU block related APIs */
+ int otx2_attach_npa_nix(struct otx2_nic *pfvf);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index 5d8359b54098..9afeefea3b65 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1146,6 +1146,23 @@ static int otx2_cgx_config_linkevents(struct otx2_nic *pf, bool enable)
+ 	return err;
+ }
+ 
++int otx2_reset_mac_stats(struct otx2_nic *pfvf)
++{
++	struct msg_req *req;
++	int err;
++
++	mutex_lock(&pfvf->mbox.lock);
++	req = otx2_mbox_alloc_msg_cgx_stats_rst(&pfvf->mbox);
++	if (!req) {
++		mutex_unlock(&pfvf->mbox.lock);
++		return -ENOMEM;
++	}
++
++	err = otx2_sync_mbox_msg(&pfvf->mbox);
++	mutex_unlock(&pfvf->mbox.lock);
++	return err;
++}
++
+ static int otx2_cgx_config_loopback(struct otx2_nic *pf, bool enable)
+ {
+ 	struct msg_req *msg;
+@@ -3034,6 +3051,9 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	netdev->min_mtu = OTX2_MIN_MTU;
+ 	netdev->max_mtu = otx2_get_max_mtu(pf);
+ 
++	/* reset CGX/RPM MAC stats */
++	otx2_reset_mac_stats(pf);
++
+ 	err = register_netdev(netdev);
+ 	if (err) {
+ 		dev_err(dev, "Failed to register netdevice\n");
+-- 
+2.25.1
 
 
