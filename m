@@ -1,135 +1,86 @@
-Return-Path: <linux-kernel+bounces-125976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 971E8892EC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 09:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6B8892ECA
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 09:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47B392823CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 07:02:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 568392823C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 07:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD71C79F9;
-	Sun, 31 Mar 2024 07:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BwEAKnya"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C2FAD21;
+	Sun, 31 Mar 2024 07:03:06 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900151C0DD3;
-	Sun, 31 Mar 2024 07:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1429455
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 07:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711868574; cv=none; b=oMAHO6cBAduQCDYBtaRVHPWwo4RyllC1eIAaVK8RqIfEVTQcMvsnJ9fdM6fDVjfsa9XpfVj3oealDXv2/nv9gf1jnUzAcj7/l4898q90SAgJ+oq0dN94MFp/Y03fxWhFD9sBBu8btpZM2GQoQ2LGmXObrtVCgeMmU6tDX1CiJE4=
+	t=1711868585; cv=none; b=Dg522ZiaAUCa3d40Ga0zhE+vbY6qn0sfaEwjQXzIvcjMfPVDY+bvAkZsSMEHAI1fY1WYvl19XfVEAWReA31IF45sRoQxcyk2AyabT4koijg4nP5KoQwgC7k8MDLplGT81ssy+Xa9aXpgDrsBvssoXLQ/YPWSm3xMGsE1LwB8vU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711868574; c=relaxed/simple;
-	bh=dxne36p7CNzoDc1pQ1xQpNgyEGkny34AksP98O9zziA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hgscki+f26YADC+aTjTWdVuBQwQGfuQ4/aMf+/D6cqQ67IoH6auHyWSAYEH8jKLCnOtIp1rQ42d42F9M9BtXaKiRdOfY9XJaOWlpIWylskRVyZU4g+v+bOCMIzjANSZz5wWnpfDnJImGKRnMjFhPqi/QlIxUSOXR2lMtJUK0qnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BwEAKnya; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-415482307b0so24398835e9.0;
-        Sun, 31 Mar 2024 00:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711868570; x=1712473370; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ftueHlK6SdS74xEyMEJM1z5ZFa9C8bMEaWxJQ9cgy6c=;
-        b=BwEAKnyai9v8Zfz/zeL7DJ1FkrWk1V6Snn8hIkc/LzbmQ6Y+7VxQdTV9PTuynyeFMd
-         LtpvqAv4Tn2d97qhlgMcneSdnwUV6WAo3GGvxgNX3XO9t4rvg6XI4mkGeA4YP86z6gH2
-         FVFZJeO7Qq++JPXsc/bcNi5IvzH52TUFXEmmif/x/zR9Vbrswn0nIuqoDN+q1DE1xaB0
-         T2jkbBit221y48NJZmcnFuB+9VeFIuP1J6rkFxm9etZXx/k5k+zMVxeO890McaFpqrIq
-         4ECAGDv5o6BNj67vyeCHL+0eXhcwoYeQpO7dqQEiUqSs1yJVz+9yV50AW9hhrZ2GIR1d
-         DmxA==
+	s=arc-20240116; t=1711868585; c=relaxed/simple;
+	bh=0pPA2FId672iO+EhkbbIOjX8z+KIhSHKWVbs6vDl1uo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=grbQA7ZgI4npmE7nWHZu4ylCc4W4yhXe20whepK4BOPgz6T9eWLtSoHIOUqfy+liXyGTiMWjynEqwA2DtxjvgB/kFP0AZmhVerEZ9qT1fG703ub3ACSbGzYbr4Kv4F/jWGnVCWRLBg+DwhlNbTGeSanvWnruhQEsCRj4vrW/M2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c9aa481ce4so327772839f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 00:03:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711868570; x=1712473370;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ftueHlK6SdS74xEyMEJM1z5ZFa9C8bMEaWxJQ9cgy6c=;
-        b=CJbu5vqLIsnn4hCPfMTvTlwXlDhufNkZ2/Xzjyqf1Vvw1e3diQQ7HuNJSGKuBsCeNR
-         KfB3iWVq5o+qurcZoG7cLRNPCt0ru2Ipi1oAcsY3xOJoyjPzhzVflxEIwaDcEXRsYgUI
-         kpuN6XKcFWPphvS22tY5R3PORY0T91LrRMoa7tWcXnEo4WigNjQfOSF9he7UvU92otnX
-         scWG81phwsHM3WgLCU/lsESW5tNRt6dTmuOeoPnkqTkfa7u/pKILnGwOJgczkPt3DFP6
-         ds2XGAoRm+VzOT+atIzUkvmIpahZnYBSG9AiFXoBBL7YDlKCGC66HlpqvDuaQQDEiQZG
-         aQ6w==
-X-Forwarded-Encrypted: i=1; AJvYcCU14EJfd4OFYrt0uec99LRjQ23eH1FFiAHn8f3K47tX2p7+ws2vTo/V0eNbjMl2nPTr9iZMWAw18Bv5QBeiboHxI/zdgxL0SmWL5biWmvw=
-X-Gm-Message-State: AOJu0Yw7Fvogbq/gOX/4EIwglcIpEw6acxhyDo+RPLyF7XUpdjtO/Ybk
-	Eff0x4f9HT77LzHKRRhGbsl9BYKESsY1NrgHNL5on0FoVd7YFUH2quMBfLsH5UA=
-X-Google-Smtp-Source: AGHT+IF7lZOkvpocBQ55+s4W2G35MpHj5Sam1R7pxRZi/Ex6OgRPj7MDoU0YvUMkRqRFqBUvtGtBjg==
-X-Received: by 2002:a05:600c:4f0d:b0:412:beee:36b3 with SMTP id l13-20020a05600c4f0d00b00412beee36b3mr5915412wmq.7.1711868569752;
-        Sun, 31 Mar 2024 00:02:49 -0700 (PDT)
-Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id jb2-20020a05600c54e200b004155387c08esm5937826wmb.27.2024.03.31.00.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Mar 2024 00:02:49 -0700 (PDT)
-From: Stafford Horne <shorne@gmail.com>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Stafford Horne <shorne@gmail.com>,
-	Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Andrew Davis <afd@ti.com>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	linux-openrisc@vger.kernel.org
-Subject: [PATCH] openrisc: Use do_kernel_power_off()
-Date: Sun, 31 Mar 2024 08:02:28 +0100
-Message-ID: <20240331070230.2252922-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1711868583; x=1712473383;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GdKB7ff7cvQS5rwdXXkTHakFZyi4v67RcWzVnTE04OY=;
+        b=pYLg4nAkBkWrFMBJza5hhQk03e0QdCoLB6Kp7ec8Y0x7zLyon1z3Je++FpeI2ZaRHV
+         m1ITwH/F3gdB5nKA+Ew5C7E1FJuGNMdqYb8N5gFZafI4SV/XaNP+rqjIUF/L3O0KE2zq
+         uZgkP1fSp6alKqTABJg9ZIVP0GfojSCgVtFqCyamED/DPHX8+2GPXGCOgm7xdt3xM1K5
+         p/ClTz8CazUyyMfnZkegUKcWUvoMxhg4asR9i/6545hl2hPBccIyI648TckzoaE5Nb4f
+         8qU0pLZpWYEBqdvir+cA11YlvRXLKf8+bN6jrMZzIay7AJp2CQ1oRvDfFgACP7ZDPoEA
+         tm4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXuvEIwItdFnhs15QVWTI5m3VHmv4Liufe9g12rBiuRirx6k9Fn2qCt5pQ1mFP1oR3ENE9vKt/BPoDpeLjGiu4od8LIQE7K6WCIbL+E
+X-Gm-Message-State: AOJu0Yx0H0KKMUigU1Ir7xlql5SvO/B57eT4rpdXPfJecJsIUfFZUhW3
+	DUihZEceh11bA//eYgO0FDchz3pN80g8+z0BSPo75CftxKVU0PjdpMJlOFD2pHfVZidGFZ1Z2vj
+	HPsk81iJiCvDyxoMB9TtaSI68RT1cm68Kn9YhIzPdbnfzhJ77kGVP47U=
+X-Google-Smtp-Source: AGHT+IE6XBVLyx+XHQNh50pRRiuhGYKxlNkCb4GhC9oaEVK6jwVlzp1AqVG21UVoomYS8jI4KPcXIf/AmrAi8ViTMX+v8Lv4dupP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:350c:b0:366:1f71:1f69 with SMTP id
+ bu12-20020a056e02350c00b003661f711f69mr382426ilb.2.1711868583533; Sun, 31 Mar
+ 2024 00:03:03 -0700 (PDT)
+Date: Sun, 31 Mar 2024 00:03:03 -0700
+In-Reply-To: <20240331061958.3340-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d2f1800614ef7685@google.com>
+Subject: Re: [syzbot] [bpf?] possible deadlock in kvfree_call_rcu
+From: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-After commit 14c5678720bd ("power: reset: syscon-poweroff: Use
-devm_register_sys_off_handler(POWER_OFF)") setting up of pm_power_off
-was removed from the driver, this causes OpenRISC platforms using
-syscon-poweroff to no longer shutdown.
+Hello,
 
-The kernel now supports chained power-off handlers. Use
-do_kernel_power_off() that invokes chained power-off handlers.  All
-architectures have moved away from using pm_power_off except OpenRISC.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-This patch migrates openrisc to use do_kernel_power_off() instead of the
-legacy pm_power_off().
+Reported-and-tested-by: syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com
 
-Fixes: 14c5678720bd ("power: reset: syscon-poweroff: Use devm_register_sys_off_handler(POWER_OFF)")
-Signed-off-by: Stafford Horne <shorne@gmail.com>
----
- arch/openrisc/kernel/process.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Tested on:
 
-diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
-index 86e02929f3ac..3c27d1c72718 100644
---- a/arch/openrisc/kernel/process.c
-+++ b/arch/openrisc/kernel/process.c
-@@ -65,7 +65,7 @@ void machine_restart(char *cmd)
- }
- 
- /*
-- * This is used if pm_power_off has not been set by a power management
-+ * This is used if a sys-off handler was not set by a power management
-  * driver, in this case we can assume we are on a simulator.  On
-  * OpenRISC simulators l.nop 1 will trigger the simulator exit.
-  */
-@@ -89,10 +89,8 @@ void machine_halt(void)
- void machine_power_off(void)
- {
- 	printk(KERN_INFO "*** MACHINE POWER OFF ***\n");
--	if (pm_power_off != NULL)
--		pm_power_off();
--	else
--		default_power_off();
-+	do_kernel_power_off();
-+	default_power_off();
- }
- 
- /*
--- 
-2.44.0
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1424fe29180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=1fa663a2100308ab6eab
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11a3b92d180000
 
+Note: testing is done by a robot and is best-effort only.
 
