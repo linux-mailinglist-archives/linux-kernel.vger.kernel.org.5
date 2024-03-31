@@ -1,181 +1,270 @@
-Return-Path: <linux-kernel+bounces-126330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8175789353D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:28:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F16B7893543
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:36:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D1F91F22B82
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:28:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2676287EE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E791474C2;
-	Sun, 31 Mar 2024 17:26:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FE414535B;
+	Sun, 31 Mar 2024 17:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xwFZQQGO"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mHvgWdYh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5129145356
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 17:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05FBA1DDCE;
+	Sun, 31 Mar 2024 17:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711906018; cv=none; b=in9EmLpC+g9/eFagyC3lPNcIu5942yoHV2c3l0majnRQNLE4c33yCVHpqDFAcVRmFyXYs4ufmZ9zJESBSH8xQsl6kKB0JZpo8NXCTedYHBIPFOzbj0sGz7j83eObjThRWfSSEVXwo0Q+MV6ELcHMdzwPBuvq59KfhuiRxZflOZo=
+	t=1711906565; cv=none; b=SgXelR8bXw8ID3Ss21FPYU304txwMe/RR9IhDfz9QOShbgiir5CiDuvzxtVGeIaNa6DqeGJs5UdLuJkRj4/16H+8LevNahbzKl33+eujGdBHCl4cGuNirwCLlVNl4dknOV9BrbfzUgyZqZ0cp7TmtrpPp3xBlJDDtdxFFfqKfvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711906018; c=relaxed/simple;
-	bh=67lOWMZ6BwW89wBJNwjyk+x7EvS3cNwshmjRuUkh9Fc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a6WGLxqTLzmu8x5LKM2cv01uK6I3ohUi3sm4QFYa5j74o6oizZa80GzDNfiq4de/gxJJGi7QyB6sU5rSIXbABr9RSaOPlcDPnAwdEV8OH1sLuY+5+0ijsrOBA58bV4Samk997W7beFVRlsyUEztueTxGW7TcpdV8058C9txUAAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xwFZQQGO; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=JuXH0teYwDflxG0HG7HxVUegvI27jzlo2icmDVUsmWE=; b=xwFZQQGOHtoB8tURrJNetvjwQ0
-	CFVzhgObPRvJkxh0DxSucoLT2XhHNhCzRzM0sMkGPKT4en+oSG3t8qw0NC4orGe+xe7rp0OaAgvoP
-	kcmDleiAl5zyGbhyJJ5bTzYrHeYkAHjJqCCfMjzutMVRSMKbHEzG4xBeoYqZ2bllkdLT/I2tQc/Gx
-	3bks9ZVM19umQRtcOXkd8Mx59FunNSiHHhwLPDzEtKqWLskIMINvFkwiL/qPus9Q8uQXHDNzGxiHk
-	IuukuT6LlTjOChgYe7GE5i8KNYAGY1TBaK82qb2mm7A34nF967kMFY4ADbNYdxcXSnkFqpLSUeHF6
-	lE9XyDcw==;
-Received: from [50.53.2.121] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqyxM-00000005z30-0KPr;
-	Sun, 31 Mar 2024 17:26:56 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 6/6] timers: fix text inconsistencies and spelling
-Date: Sun, 31 Mar 2024 10:26:52 -0700
-Message-ID: <20240331172652.14086-7-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240331172652.14086-1-rdunlap@infradead.org>
-References: <20240331172652.14086-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1711906565; c=relaxed/simple;
+	bh=5G1GEIWNh4wgtSrPSubJRUDD7diK+EByYdDzXtFnNpw=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=o3LuuoH1mJ1r/sUCCWHTG0uRNbSDLpEQh7ncW6hRxqGyVPCZw4xng9+H4YKRaax7UP2vTNB/CTtSSeS/F3r97Q5CV5A1DK95hkU8lxogTWTHvlJBeqDEGOdjrhtpbmw4r5PBrPr9soPROtz/4Qd3ld/0DlyKyvbuH3q2oOHcvDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mHvgWdYh; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711906563; x=1743442563;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=5G1GEIWNh4wgtSrPSubJRUDD7diK+EByYdDzXtFnNpw=;
+  b=mHvgWdYhLKOQXnUbG4kaXPTjcfKMopy862/X43oREgtiEYE5bRsP306g
+   /wO8df2s9pTzGq+K4pFeuW/MK82P1T6VcQj/1zUI5o+cqIXdaH3vLaxfw
+   oKzHF1h4XAwt+HVRwAurGvpPxXYKTFfToa5/GlaMzxMwo/01ia5dc7dtD
+   KKG8yy0Qgpp0iHu1k3P+8ME+zHdz79UCjBQghuEX7dbxQvU5eOvLLEV2z
+   fo3e4qZ/0+UUAyNeAuuZSnViTj0web/dmMxiZcdQEGz9Ou8rEmtvuKypB
+   RmvKfTgUbKOw/f4UiXqPkIqv1m2zobm7zKS0GzhpZVI49bYH2YkVKdYes
+   w==;
+X-CSE-ConnectionGUID: ZqIlcroiRfGOdnlGsxz5Ug==
+X-CSE-MsgGUID: FD0rlwbBTUqIHmWo3Xr0gQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17602858"
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
+   d="scan'208";a="17602858"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 10:36:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
+   d="scan'208";a="48475200"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 31 Mar 2024 10:36:00 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Jarkko
+ Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <op.2lbrsagbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D071I61AGNZ7.HQGKJZI2D5UW@kernel.org>
+ <op.2lgdg1tpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D082LCMM4PMU.GN9HOSMXOQR@kernel.org>
+Date: Sun, 31 Mar 2024 12:35:56 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2lidt6qmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <D082LCMM4PMU.GN9HOSMXOQR@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Fix some text for consistency: s/lvl/level/ in a comment and use
-correct/full function names in comments.
+On Sun, 31 Mar 2024 11:19:04 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-Correct spelling errors as reported by codespell.
+> On Sat Mar 30, 2024 at 5:32 PM EET, Haitao Huang wrote:
+>> On Sat, 30 Mar 2024 06:15:14 -0500, Jarkko Sakkinen <jarkko@kernel.org>
+>> wrote:
+>>
+>> > On Thu Mar 28, 2024 at 5:54 AM EET, Haitao Huang wrote:
+>> >> On Wed, 27 Mar 2024 07:55:34 -0500, Jarkko Sakkinen  
+>> <jarkko@kernel.org>
+>> >> wrote:
+>> >>
+>> >> > On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
+>> >> >> The scripts rely on cgroup-tools package from libcgroup [1].
+>> >> >>
+>> >> >> To run selftests for epc cgroup:
+>> >> >>
+>> >> >> sudo ./run_epc_cg_selftests.sh
+>> >> >>
+>> >> >> To watch misc cgroup 'current' changes during testing, run this  
+>> in a
+>> >> >> separate terminal:
+>> >> >>
+>> >> >> ./watch_misc_for_tests.sh current
+>> >> >>
+>> >> >> With different cgroups, the script starts one or multiple  
+>> concurrent
+>> >> >> SGX
+>> >> >> selftests, each to run one unclobbered_vdso_oversubscribed  
+>> test.Each
+>> >> >> of such test tries to load an enclave of EPC size equal to the EPC
+>> >> >> capacity available on the platform. The script checks results  
+>> against
+>> >> >> the expectation set for each cgroup and reports success or  
+>> failure.
+>> >> >>
+>> >> >> The script creates 3 different cgroups at the beginning with
+>> >> >> following
+>> >> >> expectations:
+>> >> >>
+>> >> >> 1) SMALL - intentionally small enough to fail the test loading an
+>> >> >> enclave of size equal to the capacity.
+>> >> >> 2) LARGE - large enough to run up to 4 concurrent tests but fail  
+>> some
+>> >> >> if
+>> >> >> more than 4 concurrent tests are run. The script starts 4  
+>> expecting
+>> >> >> at
+>> >> >> least one test to pass, and then starts 5 expecting at least one  
+>> test
+>> >> >> to fail.
+>> >> >> 3) LARGER - limit is the same as the capacity, large enough to run
+>> >> >> lots of
+>> >> >> concurrent tests. The script starts 8 of them and expects all  
+>> pass.
+>> >> >> Then it reruns the same test with one process randomly killed and
+>> >> >> usage checked to be zero after all process exit.
+>> >> >>
+>> >> >> The script also includes a test with low mem_cg limit and LARGE
+>> >> >> sgx_epc
+>> >> >> limit to verify that the RAM used for per-cgroup reclamation is
+>> >> >> charged
+>> >> >> to a proper mem_cg.
+>> >> >>
+>> >> >> [1] https://github.com/libcgroup/libcgroup/blob/main/README
+>> >> >>
+>> >> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> >> >> ---
+>> >> >> V7:
+>> >> >> - Added memcontrol test.
+>> >> >>
+>> >> >> V5:
+>> >> >> - Added script with automatic results checking, remove the
+>> >> >> interactive
+>> >> >> script.
+>> >> >> - The script can run independent from the series below.
+>> >> >> ---
+>> >> >>  .../selftests/sgx/run_epc_cg_selftests.sh     | 246
+>> >> >> ++++++++++++++++++
+>> >> >>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
+>> >> >>  2 files changed, 259 insertions(+)
+>> >> >>  create mode 100755
+>> >> >> tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> >> >>  create mode 100755
+>> >> >> tools/testing/selftests/sgx/watch_misc_for_tests.sh
+>> >> >>
+>> >> >> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> >> >> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> >> >> new file mode 100755
+>> >> >> index 000000000000..e027bf39f005
+>> >> >> --- /dev/null
+>> >> >> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> >> >> @@ -0,0 +1,246 @@
+>> >> >> +#!/bin/bash
+>> >> >
+>> >> > This is not portable and neither does hold in the wild.
+>> >> >
+>> >> > It does not even often hold as it is not uncommon to place bash
+>> >> > to the path /usr/bin/bash. If I recall correctly, e.g. NixOS has
+>> >> > a path that is neither of those two.
+>> >> >
+>> >> > Should be #!/usr/bin/env bash
+>> >> >
+>> >> > That is POSIX compatible form.
+>> >> >
+>> >>
+>> >> Sure
+>> >>
+>> >> > Just got around trying to test this in NUC7 so looking into this in
+>> >> > more detail.
+>> >>
+>> >> Thanks. Could you please check if this version works for you?
+>> >>
+>> >>  
+>> https://github.com/haitaohuang/linux/commit/3c424b841cf3cf66b085a424f4b537fbc3bbff6f
+>> >>
+>> >> >
+>> >> > That said can you make the script work with just "#!/usr/bin/env  
+>> sh"
+>> >> > and make sure that it is busybox ash compatible?
+>> >>
+>> >> Yes.
+>> >>
+>> >> >
+>> >> > I don't see any necessity to make this bash only and it adds to the
+>> >> > compilation time of the image. Otherwise lot of this could be  
+>> tested
+>> >> > just with qemu+bzImage+busybox(inside initramfs).
+>> >> >
+>> >>
+>> >> will still need cgroup-tools as you pointed out later. Compiling from
+>> >> its
+>> >> upstream code OK?
+>> >
+>> > Can you explain why you need it?
+>> >
+>> > What is the thing you cannot do without it?
+>> >
+>> > BR, Jarkko
+>> >
+>> I did not find a nice way to start a process in a specified cgroup like
+>> cgexec does. I could wrap the test in a shell: move the current shell  
+>> to a
+>> new cgroup then do exec to run the test app. But that seems cumbersome  
+>> as
+>> I need to spawn many shells, and check results of them.  Another option  
+>> is
+>> create my own cgexec, which I'm sure will be very similar to cgexec  
+>> code.
+>> Was not sure how far we want to go with this.
+>>
+>> I can experiment with the shell wrapper idea and see how bad it can be  
+>> and
+>> fall back to implement cgexec? Open to suggestions.
+>
+> I guess there's only few variants of how cgexec is invoked right?
+>
+> The first thing we need to do is what exact steps those variants
+> perform.
+>
+> After that we an decide how to implement exactly those variants.
+>
+> E.g. without knowing do we need to perform any syscalls or can
+> this all done through sysfs affects somewhat how to proceed.
+>
+> Right now if I want to build e.g. image with BuildRoot I'd need
+> to patch the existing recipe to add new dependencies in order to
+> execute these tests, and probably do the same for every project
+> that can package selftests to image.
+>
+> BR, Jarkko
+>
+Can be done through sysfs without syscalls. I implemented the wrapper  
+shell and it looks not as bad I expected.
+Will send an add-on patch with that change and other changes to address  
+your comments so far for the test scripts.
+If we agree on the approach, I'll squash it with this one later.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: John Stultz <jstultz@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-
- kernel/time/timer.c |   22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff -- a/kernel/time/timer.c b/kernel/time/timer.c
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -64,15 +64,15 @@ EXPORT_SYMBOL(jiffies_64);
- 
- /*
-  * The timer wheel has LVL_DEPTH array levels. Each level provides an array of
-- * LVL_SIZE buckets. Each level is driven by its own clock and therefor each
-+ * LVL_SIZE buckets. Each level is driven by its own clock and therefore each
-  * level has a different granularity.
-  *
-- * The level granularity is:		LVL_CLK_DIV ^ lvl
-+ * The level granularity is:		LVL_CLK_DIV ^ level
-  * The level clock frequency is:	HZ / (LVL_CLK_DIV ^ level)
-  *
-  * The array level of a newly armed timer depends on the relative expiry
-  * time. The farther the expiry time is away the higher the array level and
-- * therefor the granularity becomes.
-+ * therefore the granularity becomes.
-  *
-  * Contrary to the original timer wheel implementation, which aims for 'exact'
-  * expiry of the timers, this implementation removes the need for recascading
-@@ -207,7 +207,7 @@ EXPORT_SYMBOL(jiffies_64);
-  * struct timer_base - Per CPU timer base (number of base depends on config)
-  * @lock:		Lock protecting the timer_base
-  * @running_timer:	When expiring timers, the lock is dropped. To make
-- *			sure not to race agains deleting/modifying a
-+ *			sure not to race against deleting/modifying a
-  *			currently running timer, the pointer is set to the
-  *			timer, which expires at the moment. If no timer is
-  *			running, the pointer is NULL.
-@@ -737,7 +737,7 @@ static bool timer_is_static_object(void
- }
- 
- /*
-- * fixup_init is called when:
-+ * timer_fixup_init is called when:
-  * - an active object is initialized
-  */
- static bool timer_fixup_init(void *addr, enum debug_obj_state state)
-@@ -761,7 +761,7 @@ static void stub_timer(struct timer_list
- }
- 
- /*
-- * fixup_activate is called when:
-+ * timer_fixup_activate is called when:
-  * - an active object is activated
-  * - an unknown non-static object is activated
-  */
-@@ -783,7 +783,7 @@ static bool timer_fixup_activate(void *a
- }
- 
- /*
-- * fixup_free is called when:
-+ * timer_fixup_free is called when:
-  * - an active object is freed
-  */
- static bool timer_fixup_free(void *addr, enum debug_obj_state state)
-@@ -801,7 +801,7 @@ static bool timer_fixup_free(void *addr,
- }
- 
- /*
-- * fixup_assert_init is called when:
-+ * timer_fixup_assert_init is called when:
-  * - an untracked/uninit-ed object is found
-  */
- static bool timer_fixup_assert_init(void *addr, enum debug_obj_state state)
-@@ -914,7 +914,7 @@ static void do_init_timer(struct timer_l
-  * @key: lockdep class key of the fake lock used for tracking timer
-  *       sync lock dependencies
-  *
-- * init_timer_key() must be done to a timer prior calling *any* of the
-+ * init_timer_key() must be done to a timer prior to calling *any* of the
-  * other timer functions.
-  */
- void init_timer_key(struct timer_list *timer,
-@@ -1417,7 +1417,7 @@ static int __timer_delete(struct timer_l
- 	 * If @shutdown is set then the lock has to be taken whether the
- 	 * timer is pending or not to protect against a concurrent rearm
- 	 * which might hit between the lockless pending check and the lock
--	 * aquisition. By taking the lock it is ensured that such a newly
-+	 * acquisition. By taking the lock it is ensured that such a newly
- 	 * enqueued timer is dequeued and cannot end up with
- 	 * timer->function == NULL in the expiry code.
- 	 *
-@@ -2306,7 +2306,7 @@ static inline u64 __get_next_timer_inter
- 
- 		/*
- 		 * When timer base is not set idle, undo the effect of
--		 * tmigr_cpu_deactivate() to prevent inconsitent states - active
-+		 * tmigr_cpu_deactivate() to prevent inconsistent states - active
- 		 * timer base but inactive timer migration hierarchy.
- 		 *
- 		 * When timer base was already marked idle, nothing will be
+Thanks
+Haitao
 
